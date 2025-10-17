@@ -52,7 +52,7 @@ const serviceThingModels = computed(() => {
 });
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   if (!props.deviceId) return;
   loading.value = true;
   try {
@@ -62,43 +62,43 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value?.resetFields();
   queryParams.identifier = '';
   queryParams.times = [];
   handleQuery();
-};
+}
 
 /** 获取服务名称 */
-const getServiceName = (identifier: string | undefined) => {
+function getServiceName(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
     (item: ThingModelData) => item.identifier === identifier,
   );
   return service?.name || identifier;
-};
+}
 
 /** 获取调用方式 */
-const getCallType = (identifier: string | undefined) => {
+function getCallType(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
     (item: ThingModelData) => item.identifier === identifier,
   );
   if (!service?.service?.callType) return '-';
   return getThingModelServiceCallTypeLabel(service.service.callType) || '-';
-};
+}
 
 /** 解析参数 */
-const parseParams = (params: string) => {
+function parseParams(params: string) {
   if (!params) return '-';
   try {
     const parsed = JSON.parse(params);
@@ -109,7 +109,7 @@ const parseParams = (params: string) => {
   } catch {
     return params;
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {

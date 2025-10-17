@@ -61,7 +61,7 @@ const formData = ref<any>({
 const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+async function open(type: string, id?: number) {
   dialogVisible.value = true;
   // 设置标题：create -> 新增，update -> 编辑
   dialogTitle.value = type === 'create' ? $t('page.action.add') : $t('page.action.edit');
@@ -137,7 +137,7 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false;
     }
   }
-};
+}
 defineExpose({ open, close: () => (dialogVisible.value = false) });
 
 async function submitForm() {

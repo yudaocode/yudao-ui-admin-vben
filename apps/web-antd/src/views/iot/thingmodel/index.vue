@@ -63,17 +63,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 新增功能
-const handleCreate = () => {
+function handleCreate() {
   thingModelFormRef.value?.open('create');
-};
+}
 
 // 编辑功能
-const handleEdit = (row: any) => {
+function handleEdit(row: any) {
   thingModelFormRef.value?.open('update', row.id);
-};
+}
 
 // 删除功能
-const handleDelete = async (row: any) => {
+async function handleDelete(row: any) {
   try {
     await deleteThingModel(row.id);
     message.success('删除成功');
@@ -81,31 +81,31 @@ const handleDelete = async (row: any) => {
   } catch (error) {
     console.error('删除失败:', error);
   }
-};
+}
 
 // 打开 TSL
-const handleOpenTSL = () => {
+function handleOpenTSL() {
   thingModelTSLRef.value?.open();
-};
+}
 
 // 获取数据类型标签
-const getDataTypeLabel = (row: any) => {
+function getDataTypeLabel(row: any) {
   return getDataTypeOptionsLabel(row.property?.dataType) || '-';
-};
+}
 
 // 刷新表格
-const handleRefresh = () => {
+function handleRefresh() {
   gridApi.reload();
-};
+}
 
 // 获取产品信息
-const getProductData = async () => {
+async function getProductData() {
   try {
     product.value = await getProduct(props.productId);
   } catch (error) {
     console.error('获取产品信息失败:', error);
   }
-};
+}
 
 // 初始化
 onMounted(async () => {

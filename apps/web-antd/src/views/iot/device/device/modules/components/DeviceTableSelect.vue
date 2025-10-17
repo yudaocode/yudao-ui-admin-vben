@@ -139,7 +139,7 @@ const rowSelection = computed(() => ({
 }));
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     if (props.productId) {
@@ -151,22 +151,22 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+function resetQuery() {
   queryFormRef.value.resetFields();
   handleQuery();
-};
+}
 
 /** 打开弹窗 */
-const open = async () => {
+async function open() {
   dialogVisible.value = true;
   // 重置选择状态
   selectedDevices.value = [];
@@ -178,7 +178,7 @@ const open = async () => {
   }
   // 获取设备列表
   await getList();
-};
+}
 defineExpose({ open });
 
 /** 处理行点击事件 */

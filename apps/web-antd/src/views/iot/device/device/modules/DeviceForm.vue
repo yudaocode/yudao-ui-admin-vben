@@ -8,8 +8,8 @@ import {
   createDevice,
   getDevice,
   updateDevice,
-  type IotDeviceApi
 } from '#/api/iot/device/device';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

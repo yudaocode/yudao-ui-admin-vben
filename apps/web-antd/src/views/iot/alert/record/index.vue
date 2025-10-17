@@ -22,7 +22,7 @@ const productList = ref<any[]>([]);
 const deviceList = ref<any[]>([]);
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 

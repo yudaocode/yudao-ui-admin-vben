@@ -18,17 +18,17 @@ const product = inject<Ref<IotProductApi.Product>>(IOT_PROVIDE_KEY.PRODUCT); // 
 const viewMode = ref('view'); // 查看模式：view-代码视图，editor-编辑器视图
 
 /** 打开弹窗 */
-const open = async () => {
+async function open() {
   dialogVisible.value = true;
   await getTsl();
-};
+}
 defineExpose({ open });
 
 /** 获取 TSL */
 const thingModelTSL = ref<any>({});
 const tslString = ref(''); // 用于编辑器的字符串格式
 
-const getTsl = async () => {
+async function getTsl() {
   try {
     thingModelTSL.value = await getThingModelTSL(product?.value?.id || 0);
     // 将对象转换为格式化的 JSON 字符串
@@ -38,7 +38,7 @@ const getTsl = async () => {
     thingModelTSL.value = {};
     tslString.value = '{}';
   }
-};
+}
 
 /** 格式化的 TSL 用于只读展示 */
 const formattedTSL = computed(() => {
