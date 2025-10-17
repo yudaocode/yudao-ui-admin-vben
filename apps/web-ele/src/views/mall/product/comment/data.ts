@@ -57,7 +57,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：ele 版本，rate 会无法使用。
     {
       fieldName: 'descriptionScores',
       label: '描述星级',
