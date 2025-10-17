@@ -351,6 +351,7 @@ setupVbenVxeTable({
       },
     });
 
+    // add by 星语：文件大小格式化
     vxeUI.formats.add('formatFileSize', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
         if (!cellValue) return '0 B';
