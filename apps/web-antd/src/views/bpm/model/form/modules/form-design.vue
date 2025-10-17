@@ -22,7 +22,7 @@ import {
 } from 'ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
-import { setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
 
 const props = defineProps({
   formList: {

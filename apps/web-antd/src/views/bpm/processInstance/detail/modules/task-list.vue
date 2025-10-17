@@ -14,7 +14,7 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
-import { setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
 
 defineOptions({
   name: 'BpmProcessInstanceTaskList',

@@ -6,7 +6,7 @@ import { useVbenModal } from '@vben/common-ui';
 import FormCreate from '@form-create/ant-design-vue';
 
 import { getFormDetail } from '#/api/bpm/form';
-import { setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
 
 /** 详情 */
 const formConfig = ref<any>({});

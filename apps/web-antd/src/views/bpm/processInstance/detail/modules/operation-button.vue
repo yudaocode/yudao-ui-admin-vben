@@ -43,7 +43,7 @@ import {
 } from '#/api/bpm/processInstance';
 import * as TaskApi from '#/api/bpm/task';
 import * as UserApi from '#/api/system/user';
-import { setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
