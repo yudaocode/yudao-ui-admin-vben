@@ -132,6 +132,12 @@ const ElCascader = defineAsyncComponent(() =>
     import('element-plus/es/components/cascader/style/css'),
   ]).then(([res]) => res.ElCascader),
 );
+const ElRate = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/rate/index'),
+    import('element-plus/es/components/rate/style/css'),
+  ]).then(([res]) => res.ElRate),
+);
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -184,6 +190,7 @@ export type ComponentType =
   | 'InputTag'
   | 'RadioGroup'
   | 'RangePicker'
+  | 'Rate'
   | 'RichTextarea'
   | 'Select'
   | 'Space'
@@ -339,6 +346,7 @@ async function initComponentAdapter() {
         slots,
       );
     },
+    Rate: ElRate,
     DatePicker: (props, { attrs, slots }) => {
       const { name, id, type } = props;
       const extraProps: Recordable<any> = {};
