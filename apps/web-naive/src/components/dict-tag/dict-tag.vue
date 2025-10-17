@@ -43,7 +43,7 @@ const dictTag = computed(() => {
   let colorType = dict.colorType;
   switch (colorType) {
     case 'danger': {
-      colorType = 'danger';
+      colorType = 'error';
       break;
     }
     case 'info': {
@@ -64,7 +64,7 @@ const dictTag = computed(() => {
     }
     default: {
       if (!colorType) {
-        colorType = 'primary';
+        colorType = '';
       }
     }
   }
