@@ -12,7 +12,7 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -213,7 +213,7 @@ export function useDemo03GradeFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,

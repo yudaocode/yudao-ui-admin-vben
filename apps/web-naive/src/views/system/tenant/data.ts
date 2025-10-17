@@ -23,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,

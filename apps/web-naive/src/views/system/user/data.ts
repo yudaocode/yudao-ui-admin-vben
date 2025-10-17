@@ -233,8 +233,14 @@ export function useImportFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'file',
       label: '用户数据',
-      component: 'Upload',
-      rules: 'required',
+      component: 'FileUpload',
+      componentProps: {
+        accept: ['xls', 'xlsx'],
+        maxSize: 5,
+        maxNumber: 1,
+        multiple: false,
+        showDescription: true,
+      },
       help: '仅允许导入 xls、xlsx 格式文件',
     },
     {
