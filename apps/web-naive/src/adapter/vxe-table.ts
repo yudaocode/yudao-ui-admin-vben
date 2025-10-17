@@ -166,8 +166,9 @@ setupVbenVxeTable({
         }
 
         return h(NSwitch, finallyProps, {
-          checked: () => h('p', $t('common.enabled')),
-          unchecked: () => h('p', $t('common.disabled')),
+          checked: () => h('p', props?.checkedChildren ?? $t('common.enabled')),
+          unchecked: () =>
+            h('p', props?.uncheckedChildren ?? $t('common.disabled')),
         });
       },
     });
