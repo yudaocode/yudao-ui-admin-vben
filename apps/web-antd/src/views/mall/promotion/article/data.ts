@@ -9,12 +9,9 @@ import { z } from '#/adapter/form';
 import { getSimpleArticleCategoryList } from '#/api/mall/promotion/articleCategory';
 import { getRangePickerDefaultProps } from '#/utils';
 
+/** 关联数据 */
 let categoryList: MallArticleCategoryApi.ArticleCategory[] = [];
-async function getCategoryData() {
-  categoryList = await getSimpleArticleCategoryList();
-}
-
-getCategoryData();
+getSimpleArticleCategoryList().then((data) => (categoryList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

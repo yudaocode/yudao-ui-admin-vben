@@ -9,14 +9,9 @@ import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { getRangePickerDefaultProps } from '#/utils';
 
-// TODO @xingyu：这个不用 ref 么？
+/** 关联数据 */
 let tenantPackageList: SystemTenantPackageApi.TenantPackage[] = [];
-
-async function getTenantPackageData() {
-  tenantPackageList = await getTenantPackageList();
-}
-
-getTenantPackageData();
+getTenantPackageList().then((data) => (tenantPackageList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

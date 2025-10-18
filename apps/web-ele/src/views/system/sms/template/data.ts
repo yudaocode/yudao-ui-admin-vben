@@ -74,6 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入模板内容',
+        rows: 4,
       },
       rules: 'required',
     },

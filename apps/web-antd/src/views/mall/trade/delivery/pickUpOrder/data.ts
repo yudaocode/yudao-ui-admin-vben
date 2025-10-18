@@ -10,11 +10,9 @@ import { useUserStore } from '@vben/stores';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import { getRangePickerDefaultProps } from '#/utils';
 
-// TODO @芋艿：统一风格；
+/** 关联数据 **/
 const userStore = useUserStore();
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
-
-/** 自提门店列表 */
 getSimpleDeliveryPickUpStoreList().then((res) => {
   pickUpStoreList.value = res;
   // 移除自己无法核销的门店

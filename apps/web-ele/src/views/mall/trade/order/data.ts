@@ -2,8 +2,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickUpStore';
 
-import { ref } from 'vue';
-
 import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { convertToInteger, formatToFraction } from '@vben/utils';
@@ -13,10 +11,10 @@ import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pick
 import { getAreaTree } from '#/api/system/area';
 import { getRangePickerDefaultProps } from '#/utils';
 
-const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
-
-getSimpleDeliveryPickUpStoreList().then((res) => {
-  pickUpStoreList.value = res;
+/** 关联数据 */
+let pickUpStoreList: MallDeliveryPickUpStoreApi.PickUpStore[] = [];
+getSimpleDeliveryPickUpStoreList().then((data) => {
+  pickUpStoreList = data;
 });
 
 /** 列表的搜索表单 */
@@ -225,9 +223,9 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
           return `买家：${row.user?.nickname} / 收货人： ${row.receiverName} ${row.receiverMobile}${row.receiverAreaName}${row.receiverDetailAddress}`;
         }
         if (row.deliveryType === DeliveryTypeEnum.PICK_UP.type) {
-          return `门店名称：${pickUpStoreList.value.find((item) => item.id === row.pickUpStoreId)?.name} /
-                  门店手机：${pickUpStoreList.value.find((item) => item.id === row.pickUpStoreId)?.phone} /
-                  自提门店：${pickUpStoreList.value.find((item) => item.id === row.pickUpStoreId)?.detailAddress}
+          return `门店名称：${pickUpStoreList.find((item) => item.id === row.pickUpStoreId)?.name} /
+                  门店手机：${pickUpStoreList.find((item) => item.id === row.pickUpStoreId)?.phone} /
+                  自提门店：${pickUpStoreList.find((item) => item.id === row.pickUpStoreId)?.detailAddress}
                   `;
         }
         return '';
