@@ -22,7 +22,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'BpmProcessInstanceMy' });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -43,7 +43,7 @@ function handleCancel(row: BpmTaskApi.Task) {
           try {
             await cancelProcessInstanceByStartUser(row.id, scope.value);
             message.success('取消成功');
-            onRefresh();
+            handleRefresh();
           } catch {
             return false;
           }

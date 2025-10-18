@@ -22,8 +22,8 @@ import {
   createProcessInstance,
   getApprovalDetail as getApprovalDetailApi,
 } from '#/api/bpm/processInstance';
+import { decodeFields, setConfAndFields2 } from '#/components/form-create';
 import { router } from '#/router';
-import { decodeFields, setConfAndFields2 } from '#/utils';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
 

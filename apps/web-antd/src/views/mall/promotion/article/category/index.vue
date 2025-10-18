@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallArticleCategoryApi } from '#/api/mall/promotion/articleCategory';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -22,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -43,11 +43,9 @@ async function handleDelete(row: MallArticleCategoryApi.ArticleCategory) {
     duration: 0,
   });
   try {
-    await deleteArticleCategory(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    onRefresh();
+    await deleteArticleCategory(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -74,6 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -85,7 +84,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <template #doc>
+      <DocAlert
+        title="【营销】内容管理"
+        url="https://doc.iocoder.cn/mall/promotion-content/"
+      />
+    </template>
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="文章分类列表">
       <template #toolbar-tools>
         <TableAction

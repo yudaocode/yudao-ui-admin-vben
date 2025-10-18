@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Button } from 'ant-design-vue';
-import { assign } from 'min-dash';
 
 defineOptions({ name: 'MyProcessPalette' });
 
@@ -11,7 +10,7 @@ const addTask = (event: MouseEvent, options: any = {}) => {
   const create = bpmnInstances().modeler.get('create');
 
   const shape = ElementFactory.createShape(
-    assign({ type: 'bpmn:UserTask' }, options),
+    Object.assign({ type: 'bpmn:UserTask' }, options),
   );
 
   if (options) {
@@ -26,12 +25,6 @@ const addTask = (event: MouseEvent, options: any = {}) => {
     <Button type="primary" @click="addTask" @mousedown="addTask">
       测试任务
     </Button>
-    <div class="test-container" id="palette-container">1</div>
+    <div class="mt-4" id="palette-container">1</div>
   </div>
 </template>
-
-<style scoped>
-.test-container {
-  margin-top: 16px;
-}
-</style>

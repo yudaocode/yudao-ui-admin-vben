@@ -39,8 +39,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE).optional(),
     },
@@ -71,8 +69,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
     },
     {
@@ -384,8 +380,6 @@ export function useBalanceFormSchema(): VbenFormSchema[] {
           { label: '增加', value: 1 },
           { label: '减少', value: -1 },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       defaultValue: 1,
     },
@@ -461,8 +455,6 @@ export function usePointFormSchema(): VbenFormSchema[] {
           { label: '增加', value: 1 },
           { label: '减少', value: -1 },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       defaultValue: 1,
     },

@@ -2,10 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import {
   DeliveryTypeEnum,
   DICT_TYPE,
@@ -13,26 +12,34 @@ import {
 } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
-import { ElImage, ElInput, ElTag } from 'element-plus';
+import { ElImage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getOrderPage, updateOrderRemark } from '#/api/mall/trade/order';
+import { getOrderPage } from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DeleveryForm from './modules/delevery-form.vue';
+import DeliveryForm from './modules/delivery-form.vue';
+import RemarkForm from './modules/remark-form.vue';
 
-const [DeleveryFormModal, deleveryFormModalApi] = useVbenModal({
-  connectedComponent: DeleveryForm,
+const { push } = useRouter();
+
+const [DeliveryFormModal, deliveryFormModalApi] = useVbenModal({
+  connectedComponent: DeliveryForm,
+  destroyOnClose: true,
+});
+
+const [RemarkFormModal, remarkFormModalApi] = useVbenModal({
+  connectedComponent: RemarkForm,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
-const { push } = useRouter();
+
 /** 详情 */
 function handleDetail(row: MallOrderApi.Order) {
   push({ name: 'TradeOrderDetail', params: { id: row.id } });
@@ -40,31 +47,12 @@ function handleDetail(row: MallOrderApi.Order) {
 
 /** 发货 */
 function handleDelivery(row: MallOrderApi.Order) {
-  deleveryFormModalApi.setData(row).open();
+  deliveryFormModalApi.setData(row).open();
 }
 
 /** 备注 */
-function handleRemake(row: MallOrderApi.Order) {
-  prompt({
-    component: () => {
-      return h(ElInput, {
-        defaultValue: row.remark,
-        rows: 3,
-        type: 'textarea',
-      });
-    },
-    content: '请输入订单备注',
-    title: '订单备注',
-    modelPropName: 'value',
-  }).then(async (val) => {
-    if (val) {
-      await updateOrderRemark({
-        id: row.id as number,
-        remark: val,
-      });
-      onRefresh();
-    }
-  });
+function handleRemark(row: MallOrderApi.Order) {
+  remarkFormModalApi.setData(row).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -93,6 +81,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -114,31 +103,35 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/trade-cart/"
       />
     </template>
-    <DeleveryFormModal @success="onRefresh" />
+
+    <DeliveryFormModal @success="handleRefresh" />
+    <RemarkFormModal @success="handleRefresh" />
     <Grid table-title="订单列表">
-      <!-- TODO @霖：列表有点丑 -->
       <template #expand_content="{ row }">
-        <div class="order-items">
+        <div class="py-2">
           <div
-            v-for="(item, index) in row.items"
-            :key="index"
-            class="order-item"
+            v-for="item in row.items"
+            :key="item.id!"
+            class="flex items-start border-b border-gray-100 py-2 last:border-b-0"
           >
-            <div class="order-item-image">
-              <ElImage :src="item.picUrl" class="h-40 w-40" />
+            <div class="mr-3 flex-shrink-0">
+              <ElImage :src="item.picUrl" class="h-10 w-10" />
             </div>
-            <div class="order-item-content">
-              <div class="order-item-name">
+            <div class="flex-1">
+              <div class="mb-1 font-medium">
                 {{ item.spuName }}
                 <ElTag
                   v-for="property in item.properties"
                   :key="property.id"
                   class="ml-1"
+                  size="small"
                 >
                   {{ property.propertyName }}: {{ property.valueName }}
                 </ElTag>
               </div>
-              <div class="order-item-info">
+              <div
+                class="flex items-center justify-between text-xs text-gray-500"
+              >
                 <span>
                   原价：{{ fenToYuan(item.price) }} 元 / 数量：{{
                     item.count
@@ -158,6 +151,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.detail'),
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
               auth: ['trade:order:query'],
@@ -167,6 +161,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :drop-down-actions="[
             {
               label: '发货',
+              type: 'primary',
               link: true,
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
@@ -175,8 +170,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '备注',
+              type: 'primary',
               link: true,
-              onClick: handleRemake.bind(null, row),
+              onClick: handleRemark.bind(null, row),
             },
           ]"
         />
@@ -184,42 +180,3 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
-
-<style lang="scss" scoped>
-.order-items {
-  padding: 8px 0;
-}
-
-.order-item {
-  display: flex;
-  align-items: flex-start;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.order-item-image {
-  flex-shrink: 0;
-  margin-right: 12px;
-}
-
-.order-item-content {
-  flex: 1;
-}
-
-.order-item-name {
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.order-item-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #666;
-}
-</style>

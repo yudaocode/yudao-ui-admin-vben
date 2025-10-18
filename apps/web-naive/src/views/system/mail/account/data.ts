@@ -1,20 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMailAccountApi } from '#/api/system/mail/account';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -41,8 +38,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'password',
       label: '密码',
-      component: 'InputPassword',
+      component: 'Input',
       componentProps: {
+        type: 'password',
         placeholder: '请输入密码',
       },
       rules: 'required',
@@ -73,8 +71,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(true),
     },
@@ -84,8 +80,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.boolean().default(false),
     },
@@ -126,10 +120,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -180,29 +173,10 @@ export function useGridColumns<T = SystemMailAccountApi.MailAccount>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'mail',
-          nameTitle: '邮箱账号',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:mail-account:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:mail-account:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

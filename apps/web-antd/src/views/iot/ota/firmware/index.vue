@@ -22,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -52,7 +52,7 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -91,7 +91,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="固件列表">
       <template #toolbar-tools>
         <TableAction

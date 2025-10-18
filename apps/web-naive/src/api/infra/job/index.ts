@@ -15,6 +15,7 @@ export namespace InfraJobApi {
     retryInterval: number;
     monitorTimeout: number;
     createTime?: Date;
+    nextTimes?: Date[];
   }
 }
 
@@ -45,6 +46,11 @@ export function deleteJob(id: number) {
   return requestClient.delete(`/infra/job/delete?id=${id}`);
 }
 
+/** 批量删除定时任务调度 */
+export function deleteJobList(ids: number[]) {
+  return requestClient.delete(`/infra/job/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出定时任务调度 */
 export function exportJob(params: any) {
   return requestClient.download('/infra/job/export-excel', { params });
@@ -52,11 +58,12 @@ export function exportJob(params: any) {
 
 /** 任务状态修改 */
 export function updateJobStatus(id: number, status: number) {
-  const params = {
-    id,
-    status,
-  };
-  return requestClient.put('/infra/job/update-status', { params });
+  return requestClient.put('/infra/job/update-status', undefined, {
+    params: {
+      id,
+      status,
+    },
+  });
 }
 
 /** 定时任务立即执行一次 */

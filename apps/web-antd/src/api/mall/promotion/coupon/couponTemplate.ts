@@ -20,17 +20,11 @@ export namespace MallCouponTemplateApi {
     fixedStartTerm: number; // 领取日期-开始天数
     fixedEndTerm: number; // 领取日期-结束天数
     discountType: number; // 优惠类型
-    discountPercent: number; // 折扣百分比
+    discountPercent?: number; // 折扣百分比
     discountPrice: number; // 优惠金额
-    discountLimitPrice: number; // 折扣上限
+    discountLimitPrice?: number; // 折扣上限
     takeCount: number; // 已领取数量
     useCount: number; // 已使用数量
-  }
-
-  /** 优惠券模板状态更新 */
-  export interface StatusUpdate {
-    id: number; // 模板编号
-    status: 0 | 1; // 状态
   }
 }
 
@@ -49,9 +43,11 @@ export function updateCouponTemplate(
 }
 
 /** 更新优惠劵模板的状态 */
-export function updateCouponTemplateStatus(id: number, status: 0 | 1) {
-  const data: MallCouponTemplateApi.StatusUpdate = { id, status };
-  return requestClient.put('/promotion/coupon-template/update-status', data);
+export function updateCouponTemplateStatus(id: number, status: number) {
+  return requestClient.put('/promotion/coupon-template/update-status', {
+    id,
+    status,
+  });
 }
 
 /** 删除优惠劵模板 */
@@ -79,12 +75,4 @@ export function getCouponTemplateList(ids: number[]) {
   return requestClient.get<MallCouponTemplateApi.CouponTemplate[]>(
     `/promotion/coupon-template/list?ids=${ids}`,
   );
-}
-
-/** 导出优惠劵模板 Excel */
-export function exportCouponTemplateExcel(params: PageParam) {
-  return requestClient.get('/promotion/coupon-template/export-excel', {
-    params,
-    responseType: 'blob',
-  });
 }

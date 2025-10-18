@@ -62,7 +62,7 @@ const parseFormCreateFields = (formFields?: string[]) => {
 };
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   if (gridApi) {
     gridApi.query();
   }
@@ -97,7 +97,7 @@ const handleCancel = async (row: BpmProcessInstanceApi.ProcessInstance) => {
     },
   }).then(() => {
     message.success('取消成功');
-    onRefresh();
+    handleRefresh();
   });
 };
 

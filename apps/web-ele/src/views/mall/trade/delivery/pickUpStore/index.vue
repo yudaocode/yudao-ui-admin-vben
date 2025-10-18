@@ -28,7 +28,7 @@ const [BindFormModal, bindFormModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -55,7 +55,7 @@ async function handleDelete(row: MallDeliveryPickUpStoreApi.PickUpStore) {
   try {
     await deleteDeliveryPickUpStore(row.id as number);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -82,6 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -93,7 +94,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <BindFormModal />
     <Grid table-title="门店列表">
       <template #toolbar-tools>
@@ -114,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['trade:delivery:pick-up-store:update'],
@@ -121,6 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '绑定店员',
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.ADD,
               auth: ['trade:delivery:pick-up-store:update'],
@@ -128,8 +131,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              link: true,
               type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['trade:delivery:pick-up-store:delete'],
               popConfirm: {

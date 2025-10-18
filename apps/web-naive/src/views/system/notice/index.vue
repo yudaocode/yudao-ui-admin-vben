@@ -1,18 +1,20 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNoticeApi } from '#/api/system/notice';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { ref } from 'vue';
 
-import { NButton } from 'naive-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteNotice, getNoticePage, pushNotice } from '#/api/system/notice';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteNotice,
+  deleteNoticeList,
+  getNoticePage,
+  pushNotice,
+} from '#/api/system/notice';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -24,69 +26,68 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 创建公告 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑公告 */
-function onEdit(row: SystemNoticeApi.Notice) {
+function handleEdit(row: SystemNoticeApi.Notice) {
   formModalApi.setData(row).open();
 }
 
 /** 删除公告 */
-async function onDelete(row: SystemNoticeApi.Notice) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.title]),
+async function handleDelete(row: SystemNoticeApi.Notice) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.title]),
+    { duration: 0 },
+  );
+  try {
+    await deleteNotice(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
+  }
+}
+
+/** 批量删除公告 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
-    await deleteNotice(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
-    onRefresh();
-  } catch {
-    hideLoading();
+    await deleteNoticeList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemNoticeApi.Notice[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 推送公告 */
-async function onPush(row: SystemNoticeApi.Notice) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.processing', ['推送']),
-    duration: 0,
-    key: 'action_process_msg',
-  });
+async function handlePush(row: SystemNoticeApi.Notice) {
+  const hideLoading = message.loading('正在推送中...');
   try {
-    await pushNotice(row.id as number);
+    await pushNotice(row.id!);
     message.success($t('ui.actionMessage.operationSuccess'));
-  } catch {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemNoticeApi.Notice>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'push': {
-      onPush(row);
-      break;
-    }
+  } finally {
+    hideLoading.destroy();
   }
 }
 
@@ -95,7 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -111,28 +112,77 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemNoticeApi.Notice>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="公告列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:notice:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['公告']) }}
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['公告']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notice:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'error',
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notice:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:notice:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '推送',
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.ADD,
+              auth: ['system:notice:update'],
+              onClick: handlePush.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'error',
+              text: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:notice:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.title]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

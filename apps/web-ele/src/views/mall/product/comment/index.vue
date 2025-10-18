@@ -131,10 +131,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
     <Grid table-title="评论列表">
       <template #descriptionScores="{ row }">
-        <ElRate v-model:value="row.descriptionScores" :disabled="true" />
+        <ElRate v-model="row.descriptionScores" :disabled="true" />
       </template>
       <template #benefitScores="{ row }">
-        <ElRate v-model:value="row.benefitScores" :disabled="true" />
+        <ElRate v-model="row.benefitScores" :disabled="true" />
       </template>
       <template #toolbar-tools>
         <TableAction

@@ -50,9 +50,14 @@ export function deletePost(id: number) {
   return requestClient.delete(`/system/post/delete?id=${id}`);
 }
 
+/** 批量删除岗位 */
+export function deletePostList(ids: number[]) {
+  return requestClient.delete(`/system/post/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出岗位 */
 export function exportPost(params: any) {
-  return requestClient.download('/system/post/export', {
+  return requestClient.download('/system/post/export-excel', {
     params,
   });
 }

@@ -19,6 +19,7 @@ async function initSetupVbenForm() {
         Checkbox: 'checked',
         Radio: 'checked',
         Upload: 'fileList',
+        DatePicker: 'formatted-value',
       },
     },
     defineRules: {

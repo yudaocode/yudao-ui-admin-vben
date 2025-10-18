@@ -86,8 +86,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         format: 'HH:mm',
-        minuteStep: 15,
-        placeholder: ['开始时间', '结束时间'],
       },
     },
     {
@@ -196,7 +194,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         ...getRangePickerDefaultProps(),
         allowClear: true,
-        placeholder: ['开始时间', '结束时间'],
       },
     },
   ];

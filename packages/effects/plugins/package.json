@@ -14,6 +14,10 @@
     "**/*.css"
   ],
   "exports": {
+    "./code-editor": {
+      "types": "./src/code-editor/index.ts",
+      "default": "./src/code-editor/index.ts"
+    },
     "./echarts": {
       "types": "./src/echarts/index.ts",
       "default": "./src/echarts/index.ts"
@@ -48,6 +52,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/motion": "catalog:",
+    "codemirror": "catalog:",
     "echarts": "catalog:",
     "markdown-it": "catalog:",
     "markmap-common": "catalog:",
@@ -59,6 +64,7 @@
     "vxe-table": "catalog:"
   },
   "devDependencies": {
+    "@types/codemirror": "catalog:",
     "@types/markdown-it": "catalog:"
   }
 }

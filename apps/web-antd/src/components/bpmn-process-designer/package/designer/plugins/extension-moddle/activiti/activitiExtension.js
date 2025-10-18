@@ -1,10 +1,3 @@
-'use strict';
-
-import { some } from 'min-dash';
-
-// const some = require('min-dash').some
-// const some = some
-
 const ALLOWED_TYPES = {
   FailedJobRetryTimeCycle: [
     'bpmn:StartEvent',
@@ -25,20 +18,20 @@ function is(element, type) {
 }
 
 function exists(element) {
-  return element && element.length;
+  return element && element.length > 0;
 }
 
 function includesType(collection, type) {
   return (
     exists(collection) &&
-    some(collection, (element) => {
+    collection.some((element) => {
       return is(element, type);
     })
   );
 }
 
 function anyType(element, types) {
-  return some(types, (type) => {
+  return types.some((type) => {
     return is(element, type);
   });
 }

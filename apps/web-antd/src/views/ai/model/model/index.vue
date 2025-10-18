@@ -24,7 +24,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -49,7 +49,7 @@ async function handleDelete(row: AiModelModelApi.Model) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -94,7 +94,7 @@ onMounted(async () => {
     <template #doc>
       <DocAlert title="AI 手册" url="https://doc.iocoder.cn/ai/build/" />
     </template>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="模型配置列表">
       <template #toolbar-tools>
         <TableAction

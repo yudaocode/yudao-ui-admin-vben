@@ -2,7 +2,7 @@ import { defineComponent } from 'vue';
 
 import ImageUpload from '#/components/upload/image-upload.vue';
 
-export const useImagesUpload = () => {
+export function useImagesUpload() {
   return defineComponent({
     name: 'ImagesUpload',
     props: {
@@ -22,4 +22,4 @@ export const useImagesUpload = () => {
       );
     },
   });
-};
+}

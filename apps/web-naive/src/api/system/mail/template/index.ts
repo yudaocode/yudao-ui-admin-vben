@@ -20,7 +20,9 @@ export namespace SystemMailTemplateApi {
 
   /** 邮件发送信息 */
   export interface MailSendReqVO {
-    mail: string;
+    toMails: string[];
+    ccMails?: string[];
+    bccMails?: string[];
     templateCode: string;
     templateParams: Record<string, any>;
   }
@@ -54,6 +56,13 @@ export function updateMailTemplate(data: SystemMailTemplateApi.MailTemplate) {
 /** 删除邮件模版 */
 export function deleteMailTemplate(id: number) {
   return requestClient.delete(`/system/mail-template/delete?id=${id}`);
+}
+
+/** 批量删除邮件模版 */
+export function deleteMailTemplateList(ids: number[]) {
+  return requestClient.delete(
+    `/system/mail-template/delete-list?ids=${ids.join(',')}`,
+  );
 }
 
 /** 发送邮件 */

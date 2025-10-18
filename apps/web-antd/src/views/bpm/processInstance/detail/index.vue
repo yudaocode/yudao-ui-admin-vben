@@ -21,7 +21,8 @@ import {
 } from '#/api/bpm/processInstance';
 import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
-import { registerComponent, setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
+import { registerComponent } from '#/utils';
 import {
   SvgBpmApproveIcon,
   SvgBpmCancelIcon,

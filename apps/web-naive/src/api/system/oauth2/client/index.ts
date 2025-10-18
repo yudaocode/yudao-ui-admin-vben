@@ -55,3 +55,10 @@ export function updateOAuth2Client(data: SystemOAuth2ClientApi.OAuth2Client) {
 export function deleteOAuth2Client(id: number) {
   return requestClient.delete(`/system/oauth2-client/delete?id=${id}`);
 }
+
+/** 批量删除 OAuth2.0 客户端 */
+export function deleteOAuth2ClientList(ids: number[]) {
+  return requestClient.delete(
+    `/system/oauth2-client/delete-list?ids=${ids.join(',')}`,
+  );
+}

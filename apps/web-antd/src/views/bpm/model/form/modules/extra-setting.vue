@@ -6,7 +6,7 @@ import {
   BpmModelFormType,
   ProcessVariableEnum,
 } from '@vben/constants';
-import { CircleHelp } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   Checkbox,
@@ -369,7 +369,10 @@ defineExpose({ initData, validate });
                     title="输入字符 '{' 即可插入表单字段"
                     placement="top"
                   >
-                    <CircleHelp class="ml-1 size-4 text-gray-500" />
+                    <IconifyIcon
+                      icon="lucide:circle-help"
+                      class="ml-1 size-4 text-gray-500"
+                    />
                   </Tooltip>
                 </div>
               </Radio>

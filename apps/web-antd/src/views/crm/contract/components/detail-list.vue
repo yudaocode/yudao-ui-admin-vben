@@ -40,7 +40,7 @@ function setCheckedRows({ records }: { records: CrmContractApi.Contract[] }) {
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -108,7 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction

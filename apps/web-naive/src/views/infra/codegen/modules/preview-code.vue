@@ -1,32 +1,19 @@
 <script lang="ts" setup>
-// TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
+import type { TreeOption, TreeOverrideNodeClickBehaviorReturn } from 'naive-ui';
+
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
+import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
-import hljs from 'highlight.js/lib/core';
-import java from 'highlight.js/lib/languages/java';
-import javascript from 'highlight.js/lib/languages/javascript';
-import sql from 'highlight.js/lib/languages/sql';
-import typescript from 'highlight.js/lib/languages/typescript';
-import xml from 'highlight.js/lib/languages/xml';
-import { NButton, NTabs, NTree } from 'naive-ui';
+import { NButton, NTabPane, NTabs, NTree } from 'naive-ui';
 
 import { message } from '#/adapter/naive';
 import { previewCodegen } from '#/api/infra/codegen';
-
-/** 注册代码高亮语言 */
-hljs.registerLanguage('java', java);
-hljs.registerLanguage('xml', xml);
-hljs.registerLanguage('html', xml);
-hljs.registerLanguage('vue', xml);
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('sql', sql);
-hljs.registerLanguage('typescript', typescript);
 
 /** 文件树类型 */
 interface FileNode {
@@ -45,23 +32,18 @@ const activeKey = ref<string>('');
 
 /** 代码地图 */
 const codeMap = ref<Map<string, string>>(new Map<string, string>());
-const setCodeMap = (key: string, lang: string, code: string) => {
+function setCodeMap(key: string, code: string) {
   // 处理可能的缩进问题，特别是对Java文件
   const trimmedCode = code.trimStart();
   // 如果已有缓存则不重新构建
   if (codeMap.value.has(key)) {
     return;
   }
-  try {
-    const highlightedCode = hljs.highlight(trimmedCode, {
-      language: lang,
-    }).value;
-    codeMap.value.set(key, highlightedCode);
-  } catch {
-    codeMap.value.set(key, trimmedCode);
-  }
-};
-const removeCodeMapKey = (targetKey: any) => {
+  codeMap.value.set(key, trimmedCode);
+}
+
+/** 删除代码地图 */
+function removeCodeMapKey(targetKey: any) {
   // 只有一个代码视图时不允许删除
   if (codeMap.value.size === 1) {
     return;
@@ -69,10 +51,10 @@ const removeCodeMapKey = (targetKey: any) => {
   if (codeMap.value.has(targetKey)) {
     codeMap.value.delete(targetKey);
   }
-};
+}
 
 /** 复制代码 */
-const copyCode = async () => {
+async function copyCode() {
   const { copy } = useClipboard();
   const file = previewFiles.value.find(
     (item) => item.filePath === activeKey.value,
@@ -81,30 +63,38 @@ const copyCode = async () => {
     await copy(file.code);
     message.success('复制成功');
   }
-};
+}
 
 /** 文件节点点击事件 */
-const handleNodeClick = (_: any[], e: any) => {
-  if (!e.node.isLeaf) return;
+function handleNodeClick({
+  option,
+}: {
+  option: TreeOption;
+}): TreeOverrideNodeClickBehaviorReturn {
+  if (!option.isLeaf) {
+    return 'default';
+  }
 
-  activeKey.value = e.node.key;
+  activeKey.value = option.key?.toString() || '';
   const file = previewFiles.value.find((item) => {
     const list = activeKey.value.split('.');
-    // 特殊处理-包合并
+    // 特殊处理 - 包合并
     if (list.length > 2) {
       const lang = list.pop();
       return item.filePath === `${list.join('/')}.${lang}`;
     }
     return item.filePath === activeKey.value;
   });
-  if (!file) return;
+  if (!file) {
+    return 'default';
+  }
 
-  const lang = file.filePath.split('.').pop() || '';
-  setCodeMap(activeKey.value, lang, file.code);
-};
+  setCodeMap(activeKey.value, file.code);
+  return 'default';
+}
 
 /** 处理文件树 */
-const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
+function handleFiles(data: InfraCodegenApi.CodegenPreview[]): FileNode[] {
   const exists: Record<string, boolean> = {};
   const files: FileNode[] = [];
 
@@ -118,7 +108,7 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
       const path = paths[cursor] || '';
       const oldFullPath = fullPath;
 
-      // 处理Java包路径特殊情况
+      // 处理 Java 包路径特殊情况
       if (path === 'java' && cursor + 1 < paths.length) {
         fullPath = fullPath ? `${fullPath}/${path}` : path;
         cursor++;
@@ -177,17 +167,17 @@ const handleFiles = (data: InfraCodegenApi.CodegenPreview[]): FileNode[] => {
   }
 
   /** 构建树形结构 */
-  const buildTree = (parentKey: string): FileNode[] => {
+  function buildTree(parentKey: string): FileNode[] {
     return files
       .filter((file) => file.parentKey === parentKey)
       .map((file) => ({
         ...file,
         children: buildTree(file.key),
       }));
-  };
+  }
 
   return buildTree('/');
-};
+}
 
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({
@@ -201,7 +191,9 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     const row = modalApi.getData<InfraCodegenApi.CodegenTable>();
-    if (!row) return;
+    if (!row) {
+      return;
+    }
 
     // 加载预览数据
     loading.value = true;
@@ -213,9 +205,8 @@ const [Modal, modalApi] = useVbenModal({
       fileTree.value = handleFiles(data);
       if (data.length > 0) {
         activeKey.value = data[0]?.filePath || '';
-        const lang = activeKey.value.split('.').pop() || '';
         const code = data[0]?.code || '';
-        setCodeMap(activeKey.value, lang, code);
+        setCodeMap(activeKey.value, code);
       }
     } finally {
       loading.value = false;
@@ -233,36 +224,40 @@ const [Modal, modalApi] = useVbenModal({
       >
         <NTree
           v-if="fileTree.length > 0"
+          :data="fileTree"
           default-expand-all
-          v-model:active-key="activeKey"
-          @select="handleNodeClick"
-          :tree-data="fileTree"
+          key-field="key"
+          label-field="title"
+          children-field="children"
+          :checked-keys="[activeKey]"
+          :override-default-node-click-behavior="handleNodeClick"
         />
       </div>
       <!-- 代码预览 -->
       <div class="h-full w-2/3 overflow-auto pl-4">
-        <NTabs
-          v-model:active-key="activeKey"
-          hide-add
-          type="editable-card"
-          @edit="removeCodeMapKey"
-        >
+        <NTabs v-model:value="activeKey" type="card" @close="removeCodeMapKey">
           <NTabPane
             v-for="key in codeMap.keys()"
+            :name="key"
             :key="key"
             :tab="key.split('/').pop()"
           >
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
-              <code
-                v-dompurify-html="codeMap.get(activeKey)"
-                class="code-highlight"
-              ></code>
+              <CodeEditor
+                class="max-h-200"
+                :value="codeMap.get(activeKey)"
+                mode="application/json"
+                :readonly="true"
+                :bordered="true"
+                :auto-format="false"
+              />
             </div>
           </NTabPane>
-          <template #rightExtra>
-            <NButton type="primary" ghost @click="copyCode" :icon="h(Copy)">
+          <template #suffix>
+            <NButton type="primary" ghost @click="copyCode">
+              <IconifyIcon icon="lucide:copy" />
               复制代码
             </NButton>
           </template>
@@ -271,101 +266,3 @@ const [Modal, modalApi] = useVbenModal({
     </div>
   </Modal>
 </template>
-
-<style scoped>
-/* stylelint-disable selector-class-pattern */
-
-/* 代码高亮样式 - 支持暗黑模式 */
-:deep(.code-highlight) {
-  display: block;
-  white-space: pre;
-  background: transparent;
-}
-
-/* 关键字 */
-:deep(.hljs-keyword) {
-  @apply text-purple-600 dark:text-purple-400;
-}
-
-/* 字符串 */
-:deep(.hljs-string) {
-  @apply text-green-600 dark:text-green-400;
-}
-
-/* 注释 */
-:deep(.hljs-comment) {
-  @apply text-gray-500 dark:text-gray-400;
-}
-
-/* 函数 */
-:deep(.hljs-function) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 数字 */
-:deep(.hljs-number) {
-  @apply text-orange-600 dark:text-orange-400;
-}
-
-/* 类 */
-:deep(.hljs-class) {
-  @apply text-yellow-600 dark:text-yellow-400;
-}
-
-/* 标题/函数名 */
-:deep(.hljs-title) {
-  @apply font-bold text-blue-600 dark:text-blue-400;
-}
-
-/* 参数 */
-:deep(.hljs-params) {
-  @apply text-gray-700 dark:text-gray-300;
-}
-
-/* 内置对象 */
-:deep(.hljs-built_in) {
-  @apply text-teal-600 dark:text-teal-400;
-}
-
-/* HTML标签 */
-:deep(.hljs-tag) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 属性 */
-:deep(.hljs-attribute),
-:deep(.hljs-attr) {
-  @apply text-green-600 dark:text-green-400;
-}
-
-/* 字面量 */
-:deep(.hljs-literal) {
-  @apply text-purple-600 dark:text-purple-400;
-}
-
-/* 元信息 */
-:deep(.hljs-meta) {
-  @apply text-gray-500 dark:text-gray-400;
-}
-
-/* 选择器标签 */
-:deep(.hljs-selector-tag) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* XML/HTML名称 */
-:deep(.hljs-name) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 变量 */
-:deep(.hljs-variable) {
-  @apply text-orange-600 dark:text-orange-400;
-}
-
-/* 属性 */
-:deep(.hljs-property) {
-  @apply text-red-600 dark:text-red-400;
-}
-/* stylelint-enable selector-class-pattern */
-</style>

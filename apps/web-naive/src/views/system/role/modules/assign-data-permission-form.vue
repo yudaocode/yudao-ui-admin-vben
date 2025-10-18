@@ -5,9 +5,10 @@ import type { SystemRoleApi } from '#/api/system/role';
 import { ref } from 'vue';
 
 import { Tree, useVbenModal } from '@vben/common-ui';
+import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { NCheckbox } from 'naive-ui';
+import { NCheckbox, NSpin } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { message } from '#/adapter/naive';
@@ -15,7 +16,6 @@ import { getDeptList } from '#/api/system/dept';
 import { assignRoleDataScope } from '#/api/system/permission';
 import { getRole } from '#/api/system/role';
 import { $t } from '#/locales';
-import { SystemDataScopeEnum } from '#/utils';
 
 import { useAssignDataPermissionFormSchema } from '../data';
 
@@ -77,9 +77,9 @@ const [Modal, modalApi] = useVbenModal({
     try {
       // 加载部门列表
       await loadDeptTree();
-      toggleExpandAll();
-      // 设置表单值, 一定要在加载树之后
-      await formApi.setValues(await getRole(data.id as number));
+      handleExpandAll();
+      // 设置表单值，一定要在加载树之后
+      await formApi.setValues(await getRole(data.id));
     } finally {
       modalApi.unlock();
     }
@@ -98,7 +98,7 @@ async function loadDeptTree() {
 }
 
 /** 全选/全不选 */
-function toggleSelectAll() {
+function handleSelectAll() {
   isAllSelected.value = !isAllSelected.value;
   if (isAllSelected.value) {
     const allIds = getAllNodeIds(deptTree.value);
@@ -109,14 +109,13 @@ function toggleSelectAll() {
 }
 
 /** 展开/折叠所有节点 */
-function toggleExpandAll() {
+function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  // 获取所有节点的 ID
   expandedKeys.value = isExpanded.value ? getAllNodeIds(deptTree.value) : [];
 }
 
 /** 切换父子联动 */
-function toggleCheckStrictly() {
+function handleCheckStrictly() {
   isCheckStrictly.value = !isCheckStrictly.value;
 }
 
@@ -133,31 +132,32 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
 </script>
 
 <template>
-  <Modal title="数据权限" class="w-[40%]">
+  <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <Tree
-          :tree-data="deptTree"
-          multiple
-          bordered
-          :expanded="expandedKeys"
-          v-bind="slotProps"
-          value-field="id"
-          label-field="name"
-          :auto-check-parent="false"
-          :check-strictly="!isCheckStrictly"
-        />
+        <NSpin :show="deptLoading" class="w-full">
+          <Tree
+            :tree-data="deptTree"
+            multiple
+            bordered
+            :default-expanded-keys="expandedKeys"
+            v-bind="slotProps"
+            :check-strictly="!isCheckStrictly"
+            value-field="id"
+            label-field="name"
+          />
+        </NSpin>
       </template>
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <NCheckbox :checked="isAllSelected" @change="toggleSelectAll">
+        <NCheckbox :checked="isAllSelected" @change="handleSelectAll">
           全选
         </NCheckbox>
-        <NCheckbox :checked="isExpanded" @change="toggleExpandAll">
+        <NCheckbox :checked="isExpanded" @change="handleExpandAll">
           全部展开
         </NCheckbox>
-        <NCheckbox :checked="isCheckStrictly" @change="toggleCheckStrictly">
+        <NCheckbox :checked="isCheckStrictly" @change="handleCheckStrictly">
           父子联动
         </NCheckbox>
       </div>

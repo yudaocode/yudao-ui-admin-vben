@@ -2,7 +2,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -108,25 +107,4 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'actions' },
     },
   ];
-}
-
-/** 获取状态选项卡配置 */
-export function getStatusTabs() {
-  const tabs = [
-    {
-      label: '全部',
-      value: 'all',
-    },
-  ];
-
-  // 添加字典状态选项
-  const statusOptions = getDictOptions(DICT_TYPE.PROMOTION_COUPON_STATUS);
-  for (const option of statusOptions) {
-    tabs.push({
-      label: option.label,
-      value: String(option.value),
-    });
-  }
-
-  return tabs;
 }

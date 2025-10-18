@@ -1,13 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailLogApi } from '#/api/system/mail/log';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
+
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -15,10 +19,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'sendTime',
       label: '发送时间',
-      component: 'RangePicker',
+      component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -26,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -36,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择用户类型',
       },
     },
@@ -46,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_MAIL_SEND_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择发送状态',
       },
     },
@@ -58,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: async () => await getSimpleMailAccountList(),
         labelField: 'mail',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择邮箱账号',
       },
     },
@@ -67,7 +71,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编号',
       },
     },
@@ -75,9 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailLogApi.MailLog>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -91,9 +93,28 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'toMail',
-      title: '收件邮箱',
-      minWidth: 160,
+      field: 'userType',
+      title: '接收用户',
+      minWidth: 150,
+      slots: { default: 'userInfo' },
+    },
+    {
+      field: 'toMails',
+      title: '接收信息',
+      minWidth: 300,
+      formatter: ({ row }) => {
+        const lines: string[] = [];
+        if (row.toMails && row.toMails.length > 0) {
+          lines.push(`收件：${row.toMails.join('、')}`);
+        }
+        if (row.ccMails && row.ccMails.length > 0) {
+          lines.push(`抄送：${row.ccMails.join('、')}`);
+        }
+        if (row.bccMails && row.bccMails.length > 0) {
+          lines.push(`密送：${row.bccMails.join('、')}`);
+        }
+        return lines.join('\n');
+      },
     },
     {
       field: 'templateTitle',
@@ -125,26 +146,117 @@ export function useGridColumns<T = SystemMailLogApi.MailLog>(
       minWidth: 120,
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 80,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'toMail',
-          nameTitle: '邮件日志',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '查看',
-            show: hasAccessByCodes(['system:mail-log:query']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '编号',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.createTime || '') as string;
       },
+    },
+    {
+      field: 'fromMail',
+      label: '发送邮箱',
+    },
+    {
+      field: 'userId',
+      label: '接收用户',
+      content: (data: SystemMailLogApi.MailLog) => {
+        if (data?.userType && data?.userId) {
+          return h('div', [
+            h(DictTag, {
+              type: DICT_TYPE.USER_TYPE,
+              value: data.userType,
+            }),
+            ` (${data.userId})`,
+          ]);
+        }
+        return '无';
+      },
+    },
+    {
+      field: 'toMails',
+      label: '接收信息',
+      content: (data: SystemMailLogApi.MailLog) => {
+        const lines: string[] = [];
+        if (data?.toMails && data.toMails.length > 0) {
+          lines.push(`收件：${data.toMails.join('、')}`);
+        }
+        if (data?.ccMails && data.ccMails.length > 0) {
+          lines.push(`抄送：${data.ccMails.join('、')}`);
+        }
+        if (data?.bccMails && data.bccMails.length > 0) {
+          lines.push(`密送：${data.bccMails.join('、')}`);
+        }
+        return h(
+          'div',
+          {
+            style: { whiteSpace: 'pre-line' },
+          },
+          lines.join('\n'),
+        );
+      },
+    },
+    {
+      field: 'templateId',
+      label: '模板编号',
+    },
+    {
+      field: 'templateCode',
+      label: '模板编码',
+    },
+    {
+      field: 'templateTitle',
+      label: '邮件标题',
+    },
+    {
+      field: 'templateContent',
+      label: '邮件内容',
+      span: 2,
+      content: (data: SystemMailLogApi.MailLog) => {
+        return h('div', {
+          innerHTML: data?.templateContent || '',
+        });
+      },
+    },
+    {
+      field: 'sendStatus',
+      label: '发送状态',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_MAIL_SEND_STATUS,
+          value: data?.sendStatus,
+        });
+      },
+    },
+    {
+      field: 'sendTime',
+      label: '发送时间',
+      content: (data: SystemMailLogApi.MailLog) => {
+        return formatDateTime(data?.sendTime || '') as string;
+      },
+    },
+    {
+      field: 'sendMessageId',
+      label: '发送消息编号',
+    },
+    {
+      field: 'sendException',
+      label: '发送异常',
     },
   ];
 }

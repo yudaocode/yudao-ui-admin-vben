@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
-import { h, nextTick, watch } from 'vue';
+import { nextTick, watch } from 'vue';
 
-import { Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Button, Input } from 'ant-design-vue';
 
@@ -107,12 +107,12 @@ watch(
   </Grid>
   <div class="-mt-4 flex justify-center">
     <Button
-      :icon="h(Plus)"
       type="primary"
       ghost
       @click="handleAdd"
       v-access:code="['infra:demo03-student:create']"
     >
+      <IconifyIcon icon="lucide:plus" />
       {{ $t('ui.actionTitle.create', ['学生课程']) }}
     </Button>
   </div>

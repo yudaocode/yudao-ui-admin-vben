@@ -1,22 +1,15 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
-import type { SystemUserApi } from '#/api/system/user';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-
-import { NButton } from 'naive-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDept, getDeptList } from '#/api/system/dept';
-import { getSimpleUserList } from '#/api/system/user';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteDept, deleteDeptList, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
@@ -27,94 +20,94 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const userList = ref<SystemUserApi.User[]>([]);
-
-/** 获取负责人名称 */
-const getLeaderName = (userId: number) => {
-  return userList.value.find((user) => user.id === userId)?.nickname;
-};
-
-/** 刷新表格 */
-function onRefresh() {
-  gridApi.query();
-}
-
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(true);
-function toggleExpand() {
+function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);
 }
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
 /** 创建部门 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 添加下级部门 */
-function onAppend(row: SystemDeptApi.Dept) {
+function handleAppend(row: SystemDeptApi.Dept) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 编辑部门 */
-function onEdit(row: SystemDeptApi.Dept) {
+function handleEdit(row: SystemDeptApi.Dept) {
   formModalApi.setData(row).open();
 }
 
 /** 删除部门 */
-async function onDelete(row: SystemDeptApi.Dept) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
+async function handleDelete(row: SystemDeptApi.Dept) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.name]),
+    { duration: 0 },
+  );
   try {
-    await deleteDept(row.id as number);
+    await deleteDept(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
-  } catch {
-    hideLoading();
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemDeptApi.Dept>) {
-  switch (code) {
-    case 'append': {
-      onAppend(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
+/** 批量删除部门 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
+    duration: 0,
+  });
+  try {
+    await deleteDeptList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemDeptApi.Dept[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(onActionClick, getLeaderName),
+    columns: useGridColumns(),
     height: 'auto',
-    keepSource: true,
     pagerConfig: {
       enabled: false,
     },
     proxyConfig: {
       ajax: {
-        query: async (_params) => {
+        query: async () => {
           return await getDeptList();
         },
       },
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
+      search: true,
     },
     treeConfig: {
       parentField: 'parentId',
@@ -123,31 +116,77 @@ const [Grid, gridApi] = useVbenVxeGrid({
       expandAll: true,
       reserve: true,
     },
-  } as VxeTableGridOptions,
-});
-
-/** 初始化 */
-onMounted(async () => {
-  userList.value = await getSimpleUserList();
+  } as VxeTableGridOptions<SystemDeptApi.Dept>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="部门列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:dept:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['部门']) }}
-        </NButton>
-        <NButton class="ml-2" @click="toggleExpand">
-          {{ isExpanded ? '收缩' : '展开' }}
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['部门']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dept:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: isExpanded ? '收缩' : '展开',
+              type: 'primary',
+              onClick: handleExpand,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'error',
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:dept:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '新增下级',
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.ADD,
+              auth: ['system:dept:create'],
+              onClick: handleAppend.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:dept:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'error',
+              text: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:dept:delete'],
+              disabled: row.children && row.children.length > 0,
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

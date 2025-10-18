@@ -1,6 +1,5 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
 import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCommentApi } from '#/api/mall/product/comment';
 
 import { z } from '#/adapter/form';
@@ -58,7 +57,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：ele 版本，rate 会无法使用。
     {
       fieldName: 'descriptionScores',
       label: '描述星级',

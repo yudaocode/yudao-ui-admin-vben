@@ -1,4 +1,4 @@
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
 

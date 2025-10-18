@@ -1,22 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { $t } from '@vben/locales';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -38,7 +33,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       label: '用户密码',
       fieldName: 'password',
-      component: 'InputPassword',
+      component: 'Input',
+      componentProps: {
+        type: 'password',
+      },
       rules: 'required',
       dependencies: {
         triggerFields: ['id'],
@@ -75,7 +73,8 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimplePostList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请选择岗位',
       },
     },
@@ -84,11 +83,17 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '邮箱',
       component: 'Input',
       rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
+      componentProps: {
+        placeholder: '请输入邮箱',
+      },
     },
     {
       fieldName: 'mobile',
       label: '手机号码',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号码',
+      },
     },
     {
       fieldName: 'sex',
@@ -96,8 +101,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(1),
     },
@@ -107,8 +110,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -135,31 +136,50 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'newPassword',
-      label: '新密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
+        passwordStrength: true,
         placeholder: '请输入新密码',
       },
+      dependencies: {
+        rules(values) {
+          return z
+            .string({ message: '请输入新密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value !== values.oldPassword,
+              '新旧密码不能相同',
+            );
+        },
+        triggerFields: ['newPassword', 'oldPassword'],
+      },
+      fieldName: 'newPassword',
+      label: '新密码',
       rules: 'required',
     },
     {
-      fieldName: 'confirmPassword',
-      label: '确认密码',
-      component: 'InputPassword',
+      component: 'VbenInputPassword',
       componentProps: {
-        placeholder: '请再次输入新密码',
+        passwordStrength: true,
+        placeholder: $t('authentication.confirmPassword'),
       },
       dependencies: {
-        rules(values: Record<string, any>) {
-          const { newPassword } = values;
+        rules(values) {
           return z
-            .string()
-            .nonempty('确认密码不能为空')
-            .refine((value) => value === newPassword, '两次输入的密码不一致');
+            .string({ message: '请输入确认密码' })
+            .min(5, '密码长度不能少于 5 个字符')
+            .max(20, '密码长度不能超过 20 个字符')
+            .refine(
+              (value) => value === values.newPassword,
+              '新密码和确认密码不一致',
+            );
         },
-        triggerFields: ['newPassword'],
+        triggerFields: ['newPassword', 'confirmPassword'],
       },
+      fieldName: 'confirmPassword',
+      label: '确认密码',
+      rules: 'required',
     },
   ];
 }
@@ -199,7 +219,8 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
         api: getSimpleRoleList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请选择角色',
       },
     },
@@ -212,8 +233,14 @@ export function useImportFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'file',
       label: '用户数据',
-      component: 'Upload',
-      rules: 'required',
+      component: 'FileUpload',
+      componentProps: {
+        accept: ['xls', 'xlsx'],
+        maxSize: 5,
+        maxNumber: 1,
+        multiple: false,
+        showDescription: true,
+      },
       help: '仅允许导入 xls、xlsx 格式文件',
     },
     {
@@ -239,7 +266,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -248,30 +275,30 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号码',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
       fieldName: 'createTime',
       label: '创建时间',
-      component: 'RangePicker',
+      component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemUserApi.User>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: T,
+    row: SystemUserApi.User,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '用户编号',
@@ -318,43 +345,10 @@ export function useGridColumns<T = SystemUserApi.User>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 160,
+      width: 180,
       fixed: 'right',
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'username',
-          nameTitle: '用户',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        // TODO @芋艿：后续把 delete、assign-role、reset-password 搞成"更多"
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:user:update']),
-          },
-          // TODO @xingyu：删除一直弹出来
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:user:delete']),
-          },
-          // TODO @xingyu：后面的按钮，无法展示
-          {
-            code: 'assign-role',
-            text: '分配角色',
-            show: hasAccessByCodes(['system:permission:assign-user-role']),
-            'v-access:code': 'system:user:assign-role1',
-          },
-          {
-            code: 'reset-password',
-            text: '重置密码',
-            show: hasAccessByCodes(['system:user:update-password']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

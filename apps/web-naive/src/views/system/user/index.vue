@@ -1,29 +1,27 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus, Upload } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { NButton } from 'naive-ui';
+import { NCard } from 'naive-ui';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteUser,
+  deleteUserList,
   exportUser,
   getUserPage,
   updateUserStatus,
 } from '#/api/system/user';
 import { $t } from '#/locales';
-import { DICT_TYPE, getDictLabel } from '#/utils';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';
@@ -53,66 +51,90 @@ const [ImportModal, importModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportUser(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '用户.xls', source: data });
 }
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function onDeptSelect(dept: SystemDeptApi.Dept) {
+async function handleDeptSelect(dept: SystemDeptApi.Dept) {
   searchDeptId.value = dept.id;
-  onRefresh();
+  handleRefresh();
 }
 
 /** 创建用户 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 导入用户 */
-function onImport() {
+function handleImport() {
   importModalApi.open();
 }
 
 /** 编辑用户 */
-function onEdit(row: SystemUserApi.User) {
+function handleEdit(row: SystemUserApi.User) {
   formModalApi.setData(row).open();
 }
 
 /** 删除用户 */
-async function onDelete(row: SystemUserApi.User) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.username]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
+async function handleDelete(row: SystemUserApi.User) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.username]),
+    { duration: 0 },
+  );
   try {
-    await deleteUser(row.id as number);
+    await deleteUser(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.username]));
-    onRefresh();
-  } catch {
-    hideLoading();
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
 }
 
+/** 批量删除用户 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
+    duration: 0,
+  });
+  try {
+    await deleteUserList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemUserApi.User[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
 /** 重置密码 */
-function onResetPassword(row: SystemUserApi.User) {
+function handleResetPassword(row: SystemUserApi.User) {
   resetPasswordModalApi.setData(row).open();
 }
 
 /** 分配角色 */
-function onAssignRole(row: SystemUserApi.User) {
+function handleAssignRole(row: SystemUserApi.User) {
   assignRoleModalApi.setData(row).open();
 }
 
 /** 更新用户状态 */
-async function onStatusChange(
+async function handleStatusChange(
   newStatus: number,
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
@@ -122,7 +144,7 @@ async function onStatusChange(
     })
       .then(async () => {
         // 更新用户状态
-        const res = await updateUserStatus(row.id as number, newStatus);
+        const res = await updateUserStatus(row.id!, newStatus);
         if (res) {
           // 提示并返回成功
           message.success($t('ui.actionMessage.operationSuccess'));
@@ -137,34 +159,12 @@ async function onStatusChange(
   });
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({ code, row }: OnActionClickParams<SystemUserApi.User>) {
-  switch (code) {
-    case 'assign-role': {
-      onAssignRole(row);
-      break;
-    }
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'reset-password': {
-      onResetPassword(row);
-      break;
-    }
-  }
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, onStatusChange),
+    columns: useGridColumns(handleStatusChange),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -181,12 +181,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemUserApi.User>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -201,46 +206,94 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
-    <ResetPasswordModal @success="onRefresh" />
-    <AssignRoleModal @success="onRefresh" />
-    <ImportModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
+    <ResetPasswordModal @success="handleRefresh" />
+    <AssignRoleModal @success="handleRefresh" />
+    <ImportModal @success="handleRefresh" />
 
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
-      <div class="h-full w-1/6 pr-4">
-        <DeptTree @select="onDeptSelect" />
-      </div>
+      <NCard class="mr-4 h-full w-1/6">
+        <DeptTree @select="handleDeptSelect" />
+      </NCard>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">
         <Grid table-title="用户列表">
           <template #toolbar-tools>
-            <NButton
-              type="primary"
-              @click="onCreate"
-              v-access:code="['system:user:create']"
-            >
-              <Plus class="size-5" />
-              {{ $t('ui.actionTitle.create', ['用户']) }}
-            </NButton>
-            <NButton
-              type="primary"
-              class="ml-2"
-              @click="onExport"
-              v-access:code="['system:user:export']"
-            >
-              <Download class="size-5" />
-              {{ $t('ui.actionTitle.export') }}
-            </NButton>
-            <NButton
-              type="primary"
-              class="ml-2"
-              @click="onImport"
-              v-access:code="['system:user:import']"
-            >
-              <Upload class="size-5" />
-              {{ $t('ui.actionTitle.import', ['用户']) }}
-            </NButton>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('ui.actionTitle.create', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.ADD,
+                  auth: ['system:user:create'],
+                  onClick: handleCreate,
+                },
+                {
+                  label: $t('ui.actionTitle.export'),
+                  type: 'primary',
+                  icon: ACTION_ICON.DOWNLOAD,
+                  auth: ['system:user:export'],
+                  onClick: handleExport,
+                },
+                {
+                  label: $t('ui.actionTitle.import', ['用户']),
+                  type: 'primary',
+                  icon: ACTION_ICON.UPLOAD,
+                  auth: ['system:user:import'],
+                  onClick: handleImport,
+                },
+                {
+                  label: $t('ui.actionTitle.deleteBatch'),
+                  type: 'error',
+                  icon: ACTION_ICON.DELETE,
+                  disabled: isEmpty(checkedIds),
+                  auth: ['system:user:delete'],
+                  onClick: handleDeleteBatch,
+                },
+              ]"
+            />
+          </template>
+          <template #actions="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  type: 'primary',
+                  text: true,
+                  icon: ACTION_ICON.EDIT,
+                  auth: ['system:user:update'],
+                  onClick: handleEdit.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  type: 'error',
+                  text: true,
+                  icon: ACTION_ICON.DELETE,
+                  auth: ['system:user:delete'],
+                  popConfirm: {
+                    title: $t('ui.actionMessage.deleteConfirm', [row.username]),
+                    confirm: handleDelete.bind(null, row),
+                  },
+                },
+              ]"
+              :drop-down-actions="[
+                {
+                  label: '分配角色',
+                  type: 'primary',
+                  text: true,
+                  auth: ['system:permission:assign-user-role'],
+                  onClick: handleAssignRole.bind(null, row),
+                },
+                {
+                  label: '重置密码',
+                  type: 'primary',
+                  text: true,
+                  auth: ['system:user:update-password'],
+                  onClick: handleResetPassword.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </Grid>
       </div>

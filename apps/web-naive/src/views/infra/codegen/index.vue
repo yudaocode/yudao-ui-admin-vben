@@ -1,24 +1,19 @@
 <script lang="ts" setup>
-// TODO @xingyu：跑不通
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { InfraDataSourceConfigApi } from '#/api/infra/data-source-config';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-
-import { NButton } from 'naive-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteCodegenTable,
+  deleteCodegenTableList,
   downloadCodegen,
   getCodegenTablePage,
   syncCodegenFromDB,
@@ -53,63 +48,83 @@ const [PreviewModal, previewModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导入表格 */
-function onImport() {
+function handleImport() {
   importModalApi.open();
 }
 
 /** 预览代码 */
-function onPreview(row: InfraCodegenApi.CodegenTable) {
+function handlePreview(row: InfraCodegenApi.CodegenTable) {
   previewModalApi.setData(row).open();
 }
 
 /** 编辑表格 */
-function onEdit(row: InfraCodegenApi.CodegenTable) {
+function handleEdit(row: InfraCodegenApi.CodegenTable) {
   router.push({ name: 'InfraCodegenEdit', query: { id: row.id } });
 }
 
 /** 删除代码生成配置 */
-async function onDelete(row: InfraCodegenApi.CodegenTable) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.tableName]),
+async function handleDelete(row: InfraCodegenApi.CodegenTable) {
+  const hideLoading = message.loading('正在删除...', {
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     await deleteCodegenTable(row.id);
     message.success($t('ui.actionMessage.deleteSuccess', [row.tableName]));
-    onRefresh();
+    handleRefresh();
   } finally {
-    hideLoading();
+    hideLoading.destroy();
   }
 }
 
-/** 同步数据库 */
-async function onSync(row: InfraCodegenApi.CodegenTable) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.updating', [row.tableName]),
+/** 批量删除代码生成配置 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading('正在删除...', {
     duration: 0,
-    key: 'action_process_msg',
   });
+  try {
+    await deleteCodegenTableList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
+  }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: InfraCodegenApi.CodegenTable[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
+/** 同步数据库 */
+async function handleSync(row: InfraCodegenApi.CodegenTable) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.updating', [row.tableName]),
+    { duration: 0 },
+  );
   try {
     await syncCodegenFromDB(row.id);
     message.success($t('ui.actionMessage.updateSuccess', [row.tableName]));
-    onRefresh();
+    handleRefresh();
   } finally {
-    hideLoading();
+    hideLoading.destroy();
   }
 }
 
 /** 生成代码 */
-async function onGenerate(row: InfraCodegenApi.CodegenTable) {
-  const hideLoading = message.loading({
-    content: '正在生成代码...',
+async function handleGenerate(row: InfraCodegenApi.CodegenTable) {
+  const hideLoading = message.loading('正在生成代码...', {
     duration: 0,
-    key: 'action_process_msg',
   });
   try {
     const res = await downloadCodegen(row.id);
@@ -122,36 +137,7 @@ async function onGenerate(row: InfraCodegenApi.CodegenTable) {
     window.URL.revokeObjectURL(url);
     message.success('代码生成成功');
   } finally {
-    hideLoading();
-  }
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraCodegenApi.CodegenTable>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'generate': {
-      onGenerate(row);
-      break;
-    }
-    case 'preview': {
-      onPreview(row);
-      break;
-    }
-    case 'sync': {
-      onSync(row);
-      break;
-    }
+    hideLoading.destroy();
   }
 }
 
@@ -160,7 +146,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick, getDataSourceConfigName),
+    columns: useGridColumns(getDataSourceConfigName),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -176,15 +162,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<InfraCodegenApi.CodegenTable>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 
 /** 获取数据源配置列表 */
+// TODO @芋艿：这种场景的最佳实践；
 async function initDataSourceConfig() {
   try {
     dataSourceConfigList.value = await getDataSourceConfigList();
@@ -214,18 +206,77 @@ initDataSourceConfig();
       <DocAlert title="单元测试" url="https://doc.iocoder.cn/unit-test/" />
     </template>
 
-    <ImportModal @success="onRefresh" />
+    <ImportModal @success="handleRefresh" />
     <PreviewModal />
     <Grid table-title="代码生成列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          @click="onImport"
-          v-access:code="['infra:codegen:create']"
-        >
-          <Plus class="size-5" />
-          导入
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.import'),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['infra:codegen:create'],
+              onClick: handleImport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'error',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['infra:codegen:delete'],
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '预览',
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:codegen:preview'],
+              onClick: handlePreview.bind(null, row),
+            },
+            {
+              label: '生成代码',
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:codegen:download'],
+              onClick: handleGenerate.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              auth: ['infra:codegen:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '同步',
+              type: 'primary',
+              text: true,
+              auth: ['infra:codegen:update'],
+              onClick: handleSync.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'error',
+              text: true,
+              auth: ['infra:codegen:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.tableName]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

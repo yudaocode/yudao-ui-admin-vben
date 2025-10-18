@@ -19,7 +19,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -44,7 +44,7 @@ async function handleDelete(row: AiModelToolApi.Tool) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -88,7 +88,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/ai/tool/"
       />
     </template>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="工具列表">
       <template #toolbar-tools>
         <TableAction

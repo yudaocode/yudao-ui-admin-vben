@@ -6,11 +6,11 @@ export namespace MallOrderApi {
   /** 商品属性 */
   export interface ProductProperty {
     /** 属性的编号 */
-    propertyId?: null | number;
+    propertyId?: number;
     /** 属性的名称 */
     propertyName?: string;
     /** 属性值的编号 */
-    valueId?: null | number;
+    valueId?: number;
     /** 属性值的名称 */
     valueName?: string;
   }
@@ -18,37 +18,38 @@ export namespace MallOrderApi {
   /** 订单项 */
   export interface OrderItem {
     /** 编号 */
-    id?: null | number;
+    id?: number;
     /** 用户编号 */
-    userId?: null | number;
+    userId?: number;
     /** 订单编号 */
-    orderId?: null | number;
+    orderId?: number;
     /** 商品 SPU 编号 */
-    spuId?: null | number;
+    spuId?: number;
     /** 商品 SPU 名称 */
     spuName?: string;
     /** 商品 SKU 编号 */
-    skuId?: null | number;
+    skuId?: number;
     /** 商品图片 */
     picUrl?: string;
     /** 购买数量 */
-    count?: null | number;
+    count?: number;
     /** 商品原价（总） */
-    originalPrice?: null | number;
+    originalPrice?: number;
     /** 商品原价（单） */
-    originalUnitPrice?: null | number;
+    originalUnitPrice?: number;
     /** 商品优惠（总） */
-    discountPrice?: null | number;
+    discountPrice?: number;
     /** 商品实付金额（总） */
-    payPrice?: null | number;
+    payPrice?: number;
     /** 子订单分摊金额（总） */
-    orderPartPrice?: null | number;
+    orderPartPrice?: number;
     /** 分摊后子订单实付金额（总） */
-    orderDividePrice?: null | number;
+    orderDividePrice?: number;
     /** 售后状态 */
-    afterSaleStatus?: null | number;
+    afterSaleStatus?: number;
     /** 属性数组 */
     properties?: ProductProperty[];
+    price?: number;
   }
 
   /** 订单日志 */
@@ -59,96 +60,98 @@ export namespace MallOrderApi {
     createTime?: Date;
     /** 用户类型 */
     userType?: number;
+    /** 用户编号 */
+    userId?: number;
   }
 
   /** 订单 */
   export interface Order {
     /** 订单编号 */
-    id?: null | number;
+    id?: number;
     /** 订单流水号 */
     no?: string;
     /** 下单时间 */
-    createTime?: Date | null;
+    createTime?: Date;
     /** 订单类型 */
-    type?: null | number;
+    type?: number;
     /** 订单来源 */
-    terminal?: null | number;
+    terminal?: number;
     /** 用户编号 */
-    userId?: null | number;
+    userId?: number;
     /** 用户 IP */
     userIp?: string;
     /** 用户备注 */
     userRemark?: string;
     /** 订单状态 */
-    status?: null | number;
+    status?: number;
     /** 购买的商品数量 */
-    productCount?: null | number;
+    productCount?: number;
     /** 订单完成时间 */
-    finishTime?: Date | null;
+    finishTime?: Date;
     /** 订单取消时间 */
-    cancelTime?: Date | null;
+    cancelTime?: Date;
     /** 取消类型 */
-    cancelType?: null | number;
+    cancelType?: number;
     /** 商家备注 */
     remark?: string;
     /** 支付订单编号 */
-    payOrderId?: null | number;
+    payOrderId?: number;
     /** 是否已支付 */
     payStatus?: boolean;
     /** 付款时间 */
-    payTime?: Date | null;
+    payTime?: Date;
     /** 支付渠道 */
     payChannelCode?: string;
     /** 商品原价（总） */
-    totalPrice?: null | number;
+    totalPrice?: number;
     /** 订单优惠（总） */
-    discountPrice?: null | number;
+    discountPrice?: number;
     /** 运费金额 */
-    deliveryPrice?: null | number;
+    deliveryPrice?: number;
     /** 订单调价（总） */
-    adjustPrice?: null | number;
+    adjustPrice?: number;
     /** 应付金额（总） */
-    payPrice?: null | number;
+    payPrice?: number;
     /** 发货方式 */
-    deliveryType?: null | number;
+    deliveryType?: number;
     /** 自提门店编号 */
     pickUpStoreId?: number;
     /** 自提核销码 */
     pickUpVerifyCode?: string;
     /** 配送模板编号 */
-    deliveryTemplateId?: null | number;
+    deliveryTemplateId?: number;
     /** 发货物流公司编号 */
-    logisticsId?: null | number;
+    logisticsId?: number;
     /** 发货物流单号 */
     logisticsNo?: string;
     /** 发货时间 */
-    deliveryTime?: Date | null;
+    deliveryTime?: Date;
     /** 收货时间 */
-    receiveTime?: Date | null;
+    receiveTime?: Date;
     /** 收件人名称 */
     receiverName?: string;
     /** 收件人手机 */
     receiverMobile?: string;
     /** 收件人邮编 */
-    receiverPostCode?: null | number;
+    receiverPostCode?: number;
     /** 收件人地区编号 */
-    receiverAreaId?: null | number;
+    receiverAreaId?: number;
     /** 收件人地区名字 */
     receiverAreaName?: string;
     /** 收件人详细地址 */
     receiverDetailAddress?: string;
     /** 售后状态 */
-    afterSaleStatus?: null | number;
+    afterSaleStatus?: number;
     /** 退款金额 */
-    refundPrice?: null | number;
+    refundPrice?: number;
     /** 优惠劵编号 */
-    couponId?: null | number;
+    couponId?: number;
     /** 优惠劵减免金额 */
-    couponPrice?: null | number;
+    couponPrice?: number;
     /** 积分抵扣的金额 */
-    pointPrice?: null | number;
+    pointPrice?: number;
     /** VIP 减免金额 */
-    vipPrice?: null | number;
+    vipPrice?: number;
     /** 订单项列表 */
     items?: OrderItem[];
     /** 下单用户信息 */
@@ -156,7 +159,7 @@ export namespace MallOrderApi {
       /** 用户头像 */
       avatar?: string;
       /** 用户编号 */
-      id?: null | number;
+      id?: number;
       /** 用户昵称 */
       nickname?: string;
     };
@@ -165,7 +168,7 @@ export namespace MallOrderApi {
       /** 用户头像 */
       avatar?: string;
       /** 用户编号 */
-      id?: null | number;
+      id?: number;
       /** 用户昵称 */
       nickname?: string;
     };
@@ -192,7 +195,7 @@ export namespace MallOrderApi {
     /** 发货方式 */
     expressType: string;
     /** 物流公司编号 */
-    logisticsId: null | number;
+    logisticsId: number;
     /** 物流编号 */
     logisticsNo: string;
   }
@@ -239,7 +242,7 @@ export function getOrderPage(params: PageParam) {
 }
 
 /** 查询交易订单统计 */
-export function getOrderSummary(params: PageParam) {
+export function getOrderSummary(params: any) {
   return requestClient.get<MallOrderApi.OrderSummary>('/trade/order/summary', {
     params,
   });
@@ -284,7 +287,7 @@ export function pickUpOrder(id: number) {
 
 /** 订单核销 */
 export function pickUpOrderByVerifyCode(pickUpVerifyCode: string) {
-  return requestClient.put('/trade/order/pick-up-by-verify-code', {
+  return requestClient.put('/trade/order/pick-up-by-verify-code', undefined, {
     params: { pickUpVerifyCode },
   });
 }

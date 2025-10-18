@@ -42,7 +42,9 @@ const [Modal, modalApi] = useVbenModal({
       });
     }
     const data: SystemMailTemplateApi.MailSendReqVO = {
-      mail: values.mail,
+      toMails: values.toMails,
+      ccMails: values.ccMails,
+      bccMails: values.bccMails,
       templateCode: formData.value?.code || '',
       templateParams: paramsObj,
     };
@@ -54,8 +56,6 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
       message.success('邮件发送成功');
-    } catch (error) {
-      console.error('发送邮件失败', error);
     } finally {
       modalApi.unlock();
     }
@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 动态构建表单 schema */
-const buildFormSchema = () => {
+function buildFormSchema() {
   const schema = useSendMailFormSchema();
   if (formData.value?.params) {
     formData.value.params?.forEach((param: string) => {
@@ -98,11 +98,11 @@ const buildFormSchema = () => {
     });
   }
   return schema;
-};
+}
 </script>
 
 <template>
-  <Modal title="测试发送邮件">
+  <Modal title="测试发送邮件" class="w-1/3">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -1,12 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemNotifyMessageApi } from '#/api/system/notify/message';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { useAccess } from '@vben/access';
+import { h } from 'vue';
 
-import { DICT_TYPE, getDictOptions, getRangePickerDefaultProps } from '#/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
-const { hasAccessByCodes } = useAccess();
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -16,7 +20,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入用户编号',
       },
     },
@@ -25,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
         placeholder: '请选择用户类型',
       },
@@ -35,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编码',
       },
     },
@@ -48,26 +52,24 @@ export function useGridFormSchema(): VbenFormSchema[] {
           DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
           'number',
         ),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择模版类型',
       },
     },
     {
       fieldName: 'createTime',
       label: '创建时间',
-      component: 'RangePicker',
+      component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -146,25 +148,94 @@ export function useGridColumns<T = SystemNotifyMessageApi.NotifyMessage>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 180,
-      align: 'center',
+      width: 80,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'id',
-          nameTitle: '站内信',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'detail',
-            text: '详情',
-            show: hasAccessByCodes(['system:notify-message:query']),
-          },
-        ],
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 详情页的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'id',
+      label: '编号',
+    },
+    {
+      field: 'userType',
+      label: '用户类型',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
+          type: DICT_TYPE.USER_TYPE,
+          value: data?.userType,
+        });
+      },
+    },
+    {
+      field: 'userId',
+      label: '用户编号',
+    },
+    {
+      field: 'templateId',
+      label: '模版编号',
+    },
+    {
+      field: 'templateCode',
+      label: '模板编码',
+    },
+    {
+      field: 'templateNickname',
+      label: '发送人名称',
+    },
+    {
+      field: 'templateContent',
+      label: '模版内容',
+    },
+    {
+      field: 'templateParams',
+      label: '模版参数',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        try {
+          return JSON.stringify(data?.templateParams);
+        } catch {
+          return '';
+        }
+      },
+    },
+    {
+      field: 'templateType',
+      label: '模版类型',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
+          type: DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
+          value: data?.templateType,
+        });
+      },
+    },
+    {
+      field: 'readStatus',
+      label: '是否已读',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return h(DictTag, {
+          type: DICT_TYPE.INFRA_BOOLEAN_STRING,
+          value: data?.readStatus,
+        });
+      },
+    },
+    {
+      field: 'readTime',
+      label: '阅读时间',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.readTime || '') as string;
+      },
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      content: (data: SystemNotifyMessageApi.NotifyMessage) => {
+        return formatDateTime(data?.createTime || '') as string;
       },
     },
   ];

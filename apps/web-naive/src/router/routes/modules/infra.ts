@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/infra/job/job-log',
+    path: '/infra/job/log',
     component: () => import('#/views/infra/job/logger/index.vue'),
     name: 'InfraJobLog',
     meta: {
@@ -14,25 +14,16 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/codegen',
-    name: 'CodegenEdit',
+    path: '/infra/codegen/edit',
+    component: () => import('#/views/infra/codegen/edit/index.vue'),
+    name: 'InfraCodegenEdit',
     meta: {
-      title: '代码生成',
+      title: '生成配置修改',
       icon: 'ic:baseline-view-in-ar',
+      activePath: '/infra/codegen',
       keepAlive: true,
       hideInMenu: true,
     },
-    children: [
-      {
-        path: '/codegen/edit',
-        name: 'InfraCodegenEdit',
-        component: () => import('#/views/infra/codegen/edit/index.vue'),
-        meta: {
-          title: '修改生成配置',
-          activeMenu: '/infra/codegen',
-        },
-      },
-    ],
   },
 ];
 

@@ -29,7 +29,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,7 +54,7 @@ async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
     message.success({
       content: '关闭成功',
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -71,7 +71,7 @@ async function handleDelete(row: MallSeckillActivityApi.SeckillActivity) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -124,7 +124,7 @@ onMounted(async () => {
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="秒杀活动列表">
       <template #toolbar-tools>
         <TableAction

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
-import { useVbenVxeGrid } from '@vben/plugins/vxe-table';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { useGridColumns } from './task-list-data';
 

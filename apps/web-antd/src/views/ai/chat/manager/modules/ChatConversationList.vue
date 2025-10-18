@@ -24,7 +24,7 @@ import {
 
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -39,7 +39,7 @@ async function handleDelete(row: AiChatConversationApi.ChatConversation) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.id]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }

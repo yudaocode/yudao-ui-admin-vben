@@ -45,3 +45,8 @@ export async function updateDept(data: SystemDeptApi.Dept) {
 export async function deleteDept(id: number) {
   return requestClient.delete(`/system/dept/delete?id=${id}`);
 }
+
+/** 批量删除部门 */
+export async function deleteDeptList(ids: number[]) {
+  return requestClient.delete(`/system/dept/delete-list?ids=${ids.join(',')}`);
+}

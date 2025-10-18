@@ -1,12 +1,17 @@
 import type { Recordable } from '@vben/types';
 
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
-import { useAccess } from '@vben/access';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  SystemMenuTypeEnum,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree, isHttpUrl } from '@vben/utils';
 
@@ -14,14 +19,6 @@ import { z } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  SystemMenuTypeEnum,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -39,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级菜单',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getMenuList();
           data.unshift({
@@ -93,8 +90,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(SystemMenuTypeEnum.DIR),
     },
@@ -167,14 +162,15 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'componentName',
       label: '组件名称',
-      component: 'AutoComplete',
+      component: 'Select',
       componentProps: {
-        allowClear: true,
-        filterOption(input: string, option: { value: string }) {
+        clearable: true,
+        filterable: true,
+        placeholder: '请选择组件名称',
+        options: componentKeys.map((v) => ({ label: v, value: v })),
+        filter(input: string, option: { value: string }) {
           return option.value.toLowerCase().includes(input.toLowerCase());
         },
-        placeholder: '请选择组件名称',
-        options: componentKeys.map((v) => ({ value: v })),
       },
       dependencies: {
         triggerFields: ['type'],
@@ -205,7 +201,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
       rules: 'required',
@@ -216,8 +211,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -230,8 +223,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '总是', value: true },
           { label: '不是', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       defaultValue: true,
@@ -252,8 +243,6 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '缓存', value: true },
           { label: '不缓存', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: 'required',
       defaultValue: true,
@@ -269,9 +258,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick: OnActionClickFn<SystemMenuApi.Menu>,
-): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
   return [
     {
       field: 'name',
@@ -308,8 +295,8 @@ export function useGridColumns(
     },
     {
       field: 'componentName',
-      minWidth: 200,
       title: '组件名称',
+      minWidth: 200,
     },
     {
       field: 'status',
@@ -321,35 +308,10 @@ export function useGridColumns(
       },
     },
     {
-      field: 'operation',
       title: '操作',
-      align: 'right',
-      minWidth: 200,
+      width: 220,
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['system:menu:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:menu:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:menu:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

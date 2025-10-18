@@ -3,11 +3,11 @@ import type { InfraCodegenApi } from '#/api/infra/codegen';
 
 import { computed, ref, watch } from 'vue';
 
+import { InfraCodegenTemplateTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVbenForm } from '#/adapter/form';
 import { getCodegenTableList } from '#/api/infra/codegen';
-import { InfraCodegenTemplateTypeEnum } from '#/utils';
 
 import {
   useGenerationInfoBaseFormSchema,
@@ -69,6 +69,8 @@ function updateTreeSchema(): void {
   treeFormApi.setState({
     schema: useGenerationInfoTreeFormSchema(props.columns),
   });
+  // 树表信息回显
+  treeFormApi.setValues(props.table as any);
 }
 
 /** 更新主子表信息表单 schema */
@@ -76,6 +78,8 @@ function updateSubSchema(): void {
   subFormApi.setState({
     schema: useGenerationInfoSubTableFormSchema(props.columns, tables.value),
   });
+  // 主子表信息回显
+  subFormApi.setValues(props.table as any);
 }
 
 /** 获取合并的表单值 */

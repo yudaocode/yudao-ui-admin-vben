@@ -4,15 +4,22 @@ import type { MallDeliveryPickUpStoreApi } from '#/api/mall/trade/delivery/pickU
 
 import { ref } from 'vue';
 
-import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
+import { useUserStore } from '@vben/stores';
 
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import { getRangePickerDefaultProps } from '#/utils';
 
+/** 关联数据 */
+const userStore = useUserStore();
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
-
 getSimpleDeliveryPickUpStoreList().then((res) => {
   pickUpStoreList.value = res;
+  // 移除自己无法核销的门店
+  const userId = userStore?.userInfo?.id;
+  pickUpStoreList.value = pickUpStoreList.value.filter((item) =>
+    item.verifyUserIds?.includes(userId),
+  );
 });
 
 /** 列表的搜索表单 */
@@ -28,18 +35,53 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'pickUpStoreId',
+      fieldName: 'pickUpStoreIds',
       label: '自提门店',
-      component: 'ApiSelect',
+      component: 'Select',
       componentProps: {
-        api: getSimpleDeliveryPickUpStoreList,
-        labelField: 'name',
-        valueField: 'id',
+        options: pickUpStoreList,
+        props: {
+          label: 'name',
+          value: 'id',
+        },
+        placeholder: '请选择自提门店',
       },
-      dependencies: {
-        triggerFields: ['deliveryType'],
-        trigger: (values) =>
-          values.deliveryType === DeliveryTypeEnum.PICK_UP.type,
+      defaultValue: pickUpStoreList.value[0]?.id,
+    },
+    {
+      fieldName: 'no',
+      label: '订单号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入订单号',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'userId',
+      label: '用户 UID',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户 UID',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'userNickname',
+      label: '用户昵称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户昵称',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'userMobile',
+      label: '用户电话',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入用户电话',
+        clearable: true,
       },
     },
   ];
@@ -67,17 +109,13 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'spuName',
       title: '商品信息',
-      minWidth: 100,
-      formatter: ({ row }) => {
-        if (row.items.length > 1) {
-          return row.items.map((item: any) => item.spuName).join(',');
-        }
-      },
+      minWidth: 300,
+      slots: { default: 'spuName' },
     },
     {
       field: 'payPrice',
       title: '实付金额(元)',
-      formatter: 'formatFenToYuanAmount',
+      formatter: 'formatAmount2',
       minWidth: 180,
     },
     {
@@ -90,9 +128,10 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       title: '核销门店',
       minWidth: 160,
       formatter: ({ row }) => {
-        return pickUpStoreList.value.find(
-          (item) => item.id === row.pickUpStoreId,
-        )?.name;
+        return (
+          pickUpStoreList.value.find((item) => item.id === row.pickUpStoreId)
+            ?.name || ''
+        );
       },
     },
     {

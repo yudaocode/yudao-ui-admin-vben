@@ -1,23 +1,29 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { SystemUserApi } from '#/api/system/user';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
 
-const { hasAccessByCodes } = useAccess();
+let userList: SystemUserApi.User[] = [];
+async function getUserData() {
+  userList = await getSimpleUserList();
+}
+
+getUserData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -28,7 +34,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级部门',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getDeptList();
           data.unshift({
@@ -60,7 +66,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
         placeholder: '请输入显示顺序',
       },
       rules: 'required',
@@ -74,7 +79,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       rules: z.number().optional(),
     },
@@ -103,8 +108,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -112,11 +115,9 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onActionClick?: OnActionClickFn<SystemDeptApi.Dept>,
-  getLeaderName?: (userId: number) => string | undefined,
-): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'name',
       title: '部门名称',
@@ -129,9 +130,8 @@ export function useGridColumns(
       field: 'leaderUserId',
       title: '负责人',
       minWidth: 150,
-      formatter: (row) => {
-        return getLeaderName?.(row.cellValue) || '-';
-      },
+      formatter: ({ cellValue }) =>
+        userList.find((user) => user.id === cellValue)?.nickname || '-',
     },
     {
       field: 'sort',
@@ -154,39 +154,10 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 200,
-      align: 'right',
+      width: 260,
       fixed: 'right',
-      headerAlign: 'center',
-      showOverflow: false,
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '部门',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'append',
-            text: '新增下级',
-            show: hasAccessByCodes(['system:dept:create']),
-          },
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:dept:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:dept:delete']),
-            disabled: (row: SystemDeptApi.Dept) => {
-              return !!(row.children && row.children.length > 0);
-            },
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

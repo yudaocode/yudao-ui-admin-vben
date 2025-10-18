@@ -54,9 +54,14 @@ export function deleteConfig(id: number) {
   return requestClient.delete(`/infra/config/delete?id=${id}`);
 }
 
+/** 批量删除参数 */
+export function deleteConfigList(ids: number[]) {
+  return requestClient.delete(`/infra/config/delete-list?ids=${ids.join(',')}`);
+}
+
 /** 导出参数 */
 export function exportConfig(params: any) {
-  return requestClient.download('/infra/config/export', {
+  return requestClient.download('/infra/config/export-excel', {
     params,
   });
 }

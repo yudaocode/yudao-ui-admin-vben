@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
-import { h, onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
 import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import {
   cloneDeep,
@@ -68,22 +68,22 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建示例分类 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑示例分类 */
-function onEdit(row: Demo02CategoryApi.Demo02Category) {
+function handleEdit(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData(row).open();
 }
 
 /** 新增下级示例分类 */
-function onAppend(row: Demo02CategoryApi.Demo02Category) {
+function handleAppend(row: Demo02CategoryApi.Demo02Category) {
   formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 删除示例分类 */
-async function onDelete(row: Demo02CategoryApi.Demo02Category) {
+async function handleDelete(row: Demo02CategoryApi.Demo02Category) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -100,7 +100,7 @@ async function onDelete(row: Demo02CategoryApi.Demo02Category) {
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   try {
     exportLoading.value = true;
     const data = await exportDemo02Category(queryParams);
@@ -177,21 +177,21 @@ onMounted(() => {
           </Button>
           <Button
             class="ml-2"
-            :icon="h(Plus)"
             type="primary"
-            @click="onCreate"
+            @click="handleCreate"
             v-access:code="['infra:demo02-category:create']"
           >
+            <IconifyIcon icon="lucide:plus" />
             {{ $t('ui.actionTitle.create', ['示例分类']) }}
           </Button>
           <Button
-            :icon="h(Download)"
             type="primary"
             class="ml-2"
             :loading="exportLoading"
-            @click="onExport"
+            @click="handleExport"
             v-access:code="['infra:demo02-category:export']"
           >
+            <IconifyIcon icon="lucide:download" />
             {{ $t('ui.actionTitle.export') }}
           </Button>
         </VbenVxeTableToolbar>
@@ -222,7 +222,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onAppend(row)"
+              @click="handleAppend(row)"
               v-access:code="['infra:demo02-category:create']"
             >
               新增下级
@@ -230,7 +230,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo02-category:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -241,7 +241,7 @@ onMounted(() => {
               danger
               class="ml-2"
               :disabled="!isEmpty(row.children)"
-              @click="onDelete(row)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo02-category:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

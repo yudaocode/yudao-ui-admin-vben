@@ -1,20 +1,17 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { CommonStatusEnum, DICT_TYPE, getDictOptions } from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -51,9 +48,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'logo',
       label: '应用图标',
       component: 'ImageUpload',
-      componentProps: {
-        limit: 1,
-      },
       rules: 'required',
     },
     {
@@ -71,8 +65,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -83,7 +75,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入访问令牌的有效期，单位：秒',
         min: 0,
-        controlsPosition: 'right',
       },
       rules: 'required',
     },
@@ -94,7 +85,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入刷新令牌的有效期，单位：秒',
         min: 0,
-        controlsPosition: 'right',
       },
       rules: 'required',
     },
@@ -104,7 +94,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE),
-        mode: 'multiple',
+        tag: true,
+        multiple: true,
         placeholder: '请输入授权类型',
       },
       rules: 'required',
@@ -115,7 +106,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入授权范围',
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
     },
     {
@@ -124,8 +117,20 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入自动授权范围',
-        mode: 'multiple',
-        // TODO @芋艿：根据权限，自动授权范围
+        tag: true,
+        multiple: true,
+        filterable: true,
+      },
+      dependencies: {
+        triggerFields: ['scopes'],
+        componentProps: (values) => ({
+          options: values.scopes
+            ? values.scopes.map((scope: string) => ({
+                label: scope,
+                value: scope,
+              }))
+            : [],
+        }),
       },
     },
     {
@@ -134,7 +139,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入可重定向的 URI 地址',
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
       rules: 'required',
     },
@@ -144,7 +151,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入权限',
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
       },
     },
     {
@@ -152,7 +161,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '资源',
       component: 'Select',
       componentProps: {
-        mode: 'tags',
+        tag: true,
+        multiple: true,
+        filterable: true,
         placeholder: '请输入资源',
       },
     },
@@ -177,6 +188,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
+        clearable: true,
       },
     },
     {
@@ -185,7 +197,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入状态',
       },
     },
@@ -193,14 +205,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'clientId',
       title: '客户端编号',
-      minWidth: 200,
+      minWidth: 120,
     },
     {
       field: 'secret',
@@ -210,12 +221,12 @@ export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
     {
       field: 'name',
       title: '应用名',
-      minWidth: 300,
+      minWidth: 120,
     },
     {
       field: 'logo',
       title: '应用图标',
-      minWidth: 80,
+      minWidth: 100,
       cellRender: {
         name: 'CellImage',
       },
@@ -232,19 +243,19 @@ export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
     {
       field: 'accessTokenValiditySeconds',
       title: '访问令牌的有效期',
-      minWidth: 130,
+      minWidth: 150,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'refreshTokenValiditySeconds',
       title: '刷新令牌的有效期',
-      minWidth: 130,
+      minWidth: 150,
       formatter: ({ cellValue }) => `${cellValue} 秒`,
     },
     {
       field: 'authorizedGrantTypes',
       title: '授权类型',
-      minWidth: 180,
+      minWidth: 100,
     },
     {
       field: 'createTime',
@@ -253,29 +264,10 @@ export function useGridColumns<T = SystemOAuth2ClientApi.OAuth2Client>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 130,
-      align: 'center',
+      width: 130,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: 'OAuth2 客户端',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:oauth2-client:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:oauth2-client:delete']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMailAccountApi } from '#/api/system/mail/account';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
+import { ref } from 'vue';
 
-import { NButton } from 'naive-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteMailAccount,
+  deleteMailAccountList,
   getMailAccountPage,
 } from '#/api/system/mail/account';
 import { $t } from '#/locales';
@@ -27,51 +25,58 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 创建邮箱账号 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑邮箱账号 */
-function onEdit(row: SystemMailAccountApi.MailAccount) {
+function handleEdit(row: SystemMailAccountApi.MailAccount) {
   formModalApi.setData(row).open();
 }
 
 /** 删除邮箱账号 */
-async function onDelete(row: SystemMailAccountApi.MailAccount) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.mail]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
+async function handleDelete(row: SystemMailAccountApi.MailAccount) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.mail]),
+    { duration: 0 },
+  );
   try {
-    await deleteMailAccount(row.id as number);
+    await deleteMailAccount(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.mail]));
-    onRefresh();
+    handleRefresh();
   } finally {
-    hideLoading();
+    hideLoading.destroy();
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemMailAccountApi.MailAccount>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
+/** 批量删除邮箱账号 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
+    duration: 0,
+  });
+  try {
+    await deleteMailAccountList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'), { duration: 0 });
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemMailAccountApi.MailAccount[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -79,7 +84,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -95,12 +100,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemMailAccountApi.MailAccount>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 <template>
@@ -109,17 +119,53 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="邮件配置" url="https://doc.iocoder.cn/mail" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="邮箱账号列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:mail-account:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['邮箱账号']) }}
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['邮箱账号']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:mail-account:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'error',
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:mail-account:delete'],
+              disabled: isEmpty(checkedIds),
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:mail-account:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'error',
+              text: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:mail-account:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.mail]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

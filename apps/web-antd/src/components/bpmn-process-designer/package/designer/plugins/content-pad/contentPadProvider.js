@@ -3,7 +3,6 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import { isEventSubProcess, isExpanded } from 'bpmn-js/lib/util/DiUtil';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { hasPrimaryModifier } from 'diagram-js/lib/util/Mouse';
-import { assign, forEach, isArray } from 'min-dash';
 
 /**
  * A provider for BPMN 2.0 elements context pad
@@ -139,7 +138,9 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
     }
 
     function appendStart(event, element) {
-      const shape = elementFactory.createShape(assign({ type }, options));
+      const shape = elementFactory.createShape(
+        Object.assign({ type }, options),
+      );
       create.start(event, shape, {
         source: element,
       });
@@ -147,7 +148,9 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
 
     const append = autoPlace
       ? function (event, element) {
-          const shape = elementFactory.createShape(assign({ type }, options));
+          const shape = elementFactory.createShape(
+            Object.assign({ type }, options),
+          );
 
           autoPlace.append(element, shape);
         }
@@ -181,7 +184,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
   ) {
     const childLanes = getChildLanes(element);
 
-    assign(actions, {
+    Object.assign(actions, {
       'lane-insert-above': {
         group: 'lane-insert-above',
         className: 'bpmn-icon-lane-insert-above',
@@ -196,7 +199,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
 
     if (childLanes.length < 2) {
       if (element.height >= 120) {
-        assign(actions, {
+        Object.assign(actions, {
           'lane-divide-two': {
             group: 'lane-divide',
             className: 'bpmn-icon-lane-divide-two',
@@ -209,7 +212,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
       }
 
       if (element.height >= 180) {
-        assign(actions, {
+        Object.assign(actions, {
           'lane-divide-three': {
             group: 'lane-divide',
             className: 'bpmn-icon-lane-divide-three',
@@ -222,7 +225,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
       }
     }
 
-    assign(actions, {
+    Object.assign(actions, {
       'lane-insert-below': {
         group: 'lane-insert-below',
         className: 'bpmn-icon-lane-insert-below',
@@ -238,7 +241,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
 
   if (is(businessObject, 'bpmn:FlowNode')) {
     if (is(businessObject, 'bpmn:EventBasedGateway')) {
-      assign(actions, {
+      Object.assign(actions, {
         'append.receive-task': appendAction(
           'bpmn:ReceiveTask',
           'bpmn-icon-receive-task',
@@ -276,7 +279,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
         'bpmn:CompensateEventDefinition',
       )
     ) {
-      assign(actions, {
+      Object.assign(actions, {
         'append.compensation-activity': appendAction(
           'bpmn:Task',
           'bpmn-icon-task',
@@ -296,7 +299,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
       ) &&
       !isEventSubProcess(businessObject)
     ) {
-      assign(actions, {
+      Object.assign(actions, {
         'append.end-event': appendAction(
           'bpmn:EndEvent',
           'bpmn-icon-end-event-none',
@@ -323,14 +326,14 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
 
   if (!popupMenu.isEmpty(element, 'bpmn-replace')) {
     // Replace menu entry
-    assign(actions, {
+    Object.assign(actions, {
       replace: {
         group: 'edit',
         className: 'bpmn-icon-screw-wrench',
         title: '修改类型',
         action: {
           click(event, element) {
-            const position = assign(getReplaceMenuPosition(element), {
+            const position = Object.assign(getReplaceMenuPosition(element), {
               cursor: { x: event.x, y: event.y },
             });
 
@@ -349,7 +352,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
       'bpmn:DataStoreReference',
     ])
   ) {
-    assign(actions, {
+    Object.assign(actions, {
       'append.text-annotation': appendAction(
         'bpmn:TextAnnotation',
         'bpmn-icon-text-annotation',
@@ -377,7 +380,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
       'bpmn:DataStoreReference',
     ])
   ) {
-    assign(actions, {
+    Object.assign(actions, {
       connect: {
         group: 'connect',
         className: 'bpmn-icon-connection-multi',
@@ -391,7 +394,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
   }
 
   if (is(businessObject, 'bpmn:Group')) {
-    assign(actions, {
+    Object.assign(actions, {
       'append.text-annotation': appendAction(
         'bpmn:TextAnnotation',
         'bpmn-icon-text-annotation',
@@ -402,13 +405,13 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
   // delete element entry, only show if allowed by rules
   let deleteAllowed = rules.allowed('elements.delete', { elements: [element] });
 
-  if (isArray(deleteAllowed)) {
+  if (Array.isArray(deleteAllowed)) {
     // was the element returned as a deletion candidate?
     deleteAllowed = deleteAllowed[0] === element;
   }
 
   if (deleteAllowed) {
-    assign(actions, {
+    Object.assign(actions, {
       delete: {
         group: 'edit',
         className: 'bpmn-icon-trash',
@@ -430,7 +433,7 @@ function isEventType(eventBo, type, definition) {
   let isDefinition = false;
 
   const definitions = eventBo.eventDefinitions || [];
-  forEach(definitions, (def) => {
+  definitions.forEach((def) => {
     if (def.$type === definition) {
       isDefinition = true;
     }
