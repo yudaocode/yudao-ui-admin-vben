@@ -243,7 +243,6 @@ export function useFormSchema(): VbenFormSchema[] {
       defaultValue: CouponTemplateValidityTypeEnum.DATE.type,
       rules: 'required',
     },
-    // TODO @AI：不太对；
     {
       fieldName: 'validTimes',
       label: '固定日期',
