@@ -12,7 +12,6 @@ import {
 } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 import {
@@ -70,9 +69,18 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择商品',
       },
       dependencies: {
-        triggerFields: ['productScope'],
+        triggerFields: ['productScope', 'productScopeValues'],
         show: (model) =>
           model.productScope === PromotionProductScopeEnum.SPU.scope,
+        trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
+          if (
+            values.productScope === PromotionProductScopeEnum.SPU.scope &&
+            values.productScopeValues
+          ) {
+            form.setFieldValue('productSpuIds', values.productScopeValues);
+          }
+        },
       },
       rules: 'required',
     },
@@ -85,9 +93,25 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择商品分类',
       },
       dependencies: {
-        triggerFields: ['productScope'],
+        triggerFields: ['productScope', 'productScopeValues'],
         show: (model) =>
           model.productScope === PromotionProductScopeEnum.CATEGORY.scope,
+        trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
+          if (
+            values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
+            values.productScopeValues
+          ) {
+            const categoryIds = values.productScopeValues;
+            // 单选时使用数组不能反显，取第一个元素
+            form.setFieldValue(
+              'productCategoryIds',
+              Array.isArray(categoryIds) && categoryIds.length > 0
+                ? categoryIds[0]
+                : categoryIds,
+            );
+          }
+        },
       },
       rules: 'required',
     },
@@ -226,13 +250,14 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        valueFormat: 'x',
       },
       dependencies: {
         triggerFields: ['validityType'],
         show: (model) =>
           model.validityType === CouponTemplateValidityTypeEnum.DATE.type,
       },
-      rules: z.array(z.number()).min(2, '固定日期不能为空'),
+      rules: 'required',
     },
     {
       fieldName: 'fixedStartTerm',
@@ -271,8 +296,23 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'productScopeValues',
       component: 'Input',
       dependencies: {
-        triggerFields: [''],
+        triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],
         show: () => false,
+        trigger(values, form) {
+          switch (values.productScope) {
+            case PromotionProductScopeEnum.CATEGORY.scope: {
+              const categoryIds = Array.isArray(values.productCategoryIds)
+                ? values.productCategoryIds
+                : [values.productCategoryIds];
+              form.setFieldValue('productScopeValues', categoryIds);
+              break;
+            }
+            case PromotionProductScopeEnum.SPU.scope: {
+              form.setFieldValue('productScopeValues', values.productSpuIds);
+              break;
+            }
+          }
+        },
       },
     },
   ];
