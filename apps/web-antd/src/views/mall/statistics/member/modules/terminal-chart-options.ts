@@ -1,6 +1,4 @@
-/**
- * 会员终端统计图配置
- */
+/** 会员终端统计图配置 */
 export function getTerminalChartOptions(data: any[]): any {
   return {
     tooltip: {
@@ -12,7 +10,6 @@ export function getTerminalChartOptions(data: any[]): any {
       orient: 'vertical',
       left: 'right',
     },
-    roseType: 'area',
     series: [
       {
         name: '会员终端',
@@ -28,4 +25,3 @@ export function getTerminalChartOptions(data: any[]): any {
     ],
   };
 }
-

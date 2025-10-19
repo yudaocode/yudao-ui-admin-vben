@@ -24,7 +24,7 @@ const getMemberTerminalStatisticsList = async () => {
   loading.value = true;
   try {
     const list = await MemberStatisticsApi.getMemberTerminalStatisticsList();
-    const dictDataList = getDictOptions('terminal');
+    const dictDataList = getDictOptions('terminal', 'number');
     const chartData = dictDataList.map((dictData: any) => {
       const userCount = list.find(
         (item: any) => item.terminal === dictData.value,
@@ -49,7 +49,7 @@ onMounted(() => {
 <template>
   <Card :bordered="false" title="会员终端" class="h-full">
     <Spin :spinning="loading">
-      <EchartsUI ref="chartRef" class="h-[300px] w-full" />
+      <EchartsUI ref="chartRef" />
     </Spin>
   </Card>
 </template>
