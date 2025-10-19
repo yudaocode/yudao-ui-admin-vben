@@ -1,12 +1,5 @@
-import type { EChartsOption } from 'echarts';
-
-interface ChartData {
-  name: string;
-  value: number;
-}
-
 /** 会员性别比例图表配置 */
-export function getSexChartOptions(data: ChartData[]): EChartsOption {
+export function getSexChartOptions(data: any[]): any {
   return {
     tooltip: {
       trigger: 'item',
