@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
+import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
+
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
@@ -10,24 +13,26 @@ import { ElCard } from 'element-plus';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
 
-import { getTerminalChartOptions } from './terminal-chart-options';
+import { getSexChartOptions } from './sex-chart-options';
 
-/** 会员终端卡片 */
-defineOptions({ name: 'MemberTerminalCard' });
+/** 会员性别比例卡片 */
+defineOptions({ name: 'MemberSexCard' });
 
 const loading = ref(true);
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-/** 按照终端，查询会员统计列表 */
-const getMemberTerminalStatisticsList = async () => {
+/** 按照性别，查询会员统计列表 */
+async function getMemberSexStatisticsList() {
   loading.value = true;
   try {
-    const list = await MemberStatisticsApi.getMemberTerminalStatisticsList();
-    const dictDataList = getDictOptions('terminal', 'number');
+    const list = await MemberStatisticsApi.getMemberSexStatisticsList();
+    const dictDataList = getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number');
+    dictDataList.push({ label: '未知', value: null } as any);
     const chartData = dictDataList.map((dictData: any) => {
       const userCount = list.find(
-        (item: any) => item.terminal === dictData.value,
+        (item: MallMemberStatisticsApi.SexStatistics) =>
+          item.sex === dictData.value,
       )?.userCount;
       return {
         name: dictData.label,
@@ -35,22 +40,22 @@ const getMemberTerminalStatisticsList = async () => {
       };
     });
     // 更新 Echarts 数据
-    await renderEcharts(getTerminalChartOptions(chartData));
+    await renderEcharts(getSexChartOptions(chartData));
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {
-  getMemberTerminalStatisticsList();
+  getMemberSexStatisticsList();
 });
 </script>
 
 <template>
   <ElCard class="h-full">
     <template #header>
-      <span>会员终端</span>
+      <span>会员性别比例</span>
     </template>
     <div v-loading="loading">
       <EchartsUI ref="chartRef" />

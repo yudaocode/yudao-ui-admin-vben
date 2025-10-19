@@ -46,14 +46,14 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
 </script>
 
 <template>
-  <ElCard :border="false">
+  <ElCard v-loading="loading">
     <template #header>
       <div class="flex items-center justify-between">
         <span>会员概览</span>
         <ShortcutDateRangePicker @change="handleTimeRangeChange" />
       </div>
     </template>
-    <div v-loading="loading" class="min-w-[900px] py-4">
+    <div class="min-w-[900px] py-4">
       <div class="flex h-24">
         <div class="flex w-[75%] bg-blue-50">
           <div class="ml-[50px] flex flex-col justify-center">
