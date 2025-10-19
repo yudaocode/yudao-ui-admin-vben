@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 export function formatDate(
-  time: Date | number | string | undefined,
+  time: Date | Dayjs | number | string | undefined,
   format = 'YYYY-MM-DD',
 ) {
   if (!time) {
@@ -19,7 +19,9 @@ export function formatDate(
   }
 }
 
-export function formatDateTime(time: Date | number | string | undefined) {
+export function formatDateTime(
+  time: Date | Dayjs | number | string | undefined,
+) {
   if (!time) {
     return time;
   }

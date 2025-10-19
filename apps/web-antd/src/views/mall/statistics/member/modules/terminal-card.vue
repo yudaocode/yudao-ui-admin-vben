@@ -10,7 +10,7 @@ import { Card, Spin } from 'ant-design-vue';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
 
-import { getTerminalChartOptions } from './member-terminal-chart-options';
+import { getTerminalChartOptions } from './terminal-chart-options';
 
 /** 会员终端卡片 */
 defineOptions({ name: 'MemberTerminalCard' });
@@ -49,7 +49,7 @@ onMounted(() => {
 <template>
   <Card :bordered="false" title="会员终端" class="h-full">
     <Spin :spinning="loading">
-      <EchartsUI ref="chartRef" class="h-[380px] w-full" />
+      <EchartsUI ref="chartRef" class="h-[300px] w-full" />
     </Spin>
   </Card>
 </template>

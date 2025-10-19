@@ -1,3 +1,5 @@
+import type { Dayjs } from 'dayjs';
+
 import type { DataComparisonRespVO } from './common';
 
 import { formatDate, formatDateTime } from '@vben/utils';
@@ -6,8 +8,8 @@ import { requestClient } from '#/api/request';
 
 export namespace MallMemberStatisticsApi {
   /** 会员分析 Request */
-  export interface AnalyseReq {
-    times: Date[]; // 时间范围
+  export interface MemberAnalyseReqVO {
+    times: Date[] | Dayjs[]; // 时间范围
   }
 
   /** 会员分析对照数据 Response */
@@ -77,7 +79,7 @@ export function getMemberSummary() {
 }
 
 /** 查询会员分析数据 */
-export function getMemberAnalyse(params: MallMemberStatisticsApi.AnalyseReq) {
+export function getMemberAnalyse(params: MallMemberStatisticsApi.MemberAnalyseReqVO) {
   return requestClient.get<MallMemberStatisticsApi.Analyse>(
     '/statistics/member/analyse',
     {

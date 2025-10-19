@@ -4,66 +4,35 @@ import type { Dayjs } from 'dayjs';
 import { onMounted, ref } from 'vue';
 
 import { DatePicker, Radio, RadioGroup } from 'ant-design-vue';
-import dayjs from 'dayjs';
 
 import { getRangePickerDefaultProps } from '#/utils/rangePickerProps';
 
 /** 快捷日期范围选择组件 */
 defineOptions({ name: 'ShortcutDateRangePicker' });
 
-/** 触发事件：时间范围选中 */
 const emits = defineEmits<{
   change: [times: [Dayjs, Dayjs]];
 }>();
 
-/** 时间范围类型枚举 */
-enum TimeRangeType {
-  LAST_7_DAYS = 7,
-  LAST_30_DAYS = 30,
-  YESTERDAY = 1,
-}
-
-const timeRangeType = ref<TimeRangeType>(TimeRangeType.LAST_7_DAYS); // 默认选中最近7天
 const times = ref<[Dayjs, Dayjs]>(); // 日期范围
 
-/** 获取 RangePicker 的默认配置 */
 const rangePickerProps = getRangePickerDefaultProps();
-
-/** 时间范围配置 */
 const timeRangeOptions = [
-  { label: '昨天', value: TimeRangeType.YESTERDAY },
-  { label: '最近 7 天', value: TimeRangeType.LAST_7_DAYS },
-  { label: '最近 30 天', value: TimeRangeType.LAST_30_DAYS },
+  rangePickerProps.presets[3]!, // 昨天
+  rangePickerProps.presets[4]!, // 最近 7 天
+  rangePickerProps.presets[5]!, // 最近 30 天
 ];
+const timeRangeType = ref(timeRangeOptions[1]!.label); // 默认选中第一个选项
 
 /** 设置时间范围 */
 function setTimes() {
-  let beginTime: Dayjs;
-  let endTime: Dayjs;
-
-  switch (timeRangeType.value) {
-    case TimeRangeType.LAST_7_DAYS: {
-      beginTime = dayjs().subtract(7, 'day').startOf('day');
-      endTime = dayjs().subtract(1, 'day').endOf('day');
-      break;
-    }
-    case TimeRangeType.LAST_30_DAYS: {
-      beginTime = dayjs().subtract(30, 'day').startOf('day');
-      endTime = dayjs().subtract(1, 'day').endOf('day');
-      break;
-    }
-    case TimeRangeType.YESTERDAY: {
-      beginTime = dayjs().subtract(1, 'day').startOf('day');
-      endTime = dayjs().subtract(1, 'day').endOf('day');
-      break;
-    }
-    default: {
-      beginTime = dayjs().subtract(7, 'day').startOf('day');
-      endTime = dayjs().subtract(1, 'day').endOf('day');
-    }
+  // 根据选中的选项设置时间范围
+  const selectedOption = timeRangeOptions.find(
+    (option) => option.label === timeRangeType.value,
+  );
+  if (selectedOption) {
+    times.value = selectedOption.value as [Dayjs, Dayjs];
   }
-
-  times.value = [beginTime, endTime];
 }
 
 /** 快捷日期单选按钮选中 */
@@ -100,17 +69,18 @@ onMounted(() => {
     >
       <Radio
         v-for="option in timeRangeOptions"
-        :key="option.value"
-        :value="option.value"
+        :key="option.label"
+        :value="option.label"
       >
         {{ option.label }}
       </Radio>
     </RadioGroup>
     <DatePicker.RangePicker
       v-model:value="times"
-      :show-time="rangePickerProps.showTime"
       :format="rangePickerProps.format"
       :value-format="rangePickerProps.valueFormat"
+      :placeholder="rangePickerProps.placeholder"
+      :presets="rangePickerProps.presets"
       class="!w-[240px]"
       @change="handleDateRangeChange"
     />

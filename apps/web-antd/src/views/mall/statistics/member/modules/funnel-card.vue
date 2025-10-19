@@ -21,12 +21,10 @@ async function loadData(times: [Dayjs, Dayjs]) {
   if (!times || times.length !== 2) {
     return;
   }
-
   loading.value = true;
   try {
-    // 查询数据
     analyseData.value = await MemberStatisticsApi.getMemberAnalyse({
-      times: [times[0].toDate(), times[1].toDate()],
+      times,
     });
   } finally {
     loading.value = false;
@@ -40,7 +38,9 @@ const handleTimeRangeChange = (times: [Dayjs, Dayjs]) => {
 
 /** 计算环比增长率 */
 const calculateRelativeRate = (value?: number, reference?: number) => {
-  if (!reference || reference === 0) return 0;
+  if (!reference || reference === 0) {
+    return 0;
+  }
   return (((value || 0) - reference) / reference) * 100;
 };
 </script>
@@ -53,17 +53,17 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
         <ShortcutDateRangePicker @change="handleTimeRangeChange" />
       </div>
     </template>
-    <div class="min-w-[900px] py-7">
-      <div class="relative flex h-24">
-        <div class="flex h-full w-[75%] bg-blue-50">
-          <div class="ml-15 flex h-full flex-col justify-center">
+    <div class="min-w-[900px] py-4">
+      <div class="flex h-24">
+        <div class="flex w-[75%] bg-blue-50">
+          <div class="ml-[50px] flex flex-col justify-center">
             <div class="font-bold">
-              注册用户数量：{{
-                analyseData?.comparison?.value?.registerUserCount || 0
-              }}
+              注册用户数量：
+              {{ analyseData?.comparison?.value?.registerUserCount || 0 }}
             </div>
             <div class="mt-2 text-sm">
-              环比增长率：{{
+              环比增长率：
+              {{
                 calculateRelativeRate(
                   analyseData?.comparison?.value?.registerUserCount,
                   analyseData?.comparison?.reference?.registerUserCount,
@@ -73,24 +73,24 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
           </div>
         </div>
         <div
-          class="trapezoid1 -ml-[154px] mt-1.5 flex h-full w-[308px] flex-col items-center justify-center bg-blue-500 text-sm text-white"
+          class="-ml-[154px] mt-1.5 flex w-[308px] flex-col items-center justify-center bg-blue-500 text-sm text-white [transform:perspective(5em)_rotateX(-11deg)]"
         >
-          <span class="text-2xl font-bold">{{
-            analyseData?.visitUserCount || 0
-          }}</span>
+          <span class="text-2xl font-bold">
+            {{ analyseData?.visitUserCount || 0 }}
+          </span>
           <span>访客</span>
         </div>
       </div>
-      <div class="relative flex h-24">
-        <div class="flex h-full w-[75%] bg-cyan-50">
-          <div class="ml-15 flex h-full flex-col justify-center">
+      <div class="flex h-24">
+        <div class="flex w-[75%] bg-cyan-50">
+          <div class="ml-[50px] flex flex-col justify-center">
             <div class="font-bold">
-              活跃用户数量：{{
-                analyseData?.comparison?.value?.visitUserCount || 0
-              }}
+              活跃用户数量：
+              {{ analyseData?.comparison?.value?.visitUserCount || 0 }}
             </div>
             <div class="mt-2 text-sm">
-              环比增长率：{{
+              环比增长率：
+              {{
                 calculateRelativeRate(
                   analyseData?.comparison?.value?.visitUserCount,
                   analyseData?.comparison?.reference?.visitUserCount,
@@ -100,25 +100,25 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
           </div>
         </div>
         <div
-          class="trapezoid2 -ml-[112px] mt-[6.8px] flex h-[100px] w-[224px] flex-col items-center justify-center bg-cyan-500 text-sm text-white"
+          class="-ml-[112px] mt-[6.8px] flex h-[100px] w-[224px] flex-col items-center justify-center bg-cyan-500 text-sm text-white [transform:perspective(7em)_rotateX(-20deg)]"
         >
-          <span class="text-2xl font-bold">{{
-            analyseData?.orderUserCount || 0
-          }}</span>
+          <span class="text-2xl font-bold">
+            {{ analyseData?.orderUserCount || 0 }}
+          </span>
           <span>下单</span>
         </div>
       </div>
-      <div class="relative flex h-24">
+      <div class="flex h-24">
         <div class="flex w-[75%] bg-slate-50">
-          <div class="ml-15 flex h-full flex-row gap-x-16">
+          <div class="ml-[50px] flex flex-row gap-x-16">
             <div class="flex flex-col justify-center">
               <div class="font-bold">
-                充值用户数量：{{
-                  analyseData?.comparison?.value?.rechargeUserCount || 0
-                }}
+                充值用户数量：
+                {{ analyseData?.comparison?.value?.rechargeUserCount || 0 }}
               </div>
               <div class="mt-2 text-sm">
-                环比增长率：{{
+                环比增长率：
+                {{
                   calculateRelativeRate(
                     analyseData?.comparison?.value?.rechargeUserCount,
                     analyseData?.comparison?.reference?.rechargeUserCount,
@@ -134,28 +134,14 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
           </div>
         </div>
         <div
-          class="trapezoid3 -ml-[72px] mt-[13px] flex h-[92px] w-[144px] flex-col items-center justify-center bg-slate-500 text-sm text-white"
+          class="-ml-[72px] mt-[13px] flex h-[92px] w-[144px] flex-col items-center justify-center bg-slate-500 text-sm text-white [transform:perspective(3em)_rotateX(-13deg)]"
         >
-          <span class="text-2xl font-bold">{{
-            analyseData?.payUserCount || 0
-          }}</span>
+          <span class="text-2xl font-bold">
+            {{ analyseData?.payUserCount || 0 }}
+          </span>
           <span>成交用户</span>
         </div>
       </div>
     </div>
   </Card>
 </template>
-
-<style lang="less" scoped>
-.trapezoid1 {
-  transform: perspective(5em) rotateX(-11deg);
-}
-
-.trapezoid2 {
-  transform: perspective(7em) rotateX(-20deg);
-}
-
-.trapezoid3 {
-  transform: perspective(3em) rotateX(-13deg);
-}
-</style>

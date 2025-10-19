@@ -13,10 +13,10 @@ import { Col, Row } from 'ant-design-vue';
 import { getUserCountComparison } from '#/api/mall/statistics/member';
 import { getOrderComparison } from '#/api/mall/statistics/trade';
 
+import MemberFunnelCard from '../statistics/member/modules/funnel-card.vue';
+import MemberTerminalCard from '../statistics/member/modules/terminal-card.vue';
 import ComparisonCard from './modules/comparison-card.vue';
-import MemberFunnelCard from './modules/member-funnel-card.vue';
 import MemberStatisticsCard from './modules/member-statistics-card.vue';
-import MemberTerminalCard from './modules/member-terminal-card.vue';
 import OperationDataCard from './modules/operation-data-card.vue';
 import ShortcutCard from './modules/shortcut-card.vue';
 import TradeTrendCard from './modules/trade-trend-card.vue';
