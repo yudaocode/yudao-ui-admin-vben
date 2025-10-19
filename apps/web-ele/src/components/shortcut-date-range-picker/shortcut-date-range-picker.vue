@@ -102,7 +102,7 @@ onMounted(() => {
       :start-placeholder="rangePickerProps.startPlaceholder"
       :end-placeholder="rangePickerProps.endPlaceholder"
       :default-time="rangePickerProps.defaultTime as any"
-      class="!w-[360px]"
+      class="!w-[215px]"
       @change="handleDateRangeChange"
     />
     <slot></slot>
