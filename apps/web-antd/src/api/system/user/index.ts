@@ -23,6 +23,7 @@ export namespace SystemUserApi {
 
 /** 查询用户管理列表 */
 export function getUserPage(params: PageParam) {
+  debugger
   return requestClient.get<PageResult<SystemUserApi.User>>(
     '/system/user/page',
     { params },

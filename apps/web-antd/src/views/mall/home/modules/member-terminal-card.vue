@@ -3,10 +3,10 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import { onMounted, ref } from 'vue';
 
-import { Card, Spin } from 'ant-design-vue';
-
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { getDictOptions } from '@vben/hooks';
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+
+import { Card, Spin } from 'ant-design-vue';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
 
@@ -47,10 +47,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false" title="会员终端">
+  <Card :bordered="false" title="会员终端" class="h-full">
     <Spin :spinning="loading">
-      <EchartsUI ref="chartRef" class="h-[300px] w-full" />
+      <EchartsUI ref="chartRef" class="h-[380px] w-full" />
     </Spin>
   </Card>
 </template>
-

@@ -1,6 +1,6 @@
 import type { DataComparisonRespVO } from './common';
 
-import { formatDate } from '@vben/utils';
+import { formatDate, formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -82,7 +82,10 @@ export function getMemberAnalyse(params: MallMemberStatisticsApi.AnalyseReq) {
     '/statistics/member/analyse',
     {
       params: {
-        times: [formatDate(params.times[0]), formatDate(params.times[1])],
+        times: [
+          formatDateTime(params.times[0]),
+          formatDateTime(params.times[1]),
+        ],
       },
     },
   );

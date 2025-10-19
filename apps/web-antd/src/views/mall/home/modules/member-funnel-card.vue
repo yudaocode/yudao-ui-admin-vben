@@ -3,11 +3,12 @@ import type { Dayjs } from 'dayjs';
 
 import { ref } from 'vue';
 
-import { Card, DatePicker } from 'ant-design-vue';
+import { fenToYuan } from '@vben/utils';
 
-import { erpCalculatePercentage, fenToYuan } from '@vben/utils';
+import { Card } from 'ant-design-vue';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { ShortcutDateRangePicker } from '#/components/shortcut-date-range-picker';
 
 /** 会员概览卡片 */
 defineOptions({ name: 'MemberFunnelCard' });
@@ -16,15 +17,25 @@ const loading = ref(false);
 const analyseData = ref<any>();
 
 /** 查询会员概览数据列表 */
-const handleTimeRangeChange = async (times: [Dayjs, Dayjs]) => {
-  if (!times || times.length !== 2) return;
+async function loadData(times: [Dayjs, Dayjs]) {
+  if (!times || times.length !== 2) {
+    return;
+  }
+
   loading.value = true;
   try {
     // 查询数据
-    analyseData.value = await MemberStatisticsApi.getMemberAnalyse({ times });
+    analyseData.value = await MemberStatisticsApi.getMemberAnalyse({
+      times: [times[0].toDate(), times[1].toDate()],
+    });
   } finally {
     loading.value = false;
   }
+}
+
+/** 时间范围改变 */
+const handleTimeRangeChange = (times: [Dayjs, Dayjs]) => {
+  loadData(times);
 };
 
 /** 计算环比增长率 */
@@ -39,7 +50,7 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
     <template #title>
       <div class="flex items-center justify-between">
         <span>会员概览</span>
-        <DatePicker.RangePicker @change="handleTimeRangeChange" />
+        <ShortcutDateRangePicker @change="handleTimeRangeChange" />
       </div>
     </template>
     <div class="min-w-[900px] py-7">
@@ -148,4 +159,3 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
   transform: perspective(3em) rotateX(-13deg);
 }
 </style>
-
