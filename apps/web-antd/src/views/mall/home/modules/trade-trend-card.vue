@@ -1,38 +1,33 @@
 <script lang="ts" setup>
-import type { EchartsUIType } from '@vben/plugins/echarts';
 import type { Dayjs } from 'dayjs';
 
-import { onMounted, ref } from 'vue';
+import type { EchartsUIType } from '@vben/plugins/echarts';
 
-import dayjs from 'dayjs';
-import { Card, Radio, RadioGroup, Spin } from 'ant-design-vue';
+import { onMounted, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { fenToYuan } from '@vben/utils';
 
+import { Card, Radio, RadioGroup, Spin } from 'ant-design-vue';
+import dayjs from 'dayjs';
+
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 
-import { getTradeTrendChartOptions } from './trade-trend-chart-options';
+import {
+  getTradeTrendChartOptions,
+  TimeRangeTypeEnum,
+} from './trade-trend-chart-options';
 
 /** 交易量趋势 */
 defineOptions({ name: 'TradeTrendCard' });
 
-enum TimeRangeTypeEnum {
-  DAY30 = 1,
-  WEEK = 7,
-  MONTH = 30,
-  YEAR = 365,
-}
-
-const timeRangeType = ref(TimeRangeTypeEnum.DAY30); // 日期快捷选择按钮, 默认30天
 const loading = ref(false);
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-// 时间范围 Map
 const timeRangeConfig = {
   [TimeRangeTypeEnum.DAY30]: {
-    name: '30天',
+    name: '30 天',
     seriesCount: 2,
   },
   [TimeRangeTypeEnum.WEEK]: {
@@ -47,7 +42,8 @@ const timeRangeConfig = {
     name: '年',
     seriesCount: 4,
   },
-};
+}; // 时间范围 Map
+const timeRangeType = ref(TimeRangeTypeEnum.DAY30); // 日期快捷选择按钮, 默认 30 天
 
 /** 时间范围类型单选按钮选中 */
 const handleTimeRangeTypeChange = async () => {
@@ -55,9 +51,9 @@ const handleTimeRangeTypeChange = async () => {
   let beginTime: Dayjs;
   let endTime: Dayjs;
   switch (timeRangeType.value) {
-    case TimeRangeTypeEnum.WEEK: {
-      beginTime = dayjs().startOf('week');
-      endTime = dayjs().endOf('week');
+    case TimeRangeTypeEnum.DAY30: {
+      beginTime = dayjs().subtract(30, 'day').startOf('d');
+      endTime = dayjs().endOf('d');
       break;
     }
     case TimeRangeTypeEnum.MONTH: {
@@ -65,16 +61,18 @@ const handleTimeRangeTypeChange = async () => {
       endTime = dayjs().endOf('month');
       break;
     }
+    case TimeRangeTypeEnum.WEEK: {
+      beginTime = dayjs().startOf('week');
+      endTime = dayjs().endOf('week');
+      break;
+    }
     case TimeRangeTypeEnum.YEAR: {
       beginTime = dayjs().startOf('year');
       endTime = dayjs().endOf('year');
       break;
     }
-    case TimeRangeTypeEnum.DAY30:
     default: {
-      beginTime = dayjs().subtract(30, 'day').startOf('d');
-      endTime = dayjs().endOf('d');
-      break;
+      throw new Error(`未知的时间范围类型: ${timeRangeType.value}`);
     }
   }
   // 发送时间范围选中事件
@@ -82,25 +80,22 @@ const handleTimeRangeTypeChange = async () => {
 };
 
 /** 查询订单数量趋势对照数据 */
-const getOrderCountTrendComparison = async (
-  beginTime: dayjs.ConfigType,
-  endTime: dayjs.ConfigType,
-) => {
+async function getOrderCountTrendComparison(beginTime: Dayjs, endTime: Dayjs) {
   loading.value = true;
   try {
-    // 查询数据
+    // 1. 查询数据
     const list = await TradeStatisticsApi.getOrderCountTrendComparison(
       timeRangeType.value,
-      beginTime,
-      endTime,
+      beginTime.toDate(),
+      endTime.toDate(),
     );
-    // 处理数据
+    // 2. 处理数据
     const dates: string[] = [];
     const series: any[] = [];
     const config = timeRangeConfig[timeRangeType.value];
-
+    // 情况一：seriesCount 为 2（近 30 天）
     if (config.seriesCount === 2) {
-      const orderPayPriceData: number[] = [];
+      const orderPayPriceData: string[] = [];
       const orderPayCountData: number[] = [];
       for (const item of list) {
         dates.push(item.value.date);
@@ -108,7 +103,12 @@ const getOrderCountTrendComparison = async (
         orderPayCountData.push(item?.value?.orderPayCount || 0);
       }
       series.push(
-        { name: '订单金额', type: 'bar', smooth: true, data: orderPayPriceData },
+        {
+          name: '订单金额',
+          type: 'bar',
+          smooth: true,
+          data: orderPayPriceData,
+        },
         {
           name: '订单数量',
           type: 'line',
@@ -117,11 +117,11 @@ const getOrderCountTrendComparison = async (
         },
       );
     } else {
-      const refPriceData: number[] = [];
-      const curPriceData: number[] = [];
+      // 情况二：seriesCount 为 4
+      const refPriceData: string[] = [];
+      const curPriceData: string[] = [];
       const refCountData: number[] = [];
       const curCountData: number[] = [];
-
       for (const item of list) {
         dates.push(item.value.date);
         refPriceData.push(fenToYuan(item?.reference?.orderPayPrice || 0));
@@ -129,14 +129,15 @@ const getOrderCountTrendComparison = async (
         refCountData.push(item?.reference?.orderPayCount || 0);
         curCountData.push(item?.value?.orderPayCount || 0);
       }
-
-      const timeLabel =
-        timeRangeType.value === TimeRangeTypeEnum.WEEK
-          ? ['上周', '本周']
-          : timeRangeType.value === TimeRangeTypeEnum.MONTH
-            ? ['上月', '本月']
-            : ['去年', '今年'];
-
+      // 根据时间范围类型确定对照数据的标签文本
+      let timeLabel: string[];
+      if (timeRangeType.value === TimeRangeTypeEnum.WEEK) {
+        timeLabel = ['上周', '本周'];
+      } else if (timeRangeType.value === TimeRangeTypeEnum.MONTH) {
+        timeLabel = ['上月', '本月'];
+      } else {
+        timeLabel = ['去年', '今年'];
+      }
       series.push(
         {
           name: `${timeLabel[0]}金额`,
@@ -165,13 +166,14 @@ const getOrderCountTrendComparison = async (
       );
     }
 
+    // 3. 渲染 Echarts 界面
     await renderEcharts(
       getTradeTrendChartOptions(dates, series, timeRangeType.value),
     );
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 初始化 */
 onMounted(() => {
@@ -184,7 +186,10 @@ onMounted(() => {
     <template #title>
       <div class="flex items-center justify-between">
         <span>交易量趋势</span>
-        <RadioGroup v-model:value="timeRangeType" @change="handleTimeRangeTypeChange">
+        <RadioGroup
+          v-model:value="timeRangeType"
+          @change="handleTimeRangeTypeChange"
+        >
           <Radio
             v-for="[key, value] in Object.entries(timeRangeConfig)"
             :key="key"
@@ -196,8 +201,7 @@ onMounted(() => {
       </div>
     </template>
     <Spin :spinning="loading">
-      <EchartsUI ref="chartRef" class="h-[300px] w-full" />
+      <EchartsUI ref="chartRef" class="w-full" />
     </Spin>
   </Card>
 </template>
-
