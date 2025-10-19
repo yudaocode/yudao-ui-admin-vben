@@ -1,8 +1,14 @@
 import dayjs from 'dayjs';
 
-/**
- * 会员统计图表配置
- */
+/** 时间范围类型枚举 */
+export enum TimeRangeTypeEnum {
+  DAY30 = 1,
+  MONTH = 30,
+  WEEK = 7,
+  YEAR = 365,
+}
+
+/** 会员统计图表配置 */
 export function getMemberStatisticsChartOptions(list: any[]): any {
   return {
     dataset: {
@@ -56,4 +62,3 @@ export function getMemberStatisticsChartOptions(list: any[]): any {
     },
   };
 }
-

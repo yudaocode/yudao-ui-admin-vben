@@ -2,7 +2,7 @@ import type { Dayjs } from 'dayjs';
 
 import type { DataComparisonRespVO } from './common';
 
-import { formatDate, formatDateTime } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -79,7 +79,9 @@ export function getMemberSummary() {
 }
 
 /** 查询会员分析数据 */
-export function getMemberAnalyse(params: MallMemberStatisticsApi.MemberAnalyseReqVO) {
+export function getMemberAnalyse(
+  params: MallMemberStatisticsApi.MemberAnalyseReqVO,
+) {
   return requestClient.get<MallMemberStatisticsApi.Analyse>(
     '/statistics/member/analyse',
     {
@@ -127,7 +129,7 @@ export function getMemberRegisterCountList(beginTime: Date, endTime: Date) {
     '/statistics/member/register-count-list',
     {
       params: {
-        times: [formatDate(beginTime), formatDate(endTime)],
+        times: [formatDateTime(beginTime), formatDateTime(endTime)],
       },
     },
   );
