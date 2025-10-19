@@ -3,13 +3,12 @@ import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
 
 import { onMounted, ref } from 'vue';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page, SummaryCard } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
 import { Col, Row } from 'ant-design-vue';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
-import { SummaryCard } from '#/components/summary-card';
 
 import MemberAreaCard from './modules/area-card.vue';
 import MemberFunnelCard from './modules/funnel-card.vue';
