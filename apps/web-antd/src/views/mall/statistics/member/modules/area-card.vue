@@ -86,20 +86,15 @@ async function getMemberAreaStatisticsList() {
   loading.value = true;
   try {
     const list = await MemberStatisticsApi.getMemberAreaStatisticsList();
-
     areaStatisticsList.value = list.map(
       (item: MallMemberStatisticsApi.AreaStatistics) => ({
         ...item,
         areaName: areaReplace(item.areaName),
       }),
     );
-
     // 渲染图表
     const chartOptions = getAreaChartOptions(areaStatisticsList.value);
-
     await renderEcharts(chartOptions);
-  } catch (error) {
-    console.error('地域分布数据获取失败:', error);
   } finally {
     loading.value = false;
   }
@@ -116,7 +111,7 @@ onMounted(() => {
     <Spin :spinning="loading">
       <div class="flex gap-4">
         <div class="w-2/5">
-          <EchartsUI ref="chartRef" class="h-[300px] w-full" />
+          <EchartsUI ref="chartRef" />
         </div>
         <div class="w-3/5">
           <Table

@@ -5,7 +5,7 @@ import { fenToYuan } from '@vben/utils';
 /** 会员地域分布图表配置 */
 export function getAreaChartOptions(
   data: MallMemberStatisticsApi.AreaStatistics[],
-) {
+): any {
   if (!data || data.length === 0) {
     return {
       title: {
@@ -20,9 +20,9 @@ export function getAreaChartOptions(
     };
   }
 
+  // 计算 min 和 max 值
   let min = Number.POSITIVE_INFINITY;
   let max = Number.NEGATIVE_INFINITY;
-
   const mapData = data.map((item) => {
     const payUserCount = item.orderPayUserCount || 0;
     min = Math.min(min, payUserCount);
@@ -33,13 +33,13 @@ export function getAreaChartOptions(
       value: payUserCount,
     };
   });
-
-  // 如果所有值都为0，设置合理的最小最大值
+  // 如果所有值都为 0，设置合理的 min 和 max 值
   if (min === max && min === 0) {
     min = 0;
     max = 10;
   }
 
+  // 返回图表配置
   return {
     tooltip: {
       trigger: 'item',
@@ -48,7 +48,6 @@ export function getAreaChartOptions(
         if (!itemData) {
           return `${params?.name || ''}<br/>暂无数据`;
         }
-
         return `${itemData.areaName || params.name}<br/>
 会员数量：${itemData.userCount || 0}<br/>
 订单创建数量：${itemData.orderCreateUserCount || 0}<br/>

@@ -39,6 +39,7 @@ async function getMemberSexStatisticsList() {
         value: userCount || 0,
       };
     });
+    // 更新 Echarts 数据
     await renderEcharts(getSexChartOptions(chartData));
   } finally {
     loading.value = false;

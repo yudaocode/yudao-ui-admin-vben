@@ -34,6 +34,7 @@ const getMemberTerminalStatisticsList = async () => {
         value: userCount || 0,
       };
     });
+    // 更新 Echarts 数据
     await renderEcharts(getTerminalChartOptions(chartData));
   } finally {
     loading.value = false;

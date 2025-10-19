@@ -8,9 +8,9 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member'; // 会员统计数据
-import AnalysisOverviewIcon from '#/views/mall/home/components/analysis-overview-icon.vue';
-import MemberFunnelCard from '#/views/mall/home/components/member-funnel-card.vue';
-import MemberTerminalCard from '#/views/mall/home/components/member-terminal-card.vue';
+// import AnalysisOverviewIcon from '#/views/mall/home/components/analysis-overview-icon.vue';
+// import MemberFunnelCard from '#/views/mall/home/components/member-funnel-card.vue';
+// import MemberTerminalCard from '#/views/mall/home/components/member-terminal-card.vue';
 
 import MemberRegionCard from './components/member-region-card.vue';
 import MemberSexCard from './components/member-sex-card.vue';
