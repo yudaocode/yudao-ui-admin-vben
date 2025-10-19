@@ -8,13 +8,13 @@ import { fenToYuan } from '@vben/utils';
 
 import { Col, Row } from 'ant-design-vue';
 
-import { SummaryCard } from '#/components/summary-card';
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { SummaryCard } from '#/components/summary-card';
 
-import MemberFunnelCard from './modules/funnel-card.vue';
-import MemberTerminalCard from './modules/terminal-card.vue';
 import MemberAreaCard from './modules/area-card.vue';
+import MemberFunnelCard from './modules/funnel-card.vue';
 import MemberSexCard from './modules/sex-card.vue';
+import MemberTerminalCard from './modules/terminal-card.vue';
 
 /** 会员统计 */
 defineOptions({ name: 'MemberStatistics' });
@@ -91,7 +91,6 @@ onMounted(async () => {
           />
         </Col>
       </Row>
-
       <!-- 会员概览和会员终端 -->
       <Row :gutter="16">
         <Col :md="18" :sm="24" :xs="24">
@@ -101,7 +100,6 @@ onMounted(async () => {
           <MemberTerminalCard />
         </Col>
       </Row>
-
       <!-- 会员地域分布和性别比例 -->
       <Row :gutter="16">
         <Col :md="18" :sm="24" :xs="24">
