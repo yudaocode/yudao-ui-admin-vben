@@ -1,37 +1,59 @@
-import type { EChartsOption } from 'echarts';
 import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
 
 import { fenToYuan } from '@vben/utils';
 
-// 地图数据由 @vben/plugins/echarts 自动处理
-
 /** 会员地域分布图表配置 */
-export function getAreaChartOptions(data: MallMemberStatisticsApi.AreaStatistics[]): EChartsOption {
-  let min = 0;
-  let max = 0;
-  
+export function getAreaChartOptions(
+  data: MallMemberStatisticsApi.AreaStatistics[],
+) {
+  if (!data || data.length === 0) {
+    return {
+      title: {
+        text: '暂无数据',
+        left: 'center',
+        top: 'center',
+        textStyle: {
+          color: '#999',
+          fontSize: 14,
+        },
+      },
+    };
+  }
+
+  let min = Number.POSITIVE_INFINITY;
+  let max = Number.NEGATIVE_INFINITY;
+
   const mapData = data.map((item) => {
-    min = Math.min(min, item.orderPayUserCount || 0);
-    max = Math.max(max, item.orderPayUserCount || 0);
+    const payUserCount = item.orderPayUserCount || 0;
+    min = Math.min(min, payUserCount);
+    max = Math.max(max, payUserCount);
     return {
       ...item,
       name: item.areaName,
-      value: item.orderPayUserCount || 0,
+      value: payUserCount,
     };
   });
+
+  // 如果所有值都为0，设置合理的最小最大值
+  if (min === max && min === 0) {
+    min = 0;
+    max = 10;
+  }
 
   return {
     tooltip: {
       trigger: 'item',
       formatter: (params: any) => {
-        const data = params?.data;
-        if (!data) return params?.name || '';
-        
-        return `${data.areaName || params.name}<br/>
-会员数量：${data.userCount || 0}<br/>
-订单创建数量：${data.orderCreateUserCount || 0}<br/>
-订单支付数量：${data.orderPayUserCount || 0}<br/>
-订单支付金额：￥${Number(fenToYuan(data.orderPayPrice || 0)).toFixed(2)}`;
+        const itemData = params?.data;
+        if (!itemData) {
+          return `${params?.name || ''}<br/>暂无数据`;
+        }
+
+        return `${itemData.areaName || params.name}<br/>
+会员数量：${itemData.userCount || 0}<br/>
+订单创建数量：${itemData.orderCreateUserCount || 0}<br/>
+订单支付数量：${itemData.orderPayUserCount || 0}<br/>
+订单支付金额：￥${Number(fenToYuan(itemData.orderPayPrice || 0)).toFixed(2)}`;
       },
     },
     visualMap: {
@@ -39,10 +61,11 @@ export function getAreaChartOptions(data: MallMemberStatisticsApi.AreaStatistics
       realtime: false,
       calculable: true,
       top: 'middle',
+      left: 10,
       min,
       max,
       inRange: {
-        color: ['#fff', '#3b82f6'],
+        color: ['#e6f3ff', '#1890ff', '#0050b3'],
       },
     },
     series: [
@@ -52,10 +75,18 @@ export function getAreaChartOptions(data: MallMemberStatisticsApi.AreaStatistics
         map: 'china',
         roam: false,
         selectedMode: false,
+        itemStyle: {
+          borderColor: '#389e0d',
+          borderWidth: 0.5,
+        },
+        emphasis: {
+          itemStyle: {
+            areaColor: '#ffec3d',
+            borderWidth: 1,
+          },
+        },
         data: mapData,
       },
     ],
   };
 }
-
-// 地图数据已在 @vben/plugins/echarts 中自动注册
