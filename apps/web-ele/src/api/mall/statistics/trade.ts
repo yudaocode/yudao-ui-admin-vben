@@ -1,6 +1,6 @@
-import type { MallDataComparisonResp } from './common';
+import type { DataComparisonRespVO } from './common';
 
-import { formatDate2 } from '@vben/utils';
+import { formatDate, formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -15,7 +15,7 @@ export namespace MallTradeStatisticsApi {
 
   /** 交易状况 Request */
   export interface TradeTrendReq {
-    times: Date[];
+    times: [Date, Date];
   }
 
   /** 交易状况统计 Response */
@@ -43,7 +43,7 @@ export namespace MallTradeStatisticsApi {
   }
 
   /** 交易订单统计 Response */
-  export interface TradeOrderSummary {
+  export interface TradeOrderSummaryRespVO {
     /** 支付订单商品数 */
     orderPayCount?: number;
     /** 总支付金额，单位：分 */
@@ -64,17 +64,14 @@ export namespace MallTradeStatisticsApi {
 /** 时间参数需要格式化, 确保接口能识别 */
 const formatDateParam = (params: MallTradeStatisticsApi.TradeTrendReq) => {
   return {
-    times: [
-      formatDate2(params.times[0] || new Date()),
-      formatDate2(params.times[1] || new Date()),
-    ],
-  };
+    times: [formatDate(params.times[0]), formatDate(params.times[1])],
+  } as MallTradeStatisticsApi.TradeTrendReq;
 };
 
 /** 查询交易统计 */
 export function getTradeStatisticsSummary() {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>
   >('/statistics/trade/summary');
 }
 
@@ -83,7 +80,7 @@ export function getTradeStatisticsAnalyse(
   params: MallTradeStatisticsApi.TradeTrendReq,
 ) {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeTrendSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>
   >('/statistics/trade/analyse', { params: formatDateParam(params) });
 }
 
@@ -116,7 +113,7 @@ export function getOrderCount() {
 /** 获得交易订单数量对照 */
 export function getOrderComparison() {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeOrderSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderSummaryRespVO>
   >('/statistics/trade/order-comparison');
 }
 
@@ -127,12 +124,12 @@ export function getOrderCountTrendComparison(
   endTime: Date,
 ) {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeOrderTrend>[]
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderTrend>[]
   >('/statistics/trade/order-count-trend', {
     params: {
       type,
-      beginTime: formatDate2(beginTime),
-      endTime: formatDate2(endTime),
+      beginTime: formatDateTime(beginTime),
+      endTime: formatDateTime(endTime),
     },
   });
 }

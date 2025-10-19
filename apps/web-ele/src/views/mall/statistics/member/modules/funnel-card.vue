@@ -1,38 +1,30 @@
 <script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-import { ElCard, ElDatePicker } from 'element-plus';
-import dayjs from 'dayjs';
+import { ElCard } from 'element-plus';
 
 import * as MemberStatisticsApi from '#/api/mall/statistics/member';
-import { getRangePickerDefaultProps } from '#/utils/rangePickerProps';
+import { ShortcutDateRangePicker } from '#/components/shortcut-date-range-picker';
 
 /** 会员概览卡片 */
 defineOptions({ name: 'MemberFunnelCard' });
 
 const loading = ref(false);
 const analyseData = ref<any>();
-const dateRange = ref<[Dayjs, Dayjs]>([
-  dayjs().subtract(7, 'day').startOf('day'),
-  dayjs().endOf('day'),
-]);
-
-const rangePickerProps = getRangePickerDefaultProps();
 
 /** 查询会员概览数据列表 */
-async function loadData(times?: [Dayjs, Dayjs]) {
-  const timesToUse = times || dateRange.value;
-  if (!timesToUse || timesToUse.length !== 2) {
+async function loadData(times: [Dayjs, Dayjs]) {
+  if (!times || times.length !== 2) {
     return;
   }
   loading.value = true;
   try {
     analyseData.value = await MemberStatisticsApi.getMemberAnalyse({
-      times: timesToUse,
+      times,
     });
   } finally {
     loading.value = false;
@@ -40,10 +32,8 @@ async function loadData(times?: [Dayjs, Dayjs]) {
 }
 
 /** 时间范围改变 */
-const handleDateRangeChange = () => {
-  if (dateRange.value && dateRange.value.length === 2) {
-    loadData(dateRange.value);
-  }
+const handleTimeRangeChange = (times: [Dayjs, Dayjs]) => {
+  loadData(times);
 };
 
 /** 计算环比增长率 */
@@ -53,11 +43,6 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
   }
   return (((value || 0) - reference) / reference) * 100;
 };
-
-/** 初始化 */
-onMounted(() => {
-  loadData();
-});
 </script>
 
 <template>
@@ -65,18 +50,7 @@ onMounted(() => {
     <template #header>
       <div class="flex items-center justify-between">
         <span>会员概览</span>
-        <ElDatePicker
-          v-model="dateRange"
-          type="datetimerange"
-          :shortcuts="rangePickerProps.shortcuts"
-          :format="rangePickerProps.format"
-          :value-format="rangePickerProps.valueFormat"
-          :start-placeholder="rangePickerProps.startPlaceholder"
-          :end-placeholder="rangePickerProps.endPlaceholder"
-          :default-time="rangePickerProps.defaultTime"
-          class="!w-[280px]"
-          @change="handleDateRangeChange"
-        />
+        <ShortcutDateRangePicker @change="handleTimeRangeChange" />
       </div>
     </template>
     <div v-loading="loading" class="min-w-[900px] py-4">
