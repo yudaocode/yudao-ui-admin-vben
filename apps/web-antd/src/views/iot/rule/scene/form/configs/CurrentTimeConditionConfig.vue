@@ -2,9 +2,20 @@
 <script setup lang="ts">
 import type { TriggerCondition } from '#/api/iot/rule/scene';
 
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
+import {
+  Col,
+  DatePicker,
+  Form,
+  Row,
+  Select,
+  Tag,
+  TimePicker,
+} from 'ant-design-vue';
 
 import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
 
@@ -108,15 +119,15 @@ const timeValue2 = computed(() => {
  * @param field 字段名
  * @param value 字段值
  */
-const updateConditionField = (field: any, value: any) => {
+function updateConditionField(field: any, value: any) {
   condition.value[field] = value;
-};
+}
 
 /**
  * 处理第一个时间值变化
  * @param value 时间值
  */
-const handleTimeValueChange = (value: string) => {
+function handleTimeValueChange(value: string) {
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
     : [];
@@ -126,19 +137,19 @@ const handleTimeValueChange = (value: string) => {
   condition.value.param = needsSecondTimeInput.value
     ? currentParams.slice(0, 2).join(',')
     : currentParams[0];
-};
+}
 
 /**
  * 处理第二个时间值变化
  * @param value 时间值
  */
-const handleTimeValue2Change = (value: string) => {
+function handleTimeValue2Change(value: string) {
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
     : [''];
   currentParams[1] = value || '';
   condition.value.param = currentParams.slice(0, 2).join(',');
-};
+}
 
 /** 监听操作符变化，清理不相关的时间值 */
 watch(
@@ -160,19 +171,19 @@ watch(
 
 <template>
   <div class="gap-16px flex flex-col">
-    <el-row :gutter="16">
+    <Row :gutter="16">
       <!-- 时间操作符选择 -->
-      <el-col :span="8">
-        <el-form-item label="时间条件" required>
-          <el-select
+      <Col :span="8">
+        <Form.Item label="时间条件" required>
+          <Select
             :model-value="condition.operator"
             @update:model-value="
-              (value) => updateConditionField('operator', value)
+              (value: any) => updateConditionField('operator', value)
             "
             placeholder="请选择时间条件"
             class="w-full"
           >
-            <el-option
+            <Select.Option
               v-for="option in timeOperatorOptions"
               :key="option.value"
               :label="option.label"
@@ -180,22 +191,22 @@ watch(
             >
               <div class="flex w-full items-center justify-between">
                 <div class="gap-8px flex items-center">
-                  <Icon :icon="option.icon" :class="option.iconClass" />
+                  <IconifyIcon :icon="option.icon" :class="option.iconClass" />
                   <span>{{ option.label }}</span>
                 </div>
-                <el-tag :type="option.tag as any" size="small">
+                <Tag :type="option.tag as any" size="small">
                   {{ option.category }}
-                </el-tag>
+                </Tag>
               </div>
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
+            </Select.Option>
+          </Select>
+        </Form.Item>
+      </Col>
 
       <!-- 时间值输入 -->
-      <el-col :span="8">
-        <el-form-item label="时间值" required>
-          <el-time-picker
+      <Col :span="8">
+        <Form.Item label="时间值" required>
+          <TimePicker
             v-if="needsTimeInput"
             :model-value="timeValue"
             @update:model-value="handleTimeValueChange"
@@ -204,7 +215,7 @@ watch(
             value-format="HH:mm:ss"
             class="w-full"
           />
-          <el-date-picker
+          <DatePicker
             v-else-if="needsDateInput"
             :model-value="timeValue"
             @update:model-value="handleTimeValueChange"
@@ -217,13 +228,13 @@ watch(
           <div v-else class="text-14px text-[var(--el-text-color-placeholder)]">
             无需设置时间值
           </div>
-        </el-form-item>
-      </el-col>
+        </Form.Item>
+      </Col>
 
       <!-- 第二个时间值（范围条件） -->
-      <el-col :span="8" v-if="needsSecondTimeInput">
-        <el-form-item label="结束时间" required>
-          <el-time-picker
+      <Col :span="8" v-if="needsSecondTimeInput">
+        <Form.Item label="结束时间" required>
+          <TimePicker
             v-if="needsTimeInput"
             :model-value="timeValue2"
             @update:model-value="handleTimeValue2Change"
@@ -232,7 +243,7 @@ watch(
             value-format="HH:mm:ss"
             class="w-full"
           />
-          <el-date-picker
+          <DatePicker
             v-else
             :model-value="timeValue2"
             @update:model-value="handleTimeValue2Change"
@@ -242,8 +253,8 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-        </el-form-item>
-      </el-col>
-    </el-row>
+        </Form.Item>
+      </Col>
+    </Row>
   </div>
 </template>

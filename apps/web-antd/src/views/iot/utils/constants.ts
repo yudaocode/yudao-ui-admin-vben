@@ -13,7 +13,7 @@ export const IoTThingModelTypeEnum = {
   PROPERTY: 1, // 属性
   SERVICE: 2, // 服务
   EVENT: 3, // 事件
-} as const;
+};
 
 /** IoT 设备消息的方法枚举 */
 export const IotDeviceMessageMethodEnum = {
@@ -68,7 +68,7 @@ export const IoTThingModelServiceCallTypeEnum = {
     label: '同步',
     value: 'sync',
   },
-} as const;
+};
 export const getThingModelServiceCallTypeLabel = (
   value: string,
 ): string | undefined =>
@@ -90,7 +90,7 @@ export const IoTThingModelEventTypeEnum = {
     label: '故障',
     value: 'error',
   },
-} as const;
+};
 export const getEventTypeLabel = (value: string): string | undefined =>
   Object.values(IoTThingModelEventTypeEnum).find((type) => type.value === value)
     ?.label;
@@ -99,7 +99,7 @@ export const getEventTypeLabel = (value: string): string | undefined =>
 export const IoTThingModelParamDirectionEnum = {
   INPUT: 'input', // 输入参数
   OUTPUT: 'output', // 输出参数
-} as const;
+};
 
 // IoT 产品物模型访问模式枚举类
 export const IoTThingModelAccessModeEnum = {
@@ -115,7 +115,7 @@ export const IoTThingModelAccessModeEnum = {
     label: '只写',
     value: 'w',
   },
-} as const;
+};
 
 /** 获取访问模式标签 */
 export const getAccessModeLabel = (value: string): string => {
@@ -136,7 +136,7 @@ export const IoTDataSpecsDataTypeEnum = {
   DATE: 'date',
   STRUCT: 'struct',
   ARRAY: 'array',
-} as const;
+};
 
 export const getDataTypeOptions = () => {
   return [
@@ -165,7 +165,7 @@ export const getDataTypeOptionsLabel = (value: string) => {
 
 /** 获取数据类型显示名称（用于属性选择器） */
 export const getDataTypeName = (dataType: string): string => {
-  const typeMap = {
+  const typeMap: Record<string, string> = {
     [IoTDataSpecsDataTypeEnum.INT]: '整数',
     [IoTDataSpecsDataTypeEnum.FLOAT]: '浮点数',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: '双精度',
@@ -179,11 +179,14 @@ export const getDataTypeName = (dataType: string): string => {
   return typeMap[dataType] || dataType;
 };
 
-/** 获取数据类型标签类型（用于 el-tag 的 type 属性） */
+/** 获取数据类型标签类型（用于 tag 的 type 属性） */
 export const getDataTypeTagType = (
   dataType: string,
 ): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
-  const tagMap = {
+  const tagMap: Record<
+    string,
+    'danger' | 'info' | 'primary' | 'success' | 'warning'
+  > = {
     [IoTDataSpecsDataTypeEnum.INT]: 'primary',
     [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
@@ -193,7 +196,7 @@ export const getDataTypeTagType = (
     [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
     [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
     [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
-  } as const;
+  };
   return tagMap[dataType] || 'info';
 };
 
@@ -202,7 +205,7 @@ export const THING_MODEL_GROUP_LABELS = {
   PROPERTY: '设备属性',
   EVENT: '设备事件',
   SERVICE: '设备服务',
-} as const;
+};
 
 // IoT OTA 任务设备范围枚举
 export const IoTOtaTaskDeviceScopeEnum = {
@@ -214,7 +217,7 @@ export const IoTOtaTaskDeviceScopeEnum = {
     label: '指定设备',
     value: 2,
   },
-} as const;
+};
 
 // IoT OTA 任务状态枚举
 export const IoTOtaTaskStatusEnum = {
@@ -230,7 +233,7 @@ export const IoTOtaTaskStatusEnum = {
     label: '已取消',
     value: 30,
   },
-} as const;
+};
 
 // IoT OTA 升级记录状态枚举
 export const IoTOtaTaskRecordStatusEnum = {
@@ -258,7 +261,7 @@ export const IoTOtaTaskRecordStatusEnum = {
     label: '升级取消',
     value: 50,
   },
-} as const;
+};
 
 // ========== 场景联动规则相关常量 ==========
 
@@ -269,7 +272,7 @@ export const IotRuleSceneTriggerTypeEnum = {
   DEVICE_EVENT_POST: 3, // 设备事件上报
   DEVICE_SERVICE_INVOKE: 4, // 设备服务调用
   TIMER: 100, // 定时触发
-} as const;
+};
 
 /** 触发器类型选项配置 */
 export const triggerTypeOptions = [
@@ -296,7 +299,7 @@ export const triggerTypeOptions = [
 ];
 
 /** 判断是否为设备触发器类型 */
-export const isDeviceTrigger = (type: number): boolean => {
+export function isDeviceTrigger(type: number): boolean {
   const deviceTriggerTypes = [
     IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE,
     IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST,
@@ -304,7 +307,7 @@ export const isDeviceTrigger = (type: number): boolean => {
     IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE,
   ] as number[];
   return deviceTriggerTypes.includes(type);
-};
+}
 
 // ========== 场景联动规则执行器相关常量 ==========
 
@@ -314,7 +317,7 @@ export const IotRuleSceneActionTypeEnum = {
   DEVICE_SERVICE_INVOKE: 2, // 设备服务调用
   ALERT_TRIGGER: 100, // 告警触发
   ALERT_RECOVER: 101, // 告警恢复
-} as const;
+};
 
 /** 执行器类型选项配置 */
 export const getActionTypeOptions = () => [
@@ -356,14 +359,14 @@ export const IotRuleSceneTriggerConditionParameterOperatorEnum = {
   NOT_BETWEEN: { name: '不在...之间', value: 'not between' }, // 不在...之间
   LIKE: { name: '字符串匹配', value: 'like' }, // 字符串匹配
   NOT_NULL: { name: '非空', value: 'not null' }, // 非空
-} as const;
+};
 
 /** IoT 场景联动触发条件类型枚举 */
 export const IotRuleSceneTriggerConditionTypeEnum = {
   DEVICE_STATUS: 1, // 设备状态
   DEVICE_PROPERTY: 2, // 设备属性
   CURRENT_TIME: 3, // 当前时间
-} as const;
+};
 
 /** 获取条件类型选项 */
 export const getConditionTypeOptions = () => [
@@ -418,7 +421,7 @@ export const IoTDeviceStatusEnum = {
     value2: 'not_activated',
     tagType: 'info',
   },
-} as const;
+};
 
 /** 设备选择器特殊选项 */
 export const DEVICE_SELECTOR_OPTIONS = {
@@ -426,7 +429,7 @@ export const DEVICE_SELECTOR_OPTIONS = {
     id: 0,
     deviceName: '全部设备',
   },
-} as const;
+};
 
 /** IoT 场景联动触发时间操作符枚举 */
 export const IotRuleSceneTriggerTimeOperatorEnum = {
@@ -437,7 +440,7 @@ export const IotRuleSceneTriggerTimeOperatorEnum = {
   BEFORE_TODAY: { name: '在今日之前', value: 'before_today' }, // 在今日之前
   AFTER_TODAY: { name: '在今日之后', value: 'after_today' }, // 在今日之后
   TODAY: { name: '在今日之间', value: 'today' }, // 在今日之间
-} as const;
+};
 
 /** 获取触发器类型标签 */
 export const getTriggerTypeLabel = (type: number): string => {
@@ -453,7 +456,7 @@ export const JsonParamsInputTypeEnum = {
   EVENT: 'event',
   PROPERTY: 'property',
   CUSTOM: 'custom',
-} as const;
+};
 
 /** JSON 参数输入组件类型 */
 export type JsonParamsInputType =
@@ -512,7 +515,7 @@ export const JSON_PARAMS_INPUT_CONSTANTS = {
     CUSTOM: '请先进行配置',
     DEFAULT: '请先进行配置',
   },
-} as const;
+};
 
 /** JSON 参数输入组件图标常量 */
 export const JSON_PARAMS_INPUT_ICONS = {
@@ -539,10 +542,10 @@ export const JSON_PARAMS_INPUT_ICONS = {
     ERROR: 'ep:warning',
     SUCCESS: 'ep:circle-check',
   },
-} as const;
+};
 
 /** JSON 参数输入组件示例值常量 */
-export const JSON_PARAMS_EXAMPLE_VALUES = {
+export const JSON_PARAMS_EXAMPLE_VALUES: Record<string, any> = {
   [IoTDataSpecsDataTypeEnum.INT]: { display: '25', value: 25 },
   [IoTDataSpecsDataTypeEnum.FLOAT]: { display: '25.5', value: 25.5 },
   [IoTDataSpecsDataTypeEnum.DOUBLE]: { display: '25.5', value: 25.5 },
@@ -552,4 +555,4 @@ export const JSON_PARAMS_EXAMPLE_VALUES = {
   [IoTDataSpecsDataTypeEnum.STRUCT]: { display: '{}', value: {} },
   [IoTDataSpecsDataTypeEnum.ARRAY]: { display: '[]', value: [] },
   DEFAULT: { display: '""', value: '' },
-} as const;
+};

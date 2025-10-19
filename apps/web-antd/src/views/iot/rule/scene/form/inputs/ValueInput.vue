@@ -1,6 +1,9 @@
 <!-- 值输入组件 -->
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+
 import { useVModel } from '@vueuse/core';
+import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -61,16 +64,16 @@ const listPreview = computed(() => {
 });
 
 /** 判断是否为数字类型 */
-const isNumericType = () => {
+function isNumericType() {
   return [
     IoTDataSpecsDataTypeEnum.DOUBLE,
     IoTDataSpecsDataTypeEnum.FLOAT,
     IoTDataSpecsDataTypeEnum.INT,
   ].includes((props.propertyType || '') as any);
-};
+}
 
 /** 获取输入框类型 */
-const getInputType = () => {
+function getInputType() {
   switch (props.propertyType) {
     case IoTDataSpecsDataTypeEnum.DOUBLE:
     case IoTDataSpecsDataTypeEnum.FLOAT:
@@ -81,11 +84,11 @@ const getInputType = () => {
       return 'text';
     }
   }
-};
+}
 
 /** 获取占位符文本 */
-const getPlaceholder = () => {
-  const typeMap = {
+function getPlaceholder() {
+  const typeMap: Record<string, string> = {
     [IoTDataSpecsDataTypeEnum.TEXT]: '请输入字符串',
     [IoTDataSpecsDataTypeEnum.INT]: '请输入整数',
     [IoTDataSpecsDataTypeEnum.FLOAT]: '请输入浮点数',
@@ -94,45 +97,45 @@ const getPlaceholder = () => {
     [IoTDataSpecsDataTypeEnum.ARRAY]: '请输入数组格式数据',
   };
   return typeMap[props.propertyType || ''] || '请输入值';
-};
+}
 
 /** 获取数字精度 */
-const getPrecision = () => {
+function getPrecision() {
   return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 0 : 2;
-};
+}
 
 /** 获取数字步长 */
-const getStep = () => {
+function getStep() {
   return props.propertyType === IoTDataSpecsDataTypeEnum.INT ? 1 : 0.1;
-};
+}
 
 /** 获取最小值 */
-const getMin = () => {
+function getMin() {
   return props.propertyConfig?.min || undefined;
-};
+}
 
 /** 获取最大值 */
-const getMax = () => {
+function getMax() {
   return props.propertyConfig?.max || undefined;
-};
+}
 
 /** 处理范围变化事件 */
-const handleRangeChange = () => {
+function handleRangeChange() {
   localValue.value =
     rangeStart.value && rangeEnd.value
       ? `${rangeStart.value},${rangeEnd.value}`
       : '';
-};
+}
 
 /** 处理日期变化事件 */
-const handleDateChange = (value: string) => {
+function handleDateChange(value: any) {
   localValue.value = value || '';
-};
+}
 
 /** 处理数字变化事件 */
-const handleNumberChange = (value: number | undefined) => {
+function handleNumberChange(value: number | undefined) {
   localValue.value = value?.toString() || '';
-};
+}
 
 /** 监听操作符变化 */
 watch(
@@ -150,18 +153,18 @@ watch(
 <template>
   <div class="w-full min-w-0">
     <!-- 布尔值选择 -->
-    <el-select
+    <Select
       v-if="propertyType === IoTDataSpecsDataTypeEnum.BOOL"
       v-model="localValue"
       placeholder="请选择布尔值"
       class="w-full!"
     >
-      <el-option label="真 (true)" value="true" />
-      <el-option label="假 (false)" value="false" />
-    </el-select>
+      <Select.Option label="真 (true)" :value="true" />
+      <Select.Option label="假 (false)" :value="false" />
+    </Select>
 
     <!-- 枚举值选择 -->
-    <el-select
+    <Select
       v-else-if="
         propertyType === IoTDataSpecsDataTypeEnum.ENUM && enumOptions.length > 0
       "
@@ -169,13 +172,13 @@ watch(
       placeholder="请选择枚举值"
       class="w-full!"
     >
-      <el-option
+      <Select.Option
         v-for="option in enumOptions"
         :key="option.value"
         :label="option.label"
         :value="option.value"
       />
-    </el-select>
+    </Select>
 
     <!-- 范围输入 (between 操作符) -->
     <div
@@ -185,7 +188,7 @@ watch(
       "
       class="w-full! gap-8px flex items-center"
     >
-      <el-input
+      <Input
         v-model="rangeStart"
         :type="getInputType()"
         placeholder="最小值"
@@ -195,8 +198,10 @@ watch(
       />
       <span
         class="text-12px whitespace-nowrap text-[var(--el-text-color-secondary)]"
-        >至</span>
-      <el-input
+      >
+        至
+      </span>
+      <Input
         v-model="rangeEnd"
         :type="getInputType()"
         placeholder="最大值"
@@ -212,38 +217,40 @@ watch(
       "
       class="w-full!"
     >
-      <el-input
+      <Input
         v-model="localValue"
         placeholder="请输入值列表，用逗号分隔"
         class="w-full!"
       >
         <template #suffix>
-          <el-tooltip content="多个值用逗号分隔，如：1,2,3" placement="top">
-            <Icon
+          <Tooltip content="多个值用逗号分隔，如：1,2,3" placement="top">
+            <IconifyIcon
               icon="ep:question-filled"
               class="cursor-help text-[var(--el-text-color-placeholder)]"
             />
-          </el-tooltip>
+          </Tooltip>
         </template>
-      </el-input>
+      </Input>
       <div
         v-if="listPreview.length > 0"
         class="mt-8px gap-6px flex flex-wrap items-center"
       >
-        <span class="text-12px text-[var(--el-text-color-secondary)]">解析结果：</span>
-        <el-tag
+        <span class="text-12px text-[var(--el-text-color-secondary)]">
+          解析结果：
+        </span>
+        <Tag
           v-for="(item, index) in listPreview"
           :key="index"
           size="small"
           class="m-0"
         >
           {{ item }}
-        </el-tag>
+        </Tag>
       </div>
     </div>
 
     <!-- 日期时间输入 -->
-    <el-date-picker
+    <DatePicker
       v-else-if="propertyType === IoTDataSpecsDataTypeEnum.DATE"
       v-model="dateValue"
       type="datetime"
@@ -255,7 +262,7 @@ watch(
     />
 
     <!-- 数字输入 -->
-    <el-input-number
+    <Input.Number
       v-else-if="isNumericType()"
       v-model="numberValue"
       :precision="getPrecision()"
@@ -268,7 +275,7 @@ watch(
     />
 
     <!-- 文本输入 -->
-    <el-input
+    <Input
       v-else
       v-model="localValue"
       :type="getInputType()"
@@ -276,7 +283,7 @@ watch(
       class="w-full!"
     >
       <template #suffix>
-        <el-tooltip
+        <Tooltip
           v-if="propertyConfig?.unit"
           :content="`单位：${propertyConfig.unit}`"
           placement="top"
@@ -284,8 +291,8 @@ watch(
           <span class="text-12px px-4px text-[var(--el-text-color-secondary)]">
             {{ propertyConfig.unit }}
           </span>
-        </el-tooltip>
+        </Tooltip>
       </template>
-    </el-input>
+    </Input>
   </div>
 </template>

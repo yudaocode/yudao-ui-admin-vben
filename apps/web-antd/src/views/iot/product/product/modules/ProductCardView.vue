@@ -117,7 +117,7 @@ defineExpose({
             <div class="mb-4 flex items-start">
               <div class="product-icon">
                 <IconifyIcon
-                  icon="ant-design:inbox-outlined"
+                  :icon="item.icon || 'ant-design:inbox-outlined'"
                   class="text-[32px]"
                 />
               </div>

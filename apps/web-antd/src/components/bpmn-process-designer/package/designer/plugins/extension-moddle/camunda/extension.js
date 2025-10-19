@@ -1,18 +1,9 @@
-'use strict';
-
-import { isFunction, isObject, some } from 'min-dash';
-
-// const isFunction = isFunction,
-//   isObject = isObject,
-//   some = some
-// const isFunction = require('min-dash').isFunction,
-//   isObject = require('min-dash').isObject,
-//   some = require('min-dash').some
+import { isFunction, isObject } from '@vben/utils';
 
 const WILDCARD = '*';
 
 function CamundaModdleExtension(eventBus) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  // eslint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
   const self = this;
 
   eventBus.on('moddleCopy.canCopyProperty', (context) => {
@@ -122,7 +113,7 @@ function is(element, type) {
 }
 
 function isAny(element, types) {
-  return some(types, (t) => {
+  return types.some((t) => {
     return is(element, t);
   });
 }
@@ -155,7 +146,7 @@ function isAllowedInParent(property, parent) {
   }
 
   // (2) check wether property has parent of allowed type
-  return some(allowedIn, (type) => {
+  return allowedIn.some((type) => {
     return getParent(parent, type);
   });
 }

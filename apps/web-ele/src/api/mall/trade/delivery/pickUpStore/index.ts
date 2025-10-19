@@ -29,19 +29,18 @@ export namespace MallDeliveryPickUpStoreApi {
     longitude: number;
     /** 状态 */
     status: number;
+    /** 营业时间 用于fieldMappingTime */
+    rangeTime: any[];
     /** 绑定用户编号组数 */
-    verifyUserIds: number[];
+    verifyUserIds?: number[];
+    verifyUsers?: any[];
   }
 
   /** 绑定自提店员请求 */
-  export interface BindStaffRequest {
+  export interface DeliveryPickUpBindReqVO {
     id?: number;
-    /** 门店名称 */
-    name: string;
-    /** 门店编号 */
-    storeId: number;
     /** 用户编号列表 */
-    userIds: number[];
+    verifyUserIds: number[];
   }
 }
 
@@ -87,8 +86,8 @@ export function deleteDeliveryPickUpStore(id: number) {
 }
 
 /** 绑定自提店员 */
-export function bindStoreStaffId(
-  data: MallDeliveryPickUpStoreApi.BindStaffRequest,
+export function bindDeliveryPickUpStore(
+  data: MallDeliveryPickUpStoreApi.DeliveryPickUpBindReqVO,
 ) {
   return requestClient.post('/trade/delivery/pick-up-store/bind', data);
 }

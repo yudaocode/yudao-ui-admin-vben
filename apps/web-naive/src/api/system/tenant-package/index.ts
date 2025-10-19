@@ -49,6 +49,13 @@ export function deleteTenantPackage(id: number) {
   return requestClient.delete(`/system/tenant-package/delete?id=${id}`);
 }
 
+/** 批量删除租户套餐 */
+export function deleteTenantPackageList(ids: number[]) {
+  return requestClient.delete(
+    `/system/tenant-package/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 获取租户套餐精简信息列表 */
 export function getTenantPackageList() {
   return requestClient.get<SystemTenantPackageApi.TenantPackage[]>(

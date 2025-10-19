@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'ant-design-vue';
 
@@ -21,7 +22,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -51,7 +52,7 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -90,7 +91,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="固件列表">
       <template #toolbar-tools>
         <TableAction
@@ -119,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           download
           class="text-primary cursor-pointer hover:underline"
         >
-          <Icon icon="ant-design:download-outlined" class="mr-1" />
+          <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
           下载固件
         </a>
         <span v-else class="text-gray-400">无文件</span>

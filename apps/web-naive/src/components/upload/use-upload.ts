@@ -86,10 +86,10 @@ export function useUpload(directory?: string) {
   const isClientUpload =
     UPLOAD_TYPE.CLIENT === import.meta.env.VITE_UPLOAD_TYPE;
   // 重写ElUpload上传方法
-  const httpRequest = async (
+  async function httpRequest(
     file: File,
     onUploadProgress?: AxiosProgressEvent,
-  ) => {
+  ) {
     // 模式一：前端上传
     if (isClientUpload) {
       // 1.1 生成文件名称
@@ -113,7 +113,7 @@ export function useUpload(directory?: string) {
       // 模式二：后端上传
       return uploadFile({ file, directory }, onUploadProgress);
     }
-  };
+  }
 
   return {
     uploadUrl,
@@ -134,7 +134,10 @@ export function getUploadUrl(): string {
  * @param vo 文件预签名信息
  * @param file 文件
  */
-function createFile0(vo: InfraFileApi.FilePresignedUrlRespVO, file: File) {
+function createFile0(
+  vo: InfraFileApi.FilePresignedUrlRespVO,
+  file: File,
+): InfraFileApi.File {
   const fileVO = {
     configId: vo.configId,
     url: vo.url,

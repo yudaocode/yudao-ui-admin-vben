@@ -1,8 +1,12 @@
 <!-- 产品选择器组件 -->
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 
-import { ProductApi } from '#/api/iot/product/product';
+import { Select } from 'ant-design-vue';
+
+import { getSimpleProductList } from '#/api/iot/product/product';
 
 /** 产品选择器组件 */
 defineOptions({ name: 'ProductSelector' });
@@ -23,16 +27,16 @@ const productList = ref<any[]>([]); // 产品列表
  * 处理选择变化事件
  * @param value 选中的产品 ID
  */
-const handleChange = (value?: number) => {
+function handleChange(value?: number) {
   emit('update:modelValue', value);
   emit('change', value);
-};
+}
 
 /** 获取产品列表 */
-const getProductList = async () => {
+async function getProductList() {
   try {
     productLoading.value = true;
-    const res = await ProductApi.getSimpleProductList();
+    const res = await getSimpleProductList();
     productList.value = res || [];
   } catch (error) {
     console.error('获取产品列表失败:', error);
@@ -40,7 +44,7 @@ const getProductList = async () => {
   } finally {
     productLoading.value = false;
   }
-};
+}
 
 // 组件挂载时获取产品列表
 onMounted(() => {
@@ -49,7 +53,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-select
+  <Select
     :model-value="modelValue"
     @update:model-value="handleChange"
     placeholder="请选择产品"
@@ -58,7 +62,7 @@ onMounted(() => {
     class="w-full"
     :loading="productLoading"
   >
-    <el-option
+    <Select.Option
       v-for="product in productList"
       :key="product.id"
       :label="product.name"
@@ -66,17 +70,15 @@ onMounted(() => {
     >
       <div class="py-4px flex w-full items-center justify-between">
         <div class="flex-1">
-          <div
-            class="text-14px font-500 mb-2px text-[var(--el-text-color-primary)]"
-          >
+          <div class="text-14px font-500 mb-2px text-primary">
             {{ product.name }}
           </div>
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
+          <div class="text-12px text-secondary">
             {{ product.productKey }}
           </div>
         </div>
         <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
       </div>
-    </el-option>
-  </el-select>
+    </Select.Option>
+  </Select>
 </template>

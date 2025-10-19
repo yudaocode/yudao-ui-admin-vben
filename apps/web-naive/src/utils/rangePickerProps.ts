@@ -1,5 +1,3 @@
-import type { Dayjs } from 'dayjs';
-
 import dayjs from 'dayjs';
 
 import { $t } from '#/locales';
@@ -7,53 +5,48 @@ import { $t } from '#/locales';
 /** 时间段选择器拓展  */
 export function getRangePickerDefaultProps() {
   return {
-    format: 'YYYY-MM-DD HH:mm:ss',
-    placeholder: [
-      $t('utils.rangePicker.beginTime'),
-      $t('utils.rangePicker.endTime'),
-    ],
-    ranges: {
+    startPlaceholder: $t('utils.rangePicker.beginTime'),
+    endPlaceholder: $t('utils.rangePicker.endTime'),
+    type: 'datetimerange',
+    format: 'YYYY-MM-dd HH:mm:ss',
+    valueFormat: 'YYYY-MM-dd HH:mm:ss',
+    defaultTime: ['00:00:00', '23:59:59'],
+    shortcuts: {
       [$t('utils.rangePicker.today')]: () =>
-        [dayjs().startOf('day'), dayjs().endOf('day')] as [Dayjs, Dayjs],
+        [
+          dayjs().startOf('day').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.last7Days')]: () =>
-        [dayjs().subtract(7, 'day').startOf('day'), dayjs().endOf('day')] as [
-          Dayjs,
-          Dayjs,
-        ],
+        [
+          dayjs().subtract(7, 'day').startOf('day').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.last30Days')]: () =>
-        [dayjs().subtract(30, 'day').startOf('day'), dayjs().endOf('day')] as [
-          Dayjs,
-          Dayjs,
-        ],
+        [
+          dayjs().subtract(30, 'day').startOf('day').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.yesterday')]: () =>
         [
-          dayjs().subtract(1, 'day').startOf('day'),
-          dayjs().subtract(1, 'day').endOf('day'),
-        ] as [Dayjs, Dayjs],
+          dayjs().subtract(1, 'day').startOf('day').toDate(),
+          dayjs().subtract(1, 'day').endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.thisWeek')]: () =>
-        [dayjs().startOf('week'), dayjs().endOf('day')] as [Dayjs, Dayjs],
+        [
+          dayjs().startOf('week').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.thisMonth')]: () =>
-        [dayjs().startOf('month'), dayjs().endOf('day')] as [Dayjs, Dayjs],
+        [
+          dayjs().startOf('month').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
       [$t('utils.rangePicker.lastWeek')]: () =>
-        [dayjs().subtract(1, 'week').startOf('day'), dayjs().endOf('day')] as [
-          Dayjs,
-          Dayjs,
-        ],
+        [
+          dayjs().subtract(1, 'week').startOf('day').toDate(),
+          dayjs().endOf('day').toDate(),
+        ] as const,
     },
-    showTime: {
-      defaultValue: [
-        dayjs('00:00:00', 'HH:mm:ss'),
-        dayjs('23:59:59', 'HH:mm:ss'),
-      ],
-      format: 'HH:mm:ss',
-    },
-    transformDateFunc: (dates: any) => {
-      if (dates && dates.length === 2) {
-        // 格式化为后台支持的时间格式
-        return [dates.createTime[0], dates.createTime[1]].join(',');
-      }
-      return {};
-    },
-    valueFormat: 'YYYY-MM-DD HH:mm:ss',
   };
 }

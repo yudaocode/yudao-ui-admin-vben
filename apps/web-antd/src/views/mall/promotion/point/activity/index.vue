@@ -33,7 +33,7 @@ const getRedeemedQuantity = computed(
 );
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -54,14 +54,14 @@ function handleClose(row: MallPointActivityApi.PointActivity) {
   }).then(async () => {
     await closePointActivity(row.id);
     message.success('关闭成功');
-    onRefresh();
+    handleRefresh();
   });
 }
 
 /** 删除积分活动 */
 async function handleDelete(row: MallPointActivityApi.PointActivity) {
   await deletePointActivity(row.id);
-  onRefresh();
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -104,7 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="积分商城活动列表">
       <template #toolbar-tools>

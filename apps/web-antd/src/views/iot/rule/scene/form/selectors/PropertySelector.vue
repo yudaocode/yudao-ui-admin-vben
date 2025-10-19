@@ -1,17 +1,20 @@
 <!-- 属性选择器组件 -->
 <script setup lang="ts">
 import type {
-  IotThingModelTSLResp,
+  ThingModelApi,
   ThingModelEvent,
-  ThingModelParam,
   ThingModelProperty,
   ThingModelService,
 } from '#/api/iot/thingmodel';
 
-import { InfoFilled } from '@element-plus/icons-vue';
-import { useVModel } from '@vueuse/core';
+import { computed, ref, watch } from 'vue';
 
-import { ThingModelApi } from '#/api/iot/thingmodel';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Popover, Select, Tag } from 'ant-design-vue';
+
+import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
   getAccessModeLabel,
   getDataTypeName,
@@ -61,8 +64,8 @@ interface PropertySelectorItem {
 const localValue = useVModel(props, 'modelValue', emit);
 
 const loading = ref(false); // 加载状态
-const propertyList = ref<PropertySelectorItem[]>([]); // 属性列表
-const thingModelTSL = ref<IotThingModelTSLResp | null>(null); // 物模型TSL数据
+const propertyList = ref<ThingModelApi.Property[]>([]); // 属性列表
+const thingModelTSL = ref<null | ThingModelApi.ThingModel>(null); // 物模型TSL数据
 
 // 计算属性：属性分组
 const propertyGroups = computed(() => {
@@ -107,7 +110,7 @@ const selectedProperty = computed(() => {
  * 处理选择变化事件
  * @param value 选中的属性标识符
  */
-const handleChange = (value: string) => {
+function handleChange(value: any) {
   const property = propertyList.value.find((p) => p.identifier === value);
   if (property) {
     emit('change', {
@@ -115,12 +118,12 @@ const handleChange = (value: string) => {
       config: property,
     });
   }
-};
+}
 
 /**
  * 获取物模型TSL数据
  */
-const getThingModelTSL = async () => {
+async function getThingModelTSL() {
   if (!props.productId) {
     thingModelTSL.value = null;
     propertyList.value = [];
@@ -129,9 +132,7 @@ const getThingModelTSL = async () => {
 
   loading.value = true;
   try {
-    const tslData = await ThingModelApi.getThingModelTSLByProductId(
-      props.productId,
-    );
+    const tslData = await getThingModelListByProductId(props.productId);
 
     if (tslData) {
       thingModelTSL.value = tslData;
@@ -146,10 +147,10 @@ const getThingModelTSL = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 解析物模型 TSL 数据 */
-const parseThingModelData = () => {
+function parseThingModelData() {
   const tsl = thingModelTSL.value;
   const properties: PropertySelectorItem[] = [];
 
@@ -210,14 +211,14 @@ const parseThingModelData = () => {
     });
   }
   propertyList.value = properties;
-};
+}
 
 /**
  * 获取属性单位
  * @param property 属性对象
  * @returns 属性单位
  */
-const getPropertyUnit = (property: any) => {
+function getPropertyUnit(property: any) {
   if (!property) return undefined;
 
   // 数值型数据的单位
@@ -226,14 +227,14 @@ const getPropertyUnit = (property: any) => {
   }
 
   return undefined;
-};
+}
 
 /**
  * 获取属性范围描述
  * @param property 属性对象
  * @returns 属性范围描述
  */
-const getPropertyRange = (property: any) => {
+function getPropertyRange(property: any) {
   if (!property) return undefined;
 
   // 数值型数据的范围
@@ -252,7 +253,7 @@ const getPropertyRange = (property: any) => {
   }
 
   return undefined;
-};
+}
 
 /** 监听产品变化 */
 watch(
@@ -274,7 +275,7 @@ watch(
 
 <template>
   <div class="gap-8px flex items-center">
-    <el-select
+    <Select
       v-model="localValue"
       placeholder="请选择监控项"
       filterable
@@ -283,39 +284,37 @@ watch(
       class="!w-150px"
       :loading="loading"
     >
-      <el-option-group
+      <Select.OptionGroup
         v-for="group in propertyGroups"
         :key="group.label"
         :label="group.label"
       >
-        <el-option
+        <Select.Option
           v-for="property in group.options"
           :key="property.identifier"
           :label="property.name"
           :value="property.identifier"
         >
           <div class="py-2px flex w-full items-center justify-between">
-            <span
-              class="text-14px font-500 flex-1 truncate text-[var(--el-text-color-primary)]"
-            >
+            <span class="text-14px font-500 text-primary flex-1 truncate">
               {{ property.name }}
             </span>
-            <el-tag
+            <Tag
               :type="getDataTypeTagType(property.dataType)"
               size="small"
               class="ml-8px flex-shrink-0"
             >
               {{ property.identifier }}
-            </el-tag>
+            </Tag>
           </div>
-        </el-option>
-      </el-option-group>
-    </el-select>
+        </Select.Option>
+      </Select.OptionGroup>
+    </Select>
 
     <!-- 属性详情弹出层 -->
-    <el-popover
+    <Popover
       v-if="selectedProperty"
-      placement="right-start"
+      placement="rightTop"
       :width="350"
       trigger="click"
       :show-arrow="true"
@@ -323,42 +322,39 @@ watch(
       popper-class="property-detail-popover"
     >
       <template #reference>
-        <el-button
-          type="info"
-          :icon="InfoFilled"
+        <Button
+          type="primary"
+          text
           circle
           size="small"
           class="flex-shrink-0"
           title="查看属性详情"
-        />
+        >
+          <IconifyIcon icon="ep:info-filled" />
+        </Button>
       </template>
 
       <!-- 弹出层内容 -->
       <div class="property-detail-content">
         <div class="gap-8px mb-12px flex items-center">
-          <Icon
-            icon="ep:info-filled"
-            class="text-16px text-[var(--el-color-info)]"
-          />
-          <span class="text-14px font-500 text-[var(--el-text-color-primary)]">
+          <IconifyIcon icon="ep:info-filled" class="text-16px text-info" />
+          <span class="text-14px font-500 text-primary">
             {{ selectedProperty.name }}
           </span>
-          <el-tag
+          <Tag
             :type="getDataTypeTagType(selectedProperty.dataType)"
             size="small"
           >
             {{ getDataTypeName(selectedProperty.dataType) }}
-          </el-tag>
+          </Tag>
         </div>
 
         <div class="space-y-8px ml-24px">
           <div class="gap-8px flex items-start">
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               标识符：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ selectedProperty.identifier }}
             </span>
           </div>
@@ -367,34 +363,28 @@ watch(
             v-if="selectedProperty.description"
             class="gap-8px flex items-start"
           >
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               描述：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ selectedProperty.description }}
             </span>
           </div>
 
           <div v-if="selectedProperty.unit" class="gap-8px flex items-start">
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               单位：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ selectedProperty.unit }}
             </span>
           </div>
 
           <div v-if="selectedProperty.range" class="gap-8px flex items-start">
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               取值范围：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ selectedProperty.range }}
             </span>
           </div>
@@ -407,12 +397,10 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               访问模式：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ getAccessModeLabel(selectedProperty.accessMode) }}
             </span>
           </div>
@@ -424,12 +412,10 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               事件类型：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ getEventTypeLabel(selectedProperty.eventType) }}
             </span>
           </div>
@@ -441,18 +427,16 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span
-              class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]"
-            >
+            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
               调用类型：
             </span>
-            <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+            <span class="text-12px text-primary flex-1">
               {{ getThingModelServiceCallTypeLabel(selectedProperty.callType) }}
             </span>
           </div>
         </div>
       </div>
-    </el-popover>
+    </Popover>
   </div>
 </template>
 

@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { CommonStatusEnum } from '@/utils/constants';
-import { useVModel } from '@vueuse/core';
-import { ElMessage } from 'element-plus';
+import type { IotSceneRule } from '#/api/iot/rule/scene';
 
-import { IotSceneRule, RuleSceneApi } from '#/api/iot/rule/scene';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+
+import { CommonStatusEnum } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Drawer, Form, message } from 'ant-design-vue';
+
+import { createSceneRule, updateSceneRule } from '#/api/iot/rule/scene';
 import {
   IotRuleSceneActionTypeEnum,
   IotRuleSceneTriggerTypeEnum,
@@ -37,14 +43,14 @@ const drawerVisible = useVModel(props, 'modelValue', emit); // 抽屉显示状�
  * 创建默认的表单数据
  * @returns 默认表单数据对象
  */
-const createDefaultFormData = (): IotSceneRule => {
+function createDefaultFormData(): IotSceneRule {
   return {
     name: '',
     description: '',
     status: CommonStatusEnum.ENABLE, // 默认启用状态
     triggers: [
       {
-        type: IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST,
+        type: IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST.toString(),
         productId: undefined,
         deviceId: undefined,
         identifier: undefined,
@@ -56,7 +62,7 @@ const createDefaultFormData = (): IotSceneRule => {
     ],
     actions: [],
   };
-};
+}
 
 const formRef = ref(); // 表单引用
 const formData = ref<IotSceneRule>(createDefaultFormData()); // 表单数据
@@ -67,7 +73,7 @@ const formData = ref<IotSceneRule>(createDefaultFormData()); // 表单数据
  * @param value 校验值
  * @param callback 回调函数
  */
-const validateTriggers = (_rule: any, value: any, callback: any) => {
+function validateTriggers(_rule: any, value: any, callback: any) {
   if (!value || !Array.isArray(value) || value.length === 0) {
     callback(new Error('至少需要一个触发器'));
     return;
@@ -119,7 +125,7 @@ const validateTriggers = (_rule: any, value: any, callback: any) => {
   }
 
   callback();
-};
+}
 
 /**
  * 执行器校验器
@@ -127,7 +133,7 @@ const validateTriggers = (_rule: any, value: any, callback: any) => {
  * @param value 校验值
  * @param callback 回调函数
  */
-const validateActions = (_rule: any, value: any, callback: any) => {
+function validateActions(_rule: any, value: any, callback: any) {
   if (!value || !Array.isArray(value) || value.length === 0) {
     callback(new Error('至少需要一个执行器'));
     return;
@@ -181,7 +187,7 @@ const validateActions = (_rule: any, value: any, callback: any) => {
   }
 
   callback();
-};
+}
 
 const formRules = reactive({
   name: [
@@ -224,7 +230,7 @@ const drawerTitle = computed(() =>
 ); // 抽屉标题
 
 /** 提交表单 */
-const handleSubmit = async () => {
+async function handleSubmit() {
   // 校验表单
   if (!formRef.value) return;
   const valid = await formRef.value.validate();
@@ -235,12 +241,12 @@ const handleSubmit = async () => {
   try {
     if (isEdit.value) {
       // 更新场景联动规则
-      await RuleSceneApi.updateRuleScene(formData.value);
-      ElMessage.success('更新成功');
+      await updateSceneRule(formData.value);
+      message.success('更新成功');
     } else {
       // 创建场景联动规则
-      await RuleSceneApi.createRuleScene(formData.value);
-      ElMessage.success('创建成功');
+      await createSceneRule(formData.value);
+      message.success('创建成功');
     }
 
     // 关闭抽屉并触发成功事件
@@ -248,11 +254,11 @@ const handleSubmit = async () => {
     emit('success');
   } catch (error) {
     console.error('保存失败:', error);
-    ElMessage.error(isEdit.value ? '更新失败' : '创建失败');
+    message.error(isEdit.value ? '更新失败' : '创建失败');
   } finally {
     submitLoading.value = false;
   }
-};
+}
 
 /** 处理抽屉关闭事件 */
 const handleClose = () => {
@@ -260,14 +266,14 @@ const handleClose = () => {
 };
 
 /** 初始化表单数据 */
-const initFormData = () => {
+function initFormData() {
   if (props.ruleScene) {
     // 编辑模式：数据结构已对齐，直接使用后端数据
     isEdit.value = true;
     formData.value = {
       ...props.ruleScene,
       // 确保触发器数组不为空
-      triggers: props.ruleScene.triggers?.length
+      triggers: (props.ruleScene.triggers?.length as any)
         ? props.ruleScene.triggers
         : [
             {
@@ -289,7 +295,7 @@ const initFormData = () => {
     isEdit.value = false;
     formData.value = createDefaultFormData();
   }
-};
+}
 
 /** 监听抽屉显示 */
 watch(drawerVisible, async (visible) => {
@@ -314,43 +320,39 @@ watch(
 </script>
 
 <template>
-  <el-drawer
+  <Drawer
     v-model="drawerVisible"
     :title="drawerTitle"
-    size="80%"
+    width="80%"
     direction="rtl"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     @close="handleClose"
   >
-    <el-form
+    <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules"
+      :rules="formRules as any"
       label-width="110px"
     >
       <!-- 基础信息配置 -->
       <BasicInfoSection v-model="formData" :rules="formRules" />
       <!-- 触发器配置 -->
-      <TriggerSection v-model:triggers="formData.triggers" />
+      <TriggerSection v-model:triggers="formData.triggers as any" />
       <!-- 执行器配置 -->
-      <ActionSection v-model:actions="formData.actions" />
-    </el-form>
+      <ActionSection v-model:actions="formData.actions as any" />
+    </Form>
     <template #footer>
       <div class="drawer-footer">
-        <el-button
-          :disabled="submitLoading"
-          type="primary"
-          @click="handleSubmit"
-        >
-          <Icon icon="ep:check" />
+        <Button :disabled="submitLoading" type="primary" @click="handleSubmit">
+          <IconifyIcon icon="ep:check" />
           确 定
-        </el-button>
-        <el-button @click="handleClose">
-          <Icon icon="ep:close" />
+        </Button>
+        <Button @click="handleClose">
+          <IconifyIcon icon="ep:close" />
           取 消
-        </el-button>
+        </Button>
       </div>
     </template>
-  </el-drawer>
+  </Drawer>
 </template>

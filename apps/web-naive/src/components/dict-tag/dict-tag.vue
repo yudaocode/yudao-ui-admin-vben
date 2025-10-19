@@ -1,11 +1,9 @@
 <script setup lang="ts">
-// TODO color 待适配
 import { computed } from 'vue';
 
-import { NTag } from 'naive-ui';
+import { getDictObj } from '@vben/hooks';
 
-// import { isHexColor } from '@/utils/color' // TODO @芋艿：【可优化】增加 cssClass 的处理 https://gitee.com/yudaocode/yudao-ui-admin-vben/blob/v2.4.1/src/components/DictTag/src/DictTag.vue#L60
-import { getDictObj } from '#/utils';
+import { NTag } from 'naive-ui';
 
 interface DictTagProps {
   /**
@@ -26,15 +24,19 @@ const props = defineProps<DictTagProps>();
 
 /** 获取字典标签 */
 const dictTag = computed(() => {
+  const defaultDict = {
+    label: '',
+    colorType: 'primary',
+  };
   // 校验参数有效性
   if (!props.type || props.value === undefined || props.value === null) {
-    return null;
+    return defaultDict;
   }
 
   // 获取字典对象
   const dict = getDictObj(props.type, String(props.value));
   if (!dict) {
-    return null;
+    return defaultDict;
   }
 
   // 处理颜色类型
@@ -45,16 +47,24 @@ const dictTag = computed(() => {
       break;
     }
     case 'info': {
-      colorType = 'default';
+      colorType = 'info';
       break;
     }
     case 'primary': {
-      colorType = 'processing';
+      colorType = 'primary';
+      break;
+    }
+    case 'success': {
+      colorType = 'success';
+      break;
+    }
+    case 'warning': {
+      colorType = 'warning';
       break;
     }
     default: {
       if (!colorType) {
-        colorType = 'default';
+        colorType = '';
       }
     }
   }
@@ -67,7 +77,7 @@ const dictTag = computed(() => {
 </script>
 
 <template>
-  <NTag v-if="dictTag">
+  <NTag v-if="dictTag.label" :type="dictTag.colorType as any">
     {{ dictTag.label }}
   </NTag>
 </template>

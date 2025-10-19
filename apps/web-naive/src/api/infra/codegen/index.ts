@@ -112,9 +112,13 @@ export function updateCodegenTable(data: InfraCodegenApi.CodegenUpdateReqVO) {
 
 /** 基于数据库的表结构，同步数据库的表和字段定义 */
 export function syncCodegenFromDB(tableId: number) {
-  return requestClient.put('/infra/codegen/sync-from-db', {
-    params: { tableId },
-  });
+  return requestClient.put(
+    '/infra/codegen/sync-from-db',
+    {},
+    {
+      params: { tableId },
+    },
+  );
 }
 
 /** 预览生成代码 */
@@ -154,4 +158,11 @@ export function deleteCodegenTable(tableId: number) {
   return requestClient.delete('/infra/codegen/delete', {
     params: { tableId },
   });
+}
+
+/** 批量删除代码生成表定义 */
+export function deleteCodegenTableList(tableIds: number[]) {
+  return requestClient.delete(
+    `/infra/codegen/delete-list?tableIds=${tableIds.join(',')}`,
+  );
 }

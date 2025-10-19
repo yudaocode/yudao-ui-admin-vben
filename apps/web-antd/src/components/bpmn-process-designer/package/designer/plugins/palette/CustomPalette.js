@@ -1,5 +1,4 @@
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import { assign } from 'min-dash';
 
 export default function CustomPalette(
   palette,
@@ -41,7 +40,9 @@ F.prototype.getPaletteEntries = function () {
 
   function createAction(type, group, className, title, options) {
     function createListener(event) {
-      const shape = elementFactory.createShape(assign({ type }, options));
+      const shape = Object.assign(
+        elementFactory.createShape({ type }, options),
+      );
 
       if (options) {
         shape.businessObject.di.isExpanded = options.isExpanded;
@@ -89,7 +90,7 @@ F.prototype.getPaletteEntries = function () {
     create.start(event, elementFactory.createParticipantShape());
   }
 
-  assign(actions, {
+  Object.assign(actions, {
     'hand-tool': {
       group: 'tools',
       className: 'bpmn-icon-hand-tool',

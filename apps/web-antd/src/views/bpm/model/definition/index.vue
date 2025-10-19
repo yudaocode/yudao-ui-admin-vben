@@ -46,7 +46,7 @@ async function openModelForm(id?: number) {
 }
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -83,7 +83,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 初始化 */
 onMounted(() => {
-  onRefresh();
+  handleRefresh();
 });
 </script>
 

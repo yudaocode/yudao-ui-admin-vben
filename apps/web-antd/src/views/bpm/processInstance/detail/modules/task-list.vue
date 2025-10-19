@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { formCreate } from '@form-create/antd-designer';
 
-import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
-
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmTaskApi } from '#/api/bpm/task';
 
 import { nextTick, onMounted, ref, shallowRef } from 'vue';
@@ -15,7 +14,7 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
-import { setConfAndFields2 } from '#/utils';
+import { setConfAndFields2 } from '#/components/form-create';
 
 defineOptions({
   name: 'BpmProcessInstanceTaskList',

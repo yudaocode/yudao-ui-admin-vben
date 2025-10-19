@@ -1,10 +1,16 @@
 <!-- 产品的物模型表单（event 项） -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import type { ThingModelEvent } from '#/api/iot/thingmodel';
+
+import { watch } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Form, Radio } from 'ant-design-vue';
 
-import { ThingModelEvent } from '#/api/iot/thingmodel';
 import {
   IoTThingModelEventTypeEnum,
   IoTThingModelParamDirectionEnum,
@@ -26,7 +32,7 @@ const thingModelEvent = useVModel(
 // 默认选中，INFO 信息
 watch(
   () => thingModelEvent.value.type,
-  (val: string) =>
+  (val: string | undefined) =>
     isEmpty(val) &&
     (thingModelEvent.value.type = IoTThingModelEventTypeEnum.INFO.value),
   { immediate: true },
@@ -34,32 +40,32 @@ watch(
 </script>
 
 <template>
-  <el-form-item
+  <Form.Item
     :rules="[{ required: true, message: '请选择事件类型', trigger: 'change' }]"
     label="事件类型"
     prop="event.type"
   >
-    <el-radio-group v-model="thingModelEvent.type">
-      <el-radio
+    <Radio.Group v-model="thingModelEvent.type">
+      <Radio
         v-for="eventType in Object.values(IoTThingModelEventTypeEnum)"
         :key="eventType.value"
         :value="eventType.value"
       >
         {{ eventType.label }}
-      </el-radio>
-    </el-radio-group>
-  </el-form-item>
-  <el-form-item label="输出参数">
+      </Radio>
+    </Radio.Group>
+  </Form.Item>
+  <Form.Item label="输出参数">
     <ThingModelInputOutputParam
-      v-model="thingModelEvent.outputParams"
+      v-model="thingModelEvent.outputData"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
     />
-  </el-form-item>
+  </Form.Item>
 </template>
 
 <style lang="scss" scoped>
-:deep(.el-form-item) {
-  .el-form-item {
+:deep(.ant-form-item) {
+  .ant-form-item {
     margin-bottom: 0;
   }
 }

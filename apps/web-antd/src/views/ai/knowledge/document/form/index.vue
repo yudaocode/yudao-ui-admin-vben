@@ -10,7 +10,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
-import { ArrowLeft } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Card } from 'ant-design-vue';
 
@@ -135,7 +135,8 @@ defineExpose({
       >
         <!-- 左侧标题 -->
         <div class="flex w-48 items-center overflow-hidden">
-          <ArrowLeft
+          <IconifyIcon
+            icon="lucide:arrow-left"
             class="size-5 flex-shrink-0 cursor-pointer"
             @click="handleBack"
           />

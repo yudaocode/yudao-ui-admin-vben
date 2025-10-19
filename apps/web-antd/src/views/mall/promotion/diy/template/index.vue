@@ -29,7 +29,7 @@ const [FormModal, formModalApi] = useVbenModal({
 const router = useRouter();
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -57,14 +57,14 @@ async function handleUse(row: MallDiyTemplateApi.DiyTemplate) {
     // 发起删除
     await useDiyTemplate(row.id as number);
     message.success('使用成功');
-    onRefresh();
+    handleRefresh();
   });
 }
 
 /** 删除DIY模板 */
 async function handleDelete(row: MallDiyTemplateApi.DiyTemplate) {
   await deleteDiyTemplate(row.id as number);
-  onRefresh();
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -107,7 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="装修模板列表">
       <template #toolbar-tools>

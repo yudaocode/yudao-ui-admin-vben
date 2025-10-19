@@ -57,6 +57,13 @@ export function deleteSmsTemplate(id: number) {
   return requestClient.delete(`/system/sms-template/delete?id=${id}`);
 }
 
+/** 批量删除短信模板 */
+export function deleteSmsTemplateList(ids: number[]) {
+  return requestClient.delete(
+    `/system/sms-template/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出短信模板 */
 export function exportSmsTemplate(params: any) {
   return requestClient.download('/system/sms-template/export-excel', {

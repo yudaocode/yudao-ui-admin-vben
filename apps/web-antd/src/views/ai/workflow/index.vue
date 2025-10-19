@@ -13,7 +13,7 @@ import { router } from '#/router';
 import { useGridColumns, useGridFormSchema } from './data';
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -46,7 +46,7 @@ async function handleDelete(row: any) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }

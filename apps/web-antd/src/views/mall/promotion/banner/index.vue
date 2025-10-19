@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBannerApi } from '#/api/mall/market/banner';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -19,21 +19,21 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建Banner */
+/** 创建 Banner */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑Banner */
+/** 编辑 Banner */
 function handleEdit(row: MallBannerApi.Banner) {
   formModalApi.setData(row).open();
 }
 
-/** 删除Banner */
+/** 删除 Banner */
 async function handleDelete(row: MallBannerApi.Banner) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
@@ -41,10 +41,8 @@ async function handleDelete(row: MallBannerApi.Banner) {
   });
   try {
     await deleteBanner(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.title]),
-    });
-    onRefresh();
+    message.success($t('ui.actionMessage.deleteSuccess', [row.title]));
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -71,6 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -82,7 +81,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <template #doc>
+      <DocAlert
+        title="【营销】内容管理"
+        url="https://doc.iocoder.cn/mall/promotion-content/"
+      />
+    </template>
+
+    <FormModal @success="handleRefresh" />
     <Grid table-title="Banner列表">
       <template #toolbar-tools>
         <TableAction

@@ -1,20 +1,17 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSmsTemplateApi } from '#/api/system/sms/template';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download, Plus } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { ref } from 'vue';
 
-import { NButton } from 'naive-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/naive';
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSmsTemplate,
+  deleteSmsTemplateList,
   exportSmsTemplate,
   getSmsTemplatePage,
 } from '#/api/system/sms/template';
@@ -35,66 +32,69 @@ const [SendModal, sendModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportSmsTemplate(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '短信模板.xls', source: data });
 }
 
 /** 创建短信模板 */
-function onCreate() {
+function handleCreate() {
   formModalApi.setData(null).open();
 }
 
 /** 编辑短信模板 */
-function onEdit(row: SystemSmsTemplateApi.SmsTemplate) {
+function handleEdit(row: SystemSmsTemplateApi.SmsTemplate) {
   formModalApi.setData(row).open();
 }
 
 /** 发送测试短信 */
-function onSend(row: SystemSmsTemplateApi.SmsTemplate) {
+function handleSend(row: SystemSmsTemplateApi.SmsTemplate) {
   sendModalApi.setData(row).open();
 }
 
 /** 删除短信模板 */
-async function onDelete(row: SystemSmsTemplateApi.SmsTemplate) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
+async function handleDelete(row: SystemSmsTemplateApi.SmsTemplate) {
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.name]),
+    { duration: 0 },
+  );
   try {
-    await deleteSmsTemplate(row.id as number);
+    await deleteSmsTemplate(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    onRefresh();
+    handleRefresh();
   } finally {
-    hideLoading();
+    hideLoading.destroy();
   }
 }
 
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<SystemSmsTemplateApi.SmsTemplate>) {
-  switch (code) {
-    case 'delete': {
-      onDelete(row);
-      break;
-    }
-    case 'edit': {
-      onEdit(row);
-      break;
-    }
-    case 'sms-send': {
-      onSend(row);
-      break;
-    }
+/** 批量删除短信模板 */
+async function handleDeleteBatch() {
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
+    duration: 0,
+  });
+  try {
+    await deleteSmsTemplateList(checkedIds.value);
+    checkedIds.value = [];
+    message.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    hideLoading.destroy();
   }
+}
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: SystemSmsTemplateApi.SmsTemplate[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -102,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -118,12 +118,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<SystemSmsTemplateApi.SmsTemplate>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
 </script>
 
@@ -133,27 +138,69 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="短信配置" url="https://doc.iocoder.cn/sms/" />
     </template>
 
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <SendModal />
     <Grid table-title="短信模板列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          @click="onCreate"
-          v-access:code="['system:sms-template:create']"
-        >
-          <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', ['短信模板']) }}
-        </NButton>
-        <NButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['system:sms-template:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['短信模板']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['system:sms-template:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['system:sms-template:export'],
+              onClick: handleExport,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'error',
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              auth: ['system:sms-template:delete'],
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['system:sms-template:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '测试',
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['system:sms-template:send-sms'],
+              onClick: handleSend.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'error',
+              text: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['system:sms-template:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

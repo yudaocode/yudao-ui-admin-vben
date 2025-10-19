@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-// TODO @xingyu：跑不通
-import type { SystemUserApi } from '#/api/system/user';
+import type { SelectOption } from 'naive-ui';
 
 import { computed, onMounted, ref, watchEffect } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 import { formatDate } from '@vben/utils';
 
 import { useWebSocket } from '@vueuse/core';
 import {
-  NAvatar,
   NBadge,
   NButton,
   NCard,
@@ -18,11 +17,10 @@ import {
   NEmpty,
   NInput,
   NSelect,
-  NSelectOption,
   NTag,
 } from 'naive-ui';
 
-import { message } from '#/adapters/message';
+import { message } from '#/adapter/naive';
 import { getSimpleUserList } from '#/api/system/user';
 
 const accessStore = useAccessStore();
@@ -35,7 +33,9 @@ const server = ref(
   )}?token=${refreshToken}`, // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
 ); // WebSocket 服务地址
 const getIsOpen = computed(() => status.value === 'OPEN'); // WebSocket 连接是否打开
-const getTagColor = computed(() => (getIsOpen.value ? 'success' : 'red')); // WebSocket 连接的展示颜色
+const getTagColor = computed(() =>
+  getIsOpen.value ? { color: 'green' } : { color: 'red' },
+); // WebSocket 连接的展示颜色
 const getStatusText = computed(() => (getIsOpen.value ? '已连接' : '未连接')); // 连接状态文本
 
 /** 发起 WebSocket 连接 */
@@ -100,8 +100,8 @@ watchEffect(() => {
 
 /** 发送消息 */
 const sendText = ref(''); // 发送内容
-const sendUserId = ref(''); // 发送人
-const handlerSend = () => {
+const sendUserId = ref('all'); // 发送人
+function handlerSend() {
   if (!sendText.value.trim()) {
     message.warning('消息内容不能为空');
     return;
@@ -110,7 +110,7 @@ const handlerSend = () => {
   // 1.1 先 JSON 化 message 消息内容
   const messageContent = JSON.stringify({
     text: sendText.value,
-    toUserId: sendUserId.value,
+    toUserId: sendUserId.value === 'all' ? undefined : sendUserId.value,
   });
   // 1.2 再 JSON 化整个消息
   const jsonMessage = JSON.stringify({
@@ -120,19 +120,19 @@ const handlerSend = () => {
   // 2. 最后发送消息
   send(jsonMessage);
   sendText.value = '';
-};
+}
 
 /** 切换 websocket 连接状态 */
-const toggleConnectStatus = () => {
+function toggleConnectStatus() {
   if (getIsOpen.value) {
     close();
   } else {
     open();
   }
-};
+}
 
 /** 获取消息类型的徽标颜色 */
-const getMessageBadgeColor = (type?: string) => {
+function getMessageBadgeColor(type?: string) {
   switch (type) {
     case 'group': {
       return 'green';
@@ -147,10 +147,10 @@ const getMessageBadgeColor = (type?: string) => {
       return 'default';
     }
   }
-};
+}
 
 /** 获取消息类型的文本 */
-const getMessageTypeText = (type?: string) => {
+function getMessageTypeText(type?: string) {
   switch (type) {
     case 'group': {
       return '群发';
@@ -165,12 +165,22 @@ const getMessageTypeText = (type?: string) => {
       return '未知';
     }
   }
-};
+}
 
 /** 初始化 */
-const userList = ref<SystemUserApi.User[]>([]); // 用户列表
+const userList = ref<SelectOption[]>([{ label: '所有人', value: '' }]); // 用户列表
+
+async function initUserOptions() {
+  const res = await getSimpleUserList();
+  userList.value = res.map((item) => {
+    return {
+      label: item.nickname,
+      value: item.id,
+    };
+  });
+}
 onMounted(async () => {
-  userList.value = await getSimpleUserList();
+  await initUserOptions();
 });
 </script>
 
@@ -186,7 +196,7 @@ onMounted(async () => {
     <div class="mt-4 flex flex-col gap-4 md:flex-row">
       <!-- 左侧：建立连接、发送消息 -->
       <NCard :bordered="false" class="w-full md:w-1/2">
-        <template #title>
+        <template #header>
           <div class="flex items-center">
             <NBadge :status="getIsOpen ? 'success' : 'error'" />
             <span class="ml-2 text-lg font-medium">连接管理</span>
@@ -205,7 +215,7 @@ onMounted(async () => {
             class="rounded-md"
             size="large"
           >
-            <template #addonBefore>
+            <template #prefix>
               <span class="text-gray-600">服务地址</span>
             </template>
           </NInput>
@@ -230,31 +240,12 @@ onMounted(async () => {
           size="large"
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
-        >
-          <NSelectOption key="" value="" label="所有人">
-            <div class="flex items-center">
-              <NAvatar size="small" class="mr-2">全</NAvatar>
-              <span>所有人</span>
-            </div>
-          </NSelectOption>
-          <NSelectOption
-            v-for="user in userList"
-            :key="user.id"
-            :value="user.id"
-            :label="user.nickname"
-          >
-            <div class="flex items-center">
-              <NAvatar size="small" class="mr-2">
-                {{ user.nickname.slice(0, 1) }}
-              </NAvatar>
-              <span>{{ user.nickname }}</span>
-            </div>
-          </NSelectOption>
-        </NSelect>
+          :options="userList"
+        />
 
         <NInput
-          type="textarea"
           v-model:value="sendText"
+          type="textarea"
           :auto-size="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"
           class="border-1 rounded-lg"
@@ -271,7 +262,7 @@ onMounted(async () => {
           @click="handlerSend"
         >
           <template #icon>
-            <span class="i-ant-design:send-outlined mr-1"></span>
+            <IconifyIcon icon="lucide:send-horizontal" />
           </template>
           发送消息
         </NButton>
@@ -279,9 +270,12 @@ onMounted(async () => {
 
       <!-- 右侧：消息记录 -->
       <NCard :bordered="false" class="w-full md:w-1/2">
-        <template #title>
+        <template #header>
           <div class="flex items-center">
-            <span class="i-ant-design:message-outlined mr-2 text-lg"></span>
+            <IconifyIcon
+              icon="lucide:message-circle-more"
+              class="mr-2 text-lg"
+            />
             <span class="text-lg font-medium">消息记录</span>
             <NTag v-if="messageList.length > 0" class="ml-2">
               {{ messageList.length }} 条

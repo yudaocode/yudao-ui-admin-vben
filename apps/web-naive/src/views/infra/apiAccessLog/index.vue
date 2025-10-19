@@ -1,17 +1,11 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InfraApiAccessLogApi } from '#/api/infra/api-access-log';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { Download } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { NButton } from 'naive-ui';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   exportApiAccessLog,
   getApiAccessLogPage,
@@ -27,32 +21,19 @@ const [DetailModal, detailModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
 /** 导出表格 */
-async function onExport() {
+async function handleExport() {
   const data = await exportApiAccessLog(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: 'API 访问日志.xls', source: data });
 }
 
 /** 查看 API 访问日志详情 */
-function onDetail(row: InfraApiAccessLogApi.ApiAccessLog) {
+function handleDetail(row: InfraApiAccessLogApi.ApiAccessLog) {
   detailModalApi.setData(row).open();
-}
-
-/** 表格操作按钮的回调函数 */
-function onActionClick({
-  code,
-  row,
-}: OnActionClickParams<InfraApiAccessLogApi.ApiAccessLog>) {
-  switch (code) {
-    case 'detail': {
-      onDetail(row);
-      break;
-    }
-  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -60,7 +41,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(onActionClick),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -76,6 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -91,18 +73,34 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="系统日志" url="https://doc.iocoder.cn/system-log/" />
     </template>
 
-    <DetailModal @success="onRefresh" />
+    <DetailModal @success="handleRefresh" />
     <Grid table-title="API 访问日志列表">
       <template #toolbar-tools>
-        <NButton
-          type="primary"
-          class="ml-2"
-          @click="onExport"
-          v-access:code="['infra:api-access-log:export']"
-        >
-          <Download class="size-5" />
-          {{ $t('ui.actionTitle.export') }}
-        </NButton>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.export'),
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['infra:api-access-log:export'],
+              onClick: handleExport,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'primary',
+              text: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['infra:api-access-log:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

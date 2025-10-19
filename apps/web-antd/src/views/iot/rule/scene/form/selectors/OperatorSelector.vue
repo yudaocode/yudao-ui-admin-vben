@@ -1,6 +1,9 @@
 <!-- 操作符选择器组件 -->
 <script setup lang="ts">
+import { computed, watch } from 'vue';
+
 import { useVModel } from '@vueuse/core';
+import { Select } from 'ant-design-vue';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -211,9 +214,9 @@ const selectedOperator = computed(() => {
  * 处理选择变化事件
  * @param value 选中的操作符值
  */
-const handleChange = (value: string) => {
+function handleChange(value: any) {
   emit('change', value);
-};
+}
 
 /** 监听属性类型变化 */
 watch(
@@ -235,13 +238,13 @@ watch(
 
 <template>
   <div class="w-full">
-    <el-select
+    <Select
       v-model="localValue"
       placeholder="请选择操作符"
       @change="handleChange"
       class="w-full"
     >
-      <el-option
+      <Select.Option
         v-for="operator in availableOperators"
         :key="operator.value"
         :label="operator.label"
@@ -249,21 +252,21 @@ watch(
       >
         <div class="py-4px flex w-full items-center justify-between">
           <div class="gap-8px flex items-center">
-            <div class="text-14px font-500 text-[var(--el-text-color-primary)]">
+            <div class="text-14px font-500 text-primary">
               {{ operator.label }}
             </div>
             <div
-              class="text-12px px-6px py-2px rounded-4px bg-[var(--el-color-primary-light-9)] font-mono text-[var(--el-color-primary)]"
+              class="text-12px px-6px py-2px rounded-4px bg-primary-light-9 text-primary font-mono"
             >
               {{ operator.symbol }}
             </div>
           </div>
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
+          <div class="text-12px text-secondary">
             {{ operator.description }}
           </div>
         </div>
-      </el-option>
-    </el-select>
+      </Select.Option>
+    </Select>
   </div>
 </template>
 

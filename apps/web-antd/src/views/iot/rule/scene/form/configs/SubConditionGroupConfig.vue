@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { TriggerCondition } from '#/api/iot/rule/scene';
 
-import { nextTick } from 'vue';
+import { computed, nextTick } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
+import { Button } from 'ant-design-vue';
 
 import {
   IotRuleSceneTriggerConditionParameterOperatorEnum,
@@ -42,7 +45,7 @@ const addCondition = async () => {
   }
 
   const newCondition: TriggerCondition = {
-    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY, // 默认为设备属性
+    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY.toString(), // 默认为设备属性
     productId: undefined,
     deviceId: undefined,
     identifier: '',
@@ -61,22 +64,22 @@ const addCondition = async () => {
  * 移除条件
  * @param index 条件索引
  */
-const removeCondition = (index: number) => {
+function removeCondition(index: number) {
   if (subGroup.value) {
     subGroup.value.splice(index, 1);
   }
-};
+}
 
 /**
  * 更新条件
  * @param index 条件索引
  * @param condition 条件对象
  */
-const updateCondition = (index: number, condition: TriggerCondition) => {
+function updateCondition(index: number, condition: TriggerCondition) {
   if (subGroup.value) {
     subGroup.value[index] = condition;
   }
-};
+}
 </script>
 
 <template>
@@ -84,7 +87,7 @@ const updateCondition = (index: number, condition: TriggerCondition) => {
     <!-- 空状态 -->
     <div v-if="!subGroup || subGroup.length === 0" class="py-24px text-center">
       <div class="gap-12px flex flex-col items-center">
-        <Icon
+        <IconifyIcon
           icon="ep:plus"
           class="text-32px text-[var(--el-text-color-placeholder)]"
         />
@@ -92,10 +95,10 @@ const updateCondition = (index: number, condition: TriggerCondition) => {
           <p class="text-14px font-500 mb-4px">暂无条件</p>
           <p class="text-12px">点击下方按钮添加第一个条件</p>
         </div>
-        <el-button type="primary" @click="addCondition">
-          <Icon icon="ep:plus" />
+        <Button type="primary" @click="addCondition">
+          <IconifyIcon icon="ep:plus" />
           添加条件
-        </el-button>
+        </Button>
       </div>
     </div>
 
@@ -121,26 +124,28 @@ const updateCondition = (index: number, condition: TriggerCondition) => {
               </div>
               <span
                 class="text-12px font-500 text-[var(--el-text-color-primary)]"
-                >条件 {{ conditionIndex + 1 }}</span
               >
+                条件 {{ conditionIndex + 1 }}
+              </span>
             </div>
-            <el-button
-              type="danger"
+            <Button
+              danger
               size="small"
               text
               @click="removeCondition(conditionIndex)"
               v-if="subGroup!.length > 1"
               class="hover:bg-red-50"
             >
-              <Icon icon="ep:delete" />
-            </el-button>
+              <IconifyIcon icon="ep:delete" />
+            </Button>
           </div>
 
           <div class="p-12px">
             <ConditionConfig
               :model-value="condition"
               @update:model-value="
-                (value) => updateCondition(conditionIndex, value)
+                (value: TriggerCondition) =>
+                  updateCondition(conditionIndex, value)
               "
               :trigger-type="triggerType"
             />
@@ -155,10 +160,10 @@ const updateCondition = (index: number, condition: TriggerCondition) => {
         "
         class="py-16px text-center"
       >
-        <el-button type="primary" plain @click="addCondition">
-          <Icon icon="ep:plus" />
+        <Button type="primary" plain @click="addCondition">
+          <IconifyIcon icon="ep:plus" />
           继续添加条件
-        </el-button>
+        </Button>
         <span
           class="mt-8px text-12px block text-[var(--el-text-color-secondary)]"
         >

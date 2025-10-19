@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
-import { h, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { ContentWrap, useVbenModal } from '@vben/common-ui';
-import { Plus, Trash2 } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { useTableToolbar, VbenVxeTableToolbar } from '@vben/plugins/vxe-table';
 import { cloneDeep, formatDateTime, isEmpty } from '@vben/utils';
 
@@ -38,7 +38,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 创建学生课程 */
-function onCreate() {
+function handleCreate() {
   if (!props.studentId) {
     message.warning('请先选择一个学生!');
     return;
@@ -47,12 +47,12 @@ function onCreate() {
 }
 
 /** 编辑学生课程 */
-function onEdit(row: Demo03StudentApi.Demo03Course) {
+function handleEdit(row: Demo03StudentApi.Demo03Course) {
   formModalApi.setData(row).open();
 }
 
 /** 删除学生课程 */
-async function onDelete(row: Demo03StudentApi.Demo03Course) {
+async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -71,7 +71,7 @@ async function onDelete(row: Demo03StudentApi.Demo03Course) {
 }
 
 /** 批量删除学生课程 */
-async function onDeleteBatch() {
+async function handleDeleteBatch() {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting'),
     duration: 0,
@@ -218,22 +218,22 @@ onMounted(() => {
         >
           <Button
             class="ml-2"
-            :icon="h(Plus)"
             type="primary"
-            @click="onCreate"
+            @click="handleCreate"
             v-access:code="['infra:demo03-student:create']"
           >
+            <IconifyIcon icon="lucide:plus" />
             {{ $t('ui.actionTitle.create', ['学生']) }}
           </Button>
           <Button
-            :icon="h(Trash2)"
             type="primary"
             danger
             class="ml-2"
             :disabled="isEmpty(checkedIds)"
-            @click="onDeleteBatch"
+            @click="handleDeleteBatch"
             v-access:code="['infra:demo03-student:delete']"
           >
+            <IconifyIcon icon="lucide:trash-2" />
             批量删除
           </Button>
         </VbenVxeTableToolbar>
@@ -261,7 +261,7 @@ onMounted(() => {
             <Button
               size="small"
               type="link"
-              @click="onEdit(row)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -271,7 +271,7 @@ onMounted(() => {
               type="link"
               danger
               class="ml-2"
-              @click="onDelete(row)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}

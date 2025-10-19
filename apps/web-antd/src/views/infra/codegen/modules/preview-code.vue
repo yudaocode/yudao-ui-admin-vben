@@ -1,31 +1,16 @@
 <script lang="ts" setup>
-// TODO @芋艿：待定，vben2.0 有 CodeEditor，不确定官方后续会不会迁移！！！
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { Copy } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
+import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
 import { Button, DirectoryTree, message, Tabs } from 'ant-design-vue';
-import hljs from 'highlight.js/lib/core';
-import java from 'highlight.js/lib/languages/java';
-import javascript from 'highlight.js/lib/languages/javascript';
-import sql from 'highlight.js/lib/languages/sql';
-import typescript from 'highlight.js/lib/languages/typescript';
-import xml from 'highlight.js/lib/languages/xml';
 
 import { previewCodegen } from '#/api/infra/codegen';
-
-/** 注册代码高亮语言 */
-hljs.registerLanguage('java', java);
-hljs.registerLanguage('xml', xml);
-hljs.registerLanguage('html', xml);
-hljs.registerLanguage('vue', xml);
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('sql', sql);
-hljs.registerLanguage('typescript', typescript);
 
 /** 文件树类型 */
 interface FileNode {
@@ -44,21 +29,14 @@ const activeKey = ref<string>('');
 
 /** 代码地图 */
 const codeMap = ref<Map<string, string>>(new Map<string, string>());
-function setCodeMap(key: string, lang: string, code: string) {
+function setCodeMap(key: string, code: string) {
   // 处理可能的缩进问题，特别是对Java文件
   const trimmedCode = code.trimStart();
   // 如果已有缓存则不重新构建
   if (codeMap.value.has(key)) {
     return;
   }
-  try {
-    const highlightedCode = hljs.highlight(trimmedCode, {
-      language: lang,
-    }).value;
-    codeMap.value.set(key, highlightedCode);
-  } catch {
-    codeMap.value.set(key, trimmedCode);
-  }
+  codeMap.value.set(key, trimmedCode);
 }
 
 /** 删除代码地图 */
@@ -104,8 +82,7 @@ function handleNodeClick(_: any[], e: any) {
     return;
   }
 
-  const lang = file.filePath.split('.').pop() || '';
-  setCodeMap(activeKey.value, lang, file.code);
+  setCodeMap(activeKey.value, file.code);
 }
 
 /** 处理文件树 */
@@ -220,9 +197,8 @@ const [Modal, modalApi] = useVbenModal({
       fileTree.value = handleFiles(data);
       if (data.length > 0) {
         activeKey.value = data[0]?.filePath || '';
-        const lang = activeKey.value.split('.').pop() || '';
         const code = data[0]?.code || '';
-        setCodeMap(activeKey.value, lang, code);
+        setCodeMap(activeKey.value, code);
       }
     } finally {
       loading.value = false;
@@ -262,15 +238,19 @@ const [Modal, modalApi] = useVbenModal({
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <code
-                v-html="codeMap.get(activeKey)"
-                class="code-highlight"
-              ></code>
+              <CodeEditor
+                class="max-h-200"
+                :value="codeMap.get(activeKey)"
+                mode="application/json"
+                :readonly="true"
+                :bordered="true"
+                :auto-format="false"
+              />
             </div>
           </Tabs.TabPane>
           <template #rightExtra>
-            <Button type="primary" ghost @click="copyCode" :icon="h(Copy)">
+            <Button type="primary" ghost @click="copyCode">
+              <IconifyIcon icon="lucide:copy" />
               复制代码
             </Button>
           </template>
@@ -279,101 +259,3 @@ const [Modal, modalApi] = useVbenModal({
     </div>
   </Modal>
 </template>
-
-<style scoped>
-/* stylelint-disable selector-class-pattern */
-
-/* 代码高亮样式 - 支持暗黑模式 */
-:deep(.code-highlight) {
-  display: block;
-  white-space: pre;
-  background: transparent;
-}
-
-/* 关键字 */
-:deep(.hljs-keyword) {
-  @apply text-purple-600 dark:text-purple-400;
-}
-
-/* 字符串 */
-:deep(.hljs-string) {
-  @apply text-green-600 dark:text-green-400;
-}
-
-/* 注释 */
-:deep(.hljs-comment) {
-  @apply text-gray-500 dark:text-gray-400;
-}
-
-/* 函数 */
-:deep(.hljs-function) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 数字 */
-:deep(.hljs-number) {
-  @apply text-orange-600 dark:text-orange-400;
-}
-
-/* 类 */
-:deep(.hljs-class) {
-  @apply text-yellow-600 dark:text-yellow-400;
-}
-
-/* 标题/函数名 */
-:deep(.hljs-title) {
-  @apply font-bold text-blue-600 dark:text-blue-400;
-}
-
-/* 参数 */
-:deep(.hljs-params) {
-  @apply text-gray-700 dark:text-gray-300;
-}
-
-/* 内置对象 */
-:deep(.hljs-built_in) {
-  @apply text-teal-600 dark:text-teal-400;
-}
-
-/* HTML标签 */
-:deep(.hljs-tag) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 属性 */
-:deep(.hljs-attribute),
-:deep(.hljs-attr) {
-  @apply text-green-600 dark:text-green-400;
-}
-
-/* 字面量 */
-:deep(.hljs-literal) {
-  @apply text-purple-600 dark:text-purple-400;
-}
-
-/* 元信息 */
-:deep(.hljs-meta) {
-  @apply text-gray-500 dark:text-gray-400;
-}
-
-/* 选择器标签 */
-:deep(.hljs-selector-tag) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* XML/HTML名称 */
-:deep(.hljs-name) {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-/* 变量 */
-:deep(.hljs-variable) {
-  @apply text-orange-600 dark:text-orange-400;
-}
-
-/* 属性 */
-:deep(.hljs-property) {
-  @apply text-red-600 dark:text-red-400;
-}
-/* stylelint-enable selector-class-pattern */
-</style>

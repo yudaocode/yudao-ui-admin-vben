@@ -12,7 +12,7 @@ export namespace SystemTenantApi {
     contactMobile: string;
     accountCount: number;
     expireTime: Date;
-    website: string;
+    websites: string[];
     status: number;
   }
 }
@@ -59,6 +59,13 @@ export function updateTenant(data: SystemTenantApi.Tenant) {
 /** 删除租户 */
 export function deleteTenant(id: number) {
   return requestClient.delete(`/system/tenant/delete?id=${id}`);
+}
+
+/** 批量删除租户 */
+export function deleteTenantList(ids: number[]) {
+  return requestClient.delete(
+    `/system/tenant/delete-list?ids=${ids.join(',')}`,
+  );
 }
 
 /** 导出租户 */

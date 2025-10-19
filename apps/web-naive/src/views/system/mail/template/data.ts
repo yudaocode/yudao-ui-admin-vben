@@ -1,26 +1,19 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMailTemplateApi } from '#/api/system/mail/template';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { useAccess } from '@vben/access';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleMailAccountList } from '#/api/system/mail/account';
-import {
-  CommonStatusEnum,
-  DICT_TYPE,
-  getDictOptions,
-  getRangePickerDefaultProps,
-} from '#/utils';
-
-const { hasAccessByCodes } = useAccess();
+import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
-      component: 'Input',
+      component: 'InputNumber',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -76,12 +69,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Input',
-      componentProps: {
-        type: 'textarea',
-        rows: 3,
-        placeholder: '请输入模板内容',
-      },
+      component: 'RichTextarea',
       rules: 'required',
     },
     {
@@ -90,8 +78,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -122,20 +108,45 @@ export function useSendMailFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '模板内容',
-      component: 'Input',
+      component: 'RichTextarea',
       componentProps: {
-        type: 'textarea',
-        disabled: true,
+        options: {
+          readonly: true,
+        },
       },
     },
     {
-      fieldName: 'mail',
+      fieldName: 'toMails',
       label: '收件邮箱',
-      component: 'Input',
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入收件邮箱',
+        tag: true,
+        multiple: true,
+        filterable: true,
+        placeholder: '请输入收件邮箱，按 Enter 添加',
       },
-      rules: z.string().email('请输入正确的邮箱'),
+    },
+    {
+      fieldName: 'ccMails',
+      label: '抄送邮箱',
+      component: 'Select',
+      componentProps: {
+        tag: true,
+        multiple: true,
+        filterable: true,
+        placeholder: '请输入抄送邮箱，按 Enter 添加',
+      },
+    },
+    {
+      fieldName: 'bccMails',
+      label: '密送邮箱',
+      component: 'Select',
+      componentProps: {
+        tag: true,
+        multiple: true,
+        filterable: true,
+        placeholder: '请输入密送邮箱，按 Enter 添加',
+      },
     },
   ];
 }
@@ -149,7 +160,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择开启状态',
       },
     },
@@ -158,7 +169,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编码',
       },
     },
@@ -167,7 +178,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板名称',
       },
     },
@@ -179,28 +190,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: async () => await getSimpleMailAccountList(),
         labelField: 'mail',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择邮箱账号',
       },
     },
     {
       fieldName: 'createTime',
       label: '创建时间',
-      component: 'RangePicker',
+      component: 'DatePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
 }
 
 /** 列表的字段 */
-export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
-  onActionClick: OnActionClickFn<T>,
+export function useGridColumns(
   getAccountMail?: (accountId: number) => string | undefined,
 ): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '编号',
@@ -225,7 +236,7 @@ export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,
-      formatter: (row) => getAccountMail?.(row.cellValue) || '-',
+      formatter: ({ cellValue }) => getAccountMail?.(cellValue) || '-',
     },
     {
       field: 'nickname',
@@ -248,34 +259,10 @@ export function useGridColumns<T = SystemMailTemplateApi.MailTemplate>(
       formatter: 'formatDateTime',
     },
     {
-      field: 'operation',
       title: '操作',
-      minWidth: 150,
-      align: 'center',
+      width: 220,
       fixed: 'right',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: '邮件模板',
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            show: hasAccessByCodes(['system:mail-template:update']),
-          },
-          {
-            code: 'delete',
-            show: hasAccessByCodes(['system:mail-template:delete']),
-          },
-          {
-            code: 'send',
-            text: '测试',
-            show: hasAccessByCodes(['system:mail-template:send-mail']),
-          },
-        ],
-      },
+      slots: { default: 'actions' },
     },
   ];
 }

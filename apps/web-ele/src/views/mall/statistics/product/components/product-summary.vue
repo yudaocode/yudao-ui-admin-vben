@@ -8,6 +8,7 @@ import type { AnalysisOverviewIconItem } from '#/views/mall/home/components/data
 import { reactive, ref } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import {
   calculateRelativeRate,
@@ -312,7 +313,7 @@ const loadOverview = () => {
           :loading="exportLoading"
           v-access:code="['statistics:product:export']"
         >
-          <Icon icon="ep:download" class="mr-1" />导出
+          <IconifyIcon icon="ep:download" class="mr-1" />导出
         </el-button>
       </ShortcutDateRangePicker>
     </template>

@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import type { TreeOption, TreeOverrideNodeClickBehaviorReturn } from 'naive-ui';
+
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { onMounted, ref } from 'vue';
 
-import { Search } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
 import { NInput, NSpin, NTree } from 'naive-ui';
@@ -28,13 +30,18 @@ function handleSearch(e: any) {
     : deptList.value;
   deptTree.value = handleTree(filteredList);
   // 展开所有节点
-  expandedKeys.value = deptTree.value.map((node) => node.id as number);
+  expandedKeys.value = deptTree.value.map((node) => node.id!);
 }
 
 /** 选中部门 */
-const handleSelect = (_selectedKeys: any[], info: any) => {
-  emit('select', info.node.dataRef);
-};
+function handleSelect({
+  option,
+}: {
+  option: TreeOption;
+}): TreeOverrideNodeClickBehaviorReturn {
+  emit('select', option);
+  return 'default';
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -49,32 +56,31 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-// TODO @xingyu：数据没展示
 </script>
 
 <template>
   <div>
-    <div class="mb-2">
-      <NInput
-        placeholder="搜索部门"
-        allow-clear
-        v-model:value="searchValue"
-        @change="handleSearch"
-        class="w-full"
-      >
-        <template #prefix>
-          <Search class="size-4" />
-        </template>
-      </NInput>
-    </div>
-    <NSpin :show="loading">
+    <NInput
+      placeholder="搜索部门"
+      allow-clear
+      v-model:value="searchValue"
+      @change="handleSearch"
+      class="w-full"
+    >
+      <template #prefix>
+        <IconifyIcon icon="lucide:search" class="size-4" />
+      </template>
+    </NInput>
+    <NSpin :show="loading" class="w-full">
       <NTree
-        class="pt-2"
         v-if="deptTree.length > 0"
-        :tree-data="deptTree"
-        :field-names="{ title: 'name', key: 'id', children: 'children' }"
-        @select="handleSelect"
+        class="pt-2"
+        :data="deptTree"
         :default-expand-all="true"
+        key-field="id"
+        label-field="name"
+        children-field="children"
+        :override-default-node-click-behavior="handleSelect"
       />
       <div v-else-if="!loading" class="py-4 text-center text-gray-500">
         暂无数据

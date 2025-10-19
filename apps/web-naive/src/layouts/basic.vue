@@ -132,7 +132,7 @@ async function handleNotificationMakeAll() {
 
 /** 清空通知 */
 async function handleNotificationClear() {
-  handleNotificationMakeAll();
+  await handleNotificationMakeAll();
 }
 
 /** 标记单个已读 */
@@ -182,6 +182,7 @@ async function handleTenantChange(tenant: SystemTenantApi.Tenant) {
   // 提示切换成功
   message.success(`切换当前租户为: ${tenant.name}`);
 }
+
 // ========== 初始化 ==========
 onMounted(() => {
   // 首次加载未读数量

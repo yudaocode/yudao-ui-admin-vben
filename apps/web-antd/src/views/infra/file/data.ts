@@ -76,15 +76,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'size',
       title: '文件大小',
       minWidth: 80,
-      formatter: ({ cellValue }) => {
-        // TODO @xingyu：【优先级：中】要不要搞到一个方法里？
-        if (!cellValue) return '0 B';
-        const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        const index = Math.floor(Math.log(cellValue) / Math.log(1024));
-        const size = cellValue / 1024 ** index;
-        const formattedSize = size.toFixed(2);
-        return `${formattedSize} ${unitArr[index]}`;
-      },
+      formatter: 'formatFileSize',
     },
     {
       field: 'type',

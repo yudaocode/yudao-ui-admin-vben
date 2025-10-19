@@ -1,6 +1,9 @@
 <!-- dataType：array 数组类型 -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
 import { useVModel } from '@vueuse/core';
+import { Form, Input, Radio } from 'ant-design-vue';
 
 import {
   getDataTypeOptions,
@@ -17,20 +20,19 @@ const emits = defineEmits(['update:modelValue']);
 const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>;
 
 /** 元素类型改变时间。当值为 struct 时，对 dataSpecs 中的 dataSpecsList 进行初始化 */
-const handleChange = (val: string) => {
+function handleChange(val: any) {
   if (val !== IoTDataSpecsDataTypeEnum.STRUCT) {
     return;
   }
-
   dataSpecs.value.dataSpecsList = [];
-};
+}
 </script>
 
 <template>
-  <el-form-item label="元素类型" prop="property.dataSpecs.childDataType">
-    <el-radio-group v-model="dataSpecs.childDataType" @change="handleChange">
+  <Form.Item label="元素类型" prop="property.dataSpecs.childDataType">
+    <Radio.Group v-model="dataSpecs.childDataType" @change="handleChange">
       <template v-for="item in getDataTypeOptions()" :key="item.value">
-        <el-radio
+        <Radio
           v-if="
             !(
               [
@@ -44,18 +46,16 @@ const handleChange = (val: string) => {
           class="w-1/3"
         >
           {{ `${item.value}(${item.label})` }}
-        </el-radio>
+        </Radio>
       </template>
-    </el-radio-group>
-  </el-form-item>
-  <el-form-item label="元素个数" prop="property.dataSpecs.size">
-    <el-input v-model="dataSpecs.size" placeholder="请输入数组中的元素个数" />
-  </el-form-item>
+    </Radio.Group>
+  </Form.Item>
+  <Form.Item label="元素个数" prop="property.dataSpecs.size">
+    <Input v-model="dataSpecs.size" placeholder="请输入数组中的元素个数" />
+  </Form.Item>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs
     v-if="dataSpecs.childDataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="dataSpecs.dataSpecsList"
   />
 </template>
-
-<style lang="scss" scoped></style>

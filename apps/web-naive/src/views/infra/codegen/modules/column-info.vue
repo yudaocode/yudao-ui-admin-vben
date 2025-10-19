@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import type { SelectOption } from 'naive-ui';
+
 import type { InfraCodegenApi } from '#/api/infra/codegen';
-import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
@@ -25,6 +26,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
@@ -56,9 +58,19 @@ defineExpose({
 });
 
 /** 初始化 */
-const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
+const dictTypeOptions = ref<SelectOption[]>([]); // 字典类型选项
+
+async function initDictTypeOptions() {
+  const res = await getSimpleDictTypeList();
+  dictTypeOptions.value = res.map((item) => {
+    return {
+      label: item.name,
+      value: item.type,
+    };
+  });
+}
 onMounted(async () => {
-  dictTypeOptions.value = await getSimpleDictTypeList();
+  await initDictTypeOptions();
 });
 </script>
 
@@ -71,15 +83,11 @@ onMounted(async () => {
 
     <!-- Java 类型 -->
     <template #javaType="{ row, column }">
-      <NSelect v-model:value="row.javaType" style="width: 100%">
-        <NSelect.Option
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </NSelect.Option>
-      </NSelect>
+      <NSelect
+        v-model:value="row.javaType"
+        :options="column.params.options"
+        class="w-full"
+      />
     </template>
     <!-- Java 属性 -->
     <template #javaField="{ row }">
@@ -105,15 +113,11 @@ onMounted(async () => {
 
     <!-- 查询方式 -->
     <template #listOperationCondition="{ row, column }">
-      <NSelect v-model:value="row.listOperationCondition" class="w-full">
-        <NSelect.Option
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </NSelect.Option>
-      </NSelect>
+      <NSelect
+        v-model:value="row.listOperationCondition"
+        :options="column.params.options"
+        class="w-full"
+      />
     </template>
 
     <!-- 允许空 -->
@@ -123,34 +127,22 @@ onMounted(async () => {
 
     <!-- 显示类型 -->
     <template #htmlType="{ row, column }">
-      <NSelect v-model:value="row.htmlType" class="w-full">
-        <NSelect.Option
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </NSelect.Option>
-      </NSelect>
+      <NSelect
+        v-model:value="row.htmlType"
+        :options="column.params.options"
+        class="w-full"
+      />
     </template>
 
     <!-- 字典类型 -->
     <template #dictType="{ row }">
       <NSelect
         v-model:value="row.dictType"
+        :options="dictTypeOptions"
         class="w-full"
         allow-clear
         show-search
-      >
-        >
-        <NSelect.Option
-          v-for="option in dictTypeOptions"
-          :key="option.type"
-          :value="option.type"
-        >
-          {{ option.name }}
-        </NSelect.Option>
-      </NSelect>
+      />
     </template>
 
     <!-- 示例 -->

@@ -96,12 +96,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
     },
     {
-      field: 'createTime',
-      title: '创建时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
-    },
-    {
       field: 'mobile',
       title: '手机号',
       minWidth: 120,

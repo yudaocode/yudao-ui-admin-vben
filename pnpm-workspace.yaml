@@ -47,6 +47,7 @@ catalog:
   '@tinyflow-ai/vue': ^1.1.1
   '@tinymce/tinymce-vue': ^6.1.0
   '@types/archiver': ^6.0.3
+  '@types/codemirror': ^5.60.13
   '@types/crypto-js': ^4.2.2
   '@types/eslint': ^9.6.1
   '@types/html-minifier-terser': ^7.0.2
@@ -90,6 +91,7 @@ catalog:
   circular-dependency-scanner: ^2.3.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
+  codemirror: ^5.65.15
   commitlint-plugin-function-rules: ^4.0.2
   consola: ^3.4.2
   cropperjs: ^1.6.2
@@ -148,7 +150,6 @@ catalog:
   markmap-toolbar: ^0.17.0
   markmap-view: ^0.16.0
   medium-zoom: ^1.1.0
-  min-dash: ^4.2.3
   naive-ui: ^2.42.0
   nitropack: ^2.11.13
   nprogress: ^0.2.0

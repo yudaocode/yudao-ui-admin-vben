@@ -1,5 +1,3 @@
-import { assign } from 'min-dash';
-
 /**
  * A palette provider for BPMN 2.0 elements.
  */
@@ -48,7 +46,9 @@ PaletteProvider.prototype.getPaletteEntries = function () {
 
   function createAction(type, group, className, title, options) {
     function createListener(event) {
-      const shape = elementFactory.createShape(assign({ type }, options));
+      const shape = elementFactory.createShape(
+        Object.assign({ type }, options),
+      );
 
       if (options) {
         shape.businessObject.di.isExpanded = options.isExpanded;
@@ -96,7 +96,7 @@ PaletteProvider.prototype.getPaletteEntries = function () {
     create.start(event, elementFactory.createParticipantShape());
   }
 
-  assign(actions, {
+  Object.assign(actions, {
     'hand-tool': {
       group: 'tools',
       className: 'bpmn-icon-hand-tool',

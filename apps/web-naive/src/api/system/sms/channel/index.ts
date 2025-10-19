@@ -54,7 +54,14 @@ export function deleteSmsChannel(id: number) {
   return requestClient.delete(`/system/sms-channel/delete?id=${id}`);
 }
 
+/** 批量删除短信渠道 */
+export function deleteSmsChannelList(ids: number[]) {
+  return requestClient.delete(
+    `/system/sms-channel/delete-list?ids=${ids.join(',')}`,
+  );
+}
+
 /** 导出短信渠道 */
 export function exportSmsChannel(params: any) {
-  return requestClient.download('/system/sms-channel/export', { params });
+  return requestClient.download('/system/sms-channel/export-excel', { params });
 }

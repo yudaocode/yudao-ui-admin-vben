@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSceneRule,
-  getRuleScenePage,
+  getSceneRulePage,
   updateSceneRuleStatus,
 } from '#/api/iot/rule/scene';
 import { $t } from '#/locales';
@@ -25,7 +25,7 @@ const [FormModal, formModalApi] = useVbenModal({
 });
 
 /** 刷新表格 */
-function onRefresh() {
+function handleRefresh() {
   gridApi.query();
 }
 
@@ -51,7 +51,7 @@ async function handleToggleStatus(row: RuleSceneApi.SceneRule) {
     message.success({
       content: newStatus === 0 ? '启用成功' : '停用成功',
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -68,7 +68,7 @@ async function handleDelete(row: RuleSceneApi.SceneRule) {
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
-    onRefresh();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -85,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getRuleScenePage({
+          return await getSceneRulePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -107,7 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <FormModal @success="onRefresh" />
+    <FormModal @success="handleRefresh" />
     <Grid table-title="场景规则列表">
       <template #toolbar-tools>
         <TableAction

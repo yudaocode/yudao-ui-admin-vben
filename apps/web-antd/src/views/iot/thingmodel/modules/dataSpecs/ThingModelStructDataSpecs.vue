@@ -1,10 +1,14 @@
 <!-- dataType：struct 数组类型 -->
 <script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import { nextTick, onMounted, ref, unref } from 'vue';
+
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Button, Divider, Form, Input, Modal } from 'ant-design-vue';
 
-import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 import ThingModelProperty from '../ThingModelProperty.vue';
@@ -29,7 +33,7 @@ const formData = ref<any>({
 });
 
 /** 打开 struct 表单 */
-const openStructForm = (val: any) => {
+function openStructForm(val: any) {
   dialogVisible.value = true;
   resetForm();
   if (isEmpty(val)) {
@@ -46,15 +50,15 @@ const openStructForm = (val: any) => {
       dataSpecsList: val.dataSpecsList,
     },
   };
-};
+}
 
 /** 删除 struct 项 */
-const deleteStructItem = (index: number) => {
+function deleteStructItem(index: number) {
   dataSpecsList.value.splice(index, 1);
-};
+}
 
 /** 添加参数 */
-const submitForm = async () => {
+async function submitForm() {
   await structFormRef.value.validate();
 
   try {
@@ -88,10 +92,10 @@ const submitForm = async () => {
   } finally {
     dialogVisible.value = false;
   }
-};
+}
 
 /** 重置表单 */
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     property: {
       dataType: IoTDataSpecsDataTypeEnum.INT,
@@ -101,16 +105,16 @@ const resetForm = () => {
     },
   };
   structFormRef.value?.resetFields();
-};
+}
 
 /** 校验 struct 不能为空 */
-const validateList = (_: any, __: any, callback: any) => {
+function validateList(_: any, __: any, callback: any) {
   if (isEmpty(dataSpecsList.value)) {
     callback(new Error('struct 不能为空'));
     return;
   }
   callback();
-};
+}
 
 /** 组件初始化 */
 onMounted(async () => {
@@ -122,60 +126,51 @@ onMounted(async () => {
 
 <template>
   <!-- struct 数据展示 -->
-  <el-form-item
+  <Form.Item
     :rules="[{ required: true, validator: validateList, trigger: 'change' }]"
     label="JSON 对象"
   >
     <div
       v-for="(item, index) in dataSpecsList"
       :key="index"
-      class="w-1/1 struct-item px-10px mb-10px flex justify-between"
+      class="px-10px mb-10px flex w-full justify-between bg-gray-100"
     >
       <span>参数名称：{{ item.name }}</span>
       <div class="btn">
-        <el-button link type="primary" @click="openStructForm(item)">
+        <Button link type="primary" @click="openStructForm(item)">
           编辑
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button link type="danger" @click="deleteStructItem(index)">
-          删除
-        </el-button>
+        </Button>
+        <Divider direction="vertical" />
+        <Button link danger @click="deleteStructItem(index)"> 删除 </Button>
       </div>
     </div>
-    <el-button link type="primary" @click="openStructForm(null)">
+    <Button link type="primary" @click="openStructForm(null)">
       +新增参数
-    </el-button>
-  </el-form-item>
+    </Button>
+  </Form.Item>
 
   <!-- struct 表单 -->
-  <Dialog v-model="dialogVisible" :title="dialogTitle" append-to-body>
-    <el-form
+  <Modal v-model="dialogVisible" :title="dialogTitle" append-to-body>
+    <Form
       ref="structFormRef"
       v-loading="formLoading"
       :model="formData"
-      :rules="ThingModelFormRules"
       label-width="100px"
     >
-      <el-form-item label="参数名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入功能名称" />
-      </el-form-item>
-      <el-form-item label="标识符" prop="identifier">
-        <el-input v-model="formData.identifier" placeholder="请输入标识符" />
-      </el-form-item>
+      <Form.Item label="参数名称" prop="name">
+        <Input v-model="formData.name" placeholder="请输入功能名称" />
+      </Form.Item>
+      <Form.Item label="标识符" prop="identifier">
+        <Input v-model="formData.identifier" placeholder="请输入标识符" />
+      </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-struct-data-specs />
-    </el-form>
+    </Form>
     <template #footer>
-      <el-button :disabled="formLoading" type="primary" @click="submitForm">
+      <Button :disabled="formLoading" type="primary" @click="submitForm">
         确 定
-      </el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      </Button>
+      <Button @click="dialogVisible = false">取 消</Button>
     </template>
-  </Dialog>
+  </Modal>
 </template>
-
-<style lang="scss" scoped>
-.struct-item {
-  background-color: #e4f2fd;
-}
-</style>

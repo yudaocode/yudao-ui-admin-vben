@@ -7,6 +7,8 @@ import type { DescriptionItemSchema, DescriptionsOptions } from './typing';
 
 import { defineComponent } from 'vue';
 
+import { get } from '@vben/utils';
+
 import { Descriptions, DescriptionsItem } from 'ant-design-vue';
 
 /** 对 Descriptions 进行二次封装 */
@@ -45,7 +47,7 @@ const Description = defineComponent({
           ? item.content(props.data)
           : item.content;
       }
-      return item.field ? props.data?.[item.field] : null;
+      return item.field ? get(props.data, item.field) : null;
     };
 
     return () => (

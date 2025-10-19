@@ -26,8 +26,6 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@form-create/antd-designer": "catalog:",
-    "@form-create/naive-ui": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -43,9 +41,7 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
-    "cropperjs": "catalog:",
     "dayjs": "catalog:",
-    "highlight.js": "catalog:",
     "naive-ui": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",

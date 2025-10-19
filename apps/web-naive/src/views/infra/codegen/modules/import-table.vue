@@ -52,6 +52,7 @@ const [Grid] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'name',
+      isHover: true,
     },
     toolbarConfig: {
       enabled: false,
@@ -93,10 +94,8 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 2. 提交请求
-    const hideLoading = message.loading({
-      content: '导入中...',
+    const hideLoading = message.loading('导入中...', {
       duration: 0,
-      key: 'import_loading',
     });
     try {
       await createCodegenList(formData);
@@ -105,7 +104,7 @@ const [Modal, modalApi] = useVbenModal({
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
-      hideLoading();
+      hideLoading.destroy();
       modalApi.unlock();
     }
   },

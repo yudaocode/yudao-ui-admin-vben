@@ -15,7 +15,7 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 渲染命令统计图表 */
-const renderCommandStats = () => {
+function renderCommandStats() {
   if (!props.redisData?.commandStats) {
     return;
   }
@@ -76,7 +76,7 @@ const renderCommandStats = () => {
       },
     ],
   });
-};
+}
 
 /** 监听数据变化，重新渲染图表 */
 watch(
@@ -97,7 +97,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <EchartsUI ref="chartRef" height="420px" />
-  </div>
+  <EchartsUI ref="chartRef" height="420px" />
 </template>
