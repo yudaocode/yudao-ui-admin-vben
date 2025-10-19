@@ -1,4 +1,4 @@
-import type { MallDataComparisonResp } from './common';
+import type { DataComparisonRespVO } from './common';
 
 import { formatDate } from '@vben/utils';
 
@@ -23,7 +23,7 @@ export namespace MallMemberStatisticsApi {
     orderUserCount: number; // 下单用户数
     payUserCount: number; // 支付用户数
     atv: number; // 平均客单价
-    comparison: MallDataComparisonResp<AnalyseComparison>; // 对照数据
+    comparison: DataComparisonRespVO<AnalyseComparison>; // 对照数据
   }
 
   /** 会员地区统计 Response */
@@ -57,7 +57,7 @@ export namespace MallMemberStatisticsApi {
   }
 
   /** 会员数量统计 Response */
-  export interface Count {
+  export interface MemberCountRespVO {
     visitUserCount: string; // 用户访问量
     registerUserCount: number; // 注册用户数量
   }
@@ -112,7 +112,7 @@ export function getMemberTerminalStatisticsList() {
 /** 获得用户数量量对照 */
 export function getUserCountComparison() {
   return requestClient.get<
-    MallDataComparisonResp<MallMemberStatisticsApi.Count>
+    DataComparisonRespVO<MallMemberStatisticsApi.MemberCountRespVO>
   >('/statistics/member/user-count-comparison');
 }
 

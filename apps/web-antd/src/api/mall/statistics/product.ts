@@ -1,6 +1,6 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { MallDataComparisonResp } from './common';
+import type { DataComparisonRespVO } from './common';
 
 import { requestClient } from '#/api/request';
 
@@ -43,7 +43,7 @@ export namespace MallProductStatisticsApi {
 /** 获得商品统计分析 */
 export function getProductStatisticsAnalyse(params: PageParam) {
   return requestClient.get<
-    MallDataComparisonResp<MallProductStatisticsApi.ProductStatistics>
+    DataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>
   >('/statistics/product/analyse', { params });
 }
 

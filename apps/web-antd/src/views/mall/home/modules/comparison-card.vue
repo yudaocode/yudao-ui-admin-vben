@@ -1,31 +1,32 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { Card, Tag } from 'ant-design-vue';
-
 import { IconifyIcon } from '@vben/icons';
 
-import { erpCalculatePercentage } from '@vben/utils';
+import { Card, Tag } from 'ant-design-vue';
 
 /** 交易对照卡片 */
 defineOptions({ name: 'ComparisonCard' });
 
-interface Props {
-  title: string;
-  tag?: string;
-  prefix?: string;
-  value: number | string;
-  reference: number | string;
-  decimals?: number;
-}
-
 const props = withDefaults(defineProps<Props>(), {
+  title: '',
   tag: '',
   prefix: '',
+  value: 0,
+  reference: 0,
   decimals: 0,
 });
 
-// 计算环比
+interface Props {
+  title?: string;
+  tag?: string;
+  prefix?: string;
+  value?: number | string;
+  reference?: number | string;
+  decimals?: number;
+}
+
+/** 计算环比百分比 */
 const percent = computed(() => {
   const refValue = Number(props.reference);
   const curValue = Number(props.value);
@@ -33,12 +34,13 @@ const percent = computed(() => {
   return ((curValue - refValue) / refValue) * 100;
 });
 
-// 格式化数值
+/** 格式化今日数据 */
 const formattedValue = computed(() => {
   const numValue = Number(props.value);
   return numValue.toFixed(props.decimals);
 });
 
+/** 格式化昨日数据 */
 const formattedReference = computed(() => {
   const numValue = Number(props.reference);
   return numValue.toFixed(props.decimals);
@@ -46,17 +48,18 @@ const formattedReference = computed(() => {
 </script>
 
 <template>
-  <Card :bordered="false" class="comparison-card">
+  <Card :bordered="false" class="h-full">
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between text-gray-500">
         <span>{{ title }}</span>
         <Tag v-if="tag">{{ tag }}</Tag>
       </div>
       <div class="flex items-baseline justify-between">
-        <div class="text-3xl font-semibold">
-          {{ prefix }}{{ formattedValue }}
-        </div>
-        <span :class="percent > 0 ? 'text-red-500' : 'text-green-500'">
+        <div class="text-3xl">{{ prefix }}{{ formattedValue }}</div>
+        <span
+          :class="percent > 0 ? 'text-red-500' : 'text-green-500'"
+          class="flex items-center gap-0.5"
+        >
           {{ Math.abs(percent).toFixed(2) }}%
           <IconifyIcon
             :icon="percent > 0 ? 'ep:caret-top' : 'ep:caret-bottom'"
@@ -73,10 +76,3 @@ const formattedReference = computed(() => {
     </div>
   </Card>
 </template>
-
-<style lang="less" scoped>
-.comparison-card {
-  height: 100%;
-}
-</style>
-
