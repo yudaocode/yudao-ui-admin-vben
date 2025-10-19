@@ -1,3 +1,4 @@
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallMemberStatisticsApi } from '#/api/mall/statistics/member';
 
 import { fenToYuan } from '@vben/utils';
@@ -88,4 +89,42 @@ export function getAreaChartOptions(
       },
     ],
   };
+}
+
+/** VXE Grid 表格列配置 */
+export function getAreaTableColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'areaName',
+      title: '省份',
+      minWidth: 80,
+      sortable: true,
+      showOverflow: 'tooltip',
+    },
+    {
+      field: 'userCount',
+      title: '会员数量',
+      minWidth: 100,
+      sortable: true,
+    },
+    {
+      field: 'orderCreateUserCount',
+      title: '订单创建数量',
+      minWidth: 120,
+      sortable: true,
+    },
+    {
+      field: 'orderPayUserCount',
+      title: '订单支付数量',
+      minWidth: 120,
+      sortable: true,
+    },
+    {
+      field: 'orderPayPrice',
+      title: '订单支付金额',
+      minWidth: 120,
+      sortable: true,
+      formatter: 'formatFenToYuanAmount',
+    },
+  ];
 }
