@@ -2,9 +2,9 @@
 import { onActivated, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Card } from 'ant-design-vue';
-
 import { CountTo } from '@vben/common-ui';
+
+import { Card } from 'ant-design-vue';
 
 import * as ProductSpuApi from '#/api/mall/product/spu';
 import * as PayStatisticsApi from '#/api/mall/statistics/pay';
@@ -14,6 +14,15 @@ import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 defineOptions({ name: 'OperationDataCard' });
 
 const router = useRouter();
+
+/** 数据项接口 */
+interface DataItem {
+  name: string;
+  value: number;
+  routerName: string;
+  prefix?: string;
+  decimals?: number;
+}
 
 /** 数据 */
 const data = reactive({
@@ -34,7 +43,7 @@ const data = reactive({
   },
   rechargePrice: {
     name: '账户充值',
-    value: 0.0,
+    value: 0,
     prefix: '￥',
     decimals: 2,
     routerName: 'PayWalletRecharge',
@@ -44,16 +53,16 @@ const data = reactive({
 /** 查询订单数据 */
 const getOrderData = async () => {
   const orderCount = await TradeStatisticsApi.getOrderCount();
-  if (orderCount.undelivered != null) {
+  if (orderCount.undelivered) {
     data.orderUndelivered.value = orderCount.undelivered;
   }
-  if (orderCount.afterSaleApply != null) {
+  if (orderCount.afterSaleApply) {
     data.orderAfterSaleApply.value = orderCount.afterSaleApply;
   }
-  if (orderCount.pickUp != null) {
+  if (orderCount.pickUp) {
     data.orderWaitePickUp.value = orderCount.pickUp;
   }
-  if (orderCount.auditingWithdraw != null) {
+  if (orderCount.auditingWithdraw) {
     data.withdrawAuditing.value = orderCount.auditingWithdraw;
   }
 };
@@ -61,9 +70,9 @@ const getOrderData = async () => {
 /** 查询商品数据 */
 const getProductData = async () => {
   const productCount = await ProductSpuApi.getTabsCount();
-  data.productForSale.value = productCount['0'];
-  data.productInWarehouse.value = productCount['1'];
-  data.productAlertStock.value = productCount['3'];
+  data.productForSale.value = productCount['0'] || 0;
+  data.productInWarehouse.value = productCount['1'] || 0;
+  data.productAlertStock.value = productCount['3'] || 0;
 };
 
 /** 查询钱包充值数据 */
@@ -72,11 +81,8 @@ const getWalletRechargeData = async () => {
   data.rechargePrice.value = paySummary.rechargePrice;
 };
 
-/**
- * 跳转到对应页面
- *
- * @param routerName 路由页面组件的名称
- */
+/** 跳转到对应页面 */
+// TODO @xingyu：貌似通过 name 的方式，都无法跳转，找不到路由？
 const handleClick = (routerName: string) => {
   router.push({ name: routerName });
 };
@@ -100,15 +106,15 @@ onMounted(() => {
   <Card :bordered="false" title="运营数据">
     <div class="flex flex-row flex-wrap items-center gap-8 p-4">
       <div
-        v-for="item in data"
-        :key="item.name"
+        v-for="(item, key) in data"
+        :key="key"
         class="flex h-20 w-[20%] cursor-pointer flex-col items-center justify-center gap-2"
         @click="handleClick(item.routerName)"
       >
         <CountTo
-          :decimals="item.decimals || 0"
+          :decimals="(item as DataItem).decimals ?? 0"
           :end-val="item.value"
-          :prefix="item.prefix || ''"
+          :prefix="(item as DataItem).prefix ?? ''"
           class="text-3xl"
         />
         <span class="text-center">{{ item.name }}</span>
@@ -116,4 +122,3 @@ onMounted(() => {
     </div>
   </Card>
 </template>
-

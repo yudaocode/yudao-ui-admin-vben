@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 
-import { Card } from 'ant-design-vue';
-
 import { IconifyIcon } from '@vben/icons';
+
+import { Card } from 'ant-design-vue';
 
 /** 快捷入口卡片 */
 defineOptions({ name: 'ShortcutCard' });
@@ -62,14 +62,11 @@ const menuList = [
   },
 ];
 
-/**
- * 跳转到菜单对应页面
- *
- * @param routerName 路由页面组件的名称
- */
-const handleMenuClick = (routerName: string) => {
+/** 跳转到菜单对应页面 */
+// TODO @xingyu：貌似通过 name 的方式，都无法跳转，找不到路由？
+function handleMenuClick(routerName: string) {
   router.push({ name: routerName });
-};
+}
 </script>
 
 <template>
@@ -92,4 +89,3 @@ const handleMenuClick = (routerName: string) => {
     </div>
   </Card>
 </template>
-
