@@ -92,6 +92,8 @@ async function getTradeStatisticsList() {
   });
 
   // 处理数据
+  // TODO @芋艿：搞到 getTradeTrendChartOptions 里；
+  // TODO @芋艿：貌似和 vue3 + element-plus 数据不一致；
   const processedList = list.map((item) => ({
     ...item,
     turnoverPrice: Number(fenToYuan(item.turnoverPrice)),

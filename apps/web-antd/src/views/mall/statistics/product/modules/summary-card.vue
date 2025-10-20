@@ -109,8 +109,6 @@ async function handleExport() {
     });
     // 处理下载
     downloadFileFromBlobPart({ fileName: '商品状况.xlsx', source: data });
-  } catch {
-    // 用户取消导出
   } finally {
     exportLoading.value = false;
   }
