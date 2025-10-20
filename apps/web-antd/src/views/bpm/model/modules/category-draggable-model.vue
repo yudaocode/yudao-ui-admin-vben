@@ -70,7 +70,7 @@ const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.Model[]>([]);
 const modelList = ref<BpmModelApi.Model[]>([]);
 // 根据是否为第一个分类, 来设置初始展开状态
-const isExpand = ref(!!props.isFirst);
+const isExpand = ref(props.isFirst);
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
