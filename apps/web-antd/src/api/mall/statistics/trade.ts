@@ -76,31 +76,23 @@ export function getTradeStatisticsSummary() {
 }
 
 /** 获得交易状况统计 */
-export function getTradeStatisticsAnalyse(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
+export function getTradeStatisticsAnalyse(params: any) {
   return requestClient.get<
     DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>
-  >('/statistics/trade/analyse', { params: formatDateParam(params) });
+  >('/statistics/trade/analyse', { params });
 }
 
 /** 获得交易状况明细 */
-export function getTradeStatisticsList(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
+export function getTradeStatisticsList(params: any) {
   return requestClient.get<MallTradeStatisticsApi.TradeTrendSummary[]>(
     '/statistics/trade/list',
-    { params: formatDateParam(params) },
+    { params },
   );
 }
 
 /** 导出交易状况明细 */
-export function exportTradeStatisticsExcel(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
-  return requestClient.download('/statistics/trade/export-excel', {
-    params: formatDateParam(params),
-  });
+export function exportTradeStatisticsExcel(params: any) {
+  return requestClient.download('/statistics/trade/export-excel', { params });
 }
 
 /** 获得交易订单数量 */

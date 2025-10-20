@@ -1,11 +1,9 @@
-import type { EChartsOption } from 'echarts';
-
 import type { MallTradeStatisticsApi } from '#/api/mall/statistics/trade';
 
 /** 交易趋势折线图配置 */
 export function getTradeTrendChartOptions(
   data: MallTradeStatisticsApi.TradeTrendSummary[],
-): EChartsOption {
+): any {
   return {
     dataset: {
       dimensions: [
