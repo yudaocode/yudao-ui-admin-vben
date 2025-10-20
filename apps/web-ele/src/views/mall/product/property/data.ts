@@ -153,7 +153,7 @@ export function useValueGridFormSchema(): VbenFormSchema[] {
       label: '属性项',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getPropertySimpleList(),
+        api: getPropertySimpleList,
         placeholder: '请选择属性项',
         labelField: 'name',
         valueField: 'id',

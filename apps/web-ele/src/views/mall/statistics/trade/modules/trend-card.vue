@@ -18,7 +18,7 @@ import {
   isSameDay,
 } from '@vben/utils';
 
-import { Button, Card, Col, Row, Spin } from 'ant-design-vue';
+import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 import dayjs from 'dayjs';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
@@ -116,24 +116,27 @@ async function handleExport() {
 </script>
 
 <template>
-  <Card :bordered="false" title="交易状况" class="h-full">
-    <template #extra>
-      <!-- 查询条件 -->
-      <div class="flex items-center gap-2">
-        <ShortcutDateRangePicker @change="handleDateRangeChange">
-          <Button class="ml-4" @click="handleExport" :loading="exportLoading">
-            <template #icon>
-              <IconifyIcon icon="lucide:download" />
-            </template>
-            导出
-          </Button>
-        </ShortcutDateRangePicker>
+  <ElCard :bordered="false" shadow="never" class="h-full">
+    <template #header>
+      <div class="flex items-center justify-between">
+        <span class="text-base font-medium">交易状况</span>
+        <!-- 查询条件 -->
+        <div class="flex items-center gap-2">
+          <ShortcutDateRangePicker @change="handleDateRangeChange">
+            <ElButton class="ml-4" @click="handleExport" :loading="exportLoading">
+              <template #icon>
+                <IconifyIcon icon="lucide:download" />
+              </template>
+              导出
+            </ElButton>
+          </ShortcutDateRangePicker>
+        </div>
       </div>
     </template>
 
     <!-- 统计值 -->
-    <Row :gutter="16" class="mb-4">
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+    <ElRow :gutter="16" class="mb-4">
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="营业额"
           tooltip="商品支付金额、充值金额"
@@ -150,9 +153,9 @@ async function handleExport() {
             )
           "
         />
-      </Col>
+      </ElCol>
 
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="商品支付金额"
           tooltip="用户购买商品的实际支付金额，包括微信支付、余额支付、支付宝支付、线下支付金额（拼团商品在成团之后计入，线下支付订单在后台确认支付后计入）"
@@ -169,9 +172,9 @@ async function handleExport() {
             )
           "
         />
-      </Col>
+      </ElCol>
 
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="充值金额"
           tooltip="用户成功充值的金额"
@@ -188,8 +191,8 @@ async function handleExport() {
             )
           "
         />
-      </Col>
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      </ElCol>
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="支出金额"
           tooltip="余额支付金额、支付佣金金额、商品退款金额"
@@ -206,8 +209,8 @@ async function handleExport() {
             )
           "
         />
-      </Col>
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      </ElCol>
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="余额支付金额"
           tooltip="用户下单时使用余额实际支付的金额"
@@ -224,8 +227,8 @@ async function handleExport() {
             )
           "
         />
-      </Col>
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      </ElCol>
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="支付佣金金额"
           tooltip="后台给推广员支付的推广佣金，以实际支付为准"
@@ -246,9 +249,9 @@ async function handleExport() {
             )
           "
         />
-      </Col>
+      </ElCol>
 
-      <Col :md="6" :sm="12" :xs="24" class="mb-4">
+      <ElCol :md="6" :sm="12" :xs="24" class="mb-4">
         <SummaryCard
           title="商品退款金额"
           tooltip="用户成功退款的商品金额"
@@ -267,12 +270,13 @@ async function handleExport() {
             )
           "
         />
-      </Col>
-    </Row>
+      </ElCol>
+    </ElRow>
 
     <!-- 折线图 -->
-    <Spin :spinning="trendLoading">
+    <div v-loading="trendLoading">
       <EchartsUI ref="chartRef" />
-    </Spin>
-  </Card>
+    </div>
+  </ElCard>
 </template>
+
