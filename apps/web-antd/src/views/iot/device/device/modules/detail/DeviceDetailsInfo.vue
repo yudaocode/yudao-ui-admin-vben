@@ -85,7 +85,7 @@ function handleAuthInfoDialogClose() {
               <span>设备信息</span>
             </div>
           </template>
-          <Descriptions :column="1" bordered>
+          <Descriptions :column="1" bordered size="small">
             <Descriptions.Item label="产品名称">
               {{ product.name }}
             </Descriptions.Item>

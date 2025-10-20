@@ -32,7 +32,6 @@ import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
-// @ts-ignore
 import DeviceCardView from './modules/DeviceCardView.vue';
 import DeviceForm from './modules/DeviceForm.vue';
 import DeviceGroupForm from './modules/DeviceGroupForm.vue';

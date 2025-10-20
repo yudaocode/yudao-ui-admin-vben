@@ -16,11 +16,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '操作人',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleUserList,
-        props: {
-          label: 'nickname',
-          value: 'id',
-        },
+        api: () => getSimpleUserList(),
+        labelField: 'nickname',
+        valueField: 'id',
         clearable: true,
         placeholder: '请选择操作人员',
       },

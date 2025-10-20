@@ -43,10 +43,8 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       componentProps: {
         api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        labelField: 'nickname',
+        valueField: 'id',
         placeholder: '请选择负责人',
         allowClear: true,
       },

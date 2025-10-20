@@ -178,11 +178,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品',
         allowClear: true,
         showSearch: true,
-        api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getProductSimpleList(),
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -202,11 +200,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择调出仓库',
         allowClear: true,
         showSearch: true,
-        api: getWarehouseSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getWarehouseSimpleList(),
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -217,11 +213,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择调入仓库',
         allowClear: true,
         showSearch: true,
-        api: getWarehouseSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getWarehouseSimpleList(),
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -232,11 +226,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择创建人',
         allowClear: true,
         showSearch: true,
-        api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        api: () => getSimpleUserList(),
+        labelField: 'nickname',
+        valueField: 'id',
       },
     },
     {

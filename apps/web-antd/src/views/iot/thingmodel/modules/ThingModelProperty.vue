@@ -11,7 +11,6 @@ import { isEmpty } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio, Select } from 'ant-design-vue';
 
-import { validateBoolName } from '#/api/iot/thingmodel';
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
@@ -82,6 +81,7 @@ function handleChange(dataType: any) {
       break;
     }
   }
+  // useVModel 会自动同步数据到父组件，不需要手动 emit
 }
 
 /** 默认选中读写 */
@@ -91,22 +91,18 @@ watch(
     if (props.isStructDataSpecs || props.isParams) {
       return;
     }
-    isEmpty(val) &&
-      (property.value.accessMode =
-        IoTThingModelAccessModeEnum.READ_WRITE.value);
+    if (isEmpty(val)) {
+      property.value.accessMode = IoTThingModelAccessModeEnum.READ_WRITE.value;
+    }
   },
   { immediate: true },
 );
 </script>
 
 <template>
-  <Form.Item
-    :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
-    label="数据类型"
-    prop="property.dataType"
-  >
+  <Form.Item label="数据类型">
     <Select
-      v-model="property.dataType"
+      v-model:value="property.dataType"
       placeholder="请选择数据类型"
       @change="handleChange"
     >
@@ -114,9 +110,10 @@ watch(
       <Select.Option
         v-for="option in getDataTypeOptions2"
         :key="option.value"
-        :label="`${option.value}(${option.label})`"
         :value="option.value"
-      />
+      >
+        {{ `${option.value}(${option.label})` }}
+      </Select.Option>
     </Select>
   </Form.Item>
   <!-- 数值型配置 -->
@@ -140,24 +137,17 @@ watch(
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
-    <template v-for="(item, index) in property.dataSpecsList" :key="item.value">
+    <template v-for="item in property.dataSpecsList" :key="item.value">
       <div class="w-1/1 mb-5px flex items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
-        <Form.Item
-          :prop="`property.dataSpecsList[${index}].name`"
-          :rules="[
-            { required: true, message: '枚举描述不能为空' },
-            { validator: validateBoolName, trigger: 'blur' },
-          ]"
-          class="mb-0 flex-1"
-        >
+        <div class="flex-1">
           <Input
-            v-model="item.name"
+            v-model:value="item.name"
             :placeholder="`如：${item.value === 0 ? '关' : '开'}`"
             class="w-255px!"
           />
-        </Form.Item>
+        </div>
       </div>
     </template>
   </Form.Item>
@@ -165,21 +155,21 @@ watch(
   <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
     label="数据长度"
-    prop="property.dataSpecs.length"
+    name="property.dataSpecs.length"
   >
     <Input
-      v-model="property.dataSpecs.length"
+      v-model:value="property.dataSpecs.length"
       class="w-255px!"
       placeholder="请输入文本字节长度"
     >
-      <template #append>字节</template>
+      <template #addonAfter>字节</template>
     </Input>
   </Form.Item>
   <!-- 时间型配置 -->
   <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.DATE"
     label="时间格式"
-    prop="date"
+    name="date"
   >
     <Input
       class="w-255px!"
@@ -200,13 +190,13 @@ watch(
   <Form.Item
     v-if="!isStructDataSpecs && !isParams"
     label="读写类型"
-    prop="property.accessMode"
+    name="property.accessMode"
   >
-    <Radio.Group v-model="property.accessMode">
+    <Radio.Group v-model:value="property.accessMode">
       <Radio
         v-for="accessMode in Object.values(IoTThingModelAccessModeEnum)"
         :key="accessMode.value"
-        :label="accessMode.value"
+        :value="accessMode.value"
       >
         {{ accessMode.label }}
       </Radio>

@@ -28,10 +28,8 @@ export function useDistributeFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        labelField: 'nickname',
+        valueField: 'id',
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',

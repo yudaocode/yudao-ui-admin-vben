@@ -147,7 +147,8 @@ export function useBindFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         api: () => getSimpleUserList(),
-        fieldNames: { label: 'nickname', value: 'id' },
+        labelField: 'nickname',
+        valueField: 'id',
         mode: 'tags',
         allowClear: true,
         placeholder: '请选择门店店员',

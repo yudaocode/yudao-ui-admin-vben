@@ -237,12 +237,10 @@ defineExpose({
   .product-card {
     height: 100%;
     overflow: hidden;
-    border: 1px solid #e8e8e8;
     border-radius: 8px;
     transition: all 0.3s ease;
 
     &:hover {
-      border-color: #d9d9d9;
       box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
       transform: translateY(-2px);
     }
@@ -273,7 +271,6 @@ defineExpose({
       font-size: 16px;
       font-weight: 600;
       line-height: 1.5;
-      color: #1f2937;
       white-space: nowrap;
     }
 
@@ -292,14 +289,13 @@ defineExpose({
         .info-label {
           flex-shrink: 0;
           margin-right: 8px;
-          color: #6b7280;
+          opacity: 0.65;
         }
 
         .info-value {
           overflow: hidden;
           text-overflow: ellipsis;
           font-weight: 500;
-          color: #1f2937;
           white-space: nowrap;
 
           &.text-primary {
@@ -315,9 +311,9 @@ defineExpose({
           font-family: 'Courier New', monospace;
           font-size: 12px;
           vertical-align: middle;
-          color: #374151;
           white-space: nowrap;
           cursor: help;
+          opacity: 0.85;
         }
 
         .info-tag {
@@ -337,6 +333,7 @@ defineExpose({
       color: #667eea;
       background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
       border-radius: 8px;
+      opacity: 0.8;
     }
 
     // 按钮组
@@ -345,7 +342,7 @@ defineExpose({
       gap: 8px;
       padding-top: 12px;
       margin-top: auto;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid var(--ant-color-split);
 
       .action-btn {
         flex: 1;
@@ -388,6 +385,40 @@ defineExpose({
           flex: 0 0 32px;
           padding: 0;
         }
+      }
+    }
+  }
+}
+
+// 夜间模式适配
+html.dark {
+  .product-card-view {
+    .product-card {
+      &:hover {
+        box-shadow: 0 4px 16px rgb(0 0 0 / 30%);
+      }
+
+      .product-title {
+        color: rgb(255 255 255 / 85%);
+      }
+
+      .info-list {
+        .info-label {
+          color: rgb(255 255 255 / 65%);
+        }
+
+        .info-value {
+          color: rgb(255 255 255 / 85%);
+        }
+
+        .product-key {
+          color: rgb(255 255 255 / 75%);
+        }
+      }
+
+      .product-3d-icon {
+        color: #8b9cff;
+        background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
       }
     }
   }

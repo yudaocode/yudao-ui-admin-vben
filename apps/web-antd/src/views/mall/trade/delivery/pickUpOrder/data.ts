@@ -10,7 +10,7 @@ import { useUserStore } from '@vben/stores';
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import { getRangePickerDefaultProps } from '#/utils';
 
-/** 关联数据 **/
+/** 关联数据 */
 const userStore = useUserStore();
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
 getSimpleDeliveryPickUpStoreList().then((res) => {
@@ -40,10 +40,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: pickUpStoreList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择自提门店',
       },
       defaultValue: pickUpStoreList.value[0]?.id,

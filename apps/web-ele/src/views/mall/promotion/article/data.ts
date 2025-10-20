@@ -38,7 +38,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '文章分类',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleArticleCategoryList,
+        api: () => getSimpleArticleCategoryList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择文章分类',
@@ -140,7 +140,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '文章分类',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleArticleCategoryList,
+        api: () => getSimpleArticleCategoryList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择文章分类',

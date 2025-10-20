@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '邮箱账号',
       component: 'ApiSelect',
       componentProps: {
-        api: async () => await getSimpleMailAccountList(),
+        api: () => getSimpleMailAccountList(),
         labelField: 'mail',
         valueField: 'id',
         allowClear: true,

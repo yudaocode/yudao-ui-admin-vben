@@ -1,11 +1,15 @@
-import type { VbenFormSchema } from '#/adapter/form';
 import type { Ref } from 'vue';
+
+import type { VbenFormSchema } from '#/adapter/form';
 import type { CrmBusinessApi } from '#/api/crm/business';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
 
-import { DEFAULT_STATUSES, getBusinessStatusSimpleList } from '#/api/crm/business/status';
+import {
+  DEFAULT_STATUSES,
+  getBusinessStatusSimpleList,
+} from '#/api/crm/business/status';
 
 /** 详情页的字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {

@@ -544,11 +544,9 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品',
         allowClear: true,
         showSearch: true,
-        api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getProductSimpleList(),
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {

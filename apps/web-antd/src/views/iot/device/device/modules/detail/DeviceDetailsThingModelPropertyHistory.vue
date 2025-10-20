@@ -1,4 +1,5 @@
 <!-- 设备物模型 -> 运行状态 -> 查看数据（设备的属性值历史）-->
+// 重新关闭打开图表,图表不显示可能图例注销失败等大佬修复
 <script setup lang="ts">
 import type { Dayjs } from 'dayjs';
 
@@ -10,7 +11,7 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { beginOfDay, endOfDay, formatDate } from '@vben/utils';
+import { beginOfDay, endOfDay, formatDate, formatDateTime } from '@vben/utils';
 
 import {
   Button,
@@ -20,6 +21,7 @@ import {
   RangePicker,
   Space,
   Spin,
+  Table,
   Tag,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -49,8 +51,8 @@ const queryParams = reactive({
   deviceId: -1,
   identifier: '',
   times: [
-    formatDate(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
-    formatDate(endOfDay(new Date())),
+    formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
+    formatDateTime(endOfDay(new Date())),
   ],
 });
 
@@ -100,7 +102,7 @@ const tableColumns = computed(() => [
     title: '序号',
     key: 'index',
     width: 80,
-    align: 'center',
+    align: 'center' as const,
     customRender: ({ index }: { index: number }) => index + 1,
   },
   {
@@ -108,20 +110,20 @@ const tableColumns = computed(() => [
     key: 'updateTime',
     dataIndex: 'updateTime',
     width: 200,
-    align: 'center',
+    align: 'center' as const,
   },
   {
     title: '属性值',
     key: 'value',
     dataIndex: 'value',
-    align: 'center',
+    align: 'center' as const,
   },
 ]);
 
 // 分页配置
 const paginationConfig = computed(() => ({
   current: 1,
-  pageSize: 20,
+  pageSize: 10,
   total: total.value,
   showSizeChanger: true,
   showQuickJumper: true,
@@ -134,7 +136,10 @@ async function getList() {
   loading.value = true;
   try {
     const data = await getHistoryDevicePropertyList(queryParams);
-    list.value = (data?.list as IotDeviceApi.DevicePropertyDetail[]) || [];
+    // 后端直接返回数组，不是 { list: [] } 格式
+    list.value = (
+      Array.isArray(data) ? data : data?.list || []
+    ) as IotDeviceApi.DevicePropertyDetail[];
     total.value = list.value.length;
 
     // 如果是图表模式且不是复杂数据类型，渲染图表
@@ -143,7 +148,9 @@ async function getList() {
       !isComplexDataType.value &&
       list.value.length > 0
     ) {
+      // 等待 DOM 更新完成后再渲染图表
       await nextTick();
+      await nextTick(); // 双重 nextTick 确保 DOM 完全准备好
       renderChart();
     }
   } catch {
@@ -157,34 +164,43 @@ async function getList() {
 
 /** 渲染图表 */
 function renderChart() {
-  if (!list.value || list.value.length === 0) return;
+  if (!list.value || list.value.length === 0) {
+    return;
+  }
 
   const chartData = list.value.map((item) => [item.updateTime, item.value]);
 
-  renderEcharts({
-    title: {
-      text: '属性值趋势',
-      left: 'center',
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'normal',
+  // 使用 setTimeout 延迟渲染，避免 ECharts 主进程冲突
+  setTimeout(() => {
+    // 检查 chartRef 是否存在且已挂载
+    if (!chartRef.value || !chartRef.value.$el) {
+      return;
+    }
+
+    renderEcharts({
+      title: {
+        text: '属性值趋势',
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'normal',
+        },
       },
-    },
-    grid: {
-      left: 60,
-      right: 60,
-      bottom: 100,
-      top: 80,
-      containLabel: true,
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
+      grid: {
+        left: 60,
+        right: 60,
+        bottom: 100,
+        top: 80,
+        containLabel: true,
       },
-      formatter: (params: any) => {
-        const param = params[0];
-        return `
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+        },
+        formatter: (params: any) => {
+          const param = params[0];
+          return `
           <div style="padding: 8px;">
             <div style="margin-bottom: 4px; font-weight: bold;">
               ${formatDate(new Date(param.value[0]), 'YYYY-MM-DD HH:mm:ss')}
@@ -195,76 +211,77 @@ function renderChart() {
             </div>
           </div>
         `;
-      },
-    },
-    xAxis: {
-      type: 'time',
-      name: '时间',
-      nameTextStyle: {
-        padding: [10, 0, 0, 0],
-      },
-      axisLabel: {
-        formatter: (value: number) => {
-          return String(formatDate(new Date(value), 'MM-DD HH:mm') || '');
         },
       },
-    },
-    yAxis: {
-      type: 'value',
-      name: '属性值',
-      nameTextStyle: {
-        padding: [0, 0, 10, 0],
-      },
-    },
-    series: [
-      {
-        name: '属性值',
-        type: 'line',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 6,
-        lineStyle: {
-          width: 2,
-          color: '#1890FF',
+      xAxis: {
+        type: 'time',
+        name: '时间',
+        nameTextStyle: {
+          padding: [10, 0, 0, 0],
         },
-        itemStyle: {
-          color: '#1890FF',
-        },
-        areaStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              {
-                offset: 0,
-                color: 'rgba(24, 144, 255, 0.3)',
-              },
-              {
-                offset: 1,
-                color: 'rgba(24, 144, 255, 0.05)',
-              },
-            ],
+        axisLabel: {
+          formatter: (value: number) => {
+            return String(formatDate(new Date(value), 'MM-DD HH:mm') || '');
           },
         },
-        data: chartData,
       },
-    ],
-    dataZoom: [
-      {
-        type: 'inside',
-        start: 0,
-        end: 100,
+      yAxis: {
+        type: 'value',
+        name: '属性值',
+        nameTextStyle: {
+          padding: [0, 0, 10, 0],
+        },
       },
-      {
-        type: 'slider',
-        height: 30,
-        bottom: 20,
-      },
-    ],
-  });
+      series: [
+        {
+          name: '属性值',
+          type: 'line',
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          lineStyle: {
+            width: 2,
+            color: '#1890FF',
+          },
+          itemStyle: {
+            color: '#1890FF',
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: 'rgba(24, 144, 255, 0.3)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(24, 144, 255, 0.05)',
+                },
+              ],
+            },
+          },
+          data: chartData,
+        },
+      ],
+      dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 100,
+        },
+        {
+          type: 'slider',
+          height: 30,
+          bottom: 20,
+        },
+      ],
+    });
+  }, 300); // 延迟300ms渲染，确保 DOM 完全准备好
 }
 
 /** 打开弹窗 */
@@ -275,12 +292,31 @@ async function open(deviceId: number, identifier: string, dataType: string) {
   propertyIdentifier.value = identifier;
   thingModelDataType.value = dataType;
 
+  // 重置时间范围为最近7天
+  dateRange.value = [
+    dayjs().subtract(7, 'day').startOf('day'),
+    dayjs().endOf('day'),
+  ];
+
+  // 更新查询参数的时间
+  queryParams.times = [
+    formatDateTime(dateRange.value[0].toDate()),
+    formatDateTime(dateRange.value[1].toDate()),
+  ];
+
   // 如果物模型是 struct、array，需要默认使用 list 模式
   viewMode.value = isComplexDataType.value ? 'list' : 'chart';
 
   // 等待弹窗完全渲染后再获取数据
   await nextTick();
   await getList();
+
+  // 如果是图表模式，延迟渲染图表
+  if (viewMode.value === 'chart' && !isComplexDataType.value) {
+    setTimeout(() => {
+      renderChart();
+    }, 500);
+  }
 }
 
 /** 时间变化处理 */
@@ -290,8 +326,8 @@ function handleTimeChange() {
   }
 
   queryParams.times = [
-    formatDate(dateRange.value[0].toDate()),
-    formatDate(dateRange.value[1].toDate()),
+    formatDateTime(dateRange.value[0].toDate()),
+    formatDateTime(dateRange.value[1].toDate()),
   ];
 
   getList();
@@ -372,8 +408,14 @@ watch(viewMode, async (newMode) => {
     !isComplexDataType.value &&
     list.value.length > 0
   ) {
+    // 等待 DOM 显示完成
     await nextTick();
-    renderChart();
+    await nextTick();
+
+    // 延迟渲染图表
+    setTimeout(() => {
+      renderChart();
+    }, 300);
   }
 });
 
@@ -398,7 +440,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             format="YYYY-MM-DD HH:mm:ss"
             :placeholder="['开始时间', '结束时间']"
             class="!w-[400px]"
-            @press-enter="handleTimeChange"
+            @change="handleTimeChange"
           />
 
           <!-- 刷新按钮 -->
@@ -460,18 +502,20 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
       <!-- 数据展示区域 -->
       <Spin :spinning="loading" :delay="200">
         <!-- 图表模式 -->
-        <div v-if="viewMode === 'chart'" class="chart-container">
+        <div v-show="viewMode === 'chart'" class="chart-container">
           <Empty
             v-if="list.length === 0"
             :image="Empty.PRESENTED_IMAGE_SIMPLE"
             description="暂无数据"
             class="py-20"
           />
-          <EchartsUI v-else ref="chartRef" height="500px" />
+          <div v-else>
+            <EchartsUI ref="chartRef" height="500px" />
+          </div>
         </div>
 
         <!-- 表格模式 -->
-        <div v-else class="table-container">
+        <div v-show="viewMode === 'list'" class="table-container">
           <Table
             :data-source="list"
             :columns="tableColumns"

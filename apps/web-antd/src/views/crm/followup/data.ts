@@ -85,8 +85,9 @@ export function useFormSchema(
           });
           return res.list;
         },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
-        fieldNames: { label: 'name', value: 'id' },
       },
     },
     {
@@ -105,8 +106,9 @@ export function useFormSchema(
           });
           return res.list;
         },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
-        fieldNames: { label: 'name', value: 'id' },
       },
     },
   ];

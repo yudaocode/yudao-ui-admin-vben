@@ -148,6 +148,7 @@ onMounted(() => {
           v-model:value="queryParams.times"
           show-time
           format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
           style="width: 360px"
         />
       </Form.Item>

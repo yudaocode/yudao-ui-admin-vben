@@ -99,7 +99,11 @@ onMounted(() => {
 
     <Grid>
       <template #top>
-        <ElTabs v-model="statusTab" class="-mt-11" @tab-change="handleChangeStatus">
+        <ElTabs
+          v-model="statusTab"
+          class="-mt-11"
+          @tab-change="handleChangeStatus"
+        >
           <ElTabs.TabPane
             v-for="tab in statusTabs"
             :key="tab.value"

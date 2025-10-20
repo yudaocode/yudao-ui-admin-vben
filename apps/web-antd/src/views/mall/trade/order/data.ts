@@ -74,11 +74,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '快递公司',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeliveryExpressList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getSimpleDeliveryExpressList(),
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择快递公司',
         allowClear: true,
       },
@@ -92,11 +90,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '自提门店',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeliveryPickUpStoreList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getSimpleDeliveryPickUpStoreList(),
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择自提门店',
         allowClear: true,
       },
@@ -374,11 +370,9 @@ export function useAddressFormSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         api: () => getAreaTree(),
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-          children: 'children',
-        },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择收件人所在地',
         treeDefaultExpandAll: true,
       },
@@ -428,11 +422,9 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
       label: '物流公司',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeliveryExpressList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getSimpleDeliveryExpressList(),
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择物流公司',
       },
       dependencies: {
