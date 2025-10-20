@@ -201,8 +201,3 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
-<style scoped>
-:deep(.vxe-toolbar div) {
-  z-index: 1;
-}
-</style>

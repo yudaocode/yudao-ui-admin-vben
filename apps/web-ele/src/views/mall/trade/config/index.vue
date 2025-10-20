@@ -58,7 +58,6 @@ async function handleSubmit() {
   data.brokerageWithdrawMinPrice = yuanToFen(data.brokerageWithdrawMinPrice!);
   await saveTradeConfig(data);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  await getConfigInfo();
 }
 
 const [Form, formApi] = useVbenForm({

@@ -481,10 +481,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-:deep(.vxe-toolbar div) {
-  z-index: 1;
-}
-
 /* 隐藏 VxeGrid 自带的搜索表单区域 */
 :deep(.vxe-grid--form-wrapper) {
   display: none !important;
