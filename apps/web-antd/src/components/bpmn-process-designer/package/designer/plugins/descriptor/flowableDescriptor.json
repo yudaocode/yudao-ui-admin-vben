@@ -910,7 +910,10 @@
       "name": "FailedJobRetryTimeCycle",
       "superClass": ["Element"],
       "meta": {
-        "allowedIn": ["flowable:AsyncCapable", "bpmn:MultiInstanceLoopCharacteristics"]
+        "allowedIn": [
+          "flowable:AsyncCapable",
+          "bpmn:MultiInstanceLoopCharacteristics"
+        ]
       },
       "properties": [
         {
@@ -1254,11 +1257,11 @@
         "allowedIn": ["bpmn:StartEvent", "bpmn:UserTask"]
       },
       "properties": [
-      {
-        "name": "value",
-        "type": "Integer",
-        "isBody": true
-      }
+        {
+          "name": "value",
+          "type": "Integer",
+          "isBody": true
+        }
       ]
     },
     {

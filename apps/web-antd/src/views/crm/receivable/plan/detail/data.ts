@@ -31,8 +31,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'receivable',
       label: '实际回款金额',
-      content: (data) =>
-        erpPriceInputFormatter(data?.receivable?.price ?? 0),
+      content: (data) => erpPriceInputFormatter(data?.receivable?.price ?? 0),
     },
   ];
 }
@@ -78,8 +77,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'receivable',
       label: '实际回款金额',
-      content: (data) =>
-        erpPriceInputFormatter(data?.receivable?.price ?? 0),
+      content: (data) => erpPriceInputFormatter(data?.receivable?.price ?? 0),
     },
     {
       field: 'receivableRemain',
@@ -92,8 +90,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'receivable.returnTime',
       label: '实际回款日期',
-      content: (data) =>
-        formatDateTime(data?.receivable?.returnTime) as string,
+      content: (data) => formatDateTime(data?.receivable?.returnTime) as string,
     },
     {
       field: 'remark',

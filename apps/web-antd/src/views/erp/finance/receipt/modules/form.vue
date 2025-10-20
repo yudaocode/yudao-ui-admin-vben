@@ -26,17 +26,18 @@ const formData = ref<
   }
 >({
   id: undefined,
-  no: undefined,
-  customerId: undefined,
-  accountId: undefined,
-  financeUserId: undefined,
-  receiptTime: undefined,
-  remark: undefined,
+  no: '',
+  customerId: 0,
+  accountId: 0,
+  financeUserId: 0,
+  receiptTime: new Date(),
+  remark: '',
   fileUrl: undefined,
   totalPrice: 0,
   discountPrice: 0,
   receiptPrice: 0,
   items: [],
+  status: 0,
 });
 
 const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
@@ -141,7 +142,21 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {
+        id: undefined,
+        no: '',
+        customerId: 0,
+        accountId: 0,
+        financeUserId: 0,
+        receiptTime: new Date(),
+        remark: '',
+        totalPrice: 0,
+        discountPrice: 0,
+        receiptPrice: 0,
+        status: 0,
+        items: [],
+        bizNo: '',
+      };
       return;
     }
     // 加载数据

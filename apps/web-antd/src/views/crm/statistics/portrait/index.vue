@@ -38,8 +38,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async (_, formValues) => {
           const res = await getDatas(activeTabName.value, formValues);
-          await renderLeftEcharts(getChartOptions(activeTabName.value, res).left);
-          await renderRightEcharts(getChartOptions(activeTabName.value, res).right);
+          await renderLeftEcharts(
+            getChartOptions(activeTabName.value, res).left,
+          );
+          await renderRightEcharts(
+            getChartOptions(activeTabName.value, res).right,
+          );
           return res;
         },
       },

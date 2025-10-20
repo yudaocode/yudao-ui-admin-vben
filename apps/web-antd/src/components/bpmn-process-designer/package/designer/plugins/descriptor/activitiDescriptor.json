@@ -740,7 +740,10 @@
       "name": "FailedJobRetryTimeCycle",
       "superClass": ["Element"],
       "meta": {
-        "allowedIn": ["activiti:AsyncCapable", "bpmn:MultiInstanceLoopCharacteristics"]
+        "allowedIn": [
+          "activiti:AsyncCapable",
+          "bpmn:MultiInstanceLoopCharacteristics"
+        ]
       },
       "properties": [
         {

@@ -30,13 +30,13 @@ defineProps<SummaryCardProps>();
       </div>
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-1">
-          <span class="text-sm text-muted-foreground">{{ title }}</span>
+          <span class="text-muted-foreground text-sm">{{ title }}</span>
           <TooltipProvider v-if="tooltip">
             <Tooltip>
               <TooltipTrigger>
                 <VbenIcon
                   icon="lucide:circle-alert"
-                  class="size-3 text-muted-foreground"
+                  class="text-muted-foreground size-3"
                 />
               </TooltipTrigger>
               <TooltipContent>
