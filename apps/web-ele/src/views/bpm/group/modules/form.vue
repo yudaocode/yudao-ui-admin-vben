@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
