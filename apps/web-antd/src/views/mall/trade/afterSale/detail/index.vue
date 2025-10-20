@@ -206,7 +206,7 @@ async function handleRefund() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/mall/trade/afterSale');
+  router.push({ name: 'TradeAfterSale' });
 }
 
 /** 初始化 */

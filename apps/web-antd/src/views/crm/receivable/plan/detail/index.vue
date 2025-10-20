@@ -71,7 +71,7 @@ async function getReceivablePlanDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/receivablePlan');
+  router.push({ name: 'CrmReceivablePlan' });
 }
 
 /** 编辑收款 */

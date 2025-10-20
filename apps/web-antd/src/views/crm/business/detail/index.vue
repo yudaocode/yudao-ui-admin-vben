@@ -80,7 +80,7 @@ async function getBusinessDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/business');
+  router.push({ name: 'CrmBusiness' });
 }
 
 /** 编辑商机 */

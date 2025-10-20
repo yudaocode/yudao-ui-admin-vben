@@ -77,7 +77,7 @@ async function loadContractDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/contract');
+  router.push({ name: 'CrmContract' });
 }
 
 /** 编辑合同 */

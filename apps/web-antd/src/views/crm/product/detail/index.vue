@@ -57,7 +57,7 @@ async function getProductDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/product');
+  router.push({ name: 'CrmProduct' });
 }
 
 /** 加载数据 */

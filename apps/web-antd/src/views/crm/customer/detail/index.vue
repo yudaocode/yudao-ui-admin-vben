@@ -89,7 +89,7 @@ async function loadCustomerDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/customer');
+  router.push({ name: 'CrmCustomer' });
 }
 
 /** 编辑客户 */

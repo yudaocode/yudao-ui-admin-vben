@@ -109,7 +109,7 @@ async function submitForm() {
     // TODO @ziye：有告警哈；
     closeCurrentTab();
 
-    await router.push({ path: '/bpm/task/my' });
+    await router.push({ name: 'BpmTaskMy' });
   } catch (error) {
     console.error('发起流程失败:', error);
   } finally {

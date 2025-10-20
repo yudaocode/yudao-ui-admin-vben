@@ -71,7 +71,7 @@ async function getClueDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/clue');
+  router.push({ name: 'CrmClue' });
 }
 
 /** 编辑线索 */

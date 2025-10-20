@@ -70,7 +70,7 @@ async function loadReceivableDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/receivable');
+  router.push({ name: 'CrmReceivable' });
 }
 
 /** 编辑收款 */

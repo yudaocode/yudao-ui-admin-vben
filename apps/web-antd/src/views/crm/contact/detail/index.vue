@@ -73,7 +73,7 @@ async function getContactDetail() {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/crm/contact');
+  router.push({ name: 'CrmContact' });
 }
 
 /** 编辑联系人 */

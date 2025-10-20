@@ -320,7 +320,7 @@ async function handleSave() {
 
     // 返回列表页（排除更新的情况）
     if (actionType !== 'update') {
-      await router.push({ path: '/bpm/manager/model' });
+      await router.push({ name: 'BpmModel' });
     }
   } catch (error: any) {
     console.error('保存失败:', error);
@@ -354,7 +354,7 @@ async function handleDeploy() {
     // 发布
     await deployModel(formData.value.id);
     message.success('发布成功');
-    await router.push({ path: '/bpm/manager/model' });
+    await router.push({ name: 'BpmModel' });
   } catch (error: any) {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
@@ -392,8 +392,8 @@ const tabs = useTabs();
 function handleBack() {
   // 关闭当前页签
   tabs.closeCurrentTab();
-  // 跳转到列表页，使用路径， 目前后端的路由 name： 'name'+ menuId
-  router.push({ path: '/bpm/manager/model' });
+  // 跳转到列表页
+  router.push({ name: 'BpmModel' });
 }
 
 /** 初始化 */
