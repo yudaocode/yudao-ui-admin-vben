@@ -6,20 +6,25 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 import type { DataComparisonRespVO } from '#/api/mall/statistics/common';
 import type { MallProductStatisticsApi } from '#/api/mall/statistics/product';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-import { SummaryCard } from '@vben/common-ui';
+import { confirm, SummaryCard } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { fenToYuan, isSameDay } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  fenToYuan,
+  formatDateTime,
+  isSameDay,
+} from '@vben/utils';
 
-import { Button, Card, Col, message, Row, Spin } from 'ant-design-vue';
+import { Button, Card, Col, Row, Spin } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
-import { getProductSummaryChartOptions } from './product-summary-chart-options';
+import { getProductSummaryChartOptions } from './summary-chart-options';
 
 /** 商品概况 */
 defineOptions({ name: 'ProductSummaryCard' });
@@ -28,8 +33,7 @@ const trendLoading = ref(true); // 商品状态加载中
 const exportLoading = ref(false); // 导出的加载中
 const trendSummary =
   ref<DataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>>(); // 商品状况统计数据
-// TODO @AI：searchTimes；参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/statistics/product/modules/rank-card.vue；这样，可以去掉 shortcutDateRangePicker
-const shortcutDateRangePicker = ref();
+const searchTimes = ref<string[]>([]);
 
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
@@ -44,104 +48,73 @@ const calculateRelativeRate = (value?: number, reference?: number): string => {
   return (((curValue - refValue) / refValue) * 100).toFixed(2);
 };
 
+/** 处理日期范围变化 */
+const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
+  if (times?.length !== 2) {
+    getProductTrendData();
+    return;
+  }
+  // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
+  let adjustedTimes = times;
+  if (isSameDay(times[0], times[1])) {
+    adjustedTimes = [dayjs(times[0]).subtract(1, 'd'), times[1]];
+  }
+  searchTimes.value = [
+    formatDateTime(adjustedTimes[0]) as string,
+    formatDateTime(adjustedTimes[1]) as string,
+  ];
+
+  // 查询数据
+  getProductTrendData();
+};
+
 /** 处理商品状况查询 */
-const getProductTrendData = async (times?: [Dayjs, Dayjs]) => {
+const getProductTrendData = async () => {
   trendLoading.value = true;
   try {
-    // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
-    let queryTimes = times;
-    if (!queryTimes && shortcutDateRangePicker.value?.times) {
-      queryTimes = shortcutDateRangePicker.value.times;
-    }
-    if (queryTimes && isSameDay(queryTimes[0], queryTimes[1])) {
-      queryTimes[0] = dayjs(queryTimes[0]).subtract(1, 'd');
-    }
-
-    // 查询数据
-    await Promise.all([
-      getProductTrendSummary(queryTimes),
-      getProductStatisticsList(queryTimes),
-    ]);
+    await Promise.all([getProductTrendSummary(), getProductStatisticsList()]);
   } finally {
     trendLoading.value = false;
   }
 };
 
 /** 查询商品状况数据统计 */
-const getProductTrendSummary = async (times?: [Dayjs, Dayjs]) => {
-  // TODO @AI：是不是 queryTimes 直接使用 searchTimes 完事？！
-  const queryTimes = times
-    ? [
-        times[0].format('YYYY-MM-DD HH:mm:ss'),
-        times[1].format('YYYY-MM-DD HH:mm:ss'),
-      ]
-    : undefined;
+async function getProductTrendSummary() {
   trendSummary.value = await ProductStatisticsApi.getProductStatisticsAnalyse({
-    times: queryTimes,
+    times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
   });
-};
+}
 
 /** 查询商品状况数据列表 */
-const getProductStatisticsList = async (times?: [Dayjs, Dayjs]) => {
-  // TODO @AI：是不是 queryTimes 直接使用 searchTimes 完事？！
-  // 查询数据
-  const queryTimes = times
-    ? [
-        times[0].format('YYYY-MM-DD HH:mm:ss'),
-        times[1].format('YYYY-MM-DD HH:mm:ss'),
-      ]
-    : undefined;
-  const list: MallProductStatisticsApi.ProductStatistics[] =
-    await ProductStatisticsApi.getProductStatisticsList({ times: queryTimes });
+async function getProductStatisticsList() {
+  const list = await ProductStatisticsApi.getProductStatisticsList({
+    times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
+  });
 
-  // 更新 Echarts 数据，数据转换由图表配置处理
+  // 渲染图表
   await renderEcharts(getProductSummaryChartOptions(list));
-};
+}
 
 /** 导出按钮操作 */
-// TODO @AI：导出有问题，参考别的模块的 confirm 更好；
-const handleExport = async () => {
+async function handleExport() {
   try {
     // 导出的二次确认
-    await message.confirm({
+    await confirm({
       content: '确认导出商品状况数据吗？',
-      okText: '确定',
-      cancelText: '取消',
     });
     // 发起导出
     exportLoading.value = true;
-    const times = shortcutDateRangePicker.value?.times;
-    const queryTimes = times
-      ? [
-          times[0].format('YYYY-MM-DD HH:mm:ss'),
-          times[1].format('YYYY-MM-DD HH:mm:ss'),
-        ]
-      : undefined;
     const data = await ProductStatisticsApi.exportProductStatisticsExcel({
-      times: queryTimes,
+      times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
     });
-
     // 处理下载
-    const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = '商品状况.xlsx';
-    link.click();
-    window.URL.revokeObjectURL(url);
+    downloadFileFromBlobPart({ fileName: '商品状况.xlsx', source: data });
   } catch {
     // 用户取消导出
   } finally {
     exportLoading.value = false;
   }
-};
-
-/** 初始化 */
-onMounted(async () => {
-  await getProductTrendData();
-});
+}
 </script>
 
 <template>
@@ -149,10 +122,7 @@ onMounted(async () => {
     <template #extra>
       <!-- 查询条件 -->
       <div class="flex items-center gap-2">
-        <ShortcutDateRangePicker
-          ref="shortcutDateRangePicker"
-          @change="getProductTrendData"
-        >
+        <ShortcutDateRangePicker @change="handleDateRangeChange">
           <Button class="ml-4" @click="handleExport" :loading="exportLoading">
             <template #icon>
               <IconifyIcon icon="lucide:download" />
@@ -199,7 +169,6 @@ onMounted(async () => {
           "
         />
       </Col>
-
       <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="支付件数"

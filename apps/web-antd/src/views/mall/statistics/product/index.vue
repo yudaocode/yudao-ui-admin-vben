@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { DocAlert, Page } from '@vben/common-ui';
 
-import ProductSummaryCard from './modules/product-summary-card.vue';
 import ProductRankCard from './modules/rank-card.vue';
+import ProductSummaryCard from './modules/summary-card.vue';
 
 /** 商品统计 */
 defineOptions({ name: 'ProductStatistics' });
