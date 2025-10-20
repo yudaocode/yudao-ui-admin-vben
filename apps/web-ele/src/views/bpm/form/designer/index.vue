@@ -137,19 +137,18 @@ onMounted(() => {
   <Page auto-content-height>
     <FormModal @success="handleBack" />
 
-    <div v-loading="loading">
-      <FcDesigner
-        class="h-full min-h-[500px]"
-        ref="designerRef"
-        :config="designerConfig"
-      >
-        <template #handle>
-          <ElButton size="small" type="primary" @click="handleSave">
-            <IconifyIcon icon="mdi:content-save" />
-            保存
-          </ElButton>
-        </template>
-      </FcDesigner>
-    </div>
+    <FcDesigner
+      ref="designerRef"
+      height="90vh"
+      v-loading="loading"
+      :config="designerConfig"
+    >
+      <template #handle>
+        <ElButton size="small" type="primary" @click="handleSave">
+          <IconifyIcon icon="mdi:content-save" />
+          保存
+        </ElButton>
+      </template>
+    </FcDesigner>
   </Page>
 </template>
