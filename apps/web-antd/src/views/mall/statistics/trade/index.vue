@@ -4,14 +4,13 @@ import type { MallTradeStatisticsApi } from '#/api/mall/statistics/trade';
 
 import { onMounted, ref } from 'vue';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page, StatisticCard } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
 import { Col, Row } from 'ant-design-vue';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 
-import TradeStatisticCard from './modules/trade-statistic-card.vue';
 import TradeTrendCard from './modules/trade-trend-card.vue';
 
 /** 交易统计 */
@@ -22,17 +21,19 @@ const summary =
   ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>>(); // 交易统计数据
 
 /** 计算环比百分比 */
-const calculateRelativeRate = (value?: number, reference?: number): string => {
+function calculateRelativeRate(value?: number, reference?: number): string {
   const refValue = Number(reference || 0);
   const curValue = Number(value || 0);
-  if (!refValue || refValue === 0) return '0.00';
+  if (!refValue || refValue === 0) {
+    return '0.00';
+  }
   return (((curValue - refValue) / refValue) * 100).toFixed(2);
-};
+}
 
 /** 查询交易统计 */
-const getTradeStatisticsSummary = async () => {
+async function getTradeStatisticsSummary() {
   summary.value = await TradeStatisticsApi.getTradeStatisticsSummary();
-};
+}
 
 /** 初始化 */
 onMounted(async () => {
@@ -51,11 +52,11 @@ onMounted(async () => {
       />
     </template>
 
+    <!-- 交易概览卡片 -->
     <div class="flex flex-col gap-4">
-      <!-- 交易概览卡片 -->
       <Row :gutter="16">
         <Col :sm="6" :xs="12">
-          <TradeStatisticCard
+          <StatisticCard
             tooltip="昨日订单数量"
             title="昨日订单数量"
             :value="summary?.value?.yesterdayOrderCount || 0"
@@ -68,7 +69,7 @@ onMounted(async () => {
           />
         </Col>
         <Col :sm="6" :xs="12">
-          <TradeStatisticCard
+          <StatisticCard
             tooltip="本月订单数量"
             title="本月订单数量"
             :value="summary?.value?.monthOrderCount || 0"
@@ -81,7 +82,7 @@ onMounted(async () => {
           />
         </Col>
         <Col :sm="6" :xs="12">
-          <TradeStatisticCard
+          <StatisticCard
             tooltip="昨日支付金额"
             title="昨日支付金额"
             prefix="￥"
@@ -96,7 +97,7 @@ onMounted(async () => {
           />
         </Col>
         <Col :sm="6" :xs="12">
-          <TradeStatisticCard
+          <StatisticCard
             tooltip="本月支付金额"
             title="本月支付金额"
             prefix="￥"
