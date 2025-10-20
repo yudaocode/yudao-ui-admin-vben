@@ -23,7 +23,7 @@ const formatDate = (date?: Date | string) => {
 
 <template>
   <Card title="产品信息">
-    <Descriptions bordered :column="3">
+    <Descriptions bordered :column="3" size="small">
       <Descriptions.Item label="产品名称">
         {{ product.name }}
       </Descriptions.Item>

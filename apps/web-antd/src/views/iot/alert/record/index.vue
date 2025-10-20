@@ -101,7 +101,7 @@ async function handleProcess(row: AlertRecord) {
       try {
         await processAlertRecord(row.id as number, processRemark);
         message.success('处理成功');
-        handleRefresh();
+        onRefresh();
       } catch (error) {
         console.error('处理失败:', error);
         throw error;

@@ -1,28 +1,12 @@
-<!-- 设备消息列表 -->
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import {
-  Button,
-  Form,
-  Pagination,
-  Select,
-  Switch,
-  Table,
-  Tag,
-} from 'ant-design-vue';
+import { Button, Form, Pagination, Select, Switch, Table, Tag } from 'ant-design-vue';
 
 import { getDeviceMessagePage } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
@@ -62,36 +46,42 @@ const columns = [
     title: '时间',
     dataIndex: 'ts',
     key: 'ts',
+    align: 'center' as const,
     width: 180,
   },
   {
     title: '上行/下行',
     dataIndex: 'upstream',
     key: 'upstream',
+    align: 'center' as const,
     width: 140,
   },
   {
     title: '是否回复',
     dataIndex: 'reply',
     key: 'reply',
+    align: 'center' as const,
     width: 140,
   },
   {
     title: '请求编号',
     dataIndex: 'requestId',
     key: 'requestId',
+    align: 'center' as const,
     width: 300,
   },
   {
     title: '请求方法',
     dataIndex: 'method',
     key: 'method',
+    align: 'center' as const,
     width: 140,
   },
   {
     title: '请求/响应数据',
     dataIndex: 'params',
     key: 'params',
+    align: 'center' as const,
     ellipsis: true,
   },
 ];
@@ -220,7 +210,6 @@ defineExpose({
       :data-source="list"
       :columns="columns"
       :pagination="false"
-      align="center"
       class="whitespace-nowrap"
     >
       <template #bodyCell="{ column, record }">

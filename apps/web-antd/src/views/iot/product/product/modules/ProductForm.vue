@@ -65,12 +65,12 @@ const [Modal, modalApi] = useVbenModal({
     if (!basicValid) {
       return;
     }
-    
+
     modalApi.lock();
     try {
       // 提交表单 - 合并两个表单的值
       const basicValues = await formApi.getValues();
-      
+
       // 如果折叠面板展开，则获取高级表单的值，否则保留原有值（编辑时）或使用空值（新增时）
       let advancedValues: any = {};
       if (activeKey.value.includes('advanced')) {
@@ -83,12 +83,12 @@ const [Modal, modalApi] = useVbenModal({
           description: formData.value.description,
         };
       }
-      
+
       const values = { ...basicValues, ...advancedValues } as IotProductApi.Product;
       const data = formData.value?.id
         ? { ...values, id: formData.value.id }
         : values;
-      
+
       await (formData.value?.id ? updateProduct(data) : createProduct(data));
       // 关闭并提示
       await modalApi.close();
@@ -123,14 +123,14 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getProduct(data.id);
       // 设置基础表单
       await formApi.setValues(formData.value);
-      
+
       // 先设置高级表单的值（不等待）
       advancedFormApi.setValues({
         icon: formData.value.icon,
         picUrl: formData.value.picUrl,
         description: formData.value.description,
       });
-      
+
       // 如果有图标、图片或描述，自动展开折叠面板以便显示
       if (formData.value.icon || formData.value.picUrl || formData.value.description) {
         activeKey.value = ['advanced'];
@@ -151,9 +151,6 @@ const [Modal, modalApi] = useVbenModal({
       <Form />
       <Collapse v-model:active-key="activeKey" class="mt-4">
         <CollapsePanel key="advanced" header="更多设置">
-          <template #extra>
-            <span class="text-gray-500">📷</span>
-          </template>
           <AdvancedForm />
         </CollapsePanel>
       </Collapse>

@@ -111,14 +111,14 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 下载模板 */
-const handleDownloadTemplate = async () => {
+async function handleDownloadTemplate() {
   try {
     const res = await importDeviceTemplate();
     downloadFileFromBlobPart({ fileName: '设备导入模版.xls', source: res });
   } catch (error: any) {
     message.error(error.message || '下载失败');
   }
-};
+}
 </script>
 
 <template>
