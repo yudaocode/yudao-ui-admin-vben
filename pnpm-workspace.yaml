@@ -18,7 +18,7 @@ catalog:
   '@changesets/cli': ^2.29.5
   '@changesets/git': ^3.0.4
   '@clack/prompts': ^0.10.1
-  '@commitlint/cli': ^19.8.1
+  '@commitlint/cli': ^20.1.0
   '@commitlint/config-conventional': ^19.8.1
   '@ctrl/tinycolor': ^4.1.0
   '@eslint/js': ^9.30.1
