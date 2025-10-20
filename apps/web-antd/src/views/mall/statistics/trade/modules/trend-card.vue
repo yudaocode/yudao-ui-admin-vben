@@ -6,20 +6,25 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 import type { DataComparisonRespVO } from '#/api/mall/statistics/common';
 import type { MallTradeStatisticsApi } from '#/api/mall/statistics/trade';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-import { SummaryCard } from '@vben/common-ui';
+import { confirm, SummaryCard } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { fenToYuan } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  fenToYuan,
+  formatDateTime,
+  isSameDay,
+} from '@vben/utils';
 
-import { Button, Card, Col, message, Row, Skeleton } from 'ant-design-vue';
+import { Button, Card, Col, Row, Spin } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
-import { getTradeTrendChartOptions } from './trade-trend-chart-options';
+import { getTradeTrendChartOptions } from './trend-chart-options';
 
 /** 交易趋势 */
 defineOptions({ name: 'TradeTrendCard' });
@@ -28,7 +33,7 @@ const trendLoading = ref(true); // 交易状态加载中
 const exportLoading = ref(false); // 导出的加载中
 const trendSummary =
   ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>>(); // 交易状况统计数据
-const shortcutDateRangePicker = ref();
+const searchTimes = ref<string[]>([]);
 
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
@@ -37,58 +42,54 @@ const { renderEcharts } = useEcharts(chartRef);
 const calculateRelativeRate = (value?: number, reference?: number): string => {
   const refValue = Number(reference || 0);
   const curValue = Number(value || 0);
-  if (!refValue || refValue === 0) return '0.00';
+  if (!refValue || refValue === 0) {
+    return '0.00';
+  }
   return (((curValue - refValue) / refValue) * 100).toFixed(2);
 };
 
+/** 处理日期范围变化 */
+const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
+  if (times?.length !== 2) {
+    getTradeTrendData();
+    return;
+  }
+  // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
+  let adjustedTimes = times;
+  if (isSameDay(times[0], times[1])) {
+    adjustedTimes = [dayjs(times[0]).subtract(1, 'd'), times[1]];
+  }
+  searchTimes.value = [
+    formatDateTime(adjustedTimes[0]) as string,
+    formatDateTime(adjustedTimes[1]) as string,
+  ];
+
+  // 查询数据
+  getTradeTrendData();
+};
+
 /** 处理交易状况查询 */
-const getTradeTrendData = async (times?: [Dayjs, Dayjs]) => {
+async function getTradeTrendData() {
   trendLoading.value = true;
   try {
-    let queryTimes = times;
-    if (!queryTimes && shortcutDateRangePicker.value?.times) {
-      queryTimes = shortcutDateRangePicker.value.times;
-    }
-
-    // 1. 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
-    if (queryTimes && isSameDay(queryTimes[0], queryTimes[1])) {
-      // 前天
-      queryTimes[0] = dayjs(queryTimes[0]).subtract(1, 'd');
-    }
-
-    // 查询数据
-    await Promise.all([
-      getTradeStatisticsAnalyse(queryTimes),
-      getTradeStatisticsList(queryTimes),
-    ]);
+    await Promise.all([getTradeStatisticsAnalyse(), getTradeStatisticsList()]);
   } finally {
     trendLoading.value = false;
   }
-};
-
-/** 判断是否同一天 */
-const isSameDay = (date1: Dayjs, date2: Dayjs): boolean => {
-  return date1.format('YYYY-MM-DD') === date2.format('YYYY-MM-DD');
-};
+}
 
 /** 查询交易状况数据统计 */
-const getTradeStatisticsAnalyse = async (times?: [Dayjs, Dayjs]) => {
-  const queryTimes = times
-    ? { times: [times[0].toDate(), times[1].toDate()] }
-    : undefined;
-  trendSummary.value = await TradeStatisticsApi.getTradeStatisticsAnalyse(
-    queryTimes as any,
-  );
-};
+async function getTradeStatisticsAnalyse() {
+  trendSummary.value = await TradeStatisticsApi.getTradeStatisticsAnalyse({
+    times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
+  });
+}
 
 /** 查询交易状况数据列表 */
-const getTradeStatisticsList = async (times?: [Dayjs, Dayjs]) => {
-  // 查询数据
-  const queryTimes = times
-    ? { times: [times[0].toDate(), times[1].toDate()] }
-    : undefined;
-  const list: MallTradeStatisticsApi.TradeTrendSummary[] =
-    await TradeStatisticsApi.getTradeStatisticsList(queryTimes as any);
+async function getTradeStatisticsList() {
+  const list = await TradeStatisticsApi.getTradeStatisticsList({
+    times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
+  });
 
   // 处理数据
   const processedList = list.map((item) => ({
@@ -99,51 +100,30 @@ const getTradeStatisticsList = async (times?: [Dayjs, Dayjs]) => {
     expensePrice: Number(fenToYuan(item.expensePrice)),
   }));
 
-  // 更新 Echarts 数据
+  // 渲染图表
   await renderEcharts(getTradeTrendChartOptions(processedList));
-};
+}
 
-// TODO @AI：导出
 /** 导出按钮操作 */
-const handleExport = async () => {
+async function handleExport() {
   try {
     // 导出的二次确认
-    await message.confirm({
+    await confirm({
       content: '确认导出交易状况数据吗？',
-      okText: '确定',
-      cancelText: '取消',
     });
     // 发起导出
     exportLoading.value = true;
-    const times = shortcutDateRangePicker.value?.times;
-    const queryTimes = times
-      ? { times: [times[0].toDate(), times[1].toDate()] }
-      : undefined;
-    const data = await TradeStatisticsApi.exportTradeStatisticsExcel(
-      queryTimes as any,
-    );
-
-    // 处理下载
-    const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    const data = await TradeStatisticsApi.exportTradeStatisticsExcel({
+      times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
     });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = '交易状况.xlsx';
-    link.click();
-    window.URL.revokeObjectURL(url);
+    // 处理下载
+    downloadFileFromBlobPart({ fileName: '交易状况.xlsx', source: data });
   } catch {
     // 用户取消导出
   } finally {
     exportLoading.value = false;
   }
-};
-
-/** 初始化 */
-onMounted(async () => {
-  await getTradeTrendData();
-});
+}
 </script>
 
 <template>
@@ -151,10 +131,7 @@ onMounted(async () => {
     <template #extra>
       <!-- 查询条件 -->
       <div class="flex items-center gap-2">
-        <ShortcutDateRangePicker
-          ref="shortcutDateRangePicker"
-          @change="getTradeTrendData"
-        >
+        <ShortcutDateRangePicker @change="handleDateRangeChange">
           <Button class="ml-4" @click="handleExport" :loading="exportLoading">
             <template #icon>
               <IconifyIcon icon="lucide:download" />
@@ -305,8 +282,8 @@ onMounted(async () => {
     </Row>
 
     <!-- 折线图 -->
-    <Skeleton :loading="trendLoading" :active="true">
-      <EchartsUI ref="chartRef" class="h-[500px]" />
-    </Skeleton>
+    <Spin :spinning="trendLoading">
+      <EchartsUI ref="chartRef" />
+    </Spin>
   </Card>
 </template>

@@ -94,11 +94,15 @@ export function getTradeTrendChartOptions(
     },
     yAxis: {
       type: 'value',
+      axisLine: {
+        show: false,
+      },
       axisTick: {
         show: false,
       },
       axisLabel: {
         formatter: '￥{value}',
+        color: '#7F8B9C',
       },
       splitLine: {
         show: true,

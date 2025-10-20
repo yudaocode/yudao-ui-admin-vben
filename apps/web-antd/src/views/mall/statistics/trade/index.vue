@@ -11,7 +11,7 @@ import { Col, Row } from 'ant-design-vue';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 
-import TradeTrendCard from './modules/trade-trend-card.vue';
+import TradeTrendCard from './modules/trend-card.vue';
 
 /** 交易统计 */
 defineOptions({ name: 'TradeStatistics' });
