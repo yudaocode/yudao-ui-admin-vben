@@ -21,7 +21,7 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { getFormDetail } from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import { setConfAndFields2 } from '#/components/form-create';
 
 const props = defineProps({
@@ -52,7 +52,7 @@ watch(
   () => modelData.value.formId,
   async (newFormId) => {
     if (newFormId && modelData.value.formType === BpmModelFormType.NORMAL) {
-      const data = await getFormDetail(newFormId);
+      const data = await getForm(newFormId);
       setConfAndFields2(formPreview.value, data.conf, data.fields);
       // 设置只读
       formPreview.value.rule.forEach((item: any) => {

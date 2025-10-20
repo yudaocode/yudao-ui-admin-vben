@@ -17,7 +17,7 @@ import { handleTree } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 
-import { getFormDetail } from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import { getUserGroupSimpleList } from '#/api/bpm/userGroup';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
@@ -82,7 +82,7 @@ watch(
   () => props.modelFormId,
   async (newVal) => {
     if (newVal) {
-      const form = await getFormDetail(newVal);
+      const form = await getForm(newVal);
       formFields.value = form?.fields;
     } else {
       // 如果 modelFormId 为空，清空表单字段

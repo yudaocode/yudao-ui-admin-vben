@@ -230,7 +230,7 @@ watch(
   () => modelData.value.formId,
   async (newFormId) => {
     if (newFormId && modelData.value.formType === BpmModelFormType.NORMAL) {
-      const data = await FormApi.getFormDetail(newFormId);
+      const data = await FormApi.getForm(newFormId);
       const result: Array<{ field: string; title: string }> = [];
       if (data.fields) {
         unParsedFormFields.value = data.fields;

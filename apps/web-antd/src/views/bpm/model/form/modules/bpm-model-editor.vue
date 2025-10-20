@@ -10,7 +10,7 @@ import { BpmModelFormType } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
-import { getFormDetail } from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import {
   MyProcessDesigner,
   MyProcessPenal,
@@ -78,7 +78,7 @@ watch(
   () => modelData.value.formId,
   async (newFormId) => {
     if (newFormId && modelData.value.formType === BpmModelFormType.NORMAL) {
-      const data = await getFormDetail(newFormId);
+      const data = await getForm(newFormId);
       formFields.value = data.fields;
     } else {
       formFields.value = [];

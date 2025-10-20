@@ -39,20 +39,18 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // 表单验证
     const { valid } = await formApi.validate();
-    if (!valid) return;
-
-    // 锁定模态框
+    if (!valid) {
+      return;
+    }
     modalApi.lock();
+    // 提交表单
     try {
       // 获取表单数据
       const data = (await formApi.getValues()) as BpmFormApi.Form;
-
       // 编码表单配置和表单字段
       data.conf = encodeConf(designerComponent);
       data.fields = encodeFields(designerComponent);
-
       // 保存表单数据
       if (formData.value?.id) {
         await (editorAction.value === 'copy'
@@ -61,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       } else {
         await createForm(data);
       }
-
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -76,15 +74,16 @@ const [Modal, modalApi] = useVbenModal({
       designerComponent.value = undefined;
       return;
     }
-
+    // 加载数据
     const data = modalApi.getData<any>();
-    if (!data) return;
-
+    if (!data) {
+      return;
+    }
+    modalApi.lock();
     // 设置表单设计器组件
     designerComponent.value = data.designer;
     formData.value = data.formConfig;
     editorAction.value = data.action;
-
     // 如果是复制，表单名称后缀添加 _copy ，id 置空
     if (editorAction.value === 'copy' && formData.value) {
       formData.value = {
@@ -93,8 +92,8 @@ const [Modal, modalApi] = useVbenModal({
         id: undefined,
       };
     }
-
     try {
+      // 设置到 values
       if (formData.value) {
         await formApi.setValues(formData.value);
       }

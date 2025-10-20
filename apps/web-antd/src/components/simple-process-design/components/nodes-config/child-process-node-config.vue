@@ -27,7 +27,7 @@ import {
   Switch,
 } from 'ant-design-vue';
 
-import { getFormDetail } from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import { getModelList } from '#/api/bpm/model';
 
 import {
@@ -354,7 +354,7 @@ const loadFormInfo = async () => {
   );
   if (!childInfo) return;
 
-  const formInfo = await getFormDetail(childInfo.formId);
+  const formInfo = await getForm(childInfo.formId);
   childFormFieldOptions.value = [];
   if (formInfo.fields) {
     formInfo.fields.forEach((fieldStr: string) => {
