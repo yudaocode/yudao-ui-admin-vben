@@ -41,7 +41,7 @@ const timeRangeConfig = {
 const timeRangeType = ref(TimeRangeTypeEnum.DAY30); // 日期快捷选择按钮, 默认 30 天
 
 /** 时间范围类型单选按钮选中 */
-const handleTimeRangeTypeChange = async () => {
+async function handleTimeRangeTypeChange() {
   // 设置时间范围
   let beginTime: Dayjs;
   let endTime: Dayjs;
@@ -72,7 +72,7 @@ const handleTimeRangeTypeChange = async () => {
   }
   // 发送时间范围选中事件
   await getMemberRegisterCountList(beginTime, endTime);
-};
+}
 
 async function getMemberRegisterCountList(beginTime: Dayjs, endTime: Dayjs) {
   loading.value = true;
