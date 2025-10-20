@@ -1,7 +1,12 @@
-import type { EChartsOption } from 'echarts';
-
 /** 商品统计折线图配置 */
-export function getProductSummaryChartOptions(data: any[]): EChartsOption {
+export function getProductSummaryChartOptions(data: any[]): any {
+  // 处理数据：将金额从分转换为元
+  const processedData = data.map((item) => ({
+    ...item,
+    orderPayPrice: Number((item.orderPayPrice / 100).toFixed(2)),
+    afterSaleRefundPrice: Number((item.afterSaleRefundPrice / 100).toFixed(2)),
+  }));
+
   return {
     dataset: {
       dimensions: [
@@ -11,7 +16,7 @@ export function getProductSummaryChartOptions(data: any[]): EChartsOption {
         'orderPayPrice',
         'afterSaleRefundPrice',
       ],
-      source: data,
+      source: processedData,
     },
     grid: {
       left: 20,

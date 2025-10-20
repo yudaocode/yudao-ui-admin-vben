@@ -11,9 +11,9 @@ import { onMounted, ref } from 'vue';
 import { SummaryCard } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { fenToYuan } from '@vben/utils';
+import { fenToYuan, isSameDay } from '@vben/utils';
 
-import { Button, Card, Col, message, Row, Skeleton } from 'ant-design-vue';
+import { Button, Card, Col, message, Row, Spin } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
@@ -24,12 +24,11 @@ import { getProductSummaryChartOptions } from './product-summary-chart-options';
 /** 商品概况 */
 defineOptions({ name: 'ProductSummaryCard' });
 
-// 消息弹窗
-
 const trendLoading = ref(true); // 商品状态加载中
 const exportLoading = ref(false); // 导出的加载中
 const trendSummary =
   ref<DataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>>(); // 商品状况统计数据
+// TODO @AI：searchTimes；参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/statistics/product/modules/rank-card.vue；这样，可以去掉 shortcutDateRangePicker
 const shortcutDateRangePicker = ref();
 
 const chartRef = ref<EchartsUIType>();
@@ -39,7 +38,9 @@ const { renderEcharts } = useEcharts(chartRef);
 const calculateRelativeRate = (value?: number, reference?: number): string => {
   const refValue = Number(reference || 0);
   const curValue = Number(value || 0);
-  if (!refValue || refValue === 0) return '0.00';
+  if (!refValue || refValue === 0) {
+    return '0.00';
+  }
   return (((curValue - refValue) / refValue) * 100).toFixed(2);
 };
 
@@ -47,14 +48,12 @@ const calculateRelativeRate = (value?: number, reference?: number): string => {
 const getProductTrendData = async (times?: [Dayjs, Dayjs]) => {
   trendLoading.value = true;
   try {
+    // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
     let queryTimes = times;
     if (!queryTimes && shortcutDateRangePicker.value?.times) {
       queryTimes = shortcutDateRangePicker.value.times;
     }
-
-    // 1. 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
     if (queryTimes && isSameDay(queryTimes[0], queryTimes[1])) {
-      // 前天
       queryTimes[0] = dayjs(queryTimes[0]).subtract(1, 'd');
     }
 
@@ -68,13 +67,9 @@ const getProductTrendData = async (times?: [Dayjs, Dayjs]) => {
   }
 };
 
-/** 判断是否同一天 */
-const isSameDay = (date1: Dayjs, date2: Dayjs): boolean => {
-  return date1.format('YYYY-MM-DD') === date2.format('YYYY-MM-DD');
-};
-
 /** 查询商品状况数据统计 */
 const getProductTrendSummary = async (times?: [Dayjs, Dayjs]) => {
+  // TODO @AI：是不是 queryTimes 直接使用 searchTimes 完事？！
   const queryTimes = times
     ? [
         times[0].format('YYYY-MM-DD HH:mm:ss'),
@@ -88,6 +83,7 @@ const getProductTrendSummary = async (times?: [Dayjs, Dayjs]) => {
 
 /** 查询商品状况数据列表 */
 const getProductStatisticsList = async (times?: [Dayjs, Dayjs]) => {
+  // TODO @AI：是不是 queryTimes 直接使用 searchTimes 完事？！
   // 查询数据
   const queryTimes = times
     ? [
@@ -98,18 +94,12 @@ const getProductStatisticsList = async (times?: [Dayjs, Dayjs]) => {
   const list: MallProductStatisticsApi.ProductStatistics[] =
     await ProductStatisticsApi.getProductStatisticsList({ times: queryTimes });
 
-  // 处理数据
-  const processedList = list.map((item) => ({
-    ...item,
-    orderPayPrice: Number(fenToYuan(item.orderPayPrice)),
-    afterSaleRefundPrice: Number(fenToYuan(item.afterSaleRefundPrice)),
-  }));
-
-  // 更新 Echarts 数据
-  await renderEcharts(getProductSummaryChartOptions(processedList));
+  // 更新 Echarts 数据，数据转换由图表配置处理
+  await renderEcharts(getProductSummaryChartOptions(list));
 };
 
 /** 导出按钮操作 */
+// TODO @AI：导出有问题，参考别的模块的 confirm 更好；
 const handleExport = async () => {
   try {
     // 导出的二次确认
@@ -175,7 +165,7 @@ onMounted(async () => {
 
     <!-- 统计值 -->
     <Row :gutter="16" class="mb-4">
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="商品浏览量"
           tooltip="在选定条件下，所有商品详情页被访问的次数，一个人在统计时间内访问多次记为多次"
@@ -192,8 +182,7 @@ onMounted(async () => {
           "
         />
       </Col>
-
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="商品访客数"
           tooltip="在选定条件下，访问任何商品详情页的人数，一个人在统计时间范围内访问多次只记为一个"
@@ -211,7 +200,7 @@ onMounted(async () => {
         />
       </Col>
 
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="支付件数"
           tooltip="在选定条件下，成功付款订单的商品件数之和"
@@ -228,8 +217,7 @@ onMounted(async () => {
           "
         />
       </Col>
-
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="支付金额"
           tooltip="在选定条件下，成功付款订单的商品金额之和"
@@ -247,8 +235,7 @@ onMounted(async () => {
           "
         />
       </Col>
-
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="退款件数"
           tooltip="在选定条件下，成功退款的商品件数之和"
@@ -266,7 +253,7 @@ onMounted(async () => {
         />
       </Col>
 
-      <Col :xl="4" :md="8" :sm="24" class="mb-4">
+      <Col :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="退款金额"
           tooltip="在选定条件下，成功退款的商品金额之和"
@@ -289,8 +276,8 @@ onMounted(async () => {
     </Row>
 
     <!-- 折线图 -->
-    <Skeleton :loading="trendLoading" :active="true">
-      <EchartsUI ref="chartRef" class="h-[500px]" />
-    </Skeleton>
+    <Spin :spinning="trendLoading">
+      <EchartsUI ref="chartRef" />
+    </Spin>
   </Card>
 </template>

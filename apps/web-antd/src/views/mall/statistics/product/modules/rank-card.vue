@@ -119,7 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       multiple: false,
     },
     toolbarConfig: {
-      refresh: false,
+      enabled: false,
     },
   } as VxeTableGridOptions,
 });
