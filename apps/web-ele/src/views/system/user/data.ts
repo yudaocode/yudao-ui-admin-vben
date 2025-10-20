@@ -70,7 +70,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '岗位',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimplePostList,
+        api: () => getSimplePostList(),
         labelField: 'name',
         valueField: 'id',
         multiple: true,
@@ -212,7 +212,7 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
       label: '角色',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleRoleList,
+        api: () => getSimpleRoleList(),
         labelField: 'name',
         valueField: 'id',
         multiple: true,

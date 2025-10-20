@@ -23,7 +23,7 @@ export function useTransferFormSchema(): VbenFormSchema[] {
       label: '选择新负责人',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleUserList,
+        api: () => getSimpleUserList(),
         labelField: 'nickname',
         valueField: 'id',
       },
@@ -116,7 +116,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '选择人员',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleUserList,
+        api: () => getSimpleUserList(),
         labelField: 'nickname',
         valueField: 'id',
       },

@@ -6,7 +6,8 @@ import type { MallOrderApi } from '#/api/mall/trade/order/index';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DeliveryTypeEnum } from '@vben/constants';
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
@@ -17,9 +18,6 @@ import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express'
 import { getSimpleDeliveryPickUpStoreList } from '#/api/mall/trade/delivery/pickUpStore';
 import * as OrderApi from '#/api/mall/trade/order/index';
 import { DictTag } from '#/components/dict-tag';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getRangePickerDefaultProps } from '#/utils';
 import { useGridColumns } from '#/views/mall/trade/order/data';
 
@@ -106,7 +104,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'ApiSelect',
         componentProps: {
           clearable: true,
-          api: getSimpleDeliveryExpressList,
+          api: () => getSimpleDeliveryExpressList(),
           labelField: 'name',
           valueField: 'id',
           placeholder: '全部',
@@ -122,7 +120,7 @@ const [Grid] = useVbenVxeGrid({
         label: '自提门店',
         component: 'ApiSelect',
         componentProps: {
-          api: getSimpleDeliveryPickUpStoreList,
+          api: () => getSimpleDeliveryPickUpStoreList(),
           labelField: 'name',
           valueField: 'id',
         },

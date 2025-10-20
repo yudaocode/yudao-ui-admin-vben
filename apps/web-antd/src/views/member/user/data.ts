@@ -101,7 +101,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleTagList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
         placeholder: '请选择用户标签',
       },
@@ -112,7 +113,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleGroupList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择用户分组',
       },
     },
@@ -172,7 +174,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleTagList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
         placeholder: '请选择用户标签',
         allowClear: true,
@@ -184,7 +187,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择用户等级',
         allowClear: true,
       },
@@ -195,7 +199,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleGroupList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择用户分组',
         allowClear: true,
       },
@@ -323,7 +328,8 @@ export function useLevelFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleLevelList(),
-        fieldNames: { label: 'name', value: 'id' },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择用户等级',
         allowClear: true,
       },

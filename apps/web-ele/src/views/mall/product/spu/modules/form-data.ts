@@ -181,7 +181,7 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
       label: '运费模板',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleTemplateList,
+        api: () => getSimpleTemplateList(),
         labelField: 'name',
         valueField: 'id',
       },

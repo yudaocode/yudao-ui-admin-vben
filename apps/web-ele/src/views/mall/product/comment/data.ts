@@ -23,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '商品',
       component: 'ApiSelect',
       componentProps: {
-        api: getSpuSimpleList,
+        api: () => getSpuSimpleList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商品',

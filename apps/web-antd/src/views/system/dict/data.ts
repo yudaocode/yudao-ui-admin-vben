@@ -187,7 +187,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: (values) => {
         return {
-          api: getSimpleDictTypeList,
+          api: () => getSimpleDictTypeList(),
           placeholder: '请输入字典类型',
           labelField: 'name',
           valueField: 'type',
