@@ -7,7 +7,7 @@ import { onActivated } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteForm, getFormPage } from '#/api/bpm/form';
@@ -57,8 +57,8 @@ function handleCopy(row: BpmFormApi.Form) {
 
 /** 删除表单 */
 async function handleDelete(row: BpmFormApi.Form) {
-  const loadingInstance = ElMessage({
-    message: $t('ui.actionMessage.deleting', [row.name]),
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteForm(row.id!);

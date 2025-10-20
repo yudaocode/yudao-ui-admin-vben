@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FcDesigner } from '@form-create/element-ui/designer';
+import type { FcDesigner } from '@form-create/designer';
 
 import type { BpmFormApi } from '#/api/bpm/form';
 

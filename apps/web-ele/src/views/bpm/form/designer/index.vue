@@ -5,7 +5,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import FcDesigner from '@form-create/element-ui/designer';
+import FcDesigner from '@form-create/designer';
 import { ElButton, ElMessage } from 'element-plus';
 
 import { getForm } from '#/api/bpm/form';
