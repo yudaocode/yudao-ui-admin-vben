@@ -50,8 +50,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -62,6 +60,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         placeholder: '请输入分类排序',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
   ];
