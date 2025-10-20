@@ -9,7 +9,6 @@ import { z } from '#/adapter/form';
 import { getTenantPackageList } from '#/api/system/tenant-package';
 import { getRangePickerDefaultProps } from '#/utils';
 
-// TODO @xingyu：这个不用 ref 么？
 let tenantPackageList: SystemTenantPackageApi.TenantPackage[] = [];
 
 async function getTenantPackageData() {
