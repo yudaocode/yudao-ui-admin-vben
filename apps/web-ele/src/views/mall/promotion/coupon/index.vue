@@ -112,10 +112,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <Grid>
-      <template #top>
+      <template #toolbar-actions>
         <ElTabs
           :model-value="activeTab"
-          class="-mt-11"
+          class="w-full"
           @tab-change="handleTabChange"
         >
           <ElTabPane

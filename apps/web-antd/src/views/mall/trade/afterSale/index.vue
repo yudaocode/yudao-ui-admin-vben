@@ -98,10 +98,10 @@ onMounted(() => {
     </template>
 
     <Grid>
-      <template #top>
+      <template #toolbar-actions>
         <Tabs
           v-model:active-key="statusTab"
-          class="-mt-11"
+          class="w-full"
           @change="handleChangeStatus"
         >
           <Tabs.TabPane

@@ -98,10 +98,10 @@ onMounted(() => {
     </template>
 
     <Grid>
-      <template #top>
+      <template #toolbar-actions>
         <ElTabs
           v-model="statusTab"
-          class="-mt-11"
+          class="w-full"
           @tab-change="handleChangeStatus"
         >
           <ElTabs.TabPane

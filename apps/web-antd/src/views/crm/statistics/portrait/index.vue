@@ -71,8 +71,12 @@ async function handleTabChange(key: any) {
 <template>
   <Page auto-content-height>
     <Grid>
-      <template #top>
-        <Tabs v-model:active-key="activeTabName" @change="handleTabChange">
+      <template #toolbar-actions>
+        <Tabs
+          v-model:active-key="activeTabName"
+          class="w-full"
+          @change="handleTabChange"
+        >
           <Tabs.TabPane
             v-for="item in customerSummaryTabs"
             :key="item.key"

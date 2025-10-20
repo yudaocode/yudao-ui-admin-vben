@@ -166,8 +166,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <FormModal @success="handleRefresh" />
     <Grid>
-      <template #top>
-        <Tabs class="-mt-11" @change="handleChangeSceneType">
+      <template #toolbar-actions>
+        <Tabs class="-mt-11 w-full" @change="handleChangeSceneType">
           <Tabs.TabPane tab="我负责的" key="1" />
           <Tabs.TabPane tab="我参与的" key="2" />
           <Tabs.TabPane tab="下属负责的" key="3" />

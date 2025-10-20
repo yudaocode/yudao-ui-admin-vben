@@ -234,9 +234,8 @@ onMounted(async () => {
     </template>
 
     <Grid>
-      <template #top>
-        <!-- TODO @xingyu：tabs 可以考虑往上以一些，和操作按钮在一排 -->
-        <Tabs class="border-none" @change="onChangeTab">
+      <template #toolbar-actions>
+        <Tabs @change="onChangeTab" class="w-full">
           <Tabs.TabPane
             v-for="item in tabsData"
             :key="item.type"
