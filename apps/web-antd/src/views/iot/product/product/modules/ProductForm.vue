@@ -14,13 +14,18 @@ import {
 } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
-import { generateProductKey, useBasicFormSchema, useAdvancedFormSchema } from '../data';
+import {
+  generateProductKey,
+  useAdvancedFormSchema,
+  useBasicFormSchema,
+} from '../data';
 
 defineOptions({ name: 'IoTProductForm' });
 
+const emit = defineEmits(['success']);
+
 const CollapsePanel = Collapse.Panel;
 
-const emit = defineEmits(['success']);
 const formData = ref<any>();
 const getTitle = computed(() => {
   return formData.value?.id ? '编辑产品' : '新增产品';
@@ -84,7 +89,10 @@ const [Modal, modalApi] = useVbenModal({
         };
       }
 
-      const values = { ...basicValues, ...advancedValues } as IotProductApi.Product;
+      const values = {
+        ...basicValues,
+        ...advancedValues,
+      } as IotProductApi.Product;
       const data = formData.value?.id
         ? { ...values, id: formData.value.id }
         : values;
@@ -132,7 +140,11 @@ const [Modal, modalApi] = useVbenModal({
       });
 
       // 如果有图标、图片或描述，自动展开折叠面板以便显示
-      if (formData.value.icon || formData.value.picUrl || formData.value.description) {
+      if (
+        formData.value.icon ||
+        formData.value.picUrl ||
+        formData.value.description
+      ) {
         activeKey.value = ['advanced'];
       }
     } catch (error) {

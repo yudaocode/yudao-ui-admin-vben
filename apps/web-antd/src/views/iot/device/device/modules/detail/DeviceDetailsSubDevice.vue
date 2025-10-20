@@ -41,4 +41,3 @@ onMounted(() => {
     <!-- TODO: 实现子设备列表展示和管理功能 -->
   </Card>
 </template>
-

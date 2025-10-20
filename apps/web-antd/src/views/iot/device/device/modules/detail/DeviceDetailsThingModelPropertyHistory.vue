@@ -137,7 +137,9 @@ async function getList() {
   try {
     const data = await getHistoryDevicePropertyList(queryParams);
     // 后端直接返回数组，不是 { list: [] } 格式
-    list.value = (Array.isArray(data) ? data : (data?.list || [])) as IotDeviceApi.DevicePropertyDetail[];
+    list.value = (
+      Array.isArray(data) ? data : data?.list || []
+    ) as IotDeviceApi.DevicePropertyDetail[];
     total.value = list.value.length;
 
     // 如果是图表模式且不是复杂数据类型，渲染图表
@@ -176,29 +178,29 @@ function renderChart() {
     }
 
     renderEcharts({
-    title: {
-      text: '属性值趋势',
-      left: 'center',
-      textStyle: {
-        fontSize: 16,
-        fontWeight: 'normal',
+      title: {
+        text: '属性值趋势',
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'normal',
+        },
       },
-    },
-    grid: {
-      left: 60,
-      right: 60,
-      bottom: 100,
-      top: 80,
-      containLabel: true,
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
+      grid: {
+        left: 60,
+        right: 60,
+        bottom: 100,
+        top: 80,
+        containLabel: true,
       },
-      formatter: (params: any) => {
-        const param = params[0];
-        return `
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+        },
+        formatter: (params: any) => {
+          const param = params[0];
+          return `
           <div style="padding: 8px;">
             <div style="margin-bottom: 4px; font-weight: bold;">
               ${formatDate(new Date(param.value[0]), 'YYYY-MM-DD HH:mm:ss')}
@@ -209,76 +211,76 @@ function renderChart() {
             </div>
           </div>
         `;
-      },
-    },
-    xAxis: {
-      type: 'time',
-      name: '时间',
-      nameTextStyle: {
-        padding: [10, 0, 0, 0],
-      },
-      axisLabel: {
-        formatter: (value: number) => {
-          return String(formatDate(new Date(value), 'MM-DD HH:mm') || '');
         },
       },
-    },
-    yAxis: {
-      type: 'value',
-      name: '属性值',
-      nameTextStyle: {
-        padding: [0, 0, 10, 0],
-      },
-    },
-    series: [
-      {
-        name: '属性值',
-        type: 'line',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 6,
-        lineStyle: {
-          width: 2,
-          color: '#1890FF',
+      xAxis: {
+        type: 'time',
+        name: '时间',
+        nameTextStyle: {
+          padding: [10, 0, 0, 0],
         },
-        itemStyle: {
-          color: '#1890FF',
-        },
-        areaStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              {
-                offset: 0,
-                color: 'rgba(24, 144, 255, 0.3)',
-              },
-              {
-                offset: 1,
-                color: 'rgba(24, 144, 255, 0.05)',
-              },
-            ],
+        axisLabel: {
+          formatter: (value: number) => {
+            return String(formatDate(new Date(value), 'MM-DD HH:mm') || '');
           },
         },
-        data: chartData,
       },
-    ],
-    dataZoom: [
-      {
-        type: 'inside',
-        start: 0,
-        end: 100,
+      yAxis: {
+        type: 'value',
+        name: '属性值',
+        nameTextStyle: {
+          padding: [0, 0, 10, 0],
+        },
       },
-      {
-        type: 'slider',
-        height: 30,
-        bottom: 20,
-      },
-    ],
-  });
+      series: [
+        {
+          name: '属性值',
+          type: 'line',
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          lineStyle: {
+            width: 2,
+            color: '#1890FF',
+          },
+          itemStyle: {
+            color: '#1890FF',
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                {
+                  offset: 0,
+                  color: 'rgba(24, 144, 255, 0.3)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(24, 144, 255, 0.05)',
+                },
+              ],
+            },
+          },
+          data: chartData,
+        },
+      ],
+      dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 100,
+        },
+        {
+          type: 'slider',
+          height: 30,
+          bottom: 20,
+        },
+      ],
+    });
   }, 300); // 延迟300ms渲染，确保 DOM 完全准备好
 }
 

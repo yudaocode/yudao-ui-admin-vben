@@ -120,7 +120,7 @@ const timeValue2 = computed(() => {
  * @param value 字段值
  */
 function updateConditionField(field: any, value: any) {
-  condition.value[field] = value;
+  (condition.value as any)[field] = value;
 }
 
 /**

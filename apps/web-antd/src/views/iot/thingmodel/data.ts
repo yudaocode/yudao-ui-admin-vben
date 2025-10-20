@@ -15,7 +15,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE, 'number'),
         placeholder: '请选择功能类型',
         allowClear: true,
-
       },
     },
   ];

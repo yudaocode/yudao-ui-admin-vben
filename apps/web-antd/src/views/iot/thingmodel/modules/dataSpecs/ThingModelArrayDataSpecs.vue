@@ -51,7 +51,10 @@ function handleChange(val: any) {
     </Radio.Group>
   </Form.Item>
   <Form.Item label="元素个数" name="property.dataSpecs.size">
-    <Input v-model:value="dataSpecs.size" placeholder="请输入数组中的元素个数" />
+    <Input
+      v-model:value="dataSpecs.size"
+      placeholder="请输入数组中的元素个数"
+    />
   </Form.Item>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs

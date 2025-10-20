@@ -1,15 +1,13 @@
 <script setup lang="ts">
+import type { IotDeviceApi } from '#/api/iot/device/device';
+
 import { computed, ref } from 'vue';
 
-import { message } from 'ant-design-vue';
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
-import {
-  createDevice,
-  getDevice,
-  updateDevice,
-} from '#/api/iot/device/device';
-import type { IotDeviceApi } from '#/api/iot/device/device';
+import { message } from 'ant-design-vue';
+
+import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

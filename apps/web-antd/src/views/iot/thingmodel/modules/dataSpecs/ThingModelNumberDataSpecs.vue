@@ -1,4 +1,35 @@
 <!-- dataType：number 数组类型 -->
+<script lang="ts" setup>
+import type { Ref } from 'vue';
+
+import type { DataSpecsNumberData } from '#/api/iot/thingmodel';
+
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { useVModel } from '@vueuse/core';
+import { Form, Input, Select } from 'ant-design-vue';
+
+/** 数值型的 dataSpecs 配置组件 */
+defineOptions({ name: 'ThingModelNumberDataSpecs' });
+
+const props = defineProps<{ modelValue: any }>();
+const emits = defineEmits(['update:modelValue']);
+const dataSpecs = useVModel(
+  props,
+  'modelValue',
+  emits,
+) as Ref<DataSpecsNumberData>;
+
+/** 单位发生变化时触发 */
+const unitChange = (UnitSpecs: any) => {
+  if (!UnitSpecs) return;
+  const [unitName, unit] = String(UnitSpecs).split('-');
+  dataSpecs.value.unitName = unitName;
+  dataSpecs.value.unit = unit;
+};
+</script>
+
 <template>
   <Form.Item label="取值范围">
     <div class="flex items-center justify-between">
@@ -37,38 +68,6 @@
     </Select>
   </Form.Item>
 </template>
-
-<script lang="ts" setup>
-import type { Ref } from 'vue';
-
-import type { DataSpecsNumberData } from '#/api/iot/thingmodel';
-
-import { useVModel } from '@vueuse/core';
-
-import { Form, Input, Select } from 'ant-design-vue';
-
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
-/** 数值型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelNumberDataSpecs' });
-
-const props = defineProps<{ modelValue: any }>();
-const emits = defineEmits(['update:modelValue']);
-const dataSpecs = useVModel(
-  props,
-  'modelValue',
-  emits,
-) as Ref<DataSpecsNumberData>;
-
-/** 单位发生变化时触发 */
-const unitChange = (UnitSpecs: any) => {
-  if (!UnitSpecs) return;
-  const [unitName, unit] = String(UnitSpecs).split('-');
-  dataSpecs.value.unitName = unitName;
-  dataSpecs.value.unit = unit;
-};
-</script>
 
 <style lang="scss" scoped>
 :deep(.ant-form-item) {

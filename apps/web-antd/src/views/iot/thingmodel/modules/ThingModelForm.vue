@@ -64,7 +64,8 @@ const formRef = ref(); // 表单 Ref
 async function open(type: string, id?: number) {
   dialogVisible.value = true;
   // 设置标题：create -> 新增，update -> 编辑
-  dialogTitle.value = type === 'create' ? $t('page.action.add') : $t('page.action.edit');
+  dialogTitle.value =
+    type === 'create' ? $t('page.action.add') : $t('page.action.edit');
   formType.value = type;
   resetForm();
   if (id) {

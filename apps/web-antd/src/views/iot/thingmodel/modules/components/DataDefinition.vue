@@ -19,22 +19,30 @@ const props = defineProps<{ data: ThingModelData }>();
 
 // 格式化布尔值和枚举值列表为字符串
 const formattedDataSpecsList = computed(() => {
-  if (!props.data.property?.dataSpecsList || props.data.property.dataSpecsList.length === 0) {
+  if (
+    !props.data.property?.dataSpecsList ||
+    props.data.property.dataSpecsList.length === 0
+  ) {
     return '';
   }
   return props.data.property.dataSpecsList
-    .map(item => `${item.value}-${item.name}`)
+    .map((item) => `${item.value}-${item.name}`)
     .join('、');
 });
 
 // 显示的简短文本（第一个值）
 const shortText = computed(() => {
-  if (!props.data.property?.dataSpecsList || props.data.property.dataSpecsList.length === 0) {
+  if (
+    !props.data.property?.dataSpecsList ||
+    props.data.property.dataSpecsList.length === 0
+  ) {
     return '-';
   }
   const first = props.data.property.dataSpecsList[0];
   const count = props.data.property.dataSpecsList.length;
-  return count > 1 ? `${first.value}-${first.name} 等${count}项` : `${first.value}-${first.name}`;
+  return count > 1
+    ? `${first.value}-${first.name} 等${count}项`
+    : `${first.value}-${first.name}`;
 });
 </script>
 
@@ -108,8 +116,8 @@ const shortText = computed(() => {
   border-bottom: 1px dashed #d9d9d9;
 
   &:hover {
-    border-bottom-color: #1890ff;
     color: #1890ff;
+    border-bottom-color: #1890ff;
   }
 }
 </style>

@@ -5,6 +5,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
+import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
 import {
   DeviceTypeEnum,
@@ -27,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleProductList,
+        api: () => getSimpleProductList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -55,12 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '网关设备',
       component: 'ApiSelect',
       componentProps: {
-        api: async () => {
-          const { getSimpleDeviceList } = await import(
-            '#/api/iot/device/device'
-          );
-          return getSimpleDeviceList(DeviceTypeEnum.GATEWAY);
-        },
+        api: () => getSimpleDeviceList(DeviceTypeEnum.GATEWAY),
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '子设备可选择父设备',
@@ -93,7 +89,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeviceGroupList,
+        api: () => getSimpleDeviceGroupList(),
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
@@ -160,7 +156,7 @@ export function useGroupFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeviceGroupList,
+        api: () => getSimpleDeviceGroupList(),
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
@@ -203,7 +199,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleProductList,
+        api: () => getSimpleProductList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -253,7 +249,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeviceGroupList,
+        api: () => getSimpleDeviceGroupList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择设备分组',

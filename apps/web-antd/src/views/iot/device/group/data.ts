@@ -34,11 +34,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '父级分组',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: getSimpleDeviceGroupList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: () => getSimpleDeviceGroupList(),
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择父级分组',
         allowClear: true,
       },

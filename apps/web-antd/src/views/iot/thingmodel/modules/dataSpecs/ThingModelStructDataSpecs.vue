@@ -115,7 +115,6 @@ function resetForm() {
   structFormRef.value?.resetFields();
 }
 
-
 /** 组件初始化 */
 onMounted(async () => {
   await nextTick();
@@ -134,18 +133,14 @@ onMounted(async () => {
     >
       <span>参数：{{ item.name }}</span>
       <div class="btn">
-        <Button type="link" @click="openStructForm(item)">
-          编辑
-        </Button>
+        <Button type="link" @click="openStructForm(item)"> 编辑 </Button>
         <Divider type="vertical" />
         <Button type="link" danger @click="deleteStructItem(index)">
           删除
         </Button>
       </div>
     </div>
-    <Button type="link" @click="openStructForm(null)">
-      +新增参数
-    </Button>
+    <Button type="link" @click="openStructForm(null)"> +新增参数 </Button>
   </Form.Item>
 
   <!-- struct 表单 -->

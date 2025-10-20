@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { onMounted, provide, ref } from 'vue';
-
-import { message } from 'ant-design-vue';
-import { Page } from '@vben/common-ui';
-
-import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
-import { getProduct } from '#/api/iot/product/product';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { onMounted, provide, ref } from 'vue';
+
+import { Page } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getProduct } from '#/api/iot/product/product';
+import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
+
 import { getDataTypeOptionsLabel, IOT_PROVIDE_KEY } from '../utils/constants';
+import { useGridColumns, useGridFormSchema } from './data';
+import { DataDefinition } from './modules/components';
 import ThingModelForm from './modules/ThingModelForm.vue';
 import ThingModelTSL from './modules/ThingModelTSL.vue';
-import { DataDefinition } from './modules/components';
 
 defineOptions({ name: 'IoTThingModel' });
 
@@ -119,7 +121,7 @@ onMounted(async () => {
     description="管理产品的物模型定义，包括属性、服务和事件"
     title="物模型管理"
   >
-    <Grid ref="xGrid">
+    <Grid>
       <template #toolbar-tools>
         <TableAction
           :actions="[

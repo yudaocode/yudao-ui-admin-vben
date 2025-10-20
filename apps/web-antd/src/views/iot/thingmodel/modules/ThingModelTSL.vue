@@ -92,26 +92,26 @@ watch(tslString, (newValue) => {
 
 <style scoped>
 .json-viewer-container {
+  max-height: 600px;
+  padding: 12px;
+  overflow-y: auto;
   background-color: #f5f5f5;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  padding: 12px;
-  max-height: 600px;
-  overflow-y: auto;
 }
 
 .json-code {
   margin: 0;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
   font-size: 13px;
   line-height: 1.5;
   color: #333;
-  white-space: pre-wrap;
   word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .json-editor {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
   font-size: 13px;
 }
 </style>

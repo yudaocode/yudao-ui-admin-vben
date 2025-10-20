@@ -42,8 +42,13 @@ const getDataTypeOptions2 = computed(() => {
   if (!props.isStructDataSpecs) {
     return getDataTypeOptions();
   }
-  const excludedTypes = [IoTDataSpecsDataTypeEnum.STRUCT, IoTDataSpecsDataTypeEnum.ARRAY];
-  return getDataTypeOptions().filter((item: any) => !excludedTypes.includes(item.value));
+  const excludedTypes = new Set([
+    IoTDataSpecsDataTypeEnum.ARRAY,
+    IoTDataSpecsDataTypeEnum.STRUCT,
+  ]);
+  return getDataTypeOptions().filter(
+    (item: any) => !excludedTypes.has(item.value),
+  );
 }); // 获得数据类型列表
 
 /** 属性值的数据类型切换时初始化相关数据 */
@@ -52,19 +57,11 @@ function handleChange(dataType: any) {
   property.value.dataSpecsList = [];
   // 不是列表型数据才设置 dataSpecs.dataType
   ![
-    IoTDataSpecsDataTypeEnum.ENUM,
     IoTDataSpecsDataTypeEnum.BOOL,
+    IoTDataSpecsDataTypeEnum.ENUM,
     IoTDataSpecsDataTypeEnum.STRUCT,
   ].includes(dataType) && (property.value.dataSpecs.dataType = dataType);
   switch (dataType) {
-    case IoTDataSpecsDataTypeEnum.ENUM: {
-      property.value.dataSpecsList.push({
-        dataType: IoTDataSpecsDataTypeEnum.ENUM,
-        name: '', // 枚举项的名称
-        value: undefined, // 枚举值
-      });
-      break;
-    }
     case IoTDataSpecsDataTypeEnum.BOOL: {
       for (let i = 0; i < 2; i++) {
         property.value.dataSpecsList.push({
@@ -73,6 +70,14 @@ function handleChange(dataType: any) {
           value: i, // 布尔值
         });
       }
+      break;
+    }
+    case IoTDataSpecsDataTypeEnum.ENUM: {
+      property.value.dataSpecsList.push({
+        dataType: IoTDataSpecsDataTypeEnum.ENUM,
+        name: '', // 枚举项的名称
+        value: undefined, // 枚举值
+      });
       break;
     }
   }
@@ -95,9 +100,7 @@ watch(
 </script>
 
 <template>
-  <Form.Item
-    label="数据类型"
-  >
+  <Form.Item label="数据类型">
     <Select
       v-model:value="property.dataType"
       placeholder="请选择数据类型"
@@ -135,7 +138,7 @@ watch(
     label="布尔值"
   >
     <template v-for="item in property.dataSpecsList" :key="item.value">
-      <div class="flex items-center justify-start w-1/1 mb-5px">
+      <div class="w-1/1 mb-5px flex items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
         <div class="flex-1">

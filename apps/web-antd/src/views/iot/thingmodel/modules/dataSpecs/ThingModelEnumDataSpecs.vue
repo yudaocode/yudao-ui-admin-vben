@@ -28,7 +28,6 @@ function deleteEnum(index: number) {
   }
   dataSpecsList.value.splice(index, 1);
 }
-
 </script>
 
 <template>
@@ -41,7 +40,7 @@ function deleteEnum(index: number) {
       <div
         v-for="(item, index) in dataSpecsList"
         :key="index"
-        class="flex items-center justify-between mb-5px"
+        class="mb-5px flex items-center justify-between"
       >
         <div class="flex-1">
           <Input v-model:value="item.value" placeholder="请输入枚举值,如'0'" />

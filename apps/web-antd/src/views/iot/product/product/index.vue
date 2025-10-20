@@ -11,16 +11,15 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, Card, Image, Input, message, Space } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import {
   deleteProduct,
   exportProduct,
   getProductPage,
 } from '#/api/iot/product/product';
-import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import { $t } from '#/locales';
 
 import { useGridColumns, useImagePreview } from './data';
-// @ts-ignore
 import ProductCardView from './modules/ProductCardView.vue';
 import ProductForm from './modules/ProductForm.vue';
 

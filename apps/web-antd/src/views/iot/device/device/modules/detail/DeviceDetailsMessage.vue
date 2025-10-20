@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { Button, Form, Pagination, Select, Switch, Table, Tag } from 'ant-design-vue';
+import {
+  Button,
+  Form,
+  Pagination,
+  Select,
+  Switch,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
 import { getDeviceMessagePage } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
