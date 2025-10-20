@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
 
 import * as DiyPageApi from '#/api/mall/promotion/diy/page';
+import DiyEditor from '#/components/diy-editor/index.vue';
 import { PAGE_LIBS } from '#/components/diy-editor/util';
 
 /** 装修页面表单 */
@@ -17,17 +18,17 @@ const formData = ref<MallDiyPageApi.DiyPage>();
 const formRef = ref(); // 表单 Ref
 
 // 获取详情
-const getPageDetail = async (id: any) => {
+async function getPageDetail(id: any) {
   formLoading.value = true;
   try {
     formData.value = await DiyPageApi.getDiyPageProperty(id);
   } finally {
     formLoading.value = false;
   }
-};
+}
 
 // 提交表单
-const submitForm = async () => {
+async function submitForm() {
   // 校验表单
   if (!formRef.value) return;
   // 提交请求
@@ -38,10 +39,10 @@ const submitForm = async () => {
   } finally {
     formLoading.value = false;
   }
-};
+}
 
 // 重置表单
-const resetForm = () => {
+function resetForm() {
   formData.value = {
     id: undefined,
     templateId: undefined,
@@ -51,7 +52,7 @@ const resetForm = () => {
     property: '',
   } as MallDiyPageApi.DiyPage;
   formRef.value?.resetFields();
-};
+}
 
 /** 初始化 */
 const route = useRoute();

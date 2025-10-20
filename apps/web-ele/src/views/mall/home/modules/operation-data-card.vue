@@ -19,39 +19,59 @@ const router = useRouter();
 interface DataItem {
   name: string;
   value: number;
-  routerName: string;
+  routerPath: string;
   prefix?: string;
   decimals?: number;
 }
 
 /** 数据 */
 const data = reactive({
-  orderUndelivered: { name: '待发货订单', value: 0, routerName: 'TradeOrder' },
+  orderUndelivered: {
+    name: '待发货订单',
+    value: 0,
+    routerPath: '/mall/trade/order',
+  },
   orderAfterSaleApply: {
     name: '退款中订单',
     value: 0,
-    routerName: 'TradeAfterSale',
+    routerPath: '/mall/trade/after-sale',
   },
-  orderWaitePickUp: { name: '待核销订单', value: 0, routerName: 'TradeOrder' },
-  productAlertStock: { name: '库存预警', value: 0, routerName: 'ProductSpu' },
-  productForSale: { name: '上架商品', value: 0, routerName: 'ProductSpu' },
-  productInWarehouse: { name: '仓库商品', value: 0, routerName: 'ProductSpu' },
+  orderWaitePickUp: {
+    name: '待核销订单',
+    value: 0,
+    routerPath: '/mall/trade/delivery/pick-up-store/pick-up-order',
+  },
+  productAlertStock: {
+    name: '库存预警',
+    value: 0,
+    routerPath: '/mall/product/spu',
+  },
+  productForSale: {
+    name: '上架商品',
+    value: 0,
+    routerPath: '/mall/product/spu',
+  },
+  productInWarehouse: {
+    name: '仓库商品',
+    value: 0,
+    routerPath: '/mall/product/spu',
+  },
   withdrawAuditing: {
     name: '提现待审核',
     value: 0,
-    routerName: 'TradeBrokerageWithdraw',
+    routerPath: '/mall/trade/brokerage/brokerage-withdraw',
   },
   rechargePrice: {
     name: '账户充值',
     value: 0,
     prefix: '￥',
     decimals: 2,
-    routerName: 'PayWalletRecharge',
+    routerPath: '/pay/wallet/wallet-balance',
   },
 });
 
 /** 查询订单数据 */
-const getOrderData = async () => {
+async function getOrderData() {
   const orderCount = await TradeStatisticsApi.getOrderCount();
   if (orderCount.undelivered) {
     data.orderUndelivered.value = orderCount.undelivered;
@@ -65,27 +85,26 @@ const getOrderData = async () => {
   if (orderCount.auditingWithdraw) {
     data.withdrawAuditing.value = orderCount.auditingWithdraw;
   }
-};
+}
 
 /** 查询商品数据 */
-const getProductData = async () => {
+async function getProductData() {
   const productCount = await ProductSpuApi.getTabsCount();
   data.productForSale.value = productCount['0'] || 0;
   data.productInWarehouse.value = productCount['1'] || 0;
   data.productAlertStock.value = productCount['3'] || 0;
-};
+}
 
 /** 查询钱包充值数据 */
-const getWalletRechargeData = async () => {
+async function getWalletRechargeData() {
   const paySummary = await PayStatisticsApi.getWalletRechargePrice();
   data.rechargePrice.value = paySummary.rechargePrice;
-};
+}
 
 /** 跳转到对应页面 */
-// TODO @xingyu：貌似通过 name 的方式，都无法跳转，找不到路由？
-const handleClick = (routerName: string) => {
-  router.push({ name: routerName });
-};
+function handleClick(routerPath: string) {
+  router.push({ path: routerPath });
+}
 
 /** 激活时 */
 onActivated(() => {
@@ -112,7 +131,7 @@ onMounted(() => {
         v-for="(item, key) in data"
         :key="key"
         class="flex h-20 w-[20%] cursor-pointer flex-col items-center justify-center gap-2"
-        @click="handleClick(item.routerName)"
+        @click="handleClick(item.routerPath)"
       >
         <CountTo
           :decimals="(item as DataItem).decimals ?? 0"

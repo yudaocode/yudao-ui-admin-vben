@@ -7,6 +7,7 @@ import { IFrame } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
+import { useQRCode } from '@vueuse/integrations/useQRCode';
 import {
   ElAside,
   ElButtonGroup,
@@ -32,7 +33,6 @@ import ComponentContainer from './components/component-container.vue';
 import ComponentLibrary from './components/component-library.vue';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
-
 /** 页面装修详情页 */
 defineOptions({
   name: 'DiyPageDetail',
@@ -57,6 +57,11 @@ const props = defineProps({
 });
 // 工具栏操作
 const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']);
+
+const qrcode = useQRCode(props.previewUrl, {
+  errorCorrectionLevel: 'H',
+  margin: 4,
+});
 
 // 左侧组件库
 const componentLibrary = ref();
@@ -497,7 +502,8 @@ onMounted(() => {
         />
         <div class="flex flex-col">
           <ElText>手机扫码预览</ElText>
-          <Qrcode :text="previewUrl" logo="/logo.gif" />
+          <img :src="qrcode" alt="qrcode" class="w-1/2" />
+          <!-- <Qrcode :text="previewUrl" logo="/logo.gif" /> -->
         </div>
       </div>
     </ElDialog>
