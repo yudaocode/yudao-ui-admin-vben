@@ -118,7 +118,7 @@ async function handleSave() {
 
     // 保存成功，提示并跳转到列表页
     message.success('保存成功');
-    tabs.closeCurrentTab();
+    await tabs.closeCurrentTab();
     await router.push({ name: 'AiWorkflow' });
   } catch (error: any) {
     console.error('保存失败:', error);

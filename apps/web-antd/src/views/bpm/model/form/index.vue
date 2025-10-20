@@ -320,7 +320,7 @@ async function handleSave() {
 
     // 返回列表页（排除更新的情况）
     if (actionType !== 'update') {
-      router.push({ path: '/bpm/manager/model' });
+      await router.push({ path: '/bpm/manager/model' });
     }
   } catch (error: any) {
     console.error('保存失败:', error);

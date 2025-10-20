@@ -19,54 +19,34 @@ const router = useRouter();
 interface DataItem {
   name: string;
   value: number;
-  routerPath: string;
+  routerName: string;
   prefix?: string;
   decimals?: number;
 }
 
 /** 数据 */
 const data = reactive({
-  orderUndelivered: {
-    name: '待发货订单',
-    value: 0,
-    routerPath: '/mall/trade/order',
-  },
+  orderUndelivered: { name: '待发货订单', value: 0, routerName: 'TradeOrder' },
   orderAfterSaleApply: {
     name: '退款中订单',
     value: 0,
-    routerPath: '/mall/trade/after-sale',
+    routerName: 'TradeAfterSale',
   },
-  orderWaitePickUp: {
-    name: '待核销订单',
-    value: 0,
-    routerPath: '/mall/trade/delivery/pick-up-store/pick-up-order',
-  },
-  productAlertStock: {
-    name: '库存预警',
-    value: 0,
-    routerPath: '/mall/product/spu',
-  },
-  productForSale: {
-    name: '上架商品',
-    value: 0,
-    routerPath: '/mall/product/spu',
-  },
-  productInWarehouse: {
-    name: '仓库商品',
-    value: 0,
-    routerPath: '/mall/product/spu',
-  },
+  orderWaitePickUp: { name: '待核销订单', value: 0, routerName: 'TradeOrder' },
+  productAlertStock: { name: '库存预警', value: 0, routerName: 'ProductSpu' },
+  productForSale: { name: '上架商品', value: 0, routerName: 'ProductSpu' },
+  productInWarehouse: { name: '仓库商品', value: 0, routerName: 'ProductSpu' },
   withdrawAuditing: {
     name: '提现待审核',
     value: 0,
-    routerPath: '/mall/trade/brokerage/brokerage-withdraw',
+    routerName: 'TradeBrokerageWithdraw',
   },
   rechargePrice: {
     name: '账户充值',
     value: 0,
     prefix: '￥',
     decimals: 2,
-    routerPath: '/pay/wallet/wallet-balance',
+    routerName: 'PayWalletRecharge',
   },
 });
 
@@ -102,8 +82,8 @@ async function getWalletRechargeData() {
 }
 
 /** 跳转到对应页面 */
-function handleClick(routerPath: string) {
-  router.push({ path: routerPath });
+function handleClick(routerName: string) {
+  router.push({ name: routerName });
 }
 
 /** 激活时 */
@@ -128,7 +108,7 @@ onMounted(() => {
         v-for="(item, key) in data"
         :key="key"
         class="flex h-20 w-[20%] cursor-pointer flex-col items-center justify-center gap-2"
-        @click="handleClick(item.routerPath)"
+        @click="handleClick(item.routerName)"
       >
         <CountTo
           :decimals="(item as DataItem).decimals ?? 0"
