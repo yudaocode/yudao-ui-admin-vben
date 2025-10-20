@@ -127,4 +127,3 @@ export function getProductSummaryChartOptions(data: any[]): any {
     ],
   };
 }
-

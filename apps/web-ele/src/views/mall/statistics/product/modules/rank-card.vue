@@ -8,6 +8,8 @@ import { ref } from 'vue';
 import { buildSortingField } from '@vben/request';
 import { formatDateTime } from '@vben/utils';
 
+import { ElCard } from 'element-plus';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
@@ -124,7 +126,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <el-card shadow="never">
+  <ElCard shadow="never">
     <template #header>
       <div class="flex items-center justify-between">
         <span>商品排行</span>
@@ -132,6 +134,5 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </div>
     </template>
     <Grid />
-  </el-card>
+  </ElCard>
 </template>
-

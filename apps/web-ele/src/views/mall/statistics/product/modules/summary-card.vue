@@ -19,6 +19,7 @@ import {
 } from '@vben/utils';
 
 import dayjs from 'dayjs';
+import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 
 import * as ProductStatisticsApi from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
@@ -117,27 +118,31 @@ async function handleExport() {
 </script>
 
 <template>
-  <el-card shadow="never" class="h-full">
+  <ElCard shadow="never" class="h-full">
     <template #header>
       <div class="flex items-center justify-between">
         <span>商品概况</span>
         <!-- 查询条件 -->
         <div class="flex items-center gap-2">
           <ShortcutDateRangePicker @change="handleDateRangeChange">
-            <el-button class="ml-4" @click="handleExport" :loading="exportLoading">
+            <ElButton
+              class="ml-4"
+              @click="handleExport"
+              :loading="exportLoading"
+            >
               <template #icon>
                 <IconifyIcon icon="lucide:download" />
               </template>
               导出
-            </el-button>
+            </ElButton>
           </ShortcutDateRangePicker>
         </div>
       </div>
     </template>
 
     <!-- 统计值 -->
-    <el-row :gutter="16" class="mb-4">
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+    <ElRow :gutter="16" class="mb-4">
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="商品浏览量"
           tooltip="在选定条件下，所有商品详情页被访问的次数，一个人在统计时间内访问多次记为多次"
@@ -153,8 +158,8 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+      </ElCol>
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="商品访客数"
           tooltip="在选定条件下，访问任何商品详情页的人数，一个人在统计时间范围内访问多次只记为一个"
@@ -170,8 +175,8 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+      </ElCol>
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="支付件数"
           tooltip="在选定条件下，成功付款订单的商品件数之和"
@@ -187,8 +192,8 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+      </ElCol>
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="支付金额"
           tooltip="在选定条件下，成功付款订单的商品金额之和"
@@ -205,8 +210,8 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+      </ElCol>
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="退款件数"
           tooltip="在选定条件下，成功退款的商品件数之和"
@@ -222,9 +227,9 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
+      </ElCol>
 
-      <el-col :xl="8" :md="8" :sm="24" class="mb-4">
+      <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="退款金额"
           tooltip="在选定条件下，成功退款的商品金额之和"
@@ -243,13 +248,12 @@ async function handleExport() {
             )
           "
         />
-      </el-col>
-    </el-row>
+      </ElCol>
+    </ElRow>
 
     <!-- 折线图 -->
     <div v-loading="trendLoading">
       <EchartsUI ref="chartRef" />
     </div>
-  </el-card>
+  </ElCard>
 </template>
-
