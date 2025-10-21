@@ -4,7 +4,7 @@ import { Page } from '@vben/common-ui';
 
 <template>
   <Page>
-    <!-- TODO @xingyu：待开发 -->
+    <!-- TODO @puhui999：详情界面； -->
     <div>detail</div>
   </Page>
 </template>

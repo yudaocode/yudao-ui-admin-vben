@@ -1,6 +1,6 @@
 <!-- 商品发布 - 库存价格 - 属性列表 -->
 <script lang="ts" setup>
-import type { PropertyAndValues } from './index';
+import type { PropertyAndValues } from '../index';
 
 import type { MallPropertyApi } from '#/api/mall/product/property';
 

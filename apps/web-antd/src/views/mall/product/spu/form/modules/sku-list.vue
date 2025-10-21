@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { PropertyAndValues, RuleConfig } from './index';
+import type { PropertyAndValues, RuleConfig } from '../index';
 
 import type { MallSpuApi } from '#/api/mall/product/spu';
 

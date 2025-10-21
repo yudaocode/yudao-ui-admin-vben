@@ -20,11 +20,11 @@ import {
   useInfoFormSchema,
   useOtherFormSchema,
   useSkuFormSchema,
-} from './form-data';
+} from './data';
 import { getPropertyList } from './index';
-import ProductAttributes from './product-attributes.vue';
-import ProductPropertyAddForm from './product-property-add-form.vue';
-import SkuList from './sku-list.vue';
+import ProductAttributes from './modules/product-attributes.vue';
+import ProductPropertyAddForm from './modules/product-property-add-form.vue';
+import SkuList from './modules/sku-list.vue';
 
 const spuId = ref<number>();
 const { params, name } = useRoute();
