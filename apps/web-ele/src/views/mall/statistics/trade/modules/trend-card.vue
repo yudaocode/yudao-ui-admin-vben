@@ -18,8 +18,8 @@ import {
   isSameDay,
 } from '@vben/utils';
 
-import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 import dayjs from 'dayjs';
+import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 
 import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
@@ -123,7 +123,11 @@ async function handleExport() {
         <!-- 查询条件 -->
         <div class="flex items-center gap-2">
           <ShortcutDateRangePicker @change="handleDateRangeChange">
-            <ElButton class="ml-4" @click="handleExport" :loading="exportLoading">
+            <ElButton
+              class="ml-4"
+              @click="handleExport"
+              :loading="exportLoading"
+            >
               <template #icon>
                 <IconifyIcon icon="lucide:download" />
               </template>
@@ -279,4 +283,3 @@ async function handleExport() {
     </div>
   </ElCard>
 </template>
-

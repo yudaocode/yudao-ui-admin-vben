@@ -7,6 +7,7 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { message } from 'ant-design-vue';
 
 import { importDeviceTemplate } from '#/api/iot/device/device';
+import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
 
@@ -64,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       const result = await response.json();
 
       if (result.code !== 0) {
-        message.error(result.msg || '导入失败');
+        message.error(result.msg || $t('ui.actionMessage.operationFailed'));
         return;
       }
 
@@ -94,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
     } catch (error: any) {
-      message.error(error.message || '导入失败');
+      message.error(error.message || $t('ui.actionMessage.operationFailed'));
     } finally {
       modalApi.unlock();
     }

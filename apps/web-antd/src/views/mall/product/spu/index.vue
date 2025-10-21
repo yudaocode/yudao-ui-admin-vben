@@ -155,7 +155,7 @@ async function handleStatusChange(
           message.success(`${text}成功`);
           resolve(true);
         } else {
-          reject(new Error('操作失败'));
+          reject(new Error($t('ui.actionMessage.operationFailed')));
         }
       })
       .catch(() => {
@@ -264,14 +264,14 @@ onMounted(async () => {
         />
       </template>
       <template #expand_content="{ row }">
-        <!-- TODO @xingyu：展开的样子，有点丑 -->
         <Descriptions
           :column="4"
-          class="m-4"
+          class="mx-32 my-4 w-1/2"
           :label-style="{
             width: '100px',
             fontWeight: 'bold',
             fontSize: '14px',
+            color: '#99a9bf',
           }"
           :content-style="{ width: '100px', fontSize: '14px' }"
         >

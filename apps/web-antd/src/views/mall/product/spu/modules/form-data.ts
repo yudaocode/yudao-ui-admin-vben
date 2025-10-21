@@ -104,7 +104,10 @@ export function useInfoFormSchema(): VbenFormSchema[] {
 }
 
 /** 价格库存的表单 */
-export function useSkuFormSchema(): VbenFormSchema[] {
+export function useSkuFormSchema(
+  propertyList: any[] = [],
+  isDetail: boolean = false,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -152,7 +155,51 @@ export function useSkuFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：待补充商品属性
+    // 单规格时显示的 SkuList
+    {
+      fieldName: 'singleSkuList',
+      label: '',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 false（单规格）时显示
+        show: (values) => values.specType === false,
+      },
+    },
+    // 多规格时显示的商品属性（占位，实际通过插槽渲染）
+    {
+      fieldName: 'productAttributes',
+      label: '商品属性',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）时显示
+        show: (values) => values.specType === true,
+      },
+    },
+    // 多规格 - 批量设置
+    {
+      fieldName: 'batchSkuList',
+      label: '批量设置',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）且 propertyList 有数据时显示，且非详情模式
+        show: (values) =>
+          values.specType === true && propertyList.length > 0 && !isDetail,
+      },
+    },
+    // 多规格 - 规格列表
+    {
+      fieldName: 'multiSkuList',
+      label: '规格列表',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）且 propertyList 有数据时显示
+        show: (values) => values.specType === true && propertyList.length > 0,
+      },
+    },
   ];
 }
 
