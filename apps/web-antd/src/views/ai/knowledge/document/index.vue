@@ -25,8 +25,8 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'AiKnowledgeDocument' });
 const { hasAccessByCodes } = useAccess();
 
-const route = useRoute(); // 路由
-const router = useRouter(); // 路由
+const route = useRoute();
+const router = useRouter();
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();

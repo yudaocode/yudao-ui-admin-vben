@@ -178,7 +178,7 @@ const recoverPageIndex = () => {
 // #endregion
 
 /** 初始化 */
-const { currentRoute } = useRouter(); // 路由
+const { currentRoute } = useRouter();
 onMounted(async () => {
   resetForm();
   if (!currentRoute.value.params.id) {

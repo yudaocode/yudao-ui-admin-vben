@@ -36,7 +36,7 @@ const emit = defineEmits<{
   selectUserConfirm: [activityId: string, userList: any[]];
 }>();
 
-const { push } = useRouter(); // 路由
+const { push } = useRouter();
 
 // 状态图标映射
 const statusIconMap: Record<

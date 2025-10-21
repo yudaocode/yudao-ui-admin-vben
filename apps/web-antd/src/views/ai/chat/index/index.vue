@@ -28,7 +28,7 @@ import MessageNewConversation from './components/message/MessageNewConversation.
 /** AI 聊天对话 列表 */
 defineOptions({ name: 'AiChat' });
 
-const route = useRoute(); // 路由
+const route = useRoute();
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: ConversationUpdateForm,
   destroyOnClose: true,

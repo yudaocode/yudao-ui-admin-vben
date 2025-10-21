@@ -31,7 +31,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const tabType = ref(0);
-const route = useRoute(); // 路由
+const route = useRoute();
 const categoryList = ref();
 
 // tabs 数据

@@ -2,7 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-// TODO @xingyu：所有 mall 的 search 少了，请输入 xxx；表单也是类似
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -31,12 +30,12 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
-const route = useRoute(); // 路由
+const route = useRoute();
 const tabType = ref(0);
 
+// TODO @AI：放到 data.ts 里；
 const categoryList = ref();
 
-// tabs 数据
 const tabsData = ref([
   {
     name: '出售中',
@@ -63,7 +62,7 @@ const tabsData = ref([
     type: 4,
     count: 0,
   },
-]);
+]); // tabs 数据
 
 /** 刷新表格 */
 async function handleRefresh() {
