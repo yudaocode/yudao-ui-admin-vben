@@ -8,26 +8,31 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
-/** 搜索的表单 */
+interface FormField {
+  field: string;
+  title: string;
+  type: string;
+}
+
+/** 列表的搜索表单 */
 export function useGridFormSchema(
-  userList: any[] = [],
-  formFields: any[] = [],
+  formFields: FormField[] = [],
 ): VbenFormSchema[] {
-  // 基础搜索字段
-  const baseFormSchema = [
+  // 基础搜索字段配置
+  const baseFormSchema: VbenFormSchema[] = [
     {
       fieldName: 'startUserId',
       label: '发起人',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择发起人',
         allowClear: true,
-        options: userList.map((user) => ({
-          label: user.nickname,
-          value: user.id,
-        })),
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
       },
     },
     {
@@ -72,29 +77,27 @@ export function useGridFormSchema(
     },
   ];
 
-  // 动态表单字段 暂时只支持 input 和 textarea,  TODO 其他类型的支持
-  const dynamicFormSchema = formFields
-    .filter((item) => item.type === 'input' || item.type === 'textarea')
-    // 根据类型选择合适的表单组件
-    .map((item) => {
-      return {
-        fieldName: `formFieldsParams.${item.field}`,
-        label: item.title,
-        component: 'Input',
-        componentProps: {
-          placeholder: `请输入${item.title}`,
-          allowClear: true,
-        },
-      };
-    });
+  // 动态表单字段配置：目前支持 input 和 textarea 类型
+  const dynamicFormSchema: VbenFormSchema[] = formFields
+    .filter((item) => ['input', 'textarea'].includes(item.type))
+    .map((item) => ({
+      fieldName: `formFieldsParams.${item.field}`,
+      label: item.title,
+      component: 'Input',
+      componentProps: {
+        placeholder: `请输入${item.title}`,
+        allowClear: true,
+      },
+    }));
 
   return [...baseFormSchema, ...dynamicFormSchema];
 }
 
 /** 列表的字段 */
 export function useGridColumns(
-  formFields: any[] = [],
-): VxeTableGridOptions<BpmProcessInstanceApi.ProcessInstance>['columns'] {
+  formFields: FormField[] = [],
+): VxeTableGridOptions['columns'] {
+  // 基础列配置
   const baseColumns: VxeGridPropTypes.Columns<BpmProcessInstanceApi.ProcessInstance> =
     [
       {
@@ -131,8 +134,8 @@ export function useGridColumns(
       },
     ];
 
-  // 添加动态表单字段列，暂时全部以字符串，TODO 展示优化, 按 type 展示控制
-  const formFieldColumns = (formFields || []).map((item) => ({
+  // 动态表单字段列配置：根据表单字段生成对应的列，从 formVariables 中获取值
+  const formFieldColumns = formFields.map((item) => ({
     field: `formVariables.${item.field}`,
     title: item.title,
     minWidth: 120,
