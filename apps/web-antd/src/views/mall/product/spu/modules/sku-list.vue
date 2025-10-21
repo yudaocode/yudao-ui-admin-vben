@@ -60,15 +60,15 @@ const skuList = ref<MallSpuApi.Sku[]>([
 ]); // 批量添加时的临时数据
 
 /** 批量添加 */
-const batchAdd = () => {
+function batchAdd() {
   validateProperty();
   formData.value!.skus!.forEach((item: MallSpuApi.Sku) => {
     copyValueToTarget(item, skuList.value[0]);
   });
-};
+}
 
 /** 校验商品属性属性值 */
-const validateProperty = () => {
+function validateProperty() {
   // 校验商品属性属性值是否为空，有一个为空都不给过
   const warningInfo = '存在属性属性值为空，请先检查完善属性值后重试！！！';
   for (const item of props.propertyList as PropertyAndValues[]) {
@@ -77,24 +77,24 @@ const validateProperty = () => {
       throw new Error(warningInfo);
     }
   }
-};
+}
 
 /** 删除 sku */
-const deleteSku = (row: MallSpuApi.Sku) => {
+function deleteSku(row: MallSpuApi.Sku) {
   const index = formData.value!.skus!.findIndex(
     // 直接把列表转成字符串比较
     (sku: MallSpuApi.Sku) =>
       JSON.stringify(sku.properties) === JSON.stringify(row.properties),
   );
   formData.value!.skus!.splice(index, 1);
-};
+}
 
 const tableHeaders = ref<{ label: string; prop: string }[]>([]); // 多属性表头
 
 /**
  * 保存时，每个商品规格的表单要校验下。例如说,销售金额最低是 0.01 这种。
  */
-const validateSku = () => {
+function validateSku() {
   validateProperty();
   let warningInfo = '请检查商品各行相关属性配置，';
   let validate = true; // 默认通过
@@ -114,9 +114,9 @@ const validateSku = () => {
       throw new Error(warningInfo);
     }
   }
-};
+}
 
-const getValue = (obj: any, arg: string): unknown => {
+function getValue(obj: any, arg: string): unknown {
   const keys = arg.split('.');
   let value: any = obj;
   for (const key of keys) {
@@ -128,15 +128,15 @@ const getValue = (obj: any, arg: string): unknown => {
     }
   }
   return value;
-};
+}
 
 /**
  * 选择时触发
  * @param records 传递过来的选中的 sku 是一个数组
  */
-const handleSelectionChange = ({ records }: { records: MallSpuApi.Sku[] }) => {
+function handleSelectionChange({ records }: { records: MallSpuApi.Sku[] }) {
   emit('selectionChange', records);
-};
+}
 
 /**
  * 将传进来的值赋值给 skuList
@@ -154,7 +154,7 @@ watch(
 );
 
 /** 生成表数据 */
-const generateTableData = (propertyList: PropertyAndValues[]) => {
+function generateTableData(propertyList: PropertyAndValues[]) {
   // 构建数据结构
   const propertyValues = propertyList.map((item: PropertyAndValues) =>
     (item.values || []).map((v: { id: number; name: string }) => ({
@@ -194,12 +194,12 @@ const generateTableData = (propertyList: PropertyAndValues[]) => {
     }
     formData.value!.skus!.push(row);
   }
-};
+}
 
 /**
  * 生成 skus 前置校验
  */
-const validateData = (propertyList: PropertyAndValues[]): boolean => {
+function validateData(propertyList: PropertyAndValues[]): boolean {
   const skuPropertyIds: number[] = [];
   formData.value!.skus!.forEach((sku: MallSpuApi.Sku) =>
     sku.properties
@@ -212,12 +212,12 @@ const validateData = (propertyList: PropertyAndValues[]): boolean => {
   );
   const propertyIds = propertyList.map((item: PropertyAndValues) => item.id);
   return skuPropertyIds.length === propertyIds.length;
-};
+}
 
 /** 构建所有排列组合 */
-const build = (
+function build(
   propertyValuesList: MallSpuApi.Property[][],
-): (MallSpuApi.Property | MallSpuApi.Property[])[] => {
+): (MallSpuApi.Property | MallSpuApi.Property[])[] {
   if (propertyValuesList.length === 0) {
     return [];
   } else if (propertyValuesList.length === 1) {
@@ -240,7 +240,7 @@ const build = (
     }
     return result;
   }
-};
+}
 
 /** 监听属性列表，生成相关参数和表头 */
 watch(
@@ -298,307 +298,315 @@ watch(
 
 const activitySkuListRef = ref();
 
-const getSkuTableRef = () => {
+function getSkuTableRef() {
   return activitySkuListRef.value;
-};
+}
 
 // 暴露出生成 sku 方法，给添加属性成功时调用
 defineExpose({ generateTableData, validateSku, getSkuTableRef });
 </script>
 
 <template>
-  <!-- 情况一：添加/修改 -->
-  <VxeTable
-    v-if="!isDetail && !isActivityComponent"
-    :data="isBatch ? skuList : formData?.skus || []"
-    border
-    max-height="500"
-    size="small"
-    class="w-full"
-  >
-    <VxeColumn align="center" title="图片" min-width="80">
-      <template #default="{ row }">
-        <ImageUpload
-          v-model:value="row.picUrl"
-          :max-number="1"
-          :max-size="2"
-          :show-description="false"
-        />
-      </template>
-    </VxeColumn>
-    <template v-if="formData?.specType && !isBatch">
-      <!--  根据商品属性动态添加 -->
-      <VxeColumn
-        v-for="(item, index) in tableHeaders"
-        :key="index"
-        :title="item.label"
-        align="center"
-        min-width="120"
-      >
-        <template #default="{ row }">
-          <span class="font-bold text-[#40aaff]">
-            {{ row.properties?.[index]?.valueName }}
-          </span>
-        </template>
-      </VxeColumn>
-    </template>
-    <VxeColumn align="center" title="商品条码" min-width="168">
-      <template #default="{ row }">
-        <Input v-model:value="row.barCode" class="w-full" />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="销售价" min-width="168">
-      <template #default="{ row }">
-        <InputNumber
-          v-model:value="row.price"
-          :min="0"
-          :precision="2"
-          :step="0.1"
-          class="w-full"
-        />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="市场价" min-width="168">
-      <template #default="{ row }">
-        <InputNumber
-          v-model:value="row.marketPrice"
-          :min="0"
-          :precision="2"
-          :step="0.1"
-          class="w-full"
-        />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="成本价" min-width="168">
-      <template #default="{ row }">
-        <InputNumber
-          v-model:value="row.costPrice"
-          :min="0"
-          :precision="2"
-          :step="0.1"
-          class="w-full"
-        />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="库存" min-width="168">
-      <template #default="{ row }">
-        <InputNumber v-model:value="row.stock" :min="0" class="w-full" />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="重量(kg)" min-width="168">
-      <template #default="{ row }">
-        <InputNumber
-          v-model:value="row.weight"
-          :min="0"
-          :precision="2"
-          :step="0.1"
-          class="w-full"
-        />
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="体积(m^3)" min-width="168">
-      <template #default="{ row }">
-        <InputNumber
-          v-model:value="row.volume"
-          :min="0"
-          :precision="2"
-          :step="0.1"
-          class="w-full"
-        />
-      </template>
-    </VxeColumn>
-    <template v-if="formData?.subCommissionType">
-      <VxeColumn align="center" title="一级返佣(元)" min-width="168">
-        <template #default="{ row }">
-          <InputNumber
-            v-model:value="row.firstBrokeragePrice"
-            :min="0"
-            :precision="2"
-            :step="0.1"
-            class="w-full"
-          />
-        </template>
-      </VxeColumn>
-      <VxeColumn align="center" title="二级返佣(元)" min-width="168">
-        <template #default="{ row }">
-          <InputNumber
-            v-model:value="row.secondBrokeragePrice"
-            :min="0"
-            :precision="2"
-            :step="0.1"
-            class="w-full"
-          />
-        </template>
-      </VxeColumn>
-    </template>
-    <VxeColumn
-      v-if="formData?.specType"
-      align="center"
-      fixed="right"
-      title="操作"
-      width="100"
+  <div>
+    <!-- 情况一：添加/修改 -->
+    <VxeTable
+      v-if="!isDetail && !isActivityComponent"
+      :data="isBatch ? skuList : formData?.skus || []"
+      border
+      max-height="500"
+      size="small"
+      class="w-full"
     >
-      <template #default="{ row }">
-        <Button v-if="isBatch" type="link" size="small" @click="batchAdd">
-          批量添加
-        </Button>
-        <Button v-else type="link" size="small" danger @click="deleteSku(row)">
-          删除
-        </Button>
+      <VxeColumn align="center" title="图片" min-width="120">
+        <template #default="{ row }">
+          <ImageUpload
+            v-model:value="row.picUrl"
+            :max-number="1"
+            :max-size="2"
+            :show-description="false"
+          />
+        </template>
+      </VxeColumn>
+      <template v-if="formData?.specType && !isBatch">
+        <!--  根据商品属性动态添加 -->
+        <VxeColumn
+          v-for="(item, index) in tableHeaders"
+          :key="index"
+          :title="item.label"
+          align="center"
+          min-width="120"
+        >
+          <template #default="{ row }">
+            <span class="font-bold text-[#40aaff]">
+              {{ row.properties?.[index]?.valueName }}
+            </span>
+          </template>
+        </VxeColumn>
       </template>
-    </VxeColumn>
-  </VxeTable>
-
-  <!-- 情况二：详情 -->
-  <VxeTable
-    v-if="isDetail"
-    ref="activitySkuListRef"
-    :data="formData?.skus || []"
-    border
-    max-height="500"
-    size="small"
-    class="w-full"
-    :checkbox-config="isComponent ? { reserve: true } : undefined"
-    @checkbox-change="handleSelectionChange"
-    @checkbox-all="handleSelectionChange"
-  >
-    <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-    <VxeColumn align="center" title="图片" min-width="80">
-      <template #default="{ row }">
-        <Image
-          v-if="row.picUrl"
-          :src="row.picUrl"
-          class="h-[50px] w-[50px] cursor-pointer"
-          :preview="true"
-        />
+      <VxeColumn align="center" title="商品条码" min-width="168">
+        <template #default="{ row }">
+          <Input v-model:value="row.barCode" class="w-full" />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="销售价" min-width="168">
+        <template #default="{ row }">
+          <InputNumber
+            v-model:value="row.price"
+            :min="0"
+            :precision="2"
+            :step="0.1"
+            class="w-full"
+          />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="市场价" min-width="168">
+        <template #default="{ row }">
+          <InputNumber
+            v-model:value="row.marketPrice"
+            :min="0"
+            :precision="2"
+            :step="0.1"
+            class="w-full"
+          />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="成本价" min-width="168">
+        <template #default="{ row }">
+          <InputNumber
+            v-model:value="row.costPrice"
+            :min="0"
+            :precision="2"
+            :step="0.1"
+            class="w-full"
+          />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="库存" min-width="168">
+        <template #default="{ row }">
+          <InputNumber v-model:value="row.stock" :min="0" class="w-full" />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="重量(kg)" min-width="168">
+        <template #default="{ row }">
+          <InputNumber
+            v-model:value="row.weight"
+            :min="0"
+            :precision="2"
+            :step="0.1"
+            class="w-full"
+          />
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="体积(m^3)" min-width="168">
+        <template #default="{ row }">
+          <InputNumber
+            v-model:value="row.volume"
+            :min="0"
+            :precision="2"
+            :step="0.1"
+            class="w-full"
+          />
+        </template>
+      </VxeColumn>
+      <template v-if="formData?.subCommissionType">
+        <VxeColumn align="center" title="一级返佣(元)" min-width="168">
+          <template #default="{ row }">
+            <InputNumber
+              v-model:value="row.firstBrokeragePrice"
+              :min="0"
+              :precision="2"
+              :step="0.1"
+              class="w-full"
+            />
+          </template>
+        </VxeColumn>
+        <VxeColumn align="center" title="二级返佣(元)" min-width="168">
+          <template #default="{ row }">
+            <InputNumber
+              v-model:value="row.secondBrokeragePrice"
+              :min="0"
+              :precision="2"
+              :step="0.1"
+              class="w-full"
+            />
+          </template>
+        </VxeColumn>
       </template>
-    </VxeColumn>
-    <template v-if="formData?.specType && !isBatch">
-      <!--  根据商品属性动态添加 -->
       <VxeColumn
-        v-for="(item, index) in tableHeaders"
-        :key="index"
-        :title="item.label"
+        v-if="formData?.specType"
         align="center"
-        min-width="80"
+        fixed="right"
+        title="操作"
+        width="100"
       >
         <template #default="{ row }">
-          <span class="font-bold text-[#40aaff]">
-            {{ row.properties?.[index]?.valueName }}
-          </span>
+          <Button v-if="isBatch" type="link" size="small" @click="batchAdd">
+            批量添加
+          </Button>
+          <Button
+            v-else
+            type="link"
+            size="small"
+            danger
+            @click="deleteSku(row)"
+          >
+            删除
+          </Button>
         </template>
       </VxeColumn>
-    </template>
-    <VxeColumn align="center" title="商品条码" min-width="100">
-      <template #default="{ row }">
-        {{ row.barCode }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="销售价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.price }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="市场价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.marketPrice }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="成本价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ row.costPrice }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="库存" min-width="80">
-      <template #default="{ row }">
-        {{ row.stock }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="重量(kg)" min-width="80">
-      <template #default="{ row }">
-        {{ row.weight }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="体积(m^3)" min-width="80">
-      <template #default="{ row }">
-        {{ row.volume }}
-      </template>
-    </VxeColumn>
-    <template v-if="formData?.subCommissionType">
-      <VxeColumn align="center" title="一级返佣(元)" min-width="80">
-        <template #default="{ row }">
-          {{ row.firstBrokeragePrice }}
-        </template>
-      </VxeColumn>
-      <VxeColumn align="center" title="二级返佣(元)" min-width="80">
-        <template #default="{ row }">
-          {{ row.secondBrokeragePrice }}
-        </template>
-      </VxeColumn>
-    </template>
-  </VxeTable>
+    </VxeTable>
 
-  <!-- 情况三：作为活动组件 -->
-  <VxeTable
-    v-if="isActivityComponent"
-    :data="formData?.skus || []"
-    border
-    max-height="500"
-    size="small"
-    class="w-full"
-  >
-    <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-    <VxeColumn align="center" title="图片" min-width="80">
-      <template #default="{ row }">
-        <Image
-          :src="row.picUrl"
-          class="h-[60px] w-[60px] cursor-pointer"
-          :preview="true"
-        />
-      </template>
-    </VxeColumn>
-    <template v-if="formData?.specType">
-      <!--  根据商品属性动态添加 -->
-      <VxeColumn
-        v-for="(item, index) in tableHeaders"
-        :key="index"
-        :title="item.label"
-        align="center"
-        min-width="80"
-      >
+    <!-- 情况二：详情 -->
+    <VxeTable
+      v-if="isDetail"
+      ref="activitySkuListRef"
+      :data="formData?.skus || []"
+      border
+      max-height="500"
+      size="small"
+      class="w-full"
+      :checkbox-config="isComponent ? { reserve: true } : undefined"
+      @checkbox-change="handleSelectionChange"
+      @checkbox-all="handleSelectionChange"
+    >
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
+      <VxeColumn align="center" title="图片" min-width="120">
         <template #default="{ row }">
-          <span class="font-bold text-[#40aaff]">
-            {{ row.properties?.[index]?.valueName }}
-          </span>
+          <Image
+            v-if="row.picUrl"
+            :src="row.picUrl"
+            class="h-[50px] w-[50px] cursor-pointer"
+            :preview="true"
+          />
         </template>
       </VxeColumn>
-    </template>
-    <VxeColumn align="center" title="商品条码" min-width="100">
-      <template #default="{ row }">
-        {{ row.barCode }}
+      <template v-if="formData?.specType && !isBatch">
+        <!--  根据商品属性动态添加 -->
+        <VxeColumn
+          v-for="(item, index) in tableHeaders"
+          :key="index"
+          :title="item.label"
+          align="center"
+          min-width="80"
+        >
+          <template #default="{ row }">
+            <span class="font-bold text-[#40aaff]">
+              {{ row.properties?.[index]?.valueName }}
+            </span>
+          </template>
+        </VxeColumn>
       </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="销售价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ formatToFraction(row.price) }}
+      <VxeColumn align="center" title="商品条码" min-width="100">
+        <template #default="{ row }">
+          {{ row.barCode }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="销售价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ row.price }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="市场价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ row.marketPrice }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="成本价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ row.costPrice }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="库存" min-width="80">
+        <template #default="{ row }">
+          {{ row.stock }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="重量(kg)" min-width="80">
+        <template #default="{ row }">
+          {{ row.weight }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="体积(m^3)" min-width="80">
+        <template #default="{ row }">
+          {{ row.volume }}
+        </template>
+      </VxeColumn>
+      <template v-if="formData?.subCommissionType">
+        <VxeColumn align="center" title="一级返佣(元)" min-width="80">
+          <template #default="{ row }">
+            {{ row.firstBrokeragePrice }}
+          </template>
+        </VxeColumn>
+        <VxeColumn align="center" title="二级返佣(元)" min-width="80">
+          <template #default="{ row }">
+            {{ row.secondBrokeragePrice }}
+          </template>
+        </VxeColumn>
       </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="市场价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ formatToFraction(row.marketPrice) }}
+    </VxeTable>
+
+    <!-- 情况三：作为活动组件 -->
+    <VxeTable
+      v-if="isActivityComponent"
+      :data="formData?.skus || []"
+      border
+      max-height="500"
+      size="small"
+      class="w-full"
+    >
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
+      <VxeColumn align="center" title="图片" min-width="120">
+        <template #default="{ row }">
+          <Image
+            :src="row.picUrl"
+            class="h-[60px] w-[60px] cursor-pointer"
+            :preview="true"
+          />
+        </template>
+      </VxeColumn>
+      <template v-if="formData?.specType">
+        <!--  根据商品属性动态添加 -->
+        <VxeColumn
+          v-for="(item, index) in tableHeaders"
+          :key="index"
+          :title="item.label"
+          align="center"
+          min-width="80"
+        >
+          <template #default="{ row }">
+            <span class="font-bold text-[#40aaff]">
+              {{ row.properties?.[index]?.valueName }}
+            </span>
+          </template>
+        </VxeColumn>
       </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="成本价(元)" min-width="80">
-      <template #default="{ row }">
-        {{ formatToFraction(row.costPrice) }}
-      </template>
-    </VxeColumn>
-    <VxeColumn align="center" title="库存" min-width="80">
-      <template #default="{ row }">
-        {{ row.stock }}
-      </template>
-    </VxeColumn>
-    <!--  方便扩展每个活动配置的属性不一样  -->
-    <slot name="extension"></slot>
-  </VxeTable>
+      <VxeColumn align="center" title="商品条码" min-width="100">
+        <template #default="{ row }">
+          {{ row.barCode }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="销售价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ formatToFraction(row.price) }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="市场价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ formatToFraction(row.marketPrice) }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="成本价(元)" min-width="80">
+        <template #default="{ row }">
+          {{ formatToFraction(row.costPrice) }}
+        </template>
+      </VxeColumn>
+      <VxeColumn align="center" title="库存" min-width="80">
+        <template #default="{ row }">
+          {{ row.stock }}
+        </template>
+      </VxeColumn>
+      <!--  方便扩展每个活动配置的属性不一样  -->
+      <slot name="extension"></slot>
+    </VxeTable>
+  </div>
 </template>

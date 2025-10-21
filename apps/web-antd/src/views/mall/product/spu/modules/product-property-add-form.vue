@@ -128,7 +128,7 @@ const [Modal, modalApi] = useVbenModal({
         name,
         values: [],
       });
-      message.success($t('common.createSuccess'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
     } catch (error) {

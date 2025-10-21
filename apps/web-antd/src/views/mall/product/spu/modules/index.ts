@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 export interface PropertyAndValues {
@@ -39,9 +40,7 @@ const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
           // 添加属性
           if (!properties?.some((item) => item.id === propertyId)) {
             properties.push({
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               id: propertyId!,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               name: propertyName!,
               values: [],
             });
@@ -51,7 +50,6 @@ const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
           if (
             !properties[index]?.values?.some((value) => value.id === valueId)
           ) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             properties[index]?.values?.push({ id: valueId!, name: valueName! });
           }
         },

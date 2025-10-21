@@ -313,67 +313,69 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ProductPropertyAddFormModal :property-list="propertyList" />
+  <div>
+    <ProductPropertyAddFormModal :property-list="propertyList" />
 
-  <Page auto-content-height>
-    <ContentWrap class="h-full w-full pb-8">
-      <template #extra>
-        <Button type="primary" @click="onSubmit">保存</Button>
-      </template>
-      <Tabs v-model:active-key="activeTabName">
-        <Tabs.TabPane tab="基础设置" key="info">
-          <InfoForm class="w-3/5" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="价格库存" key="sku">
-          <SkuForm class="w-full">
-            <template #singleSkuList>
-              <SkuList
-                ref="skuListRef"
-                :prop-form-data="formData"
-                :property-list="propertyList"
-                :rule-config="ruleConfig"
-              />
-            </template>
-            <template #productAttributes>
-              <div>
-                <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
-                  添加属性
-                </Button>
-                <ProductAttributes
-                  :is-detail="isDetail"
+    <Page auto-content-height>
+      <ContentWrap class="h-full w-full pb-8">
+        <template #extra>
+          <Button type="primary" @click="onSubmit">保存</Button>
+        </template>
+        <Tabs v-model:active-key="activeTabName">
+          <Tabs.TabPane tab="基础设置" key="info">
+            <InfoForm class="w-3/5" />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="价格库存" key="sku">
+            <SkuForm class="w-full">
+              <template #singleSkuList>
+                <SkuList
+                  ref="skuListRef"
+                  :prop-form-data="formData"
                   :property-list="propertyList"
-                  @success="generateSkus"
+                  :rule-config="ruleConfig"
                 />
-              </div>
-            </template>
-            <template #batchSkuList>
-              <SkuList
-                :is-batch="true"
-                :prop-form-data="formData"
-                :property-list="propertyList"
-              />
-            </template>
-            <template #multiSkuList>
-              <SkuList
-                ref="skuListRef"
-                :is-detail="isDetail"
-                :prop-form-data="formData"
-                :property-list="propertyList"
-                :rule-config="ruleConfig"
-              />
-            </template>
-          </SkuForm>
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="物流设置" key="delivery">
-          <DeliveryForm class="w-3/5" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="商品详情" key="description">
-          <DescriptionForm class="w-3/5" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="其它设置" key="other">
-          <OtherForm class="w-3/5" />
-        </Tabs.TabPane>
-      </Tabs>
-    </ContentWrap>
-  </Page>
+              </template>
+              <template #productAttributes>
+                <div>
+                  <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
+                    添加属性
+                  </Button>
+                  <ProductAttributes
+                    :is-detail="isDetail"
+                    :property-list="propertyList"
+                    @success="generateSkus"
+                  />
+                </div>
+              </template>
+              <template #batchSkuList>
+                <SkuList
+                  :is-batch="true"
+                  :prop-form-data="formData"
+                  :property-list="propertyList"
+                />
+              </template>
+              <template #multiSkuList>
+                <SkuList
+                  ref="skuListRef"
+                  :is-detail="isDetail"
+                  :prop-form-data="formData"
+                  :property-list="propertyList"
+                  :rule-config="ruleConfig"
+                />
+              </template>
+            </SkuForm>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="物流设置" key="delivery">
+            <DeliveryForm class="w-3/5" />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="商品详情" key="description">
+            <DescriptionForm class="w-3/5" />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="其它设置" key="other">
+            <OtherForm class="w-3/5" />
+          </Tabs.TabPane>
+        </Tabs>
+      </ContentWrap>
+    </Page>
+  </div>
 </template>

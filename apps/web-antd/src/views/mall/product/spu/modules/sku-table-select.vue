@@ -6,8 +6,9 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { fenToYuan } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { Input, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';
@@ -22,13 +23,6 @@ const emit = defineEmits<{
 
 const selectedSkuId = ref<number>();
 const spuId = ref<number>();
-
-// 价格格式化：分转元
-const fenToYuan = (price?: number | string) => {
-  const numPrice =
-    typeof price === 'string' ? Number.parseFloat(price) : price || 0;
-  return (numPrice / 100).toFixed(2);
-};
 
 // 配置列
 const gridColumns = computed<VxeGridProps['columns']>(() => [
@@ -102,11 +96,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 处理选中
-const handleSelected = (row: MallSpuApi.Sku) => {
+function handleSelected(row: MallSpuApi.Sku) {
   emit('change', row);
   modalApi.close();
   selectedSkuId.value = undefined;
-};
+}
 
 // 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
@@ -133,7 +127,7 @@ const [Modal, modalApi] = useVbenModal({
     <Grid>
       <!-- 单选列 -->
       <template #radio-column="{ row }">
-        <input
+        <Input
           v-model="selectedSkuId"
           :value="row.id"
           class="cursor-pointer"

@@ -160,7 +160,6 @@ export function useSkuFormSchema(
       fieldName: 'singleSkuList',
       label: '',
       component: 'Input',
-      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 false（单规格）时显示
@@ -172,7 +171,6 @@ export function useSkuFormSchema(
       fieldName: 'productAttributes',
       label: '商品属性',
       component: 'Input',
-      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 true（多规格）时显示
@@ -184,7 +182,6 @@ export function useSkuFormSchema(
       fieldName: 'batchSkuList',
       label: '批量设置',
       component: 'Input',
-      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 true（多规格）且 propertyList 有数据时显示，且非详情模式
@@ -197,7 +194,6 @@ export function useSkuFormSchema(
       fieldName: 'multiSkuList',
       label: '规格列表',
       component: 'Input',
-      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 true（多规格）且 propertyList 有数据时显示

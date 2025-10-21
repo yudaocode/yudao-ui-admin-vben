@@ -48,7 +48,7 @@ interface InputRefItem {
 
 const inputRef = ref<InputRefItem[]>([]); // 标签输入框Ref
 /** 解决 ref 在 v-for 中的获取问题*/
-const setInputRef = (el: any) => {
+function setInputRef(el: any) {
   if (el === null || el === undefined) return;
   // 如果不存在 id 相同的元素才添加
   if (
@@ -58,7 +58,7 @@ const setInputRef = (el: any) => {
   ) {
     inputRef.value.push(el);
   }
-};
+}
 const attributeList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const attributeOptions = ref<MallPropertyApi.PropertyValue[]>([]); // 商品属性值下拉框
 
@@ -75,26 +75,26 @@ watch(
 );
 
 /** 删除属性值*/
-const handleCloseValue = (index: number, valueIndex: number) => {
+function handleCloseValue(index: number, valueIndex: number) {
   attributeList.value?.[index]?.values?.splice(valueIndex, 1);
-};
+}
 
 /** 删除属性*/
-const handleCloseProperty = (index: number) => {
+function handleCloseProperty(index: number) {
   attributeList.value?.splice(index, 1);
   emit('success', attributeList.value);
-};
+}
 
 /** 显示输入框并获取焦点 */
-const showInput = async (index: number) => {
+async function showInput(index: number) {
   attributeIndex.value = index;
   inputRef.value?.[index]?.focus();
   // 获取属性下拉选项
   await getAttributeOptions(attributeList.value?.[index]?.id!);
-};
+}
 
 // 定义 success 事件，用于操作成功后的回调
-const handleInputConfirm = async (index: number, propertyId: number) => {
+async function handleInputConfirm(index: number, propertyId: number) {
   // 从数组中取最后一个输入的值（tags 模式下 inputValue 是数组）
   const currentValue = inputValue.value?.[inputValue.value.length - 1]?.trim();
 
@@ -144,12 +144,12 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
   }
   attributeIndex.value = null;
   inputValue.value = [];
-};
+}
 
 /** 获取商品属性下拉选项 */
-const getAttributeOptions = async (propertyId: number) => {
+async function getAttributeOptions(propertyId: number) {
   attributeOptions.value = await getPropertyValueSimpleList(propertyId);
-};
+}
 </script>
 
 <template>
