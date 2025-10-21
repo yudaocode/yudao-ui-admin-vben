@@ -12,11 +12,9 @@ import { useDetailSchema } from '../data';
 const formData = ref<InfraApiErrorLogApi.ApiErrorLog>();
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 1,
-    class: 'mx-4',
-  },
+  bordered: true,
+  column: 1,
+  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

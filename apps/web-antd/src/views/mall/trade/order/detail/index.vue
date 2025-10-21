@@ -57,38 +57,30 @@ const expressTrackList = ref<any[]>([]);
 const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
 
 const [OrderInfoDescriptions] = useDescription({
-  componentProps: {
-    title: '订单信息',
-    bordered: false,
-    column: 3,
-  },
+  title: '订单信息',
+  bordered: false,
+  column: 3,
   schema: useOrderInfoSchema(),
 });
 
 const [OrderStatusDescriptions] = useDescription({
-  componentProps: {
-    title: '订单状态',
-    bordered: false,
-    column: 1,
-  },
+  title: '订单状态',
+  bordered: false,
+  column: 1,
   schema: useOrderStatusSchema(),
 });
 
 const [OrderPriceDescriptions] = useDescription({
-  componentProps: {
-    title: '费用信息',
-    bordered: false,
-    column: 4,
-  },
+  title: '费用信息',
+  bordered: false,
+  column: 4,
   schema: useOrderPriceSchema(),
 });
 
 const [DeliveryInfoDescriptions] = useDescription({
-  componentProps: {
-    title: '收货信息',
-    bordered: false,
-    column: 3,
-  },
+  title: '收货信息',
+  bordered: false,
+  column: 3,
   schema: useDeliveryInfoSchema(),
 });
 

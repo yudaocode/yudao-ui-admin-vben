@@ -24,37 +24,37 @@ const [Descriptions] = useDescription({
     {
       field: 'levelName',
       label: '等级',
-      content: (data) => data.levelName || '-',
+      render: (val) => val || '-',
     },
     {
       field: 'experience',
       label: '成长值',
-      content: (data) => data.experience || 0,
+      render: (val) => val || 0,
     },
     {
       field: 'point',
       label: '当前积分',
-      content: (data) => data.point || 0,
+      render: (val) => val || 0,
     },
     {
       field: 'totalPoint',
       label: '总积分',
-      content: (data) => data.totalPoint || 0,
+      render: (val) => val || 0,
     },
     {
       field: 'balance',
       label: '当前余额',
-      content: (data) => fenToYuan(data.balance || 0),
+      render: (val) => fenToYuan(val || 0),
     },
     {
       field: 'totalExpense',
       label: '支出金额',
-      content: (data) => fenToYuan(data.totalExpense || 0),
+      render: (val) => fenToYuan(val || 0),
     },
     {
       field: 'totalRecharge',
       label: '充值金额',
-      content: (data) => fenToYuan(data.totalRecharge || 0),
+      render: (val) => fenToYuan(val || 0),
     },
   ],
 });

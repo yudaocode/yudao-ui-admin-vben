@@ -10,12 +10,10 @@ defineProps<{
 }>();
 
 const [ProductDescriptions] = useDescription({
-  componentProps: {
-    title: '基本信息',
-    bordered: false,
-    column: 4,
-    class: 'mx-4',
-  },
+  title: '基本信息',
+  bordered: false,
+  column: 4,
+  class: 'mx-4',
   schema: useDetailBaseSchema(),
 });
 </script>
