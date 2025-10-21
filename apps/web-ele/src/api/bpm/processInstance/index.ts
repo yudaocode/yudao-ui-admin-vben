@@ -1,5 +1,8 @@
+import type {
+  BpmCandidateStrategyEnum,
+  BpmNodeTypeEnum,
+} from '@vben/constants';
 import type { PageParam, PageResult } from '@vben/request';
-import type { BpmCandidateStrategyEnum, BpmNodeTypeEnum } from '@vben/utils';
 
 import type { BpmTaskApi } from '../task';
 
@@ -35,11 +38,12 @@ export namespace BpmProcessInstanceApi {
     candidateStrategy?: BpmCandidateStrategyEnum;
     candidateUsers?: User[];
     endTime?: Date;
-    id: number;
+    id: string;
     name: string;
     nodeType: BpmNodeTypeEnum;
     startTime?: Date;
     status: number;
+    processInstanceId?: string;
     tasks: ApprovalTaskInfo[];
   }
 
