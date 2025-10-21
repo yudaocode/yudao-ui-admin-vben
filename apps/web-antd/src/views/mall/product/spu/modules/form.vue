@@ -9,7 +9,7 @@ import { useRoute } from 'vue-router';
 import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
 import { convertToInteger, floatToFixed2, formatToFraction } from '@vben/utils';
 
-import { Button, Tabs } from 'ant-design-vue';
+import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';
@@ -177,8 +177,15 @@ async function onSubmit() {
     .merge(descriptionFormApi)
     .merge(otherFormApi)
     .submitAllForm(true);
-
+  values.skus = formData.value.skus;
   if (values.skus) {
+    try {
+      // 校验 sku
+      skuListRef.value.validateSku();
+    } catch {
+      message.error('【库存价格】不完善，请填写相关信息');
+      return;
+    }
     values.skus.forEach((item) => {
       // sku相关价格元转分
       item.price = convertToInteger(item.price);
