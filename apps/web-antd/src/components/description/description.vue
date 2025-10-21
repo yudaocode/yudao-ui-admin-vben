@@ -5,9 +5,9 @@ import type { CSSProperties, PropType, Slots } from 'vue';
 
 import type { DescriptionItemSchema, DescriptionProps } from './typing';
 
-import { computed, defineComponent, ref, toRefs, unref, useAttrs } from 'vue';
+import { computed, defineComponent, ref, unref, useAttrs } from 'vue';
 
-import { get, isFunction } from '@vben/utils';
+import { get, getNestedValue, isFunction } from '@vben/utils';
 
 import { Card, Descriptions } from 'ant-design-vue';
 
@@ -110,15 +110,17 @@ export default defineComponent({
             if (!_data) {
               return null;
             }
-            const getField = get(_data, field);
-            if (
-              getField &&
-              !Object.prototype.hasOwnProperty.call(toRefs(_data), field)
-            ) {
-              return isFunction(render) ? render!('', _data) : '';
-            }
+            const getField = field.includes('.')
+              ? (getNestedValue(_data, field) ?? get(_data, field))
+              : get(_data, field);
+            // if (
+            //   getField &&
+            //   !Object.prototype.hasOwnProperty.call(toRefs(_data), field)
+            // ) {
+            //   return isFunction(render) ? render('', _data) : (getField ?? '');
+            // }
             return isFunction(render)
-              ? render!(getField, _data)
+              ? render(getField, _data)
               : (getField ?? '');
           }
 
