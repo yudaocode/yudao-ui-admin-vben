@@ -87,6 +87,7 @@ const [Form, formApi] = useVbenForm({
 
 // 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
+  destroyOnClose: true, // 关键：关闭时销毁弹窗，确保每次打开都是全新状态
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) return;
@@ -118,7 +119,6 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 情况二：如果是不存在的属性，则需要执行新增
-    modalApi.lock();
     try {
       const data = { name } as MallPropertyApi.Property;
       const propertyId = await createProperty(data);
@@ -131,8 +131,9 @@ const [Modal, modalApi] = useVbenModal({
       message.success($t('common.createSuccess'));
       await modalApi.close();
       emit('success');
-    } finally {
-      modalApi.unlock();
+    } catch (error) {
+      // 发生错误时不关闭弹窗
+      console.error('添加属性失败:', error);
     }
   },
   async onOpenChange(isOpen: boolean) {

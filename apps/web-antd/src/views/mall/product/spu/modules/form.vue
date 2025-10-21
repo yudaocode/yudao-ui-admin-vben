@@ -3,7 +3,7 @@ import type { PropertyAndValues, RuleConfig } from './index';
 
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
@@ -24,6 +24,7 @@ import {
 import { getPropertyList } from './index';
 import ProductAttributes from './product-attributes.vue';
 import ProductPropertyAddForm from './product-property-add-form.vue';
+import SkuList from './sku-list.vue';
 
 const spuId = ref<number>();
 const { params, name } = useRoute();
@@ -63,6 +64,7 @@ const formData = ref<MallSpuApi.Spu>({
 const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(false); // 是否查看详情
+const skuListRef = ref(); // 商品属性列表 Ref
 
 // sku 相关属性校验规则
 const ruleConfig: RuleConfig[] = [
@@ -88,15 +90,6 @@ const ruleConfig: RuleConfig[] = [
   },
 ];
 
-// 动态生成 sku form schema
-const skuFormSchema = computed(() => {
-  return useSkuFormSchema(
-    propertyList.value,
-    ruleConfig,
-    isDetail.value || false,
-  );
-});
-
 const [InfoForm, infoFormApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -119,8 +112,18 @@ const [SkuForm, skuFormApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: skuFormSchema.value,
+  schema: useSkuFormSchema(propertyList.value, isDetail.value),
   showDefaultActions: false,
+  handleValuesChange: (values, fieldsChanged) => {
+    if (fieldsChanged.includes('subCommissionType')) {
+      formData.value.subCommissionType = values.subCommissionType;
+      changeSubCommissionType();
+    }
+    if (fieldsChanged.includes('specType')) {
+      formData.value.specType = values.specType;
+      onChangeSpec();
+    }
+  },
 });
 
 const [ProductPropertyAddFormModal, productPropertyAddFormApi] = useVbenModal({
@@ -227,11 +230,8 @@ const getDetail = async () => {
         }
       });
       formData.value = res;
-      // 将 SKU 的属性，整理成 PropertyAndValues 数组
-      propertyList.value = getPropertyList(res);
       // 初始化各表单值（异步）
       infoFormApi.setValues(res);
-      // 特殊处理 SpuSkuFormData
       skuFormApi.setValues(res);
       deliveryFormApi.setValues(res);
       descriptionFormApi.setValues(res);
@@ -240,18 +240,58 @@ const getDetail = async () => {
       formLoading.value = false;
     }
   }
+  // 将 SKU 的属性，整理成 PropertyAndValues 数组
+  propertyList.value = getPropertyList(formData.value);
 };
+
+// =========== sku form 逻辑 ===========
+
+function openPropertyAddForm() {
+  productPropertyAddFormApi.open();
+}
 
 /** 调用 SkuList generateTableData 方法*/
 const generateSkus = (propertyList: any[]) => {
-  // skuListRef.value.generateTableData(propertyList)
+  skuListRef.value.generateTableData(propertyList);
+};
+
+/** 分销类型 */
+const changeSubCommissionType = () => {
+  // 默认为零，类型切换后也要重置为零
+  for (const item of formData.value.skus!) {
+    item.firstBrokeragePrice = 0;
+    item.secondBrokeragePrice = 0;
+  }
+};
+
+/** 选择规格 */
+const onChangeSpec = () => {
+  // 重置商品属性列表
+  propertyList.value = [];
+  // 重置sku列表
+  formData.value.skus = [
+    {
+      price: 0,
+      marketPrice: 0,
+      costPrice: 0,
+      barCode: '',
+      picUrl: '',
+      stock: 0,
+      weight: 0,
+      volume: 0,
+      firstBrokeragePrice: 0,
+      secondBrokeragePrice: 0,
+    },
+  ];
 };
 
 // 监听 sku form schema 变化，更新表单
 watch(
-  skuFormSchema,
-  (newSchema) => {
-    skuFormApi.updateSchema(newSchema);
+  propertyList,
+  () => {
+    skuFormApi.updateSchema(
+      useSkuFormSchema(propertyList.value, isDetail.value),
+    );
   },
   { deep: true },
 );
@@ -266,7 +306,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ProductPropertyAddFormModal />
+  <ProductPropertyAddFormModal :property-list="propertyList" />
 
   <Page auto-content-height>
     <ContentWrap class="h-full w-full pb-8">
@@ -278,13 +318,18 @@ onMounted(async () => {
           <InfoForm class="w-3/5" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="价格库存" key="sku">
-          <SkuForm class="w-3/5">
+          <SkuForm class="w-full">
+            <template #singleSkuList>
+              <SkuList
+                ref="skuListRef"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+                :rule-config="ruleConfig"
+              />
+            </template>
             <template #productAttributes>
               <div>
-                <Button
-                  class="mb-10px mr-15px"
-                  @click="productPropertyAddFormApi.open"
-                >
+                <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
                   添加属性
                 </Button>
                 <ProductAttributes
@@ -293,6 +338,22 @@ onMounted(async () => {
                   @success="generateSkus"
                 />
               </div>
+            </template>
+            <template #batchSkuList>
+              <SkuList
+                :is-batch="true"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+              />
+            </template>
+            <template #multiSkuList>
+              <SkuList
+                ref="skuListRef"
+                :is-detail="isDetail"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+                :rule-config="ruleConfig"
+              />
             </template>
           </SkuForm>
         </Tabs.TabPane>

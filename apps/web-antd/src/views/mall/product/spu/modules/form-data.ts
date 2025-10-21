@@ -1,7 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
-import { h } from 'vue';
-
 import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
@@ -10,8 +8,6 @@ import { z } from '#/adapter/form';
 import { getSimpleBrandList } from '#/api/mall/product/brand';
 import { getCategoryList } from '#/api/mall/product/category';
 import { getSimpleTemplateList } from '#/api/mall/trade/delivery/expressTemplate';
-
-import SkuList from './sku-list.vue';
 
 /** 基础设置的表单 */
 export function useInfoFormSchema(): VbenFormSchema[] {
@@ -110,7 +106,6 @@ export function useInfoFormSchema(): VbenFormSchema[] {
 /** 价格库存的表单 */
 export function useSkuFormSchema(
   propertyList: any[] = [],
-  ruleConfig: any[] = [],
   isDetail: boolean = false,
 ): VbenFormSchema[] {
   return [
@@ -164,11 +159,8 @@ export function useSkuFormSchema(
     {
       fieldName: 'singleSkuList',
       label: '',
-      component: h(SkuList),
-      componentProps: {
-        propertyList,
-        ruleConfig,
-      },
+      component: 'Input',
+      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 false（单规格）时显示
@@ -191,11 +183,8 @@ export function useSkuFormSchema(
     {
       fieldName: 'batchSkuList',
       label: '批量设置',
-      component: h(SkuList),
-      componentProps: {
-        isBatch: true,
-        propertyList,
-      },
+      component: 'Input',
+      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 true（多规格）且 propertyList 有数据时显示，且非详情模式
@@ -207,12 +196,8 @@ export function useSkuFormSchema(
     {
       fieldName: 'multiSkuList',
       label: '规格列表',
-      component: h(SkuList),
-      componentProps: {
-        propertyList,
-        ruleConfig,
-        isDetail,
-      },
+      component: 'Input',
+      componentProps: {},
       dependencies: {
         triggerFields: ['specType'],
         // 当 specType 为 true（多规格）且 propertyList 有数据时显示

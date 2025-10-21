@@ -214,11 +214,8 @@ const validateData = (propertyList: PropertyAndValues[]): boolean => {
     sku.properties
       ?.map((property: MallSpuApi.Property) => property.propertyId)
       ?.forEach((propertyId?: number) => {
-        if (
-          propertyId !== undefined &&
-          !skuPropertyIds.indexOf(propertyId) === -1
-        ) {
-          skuPropertyIds.push(propertyId);
+        if (!skuPropertyIds.includes(propertyId!)) {
+          skuPropertyIds.push(propertyId!);
         }
       }),
   );
