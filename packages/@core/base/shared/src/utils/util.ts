@@ -48,23 +48,23 @@ export function getNestedValue<T>(obj: T, path: string): any {
  * @param key 参数键名
  * @param urlStr 链接地址，默认为当前浏览器的地址
  */
-export const getUrlNumberValue = (
+export function getUrlNumberValue(
   key: string,
   urlStr: string = location.href,
-): number => {
+): number {
   return Number(getUrlValue(key, urlStr));
-};
+}
 
 /**
  * 获取链接的参数值
  * @param key 参数键名
  * @param urlStr 链接地址，默认为当前浏览器的地址
  */
-export const getUrlValue = (
+export function getUrlValue(
   key: string,
   urlStr: string = location.href,
-): string => {
+): string {
   if (!urlStr || !key) return '';
   const url = new URL(decodeURIComponent(urlStr));
   return url.searchParams.get(key) ?? '';
-};
+}
