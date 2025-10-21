@@ -7,7 +7,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { ref, watch } from 'vue';
 
-import { formatToFraction, isEmpty } from '@vben/utils';
+import { copyValueToTarget, formatToFraction, isEmpty } from '@vben/utils';
 
 import { Button, Image, Input, InputNumber, message } from 'ant-design-vue';
 
@@ -59,20 +59,11 @@ const skuList = ref<MallSpuApi.Sku[]>([
   },
 ]); // 批量添加时的临时数据
 
-/** 商品图预览 */
-const imagePreview = (imgUrl: string) => {
-  // TODO @puhui999: 图片预览
-  // createImageViewer({
-  //   zIndex: 9_999_999,
-  //   urlList: [imgUrl],
-  // });
-};
-
 /** 批量添加 */
 const batchAdd = () => {
   validateProperty();
   formData.value!.skus!.forEach((item: MallSpuApi.Sku) => {
-    // copyValueToTarget(item, skuList.value[0]);
+    copyValueToTarget(item, skuList.value[0]);
   });
 };
 
@@ -478,8 +469,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           v-if="row.picUrl"
           :src="row.picUrl"
           class="h-[50px] w-[50px] cursor-pointer"
-          :preview="false"
-          @click="imagePreview(row.picUrl)"
+          :preview="true"
         />
       </template>
     </VxeColumn>
@@ -563,8 +553,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
         <Image
           :src="row.picUrl"
           class="h-[60px] w-[60px] cursor-pointer"
-          :preview="false"
-          @click="imagePreview(row.picUrl)"
+          :preview="true"
         />
       </template>
     </VxeColumn>

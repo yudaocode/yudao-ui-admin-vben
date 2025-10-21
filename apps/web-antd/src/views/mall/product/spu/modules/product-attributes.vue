@@ -29,7 +29,7 @@ interface Props {
   isDetail?: boolean;
 }
 
-const inputValue = ref(''); // 输入框值
+const inputValue = ref<string[]>([]); // 输入框值（tags 模式使用数组）
 const attributeIndex = ref<null | number>(null); // 获取焦点时记录当前属性项的index
 // 输入框显隐控制
 const inputVisible = computed(() => (index: number) => {
@@ -95,26 +95,29 @@ const showInput = async (index: number) => {
 
 // 定义 success 事件，用于操作成功后的回调
 const handleInputConfirm = async (index: number, propertyId: number) => {
-  if (inputValue.value) {
+  // 从数组中取最后一个输入的值（tags 模式下 inputValue 是数组）
+  const currentValue = inputValue.value?.[inputValue.value.length - 1]?.trim();
+  
+  if (currentValue) {
     // 1. 重复添加校验
     if (
       attributeList.value?.[index]?.values?.find(
-        (item) => item.name === inputValue.value,
+        (item) => item.name === currentValue,
       )
     ) {
       message.warning('已存在相同属性值，请重试');
       attributeIndex.value = null;
-      inputValue.value = '';
+      inputValue.value = [];
       return;
     }
 
     // 2.1 情况一：属性值已存在，则直接使用并结束
     const existValue = attributeOptions.value.find(
-      (item) => item.name === inputValue.value,
+      (item) => item.name === currentValue,
     );
     if (existValue) {
       attributeIndex.value = null;
-      inputValue.value = '';
+      inputValue.value = [];
       attributeList.value?.[index]?.values?.push({
         id: existValue.id!,
         name: existValue.name,
@@ -127,11 +130,11 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
     try {
       const id = await createPropertyValue({
         propertyId,
-        name: inputValue.value,
+        name: currentValue,
       });
       attributeList.value?.[index]?.values?.push({
         id,
-        name: inputValue.value,
+        name: currentValue,
       });
       message.success($t('common.createSuccess'));
       emit('success', attributeList.value);
@@ -140,7 +143,7 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
     }
   }
   attributeIndex.value = null;
-  inputValue.value = '';
+  inputValue.value = [];
 };
 
 /** 获取商品属性下拉选项 */
@@ -179,11 +182,11 @@ const getAttributeOptions = async (propertyId: number) => {
         :ref="setInputRef"
         v-model:value="inputValue"
         allow-clear
-        class="!w-30"
         mode="tags"
         :max-tag-count="1"
         :filter-option="true"
         size="small"
+        style="width: 100px"
         @blur="handleInputConfirm(index, item.id)"
         @change="handleInputConfirm(index, item.id)"
         @keyup.enter="handleInputConfirm(index, item.id)"
