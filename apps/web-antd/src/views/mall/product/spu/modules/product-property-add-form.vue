@@ -73,6 +73,14 @@ const formSchema: VbenFormSchema[] = [
 
 // 初始化表单
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 120,
+  },
+  layout: 'horizontal',
   schema: formSchema,
   showDefaultActions: false,
 });

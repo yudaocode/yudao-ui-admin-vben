@@ -63,4 +63,5 @@ const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
 
 export { getPropertyList };
 
-// export { default as SkuList } from './sku-list.vue';
+// 导出组件
+export { default as SkuList } from './sku-list.vue';
