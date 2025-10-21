@@ -12,7 +12,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户编号',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
       },

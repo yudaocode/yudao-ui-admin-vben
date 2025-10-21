@@ -6,6 +6,7 @@ export namespace BpmProcessDefinitionApi {
   /** 流程定义 */
   export interface ProcessDefinition {
     id: string;
+    key?: string;
     version: number;
     name: string;
     description: string;

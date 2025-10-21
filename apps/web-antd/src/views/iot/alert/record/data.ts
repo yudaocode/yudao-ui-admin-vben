@@ -17,7 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '告警配置',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleAlertConfigList(),
+        api: getSimpleAlertConfigList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择告警配置',
@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleProductList(),
+        api: getSimpleProductList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -53,7 +53,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleDeviceList(),
+        api: getSimpleDeviceList,
         labelField: 'deviceName',
         valueField: 'id',
         placeholder: '请选择设备',

@@ -61,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '单位',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getProductUnitSimpleList(),
+        api: getProductUnitSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择单位',

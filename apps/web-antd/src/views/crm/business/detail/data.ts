@@ -21,7 +21,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '商机金额（元）',
-      content: (data) => erpPriceInputFormatter(data.totalPrice),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'statusTypeName',
@@ -34,7 +34,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
   ];
 }
@@ -53,17 +53,17 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '商机金额（元）',
-      content: (data) => erpPriceInputFormatter(data.totalPrice),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'dealTime',
       label: '预计成交日期',
-      content: (data) => formatDateTime(data?.dealTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'contactNextTime',
       label: '下次联系时间',
-      content: (data) => formatDateTime(data?.contactNextTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'statusTypeName',

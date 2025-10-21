@@ -29,7 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '所属产品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleProductList(),
+        api: getSimpleProductList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -86,7 +86,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleProductList(),
+        api: getSimpleProductList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',

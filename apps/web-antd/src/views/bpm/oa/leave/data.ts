@@ -179,21 +179,21 @@ export function useDetailFormSchema(): DescriptionItemSchema[] {
     {
       label: '请假类型',
       field: 'type',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.BPM_OA_LEAVE_TYPE,
-          value: data?.type,
+          value: val,
         }),
     },
     {
       label: '开始时间',
       field: 'startTime',
-      content: (data) => formatDateTime(data?.startTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       label: '结束时间',
       field: 'endTime',
-      content: (data) => formatDateTime(data?.endTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       label: '原因',

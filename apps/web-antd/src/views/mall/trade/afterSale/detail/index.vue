@@ -49,29 +49,23 @@ const afterSale = ref<MallAfterSaleApi.AfterSale>({
 });
 
 const [OrderDescriptions] = useDescription({
-  componentProps: {
-    title: '订单信息',
-    bordered: false,
-    column: 3,
-  },
+  title: '订单信息',
+  bordered: false,
+  column: 3,
   schema: useOrderInfoSchema(),
 });
 
 const [AfterSaleDescriptions] = useDescription({
-  componentProps: {
-    title: '售后信息',
-    bordered: false,
-    column: 3,
-  },
+  title: '售后信息',
+  bordered: false,
+  column: 3,
   schema: useAfterSaleInfoSchema(),
 });
 
 const [RefundStatusDescriptions] = useDescription({
-  componentProps: {
-    title: '退款状态',
-    bordered: false,
-    column: 1,
-  },
+  title: '退款状态',
+  bordered: false,
+  column: 1,
   schema: useRefundStatusSchema(),
 });
 

@@ -29,11 +29,9 @@ const product = ref<CrmProductApi.Product>({} as CrmProductApi.Product); // 产�
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    bordered: false,
-    column: 4,
-    class: 'mx-4',
-  },
+  bordered: false,
+  column: 4,
+  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

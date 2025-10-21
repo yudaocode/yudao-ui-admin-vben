@@ -86,7 +86,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '所在地',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: () => getAreaTree(),
+        api: getAreaTree,
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
@@ -98,7 +98,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户标签',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleTagList(),
+        api: getSimpleTagList,
         labelField: 'name',
         valueField: 'id',
         multiple: true,
@@ -110,7 +110,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '用户分组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleGroupList(),
+        api: getSimpleGroupList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择用户分组',
@@ -171,7 +171,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户标签',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleTagList(),
+        api: getSimpleTagList,
         labelField: 'name',
         valueField: 'id',
         multiple: true,
@@ -184,7 +184,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户等级',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleLevelList(),
+        api: getSimpleLevelList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择用户等级',
@@ -196,7 +196,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '用户分组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleGroupList(),
+        api: getSimpleGroupList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择用户分组',
@@ -325,7 +325,7 @@ export function useLevelFormSchema(): VbenFormSchema[] {
       label: '用户等级',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleLevelList(),
+        api: getSimpleLevelList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择用户等级',

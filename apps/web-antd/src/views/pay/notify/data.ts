@@ -1,6 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { PayNotifyApi } from '#/api/pay/notify';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
@@ -21,7 +20,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用编号',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getAppList(),
+        api: getAppList,
         labelField: 'name',
         valueField: 'id',
         autoSelect: 'first',
@@ -182,10 +181,10 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'type',
       label: '通知类型',
-      content: (data: PayNotifyApi.NotifyTask) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_NOTIFY_TYPE,
-          value: data?.type,
+          value: val,
         }),
     },
     {
@@ -195,10 +194,10 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'status',
       label: '通知状态',
-      content: (data: PayNotifyApi.NotifyTask) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.PAY_NOTIFY_STATUS,
-          value: data?.status,
+          value: val,
         }),
     },
     {
@@ -208,14 +207,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'lastExecuteTime',
       label: '最后通知时间',
-      content: (data: PayNotifyApi.NotifyTask) =>
-        formatDateTime(data?.lastExecuteTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'nextNotifyTime',
       label: '下次通知时间',
-      content: (data: PayNotifyApi.NotifyTask) =>
-        formatDateTime(data?.nextNotifyTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'notifyTimes',
@@ -228,14 +225,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data: PayNotifyApi.NotifyTask) =>
-        formatDateTime(data?.createTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      content: (data: PayNotifyApi.NotifyTask) =>
-        formatDateTime(data?.updateTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
   ];
 }

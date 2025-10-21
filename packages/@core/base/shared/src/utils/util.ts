@@ -48,22 +48,22 @@ export function getNestedValue<T>(obj: T, path: string): any {
  * @param key 参数键名
  * @param urlStr 链接地址，默认为当前浏览器的地址
  */
-export const getUrlNumberValue = (
+export function getUrlNumberValue(
   key: string,
   urlStr: string = location.href,
-): number => {
+): number {
   return Number(getUrlValue(key, urlStr));
-};
+}
 
 /**
  * 获取链接的参数值
  * @param key 参数键名
  * @param urlStr 链接地址，默认为当前浏览器的地址
  */
-export const getUrlValue = (
+export function getUrlValue(
   key: string,
   urlStr: string = location.href,
-): string => {
+): string {
   if (!urlStr || !key) return '';
   const url = new URL(decodeURIComponent(urlStr));
   return url.searchParams.get(key) ?? '';
@@ -74,7 +74,7 @@ export const getUrlValue = (
  * @param target 目标对象
  * @param source 源对象
  */
-export const copyValueToTarget = (target: any, source: any) => {
+export function copyValueToTarget(target: any, source: any) {
   const newObj = Object.assign({}, target, source);
   // 删除多余属性
   Object.keys(newObj).forEach((key) => {
@@ -86,4 +86,4 @@ export const copyValueToTarget = (target: any, source: any) => {
   });
   // 更新目标对象值
   Object.assign(target, newObj);
-};
+}

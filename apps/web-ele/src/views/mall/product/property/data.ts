@@ -113,7 +113,7 @@ export function useValueFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: (values) => {
         return {
-          api: () => getPropertySimpleList(),
+          api: getPropertySimpleList,
           placeholder: '请选择属性',
           labelField: 'name',
           valueField: 'id',

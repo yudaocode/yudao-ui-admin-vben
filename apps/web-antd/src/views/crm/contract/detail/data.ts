@@ -17,18 +17,17 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '合同金额（元）',
-      content: (data) => erpPriceInputFormatter(data?.totalPrice) as string,
+      render: (val) => erpPriceInputFormatter(val) as string,
     },
     {
       field: 'orderDate',
       label: '下单时间',
-      content: (data) => formatDateTime(data?.orderDate) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'totalReceivablePrice',
       label: '回款金额（元）',
-      content: (data) =>
-        erpPriceInputFormatter(data?.totalReceivablePrice) as string,
+      render: (val) => erpPriceInputFormatter(val) as string,
     },
     {
       field: 'ownerUserName',
@@ -59,22 +58,22 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '合同金额（元）',
-      content: (data) => erpPriceInputFormatter(data?.totalPrice) as string,
+      render: (val) => erpPriceInputFormatter(val) as string,
     },
     {
       field: 'orderDate',
       label: '下单时间',
-      content: (data) => formatDateTime(data?.orderDate) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'startTime',
       label: '合同开始时间',
-      content: (data) => formatDateTime(data?.startTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'endTime',
       label: '合同结束时间',
-      content: (data) => formatDateTime(data?.endTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'signContactName',
@@ -91,10 +90,10 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'auditStatus',
       label: '合同状态',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_AUDIT_STATUS,
-          value: data?.auditStatus,
+          value: val,
         }),
     },
   ];

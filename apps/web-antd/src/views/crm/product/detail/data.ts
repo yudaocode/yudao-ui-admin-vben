@@ -17,13 +17,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'unit',
       label: '产品单位',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: data?.unit }),
+      render: (val) =>
+        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: val }),
     },
     {
       field: 'price',
       label: '产品价格（元）',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'no',
@@ -46,7 +46,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'price',
       label: '价格（元）',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'description',
@@ -59,14 +59,14 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'status',
       label: '是否上下架',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_STATUS, value: data?.status }),
+      render: (val) =>
+        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_STATUS, value: val }),
     },
     {
       field: 'unit',
       label: '产品单位',
-      content: (data) =>
-        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: data?.unit }),
+      render: (val) =>
+        h(DictTag, { type: DICT_TYPE.CRM_PRODUCT_UNIT, value: val }),
     },
   ];
 }

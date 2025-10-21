@@ -40,7 +40,7 @@ export function useFormSchema(): VbenFormSchema[] {
         disabled: (values) => values.id,
       },
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
@@ -54,7 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getCustomerSimpleList(),
+        api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
@@ -80,7 +80,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '商机状态组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getBusinessStatusTypeSimpleList(),
+        api: getBusinessStatusTypeSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商机状态组',

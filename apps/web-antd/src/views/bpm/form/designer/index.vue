@@ -138,11 +138,7 @@ onMounted(() => {
     <FormModal @success="handleBack" />
 
     <Spin :spinning="loading">
-      <FcDesigner
-        class="h-full min-h-[500px]"
-        ref="designerRef"
-        :config="designerConfig"
-      >
+      <FcDesigner ref="designerRef" height="90vh" :config="designerConfig">
         <template #handle>
           <Button size="small" type="primary" @click="handleSave">
             <IconifyIcon icon="mdi:content-save" />

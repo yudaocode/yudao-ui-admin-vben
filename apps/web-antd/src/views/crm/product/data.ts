@@ -42,7 +42,7 @@ export function useFormSchema(): VbenFormSchema[] {
         disabled: (values) => values.id,
       },
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',

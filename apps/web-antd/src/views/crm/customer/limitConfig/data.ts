@@ -34,7 +34,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
       label: '规则适用人群',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         mode: 'multiple',

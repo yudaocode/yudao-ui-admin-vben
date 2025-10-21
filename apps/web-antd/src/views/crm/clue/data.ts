@@ -53,7 +53,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         allowClear: true,
@@ -121,7 +121,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '地址',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: () => getAreaTree(),
+        api: getAreaTree,
         fieldNames: { label: 'name', value: 'id', children: 'children' },
         placeholder: '请选择地址',
       },

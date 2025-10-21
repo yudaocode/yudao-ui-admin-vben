@@ -35,7 +35,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '租户套餐',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getTenantPackageList(),
+        api: getTenantPackageList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择租户套餐',
