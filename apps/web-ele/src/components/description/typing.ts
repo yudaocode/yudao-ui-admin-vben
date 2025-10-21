@@ -28,8 +28,6 @@ export interface DescriptionItemSchema {
 }
 
 export interface DescriptionProps extends ElDescriptionProps {
-  // 是否包含卡片组件
-  useCard?: boolean;
   // 描述项配置
   schema: DescriptionItemSchema[];
   // 数据

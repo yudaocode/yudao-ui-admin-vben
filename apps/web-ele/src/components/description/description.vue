@@ -29,7 +29,6 @@ const props = {
       ['default', 'middle', 'small', undefined].includes(v),
   },
   title: { default: '', type: String },
-  useCard: { default: true, type: Boolean },
   direction: { default: 'horizontal', type: String },
 };
 
