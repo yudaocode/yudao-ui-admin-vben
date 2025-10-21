@@ -1,13 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
-
-import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-
-import { Button } from 'ant-design-vue';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getSimpleUserList } from '#/api/system/user';
@@ -46,7 +41,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 流程分类
     {
       fieldName: 'category',
       label: '流程分类',
@@ -59,7 +53,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'code',
       },
     },
-    // 流程状态
     {
       fieldName: 'status',
       label: '流程状态',
@@ -73,7 +66,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 发起时间
     {
       fieldName: 'createTime',
       label: '发起时间',
@@ -87,9 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  onTaskClick: (task: BpmProcessInstanceApi.Task) => void,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -103,27 +93,22 @@ export function useGridColumns(
       minWidth: 200,
       fixed: 'left',
     },
-
     {
       field: 'categoryName',
       title: '流程分类',
       minWidth: 120,
       fixed: 'left',
     },
-
     {
       field: 'startUser.nickname',
       title: '流程发起人',
       minWidth: 120,
     },
-
     {
       field: 'startUser.deptName',
       title: '发起部门',
       minWidth: 120,
     },
-
-    // 流程状态
     {
       field: 'status',
       title: '流程状态',
@@ -133,7 +118,6 @@ export function useGridColumns(
         props: { type: DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS },
       },
     },
-
     {
       field: 'startTime',
       title: '发起时间',
@@ -152,29 +136,11 @@ export function useGridColumns(
       minWidth: 180,
       formatter: 'formatPast2',
     },
-
-    // 当前审批任务 tasks
     {
       field: 'tasks',
       title: '当前审批任务',
       minWidth: 320,
-      slots: {
-        default: ({ row }) => {
-          if (!row?.tasks?.length) return '-';
-
-          return row.tasks.map((task: BpmProcessInstanceApi.Task) =>
-            h(
-              Button,
-              {
-                type: 'link',
-                size: 'small',
-                onClick: () => onTaskClick(task),
-              },
-              { default: () => task.name },
-            ),
-          );
-        },
-      },
+      slots: { default: 'tasks' },
     },
     {
       title: '操作',
