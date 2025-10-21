@@ -86,15 +86,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         default: 'slot-summary',
       },
     },
-
     {
       field: 'categoryName',
       title: '流程分类',
       minWidth: 120,
       fixed: 'left',
     },
-
-    // 流程状态
     {
       field: 'status',
       title: '流程状态',
@@ -103,7 +100,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         default: 'slot-status',
       },
     },
-
     {
       field: 'startTime',
       title: '发起时间',
