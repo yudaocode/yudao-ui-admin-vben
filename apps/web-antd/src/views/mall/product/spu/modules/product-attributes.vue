@@ -97,7 +97,7 @@ const showInput = async (index: number) => {
 const handleInputConfirm = async (index: number, propertyId: number) => {
   // 从数组中取最后一个输入的值（tags 模式下 inputValue 是数组）
   const currentValue = inputValue.value?.[inputValue.value.length - 1]?.trim();
-  
+
   if (currentValue) {
     // 1. 重复添加校验
     if (
@@ -136,10 +136,10 @@ const handleInputConfirm = async (index: number, propertyId: number) => {
         id,
         name: currentValue,
       });
-      message.success($t('common.createSuccess'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       emit('success', attributeList.value);
     } catch {
-      message.error('添加失败，请重试');
+      message.error($t('ui.actionMessage.operationFailed'));
     }
   }
   attributeIndex.value = null;

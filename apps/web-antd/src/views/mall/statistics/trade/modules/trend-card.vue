@@ -125,7 +125,7 @@ async function handleExport() {
             <template #icon>
               <IconifyIcon icon="lucide:download" />
             </template>
-            导出
+            {{ $t('page.action.export') }}
           </Button>
         </ShortcutDateRangePicker>
       </div>

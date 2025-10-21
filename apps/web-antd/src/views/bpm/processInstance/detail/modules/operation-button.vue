@@ -44,6 +44,7 @@ import {
 import * as TaskApi from '#/api/bpm/task';
 import * as UserApi from '#/api/system/user';
 import { setConfAndFields2 } from '#/components/form-create';
+import { $t } from '#/locales';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
@@ -426,7 +427,7 @@ async function handleCopy() {
     await TaskApi.copyTask(data);
     copyFormRef.value.resetFields();
     popOverVisible.value.copy = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     formLoading.value = false;
   }
@@ -448,7 +449,7 @@ async function handleTransfer() {
     await TaskApi.transferTask(data);
     transferFormRef.value.resetFields();
     popOverVisible.value.transfer = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2. 加载最新数据
     reload();
   } finally {
@@ -473,7 +474,7 @@ async function handleDelegate() {
     await TaskApi.delegateTask(data);
     popOverVisible.value.delegate = false;
     delegateFormRef.value.resetFields();
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2. 加载最新数据
     reload();
   } finally {
@@ -496,7 +497,7 @@ async function handlerAddSign(type: string) {
       userIds: addSignForm.addSignUserIds,
     };
     await TaskApi.signCreateTask(data);
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     addSignFormRef.value.resetFields();
     popOverVisible.value.addSign = false;
     // 2 加载最新数据
@@ -523,7 +524,7 @@ async function handleReturn() {
     await TaskApi.returnTask(data);
     popOverVisible.value.return = false;
     returnFormRef.value.resetFields();
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2 重新加载数据
     reload();
   } finally {
@@ -544,7 +545,7 @@ async function handleCancel() {
       cancelForm.cancelReason,
     );
     popOverVisible.value.return = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     cancelFormRef.value.resetFields();
     // 2 重新加载数据
     reload();

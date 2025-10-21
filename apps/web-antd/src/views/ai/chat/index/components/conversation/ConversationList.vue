@@ -17,6 +17,7 @@ import {
   getChatConversationMyList,
   updateChatConversationMy,
 } from '#/api/ai/chat/conversation';
+import { $t } from '#/locales';
 
 import RoleRepository from '../role/RoleRepository.vue';
 
@@ -249,7 +250,7 @@ async function handleClearConversation() {
   try {
     await confirm('确认后对话会全部清空，置顶的对话除外。');
     await deleteChatConversationMyByUnpinned();
-    message.success('操作成功!');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 清空 对话 和 对话内容
     activeConversationId.value = null;
     // 获取 对话列表
