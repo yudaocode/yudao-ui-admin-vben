@@ -15,6 +15,7 @@ export namespace BpmProcessInstanceApi {
   export interface Task {
     id: number;
     name: string;
+    assigneeUser?: User;
   }
 
   export interface User {
@@ -51,6 +52,7 @@ export namespace BpmProcessInstanceApi {
   export interface ProcessInstance {
     businessKey: string;
     category: string;
+    categoryName?: string;
     createTime: string;
     endTime: string;
     fields: string[];
@@ -64,6 +66,10 @@ export namespace BpmProcessInstanceApi {
     startTime?: Date;
     startUser?: User;
     status: number;
+    summary?: {
+      key: string;
+      value: string;
+    }[];
     tasks?: BpmProcessInstanceApi.Task[];
   }
 
