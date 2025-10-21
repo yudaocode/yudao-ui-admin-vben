@@ -1,13 +1,15 @@
 <script lang="ts" setup>
+import type { PropertyAndValues, RuleConfig } from './index';
+
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { ContentWrap, Page } from '@vben/common-ui';
-import { convertToInteger, formatToFraction } from '@vben/utils';
+import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
+import { convertToInteger, floatToFixed2, formatToFraction } from '@vben/utils';
 
-import { Button, Tabs } from 'ant-design-vue';
+import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';
@@ -19,11 +21,74 @@ import {
   useOtherFormSchema,
   useSkuFormSchema,
 } from './form-data';
+import { getPropertyList } from './index';
+import ProductAttributes from './product-attributes.vue';
+import ProductPropertyAddForm from './product-property-add-form.vue';
+import SkuList from './sku-list.vue';
 
 const spuId = ref<number>();
-const { params } = useRoute();
-
+const { params, name } = useRoute();
 const activeTabName = ref('info');
+// spu 表单数据
+const formData = ref<MallSpuApi.Spu>({
+  name: '', // 商品名称
+  categoryId: undefined, // 商品分类
+  keyword: '', // 关键字
+  picUrl: '', // 商品封面图
+  sliderPicUrls: [], // 商品轮播图
+  introduction: '', // 商品简介
+  deliveryTypes: [], // 配送方式数组
+  deliveryTemplateId: undefined, // 运费模版
+  brandId: undefined, // 商品品牌
+  specType: false, // 商品规格
+  subCommissionType: false, // 分销类型
+  skus: [
+    {
+      price: 0, // 商品价格
+      marketPrice: 0, // 市场价
+      costPrice: 0, // 成本价
+      barCode: '', // 商品条码
+      picUrl: '', // 图片地址
+      stock: 0, // 库存
+      weight: 0, // 商品重量
+      volume: 0, // 商品体积
+      firstBrokeragePrice: 0, // 一级分销的佣金
+      secondBrokeragePrice: 0, // 二级分销的佣金
+    },
+  ],
+  description: '', // 商品详情
+  sort: 0, // 商品排序
+  giveIntegral: 0, // 赠送积分
+  virtualSalesCount: 0, // 虚拟销量
+});
+const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
+const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const isDetail = ref(false); // 是否查看详情
+const skuListRef = ref(); // 商品属性列表 Ref
+
+// sku 相关属性校验规则
+const ruleConfig: RuleConfig[] = [
+  {
+    name: 'stock',
+    rule: (arg) => arg >= 0,
+    message: '商品库存必须大于等于 1 ！！！',
+  },
+  {
+    name: 'price',
+    rule: (arg) => arg >= 0.01,
+    message: '商品销售价格必须大于等于 0.01 元！！！',
+  },
+  {
+    name: 'marketPrice',
+    rule: (arg) => arg >= 0.01,
+    message: '商品市场价格必须大于等于 0.01 元！！！',
+  },
+  {
+    name: 'costPrice',
+    rule: (arg) => arg >= 0.01,
+    message: '商品成本价格必须大于等于 0.00 元！！！',
+  },
+];
 
 const [InfoForm, infoFormApi] = useVbenForm({
   commonConfig: {
@@ -47,8 +112,23 @@ const [SkuForm, skuFormApi] = useVbenForm({
     labelWidth: 120,
   },
   layout: 'horizontal',
-  schema: useSkuFormSchema(),
+  schema: useSkuFormSchema(propertyList.value, isDetail.value),
   showDefaultActions: false,
+  handleValuesChange: (values, fieldsChanged) => {
+    if (fieldsChanged.includes('subCommissionType')) {
+      formData.value.subCommissionType = values.subCommissionType;
+      changeSubCommissionType();
+    }
+    if (fieldsChanged.includes('specType')) {
+      formData.value.specType = values.specType;
+      onChangeSpec();
+    }
+  },
+});
+
+const [ProductPropertyAddFormModal, productPropertyAddFormApi] = useVbenModal({
+  connectedComponent: ProductPropertyAddForm,
+  destroyOnClose: true,
 });
 
 const [DeliveryForm, deliveryFormApi] = useVbenForm({
@@ -97,8 +177,15 @@ async function onSubmit() {
     .merge(descriptionFormApi)
     .merge(otherFormApi)
     .submitAllForm(true);
-
+  values.skus = formData.value.skus;
   if (values.skus) {
+    try {
+      // 校验 sku
+      skuListRef.value.validateSku();
+    } catch {
+      message.error('【库存价格】不完善，请填写相关信息');
+      return;
+    }
     values.skus.forEach((item) => {
       // sku相关价格元转分
       item.price = convertToInteger(item.price);
@@ -121,35 +208,113 @@ async function onSubmit() {
   await (spuId.value ? updateSpu(values) : createSpu(values));
 }
 
-async function initDate() {
+/** 获得详情 */
+const getDetail = async () => {
+  if (name === 'ProductSpuDetail') {
+    isDetail.value = true;
+  }
+  const id = params.id as unknown as number;
+  if (id) {
+    formLoading.value = true;
+    try {
+      const res = await getSpu(spuId.value!);
+      res.skus?.forEach((item) => {
+        if (isDetail.value) {
+          item.price = floatToFixed2(item.price);
+          item.marketPrice = floatToFixed2(item.marketPrice);
+          item.costPrice = floatToFixed2(item.costPrice);
+          item.firstBrokeragePrice = floatToFixed2(item.firstBrokeragePrice);
+          item.secondBrokeragePrice = floatToFixed2(item.secondBrokeragePrice);
+        } else {
+          // 回显价格分转元
+          item.price = formatToFraction(item.price);
+          item.marketPrice = formatToFraction(item.marketPrice);
+          item.costPrice = formatToFraction(item.costPrice);
+          item.firstBrokeragePrice = formatToFraction(item.firstBrokeragePrice);
+          item.secondBrokeragePrice = formatToFraction(
+            item.secondBrokeragePrice,
+          );
+        }
+      });
+      formData.value = res;
+      // 初始化各表单值（异步）
+      infoFormApi.setValues(res);
+      skuFormApi.setValues(res);
+      deliveryFormApi.setValues(res);
+      descriptionFormApi.setValues(res);
+      otherFormApi.setValues(res);
+    } finally {
+      formLoading.value = false;
+    }
+  }
+  // 将 SKU 的属性，整理成 PropertyAndValues 数组
+  propertyList.value = getPropertyList(formData.value);
+};
+
+// =========== sku form 逻辑 ===========
+
+function openPropertyAddForm() {
+  productPropertyAddFormApi.open();
+}
+
+/** 调用 SkuList generateTableData 方法*/
+const generateSkus = (propertyList: any[]) => {
+  skuListRef.value.generateTableData(propertyList);
+};
+
+/** 分销类型 */
+const changeSubCommissionType = () => {
+  // 默认为零，类型切换后也要重置为零
+  for (const item of formData.value.skus!) {
+    item.firstBrokeragePrice = 0;
+    item.secondBrokeragePrice = 0;
+  }
+};
+
+/** 选择规格 */
+const onChangeSpec = () => {
+  // 重置商品属性列表
+  propertyList.value = [];
+  // 重置sku列表
+  formData.value.skus = [
+    {
+      price: 0,
+      marketPrice: 0,
+      costPrice: 0,
+      barCode: '',
+      picUrl: '',
+      stock: 0,
+      weight: 0,
+      volume: 0,
+      firstBrokeragePrice: 0,
+      secondBrokeragePrice: 0,
+    },
+  ];
+};
+
+// 监听 sku form schema 变化，更新表单
+watch(
+  propertyList,
+  () => {
+    skuFormApi.updateSchema(
+      useSkuFormSchema(propertyList.value, isDetail.value),
+    );
+  },
+  { deep: true },
+);
+
+onMounted(async () => {
   spuId.value = params.id as unknown as number;
   if (!spuId.value) {
     return;
   }
-  const res = await getSpu(spuId.value);
-  if (res.skus) {
-    res.skus.forEach((item) => {
-      // 回显价格分转元
-      item.price = formatToFraction(item.price);
-      item.marketPrice = formatToFraction(item.marketPrice);
-      item.costPrice = formatToFraction(item.costPrice);
-      item.firstBrokeragePrice = formatToFraction(item.firstBrokeragePrice);
-      item.secondBrokeragePrice = formatToFraction(item.secondBrokeragePrice);
-    });
-  }
-  infoFormApi.setValues(res);
-  skuFormApi.setValues(res);
-  deliveryFormApi.setValues(res);
-  descriptionFormApi.setValues(res);
-  otherFormApi.setValues(res);
-}
-
-onMounted(async () => {
-  await initDate();
+  await getDetail();
 });
 </script>
 
 <template>
+  <ProductPropertyAddFormModal :property-list="propertyList" />
+
   <Page auto-content-height>
     <ContentWrap class="h-full w-full pb-8">
       <template #extra>
@@ -160,7 +325,44 @@ onMounted(async () => {
           <InfoForm class="w-3/5" />
         </Tabs.TabPane>
         <Tabs.TabPane tab="价格库存" key="sku">
-          <SkuForm class="w-3/5" />
+          <SkuForm class="w-full">
+            <template #singleSkuList>
+              <SkuList
+                ref="skuListRef"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+                :rule-config="ruleConfig"
+              />
+            </template>
+            <template #productAttributes>
+              <div>
+                <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
+                  添加属性
+                </Button>
+                <ProductAttributes
+                  :is-detail="isDetail"
+                  :property-list="propertyList"
+                  @success="generateSkus"
+                />
+              </div>
+            </template>
+            <template #batchSkuList>
+              <SkuList
+                :is-batch="true"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+              />
+            </template>
+            <template #multiSkuList>
+              <SkuList
+                ref="skuListRef"
+                :is-detail="isDetail"
+                :prop-form-data="formData"
+                :property-list="propertyList"
+                :rule-config="ruleConfig"
+              />
+            </template>
+          </SkuForm>
         </Tabs.TabPane>
         <Tabs.TabPane tab="物流设置" key="delivery">
           <DeliveryForm class="w-3/5" />
