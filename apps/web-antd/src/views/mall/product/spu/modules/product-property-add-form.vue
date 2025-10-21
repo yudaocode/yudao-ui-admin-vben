@@ -87,7 +87,7 @@ const [Form, formApi] = useVbenForm({
 
 // 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
-  destroyOnClose: true, // 关键：关闭时销毁弹窗，确保每次打开都是全新状态
+  destroyOnClose: true,
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) return;
