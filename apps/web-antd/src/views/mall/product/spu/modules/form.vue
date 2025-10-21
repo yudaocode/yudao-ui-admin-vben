@@ -6,10 +6,10 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { ContentWrap, Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { convertToInteger, floatToFixed2, formatToFraction } from '@vben/utils';
 
-import { Button, message, Tabs } from 'ant-design-vue';
+import { Button, Card, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';
@@ -29,6 +29,33 @@ import SkuList from './sku-list.vue';
 const spuId = ref<number>();
 const { params, name } = useRoute();
 const activeTabName = ref('info');
+
+function onTabChange(key: string) {
+  activeTabName.value = key;
+}
+
+const tabList = ref([
+  {
+    key: 'info',
+    tab: '基础设置',
+  },
+  {
+    key: 'sku',
+    tab: '价格库存',
+  },
+  {
+    key: 'delivery',
+    tab: '物流设置',
+  },
+  {
+    key: 'description',
+    tab: '商品详情',
+  },
+  {
+    key: 'other',
+    tab: '其它设置',
+  },
+]);
 // spu 表单数据
 const formData = ref<MallSpuApi.Spu>({
   name: '', // 商品名称
@@ -317,65 +344,62 @@ onMounted(async () => {
     <ProductPropertyAddFormModal :property-list="propertyList" />
 
     <Page auto-content-height>
-      <ContentWrap class="h-full w-full pb-8">
-        <template #extra>
+      <Card
+        class="h-full w-full pb-8"
+        :tab-list="tabList"
+        :active-key="activeTabName"
+        @tab-change="onTabChange"
+      >
+        <template #tabBarExtraContent>
           <Button type="primary" @click="onSubmit">保存</Button>
         </template>
-        <Tabs v-model:active-key="activeTabName">
-          <Tabs.TabPane tab="基础设置" key="info">
-            <InfoForm class="w-3/5" />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="价格库存" key="sku">
-            <SkuForm class="w-full">
-              <template #singleSkuList>
-                <SkuList
-                  ref="skuListRef"
-                  :prop-form-data="formData"
-                  :property-list="propertyList"
-                  :rule-config="ruleConfig"
-                />
-              </template>
-              <template #productAttributes>
-                <div>
-                  <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
-                    添加属性
-                  </Button>
-                  <ProductAttributes
-                    :is-detail="isDetail"
-                    :property-list="propertyList"
-                    @success="generateSkus"
-                  />
-                </div>
-              </template>
-              <template #batchSkuList>
-                <SkuList
-                  :is-batch="true"
-                  :prop-form-data="formData"
-                  :property-list="propertyList"
-                />
-              </template>
-              <template #multiSkuList>
-                <SkuList
-                  ref="skuListRef"
-                  :is-detail="isDetail"
-                  :prop-form-data="formData"
-                  :property-list="propertyList"
-                  :rule-config="ruleConfig"
-                />
-              </template>
-            </SkuForm>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="物流设置" key="delivery">
-            <DeliveryForm class="w-3/5" />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="商品详情" key="description">
-            <DescriptionForm class="w-3/5" />
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="其它设置" key="other">
-            <OtherForm class="w-3/5" />
-          </Tabs.TabPane>
-        </Tabs>
-      </ContentWrap>
+        <InfoForm class="w-3/5" v-show="activeTabName === 'info'" />
+
+        <SkuForm class="w-full" v-show="activeTabName === 'sku'">
+          <template #singleSkuList>
+            <SkuList
+              ref="skuListRef"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+              :rule-config="ruleConfig"
+            />
+          </template>
+          <template #productAttributes>
+            <div>
+              <Button class="mb-10px mr-15px" @click="openPropertyAddForm">
+                添加属性
+              </Button>
+              <ProductAttributes
+                :is-detail="isDetail"
+                :property-list="propertyList"
+                @success="generateSkus"
+              />
+            </div>
+          </template>
+          <template #batchSkuList>
+            <SkuList
+              :is-batch="true"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+            />
+          </template>
+          <template #multiSkuList>
+            <SkuList
+              ref="skuListRef"
+              :is-detail="isDetail"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+              :rule-config="ruleConfig"
+            />
+          </template>
+        </SkuForm>
+        <DeliveryForm class="w-3/5" v-show="activeTabName === 'delivery'" />
+        <DescriptionForm
+          class="w-3/5"
+          v-show="activeTabName === 'description'"
+        />
+        <OtherForm class="w-3/5" v-show="activeTabName === 'other'" />
+      </Card>
     </Page>
   </div>
 </template>
