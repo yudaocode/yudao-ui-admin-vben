@@ -7,10 +7,9 @@ import type { DescriptionItemSchema, DescriptionProps } from './typing';
 
 import { computed, defineComponent, ref, toRefs, unref, useAttrs } from 'vue';
 
-import { ContentWrap } from '@vben/common-ui';
 import { get, isFunction } from '@vben/utils';
 
-import { Descriptions } from 'ant-design-vue';
+import { Card, Descriptions } from 'ant-design-vue';
 
 const props = {
   bordered: { default: true, type: Boolean },
@@ -171,20 +170,21 @@ export default defineComponent({
       const extraSlot = getSlot(slots, 'extra');
 
       return (
-        <ContentWrap
-          class="text-base"
-          headerClass={props.bordered ? 'p-4' : 'border-none p-4'}
+        <Card
+          bodyStyle={{ padding: '8px 0' }}
+          headStyle={{
+            padding: '8px 16px',
+            fontSize: '14px',
+            minHeight: '24px',
+          }}
+          style={{ margin: 0 }}
+          title={title}
         >
           {{
             default: () => content,
-            title: () => (
-              <div class="mb-2 flex w-full items-center justify-between text-base">
-                <div>{title}</div>
-                {extraSlot && <div>{extraSlot}</div>}
-              </div>
-            ),
+            extra: () => extraSlot && <div>{extraSlot}</div>,
           }}
-        </ContentWrap>
+        </Card>
       );
     }
 
