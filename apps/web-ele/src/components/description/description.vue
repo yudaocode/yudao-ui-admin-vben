@@ -30,6 +30,7 @@ const props = {
   },
   title: { default: '', type: String },
   useCard: { default: true, type: Boolean },
+  direction: { default: 'horizontal', type: String },
 };
 
 function getSlot(slots: Slots, slot: string, data?: any) {
