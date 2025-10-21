@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择发起人',
         allowClear: true,
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
       },
@@ -54,7 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入流程分类',
         allowClear: true,
-        api: () => getCategorySimpleList(),
+        api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',
       },

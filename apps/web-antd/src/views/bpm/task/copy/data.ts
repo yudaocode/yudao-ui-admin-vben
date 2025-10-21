@@ -34,7 +34,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'processInstanceName',
       title: '流程名称',
       minWidth: 200,
-      fixed: 'left',
     },
     {
       field: 'summary',
@@ -62,12 +61,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'activityName',
       title: '抄送节点',
-      minWidth: 180,
+      minWidth: 120,
     },
     {
       field: 'createUser.nickname',
       title: '抄送人',
-      minWidth: 180,
+      minWidth: 120,
       formatter: ({ cellValue }) => {
         return cellValue || '-';
       },

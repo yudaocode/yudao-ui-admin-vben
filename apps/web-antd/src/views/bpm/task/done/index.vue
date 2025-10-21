@@ -95,8 +95,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '撤回',
               type: 'link',
-              icon: ACTION_ICON.EDIT,
-              color: 'warning',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
               popConfirm: {
                 title: '确定要撤回该任务吗？',
                 confirm: handleWithdraw.bind(null, row),

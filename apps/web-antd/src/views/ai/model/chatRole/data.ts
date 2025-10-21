@@ -93,7 +93,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择引用知识库',
-        api: () => getSimpleKnowledgeList(),
+        api: getSimpleKnowledgeList,
         labelField: 'name',
         mode: 'multiple',
         valueField: 'id',
@@ -106,7 +106,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择引用工具',
-        api: () => getToolSimpleList(),
+        api: getToolSimpleList,
         mode: 'multiple',
         labelField: 'name',
         valueField: 'id',

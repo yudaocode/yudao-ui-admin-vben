@@ -196,7 +196,7 @@ export function useSendNotifyFormSchema(): VbenFormSchema[] {
       label: '接收人',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择接收人',

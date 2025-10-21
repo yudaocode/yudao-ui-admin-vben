@@ -109,7 +109,7 @@ export function useGridFormSchemaMessage(): VbenFormSchema[] {
       label: '用户编号',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
       },

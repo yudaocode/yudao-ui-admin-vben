@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择API 秘钥',
-        api: () => getApiKeySimpleList(),
+        api: getApiKeySimpleList,
         labelField: 'name',
         valueField: 'id',
         allowClear: true,

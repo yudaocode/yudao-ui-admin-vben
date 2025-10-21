@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '应用编号',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getAppList(),
+        api: getAppList,
         labelField: 'name',
         valueField: 'id',
         autoSelect: 'first',

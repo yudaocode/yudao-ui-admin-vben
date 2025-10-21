@@ -25,7 +25,7 @@ export function useImportTableFormSchema(): VbenFormSchema[] {
       label: '数据源',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getDataSourceConfigList(),
+        api: getDataSourceConfigList,
         labelField: 'name',
         valueField: 'id',
         autoSelect: 'first',

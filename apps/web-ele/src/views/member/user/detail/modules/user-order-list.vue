@@ -104,7 +104,7 @@ const [Grid] = useVbenVxeGrid({
         component: 'ApiSelect',
         componentProps: {
           clearable: true,
-          api: () => getSimpleDeliveryExpressList(),
+          api: getSimpleDeliveryExpressList,
           labelField: 'name',
           valueField: 'id',
           placeholder: '全部',
@@ -120,7 +120,7 @@ const [Grid] = useVbenVxeGrid({
         label: '自提门店',
         component: 'ApiSelect',
         componentProps: {
-          api: () => getSimpleDeliveryPickUpStoreList(),
+          api: getSimpleDeliveryPickUpStoreList,
           labelField: 'name',
           valueField: 'id',
         },

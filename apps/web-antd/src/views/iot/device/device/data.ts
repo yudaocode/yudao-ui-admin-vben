@@ -28,7 +28,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleProductList(),
+        api: getSimpleProductList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -89,7 +89,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleDeviceGroupList(),
+        api: getSimpleDeviceGroupList,
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
@@ -156,7 +156,7 @@ export function useGroupFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleDeviceGroupList(),
+        api: getSimpleDeviceGroupList,
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
@@ -199,7 +199,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '产品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleProductList(),
+        api: getSimpleProductList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品',
@@ -249,7 +249,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备分组',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleDeviceGroupList(),
+        api: getSimpleDeviceGroupList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择设备分组',

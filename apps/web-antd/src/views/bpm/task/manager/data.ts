@@ -36,7 +36,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'processInstance.name',
       title: '流程',
       minWidth: 200,
-      fixed: 'left',
     },
     {
       field: 'processInstance.startUser.nickname',

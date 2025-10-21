@@ -5,6 +5,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
+import { getSimpleProcessDefinitionList } from '#/api/bpm/definition';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -19,7 +20,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // TODO @AI：是不是直接 import 下，不要动态；
     {
       fieldName: 'processDefinitionKey',
       label: '所属流程',
@@ -27,12 +27,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择流程定义',
         allowClear: true,
-        api: async () => {
-          const { getSimpleProcessDefinitionList } = await import(
-            '#/api/bpm/definition'
-          );
-          return await getSimpleProcessDefinitionList();
-        },
+        api: getSimpleProcessDefinitionList,
         labelField: 'name',
         valueField: 'key',
       },
@@ -44,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入流程分类',
         allowClear: true,
-        api: () => getCategorySimpleList(),
+        api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',
       },
@@ -78,7 +73,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'processInstance.name',
       title: '流程',
       minWidth: 200,
-      fixed: 'left',
     },
     {
       field: 'processInstance.summary',
