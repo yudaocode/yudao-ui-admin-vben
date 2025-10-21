@@ -166,7 +166,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'extra',
       label: '操作拓展参数',
-      show: (data) => !data?.extra,
+      show: (val) => !val,
     },
     {
       field: 'requestUrl',
