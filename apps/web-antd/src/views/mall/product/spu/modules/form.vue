@@ -89,7 +89,7 @@ const formData = ref<MallSpuApi.Spu>({
   virtualSalesCount: 0, // 虚拟销量
 });
 const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
-const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const formLoading = ref(true); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(false); // 是否查看详情
 const skuListRef = ref(); // 商品属性列表 Ref
 
@@ -236,13 +236,12 @@ async function onSubmit() {
 }
 
 /** 获得详情 */
-const getDetail = async () => {
+async function getDetail() {
   if (name === 'ProductSpuDetail') {
     isDetail.value = true;
   }
   const id = params.id as unknown as number;
   if (id) {
-    formLoading.value = true;
     try {
       const res = await getSpu(spuId.value!);
       res.skus?.forEach((item) => {
@@ -276,7 +275,7 @@ const getDetail = async () => {
   }
   // 将 SKU 的属性，整理成 PropertyAndValues 数组
   propertyList.value = getPropertyList(formData.value);
-};
+}
 
 // =========== sku form 逻辑 ===========
 
@@ -285,21 +284,21 @@ function openPropertyAddForm() {
 }
 
 /** 调用 SkuList generateTableData 方法*/
-const generateSkus = (propertyList: any[]) => {
+function generateSkus(propertyList: any[]) {
   skuListRef.value.generateTableData(propertyList);
-};
+}
 
 /** 分销类型 */
-const changeSubCommissionType = () => {
+function changeSubCommissionType() {
   // 默认为零，类型切换后也要重置为零
   for (const item of formData.value.skus!) {
     item.firstBrokeragePrice = 0;
     item.secondBrokeragePrice = 0;
   }
-};
+}
 
 /** 选择规格 */
-const onChangeSpec = () => {
+function onChangeSpec() {
   // 重置商品属性列表
   propertyList.value = [];
   // 重置sku列表
@@ -317,7 +316,7 @@ const onChangeSpec = () => {
       secondBrokeragePrice: 0,
     },
   ];
-};
+}
 
 // 监听 sku form schema 变化，更新表单
 watch(
@@ -345,7 +344,8 @@ onMounted(async () => {
 
     <Page auto-content-height>
       <Card
-        class="h-full w-full pb-8"
+        class="h-full w-full"
+        :loading="formLoading"
         :tab-list="tabList"
         :active-key="activeTabName"
         @tab-change="onTabChange"
@@ -403,3 +403,8 @@ onMounted(async () => {
     </Page>
   </div>
 </template>
+<style lang="scss" scoped>
+:deep(.ant-tabs-tab-btn) {
+  font-size: 14px !important;
+}
+</style>
