@@ -179,14 +179,14 @@ function handleRowChange(row: any) {
 }
 
 /** 初始化行数据 */
-const initRow = (row: ErpPurchaseOrderApi.PurchaseOrderItem): void => {
+function initRow(row: ErpPurchaseOrderApi.PurchaseOrderItem) {
   if (row.productPrice && row.count) {
     row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
     row.taxPrice =
       erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
     row.totalPrice = row.totalProductPrice + row.taxPrice;
   }
-};
+}
 
 /** 表单校验 */
 function validate() {
