@@ -1,13 +1,10 @@
-import type { PageParam } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace MpStatisticsApi {
   /** 统计查询参数 */
-  export interface StatisticsQuery extends PageParam {
+  export interface StatisticsQuery {
     accountId: number;
-    beginDate: string;
-    endDate: string;
+    date: Date[];
   }
 
   /** 消息发送概况数据 */
