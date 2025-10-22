@@ -84,9 +84,9 @@ onMounted(async () => {
         <TableAction :actions="[]" />
       </template>
       <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
+        <span>
+          {{ userList.find((item) => item.id === row.userId)?.nickname }}
+        </span>
       </template>
       <template #actions="{ row }">
         <TableAction

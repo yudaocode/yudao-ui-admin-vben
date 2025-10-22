@@ -1,23 +1,18 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { AiModelApiKeyApi } from '#/api/ai/model/apiKey';
 import type { AiModelModelApi } from '#/api/ai/model/model';
-
-import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 import { deleteModel, getModelPage } from '#/api/ai/model/model';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-const apiKeyList = ref([] as AiModelApiKeyApi.ApiKey[]);
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -83,10 +78,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AiModelModelApi.Model>,
 });
-onMounted(async () => {
-  // 获得下拉数据
-  apiKeyList.value = await getApiKeySimpleList();
-});
 </script>
 
 <template>
@@ -108,15 +99,6 @@ onMounted(async () => {
             },
           ]"
         />
-      </template>
-      <template #keyId="{ row }">
-        <span>
-          {{
-            apiKeyList.find(
-              (item: AiModelApiKeyApi.ApiKey) => item.id === row.keyId,
-            )?.name
-          }}
-        </span>
       </template>
       <template #actions="{ row }">
         <TableAction

@@ -65,16 +65,16 @@ async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocument) {
   }
 }
 /** 跳转到知识库分段页面 */
-const handleSegment = (id: number) => {
+function handleSegment(id: number) {
   router.push({
     name: 'AiKnowledgeSegment',
     query: { documentId: id },
   });
-};
+}
 /** 修改是否发布 */
-const handleStatusChange = async (
+async function handleStatusChange(
   row: AiKnowledgeDocumentApi.KnowledgeDocument,
-) => {
+) {
   try {
     // 修改状态的二次确认
     const text = row.status ? '启用' : '禁用';
@@ -91,7 +91,7 @@ const handleStatusChange = async (
         ? CommonStatusEnum.DISABLE
         : CommonStatusEnum.ENABLE;
   }
-};
+}
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),

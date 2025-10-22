@@ -4,7 +4,7 @@ import type { AiModelChatRoleApi } from '#/api/ai/model/chatRole';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Image, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteChatRole, getChatRolePage } from '#/api/ai/model/chatRole';
@@ -99,17 +99,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
-      </template>
-      <template #knowledgeIds="{ row }">
-        <span v-if="!row.knowledgeIds || row.knowledgeIds.length === 0">-</span>
-        <span v-else>引用 {{ row.knowledgeIds.length }} 个</span>
-      </template>
-      <template #toolIds="{ row }">
-        <span v-if="!row.toolIds || row.toolIds.length === 0">-</span>
-        <span v-else>引用 {{ row.toolIds.length }} 个</span>
-      </template>
-      <template #avatar="{ row }">
-        <Image :src="row.avatar" class="h-8 w-8" />
       </template>
       <template #actions="{ row }">
         <TableAction

@@ -209,8 +209,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '角色头像',
-      slots: { default: 'avatar' },
+      field: 'avatar',
       minWidth: 140,
+      cellRender: {
+        name: 'CellImage',
+        props: {
+          width: 40,
+          height: 40,
+        },
+      },
     },
     {
       title: '角色类别',
@@ -229,13 +236,23 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '知识库',
-      slots: { default: 'knowledgeIds' },
+      field: 'knowledgeIds',
       minWidth: 100,
+      formatter: ({ cellValue }) => {
+        return !cellValue || cellValue.length === 0
+          ? '-'
+          : `引用${cellValue.length}个`;
+      },
     },
     {
       title: '工具',
-      slots: { default: 'toolIds' },
+      field: 'toolIds',
       minWidth: 100,
+      formatter: ({ cellValue }) => {
+        return !cellValue || cellValue.length === 0
+          ? '-'
+          : `引用${cellValue.length}个`;
+      },
     },
     {
       field: 'publicStatus',

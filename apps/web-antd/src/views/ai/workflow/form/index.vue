@@ -190,8 +190,8 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  workflowId.value = route.query.id as string;
-  actionType.value = route.query.type as string;
+  workflowId.value = route.params.id as string;
+  actionType.value = route.params.type as string;
   await initData();
 });
 

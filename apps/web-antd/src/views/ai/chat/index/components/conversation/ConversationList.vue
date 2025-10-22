@@ -202,7 +202,8 @@ async function updateConversationTitle(
             if (
               filterConversationList.length > 0 &&
               filterConversationList[0] && // tip：避免切换对话
-              activeConversationId.value === filterConversationList[0].id
+              activeConversationId.value ===
+                (filterConversationList[0].id as number)
             ) {
               emits('onConversationClick', filterConversationList[0]);
             }
@@ -306,7 +307,7 @@ onMounted(async () => {
 <template>
   <Layout.Sider
     width="280px"
-    class="conversation-container relative flex h-full flex-col justify-between overflow-hidden p-4"
+    class="relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
     <!-- 左顶部：对话 -->
@@ -329,7 +330,7 @@ onMounted(async () => {
       </Input>
 
       <!-- 左中间：对话列表 -->
-      <div class="conversation-list mt-2 flex-1 overflow-auto">
+      <div class="mt-2 flex-1 overflow-auto">
         <!-- 情况一：加载中 -->
         <Empty v-if="loading" description="." v-loading="loading" />
 
@@ -337,11 +338,10 @@ onMounted(async () => {
         <div
           v-for="conversationKey in Object.keys(conversationMap)"
           :key="conversationKey"
-          class=""
         >
           <div
             v-if="conversationMap[conversationKey].length > 0"
-            class="conversation-item classify-title pt-2"
+            class="classify-title pt-2"
           >
             <b class="mx-1">
               {{ conversationKey }}
@@ -354,24 +354,24 @@ onMounted(async () => {
             @click="handleConversationClick(conversation.id)"
             @mouseover="hoverConversationId = conversation.id"
             @mouseout="hoverConversationId = null"
-            class="conversation-item mt-1"
+            class="mt-1"
           >
             <div
-              class="conversation flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
+              class="flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
               :class="[
                 conversation.id === activeConversationId
-                  ? 'bg-primary-200'
+                  ? 'bg-success-600'
                   : '',
               ]"
             >
-              <div class="title-wrapper flex items-center">
+              <div class="flex items-center">
                 <Avatar
                   v-if="conversation.roleAvatar"
                   :src="conversation.roleAvatar"
                 />
                 <SvgGptIcon v-else class="size-8" />
                 <span
-                  class="max-w-36 overflow-hidden text-ellipsis whitespace-nowrap p-2 text-sm font-normal text-gray-600"
+                  class="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap p-2 text-sm font-normal"
                 >
                   {{ conversation.title }}
                 </span>
@@ -379,7 +379,7 @@ onMounted(async () => {
 
               <div
                 v-show="hoverConversationId === conversation.id"
-                class="button-wrapper relative right-0.5 flex items-center text-gray-400"
+                class="relative right-0.5 flex items-center text-gray-400"
               >
                 <Button
                   class="mr-0 px-1"

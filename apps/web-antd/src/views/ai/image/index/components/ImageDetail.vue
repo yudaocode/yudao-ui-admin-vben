@@ -44,7 +44,7 @@ watch(
 
 <template>
   <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       <Image class="rounded-lg" :src="detail?.picUrl" />
     </div>
   </div>
@@ -52,7 +52,7 @@ watch(
   <!-- 时间 -->
   <div class="mb-5 w-full overflow-hidden break-words">
     <div class="text-lg font-bold">时间</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       <div>
         提交时间：{{ formatDate(detail.createTime, 'yyyy-MM-dd HH:mm:ss') }}
       </div>
@@ -65,7 +65,7 @@ watch(
   <!-- 模型 -->
   <div class="mb-5 w-full overflow-hidden break-words">
     <div class="text-lg font-bold">模型</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{ detail.model }}({{ detail.height }}x{{ detail.width }})
     </div>
   </div>
@@ -73,7 +73,7 @@ watch(
   <!-- 提示词 -->
   <div class="mb-5 w-full overflow-hidden break-words">
     <div class="text-lg font-bold">提示词</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{ detail.prompt }}
     </div>
   </div>
@@ -81,7 +81,7 @@ watch(
   <!-- 图片地址 -->
   <div class="mb-5 w-full overflow-hidden break-words">
     <div class="text-lg font-bold">图片地址</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{ detail.picUrl }}
     </div>
   </div>
@@ -95,7 +95,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">采样方法</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{
         StableDiffusionSamplers.find(
           (item) => item.key === detail?.options?.sampler,
@@ -112,7 +112,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">CLIP</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{
         StableDiffusionClipGuidancePresets.find(
           (item) => item.key === detail?.options?.clipGuidancePreset,
@@ -129,7 +129,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">风格</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{
         StableDiffusionStylePresets.find(
           (item) => item.key === detail?.options?.stylePreset,
@@ -146,7 +146,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">迭代步数</div>
-    <div class="mt-2 text-gray-600">{{ detail?.options?.steps }}</div>
+    <div class="mt-2">{{ detail?.options?.steps }}</div>
   </div>
 
   <div
@@ -157,7 +157,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">引导系数</div>
-    <div class="mt-2 text-gray-600">{{ detail?.options?.scale }}</div>
+    <div class="mt-2">{{ detail?.options?.scale }}</div>
   </div>
 
   <div
@@ -168,7 +168,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">随机因子</div>
-    <div class="mt-2 text-gray-600">{{ detail?.options?.seed }}</div>
+    <div class="mt-2">{{ detail?.options?.seed }}</div>
   </div>
 
   <!-- Dall3 专属 -->
@@ -177,7 +177,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">风格选择</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       {{
         Dall3StyleList.find((item) => item.key === detail?.options?.style)?.name
       }}
@@ -192,7 +192,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">模型版本</div>
-    <div class="mt-2 text-gray-600">{{ detail?.options?.version }}</div>
+    <div class="mt-2">{{ detail?.options?.version }}</div>
   </div>
 
   <div
@@ -203,7 +203,7 @@ watch(
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">参考图</div>
-    <div class="mt-2 text-gray-600">
+    <div class="mt-2">
       <Image :src="detail.options.referImageUrl" />
     </div>
   </div>
