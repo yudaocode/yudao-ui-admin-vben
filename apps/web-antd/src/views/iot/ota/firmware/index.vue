@@ -4,6 +4,7 @@ import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { useRouter } from 'vue-router';
 
 import { message } from 'ant-design-vue';
 
@@ -15,6 +16,8 @@ import Form from '../modules/OtaFirmwareForm.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTOtaFirmware' });
+
+const { push } = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -52,6 +55,11 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
   } finally {
     hideLoading();
   }
+}
+
+/** 查看固件详情 */
+function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
+  push({ name: 'IoTOtaFirmwareDetail', params: { id: row.id } });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -131,7 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.detail'),
               type: 'link',
               icon: ACTION_ICON.VIEW,
-              onClick: () => $router.push({ name: 'IoTOtaFirmwareDetail', params: { id: row.id } }),
+              onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.edit'),

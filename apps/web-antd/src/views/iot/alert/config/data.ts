@@ -63,7 +63,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '关联场景联动规则',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleRuleSceneList(),
+        api: getSimpleRuleSceneList,
         labelField: 'name',
         valueField: 'id',
         mode: 'multiple',
