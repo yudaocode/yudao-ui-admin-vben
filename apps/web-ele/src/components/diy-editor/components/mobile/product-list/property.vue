@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ProductListProperty } from './config';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
 import {
   ElCard,
@@ -16,7 +18,8 @@ import {
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import ColorInput from '#/components/input-with-color/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
+// TODO: 添加组件
+// import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
 // 商品栏属性面板
 defineOptions({ name: 'ProductListProperty' });
@@ -30,7 +33,7 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <ElForm label-width="80px" :model="formData">
       <ElCard header="商品列表" class="property-group" shadow="never">
-        <SpuShowcase v-model="formData.spuIds" />
+        <!-- <SpuShowcase v-model="formData.spuIds" /> -->
       </ElCard>
       <ElCard header="商品样式" class="property-group" shadow="never">
         <ElFormItem label="布局" prop="type">

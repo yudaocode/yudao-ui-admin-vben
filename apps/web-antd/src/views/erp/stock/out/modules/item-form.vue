@@ -98,7 +98,7 @@ function handleAdd() {
     totalPrice: undefined,
     remark: undefined,
   };
-  tableData.value.push(newRow);
+  tableData.value.push(newRow as any);
   // 通知父组件更新
   emit('update:items', [...tableData.value]);
 }
