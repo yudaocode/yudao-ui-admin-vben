@@ -241,7 +241,7 @@ function handleUploadSuccess(res: any, file: File) {
 // 处理上传错误
 function handleUploadError(error: any) {
   console.error('上传错误:', error);
-  message.error($t('ui.upload.uploadError'));
+  message.error('上传错误！！！');
   // 上传失败时减少计数器
   uploadNumber.value = Math.max(0, uploadNumber.value - 1);
 }
