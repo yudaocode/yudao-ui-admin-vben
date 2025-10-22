@@ -34,9 +34,9 @@ const routes: RouteRecordRaw[] = [
         name: 'ProductSpuDetail',
         meta: {
           title: '商品详情',
-          activePath: '/crm/business',
+          activePath: '/mall/product/spu',
         },
-        component: () => import('#/views/mall/product/spu/modules/detail.vue'),
+        component: () => import('#/views/mall/product/spu/form/index.vue'),
       },
     ],
   },

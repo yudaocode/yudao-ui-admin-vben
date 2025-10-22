@@ -12,7 +12,7 @@ import { copyValueToTarget, formatToFraction, isEmpty } from '@vben/utils';
 import { Button, Image, Input, InputNumber, message } from 'ant-design-vue';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
-import ImageUpload from '#/components/upload/image-upload.vue';
+import { ImageUpload } from '#/components/upload';
 
 defineOptions({ name: 'SkuList' });
 

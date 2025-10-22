@@ -7,6 +7,7 @@ import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { useTabs } from '@vben/hooks';
 import { convertToInteger, floatToFixed2, formatToFraction } from '@vben/utils';
 
 import { Button, Card, message } from 'ant-design-vue';
@@ -28,6 +29,7 @@ import SkuList from './modules/sku-list.vue';
 
 const spuId = ref<number>();
 const { params, name } = useRoute();
+const { closeCurrentTab } = useTabs();
 const activeTabName = ref('info');
 
 function onTabChange(key: string) {
@@ -239,6 +241,11 @@ async function onSubmit() {
 async function getDetail() {
   if (name === 'ProductSpuDetail') {
     isDetail.value = true;
+    infoFormApi.setDisabled(true);
+    skuFormApi.setDisabled(true);
+    deliveryFormApi.setDisabled(true);
+    descriptionFormApi.setDisabled(true);
+    otherFormApi.setDisabled(true);
   }
   const id = params.id as unknown as number;
   if (id) {
@@ -351,7 +358,12 @@ onMounted(async () => {
         @tab-change="onTabChange"
       >
         <template #tabBarExtraContent>
-          <Button type="primary" @click="onSubmit">保存</Button>
+          <Button type="primary" v-if="!isDetail" @click="onSubmit">
+            保存
+          </Button>
+          <Button type="default" v-else @click="() => closeCurrentTab()">
+            返回列表
+          </Button>
         </template>
         <InfoForm class="w-3/5" v-show="activeTabName === 'info'" />
 
@@ -359,6 +371,7 @@ onMounted(async () => {
           <template #singleSkuList>
             <SkuList
               ref="skuListRef"
+              :is-detail="isDetail"
               :prop-form-data="formData"
               :property-list="propertyList"
               :rule-config="ruleConfig"
@@ -379,6 +392,7 @@ onMounted(async () => {
           <template #batchSkuList>
             <SkuList
               :is-batch="true"
+              :is-detail="isDetail"
               :prop-form-data="formData"
               :property-list="propertyList"
             />
