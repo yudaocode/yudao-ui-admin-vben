@@ -64,7 +64,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
       align: 'center',
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: { type: DICT_TYPE.PROMOTION_PRODUCT_SCOPE },
       },
     },
@@ -88,7 +88,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
       align: 'center',
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },

@@ -146,7 +146,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       width: 100,
       align: 'center',
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: {
           dictType: DICT_TYPE.TRADE_AFTER_SALE_STATUS,
         },
@@ -158,7 +158,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       width: 100,
       align: 'center',
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: {
           dictType: DICT_TYPE.TRADE_AFTER_SALE_WAY,
         },
