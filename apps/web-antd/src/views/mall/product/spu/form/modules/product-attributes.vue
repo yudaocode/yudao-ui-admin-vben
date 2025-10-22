@@ -21,7 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
   isDetail: false,
 });
 
-/** 输入框失去焦点或点击回车时触发 */
 const emit = defineEmits(['success']);
 
 interface Props {
@@ -30,12 +29,15 @@ interface Props {
 }
 
 const inputValue = ref<string[]>([]); // 输入框值（tags 模式使用数组）
-const attributeIndex = ref<null | number>(null); // 获取焦点时记录当前属性项的index
-// 输入框显隐控制
+const attributeIndex = ref<null | number>(null); // 获取焦点时记录当前属性项的 index
 const inputVisible = computed(() => (index: number) => {
-  if (attributeIndex.value === null) return false;
-  if (attributeIndex.value === index) return true;
-});
+  if (attributeIndex.value === null) {
+    return false;
+  }
+  if (attributeIndex.value === index) {
+    return true;
+  }
+}); // 输入框显隐控制
 
 interface InputRefItem {
   inputRef?: {
@@ -46,7 +48,10 @@ interface InputRefItem {
   focus: () => void;
 }
 
-const inputRef = ref<InputRefItem[]>([]); // 标签输入框Ref
+const inputRef = ref<InputRefItem[]>([]); // 标签输入框 Ref
+const attributeList = ref<PropertyAndValues[]>([]); // 商品属性列表
+const attributeOptions = ref<MallPropertyApi.PropertyValue[]>([]); // 商品属性值下拉框
+
 /** 解决 ref 在 v-for 中的获取问题*/
 function setInputRef(el: any) {
   if (el === null || el === undefined) return;
@@ -59,13 +64,13 @@ function setInputRef(el: any) {
     inputRef.value.push(el);
   }
 }
-const attributeList = ref<PropertyAndValues[]>([]); // 商品属性列表
-const attributeOptions = ref<MallPropertyApi.PropertyValue[]>([]); // 商品属性值下拉框
 
 watch(
   () => props.propertyList,
   (data) => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
     attributeList.value = data;
   },
   {
@@ -74,12 +79,12 @@ watch(
   },
 );
 
-/** 删除属性值*/
+/** 删除属性值 */
 function handleCloseValue(index: number, valueIndex: number) {
   attributeList.value?.[index]?.values?.splice(valueIndex, 1);
 }
 
-/** 删除属性*/
+/** 删除属性 */
 function handleCloseProperty(index: number) {
   attributeList.value?.splice(index, 1);
   emit('success', attributeList.value);
@@ -93,7 +98,7 @@ async function showInput(index: number) {
   await getAttributeOptions(attributeList.value?.[index]?.id!);
 }
 
-// 定义 success 事件，用于操作成功后的回调
+/** 定义 success 事件，用于操作成功后的回调 */
 async function handleInputConfirm(index: number, propertyId: number) {
   // 从数组中取最后一个输入的值（tags 模式下 inputValue 是数组）
   const currentValue = inputValue.value?.[inputValue.value.length - 1]?.trim();
@@ -154,6 +159,7 @@ async function getAttributeOptions(propertyId: number) {
 
 <template>
   <Col v-for="(item, index) in attributeList" :key="index">
+    <!-- TODO @puhui999：1）间隙可以看看；2)vue3 + element-plus 添加属性这个按钮，是和属性名在一排，感觉更好看点。 -->
     <div>
       <span class="mx-1">属性名：</span>
       <Tag
@@ -174,6 +180,7 @@ async function getAttributeOptions(propertyId: number) {
         class="mx-1"
         @close="handleCloseValue(index, valueIndex)"
       >
+        <!-- TODO @puhui999：这里貌似爆红？！idea -->
         {{ value.name }}
       </Tag>
       <Select

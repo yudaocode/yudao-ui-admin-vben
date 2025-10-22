@@ -46,16 +46,16 @@ const { isBatch, isDetail, isComponent, isActivityComponent } = props;
 const formData: Ref<MallSpuApi.Spu | undefined> = ref<MallSpuApi.Spu>(); // 表单数据
 const skuList = ref<MallSpuApi.Sku[]>([
   {
-    price: 0, // 商品价格
-    marketPrice: 0, // 市场价
-    costPrice: 0, // 成本价
-    barCode: '', // 商品条码
-    picUrl: '', // 图片地址
-    stock: 0, // 库存
-    weight: 0, // 商品重量
-    volume: 0, // 商品体积
-    firstBrokeragePrice: 0, // 一级分销的佣金
-    secondBrokeragePrice: 0, // 二级分销的佣金
+    price: 0,
+    marketPrice: 0,
+    costPrice: 0,
+    barCode: '',
+    picUrl: '',
+    stock: 0,
+    weight: 0,
+    volume: 0,
+    firstBrokeragePrice: 0,
+    secondBrokeragePrice: 0,
   },
 ]); // 批量添加时的临时数据
 
@@ -91,9 +91,7 @@ function deleteSku(row: MallSpuApi.Sku) {
 
 const tableHeaders = ref<{ label: string; prop: string }[]>([]); // 多属性表头
 
-/**
- * 保存时，每个商品规格的表单要校验下。例如说,销售金额最低是 0.01 这种。
- */
+/** 保存时，每个商品规格的表单要校验下。例如说,销售金额最低是 0.01 这种 */
 function validateSku() {
   validateProperty();
   let warningInfo = '请检查商品各行相关属性配置，';
@@ -116,6 +114,7 @@ function validateSku() {
   }
 }
 
+// TODO @puhui999：是不是可以通过 getNestedValue  简化？
 function getValue(obj: any, arg: string): unknown {
   const keys = arg.split('.');
   let value: any = obj;
@@ -132,19 +131,20 @@ function getValue(obj: any, arg: string): unknown {
 
 /**
  * 选择时触发
+ *
  * @param records 传递过来的选中的 sku 是一个数组
  */
 function handleSelectionChange({ records }: { records: MallSpuApi.Sku[] }) {
   emit('selectionChange', records);
 }
 
-/**
- * 将传进来的值赋值给 skuList
- */
+/** 将传进来的值赋值给 skuList */
 watch(
   () => props.propFormData,
   (data) => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
     formData.value = data;
   },
   {
@@ -196,9 +196,7 @@ function generateTableData(propertyList: PropertyAndValues[]) {
   }
 }
 
-/**
- * 生成 skus 前置校验
- */
+/** 生成 skus 前置校验 */
 function validateData(propertyList: PropertyAndValues[]): boolean {
   const skuPropertyIds: number[] = [];
   formData.value!.skus!.forEach((sku: MallSpuApi.Sku) =>
@@ -302,13 +300,13 @@ function getSkuTableRef() {
   return activitySkuListRef.value;
 }
 
-// 暴露出生成 sku 方法，给添加属性成功时调用
 defineExpose({ generateTableData, validateSku, getSkuTableRef });
 </script>
 
 <template>
   <div>
     <!-- 情况一：添加/修改 -->
+    <!-- TODO @puhui999：有可以通过 grid 来做么？主要考虑，这样不直接使用 vxe 标签，抽象程度更高； -->
     <VxeTable
       v-if="!isDetail && !isActivityComponent"
       :data="isBatch ? skuList : formData?.skus || []"
@@ -328,7 +326,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
         </template>
       </VxeColumn>
       <template v-if="formData?.specType && !isBatch">
-        <!--  根据商品属性动态添加 -->
+        <!-- 根据商品属性动态添加 -->
         <VxeColumn
           v-for="(item, index) in tableHeaders"
           :key="index"
@@ -481,7 +479,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
         </template>
       </VxeColumn>
       <template v-if="formData?.specType && !isBatch">
-        <!--  根据商品属性动态添加 -->
+        <!-- 根据商品属性动态添加 -->
         <VxeColumn
           v-for="(item, index) in tableHeaders"
           :key="index"
@@ -565,7 +563,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
         </template>
       </VxeColumn>
       <template v-if="formData?.specType">
-        <!--  根据商品属性动态添加 -->
+        <!-- 根据商品属性动态添加 -->
         <VxeColumn
           v-for="(item, index) in tableHeaders"
           :key="index"
@@ -605,7 +603,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           {{ row.stock }}
         </template>
       </VxeColumn>
-      <!--  方便扩展每个活动配置的属性不一样  -->
+      <!-- 方便扩展每个活动配置的属性不一样  -->
       <slot name="extension"></slot>
     </VxeTable>
   </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
+// TODO @puhui999：这个是不是 api 后端有定义类似的？如果是，是不是放到 api 哈？
 export interface PropertyAndValues {
   id: number;
   name: string;
@@ -23,12 +24,8 @@ export interface RuleConfig {
   message: string;
 }
 
-/**
- * 获得商品的规格列表 - 商品相关的公共函数
- *
- * @param spu
- * @return PropertyAndValues 规格列表
- */
+// TODO @puhui999：这个是只有 index.ts 在用么？还是别的模块也会用
+/** 获得商品的规格列表 - 商品相关的公共函数 */
 const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
   //  直接拿返回的 skus 属性逆向生成出 propertyList
   const properties: PropertyAndValues[] = [];
@@ -62,4 +59,5 @@ const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
 export { getPropertyList };
 
 // 导出组件
+// TODO @puhui999：如果 sku-list.vue 要对外，可以考虑在 spu 下面，搞个 components 模块；（目前看，别的模块应该会用到哈。）；modules 是当前模块用到的，components 是跨模块要用到的。
 export { default as SkuList } from './modules/sku-list.vue';
