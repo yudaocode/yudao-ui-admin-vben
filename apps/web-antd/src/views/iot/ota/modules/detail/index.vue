@@ -59,8 +59,8 @@ onMounted(() => {
 <template>
   <div class="p-4">
     <!-- 固件信息 -->
-    <Card title="固件信息" class="mb-5" :loading="firmwareLoading">
-      <Descriptions :column="3" bordered>
+    <Card title="固件信息" class="mb-3" :loading="firmwareLoading">
+      <Descriptions :column="3" bordered size="small">
         <Descriptions.Item label="固件名称">
           {{ firmware?.name }}
         </Descriptions.Item>
@@ -86,15 +86,15 @@ onMounted(() => {
     <!-- 升级设备统计 -->
     <Card
       title="升级设备统计"
-      class="mb-5"
+      class="mb-3"
       :loading="firmwareStatisticsLoading"
     >
-      <Row :gutter="20" class="py-5">
+      <Row :gutter="20" class="py-3">
         <Col :span="6">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-blue-500">
+            <div class="mb-1 text-3xl font-bold text-blue-500">
               {{
                 Object.values(firmwareStatistics).reduce(
                   (sum: number, count) => sum + (count || 0),
@@ -107,9 +107,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-gray-400">
+            <div class="mb-1 text-3xl font-bold text-gray-400">
               {{
                 firmwareStatistics[IoTOtaTaskRecordStatusEnum.PENDING.value] ||
                 0
@@ -120,9 +120,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-blue-400">
+            <div class="mb-1 text-3xl font-bold text-blue-400">
               {{
                 firmwareStatistics[IoTOtaTaskRecordStatusEnum.PUSHED.value] || 0
               }}
@@ -132,9 +132,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-yellow-500">
+            <div class="mb-1 text-3xl font-bold text-yellow-500">
               {{
                 firmwareStatistics[
                   IoTOtaTaskRecordStatusEnum.UPGRADING.value
@@ -146,9 +146,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-green-500">
+            <div class="mb-1 text-3xl font-bold text-green-500">
               {{
                 firmwareStatistics[IoTOtaTaskRecordStatusEnum.SUCCESS.value] ||
                 0
@@ -159,9 +159,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-red-500">
+            <div class="mb-1 text-3xl font-bold text-red-500">
               {{
                 firmwareStatistics[IoTOtaTaskRecordStatusEnum.FAILURE.value] ||
                 0
@@ -172,9 +172,9 @@ onMounted(() => {
         </Col>
         <Col :span="3">
           <div
-            class="rounded border border-solid border-gray-200 bg-gray-50 p-5 text-center"
+            class="rounded border border-solid border-gray-200 bg-gray-50 p-3 text-center"
           >
-            <div class="mb-2 text-3xl font-bold text-gray-400">
+            <div class="mb-1 text-3xl font-bold text-gray-400">
               {{
                 firmwareStatistics[IoTOtaTaskRecordStatusEnum.CANCELED.value] ||
                 0
