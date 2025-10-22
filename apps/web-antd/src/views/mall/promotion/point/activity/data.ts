@@ -5,7 +5,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 // 2. 导入 VBEN 常量和工具
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { $t } from '@vben/locales';
 
 // 3. 导入 Zod 用于高级验证
 import { z } from '#/adapter/form';
@@ -59,7 +58,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'marketPrice',
       title: '原价',
       minWidth: 100,
-      formatter: 'formatAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'status',
@@ -98,13 +97,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       field: 'createTime',
-      title: $t('common.createTime'),
+      title: '创建时间',
       minWidth: 180,
       align: 'center',
       formatter: 'formatDateTime',
     },
     {
-      title: $t('common.action'),
+      title: '操作',
       width: 150,
       fixed: 'right',
       slots: { default: 'actions' },

@@ -221,14 +221,9 @@ function selectSku(skus: MallSpuApi.Sku[]) {
     selectedSkuIds.value = [];
     return;
   }
-
-  if (props.radio) {
-    // 单选模式
-    selectedSkuIds.value = [skus[0]?.id!];
-  } else {
-    // 多选模式
-    selectedSkuIds.value = skus.map((sku) => sku.id!);
-  }
+  props.radio
+    ? (selectedSkuIds.value = [skus[0]?.id!])
+    : (selectedSkuIds.value = skus.map((sku) => sku.id!));
 }
 
 // 展开行，加载 SKU 列表
@@ -307,6 +302,10 @@ const [Modal, modalApi] = useVbenModal({
     // 打开时触发查询
     await gridApi.query();
   },
+});
+defineExpose({
+  open: modalApi.open,
+  close: modalApi.close,
 });
 </script>
 

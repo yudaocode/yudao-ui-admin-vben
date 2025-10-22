@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { computed } from 'vue';
-
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -55,43 +53,6 @@ function handleRefresh() {
   gridApi.query();
 }
 
-// 计算操作按钮
-const getActions = computed(() => (row: any) => {
-  const actions: any[] = [
-    {
-      label: $t('common.edit'),
-      icon: ACTION_ICON.EDIT,
-      onClick: handleEdit.bind(null, row),
-    },
-  ];
-
-  // 如果状态是启用(0)，显示关闭按钮
-  if (row.status === 0) {
-    actions.push({
-      label: '关闭',
-      icon: ACTION_ICON.CLOSE,
-      danger: true,
-      popConfirm: {
-        title: '确认关闭该积分商城活动吗？',
-        confirm: handleClose.bind(null, row),
-      },
-    });
-  } else {
-    // 否则显示删除按钮
-    actions.push({
-      label: $t('common.delete'),
-      icon: ACTION_ICON.DELETE,
-      danger: true,
-      popConfirm: {
-        title: $t('ui.actionMessage.deleteConfirm', [row.spuName]),
-        confirm: handleDelete.bind(null, row),
-      },
-    });
-  }
-
-  return actions;
-});
-
 // 3. 使用 useVbenVxeGrid 初始化列表
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -99,6 +60,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -121,6 +84,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     description="积分商城活动，用于管理积分兑换商品的配置"
     doc-link="https://doc.iocoder.cn/mall/promotion-point/"
     title="积分商城活动"
+    auto-content-height
   >
     <!-- 弹窗组件的注册 -->
     <FormModal @success="handleRefresh" />
@@ -133,7 +97,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('ui.actionTitle.create', ['积分活动']),
+              type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['promotion:point-activity:create'],
               onClick: handleCreate,
             },
           ]"
@@ -141,7 +107,41 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <!-- 操作列按钮 -->
       <template #actions="{ row }">
-        <TableAction :actions="getActions(row)" />
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['promotion:point-activity:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '关闭',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.CLOSE,
+              ifShow: row.status === 0,
+              auth: ['promotion:point-activity:close'],
+              popConfirm: {
+                title: '确认关闭该积分商城活动吗？',
+                confirm: handleClose.bind(null, row),
+              },
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: row.status !== 0,
+              auth: ['promotion:point-activity:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.spuName]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>
