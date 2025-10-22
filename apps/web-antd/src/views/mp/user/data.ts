@@ -2,10 +2,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpAccountApi } from '#/api/mp/account';
 
-import { h } from 'vue';
-
-import { Tag } from 'ant-design-vue';
-
 import { getSimpleAccountList } from '#/api/mp/account';
 
 let accountList: MpAccountApi.AccountSimple[] = [];
@@ -123,15 +119,8 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '订阅状态',
       minWidth: 100,
       align: 'center',
-      cellRender: {
-        name: 'CellRender',
-        props: ({ row }: { row: any }) => ({
-          children: h(
-            Tag,
-            { color: row.subscribeStatus === 0 ? 'success' : 'error' },
-            () => (row.subscribeStatus === 0 ? '已订阅' : '未订阅'),
-          ),
-        }),
+      formatter: ({ cellValue }) => {
+        return cellValue === 0 ? '已订阅' : '未订阅';
       },
     },
     {
