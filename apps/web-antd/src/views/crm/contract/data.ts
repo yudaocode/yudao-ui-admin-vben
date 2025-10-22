@@ -348,7 +348,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '未回款金额（元）',
-      field: 'totalReceivablePrice',
+      field: 'unReceivablePrice',
       minWidth: 140,
       formatter: ({ row }) => {
         return erpPriceInputFormatter(

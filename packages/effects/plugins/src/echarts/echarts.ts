@@ -18,6 +18,7 @@ import type { ComposeOption } from 'echarts/core';
 
 import {
   BarChart,
+  FunnelChart,
   GaugeChart,
   LineChart,
   MapChart,
@@ -66,6 +67,7 @@ echarts.use([
   TransformComponent,
   BarChart,
   LineChart,
+  FunnelChart,
   GaugeChart,
   LabelLayout,
   UniversalTransition,
