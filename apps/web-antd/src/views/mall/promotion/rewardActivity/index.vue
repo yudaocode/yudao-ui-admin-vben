@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+// 严格遵循导入顺序原则
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -15,46 +16,32 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import RewardActivityForm from './modules/form.vue';
+import Form from './modules/form.vue';
 
 defineOptions({ name: 'PromotionRewardActivity' });
 
+// 1. 使用 useVbenModal 初始化弹窗
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: RewardActivityForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
-/** 刷新表格 */
-function handleRefresh() {
-  gridApi.query();
-}
-
-/** 创建满减送活动 */
+// 2. 定义业务操作函数
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑满减送活动 */
 function handleEdit(row: MallRewardActivityApi.RewardActivity) {
-  formModalApi.setData(row).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
-/** 关闭活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
-  try {
-    await confirm({
-      content: '确认关闭该满减送活动吗？',
-    });
-  } catch {
-    return;
-  }
-
   const hideLoading = message.loading({
-    content: '正在关闭中',
+    content: '活动关闭中...',
     duration: 0,
   });
   try {
-    await closeRewardActivity(row.id as number);
+    await closeRewardActivity(row.id!);
     message.success({
       content: '关闭成功',
     });
@@ -64,105 +51,81 @@ async function handleClose(row: MallRewardActivityApi.RewardActivity) {
   }
 }
 
-/** 删除活动 */
 async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-  });
-  try {
-    await deleteRewardActivity(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
-    handleRefresh();
-  } finally {
-    hideLoading();
-  }
+  await deleteRewardActivity(row.id!);
+  message.success($t('common.delSuccess'));
+  handleRefresh();
 }
 
+function handleRefresh() {
+  gridApi.query();
+}
+
+// 3. 使用 useVbenVxeGrid 初始化列表
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
-    height: 'auto',
-    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getRewardActivityPage({
+          const params = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
-          });
+          };
+          return await getRewardActivityPage(params);
         },
       },
     },
-    rowConfig: {
-      keyField: 'id',
-      isHover: true,
-    },
-    toolbarConfig: {
-      refresh: true,
-      search: true,
-    },
-  } as VxeTableGridOptions<MallRewardActivityApi.RewardActivity>,
+  } as VxeTableGridOptions,
 });
 </script>
 
 <template>
-  <Page auto-content-height>
-    <template #doc>
-      <DocAlert
-        title="【营销】满减送"
-        url="https://doc.iocoder.cn/mall/promotion-record/"
-      />
-    </template>
-
+  <Page>
+    <!-- 弹窗组件的注册 -->
     <FormModal @success="handleRefresh" />
 
-    <Grid table-title="满减送活动列表">
+    <!-- 列表组件的渲染 -->
+    <Grid table-title="满减送活动">
+      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: $t('ui.actionTitle.create', ['满减送活动']),
-              type: 'primary',
+              label: $t('ui.actionTitle.create', ['活动']),
               icon: ACTION_ICON.ADD,
-              auth: ['promotion:reward-activity:create'],
               onClick: handleCreate,
             },
           ]"
         />
       </template>
+      <!-- 操作列按钮 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['promotion:reward-activity:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: '关闭',
-              type: 'link',
+              icon: ACTION_ICON.CLOSE,
               danger: true,
-              icon: ACTION_ICON.DELETE,
-              auth: ['promotion:reward-activity:close'],
               ifShow: row.status === 0,
-              onClick: handleClose.bind(null, row),
+              popConfirm: {
+                title: '确认关闭该满减活动吗？',
+                confirm: handleClose.bind(null, row),
+              },
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['promotion:reward-activity:delete'],
-              ifShow: row.status !== 0,
+              danger: true,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
