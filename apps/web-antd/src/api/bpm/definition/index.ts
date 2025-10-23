@@ -9,6 +9,7 @@ export namespace BpmProcessDefinitionApi {
     key?: string;
     version: number;
     name: string;
+    category: string;
     description: string;
     deploymentTime: number;
     suspensionState: number;

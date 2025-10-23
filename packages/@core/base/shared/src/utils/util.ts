@@ -87,3 +87,16 @@ export function copyValueToTarget(target: any, source: any) {
   // 更新目标对象值
   Object.assign(target, newObj);
 }
+
+/** 实现 groupBy 功能 */
+export function groupBy(array: any[], key: string) {
+  const result: Record<string, any[]> = {};
+  for (const item of array) {
+    const groupKey = item[key];
+    if (!result[groupKey]) {
+      result[groupKey] = [];
+    }
+    result[groupKey].push(item);
+  }
+  return result;
+}
