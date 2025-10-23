@@ -93,7 +93,7 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
       label: '产品分类',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleProductCategoryList,
+        api: () => getSimpleProductCategoryList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品分类',
@@ -246,7 +246,7 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
       label: '产品分类',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleProductCategoryList,
+        api: () => getSimpleProductCategoryList(),
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择产品分类',
