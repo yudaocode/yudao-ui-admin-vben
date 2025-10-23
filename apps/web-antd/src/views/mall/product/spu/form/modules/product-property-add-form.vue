@@ -64,7 +64,6 @@ const formSchema: VbenFormSchema[] = [
       filterOption: true,
       placeholder: '请选择属性名称。如果不存在，可手动输入选择',
       mode: 'tags',
-      maxTagCount: 1,
       allowClear: true,
     },
     rules: 'required',
@@ -77,7 +76,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 120,
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: formSchema,
@@ -91,51 +90,47 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
+    modalApi.lock();
     const values = await formApi.getValues();
-    const name = Array.isArray(values.name) ? values.name[0] : values.name;
-    // 重复添加校验
-    for (const attrItem of attributeList.value) {
-      if (attrItem.name === name) {
-        message.error('该属性已存在，请勿重复添加');
-        return;
+    // name 为数组，遍历数组，进行重复添加校验
+    const names = values.name;
+    for (const name of names) {
+      // 重复添加校验
+      for (const attrItem of attributeList.value) {
+        if (attrItem.name === name) {
+          message.error('该属性已存在，请勿重复添加');
+          return;
+        }
       }
     }
 
-    // TODO @puhui999：modalApi.lock(); 这种写法；
-
-    // 情况一：属性名已存在，则直接使用
-    const existProperty = attributeOptions.value.find(
-      (item: MallPropertyApi.Property) => item.name === name,
-    );
-    if (existProperty) {
-      attributeList.value.push({
-        id: existProperty.id,
-        name,
-        values: [],
-      });
-      // TODO @puhui999：这里要不 if else；这样 await modalApi.close(); emit('success'); 可以复用？另外，感觉甚至可以情况二：add 后，成为 existProperty，可以进一步简化？
-      await modalApi.close();
-      emit('success');
-      return;
+    for (const name of names) {
+      const existProperty = attributeOptions.value.find(
+        (item: MallPropertyApi.Property) => item.name === name,
+      );
+      if (existProperty) {
+        // 情况一：如果属性已存在，则直接使用并结束
+        attributeList.value.push({
+          id: existProperty.id,
+          name,
+          values: [],
+        });
+      } else {
+        // 情况二：如果是不存在的属性，则需要执行新增
+        const propertyId = await createProperty({ name });
+        attributeList.value.push({
+          id: propertyId,
+          name,
+          values: [],
+        });
+      }
     }
-
-    // 情况二：如果是不存在的属性，则需要执行新增
-    try {
-      const data = { name } as MallPropertyApi.Property;
-      const propertyId = await createProperty(data);
-      // 添加到属性列表
-      attributeList.value.push({
-        id: propertyId,
-        name,
-        values: [],
-      });
-      message.success($t('ui.actionMessage.operationSuccess'));
-      await modalApi.close();
-      emit('success');
-    } catch (error) {
-      console.error('添加属性失败:', error);
-    }
+    message.success($t('ui.actionMessage.operationSuccess'));
+    modalApi.unlock();
+    await modalApi.close();
+    emit('success');
   },
+
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
