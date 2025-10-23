@@ -110,6 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['积分活动']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['promotion:point-activity:create'],
               onClick: handleCreate,
             },
           ]"
@@ -122,6 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['promotion:point-activity:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -130,6 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.CLOSE,
               ifShow: row.status === 0,
+              auth: ['promotion:point-activity:close'],
               popConfirm: {
                 title: '确认关闭该积分商城活动吗？',
                 confirm: handleClose.bind(null, row),
@@ -141,6 +144,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               ifShow: row.status !== 0,
+              auth: ['promotion:point-activity:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.spuName]),
                 confirm: handleDelete.bind(null, row),

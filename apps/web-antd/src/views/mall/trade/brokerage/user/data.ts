@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'brokerageEnabled',
       label: '推广资格',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
         placeholder: '请选择推广资格',
         allowClear: true,

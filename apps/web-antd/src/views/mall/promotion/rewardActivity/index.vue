@@ -53,7 +53,9 @@ async function handleClose(row: MallRewardActivityApi.RewardActivity) {
 
 async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
   await deleteRewardActivity(row.id!);
-  message.success($t('common.delSuccess'));
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+  });
   handleRefresh();
 }
 

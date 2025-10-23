@@ -101,7 +101,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'replyStatus',
       label: '回复状态',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
         options: [
           { label: '已回复', value: true },

@@ -2,9 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
+import { useRouter } from 'vue-router';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { useRouter } from 'vue-router';
 
 import { message } from 'ant-design-vue';
 
@@ -38,7 +39,6 @@ function handleCreate() {
 function handleEdit(row: IoTOtaFirmwareApi.Firmware) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
-
 
 /** 删除固件 */
 async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
@@ -117,19 +117,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
       <!-- 固件文件列 -->
       <template #fileUrl="{ row }">
-  <div v-if="row.fileUrl" class="inline-flex items-center gap-1.5 align-middle leading-none">
-    <IconifyIcon icon="ant-design:download-outlined" class="shrink-0 text-base align-middle text-primary" />
-    <a
-      :href="row.fileUrl"
-      target="_blank"
-      download
-      class="text-primary cursor-pointer hover:underline align-middle"
-    >
-      下载固件
-    </a>
-  </div>
-  <span v-else class="text-gray-400">无文件</span>
-</template>
+        <div
+          v-if="row.fileUrl"
+          class="inline-flex items-center gap-1.5 align-middle leading-none"
+        >
+          <IconifyIcon
+            icon="ant-design:download-outlined"
+            class="text-primary shrink-0 align-middle text-base"
+          />
+          <a
+            :href="row.fileUrl"
+            target="_blank"
+            download
+            class="text-primary cursor-pointer align-middle hover:underline"
+          >
+            下载固件
+          </a>
+        </div>
+        <span v-else class="text-gray-400">无文件</span>
+      </template>
 
       <!-- 操作列 -->
       <template #actions="{ row }">

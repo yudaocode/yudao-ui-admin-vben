@@ -76,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '接收的用户',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         mode: 'multiple',
@@ -124,7 +124,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',
-      componentProps: getRangePickerDefaultProps(),
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
     },
   ];
 }

@@ -109,7 +109,7 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       field: 'marketPrice',
       title: '原价',
       minWidth: 100,
-      formatter: 'formatAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'status',

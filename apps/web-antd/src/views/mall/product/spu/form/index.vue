@@ -283,7 +283,7 @@ function openPropertyAddForm() {
 }
 
 /** 调用 SkuList generateTableData 方法*/
-function generateSkus(propertyList: any[]) {
+function generateSkus(propertyList: PropertyAndValues[]) {
   skuListRef.value.generateTableData(propertyList);
 }
 

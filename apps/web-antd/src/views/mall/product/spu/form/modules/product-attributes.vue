@@ -6,7 +6,9 @@ import type { MallPropertyApi } from '#/api/mall/product/property';
 
 import { computed, ref, watch } from 'vue';
 
-import { Button, Col, Divider, message, Select, Tag } from 'ant-design-vue';
+import { IconifyIcon } from '@vben/icons';
+
+import { Col, Divider, message, Select, Tag } from 'ant-design-vue';
 
 import {
   createPropertyValue,
@@ -80,13 +82,19 @@ watch(
 );
 
 /** 删除属性值 */
-function handleCloseValue(index: number, valueIndex: number) {
-  attributeList.value?.[index]?.values?.splice(valueIndex, 1);
+function handleCloseValue(index: number, value: PropertyAndValues) {
+  if (attributeList.value[index]) {
+    attributeList.value[index].values = attributeList.value?.[
+      index
+    ]?.values?.filter((item) => item.id !== value.id);
+  }
 }
 
 /** 删除属性 */
-function handleCloseProperty(index: number) {
-  attributeList.value?.splice(index, 1);
+function handleCloseProperty(item: PropertyAndValues) {
+  attributeList.value = attributeList.value.filter(
+    (attribute) => attribute.id !== item.id,
+  );
   emit('success', attributeList.value);
 }
 
@@ -158,27 +166,28 @@ async function getAttributeOptions(propertyId: number) {
 </script>
 
 <template>
-  <Col v-for="(item, index) in attributeList" :key="index">
+  <Col v-for="(attribute, index) in attributeList" :key="index">
+    <Divider class="my-4" />
     <!-- TODO @puhui999：1）间隙可以看看；2)vue3 + element-plus 添加属性这个按钮，是和属性名在一排，感觉更好看点。 -->
-    <div>
+    <div class="mt-1">
       <span class="mx-1">属性名：</span>
       <Tag
         :closable="!isDetail"
         class="mx-1"
         color="success"
-        @close="handleCloseProperty(index)"
+        @close="handleCloseProperty(attribute)"
       >
-        {{ item.name }}
+        {{ attribute.name }}
       </Tag>
     </div>
-    <div>
+    <div class="mt-2">
       <span class="mx-1">属性值：</span>
       <Tag
-        v-for="(value, valueIndex) in item.values"
-        :key="value.id"
+        v-for="(value, valueIndex) in attribute.values"
+        :key="valueIndex"
         :closable="!isDetail"
         class="mx-1"
-        @close="handleCloseValue(index, valueIndex)"
+        @close="handleCloseValue(index, value)"
       >
         <!-- TODO @puhui999：这里貌似爆红？！idea -->
         {{ value.name }}
@@ -194,9 +203,9 @@ async function getAttributeOptions(propertyId: number) {
         :filter-option="true"
         size="small"
         style="width: 100px"
-        @blur="handleInputConfirm(index, item.id)"
-        @change="handleInputConfirm(index, item.id)"
-        @keyup.enter="handleInputConfirm(index, item.id)"
+        @blur="handleInputConfirm(index, attribute.id)"
+        @change="handleInputConfirm(index, attribute.id)"
+        @keyup.enter="handleInputConfirm(index, attribute.id)"
       >
         <Select.Option
           v-for="item2 in attributeOptions"
@@ -206,15 +215,16 @@ async function getAttributeOptions(propertyId: number) {
           {{ item2.name }}
         </Select.Option>
       </Select>
-      <Button
+      <Tag
         v-show="!inputVisible(index)"
-        class="button-new-tag ml-1"
-        size="small"
         @click="showInput(index)"
+        class="mx-1 border-dashed bg-gray-100"
       >
-        + 添加
-      </Button>
+        <div class="flex items-center">
+          <IconifyIcon class="mr-2" icon="lucide:plus" />
+          添加
+        </div>
+      </Tag>
     </div>
-    <Divider class="my-10px" />
   </Col>
 </template>

@@ -197,15 +197,9 @@ function selectSku(skus: MallSpuApi.Sku[]) {
     selectedSkuIds.value = [];
     return;
   }
-
-  // TODO @puhui999：有 idea 告警
-  if (props.radio) {
-    // 单选模式
-    selectedSkuIds.value = [skus[0]?.id!];
-  } else {
-    // 多选模式
-    selectedSkuIds.value = skus.map((sku) => sku.id!);
-  }
+  props.radio
+    ? (selectedSkuIds.value = [skus[0]?.id!])
+    : (selectedSkuIds.value = skus.map((sku) => sku.id!));
 }
 
 /** 展开行，加载 SKU 列表 */
@@ -280,7 +274,10 @@ const [Modal, modalApi] = useVbenModal({
     await gridApi.query();
   },
 });
-
+defineExpose({
+  open: modalApi.open,
+  close: modalApi.close,
+});
 /** 初始化分类数据 */
 onMounted(async () => {
   categoryList.value = await getCategoryList({});

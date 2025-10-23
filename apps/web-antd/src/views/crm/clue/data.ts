@@ -171,7 +171,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'transformStatus',
       label: '转化状态',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
         options: [
           { label: '未转化', value: false },
