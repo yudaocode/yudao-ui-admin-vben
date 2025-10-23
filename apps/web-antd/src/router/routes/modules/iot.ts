@@ -18,8 +18,7 @@ const routes: RouteRecordRaw[] = [
           title: '产品详情',
           activePath: '/iot/device/product',
         },
-        component: () =>
-          import('#/views/iot/product/product/modules/detail/index.vue'),
+        component: () => import('#/views/iot/product/product/modules/detail/index.vue'),
       },
       {
         path: 'device/detail/:id',
@@ -28,11 +27,20 @@ const routes: RouteRecordRaw[] = [
           title: '设备详情',
           activePath: '/iot/device/device',
         },
-        component: () =>
-          import('#/views/iot/device/device/modules/detail/index.vue'),
+        component: () => import('#/views/iot/device/device/modules/detail/index.vue'),
+      },
+      {
+        path: 'ota/firmware/detail/:id',
+        name: 'IoTOtaFirmwareDetail',
+        meta: {
+          title: '固件详情',
+          activePath: '/iot/ota',
+        },
+        component: () => import('#/views/iot/ota/modules/firmware-detail/index.vue'),
       },
     ],
   },
 ];
 
 export default routes;
+

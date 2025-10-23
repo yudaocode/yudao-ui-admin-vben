@@ -4,6 +4,7 @@ import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { useRouter } from 'vue-router';
 
 import { message } from 'ant-design-vue';
 
@@ -15,6 +16,8 @@ import Form from '../modules/OtaFirmwareForm.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTOtaFirmware' });
+
+const { push } = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -36,10 +39,6 @@ function handleEdit(row: IoTOtaFirmwareApi.Firmware) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-/** 查看固件详情 */
-function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
-  formModalApi.setData({ type: 'view', id: row.id }).open();
-}
 
 /** 删除固件 */
 async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
@@ -56,6 +55,11 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
   } finally {
     hideLoading();
   }
+}
+
+/** 查看固件详情 */
+function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
+  push({ name: 'IoTOtaFirmwareDetail', params: { id: row.id } });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -113,18 +117,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
       <!-- 固件文件列 -->
       <template #fileUrl="{ row }">
-        <a
-          v-if="row.fileUrl"
-          :href="row.fileUrl"
-          target="_blank"
-          download
-          class="text-primary cursor-pointer hover:underline"
-        >
-          <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
-          下载固件
-        </a>
-        <span v-else class="text-gray-400">无文件</span>
-      </template>
+  <div v-if="row.fileUrl" class="inline-flex items-center gap-1.5 align-middle leading-none">
+    <IconifyIcon icon="ant-design:download-outlined" class="shrink-0 text-base align-middle text-primary" />
+    <a
+      :href="row.fileUrl"
+      target="_blank"
+      download
+      class="text-primary cursor-pointer hover:underline align-middle"
+    >
+      下载固件
+    </a>
+  </div>
+  <span v-else class="text-gray-400">无文件</span>
+</template>
 
       <!-- 操作列 -->
       <template #actions="{ row }">

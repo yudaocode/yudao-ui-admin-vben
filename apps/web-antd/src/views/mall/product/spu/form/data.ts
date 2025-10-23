@@ -4,7 +4,6 @@ import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getSimpleBrandList } from '#/api/mall/product/brand';
 import { getCategoryList } from '#/api/mall/product/category';
 import { getSimpleTemplateList } from '#/api/mall/trade/delivery/expressTemplate';
@@ -33,7 +32,6 @@ export function useInfoFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'categoryId',
       label: '分类名称',
-      // component: 'ApiCascader',
       component: 'ApiTreeSelect',
       componentProps: {
         api: async () => {
@@ -285,7 +283,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
     {
       fieldName: 'giveIntegral',
@@ -294,7 +292,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
     {
       fieldName: 'virtualSalesCount',
@@ -303,7 +301,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
   ];
 }

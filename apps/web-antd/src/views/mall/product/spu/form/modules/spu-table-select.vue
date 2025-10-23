@@ -1,5 +1,6 @@
 <!-- SPU 商品选择弹窗组件 -->
 <script lang="ts" setup>
+// TODO @puhui999：这个是不是可以放到 components 里？，和商品发布，关系不大
 import type { CheckboxChangeEvent } from 'ant-design-vue/es/checkbox/interface';
 
 import type { VbenFormSchema } from '#/adapter/form';
@@ -30,33 +31,15 @@ const emit = defineEmits<{
   change: [spu: MallSpuApi.Spu | MallSpuApi.Spu[]];
 }>();
 
-// 单选：选中的 SPU ID
-const selectedSpuId = ref<number>();
-// 多选：选中状态 map
-const checkedStatus = ref<Record<number, boolean>>({});
-// 多选：选中的 SPU 列表
-const checkedSpus = ref<MallSpuApi.Spu[]>([]);
-// 多选：全选状态
-const isCheckAll = ref(false);
-// 多选：半选状态
-const isIndeterminate = ref(false);
+const selectedSpuId = ref<number>(); // 单选：选中的 SPU ID
+const checkedStatus = ref<Record<number, boolean>>({}); // 多选：选中状态 map
+const checkedSpus = ref<MallSpuApi.Spu[]>([]); // 多选：选中的 SPU 列表
+const isCheckAll = ref(false); // 多选：全选状态
+const isIndeterminate = ref(false); // 多选：半选状态
 
-// 分类列表（扁平）
-const categoryList = ref<any[]>([]);
-// 分类树
-const categoryTreeList = ref<any[]>([]);
+const categoryList = ref<any[]>([]); // 分类列表（扁平）
+const categoryTreeList = ref<any[]>([]); // 分类树
 
-// 初始化分类数据
-onMounted(async () => {
-  try {
-    categoryList.value = await getCategoryList({});
-    categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
-  } catch (error) {
-    console.error('加载分类数据失败:', error);
-  }
-});
-
-// 搜索表单配置
 const formSchema = computed<VbenFormSchema[]>(() => {
   return [
     {
@@ -97,7 +80,6 @@ const formSchema = computed<VbenFormSchema[]>(() => {
   ];
 });
 
-// 列配置
 const gridColumns = computed<VxeGridProps['columns']>(() => {
   const columns: VxeGridProps['columns'] = [];
 
@@ -121,7 +103,7 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
     });
   }
 
-  // 其他列
+  // 其它列
   columns.push(
     {
       field: 'id',
@@ -157,7 +139,6 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
   return columns;
 });
 
-// 初始化表格
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: formSchema.value,
@@ -172,6 +153,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         async query({ page }: any, formValues: any) {
+          // TODO @puhui999：这里是不是不 try catch？
           try {
             const params = {
               pageNo: page.currentPage,
@@ -182,6 +164,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               createTime: formValues.createTime || undefined,
             };
 
+            // TODO @puhui999：一次性的，是不是不声明 params，直接放到 getSpuPage 里？
             const data = await getSpuPage(params);
 
             // 初始化多选状态
@@ -208,14 +191,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-// 单选：处理选中
+// TODO @puhui999：如下的选中方法，可以因为 Grid 做简化么？
+/** 单选：处理选中 */
 function handleSingleSelected(row: MallSpuApi.Spu) {
   selectedSpuId.value = row.id;
   emit('change', row);
   modalApi.close();
 }
 
-// 多选：全选/全不选
+/** 多选：全选/全不选 */
 function handleCheckAll(e: CheckboxChangeEvent) {
   const checked = e.target.checked;
   isCheckAll.value = checked;
@@ -228,7 +212,7 @@ function handleCheckAll(e: CheckboxChangeEvent) {
   calculateIsCheckAll();
 }
 
-// 多选：选中单个
+/** 多选：选中单个 */
 function handleCheckOne(
   checked: boolean,
   spu: MallSpuApi.Spu,
@@ -255,7 +239,7 @@ function handleCheckOne(
   }
 }
 
-// 多选：计算全选状态
+/** 多选：计算全选状态 */
 function calculateIsCheckAll() {
   const currentList = gridApi.grid.getData();
   if (currentList.length === 0) {
@@ -272,7 +256,6 @@ function calculateIsCheckAll() {
   isIndeterminate.value = checkedCount > 0 && checkedCount < currentList.length;
 }
 
-// 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   // 多选模式时显示确认按钮
@@ -284,7 +267,7 @@ const [Modal, modalApi] = useVbenModal({
     : undefined,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // 关闭时清理状态
+      // TODO @puhui999：是不是直接清理，不要判断 selectedSpuId.value
       if (!props.multiple) {
         selectedSpuId.value = undefined;
       }
@@ -300,7 +283,6 @@ const [Modal, modalApi] = useVbenModal({
       checkedStatus.value = {};
       isCheckAll.value = false;
       isIndeterminate.value = false;
-
       // 恢复已选中的数据
       if (Array.isArray(data) && data.length > 0) {
         checkedSpus.value = [...data];
@@ -316,8 +298,15 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 触发查询
+    // TODO @puhui999：貌似不用这里再查询一次，100% 会查询的，记忆中是；
     await gridApi.query();
   },
+});
+
+/** 初始化分类数据 */
+onMounted(async () => {
+  categoryList.value = await getCategoryList({});
+  categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
 });
 </script>
 

@@ -53,7 +53,9 @@ const rewardRuleRef = ref<InstanceType<typeof RewardRule>>();
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
-    if (!valid) return;
+    if (!valid) {
+      return;
+    }
 
     modalApi.lock();
     try {

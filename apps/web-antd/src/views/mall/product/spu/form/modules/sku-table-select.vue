@@ -24,7 +24,8 @@ const emit = defineEmits<{
 const selectedSkuId = ref<number>();
 const spuId = ref<number>();
 
-// 配置列
+/** 配置列 */
+// TODO @puhui999：貌似列太宽了？
 const gridColumns = computed<VxeGridProps['columns']>(() => [
   {
     field: 'id',
@@ -65,7 +66,6 @@ const gridColumns = computed<VxeGridProps['columns']>(() => [
   },
 ]);
 
-// 初始化表格
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: gridColumns.value,
@@ -95,14 +95,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-// 处理选中
+/** 处理选中 */
 function handleSelected(row: MallSpuApi.Sku) {
   emit('change', row);
   modalApi.close();
   selectedSkuId.value = undefined;
 }
 
-// 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   onOpenChange: async (isOpen: boolean) => {
@@ -111,8 +110,8 @@ const [Modal, modalApi] = useVbenModal({
       spuId.value = undefined;
       return;
     }
-
     const data = modalApi.getData<SpuData>();
+    // TODO @puhui999：这里要不 if return，让括号的层级简单点。
     if (data?.spuId) {
       spuId.value = data.spuId;
       // 触发数据查询
@@ -125,7 +124,6 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal class="w-[700px]" title="选择规格">
     <Grid>
-      <!-- 单选列 -->
       <template #radio-column="{ row }">
         <Input
           v-model="selectedSkuId"

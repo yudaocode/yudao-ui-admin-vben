@@ -35,7 +35,9 @@ const attributeOptions = ref<MallPropertyApi.Property[]>([]); // 商品属性名
 watch(
   () => props.propertyList,
   (data) => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
     attributeList.value = data as any[];
   },
   {
@@ -44,7 +46,6 @@ watch(
   },
 );
 
-// 表单配置
 const formSchema: VbenFormSchema[] = [
   {
     fieldName: 'name',
@@ -62,7 +63,6 @@ const formSchema: VbenFormSchema[] = [
       showSearch: true,
       filterOption: true,
       placeholder: '请选择属性名称。如果不存在，可手动输入选择',
-      // 支持手动输入新选项
       mode: 'tags',
       maxTagCount: 1,
       allowClear: true,
@@ -71,7 +71,6 @@ const formSchema: VbenFormSchema[] = [
   },
 ];
 
-// 初始化表单
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -85,16 +84,15 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   async onConfirm() {
     const { valid } = await formApi.validate();
-    if (!valid) return;
-
+    if (!valid) {
+      return;
+    }
     const values = await formApi.getValues();
     const name = Array.isArray(values.name) ? values.name[0] : values.name;
-
     // 重复添加校验
     for (const attrItem of attributeList.value) {
       if (attrItem.name === name) {
@@ -102,6 +100,8 @@ const [Modal, modalApi] = useVbenModal({
         return;
       }
     }
+
+    // TODO @puhui999：modalApi.lock(); 这种写法；
 
     // 情况一：属性名已存在，则直接使用
     const existProperty = attributeOptions.value.find(
@@ -113,6 +113,7 @@ const [Modal, modalApi] = useVbenModal({
         name,
         values: [],
       });
+      // TODO @puhui999：这里要不 if else；这样 await modalApi.close(); emit('success'); 可以复用？另外，感觉甚至可以情况二：add 后，成为 existProperty，可以进一步简化？
       await modalApi.close();
       emit('success');
       return;
@@ -132,7 +133,6 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
     } catch (error) {
-      // 发生错误时不关闭弹窗
       console.error('添加属性失败:', error);
     }
   },
@@ -140,7 +140,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    // 重置表单
     await formApi.resetForm();
   },
 });

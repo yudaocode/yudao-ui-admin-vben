@@ -145,7 +145,9 @@ const [Modal, modalApi] = useVbenModal({
   // "确认"按钮的回调
   async onConfirm() {
     const { valid } = await formApi.validate();
-    if (!valid) return;
+    if (!valid) {
+      return;
+    }
 
     modalApi.lock();
     try {
