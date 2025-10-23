@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @puhui999：在优化下代码；
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
 import { computed, ref } from 'vue';

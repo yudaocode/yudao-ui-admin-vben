@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// 严格遵循导入顺序原则
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
@@ -20,104 +19,118 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'PromotionRewardActivity' });
 
-// 1. 使用 useVbenModal 初始化弹窗
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-// 2. 定义业务操作函数
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 创建满减送活动 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+/** 编辑满减送活动 */
 function handleEdit(row: MallRewardActivityApi.RewardActivity) {
   formModalApi.setData({ id: row.id }).open();
 }
 
+/** 关闭满减送活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
   const hideLoading = message.loading({
-    content: '活动关闭中...',
+    content: '正在关闭中...',
     duration: 0,
   });
   try {
     await closeRewardActivity(row.id!);
-    message.success({
-      content: '关闭成功',
-    });
+    message.success('关闭成功');
     handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
+/** 删除满减送活动 */
 async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
-  await deleteRewardActivity(row.id!);
-  message.success({
-    content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.name]),
+    duration: 0,
   });
-  handleRefresh();
+  try {
+    await deleteRewardActivity(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
-function handleRefresh() {
-  gridApi.query();
-}
-
-// 3. 使用 useVbenVxeGrid 初始化列表
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const params = {
+          return await getRewardActivityPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
-          };
-          return await getRewardActivityPage(params);
+          });
         },
       },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
     },
   } as VxeTableGridOptions,
 });
 </script>
 
 <template>
-  <Page>
-    <!-- 弹窗组件的注册 -->
+  <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-
-    <!-- 列表组件的渲染 -->
     <Grid table-title="满减送活动">
-      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
               label: $t('ui.actionTitle.create', ['活动']),
+              type: 'primary',
               icon: ACTION_ICON.ADD,
               onClick: handleCreate,
             },
           ]"
         />
       </template>
-      <!-- 操作列按钮 -->
       <template #actions="{ row }">
+        <!-- TODO @AI：table action 的权限标识；参考 /Users/yunai/Java/yudao-ui-admin-vue3/src/views/mall/promotion/rewardActivity/index.vue -->
         <TableAction
           :actions="[
             {
               label: $t('common.edit'),
+              type: 'link',
               icon: ACTION_ICON.EDIT,
               onClick: handleEdit.bind(null, row),
             },
             {
               label: '关闭',
-              icon: ACTION_ICON.CLOSE,
+              type: 'link',
               danger: true,
+              icon: ACTION_ICON.CLOSE,
               ifShow: row.status === 0,
               popConfirm: {
                 title: '确认关闭该满减活动吗？',
@@ -126,8 +139,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              icon: ACTION_ICON.DELETE,
+              type: 'link',
               danger: true,
+              icon: ACTION_ICON.DELETE,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -139,3 +153,4 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
+

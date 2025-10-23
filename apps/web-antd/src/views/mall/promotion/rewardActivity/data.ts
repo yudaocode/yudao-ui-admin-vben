@@ -1,20 +1,13 @@
-// 1. 导入类型
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-// 2. 导入 VBEN 常量和工具
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-// 3. 导入 Zod 用于高级验证
-import { z } from '#/adapter/form';
-// 4. 导入项目级工具函数
 import { getRangePickerDefaultProps } from '#/utils';
 
-/**
- * @description: 列表的搜索表单
- */
+/** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -48,9 +41,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/**
- * @description: 列表的字段
- */
+/** 列表的表格列 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
@@ -62,7 +53,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'productScope',
       title: '活动范围',
       minWidth: 120,
-      align: 'center',
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PROMOTION_PRODUCT_SCOPE },
@@ -72,21 +62,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'startTime',
       title: '活动开始时间',
       minWidth: 180,
-      align: 'center',
       formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '活动结束时间',
       minWidth: 180,
-      align: 'center',
       formatter: 'formatDateTime',
     },
     {
       field: 'status',
       title: '状态',
       minWidth: 100,
-      align: 'center',
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
@@ -107,12 +94,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/**
- * @description: 新增/修改的表单
- */
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
-    // 隐藏的 ID 字段
     {
       component: 'Input',
       fieldName: 'id',
@@ -128,7 +112,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入活动名称',
       },
-      rules: z.string().min(1, '活动名称不能为空'),
+      rules: 'required',
     },
     {
       fieldName: 'startAndEndTime',
@@ -139,8 +123,9 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         placeholder: [$t('common.startTimeText'), $t('common.endTimeText')],
       },
-      rules: z.array(z.any()).min(1, '活动时间不能为空'),
+      rules: 'required',
     },
+    // TODO @puhui999：增加一个 defaultValue
     {
       fieldName: 'conditionType',
       label: '条件类型',
@@ -150,7 +135,8 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: z.number(),
+      defaultValue: PromotionConditionTypeEnum.PRICE.type,
+      rules: 'required',
     },
     {
       fieldName: 'productScope',
@@ -161,7 +147,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: z.number(),
+      rules: 'required',
     },
     {
       fieldName: 'remark',

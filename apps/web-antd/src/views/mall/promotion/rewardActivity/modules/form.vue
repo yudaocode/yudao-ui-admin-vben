@@ -26,71 +26,65 @@ import RewardRule from '../components/reward-rule.vue';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+// TODO @puhui999：代码风格，和别的 form 保持一致；
 const formData = ref<MallRewardActivityApi.RewardActivity>({
   conditionType: PromotionConditionTypeEnum.PRICE.type,
   productScope: PromotionProductScopeEnum.ALL.scope,
   rules: [],
 });
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['满减送'])
+    : $t('ui.actionTitle.create', ['满减送']);
+});
 
-const getTitle = computed(() =>
-  formData.value?.id ? '编辑满减送' : '新增满减送',
-);
-
-// 1. 使用 useVbenForm 初始化表单
 const [Form, formApi] = useVbenForm({
-  schema: useFormSchema(),
-  showDefaultActions: false,
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
   } as VbenFormProps['commonConfig'],
+  schema: useFormSchema(),
+  showDefaultActions: false,
 });
 
 const rewardRuleRef = ref<InstanceType<typeof RewardRule>>();
 
-// 2. 使用 useVbenModal 定义弹窗行为
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
     }
-
     modalApi.lock();
     try {
       const data = await formApi.getValues();
-
-      // 1. 设置活动规则优惠券
+      // 设置活动规则优惠券
       rewardRuleRef.value?.setRuleCoupon();
-
-      // 2. 时间段转换
+      // 时间段转换
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
         data.startTime = data.startAndEndTime[0];
         data.endTime = data.startAndEndTime[1];
         delete data.startAndEndTime;
       }
-
-      // 3. 规则元转分
+      // 规则元转分
       data.rules?.forEach((item: any) => {
         item.discountPrice = convertToInteger(item.discountPrice || 0);
         if (data.conditionType === PromotionConditionTypeEnum.PRICE.type) {
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-
-      // 4. 设置商品范围
+      // 设置商品范围
       setProductScopeValues(data);
 
-      if (formData.value?.id) {
-        await updateRewardActivity(<MallRewardActivityApi.RewardActivity>data);
-        message.success($t('common.updateSuccess'));
-      } else {
-        await createRewardActivity(<MallRewardActivityApi.RewardActivity>data);
-        message.success($t('common.createSuccess'));
-      }
+      // 提交表单
+      await (formData.value?.id
+        ? updateRewardActivity(<MallRewardActivityApi.RewardActivity>data)
+        : createRewardActivity(<MallRewardActivityApi.RewardActivity>data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -104,17 +98,16 @@ const [Modal, modalApi] = useVbenModal({
       };
       return;
     }
-
-    const data = modalApi.getData();
-    if (!data || !data.id) return;
-
+    // 加载数据
+    const data = modalApi.getData<MallRewardActivityApi.RewardActivity>();
+    if (!data || !data.id) {
+      return;
+    }
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-
       // 转区段时间
       result.startAndEndTime = [result.startTime, result.endTime];
-
       // 规则分转元
       result.rules?.forEach((item: any) => {
         item.discountPrice = formatToFraction(item.discountPrice || 0);
@@ -124,6 +117,7 @@ const [Modal, modalApi] = useVbenModal({
       });
 
       formData.value = result;
+      // 设置到 values
       await formApi.setValues(result);
 
       // 获得商品范围
@@ -135,6 +129,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 获得商品范围 */
+// TODO @puhui999：可以参考下优惠劵模版的做法；可见 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/coupon/template/data.ts 的 295 行；
 async function getProductScope() {
   switch (formData.value.productScope) {
     case PromotionProductScopeEnum.CATEGORY.scope: {
@@ -184,6 +179,7 @@ function setProductScopeValues(data: any) {
 
 <template>
   <Modal :title="getTitle" class="!w-[65%]">
+    <!-- TODO @puhui999：貌似可以不要？ -->
     <Alert
       description="【营销】满减送"
       message="提示"
@@ -191,14 +187,12 @@ function setProductScopeValues(data: any) {
       type="info"
       class="mb-4"
     />
-
-    <Form />
+    <Form class="mx-4" />
 
     <!-- 优惠设置 -->
     <FormItem label="优惠设置">
       <RewardRule ref="rewardRuleRef" v-model="formData" />
     </FormItem>
-
     <!-- 商品范围选择 -->
     <FormItem
       v-if="formData.productScope === PromotionProductScopeEnum.SPU.scope"
@@ -211,8 +205,5 @@ function setProductScopeValues(data: any) {
         :deletable="true"
         :spu-list="[]"/>
     </FormItem>
-
-    <!-- 分类选择 -->
-    <!-- 注意：category 选择器暂未实现，需要根据实际需求添加 -->
   </Modal>
 </template>

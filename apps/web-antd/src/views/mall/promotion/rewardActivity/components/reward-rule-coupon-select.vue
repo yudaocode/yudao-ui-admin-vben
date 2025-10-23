@@ -10,6 +10,7 @@ import { Button, Input } from 'ant-design-vue';
 // import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate'; // TODO: API
 // import { discountFormat } from '@/views/mall/promotion/coupon/formatter'; // TODO: 根据实际路径调整
 
+// TODO @puhui999：这里报错了。
 defineOptions({ name: 'RewardRuleCouponSelect' });
 
 const props = defineProps<{
