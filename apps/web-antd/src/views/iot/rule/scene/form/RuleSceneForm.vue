@@ -234,7 +234,9 @@ async function handleSubmit() {
   // 校验表单
   if (!formRef.value) return;
   const valid = await formRef.value.validate();
-  if (!valid) return;
+  if (!valid) {
+    return;
+  }
 
   // 提交请求
   submitLoading.value = true;

@@ -18,37 +18,42 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'PromotionPointActivity' });
 
-// 1. 使用 useVbenModal 初始化弹窗
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-// 2. 定义业务操作函数
+// TODO @AI：增加注释
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+// TODO @AI：增加注释
 function handleEdit(row: any) {
   formModalApi.setData(row).open();
 }
 
+// TODO @AI：增加注释
 async function handleClose(row: any) {
   await confirm({
     title: '提示',
     content: '确认关闭该积分商城活动吗？',
   });
   await closePointActivity(row.id);
+  // TODO @AI：增加 loading
   message.success('关闭成功');
   gridApi.query();
 }
 
 async function handleDelete(row: any) {
   await deletePointActivity(row.id);
-  message.success($t('common.delSuccess'));
+  message.success({
+    content: $t('ui.actionMessage.deleteSuccess', [row.id]),
+  });
   gridApi.query();
 }
 
+// TODO @AI：增加注释
 function handleRefresh() {
   gridApi.query();
 }
@@ -80,18 +85,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
+  <!-- TODO @puhui999：不用 description 哈。 -->
   <Page
     description="积分商城活动，用于管理积分兑换商品的配置"
     doc-link="https://doc.iocoder.cn/mall/promotion-point/"
     title="积分商城活动"
     auto-content-height
   >
-    <!-- 弹窗组件的注册 -->
     <FormModal @success="handleRefresh" />
 
-    <!-- 列表组件的渲染 -->
     <Grid table-title="积分商城活动列表">
-      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -105,7 +108,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- 操作列按钮 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[

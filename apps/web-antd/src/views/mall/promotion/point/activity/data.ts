@@ -1,17 +1,12 @@
-// 1. 导入类型
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-// 2. 导入 VBEN 常量和工具
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-// 3. 导入 Zod 用于高级验证
 import { z } from '#/adapter/form';
 
-/**
- * @description: 列表的搜索表单
- */
+// TODO @AI：注释
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -27,12 +22,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/**
- * @description: 列表的字段
- */
+// TODO @AI：注释
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '活动编号',
@@ -77,20 +69,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'stock',
       title: '库存',
       minWidth: 80,
-      align: 'center',
     },
     {
       field: 'totalStock',
       title: '总库存',
       minWidth: 80,
-      align: 'center',
     },
     {
       field: 'redeemedQuantity',
       title: '已兑换数量',
       minWidth: 100,
-      align: 'center',
-      // 使用 formatter 计算已兑换数量
+
       formatter: ({ row }) => {
         return (row.totalStock || 0) - (row.stock || 0);
       },
@@ -99,7 +88,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'createTime',
       title: '创建时间',
       minWidth: 180,
-      align: 'center',
+
       formatter: 'formatDateTime',
     },
     {
@@ -111,12 +100,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/**
- * @description: 新增/修改的表单
- */
+// TODO @AI：注释下
 export function useFormSchema(): VbenFormSchema[] {
   return [
-    // 隐藏的 ID 字段
     {
       component: 'Input',
       fieldName: 'id',
@@ -131,7 +117,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
       formItemClass: 'col-span-2',
-      // 通过插槽实现自定义商品选择器
       renderComponentContent: () => ({
         default: () => null,
       }),
