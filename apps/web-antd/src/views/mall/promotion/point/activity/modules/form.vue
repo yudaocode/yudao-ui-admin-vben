@@ -33,7 +33,6 @@ const getTitle = computed(() =>
   isFormUpdate.value ? '编辑积分活动' : '新增积分活动',
 );
 
-// 1. 使用 useVbenForm 初始化表单
 const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -69,6 +68,7 @@ const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
 /**
  * 打开商品选择器
  */
+// TODO @puhui999：spuSkuSelectRef.value.open is not a function
 function openSpuSelect() {
   spuSkuSelectRef.value.open();
 }
@@ -140,9 +140,7 @@ async function getSpuDetails(
 
 // ================= end =================
 
-// 2. 使用 useVbenModal 定义弹窗行为
 const [Modal, modalApi] = useVbenModal({
-  // "确认"按钮的回调
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -176,7 +174,6 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  // 弹窗打开时的回调
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       // 关闭时清理状态
@@ -244,7 +241,6 @@ const [Modal, modalApi] = useVbenModal({
                   />
                 </template>
               </VxeColumn>
-
               <VxeColumn align="center" min-width="168" title="可兑换次数">
                 <template #default="{ row: sku }">
                   <InputNumber
@@ -254,7 +250,6 @@ const [Modal, modalApi] = useVbenModal({
                   />
                 </template>
               </VxeColumn>
-
               <VxeColumn align="center" min-width="168" title="所需积分">
                 <template #default="{ row: sku }">
                   <InputNumber
@@ -264,7 +259,6 @@ const [Modal, modalApi] = useVbenModal({
                   />
                 </template>
               </VxeColumn>
-
               <VxeColumn align="center" min-width="168" title="所需金额(元)">
                 <template #default="{ row: sku }">
                   <InputNumber

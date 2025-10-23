@@ -18,10 +18,8 @@ import { getRangePickerDefaultProps } from '#/utils';
 import { getPropertyList, SkuList } from '#/views/mall/product/spu/form';
 
 interface SpuSkuSelectProps {
-  /** 是否选择 SKU */
-  isSelectSku?: boolean;
-  /** 是否单选 SKU */
-  radio?: boolean;
+  isSelectSku?: boolean; // 是否选择 SKU
+  radio?: boolean; // 是否单选 SKU
 }
 
 const props = withDefaults(defineProps<SpuSkuSelectProps>(), {
@@ -33,33 +31,17 @@ const emit = defineEmits<{
   confirm: [spuId: number, skuIds?: number[]];
 }>();
 
-// 单选：选中的 SPU ID
-const selectedSpuId = ref<number>();
-// 选中的 SKU ID 列表
-const selectedSkuIds = ref<number[]>([]);
-// SKU 列表数据
+const selectedSpuId = ref<number>(); // 单选：选中的 SPU ID
+const selectedSkuIds = ref<number[]>([]); // 选中的 SKU ID 列表
 const spuData = ref<MallSpuApi.Spu>();
 const propertyList = ref<any[]>([]);
 const isExpand = ref(false);
 const expandRowKeys = ref<number[]>([]);
 const skuListRef = ref<InstanceType<typeof SkuList>>();
 
-// 分类列表（扁平）
-const categoryList = ref<any[]>([]);
-// 分类树
-const categoryTreeList = ref<any[]>([]);
+const categoryList = ref<any[]>([]); // 分类列表（扁平）
+const categoryTreeList = ref<any[]>([]); // 分类树
 
-// 初始化分类数据
-onMounted(async () => {
-  try {
-    categoryList.value = await getCategoryList({});
-    categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
-  } catch (error) {
-    console.error('加载分类数据失败:', error);
-  }
-});
-
-// 搜索表单配置
 const formSchema = computed<VbenFormSchema[]>(() => {
   return [
     {
@@ -100,10 +82,8 @@ const formSchema = computed<VbenFormSchema[]>(() => {
   ];
 });
 
-// 列配置
 const gridColumns = computed<VxeGridProps['columns']>(() => {
   const columns: VxeGridProps['columns'] = [];
-
   // 如果需要选择 SKU，添加展开列
   if (props.isSelectSku) {
     columns.push({
@@ -112,7 +92,6 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       slots: { content: 'expand-content' },
     });
   }
-
   // 单选列
   columns.push(
     {
@@ -152,11 +131,9 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       },
     },
   );
-
   return columns;
 });
 
-// 初始化表格
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: formSchema.value,
@@ -175,6 +152,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         async query({ page }: any, formValues: any) {
           try {
+            // TODO @puhui999：1）try catch 可以去掉？；2）params 直接放到 getSpuPage 里哇？
             const params = {
               pageNo: page.currentPage,
               pageSize: page.pageSize,
@@ -200,28 +178,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-// 单选：处理选中 SPU
+/** 单选：处理选中 SPU */
 async function handleSingleSelected(row: MallSpuApi.Spu) {
   selectedSpuId.value = row.id;
-
   // 如果需要选择 SKU，展开行
   if (props.isSelectSku) {
     await expandChange(row, [row]);
   }
 }
 
-// 选择 SKU
+/** 选择 SKU */
 function selectSku(skus: MallSpuApi.Sku[]) {
   if (!selectedSpuId.value) {
     message.warning('请先选择商品再选择相应的规格！');
     return;
   }
-
   if (skus.length === 0) {
     selectedSkuIds.value = [];
     return;
   }
 
+  // TODO @puhui999：有 idea 告警
   if (props.radio) {
     // 单选模式
     selectedSkuIds.value = [skus[0]?.id!];
@@ -231,7 +208,7 @@ function selectSku(skus: MallSpuApi.Sku[]) {
   }
 }
 
-// 展开行，加载 SKU 列表
+/** 展开行，加载 SKU 列表 */
 async function expandChange(
   row: MallSpuApi.Spu,
   expandedRows?: MallSpuApi.Spu[],
@@ -242,7 +219,6 @@ async function expandChange(
     expandRowKeys.value = [selectedSpuId.value];
     return;
   }
-
   // 如果已经展开且是同一个 SPU，不重复加载
   if (isExpand.value && spuData.value?.id === row.id) {
     return;
@@ -252,7 +228,6 @@ async function expandChange(
   spuData.value = undefined;
   propertyList.value = [];
   isExpand.value = false;
-
   if (!expandedRows || expandedRows.length === 0) {
     expandRowKeys.value = [];
     return;
@@ -266,13 +241,12 @@ async function expandChange(
   expandRowKeys.value = [row.id!];
 }
 
-// 确认选择
+/** 确认选择 */
 function handleConfirm() {
   if (!selectedSpuId.value) {
     message.warning('没有选择任何商品');
     return;
   }
-
   if (props.isSelectSku && selectedSkuIds.value.length === 0) {
     message.warning('没有选择任何商品属性');
     return;
@@ -284,12 +258,10 @@ function handleConfirm() {
     selectedSpuId.value,
     props.isSelectSku ? selectedSkuIds.value : undefined,
   );
-
   // 关闭弹窗
   modalApi.close();
 }
 
-// 初始化弹窗
 const [Modal, modalApi] = useVbenModal({
   onConfirm: handleConfirm,
   async onOpenChange(isOpen: boolean) {
@@ -307,6 +279,12 @@ const [Modal, modalApi] = useVbenModal({
     // 打开时触发查询
     await gridApi.query();
   },
+});
+
+/** 初始化分类数据 */
+onMounted(async () => {
+  categoryList.value = await getCategoryList({});
+  categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
 });
 </script>
 

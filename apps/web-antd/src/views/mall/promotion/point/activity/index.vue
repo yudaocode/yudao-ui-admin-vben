@@ -20,27 +20,29 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'PromotionPointActivity' });
 
-// 1. 使用 useVbenModal 初始化弹窗
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-// 2. 定义业务操作函数
+// TODO @AI：增加注释
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+// TODO @AI：增加注释
 function handleEdit(row: any) {
   formModalApi.setData(row).open();
 }
 
+// TODO @AI：增加注释
 async function handleClose(row: any) {
   await confirm({
     title: '提示',
     content: '确认关闭该积分商城活动吗？',
   });
   await closePointActivity(row.id);
+  // TODO @AI：增加 loading
   message.success('关闭成功');
   gridApi.query();
 }
@@ -51,11 +53,13 @@ async function handleDelete(row: any) {
   gridApi.query();
 }
 
+// TODO @AI：增加注释
 function handleRefresh() {
   gridApi.query();
 }
 
 // 计算操作按钮
+// TODO @AI：不用方法，直接 vue 标签里，写条件 ifShow ！
 const getActions = computed(() => (row: any) => {
   const actions: any[] = [
     {
@@ -64,8 +68,6 @@ const getActions = computed(() => (row: any) => {
       onClick: handleEdit.bind(null, row),
     },
   ];
-
-  // 如果状态是启用(0)，显示关闭按钮
   if (row.status === 0) {
     actions.push({
       label: '关闭',
@@ -77,7 +79,6 @@ const getActions = computed(() => (row: any) => {
       },
     });
   } else {
-    // 否则显示删除按钮
     actions.push({
       label: $t('common.delete'),
       icon: ACTION_ICON.DELETE,
@@ -88,11 +89,10 @@ const getActions = computed(() => (row: any) => {
       },
     });
   }
-
   return actions;
 });
 
-// 3. 使用 useVbenVxeGrid 初始化列表
+// TODO @AI：参考 system/notice 补全，简化；
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -117,17 +117,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
+  <!-- TODO @puhui999：不用 description 哈。 -->
   <Page
     description="积分商城活动，用于管理积分兑换商品的配置"
     doc-link="https://doc.iocoder.cn/mall/promotion-point/"
     title="积分商城活动"
   >
-    <!-- 弹窗组件的注册 -->
     <FormModal @success="handleRefresh" />
 
-    <!-- 列表组件的渲染 -->
     <Grid table-title="积分商城活动列表">
-      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -139,7 +137,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- 操作列按钮 -->
       <template #actions="{ row }">
         <TableAction :actions="getActions(row)" />
       </template>

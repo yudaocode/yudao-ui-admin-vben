@@ -15,14 +15,10 @@ import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { SkuList } from '#/views/mall/product/spu/form';
 
 interface SpuAndSkuListProps {
-  /** SPU 列表 */
-  spuList: T[];
-  /** 规则配置 */
-  ruleConfig: RuleConfig[];
-  /** SPU 属性列表 */
-  spuPropertyList: SpuProperty<T>[];
-  /** 是否可删除 */
-  deletable?: boolean;
+  spuList: T[]; // SPU 列表
+  ruleConfig: RuleConfig[]; // 规则配置
+  spuPropertyList: SpuProperty<T>[]; // SPU 属性列表
+  deletable?: boolean; // 是否可删除
 }
 
 const props = withDefaults(defineProps<SpuAndSkuListProps>(), {
@@ -33,13 +29,11 @@ const emit = defineEmits<{
   delete: [spuId: number];
 }>();
 
-// 内部数据
 const spuData = ref<MallSpuApi.Spu[]>([]);
 const spuPropertyListData = ref<SpuProperty<T>[]>([]);
 const expandedRowKeys = ref<number[]>([]);
 const skuListRef = ref<InstanceType<typeof SkuList>>();
 
-// 列配置（动态计算）
 const columns = computed<VxeGridProps['columns']>(() => {
   const cols: VxeGridProps['columns'] = [
     {
@@ -103,7 +97,6 @@ const columns = computed<VxeGridProps['columns']>(() => {
   return cols;
 });
 
-// 初始化表格
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: columns.value,
@@ -121,14 +114,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-/**
- * 删除 SPU
- */
+/** 删除 SPU */
 async function handleDelete(row: MallSpuApi.Spu) {
+  // TODO @puhui999：可以使用 TableAction 的 popConfirm 哈？
   await confirm({
     content: `是否删除商品编号为 ${row.id} 的数据？`,
   });
-
   const index = spuData.value.findIndex((item) => item.id === row.id);
   if (index !== -1) {
     spuData.value.splice(index, 1);
@@ -138,6 +129,7 @@ async function handleDelete(row: MallSpuApi.Spu) {
 
 /**
  * 获取所有 SKU 活动配置
+ *
  * @param extendedAttribute 在 SKU 上扩展的属性名称
  */
 function getSkuConfigs(extendedAttribute: string) {
@@ -157,32 +149,36 @@ function getSkuConfigs(extendedAttribute: string) {
   return configs;
 }
 
-// 暴露方法给父组件
 defineExpose({
   getSkuConfigs,
 });
 
-// 监听 spuList 变化
+/** 监听 spuList 变化 */
 watch(
   () => props.spuList,
   (data) => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
     spuData.value = data as MallSpuApi.Spu[];
     // 更新表格列配置和数据
     gridApi.grid.reloadData(spuData.value);
-    gridApi.grid.reloadColumn(columns.value);
+    gridApi.grid.reloadColumn(columns.value as any[]);
   },
   { deep: true, immediate: true },
 );
 
-// 监听 spuPropertyList 变化
+/** 监听 spuPropertyList 变化 */
 watch(
   () => props.spuPropertyList,
   (data) => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
     spuPropertyListData.value = data as SpuProperty<T>[];
 
     // 延迟展开所有行，确保 SKU 列表正确渲染
+    // TODO @puhui999：只能 setTimeout 么？await 之类可以么？
     setTimeout(() => {
       expandedRowKeys.value = data.map((item) => item.spuId);
       // 手动展开每一行
@@ -222,7 +218,6 @@ watch(
         </SkuList>
       </div>
     </template>
-
     <!-- 操作列 -->
     <template
       v-if="props.deletable && props.spuList.length > 1"
