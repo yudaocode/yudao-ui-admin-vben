@@ -25,15 +25,22 @@ import { SpuAndSkuList, SpuSkuSelect } from '../../../components';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-
-const formData = ref<MallPointActivityApi.PointActivity>(); // 用于存储当前编辑的数据
-const isFormUpdate = ref(false); // 是否为编辑模式
-
-const getTitle = computed(() =>
-  isFormUpdate.value ? '编辑积分活动' : '新增积分活动',
-);
+const formData = ref<MallPointActivityApi.PointActivity>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['积分活动'])
+    : $t('ui.actionTitle.create', ['积分活动']);
+});
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
@@ -43,7 +50,6 @@ const [Form, formApi] = useVbenForm({
 const spuSkuSelectRef = ref(); // 商品和属性选择 Ref
 const spuAndSkuListRef = ref(); // SPU 和 SKU 列表组件 Ref
 
-// SKU 规则配置
 const ruleConfig: RuleConfig[] = [
   {
     name: 'productConfig.stock',
@@ -60,38 +66,30 @@ const ruleConfig: RuleConfig[] = [
     rule: (arg) => arg >= 1,
     message: '商品可兑换次数必须大于等于 1 ！！！',
   },
-];
+]; // SKU 规则配置
 
 const spuList = ref<any[]>([]); // 选择的 SPU 列表
 const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
 
-/**
- * 打开商品选择器
- */
+/** 打开商品选择器 */
 // TODO @puhui999：spuSkuSelectRef.value.open is not a function
 function openSpuSelect() {
   spuSkuSelectRef.value.open();
 }
 
-/**
- * 选择商品后的回调
- */
+/** 选择商品后的回调 */
 async function handleSpuSelected(spuId: number, skuIds?: number[]) {
   await formApi.setFieldValue('spuId', spuId);
   await getSpuDetails(spuId, skuIds);
 }
 
-/**
- * 获取 SPU 详情
- */
+/** 获取 SPU 详情 */
 async function getSpuDetails(
   spuId: number,
   skuIds?: number[],
   products?: MallPointActivityApi.PointProduct[],
 ) {
-  const spuProperties: SpuProperty<any>[] = [];
   const res = await getSpu(spuId);
-
   if (!res) {
     return;
   }
@@ -103,7 +101,6 @@ async function getSpuDetails(
     skuIds === undefined
       ? res.skus
       : res.skus?.filter((sku) => skuIds.includes(sku.id!));
-
   // 为每个 SKU 配置积分商城相关的配置
   selectSkus?.forEach((sku: any) => {
     let config: MallPointActivityApi.PointProduct = {
@@ -113,7 +110,6 @@ async function getSpuDetails(
       point: 0,
       count: 0,
     };
-
     // 如果是编辑模式，回填已有配置
     if (products !== undefined) {
       const product = products.find((item) => item.skuId === sku.id);
@@ -122,19 +118,20 @@ async function getSpuDetails(
       }
       config = product || config;
     }
-
     sku.productConfig = config;
   });
-
   res.skus = selectSkus;
 
+  const spuProperties: SpuProperty[] = [];
   spuProperties.push({
     spuId: res.id!,
     spuDetail: res,
     propertyList: getPropertyList(res),
   });
 
+  // TODO @puhui999：貌似直接 = 下面的，不用 push？
   spuList.value.push(res);
+  // TODO @puhui999：貌似直接 = 下面的，不用 push？
   spuPropertyList.value = spuProperties;
 }
 
@@ -146,55 +143,43 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-
     modalApi.lock();
     try {
       // 获取积分商城商品配置
       const products: MallPointActivityApi.PointProduct[] =
         spuAndSkuListRef.value?.getSkuConfigs('productConfig') || [];
-
       // 价格需要转为分
       products.forEach((item) => {
         item.price = convertToInteger(item.price);
       });
-
+      // 提交表单
       const data =
         (await formApi.getValues()) as MallPointActivityApi.PointActivity;
       data.products = products;
-
-      // 真正提交
-      await (isFormUpdate.value
+      await (formData.value?.id
         ? updatePointActivity(data)
         : createPointActivity(data));
-
-      message.success($t('ui.actionMessage.operationSuccess'));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // 关闭时清理状态
       formData.value = undefined;
-      isFormUpdate.value = false;
       spuList.value = [];
       spuPropertyList.value = [];
       return;
     }
-
-    const data = modalApi.getData();
+    // 加载数据
+    const data = modalApi.getData<MallPointActivityApi.PointActivity>();
     if (!data || !data.id) {
-      // 新增模式
-      isFormUpdate.value = false;
       return;
     }
-
-    // 编辑模式
-    isFormUpdate.value = true;
     modalApi.lock();
-
     try {
       formData.value = await getPointActivity(data.id);
       await getSpuDetails(
@@ -202,6 +187,7 @@ const [Modal, modalApi] = useVbenModal({
         formData.value.products?.map((sku) => sku.skuId),
         formData.value.products,
       );
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -212,11 +198,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle" class="w-[70%]">
-    <Form>
+    <Form class="mx-4">
       <!-- 商品选择 -->
       <template #spuId>
         <div class="w-full">
-          <Button v-if="!isFormUpdate" type="primary" @click="openSpuSelect">
+          <Button v-if="!formData?.id" type="primary" @click="openSpuSelect">
             选择商品
           </Button>
 

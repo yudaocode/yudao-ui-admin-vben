@@ -1,13 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { $t } from '@vben/locales';
+import { fenToYuan } from '@vben/utils';
 
-import { z } from '#/adapter/form';
-
-// TODO @AI：注释
+/** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -23,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-// TODO @AI：注释
+/** 列表的表格列 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
@@ -51,19 +49,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'marketPrice',
       title: '原价',
       minWidth: 100,
-      formatter: 'formatAmount',
+      formatter: ({ row }) => `￥${fenToYuan(row.marketPrice)}`,
     },
     {
       field: 'status',
       title: '活动状态',
       minWidth: 100,
-      align: 'center',
       cellRender: {
         name: 'CellDict',
-        props: {
-          type: DICT_TYPE.COMMON_STATUS,
-          value: CommonStatusEnum.ENABLE,
-        },
+        props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
@@ -80,20 +74,18 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'redeemedQuantity',
       title: '已兑换数量',
       minWidth: 100,
-
       formatter: ({ row }) => {
         return (row.totalStock || 0) - (row.stock || 0);
       },
     },
     {
       field: 'createTime',
-      title: $t('common.createTime'),
+      title: '创建时间',
       minWidth: 180,
-
       formatter: 'formatDateTime',
     },
     {
-      title: $t('common.action'),
+      title: '操作',
       width: 150,
       fixed: 'right',
       slots: { default: 'actions' },
@@ -101,7 +93,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-// TODO @AI：注释下
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -113,32 +105,35 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'spuId',
-      label: '积分商城活动商品',
-      component: 'Input',
-      rules: 'required',
-      formItemClass: 'col-span-2',
-      renderComponentContent: () => ({
-        default: () => null,
-      }),
-    },
-    {
       fieldName: 'sort',
       label: '排序',
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        placeholder: '请输入排序',
+        class: '!w-full',
       },
-      rules: z.number().default(0),
+      rules: 'required',
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
       componentProps: {
+        placeholder: '请输入备注',
         rows: 4,
       },
       formItemClass: 'col-span-2',
+    },
+    {
+      fieldName: 'spuId',
+      label: '活动商品',
+      component: 'Input',
+      rules: 'required',
+      formItemClass: 'col-span-2',
+      renderComponentContent: () => ({
+        default: () => null,
+      }),
     },
   ];
 }

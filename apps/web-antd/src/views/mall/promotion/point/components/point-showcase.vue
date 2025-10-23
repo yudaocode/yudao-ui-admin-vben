@@ -1,5 +1,6 @@
 <!-- 积分活动橱窗组件 - 用于装修时展示和选择积分活动 -->
 <script lang="ts" setup>
+// TODO @puhui999：看看是不是整体优化下代码风格，参考别的模块
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed, ref, watch } from 'vue';

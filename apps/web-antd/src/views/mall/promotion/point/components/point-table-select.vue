@@ -1,5 +1,6 @@
 <!-- 积分活动表格选择器 -->
 <script lang="ts" setup>
+// TODO @puhui999：看看是不是整体优化下代码风格，参考别的模块
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
