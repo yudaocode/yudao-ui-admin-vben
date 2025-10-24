@@ -9,7 +9,7 @@
 -->
 <script lang="ts" setup>
 import type { SystemUserApi } from '#/api/system/user';
-import type { ButtonSetting } from '#/components/simple-process-design/consts';
+import type { ButtonSetting } from '#/views/bpm/components/simple-process-design/consts';
 
 import { inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
@@ -38,8 +38,8 @@ import {
   OPERATION_BUTTON_NAME,
   REJECT_HANDLER_TYPES,
   RejectHandlerType,
-} from '#/components/simple-process-design/consts';
-import { useFormFieldsPermission } from '#/components/simple-process-design/helpers';
+} from '#/views/bpm/components/simple-process-design/consts';
+import { useFormFieldsPermission } from '#/views/bpm/components/simple-process-design/helpers';
 
 defineOptions({ name: 'ElementCustomConfig4UserTask' });
 const props = defineProps({

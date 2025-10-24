@@ -30,7 +30,7 @@ import * as FormApi from '#/api/bpm/form';
 import {
   HttpRequestSetting,
   parseFormFields,
-} from '#/components/simple-process-design';
+} from '#/views/bpm/components/simple-process-design';
 
 const modelData = defineModel<any>();
 

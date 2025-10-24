@@ -1,4 +1,3 @@
-// TODO @jason：要不要新建 bpm/components，然后迁移过去？
 import './styles/simple-process-designer.scss';
 
 export { default as HttpRequestSetting } from './components/nodes-config/modules/http-request-setting.vue';

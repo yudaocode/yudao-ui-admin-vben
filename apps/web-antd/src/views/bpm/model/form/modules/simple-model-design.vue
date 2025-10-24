@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 
-import { SimpleProcessDesigner } from '#/components/simple-process-design';
+import { SimpleProcessDesigner } from '#/views/bpm/components/simple-process-design';
 
 defineOptions({ name: 'SimpleModelDesign' });
 

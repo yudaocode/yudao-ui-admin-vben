@@ -15,7 +15,7 @@ import {
   cancelProcessInstanceByAdmin,
   getProcessInstanceManagerPage,
 } from '#/api/bpm/processInstance';
-import { parseFormFields } from '#/components/simple-process-design';
+import { parseFormFields } from '#/views/bpm/components/simple-process-design';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

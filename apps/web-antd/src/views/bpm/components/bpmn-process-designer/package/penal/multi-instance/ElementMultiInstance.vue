@@ -16,7 +16,7 @@ import {
 import {
   APPROVE_METHODS,
   ApproveMethodType,
-} from '#/components/simple-process-design/consts';
+} from '#/views/bpm/components/simple-process-design/consts';
 
 defineOptions({ name: 'ElementMultiInstance' });
 

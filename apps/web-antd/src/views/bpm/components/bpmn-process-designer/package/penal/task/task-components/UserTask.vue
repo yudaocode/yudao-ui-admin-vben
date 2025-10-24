@@ -40,8 +40,8 @@ import {
   CandidateStrategy,
   FieldPermissionType,
   MULTI_LEVEL_DEPT,
-} from '#/components/simple-process-design/consts';
-import { useFormFieldsPermission } from '#/components/simple-process-design/helpers';
+} from '#/views/bpm/components/simple-process-design/consts';
+import { useFormFieldsPermission } from '#/views/bpm/components/simple-process-design/helpers';
 
 import ProcessExpressionDialog from './ProcessExpressionDialog.vue';
 
