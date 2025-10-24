@@ -22,7 +22,6 @@ import { useFormSchema } from './data';
 
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 
-// 审批相关：变量
 const processDefineKey = 'oa_leave'; // 流程定义 Key
 const startUserSelectTasks = ref<any>([]); // 发起人需要选择审批人的用户任务列表
 const startUserSelectAssignees = ref<any>({}); // 发起人选择审批人的数据
@@ -95,7 +94,6 @@ async function onSubmit() {
       key: 'action_process_msg',
     });
 
-    // TODO @ziye、@jason：好像跳转不了？
     await router.push({
       name: 'BpmOALeave',
     });
@@ -121,49 +119,44 @@ function onBack() {
   });
 }
 
-// ============================== 审核流程相关 ==============================
-
 /** 审批相关：获取审批详情 */
 async function getApprovalDetail() {
-  try {
-    const data = await getApprovalDetailApi({
-      processDefinitionId: processDefinitionId.value,
-      // TODO 小北：可以支持 processDefinitionKey 查询
-      activityId: BpmNodeIdEnum.START_USER_NODE_ID,
-      processVariablesStr: JSON.stringify({
-        day: dayjs(formData.value?.startTime).diff(
-          dayjs(formData.value?.endTime),
-          'day',
-        ),
-      }), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
-    });
+  const data = await getApprovalDetailApi({
+    processDefinitionId: processDefinitionId.value,
+    // TODO 小北：可以支持 processDefinitionKey 查询
+    activityId: BpmNodeIdEnum.START_USER_NODE_ID,
+    processVariablesStr: JSON.stringify({
+      day: dayjs(formData.value?.startTime).diff(
+        dayjs(formData.value?.endTime),
+        'day',
+      ),
+    }), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
+  });
 
-    if (!data) {
-      message.error('查询不到审批详情信息！');
-      return;
-    }
-    // 获取审批节点，显示 Timeline 的数据
-    activityNodes.value = data.activityNodes;
+  if (!data) {
+    message.error('查询不到审批详情信息！');
+    return;
+  }
+  // 获取审批节点，显示 Timeline 的数据
+  activityNodes.value = data.activityNodes;
 
-    // 获取发起人自选的任务
-    startUserSelectTasks.value = data.activityNodes?.filter(
-      (node: BpmProcessInstanceApi.ApprovalNodeInfo) =>
-        BpmCandidateStrategyEnum.START_USER_SELECT === node.candidateStrategy,
-    );
-    // 恢复之前的选择审批人
-    if (startUserSelectTasks.value?.length > 0) {
-      for (const node of startUserSelectTasks.value) {
-        startUserSelectAssignees.value[node.id] =
-          tempStartUserSelectAssignees.value[node.id] &&
-          tempStartUserSelectAssignees.value[node.id].length > 0
-            ? tempStartUserSelectAssignees.value[node.id]
-            : [];
-      }
+  // 获取发起人自选的任务
+  startUserSelectTasks.value = data.activityNodes?.filter(
+    (node: BpmProcessInstanceApi.ApprovalNodeInfo) =>
+      BpmCandidateStrategyEnum.START_USER_SELECT === node.candidateStrategy,
+  );
+  // 恢复之前的选择审批人
+  if (startUserSelectTasks.value?.length > 0) {
+    for (const node of startUserSelectTasks.value) {
+      startUserSelectAssignees.value[node.id] =
+        tempStartUserSelectAssignees.value[node.id] &&
+        tempStartUserSelectAssignees.value[node.id].length > 0
+          ? tempStartUserSelectAssignees.value[node.id]
+          : [];
     }
-  } finally {
-    //
   }
 }
+
 /** 审批相关：选择发起人 */
 function selectUserConfirm(id: string, userList: any[]) {
   startUserSelectAssignees.value[id] = userList?.map((item: any) => item.id);
@@ -189,7 +182,6 @@ watch(
   },
 );
 
-// ============================== 生命周期 ==============================
 onMounted(async () => {
   const processDefinitionDetail: any = await getProcessDefinition(
     undefined,
