@@ -12,6 +12,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
+// TODO @jason：某个模型下的排序功能，无法使用。操作流程：模型分类 A 的右侧【排序】，然后，无法拖拽使用；
 import { useDebounceFn } from '@vueuse/core';
 import { useSortable } from '@vueuse/integrations/useSortable';
 import {
@@ -36,11 +37,9 @@ import {
 } from '#/api/bpm/model';
 import { $t } from '#/locales';
 
-// 导入重命名表单
 import CategoryRenameForm from '../../category/modules/rename-form.vue';
-// 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';
-import { useGridColumns } from './data';
+import { useGridColumns } from '../data';
 
 const props = defineProps<{
   categoryInfo: ModelCategoryInfo;
@@ -50,46 +49,26 @@ const props = defineProps<{
 
 const emit = defineEmits(['success']);
 
-/** 重命名分类对话框 */
 const [CategoryRenameModal, categoryRenameModalApi] = useVbenModal({
   connectedComponent: CategoryRenameForm,
   destroyOnClose: true,
 });
 
-/** 流程表单详情对话框 */
 const [FormCreateDetailModal, formCreateDetailModalApi] = useVbenModal({
   connectedComponent: FormCreateDetail,
   destroyOnClose: true,
 });
 
 const router = useRouter();
-// 获取当前登录用户Id
-const userStore = useUserStore();
-const userId = userStore.userInfo?.id;
+const userId = useUserStore().userInfo?.id;
+
 const isModelSorting = ref(false);
 const originalData = ref<BpmModelApi.Model[]>([]);
 const modelList = ref<BpmModelApi.Model[]>([]);
-// 根据是否为第一个分类, 来设置初始展开状态
-const isExpand = ref(props.isFirst);
+// TODO @jason：可以全部展开么？
+const isExpand = ref(props.isFirst); // 根据是否为第一个分类, 来设置初始展开状态
 
-const [Grid, gridApi] = useVbenVxeGrid({
-  gridOptions: {
-    columns: useGridColumns(),
-    pagerConfig: {
-      enabled: false,
-    },
-    data: modelList.value,
-    rowConfig: {
-      keyField: 'id',
-    },
-    toolbarConfig: {
-      enabled: false, // 完全禁用工具栏
-    },
-  } as VxeTableGridOptions,
-});
-
-// 排序引用，以便后续启用或禁用排序
-const sortableInstance = ref<any>(null);
+const sortableInstance = ref<any>(null); // 排序引用，以便后续启用或禁用排序
 /** 解决 v-model 问题，使用计算属性 */
 const expandKeys = computed(() => (isExpand.value ? ['1'] : []));
 
@@ -103,6 +82,24 @@ const hasPermiDelete = computed(() => {
 });
 const hasPermiDeploy = computed(() => {
   return hasAccessByCodes(['bpm:model:deploy']);
+});
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(),
+    data: modelList.value,
+    keepSource: true,
+    pagerConfig: {
+      enabled: false,
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      enabled: false,
+    },
+  } as VxeTableGridOptions,
 });
 
 /** 处理模型的排序 */
@@ -126,7 +123,6 @@ function handleModelSort() {
     // 已存在实例，则启用排序功能
     sortableInstance.value.option('disabled', false);
   } else {
-    const sortableClass = `.category-${props.categoryInfo.id} .vxe-table .vxe-table--body-wrapper:not(.fixed-right--wrapper) .vxe-table--body tbody`;
     // 确保使用最新的数据
     modelList.value = cloneDeep(props.categoryInfo.modelList);
     // 更新表格数据
@@ -134,26 +130,31 @@ function handleModelSort() {
       data: modelList.value,
     });
 
-    sortableInstance.value = useSortable(sortableClass, modelList.value, {
-      draggable: '.vxe-body--row',
-      animation: 150,
-      handle: '.drag-handle',
-      disabled: false,
-      onEnd: ({ newDraggableIndex, oldDraggableIndex }) => {
-        if (oldDraggableIndex !== newDraggableIndex) {
-          modelList.value.splice(
-            newDraggableIndex ?? 0,
-            0,
-            modelList.value.splice(oldDraggableIndex ?? 0, 1)[0]!,
-          );
-        }
+    sortableInstance.value = useSortable(
+      `.category-${props.categoryInfo.id} .vxe-table .vxe-table--body-wrapper:not(.fixed-right--wrapper) .vxe-table--body tbody`,
+      modelList.value,
+      {
+        draggable: '.vxe-body--row',
+        animation: 150,
+        handle: '.drag-handle',
+        disabled: false,
+        onEnd: ({ newDraggableIndex, oldDraggableIndex }) => {
+          if (oldDraggableIndex !== newDraggableIndex) {
+            modelList.value.splice(
+              newDraggableIndex ?? 0,
+              0,
+              modelList.value.splice(oldDraggableIndex ?? 0, 1)[0]!,
+            );
+          }
+        },
       },
-    });
+    );
   }
 }
 
 /** 处理模型的排序提交 */
 async function handleModelSortSubmit() {
+  // TODO @jason：loading 加一下，体验好点。
   try {
     // 确保数据已经正确同步
     if (!modelList.value || modelList.value.length === 0) {
@@ -206,6 +207,7 @@ async function handleDeleteCategory() {
     return;
   }
 
+  // TODO @jason：改成 await；然后增加一个 loading；
   confirm({
     content: `确定要删除[${props.categoryInfo.name}]吗？`,
   }).then(async () => {
@@ -227,7 +229,7 @@ function handleFormDetail(row: any) {
     };
     formCreateDetailModalApi.setData(data).open();
   } else {
-    // TODO 待实现
+    // TODO 待实现 jason：是不是已经 ok 啦？
     console.warn('业务表单待实现', row);
   }
 }
@@ -237,6 +239,7 @@ function isManagerUser(row: any) {
   return row.managerUserIds && row.managerUserIds.includes(userId);
 }
 
+/** 模型操作 */
 async function modelOperation(type: string, id: number) {
   await router.push({
     name: 'BpmModelUpdate',
@@ -246,6 +249,7 @@ async function modelOperation(type: string, id: number) {
 
 /** 发布流程 */
 async function handleDeploy(row: any) {
+  // TODO @jason：改成 await；然后增加一个 loading；
   confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
@@ -300,6 +304,7 @@ function handleChangeState(row: any) {
   const state = row.processDefinition.suspensionState;
   const newState = state === 1 ? 2 : 1;
   const statusState = state === 1 ? '停用' : '启用';
+  // TODO @jason：改成 await；然后增加一个 loading；
   confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
@@ -318,6 +323,7 @@ function handleChangeState(row: any) {
 
 /** 清理流程操作 */
 function handleClean(row: any) {
+  // TODO @jason：改成 await；然后增加一个 loading；
   confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
@@ -336,6 +342,7 @@ function handleClean(row: any) {
 
 /** 删除流程操作 */
 function handleDelete(row: any) {
+  // TODO @jason：改成 await；然后增加一个 loading；
   confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
@@ -401,10 +408,10 @@ watchEffect(() => {
   }
 });
 
-// 处理重命名成功
-const handleRenameSuccess = () => {
+/** 处理重命名成功 */
+function handleRenameSuccess() {
   emit('success');
-};
+}
 </script>
 
 <template>
@@ -686,6 +693,7 @@ const handleRenameSuccess = () => {
 </template>
 
 <style lang="scss" scoped>
+// @jason：看看能不能通过 tailwindcss 简化下
 .category-draggable-model {
   // ant-collapse-header 自定义样式
   :deep(.ant-collapse-header) {
