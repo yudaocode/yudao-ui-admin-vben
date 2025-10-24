@@ -1,5 +1,7 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import type { BpmModelApi } from '#/api/bpm/model';
+
 import { requestClient } from '#/api/request';
 
 export namespace BpmProcessDefinitionApi {
@@ -16,10 +18,14 @@ export namespace BpmProcessDefinitionApi {
     modelType: number;
     modelId: string;
     formType?: number;
+    formId?: number;
+    formName?: string;
+    formCustomCreatePath?: string;
     bpmnXml?: string;
     simpleModel?: string;
     formFields?: string[];
     icon?: string;
+    startUsers?: BpmModelApi.UserInfo[];
   }
 }
 

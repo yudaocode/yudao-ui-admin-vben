@@ -4,7 +4,7 @@ import type { BpmProcessDefinitionApi } from '#/api/bpm/definition';
 import { DICT_TYPE } from '@vben/constants';
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions<BpmProcessDefinitionApi.ProcessDefinition>['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
