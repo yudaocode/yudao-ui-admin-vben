@@ -82,7 +82,6 @@ async function submitForm() {
   }
   // 流程表单校验
   await fApi.value.validate();
-
   // 校验指定审批人
   if (startUserSelectTasks.value?.length > 0) {
     for (const userTask of startUserSelectTasks.value) {
