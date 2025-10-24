@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
 // TODO @jason：tailwind？
 .process-panel__container {
   position: absolute;
-  top: 172px;
+  top: 110px;
   right: 70px;
 }
 </style>
