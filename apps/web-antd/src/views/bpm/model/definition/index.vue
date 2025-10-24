@@ -12,7 +12,6 @@ import { Button, Tooltip } from 'ant-design-vue';
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';
 
-// 导入 FormCreate 表单详情
 import FormCreateDetail from '../../form/modules/detail.vue';
 import { useGridColumns } from './data';
 

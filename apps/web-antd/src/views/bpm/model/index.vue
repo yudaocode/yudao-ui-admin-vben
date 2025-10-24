@@ -17,11 +17,9 @@ import {
 import { getModelList } from '#/api/bpm/model';
 import { router } from '#/router';
 
-// 流程分类对话框
 import CategoryForm from '../category/modules/form.vue';
 import CategoryDraggableModel from './modules/category-draggable-model.vue';
 
-// 新建流程分类对话框
 const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
   connectedComponent: CategoryForm,
   destroyOnClose: true,

@@ -8,9 +8,7 @@ import { BpmModelType } from '@vben/constants';
 import BpmModelEditor from './bpm-model-editor.vue';
 import SimpleModelDesign from './simple-model-design.vue';
 
-// 创建本地数据副本
-const modelData = defineModel<any>();
-
+const modelData = defineModel<any>(); // 创建本地数据副本
 const processData = inject('processData') as Ref;
 
 const simpleDesign = ref();
@@ -30,6 +28,7 @@ async function validate() {
   }
   return true;
 }
+
 /** 处理设计器保存成功 */
 async function handleDesignSuccess(data?: any) {
   if (data) {
@@ -39,7 +38,7 @@ async function handleDesignSuccess(data?: any) {
       bpmnXml: modelData.value.type === BpmModelType.BPMN ? data : null,
       simpleModel: modelData.value.type === BpmModelType.BPMN ? null : data,
     };
-    // 使用emit更新父组件的数据
+    // 使用 emit 更新父组件的数据
     await nextTick();
     // 更新表单的模型数据部分
     modelData.value = newModelData;
@@ -50,6 +49,7 @@ async function handleDesignSuccess(data?: any) {
 const showDesigner = computed(() => {
   return Boolean(modelData.value?.key && modelData.value?.name);
 });
+
 defineExpose({ validate });
 </script>
 <template>

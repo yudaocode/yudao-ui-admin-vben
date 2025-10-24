@@ -179,8 +179,7 @@ const formFieldOptions4Summary = computed(() => {
   });
 });
 const unParsedFormFields = ref<string[]>([]); // 未解析的表单字段
-// 暴露给子组件 HttpRequestSetting 使用
-provide('formFields', unParsedFormFields);
+provide('formFields', unParsedFormFields); // 暴露给子组件 HttpRequestSetting 使用
 
 /** 兼容以前未配置更多设置的流程 */
 function initData() {
@@ -246,8 +245,8 @@ watch(
   },
   { immediate: true },
 );
-// 表单引用
-const formRef = ref();
+const formRef = ref(); // 表单引用
+
 /** 表单校验 */
 async function validate() {
   await formRef.value?.validate();

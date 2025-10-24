@@ -33,10 +33,7 @@ const props = defineProps({
 
 const formRef = ref();
 
-// 创建本地数据副本
-const modelData = defineModel<any>();
-
-// 表单预览数据
+const modelData = defineModel<any>(); // 创建本地数据副本
 const formPreview = ref({
   formData: {} as any,
   rule: [],
@@ -45,9 +42,20 @@ const formPreview = ref({
     resetBtn: false,
     formData: {},
   },
-});
+}); // 表单预览数据
 
-/** 监听表单ID变化，加载表单数据 */
+const rules: Record<string, Rule[]> = {
+  formType: [{ required: true, message: '表单类型不能为空', trigger: 'blur' }],
+  formId: [{ required: true, message: '流程表单不能为空', trigger: 'blur' }],
+  formCustomCreatePath: [
+    { required: true, message: '表单提交路由不能为空', trigger: 'blur' },
+  ],
+  formCustomViewPath: [
+    { required: true, message: '表单查看地址不能为空', trigger: 'blur' },
+  ],
+};
+
+/** 监听表单 ID 变化，加载表单数据 */
 watch(
   () => modelData.value.formId,
   async (newFormId) => {
@@ -64,17 +72,6 @@ watch(
   },
   { immediate: true },
 );
-
-const rules: Record<string, Rule[]> = {
-  formType: [{ required: true, message: '表单类型不能为空', trigger: 'blur' }],
-  formId: [{ required: true, message: '流程表单不能为空', trigger: 'blur' }],
-  formCustomCreatePath: [
-    { required: true, message: '表单提交路由不能为空', trigger: 'blur' },
-  ],
-  formCustomViewPath: [
-    { required: true, message: '表单查看地址不能为空', trigger: 'blur' },
-  ],
-};
 
 /** 表单校验 */
 async function validate() {
