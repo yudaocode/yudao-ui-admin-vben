@@ -14,11 +14,11 @@ import { getForm } from '#/api/bpm/form';
 import {
   MyProcessDesigner,
   MyProcessPenal,
-} from '#/components/bpmn-process-designer/package';
+} from '#/views/bpm/components/bpmn-process-designer/package';
 // 自定义元素选中时的弹出菜单（修改 默认任务 为 用户任务）
-import CustomContentPadProvider from '#/components/bpmn-process-designer/package/designer/plugins/content-pad';
+import CustomContentPadProvider from '#/views/bpm/components/bpmn-process-designer/package/designer/plugins/content-pad';
 // 自定义左侧菜单（修改 默认任务 为 用户任务）
-import CustomPaletteProvider from '#/components/bpmn-process-designer/package/designer/plugins/palette';
+import CustomPaletteProvider from '#/views/bpm/components/bpmn-process-designer/package/designer/plugins/palette';
 
 defineOptions({ name: 'BpmModelEditor' });
 

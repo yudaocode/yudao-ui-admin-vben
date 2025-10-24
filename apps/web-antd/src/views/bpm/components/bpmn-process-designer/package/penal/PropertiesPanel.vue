@@ -6,8 +6,8 @@ import { cloneDeep } from '@vben/utils';
 
 import { Collapse } from 'ant-design-vue';
 
-import ElementCustomConfig from '#/components/bpmn-process-designer/package/penal/custom-config/ElementCustomConfig.vue';
-import ElementForm from '#/components/bpmn-process-designer/package/penal/form/ElementForm.vue';
+import ElementCustomConfig from '#/views/bpm/components/bpmn-process-designer/package/penal/custom-config/ElementCustomConfig.vue';
+import ElementForm from '#/views/bpm/components/bpmn-process-designer/package/penal/form/ElementForm.vue';
 
 import ElementBaseInfo from './base/ElementBaseInfo.vue';
 import FlowCondition from './flow-condition/FlowCondition.vue';

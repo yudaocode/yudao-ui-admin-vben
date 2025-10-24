@@ -18,7 +18,7 @@ import {
   TableColumn,
 } from 'ant-design-vue';
 
-import ProcessListenerDialog from '#/components/bpmn-process-designer/package/penal/listeners/ProcessListenerDialog.vue';
+import ProcessListenerDialog from '#/views/bpm/components/bpmn-process-designer/package/penal/listeners/ProcessListenerDialog.vue';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
 import {
