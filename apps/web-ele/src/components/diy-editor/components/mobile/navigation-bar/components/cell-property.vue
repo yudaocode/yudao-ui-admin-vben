@@ -15,7 +15,7 @@ import {
 } from 'element-plus';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
-import AppLinkInput from '#/components/app-link-input/index.vue';
+import { AppLinkInput } from '#/views/mall/promotion/components';
 import ColorInput from '#/components/color-input/index.vue';
 import MagicCubeEditor from '#/components/magic-cube-editor/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';

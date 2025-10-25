@@ -16,7 +16,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import AppLinkInput from '#/components/app-link-input/index.vue';
+import { AppLinkInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import InputWithColor from '#/components/input-with-color/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
