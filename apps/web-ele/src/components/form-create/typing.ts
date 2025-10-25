@@ -1,5 +1,3 @@
-import type { Rule } from '@form-create/element-ui'; // 左侧拖拽按钮
-
 /** 数据字典 Select 选择器组件 Props 类型 */
 export interface DictSelectProps {
   dictType: string; // 字典类型
@@ -20,25 +18,6 @@ export interface Menu {
   title: string;
   name: string;
   list: MenuItem[];
-}
-
-export type MenuList = Array<Menu>;
-
-// TODO @dhb52：MenuList、Menu、MenuItem、DragRule 这几个，是不是没用到呀？
-// 拖拽组件的规则
-export interface DragRule {
-  icon: string;
-  name: string;
-  label: string;
-  children?: string;
-  inside?: true;
-  drag?: string | true;
-  dragBtn?: false;
-  mask?: false;
-
-  rule(): Rule;
-
-  props(v: any, v1: any): Rule[];
 }
 
 /** 通用 API 下拉组件 Props 类型 */
