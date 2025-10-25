@@ -40,7 +40,7 @@ function handleEdit(row: MpAccountApi.Account) {
 
 /** 删除账号 */
 async function handleDelete(row: MpAccountApi.Account) {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
@@ -48,13 +48,13 @@ async function handleDelete(row: MpAccountApi.Account) {
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 
 /** 生成二维码 */
 async function handleGenerateQrCode(row: MpAccountApi.Account) {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: '正在生成二维码中...',
   });
   try {
@@ -62,20 +62,20 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     handleRefresh();
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 
 /** 清空 API 配额 */
 async function handleCleanQuota(row: MpAccountApi.Account) {
-  const hideLoading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.processing', ['清空 API 配额']),
   });
   try {
     await clearAccountQuota(row.id as number);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
   } finally {
-    hideLoading.close();
+    loadingInstance.close();
   }
 }
 
