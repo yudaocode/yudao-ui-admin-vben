@@ -7,8 +7,7 @@ import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
 
 import * as DiyPageApi from '#/api/mall/promotion/diy/page';
-import DiyEditor from '#/components/diy-editor/index.vue';
-import { PAGE_LIBS } from '#/components/diy-editor/util';
+import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
 /** 装修页面表单 */
 defineOptions({ name: 'DiyPageDecorate' });
