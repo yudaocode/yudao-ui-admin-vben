@@ -1,6 +1,6 @@
 import type { MpStatisticsApi } from '#/api/mp/statistics';
 
-// 用户增减数据图表配置项
+/** 用户增减数据图表配置项 */
 export function userSummaryOption(
   data: MpStatisticsApi.UserSummary[],
   dates: string[],
@@ -39,7 +39,7 @@ export function userSummaryOption(
   };
 }
 
-// 累计用户数据图表配置项
+/** 累计用户数据图表配置项 */
 export function userCumulateOption(
   data: MpStatisticsApi.UserCumulate[],
   dates: string[],
@@ -69,7 +69,7 @@ export function userCumulateOption(
   };
 }
 
-// 消息发送概况数据图表配置项
+/** 消息发送概况数据图表配置项 */
 export function upstreamMessageOption(
   data: MpStatisticsApi.UpstreamMessage[],
   dates: string[],
@@ -109,7 +109,7 @@ export function upstreamMessageOption(
   };
 }
 
-// 接口分析况数据图表配置项
+/** 接口分析况数据图表配置项 */
 export function interfaceSummaryOption(
   data: MpStatisticsApi.InterfaceSummary[],
   dates: string[],

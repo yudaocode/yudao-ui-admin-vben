@@ -5,6 +5,7 @@ import { beginOfDay, endOfDay, formatDateTime } from '@vben/utils';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
+/** 关联数据 */
 let accountList: MpAccountApi.AccountSimple[] = [];
 getSimpleAccountList().then((data) => (accountList = data));
 
@@ -14,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
         options: accountList.map((item) => ({
           label: item.name,

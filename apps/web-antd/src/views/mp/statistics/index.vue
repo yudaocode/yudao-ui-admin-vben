@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
@@ -16,7 +16,6 @@ import {
   getUserCumulate,
   getUserSummary,
 } from '#/api/mp/statistics';
-import { $t } from '#/locales';
 
 import {
   interfaceSummaryOption,
@@ -40,24 +39,6 @@ const { renderEcharts: renderUpstreamMessageEcharts } =
 const interfaceSummaryRef = ref<EchartsUIType>();
 const { renderEcharts: renderInterfaceSummaryEcharts } =
   useEcharts(interfaceSummaryRef);
-
-const [QueryForm] = useVbenForm({
-  commonConfig: {
-    componentProps: {
-      class: 'w-full',
-    },
-  },
-  handleSubmit: onSubmit,
-  layout: 'horizontal',
-  schema: useGridFormSchema(),
-  submitButtonOptions: {
-    content: $t('common.query'),
-  },
-  wrapperClass: 'grid-cols-1 md:grid-cols-2',
-});
-function onSubmit(values: Record<string, any>) {
-  getSummary(values);
-}
 
 /** 加载数据 */
 async function getSummary(values: Record<string, any>) {
@@ -89,19 +70,19 @@ async function getSummary(values: Record<string, any>) {
     accountId,
     date: dateRange,
   });
-  renderUserSummaryEcharts(userSummaryOption(userSummaryData, dates));
+  await renderUserSummaryEcharts(userSummaryOption(userSummaryData, dates));
   // 累计用户数据
   const userCumulateData = await getUserCumulate({
     accountId,
     date: dateRange,
   });
-  renderUserCumulateEcharts(userCumulateOption(userCumulateData, dates));
+  await renderUserCumulateEcharts(userCumulateOption(userCumulateData, dates));
   // 消息发送概况数据
   const upstreamMessageData = await getUpstreamMessage({
     accountId,
     date: dateRange,
   });
-  renderUpstreamMessageEcharts(
+  await renderUpstreamMessageEcharts(
     upstreamMessageOption(upstreamMessageData, dates),
   );
   // 接口分析数据
@@ -109,16 +90,34 @@ async function getSummary(values: Record<string, any>) {
     accountId,
     date: dateRange,
   });
-  renderInterfaceSummaryEcharts(
+  await renderInterfaceSummaryEcharts(
     interfaceSummaryOption(interfaceSummaryData, dates),
   );
 }
+
+const [QueryForm, queryFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+  },
+  layout: 'horizontal',
+  schema: useGridFormSchema(),
+  wrapperClass: 'grid-cols-1 md:grid-cols-2',
+  handleSubmit: getSummary,
+});
+
+/** 初始化 */
+onMounted(() => {
+  queryFormApi.submitForm();
+});
 </script>
 
 <template>
   <Page auto-content-height>
     <ContentWrap class="h-full w-full">
       <QueryForm />
+
       <div class="flex h-1/3 w-full gap-4">
         <Card class="h-full w-1/2" title="用户增减数据">
           <EchartsUI ref="userSummaryRef" />
