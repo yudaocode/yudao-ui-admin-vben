@@ -13,7 +13,7 @@ import {
 
 import { AppLinkInput } from '#/views/mall/promotion/components';
 import Draggable from '#/components/draggable/index.vue';
-import InputWithColor from '#/components/input-with-color/index.vue';
+import { InputWithColor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 
 // 悬浮按钮属性面板

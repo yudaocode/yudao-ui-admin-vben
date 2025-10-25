@@ -1,13 +1,10 @@
 <script lang="ts" setup>
 import { PREDEFINE_COLORS } from '@vben/constants';
 
-// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import { useVModels } from '@vueuse/core';
 import { ElColorPicker, ElInput } from 'element-plus';
 
-/**
- * 带颜色选择器输入框
- */
+/** 带颜色选择器输入框 */
 defineOptions({ name: 'InputWithColor' });
 
 const props = defineProps({
@@ -20,7 +17,9 @@ const props = defineProps({
     default: '',
   },
 });
+
 const emit = defineEmits(['update:modelValue', 'update:color']);
+
 const { modelValue, color } = useVModels(props, emit);
 </script>
 

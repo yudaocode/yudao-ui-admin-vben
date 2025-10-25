@@ -16,7 +16,7 @@ import {
 } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import ColorInput from '#/components/input-with-color/index.vue';
+import { InputWithColor as ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 // TODO: 添加组件
 // import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';

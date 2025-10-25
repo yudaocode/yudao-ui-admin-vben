@@ -7,7 +7,7 @@ import { ElForm, ElFormItem, ElText } from 'element-plus';
 import { AppLinkInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import Draggable from '#/components/draggable/index.vue';
-import InputWithColor from '#/components/input-with-color/index.vue';
+import { InputWithColor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 
 import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';

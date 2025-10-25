@@ -13,7 +13,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import ColorInput from '#/components/input-with-color/index.vue';
+import { InputWithColor as ColorInput } from '#/views/mall/promotion/components';
 
 // 导航栏属性面板
 defineOptions({ name: 'DividerProperty' });
