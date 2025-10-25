@@ -51,7 +51,6 @@ function handleDecorate(row: MallDiyTemplateApi.DiyTemplate) {
 /** 使用模板 */
 async function handleUse(row: MallDiyTemplateApi.DiyTemplate) {
   await confirm(`是否使用模板"${row.name}"?`);
-  
   const loadingInstance = ElLoading.service({
     text: `正在使用模板"${row.name}"...`,
   });

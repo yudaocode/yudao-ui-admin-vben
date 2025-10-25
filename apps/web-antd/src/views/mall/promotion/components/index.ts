@@ -1,3 +1,5 @@
+export { default as DiyEditor } from './diy-editor/index.vue';
+export { type DiyComponentLibrary, PAGE_LIBS } from './diy-editor/util';
 export { default as SpuAndSkuList } from './spu-and-sku-list.vue';
 export { default as SpuSkuSelect } from './spu-sku-select.vue';
 
