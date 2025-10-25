@@ -91,10 +91,12 @@ const components = [
   FileUpload,
 ];
 
+// 参考 https://www.form-create.com/v3/ant-design-vue/auto-import 文档
 export function setupFormCreate(app: App) {
   components.forEach((component) => {
     app.component(component.name as string, component);
   });
+  // TODO @xingyu：这里为啥 app.component('AMessage', message); 看官方是没有的；
   app.component('AMessage', message);
   formCreate.use(install);
   app.use(formCreate);

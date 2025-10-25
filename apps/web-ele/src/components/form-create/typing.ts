@@ -3,7 +3,7 @@ import type { Rule } from '@form-create/element-ui'; // 左侧拖拽按钮
 /** 数据字典 Select 选择器组件 Props 类型 */
 export interface DictSelectProps {
   dictType: string; // 字典类型
-  valueType?: 'bool' | 'int' | 'str'; // 字典值类型 TODO @芋艿：'boolean' | 'number' | 'string'；需要和 vue3 一起统一！
+  valueType?: 'bool' | 'int' | 'str'; // 字典值类型
   selectType?: 'checkbox' | 'radio' | 'select'; // 选择器类型，下拉框 select、多选框 checkbox、单选框 radio
   formCreateInject?: any;
 }
