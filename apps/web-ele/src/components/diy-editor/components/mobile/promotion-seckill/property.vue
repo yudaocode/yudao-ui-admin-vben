@@ -22,7 +22,7 @@ import {
 } from 'element-plus';
 
 import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
-import ColorInput from '#/components/color-input/index.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 import SeckillShowcase from '#/views/mall/promotion/seckill/components/seckill-showcase.vue';
 

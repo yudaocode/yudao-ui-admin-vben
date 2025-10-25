@@ -15,8 +15,7 @@ import {
   ElText,
 } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
-import ColorInput from '#/components/color-input/index.vue';
+import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
 import Draggable from '#/components/draggable/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 

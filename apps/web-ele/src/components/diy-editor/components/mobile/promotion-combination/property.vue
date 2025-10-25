@@ -20,7 +20,7 @@ import {
 } from 'element-plus';
 
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
-import ColorInput from '#/components/color-input/index.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
 

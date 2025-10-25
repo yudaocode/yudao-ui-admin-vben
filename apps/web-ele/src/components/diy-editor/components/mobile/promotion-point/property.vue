@@ -16,7 +16,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import ColorInput from '#/components/color-input/index.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 import PointShowcase from '#/views/mall/promotion/point/components/point-showcase.vue';
 
 // 秒杀属性面板

@@ -24,7 +24,7 @@ import {
 } from 'element-plus';
 
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
-import ColorInput from '#/components/color-input/index.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 // TODO: 添加组件

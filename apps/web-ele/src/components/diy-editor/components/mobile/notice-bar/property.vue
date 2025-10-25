@@ -4,8 +4,7 @@ import type { NoticeBarProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElCard, ElForm, ElFormItem, ElInput } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
-import ColorInput from '#/components/color-input/index.vue';
+import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import Draggable from '#/components/draggable/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
