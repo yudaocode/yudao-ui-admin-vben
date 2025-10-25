@@ -5,9 +5,12 @@ import { useVModel } from '@vueuse/core';
 import { ElCard, ElForm, ElFormItem, ElInput } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
+import {
+  AppLinkInput,
+  ColorInput,
+  Draggable,
+} from '#/views/mall/promotion/components';
 
 // 通知栏属性面板
 defineOptions({ name: 'NoticeBarProperty' });

@@ -11,10 +11,10 @@ import {
   ElSwitch,
 } from 'element-plus';
 
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
   AppLinkInput,
+  Draggable,
   InputWithColor,
 } from '#/views/mall/promotion/components';
 

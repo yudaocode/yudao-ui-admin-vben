@@ -10,9 +10,8 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput } from '#/views/mall/promotion/components';
+import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
 // 弹窗广告属性面板
 defineOptions({ name: 'PopoverProperty' });

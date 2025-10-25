@@ -7,9 +7,11 @@ import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElSlider, ElText } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import { MagicCubeEditor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput } from '#/views/mall/promotion/components';
+import {
+  AppLinkInput,
+  MagicCubeEditor,
+} from '#/views/mall/promotion/components';
 
 /** 广告魔方属性面板 */
 defineOptions({ name: 'MagicCubeProperty' });

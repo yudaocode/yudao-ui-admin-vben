@@ -15,9 +15,12 @@ import {
   ElText,
 } from 'element-plus';
 
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
+import {
+  AppLinkInput,
+  ColorInput,
+  Draggable,
+} from '#/views/mall/promotion/components';
 
 import { component, THEME_LIST } from './config';
 // 底部导航栏

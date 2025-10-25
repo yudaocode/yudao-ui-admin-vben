@@ -17,10 +17,9 @@ import {
 } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput } from '#/views/mall/promotion/components';
+import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
 // 轮播图属性面板
 defineOptions({ name: 'CarouselProperty' });

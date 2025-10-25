@@ -12,9 +12,8 @@ import {
 } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput } from '#/views/mall/promotion/components';
+import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
 import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
 

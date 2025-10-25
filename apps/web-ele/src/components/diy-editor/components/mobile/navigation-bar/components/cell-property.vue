@@ -15,9 +15,12 @@ import {
 } from 'element-plus';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
-import { MagicCubeEditor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
+import {
+  AppLinkInput,
+  ColorInput,
+  MagicCubeEditor,
+} from '#/views/mall/promotion/components';
 
 // 导航栏属性面板
 defineOptions({ name: 'NavigationBarCellProperty' });
