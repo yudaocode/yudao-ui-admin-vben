@@ -1,3 +1,7 @@
+import type { NavigationBarProperty } from './components/mobile/navigation-bar/config';
+import type { PageConfigProperty } from './components/mobile/page-config/config';
+import type { TabBarProperty } from './components/mobile/tab-bar/config';
+
 // 页面装修组件
 export interface DiyComponent<T> {
   // 用于区分同一种组件的不同实例
@@ -62,11 +66,11 @@ export interface ComponentStyle {
 // 页面配置
 export interface PageConfig {
   // 页面属性
-  page: any;
+  page: PageConfigProperty;
   // 顶部导航栏属性
-  navigationBar: any;
+  navigationBar: NavigationBarProperty;
   // 底部导航菜单属性
-  tabBar?: any;
+  tabBar?: TabBarProperty;
   // 页面组件列表
   components: PageComponent[];
 }

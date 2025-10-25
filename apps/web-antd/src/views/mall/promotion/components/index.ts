@@ -1,7 +1,9 @@
+export { default as AppLinkInput } from './app-link-input/index.vue';
+export { default as ColorInput } from './color-input/index.vue';
 export { default as DiyEditor } from './diy-editor/index.vue';
 export { type DiyComponentLibrary, PAGE_LIBS } from './diy-editor/util';
-export { default as SpuAndSkuList } from './spu-and-sku-list.vue';
-export { default as SpuSkuSelect } from './spu-sku-select.vue';
+export { default as Draggable } from './draggable/index.vue';
+export { default as InputWithColor } from './input-with-color/index.vue';
 
-export type * from './types';
-// TODO @puhui999：这个要不要也放到 product/spu/components 下？相当于各种商品的 select 能力，统一由 spu 提供组件化能力！
+export { default as MagicCubeEditor } from './magic-cube-editor/index.vue';
+export { default as VerticalButtonGroup } from './vertical-button-group/index.vue';
