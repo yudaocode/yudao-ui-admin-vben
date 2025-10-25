@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { ElButton, ElTooltip } from 'element-plus';
 
 import { components } from '#/components/diy-editor/components/mobile';
-import VerticalButtonGroup from '#/components/vertical-button-group/index.vue';
+import { VerticalButtonGroup } from '#/views/mall/promotion/components';
 
 /**
  * 组件容器：目前在中间部分
