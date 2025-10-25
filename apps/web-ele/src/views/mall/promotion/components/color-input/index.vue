@@ -1,10 +1,10 @@
 <script setup lang="ts">
-// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
+// TODO @AI：改成 El 风格，而不是iel- 风格；
 import { computed } from 'vue';
 
 import { PREDEFINE_COLORS } from '@vben/constants';
 
-// 颜色输入框
+/** 颜色输入框 */
 defineOptions({ name: 'ColorInput' });
 
 const props = defineProps({
@@ -13,7 +13,9 @@ const props = defineProps({
     default: '',
   },
 });
+
 const emit = defineEmits(['update:modelValue']);
+
 const color = computed({
   get: () => {
     return props.modelValue;

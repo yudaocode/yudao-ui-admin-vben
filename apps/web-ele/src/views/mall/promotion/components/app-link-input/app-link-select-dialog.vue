@@ -139,7 +139,7 @@ function isSameLink(link1: string, link2: string) {
 
 /** 处理详情选择 */
 function handleProductCategorySelected(id: number) {
-  // TODO @AI：这里有点问题；
+  // TODO @AI：这里有点问题；activeAppLink 地址；
   const url = new URL(activeAppLink.value.path, 'http://127.0.0.1');
   // 修改 id 参数
   url.searchParams.set('id', `${id}`);
