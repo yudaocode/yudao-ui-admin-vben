@@ -45,7 +45,7 @@ async function handleDelete(row: MpAccountApi.Account) {
     duration: 0,
   });
   try {
-    await deleteAccount(row.id as number);
+    await deleteAccount(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -60,7 +60,7 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
     duration: 0,
   });
   try {
-    await generateAccountQrCode(row.id as number);
+    await generateAccountQrCode(row.id!);
     message.success($t('ui.actionMessage.operationSuccess'));
     handleRefresh();
   } finally {
@@ -75,7 +75,7 @@ async function handleCleanQuota(row: MpAccountApi.Account) {
     duration: 0,
   });
   try {
-    await clearAccountQuota(row.id as number);
+    await clearAccountQuota(row.id!);
     message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     hideLoading();

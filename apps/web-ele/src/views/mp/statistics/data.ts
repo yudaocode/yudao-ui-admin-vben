@@ -22,7 +22,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
           value: item.id,
         })),
         placeholder: '请选择公众号',
-        clearable: true,
       },
       defaultValue: accountList[0]?.id,
     },

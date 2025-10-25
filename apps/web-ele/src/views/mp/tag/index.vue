@@ -4,7 +4,7 @@ import type { MpTagApi } from '#/api/mp/tag';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTag, getTagPage, syncTag } from '#/api/mp/tag';
@@ -28,7 +28,7 @@ async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
   formModalApi.setData({ accountId }).open();
@@ -39,7 +39,7 @@ async function handleEdit(row: MpTagApi.Tag) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
   formModalApi.setData({ row, accountId }).open();
@@ -47,16 +47,15 @@ async function handleEdit(row: MpTagApi.Tag) {
 
 /** 删除标签 */
 async function handleDelete(row: MpTagApi.Tag) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteTag(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -65,21 +64,20 @@ async function handleSync() {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
 
   await confirm('是否确认同步标签？');
-  const hideLoading = message.loading({
-    content: '正在同步标签...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在同步标签...',
   });
   try {
     await syncTag(accountId);
-    message.success('同步标签成功');
+    ElMessage.success('同步标签成功');
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -143,15 +141,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['mp:tag:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['mp:tag:delete'],
               popConfirm: {

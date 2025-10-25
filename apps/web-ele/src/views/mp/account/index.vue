@@ -44,7 +44,7 @@ async function handleDelete(row: MpAccountApi.Account) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteAccount(row.id as number);
+    await deleteAccount(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -58,7 +58,7 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
     text: '正在生成二维码中...',
   });
   try {
-    await generateAccountQrCode(row.id as number);
+    await generateAccountQrCode(row.id!);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     handleRefresh();
   } finally {
@@ -72,7 +72,7 @@ async function handleCleanQuota(row: MpAccountApi.Account) {
     text: $t('ui.actionMessage.processing', ['清空 API 配额']),
   });
   try {
-    await clearAccountQuota(row.id as number);
+    await clearAccountQuota(row.id!);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     loadingInstance.close();
