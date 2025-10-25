@@ -10,7 +10,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import Draggable from '#/components/draggable/index.vue';
+import { Draggable } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput } from '#/views/mall/promotion/components';
 

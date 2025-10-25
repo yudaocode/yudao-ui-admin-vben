@@ -19,7 +19,7 @@ import {
 } from 'element-plus';
 
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import Draggable from '#/components/draggable/index.vue';
+import { Draggable } from '#/views/mall/promotion/components';
 
 /** 搜索框属性面板 */
 defineOptions({ name: 'SearchProperty' });
