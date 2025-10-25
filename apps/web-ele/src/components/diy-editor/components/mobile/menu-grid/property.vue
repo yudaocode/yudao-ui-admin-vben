@@ -11,10 +11,10 @@ import {
   ElSwitch,
 } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import Draggable from '#/components/draggable/index.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { AppLinkInput } from '#/views/mall/promotion/components';
 
 import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
 

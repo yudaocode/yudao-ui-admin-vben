@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { ControlDot } from './controller';
 
-import type { AppLink } from '#/views/mall/promotion/components/app-link-input/data';
 import type { HotZoneItemProperty } from '#/components/diy-editor/components/mobile/HotZone/config';
+import type { AppLink } from '#/views/mall/promotion/components/app-link-input/data';
 
 import { ref } from 'vue';
 

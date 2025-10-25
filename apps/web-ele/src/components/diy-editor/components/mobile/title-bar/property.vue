@@ -16,10 +16,12 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
-import { InputWithColor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import {
+  AppLinkInput,
+  InputWithColor,
+} from '#/views/mall/promotion/components';
 
 // 导航栏属性面板
 defineOptions({ name: 'TitleBarProperty' });

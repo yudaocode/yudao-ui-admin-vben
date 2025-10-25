@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
 import type { Point, Rect } from './util';
 
 import { ref, watch } from 'vue';
@@ -8,6 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { createRect, isContains, isOverlap } from './util';
 
+// TODO @AI: 改成标准注释
 // 魔方编辑器
 // 有两部分组成：
 // 1. 魔方矩阵：位于底层，由方块组件的二维表格，用于创建热区
@@ -19,42 +19,38 @@ import { createRect, isContains, isOverlap } from './util';
 // 2. 热区：位于顶层，采用绝对定位，覆盖在魔方矩阵上面。
 defineOptions({ name: 'MagicCubeEditor' });
 
-// 定义属性
+/** 定义属性 */
 const props = defineProps({
-  // 热区列表
   modelValue: {
     type: Array as () => Rect[],
     default: () => [],
-  },
-  // 行数，默认 4 行
+  }, // 热区列表
   rows: {
     type: Number,
     default: 4,
-  },
-  // 列数，默认 4 列
+  }, // 行数，默认 4 行
+
   cols: {
     type: Number,
     default: 4,
-  },
-  // 方块大小，单位px，默认75px
+  }, // 列数，默认 4 列
+
   cubeSize: {
     type: Number,
     default: 75,
-  },
+  }, // 方块大小，单位px，默认75px
 });
 
-// 发送模型更新
-const emit = defineEmits(['update:modelValue', 'hotAreaSelected']);
+const emit = defineEmits(['update:modelValue', 'hotAreaSelected']); // 发送模型更新
 
-/**
- * 方块
- * @property active 是否激活
- */
-type Cube = Point & { active: boolean };
+/** 方块 */
+type Cube = {
+  active: boolean; // 是否激活
+} & Point;
 
-// 魔方矩阵：所有的方块
-const cubes = ref<Cube[][]>([]);
-// 监听行数、列数变化
+const cubes = ref<Cube[][]>([]); // 魔方矩阵：所有的方块
+
+/** 监听行数、列数变化 */
 watch(
   () => [props.rows, props.cols],
   () => {
@@ -73,19 +69,17 @@ watch(
   { immediate: true },
 );
 
-// 热区列表
-const hotAreas = ref<Rect[]>([]);
-// 初始化热区
+const hotAreas = ref<Rect[]>([]); // 热区列表
+/** 初始化热区 */
 watch(
   () => props.modelValue,
   () => (hotAreas.value = props.modelValue || []),
   { immediate: true },
 );
 
-// 热区起始方块
-const hotAreaBeginCube = ref<Cube>();
-// 是否开启了热区选择模式
-const isHotAreaSelectMode = () => !!hotAreaBeginCube.value;
+const hotAreaBeginCube = ref<Cube>(); // 热区起始方块
+const isHotAreaSelectMode = () => !!hotAreaBeginCube.value; // 是否开启了热区选择模式
+
 /**
  * 处理鼠标点击方块
  *
@@ -94,7 +88,9 @@ const isHotAreaSelectMode = () => !!hotAreaBeginCube.value;
  */
 const handleCubeClick = (currentRow: number, currentCol: number) => {
   const currentCube = cubes.value[currentRow]?.[currentCol];
-  if (!currentCube) return;
+  if (!currentCube) {
+    return;
+  }
 
   // 情况1：进入热区选择模式
   if (!isHotAreaSelectMode()) {
@@ -116,6 +112,7 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
   // 发送热区变动通知
   emitUpdateModelValue();
 };
+
 /**
  * 处理鼠标经过方块
  *
@@ -124,11 +121,15 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
  */
 const handleCellHover = (currentRow: number, currentCol: number) => {
   // 当前没有进入热区选择模式
-  if (!isHotAreaSelectMode()) return;
+  if (!isHotAreaSelectMode()) {
+    return;
+  }
 
   // 当前已选的区域
   const currentCube = cubes.value[currentRow]?.[currentCol];
-  if (!currentCube) return;
+  if (!currentCube) {
+    return;
+  }
 
   const currentSelectedArea = createRect(hotAreaBeginCube.value!, currentCube);
   // 热区不允许重叠
@@ -147,24 +148,23 @@ const handleCellHover = (currentRow: number, currentCol: number) => {
     cube.active = isContains(currentSelectedArea, cube);
   });
 };
+
 /**
  * 处理热区删除
  *
  * @param index 热区索引
  */
-const handleDeleteHotArea = (index: number) => {
+function handleDeleteHotArea(index: number) {
   hotAreas.value.splice(index, 1);
   // 结束热区选择模式
   exitHotAreaSelectMode();
   // 发送热区变动通知
   emitUpdateModelValue();
-};
+}
 
-// 发送热区变动通知
-const emitUpdateModelValue = () => emit('update:modelValue', hotAreas.value);
+const emitUpdateModelValue = () => emit('update:modelValue', hotAreas.value); // 发送热区变动通知
 
-// 热区选中
-const selectedHotAreaIndex = ref(0);
+const selectedHotAreaIndex = ref(0); // 热区选中
 const handleHotAreaSelected = (hotArea: Rect, index: number) => {
   selectedHotAreaIndex.value = index;
   emit('hotAreaSelected', hotArea, index);

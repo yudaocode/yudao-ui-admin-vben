@@ -11,10 +11,12 @@ import {
   ElSwitch,
 } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
 import Draggable from '#/components/draggable/index.vue';
-import { InputWithColor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import {
+  AppLinkInput,
+  InputWithColor,
+} from '#/views/mall/promotion/components';
 
 // 悬浮按钮属性面板
 defineOptions({ name: 'FloatingActionButtonProperty' });

@@ -4,8 +4,8 @@ import type { PageConfigProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElInput } from 'element-plus';
 
-import { ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 
 // 导航栏属性面板
 defineOptions({ name: 'PageConfigProperty' });

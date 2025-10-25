@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NavigationBarCellProperty } from '../config';
 
-import type { Rect } from '#/components/magic-cube-editor/util';
+import type { Rect } from '#/views/mall/promotion/components/magic-cube-editor/util';
 
 import { computed, ref } from 'vue';
 
@@ -15,9 +15,9 @@ import {
 } from 'element-plus';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
-import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
-import MagicCubeEditor from '#/components/magic-cube-editor/index.vue';
+import { MagicCubeEditor } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { AppLinkInput, ColorInput } from '#/views/mall/promotion/components';
 
 // 导航栏属性面板
 defineOptions({ name: 'NavigationBarCellProperty' });

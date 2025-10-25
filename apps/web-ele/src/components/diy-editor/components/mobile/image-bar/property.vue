@@ -4,9 +4,9 @@ import type { ImageBarProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem } from 'element-plus';
 
-import { AppLinkInput } from '#/views/mall/promotion/components';
 import ComponentContainerProperty from '#/components/diy-editor/components/component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { AppLinkInput } from '#/views/mall/promotion/components';
 
 // 图片展示属性面板
 defineOptions({ name: 'ImageBarProperty' });

@@ -22,8 +22,8 @@ import {
 } from 'element-plus';
 
 import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
-import { ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 import SeckillShowcase from '#/views/mall/promotion/seckill/components/seckill-showcase.vue';
 
 // 秒杀属性面板

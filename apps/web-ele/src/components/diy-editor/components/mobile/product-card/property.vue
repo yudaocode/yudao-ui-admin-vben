@@ -17,8 +17,8 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import { ColorInput } from '#/views/mall/promotion/components';
 import UploadImg from '#/components/upload/image-upload.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 // TODO: 添加组件
 // import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
