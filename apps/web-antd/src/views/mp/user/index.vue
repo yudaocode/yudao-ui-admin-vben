@@ -40,12 +40,10 @@ async function handleSync() {
   }
 
   await confirm('是否确认同步粉丝？');
-
   const hideLoading = message.loading({
     content: '正在同步粉丝...',
     duration: 0,
   });
-
   try {
     await syncUser(accountId);
     message.success(
