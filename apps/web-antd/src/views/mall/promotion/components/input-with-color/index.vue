@@ -2,6 +2,7 @@
 import { PREDEFINE_COLORS } from '@vben/constants';
 
 import { useVModels } from '@vueuse/core';
+import { Input, InputGroup } from 'ant-design-vue';
 
 /** 带颜色选择器输入框 */
 defineOptions({ name: 'InputWithColor' });

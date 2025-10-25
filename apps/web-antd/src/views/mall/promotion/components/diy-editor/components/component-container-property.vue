@@ -2,6 +2,17 @@
 import type { ComponentStyle } from '../util';
 
 import { useVModel } from '@vueuse/core';
+import {
+  Card,
+  Form,
+  FormItem,
+  Radio,
+  RadioGroup,
+  Slider,
+  TabPane,
+  Tabs,
+  Tree,
+} from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';

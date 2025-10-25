@@ -5,6 +5,8 @@ import { nextTick, ref } from 'vue';
 
 import { getUrlNumberValue } from '@vben/utils';
 
+import { Button, Form, FormItem, Modal, Tooltip } from 'ant-design-vue';
+
 import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
 
 import { APP_LINK_GROUP_LIST, APP_LINK_TYPE_ENUM } from './data';

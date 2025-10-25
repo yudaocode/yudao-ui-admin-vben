@@ -5,6 +5,8 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Button, Tooltip } from 'ant-design-vue';
+
 import { VerticalButtonGroup } from '#/views/mall/promotion/components';
 
 import { components } from './mobile';

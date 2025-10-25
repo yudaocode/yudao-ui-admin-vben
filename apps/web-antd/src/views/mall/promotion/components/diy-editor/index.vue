@@ -8,6 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
 import { useQRCode } from '@vueuse/integrations/useQRCode';
+import { Button, Card, Modal, Tag, Tooltip } from 'ant-design-vue';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';

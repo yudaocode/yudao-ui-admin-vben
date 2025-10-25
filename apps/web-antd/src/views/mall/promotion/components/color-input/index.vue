@@ -1,8 +1,9 @@
 <script setup lang="ts">
-// TODO @AI：改成 El 风格，而不是iel- 风格；
 import { computed } from 'vue';
 
 import { PREDEFINE_COLORS } from '@vben/constants';
+
+import { Input, InputGroup } from 'ant-design-vue';
 
 /** 颜色输入框 */
 defineOptions({ name: 'ColorInput' });

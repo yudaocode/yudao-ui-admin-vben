@@ -6,6 +6,7 @@ import { reactive, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
+import { Collapse, CollapsePanel } from 'ant-design-vue';
 import draggable from 'vuedraggable';
 
 import { componentConfigs } from './mobile/index';

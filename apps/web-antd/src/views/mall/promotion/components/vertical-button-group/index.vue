@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ButtonGroup } from 'ant-design-vue';
+
 /**
  * 垂直按钮组
  * Element 官方的按钮组只支持水平显示，通过重写样式实现垂直布局

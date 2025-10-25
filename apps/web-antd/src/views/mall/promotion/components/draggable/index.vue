@@ -1,10 +1,9 @@
 <script setup lang="ts">
-// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
-
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { Button, Tooltip } from 'ant-design-vue';
 import VueDraggable from 'vuedraggable';
 
 /** 拖拽组件封装 */
