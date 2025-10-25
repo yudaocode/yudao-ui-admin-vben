@@ -4,7 +4,7 @@ import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
 import { onMounted, ref, unref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import * as DiyPageApi from '#/api/mall/promotion/diy/page';
 import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
@@ -12,63 +12,50 @@ import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 /** 装修页面表单 */
 defineOptions({ name: 'DiyPageDecorate' });
 
-const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formData = ref<MallDiyPageApi.DiyPage>();
-const formRef = ref(); // 表单 Ref
+const route = useRoute();
 
-// 获取详情
+const formData = ref<MallDiyPageApi.DiyPage>();
+
+/** 获取详情 */
 async function getPageDetail(id: any) {
-  formLoading.value = true;
+  const loadingInstance = ElLoading.service({
+    text: '加载中...',
+  });
   try {
     formData.value = await DiyPageApi.getDiyPageProperty(id);
   } finally {
-    formLoading.value = false;
+    loadingInstance.close();
   }
 }
 
-// 提交表单
+/** 提交表单 */
 async function submitForm() {
-  // 校验表单
-  if (!formRef.value) return;
-  // 提交请求
-  formLoading.value = true;
+  const loadingInstance = ElLoading.service({
+    text: '保存中...',
+  });
   try {
     await DiyPageApi.updateDiyPageProperty(unref(formData)!);
     ElMessage.success('保存成功');
   } finally {
-    formLoading.value = false;
+    loadingInstance.close();
   }
 }
 
-// 重置表单
-function resetForm() {
-  formData.value = {
-    id: undefined,
-    templateId: undefined,
-    name: '',
-    remark: '',
-    previewPicUrls: [],
-    property: '',
-  } as MallDiyPageApi.DiyPage;
-  formRef.value?.resetFields();
-}
-
 /** 初始化 */
-const route = useRoute();
 onMounted(() => {
-  resetForm();
   if (!route.params.id) {
     ElMessage.warning('参数错误，页面编号不能为空！');
     return;
   }
+  formData.value = {} as MallDiyPageApi.DiyPage;
   getPageDetail(route.params.id);
 });
 </script>
 <template>
   <DiyEditor
-    v-if="formData && !formLoading"
-    v-model="formData.property"
-    :title="formData.name"
+    v-if="formData?.id"
+    v-model="formData!.property"
+    :title="formData!.name"
     :libs="PAGE_LIBS"
     @save="submitForm"
   />
