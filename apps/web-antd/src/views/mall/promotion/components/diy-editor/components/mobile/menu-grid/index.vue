@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { MenuGridProperty } from './config';
 
-
 /** 宫格导航 */
 defineOptions({ name: 'MenuGrid' });
 defineProps<{ property: MenuGridProperty }>();
@@ -26,7 +25,12 @@ defineProps<{ property: MenuGridProperty }>();
       >
         {{ item.badge.text }}
       </span>
-      <Image v-if="item.iconUrl" class="h-7 w-7" :src="item.iconUrl" :preview="false" />
+      <Image
+        v-if="item.iconUrl"
+        class="h-7 w-7"
+        :src="item.iconUrl"
+        :preview="false"
+      />
       <span
         class="mt-2 h-4 text-xs leading-4"
         :style="{ color: item.titleColor }"

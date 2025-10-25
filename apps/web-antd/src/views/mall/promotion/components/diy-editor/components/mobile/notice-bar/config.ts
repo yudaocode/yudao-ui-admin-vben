@@ -1,7 +1,4 @@
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../../../util';
+import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 公告栏属性 */
 export interface NoticeBarProperty {

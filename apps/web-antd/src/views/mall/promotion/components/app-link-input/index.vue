@@ -39,7 +39,11 @@ watch(
 </script>
 <template>
   <InputGroup compact>
-    <Input v-model:value="appLink" placeholder="输入或选择链接" class="flex-1" />
+    <Input
+      v-model:value="appLink"
+      placeholder="输入或选择链接"
+      class="flex-1"
+    />
     <Button @click="handleOpenDialog">选择</Button>
   </InputGroup>
 

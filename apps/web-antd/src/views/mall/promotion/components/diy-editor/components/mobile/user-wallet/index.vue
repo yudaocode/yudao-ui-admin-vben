@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { UserWalletProperty } from './config';
 
-
 /** 用户资产 */
 defineOptions({ name: 'UserWallet' });
 // 定义属性

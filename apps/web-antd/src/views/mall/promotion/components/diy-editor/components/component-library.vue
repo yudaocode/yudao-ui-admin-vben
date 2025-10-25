@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {
-  DiyComponent,
-  DiyComponentLibrary,
-} from '../util';
+import type { DiyComponent, DiyComponentLibrary } from '../util';
 
 import { reactive, watch } from 'vue';
 
@@ -66,7 +63,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 <template>
   <div class="editor-left w-[261px]">
     <div class="h-full overflow-y-auto">
-      <Collapse v-model:activeKey="extendGroups">
+      <Collapse v-model:active-key="extendGroups">
         <CollapsePanel
           v-for="group in groups"
           :key="group.name"

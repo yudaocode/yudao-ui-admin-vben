@@ -3,9 +3,10 @@ import type { VideoPlayerProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 视频播放属性面板
 defineOptions({ name: 'VideoPlayerProperty' });
@@ -19,14 +20,10 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <template #style>
       <FormItem label="高度" name="height">
-        <Slider
-          v-model:value="formData.style.height"
-          :max="500"
-          :min="100"
-        />
+        <Slider v-model:value="formData.style.height" :max="500" :min="100" />
       </FormItem>
     </template>
-    <Form :model="formData" labelCol="{ span: 6 }" wrapperCol="{ span: 18 }">
+    <Form :model="formData" label-col="{ span: 6 }" wrapper-col="{ span: 18 }">
       <FormItem label="上传视频" name="videoUrl">
         <UploadFile
           v-model="formData.videoUrl"

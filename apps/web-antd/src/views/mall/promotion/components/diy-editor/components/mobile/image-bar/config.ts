@@ -1,7 +1,4 @@
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../../../util';
+import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 图片展示属性 */
 export interface ImageBarProperty {

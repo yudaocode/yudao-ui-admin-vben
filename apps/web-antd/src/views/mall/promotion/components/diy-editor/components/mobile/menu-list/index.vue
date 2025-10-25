@@ -3,7 +3,6 @@ import type { MenuListProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-
 /** 列表导航 */
 defineOptions({ name: 'MenuList' });
 defineProps<{ property: MenuListProperty }>();

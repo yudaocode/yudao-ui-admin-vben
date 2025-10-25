@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { VideoPlayerProperty } from './config';
 
-
 /** 视频播放 */
 defineOptions({ name: 'VideoPlayer' });
 
@@ -9,11 +8,7 @@ defineProps<{ property: VideoPlayerProperty }>();
 </script>
 <template>
   <div class="w-full" :style="{ height: `${property.style.height}px` }">
-    <Image
-      class="w-full"
-      :src="property.posterUrl"
-      v-if="property.posterUrl"
-    />
+    <Image class="w-full" :src="property.posterUrl" v-if="property.posterUrl" />
     <video
       v-else
       class="w-full"

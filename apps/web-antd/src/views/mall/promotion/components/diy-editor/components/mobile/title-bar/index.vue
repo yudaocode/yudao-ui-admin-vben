@@ -3,7 +3,6 @@ import type { TitleBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-
 /** 标题栏 */
 defineOptions({ name: 'TitleBar' });
 

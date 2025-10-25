@@ -5,7 +5,6 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { onMounted, ref, watch } from 'vue';
 
-
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 
 import {

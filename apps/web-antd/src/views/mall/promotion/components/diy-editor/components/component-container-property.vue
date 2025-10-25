@@ -122,7 +122,11 @@ const handleSliderChange = (prop: string) => {
     <!-- 每个组件的通用内容 -->
     <TabPane tab="样式" key="style">
       <Card title="组件样式" class="property-group">
-        <Form :model="formData" labelCol="{ span: 6 }" wrapperCol="{ span: 18 }">
+        <Form
+          :model="formData"
+          label-col="{ span: 6 }"
+          wrapper-col="{ span: 18 }"
+        >
           <FormItem label="组件背景" name="bgType">
             <RadioGroup v-model:value="formData.bgType">
               <Radio value="color">纯色</Radio>

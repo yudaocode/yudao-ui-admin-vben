@@ -1,7 +1,4 @@
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../../../util';
+import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 轮播图属性 */
 export interface CarouselProperty {

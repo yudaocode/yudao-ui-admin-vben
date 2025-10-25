@@ -5,7 +5,6 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-
 /** 轮播图 */
 defineOptions({ name: 'Carousel' });
 
@@ -27,13 +26,17 @@ const handleIndexChange = (index: number) => {
   <div v-else class="relative">
     <Carousel
       :autoplay="property.autoplay"
-      :autoplaySpeed="property.interval * 1000"
+      :autoplay-speed="property.interval * 1000"
       :dots="property.indicator !== 'number'"
       @change="handleIndexChange"
       class="h-[174px]"
     >
       <div v-for="(item, index) in property.items" :key="index">
-        <Image class="h-full w-full object-cover" :src="item.imgUrl" :preview="false" />
+        <Image
+          class="h-full w-full object-cover"
+          :src="item.imgUrl"
+          :preview="false"
+        />
       </div>
     </Carousel>
     <div

@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { StyleValue } from 'vue';
 
+import type { SearchProperty } from '../search-bar/config';
 import type {
   NavigationBarCellProperty,
   NavigationBarProperty,
 } from './config';
 
-import type { SearchProperty } from '../search-bar/config';
-
 import { computed } from 'vue';
 
 import appNavbarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
+
 import SearchBar from '../search-bar/index.vue';
 
 /** 页面顶部导航栏 */

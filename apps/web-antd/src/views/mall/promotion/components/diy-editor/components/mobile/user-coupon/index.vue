@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { UserCouponProperty } from './config';
 
-
 /** 用户卡券 */
 defineOptions({ name: 'UserCoupon' });
 // 定义属性

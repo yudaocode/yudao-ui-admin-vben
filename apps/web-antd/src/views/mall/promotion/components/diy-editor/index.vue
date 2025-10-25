@@ -11,15 +11,12 @@ import { useQRCode } from '@vueuse/integrations/useQRCode';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
-import {
-  componentConfigs,
-  components,
-} from './components/mobile';
-import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 
 import ComponentContainer from './components/component-container.vue';
 import ComponentLibrary from './components/component-library.vue';
+import { componentConfigs, components } from './components/mobile';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
+import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
 /** 页面装修详情页 */
 defineOptions({
@@ -290,7 +287,7 @@ onMounted(() => {
 </script>
 <template>
   <div>
-    <div class="editor flex flex-col h-full">
+    <div class="editor flex h-full flex-col">
       <!-- 顶部：工具栏 -->
       <div class="editor-header flex items-center">
         <!-- 左侧操作区 -->
@@ -360,11 +357,11 @@ onMounted(() => {
           </div>
           <!-- 手机页面编辑区域 -->
           <div
-            class="editor-design-center page-prop-area overflow-y-auto phone-container"
+            class="editor-design-center page-prop-area phone-container overflow-y-auto"
             :style="{
               backgroundColor: pageConfigComponent.property.backgroundColor,
               backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
-              height: 'calc(100vh - 135px - 120px)'
+              height: 'calc(100vh - 135px - 120px)',
             }"
           >
             <draggable
@@ -440,13 +437,10 @@ onMounted(() => {
           </div>
         </div>
         <!-- 右侧：属性面板（ComponentContainerProperty） -->
-        <div
-          v-if="selectedComponent?.property"
-          class="editor-right w-[350px]"
-        >
+        <div v-if="selectedComponent?.property" class="editor-right w-[350px]">
           <Card
             class="h-full"
-            :bodyStyle="{ height: 'calc(100% - 57px)', padding: 0 }"
+            :body-style="{ height: 'calc(100% - 57px)', padding: 0 }"
           >
             <!-- 组件名称 -->
             <template #title>
@@ -455,9 +449,7 @@ onMounted(() => {
                 <span>{{ selectedComponent?.name }}</span>
               </div>
             </template>
-            <div
-              class="h-full overflow-y-auto p-4 property"
-            >
+            <div class="property h-full overflow-y-auto p-4">
               <component
                 :is="`${selectedComponent?.id}Property`"
                 :key="selectedComponent?.uid || selectedComponent?.id"

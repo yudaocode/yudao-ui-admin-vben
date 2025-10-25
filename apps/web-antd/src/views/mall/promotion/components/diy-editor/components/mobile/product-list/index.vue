@@ -7,7 +7,6 @@ import { onMounted, ref, watch } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-
 import * as ProductSpuApi from '#/api/mall/product/spu';
 
 /** 商品栏 */

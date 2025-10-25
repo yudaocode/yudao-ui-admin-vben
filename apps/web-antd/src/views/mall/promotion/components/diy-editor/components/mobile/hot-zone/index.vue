@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { HotZoneProperty } from './config';
 
-
 /** 热区 */
 defineOptions({ name: 'HotZone' });
 const props = defineProps<{ property: HotZoneProperty }>();

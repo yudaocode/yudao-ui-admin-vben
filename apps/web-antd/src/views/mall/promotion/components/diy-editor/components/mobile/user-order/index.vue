@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { UserOrderProperty } from './config';
 
-
 /** 用户订单 */
 defineOptions({ name: 'UserOrder' });
 // 定义属性

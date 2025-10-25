@@ -5,9 +5,10 @@ import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { InputWithColor as ColorInput } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 // TODO: 添加组件
 // import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 

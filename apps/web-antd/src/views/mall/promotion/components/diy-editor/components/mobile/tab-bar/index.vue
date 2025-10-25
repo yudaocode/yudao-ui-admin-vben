@@ -3,8 +3,6 @@ import type { TabBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-
-
 /** 页面底部导航栏 */
 defineOptions({ name: 'TabBar' });
 

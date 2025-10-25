@@ -1,7 +1,4 @@
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../../../util';
+import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 用户资产属性 */
 export interface UserWalletProperty {

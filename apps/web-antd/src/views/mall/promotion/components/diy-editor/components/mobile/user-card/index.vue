@@ -3,7 +3,6 @@ import type { UserCardProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-
 /** 用户卡片 */
 defineOptions({ name: 'UserCard' });
 // 定义属性

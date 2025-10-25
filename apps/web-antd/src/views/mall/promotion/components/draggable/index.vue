@@ -46,7 +46,7 @@ const handleDelete = function (index: number) {
 </script>
 
 <template>
-  <div class="text-xs text-gray-500"> 拖动左上角的小圆点可对其排序 </div>
+  <div class="text-xs text-gray-500">拖动左上角的小圆点可对其排序</div>
   <VueDraggable
     :list="formData"
     :force-fallback="true"

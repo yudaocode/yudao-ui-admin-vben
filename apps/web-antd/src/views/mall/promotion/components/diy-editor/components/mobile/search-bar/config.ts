@@ -1,7 +1,4 @@
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../../../util';
+import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 搜索框属性 */
 export interface SearchProperty {

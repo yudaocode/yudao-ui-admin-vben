@@ -19,7 +19,12 @@ const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <Form :model="formData" :rules="rules" labelCol="{ span: 6 }" wrapperCol="{ span: 18 }">
+  <Form
+    :model="formData"
+    :rules="rules"
+    label-col="{ span: 6 }"
+    wrapper-col="{ span: 18 }"
+  >
     <FormItem label="页面描述" name="description">
       <Textarea
         v-model:value="formData!.description"

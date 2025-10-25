@@ -120,8 +120,9 @@ function handleGroupSelected(group: string) {
 
 /** 自动滚动分组按钮，确保分组按钮保持在可视区域内 */
 function scrollToGroupBtn(group: string) {
-  const groupBtn = groupBtnRefs.value
-    .find((ref: HTMLButtonElement | undefined) => ref?.textContent === group);
+  const groupBtn = groupBtnRefs.value.find(
+    (ref: HTMLButtonElement | undefined) => ref?.textContent === group,
+  );
   if (groupBtn && groupScrollbar.value) {
     groupScrollbar.value.scrollTop = groupBtn.offsetTop;
   }
@@ -150,14 +151,11 @@ function handleProductCategorySelected(id: number) {
   <Modal v-model:open="dialogVisible" title="选择链接" width="65%">
     <div class="flex h-[500px] gap-2">
       <!-- 左侧分组列表 -->
-      <div
-        class="h-full overflow-y-auto flex flex-col"
-        ref="groupScrollbar"
-      >
+      <div class="flex h-full flex-col overflow-y-auto" ref="groupScrollbar">
         <Button
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
-          class="ml-0 mr-4 w-[90px] justify-start mb-1"
+          class="mb-1 ml-0 mr-4 w-[90px] justify-start"
           :class="[{ active: activeGroup === group.name }]"
           ref="groupBtnRefs"
           :type="activeGroup === group.name ? 'primary' : 'default'"

@@ -35,7 +35,7 @@ const handleThemeChange = () => {
 <template>
   <div class="tab-bar">
     <!-- 表单 -->
-    <Form :model="formData" labelCol="{ span: 6 }" wrapperCol="{ span: 18 }">
+    <Form :model="formData" label-col="{ span: 6 }" wrapper-col="{ span: 18 }">
       <FormItem label="主题" name="theme">
         <Select v-model:value="formData!.theme" @change="handleThemeChange">
           <SelectOption
@@ -78,8 +78,8 @@ const handleThemeChange = () => {
         </UploadImg>
       </FormItem>
 
-      <div class="text-base mb-2">图标设置</div>
-      <div class="text-xs text-gray-500 mb-2">
+      <div class="mb-2 text-base">图标设置</div>
+      <div class="mb-2 text-xs text-gray-500">
         拖动左上角的小圆点可对其排序, 图标建议尺寸 44*44
       </div>
       <Draggable v-model="formData.items" :limit="5">
@@ -106,10 +106,22 @@ const handleThemeChange = () => {
               <div class="text-xs">已选中</div>
             </div>
           </div>
-          <FormItem name="text" label="文字" labelCol="{ span: 4 }" wrapperCol="{ span: 20 }" class="mb-2">
+          <FormItem
+            name="text"
+            label="文字"
+            label-col="{ span: 4 }"
+            wrapper-col="{ span: 20 }"
+            class="mb-2"
+          >
             <Input v-model:value="element.text" placeholder="请输入文字" />
           </FormItem>
-          <FormItem name="url" label="链接" labelCol="{ span: 4 }" wrapperCol="{ span: 20 }" class="mb-0">
+          <FormItem
+            name="url"
+            label="链接"
+            label-col="{ span: 4 }"
+            wrapper-col="{ span: 20 }"
+            class="mb-0"
+          >
             <AppLinkInput v-model="element.url" />
           </FormItem>
         </template>

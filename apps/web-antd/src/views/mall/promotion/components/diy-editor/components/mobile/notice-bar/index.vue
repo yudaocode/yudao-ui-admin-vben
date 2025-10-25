@@ -3,7 +3,6 @@ import type { NoticeBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-
 /** 公告栏 */
 defineOptions({ name: 'NoticeBar' });
 

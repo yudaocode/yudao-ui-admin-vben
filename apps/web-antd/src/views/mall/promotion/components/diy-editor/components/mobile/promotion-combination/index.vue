@@ -8,7 +8,6 @@ import { ref, watch } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-
 import * as ProductSpuApi from '#/api/mall/product/spu';
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
 
