@@ -28,10 +28,7 @@ function handleCreate() {
 function handleEdit(row: any) {
   router.push({
     name: 'AiWorkflowCreate',
-    query: {
-      id: row.id,
-      type: 'update',
-    },
+    params: { id: row.id, type: 'update' },
   });
 }
 

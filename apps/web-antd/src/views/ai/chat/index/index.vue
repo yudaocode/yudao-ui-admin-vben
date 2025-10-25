@@ -28,7 +28,7 @@ import MessageNewConversation from './components/message/MessageNewConversation.
 /** AI 聊天对话 列表 */
 defineOptions({ name: 'AiChat' });
 
-const route = useRoute(); // 路由
+const route = useRoute();
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: ConversationUpdateForm,
   destroyOnClose: true,
@@ -428,7 +428,7 @@ async function textRoll() {
     // 设置状态
     textRoleRunning.value = true;
     receiveMessageDisplayedText.value = '';
-    const task = async () => {
+    async function task() {
       // 调整速度
       const diff =
         (receiveMessageFullText.value.length -
@@ -472,7 +472,7 @@ async function textRoll() {
           clearTimeout(timer);
         }
       }
-    };
+    }
     let timer = setTimeout(task, textSpeed.value);
   } catch {}
 }
@@ -503,7 +503,7 @@ onMounted(async () => {
       <!-- 左侧：对话列表 -->
       <ConversationList
         class="!bg-card"
-        :active-id="activeConversationId as any"
+        :active-id="activeConversationId"
         ref="conversationListRef"
         @on-conversation-create="handleConversationCreateSuccess"
         @on-conversation-click="handleConversationClick"
@@ -578,7 +578,7 @@ onMounted(async () => {
             class="border-border my-5 mb-5 mt-2 flex flex-col rounded-xl border px-2 py-2.5"
           >
             <textarea
-              class="box-border h-24 resize-none overflow-auto border-none px-0 py-1 focus:outline-none"
+              class="box-border h-24 resize-none overflow-auto rounded-md px-0 py-1 focus:outline-none"
               v-model="prompt"
               @keydown="handleSendByKeydown"
               @input="handlePromptInput"

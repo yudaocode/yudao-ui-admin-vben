@@ -46,11 +46,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '负责人',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
       },
       dependencies: {
         triggerFields: ['id'],
@@ -65,11 +63,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: () => getCustomerSimpleList(),
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: getCustomerSimpleList,
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择客户',
       },
     },
@@ -141,11 +137,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '公司签约人',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleUserList(),
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -269,11 +263,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getCustomerSimpleList(),
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        api: getCustomerSimpleList,
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择客户',
         allowClear: true,
       },
@@ -356,7 +348,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '未回款金额（元）',
-      field: 'totalReceivablePrice',
+      field: 'unReceivablePrice',
       minWidth: 140,
       formatter: ({ row }) => {
         return erpPriceInputFormatter(

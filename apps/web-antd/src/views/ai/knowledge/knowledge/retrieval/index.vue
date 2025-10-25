@@ -20,8 +20,8 @@ import { searchKnowledgeSegment } from '#/api/ai/knowledge/segment';
 /** 文档召回测试 */
 defineOptions({ name: 'KnowledgeDocumentRetrieval' });
 
-const route = useRoute(); // 路由
-const router = useRouter(); // 路由
+const route = useRoute();
+const router = useRouter();
 
 const loading = ref(false); // 加载状态
 const segments = ref<any[]>([]); // 召回结果

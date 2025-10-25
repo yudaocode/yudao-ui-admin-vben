@@ -8,19 +8,21 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, ref } from 'vue';
 
+import { ContentWrap } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+
 import {
   Button,
   Card,
-  Col,
   Input,
   message,
-  Row,
   Table,
   Tabs,
   Textarea,
 } from 'ant-design-vue';
 
 import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
+import DataDefinition from '#/views/iot/thingmodel/modules/components/DataDefinition.vue';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
@@ -40,6 +42,10 @@ const upstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_POST.method); // 上
 const downstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_SET.method); // 下行子标签
 const deviceMessageRef = ref(); // 设备消息组件引用
 const deviceMessageRefreshDelay = 2000; // 延迟 N 秒，保证模拟上行的消息被处理
+
+// 折叠状态
+const debugCollapsed = ref(false); // 指令调试区域折叠状态
+const messageCollapsed = ref(false); // 设备消息区域折叠状态
 
 // 表单数据：存储用户输入的模拟值
 const formData = ref<Record<string, string>>({});
@@ -90,12 +96,12 @@ const propertyColumns: TableColumnType[] = [
   {
     title: '数据定义',
     key: 'dataDefinition',
-    minWidth: 200,
+    minWidth: 100,
   },
   {
     title: '值',
     key: 'value',
-    width: 150,
+    width: 300,
     fixed: 'right' as any,
   },
 ];
@@ -332,232 +338,266 @@ async function handleServiceInvoke(row: ThingModelData) {
 
 <template>
   <ContentWrap>
-    <Row :gutter="20">
-      <!-- 左侧指令调试区域 -->
-      <Col :span="12">
-        <Card>
-          <Tabs v-model:active-key="activeTab">
-            <!-- 上行指令调试 -->
-            <Tabs.Pane key="upstream" tab="上行指令调试">
-              <Tabs
-                v-if="activeTab === 'upstream'"
-                v-model:active-key="upstreamTab"
+    <!-- 上方：指令调试区域 -->
+    <Card class="simulator-tabs mb-4">
+      <template #title>
+        <div class="flex items-center justify-between">
+          <span>指令调试</span>
+          <Button
+            type="text"
+            size="small"
+            @click="debugCollapsed = !debugCollapsed"
+          >
+            <IconifyIcon icon="lucide:chevron-up" v-if="!debugCollapsed" />
+            <IconifyIcon icon="lucide:chevron-down" v-if="debugCollapsed" />
+          </Button>
+        </div>
+      </template>
+      <div v-show="!debugCollapsed">
+        <Tabs v-model:active-key="activeTab" size="small">
+          <!-- 上行指令调试 -->
+          <Tabs.TabPane key="upstream" tab="上行指令调试">
+            <Tabs
+              v-if="activeTab === 'upstream'"
+              v-model:active-key="upstreamTab"
+              size="small"
+            >
+              <!-- 属性上报 -->
+              <Tabs.TabPane
+                :key="IotDeviceMessageMethodEnum.PROPERTY_POST.method"
+                tab="属性上报"
               >
-                <!-- 属性上报 -->
-                <Tabs.Pane
-                  :key="IotDeviceMessageMethodEnum.PROPERTY_POST.method"
-                  tab="属性上报"
-                >
-                  <ContentWrap>
-                    <Table
-                      :data-source="propertyList"
-                      align="center"
-                      :columns="propertyColumns"
-                      :pagination="false"
-                    >
-                      <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'dataType'">
-                          {{ record.property?.dataType ?? '-' }}
-                        </template>
-                        <template v-else-if="column.key === 'dataDefinition'">
-                          <DataDefinition :data="record" />
-                        </template>
-                        <template v-else-if="column.key === 'value'">
-                          <Input
-                            :value="getFormValue(record.identifier)"
-                            @update:value="
-                              setFormValue(record.identifier, $event)
-                            "
-                            placeholder="输入值"
-                            size="small"
-                          />
-                        </template>
+                <ContentWrap>
+                  <Table
+                    :data-source="propertyList"
+                    align="center"
+                    :columns="propertyColumns"
+                    :pagination="false"
+                    :scroll="{ y: 300 }"
+                    size="small"
+                  >
+                    <template #bodyCell="{ column, record }">
+                      <template v-if="column.key === 'dataType'">
+                        {{ record.property?.dataType ?? '-' }}
                       </template>
-                    </Table>
-                    <div class="mt-4 flex items-center justify-between">
-                      <span class="text-sm text-gray-600">
-                        设置属性值后，点击「发送属性上报」按钮
-                      </span>
-                      <Button type="primary" @click="handlePropertyPost">
-                        发送属性上报
-                      </Button>
-                    </div>
-                  </ContentWrap>
-                </Tabs.Pane>
-
-                <!-- 事件上报 -->
-                <Tabs.Pane
-                  :key="IotDeviceMessageMethodEnum.EVENT_POST.method"
-                  tab="事件上报"
-                >
-                  <ContentWrap>
-                    <Table
-                      :data-source="eventList"
-                      align="center"
-                      :columns="eventColumns"
-                      :pagination="false"
-                    >
-                      <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'dataType'">
-                          {{ record.event?.dataType ?? '-' }}
-                        </template>
-                        <template v-else-if="column.key === 'dataDefinition'">
-                          <DataDefinition :data="record" />
-                        </template>
-                        <template v-else-if="column.key === 'value'">
-                          <Textarea
-                            :value="getFormValue(record.identifier)"
-                            @update:value="
-                              setFormValue(record.identifier, $event)
-                            "
-                            :rows="3"
-                            placeholder="输入事件参数（JSON格式）"
-                            size="small"
-                          />
-                        </template>
-                        <template v-else-if="column.key === 'action'">
-                          <Button
-                            type="primary"
-                            size="small"
-                            @click="handleEventPost(record)"
-                          >
-                            上报事件
-                          </Button>
-                        </template>
+                      <template v-else-if="column.key === 'dataDefinition'">
+                        <DataDefinition :data="record" />
                       </template>
-                    </Table>
-                  </ContentWrap>
-                </Tabs.Pane>
+                      <template v-else-if="column.key === 'value'">
+                        <Input
+                          :value="getFormValue(record.identifier)"
+                          @update:value="
+                            setFormValue(record.identifier, $event)
+                          "
+                          placeholder="输入值"
+                          size="small"
+                        />
+                      </template>
+                    </template>
+                  </Table>
+                  <div class="mt-4 flex items-center justify-between">
+                    <span class="text-sm text-gray-600">
+                      设置属性值后，点击「发送属性上报」按钮
+                    </span>
+                    <Button type="primary" @click="handlePropertyPost">
+                      发送属性上报
+                    </Button>
+                  </div>
+                </ContentWrap>
+              </Tabs.TabPane>
 
-                <!-- 状态变更 -->
-                <Tabs.Pane
-                  :key="IotDeviceMessageMethodEnum.STATE_UPDATE.method"
-                  tab="状态变更"
-                >
-                  <ContentWrap>
-                    <div class="flex gap-4">
-                      <Button
-                        type="primary"
-                        @click="handleDeviceState(DeviceStateEnum.ONLINE)"
-                      >
-                        设备上线
-                      </Button>
-                      <Button
-                        danger
-                        @click="handleDeviceState(DeviceStateEnum.OFFLINE)"
-                      >
-                        设备下线
-                      </Button>
-                    </div>
-                  </ContentWrap>
-                </Tabs.Pane>
-              </Tabs>
-            </Tabs.Pane>
-
-            <!-- 下行指令调试 -->
-            <Tabs.Pane key="downstream" tab="下行指令调试">
-              <Tabs
-                v-if="activeTab === 'downstream'"
-                v-model:active-key="downstreamTab"
+              <!-- 事件上报 -->
+              <Tabs.TabPane
+                :key="IotDeviceMessageMethodEnum.EVENT_POST.method"
+                tab="事件上报"
               >
-                <!-- 属性调试 -->
-                <Tabs.Pane
-                  :key="IotDeviceMessageMethodEnum.PROPERTY_SET.method"
-                  tab="属性设置"
-                >
-                  <ContentWrap>
-                    <Table
-                      :data-source="propertyList"
-                      align="center"
-                      :columns="propertyColumns"
-                      :pagination="false"
-                    >
-                      <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'dataType'">
-                          {{ record.property?.dataType ?? '-' }}
-                        </template>
-                        <template v-else-if="column.key === 'dataDefinition'">
-                          <DataDefinition :data="record" />
-                        </template>
-                        <template v-else-if="column.key === 'value'">
-                          <Input
-                            :value="getFormValue(record.identifier)"
-                            @update:value="
-                              setFormValue(record.identifier, $event)
-                            "
-                            placeholder="输入值"
-                            size="small"
-                          />
-                        </template>
+                <ContentWrap>
+                  <Table
+                    :data-source="eventList"
+                    align="center"
+                    :columns="eventColumns"
+                    :pagination="false"
+                    :scroll="{ y: 300 }"
+                    size="small"
+                  >
+                    <template #bodyCell="{ column, record }">
+                      <template v-if="column.key === 'dataType'">
+                        {{ record.event?.dataType ?? '-' }}
                       </template>
-                    </Table>
-                    <div class="mt-4 flex items-center justify-between">
-                      <span class="text-sm text-gray-600">
-                        设置属性值后，点击「发送属性设置」按钮
-                      </span>
-                      <Button type="primary" @click="handlePropertySet">
-                        发送属性设置
-                      </Button>
-                    </div>
-                  </ContentWrap>
-                </Tabs.Pane>
-
-                <!-- 服务调用 -->
-                <Tabs.Pane
-                  :key="IotDeviceMessageMethodEnum.SERVICE_INVOKE.method"
-                  tab="设备服务调用"
-                >
-                  <ContentWrap>
-                    <Table
-                      :data-source="serviceList"
-                      align="center"
-                      :columns="serviceColumns"
-                      :pagination="false"
-                    >
-                      <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'dataDefinition'">
-                          <DataDefinition :data="record" />
-                        </template>
-                        <template v-else-if="column.key === 'value'">
-                          <Textarea
-                            :value="getFormValue(record.identifier)"
-                            @update:value="
-                              setFormValue(record.identifier, $event)
-                            "
-                            :rows="3"
-                            placeholder="输入服务参数（JSON格式）"
-                            size="small"
-                          />
-                        </template>
-                        <template v-else-if="column.key === 'action'">
-                          <Button
-                            type="primary"
-                            size="small"
-                            @click="handleServiceInvoke(record)"
-                          >
-                            服务调用
-                          </Button>
-                        </template>
+                      <template v-else-if="column.key === 'dataDefinition'">
+                        <DataDefinition :data="record" />
                       </template>
-                    </Table>
-                  </ContentWrap>
-                </Tabs.Pane>
-              </Tabs>
-            </Tabs.Pane>
-          </Tabs>
-        </Card>
-      </Col>
+                      <template v-else-if="column.key === 'value'">
+                        <Textarea
+                          :value="getFormValue(record.identifier)"
+                          @update:value="
+                            setFormValue(record.identifier, $event)
+                          "
+                          :rows="3"
+                          placeholder="输入事件参数（JSON格式）"
+                          size="small"
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'action'">
+                        <Button
+                          type="primary"
+                          size="small"
+                          @click="handleEventPost(record)"
+                        >
+                          上报事件
+                        </Button>
+                      </template>
+                    </template>
+                  </Table>
+                </ContentWrap>
+              </Tabs.TabPane>
 
-      <!-- 右侧设备日志区域 -->
-      <Col :span="12">
-        <ContentWrap title="设备消息">
-          <DeviceDetailsMessage
-            v-if="device.id"
-            ref="deviceMessageRef"
-            :device-id="device.id"
-          />
-        </ContentWrap>
-      </Col>
-    </Row>
+              <!-- 状态变更 -->
+              <Tabs.TabPane
+                :key="IotDeviceMessageMethodEnum.STATE_UPDATE.method"
+                tab="状态变更"
+              >
+                <ContentWrap>
+                  <div class="flex gap-4">
+                    <Button
+                      type="primary"
+                      @click="handleDeviceState(DeviceStateEnum.ONLINE)"
+                    >
+                      设备上线
+                    </Button>
+                    <Button
+                      danger
+                      @click="handleDeviceState(DeviceStateEnum.OFFLINE)"
+                    >
+                      设备下线
+                    </Button>
+                  </div>
+                </ContentWrap>
+              </Tabs.TabPane>
+            </Tabs>
+          </Tabs.TabPane>
+
+          <!-- 下行指令调试 -->
+          <Tabs.TabPane key="downstream" tab="下行指令调试">
+            <Tabs
+              v-if="activeTab === 'downstream'"
+              v-model:active-key="downstreamTab"
+              size="small"
+            >
+              <!-- 属性调试 -->
+              <Tabs.TabPane
+                :key="IotDeviceMessageMethodEnum.PROPERTY_SET.method"
+                tab="属性设置"
+              >
+                <ContentWrap>
+                  <Table
+                    :data-source="propertyList"
+                    align="center"
+                    :columns="propertyColumns"
+                    :pagination="false"
+                    :scroll="{ y: 300 }"
+                    size="small"
+                  >
+                    <template #bodyCell="{ column, record }">
+                      <template v-if="column.key === 'dataType'">
+                        {{ record.property?.dataType ?? '-' }}
+                      </template>
+                      <template v-else-if="column.key === 'dataDefinition'">
+                        <DataDefinition :data="record" />
+                      </template>
+                      <template v-else-if="column.key === 'value'">
+                        <Input
+                          :value="getFormValue(record.identifier)"
+                          @update:value="
+                            setFormValue(record.identifier, $event)
+                          "
+                          placeholder="输入值"
+                          size="small"
+                        />
+                      </template>
+                    </template>
+                  </Table>
+                  <div class="mt-4 flex items-center justify-between">
+                    <span class="text-sm text-gray-600">
+                      设置属性值后，点击「发送属性设置」按钮
+                    </span>
+                    <Button type="primary" @click="handlePropertySet">
+                      发送属性设置
+                    </Button>
+                  </div>
+                </ContentWrap>
+              </Tabs.TabPane>
+
+              <!-- 服务调用 -->
+              <Tabs.TabPane
+                :key="IotDeviceMessageMethodEnum.SERVICE_INVOKE.method"
+                tab="设备服务调用"
+              >
+                <ContentWrap>
+                  <Table
+                    :data-source="serviceList"
+                    align="center"
+                    :columns="serviceColumns"
+                    :pagination="false"
+                    :scroll="{ y: 300 }"
+                    size="small"
+                  >
+                    <template #bodyCell="{ column, record }">
+                      <template v-if="column.key === 'dataDefinition'">
+                        <DataDefinition :data="record" />
+                      </template>
+                      <template v-else-if="column.key === 'value'">
+                        <Textarea
+                          :value="getFormValue(record.identifier)"
+                          @update:value="
+                            setFormValue(record.identifier, $event)
+                          "
+                          :rows="3"
+                          placeholder="输入服务参数（JSON格式）"
+                          size="small"
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'action'">
+                        <Button
+                          type="primary"
+                          size="small"
+                          @click="handleServiceInvoke(record)"
+                        >
+                          服务调用
+                        </Button>
+                      </template>
+                    </template>
+                  </Table>
+                </ContentWrap>
+              </Tabs.TabPane>
+            </Tabs>
+          </Tabs.TabPane>
+        </Tabs>
+      </div>
+    </Card>
+
+    <!-- 下方：设备消息区域 -->
+    <Card>
+      <template #title>
+        <div class="flex items-center justify-between">
+          <span>设备消息</span>
+          <Button
+            type="text"
+            size="small"
+            @click="messageCollapsed = !messageCollapsed"
+          >
+            <IconifyIcon icon="lucide:chevron-down" v-if="!messageCollapsed" />
+            <IconifyIcon icon="lucide:chevron-down" v-if="messageCollapsed" />
+          </Button>
+        </div>
+      </template>
+      <div v-show="!messageCollapsed">
+        <DeviceDetailsMessage
+          v-if="device.id"
+          ref="deviceMessageRef"
+          :device-id="device.id"
+        />
+      </div>
+    </Card>
   </ContentWrap>
 </template>

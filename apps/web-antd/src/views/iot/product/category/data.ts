@@ -35,10 +35,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         api: getSimpleProductCategoryList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
         placeholder: '请选择父级分类',
         allowClear: true,
       },

@@ -545,10 +545,8 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {

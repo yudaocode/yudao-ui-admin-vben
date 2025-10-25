@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { SimpleFlowNode } from '#/components/simple-process-design';
+import type { SimpleFlowNode } from '#/views/bpm/components/simple-process-design';
 
 import { ref, watch } from 'vue';
 
 import { BpmNodeTypeEnum, BpmTaskStatusEnum } from '@vben/constants';
 
-import { SimpleProcessViewer } from '#/components/simple-process-design';
+import { SimpleProcessViewer } from '#/views/bpm/components/simple-process-design';
 
 defineOptions({ name: 'BpmProcessInstanceSimpleViewer' });
 
@@ -23,10 +23,8 @@ const props = withDefaults(
 );
 
 const simpleModel = ref<any>({});
-// 用户任务
-const tasks = ref([]);
-// 流程实例
-const processInstance = ref();
+const tasks = ref([]); // 用户任务
+const processInstance = ref(); // 流程实例
 
 /** 监控模型视图 包括任务列表、进行中的活动节点编号等 */
 watch(
@@ -69,6 +67,7 @@ watch(
     }
   },
 );
+
 const setSimpleModelNodeTaskStatus = (
   simpleModel: SimpleFlowNode | undefined,
   processStatus: number,
@@ -102,7 +101,7 @@ const setSimpleModelNodeTaskStatus = (
     } else if (finishedActivityIds.includes(simpleModel.id)) {
       simpleModel.activityStatus = BpmTaskStatusEnum.APPROVE;
     }
-    // TODO 是不是还缺一个 cancel 的状态
+    // TODO 是不是还缺一个 cancel 的状态 @jason：
   }
   // 抄送节点
   if (simpleModel.type === BpmNodeTypeEnum.COPY_TASK_NODE) {
@@ -177,5 +176,3 @@ const setSimpleModelNodeTaskStatus = (
     />
   </div>
 </template>
-
-<style lang="scss" scoped></style>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
 import type { MallDiyTemplateApi } from '#/api/mall/promotion/diy/template';
-import type { DiyComponentLibrary } from '#/components/diy-editor/util'; // 商城的 DIY 组件，在 DiyEditor 目录下
+import type { DiyComponentLibrary } from '#/views/mall/promotion/components'; // 商城的 DIY 组件，在 DiyEditor 目录下
 
 import { onMounted, reactive, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -15,8 +15,7 @@ import { ElMessage } from 'element-plus';
 import * as DiyPageApi from '#/api/mall/promotion/diy/page';
 // TODO @疯狂：要不要建个 decorate 目录，然后挪进去，改成 index.vue，这样可以更明确看到是个独立界面哈，更好找
 import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
-import DiyEditor from '#/components/diy-editor/index.vue';
-import { PAGE_LIBS } from '#/components/diy-editor/util';
+import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
@@ -178,7 +177,7 @@ const recoverPageIndex = () => {
 // #endregion
 
 /** 初始化 */
-const { currentRoute } = useRouter(); // 路由
+const { currentRoute } = useRouter();
 onMounted(async () => {
   resetForm();
   if (!currentRoute.value.params.id) {

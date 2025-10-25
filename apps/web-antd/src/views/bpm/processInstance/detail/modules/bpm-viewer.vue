@@ -3,7 +3,7 @@ defineOptions({ name: 'ProcessInstanceBpmnViewer' });
 </script>
 
 <template>
-  <!-- TODO @ziye：可以后续，找下 antd 有没可以直接用的组件哈 -->
+  <!-- TODO @jason：这里 BPMN 图的接入 -->
   <div>
     <h1>BPMN Viewer</h1>
   </div>

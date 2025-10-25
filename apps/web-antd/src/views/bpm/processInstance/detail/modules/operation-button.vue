@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @jason：你感觉要拆分下，按照表单么？
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 
@@ -44,13 +45,12 @@ import {
 import * as TaskApi from '#/api/bpm/task';
 import * as UserApi from '#/api/system/user';
 import { setConfAndFields2 } from '#/components/form-create';
+import { $t } from '#/locales';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
 
 defineOptions({ name: 'ProcessInstanceBtnContainer' });
-
-// 定义 success 事件，用于操作成功后的回调
 
 const props = defineProps<{
   normalForm: any; // 流程表单 formCreate
@@ -67,12 +67,7 @@ const [SignatureModal, signatureModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-/** 创建流程表达式 */
-function openSignatureModal() {
-  signatureModalApi.setData(null).open();
-}
-
-const router = useRouter(); // 路由
+const router = useRouter();
 const userStore = useUserStore();
 const userId = userStore.userInfo?.id;
 const formLoading = ref(false); // 表单加载中
@@ -89,15 +84,19 @@ const popOverVisible: any = ref({
 }); // 气泡卡是否展示
 const returnList = ref([] as any); // 退回节点
 
+/** 创建流程表达式 */
+function openSignatureModal() {
+  signatureModalApi.setData(null).open();
+}
+
 // ========== 审批信息 ==========
 const runningTask = ref<any>(); // 运行中的任务
 const approveForm = ref<any>({}); // 审批通过时，额外的补充信息
 const approveFormFApi = ref<any>({}); // approveForms 的 fAPi
 const nodeTypeName = ref('审批'); // 节点类型名称
 
-// 审批通过意见表单
 const reasonRequire = ref();
-const approveFormRef = ref<FormInstance>();
+const approveFormRef = ref<FormInstance>(); // 审批通过意见表单
 const approveSignFormRef = ref();
 const nextAssigneesActivityNode = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>(
   [],
@@ -126,11 +125,10 @@ const approveReasonRule: Record<string, any> = computed(() => {
   };
 });
 
-// 拒绝表单
 const rejectFormRef = ref<FormInstance>();
 const rejectReasonForm = reactive({
   reason: '',
-});
+}); // 拒绝表单
 const rejectReasonRule: any = computed(() => {
   return {
     reason: [
@@ -143,8 +141,7 @@ const rejectReasonRule: any = computed(() => {
   } as Record<string, Rule[]>;
 });
 
-// 抄送表单
-const copyFormRef = ref<FormInstance>();
+const copyFormRef = ref<FormInstance>(); // 抄送表单
 const copyForm = reactive({
   copyUserIds: [],
   copyReason: '',
@@ -155,8 +152,7 @@ const copyFormRule: Record<string, Rule[]> = reactive({
   ],
 });
 
-// 转办表单
-const transferFormRef = ref<FormInstance>();
+const transferFormRef = ref<FormInstance>(); // 转办表单
 const transferForm = reactive({
   assigneeUserId: undefined,
   reason: '',
@@ -168,8 +164,7 @@ const transferFormRule: Record<string, Rule[]> = reactive({
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
 
-// 委派表单
-const delegateFormRef = ref<FormInstance>();
+const delegateFormRef = ref<FormInstance>(); // 委派表单
 const delegateForm = reactive({
   delegateUserId: undefined,
   reason: '',
@@ -181,8 +176,7 @@ const delegateFormRule: Record<string, Rule[]> = reactive({
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
 
-// 加签表单
-const addSignFormRef = ref<FormInstance>();
+const addSignFormRef = ref<FormInstance>(); // 加签表单
 const addSignForm = reactive({
   addSignUserIds: undefined,
   reason: '',
@@ -194,8 +188,7 @@ const addSignFormRule: Record<string, Rule[]> = reactive({
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
 
-// 减签表单
-const deleteSignFormRef = ref<FormInstance>();
+const deleteSignFormRef = ref<FormInstance>(); // 减签表单
 const deleteSignForm = reactive({
   deleteSignTaskId: undefined,
   reason: '',
@@ -207,8 +200,7 @@ const deleteSignFormRule: Record<string, Rule[]> = reactive({
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
 
-// 退回表单
-const returnFormRef = ref<FormInstance>();
+const returnFormRef = ref<FormInstance>(); // 退回表单
 const returnForm = reactive({
   targetTaskDefinitionKey: undefined,
   returnReason: '',
@@ -222,9 +214,7 @@ const returnFormRule: Record<string, Rule[]> = reactive({
   ],
 });
 
-// 取消表单
-const cancelFormRef = ref<FormInstance>();
-
+const cancelFormRef = ref<FormInstance>(); // 取消表单
 const cancelForm = reactive({
   cancelReason: '',
 });
@@ -255,7 +245,7 @@ async function openPopover(type: string) {
       message.warning('表单校验不通过，请先完善表单!!');
       return;
     }
-    initNextAssigneesFormField();
+    await initNextAssigneesFormField();
   }
   if (type === 'return') {
     // 获取退回节点
@@ -268,6 +258,7 @@ async function openPopover(type: string) {
   Object.keys(popOverVisible.value).forEach((item) => {
     if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
+  // TODO @jason：下面这 2 行，要删除么？
   // await nextTick()
   // formRef.value.resetFields()
 }
@@ -332,6 +323,7 @@ async function initNextAssigneesFormField() {
 function selectNextAssigneesConfirm(id: string, userList: any[]) {
   approveReasonForm.nextAssignees[id] = userList?.map((item: any) => item.id);
 }
+
 /** 审批通过时，校验每个自选审批人的节点是否都已配置了审批人 */
 function validateNextAssignees() {
   if (Object.keys(nextAssigneesActivityNode.value).length === 0) {
@@ -426,7 +418,7 @@ async function handleCopy() {
     await TaskApi.copyTask(data);
     copyFormRef.value.resetFields();
     popOverVisible.value.copy = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     formLoading.value = false;
   }
@@ -437,7 +429,9 @@ async function handleTransfer() {
   formLoading.value = true;
   try {
     // 1.1 校验表单
-    if (!transferFormRef.value) return;
+    if (!transferFormRef.value) {
+      return;
+    }
     await transferFormRef.value.validate();
     // 1.2 提交转交
     const data = {
@@ -448,7 +442,7 @@ async function handleTransfer() {
     await TaskApi.transferTask(data);
     transferFormRef.value.resetFields();
     popOverVisible.value.transfer = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2. 加载最新数据
     reload();
   } finally {
@@ -469,11 +463,10 @@ async function handleDelegate() {
       reason: delegateForm.reason,
       delegateUserId: delegateForm.delegateUserId,
     };
-
     await TaskApi.delegateTask(data);
     popOverVisible.value.delegate = false;
     delegateFormRef.value.resetFields();
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2. 加载最新数据
     reload();
   } finally {
@@ -496,7 +489,7 @@ async function handlerAddSign(type: string) {
       userIds: addSignForm.addSignUserIds,
     };
     await TaskApi.signCreateTask(data);
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     addSignFormRef.value.resetFields();
     popOverVisible.value.addSign = false;
     // 2 加载最新数据
@@ -519,11 +512,10 @@ async function handleReturn() {
       reason: returnForm.returnReason,
       targetTaskDefinitionKey: returnForm.targetTaskDefinitionKey,
     };
-
     await TaskApi.returnTask(data);
     popOverVisible.value.return = false;
     returnFormRef.value.resetFields();
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     // 2 重新加载数据
     reload();
   } finally {
@@ -544,7 +536,7 @@ async function handleCancel() {
       cancelForm.cancelReason,
     );
     popOverVisible.value.return = false;
-    message.success('操作成功');
+    message.success($t('ui.actionMessage.operationSuccess'));
     cancelFormRef.value.resetFields();
     // 2 重新加载数据
     reload();
@@ -556,11 +548,11 @@ async function handleCancel() {
 /** 处理再次提交 */
 async function handleReCreate() {
   // 跳转发起流程界面
+  // TODO @jason：这个要优化成 push 到 name 么？这样后续 path 可以按需调整；
   await router.push({
     path: '/bpm/task/create',
     query: { processInstanceId: props.processInstance?.id },
   });
-  // router.push('/bpm/task/my');
 }
 
 /** 获取减签人员标签 */
@@ -569,6 +561,7 @@ function getDeleteSignUserLabel(task: any): string {
   const nickname = task?.assigneeUser?.nickname || task?.ownerUser?.nickname;
   return `${nickname} ( 所属部门：${deptName} )`;
 }
+
 /** 处理减签 */
 async function handlerDeleteSign() {
   formLoading.value = true;
@@ -591,6 +584,7 @@ async function handlerDeleteSign() {
     formLoading.value = false;
   }
 }
+
 /** 重新加载数据 */
 function reload() {
   emit('success');
@@ -642,6 +636,7 @@ function getButtonDisplayName(btnType: BpmTaskOperationButtonTypeEnum) {
   return displayName;
 }
 
+/** 加载待办任务 */
 function loadTodoTask(task: any) {
   approveForm.value = {};
   runningTask.value = task;
@@ -649,7 +644,7 @@ function loadTodoTask(task: any) {
   reasonRequire.value = task?.reasonRequire ?? false;
   nodeTypeName.value =
     task?.nodeType === BpmNodeTypeEnum.TRANSACTOR_NODE ? '办理' : '审批';
-  // 处理 approve 表单.
+  // 处理 approve 表单
   if (task && task.formId && task.formConf) {
     const tempApproveForm = {};
     setConfAndFields2(
@@ -706,6 +701,7 @@ defineExpose({ loadTodoTask });
 </script>
 <template>
   <div class="flex items-center">
+    <!-- TODO @jason：这里要删除么？ -->
     <!-- <div>是否处理中 {{ !!isHandleTaskStatus() }}</div> -->
 
     <!-- 【通过】按钮 -->
@@ -776,7 +772,6 @@ defineExpose({ loadTodoTask });
                 <Button @click="openSignatureModal" type="primary">
                   {{ approveReasonForm.signPicUrl ? '重新签名' : '点击签名' }}
                 </Button>
-
                 <div class="mt-2">
                   <Image
                     class="float-left h-40 w-80"
@@ -785,7 +780,6 @@ defineExpose({ loadTodoTask });
                   />
                 </div>
               </FormItem>
-
               <FormItem :label="`${nodeTypeName}意见`" name="reason">
                 <Textarea
                   v-model:value="approveReasonForm.reason"
@@ -793,7 +787,6 @@ defineExpose({ loadTodoTask });
                   :rows="4"
                 />
               </FormItem>
-
               <FormItem>
                 <Space>
                   <Button
@@ -901,6 +894,7 @@ defineExpose({ loadTodoTask });
               label-width="100px"
             >
               <FormItem label="抄送人" name="copyUserIds">
+                <!-- TODO @jason：看看是不是用 看看能不能通过 tailwindcss 简化下 style -->
                 <Select
                   v-model:value="copyForm.copyUserIds"
                   :allow-clear="true"

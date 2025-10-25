@@ -2,7 +2,7 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
-namespace ErpFinanceReceiptApi {
+export namespace ErpFinanceReceiptApi {
   /** 收款单项 */
   export interface FinanceReceiptItem {
     id?: number;

@@ -101,6 +101,7 @@ export interface Action {
   identifier?: string;
   value?: any;
   alertConfigId?: number;
+  params?: string;
 }
 
 /** 查询场景联动规则分页 */

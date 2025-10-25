@@ -17,7 +17,7 @@ import Form from '../../../../model/chatRole/modules/form.vue';
 import RoleCategoryList from './RoleCategoryList.vue';
 import RoleList from './RoleList.vue';
 
-const router = useRouter(); // 路由对象
+const router = useRouter();
 const [Drawer] = useVbenDrawer({
   title: '角色管理',
   footer: false,

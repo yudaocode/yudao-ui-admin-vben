@@ -21,18 +21,17 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'price',
       label: '计划回款金额',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'returnTime',
       label: '计划回款日期',
-      content: (data) => formatDateTime(data?.returnTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'receivable',
       label: '实际回款金额',
-      content: (data) =>
-        erpPriceInputFormatter(data?.receivable?.price ?? 0),
+      render: (val) => erpPriceInputFormatter(val?.price ?? 0),
     },
   ];
 }
@@ -55,20 +54,20 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'returnTime',
       label: '计划回款日期',
-      content: (data) => formatDateTime(data?.returnTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'price',
       label: '计划回款金额',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'returnType',
       label: '计划回款方式',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE,
-          value: data?.returnType,
+          value: val,
         }),
     },
     {
@@ -78,22 +77,20 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'receivable',
       label: '实际回款金额',
-      content: (data) =>
-        erpPriceInputFormatter(data?.receivable?.price ?? 0),
+      render: (val) => erpPriceInputFormatter(val ?? 0),
     },
     {
       field: 'receivableRemain',
       label: '未回款金额',
-      content: (data) => {
+      render: (val, data) => {
         const paid = data?.receivable?.price ?? 0;
-        return erpPriceInputFormatter(Math.max(data.price - paid, 0));
+        return erpPriceInputFormatter(Math.max(val - paid, 0));
       },
     },
     {
       field: 'receivable.returnTime',
       label: '实际回款日期',
-      content: (data) =>
-        formatDateTime(data?.receivable?.returnTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'remark',
@@ -116,12 +113,12 @@ export function useDetailSystemSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
   ];
 }

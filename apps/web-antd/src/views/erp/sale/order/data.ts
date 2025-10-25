@@ -53,10 +53,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getCustomerSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
       rules: 'required',
     },
@@ -69,10 +67,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        labelField: 'nickname',
+        valueField: 'id',
       },
     },
     {
@@ -158,10 +154,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getAccountSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -282,10 +276,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -306,10 +298,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getCustomerSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -321,10 +311,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        labelField: 'nickname',
+        valueField: 'id',
       },
     },
     {

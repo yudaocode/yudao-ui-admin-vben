@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMindmapApi } from '#/api/ai/mindmap';
-import type { SystemUserApi } from '#/api/system/user';
 
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
@@ -11,14 +10,11 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMindMap, getMindMapPage } from '#/api/ai/mindmap';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import Right from '../index/modules/Right.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
-const userList = ref<SystemUserApi.User[]>([]); // 用户列表
-const previewVisible = ref(false); // drawer 的显示隐藏
 const previewContent = ref('');
 const [Drawer, drawerApi] = useVbenDrawer({
   header: false,
@@ -75,16 +71,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<AiMindmapApi.MindMap>,
 });
 async function openPreview(row: AiMindmapApi.MindMap) {
-  previewVisible.value = false;
+  previewContent.value = row.generatedContent;
   drawerApi.open();
   await nextTick();
-  previewVisible.value = true;
-  previewContent.value = row.generatedContent;
 }
-onMounted(async () => {
-  // 获得下拉数据
-  userList.value = await getSimpleUserList();
-});
 </script>
 
 <template>
@@ -94,7 +84,6 @@ onMounted(async () => {
     </template>
     <Drawer class="w-3/5">
       <Right
-        v-if="previewVisible"
         :generated-content="previewContent"
         :is-end="true"
         :is-generating="false"
@@ -102,17 +91,6 @@ onMounted(async () => {
       />
     </Drawer>
     <Grid table-title="思维导图管理列表">
-      <template #toolbar-tools>
-        <TableAction :actions="[]" />
-      </template>
-      <template #userId="{ row }">
-        <span>
-          {{
-            userList.find((item: SystemUserApi.User) => item.id === row.userId)
-              ?.nickname
-          }}
-        </span>
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

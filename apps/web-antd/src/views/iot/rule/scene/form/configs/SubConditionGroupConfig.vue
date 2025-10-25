@@ -33,7 +33,7 @@ const subGroup = useVModel(props, 'modelValue', emit);
 const maxConditions = computed(() => props.maxConditions || 3); // 最大条件数量
 
 /** 添加条件 */
-const addCondition = async () => {
+async function addCondition() {
   // 确保 subGroup.value 是一个数组
   if (!subGroup.value) {
     subGroup.value = [];
@@ -58,7 +58,7 @@ const addCondition = async () => {
   if (subGroup.value) {
     subGroup.value.push(newCondition);
   }
-};
+}
 
 /**
  * 移除条件

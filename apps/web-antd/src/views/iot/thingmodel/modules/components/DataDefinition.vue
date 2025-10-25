@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
+import { computed } from 'vue';
+
+import { Tooltip } from 'ant-design-vue';
+
 import {
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
@@ -11,12 +15,40 @@ import {
 /** 数据定义展示组件 */
 defineOptions({ name: 'DataDefinition' });
 
-defineProps<{ data: ThingModelData }>();
+const props = defineProps<{ data: ThingModelData }>();
+
+// 格式化布尔值和枚举值列表为字符串
+const formattedDataSpecsList = computed(() => {
+  if (
+    !props.data.property?.dataSpecsList ||
+    props.data.property.dataSpecsList.length === 0
+  ) {
+    return '';
+  }
+  return props.data.property.dataSpecsList
+    .map((item) => `${item.value}-${item.name}`)
+    .join('、');
+});
+
+// 显示的简短文本（第一个值）
+const shortText = computed(() => {
+  if (
+    !props.data.property?.dataSpecsList ||
+    props.data.property.dataSpecsList.length === 0
+  ) {
+    return '-';
+  }
+  const first = props.data.property.dataSpecsList[0];
+  const count = props.data.property.dataSpecsList.length;
+  return count > 1
+    ? `${first.value}-${first.name} 等${count}项`
+    : `${first.value}-${first.name}`;
+});
 </script>
 
 <template>
   <!-- 属性 -->
-  <template v-if="data.type === IoTThingModelTypeEnum.PROPERTY.toString()">
+  <template v-if="Number(data.type) === IoTThingModelTypeEnum.PROPERTY">
     <!-- 非列表型：数值 -->
     <div
       v-if="
@@ -28,12 +60,12 @@ defineProps<{ data: ThingModelData }>();
       "
     >
       取值范围：{{
-        `${data.property?.dataSpecs.min}~${data.property?.dataSpecs.max}`
+        `${data.property?.dataSpecs?.min}~${data.property?.dataSpecs?.max}`
       }}
     </div>
     <!-- 非列表型：文本 -->
     <div v-if="IoTDataSpecsDataTypeEnum.TEXT === data.property?.dataType">
-      数据长度：{{ data.property?.dataSpecs.length }}
+      数据长度：{{ data.property?.dataSpecs?.length }}
     </div>
     <!-- 列表型: 数组、结构、时间（特殊） -->
     <div
@@ -55,28 +87,37 @@ defineProps<{ data: ThingModelData }>();
         )
       "
     >
-      <div>
-        {{
-          IoTDataSpecsDataTypeEnum.BOOL === data.property?.dataType
-            ? '布尔值'
-            : '枚举值'
-        }}：
-      </div>
-      <div v-for="item in data.property?.dataSpecsList" :key="item.value">
-        {{ `${item.name}-${item.value}` }}
-      </div>
+      <Tooltip :title="formattedDataSpecsList" placement="topLeft">
+        <span class="data-specs-text">
+          {{
+            IoTDataSpecsDataTypeEnum.BOOL === data.property?.dataType
+              ? '布尔值'
+              : '枚举值'
+          }}：{{ shortText }}
+        </span>
+      </Tooltip>
     </div>
   </template>
   <!-- 服务 -->
-  <div v-if="data.type === IoTThingModelTypeEnum.SERVICE.toString()">
+  <div v-if="Number(data.type) === IoTThingModelTypeEnum.SERVICE">
     调用方式：{{
       getThingModelServiceCallTypeLabel(data.service?.callType as any)
     }}
   </div>
   <!-- 事件 -->
-  <div v-if="data.type === IoTThingModelTypeEnum.EVENT.toString()">
+  <div v-if="Number(data.type) === IoTThingModelTypeEnum.EVENT">
     事件类型：{{ getEventTypeLabel(data.event?.type as any) }}
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.data-specs-text {
+  cursor: help;
+  border-bottom: 1px dashed #d9d9d9;
+
+  &:hover {
+    color: #1890ff;
+    border-bottom-color: #1890ff;
+  }
+}
+</style>

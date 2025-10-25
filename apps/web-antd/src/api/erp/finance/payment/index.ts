@@ -20,9 +20,9 @@ export namespace ErpFinancePaymentApi {
   export interface FinancePayment {
     id?: number; // 付款单编号
     no: string; // 付款单号
-    supplierId: number; // 供应商编号
+    supplierId?: number; // 供应商编号
     supplierName?: string; // 供应商名称
-    paymentTime: Date; // 付款时间
+    paymentTime?: Date; // 付款时间
     totalPrice: number; // 合计金额，单位：元
     discountPrice: number; // 优惠金额
     paymentPrice: number; // 实际付款金额

@@ -27,7 +27,7 @@ defineExpose({
     <h3 class="text-primary h-7 w-full text-center text-xl leading-7">
       思维导图创作中心
     </h3>
-    <div class="flex-grow overflow-y-auto">
+    <div class="mt-4 flex-grow overflow-y-auto">
       <div>
         <b>您的需求？</b>
         <Textarea

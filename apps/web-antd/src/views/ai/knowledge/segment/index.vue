@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { AiKnowledgeKnowledgeApi } from '#/api/ai/knowledge/knowledge';
 import type { AiKnowledgeSegmentApi } from '#/api/ai/knowledge/segment';
 
 import { onMounted } from 'vue';
@@ -41,12 +40,12 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: AiKnowledgeKnowledgeApi.Knowledge) {
+function handleEdit(row: AiKnowledgeSegmentApi.KnowledgeSegment) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 */
-async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
+async function handleDelete(row: AiKnowledgeSegmentApi.KnowledgeSegment) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -88,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AiKnowledgeKnowledgeApi.Knowledge>,
+  } as VxeTableGridOptions<AiKnowledgeSegmentApi.KnowledgeSegment>,
 });
 
 /** 修改是否发布 */

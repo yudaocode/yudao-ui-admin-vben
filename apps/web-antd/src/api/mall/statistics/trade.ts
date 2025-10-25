@@ -1,6 +1,6 @@
-import type { MallDataComparisonResp } from './common';
+import type { DataComparisonRespVO } from './common';
 
-import { formatDate } from '@vben/utils';
+import { formatDate, formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
@@ -43,7 +43,7 @@ export namespace MallTradeStatisticsApi {
   }
 
   /** 交易订单统计 Response */
-  export interface TradeOrderSummary {
+  export interface TradeOrderSummaryRespVO {
     /** 支付订单商品数 */
     orderPayCount?: number;
     /** 总支付金额，单位：分 */
@@ -71,36 +71,28 @@ const formatDateParam = (params: MallTradeStatisticsApi.TradeTrendReq) => {
 /** 查询交易统计 */
 export function getTradeStatisticsSummary() {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>
   >('/statistics/trade/summary');
 }
 
 /** 获得交易状况统计 */
-export function getTradeStatisticsAnalyse(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
+export function getTradeStatisticsAnalyse(params: any) {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeTrendSummary>
-  >('/statistics/trade/analyse', { params: formatDateParam(params) });
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>
+  >('/statistics/trade/analyse', { params });
 }
 
 /** 获得交易状况明细 */
-export function getTradeStatisticsList(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
+export function getTradeStatisticsList(params: any) {
   return requestClient.get<MallTradeStatisticsApi.TradeTrendSummary[]>(
     '/statistics/trade/list',
-    { params: formatDateParam(params) },
+    { params },
   );
 }
 
 /** 导出交易状况明细 */
-export function exportTradeStatisticsExcel(
-  params: MallTradeStatisticsApi.TradeTrendReq,
-) {
-  return requestClient.download('/statistics/trade/export-excel', {
-    params: formatDateParam(params),
-  });
+export function exportTradeStatisticsExcel(params: any) {
+  return requestClient.download('/statistics/trade/export-excel', { params });
 }
 
 /** 获得交易订单数量 */
@@ -113,7 +105,7 @@ export function getOrderCount() {
 /** 获得交易订单数量对照 */
 export function getOrderComparison() {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeOrderSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderSummaryRespVO>
   >('/statistics/trade/order-comparison');
 }
 
@@ -124,12 +116,12 @@ export function getOrderCountTrendComparison(
   endTime: Date,
 ) {
   return requestClient.get<
-    MallDataComparisonResp<MallTradeStatisticsApi.TradeOrderTrend>[]
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderTrend>[]
   >('/statistics/trade/order-count-trend', {
     params: {
       type,
-      beginTime: formatDate(beginTime),
-      endTime: formatDate(endTime),
+      beginTime: formatDateTime(beginTime),
+      endTime: formatDateTime(endTime),
     },
   });
 }

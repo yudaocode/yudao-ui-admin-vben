@@ -50,7 +50,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
       label: '商品品牌',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleBrandList(),
+        api: getSimpleBrandList,
         labelField: 'name',
         valueField: 'id',
         allowClear: true,

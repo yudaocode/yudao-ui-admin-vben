@@ -181,10 +181,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getProductSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -205,10 +203,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getWarehouseSimpleList,
-        fieldNames: {
-          label: 'name',
-          value: 'id',
-        },
+        labelField: 'name',
+        valueField: 'id',
       },
     },
     {
@@ -220,10 +216,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         showSearch: true,
         api: getSimpleUserList,
-        fieldNames: {
-          label: 'nickname',
-          value: 'id',
-        },
+        labelField: 'nickname',
+        valueField: 'id',
       },
     },
     {

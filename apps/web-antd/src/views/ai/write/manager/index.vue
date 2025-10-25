@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiWriteApi } from '#/api/ai/write';
-import type { SystemUserApi } from '#/api/system/user';
-
-import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
@@ -11,12 +8,10 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteWrite, getWritePage } from '#/api/ai/write';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -66,10 +61,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AiWriteApi.AiWritePageReq>,
 });
-onMounted(async () => {
-  // 获得下拉数据
-  userList.value = await getSimpleUserList();
-});
 </script>
 
 <template>
@@ -78,14 +69,6 @@ onMounted(async () => {
       <DocAlert title="AI 写作助手" url="https://doc.iocoder.cn/ai/write/" />
     </template>
     <Grid table-title="写作管理列表">
-      <template #toolbar-tools>
-        <TableAction :actions="[]" />
-      </template>
-      <template #userId="{ row }">
-        <span>{{
-          userList.find((item) => item.id === row.userId)?.nickname
-        }}</span>
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

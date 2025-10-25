@@ -1,8 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+
+let userList: SystemUserApi.User[] = [];
+async function getUserData() {
+  userList = await getSimpleUserList();
+}
+
+getUserData();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -44,9 +52,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       fixed: 'left',
     },
     {
-      minWidth: 180,
+      field: 'userId',
       title: '用户',
-      slots: { default: 'userId' },
+      minWidth: 180,
+      formatter: ({ cellValue }) =>
+        userList.find((user) => user.id === cellValue)?.nickname || '-',
     },
     {
       field: 'prompt',

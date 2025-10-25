@@ -1,6 +1,6 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { MallDataComparisonResp } from './common';
+import type { DataComparisonRespVO } from './common';
 
 import { requestClient } from '#/api/request';
 
@@ -41,14 +41,14 @@ export namespace MallProductStatisticsApi {
 }
 
 /** 获得商品统计分析 */
-export function getProductStatisticsAnalyse(params: PageParam) {
+export function getProductStatisticsAnalyse(params: any) {
   return requestClient.get<
-    MallDataComparisonResp<MallProductStatisticsApi.ProductStatistics>
+    DataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>
   >('/statistics/product/analyse', { params });
 }
 
 /** 获得商品状况明细 */
-export function getProductStatisticsList(params: PageParam) {
+export function getProductStatisticsList(params: any) {
   return requestClient.get<MallProductStatisticsApi.ProductStatistics[]>(
     '/statistics/product/list',
     { params },
@@ -56,7 +56,7 @@ export function getProductStatisticsList(params: PageParam) {
 }
 
 /** 导出获得商品状况明细 Excel */
-export function exportProductStatisticsExcel(params: PageParam) {
+export function exportProductStatisticsExcel(params: any) {
   return requestClient.download('/statistics/product/export-excel', { params });
 }
 

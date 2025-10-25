@@ -13,6 +13,7 @@ export namespace BpmTaskApi {
     status: number; // 监听器状态
     event: string; // 监听事件
     valueType: string; // 监听器值类型
+    processInstance?: BpmProcessInstanceApi.ProcessInstance; // 流程实例
   }
 
   // 流程任务
@@ -129,4 +130,11 @@ export const getChildrenTaskList = async (id: string) => {
   return await requestClient.get(
     `/bpm/task/list-by-parent-task-id?parentTaskId=${id}`,
   );
+};
+
+// 撤回任务
+export const withdrawTask = async (taskId: string) => {
+  return await requestClient.put('/bpm/task/withdraw', null, {
+    params: { taskId },
+  });
 };

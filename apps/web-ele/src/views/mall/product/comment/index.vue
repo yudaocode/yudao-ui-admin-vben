@@ -80,7 +80,7 @@ async function handleStatusChange(
           ElMessage.success(`${text}成功`);
           resolve(true);
         } else {
-          reject(new Error('操作失败'));
+          reject(new Error($t('ui.actionMessage.operationFailed')));
         }
       })
       .catch(() => {

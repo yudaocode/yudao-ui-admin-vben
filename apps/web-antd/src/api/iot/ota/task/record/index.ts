@@ -95,7 +95,7 @@ export function getOtaTaskRecordStatusStatistics(
   taskId?: number,
 ) {
   return requestClient.get<Record<string, number>>(
-    '/iot/ota/task/record/status-statistics',
+    '/iot/ota/task/record/get-status-statistics',
     { params: { firmwareId, taskId } },
   );
 }

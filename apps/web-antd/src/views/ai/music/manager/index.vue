@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMusicApi } from '#/api/ai/music';
-import type { SystemUserApi } from '#/api/system/user';
-
-import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { AiMusicStatusEnum } from '@vben/constants';
@@ -12,12 +9,10 @@ import { Button, message, Switch } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
-import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -83,10 +78,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AiMusicApi.Music>,
 });
-onMounted(async () => {
-  // 获得下拉数据
-  userList.value = await getSimpleUserList();
-});
 </script>
 
 <template>
@@ -99,11 +90,6 @@ onMounted(async () => {
         <TableAction :actions="[]" />
       </template>
 
-      <template #userId="{ row }">
-        <span>
-          {{ userList.find((item) => item.id === row.userId)?.nickname }}
-        </span>
-      </template>
       <template #content="{ row }">
         <Button
           type="link"

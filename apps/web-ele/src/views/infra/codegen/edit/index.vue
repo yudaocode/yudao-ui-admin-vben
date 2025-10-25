@@ -85,7 +85,7 @@ async function submitForm() {
 const tabs = useTabs();
 function close() {
   tabs.closeCurrentTab();
-  router.push('/infra/codegen');
+  router.push({ name: 'InfraCodegen' });
 }
 
 /** 下一步 */

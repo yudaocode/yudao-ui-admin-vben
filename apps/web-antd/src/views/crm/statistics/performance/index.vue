@@ -6,17 +6,19 @@ import type { CrmStatisticsCustomerApi } from '#/api/crm/statistics/customer';
 
 import { onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { Tabs } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getContractCountPerformance,
   getContractPricePerformance,
   getReceivablePricePerformance,
 } from '#/api/crm/statistics/performance';
+import { $t } from '#/locales';
 
 import { getChartOptions } from './chartOptions';
 import { customerSummaryTabs, useGridFormSchema } from './data';
@@ -25,13 +27,25 @@ const activeTabName = ref('ContractCountPerformance');
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: {
-    schema: useGridFormSchema(),
-    handleSubmit: async () => {
-      await handleTabChange(activeTabName.value);
+const [QueryForm, formApi] = useVbenForm({
+  commonConfig: {
+    // 所有表单项
+    componentProps: {
+      class: 'w-full',
     },
   },
+  schema: useGridFormSchema(),
+  // 是否可展开
+  showCollapseButton: true,
+  submitButtonOptions: {
+    content: $t('common.query'),
+  },
+  wrapperClass: 'grid-cols-1 md:grid-cols-2',
+  handleSubmit: async () => {
+    await handleTabChange(activeTabName.value);
+  },
+});
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: [],
     height: 'auto',
@@ -42,7 +56,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       enabled: false,
     },
-    data: [],
     rowConfig: {
       keyField: 'id',
       isHover: true,
@@ -56,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** tab 切换 */
 async function handleTabChange(key: any) {
   activeTabName.value = key;
-  const params = (await gridApi.formApi.getValues()) as any;
+  const queryParams = (await formApi.getValues()) as any;
   let data: any[] = [];
   const columnsData: any[] = [];
   let tableData: any[] = [];
@@ -69,7 +82,7 @@ async function handleTabChange(key: any) {
         { title: '环比增长率（%）' },
         { title: '同比增长率（%）' },
       ];
-      data = await getContractCountPerformance(params);
+      data = await getContractCountPerformance(queryParams);
       break;
     }
     case 'ContractPricePerformance': {
@@ -80,7 +93,7 @@ async function handleTabChange(key: any) {
         { title: '环比增长率（%）' },
         { title: '同比增长率（%）' },
       ];
-      data = await getContractPricePerformance(params);
+      data = await getContractPricePerformance(queryParams);
       break;
     }
     case 'ReceivablePricePerformance': {
@@ -91,7 +104,7 @@ async function handleTabChange(key: any) {
         { title: '环比增长率（%）' },
         { title: '同比增长率（%）' },
       ];
-      data = await getReceivablePricePerformance(params);
+      data = await getReceivablePricePerformance(queryParams);
       break;
     }
     default: {
@@ -142,18 +155,22 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <Grid>
-      <template #top>
-        <Tabs v-model:active-key="activeTabName" @change="handleTabChange">
-          <Tabs.TabPane
-            v-for="item in customerSummaryTabs"
-            :key="item.key"
-            :tab="item.tab"
-            :force-render="true"
-          />
-        </Tabs>
-        <EchartsUI class="mb-20 h-full w-full" ref="chartRef" />
-      </template>
-    </Grid>
+    <ContentWrap>
+      <QueryForm />
+      <Tabs
+        v-model:active-key="activeTabName"
+        class="w-full"
+        @change="handleTabChange"
+      >
+        <Tabs.TabPane
+          v-for="item in customerSummaryTabs"
+          :key="item.key"
+          :tab="item.tab"
+          :force-render="true"
+        />
+      </Tabs>
+      <EchartsUI class="mb-20 h-full w-full" ref="chartRef" />
+      <Grid class="min-h-[400px]" />
+    </ContentWrap>
   </Page>
 </template>

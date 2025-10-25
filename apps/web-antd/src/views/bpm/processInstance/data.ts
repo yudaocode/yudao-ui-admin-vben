@@ -5,23 +5,12 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
+import { getSimpleProcessDefinitionList } from '#/api/bpm/definition';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
-    // {
-    //   fieldName: 'startUserId',
-    //   label: '发起人',
-    //   component: 'ApiSelect',
-    //   componentProps: {
-    //     placeholder: '请选择发起人',
-    //     allowClear: true,
-    //     api: getSimpleUserList,
-    //     labelField: 'nickname',
-    //     valueField: 'id',
-    //   },
-    // },
     {
       fieldName: 'name',
       label: '流程名称',
@@ -34,13 +23,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'processDefinitionId',
       label: '所属流程',
-      component: 'Input',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: '请输入流程定义的编号',
+        placeholder: '请选择流程定义',
         allowClear: true,
+        api: getSimpleProcessDefinitionList,
+        labelField: 'name',
+        valueField: 'id',
       },
     },
-    // 流程分类
     {
       fieldName: 'category',
       label: '流程分类',
@@ -53,7 +44,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'code',
       },
     },
-    // 流程状态
     {
       fieldName: 'status',
       label: '流程状态',
@@ -67,7 +57,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 发起时间
     {
       fieldName: 'createTime',
       label: '发起时间',
@@ -97,15 +86,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         default: 'slot-summary',
       },
     },
-
     {
       field: 'categoryName',
       title: '流程分类',
       minWidth: 120,
       fixed: 'left',
     },
-
-    // 流程状态
     {
       field: 'status',
       title: '流程状态',
@@ -114,7 +100,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         default: 'slot-status',
       },
     },
-
     {
       field: 'startTime',
       title: '发起时间',

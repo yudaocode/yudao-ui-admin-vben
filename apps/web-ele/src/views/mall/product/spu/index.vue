@@ -31,7 +31,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const tabType = ref(0);
-const route = useRoute(); // 路由
+const route = useRoute();
 const categoryList = ref();
 
 // tabs 数据
@@ -145,7 +145,7 @@ async function handleStatusChange(
           ElMessage.success(`${text}成功`);
           resolve(true);
         } else {
-          reject(new Error('操作失败'));
+          reject(new Error($t('ui.actionMessage.operationFailed')));
         }
       })
       .catch(() => {
@@ -224,9 +224,8 @@ onMounted(async () => {
     </template>
 
     <Grid>
-      <template #top>
-        <!-- TODO @xingyu：tabs 可以考虑往上以一些，和操作按钮在一排 -->
-        <ElTabs class="border-none" @tab-change="onChangeTab">
+      <template #toolbar-actions>
+        <ElTabs class="w-full" @tab-change="onChangeTab" :stretch="true">
           <ElTabs.TabPane
             v-for="item in tabsData"
             :key="item.type"

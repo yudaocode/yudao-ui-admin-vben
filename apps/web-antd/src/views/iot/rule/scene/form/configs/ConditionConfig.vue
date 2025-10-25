@@ -210,7 +210,8 @@ function handleOperatorChange() {
     <!-- 设备状态条件配置 -->
     <div
       v-if="
-        condition.type === IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS
+        condition.type ===
+        IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS.toString()
       "
       class="gap-16px flex flex-col"
     >
@@ -222,7 +223,7 @@ function handleOperatorChange() {
             <Select
               :model-value="condition.operator"
               @update:model-value="
-                (value) => updateConditionField('operator', value)
+                (value: any) => updateConditionField('operator', value)
               "
               placeholder="请选择操作符"
               class="w-full"

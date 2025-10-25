@@ -11,6 +11,8 @@ export * from './json-viewer';
 export * from './loading';
 export * from './page';
 export * from './resize';
+export * from './statistic-card';
+export * from './summary-card';
 export * from './tippy';
 export * from './tree';
 export * from '@vben-core/form-ui';

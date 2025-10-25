@@ -17,35 +17,29 @@ import {
 import { getModelList } from '#/api/bpm/model';
 import { router } from '#/router';
 
-// 流程分类对话框
 import CategoryForm from '../category/modules/form.vue';
 import CategoryDraggableModel from './modules/category-draggable-model.vue';
 
-// 新建流程分类对话框
 const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
   connectedComponent: CategoryForm,
   destroyOnClose: true,
 });
-// 模型列表加载状态
-const modelListSpinning = ref(false);
-// 保存排序状态
-const saveSortLoading = ref(false);
-// 按照 category 分组的数据
-const categoryGroup = ref<ModelCategoryInfo[]>([]);
-// 未排序前的原始数据
-const originalData = ref<ModelCategoryInfo[]>([]);
-// 可以排序元素的容器
-const sortable = useTemplateRef<HTMLElement>('categoryGroupRef');
-// 排序引用，以便后续启用或禁用排序
-const sortableInstance = ref<any>(null);
-// 分类排序状态
-const isCategorySorting = ref(false);
-// 查询参数
+
+const modelListSpinning = ref(false); // 模型列表加载状态
+
+const saveSortLoading = ref(false); // 保存排序状态
+const categoryGroup = ref<ModelCategoryInfo[]>([]); // 按照 category 分组的数据
+const originalData = ref<ModelCategoryInfo[]>([]); // 未排序前的原始数据
+
+const sortable = useTemplateRef<HTMLElement>('categoryGroupRef'); // 可以排序元素的容器
+const sortableInstance = ref<any>(null); // 排序引用，以便后续启用或禁用排序
+const isCategorySorting = ref(false); // 分类排序状态
+
 const queryParams = reactive({
   name: '',
-});
+}); // 查询参数
 
-// 监听分类排序模式切换
+/** 监听分类排序模式切换 */
 watch(
   () => isCategorySorting.value,
   (newValue) => {
@@ -131,10 +125,10 @@ async function handleCategorySortSubmit() {
     // 保存排序逻辑
     const ids = categoryGroup.value.map((item: any) => item.id);
     await updateCategorySortBatch(ids);
+    message.success('分类排序成功');
   } finally {
     saveSortLoading.value = false;
   }
-  message.success('分类排序成功');
   isCategorySorting.value = false;
   // 刷新列表
   await getList();

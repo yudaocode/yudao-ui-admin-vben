@@ -1,13 +1,15 @@
-import type { MallDataComparisonResp } from './common';
+import type { Dayjs } from 'dayjs';
 
-import { formatDate } from '@vben/utils';
+import type { DataComparisonRespVO } from './common';
+
+import { formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
 export namespace MallMemberStatisticsApi {
   /** 会员分析 Request */
-  export interface AnalyseReq {
-    times: Date[]; // 时间范围
+  export interface MemberAnalyseReqVO {
+    times: Date[] | Dayjs[]; // 时间范围
   }
 
   /** 会员分析对照数据 Response */
@@ -23,7 +25,7 @@ export namespace MallMemberStatisticsApi {
     orderUserCount: number; // 下单用户数
     payUserCount: number; // 支付用户数
     atv: number; // 平均客单价
-    comparison: MallDataComparisonResp<AnalyseComparison>; // 对照数据
+    comparison: DataComparisonRespVO<AnalyseComparison>; // 对照数据
   }
 
   /** 会员地区统计 Response */
@@ -57,7 +59,7 @@ export namespace MallMemberStatisticsApi {
   }
 
   /** 会员数量统计 Response */
-  export interface Count {
+  export interface MemberCountRespVO {
     visitUserCount: string; // 用户访问量
     registerUserCount: number; // 注册用户数量
   }
@@ -77,12 +79,17 @@ export function getMemberSummary() {
 }
 
 /** 查询会员分析数据 */
-export function getMemberAnalyse(params: MallMemberStatisticsApi.AnalyseReq) {
+export function getMemberAnalyse(
+  params: MallMemberStatisticsApi.MemberAnalyseReqVO,
+) {
   return requestClient.get<MallMemberStatisticsApi.Analyse>(
     '/statistics/member/analyse',
     {
       params: {
-        times: [formatDate(params.times[0]), formatDate(params.times[1])],
+        times: [
+          formatDateTime(params.times[0]),
+          formatDateTime(params.times[1]),
+        ],
       },
     },
   );
@@ -112,7 +119,7 @@ export function getMemberTerminalStatisticsList() {
 /** 获得用户数量量对照 */
 export function getUserCountComparison() {
   return requestClient.get<
-    MallDataComparisonResp<MallMemberStatisticsApi.Count>
+    DataComparisonRespVO<MallMemberStatisticsApi.MemberCountRespVO>
   >('/statistics/member/user-count-comparison');
 }
 
@@ -122,7 +129,7 @@ export function getMemberRegisterCountList(beginTime: Date, endTime: Date) {
     '/statistics/member/register-count-list',
     {
       params: {
-        times: [formatDate(beginTime), formatDate(endTime)],
+        times: [formatDateTime(beginTime), formatDateTime(endTime)],
       },
     },
   );

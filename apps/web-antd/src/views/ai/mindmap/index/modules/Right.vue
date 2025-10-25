@@ -73,7 +73,7 @@ watch(props, ({ generatedContent, isGenerating, isEnd, isStart }) => {
 });
 
 /** 更新思维导图的展示 */
-const update = () => {
+function update() {
   try {
     const { root } = transformer.transform(
       processContent(props.generatedContent),
@@ -83,7 +83,7 @@ const update = () => {
   } catch (error: any) {
     console.error(error);
   }
-};
+}
 /** 处理内容 */
 function processContent(text: string) {
   const arr: string[] = [];

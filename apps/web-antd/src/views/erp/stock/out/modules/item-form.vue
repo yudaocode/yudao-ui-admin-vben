@@ -98,7 +98,7 @@ function handleAdd() {
     totalPrice: undefined,
     remark: undefined,
   };
-  tableData.value.push(newRow);
+  tableData.value.push(newRow as any);
   // 通知父组件更新
   emit('update:items', [...tableData.value]);
 }
@@ -158,11 +158,11 @@ function handleRowChange(row: any) {
 }
 
 /** 初始化行数据 */
-const initRow = (row: ErpStockOutApi.StockOutItem): void => {
+function initRow(row: ErpStockOutApi.StockOutItem) {
   if (row.productPrice && row.count) {
     row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
   }
-};
+}
 
 /** 表单校验 */
 function validate() {

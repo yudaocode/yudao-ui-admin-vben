@@ -59,6 +59,7 @@ const PAY_DICT = {
   PAY_NOTIFY_STATUS: 'pay_notify_status', // 商户支付回调状态
   PAY_NOTIFY_TYPE: 'pay_notify_type', // 商户支付回调状态
   PAY_TRANSFER_STATUS: 'pay_transfer_status', // 转账订单状态
+  PAY_TRANSFER_TYPE: 'pay_transfer_type', // 转账类型
 } as const;
 
 /** ========== MP - 公众号模块 ========== */

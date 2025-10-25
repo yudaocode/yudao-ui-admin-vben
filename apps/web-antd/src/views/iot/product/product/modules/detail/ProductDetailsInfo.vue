@@ -15,15 +15,15 @@ interface Props {
 defineProps<Props>();
 
 /** 格式化日期 */
-const formatDate = (date?: Date | string) => {
+function formatDate(date?: Date | string) {
   if (!date) return '-';
   return new Date(date).toLocaleString('zh-CN');
-};
+}
 </script>
 
 <template>
   <Card title="产品信息">
-    <Descriptions bordered :column="3">
+    <Descriptions bordered :column="3" size="small">
       <Descriptions.Item label="产品名称">
         {{ product.name }}
       </Descriptions.Item>
