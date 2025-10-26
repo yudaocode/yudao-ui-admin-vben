@@ -23,24 +23,24 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建 */
+/** 创建模型配置 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑 */
+/** 编辑模型配置 */
 function handleEdit(row: AiModelModelApi.Model) {
   formModalApi.setData(row).open();
 }
 
-/** 删除 */
+/** 删除模型配置 */
 async function handleDelete(row: AiModelModelApi.Model) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteModel(row.id as number);
+    await deleteModel(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
