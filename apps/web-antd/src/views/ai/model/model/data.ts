@@ -35,7 +35,7 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.AI_PLATFORM, 'string'),
         allowClear: true,
       },
-      rules: z.string().min(1, { message: '请输入平台' }),
+      rules: 'required',
     },
     {
       fieldName: 'type',
@@ -56,7 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: 'API 秘钥',
       component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择API 秘钥',
+        placeholder: '请选择 API 秘钥',
         api: getApiKeySimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -69,12 +69,18 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '模型名字',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入模型名字',
+      },
     },
     {
       component: 'Input',
       fieldName: 'model',
       label: '模型标识',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入模型标识',
+      },
     },
     {
       fieldName: 'sort',
@@ -161,16 +167,28 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '模型名字',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入模型名字',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'model',
       label: '模型标识',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入模型标识',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'platform',
       label: '模型平台',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入模型平台',
+        allowClear: true,
+      },
     },
   ];
 }
@@ -233,7 +251,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'temperature',
       title: '温度参数',
-      minWidth: 80,
+      minWidth: 100,
     },
     {
       title: '回复数 Token 数',
@@ -243,7 +261,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '上下文数量',
       field: 'maxContexts',
-      minWidth: 100,
+      minWidth: 120,
     },
     {
       title: '操作',

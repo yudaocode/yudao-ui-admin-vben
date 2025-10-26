@@ -8,6 +8,7 @@ import { z } from '#/adapter/form';
 import { getSimpleKnowledgeList } from '#/api/ai/knowledge/knowledge';
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { getToolSimpleList } from '#/api/ai/model/tool';
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -32,6 +33,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '角色名称',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入角色名称',
+      },
     },
     {
       component: 'ImageUpload',
@@ -62,6 +66,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'category',
       label: '角色类别',
       rules: 'required',
+      componentProps: {
+        placeholder: '请输入角色类别',
+      },
       dependencies: {
         triggerFields: ['formType'],
         show: (values) => {
@@ -110,6 +117,17 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         labelField: 'name',
         valueField: 'id',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'mcpClientNames',
+      label: '引用 MCP',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择 MCP',
+        options: getDictOptions(DICT_TYPE.AI_MCP_CLIENT_NAME, 'string'),
+        mode: 'multiple',
         allowClear: true,
       },
     },
@@ -247,6 +265,16 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       title: '工具',
       field: 'toolIds',
+      minWidth: 100,
+      formatter: ({ cellValue }) => {
+        return !cellValue || cellValue.length === 0
+          ? '-'
+          : `引用${cellValue.length}个`;
+      },
+    },
+    {
+      title: 'MCP',
+      field: 'mcpClientNames',
       minWidth: 100,
       formatter: ({ cellValue }) => {
         return !cellValue || cellValue.length === 0

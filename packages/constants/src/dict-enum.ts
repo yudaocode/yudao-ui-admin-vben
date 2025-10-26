@@ -143,6 +143,7 @@ const AI_DICT = {
   AI_WRITE_LENGTH: 'ai_write_length', // AI 写作长度
   AI_WRITE_TONE: 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE: 'ai_write_type', // AI 写作类型
+  AI_MCP_CLIENT_NAME: 'ai_mcp_client_name', // AI MCP Client 名字
 } as const;
 
 /** ========== IOT - 物联网模块 ========== */
