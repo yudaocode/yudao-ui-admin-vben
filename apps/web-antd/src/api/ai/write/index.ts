@@ -9,6 +9,7 @@ import { requestClient } from '#/api/request';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
+
 export namespace AiWriteApi {
   export interface Write {
     type: AiWriteTypeEnum.REPLY | AiWriteTypeEnum.WRITING; // 1:撰写 2:回复

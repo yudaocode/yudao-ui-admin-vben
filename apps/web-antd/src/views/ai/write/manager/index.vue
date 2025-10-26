@@ -25,9 +25,7 @@ async function handleDelete(row: AiWriteApi.AiWritePageReq) {
   });
   try {
     await deleteWrite(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -54,6 +52,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
