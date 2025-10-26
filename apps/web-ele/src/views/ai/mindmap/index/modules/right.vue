@@ -134,7 +134,12 @@ defineExpose({
     <template #header>
       <div class="m-0 flex shrink-0 items-center justify-between px-7">
         <h3>思维导图预览</h3>
-        <ElButton type="primary" size="small" class="flex" @click="downloadImage">
+        <ElButton
+          type="primary"
+          size="small"
+          class="flex"
+          @click="downloadImage"
+        >
           <template #icon>
             <div class="flex items-center justify-center">
               <IconifyIcon icon="lucide:copy" />
