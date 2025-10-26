@@ -8,7 +8,9 @@ import { Button, Textarea } from 'ant-design-vue';
 defineProps<{
   isGenerating: boolean;
 }>();
+
 const emits = defineEmits(['submit', 'directGenerate']);
+
 const formData = reactive({
   prompt: '',
 });

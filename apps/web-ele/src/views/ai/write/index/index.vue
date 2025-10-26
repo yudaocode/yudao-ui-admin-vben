@@ -19,12 +19,6 @@ const abortController = ref<AbortController>(); // // 写作进行中 abort 控�
 
 const rightRef = ref<InstanceType<typeof Right>>(); // 写作面板
 
-/** 停止 stream 生成 */
-function handleStopStream() {
-  abortController.value?.abort();
-  isWriting.value = false;
-}
-
 /** 提交写作 */
 function handleSubmit(data: Partial<AiWriteApi.Write>) {
   abortController.value = new AbortController();
@@ -53,6 +47,12 @@ function handleSubmit(data: Partial<AiWriteApi.Write>) {
       throw error;
     },
   });
+}
+
+/** 停止 stream 生成 */
+function handleStopStream() {
+  abortController.value?.abort();
+  isWriting.value = false;
 }
 
 /** 点击示例触发 */

@@ -18,6 +18,7 @@ const props = defineProps<{
   isGenerating: boolean; // 是否正在生成
   isStart: boolean; // 开始状态，开始时需要清除 html
 }>();
+
 const md = MarkdownIt();
 const contentRef = ref<HTMLDivElement>(); // 右侧出来 header 以下的区域
 const mdContainerRef = ref<HTMLDivElement>(); // markdown 的容器，用来滚动到底下的
@@ -30,12 +31,14 @@ let markMap: Markmap | null = null;
 const transformer = new Transformer();
 let resizeObserver: null | ResizeObserver = null;
 const initialized = false;
+
+/** 初始化 */
 onMounted(() => {
   resizeObserver = new ResizeObserver(() => {
     contentAreaHeight.value = contentRef.value?.clientHeight || 0;
     // 先更新高度，再更新思维导图
     if (contentAreaHeight.value && !initialized) {
-      /** 初始化思维导图 */
+      // 初始化思维导图
       try {
         if (!markMap) {
           markMap = Markmap.create(svgRef.value!);
@@ -52,11 +55,15 @@ onMounted(() => {
     resizeObserver.observe(contentRef.value);
   }
 });
+
+/** 卸载 */
 onBeforeUnmount(() => {
   if (resizeObserver && contentRef.value) {
     resizeObserver.unobserve(contentRef.value);
   }
 });
+
+/** 监听 props 变化 */
 watch(props, ({ generatedContent, isGenerating, isEnd, isStart }) => {
   // 开始生成的时候清空一下 markdown 的内容
   if (isStart) {
@@ -84,6 +91,7 @@ function update() {
     console.error(error);
   }
 }
+
 /** 处理内容 */
 function processContent(text: string) {
   const arr: string[] = [];
@@ -98,6 +106,7 @@ function processContent(text: string) {
   }
   return arr.join('\n');
 }
+
 /** 下载图片：download SVG to png file */
 function downloadImage() {
   const svgElement = mindMapRef.value;
@@ -112,6 +121,7 @@ function downloadImage() {
     drawWithImageSize: false,
   });
 }
+
 defineExpose({
   scrollBottom() {
     mdContainerRef.value?.scrollTo(0, mdContainerRef.value?.scrollHeight);
@@ -135,7 +145,6 @@ defineExpose({
       </div>
     </template>
     <div ref="contentRef" class="hide-scroll-bar box-border h-full">
-      <!--展示 markdown 的容器，最终生成的是 html 字符串，直接用 v-html 嵌入-->
       <div
         v-if="isGenerating"
         ref="mdContainerRef"
@@ -146,7 +155,6 @@ defineExpose({
           v-html="html"
         ></div>
       </div>
-
       <div ref="mindMapRef" class="wh-full">
         <svg
           ref="svgRef"

@@ -5,12 +5,9 @@ import type { SystemUserApi } from '#/api/system/user';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
+/** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-async function getUserData() {
-  userList = await getSimpleUserList();
-}
-
-getUserData();
+getSimpleUserList().then((data) => (userList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
