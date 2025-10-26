@@ -136,17 +136,13 @@ async function handleStatusChange(
     })
       .then(async () => {
         // 更新状态
-        const res = await updateStatus({
+        await updateStatus({
           id: row.id as number,
           status: newStatus,
         });
-        if (res) {
-          // 提示并返回成功
-          ElMessage.success(`${text}成功`);
-          resolve(true);
-        } else {
-          reject(new Error($t('ui.actionMessage.operationFailed')));
-        }
+        // 提示并返回成功
+        ElMessage.success(`${text}成功`);
+        resolve(true);
       })
       .catch(() => {
         reject(new Error('取消操作'));
