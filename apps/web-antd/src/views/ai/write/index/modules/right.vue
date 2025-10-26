@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @gjd：应该是 modules 模块，然后小写
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
@@ -9,16 +8,15 @@ import { Button, Card, message, Textarea } from 'ant-design-vue';
 
 const props = defineProps({
   content: {
-    // 生成的结果
     type: String,
     default: '',
-  },
+  }, // 生成的结果
   isWriting: {
-    // 是否正在生成文章
     type: Boolean,
     default: false,
-  },
+  }, // 是否正在生成文章
 });
+
 const emits = defineEmits(['update:content', 'stopStream']);
 const { copied, copy } = useClipboard();
 
@@ -58,7 +56,6 @@ watch(copied, (val) => {
     <template #title>
       <h3 class="m-0 flex shrink-0 items-center justify-between px-7">
         <span>预览</span>
-        <!-- 展示在右上角 -->
         <Button
           type="primary"
           v-show="showCopy"
@@ -75,12 +72,11 @@ watch(copied, (val) => {
       class="hide-scroll-bar box-border h-full overflow-y-auto"
     >
       <div
-        class="bg-card relative box-border min-h-full w-full flex-grow p-3 sm:p-7"
+        class="bg-card relative box-border min-h-full w-full flex-grow p-2 sm:p-5"
       >
-        <!-- 终止生成内容的按钮 -->
         <Button
           v-show="isWriting"
-          class="absolute bottom-2 left-1/2 z-40 flex -translate-x-1/2 sm:bottom-5"
+          class="absolute bottom-1 left-1/2 z-40 flex -translate-x-1/2 sm:bottom-2"
           @click="emits('stopStream')"
           size="small"
         >
@@ -94,7 +90,7 @@ watch(copied, (val) => {
         <Textarea
           id="inputId"
           v-model:value="compContent"
-          auto-size
+          :auto-size="true"
           :bordered="false"
           placeholder="生成的内容……"
         />
@@ -130,7 +126,7 @@ watch(copied, (val) => {
   }
 }
 
-// markmap的tool样式覆盖
+// markmap 的 tool 样式覆盖
 :deep(.markmap) {
   width: 100%;
 }

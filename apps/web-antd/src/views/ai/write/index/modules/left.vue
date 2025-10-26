@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @gjd：应该是 modules 模块，然后小写
 import type { AiWriteApi } from '#/api/ai/write';
 
 import { ref } from 'vue';
@@ -11,7 +10,7 @@ import { IconifyIcon } from '@vben/icons';
 import { createReusableTemplate } from '@vueuse/core';
 import { Button, message, Textarea } from 'ant-design-vue';
 
-import Tag from './Tag.vue';
+import Tag from './tag.vue';
 
 type TabType = AiWriteApi.Write['type'];
 
@@ -34,6 +33,7 @@ function omit(obj: Record<string, any>, keysToOmit: string[]) {
   }
   return result;
 }
+
 /** 点击示例的时候，将定义好的文章作为示例展示出来 */
 function example(type: 'reply' | 'write') {
   formData.value = {
@@ -79,13 +79,11 @@ const initData: AiWriteApi.Write = {
   length: 1,
   format: 1,
 };
-
 const formData = ref<AiWriteApi.Write>({ ...initData });
+const recordFormData = {} as Record<AiWriteTypeEnum, AiWriteApi.Write>; // 用来记录切换之前所填写的数据，切换的时候给赋值回来
 
-/** 用来记录切换之前所填写的数据，切换的时候给赋值回来 */
-const recordFormData = {} as Record<AiWriteTypeEnum, AiWriteApi.Write>;
-/** 切换tab */
-function switchTab(value: TabType) {
+/** 切换 tab */
+function handleSwitchTab(value: TabType) {
   if (value !== selectedTab.value) {
     // 保存之前的久数据
     recordFormData[selectedTab.value] = formData.value;
@@ -96,8 +94,11 @@ function switchTab(value: TabType) {
 }
 
 /** 提交写作 */
-function submit() {
-  if (selectedTab.value === 2 && !formData.value.originalContent) {
+function handleSubmit() {
+  if (
+    selectedTab.value === AiWriteTypeEnum.REPLY &&
+    !formData.value.originalContent
+  ) {
     message.warning('请输入原文');
     return;
   }
@@ -105,12 +106,13 @@ function submit() {
     message.warning(`请输入${selectedTab.value === 1 ? '写作' : '回复'}内容`);
     return;
   }
+
   emit('submit', {
-    /** 撰写的时候没有 originalContent 字段*/
+    // 撰写的时候没有 originalContent 字段
     ...(selectedTab.value === 1
       ? omit(formData.value, ['originalContent'])
       : formData.value),
-    /** 使用选中 tab 值覆盖当前的 type 类型 */
+    // 使用选中 tab 值覆盖当前的 type 类型
     type: selectedTab.value,
   });
 }
@@ -156,7 +158,7 @@ function submit() {
             v-for="tab in tabs"
             :key="tab.value"
             :active="tab.value === selectedTab"
-            :item-click="() => switchTab(tab.value)"
+            :item-click="() => handleSwitchTab(tab.value)"
             :text="tab.text"
             class="relative z-20"
           />
@@ -167,7 +169,7 @@ function submit() {
       class="bg-card box-border h-full w-96 flex-grow overflow-y-auto px-7 pb-2 lg:block"
     >
       <div>
-        <template v-if="selectedTab === 1">
+        <template v-if="selectedTab === AiWriteTypeEnum.WRITING">
           <ReuseLabel
             :hint-click="() => example('write')"
             hint="示例"
@@ -181,7 +183,6 @@ function submit() {
             show-count
           />
         </template>
-
         <template v-else>
           <ReuseLabel
             :hint-click="() => example('reply')"
@@ -195,7 +196,6 @@ function submit() {
             placeholder="请输入原文"
             show-count
           />
-
           <ReuseLabel label="回复内容" />
           <Textarea
             v-model:value="formData.prompt"
@@ -231,7 +231,7 @@ function submit() {
           <Button :disabled="isWriting" class="mr-2" @click="reset">
             重置
           </Button>
-          <Button type="primary" :loading="isWriting" @click="submit">
+          <Button type="primary" :loading="isWriting" @click="handleSubmit">
             生成
           </Button>
         </div>

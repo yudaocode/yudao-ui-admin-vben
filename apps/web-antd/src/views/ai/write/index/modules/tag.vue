@@ -1,6 +1,5 @@
 <!-- 标签选项 -->
 <script setup lang="ts">
-// TODO @gjd：应该是 modules 模块，然后小写
 const props = withDefaults(
   defineProps<{
     [k: string]: any;

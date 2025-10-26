@@ -3,28 +3,30 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { nextTick, ref } from 'vue';
 
-import { alert, Page } from '@vben/common-ui';
+import { Page } from '@vben/common-ui';
 import { WriteExample } from '@vben/constants';
+
+import { message } from 'ant-design-vue';
 
 import { writeStream } from '#/api/ai/write';
 
-import Left from './components/Left.vue';
-import Right from './components/Right.vue';
+import Left from './modules/left.vue';
+import Right from './modules/right.vue';
 
 const writeResult = ref(''); // 写作结果
 const isWriting = ref(false); // 是否正在写作中
 const abortController = ref<AbortController>(); // // 写作进行中 abort 控制器(控制 stream 写作)
 
+const rightRef = ref<InstanceType<typeof Right>>(); // 写作面板
+
 /** 停止 stream 生成 */
-function stopStream() {
+function handleStopStream() {
   abortController.value?.abort();
   isWriting.value = false;
 }
 
-/** 执行写作 */
-const rightRef = ref<InstanceType<typeof Right>>();
-
-function submit(data: Partial<AiWriteApi.Write>) {
+/** 提交写作 */
+function handleSubmit(data: Partial<AiWriteApi.Write>) {
   abortController.value = new AbortController();
   writeResult.value = '';
   isWriting.value = true;
@@ -33,8 +35,8 @@ function submit(data: Partial<AiWriteApi.Write>) {
     onMessage: async (res: any) => {
       const { code, data, msg } = JSON.parse(res.data);
       if (code !== 0) {
-        alert(`写作异常! ${msg}`);
-        stopStream();
+        message.error(`写作异常! ${msg}`);
+        handleStopStream();
         return;
       }
       writeResult.value = writeResult.value + data;
@@ -43,10 +45,10 @@ function submit(data: Partial<AiWriteApi.Write>) {
       rightRef.value?.scrollToBottom();
     },
     ctrl: abortController.value,
-    onClose: stopStream,
+    onClose: handleStopStream,
     onError: (error: any) => {
       console.error('写作异常', error);
-      stopStream();
+      handleStopStream();
       // 需要抛出异常，禁止重试
       throw error;
     },
@@ -59,7 +61,7 @@ function handleExampleClick(type: keyof typeof WriteExample) {
 }
 
 /** 点击重置的时候清空写作的结果*/
-function reset() {
+function handleReset() {
   writeResult.value = '';
 }
 </script>
@@ -70,13 +72,13 @@ function reset() {
       <Left
         :is-writing="isWriting"
         class="mr-4 h-full rounded-lg"
-        @submit="submit"
-        @reset="reset"
+        @submit="handleSubmit"
+        @reset="handleReset"
         @example="handleExampleClick"
       />
       <Right
         :is-writing="isWriting"
-        @stop-stream="stopStream"
+        @stop-stream="handleStopStream"
         ref="rightRef"
         class="flex-grow"
         v-model:content="writeResult"
