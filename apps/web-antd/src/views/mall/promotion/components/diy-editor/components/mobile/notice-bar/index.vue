@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import type { NoticeBarProperty } from './config';
 
+import { ref } from 'vue';
+
 import { IconifyIcon } from '@vben/icons';
+
+import { Divider, Image } from 'ant-design-vue';
 
 /** 公告栏 */
 defineOptions({ name: 'NoticeBar' });
 
-defineProps<{ property: NoticeBarProperty }>();
+const props = defineProps<{ property: NoticeBarProperty }>();
+
+// 自动轮播
+const activeIndex = ref(0);
+setInterval(() => {
+  const contents = props.property.contents || [];
+  activeIndex.value = (activeIndex.value + 1) % (contents.length || 1);
+}, 3000);
 </script>
 
 <template>
@@ -17,18 +28,11 @@ defineProps<{ property: NoticeBarProperty }>();
       color: property.textColor,
     }"
   >
-    <ElImage :src="property.iconUrl" class="h-[18px]" />
-    <ElDivider direction="vertical" />
-    <ElCarousel
-      height="24px"
-      direction="vertical"
-      :autoplay="true"
-      class="flex-1 pr-2"
-    >
-      <ElCarouselItem v-for="(item, index) in property.contents" :key="index">
-        <div class="h-6 truncate leading-6">{{ item.text }}</div>
-      </ElCarouselItem>
-    </ElCarousel>
+    <Image :src="property.iconUrl" class="h-[18px]" :preview="false" />
+    <Divider type="vertical" />
+    <div class="flex-1 pr-2 h-6 truncate leading-6">
+      {{ property.contents?.[activeIndex]?.text }}
+    </div>
     <IconifyIcon icon="ep:arrow-right" />
   </div>
 </template>

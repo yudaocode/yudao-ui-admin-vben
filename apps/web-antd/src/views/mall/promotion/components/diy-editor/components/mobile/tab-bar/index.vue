@@ -3,6 +3,8 @@ import type { TabBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Image } from 'ant-design-vue';
+
 /** 页面底部导航栏 */
 defineOptions({ name: 'TabBar' });
 

@@ -3,6 +3,8 @@ import type { MenuListProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Image } from 'ant-design-vue';
+
 /** 列表导航 */
 defineOptions({ name: 'MenuList' });
 defineProps<{ property: MenuListProperty }>();
