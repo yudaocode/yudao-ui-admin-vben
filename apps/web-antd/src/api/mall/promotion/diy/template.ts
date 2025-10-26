@@ -7,18 +7,26 @@ import { requestClient } from '#/api/request';
 export namespace MallDiyTemplateApi {
   /** 装修模板 */
   export interface DiyTemplate {
-    id?: number; // 模板编号
-    name: string; // 模板名称
-    used: boolean; // 是否使用
-    usedTime?: Date; // 使用时间
-    remark: string; // 备注
-    previewPicUrls: string[]; // 预览图片地址数组
-    property: string; // 模板属性
+    /** 模板编号 */
+    id?: number;
+    /** 模板名称 */
+    name: string;
+    /** 是否使用 */
+    used: boolean;
+    /** 使用时间 */
+    usedTime?: Date;
+    /** 备注 */
+    remark: string;
+    /** 预览图片地址数组 */
+    previewPicUrls: string[];
+    /** 模板属性 */
+    property: string;
   }
 
   /** 装修模板属性（包含页面列表） */
   export interface DiyTemplateProperty extends DiyTemplate {
-    pages: MallDiyPageApi.DiyPage[]; // 页面列表
+    /** 页面列表 */
+    pages: MallDiyPageApi.DiyPage[];
   }
 }
 

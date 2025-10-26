@@ -267,7 +267,7 @@ const handleDeleteComponent = (index: number) => {
 };
 
 // 注入无感刷新页面函数
-const reload = inject<() => void>('reload');
+const reload = inject<() => void>('reload'); // TODO @芋艿：是 vue3 + element-plus 独有的，可以清理掉。
 // 重置
 const handleReset = () => {
   if (reload) reload();

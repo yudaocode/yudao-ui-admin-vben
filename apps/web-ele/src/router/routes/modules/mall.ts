@@ -98,7 +98,7 @@ const routes: RouteRecordRaw[] = [
           activePath: '/mall/promotion/diy-template/diy-template',
         },
         component: () =>
-          import('#/views/mall/promotion/diy/template/modules/decorate.vue'),
+          import('#/views/mall/promotion/diy/template/decorate/index.vue'),
       },
       {
         path: 'page/decorate/:id',
@@ -110,7 +110,7 @@ const routes: RouteRecordRaw[] = [
           activePath: '/mall/promotion/diy-template/diy-page',
         },
         component: () =>
-          import('#/views/mall/promotion/diy/page/modules/decorate.vue'),
+          import('#/views/mall/promotion/diy/page/decorate/index.vue'),
       },
     ],
   },
