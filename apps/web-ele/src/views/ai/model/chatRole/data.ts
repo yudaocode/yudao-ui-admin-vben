@@ -136,7 +136,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '是否公开',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),      },
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+      },
       defaultValue: true,
       dependencies: {
         triggerFields: ['formType'],
@@ -153,7 +154,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入角色排序',
         controlsPosition: 'right',
-        class: 'w-full',
+        class: '!w-full',
       },
       dependencies: {
         triggerFields: ['formType'],
@@ -168,7 +169,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '开启状态',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),      },
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+      },
       dependencies: {
         triggerFields: ['formType'],
         show: (values) => {

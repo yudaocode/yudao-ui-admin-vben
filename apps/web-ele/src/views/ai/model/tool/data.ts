@@ -39,7 +39,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),      },
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+      },
       defaultValue: CommonStatusEnum.ENABLE,
     },
   ];

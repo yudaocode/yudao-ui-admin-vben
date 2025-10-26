@@ -155,7 +155,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入角色排序',
-        class: 'w-full',
       },
       dependencies: {
         triggerFields: ['formType'],

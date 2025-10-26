@@ -37,7 +37,6 @@ function handleEdit(row: AiModelChatRoleApi.ChatRole) {
 async function handleDelete(row: AiModelChatRoleApi.ChatRole) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
   });
   try {
     await deleteChatRole(row.id!);

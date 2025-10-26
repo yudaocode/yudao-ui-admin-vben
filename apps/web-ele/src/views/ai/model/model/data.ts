@@ -8,12 +8,9 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 
+/** 关联数据 */
 let apiKeyList: AiModelApiKeyApi.ApiKey[] = [];
-async function getApiKeyList() {
-  apiKeyList = await getApiKeySimpleList();
-}
-
-getApiKeyList();
+getApiKeySimpleList().then((data) => (apiKeyList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

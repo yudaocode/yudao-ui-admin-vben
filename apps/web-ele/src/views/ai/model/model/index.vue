@@ -37,7 +37,6 @@ function handleEdit(row: AiModelModelApi.Model) {
 async function handleDelete(row: AiModelModelApi.Model) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
   });
   try {
     await deleteModel(row.id!);

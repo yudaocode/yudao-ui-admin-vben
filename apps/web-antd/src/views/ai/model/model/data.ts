@@ -8,12 +8,9 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 
+/** 关联数据 */
 let apiKeyList: AiModelApiKeyApi.ApiKey[] = [];
-async function getApiKeyList() {
-  apiKeyList = await getApiKeySimpleList();
-}
-
-getApiKeyList();
+getApiKeySimpleList().then((data) => (apiKeyList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -88,7 +85,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入模型排序',
-        class: 'w-full',
       },
       rules: 'required',
     },
@@ -109,7 +105,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入温度参数',
-        class: 'w-full',
         min: 0,
         max: 2,
       },
@@ -129,7 +124,6 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         max: 8192,
         placeholder: '请输入回复数 Token 数',
-        class: 'w-full',
       },
       dependencies: {
         triggerFields: ['type'],
@@ -147,7 +141,6 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         max: 20,
         placeholder: '请输入上下文数量',
-        class: 'w-full',
       },
       dependencies: {
         triggerFields: ['type'],
