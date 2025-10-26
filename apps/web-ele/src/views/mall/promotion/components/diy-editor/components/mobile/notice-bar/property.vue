@@ -4,13 +4,14 @@ import type { NoticeBarProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElCard, ElForm, ElFormItem, ElInput } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
   AppLinkInput,
   ColorInput,
   Draggable,
 } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 通知栏属性面板
 defineOptions({ name: 'NoticeBarProperty' });

@@ -9,6 +9,7 @@ import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElOption, ElSelect } from 'element-plus';
 
 import * as ArticleApi from '#/api/mall/promotion/article/index';
+
 import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 营销文章属性面板

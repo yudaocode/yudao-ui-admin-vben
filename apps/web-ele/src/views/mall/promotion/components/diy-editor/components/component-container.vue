@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {
-  ComponentStyle,
-  DiyComponent,
-} from '../util';
+import type { ComponentStyle, DiyComponent } from '../util';
 
 import { computed } from 'vue';
 
@@ -10,8 +7,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElButton, ElTooltip } from 'element-plus';
 
-import { components } from './mobile';
 import { VerticalButtonGroup } from '#/views/mall/promotion/components';
+
+import { components } from './mobile';
 
 /**
  * 组件容器：目前在中间部分

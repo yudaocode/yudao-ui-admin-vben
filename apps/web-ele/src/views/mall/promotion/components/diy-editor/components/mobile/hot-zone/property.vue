@@ -6,9 +6,9 @@ import { ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { ElButton, ElForm, ElFormItem, ElText } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 
+import ComponentContainerProperty from '../../component-container-property.vue';
 import HotZoneEditDialog from './components/hot-zone-edit-dialog/index.vue';
 
 /** 热区属性面板 */

@@ -18,8 +18,9 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import { Draggable } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 /** 搜索框属性面板 */
 defineOptions({ name: 'SearchProperty' });

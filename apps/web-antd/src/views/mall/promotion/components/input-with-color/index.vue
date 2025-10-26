@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PREDEFINE_COLORS } from '@vben/constants';
+// import { PREDEFINE_COLORS } from '@vben/constants';
 
 import { useVModels } from '@vueuse/core';
 import { Input, InputGroup } from 'ant-design-vue';
@@ -26,7 +26,9 @@ const { modelValue, color } = useVModels(props, emit);
 <template>
   <InputGroup compact>
     <Input v-model:value="modelValue" v-bind="$attrs" class="flex-1" />
+    <!-- TODO 芋艿：后续在处理，antd 不支持该组件；
     <ColorPicker v-model:value="color" :presets="PREDEFINE_COLORS" />
+    -->
   </InputGroup>
 </template>
 <style scoped lang="scss"></style>

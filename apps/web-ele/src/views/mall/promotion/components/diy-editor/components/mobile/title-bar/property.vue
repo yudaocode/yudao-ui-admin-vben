@@ -16,12 +16,13 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
   AppLinkInput,
   InputWithColor,
 } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 导航栏属性面板
 defineOptions({ name: 'TitleBarProperty' });

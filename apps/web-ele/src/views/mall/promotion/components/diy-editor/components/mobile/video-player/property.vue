@@ -4,9 +4,10 @@ import type { VideoPlayerProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElSlider, ElSwitch } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 视频播放属性面板
 defineOptions({ name: 'VideoPlayerProperty' });

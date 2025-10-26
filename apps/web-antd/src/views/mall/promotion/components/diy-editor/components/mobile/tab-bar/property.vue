@@ -5,6 +5,16 @@ import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 
+import {
+  Form,
+  FormItem,
+  Input,
+  RadioButton,
+  RadioGroup,
+  Select,
+  SelectOption,
+} from 'ant-design-vue';
+
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
   AppLinkInput,
@@ -35,7 +45,7 @@ const handleThemeChange = () => {
 <template>
   <div class="tab-bar">
     <!-- 表单 -->
-    <Form :model="formData" label-col="{ span: 6 }" wrapper-col="{ span: 18 }">
+    <Form :model="formData" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <FormItem label="主题" name="theme">
         <Select v-model:value="formData!.theme" @change="handleThemeChange">
           <SelectOption
@@ -109,8 +119,8 @@ const handleThemeChange = () => {
           <FormItem
             name="text"
             label="文字"
-            label-col="{ span: 4 }"
-            wrapper-col="{ span: 20 }"
+            :label-col="{ span: 4 }"
+            :wrapper-col="{ span: 20 }"
             class="mb-2"
           >
             <Input v-model:value="element.text" placeholder="请输入文字" />
@@ -118,8 +128,8 @@ const handleThemeChange = () => {
           <FormItem
             name="url"
             label="链接"
-            label-col="{ span: 4 }"
-            wrapper-col="{ span: 20 }"
+            :label-col="{ span: 4 }"
+            :wrapper-col="{ span: 20 }"
             class="mb-0"
           >
             <AppLinkInput v-model="element.url" />

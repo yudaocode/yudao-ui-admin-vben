@@ -10,6 +10,20 @@ import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 
+import {
+  Card,
+  Checkbox,
+  Form,
+  FormItem,
+  Input,
+  Radio,
+  RadioButton,
+  RadioGroup,
+  Slider,
+  Switch,
+  Tooltip,
+} from 'ant-design-vue';
+
 import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
 import UploadImg from '#/components/upload/image-upload.vue';
 import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
@@ -35,102 +49,97 @@ onMounted(async () => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <ElForm label-width="80px" :model="formData">
-      <ElCard header="拼团活动" class="property-group" shadow="never">
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+      <Card title="拼团活动" class="property-group" :bordered="false">
         <CombinationShowcase v-model="formData.activityIds" />
-      </ElCard>
-      <ElCard header="商品样式" class="property-group" shadow="never">
-        <ElFormItem label="布局" prop="type">
-          <ElRadioGroup v-model="formData.layoutType">
-            <ElTooltip class="item" content="单列大图" placement="bottom">
-              <ElRadioButton value="oneColBigImg">
+      </Card>
+      <Card title="商品样式" class="property-group" :bordered="false">
+        <FormItem label="布局" prop="type">
+          <RadioGroup v-model:value="formData.layoutType">
+            <Tooltip title="单列大图" placement="bottom">
+              <RadioButton value="oneColBigImg">
                 <IconifyIcon icon="fluent:text-column-one-24-filled" />
-              </ElRadioButton>
-            </ElTooltip>
-            <ElTooltip class="item" content="单列小图" placement="bottom">
-              <ElRadioButton value="oneColSmallImg">
+              </RadioButton>
+            </Tooltip>
+            <Tooltip title="单列小图" placement="bottom">
+              <RadioButton value="oneColSmallImg">
                 <IconifyIcon icon="fluent:text-column-two-left-24-filled" />
-              </ElRadioButton>
-            </ElTooltip>
-            <ElTooltip class="item" content="双列" placement="bottom">
-              <ElRadioButton value="twoCol">
+              </RadioButton>
+            </Tooltip>
+            <Tooltip title="双列" placement="bottom">
+              <RadioButton value="twoCol">
                 <IconifyIcon icon="fluent:text-column-two-24-filled" />
-              </ElRadioButton>
-            </ElTooltip>
-            <!--<el-tooltip class="item" content="三列" placement="bottom">
-              <el-radio-button value="threeCol">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
-              </ElRadioButton>
-            </ElTooltip>-->
-          </ElRadioGroup>
-        </ElFormItem>
-        <ElFormItem label="商品名称" prop="fields.name.show">
+              </RadioButton>
+            </Tooltip>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="商品名称" prop="fields.name.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.name.color" />
-            <ElCheckbox v-model="formData.fields.name.show" />
+            <Checkbox v-model:checked="formData.fields.name.show" />
           </div>
-        </ElFormItem>
-        <ElFormItem label="商品简介" prop="fields.introduction.show">
+        </FormItem>
+        <FormItem label="商品简介" prop="fields.introduction.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.introduction.color" />
-            <ElCheckbox v-model="formData.fields.introduction.show" />
+            <Checkbox v-model:checked="formData.fields.introduction.show" />
           </div>
-        </ElFormItem>
-        <ElFormItem label="商品价格" prop="fields.price.show">
+        </FormItem>
+        <FormItem label="商品价格" prop="fields.price.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.price.color" />
-            <ElCheckbox v-model="formData.fields.price.show" />
+            <Checkbox v-model:checked="formData.fields.price.show" />
           </div>
-        </ElFormItem>
-        <ElFormItem label="市场价" prop="fields.marketPrice.show">
+        </FormItem>
+        <FormItem label="市场价" prop="fields.marketPrice.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.marketPrice.color" />
-            <ElCheckbox v-model="formData.fields.marketPrice.show" />
+            <Checkbox v-model:checked="formData.fields.marketPrice.show" />
           </div>
-        </ElFormItem>
-        <ElFormItem label="商品销量" prop="fields.salesCount.show">
+        </FormItem>
+        <FormItem label="商品销量" prop="fields.salesCount.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.salesCount.color" />
-            <ElCheckbox v-model="formData.fields.salesCount.show" />
+            <Checkbox v-model:checked="formData.fields.salesCount.show" />
           </div>
-        </ElFormItem>
-        <ElFormItem label="商品库存" prop="fields.stock.show">
+        </FormItem>
+        <FormItem label="商品库存" prop="fields.stock.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.stock.color" />
-            <ElCheckbox v-model="formData.fields.stock.show" />
+            <Checkbox v-model:checked="formData.fields.stock.show" />
           </div>
-        </ElFormItem>
-      </ElCard>
-      <ElCard header="角标" class="property-group" shadow="never">
-        <ElFormItem label="角标" prop="badge.show">
-          <ElSwitch v-model="formData.badge.show" />
-        </ElFormItem>
-        <ElFormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
+        </FormItem>
+      </Card>
+      <Card title="角标" class="property-group" :bordered="false">
+        <FormItem label="角标" prop="badge.show">
+          <Switch v-model:checked="formData.badge.show" />
+        </FormItem>
+        <FormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
           <UploadImg v-model="formData.badge.imgUrl" height="44px" width="72px">
             <template #tip> 建议尺寸：36 * 22</template>
           </UploadImg>
-        </ElFormItem>
-      </ElCard>
-      <ElCard header="按钮" class="property-group" shadow="never">
-        <ElFormItem label="按钮类型" prop="btnBuy.type">
-          <ElRadioGroup v-model="formData.btnBuy.type">
-            <ElRadioButton value="text">文字</ElRadioButton>
-            <ElRadioButton value="img">图片</ElRadioButton>
-          </ElRadioGroup>
-        </ElFormItem>
+        </FormItem>
+      </Card>
+      <Card title="按钮" class="property-group" :bordered="false">
+        <FormItem label="按钮类型" prop="btnBuy.type">
+          <RadioGroup v-model:value="formData.btnBuy.type">
+            <RadioButton value="text">文字</RadioButton>
+            <RadioButton value="img">图片</RadioButton>
+          </RadioGroup>
+        </FormItem>
         <template v-if="formData.btnBuy.type === 'text'">
-          <ElFormItem label="按钮文字" prop="btnBuy.text">
-            <ElInput v-model="formData.btnBuy.text" />
-          </ElFormItem>
-          <ElFormItem label="左侧背景" prop="btnBuy.bgBeginColor">
+          <FormItem label="按钮文字" prop="btnBuy.text">
+            <Input v-model:value="formData.btnBuy.text" />
+          </FormItem>
+          <FormItem label="左侧背景" prop="btnBuy.bgBeginColor">
             <ColorInput v-model="formData.btnBuy.bgBeginColor" />
-          </ElFormItem>
-          <ElFormItem label="右侧背景" prop="btnBuy.bgEndColor">
+          </FormItem>
+          <FormItem label="右侧背景" prop="btnBuy.bgEndColor">
             <ColorInput v-model="formData.btnBuy.bgEndColor" />
-          </ElFormItem>
+          </FormItem>
         </template>
         <template v-else>
-          <ElFormItem label="图片" prop="btnBuy.imgUrl">
+          <FormItem label="图片" prop="btnBuy.imgUrl">
             <UploadImg
               v-model="formData.btnBuy.imgUrl"
               height="56px"
@@ -139,42 +148,33 @@ onMounted(async () => {
             >
               <template #tip> 建议尺寸：56 * 56</template>
             </UploadImg>
-          </ElFormItem>
+          </FormItem>
         </template>
-      </ElCard>
-      <ElCard header="商品样式" class="property-group" shadow="never">
-        <ElFormItem label="上圆角" prop="borderRadiusTop">
-          <ElSlider
-            v-model="formData.borderRadiusTop"
+      </Card>
+      <Card title="商品样式" class="property-group" :bordered="false">
+        <FormItem label="上圆角" prop="borderRadiusTop">
+          <Slider
+            v-model:value="formData.borderRadiusTop"
             :max="100"
             :min="0"
-            show-input
-            input-size="small"
-            :show-input-controls="false"
           />
-        </ElFormItem>
-        <ElFormItem label="下圆角" prop="borderRadiusBottom">
-          <ElSlider
-            v-model="formData.borderRadiusBottom"
+        </FormItem>
+        <FormItem label="下圆角" prop="borderRadiusBottom">
+          <Slider
+            v-model:value="formData.borderRadiusBottom"
             :max="100"
             :min="0"
-            show-input
-            input-size="small"
-            :show-input-controls="false"
           />
-        </ElFormItem>
-        <ElFormItem label="间隔" prop="space">
-          <ElSlider
-            v-model="formData.space"
+        </FormItem>
+        <FormItem label="间隔" prop="space">
+          <Slider
+            v-model:value="formData.space"
             :max="100"
             :min="0"
-            show-input
-            input-size="small"
-            :show-input-controls="false"
           />
-        </ElFormItem>
-      </ElCard>
-    </ElForm>
+        </FormItem>
+      </Card>
+    </Form>
   </ComponentContainerProperty>
 </template>
 
