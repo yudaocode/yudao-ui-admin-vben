@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { AiImageApi } from '#/api/ai/image';
+import type { AiMusicApi } from '#/api/ai/music';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteImage, getImagePage, updateImage } from '#/api/ai/image';
+import { deleteMusic, getMusicPage, updateMusic } from '#/api/ai/music';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -17,39 +17,38 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除图片 */
-async function handleDelete(row: AiImageApi.Image) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
+/** 删除音乐记录 */
+async function handleDelete(row: AiMusicApi.Music) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteImage(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    await deleteMusic(row.id as number);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
 /** 修改是否发布 */
 async function handleUpdatePublicStatusChange(
   newStatus: boolean,
-  row: AiImageApi.Image,
+  row: AiMusicApi.Music,
 ): Promise<boolean | undefined> {
   const text = newStatus ? '公开' : '私有';
   return new Promise((resolve, reject) => {
     confirm({
-      content: `确认要将该图片切换为【${text}】吗？`,
+      content: `确认要将该音乐切换为【${text}】吗？`,
     })
       .then(async () => {
-        // 更新图片状态
-        await updateImage({
+        // 更新音乐状态
+        await updateMusic({
           id: row.id,
           publicStatus: newStatus,
         });
         // 提示并返回成功
-        message.success($t('ui.actionMessage.operationSuccess'));
+        ElMessage.success($t('ui.actionMessage.operationSuccess'));
         resolve(true);
       })
       .catch(() => {
@@ -69,7 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getImagePage({
+          return await getMusicPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -85,25 +84,61 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AiImageApi.Image>,
+  } as VxeTableGridOptions<AiMusicApi.Music>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="AI 绘图创作" url="https://doc.iocoder.cn/ai/image/" />
+      <DocAlert title="AI 音乐创作" url="https://doc.iocoder.cn/ai/music/" />
     </template>
-    <Grid table-title="绘画管理列表">
+    <Grid table-title="音乐管理列表">
+      <template #toolbar-tools>
+        <TableAction :actions="[]" />
+      </template>
+
+      <template #content="{ row }">
+        <ElButton
+          type="primary"
+          link
+          v-if="row.audioUrl?.length > 0"
+          :href="row.audioUrl"
+          target="_blank"
+          class="p-0"
+        >
+          音乐
+        </ElButton>
+        <ElButton
+          type="primary"
+          link
+          v-if="row.videoUrl?.length > 0"
+          :href="row.videoUrl"
+          target="_blank"
+          class="p-0 !pl-1"
+        >
+          视频
+        </ElButton>
+        <ElButton
+          type="primary"
+          link
+          v-if="row.imageUrl?.length > 0"
+          :href="row.imageUrl"
+          target="_blank"
+          class="p-0 !pl-1"
+        >
+          封面
+        </ElButton>
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['ai:image:delete'],
+              auth: ['ai:music:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.id]),
                 confirm: handleDelete.bind(null, row),

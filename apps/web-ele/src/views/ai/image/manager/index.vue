@@ -4,7 +4,7 @@ import type { AiImageApi } from '#/api/ai/image';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteImage, getImagePage, updateImage } from '#/api/ai/image';
@@ -19,16 +19,15 @@ function handleRefresh() {
 
 /** 删除图片 */
 async function handleDelete(row: AiImageApi.Image) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
     await deleteImage(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -49,7 +48,7 @@ async function handleUpdatePublicStatusChange(
           publicStatus: newStatus,
         });
         // 提示并返回成功
-        message.success($t('ui.actionMessage.operationSuccess'));
+        ElMessage.success($t('ui.actionMessage.operationSuccess'));
         resolve(true);
       })
       .catch(() => {
@@ -100,8 +99,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['ai:image:delete'],
               popConfirm: {

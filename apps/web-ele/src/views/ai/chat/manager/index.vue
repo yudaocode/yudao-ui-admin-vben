@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Tabs } from 'ant-design-vue';
+import { ElTabs } from 'element-plus';
 
 import ChatConversationList from './modules/conversation-list.vue';
 import ChatMessageList from './modules/message-list.vue';
@@ -17,13 +17,13 @@ const activeTabName = ref('conversation');
       <DocAlert title="AI 对话聊天" url="https://doc.iocoder.cn/ai/chat/" />
     </template>
 
-    <Tabs v-model:active-key="activeTabName">
-      <Tabs.TabPane tab="对话列表" key="conversation">
+    <ElTabs v-model:model-value="activeTabName">
+      <ElTabs.TabPane label="对话列表" name="conversation">
         <ChatConversationList />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab="消息列表" key="message">
+      </ElTabs.TabPane>
+      <ElTabs.TabPane label="消息列表" name="message">
         <ChatMessageList />
-      </Tabs.TabPane>
-    </Tabs>
+      </ElTabs.TabPane>
+    </ElTabs>
   </Page>
 </template>

@@ -4,7 +4,7 @@ import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 
 import { Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -25,16 +25,15 @@ function handleRefresh() {
 
 /** 删除对话 */
 async function handleDelete(row: AiChatConversationApi.ChatConversation) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
     await deleteChatConversationByAdmin(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -77,8 +76,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['ai:chat-conversation:delete'],
               popConfirm: {

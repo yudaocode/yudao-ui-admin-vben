@@ -4,52 +4,48 @@ import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 
 import { Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteChatConversationByAdmin,
-  getChatConversationPage,
-} from '#/api/ai/chat/conversation';
+  deleteChatMessageByAdmin,
+  getChatMessagePage,
+} from '#/api/ai/chat/message';
 import { $t } from '#/locales';
 
-import {
-  useGridColumnsConversation,
-  useGridFormSchemaConversation,
-} from '../data';
+import { useGridColumnsMessage, useGridFormSchemaMessage } from '../data';
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除对话 */
+/** 删除消息 */
 async function handleDelete(row: AiChatConversationApi.ChatConversation) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteChatConversationByAdmin(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    await deleteChatMessageByAdmin(row.id!);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchemaConversation(),
+    schema: useGridFormSchemaMessage(),
   },
   gridOptions: {
-    columns: useGridColumnsConversation(),
+    columns: useGridColumnsMessage(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getChatConversationPage({
+          return await getChatMessagePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -71,16 +67,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="对话列表">
+    <Grid table-title="消息列表">
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['ai:chat-conversation:delete'],
+              auth: ['ai:chat-message:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.id]),
                 confirm: handleDelete.bind(null, row),
