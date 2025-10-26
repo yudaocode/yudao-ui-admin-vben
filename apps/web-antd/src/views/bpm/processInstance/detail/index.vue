@@ -6,6 +6,7 @@ import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
+  BpmFieldPermissionType,
   BpmModelFormType,
   BpmModelType,
   BpmTaskStatusEnum,
@@ -43,13 +44,6 @@ const props = defineProps<{
   id: string; // 流程实例的编号
   taskId?: string; // 任务编号
 }>();
-
-// TODO @jason：是不是使用全局的 FieldPermissionType？export enum FieldPermissionType {
-enum FieldPermissionType {
-  NONE = '3', // 隐藏
-  READ = '1', // 只读
-  WRITE = '2', // 编辑
-}
 
 const processInstanceLoading = ref(false); // 流程实例的加载中
 const processInstance = ref<BpmProcessInstanceApi.ProcessInstance>(); // 流程实例
@@ -131,18 +125,16 @@ async function getApprovalDetail() {
           processInstance.value.formVariables,
         );
       }
-      // TODO @jason：这里 await 来搞？
-      nextTick().then(() => {
-        fApi.value?.btn.show(false);
-        fApi.value?.resetBtn.show(false);
-        fApi.value?.disabled(true);
-        // 设置表单字段权限
-        if (formFieldsPermission) {
-          Object.keys(data.formFieldsPermission).forEach((item) => {
-            setFieldPermission(item, formFieldsPermission[item]);
-          });
-        }
-      });
+      await nextTick();
+      fApi.value?.btn.show(false);
+      fApi.value?.resetBtn.show(false);
+      fApi.value?.disabled(true);
+      // 设置表单字段权限
+      if (formFieldsPermission) {
+        Object.keys(data.formFieldsPermission).forEach((item) => {
+          setFieldPermission(item, formFieldsPermission[item]);
+        });
+      }
     } else {
       // 注意：data.processDefinition.formCustomViewPath 是组件的全路径，例如说：/crm/contract/detail/index.vue
       BusinessFormComponent.value = registerComponent(
@@ -178,15 +170,15 @@ async function getProcessModelView() {
 
 /** 设置表单权限 */
 function setFieldPermission(field: string, permission: string) {
-  if (permission === FieldPermissionType.READ) {
+  if (permission === BpmFieldPermissionType.READ) {
     fApi.value?.disabled(true, field);
   }
-  if (permission === FieldPermissionType.WRITE) {
+  if (permission === BpmFieldPermissionType.WRITE) {
     fApi.value?.disabled(false, field);
     // 加入可以编辑的字段
     writableFields.push(field);
   }
-  if (permission === FieldPermissionType.NONE) {
+  if (permission === BpmFieldPermissionType.NONE) {
     fApi.value?.hidden(true, field);
   }
 }
@@ -203,13 +195,11 @@ function setFieldPermission(field: string, permission: string) {
 /** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */
 watch(
   () => activeTab.value,
-  (newVal) => {
+  async (newVal) => {
     if (newVal === 'record') {
       // 如果切换到流转记录标签，刷新任务列表
-      // TODO @jason：await nextTick 要不？
-      nextTick(() => {
-        taskListRef.value?.refresh();
-      });
+      await nextTick();
+      taskListRef.value?.refresh();
     }
   },
 );

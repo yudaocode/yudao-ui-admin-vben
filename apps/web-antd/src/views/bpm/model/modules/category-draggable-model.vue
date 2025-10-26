@@ -154,13 +154,17 @@ function handleModelSort() {
 
 /** 处理模型的排序提交 */
 async function handleModelSortSubmit() {
-  // TODO @jason：loading 加一下，体验好点。
+  // 确保数据已经正确同步
+  if (!modelList.value || modelList.value.length === 0) {
+    message.error('排序数据异常，请重试');
+    return;
+  }
+
+  const hideLoading = message.loading({
+    content: '正在保存排序...',
+    duration: 0,
+  });
   try {
-    // 确保数据已经正确同步
-    if (!modelList.value || modelList.value.length === 0) {
-      message.error('排序数据异常，请重试');
-      return;
-    }
     // 保存排序
     const ids = modelList.value.map((item) => item.id);
     await updateModelSortBatch(ids);
@@ -170,6 +174,8 @@ async function handleModelSortSubmit() {
     emit('success');
   } catch (error) {
     console.error('排序保存失败', error);
+  } finally {
+    hideLoading();
   }
 }
 
@@ -207,18 +213,29 @@ async function handleDeleteCategory() {
     return;
   }
 
-  // TODO @jason：改成 await；然后增加一个 loading；
-  confirm({
+  await confirm({
+    beforeClose: async ({ isConfirm }) => {
+      if (!isConfirm) return;
+      // 发起删除
+      const hideLoading = message.loading({
+        content: `正在删除分类: "${props.categoryInfo.name}"...`,
+        duration: 0,
+      });
+      try {
+        await deleteCategory(props.categoryInfo.id);
+      } finally {
+        hideLoading();
+      }
+      return true;
+    },
     content: `确定要删除[${props.categoryInfo.name}]吗？`,
-  }).then(async () => {
-    // 发起删除
-    await deleteCategory(props.categoryInfo.id);
-    message.success(
-      $t('ui.actionMessage.deleteSuccess', [props.categoryInfo.name]),
-    );
-    // 刷新列表
-    emit('success');
+    icon: 'question',
   });
+  message.success(
+    $t('ui.actionMessage.deleteSuccess', [props.categoryInfo.name]),
+  );
+  // 刷新列表
+  emit('success');
 }
 
 /** 处理表单详情点击 */
@@ -249,21 +266,27 @@ async function modelOperation(type: string, id: number) {
 
 /** 发布流程 */
 async function handleDeploy(row: any) {
-  // TODO @jason：改成 await；然后增加一个 loading；
-  confirm({
+  await confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
       // 发起部署
-      await deployModel(row.id);
+      const hideLoading = message.loading({
+        content: `正在发布流程: "${row.name}"...`,
+        duration: 0,
+      });
+      try {
+        await deployModel(row.id);
+      } finally {
+        hideLoading();
+      }
       return true;
     },
     content: `确认要发布[${row.name}]流程吗？`,
     icon: 'question',
-  }).then(async () => {
-    message.success(`发布[${row.name}]流程成功`);
-    // 刷新列表
-    emit('success');
   });
+  message.success(`发布[${row.name}]流程成功`);
+  // 刷新列表
+  emit('success');
 }
 
 /** '更多'操作按钮 */
@@ -300,63 +323,82 @@ function handleModelCommand(command: string, row: any) {
 }
 
 /** 更新状态操作 */
-function handleChangeState(row: any) {
+async function handleChangeState(row: any) {
   const state = row.processDefinition.suspensionState;
   const newState = state === 1 ? 2 : 1;
   const statusState = state === 1 ? '停用' : '启用';
-  // TODO @jason：改成 await；然后增加一个 loading；
-  confirm({
+  await confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
       // 发起更新状态
-      await updateModelState(row.id, newState);
+      const hideLoading = message.loading({
+        content: `正在${statusState}流程: "${row.name}"...`,
+        duration: 0,
+      });
+      try {
+        await updateModelState(row.id, newState);
+      } finally {
+        hideLoading();
+      }
       return true;
     },
     content: `确认要${statusState}流程: "${row.name}" 吗？`,
     icon: 'question',
-  }).then(async () => {
-    message.success(`${statusState} 流程: "${row.name}" 成功`);
-    // 刷新列表
-    emit('success');
   });
+  message.success(`${statusState} 流程: "${row.name}" 成功`);
+  // 刷新列表
+  emit('success');
 }
 
 /** 清理流程操作 */
-function handleClean(row: any) {
-  // TODO @jason：改成 await；然后增加一个 loading；
-  confirm({
+async function handleClean(row: any) {
+  await confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
       // 发起清理操作
-      await cleanModel(row.id);
+      const hideLoading = message.loading({
+        content: `正在清理流程: "${row.name}"...`,
+        duration: 0,
+      });
+      try {
+        await cleanModel(row.id);
+      } finally {
+        hideLoading();
+      }
       return true;
     },
     content: `确认要清理流程: "${row.name}" 吗？`,
     icon: 'question',
-  }).then(async () => {
-    message.success(`清理流程: "${row.name}" 成功`);
-    // 刷新列表
-    emit('success');
   });
+  message.success(`清理流程: "${row.name}" 成功`);
+  // 刷新列表
+  emit('success');
 }
 
 /** 删除流程操作 */
-function handleDelete(row: any) {
-  // TODO @jason：改成 await；然后增加一个 loading；
-  confirm({
+async function handleDelete(row: any) {
+  await confirm({
     beforeClose: async ({ isConfirm }) => {
       if (!isConfirm) return;
       // 发起删除操作
-      await deleteModel(row.id);
+      const hideLoading = message.loading({
+        content: $t('ui.actionMessage.deleting', [row.name]),
+        duration: 0,
+      });
+      try {
+        await deleteModel(row.id);
+      } finally {
+        hideLoading();
+      }
       return true;
     },
     content: `确认要删除流程: "${row.name}" 吗？`,
     icon: 'question',
-  }).then(async () => {
-    message.success(`删除流程: "${row.name}" 成功`);
-    // 刷新列表
-    emit('success');
   });
+
+  message.success(`删除流程: "${row.name}" 成功`);
+  // 刷新列表
+  emit('success');
 }
 
 /** 跳转到指定流程定义列表 */

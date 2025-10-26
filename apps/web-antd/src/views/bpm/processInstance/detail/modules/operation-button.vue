@@ -548,9 +548,8 @@ async function handleCancel() {
 /** 处理再次提交 */
 async function handleReCreate() {
   // 跳转发起流程界面
-  // TODO @jason：这个要优化成 push 到 name 么？这样后续 path 可以按需调整；
   await router.push({
-    path: '/bpm/task/create',
+    name: 'BpmProcessInstanceCreate',
     query: { processInstanceId: props.processInstance?.id },
   });
 }
