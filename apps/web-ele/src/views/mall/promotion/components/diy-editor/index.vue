@@ -10,7 +10,6 @@ import { cloneDeep, isEmpty, isString } from '@vben/utils';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import {
   ElAside,
-  ElButtonGroup,
   ElCard,
   ElContainer,
   ElDialog,
@@ -20,18 +19,14 @@ import {
   ElText,
   ElTooltip,
 } from 'element-plus';
-import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
-import {
-  componentConfigs,
-  components,
-} from './components/mobile';
-import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 
 import ComponentContainer from './components/component-container.vue';
 import ComponentLibrary from './components/component-library.vue';
+import { componentConfigs, components } from './components/mobile';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
+import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
 /** 页面装修详情页 */
 defineOptions({
@@ -266,13 +261,13 @@ const handleDeleteComponent = (index: number) => {
   }
 };
 
-// 注入无感刷新页面函数
-const reload = inject<() => void>('reload'); // TODO @芋艿：是 vue3 + element-plus 独有的，可以清理掉。
-// 重置
-const handleReset = () => {
-  if (reload) reload();
-  emits('reset');
-};
+// // 注入无感刷新页面函数
+// const reload = inject<() => void>('reload'); // TODO @芋艿：是 vue3 + element-plus 独有的，可以清理掉。
+// // 重置
+// const handleReset = () => {
+//   if (reload) reload();
+//   emits('reset');
+// };
 
 // 预览
 const previewDialogVisible = ref(false);
@@ -312,35 +307,40 @@ onMounted(() => {
           <span>{{ title }}</span>
         </div>
         <!-- 右侧操作区 -->
-        <ElButtonGroup class="header-right">
-          <ElTooltip content="重置">
+        <div class="header-right">
+          <ElTooltip title="重置">
             <ElButton @click="handleReset">
               <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip v-if="previewUrl" content="预览">
+          <ElTooltip v-if="previewUrl" title="预览">
             <ElButton @click="handlePreview">
               <IconifyIcon :size="24" icon="ep:view" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip content="保存">
+          <ElTooltip title="保存">
             <ElButton @click="handleSave">
               <IconifyIcon :size="24" icon="ep:check" />
             </ElButton>
           </ElTooltip>
-        </ElButtonGroup>
+        </div>
       </ElHeader>
 
       <!-- 中心区域 -->
       <ElContainer class="editor-container">
         <!-- 左侧：组件库（ComponentLibrary） -->
-        <ComponentLibrary
-          v-if="libs && libs.length > 0"
-          ref="componentLibrary"
-          :list="libs"
-        />
+        <ElAside width="200px" class="editor-left">
+          <ComponentLibrary
+            v-if="libs && libs.length > 0"
+            ref="componentLibrary"
+            :list="libs"
+          />
+        </ElAside>
         <!-- 中心：设计区域（ComponentContainer） -->
-        <div class="editor-center page-prop-area" @click="handlePageSelected">
+        <ElContainer
+          class="editor-center page-prop-area"
+          @click="handlePageSelected"
+        >
           <!-- 手机顶部 -->
           <div class="editor-design-top">
             <!-- 手机顶部状态栏 -->
@@ -371,15 +371,7 @@ onMounted(() => {
             />
           </div>
           <!-- 手机页面编辑区域 -->
-          <ElScrollbar
-            :view-style="{
-              backgroundColor: pageConfigComponent.property.backgroundColor,
-              backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
-            }"
-            view-class="phone-container"
-            wrap-class="editor-design-center page-prop-area"
-            style="height: calc(100vh - 135px - 120px)"
-          >
+          <ElScrollbar class="phone-container">
             <draggable
               v-model="pageComponents"
               :animation="200"
@@ -424,42 +416,36 @@ onMounted(() => {
           <div class="fixed-component-action-group gap-2">
             <ElTag
               v-if="showPageConfig"
-              :effect="
+              :color="
                 selectedComponent?.uid === pageConfigComponent.uid
-                  ? 'dark'
-                  : 'plain'
+                  ? 'blue'
+                  : 'default'
               "
-              :type="
-                selectedComponent?.uid === pageConfigComponent.uid
-                  ? 'primary'
-                  : 'info'
-              "
+              :bordered="false"
               size="large"
               @click="handleComponentSelected(pageConfigComponent)"
             >
               <IconifyIcon :icon="pageConfigComponent.icon" :size="12" />
-              <span>{{ pageConfigComponent.name }}</span>
+              <ElText>{{ pageConfigComponent.name }}</ElText>
             </ElTag>
             <template v-for="(component, index) in pageComponents" :key="index">
               <ElTag
                 v-if="component.position === 'fixed'"
-                :effect="
-                  selectedComponent?.uid === component.uid ? 'dark' : 'plain'
+                :color="
+                  selectedComponent?.uid === component.uid ? 'blue' : 'default'
                 "
-                :type="
-                  selectedComponent?.uid === component.uid ? 'primary' : 'info'
-                "
+                :bordered="false"
                 closable
                 size="large"
                 @click="handleComponentSelected(component)"
                 @close="handleDeleteComponent(index)"
               >
                 <IconifyIcon :icon="component.icon" :size="12" />
-                <span>{{ component.name }}</span>
+                <ElText>{{ component.name }}</ElText>
               </ElTag>
             </template>
           </div>
-        </div>
+        </ElContainer>
         <!-- 右侧：属性面板（ComponentContainerProperty） -->
         <ElAside
           v-if="selectedComponent?.property"
@@ -469,13 +455,13 @@ onMounted(() => {
           <ElCard
             body-class="h-[calc(100%-var(--el-card-padding)-var(--el-card-padding))]"
             class="h-full"
-            shadow="never"
+            :bordered="false"
           >
             <!-- 组件名称 -->
             <template #header>
               <div class="flex items-center gap-2">
                 <IconifyIcon :icon="selectedComponent?.icon" color="gray" />
-                <span>{{ selectedComponent?.name }}</span>
+                <ElText>{{ selectedComponent?.name }}</ElText>
               </div>
             </template>
             <ElScrollbar
@@ -494,7 +480,7 @@ onMounted(() => {
     </ElContainer>
 
     <!-- 预览弹框 -->
-    <ElDialog v-model="previewDialogVisible" title="预览" width="700">
+    <ElDialog v-model:open="previewDialogVisible" title="预览" width="700">
       <div class="flex justify-around">
         <IFrame
           :src="previewUrl"

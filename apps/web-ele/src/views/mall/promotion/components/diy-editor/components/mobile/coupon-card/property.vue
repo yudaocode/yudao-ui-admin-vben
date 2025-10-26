@@ -24,9 +24,10 @@ import {
 } from 'element-plus';
 
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 // TODO: 添加组件
 // import CouponSelect from '#/views/mall/promotion/coupon/components/coupon-select.vue';
 

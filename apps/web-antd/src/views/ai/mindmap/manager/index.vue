@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMindmapApi } from '#/api/ai/mindmap';
 
-import { nextTick, ref } from 'vue';
-
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -12,21 +10,21 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMindMap, getMindMapPage } from '#/api/ai/mindmap';
 import { $t } from '#/locales';
 
-import Right from '../index/modules/Right.vue';
+import Right from '../index/modules/right.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
-const previewContent = ref('');
 const [Drawer, drawerApi] = useVbenDrawer({
   header: false,
   footer: false,
   destroyOnClose: true,
 });
+
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除 */
+/** 删除思维导图记录 */
 async function handleDelete(row: AiMindmapApi.MindMap) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
@@ -34,14 +32,18 @@ async function handleDelete(row: AiMindmapApi.MindMap) {
   });
   try {
     await deleteMindMap(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
     hideLoading();
   }
 }
+
+/** 预览思维导图 */
+async function openPreview(row: AiMindmapApi.MindMap) {
+  drawerApi.setData(row.generatedContent).open();
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -63,6 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -70,11 +73,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AiMindmapApi.MindMap>,
 });
-async function openPreview(row: AiMindmapApi.MindMap) {
-  previewContent.value = row.generatedContent;
-  drawerApi.open();
-  await nextTick();
-}
 </script>
 
 <template>
@@ -82,9 +80,10 @@ async function openPreview(row: AiMindmapApi.MindMap) {
     <template #doc>
       <DocAlert title="AI 思维导图" url="https://doc.iocoder.cn/ai/mindmap/" />
     </template>
+
     <Drawer class="w-3/5">
       <Right
-        :generated-content="previewContent"
+        :generated-content="drawerApi.getData() as any"
         :is-end="true"
         :is-generating="false"
         :is-start="false"
@@ -99,6 +98,7 @@ async function openPreview(row: AiMindmapApi.MindMap) {
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['ai:api-key:update'],
+              disabled: !row.generatedContent,
               onClick: openPreview.bind(null, row),
             },
             {

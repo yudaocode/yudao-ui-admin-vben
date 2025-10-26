@@ -5,6 +5,8 @@ import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
 
+import { Button, Form, FormItem, Typography } from 'ant-design-vue';
+
 import UploadImg from '#/components/upload/image-upload.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
@@ -28,8 +30,8 @@ const handleOpenEditDialog = () => {
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <!-- 表单 -->
-    <ElForm label-width="80px" :model="formData" class="mt-2">
-      <ElFormItem label="上传图片" prop="imgUrl">
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData" class="mt-2">
+      <FormItem label="上传图片" prop="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
           height="50px"
@@ -38,15 +40,15 @@ const handleOpenEditDialog = () => {
           :show-description="false"
         >
           <template #tip>
-            <ElText type="info" size="small"> 推荐宽度 750</ElText>
+            <Typography.Text type="secondary" class="text-xs"> 推荐宽度 750</Typography.Text>
           </template>
         </UploadImg>
-      </ElFormItem>
-    </ElForm>
+      </FormItem>
+    </Form>
 
-    <ElButton type="primary" plain class="w-full" @click="handleOpenEditDialog">
+    <Button type="primary" class="w-full" @click="handleOpenEditDialog">
       设置热区
-    </ElButton>
+    </Button>
   </ComponentContainerProperty>
   <!-- 热区编辑对话框 -->
   <HotZoneEditDialog

@@ -73,6 +73,7 @@ async function handleDefaultStatusChange(
       .then(async () => {
         // 更新默认状态
         await updateAccountDefaultStatus(row.id!, newStatus);
+        // 提示并返回成功
         message.success(`${text}默认成功`);
         resolve(true);
       })

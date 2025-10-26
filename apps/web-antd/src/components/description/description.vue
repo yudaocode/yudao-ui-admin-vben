@@ -133,6 +133,7 @@ export default defineComponent({
             >
               {() => {
                 if (item.slot) {
+                  // TODO @xingyu：这里要 inline 掉么？
                   const slotContent = getSlot(slots, item.slot, data);
                   return slotContent;
                 }

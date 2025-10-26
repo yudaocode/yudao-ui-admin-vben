@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { PREDEFINE_COLORS } from '@vben/constants';
+// import { PREDEFINE_COLORS } from '@vben/constants';
 
 import { Input, InputGroup } from 'ant-design-vue';
 
@@ -29,7 +29,9 @@ const color = computed({
 
 <template>
   <InputGroup compact>
+    <!-- TODO 芋艿：后续在处理，antd 不支持该组件；
     <ColorPicker v-model:value="color" :presets="PREDEFINE_COLORS" />
+    -->
     <Input v-model:value="color" class="flex-1" />
   </InputGroup>
 </template>

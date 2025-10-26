@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { VideoPlayerProperty } from './config';
 
+import { Image } from 'ant-design-vue';
+
 /** 视频播放 */
 defineOptions({ name: 'VideoPlayer' });
 

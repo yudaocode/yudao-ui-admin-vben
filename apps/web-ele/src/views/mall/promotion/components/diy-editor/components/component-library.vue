@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {
-  DiyComponent,
-  DiyComponentLibrary,
-} from '../util';
+import type { DiyComponent, DiyComponentLibrary } from '../util';
 
 import { reactive, watch } from 'vue';
 

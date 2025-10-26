@@ -23,27 +23,25 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建 */
+/** 创建聊天角色 */
 function handleCreate() {
   formModalApi.setData({ formType: 'create' }).open();
 }
 
-/** 编辑 */
+/** 编辑聊天角色 */
 function handleEdit(row: AiModelChatRoleApi.ChatRole) {
   formModalApi.setData({ formType: 'update', ...row }).open();
 }
 
-/** 删除 */
+/** 删除聊天角色 */
 async function handleDelete(row: AiModelChatRoleApi.ChatRole) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteChatRole(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    await deleteChatRole(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -71,6 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,

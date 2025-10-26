@@ -4,7 +4,6 @@ import type { MenuListProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElText } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
   AppLinkInput,
@@ -12,6 +11,7 @@ import {
   InputWithColor,
 } from '#/views/mall/promotion/components';
 
+import ComponentContainerProperty from '../../component-container-property.vue';
 import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
 
 /** 列表导航属性面板 */

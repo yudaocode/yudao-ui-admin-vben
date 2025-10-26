@@ -16,10 +16,11 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
 
 // 轮播图属性面板
 defineOptions({ name: 'CarouselProperty' });

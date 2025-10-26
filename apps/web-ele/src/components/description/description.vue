@@ -10,6 +10,7 @@ import { get, getNestedValue, isFunction } from '@vben/utils';
 import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 const props = {
+  // TODO @星语：bordered 不生效；之前好像是 border
   bordered: { default: true, type: Boolean },
   column: {
     default: () => {
@@ -127,6 +128,7 @@ export default defineComponent({
                 },
                 default: () => {
                   if (item.slot) {
+                    // TODO @xingyu：这里要 inline 掉么？
                     const slotContent = getSlot(slots, item.slot, data);
                     return slotContent;
                   }

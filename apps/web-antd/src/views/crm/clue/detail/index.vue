@@ -89,13 +89,11 @@ async function handleTransform(): Promise<boolean | undefined> {
       content: '确定将该线索转化为客户吗？',
     })
       .then(async () => {
-        const res = await transformClue(clueId.value);
-        if (res) {
-          message.success('转化客户成功');
-          resolve(true);
-        } else {
-          reject(new Error('转化失败'));
-        }
+        // 转化为客户
+        await transformClue(clueId.value);
+        // 提示并返回成功
+        message.success('转化客户成功');
+        resolve(true);
       })
       .catch(() => {
         reject(new Error('取消操作'));

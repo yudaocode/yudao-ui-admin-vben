@@ -3,6 +3,8 @@ import type { PageConfigProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
 
+import { Form, FormItem, Textarea } from 'ant-design-vue';
+
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
@@ -22,8 +24,8 @@ const formData = useVModel(props, 'modelValue', emit);
   <Form
     :model="formData"
     :rules="rules"
-    label-col="{ span: 6 }"
-    wrapper-col="{ span: 18 }"
+    :label-col="{ span: 6 }"
+    :wrapper-col="{ span: 18 }"
   >
     <FormItem label="页面描述" name="description">
       <Textarea

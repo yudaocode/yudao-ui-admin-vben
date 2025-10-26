@@ -7,6 +7,8 @@ import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
 
+import { Form, FormItem, Select } from 'ant-design-vue';
+
 import * as ArticleApi from '#/api/mall/promotion/article/index';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
@@ -42,26 +44,19 @@ onMounted(() => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <ElForm label-width="40px" :model="formData">
-      <ElFormItem label="文章" prop="id">
-        <ElSelect
-          v-model="formData.id"
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+      <FormItem label="文章" prop="id">
+        <Select
+          v-model:value="formData.id"
           placeholder="请选择文章"
           class="w-full"
           filterable
-          remote
-          :remote-method="queryArticleList"
           :loading="loading"
-        >
-          <ElOption
-            v-for="article in articles"
-            :key="article.id"
-            :label="article.title"
-            :value="article.id"
-          />
-        </ElSelect>
-      </ElFormItem>
-    </ElForm>
+          :options="articles.map((item) => ({ label: item.title, value: item.id }))"
+          @search="queryArticleList"
+        />
+      </FormItem>
+    </Form>
   </ComponentContainerProperty>
 </template>
 

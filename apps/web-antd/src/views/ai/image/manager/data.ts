@@ -26,6 +26,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
+        placeholder: '请选择用户编号',
+        allowClear: true,
       },
     },
     {
@@ -33,6 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '平台',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择平台',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.AI_PLATFORM, 'string'),
       },
@@ -42,6 +45,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '绘画状态',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择绘画状态',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.AI_IMAGE_STATUS, 'number'),
       },
@@ -51,8 +55,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '是否发布',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+        placeholder: '请选择是否发布',
         allowClear: true,
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
     },
     {
@@ -68,7 +73,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  onPublicStatusChange?: (
+    newStatus: boolean,
+    row: any,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -118,7 +128,16 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       minWidth: 100,
       title: '是否发布',
-      slots: { default: 'publicStatus' },
+      field: 'publicStatus',
+      align: 'center',
+      cellRender: {
+        attrs: { beforeChange: onPublicStatusChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: true,
+          unCheckedValue: false,
+        },
+      },
     },
     {
       field: 'prompt',

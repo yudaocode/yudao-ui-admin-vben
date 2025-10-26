@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { message } from 'ant-design-vue';
+import { Image, message } from 'ant-design-vue';
 
 /** 悬浮按钮 */
 defineOptions({ name: 'FloatingActionButton' });

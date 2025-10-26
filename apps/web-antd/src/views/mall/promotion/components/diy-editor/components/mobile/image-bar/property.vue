@@ -3,6 +3,8 @@ import type { ImageBarProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
 
+import { Form, FormItem } from 'ant-design-vue';
+
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput } from '#/views/mall/promotion/components';
 
@@ -18,8 +20,8 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <ElForm label-width="80px" :model="formData">
-      <ElFormItem label="上传图片" prop="imgUrl">
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+      <FormItem label="上传图片" prop="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
           draggable="false"
@@ -30,11 +32,11 @@ const formData = useVModel(props, 'modelValue', emit);
         >
           <template #tip> 建议宽度750 </template>
         </UploadImg>
-      </ElFormItem>
-      <ElFormItem label="链接" prop="url">
+      </FormItem>
+      <FormItem label="链接" prop="url">
         <AppLinkInput v-model="formData.url" />
-      </ElFormItem>
-    </ElForm>
+      </FormItem>
+    </Form>
   </ComponentContainerProperty>
 </template>
 
