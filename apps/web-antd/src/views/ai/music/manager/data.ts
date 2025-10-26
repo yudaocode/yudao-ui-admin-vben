@@ -8,12 +8,9 @@ import { getDictOptions } from '@vben/hooks';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
+/** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-async function getUserData() {
-  userList = await getSimpleUserList();
-}
-
-getUserData();
+getSimpleUserList().then((data) => (userList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -73,7 +70,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  onPublicStatusChange?: (
+    newStatus: boolean,
+    row: any,
+  ) => PromiseLike<boolean | undefined>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -154,7 +156,16 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       minWidth: 100,
       title: '是否发布',
-      slots: { default: 'publicStatus' },
+      field: 'publicStatus',
+      align: 'center',
+      cellRender: {
+        attrs: { beforeChange: onPublicStatusChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: true,
+          unCheckedValue: false,
+        },
+      },
     },
     {
       field: 'taskId',
