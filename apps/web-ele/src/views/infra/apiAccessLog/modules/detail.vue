@@ -11,6 +11,7 @@ import { useDetailSchema } from '../data';
 
 const formData = ref<InfraApiAccessLogApi.ApiAccessLog>();
 
+// TODO @xingyu：antd 和 el 这 2 个组件在这个模块的 detail.vue 不一样，看看是不是统一？还是就是区分的哈？
 const [Descriptions] = useDescription({
   column: 1,
   labelWidth: 110,

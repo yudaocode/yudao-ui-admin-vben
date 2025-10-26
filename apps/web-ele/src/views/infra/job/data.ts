@@ -222,12 +222,16 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       label: '重试间隔',
       field: 'retryInterval',
-      render: (val) => (val ? `${val} 毫秒` : '无间隔'),
+      render: (val) => {
+        return val ? `${val} 毫秒` : '无间隔';
+      },
     },
     {
       label: '监控超时时间',
       field: 'monitorTimeout',
-      render: (val) => (val && val > 0 ? `${val} 毫秒` : '未开启'),
+      render: (val) => {
+        return val && val > 0 ? `${val} 毫秒` : '未开启';
+      },
     },
     {
       field: 'nextTimes',

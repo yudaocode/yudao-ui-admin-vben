@@ -198,7 +198,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'exceptionTime',
       label: '异常时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => {
+        return formatDateTime(val) as string;
+      },
     },
     {
       field: 'exceptionName',
@@ -239,7 +241,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'processTime',
       label: '处理时间',
       show: (val) => !val,
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => {
+        return formatDateTime(val) as string;
+      },
     },
   ];
 }

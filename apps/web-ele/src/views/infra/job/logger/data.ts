@@ -163,7 +163,9 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'duration',
       label: '执行时长',
-      render: (val) => (val ? `${val} 毫秒` : ''),
+      render: (val) => {
+        return val ? `${val} 毫秒` : '';
+      },
     },
     {
       field: 'status',
