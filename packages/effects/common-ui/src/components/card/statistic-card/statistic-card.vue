@@ -59,7 +59,9 @@ withDefaults(defineProps<StatisticCardProps>(), {
           {{ Math.abs(Number(percent ?? 0)).toFixed(2) }}%
           <VbenIcon
             :icon="
-              Number(percent) > 0 ? 'lucide:trending-up' : 'lucide:trending-down'
+              Number(percent) > 0
+                ? 'lucide:trending-up'
+                : 'lucide:trending-down'
             "
             class="size-3"
           />
@@ -68,4 +70,3 @@ withDefaults(defineProps<StatisticCardProps>(), {
     </CardContent>
   </Card>
 </template>
-

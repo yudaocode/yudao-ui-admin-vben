@@ -14,4 +14,3 @@ export interface StatisticCardProps {
   /** 环比标签文本 */
   percentLabel?: string;
 }
-
