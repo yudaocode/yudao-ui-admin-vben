@@ -196,8 +196,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       label: '用户 UA',
     },
     {
-      label: '请求信息',
       field: 'requestMethod',
+      label: '请求信息',
       render: (val, data) => {
         if (val && data?.requestUrl) {
           return `${val} ${data.requestUrl}`;
@@ -245,7 +245,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       render: (val, data) => {
         if (val === 0) {
           return '正常';
-        } else if (val > 0 && data?.resultMsg) {
+        } else if (val > 0 && data?.resultCode > 0) {
           return `失败 | ${val} | ${data.resultMsg}`;
         }
         return '';

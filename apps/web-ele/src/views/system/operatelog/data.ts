@@ -169,8 +169,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       show: (val) => !val,
     },
     {
-      label: '请求 URL',
       field: 'requestUrl',
+      label: '请求 URL',
       render: (val, data) => {
         if (data?.requestMethod && val) {
           return `${data.requestMethod} ${val}`;
