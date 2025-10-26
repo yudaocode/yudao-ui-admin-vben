@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
-import type { SystemUserApi } from '#/api/system/user';
-
-import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -11,31 +8,30 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteChatMessageByAdmin,
-  getChatMessagePage,
-} from '#/api/ai/chat/message';
-import { getSimpleUserList } from '#/api/system/user';
+  deleteChatConversationByAdmin,
+  getChatConversationPage,
+} from '#/api/ai/chat/conversation';
 import { $t } from '#/locales';
 
-import { useGridColumnsMessage, useGridFormSchemaMessage } from '../data';
+import {
+  useGridColumnsConversation,
+  useGridFormSchemaConversation,
+} from '../data';
 
-const userList = ref<SystemUserApi.User[]>([]); // 用户列表
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除 */
+/** 删除消息 */
 async function handleDelete(row: AiChatConversationApi.ChatConversation) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
   });
   try {
-    await deleteChatMessageByAdmin(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.id]),
-    });
+    await deleteChatConversationByAdmin(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -44,16 +40,16 @@ async function handleDelete(row: AiChatConversationApi.ChatConversation) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchemaMessage(),
+    schema: useGridFormSchemaConversation(),
   },
   gridOptions: {
-    columns: useGridColumnsMessage(),
+    columns: useGridColumnsConversation(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getChatMessagePage({
+          return await getChatConversationPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -63,30 +59,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
   } as VxeTableGridOptions<AiChatConversationApi.ChatConversation>,
-  separator: false,
-});
-onMounted(async () => {
-  // 获得用户列表
-  userList.value = await getSimpleUserList();
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid table-title="消息列表">
+    <Grid table-title="对话列表">
       <template #toolbar-tools>
         <TableAction :actions="[]" />
-      </template>
-      <template #userId="{ row }">
-        <span>
-          {{ userList.find((item) => item.id === row.userId)?.nickname }}
-        </span>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -96,7 +83,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['ai:chat-message:delete'],
+              auth: ['ai:chat-conversation:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.id]),
                 confirm: handleDelete.bind(null, row),
