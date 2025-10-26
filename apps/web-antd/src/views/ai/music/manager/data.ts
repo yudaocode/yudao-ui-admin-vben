@@ -23,18 +23,25 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
+        placeholder: '请选择用户编号',
+        allowClear: true,
       },
     },
     {
       fieldName: 'title',
       label: '音乐名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入音乐名称',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'status',
       label: '绘画状态',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择绘画状态',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.AI_MUSIC_STATUS, 'number'),
       },
@@ -44,6 +51,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '生成模式',
       component: 'Select',
       componentProps: {
+        placeholder: '请选择生成模式',
         allowClear: true,
         options: getDictOptions(DICT_TYPE.AI_GENERATE_MODE, 'number'),
       },
@@ -62,8 +70,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '是否发布',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
+        placeholder: '请选择是否发布',
         allowClear: true,
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
     },
   ];
