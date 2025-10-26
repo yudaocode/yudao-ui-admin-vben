@@ -8,7 +8,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { createReusableTemplate } from '@vueuse/core';
-import { ElButton as Button, ElMessage as message } from 'element-plus';
+import { ElButton, ElInput, ElMessage } from 'element-plus';
 
 import Tag from './tag.vue';
 
@@ -99,11 +99,11 @@ function handleSubmit() {
     selectedTab.value === AiWriteTypeEnum.REPLY &&
     !formData.value.originalContent
   ) {
-    message.warning('请输入原文');
+    ElMessage.warning('请输入原文');
     return;
   }
   if (!formData.value.prompt) {
-    message.warning(`请输入${selectedTab.value === 1 ? '写作' : '回复'}内容`);
+    ElMessage.warning(`请输入${selectedTab.value === 1 ? '写作' : '回复'}内容`);
     return;
   }
 
@@ -175,11 +175,13 @@ function handleSubmit() {
             hint="示例"
             label="写作内容"
           />
-          <el-input
+          <ElInput
             v-model="formData.prompt"
             type="textarea"
             :maxlength="500"
             :rows="5"
+            :input-style="{ boxShadow: 'none' }"
+            resize="none"
             placeholder="请输入写作内容"
             show-word-limit
           />
@@ -190,20 +192,24 @@ function handleSubmit() {
             hint="示例"
             label="原文"
           />
-          <el-input
+          <ElInput
             v-model="formData.originalContent"
             type="textarea"
             :maxlength="500"
             :rows="5"
+            :input-style="{ boxShadow: 'none' }"
+            resize="none"
             placeholder="请输入原文"
             show-word-limit
           />
           <ReuseLabel label="回复内容" />
-          <el-input
+          <ElInput
             v-model="formData.prompt"
             type="textarea"
             :maxlength="500"
             :rows="5"
+            :input-style="{ boxShadow: 'none' }"
+            resize="none"
             placeholder="请输入回复内容"
             show-word-limit
           />
@@ -231,12 +237,12 @@ function handleSubmit() {
         />
 
         <div class="mt-3 flex items-center justify-center">
-          <Button :disabled="isWriting" class="mr-2" @click="reset">
+          <ElButton :disabled="isWriting" class="mr-2" @click="reset">
             重置
-          </Button>
-          <Button type="primary" :loading="isWriting" @click="handleSubmit">
+          </ElButton>
+          <ElButton type="primary" :loading="isWriting" @click="handleSubmit">
             生成
-          </Button>
+          </ElButton>
         </div>
       </div>
     </div>

@@ -17,20 +17,21 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除 */
-async function handleDelete(row: AiWriteApi.AiWritePageReq) {
+/** 删除写作记录 */
+async function handleDelete(row: AiWriteApi.Write) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
   });
   try {
-    await deleteWrite(row.id as number);
+    await deleteWrite(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
     hideLoading();
   }
 }
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -58,7 +59,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AiWriteApi.AiWritePageReq>,
+  } as VxeTableGridOptions<AiWriteApi.Write>,
 });
 </script>
 

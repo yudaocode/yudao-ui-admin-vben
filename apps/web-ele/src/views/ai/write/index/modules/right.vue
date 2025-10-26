@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
-import { ElButton as Button, ElCard as Card, ElMessage as message } from 'element-plus';
+import { ElButton, ElCard, ElInput, ElMessage } from 'element-plus';
 
 const props = defineProps({
   content: {
@@ -47,16 +47,16 @@ function copyContent() {
 /** 复制成功的时候 copied.value 为 true */
 watch(copied, (val) => {
   if (val) {
-    message.success('复制成功');
+    ElMessage.success('复制成功');
   }
 });
 </script>
 <template>
-  <Card class="flex h-full flex-col">
+  <ElCard class="flex h-full flex-col">
     <template #header>
       <h3 class="m-0 flex shrink-0 items-center justify-between px-7">
         <span>预览</span>
-        <Button
+        <ElButton
           type="primary"
           v-show="showCopy"
           @click="copyContent"
@@ -64,7 +64,7 @@ watch(copied, (val) => {
         >
           <IconifyIcon icon="lucide:copy" />
           复制
-        </Button>
+        </ElButton>
       </h3>
     </template>
     <div
@@ -74,7 +74,7 @@ watch(copied, (val) => {
       <div
         class="bg-card relative box-border min-h-full w-full flex-grow p-2 sm:p-5"
       >
-        <Button
+        <ElButton
           v-show="isWriting"
           class="absolute bottom-1 left-1/2 z-40 flex -translate-x-1/2 sm:bottom-2"
           @click="emits('stopStream')"
@@ -86,17 +86,19 @@ watch(copied, (val) => {
             </div>
           </template>
           终止生成
-        </Button>
-        <el-input
+        </ElButton>
+        <ElInput
           id="inputId"
           v-model="compContent"
           type="textarea"
-          :autosize="{ minRows: 4, maxRows: 25 }"
+          autosize
+          :input-style="{ boxShadow: 'none' }"
+          resize="none"
           placeholder="生成的内容……"
         />
       </div>
     </div>
-  </Card>
+  </ElCard>
 </template>
 
 <style lang="scss" scoped>

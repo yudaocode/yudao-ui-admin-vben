@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { WriteExample } from '@vben/constants';
 
-import { ElMessage as message } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import { writeStream } from '#/api/ai/write';
 
@@ -35,7 +35,7 @@ function handleSubmit(data: Partial<AiWriteApi.Write>) {
     onMessage: async (res: any) => {
       const { code, data, msg } = JSON.parse(res.data);
       if (code !== 0) {
-        message.error(`写作异常! ${msg}`);
+        ElMessage.error(`写作异常! ${msg}`);
         handleStopStream();
         return;
       }

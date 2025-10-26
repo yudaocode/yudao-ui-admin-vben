@@ -4,7 +4,7 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { ElMessage as message } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteWrite, getWritePage } from '#/api/ai/write';
@@ -17,20 +17,20 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 删除 */
-async function handleDelete(row: AiWriteApi.AiWritePageReq) {
-  const hideLoading = message.loading({
-    message: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
+/** 删除写作记录 */
+async function handleDelete(row: AiWriteApi.Write) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteWrite(row.id as number);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    await deleteWrite(row.id!);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -58,7 +58,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AiWriteApi.AiWritePageReq>,
+  } as VxeTableGridOptions<AiWriteApi.Write>,
 });
 </script>
 
