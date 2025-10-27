@@ -2,37 +2,29 @@ import type { NavigationBarProperty } from './components/mobile/navigation-bar/c
 import type { PageConfigProperty } from './components/mobile/page-config/config';
 import type { TabBarProperty } from './components/mobile/tab-bar/config';
 
-// 页面装修组件
+/** 页面装修组件 */
 export interface DiyComponent<T> {
-  // 用于区分同一种组件的不同实例
-  uid?: number;
-  // 组件唯一标识
-  id: string;
-  // 组件名称
-  name: string;
-  // 组件图标
-  icon: string;
+  uid?: number; // 用于区分同一种组件的不同实例
+  id: string; // 组件唯一标识
+  name: string; // 组件名称
+  icon: string; // 组件图标
   /*
    组件位置：
-   top: 固定于手机顶部，例如 顶部的导航栏
-   bottom: 固定于手机底部，例如 底部的菜单导航栏
-   center: 位于手机中心，每个组件占一行，顺序向下排列
-   空：同center
-   fixed: 由组件自己决定位置，如弹窗位于手机中心、浮动按钮一般位于手机右下角
+    top: 固定于手机顶部，例如 顶部的导航栏
+    bottom: 固定于手机底部，例如 底部的菜单导航栏
+    center: 位于手机中心，每个组件占一行，顺序向下排列
+    空：同 center
+    fixed: 由组件自己决定位置，如弹窗位于手机中心、浮动按钮一般位于手机右下角
   */
   position?: '' | 'bottom' | 'center' | 'fixed' | 'top';
-  // 组件属性
-  property: T;
+  property: T; // 组件属性
 }
 
-// 页面装修组件库
+/** 页面装修组件库 */
 export interface DiyComponentLibrary {
-  // 组件库名称
-  name: string;
-  // 是否展开
-  extended: boolean;
-  // 组件列表
-  components: string[];
+  name: string; // 组件库名称
+  extended: boolean; // 是否展开
+  components: string[]; // 组件列表
 }
 
 // 组件样式
@@ -63,21 +55,18 @@ export interface ComponentStyle {
   borderBottomLeftRadius: number;
 }
 
-// 页面配置
+/** 页面配置 */
 export interface PageConfig {
-  // 页面属性
-  page: PageConfigProperty;
-  // 顶部导航栏属性
-  navigationBar: NavigationBarProperty;
-  // 底部导航菜单属性
-  tabBar?: TabBarProperty;
-  // 页面组件列表
-  components: PageComponent[];
-}
-// 页面组件，只保留组件ID，组件属性
-export type PageComponent = Pick<DiyComponent<any>, 'id' | 'property'>;
+  page: PageConfigProperty; // 页面属性
+  navigationBar: NavigationBarProperty; // 顶部导航栏属性
+  tabBar?: TabBarProperty; // 底部导航菜单属性
 
-// 页面组件库
+  components: PageComponent[]; // 页面组件列表
+}
+
+export type PageComponent = Pick<DiyComponent<any>, 'id' | 'property'>; // 页面组件，只保留组件 ID，组件属性
+
+/** 页面组件库 */
 export const PAGE_LIBS = [
   {
     name: '基础组件',
