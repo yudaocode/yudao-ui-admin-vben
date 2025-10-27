@@ -595,18 +595,22 @@ $phone-width: 375px;
       }
 
       /* 手机页面编辑区域 */
-      .phone-container {
-        position: relative;
-        width: $phone-width;
-        height: 100%;
-        margin: 0 auto;
-        overflow-x: hidden;
-        background-repeat: no-repeat;
-        background-size: 100% 100%;
+      :deep(.editor-design-center) {
+        width: 100%;
 
-        .drag-area {
-          width: 100%;
+        /* 主体内容 */
+        .phone-container {
+          position: relative;
+          width: $phone-width;
           height: 100%;
+          margin: 0 auto;
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+
+          .drag-area {
+            width: 100%;
+            height: 100%;
+          }
         }
       }
 

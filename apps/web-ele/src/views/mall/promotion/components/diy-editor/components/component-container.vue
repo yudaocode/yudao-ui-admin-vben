@@ -49,9 +49,8 @@ const emits = defineEmits<{
 type DiyComponentWithStyle = DiyComponent<any> & {
   property: { style?: ComponentStyle };
 };
-/**
- * 组件样式
- */
+
+/** 组件样式 */
 const style = computed(() => {
   const componentStyle = props.component.property.style;
   if (!componentStyle) {
@@ -78,24 +77,17 @@ const style = computed(() => {
   };
 });
 
-/**
- * 移动组件
- * @param direction 移动方向
- */
+/** 移动组件 */
 const handleMoveComponent = (direction: number) => {
   emits('move', direction);
 };
 
-/**
- * 复制组件
- */
+/** 复制组件 */
 const handleCopyComponent = () => {
   emits('copy');
 };
 
-/**
- * 删除组件
- */
+/** 删除组件 */
 const handleDeleteComponent = () => {
   emits('delete');
 };
