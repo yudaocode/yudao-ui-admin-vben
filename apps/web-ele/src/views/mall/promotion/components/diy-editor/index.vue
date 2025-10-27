@@ -3,7 +3,7 @@ import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { onMounted, ref, unref, watch } from 'vue';
 
-import { IFrame } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
@@ -12,8 +12,8 @@ import {
   ElAside,
   ElCard,
   ElContainer,
-  ElDialog,
   ElHeader,
+  ElImage,
   ElScrollbar,
   ElTag,
   ElText,
@@ -46,7 +46,7 @@ const props = defineProps({
   previewUrl: { type: String, default: '' }, // 预览地址：提供了预览地址，才会显示预览按钮
 });
 
-const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']); // 工具栏操作
+const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
 const qrcode = useQRCode(props.previewUrl, {
   errorCorrectionLevel: 'H',
@@ -260,12 +260,17 @@ function handleReset() {
   emits('reset');
 }
 
-// TODO @AI：搞成 modal 来？
+const [PreviewModal, previewModalApi] = useVbenModal({
+  showConfirmButton: false,
+  showCancelButton: false,
+  onCancel() {
+    previewModalApi.close();
+  },
+});
+
 /** 预览 */
-const previewDialogVisible = ref(false);
 function handlePreview() {
-  previewDialogVisible.value = true;
-  emits('preview');
+  previewModalApi.open();
 }
 
 /** 设置默认选中的组件 */
@@ -302,6 +307,7 @@ onMounted(() => {
         </div>
         <!-- 右侧操作区 -->
         <div class="header-right">
+          <!-- TODO @AI：按钮之间有空隙； -->
           <ElTooltip title="重置">
             <ElButton @click="handleReset">
               <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
@@ -474,7 +480,7 @@ onMounted(() => {
     </ElContainer>
 
     <!-- 预览弹框 -->
-    <ElDialog v-model:open="previewDialogVisible" title="预览" width="700">
+    <PreviewModal title="预览" class="w-700px">
       <div class="flex justify-around">
         <IFrame
           :src="previewUrl"
@@ -482,12 +488,10 @@ onMounted(() => {
         />
         <div class="flex flex-col">
           <ElText>手机扫码预览</ElText>
-          <img :src="qrcode" alt="qrcode" class="w-1/2" />
-          <!-- TODO @AI：要不要用 element-plus 组件？ -->
-          <!-- <Qrcode :text="previewUrl" logo="/logo.gif" /> -->
+          <ElImage :src="qrcode" alt="qrcode" />
         </div>
       </div>
-    </ElDialog>
+    </PreviewModal>
   </div>
 </template>
 <style lang="scss" scoped>
