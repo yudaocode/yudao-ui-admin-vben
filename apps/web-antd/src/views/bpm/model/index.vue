@@ -150,44 +150,44 @@ async function handleCategorySortSubmit() {
       v-spinning="modelListSpinning"
     >
       <template #extra>
-        <Input
-          v-model:value="queryParams.name"
-          placeholder="搜索流程"
-          allow-clear
-          @press-enter="getList"
-          class="!w-60"
-        />
-        <Button class="ml-2" type="primary" @click="createModel">
-          <IconifyIcon icon="lucide:plus" /> 新建模型
-        </Button>
-        <Dropdown class="ml-2" placement="bottomRight" arrow>
-          <Button>
-            <template #icon>
-              <div class="flex items-center justify-center">
-                <IconifyIcon icon="lucide:settings" />
-              </div>
-            </template>
+        <div v-if="!isCategorySorting">
+          <Input
+            v-model:value="queryParams.name"
+            placeholder="搜索流程"
+            allow-clear
+            @press-enter="getList"
+            class="!w-60"
+          />
+          <Button class="ml-2" type="primary" @click="createModel">
+            <IconifyIcon icon="lucide:plus" /> 新建模型
           </Button>
-          <template #overlay>
-            <Menu @click="(e) => handleCommand(e.key as string)">
-              <Menu.Item key="handleCategoryAdd">
-                <div class="flex items-center gap-1">
-                  <IconifyIcon icon="lucide:plus" />
-                  新建分类
+          <Dropdown class="ml-2" placement="bottomRight" arrow>
+            <Button>
+              <template #icon>
+                <div class="flex items-center justify-center">
+                  <IconifyIcon icon="lucide:settings" />
                 </div>
-              </Menu.Item>
-              <Menu.Item key="handleCategorySort">
-                <div class="flex items-center gap-1">
-                  <IconifyIcon icon="lucide:align-start-vertical" />
-                  分类排序
-                </div>
-              </Menu.Item>
-            </Menu>
-          </template>
-        </Dropdown>
-      </template>
-      <div class="flex h-full items-center justify-between pl-5">
-        <div class="mb-4 mr-6" v-if="isCategorySorting">
+              </template>
+            </Button>
+            <template #overlay>
+              <Menu @click="(e) => handleCommand(e.key as string)">
+                <Menu.Item key="handleCategoryAdd">
+                  <div class="flex items-center gap-1">
+                    <IconifyIcon icon="lucide:plus" />
+                    新建分类
+                  </div>
+                </Menu.Item>
+                <Menu.Item key="handleCategorySort">
+                  <div class="flex items-center gap-1">
+                    <IconifyIcon icon="lucide:align-start-vertical" />
+                    分类排序
+                  </div>
+                </Menu.Item>
+              </Menu>
+            </template>
+          </Dropdown>
+        </div>
+        <div class="flex h-full items-center justify-between" v-else>
           <Button @click="handleCategorySortCancel" class="mr-3">
             取 消
           </Button>
@@ -199,7 +199,7 @@ async function handleCategorySortSubmit() {
             保存排序
           </Button>
         </div>
-      </div>
+      </template>
 
       <!-- 按照分类，展示其所属的模型列表 -->
       <div class="px-3" ref="categoryGroupRef">
