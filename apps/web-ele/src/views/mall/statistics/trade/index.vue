@@ -9,7 +9,7 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElCol, ElRow } from 'element-plus';
 
-import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import { getTradeStatisticsSummary } from '#/api/mall/statistics/trade';
 
 import TradeTrendCard from './modules/trend-card.vue';
 
@@ -31,14 +31,14 @@ function calculateRelativeRate(value?: number, reference?: number): string {
 }
 
 /** 查询交易统计 */
-async function getTradeStatisticsSummary() {
-  summary.value = await TradeStatisticsApi.getTradeStatisticsSummary();
+async function loadTradeStatisticsSummary() {
+  summary.value = await getTradeStatisticsSummary();
 }
 
 /** 初始化 */
 onMounted(async () => {
   loading.value = true;
-  await getTradeStatisticsSummary();
+  await loadTradeStatisticsSummary();
   loading.value = false;
 });
 </script>

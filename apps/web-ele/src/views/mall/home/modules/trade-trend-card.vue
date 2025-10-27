@@ -11,7 +11,7 @@ import { fenToYuan } from '@vben/utils';
 import dayjs from 'dayjs';
 import { ElCard, ElRadio, ElRadioGroup } from 'element-plus';
 
-import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import { getOrderCountTrendComparison } from '#/api/mall/statistics/trade';
 
 import {
   getTradeTrendChartOptions,
@@ -76,15 +76,15 @@ async function handleTimeRangeTypeChange() {
     }
   }
   // 发送时间范围选中事件
-  await getOrderCountTrendComparison(beginTime, endTime);
+  await loadOrderCountTrendComparison(beginTime, endTime);
 }
 
 /** 查询订单数量趋势对照数据 */
-async function getOrderCountTrendComparison(beginTime: Dayjs, endTime: Dayjs) {
+async function loadOrderCountTrendComparison(beginTime: Dayjs, endTime: Dayjs) {
   loading.value = true;
   try {
     // 1. 查询数据
-    const list = await TradeStatisticsApi.getOrderCountTrendComparison(
+    const list = await getOrderCountTrendComparison(
       timeRangeType.value,
       beginTime.toDate(),
       endTime.toDate(),

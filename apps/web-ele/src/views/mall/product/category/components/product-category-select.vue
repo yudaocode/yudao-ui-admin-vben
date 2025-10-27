@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
-import * as ProductCategoryApi from '#/api/mall/product/category';
+import { getCategoryList } from '#/api/mall/product/category';
 
 /** 商品分类选择组件 */
 defineOptions({ name: 'ProductCategorySelect' });
@@ -42,8 +42,7 @@ const selectCategoryId = computed({
 /** 初始化 */
 const categoryList = ref<any[]>([]); // 分类树
 onMounted(async () => {
-  // 获得分类树
-  const data = await ProductCategoryApi.getCategoryList({
+  const data = await getCategoryList({
     parentId: props.parentId,
   });
   categoryList.value = handleTree(data, 'id', 'parentId');

@@ -11,7 +11,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { ElCard } from 'element-plus';
 
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberSexStatisticsList } from '#/api/mall/statistics/member';
 
 import { getSexChartOptions } from './sex-chart-options';
 
@@ -23,10 +23,10 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 按照性别，查询会员统计列表 */
-async function getMemberSexStatisticsList() {
+async function loadMemberSexStatisticsList() {
   loading.value = true;
   try {
-    const list = await MemberStatisticsApi.getMemberSexStatisticsList();
+    const list = await getMemberSexStatisticsList();
     const dictDataList = getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number');
     dictDataList.push({ label: '未知', value: null } as any);
     const chartData = dictDataList.map((dictData: any) => {
@@ -49,7 +49,7 @@ async function getMemberSexStatisticsList() {
 
 /** 初始化 */
 onMounted(() => {
-  getMemberSexStatisticsList();
+  loadMemberSexStatisticsList();
 });
 </script>
 

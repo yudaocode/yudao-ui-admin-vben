@@ -21,7 +21,11 @@ import {
 import dayjs from 'dayjs';
 import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 
-import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import {
+  exportTradeStatisticsExcel,
+  getTradeStatisticsAnalyse,
+  getTradeStatisticsList,
+} from '#/api/mall/statistics/trade';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
 import { getTradeTrendChartOptions } from './trend-chart-options';
@@ -51,7 +55,7 @@ const calculateRelativeRate = (value?: number, reference?: number): string => {
 /** 处理日期范围变化 */
 const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
   if (times?.length !== 2) {
-    getTradeTrendData();
+    loadTradeTrendData();
     return;
   }
   // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
@@ -65,29 +69,32 @@ const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
   ];
 
   // 查询数据
-  getTradeTrendData();
+  loadTradeTrendData();
 };
 
 /** 处理交易状况查询 */
-async function getTradeTrendData() {
+async function loadTradeTrendData() {
   trendLoading.value = true;
   try {
-    await Promise.all([getTradeStatisticsAnalyse(), getTradeStatisticsList()]);
+    await Promise.all([
+      loadTradeStatisticsAnalyse(),
+      loadTradeStatisticsList(),
+    ]);
   } finally {
     trendLoading.value = false;
   }
 }
 
 /** 查询交易状况数据统计 */
-async function getTradeStatisticsAnalyse() {
-  trendSummary.value = await TradeStatisticsApi.getTradeStatisticsAnalyse({
+async function loadTradeStatisticsAnalyse() {
+  trendSummary.value = await getTradeStatisticsAnalyse({
     times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
   });
 }
 
 /** 查询交易状况数据列表 */
-async function getTradeStatisticsList() {
-  const list = await TradeStatisticsApi.getTradeStatisticsList({
+async function loadTradeStatisticsList() {
+  const list = await getTradeStatisticsList({
     times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
   });
 
@@ -104,7 +111,7 @@ async function handleExport() {
     });
     // 发起导出
     exportLoading.value = true;
-    const data = await TradeStatisticsApi.exportTradeStatisticsExcel({
+    const data = await exportTradeStatisticsExcel({
       times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
     });
     // 处理下载

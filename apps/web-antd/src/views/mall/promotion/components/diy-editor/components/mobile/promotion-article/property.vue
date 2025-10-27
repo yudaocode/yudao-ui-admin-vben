@@ -9,7 +9,7 @@ import { useVModel } from '@vueuse/core';
 
 import { Form, FormItem, Select } from 'ant-design-vue';
 
-import * as ArticleApi from '#/api/mall/promotion/article/index';
+
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -27,7 +27,7 @@ const loading = ref(false);
 // 查询文章列表
 const queryArticleList = async (title?: string) => {
   loading.value = true;
-  const { list } = await ArticleApi.getArticlePage({
+  const { list } = await getArticlePage({
     title,
     pageNo: 1,
     pageSize: 10,

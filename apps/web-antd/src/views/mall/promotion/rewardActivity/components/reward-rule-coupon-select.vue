@@ -55,7 +55,7 @@ async function initGiveCouponList() {
   //   return;
   // }
   // const tempLateIds = Object.keys(rewardRule.value.giveCouponTemplateCounts);
-  // const data = await CouponTemplateApi.getCouponTemplateList(tempLateIds);
+  // const data = await getCouponTemplateList(tempLateIds);
   // if (!data) {
   //   return;
   // }

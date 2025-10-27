@@ -42,7 +42,6 @@ const selectCategoryId = computed({
 /** 初始化 */
 const categoryList = ref<any[]>([]); // 分类树
 onMounted(async () => {
-  // 获得分类树
   const data = await getCategoryList({
     parentId: props.parentId,
   });

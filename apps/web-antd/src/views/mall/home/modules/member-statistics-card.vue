@@ -10,7 +10,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { Card, Radio, RadioGroup, Spin } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberRegisterCountList } from '#/api/mall/statistics/member';
 
 import {
   getMemberStatisticsChartOptions,
@@ -71,13 +71,13 @@ async function handleTimeRangeTypeChange() {
     }
   }
   // 发送时间范围选中事件
-  await getMemberRegisterCountList(beginTime, endTime);
+  await loadMemberRegisterCountList(beginTime, endTime);
 }
 
-async function getMemberRegisterCountList(beginTime: Dayjs, endTime: Dayjs) {
+async function loadMemberRegisterCountList(beginTime: Dayjs, endTime: Dayjs) {
   loading.value = true;
   try {
-    const list = await MemberStatisticsApi.getMemberRegisterCountList(
+    const list = await getMemberRegisterCountList(
       beginTime.toDate(),
       endTime.toDate(),
     );
