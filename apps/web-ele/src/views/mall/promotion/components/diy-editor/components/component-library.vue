@@ -129,6 +129,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    width: 261px;
   }
 
   .component {

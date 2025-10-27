@@ -331,7 +331,7 @@ onMounted(() => {
       <!-- 中心区域 -->
       <ElContainer class="editor-container">
         <!-- 左侧：组件库（ComponentLibrary） -->
-        <ElAside width="200px" class="editor-left">
+        <ElAside width="261px" class="editor-left">
           <ComponentLibrary
             v-if="libs && libs.length > 0"
             ref="componentLibrary"
@@ -595,22 +595,18 @@ $phone-width: 375px;
       }
 
       /* 手机页面编辑区域 */
-      :deep(.editor-design-center) {
-        width: 100%;
+      .phone-container {
+        position: relative;
+        width: $phone-width;
+        height: 100%;
+        margin: 0 auto;
+        overflow-x: hidden;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
 
-        /* 主体内容 */
-        .phone-container {
-          position: relative;
-          width: $phone-width;
+        .drag-area {
+          width: 100%;
           height: 100%;
-          margin: 0 auto;
-          background-repeat: no-repeat;
-          background-size: 100% 100%;
-
-          .drag-area {
-            width: 100%;
-            height: 100%;
-          }
         }
       }
 
