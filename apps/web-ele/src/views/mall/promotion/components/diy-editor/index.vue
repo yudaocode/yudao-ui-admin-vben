@@ -19,6 +19,7 @@ import {
   ElText,
   ElTooltip,
 } from 'element-plus';
+import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
 
@@ -77,17 +78,20 @@ watch(
       isString(props.modelValue) && !isEmpty(props.modelValue)
         ? (JSON.parse(props.modelValue) as PageConfig)
         : props.modelValue;
-    // TODO @AI：这里可以简化么？idea 提示 Invalid 'typeof' check: 'modelValue' cannot have type 'string'
+    // noinspection SuspiciousTypeOfGuard
     pageConfigComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     navigationBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.navigationBar) ||
       NAVIGATION_BAR_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     tabBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.tabBar) ||
       TAB_BAR_COMPONENT.property;
     // 查找对应的页面组件
+    // noinspection SuspiciousTypeOfGuard
     pageComponents.value = (
       (typeof modelValue !== 'string' && modelValue?.components) ||
       []
@@ -233,7 +237,6 @@ function handleCopyComponent(index: number) {
 
 /** 删除组件 */
 function handleDeleteComponent(index: number) {
-  // 删除组件
   pageComponents.value.splice(index, 1);
   if (index < pageComponents.value.length) {
     // 1. 不是最后一个组件时，删除后选中下面的组件
@@ -481,10 +484,10 @@ onMounted(() => {
     <!-- 预览弹框 -->
     <PreviewModal title="预览" class="w-700px">
       <div class="flex justify-around">
-        <IFrame
+        <iframe
           :src="previewUrl"
           class="h-[667px] w-[375px] rounded-lg border-4 border-solid p-0.5"
-        />
+        ></iframe>
         <div class="flex flex-col">
           <ElText>手机扫码预览</ElText>
           <ElImage :src="qrcode" alt="qrcode" />
