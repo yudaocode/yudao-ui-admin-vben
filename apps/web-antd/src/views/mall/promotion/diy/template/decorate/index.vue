@@ -13,8 +13,11 @@ import { isEmpty } from '@vben/utils';
 
 import { message, Radio, RadioGroup, Tooltip } from 'ant-design-vue';
 
-import * as DiyPageApi from '#/api/mall/promotion/diy/page';
-import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
+import { updateDiyPageProperty } from '#/api/mall/promotion/diy/page';
+import {
+  getDiyTemplateProperty,
+  updateDiyTemplateProperty,
+} from '#/api/mall/promotion/diy/template';
 import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
 /** 装修模板表单 */
@@ -54,7 +57,7 @@ async function getPageDetail(id: any) {
     duration: 0,
   });
   try {
-    formData.value = await DiyTemplateApi.getDiyTemplateProperty(id);
+    formData.value = await getDiyTemplateProperty(id);
 
     // 拼接手机预览链接
     const domain = import.meta.env.VITE_MALL_H5_DOMAIN;
@@ -112,20 +115,18 @@ async function submitForm() {
       // 情况一：基础设置
       if (i === 0) {
         // 提交模板属性
-        await DiyTemplateApi.updateDiyTemplateProperty(
-          isEmpty(data) ? formData.value! : data,
-        );
+        await updateDiyTemplateProperty(isEmpty(data) ? formData.value! : data);
         continue;
       }
       // 提交页面属性
       // 情况二：提交当前正在编辑的页面
       if (currentFormData.value?.name.includes(templateItem.name)) {
-        await DiyPageApi.updateDiyPageProperty(currentFormData.value!);
+        await updateDiyPageProperty(currentFormData.value!);
         continue;
       }
       // 情况三：提交页面编辑缓存
       if (!isEmpty(data)) {
-        await DiyPageApi.updateDiyPageProperty(data!);
+        await updateDiyPageProperty(data!);
       }
     }
     message.success('保存成功');

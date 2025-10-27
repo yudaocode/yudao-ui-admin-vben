@@ -6,7 +6,10 @@ import { useRoute } from 'vue-router';
 
 import { message } from 'ant-design-vue';
 
-import * as DiyPageApi from '#/api/mall/promotion/diy/page';
+import {
+  getDiyPageProperty,
+  updateDiyPageProperty,
+} from '#/api/mall/promotion/diy/page';
 import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
 /** 装修页面表单 */
@@ -23,7 +26,7 @@ async function getPageDetail(id: any) {
     duration: 0,
   });
   try {
-    formData.value = await DiyPageApi.getDiyPageProperty(id);
+    formData.value = await getDiyPageProperty(id);
   } finally {
     hideLoading();
   }
@@ -36,7 +39,7 @@ async function submitForm() {
     duration: 0,
   });
   try {
-    await DiyPageApi.updateDiyPageProperty(unref(formData)!);
+    await updateDiyPageProperty(unref(formData)!);
     message.success('保存成功');
   } finally {
     hideLoading();

@@ -19,7 +19,7 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import * as IoTOtaTaskApi from '#/api/iot/ota/task';
+import { getOtaTaskPage } from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
 import OtaTaskDetail from './OtaTaskDetail.vue';
@@ -52,7 +52,7 @@ const taskDetailRef = ref(); // 任务详情引用
 async function getTaskList() {
   taskLoading.value = true;
   try {
-    const data = await IoTOtaTaskApi.getOtaTaskPage(queryParams);
+    const data = await getOtaTaskPage(queryParams);
     taskList.value = data.list;
     taskTotal.value = data.total;
   } finally {
