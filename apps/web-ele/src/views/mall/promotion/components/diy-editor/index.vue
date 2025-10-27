@@ -306,20 +306,19 @@ onMounted(() => {
           <span>{{ title }}</span>
         </div>
         <!-- 右侧操作区 -->
-        <div class="header-right">
-          <!-- TODO @AI：按钮之间有空隙； -->
-          <ElTooltip title="重置">
-            <ElButton @click="handleReset">
+        <div>
+          <ElTooltip content="重置">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handleReset">
               <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip v-if="previewUrl" title="预览">
-            <ElButton @click="handlePreview">
+          <ElTooltip v-if="previewUrl" content="预览">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handlePreview">
               <IconifyIcon :size="24" icon="ep:view" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip title="保存">
-            <ElButton @click="handleSave">
+          <ElTooltip content="保存">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handleSave">
               <IconifyIcon :size="24" icon="ep:check" />
             </ElButton>
           </ElTooltip>
@@ -513,15 +512,6 @@ $phone-width: 375px;
     padding: 0;
     background-color: var(--el-bg-color);
     border-bottom: solid 1px var(--el-border-color);
-
-    /* 工具栏：右侧按钮 */
-    .header-right {
-      height: 100%;
-
-      .el-button {
-        height: 100%;
-      }
-    }
 
     /* 隐藏工具栏按钮的边框 */
     :deep(.el-radio-button__inner),
