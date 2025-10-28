@@ -284,6 +284,17 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 // @jason：看看能不能通过 tailwindcss 简化下
+@keyframes bounce {
+  0%,
+  50% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .process-definition-container {
   .definition-item-card {
     .flow-icon-img {
@@ -308,17 +319,6 @@ onMounted(() => {
       border: 1px solid var(--primary);
       animation: bounce 0.5s ease;
     }
-  }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
   }
 }
 </style>

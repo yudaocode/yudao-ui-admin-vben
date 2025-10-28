@@ -30,7 +30,7 @@ setInterval(() => {
   >
     <Image :src="property.iconUrl" class="h-[18px]" :preview="false" />
     <Divider type="vertical" />
-    <div class="flex-1 pr-2 h-6 truncate leading-6">
+    <div class="h-6 flex-1 truncate pr-2 leading-6">
       {{ property.contents?.[activeIndex]?.text }}
     </div>
     <IconifyIcon icon="ep:arrow-right" />
