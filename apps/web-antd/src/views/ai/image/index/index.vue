@@ -47,15 +47,15 @@ const platformOptions = [
 const models = ref<AiModelModelApi.Model[]>([]); // 模型列表
 
 /** 绘画 start  */
-const handleDrawStart = async () => {};
+async function handleDrawStart() {}
 
 /** 绘画 complete */
-const handleDrawComplete = async () => {
+async function handleDrawComplete() {
   await imageListRef.value.getImageList();
-};
+}
 
 /** 重新生成：将画图详情填充到对应平台 */
-const handleRegeneration = async (image: AiImageApi.Image) => {
+async function handleRegeneration(image: AiImageApi.Image) {
   // 切换平台
   selectPlatform.value = image.platform;
   // 根据不同平台填充 image
@@ -79,7 +79,7 @@ const handleRegeneration = async (image: AiImageApi.Image) => {
     // No default
   }
   // TODO @fan：貌似 other 重新设置不行？
-};
+}
 
 /** 组件挂载的时候 */
 onMounted(async () => {

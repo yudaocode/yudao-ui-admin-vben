@@ -63,7 +63,6 @@ const menuList = [
 ];
 
 /** 跳转到菜单对应页面 */
-// TODO @xingyu：貌似通过 name 的方式，都无法跳转，找不到路由？
 function handleMenuClick(routerName: string) {
   router.push({ name: routerName });
 }

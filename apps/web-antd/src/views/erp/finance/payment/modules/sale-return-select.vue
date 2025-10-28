@@ -73,7 +73,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开弹窗 */
-const openModal = (id: number) => {
+function openModal(id: number) {
   // 重置数据
   supplierId.value = id;
   open.value = true;
@@ -82,17 +82,17 @@ const openModal = (id: number) => {
   gridApi.formApi?.resetForm();
   gridApi.formApi?.setValues({ supplierId: id });
   gridApi.query();
-};
+}
 
 /** 确认选择 */
-const handleOk = () => {
+function handleOk() {
   if (selectedRows.value.length === 0) {
     message.warning('请选择要添加的采购退货单');
     return;
   }
   emit('success', selectedRows.value);
   open.value = false;
-};
+}
 
 defineExpose({ open: openModal });
 </script>

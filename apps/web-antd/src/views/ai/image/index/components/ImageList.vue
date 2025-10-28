@@ -24,7 +24,7 @@ import ImageDetail from './ImageDetail.vue';
 // 暴露组件方法
 
 const emits = defineEmits(['onRegeneration']);
-const router = useRouter(); // 路由
+const router = useRouter();
 const [Drawer, drawerApi] = useVbenDrawer({
   title: '图片详情',
   footer: false,

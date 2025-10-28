@@ -41,7 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
         disabled: (values) => values.id,
       },
       componentProps: {
-        api: () => getSimpleUserList(),
+        api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
@@ -54,7 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
-        api: () => getCustomerSimpleList(),
+        api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
@@ -134,7 +134,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '直属上级',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSimpleContactList(),
+        api: getSimpleContactList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择直属上级',
@@ -145,7 +145,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '地址',
       component: 'ApiTreeSelect',
       componentProps: {
-        api: () => getAreaTree(),
+        api: getAreaTree,
         fieldNames: { label: 'name', value: 'id', children: 'children' },
         placeholder: '请选择地址',
       },
@@ -188,7 +188,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '客户',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getCustomerSimpleList(),
+        api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',

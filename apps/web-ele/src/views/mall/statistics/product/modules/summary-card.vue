@@ -21,8 +21,13 @@ import {
 import dayjs from 'dayjs';
 import { ElButton, ElCard, ElCol, ElRow } from 'element-plus';
 
-import * as ProductStatisticsApi from '#/api/mall/statistics/product';
+import {
+  exportProductStatisticsExcel,
+  getProductStatisticsAnalyse,
+  getProductStatisticsList,
+} from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
+import { $t } from '#/locales';
 
 import { getProductSummaryChartOptions } from './summary-chart-options';
 
@@ -51,7 +56,7 @@ const calculateRelativeRate = (value?: number, reference?: number): string => {
 /** 处理日期范围变化 */
 const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
   if (times?.length !== 2) {
-    getProductTrendData();
+    loadProductTrendData();
     return;
   }
   // 处理时间: 开始与截止在同一天的, 折线图出不来, 需要延长一天
@@ -65,29 +70,29 @@ const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
   ];
 
   // 查询数据
-  getProductTrendData();
+  loadProductTrendData();
 };
 
 /** 处理商品状况查询 */
-const getProductTrendData = async () => {
+const loadProductTrendData = async () => {
   trendLoading.value = true;
   try {
-    await Promise.all([getProductTrendSummary(), getProductStatisticsList()]);
+    await Promise.all([loadProductTrendSummary(), loadProductStatisticsList()]);
   } finally {
     trendLoading.value = false;
   }
 };
 
 /** 查询商品状况数据统计 */
-async function getProductTrendSummary() {
-  trendSummary.value = await ProductStatisticsApi.getProductStatisticsAnalyse({
+async function loadProductTrendSummary() {
+  trendSummary.value = await getProductStatisticsAnalyse({
     times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
   });
 }
 
 /** 查询商品状况数据列表 */
-async function getProductStatisticsList() {
-  const list = await ProductStatisticsApi.getProductStatisticsList({
+async function loadProductStatisticsList() {
+  const list = await getProductStatisticsList({
     times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
   });
 
@@ -104,13 +109,11 @@ async function handleExport() {
     });
     // 发起导出
     exportLoading.value = true;
-    const data = await ProductStatisticsApi.exportProductStatisticsExcel({
+    const data = await exportProductStatisticsExcel({
       times: searchTimes.value.length > 0 ? searchTimes.value : undefined,
     });
     // 处理下载
     downloadFileFromBlobPart({ fileName: '商品状况.xlsx', source: data });
-  } catch {
-    // 用户取消导出
   } finally {
     exportLoading.value = false;
   }
@@ -133,7 +136,7 @@ async function handleExport() {
               <template #icon>
                 <IconifyIcon icon="lucide:download" />
               </template>
-              导出
+              {{ $t('page.action.export') }}
             </ElButton>
           </ShortcutDateRangePicker>
         </div>
@@ -228,7 +231,6 @@ async function handleExport() {
           "
         />
       </ElCol>
-
       <ElCol :xl="8" :md="8" :sm="24" class="mb-4">
         <SummaryCard
           title="退款金额"

@@ -20,8 +20,8 @@ import ProcessStep from './ProcessStep.vue';
 import SplitStep from './SplitStep.vue';
 import UploadStep from './UploadStep.vue';
 
-const route = useRoute(); // 路由
-const router = useRouter(); // 路由
+const route = useRoute();
+const router = useRouter();
 
 // 组件引用
 const uploadDocumentRef = ref();

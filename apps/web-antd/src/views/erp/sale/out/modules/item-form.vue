@@ -96,7 +96,7 @@ watch(
     await gridApi.grid.reloadData(tableData.value);
     // 更新表格列配置（目的：原数量、已出库动态列）
     const columns = useFormItemColumns(tableData.value);
-    await gridApi.grid.reloadColumn(columns);
+    await gridApi.grid.reloadColumn(columns || []);
   },
   {
     immediate: true,
@@ -140,14 +140,14 @@ function handleDelete(row: ErpSaleOutApi.SaleOutItem) {
 }
 
 /** 处理仓库变更 */
-const handleWarehouseChange = async (row: ErpSaleOutApi.SaleOutItem) => {
+async function handleWarehouseChange(row: ErpSaleOutApi.SaleOutItem) {
   const stockCount = await getWarehouseStockCount({
     productId: row.productId!,
     warehouseId: row.warehouseId!,
   });
   row.stockCount = stockCount || 0;
   handleRowChange(row);
-};
+}
 
 /** 处理行数据变更 */
 function handleRowChange(row: any) {
@@ -161,14 +161,14 @@ function handleRowChange(row: any) {
 }
 
 /** 初始化行数据 */
-const initRow = (row: ErpSaleOutApi.SaleOutItem): void => {
+function initRow(row: ErpSaleOutApi.SaleOutItem) {
   if (row.productPrice && row.count) {
     row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
     row.taxPrice =
       erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
     row.totalPrice = row.totalProductPrice + row.taxPrice;
   }
-};
+}
 
 /** 表单校验 */
 function validate() {

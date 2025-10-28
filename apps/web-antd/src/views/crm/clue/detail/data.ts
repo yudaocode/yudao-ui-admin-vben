@@ -13,10 +13,10 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'source',
       label: '线索来源',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_CUSTOMER_SOURCE,
-          value: data?.source,
+          value: val,
         }),
     },
     {
@@ -30,7 +30,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
   ];
 }
@@ -45,10 +45,10 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'source',
       label: '客户来源',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_CUSTOMER_SOURCE,
-          value: data?.source,
+          value: val,
         }),
     },
     {
@@ -66,8 +66,8 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'areaName',
       label: '地址',
-      content: (data) => {
-        const areaName = data.areaName ?? '';
+      render: (val, data) => {
+        const areaName = val ?? '';
         const detailAddress = data?.detailAddress ?? '';
         return [areaName, detailAddress].filter((item) => !!item).join(' ');
       },
@@ -83,25 +83,25 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'industryId',
       label: '客户行业',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_CUSTOMER_INDUSTRY,
-          value: data?.industryId,
+          value: val,
         }),
     },
     {
       field: 'level',
       label: '客户级别',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_CUSTOMER_LEVEL,
-          value: data?.level,
+          value: val,
         }),
     },
     {
       field: 'contactNextTime',
       label: '下次联系时间',
-      content: (data) => formatDateTime(data?.contactNextTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'remark',

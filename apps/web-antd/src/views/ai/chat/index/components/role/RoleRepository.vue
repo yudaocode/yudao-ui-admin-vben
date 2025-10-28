@@ -17,7 +17,7 @@ import Form from '../../../../model/chatRole/modules/form.vue';
 import RoleCategoryList from './RoleCategoryList.vue';
 import RoleList from './RoleList.vue';
 
-const router = useRouter(); // 路由对象
+const router = useRouter();
 const [Drawer] = useVbenDrawer({
   title: '角色管理',
   footer: false,
@@ -55,7 +55,7 @@ async function handleTabsClick(tab: any) {
 
 /** 获取 my role 我的角色 */
 async function getMyRole(append?: boolean) {
-  const params: AiModelChatRoleApi.ChatRolePageReq = {
+  const params: AiModelChatRoleApi.ChatRolePageReqVO = {
     ...myRoleParams,
     name: search.value,
     publicStatus: false,
@@ -70,7 +70,7 @@ async function getMyRole(append?: boolean) {
 
 /** 获取 public role 公共角色 */
 async function getPublicRole(append?: boolean) {
-  const params: AiModelChatRoleApi.ChatRolePageReq = {
+  const params: AiModelChatRoleApi.ChatRolePageReqVO = {
     ...publicRoleParams,
     category: activeCategory.value === '全部' ? '' : activeCategory.value,
     name: search.value,

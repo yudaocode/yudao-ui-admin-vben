@@ -59,6 +59,7 @@ const PAY_DICT = {
   PAY_NOTIFY_STATUS: 'pay_notify_status', // 商户支付回调状态
   PAY_NOTIFY_TYPE: 'pay_notify_type', // 商户支付回调状态
   PAY_TRANSFER_STATUS: 'pay_transfer_status', // 转账订单状态
+  PAY_TRANSFER_TYPE: 'pay_transfer_type', // 转账类型
 } as const;
 
 /** ========== MP - 公众号模块 ========== */
@@ -142,6 +143,7 @@ const AI_DICT = {
   AI_WRITE_LENGTH: 'ai_write_length', // AI 写作长度
   AI_WRITE_TONE: 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE: 'ai_write_type', // AI 写作类型
+  AI_MCP_CLIENT_NAME: 'ai_mcp_client_name', // AI MCP Client 名字
 } as const;
 
 /** ========== IOT - 物联网模块 ========== */

@@ -139,7 +139,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'status',
       minWidth: 150,
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: {
           dictType: DICT_TYPE.COMMON_STATUS,
         },
@@ -150,7 +150,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'position',
       minWidth: 150,
       cellRender: {
-        name: 'CellDictTag',
+        name: 'CellDict',
         props: {
           dictType: DICT_TYPE.PROMOTION_BANNER_POSITION,
         },

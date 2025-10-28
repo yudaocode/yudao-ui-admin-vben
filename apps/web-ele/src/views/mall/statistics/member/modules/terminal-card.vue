@@ -8,7 +8,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { ElCard } from 'element-plus';
 
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberTerminalStatisticsList } from '#/api/mall/statistics/member';
 
 import { getTerminalChartOptions } from './terminal-chart-options';
 
@@ -20,10 +20,10 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 按照终端，查询会员统计列表 */
-const getMemberTerminalStatisticsList = async () => {
+const loadMemberTerminalStatisticsList = async () => {
   loading.value = true;
   try {
-    const list = await MemberStatisticsApi.getMemberTerminalStatisticsList();
+    const list = await getMemberTerminalStatisticsList();
     const dictDataList = getDictOptions('terminal', 'number');
     const chartData = dictDataList.map((dictData: any) => {
       const userCount = list.find(
@@ -43,7 +43,7 @@ const getMemberTerminalStatisticsList = async () => {
 
 /** 初始化 */
 onMounted(() => {
-  getMemberTerminalStatisticsList();
+  loadMemberTerminalStatisticsList();
 });
 </script>
 

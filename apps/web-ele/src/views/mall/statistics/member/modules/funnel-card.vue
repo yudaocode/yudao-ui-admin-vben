@@ -7,7 +7,7 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElCard } from 'element-plus';
 
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberAnalyse } from '#/api/mall/statistics/member';
 import { ShortcutDateRangePicker } from '#/components/shortcut-date-range-picker';
 
 /** 会员概览卡片 */
@@ -23,7 +23,7 @@ async function loadData(times: [Dayjs, Dayjs]) {
   }
   loading.value = true;
   try {
-    analyseData.value = await MemberStatisticsApi.getMemberAnalyse({
+    analyseData.value = await getMemberAnalyse({
       times,
     });
   } finally {

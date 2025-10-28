@@ -8,10 +8,10 @@ import { onMounted, ref } from 'vue';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { fenToYuan } from '@vben/utils';
 
-import { ElCard, ElRadio, ElRadioGroup } from 'element-plus';
 import dayjs from 'dayjs';
+import { ElCard, ElRadio, ElRadioGroup } from 'element-plus';
 
-import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import { getOrderCountTrendComparison } from '#/api/mall/statistics/trade';
 
 import {
   getTradeTrendChartOptions,
@@ -46,7 +46,7 @@ const timeRangeConfig = {
 const timeRangeType = ref(TimeRangeTypeEnum.DAY30); // 日期快捷选择按钮, 默认 30 天
 
 /** 时间范围类型单选按钮选中 */
-const handleTimeRangeTypeChange = async () => {
+async function handleTimeRangeTypeChange() {
   // 设置时间范围
   let beginTime: Dayjs;
   let endTime: Dayjs;
@@ -76,15 +76,15 @@ const handleTimeRangeTypeChange = async () => {
     }
   }
   // 发送时间范围选中事件
-  await getOrderCountTrendComparison(beginTime, endTime);
-};
+  await loadOrderCountTrendComparison(beginTime, endTime);
+}
 
 /** 查询订单数量趋势对照数据 */
-async function getOrderCountTrendComparison(beginTime: Dayjs, endTime: Dayjs) {
+async function loadOrderCountTrendComparison(beginTime: Dayjs, endTime: Dayjs) {
   loading.value = true;
   try {
     // 1. 查询数据
-    const list = await TradeStatisticsApi.getOrderCountTrendComparison(
+    const list = await getOrderCountTrendComparison(
       timeRangeType.value,
       beginTime.toDate(),
       endTime.toDate(),

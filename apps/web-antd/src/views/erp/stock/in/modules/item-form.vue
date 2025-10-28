@@ -160,11 +160,11 @@ function handleRowChange(row: any) {
 }
 
 /** 初始化行数据 */
-const initRow = (row: ErpStockInApi.StockInItem): void => {
+function initRow(row: ErpStockInApi.StockInItem) {
   if (row.productPrice && row.count) {
     row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
   }
-};
+}
 
 /** 表单校验 */
 function validate() {

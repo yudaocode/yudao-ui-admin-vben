@@ -11,7 +11,7 @@ import { formatDateTime } from '@vben/utils';
 import { Card } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as ProductStatisticsApi from '#/api/mall/statistics/product';
+import { getProductStatisticsRankPage } from '#/api/mall/statistics/product';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
 /** 商品排行 */
@@ -104,7 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page, sorts }) => {
-          return await ProductStatisticsApi.getProductStatisticsRankPage({
+          return await getProductStatisticsRankPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             times: searchTimes.value.length > 0 ? searchTimes.value : undefined,

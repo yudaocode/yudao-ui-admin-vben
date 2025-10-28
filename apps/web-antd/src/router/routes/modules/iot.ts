@@ -31,6 +31,16 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('#/views/iot/device/device/modules/detail/index.vue'),
       },
+      {
+        path: 'ota/firmware/detail/:id',
+        name: 'IoTOtaFirmwareDetail',
+        meta: {
+          title: '固件详情',
+          activePath: '/iot/ota',
+        },
+        component: () =>
+          import('#/views/iot/ota/modules/firmware-detail/index.vue'),
+      },
     ],
   },
 ];

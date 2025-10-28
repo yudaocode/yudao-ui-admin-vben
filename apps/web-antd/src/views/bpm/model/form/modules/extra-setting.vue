@@ -26,11 +26,11 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import * as FormApi from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import {
   HttpRequestSetting,
   parseFormFields,
-} from '#/components/simple-process-design';
+} from '#/views/bpm/components/simple-process-design';
 
 const modelData = defineModel<any>();
 
@@ -179,8 +179,7 @@ const formFieldOptions4Summary = computed(() => {
   });
 });
 const unParsedFormFields = ref<string[]>([]); // 未解析的表单字段
-// 暴露给子组件 HttpRequestSetting 使用
-provide('formFields', unParsedFormFields);
+provide('formFields', unParsedFormFields); // 暴露给子组件 HttpRequestSetting 使用
 
 /** 兼容以前未配置更多设置的流程 */
 function initData() {
@@ -230,7 +229,7 @@ watch(
   () => modelData.value.formId,
   async (newFormId) => {
     if (newFormId && modelData.value.formType === BpmModelFormType.NORMAL) {
-      const data = await FormApi.getFormDetail(newFormId);
+      const data = await getForm(newFormId);
       const result: Array<{ field: string; title: string }> = [];
       if (data.fields) {
         unParsedFormFields.value = data.fields;
@@ -246,8 +245,8 @@ watch(
   },
   { immediate: true },
 );
-// 表单引用
-const formRef = ref();
+const formRef = ref(); // 表单引用
+
 /** 表单校验 */
 async function validate() {
   await formRef.value?.validate();

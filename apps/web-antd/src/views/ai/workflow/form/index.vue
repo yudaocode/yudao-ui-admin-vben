@@ -118,7 +118,7 @@ async function handleSave() {
 
     // 保存成功，提示并跳转到列表页
     message.success('保存成功');
-    tabs.closeCurrentTab();
+    await tabs.closeCurrentTab();
     await router.push({ name: 'AiWorkflow' });
   } catch (error: any) {
     console.error('保存失败:', error);
@@ -152,8 +152,8 @@ async function handleDeploy() {
     // 发布
     await deployModel(formData.value.id);
     message.success('发布成功');
-    // TODO 返回列表页
-    await router.push({ name: '/ai/workflow' });
+    // 返回列表页
+    await router.push({ name: 'AiWorkflow' });
   } catch (error: any) {
     console.error('发布失败:', error);
     message.warning(error.message || '发布失败');
@@ -190,8 +190,8 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  workflowId.value = route.query.id as string;
-  actionType.value = route.query.type as string;
+  workflowId.value = route.params.id as string;
+  actionType.value = route.params.type as string;
   await initData();
 });
 

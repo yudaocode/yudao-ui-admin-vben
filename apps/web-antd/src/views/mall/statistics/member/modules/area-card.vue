@@ -10,7 +10,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { Card, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberAreaStatisticsList } from '#/api/mall/statistics/member';
 
 import { getAreaChartOptions, getAreaTableColumns } from './area-chart-options';
 
@@ -44,10 +44,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 按照省份，查询会员统计列表 */
-async function getMemberAreaStatisticsList() {
+async function loadMemberAreaStatisticsList() {
   loading.value = true;
   try {
-    const list = await MemberStatisticsApi.getMemberAreaStatisticsList();
+    const list = await getMemberAreaStatisticsList();
     areaStatisticsList.value = list.map(
       (item: MallMemberStatisticsApi.AreaStatistics) => ({
         ...item,
@@ -80,7 +80,7 @@ function areaReplace(areaName: string): string {
 
 /** 初始化 */
 onMounted(() => {
-  getMemberAreaStatisticsList();
+  loadMemberAreaStatisticsList();
 });
 </script>
 

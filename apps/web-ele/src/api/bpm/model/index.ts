@@ -52,7 +52,7 @@ export interface ModelCategoryInfo {
 }
 
 /** 获取流程模型列表 */
-export async function getModelList(name: string | undefined) {
+export async function getModelList(name?: string) {
   return requestClient.get<BpmModelApi.Model[]>('/bpm/model/list', {
     params: { name },
   });

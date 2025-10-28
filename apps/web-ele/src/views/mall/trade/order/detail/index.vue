@@ -235,7 +235,7 @@ const handlePickUp = async () => {
 /** 返回列表页 */
 function handleBack() {
   tabs.closeCurrentTab();
-  router.push('/mall/trade/order');
+  router.push({ name: 'TradeOrder' });
 }
 
 /** 初始化 */

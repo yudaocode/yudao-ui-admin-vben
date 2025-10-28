@@ -43,14 +43,15 @@ const formData = ref<
 const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
 const itemFormRef = ref<InstanceType<typeof ItemForm>>();
 
-/* eslint-disable unicorn/no-nested-ternary */
-const getTitle = computed(() =>
-  formType.value === 'create'
-    ? $t('ui.actionTitle.create', ['收款单'])
-    : formType.value === 'edit'
-      ? $t('ui.actionTitle.edit', ['收款单'])
-      : '收款单详情',
-);
+const getTitle = computed(() => {
+  if (formType.value === 'create') {
+    return $t('ui.actionTitle.create', ['收款单']);
+  } else if (formType.value === 'edit') {
+    return $t('ui.actionTitle.edit', ['收款单']);
+  } else {
+    return '收款单详情';
+  }
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -82,30 +83,28 @@ const [Form, formApi] = useVbenForm({
 });
 
 /** 更新收款项 */
-const handleUpdateItems = (
-  items: ErpFinanceReceiptApi.FinanceReceiptItem[],
-) => {
+function handleUpdateItems(items: ErpFinanceReceiptApi.FinanceReceiptItem[]) {
   formData.value.items = items;
   formApi.setValues({
     items,
   });
-};
+}
 
 /** 更新总金额 */
-const handleUpdateTotalPrice = (totalPrice: number) => {
+function handleUpdateTotalPrice(totalPrice: number) {
   formData.value.totalPrice = totalPrice;
   formApi.setValues({
     totalPrice: formData.value.totalPrice,
   });
-};
+}
 
 /** 更新收款金额 */
-const handleUpdateReceiptPrice = (receiptPrice: number) => {
+function handleUpdateReceiptPrice(receiptPrice: number) {
   formData.value.receiptPrice = receiptPrice;
   formApi.setValues({
     receiptPrice: formData.value.receiptPrice,
   });
-};
+}
 
 /** 创建或更新收款单 */
 const [Modal, modalApi] = useVbenModal({

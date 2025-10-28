@@ -14,14 +14,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<SystemSocialUserApi.SocialUser>();
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    border: true,
-    column: 1,
-    direction: 'horizontal',
-    title: '',
-    extra: '',
-    labelWidth: 185,
-  },
+  column: 1,
+  labelWidth: 185,
   schema: useDetailSchema(),
 });
 

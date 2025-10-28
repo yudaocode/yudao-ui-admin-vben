@@ -23,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '商品',
       component: 'ApiSelect',
       componentProps: {
-        api: () => getSpuSimpleList(),
+        api: getSpuSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商品',
@@ -101,7 +101,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'replyStatus',
       label: '回复状态',
-      component: 'Select',
+      component: 'RadioGroup',
       componentProps: {
         options: [
           { label: '已回复', value: true },

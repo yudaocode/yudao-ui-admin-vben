@@ -33,10 +33,10 @@ async function getList() {
 }
 const debounceGetList = useDebounceFn(getList, 80);
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 初始化 */
 onMounted(async () => {

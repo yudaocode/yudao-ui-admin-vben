@@ -21,8 +21,12 @@ import {
   Tag,
 } from 'ant-design-vue';
 
-import * as IoTOtaTaskApi from '#/api/iot/ota/task';
-import * as IoTOtaTaskRecordApi from '#/api/iot/ota/task/record';
+import { getOtaTask } from '#/api/iot/ota/task';
+import {
+  cancelOtaTaskRecord,
+  getOtaTaskRecordPage,
+  getOtaTaskRecordStatusStatistics,
+} from '#/api/iot/ota/task/record';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 /** OTA 任务详情组件 */
@@ -119,7 +123,7 @@ async function getTaskInfo() {
   }
   taskLoading.value = true;
   try {
-    task.value = await IoTOtaTaskApi.getOtaTask(taskId.value);
+    task.value = await getOtaTask(taskId.value);
   } finally {
     taskLoading.value = false;
   }
@@ -132,11 +136,10 @@ async function getStatistics() {
   }
   taskStatisticsLoading.value = true;
   try {
-    taskStatistics.value =
-      await IoTOtaTaskRecordApi.getOtaTaskRecordStatusStatistics(
-        undefined,
-        taskId.value,
-      );
+    taskStatistics.value = await getOtaTaskRecordStatusStatistics(
+      undefined,
+      taskId.value,
+    );
   } finally {
     taskStatisticsLoading.value = false;
   }
@@ -150,7 +153,7 @@ async function getRecordList() {
   recordLoading.value = true;
   try {
     queryParams.taskId = taskId.value;
-    const data = await IoTOtaTaskRecordApi.getOtaTaskRecordPage(queryParams);
+    const data = await getOtaTaskRecordPage(queryParams);
     recordList.value = data.list || [];
     recordTotal.value = data.total || 0;
   } finally {
@@ -181,7 +184,7 @@ async function handleCancelUpgrade(record: OtaTaskRecord) {
     content: '确认要取消该设备的升级任务吗？',
     async onOk() {
       try {
-        await IoTOtaTaskRecordApi.cancelOtaTaskRecord(record.id!);
+        await cancelOtaTaskRecord(record.id!);
         message.success('取消成功');
         await getRecordList();
         await getStatistics();

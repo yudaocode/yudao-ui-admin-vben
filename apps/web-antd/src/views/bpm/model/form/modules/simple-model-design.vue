@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 
-import { SimpleProcessDesigner } from '#/components/simple-process-design';
+import { SimpleProcessDesigner } from '#/views/bpm/components/simple-process-design';
 
 defineOptions({ name: 'SimpleModelDesign' });
 
@@ -16,6 +16,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits(['success']);
+
 const designerRef = ref();
 
 /** 保存成功回调 */
@@ -24,10 +25,12 @@ function handleSuccess(data?: any) {
     emit('success', data);
   }
 }
+
 /** 设计器配置校验 */
 async function validateConfig() {
   return await designerRef.value.validate();
 }
+
 defineExpose({ validateConfig });
 </script>
 <template>

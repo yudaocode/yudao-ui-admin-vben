@@ -113,8 +113,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <Grid>
-      <template #top>
-        <Tabs class="-mt-11" @change="handleTabChange">
+      <template #toolbar-actions>
+        <Tabs class="w-full" @change="handleTabChange">
           <TabPane
             v-for="tab in statusTabs"
             :key="tab.value"
@@ -143,8 +143,3 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
-<style scoped>
-:deep(.vxe-toolbar div) {
-  z-index: 1;
-}
-</style>

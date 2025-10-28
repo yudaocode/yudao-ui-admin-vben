@@ -6,7 +6,6 @@ import { IconifyIcon } from '@vben/icons';
 import { base64ToFile } from '@vben/utils';
 
 import { Button, message, Space, Tooltip } from 'ant-design-vue';
-// TODO @ziye：这个可能，适合放到全局？！因为 element-plus 也用这个；
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';
@@ -20,28 +19,29 @@ const emits = defineEmits(['success']);
 const signature = ref<InstanceType<typeof Vue3Signature>>();
 
 const [Modal, modalApi] = useVbenModal({
-  title: '流程签名',
-  onOpenChange(visible) {
-    if (!visible) {
-      modalApi.close();
-    }
-  },
   async onConfirm() {
+    // TODO @jason：这里需要使用类似 modalApi.lock() 么？类似别的模块
     message.success({
-      content: '签名上传中请稍等。。。',
+      content: '签名上传中，请稍等...',
     });
     const signFileUrl = await uploadFile({
       file: base64ToFile(signature?.value?.save('image/jpeg') || '', '签名'),
     });
     emits('success', signFileUrl);
-    // TODO @ziye：下面有个告警哈；ps：所有告警，皆是错误，可以关注 ide 给的提示哈；
-    modalApi.close();
+    // TODO @jason：是不是不用主动 close？
+    await modalApi.close();
+  },
+  // TODO @jason：这个是不是下面方法，可以删除；
+  onOpenChange(visible) {
+    if (!visible) {
+      modalApi.close();
+    }
   },
 });
 </script>
 
 <template>
-  <Modal class="h-2/5 w-3/5">
+  <Modal title="流程签名" class="h-2/5 w-3/5">
     <div class="mb-2 flex justify-end">
       <Space>
         <Tooltip title="撤销上一步操作">
@@ -52,7 +52,6 @@ const [Modal, modalApi] = useVbenModal({
             撤销
           </Button>
         </Tooltip>
-
         <Tooltip title="清空画布">
           <Button @click="signature?.clear()">
             <template #icon>

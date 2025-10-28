@@ -8,7 +8,7 @@ import { fenToYuan } from '@vben/utils';
 
 import { Col, Row } from 'ant-design-vue';
 
-import * as MemberStatisticsApi from '#/api/mall/statistics/member';
+import { getMemberSummary } from '#/api/mall/statistics/member';
 
 import MemberAreaCard from './modules/area-card.vue';
 import MemberFunnelCard from './modules/funnel-card.vue';
@@ -22,15 +22,15 @@ const loading = ref(true); // 加载中
 const summary = ref<MallMemberStatisticsApi.Summary>(); // 会员统计数据
 
 /** 查询会员统计 */
-async function getMemberSummary() {
-  summary.value = await MemberStatisticsApi.getMemberSummary();
+async function loadMemberSummary() {
+  summary.value = await getMemberSummary();
 }
 
 /** 初始化 */
 onMounted(async () => {
   loading.value = true;
   try {
-    await getMemberSummary();
+    await loadMemberSummary();
   } finally {
     loading.value = false;
   }

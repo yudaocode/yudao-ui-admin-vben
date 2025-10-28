@@ -17,18 +17,18 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '合同金额（元）',
-      content: (data) =>
-        erpPriceInputFormatter(data?.contract?.totalPrice ?? data.totalPrice),
+      render: (val, data) =>
+        erpPriceInputFormatter(val ?? data?.contract?.totalPrice ?? 0),
     },
     {
       field: 'returnTime',
       label: '回款日期',
-      content: (data) => formatDateTime(data?.returnTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'price',
       label: '回款金额（元）',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'ownerUserName',
@@ -51,25 +51,26 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'contract',
       label: '合同编号',
-      content: (data) => data?.contract?.no,
+      render: (val, data) =>
+        val && data?.contract?.no ? data?.contract?.no : '',
     },
     {
       field: 'returnTime',
       label: '回款日期',
-      content: (data) => formatDateTime(data?.returnTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'price',
       label: '回款金额',
-      content: (data) => erpPriceInputFormatter(data.price),
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'returnType',
       label: '回款方式',
-      content: (data) =>
+      render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.CRM_RECEIVABLE_RETURN_TYPE,
-          value: data?.returnType,
+          value: val,
         }),
     },
     {
@@ -93,12 +94,12 @@ export function useDetailSystemSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      content: (data) => formatDateTime(data?.createTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      content: (data) => formatDateTime(data?.updateTime) as string,
+      render: (val) => formatDateTime(val) as string,
     },
   ];
 }

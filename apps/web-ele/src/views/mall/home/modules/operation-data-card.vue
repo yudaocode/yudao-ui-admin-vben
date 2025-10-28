@@ -6,9 +6,9 @@ import { CountTo } from '@vben/common-ui';
 
 import { ElCard } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
-import * as PayStatisticsApi from '#/api/mall/statistics/pay';
-import * as TradeStatisticsApi from '#/api/mall/statistics/trade';
+import { getTabsCount } from '#/api/mall/product/spu';
+import { getWalletRechargePrice } from '#/api/mall/statistics/pay';
+import { getOrderCount } from '#/api/mall/statistics/trade';
 
 /** 运营数据卡片 */
 defineOptions({ name: 'OperationDataCard' });
@@ -51,8 +51,8 @@ const data = reactive({
 });
 
 /** 查询订单数据 */
-const getOrderData = async () => {
-  const orderCount = await TradeStatisticsApi.getOrderCount();
+async function loadOrderData() {
+  const orderCount = await getOrderCount();
   if (orderCount.undelivered) {
     data.orderUndelivered.value = orderCount.undelivered;
   }
@@ -65,33 +65,32 @@ const getOrderData = async () => {
   if (orderCount.auditingWithdraw) {
     data.withdrawAuditing.value = orderCount.auditingWithdraw;
   }
-};
+}
 
 /** 查询商品数据 */
-const getProductData = async () => {
-  const productCount = await ProductSpuApi.getTabsCount();
+async function loadProductData() {
+  const productCount = await getTabsCount();
   data.productForSale.value = productCount['0'] || 0;
   data.productInWarehouse.value = productCount['1'] || 0;
   data.productAlertStock.value = productCount['3'] || 0;
-};
+}
 
 /** 查询钱包充值数据 */
-const getWalletRechargeData = async () => {
-  const paySummary = await PayStatisticsApi.getWalletRechargePrice();
+async function loadWalletRechargeData() {
+  const paySummary = await getWalletRechargePrice();
   data.rechargePrice.value = paySummary.rechargePrice;
-};
+}
 
 /** 跳转到对应页面 */
-// TODO @xingyu：貌似通过 name 的方式，都无法跳转，找不到路由？
-const handleClick = (routerName: string) => {
+function handleClick(routerName: string) {
   router.push({ name: routerName });
-};
+}
 
 /** 激活时 */
 onActivated(() => {
-  getOrderData();
-  getProductData();
-  getWalletRechargeData();
+  loadOrderData();
+  loadProductData();
+  loadWalletRechargeData();
 });
 
 /** 初始化 */
