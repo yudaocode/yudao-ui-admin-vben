@@ -17,11 +17,9 @@ import { useDetailLogColumns, useDetailSchema } from '../data';
 const formData = ref<PayNotifyApi.NotifyTask>();
 
 const [Description] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 2,
-    class: 'mx-4',
-  },
+  bordered: true,
+  column: 2,
+  class: 'mx-4',
   schema: useDetailSchema(),
 });
 
