@@ -42,9 +42,11 @@ const emit = defineEmits(['update:modelValue']);
 const formData = ref<HotZoneItemProperty[]>([]);
 
 const [Modal, modalApi] = useVbenModal({
-  onClosed() {
+  showCancelButton: false,
+  onConfirm() {
     const list = zoomOut(formData.value);
     emit('update:modelValue', list);
+    modalApi.close();
   },
 });
 
@@ -162,11 +164,6 @@ const setHeight = (item: HotZoneItemProperty, height: number) => {
   }
 };
 
-/** 处理对话框确定 */
-const handleSubmit = () => {
-  modalApi.close();
-};
-
 const activeHotZone = ref<HotZoneItemProperty>();
 const appLinkDialogRef = ref();
 
@@ -224,14 +221,10 @@ const handleAppLinkChange = (appLink: AppLink) => {
         ></span>
       </div>
     </div>
-    <template #footer>
+    <template #prepend-footer>
       <ElButton @click="handleAdd" type="primary" plain>
         <IconifyIcon icon="ep:plus" class="mr-5px" />
         添加热区
-      </ElButton>
-      <ElButton @click="handleSubmit" type="primary" plain>
-        <IconifyIcon icon="ep:check" class="mr-5px" />
-        确定
       </ElButton>
     </template>
   </Modal>

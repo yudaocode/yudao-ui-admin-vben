@@ -48,8 +48,6 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-defineExpose({ open });
-
 /** 打开弹窗 */
 async function open(link: string) {
   activeAppLink.value.path = link;
@@ -70,6 +68,8 @@ async function open(link: string) {
     handleGroupSelected(group.name);
   }
 }
+
+defineExpose({ open });
 
 /** 处理 APP 链接选中 */
 function handleAppLinkSelected(appLink: AppLink) {
@@ -139,7 +139,7 @@ function scrollToGroupBtn(group: string) {
 
 /** 是否为相同的链接（不比较参数，只比较链接） */
 function isSameLink(link1: string, link2: string) {
-  return link2 ? link1.split('?')[0] === link2.split('?')[0] : false;
+  return link2 ? link1?.split('?')[0] === link2.split('?')[0] : false;
 }
 
 /** 处理详情选择 */
@@ -166,7 +166,6 @@ function handleProductCategorySelected(id: number) {
         view-class="flex flex-col"
         class="border-r border-gray-200 pr-2"
       >
-        <!-- TODO @AI：文字左对齐 -->
         <ElButton
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
@@ -220,7 +219,6 @@ function handleProductCategorySelected(id: number) {
     </div>
   </Modal>
 
-  <!-- TODO @AI：这里要处理下； -->
   <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
     <el-form class="min-h-[200px]">
       <el-form-item
