@@ -5,9 +5,10 @@ import type { AppLink } from './data';
 
 import { nextTick, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { getUrlNumberValue } from '@vben/utils';
 
-import { ElScrollbar } from 'element-plus';
+import { ElButton, ElScrollbar, ElTooltip } from 'element-plus';
 
 import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
 
@@ -39,12 +40,20 @@ const detailSelectDialog = ref<{
   type: undefined,
 }); // 详情选择对话框
 
-const dialogVisible = ref(false);
+const [Modal, modalApi] = useVbenModal({
+  onConfirm() {
+    emit('change', activeAppLink.value.path);
+    emit('appLinkChange', activeAppLink.value);
+    modalApi.close();
+  },
+});
+
+defineExpose({ open });
 
 /** 打开弹窗 */
-function open(link: string) {
+async function open(link: string) {
   activeAppLink.value.path = link;
-  dialogVisible.value = true;
+  modalApi.open();
   // 滚动到当前的链接
   const group = APP_LINK_GROUP_LIST.find((group) =>
     group.links.some((linkItem) => {
@@ -56,13 +65,11 @@ function open(link: string) {
     }),
   );
   if (group) {
-    // TODO @AI：await 方式；
     // 使用 nextTick 的原因：可能 Dom 还没生成，导致滚动失败
-    nextTick(() => handleGroupSelected(group.name));
+    await nextTick();
+    handleGroupSelected(group.name);
   }
 }
-
-defineExpose({ open });
 
 /** 处理 APP 链接选中 */
 function handleAppLinkSelected(appLink: AppLink) {
@@ -85,12 +92,6 @@ function handleAppLinkSelected(appLink: AppLink) {
       break;
     }
   }
-}
-
-function handleSubmit() {
-  dialogVisible.value = false;
-  emit('change', activeAppLink.value.path);
-  emit('appLinkChange', activeAppLink.value);
 }
 
 /**
@@ -156,15 +157,17 @@ function handleProductCategorySelected(id: number) {
 }
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="选择链接" width="65%">
+  <Modal title="选择链接" class="w-[65%]">
     <div class="flex h-[500px] gap-2">
       <!-- 左侧分组列表 -->
       <ElScrollbar
         wrap-class="h-full"
         ref="groupScrollbar"
         view-class="flex flex-col"
+        class="border-r border-gray-200 pr-2"
       >
-        <el-button
+        <!-- TODO @AI：文字左对齐 -->
+        <ElButton
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
           class="ml-0 mr-4 w-[90px] justify-start"
@@ -175,29 +178,32 @@ function handleProductCategorySelected(id: number) {
           @click="handleGroupSelected(group.name)"
         >
           {{ group.name }}
-        </el-button>
+        </ElButton>
       </ElScrollbar>
       <!-- 右侧链接列表 -->
       <ElScrollbar
-        class="h-full flex-1"
+        class="h-full flex-1 pl-2"
         @scroll="handleScroll"
         ref="linkScrollbar"
       >
         <div
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
+          class="mb-4 border-b border-gray-100 pb-4 last:mb-0 last:border-b-0"
         >
           <!-- 分组标题 -->
-          <div class="font-bold" ref="groupTitleRefs">{{ group.name }}</div>
+          <div class="mb-2 font-bold" ref="groupTitleRefs">
+            {{ group.name }}
+          </div>
           <!-- 链接列表 -->
-          <el-tooltip
+          <ElTooltip
             v-for="(appLink, appLinkIndex) in group.links"
             :key="appLinkIndex"
             :content="appLink.path"
             placement="bottom"
             :show-after="300"
           >
-            <el-button
+            <ElButton
               class="mb-2 ml-0 mr-2"
               :type="
                 isSameLink(appLink.path, activeAppLink.path)
@@ -207,18 +213,14 @@ function handleProductCategorySelected(id: number) {
               @click="handleAppLinkSelected(appLink)"
             >
               {{ appLink.name }}
-            </el-button>
-          </el-tooltip>
+            </ElButton>
+          </ElTooltip>
         </div>
       </ElScrollbar>
     </div>
-    <!-- 底部对话框操作按钮 -->
-    <template #footer>
-      <el-button type="primary" @click="handleSubmit">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
-    </template>
-  </el-dialog>
+  </Modal>
 
+  <!-- TODO @AI：这里要处理下； -->
   <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
     <el-form class="min-h-[200px]">
       <el-form-item
@@ -236,8 +238,3 @@ function handleProductCategorySelected(id: number) {
     </el-form>
   </el-dialog>
 </template>
-<style lang="scss" scoped>
-:deep(.el-button + .el-button) {
-  margin-left: 0 !important;
-}
-</style>
