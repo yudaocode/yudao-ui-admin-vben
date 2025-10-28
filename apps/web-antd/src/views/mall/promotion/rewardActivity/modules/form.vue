@@ -204,7 +204,8 @@ function setProductScopeValues(data: any) {
         :rule-config="[]"
         :spu-property-list="[]"
         :deletable="true"
-        :spu-list="[]"/>
+        :spu-list="[]"
+      />
     </FormItem>
   </Modal>
 </template>
