@@ -31,20 +31,24 @@ import ComponentContainerProperty from '../../component-container-property.vue';
 // TODO: 添加组件
 // import CouponSelect from '#/views/mall/promotion/coupon/components/coupon-select.vue';
 
-// 优惠券卡片属性面板
+/** 优惠券卡片属性面板 */
 defineOptions({ name: 'CouponCardProperty' });
 
 const props = defineProps<{ modelValue: CouponCardProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 优惠券列表
-const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]);
+const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]); // 已选择的优惠券列表
 const couponSelectDialog = ref();
-// 添加优惠券
+
+/** 添加优惠劵 */
 const handleAddCoupon = () => {
   couponSelectDialog.value.open();
 };
+
+/** 处理优惠劵选择 */
 const handleCouponSelect = () => {
   formData.value.couponIds = couponList.value.map((coupon) => coupon.id);
 };
@@ -151,7 +155,9 @@ watch(
       </ElCard>
     </ElForm>
   </ComponentContainerProperty>
+
   <!-- 优惠券选择 -->
+  <!-- TODO @AI：优惠劵的选择 -->
   <CouponSelect
     ref="couponSelectDialog"
     v-model:multiple-selection="couponList"
@@ -159,5 +165,3 @@ watch(
     @change="handleCouponSelect"
   />
 </template>
-
-<style scoped lang="scss"></style>
