@@ -6,9 +6,10 @@ import type { AppLink } from '#/views/mall/promotion/components/app-link-input/d
 
 import { ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { ElButton, ElDialog, ElImage } from 'element-plus';
+import { ElButton, ElImage } from 'element-plus';
 
 import { AppLinkSelectDialog } from '#/views/mall/promotion/components';
 
@@ -40,14 +41,19 @@ const emit = defineEmits(['update:modelValue']);
 
 const formData = ref<HotZoneItemProperty[]>([]);
 
-const dialogVisible = ref(false); // 弹窗的是否显示
+const [Modal, modalApi] = useVbenModal({
+  onClosed() {
+    const list = zoomOut(formData.value);
+    emit('update:modelValue', list);
+  },
+});
 
 /** 打开弹窗 */
-const open = () => {
+function open() {
   // 放大
   formData.value = zoomIn(props.modelValue);
-  dialogVisible.value = true;
-};
+  modalApi.open();
+}
 
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
@@ -156,16 +162,9 @@ const setHeight = (item: HotZoneItemProperty, height: number) => {
   }
 };
 
-/** 处理对话框关闭 */
+/** 处理对话框确定 */
 const handleSubmit = () => {
-  dialogVisible.value = false;
-};
-
-/** 处理对话框关闭 */
-const handleClose = () => {
-  // 缩小
-  const list = zoomOut(formData.value);
-  emit('update:modelValue', list);
+  modalApi.close();
 };
 
 const activeHotZone = ref<HotZoneItemProperty>();
@@ -186,12 +185,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
 </script>
 
 <template>
-  <ElDialog
-    v-model="dialogVisible"
-    title="设置热区"
-    width="780"
-    @close="handleClose"
-  >
+  <Modal title="设置热区" class="w-[780px]">
     <div ref="container" class="w-750px relative h-full">
       <ElImage
         :src="imgUrl"
@@ -210,9 +204,9 @@ const handleAppLinkChange = (appLink: AppLink) => {
         @mousedown="handleMove(item, $event)"
         @dblclick="handleShowAppLinkDialog(item)"
       >
-        <span class="pointer-events-none select-none">{{
-          item.name || '双击选择链接'
-        }}</span>
+        <span class="pointer-events-none select-none">
+          {{ item.name || '双击选择链接' }}
+        </span>
         <IconifyIcon
           icon="ep:close"
           class="delete"
@@ -220,7 +214,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
           @click="handleRemove(item)"
         />
 
-        <!-- 8个控制点 -->
+        <!-- 8 个控制点 -->
         <span
           class="ctrl-dot"
           v-for="(dot, dotIndex) in CONTROL_DOT_LIST"
@@ -240,7 +234,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
         确定
       </ElButton>
     </template>
-  </ElDialog>
+  </Modal>
 
   <AppLinkSelectDialog
     ref="appLinkDialogRef"
