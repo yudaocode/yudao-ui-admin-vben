@@ -167,11 +167,13 @@ const setHeight = (item: HotZoneItemProperty, height: number) => {
 const activeHotZone = ref<HotZoneItemProperty>();
 const appLinkDialogRef = ref();
 
+/** 显示 App 链接选择对话框 */
 const handleShowAppLinkDialog = (hotZone: HotZoneItemProperty) => {
   activeHotZone.value = hotZone;
   appLinkDialogRef.value.open(hotZone.url);
 };
 
+/** 处理 App 链接选择变更 */
 const handleAppLinkChange = (appLink: AppLink) => {
   if (!appLink || !activeHotZone.value) {
     return;

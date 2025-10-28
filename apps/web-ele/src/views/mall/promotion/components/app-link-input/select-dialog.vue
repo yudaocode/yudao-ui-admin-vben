@@ -8,9 +8,15 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { getUrlNumberValue } from '@vben/utils';
 
-import { ElButton, ElScrollbar, ElTooltip } from 'element-plus';
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElScrollbar,
+  ElTooltip,
+} from 'element-plus';
 
-import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
+import { ProductCategorySelect } from '#/views/mall/product/category/components/';
 
 import { APP_LINK_GROUP_LIST, APP_LINK_TYPE_ENUM } from './data';
 
@@ -33,9 +39,7 @@ const groupBtnRefs = ref<ButtonInstance[]>([]); // 分组引用列表
 const detailSelectDialog = ref<{
   id?: number;
   type?: APP_LINK_TYPE_ENUM;
-  visible: boolean;
 }>({
-  visible: false,
   id: undefined,
   type: undefined,
 }); // 详情选择对话框
@@ -47,6 +51,14 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.close();
   },
 });
+
+const [DetailSelectModal, detailSelectModalApi] = useVbenModal({
+  onConfirm() {
+    detailSelectModalApi.close();
+  },
+});
+
+defineExpose({ open });
 
 /** 打开弹窗 */
 async function open(link: string) {
@@ -69,8 +81,6 @@ async function open(link: string) {
   }
 }
 
-defineExpose({ open });
-
 /** 处理 APP 链接选中 */
 function handleAppLinkSelected(appLink: AppLink) {
   if (!isSameLink(appLink.path, activeAppLink.value.path)) {
@@ -78,7 +88,6 @@ function handleAppLinkSelected(appLink: AppLink) {
   }
   switch (appLink.type) {
     case APP_LINK_TYPE_ENUM.PRODUCT_CATEGORY_LIST: {
-      detailSelectDialog.value.visible = true;
       detailSelectDialog.value.type = appLink.type;
       // 返显
       detailSelectDialog.value.id =
@@ -86,6 +95,7 @@ function handleAppLinkSelected(appLink: AppLink) {
           'id',
           `http://127.0.0.1${activeAppLink.value.path}`,
         ) || undefined;
+      detailSelectModalApi.open();
       break;
     }
     default: {
@@ -144,41 +154,41 @@ function isSameLink(link1: string, link2: string) {
 
 /** 处理详情选择 */
 function handleProductCategorySelected(id: number) {
-  // TODO @AI：这里有点问题；activeAppLink 地址；
+  // 生成 activeAppLink
   const url = new URL(activeAppLink.value.path, 'http://127.0.0.1');
-  // 修改 id 参数
   url.searchParams.set('id', `${id}`);
-  // 排除域名
   activeAppLink.value.path = `${url.pathname}${url.search}`;
-  // 关闭对话框
-  detailSelectDialog.value.visible = false;
-  // 重置 id
+
+  // 关闭对话框，并重置 id
+  detailSelectModalApi.close();
   detailSelectDialog.value.id = undefined;
 }
 </script>
 <template>
   <Modal title="选择链接" class="w-[65%]">
     <div class="flex h-[500px] gap-2">
-      <!-- 左侧分组列表 -->
-      <ElScrollbar
-        wrap-class="h-full"
-        ref="groupScrollbar"
-        view-class="flex flex-col"
-        class="border-r border-gray-200 pr-2"
-      >
-        <ElButton
-          v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
-          :key="groupIndex"
-          class="ml-0 mr-4 w-[90px] justify-start"
-          :class="[{ active: activeGroup === group.name }]"
-          ref="groupBtnRefs"
-          :text="activeGroup !== group.name"
-          :type="activeGroup === group.name ? 'primary' : 'default'"
-          @click="handleGroupSelected(group.name)"
+      <div class="flex flex-col">
+        <!-- 左侧分组列表 -->
+        <ElScrollbar
+          wrap-class="h-full"
+          ref="groupScrollbar"
+          view-class="flex flex-col"
+          class="border-r border-gray-200 pr-2"
         >
-          {{ group.name }}
-        </ElButton>
-      </ElScrollbar>
+          <ElButton
+            v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
+            :key="groupIndex"
+            class="!ml-0 mb-1 mr-4 !justify-start"
+            :class="[{ active: activeGroup === group.name }]"
+            ref="groupBtnRefs"
+            :text="activeGroup !== group.name"
+            :type="activeGroup === group.name ? 'primary' : 'default'"
+            @click="handleGroupSelected(group.name)"
+          >
+            {{ group.name }}
+          </ElButton>
+        </ElScrollbar>
+      </div>
       <!-- 右侧链接列表 -->
       <ElScrollbar
         class="h-full flex-1 pl-2"
@@ -219,9 +229,9 @@ function handleProductCategorySelected(id: number) {
     </div>
   </Modal>
 
-  <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
-    <el-form class="min-h-[200px]">
-      <el-form-item
+  <DetailSelectModal title="选择分类" class="w-[65%]">
+    <ElForm class="min-h-[200px]">
+      <ElFormItem
         label="选择分类"
         v-if="
           detailSelectDialog.type === APP_LINK_TYPE_ENUM.PRODUCT_CATEGORY_LIST
@@ -232,7 +242,7 @@ function handleProductCategorySelected(id: number) {
           :parent-id="0"
           @update:model-value="handleProductCategorySelected"
         />
-      </el-form-item>
-    </el-form>
-  </el-dialog>
+      </ElFormItem>
+    </ElForm>
+  </DetailSelectModal>
 </template>
