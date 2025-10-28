@@ -5,6 +5,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import {
   CouponTemplateTakeTypeEnum,
   PromotionDiscountTypeEnum,
@@ -26,10 +27,9 @@ import {
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
+import CouponSelect from '#/views/mall/promotion/coupon/components/select.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
-// TODO: 添加组件
-// import CouponSelect from '#/views/mall/promotion/coupon/components/coupon-select.vue';
 
 /** 优惠券卡片属性面板 */
 defineOptions({ name: 'CouponCardProperty' });
@@ -41,18 +41,26 @@ const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 
 const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]); // 已选择的优惠券列表
-const couponSelectDialog = ref();
+
+const [CouponSelectModal, couponSelectModalApi] = useVbenModal({
+  connectedComponent: CouponSelect,
+  destroyOnClose: true,
+});
 
 /** 添加优惠劵 */
 const handleAddCoupon = () => {
-  couponSelectDialog.value.open();
+  couponSelectModalApi.open();
 };
 
 /** 处理优惠劵选择 */
-const handleCouponSelect = () => {
-  formData.value.couponIds = couponList.value.map((coupon) => coupon.id);
+const handleCouponSelect = (
+  selectedCoupons: MallCouponTemplateApi.CouponTemplate[],
+) => {
+  couponList.value = selectedCoupons;
+  formData.value.couponIds = selectedCoupons.map((coupon) => coupon.id);
 };
 
+/** 监听优惠券 ID 变化，加载优惠券列表 */
 watch(
   () => formData.value.couponIds,
   async () => {
@@ -157,11 +165,8 @@ watch(
   </ComponentContainerProperty>
 
   <!-- 优惠券选择 -->
-  <!-- TODO @AI：优惠劵的选择 -->
-  <CouponSelect
-    ref="couponSelectDialog"
-    v-model:multiple-selection="couponList"
+  <CouponSelectModal
     :take-type="CouponTemplateTakeTypeEnum.USER.type"
-    @change="handleCouponSelect"
+    @success="handleCouponSelect"
   />
 </template>

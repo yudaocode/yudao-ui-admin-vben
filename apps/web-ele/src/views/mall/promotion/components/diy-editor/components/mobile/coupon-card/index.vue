@@ -60,7 +60,7 @@ watch(
   { immediate: true, deep: true },
 );
 
-/** 提取手机宽度 */
+/** 初始化 */
 onMounted(() => {
   phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
 });
