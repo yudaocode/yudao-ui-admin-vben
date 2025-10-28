@@ -4,7 +4,6 @@ import type { HotZoneProperty } from './config';
 import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-
 import { Button, Form, FormItem, Typography } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -30,7 +29,12 @@ const handleOpenEditDialog = () => {
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <!-- 表单 -->
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData" class="mt-2">
+    <Form
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+      :model="formData"
+      class="mt-2"
+    >
       <FormItem label="上传图片" prop="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
@@ -40,7 +44,9 @@ const handleOpenEditDialog = () => {
           :show-description="false"
         >
           <template #tip>
-            <Typography.Text type="secondary" class="text-xs"> 推荐宽度 750</Typography.Text>
+            <Typography.Text type="secondary" class="text-xs">
+              推荐宽度 750
+            </Typography.Text>
           </template>
         </UploadImg>
       </FormItem>

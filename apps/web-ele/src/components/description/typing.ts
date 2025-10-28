@@ -32,8 +32,6 @@ export interface DescriptionProps extends ElDescriptionProps {
   schema: DescriptionItemSchema[];
   // 数据
   data: Recordable<any>;
-  // 是否包含边框
-  bordered?: boolean;
 }
 
 export interface DescInstance {

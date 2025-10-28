@@ -13,6 +13,7 @@ import { useDetailSchema } from '../data';
 const formData = ref<PayOrderApi.Order>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 2,
   labelWidth: 140,
   schema: useDetailSchema(),

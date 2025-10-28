@@ -10,8 +10,7 @@ import { get, getNestedValue, isFunction } from '@vben/utils';
 import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 const props = {
-  // TODO @星语：bordered 不生效；之前好像是 border
-  bordered: { default: true, type: Boolean },
+  border: { default: true, type: Boolean },
   column: {
     default: () => {
       return { lg: 3, md: 3, sm: 2, xl: 3, xs: 1, xxl: 4 };

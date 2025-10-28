@@ -2,7 +2,6 @@
 import type { ImageBarProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-
 import { Form, FormItem } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -20,7 +19,11 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+    <Form
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+      :model="formData"
+    >
       <FormItem label="上传图片" prop="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"

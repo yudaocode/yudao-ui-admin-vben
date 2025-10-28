@@ -245,7 +245,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       render: (val, data) => {
         if (val === 0) {
           return '正常';
-        } else if (data && data.resultCode > 0) {
+        } else if (data && data.resultMsg) {
           return `失败 | ${val} | ${data.resultMsg}`;
         }
         return '';
