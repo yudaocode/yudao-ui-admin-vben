@@ -13,15 +13,15 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import { InputWithColor as ColorInput } from '#/views/mall/promotion/components';
+import { ColorInput } from '#/views/mall/promotion/components';
 
-// 导航栏属性面板
+/** 导航栏属性面板 */
 defineOptions({ name: 'DividerProperty' });
-const props = defineProps<{ modelValue: DividerProperty }>();
-const emit = defineEmits(['update:modelValue']);
-const formData = useVModel(props, 'modelValue', emit);
 
-// 线类型
+const props = defineProps<{ modelValue: DividerProperty }>();
+
+const emit = defineEmits(['update:modelValue']);
+
 const BORDER_TYPES = [
   {
     icon: 'vaadin:line-h',
@@ -43,7 +43,8 @@ const BORDER_TYPES = [
     text: '无',
     type: 'none',
   },
-];
+]; // 线类型
+const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
@@ -96,11 +97,8 @@ const BORDER_TYPES = [
         </ElRadioGroup>
       </ElFormItem>
       <ElFormItem label="颜色">
-        <!-- 分割线颜色 -->
         <ColorInput v-model="formData.lineColor" />
       </ElFormItem>
     </template>
   </ElForm>
 </template>
-
-<style scoped lang="scss"></style>
