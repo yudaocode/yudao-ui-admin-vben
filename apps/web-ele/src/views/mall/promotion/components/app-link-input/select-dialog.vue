@@ -39,9 +39,10 @@ const detailSelectDialog = ref<{
   type: undefined,
 }); // 详情选择对话框
 
-/** 打开弹窗 */
 const dialogVisible = ref(false);
-const open = (link: string) => {
+
+/** 打开弹窗 */
+function open(link: string) {
   activeAppLink.value.path = link;
   dialogVisible.value = true;
   // 滚动到当前的链接
@@ -55,14 +56,16 @@ const open = (link: string) => {
     }),
   );
   if (group) {
+    // TODO @AI：await 方式；
     // 使用 nextTick 的原因：可能 Dom 还没生成，导致滚动失败
     nextTick(() => handleGroupSelected(group.name));
   }
-};
+}
+
 defineExpose({ open });
 
 /** 处理 APP 链接选中 */
-const handleAppLinkSelected = (appLink: AppLink) => {
+function handleAppLinkSelected(appLink: AppLink) {
   if (!isSameLink(appLink.path, activeAppLink.value.path)) {
     activeAppLink.value = appLink;
   }
@@ -82,7 +85,7 @@ const handleAppLinkSelected = (appLink: AppLink) => {
       break;
     }
   }
-};
+}
 
 function handleSubmit() {
   dialogVisible.value = false;
@@ -92,6 +95,7 @@ function handleSubmit() {
 
 /**
  * 处理右侧链接列表滚动
+ *
  * @param {object} param0 滚动事件参数
  * @param {number} param0.scrollTop 滚动条的位置
  */
@@ -214,6 +218,7 @@ function handleProductCategorySelected(id: number) {
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </el-dialog>
+
   <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
     <el-form class="min-h-[200px]">
       <el-form-item
