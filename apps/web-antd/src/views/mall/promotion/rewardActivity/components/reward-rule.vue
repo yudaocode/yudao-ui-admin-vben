@@ -165,7 +165,7 @@ defineExpose({ setRuleCoupon });
                 <span>送优惠券：</span>
                 <RewardRuleCouponSelect
                   ref="rewardRuleCouponSelectRef"
-                  v-model="rule"
+                  :model-value="rule"
                 />
               </div>
             </div>

@@ -20,7 +20,8 @@ import {
   updateRewardActivity,
 } from '#/api/mall/promotion/reward/rewardActivity';
 import { $t } from '#/locales';
-import { SpuAndSkuList } from '#/views/mall/promotion/components';
+// TODO @puhui999：有问题
+// import { SpuAndSkuList } from '#/views/mall/promotion/components';
 
 import RewardRule from '../components/reward-rule.vue';
 import { useFormSchema } from '../data';
