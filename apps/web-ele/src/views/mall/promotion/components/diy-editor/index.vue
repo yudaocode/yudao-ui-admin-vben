@@ -541,7 +541,7 @@ $phone-width: 375px;
       }
 
       /* 属性面板分组 */
-      :deep(.property-group) {
+      .property-group {
         margin: 0 -20px;
 
         &.el-card {
