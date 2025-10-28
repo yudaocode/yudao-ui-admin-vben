@@ -11,7 +11,7 @@ import { fenToYuan } from '@vben/utils';
 import { Image } from 'ant-design-vue';
 
 import { getSpuDetailList } from '#/api/mall/product/spu';
-import { getCombinationActivityListByIds, getCombinationActivityPage } from '#/api/mall/promotion/combination/combinationActivity';
+import { getCombinationActivityListByIds } from '#/api/mall/promotion/combination/combinationActivity';
 
 /** 拼团卡片 */
 defineOptions({ name: 'PromotionCombination' });
@@ -34,9 +34,7 @@ watch(
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取拼团活动详情列表
         combinationActivityList.value =
-          await getCombinationActivityListByIds(
-            activityIds,
-          );
+          await getCombinationActivityListByIds(activityIds);
 
         // 获取拼团活动的 SPU 详情列表
         spuList.value = [];

@@ -608,12 +608,12 @@ $phone-width: 375px;
         flex-direction: column;
 
         :deep(.ant-tag) {
-          border: none;
-          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
           display: flex;
           align-items: center;
           justify-content: flex-start;
           width: 100%;
+          border: none;
+          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
 
           .anticon {
             margin-right: 4px;

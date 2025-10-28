@@ -5,7 +5,7 @@ import type { MallArticleApi } from '#/api/mall/promotion/article';
 
 import { ref, watch } from 'vue';
 
-
+import { getArticle } from '#/api/mall/promotion/article';
 
 /** 营销文章 */
 defineOptions({ name: 'PromotionArticle' });

@@ -4,7 +4,6 @@ import type { ProductListProperty } from './config';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-
 import {
   Card,
   Checkbox,
@@ -34,7 +33,11 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+    <Form
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+      :model="formData"
+    >
       <Card title="商品列表" class="property-group" :bordered="false">
         <!-- <SpuShowcase v-model="formData.spuIds" /> -->
       </Card>
@@ -102,11 +105,7 @@ const formData = useVModel(props, 'modelValue', emit);
           />
         </FormItem>
         <FormItem label="间隔" prop="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>

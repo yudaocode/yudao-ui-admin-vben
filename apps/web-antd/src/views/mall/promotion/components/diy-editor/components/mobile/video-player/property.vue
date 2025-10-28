@@ -2,7 +2,6 @@
 import type { VideoPlayerProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-
 import { Form, FormItem, Slider, Switch } from 'ant-design-vue';
 
 import UploadFile from '#/components/upload/file-upload.vue';
@@ -25,7 +24,11 @@ const formData = useVModel(props, 'modelValue', emit);
         <Slider v-model:value="formData.style.height" :max="500" :min="100" />
       </FormItem>
     </template>
-    <Form :model="formData" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <Form
+      :model="formData"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+    >
       <FormItem label="上传视频" name="videoUrl">
         <UploadFile
           v-model="formData.videoUrl"

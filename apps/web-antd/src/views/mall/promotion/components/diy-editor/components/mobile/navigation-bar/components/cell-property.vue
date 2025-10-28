@@ -6,13 +6,7 @@ import type { Rect } from '#/views/mall/promotion/components/magic-cube-editor/u
 import { computed, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import {
-  FormItem,
-  Input,
-  Radio,
-  RadioGroup,
-  Slider,
-} from 'ant-design-vue';
+import { FormItem, Input, Radio, RadioGroup, Slider } from 'ant-design-vue';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -86,7 +80,7 @@ const handleHotAreaSelected = (
   </div>
   <template v-for="(cell, cellIndex) in cellList" :key="cellIndex">
     <template v-if="selectedHotAreaIndex === Number(cellIndex)">
-      <FormItem :label="`类型`">
+      <FormItem label="类型">
         <RadioGroup v-model:value="cell.type">
           <Radio value="text">文字</Radio>
           <Radio value="image">图片</Radio>
@@ -95,19 +89,19 @@ const handleHotAreaSelected = (
       </FormItem>
       <!-- 1. 文字 -->
       <template v-if="cell.type === 'text'">
-        <FormItem :label="`内容`">
+        <FormItem label="内容">
           <Input v-model:value="cell!.text" :maxlength="10" show-count />
         </FormItem>
-        <FormItem :label="`颜色`">
+        <FormItem label="颜色">
           <ColorInput v-model="cell!.textColor" />
         </FormItem>
-        <FormItem :label="`链接`">
+        <FormItem label="链接">
           <AppLinkInput v-model="cell.url" />
         </FormItem>
       </template>
       <!-- 2. 图片 -->
       <template v-else-if="cell.type === 'image'">
-        <FormItem :label="`图片`">
+        <FormItem label="图片">
           <UploadImg
             v-model="cell.imgUrl"
             :limit="1"
@@ -118,21 +112,17 @@ const handleHotAreaSelected = (
             <template #tip>建议尺寸 56*56</template>
           </UploadImg>
         </FormItem>
-        <FormItem :label="`链接`">
+        <FormItem label="链接">
           <AppLinkInput v-model="cell.url" />
         </FormItem>
       </template>
       <!-- 3. 搜索框 -->
       <template v-else>
-        <FormItem :label="`提示文字`">
+        <FormItem label="提示文字">
           <Input v-model:value="cell.placeholder" :maxlength="10" show-count />
         </FormItem>
-        <FormItem :label="`圆角`">
-          <Slider
-            v-model:value="cell.borderRadius"
-            :max="100"
-            :min="0"
-          />
+        <FormItem label="圆角">
+          <Slider v-model:value="cell.borderRadius" :max="100" :min="0" />
         </FormItem>
       </template>
     </template>
@@ -140,8 +130,3 @@ const handleHotAreaSelected = (
 </template>
 
 <style lang="scss" scoped></style>
-
-
-
-
-

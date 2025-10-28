@@ -10,7 +10,7 @@ import { fenToYuan } from '@vben/utils';
 import { Image } from 'ant-design-vue';
 
 import { getSpuDetailList } from '#/api/mall/product/spu';
-
+import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
 /** 积分商城卡片 */
 defineOptions({ name: 'PromotionPoint' });
@@ -30,8 +30,7 @@ watch(
       // 检查活动ID的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取积分商城活动详情列表
-        pointActivityList.value =
-          await getPointActivityListByIds(activityIds);
+        pointActivityList.value = await getPointActivityListByIds(activityIds);
 
         // 获取积分商城活动的 SPU 详情列表
         spuList.value = [];

@@ -93,7 +93,7 @@ defineExpose({ setRuleCoupon });
         </div>
 
         <Form :model="rule">
-          <FormItem label="优惠门槛:" label-col="{ span: 4 }">
+          <FormItem label="优惠门槛:" :label-col="{ span: 4 }">
             <div class="flex items-center gap-2">
               <span>满</span>
               <InputNumber
@@ -118,7 +118,7 @@ defineExpose({ setRuleCoupon });
             </div>
           </FormItem>
 
-          <FormItem label="优惠内容:" label-col="{ span: 4 }">
+          <FormItem label="优惠内容:" :label-col="{ span: 4 }">
             <div class="flex flex-col gap-4">
               <!-- 订单金额优惠 -->
               <div class="flex items-center gap-2">

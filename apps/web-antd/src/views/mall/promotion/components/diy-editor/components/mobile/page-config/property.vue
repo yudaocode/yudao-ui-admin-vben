@@ -2,7 +2,6 @@
 import type { PageConfigProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-
 import { Form, FormItem, Textarea } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';

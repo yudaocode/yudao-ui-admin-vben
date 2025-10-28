@@ -122,8 +122,8 @@ watch(
     button {
       width: 6px;
       height: 6px;
-      border-radius: 6px;
       background: #ff6000;
+      border-radius: 6px;
     }
   }
 
