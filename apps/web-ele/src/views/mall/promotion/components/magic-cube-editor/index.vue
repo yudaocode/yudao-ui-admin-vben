@@ -241,7 +241,7 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
           <IconifyIcon icon="ep:circle-close-filled" />
         </div>
         <span v-if="hotArea.width">
-          {{ `${hotArea.width}×${hotArea.height}`}}
+          {{ `${hotArea.width}×${hotArea.height}` }}
         </span>
       </div>
     </table>
@@ -259,6 +259,11 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
     text-align: center;
     cursor: pointer;
     border: 1px solid var(--el-border-color);
+    line-height: 1;
+
+    :deep(.iconify) {
+      display: inline-block;
+    }
 
     &.active {
       background: var(--el-color-primary-light-9);
