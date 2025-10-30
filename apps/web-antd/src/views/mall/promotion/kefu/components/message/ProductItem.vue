@@ -37,9 +37,9 @@ defineProps({
 const { push } = useRouter();
 
 /** 查看商品详情 */
-const openDetail = (spuId: number) => {
+function openDetail(spuId: number) {
   push({ name: 'ProductSpuDetail', params: { id: spuId } });
-};
+}
 </script>
 
 <template>
@@ -89,10 +89,10 @@ const openDetail = (spuId: number) => {
   align-items: center;
   width: 100%;
   padding: 10px;
+  margin-bottom: 10px;
   background-color: rgb(128 128 128 / 30%);
   border: 1px solid var(--el-border-color);
   border-radius: 8px;
-  margin-bottom: 10px;
 
   &-left {
     width: 70px;

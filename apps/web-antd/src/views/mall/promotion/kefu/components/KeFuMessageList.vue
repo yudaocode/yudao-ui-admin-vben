@@ -53,7 +53,7 @@ const getMessageContent = computed(
   () => (item: any) => jsonParse(item.content),
 );
 /** 获得消息列表 */
-const getMessageList = async () => {
+async function getMessageList() {
   const res = await KeFuMessageApi.getKeFuMessageList(queryParams);
   if (isEmpty(res)) {
     // 当返回的是空列表说明没有消息或者已经查询完了历史消息
@@ -72,15 +72,15 @@ const getMessageList = async () => {
     messageList.value = res;
   }
   refreshContent.value = true;
-};
+}
 
 /** 添加消息 */
-const pushMessage = (message: any) => {
+function pushMessage(message: any) {
   if (messageList.value.some((val) => val.id === message.id)) {
     return;
   }
   messageList.value.push(message);
-};
+}
 
 /** 按照时间倒序，获取消息列表 */
 const getMessageList0 = computed(() => {
@@ -91,7 +91,7 @@ const getMessageList0 = computed(() => {
 });
 
 /** 刷新消息列表 */
-const refreshMessageList = async (message?: any) => {
+async function refreshMessageList(message?: any) {
   if (!conversation.value) {
     return;
   }
@@ -114,10 +114,10 @@ const refreshMessageList = async (message?: any) => {
     // 滚动到最新消息处
     await handleToNewMessage();
   }
-};
+}
 
 /** 获得新会话的消息列表, 点击切换时，读取缓存；然后异步获取新消息，merge 下； */
-const getNewMessageList = async (val: MallKefuMessageApi.Message) => {
+async function getNewMessageList(val: MallKefuMessageApi.Message) {
   // 1. 缓存当前会话消息列表
   kefuStore.saveMessageList(conversation.value.id, messageList.value);
   // 2.1 会话切换,重置相关参数
@@ -132,19 +132,23 @@ const getNewMessageList = async (val: MallKefuMessageApi.Message) => {
   queryParams.createTime = undefined;
   // 3. 获取消息
   await refreshMessageList();
-};
+}
 defineExpose({ getNewMessageList, refreshMessageList });
 
-const showKeFuMessageList = computed(() => !isEmpty(conversation.value)); // 是否显示聊天区域
+// 是否显示聊天区域
+function showKeFuMessageList() {
+  return !isEmpty(conversation.value);
+}
+
 const skipGetMessageList = ref(false); // 跳过消息获取
 
 /** 处理表情选择 */
-const handleEmojiSelect = (item: Emoji) => {
+function handleEmojiSelect(item: Emoji) {
   message.value += item.name;
-};
+}
 
 /** 处理图片发送 */
-const handleSendPicture = async (picUrl: string) => {
+async function handleSendPicture(picUrl: string) {
   // 组织发送消息
   const msg = {
     conversationId: conversation.value.id,
@@ -152,10 +156,10 @@ const handleSendPicture = async (picUrl: string) => {
     content: JSON.stringify({ picUrl }),
   };
   await sendMessage(msg);
-};
+}
 
 /** 发送文本消息 */
-const handleSendMessage = async (event: any) => {
+async function handleSendMessage(event: any) {
   // shift 不发送
   if (event.shiftKey) {
     return;
@@ -173,10 +177,10 @@ const handleSendMessage = async (event: any) => {
     content: JSON.stringify({ text: message.value }),
   };
   await sendMessage(msg);
-};
+}
 
 /** 真正发送消息 【共用】*/
-const sendMessage = async (msg: MallKefuMessageApi.MessageSend) => {
+async function sendMessage(msg: MallKefuMessageApi.MessageSend) {
   // 发送消息
   await KeFuMessageApi.sendKeFuMessage(msg);
   message.value = '';
@@ -184,14 +188,14 @@ const sendMessage = async (msg: MallKefuMessageApi.MessageSend) => {
   await refreshMessageList();
   // 更新会话缓存
   await kefuStore.updateConversation(conversation.value.id);
-};
+}
 
 /** 滚动到底部 */
 const innerRef = ref<HTMLDivElement>();
 const scrollbarRef = ref<HTMLElement | null>(null);
 const { y } = useScroll(scrollbarRef);
 
-const scrollToBottom = async () => {
+async function scrollToBottom() {
   if (!scrollbarRef.value) return;
   // 1. 首次加载时滚动到最新消息，如果加载的是历史消息则不滚动
   if (loadHistory.value) {
@@ -206,13 +210,13 @@ const scrollToBottom = async () => {
   showNewMessageTip.value = false;
   // 2.2 消息已读
   await KeFuMessageApi.updateKeFuMessageReadStatus(conversation.value.id);
-};
+}
 
 /** 查看新消息 */
-const handleToNewMessage = async () => {
+async function handleToNewMessage() {
   loadHistory.value = false;
   await scrollToBottom();
-};
+}
 
 const loadHistory = ref(false); // 加载历史消息
 /** 处理消息列表滚动事件(debounce 限流) */
@@ -233,7 +237,7 @@ const handleScroll = useDebounceFn((state: UseScrollReturn) => {
   }
 }, 200);
 /** 加载历史消息 */
-const handleOldMessage = async () => {
+async function handleOldMessage() {
   // 记录已有页面高度
   const oldPageHeight = innerRef.value?.clientHeight;
   if (!oldPageHeight) {
@@ -247,7 +251,7 @@ const handleOldMessage = async () => {
     scrollbarRef.value.scrollHeight -
     innerRef.value!.clientHeight -
     oldPageHeight;
-};
+}
 
 /**
  * 是否显示时间
@@ -255,17 +259,15 @@ const handleOldMessage = async () => {
  * @param {*} item - 数据
  * @param {*} index - 索引
  */
-const showTime = computed(
-  () => (item: MallKefuMessageApi.Message, index: number) => {
-    if (unref(messageList.value)[index + 1]) {
-      const dateString = dayjs(
-        unref(messageList.value)[index + 1].createTime,
-      ).fromNow();
-      return dateString !== dayjs(unref(item).createTime).fromNow();
-    }
-    return false;
-  },
-);
+function showTime(item: MallKefuMessageApi.Message, index: number) {
+  if (unref(messageList.value)[index + 1]) {
+    const dateString = dayjs(
+      unref(messageList.value)[index + 1].createTime,
+    ).fromNow();
+    return dateString !== dayjs(unref(item).createTime).fromNow();
+  }
+  return false;
+}
 </script>
 
 <template>
@@ -417,7 +419,7 @@ const showTime = computed(
   </a-layout>
   <a-layout v-else class="kefu">
     <a-layout-content>
-      <Empty description="请选择左侧的一个会话后开始" class="mt-[50px]"/>
+      <Empty description="请选择左侧的一个会话后开始" class="mt-[50px]" />
     </a-layout-content>
   </a-layout>
 </template>

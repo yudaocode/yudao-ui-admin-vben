@@ -8,7 +8,7 @@ import { isEmpty } from '@vben/utils';
 
 // import { debounce } from 'lodash-es'
 import { useDebounceFn } from '@vueuse/core';
-import { Card, Empty,message } from 'ant-design-vue';
+import { Card, Empty, message } from 'ant-design-vue';
 
 import * as UserApi from '#/api/member/user';
 import * as WalletApi from '#/api/pay/wallet/balance';
@@ -29,14 +29,14 @@ const productBrowsingHistoryRef =
   ref<InstanceType<typeof ProductBrowsingHistory>>();
 const orderBrowsingHistoryRef =
   ref<InstanceType<typeof OrderBrowsingHistory>>();
-const handleClick = async (tab: string) => {
+async function handleClick(tab: string) {
   activeTab.value = tab;
   await nextTick();
   await getHistoryList();
-};
+}
 
 /** 获得历史数据 */
-const getHistoryList = async () => {
+async function getHistoryList() {
   switch (activeTab.value) {
     case '交易订单': {
       await orderBrowsingHistoryRef.value?.getHistoryList(conversation.value);
@@ -55,10 +55,10 @@ const getHistoryList = async () => {
       break;
     }
   }
-};
+}
 
 /** 加载下一页数据 */
-const loadMore = async () => {
+async function loadMore() {
   switch (activeTab.value) {
     case '交易订单': {
       await orderBrowsingHistoryRef.value?.loadMore();
@@ -75,18 +75,18 @@ const loadMore = async () => {
       break;
     }
   }
-};
+}
 
 /** 浏览历史初始化 */
 const conversation = ref<MallKefuConversationApi.Conversation>(
   {} as MallKefuConversationApi.Conversation,
 ); // 用户会话
-const initHistory = async (val: MallKefuConversationApi.Conversation) => {
+async function initHistory(val: MallKefuConversationApi.Conversation) {
   activeTab.value = '会员信息';
   conversation.value = val;
   await nextTick();
   await getHistoryList();
-};
+}
 defineExpose({ initHistory });
 
 /** 处理消息列表滚动事件(debounce 限流) */
@@ -106,7 +106,8 @@ const WALLET_INIT_DATA = {
   totalRecharge: 0,
 } as WalletApi.WalletVO; // 钱包初始化数据
 const wallet = ref<WalletApi.WalletVO>(WALLET_INIT_DATA); // 钱包信息
-const getUserWallet = async () => {
+
+async function getUserWallet() {
   if (!conversation.value.userId) {
     wallet.value = WALLET_INIT_DATA;
     return;
@@ -114,12 +115,12 @@ const getUserWallet = async () => {
   wallet.value =
     (await WalletApi.getWallet({ userId: conversation.value.userId })) ||
     WALLET_INIT_DATA;
-};
+}
 
 /** 获得用户 */
 const loading = ref(true); // 加载中
 const user = ref<UserApi.UserVO>({} as UserApi.UserVO);
-const getUserData = async () => {
+async function getUserData() {
   loading.value = true;
   try {
     const res = await UserApi.getUser(conversation.value.userId);
@@ -132,7 +133,7 @@ const getUserData = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 </script>
 
 <template>

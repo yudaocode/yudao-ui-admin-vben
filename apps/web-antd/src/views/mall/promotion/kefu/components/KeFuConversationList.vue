@@ -27,24 +27,24 @@ const collapse = ref(false); // 折叠菜单
 
 /** 计算消息最后发送时间距离现在过去了多久 */
 const lastMessageTimeMap = ref<Map<number, string>>(new Map<number, string>());
-const calculationLastMessageTime = () => {
+function calculationLastMessageTime() {
   kefuStore.getConversationList?.forEach((item) => {
     lastMessageTimeMap.value.set(
       item.id,
       formatPast(item.lastMessageTime, 'YYYY-MM-DD'),
     );
   });
-};
+}
 defineExpose({ calculationLastMessageTime });
 
-const openRightMessage = (item: MallKefuConversationApi.Conversation) => {
+function openRightMessage(item: MallKefuConversationApi.Conversation) {
   // 同一个会话则不处理
   if (activeConversationId.value === item.id) {
     return;
   }
   activeConversationId.value = item.id;
   emits('change', item);
-};
+}
 
 /** 获得消息类型 */
 const getConversationDisplayText = computed(
@@ -88,10 +88,10 @@ const rightClickConversation = ref<MallKefuConversationApi.Conversation>(
 ); // 右键选中的会话对象
 
 /** 打开右键菜单 */
-const rightClick = (
+function rightClick(
   mouseEvent: PointerEvent,
   item: MallKefuConversationApi.Conversation,
-) => {
+) {
   rightClickConversation.value = item;
   // 显示右键菜单
   showRightMenu.value = true;
@@ -101,14 +101,14 @@ const rightClick = (
       ? `${mouseEvent.clientX - 80}px`
       : `${mouseEvent.clientX - 210}px`,
   };
-};
+}
 /** 关闭右键菜单 */
-const closeRightMenu = () => {
+function closeRightMenu() {
   showRightMenu.value = false;
-};
+}
 
 /** 置顶会话 */
-const updateConversationPinned = async (adminPinned: boolean) => {
+async function updateConversationPinned(adminPinned: boolean) {
   // 1. 会话置顶/取消置顶
   await KeFuConversationApi.updateConversationPinned({
     id: rightClickConversation.value.id,
@@ -118,17 +118,17 @@ const updateConversationPinned = async (adminPinned: boolean) => {
   // 2. 关闭右键菜单，更新会话列表
   closeRightMenu();
   await kefuStore.updateConversation(rightClickConversation.value.id);
-};
+}
 
 /** 删除会话 */
-const deleteConversation = async () => {
+async function deleteConversation() {
   // 1. 删除会话
   await message.confirm('您确定要删除该会话吗？');
   await KeFuConversationApi.deleteConversation(rightClickConversation.value.id);
   // 2. 关闭右键菜单，更新会话列表
   closeRightMenu();
   kefuStore.deleteConversation(rightClickConversation.value.id);
-};
+}
 
 /** 监听右键菜单的显示状态，添加点击事件监听器 */
 watch(showRightMenu, (val) => {

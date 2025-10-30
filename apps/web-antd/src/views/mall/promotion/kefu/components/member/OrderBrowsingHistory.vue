@@ -24,15 +24,15 @@ const skipGetMessageList = computed(() => {
 }); // 跳过消息获取
 
 /** 获得浏览记录 */
-const getHistoryList = async (val: MallKefuConversationApi.Conversation) => {
+async function getHistoryList(val: MallKefuConversationApi.Conversation) {
   queryParams.userId = val.userId;
   const res = await getOrderPage(queryParams);
   total.value = res.total;
   list.value = res.list;
-};
+}
 
 /** 加载下一页数据 */
-const loadMore = async () => {
+async function loadMore() {
   if (skipGetMessageList.value) {
     return;
   }
@@ -41,7 +41,7 @@ const loadMore = async () => {
   total.value = res.total;
   // 使用展开运算符替代 concat 方法
   list.value = [...list.value, ...res.list];
-};
+}
 defineExpose({ getHistoryList, loadMore });
 </script>
 

@@ -24,9 +24,9 @@ const getMessageContent = computed(() =>
 );
 
 /** 查看订单详情 */
-const openDetail = (id: number) => {
+function openDetail(id: number) {
   push({ name: 'TradeOrderDetail', params: { id } });
-};
+}
 
 /**
  * 格式化订单状态的颜色

@@ -19,10 +19,10 @@ const emits = defineEmits<{
 const { getEmojiList } = useEmoji();
 const emojiList = computed(() => getEmojiList());
 
-const handleSelect = (item: Emoji) => {
+function handleSelect(item: Emoji) {
   // 整个 emoji 数据传递出去，方便以后输入框直接显示表情
   emits('selectEmoji', item);
-};
+}
 </script>
 
 <template>
