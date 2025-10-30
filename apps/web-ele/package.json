@@ -45,6 +45,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
+    "benz-amr-recorder": "^1.1.5",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
