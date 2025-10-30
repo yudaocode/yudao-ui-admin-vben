@@ -854,6 +854,9 @@ importers:
       vue3-signature:
         specifier: 'catalog:'
         version: 0.2.4(vue@3.5.22(typescript@5.9.3))
+      vuedraggable:
+        specifier: 'catalog:'
+        version: 4.1.0(vue@3.5.22(typescript@5.9.3))
 
   apps/web-ele:
     dependencies:
@@ -2113,6 +2116,9 @@ importers:
       '@types/json-bigint':
         specifier: 'catalog:'
         version: 1.0.4
+      vite:
+        specifier: 'catalog:'
+        version: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
 
   scripts/turbo-run:
     dependencies:
