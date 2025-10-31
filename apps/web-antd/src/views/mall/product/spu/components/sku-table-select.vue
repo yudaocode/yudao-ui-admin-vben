@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { Input, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';
@@ -21,18 +21,13 @@ const emit = defineEmits<{
   change: [sku: MallSpuApi.Sku];
 }>();
 
-const selectedSkuId = ref<number>();
 const spuId = ref<number>();
 
-/** 配置列 */
-// TODO @puhui999：貌似列太宽了？
+/** 表格列配置 */
 const gridColumns = computed<VxeGridProps['columns']>(() => [
   {
-    field: 'id',
-    title: '#',
-    width: 60,
-    align: 'center',
-    slots: { default: 'radio-column' },
+    type: 'radio',
+    width: 55,
   },
   {
     field: 'picUrl',
@@ -72,6 +67,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 400,
     border: true,
     showOverflow: true,
+    radioConfig: {
+      reserve: true,
+    },
     proxyConfig: {
       ajax: {
         query: async () => {
@@ -93,46 +91,42 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
   },
+  gridEvents: {
+    radioChange: handleRadioChange,
+  },
 });
 
 /** 处理选中 */
-function handleSelected(row: MallSpuApi.Sku) {
-  emit('change', row);
-  modalApi.close();
-  selectedSkuId.value = undefined;
+function handleRadioChange() {
+  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Sku;
+  if (selectedRow) {
+    emit('change', selectedRow);
+    modalApi.close();
+  }
 }
 
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   onOpenChange: async (isOpen: boolean) => {
     if (!isOpen) {
-      selectedSkuId.value = undefined;
+      gridApi.grid.clearRadioRow();
       spuId.value = undefined;
       return;
     }
+
     const data = modalApi.getData<SpuData>();
-    // TODO @puhui999：这里要不 if return，让括号的层级简单点。
-    if (data?.spuId) {
-      spuId.value = data.spuId;
-      // 触发数据查询
-      await gridApi.query();
+    if (!data?.spuId) {
+      return;
     }
+
+    spuId.value = data.spuId;
+    await gridApi.query();
   },
 });
 </script>
 
 <template>
   <Modal class="w-[700px]" title="选择规格">
-    <Grid>
-      <template #radio-column="{ row }">
-        <Input
-          v-model="selectedSkuId"
-          :value="row.id"
-          class="cursor-pointer"
-          type="radio"
-          @change="handleSelected(row)"
-        />
-      </template>
-    </Grid>
+    <Grid />
   </Modal>
 </template>
