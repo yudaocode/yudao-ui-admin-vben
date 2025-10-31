@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-// TODO @puhui999：在优化下代码；
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
 import { computed, ref } from 'vue';
+
+import { PromotionConditionTypeEnum } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -33,23 +34,12 @@ const formData = useVModel(props, 'modelValue', emits);
 const rewardRuleCouponSelectRef =
   ref<InstanceType<typeof RewardRuleCouponSelect>[]>();
 
-const PromotionConditionTypeEnum = {
-  PRICE: { type: 10 },
-  COUNT: { type: 20 },
-};
-
 const isPriceCondition = computed(() => {
   return (
     formData.value?.conditionType === PromotionConditionTypeEnum.PRICE.type
   );
 });
 
-/** 删除优惠规则 */
-function deleteRule(ruleIndex: number) {
-  formData.value.rules.splice(ruleIndex, 1);
-}
-
-/** 添加优惠规则 */
 function addRule() {
   if (!formData.value.rules) {
     formData.value.rules = [];
@@ -62,7 +52,10 @@ function addRule() {
   });
 }
 
-/** 设置规则优惠券-提交时 */
+function deleteRule(ruleIndex: number) {
+  formData.value.rules.splice(ruleIndex, 1);
+}
+
 function setRuleCoupon() {
   if (!rewardRuleCouponSelectRef.value) {
     return;
@@ -76,11 +69,12 @@ defineExpose({ setRuleCoupon });
 </script>
 
 <template>
-  <Row>
+  <Row :gutter="[16, 16]">
     <template v-if="formData.rules">
       <Col v-for="(rule, index) in formData.rules" :key="index" :span="24">
-        <div class="mb-4">
-          <span class="font-bold">活动层级{{ index + 1 }}</span>
+        <!-- 规则标题 -->
+        <div class="mb-4 flex items-center">
+          <span class="text-base font-bold">活动层级 {{ index + 1 }}</span>
           <Button
             v-if="index !== 0"
             type="link"
@@ -92,8 +86,9 @@ defineExpose({ setRuleCoupon });
           </Button>
         </div>
 
-        <Form :model="rule">
-          <FormItem label="优惠门槛:" :label-col="{ span: 4 }">
+        <Form :model="rule" layout="horizontal">
+          <!-- 优惠门槛 -->
+          <FormItem label="优惠门槛" :label-col="{ span: 4 }">
             <div class="flex items-center gap-2">
               <span>满</span>
               <InputNumber
@@ -102,44 +97,46 @@ defineExpose({ setRuleCoupon });
                 :min="0"
                 :precision="2"
                 :step="0.1"
-                class="!w-150px"
-                placeholder=""
-                controls-position="right"
+                :controls="false"
+                class="!w-40"
+                placeholder="请输入金额"
               />
               <Input
                 v-else
                 v-model:value="rule.limit"
                 :min="0"
-                class="!w-150px"
-                placeholder=""
+                class="!w-40"
+                placeholder="请输入数量"
                 type="number"
               />
               <span>{{ isPriceCondition ? '元' : '件' }}</span>
             </div>
           </FormItem>
 
-          <FormItem label="优惠内容:" :label-col="{ span: 4 }">
+          <!-- 优惠内容 -->
+          <FormItem label="优惠内容" :label-col="{ span: 4 }">
             <div class="flex flex-col gap-4">
               <!-- 订单金额优惠 -->
-              <div class="flex items-center gap-2">
-                <span>订单金额优惠</span>
-              </div>
-              <div class="ml-4 flex items-center gap-2">
-                <span>减</span>
-                <InputNumber
-                  v-model:value="rule.discountPrice"
-                  :min="0"
-                  :precision="2"
-                  :step="0.1"
-                  class="!w-150px"
-                  controls-position="right"
-                />
-                <span>元</span>
+              <div class="flex flex-col gap-2">
+                <div class="font-medium">订单金额优惠</div>
+                <div class="ml-4 flex items-center gap-2">
+                  <span>减</span>
+                  <InputNumber
+                    v-model:value="rule.discountPrice"
+                    :min="0"
+                    :precision="2"
+                    :step="0.1"
+                    :controls="false"
+                    class="!w-40"
+                    placeholder="请输入金额"
+                  />
+                  <span>元</span>
+                </div>
               </div>
 
               <!-- 包邮 -->
               <div class="flex items-center gap-2">
-                <span>包邮：</span>
+                <span class="font-medium">包邮：</span>
                 <Switch
                   v-model:checked="rule.freeDelivery"
                   checked-children="是"
@@ -149,20 +146,21 @@ defineExpose({ setRuleCoupon });
 
               <!-- 送积分 -->
               <div class="flex items-center gap-2">
-                <span>送积分：</span>
+                <span class="font-medium">送积分：</span>
                 <span>送</span>
-                <Input
+                <InputNumber
                   v-model:value="rule.point"
-                  class="!w-150px"
-                  placeholder=""
-                  type="number"
+                  :min="0"
+                  :controls="false"
+                  class="!w-40"
+                  placeholder="请输入积分"
                 />
                 <span>积分</span>
               </div>
 
               <!-- 送优惠券 -->
-              <div class="flex items-center gap-2">
-                <span>送优惠券：</span>
+              <div class="flex items-start gap-2">
+                <span class="font-medium">送优惠券：</span>
                 <RewardRuleCouponSelect
                   ref="rewardRuleCouponSelectRef"
                   :model-value="rule"
@@ -174,12 +172,16 @@ defineExpose({ setRuleCoupon });
       </Col>
     </template>
 
-    <Col :span="24" class="mt-4">
-      <Button type="primary" @click="addRule">添加优惠规则</Button>
+    <!-- 添加规则按钮 -->
+    <Col :span="24" class="mt-2">
+      <Button type="primary" @click="addRule">+ 添加优惠规则</Button>
     </Col>
 
-    <Col :span="24" class="mt-4">
-      <Tag color="warning">赠送积分为 0 时不赠送。未选优惠券时不赠送。</Tag>
+    <!-- 提示信息 -->
+    <Col :span="24" class="mt-2">
+      <Tag color="warning">
+        提示：赠送积分为 0 时不赠送；未选择优惠券时不赠送。
+      </Tag>
     </Col>
   </Row>
 </template>
