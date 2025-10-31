@@ -216,6 +216,13 @@ onMounted(async () => {
   categoryList.value = await getCategoryList({});
   categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
 });
+
+/** 对外暴露的方法 */
+defineExpose({
+  open: (data?: MallSpuApi.Spu | MallSpuApi.Spu[]) => {
+    modalApi.setData(data).open();
+  },
+});
 </script>
 
 <template>
