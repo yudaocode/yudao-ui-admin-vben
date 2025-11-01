@@ -8,8 +8,8 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { Form, Input, message, Select, Spin } from 'ant-design-vue';
 
-import * as DeviceApi from '#/api/iot/device/device';
-import * as IoTOtaTaskApi from '#/api/iot/ota/task';
+import { getDeviceListByProductId } from '#/api/iot/device/device';
+import { createOtaTask } from '#/api/iot/ota/task';
 import { IoTOtaTaskDeviceScopeEnum } from '#/views/iot/utils/constants';
 
 /** IoT OTA 升级任务表单 */
@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await formRef.value.validate();
       modalApi.lock();
-      await IoTOtaTaskApi.createOtaTask(formData.value);
+      await createOtaTask(formData.value);
       message.success('创建成功');
       await modalApi.close();
       emit('success');
@@ -98,8 +98,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载设备列表
     formLoading.value = true;
     try {
-      devices.value =
-        (await DeviceApi.getDeviceListByProductId(props.productId)) || [];
+      devices.value = (await getDeviceListByProductId(props.productId)) || [];
     } finally {
       formLoading.value = false;
     }

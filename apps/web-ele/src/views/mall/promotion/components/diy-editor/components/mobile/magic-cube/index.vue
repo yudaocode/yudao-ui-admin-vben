@@ -9,9 +9,11 @@ import { ElImage } from 'element-plus';
 
 /** 广告魔方 */
 defineOptions({ name: 'MagicCube' });
+
 const props = defineProps<{ property: MagicCubeProperty }>();
-// 一个方块的大小
-const CUBE_SIZE = 93.75;
+
+const CUBE_SIZE = 93.75; // 一个方块的大小
+
 /**
  * 计算方块的行数
  * 行数用于计算魔方的总体高度，存在以下情况：
@@ -80,5 +82,3 @@ const rowCount = computed(() => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

@@ -12,7 +12,9 @@ defineOptions({ name: 'Carousel' });
 
 defineProps<{ property: CarouselProperty }>();
 
-const currentIndex = ref(0);
+const currentIndex = ref(0); // 当前索引
+
+/** 处理索引变化 */
 const handleIndexChange = (index: number) => {
   currentIndex.value = index + 1;
 };
@@ -46,5 +48,3 @@ const handleIndexChange = (index: number) => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

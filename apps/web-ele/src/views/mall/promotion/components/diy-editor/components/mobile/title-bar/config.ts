@@ -2,46 +2,28 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 标题栏属性 */
 export interface TitleBarProperty {
-  // 背景图
-  bgImgUrl: string;
-  // 偏移
-  marginLeft: number;
-  // 显示位置
-  textAlign: 'center' | 'left';
-  // 主标题
-  title: string;
-  // 副标题
-  description: string;
-  // 标题大小
-  titleSize: number;
-  // 描述大小
-  descriptionSize: number;
-  // 标题粗细
-  titleWeight: number;
-  // 描述粗细
-  descriptionWeight: number;
-  // 标题颜色
-  titleColor: string;
-  // 描述颜色
-  descriptionColor: string;
-  // 高度
-  height: number;
-  // 查看更多
+  bgImgUrl: string; // 背景图
+  marginLeft: number; // 偏移
+  textAlign: 'center' | 'left'; // 显示位置
+  title: string; // 主标题
+  description: string; // 副标题
+  titleSize: number; // 标题大小
+  descriptionSize: number; // 描述大小
+  titleWeight: number; // 标题粗细
+  descriptionWeight: number; // 描述粗细
+  titleColor: string; // 标题颜色
+  descriptionColor: string; // 描述颜色
+  height: number; // 高度
   more: {
-    // 是否显示查看更多
-    show: false;
-    // 自定义文字
-    text: string;
-    // 样式选择
-    type: 'all' | 'icon' | 'text';
-    // 链接
-    url: string;
-  };
-  // 组件样式
-  style: ComponentStyle;
+    show: false; // 是否显示查看更多
+    text: string; // 自定义文字
+    type: 'all' | 'icon' | 'text'; // 样式选择
+    url: string; // 链接
+  }; // 查看更多
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'TitleBar',
   name: '标题栏',

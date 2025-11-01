@@ -18,11 +18,14 @@ import ComponentContainerProperty from '../../component-container-property.vue';
 defineOptions({ name: 'MagicCubeProperty' });
 
 const props = defineProps<{ modelValue: MagicCubeProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 选中的热区
-const selectedHotAreaIndex = ref(-1);
+const selectedHotAreaIndex = ref(-1); // 选中的热区
+
+/** 处理热区被选中事件 */
 const handleHotAreaSelected = (_: any, index: number) => {
   selectedHotAreaIndex.value = index;
 };
@@ -30,7 +33,6 @@ const handleHotAreaSelected = (_: any, index: number) => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <!-- 表单 -->
     <ElForm label-width="80px" :model="formData" class="mt-2">
       <ElText tag="p"> 魔方设置 </ElText>
       <ElText type="info" size="small"> 每格尺寸187 * 187 </ElText>
@@ -89,5 +91,3 @@ const handleHotAreaSelected = (_: any, index: number) => {
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

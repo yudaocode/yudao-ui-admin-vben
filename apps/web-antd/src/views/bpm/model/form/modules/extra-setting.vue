@@ -26,7 +26,7 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import * as FormApi from '#/api/bpm/form';
+import { getForm } from '#/api/bpm/form';
 import {
   HttpRequestSetting,
   parseFormFields,
@@ -229,7 +229,7 @@ watch(
   () => modelData.value.formId,
   async (newFormId) => {
     if (newFormId && modelData.value.formType === BpmModelFormType.NORMAL) {
-      const data = await FormApi.getForm(newFormId);
+      const data = await getForm(newFormId);
       const result: Array<{ field: string; title: string }> = [];
       if (data.fields) {
         unParsedFormFields.value = data.fields;

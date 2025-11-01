@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
-import { inject, onMounted, ref, unref, watch } from 'vue';
+import { onMounted, ref, unref, watch } from 'vue';
 
 import { IFrame } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -19,57 +19,48 @@ import { componentConfigs, components } from './components/mobile';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
 import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
+
 /** 页面装修详情页 */
 defineOptions({
   name: 'DiyPageDetail',
   components,
 });
-// 定义属性
+
+/** 定义属性 */
 const props = defineProps({
-  // 页面配置，支持Json字符串
-  modelValue: { type: [String, Object], required: true },
-  // 标题
-  title: { type: String, default: '' },
-  // 组件库
-  libs: { type: Array<DiyComponentLibrary>, default: () => [] },
-  // 是否显示顶部导航栏
-  showNavigationBar: { type: Boolean, default: true },
-  // 是否显示底部导航菜单
-  showTabBar: { type: Boolean, default: false },
-  // 是否显示页面配置
-  showPageConfig: { type: Boolean, default: true },
-  // 预览地址：提供了预览地址，才会显示预览按钮
-  previewUrl: { type: String, default: '' },
+  modelValue: { type: [String, Object], required: true }, // 页面配置，支持 Json 字符串
+  title: { type: String, default: '' }, // 标题
+  libs: { type: Array<DiyComponentLibrary>, default: () => [] }, // 组件库
+  showNavigationBar: { type: Boolean, default: true }, // 是否显示顶部导航栏
+  showTabBar: { type: Boolean, default: false }, // 是否显示底部导航菜单
+  showPageConfig: { type: Boolean, default: true }, // 是否显示页面配置
+  previewUrl: { type: String, default: '' }, // 预览地址：提供了预览地址，才会显示预览按钮
 });
-// 工具栏操作
-const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']);
+
+const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']); // 工具栏操作
 
 const qrcode = useQRCode(props.previewUrl, {
   errorCorrectionLevel: 'H',
   margin: 4,
-});
+}); // 预览二维码
 
-// 左侧组件库
-const componentLibrary = ref();
-// 页面设置组件
+const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
   cloneDeep(PAGE_CONFIG_COMPONENT),
-);
-// 顶部导航栏
+); // 页面设置组件
 const navigationBarComponent = ref<DiyComponent<any>>(
   cloneDeep(NAVIGATION_BAR_COMPONENT),
-);
-// 底部导航菜单
-const tabBarComponent = ref<DiyComponent<any>>(cloneDeep(TAB_BAR_COMPONENT));
+); // 顶部导航栏
+const tabBarComponent = ref<DiyComponent<any>>(cloneDeep(TAB_BAR_COMPONENT)); // 底部导航菜单
 
-// 选中的组件，默认选中顶部导航栏
-const selectedComponent = ref<DiyComponent<any>>();
-// 选中的组件索引
-const selectedComponentIndex = ref<number>(-1);
-// 组件列表
-const pageComponents = ref<DiyComponent<any>[]>([]);
-// 监听传入的页面配置
-// 解析出 pageConfigComponent 页面整体的配置，navigationBarComponent、pageComponents、tabBarComponent 页面上、中、下的配置
+const selectedComponent = ref<DiyComponent<any>>(); // 选中的组件，默认选中顶部导航栏
+const selectedComponentIndex = ref<number>(-1); // 选中的组件索引
+const pageComponents = ref<DiyComponent<any>[]>([]); // 组件列表
+
+/**
+ * 监听传入的页面配置
+ * 解析出 pageConfigComponent 页面整体的配置，navigationBarComponent、pageComponents、tabBarComponent 页面上、中、下的配置
+ */
 watch(
   () => props.modelValue,
   () => {
@@ -77,6 +68,7 @@ watch(
       isString(props.modelValue) && !isEmpty(props.modelValue)
         ? (JSON.parse(props.modelValue) as PageConfig)
         : props.modelValue;
+    // TODO @AI：这里可以简化么？idea 提示 Invalid 'typeof' check: 'modelValue' cannot have type 'string'
     pageConfigComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
@@ -113,19 +105,20 @@ watch(
   { deep: true },
 );
 
-// 保存
-const handleSave = () => {
-  // 发送保存通知
+/** 保存 */
+function handleSave() {
+  // 发送保存通知，由外部保存
   emits('save');
-};
-// 监听配置修改
-const pageConfigChange = () => {
+}
+
+/** 监听配置修改 */
+function pageConfigChange() {
   const pageConfig = {
     page: pageConfigComponent.value.property,
     navigationBar: navigationBarComponent.value.property,
     tabBar: tabBarComponent.value.property,
     components: pageComponents.value.map((component) => {
-      // 只保留APP有用的字段
+      // 只保留 APP 有用的字段
       return { id: component.id, property: component.property };
     }),
   } as PageConfig;
@@ -137,7 +130,8 @@ const pageConfigChange = () => {
     ? JSON.stringify(pageConfig)
     : pageConfig;
   emits('update:modelValue', modelValue);
-};
+}
+
 watch(
   () => [
     pageConfigComponent.value.property,
@@ -150,15 +144,17 @@ watch(
   },
   { deep: true },
 );
-// 处理页面选中：显示属性表单
-const handlePageSelected = (event: any) => {
-  if (!props.showPageConfig) return;
 
+/** 处理页面选中：显示属性表单 */
+function handlePageSelected(event: any) {
+  if (!props.showPageConfig) {
+    return;
+  }
   // 配置了样式 page-prop-area 的元素，才显示页面设置
   if (event?.target?.classList?.contains('page-prop-area')) {
     handleComponentSelected(unref(pageConfigComponent));
   }
-};
+}
 
 /**
  * 选中组件
@@ -166,26 +162,26 @@ const handlePageSelected = (event: any) => {
  * @param component 组件
  * @param index 组件的索引
  */
-const handleComponentSelected = (
+function handleComponentSelected(
   component: DiyComponent<any>,
   index: number = -1,
-) => {
+) {
   selectedComponent.value = component;
   selectedComponentIndex.value = index;
-};
+}
 
-// 选中顶部导航栏
-const handleNavigationBarSelected = () => {
+/** 选中顶部导航栏 */
+function handleNavigationBarSelected() {
   handleComponentSelected(unref(navigationBarComponent));
-};
+}
 
-// 选中底部导航菜单
-const handleTabBarSelected = () => {
+/** 选中底部导航菜单 */
+function handleTabBarSelected() {
   handleComponentSelected(unref(tabBarComponent));
-};
+}
 
-// 组件变动（拖拽）
-const handleComponentChange = (dragEvent: any) => {
+/** 组件变动（拖拽） */
+function handleComponentChange(dragEvent: any) {
   // 新增，即从组件库拖拽添加组件
   if (dragEvent.added) {
     const { element, newIndex } = dragEvent.added;
@@ -196,40 +192,38 @@ const handleComponentChange = (dragEvent: any) => {
     // 保持选中
     selectedComponentIndex.value = newIndex;
   }
-};
+}
 
-// 交换组件
-const swapComponent = (oldIndex: number, newIndex: number) => {
+/** 交换组件 */
+function swapComponent(oldIndex: number, newIndex: number) {
   const temp = pageComponents.value[oldIndex]!;
   pageComponents.value[oldIndex] = pageComponents.value[newIndex]!;
   pageComponents.value[newIndex] = temp;
   // 保持选中
   selectedComponentIndex.value = newIndex;
-};
+}
 
 /** 移动组件（上移、下移） */
-const handleMoveComponent = (index: number, direction: number) => {
+function handleMoveComponent(index: number, direction: number) {
   const newIndex = index + direction;
-  if (newIndex < 0 || newIndex >= pageComponents.value.length) return;
-
+  if (newIndex < 0 || newIndex >= pageComponents.value.length) {
+    return;
+  }
   swapComponent(index, newIndex);
-};
+}
 
 /** 复制组件 */
-const handleCopyComponent = (index: number) => {
+function handleCopyComponent(index: number) {
   const component = pageComponents.value[index];
   if (component) {
     const clonedComponent = cloneDeep(component);
     clonedComponent.uid = Date.now();
     pageComponents.value.splice(index + 1, 0, clonedComponent);
   }
-};
+}
 
-/**
- * 删除组件
- * @param index 当前组件index
- */
-const handleDeleteComponent = (index: number) => {
+/** 删除组件 */
+function handleDeleteComponent(index: number) {
   // 删除组件
   pageComponents.value.splice(index, 1);
   if (index < pageComponents.value.length) {
@@ -250,25 +244,23 @@ const handleDeleteComponent = (index: number) => {
     // 3. 组件全部删除之后，显示页面设置
     handleComponentSelected(unref(pageConfigComponent));
   }
-};
+}
 
-// // 注入无感刷新页面函数
-// const reload = inject<() => void>('reload'); // TODO @芋艿：是 vue3 + element-plus 独有的，可以清理掉。
-// // 重置
-// const handleReset = () => {
-//   if (reload) reload();
-//   emits('reset');
-// };
+/** 重置 */
+function handleReset() {
+  emits('reset');
+}
 
-// 预览
+// TODO @AI：搞成 modal 来？
+/** 预览 */
 const previewDialogVisible = ref(false);
-const handlePreview = () => {
+function handlePreview() {
   previewDialogVisible.value = true;
   emits('preview');
-};
+}
 
-// 设置默认选中的组件
-const setDefaultSelectedComponent = () => {
+/** 设置默认选中的组件 */
+function setDefaultSelectedComponent() {
   if (props.showPageConfig) {
     selectedComponent.value = unref(pageConfigComponent);
   } else if (props.showNavigationBar) {
@@ -276,12 +268,14 @@ const setDefaultSelectedComponent = () => {
   } else if (props.showTabBar) {
     selectedComponent.value = unref(tabBarComponent);
   }
-};
+}
 
 watch(
   () => [props.showPageConfig, props.showNavigationBar, props.showTabBar],
   () => setDefaultSelectedComponent(),
 );
+
+/** 初始化 */
 onMounted(() => {
   setDefaultSelectedComponent();
 });
@@ -614,12 +608,12 @@ $phone-width: 375px;
         flex-direction: column;
 
         :deep(.ant-tag) {
-          border: none;
-          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
           display: flex;
           align-items: center;
           justify-content: flex-start;
           width: 100%;
+          border: none;
+          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
 
           .anticon {
             margin-right: 4px;

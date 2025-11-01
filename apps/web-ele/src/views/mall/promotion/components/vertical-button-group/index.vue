@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ElButtonGroup } from 'element-plus';
+
 /**
  * 垂直按钮组
  * Element 官方的按钮组只支持水平显示，通过重写样式实现垂直布局
@@ -7,9 +9,9 @@ defineOptions({ name: 'VerticalButtonGroup' });
 </script>
 
 <template>
-  <el-button-group v-bind="$attrs">
+  <ElButtonGroup v-bind="$attrs">
     <slot></slot>
-  </el-button-group>
+  </ElButtonGroup>
 </template>
 
 <style scoped lang="scss">

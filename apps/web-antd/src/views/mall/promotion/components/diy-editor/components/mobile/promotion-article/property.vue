@@ -6,10 +6,9 @@ import type { MallArticleApi } from '#/api/mall/promotion/article';
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-
 import { Form, FormItem, Select } from 'ant-design-vue';
 
-import * as ArticleApi from '#/api/mall/promotion/article/index';
+import { getArticlePage } from '#/api/mall/promotion/article';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -27,7 +26,7 @@ const loading = ref(false);
 // 查询文章列表
 const queryArticleList = async (title?: string) => {
   loading.value = true;
-  const { list } = await ArticleApi.getArticlePage({
+  const { list } = await getArticlePage({
     title,
     pageNo: 1,
     pageSize: 10,
@@ -44,7 +43,11 @@ onMounted(() => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+    <Form
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+      :model="formData"
+    >
       <FormItem label="文章" prop="id">
         <Select
           v-model:value="formData.id"
@@ -52,7 +55,9 @@ onMounted(() => {
           class="w-full"
           filterable
           :loading="loading"
-          :options="articles.map((item) => ({ label: item.title, value: item.id }))"
+          :options="
+            articles.map((item) => ({ label: item.title, value: item.id }))
+          "
           @search="queryArticleList"
         />
       </FormItem>

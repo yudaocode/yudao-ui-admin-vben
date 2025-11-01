@@ -4,6 +4,7 @@ import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
+import type { SystemUserApi } from '#/api/system/user';
 
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -42,8 +43,17 @@ import {
   cancelProcessInstanceByStartUser,
   getNextApprovalNodes,
 } from '#/api/bpm/processInstance';
-import * as TaskApi from '#/api/bpm/task';
-import * as UserApi from '#/api/system/user';
+import {
+  approveTask,
+  copyTask,
+  delegateTask,
+  getTaskListByReturn,
+  rejectTask,
+  returnTask,
+  signCreateTask,
+  signDeleteTask,
+  transferTask,
+} from '#/api/bpm/task';
 import { setConfAndFields2 } from '#/components/form-create';
 import { $t } from '#/locales';
 
@@ -57,7 +67,7 @@ const props = defineProps<{
   normalFormApi: any; // 流程表单 formCreate Api
   processDefinition: any; // 流程定义信息
   processInstance: any; // 流程实例信息
-  userOptions: UserApi.SystemUserApi.User[];
+  userOptions: SystemUserApi.User[];
   writableFields: string[]; // 流程表单可以编辑的字段
 }>(); // 当前登录的编号
 const emit = defineEmits(['success']);
@@ -249,7 +259,7 @@ async function openPopover(type: string) {
   }
   if (type === 'return') {
     // 获取退回节点
-    returnList.value = await TaskApi.getTaskListByReturn(runningTask.value.id);
+    returnList.value = await getTaskListByReturn(runningTask.value.id);
     if (returnList.value.length === 0) {
       message.warning('当前没有可退回的节点');
       return;
@@ -375,7 +385,7 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
         await formCreateApi.validate();
         data.variables = approveForm.value.value;
       }
-      await TaskApi.approveTask(data);
+      await approveTask(data);
       popOverVisible.value.approve = false;
       nextAssigneesActivityNode.value = [];
       // 清理 Timeline 组件中的自定义审批人数据
@@ -389,7 +399,7 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
         id: runningTask.value.id,
         reason: rejectReasonForm.reason,
       };
-      await TaskApi.rejectTask(data);
+      await rejectTask(data);
       popOverVisible.value.reject = false;
       message.success('审批不通过成功');
     }
@@ -415,7 +425,7 @@ async function handleCopy() {
       reason: copyForm.copyReason,
       copyUserIds: copyForm.copyUserIds,
     };
-    await TaskApi.copyTask(data);
+    await copyTask(data);
     copyFormRef.value.resetFields();
     popOverVisible.value.copy = false;
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -439,7 +449,7 @@ async function handleTransfer() {
       reason: transferForm.reason,
       assigneeUserId: transferForm.assigneeUserId,
     };
-    await TaskApi.transferTask(data);
+    await transferTask(data);
     transferFormRef.value.resetFields();
     popOverVisible.value.transfer = false;
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -463,7 +473,7 @@ async function handleDelegate() {
       reason: delegateForm.reason,
       delegateUserId: delegateForm.delegateUserId,
     };
-    await TaskApi.delegateTask(data);
+    await delegateTask(data);
     popOverVisible.value.delegate = false;
     delegateFormRef.value.resetFields();
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -488,7 +498,7 @@ async function handlerAddSign(type: string) {
       reason: addSignForm.reason,
       userIds: addSignForm.addSignUserIds,
     };
-    await TaskApi.signCreateTask(data);
+    await signCreateTask(data);
     message.success($t('ui.actionMessage.operationSuccess'));
     addSignFormRef.value.resetFields();
     popOverVisible.value.addSign = false;
@@ -512,7 +522,7 @@ async function handleReturn() {
       reason: returnForm.returnReason,
       targetTaskDefinitionKey: returnForm.targetTaskDefinitionKey,
     };
-    await TaskApi.returnTask(data);
+    await returnTask(data);
     popOverVisible.value.return = false;
     returnFormRef.value.resetFields();
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -573,7 +583,7 @@ async function handlerDeleteSign() {
       id: deleteSignForm.deleteSignTaskId,
       reason: deleteSignForm.reason,
     };
-    await TaskApi.signDeleteTask(data);
+    await signDeleteTask(data);
     message.success('减签成功');
     deleteSignFormRef.value.resetFields();
     popOverVisible.value.deleteSign = false;

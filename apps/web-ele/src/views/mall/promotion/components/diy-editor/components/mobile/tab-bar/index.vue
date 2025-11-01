@@ -5,7 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElImage } from 'element-plus';
 
-/** 页面底部导航栏 */
+/** 底部导航 */
 defineOptions({ name: 'TabBar' });
 
 defineProps<{ property: TabBarProperty }>();

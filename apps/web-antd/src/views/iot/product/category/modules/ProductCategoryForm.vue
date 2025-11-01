@@ -63,13 +63,17 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
+      formApi.resetForm();
       return;
     }
-    // 加载数据
-    let data = modalApi.getData<
-      IotProductCategoryApi.ProductCategory & { parentId?: number }
-    >();
-    if (!data) {
+
+    // 重置表单
+    await formApi.resetForm();
+
+    const data = modalApi.getData<IotProductCategoryApi.ProductCategory>();
+    // 如果没有数据或没有 id，表示是新增
+    if (!data || !data.id) {
+      formData.value = undefined;
       // 新增模式：设置默认值
       await formApi.setValues({
         sort: 0,
@@ -77,23 +81,12 @@ const [Modal, modalApi] = useVbenModal({
       });
       return;
     }
+
+    // 编辑模式：加载数据
     modalApi.lock();
     try {
-      if (data.id) {
-        // 编辑模式：加载完整数据
-        data = await getProductCategory(data.id);
-      } else if (data.parentId) {
-        // 新增下级分类：设置父级ID
-        await formApi.setValues({
-          parentId: data.parentId,
-          sort: 0,
-          status: 1,
-        });
-        return;
-      }
-      // 设置到 values
-      formData.value = data;
-      await formApi.setValues(data);
+      formData.value = await getProductCategory(data.id);
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }

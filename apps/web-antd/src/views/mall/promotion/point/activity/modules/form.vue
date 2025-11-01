@@ -21,7 +21,8 @@ import {
 import { $t } from '#/locales';
 import { getPropertyList } from '#/views/mall/product/spu/form';
 
-import { SpuAndSkuList, SpuSkuSelect } from '../../../components';
+// TODO @puhui999：有问题
+// import { SpuAndSkuList, SpuSkuSelect } from '../../../components';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);

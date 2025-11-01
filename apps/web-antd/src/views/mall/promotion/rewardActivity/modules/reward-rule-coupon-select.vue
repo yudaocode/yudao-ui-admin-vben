@@ -1,16 +1,19 @@
 <script lang="ts" setup>
+import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
 import { nextTick, onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+
 import { useVModel } from '@vueuse/core';
 import { Button, Input } from 'ant-design-vue';
 
-// import { CouponSelect } from '@/views/mall/promotion/coupon/components'; // TODO: 根据实际路径调整
-// import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate'; // TODO: API
-// import { discountFormat } from '@/views/mall/promotion/coupon/formatter'; // TODO: 根据实际路径调整
+import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
+import { DictTag } from '#/components/dict-tag';
+import { CouponSelect } from '#/views/mall/promotion/coupon/components';
+import { discountFormat } from '#/views/mall/promotion/coupon/formatter';
 
-// TODO @puhui999：这里报错了。
 defineOptions({ name: 'RewardRuleCouponSelect' });
 
 const props = defineProps<{
@@ -21,17 +24,22 @@ const emits = defineEmits<{
   (e: 'update:modelValue', v: any): void;
 }>();
 
+/** 选择赠送的优惠类型拓展 */
+interface GiveCoupon extends MallCouponTemplateApi.CouponTemplate {
+  giveCount?: number;
+}
+
 const rewardRule = useVModel(props, 'modelValue', emits);
-const list = ref<any[]>([]); // TODO: 改为 GiveCouponVO[] 类型
+const list = ref<GiveCoupon[]>([]);
 
 const CouponTemplateTakeTypeEnum = {
   ADMIN: { type: 2 },
 };
 
 /** 选择优惠券 */
-// const couponSelectRef = ref<InstanceType<typeof CouponSelect>>();
+const couponSelectRef = ref<InstanceType<typeof CouponSelect>>();
 function selectCoupon() {
-  // couponSelectRef.value?.open();
+  couponSelectRef.value?.open();
 }
 
 /** 选择优惠券后的回调 */
@@ -51,20 +59,22 @@ function deleteCoupon(index: number) {
 
 /** 初始化赠送的优惠券列表 */
 async function initGiveCouponList() {
-  // if (!rewardRule.value || !rewardRule.value.giveCouponTemplateCounts) {
-  //   return;
-  // }
-  // const tempLateIds = Object.keys(rewardRule.value.giveCouponTemplateCounts);
-  // const data = await CouponTemplateApi.getCouponTemplateList(tempLateIds);
-  // if (!data) {
-  //   return;
-  // }
-  // data.forEach((coupon) => {
-  //   list.value.push({
-  //     ...coupon,
-  //     giveCount: rewardRule.value.giveCouponTemplateCounts![coupon.id],
-  //   });
-  // });
+  if (!rewardRule.value || !rewardRule.value.giveCouponTemplateCounts) {
+    return;
+  }
+  const tempLateIds = Object.keys(
+    rewardRule.value.giveCouponTemplateCounts,
+  ) as unknown as number[];
+  const data = await getCouponTemplateList(tempLateIds);
+  if (!data) {
+    return;
+  }
+  data.forEach((coupon) => {
+    list.value.push({
+      ...coupon,
+      giveCount: rewardRule.value.giveCouponTemplateCounts![coupon.id],
+    });
+  });
 }
 
 /** 设置赠送的优惠券 */
@@ -99,14 +109,18 @@ onMounted(async () => {
         <div>优惠券名称：{{ item.name }}</div>
         <div>
           范围：
-          <!-- <DictTag :type="DICT_TYPE.PROMOTION_PRODUCT_SCOPE" :value="item.productScope" /> -->
-          {{ item.productScope }}
+          <DictTag
+            :type="DICT_TYPE.PROMOTION_PRODUCT_SCOPE"
+            :value="item.productScope"
+          />
         </div>
         <div class="flex items-center">
           优惠：
-          <!-- <DictTag :type="DICT_TYPE.PROMOTION_DISCOUNT_TYPE" :value="item.discountType" /> -->
-          <!-- {{ discountFormat(item) }} -->
-          {{ item.discountType }}
+          <DictTag
+            :type="DICT_TYPE.PROMOTION_DISCOUNT_TYPE"
+            :value="item.discountType"
+          />
+          {{ discountFormat(item) }}
         </div>
       </div>
       <div class="coupon-list-item-right flex items-center gap-2">
@@ -123,10 +137,10 @@ onMounted(async () => {
     </div>
 
     <!-- 优惠券选择 -->
-    <!-- <CouponSelect
+    <CouponSelect
       ref="couponSelectRef"
       :take-type="CouponTemplateTakeTypeEnum.ADMIN.type"
       @change="handleCouponChange"
-    /> -->
+    />
   </div>
 </template>

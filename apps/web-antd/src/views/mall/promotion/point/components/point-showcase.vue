@@ -1,3 +1,4 @@
+<!-- eslint-disable unicorn/no-nested-ternary -->
 <!-- 积分活动橱窗组件 - 用于装修时展示和选择积分活动 -->
 <script lang="ts" setup>
 // TODO @puhui999：看看是不是整体优化下代码风格，参考别的模块
@@ -95,9 +96,9 @@ watch(
   async () => {
     const ids = Array.isArray(props.modelValue)
       ? props.modelValue
-      : (props.modelValue
+      : props.modelValue
         ? [props.modelValue]
-        : []);
+        : [];
 
     // 不需要返显
     if (ids.length === 0) {
@@ -158,7 +159,7 @@ watch(
   <!-- 积分活动选择对话框 -->
   <PointTableSelect
     ref="pointActivityTableSelectRef"
-    :multiple="limit != 1"
+    :multiple="limit !== 1"
     @change="handleActivitySelected"
   />
 </template>

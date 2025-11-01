@@ -26,7 +26,9 @@ import ComponentContainerProperty from '../../component-container-property.vue';
 defineOptions({ name: 'CarouselProperty' });
 
 const props = defineProps<{ modelValue: CarouselProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

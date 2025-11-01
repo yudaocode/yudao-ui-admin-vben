@@ -2,11 +2,10 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 用户卡片属性 */
 export interface UserCardProperty {
-  // 组件样式
-  style: ComponentStyle;
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'UserCard',
   name: '用户卡片',

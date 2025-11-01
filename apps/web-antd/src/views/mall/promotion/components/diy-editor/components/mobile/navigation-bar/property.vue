@@ -24,7 +24,7 @@ const props = defineProps<{ modelValue: NavigationBarProperty }>();
 const emit = defineEmits(['update:modelValue']);
 
 // 表单校验
-const rules = {
+const rules: Record<string, any> = {
   name: [{ required: true, message: '请输入页面名称', trigger: 'blur' }],
 };
 

@@ -22,6 +22,7 @@ export namespace IoTOtaTaskRecordApi {
   }
 }
 
+// TODO @AI：这里应该拿到 IoTOtaTaskRecordApi 里
 /** IoT OTA 升级任务记录 */
 export interface OtaTaskRecord {
   id?: number;

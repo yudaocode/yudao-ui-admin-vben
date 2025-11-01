@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -62,24 +61,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
-    treeConfig: {
-      transform: true,
-      rowField: 'id',
-      parentField: 'parentId',
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const data = await getDeviceGroupPage({
+          return await getDeviceGroupPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
-          // 转换为树形结构
-          return {
-            ...data,
-            list: handleTree(data.list, 'id', 'parentId'),
-          };
         },
       },
     },

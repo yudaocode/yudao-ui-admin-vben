@@ -12,11 +12,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<SystemMailLogApi.MailLog>();
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 2,
-    class: 'mx-4',
-  },
+  bordered: true,
+  column: 2,
   schema: useDetailSchema(),
 });
 

@@ -48,6 +48,7 @@ const afterSale = ref<MallAfterSaleApi.AfterSale>({
   logs: [],
 });
 
+// TODO @xingyu：貌似 antd 相比 antd 来说，多了一个框？有啥办法只有 1 个么？
 const [OrderDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,

@@ -2,31 +2,22 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 热区属性 */
 export interface HotZoneProperty {
-  // 图片地址
-  imgUrl: string;
-  // 导航菜单列表
-  list: HotZoneItemProperty[];
-  // 组件样式
-  style: ComponentStyle;
+  imgUrl: string; // 图片地址
+  list: HotZoneItemProperty[]; // 导航菜单列表
+  style: ComponentStyle; // 组件样式
 }
 
 /** 热区项目属性 */
 export interface HotZoneItemProperty {
-  // 链接的名称
-  name: string;
-  // 链接
-  url: string;
-  // 宽
-  width: number;
-  // 高
-  height: number;
-  // 上
-  top: number;
-  // 左
-  left: number;
+  name: string; // 链接的名称
+  url: string; // 链接
+  width: number; // 宽
+  height: number; // 高
+  top: number; // 上
+  left: number; // 左
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'HotZone',
   name: '热区',

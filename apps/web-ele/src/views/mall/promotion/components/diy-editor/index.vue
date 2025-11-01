@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
-import { inject, onMounted, ref, unref, watch } from 'vue';
+import { onMounted, ref, unref, watch } from 'vue';
 
-import { IFrame } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
@@ -12,13 +12,14 @@ import {
   ElAside,
   ElCard,
   ElContainer,
-  ElDialog,
   ElHeader,
+  ElImage,
   ElScrollbar,
   ElTag,
   ElText,
   ElTooltip,
 } from 'element-plus';
+import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
 
@@ -28,57 +29,48 @@ import { componentConfigs, components } from './components/mobile';
 import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
 import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
+
 /** 页面装修详情页 */
 defineOptions({
   name: 'DiyPageDetail',
   components,
 });
-// 定义属性
+
+/** 定义属性 */
 const props = defineProps({
-  // 页面配置，支持Json字符串
-  modelValue: { type: [String, Object], required: true },
-  // 标题
-  title: { type: String, default: '' },
-  // 组件库
-  libs: { type: Array<DiyComponentLibrary>, default: () => [] },
-  // 是否显示顶部导航栏
-  showNavigationBar: { type: Boolean, default: true },
-  // 是否显示底部导航菜单
-  showTabBar: { type: Boolean, default: false },
-  // 是否显示页面配置
-  showPageConfig: { type: Boolean, default: true },
-  // 预览地址：提供了预览地址，才会显示预览按钮
-  previewUrl: { type: String, default: '' },
+  modelValue: { type: [String, Object], required: true }, // 页面配置，支持 Json 字符串
+  title: { type: String, default: '' }, // 标题
+  libs: { type: Array<DiyComponentLibrary>, default: () => [] }, // 组件库
+  showNavigationBar: { type: Boolean, default: true }, // 是否显示顶部导航栏
+  showTabBar: { type: Boolean, default: false }, // 是否显示底部导航菜单
+  showPageConfig: { type: Boolean, default: true }, // 是否显示页面配置
+  previewUrl: { type: String, default: '' }, // 预览地址：提供了预览地址，才会显示预览按钮
 });
-// 工具栏操作
-const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']);
+
+const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
 const qrcode = useQRCode(props.previewUrl, {
   errorCorrectionLevel: 'H',
   margin: 4,
-});
+}); // 预览二维码
 
-// 左侧组件库
-const componentLibrary = ref();
-// 页面设置组件
+const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
   cloneDeep(PAGE_CONFIG_COMPONENT),
-);
-// 顶部导航栏
+); // 页面设置组件
 const navigationBarComponent = ref<DiyComponent<any>>(
   cloneDeep(NAVIGATION_BAR_COMPONENT),
-);
-// 底部导航菜单
-const tabBarComponent = ref<DiyComponent<any>>(cloneDeep(TAB_BAR_COMPONENT));
+); // 顶部导航栏
+const tabBarComponent = ref<DiyComponent<any>>(cloneDeep(TAB_BAR_COMPONENT)); // 底部导航菜单
 
-// 选中的组件，默认选中顶部导航栏
-const selectedComponent = ref<DiyComponent<any>>();
-// 选中的组件索引
-const selectedComponentIndex = ref<number>(-1);
-// 组件列表
-const pageComponents = ref<DiyComponent<any>[]>([]);
-// 监听传入的页面配置
-// 解析出 pageConfigComponent 页面整体的配置，navigationBarComponent、pageComponents、tabBarComponent 页面上、中、下的配置
+const selectedComponent = ref<DiyComponent<any>>(); // 选中的组件，默认选中顶部导航栏
+const selectedComponentIndex = ref<number>(-1); // 选中的组件索引
+const pageComponents = ref<DiyComponent<any>[]>([]); // 组件列表
+
+/**
+ * 监听传入的页面配置
+ * 解析出 pageConfigComponent 页面整体的配置，navigationBarComponent、pageComponents、tabBarComponent 页面上、中、下的配置
+ */
 watch(
   () => props.modelValue,
   () => {
@@ -86,16 +78,20 @@ watch(
       isString(props.modelValue) && !isEmpty(props.modelValue)
         ? (JSON.parse(props.modelValue) as PageConfig)
         : props.modelValue;
+    // noinspection SuspiciousTypeOfGuard
     pageConfigComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     navigationBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.navigationBar) ||
       NAVIGATION_BAR_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     tabBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.tabBar) ||
       TAB_BAR_COMPONENT.property;
     // 查找对应的页面组件
+    // noinspection SuspiciousTypeOfGuard
     pageComponents.value = (
       (typeof modelValue !== 'string' && modelValue?.components) ||
       []
@@ -122,19 +118,20 @@ watch(
   { deep: true },
 );
 
-// 保存
-const handleSave = () => {
-  // 发送保存通知
+/** 保存 */
+function handleSave() {
+  // 发送保存通知，由外部保存
   emits('save');
-};
-// 监听配置修改
-const pageConfigChange = () => {
+}
+
+/** 监听配置修改 */
+function pageConfigChange() {
   const pageConfig = {
     page: pageConfigComponent.value.property,
     navigationBar: navigationBarComponent.value.property,
     tabBar: tabBarComponent.value.property,
     components: pageComponents.value.map((component) => {
-      // 只保留APP有用的字段
+      // 只保留 APP 有用的字段
       return { id: component.id, property: component.property };
     }),
   } as PageConfig;
@@ -146,7 +143,8 @@ const pageConfigChange = () => {
     ? JSON.stringify(pageConfig)
     : pageConfig;
   emits('update:modelValue', modelValue);
-};
+}
+
 watch(
   () => [
     pageConfigComponent.value.property,
@@ -159,15 +157,17 @@ watch(
   },
   { deep: true },
 );
-// 处理页面选中：显示属性表单
-const handlePageSelected = (event: any) => {
-  if (!props.showPageConfig) return;
 
+/** 处理页面选中：显示属性表单 */
+function handlePageSelected(event: any) {
+  if (!props.showPageConfig) {
+    return;
+  }
   // 配置了样式 page-prop-area 的元素，才显示页面设置
   if (event?.target?.classList?.contains('page-prop-area')) {
     handleComponentSelected(unref(pageConfigComponent));
   }
-};
+}
 
 /**
  * 选中组件
@@ -175,26 +175,26 @@ const handlePageSelected = (event: any) => {
  * @param component 组件
  * @param index 组件的索引
  */
-const handleComponentSelected = (
+function handleComponentSelected(
   component: DiyComponent<any>,
   index: number = -1,
-) => {
+) {
   selectedComponent.value = component;
   selectedComponentIndex.value = index;
-};
+}
 
-// 选中顶部导航栏
-const handleNavigationBarSelected = () => {
+/** 选中顶部导航栏 */
+function handleNavigationBarSelected() {
   handleComponentSelected(unref(navigationBarComponent));
-};
+}
 
-// 选中底部导航菜单
-const handleTabBarSelected = () => {
+/** 选中底部导航菜单 */
+function handleTabBarSelected() {
   handleComponentSelected(unref(tabBarComponent));
-};
+}
 
-// 组件变动（拖拽）
-const handleComponentChange = (dragEvent: any) => {
+/** 组件变动（拖拽） */
+function handleComponentChange(dragEvent: any) {
   // 新增，即从组件库拖拽添加组件
   if (dragEvent.added) {
     const { element, newIndex } = dragEvent.added;
@@ -205,41 +205,38 @@ const handleComponentChange = (dragEvent: any) => {
     // 保持选中
     selectedComponentIndex.value = newIndex;
   }
-};
+}
 
-// 交换组件
-const swapComponent = (oldIndex: number, newIndex: number) => {
+/** 交换组件 */
+function swapComponent(oldIndex: number, newIndex: number) {
   const temp = pageComponents.value[oldIndex]!;
   pageComponents.value[oldIndex] = pageComponents.value[newIndex]!;
   pageComponents.value[newIndex] = temp;
   // 保持选中
   selectedComponentIndex.value = newIndex;
-};
+}
 
 /** 移动组件（上移、下移） */
-const handleMoveComponent = (index: number, direction: number) => {
+function handleMoveComponent(index: number, direction: number) {
   const newIndex = index + direction;
-  if (newIndex < 0 || newIndex >= pageComponents.value.length) return;
-
+  if (newIndex < 0 || newIndex >= pageComponents.value.length) {
+    return;
+  }
   swapComponent(index, newIndex);
-};
+}
 
 /** 复制组件 */
-const handleCopyComponent = (index: number) => {
+function handleCopyComponent(index: number) {
   const component = pageComponents.value[index];
   if (component) {
     const clonedComponent = cloneDeep(component);
     clonedComponent.uid = Date.now();
     pageComponents.value.splice(index + 1, 0, clonedComponent);
   }
-};
+}
 
-/**
- * 删除组件
- * @param index 当前组件index
- */
-const handleDeleteComponent = (index: number) => {
-  // 删除组件
+/** 删除组件 */
+function handleDeleteComponent(index: number) {
   pageComponents.value.splice(index, 1);
   if (index < pageComponents.value.length) {
     // 1. 不是最后一个组件时，删除后选中下面的组件
@@ -259,25 +256,28 @@ const handleDeleteComponent = (index: number) => {
     // 3. 组件全部删除之后，显示页面设置
     handleComponentSelected(unref(pageConfigComponent));
   }
-};
+}
 
-// // 注入无感刷新页面函数
-// const reload = inject<() => void>('reload'); // TODO @芋艿：是 vue3 + element-plus 独有的，可以清理掉。
-// // 重置
-// const handleReset = () => {
-//   if (reload) reload();
-//   emits('reset');
-// };
+/** 重置 */
+function handleReset() {
+  emits('reset');
+}
 
-// 预览
-const previewDialogVisible = ref(false);
-const handlePreview = () => {
-  previewDialogVisible.value = true;
-  emits('preview');
-};
+const [PreviewModal, previewModalApi] = useVbenModal({
+  showConfirmButton: false,
+  showCancelButton: false,
+  onCancel() {
+    previewModalApi.close();
+  },
+});
 
-// 设置默认选中的组件
-const setDefaultSelectedComponent = () => {
+/** 预览 */
+function handlePreview() {
+  previewModalApi.open();
+}
+
+/** 设置默认选中的组件 */
+function setDefaultSelectedComponent() {
   if (props.showPageConfig) {
     selectedComponent.value = unref(pageConfigComponent);
   } else if (props.showNavigationBar) {
@@ -285,12 +285,14 @@ const setDefaultSelectedComponent = () => {
   } else if (props.showTabBar) {
     selectedComponent.value = unref(tabBarComponent);
   }
-};
+}
 
 watch(
   () => [props.showPageConfig, props.showNavigationBar, props.showTabBar],
   () => setDefaultSelectedComponent(),
 );
+
+/** 初始化 */
 onMounted(() => {
   setDefaultSelectedComponent();
 });
@@ -307,19 +309,19 @@ onMounted(() => {
           <span>{{ title }}</span>
         </div>
         <!-- 右侧操作区 -->
-        <div class="header-right">
-          <ElTooltip title="重置">
-            <ElButton @click="handleReset">
+        <div>
+          <ElTooltip content="重置">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handleReset">
               <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip v-if="previewUrl" title="预览">
-            <ElButton @click="handlePreview">
+          <ElTooltip v-if="previewUrl" content="预览">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handlePreview">
               <IconifyIcon :size="24" icon="ep:view" />
             </ElButton>
           </ElTooltip>
-          <ElTooltip title="保存">
-            <ElButton @click="handleSave">
+          <ElTooltip content="保存">
+            <ElButton class="!m-0 !border-l !border-r-0" @click="handleSave">
               <IconifyIcon :size="24" icon="ep:check" />
             </ElButton>
           </ElTooltip>
@@ -329,7 +331,7 @@ onMounted(() => {
       <!-- 中心区域 -->
       <ElContainer class="editor-container">
         <!-- 左侧：组件库（ComponentLibrary） -->
-        <ElAside width="200px" class="editor-left">
+        <ElAside width="261px" class="editor-left">
           <ComponentLibrary
             v-if="libs && libs.length > 0"
             ref="componentLibrary"
@@ -480,19 +482,18 @@ onMounted(() => {
     </ElContainer>
 
     <!-- 预览弹框 -->
-    <ElDialog v-model:open="previewDialogVisible" title="预览" width="700">
+    <PreviewModal title="预览" class="w-700px">
       <div class="flex justify-around">
-        <IFrame
+        <iframe
           :src="previewUrl"
           class="h-[667px] w-[375px] rounded-lg border-4 border-solid p-0.5"
-        />
+        ></iframe>
         <div class="flex flex-col">
           <ElText>手机扫码预览</ElText>
-          <img :src="qrcode" alt="qrcode" class="w-1/2" />
-          <!-- <Qrcode :text="previewUrl" logo="/logo.gif" /> -->
+          <ElImage :src="qrcode" alt="qrcode" />
         </div>
       </div>
-    </ElDialog>
+    </PreviewModal>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -514,15 +515,6 @@ $phone-width: 375px;
     padding: 0;
     background-color: var(--el-bg-color);
     border-bottom: solid 1px var(--el-border-color);
-
-    /* 工具栏：右侧按钮 */
-    .header-right {
-      height: 100%;
-
-      .el-button {
-        height: 100%;
-      }
-    }
 
     /* 隐藏工具栏按钮的边框 */
     :deep(.el-radio-button__inner),
@@ -549,7 +541,7 @@ $phone-width: 375px;
       }
 
       /* 属性面板分组 */
-      :deep(.property-group) {
+      .property-group {
         margin: 0 -20px;
 
         &.el-card {

@@ -24,15 +24,16 @@ import {
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 导航栏属性面板
+/** 导航栏属性面板 */
 defineOptions({ name: 'TitleBarProperty' });
 
 const props = defineProps<{ modelValue: TitleBarProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 表单校验
-const rules = {};
+const rules = {}; // 表单校验
 </script>
 <template>
   <ComponentContainerProperty v-model="formData.style">
@@ -167,5 +168,3 @@ const rules = {};
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

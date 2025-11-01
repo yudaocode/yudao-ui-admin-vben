@@ -9,14 +9,12 @@ import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-
 import {
   Card,
   Checkbox,
   Form,
   FormItem,
   Input,
-  Radio,
   RadioButton,
   RadioGroup,
   Slider,
@@ -24,9 +22,9 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
+import { getCombinationActivityPage } from '#/api/mall/promotion/combination/combinationActivity';
 import UploadImg from '#/components/upload/image-upload.vue';
-import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
+// import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
 // 拼团属性面板
@@ -38,7 +36,7 @@ const formData = useVModel(props, 'modelValue', emit);
 // 活动列表
 const activityList = ref<MallCombinationActivityApi.CombinationActivity[]>([]);
 onMounted(async () => {
-  const { list } = await CombinationActivityApi.getCombinationActivityPage({
+  const { list } = await getCombinationActivityPage({
     pageNo: 1,
     pageSize: 10,
     status: CommonStatusEnum.ENABLE,
@@ -49,7 +47,11 @@ onMounted(async () => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }" :model="formData">
+    <Form
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+      :model="formData"
+    >
       <Card title="拼团活动" class="property-group" :bordered="false">
         <CombinationShowcase v-model="formData.activityIds" />
       </Card>
@@ -167,11 +169,7 @@ onMounted(async () => {
           />
         </FormItem>
         <FormItem label="间隔" prop="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>

@@ -39,6 +39,7 @@ const [Form, formApi] = useVbenForm({
   },
   schema: useFormSchema(),
   showCollapseButton: false,
+  showDefaultActions: false,
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -70,8 +71,12 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
+      formApi.resetForm();
       return;
     }
+
+    // 重置表单
+    await formApi.resetForm();
 
     const data = modalApi.getData<IotDeviceGroupApi.DeviceGroup>();
     // 如果没有数据或没有 id，表示是新增

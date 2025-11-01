@@ -2,41 +2,29 @@ import type { DiyComponent } from '../../../util';
 
 /** 底部导航菜单属性 */
 export interface TabBarProperty {
-  // 选项列表
-  items: TabBarItemProperty[];
-  // 主题
-  theme: string;
-  // 样式
-  style: TabBarStyle;
+  items: TabBarItemProperty[]; // 选项列表
+  theme: string; // 主题
+  style: TabBarStyle; // 样式
 }
 
-// 选项属性
+/** 选项属性 */
 export interface TabBarItemProperty {
-  // 标签文字
-  text: string;
-  // 链接
-  url: string;
-  // 默认图标链接
-  iconUrl: string;
-  // 选中的图标链接
-  activeIconUrl: string;
+  text: string; // 标签文字
+  url: string; // 链接
+  iconUrl: string; // 默认图标链接
+  activeIconUrl: string; // 选中的图标链接
 }
 
-// 样式
+/** 样式 */
 export interface TabBarStyle {
-  // 背景类型
-  bgType: 'color' | 'img';
-  // 背景颜色
-  bgColor: string;
-  // 图片链接
-  bgImg: string;
-  // 默认颜色
-  color: string;
-  // 选中的颜色
-  activeColor: string;
+  bgType: 'color' | 'img'; // 背景类型
+  bgColor: string; // 背景颜色
+  bgImg: string; // 图片链接
+  color: string; // 默认颜色
+  activeColor: string; // 选中的颜色
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'TabBar',
   name: '底部导航',

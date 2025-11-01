@@ -14,16 +14,15 @@ import { componentConfigs } from './mobile/index';
 /** 组件库：目前左侧的【基础组件】、【图文组件】部分 */
 defineOptions({ name: 'ComponentLibrary' });
 
-// 组件列表
+/** 组件列表 */
 const props = defineProps<{
   list: DiyComponentLibrary[];
 }>();
-// 组件分组
-const groups = reactive<any[]>([]);
-// 展开的折叠面板
-const extendGroups = reactive<string[]>([]);
 
-// 监听 list 属性，按照 DiyComponentLibrary 的 name 分组
+const groups = reactive<any[]>([]); // 组件分组
+const extendGroups = reactive<string[]>([]); // 展开的折叠面板
+
+/** 监听 list 属性，按照 DiyComponentLibrary 的 name 分组 */
 watch(
   () => props.list,
   () => {
@@ -53,7 +52,7 @@ watch(
   },
 );
 
-// 克隆组件
+/** 克隆组件 */
 const handleCloneComponent = (component: DiyComponent<any>) => {
   const instance = cloneDeep(component);
   instance.uid = Date.now();
@@ -129,6 +128,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    width: 261px;
   }
 
   .component {

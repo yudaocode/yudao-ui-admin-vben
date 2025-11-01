@@ -10,8 +10,8 @@ import { fenToYuan } from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
-import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
+import { getSpuDetailList } from '#/api/mall/product/spu';
+import { getCombinationActivityListByIds } from '#/api/mall/promotion/combination/combinationActivity';
 
 /** 拼团卡片 */
 defineOptions({ name: 'PromotionCombination' });
@@ -34,9 +34,7 @@ watch(
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取拼团活动详情列表
         combinationActivityList.value =
-          await CombinationActivityApi.getCombinationActivityListByIds(
-            activityIds,
-          );
+          await getCombinationActivityListByIds(activityIds);
 
         // 获取拼团活动的 SPU 详情列表
         spuList.value = [];
@@ -44,7 +42,7 @@ watch(
           .map((activity) => activity.spuId)
           .filter((spuId): spuId is number => typeof spuId === 'number');
         if (spuIdList.value.length > 0) {
-          spuList.value = await ProductSpuApi.getSpuDetailList(spuIdList.value);
+          spuList.value = await getSpuDetailList(spuIdList.value);
         }
 
         // 更新 SPU 的最低价格

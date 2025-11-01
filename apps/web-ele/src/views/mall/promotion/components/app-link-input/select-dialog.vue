@@ -5,11 +5,18 @@ import type { AppLink } from './data';
 
 import { nextTick, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { getUrlNumberValue } from '@vben/utils';
 
-import { ElScrollbar } from 'element-plus';
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElScrollbar,
+  ElTooltip,
+} from 'element-plus';
 
-import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
+import { ProductCategorySelect } from '#/views/mall/product/category/components/';
 
 import { APP_LINK_GROUP_LIST, APP_LINK_TYPE_ENUM } from './data';
 
@@ -32,18 +39,31 @@ const groupBtnRefs = ref<ButtonInstance[]>([]); // 分组引用列表
 const detailSelectDialog = ref<{
   id?: number;
   type?: APP_LINK_TYPE_ENUM;
-  visible: boolean;
 }>({
-  visible: false,
   id: undefined,
   type: undefined,
 }); // 详情选择对话框
 
+const [Modal, modalApi] = useVbenModal({
+  onConfirm() {
+    emit('change', activeAppLink.value.path);
+    emit('appLinkChange', activeAppLink.value);
+    modalApi.close();
+  },
+});
+
+const [DetailSelectModal, detailSelectModalApi] = useVbenModal({
+  onConfirm() {
+    detailSelectModalApi.close();
+  },
+});
+
+defineExpose({ open });
+
 /** 打开弹窗 */
-const dialogVisible = ref(false);
-const open = (link: string) => {
+async function open(link: string) {
   activeAppLink.value.path = link;
-  dialogVisible.value = true;
+  modalApi.open();
   // 滚动到当前的链接
   const group = APP_LINK_GROUP_LIST.find((group) =>
     group.links.some((linkItem) => {
@@ -56,19 +76,18 @@ const open = (link: string) => {
   );
   if (group) {
     // 使用 nextTick 的原因：可能 Dom 还没生成，导致滚动失败
-    nextTick(() => handleGroupSelected(group.name));
+    await nextTick();
+    handleGroupSelected(group.name);
   }
-};
-defineExpose({ open });
+}
 
 /** 处理 APP 链接选中 */
-const handleAppLinkSelected = (appLink: AppLink) => {
+function handleAppLinkSelected(appLink: AppLink) {
   if (!isSameLink(appLink.path, activeAppLink.value.path)) {
     activeAppLink.value = appLink;
   }
   switch (appLink.type) {
     case APP_LINK_TYPE_ENUM.PRODUCT_CATEGORY_LIST: {
-      detailSelectDialog.value.visible = true;
       detailSelectDialog.value.type = appLink.type;
       // 返显
       detailSelectDialog.value.id =
@@ -76,22 +95,18 @@ const handleAppLinkSelected = (appLink: AppLink) => {
           'id',
           `http://127.0.0.1${activeAppLink.value.path}`,
         ) || undefined;
+      detailSelectModalApi.open();
       break;
     }
     default: {
       break;
     }
   }
-};
-
-function handleSubmit() {
-  dialogVisible.value = false;
-  emit('change', activeAppLink.value.path);
-  emit('appLinkChange', activeAppLink.value);
 }
 
 /**
  * 处理右侧链接列表滚动
+ *
  * @param {object} param0 滚动事件参数
  * @param {number} param0.scrollTop 滚动条的位置
  */
@@ -134,66 +149,70 @@ function scrollToGroupBtn(group: string) {
 
 /** 是否为相同的链接（不比较参数，只比较链接） */
 function isSameLink(link1: string, link2: string) {
-  return link2 ? link1.split('?')[0] === link2.split('?')[0] : false;
+  return link2 ? link1?.split('?')[0] === link2.split('?')[0] : false;
 }
 
 /** 处理详情选择 */
 function handleProductCategorySelected(id: number) {
-  // TODO @AI：这里有点问题；activeAppLink 地址；
+  // 生成 activeAppLink
   const url = new URL(activeAppLink.value.path, 'http://127.0.0.1');
-  // 修改 id 参数
   url.searchParams.set('id', `${id}`);
-  // 排除域名
   activeAppLink.value.path = `${url.pathname}${url.search}`;
-  // 关闭对话框
-  detailSelectDialog.value.visible = false;
-  // 重置 id
+
+  // 关闭对话框，并重置 id
+  detailSelectModalApi.close();
   detailSelectDialog.value.id = undefined;
 }
 </script>
 <template>
-  <el-dialog v-model="dialogVisible" title="选择链接" width="65%">
+  <Modal title="选择链接" class="w-[65%]">
     <div class="flex h-[500px] gap-2">
-      <!-- 左侧分组列表 -->
-      <ElScrollbar
-        wrap-class="h-full"
-        ref="groupScrollbar"
-        view-class="flex flex-col"
-      >
-        <el-button
-          v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
-          :key="groupIndex"
-          class="ml-0 mr-4 w-[90px] justify-start"
-          :class="[{ active: activeGroup === group.name }]"
-          ref="groupBtnRefs"
-          :text="activeGroup !== group.name"
-          :type="activeGroup === group.name ? 'primary' : 'default'"
-          @click="handleGroupSelected(group.name)"
+      <div class="flex flex-col">
+        <!-- 左侧分组列表 -->
+        <ElScrollbar
+          wrap-class="h-full"
+          ref="groupScrollbar"
+          view-class="flex flex-col"
+          class="border-r border-gray-200 pr-2"
         >
-          {{ group.name }}
-        </el-button>
-      </ElScrollbar>
+          <ElButton
+            v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
+            :key="groupIndex"
+            class="!ml-0 mb-1 mr-4 !justify-start"
+            :class="[{ active: activeGroup === group.name }]"
+            ref="groupBtnRefs"
+            :text="activeGroup !== group.name"
+            :type="activeGroup === group.name ? 'primary' : 'default'"
+            @click="handleGroupSelected(group.name)"
+          >
+            {{ group.name }}
+          </ElButton>
+        </ElScrollbar>
+      </div>
       <!-- 右侧链接列表 -->
       <ElScrollbar
-        class="h-full flex-1"
+        class="h-full flex-1 pl-2"
         @scroll="handleScroll"
         ref="linkScrollbar"
       >
         <div
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
+          class="mb-4 border-b border-gray-100 pb-4 last:mb-0 last:border-b-0"
         >
           <!-- 分组标题 -->
-          <div class="font-bold" ref="groupTitleRefs">{{ group.name }}</div>
+          <div class="mb-2 font-bold" ref="groupTitleRefs">
+            {{ group.name }}
+          </div>
           <!-- 链接列表 -->
-          <el-tooltip
+          <ElTooltip
             v-for="(appLink, appLinkIndex) in group.links"
             :key="appLinkIndex"
             :content="appLink.path"
             placement="bottom"
             :show-after="300"
           >
-            <el-button
+            <ElButton
               class="mb-2 ml-0 mr-2"
               :type="
                 isSameLink(appLink.path, activeAppLink.path)
@@ -203,20 +222,16 @@ function handleProductCategorySelected(id: number) {
               @click="handleAppLinkSelected(appLink)"
             >
               {{ appLink.name }}
-            </el-button>
-          </el-tooltip>
+            </ElButton>
+          </ElTooltip>
         </div>
       </ElScrollbar>
     </div>
-    <!-- 底部对话框操作按钮 -->
-    <template #footer>
-      <el-button type="primary" @click="handleSubmit">确 定</el-button>
-      <el-button @click="dialogVisible = false">取 消</el-button>
-    </template>
-  </el-dialog>
-  <el-dialog v-model="detailSelectDialog.visible" title="" width="50%">
-    <el-form class="min-h-[200px]">
-      <el-form-item
+  </Modal>
+
+  <DetailSelectModal title="选择分类" class="w-[65%]">
+    <ElForm class="min-h-[200px]">
+      <ElFormItem
         label="选择分类"
         v-if="
           detailSelectDialog.type === APP_LINK_TYPE_ENUM.PRODUCT_CATEGORY_LIST
@@ -227,12 +242,7 @@ function handleProductCategorySelected(id: number) {
           :parent-id="0"
           @update:model-value="handleProductCategorySelected"
         />
-      </el-form-item>
-    </el-form>
-  </el-dialog>
+      </ElFormItem>
+    </ElForm>
+  </DetailSelectModal>
 </template>
-<style lang="scss" scoped>
-:deep(.el-button + .el-button) {
-  margin-left: 0 !important;
-}
-</style>

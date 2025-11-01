@@ -12,11 +12,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<SystemOperateLogApi.OperateLog>();
 
 const [Descriptions] = useDescription({
-  componentProps: {
-    bordered: true,
-    column: 1,
-    class: 'mx-4',
-  },
+  bordered: true,
+  column: 1,
   schema: useDetailSchema(),
 });
 

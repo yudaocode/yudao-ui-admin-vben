@@ -7,7 +7,8 @@ import { ElAvatar } from 'element-plus';
 
 /** 用户卡片 */
 defineOptions({ name: 'UserCard' });
-// 定义属性
+
+/** 定义属性 */
 defineProps<{ property: UserCardProperty }>();
 </script>
 <template>
@@ -31,5 +32,3 @@ defineProps<{ property: UserCardProperty }>();
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import type { PromotionCombinationProperty } from './config';
 
-import type { MallCombinationActivityApi } from '#/api/mall/promotion/combination/combinationActivity';
-
-import { onMounted, ref } from 'vue';
-
-import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import {
+  ElCard,
+  ElCheckbox,
   ElForm,
   ElFormItem,
+  ElInput,
   ElRadioButton,
   ElRadioGroup,
   ElSlider,
@@ -19,27 +17,20 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
 import UploadImg from '#/components/upload/image-upload.vue';
 import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
-// 拼团属性面板
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 拼团属性面板 */
 defineOptions({ name: 'PromotionCombinationProperty' });
 
 const props = defineProps<{ modelValue: PromotionCombinationProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
-// 活动列表
-const activityList = ref<MallCombinationActivityApi.CombinationActivity[]>([]);
-onMounted(async () => {
-  const { list } = await CombinationActivityApi.getCombinationActivityPage({
-    pageNo: 1,
-    pageSize: 10,
-    status: CommonStatusEnum.ENABLE,
-  });
-  activityList.value = list;
-});
 </script>
 
 <template>
@@ -66,8 +57,8 @@ onMounted(async () => {
                 <IconifyIcon icon="fluent:text-column-two-24-filled" />
               </ElRadioButton>
             </ElTooltip>
-            <!--<el-tooltip class="item" content="三列" placement="bottom">
-              <el-radio-button value="threeCol">
+            <!--<ElTooltip class="item" content="三列" placement="bottom">
+              <ElRadioButton value="threeCol">
                 <IconifyIcon icon="fluent:text-column-three-24-filled" />
               </ElRadioButton>
             </ElTooltip>-->
@@ -115,8 +106,13 @@ onMounted(async () => {
           <ElSwitch v-model="formData.badge.show" />
         </ElFormItem>
         <ElFormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
-          <UploadImg v-model="formData.badge.imgUrl" height="44px" width="72px">
-            <template #tip> 建议尺寸：36 * 22</template>
+          <UploadImg
+            v-model="formData.badge.imgUrl"
+            height="44px"
+            width="72px"
+            :show-description="false"
+          >
+            <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </ElFormItem>
       </ElCard>
@@ -146,7 +142,7 @@ onMounted(async () => {
               width="56px"
               :show-description="false"
             >
-              <template #tip> 建议尺寸：56 * 56</template>
+              <template #tip> 建议尺寸：56 * 56 </template>
             </UploadImg>
           </ElFormItem>
         </template>
@@ -186,5 +182,3 @@ onMounted(async () => {
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

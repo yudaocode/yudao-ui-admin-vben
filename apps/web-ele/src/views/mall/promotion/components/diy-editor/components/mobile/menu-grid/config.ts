@@ -4,41 +4,28 @@ import { cloneDeep } from '@vben/utils';
 
 /** 宫格导航属性 */
 export interface MenuGridProperty {
-  // 列数
-  column: number;
-  // 导航菜单列表
-  list: MenuGridItemProperty[];
-  // 组件样式
-  style: ComponentStyle;
+  column: number; // 列数
+  list: MenuGridItemProperty[]; // 导航菜单列表
+  style: ComponentStyle; // 组件样式
 }
 
 /** 宫格导航项目属性 */
 export interface MenuGridItemProperty {
-  // 图标链接
-  iconUrl: string;
-  // 标题
-  title: string;
-  // 标题颜色
-  titleColor: string;
-  // 副标题
-  subtitle: string;
-  // 副标题颜色
-  subtitleColor: string;
-  // 链接
-  url: string;
-  // 角标
+  iconUrl: string; // 图标链接
+  title: string; // 标题
+  titleColor: string; // 标题颜色
+  subtitle: string; // 副标题
+  subtitleColor: string; // 副标题颜色
+  url: string; // 链接
   badge: {
-    // 角标背景颜色
-    bgColor: string;
-    // 是否显示
-    show: boolean;
-    // 角标文字
-    text: string;
-    // 角标文字颜色
-    textColor: string;
+    bgColor: string; // 角标背景颜色
+    show: boolean; // 是否显示
+    text: string; // 角标文字
+    textColor: string; // 角标文字颜色
   };
 }
 
+/** 宫格导航项目默认属性 */
 export const EMPTY_MENU_GRID_ITEM_PROPERTY = {
   title: '标题',
   titleColor: '#333',
@@ -51,7 +38,7 @@ export const EMPTY_MENU_GRID_ITEM_PROPERTY = {
   },
 } as MenuGridItemProperty;
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'MenuGrid',
   name: '宫格导航',

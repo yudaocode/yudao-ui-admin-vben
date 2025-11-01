@@ -14,7 +14,6 @@ const formData = ref<InfraApiAccessLogApi.ApiAccessLog>();
 const [Descriptions] = useDescription({
   bordered: true,
   column: 1,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

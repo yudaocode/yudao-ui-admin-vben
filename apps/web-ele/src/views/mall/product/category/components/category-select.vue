@@ -3,31 +3,32 @@ import { computed, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
-import * as ProductCategoryApi from '#/api/mall/product/category';
+import { ElTreeSelect } from 'element-plus';
+
+import { getCategoryList } from '#/api/mall/product/category';
 
 /** 商品分类选择组件 */
 defineOptions({ name: 'ProductCategorySelect' });
 
 const props = defineProps({
-  // 选中的ID
   modelValue: {
     type: [Number, Array<Number>],
     default: undefined,
-  },
-  // 是否多选
+  }, // 选中的 ID
   multiple: {
     type: Boolean,
     default: false,
-  },
-  // 上级品类的编号
+  }, // 是否多选
   parentId: {
     type: Number,
     default: undefined,
-  },
+  }, // 上级品类的编号
 });
 
 /** 分类选择 */
 const emit = defineEmits(['update:modelValue']);
+
+const categoryList = ref<any[]>([]); // 分类树
 
 /** 选中的分类 ID */
 const selectCategoryId = computed({
@@ -40,30 +41,27 @@ const selectCategoryId = computed({
 });
 
 /** 初始化 */
-const categoryList = ref<any[]>([]); // 分类树
 onMounted(async () => {
-  // 获得分类树
-  const data = await ProductCategoryApi.getCategoryList({
+  const data = await getCategoryList({
     parentId: props.parentId,
   });
   categoryList.value = handleTree(data, 'id', 'parentId');
 });
 </script>
 <template>
-  <el-tree-select
+  <ElTreeSelect
     v-model="selectCategoryId"
     :data="categoryList"
+    node-key="id"
     :props="{
       children: 'children',
       label: 'name',
-      value: 'id',
-      isLeaf: 'leaf',
-      emitPath: false,
     }"
     :multiple="multiple"
     :show-checkbox="multiple"
-    class="w-1/1"
-    node-key="id"
+    check-strictly
+    default-expand-all
+    class="w-full"
     placeholder="请选择商品分类"
   />
 </template>

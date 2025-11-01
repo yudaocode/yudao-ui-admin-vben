@@ -7,6 +7,7 @@ import { ElImage } from 'element-plus';
 
 /** 列表导航 */
 defineOptions({ name: 'MenuList' });
+
 defineProps<{ property: MenuListProperty }>();
 </script>
 
@@ -19,14 +20,14 @@ defineProps<{ property: MenuListProperty }>();
     >
       <div class="flex flex-1 flex-row items-center gap-2">
         <ElImage v-if="item.iconUrl" class="h-4 w-4" :src="item.iconUrl" />
-        <span class="text-base" :style="{ color: item.titleColor }">{{
-          item.title
-        }}</span>
+        <span class="text-base" :style="{ color: item.titleColor }">
+          {{ item.title }}
+        </span>
       </div>
       <div class="item-center flex flex-row justify-center gap-1">
-        <span class="text-xs" :style="{ color: item.subtitleColor }">{{
-          item.subtitle
-        }}</span>
+        <span class="text-xs" :style="{ color: item.subtitleColor }">
+          {{ item.subtitle }}
+        </span>
         <IconifyIcon icon="ep:arrow-right" color="#000" :size="16" />
       </div>
     </div>

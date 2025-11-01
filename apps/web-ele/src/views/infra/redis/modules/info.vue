@@ -8,7 +8,7 @@ defineProps<{
 }>();
 
 const [Descriptions] = useDescription({
-  bordered: false,
+  border: false,
   column: 6,
   schema: [
     {

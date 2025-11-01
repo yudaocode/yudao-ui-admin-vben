@@ -18,9 +18,13 @@ import { useTabs } from '@vben/hooks';
 import { Card, message, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as DeliveryExpressApi from '#/api/mall/trade/delivery/express';
-import * as DeliveryPickUpStoreApi from '#/api/mall/trade/delivery/pickUpStore';
-import * as TradeOrderApi from '#/api/mall/trade/order';
+import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
+import { getDeliveryPickUpStore } from '#/api/mall/trade/delivery/pickUpStore';
+import {
+  getExpressTrackList,
+  getOrder,
+  pickUpOrder,
+} from '#/api/mall/trade/order';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
@@ -56,6 +60,7 @@ const deliveryExpressList = ref<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
 const expressTrackList = ref<any[]>([]);
 const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
 
+// TODO @xingyu：貌似 antd 相比 antd 来说，多了一个框？有啥办法只有 1 个么？
 const [OrderInfoDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
@@ -157,7 +162,7 @@ const [PriceFormModal, priceFormModalApi] = useVbenModal({
 async function getDetail() {
   loading.value = true;
   try {
-    const res = await TradeOrderApi.getOrder(orderId.value);
+    const res = await getOrder(orderId.value);
     if (res === null) {
       message.error('交易订单不存在');
       handleBack();
@@ -169,12 +174,9 @@ async function getDetail() {
 
     // 如果配送方式为快递，则查询物流公司
     if (res.deliveryType === DeliveryTypeEnum.EXPRESS.type) {
-      deliveryExpressList.value =
-        await DeliveryExpressApi.getSimpleDeliveryExpressList();
+      deliveryExpressList.value = await getSimpleDeliveryExpressList();
       if (res.logisticsId) {
-        expressTrackList.value = await TradeOrderApi.getExpressTrackList(
-          res.id!,
-        );
+        expressTrackList.value = await getExpressTrackList(res.id!);
         expressTrackGridApi.setGridOptions({
           data: expressTrackList.value || [],
         });
@@ -183,9 +185,7 @@ async function getDetail() {
       res.deliveryType === DeliveryTypeEnum.PICK_UP.type &&
       res.pickUpStoreId
     ) {
-      pickUpStore.value = await DeliveryPickUpStoreApi.getDeliveryPickUpStore(
-        res.pickUpStoreId,
-      );
+      pickUpStore.value = await getDeliveryPickUpStore(res.pickUpStoreId);
     }
   } finally {
     loading.value = false;
@@ -217,7 +217,7 @@ const handlePickUp = async () => {
     duration: 0,
   });
   try {
-    await TradeOrderApi.pickUpOrder(order.value.id!);
+    await pickUpOrder(order.value.id!);
     message.success('核销成功');
     await getDetail();
   } finally {
@@ -338,7 +338,7 @@ onMounted(async () => {
       <OperateLogGrid table-title="操作日志">
         <template #userType="{ row }">
           <Tag v-if="row.userType === 0" color="default"> 系统 </Tag>
-          <DictTag :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
+          <DictTag v-else :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
         </template>
       </OperateLogGrid>
     </div>

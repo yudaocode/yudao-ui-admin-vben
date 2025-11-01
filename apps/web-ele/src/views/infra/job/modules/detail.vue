@@ -14,8 +14,8 @@ const formData = ref<InfraJobApi.Job>(); // 任务详情
 const nextTimes = ref<Date[]>([]); // 下一次执行时间
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 1,
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 

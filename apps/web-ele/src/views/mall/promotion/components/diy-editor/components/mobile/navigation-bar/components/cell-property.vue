@@ -22,7 +22,7 @@ import {
   MagicCubeEditor,
 } from '#/views/mall/promotion/components';
 
-// 导航栏属性面板
+/** 导航栏单元格属性面板 */
 defineOptions({ name: 'NavigationBarCellProperty' });
 
 const props = defineProps({
@@ -35,13 +35,19 @@ const props = defineProps({
     default: () => [],
   },
 });
+
 const emit = defineEmits(['update:modelValue']);
+
 const cellList = useVModel(props, 'modelValue', emit);
 
-// 单元格数量：小程序6个（右侧胶囊按钮占了2个），其它平台8个
+/**
+ * 计算单元格数量
+ * 1. 小程序：6 个（因为右侧有胶囊按钮占据 2 个格子的空间）
+ * 2. 其它平台：8 个（全部空间可用）
+ */
 const cellCount = computed(() => (props.isMp ? 6 : 8));
 
-// 转换为Rect格式的数据
+/** 转换为 Rect 格式的数据：MagicCubeEditor 组件需要 Rect 格式的数据来渲染热区 */
 const rectList = computed<Rect[]>(() => {
   return cellList.value.map((cell) => ({
     left: cell.left,
@@ -53,18 +59,19 @@ const rectList = computed<Rect[]>(() => {
   }));
 });
 
-// 选中的热区
-const selectedHotAreaIndex = ref(0);
-const handleHotAreaSelected = (
+const selectedHotAreaIndex = ref(0); // 选中的热区
+
+/** 处理热区被选中事件 */
+function handleHotAreaSelected(
   cellValue: NavigationBarCellProperty,
   index: number,
-) => {
+) {
   selectedHotAreaIndex.value = index;
   if (!cellValue.type) {
     cellValue.type = 'text';
     cellValue.textColor = '#111111';
   }
-};
+}
 </script>
 
 <template>
@@ -141,5 +148,3 @@ const handleHotAreaSelected = (
     </template>
   </template>
 </template>
-
-<style lang="scss" scoped></style>

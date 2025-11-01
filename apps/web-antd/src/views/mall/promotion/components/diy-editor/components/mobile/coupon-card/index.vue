@@ -5,8 +5,6 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { onMounted, ref, watch } from 'vue';
 
-import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
-
 import {
   CouponDiscount,
   CouponDiscountDesc,
@@ -23,9 +21,7 @@ watch(
   () => props.property.couponIds,
   async () => {
     if (props.property.couponIds?.length > 0) {
-      couponList.value = await CouponTemplateApi.getCouponTemplateList(
-        props.property.couponIds,
-      );
+      couponList.value = await getCouponTemplateList(props.property.couponIds);
     }
   },
   {

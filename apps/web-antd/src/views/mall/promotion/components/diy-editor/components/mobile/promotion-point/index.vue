@@ -9,8 +9,8 @@ import { fenToYuan } from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
-import * as PointActivityApi from '#/api/mall/promotion/point';
+import { getSpuDetailList } from '#/api/mall/product/spu';
+import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
 /** 积分商城卡片 */
 defineOptions({ name: 'PromotionPoint' });
@@ -30,8 +30,7 @@ watch(
       // 检查活动ID的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取积分商城活动详情列表
-        pointActivityList.value =
-          await PointActivityApi.getPointActivityListByIds(activityIds);
+        pointActivityList.value = await getPointActivityListByIds(activityIds);
 
         // 获取积分商城活动的 SPU 详情列表
         spuList.value = [];
@@ -39,7 +38,7 @@ watch(
           (activity) => activity.spuId,
         );
         if (spuIdList.value.length > 0) {
-          spuList.value = (await ProductSpuApi.getSpuDetailList(
+          spuList.value = (await getSpuDetailList(
             spuIdList.value,
           )) as MallPointActivityApi.SpuExtensionWithPoint[];
         }

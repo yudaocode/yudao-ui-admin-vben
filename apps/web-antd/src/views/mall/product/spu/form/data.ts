@@ -102,6 +102,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
 }
 
 /** 价格库存的表单 */
+// TODO @puhui999：貌似太宽了。。。屏幕小的，整个 table 展示补全哈~~
 export function useSkuFormSchema(
   propertyList: any[] = [],
   isDetail: boolean = false,

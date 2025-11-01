@@ -4,7 +4,6 @@ import type { TabBarProperty } from './config';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-
 import {
   Form,
   FormItem,
@@ -45,7 +44,11 @@ const handleThemeChange = () => {
 <template>
   <div class="tab-bar">
     <!-- 表单 -->
-    <Form :model="formData" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+    <Form
+      :model="formData"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+    >
       <FormItem label="主题" name="theme">
         <Select v-model:value="formData!.theme" @change="handleThemeChange">
           <SelectOption
