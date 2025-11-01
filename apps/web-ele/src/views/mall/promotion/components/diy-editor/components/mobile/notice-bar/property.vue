@@ -13,18 +13,17 @@ import {
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 通知栏属性面板
+/** 公告栏属性面板 */
 defineOptions({ name: 'NoticeBarProperty' });
+
 const props = defineProps<{ modelValue: NoticeBarProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
 
-// 表单校验
+const formData = useVModel(props, 'modelValue', emit);
 const rules = {
   content: [{ required: true, message: '请输入公告', trigger: 'blur' }],
-};
-
-const formData = useVModel(props, 'modelValue', emit);
+}; // 表单校验
 </script>
 
 <template>
@@ -60,5 +59,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>
