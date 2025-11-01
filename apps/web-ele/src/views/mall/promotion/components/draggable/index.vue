@@ -3,6 +3,7 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { ElButton, ElText, ElTooltip } from 'element-plus';
 import VueDraggable from 'vuedraggable';
 
 /** 拖拽组件封装 */
