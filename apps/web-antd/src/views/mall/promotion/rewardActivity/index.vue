@@ -42,12 +42,12 @@ function handleEdit(row: MallRewardActivityApi.RewardActivity) {
 /** 关闭满减送活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
   const hideLoading = message.loading({
-    content: '正在关闭中...',
+    content: $t('ui.actionMessage.closing', [row.name]),
     duration: 0,
   });
   try {
     await closeRewardActivity(row.id!);
-    message.success('关闭成功');
+    message.success($t('ui.actionMessage.closeSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -96,7 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<MallRewardActivityApi.RewardActivity>,
 });
 </script>
 
@@ -104,6 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
     <Grid table-title="满减送活动">
+      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -111,19 +112,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['活动']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['promotion:reward-activity:create'],
               onClick: handleCreate,
             },
           ]"
         />
       </template>
+
+      <!-- 行操作按钮 -->
       <template #actions="{ row }">
-        <!-- TODO @AI：table action 的权限标识；参考 /Users/yunai/Java/yudao-ui-admin-vue3/src/views/mall/promotion/rewardActivity/index.vue -->
         <TableAction
           :actions="[
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['promotion:reward-activity:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -131,9 +135,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.CLOSE,
+              auth: ['promotion:reward-activity:close'],
               ifShow: row.status === 0,
               popConfirm: {
-                title: '确认关闭该满减活动吗？',
+                title: '确认关闭该满减送活动吗？',
                 confirm: handleClose.bind(null, row),
               },
             },
@@ -142,6 +147,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['promotion:reward-activity:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

@@ -1,10 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  PromotionConditionTypeEnum,
+  PromotionProductScopeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
+import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -97,35 +102,40 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
+    // 隐藏 ID 字段
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
       },
     },
+    // 活动名称
     {
       fieldName: 'name',
       label: '活动名称',
       component: 'Input',
+      rules: 'required',
       componentProps: {
         placeholder: '请输入活动名称',
+        allowClear: true,
       },
-      rules: 'required',
     },
+    // 活动时间
     {
       fieldName: 'startAndEndTime',
       label: '活动时间',
       component: 'RangePicker',
+      rules: 'required',
       componentProps: {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         placeholder: [$t('common.startTimeText'), $t('common.endTimeText')],
+        allowClear: true,
       },
-      rules: 'required',
     },
-    // TODO @puhui999：增加一个 defaultValue
+    // 条件类型
     {
       fieldName: 'conditionType',
       label: '条件类型',
@@ -135,9 +145,9 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      defaultValue: PromotionConditionTypeEnum.PRICE.type,
-      rules: 'required',
+      rules: z.number().default(PromotionConditionTypeEnum.PRICE.type),
     },
+    // 活动范围
     {
       fieldName: 'productScope',
       label: '活动范围',
@@ -147,8 +157,9 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: 'required',
+      rules: z.number().default(PromotionProductScopeEnum.ALL.scope),
     },
+    // 备注
     {
       fieldName: 'remark',
       label: '备注',
@@ -156,6 +167,26 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入备注',
         rows: 4,
+        allowClear: true,
+      },
+    },
+    // 优惠规则（自定义组件插槽）
+    {
+      fieldName: 'rules',
+      label: '优惠设置',
+      component: 'Input',
+      formItemClass: 'items-start',
+    },
+    // 商品范围选择（自定义组件插槽）
+    {
+      fieldName: 'productSpuIds',
+      label: '选择商品',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['productScope'],
+        show: (values) => {
+          return values.productScope === PromotionProductScopeEnum.SPU.scope;
+        },
       },
     },
   ];
