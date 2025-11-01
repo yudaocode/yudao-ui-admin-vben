@@ -106,7 +106,7 @@ function handleAuthInfoDialogClose() {
             </Descriptions.Item>
             <Descriptions.Item label="当前状态">
               <DictTag
-                :type="DICT_TYPE.IOT_DEVICE_STATUS"
+                :type="DICT_TYPE.IOT_DEVICE_STATE"
                 :value="device.state"
               />
             </Descriptions.Item>
