@@ -9,18 +9,20 @@ import { ElImage } from 'element-plus';
 
 /** 弹窗广告 */
 defineOptions({ name: 'Popover' });
-// 定义属性
-defineProps<{ property: PopoverProperty }>();
 
-// 处理选中
-const activeIndex = ref(0);
-const handleActive = (index: number) => {
+const props = defineProps<{ property: PopoverProperty }>();
+
+const activeIndex = ref(0); // 选中 index
+
+/** 处理选中 */
+function handleActive(index: number) {
   activeIndex.value = index;
-};
+}
 </script>
+
 <template>
   <div
-    v-for="(item, index) in property.list"
+    v-for="(item, index) in props.property.list"
     :key="index"
     class="absolute bottom-1/2 right-1/2 h-[454px] w-[292px] rounded border border-gray-300 bg-white p-0.5"
     :style="{
@@ -40,5 +42,3 @@ const handleActive = (index: number) => {
     <div class="absolute right-1 top-1 text-xs">{{ index + 1 }}</div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

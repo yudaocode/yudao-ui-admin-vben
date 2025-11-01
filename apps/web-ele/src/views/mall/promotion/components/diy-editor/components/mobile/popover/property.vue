@@ -13,11 +13,13 @@ import {
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
-// 弹窗广告属性面板
+/** 弹窗广告属性面板 */
 defineOptions({ name: 'PopoverProperty' });
 
 const props = defineProps<{ modelValue: PopoverProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -53,5 +55,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </Draggable>
   </ElForm>
 </template>
-
-<style scoped lang="scss"></style>
