@@ -60,6 +60,7 @@ const deliveryExpressList = ref<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
 const expressTrackList = ref<any[]>([]);
 const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
 
+// TODO @xingyu：貌似 antd 相比 antd 来说，多了一个框？有啥办法只有 1 个么？
 const [OrderInfoDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
@@ -337,7 +338,7 @@ onMounted(async () => {
       <OperateLogGrid table-title="操作日志">
         <template #userType="{ row }">
           <Tag v-if="row.userType === 0" color="default"> 系统 </Tag>
-          <DictTag :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
+          <DictTag v-else :type="DICT_TYPE.USER_TYPE" :value="row.userType" />
         </template>
       </OperateLogGrid>
     </div>

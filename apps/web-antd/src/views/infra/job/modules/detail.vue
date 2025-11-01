@@ -16,7 +16,6 @@ const nextTimes = ref<Date[]>([]); // 下一次执行时间
 const [Descriptions] = useDescription({
   bordered: true,
   column: 1,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

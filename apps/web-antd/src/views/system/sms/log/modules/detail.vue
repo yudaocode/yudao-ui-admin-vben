@@ -14,7 +14,6 @@ const formData = ref<SystemSmsLogApi.SmsLog>();
 const [Descriptions] = useDescription({
   bordered: true,
   column: 2,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

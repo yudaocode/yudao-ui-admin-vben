@@ -14,7 +14,6 @@ const formData = ref<SystemNotifyMessageApi.NotifyMessage>();
 const [Descriptions] = useDescription({
   border: true,
   column: 1,
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 
