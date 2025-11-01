@@ -23,7 +23,8 @@ import {
 } from '#/views/mall/promotion/components';
 
 import { component, THEME_LIST } from './config';
-// 底部导航栏
+
+/** 底部导航栏 */
 defineOptions({ name: 'TabBarProperty' });
 
 const props = defineProps<{ modelValue: TabBarProperty }>();
@@ -33,7 +34,7 @@ const formData = useVModel(props, 'modelValue', emit);
 // 将数据库的值更新到右侧属性栏
 component.property.items = formData.value.items;
 
-// 要的主题
+/** 处理主题变更 */
 const handleThemeChange = () => {
   const theme = THEME_LIST.find((theme) => theme.id === formData.value.theme);
   if (theme?.color) {
@@ -44,7 +45,6 @@ const handleThemeChange = () => {
 
 <template>
   <div class="tab-bar">
-    <!-- 表单 -->
     <ElForm :model="formData" label-width="80px">
       <ElFormItem label="主题" prop="theme">
         <ElSelect v-model="formData!.theme" @change="handleThemeChange">
@@ -89,7 +89,6 @@ const handleThemeChange = () => {
           <template #tip> 建议尺寸 375 * 50 </template>
         </UploadImg>
       </ElFormItem>
-
       <ElText tag="p">图标设置</ElText>
       <ElText type="info" size="small">
         拖动左上角的小圆点可对其排序, 图标建议尺寸 44*44
@@ -129,5 +128,3 @@ const handleThemeChange = () => {
     </ElForm>
   </div>
 </template>
-
-<style lang="scss" scoped></style>
