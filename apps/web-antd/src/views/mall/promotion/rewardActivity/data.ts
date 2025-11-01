@@ -102,7 +102,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
-    // 隐藏 ID 字段
     {
       fieldName: 'id',
       component: 'Input',
@@ -111,7 +110,6 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
-    // 活动名称
     {
       fieldName: 'name',
       label: '活动名称',
@@ -122,7 +120,6 @@ export function useFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 活动时间
     {
       fieldName: 'startAndEndTime',
       label: '活动时间',
@@ -135,7 +132,6 @@ export function useFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 条件类型
     {
       fieldName: 'conditionType',
       label: '条件类型',
@@ -147,7 +143,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(PromotionConditionTypeEnum.PRICE.type),
     },
-    // 活动范围
     {
       fieldName: 'productScope',
       label: '活动范围',
@@ -159,7 +154,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(PromotionProductScopeEnum.ALL.scope),
     },
-    // 备注
     {
       fieldName: 'remark',
       label: '备注',
@@ -170,14 +164,12 @@ export function useFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    // 优惠规则（自定义组件插槽）
     {
       fieldName: 'rules',
       label: '优惠设置',
       component: 'Input',
       formItemClass: 'items-start',
     },
-    // 商品范围选择（自定义组件插槽）
     {
       fieldName: 'productSpuIds',
       label: '选择商品',

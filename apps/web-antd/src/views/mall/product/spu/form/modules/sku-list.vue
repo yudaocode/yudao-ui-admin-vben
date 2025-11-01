@@ -212,7 +212,9 @@ function build(
     const result: MallSpuApi.Property[][] = [];
     const rest = build(propertyValuesList.slice(1));
     const firstList = propertyValuesList[0];
-    if (!firstList) return [];
+    if (!firstList) {
+      return [];
+    }
 
     for (const element of firstList) {
       for (const element_ of rest) {
@@ -289,8 +291,6 @@ defineExpose({
 <template>
   <div>
     <!-- 情况一：添加/修改 -->
-    <!-- TODO @puhui999：有可以通过 grid 来做么？主要考虑，这样不直接使用 vxe 标签，抽象程度更高； -->
-    <!-- TODO 还是先这样吧 🤣🤣   -->
     <VxeTable
       v-if="!isDetail && !isActivityComponent"
       :data="isBatch ? skuList : formData?.skus || []"

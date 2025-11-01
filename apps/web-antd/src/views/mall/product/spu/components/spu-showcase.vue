@@ -28,16 +28,18 @@ const emit = defineEmits(['update:modelValue', 'change']);
 
 const productSpus = ref<MallSpuApi.Spu[]>([]);
 const spuTableSelectRef = ref<InstanceType<typeof SpuTableSelect>>();
+const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
 /** 计算是否可以添加 */
 const canAdd = computed(() => {
-  if (props.disabled) return false;
-  if (!props.limit) return true;
+  if (props.disabled) {
+    return false;
+  }
+  if (!props.limit) {
+    return true;
+  }
   return productSpus.value.length < props.limit;
 });
-
-/** 是否为多选模式 */
-const isMultiple = computed(() => props.limit !== 1);
 
 /** 监听 modelValue 变化，加载商品详情 */
 watch(

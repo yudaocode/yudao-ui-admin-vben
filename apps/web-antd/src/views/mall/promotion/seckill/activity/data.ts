@@ -35,7 +35,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 新增/编辑的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
-    // 隐藏的 ID 字段
     {
       component: 'Input',
       fieldName: 'id',

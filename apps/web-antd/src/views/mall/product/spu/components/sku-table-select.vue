@@ -8,8 +8,6 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';
 
@@ -61,6 +59,7 @@ const gridColumns = computed<VxeGridProps['columns']>(() => [
   },
 ]);
 
+// TODO @芋艿：要不要直接非 pager？
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: gridColumns.value,
@@ -76,17 +75,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           if (!spuId.value) {
             return { items: [], total: 0 };
           }
-          try {
-            const spu = await getSpu(spuId.value);
-            return {
-              items: spu.skus || [],
-              total: spu.skus?.length || 0,
-            };
-          } catch (error) {
-            message.error('加载 SKU 数据失败');
-            console.error(error);
-            return { items: [], total: 0 };
-          }
+          const spu = await getSpu(spuId.value);
+          return {
+            items: spu.skus || [],
+            total: spu.skus?.length || 0,
+          };
         },
       },
     },
@@ -113,12 +106,10 @@ const [Modal, modalApi] = useVbenModal({
       spuId.value = undefined;
       return;
     }
-
     const data = modalApi.getData<SpuData>();
     if (!data?.spuId) {
       return;
     }
-
     spuId.value = data.spuId;
     await gridApi.query();
   },

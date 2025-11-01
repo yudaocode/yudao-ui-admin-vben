@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { VbenFormProps } from '#/adapter/form';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
 import { computed, nextTick, ref } from 'vue';
@@ -45,7 +44,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     labelWidth: 100,
-  } as VbenFormProps['commonConfig'],
+  },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
@@ -53,6 +52,7 @@ const [Form, formApi] = useVbenForm({
 
 const rewardRuleRef = ref<InstanceType<typeof RewardRule>>();
 
+// TODO @芋艿：这里需要在简化下；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

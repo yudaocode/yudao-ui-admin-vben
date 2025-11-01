@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
@@ -41,6 +42,7 @@ function handleEdit(row: MallRewardActivityApi.RewardActivity) {
 
 /** 关闭满减送活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
+  // TODO @puhui999：这个国际化，需要加下哈；closing、closeSuccess；
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.closing', [row.name]),
     duration: 0,
@@ -104,7 +106,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
     <Grid table-title="满减送活动">
-      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -118,8 +119,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-
-      <!-- 行操作按钮 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -136,7 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.CLOSE,
               auth: ['promotion:reward-activity:close'],
-              ifShow: row.status === 0,
+              ifShow: row.status === CommonStatusEnum.ENABLE,
               popConfirm: {
                 title: '确认关闭该满减送活动吗？',
                 confirm: handleClose.bind(null, row),

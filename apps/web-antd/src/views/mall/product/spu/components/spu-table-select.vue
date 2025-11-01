@@ -26,6 +26,7 @@ const emit = defineEmits<{
   change: [spu: MallSpuApi.Spu | MallSpuApi.Spu[]];
 }>();
 
+// TODO @芋艿：要不要加类型；
 const categoryList = ref<any[]>([]);
 const categoryTreeList = ref<any[]>([]);
 
@@ -71,13 +72,11 @@ const formSchema = computed<VbenFormSchema[]>(() => [
 /** 表格列配置 */
 const gridColumns = computed<VxeGridProps['columns']>(() => {
   const columns: VxeGridProps['columns'] = [];
-
   if (props.multiple) {
     columns.push({ type: 'checkbox', width: 55 });
   } else {
     columns.push({ type: 'radio', width: 55 });
   }
-
   columns.push(
     {
       field: 'id',
@@ -109,7 +108,6 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       },
     },
   );
-
   return columns;
 });
 
@@ -129,14 +127,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
           reserve: true,
         }
       : undefined,
-    radioConfig: !props.multiple
-      ? {
+    radioConfig: props.multiple
+      ? undefined
+      : {
           reserve: true,
-        }
-      : undefined,
+        },
     proxyConfig: {
       ajax: {
         async query({ page }: any, formValues: any) {
+          // TODO @芋艿：怎么简化下。
           const data = await getSpuPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -145,7 +144,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             categoryId: formValues.categoryId || undefined,
             createTime: formValues.createTime || undefined,
           });
-
           return {
             items: data.list || [],
             total: data.total || 0,
@@ -165,6 +163,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 多选：处理选中变化 */
+// TODO @芋艿：要不要清理掉？
 function handleCheckboxChange() {
   // vxe-table 自动管理选中状态，无需手动处理
 }
@@ -180,13 +179,16 @@ function handleRadioChange() {
 
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
+  // TODO @芋艿：看看怎么简化
   onConfirm: props.multiple
     ? () => {
-        const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
+        const selectedRows =
+          gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
         emit('change', selectedRows);
         modalApi.close();
       }
     : undefined,
+  // TODO @芋艿：看看怎么简化？
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.grid.clearCheckboxRow();
