@@ -309,8 +309,6 @@ async function handleSave() {
     }
   } catch (error: any) {
     console.error('保存失败:', error);
-    // TODO @jason：这个提示，还要么？？？
-    // message.warning(error.msg || '请完善所有步骤的必填信息');
   }
 }
 

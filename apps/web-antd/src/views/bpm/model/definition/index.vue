@@ -32,15 +32,18 @@ function handleRefresh() {
 }
 
 /** 查看表单详情 */
-function handleFormDetail(row: BpmProcessDefinitionApi.ProcessDefinition) {
+async function handleFormDetail(
+  row: BpmProcessDefinitionApi.ProcessDefinition,
+) {
   if (row.formType === BpmModelFormType.NORMAL) {
     const data = {
       id: row.formId,
     };
     formCreateDetailModalApi.setData(data).open();
   } else {
-    // TODO 待实现 jason 这里要改么？
-    console.warn('业务表单待实现', row);
+    await router.push({
+      path: row.formCustomCreatePath,
+    });
   }
 }
 
