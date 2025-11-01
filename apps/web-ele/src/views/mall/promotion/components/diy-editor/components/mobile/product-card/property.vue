@@ -18,9 +18,8 @@ import {
 } from 'element-plus';
 
 import UploadImg from '#/components/upload/image-upload.vue';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 import { ColorInput } from '#/views/mall/promotion/components';
-// TODO: 添加组件
-// import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -38,7 +37,7 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <ElForm label-width="80px" :model="formData">
       <ElCard header="商品列表" class="property-group" shadow="never">
-        <!-- <SpuShowcase v-model="formData.spuIds" /> -->
+        <SpuShowcase v-model="formData.spuIds" />
       </ElCard>
       <ElCard header="商品样式" class="property-group" shadow="never">
         <ElFormItem label="布局" prop="type">
