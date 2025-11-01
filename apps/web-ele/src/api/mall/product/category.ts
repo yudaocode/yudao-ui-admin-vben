@@ -50,7 +50,7 @@ export function getCategoryList(params: any) {
   );
 }
 
-// 获得商品分类列表
+/** 获得商品分类列表 */
 export function getCategorySimpleList() {
   return requestClient.get<MallCategoryApi.Category[]>(
     '/product/category/list',

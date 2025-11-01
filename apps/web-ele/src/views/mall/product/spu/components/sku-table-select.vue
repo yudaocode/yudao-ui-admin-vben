@@ -59,6 +59,15 @@ const gridColumns = computed<VxeGridProps['columns']>(() => [
   },
 ]);
 
+/** 处理选中 */
+function handleRadioChange() {
+  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Sku;
+  if (selectedRow) {
+    emit('change', selectedRow);
+    modalApi.close();
+  }
+}
+
 // TODO @芋艿：要不要直接非 pager？
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -88,15 +97,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     radioChange: handleRadioChange,
   },
 });
-
-/** 处理选中 */
-function handleRadioChange() {
-  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Sku;
-  if (selectedRow) {
-    emit('change', selectedRow);
-    modalApi.close();
-  }
-}
 
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,

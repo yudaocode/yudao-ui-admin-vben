@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { MallCategoryApi } from '#/api/mall/product/category';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed, onMounted, ref } from 'vue';
@@ -15,7 +16,7 @@ import { getSpuPage } from '#/api/mall/product/spu';
 import { getRangePickerDefaultProps } from '#/utils';
 
 interface SpuTableSelectProps {
-  multiple?: boolean;
+  multiple?: boolean; // 是否单选：true - checkbox；false - radio
 }
 
 const props = withDefaults(defineProps<SpuTableSelectProps>(), {
@@ -26,9 +27,17 @@ const emit = defineEmits<{
   change: [spu: MallSpuApi.Spu | MallSpuApi.Spu[]];
 }>();
 
-// TODO @芋艿：要不要加类型；
-const categoryList = ref<any[]>([]);
-const categoryTreeList = ref<any[]>([]);
+const categoryList = ref<MallCategoryApi.Category[]>([]); // 分类列表
+const categoryTreeList = ref<any[]>([]); // 分类树
+
+/** 单选：处理选中变化 */
+function handleRadioChange() {
+  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Spu;
+  if (selectedRow) {
+    emit('change', selectedRow);
+    modalApi.close();
+  }
+}
 
 /** 搜索表单 Schema */
 const formSchema = computed<VbenFormSchema[]>(() => [
@@ -38,24 +47,19 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入商品名称',
-      allowClear: true,
+      clearable: true,
     },
   },
   {
     fieldName: 'categoryId',
     label: '商品分类',
-    component: 'TreeSelect',
+    component: 'ApiTreeSelect',
     componentProps: {
-      treeData: categoryTreeList.value,
-      fieldNames: {
-        label: 'name',
-        value: 'id',
-      },
-      treeCheckStrictly: true,
+      options: categoryTreeList,
+      props: { label: 'name', children: 'children' },
+      nodeKey: 'id',
       placeholder: '请选择商品分类',
-      allowClear: true,
-      showSearch: true,
-      treeNodeFilterProp: 'name',
+      clearable: true,
     },
   },
   {
@@ -64,7 +68,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'RangePicker',
     componentProps: {
       ...getRangePickerDefaultProps(),
-      allowClear: true,
+      clearable: true,
     },
   },
 ]);
@@ -121,17 +125,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: gridColumns.value,
     height: 500,
     border: true,
-    showOverflow: true,
-    checkboxConfig: props.multiple
-      ? {
-          reserve: true,
-        }
-      : undefined,
-    radioConfig: props.multiple
-      ? undefined
-      : {
-          reserve: true,
-        },
+    checkboxConfig: {
+      reserve: true,
+    },
+    radioConfig: {
+      reserve: true,
+    },
     rowConfig: {
       keyField: 'id',
       isHover: true,
@@ -149,43 +148,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
   },
-  gridEvents: props.multiple
-    ? {
-        checkboxChange: handleCheckboxChange,
-        checkboxAll: handleCheckboxChange,
-      }
-    : {
-        radioChange: handleRadioChange,
-      },
+  gridEvents: {
+    radioChange: handleRadioChange,
+  },
 });
-
-/** 多选：处理选中变化 */
-// TODO @芋艿：要不要清理掉？
-function handleCheckboxChange() {
-  // vxe-table 自动管理选中状态，无需手动处理
-}
-
-/** 单选：处理选中变化 */
-function handleRadioChange() {
-  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Spu;
-  if (selectedRow) {
-    emit('change', selectedRow);
-    modalApi.close();
-  }
-}
 
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
-  // TODO @芋艿：看看怎么简化
-  onConfirm: props.multiple
-    ? () => {
-        const selectedRows =
-          gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
-        emit('change', selectedRows);
-        modalApi.close();
-      }
-    : undefined,
-  // TODO @芋艿：看看怎么简化？
+  showConfirmButton: props.multiple, // 特殊：radio 单选情况下，走 handleRadioChange 处理。
+  onConfirm: () => {
+    const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
+    emit('change', selectedRows);
+    modalApi.close();
+  },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.grid.clearCheckboxRow();
@@ -193,18 +168,17 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
-    const data = modalApi.getData<MallSpuApi.Spu | MallSpuApi.Spu[]>();
-
-    // 先查询数据，确保表格已加载
+    // 1. 先查询数据
     await gridApi.query();
-
+    // 2. 设置已选中行
+    const data = modalApi.getData<MallSpuApi.Spu | MallSpuApi.Spu[]>();
     if (props.multiple && Array.isArray(data) && data.length > 0) {
-      // 等待数据加载完成后再设置选中状态
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData().fullData;
         data.forEach((spu) => {
-          // 在表格数据中查找匹配的行
-          const row = tableData.find((item: MallSpuApi.Spu) => item.id === spu.id);
+          const row = tableData.find(
+            (item: MallSpuApi.Spu) => item.id === spu.id,
+          );
           if (row) {
             gridApi.grid.setCheckboxRow(row, true);
           }
@@ -213,8 +187,9 @@ const [Modal, modalApi] = useVbenModal({
     } else if (!props.multiple && data && !Array.isArray(data)) {
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData().fullData;
-        // 在表格数据中查找匹配的行
-        const row = tableData.find((item: MallSpuApi.Spu) => item.id === data.id);
+        const row = tableData.find(
+          (item: MallSpuApi.Spu) => item.id === data.id,
+        );
         if (row) {
           gridApi.grid.setRadioRow(row);
         }
@@ -223,22 +198,22 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-/** 初始化分类数据 */
-onMounted(async () => {
-  categoryList.value = await getCategoryList({});
-  categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
-});
-
 /** 对外暴露的方法 */
 defineExpose({
   open: (data?: MallSpuApi.Spu | MallSpuApi.Spu[]) => {
     modalApi.setData(data).open();
   },
 });
+
+/** 初始化分类数据 */
+onMounted(async () => {
+  categoryList.value = await getCategoryList({});
+  categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
+});
 </script>
 
 <template>
-  <Modal :class="props.multiple ? 'w-[900px]' : 'w-[800px]'" title="选择商品">
+  <Modal title="选择商品" class="w-[950px]">
     <Grid />
   </Modal>
 </template>

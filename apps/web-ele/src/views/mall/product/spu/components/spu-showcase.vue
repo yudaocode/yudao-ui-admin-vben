@@ -26,8 +26,8 @@ const props = withDefaults(defineProps<SpuShowcaseProps>(), {
 
 const emit = defineEmits(['update:modelValue', 'change']);
 
-const productSpus = ref<MallSpuApi.Spu[]>([]);
-const spuTableSelectRef = ref<InstanceType<typeof SpuTableSelect>>();
+const productSpus = ref<MallSpuApi.Spu[]>([]); // 已选择的商品列表
+const spuTableSelectRef = ref<InstanceType<typeof SpuTableSelect>>(); // 商品选择表格组件引用
 const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
 /** 计算是否可以添加 */
@@ -101,7 +101,7 @@ function emitSpuChange() {
     <div
       v-for="(spu, index) in productSpus"
       :key="spu.id"
-      class="spu-item group relative"
+      class="group relative h-[60px] w-[60px] overflow-hidden rounded-lg"
     >
       <ElTooltip :content="spu.name">
         <div class="relative h-full w-full">
@@ -125,7 +125,7 @@ function emitSpuChange() {
     <!-- 添加商品按钮 -->
     <ElTooltip v-if="canAdd" content="选择商品">
       <div
-        class="spu-add-box hover:border-primary hover:bg-primary/5 flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
+        class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
         @click="handleOpenSpuSelect"
       >
         <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />
@@ -140,17 +140,3 @@ function emitSpuChange() {
     @change="handleSpuSelected"
   />
 </template>
-
-<style scoped>
-.spu-item {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.spu-add-box {
-  width: 60px;
-  height: 60px;
-}
-</style>

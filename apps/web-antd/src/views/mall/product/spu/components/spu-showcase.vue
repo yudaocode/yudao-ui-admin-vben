@@ -26,8 +26,8 @@ const props = withDefaults(defineProps<SpuShowcaseProps>(), {
 
 const emit = defineEmits(['update:modelValue', 'change']);
 
-const productSpus = ref<MallSpuApi.Spu[]>([]);
-const spuTableSelectRef = ref<InstanceType<typeof SpuTableSelect>>();
+const productSpus = ref<MallSpuApi.Spu[]>([]); // 已选择的商品列表
+const spuTableSelectRef = ref<InstanceType<typeof SpuTableSelect>>(); // 商品选择表格组件引用
 const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
 /** 计算是否可以添加 */
@@ -47,12 +47,10 @@ watch(
   async (newValue) => {
     // eslint-disable-next-line unicorn/no-nested-ternary
     const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
-
     if (ids.length === 0) {
       productSpus.value = [];
       return;
     }
-
     // 只有商品发生变化时才重新查询
     if (
       productSpus.value.length === 0 ||
@@ -103,16 +101,16 @@ function emitSpuChange() {
     <div
       v-for="(spu, index) in productSpus"
       :key="spu.id"
-      class="spu-item group relative"
+      class="group relative h-[60px] w-[60px] overflow-hidden rounded-lg"
     >
       <Tooltip :title="spu.name">
         <div class="relative h-full w-full">
           <Image
             :src="spu.picUrl"
             class="h-full w-full rounded-lg object-cover"
-            :preview="false"
           />
           <!-- 删除按钮 -->
+          <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
           <CloseCircleFilled
             v-if="!disabled"
             class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
@@ -125,9 +123,10 @@ function emitSpuChange() {
     <!-- 添加商品按钮 -->
     <Tooltip v-if="canAdd" title="选择商品">
       <div
-        class="spu-add-box hover:border-primary hover:bg-primary/5 flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
+        class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
         @click="handleOpenSpuSelect"
       >
+        <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
         <PlusOutlined class="text-xl text-gray-400" />
       </div>
     </Tooltip>
@@ -140,17 +139,3 @@ function emitSpuChange() {
     @change="handleSpuSelected"
   />
 </template>
-
-<style scoped>
-.spu-item {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.spu-add-box {
-  width: 60px;
-  height: 60px;
-}
-</style>
