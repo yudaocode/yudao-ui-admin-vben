@@ -22,11 +22,15 @@ import { ColorInput } from '#/views/mall/promotion/components';
 // TODO: 添加组件
 // import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
-// 商品卡片属性面板
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 商品卡片属性面板 */
 defineOptions({ name: 'ProductCardProperty' });
 
 const props = defineProps<{ modelValue: ProductCardProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -174,5 +178,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>
