@@ -5,7 +5,7 @@ import { Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
-import message from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useMallKefuStore } from '#/store/mall/kefu';
 
@@ -80,6 +80,7 @@ watch(
 /** 加载指定会话的消息列表 */
 const keFuChatBoxRef = ref<InstanceType<typeof KeFuMessageList>>();
 const memberInfoRef = ref<InstanceType<typeof MemberInfo>>();
+// TODO @jawe：这里没导入
 const handleChange = (conversation: KeFuConversationRespVO) => {
   keFuChatBoxRef.value?.getNewMessageList(conversation);
   memberInfoRef.value?.initHistory(conversation);
@@ -88,7 +89,7 @@ const handleChange = (conversation: KeFuConversationRespVO) => {
 const keFuConversationRef = ref<InstanceType<typeof KeFuConversationList>>();
 /** 初始化 */
 onMounted(() => {
-  /** 加载会话列表 */
+  // 加载会话列表
   kefuStore.setConversationList().then(() => {
     keFuConversationRef.value?.calculationLastMessageTime();
   });
@@ -105,6 +106,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Page>
+    <!-- TODO @jawe：style 使用 tailwindcss，AI 友好； -->
     <a-layout-content class="kefu-layout hrow">
       <!-- 会话列表 -->
       <KeFuConversationList ref="keFuConversationRef" @change="handleChange" />

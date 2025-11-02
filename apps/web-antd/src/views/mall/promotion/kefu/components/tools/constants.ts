@@ -1,4 +1,4 @@
-// 客服消息类型枚举类
+/** 客服消息类型枚举类 */
 export const KeFuMessageContentTypeEnum = {
   TEXT: 1, // 文本消息
   IMAGE: 2, // 图片消息
@@ -10,7 +10,7 @@ export const KeFuMessageContentTypeEnum = {
   ORDER: 11, //  订单消息"
 };
 
-// Promotion 的 WebSocket 消息类型枚举类
+/** Promotion 的 WebSocket 消息类型枚举类 */
 export const WebSocketMessageTypeConstants = {
   KEFU_MESSAGE_TYPE: 'kefu_message_type', // 客服消息类型
   KEFU_MESSAGE_ADMIN_READ: 'kefu_message_read_status_change', // 客服消息管理员已读

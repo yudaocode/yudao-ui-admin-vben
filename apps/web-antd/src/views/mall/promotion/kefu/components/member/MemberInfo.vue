@@ -6,6 +6,7 @@ import { computed, nextTick, ref } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
+// TODO @jawe：debounce 是不是还是需要的哈；应该有 2 处需要；可以微信沟通哈；
 // import { debounce } from 'lodash-es'
 import { useDebounceFn } from '@vueuse/core';
 import { Card, Empty, message } from 'ant-design-vue';
@@ -100,6 +101,7 @@ const handleScroll = useDebounceFn(() => {
 }, 200);
 
 /** 查询用户钱包信息 */
+// TODO @jawe：idea 的导入报错；需要看下；
 const WALLET_INIT_DATA = {
   balance: 0,
   totalExpense: 0,
@@ -137,6 +139,7 @@ async function getUserData() {
 </script>
 
 <template>
+  <!-- TODO @jave：from xingyu：a- 换成大写的方式，另外组件没有进行导入，其他页面也有这个问题 -->
   <a-layout class="kefu">
     <a-layout-header class="kefu-header">
       <div
@@ -205,6 +208,7 @@ async function getUserData() {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
 .kefu {
   position: relative;
   width: 300px !important;

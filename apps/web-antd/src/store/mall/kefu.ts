@@ -41,6 +41,8 @@ export const useMallKefuStore = defineStore('mall-kefu', {
     // ======================= 会话相关 =======================
     /** 加载会话缓存列表 */
     async setConversationList() {
+      // TODO @jave：idea linter 告警，修复下；
+      // TODO @jave：不使用 KeFuConversationApi.，直接用 getConversationList
       this.conversationList = await KeFuConversationApi.getConversationList();
       this.conversationSort();
     },

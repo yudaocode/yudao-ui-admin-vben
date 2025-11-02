@@ -52,7 +52,9 @@ const kefuStore = useMallKefuStore(); // 客服缓存
 const getMessageContent = computed(
   () => (item: any) => jsonParse(item.content),
 );
+
 /** 获得消息列表 */
+// TODO @jave：idea 的 linter 报错，处理下；
 async function getMessageList() {
   const res = await KeFuMessageApi.getKeFuMessageList(queryParams);
   if (isEmpty(res)) {
@@ -135,7 +137,7 @@ async function getNewMessageList(val: MallKefuMessageApi.Message) {
 }
 defineExpose({ getNewMessageList, refreshMessageList });
 
-// 是否显示聊天区域
+/** 是否显示聊天区域 */
 function showKeFuMessageList() {
   return !isEmpty(conversation.value);
 }
@@ -253,12 +255,7 @@ async function handleOldMessage() {
     oldPageHeight;
 }
 
-/**
- * 是否显示时间
- *
- * @param {*} item - 数据
- * @param {*} index - 索引
- */
+/** 是否显示时间 */
 function showTime(item: MallKefuMessageApi.Message, index: number) {
   if (unref(messageList.value)[index + 1]) {
     const dateString = dayjs(
@@ -425,6 +422,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
 .kefu {
   position: relative;
   width: calc(100% - 300px - 260px);

@@ -5,7 +5,6 @@ import { computed, reactive, ref } from 'vue';
 
 import { getBrowseHistoryPage } from '#/api/mall/product/history';
 import ProductItem from '#/views/mall/promotion/kefu/components/message/ProductItem.vue';
-// import { concat } from 'lodash-es'
 
 defineOptions({ name: 'ProductBrowsingHistory' });
 
@@ -41,7 +40,6 @@ async function loadMore() {
   queryParams.pageNo += 1;
   const res = await getBrowseHistoryPage(queryParams);
   total.value = res.total;
-  // 使用展开运算符替代 concat 方法
   list.value = [...list.value, ...res.list];
 }
 defineExpose({ getHistoryList, loadMore });
@@ -60,5 +58,3 @@ defineExpose({ getHistoryList, loadMore });
     class="mb-10px"
   />
 </template>
-
-<style lang="scss" scoped></style>

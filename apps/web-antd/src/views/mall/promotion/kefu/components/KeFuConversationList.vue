@@ -114,7 +114,7 @@ async function updateConversationPinned(adminPinned: boolean) {
     id: rightClickConversation.value.id,
     adminPinned,
   });
-  message.notifySuccess(adminPinned ? '置顶成功' : '取消置顶成功');
+  message.success(adminPinned ? '置顶成功' : '取消置顶成功');
   // 2. 关闭右键菜单，更新会话列表
   closeRightMenu();
   await kefuStore.updateConversation(rightClickConversation.value.id);
@@ -123,6 +123,7 @@ async function updateConversationPinned(adminPinned: boolean) {
 /** 删除会话 */
 async function deleteConversation() {
   // 1. 删除会话
+  // TODO @jave：使用全局的 confirm，这样 ele 和 antd 可以相对复用；
   await message.confirm('您确定要删除该会话吗？');
   await KeFuConversationApi.deleteConversation(rightClickConversation.value.id);
   // 2. 关闭右键菜单，更新会话列表
@@ -140,10 +141,12 @@ watch(showRightMenu, (val) => {
 });
 
 const timer = ref<any>();
+
 /** 初始化 */
 onMounted(() => {
   timer.value = setInterval(calculationLastMessageTime, 1000 * 10); // 十秒计算一次
 });
+
 /** 组件卸载前 */
 onBeforeUnmount(() => {
   clearInterval(timer.value);
@@ -229,6 +232,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
 .kefu {
   background-color: var(--app-content-bg-color);
 

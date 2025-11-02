@@ -76,6 +76,7 @@ function openDetail(spuId: number) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @jawe：下面的，看看要不要用 tailwind 简化，ai 友好； */
 .button {
   padding: 5px 10px;
   color: white;

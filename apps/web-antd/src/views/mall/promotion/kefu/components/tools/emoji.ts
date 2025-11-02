@@ -101,11 +101,7 @@ export const useEmoji = () => {
     return newData;
   };
 
-  /**
-   * 获得所有表情
-   *
-   * @return 表情列表
-   */
+  /** 获得所有表情 */
   function getEmojiList(): Emoji[] {
     return emojiList.map((item) => ({
       url: getEmojiFileByName(item.name),

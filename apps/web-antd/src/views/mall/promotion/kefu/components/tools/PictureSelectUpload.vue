@@ -1,6 +1,6 @@
 <!-- 图片选择 -->
 <script lang="ts" setup>
-import message from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import * as FileApi from '#/api/infra/file';
 import Picture from '#/views/mall/promotion/kefu/asserts/picture.svg';
@@ -11,23 +11,17 @@ defineOptions({ name: 'PictureSelectUpload' });
 const emits = defineEmits<{
   (e: 'sendPicture', v: string): void;
 }>();
-const selectAndUpload = async () => {
+
+async function selectAndUpload() {
   const files: any = await getFiles();
   message.success('图片发送中请稍等。。。');
+  // TODO @jawe：直接使用 updateFile，不通过 FileApi。vben 这里的规范；
+  // TODO @jawe：这里的上传，看看能不能替换成 export function useUpload(directory?: string) {；它支持前端直传，更统一；
   const res = await FileApi.updateFile({ file: files[0].file });
   emits('sendPicture', res.data);
-};
+}
 
-/**
- * 唤起文件选择窗口，并获取选择的文件
- *
- * @param {object} options - 配置选项
- * @param {boolean} [options.multiple] - 是否支持多选
- * @param {string} [options.accept] - 文件上传格式限制
- * @param {number} [options.limit] - 单次上传最大文件数
- * @param {number} [options.fileSize] - 单个文件大小限制（单位：MB）
- * @returns {Promise<Array>} 选择的文件列表，每个文件带有一个uid
- */
+/** 唤起文件选择窗口，并获取选择的文件 */
 async function getFiles(options = {}) {
   const { multiple, accept, limit, fileSize } = {
     multiple: true,
@@ -65,7 +59,6 @@ async function getFiles(options = {}) {
         reject(new Error(`超出上传数量限制，最多允许 ${limit} 个文件`));
         return;
       }
-
       // 判断是否超出上传文件大小限制
       const overSizedFiles = filesArray.filter(
         (file: File) => file.size / 1024 ** 2 > fileSize,
@@ -89,8 +82,7 @@ async function getFiles(options = {}) {
 
 <template>
   <div>
+    <!-- TODO @jawe：看看能不能换成 antd 的 Image 组件 -->
     <img :src="Picture" class="h-[35px] w-[35px]" @click="selectAndUpload" />
   </div>
 </template>
-
-<style lang="scss" scoped></style>

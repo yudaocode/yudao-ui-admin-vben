@@ -5,7 +5,7 @@ import { computed, reactive, ref } from 'vue';
 
 import { getOrderPage } from '#/api/mall/trade/order';
 import OrderItem from '#/views/mall/promotion/kefu/components/message/OrderItem.vue';
-// import { concat } from 'lodash-es'
+
 defineOptions({ name: 'OrderBrowsingHistory' });
 
 const list = ref<any>([]); // 列表
@@ -39,7 +39,6 @@ async function loadMore() {
   queryParams.pageNo += 1;
   const res = await getOrderPage(queryParams);
   total.value = res.total;
-  // 使用展开运算符替代 concat 方法
   list.value = [...list.value, ...res.list];
 }
 defineExpose({ getHistoryList, loadMore });

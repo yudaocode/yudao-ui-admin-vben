@@ -132,6 +132,7 @@ function formatOrderStatus(order: any) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
 .order-list-card-box {
   padding: 10px;
   background-color: rgb(128 128 128 / 30%); // 透明色，暗黑模式下也能体现

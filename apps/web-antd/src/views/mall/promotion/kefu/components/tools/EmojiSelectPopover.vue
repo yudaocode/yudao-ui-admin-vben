@@ -13,6 +13,7 @@ import { useEmoji } from './emoji';
 defineOptions({ name: 'EmojiSelectPopover' });
 
 /** 选择 emoji 表情 */
+// TODO @jawe：这里有 linter 告警，看看要不要处理下；
 const emits = defineEmits<{
   (e: 'selectEmoji', v: Emoji);
 }>();
