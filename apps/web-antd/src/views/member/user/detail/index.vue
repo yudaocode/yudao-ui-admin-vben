@@ -17,6 +17,7 @@ import { $t } from '#/locales';
 import Form from '../modules/form.vue';
 import AccountInfo from './modules/account-info.vue';
 import AddressList from './modules/address-list.vue';
+import AfterSaleList from './modules/after-sale-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
@@ -104,10 +105,7 @@ onMounted(async () => {
             <OrderList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="售后管理" key="AfterSaleList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <h1>售后管理</h1>
-            </div>
+            <AfterSaleList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="收藏记录" key="FavoriteList">
             <!-- Todo: 商城模块 -->

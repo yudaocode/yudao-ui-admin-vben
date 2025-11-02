@@ -16,6 +16,7 @@ import { $t } from '#/locales';
 
 import Form from '../modules/form.vue';
 import AccountInfo from './modules/account-info.vue';
+import AfterSaleList from './modules/after-sale-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
@@ -23,7 +24,6 @@ import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
 import SignList from './modules/sign-list.vue';
 import UserAddressList from './modules/user-address-list.vue';
-import UserAfterSaleList from './modules/user-after-sale-list.vue';
 import UserBrokerageList from './modules/user-brokerage-list.vue';
 import UserCouponList from './modules/user-coupon-list.vue';
 import UserFavoriteList from './modules/user-favorite-list.vue';
@@ -110,10 +110,7 @@ onMounted(async () => {
             <OrderList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="售后管理" name="AfterSaleList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <UserAfterSaleList class="h-full" :user-id="userId" />
-            </div>
+            <AfterSaleList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="收藏记录" name="FavoriteList">
             <!-- Todo: 商城模块 -->
