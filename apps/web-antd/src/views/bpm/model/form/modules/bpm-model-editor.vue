@@ -121,11 +121,9 @@ onBeforeUnmount(() => {
     />
   </ContentWrap>
 </template>
-<style lang="scss">
-// TODO @jason：tailwind？
-.process-panel__container {
-  position: absolute;
-  top: 110px;
-  right: 70px;
+
+<style scoped>
+:deep(.process-panel__container) {
+  @apply absolute right-[20px] top-[70px];
 }
 </style>

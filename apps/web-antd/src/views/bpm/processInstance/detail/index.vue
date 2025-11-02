@@ -183,14 +183,13 @@ function setFieldPermission(field: string, permission: string) {
   }
 }
 
-// TODO @jason：这个还要么？
 /**
  * 操作成功后刷新
  */
-// const refresh = () => {
-//   // 重新获取详情
-//   getDetail();
-// };
+const refresh = () => {
+  // 重新获取详情
+  getDetail();
+};
 
 /** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */
 watch(
@@ -369,7 +368,7 @@ onMounted(async () => {
             :normal-form="detailForm"
             :normal-form-api="fApi"
             :writable-fields="writableFields"
-            @success="getDetail"
+            @success="refresh"
           />
         </div>
       </template>

@@ -238,15 +238,16 @@ async function handleDeleteCategory() {
 }
 
 /** 处理表单详情点击 */
-function handleFormDetail(row: any) {
+async function handleFormDetail(row: any) {
   if (row.formType === BpmModelFormType.NORMAL) {
     const data = {
       id: row.formId,
     };
     formCreateDetailModalApi.setData(data).open();
   } else {
-    // TODO 待实现 jason：是不是已经 ok 啦？
-    console.warn('业务表单待实现', row);
+    await router.push({
+      path: row.formCustomCreatePath,
+    });
   }
 }
 
@@ -547,7 +548,7 @@ function handleRenameSuccess() {
       <Collapse
         :active-key="expandKeys"
         :bordered="false"
-        class="bg-transparent"
+        class="collapse-no-padding bg-transparent"
       >
         <Collapse.Panel
           key="1"
@@ -738,17 +739,10 @@ function handleRenameSuccess() {
   </div>
 </template>
 
-<style lang="scss" scoped>
-// @jason：看看能不能通过 tailwindcss 简化下
-.category-draggable-model {
-  // ant-collapse-header 自定义样式
-  :deep(.ant-collapse-header) {
-    padding: 0;
-  }
-
-  // 折叠面板样式
-  :deep(.ant-collapse-content-box) {
-    padding: 0;
-  }
+<style scoped>
+/* :deep() 实现样式穿透 */
+.collapse-no-padding :deep(.ant-collapse-header),
+.collapse-no-padding :deep(.ant-collapse-content-box) {
+  padding: 0;
 }
 </style>
