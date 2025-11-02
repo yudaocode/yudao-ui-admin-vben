@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { ElColorPicker, ElInput } from 'element-plus';
-
 import { PREDEFINE_COLORS } from '@vben/constants';
+
+import { ElColorPicker, ElInput } from 'element-plus';
 
 /** 颜色输入框 */
 defineOptions({ name: 'ColorInput' });
