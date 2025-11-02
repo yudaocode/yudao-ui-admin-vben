@@ -19,6 +19,7 @@ import {
 
 import { getProductPage } from '#/api/iot/product/product';
 
+// TODO @haohao：命名不太对；可以简化下；
 defineOptions({ name: 'ProductCardView' });
 
 const props = defineProps<Props>();

@@ -7,7 +7,7 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
-/** 新增/修改设备分组的表单 */
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
