@@ -16,17 +16,17 @@ import { $t } from '#/locales';
 
 import Form from '../modules/form.vue';
 import AccountInfo from './modules/account-info.vue';
+import AddressList from './modules/address-list.vue';
 import AfterSaleList from './modules/after-sale-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
 import CouponList from './modules/coupon-list.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
+import FavoriteList from './modules/favorite-list.vue';
 import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
 import SignList from './modules/sign-list.vue';
-import UserAddressList from './modules/user-address-list.vue';
 import UserBrokerageList from './modules/user-brokerage-list.vue';
-import UserFavoriteList from './modules/user-favorite-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
@@ -104,7 +104,7 @@ onMounted(async () => {
             <BalanceList class="h-full" :wallet-id="wallet?.id" />
           </ElTabPane>
           <ElTabPane label="收货地址" name="AddressList">
-            <UserAddressList class="h-full" :user-id="userId" />
+            <AddressList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="订单管理" name="OrderList">
             <OrderList class="h-full" :user-id="userId" />
@@ -113,10 +113,7 @@ onMounted(async () => {
             <AfterSaleList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="收藏记录" name="FavoriteList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <UserFavoriteList class="h-full" :user-id="userId" />
-            </div>
+            <FavoriteList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="优惠劵" name="CouponList">
             <CouponList class="h-full" :user-id="userId" />
