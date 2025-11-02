@@ -1,5 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -8,26 +8,25 @@ import {
   discountFormat,
   remainedCountFormat,
   takeLimitCountFormat,
-  usePriceFormat,
   validityTypeFormat,
 } from '../formatter';
 
-/** 优惠券选择弹窗的搜索表单 schema */
-export function useCouponSelectFormSchema(): VbenFormSchema[] {
+/** 优惠券选择的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'name',
       label: '优惠券名称',
+      component: 'Input',
       componentProps: {
         placeholder: '请输入优惠券名称',
         allowClear: true,
       },
     },
     {
-      component: 'Select',
       fieldName: 'discountType',
       label: '优惠类型',
+      component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PROMOTION_DISCOUNT_TYPE, 'number'),
         placeholder: '请选择优惠类型',
@@ -37,33 +36,18 @@ export function useCouponSelectFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 搜索表单的 schema */
-export function useFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'name',
-      label: '优惠券名称',
-      componentProps: {
-        placeholder: '请输入优惠券名称',
-        allowClear: true,
-      },
-    },
-  ];
-}
-
-/** 优惠券选择弹窗的表格列配置 */
-export function useCouponSelectGridColumns(): VxeGridProps['columns'] {
+/** 优惠券选择的表格列 */
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 55 },
     {
-      title: '优惠券名称',
       field: 'name',
+      title: '优惠券名称',
       minWidth: 140,
     },
     {
-      title: '类型',
       field: 'productScope',
+      title: '类型',
       minWidth: 80,
       cellRender: {
         name: 'CellDict',
@@ -71,14 +55,23 @@ export function useCouponSelectGridColumns(): VxeGridProps['columns'] {
       },
     },
     {
-      title: '优惠',
-      field: 'discount',
+      field: 'discountType',
+      title: '优惠类型',
       minWidth: 100,
-      slots: { default: 'discount' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PROMOTION_DISCOUNT_TYPE },
+      },
     },
     {
-      title: '领取方式',
+      field: 'discountPrice',
+      title: '优惠力度',
+      minWidth: 100,
+      formatter: ({ row }) => discountFormat(row),
+    },
+    {
       field: 'takeType',
+      title: '领取方式',
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
@@ -86,80 +79,41 @@ export function useCouponSelectGridColumns(): VxeGridProps['columns'] {
       },
     },
     {
-      title: '使用时间',
       field: 'validityType',
+      title: '使用时间',
       minWidth: 185,
       align: 'center',
       formatter: ({ row }) => validityTypeFormat(row),
     },
     {
-      title: '发放数量',
       field: 'totalCount',
-      align: 'center',
+      title: '发放数量',
       minWidth: 100,
+      align: 'center',
     },
     {
+      field: 'remainedCount',
       title: '剩余数量',
       minWidth: 100,
       align: 'center',
       formatter: ({ row }) => remainedCountFormat(row),
     },
     {
-      title: '领取上限',
       field: 'takeLimitCount',
+      title: '领取上限',
       minWidth: 100,
       align: 'center',
       formatter: ({ row }) => takeLimitCountFormat(row),
     },
     {
-      title: '状态',
       field: 'status',
-      align: 'center',
+      title: '状态',
       minWidth: 80,
+      align: 'center',
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
-    },
-  ];
-}
-
-/** 表格列配置 */
-export function useGridColumns(): VxeGridProps['columns'] {
-  return [
-    {
-      title: '优惠券名称',
-      field: 'name',
-      minWidth: 120,
-    },
-    {
-      title: '优惠金额 / 折扣',
-      field: 'discount',
-      minWidth: 120,
-      formatter: ({ row }) => discountFormat(row),
-    },
-    {
-      title: '最低消费',
-      field: 'usePrice',
-      minWidth: 100,
-      formatter: ({ row }) => usePriceFormat(row),
-    },
-    {
-      title: '有效期限',
-      field: 'validityType',
-      minWidth: 140,
-      formatter: ({ row }) => validityTypeFormat(row),
-    },
-    {
-      title: '剩余数量',
-      minWidth: 100,
-      formatter: ({ row }) => remainedCountFormat(row),
-    },
-    {
-      title: '操作',
-      width: 100,
-      fixed: 'right',
-      slots: { default: 'actions' },
     },
   ];
 }
