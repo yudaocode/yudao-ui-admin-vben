@@ -19,6 +19,7 @@ import AccountInfo from './modules/account-info.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
+import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
 import SignList from './modules/sign-list.vue';
 import UserAddressList from './modules/user-address-list.vue';
@@ -26,7 +27,6 @@ import UserAfterSaleList from './modules/user-after-sale-list.vue';
 import UserBrokerageList from './modules/user-brokerage-list.vue';
 import UserCouponList from './modules/user-coupon-list.vue';
 import UserFavoriteList from './modules/user-favorite-list.vue';
-import UserOrderList from './modules/user-order-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
@@ -70,6 +70,7 @@ onMounted(async () => {
   <Page auto-content-height>
     <FormModal @success="refreshTab" />
     <div class="flex">
+      <!-- TODO @芋艿：这里的 title 怎么办？ -->
       <BasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
         <template #title> 基本信息 </template>
         <template #extra>
@@ -106,10 +107,7 @@ onMounted(async () => {
             <UserAddressList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="订单管理" name="OrderList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <UserOrderList class="h-full" :user-id="userId" />
-            </div>
+            <OrderList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="售后管理" name="AfterSaleList">
             <!-- Todo: 商城模块 -->

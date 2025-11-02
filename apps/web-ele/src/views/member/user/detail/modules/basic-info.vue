@@ -21,7 +21,6 @@ const props = withDefaults(
 const [Descriptions] = useDescription({
   border: false,
   column: props.mode === 'member' ? 2 : 1,
-  labelWidth: 140,
   schema: [
     {
       field: 'name',

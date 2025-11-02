@@ -8,7 +8,7 @@ import { Card } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     mode?: 'kefu' | 'member';
     user: MemberUserApi.User;
@@ -20,6 +20,8 @@ withDefaults(
 );
 
 const [Descriptions] = useDescription({
+  bordered: false,
+  column: props.mode === 'member' ? 2 : 1,
   schema: [
     {
       field: 'levelName',
