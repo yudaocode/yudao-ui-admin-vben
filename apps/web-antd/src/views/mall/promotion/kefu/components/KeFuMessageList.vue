@@ -14,11 +14,22 @@ import { formatDate, isEmpty, jsonParse } from '@vben/utils';
 
 import { vScroll } from '@vueuse/components';
 import { useDebounceFn, useScroll } from '@vueuse/core';
-import { Avatar, Empty, Image, notification } from 'ant-design-vue'; // 添加 Empty 组件导入
+import {
+  Avatar,
+  Empty,
+  Image,
+  Layout,
+  notification,
+  Textarea,
+} from 'ant-design-vue';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import * as KeFuMessageApi from '#/api/mall/promotion/kefu/message';
+import {
+  getKeFuMessageList,
+  sendKeFuMessage,
+  updateKeFuMessageReadStatus,
+} from '#/api/mall/promotion/kefu/message';
 import { useMallKefuStore } from '#/store/mall/kefu';
 
 import MessageItem from './message/MessageItem.vue';
@@ -56,18 +67,18 @@ const getMessageContent = computed(
 /** 获得消息列表 */
 // TODO @jave：idea 的 linter 报错，处理下；
 async function getMessageList() {
-  const res = await KeFuMessageApi.getKeFuMessageList(queryParams);
+  const res: any = await getKeFuMessageList(queryParams as any);
   if (isEmpty(res)) {
     // 当返回的是空列表说明没有消息或者已经查询完了历史消息
     skipGetMessageList.value = true;
     return;
   }
-  queryParams.createTime = formatDate(res.at(-1).createTime) as any;
+  queryParams.createTime = formatDate((res as any).at(-1).createTime) as any;
 
   // 情况一：加载最新消息
   if (queryParams.createTime) {
     // 情况二：加载历史消息
-    for (const item of res) {
+    for (const item of res as any) {
       pushMessage(item);
     }
   } else {
@@ -184,7 +195,7 @@ async function handleSendMessage(event: any) {
 /** 真正发送消息 【共用】*/
 async function sendMessage(msg: MallKefuMessageApi.MessageSend) {
   // 发送消息
-  await KeFuMessageApi.sendKeFuMessage(msg);
+  await sendKeFuMessage(msg);
   message.value = '';
   // 加载消息列表
   await refreshMessageList();
@@ -211,7 +222,7 @@ async function scrollToBottom() {
   // scrollbarRef.value!.setScrollTop(innerRef.value!.clientHeight)
   showNewMessageTip.value = false;
   // 2.2 消息已读
-  await KeFuMessageApi.updateKeFuMessageReadStatus(conversation.value.id);
+  await updateKeFuMessageReadStatus(conversation.value.id);
 }
 
 /** 查看新消息 */
@@ -268,11 +279,11 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
 </script>
 
 <template>
-  <a-layout v-if="showKeFuMessageList" class="kefu">
-    <a-layout-header class="kefu-header">
+  <Layout v-if="showKeFuMessageList()" class="kefu">
+    <Layout.Header class="kefu-header">
       <div class="kefu-title">{{ conversation.userNickname }}</div>
-    </a-layout-header>
-    <a-layout-content class="kefu-content">
+    </Layout.Header>
+    <Layout.Content class="kefu-content">
       <div
         ref="scrollbarRef"
         class="flex h-full overflow-y-auto"
@@ -396,8 +407,8 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
         <span>有新消息</span>
         <IconifyIcon class="ml-5px" icon="ep:bottom" />
       </div>
-    </a-layout-content>
-    <a-layout-footer class="kefu-footer">
+    </Layout.Content>
+    <Layout.Footer class="kefu-footer">
       <div class="chat-tools flex items-center">
         <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
         <PictureSelectUpload
@@ -405,20 +416,20 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
           @send-picture="handleSendPicture"
         />
       </div>
-      <a-textarea
+      <Textarea
         v-model:value="message"
         :rows="6"
         placeholder="输入消息，Enter发送，Shift+Enter换行"
         style="border-style: none"
         @keyup.enter.prevent="handleSendMessage"
       />
-    </a-layout-footer>
-  </a-layout>
-  <a-layout v-else class="kefu">
-    <a-layout-content>
+    </Layout.Footer>
+  </Layout>
+  <Layout v-else class="kefu">
+    <Layout.Content>
       <Empty description="请选择左侧的一个会话后开始" class="mt-[50px]" />
-    </a-layout-content>
-  </a-layout>
+    </Layout.Content>
+  </Layout>
 </template>
 
 <style lang="scss" scoped>

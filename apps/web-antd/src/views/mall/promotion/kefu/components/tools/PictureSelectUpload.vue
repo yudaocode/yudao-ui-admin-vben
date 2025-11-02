@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import { message } from 'ant-design-vue';
 
-import * as FileApi from '#/api/infra/file';
+import { uploadFile } from '#/api/infra/file';
 import Picture from '#/views/mall/promotion/kefu/asserts/picture.svg';
 
 defineOptions({ name: 'PictureSelectUpload' });
@@ -17,7 +17,7 @@ async function selectAndUpload() {
   message.success('图片发送中请稍等。。。');
   // TODO @jawe：直接使用 updateFile，不通过 FileApi。vben 这里的规范；
   // TODO @jawe：这里的上传，看看能不能替换成 export function useUpload(directory?: string) {；它支持前端直传，更统一；
-  const res = await FileApi.updateFile({ file: files[0].file });
+  const res = await uploadFile({ file: files[0].file });
   emits('sendPicture', res.data);
 }
 

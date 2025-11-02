@@ -1,6 +1,8 @@
 <!-- 右侧信息：会员信息 + 最近浏览 + 交易订单 -->
 <script lang="ts" setup>
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
+import type { MemberUserApi } from '#/api/member/user';
+import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -9,11 +11,10 @@ import { isEmpty } from '@vben/utils';
 // TODO @jawe：debounce 是不是还是需要的哈；应该有 2 处需要；可以微信沟通哈；
 // import { debounce } from 'lodash-es'
 import { useDebounceFn } from '@vueuse/core';
-import { Card, Empty, message } from 'ant-design-vue';
+import { Card, Empty, Layout, message } from 'ant-design-vue';
 
-import * as UserApi from '#/api/member/user';
-import * as WalletApi from '#/api/pay/wallet/balance';
-import { CardTitle } from '#/components/card-title';
+import { getUser } from '#/api/member/user';
+import { getWallet } from '#/api/pay/wallet/balance';
 import AccountInfo from '#/views/member/user/detail/modules/account-info.vue';
 import BasicInfo from '#/views/member/user/detail/modules/basic-info.vue';
 
@@ -91,12 +92,12 @@ async function initHistory(val: MallKefuConversationApi.Conversation) {
 defineExpose({ initHistory });
 
 /** 处理消息列表滚动事件(debounce 限流) */
-const scrollbarRef = ref<InstanceType>();
-const handleScroll = useDebounceFn(() => {
+const scrollbarRef = ref<InstanceType<any>>();
+const handleScroll = useDebounceFn(async () => {
   const wrap = scrollbarRef.value?.wrapRef;
   // 触底重置
   if (Math.abs(wrap!.scrollHeight - wrap!.clientHeight - wrap!.scrollTop) < 1) {
-    loadMore();
+    await loadMore();
   }
 }, 200);
 
@@ -106,8 +107,8 @@ const WALLET_INIT_DATA = {
   balance: 0,
   totalExpense: 0,
   totalRecharge: 0,
-} as WalletApi.WalletVO; // 钱包初始化数据
-const wallet = ref<WalletApi.WalletVO>(WALLET_INIT_DATA); // 钱包信息
+} as PayWalletApi.Wallet; // 钱包初始化数据
+const wallet = ref<PayWalletApi.Wallet>(WALLET_INIT_DATA); // 钱包信息
 
 async function getUserWallet() {
   if (!conversation.value.userId) {
@@ -115,21 +116,21 @@ async function getUserWallet() {
     return;
   }
   wallet.value =
-    (await WalletApi.getWallet({ userId: conversation.value.userId })) ||
+    (await getWallet({ userId: conversation.value.userId })) ||
     WALLET_INIT_DATA;
 }
 
 /** 获得用户 */
 const loading = ref(true); // 加载中
-const user = ref<UserApi.UserVO>({} as UserApi.UserVO);
+const user = ref<MemberUserApi.User>({} as MemberUserApi.User);
 async function getUserData() {
   loading.value = true;
   try {
-    const res = await UserApi.getUser(conversation.value.userId);
+    const res = await getUser(conversation.value.userId);
     if (res) {
       user.value = res;
     } else {
-      user.value = {} as UserApi.UserVO;
+      user.value = {} as MemberUserApi.User;
       message.error('会员不存在！');
     }
   } finally {
@@ -140,8 +141,8 @@ async function getUserData() {
 
 <template>
   <!-- TODO @jave：from xingyu：a- 换成大写的方式，另外组件没有进行导入，其他页面也有这个问题 -->
-  <a-layout class="kefu">
-    <a-layout-header class="kefu-header">
+  <Layout class="kefu">
+    <Layout.Header class="kefu-header">
       <div
         :class="{ 'kefu-header-item-activation': tabActivation('会员信息') }"
         class="kefu-header-item flex cursor-pointer items-center justify-center"
@@ -163,13 +164,13 @@ async function getUserData() {
       >
         交易订单
       </div>
-    </a-layout-header>
-    <a-layout-content class="kefu-content p-10px!">
+    </Layout.Header>
+    <Layout.Content class="kefu-content p-10px!">
       <div v-if="!isEmpty(conversation)" v-loading="loading">
         <!-- 基本信息 -->
         <BasicInfo v-if="activeTab === '会员信息'" :user="user" mode="kefu">
-          <template #header>
-            <CardTitle title="基本信息" />
+          <template #title>
+            <span class="text-sm font-bold">基本信息</span>
           </template>
         </BasicInfo>
         <!-- 账户信息 -->
@@ -178,8 +179,8 @@ async function getUserData() {
           class="mt-10px h-full"
           shadow="never"
         >
-          <template #header>
-            <CardTitle title="账户信息" />
+          <template #title>
+            <span class="text-sm font-bold">账户信息</span>
           </template>
           <AccountInfo :column="1" :user="user" :wallet="wallet" />
         </Card>
@@ -203,8 +204,8 @@ async function getUserData() {
         description="请选择左侧的一个会话后开始"
         class="mt-[50px]"
       />
-    </a-layout-content>
-  </a-layout>
+    </Layout.Content>
+  </Layout>
 </template>
 
 <style lang="scss" scoped>

@@ -1,14 +1,12 @@
 <script lang="ts" setup>
+defineOptions({ name: 'CardTitle' });
+
 // TODO @jawe from xingyu：https://gitee.com/yudaocode/yudao-ui-admin-vben/pulls/243/files#diff_note_47350213；这个组件没有必要，直接用antdv card 的slot去做就行了，只有这一个地方用，没有必要单独写一个组件
 defineProps({
   title: {
     type: String,
     required: true,
   },
-});
-
-defineComponent({
-  name: 'CardTitle',
 });
 </script>
 
