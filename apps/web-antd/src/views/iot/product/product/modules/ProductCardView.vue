@@ -195,16 +195,33 @@ defineExpose({
                 />
                 物模型
               </Button>
+              <Tooltip v-if="item.status === 1" title="启用状态的产品不能删除">
+                <Button
+                  size="small"
+                  danger
+                  disabled
+                  class="action-btn action-btn-delete !w-[32px]"
+                >
+                  <IconifyIcon
+                    icon="ant-design:delete-outlined"
+                    class="text-[14px]"
+                  />
+                </Button>
+              </Tooltip>
               <Popconfirm
+                v-else
                 :title="`确认删除产品 ${item.name} 吗?`"
                 @confirm="emit('delete', item)"
               >
                 <Button
                   size="small"
                   danger
-                  class="action-btn action-btn-delete"
+                  class="action-btn action-btn-delete !w-[32px]"
                 >
-                  <IconifyIcon icon="ant-design:delete-outlined" />
+                  <IconifyIcon
+                    icon="ant-design:delete-outlined"
+                    class="text-[14px]"
+                  />
                 </Button>
               </Popconfirm>
             </div>
