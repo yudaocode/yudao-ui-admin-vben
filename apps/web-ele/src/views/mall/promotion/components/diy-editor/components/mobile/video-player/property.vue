@@ -40,7 +40,7 @@ const formData = useVModel(props, 'modelValue', emit);
           :file-type="['mp4']"
           :limit="1"
           :file-size="100"
-          class="min-w-[80px]"
+          class="min-w-20"
         />
       </ElFormItem>
       <ElFormItem label="上传封面" prop="posterUrl">
@@ -49,7 +49,7 @@ const formData = useVModel(props, 'modelValue', emit);
           draggable="false"
           height="80px"
           width="100%"
-          class="min-w-[80px]"
+          class="min-w-20"
           :show-description="false"
         >
           <template #tip> 建议宽度750 </template>
