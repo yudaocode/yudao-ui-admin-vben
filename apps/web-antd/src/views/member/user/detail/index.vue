@@ -20,6 +20,7 @@ import AddressList from './modules/address-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
+import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
 import SignList from './modules/sign-list.vue';
 
@@ -100,10 +101,7 @@ onMounted(async () => {
             <AddressList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="订单管理" key="OrderList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <h1>订单管理</h1>
-            </div>
+            <OrderList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="售后管理" key="AfterSaleList">
             <!-- Todo: 商城模块 -->
