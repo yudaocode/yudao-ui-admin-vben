@@ -70,7 +70,6 @@ onMounted(async () => {
   <Page auto-content-height>
     <FormModal @success="refreshTab" />
     <div class="flex">
-      <!-- TODO @芋艿：这里的 title 怎么办？ -->
       <BasicInfo v-if="user" class="w-3/5" :user="user" mode="member">
         <template #title> 基本信息 </template>
         <template #extra>
