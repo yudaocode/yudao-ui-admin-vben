@@ -255,11 +255,11 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
 
   .cube {
     box-sizing: border-box;
+    line-height: 1;
     color: var(--el-text-color-secondary);
     text-align: center;
     cursor: pointer;
     border: 1px solid var(--el-border-color);
-    line-height: 1;
 
     :deep(.iconify) {
       display: inline-block;

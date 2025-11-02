@@ -17,5 +17,5 @@ defineProps<{ property: ImageBarProperty }>();
   >
     <IconifyIcon icon="ep:picture" class="text-3xl text-gray-600" />
   </div>
-  <ElImage v-else class="block w-full h-full" :src="property.imgUrl" />
+  <ElImage v-else class="block h-full w-full" :src="property.imgUrl" />
 </template>
