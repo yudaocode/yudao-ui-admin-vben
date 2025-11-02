@@ -20,6 +20,7 @@ import AddressList from './modules/address-list.vue';
 import AfterSaleList from './modules/after-sale-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
+import CouponList from './modules/coupon-list.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
 import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
@@ -114,10 +115,7 @@ onMounted(async () => {
             </div>
           </TabPane>
           <TabPane tab="优惠劵" key="CouponList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <h1>优惠劵</h1>
-            </div>
+            <CouponList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="推广用户" key="BrokerageList">
             <!-- Todo: 商城模块 -->

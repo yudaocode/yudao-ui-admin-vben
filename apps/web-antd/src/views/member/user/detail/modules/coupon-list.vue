@@ -4,7 +4,6 @@ import type { MallCouponApi } from '#/api/mall/promotion/coupon/coupon';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -15,32 +14,32 @@ import {
   deleteCoupon,
   getCouponPage,
 } from '#/api/mall/promotion/coupon/coupon';
+import {
+  useGridColumns as useCouponGridColumns,
+  useGridFormSchema as useCouponGridFormSchema,
+} from '#/views/mall/promotion/coupon/data';
 
-import { useGridColumns, useGridFormSchema } from './data';
-
-defineOptions({ name: 'PromotionCoupon' });
+const props = defineProps<{
+  userId: number;
+}>();
 
 const activeTab = ref('all');
 const statusTabs = ref(getStatusTabs());
 
-/** 刷新表格 */
-function handleRefresh() {
-  gridApi.query();
+/** 列表的搜索表单（过滤掉会员相关字段） */
+function useGridFormSchema() {
+  const excludeFields = new Set(['nickname']);
+  return useCouponGridFormSchema().filter(
+    (item) => !excludeFields.has(item.fieldName),
+  );
 }
 
-/** 删除优惠券 */
-async function handleDelete(row: MallCouponApi.Coupon) {
-  const hideLoading = message.loading({
-    content: '回收中...',
-    duration: 0,
-  });
-  try {
-    await deleteCoupon(row.id!);
-    message.success('回收成功');
-    handleRefresh();
-  } finally {
-    hideLoading();
-  }
+/** 列表的字段（过滤掉会员相关字段） */
+function useGridColumns() {
+  const excludeFields = new Set(['nickname']);
+  return useCouponGridColumns()?.filter(
+    (item) => item.field && !excludeFields.has(item.field),
+  );
 }
 
 /** 获取状态选项卡配置 */
@@ -67,20 +66,38 @@ function handleTabChange(tabName: any) {
   gridApi.query();
 }
 
+/** 删除优惠券 */
+async function handleDelete(row: MallCouponApi.Coupon) {
+  const hideLoading = message.loading({
+    content: '回收中...',
+    duration: 0,
+  });
+  try {
+    await deleteCoupon(row.id!);
+    message.success('回收成功');
+    await gridApi.query();
+  } finally {
+    hideLoading();
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
-    height: 'auto',
     keepSource: true,
+    pagerConfig: {
+      pageSize: 10,
+    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
           const params = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
+            userId: props.userId,
             ...formValues,
             // Tab状态过滤
             status:
@@ -103,42 +120,29 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page auto-content-height>
-    <template #doc>
-      <DocAlert
-        title="【营销】优惠劵"
-        url="https://doc.iocoder.cn/mall/promotion-coupon/"
+  <Grid>
+    <template #toolbar-actions>
+      <Tabs class="w-full" @change="handleTabChange">
+        <TabPane v-for="tab in statusTabs" :key="tab.value" :tab="tab.label" />
+      </Tabs>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        :actions="[
+          {
+            label: '回收',
+            type: 'link',
+            danger: true,
+            icon: ACTION_ICON.DELETE,
+            auth: ['promotion:coupon:delete'],
+            popConfirm: {
+              title:
+                '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
+              confirm: handleDelete.bind(null, row),
+            },
+          },
+        ]"
       />
     </template>
-
-    <Grid>
-      <template #toolbar-actions>
-        <Tabs class="w-full" @change="handleTabChange">
-          <TabPane
-            v-for="tab in statusTabs"
-            :key="tab.value"
-            :tab="tab.label"
-          />
-        </Tabs>
-      </template>
-      <template #actions="{ row }">
-        <TableAction
-          :actions="[
-            {
-              label: '回收',
-              type: 'link',
-              danger: true,
-              icon: ACTION_ICON.DELETE,
-              auth: ['promotion:coupon:delete'],
-              popConfirm: {
-                title:
-                  '回收将会收回会员领取的待使用的优惠券，已使用的将无法回收，确定要回收所选优惠券吗？',
-                confirm: handleDelete.bind(null, row),
-              },
-            },
-          ]"
-        />
-      </template>
-    </Grid>
-  </Page>
+  </Grid>
 </template>
