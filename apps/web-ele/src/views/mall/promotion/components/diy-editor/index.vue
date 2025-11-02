@@ -339,10 +339,7 @@ onMounted(() => {
           />
         </ElAside>
         <!-- 中心：设计区域（ComponentContainer） -->
-        <ElContainer
-          class="editor-center page-prop-area"
-          @click="handlePageSelected"
-        >
+        <div class="editor-center page-prop-area" @click="handlePageSelected">
           <!-- 手机顶部 -->
           <div class="editor-design-top">
             <!-- 手机顶部状态栏 -->
@@ -373,7 +370,15 @@ onMounted(() => {
             />
           </div>
           <!-- 手机页面编辑区域 -->
-          <ElScrollbar class="phone-container">
+          <ElScrollbar
+            :view-style="{
+              backgroundColor: pageConfigComponent.property.backgroundColor,
+              backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
+            }"
+            height="100%"
+            view-class="phone-container"
+            wrap-class="editor-design-center page-prop-area"
+          >
             <draggable
               v-model="pageComponents"
               :animation="200"
@@ -415,39 +420,45 @@ onMounted(() => {
             />
           </div>
           <!-- 固定布局的组件 操作按钮区 -->
-          <div class="fixed-component-action-group gap-2">
+          <div class="fixed-component-action-group">
             <ElTag
               v-if="showPageConfig"
-              :color="
+              :effect="
                 selectedComponent?.uid === pageConfigComponent.uid
-                  ? 'blue'
-                  : 'default'
+                  ? 'dark'
+                  : 'plain'
               "
-              :bordered="false"
+              :type="
+                selectedComponent?.uid === pageConfigComponent.uid
+                  ? 'primary'
+                  : 'info'
+              "
               size="large"
               @click="handleComponentSelected(pageConfigComponent)"
             >
               <IconifyIcon :icon="pageConfigComponent.icon" :size="12" />
-              <ElText>{{ pageConfigComponent.name }}</ElText>
+              <span>{{ pageConfigComponent.name }}</span>
             </ElTag>
             <template v-for="(component, index) in pageComponents" :key="index">
               <ElTag
                 v-if="component.position === 'fixed'"
-                :color="
-                  selectedComponent?.uid === component.uid ? 'blue' : 'default'
+                :effect="
+                  selectedComponent?.uid === component.uid ? 'dark' : 'plain'
                 "
-                :bordered="false"
+                :type="
+                  selectedComponent?.uid === component.uid ? 'primary' : 'info'
+                "
                 closable
                 size="large"
                 @click="handleComponentSelected(component)"
                 @close="handleDeleteComponent(index)"
               >
                 <IconifyIcon :icon="component.icon" :size="12" />
-                <ElText>{{ component.name }}</ElText>
+                <span>{{ component.name }}</span>
               </ElTag>
             </template>
           </div>
-        </ElContainer>
+        </div>
         <!-- 右侧：属性面板（ComponentContainerProperty） -->
         <ElAside
           v-if="selectedComponent?.property"
@@ -457,7 +468,7 @@ onMounted(() => {
           <ElCard
             body-class="h-[calc(100%-var(--el-card-padding)-var(--el-card-padding))]"
             class="h-full"
-            :bordered="false"
+            shadow="never"
           >
             <!-- 组件名称 -->
             <template #header>
@@ -621,6 +632,7 @@ $phone-width: 375px;
         right: 16px;
         display: flex;
         flex-direction: column;
+        gap: 8px;
 
         :deep(.el-tag) {
           border: none;
