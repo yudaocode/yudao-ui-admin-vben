@@ -19,7 +19,7 @@ import {
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
-import SeckillShowcase from '#/views/mall/promotion/seckill/components/seckill-showcase.vue';
+import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 

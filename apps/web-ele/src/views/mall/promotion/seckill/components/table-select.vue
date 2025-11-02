@@ -1,30 +1,35 @@
-<!-- SPU 商品选择弹窗组件 -->
+<!-- 秒杀活动选择弹窗组件 -->
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { MallCategoryApi } from '#/api/mall/product/category';
-import type { MallSpuApi } from '#/api/mall/product/spu';
+import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckillActivity';
 
 import { computed, onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+import { fenToYuan, formatDate, handleTree } from '@vben/utils';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
-import { getSpuPage } from '#/api/mall/product/spu';
-import { getRangePickerDefaultProps } from '#/utils';
+import { getSeckillActivityPage } from '#/api/mall/promotion/seckill/seckillActivity';
 
-interface SpuTableSelectProps {
-  multiple?: boolean; // 是否单选：true - checkbox；false - radio
+interface SeckillTableSelectProps {
+  multiple?: boolean; // 是否多选：true - checkbox；false - radio
 }
 
-const props = withDefaults(defineProps<SpuTableSelectProps>(), {
+const props = withDefaults(defineProps<SeckillTableSelectProps>(), {
   multiple: false,
 });
 
 const emit = defineEmits<{
-  change: [spu: MallSpuApi.Spu | MallSpuApi.Spu[]];
+  change: [
+    activity:
+      | MallSeckillActivityApi.SeckillActivity
+      | MallSeckillActivityApi.SeckillActivity[],
+  ];
 }>();
 
 const categoryList = ref<MallCategoryApi.Category[]>([]); // 分类列表
@@ -32,49 +37,47 @@ const categoryTreeList = ref<any[]>([]); // 分类树
 
 /** 单选：处理选中变化 */
 function handleRadioChange() {
-  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Spu;
+  const selectedRow =
+    gridApi.grid.getRadioRecord() as MallSeckillActivityApi.SeckillActivity;
   if (selectedRow) {
     emit('change', selectedRow);
     modalApi.close();
   }
 }
 
+/**
+ * 格式化秒杀价格
+ * @param products
+ */
+const formatSeckillPrice = (
+  products: MallSeckillActivityApi.SeckillProduct[],
+) => {
+  if (!products || products.length === 0) return '-';
+  const seckillPrice = Math.min(
+    ...products.map((item) => item.seckillPrice || 0),
+  );
+  return `￥${fenToYuan(seckillPrice)}`;
+};
+
 /** 搜索表单 Schema */
 const formSchema = computed<VbenFormSchema[]>(() => [
   {
     fieldName: 'name',
-    label: '商品名称',
+    label: '活动名称',
     component: 'Input',
     componentProps: {
-      placeholder: '请输入商品名称',
-      allowClear: true,
+      placeholder: '请输入活动名称',
+      clearable: true,
     },
   },
   {
-    fieldName: 'categoryId',
-    label: '商品分类',
-    component: 'TreeSelect',
-    // TODO @芋艿：可能要测试下；
+    fieldName: 'status',
+    label: '活动状态',
+    component: 'Select',
     componentProps: {
-      treeData: categoryTreeList,
-      fieldNames: {
-        label: 'name',
-        value: 'id',
-      },
-      treeCheckStrictly: true,
-      placeholder: '请选择商品分类',
-      allowClear: true,
-      showSearch: true,
-      treeNodeFilterProp: 'name',
-    },
-  },
-  {
-    fieldName: 'createTime',
-    label: '创建时间',
-    component: 'RangePicker',
-    componentProps: {
-      ...getRangePickerDefaultProps(),
-      allowClear: true,
+      placeholder: '请选择活动状态',
+      clearable: true,
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
     },
   },
 ]);
@@ -90,13 +93,26 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
   columns.push(
     {
       field: 'id',
-      title: '商品编号',
-      minWidth: 100,
+      title: '活动编号',
+      minWidth: 80,
       align: 'center',
     },
     {
+      field: 'name',
+      title: '活动名称',
+      minWidth: 140,
+    },
+    {
+      field: 'activityTime',
+      title: '活动时间',
+      minWidth: 210,
+      formatter: ({ row }) => {
+        return `${formatDate(row.startTime, 'YYYY-MM-DD')} ~ ${formatDate(row.endTime, 'YYYY-MM-DD')}`;
+      },
+    },
+    {
       field: 'picUrl',
-      title: '商品图',
+      title: '商品图片',
       width: 100,
       align: 'center',
       cellRender: {
@@ -104,17 +120,45 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       },
     },
     {
-      field: 'name',
-      title: '商品名称',
-      minWidth: 200,
+      field: 'spuName',
+      title: '商品标题',
+      minWidth: 300,
     },
     {
-      field: 'categoryId',
-      title: '商品分类',
-      minWidth: 120,
+      field: 'marketPrice',
+      title: '原价',
+      minWidth: 100,
+      align: 'center',
       formatter: ({ cellValue }) => {
-        const category = categoryList.value?.find((c) => c.id === cellValue);
-        return category?.name || '-';
+        return cellValue ? `￥${fenToYuan(cellValue)}` : '-';
+      },
+    },
+    {
+      field: 'products',
+      title: '秒杀价',
+      minWidth: 100,
+      align: 'center',
+      formatter: ({ cellValue }) => {
+        return formatSeckillPrice(cellValue);
+      },
+    },
+    {
+      field: 'status',
+      title: '活动状态',
+      minWidth: 100,
+      align: 'center',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      align: 'center',
+      cellRender: {
+        name: 'CellDatetime',
       },
     },
   );
@@ -144,10 +188,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         async query({ page }: any, formValues: any) {
-          return await getSpuPage({
+          return await getSeckillActivityPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            tabType: 0,
             ...formValues,
           });
         },
@@ -163,7 +206,8 @@ const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   showConfirmButton: props.multiple, // 特殊：radio 单选情况下，走 handleRadioChange 处理。
   onConfirm: () => {
-    const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
+    const selectedRows =
+      gridApi.grid.getCheckboxRecords() as MallSeckillActivityApi.SeckillActivity[];
     emit('change', selectedRows);
     modalApi.close();
   },
@@ -177,13 +221,17 @@ const [Modal, modalApi] = useVbenModal({
     // 1. 先查询数据
     await gridApi.query();
     // 2. 设置已选中行
-    const data = modalApi.getData<MallSpuApi.Spu | MallSpuApi.Spu[]>();
+    const data = modalApi.getData<
+      | MallSeckillActivityApi.SeckillActivity
+      | MallSeckillActivityApi.SeckillActivity[]
+    >();
     if (props.multiple && Array.isArray(data) && data.length > 0) {
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData().fullData;
-        data.forEach((spu) => {
+        data.forEach((activity) => {
           const row = tableData.find(
-            (item: MallSpuApi.Spu) => item.id === spu.id,
+            (item: MallSeckillActivityApi.SeckillActivity) =>
+              item.id === activity.id,
           );
           if (row) {
             gridApi.grid.setCheckboxRow(row, true);
@@ -194,7 +242,7 @@ const [Modal, modalApi] = useVbenModal({
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData().fullData;
         const row = tableData.find(
-          (item: MallSpuApi.Spu) => item.id === data.id,
+          (item: MallSeckillActivityApi.SeckillActivity) => item.id === data.id,
         );
         if (row) {
           gridApi.grid.setRadioRow(row);
@@ -206,7 +254,11 @@ const [Modal, modalApi] = useVbenModal({
 
 /** 对外暴露的方法 */
 defineExpose({
-  open: (data?: MallSpuApi.Spu | MallSpuApi.Spu[]) => {
+  open: (
+    data?:
+      | MallSeckillActivityApi.SeckillActivity
+      | MallSeckillActivityApi.SeckillActivity[],
+  ) => {
     modalApi.setData(data).open();
   },
 });
@@ -219,7 +271,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Modal title="选择商品" class="w-[950px]">
+  <Modal title="选择活动" class="w-[950px]">
     <Grid />
   </Modal>
 </template>
