@@ -51,7 +51,6 @@ const props = defineProps({
 const emit = defineEmits(['cancel']);
 const { closeCurrentTab } = useTabs();
 
-const isFormReady = ref(false); // 表单就绪状态变量：表单就绪后再渲染 form-create
 const getTitle = computed(() => {
   return `流程表单 - ${props.selectProcessDefinition.name}`;
 });
@@ -122,21 +121,32 @@ async function initProcessInfo(row: any, formVariables?: any) {
     // 注意：需要从 formVariables 中，移除不在 row.formFields 的值。
     // 原因是：后端返回的 formVariables 里面，会有一些非表单的信息。例如说，某个流程节点的审批人。
     //        这样，就可能导致一个流程被审批不通过后，重新发起时，会直接后端报错！！！
-    const formApi = formCreate.create(decodeFields(row.formFields));
-    const allowedFields = formApi.fields();
-    for (const key in formVariables) {
-      if (!allowedFields.includes(key)) {
-        delete formVariables[key];
+
+    // 解析表单字段列表（不创建实例，避免重复渲染）
+    const decodedFields = decodeFields(row.formFields);
+    const allowedFields = new Set(
+      decodedFields.map((field: any) => field.field).filter(Boolean),
+    );
+
+    // 过滤掉不允许的字段
+    if (formVariables) {
+      for (const key in formVariables) {
+        if (!allowedFields.has(key)) {
+          delete formVariables[key];
+        }
       }
     }
+
     setConfAndFields2(detailForm, row.formConf, row.formFields, formVariables);
 
-    // 设置表单就绪状态
-    // TODO @jason：这个变量是必须的，有没可能简化掉？
-    isFormReady.value = true;
+    // 在配置中禁用 form-create 自带的提交和重置按钮
+    detailForm.value.option = {
+      ...detailForm.value.option,
+      submitBtn: false,
+      resetBtn: false,
+    };
 
     await nextTick();
-    fApi.value?.btn.show(false); // 隐藏提交按钮
 
     // 获取流程审批信息,当再次发起时，流程审批节点要根据原始表单参数预测出来
     await getApprovalDetail({
@@ -153,30 +163,32 @@ async function initProcessInfo(row: any, formVariables?: any) {
     }
     // 情况二：业务表单
   } else if (row.formCustomCreatePath) {
+    // 这里暂时无需加载流程图，因为跳出到另外个 Tab；
     await router.push({
       path: row.formCustomCreatePath,
     });
-    // 这里暂时无需加载流程图，因为跳出到另外个 Tab；
+    // 返回选择流程
+    emit('cancel');
   }
 }
 
 /** 预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次 */
 watch(
-  detailForm.value,
+  () => detailForm.value.value,
   (newValue) => {
-    if (newValue && Object.keys(newValue.value).length > 0) {
+    if (newValue && Object.keys(newValue).length > 0) {
       // 记录之前的节点审批人
       tempStartUserSelectAssignees.value = startUserSelectAssignees.value;
       startUserSelectAssignees.value = {};
       // 加载最新的审批详情
       getApprovalDetail({
         id: props.selectProcessDefinition.id,
-        processVariablesStr: JSON.stringify(newValue.value), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
+        processVariablesStr: JSON.stringify(newValue), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
       });
     }
   },
   {
-    immediate: true,
+    deep: true,
   },
 );
 
@@ -283,7 +295,6 @@ defineExpose({ initProcessInfo });
             class="flex-1 overflow-auto"
           >
             <form-create
-              v-if="isFormReady"
               :rule="detailForm.rule"
               v-model:api="fApi"
               v-model="detailForm.value"
