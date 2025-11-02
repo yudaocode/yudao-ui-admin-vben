@@ -155,7 +155,6 @@ const IOT_DICT = {
   IOT_DATA_SINK_TYPE_ENUM: 'iot_data_sink_type_enum', // IoT 数据流转目的类型
   IOT_DATA_TYPE: 'iot_data_type', // IOT 数据类型
   IOT_DEVICE_STATE: 'iot_device_state', // IOT 设备状态
-  IOT_DEVICE_STATUS: 'iot_device_status', // IOT 设备状态
   IOT_LOCATION_TYPE: 'iot_location_type', // IOT 定位类型
   IOT_NET_TYPE: 'iot_net_type', // IOT 联网方式
   IOT_OTA_TASK_DEVICE_SCOPE: 'iot_ota_task_device_scope', // IoT OTA任务设备范围

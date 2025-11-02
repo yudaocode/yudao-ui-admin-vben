@@ -1,0 +1,206 @@
+<script lang="ts" setup>
+import type { MallKefuMessageApi } from '#/api/mall/promotion/kefu/message';
+
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { fenToYuan, isObject, jsonParse } from '@vben/utils';
+
+import ProductItem from '#/views/mall/promotion/kefu/components/message/ProductItem.vue';
+
+defineOptions({ name: 'OrderItem' });
+
+const props = defineProps<{
+  message?: MallKefuMessageApi.Message;
+  order?: any;
+}>();
+
+const { push } = useRouter();
+
+const getMessageContent = computed(() =>
+  props.message === undefined
+    ? props.order
+    : jsonParse(props!.message!.content),
+);
+
+/** 查看订单详情 */
+function openDetail(id: number) {
+  push({ name: 'TradeOrderDetail', params: { id } });
+}
+
+/**
+ * 格式化订单状态的颜色
+ *
+ * @param order 订单
+ * @return {string} 颜色的 class 名称
+ */
+function formatOrderColor(order: any) {
+  if (order.status === 0) {
+    return 'info-color';
+  }
+  if (
+    order.status === 10 ||
+    order.status === 20 ||
+    (order.status === 30 && !order.commentStatus)
+  ) {
+    return 'warning-color';
+  }
+  if (order.status === 30 && order.commentStatus) {
+    return 'success-color';
+  }
+  return 'danger-color';
+}
+
+/**
+ * 格式化订单状态
+ *
+ * @param order 订单
+ */
+function formatOrderStatus(order: any) {
+  if (order.status === 0) {
+    return '待付款';
+  }
+  if (order.status === 10 && order.deliveryType === 1) {
+    return '待发货';
+  }
+  if (order.status === 10 && order.deliveryType === 2) {
+    return '待核销';
+  }
+  if (order.status === 20) {
+    return '待收货';
+  }
+  if (order.status === 30 && !order.commentStatus) {
+    return '待评价';
+  }
+  if (order.status === 30 && order.commentStatus) {
+    return '已完成';
+  }
+  return '已关闭';
+}
+</script>
+
+<template>
+  <div v-if="isObject(getMessageContent)">
+    <div :key="getMessageContent.id" class="order-list-card-box mt-[14px]">
+      <div
+        class="order-card-header p-x-[5px] flex items-center justify-between"
+      >
+        <div class="order-no">
+          订单号：
+          <span
+            style="cursor: pointer"
+            @click="openDetail(getMessageContent.id)"
+          >
+            {{ getMessageContent.no }}
+          </span>
+        </div>
+        <div
+          :class="formatOrderColor(getMessageContent)"
+          class="order-state font-16"
+        >
+          {{ formatOrderStatus(getMessageContent) }}
+        </div>
+      </div>
+      <div
+        v-for="item in getMessageContent.items"
+        :key="item.id"
+        class="border-bottom"
+      >
+        <ProductItem
+          :num="item.count"
+          :pic-url="item.picUrl"
+          :price="item.price"
+          :sku-text="
+            item.properties.map((property: any) => property.valueName).join(' ')
+          "
+          :spu-id="item.spuId"
+          :title="item.spuName"
+        />
+      </div>
+      <div class="pay-box flex justify-end pr-[5px]">
+        <div class="flex items-center">
+          <div class="discounts-title pay-color">
+            共 {{ getMessageContent?.productCount }} 件商品,总金额:
+          </div>
+          <div class="discounts-money pay-color">
+            ￥{{ fenToYuan(getMessageContent?.payPrice) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
+.order-list-card-box {
+  padding: 10px;
+  background-color: rgb(128 128 128 / 30%); // 透明色，暗黑模式下也能体现
+  border: 1px var(--el-border-color) solid;
+  border-radius: 10px;
+
+  .order-card-header {
+    height: 28px;
+    font-weight: bold;
+
+    .order-no {
+      font-size: 13px;
+
+      span {
+        &:hover {
+          color: var(--left-menu-bg-active-color);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .order-state {
+      font-size: 13px;
+    }
+  }
+
+  .pay-box {
+    padding-top: 10px;
+    font-weight: bold;
+
+    .discounts-title {
+      font-size: 16px;
+      line-height: normal;
+    }
+
+    .discounts-money {
+      font-family: OPPOSANS;
+      font-size: 16px;
+      line-height: normal;
+    }
+
+    .pay-color {
+      font-size: 13px;
+    }
+  }
+}
+
+.warning-color {
+  font-size: 11px;
+  font-weight: bold;
+  color: #faad14;
+}
+
+.danger-color {
+  font-size: 11px;
+  font-weight: bold;
+  color: #ff3000;
+}
+
+.success-color {
+  font-size: 11px;
+  font-weight: bold;
+  color: #52c41a;
+}
+
+.info-color {
+  font-size: 11px;
+  font-weight: bold;
+  color: #999;
+}
+</style>

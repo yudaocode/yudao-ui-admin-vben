@@ -121,6 +121,16 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 4,
+        allowClear: true,
+      },
+    },
+    {
       fieldName: 'startAndEndTime',
       label: '活动时间',
       component: 'RangePicker',
@@ -128,8 +138,10 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
-        placeholder: [$t('common.startTimeText'), $t('common.endTimeText')],
-        allowClear: true,
+        placeholder: [
+          $t('utils.rangePicker.beginTime'),
+          $t('utils.rangePicker.endTime'),
+        ],
       },
     },
     {
@@ -154,22 +166,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(PromotionProductScopeEnum.ALL.scope),
     },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-        rows: 4,
-        allowClear: true,
-      },
-    },
-    {
-      fieldName: 'rules',
-      label: '优惠设置',
-      component: 'Input',
-      formItemClass: 'items-start',
-    },
+    // TODO @puhui999：选择完删除后，自动就退出了 modal；
     {
       fieldName: 'productSpuIds',
       label: '选择商品',
@@ -180,6 +177,15 @@ export function useFormSchema(): VbenFormSchema[] {
           return values.productScope === PromotionProductScopeEnum.SPU.scope;
         },
       },
+      rules: 'required',
+    },
+    // TODO @puhui999：这里还有个分类；
+    {
+      fieldName: 'rules',
+      label: '优惠设置',
+      component: 'Input',
+      formItemClass: 'items-start',
+      // TODO @puhui999：这里可能要加个 rules: 'required',
     },
   ];
 }

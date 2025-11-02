@@ -43,6 +43,7 @@
     "@vben/styles": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
+    "@vueuse/components": "^14.0.0",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",

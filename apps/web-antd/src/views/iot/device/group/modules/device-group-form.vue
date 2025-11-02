@@ -42,6 +42,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// TODO @haohao：参考别的 form；1）文件的命名可以简化；2）代码可以在简化下；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -71,7 +72,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
-      formApi.resetForm();
+      await formApi.resetForm();
       return;
     }
 

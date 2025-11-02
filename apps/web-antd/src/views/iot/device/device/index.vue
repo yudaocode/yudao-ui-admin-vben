@@ -307,7 +307,7 @@ onMounted(async () => {
           style="width: 200px"
         >
           <Select.Option
-            v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATUS)"
+            v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATE)"
             :key="dict.value"
             :value="dict.value"
           >

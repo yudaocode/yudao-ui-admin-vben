@@ -4,7 +4,7 @@ import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardAc
 
 import { nextTick, onMounted, ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Input } from 'ant-design-vue';
@@ -30,12 +30,9 @@ interface GiveCoupon extends MallCouponTemplateApi.CouponTemplate {
 }
 
 const rewardRule = useVModel(props, 'modelValue', emits);
-const list = ref<GiveCoupon[]>([]);
+const list = ref<GiveCoupon[]>([]); // 选择的优惠劵列表
 
-const CouponTemplateTakeTypeEnum = {
-  ADMIN: { type: 2 },
-};
-
+// TODO @puhui999：1）命名上，可以弱化 coupon；例如说 selectRef；原因是，本身就是 coupon-select.vue；2）相关的处理的方法，最好都带 handle，如果是处理事件；例如说 deleteCoupon 改成 handleDelete；
 /** 选择优惠券 */
 const couponSelectRef = ref<InstanceType<typeof CouponSelect>>();
 function selectCoupon() {
@@ -78,6 +75,7 @@ async function initGiveCouponList() {
 }
 
 /** 设置赠送的优惠券 */
+// TODO @puhui999：这个有办法不提供，就是不用 form.vue 去调用，更加透明~
 function setGiveCouponList() {
   if (!rewardRule.value) {
     return;

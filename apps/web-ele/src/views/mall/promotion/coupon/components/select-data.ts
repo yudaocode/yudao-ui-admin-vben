@@ -19,7 +19,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '优惠券名称',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入优惠劵名',
+        placeholder: '请输入优惠券名称',
         clearable: true,
       },
     },
@@ -29,7 +29,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.PROMOTION_DISCOUNT_TYPE, 'number'),
-        placeholder: '请选择优惠券类型',
+        placeholder: '请选择优惠类型',
         clearable: true,
       },
     },

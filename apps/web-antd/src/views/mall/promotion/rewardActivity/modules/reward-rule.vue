@@ -40,7 +40,8 @@ const isPriceCondition = computed(() => {
   );
 });
 
-function addRule() {
+/** 处理新增 */
+function handleAdd() {
   if (!formData.value.rules) {
     formData.value.rules = [];
   }
@@ -52,7 +53,8 @@ function addRule() {
   });
 }
 
-function deleteRule(ruleIndex: number) {
+/** 处理删除 */
+function handleDelete(ruleIndex: number) {
   formData.value.rules.splice(ruleIndex, 1);
 }
 
@@ -80,7 +82,7 @@ defineExpose({ setRuleCoupon });
             type="link"
             danger
             class="ml-2"
-            @click="deleteRule(index)"
+            @click="handleDelete(index)"
           >
             删除
           </Button>
@@ -114,6 +116,7 @@ defineExpose({ setRuleCoupon });
           </FormItem>
 
           <!-- 优惠内容 -->
+          <!-- TODO @puhui999：这里样式，让 AI 调整下；1）类似优惠劵折行啦；2）整体要左移点； -->
           <FormItem label="优惠内容" :label-col="{ span: 4 }">
             <div class="flex flex-col gap-4">
               <!-- 订单金额优惠 -->
@@ -174,7 +177,7 @@ defineExpose({ setRuleCoupon });
 
     <!-- 添加规则按钮 -->
     <Col :span="24" class="mt-2">
-      <Button type="primary" @click="addRule">+ 添加优惠规则</Button>
+      <Button type="primary" @click="handleAdd">+ 添加优惠规则</Button>
     </Col>
 
     <!-- 提示信息 -->
