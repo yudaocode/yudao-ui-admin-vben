@@ -50,6 +50,7 @@ const emits = defineEmits<{
       | MallSeckillActivityApi.SeckillActivity[],
   ];
 }>();
+
 // 列表的总页数
 const total = ref(0);
 // 列表的数据
@@ -128,7 +129,7 @@ const resetQuery = () => {
 };
 
 /**
- * 格式化拼团价格
+ * 格式化秒杀价格
  * @param products
  */
 const formatSeckillPrice = (
@@ -339,18 +340,11 @@ onMounted(async () => {
           min-width="100"
           :formatter="fenToYuanFormat"
         />
-        <el-table-column label="拼团价" prop="seckillPrice" min-width="100">
+        <el-table-column label="秒杀价" prop="seckillPrice" min-width="100">
           <template #default="scope">
             {{ formatSeckillPrice(scope.row.products) }}
           </template>
         </el-table-column>
-        <el-table-column label="开团组数" prop="groupCount" min-width="100" />
-        <el-table-column
-          label="成团组数"
-          prop="groupSuccessCount"
-          min-width="100"
-        />
-        <el-table-column label="购买次数" prop="recordCount" min-width="100" />
         <el-table-column
           label="活动状态"
           align="center"

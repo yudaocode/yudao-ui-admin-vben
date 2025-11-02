@@ -50,6 +50,10 @@ export namespace MallCombinationActivityApi {
     products: CombinationProduct[];
     /** 图片 */
     picUrl?: string;
+    /** 商品名称 */
+    spuName?: string;
+    /** 市场价 */
+    marketPrice?: number;
   }
 
   /** 扩展 SKU 配置 */

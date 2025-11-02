@@ -1,3 +1,4 @@
+<!-- 秒杀活动橱窗组件 - 用于装修时展示和选择秒杀活动 -->
 <script lang="ts" setup>
 import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckillActivity';
 
@@ -10,117 +11,120 @@ import { ElImage, ElTooltip } from 'element-plus';
 import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
 import SeckillTableSelect from '#/views/mall/promotion/seckill/components/seckill-table-select.vue';
 
-// 活动橱窗，一般用于装修时使用
-// 提供功能：展示活动列表、添加活动、删除活动
-defineOptions({ name: 'SeckillShowcase' });
+interface SeckillShowcaseProps {
+  modelValue: number | number[];
+  limit?: number;
+  disabled?: boolean;
+}
 
-const props = defineProps({
-  modelValue: {
-    type: [Number, Array],
-    required: true,
-  },
-  // 限制数量：默认不限制
-  limit: {
-    type: Number,
-    default: Number.MAX_VALUE,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<SeckillShowcaseProps>(), {
+  limit: Number.MAX_VALUE,
+  disabled: false,
 });
 
-const emit = defineEmits(['update:modelValue', 'change']);
+const emit = defineEmits<{
+  change: [value: any];
+  'update:modelValue': [value: number | number[]];
+}>();
+
+// 秒杀活动列表
+const seckillActivityList = ref<MallSeckillActivityApi.SeckillActivity[]>([]);
 
 // 计算是否可以添加
 const canAdd = computed(() => {
-  // 情况一：禁用时不可以添加
   if (props.disabled) return false;
-  // 情况二：未指定限制数量时，可以添加
   if (!props.limit) return true;
-  // 情况三：检查已添加数量是否小于限制数量
-  return Activitys.value.length < props.limit;
+  return seckillActivityList.value.length < props.limit;
 });
 
-// 拼团活动列表
-const Activitys = ref<MallSeckillActivityApi.SeckillActivity[]>([]);
-
-watch(
-  () => props.modelValue,
-  async () => {
-    let ids;
-    if (Array.isArray(props.modelValue)) {
-      ids = props.modelValue;
-    } else {
-      ids = props.modelValue ? [props.modelValue] : [];
-    }
-    // 不需要返显
-    if (ids.length === 0) {
-      Activitys.value = [];
-      return;
-    }
-    // 只有活动发生变化之后，才会查询活动
-    if (
-      Activitys.value.length === 0 ||
-      Activitys.value.some(
-        (seckillActivity) => !ids.includes(seckillActivity.id!),
-      )
-    ) {
-      Activitys.value = await SeckillActivityApi.getSeckillActivityListByIds(
-        ids as number[],
-      );
-    }
-  },
-  { immediate: true },
-);
-
-/** 活动表格选择对话框 */
+// 秒杀活动选择器引用
 const seckillActivityTableSelectRef = ref();
-// 打开对话框
-const openSeckillActivityTableSelect = () => {
-  seckillActivityTableSelectRef.value.open(Activitys.value);
-};
+
+/**
+ * 打开秒杀活动选择器
+ */
+function openSeckillActivityTableSelect() {
+  seckillActivityTableSelectRef.value.open(seckillActivityList.value);
+}
 
 /**
  * 选择活动后触发
- * @param activityVOs 选中的活动列表
  */
-const handleActivitySelected = (
-  activityVOs:
+function handleActivitySelected(
+  activityList:
     | MallSeckillActivityApi.SeckillActivity
     | MallSeckillActivityApi.SeckillActivity[],
-) => {
-  Activitys.value = Array.isArray(activityVOs) ? activityVOs : [activityVOs];
+) {
+  seckillActivityList.value = Array.isArray(activityList)
+    ? activityList
+    : [activityList];
   emitActivityChange();
-};
+}
 
 /**
  * 删除活动
- * @param index 活动索引
  */
-const handleRemoveActivity = (index: number) => {
-  Activitys.value.splice(index, 1);
+function handleRemoveActivity(index: number) {
+  seckillActivityList.value.splice(index, 1);
   emitActivityChange();
-};
-const emitActivityChange = () => {
+}
+
+/**
+ * 发送变更事件
+ */
+function emitActivityChange() {
   if (props.limit === 1) {
     const seckillActivity =
-      Activitys.value.length > 0 ? Activitys.value[0] : null;
+      seckillActivityList.value.length > 0
+        ? seckillActivityList.value[0]
+        : null;
     emit('update:modelValue', seckillActivity?.id || 0);
     emit('change', seckillActivity);
   } else {
     emit(
       'update:modelValue',
-      Activitys.value.map((seckillActivity) => seckillActivity.id),
+      seckillActivityList.value.map((seckillActivity) => seckillActivity.id),
     );
-    emit('change', Activitys.value);
+    emit('change', seckillActivityList.value);
   }
-};
+}
+
+// 监听 modelValue 变化
+watch(
+  () => props.modelValue,
+  async () => {
+    const ids = Array.isArray(props.modelValue)
+      ? props.modelValue
+      : props.modelValue
+        ? [props.modelValue]
+        : [];
+
+    // 不需要返显
+    if (ids.length === 0) {
+      seckillActivityList.value = [];
+      return;
+    }
+
+    // 只有活动发生变化之后，才会查询活动
+    if (
+      seckillActivityList.value.length === 0 ||
+      seckillActivityList.value.some(
+        (seckillActivity) => !ids.includes(seckillActivity.id!),
+      )
+    ) {
+      seckillActivityList.value =
+        await SeckillActivityApi.getSeckillActivityListByIds(ids as number[]);
+    }
+  },
+  { immediate: true },
+);
 </script>
+
 <template>
-  <div class="gap-8px flex flex-wrap items-center">
+  <div class="flex flex-wrap items-center gap-2">
+    <!-- 活动图片列表 -->
     <div
-      v-for="(seckillActivity, index) in Activitys"
+      v-for="(seckillActivity, index) in seckillActivityList"
       :key="seckillActivity.id"
       class="select-box spu-pic"
     >
@@ -136,13 +140,16 @@ const emitActivityChange = () => {
         </div>
       </ElTooltip>
     </div>
-    <ElTooltip content="选择活动" v-if="canAdd">
+
+    <!-- 添加按钮 -->
+    <ElTooltip v-if="canAdd" content="选择活动">
       <div class="select-box" @click="openSeckillActivityTableSelect">
         <IconifyIcon icon="ep:plus" />
       </div>
     </ElTooltip>
   </div>
-  <!-- 拼团活动选择对话框（表格形式） -->
+
+  <!-- 秒杀活动选择对话框 -->
   <SeckillTableSelect
     ref="seckillActivityTableSelectRef"
     :multiple="limit !== 1"

@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import type { PromotionSeckillProperty } from './config';
 
-import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckillActivity';
-
-import { onMounted, ref } from 'vue';
-
-import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
@@ -19,29 +14,23 @@ import {
   ElRadioGroup,
   ElSlider,
   ElSwitch,
+  ElTooltip,
 } from 'element-plus';
 
-import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 import SeckillShowcase from '#/views/mall/promotion/seckill/components/seckill-showcase.vue';
 
-// 秒杀属性面板
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 秒杀属性面板 */
 defineOptions({ name: 'PromotionSeckillProperty' });
 
 const props = defineProps<{ modelValue: PromotionSeckillProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
-// 活动列表
-const activityList = ref<MallSeckillActivityApi.SeckillActivity[]>([]);
-onMounted(async () => {
-  const { list } = await SeckillActivityApi.getSeckillActivityPage({
-    pageNo: 1,
-    pageSize: 10,
-    status: CommonStatusEnum.ENABLE,
-  });
-  activityList.value = list;
-});
 </script>
 
 <template>
@@ -68,10 +57,10 @@ onMounted(async () => {
                 <IconifyIcon icon="fluent:text-column-two-24-filled" />
               </ElRadioButton>
             </ElTooltip>
-            <!--<el-tooltip class="item" content="三列" placement="bottom">
-              <el-radio-button value="threeCol">
+            <!--<ElTooltip class="item" content="三列" placement="bottom">
+              <ElRadioButton value="threeCol">
                 <IconifyIcon icon="fluent:text-column-three-24-filled" />
-              </el-radio-button>
+              </ElRadioButton>
             </ElTooltip>-->
           </ElRadioGroup>
         </ElFormItem>
@@ -116,14 +105,14 @@ onMounted(async () => {
         <ElFormItem label="角标" prop="badge.show">
           <ElSwitch v-model="formData.badge.show" />
         </ElFormItem>
-        <ElFormItem v-if="formData.badge.show" label="角标" prop="badge.imgUrl">
+        <ElFormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
           <UploadImg
             v-model="formData.badge.imgUrl"
             height="44px"
             width="72px"
             :show-description="false"
           >
-            <template #tip> 建议尺寸：36 * 22</template>
+            <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </ElFormItem>
       </ElCard>
@@ -193,5 +182,3 @@ onMounted(async () => {
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>
