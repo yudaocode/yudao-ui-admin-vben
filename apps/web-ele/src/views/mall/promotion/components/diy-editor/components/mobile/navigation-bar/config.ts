@@ -26,7 +26,10 @@ export interface NavigationBarCellProperty {
   textColor: string; // 文字颜色
   imgUrl: string; // 图片地址
   url: string; // 图片链接
+  backgroundColor: string; // 搜索框：框体颜色
   placeholder: string; // 搜索框：提示文字
+  placeholderPosition: string; // 搜索框：提示文字位置
+  showScan: boolean; // 搜索框：是否显示扫一扫
   borderRadius: number; // 搜索框：边框圆角半径
 }
 
