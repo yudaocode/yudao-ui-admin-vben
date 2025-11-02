@@ -20,13 +20,13 @@ import AddressList from './modules/address-list.vue';
 import AfterSaleList from './modules/after-sale-list.vue';
 import BalanceList from './modules/balance-list.vue';
 import BasicInfo from './modules/basic-info.vue';
+import BrokerageList from './modules/brokerage-list.vue';
 import CouponList from './modules/coupon-list.vue';
 import ExperienceRecordList from './modules/experience-record-list.vue';
 import FavoriteList from './modules/favorite-list.vue';
 import OrderList from './modules/order-list.vue';
 import PointList from './modules/point-list.vue';
 import SignList from './modules/sign-list.vue';
-import UserBrokerageList from './modules/user-brokerage-list.vue';
 
 const route = useRoute();
 const { closeCurrentTab, refreshTab } = useTabs();
@@ -119,10 +119,7 @@ onMounted(async () => {
             <CouponList class="h-full" :user-id="userId" />
           </ElTabPane>
           <ElTabPane label="推广用户" name="BrokerageList">
-            <!-- Todo: 商城模块 -->
-            <div class="h-full">
-              <UserBrokerageList class="h-full" :user-id="userId" />
-            </div>
+            <BrokerageList class="h-full" :user-id="userId" />
           </ElTabPane>
         </ElTabs>
       </ElCard>
