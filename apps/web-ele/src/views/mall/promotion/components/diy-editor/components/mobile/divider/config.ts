@@ -2,19 +2,14 @@ import type { DiyComponent } from '../../../util';
 
 /** 分割线属性 */
 export interface DividerProperty {
-  // 高度
-  height: number;
-  // 线宽
-  lineWidth: number;
-  // 边距类型
-  paddingType: 'horizontal' | 'none';
-  // 颜色
-  lineColor: string;
-  // 类型
-  borderType: 'dashed' | 'dotted' | 'none' | 'solid';
+  height: number; // 高度
+  lineWidth: number; // 线宽
+  paddingType: 'horizontal' | 'none'; // 边距类型
+  lineColor: string; // 颜色
+  borderType: 'dashed' | 'dotted' | 'none' | 'solid'; // 类型
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'Divider',
   name: '分割线',

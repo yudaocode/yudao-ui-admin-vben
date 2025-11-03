@@ -12,8 +12,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<SystemOperateLogApi.OperateLog>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 1,
-  direction: 'horizontal',
   labelWidth: 110,
   schema: useDetailSchema(),
 });

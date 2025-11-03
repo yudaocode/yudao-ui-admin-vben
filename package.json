@@ -95,8 +95,8 @@
     "vue-tsc": "catalog:"
   },
   "engines": {
-    "node": ">=20.10.0",
-    "pnpm": ">=9.12.0"
+    "node": ">=20.12.0",
+    "pnpm": ">=10.14.0"
   },
   "packageManager": "pnpm@10.14.0",
   "pnpm": {

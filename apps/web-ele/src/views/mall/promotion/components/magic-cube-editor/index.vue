@@ -7,16 +7,16 @@ import { IconifyIcon } from '@vben/icons';
 
 import { createRect, isContains, isOverlap } from './util';
 
-// TODO @AI: 改成标准注释
-// 魔方编辑器
-// 有两部分组成：
-// 1. 魔方矩阵：位于底层，由方块组件的二维表格，用于创建热区
-//    操作方法：
-//    1.1 点击其中一个方块就会进入热区选择模式
-//    1.2 再次点击另外一个方块时，结束热区选择模式
-//    1.3 在两个方块中间的区域创建热区
-//    如果两次点击的都是同一方块，就只创建一个格子的热区
-// 2. 热区：位于顶层，采用绝对定位，覆盖在魔方矩阵上面。
+/**
+ * 魔方编辑器，有两部分组成：
+ *  1. 魔方矩阵：位于底层，由方块组件的二维表格，用于创建热区
+ *    操作方法：
+ *       1.1 点击其中一个方块就会进入热区选择模式
+ *       1.2 再次点击另外一个方块时，结束热区选择模式
+ *       1.3 在两个方块中间的区域创建热区
+ *    如果两次点击的都是同一方块，就只创建一个格子的热区
+ *  2. 热区：位于顶层，采用绝对定位，覆盖在魔方矩阵上面。
+ */
 defineOptions({ name: 'MagicCubeEditor' });
 
 /** 定义属性 */
@@ -29,12 +29,10 @@ const props = defineProps({
     type: Number,
     default: 4,
   }, // 行数，默认 4 行
-
   cols: {
     type: Number,
     default: 4,
   }, // 列数，默认 4 列
-
   cubeSize: {
     type: Number,
     default: 75,
@@ -70,6 +68,7 @@ watch(
 );
 
 const hotAreas = ref<Rect[]>([]); // 热区列表
+
 /** 初始化热区 */
 watch(
   () => props.modelValue,
@@ -86,20 +85,20 @@ const isHotAreaSelectMode = () => !!hotAreaBeginCube.value; // 是否开启了�
  * @param currentRow 当前行号
  * @param currentCol 当前列号
  */
-const handleCubeClick = (currentRow: number, currentCol: number) => {
+function handleCubeClick(currentRow: number, currentCol: number) {
   const currentCube = cubes.value[currentRow]?.[currentCol];
   if (!currentCube) {
     return;
   }
 
-  // 情况1：进入热区选择模式
+  // 情况 1：进入热区选择模式
   if (!isHotAreaSelectMode()) {
     hotAreaBeginCube.value = currentCube;
     hotAreaBeginCube.value!.active = true;
     return;
   }
 
-  // 情况2：结束热区选择模式
+  // 情况 2：结束热区选择模式
   hotAreas.value.push(createRect(hotAreaBeginCube.value!, currentCube));
   // 结束热区选择模式
   exitHotAreaSelectMode();
@@ -111,7 +110,7 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
   }
   // 发送热区变动通知
   emitUpdateModelValue();
-};
+}
 
 /**
  * 处理鼠标经过方块
@@ -119,7 +118,7 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
  * @param currentRow 当前行号
  * @param currentCol 当前列号
  */
-const handleCellHover = (currentRow: number, currentCol: number) => {
+function handleCellHover(currentRow: number, currentCol: number) {
   // 当前没有进入热区选择模式
   if (!isHotAreaSelectMode()) {
     return;
@@ -138,7 +137,6 @@ const handleCellHover = (currentRow: number, currentCol: number) => {
     if (isOverlap(hotArea, currentSelectedArea)) {
       // 结束热区选择模式
       exitHotAreaSelectMode();
-
       return;
     }
   }
@@ -147,13 +145,9 @@ const handleCellHover = (currentRow: number, currentCol: number) => {
   eachCube((_, __, cube) => {
     cube.active = isContains(currentSelectedArea, cube);
   });
-};
+}
 
-/**
- * 处理热区删除
- *
- * @param index 热区索引
- */
+/** 处理热区删除 */
 function handleDeleteHotArea(index: number) {
   hotAreas.value.splice(index, 1);
   // 结束热区选择模式
@@ -165,14 +159,14 @@ function handleDeleteHotArea(index: number) {
 const emitUpdateModelValue = () => emit('update:modelValue', hotAreas.value); // 发送热区变动通知
 
 const selectedHotAreaIndex = ref(0); // 热区选中
-const handleHotAreaSelected = (hotArea: Rect, index: number) => {
+
+/** 处理热区选中 */
+function handleHotAreaSelected(hotArea: Rect, index: number) {
   selectedHotAreaIndex.value = index;
   emit('hotAreaSelected', hotArea, index);
-};
+}
 
-/**
- * 结束热区选择模式
- */
+/** 结束热区选择模式 */
 function exitHotAreaSelectMode() {
   // 移除方块激活标记
   eachCube((_, __, cube) => {
@@ -246,9 +240,9 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
         >
           <IconifyIcon icon="ep:circle-close-filled" />
         </div>
-        <span v-if="hotArea.width">{{
-          `${hotArea.width}×${hotArea.height}`
-        }}</span>
+        <span v-if="hotArea.width">
+          {{ `${hotArea.width}×${hotArea.height}` }}
+        </span>
       </div>
     </table>
   </div>
@@ -265,6 +259,11 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
     text-align: center;
     cursor: pointer;
     border: 1px solid var(--el-border-color);
+    line-height: 1;
+
+    :deep(.iconify) {
+      display: inline-block;
+    }
 
     &.active {
       background: var(--el-color-primary-light-9);
