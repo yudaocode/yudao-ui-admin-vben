@@ -24,6 +24,7 @@ import {
 } from '#/api/bpm/processInstance';
 import { decodeFields, setConfAndFields2 } from '#/components/form-create';
 import { router } from '#/router';
+import ProcessInstanceBpmnViewer from '#/views/bpm/processInstance/detail/modules/bpm-viewer.vue';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
 
@@ -318,10 +319,15 @@ defineExpose({ initProcessInfo });
         class="flex flex-1 overflow-hidden"
         :force-render="true"
       >
-        <div class="w-full">
+        <div class="h-full w-full">
+          <!-- BPMN 流程图预览 -->
+          <ProcessInstanceBpmnViewer
+            :bpmn-xml="bpmnXML"
+            v-if="BpmModelType.BPMN === selectProcessDefinition.modelType"
+          />
           <ProcessInstanceSimpleViewer
             :simple-json="simpleJson"
-            v-if="selectProcessDefinition.modelType === BpmModelType.SIMPLE"
+            v-if="BpmModelType.SIMPLE === selectProcessDefinition.modelType"
           />
         </div>
       </Tabs.TabPane>
