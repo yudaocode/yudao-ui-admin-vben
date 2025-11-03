@@ -128,10 +128,6 @@ const [InfoForm, infoFormApi] = useVbenForm({
 
 const [SkuForm, skuFormApi] = useVbenForm({
   commonConfig: {
-    componentProps: {
-      class: 'w-full',
-    },
-    formItemClass: 'col-span-2',
     labelWidth: 120,
   },
   layout: 'horizontal',
@@ -364,6 +360,7 @@ onMounted(async () => {
           <template #singleSkuList>
             <SkuList
               ref="skuListRef"
+              class="w-full"
               :is-detail="isDetail"
               :prop-form-data="formData"
               :property-list="propertyList"
