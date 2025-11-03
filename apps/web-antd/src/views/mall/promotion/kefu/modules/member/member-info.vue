@@ -1,5 +1,7 @@
 <!-- 右侧信息：会员信息 + 最近浏览 + 交易订单 -->
 <script lang="ts" setup>
+import type { UseScrollReturn } from '@vueuse/core';
+
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MemberUserApi } from '#/api/member/user';
 import type { PayWalletApi } from '#/api/pay/wallet/balance';
@@ -8,8 +10,7 @@ import { computed, nextTick, ref } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
-// TODO @jawe：debounce 是不是还是需要的哈；应该有 2 处需要；可以微信沟通哈；
-// import { debounce } from 'lodash-es'
+import { vScroll } from '@vueuse/components';
 import { useDebounceFn } from '@vueuse/core';
 import { Card, Empty, Layout, message } from 'ant-design-vue';
 
@@ -18,12 +19,11 @@ import { getWallet } from '#/api/pay/wallet/balance';
 import AccountInfo from '#/views/member/user/detail/modules/account-info.vue';
 import BasicInfo from '#/views/member/user/detail/modules/basic-info.vue';
 
-import OrderBrowsingHistory from './OrderBrowsingHistory.vue';
-import ProductBrowsingHistory from './ProductBrowsingHistory.vue';
+import OrderBrowsingHistory from './order-browsing-history.vue';
+import ProductBrowsingHistory from './product-browsing-history.vue';
 
-defineOptions({ name: 'MemberBrowsingHistory' });
+const activeTab = ref<'交易订单' | '会员信息' | '最近浏览'>('会员信息');
 
-const activeTab = ref('会员信息');
 const tabActivation = computed(() => (tab: string) => activeTab.value === tab);
 
 /** tab 切换 */
@@ -93,10 +93,9 @@ defineExpose({ initHistory });
 
 /** 处理消息列表滚动事件(debounce 限流) */
 const scrollbarRef = ref<InstanceType<any>>();
-const handleScroll = useDebounceFn(async () => {
-  const wrap = scrollbarRef.value?.wrapRef;
-  // 触底重置
-  if (Math.abs(wrap!.scrollHeight - wrap!.clientHeight - wrap!.scrollTop) < 1) {
+const handleScroll = useDebounceFn(async (state: UseScrollReturn) => {
+  const { arrivedState } = state;
+  if (arrivedState.bottom) {
     await loadMore();
   }
 }, 200);
@@ -140,53 +139,70 @@ async function getUserData() {
 </script>
 
 <template>
-  <!-- TODO @jave：from xingyu：a- 换成大写的方式，另外组件没有进行导入，其他页面也有这个问题 -->
-  <Layout class="kefu">
-    <Layout.Header class="kefu-header">
+  <Layout
+    class="relative w-[300px] bg-[var(--background)] after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-[var(--el-border-color)] after:content-['']"
+  >
+    <Layout.Header
+      class="relative flex items-center justify-around bg-[var(--background)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-[var(--el-border-color)] before:content-['']"
+    >
       <div
-        :class="{ 'kefu-header-item-activation': tabActivation('会员信息') }"
-        class="kefu-header-item flex cursor-pointer items-center justify-center"
+        :class="{
+          'before:border-b-2 before:border-gray-500/50':
+            tabActivation('会员信息'),
+        }"
+        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('会员信息')"
       >
         会员信息
       </div>
       <div
-        :class="{ 'kefu-header-item-activation': tabActivation('最近浏览') }"
-        class="kefu-header-item flex cursor-pointer items-center justify-center"
+        :class="{
+          'before:border-b-2 before:border-gray-500/50':
+            tabActivation('最近浏览'),
+        }"
+        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('最近浏览')"
       >
         最近浏览
       </div>
       <div
-        :class="{ 'kefu-header-item-activation': tabActivation('交易订单') }"
-        class="kefu-header-item flex cursor-pointer items-center justify-center"
+        :class="{
+          'before:border-b-2 before:border-gray-500/50':
+            tabActivation('交易订单'),
+        }"
+        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('交易订单')"
       >
         交易订单
       </div>
     </Layout.Header>
-    <Layout.Content class="kefu-content p-10px!">
-      <div v-if="!isEmpty(conversation)" v-loading="loading">
-        <!-- 基本信息 -->
-        <BasicInfo v-if="activeTab === '会员信息'" :user="user" mode="kefu">
-          <template #title>
-            <span class="text-sm font-bold">基本信息</span>
-          </template>
-        </BasicInfo>
-        <!-- 账户信息 -->
-        <Card
+    <Layout.Content class="relative m-0 h-full w-full p-[10px]">
+      <template v-if="!isEmpty(conversation)">
+        <div
+          v-loading="loading"
           v-if="activeTab === '会员信息'"
-          class="mt-10px h-full"
-          shadow="never"
+          class="relative h-full overflow-y-auto overflow-x-hidden"
         >
-          <template #title>
-            <span class="text-sm font-bold">账户信息</span>
-          </template>
-          <AccountInfo :column="1" :user="user" :wallet="wallet" />
-        </Card>
-      </div>
-      <div v-show="!isEmpty(conversation)">
-        <div ref="scrollbarRef" always @scroll="handleScroll">
+          <!-- 基本信息 -->
+          <BasicInfo :user="user" mode="kefu">
+            <template #title>
+              <span class="text-sm font-bold">基本信息</span>
+            </template>
+          </BasicInfo>
+          <!-- 账户信息 -->
+          <Card class="mt-10px h-full" shadow="never">
+            <template #title>
+              <span class="text-sm font-bold">账户信息</span>
+            </template>
+            <AccountInfo :column="1" :user="user" :wallet="wallet" />
+          </Card>
+        </div>
+        <div
+          v-show="activeTab !== '会员信息'"
+          ref="scrollbarRef"
+          v-scroll="handleScroll"
+          class="relative h-full overflow-y-auto overflow-x-hidden"
+        >
           <!-- 最近浏览 -->
           <ProductBrowsingHistory
             v-if="activeTab === '最近浏览'"
@@ -198,96 +214,8 @@ async function getUserData() {
             ref="orderBrowsingHistoryRef"
           />
         </div>
-      </div>
-      <Empty
-        v-show="isEmpty(conversation)"
-        description="请选择左侧的一个会话后开始"
-        class="mt-[50px]"
-      />
+      </template>
+      <Empty v-else description="请选择左侧的一个会话后开始" class="mt-[50%]" />
     </Layout.Content>
   </Layout>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
-.kefu {
-  position: relative;
-  width: 300px !important;
-  background-color: var(--app-content-bg-color);
-
-  &::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1px; /* 实际宽度 */
-    height: 100%;
-    content: '';
-    background-color: var(--el-border-color);
-    transform: scaleX(0.3); /* 缩小宽度 */
-  }
-
-  &-header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    background-color: var(--app-content-bg-color);
-
-    &::before {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 1px; /* 初始宽度 */
-      content: '';
-      background-color: var(--el-border-color);
-      transform: scaleY(0.3); /* 缩小视觉高度 */
-    }
-
-    &-title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    &-item {
-      position: relative;
-      width: 100%;
-      height: 100%;
-
-      &-activation::before {
-        position: absolute; /* 绝对定位 */
-        inset: 0; /* 覆盖整个元素 */
-        pointer-events: none; /* 确保点击事件不会被伪元素拦截 */
-        content: '';
-        border-bottom: 2px solid rgb(128 128 128 / 50%); /* 边框样式 */
-      }
-
-      &:hover::before {
-        position: absolute; /* 绝对定位 */
-        inset: 0; /* 覆盖整个元素 */
-        pointer-events: none; /* 确保点击事件不会被伪元素拦截 */
-        content: '';
-        border-bottom: 2px solid rgb(128 128 128 / 50%); /* 边框样式 */
-      }
-    }
-  }
-
-  &-content {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    overflow: auto;
-  }
-
-  &-tabs {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.header-title {
-  border-bottom: #e4e0e0 solid 1px;
-}
-</style>

@@ -4,7 +4,6 @@ import type { MallKefuMessageApi } from '#/api/mall/promotion/kefu/message';
 import { UserTypeEnum } from '@vben/constants';
 
 /** 消息组件 */
-defineOptions({ name: 'MessageItem' });
 
 defineProps<{
   message: MallKefuMessageApi.Message;

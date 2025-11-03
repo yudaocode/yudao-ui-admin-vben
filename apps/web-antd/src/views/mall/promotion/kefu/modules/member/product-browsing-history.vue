@@ -4,9 +4,7 @@ import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversa
 import { computed, reactive, ref } from 'vue';
 
 import { getBrowseHistoryPage } from '#/api/mall/product/history';
-import ProductItem from '#/views/mall/promotion/kefu/components/message/ProductItem.vue';
-
-defineOptions({ name: 'ProductBrowsingHistory' });
+import ProductItem from '#/views/mall/promotion/kefu/modules/message/product-item.vue';
 
 const list = ref<any>([]); // 列表
 const total = ref(0); // 总数

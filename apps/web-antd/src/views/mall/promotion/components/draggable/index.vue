@@ -59,7 +59,7 @@ const handleDelete = function (index: number) {
         <!-- 操作按钮区 -->
         <div
           class="-m-2 mb-1 flex flex-row items-center justify-between p-2"
-          style="background-color: var(--app-content-bg-color)"
+          style="background-color: var(--background)"
         >
           <Tooltip title="拖动排序">
             <IconifyIcon

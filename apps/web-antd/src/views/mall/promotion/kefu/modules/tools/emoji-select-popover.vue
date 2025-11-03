@@ -10,8 +10,6 @@ import { List, Popover } from 'ant-design-vue';
 
 import { useEmoji } from './emoji';
 
-defineOptions({ name: 'EmojiSelectPopover' });
-
 /** 选择 emoji 表情 */
 const emits = defineEmits<{
   (e: 'selectEmoji', v: Emoji): void;
@@ -26,9 +24,9 @@ function handleSelect(item: Emoji) {
 </script>
 
 <template>
-  <Popover :width="500" placement="top" trigger="click">
+  <Popover placement="top" trigger="click">
     <template #content>
-      <List height="300px">
+      <List height="300px" class="w-[500px]">
         <ul class="ml-2 flex flex-wrap px-2">
           <li
             v-for="(item, index) in emojiList"

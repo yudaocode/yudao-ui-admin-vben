@@ -4,9 +4,7 @@ import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversa
 import { computed, reactive, ref } from 'vue';
 
 import { getOrderPage } from '#/api/mall/trade/order';
-import OrderItem from '#/views/mall/promotion/kefu/components/message/OrderItem.vue';
-
-defineOptions({ name: 'OrderBrowsingHistory' });
+import OrderItem from '#/views/mall/promotion/kefu/modules/message/order-item.vue';
 
 const list = ref<any>([]); // 列表
 const total = ref(0); // 总数
@@ -45,10 +43,5 @@ defineExpose({ getHistoryList, loadMore });
 </script>
 
 <template>
-  <OrderItem
-    v-for="item in list"
-    :key="item.id"
-    :order="item"
-    class="mb-[10px]"
-  />
+  <OrderItem v-for="item in list" :key="item.id" :order="item" />
 </template>

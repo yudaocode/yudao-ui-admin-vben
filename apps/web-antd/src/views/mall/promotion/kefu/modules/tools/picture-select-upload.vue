@@ -1,11 +1,10 @@
 <!-- 图片选择 -->
 <script lang="ts" setup>
-import { message } from 'ant-design-vue';
+import { Image, message } from 'ant-design-vue';
 
-import { uploadFile } from '#/api/infra/file';
+import { useUpload } from '#/components/upload/use-upload';
+import { $t } from '#/locales';
 import Picture from '#/views/mall/promotion/kefu/asserts/picture.svg';
-
-defineOptions({ name: 'PictureSelectUpload' });
 
 /** 选择并上传文件 */
 const emits = defineEmits<{
@@ -14,11 +13,10 @@ const emits = defineEmits<{
 
 async function selectAndUpload() {
   const files: any = await getFiles();
-  message.success('图片发送中请稍等。。。');
-  // TODO @jawe：直接使用 updateFile，不通过 FileApi。vben 这里的规范；
-  // TODO @jawe：这里的上传，看看能不能替换成 export function useUpload(directory?: string) {；它支持前端直传，更统一；
-  const res = await uploadFile({ file: files[0].file });
-  emits('sendPicture', res.data);
+  message.success($t('ui.upload.imgUploading'));
+  const res = await useUpload().httpRequest(files[0].file);
+  message.success($t('ui.upload.uploadSuccess'));
+  emits('sendPicture', res);
 }
 
 /** 唤起文件选择窗口，并获取选择的文件 */
@@ -82,7 +80,12 @@ async function getFiles(options = {}) {
 
 <template>
   <div>
-    <!-- TODO @jawe：看看能不能换成 antd 的 Image 组件 -->
-    <img :src="Picture" class="h-[35px] w-[35px]" @click="selectAndUpload" />
+    <Image
+      :preview="false"
+      :src="Picture"
+      width="35px"
+      height="35px"
+      @click="selectAndUpload"
+    />
   </div>
 </template>

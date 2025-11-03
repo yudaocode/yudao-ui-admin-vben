@@ -18,8 +18,6 @@ import { useMallKefuStore } from '#/store/mall/kefu';
 import { KeFuMessageContentTypeEnum } from './tools/constants';
 import { useEmoji } from './tools/emoji';
 
-defineOptions({ name: 'KeFuConversationList' });
-
 /** 打开右侧的消息列表 */
 const emits = defineEmits<{
   (e: 'change', v: MallKefuConversationApi.Conversation): void;
@@ -160,23 +158,22 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Layout.Sider class="kefu h-full pt-[5px]" width="260px">
-    <div class="color-[#999] my-[10px] font-bold">
+  <Layout.Sider class="h-full bg-[var(--background)] pt-[5px]" width="260px">
+    <div class="my-[10px] font-bold text-[#999]">
       会话记录({{ kefuStore.getConversationList.length }})
     </div>
     <div
       v-for="item in kefuStore.getConversationList"
       :key="item.id"
       :class="{
-        active: item.id === activeConversationId,
-        pinned: item.adminPinned,
+        'bg-gray-500/50': item.id === activeConversationId,
       }"
-      class="kefu-conversation flex items-center px-[10px]"
+      class="flex h-[60px] cursor-pointer items-center px-[10px]"
       @click="openRightMessage(item)"
       @contextmenu.prevent="rightClick($event as PointerEvent, item)"
     >
-      <div class="!flex w-full items-center justify-center">
-        <div class="w-50[px] h-50[px] flex items-center justify-center">
+      <div class="flex w-full items-center justify-center">
+        <div class="flex h-[50px] w-[50px] items-center justify-center">
           <!-- 头像 + 未读 -->
           <Badge
             :hidden="item.adminUnreadMessageCount === 0"
@@ -187,9 +184,11 @@ onBeforeUnmount(() => {
           </Badge>
         </div>
         <div class="ml-[10px] w-full">
-          <div class="!flex w-full items-center justify-between">
-            <span class="username">{{ item.userNickname || 'null' }}</span>
-            <span class="color-[#999]" style="font-size: 13px">
+          <div class="flex w-full items-center justify-between">
+            <span class="line-clamp-1 min-w-0 max-w-[60%]">{{
+              item.userNickname || 'null'
+            }}</span>
+            <span class="text-[13px] text-[#999]">
               {{ lastMessageTimeMap.get(item.id) ?? '计算中' }}
             </span>
           </div>
@@ -201,17 +200,21 @@ onBeforeUnmount(() => {
                 item.lastMessageContent,
               )
             "
-            class="last-message color-[#999] !flex items-center"
+            class="line-clamp-1 flex items-center text-[13px] text-[#999]"
           ></div>
         </div>
       </div>
     </div>
 
     <!-- 右键，进行操作（类似微信） -->
-    <ul v-show="showRightMenu" :style="rightMenuStyle" class="right-menu-ul">
+    <ul
+      v-show="showRightMenu"
+      :style="rightMenuStyle"
+      class="absolute m-0 w-[130px] list-none rounded-xl bg-[hsl(var(--background))] p-[5px] shadow-md"
+    >
       <li
         v-show="!rightClickConversation.adminPinned"
-        class="flex items-center"
+        class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(true)"
       >
         <IconifyIcon class="mr-[5px]" icon="ep:top" />
@@ -219,78 +222,26 @@ onBeforeUnmount(() => {
       </li>
       <li
         v-show="rightClickConversation.adminPinned"
-        class="flex items-center"
+        class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(false)"
       >
         <IconifyIcon class="mr-[5px]" icon="ep:bottom" />
         取消置顶
       </li>
-      <li class="flex items-center" @click.stop="deleteConversationFn">
+      <li
+        class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
+        @click.stop="deleteConversationFn"
+      >
         <IconifyIcon class="mr-[5px]" color="red" icon="ep:delete" />
         删除会话
       </li>
-      <li class="flex items-center" @click.stop="closeRightMenu">
+      <li
+        class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
+        @click.stop="closeRightMenu"
+      >
         <IconifyIcon class="mr-[5px]" color="red" icon="ep:close" />
         取消
       </li>
     </ul>
   </Layout.Sider>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @jave：看看哪些可以用 tailwind 简化掉 */
-.kefu {
-  background-color: var(--app-content-bg-color);
-
-  &-conversation {
-    height: 60px;
-    //background-color: #fff;
-    //transition: border-left 0.05s ease-in-out; /* 设置过渡效果 */
-
-    .username {
-      min-width: 0;
-      max-width: 60%;
-    }
-
-    .last-message {
-      font-size: 13px;
-    }
-
-    .last-message,
-    .username {
-      display: -webkit-box;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-    }
-  }
-
-  .active {
-    background-color: rgb(128 128 128 / 50%); // 透明色，暗黑模式下也能体现
-  }
-
-  .right-menu-ul {
-    position: absolute;
-    width: 130px;
-    padding: 5px;
-    margin: 0;
-    list-style-type: none; /* 移除默认的项目符号 */
-    background-color: var(--app-content-bg-color);
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%); /* 阴影效果 */
-
-    li {
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: 12px;
-      transition: background-color 0.3s; /* 平滑过渡 */
-      &:hover {
-        background-color: var(
-          --left-menu-bg-active-color
-        ); /* 悬停时的背景颜色 */
-      }
-    }
-  }
-}
-</style>

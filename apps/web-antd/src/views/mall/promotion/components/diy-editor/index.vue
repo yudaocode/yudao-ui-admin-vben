@@ -556,7 +556,7 @@ $phone-width: 375px;
       width: 100%;
       margin: 16px 0 0;
       overflow: hidden;
-      background-color: var(--app-content-bg-color);
+      background-color: var(--background);
 
       /* 手机顶部 */
       .editor-design-top {
