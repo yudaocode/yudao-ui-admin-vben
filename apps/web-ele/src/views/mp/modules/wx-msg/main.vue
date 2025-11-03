@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import type { User } from './types';
 
-import type { Reply } from '#/views/mp/components/wx-reply';
+import type { Reply } from '#/views/mp/modules/wx-reply';
 
 import { nextTick, onMounted, reactive, ref, unref } from 'vue';
 
@@ -17,7 +17,7 @@ import { ElMessage } from 'element-plus';
 import { getMessagePage, sendMessage } from '#/api/mp/message';
 import { getUser } from '#/api/mp/user';
 import profile from '#/assets/imgs/profile.jpg';
-import WxReplySelect, { ReplyType } from '#/views/mp/components/wx-reply';
+import WxReplySelect, { ReplyType } from '#/views/mp/modules/wx-reply';
 
 import MsgList from './components/MsgList.vue';
 
@@ -76,8 +76,8 @@ onMounted(async () => {
   refreshChange();
 });
 
-// 执行发送
-const sendMsg = async () => {
+/** 执行发送 */
+async function sendMsg() {
   if (!unref(reply)) {
     return;
   }
@@ -104,14 +104,16 @@ const sendMsg = async () => {
 
   // 发送后清空数据
   replySelectRef.value?.clear();
-};
+}
 
-const loadMore = () => {
+/** 加载更多 */
+function loadMore() {
   queryParams.pageNo++;
   getPage(queryParams, null);
-};
+}
 
-const getPage = async (page: any, params: any = null) => {
+/** 获取分页数据 */
+async function getPage(page: any, params: any = null) {
   loading.value = true;
   const dataTemp = await getMessagePage(
     Object.assign(
@@ -147,19 +149,20 @@ const getPage = async (page: any, params: any = null) => {
         msgDivRef.value.scrollHeight - scrollHeight - 100;
     }
   }
-};
+}
 
-const refreshChange = () => {
+/** 刷新消息 */
+function refreshChange() {
   getPage(queryParams);
-};
+}
 
 /** 定位到消息底部 */
-const scrollToBottom = async () => {
+async function scrollToBottom() {
   await nextTick();
   if (msgDivRef.value) {
     msgDivRef.value.scrollTop = msgDivRef.value.scrollHeight;
   }
-};
+}
 </script>
 
 <template>

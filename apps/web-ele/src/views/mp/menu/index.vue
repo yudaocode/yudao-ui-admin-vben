@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Menu, RawMenu } from './components/types';
+import type { Menu, RawMenu } from './modules/types';
 
 import { ref } from 'vue';
 
@@ -15,10 +15,10 @@ import {
 
 import * as MpMenuApi from '#/api/mp/menu';
 import * as UtilsTree from '#/utils/tree';
-import WxAccountSelect from '#/views/mp/components/wx-account-select/main.vue';
 import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
 import MenuEditor from '#/views/mp/menu/modules/menu-editor.vue';
 import MenuPreviewer from '#/views/mp/menu/modules/menu-previewer.vue';
+import WxAccountSelect from '#/views/mp/modules/wx-account-select/main.vue';
 
 defineOptions({ name: 'MpMenu' });
 
@@ -57,14 +57,14 @@ const tempSelfObj = ref<{
 const dialogNewsVisible = ref(false); // 跳转图文时的素材选择弹窗
 
 /** 侦听公众号变化 */
-const onAccountChanged = (id: number, name: string) => {
+function onAccountChanged(id: number, name: string) {
   accountId.value = id;
   accountName.value = name;
   getList();
-};
+}
 
 /** 查询并转换菜单 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await MpMenuApi.getMenuList(accountId.value);
@@ -73,16 +73,16 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   resetForm();
   getList();
-};
+}
 
-// 将后端返回的 menuList，转换成前端的 menuList
-const menuListToFrontend = (list: any[]) => {
+/** 将后端返回的 menuList，转换成前端的 menuList */
+function menuListToFrontend(list: any[]) {
   if (!list) return [];
 
   const result: RawMenu[] = [];
@@ -107,10 +107,10 @@ const menuListToFrontend = (list: any[]) => {
     result.push(menu as RawMenu);
   });
   return result;
-};
+}
 
-// 重置表单，清空表单数据
-const resetForm = () => {
+/** 重置表单，清空表单数据 */
+function resetForm() {
   // 菜单操作
   activeIndex.value = MENU_NOT_SELECTED;
   parentIndex.value = -1;
@@ -120,11 +120,11 @@ const resetForm = () => {
   activeMenu.value = {};
   tempSelfObj.value = { grand: Level.Undefined, x: 0, y: 0 };
   dialogNewsVisible.value = false;
-};
+}
 
 // ======================== 菜单操作 ========================
-// 一级菜单点击事件
-const menuClicked = (parent: Menu, x: number) => {
+/** 一级菜单点击事件 */
+function menuClicked(parent: Menu, x: number) {
   // 右侧的表单相关
   showRightPanel.value = true; // 右边菜单
   activeMenu.value = parent; // 这个如果放在顶部，flag 会没有。因为重新赋值了。
@@ -135,10 +135,10 @@ const menuClicked = (parent: Menu, x: number) => {
   // 左侧的选中
   activeIndex.value = `${x}`; // 菜单选中样式
   parentIndex.value = x; // 二级菜单显示标志
-};
+}
 
-// 二级菜单点击事件
-const subMenuClicked = (child: Menu, x: number, y: number) => {
+/** 二级菜单点击事件 */
+function subMenuClicked(child: Menu, x: number, y: number) {
   // 右侧的表单相关
   showRightPanel.value = true; // 右边菜单
   activeMenu.value = child; // 将点击的数据放到临时变量，对象有引用作用
@@ -149,10 +149,10 @@ const subMenuClicked = (child: Menu, x: number, y: number) => {
 
   // 左侧的选中
   activeIndex.value = `${x}-${y}`;
-};
+}
 
-// 删除当前菜单
-const onDeleteMenu = async () => {
+/** 删除当前菜单 */
+async function onDeleteMenu() {
   try {
     await confirm('确定要删除吗?');
     if (tempSelfObj.value.grand === Level.Parent) {
@@ -175,10 +175,11 @@ const onDeleteMenu = async () => {
   } catch {
     //
   }
-};
+}
 
 // ======================== 菜单编辑 ========================
-const onSave = async () => {
+/** 保存菜单 */
+async function onSave() {
   try {
     await confirm('确定要保存吗?');
     const loadingInstance = ElLoading.service({
@@ -194,9 +195,10 @@ const onSave = async () => {
   } catch {
     //
   }
-};
+}
 
-const onClear = async () => {
+/** 清空菜单 */
+async function onClear() {
   try {
     await confirm('确定要删除吗?');
     const loadingInstance = ElLoading.service({
@@ -212,10 +214,10 @@ const onClear = async () => {
   } catch {
     //
   }
-};
+}
 
-// 将前端的 menuList，转换成后端接收的 menuList
-const menuListToBackend = () => {
+/** 将前端的 menuList，转换成后端接收的 menuList */
+function menuListToBackend() {
   const result: any[] = [];
   menuList.value.forEach((item) => {
     const menu = menuToBackend(item);
@@ -231,11 +233,11 @@ const menuListToBackend = () => {
     });
   });
   return result;
-};
+}
 
-// 将前端的 menu，转换成后端接收的 menu
+/** 将前端的 menu，转换成后端接收的 menu */
 // TODO: @芋艿，需要根据后台API删除不需要的字段
-const menuToBackend = (menu: any) => {
+function menuToBackend(menu: any) {
   const result = {
     ...menu,
     children: undefined, // 不处理子节点
@@ -254,7 +256,7 @@ const menuToBackend = (menu: any) => {
   result.replyHqMusicUrl = menu.reply.hqMusicUrl;
 
   return result;
-};
+}
 </script>
 
 <template>

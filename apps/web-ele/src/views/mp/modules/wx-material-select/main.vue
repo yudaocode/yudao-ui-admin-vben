@@ -12,9 +12,9 @@ import { formatTime } from '@vben/utils';
 import * as MpDraftApi from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
 import * as MpMaterialApi from '#/api/mp/material';
-import WxNews from '#/views/mp/components/wx-news';
-import WxVideoPlayer from '#/views/mp/components/wx-video-play';
-import WxVoicePlayer from '#/views/mp/components/wx-voice-play';
+import WxNews from '#/views/mp/modules/wx-news';
+import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
+import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
 
 import { NewsType } from './types';
 
@@ -46,11 +46,13 @@ const queryParams = reactive({
   accountId: props.accountId,
 });
 
-const selectMaterialFun = (item: any) => {
+/** 选择素材 */
+function selectMaterialFun(item: any) {
   emit('selectMaterial', item);
-};
+}
 
-const getPage = async () => {
+/** 获取分页数据 */
+async function getPage() {
   loading.value = true;
   try {
     if (props.type === 'news' && props.newsType === NewsType.Published) {
@@ -66,18 +68,20 @@ const getPage = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
-const getMaterialPageFun = async () => {
+/** 获取素材分页 */
+async function getMaterialPageFun() {
   const data = await MpMaterialApi.getMaterialPage({
     ...queryParams,
     type: props.type,
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
-const getFreePublishPageFun = async () => {
+/** 获取已发布图文分页 */
+async function getFreePublishPageFun() {
   const data = await MpFreePublishApi.getFreePublishPage(queryParams);
   data.list.forEach((item: any) => {
     const articles = item.content.newsItem;
@@ -87,9 +91,10 @@ const getFreePublishPageFun = async () => {
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
-const getDraftPageFun = async () => {
+/** 获取草稿图文分页 */
+async function getDraftPageFun() {
   const data = await MpDraftApi.getDraftPage(queryParams);
   data.list.forEach((draft: any) => {
     const articles = draft.content.newsItem;
@@ -99,7 +104,7 @@ const getDraftPageFun = async () => {
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
 onMounted(async () => {
   getPage();

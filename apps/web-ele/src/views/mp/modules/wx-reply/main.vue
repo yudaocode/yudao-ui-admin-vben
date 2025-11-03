@@ -12,6 +12,10 @@ import type { Reply } from './components/types';
 
 import { computed, ref, unref, watch } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { ElRow, ElTabPane, ElTabs } from 'element-plus';
+
 import TabImage from './components/TabImage.vue';
 import TabMusic from './components/TabMusic.vue';
 import TabNews from './components/TabNews.vue';
@@ -70,9 +74,9 @@ watch(
 );
 
 /** 清除除了`type`, `accountId`的字段 */
-const clear = () => {
+function clear() {
   reply.value = createEmptyReply(reply);
-};
+}
 
 defineExpose({
   clear,
@@ -80,57 +84,57 @@ defineExpose({
 </script>
 
 <template>
-  <el-tabs type="border-card" v-model="currentTab">
+  <ElTabs type="border-card" v-model="currentTab">
     <!-- 类型 1：文本 -->
-    <el-tab-pane :name="ReplyType.Text">
+    <ElTabPane :name="ReplyType.Text">
       <template #label>
-        <el-row align="middle"><Icon icon="ep:document" /> 文本</el-row>
+        <ElRow align="middle"><IconifyIcon icon="ep:document" /> 文本</ElRow>
       </template>
       <TabText v-model="reply.content" />
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 类型 2：图片 -->
-    <el-tab-pane :name="ReplyType.Image">
+    <ElTabPane :name="ReplyType.Image">
       <template #label>
-        <el-row align="middle">
-          <Icon icon="ep:picture" class="mr-5px" /> 图片
-        </el-row>
+        <ElRow align="middle">
+          <IconifyIcon icon="ep:picture" class="mr-5px" /> 图片
+        </ElRow>
       </template>
       <TabImage v-model="reply" />
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 类型 3：语音 -->
-    <el-tab-pane :name="ReplyType.Voice">
+    <ElTabPane :name="ReplyType.Voice">
       <template #label>
-        <el-row align="middle"><Icon icon="ep:phone" /> 语音</el-row>
+        <ElRow align="middle"><IconifyIcon icon="ep:phone" /> 语音</ElRow>
       </template>
       <TabVoice v-model="reply" />
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 类型 4：视频 -->
-    <el-tab-pane :name="ReplyType.Video">
+    <ElTabPane :name="ReplyType.Video">
       <template #label>
-        <el-row align="middle"><Icon icon="ep:share" /> 视频</el-row>
+        <ElRow align="middle"><IconifyIcon icon="ep:share" /> 视频</ElRow>
       </template>
       <TabVideo v-model="reply" />
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 类型 5：图文 -->
-    <el-tab-pane :name="ReplyType.News">
+    <ElTabPane :name="ReplyType.News">
       <template #label>
-        <el-row align="middle"><Icon icon="ep:reading" /> 图文</el-row>
+        <ElRow align="middle"><IconifyIcon icon="ep:reading" /> 图文</ElRow>
       </template>
       <TabNews v-model="reply" :news-type="newsType" />
-    </el-tab-pane>
+    </ElTabPane>
 
     <!-- 类型 6：音乐 -->
-    <el-tab-pane :name="ReplyType.Music">
+    <ElTabPane :name="ReplyType.Music">
       <template #label>
-        <el-row align="middle"><Icon icon="ep:service" />音乐</el-row>
+        <ElRow align="middle"><IconifyIcon icon="ep:service" />音乐</ElRow>
       </template>
       <TabMusic v-model="reply" />
-    </el-tab-pane>
-  </el-tabs>
+    </ElTabPane>
+  </ElTabs>
 </template>
 
 <style lang="scss" scoped>

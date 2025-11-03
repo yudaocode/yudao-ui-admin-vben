@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Menu } from '../components/types';
+import type { Menu } from './types';
 
 import { computed } from 'vue';
 
@@ -25,8 +25,8 @@ const menuList = computed<Menu[]>({
   set: (val) => emit('update:modelValue', val),
 });
 
-// 添加横向一级菜单
-const addMenu = () => {
+/** 添加横向一级菜单 */
+function addMenu() {
   const index = menuList.value.length;
   const menu = {
     name: '菜单名称',
@@ -39,10 +39,10 @@ const addMenu = () => {
   };
   menuList.value[index] = menu;
   menuClicked(menu, index - 1);
-};
+}
 
-// 添加横向二级菜单；parent 表示要操作的父菜单
-const addSubMenu = (i: number, parent: any) => {
+/** 添加横向二级菜单；parent 表示要操作的父菜单 */
+function addSubMenu(i: number, parent: any) {
   const subMenuKeyLength = parent.children.length; // 获取二级菜单key长度
   const addButton = {
     name: '子菜单名称',
@@ -54,15 +54,17 @@ const addSubMenu = (i: number, parent: any) => {
   };
   parent.children[subMenuKeyLength] = addButton;
   subMenuClicked(parent.children[subMenuKeyLength], i, subMenuKeyLength);
-};
+}
 
-const menuClicked = (parent: Menu, x: number) => {
+/** 一级菜单点击 */
+function menuClicked(parent: Menu, x: number) {
   emit('menuClicked', parent, x);
-};
+}
 
-const subMenuClicked = (child: Menu, x: number, y: number) => {
+/** 二级菜单点击 */
+function subMenuClicked(child: Menu, x: number, y: number) {
   emit('submenuClicked', child, x, y);
-};
+}
 
 /**
  * 处理一级菜单展开后被拖动，激活(展开)原来活动的一级菜单
@@ -71,13 +73,13 @@ const subMenuClicked = (child: Menu, x: number, y: number) => {
  * @param options.oldIndex - 一级菜单拖动前的位置
  * @param options.newIndex - 一级菜单拖动后的位置
  */
-const onParentDragEnd = ({
+function onParentDragEnd({
   oldIndex,
   newIndex,
 }: {
   newIndex: number;
   oldIndex: number;
-}) => {
+}) {
   // 二级菜单没有展开，直接返回
   if (props.activeIndex === '__MENU_NOT_SELECTED__') {
     return;
@@ -95,7 +97,7 @@ const onParentDragEnd = ({
   if (parent && newParentIndex !== -1) {
     emit('menuClicked', parent, newParentIndex);
   }
-};
+}
 
 /**
  * 处理二级菜单展开后被拖动，激活被拖动的菜单
@@ -103,7 +105,7 @@ const onParentDragEnd = ({
  * @param options - 拖动参数对象
  * @param options.newIndex - 二级菜单拖动后的位置
  */
-const onChildDragEnd = ({ newIndex }: { newIndex: number }) => {
+function onChildDragEnd({ newIndex }: { newIndex: number }) {
   const x = props.parentIndex;
   const y = newIndex;
   const children = menuList.value[x]?.children;
@@ -113,7 +115,7 @@ const onChildDragEnd = ({ newIndex }: { newIndex: number }) => {
       emit('submenuClicked', child, x, y);
     }
   }
-};
+}
 </script>
 
 <template>

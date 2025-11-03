@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { ElInput } from 'element-plus';
+
 const props = defineProps<{
   modelValue?: null | string;
 }>();
@@ -20,7 +22,7 @@ const content = computed({
 </script>
 
 <template>
-  <el-input
+  <ElInput
     type="textarea"
     :rows="5"
     placeholder="请输入内容"

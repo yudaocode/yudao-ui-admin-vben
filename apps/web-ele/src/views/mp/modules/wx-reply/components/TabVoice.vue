@@ -5,13 +5,21 @@ import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { ElMessage } from 'element-plus';
+import {
+  ElButton,
+  ElCol,
+  ElDialog,
+  ElMessage,
+  ElRow,
+  ElUpload,
+} from 'element-plus';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
-import WxVoicePlayer from '#/views/mp/components/wx-voice-play';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
+import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
 
 // 设置上传的请求头部
 
@@ -41,10 +49,13 @@ const uploadData = reactive({
   introduction: '',
 });
 
-const beforeVoiceUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Voice, 10)(rawFile);
+/** 语音上传前校验 */
+function beforeVoiceUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Voice, 10)(rawFile);
+}
 
-const onUploadSuccess = (res: any) => {
+/** 上传成功 */
+function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -57,43 +68,45 @@ const onUploadSuccess = (res: any) => {
 
   // 上传好的文件，本质是个素材，所以可以进行选中
   selectMaterial(res.data);
-};
+}
 
-const onDelete = () => {
+/** 删除语音 */
+function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
-};
+}
 
-const selectMaterial = (item: Reply) => {
+/** 选择素材 */
+function selectMaterial(item: Reply) {
   showDialog.value = false;
 
   // reply.value.type = ReplyType.Voice
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
-};
+}
 </script>
 <template>
   <div>
     <div class="select-item2" v-if="reply.url">
       <p class="item-name">{{ reply.name }}</p>
-      <el-row class="ope-row" justify="center">
+      <ElRow class="ope-row" justify="center">
         <WxVoicePlayer :url="reply.url" />
-      </el-row>
-      <el-row class="ope-row" justify="center">
-        <el-button type="danger" circle @click="onDelete">
-          <Icon icon="ep:delete" />
-        </el-button>
-      </el-row>
+      </ElRow>
+      <ElRow class="ope-row" justify="center">
+        <ElButton type="danger" circle @click="onDelete">
+          <IconifyIcon icon="ep:delete" />
+        </ElButton>
+      </ElRow>
     </div>
-    <el-row v-else style="text-align: center">
+    <ElRow v-else style="text-align: center">
       <!-- 选择素材 -->
-      <el-col :span="12" class="col-select">
-        <el-button type="success" @click="showDialog = true">
-          素材库选择<Icon icon="ep:circle-check" />
-        </el-button>
-        <el-dialog
+      <ElCol :span="12" class="col-select">
+        <ElButton type="success" @click="showDialog = true">
+          素材库选择<IconifyIcon icon="ep:circle-check" />
+        </ElButton>
+        <ElDialog
           title="选择语音"
           v-model="showDialog"
           width="90%"
@@ -105,11 +118,11 @@ const selectMaterial = (item: Reply) => {
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
-        </el-dialog>
-      </el-col>
+        </ElDialog>
+      </ElCol>
       <!-- 文件上传 -->
-      <el-col :span="12" class="col-add">
-        <el-upload
+      <ElCol :span="12" class="col-add">
+        <ElUpload
           :action="UPLOAD_URL"
           :headers="HEADERS"
           multiple
@@ -119,15 +132,15 @@ const selectMaterial = (item: Reply) => {
           :before-upload="beforeVoiceUpload"
           :on-success="onUploadSuccess"
         >
-          <el-button type="primary">点击上传</el-button>
+          <ElButton type="primary">点击上传</ElButton>
           <template #tip>
             <div class="el-upload__tip">
               格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
             </div>
           </template>
-        </el-upload>
-      </el-col>
-    </el-row>
+        </ElUpload>
+      </ElCol>
+    </ElRow>
   </div>
 </template>
 

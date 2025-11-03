@@ -5,13 +5,22 @@ import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { ElMessage } from 'element-plus';
+import {
+  ElButton,
+  ElCol,
+  ElDialog,
+  ElInput,
+  ElMessage,
+  ElRow,
+  ElUpload,
+} from 'element-plus';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
-import WxVideoPlayer from '#/views/mp/components/wx-video-play';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
+import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
 
 const props = defineProps<{
   modelValue: Reply;
@@ -40,10 +49,13 @@ const uploadData = reactive({
   introduction: '',
 });
 
-const beforeVideoUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Video, 10)(rawFile);
+/** 视频上传前校验 */
+function beforeVideoUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Video, 10)(rawFile);
+}
 
-const onUploadSuccess = (res: any) => {
+/** 上传成功 */
+function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -55,10 +67,10 @@ const onUploadSuccess = (res: any) => {
   uploadData.introduction = '';
 
   selectMaterial(res.data);
-};
+}
 
 /** 选择素材后设置 */
-const selectMaterial = (item: any) => {
+function selectMaterial(item: any) {
   showDialog.value = false;
 
   reply.value.mediaId = item.mediaId;
@@ -72,33 +84,33 @@ const selectMaterial = (item: any) => {
   if (item.introduction) {
     reply.value.description = item.introduction || '';
   }
-};
+}
 </script>
 
 <template>
   <div>
-    <el-row>
-      <el-input
+    <ElRow>
+      <ElInput
         v-model="reply.title"
         class="input-margin-bottom"
         placeholder="请输入标题"
       />
-      <el-input
+      <ElInput
         class="input-margin-bottom"
         v-model="reply.description"
         placeholder="请输入描述"
       />
-      <el-row class="ope-row" justify="center">
+      <ElRow class="ope-row" justify="center">
         <WxVideoPlayer v-if="reply.url" :url="reply.url" />
-      </el-row>
-      <el-col>
-        <el-row style="text-align: center" align="middle">
+      </ElRow>
+      <ElCol>
+        <ElRow style="text-align: center" align="middle">
           <!-- 选择素材 -->
-          <el-col :span="12">
-            <el-button type="success" @click="showDialog = true">
-              素材库选择 <Icon icon="ep:circle-check" />
-            </el-button>
-            <el-dialog
+          <ElCol :span="12">
+            <ElButton type="success" @click="showDialog = true">
+              素材库选择 <IconifyIcon icon="ep:circle-check" />
+            </ElButton>
+            <ElDialog
               title="选择视频"
               v-model="showDialog"
               width="90%"
@@ -110,11 +122,11 @@ const selectMaterial = (item: any) => {
                 :account-id="reply.accountId"
                 @select-material="selectMaterial"
               />
-            </el-dialog>
-          </el-col>
+            </ElDialog>
+          </ElCol>
           <!-- 文件上传 -->
-          <el-col :span="12">
-            <el-upload
+          <ElCol :span="12">
+            <ElUpload
               :action="UPLOAD_URL"
               :headers="HEADERS"
               multiple
@@ -124,14 +136,14 @@ const selectMaterial = (item: any) => {
               :before-upload="beforeVideoUpload"
               :on-success="onUploadSuccess"
             >
-              <el-button type="primary">
-                新建视频 <Icon icon="ep:upload" />
-              </el-button>
-            </el-upload>
-          </el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+              <ElButton type="primary">
+                新建视频 <IconifyIcon icon="ep:upload" />
+              </ElButton>
+            </ElUpload>
+          </ElCol>
+        </ElRow>
+      </ElCol>
+    </ElRow>
   </div>
 </template>
 

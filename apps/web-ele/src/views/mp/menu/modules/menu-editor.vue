@@ -14,11 +14,11 @@ import {
   ElSelect,
 } from 'element-plus';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
-import WxNews from '#/views/mp/components/wx-news';
-import WxReplySelect from '#/views/mp/components/wx-reply';
+import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import WxNews from '#/views/mp/modules/wx-news';
+import WxReplySelect from '#/views/mp/modules/wx-reply';
 
-import menuOptions from '../components/menuOptions';
+import menuOptions from './menuOptions';
 
 const props = defineProps<{
   accountId: number;
@@ -51,7 +51,8 @@ watch(menu, () => {
 });
 
 // ======================== 菜单编辑（素材选择） ========================
-const selectMaterial = (item: any) => {
+/** 选择素材 */
+function selectMaterial(item: any) {
   const articleId = item.articleId;
   const articles = item.content.newsItem;
   // 提示，针对多图文
@@ -71,12 +72,13 @@ const selectMaterial = (item: any) => {
       url: article.url,
     });
   });
-};
+}
 
-const deleteMaterial = () => {
+/** 删除素材 */
+function deleteMaterial() {
   delete menu.value.articleId;
   delete menu.value.replyArticles;
-};
+}
 </script>
 
 <template>

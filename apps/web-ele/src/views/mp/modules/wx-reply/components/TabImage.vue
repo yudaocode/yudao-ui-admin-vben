@@ -5,15 +5,20 @@ import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
 
-// import { getAccessToken } from '#/utils/auth';
+import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { ElMessage } from 'element-plus';
+import {
+  ElButton,
+  ElCol,
+  ElDialog,
+  ElMessage,
+  ElRow,
+  ElUpload,
+} from 'element-plus';
 
-// import WxMaterialSelect from '#/views/mp/components/wx-material-select';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
-
-// 设置上传的请求头部
+import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
 
 const props = defineProps<{
   modelValue: Reply;
@@ -41,10 +46,13 @@ const uploadData = reactive({
   introduction: '',
 });
 
-const beforeImageUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Image, 2)(rawFile);
+/** 图片上传前校验 */
+function beforeImageUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Image, 2)(rawFile);
+}
 
-const onUploadSuccess = (res: any) => {
+/** 上传成功 */
+function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -57,22 +65,24 @@ const onUploadSuccess = (res: any) => {
 
   // 上传好的文件，本质是个素材，所以可以进行选中
   selectMaterial(res.data);
-};
+}
 
-const onDelete = () => {
+/** 删除图片 */
+function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
-};
+}
 
-const selectMaterial = (item: any) => {
+/** 选择素材 */
+function selectMaterial(item: any) {
   showDialog.value = false;
 
   // reply.value.type = 'image'
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
-};
+}
 </script>
 
 <template>
@@ -81,20 +91,20 @@ const selectMaterial = (item: any) => {
     <div class="select-item" v-if="reply.url">
       <img class="material-img" :src="reply.url" />
       <p class="item-name" v-if="reply.name">{{ reply.name }}</p>
-      <el-row class="ope-row" justify="center">
-        <el-button type="danger" circle @click="onDelete">
-          <Icon icon="ep:delete" />
-        </el-button>
-      </el-row>
+      <ElRow class="ope-row" justify="center">
+        <ElButton type="danger" circle @click="onDelete">
+          <IconifyIcon icon="ep:delete" />
+        </ElButton>
+      </ElRow>
     </div>
     <!-- 情况二：未做完上述操作 -->
-    <el-row v-else style="text-align: center" align="middle">
+    <ElRow v-else style="text-align: center" align="middle">
       <!-- 选择素材 -->
-      <el-col :span="12" class="col-select">
-        <el-button type="success" @click="showDialog = true">
-          素材库选择 <Icon icon="ep:circle-check" />
-        </el-button>
-        <el-dialog
+      <ElCol :span="12" class="col-select">
+        <ElButton type="success" @click="showDialog = true">
+          素材库选择 <IconifyIcon icon="ep:circle-check" />
+        </ElButton>
+        <ElDialog
           title="选择图片"
           v-model="showDialog"
           width="90%"
@@ -106,11 +116,11 @@ const selectMaterial = (item: any) => {
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
-        </el-dialog>
-      </el-col>
+        </ElDialog>
+      </ElCol>
       <!-- 文件上传 -->
-      <el-col :span="12" class="col-add">
-        <el-upload
+      <ElCol :span="12" class="col-add">
+        <ElUpload
           :action="UPLOAD_URL"
           :headers="HEADERS"
           multiple
@@ -120,7 +130,7 @@ const selectMaterial = (item: any) => {
           :before-upload="beforeImageUpload"
           :on-success="onUploadSuccess"
         >
-          <el-button type="primary">上传图片</el-button>
+          <ElButton type="primary">上传图片</ElButton>
           <template #tip>
             <span>
               <div class="el-upload__tip">
@@ -128,9 +138,9 @@ const selectMaterial = (item: any) => {
               </div>
             </span>
           </template>
-        </el-upload>
-      </el-col>
-    </el-row>
+        </ElUpload>
+      </ElCol>
+    </ElRow>
   </div>
 </template>
 

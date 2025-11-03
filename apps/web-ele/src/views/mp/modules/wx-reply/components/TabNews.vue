@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import type { NewsType, Reply } from './types';
+import type { Reply } from './types';
 
 import { computed, ref } from 'vue';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
-import WxNews from '#/views/mp/components/wx-news';
+import { IconifyIcon } from '@vben/icons';
+
+import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
+
+import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import WxNews from '#/views/mp/modules/wx-news';
+
+import { NewsType } from './types';
 
 const props = defineProps<{
   modelValue: Reply;
@@ -20,46 +26,48 @@ const reply = computed<Reply>({
 
 const showDialog = ref(false);
 
-const selectMaterial = (item: any) => {
+/** 选择素材 */
+function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.articles = item.content.newsItem;
-};
+}
 
-const onDelete = () => {
+/** 删除图文 */
+function onDelete() {
   reply.value.articles = [];
-};
+}
 </script>
 
 <template>
   <div>
-    <el-row>
+    <ElRow>
       <div
         class="select-item"
         v-if="reply.articles && reply.articles.length > 0"
       >
         <WxNews :articles="reply.articles" />
-        <el-col class="ope-row">
-          <el-button type="danger" circle @click="onDelete">
-            <Icon icon="ep:delete" />
-          </el-button>
-        </el-col>
+        <ElCol class="ope-row">
+          <ElButton type="danger" circle @click="onDelete">
+            <IconifyIcon icon="ep:delete" />
+          </ElButton>
+        </ElCol>
       </div>
       <!-- 选择素材 -->
-      <el-col :span="24" v-if="!reply.content">
-        <el-row style="text-align: center" align="middle">
-          <el-col :span="24">
-            <el-button type="success" @click="showDialog = true">
+      <ElCol :span="24" v-if="!reply.content">
+        <ElRow style="text-align: center" align="middle">
+          <ElCol :span="24">
+            <ElButton type="success" @click="showDialog = true">
               {{
                 newsType === NewsType.Published
                   ? '选择已发布图文'
                   : '选择草稿箱图文'
               }}
-              <Icon icon="ep:circle-check" />
-            </el-button>
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-dialog
+              <IconifyIcon icon="ep:circle-check" />
+            </ElButton>
+          </ElCol>
+        </ElRow>
+      </ElCol>
+      <ElDialog
         title="选择图文"
         v-model="showDialog"
         width="90%"
@@ -72,8 +80,8 @@ const onDelete = () => {
           :news-type="newsType"
           @select-material="selectMaterial"
         />
-      </el-dialog>
-    </el-row>
+      </ElDialog>
+    </ElRow>
   </div>
 </template>
 
