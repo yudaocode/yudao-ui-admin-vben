@@ -2,11 +2,10 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 用户资产属性 */
 export interface UserWalletProperty {
-  // 组件样式
-  style: ComponentStyle;
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'UserWallet',
   name: '用户资产',

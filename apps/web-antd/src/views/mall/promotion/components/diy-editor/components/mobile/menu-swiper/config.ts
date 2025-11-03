@@ -4,40 +4,28 @@ import { cloneDeep } from '@vben/utils';
 
 /** 菜单导航属性 */
 export interface MenuSwiperProperty {
-  // 布局： 图标+文字 | 图标
-  layout: 'icon' | 'iconText';
-  // 行数
-  row: number;
-  // 列数
-  column: number;
-  // 导航菜单列表
-  list: MenuSwiperItemProperty[];
-  // 组件样式
-  style: ComponentStyle;
-}
-/** 菜单导航项目属性 */
-export interface MenuSwiperItemProperty {
-  // 图标链接
-  iconUrl: string;
-  // 标题
-  title: string;
-  // 标题颜色
-  titleColor: string;
-  // 链接
-  url: string;
-  // 角标
-  badge: {
-    // 角标背景颜色
-    bgColor: string;
-    // 是否显示
-    show: boolean;
-    // 角标文字
-    text: string;
-    // 角标文字颜色
-    textColor: string;
-  };
+  layout: 'icon' | 'iconText'; // 布局：图标+文字 | 图标
+  row: number; // 行数
+  column: number; // 列数
+  list: MenuSwiperItemProperty[]; // 导航菜单列表
+  style: ComponentStyle; // 组件样式
 }
 
+/** 菜单导航项目属性 */
+export interface MenuSwiperItemProperty {
+  iconUrl: string; // 图标链接
+  title: string; // 标题
+  titleColor: string; // 标题颜色
+  url: string; // 链接
+  badge: {
+    bgColor: string; // 角标背景颜色
+    show: boolean; // 是否显示
+    text: string; // 角标文字
+    textColor: string; // 角标文字颜色
+  }; // 角标
+}
+
+/** 空菜单导航项目属性 */
 export const EMPTY_MENU_SWIPER_ITEM_PROPERTY = {
   title: '标题',
   titleColor: '#333',
@@ -48,7 +36,7 @@ export const EMPTY_MENU_SWIPER_ITEM_PROPERTY = {
   },
 } as MenuSwiperItemProperty;
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'MenuSwiper',
   name: '菜单导航',

@@ -2,15 +2,12 @@ import type { DiyComponent } from '../../../util';
 
 /** 页面设置属性 */
 export interface PageConfigProperty {
-  // 页面描述
-  description: string;
-  // 页面背景颜色
-  backgroundColor: string;
-  // 页面背景图片
-  backgroundImage: string;
+  description: string; // 页面描述
+  backgroundColor: string; // 页面背景颜色
+  backgroundImage: string; // 页面背景图片
 }
 
-// 定义页面组件
+/** 定义页面组件 */
 export const component = {
   id: 'PageConfig',
   name: '页面设置',

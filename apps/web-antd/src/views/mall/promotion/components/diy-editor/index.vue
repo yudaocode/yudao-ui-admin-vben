@@ -3,12 +3,12 @@ import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { onMounted, ref, unref, watch } from 'vue';
 
-import { IFrame } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
 import { useQRCode } from '@vueuse/integrations/useQRCode';
-import { Button, Card, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { Button, Card, Image, Tag, Tooltip } from 'ant-design-vue';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
@@ -37,7 +37,7 @@ const props = defineProps({
   previewUrl: { type: String, default: '' }, // 预览地址：提供了预览地址，才会显示预览按钮
 });
 
-const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']); // 工具栏操作
+const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
 const qrcode = useQRCode(props.previewUrl, {
   errorCorrectionLevel: 'H',
@@ -68,17 +68,20 @@ watch(
       isString(props.modelValue) && !isEmpty(props.modelValue)
         ? (JSON.parse(props.modelValue) as PageConfig)
         : props.modelValue;
-    // TODO @AI：这里可以简化么？idea 提示 Invalid 'typeof' check: 'modelValue' cannot have type 'string'
+    // noinspection SuspiciousTypeOfGuard
     pageConfigComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     navigationBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.navigationBar) ||
       NAVIGATION_BAR_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     tabBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.tabBar) ||
       TAB_BAR_COMPONENT.property;
     // 查找对应的页面组件
+    // noinspection SuspiciousTypeOfGuard
     pageComponents.value = (
       (typeof modelValue !== 'string' && modelValue?.components) ||
       []
@@ -98,6 +101,11 @@ watch(
   (val: any) => {
     if (!val || selectedComponentIndex.value === -1) {
       return;
+    }
+    // 如果是基础设置页，默认选中的索引改成 -1，为了防止删除组件后切换到此页导致报错
+    // https://gitee.com/yudaocode/yudao-ui-admin-vue3/pulls/792
+    if (props.showTabBar) {
+      selectedComponentIndex.value = -1;
     }
     pageComponents.value[selectedComponentIndex.value] =
       selectedComponent.value!;
@@ -251,12 +259,17 @@ function handleReset() {
   emits('reset');
 }
 
-// TODO @AI：搞成 modal 来？
+const [PreviewModal, previewModalApi] = useVbenModal({
+  showConfirmButton: false,
+  showCancelButton: false,
+  onCancel() {
+    previewModalApi.close();
+  },
+});
+
 /** 预览 */
-const previewDialogVisible = ref(false);
 function handlePreview() {
-  previewDialogVisible.value = true;
-  emits('preview');
+  previewModalApi.open();
 }
 
 /** 设置默认选中的组件 */
@@ -457,19 +470,18 @@ onMounted(() => {
     </div>
 
     <!-- 预览弹框 -->
-    <Modal v-model:open="previewDialogVisible" title="预览" width="700">
+    <PreviewModal title="预览" class="w-700px">
       <div class="flex justify-around">
-        <IFrame
+        <iframe
           :src="previewUrl"
           class="h-[667px] w-[375px] rounded-lg border-4 border-solid p-0.5"
-        />
+        ></iframe>
         <div class="flex flex-col">
           <div class="text-base">手机扫码预览</div>
-          <img :src="qrcode" alt="qrcode" class="w-1/2" />
-          <!-- <Qrcode :text="previewUrl" logo="/logo.gif" /> -->
+          <Image :src="qrcode" alt="qrcode" />
         </div>
       </div>
-    </Modal>
+    </PreviewModal>
   </div>
 </template>
 <style lang="scss" scoped>
