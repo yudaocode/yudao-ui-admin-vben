@@ -193,7 +193,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
       <div
         v-for="(item, hotZoneIndex) in formData"
         :key="hotZoneIndex"
-        class="hot-zone absolute z-10 flex cursor-move items-center justify-center border text-base opacity-80"
+        class="group absolute z-10 flex cursor-move items-center justify-center border text-base opacity-80"
         :style="{
           width: `${item.width}px`,
           height: `${item.height}px`,
@@ -211,7 +211,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
         </span>
         <IconifyIcon
           icon="ep:close"
-          class="delete absolute right-0 top-0 hidden cursor-pointer rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white"
+          class="absolute right-0 top-0 hidden cursor-pointer rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
           :style="{ backgroundColor: 'var(--el-color-primary)' }"
           :size="14"
           @click="handleRemove(item)"
@@ -240,11 +240,3 @@ const handleAppLinkChange = (appLink: AppLink) => {
     @app-link-change="handleAppLinkChange"
   />
 </template>
-
-<style scoped lang="scss">
-.hot-zone:hover {
-  .delete {
-    display: block;
-  }
-}
-</style>
