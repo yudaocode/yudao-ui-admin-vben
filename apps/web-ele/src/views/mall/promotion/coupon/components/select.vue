@@ -7,10 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
 
-import {
-  useGridColumns,
-  useGridFormSchema,
-} from './select-data';
+import { useGridColumns, useGridFormSchema } from './select-data';
 
 defineOptions({ name: 'CouponSelect' });
 
@@ -54,7 +51,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 从 gridApi 获取选中的记录
-    const selectedRecords = (gridApi.grid?.getCheckboxRecords() || []) as MallCouponTemplateApi.CouponTemplate[];
+    const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
+      []) as MallCouponTemplateApi.CouponTemplate[];
     await modalApi.close();
     emit('success', selectedRecords);
   },
@@ -66,4 +64,3 @@ const [Modal, modalApi] = useVbenModal({
     <Grid />
   </Modal>
 </template>
-

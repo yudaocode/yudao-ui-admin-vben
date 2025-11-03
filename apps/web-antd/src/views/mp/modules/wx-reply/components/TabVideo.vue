@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'ant-design-vue';
 
 import type { Reply } from './types';
 
@@ -9,14 +9,14 @@ import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
 import {
-  ElButton,
-  ElCol,
-  ElDialog,
-  ElInput,
-  ElMessage,
-  ElRow,
-  ElUpload,
-} from 'element-plus';
+  Button,
+  Col,
+  Input,
+  message,
+  Modal,
+  Row,
+  Upload,
+} from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
@@ -30,7 +30,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-const message = ElMessage;
+// 消息弹窗
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -50,12 +50,13 @@ const uploadData = reactive({
 });
 
 /** 视频上传前校验 */
-function beforeVideoUpload(rawFile: UploadRawFile) {
-  return useBeforeUpload(UploadType.Video, 10)(rawFile);
+function beforeVideoUpload(file: UploadFile) {
+  return useBeforeUpload(UploadType.Video, 10)(file as any);
 }
 
 /** 上传成功 */
-function onUploadSuccess(res: any) {
+function onUploadSuccess(info: any) {
+  const res = info.response || info;
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -89,32 +90,31 @@ function selectMaterial(item: any) {
 
 <template>
   <div>
-    <ElRow>
-      <ElInput
-        v-model="reply.title"
+    <Row>
+      <Input
+        v-model:value="reply.title as string"
         class="input-margin-bottom"
         placeholder="请输入标题"
       />
-      <ElInput
+      <Input
         class="input-margin-bottom"
-        v-model="reply.description"
+        v-model:value="reply.description as string"
         placeholder="请输入描述"
       />
-      <ElRow class="ope-row" justify="center">
+      <Row class="ope-row" justify="center">
         <WxVideoPlayer v-if="reply.url" :url="reply.url" />
-      </ElRow>
-      <ElCol>
-        <ElRow style="text-align: center" align="middle">
+      </Row>
+      <Col class="w-full">
+        <Row style="text-align: center" align="middle">
           <!-- 选择素材 -->
-          <ElCol :span="12">
-            <ElButton type="success" @click="showDialog = true">
+          <Col :span="12">
+            <Button type="primary" @click="showDialog = true">
               素材库选择 <IconifyIcon icon="ep:circle-check" />
-            </ElButton>
-            <ElDialog
+            </Button>
+            <Modal
               title="选择视频"
-              v-model="showDialog"
+              v-model:open="showDialog"
               width="90%"
-              append-to-body
               destroy-on-close
             >
               <WxMaterialSelect
@@ -122,28 +122,32 @@ function selectMaterial(item: any) {
                 :account-id="reply.accountId"
                 @select-material="selectMaterial"
               />
-            </ElDialog>
-          </ElCol>
+            </Modal>
+          </Col>
           <!-- 文件上传 -->
-          <ElCol :span="12">
-            <ElUpload
+          <Col :span="12">
+            <Upload
               :action="UPLOAD_URL"
               :headers="HEADERS"
-              multiple
-              :limit="1"
               :file-list="fileList"
               :data="uploadData"
               :before-upload="beforeVideoUpload"
-              :on-success="onUploadSuccess"
+              @change="
+                (info) => {
+                  if (info.file.status === 'done') {
+                    onUploadSuccess(info.file.response || info.file);
+                  }
+                }
+              "
             >
-              <ElButton type="primary">
+              <Button type="primary">
                 新建视频 <IconifyIcon icon="ep:upload" />
-              </ElButton>
-            </ElUpload>
-          </ElCol>
-        </ElRow>
-      </ElCol>
-    </ElRow>
+              </Button>
+            </Upload>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   </div>
 </template>
 

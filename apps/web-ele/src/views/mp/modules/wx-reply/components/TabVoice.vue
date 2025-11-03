@@ -17,7 +17,7 @@ import {
   ElUpload,
 } from 'element-plus';
 
-import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
+import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
 import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
 

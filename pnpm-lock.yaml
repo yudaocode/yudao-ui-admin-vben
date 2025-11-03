@@ -669,17 +669,10 @@ importers:
         version: link:scripts/vsh
       '@vitejs/plugin-vue':
         specifier: 'catalog:'
-<<<<<<< HEAD
-        version: 6.0.1(vite@7.1.11(@types/node@22.18.11)(jiti@1.21.7)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
-      '@vitejs/plugin-vue-jsx':
-        specifier: 'catalog:'
-        version: 5.1.1(vite@7.1.11(@types/node@22.18.11)(jiti@1.21.7)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
-=======
         version: 6.0.1(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       '@vitejs/plugin-vue-jsx':
         specifier: 'catalog:'
         version: 5.1.1(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
->>>>>>> 38df83e2812cb9d116a68a6057ac21a965e33b7e
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
@@ -721,17 +714,10 @@ importers:
         version: 3.6.1(sass@1.93.2)(typescript@5.9.3)(vue-tsc@2.2.10(typescript@5.9.3))(vue@3.5.22(typescript@5.9.3))
       vite:
         specifier: 'catalog:'
-<<<<<<< HEAD
-        version: 7.1.11(@types/node@22.18.11)(jiti@1.21.7)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
-      vitest:
-        specifier: 'catalog:'
-        version: 3.2.4(@types/node@22.18.11)(happy-dom@17.6.3)(jiti@1.21.7)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
-=======
         version: 7.1.11(@types/node@22.18.12)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.18.12)(happy-dom@17.6.3)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
->>>>>>> 38df83e2812cb9d116a68a6057ac21a965e33b7e
       vue:
         specifier: ^3.5.17
         version: 3.5.22(typescript@5.9.3)
@@ -820,6 +806,9 @@ importers:
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.22(typescript@5.9.3))
+      benz-amr-recorder:
+        specifier: ^1.1.5
+        version: 1.1.5
       bpmn-js:
         specifier: 'catalog:'
         version: 17.11.1
@@ -2135,7 +2124,7 @@ importers:
         version: 1.0.4
       vite:
         specifier: 'catalog:'
-        version: 7.1.11(@types/node@24.8.1)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
+        version: 7.1.11(@types/node@24.9.1)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
 
   scripts/turbo-run:
     dependencies:
@@ -21805,7 +21794,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.18.12
       fsevents: 2.3.3
-      jiti: 1.21.7
+      jiti: 2.6.1
       less: 4.4.2
       sass: 1.93.2
       terser: 5.44.0

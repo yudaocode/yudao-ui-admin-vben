@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'ant-design-vue';
 
 import type { Reply } from './types';
 
@@ -8,14 +8,7 @@ import { computed, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import {
-  ElButton,
-  ElCol,
-  ElDialog,
-  ElMessage,
-  ElRow,
-  ElUpload,
-} from 'element-plus';
+import { Button, Col, message, Modal, Row, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
@@ -28,7 +21,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-const message = ElMessage;
+// 消息弹窗
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -47,12 +40,13 @@ const uploadData = reactive({
 });
 
 /** 图片上传前校验 */
-function beforeImageUpload(rawFile: UploadRawFile) {
-  return useBeforeUpload(UploadType.Image, 2)(rawFile);
+function beforeImageUpload(file: UploadFile) {
+  return useBeforeUpload(UploadType.Image, 2)(file as any);
 }
 
 /** 上传成功 */
-function onUploadSuccess(res: any) {
+function onUploadSuccess(info: any) {
+  const res = info.response || info;
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -91,24 +85,23 @@ function selectMaterial(item: any) {
     <div class="select-item" v-if="reply.url">
       <img class="material-img" :src="reply.url" />
       <p class="item-name" v-if="reply.name">{{ reply.name }}</p>
-      <ElRow class="ope-row" justify="center">
-        <ElButton type="danger" circle @click="onDelete">
+      <Row class="ope-row" justify="center">
+        <Button type="primary" danger shape="circle" @click="onDelete">
           <IconifyIcon icon="ep:delete" />
-        </ElButton>
-      </ElRow>
+        </Button>
+      </Row>
     </div>
     <!-- 情况二：未做完上述操作 -->
-    <ElRow v-else style="text-align: center" align="middle">
+    <Row v-else style="text-align: center" align="middle">
       <!-- 选择素材 -->
-      <ElCol :span="12" class="col-select">
-        <ElButton type="success" @click="showDialog = true">
+      <Col :span="12" class="col-select">
+        <Button type="primary" @click="showDialog = true">
           素材库选择 <IconifyIcon icon="ep:circle-check" />
-        </ElButton>
-        <ElDialog
+        </Button>
+        <Modal
           title="选择图片"
-          v-model="showDialog"
+          v-model:open="showDialog"
           width="90%"
-          append-to-body
           destroy-on-close
         >
           <WxMaterialSelect
@@ -116,31 +109,35 @@ function selectMaterial(item: any) {
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
-        </ElDialog>
-      </ElCol>
+        </Modal>
+      </Col>
       <!-- 文件上传 -->
-      <ElCol :span="12" class="col-add">
-        <ElUpload
+      <Col :span="12" class="col-add">
+        <Upload
           :action="UPLOAD_URL"
           :headers="HEADERS"
-          multiple
-          :limit="1"
           :file-list="fileList"
           :data="uploadData"
           :before-upload="beforeImageUpload"
-          :on-success="onUploadSuccess"
+          @change="
+            (info) => {
+              if (info.file.status === 'done') {
+                onUploadSuccess(info.file.response || info.file);
+              }
+            }
+          "
         >
-          <ElButton type="primary">上传图片</ElButton>
+          <Button type="primary">上传图片</Button>
           <template #tip>
             <span>
-              <div class="el-upload__tip">
+              <div class="upload-tip">
                 支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
               </div>
             </span>
           </template>
-        </ElUpload>
-      </ElCol>
-    </ElRow>
+        </Upload>
+      </Col>
+    </Row>
   </div>
 </template>
 
@@ -187,7 +184,7 @@ function selectMaterial(item: any) {
     padding: 50px 0;
     border: 1px solid rgb(234 234 234);
 
-    .el-upload__tip {
+    .upload-tip {
       line-height: 18px;
       text-align: center;
     }
