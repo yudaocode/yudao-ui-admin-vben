@@ -61,7 +61,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 </script>
 
 <template>
-  <div
+  <aside
     class="editor-left z-[1] w-[261px] shrink-0 select-none shadow-[8px_0_8px_-8px_rgb(0_0_0/0.12)]"
   >
     <div class="h-full overflow-y-auto">
@@ -104,7 +104,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
         </CollapsePanel>
       </Collapse>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped lang="scss">

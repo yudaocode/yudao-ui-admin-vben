@@ -232,7 +232,6 @@ function handleCopyComponent(index: number) {
 
 /** 删除组件 */
 function handleDeleteComponent(index: number) {
-  // 删除组件
   pageComponents.value.splice(index, 1);
   if (index < pageComponents.value.length) {
     // 1. 不是最后一个组件时，删除后选中下面的组件
@@ -325,7 +324,7 @@ onMounted(() => {
       </div>
 
       <!-- 中心区域 -->
-      <div class="editor-container flex flex-1">
+      <div class="editor-container h-[calc(100vh-135px)]">
         <!-- 左侧：组件库（ComponentLibrary） -->
         <ComponentLibrary
           v-if="libs && libs.length > 0"
@@ -333,11 +332,15 @@ onMounted(() => {
           :list="libs"
         />
         <!-- 中心：设计区域（ComponentContainer） -->
-        <div class="editor-center page-prop-area" @click="handlePageSelected">
+        <div
+          class="editor-center page-prop-area relative mt-4 flex w-full flex-1 flex-col justify-center overflow-hidden"
+          :style="{ backgroundColor: 'var(--app-content-bg-color)' }"
+          @click="handlePageSelected"
+        >
           <!-- 手机顶部 -->
-          <div class="editor-design-top">
+          <div class="editor-design-top mx-auto flex w-[375px] flex-col">
             <!-- 手机顶部状态栏 -->
-            <img alt="" class="status-bar" :src="statusBarImg" />
+            <img alt="" class="h-5 w-[375px] bg-white" :src="statusBarImg" />
             <!-- 手机顶部导航栏 -->
             <ComponentContainer
               v-if="showNavigationBar"
@@ -365,45 +368,46 @@ onMounted(() => {
           </div>
           <!-- 手机页面编辑区域 -->
           <div
-            class="editor-design-center page-prop-area phone-container overflow-y-auto"
+            class="editor-design-center page-prop-area h-full w-full overflow-y-auto"
             :style="{
               backgroundColor: pageConfigComponent.property.backgroundColor,
               backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
-              height: 'calc(100vh - 135px - 120px)',
             }"
           >
-            <draggable
-              v-model="pageComponents"
-              :animation="200"
-              :force-fallback="true"
-              class="page-prop-area drag-area"
-              filter=".component-toolbar"
-              ghost-class="draggable-ghost"
-              group="component"
-              item-key="index"
-              @change="handleComponentChange"
-            >
-              <template #item="{ element, index }">
-                <ComponentContainer
-                  v-if="!element.position || element.position === 'center'"
-                  :active="selectedComponentIndex === index"
-                  :can-move-down="index < pageComponents.length - 1"
-                  :can-move-up="index > 0"
-                  :component="element"
-                  @click="handleComponentSelected(element, index)"
-                  @copy="handleCopyComponent(index)"
-                  @delete="handleDeleteComponent(index)"
-                  @move="
-                    (direction: number) => handleMoveComponent(index, direction)
-                  "
-                />
-              </template>
-            </draggable>
+            <div class="phone-container">
+              <draggable
+                v-model="pageComponents"
+                :animation="200"
+                :force-fallback="false"
+                class="page-prop-area drag-area"
+                filter=".component-toolbar"
+                ghost-class="draggable-ghost"
+                group="component"
+                item-key="index"
+                @change="handleComponentChange"
+              >
+                <template #item="{ element, index }">
+                  <ComponentContainer
+                    v-if="!element.position || element.position === 'center'"
+                    :active="selectedComponentIndex === index"
+                    :can-move-down="index < pageComponents.length - 1"
+                    :can-move-up="index > 0"
+                    :component="element"
+                    @click="handleComponentSelected(element, index)"
+                    @copy="handleCopyComponent(index)"
+                    @delete="handleDeleteComponent(index)"
+                    @move="
+                      (direction: number) => handleMoveComponent(index, direction)
+                    "
+                  />
+                </template>
+              </draggable>
+            </div>
           </div>
           <!-- 手机底部导航 -->
           <div
             v-if="showTabBar"
-            class="editor-design-bottom component cursor-pointer"
+            class="editor-design-bottom component mx-auto w-[375px] cursor-pointer"
           >
             <ComponentContainer
               :active="selectedComponent?.id === tabBarComponent.id"
@@ -413,7 +417,9 @@ onMounted(() => {
             />
           </div>
           <!-- 固定布局的组件 操作按钮区 -->
-          <div class="fixed-component-action-group gap-2">
+          <div
+            class="fixed-component-action-group absolute right-4 top-0 flex flex-col gap-2"
+          >
             <Tag
               v-if="showPageConfig"
               :color="
@@ -422,6 +428,7 @@ onMounted(() => {
                   : 'default'
               "
               class="cursor-pointer"
+              size="large"
               @click="handleComponentSelected(pageConfigComponent)"
             >
               <IconifyIcon :icon="pageConfigComponent.icon" :size="12" />
@@ -435,6 +442,7 @@ onMounted(() => {
                 "
                 closable
                 class="cursor-pointer"
+                size="large"
                 @click="handleComponentSelected(component)"
                 @close="handleDeleteComponent(index)"
               >
@@ -445,11 +453,11 @@ onMounted(() => {
           </div>
         </div>
         <!-- 右侧：属性面板（ComponentContainerProperty） -->
-        <div v-if="selectedComponent?.property" class="editor-right w-[350px]">
-          <Card
-            class="h-full"
-            :body-style="{ height: 'calc(100% - 57px)', padding: 0 }"
-          >
+        <aside
+          v-if="selectedComponent?.property"
+          class="editor-right w-[350px] shrink-0 overflow-hidden shadow-[-8px_0_8px_-8px_rgb(0_0_0/0.12)]"
+        >
+          <Card class="h-full" :body-style="{ padding: 0, height: 'calc(100% - 57px)' }">
             <!-- 组件名称 -->
             <template #title>
               <div class="flex items-center gap-2">
@@ -465,7 +473,7 @@ onMounted(() => {
               />
             </div>
           </Card>
-        </div>
+        </aside>
       </div>
     </div>
 
@@ -524,14 +532,10 @@ $phone-width: 375px;
 
   /* 中心操作区 */
   .editor-container {
-    height: calc(100vh - 135px);
+    display: flex;
 
     /* 右侧属性面板 */
     :deep(.editor-right) {
-      flex-shrink: 0;
-      overflow: hidden;
-      box-shadow: -8px 0 8px -8px rgb(0 0 0 / 12%);
-
       /* 属性面板顶部：减少内边距 */
       :deep(.ant-card-head) {
         padding: 8px 16px;
@@ -560,37 +564,6 @@ $phone-width: 375px;
 
     /* 中心区域 */
     .editor-center {
-      position: relative;
-      display: flex;
-      flex: 1 1 0;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      margin: 16px 0 0;
-      overflow: hidden;
-      background-color: var(--app-content-bg-color);
-
-      /* 手机顶部 */
-      .editor-design-top {
-        display: flex;
-        flex-direction: column;
-        width: $phone-width;
-        margin: 0 auto;
-
-        /* 手机顶部状态栏 */
-        .status-bar {
-          width: $phone-width;
-          height: 20px;
-          background-color: #fff;
-        }
-      }
-
-      /* 手机底部导航 */
-      .editor-design-bottom {
-        width: $phone-width;
-        margin: 0 auto;
-      }
-
       /* 手机页面编辑区域 */
       :deep(.editor-design-center) {
         width: 100%;
@@ -613,21 +586,11 @@ $phone-width: 375px;
 
       /* 固定布局的组件 操作按钮区 */
       .fixed-component-action-group {
-        position: absolute;
-        top: 0;
-        right: 16px;
-        display: flex;
-        flex-direction: column;
-
         :deep(.ant-tag) {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          width: 100%;
           border: none;
           box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
 
-          .anticon {
+          .ant-tag-icon {
             margin-right: 4px;
           }
         }
