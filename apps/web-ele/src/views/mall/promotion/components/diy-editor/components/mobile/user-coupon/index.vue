@@ -13,5 +13,3 @@ defineProps<{ property: UserCouponProperty }>();
     src="https://shopro.sheepjs.com/admin/static/images/shop/decorate/couponCardStyle.png"
   />
 </template>
-
-<style scoped lang="scss"></style>

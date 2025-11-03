@@ -141,5 +141,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>
