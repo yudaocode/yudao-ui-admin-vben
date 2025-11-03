@@ -197,4 +197,14 @@ const handleSliderChange = (prop: string) => {
 :deep(.el-input-number) {
   width: 50px;
 }
+
+:deep(.el-tree) {
+  .el-tree-node__expand-icon {
+    margin-right: -15px;
+  }
+
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
 </style>

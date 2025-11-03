@@ -79,7 +79,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
             :group="{ name: 'component', pull: 'clone', put: false }"
             :clone="handleCloneComponent"
             :animation="200"
-            :force-fallback="true"
+            :force-fallback="false"
           >
             <template #item="{ element }">
               <div>
@@ -128,7 +128,6 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    width: 261px;
   }
 
   .component {

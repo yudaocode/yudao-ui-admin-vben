@@ -6,16 +6,15 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { List } from 'ant-design-vue';
+import { List, Popover } from 'ant-design-vue';
 
 import { useEmoji } from './emoji';
 
 defineOptions({ name: 'EmojiSelectPopover' });
 
 /** 选择 emoji 表情 */
-// TODO @jawe：这里有 linter 告警，看看要不要处理下；
 const emits = defineEmits<{
-  (e: 'selectEmoji', v: Emoji);
+  (e: 'selectEmoji', v: Emoji): void;
 }>();
 const { getEmojiList } = useEmoji();
 const emojiList = computed(() => getEmojiList());
@@ -27,7 +26,7 @@ function handleSelect(item: Emoji) {
 </script>
 
 <template>
-  <a-popover :width="500" placement="top" trigger="click">
+  <Popover :width="500" placement="top" trigger="click">
     <template #content>
       <List height="300px">
         <ul class="ml-2 flex flex-wrap px-2">
@@ -42,15 +41,15 @@ function handleSelect(item: Emoji) {
             class="icon-item w-1/10 mr-2 mt-1 flex cursor-pointer items-center justify-center border border-solid p-2"
             @click="handleSelect(item)"
           >
-            <img :src="item.url" class="h-[24px] w-[24px]" />
+            <img :src="item.url" class="h-6 w-6" />
           </li>
         </ul>
       </List>
     </template>
     <IconifyIcon
       :size="30"
-      class="ml-[10px] cursor-pointer"
+      class="ml-2.5 cursor-pointer"
       icon="twemoji:grinning-face"
     />
-  </a-popover>
+  </Popover>
 </template>

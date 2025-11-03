@@ -21,7 +21,6 @@ const props = withDefaults(
 const [Descriptions] = useDescription({
   border: false,
   column: props.mode === 'member' ? 2 : 1,
-  labelWidth: 140,
   schema: [
     {
       field: 'name',
@@ -73,11 +72,15 @@ const [Descriptions] = useDescription({
 
 <template>
   <ElCard>
-    <template #title>
-      <slot name="title"></slot>
-    </template>
-    <template #extra>
-      <slot name="extra"></slot>
+    <template #header>
+      <div class="flex justify-between">
+        <span class="font-medium">
+          <slot name="title"></slot>
+        </span>
+        <div class="h-[10px]">
+          <slot name="extra"></slot>
+        </div>
+      </div>
     </template>
     <ElRow v-if="mode === 'member'" :gutter="24">
       <ElCol :span="6">

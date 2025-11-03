@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import type { NavigationBarCellProperty } from '../config';
 
-import type { Rect } from '#/views/mall/promotion/components/magic-cube-editor/util';
-
 import { computed, ref } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import {
   ElFormItem,
   ElInput,
   ElRadio,
+  ElRadioButton,
   ElRadioGroup,
   ElSlider,
+  ElSwitch,
+  ElTooltip,
 } from 'element-plus';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
@@ -47,18 +50,6 @@ const cellList = useVModel(props, 'modelValue', emit);
  */
 const cellCount = computed(() => (props.isMp ? 6 : 8));
 
-/** 转换为 Rect 格式的数据：MagicCubeEditor 组件需要 Rect 格式的数据来渲染热区 */
-const rectList = computed<Rect[]>(() => {
-  return cellList.value.map((cell) => ({
-    left: cell.left,
-    top: cell.top,
-    width: cell.width,
-    height: cell.height,
-    right: cell.left + cell.width,
-    bottom: cell.top + cell.height,
-  }));
-});
-
 const selectedHotAreaIndex = ref(0); // 选中的热区
 
 /** 处理热区被选中事件 */
@@ -67,9 +58,16 @@ function handleHotAreaSelected(
   index: number,
 ) {
   selectedHotAreaIndex.value = index;
+  // 默认设置为选中文字，并设置属性
   if (!cellValue.type) {
     cellValue.type = 'text';
     cellValue.textColor = '#111111';
+  }
+  // 如果点击的是搜索框，则初始化搜索框的属性
+  if (cellValue.type === 'search') {
+    cellValue.placeholderPosition = 'left';
+    cellValue.backgroundColor = '#EEEEEE';
+    cellValue.textColor = '#969799';
   }
 }
 </script>
@@ -77,7 +75,7 @@ function handleHotAreaSelected(
 <template>
   <div class="h-40px flex items-center justify-center">
     <MagicCubeEditor
-      v-model="rectList"
+      v-model="cellList as any"
       :cols="cellCount"
       :cube-size="38"
       :rows="1"
@@ -94,7 +92,10 @@ function handleHotAreaSelected(
   <template v-for="(cell, cellIndex) in cellList" :key="cellIndex">
     <template v-if="selectedHotAreaIndex === Number(cellIndex)">
       <ElFormItem :prop="`cell[${cellIndex}].type`" label="类型">
-        <ElRadioGroup v-model="cell.type">
+        <ElRadioGroup
+          v-model="cell.type"
+          @change="handleHotAreaSelected(cell, cellIndex)"
+        >
           <ElRadio value="text">文字</ElRadio>
           <ElRadio value="image">图片</ElRadio>
           <ElRadio value="search">搜索框</ElRadio>
@@ -131,8 +132,31 @@ function handleHotAreaSelected(
       </template>
       <!-- 3. 搜索框 -->
       <template v-else>
+        <ElFormItem label="框体颜色" prop="backgroundColor">
+          <ColorInput v-model="cell.backgroundColor" />
+        </ElFormItem>
+        <ElFormItem class="lef" label="文本颜色" prop="textColor">
+          <ColorInput v-model="cell.textColor" />
+        </ElFormItem>
         <ElFormItem :prop="`cell[${cellIndex}].placeholder`" label="提示文字">
           <ElInput v-model="cell.placeholder" maxlength="10" show-word-limit />
+        </ElFormItem>
+        <ElFormItem label="文本位置" prop="placeholderPosition">
+          <ElRadioGroup v-model="cell!.placeholderPosition">
+            <ElTooltip content="居左" placement="top">
+              <ElRadioButton value="left">
+                <IconifyIcon icon="ant-design:align-left-outlined" />
+              </ElRadioButton>
+            </ElTooltip>
+            <ElTooltip content="居中" placement="top">
+              <ElRadioButton value="center">
+                <IconifyIcon icon="ant-design:align-center-outlined" />
+              </ElRadioButton>
+            </ElTooltip>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="扫一扫" prop="showScan">
+          <ElSwitch v-model="cell!.showScan" />
         </ElFormItem>
         <ElFormItem :prop="`cell[${cellIndex}].borderRadius`" label="圆角">
           <ElSlider

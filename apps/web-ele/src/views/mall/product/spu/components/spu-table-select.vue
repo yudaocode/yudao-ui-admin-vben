@@ -163,8 +163,8 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      gridApi.grid.clearCheckboxRow();
-      gridApi.grid.clearRadioRow();
+      await gridApi.grid.clearCheckboxRow();
+      await gridApi.grid.clearRadioRow();
       return;
     }
 

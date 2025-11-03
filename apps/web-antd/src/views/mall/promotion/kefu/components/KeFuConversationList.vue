@@ -3,12 +3,16 @@ import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversa
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
+import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
-import { Avatar, Badge, message } from 'ant-design-vue';
+import { Avatar, Badge, Layout, message } from 'ant-design-vue';
 
-import * as KeFuConversationApi from '#/api/mall/promotion/kefu/conversation';
+import {
+  deleteConversation,
+  updateConversationPinned,
+} from '#/api/mall/promotion/kefu/conversation';
 import { useMallKefuStore } from '#/store/mall/kefu';
 
 import { KeFuMessageContentTypeEnum } from './tools/constants';
@@ -108,27 +112,29 @@ function closeRightMenu() {
 }
 
 /** 置顶会话 */
-async function updateConversationPinned(adminPinned: boolean) {
+async function updateConversationPinnedFn(pinned: boolean) {
   // 1. 会话置顶/取消置顶
-  await KeFuConversationApi.updateConversationPinned({
+  await updateConversationPinned({
     id: rightClickConversation.value.id,
-    adminPinned,
+    pinned,
   });
-  message.success(adminPinned ? '置顶成功' : '取消置顶成功');
+  message.success(pinned ? '置顶成功' : '取消置顶成功');
   // 2. 关闭右键菜单，更新会话列表
   closeRightMenu();
   await kefuStore.updateConversation(rightClickConversation.value.id);
 }
 
 /** 删除会话 */
-async function deleteConversation() {
+async function deleteConversationFn() {
   // 1. 删除会话
-  // TODO @jave：使用全局的 confirm，这样 ele 和 antd 可以相对复用；
-  await message.confirm('您确定要删除该会话吗？');
-  await KeFuConversationApi.deleteConversation(rightClickConversation.value.id);
-  // 2. 关闭右键菜单，更新会话列表
-  closeRightMenu();
-  kefuStore.deleteConversation(rightClickConversation.value.id);
+  confirm({
+    content: '您确定要删除该会话吗？',
+  }).then(async () => {
+    await deleteConversation(rightClickConversation.value.id);
+    // 2. 关闭右键菜单，更新会话列表
+    closeRightMenu();
+    kefuStore.deleteConversation(rightClickConversation.value.id);
+  });
 }
 
 /** 监听右键菜单的显示状态，添加点击事件监听器 */
@@ -154,7 +160,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <a-layout-sider class="kefu h-full pt-[5px]" width="260px">
+  <Layout.Sider class="kefu h-full pt-[5px]" width="260px">
     <div class="color-[#999] my-[10px] font-bold">
       会话记录({{ kefuStore.getConversationList.length }})
     </div>
@@ -206,7 +212,7 @@ onBeforeUnmount(() => {
       <li
         v-show="!rightClickConversation.adminPinned"
         class="flex items-center"
-        @click.stop="updateConversationPinned(true)"
+        @click.stop="updateConversationPinnedFn(true)"
       >
         <IconifyIcon class="mr-[5px]" icon="ep:top" />
         置顶会话
@@ -214,12 +220,12 @@ onBeforeUnmount(() => {
       <li
         v-show="rightClickConversation.adminPinned"
         class="flex items-center"
-        @click.stop="updateConversationPinned(false)"
+        @click.stop="updateConversationPinnedFn(false)"
       >
         <IconifyIcon class="mr-[5px]" icon="ep:bottom" />
         取消置顶
       </li>
-      <li class="flex items-center" @click.stop="deleteConversation">
+      <li class="flex items-center" @click.stop="deleteConversationFn">
         <IconifyIcon class="mr-[5px]" color="red" icon="ep:delete" />
         删除会话
       </li>
@@ -228,7 +234,7 @@ onBeforeUnmount(() => {
         取消
       </li>
     </ul>
-  </a-layout-sider>
+  </Layout.Sider>
 </template>
 
 <style lang="scss" scoped>

@@ -8,6 +8,8 @@ import {
   ElCard,
   ElForm,
   ElFormItem,
+  ElInputNumber,
+  ElRadio,
   ElRadioButton,
   ElRadioGroup,
   ElSlider,
@@ -49,6 +51,14 @@ const formData = useVModel(props, 'modelValue', emit);
               </ElRadioButton>
             </ElTooltip>
           </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="高度" prop="height">
+          <ElInputNumber
+            class="mr-[10px] !w-1/2"
+            controls-position="right"
+            v-model="formData.height"
+          />
+          px
         </ElFormItem>
         <ElFormItem label="指示器" prop="indicator">
           <ElRadioGroup v-model="formData.indicator">
@@ -131,5 +141,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

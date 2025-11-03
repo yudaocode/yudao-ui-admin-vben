@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
+
 import { defineOptions, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
-import { message } from 'ant-design-vue';
+import { Layout, message } from 'ant-design-vue';
 
 import { useMallKefuStore } from '#/store/mall/kefu';
 
@@ -81,10 +83,10 @@ watch(
 const keFuChatBoxRef = ref<InstanceType<typeof KeFuMessageList>>();
 const memberInfoRef = ref<InstanceType<typeof MemberInfo>>();
 // TODO @jawe：这里没导入
-const handleChange = (conversation: KeFuConversationRespVO) => {
-  keFuChatBoxRef.value?.getNewMessageList(conversation);
+function handleChange(conversation: MallKefuConversationApi.Conversation) {
+  keFuChatBoxRef.value?.getNewMessageList(conversation as any);
   memberInfoRef.value?.initHistory(conversation);
-};
+}
 
 const keFuConversationRef = ref<InstanceType<typeof KeFuConversationList>>();
 /** 初始化 */
@@ -107,14 +109,14 @@ onBeforeUnmount(() => {
 <template>
   <Page>
     <!-- TODO @jawe：style 使用 tailwindcss，AI 友好； -->
-    <a-layout-content class="kefu-layout hrow">
+    <Layout.Content class="kefu-layout hrow">
       <!-- 会话列表 -->
       <KeFuConversationList ref="keFuConversationRef" @change="handleChange" />
       <!-- 会话详情（选中会话的消息列表） -->
       <KeFuMessageList ref="keFuChatBoxRef" />
       <!-- 会员信息（选中会话的会员信息） -->
       <MemberInfo ref="memberInfoRef" />
-    </a-layout-content>
+    </Layout.Content>
   </Page>
 </template>
 

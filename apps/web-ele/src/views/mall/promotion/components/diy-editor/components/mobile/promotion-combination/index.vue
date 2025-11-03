@@ -18,7 +18,7 @@ defineOptions({ name: 'PromotionCombination' });
 
 const props = defineProps<{ property: PromotionCombinationProperty }>();
 
-const spuList = ref<MallSpuApi.Spu[]>([]);
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const combinationActivityList = ref<
   MallCombinationActivityApi.CombinationActivity[]
@@ -81,14 +81,14 @@ function calculateSpace(index: number) {
 const containerRef = ref();
 
 /** 计算商品的宽度 */
-const calculateWidth = () => {
+function calculateWidth() {
   let width = '100%';
   if (props.property.layoutType === 'twoCol') {
     // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div

@@ -18,31 +18,18 @@ const props = defineProps<{ property: HotZoneProperty }>();
     <div
       v-for="(item, index) in props.property.list"
       :key="index"
-      class="hot-zone"
+      class="absolute z-10 flex cursor-move items-center justify-center border text-sm opacity-80"
       :style="{
         width: `${item.width}px`,
         height: `${item.height}px`,
         top: `${item.top}px`,
         left: `${item.left}px`,
+        color: 'var(--el-color-primary)',
+        background: 'var(--el-color-primary-light-7)',
+        borderColor: 'var(--el-color-primary)',
       }"
     >
       {{ item.name }}
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.hot-zone {
-  position: absolute;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: var(--el-color-primary);
-  cursor: move;
-  background: var(--el-color-primary-light-7);
-  border: 1px solid var(--el-color-primary);
-  opacity: 0.8;
-}
-</style>

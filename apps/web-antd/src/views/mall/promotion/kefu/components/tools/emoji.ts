@@ -65,7 +65,7 @@ export const useEmoji = () => {
   const initStaticEmoji = async () => {
     const pathList = import.meta.glob('../../asserts/*.{png,jpg,jpeg,svg}');
     for (const path in pathList) {
-      const imageModule: any = await pathList[path]();
+      const imageModule: any = await pathList[path]?.();
       emojiPathList.value.push({ path, src: imageModule.default });
     }
   };

@@ -43,13 +43,9 @@ function openDetail(spuId: number) {
 </script>
 
 <template>
-  <div
-    class="product-warp"
-    style="cursor: pointer"
-    @click.stop="openDetail(spuId)"
-  >
+  <div class="product-warp cursor-pointer" @click.stop="openDetail(spuId)">
     <!-- 左侧商品图片-->
-    <div class="product-warp-left mr-[24px]">
+    <div class="product-warp-left mr-6">
       <Image
         :initial-index="0"
         :preview-src-list="[picUrl]"
@@ -63,8 +59,8 @@ function openDetail(spuId: number) {
     <!-- 右侧商品信息 -->
     <div class="product-warp-right">
       <div class="description">{{ title }}</div>
-      <div class="my-[5px]">
-        <span class="mr-[20px]">库存: {{ stock || 0 }}</span>
+      <div class="my-1">
+        <span class="mr-5">库存: {{ stock || 0 }}</span>
         <span>销量: {{ salesCount || 0 }}</span>
       </div>
       <div class="flex items-center justify-between">

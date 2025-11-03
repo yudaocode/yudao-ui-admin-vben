@@ -11,9 +11,9 @@ defineOptions({ name: 'TabBar' });
 defineProps<{ property: TabBarProperty }>();
 </script>
 <template>
-  <div class="tab-bar">
+  <div class="z-[2] w-full">
     <div
-      class="tab-bar-bg"
+      class="flex flex-row items-center justify-around py-2"
       :style="{
         background:
           property.style.bgType === 'color'
@@ -26,7 +26,7 @@ defineProps<{ property: TabBarProperty }>();
       <div
         v-for="(item, index) in property.items"
         :key="index"
-        class="tab-bar-item"
+        class="tab-bar-item flex w-full flex-col items-center justify-center text-xs"
       >
         <ElImage :src="index === 0 ? item.activeIconUrl : item.iconUrl">
           <template #error>
@@ -48,32 +48,12 @@ defineProps<{ property: TabBarProperty }>();
   </div>
 </template>
 <style lang="scss" scoped>
-.tab-bar {
-  z-index: 2;
-  width: 100%;
-
-  .tab-bar-bg {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    padding: 8px 0;
-
-    .tab-bar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      font-size: 12px;
-
-      :deep(img),
-      .el-icon {
-        width: 26px;
-        height: 26px;
-        border-radius: 4px;
-      }
-    }
+.tab-bar-item {
+  :deep(img),
+  .el-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
   }
 }
 </style>
