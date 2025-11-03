@@ -16,7 +16,7 @@ defineProps<{ property: MenuListProperty }>();
     <div
       v-for="(item, index) in property.list"
       :key="index"
-      class="item flex h-[42px] flex-row items-center justify-between gap-1 px-3"
+      class="flex h-[42px] flex-row items-center justify-between gap-1 border-t border-[#eee] px-3 first:border-t-0"
     >
       <div class="flex flex-1 flex-row items-center gap-2">
         <ElImage v-if="item.iconUrl" class="h-4 w-4" :src="item.iconUrl" />
@@ -33,9 +33,3 @@ defineProps<{ property: MenuListProperty }>();
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.item + .item {
-  border-top: 1px solid #eee;
-}
-</style>
