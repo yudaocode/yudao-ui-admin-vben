@@ -28,10 +28,16 @@ defineProps<{ property: TabBarProperty }>();
         :key="index"
         class="tab-bar-item flex w-full flex-col items-center justify-center text-xs"
       >
-        <ElImage :src="index === 0 ? item.activeIconUrl : item.iconUrl">
+        <ElImage
+          :src="index === 0 ? item.activeIconUrl : item.iconUrl"
+          class="h-[26px] w-[26px] rounded"
+        >
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" />
+              <IconifyIcon
+                icon="ep:picture"
+                class="h-[26px] w-[26px] rounded"
+              />
             </div>
           </template>
         </ElImage>
@@ -47,13 +53,3 @@ defineProps<{ property: TabBarProperty }>();
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-.tab-bar-item {
-  :deep(img),
-  .el-icon {
-    width: 26px;
-    height: 26px;
-    border-radius: 4px;
-  }
-}
-</style>
