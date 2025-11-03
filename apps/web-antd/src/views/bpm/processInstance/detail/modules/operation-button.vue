@@ -268,9 +268,6 @@ async function openPopover(type: string) {
   Object.keys(popOverVisible.value).forEach((item) => {
     if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
-  // TODO @jason：下面这 2 行，要删除么？
-  // await nextTick()
-  // formRef.value.resetFields()
 }
 
 /** 关闭气泡卡 */
