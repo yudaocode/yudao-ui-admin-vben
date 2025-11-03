@@ -1,6 +1,6 @@
 version: '1.0'
 name: pipeline-20251103
-displayName: pipeline-20251103
+displayName: master-build
 triggers:
   trigger: auto
   push:
@@ -15,7 +15,7 @@ triggers:
     - cron: '* * * 1 * ? *'
 stages:
   - name: stage-72bb5db9
-    displayName: 未命名
+    displayName: build
     strategy: naturally
     trigger: auto
     executor: []
@@ -29,6 +29,10 @@ stages:
           - npm config set registry https://registry.npmmirror.com
           - ''
           - npm add -g pnpm
+          - ''
+          - pnpm lint
+          - ''
+          - pnpm check
           - ''
           - '# 执行编译命令'
           - pnpm i && pnpm build:antd
