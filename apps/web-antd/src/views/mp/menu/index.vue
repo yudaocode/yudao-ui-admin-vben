@@ -386,11 +386,11 @@ div {
     background-size: 100% auto;
 
     .save-div {
-      margin-top: 15px;
       display: flex;
-      justify-content: center;
-      align-items: center;
       gap: 10px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
     }
   }
 
