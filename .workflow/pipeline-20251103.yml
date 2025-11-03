@@ -1,0 +1,45 @@
+version: '1.0'
+name: pipeline-20251103
+displayName: pipeline-20251103
+triggers:
+  trigger: auto
+  push:
+    branches:
+      prefix:
+        - ''
+  pr:
+    branches:
+      prefix:
+        - ''
+  schedule:
+    - cron: '* * * 1 * ? *'
+stages:
+  - name: stage-72bb5db9
+    displayName: 未命名
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: build@nodejs
+        name: build_nodejs
+        displayName: Nodejs 构建
+        nodeVersion: 24.5.0
+        commands:
+          - '# 设置NPM源，提升安装速度'
+          - npm config set registry https://registry.npmmirror.com
+          - ''
+          - npm add -g pnpm
+          - ''
+          - '# 执行编译命令'
+          - pnpm i && pnpm build:antd
+        artifacts:
+          - name: BUILD_ARTIFACT
+            path:
+              - ./dist
+        caches:
+          - ~/.npm
+          - ~/.yarn
+          - ~/.pnpm
+        notify: []
+        strategy:
+          retry: '0'
