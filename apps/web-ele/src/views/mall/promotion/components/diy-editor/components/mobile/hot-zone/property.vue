@@ -59,26 +59,3 @@ const handleOpenEditDialog = () => {
     :img-url="formData.imgUrl"
   />
 </template>
-
-<style scoped lang="scss">
-.hot-zone {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: #fff;
-  cursor: move;
-  background: #409effbf;
-  border: 1px solid var(--el-color-primary);
-
-  /* 控制点 */
-  .ctrl-dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #fff;
-    border-radius: 50%;
-  }
-}
-</style>
