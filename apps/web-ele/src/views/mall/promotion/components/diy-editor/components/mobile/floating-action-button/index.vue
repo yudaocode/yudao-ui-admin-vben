@@ -62,21 +62,14 @@ function handleToggleFab() {
     </ElButton>
   </div>
   <!-- 模态背景：展开时显示，点击后折叠 -->
-  <div v-if="expanded" class="modal-bg" @click="handleToggleFab"></div>
+  <div
+    v-if="expanded"
+    class="absolute left-[calc(50%-375px/2)] top-0 z-[11] h-full w-[375px] bg-black/40"
+    @click="handleToggleFab"
+  ></div>
 </template>
 
 <style scoped lang="scss">
-/* 模态背景 */
-.modal-bg {
-  position: absolute;
-  top: 0;
-  left: calc(50% - 375px / 2);
-  z-index: 11;
-  width: 375px;
-  height: 100%;
-  background-color: rgb(0 0 0 / 40%);
-}
-
 .fab-icon {
   transform: rotate(0deg);
   transition: transform 0.3s;
