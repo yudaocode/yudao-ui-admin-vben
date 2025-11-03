@@ -39,7 +39,7 @@ stages:
         artifacts:
           - name: BUILD_ARTIFACT
             path:
-              - ./dist
+              - ./apps/web-antd/dist/
         caches:
           - ~/.npm
           - ~/.yarn
