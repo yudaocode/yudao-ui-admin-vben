@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { MpAccountApi } from '#/api/mp/account';
 
-import { computed, onMounted, reactive, ref, unref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { useTabs } from '@vben/hooks';
 
 import { ElMessage } from 'element-plus';
 
 import { getSimpleAccountList } from '#/api/mp/account';
-import { useTagsViewStore } from '#/store/tagsView';
 
 defineOptions({ name: 'WxAccountSelect' });
 
@@ -21,8 +22,8 @@ const emit = defineEmits<{
 }>();
 
 const message = ElMessage; // 消息弹窗
-const { delView } = useTagsViewStore(); // 视图操作
-const { push, currentRoute } = useRouter();
+const { closeCurrentTab } = useTabs(); // 视图操作
+const { push } = useRouter();
 
 const account: MpAccountApi.AccountSimple = reactive({
   id: -1,
@@ -81,7 +82,7 @@ async function handleQuery() {
   accountList.value = await getSimpleAccountList();
   if (accountList.value.length === 0) {
     message.error('未配置公众号，请在【公众号管理 -> 账号管理】菜单，进行配置');
-    delView(unref(currentRoute));
+    await closeCurrentTab();
     await push({ name: 'MpAccount' });
     return;
   }

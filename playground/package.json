@@ -54,7 +54,6 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@types/json-bigint": "catalog:",
-    "vite": "catalog:"
+    "@types/json-bigint": "catalog:"
   }
 }
