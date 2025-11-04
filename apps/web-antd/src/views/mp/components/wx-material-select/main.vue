@@ -1,0 +1,368 @@
+<script lang="ts" setup>
+import { onMounted, reactive, ref } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+import { formatDate2 } from '@vben/utils';
+
+import { Button, Pagination, Row, Spin, Table } from 'ant-design-vue';
+
+import * as MpDraftApi from '#/api/mp/draft';
+import * as MpFreePublishApi from '#/api/mp/freePublish';
+import * as MpMaterialApi from '#/api/mp/material';
+import WxNews from '#/views/mp/components/wx-news';
+import WxVideoPlayer from '#/views/mp/components/wx-video-play';
+import WxVoicePlayer from '#/views/mp/components/wx-voice-play';
+
+import { NewsType } from './types';
+
+defineOptions({ name: 'WxMaterialSelect' });
+
+const props = withDefaults(
+  defineProps<{
+    accountId: number;
+    newsType?: NewsType;
+    type: string;
+  }>(),
+  {
+    newsType: NewsType.Published,
+  },
+);
+
+const emit = defineEmits<{
+  (e: 'selectMaterial', item: any): void;
+}>();
+
+// 遮罩层
+const loading = ref(false);
+// 总条数
+const total = ref(0);
+// 数据列表
+const list = ref<any[]>([]);
+// 查询参数
+const queryParams = reactive({
+  accountId: props.accountId,
+  pageNo: 1,
+  pageSize: 10,
+});
+
+const selectMaterialFun = (item: any) => {
+  emit('selectMaterial', item);
+};
+
+const getPage = async () => {
+  loading.value = true;
+  try {
+    if (props.type === 'news' && props.newsType === NewsType.Published) {
+      // 【图文】+ 【已发布】
+      await getFreePublishPageFun();
+    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
+      // 【图文】+ 【草稿】
+      await getDraftPageFun();
+    } else {
+      // 【素材】
+      await getMaterialPageFun();
+    }
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getMaterialPageFun = async () => {
+  const data = await MpMaterialApi.getMaterialPage({
+    ...queryParams,
+    type: props.type,
+  });
+  list.value = data.list;
+  total.value = data.total;
+};
+
+const getFreePublishPageFun = async () => {
+  const data = await MpFreePublishApi.getFreePublishPage(queryParams);
+  data.list.forEach((item: any) => {
+    const articles = item.content.newsItem;
+    articles.forEach((article: any) => {
+      article.picUrl = article.thumbUrl;
+    });
+  });
+  list.value = data.list;
+  total.value = data.total;
+};
+
+const getDraftPageFun = async () => {
+  const data = await MpDraftApi.getDraftPage(queryParams);
+  data.list.forEach((draft: any) => {
+    const articles = draft.content.newsItem;
+    articles.forEach((article: any) => {
+      article.picUrl = article.thumbUrl;
+    });
+  });
+  list.value = data.list;
+  total.value = data.total;
+};
+
+const voiceColumns = [
+  {
+    title: '编号',
+    dataIndex: 'mediaId',
+    align: 'center' as const,
+  },
+  {
+    title: '文件名',
+    dataIndex: 'name',
+    align: 'center' as const,
+  },
+  {
+    title: '语音',
+    key: 'voice',
+    align: 'center' as const,
+  },
+  {
+    title: '上传时间',
+    dataIndex: 'createTime',
+    align: 'center' as const,
+    width: 180,
+    customRender: ({ record }: any) => formatDate2(record.createTime),
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center' as const,
+    fixed: 'right' as const,
+  },
+];
+
+const videoColumns = [
+  {
+    title: '编号',
+    dataIndex: 'mediaId',
+    align: 'center' as const,
+  },
+  {
+    title: '文件名',
+    dataIndex: 'name',
+    align: 'center' as const,
+  },
+  {
+    title: '标题',
+    dataIndex: 'title',
+    align: 'center' as const,
+  },
+  {
+    title: '介绍',
+    dataIndex: 'introduction',
+    align: 'center' as const,
+  },
+  {
+    title: '视频',
+    key: 'video',
+    align: 'center' as const,
+  },
+  {
+    title: '上传时间',
+    dataIndex: 'createTime',
+    align: 'center' as const,
+    width: 180,
+    customRender: ({ record }: any) => formatDate2(record.createTime),
+  },
+  {
+    title: '操作',
+    key: 'action',
+    align: 'center' as const,
+    fixed: 'right' as const,
+  },
+];
+
+onMounted(async () => {
+  getPage();
+});
+</script>
+
+<template>
+  <div class="pb-8">
+    <!-- 类型：image -->
+    <div v-if="props.type === 'image'">
+      <Spin :spinning="loading">
+        <div class="waterfall">
+          <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
+            <img class="material-img" :src="item.url" alt="素材图片" />
+            <p class="item-name">{{ item.name }}</p>
+            <Row class="ope-row">
+              <Button type="primary" @click="selectMaterialFun(item)">
+                选择
+                <template #icon>
+                  <IconifyIcon icon="mdi:check-circle" />
+                </template>
+              </Button>
+            </Row>
+          </div>
+        </div>
+      </Spin>
+      <!-- 分页组件 -->
+      <Pagination
+        v-model:current="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        :total="total"
+        class="mt-4"
+        @change="getMaterialPageFun"
+      />
+    </div>
+
+    <!-- 类型：voice -->
+    <div v-else-if="props.type === 'voice'">
+      <Table
+        :columns="voiceColumns"
+        :data-source="list"
+        :loading="loading"
+        :pagination="false"
+        row-key="mediaId"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'voice'">
+            <WxVoicePlayer :url="record.url" />
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <Button type="link" @click="selectMaterialFun(record)">
+              选择
+              <template #icon>
+                <IconifyIcon icon="mdi:plus" />
+              </template>
+            </Button>
+          </template>
+        </template>
+      </Table>
+      <!-- 分页组件 -->
+      <Pagination
+        v-model:current="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        :total="total"
+        class="mt-4"
+        @change="getPage"
+      />
+    </div>
+
+    <!-- 类型：video -->
+    <div v-else-if="props.type === 'video'">
+      <Table
+        :columns="videoColumns"
+        :data-source="list"
+        :loading="loading"
+        :pagination="false"
+        row-key="mediaId"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'video'">
+            <WxVideoPlayer :url="record.url" />
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <Button type="link" @click="selectMaterialFun(record)">
+              选择
+              <template #icon>
+                <IconifyIcon icon="mdi:plus-circle" />
+              </template>
+            </Button>
+          </template>
+        </template>
+      </Table>
+      <!-- 分页组件 -->
+      <Pagination
+        v-model:current="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        :total="total"
+        class="mt-4"
+        @change="getMaterialPageFun"
+      />
+    </div>
+
+    <!-- 类型：news -->
+    <div v-else-if="props.type === 'news'">
+      <Spin :spinning="loading">
+        <div class="waterfall">
+          <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
+            <div v-if="item.content && item.content.newsItem">
+              <WxNews :articles="item.content.newsItem" />
+              <Row class="ope-row">
+                <Button type="primary" @click="selectMaterialFun(item)">
+                  选择
+                  <template #icon>
+                    <IconifyIcon icon="mdi:check-circle" />
+                  </template>
+                </Button>
+              </Row>
+            </div>
+          </div>
+        </div>
+      </Spin>
+      <!-- 分页组件 -->
+      <Pagination
+        v-model:current="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        :total="total"
+        class="mt-4"
+        @change="getMaterialPageFun"
+      />
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+@media (width >= 992px) and (width <= 1300px) {
+  .waterfall {
+    column-count: 3;
+  }
+
+  p {
+    color: red;
+  }
+}
+
+@media (width >= 768px) and (width <= 991px) {
+  .waterfall {
+    column-count: 2;
+  }
+
+  p {
+    color: orange;
+  }
+}
+
+@media (width <= 767px) {
+  .waterfall {
+    column-count: 1;
+  }
+}
+
+.waterfall {
+  column-count: 5;
+  column-gap: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.waterfall-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #eaeaea;
+  break-inside: avoid;
+}
+
+.material-img {
+  width: 100%;
+}
+
+p {
+  line-height: 30px;
+}
+
+.ope-row {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+</style>

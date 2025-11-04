@@ -5,12 +5,12 @@ import { requestClient } from '#/api/request';
 export namespace MpAccountApi {
   /** 公众号账号信息 */
   export interface Account {
-    id?: number;
+    id: number;
     name: string;
-    account: string;
-    appId: string;
-    appSecret: string;
-    token: string;
+    account?: string;
+    appId?: string;
+    appSecret?: string;
+    token?: string;
     aesKey?: string;
     qrCodeUrl?: string;
     remark?: string;
@@ -22,6 +22,10 @@ export namespace MpAccountApi {
     name: string;
   }
 }
+
+// 重新导出类型，方便使用
+export type Account = MpAccountApi.Account;
+export type AccountSimple = MpAccountApi.AccountSimple;
 
 /** 查询公众号账号列表 */
 export function getAccountPage(params: PageParam) {

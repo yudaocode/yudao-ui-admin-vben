@@ -1,3 +1,5 @@
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
+
 import { defineAsyncComponent } from 'vue';
 
 const modules = import.meta.glob('../views/**/*.{vue,tsx}');
@@ -13,4 +15,15 @@ export function registerComponent(componentPath: string) {
       return defineAsyncComponent(modules[item] as any);
     }
   }
+}
+
+export function getRawRoute(
+  route: RouteLocationNormalizedLoaded,
+): RouteLocationNormalizedLoaded {
+  if (!route) return route;
+  const { matched, ...others } = route;
+  return {
+    ...others,
+    matched: matched ? matched.map((m) => ({ ...m })) : [],
+  };
 }
