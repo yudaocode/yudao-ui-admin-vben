@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -70,16 +69,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const data = await getProductCategoryPage({
+          return await getProductCategoryPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
-          // 转换为树形结构
-          return {
-            ...data,
-            list: handleTree(data.list, 'id', 'parentId'),
-          };
         },
       },
     },
@@ -90,16 +84,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: true,
       search: true,
-    },
-    treeConfig: {
-      parentField: 'parentId',
-      rowField: 'id',
-      transform: true,
-      expandAll: true,
-      reserve: true,
-      trigger: 'default',
-      iconOpen: '',
-      iconClose: '',
     },
   } as VxeTableGridOptions<IotProductCategoryApi.ProductCategory>,
 });
@@ -121,8 +105,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[

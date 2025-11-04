@@ -7,24 +7,22 @@ import { ElForm, ElFormItem, ElInput } from 'element-plus';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
-// 导航栏属性面板
+/** 导航栏属性面板 */
 defineOptions({ name: 'PageConfigProperty' });
+
 const props = defineProps<{ modelValue: PageConfigProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-// 表单校验
-const rules = {};
 
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <ElForm label-width="80px" :model="formData" :rules="rules">
+  <ElForm label-width="80px" :model="formData">
     <ElFormItem label="页面描述" prop="description">
       <ElInput
-        type="textarea"
         v-model="formData!.description"
+        type="textarea"
         placeholder="用户通过微信分享给朋友时，会自动显示页面描述"
       />
     </ElFormItem>
@@ -42,5 +40,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElFormItem>
   </ElForm>
 </template>
-
-<style scoped lang="scss"></style>

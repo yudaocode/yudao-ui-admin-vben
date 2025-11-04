@@ -12,9 +12,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<SystemSmsLogApi.SmsLog>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 2,
-  direction: 'horizontal',
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 

@@ -268,9 +268,6 @@ async function openPopover(type: string) {
   Object.keys(popOverVisible.value).forEach((item) => {
     if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
-  // TODO @jason：下面这 2 行，要删除么？
-  // await nextTick()
-  // formRef.value.resetFields()
 }
 
 /** 关闭气泡卡 */
@@ -710,9 +707,6 @@ defineExpose({ loadTodoTask });
 </script>
 <template>
   <div class="flex items-center">
-    <!-- TODO @jason：这里要删除么？ -->
-    <!-- <div>是否处理中 {{ !!isHandleTaskStatus() }}</div> -->
-
     <!-- 【通过】按钮 -->
     <!-- z-index 设置为300 避免覆盖签名弹窗 -->
     <Space size="middle">
@@ -903,13 +897,12 @@ defineExpose({ loadTodoTask });
               label-width="100px"
             >
               <FormItem label="抄送人" name="copyUserIds">
-                <!-- TODO @jason：看看是不是用 看看能不能通过 tailwindcss 简化下 style -->
                 <Select
                   v-model:value="copyForm.copyUserIds"
                   :allow-clear="true"
-                  style="width: 100%"
                   mode="multiple"
                   placeholder="请选择抄送人"
+                  class="w-full"
                 >
                   <SelectOption
                     v-for="item in userOptions"

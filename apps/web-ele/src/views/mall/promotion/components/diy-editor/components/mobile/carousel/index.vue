@@ -29,7 +29,7 @@ const handleIndexChange = (index: number) => {
   </div>
   <div v-else class="relative">
     <ElCarousel
-      height="174px"
+      :height="`${property.height}px`"
       :type="property.type === 'card' ? 'card' : ''"
       :autoplay="property.autoplay"
       :interval="property.interval * 1000"

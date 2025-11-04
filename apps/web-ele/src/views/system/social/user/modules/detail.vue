@@ -16,8 +16,6 @@ const formData = ref<SystemSocialUserApi.SocialUser>();
 const [Descriptions] = useDescription({
   border: true,
   column: 1,
-  size: 'large',
-  labelWidth: 185,
   schema: useDetailSchema(),
 });
 

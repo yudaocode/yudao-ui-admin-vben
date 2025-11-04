@@ -11,6 +11,7 @@ import {
   ElCard,
   ElForm,
   ElFormItem,
+  ElInput,
   ElRadioButton,
   ElRadioGroup,
   ElSlider,
@@ -18,7 +19,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import { Draggable } from '#/views/mall/promotion/components';
+import { ColorInput, Draggable } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -26,10 +27,12 @@ import ComponentContainerProperty from '../../component-container-property.vue';
 defineOptions({ name: 'SearchProperty' });
 
 const props = defineProps<{ modelValue: SearchProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 监听热词数组变化
+/** 监听热词数组变化 */
 watch(
   () => formData.value.hotKeywords,
   (newVal) => {
@@ -45,8 +48,7 @@ watch(
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <!-- 表单 -->
-    <ElForm label-width="80px" :model="formData" class="mt-2">
+    <ElForm label-width="80px" :model="formData">
       <ElCard header="搜索热词" class="property-group" shadow="never">
         <Draggable
           v-model="formData.hotKeywords"
@@ -56,7 +58,7 @@ watch(
           }"
         >
           <template #default="{ index }">
-            <el-input
+            <ElInput
               v-model="formData.hotKeywords[index]"
               placeholder="请输入热词"
             />
@@ -79,7 +81,7 @@ watch(
           </ElRadioGroup>
         </ElFormItem>
         <ElFormItem label="提示文字" prop="placeholder">
-          <el-input v-model="formData.placeholder" />
+          <ElInput v-model="formData.placeholder" />
         </ElFormItem>
         <ElFormItem label="文本位置" prop="placeholderPosition">
           <ElRadioGroup v-model="formData!.placeholderPosition">
@@ -110,12 +112,10 @@ watch(
         <ElFormItem label="框体颜色" prop="backgroundColor">
           <ColorInput v-model="formData.backgroundColor" />
         </ElFormItem>
-        <ElFormItem class="lef" label="文本颜色" prop="textColor">
+        <ElFormItem label="文本颜色" prop="textColor">
           <ColorInput v-model="formData.textColor" />
         </ElFormItem>
       </ElCard>
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

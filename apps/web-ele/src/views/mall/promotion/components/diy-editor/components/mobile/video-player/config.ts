@@ -2,23 +2,18 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 视频播放属性 */
 export interface VideoPlayerProperty {
-  // 视频链接
-  videoUrl: string;
-  // 封面链接
-  posterUrl: string;
-  // 是否自动播放
-  autoplay: boolean;
-  // 组件样式
-  style: VideoPlayerStyle;
+  videoUrl: string; // 视频链接
+  posterUrl: string; // 封面链接
+  autoplay: boolean; // 是否自动播放
+  style: VideoPlayerStyle; // 组件样式
 }
 
-// 视频播放样式
+/** 视频播放样式 */
 export interface VideoPlayerStyle extends ComponentStyle {
-  // 视频高度
-  height: number;
+  height: number; // 视频高度
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'VideoPlayer',
   name: '视频播放',

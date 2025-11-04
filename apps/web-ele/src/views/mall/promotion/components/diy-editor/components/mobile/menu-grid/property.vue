@@ -12,7 +12,12 @@ import {
 } from 'element-plus';
 
 import UploadImg from '#/components/upload/image-upload.vue';
-import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
+import {
+  AppLinkInput,
+  ColorInput,
+  Draggable,
+  InputWithColor,
+} from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
@@ -21,7 +26,9 @@ import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
 defineOptions({ name: 'MenuGridProperty' });
 
 const props = defineProps<{ modelValue: MenuGridProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -35,7 +42,6 @@ const formData = useVModel(props, 'modelValue', emit);
           <ElRadio :value="4">4个</ElRadio>
         </ElRadioGroup>
       </ElFormItem>
-
       <ElCard header="菜单设置" class="property-group" shadow="never">
         <Draggable
           v-model="formData.list"
@@ -87,5 +93,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

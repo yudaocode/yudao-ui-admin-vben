@@ -13,8 +13,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<InfraJobLogApi.JobLog>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 1,
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 

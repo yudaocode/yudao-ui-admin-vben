@@ -14,16 +14,15 @@ import { componentConfigs } from './mobile/index';
 /** 组件库：目前左侧的【基础组件】、【图文组件】部分 */
 defineOptions({ name: 'ComponentLibrary' });
 
-// 组件列表
+/** 组件列表 */
 const props = defineProps<{
   list: DiyComponentLibrary[];
 }>();
-// 组件分组
-const groups = reactive<any[]>([]);
-// 展开的折叠面板
-const extendGroups = reactive<string[]>([]);
 
-// 监听 list 属性，按照 DiyComponentLibrary 的 name 分组
+const groups = reactive<any[]>([]); // 组件分组
+const extendGroups = reactive<string[]>([]); // 展开的折叠面板
+
+/** 监听 list 属性，按照 DiyComponentLibrary 的 name 分组 */
 watch(
   () => props.list,
   () => {
@@ -53,7 +52,7 @@ watch(
   },
 );
 
-// 克隆组件
+/** 克隆组件 */
 const handleCloneComponent = (component: DiyComponent<any>) => {
   const instance = cloneDeep(component);
   instance.uid = Date.now();
@@ -62,7 +61,9 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 </script>
 
 <template>
-  <div class="editor-left w-[261px]">
+  <aside
+    class="editor-left z-[1] w-[261px] shrink-0 select-none shadow-[8px_0_8px_-8px_rgb(0_0_0/0.12)]"
+  >
     <div class="h-full overflow-y-auto">
       <Collapse v-model:active-key="extendGroups">
         <CollapsePanel
@@ -71,7 +72,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
           :header="group.name"
         >
           <draggable
-            class="component-container"
+            class="flex flex-wrap items-center"
             ghost-class="draggable-ghost"
             item-key="index"
             :list="group.components"
@@ -79,13 +80,22 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
             :group="{ name: 'component', pull: 'clone', put: false }"
             :clone="handleCloneComponent"
             :animation="200"
-            :force-fallback="true"
+            :force-fallback="false"
           >
             <template #item="{ element }">
               <div>
-                <div class="drag-placement">组件放置区域</div>
-                <div class="component">
-                  <IconifyIcon :icon="element.icon" :size="32" />
+                <div class="hidden text-white">组件放置区域</div>
+                <div
+                  class="component flex h-[86px] w-[86px] cursor-move flex-col items-center justify-center border-b border-r [&:nth-of-type(3n)]:border-r-0"
+                  :style="{
+                    borderColor: 'var(--ant-color-split)',
+                  }"
+                >
+                  <IconifyIcon
+                    :icon="element.icon"
+                    :size="32"
+                    class="mb-1 text-gray-500"
+                  />
                   <span class="mt-1 text-xs">{{ element.name }}</span>
                 </div>
               </div>
@@ -94,16 +104,11 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
         </CollapsePanel>
       </Collapse>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped lang="scss">
 .editor-left {
-  z-index: 1;
-  flex-shrink: 0;
-  user-select: none;
-  box-shadow: 8px 0 8px -8px rgb(0 0 0 / 12%);
-
   :deep(.ant-collapse) {
     border-top: none;
   }
@@ -112,8 +117,8 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     border-bottom: none;
   }
 
-  :deep(.ant-collapse-content) {
-    padding-bottom: 0;
+  :deep(.ant-collapse-content-box) {
+    padding: 0;
   }
 
   :deep(.ant-collapse-header) {
@@ -124,50 +129,19 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     border-bottom: none;
   }
 
-  .component-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .component {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 86px;
-    height: 86px;
-    cursor: move;
-    border-right: 1px solid var(--ant-color-border-secondary);
-    border-bottom: 1px solid var(--ant-color-border-secondary);
-
-    .anticon {
-      margin-bottom: 4px;
-      color: gray;
-    }
-  }
-
+  /* 组件 hover 和 active 状态（需要 CSS 变量）*/
   .component.active,
   .component:hover {
     color: var(--ant-color-white);
     background: var(--ant-color-primary);
 
-    .anticon {
+    :deep(.iconify) {
       color: var(--ant-color-white);
     }
   }
-
-  .component:nth-of-type(3n) {
-    border-right: none;
-  }
 }
 
-/* 拖拽占位提示，默认不显示 */
-.drag-placement {
-  display: none;
-  color: #fff;
-}
-
+/* 拖拽区域全局样式 */
 .drag-area {
   /* 拖拽到手机区域时的样式 */
   .draggable-ghost {
@@ -203,14 +177,12 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
       background: #5487df;
     }
 
-    /* 拖拽时隐藏组件 */
     .component {
-      display: none;
+      display: none; /* 拖拽时隐藏组件 */
     }
 
-    /* 拖拽时显示占位提示 */
-    .drag-placement {
-      display: block;
+    .hidden {
+      display: block !important; /* 拖拽时显示占位提示 */
     }
   }
 }

@@ -100,3 +100,17 @@ export function groupBy(array: any[], key: string) {
   }
   return result;
 }
+
+/**
+ * 解析 JSON 字符串
+ *
+ * @param str
+ */
+export function jsonParse(str: string) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    console.warn(`str[${str}] 不是一个 JSON 字符串`);
+    return str;
+  }
+}

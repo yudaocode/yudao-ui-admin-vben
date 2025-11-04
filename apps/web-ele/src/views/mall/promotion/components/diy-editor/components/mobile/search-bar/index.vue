@@ -5,19 +5,19 @@ import { IconifyIcon } from '@vben/icons';
 
 /** 搜索框 */
 defineOptions({ name: 'SearchBar' });
+
 defineProps<{ property: SearchProperty }>();
 </script>
 
 <template>
   <div
-    class="search-bar"
     :style="{
       color: property.textColor,
     }"
   >
     <!-- 搜索框 -->
     <div
-      class="inner"
+      class="relative flex min-h-7 items-center text-sm"
       :style="{
         height: `${property.height}px`,
         background: property.backgroundColor,
@@ -25,7 +25,7 @@ defineProps<{ property: SearchProperty }>();
       }"
     >
       <div
-        class="placeholder"
+        class="flex w-full items-center gap-0.5 overflow-hidden text-ellipsis whitespace-nowrap break-all px-2"
         :style="{
           justifyContent: property.placeholderPosition,
         }"
@@ -33,11 +33,11 @@ defineProps<{ property: SearchProperty }>();
         <IconifyIcon icon="ep:search" />
         <span>{{ property.placeholder || '搜索商品' }}</span>
       </div>
-      <div class="right">
+      <div class="absolute right-2 flex items-center justify-center gap-2">
         <!-- 搜索热词 -->
-        <span v-for="(keyword, index) in property.hotKeywords" :key="index">{{
-          keyword
-        }}</span>
+        <span v-for="(keyword, index) in property.hotKeywords" :key="index">
+          {{ keyword }}
+        </span>
         <!-- 扫一扫 -->
         <IconifyIcon
           icon="ant-design:scan-outlined"
@@ -47,37 +47,3 @@ defineProps<{ property: SearchProperty }>();
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.search-bar {
-  /* 搜索框 */
-  .inner {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 28px;
-    font-size: 14px;
-
-    .placeholder {
-      display: flex;
-      gap: 2px;
-      align-items: center;
-      width: 100%;
-      padding: 0 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      word-break: break-all;
-      white-space: nowrap;
-    }
-
-    .right {
-      position: absolute;
-      right: 8px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-}
-</style>

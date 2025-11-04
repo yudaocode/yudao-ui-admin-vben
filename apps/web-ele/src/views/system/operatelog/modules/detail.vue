@@ -14,7 +14,6 @@ const formData = ref<SystemOperateLogApi.OperateLog>();
 const [Descriptions] = useDescription({
   border: true,
   column: 1,
-  labelWidth: 110,
   schema: useDetailSchema(),
 });
 

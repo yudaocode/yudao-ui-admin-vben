@@ -193,12 +193,15 @@ const handleAppLinkChange = (appLink: AppLink) => {
       <div
         v-for="(item, hotZoneIndex) in formData"
         :key="hotZoneIndex"
-        class="hot-zone"
+        class="group absolute z-10 flex cursor-move items-center justify-center border text-base opacity-80"
         :style="{
           width: `${item.width}px`,
           height: `${item.height}px`,
           top: `${item.top}px`,
           left: `${item.left}px`,
+          color: 'var(--el-color-primary)',
+          background: 'var(--el-color-primary-light-7)',
+          borderColor: 'var(--el-color-primary)',
         }"
         @mousedown="handleMove(item, $event)"
         @dblclick="handleShowAppLinkDialog(item)"
@@ -208,17 +211,18 @@ const handleAppLinkChange = (appLink: AppLink) => {
         </span>
         <IconifyIcon
           icon="ep:close"
-          class="delete"
+          class="absolute right-0 top-0 hidden cursor-pointer rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
+          :style="{ backgroundColor: 'var(--el-color-primary)' }"
           :size="14"
           @click="handleRemove(item)"
         />
 
         <!-- 8 个控制点 -->
         <span
-          class="ctrl-dot"
+          class="ctrl-dot absolute z-[11] h-2 w-2 rounded-full bg-white"
           v-for="(dot, dotIndex) in CONTROL_DOT_LIST"
           :key="dotIndex"
-          :style="dot.style"
+          :style="{ ...dot.style, border: 'inherit' }"
           @mousedown="handleResize(item, dot, $event)"
         ></span>
       </div>
@@ -236,49 +240,3 @@ const handleAppLinkChange = (appLink: AppLink) => {
     @app-link-change="handleAppLinkChange"
   />
 </template>
-
-<style scoped lang="scss">
-.hot-zone {
-  position: absolute;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--el-color-primary);
-  cursor: move;
-  background: var(--el-color-primary-light-7);
-  border: 1px solid var(--el-color-primary);
-  opacity: 0.8;
-
-  /* 控制点 */
-  .ctrl-dot {
-    position: absolute;
-    z-index: 11;
-    width: 8px;
-    height: 8px;
-    background-color: #fff;
-    border: inherit;
-    border-radius: 50%;
-  }
-
-  .delete {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: none;
-    padding: 2px 2px 6px 6px;
-    color: #fff;
-    text-align: right;
-    cursor: pointer;
-    background-color: var(--el-color-primary);
-    border-radius: 0 0 0 80%;
-  }
-
-  &:hover {
-    .delete {
-      display: block;
-    }
-  }
-}
-</style>

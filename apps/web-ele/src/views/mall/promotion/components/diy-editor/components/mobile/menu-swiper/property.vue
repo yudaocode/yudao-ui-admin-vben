@@ -28,13 +28,14 @@ import { EMPTY_MENU_SWIPER_ITEM_PROPERTY } from './config';
 defineOptions({ name: 'MenuSwiperProperty' });
 
 const props = defineProps<{ modelValue: MenuSwiperProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <!-- 表单 -->
     <ElForm label-width="80px" :model="formData" class="mt-2">
       <ElFormItem label="布局" prop="layout">
         <ElRadioGroup v-model="formData.layout">
@@ -55,7 +56,6 @@ const formData = useVModel(props, 'modelValue', emit);
           <ElRadio :value="5">5列</ElRadio>
         </ElRadioGroup>
       </ElFormItem>
-
       <ElCard header="菜单设置" class="property-group" shadow="never">
         <Draggable
           v-model="formData.list"
@@ -101,5 +101,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

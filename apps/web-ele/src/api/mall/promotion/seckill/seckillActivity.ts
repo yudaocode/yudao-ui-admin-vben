@@ -57,6 +57,10 @@ export namespace MallSeckillActivityApi {
     products?: SeckillProduct[];
     /** 图片 */
     picUrl?: string;
+    /** 商品名称 */
+    spuName?: string;
+    /** 市场价 */
+    marketPrice?: number;
   }
 
   /** 扩展 SKU 配置 */

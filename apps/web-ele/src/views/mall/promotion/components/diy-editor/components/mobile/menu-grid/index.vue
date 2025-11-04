@@ -5,6 +5,7 @@ import { ElImage } from 'element-plus';
 
 /** 宫格导航 */
 defineOptions({ name: 'MenuGrid' });
+
 defineProps<{ property: MenuGridProperty }>();
 </script>
 
@@ -16,7 +17,6 @@ defineProps<{ property: MenuGridProperty }>();
       class="relative flex flex-col items-center pb-3.5 pt-5"
       :style="{ width: `${100 * (1 / property.column)}%` }"
     >
-      <!-- 右上角角标 -->
       <span
         v-if="item.badge?.show"
         class="absolute left-1/2 top-2.5 z-10 h-5 rounded-full px-1.5 text-center text-xs leading-5"
@@ -43,5 +43,3 @@ defineProps<{ property: MenuGridProperty }>();
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

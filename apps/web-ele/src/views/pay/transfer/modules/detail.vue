@@ -13,8 +13,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<PayTransferApi.Transfer>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 2,
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 

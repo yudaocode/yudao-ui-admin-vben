@@ -7,7 +7,6 @@ import { ref } from 'vue';
 import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { $t } from '@vben/locales';
 
 import { message, TabPane, Tabs } from 'ant-design-vue';
 
@@ -32,7 +31,7 @@ function handleRefresh() {
 /** 删除优惠券 */
 async function handleDelete(row: MallCouponApi.Coupon) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+    content: '回收中...',
     duration: 0,
   });
   try {
