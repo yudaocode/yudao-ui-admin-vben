@@ -289,17 +289,22 @@ defineExpose({
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <!-- 情况一：添加/修改 -->
     <VxeTable
       v-if="!isDetail && !isActivityComponent"
       :data="isBatch ? skuList : formData?.skus || []"
       border
       max-height="500"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
       size="small"
-      class="w-full"
     >
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn align="center" title="图片" width="120" fixed="left">
         <template #default="{ row }">
           <ImageUpload
             v-model:value="row.picUrl"
@@ -316,7 +321,8 @@ defineExpose({
           :key="index"
           :title="item.label"
           align="center"
-          min-width="120"
+          fixed="left"
+          min-width="80"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -325,12 +331,12 @@ defineExpose({
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="168">
+      <VxeColumn align="center" title="商品条码" width="168">
         <template #default="{ row }">
           <Input v-model:value="row.barCode" class="w-full" />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价" min-width="168">
+      <VxeColumn align="center" title="销售价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.price"
@@ -341,7 +347,7 @@ defineExpose({
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价" min-width="168">
+      <VxeColumn align="center" title="市场价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.marketPrice"
@@ -352,7 +358,7 @@ defineExpose({
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价" min-width="168">
+      <VxeColumn align="center" title="成本价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.costPrice"
@@ -363,12 +369,12 @@ defineExpose({
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="168">
+      <VxeColumn align="center" title="库存" width="168">
         <template #default="{ row }">
           <InputNumber v-model:value="row.stock" :min="0" class="w-full" />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="重量(kg)" min-width="168">
+      <VxeColumn align="center" title="重量(kg)" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.weight"
@@ -379,7 +385,7 @@ defineExpose({
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="体积(m^3)" min-width="168">
+      <VxeColumn align="center" title="体积(m^3)" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.volume"
@@ -391,7 +397,7 @@ defineExpose({
         </template>
       </VxeColumn>
       <template v-if="formData?.subCommissionType">
-        <VxeColumn align="center" title="一级返佣(元)" min-width="168">
+        <VxeColumn align="center" title="一级返佣(元)" width="168">
           <template #default="{ row }">
             <InputNumber
               v-model:value="row.firstBrokeragePrice"
@@ -402,7 +408,7 @@ defineExpose({
             />
           </template>
         </VxeColumn>
-        <VxeColumn align="center" title="二级返佣(元)" min-width="168">
+        <VxeColumn align="center" title="二级返佣(元)" width="168">
           <template #default="{ row }">
             <InputNumber
               v-model:value="row.secondBrokeragePrice"
@@ -446,13 +452,18 @@ defineExpose({
       border
       max-height="500"
       size="small"
-      class="w-full"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
       :checkbox-config="isComponent ? { reserve: true } : undefined"
       @checkbox-change="handleSelectionChange"
       @checkbox-all="handleSelectionChange"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
             v-if="row.picUrl"
@@ -469,7 +480,8 @@ defineExpose({
           :key="index"
           :title="item.label"
           align="center"
-          min-width="80"
+          max-width="80"
+          fixed="left"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -478,48 +490,48 @@ defineExpose({
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="100">
+      <VxeColumn align="center" title="商品条码" width="100">
         <template #default="{ row }">
           {{ row.barCode }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价(元)" min-width="80">
+      <VxeColumn align="center" title="销售价(元)" width="80">
         <template #default="{ row }">
           {{ row.price }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价(元)" min-width="80">
+      <VxeColumn align="center" title="市场价(元)" width="80">
         <template #default="{ row }">
           {{ row.marketPrice }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价(元)" min-width="80">
+      <VxeColumn align="center" title="成本价(元)" width="80">
         <template #default="{ row }">
           {{ row.costPrice }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="80">
+      <VxeColumn align="center" title="库存" width="80">
         <template #default="{ row }">
           {{ row.stock }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="重量(kg)" min-width="80">
+      <VxeColumn align="center" title="重量(kg)" width="80">
         <template #default="{ row }">
           {{ row.weight }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="体积(m^3)" min-width="80">
+      <VxeColumn align="center" title="体积(m^3)" width="80">
         <template #default="{ row }">
           {{ row.volume }}
         </template>
       </VxeColumn>
       <template v-if="formData?.subCommissionType">
-        <VxeColumn align="center" title="一级返佣(元)" min-width="80">
+        <VxeColumn align="center" title="一级返佣(元)" width="80">
           <template #default="{ row }">
             {{ row.firstBrokeragePrice }}
           </template>
         </VxeColumn>
-        <VxeColumn align="center" title="二级返佣(元)" min-width="80">
+        <VxeColumn align="center" title="二级返佣(元)" width="80">
           <template #default="{ row }">
             {{ row.secondBrokeragePrice }}
           </template>
@@ -534,10 +546,15 @@ defineExpose({
       border
       max-height="500"
       size="small"
-      class="w-full"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
     >
-      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
+      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
             :src="row.picUrl"
@@ -553,7 +570,8 @@ defineExpose({
           :key="index"
           :title="item.label"
           align="center"
-          min-width="80"
+          width="80"
+          fixed="left"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -562,27 +580,27 @@ defineExpose({
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="100">
+      <VxeColumn align="center" title="商品条码" width="100">
         <template #default="{ row }">
           {{ row.barCode }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价(元)" min-width="80">
+      <VxeColumn align="center" title="销售价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.price) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价(元)" min-width="80">
+      <VxeColumn align="center" title="市场价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.marketPrice) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价(元)" min-width="80">
+      <VxeColumn align="center" title="成本价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.costPrice) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="80">
+      <VxeColumn align="center" title="库存" width="80">
         <template #default="{ row }">
           {{ row.stock }}
         </template>

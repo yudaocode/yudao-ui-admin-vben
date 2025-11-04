@@ -127,9 +127,7 @@ export default defineComponent({
                 },
                 default: () => {
                   if (item.slot) {
-                    // TODO @xingyu：这里要 inline 掉么？
-                    const slotContent = getSlot(slots, item.slot, data);
-                    return slotContent;
+                    return getSlot(slots, item.slot, data);
                   }
                   if (!contentMinWidth) {
                     return getContent();
