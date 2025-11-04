@@ -76,6 +76,7 @@ catalog:
   '@vueuse/core': ^13.4.0
   '@vueuse/integrations': ^13.4.0
   '@vueuse/motion': ^3.0.3
+  '@videojs-player/vue': ^1.0.0
   ant-design-vue: ^4.2.6
   archiver: ^7.0.1
   autoprefixer: ^10.4.21
@@ -220,6 +221,7 @@ catalog:
   vuedraggable: ^4.1.0
   vxe-pc-ui: ^4.9.29
   vxe-table: ^4.16.11
+  video.js: ^7.21.6
   watermark-js-plus: ^1.6.2
   zod: ^3.25.67
   zod-defaults: ^0.1.3

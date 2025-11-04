@@ -1,18 +1,20 @@
 <script lang="ts" setup>
+import type { TabPaneName } from 'element-plus';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 
-import {
-  confirm,
-  ContentWrap,
-  DocAlert,
-  Page,
-  useVbenModal,
-} from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+import { ContentWrap, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message, Row, Tabs } from 'ant-design-vue';
+import {
+  ElLoading,
+  ElMessage,
+  ElMessageBox,
+  ElRow,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpAutoReplyApi from '#/api/mp/autoReply';
@@ -25,12 +27,11 @@ import { MsgType } from './modules/types';
 
 defineOptions({ name: 'MpAutoReply' });
 
-const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
-async function onTabChange(_tabName: string) {
-  msgType.value = _tabName;
+const msgType = ref<MsgType>(MsgType.Keyword); // 消息类型
+async function onTabChange(_tabName: TabPaneName) {
   // 等待 msgType 更新完成
   await nextTick();
-  const columns = useGridColumns(Number(msgType.value) as MsgType);
+  const columns = useGridColumns(msgType.value);
   if (columns) {
     // 使用 setGridOptions 更新列配置
     gridApi.setGridOptions({ columns });
@@ -49,7 +50,7 @@ async function handleCreate() {
   formModalApi
     .setData({
       isCreating: true,
-      msgType: Number(msgType.value) as MsgType,
+      msgType: msgType.value,
       accountId: formValues.accountId,
     })
     .open();
@@ -59,29 +60,24 @@ async function handleCreate() {
 async function handleEdit(row: any) {
   const data = (await MpAutoReplyApi.getAutoReply(row.id)) as any;
   formModalApi
-    .setData({
-      isCreating: false,
-      msgType: Number(msgType.value) as MsgType,
-      row: data,
-    })
+    .setData({ isCreating: false, msgType: msgType.value, row: data })
     .open();
 }
 
 /** 删除按钮操作 */
 async function handleDelete(row: any) {
-  await confirm('是否确认删除此数据?');
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', ['自动回复']),
-    duration: 0,
+  await ElMessageBox.confirm('是否确认删除此数据?');
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', ['自动回复']),
   });
   try {
     await MpAutoReplyApi.deleteAutoReply(row.id);
-    message.success('删除成功');
+    ElMessage.success('删除成功');
     await gridApi.query();
     // 查询完成后更新数据长度
     updateTableDataLength();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -97,7 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useGridColumns(Number(msgType.value) as MsgType),
+    columns: useGridColumns(msgType.value),
     height: 'calc(100vh - 300px)',
     // height: '600px',
     keepSource: true,
@@ -107,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await MpAutoReplyApi.getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: Number(msgType.value) as MsgType,
+            type: msgType.value,
             ...formValues,
           });
         },
@@ -144,7 +140,7 @@ function updateTableDataLength() {
 
 // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
 const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== MsgType.Follow) {
+  if (msgType.value !== MsgType.Follow) {
     return true;
   }
   return tableDataLength.value <= 0;
@@ -174,33 +170,30 @@ onMounted(async () => {
 
     <!-- tab 切换 -->
     <ContentWrap>
-      <Tabs
-        v-model:active-key="msgType"
-        @change="(activeKey) => onTabChange(activeKey as string)"
-      >
+      <ElTabs v-model="msgType" @tab-change="onTabChange">
         <!-- tab 项 -->
-        <Tabs.TabPane :key="String(MsgType.Follow)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="ep:star" class="mr-2px" /> 关注时回复
-            </Row>
+        <ElTabPane :name="MsgType.Follow">
+          <template #label>
+            <ElRow align="middle">
+              <Icon icon="ep:star" class="mr-2px" /> 关注时回复
+            </ElRow>
           </template>
-        </Tabs.TabPane>
-        <Tabs.TabPane :key="String(MsgType.Message)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="ep:chat-line-round" class="mr-2px" /> 消息回复
-            </Row>
+        </ElTabPane>
+        <ElTabPane :name="MsgType.Message">
+          <template #label>
+            <ElRow align="middle">
+              <Icon icon="ep:chat-line-round" class="mr-2px" /> 消息回复
+            </ElRow>
           </template>
-        </Tabs.TabPane>
-        <Tabs.TabPane :key="String(MsgType.Keyword)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
-            </Row>
+        </ElTabPane>
+        <ElTabPane :name="MsgType.Keyword">
+          <template #label>
+            <ElRow align="middle">
+              <Icon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
+            </ElRow>
           </template>
-        </Tabs.TabPane>
-      </Tabs>
+        </ElTabPane>
+      </ElTabs>
       <!-- 列表 -->
       <FormModal
         @success="
@@ -234,15 +227,16 @@ onMounted(async () => {
             :actions="[
               {
                 label: $t('common.edit'),
-                type: 'link',
+                type: 'primary',
+                link: true,
                 icon: ACTION_ICON.EDIT,
                 auth: ['mp:auto-reply:update'],
                 onClick: handleEdit.bind(null, row),
               },
               {
                 label: $t('common.delete'),
-                type: 'link',
-                danger: true,
+                type: 'danger',
+                link: true,
                 icon: ACTION_ICON.DELETE,
                 auth: ['mp:auto-reply:delete'],
                 popConfirm: {

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { UploadFile } from 'ant-design-vue';
+import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
 
 import type { Reply } from './types';
 
@@ -54,9 +55,65 @@ function beforeVideoUpload(file: UploadFile) {
   return useBeforeUpload(UploadType.Video, 10)(file as any);
 }
 
+/** 自定义上传请求 */
+async function customRequest(info: UploadRequestOption) {
+  const formData = new FormData();
+  formData.append('file', info.file as File);
+  formData.append('accountId', String(uploadData.accountId));
+  formData.append('type', uploadData.type);
+  if (uploadData.title) {
+    formData.append('title', uploadData.title);
+  }
+  if (uploadData.introduction) {
+    formData.append('introduction', uploadData.introduction);
+  }
+
+  try {
+    const xhr = new XMLHttpRequest();
+
+    // 监听上传进度
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const percent = Math.round((e.loaded / e.total) * 100);
+        info.onProgress?.({ percent });
+      }
+    });
+
+    // 监听上传完成
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const res = JSON.parse(xhr.responseText);
+          onUploadSuccess(res);
+          info.onSuccess?.(res);
+        } catch {
+          info.onError?.(new Error('解析响应失败'));
+          message.error('上传失败：解析响应失败');
+        }
+      } else {
+        info.onError?.(new Error(`上传失败：HTTP ${xhr.status}`));
+        message.error('上传失败，请重试');
+      }
+    });
+
+    // 监听上传错误
+    xhr.addEventListener('error', () => {
+      info.onError?.(new Error('上传请求失败'));
+      message.error('上传失败，请重试');
+    });
+
+    // 发送请求
+    xhr.open('POST', UPLOAD_URL);
+    xhr.setRequestHeader('Authorization', HEADERS.Authorization);
+    xhr.send(formData);
+  } catch (error: any) {
+    info.onError?.(error);
+    message.error('上传失败，请重试');
+  }
+}
+
 /** 上传成功 */
-function onUploadSuccess(info: any) {
-  const res = info.response || info;
+function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -66,7 +123,6 @@ function onUploadSuccess(info: any) {
   fileList.value = [];
   uploadData.title = '';
   uploadData.introduction = '';
-
   selectMaterial(res.data);
 }
 
@@ -127,18 +183,9 @@ function selectMaterial(item: any) {
           <!-- 文件上传 -->
           <Col :span="12">
             <Upload
-              :action="UPLOAD_URL"
-              :headers="HEADERS"
               :file-list="fileList"
-              :data="uploadData"
               :before-upload="beforeVideoUpload"
-              @change="
-                (info) => {
-                  if (info.file.status === 'done') {
-                    onUploadSuccess(info.file.response || info.file);
-                  }
-                }
-              "
+              :custom-request="customRequest"
             >
               <Button type="primary">
                 新建视频 <IconifyIcon icon="ep:upload" />

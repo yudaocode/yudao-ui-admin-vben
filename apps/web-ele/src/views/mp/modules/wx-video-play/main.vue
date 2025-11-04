@@ -13,9 +13,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-// import { VideoPlayer } from '@videojs-player/vue';
+import { VideoPlayer } from '@videojs-player/vue';
 
-// import 'video.js/dist/video-js.css';
+import 'video.js/dist/video-js.css';
 
 defineOptions({ name: 'WxVideoPlayer' });
 
@@ -52,7 +52,6 @@ const playVideo = () => {
         class="video-player vjs-big-play-centered"
         :src="props.url"
         poster=""
-        crossorigin="anonymous"
         controls
         playsinline
         :volume="0.6"

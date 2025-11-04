@@ -13,11 +13,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
+import { VideoPlayer } from '@videojs-player/vue';
 import { Modal } from 'ant-design-vue';
 
-// import { VideoPlayer } from '@videojs-player/vue';
-
-// import 'video.js/dist/video-js.css';
+import 'video.js/dist/video-js.css';
 
 defineOptions({ name: 'WxVideoPlayer' });
 
@@ -42,19 +43,23 @@ const playVideo = () => {
 <template>
   <div @click="playVideo()">
     <!-- 提示 -->
-    <div>
-      <Icon icon="ep:video-play" :size="32" class="mr-5px" />
+    <div class="flex cursor-pointer flex-col items-center">
+      <IconifyIcon icon="ep:video-play" class="size-5" />
       <p class="text-sm">点击播放视频</p>
     </div>
 
     <!-- 弹窗播放 -->
-    <Modal v-model:open="dialogVideo" title="视频播放" width="800px">
+    <Modal
+      v-model:open="dialogVideo"
+      title="视频播放"
+      width="900px"
+      :footer="null"
+    >
       <VideoPlayer
         v-if="dialogVideo"
         class="video-player vjs-big-play-centered"
         :src="props.url"
         poster=""
-        crossorigin="anonymous"
         controls
         playsinline
         :volume="0.6"
