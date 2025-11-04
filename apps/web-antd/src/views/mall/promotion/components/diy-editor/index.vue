@@ -7,8 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
-import { useQRCode } from '@vueuse/integrations/useQRCode';
-import { Button, Card, Image, Tag, Tooltip } from 'ant-design-vue';
+import { Button, Card, QRCode, Tag, Tooltip } from 'ant-design-vue';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
@@ -38,11 +37,6 @@ const props = defineProps({
 });
 
 const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
-
-const qrcode = useQRCode(props.previewUrl, {
-  errorCorrectionLevel: 'H',
-  margin: 4,
-}); // 预览二维码
 
 const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
@@ -397,7 +391,8 @@ onMounted(() => {
                     @copy="handleCopyComponent(index)"
                     @delete="handleDeleteComponent(index)"
                     @move="
-                      (direction: number) => handleMoveComponent(index, direction)
+                      (direction: number) =>
+                        handleMoveComponent(index, direction)
                     "
                   />
                 </template>
@@ -457,7 +452,10 @@ onMounted(() => {
           v-if="selectedComponent?.property"
           class="editor-right w-[350px] shrink-0 overflow-hidden shadow-[-8px_0_8px_-8px_rgb(0_0_0/0.12)]"
         >
-          <Card class="h-full" :body-style="{ padding: 0, height: 'calc(100% - 57px)' }">
+          <Card
+            class="h-full"
+            :body-style="{ padding: 0, height: 'calc(100% - 57px)' }"
+          >
             <!-- 组件名称 -->
             <template #title>
               <div class="flex items-center gap-2">
@@ -478,7 +476,7 @@ onMounted(() => {
     </div>
 
     <!-- 预览弹框 -->
-    <PreviewModal title="预览" class="w-700px">
+    <PreviewModal title="预览" class="w-[700px]">
       <div class="flex justify-around">
         <iframe
           :src="previewUrl"
@@ -486,7 +484,7 @@ onMounted(() => {
         ></iframe>
         <div class="flex flex-col">
           <div class="text-base">手机扫码预览</div>
-          <Image :src="qrcode" alt="qrcode" />
+          <QRCode :value="previewUrl" error-level="H" />
         </div>
       </div>
     </PreviewModal>
