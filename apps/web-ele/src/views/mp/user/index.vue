@@ -4,7 +4,7 @@ import type { MpUserApi } from '#/api/mp/user';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElLoading } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getUserPage, syncUser } from '#/api/mp/user';
