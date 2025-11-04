@@ -101,11 +101,7 @@ watch(
           <Switch v-model:checked="formData!.showScan" />
         </FormItem>
         <FormItem label="框体高度" name="height">
-          <Slider
-            v-model:value="formData!.height"
-            :max="50"
-            :min="28"
-          />
+          <Slider v-model:value="formData!.height" :max="50" :min="28" />
         </FormItem>
         <FormItem label="框体颜色" name="backgroundColor">
           <ColorInput v-model="formData.backgroundColor" />

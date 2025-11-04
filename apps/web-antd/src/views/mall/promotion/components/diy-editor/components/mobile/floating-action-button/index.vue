@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image, message } from 'ant-design-vue';
+import { Button, Image, message } from 'ant-design-vue';
 
 /** 悬浮按钮 */
 defineOptions({ name: 'FloatingActionButton' });
@@ -57,13 +57,13 @@ const handleActive = (index: number) => {
       </div>
     </template>
     <!-- todo: @owen 使用APP主题色 -->
-    <el-button type="primary" size="large" circle @click="handleToggleFab">
+    <Button type="primary" size="large" circle @click="handleToggleFab">
       <IconifyIcon
         icon="ep:plus"
         class="fab-icon"
         :class="[{ active: expanded }]"
       />
-    </el-button>
+    </Button>
   </div>
   <!-- 模态背景：展开时显示，点击后折叠 -->
   <div v-if="expanded" class="modal-bg" @click="handleToggleFab"></div>

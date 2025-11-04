@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { UserWalletProperty } from './config';
 
+import { Image } from 'ant-design-vue';
+
 /** 用户资产 */
 defineOptions({ name: 'UserWallet' });
 // 定义属性

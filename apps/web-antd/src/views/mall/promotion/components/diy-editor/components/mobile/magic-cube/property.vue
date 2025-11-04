@@ -14,14 +14,14 @@ import {
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-const { Text: ATypographyText } = Typography;
-
 /** 广告魔方属性面板 */
 defineOptions({ name: 'MagicCubeProperty' });
 
 const props = defineProps<{ modelValue: MagicCubeProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
+
+const { Text: ATypographyText } = Typography;
 
 const formData = useVModel(props, 'modelValue', emit);
 
@@ -37,7 +37,9 @@ const handleHotAreaSelected = (_: any, index: number) => {
   <ComponentContainerProperty v-model="formData.style">
     <Form :model="formData" class="mt-2">
       <ATypographyText tag="p"> 魔方设置 </ATypographyText>
-      <ATypographyText type="secondary" class="text-sm"> 每格尺寸187 * 187 </ATypographyText>
+      <ATypographyText type="secondary" class="text-sm">
+        每格尺寸187 * 187
+      </ATypographyText>
       <MagicCubeEditor
         class="my-4"
         v-model="formData.list"
@@ -61,11 +63,7 @@ const handleHotAreaSelected = (_: any, index: number) => {
         </template>
       </template>
       <FormItem label="上圆角" name="borderRadiusTop">
-        <Slider
-          v-model:value="formData.borderRadiusTop"
-          :max="100"
-          :min="0"
-        />
+        <Slider v-model:value="formData.borderRadiusTop" :max="100" :min="0" />
       </FormItem>
       <FormItem label="下圆角" name="borderRadiusBottom">
         <Slider
@@ -75,11 +73,7 @@ const handleHotAreaSelected = (_: any, index: number) => {
         />
       </FormItem>
       <FormItem label="间隔" name="space">
-        <Slider
-          v-model:value="formData.space"
-          :max="100"
-          :min="0"
-        />
+        <Slider v-model:value="formData.space" :max="100" :min="0" />
       </FormItem>
     </Form>
   </ComponentContainerProperty>

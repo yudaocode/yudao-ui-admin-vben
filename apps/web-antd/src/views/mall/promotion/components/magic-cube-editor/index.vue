@@ -258,9 +258,9 @@ function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
 
   .cube {
     box-sizing: border-box;
+    line-height: 1;
     color: var(--ant-color-text-secondary);
     text-align: center;
-    line-height: 1;
     cursor: pointer;
     border: 1px solid var(--ant-color-border);
 

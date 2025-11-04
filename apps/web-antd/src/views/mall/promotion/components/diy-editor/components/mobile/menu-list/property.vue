@@ -14,8 +14,6 @@ import {
 import ComponentContainerProperty from '../../component-container-property.vue';
 import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
 
-const { Text: ATypographyText } = Typography;
-
 /** 列表导航属性面板 */
 defineOptions({ name: 'MenuListProperty' });
 
@@ -23,13 +21,17 @@ const props = defineProps<{ modelValue: MenuListProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
 
+const { Text: ATypographyText } = Typography;
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <ATypographyText tag="p"> 菜单设置 </ATypographyText>
-    <ATypographyText type="secondary" class="text-sm"> 拖动左侧的小圆点可以调整顺序 </ATypographyText>
+    <ATypographyText type="secondary" class="text-sm">
+      拖动左侧的小圆点可以调整顺序
+    </ATypographyText>
     <Form :model="formData" class="mt-2">
       <Draggable
         v-model="formData.list"

@@ -65,18 +65,10 @@ const rules = {}; // 表单校验
           </RadioGroup>
         </FormItem>
         <FormItem label="偏移量" name="marginLeft">
-          <Slider
-            v-model:value="formData.marginLeft"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.marginLeft" :max="100" :min="0" />
         </FormItem>
         <FormItem label="高度" name="height">
-          <Slider
-            v-model:value="formData.height"
-            :max="200"
-            :min="20"
-          />
+          <Slider v-model:value="formData.height" :max="200" :min="20" />
         </FormItem>
       </Card>
       <Card title="主标题" class="property-group">
@@ -89,11 +81,7 @@ const rules = {}; // 表单校验
           />
         </FormItem>
         <FormItem label="大小" name="titleSize">
-          <Slider
-            v-model:value="formData.titleSize"
-            :max="60"
-            :min="10"
-          />
+          <Slider v-model:value="formData.titleSize" :max="60" :min="10" />
         </FormItem>
         <FormItem label="粗细" name="titleWeight">
           <Slider

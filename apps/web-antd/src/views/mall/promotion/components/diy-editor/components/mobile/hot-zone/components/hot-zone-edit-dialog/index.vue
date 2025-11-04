@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Image } from 'ant-design-vue';
 
-import { AppLinkSelectDialog } from '#/views/mall/promotion/components';
+import AppLinkSelectDialog from '#/views/mall/promotion/components/app-link-input/app-link-select-dialog.vue';
 
 import {
   CONTROL_DOT_LIST,
@@ -201,7 +201,8 @@ const handleAppLinkChange = (appLink: AppLink) => {
           top: `${item.top}px`,
           left: `${item.left}px`,
           color: 'var(--ant-color-primary)',
-          background: 'color-mix(in srgb, var(--ant-color-primary) 30%, transparent)',
+          background:
+            'color-mix(in srgb, var(--ant-color-primary) 30%, transparent)',
           borderColor: 'var(--ant-color-primary)',
         }"
         @mousedown="handleMove(item, $event)"

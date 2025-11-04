@@ -80,7 +80,11 @@ const handleDelete = function (index: number) {
       </div>
     </template>
   </VueDraggable>
-  <Tooltip :title="limit > 0 && limit < Number.MAX_VALUE ? `最多添加${limit}个` : undefined">
+  <Tooltip
+    :title="
+      limit > 0 && limit < Number.MAX_VALUE ? `最多添加${limit}个` : undefined
+    "
+  >
     <Button
       type="primary"
       ghost

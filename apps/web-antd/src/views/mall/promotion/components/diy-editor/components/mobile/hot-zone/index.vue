@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HotZoneProperty } from './config';
 
+import { Image } from 'ant-design-vue';
 /** 热区 */
 defineOptions({ name: 'HotZone' });
 const props = defineProps<{ property: HotZoneProperty }>();

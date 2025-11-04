@@ -33,14 +33,14 @@ import CouponSelect from '#/views/mall/promotion/coupon/components/select.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-const { Text: ATypographyText } = Typography;
-
 /** 优惠券卡片属性面板 */
 defineOptions({ name: 'CouponCardProperty' });
 
 const props = defineProps<{ modelValue: CouponCardProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
+
+const { Text: ATypographyText } = Typography;
 
 const formData = useVModel(props, 'modelValue', emit);
 
@@ -90,7 +90,9 @@ watch(
           :key="index"
           class="flex items-center justify-between"
         >
-          <ATypographyText ellipsis class="text-base">{{ coupon.name }}</ATypographyText>
+          <ATypographyText ellipsis class="text-base">
+            {{ coupon.name }}
+          </ATypographyText>
           <ATypographyText type="secondary" ellipsis>
             <span v-if="coupon.usePrice > 0">
               满{{ floatToFixed2(coupon.usePrice) }}元，
@@ -158,11 +160,7 @@ watch(
           <ColorInput v-model="formData.button.color" />
         </FormItem>
         <FormItem label="间隔" name="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>

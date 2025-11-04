@@ -158,11 +158,7 @@ const formData = useVModel(props, 'modelValue', emit);
           />
         </FormItem>
         <FormItem label="间隔" name="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>

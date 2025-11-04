@@ -19,7 +19,8 @@ import {
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
-import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
+// TODO: 添加组件
+// import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -158,11 +159,7 @@ const formData = useVModel(props, 'modelValue', emit);
           />
         </FormItem>
         <FormItem label="间隔" name="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>
