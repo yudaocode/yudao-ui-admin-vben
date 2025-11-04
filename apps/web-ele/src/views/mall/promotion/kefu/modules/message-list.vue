@@ -14,16 +14,19 @@ import { formatDate, isEmpty, jsonParse } from '@vben/utils';
 
 import { vScroll } from '@vueuse/components';
 import { useDebounceFn, useScroll } from '@vueuse/core';
-import {
-  Avatar,
-  Empty,
-  Image,
-  Layout,
-  notification,
-  Textarea,
-} from 'ant-design-vue';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {
+  ElAvatar,
+  ElContainer,
+  ElEmpty,
+  ElFooter,
+  ElHeader,
+  ElImage,
+  ElInput,
+  ElMain,
+  ElNotification,
+} from 'element-plus';
 
 import {
   getKeFuMessageList,
@@ -180,7 +183,7 @@ async function handleSendMessage(event: any) {
   }
   // 1. 校验消息是否为空
   if (isEmpty(unref(message.value)?.trim())) {
-    notification.warning({ message: '请输入消息后再发送哦！' });
+    ElNotification.warning({ message: '请输入消息后再发送哦！' });
     message.value = '';
     return;
   }
@@ -264,16 +267,16 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
 </script>
 
 <template>
-  <Layout
+  <ElContainer
     v-if="showMessageList()"
     class="bg-card relative w-[calc(100%-300px-260px)]"
   >
-    <Layout.Header
+    <ElHeader
       class="!bg-card border-border flex items-center justify-between border-b"
     >
       <div class="text-lg font-bold">{{ conversation.userNickname }}</div>
-    </Layout.Header>
-    <Layout.Content class="relative m-0 h-full w-full p-0">
+    </ElHeader>
+    <ElMain class="relative m-0 p-0">
       <div
         ref="scrollbarRef"
         class="absolute inset-0 m-0 overflow-y-auto overflow-x-hidden p-0"
@@ -315,7 +318,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
             ]"
             class="mb-[20px] flex w-full"
           >
-            <Avatar
+            <ElAvatar
               v-if="item.senderType === UserTypeEnum.MEMBER"
               :src="conversation.userAvatar"
               alt="avatar"
@@ -348,16 +351,11 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
               </MessageItem>
               <!-- 图片消息 -->
               <MessageItem :message="item">
-                <Image
+                <ElImage
                   v-if="KeFuMessageContentTypeEnum.IMAGE === item.contentType"
-                  :initial-index="0"
-                  :preview-src-list="[
-                    getMessageContent(item).picUrl || item.content,
-                  ]"
                   :src="getMessageContent(item).picUrl || item.content"
                   class="mx-[10px] !w-[200px]"
-                  fit="contain"
-                  preview-teleported
+                  fit="cover"
                 />
               </MessageItem>
               <!-- 商品消息 -->
@@ -382,7 +380,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                 />
               </MessageItem>
             </div>
-            <Avatar
+            <ElAvatar
               v-if="item.senderType === UserTypeEnum.ADMIN"
               :src="item.senderAvatar"
               alt="avatar"
@@ -399,8 +397,8 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
         <span>有新消息</span>
         <IconifyIcon class="ml-5px" icon="ep:bottom" />
       </div>
-    </Layout.Content>
-    <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
+    </ElMain>
+    <ElFooter class="!bg-card m-0 flex !h-auto flex-col p-0">
       <div class="flex h-[44px] w-full items-center">
         <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
         <PictureSelectUpload
@@ -408,18 +406,19 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
           @send-picture="handleSendPicture"
         />
       </div>
-      <Textarea
-        v-model:value="message"
+      <ElInput
+        type="textarea"
+        v-model="message"
         :rows="6"
         placeholder="输入消息，Enter发送，Shift+Enter换行"
         style="border-style: none"
-        @press-enter="handleSendMessage"
+        @keyup.enter="handleSendMessage"
       />
-    </Layout.Footer>
-  </Layout>
-  <Layout v-else class="bg-card relative w-[calc(100%-300px-260px)]">
-    <Layout.Content>
-      <Empty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
-    </Layout.Content>
-  </Layout>
+    </ElFooter>
+  </ElContainer>
+  <ElContainer v-else class="bg-card relative w-[calc(100%-300px-260px)]">
+    <ElMain>
+      <ElEmpty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
+    </ElMain>
+  </ElContainer>
 </template>

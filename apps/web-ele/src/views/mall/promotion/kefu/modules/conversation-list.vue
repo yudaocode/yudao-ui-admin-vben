@@ -7,7 +7,7 @@ import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
-import { Avatar, Badge, Layout, message } from 'ant-design-vue';
+import { ElAside, ElAvatar, ElBadge, ElMessage } from 'element-plus';
 
 import {
   deleteConversation,
@@ -116,7 +116,7 @@ async function updateConversationPinnedFn(pinned: boolean) {
     id: rightClickConversation.value.id,
     pinned,
   });
-  message.success(pinned ? '置顶成功' : '取消置顶成功');
+  ElMessage.success(pinned ? '置顶成功' : '取消置顶成功');
   // 2. 关闭右键菜单，更新会话列表
   closeRightMenu();
   await kefuStore.updateConversation(rightClickConversation.value.id);
@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Layout.Sider class="h-full bg-[var(--background)] pt-[5px]" width="260px">
+  <ElAside class="!bg-card pt-[5px]" width="260px">
     <div class="my-[10px] font-bold text-[#999]">
       会话记录({{ kefuStore.getConversationList.length }})
     </div>
@@ -175,13 +175,13 @@ onBeforeUnmount(() => {
       <div class="flex w-full items-center justify-center">
         <div class="flex h-[50px] w-[50px] items-center justify-center">
           <!-- 头像 + 未读 -->
-          <Badge
+          <ElBadge
             :hidden="item.adminUnreadMessageCount === 0"
             :max="99"
             :value="item.adminUnreadMessageCount"
           >
-            <Avatar :src="item.userAvatar" alt="avatar" />
-          </Badge>
+            <ElAvatar :src="item.userAvatar" alt="avatar" />
+          </ElBadge>
         </div>
         <div class="ml-[10px] w-full">
           <div class="flex w-full items-center justify-between">
@@ -243,5 +243,5 @@ onBeforeUnmount(() => {
         取消
       </li>
     </ul>
-  </Layout.Sider>
+  </ElAside>
 </template>

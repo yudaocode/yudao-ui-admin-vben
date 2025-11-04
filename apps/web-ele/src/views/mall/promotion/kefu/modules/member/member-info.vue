@@ -12,7 +12,14 @@ import { isEmpty } from '@vben/utils';
 
 import { vScroll } from '@vueuse/components';
 import { useDebounceFn } from '@vueuse/core';
-import { Card, Empty, Layout, message } from 'ant-design-vue';
+import {
+  ElCard,
+  ElContainer,
+  ElEmpty,
+  ElHeader,
+  ElMain,
+  ElMessage,
+} from 'element-plus';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
@@ -130,7 +137,7 @@ async function getUserData() {
       user.value = res;
     } else {
       user.value = {} as MemberUserApi.User;
-      message.error('会员不存在！');
+      ElMessage.error('会员不存在！');
     }
   } finally {
     loading.value = false;
@@ -139,10 +146,10 @@ async function getUserData() {
 </script>
 
 <template>
-  <Layout
+  <ElContainer
     class="relative w-[300px] bg-[var(--background)] after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-[var(--el-border-color)] after:content-['']"
   >
-    <Layout.Header
+    <ElHeader
       class="relative flex items-center justify-around bg-[var(--background)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-[var(--el-border-color)] before:content-['']"
     >
       <div
@@ -175,8 +182,8 @@ async function getUserData() {
       >
         交易订单
       </div>
-    </Layout.Header>
-    <Layout.Content class="relative m-0 h-full w-full p-[10px]">
+    </ElHeader>
+    <ElMain class="relative m-0 h-full w-full p-[10px]">
       <template v-if="!isEmpty(conversation)">
         <div
           v-loading="loading"
@@ -190,12 +197,12 @@ async function getUserData() {
             </template>
           </BasicInfo>
           <!-- 账户信息 -->
-          <Card class="mt-10px h-full" shadow="never">
+          <ElCard class="mt-10px h-full" shadow="never">
             <template #title>
               <span class="text-sm font-bold">账户信息</span>
             </template>
             <AccountInfo :column="1" :user="user" :wallet="wallet" />
-          </Card>
+          </ElCard>
         </div>
         <div
           v-show="activeTab !== '会员信息'"
@@ -215,7 +222,11 @@ async function getUserData() {
           />
         </div>
       </template>
-      <Empty v-else description="请选择左侧的一个会话后开始" class="mt-[20%]" />
-    </Layout.Content>
-  </Layout>
+      <ElEmpty
+        v-else
+        description="请选择左侧的一个会话后开始"
+        class="mt-[20%]"
+      />
+    </ElMain>
+  </ElContainer>
 </template>
