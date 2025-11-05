@@ -26,28 +26,35 @@ defineOptions({ name: 'DiyTemplateDecorate' });
 const route = useRoute();
 const { refreshTab } = useTabs();
 
-const DIY_PAGE_INDEX_KEY = 'diy_page_index'; // 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复
+/** 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复 */
+const DIY_PAGE_INDEX_KEY = 'diy_page_index';
 
 const selectedTemplateItem = ref(0);
+/** 左上角工具栏操作按钮 */
 const templateItems = reactive([
   { name: '基础设置', icon: 'lucide:settings' },
   { name: '首页', icon: 'lucide:home' },
   { name: '我的', icon: 'lucide:user' },
-]); // 左上角工具栏操作按钮
+]);
 
 const formData = ref<MallDiyTemplateApi.DiyTemplateProperty>();
+/** 当前编辑的属性 */
 const currentFormData = ref<
   MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty
 >({
   property: '',
-} as MallDiyPageApi.DiyPage); // 当前编辑的属性
+} as MallDiyPageApi.DiyPage);
+/** templateItem 对应的缓存 */
 const currentFormDataMap = ref<
   Map<string, MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty>
->(new Map()); // templateItem 对应的缓存
+>(new Map());
 
-const previewUrl = ref(''); // 商城 H5 预览地址
+/** 商城 H5 预览地址 */
+const previewUrl = ref('');
 
-const templateLibs = [] as DiyComponentLibrary[]; // 模板组件库
+/** 模板组件库 */
+const templateLibs = [] as DiyComponentLibrary[];
+/** 当前组件库 */
 const libs = ref<DiyComponentLibrary[]>(templateLibs); // 当前组件库
 
 /** 获取详情 */
@@ -92,14 +99,22 @@ function handleTemplateItemChange(val: any) {
 
   // 情况二：编辑页面
   libs.value = PAGE_LIBS;
-  currentFormData.value = (
-    isEmpty(data)
-      ? formData.value!.pages.find(
-          (page: MallDiyPageApi.DiyPage) =>
-            page.name === templateItems[val]?.name,
-        )
-      : data
-  ) as MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty;
+  const pageData = isEmpty(data)
+    ? formData.value!.pages.find(
+        (page: MallDiyPageApi.DiyPage) =>
+          page.name === templateItems[val]?.name,
+      )
+    : data;
+
+  // 如果找不到页面数据，使用默认值
+  currentFormData.value = pageData
+    ? (pageData as
+        | MallDiyPageApi.DiyPage
+        | MallDiyTemplateApi.DiyTemplateProperty)
+    : ({
+        property: '',
+        name: templateItems[val]?.name || '',
+      } as MallDiyPageApi.DiyPage);
 }
 
 /** 提交表单 */
