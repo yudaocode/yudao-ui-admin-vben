@@ -304,9 +304,15 @@ onMounted(() => {
 </script>
 <template>
   <div>
-    <ElContainer class="editor">
+    <ElContainer class="editor flex h-full flex-col">
       <!-- 顶部：工具栏 -->
-      <ElHeader class="editor-header">
+      <ElHeader
+        class="editor-header flex !h-[42px] items-center justify-between !border-b !p-0"
+        :style="{
+          backgroundColor: 'var(--el-bg-color)',
+          borderBottomColor: 'var(--el-border-color)',
+        }"
+      >
         <!-- 左侧操作区 -->
         <slot name="toolBarLeft"></slot>
         <!-- 中心操作区 -->
@@ -334,7 +340,7 @@ onMounted(() => {
       </ElHeader>
 
       <!-- 中心区域 -->
-      <ElContainer class="editor-container">
+      <ElContainer class="editor-container h-[calc(100vh-135px)]">
         <!-- 左侧：组件库（ComponentLibrary） -->
         <ElAside width="261px" class="editor-left">
           <ComponentLibrary
@@ -344,11 +350,15 @@ onMounted(() => {
           />
         </ElAside>
         <!-- 中心：设计区域（ComponentContainer） -->
-        <div class="editor-center page-prop-area" @click="handlePageSelected">
+        <div
+          class="editor-center page-prop-area relative mt-4 flex w-full flex-1 flex-col justify-center overflow-hidden"
+          :style="{ backgroundColor: 'var(--app-content-bg-color)' }"
+          @click="handlePageSelected"
+        >
           <!-- 手机顶部 -->
-          <div class="editor-design-top">
+          <div class="editor-design-top mx-auto flex w-[375px] flex-col">
             <!-- 手机顶部状态栏 -->
-            <img alt="" class="status-bar" :src="statusBarImg" />
+            <img alt="" class="h-5 w-[375px] bg-white" :src="statusBarImg" />
             <!-- 手机顶部导航栏 -->
             <ComponentContainer
               v-if="showNavigationBar"
@@ -415,7 +425,7 @@ onMounted(() => {
           <!-- 手机底部导航 -->
           <div
             v-if="showTabBar"
-            class="editor-design-bottom component cursor-pointer"
+            class="editor-design-bottom component mx-auto w-[375px] cursor-pointer"
           >
             <ComponentContainer
               :active="selectedComponent?.id === tabBarComponent.id"
@@ -425,7 +435,9 @@ onMounted(() => {
             />
           </div>
           <!-- 固定布局的组件 操作按钮区 -->
-          <div class="fixed-component-action-group">
+          <div
+            class="fixed-component-action-group absolute right-4 top-0 flex flex-col gap-2"
+          >
             <ElTag
               v-if="showPageConfig"
               :effect="
@@ -467,7 +479,7 @@ onMounted(() => {
         <!-- 右侧：属性面板（ComponentContainerProperty） -->
         <ElAside
           v-if="selectedComponent?.property"
-          class="editor-right"
+          class="editor-right shrink-0 overflow-hidden shadow-[-8px_0_8px_-8px_rgb(0_0_0/0.12)]"
           width="350px"
         >
           <ElCard
@@ -516,22 +528,8 @@ onMounted(() => {
 /* 手机宽度 */
 $phone-width: 375px;
 
-/* 根节点样式 */
 .editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  /* 顶部：工具栏 */
   .editor-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 42px;
-    padding: 0;
-    background-color: var(--el-bg-color);
-    border-bottom: solid 1px var(--el-border-color);
-
     /* 隐藏工具栏按钮的边框 */
     :deep(.el-radio-button__inner),
     :deep(.el-button) {
@@ -543,14 +541,8 @@ $phone-width: 375px;
 
   /* 中心操作区 */
   .editor-container {
-    height: calc(100vh - 135px);
-
     /* 右侧属性面板 */
     :deep(.editor-right) {
-      flex-shrink: 0;
-      overflow: hidden;
-      box-shadow: -8px 0 8px -8px rgb(0 0 0 / 12%);
-
       /* 属性面板顶部：减少内边距 */
       :deep(.el-card__header) {
         padding: 8px 16px;
@@ -579,37 +571,6 @@ $phone-width: 375px;
 
     /* 中心区域 */
     .editor-center {
-      position: relative;
-      display: flex;
-      flex: 1 1 0;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      margin: 16px 0 0;
-      overflow: hidden;
-      background-color: var(--app-content-bg-color);
-
-      /* 手机顶部 */
-      .editor-design-top {
-        display: flex;
-        flex-direction: column;
-        width: $phone-width;
-        margin: 0 auto;
-
-        /* 手机顶部状态栏 */
-        .status-bar {
-          width: $phone-width;
-          height: 20px;
-          background-color: #fff;
-        }
-      }
-
-      /* 手机底部导航 */
-      .editor-design-bottom {
-        width: $phone-width;
-        margin: 0 auto;
-      }
-
       /* 手机页面编辑区域 */
       :deep(.editor-design-center) {
         width: 100%;
@@ -632,13 +593,6 @@ $phone-width: 375px;
 
       /* 固定布局的组件 操作按钮区 */
       .fixed-component-action-group {
-        position: absolute;
-        top: 0;
-        right: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-
         :deep(.el-tag) {
           border: none;
           box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);

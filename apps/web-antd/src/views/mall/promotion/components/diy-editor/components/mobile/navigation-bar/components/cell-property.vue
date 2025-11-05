@@ -6,7 +6,14 @@ import type { Rect } from '#/views/mall/promotion/components/magic-cube-editor/u
 import { computed, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Radio, RadioGroup, Slider } from 'ant-design-vue';
+import {
+  FormItem,
+  Image,
+  Input,
+  Radio,
+  RadioGroup,
+  Slider,
+} from 'ant-design-vue';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -71,7 +78,7 @@ const handleHotAreaSelected = (
       class="m-b-16px"
       @hot-area-selected="handleHotAreaSelected"
     />
-    <img
+    <Image
       v-if="isMp"
       alt=""
       style="width: 76px; height: 30px"

@@ -196,23 +196,25 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
 </script>
 <template>
   <div class="relative">
-    <table class="cube-table">
+    <table class="relative border-separate border-spacing-0">
       <!-- 底层：魔方矩阵 -->
       <tbody>
         <tr v-for="(rowCubes, row) in cubes" :key="row">
           <td
             v-for="(cube, col) in rowCubes"
             :key="col"
-            class="cube"
-            :class="[{ active: cube.active }]"
+            class="box-border cursor-pointer border text-center leading-none"
+            :class="cube.active ? 'bg-[var(--el-color-primary-light-9)]' : ''"
             :style="{
               width: `${cubeSize}px`,
               height: `${cubeSize}px`,
+              color: 'var(--el-text-color-secondary)',
+              borderColor: 'var(--el-border-color)',
             }"
             @click="handleCubeClick(row, col)"
             @mouseenter="handleCellHover(row, col)"
           >
-            <IconifyIcon icon="ep-plus" />
+            <IconifyIcon icon="ep-plus" class="inline-block" />
           </td>
         </tr>
       </tbody>
@@ -220,12 +222,15 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
       <div
         v-for="(hotArea, index) in hotAreas"
         :key="index"
-        class="hot-area"
+        class="absolute box-border flex border-separate border-spacing-0 cursor-pointer items-center justify-center border"
         :style="{
           top: `${cubeSize * hotArea.top}px`,
           left: `${cubeSize * hotArea.left}px`,
           height: `${cubeSize * hotArea.height}px`,
           width: `${cubeSize * hotArea.width}px`,
+          color: 'var(--el-color-primary)',
+          background: 'var(--el-color-primary-light-8)',
+          borderColor: 'var(--el-color-primary)',
         }"
         @click="handleHotAreaSelected(hotArea, index)"
         @mouseover="exitHotAreaSelectMode"
@@ -235,7 +240,7 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
           v-if="
             selectedHotAreaIndex === index && hotArea.width && hotArea.height
           "
-          class="btn-delete"
+          class="absolute -right-2 -top-2 z-[1] flex h-4 w-4 items-center justify-center rounded-full bg-white"
           @click="handleDeleteHotArea(index)"
         >
           <IconifyIcon icon="ep:circle-close-filled" />
@@ -247,55 +252,3 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
     </table>
   </div>
 </template>
-<style lang="scss" scoped>
-.cube-table {
-  position: relative;
-  border-spacing: 0;
-  border-collapse: collapse;
-
-  .cube {
-    box-sizing: border-box;
-    line-height: 1;
-    color: var(--el-text-color-secondary);
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid var(--el-border-color);
-
-    :deep(.iconify) {
-      display: inline-block;
-    }
-
-    &.active {
-      background: var(--el-color-primary-light-9);
-    }
-  }
-
-  .hot-area {
-    position: absolute;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--el-color-primary);
-    cursor: pointer;
-    border-spacing: 0;
-    border-collapse: collapse;
-    background: var(--el-color-primary-light-8);
-    border: 1px solid var(--el-color-primary);
-
-    .btn-delete {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      background-color: #fff;
-      border-radius: 50%;
-    }
-  }
-}
-</style>

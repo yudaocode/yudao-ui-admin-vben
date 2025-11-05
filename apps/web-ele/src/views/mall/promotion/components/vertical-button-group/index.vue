@@ -9,17 +9,12 @@ defineOptions({ name: 'VerticalButtonGroup' });
 </script>
 
 <template>
-  <ElButtonGroup v-bind="$attrs">
+  <ElButtonGroup v-bind="$attrs" class="!inline-flex !flex-col">
     <slot></slot>
   </ElButtonGroup>
 </template>
 
 <style scoped lang="scss">
-.el-button-group {
-  display: inline-flex;
-  flex-direction: column;
-}
-
 .el-button-group > :deep(.el-button:first-child) {
   border-bottom-color: var(--el-button-divide-border-color);
   border-top-right-radius: var(--el-border-radius-base);

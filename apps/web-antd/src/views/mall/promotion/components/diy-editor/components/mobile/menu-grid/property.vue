@@ -11,10 +11,10 @@ import {
   Switch,
 } from 'ant-design-vue';
 
-import ComponentContainerProperty from '../../component-container-property.vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
+import ComponentContainerProperty from '../../component-container-property.vue';
 import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
 
 /** 宫格导航属性面板 */

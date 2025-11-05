@@ -56,8 +56,8 @@ function handleToggleFab() {
     <ElButton type="primary" size="large" circle @click="handleToggleFab">
       <IconifyIcon
         icon="ep:plus"
-        class="fab-icon"
-        :class="[{ active: expanded }]"
+        class="transition-transform duration-300"
+        :class="expanded ? 'rotate-[135deg]' : 'rotate-0'"
       />
     </ElButton>
   </div>
@@ -68,14 +68,3 @@ function handleToggleFab() {
     @click="handleToggleFab"
   ></div>
 </template>
-
-<style scoped lang="scss">
-.fab-icon {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-
-  &.active {
-    transform: rotate(135deg);
-  }
-}
-</style>

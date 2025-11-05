@@ -27,7 +27,7 @@ const props = defineProps<{ modelValue: ComponentStyle }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 
-const treeData = [
+const treeData: any[] = [
   {
     label: '外部边距',
     prop: 'margin',
@@ -96,7 +96,7 @@ const treeData = [
   },
 ];
 
-const handleSliderChange = (prop: string) => {
+function handleSliderChange(prop: string) {
   switch (prop) {
     case 'borderRadius': {
       formData.value.borderTopLeftRadius = formData.value.borderRadius;
@@ -120,7 +120,7 @@ const handleSliderChange = (prop: string) => {
       break;
     }
   }
-};
+}
 </script>
 
 <template>
@@ -131,13 +131,9 @@ const handleSliderChange = (prop: string) => {
     </TabPane>
 
     <!-- 每个组件的通用内容 -->
-    <TabPane tab="样式" key="style">
+    <TabPane tab="样式" key="style" force-render>
       <Card title="组件样式" class="property-group">
-        <Form
-          :model="formData"
-          label-col="{ span: 6 }"
-          wrapper-col="{ span: 18 }"
-        >
+        <Form :model="formData">
           <FormItem label="组件背景" name="bgType">
             <RadioGroup v-model:value="formData.bgType">
               <Radio value="color">纯色</Radio>
@@ -160,24 +156,24 @@ const handleSliderChange = (prop: string) => {
               <template #tip>建议宽度 750px</template>
             </UploadImg>
           </FormItem>
-          <Tree
-            :tree-data="treeData"
-            :expand-on-click-node="false"
-            default-expand-all
-          >
-            <template #title="{ data, node }">
+          <Tree :tree-data="treeData" default-expand-all>
+            <template #title="{ dataRef }">
               <FormItem
-                :label="data.label"
-                :name="data.prop"
+                :label="dataRef.label"
+                :name="dataRef.prop"
+                :label-col="
+                  dataRef.children ? { span: 6 } : { span: 5, offset: 1 }
+                "
+                :wrapper-col="dataRef.children ? { span: 18 } : { span: 18 }"
                 class="mb-0 w-full"
               >
                 <Slider
                   v-model:value="
-                    formData[data.prop as keyof ComponentStyle] as number
+                    formData[dataRef.prop as keyof ComponentStyle] as number
                   "
                   :max="100"
                   :min="0"
-                  @change="handleSliderChange(data.prop)"
+                  @change="handleSliderChange(dataRef.prop)"
                 />
               </FormItem>
             </template>
@@ -196,5 +192,15 @@ const handleSliderChange = (prop: string) => {
 
 :deep(.ant-input-number) {
   width: 50px;
+}
+
+:deep(.ant-tree) {
+  .ant-tree-node-content-wrapper {
+    flex: 1;
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+  }
 }
 </style>

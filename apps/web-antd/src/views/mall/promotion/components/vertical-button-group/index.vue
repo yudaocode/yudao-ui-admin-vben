@@ -3,15 +3,37 @@ import { ButtonGroup } from 'ant-design-vue';
 
 /**
  * 垂直按钮组
- * Element 官方的按钮组只支持水平显示，通过重写样式实现垂直布局
+ * Ant Design Vue 的按钮组只支持水平显示，通过重写样式实现垂直布局
  */
 defineOptions({ name: 'VerticalButtonGroup' });
 </script>
 
 <template>
-  <ButtonGroup direction="vertical" v-bind="$attrs">
+  <ButtonGroup v-bind="$attrs" class="!inline-flex !flex-col">
     <slot></slot>
   </ButtonGroup>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+// TODO @AI:圆角的样式不太对！
+.ant-btn-group > :deep(.ant-btn:first-child) {
+  border-bottom-color: transparent;
+  border-radius: var(--ant-border-radius) var(--ant-border-radius) 0 0;
+}
+
+.ant-btn-group > :deep(.ant-btn:last-child) {
+  border-top-color: transparent;
+  border-radius: 0 0 var(--ant-border-radius) var(--ant-border-radius);
+}
+
+.ant-btn-group :deep(.ant-btn:not(:first-child):not(:last-child)) {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 0;
+}
+
+.ant-btn-group > :deep(.ant-btn:not(:last-child)) {
+  margin-right: 0;
+  margin-bottom: -1px;
+}
+</style>

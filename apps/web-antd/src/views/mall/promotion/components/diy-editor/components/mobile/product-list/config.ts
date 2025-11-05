@@ -2,42 +2,29 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 商品栏属性 */
 export interface ProductListProperty {
-  // 布局类型：双列 | 三列 | 水平滑动
-  layoutType: 'horizSwiper' | 'threeCol' | 'twoCol';
-  // 商品字段
+  layoutType: 'horizSwiper' | 'threeCol' | 'twoCol'; // 布局类型：双列 | 三列 | 水平滑动
   fields: {
-    // 商品名称
-    name: ProductListFieldProperty;
-    // 商品价格
-    price: ProductListFieldProperty;
-  };
-  // 角标
+    name: ProductListFieldProperty; // 商品名称
+    price: ProductListFieldProperty; // 商品价格
+  }; // 商品字段
   badge: {
-    // 角标图片
-    imgUrl: string;
-    // 是否显示
-    show: boolean;
-  };
-  // 上圆角
-  borderRadiusTop: number;
-  // 下圆角
-  borderRadiusBottom: number;
-  // 间距
-  space: number;
-  // 商品编号列表
-  spuIds: number[];
-  // 组件样式
-  style: ComponentStyle;
-}
-// 商品字段
-export interface ProductListFieldProperty {
-  // 是否显示
-  show: boolean;
-  // 颜色
-  color: string;
+    imgUrl: string; // 角标图片
+    show: boolean; // 是否显示
+  }; // 角标
+  borderRadiusTop: number; // 上圆角
+  borderRadiusBottom: number; // 下圆角
+  space: number; // 间距
+  spuIds: number[]; // 商品编号列表
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 商品字段属性 */
+export interface ProductListFieldProperty {
+  show: boolean; // 是否显示
+  color: string; // 颜色
+}
+
+/** 定义组件 */
 export const component = {
   id: 'ProductList',
   name: '商品栏',

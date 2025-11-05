@@ -32,7 +32,7 @@ watch(
  * 计算商品的间距
  * @param index 商品索引
  */
-const calculateSpace = (index: number) => {
+function calculateSpace(index: number) {
   // 商品的列数
   const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
   // 第一列没有左边距
@@ -41,19 +41,19 @@ const calculateSpace = (index: number) => {
   const marginTop = index < columns ? '0' : `${props.property.space}px`;
 
   return { marginLeft, marginTop };
-};
+}
 
 // 容器
 const containerRef = ref();
 // 计算商品的宽度
-const calculateWidth = () => {
+function calculateWidth() {
   let width = '100%';
   // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div

@@ -1,4 +1,80 @@
 <script setup lang="ts">
-import { Page } from '@vben/common-ui';
+import type { MagicCubeProperty } from './config';
+
+import { ref } from 'vue';
+
+import { useVModel } from '@vueuse/core';
+import { Form, FormItem, Slider, Typography } from 'ant-design-vue';
+
+import UploadImg from '#/components/upload/image-upload.vue';
+import {
+  AppLinkInput,
+  MagicCubeEditor,
+} from '#/views/mall/promotion/components';
+
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 广告魔方属性面板 */
+defineOptions({ name: 'MagicCubeProperty' });
+
+const props = defineProps<{ modelValue: MagicCubeProperty }>();
+
+const emit = defineEmits(['update:modelValue']);
+
+const { Text: ATypographyText } = Typography;
+
+const formData = useVModel(props, 'modelValue', emit);
+
+const selectedHotAreaIndex = ref(-1); // 选中的热区
+
+/** 处理热区被选中事件 */
+const handleHotAreaSelected = (_: any, index: number) => {
+  selectedHotAreaIndex.value = index;
+};
 </script>
-<template><Page>待完成</Page></template>
+
+<template>
+  <ComponentContainerProperty v-model="formData.style">
+    <Form :model="formData" class="mt-2">
+      <ATypographyText tag="p"> 魔方设置 </ATypographyText>
+      <ATypographyText type="secondary" class="text-sm">
+        每格尺寸187 * 187
+      </ATypographyText>
+      <MagicCubeEditor
+        class="my-4"
+        v-model="formData.list"
+        :rows="4"
+        :cols="4"
+        @hot-area-selected="handleHotAreaSelected"
+      />
+      <template v-for="(hotArea, index) in formData.list" :key="index">
+        <template v-if="selectedHotAreaIndex === index">
+          <FormItem label="上传图片" :name="`list[${index}].imgUrl`">
+            <UploadImg
+              v-model="hotArea.imgUrl"
+              height="80px"
+              width="80px"
+              :show-description="false"
+            />
+          </FormItem>
+          <FormItem label="链接" :name="`list[${index}].url`">
+            <AppLinkInput v-model="hotArea.url" />
+          </FormItem>
+        </template>
+      </template>
+      <FormItem label="上圆角" name="borderRadiusTop">
+        <Slider v-model:value="formData.borderRadiusTop" :max="100" :min="0" />
+      </FormItem>
+      <FormItem label="下圆角" name="borderRadiusBottom">
+        <Slider
+          v-model:value="formData.borderRadiusBottom"
+          :max="100"
+          :min="0"
+        />
+      </FormItem>
+      <FormItem label="间隔" name="space">
+        <Slider v-model:value="formData.space" :max="100" :min="0" />
+      </FormItem>
+    </Form>
+  </ComponentContainerProperty>
+</template>
