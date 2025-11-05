@@ -4,10 +4,13 @@ import type { ComponentStyle } from '../util';
 import { useVModel } from '@vueuse/core';
 import {
   Card,
+  Col,
   Form,
   FormItem,
+  InputNumber,
   Radio,
   RadioGroup,
+  Row,
   Slider,
   TabPane,
   Tabs,
@@ -156,7 +159,7 @@ function handleSliderChange(prop: string) {
               <template #tip>建议宽度 750px</template>
             </UploadImg>
           </FormItem>
-          <Tree :tree-data="treeData" default-expand-all>
+          <Tree :tree-data="treeData" default-expand-all :block-node="true">
             <template #title="{ dataRef }">
               <FormItem
                 :label="dataRef.label"
@@ -167,14 +170,27 @@ function handleSliderChange(prop: string) {
                 :wrapper-col="dataRef.children ? { span: 18 } : { span: 18 }"
                 class="mb-0 w-full"
               >
-                <Slider
-                  v-model:value="
-                    formData[dataRef.prop as keyof ComponentStyle] as number
-                  "
-                  :max="100"
-                  :min="0"
-                  @change="handleSliderChange(dataRef.prop)"
-                />
+                <Row>
+                  <Col :span="12">
+                    <Slider
+                      v-model:value="
+                        formData[dataRef.prop as keyof ComponentStyle] as number
+                      "
+                      :max="100"
+                      :min="0"
+                      @change="handleSliderChange(dataRef.prop)"
+                    />
+                  </Col>
+                  <Col :span="4">
+                    <InputNumber
+                      :max="100"
+                      :min="0"
+                      v-model:value="
+                        formData[dataRef.prop as keyof ComponentStyle]
+                      "
+                    />
+                  </Col>
+                </Row>
               </FormItem>
             </template>
           </Tree>
