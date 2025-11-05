@@ -38,12 +38,12 @@ const formData = useVModel(props, 'modelValue', emit);
           <RadioGroup v-model="formData.type">
             <Tooltip class="item" content="默认" placement="bottom">
               <RadioButton value="default">
-                <IconifyIcon icon="system-uicons:carousel" />
+                <IconifyIcon icon="system-uicons:carousel" class="size-6" />
               </RadioButton>
             </Tooltip>
             <Tooltip class="item" content="卡片" placement="bottom">
               <RadioButton value="card">
-                <IconifyIcon icon="ic:round-view-carousel" />
+                <IconifyIcon icon="ic:round-view-carousel" class="size-6" />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
@@ -90,7 +90,7 @@ const formData = useVModel(props, 'modelValue', emit);
                 draggable="false"
                 height="80px"
                 width="100%"
-                class="min-w-[80px]"
+                class="min-w-20"
                 :show-description="false"
               />
             </FormItem>
@@ -102,7 +102,7 @@ const formData = useVModel(props, 'modelValue', emit);
                   :show-description="false"
                   height="80px"
                   width="100%"
-                  class="min-w-[80px]"
+                  class="min-w-20"
                 />
               </FormItem>
               <FormItem label="视频" class="mb-2" label-width="40px">
@@ -111,7 +111,7 @@ const formData = useVModel(props, 'modelValue', emit);
                   :file-type="['mp4']"
                   :limit="1"
                   :file-size="100"
-                  class="min-w-[80px]"
+                  class="min-w-20"
                 />
               </FormItem>
             </template>
@@ -124,5 +124,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

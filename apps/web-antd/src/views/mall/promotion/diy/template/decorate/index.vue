@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
-import { message, Radio, RadioGroup, Tooltip } from 'ant-design-vue';
+import { message, Radio, RadioGroup } from 'ant-design-vue';
 
 import { updateDiyPageProperty } from '#/api/mall/promotion/diy/page';
 import {
@@ -191,18 +191,18 @@ onMounted(async () => {
     <template #toolBarLeft>
       <RadioGroup
         :value="selectedTemplateItem"
-        class="h-full!"
+        class="flex items-center"
+        size="large"
         @change="handleTemplateItemChange"
       >
-        <Tooltip
-          v-for="(item, index) in templateItems"
-          :key="index"
-          :title="item.name"
-        >
+        <template v-for="(item, index) in templateItems" :key="index">
           <Radio.Button :value="index">
-            <IconifyIcon :icon="item.icon" :size="24" />
+            <IconifyIcon
+              :icon="item.icon"
+              class="mt-2 flex size-6 items-center"
+            />
           </Radio.Button>
-        </Tooltip>
+        </template>
       </RadioGroup>
     </template>
   </DiyEditor>

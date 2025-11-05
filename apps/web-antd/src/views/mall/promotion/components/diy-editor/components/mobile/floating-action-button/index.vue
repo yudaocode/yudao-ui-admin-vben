@@ -25,7 +25,7 @@ const handleActive = (index: number) => {
 </script>
 <template>
   <div
-    class="absolute bottom-8 right-[calc(50%-375px/2+32px)] z-20 flex items-center gap-3"
+    class="absolute bottom-8 right-[calc(50%-384px/2+32px)] z-20 flex items-center gap-3"
     :class="[
       {
         'flex-row': property.direction === 'horizontal',
@@ -74,9 +74,9 @@ const handleActive = (index: number) => {
 .modal-bg {
   position: absolute;
   top: 0;
-  left: calc(50% - 375px / 2);
+  left: calc(50% - 384px / 2);
   z-index: 11;
-  width: 375px;
+  width: 384px;
   height: 100%;
   background-color: rgb(0 0 0 / 40%);
 }

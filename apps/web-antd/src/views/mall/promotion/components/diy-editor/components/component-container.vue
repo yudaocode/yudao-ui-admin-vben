@@ -5,7 +5,7 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
 import { VerticalButtonGroup } from '#/views/mall/promotion/components';
 
@@ -96,7 +96,7 @@ const handleDeleteComponent = () => {
     <div :style="style">
       <component :is="component.id" :property="component.property" />
     </div>
-    <div class="component-wrap absolute left-[-2px] top-0 block h-full w-full">
+    <div class="component-wrap absolute -left-0.5 top-1 block h-full w-full">
       <!-- 左侧：组件名（悬浮的小贴条） -->
       <div class="component-name" v-if="component.name">
         {{ component.name }}
@@ -107,32 +107,52 @@ const handleDeleteComponent = () => {
         v-if="showToolbar && component.name && active"
       >
         <VerticalButtonGroup type="primary">
-          <Tooltip title="上移" placement="right">
-            <Button
-              :disabled="!canMoveUp"
-              @click.stop="handleMoveComponent(-1)"
-            >
-              <IconifyIcon icon="ep:arrow-up" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="下移" placement="right">
-            <Button
-              :disabled="!canMoveDown"
-              @click.stop="handleMoveComponent(1)"
-            >
-              <IconifyIcon icon="ep:arrow-down" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="复制" placement="right">
-            <Button @click.stop="handleCopyComponent()">
-              <IconifyIcon icon="ep:copy-document" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="删除" placement="right">
-            <Button @click.stop="handleDeleteComponent()">
-              <IconifyIcon icon="ep:delete" />
-            </Button>
-          </Tooltip>
+          <Button
+            :disabled="!canMoveUp"
+            @click.stop="handleMoveComponent(-1)"
+            v-tippy="{
+              content: '上移',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="ep:arrow-up" />
+          </Button>
+          <Button
+            :disabled="!canMoveDown"
+            @click.stop="handleMoveComponent(1)"
+            v-tippy="{
+              content: '下移',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="ep:arrow-down" />
+          </Button>
+          <Button
+            @click.stop="handleCopyComponent()"
+            v-tippy="{
+              content: '复制',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="ep:copy-document" />
+          </Button>
+          <Button
+            @click.stop="handleDeleteComponent()"
+            v-tippy="{
+              content: '删除',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="ep:delete" />
+          </Button>
         </VerticalButtonGroup>
       </div>
     </div>
@@ -149,7 +169,7 @@ $toolbar-position: -55px;
   .component-wrap {
     /* 鼠标放到组件上时 */
     &:hover {
-      border: $hover-border-width dashed var(--ant-color-primary);
+      border: $hover-border-width dashed var(--primary);
       box-shadow: 0 0 5px 0 rgb(24 144 255 / 30%);
 
       .component-name {
@@ -170,9 +190,9 @@ $toolbar-position: -55px;
       height: 25px;
       font-size: 12px;
       line-height: 25px;
-      color: #6a6a6a;
+      color: hsl(var(--text-color));
       text-align: center;
-      background: #fff;
+      background: hsl(var(--background));
       box-shadow:
         0 0 4px #00000014,
         0 2px 6px #0000000f,
@@ -187,7 +207,7 @@ $toolbar-position: -55px;
         height: 0;
         content: ' ';
         border: 5px solid transparent;
-        border-left-color: #fff;
+        border-left-color: hsl(var(--background));
       }
     }
 
@@ -207,7 +227,7 @@ $toolbar-position: -55px;
         height: 0;
         content: ' ';
         border: 5px solid transparent;
-        border-right-color: #2d8cf0;
+        border-right-color: hsl(var(--primary));
       }
     }
   }
@@ -218,7 +238,7 @@ $toolbar-position: -55px;
 
     .component-wrap {
       margin-bottom: $active-border-width + $active-border-width;
-      border: $active-border-width solid var(--ant-color-primary) !important;
+      border: $active-border-width solid hsl(var(--primary)) !important;
       box-shadow: 0 0 10px 0 rgb(24 144 255 / 30%);
 
       .component-name {
@@ -227,10 +247,10 @@ $toolbar-position: -55px;
         /* 防止加了边框之后，位置移动 */
         left: $name-position - $active-border-width !important;
         color: #fff;
-        background: var(--ant-color-primary);
+        background: hsl(var(--primary));
 
         &::after {
-          border-left-color: var(--ant-color-primary);
+          border-left-color: hsl(var(--primary));
         }
       }
 
