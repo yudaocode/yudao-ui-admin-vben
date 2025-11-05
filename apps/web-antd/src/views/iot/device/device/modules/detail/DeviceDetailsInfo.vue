@@ -181,7 +181,7 @@ function handleAuthInfoDialogClose() {
               style="width: calc(100% - 80px)"
             />
             <Button @click="copyToClipboard(authInfo.clientId)" type="primary">
-              <IconifyIcon icon="ph:copy" />
+              <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
         </Form.Item>
@@ -193,7 +193,7 @@ function handleAuthInfoDialogClose() {
               style="width: calc(100% - 80px)"
             />
             <Button @click="copyToClipboard(authInfo.username)" type="primary">
-              <IconifyIcon icon="ph:copy" />
+              <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
         </Form.Item>
@@ -210,11 +210,11 @@ function handleAuthInfoDialogClose() {
               type="primary"
             >
               <IconifyIcon
-                :icon="authPasswordVisible ? 'ph:eye-slash' : 'ph:eye'"
+                :icon="authPasswordVisible ? 'lucide:eye-off' : 'lucide:eye'"
               />
             </Button>
             <Button @click="copyToClipboard(authInfo.password)" type="primary">
-              <IconifyIcon icon="ph:copy" />
+              <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
         </Form.Item>

@@ -83,27 +83,24 @@ function updateCondition(index: number, condition: TriggerCondition) {
 </script>
 
 <template>
-  <div class="p-16px">
+  <div class="p-4">
     <!-- 空状态 -->
-    <div v-if="!subGroup || subGroup.length === 0" class="py-24px text-center">
-      <div class="gap-12px flex flex-col items-center">
-        <IconifyIcon
-          icon="ep:plus"
-          class="text-32px text-[var(--el-text-color-placeholder)]"
-        />
-        <div class="text-[var(--el-text-color-secondary)]">
-          <p class="text-14px font-500 mb-4px">暂无条件</p>
-          <p class="text-12px">点击下方按钮添加第一个条件</p>
+    <div v-if="!subGroup || subGroup.length === 0" class="py-6 text-center">
+      <div class="flex flex-col items-center gap-3">
+        <IconifyIcon icon="lucide:plus" class="text-8 text-secondary" />
+        <div class="text-secondary">
+          <p class="mb-1 text-base font-bold">暂无条件</p>
+          <p class="text-xs">点击下方按钮添加第一个条件</p>
         </div>
         <Button type="primary" @click="addCondition">
-          <IconifyIcon icon="ep:plus" />
+          <IconifyIcon icon="lucide:plus" />
           添加条件
         </Button>
       </div>
     </div>
 
     <!-- 条件列表 -->
-    <div v-else class="space-y-16px">
+    <div v-else class="space-y-4">
       <div
         v-for="(condition, conditionIndex) in subGroup"
         :key="`condition-${conditionIndex}`"
@@ -111,20 +108,18 @@ function updateCondition(index: number, condition: TriggerCondition) {
       >
         <!-- 条件配置 -->
         <div
-          class="rounded-6px border border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-blank)] shadow-sm"
+          class="rounded-3px border-border bg-fill-color-blank border shadow-sm"
         >
           <div
-            class="p-12px rounded-t-4px flex items-center justify-between border-b border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-light)]"
+            class="rounded-t-1 border-border bg-fill-color-blank flex items-center justify-between border-b p-3"
           >
-            <div class="gap-8px flex items-center">
+            <div class="flex items-center gap-2">
               <div
-                class="w-20px h-20px text-10px flex items-center justify-center rounded-full bg-blue-500 font-bold text-white"
+                class="bg-primary flex size-5 items-center justify-center rounded-full text-xs font-bold text-white"
               >
                 {{ conditionIndex + 1 }}
               </div>
-              <span
-                class="text-12px font-500 text-[var(--el-text-color-primary)]"
-              >
+              <span class="text-primary text-base font-bold">
                 条件 {{ conditionIndex + 1 }}
               </span>
             </div>
@@ -140,7 +135,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
             </Button>
           </div>
 
-          <div class="p-12px">
+          <div class="p-3">
             <ConditionConfig
               :model-value="condition"
               @update:model-value="
@@ -158,15 +153,13 @@ function updateCondition(index: number, condition: TriggerCondition) {
         v-if="
           subGroup && subGroup.length > 0 && subGroup.length < maxConditions
         "
-        class="py-16px text-center"
+        class="py-4 text-center"
       >
         <Button type="primary" plain @click="addCondition">
-          <IconifyIcon icon="ep:plus" />
+          <IconifyIcon icon="lucide:plus" />
           继续添加条件
         </Button>
-        <span
-          class="mt-8px text-12px block text-[var(--el-text-color-secondary)]"
-        >
+        <span class="text-secondary mt-2 block text-xs">
           最多可添加 {{ maxConditions }} 个条件
         </span>
       </div>

@@ -27,7 +27,5 @@ watch(
 );
 </script>
 <template>
-  <div class="min-h-[30px]" v-dompurify-html="article?.content"></div>
+  <div class="min-h-8" v-dompurify-html="article?.content"></div>
 </template>
-
-<style scoped lang="scss"></style>

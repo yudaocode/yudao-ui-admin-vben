@@ -116,19 +116,15 @@ const calculateWidth = () => {
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image
-          fit="cover"
-          :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
-        />
+        <Image fit="cover" :src="property.badge.imgUrl" class="h-6 w-8" />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-[140px]"
+        class="h-36"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[140px]': property.layoutType === 'oneColSmallImg',
+            'w-36': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
@@ -139,7 +135,7 @@ const calculateWidth = () => {
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[calc(100%-140px-16px)]':
+            'w-[calc(100vw-140px-16px)]':
               property.layoutType === 'oneColSmallImg',
           },
         ]"

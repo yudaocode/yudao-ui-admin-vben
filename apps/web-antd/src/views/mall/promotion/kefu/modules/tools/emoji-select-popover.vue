@@ -32,8 +32,8 @@ function handleSelect(item: Emoji) {
             v-for="(item, index) in emojiList"
             :key="index"
             :style="{
-              borderColor: 'var(--primary)',
-              color: 'var(--primary)',
+              borderColor: 'hsl(var(--primary))',
+              color: 'hsl(var(--primary))',
             }"
             :title="item.name"
             class="icon-item w-1/10 mr-2 mt-1 flex cursor-pointer items-center justify-center border border-solid p-2"

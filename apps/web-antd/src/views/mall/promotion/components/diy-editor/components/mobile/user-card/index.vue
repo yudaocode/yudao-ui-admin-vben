@@ -21,7 +21,7 @@ defineProps<{ property: UserCardProperty }>();
       </div>
       <IconifyIcon icon="lucide:qr-code" class="size-5" />
     </div>
-    <div class="flex items-center justify-between bg-white px-5 py-2 text-xs">
+    <div class="bg-card flex items-center justify-between px-5 py-2 text-xs">
       <span class="text-orange-500">点击绑定手机号</span>
       <span class="rounded-lg bg-orange-500 px-2 py-1 text-white">
         去绑定

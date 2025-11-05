@@ -56,5 +56,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

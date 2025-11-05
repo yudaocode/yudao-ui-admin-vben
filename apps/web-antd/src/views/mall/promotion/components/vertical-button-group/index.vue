@@ -18,12 +18,12 @@ defineOptions({ name: 'VerticalButtonGroup' });
 // TODO @AI:圆角的样式不太对！
 .ant-btn-group > :deep(.ant-btn:first-child) {
   border-bottom-color: transparent;
-  border-radius: var(--ant-border-radius) var(--ant-border-radius) 0 0;
+  border-radius: hsl(var(--radius)) hsl(var(--radius)) 0 0;
 }
 
 .ant-btn-group > :deep(.ant-btn:last-child) {
   border-top-color: transparent;
-  border-radius: 0 0 var(--ant-border-radius) var(--ant-border-radius);
+  border-radius: 0 0 hsl(var(--radius)) hsl(var(--radius));
 }
 
 .ant-btn-group :deep(.ant-btn:not(:first-child):not(:last-child)) {

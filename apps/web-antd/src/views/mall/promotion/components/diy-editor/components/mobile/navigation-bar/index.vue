@@ -35,8 +35,8 @@ const cellList = computed(() =>
 // 单元格宽度
 const cellWidth = computed(() => {
   return props.property._local?.previewMp
-    ? (375 - 80 - 86) / 6
-    : (375 - 90) / 8;
+    ? (384 - 80 - 86) / 6
+    : (384 - 90) / 8;
 });
 // 获得单元格样式
 const getCellStyle = (cell: NavigationBarCellProperty) => {

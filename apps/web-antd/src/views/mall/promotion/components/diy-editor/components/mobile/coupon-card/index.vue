@@ -33,13 +33,13 @@ watch(
 );
 
 // 手机宽度
-const phoneWidth = ref(375);
+const phoneWidth = ref(384);
 // 容器
 const containerRef = ref();
 // 滚动条宽度
 const scrollbarWidth = ref('100%');
 // 优惠券的宽度
-const couponWidth = ref(375);
+const couponWidth = ref(384);
 // 计算布局参数
 watch(
   () => [props.property, phoneWidth, couponList.value.length],
@@ -58,7 +58,7 @@ watch(
 );
 onMounted(() => {
   // 提取手机宽度
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
+  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 384;
 });
 </script>
 <template>

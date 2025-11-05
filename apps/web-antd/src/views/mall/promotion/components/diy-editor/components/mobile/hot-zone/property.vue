@@ -66,10 +66,10 @@ const handleOpenEditDialog = () => {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #fff;
+  color: hsl(var(--text-color));
   cursor: move;
-  background: #409effbf;
-  border: 1px solid var(--el-color-primary);
+  background: color-mix(in srgb, hsl(var(--primary)) 30%, transparent);
+  border: 1px solid hsl(var(--primary));
 
   /* 控制点 */
   .ctrl-dot {

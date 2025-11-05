@@ -96,7 +96,9 @@ const handleDeleteComponent = () => {
     <div :style="style">
       <component :is="component.id" :property="component.property" />
     </div>
-    <div class="component-wrap absolute -left-0.5 top-1 block h-full w-full">
+    <div
+      class="component-wrap absolute -bottom-1 -left-0.5 -right-0.5 -top-1 block h-full w-full"
+    >
       <!-- 左侧：组件名（悬浮的小贴条） -->
       <div class="component-name" v-if="component.name">
         {{ component.name }}
@@ -169,7 +171,7 @@ $toolbar-position: -55px;
   .component-wrap {
     /* 鼠标放到组件上时 */
     &:hover {
-      border: $hover-border-width dashed var(--primary);
+      border: $hover-border-width dashed hsl(var(--primary));
       box-shadow: 0 0 5px 0 rgb(24 144 255 / 30%);
 
       .component-name {

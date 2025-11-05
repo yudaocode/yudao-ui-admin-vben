@@ -26,7 +26,7 @@ watch(
   },
 );
 // 手机宽度
-const phoneWidth = ref(375);
+const phoneWidth = ref(384);
 // 容器
 const containerRef = ref();
 // 商品的列数
@@ -69,7 +69,7 @@ watch(
 );
 onMounted(() => {
   // 提取手机宽度
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
+  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 384;
 });
 </script>
 <template>

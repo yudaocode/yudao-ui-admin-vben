@@ -13,5 +13,3 @@ defineProps<{ property: UserOrderProperty }>();
     src="https://shopro.sheepjs.com/admin/static/images/shop/decorate/orderCardStyle.png"
   />
 </template>
-
-<style scoped lang="scss"></style>

@@ -153,7 +153,7 @@ function onActionTypeChange(action: Action, type: any) {
 </script>
 
 <template>
-  <Card class="rounded-8px border-primary border" shadow="never">
+  <Card class="border-primary rounded-lg border" shadow="never">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
@@ -186,18 +186,18 @@ function onActionTypeChange(action: Action, type: any) {
         <div
           v-for="(action, index) in actions"
           :key="`action-${index}`"
-          class="rounded-8px border-2 border-blue-200 bg-blue-50 shadow-sm transition-shadow hover:shadow-md"
+          class="rounded-lg border-2 border-blue-200 bg-blue-50 shadow-sm transition-shadow hover:shadow-md"
         >
           <!-- 执行器头部 - 蓝色主题 -->
           <div
-            class="p-16px rounded-t-6px flex items-center justify-between border-b border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50"
+            class="flex items-center justify-between rounded-t-lg border-b border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50 p-4"
           >
             <div class="gap-12px flex items-center">
               <div
-                class="gap-8px text-16px font-600 flex items-center text-blue-700"
+                class="font-600 flex items-center gap-2 text-base text-blue-700"
               >
                 <div
-                  class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-blue-500 font-bold text-white"
+                  class="flex size-6 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white"
                 >
                   {{ index + 1 }}
                 </div>
@@ -275,16 +275,14 @@ function onActionTypeChange(action: Action, type: any) {
                 action.type ===
                 IotRuleSceneActionTypeEnum.ALERT_TRIGGER.toString()
               "
-              class="rounded-6px p-16px border-border bg-fill-color-blank border"
+              class="border-border bg-fill-color-blank rounded-lg border p-4"
             >
-              <div class="gap-8px mb-8px flex items-center">
-                <IconifyIcon icon="ep:warning" class="text-16px text-warning" />
-                <span class="text-14px font-600 text-primary">触发告警</span>
+              <div class="mb-2 flex items-center gap-2">
+                <IconifyIcon icon="ep:warning" class="text-warning text-base" />
+                <span class="font-600 text-primary text-sm">触发告警</span>
                 <Tag size="small" type="warning">自动执行</Tag>
               </div>
-              <div
-                class="text-12px leading-relaxed text-[var(--el-text-color-secondary)]"
-              >
+              <div class="text-secondary text-xs leading-relaxed">
                 当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
                 告警配置] 管理。
               </div>
