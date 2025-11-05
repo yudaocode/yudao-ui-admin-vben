@@ -264,11 +264,17 @@ onMounted(() => {
     <DisagreeModal @success="getDetail" />
 
     <!-- 订单信息 -->
-    <OrderDescriptions :data="afterSale" />
+    <div class="mb-4">
+      <OrderDescriptions :data="afterSale" />
+    </div>
     <!-- 售后信息 -->
-    <AfterSaleDescriptions :data="afterSale" />
+    <div class="mb-4">
+      <AfterSaleDescriptions :data="afterSale" />
+    </div>
     <!-- 退款状态 -->
-    <RefundStatusDescriptions :data="afterSale" />
+    <div class="mb-4">
+      <RefundStatusDescriptions :data="afterSale" />
+    </div>
     <!-- 商品信息 -->
     <div class="mb-4">
       <ProductGrid table-title="商品信息">
