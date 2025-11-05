@@ -30,11 +30,9 @@ const formData = useVModel(props, 'modelValue', emit);
           draggable="false"
           height="80px"
           width="100%"
-          class="min-w-[80px]"
+          class="min-w-20"
           :show-description="false"
-        >
-          <template #tip> 建议宽度750 </template>
-        </UploadImg>
+        />
       </FormItem>
       <FormItem label="链接" prop="url">
         <AppLinkInput v-model="formData.url" />
@@ -42,5 +40,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

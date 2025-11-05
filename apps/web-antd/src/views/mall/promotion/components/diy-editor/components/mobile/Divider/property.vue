@@ -61,7 +61,10 @@ const formData = useVModel(props, 'modelValue', emit);
           :title="item.text"
         >
           <RadioButton :value="item.type">
-            <IconifyIcon :icon="item.icon" />
+            <IconifyIcon
+              :icon="item.icon"
+              class="inset-0 size-6 items-center"
+            />
           </RadioButton>
         </Tooltip>
       </RadioGroup>
@@ -74,12 +77,18 @@ const formData = useVModel(props, 'modelValue', emit);
         <RadioGroup v-model:value="formData!.paddingType">
           <Tooltip title="无边距" placement="top">
             <RadioButton value="none">
-              <IconifyIcon icon="tabler:box-padding" />
+              <IconifyIcon
+                icon="tabler:box-padding"
+                class="inset-0 size-6 items-center"
+              />
             </RadioButton>
           </Tooltip>
           <Tooltip title="左右留边" placement="top">
             <RadioButton value="horizontal">
-              <IconifyIcon icon="vaadin:padding" />
+              <IconifyIcon
+                icon="vaadin:padding"
+                class="inset-0 size-6 items-center"
+              />
             </RadioButton>
           </Tooltip>
         </RadioGroup>

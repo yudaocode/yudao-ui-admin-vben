@@ -44,9 +44,9 @@ const handleActive = (index: number) => {
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
               <IconifyIcon
-                icon="ep:picture"
+                icon="lucide:image"
                 :color="item.textColor"
-                class="size-6"
+                class="inset-0 size-6 items-center"
               />
             </div>
           </template>
@@ -63,7 +63,7 @@ const handleActive = (index: number) => {
     <!-- todo: @owen 使用APP主题色 -->
     <Button type="primary" size="large" circle @click="handleToggleFab">
       <IconifyIcon
-        icon="ep:plus"
+        icon="lucide:plus"
         class="fab-icon"
         :class="[{ active: expanded }]"
       />

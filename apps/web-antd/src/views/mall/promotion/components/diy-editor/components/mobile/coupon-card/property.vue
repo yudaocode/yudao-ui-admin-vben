@@ -16,7 +16,6 @@ import { floatToFixed2 } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import {
   Button,
-  Card,
   Form,
   FormItem,
   RadioButton,
@@ -82,7 +81,8 @@ watch(
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <Form :model="formData">
-      <Card title="优惠券列表" class="property-group">
+      <p class="text-base font-bold">优惠券列表：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <div
           v-for="(coupon, index) in couponList"
           :key="index"
@@ -118,15 +118,16 @@ watch(
             添加
           </Button>
         </FormItem>
-      </Card>
-      <Card title="优惠券样式" class="property-group">
+      </div>
+      <p class="text-base font-bold">优惠券样式：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <FormItem label="列数" name="type">
           <RadioGroup v-model:value="formData.columns">
             <Tooltip title="一列" placement="bottom">
               <RadioButton :value="1">
                 <IconifyIcon
                   icon="fluent:text-column-one-24-filled"
-                  class="size-6"
+                  class="inset-0 size-6 items-center"
                 />
               </RadioButton>
             </Tooltip>
@@ -169,7 +170,7 @@ watch(
         <FormItem label="间隔" name="space">
           <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
-      </Card>
+      </div>
     </Form>
   </ComponentContainerProperty>
 

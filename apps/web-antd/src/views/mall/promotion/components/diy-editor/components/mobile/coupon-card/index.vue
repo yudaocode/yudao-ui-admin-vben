@@ -62,7 +62,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="z-10 min-h-[30px]" wrap-class="w-full" ref="containerRef">
+  <div class="z-10 min-h-8" wrap-class="w-full" ref="containerRef">
     <div
       class="flex flex-row text-xs"
       :style="{

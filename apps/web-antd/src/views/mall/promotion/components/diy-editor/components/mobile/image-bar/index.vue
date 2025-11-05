@@ -13,10 +13,10 @@ defineProps<{ property: ImageBarProperty }>();
 <template>
   <!-- 无图片 -->
   <div
-    class="flex h-12 items-center justify-center bg-gray-300"
+    class="bg-card flex h-12 items-center justify-center"
     v-if="!property.imgUrl"
   >
-    <IconifyIcon icon="ep:picture" class="text-3xl text-gray-600" />
+    <IconifyIcon icon="lucide:image" class="text-3xl text-gray-600" />
   </div>
   <Image
     class="block h-full min-h-8 w-full"

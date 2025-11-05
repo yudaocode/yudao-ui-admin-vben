@@ -3,7 +3,6 @@ import type { ComponentStyle } from '../util';
 
 import { useVModel } from '@vueuse/core';
 import {
-  Card,
   Col,
   Form,
   FormItem,
@@ -135,7 +134,8 @@ function handleSliderChange(prop: string) {
 
     <!-- 每个组件的通用内容 -->
     <TabPane tab="样式" key="style" force-render>
-      <Card title="组件样式" class="property-group">
+      <p class="text-lg font-bold">组件样式：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Form :model="formData">
           <FormItem label="组件背景" name="bgType">
             <RadioGroup v-model:value="formData.bgType">
@@ -196,7 +196,7 @@ function handleSliderChange(prop: string) {
           </Tree>
           <slot name="style" :style="formData"></slot>
         </Form>
-      </Card>
+      </div>
     </TabPane>
   </Tabs>
 </template>

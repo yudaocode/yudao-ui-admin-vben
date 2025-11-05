@@ -117,7 +117,7 @@ const handleDeleteComponent = () => {
               arrow: true,
             }"
           >
-            <IconifyIcon icon="ep:arrow-up" />
+            <IconifyIcon icon="lucide:arrow-up" />
           </Button>
           <Button
             :disabled="!canMoveDown"
@@ -129,7 +129,7 @@ const handleDeleteComponent = () => {
               arrow: true,
             }"
           >
-            <IconifyIcon icon="ep:arrow-down" />
+            <IconifyIcon icon="lucide:arrow-down" />
           </Button>
           <Button
             @click.stop="handleCopyComponent()"
@@ -140,7 +140,7 @@ const handleDeleteComponent = () => {
               arrow: true,
             }"
           >
-            <IconifyIcon icon="ep:copy-document" />
+            <IconifyIcon icon="lucide:copy" />
           </Button>
           <Button
             @click.stop="handleDeleteComponent()"
@@ -151,7 +151,7 @@ const handleDeleteComponent = () => {
               arrow: true,
             }"
           >
-            <IconifyIcon icon="ep:delete" />
+            <IconifyIcon icon="lucide:trash-2" />
           </Button>
         </VerticalButtonGroup>
       </div>

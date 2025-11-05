@@ -307,17 +307,17 @@ onMounted(() => {
         >
           <Tooltip title="重置">
             <Button @click="handleReset">
-              <IconifyIcon class="size-6" icon="system-uicons:reset-alt" />
+              <IconifyIcon class="size-6" icon="lucide:refresh-cw" />
             </Button>
           </Tooltip>
           <Tooltip v-if="previewUrl" title="预览">
             <Button @click="handlePreview">
-              <IconifyIcon class="size-6" icon="ep:view" />
+              <IconifyIcon class="size-6" icon="lucide:eye" />
             </Button>
           </Tooltip>
           <Tooltip title="保存">
             <Button @click="handleSave">
-              <IconifyIcon class="size-6" icon="ep:check" />
+              <IconifyIcon class="size-6" icon="lucide:check" />
             </Button>
           </Tooltip>
         </Button.Group>
@@ -473,7 +473,9 @@ onMounted(() => {
               <span>{{ selectedComponent?.name }}</span>
             </div>
           </template>
-          <div class="property max-h-[calc(80vh-100px)] overflow-y-auto p-4">
+          <div
+            class="property mt-0 max-h-[calc(80vh-100px)] overflow-y-auto p-4"
+          >
             <component
               :is="`${selectedComponent?.id}Property`"
               :key="selectedComponent?.uid || selectedComponent?.id"

@@ -11,7 +11,7 @@ export interface PageConfigProperty {
 export const component = {
   id: 'PageConfig',
   name: '页面设置',
-  icon: 'ep:document',
+  icon: 'lucide:file-text',
   property: {
     description: '',
     backgroundColor: '#f5f5f5',

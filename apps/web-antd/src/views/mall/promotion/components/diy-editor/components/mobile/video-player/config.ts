@@ -17,7 +17,7 @@ export interface VideoPlayerStyle extends ComponentStyle {
 export const component = {
   id: 'VideoPlayer',
   name: '视频播放',
-  icon: 'ep:video-play',
+  icon: 'lucide:video',
   property: {
     videoUrl: '',
     posterUrl: '',

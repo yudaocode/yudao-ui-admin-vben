@@ -48,17 +48,13 @@ watch(
 <template>
   <Input v-model:value="appLink" placeholder="输入或选择链接">
     <template #addonAfter>
-      <Button @click="handleOpenDialog" class="!border-none">选择</Button>
+      <Button
+        @click="handleOpenDialog"
+        class="!border-none !bg-transparent !p-0"
+      >
+        选择
+      </Button>
     </template>
   </Input>
-
   <AppLinkSelectDialog ref="dialogRef" @change="handleLinkSelected" />
 </template>
-
-<style scoped lang="scss">
-:deep(.ant-input-group-addon) {
-  padding: 0;
-  background: transparent;
-  border: 0;
-}
-</style>

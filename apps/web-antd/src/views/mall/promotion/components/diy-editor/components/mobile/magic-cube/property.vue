@@ -4,7 +4,7 @@ import type { MagicCubeProperty } from './config';
 import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Slider, Typography } from 'ant-design-vue';
+import { Form, FormItem, Slider } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
@@ -21,8 +21,6 @@ const props = defineProps<{ modelValue: MagicCubeProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
 
-const { Text: ATypographyText } = Typography;
-
 const formData = useVModel(props, 'modelValue', emit);
 
 const selectedHotAreaIndex = ref(-1); // 选中的热区
@@ -36,10 +34,7 @@ const handleHotAreaSelected = (_: any, index: number) => {
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <Form :model="formData" class="mt-2">
-      <ATypographyText tag="p"> 魔方设置 </ATypographyText>
-      <ATypographyText type="secondary" class="text-sm">
-        每格尺寸187 * 187
-      </ATypographyText>
+      <p class="text-base font-bold">魔方设置：</p>
       <MagicCubeEditor
         class="my-4"
         v-model="formData.list"

@@ -2,14 +2,7 @@
 import type { MenuGridProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Card,
-  Form,
-  FormItem,
-  Radio,
-  RadioGroup,
-  Switch,
-} from 'ant-design-vue';
+import { Form, FormItem, Radio, RadioGroup, Switch } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
@@ -40,7 +33,8 @@ const formData = useVModel(props, 'modelValue', emit);
         </RadioGroup>
       </FormItem>
 
-      <Card header="菜单设置" class="property-group" shadow="never">
+      <p class="text-base font-bold">菜单设置</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Draggable
           v-model="formData.list"
           :empty-item="EMPTY_MENU_GRID_ITEM_PROPERTY"
@@ -87,7 +81,7 @@ const formData = useVModel(props, 'modelValue', emit);
             </template>
           </template>
         </Draggable>
-      </Card>
+      </div>
     </Form>
   </ComponentContainerProperty>
 </template>

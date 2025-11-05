@@ -58,18 +58,17 @@ const handleDelete = function (index: number) {
       <div class="mb-1 flex flex-col gap-1 rounded border border-gray-200 p-2">
         <!-- 操作按钮区 -->
         <div
-          class="-m-2 mb-1 flex flex-row items-center justify-between rounded-t p-2"
-          style="background-color: var(--ant-color-bg-container-secondary)"
+          class="bg-secondary -m-2 mb-1 flex flex-row items-center justify-between rounded-t p-2"
         >
           <Tooltip title="拖动排序">
             <IconifyIcon
-              icon="ic:round-drag-indicator"
+              icon="lucide:move"
               class="drag-icon cursor-move text-gray-500"
             />
           </Tooltip>
           <Tooltip v-if="formData.length > min" title="删除">
             <IconifyIcon
-              icon="ep:delete"
+              icon="lucide:trash-2"
               class="cursor-pointer text-red-500 hover:text-red-600"
               @click="handleDelete(index)"
             />
@@ -93,7 +92,7 @@ const handleDelete = function (index: number) {
       @click="handleAdd"
     >
       <template #icon>
-        <IconifyIcon icon="ep:plus" />
+        <IconifyIcon icon="lucide:plus" />
       </template>
       添加
     </Button>

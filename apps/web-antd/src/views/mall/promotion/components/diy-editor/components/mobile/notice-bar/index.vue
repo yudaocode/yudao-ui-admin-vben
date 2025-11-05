@@ -33,7 +33,7 @@ setInterval(() => {
     <div class="h-6 flex-1 truncate pr-2 leading-6">
       {{ property.contents?.[activeIndex]?.text }}
     </div>
-    <IconifyIcon icon="ep:arrow-right" />
+    <IconifyIcon icon="lucide:arrow-right" />
   </div>
 </template>
 

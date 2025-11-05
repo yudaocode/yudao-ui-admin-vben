@@ -39,7 +39,7 @@ export interface ProductCardFieldProperty {
 export const component = {
   id: 'ProductCard',
   name: '商品卡片',
-  icon: 'fluent:text-column-two-left-24-filled',
+  icon: 'lucide:grid-3x3',
   property: {
     layoutType: 'oneColBigImg',
     fields: {

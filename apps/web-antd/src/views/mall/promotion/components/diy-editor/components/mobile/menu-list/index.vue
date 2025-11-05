@@ -11,11 +11,11 @@ defineProps<{ property: MenuListProperty }>();
 </script>
 
 <template>
-  <div class="flex min-h-[42px] flex-col">
+  <div class="flex min-h-10 flex-col">
     <div
       v-for="(item, index) in property.list"
       :key="index"
-      class="item flex h-[42px] flex-row items-center justify-between gap-1 px-3"
+      class="flex h-10 flex-row items-center justify-between gap-1 border-t border-gray-200 px-3 first:border-t-0"
     >
       <div class="flex flex-1 flex-row items-center gap-2">
         <Image v-if="item.iconUrl" class="h-4 w-4" :src="item.iconUrl" />
@@ -27,14 +27,8 @@ defineProps<{ property: MenuListProperty }>();
         <span class="text-xs" :style="{ color: item.subtitleColor }">
           {{ item.subtitle }}
         </span>
-        <IconifyIcon icon="ep:arrow-right" color="#000" :size="16" />
+        <IconifyIcon icon="lucide:arrow-right" class="size-4" />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.item + .item {
-  border-top: 1px solid #eee;
-}
-</style>

@@ -30,9 +30,9 @@ const DIY_PAGE_INDEX_KEY = 'diy_page_index'; // 特殊：存储 reset 重置时�
 
 const selectedTemplateItem = ref(0);
 const templateItems = reactive([
-  { name: '基础设置', icon: 'ep:iphone' },
-  { name: '首页', icon: 'ep:home-filled' },
-  { name: '我的', icon: 'ep:user-filled' },
+  { name: '基础设置', icon: 'lucide:settings' },
+  { name: '首页', icon: 'lucide:home' },
+  { name: '我的', icon: 'lucide:user' },
 ]); // 左上角工具栏操作按钮
 
 const formData = ref<MallDiyTemplateApi.DiyTemplateProperty>();

@@ -61,13 +61,11 @@ function handleCloneComponent(component: DiyComponent<any>) {
 </script>
 
 <template>
-  <div
-    class="z-[1] max-h-[calc(80vh)] w-96 shrink-0 select-none overflow-y-auto"
-  >
+  <div class="z-[1] max-h-[calc(80vh)] shrink-0 select-none overflow-y-auto">
     <Collapse
       v-model:active-key="extendGroups"
       :bordered="false"
-      class="bg-card shadow-none"
+      class="bg-card"
     >
       <Collapse.Panel
         v-for="(group, index) in groups"

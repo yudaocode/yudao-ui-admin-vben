@@ -10,7 +10,7 @@ export interface UserCouponProperty {
 export const component = {
   id: 'UserCoupon',
   name: '用户卡券',
-  icon: 'ep:ticket',
+  icon: 'lucide:ticket',
   property: {
     style: {
       bgType: 'color',

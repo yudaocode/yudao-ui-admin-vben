@@ -78,7 +78,7 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
       v-if="property._local?.previewMp"
       :src="appNavbarMp"
       alt=""
-      style="width: 86px; height: 30px"
+      class="w-22 h-8"
     />
   </div>
 </template>

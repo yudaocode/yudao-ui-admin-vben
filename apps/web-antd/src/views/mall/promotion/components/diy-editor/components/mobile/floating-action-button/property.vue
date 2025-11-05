@@ -2,14 +2,7 @@
 import type { FloatingActionButtonProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Card,
-  Form,
-  FormItem,
-  Radio,
-  RadioGroup,
-  Switch,
-} from 'ant-design-vue';
+import { Form, FormItem, Radio, RadioGroup, Switch } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
@@ -30,7 +23,8 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <Form :model="formData">
-    <Card title="按钮配置" class="property-group">
+    <p class="text-base font-bold">按钮配置：</p>
+    <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
       <FormItem label="展开方向" name="direction">
         <RadioGroup v-model:value="formData.direction">
           <Radio value="vertical">垂直</Radio>
@@ -40,8 +34,9 @@ const formData = useVModel(props, 'modelValue', emit);
       <FormItem label="显示文字" name="showText">
         <Switch v-model:checked="formData.showText" />
       </FormItem>
-    </Card>
-    <Card title="按钮列表" class="property-group">
+    </div>
+    <p class="text-base font-bold">按钮列表：</p>
+    <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
       <Draggable v-model="formData.list" :empty-item="{ textColor: '#fff' }">
         <template #default="{ element, index }">
           <FormItem label="图标" :name="`list[${index}].imgUrl`">
@@ -63,6 +58,6 @@ const formData = useVModel(props, 'modelValue', emit);
           </FormItem>
         </template>
       </Draggable>
-    </Card>
+    </div>
   </Form>
 </template>
