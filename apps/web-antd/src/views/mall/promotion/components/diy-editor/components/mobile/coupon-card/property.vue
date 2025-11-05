@@ -40,8 +40,6 @@ const props = defineProps<{ modelValue: CouponCardProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
 
-const { Text: ATypographyText } = Typography;
-
 const formData = useVModel(props, 'modelValue', emit);
 
 const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]); // 已选择的优惠券列表
@@ -90,22 +88,24 @@ watch(
           :key="index"
           class="flex items-center justify-between"
         >
-          <ATypographyText ellipsis class="text-base">
-            {{ coupon.name }}
-          </ATypographyText>
-          <ATypographyText type="secondary" ellipsis>
-            <span v-if="coupon.usePrice > 0">
-              满{{ floatToFixed2(coupon.usePrice) }}元，
-            </span>
-            <span
-              v-if="
-                coupon.discountType === PromotionDiscountTypeEnum.PRICE.type
-              "
-            >
-              减{{ floatToFixed2(coupon.discountPrice) }}元
-            </span>
-            <span v-else> 打{{ coupon.discountPercent }}折 </span>
-          </ATypographyText>
+          <Typography>
+            <Typography.Title :level="5">
+              {{ coupon.name }}
+            </Typography.Title>
+            <Typography.Text type="secondary">
+              <span v-if="coupon.usePrice > 0">
+                满{{ floatToFixed2(coupon.usePrice) }}元，
+              </span>
+              <span
+                v-if="
+                  coupon.discountType === PromotionDiscountTypeEnum.PRICE.type
+                "
+              >
+                减{{ floatToFixed2(coupon.discountPrice) }}元
+              </span>
+              <span v-else> 打{{ (coupon.discountPercent ?? 0) / 10 }}折 </span>
+            </Typography.Text>
+          </Typography>
         </div>
         <FormItem>
           <Button
@@ -114,9 +114,7 @@ watch(
             ghost
             class="mt-2 w-full"
           >
-            <template #icon>
-              <IconifyIcon icon="ep:plus" />
-            </template>
+            <IconifyIcon icon="lucide:plus" />
             添加
           </Button>
         </FormItem>
@@ -126,17 +124,26 @@ watch(
           <RadioGroup v-model:value="formData.columns">
             <Tooltip title="一列" placement="bottom">
               <RadioButton :value="1">
-                <IconifyIcon icon="fluent:text-column-one-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-one-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="二列" placement="bottom">
               <RadioButton :value="2">
-                <IconifyIcon icon="fluent:text-column-two-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-two-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="三列" placement="bottom">
               <RadioButton :value="3">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-three-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
