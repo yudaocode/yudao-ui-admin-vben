@@ -14,9 +14,9 @@ defineProps<{
   <div
     :class="[
       message.senderType === UserTypeEnum.MEMBER
-        ? `ml-[10px]`
+        ? `ml-2`
         : message.senderType === UserTypeEnum.ADMIN
-          ? `mr-[10px]`
+          ? `mr-2`
           : '',
     ]"
   >

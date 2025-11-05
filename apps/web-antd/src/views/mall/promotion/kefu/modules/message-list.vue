@@ -255,7 +255,7 @@ async function handleOldMessage() {
 function showTime(item: MallKefuMessageApi.Message, index: number) {
   if (unref(messageList.value)[index + 1]) {
     const dateString = dayjs(
-      unref(messageList.value)[index + 1].createTime,
+      unref(messageList.value)[index + 1]!.createTime,
     ).fromNow();
     return dateString !== dayjs(unref(item).createTime).fromNow();
   }
@@ -286,21 +286,21 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
           :key="item.id"
           class="w-full"
         >
-          <div class="mb-[20px] flex items-center justify-center">
+          <div class="mb-5 flex items-center justify-center">
             <!-- 日期 -->
             <div
               v-if="
                 item.contentType !== KeFuMessageContentTypeEnum.SYSTEM &&
                 showTime(item, index)
               "
-              class="w-fit rounded-lg bg-black/10 px-[5px] text-[10px] text-white"
+              class="w-fit rounded-lg bg-black/10 px-2 text-xs text-white"
             >
               {{ formatDate(item.createTime) }}
             </div>
             <!-- 系统消息 -->
             <div
               v-if="item.contentType === KeFuMessageContentTypeEnum.SYSTEM"
-              class="w-fit rounded-lg bg-black/10 px-[5px] text-[10px] text-white"
+              class="w-fit rounded-lg bg-black/10 px-2 text-xs text-white"
             >
               {{ item.content }}
             </div>
@@ -313,22 +313,22 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                   ? 'justify-end'
                   : '',
             ]"
-            class="mb-[20px] flex w-full"
+            class="mb-5 flex w-full"
           >
             <Avatar
               v-if="item.senderType === UserTypeEnum.MEMBER"
               :src="conversation.userAvatar"
               alt="avatar"
-              class="h-[60px] w-[60px]"
+              class="h-14 w-14"
             />
             <div
               :class="{
-                'w-auto max-w-[50%] px-[10px] py-[5px] font-medium text-[#414141] transition-all duration-200 hover:scale-105':
+                'w-auto max-w-[50%] px-2 py-1 font-medium text-gray-500 transition-all duration-200 hover:scale-105':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType,
-                'ml-[10px] mt-[3px] rounded-bl-[10px] rounded-br-[10px] rounded-tr-[10px] bg-white':
+                'rounded-bl-2 rounded-br-2 rounded-tr-2 ml-2 mt-1 bg-white':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType &&
                   item.senderType === UserTypeEnum.MEMBER,
-                'mr-[10px] mt-[3px] rounded-bl-[10px] rounded-br-[10px] rounded-tl-[10px] bg-[rgb(206_223_255)]':
+                'rounded-bl-2 rounded-br-2 rounded-tl-2 mr-2 mt-1 bg-blue-50':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType &&
                   item.senderType === UserTypeEnum.ADMIN,
               }"
@@ -355,7 +355,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                     getMessageContent(item).picUrl || item.content,
                   ]"
                   :src="getMessageContent(item).picUrl || item.content"
-                  class="mx-[10px] !w-[200px]"
+                  class="mx-2 !w-52"
                   fit="contain"
                   preview-teleported
                 />
@@ -370,7 +370,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                   :spu-id="getMessageContent(item).spuId"
                   :stock="getMessageContent(item).stock"
                   :title="getMessageContent(item).spuName"
-                  class="mx-[10px] max-w-[300px]"
+                  class="mx-2 max-w-80"
                 />
               </MessageItem>
               <!-- 订单消息 -->
@@ -378,7 +378,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                 <OrderItem
                   v-if="KeFuMessageContentTypeEnum.ORDER === item.contentType"
                   :message="item"
-                  class="mx-[10px] max-w-full"
+                  class="mx-2 max-w-full"
                 />
               </MessageItem>
             </div>
@@ -393,26 +393,28 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
       </div>
       <div
         v-show="showNewMessageTip"
-        class="absolute bottom-[35px] right-[35px] z-10 flex cursor-pointer items-center rounded-[30px] bg-[var(--background)] p-[10px] text-xs shadow-md"
+        class="bg-card absolute bottom-9 right-9 z-10 flex cursor-pointer items-center rounded-full p-2.5 text-xs shadow-md"
         @click="handleToNewMessage"
       >
         <span>有新消息</span>
-        <IconifyIcon class="ml-5px" icon="ep:bottom" />
+        <IconifyIcon class="ml-1" icon="lucide:arrow-down-from-line" />
       </div>
     </Layout.Content>
-    <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
-      <div class="flex h-[44px] w-full items-center">
+    <Layout.Footer
+      class="!bg-card m-0 flex flex-col border-t-2 border-gray-200 p-0"
+    >
+      <div class="flex h-11 w-full items-center">
         <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
         <PictureSelectUpload
-          class="ml-[15px] mt-[3px] cursor-pointer"
+          class="ml-4 mt-1 cursor-pointer"
           @send-picture="handleSendPicture"
         />
       </div>
       <Textarea
         v-model:value="message"
         :rows="6"
+        class="border-none"
         placeholder="输入消息，Enter发送，Shift+Enter换行"
-        style="border-style: none"
         @press-enter="handleSendMessage"
       />
     </Layout.Footer>

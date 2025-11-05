@@ -158,8 +158,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Layout.Sider class="h-full bg-[var(--background)] pt-[5px]" width="260px">
-    <div class="my-[10px] font-bold text-[#999]">
+  <Layout.Sider class="bg-card h-full border-b-2 p-2" width="260px">
+    <div class="m-4 border-b border-gray-200 pb-4 font-bold">
       会话记录({{ kefuStore.getConversationList.length }})
     </div>
     <div
@@ -168,12 +168,12 @@ onBeforeUnmount(() => {
       :class="{
         'bg-gray-500/50': item.id === activeConversationId,
       }"
-      class="flex h-[60px] cursor-pointer items-center px-[10px]"
+      class="flex h-14 cursor-pointer items-center px-3"
       @click="openRightMessage(item)"
       @contextmenu.prevent="rightClick($event as PointerEvent, item)"
     >
       <div class="flex w-full items-center justify-center">
-        <div class="flex h-[50px] w-[50px] items-center justify-center">
+        <div class="flex h-12 w-12 items-center justify-center">
           <!-- 头像 + 未读 -->
           <Badge
             :hidden="item.adminUnreadMessageCount === 0"
@@ -183,12 +183,12 @@ onBeforeUnmount(() => {
             <Avatar :src="item.userAvatar" alt="avatar" />
           </Badge>
         </div>
-        <div class="ml-[10px] w-full">
+        <div class="ml-3 w-full">
           <div class="flex w-full items-center justify-between">
-            <span class="line-clamp-1 min-w-0 max-w-[60%]">{{
-              item.userNickname || 'null'
-            }}</span>
-            <span class="text-[13px] text-[#999]">
+            <span class="line-clamp-1 min-w-0 max-w-[60%]">
+              {{ item.userNickname || 'null' }}
+            </span>
+            <span class="text-sm text-gray-500">
               {{ lastMessageTimeMap.get(item.id) ?? '计算中' }}
             </span>
           </div>
@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
                 item.lastMessageContent,
               )
             "
-            class="line-clamp-1 flex items-center text-[13px] text-[#999]"
+            class="line-clamp-1 flex items-center text-sm text-gray-500"
           ></div>
         </div>
       </div>
@@ -210,14 +210,14 @@ onBeforeUnmount(() => {
     <ul
       v-show="showRightMenu"
       :style="rightMenuStyle"
-      class="absolute z-[1999] m-0 w-[130px] list-none rounded-xl bg-[hsl(var(--background))] p-[5px] shadow-md"
+      class="absolute z-[1999] m-0 w-[130px] list-none rounded-xl bg-[hsl(var(--background))] p-1 shadow-md"
     >
       <li
         v-show="!rightClickConversation.adminPinned"
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(true)"
       >
-        <IconifyIcon class="mr-[5px]" icon="ep:top" />
+        <IconifyIcon class="mr-1" icon="lucide:arrow-up-to-line" />
         置顶会话
       </li>
       <li
@@ -225,21 +225,21 @@ onBeforeUnmount(() => {
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(false)"
       >
-        <IconifyIcon class="mr-[5px]" icon="ep:bottom" />
+        <IconifyIcon class="mr-1" icon="lucide:arrow-down-from-line" />
         取消置顶
       </li>
       <li
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="deleteConversationFn"
       >
-        <IconifyIcon class="mr-[5px]" color="red" icon="ep:delete" />
+        <IconifyIcon class="mr-1" color="red" icon="lucide:trash-2" />
         删除会话
       </li>
       <li
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="closeRightMenu"
       >
-        <IconifyIcon class="mr-[5px]" color="red" icon="ep:close" />
+        <IconifyIcon class="mr-1" color="red" icon="lucide:x" />
         取消
       </li>
     </ul>

@@ -22,7 +22,7 @@ import BasicInfo from '#/views/member/user/detail/modules/basic-info.vue';
 import OrderBrowsingHistory from './order-browsing-history.vue';
 import ProductBrowsingHistory from './product-browsing-history.vue';
 
-const activeTab = ref<'交易订单' | '会员信息' | '最近浏览'>('会员信息');
+const activeTab = ref<string>('会员信息');
 
 const tabActivation = computed(() => (tab: string) => activeTab.value === tab);
 
@@ -140,10 +140,10 @@ async function getUserData() {
 
 <template>
   <Layout
-    class="relative w-[300px] bg-[var(--background)] after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-[var(--el-border-color)] after:content-['']"
+    class="bg-card relative w-72 after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-gray-200 after:content-['']"
   >
     <Layout.Header
-      class="relative flex items-center justify-around bg-[var(--background)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-[var(--el-border-color)] before:content-['']"
+      class="!bg-card relative flex items-center justify-around before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-gray-200 before:content-['']"
     >
       <div
         :class="{
@@ -176,7 +176,7 @@ async function getUserData() {
         交易订单
       </div>
     </Layout.Header>
-    <Layout.Content class="relative m-0 h-full w-full p-[10px]">
+    <Layout.Content class="relative m-0 h-full w-full p-2">
       <template v-if="!isEmpty(conversation)">
         <div
           v-loading="loading"
@@ -190,11 +190,20 @@ async function getUserData() {
             </template>
           </BasicInfo>
           <!-- 账户信息 -->
-          <Card class="mt-10px h-full" shadow="never">
+          <Card
+            class="mt-2 h-full"
+            :body-style="{ padding: '16px' }"
+            shadow="never"
+          >
             <template #title>
               <span class="text-sm font-bold">账户信息</span>
             </template>
-            <AccountInfo :column="1" :user="user" :wallet="wallet" />
+            <AccountInfo
+              :column="1"
+              :user="user"
+              :wallet="wallet"
+              mode="kefu"
+            />
           </Card>
         </div>
         <div
