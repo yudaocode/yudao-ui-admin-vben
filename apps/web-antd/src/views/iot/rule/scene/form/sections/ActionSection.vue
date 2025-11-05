@@ -100,7 +100,7 @@ function removeAction(index: number) {
  * @param type 执行器类型
  */
 function updateActionType(index: number, type: number) {
-  actions.value[index].type = type.toString();
+  actions.value[index]!.type = type.toString();
   onActionTypeChange(actions.value[index] as Action, type);
 }
 
@@ -119,7 +119,7 @@ function updateAction(index: number, action: Action) {
  * @param alertConfigId 告警配置ID
  */
 function updateActionAlertConfig(index: number, alertConfigId?: number) {
-  actions.value[index].alertConfigId = alertConfigId;
+  actions.value[index]!.alertConfigId = alertConfigId;
   if (actions.value[index]) {
     actions.value[index].alertConfigId = alertConfigId;
   }
@@ -220,7 +220,7 @@ function onActionTypeChange(action: Action, type: any) {
                 @click="removeAction(index)"
                 class="hover:bg-red-50"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
                 删除
               </Button>
             </div>

@@ -71,7 +71,7 @@ function removeTrigger(index: number) {
  * @param type 触发器类型
  */
 function updateTriggerType(index: number, type: number) {
-  triggers.value[index].type = type;
+  triggers.value[index]!.type = type.toString();
   onTriggerTypeChange(index, type);
 }
 
@@ -90,7 +90,7 @@ function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
  * @param cronExpression CRON 表达式
  */
 function updateTriggerCronConfig(index: number, cronExpression?: string) {
-  triggers.value[index].cronExpression = cronExpression;
+  triggers.value[index]!.cronExpression = cronExpression;
 }
 
 /**
@@ -99,7 +99,7 @@ function updateTriggerCronConfig(index: number, cronExpression?: string) {
  * @param _ 触发器类型（未使用）
  */
 function onTriggerTypeChange(index: number, _: number) {
-  const triggerItem = triggers.value[index];
+  const triggerItem = triggers.value[index]!;
   triggerItem.productId = undefined;
   triggerItem.deviceId = undefined;
   triggerItem.identifier = undefined;
@@ -127,7 +127,7 @@ onMounted(() => {
           <Tag size="small" type="info"> {{ triggers.length }} 个触发器 </Tag>
         </div>
         <Button type="primary" size="small" @click="addTrigger">
-          <IconifyIcon icon="ep:plus" />
+          <IconifyIcon icon="lucide:plus" />
           添加触发器
         </Button>
       </div>
@@ -173,7 +173,7 @@ onMounted(() => {
                 @click="removeTrigger(index)"
                 class="hover:bg-red-50"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
                 删除
               </Button>
             </div>
@@ -203,7 +203,10 @@ onMounted(() => {
               <div
                 class="gap-8px p-12px px-16px rounded-6px border-primary bg-background flex items-center border"
               >
-                <IconifyIcon icon="ep:timer" class="text-18px text-danger" />
+                <IconifyIcon
+                  icon="lucide:timer"
+                  class="text-18px text-danger"
+                />
                 <span class="text-14px font-500 text-primary">
                   定时触发配置
                 </span>

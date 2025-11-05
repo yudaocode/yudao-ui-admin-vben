@@ -136,7 +136,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
               v-if="subGroup!.length > 1"
               class="hover:bg-red-50"
             >
-              <IconifyIcon icon="ep:delete" />
+              <IconifyIcon icon="lucide:trash-2" />
             </Button>
           </div>
 
