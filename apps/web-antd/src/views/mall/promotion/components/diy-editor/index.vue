@@ -168,7 +168,8 @@ function handleComponentSelected(
   component: DiyComponent<any>,
   index: number = -1,
 ) {
-  selectedComponent.value = component;
+  // 使用深拷贝避免响应式追踪循环警告
+  selectedComponent.value = cloneDeep(component);
   selectedComponentIndex.value = index;
 }
 
