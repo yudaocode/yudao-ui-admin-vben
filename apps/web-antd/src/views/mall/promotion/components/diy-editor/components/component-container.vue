@@ -108,9 +108,11 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <VerticalButtonGroup type="primary">
+        <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"
+            type="primary"
+            size="small"
             @click.stop="handleMoveComponent(-1)"
             v-tippy="{
               content: '上移',
@@ -123,6 +125,8 @@ const handleDeleteComponent = () => {
           </Button>
           <Button
             :disabled="!canMoveDown"
+            type="primary"
+            size="small"
             @click.stop="handleMoveComponent(1)"
             v-tippy="{
               content: '下移',
@@ -134,6 +138,8 @@ const handleDeleteComponent = () => {
             <IconifyIcon icon="lucide:arrow-down" />
           </Button>
           <Button
+            type="primary"
+            size="small"
             @click.stop="handleCopyComponent()"
             v-tippy="{
               content: '复制',
@@ -145,6 +151,8 @@ const handleDeleteComponent = () => {
             <IconifyIcon icon="lucide:copy" />
           </Button>
           <Button
+            type="primary"
+            size="small"
             @click.stop="handleDeleteComponent()"
             v-tippy="{
               content: '删除',
