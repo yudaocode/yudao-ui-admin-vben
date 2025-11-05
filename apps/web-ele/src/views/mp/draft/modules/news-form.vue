@@ -279,9 +279,9 @@ function plusNews() {
   height: 25px;
   padding: 1%;
   overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 15px;
   color: #fff;
-  text-overflow: ellipsis;
   white-space: nowrap;
   background-color: black;
   opacity: 0.65;

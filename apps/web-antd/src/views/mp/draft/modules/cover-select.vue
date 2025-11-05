@@ -147,20 +147,20 @@ function onUploadError(err: Error) {
 
 <style lang="scss" scoped>
 .upload-tip {
-  margin-left: 5px;
   margin-top: 5px;
+  margin-left: 5px;
   font-size: 12px;
   color: #999;
 }
 
 .thumb-div {
   display: inline-block;
-  width: 100%;
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  text-align: center;
 
   .avatar-uploader-icon {
     width: 120px;

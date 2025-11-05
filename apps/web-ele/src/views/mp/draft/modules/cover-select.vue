@@ -147,12 +147,12 @@ function onUploadError(err: Error) {
 
 .thumb-div {
   display: inline-block;
-  width: 100%;
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  text-align: center;
 
   .avatar-uploader-icon {
     width: 120px;
