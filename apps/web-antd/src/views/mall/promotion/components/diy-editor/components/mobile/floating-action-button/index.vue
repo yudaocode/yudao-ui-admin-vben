@@ -43,7 +43,11 @@ const handleActive = (index: number) => {
         <Image :src="item.imgUrl" fit="contain" class="h-7 w-7">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" :color="item.textColor" />
+              <IconifyIcon
+                icon="ep:picture"
+                :color="item.textColor"
+                class="size-6"
+              />
             </div>
           </template>
         </Image>

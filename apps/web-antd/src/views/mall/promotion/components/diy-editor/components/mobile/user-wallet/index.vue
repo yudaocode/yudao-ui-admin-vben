@@ -13,5 +13,3 @@ defineProps<{ property: UserWalletProperty }>();
     src="https://shopro.sheepjs.com/admin/static/images/shop/decorate/walletCardStyle.png"
   />
 </template>
-
-<style scoped lang="scss"></style>

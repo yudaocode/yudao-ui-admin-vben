@@ -24,7 +24,7 @@ const handleIndexChange = (index: number) => {
       class="bg-card flex h-64 items-center justify-center"
       v-if="property.items.length === 0"
     >
-      <IconifyIcon icon="tdesign:image" class="text-3xl text-gray-800" />
+      <IconifyIcon icon="tdesign:image" class="size-6 text-gray-800" />
     </div>
     <div v-else class="relative">
       <Carousel
