@@ -5,9 +5,9 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { nextTick, onMounted, provide, ref, watch } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpDraftApi from '#/api/mp/draft';
@@ -135,7 +135,7 @@ async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId || accountId === -1) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
 
@@ -153,7 +153,7 @@ async function handleEdit(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId || accountId === -1) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
 
@@ -172,7 +172,7 @@ async function handlePublish(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId || accountId === -1) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
 
@@ -181,17 +181,16 @@ async function handlePublish(row: Article) {
     '已发布内容不会推送给用户，也不会展示在公众号主页中。 ' +
     '发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。';
   try {
-    await confirm(content);
-    const hideLoading = message.loading({
-      content: '发布中...',
-      duration: 0,
+    await ElMessageBox.confirm(content);
+    const loadingInstance = ElLoading.service({
+      text: '发布中...',
     });
     try {
       await MpFreePublishApi.submitFreePublish(accountId, row.mediaId);
-      message.success('发布成功');
+      ElMessage.success('发布成功');
       await gridApi.query();
     } finally {
-      hideLoading();
+      loadingInstance.close();
     }
   } catch {
     //
@@ -203,22 +202,21 @@ async function handleDelete(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId || accountId === -1) {
-    message.warning('请先选择公众号');
+    ElMessage.warning('请先选择公众号');
     return;
   }
 
   try {
-    await confirm('此操作将永久删除该草稿, 是否继续?');
-    const hideLoading = message.loading({
-      content: '删除中...',
-      duration: 0,
+    await ElMessageBox.confirm('此操作将永久删除该草稿, 是否继续?');
+    const loadingInstance = ElLoading.service({
+      text: '删除中...',
     });
     try {
       await MpDraftApi.deleteDraft(accountId, row.mediaId);
-      message.success('删除成功');
+      ElMessage.success('删除成功');
       await gridApi.query();
     } finally {
-      hideLoading();
+      loadingInstance.close();
     }
   } catch {
     //
@@ -273,22 +271,24 @@ onMounted(async () => {
           :actions="[
             {
               label: '发布',
-              type: 'link',
+              type: 'success',
+              link: true,
               icon: ACTION_ICON.UPLOAD,
               auth: ['mp:free-publish:submit'],
               onClick: handlePublish.bind(null, row),
             },
             {
               label: '编辑',
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['mp:draft:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: '删除',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['mp:draft:delete'],
               popConfirm: {

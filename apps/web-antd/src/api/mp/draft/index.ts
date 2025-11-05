@@ -35,9 +35,13 @@ export function getDraftPage(params: PageParam) {
 
 /** 创建草稿 */
 export function createDraft(accountId: number, articles: MpDraftApi.Article[]) {
-  return requestClient.post('/mp/draft/create', articles, {
-    params: { accountId },
-  });
+  return requestClient.post(
+    '/mp/draft/create',
+    { articles },
+    {
+      params: { accountId },
+    },
+  );
 }
 
 /** 更新草稿 */
@@ -46,9 +50,13 @@ export function updateDraft(
   mediaId: string,
   articles: MpDraftApi.Article[],
 ) {
-  return requestClient.put('/mp/draft/update', articles, {
-    params: { accountId, mediaId },
-  });
+  return requestClient.put(
+    '/mp/draft/update',
+    { articles },
+    {
+      params: { accountId, mediaId },
+    },
+  );
 }
 
 /** 删除草稿 */
