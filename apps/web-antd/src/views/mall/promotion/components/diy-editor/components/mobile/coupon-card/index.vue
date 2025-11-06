@@ -5,6 +5,8 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { onMounted, ref, watch } from 'vue';
 
+import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
+
 import {
   CouponDiscount,
   CouponDiscountDesc,
@@ -31,13 +33,13 @@ watch(
 );
 
 // 手机宽度
-const phoneWidth = ref(375);
+const phoneWidth = ref(384);
 // 容器
 const containerRef = ref();
 // 滚动条宽度
 const scrollbarWidth = ref('100%');
 // 优惠券的宽度
-const couponWidth = ref(375);
+const couponWidth = ref(384);
 // 计算布局参数
 watch(
   () => [props.property, phoneWidth, couponList.value.length],
@@ -56,11 +58,11 @@ watch(
 );
 onMounted(() => {
   // 提取手机宽度
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
+  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 384;
 });
 </script>
 <template>
-  <div class="z-10 min-h-[30px]" wrap-class="w-full" ref="containerRef">
+  <div class="z-10 min-h-8" wrap-class="w-full" ref="containerRef">
     <div
       class="flex flex-row text-xs"
       :style="{
@@ -153,4 +155,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-<style scoped lang="scss"></style>

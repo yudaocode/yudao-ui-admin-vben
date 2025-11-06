@@ -131,7 +131,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     border-bottom: none;
   }
 
-  /* 组件 hover 和 active 状态（需要 CSS 变量）*/
+  /* 组件 hover 和 active 状态（需要 CSS 变量） */
   .component.active,
   .component:hover {
     color: var(--el-color-white);

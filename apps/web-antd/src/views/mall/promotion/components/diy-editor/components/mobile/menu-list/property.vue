@@ -2,7 +2,7 @@
 import type { MenuListProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Typography } from 'ant-design-vue';
+import { Form, FormItem } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {
@@ -13,8 +13,6 @@ import {
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
-
-const { Text: ATypographyText } = Typography;
 
 /** 列表导航属性面板 */
 defineOptions({ name: 'MenuListProperty' });
@@ -28,8 +26,7 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <ATypographyText tag="p"> 菜单设置 </ATypographyText>
-    <ATypographyText type="secondary" class="text-sm"> 拖动左侧的小圆点可以调整顺序 </ATypographyText>
+    <p class="text-base font-bold">菜单设置</p>
     <Form :model="formData" class="mt-2">
       <Draggable
         v-model="formData.list"
@@ -42,9 +39,8 @@ const formData = useVModel(props, 'modelValue', emit);
               height="80px"
               width="80px"
               :show-description="false"
-            >
-              <template #tip> 建议尺寸：44 * 44 </template>
-            </UploadImg>
+            />
+            <p class="text-sm text-gray-500">建议尺寸：44 * 44</p>
           </FormItem>
           <FormItem label="标题" name="title">
             <InputWithColor

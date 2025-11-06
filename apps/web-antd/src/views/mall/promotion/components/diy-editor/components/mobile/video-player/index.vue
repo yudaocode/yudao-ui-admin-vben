@@ -10,10 +10,14 @@ defineProps<{ property: VideoPlayerProperty }>();
 </script>
 <template>
   <div class="w-full" :style="{ height: `${property.style.height}px` }">
-    <Image class="w-full" :src="property.posterUrl" v-if="property.posterUrl" />
+    <Image
+      class="h-full w-full"
+      :src="property.posterUrl"
+      v-if="property.posterUrl"
+    />
     <video
       v-else
-      class="w-full"
+      class="h-full w-full"
       :src="property.videoUrl"
       :poster="property.posterUrl"
       :autoplay="property.autoplay"
@@ -21,12 +25,3 @@ defineProps<{ property: VideoPlayerProperty }>();
     ></video>
   </div>
 </template>
-
-<style scoped lang="scss">
-/* 图片 */
-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-</style>

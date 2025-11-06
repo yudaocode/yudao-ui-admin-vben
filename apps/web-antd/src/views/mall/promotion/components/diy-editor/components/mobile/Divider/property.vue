@@ -50,11 +50,7 @@ const formData = useVModel(props, 'modelValue', emit);
 <template>
   <Form :model="formData">
     <FormItem label="高度" name="height">
-      <Slider
-        v-model:value="formData.height"
-        :min="1"
-        :max="100"
-      />
+      <Slider v-model:value="formData.height" :min="1" :max="100" />
     </FormItem>
     <FormItem label="选择样式" name="borderType">
       <RadioGroup v-model:value="formData!.borderType">
@@ -65,29 +61,34 @@ const formData = useVModel(props, 'modelValue', emit);
           :title="item.text"
         >
           <RadioButton :value="item.type">
-            <IconifyIcon :icon="item.icon" />
+            <IconifyIcon
+              :icon="item.icon"
+              class="inset-0 size-6 items-center"
+            />
           </RadioButton>
         </Tooltip>
       </RadioGroup>
     </FormItem>
     <template v-if="formData.borderType !== 'none'">
       <FormItem label="线宽" name="lineWidth">
-        <Slider
-          v-model:value="formData.lineWidth"
-          :min="1"
-          :max="30"
-        />
+        <Slider v-model:value="formData.lineWidth" :min="1" :max="30" />
       </FormItem>
       <FormItem label="左右边距" name="paddingType">
         <RadioGroup v-model:value="formData!.paddingType">
           <Tooltip title="无边距" placement="top">
             <RadioButton value="none">
-              <IconifyIcon icon="tabler:box-padding" />
+              <IconifyIcon
+                icon="tabler:box-padding"
+                class="inset-0 size-6 items-center"
+              />
             </RadioButton>
           </Tooltip>
           <Tooltip title="左右留边" placement="top">
             <RadioButton value="horizontal">
-              <IconifyIcon icon="vaadin:padding" />
+              <IconifyIcon
+                icon="vaadin:padding"
+                class="inset-0 size-6 items-center"
+              />
             </RadioButton>
           </Tooltip>
         </RadioGroup>

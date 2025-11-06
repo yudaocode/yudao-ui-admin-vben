@@ -772,12 +772,12 @@ defineExpose({ loadTodoTask });
                 name="signPicUrl"
                 ref="approveSignFormRef"
               >
-                <Button @click="openSignatureModal" type="primary">
-                  {{ approveReasonForm.signPicUrl ? '重新签名' : '点击签名' }}
-                </Button>
-                <div class="mt-2">
+                <div class="flex items-center gap-2">
+                  <Button @click="openSignatureModal" type="primary">
+                    {{ approveReasonForm.signPicUrl ? '重新签名' : '点击签名' }}
+                  </Button>
                   <Image
-                    class="float-left h-40 w-80"
+                    class="!h-10 !w-40 object-contain"
                     v-if="approveReasonForm.signPicUrl"
                     :src="approveReasonForm.signPicUrl"
                   />

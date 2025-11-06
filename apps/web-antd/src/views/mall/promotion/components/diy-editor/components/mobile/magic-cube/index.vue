@@ -5,6 +5,8 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Image } from 'ant-design-vue';
+
 /** 广告魔方 */
 defineOptions({ name: 'MagicCube' });
 const props = defineProps<{ property: MagicCubeProperty }>();
@@ -78,5 +80,3 @@ const rowCount = computed(() => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

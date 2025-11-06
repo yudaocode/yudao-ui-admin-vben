@@ -15,7 +15,7 @@ import {
 } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
@@ -60,11 +60,11 @@ const deliveryExpressList = ref<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
 const expressTrackList = ref<any[]>([]);
 const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
 
-// TODO @xingyu：貌似 antd 相比 antd 来说，多了一个框？有啥办法只有 1 个么？
 const [OrderInfoDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
   column: 3,
+  class: 'mx-4',
   schema: useOrderInfoSchema(),
 });
 
@@ -72,6 +72,7 @@ const [OrderStatusDescriptions] = useDescription({
   title: '订单状态',
   bordered: false,
   column: 1,
+  class: 'mx-4',
   schema: useOrderStatusSchema(),
 });
 
@@ -79,6 +80,7 @@ const [OrderPriceDescriptions] = useDescription({
   title: '费用信息',
   bordered: false,
   column: 4,
+  class: 'mx-4',
   schema: useOrderPriceSchema(),
 });
 
@@ -86,6 +88,7 @@ const [DeliveryInfoDescriptions] = useDescription({
   title: '收货信息',
   bordered: false,
   column: 3,
+  class: 'mx-4',
   schema: useDeliveryInfoSchema(),
 });
 
@@ -295,13 +298,13 @@ onMounted(async () => {
     <PriceFormModal @success="getDetail" />
 
     <!-- 订单信息 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <OrderInfoDescriptions :data="order" />
-    </Card>
+    </div>
     <!-- 订单状态 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <OrderStatusDescriptions :data="order" />
-    </Card>
+    </div>
     <!-- 商品信息 -->
     <div class="mb-4">
       <ProductGrid table-title="商品信息">
@@ -322,15 +325,15 @@ onMounted(async () => {
       </ProductGrid>
     </div>
     <!-- 费用信息 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <OrderPriceDescriptions :data="order" />
-    </Card>
+    </div>
     <!-- 收货信息 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <DeliveryInfoDescriptions :data="order" />
-    </Card>
+    </div>
     <!-- 物流详情 -->
-    <div v-if="expressTrackList.length > 0" class="mt-4">
+    <div v-if="expressTrackList.length > 0" class="mb-4">
       <ExpressTrackGrid table-title="物流详情" />
     </div>
     <!-- 操作日志 -->

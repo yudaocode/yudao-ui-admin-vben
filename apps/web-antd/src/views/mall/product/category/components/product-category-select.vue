@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
+import { TreeSelect } from 'ant-design-vue';
+
 import { getCategoryList } from '#/api/mall/product/category';
 
 /** 商品分类选择组件 */

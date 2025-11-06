@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 import type { RuleConfig } from '#/views/mall/product/spu/form';
-import type { SpuProperty } from '#/views/mall/promotion/components/types';
+// TODO @puhui999：有问题
+// import type { SpuProperty } from '#/views/mall/promotion/components/types';
 
 import { computed, ref } from 'vue';
 
@@ -70,7 +71,9 @@ const ruleConfig: RuleConfig[] = [
 ]; // SKU 规则配置
 
 const spuList = ref<any[]>([]); // 选择的 SPU 列表
-const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
+// TODO @puhui999：有问题
+// const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
+const spuPropertyList = ref<any[]>([]); // SPU 属性列表
 
 /** 打开商品选择器 */
 // TODO @puhui999：spuSkuSelectRef.value.open is not a function
@@ -123,7 +126,9 @@ async function getSpuDetails(
   });
   res.skus = selectSkus;
 
-  const spuProperties: SpuProperty[] = [];
+  // TODO @puhui999：有问题
+  // const spuProperties: SpuProperty[] = [];
+  const spuProperties: any[] = [];
   spuProperties.push({
     spuId: res.id!,
     spuDetail: res,

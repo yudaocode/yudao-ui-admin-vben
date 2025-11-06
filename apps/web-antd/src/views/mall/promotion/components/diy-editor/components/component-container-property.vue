@@ -3,11 +3,13 @@ import type { ComponentStyle } from '../util';
 
 import { useVModel } from '@vueuse/core';
 import {
-  Card,
+  Col,
   Form,
   FormItem,
+  InputNumber,
   Radio,
   RadioGroup,
+  Row,
   Slider,
   TabPane,
   Tabs,
@@ -27,7 +29,7 @@ const props = defineProps<{ modelValue: ComponentStyle }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 
-const treeData = [
+const treeData: any[] = [
   {
     label: '外部边距',
     prop: 'margin',
@@ -96,7 +98,7 @@ const treeData = [
   },
 ];
 
-const handleSliderChange = (prop: string) => {
+function handleSliderChange(prop: string) {
   switch (prop) {
     case 'borderRadius': {
       formData.value.borderTopLeftRadius = formData.value.borderRadius;
@@ -120,7 +122,7 @@ const handleSliderChange = (prop: string) => {
       break;
     }
   }
-};
+}
 </script>
 
 <template>
@@ -132,7 +134,8 @@ const handleSliderChange = (prop: string) => {
 
     <!-- 每个组件的通用内容 -->
     <TabPane tab="样式" key="style" force-render>
-      <Card title="组件样式" class="property-group">
+      <p class="text-lg font-bold">组件样式：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Form :model="formData">
           <FormItem label="组件背景" name="bgType">
             <RadioGroup v-model:value="formData.bgType">
@@ -156,29 +159,44 @@ const handleSliderChange = (prop: string) => {
               <template #tip>建议宽度 750px</template>
             </UploadImg>
           </FormItem>
-          <Tree :tree-data="treeData" default-expand-all>
+          <Tree :tree-data="treeData" default-expand-all :block-node="true">
             <template #title="{ dataRef }">
               <FormItem
                 :label="dataRef.label"
                 :name="dataRef.prop"
-                :label-col="dataRef.children ? { span: 6 } : { span: 5, offset: 1 }"
+                :label-col="
+                  dataRef.children ? { span: 6 } : { span: 5, offset: 1 }
+                "
                 :wrapper-col="dataRef.children ? { span: 18 } : { span: 18 }"
                 class="mb-0 w-full"
               >
-                <Slider
-                  v-model:value="
-                    formData[dataRef.prop as keyof ComponentStyle] as number
-                  "
-                  :max="100"
-                  :min="0"
-                  @change="handleSliderChange(dataRef.prop)"
-                />
+                <Row>
+                  <Col :span="12">
+                    <Slider
+                      v-model:value="
+                        formData[dataRef.prop as keyof ComponentStyle]
+                      "
+                      :max="100"
+                      :min="0"
+                      @change="handleSliderChange(dataRef.prop)"
+                    />
+                  </Col>
+                  <Col :span="4">
+                    <InputNumber
+                      :max="100"
+                      :min="0"
+                      v-model:value="
+                        formData[dataRef.prop as keyof ComponentStyle]
+                      "
+                    />
+                  </Col>
+                </Row>
               </FormItem>
             </template>
           </Tree>
           <slot name="style" :style="formData"></slot>
         </Form>
-      </Card>
+      </div>
     </TabPane>
   </Tabs>
 </template>

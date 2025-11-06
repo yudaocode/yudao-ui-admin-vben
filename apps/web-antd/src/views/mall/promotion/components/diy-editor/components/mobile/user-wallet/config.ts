@@ -9,7 +9,7 @@ export interface UserWalletProperty {
 export const component = {
   id: 'UserWallet',
   name: '用户资产',
-  icon: 'ep:wallet-filled',
+  icon: 'lucide:wallet',
   property: {
     style: {
       bgType: 'color',

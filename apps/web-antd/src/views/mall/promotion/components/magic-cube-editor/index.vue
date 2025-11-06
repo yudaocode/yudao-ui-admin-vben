@@ -198,103 +198,54 @@ function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
 }
 </script>
 <template>
-  <div class="relative">
-    <table class="cube-table">
-      <!-- 底层：魔方矩阵 -->
-      <tbody>
-        <tr v-for="(rowCubes, row) in cubes" :key="row">
-          <td
-            v-for="(cube, col) in rowCubes"
-            :key="col"
-            class="cube"
-            :class="[{ active: cube.active }]"
-            :style="{
-              width: `${cubeSize}px`,
-              height: `${cubeSize}px`,
-            }"
-            @click="handleCubeClick(row, col)"
-            @mouseenter="handleCellHover(row, col)"
-          >
-            <IconifyIcon icon="ep-plus" />
-          </td>
-        </tr>
-      </tbody>
-      <!-- 顶层：热区 -->
-      <div
-        v-for="(hotArea, index) in hotAreas"
-        :key="index"
-        class="hot-area"
-        :style="{
-          top: `${cubeSize * hotArea.top}px`,
-          left: `${cubeSize * hotArea.left}px`,
-          height: `${cubeSize * hotArea.height}px`,
-          width: `${cubeSize * hotArea.width}px`,
-        }"
-        @click="handleHotAreaSelected(hotArea, index)"
-        @mouseover="exitHotAreaSelectMode"
-      >
-        <!-- 右上角热区删除按钮 -->
-        <div
-          v-if="
-            selectedHotAreaIndex === index && hotArea.width && hotArea.height
-          "
-          class="btn-delete"
-          @click="handleDeleteHotArea(index)"
+  <table class="relative border-collapse border-spacing-0">
+    <!-- 底层：魔方矩阵 -->
+    <tbody>
+      <tr v-for="(rowCubes, row) in cubes" :key="row">
+        <td
+          v-for="(cube, col) in rowCubes"
+          :key="col"
+          class="active:bg-primary-200 hover:bg-primary-100 box-border cursor-pointer border text-center align-middle"
+          :class="[{ active: cube.active }]"
+          :style="{
+            width: `${cubeSize}px`,
+            height: `${cubeSize}px`,
+          }"
+          @click="handleCubeClick(row, col)"
+          @mouseenter="handleCellHover(row, col)"
         >
-          <IconifyIcon icon="ep:circle-close-filled" />
-        </div>
-        <span v-if="hotArea.width">{{
-          `${hotArea.width}×${hotArea.height}`
-        }}</span>
+          <IconifyIcon icon="lucide:plus" class="inline-block size-6" />
+        </td>
+      </tr>
+    </tbody>
+    <!-- 顶层：热区 -->
+    <div
+      v-for="(hotArea, index) in hotAreas"
+      :key="index"
+      class="bg-primary-200 border-primary absolute box-border flex items-center justify-center border"
+      :style="{
+        top: `${cubeSize * hotArea.top}px`,
+        left: `${cubeSize * hotArea.left}px`,
+        height: `${cubeSize * hotArea.height}px`,
+        width: `${cubeSize * hotArea.width}px`,
+      }"
+      @click="handleHotAreaSelected(hotArea, index)"
+      @mouseover="exitHotAreaSelectMode"
+    >
+      <!-- 右上角热区删除按钮 -->
+      <div
+        v-if="selectedHotAreaIndex === index && hotArea.width && hotArea.height"
+        class="bg-card absolute -right-2 -top-2 z-[1] size-6 h-4 w-4 items-center rounded-lg"
+        @click="handleDeleteHotArea(index)"
+      >
+        <IconifyIcon
+          icon="lucide:x"
+          class="bg-primary inset-0 items-center text-white"
+        />
       </div>
-    </table>
-  </div>
+      <span v-if="hotArea.width">
+        {{ `${hotArea.width}×${hotArea.height}` }}
+      </span>
+    </div>
+  </table>
 </template>
-<style lang="scss" scoped>
-.cube-table {
-  position: relative;
-  border-spacing: 0;
-  border-collapse: collapse;
-
-  .cube {
-    box-sizing: border-box;
-    color: var(--ant-color-text-secondary);
-    text-align: center;
-    line-height: 1;
-    cursor: pointer;
-    border: 1px solid var(--ant-color-border);
-
-    &.active {
-      background: color-mix(in srgb, var(--ant-color-primary) 10%, transparent);
-    }
-  }
-
-  .hot-area {
-    position: absolute;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ant-color-primary);
-    cursor: pointer;
-    border-spacing: 0;
-    border-collapse: collapse;
-    background: color-mix(in srgb, var(--ant-color-primary) 20%, transparent);
-    border: 1px solid var(--ant-color-primary);
-
-    .btn-delete {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      background-color: var(--ant-color-bg-container);
-      border-radius: 50%;
-    }
-  }
-}
-</style>

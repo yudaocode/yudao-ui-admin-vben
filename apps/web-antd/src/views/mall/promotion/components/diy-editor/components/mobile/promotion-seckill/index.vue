@@ -95,11 +95,11 @@ const calculateWidth = () => {
 </script>
 <template>
   <div
-    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
+    class="box-content flex min-h-9 w-full flex-row flex-wrap"
     ref="containerRef"
   >
     <div
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),
@@ -116,19 +116,15 @@ const calculateWidth = () => {
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image
-          fit="cover"
-          :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
-        />
+        <Image fit="cover" :src="property.badge.imgUrl" class="h-6 w-8" />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-[140px]"
+        class="h-36"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[140px]': property.layoutType === 'oneColSmallImg',
+            'w-36': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
@@ -139,7 +135,7 @@ const calculateWidth = () => {
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[calc(100%-140px-16px)]':
+            'w-[calc(100vw-140px-16px)]':
               property.layoutType === 'oneColSmallImg',
           },
         ]"
@@ -179,7 +175,7 @@ const calculateWidth = () => {
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
-            class="ml-1 text-[10px] line-through"
+            class="ml-1 text-xs line-through"
             :style="{ color: property.fields.marketPrice.color }"
           >
             ￥{{ fenToYuan(spu.marketPrice) }}
@@ -217,7 +213,7 @@ const calculateWidth = () => {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="h-7 w-7 rounded-full"
+          class="size-7 rounded-full"
           fit="cover"
           :src="property.btnBuy.imgUrl"
         />
@@ -225,5 +221,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

@@ -2,13 +2,7 @@
 import type { PopoverProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Form,
-  FormItem,
-  Radio,
-  RadioGroup,
-  Tooltip,
-} from 'ant-design-vue';
+import { Form, FormItem, Radio, RadioGroup, Tooltip } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
@@ -40,10 +34,7 @@ const formData = useVModel(props, 'modelValue', emit);
         </FormItem>
         <FormItem label="显示次数" :name="`list[${index}].showType`">
           <RadioGroup v-model:value="element.showType">
-            <Tooltip
-              title="只显示一次，下次打开时不显示"
-              placement="bottom"
-            >
+            <Tooltip title="只显示一次，下次打开时不显示" placement="bottom">
               <Radio value="once">一次</Radio>
             </Tooltip>
             <Tooltip title="每次打开时都会显示" placement="bottom">

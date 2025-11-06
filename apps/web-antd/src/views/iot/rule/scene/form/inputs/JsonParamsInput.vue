@@ -197,27 +197,6 @@ const emptyMessage = computed(() => {
   }
 });
 
-// 计算属性：无配置消息
-const noConfigMessage = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.CUSTOM: {
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.CUSTOM;
-    }
-    case JsonParamsInputTypeEnum.EVENT: {
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.EVENT;
-    }
-    case JsonParamsInputTypeEnum.PROPERTY: {
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.PROPERTY;
-    }
-    case JsonParamsInputTypeEnum.SERVICE: {
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.SERVICE;
-    }
-    default: {
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.DEFAULT;
-    }
-  }
-});
-
 /**
  * 处理参数变化事件
  */
@@ -415,7 +394,7 @@ watch(
 
 <template>
   <!-- 参数配置 -->
-  <div class="space-y-12px w-full">
+  <div class="w-full space-y-3">
     <!-- JSON 输入框 -->
     <div class="relative">
       <Input.TextArea
@@ -427,7 +406,7 @@ watch(
         :class="{ 'is-error': jsonError }"
       />
       <!-- 查看详细示例弹出层 -->
-      <div class="top-8px right-8px absolute">
+      <div class="absolute right-2 top-2">
         <Popover
           placement="leftTop"
           :width="450"
@@ -450,79 +429,64 @@ watch(
 
           <!-- 弹出层内容 -->
           <div class="json-params-detail-content">
-            <div class="gap-8px mb-16px flex items-center">
-              <IconifyIcon
-                :icon="titleIcon"
-                class="text-18px text-[var(--el-color-primary)]"
-              />
-              <span
-                class="text-16px font-600 text-[var(--el-text-color-primary)]"
-              >
+            <div class="mb-4 flex items-center gap-2">
+              <IconifyIcon :icon="titleIcon" class="text-primary text-lg" />
+              <span class="text-primary text-base font-bold">
                 {{ title }}
               </span>
             </div>
 
-            <div class="space-y-16px">
+            <div class="space-y-4">
               <!-- 参数列表 -->
               <div v-if="paramsList.length > 0">
-                <div class="gap-8px mb-8px flex items-center">
+                <div class="mb-2 flex items-center gap-2">
                   <IconifyIcon
                     :icon="paramsIcon"
-                    class="text-14px text-[var(--el-color-primary)]"
+                    class="text-primary text-base"
                   />
-                  <span
-                    class="text-14px font-500 text-[var(--el-text-color-primary)]"
-                  >
+                  <span class="text-primary text-base font-bold">
                     {{ paramsLabel }}
                   </span>
                 </div>
-                <div class="ml-22px space-y-8px">
+                <div class="ml-6 space-y-2">
                   <div
                     v-for="param in paramsList"
                     :key="param.identifier"
-                    class="p-8px rounded-4px flex items-center justify-between bg-[var(--el-fill-color-lighter)]"
+                    class="bg-card flex items-center justify-between rounded-lg p-2"
                   >
                     <div class="flex-1">
-                      <div
-                        class="text-12px font-500 text-[var(--el-text-color-primary)]"
-                      >
+                      <div class="text-primary text-base font-bold">
                         {{ param.name }}
                         <Tag
                           v-if="param.required"
                           size="small"
                           type="danger"
-                          class="ml-4px"
+                          class="ml-1"
                         >
                           {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
                         </Tag>
                       </div>
-                      <div
-                        class="text-11px text-[var(--el-text-color-secondary)]"
-                      >
+                      <div class="text-secondary text-xs">
                         {{ param.identifier }}
                       </div>
                     </div>
-                    <div class="gap-8px flex items-center">
+                    <div class="flex items-center gap-2">
                       <Tag :type="getParamTypeTag(param.dataType)" size="small">
                         {{ getParamTypeName(param.dataType) }}
                       </Tag>
-                      <span
-                        class="text-11px text-[var(--el-text-color-secondary)]"
-                      >
+                      <span class="text-secondary text-xs">
                         {{ getExampleValue(param) }}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div class="mt-12px ml-22px">
-                  <div
-                    class="text-12px mb-6px text-[var(--el-text-color-secondary)]"
-                  >
+                <div class="ml-6 mt-3">
+                  <div class="text-secondary mb-1 text-xs">
                     {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                   </div>
                   <pre
-                    class="p-12px rounded-4px text-11px border-l-3px overflow-x-auto border-[var(--el-color-primary)] bg-[var(--el-fill-color-light)] text-[var(--el-text-color-primary)]"
+                    class="bg-card border-l-3px border-primary text-primary overflow-x-auto rounded-lg p-3 text-sm"
                   >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>
@@ -531,8 +495,8 @@ watch(
 
               <!-- 无参数提示 -->
               <div v-else>
-                <div class="py-16px text-center">
-                  <p class="text-14px text-[var(--el-text-color-secondary)]">
+                <div class="py-4 text-center">
+                  <p class="text-secondary text-sm">
                     {{ emptyMessage }}
                   </p>
                 </div>
@@ -545,37 +509,29 @@ watch(
 
     <!-- 验证状态和错误提示 -->
     <div class="flex items-center justify-between">
-      <div class="gap-8px flex items-center">
+      <div class="flex items-center gap-2">
         <IconifyIcon
           :icon="
             jsonError
               ? JSON_PARAMS_INPUT_ICONS.STATUS_ICONS.ERROR
               : JSON_PARAMS_INPUT_ICONS.STATUS_ICONS.SUCCESS
           "
-          :class="
-            jsonError
-              ? 'text-[var(--el-color-danger)]'
-              : 'text-[var(--el-color-success)]'
-          "
-          class="text-14px"
+          :class="jsonError ? 'text-danger' : 'text-success'"
+          class="text-sm"
         />
         <span
-          :class="
-            jsonError
-              ? 'text-[var(--el-color-danger)]'
-              : 'text-[var(--el-color-success)]'
-          "
-          class="text-12px"
+          :class="jsonError ? 'text-danger' : 'text-success'"
+          class="text-xs"
         >
           {{ jsonError || JSON_PARAMS_INPUT_CONSTANTS.JSON_FORMAT_CORRECT }}
         </span>
       </div>
 
       <!-- 快速填充按钮 -->
-      <div v-if="paramsList.length > 0" class="gap-8px flex items-center">
-        <span class="text-12px text-[var(--el-text-color-secondary)]">{{
-          JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL
-        }}</span>
+      <div v-if="paramsList.length > 0" class="flex items-center gap-2">
+        <span class="text-secondary text-xs">
+          {{ JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL }}
+        </span>
         <Button size="small" type="primary" plain @click="fillExampleJson">
           {{ JSON_PARAMS_INPUT_CONSTANTS.EXAMPLE_DATA_BUTTON }}
         </Button>

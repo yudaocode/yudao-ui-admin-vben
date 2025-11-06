@@ -109,11 +109,11 @@ function getApprovalNodeIcon(taskStatus: number, nodeType: BpmNodeTypeEnum) {
   }
   if (
     [
-      BpmNodeTypeEnum.START_USER_NODE,
-      BpmNodeTypeEnum.USER_TASK_NODE,
-      BpmNodeTypeEnum.TRANSACTOR_NODE,
       BpmNodeTypeEnum.CHILD_PROCESS_NODE,
       BpmNodeTypeEnum.END_EVENT_NODE,
+      BpmNodeTypeEnum.START_USER_NODE,
+      BpmNodeTypeEnum.TRANSACTOR_NODE,
+      BpmNodeTypeEnum.USER_TASK_NODE,
     ].includes(nodeType)
   ) {
     return statusIconMap[taskStatus]?.icon || 'mdi:clock-outline';

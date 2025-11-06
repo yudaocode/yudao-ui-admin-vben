@@ -6,8 +6,6 @@ import { DocAlert, Page } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import { $t } from '#/locales';
-
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskDonePage, withdrawTask } from '#/api/bpm/task';
 import { router } from '#/router';

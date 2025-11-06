@@ -3,6 +3,8 @@ import type { MenuSwiperItemProperty, MenuSwiperProperty } from './config';
 
 import { ref, watch } from 'vue';
 
+import { Image } from 'ant-design-vue';
+
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });
 const props = defineProps<{ property: MenuSwiperProperty }>();
@@ -122,14 +124,14 @@ watch(
     button {
       width: 6px;
       height: 6px;
-      background: #ff6000;
+      background: hsl(var(--red));
       border-radius: 6px;
     }
   }
 
   .ant-carousel-dot-active button {
     width: 12px;
-    background: #ff6000;
+    background: hsl(var(--red));
   }
 }
 </style>

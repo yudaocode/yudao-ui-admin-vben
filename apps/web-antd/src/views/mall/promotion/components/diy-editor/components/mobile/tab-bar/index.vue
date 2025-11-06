@@ -31,7 +31,7 @@ defineProps<{ property: TabBarProperty }>();
         <Image :src="index === 0 ? item.activeIconUrl : item.iconUrl">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" />
+              <IconifyIcon icon="lucide:image" />
             </div>
           </template>
         </Image>

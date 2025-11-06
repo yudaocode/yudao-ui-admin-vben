@@ -44,17 +44,26 @@ const formData = useVModel(props, 'modelValue', emit);
           <RadioGroup v-model:value="formData.layoutType">
             <Tooltip title="单列大图" placement="bottom">
               <RadioButton value="oneColBigImg">
-                <IconifyIcon icon="fluent:text-column-one-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-one-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="单列小图" placement="bottom">
               <RadioButton value="oneColSmallImg">
-                <IconifyIcon icon="fluent:text-column-two-left-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-two-left-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="双列" placement="bottom">
               <RadioButton value="twoCol">
-                <IconifyIcon icon="fluent:text-column-two-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-two-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
@@ -158,11 +167,7 @@ const formData = useVModel(props, 'modelValue', emit);
           />
         </FormItem>
         <FormItem label="间隔" name="space">
-          <Slider
-            v-model:value="formData.space"
-            :max="100"
-            :min="0"
-          />
+          <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>
     </Form>

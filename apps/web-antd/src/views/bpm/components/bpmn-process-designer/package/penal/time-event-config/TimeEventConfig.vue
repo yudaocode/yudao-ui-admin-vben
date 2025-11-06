@@ -246,7 +246,7 @@ watch(
       <Input
         v-model:value="condition"
         :placeholder="placeholder"
-        style="width: calc(100% - 100px)"
+        class="w-[calc(100vw-25%)]"
         :readonly="type !== 'duration' && type !== 'cycle'"
         @focus="handleInputFocus"
         @blur="updateNode"
