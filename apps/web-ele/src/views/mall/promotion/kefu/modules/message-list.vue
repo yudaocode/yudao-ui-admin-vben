@@ -351,9 +351,13 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                   <ElImage
                     v-if="KeFuMessageContentTypeEnum.IMAGE === item.contentType"
                     :initial-index="0"
+                    :preview-src-list="[
+                      getMessageContent(item).picUrl || item.content,
+                    ]"
                     :src="getMessageContent(item).picUrl || item.content"
                     class="mx-2 !w-52"
-                    fit="cover"
+                    fit="contain"
+                    preview-teleported
                   />
                 </MessageItem>
                 <!-- 商品消息 -->
