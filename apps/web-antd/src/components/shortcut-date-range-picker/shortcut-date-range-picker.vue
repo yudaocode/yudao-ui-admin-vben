@@ -81,7 +81,7 @@ onMounted(() => {
       :value-format="rangePickerProps.valueFormat"
       :placeholder="rangePickerProps.placeholder"
       :presets="rangePickerProps.presets"
-      class="!w-[235px]"
+      class="!w-full !max-w-96"
       @change="handleDateRangeChange"
     />
     <slot></slot>
