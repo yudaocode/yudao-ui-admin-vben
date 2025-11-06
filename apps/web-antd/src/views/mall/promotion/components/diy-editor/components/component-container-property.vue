@@ -174,7 +174,7 @@ function handleSliderChange(prop: string) {
                   <Col :span="12">
                     <Slider
                       v-model:value="
-                        formData[dataRef.prop as keyof ComponentStyle] as number
+                        formData[dataRef.prop as keyof ComponentStyle]
                       "
                       :max="100"
                       :min="0"

@@ -169,9 +169,7 @@ const handleSliderChange = (prop: string) => {
                 class="mb-0 w-full"
               >
                 <ElSlider
-                  v-model="
-                    formData[data.prop as keyof ComponentStyle] as number
-                  "
+                  v-model="formData[data.prop]"
                   :max="100"
                   :min="0"
                   show-input
