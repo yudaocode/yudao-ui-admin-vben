@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
         <!-- 会话详情（选中会话的消息列表） -->
         <MessageList class="w-4/6" ref="messageListRef" />
         <!-- 会员信息（选中会话的会员信息） -->
-        <MemberInfo class="w-1/6" ref="memberInfoRef" />
+        <MemberInfo class="w-[280px]" ref="memberInfoRef" />
       </div>
     </div>
   </Page>

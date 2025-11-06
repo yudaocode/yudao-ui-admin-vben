@@ -402,7 +402,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
         <IconifyIcon class="ml-1" icon="lucide:arrow-down-from-line" />
       </div>
       <div class="flex flex-col">
-        <div class="border-border -mt-3 flex flex-col rounded-xl border">
+        <div class="-mt-2 flex flex-col rounded-xl border">
           <div class="flex h-10 w-full items-center">
             <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
             <PictureSelectUpload
@@ -417,6 +417,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
             class="border-none p-2"
             placeholder="输入消息，Enter发送，Shift+Enter换行"
             @keyup.enter="handleSendMessage"
+            :input-style="{ boxShadow: 'none' }"
           />
         </div>
       </div>

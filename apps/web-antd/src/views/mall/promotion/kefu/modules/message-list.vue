@@ -396,7 +396,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
         <IconifyIcon class="ml-1" icon="lucide:arrow-down-from-line" />
       </div>
       <div class="flex flex-col">
-        <div class="border-border -mt-3 flex flex-col rounded-xl border">
+        <div class="-mt-2 flex flex-col rounded-xl border">
           <div class="flex h-10 w-full items-center">
             <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
             <PictureSelectUpload

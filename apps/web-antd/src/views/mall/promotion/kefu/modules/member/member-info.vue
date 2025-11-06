@@ -102,7 +102,6 @@ watch(
 );
 
 /** 查询用户钱包信息 */
-// TODO @jawe：idea 的导入报错；需要看下；
 const WALLET_INIT_DATA = {
   balance: 0,
   totalExpense: 0,

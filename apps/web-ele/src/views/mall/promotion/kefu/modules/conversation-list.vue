@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
           <div
             class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200"
           >
-            <ElAvatar :src="item.userAvatar" alt="avatar" class="size-8" />
+            <ElAvatar :src="item.userAvatar" alt="avatar" :size="30" />
           </div>
           <div class="ml-2 text-sm font-semibold">
             {{ item.userNickname || 'null' }}

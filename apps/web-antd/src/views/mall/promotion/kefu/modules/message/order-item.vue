@@ -26,12 +26,7 @@ function openDetail(id: number) {
   push({ name: 'TradeOrderDetail', params: { id } });
 }
 
-/**
- * 格式化订单状态的颜色
- *
- * @param order 订单
- * @return {string} 颜色的 class 名称
- */
+/** 格式化订单状态的颜色 */
 function formatOrderColor(order: any) {
   if (order.status === 0) {
     return 'text-gray-500';
@@ -49,11 +44,7 @@ function formatOrderColor(order: any) {
   return 'text-red-500';
 }
 
-/**
- * 格式化订单状态
- *
- * @param order 订单
- */
+/** 格式化订单状态 */
 function formatOrderStatus(order: any) {
   if (order.status === 0) {
     return '待付款';
