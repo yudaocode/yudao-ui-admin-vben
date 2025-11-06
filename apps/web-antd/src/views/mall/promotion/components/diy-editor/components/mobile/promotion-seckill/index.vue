@@ -95,11 +95,11 @@ const calculateWidth = () => {
 </script>
 <template>
   <div
-    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
+    class="box-content flex min-h-9 w-full flex-row flex-wrap"
     ref="containerRef"
   >
     <div
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),
@@ -175,7 +175,7 @@ const calculateWidth = () => {
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
-            class="ml-1 text-[10px] line-through"
+            class="ml-1 text-xs line-through"
             :style="{ color: property.fields.marketPrice.color }"
           >
             ￥{{ fenToYuan(spu.marketPrice) }}
@@ -213,7 +213,7 @@ const calculateWidth = () => {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="h-7 w-7 rounded-full"
+          class="size-7 rounded-full"
           fit="cover"
           :src="property.btnBuy.imgUrl"
         />
@@ -221,5 +221,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>
