@@ -31,22 +31,17 @@ function handleSelect(item: Emoji) {
           <li
             v-for="(item, index) in emojiList"
             :key="index"
-            :style="{
-              borderColor: 'hsl(var(--primary))',
-              color: 'hsl(var(--primary))',
-            }"
             :title="item.name"
-            class="icon-item w-1/10 mr-2 mt-1 flex cursor-pointer items-center justify-center border border-solid p-2"
+            class="w-1/10 border-primary m-2 flex cursor-pointer items-center justify-center border border-solid p-2"
             @click="handleSelect(item)"
           >
-            <img :src="item.url" class="h-6 w-6" />
+            <img :src="item.url" class="size-4" />
           </li>
         </ul>
       </List>
     </template>
     <IconifyIcon
-      :size="30"
-      class="ml-2.5 cursor-pointer"
+      class="ml-2.5 size-6 cursor-pointer"
       icon="twemoji:grinning-face"
     />
   </Popover>

@@ -319,16 +319,16 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
               v-if="item.senderType === UserTypeEnum.MEMBER"
               :src="conversation.userAvatar"
               alt="avatar"
-              class="h-14 w-14"
+              class="size-8"
             />
             <div
               :class="{
-                'w-auto max-w-[50%] px-2 py-1 font-medium text-gray-500 transition-all duration-200 hover:scale-105':
+                'w-auto max-w-[50%] p-1 font-medium text-gray-500 transition-all duration-200 hover:scale-105':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType,
-                'rounded-bl-2 rounded-br-2 rounded-tr-2 ml-2 mt-1 bg-white':
+                'm-1 break-words rounded-lg bg-gray-100':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType &&
                   item.senderType === UserTypeEnum.MEMBER,
-                'rounded-bl-2 rounded-br-2 rounded-tl-2 mr-2 mt-1 bg-blue-50':
+                'm-1 break-words rounded-lg bg-blue-50':
                   KeFuMessageContentTypeEnum.TEXT === item.contentType &&
                   item.senderType === UserTypeEnum.ADMIN,
               }"
@@ -342,7 +342,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
                     v-dompurify-html="
                       replaceEmoji(getMessageContent(item).text || item.content)
                     "
-                    class="line-height-normal h-1/1 w-full text-justify"
+                    class="h-full w-full text-justify"
                   ></div>
                 </template>
               </MessageItem>
@@ -400,26 +400,26 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
         <IconifyIcon class="ml-1" icon="lucide:arrow-down-from-line" />
       </div>
     </Layout.Content>
-    <Layout.Footer
-      class="!bg-card m-0 flex flex-col border-t-2 border-gray-200 p-0"
-    >
-      <div class="flex h-11 w-full items-center">
-        <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
-        <PictureSelectUpload
-          class="ml-4 mt-1 cursor-pointer"
-          @send-picture="handleSendPicture"
+    <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
+      <div class="border-border flex flex-col rounded-xl border p-2">
+        <div class="flex h-11 w-full items-center">
+          <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
+          <PictureSelectUpload
+            class="ml-4 mt-1 cursor-pointer"
+            @send-picture="handleSendPicture"
+          />
+        </div>
+        <Textarea
+          v-model:value="message"
+          :rows="6"
+          class="border-none"
+          placeholder="输入消息，Enter发送，Shift+Enter换行"
+          @press-enter="handleSendMessage"
         />
       </div>
-      <Textarea
-        v-model:value="message"
-        :rows="6"
-        class="border-none"
-        placeholder="输入消息，Enter发送，Shift+Enter换行"
-        @press-enter="handleSendMessage"
-      />
     </Layout.Footer>
   </Layout>
-  <Layout v-else class="bg-card relative w-[calc(100%-300px-260px)]">
+  <Layout v-else class="bg-card relative w-[calc(100vw-300px-260px)]">
     <Layout.Content>
       <Empty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
     </Layout.Content>

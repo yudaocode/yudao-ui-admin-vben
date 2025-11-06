@@ -12,7 +12,7 @@ import { isEmpty } from '@vben/utils';
 
 import { vScroll } from '@vueuse/components';
 import { useDebounceFn } from '@vueuse/core';
-import { Card, Empty, Layout, message } from 'ant-design-vue';
+import { Empty, Layout, message } from 'ant-design-vue';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
@@ -190,21 +190,17 @@ async function getUserData() {
             </template>
           </BasicInfo>
           <!-- 账户信息 -->
-          <Card
-            class="mt-2 h-full"
-            :body-style="{ padding: '16px' }"
-            shadow="never"
+          <AccountInfo
+            :column="1"
+            :user="user"
+            :wallet="wallet"
+            mode="kefu"
+            class="mt-2"
           >
             <template #title>
               <span class="text-sm font-bold">账户信息</span>
             </template>
-            <AccountInfo
-              :column="1"
-              :user="user"
-              :wallet="wallet"
-              mode="kefu"
-            />
-          </Card>
+          </AccountInfo>
         </div>
         <div
           v-show="activeTab !== '会员信息'"

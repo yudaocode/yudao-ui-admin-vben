@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Page auto-content-height>
-    <Layout.Content class="absolute left-0 top-0 flex h-full w-full flex-1">
+    <Layout.Content class="absolute left-0 top-0 m-4 flex h-full w-full flex-1">
       <!-- 会话列表 -->
       <ConversationList ref="conversationListRef" @change="handleChange" />
       <!-- 会话详情（选中会话的消息列表） -->

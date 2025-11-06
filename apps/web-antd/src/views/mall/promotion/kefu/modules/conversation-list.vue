@@ -158,8 +158,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Layout.Sider class="bg-card h-full border-b-2 p-2" width="260px">
-    <div class="m-4 border-b border-gray-200 pb-4 font-bold">
+  <Layout.Sider
+    class="bg-card relative flex h-full flex-col justify-between overflow-hidden p-4"
+    width="260px"
+  >
+    <div class="m-4 border-b border-gray-200 pb-2 font-bold">
       会话记录({{ kefuStore.getConversationList.length }})
     </div>
     <div
@@ -175,11 +178,7 @@ onBeforeUnmount(() => {
       <div class="flex w-full items-center justify-center">
         <div class="flex h-12 w-12 items-center justify-center">
           <!-- 头像 + 未读 -->
-          <Badge
-            :hidden="item.adminUnreadMessageCount === 0"
-            :max="99"
-            :value="item.adminUnreadMessageCount"
-          >
+          <Badge :max="99" :value="item.adminUnreadMessageCount">
             <Avatar :src="item.userAvatar" alt="avatar" />
           </Badge>
         </div>
@@ -210,7 +209,7 @@ onBeforeUnmount(() => {
     <ul
       v-show="showRightMenu"
       :style="rightMenuStyle"
-      class="absolute z-[1999] m-0 w-[130px] list-none rounded-xl bg-[hsl(var(--background))] p-1 shadow-md"
+      class="bg-background absolute z-[9999] m-0 w-32 list-none rounded-xl p-1 shadow-md"
     >
       <li
         v-show="!rightClickConversation.adminPinned"
