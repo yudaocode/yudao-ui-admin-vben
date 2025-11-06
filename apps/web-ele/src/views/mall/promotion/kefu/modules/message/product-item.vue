@@ -42,11 +42,11 @@ function openDetail(spuId: number) {
 
 <template>
   <div
-    class="mb-[10px] flex w-full cursor-pointer items-center rounded-lg bg-gray-500/30 p-[10px]"
+    class="mb-2.5 flex w-full cursor-pointer items-center rounded-lg bg-gray-500/30 p-2.5"
     @click.stop="openDetail(spuId)"
   >
     <!-- 左侧商品图片-->
-    <div class="mr-6 w-[70px]">
+    <div class="mr-2 w-16">
       <ElImage
         :initial-index="0"
         :preview-src-list="[picUrl]"
@@ -65,8 +65,8 @@ function openDetail(spuId: number) {
         <span>销量: {{ salesCount || 0 }}</span>
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-[#ff3000]">￥{{ fenToYuan(price) }}</span>
-        <ElButton size="small" text type="primary">详情</ElButton>
+        <span class="text-red-500">￥{{ fenToYuan(price) }}</span>
+        <ElButton size="small" type="text">详情</ElButton>
       </div>
     </div>
   </div>

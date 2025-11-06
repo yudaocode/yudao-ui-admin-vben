@@ -7,7 +7,7 @@ import { Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
-import { ElContainer, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import { useMallKefuStore } from '#/store/mall/kefu';
 
@@ -104,13 +104,19 @@ onBeforeUnmount(() => {
 
 <template>
   <Page auto-content-height>
-    <ElContainer class="absolute left-0 top-0 flex h-full w-full flex-1">
-      <!-- 会话列表 -->
-      <ConversationList ref="conversationListRef" @change="handleChange" />
-      <!-- 会话详情（选中会话的消息列表） -->
-      <MessageList ref="messageListRef" />
-      <!-- 会员信息（选中会话的会员信息） -->
-      <MemberInfo ref="memberInfoRef" />
-    </ElContainer>
+    <div class="flex h-full antialiased">
+      <div class="flex h-full w-full flex-row overflow-x-hidden">
+        <!-- 会话列表 -->
+        <ConversationList
+          class="w-1/6"
+          ref="conversationListRef"
+          @change="handleChange"
+        />
+        <!-- 会话详情（选中会话的消息列表） -->
+        <MessageList class="w-4/6" ref="messageListRef" />
+        <!-- 会员信息（选中会话的会员信息） -->
+        <MemberInfo class="w-1/6" ref="memberInfoRef" />
+      </div>
+    </div>
   </Page>
 </template>

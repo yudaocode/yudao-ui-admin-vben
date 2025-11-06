@@ -7,7 +7,7 @@ import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
-import { ElAside, ElAvatar, ElBadge, ElMessage } from 'element-plus';
+import { ElAvatar, ElMessage } from 'element-plus';
 
 import {
   deleteConversation,
@@ -158,39 +158,36 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ElAside class="!bg-card pt-[5px]" width="260px">
-    <div class="my-[10px] font-bold text-[#999]">
-      会话记录({{ kefuStore.getConversationList.length }})
+  <div
+    class="bg-background flex flex-shrink-0 flex-col border-r border-gray-200 p-4"
+  >
+    <div class="flex h-12 w-full flex-row items-center justify-between">
+      <span class="text-lg font-bold">会话记录</span>
+      <span
+        class="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-100 text-indigo-600"
+      >
+        {{ kefuStore.getConversationList.length }}
+      </span>
     </div>
-    <div
-      v-for="item in kefuStore.getConversationList"
-      :key="item.id"
-      :class="{
-        'bg-gray-500/50': item.id === activeConversationId,
-      }"
-      class="flex h-[60px] cursor-pointer items-center px-[10px]"
-      @click="openRightMessage(item)"
-      @contextmenu.prevent="rightClick($event as PointerEvent, item)"
-    >
-      <div class="flex w-full items-center justify-center">
-        <div class="flex h-[50px] w-[50px] items-center justify-center">
-          <!-- 头像 + 未读 -->
-          <ElBadge
-            :hidden="item.adminUnreadMessageCount === 0"
-            :max="99"
-            :value="item.adminUnreadMessageCount"
+    <div class="mt-2 flex flex-col">
+      <div class="-mx-2 mt-4 flex h-48 flex-col space-y-1 overflow-y-auto">
+        <button
+          v-for="(item, index) in kefuStore.getConversationList"
+          :key="index"
+          class="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100"
+          :class="{
+            'bg-gray-500/50': item.id === activeConversationId,
+          }"
+          @click="openRightMessage(item)"
+          @contextmenu.prevent="rightClick($event as PointerEvent, item)"
+        >
+          <div
+            class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200"
           >
-            <ElAvatar :src="item.userAvatar" alt="avatar" />
-          </ElBadge>
-        </div>
-        <div class="ml-[10px] w-full">
-          <div class="flex w-full items-center justify-between">
-            <span class="line-clamp-1 min-w-0 max-w-[60%]">{{
-              item.userNickname || 'null'
-            }}</span>
-            <span class="text-[13px] text-[#999]">
-              {{ lastMessageTimeMap.get(item.id) ?? '计算中' }}
-            </span>
+            <ElAvatar :src="item.userAvatar" alt="avatar" class="size-8" />
+          </div>
+          <div class="ml-2 text-sm font-semibold">
+            {{ item.userNickname || 'null' }}
           </div>
           <!-- 最后聊天内容 -->
           <div
@@ -200,9 +197,15 @@ onBeforeUnmount(() => {
                 item.lastMessageContent,
               )
             "
-            class="line-clamp-1 flex items-center text-[13px] text-[#999]"
+            class="line-clamp-1 flex items-center text-sm text-gray-500"
           ></div>
-        </div>
+          <div
+            v-if="item.adminUnreadMessageCount > 0"
+            class="ml-auto flex h-4 w-4 items-center justify-center rounded bg-red-500 text-xs leading-none text-white"
+          >
+            {{ item.adminUnreadMessageCount }}
+          </div>
+        </button>
       </div>
     </div>
 
@@ -210,14 +213,14 @@ onBeforeUnmount(() => {
     <ul
       v-show="showRightMenu"
       :style="rightMenuStyle"
-      class="absolute z-[1999] m-0 w-[130px] list-none rounded-xl bg-[hsl(var(--background))] p-[5px] shadow-md"
+      class="bg-background absolute z-[9999] m-0 w-32 list-none rounded-xl p-1 shadow-md"
     >
       <li
         v-show="!rightClickConversation.adminPinned"
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(true)"
       >
-        <IconifyIcon class="mr-[5px]" icon="ep:top" />
+        <IconifyIcon class="mr-1" icon="lucide:arrow-up-to-line" />
         置顶会话
       </li>
       <li
@@ -225,23 +228,23 @@ onBeforeUnmount(() => {
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="updateConversationPinnedFn(false)"
       >
-        <IconifyIcon class="mr-[5px]" icon="ep:bottom" />
+        <IconifyIcon class="mr-1" icon="lucide:arrow-down-from-line" />
         取消置顶
       </li>
       <li
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="deleteConversationFn"
       >
-        <IconifyIcon class="mr-[5px]" color="red" icon="ep:delete" />
+        <IconifyIcon class="mr-1" color="red" icon="lucide:trash-2" />
         删除会话
       </li>
       <li
         class="flex cursor-pointer items-center rounded-xl px-4 py-2 transition-colors hover:bg-gray-500/50"
         @click.stop="closeRightMenu"
       >
-        <IconifyIcon class="mr-[5px]" color="red" icon="ep:close" />
+        <IconifyIcon class="mr-1" color="red" icon="lucide:x" />
         取消
       </li>
     </ul>
-  </ElAside>
+  </div>
 </template>

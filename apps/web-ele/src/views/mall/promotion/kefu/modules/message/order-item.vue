@@ -34,19 +34,19 @@ function openDetail(id: number) {
  */
 function formatOrderColor(order: any) {
   if (order.status === 0) {
-    return 'text-[#999]';
+    return 'text-gray-500';
   }
   if (
     order.status === 10 ||
     order.status === 20 ||
     (order.status === 30 && !order.commentStatus)
   ) {
-    return 'text-[#faad14]';
+    return 'text-orange-500';
   }
   if (order.status === 30 && order.commentStatus) {
-    return 'text-[#52c41a]';
+    return 'text-green-500';
   }
-  return 'text-[#ff3000]';
+  return 'text-red-500';
 }
 
 /**
@@ -81,10 +81,10 @@ function formatOrderStatus(order: any) {
   <div
     v-if="isObject(getMessageContent)"
     :key="getMessageContent.id"
-    class="mb-[10px] rounded-[10px] bg-gray-500/30 p-[10px]"
+    class="mb-2.5 rounded-md bg-gray-500/30 p-2.5"
   >
-    <div class="flex h-[28px] items-center justify-between px-[5px] font-bold">
-      <div class="text-[13px]">
+    <div class="flex h-7 items-center justify-between px-1.5 font-bold">
+      <div class="text-sm">
         订单号：
         <span
           class="cursor-pointer hover:text-[var(--left-menu-bg-active-color)] hover:underline"
@@ -95,7 +95,7 @@ function formatOrderStatus(order: any) {
       </div>
       <div
         :class="formatOrderColor(getMessageContent)"
-        class="text-[13px] font-bold"
+        class="text-sm font-bold"
       >
         {{ formatOrderStatus(getMessageContent) }}
       </div>
@@ -103,7 +103,7 @@ function formatOrderStatus(order: any) {
     <div
       v-for="item in getMessageContent.items"
       :key="item.id"
-      class="border-b"
+      class="border-b border-gray-200"
     >
       <ProductItem
         :num="item.count"
@@ -116,12 +116,12 @@ function formatOrderStatus(order: any) {
         :title="item.spuName"
       />
     </div>
-    <div class="flex justify-end pr-[5px] pt-[10px] font-bold">
+    <div class="flex justify-end pr-1.5 pt-2.5 font-bold">
       <div class="flex items-center">
-        <div class="text-[13px] leading-normal">
+        <div class="text-sm leading-normal">
           共 {{ getMessageContent?.productCount }} 件商品,总金额:
         </div>
-        <div class="font-[OPPOSANS] text-[13px] leading-normal">
+        <div class="text-sm font-medium leading-normal">
           ￥{{ fenToYuan(getMessageContent?.payPrice) }}
         </div>
       </div>

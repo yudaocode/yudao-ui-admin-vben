@@ -1,25 +1,15 @@
 <!-- 右侧信息：会员信息 + 最近浏览 + 交易订单 -->
 <script lang="ts" setup>
-import type { UseScrollReturn } from '@vueuse/core';
-
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MemberUserApi } from '#/api/member/user';
 import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, ref, toRefs, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
-import { vScroll } from '@vueuse/components';
-import { useDebounceFn } from '@vueuse/core';
-import {
-  ElCard,
-  ElContainer,
-  ElEmpty,
-  ElHeader,
-  ElMain,
-  ElMessage,
-} from 'element-plus';
+import { useScroll } from '@vueuse/core';
+import { ElEmpty, ElMessage } from 'element-plus';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
@@ -29,7 +19,7 @@ import BasicInfo from '#/views/member/user/detail/modules/basic-info.vue';
 import OrderBrowsingHistory from './order-browsing-history.vue';
 import ProductBrowsingHistory from './product-browsing-history.vue';
 
-const activeTab = ref<'交易订单' | '会员信息' | '最近浏览'>('会员信息');
+const activeTab = ref<string>('会员信息');
 
 const tabActivation = computed(() => (tab: string) => activeTab.value === tab);
 
@@ -100,12 +90,16 @@ defineExpose({ initHistory });
 
 /** 处理消息列表滚动事件(debounce 限流) */
 const scrollbarRef = ref<InstanceType<any>>();
-const handleScroll = useDebounceFn(async (state: UseScrollReturn) => {
-  const { arrivedState } = state;
-  if (arrivedState.bottom) {
-    await loadMore();
-  }
-}, 200);
+const { arrivedState } = useScroll(scrollbarRef);
+const { bottom } = toRefs(arrivedState);
+watch(
+  () => bottom.value,
+  async (newVal) => {
+    if (newVal) {
+      await loadMore();
+    }
+  },
+);
 
 /** 查询用户钱包信息 */
 // TODO @jawe：idea 的导入报错；需要看下；
@@ -146,18 +140,16 @@ async function getUserData() {
 </script>
 
 <template>
-  <ElContainer
-    class="relative w-[300px] bg-[var(--background)] after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-[var(--el-border-color)] after:content-['']"
-  >
-    <ElHeader
-      class="relative flex items-center justify-around bg-[var(--background)] before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-[var(--el-border-color)] before:content-['']"
+  <div class="bg-background relative">
+    <div
+      class="relative flex h-12 items-center justify-around before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-gray-200 before:content-['']"
     >
       <div
         :class="{
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('会员信息'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('会员信息')"
       >
         会员信息
@@ -167,7 +159,7 @@ async function getUserData() {
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('最近浏览'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('最近浏览')"
       >
         最近浏览
@@ -177,18 +169,18 @@ async function getUserData() {
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('交易订单'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('交易订单')"
       >
         交易订单
       </div>
-    </ElHeader>
-    <ElMain class="relative m-0 h-full w-full p-[10px]">
+    </div>
+    <div class="relative m-0 w-full p-2">
       <template v-if="!isEmpty(conversation)">
         <div
           v-loading="loading"
           v-if="activeTab === '会员信息'"
-          class="relative h-full overflow-y-auto overflow-x-hidden"
+          class="relative overflow-y-auto overflow-x-hidden"
         >
           <!-- 基本信息 -->
           <BasicInfo :user="user" mode="kefu">
@@ -197,17 +189,21 @@ async function getUserData() {
             </template>
           </BasicInfo>
           <!-- 账户信息 -->
-          <ElCard class="mt-10px h-full" shadow="never">
+          <AccountInfo
+            :column="1"
+            :user="user"
+            :wallet="wallet"
+            mode="kefu"
+            class="mt-2"
+          >
             <template #title>
               <span class="text-sm font-bold">账户信息</span>
             </template>
-            <AccountInfo :column="1" :user="user" :wallet="wallet" />
-          </ElCard>
+          </AccountInfo>
         </div>
         <div
           v-show="activeTab !== '会员信息'"
           ref="scrollbarRef"
-          v-scroll="handleScroll"
           class="relative h-full overflow-y-auto overflow-x-hidden"
         >
           <!-- 最近浏览 -->
@@ -227,6 +223,6 @@ async function getUserData() {
         description="请选择左侧的一个会话后开始"
         class="mt-[20%]"
       />
-    </ElMain>
-  </ElContainer>
+    </div>
+  </div>
 </template>

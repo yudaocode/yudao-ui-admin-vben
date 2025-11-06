@@ -53,6 +53,6 @@ defineExpose({ getHistoryList, loadMore });
     :spu-id="item.spuId"
     :stock="item.stock"
     :title="item.spuName"
-    class="mb-10px"
+    class="mb-2.5"
   />
 </template>

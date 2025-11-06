@@ -58,17 +58,17 @@ export interface Emoji {
   url: string;
 }
 
-export const useEmoji = () => {
+export function useEmoji() {
   const emojiPathList = ref<any[]>([]);
 
   /** 加载本地图片 */
-  const initStaticEmoji = async () => {
+  async function initStaticEmoji() {
     const pathList = import.meta.glob('../../asserts/*.{png,jpg,jpeg,svg}');
     for (const path in pathList) {
       const imageModule: any = await pathList[path]?.();
       emojiPathList.value.push({ path, src: imageModule.default });
     }
-  };
+  }
 
   /** 初始化 */
   onMounted(async () => {
@@ -83,7 +83,7 @@ export const useEmoji = () => {
    * @return 替换后的文本
    * @param content 消息内容
    */
-  const replaceEmoji = (content: string) => {
+  function replaceEmoji(content: string) {
     let newData = content;
     if (typeof newData !== 'object') {
       const reg = /\[(.+?)\]/g; // [] 中括号
@@ -99,7 +99,7 @@ export const useEmoji = () => {
       }
     }
     return newData;
-  };
+  }
 
   /** 获得所有表情 */
   function getEmojiList(): Emoji[] {
@@ -123,4 +123,4 @@ export const useEmoji = () => {
   }
 
   return { replaceEmoji, getEmojiList };
-};
+}
