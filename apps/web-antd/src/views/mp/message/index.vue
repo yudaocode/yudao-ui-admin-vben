@@ -54,19 +54,19 @@ const messageBoxVisible = ref(false);
 const messageBoxUserId = ref(0);
 
 /** 侦听accountId */
-const onAccountChanged = (id: number) => {
+function onAccountChanged(id: number) {
   queryParams.accountId = id;
   queryParams.pageNo = 1;
   handleQuery();
-};
+}
 
 /** 查询列表 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
-const getList = async () => {
+async function getList() {
   try {
     loading.value = true;
     const data = await getMessagePage(queryParams);
@@ -75,29 +75,34 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 重置按钮操作 */
-const resetQuery = async () => {
+async function resetQuery() {
   // 暂存 accountId，并在 reset 后恢复
   const accountId = queryParams.accountId;
   queryFormRef.value?.resetFields();
   queryParams.accountId = accountId;
   handleQuery();
-};
+}
 
 /** 打开消息发送窗口 */
-const handleSend = async (userId: number) => {
+async function handleSend(userId: number) {
   messageBoxUserId.value = userId;
   messageBoxVisible.value = true;
-};
+}
 
 /** 分页改变事件 */
-const handlePageChange = (page: number, pageSize: number) => {
+function handlePageChange(page: number, pageSize: number) {
   queryParams.pageNo = page;
   queryParams.pageSize = pageSize;
   getList();
-};
+}
+
+/** 显示总条数 */
+function showTotal(total: number) {
+  return `共 ${total} 条`;
+}
 </script>
 
 <template>
@@ -170,7 +175,7 @@ const handlePageChange = (page: number, pageSize: number) => {
           :total="total"
           show-size-changer
           show-quick-jumper
-          :show-total="(total: number) => `共 ${total} 条`"
+          :show-total="showTotal"
           @change="handlePageChange"
         />
       </div>
