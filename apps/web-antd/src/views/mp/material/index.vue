@@ -148,9 +148,10 @@ const handleDelete = async (id: number) => {
         <!-- tab 2：语音  -->
         <Tabs.TabPane :key="UploadType.Voice">
           <template #tab>
-            <span class="flex items-center"></span>
-            <IconifyIcon icon="mdi:microphone" class="mr-1" />
-            <span>语音</span>
+            <span class="flex items-center">
+              <IconifyIcon icon="mdi:microphone" class="mr-1" />
+              语音
+            </span>
           </template>
           <UploadFile
             v-if="hasAccessByCodes(['mp:material:upload-permanent'])"

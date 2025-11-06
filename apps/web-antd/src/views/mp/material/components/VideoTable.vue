@@ -5,7 +5,7 @@ import { formatDate2 } from '@vben/utils';
 
 import { Button, Table } from 'ant-design-vue';
 
-import WxVideoPlayer from '#/views/mp/components/wx-video-play';
+import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
 
 const props = defineProps<{
   list: any[];
