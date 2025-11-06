@@ -81,13 +81,13 @@ function formatOrderStatus(order: any) {
   <div
     v-if="isObject(getMessageContent)"
     :key="getMessageContent.id"
-    class="mb-2.5 rounded-md bg-gray-500/30 p-2.5"
+    class="mb-2 rounded-md bg-gray-500/30 p-2"
   >
-    <div class="flex h-7 items-center justify-between px-1.5 font-bold">
-      <div class="text-sm">
-        订单号：
+    <div class="flex h-6 items-center justify-between px-1 font-bold">
+      <div class="flex flex-row text-sm">
+        <div>订单号：</div>
         <span
-          class="cursor-pointer hover:text-[var(--left-menu-bg-active-color)] hover:underline"
+          class="text-primary cursor-pointer hover:underline"
           @click="openDetail(getMessageContent.id)"
         >
           {{ getMessageContent.no }}

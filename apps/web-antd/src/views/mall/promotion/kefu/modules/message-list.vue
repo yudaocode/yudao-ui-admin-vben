@@ -269,7 +269,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
       </div>
       <div
         ref="scrollbarRef"
-        class="mb-4 flex flex-col overflow-x-auto rounded-lg bg-gray-100 p-2"
+        class="mb-4 flex h-full flex-col overflow-x-auto rounded-lg bg-gray-100 p-2"
       >
         <div class="flex flex-col">
           <!-- 消息列表 -->
