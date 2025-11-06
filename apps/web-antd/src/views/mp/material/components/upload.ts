@@ -17,17 +17,23 @@ interface UploadData {
   type: UploadType;
 }
 
-const beforeImageUpload: UploadProps['beforeUpload'] = (
+const beforeImageUpload: UploadProps['beforeUpload'] = function (
   rawFile: UploadRawFile,
-) => useBeforeUpload(UploadType.Image, 2)(rawFile);
+) {
+  return useBeforeUpload(UploadType.Image, 2)(rawFile);
+};
 
-const beforeVoiceUpload: UploadProps['beforeUpload'] = (
+const beforeVoiceUpload: UploadProps['beforeUpload'] = function (
   rawFile: UploadRawFile,
-) => useBeforeUpload(UploadType.Voice, 2)(rawFile);
+) {
+  return useBeforeUpload(UploadType.Voice, 2)(rawFile);
+};
 
-const beforeVideoUpload: UploadProps['beforeUpload'] = (
+const beforeVideoUpload: UploadProps['beforeUpload'] = function (
   rawFile: UploadRawFile,
-) => useBeforeUpload(UploadType.Video, 10)(rawFile);
+) {
+  return useBeforeUpload(UploadType.Video, 10)(rawFile);
+};
 
 export {
   beforeImageUpload,

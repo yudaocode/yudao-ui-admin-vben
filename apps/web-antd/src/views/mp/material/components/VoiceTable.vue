@@ -41,9 +41,9 @@ const columns = [
   },
 ];
 
-const handleDownload = (url: string) => {
+function handleDownload(url: string) {
   window.open(url, '_blank');
-};
+}
 </script>
 
 <template>

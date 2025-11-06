@@ -42,9 +42,9 @@ const uploadRules = {
   title: [{ message: '请输入标题', required: true, trigger: 'blur' } as const],
 };
 
-const handleCancel = () => {
+function handleCancel() {
   emit('update:open', false);
-};
+}
 
 const fileList = ref<any[]>([]);
 
@@ -58,17 +58,17 @@ const uploadData: UploadData = reactive({
 const uploadFormRef = ref<FormInstance | null>(null);
 const uploadVideoRef = ref<any>(null);
 
-const submitVideo = async () => {
+async function submitVideo() {
   try {
     await uploadFormRef.value?.validate();
     uploadVideoRef.value?.submit();
   } catch {
     // Validation failed
   }
-};
+}
 
 /** 自定义上传 */
-const customRequest: UploadProps['customRequest'] = async (options) => {
+const customRequest: UploadProps['customRequest'] = async function (options) {
   const { file, onError, onSuccess } = options;
 
   const formData = new FormData();

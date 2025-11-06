@@ -18,13 +18,15 @@ const SendFrom = {
   User: 1,
 } as const;
 
-const getAvatar = (sendFrom: number) =>
-  sendFrom === SendFrom.User
+function getAvatar(sendFrom: number) {
+  return sendFrom === SendFrom.User
     ? props.user.avatar
     : preferences.app.defaultAvatar;
+}
 
-const getNickname = (sendFrom: SendFrom) =>
-  sendFrom === SendFrom.User ? props.user.nickname : '公众号';
+function getNickname(sendFrom: SendFrom) {
+  return sendFrom === SendFrom.User ? props.user.nickname : '公众号';
+}
 </script>
 <template>
   <div class="execution" v-for="item in props.list" :key="item.id">

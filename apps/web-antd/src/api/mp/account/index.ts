@@ -23,10 +23,6 @@ export namespace MpAccountApi {
   }
 }
 
-// 重新导出类型，方便使用
-// export type Account = MpAccountApi.Account;
-// export type AccountSimple = MpAccountApi.AccountSimple;
-
 /** 查询公众号账号列表 */
 export function getAccountPage(params: PageParam) {
   return requestClient.get<PageResult<MpAccountApi.Account>>(

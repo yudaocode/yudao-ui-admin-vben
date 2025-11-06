@@ -16,9 +16,9 @@ const props = defineProps<{
 
 const dialogVideo = ref(false);
 
-const playVideo = () => {
+function playVideo() {
   dialogVideo.value = true;
-};
+}
 </script>
 
 <template>

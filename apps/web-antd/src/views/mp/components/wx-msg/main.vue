@@ -60,7 +60,7 @@ onMounted(async () => {
 });
 
 // 执行发送
-const sendMsg = async () => {
+async function sendMsg() {
   if (!unref(reply)) {
     return;
   }
@@ -85,14 +85,14 @@ const sendMsg = async () => {
 
   // 发送后清空数据
   replySelectRef.value?.clear();
-};
+}
 
-const loadMore = () => {
+function loadMore() {
   queryParams.pageNo++;
   getPage(queryParams, null);
-};
+}
 
-const getPage = async (page: any, params: any = null) => {
+async function getPage(page: any, params: any = null) {
   loading.value = true;
   const dataTemp = await getMessagePage(
     Object.assign(
@@ -128,19 +128,19 @@ const getPage = async (page: any, params: any = null) => {
         msgDivRef.value.scrollHeight - scrollHeight - 100;
     }
   }
-};
+}
 
-const refreshChange = () => {
+function refreshChange() {
   getPage(queryParams);
-};
+}
 
 /** 定位到消息底部 */
-const scrollToBottom = async () => {
+async function scrollToBottom() {
   await nextTick();
   if (msgDivRef.value) {
     msgDivRef.value.scrollTop = msgDivRef.value.scrollHeight;
   }
-};
+}
 </script>
 
 <template>

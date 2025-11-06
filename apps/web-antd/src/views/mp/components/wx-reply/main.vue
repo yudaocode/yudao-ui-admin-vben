@@ -73,9 +73,9 @@ watch(
 );
 
 /** 清除除了`type`, `accountId`的字段 */
-const clear = () => {
+function clear() {
   reply.value = createEmptyReply(reply);
-};
+}
 
 defineExpose({
   clear,

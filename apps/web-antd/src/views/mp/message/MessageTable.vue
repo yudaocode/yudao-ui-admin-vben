@@ -18,7 +18,9 @@ const props = withDefaults(
     loading?: boolean;
   }>(),
   {
-    list: () => [],
+    list() {
+      return [];
+    },
     loading: false,
   },
 );
@@ -33,7 +35,9 @@ const columns: TableColumnsType = [
     dataIndex: 'createTime',
     width: 180,
     align: 'center',
-    customRender: ({ record }) => formatDate2(record.createTime),
+    customRender({ record }) {
+      return formatDate2(record.createTime);
+    },
   },
   {
     title: '消息类型',

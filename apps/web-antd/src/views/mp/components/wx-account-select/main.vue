@@ -29,7 +29,7 @@ const account: MpAccountApi.Account = reactive({
 const accountList = ref<MpAccountApi.Account[]>([]);
 
 // 查询公众号列表
-const handleQuery = async () => {
+async function handleQuery() {
   accountList.value = await getSimpleAccountList();
   if (accountList.value.length === 0) {
     message.error('未配置公众号，请在【公众号管理 -> 账号管理】菜单，进行配置');
@@ -44,16 +44,16 @@ const handleQuery = async () => {
     account.name = first.name;
     emit('change', account.id, account.name);
   }
-};
+}
 
 // 切换选中公众号
-const onChanged = (id: SelectValue) => {
+function onChanged(id: SelectValue) {
   const found = accountList.value.find((v) => v.id === id);
   if (found) {
     account.name = found.name;
     emit('change', account.id, account.name);
   }
-};
+}
 
 // 初始化
 onMounted(handleQuery);

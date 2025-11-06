@@ -30,14 +30,14 @@ const reply = computed<Reply>({
 
 const showDialog = ref(false);
 
-const selectMaterial = (item: any) => {
+function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.articles = item.content.newsItem;
-};
+}
 
-const onDelete = () => {
+function onDelete() {
   reply.value.articles = [];
-};
+}
 </script>
 
 <template>

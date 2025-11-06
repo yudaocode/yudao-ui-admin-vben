@@ -47,15 +47,15 @@ const queryParams = reactive({
 const showCreateVideo = ref(false); // 是否新建视频的弹窗
 
 /** 侦听公众号变化 */
-const onAccountChanged = (id: number) => {
+function onAccountChanged(id: number) {
   accountId.value = id;
   queryParams.accountId = id;
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 查询列表 */
-const getList = async () => {
+async function getList() {
   loading.value = true;
   try {
     const data = await MpMaterialApi.getMaterialPage({
@@ -67,25 +67,25 @@ const getList = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+function handleQuery() {
   queryParams.pageNo = 1;
   getList();
-};
+}
 
 /** 处理 tab 切换 */
-const onTabChange = () => {
+function onTabChange() {
   // 提前清空数据，避免 tab 切换后显示垃圾数据
   list.value = [];
   total.value = 0;
   // 从第一页开始查询
   handleQuery();
-};
+}
 
 /** 处理删除操作 */
-const handleDelete = async (id: number) => {
+async function handleDelete(id: number) {
   Modal.confirm({
     content: '此操作将永久删除该文件, 是否继续?',
     title: '提示',
@@ -95,7 +95,7 @@ const handleDelete = async (id: number) => {
       await getList();
     },
   });
-};
+}
 </script>
 
 <template>

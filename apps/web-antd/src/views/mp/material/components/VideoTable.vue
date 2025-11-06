@@ -49,9 +49,9 @@ const columns = [
 ];
 
 // 下载文件
-const handleDownload = (url: string) => {
+function handleDownload(url: string) {
   window.open(url, '_blank');
-};
+}
 </script>
 
 <template>

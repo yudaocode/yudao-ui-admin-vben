@@ -50,11 +50,12 @@ const uploadData = reactive({
   type: 'video',
 });
 
-const beforeVideoUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Video, 10)(rawFile);
+function beforeVideoUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Video, 10)(rawFile);
+}
 
 // 自定义上传请求
-const customRequest = async (options: any) => {
+async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
   const formData = new FormData();
@@ -91,10 +92,10 @@ const customRequest = async (options: any) => {
     message.error('上传失败，请重试');
     onError(error);
   }
-};
+}
 
 /** 选择素材后设置 */
-const selectMaterial = (item: any) => {
+function selectMaterial(item: any) {
   showDialog.value = false;
 
   reply.value.mediaId = item.mediaId;
@@ -108,7 +109,7 @@ const selectMaterial = (item: any) => {
   if (item.introduction) {
     reply.value.description = item.introduction || '';
   }
-};
+}
 </script>
 
 <template>

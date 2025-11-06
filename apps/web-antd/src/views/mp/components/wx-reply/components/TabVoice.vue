@@ -42,11 +42,12 @@ const uploadData = reactive({
   type: 'voice',
 });
 
-const beforeVoiceUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Voice, 10)(rawFile);
+function beforeVoiceUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Voice, 10)(rawFile);
+}
 
 // 自定义上传请求
-const customRequest = async (options: any) => {
+async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
   const formData = new FormData();
@@ -83,20 +84,20 @@ const customRequest = async (options: any) => {
     message.error('上传失败，请重试');
     onError(error);
   }
-};
+}
 
-const onDelete = () => {
+function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
-};
+}
 
-const selectMaterial = (item: Reply) => {
+function selectMaterial(item: Reply) {
   showDialog.value = false;
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
-};
+}
 </script>
 
 <template>

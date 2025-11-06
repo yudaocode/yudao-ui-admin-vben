@@ -41,11 +41,12 @@ const uploadData = reactive({
   type: 'image',
 });
 
-const beforeImageUpload = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Image, 2)(rawFile);
+function beforeImageUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Image, 2)(rawFile);
+}
 
 // 自定义上传请求
-const customRequest = async (options: any) => {
+async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
   const formData = new FormData();
@@ -82,20 +83,20 @@ const customRequest = async (options: any) => {
     message.error('上传失败，请重试');
     onError(error);
   }
-};
+}
 
-const onDelete = () => {
+function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
-};
+}
 
-const selectMaterial = (item: any) => {
+function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
-};
+}
 </script>
 
 <template>

@@ -38,7 +38,7 @@ const onBeforeUpload =
   props.type === UploadType.Image ? beforeImageUpload : beforeVoiceUpload;
 
 /** 自定义上传 */
-const customRequest: UploadProps['customRequest'] = async (options) => {
+const customRequest: UploadProps['customRequest'] = async function (options) {
   const { file, onError, onSuccess } = options;
 
   const formData = new FormData();

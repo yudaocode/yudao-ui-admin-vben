@@ -45,11 +45,11 @@ const queryParams = reactive({
   pageSize: 10,
 });
 
-const selectMaterialFun = (item: any) => {
+function selectMaterialFun(item: any) {
   emit('selectMaterial', item);
-};
+}
 
-const getPage = async () => {
+async function getPage() {
   loading.value = true;
   try {
     if (props.type === 'news' && props.newsType === NewsType.Published) {
@@ -65,18 +65,18 @@ const getPage = async () => {
   } finally {
     loading.value = false;
   }
-};
+}
 
-const getMaterialPageFun = async () => {
+async function getMaterialPageFun() {
   const data = await MpMaterialApi.getMaterialPage({
     ...queryParams,
     type: props.type,
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
-const getFreePublishPageFun = async () => {
+async function getFreePublishPageFun() {
   const data = await MpFreePublishApi.getFreePublishPage(queryParams);
   data.list.forEach((item: any) => {
     const articles = item.content.newsItem;
@@ -86,9 +86,9 @@ const getFreePublishPageFun = async () => {
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
-const getDraftPageFun = async () => {
+async function getDraftPageFun() {
   const data = await MpDraftApi.getDraftPage(queryParams);
   data.list.forEach((draft: any) => {
     const articles = draft.content.newsItem;
@@ -98,7 +98,7 @@ const getDraftPageFun = async () => {
   });
   list.value = data.list;
   total.value = data.total;
-};
+}
 
 const voiceColumns = [
   {
