@@ -5,10 +5,18 @@ import { useAccess } from '@vben/access';
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Modal, Tabs } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Form,
+  message,
+  Modal,
+  Pagination,
+  Tabs,
+} from 'ant-design-vue';
 
 import * as MpMaterialApi from '#/api/mp/material';
-import WxAccountSelect from '#/views/mp/components/wx-account-select';
+import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
 
 import ImageTable from './components/ImageTable.vue';
 import { UploadType } from './components/upload';
@@ -97,15 +105,15 @@ const handleDelete = async (id: number) => {
     title="公众号素材"
   >
     <!-- 搜索工作栏 -->
-    <a-card class="mb-4" :bordered="false">
-      <a-form :model="queryParams" layout="inline">
-        <a-form-item label="公众号">
+    <Card class="mb-4" :bordered="false">
+      <Form :model="queryParams" layout="inline">
+        <Form.Item label="公众号">
           <WxAccountSelect @change="onAccountChanged" />
-        </a-form-item>
-      </a-form>
-    </a-card>
+        </Form.Item>
+      </Form>
+    </Card>
 
-    <a-card :bordered="false">
+    <Card :bordered="false">
       <Tabs v-model:active-key="type" @change="onTabChange">
         <!-- tab 1：图片  -->
         <Tabs.TabPane :key="UploadType.Image">
@@ -126,7 +134,7 @@ const handleDelete = async (id: number) => {
           <ImageTable :list="list" :loading="loading" @delete="handleDelete" />
           <!-- 分页组件 -->
           <div class="mt-4 flex justify-end">
-            <a-pagination
+            <Pagination
               v-model:current="queryParams.pageNo"
               v-model:page-size="queryParams.pageSize"
               :total="total"
@@ -140,10 +148,9 @@ const handleDelete = async (id: number) => {
         <!-- tab 2：语音  -->
         <Tabs.TabPane :key="UploadType.Voice">
           <template #tab>
-            <span class="flex items-center">
-              <IconifyIcon icon="mdi:microphone" class="mr-1" />
-              语音
-            </span>
+            <span class="flex items-center"></span>
+            <IconifyIcon icon="mdi:microphone" class="mr-1" />
+            <span>语音</span>
           </template>
           <UploadFile
             v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -156,7 +163,7 @@ const handleDelete = async (id: number) => {
           <VoiceTable :list="list" :loading="loading" @delete="handleDelete" />
           <!-- 分页组件 -->
           <div class="mt-4 flex justify-end">
-            <a-pagination
+            <Pagination
               v-model:current="queryParams.pageNo"
               v-model:page-size="queryParams.pageSize"
               :total="total"
@@ -175,20 +182,20 @@ const handleDelete = async (id: number) => {
               视频
             </span>
           </template>
-          <a-button
+          <Button
             v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
             type="primary"
             @click="showCreateVideo = true"
           >
             新建视频
-          </a-button>
+          </Button>
           <!-- 新建视频的弹窗 -->
           <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
           <!-- 列表 -->
           <VideoTable :list="list" :loading="loading" @delete="handleDelete" />
           <!-- 分页组件 -->
           <div class="mt-4 flex justify-end">
-            <a-pagination
+            <Pagination
               v-model:current="queryParams.pageNo"
               v-model:page-size="queryParams.pageSize"
               :total="total"
@@ -199,6 +206,6 @@ const handleDelete = async (id: number) => {
           </div>
         </Tabs.TabPane>
       </Tabs>
-    </a-card>
+    </Card>
   </Page>
 </template>

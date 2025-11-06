@@ -1,1 +1,1 @@
-export { default } from './main.vue';
+export { default as WxVoicePlayer } from './main.vue';

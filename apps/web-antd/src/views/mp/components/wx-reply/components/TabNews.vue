@@ -7,8 +7,8 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Col, Modal, Row } from 'ant-design-vue';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
-import WxNews from '#/views/mp/components/wx-news';
+import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
+import { WxNews } from '#/views/mp/components/wx-news';
 
 import { NewsType } from './types';
 

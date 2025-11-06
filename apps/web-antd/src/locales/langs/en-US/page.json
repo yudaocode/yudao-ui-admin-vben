@@ -29,5 +29,11 @@
   "tenant": {
     "placeholder": "Please select tenant",
     "success": "Switch tenant success"
+  },
+  "mp": {
+    "upload": {
+      "invalidFormat": "Invalid {0} format!",
+      "maxSize": "{0} size cannot exceed {1}M!"
+    }
   }
 }

@@ -7,7 +7,15 @@ import { inject, reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Modal, Upload } from 'ant-design-vue';
+import {
+  Button,
+  Divider,
+  Form,
+  Input,
+  message,
+  Modal,
+  Upload,
+} from 'ant-design-vue';
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
@@ -28,8 +36,10 @@ const emit = defineEmits<{
 const accountId = inject<number>('accountId');
 
 const uploadRules = {
-  introduction: [{ message: '请输入描述', required: true, trigger: 'blur' }],
-  title: [{ message: '请输入标题', required: true, trigger: 'blur' }],
+  introduction: [
+    { message: '请输入描述', required: true, trigger: 'blur' } as const,
+  ],
+  title: [{ message: '请输入标题', required: true, trigger: 'blur' } as const],
 };
 
 const handleCancel = () => {
@@ -119,36 +129,36 @@ const customRequest: UploadProps['customRequest'] = async (options) => {
       :multiple="true"
       class="mb-4"
     >
-      <a-button type="primary">
+      <Button type="primary">
         <IconifyIcon icon="mdi:video-plus" class="mr-1" />
         选择视频
-      </a-button>
+      </Button>
     </Upload>
     <div class="mb-4 ml-1 text-sm text-gray-500">
       格式支持 MP4，文件大小不超过 10MB
     </div>
 
-    <a-divider />
+    <Divider />
 
-    <a-form
+    <Form
       ref="uploadFormRef"
       :model="uploadData"
       :rules="uploadRules"
       layout="vertical"
     >
-      <a-form-item label="标题" name="title">
-        <a-input
+      <Form.Item label="标题" name="title">
+        <Input
           v-model:value="uploadData.title"
           placeholder="标题将展示在相关播放页面，建议填写清晰、准确、生动的标题"
         />
-      </a-form-item>
-      <a-form-item label="描述" name="introduction">
-        <a-textarea
+      </Form.Item>
+      <Form.Item label="描述" name="introduction">
+        <Input.TextArea
           v-model:value="uploadData.introduction"
           :rows="3"
           placeholder="介绍语将展示在相关播放页面，建议填写简洁明确、有信息量的内容"
         />
-      </a-form-item>
-    </a-form>
+      </Form.Item>
+    </Form>
   </Modal>
 </template>

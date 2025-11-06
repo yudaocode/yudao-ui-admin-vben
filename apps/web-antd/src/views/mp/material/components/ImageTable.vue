@@ -2,7 +2,7 @@
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
+import { Button, Spin } from 'ant-design-vue';
 
 const props = defineProps<{
   list: any[];
@@ -25,7 +25,7 @@ const { hasAccessByCodes } = useAccess();
           <div class="item-name">{{ item.name }}</div>
         </a>
         <div class="flex justify-center">
-          <a-button
+          <Button
             v-if="hasAccessByCodes(['mp:material:delete'])"
             danger
             shape="circle"
@@ -35,7 +35,7 @@ const { hasAccessByCodes } = useAccess();
             <template #icon>
               <IconifyIcon icon="mdi:delete" />
             </template>
-          </a-button>
+          </Button>
         </div>
       </div>
     </div>

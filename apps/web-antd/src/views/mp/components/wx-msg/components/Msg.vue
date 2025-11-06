@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { IconifyIcon } from '@vben/icons';
 
-import WxLocation from '#/views/mp/components/wx-location';
-import WxMusic from '#/views/mp/components/wx-music';
-import WxNews from '#/views/mp/components/wx-news';
-import WxVideoPlayer from '#/views/mp/components/wx-video-play';
-import WxVoicePlayer from '#/views/mp/components/wx-voice-play';
+import { WxLocation } from '#/views/mp/components/wx-location';
+import { WxMusic } from '#/views/mp/components/wx-music';
+import { WxNews } from '#/views/mp/components/wx-news';
+import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
+import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 
 import { MsgType } from '../types';
 import MsgEvent from './MsgEvent.vue';
@@ -29,7 +29,7 @@ defineProps<{
 
     <div v-else-if="item.type === MsgType.Image">
       <a :href="item.mediaUrl" target="_blank">
-        <img :src="item.mediaUrl" style="width: 100px" alt="图片消息" />
+        <img :src="item.mediaUrl" class="w-[100px]" alt="图片消息" />
       </a>
     </div>
 
@@ -40,14 +40,14 @@ defineProps<{
       <WxVideoPlayer :url="item.mediaUrl" />
     </div>
 
-    <div v-else-if="item.type === MsgType.Link" class="link-card">
+    <div v-else-if="item.type === MsgType.Link" class="flex flex-col gap-2">
       <a :href="item.url" target="_blank" class="text-success no-underline">
-        <div class="link-title">
+        <div class="flex items-center text-sm font-medium text-[#52c41a]">
           <IconifyIcon icon="mdi:link" class="mr-1" />
           {{ item.title }}
         </div>
       </a>
-      <div class="link-description">{{ item.description }}</div>
+      <div class="text-xs text-[#666]">{{ item.description }}</div>
     </div>
 
     <div v-else-if="item.type === MsgType.Location">
@@ -58,7 +58,7 @@ defineProps<{
       />
     </div>
 
-    <div v-else-if="item.type === MsgType.News" class="news-wrapper">
+    <div v-else-if="item.type === MsgType.News" class="w-[300px]">
       <WxNews :articles="item.articles" />
     </div>
 
@@ -73,28 +73,3 @@ defineProps<{
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.link-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.link-title {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 500;
-  color: #52c41a;
-}
-
-.link-description {
-  font-size: 12px;
-  color: #666;
-}
-
-.news-wrapper {
-  width: 300px;
-}
-</style>

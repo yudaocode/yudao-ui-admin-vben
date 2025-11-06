@@ -9,7 +9,7 @@ import { Button, message, Spin } from 'ant-design-vue';
 
 import { getMessagePage, sendMessage } from '#/api/mp/message';
 import { getUser } from '#/api/mp/user';
-import WxReplySelect from '#/views/mp/components/wx-reply';
+import { WxReplySelect } from '#/views/mp/components/wx-reply';
 
 import MsgList from './components/MsgList.vue';
 
@@ -144,15 +144,22 @@ const scrollToBottom = async () => {
 </script>
 
 <template>
-  <div class="wx-msg-container">
-    <div ref="msgDivRef" class="msg-div">
+  <div class="flex h-full flex-col">
+    <div ref="msgDivRef" class="mx-2.5 flex-1 overflow-auto bg-[#eaeaea]">
       <!-- 加载更多 -->
       <Spin :spinning="loading" />
       <div v-if="!loading">
-        <div v-if="hasMore" class="load-more-btn" @click="loadMore">
+        <div
+          v-if="hasMore"
+          class="cursor-pointer rounded p-3 text-center text-sm text-[#409eff] transition-colors duration-300 hover:bg-[#f5f7fa]"
+          @click="loadMore"
+        >
           <span>点击加载更多</span>
         </div>
-        <div v-else class="load-more-btn disabled">
+        <div
+          v-else
+          class="cursor-not-allowed rounded p-3 text-center text-sm text-[#909399] hover:bg-transparent"
+        >
           <span>没有更多了</span>
         </div>
       </div>
@@ -161,62 +168,13 @@ const scrollToBottom = async () => {
       <MsgList :list="list" :account-id="accountId" :user="user" />
     </div>
 
-    <div class="msg-send">
+    <div class="p-2.5">
       <Spin :spinning="sendLoading">
         <WxReplySelect ref="replySelectRef" v-model="reply" />
-        <Button type="primary" class="send-but" @click="sendMsg">
+        <Button type="primary" class="float-right mb-2 mt-2" @click="sendMsg">
           发送(S)
         </Button>
       </Spin>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.wx-msg-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.msg-div {
-  flex: 1;
-  height: 50vh;
-  margin: 0 10px;
-  overflow: auto;
-  background-color: #eaeaea;
-}
-
-.load-more-btn {
-  padding: 12px;
-  font-size: 14px;
-  color: #409eff;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #f5f7fa;
-  }
-
-  &.disabled {
-    color: #909399;
-    cursor: not-allowed;
-
-    &:hover {
-      background-color: transparent;
-    }
-  }
-}
-
-.msg-send {
-  padding: 10px;
-}
-
-.send-but {
-  float: right;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-</style>

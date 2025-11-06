@@ -7,7 +7,7 @@ import { inject, reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Upload } from 'ant-design-vue';
+import { Button, message, Upload } from 'ant-design-vue';
 
 import {
   beforeImageUpload,
@@ -83,22 +83,19 @@ const customRequest: UploadProps['customRequest'] = async (options) => {
     :action="UPLOAD_URL"
     :before-upload="onBeforeUpload"
     :custom-request="customRequest"
-    :data="uploadData"
     :file-list="fileList"
     :headers="HEADERS"
     :multiple="true"
     class="mb-4"
   >
-    <a-button type="primary">
+    <Button type="primary">
       <IconifyIcon icon="mdi:upload" class="mr-1" />
       点击上传
-    </a-button>
+    </Button>
     <template #itemRender="{ file, actions }">
       <div class="flex items-center">
         <span>{{ file.name }}</span>
-        <a-button type="link" size="small" @click="actions.remove">
-          删除
-        </a-button>
+        <Button type="link" size="small" @click="actions.remove"> 删除 </Button>
       </div>
     </template>
   </Upload>

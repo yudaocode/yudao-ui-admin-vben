@@ -10,7 +10,7 @@ import { useAccessStore } from '@vben/stores';
 
 import { Button, Col, message, Modal, Row, Upload } from 'ant-design-vue';
 
-import WxMaterialSelect from '#/views/mp/components/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
 defineOptions({ name: 'TabImage' });

@@ -9,9 +9,9 @@ import { Button, Pagination, Row, Spin, Table } from 'ant-design-vue';
 import * as MpDraftApi from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
 import * as MpMaterialApi from '#/api/mp/material';
-import WxNews from '#/views/mp/components/wx-news';
-import WxVideoPlayer from '#/views/mp/components/wx-video-play';
-import WxVoicePlayer from '#/views/mp/components/wx-voice-play';
+import { WxNews } from '#/views/mp/components/wx-news';
+import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
+import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 
 import { NewsType } from './types';
 

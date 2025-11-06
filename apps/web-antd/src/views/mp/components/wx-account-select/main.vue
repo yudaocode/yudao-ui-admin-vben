@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref, unref } from 'vue';
+import type { SelectValue } from 'ant-design-vue/es/select';
+
+import type { MpAccountApi } from '#/api/mp/account';
+
+import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { message } from 'ant-design-vue';
+import { message, Select } from 'ant-design-vue';
 
-import * as MpAccountApi from '#/api/mp/account';
-import { useTagsViewStore } from '#/store';
+import { getSimpleAccountList } from '#/api/mp/account';
 
 defineOptions({ name: 'WxAccountSelect' });
 
@@ -14,8 +17,7 @@ const emit = defineEmits<{
   (e: 'change', id: number, name: string): void;
 }>();
 // 消息弹窗
-const { delView } = useTagsViewStore();
-const { push, currentRoute } = useRouter();
+const { push } = useRouter();
 
 // 当前选中的公众号
 const account: MpAccountApi.Account = reactive({
@@ -28,10 +30,9 @@ const accountList = ref<MpAccountApi.Account[]>([]);
 
 // 查询公众号列表
 const handleQuery = async () => {
-  accountList.value = await MpAccountApi.getSimpleAccountList();
+  accountList.value = await getSimpleAccountList();
   if (accountList.value.length === 0) {
     message.error('未配置公众号，请在【公众号管理 -> 账号管理】菜单，进行配置');
-    delView(unref(currentRoute));
     await push({ name: 'MpAccount' });
     return;
   }
@@ -46,7 +47,7 @@ const handleQuery = async () => {
 };
 
 // 切换选中公众号
-const onChanged = (id?: number) => {
+const onChanged = (id: SelectValue) => {
   const found = accountList.value.find((v) => v.id === id);
   if (found) {
     account.name = found.name;
@@ -59,24 +60,14 @@ onMounted(handleQuery);
 </script>
 
 <template>
-  <a-select
+  <Select
     v-model:value="account.id"
     placeholder="请选择公众号"
-    class="!w-240px"
+    class="!w-[240px]"
     @change="onChanged"
   >
-    <a-select-option
-      v-for="item in accountList"
-      :key="item.id"
-      :value="item.id"
-    >
+    <Select.Option v-for="item in accountList" :key="item.id" :value="item.id">
       {{ item.name }}
-    </a-select-option>
-  </a-select>
+    </Select.Option>
+  </Select>
 </template>
-
-<style scoped>
-.w-240px {
-  width: 240px;
-}
-</style>

@@ -3,6 +3,8 @@ import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate2 } from '@vben/utils';
 
+import { Button, Table } from 'ant-design-vue';
+
 import WxVideoPlayer from '#/views/mp/components/wx-video-play';
 
 const props = defineProps<{
@@ -17,18 +19,33 @@ const emit = defineEmits<{
 const { hasAccessByCodes } = useAccess();
 
 const columns = [
-  { align: 'center', dataIndex: 'mediaId', key: 'mediaId', title: '编号' },
-  { align: 'center', dataIndex: 'name', key: 'name', title: '文件名' },
-  { align: 'center', dataIndex: 'title', key: 'title', title: '标题' },
   {
-    align: 'center',
+    align: 'center' as const,
+    dataIndex: 'mediaId',
+    key: 'mediaId',
+    title: '编号',
+  },
+  { align: 'center' as const, dataIndex: 'name', key: 'name', title: '文件名' },
+  { align: 'center' as const, dataIndex: 'title', key: 'title', title: '标题' },
+  {
+    align: 'center' as const,
     dataIndex: 'introduction',
     key: 'introduction',
     title: '介绍',
   },
-  { align: 'center', key: 'video', title: '视频' },
-  { align: 'center', key: 'createTime', title: '上传时间', width: 180 },
-  { align: 'center', fixed: 'right', key: 'action', title: '操作' },
+  { align: 'center' as const, key: 'video', title: '视频' },
+  {
+    align: 'center' as const,
+    key: 'createTime',
+    title: '上传时间',
+    width: 180,
+  },
+  {
+    align: 'center' as const,
+    fixed: 'right' as const,
+    key: 'action',
+    title: '操作',
+  },
 ];
 
 // 下载文件
@@ -38,7 +55,7 @@ const handleDownload = (url: string) => {
 </script>
 
 <template>
-  <a-table
+  <Table
     :columns="columns"
     :data-source="props.list"
     :loading="props.loading"
@@ -55,11 +72,11 @@ const handleDownload = (url: string) => {
         {{ formatDate2(record.createTime) }}
       </template>
       <template v-else-if="column.key === 'action'">
-        <a-button type="link" @click="handleDownload(record.url)">
+        <Button type="link" @click="handleDownload(record.url)">
           <IconifyIcon icon="mdi:download" />
           下载
-        </a-button>
-        <a-button
+        </Button>
+        <Button
           v-if="hasAccessByCodes(['mp:material:delete'])"
           danger
           type="link"
@@ -67,8 +84,8 @@ const handleDownload = (url: string) => {
         >
           <IconifyIcon icon="mdi:delete" />
           删除
-        </a-button>
+        </Button>
       </template>
     </template>
-  </a-table>
+  </Table>
 </template>

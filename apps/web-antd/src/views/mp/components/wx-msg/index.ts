@@ -1,3 +1,3 @@
-export { default } from './main.vue';
+export { default as WxMsg } from './main.vue';
 
 export { MsgType } from './types';
