@@ -7,7 +7,7 @@ import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
-import { Avatar, Badge, Layout, message } from 'ant-design-vue';
+import { Avatar, message } from 'ant-design-vue';
 
 import {
   deleteConversation,
@@ -158,38 +158,36 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Layout.Sider
-    class="bg-card relative flex h-full flex-col justify-between overflow-hidden p-4"
-    width="260px"
+  <div
+    class="bg-background flex flex-shrink-0 flex-col border-r border-gray-200 p-4"
   >
-    <div class="m-4 border-b border-gray-200 pb-2 font-bold">
-      会话记录({{ kefuStore.getConversationList.length }})
+    <div class="flex h-12 w-full flex-row items-center justify-between">
+      <span class="text-lg font-bold">会话记录</span>
+      <span
+        class="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-100 text-indigo-600"
+      >
+        {{ kefuStore.getConversationList.length }}
+      </span>
     </div>
-    <div
-      v-for="item in kefuStore.getConversationList"
-      :key="item.id"
-      :class="{
-        'bg-gray-500/50': item.id === activeConversationId,
-      }"
-      class="flex h-14 cursor-pointer items-center px-3"
-      @click="openRightMessage(item)"
-      @contextmenu.prevent="rightClick($event as PointerEvent, item)"
-    >
-      <div class="flex w-full items-center justify-center">
-        <div class="flex h-12 w-12 items-center justify-center">
-          <!-- 头像 + 未读 -->
-          <Badge :max="99" :value="item.adminUnreadMessageCount">
+    <div class="mt-2 flex flex-col">
+      <div class="-mx-2 mt-4 flex h-48 flex-col space-y-1 overflow-y-auto">
+        <button
+          v-for="(item, index) in kefuStore.getConversationList"
+          :key="index"
+          class="flex flex-row items-center rounded-xl p-2 hover:bg-gray-100"
+          :class="{
+            'bg-gray-500/50': item.id === activeConversationId,
+          }"
+          @click="openRightMessage(item)"
+          @contextmenu.prevent="rightClick($event as PointerEvent, item)"
+        >
+          <div
+            class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200"
+          >
             <Avatar :src="item.userAvatar" alt="avatar" />
-          </Badge>
-        </div>
-        <div class="ml-3 w-full">
-          <div class="flex w-full items-center justify-between">
-            <span class="line-clamp-1 min-w-0 max-w-[60%]">
-              {{ item.userNickname || 'null' }}
-            </span>
-            <span class="text-sm text-gray-500">
-              {{ lastMessageTimeMap.get(item.id) ?? '计算中' }}
-            </span>
+          </div>
+          <div class="ml-2 text-sm font-semibold">
+            {{ item.userNickname || 'null' }}
           </div>
           <!-- 最后聊天内容 -->
           <div
@@ -201,7 +199,13 @@ onBeforeUnmount(() => {
             "
             class="line-clamp-1 flex items-center text-sm text-gray-500"
           ></div>
-        </div>
+          <div
+            v-if="item.adminUnreadMessageCount > 0"
+            class="ml-auto flex h-4 w-4 items-center justify-center rounded bg-red-500 text-xs leading-none text-white"
+          >
+            {{ item.adminUnreadMessageCount }}
+          </div>
+        </button>
       </div>
     </div>
 
@@ -242,5 +246,5 @@ onBeforeUnmount(() => {
         取消
       </li>
     </ul>
-  </Layout.Sider>
+  </div>
 </template>

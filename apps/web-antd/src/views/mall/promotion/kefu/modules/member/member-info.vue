@@ -1,18 +1,15 @@
 <!-- 右侧信息：会员信息 + 最近浏览 + 交易订单 -->
 <script lang="ts" setup>
-import type { UseScrollReturn } from '@vueuse/core';
-
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MemberUserApi } from '#/api/member/user';
 import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, ref, toRefs, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
-import { vScroll } from '@vueuse/components';
-import { useDebounceFn } from '@vueuse/core';
-import { Empty, Layout, message } from 'ant-design-vue';
+import { useScroll } from '@vueuse/core';
+import { Empty, message } from 'ant-design-vue';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';
@@ -93,12 +90,16 @@ defineExpose({ initHistory });
 
 /** 处理消息列表滚动事件(debounce 限流) */
 const scrollbarRef = ref<InstanceType<any>>();
-const handleScroll = useDebounceFn(async (state: UseScrollReturn) => {
-  const { arrivedState } = state;
-  if (arrivedState.bottom) {
-    await loadMore();
-  }
-}, 200);
+const { arrivedState } = useScroll(scrollbarRef);
+const { bottom } = toRefs(arrivedState);
+watch(
+  () => bottom.value,
+  async (newVal) => {
+    if (newVal) {
+      await loadMore();
+    }
+  },
+);
 
 /** 查询用户钱包信息 */
 // TODO @jawe：idea 的导入报错；需要看下；
@@ -139,18 +140,16 @@ async function getUserData() {
 </script>
 
 <template>
-  <Layout
-    class="bg-card relative w-72 after:absolute after:left-0 after:top-0 after:h-full after:w-[1px] after:scale-x-[0.3] after:bg-gray-200 after:content-['']"
-  >
-    <Layout.Header
-      class="!bg-card relative flex items-center justify-around before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-gray-200 before:content-['']"
+  <div class="bg-background relative">
+    <div
+      class="relative flex h-12 items-center justify-around before:absolute before:bottom-0 before:left-0 before:h-[1px] before:w-full before:scale-y-[0.3] before:bg-gray-200 before:content-['']"
     >
       <div
         :class="{
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('会员信息'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('会员信息')"
       >
         会员信息
@@ -160,7 +159,7 @@ async function getUserData() {
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('最近浏览'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('最近浏览')"
       >
         最近浏览
@@ -170,18 +169,18 @@ async function getUserData() {
           'before:border-b-2 before:border-gray-500/50':
             tabActivation('交易订单'),
         }"
-        class="relative flex h-full w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
+        class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('交易订单')"
       >
         交易订单
       </div>
-    </Layout.Header>
-    <Layout.Content class="relative m-0 h-full w-full p-2">
+    </div>
+    <div class="relative m-0 w-full p-2">
       <template v-if="!isEmpty(conversation)">
         <div
           v-loading="loading"
           v-if="activeTab === '会员信息'"
-          class="relative h-full overflow-y-auto overflow-x-hidden"
+          class="relative overflow-y-auto overflow-x-hidden"
         >
           <!-- 基本信息 -->
           <BasicInfo :user="user" mode="kefu">
@@ -205,7 +204,6 @@ async function getUserData() {
         <div
           v-show="activeTab !== '会员信息'"
           ref="scrollbarRef"
-          v-scroll="handleScroll"
           class="relative h-full overflow-y-auto overflow-x-hidden"
         >
           <!-- 最近浏览 -->
@@ -221,6 +219,6 @@ async function getUserData() {
         </div>
       </template>
       <Empty v-else description="请选择左侧的一个会话后开始" class="mt-[20%]" />
-    </Layout.Content>
-  </Layout>
+    </div>
+  </div>
 </template>

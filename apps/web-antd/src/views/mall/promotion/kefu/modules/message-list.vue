@@ -1,27 +1,17 @@
 <script lang="ts" setup>
-import type { UseScrollReturn } from '@vueuse/core';
-
 import type { Emoji } from './tools/emoji';
 
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MallKefuMessageApi } from '#/api/mall/promotion/kefu/message';
 
-import { computed, reactive, ref, unref } from 'vue';
+import { computed, reactive, ref, toRefs, unref, watch } from 'vue';
 
 import { UserTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate, isEmpty, jsonParse } from '@vben/utils';
 
-import { vScroll } from '@vueuse/components';
-import { useDebounceFn, useScroll } from '@vueuse/core';
-import {
-  Avatar,
-  Empty,
-  Image,
-  Layout,
-  notification,
-  Textarea,
-} from 'ant-design-vue';
+import { useScroll } from '@vueuse/core';
+import { Avatar, Empty, Image, notification, Textarea } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -206,7 +196,9 @@ async function sendMessage(msg: MallKefuMessageApi.MessageSend) {
 
 /** 滚动到底部 */
 const scrollbarRef = ref<HTMLElement | null>(null);
-const { y } = useScroll(scrollbarRef);
+const { y, arrivedState } = useScroll(scrollbarRef);
+
+const { bottom } = toRefs(arrivedState);
 
 async function scrollToBottom() {
   if (!scrollbarRef.value) return;
@@ -228,23 +220,26 @@ async function handleToNewMessage() {
   await scrollToBottom();
 }
 
-/** 处理消息列表滚动事件(debounce 限流) */
-const handleScroll = useDebounceFn((state: UseScrollReturn) => {
-  const { arrivedState } = state;
-  if (skipGetMessageList.value) {
-    return;
-  }
-  // 滚动到底部了
-  if (arrivedState.bottom) {
-    loadHistory.value = false;
-    refreshMessageList();
-  }
+watch(
+  () => bottom.value,
+  (newVal) => {
+    if (newVal) {
+      if (skipGetMessageList.value) {
+        return;
+      }
+      // 滚动到底部了
+      if (newVal) {
+        loadHistory.value = false;
+        refreshMessageList();
+      }
 
-  // 触顶自动加载下一页数据
-  if (arrivedState.top) {
-    handleOldMessage();
-  }
-}, 200);
+      // 触顶自动加载下一页数据
+      if (arrivedState.top) {
+        handleOldMessage();
+      }
+    }
+  },
+);
 /** 加载历史消息 */
 async function handleOldMessage() {
   loadHistory.value = true;
@@ -264,164 +259,163 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
 </script>
 
 <template>
-  <Layout
+  <div
     v-if="showMessageList()"
-    class="bg-card relative w-[calc(100%-300px-260px)]"
+    class="bg-background flex h-full flex-auto flex-col p-4"
   >
-    <Layout.Header
-      class="!bg-card border-border flex items-center justify-between border-b"
-    >
-      <div class="text-lg font-bold">{{ conversation.userNickname }}</div>
-    </Layout.Header>
-    <Layout.Content class="relative m-0 h-full w-full p-0">
+    <div class="flex h-full flex-auto flex-shrink-0 flex-col">
+      <div class="flex h-12 w-full flex-row items-center justify-between">
+        <span class="text-lg font-bold">{{ conversation.userNickname }}</span>
+      </div>
       <div
         ref="scrollbarRef"
-        class="absolute inset-0 m-0 overflow-y-auto overflow-x-hidden p-0"
-        v-scroll="handleScroll"
+        class="mb-4 flex flex-col overflow-x-auto rounded-lg bg-gray-100 p-2"
       >
-        <!-- <div v-if="refreshContent" ref="innerRef" class="w-full px-[10px] absolute inset-0 m-0 overflow-x-hidden p-0 overflow-y-auto"> -->
-        <!-- 消息列表 -->
-        <div
-          v-for="(item, index) in getMessageList0"
-          :key="item.id"
-          class="w-full"
-        >
-          <div class="mb-5 flex items-center justify-center">
-            <!-- 日期 -->
-            <div
-              v-if="
-                item.contentType !== KeFuMessageContentTypeEnum.SYSTEM &&
-                showTime(item, index)
-              "
-              class="w-fit rounded-lg bg-black/10 px-2 text-xs text-white"
-            >
-              {{ formatDate(item.createTime) }}
-            </div>
-            <!-- 系统消息 -->
-            <div
-              v-if="item.contentType === KeFuMessageContentTypeEnum.SYSTEM"
-              class="w-fit rounded-lg bg-black/10 px-2 text-xs text-white"
-            >
-              {{ item.content }}
-            </div>
-          </div>
+        <div class="flex flex-col">
+          <!-- 消息列表 -->
           <div
-            :class="[
-              item.senderType === UserTypeEnum.MEMBER
-                ? 'justify-start'
-                : item.senderType === UserTypeEnum.ADMIN
-                  ? 'justify-end'
-                  : '',
-            ]"
-            class="mb-5 flex w-full"
+            v-for="(item, index) in getMessageList0"
+            :key="item.id"
+            class="w-full"
           >
-            <Avatar
-              v-if="item.senderType === UserTypeEnum.MEMBER"
-              :src="conversation.userAvatar"
-              alt="avatar"
-              class="size-8"
-            />
-            <div
-              :class="{
-                'w-auto max-w-[50%] p-1 font-medium text-gray-500 transition-all duration-200 hover:scale-105':
-                  KeFuMessageContentTypeEnum.TEXT === item.contentType,
-                'm-1 break-words rounded-lg bg-gray-100':
-                  KeFuMessageContentTypeEnum.TEXT === item.contentType &&
-                  item.senderType === UserTypeEnum.MEMBER,
-                'm-1 break-words rounded-lg bg-blue-50':
-                  KeFuMessageContentTypeEnum.TEXT === item.contentType &&
-                  item.senderType === UserTypeEnum.ADMIN,
-              }"
-            >
-              <!-- 文本消息 -->
-              <MessageItem :message="item">
-                <template
-                  v-if="KeFuMessageContentTypeEnum.TEXT === item.contentType"
-                >
-                  <div
-                    v-dompurify-html="
-                      replaceEmoji(getMessageContent(item).text || item.content)
-                    "
-                    class="h-full w-full text-justify"
-                  ></div>
-                </template>
-              </MessageItem>
-              <!-- 图片消息 -->
-              <MessageItem :message="item">
-                <Image
-                  v-if="KeFuMessageContentTypeEnum.IMAGE === item.contentType"
-                  :initial-index="0"
-                  :preview-src-list="[
-                    getMessageContent(item).picUrl || item.content,
-                  ]"
-                  :src="getMessageContent(item).picUrl || item.content"
-                  class="mx-2 !w-52"
-                  fit="contain"
-                  preview-teleported
-                />
-              </MessageItem>
-              <!-- 商品消息 -->
-              <MessageItem :message="item">
-                <ProductItem
-                  v-if="KeFuMessageContentTypeEnum.PRODUCT === item.contentType"
-                  :pic-url="getMessageContent(item).picUrl"
-                  :price="getMessageContent(item).price"
-                  :sales-count="getMessageContent(item).salesCount"
-                  :spu-id="getMessageContent(item).spuId"
-                  :stock="getMessageContent(item).stock"
-                  :title="getMessageContent(item).spuName"
-                  class="mx-2 max-w-80"
-                />
-              </MessageItem>
-              <!-- 订单消息 -->
-              <MessageItem :message="item">
-                <OrderItem
-                  v-if="KeFuMessageContentTypeEnum.ORDER === item.contentType"
-                  :message="item"
-                  class="mx-2 max-w-full"
-                />
-              </MessageItem>
+            <div class="mb-5 flex items-center justify-center">
+              <!-- 日期 -->
+              <div
+                v-if="
+                  item.contentType !== KeFuMessageContentTypeEnum.SYSTEM &&
+                  showTime(item, index)
+                "
+                class="w-fit rounded-lg bg-black/10 px-2 text-xs"
+              >
+                {{ formatDate(item.createTime) }}
+              </div>
+              <!-- 系统消息 -->
+              <div
+                v-if="item.contentType === KeFuMessageContentTypeEnum.SYSTEM"
+                class="w-fit rounded-lg bg-black/10 px-2 text-xs"
+              >
+                {{ item.content }}
+              </div>
             </div>
-            <Avatar
-              v-if="item.senderType === UserTypeEnum.ADMIN"
-              :src="item.senderAvatar"
-              alt="avatar"
-            />
+            <div
+              :class="[
+                item.senderType === UserTypeEnum.MEMBER
+                  ? 'justify-start'
+                  : item.senderType === UserTypeEnum.ADMIN
+                    ? 'justify-end'
+                    : '',
+              ]"
+              class="mb-5 flex w-full"
+            >
+              <Avatar
+                v-if="item.senderType === UserTypeEnum.MEMBER"
+                :src="conversation.userAvatar"
+                alt="avatar"
+                class="size-8"
+              />
+              <div
+                :class="{
+                  'w-auto max-w-[50%] p-1 font-medium text-gray-500 transition-all duration-200 hover:scale-105':
+                    KeFuMessageContentTypeEnum.TEXT === item.contentType,
+                  'm-1 break-words rounded-lg bg-gray-100':
+                    KeFuMessageContentTypeEnum.TEXT === item.contentType &&
+                    item.senderType === UserTypeEnum.MEMBER,
+                  'm-1 break-words rounded-lg bg-blue-50':
+                    KeFuMessageContentTypeEnum.TEXT === item.contentType &&
+                    item.senderType === UserTypeEnum.ADMIN,
+                }"
+              >
+                <!-- 文本消息 -->
+                <MessageItem :message="item">
+                  <template
+                    v-if="KeFuMessageContentTypeEnum.TEXT === item.contentType"
+                  >
+                    <div
+                      v-dompurify-html="
+                        replaceEmoji(
+                          getMessageContent(item).text || item.content,
+                        )
+                      "
+                      class="h-full w-full text-justify"
+                    ></div>
+                  </template>
+                </MessageItem>
+                <!-- 图片消息 -->
+                <MessageItem :message="item">
+                  <Image
+                    v-if="KeFuMessageContentTypeEnum.IMAGE === item.contentType"
+                    :initial-index="0"
+                    :preview-src-list="[
+                      getMessageContent(item).picUrl || item.content,
+                    ]"
+                    :src="getMessageContent(item).picUrl || item.content"
+                    class="mx-2 !w-52"
+                    fit="contain"
+                    preview-teleported
+                  />
+                </MessageItem>
+                <!-- 商品消息 -->
+                <MessageItem :message="item">
+                  <ProductItem
+                    v-if="
+                      KeFuMessageContentTypeEnum.PRODUCT === item.contentType
+                    "
+                    :pic-url="getMessageContent(item).picUrl"
+                    :price="getMessageContent(item).price"
+                    :sales-count="getMessageContent(item).salesCount"
+                    :spu-id="getMessageContent(item).spuId"
+                    :stock="getMessageContent(item).stock"
+                    :title="getMessageContent(item).spuName"
+                    class="mx-2 max-w-80"
+                  />
+                </MessageItem>
+                <!-- 订单消息 -->
+                <MessageItem :message="item">
+                  <OrderItem
+                    v-if="KeFuMessageContentTypeEnum.ORDER === item.contentType"
+                    :message="item"
+                    class="mx-2 max-w-full"
+                  />
+                </MessageItem>
+              </div>
+              <Avatar
+                v-if="item.senderType === UserTypeEnum.ADMIN"
+                :src="item.senderAvatar"
+                alt="avatar"
+              />
+            </div>
           </div>
         </div>
-        <!-- </div> -->
       </div>
       <div
         v-show="showNewMessageTip"
-        class="bg-card absolute bottom-9 right-9 z-10 flex cursor-pointer items-center rounded-full p-2.5 text-xs shadow-md"
+        class="absolute bottom-9 right-9 z-10 flex cursor-pointer items-center rounded-lg p-2 text-xs shadow-md"
         @click="handleToNewMessage"
       >
         <span>有新消息</span>
         <IconifyIcon class="ml-1" icon="lucide:arrow-down-from-line" />
       </div>
-    </Layout.Content>
-    <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
-      <div class="border-border flex flex-col rounded-xl border p-2">
-        <div class="flex h-11 w-full items-center">
-          <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
-          <PictureSelectUpload
-            class="ml-4 mt-1 cursor-pointer"
-            @send-picture="handleSendPicture"
+      <div class="flex flex-col">
+        <div class="border-border -mt-3 flex flex-col rounded-xl border">
+          <div class="flex h-10 w-full items-center">
+            <EmojiSelectPopover @select-emoji="handleEmojiSelect" />
+            <PictureSelectUpload
+              class="ml-4 mt-1 cursor-pointer"
+              @send-picture="handleSendPicture"
+            />
+          </div>
+          <Textarea
+            v-model:value="message"
+            :rows="4"
+            class="border-none p-2"
+            placeholder="输入消息，Enter发送，Shift+Enter换行"
+            @press-enter="handleSendMessage"
           />
         </div>
-        <Textarea
-          v-model:value="message"
-          :rows="6"
-          class="border-none"
-          placeholder="输入消息，Enter发送，Shift+Enter换行"
-          @press-enter="handleSendMessage"
-        />
       </div>
-    </Layout.Footer>
-  </Layout>
-  <Layout v-else class="bg-card relative w-[calc(100vw-300px-260px)]">
-    <Layout.Content>
-      <Empty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
-    </Layout.Content>
-  </Layout>
+    </div>
+  </div>
+  <div v-else class="bg-background relative">
+    <Empty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
+  </div>
 </template>
