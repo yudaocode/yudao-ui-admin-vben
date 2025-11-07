@@ -290,7 +290,7 @@ function menuToBackend(menu: any) {
               class="save-btn"
               type="primary"
               @click="onSave"
-              v-hasPermi="['mp:menu:save']"
+              v-access:code="['mp:menu:save']"
             >
               保存并发布菜单
             </Button>
@@ -298,7 +298,7 @@ function menuToBackend(menu: any) {
               class="save-btn"
               danger
               @click="onClear"
-              v-hasPermi="['mp:menu:delete']"
+              v-access:code="['mp:menu:delete']"
             >
               清空菜单
             </Button>
