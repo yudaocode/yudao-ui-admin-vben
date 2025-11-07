@@ -345,7 +345,7 @@ div {
   height: 64px;
   color: #fff;
   text-align: center;
-  background: transparent url('./assets/menu_head.png') no-repeat 0 0;
+  background: transparent url('./components/assets/menu_head.png') no-repeat 0 0;
   background-position: 0 0;
   background-size: 100%;
 }
@@ -363,7 +363,7 @@ div {
 .weixin-menu {
   padding-left: 43px;
   font-size: 12px;
-  background: transparent url('./assets/menu_foot.png') no-repeat 0 0;
+  background: transparent url('./components/assets/menu_foot.png') no-repeat 0 0;
 }
 
 .public-account-management {
@@ -379,7 +379,7 @@ div {
     width: 350px;
     height: 715px;
     padding: 518px 25px 88px;
-    background: url('./assets/iphone_backImg.png') no-repeat;
+    background: url('./components/assets/iphone_backImg.png') no-repeat;
     background-size: 100% auto;
 
     .save-div {
