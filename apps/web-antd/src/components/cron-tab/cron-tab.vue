@@ -420,7 +420,7 @@ function inputChange() {
     @input="inputChange"
   >
     <template #addonAfter>
-      <Select v-model:value="select" placeholder="生成器" style="width: 115px">
+      <Select v-model:value="select" placeholder="生成器" class="w-36">
         <Select.Option value="0 * * * * ?">每分钟</Select.Option>
         <Select.Option value="0 0 * * * ?">每小时</Select.Option>
         <Select.Option value="0 0 0 * * ?">每天零点</Select.Option>
@@ -946,20 +946,20 @@ function inputChange() {
   padding: 0 15px;
   font-size: 12px;
   line-height: 30px;
-  background: var(--ant-primary-color-active-bg);
+  background: hsl(var(--primary) / 10%);
   border-radius: 4px;
 }
 
 .sc-cron :deep(.ant-tabs-tab.ant-tabs-tab-active) .sc-cron-num h4 {
   color: #fff;
-  background: var(--ant-primary-color);
+  background: hsl(var(--primary));
 }
 
 [data-theme='dark'] .sc-cron-num h4 {
-  background: var(--ant-color-white);
+  background: hsl(var(--white));
 }
 
 .input-with-select .ant-input-group-addon {
-  background-color: var(--ant-color-fill-alter);
+  background-color: hsl(var(--muted));
 }
 </style>

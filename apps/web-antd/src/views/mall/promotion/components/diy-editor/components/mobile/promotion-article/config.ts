@@ -2,13 +2,11 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 营销文章属性 */
 export interface PromotionArticleProperty {
-  // 文章编号
-  id: number;
-  // 组件样式
-  style: ComponentStyle;
+  id: number; // 文章编号
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'PromotionArticle',
   name: '营销文章',

@@ -6,6 +6,7 @@ export interface CarouselProperty {
   indicator: 'dot' | 'number'; // 指示器样式：点 | 数字
   autoplay: boolean; // 是否自动播放
   interval: number; // 播放间隔
+  height: number; // 轮播高度
   items: CarouselItemProperty[]; // 轮播内容
   style: ComponentStyle; // 组件样式
 }
@@ -28,6 +29,7 @@ export const component = {
     indicator: 'dot',
     autoplay: false,
     interval: 3,
+    height: 174,
     items: [
       {
         type: 'img',

@@ -56,7 +56,7 @@ onMounted(() => {
           filterable
           :loading="loading"
           :options="
-            articles.map((item) => ({ label: item.title, value: item.id }))
+            articles.map((item: any) => ({ label: item.title, value: item.id }))
           "
           @search="queryArticleList"
         />
@@ -64,5 +64,3 @@ onMounted(() => {
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

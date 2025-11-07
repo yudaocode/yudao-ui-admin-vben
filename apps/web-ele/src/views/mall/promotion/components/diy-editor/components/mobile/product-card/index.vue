@@ -13,10 +13,11 @@ import * as ProductSpuApi from '#/api/mall/product/spu';
 
 /** 商品卡片 */
 defineOptions({ name: 'ProductCard' });
-// 定义属性
+
 const props = defineProps<{ property: ProductCardProperty }>();
-// 商品列表
+
 const spuList = ref<MallSpuApi.Spu[]>([]);
+
 watch(
   () => props.property.spuIds,
   async () => {
@@ -28,28 +29,21 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
 const containerRef = ref();
-// 计算商品的宽度
+
+/** 计算商品的宽度 */
 const calculateWidth = () => {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
@@ -136,14 +130,14 @@ const calculateWidth = () => {
             class="text-[16px]"
             :style="{ color: property.fields.price.color }"
           >
-            ￥{{ fenToYuan(spu.price as any) }}
+            ￥{{ fenToYuan(spu.price!) }}
           </span>
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
             class="ml-[4px] text-[10px] line-through"
             :style="{ color: property.fields.marketPrice.color }"
-            >￥{{ fenToYuan(spu.marketPrice) }}
+            >￥{{ fenToYuan(spu.marketPrice!) }}
           </span>
         </div>
         <div class="text-[12px]">
@@ -186,5 +180,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

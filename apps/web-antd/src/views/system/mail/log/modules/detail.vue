@@ -14,7 +14,6 @@ const formData = ref<SystemMailLogApi.MailLog>();
 const [Descriptions] = useDescription({
   bordered: true,
   column: 2,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

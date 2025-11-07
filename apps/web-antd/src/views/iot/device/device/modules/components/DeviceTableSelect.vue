@@ -294,7 +294,7 @@ onMounted(async () => {
             style="width: 240px"
           >
             <Select.Option
-              v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATUS)"
+              v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATE)"
               :key="dict.value"
               :value="dict.value"
             >
@@ -373,7 +373,7 @@ onMounted(async () => {
           </template>
           <template v-else-if="column.key === 'status'">
             <DictTag
-              :type="DICT_TYPE.IOT_DEVICE_STATUS"
+              :type="DICT_TYPE.IOT_DEVICE_STATE"
               :value="record.status"
             />
           </template>

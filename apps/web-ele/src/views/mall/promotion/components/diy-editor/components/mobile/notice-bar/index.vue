@@ -34,5 +34,3 @@ defineProps<{ property: NoticeBarProperty }>();
     <IconifyIcon icon="ep:arrow-right" />
   </div>
 </template>
-
-<style scoped lang="scss"></style>

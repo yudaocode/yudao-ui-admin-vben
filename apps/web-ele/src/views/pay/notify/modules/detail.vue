@@ -19,8 +19,6 @@ const formData = ref<PayNotifyApi.NotifyTask>();
 const [Description] = useDescription({
   border: true,
   column: 2,
-  direction: 'horizontal',
-  labelWidth: 140,
   schema: useDetailSchema(),
 });
 

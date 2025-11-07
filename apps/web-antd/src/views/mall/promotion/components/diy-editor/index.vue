@@ -3,12 +3,11 @@ import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { onMounted, ref, unref, watch } from 'vue';
 
-import { IFrame } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
-import { useQRCode } from '@vueuse/integrations/useQRCode';
-import { Button, Card, Modal, Tag, Tooltip } from 'ant-design-vue';
+import { Button, Card, Col, QRCode, Row, Tag, Tooltip } from 'ant-design-vue';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
@@ -37,12 +36,7 @@ const props = defineProps({
   previewUrl: { type: String, default: '' }, // 预览地址：提供了预览地址，才会显示预览按钮
 });
 
-const emits = defineEmits(['reset', 'preview', 'save', 'update:modelValue']); // 工具栏操作
-
-const qrcode = useQRCode(props.previewUrl, {
-  errorCorrectionLevel: 'H',
-  margin: 4,
-}); // 预览二维码
+const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
 const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
@@ -68,17 +62,20 @@ watch(
       isString(props.modelValue) && !isEmpty(props.modelValue)
         ? (JSON.parse(props.modelValue) as PageConfig)
         : props.modelValue;
-    // TODO @AI：这里可以简化么？idea 提示 Invalid 'typeof' check: 'modelValue' cannot have type 'string'
+    // noinspection SuspiciousTypeOfGuard
     pageConfigComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     navigationBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.navigationBar) ||
       NAVIGATION_BAR_COMPONENT.property;
+    // noinspection SuspiciousTypeOfGuard
     tabBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.tabBar) ||
       TAB_BAR_COMPONENT.property;
     // 查找对应的页面组件
+    // noinspection SuspiciousTypeOfGuard
     pageComponents.value = (
       (typeof modelValue !== 'string' && modelValue?.components) ||
       []
@@ -98,6 +95,11 @@ watch(
   (val: any) => {
     if (!val || selectedComponentIndex.value === -1) {
       return;
+    }
+    // 如果是基础设置页，默认选中的索引改成 -1，为了防止删除组件后切换到此页导致报错
+    // https://gitee.com/yudaocode/yudao-ui-admin-vue3/pulls/792
+    if (props.showTabBar) {
+      selectedComponentIndex.value = -1;
     }
     pageComponents.value[selectedComponentIndex.value] =
       selectedComponent.value!;
@@ -166,7 +168,8 @@ function handleComponentSelected(
   component: DiyComponent<any>,
   index: number = -1,
 ) {
-  selectedComponent.value = component;
+  // 使用深拷贝避免响应式追踪循环警告
+  selectedComponent.value = cloneDeep(component);
   selectedComponentIndex.value = index;
 }
 
@@ -224,7 +227,6 @@ function handleCopyComponent(index: number) {
 
 /** 删除组件 */
 function handleDeleteComponent(index: number) {
-  // 删除组件
   pageComponents.value.splice(index, 1);
   if (index < pageComponents.value.length) {
     // 1. 不是最后一个组件时，删除后选中下面的组件
@@ -251,12 +253,17 @@ function handleReset() {
   emits('reset');
 }
 
-// TODO @AI：搞成 modal 来？
+const [PreviewModal, previewModalApi] = useVbenModal({
+  showConfirmButton: false,
+  showCancelButton: false,
+  onCancel() {
+    previewModalApi.close();
+  },
+});
+
 /** 预览 */
-const previewDialogVisible = ref(false);
 function handlePreview() {
-  previewDialogVisible.value = true;
-  emits('preview');
+  previewModalApi.open();
 }
 
 /** 设置默认选中的组件 */
@@ -281,50 +288,62 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div>
-    <div class="editor flex h-full flex-col">
-      <!-- 顶部：工具栏 -->
-      <div class="editor-header flex items-center">
-        <!-- 左侧操作区 -->
+  <Page auto-content-height>
+    <!-- 顶部：工具栏 -->
+    <Row class="bg-card flex max-h-12 rounded-lg">
+      <!-- 左侧操作区 -->
+      <Col :span="8">
         <slot name="toolBarLeft"></slot>
-        <!-- 中心操作区 -->
-        <div class="header-center flex flex-1 items-center justify-center">
-          <span>{{ title }}</span>
-        </div>
-        <!-- 右侧操作区 -->
-        <div class="header-right flex">
+      </Col>
+      <!-- 中心操作区 -->
+      <Col :span="8">
+        <span class="flex h-full items-center justify-center">{{ title }}</span>
+      </Col>
+      <!-- 右侧操作区 -->
+      <Col :span="8">
+        <Button.Group
+          direction="vertical"
+          size="large"
+          class="flex justify-end"
+        >
           <Tooltip title="重置">
             <Button @click="handleReset">
-              <IconifyIcon :size="24" icon="system-uicons:reset-alt" />
+              <IconifyIcon class="size-6" icon="lucide:refresh-cw" />
             </Button>
           </Tooltip>
           <Tooltip v-if="previewUrl" title="预览">
             <Button @click="handlePreview">
-              <IconifyIcon :size="24" icon="ep:view" />
+              <IconifyIcon class="size-6" icon="lucide:eye" />
             </Button>
           </Tooltip>
           <Tooltip title="保存">
             <Button @click="handleSave">
-              <IconifyIcon :size="24" icon="ep:check" />
+              <IconifyIcon class="size-6" icon="lucide:check" />
             </Button>
           </Tooltip>
-        </div>
-      </div>
-
-      <!-- 中心区域 -->
-      <div class="editor-container flex flex-1">
-        <!-- 左侧：组件库（ComponentLibrary） -->
+        </Button.Group>
+      </Col>
+    </Row>
+    <!-- 中心区域 -->
+    <Row class="mt-4 h-[calc(80vh)]">
+      <!-- 左侧：组件库（ComponentLibrary） -->
+      <Col :span="6">
         <ComponentLibrary
           v-if="libs && libs.length > 0"
           ref="componentLibrary"
           :list="libs"
         />
-        <!-- 中心：设计区域（ComponentContainer） -->
-        <div class="editor-center page-prop-area" @click="handlePageSelected">
+      </Col>
+      <!-- 中心：设计区域（ComponentContainer） -->
+      <Col :span="12">
+        <div
+          class="relative flex max-h-[calc(80vh)] w-full flex-1 flex-col justify-center overflow-y-auto"
+          @click="handlePageSelected"
+        >
           <!-- 手机顶部 -->
-          <div class="editor-design-top">
+          <div class="mx-auto flex w-96 flex-col">
             <!-- 手机顶部状态栏 -->
-            <img alt="" class="status-bar" :src="statusBarImg" />
+            <img alt="" class="bg-card h-6" :src="statusBarImg" />
             <!-- 手机顶部导航栏 -->
             <ComponentContainer
               v-if="showNavigationBar"
@@ -352,45 +371,49 @@ onMounted(() => {
           </div>
           <!-- 手机页面编辑区域 -->
           <div
-            class="editor-design-center page-prop-area phone-container overflow-y-auto"
+            class="min-h-full w-full"
             :style="{
-              backgroundColor: pageConfigComponent.property.backgroundColor,
+              // backgroundColor: pageConfigComponent.property.backgroundColor,
               backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
-              height: 'calc(100vh - 135px - 120px)',
             }"
           >
-            <draggable
-              v-model="pageComponents"
-              :animation="200"
-              :force-fallback="true"
-              class="page-prop-area drag-area"
-              filter=".component-toolbar"
-              ghost-class="draggable-ghost"
-              group="component"
-              item-key="index"
-              @change="handleComponentChange"
+            <div
+              class="bg-size-[auto_auto] relative mx-auto my-0 min-h-full w-96 items-center justify-center bg-no-repeat"
             >
-              <template #item="{ element, index }">
-                <ComponentContainer
-                  v-if="!element.position || element.position === 'center'"
-                  :active="selectedComponentIndex === index"
-                  :can-move-down="index < pageComponents.length - 1"
-                  :can-move-up="index > 0"
-                  :component="element"
-                  @click="handleComponentSelected(element, index)"
-                  @copy="handleCopyComponent(index)"
-                  @delete="handleDeleteComponent(index)"
-                  @move="
-                    (direction: number) => handleMoveComponent(index, direction)
-                  "
-                />
-              </template>
-            </draggable>
+              <draggable
+                v-model="pageComponents"
+                :animation="200"
+                :force-fallback="false"
+                class="min-h-full w-full"
+                filter=".component-toolbar"
+                ghost-class="draggable-ghost"
+                group="component"
+                item-key="index"
+                @change="handleComponentChange"
+              >
+                <template #item="{ element, index }">
+                  <ComponentContainer
+                    v-if="!element.position || element.position === 'center'"
+                    :active="selectedComponentIndex === index"
+                    :can-move-down="index < pageComponents.length - 1"
+                    :can-move-up="index > 0"
+                    :component="element"
+                    @click="handleComponentSelected(element, index)"
+                    @copy="handleCopyComponent(index)"
+                    @delete="handleDeleteComponent(index)"
+                    @move="
+                      (direction: number) =>
+                        handleMoveComponent(index, direction)
+                    "
+                  />
+                </template>
+              </draggable>
+            </div>
           </div>
           <!-- 手机底部导航 -->
           <div
             v-if="showTabBar"
-            class="editor-design-bottom component cursor-pointer"
+            class="bottom-2 mx-auto mb-2 w-96 cursor-pointer"
           >
             <ComponentContainer
               :active="selectedComponent?.id === tabBarComponent.id"
@@ -400,7 +423,7 @@ onMounted(() => {
             />
           </div>
           <!-- 固定布局的组件 操作按钮区 -->
-          <div class="fixed-component-action-group gap-2">
+          <div class="absolute right-4 top-0 flex flex-col gap-2">
             <Tag
               v-if="showPageConfig"
               :color="
@@ -409,9 +432,13 @@ onMounted(() => {
                   : 'default'
               "
               class="cursor-pointer"
+              size="large"
               @click="handleComponentSelected(pageConfigComponent)"
             >
-              <IconifyIcon :icon="pageConfigComponent.icon" :size="12" />
+              <IconifyIcon
+                :icon="pageConfigComponent.icon"
+                class="mr-2 size-4"
+              />
               <span>{{ pageConfigComponent.name }}</span>
             </Tag>
             <template v-for="(component, index) in pageComponents" :key="index">
@@ -422,205 +449,56 @@ onMounted(() => {
                 "
                 closable
                 class="cursor-pointer"
+                size="large"
                 @click="handleComponentSelected(component)"
                 @close="handleDeleteComponent(index)"
               >
-                <IconifyIcon :icon="component.icon" :size="12" />
+                <IconifyIcon :icon="component.icon" class="size-4" />
                 <span>{{ component.name }}</span>
               </Tag>
             </template>
           </div>
         </div>
-        <!-- 右侧：属性面板（ComponentContainerProperty） -->
-        <div v-if="selectedComponent?.property" class="editor-right w-[350px]">
-          <Card
-            class="h-full"
-            :body-style="{ height: 'calc(100% - 57px)', padding: 0 }"
-          >
-            <!-- 组件名称 -->
-            <template #title>
-              <div class="flex items-center gap-2">
-                <IconifyIcon :icon="selectedComponent?.icon" color="gray" />
-                <span>{{ selectedComponent?.name }}</span>
-              </div>
-            </template>
-            <div class="property h-full overflow-y-auto p-4">
-              <component
-                :is="`${selectedComponent?.id}Property`"
-                :key="selectedComponent?.uid || selectedComponent?.id"
-                v-model="selectedComponent.property"
-              />
+      </Col>
+      <!-- 右侧：属性面板（ComponentContainerProperty） -->
+      <Col :span="6" v-if="selectedComponent?.property">
+        <Card
+          class="h-[calc(80vh)] px-2 py-4"
+          :body-style="{ padding: 0 }"
+          :head-style="{ padding: 0, minHeight: '40px' }"
+        >
+          <!-- 组件名称 -->
+          <template #title>
+            <div class="flex h-8 items-center gap-1">
+              <IconifyIcon :icon="selectedComponent?.icon" color="gray" />
+              <span>{{ selectedComponent?.name }}</span>
             </div>
-          </Card>
-        </div>
-      </div>
-    </div>
+          </template>
+          <div
+            class="property mt-0 max-h-[calc(80vh-100px)] overflow-y-auto p-4"
+          >
+            <component
+              :is="`${selectedComponent?.id}Property`"
+              :key="selectedComponent?.uid || selectedComponent?.id"
+              v-model="selectedComponent.property"
+            />
+          </div>
+        </Card>
+      </Col>
+    </Row>
 
     <!-- 预览弹框 -->
-    <Modal v-model:open="previewDialogVisible" title="预览" width="700">
+    <PreviewModal title="预览" class="w-[700px]">
       <div class="flex justify-around">
-        <IFrame
+        <iframe
           :src="previewUrl"
-          class="h-[667px] w-[375px] rounded-lg border-4 border-solid p-0.5"
-        />
+          class="h-[667px] w-96 rounded-lg border-4 border-solid p-0.5"
+        ></iframe>
         <div class="flex flex-col">
           <div class="text-base">手机扫码预览</div>
-          <img :src="qrcode" alt="qrcode" class="w-1/2" />
-          <!-- <Qrcode :text="previewUrl" logo="/logo.gif" /> -->
+          <QRCode :value="previewUrl" error-level="H" />
         </div>
       </div>
-    </Modal>
-  </div>
+    </PreviewModal>
+  </Page>
 </template>
-<style lang="scss" scoped>
-/* 手机宽度 */
-$phone-width: 375px;
-
-/* 根节点样式 */
-.editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  /* 顶部：工具栏 */
-  .editor-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 42px;
-    padding: 0;
-    background-color: var(--ant-color-bg-container);
-    border-bottom: solid 1px var(--ant-color-border);
-
-    /* 工具栏：右侧按钮 */
-    .header-right {
-      height: 100%;
-
-      .ant-btn {
-        height: 100%;
-      }
-    }
-
-    /* 隐藏工具栏按钮的边框 */
-    :deep(.ant-radio-button-wrapper),
-    :deep(.ant-btn) {
-      border-top: none !important;
-      border-bottom: none !important;
-      border-radius: 0 !important;
-    }
-  }
-
-  /* 中心操作区 */
-  .editor-container {
-    height: calc(100vh - 135px);
-
-    /* 右侧属性面板 */
-    :deep(.editor-right) {
-      flex-shrink: 0;
-      overflow: hidden;
-      box-shadow: -8px 0 8px -8px rgb(0 0 0 / 12%);
-
-      /* 属性面板顶部：减少内边距 */
-      :deep(.ant-card-head) {
-        padding: 8px 16px;
-      }
-
-      /* 属性面板分组 */
-      :deep(.property-group) {
-        margin: 0 -20px;
-
-        &.ant-card {
-          border: none;
-        }
-
-        /* 属性分组名称 */
-        .ant-card-head {
-          padding: 8px 32px;
-          background: var(--ant-color-bg-layout);
-          border: none;
-        }
-
-        .ant-card-body {
-          border: none;
-        }
-      }
-    }
-
-    /* 中心区域 */
-    .editor-center {
-      position: relative;
-      display: flex;
-      flex: 1 1 0;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      margin: 16px 0 0;
-      overflow: hidden;
-      background-color: var(--app-content-bg-color);
-
-      /* 手机顶部 */
-      .editor-design-top {
-        display: flex;
-        flex-direction: column;
-        width: $phone-width;
-        margin: 0 auto;
-
-        /* 手机顶部状态栏 */
-        .status-bar {
-          width: $phone-width;
-          height: 20px;
-          background-color: #fff;
-        }
-      }
-
-      /* 手机底部导航 */
-      .editor-design-bottom {
-        width: $phone-width;
-        margin: 0 auto;
-      }
-
-      /* 手机页面编辑区域 */
-      :deep(.editor-design-center) {
-        width: 100%;
-
-        /* 主体内容 */
-        .phone-container {
-          position: relative;
-          width: $phone-width;
-          height: 100%;
-          margin: 0 auto;
-          background-repeat: no-repeat;
-          background-size: 100% 100%;
-
-          .drag-area {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-
-      /* 固定布局的组件 操作按钮区 */
-      .fixed-component-action-group {
-        position: absolute;
-        top: 0;
-        right: 16px;
-        display: flex;
-        flex-direction: column;
-
-        :deep(.ant-tag) {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          width: 100%;
-          border: none;
-          box-shadow: 0 2px 8px 0 rgb(0 0 0 / 10%);
-
-          .anticon {
-            margin-right: 4px;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

@@ -170,7 +170,7 @@ watch(
 </script>
 
 <template>
-  <div class="gap-16px flex flex-col">
+  <div class="flex flex-col gap-4">
     <Row :gutter="16">
       <!-- 时间操作符选择 -->
       <Col :span="8">
@@ -190,7 +190,7 @@ watch(
               :value="option.value"
             >
               <div class="flex w-full items-center justify-between">
-                <div class="gap-8px flex items-center">
+                <div class="flex items-center gap-2">
                   <IconifyIcon :icon="option.icon" :class="option.iconClass" />
                   <span>{{ option.label }}</span>
                 </div>
@@ -225,9 +225,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-14px text-[var(--el-text-color-placeholder)]">
-            无需设置时间值
-          </div>
+          <div v-else class="text-secondary text-sm">无需设置时间值</div>
         </Form.Item>
       </Col>
 

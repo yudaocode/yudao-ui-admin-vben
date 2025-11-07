@@ -13,14 +13,14 @@ export interface SearchProperty {
   style: ComponentStyle;
 }
 
-// 文字位置
+/** 文字位置 */
 export type PlaceholderPosition = 'center' | 'left';
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'SearchBar',
   name: '搜索框',
-  icon: 'ep:search',
+  icon: 'lucide:search',
   property: {
     height: 28,
     showScan: false,

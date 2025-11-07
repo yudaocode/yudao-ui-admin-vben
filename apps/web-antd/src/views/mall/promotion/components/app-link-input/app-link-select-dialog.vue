@@ -37,9 +37,12 @@ const detailSelectDialog = ref<{
   type: undefined,
 }); // 详情选择对话框
 
-/** 打开弹窗 */
 const dialogVisible = ref(false);
-const open = (link: string) => {
+
+defineExpose({ open });
+
+/** 打开弹窗 */
+async function open(link: string) {
   activeAppLink.value.path = link;
   dialogVisible.value = true;
   // 滚动到当前的链接
@@ -54,19 +57,18 @@ const open = (link: string) => {
   );
   if (group) {
     // 使用 nextTick 的原因：可能 Dom 还没生成，导致滚动失败
-    nextTick(() => handleGroupSelected(group.name));
+    await nextTick();
+    handleGroupSelected(group.name);
   }
-};
-defineExpose({ open });
+}
 
 /** 处理 APP 链接选中 */
-const handleAppLinkSelected = (appLink: AppLink) => {
+function handleAppLinkSelected(appLink: AppLink) {
   if (!isSameLink(appLink.path, activeAppLink.value.path)) {
     activeAppLink.value = appLink;
   }
   switch (appLink.type) {
     case APP_LINK_TYPE_ENUM.PRODUCT_CATEGORY_LIST: {
-      detailSelectDialog.value.visible = true;
       detailSelectDialog.value.type = appLink.type;
       // 返显
       detailSelectDialog.value.id =
@@ -74,26 +76,30 @@ const handleAppLinkSelected = (appLink: AppLink) => {
           'id',
           `http://127.0.0.1${activeAppLink.value.path}`,
         ) || undefined;
+      detailSelectDialog.value.visible = true;
       break;
     }
     default: {
       break;
     }
   }
-};
+}
 
+/** 处理确认提交 */
 function handleSubmit() {
-  dialogVisible.value = false;
   emit('change', activeAppLink.value.path);
   emit('appLinkChange', activeAppLink.value);
+  dialogVisible.value = false;
 }
 
 /**
  * 处理右侧链接列表滚动
+ *
  * @param {object} param0 滚动事件参数
  * @param {number} param0.scrollTop 滚动条的位置
  */
-function handleScroll({ scrollTop }: { scrollTop: number }) {
+function handleScroll(event: Event) {
+  const scrollTop = (event.target as HTMLDivElement).scrollTop;
   const titleEl = groupTitleRefs.value.find((titleEl: HTMLInputElement) => {
     // 获取标题的位置信息
     const { offsetHeight, offsetTop } = titleEl;
@@ -137,27 +143,33 @@ function isSameLink(link1: string, link2: string) {
 
 /** 处理详情选择 */
 function handleProductCategorySelected(id: number) {
-  // TODO @AI：这里有点问题；activeAppLink 地址；
+  // 生成 activeAppLink
   const url = new URL(activeAppLink.value.path, 'http://127.0.0.1');
-  // 修改 id 参数
   url.searchParams.set('id', `${id}`);
-  // 排除域名
   activeAppLink.value.path = `${url.pathname}${url.search}`;
-  // 关闭对话框
+
+  // 关闭对话框，并重置 id
   detailSelectDialog.value.visible = false;
-  // 重置 id
   detailSelectDialog.value.id = undefined;
 }
 </script>
 <template>
-  <Modal v-model:open="dialogVisible" title="选择链接" width="65%">
+  <Modal
+    v-model:open="dialogVisible"
+    title="选择链接"
+    width="65%"
+    @ok="handleSubmit"
+  >
     <div class="flex h-[500px] gap-2">
       <!-- 左侧分组列表 -->
-      <div class="flex h-full flex-col overflow-y-auto" ref="groupScrollbar">
+      <div
+        class="flex h-full flex-col overflow-y-auto border-r border-gray-200 pr-2"
+        ref="groupScrollbar"
+      >
         <Button
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
-          class="mb-1 ml-0 mr-4 w-[90px] justify-start"
+          class="!ml-0 mb-1 mr-4 !justify-start"
           :class="[{ active: activeGroup === group.name }]"
           ref="groupBtnRefs"
           :type="activeGroup === group.name ? 'primary' : 'default'"
@@ -168,16 +180,19 @@ function handleProductCategorySelected(id: number) {
       </div>
       <!-- 右侧链接列表 -->
       <div
-        class="h-full flex-1 overflow-y-auto"
+        class="h-full flex-1 overflow-y-auto pl-2"
         @scroll="handleScroll"
         ref="linkScrollbar"
       >
         <div
           v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
           :key="groupIndex"
+          class="mb-4 border-b border-gray-100 pb-4 last:mb-0 last:border-b-0"
         >
           <!-- 分组标题 -->
-          <div class="font-bold" ref="groupTitleRefs">{{ group.name }}</div>
+          <div class="mb-2 font-bold" ref="groupTitleRefs">
+            {{ group.name }}
+          </div>
           <!-- 链接列表 -->
           <Tooltip
             v-for="(appLink, appLinkIndex) in group.links"
@@ -201,13 +216,9 @@ function handleProductCategorySelected(id: number) {
         </div>
       </div>
     </div>
-    <!-- 底部对话框操作按钮 -->
-    <template #footer>
-      <Button type="primary" @click="handleSubmit">确 定</Button>
-      <Button @click="dialogVisible = false">取 消</Button>
-    </template>
   </Modal>
-  <Modal v-model:open="detailSelectDialog.visible" title="" width="50%">
+
+  <Modal v-model:open="detailSelectDialog.visible" title="选择分类" width="65%">
     <Form class="min-h-[200px]">
       <FormItem
         label="选择分类"
@@ -224,6 +235,7 @@ function handleProductCategorySelected(id: number) {
     </Form>
   </Modal>
 </template>
+
 <style lang="scss" scoped>
 :deep(.ant-btn + .ant-btn) {
   margin-left: 0 !important;

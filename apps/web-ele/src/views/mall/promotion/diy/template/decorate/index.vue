@@ -19,9 +19,12 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import * as DiyPageApi from '#/api/mall/promotion/diy/page';
-import * as DiyTemplateApi from '#/api/mall/promotion/diy/template';
-import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
+import { updateDiyPageProperty } from '#/api/mall/promotion/diy/page';
+import {
+  getDiyTemplateProperty,
+  updateDiyTemplateProperty,
+} from '#/api/mall/promotion/diy/template';
+import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components'; // 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复
 
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
@@ -59,7 +62,7 @@ async function getPageDetail(id: any) {
     text: '加载中...',
   });
   try {
-    formData.value = await DiyTemplateApi.getDiyTemplateProperty(id);
+    formData.value = await getDiyTemplateProperty(id);
 
     // 拼接手机预览链接
     const domain = import.meta.env.VITE_MALL_H5_DOMAIN;
@@ -116,20 +119,18 @@ async function submitForm() {
       // 情况一：基础设置
       if (i === 0) {
         // 提交模板属性
-        await DiyTemplateApi.updateDiyTemplateProperty(
-          isEmpty(data) ? formData.value! : data,
-        );
+        await updateDiyTemplateProperty(isEmpty(data) ? formData.value! : data);
         continue;
       }
       // 提交页面属性
       // 情况二：提交当前正在编辑的页面
       if (currentFormData.value?.name.includes(templateItem.name)) {
-        await DiyPageApi.updateDiyPageProperty(currentFormData.value!);
+        await updateDiyPageProperty(currentFormData.value!);
         continue;
       }
       // 情况三：提交页面编辑缓存
       if (!isEmpty(data)) {
-        await DiyPageApi.updateDiyPageProperty(data!);
+        await updateDiyPageProperty(data!);
       }
     }
     ElMessage.success('保存成功');

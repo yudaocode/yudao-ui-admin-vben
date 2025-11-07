@@ -95,7 +95,7 @@ const calculateWidth = () => {
 <template>
   <div
     ref="containerRef"
-    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
+    class="box-content flex min-h-9 w-full flex-row flex-wrap"
   >
     <div
       v-for="(spu, index) in spuList"
@@ -108,26 +108,22 @@ const calculateWidth = () => {
         borderBottomLeftRadius: `${property.borderRadiusBottom}px`,
         borderBottomRightRadius: `${property.borderRadiusBottom}px`,
       }"
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
     >
       <!-- 角标 -->
       <div
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image
-          :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
-          fit="cover"
-        />
+        <Image :src="property.badge.imgUrl" class="h-6 w-10" fit="cover" />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-[140px]"
+        class="h-36"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[140px]': property.layoutType === 'oneColSmallImg',
+            'w-36': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
@@ -146,7 +142,7 @@ const calculateWidth = () => {
         <!-- 商品名称 -->
         <div
           v-if="property.fields.name.show"
-          class="text-[14px]"
+          class="text-sm"
           :class="[
             {
               truncate: property.layoutType !== 'oneColSmallImg',
@@ -162,7 +158,7 @@ const calculateWidth = () => {
         <div
           v-if="property.fields.introduction.show"
           :style="{ color: property.fields.introduction.color }"
-          class="truncate text-[12px]"
+          class="truncate text-xs"
         >
           {{ spu.introduction }}
         </div>
@@ -171,7 +167,7 @@ const calculateWidth = () => {
           <span
             v-if="property.fields.price.show"
             :style="{ color: property.fields.price.color }"
-            class="text-[16px]"
+            class="text-base"
           >
             {{ spu.point }}积分
             {{
@@ -184,12 +180,12 @@ const calculateWidth = () => {
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
             :style="{ color: property.fields.marketPrice.color }"
-            class="ml-[4px] text-[10px] line-through"
+            class="ml-1 text-xs line-through"
           >
             ￥{{ fenToYuan(spu.marketPrice) }}
           </span>
         </div>
-        <div class="text-[12px]">
+        <div class="text-xs">
           <!-- 销量 -->
           <span
             v-if="property.fields.salesCount.show"
@@ -207,14 +203,14 @@ const calculateWidth = () => {
         </div>
       </div>
       <!-- 购买按钮 -->
-      <div class="absolute bottom-[8px] right-[8px]">
+      <div class="absolute bottom-2 right-2">
         <!-- 文字按钮 -->
         <span
           v-if="property.btnBuy.type === 'text'"
           :style="{
             background: `linear-gradient(to right, ${property.btnBuy.bgBeginColor}, ${property.btnBuy.bgEndColor}`,
           }"
-          class="rounded-full px-[12px] py-[4px] text-[12px] text-white"
+          class="rounded-full px-3 py-1 text-sm text-white"
         >
           {{ property.btnBuy.text }}
         </span>
@@ -222,12 +218,10 @@ const calculateWidth = () => {
         <Image
           v-else
           :src="property.btnBuy.imgUrl"
-          class="h-[28px] w-[28px] rounded-full"
+          class="size-7 rounded-full"
           fit="cover"
         />
       </div>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

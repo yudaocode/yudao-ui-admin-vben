@@ -27,6 +27,7 @@ import {
   getTradeStatisticsList,
 } from '#/api/mall/statistics/trade';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
+import { $t } from '#/locales';
 
 import { getTradeTrendChartOptions } from './trend-chart-options';
 
@@ -138,7 +139,7 @@ async function handleExport() {
               <template #icon>
                 <IconifyIcon icon="lucide:download" />
               </template>
-              导出
+              {{ $t('page.action.export') }}
             </ElButton>
           </ShortcutDateRangePicker>
         </div>

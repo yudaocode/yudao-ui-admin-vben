@@ -186,7 +186,7 @@ watch(
         operator ===
         IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value
       "
-      class="w-full! gap-8px flex items-center"
+      class="w-full! flex items-center gap-2"
     >
       <Input
         v-model="rangeStart"
@@ -196,11 +196,7 @@ watch(
         class="min-w-0 flex-1"
         style="width: auto !important"
       />
-      <span
-        class="text-12px whitespace-nowrap text-[var(--el-text-color-secondary)]"
-      >
-        至
-      </span>
+      <span class="text-secondary whitespace-nowrap text-xs"> 至 </span>
       <Input
         v-model="rangeEnd"
         :type="getInputType()"
@@ -226,18 +222,16 @@ watch(
           <Tooltip content="多个值用逗号分隔，如：1,2,3" placement="top">
             <IconifyIcon
               icon="ep:question-filled"
-              class="cursor-help text-[var(--el-text-color-placeholder)]"
+              class="cursor-help text-gray-400"
             />
           </Tooltip>
         </template>
       </Input>
       <div
         v-if="listPreview.length > 0"
-        class="mt-8px gap-6px flex flex-wrap items-center"
+        class="mt-2 flex flex-wrap items-center gap-1"
       >
-        <span class="text-12px text-[var(--el-text-color-secondary)]">
-          解析结果：
-        </span>
+        <span class="text-secondary text-xs"> 解析结果： </span>
         <Tag
           v-for="(item, index) in listPreview"
           :key="index"
@@ -288,7 +282,7 @@ watch(
           :content="`单位：${propertyConfig.unit}`"
           placement="top"
         >
-          <span class="text-12px px-4px text-[var(--el-text-color-secondary)]">
+          <span class="text-secondary px-1 text-xs">
             {{ propertyConfig.unit }}
           </span>
         </Tooltip>

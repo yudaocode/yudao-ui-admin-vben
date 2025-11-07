@@ -343,9 +343,9 @@ onMounted(async () => {
             v-if="conversationMap[conversationKey].length > 0"
             class="classify-title pt-2"
           >
-            <b class="mx-1">
+            <p class="mx-1">
               {{ conversationKey }}
-            </b>
+            </p>
           </div>
 
           <div
@@ -357,11 +357,9 @@ onMounted(async () => {
             class="mt-1"
           >
             <div
-              class="flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
+              class="mb-2 flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
               :class="[
-                conversation.id === activeConversationId
-                  ? 'bg-success-600'
-                  : '',
+                conversation.id === activeConversationId ? 'bg-success' : '',
               ]"
             >
               <div class="flex items-center">

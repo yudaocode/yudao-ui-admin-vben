@@ -7,7 +7,12 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { ref, watch } from 'vue';
 
-import { copyValueToTarget, formatToFraction, isEmpty } from '@vben/utils';
+import {
+  copyValueToTarget,
+  formatToFraction,
+  getNestedValue,
+  isEmpty,
+} from '@vben/utils';
 
 import { Button, Image, Input, InputNumber, message } from 'ant-design-vue';
 
@@ -43,9 +48,12 @@ const emit = defineEmits<{
 
 const { isBatch, isDetail, isComponent, isActivityComponent } = props;
 
-const formData: Ref<MallSpuApi.Spu | undefined> = ref<MallSpuApi.Spu>(); // 表单数据
-const skuList = ref<MallSpuApi.Sku[]>([
-  {
+const formData: Ref<MallSpuApi.Spu | undefined> = ref<MallSpuApi.Spu>();
+const tableHeaders = ref<{ label: string; prop: string }[]>([]);
+
+/** 创建空 SKU 数据 */
+function createEmptySku(): MallSpuApi.Sku {
+  return {
     price: 0,
     marketPrice: 0,
     costPrice: 0,
@@ -56,8 +64,10 @@ const skuList = ref<MallSpuApi.Sku[]>([
     volume: 0,
     firstBrokeragePrice: 0,
     secondBrokeragePrice: 0,
-  },
-]); // 批量添加时的临时数据
+  };
+}
+
+const skuList = ref<MallSpuApi.Sku[]>([createEmptySku()]);
 
 /** 批量添加 */
 function batchAdd() {
@@ -79,54 +89,38 @@ function validateProperty() {
   }
 }
 
-/** 删除 sku */
+/** 删除 SKU */
 function deleteSku(row: MallSpuApi.Sku) {
   const index = formData.value!.skus!.findIndex(
-    // 直接把列表转成字符串比较
     (sku: MallSpuApi.Sku) =>
       JSON.stringify(sku.properties) === JSON.stringify(row.properties),
   );
-  formData.value!.skus!.splice(index, 1);
+  if (index !== -1) {
+    formData.value!.skus!.splice(index, 1);
+  }
 }
 
-const tableHeaders = ref<{ label: string; prop: string }[]>([]); // 多属性表头
-
-/** 保存时，每个商品规格的表单要校验下。例如说,销售金额最低是 0.01 这种 */
+/** 校验 SKU 数据：保存时，每个商品规格的表单要校验。例如：销售金额最低是 0.01 */
 function validateSku() {
   validateProperty();
   let warningInfo = '请检查商品各行相关属性配置，';
-  let validate = true; // 默认通过
+  let validate = true;
+
   for (const sku of formData.value!.skus!) {
-    // 作为活动组件的校验
     for (const rule of props?.ruleConfig as RuleConfig[]) {
-      const arg = getValue(sku, rule.name);
-      if (!rule.rule(arg)) {
-        validate = false; // 只要有一个不通过则直接不通过
+      const value = getNestedValue(sku, rule.name);
+      if (!rule.rule(value)) {
+        validate = false;
         warningInfo += rule.message;
         break;
       }
     }
-    // 只要有一个不通过则结束后续的校验
+
     if (!validate) {
       message.warning(warningInfo);
       throw new Error(warningInfo);
     }
   }
-}
-
-// TODO @puhui999：是不是可以通过 getNestedValue  简化？
-function getValue(obj: any, arg: string): unknown {
-  const keys = arg.split('.');
-  let value: any = obj;
-  for (const key of keys) {
-    if (value && typeof value === 'object' && key in value) {
-      value = value[key];
-    } else {
-      value = undefined;
-      break;
-    }
-  }
-  return value;
 }
 
 /**
@@ -155,7 +149,6 @@ watch(
 
 /** 生成表数据 */
 function generateTableData(propertyList: PropertyAndValues[]) {
-  // 构建数据结构
   const propertyValues = propertyList.map((item: PropertyAndValues) =>
     (item.values || []).map((v: { id: number; name: string }) => ({
       propertyId: item.id,
@@ -164,35 +157,30 @@ function generateTableData(propertyList: PropertyAndValues[]) {
       valueName: v.name,
     })),
   );
+
   const buildSkuList = build(propertyValues);
+
   // 如果回显的 sku 属性和添加的属性不一致则重置 skus 列表
   if (!validateData(propertyList)) {
-    // 如果不一致则重置表数据，默认添加新的属性重新生成 sku 列表
     formData.value!.skus = [];
   }
+
   for (const item of buildSkuList) {
+    const properties = Array.isArray(item) ? item : [item];
     const row = {
-      properties: Array.isArray(item) ? item : [item], // 如果只有一个属性的话返回的是一个 property 对象
-      price: 0,
-      marketPrice: 0,
-      costPrice: 0,
-      barCode: '',
-      picUrl: '',
-      stock: 0,
-      weight: 0,
-      volume: 0,
-      firstBrokeragePrice: 0,
-      secondBrokeragePrice: 0,
+      ...createEmptySku(),
+      properties,
     };
+
     // 如果存在属性相同的 sku 则不做处理
-    const index = formData.value!.skus!.findIndex(
+    const exists = formData.value!.skus!.some(
       (sku: MallSpuApi.Sku) =>
         JSON.stringify(sku.properties) === JSON.stringify(row.properties),
     );
-    if (index !== -1) {
-      continue;
+
+    if (!exists) {
+      formData.value!.skus!.push(row);
     }
-    formData.value!.skus!.push(row);
   }
 }
 
@@ -224,7 +212,9 @@ function build(
     const result: MallSpuApi.Property[][] = [];
     const rest = build(propertyValuesList.slice(1));
     const firstList = propertyValuesList[0];
-    if (!firstList) return [];
+    if (!firstList) {
+      return [];
+    }
 
     for (const element of firstList) {
       for (const element_ of rest) {
@@ -248,43 +238,33 @@ watch(
     if (!formData.value!.specType) {
       return;
     }
+
     // 如果当前组件作为批量添加数据使用，则重置表数据
     if (props.isBatch) {
-      skuList.value = [
-        {
-          price: 0,
-          marketPrice: 0,
-          costPrice: 0,
-          barCode: '',
-          picUrl: '',
-          stock: 0,
-          weight: 0,
-          volume: 0,
-          firstBrokeragePrice: 0,
-          secondBrokeragePrice: 0,
-        },
-      ];
+      skuList.value = [createEmptySku()];
     }
 
     // 判断代理对象是否为空
     if (JSON.stringify(propertyList) === '[]') {
       return;
     }
-    // 重置表头
-    tableHeaders.value = [];
-    // 生成表头
-    propertyList.forEach((item, index) => {
-      // name加属性项index区分属性值
-      tableHeaders.value.push({ prop: `name${index}`, label: item.name });
-    });
+
+    // 重置并生成表头
+    tableHeaders.value = propertyList.map((item, index) => ({
+      prop: `name${index}`,
+      label: item.name,
+    }));
+
     // 如果回显的 sku 属性和添加的属性一致则不处理
     if (validateData(propertyList)) {
       return;
     }
+
     // 添加新属性没有属性值也不做处理
     if (propertyList.some((item) => !item.values || isEmpty(item.values))) {
       return;
     }
+
     // 生成 table 数据，即 sku 列表
     generateTableData(propertyList);
   },
@@ -296,26 +276,35 @@ watch(
 
 const activitySkuListRef = ref();
 
+/** 获取 SKU 表格引用 */
 function getSkuTableRef() {
   return activitySkuListRef.value;
 }
 
-defineExpose({ generateTableData, validateSku, getSkuTableRef });
+defineExpose({
+  generateTableData,
+  validateSku,
+  getSkuTableRef,
+});
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <!-- 情况一：添加/修改 -->
-    <!-- TODO @puhui999：有可以通过 grid 来做么？主要考虑，这样不直接使用 vxe 标签，抽象程度更高； -->
     <VxeTable
       v-if="!isDetail && !isActivityComponent"
       :data="isBatch ? skuList : formData?.skus || []"
       border
       max-height="500"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
       size="small"
-      class="w-full"
     >
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn align="center" title="图片" width="120" fixed="left">
         <template #default="{ row }">
           <ImageUpload
             v-model:value="row.picUrl"
@@ -332,7 +321,8 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           :key="index"
           :title="item.label"
           align="center"
-          min-width="120"
+          fixed="left"
+          min-width="80"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -341,12 +331,12 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="168">
+      <VxeColumn align="center" title="商品条码" width="168">
         <template #default="{ row }">
           <Input v-model:value="row.barCode" class="w-full" />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价" min-width="168">
+      <VxeColumn align="center" title="销售价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.price"
@@ -357,7 +347,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价" min-width="168">
+      <VxeColumn align="center" title="市场价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.marketPrice"
@@ -368,7 +358,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价" min-width="168">
+      <VxeColumn align="center" title="成本价" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.costPrice"
@@ -379,12 +369,12 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="168">
+      <VxeColumn align="center" title="库存" width="168">
         <template #default="{ row }">
           <InputNumber v-model:value="row.stock" :min="0" class="w-full" />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="重量(kg)" min-width="168">
+      <VxeColumn align="center" title="重量(kg)" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.weight"
@@ -395,7 +385,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           />
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="体积(m^3)" min-width="168">
+      <VxeColumn align="center" title="体积(m^3)" width="168">
         <template #default="{ row }">
           <InputNumber
             v-model:value="row.volume"
@@ -407,7 +397,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
         </template>
       </VxeColumn>
       <template v-if="formData?.subCommissionType">
-        <VxeColumn align="center" title="一级返佣(元)" min-width="168">
+        <VxeColumn align="center" title="一级返佣(元)" width="168">
           <template #default="{ row }">
             <InputNumber
               v-model:value="row.firstBrokeragePrice"
@@ -418,7 +408,7 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
             />
           </template>
         </VxeColumn>
-        <VxeColumn align="center" title="二级返佣(元)" min-width="168">
+        <VxeColumn align="center" title="二级返佣(元)" width="168">
           <template #default="{ row }">
             <InputNumber
               v-model:value="row.secondBrokeragePrice"
@@ -462,13 +452,18 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
       border
       max-height="500"
       size="small"
-      class="w-full"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
       :checkbox-config="isComponent ? { reserve: true } : undefined"
       @checkbox-change="handleSelectionChange"
       @checkbox-all="handleSelectionChange"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
             v-if="row.picUrl"
@@ -485,7 +480,8 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           :key="index"
           :title="item.label"
           align="center"
-          min-width="80"
+          max-width="80"
+          fixed="left"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -494,48 +490,48 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="100">
+      <VxeColumn align="center" title="商品条码" width="100">
         <template #default="{ row }">
           {{ row.barCode }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价(元)" min-width="80">
+      <VxeColumn align="center" title="销售价(元)" width="80">
         <template #default="{ row }">
           {{ row.price }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价(元)" min-width="80">
+      <VxeColumn align="center" title="市场价(元)" width="80">
         <template #default="{ row }">
           {{ row.marketPrice }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价(元)" min-width="80">
+      <VxeColumn align="center" title="成本价(元)" width="80">
         <template #default="{ row }">
           {{ row.costPrice }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="80">
+      <VxeColumn align="center" title="库存" width="80">
         <template #default="{ row }">
           {{ row.stock }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="重量(kg)" min-width="80">
+      <VxeColumn align="center" title="重量(kg)" width="80">
         <template #default="{ row }">
           {{ row.weight }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="体积(m^3)" min-width="80">
+      <VxeColumn align="center" title="体积(m^3)" width="80">
         <template #default="{ row }">
           {{ row.volume }}
         </template>
       </VxeColumn>
       <template v-if="formData?.subCommissionType">
-        <VxeColumn align="center" title="一级返佣(元)" min-width="80">
+        <VxeColumn align="center" title="一级返佣(元)" width="80">
           <template #default="{ row }">
             {{ row.firstBrokeragePrice }}
           </template>
         </VxeColumn>
-        <VxeColumn align="center" title="二级返佣(元)" min-width="80">
+        <VxeColumn align="center" title="二级返佣(元)" width="80">
           <template #default="{ row }">
             {{ row.secondBrokeragePrice }}
           </template>
@@ -550,10 +546,15 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
       border
       max-height="500"
       size="small"
-      class="w-full"
+      :column-config="{
+        resizable: true,
+      }"
+      :resizable-config="{
+        dragMode: 'fixed',
+      }"
     >
-      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
-      <VxeColumn align="center" title="图片" min-width="120">
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
+      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
             :src="row.picUrl"
@@ -569,7 +570,8 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           :key="index"
           :title="item.label"
           align="center"
-          min-width="80"
+          width="80"
+          fixed="left"
         >
           <template #default="{ row }">
             <span class="font-bold text-[#40aaff]">
@@ -578,27 +580,27 @@ defineExpose({ generateTableData, validateSku, getSkuTableRef });
           </template>
         </VxeColumn>
       </template>
-      <VxeColumn align="center" title="商品条码" min-width="100">
+      <VxeColumn align="center" title="商品条码" width="100">
         <template #default="{ row }">
           {{ row.barCode }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="销售价(元)" min-width="80">
+      <VxeColumn align="center" title="销售价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.price) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="市场价(元)" min-width="80">
+      <VxeColumn align="center" title="市场价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.marketPrice) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="成本价(元)" min-width="80">
+      <VxeColumn align="center" title="成本价(元)" width="80">
         <template #default="{ row }">
           {{ formatToFraction(row.costPrice) }}
         </template>
       </VxeColumn>
-      <VxeColumn align="center" title="库存" min-width="80">
+      <VxeColumn align="center" title="库存" width="80">
         <template #default="{ row }">
           {{ row.stock }}
         </template>

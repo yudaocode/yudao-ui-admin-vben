@@ -1,10 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  PromotionConditionTypeEnum,
+  PromotionProductScopeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
+import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -98,8 +103,8 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
       fieldName: 'id',
+      component: 'Input',
       dependencies: {
         triggerFields: [''],
         show: () => false,
@@ -109,23 +114,36 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '活动名称',
       component: 'Input',
+      rules: 'required',
       componentProps: {
         placeholder: '请输入活动名称',
+        allowClear: true,
       },
-      rules: 'required',
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 4,
+        allowClear: true,
+      },
     },
     {
       fieldName: 'startAndEndTime',
       label: '活动时间',
       component: 'RangePicker',
+      rules: 'required',
       componentProps: {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
-        placeholder: [$t('common.startTimeText'), $t('common.endTimeText')],
+        placeholder: [
+          $t('utils.rangePicker.beginTime'),
+          $t('utils.rangePicker.endTime'),
+        ],
       },
-      rules: 'required',
     },
-    // TODO @puhui999：增加一个 defaultValue
     {
       fieldName: 'conditionType',
       label: '条件类型',
@@ -135,8 +153,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      defaultValue: PromotionConditionTypeEnum.PRICE.type,
-      rules: 'required',
+      rules: z.number().default(PromotionConditionTypeEnum.PRICE.type),
     },
     {
       fieldName: 'productScope',
@@ -147,16 +164,28 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      rules: z.number().default(PromotionProductScopeEnum.ALL.scope),
+    },
+    // TODO @puhui999：选择完删除后，自动就退出了 modal；
+    {
+      fieldName: 'productSpuIds',
+      label: '选择商品',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['productScope'],
+        show: (values) => {
+          return values.productScope === PromotionProductScopeEnum.SPU.scope;
+        },
+      },
       rules: 'required',
     },
+    // TODO @puhui999：这里还有个分类；
     {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-        rows: 4,
-      },
+      fieldName: 'rules',
+      label: '优惠设置',
+      component: 'Input',
+      formItemClass: 'items-start',
+      // TODO @puhui999：这里可能要加个 rules: 'required',
     },
   ];
 }

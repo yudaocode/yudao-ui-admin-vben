@@ -2,11 +2,10 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 用户订单属性 */
 export interface UserOrderProperty {
-  // 组件样式
-  style: ComponentStyle;
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'UserOrder',
   name: '用户订单',

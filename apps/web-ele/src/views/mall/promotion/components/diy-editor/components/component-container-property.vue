@@ -169,9 +169,7 @@ const handleSliderChange = (prop: string) => {
                 class="mb-0 w-full"
               >
                 <ElSlider
-                  v-model="
-                    formData[data.prop as keyof ComponentStyle] as number
-                  "
+                  v-model="formData[data.prop]"
                   :max="100"
                   :min="0"
                   show-input
@@ -196,5 +194,15 @@ const handleSliderChange = (prop: string) => {
 
 :deep(.el-input-number) {
   width: 50px;
+}
+
+:deep(.el-tree) {
+  .el-tree-node__expand-icon {
+    margin-right: -15px;
+  }
+
+  .el-form-item {
+    margin-bottom: 0;
+  }
 }
 </style>

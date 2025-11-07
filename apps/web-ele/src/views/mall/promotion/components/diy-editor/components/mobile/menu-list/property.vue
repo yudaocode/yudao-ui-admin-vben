@@ -18,7 +18,9 @@ import { EMPTY_MENU_LIST_ITEM_PROPERTY } from './config';
 defineOptions({ name: 'MenuListProperty' });
 
 const props = defineProps<{ modelValue: MenuListProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -26,8 +28,6 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <ElText tag="p"> 菜单设置 </ElText>
     <ElText type="info" size="small"> 拖动左侧的小圆点可以调整顺序 </ElText>
-
-    <!-- 表单 -->
     <ElForm label-width="60px" :model="formData" class="mt-2">
       <Draggable
         v-model="formData.list"
@@ -64,5 +64,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

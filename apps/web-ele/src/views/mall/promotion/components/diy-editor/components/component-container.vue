@@ -93,15 +93,11 @@ const handleDeleteComponent = () => {
 };
 </script>
 <template>
-  <div class="component" :class="[{ active }]">
-    <div
-      :style="{
-        ...style,
-      }"
-    >
+  <div class="component relative cursor-move" :class="[{ active }]">
+    <div :style="style">
       <component :is="component.id" :property="component.property" />
     </div>
-    <div class="component-wrap">
+    <div class="component-wrap absolute left-[-2px] top-0 block h-full w-full">
       <!-- 左侧：组件名（悬浮的小贴条） -->
       <div class="component-name" v-if="component.name">
         {{ component.name }}
@@ -150,19 +146,8 @@ $hover-border-width: 1px;
 $name-position: -85px;
 $toolbar-position: -55px;
 
-/* 组件 */
 .component {
-  position: relative;
-  cursor: move;
-
   .component-wrap {
-    position: absolute;
-    top: 0;
-    left: -$active-border-width;
-    display: block;
-    width: 100%;
-    height: 100%;
-
     /* 鼠标放到组件上时 */
     &:hover {
       border: $hover-border-width dashed var(--el-color-primary);
@@ -228,7 +213,7 @@ $toolbar-position: -55px;
     }
   }
 
-  /* 组件选中时 */
+  /* 选中状态 */
   &.active {
     margin-bottom: 4px;
 

@@ -15,7 +15,6 @@ const formData = ref<PayOrderApi.Order>();
 const [Descriptions] = useDescription({
   bordered: true,
   column: 2,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

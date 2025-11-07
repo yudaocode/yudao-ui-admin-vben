@@ -130,5 +130,3 @@ if (!formData.value._local) {
     </Card>
   </Form>
 </template>
-
-<style scoped lang="scss"></style>

@@ -32,7 +32,7 @@ watch(
  * 计算商品的间距
  * @param index 商品索引
  */
-const calculateSpace = (index: number) => {
+function calculateSpace(index: number) {
   // 商品的列数
   const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
   // 第一列没有左边距
@@ -41,19 +41,19 @@ const calculateSpace = (index: number) => {
   const marginTop = index < columns ? '0' : `${props.property.space}px`;
 
   return { marginLeft, marginTop };
-};
+}
 
 // 容器
 const containerRef = ref();
 // 计算商品的宽度
-const calculateWidth = () => {
+function calculateWidth() {
   let width = '100%';
   // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
@@ -61,7 +61,7 @@ const calculateWidth = () => {
     ref="containerRef"
   >
     <div
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),
@@ -78,30 +78,26 @@ const calculateWidth = () => {
         v-if="property.badge.show && property.badge.imgUrl"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image
-          fit="cover"
-          :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
-        />
+        <Image fit="cover" :src="property.badge.imgUrl" class="h-6 w-8" />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-[140px]"
+        class="h-36"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[140px]': property.layoutType === 'oneColSmallImg',
+            'w-36': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
         <Image fit="cover" class="h-full w-full" :src="spu.picUrl" />
       </div>
       <div
-        class="box-border flex flex-col gap-[8px] p-[8px]"
+        class="box-border flex flex-col gap-2 p-2"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[calc(100%-140px-16px)]':
+            'w-[calc(100vh-140px-16px)]':
               property.layoutType === 'oneColSmallImg',
           },
         ]"
@@ -109,7 +105,7 @@ const calculateWidth = () => {
         <!-- 商品名称 -->
         <div
           v-if="property.fields.name.show"
-          class="text-[14px]"
+          class="text-sm"
           :class="[
             {
               truncate: property.layoutType !== 'oneColSmallImg',
@@ -124,7 +120,7 @@ const calculateWidth = () => {
         <!-- 商品简介 -->
         <div
           v-if="property.fields.introduction.show"
-          class="truncate text-[12px]"
+          class="truncate text-xs"
           :style="{ color: property.fields.introduction.color }"
         >
           {{ spu.introduction }}
@@ -133,7 +129,7 @@ const calculateWidth = () => {
           <!-- 价格 -->
           <span
             v-if="property.fields.price.show"
-            class="text-[16px]"
+            class="text-base"
             :style="{ color: property.fields.price.color }"
           >
             ￥{{ fenToYuan(spu.price as any) }}
@@ -141,12 +137,12 @@ const calculateWidth = () => {
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
-            class="ml-[4px] text-[10px] line-through"
+            class="ml-1 text-xs line-through"
             :style="{ color: property.fields.marketPrice.color }"
             >￥{{ fenToYuan(spu.marketPrice) }}
           </span>
         </div>
-        <div class="text-[12px]">
+        <div class="text-xs">
           <!-- 销量 -->
           <span
             v-if="property.fields.salesCount.show"
@@ -164,11 +160,11 @@ const calculateWidth = () => {
         </div>
       </div>
       <!-- 购买按钮 -->
-      <div class="absolute bottom-[8px] right-[8px]">
+      <div class="absolute bottom-2 right-2">
         <!-- 文字按钮 -->
         <span
           v-if="property.btnBuy.type === 'text'"
-          class="rounded-full px-[12px] py-[4px] text-[12px] text-white"
+          class="rounded-full px-3 py-1 text-sm text-white"
           :style="{
             background: `linear-gradient(to right, ${property.btnBuy.bgBeginColor}, ${property.btnBuy.bgEndColor}`,
           }"
@@ -178,7 +174,7 @@ const calculateWidth = () => {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="h-[28px] w-[28px] rounded-full"
+          class="size-7 rounded-full"
           fit="cover"
           :src="property.btnBuy.imgUrl"
         />
@@ -186,5 +182,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

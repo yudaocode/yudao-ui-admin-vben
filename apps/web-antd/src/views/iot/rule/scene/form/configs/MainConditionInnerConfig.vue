@@ -173,7 +173,7 @@ function handlePropertyChange(propertyInfo: any) {
 </script>
 
 <template>
-  <div class="space-y-16px">
+  <div class="space-y-4">
     <!-- 触发事件类型选择 -->
     <Form.Item label="触发事件类型" required>
       <Select
@@ -192,7 +192,7 @@ function handlePropertyChange(propertyInfo: any) {
     </Form.Item>
 
     <!-- 设备属性条件配置 -->
-    <div v-if="isDevicePropertyTrigger" class="space-y-16px">
+    <div v-if="isDevicePropertyTrigger" class="space-y-4">
       <!-- 产品设备选择 -->
       <Row :gutter="16">
         <Col :span="12">
@@ -292,7 +292,7 @@ function handlePropertyChange(propertyInfo: any) {
     </div>
 
     <!-- 设备状态条件配置 -->
-    <div v-else-if="isDeviceStatusTrigger" class="space-y-16px">
+    <div v-else-if="isDeviceStatusTrigger" class="space-y-4">
       <!-- 设备状态触发器使用简化的配置 -->
       <Row :gutter="16">
         <Col :span="12">
@@ -364,13 +364,11 @@ function handlePropertyChange(propertyInfo: any) {
     </div>
 
     <!-- 其他触发类型的提示 -->
-    <div v-else class="py-20px text-center">
-      <p class="text-14px mb-4px text-[var(--el-text-color-secondary)]">
+    <div v-else class="py-5 text-center">
+      <p class="text-secondary mb-1 text-sm">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-12px text-[var(--el-text-color-placeholder)]">
-        此触发类型暂不需要配置额外条件
-      </p>
+      <p class="text-secondary text-xs">此触发类型暂不需要配置额外条件</p>
     </div>
   </div>
 </template>

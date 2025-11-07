@@ -1,29 +1,20 @@
 import type { ComponentStyle, DiyComponent } from '../../../util';
 
-/** 商品卡片属性 */
+/** 优惠劵卡片属性 */
 export interface CouponCardProperty {
-  // 列数
-  columns: number;
-  // 背景图
-  bgImg: string;
-  // 文字颜色
-  textColor: string;
-  // 按钮样式
+  columns: number; // 列数
+  bgImg: string; // 背景图
+  textColor: string; // 文字颜色
   button: {
-    // 背景颜色
-    bgColor: string;
-    // 颜色
-    color: string;
-  };
-  // 间距
-  space: number;
-  // 优惠券编号列表
-  couponIds: number[];
-  // 组件样式
-  style: ComponentStyle;
+    bgColor: string; // 背景颜色
+    color: string; // 文字颜色
+  }; // 按钮样式
+  space: number; // 间距
+  couponIds: number[]; // 优惠券编号列表
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'CouponCard',
   name: '优惠券',

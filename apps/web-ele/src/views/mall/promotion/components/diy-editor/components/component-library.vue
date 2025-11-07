@@ -61,7 +61,10 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 </script>
 
 <template>
-  <ElAside class="editor-left" width="261px">
+  <ElAside
+    class="editor-left z-[1] shrink-0 select-none shadow-[8px_0_8px_-8px_rgb(0_0_0/0.12)]"
+    width="261px"
+  >
     <ElScrollbar>
       <ElCollapse v-model="extendGroups">
         <ElCollapseItem
@@ -71,7 +74,7 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
           :title="group.name"
         >
           <draggable
-            class="component-container"
+            class="flex flex-wrap items-center"
             ghost-class="draggable-ghost"
             item-key="index"
             :list="group.components"
@@ -79,13 +82,22 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
             :group="{ name: 'component', pull: 'clone', put: false }"
             :clone="handleCloneComponent"
             :animation="200"
-            :force-fallback="true"
+            :force-fallback="false"
           >
             <template #item="{ element }">
               <div>
-                <div class="drag-placement">组件放置区域</div>
-                <div class="component">
-                  <IconifyIcon :icon="element.icon" :size="32" />
+                <div class="hidden text-white">组件放置区域</div>
+                <div
+                  class="component flex h-[86px] w-[86px] cursor-move flex-col items-center justify-center border-b border-r [&:nth-of-type(3n)]:border-r-0"
+                  :style="{
+                    borderColor: 'var(--el-border-color-lighter)',
+                  }"
+                >
+                  <IconifyIcon
+                    :icon="element.icon"
+                    :size="32"
+                    class="mb-1 text-gray-500"
+                  />
                   <span class="mt-1 text-xs">{{ element.name }}</span>
                 </div>
               </div>
@@ -99,11 +111,6 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
 
 <style scoped lang="scss">
 .editor-left {
-  z-index: 1;
-  flex-shrink: 0;
-  user-select: none;
-  box-shadow: 8px 0 8px -8px rgb(0 0 0 / 12%);
-
   :deep(.el-collapse) {
     border-top: none;
   }
@@ -124,51 +131,19 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
     border-bottom: none;
   }
 
-  .component-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 261px;
-  }
-
-  .component {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 86px;
-    height: 86px;
-    cursor: move;
-    border-right: 1px solid var(--el-border-color-lighter);
-    border-bottom: 1px solid var(--el-border-color-lighter);
-
-    .el-icon {
-      margin-bottom: 4px;
-      color: gray;
-    }
-  }
-
+  /* 组件 hover 和 active 状态（需要 CSS 变量） */
   .component.active,
   .component:hover {
     color: var(--el-color-white);
     background: var(--el-color-primary);
 
-    .el-icon {
+    :deep(.iconify) {
       color: var(--el-color-white);
     }
   }
-
-  .component:nth-of-type(3n) {
-    border-right: none;
-  }
 }
 
-/* 拖拽占位提示，默认不显示 */
-.drag-placement {
-  display: none;
-  color: #fff;
-}
-
+/* 拖拽区域全局样式 */
 .drag-area {
   /* 拖拽到手机区域时的样式 */
   .draggable-ghost {
@@ -204,14 +179,12 @@ const handleCloneComponent = (component: DiyComponent<any>) => {
       background: #5487df;
     }
 
-    /* 拖拽时隐藏组件 */
     .component {
-      display: none;
+      display: none; /* 拖拽时隐藏组件 */
     }
 
-    /* 拖拽时显示占位提示 */
-    .drag-placement {
-      display: block;
+    .hidden {
+      display: block !important; /* 拖拽时显示占位提示 */
     }
   }
 }

@@ -60,7 +60,10 @@ defineProps<{ property: TitleBarProperty }>();
       <span v-if="property.more.type !== 'icon'">
         {{ property.more.text }}
       </span>
-      <IconifyIcon icon="ep:arrow-right" v-if="property.more.type !== 'text'" />
+      <IconifyIcon
+        icon="lucide:arrow-right"
+        v-if="property.more.type !== 'text'"
+      />
     </div>
   </div>
 </template>
