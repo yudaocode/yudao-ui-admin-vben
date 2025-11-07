@@ -3,7 +3,7 @@ import type { User } from '../types';
 
 import { formatDateTime } from '@vben/utils';
 
-import avatarWechat from '@/assets/imgs/wechat.png';
+import avatarWechat from '#/assets/imgs/wechat.png';
 
 import Msg from './Msg.vue';
 

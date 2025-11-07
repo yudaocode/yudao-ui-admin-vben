@@ -47,7 +47,7 @@
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",
-    "benz-amr-recorder": "^1.1.5",
+    "benz-amr-recorder": "catalog:",
     "bpmn-js": "catalog:",
     "bpmn-js-properties-panel": "catalog:",
     "bpmn-js-token-simulation": "catalog:",

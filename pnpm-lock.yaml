@@ -201,6 +201,9 @@ catalogs:
     axios-mock-adapter:
       specifier: ^2.1.0
       version: 2.1.0
+    benz-amr-recorder:
+      specifier: ^1.1.5
+      version: 1.1.5
     bpmn-js:
       specifier: ^17.11.1
       version: 17.11.1
@@ -805,7 +808,7 @@ importers:
         version: link:../../packages/utils
       '@videojs-player/vue':
         specifier: 'catalog:'
-        version: 1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.22(typescript@5.9.3))
+        version: 1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.23(typescript@5.9.3))
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.9.0(vue@3.5.23(typescript@5.9.3))
@@ -814,9 +817,9 @@ importers:
         version: 14.0.0(async-validator@4.2.5)(axios@1.13.2)(focus-trap@7.6.6)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(vue@3.5.23(typescript@5.9.3))
       ant-design-vue:
         specifier: 'catalog:'
-        version: 4.2.6(vue@3.5.22(typescript@5.9.3))
+        version: 4.2.6(vue@3.5.23(typescript@5.9.3))
       benz-amr-recorder:
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       bpmn-js:
         specifier: 'catalog:'
@@ -928,15 +931,15 @@ importers:
         version: link:../../packages/utils
       '@videojs-player/vue':
         specifier: 'catalog:'
-        version: 1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.22(typescript@5.9.3))
+        version: 1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.23(typescript@5.9.3))
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.9.0(vue@3.5.23(typescript@5.9.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 13.9.0(async-validator@4.2.5)(axios@1.12.2)(focus-trap@7.6.5)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(vue@3.5.22(typescript@5.9.3))
+        version: 14.0.0(async-validator@4.2.5)(axios@1.13.2)(focus-trap@7.6.6)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.6)(vue@3.5.23(typescript@5.9.3))
       benz-amr-recorder:
-        specifier: ^1.1.5
+        specifier: 'catalog:'
         version: 1.1.5
       cropperjs:
         specifier: 'catalog:'
@@ -2140,9 +2143,6 @@ importers:
       '@types/json-bigint':
         specifier: 'catalog:'
         version: 1.0.4
-      vite:
-        specifier: 'catalog:'
-        version: 7.1.11(@types/node@24.9.1)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
 
   scripts/turbo-run:
     dependencies:
@@ -5494,6 +5494,10 @@ packages:
     resolution: {integrity: sha512-c+YJg3L8WuwftsTBnHw56knMERkKJSmB+GOqPENE+MBNKPvHTohEuSV5XcY7UAK25lXwkWNKZjEkbEzNZZS5ig==}
     peerDependencies:
       vue: ^3.5.17
+
+  '@xmldom/xmldom@0.8.11':
+    resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
+    engines: {node: '>=10.0.0'}
 
   '@xyflow/svelte@1.4.1':
     resolution: {integrity: sha512-CAegVmLMpX64G6JnhiU7ezoIOY7aX88cf1fSOV8FutKdZNMxcJBykhvaXunOBf7jjDs9X887RH8Jgdl1rMwXww==}
@@ -15229,11 +15233,11 @@ snapshots:
       - rollup
       - supports-color
 
-  '@videojs-player/vue@1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.22(typescript@5.9.3))':
+  '@videojs-player/vue@1.0.0(@types/video.js@7.3.58)(video.js@7.21.7)(vue@3.5.23(typescript@5.9.3))':
     dependencies:
       '@types/video.js': 7.3.58
       video.js: 7.21.7
-      vue: 3.5.22(typescript@5.9.3)
+      vue: 3.5.23(typescript@5.9.3)
 
   '@videojs/http-streaming@2.16.3(video.js@7.21.7)':
     dependencies:
@@ -15258,7 +15262,7 @@ snapshots:
       global: 4.4.0
       is-function: 1.0.2
 
-  '@vite-pwa/vitepress@1.0.1(vite-plugin-pwa@1.1.0(vite@5.4.21(@types/node@24.9.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0))(workbox-build@7.3.0)(workbox-window@7.3.0))':
+  '@vite-pwa/vitepress@1.0.1(vite-plugin-pwa@1.1.0(vite@5.4.21(@types/node@24.10.0)(less@4.4.2)(sass@1.93.3)(terser@5.44.1))(workbox-build@7.3.0)(workbox-window@7.3.0))':
     dependencies:
       vite-plugin-pwa: 1.1.0(vite@5.4.21(@types/node@24.10.0)(less@4.4.2)(sass@1.93.3)(terser@5.44.1))(workbox-build@7.3.0)(workbox-window@7.3.0)
 
@@ -15599,6 +15603,8 @@ snapshots:
       dom-zindex: 1.0.6
       vue: 3.5.23(typescript@5.9.3)
       xe-utils: 3.7.9
+
+  '@xmldom/xmldom@0.8.11': {}
 
   '@xyflow/svelte@1.4.1(svelte@5.43.3)':
     dependencies:
@@ -21791,7 +21797,7 @@ snapshots:
     dependencies:
       global: 4.4.0
 
-  vite-hot-client@2.1.0(vite@7.1.11(@types/node@24.9.1)(jiti@2.6.1)(less@4.4.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)):
+  vite-hot-client@2.1.0(vite@7.2.1(@types/node@24.10.0)(jiti@2.6.1)(less@4.4.2)(sass@1.93.3)(terser@5.44.1)(yaml@2.8.1)):
     dependencies:
       vite: 7.2.1(@types/node@24.10.0)(jiti@2.6.1)(less@4.4.2)(sass@1.93.3)(terser@5.44.1)(yaml@2.8.1)
 

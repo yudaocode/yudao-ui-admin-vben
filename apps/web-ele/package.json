@@ -46,7 +46,7 @@
     "@videojs-player/vue": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
-    "benz-amr-recorder": "^1.1.5",
+    "benz-amr-recorder": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
