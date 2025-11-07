@@ -84,18 +84,18 @@ function selectMaterial(item: any) {
   <div>
     <ElRow align="middle" justify="center">
       <ElCol :span="6">
-        <ElRow align="middle" justify="center" class="thumb-div">
+        <ElRow align="middle" justify="center" class="inline-block text-center">
           <ElCol :span="24">
             <ElRow align="middle" justify="center">
               <img
-                style="width: 100px"
+                class="w-[100px]"
                 v-if="reply.thumbMediaUrl"
                 :src="reply.thumbMediaUrl"
               />
               <IconifyIcon v-else icon="ep:plus" />
             </ElRow>
-            <ElRow align="middle" justify="center" style="margin-top: 2%">
-              <div class="thumb-but">
+            <ElRow align="middle" justify="center" class="mt-[2%]">
+              <div>
                 <ElUpload
                   :action="UPLOAD_URL"
                   :headers="HEADERS"
@@ -113,7 +113,7 @@ function selectMaterial(item: any) {
                     type="primary"
                     link
                     @click="showDialog = true"
-                    style="margin-left: 5px"
+                    class="ml-[5px]"
                   >
                     素材库选择
                   </ElButton>
@@ -138,13 +138,13 @@ function selectMaterial(item: any) {
       </ElCol>
       <ElCol :span="18">
         <ElInput v-model="reply.title" placeholder="请输入标题" />
-        <div style="margin: 20px 0"></div>
+        <div class="my-5"></div>
         <ElInput v-model="reply.description" placeholder="请输入描述" />
       </ElCol>
     </ElRow>
-    <div style="margin: 20px 0"></div>
+    <div class="my-5"></div>
     <ElInput v-model="reply.musicUrl" placeholder="请输入音乐链接" />
-    <div style="margin: 20px 0"></div>
+    <div class="my-5"></div>
     <ElInput v-model="reply.hqMusicUrl" placeholder="请输入高质量音乐链接" />
   </div>
 </template>

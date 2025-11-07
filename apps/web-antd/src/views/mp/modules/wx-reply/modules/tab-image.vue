@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'ant-design-vue';
 
 import type { Reply } from './types';
 
@@ -8,14 +8,7 @@ import { computed, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import {
-  ElButton,
-  ElCol,
-  ElDialog,
-  ElMessage,
-  ElRow,
-  ElUpload,
-} from 'element-plus';
+import { Button, Col, message, Modal, Row, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
@@ -28,7 +21,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-const message = ElMessage;
+// 消息弹窗
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -47,12 +40,13 @@ const uploadData = reactive({
 });
 
 /** 图片上传前校验 */
-function beforeImageUpload(rawFile: UploadRawFile) {
-  return useBeforeUpload(UploadType.Image, 2)(rawFile);
+function beforeImageUpload(file: UploadFile) {
+  return useBeforeUpload(UploadType.Image, 2)(file as any);
 }
 
 /** 上传成功 */
-function onUploadSuccess(res: any) {
+function onUploadSuccess(info: any) {
+  const res = info.response || info;
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -88,27 +82,37 @@ function selectMaterial(item: any) {
 <template>
   <div>
     <!-- 情况一：已经选择好素材、或者上传好图片 -->
-    <div class="select-item" v-if="reply.url">
-      <img class="material-img" :src="reply.url" />
-      <p class="item-name" v-if="reply.name">{{ reply.name }}</p>
-      <ElRow class="ope-row" justify="center">
-        <ElButton type="danger" circle @click="onDelete">
+    <div
+      class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
+      v-if="reply.url"
+    >
+      <img class="w-full" :src="reply.url" />
+      <p
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-center text-xs"
+        v-if="reply.name"
+      >
+        {{ reply.name }}
+      </p>
+      <Row class="pt-[10px] text-center" justify="center">
+        <Button type="primary" danger shape="circle" @click="onDelete">
           <IconifyIcon icon="ep:delete" />
-        </ElButton>
-      </ElRow>
+        </Button>
+      </Row>
     </div>
     <!-- 情况二：未做完上述操作 -->
-    <ElRow v-else style="text-align: center" align="middle">
+    <Row v-else class="text-center" align="middle">
       <!-- 选择素材 -->
-      <ElCol :span="12" class="col-select">
-        <ElButton type="success" @click="showDialog = true">
+      <Col
+        :span="12"
+        class="h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
+      >
+        <Button type="primary" @click="showDialog = true">
           素材库选择 <IconifyIcon icon="ep:circle-check" />
-        </ElButton>
-        <ElDialog
+        </Button>
+        <Modal
           title="选择图片"
-          v-model="showDialog"
+          v-model:open="showDialog"
           width="90%"
-          append-to-body
           destroy-on-close
         >
           <WxMaterialSelect
@@ -116,81 +120,39 @@ function selectMaterial(item: any) {
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
-        </ElDialog>
-      </ElCol>
+        </Modal>
+      </Col>
       <!-- 文件上传 -->
-      <ElCol :span="12" class="col-add">
-        <ElUpload
+      <Col
+        :span="12"
+        class="float-right h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
+      >
+        <Upload
           :action="UPLOAD_URL"
           :headers="HEADERS"
-          multiple
-          :limit="1"
           :file-list="fileList"
           :data="uploadData"
           :before-upload="beforeImageUpload"
-          :on-success="onUploadSuccess"
+          @change="
+            (info) => {
+              if (info.file.status === 'done') {
+                onUploadSuccess(info.file.response || info.file);
+              }
+            }
+          "
         >
-          <ElButton type="primary">上传图片</ElButton>
+          <Button type="primary">上传图片</Button>
           <template #tip>
             <span>
-              <div class="el-upload__tip">
+              <div class="text-center leading-[18px]">
                 支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
               </div>
             </span>
           </template>
-        </ElUpload>
-      </ElCol>
-    </ElRow>
+        </Upload>
+      </Col>
+    </Row>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.select-item {
-  width: 280px;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-
-  .material-img {
-    width: 100%;
-  }
-
-  .item-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    text-align: center;
-    white-space: nowrap;
-
-    .item-infos {
-      width: 30%;
-      margin: auto;
-    }
-
-    .ope-row {
-      padding-top: 10px;
-      text-align: center;
-    }
-  }
-
-  .col-select {
-    width: 49.5%;
-    height: 160px;
-    padding: 50px 0;
-    border: 1px solid rgb(234 234 234);
-  }
-
-  .col-add {
-    float: right;
-    width: 49.5%;
-    height: 160px;
-    padding: 50px 0;
-    border: 1px solid rgb(234 234 234);
-
-    .el-upload__tip {
-      line-height: 18px;
-      text-align: center;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

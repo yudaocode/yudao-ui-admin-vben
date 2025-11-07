@@ -8,7 +8,7 @@
   ④ 支持发送【视频】消息时，支持新建视频
 -->
 <script lang="ts" setup>
-import type { Reply } from './components/types';
+import type { Reply } from './modules/types';
 
 import { computed, ref, unref, watch } from 'vue';
 
@@ -16,13 +16,13 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Row, Tabs } from 'ant-design-vue';
 
-import TabImage from './components/TabImage.vue';
-import TabMusic from './components/TabMusic.vue';
-import TabNews from './components/TabNews.vue';
-import TabText from './components/TabText.vue';
-import TabVideo from './components/TabVideo.vue';
-import TabVoice from './components/TabVoice.vue';
-import { createEmptyReply, NewsType, ReplyType } from './components/types';
+import TabImage from './modules/tab-image.vue';
+import TabMusic from './modules/tab-music.vue';
+import TabNews from './modules/tab-news.vue';
+import TabText from './modules/tab-text.vue';
+import TabVideo from './modules/tab-video.vue';
+import TabVoice from './modules/tab-voice.vue';
+import { createEmptyReply, NewsType, ReplyType } from './modules/types';
 
 defineOptions({ name: 'WxReplySelect' });
 
@@ -137,83 +137,4 @@ defineExpose({
   </Tabs>
 </template>
 
-<style lang="scss" scoped>
-.select-item {
-  width: 280px;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-}
-
-.select-item2 {
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-}
-
-.ope-row {
-  padding-top: 10px;
-  text-align: center;
-}
-
-.input-margin-bottom {
-  margin-bottom: 2%;
-}
-
-.item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.el-form-item__content {
-  line-height: unset !important;
-}
-
-.col-select {
-  width: 49.5%;
-  height: 160px;
-  padding: 50px 0;
-  border: 1px solid rgb(234 234 234);
-}
-
-.col-select2 {
-  height: 160px;
-  padding: 50px 0;
-  border: 1px solid rgb(234 234 234);
-}
-
-.col-add {
-  float: right;
-  width: 49.5%;
-  height: 160px;
-  padding: 50px 0;
-  border: 1px solid rgb(234 234 234);
-}
-
-.avatar-uploader-icon {
-  width: 100px !important;
-  height: 100px !important;
-  font-size: 28px;
-  line-height: 100px !important;
-  color: #8c939d;
-  text-align: center;
-  border: 1px solid #d9d9d9;
-}
-
-.material-img {
-  width: 100%;
-}
-
-.thumb-div {
-  display: inline-block;
-  text-align: center;
-}
-
-.item-infos {
-  width: 30%;
-  margin: auto;
-}
-</style>
+<style lang="scss" scoped></style>

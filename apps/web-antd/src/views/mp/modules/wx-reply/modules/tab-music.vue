@@ -85,18 +85,18 @@ function selectMaterial(item: any) {
   <div>
     <Row align="middle" justify="center">
       <Col :span="6">
-        <Row align="middle" justify="center" class="thumb-div">
+        <Row align="middle" justify="center" class="inline-block text-center">
           <Col :span="24">
             <Row align="middle" justify="center">
               <img
-                style="width: 100px"
+                class="w-[100px]"
                 v-if="reply.thumbMediaUrl"
                 :src="reply.thumbMediaUrl"
               />
               <IconifyIcon v-else icon="ep:plus" />
             </Row>
-            <Row align="middle" justify="center" style="margin-top: 2%">
-              <div class="thumb-but">
+            <Row align="middle" justify="center" class="mt-[2%]">
+              <div>
                 <Upload
                   :action="UPLOAD_URL"
                   :headers="HEADERS"
@@ -115,11 +115,7 @@ function selectMaterial(item: any) {
                     <Button type="link">本地上传</Button>
                   </template>
                 </Upload>
-                <Button
-                  type="link"
-                  @click="showDialog = true"
-                  style="margin-left: 5px"
-                >
+                <Button type="link" @click="showDialog = true" class="ml-[5px]">
                   素材库选择
                 </Button>
               </div>
@@ -141,19 +137,19 @@ function selectMaterial(item: any) {
       </Col>
       <Col :span="18">
         <Input v-model:value="reply.title as string" placeholder="请输入标题" />
-        <div style="margin: 20px 0"></div>
+        <div class="my-5"></div>
         <Input
           v-model:value="reply.description as string"
           placeholder="请输入描述"
         />
       </Col>
     </Row>
-    <div style="margin: 20px 0"></div>
+    <div class="my-5"></div>
     <Input
       v-model:value="reply.musicUrl as string"
       placeholder="请输入音乐链接"
     />
-    <div style="margin: 20px 0"></div>
+    <div class="my-5"></div>
     <Input
       v-model:value="reply.hqMusicUrl as string"
       placeholder="请输入高质量音乐链接"

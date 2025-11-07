@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadFile } from 'ant-design-vue';
+import type { UploadRawFile } from 'element-plus';
 
 import type { Reply } from './types';
 
@@ -8,7 +8,14 @@ import { computed, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { Button, Col, message, Modal, Row, Upload } from 'ant-design-vue';
+import {
+  ElButton,
+  ElCol,
+  ElDialog,
+  ElMessage,
+  ElRow,
+  ElUpload,
+} from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
@@ -24,7 +31,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-// 消息弹窗
+const message = ElMessage;
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -43,13 +50,12 @@ const uploadData = reactive({
 });
 
 /** 语音上传前校验 */
-function beforeVoiceUpload(file: UploadFile) {
-  return useBeforeUpload(UploadType.Voice, 10)(file as any);
+function beforeVoiceUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Voice, 10)(rawFile);
 }
 
 /** 上传成功 */
-function onUploadSuccess(info: any) {
-  const res = info.response || info;
+function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
     return false;
@@ -83,27 +89,38 @@ function selectMaterial(item: Reply) {
 </script>
 <template>
   <div>
-    <div class="select-item2" v-if="reply.url">
-      <p class="item-name">{{ reply.name }}</p>
-      <Row class="ope-row" justify="center">
+    <div
+      class="mx-auto mb-[10px] border border-[#eaeaea] p-[10px]"
+      v-if="reply.url"
+    >
+      <p
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-center text-xs"
+      >
+        {{ reply.name }}
+      </p>
+      <ElRow class="w-full pt-[10px] text-center" justify="center">
         <WxVoicePlayer :url="reply.url" />
-      </Row>
-      <Row class="ope-row" justify="center">
-        <Button type="primary" danger shape="circle" @click="onDelete">
+      </ElRow>
+      <ElRow class="w-full pt-[10px] text-center" justify="center">
+        <ElButton type="danger" circle @click="onDelete">
           <IconifyIcon icon="ep:delete" />
-        </Button>
-      </Row>
+        </ElButton>
+      </ElRow>
     </div>
-    <Row v-else style="text-align: center">
+    <ElRow v-else class="text-center">
       <!-- 选择素材 -->
-      <Col :span="12" class="col-select">
-        <Button type="primary" @click="showDialog = true">
+      <ElCol
+        :span="12"
+        class="h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
+      >
+        <ElButton type="success" @click="showDialog = true">
           素材库选择<IconifyIcon icon="ep:circle-check" />
-        </Button>
-        <Modal
+        </ElButton>
+        <ElDialog
           title="选择语音"
-          v-model:open="showDialog"
+          v-model="showDialog"
           width="90%"
+          append-to-body
           destroy-on-close
         >
           <WxMaterialSelect
@@ -111,74 +128,33 @@ function selectMaterial(item: Reply) {
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
-        </Modal>
-      </Col>
+        </ElDialog>
+      </ElCol>
       <!-- 文件上传 -->
-      <Col :span="12" class="col-add">
-        <Upload
+      <ElCol
+        :span="12"
+        class="float-right h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
+      >
+        <ElUpload
           :action="UPLOAD_URL"
           :headers="HEADERS"
+          multiple
+          :limit="1"
           :file-list="fileList"
           :data="uploadData"
           :before-upload="beforeVoiceUpload"
-          @change="
-            (info) => {
-              if (info.file.status === 'done') {
-                onUploadSuccess(info.file.response || info.file);
-              }
-            }
-          "
+          :on-success="onUploadSuccess"
         >
-          <Button type="primary">点击上传</Button>
+          <ElButton type="primary">点击上传</ElButton>
           <template #tip>
-            <div class="upload-tip">
+            <div class="text-center leading-[18px]">
               格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
             </div>
           </template>
-        </Upload>
-      </Col>
-    </Row>
+        </ElUpload>
+      </ElCol>
+    </ElRow>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.select-item2 {
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-
-  .item-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    text-align: center;
-    white-space: nowrap;
-
-    .ope-row {
-      width: 100%;
-      padding-top: 10px;
-      text-align: center;
-    }
-  }
-
-  .col-select {
-    width: 49.5%;
-    height: 160px;
-    padding: 50px 0;
-    border: 1px solid rgb(234 234 234);
-  }
-
-  .col-add {
-    float: right;
-    width: 49.5%;
-    height: 160px;
-    padding: 50px 0;
-    border: 1px solid rgb(234 234 234);
-
-    .upload-tip {
-      line-height: 18px;
-      text-align: center;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

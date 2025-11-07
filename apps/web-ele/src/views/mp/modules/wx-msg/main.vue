@@ -19,7 +19,7 @@ import { getUser } from '#/api/mp/user';
 import profile from '#/assets/imgs/profile.jpg';
 import WxReplySelect, { ReplyType } from '#/views/mp/modules/wx-reply';
 
-import MsgList from './components/MsgList.vue';
+import MsgList from './modules/msg-list.vue';
 
 defineOptions({ name: 'WxMsg' });
 
@@ -167,15 +167,22 @@ async function scrollToBottom() {
 
 <template>
   <ContentWrap>
-    <div class="msg-div" ref="msgDivRef">
+    <div
+      class="ml-[10px] mr-[10px] h-[50vh] overflow-auto bg-[#eaeaea]"
+      ref="msgDivRef"
+    >
       <!-- 加载更多 -->
       <div v-loading="loading"></div>
       <div v-if="!loading">
-        <div class="el-table__empty-block" v-if="hasMore" @click="loadMore">
-          <span class="el-table__empty-text">点击加载更多</span>
+        <div
+          class="cursor-pointer py-5 text-center"
+          v-if="hasMore"
+          @click="loadMore"
+        >
+          <span class="text-[#999]">点击加载更多</span>
         </div>
-        <div class="el-table__empty-block" v-if="!hasMore">
-          <span class="el-table__empty-text">没有更多了</span>
+        <div class="py-5 text-center" v-if="!hasMore">
+          <span class="text-[#999]">没有更多了</span>
         </div>
       </div>
 
@@ -183,31 +190,13 @@ async function scrollToBottom() {
       <MsgList :list="list" :account-id="accountId" :user="user" />
     </div>
 
-    <div class="msg-send" v-loading="sendLoading">
+    <div class="p-[10px]" v-loading="sendLoading">
       <WxReplySelect ref="replySelectRef" v-model="reply" />
-      <el-button type="success" class="send-but" @click="sendMsg">
+      <el-button type="success" class="float-right mb-2 mt-2" @click="sendMsg">
         发送(S)
       </el-button>
     </div>
   </ContentWrap>
 </template>
 
-<style lang="scss" scoped>
-.msg-div {
-  height: 50vh;
-  margin-right: 10px;
-  margin-left: 10px;
-  overflow: auto;
-  background-color: #eaeaea;
-}
-
-.msg-send {
-  padding: 10px;
-}
-
-.send-but {
-  float: right;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-</style>
+<style lang="scss" scoped></style>

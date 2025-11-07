@@ -149,19 +149,19 @@ function selectMaterial(item: any) {
     <Row>
       <Input
         v-model:value="reply.title as string"
-        class="input-margin-bottom"
+        class="mb-[2%]"
         placeholder="请输入标题"
       />
       <Input
-        class="input-margin-bottom"
+        class="mb-[2%]"
         v-model:value="reply.description as string"
         placeholder="请输入描述"
       />
-      <Row class="ope-row" justify="center">
+      <Row class="w-full pt-[10px] text-center" justify="center">
         <WxVideoPlayer v-if="reply.url" :url="reply.url" />
       </Row>
       <Col class="w-full">
-        <Row style="text-align: center" align="middle">
+        <Row class="text-center" align="middle">
           <!-- 选择素材 -->
           <Col :span="12">
             <Button type="primary" @click="showDialog = true">
@@ -198,14 +198,4 @@ function selectMaterial(item: any) {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.input-margin-bottom {
-  margin-bottom: 2%;
-}
-
-.ope-row {
-  width: 100%;
-  padding-top: 10px;
-  text-align: center;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -8,7 +8,7 @@ import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
 import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
 
 import { MsgType } from '../types';
-import MsgEvent from './MsgEvent.vue';
+import MsgEvent from './msg-event.vue';
 
 defineOptions({ name: 'Msg' });
 
@@ -31,24 +31,29 @@ const item = ref<any>(props.item);
 
     <div v-else-if="item.type === MsgType.Image">
       <a target="_blank" :href="item.mediaUrl">
-        <img :src="item.mediaUrl" style="width: 100px" />
+        <img :src="item.mediaUrl" class="w-[100px]" />
       </a>
     </div>
 
     <div
       v-else-if="item.type === MsgType.Video || item.type === 'shortvideo'"
-      style="text-align: center"
+      class="text-center"
     >
       <WxVideoPlayer :url="item.mediaUrl" />
     </div>
 
-    <div v-else-if="item.type === MsgType.Link" class="avue-card__detail">
+    <div v-else-if="item.type === MsgType.Link" class="flex-1">
       <a target="_blank" :href="item.url">
-        <div class="avue-card__title">
+        <div
+          class="mb-3 text-base text-[rgba(0,0,0,0.85)] hover:text-[#1890ff]"
+        >
           <Icon icon="ep:link" />{{ item.title }}
         </div>
       </a>
-      <div class="avue-card__info" style="height: unset">
+      <div
+        class="h-auto overflow-hidden text-[rgba(0,0,0,0.45)]"
+        style="height: unset"
+      >
         {{ item.description }}
       </div>
     </div>
@@ -61,7 +66,7 @@ const item = ref<any>(props.item);
       />
     </div>
 
-    <div v-else-if="item.type === MsgType.News" style="width: 300px">
+    <div v-else-if="item.type === MsgType.News" class="w-[300px]">
       <WxNews :articles="item.articles" />
     </div>
 

@@ -9,7 +9,7 @@ import { ElMessage } from 'element-plus';
 
 import * as MpAutoReplyApi from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/modules/wx-reply/components/types';
+import { ReplyType } from '#/views/mp/modules/wx-reply/modules/types';
 
 import ReplyForm from './ReplyForm.vue';
 import { MsgType } from './types';

@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Col, Modal, Row } from 'ant-design-vue';
+import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
 
 import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
 import WxNews from '#/views/mp/modules/wx-news';
@@ -40,37 +40,38 @@ function onDelete() {
 
 <template>
   <div>
-    <Row>
+    <ElRow>
       <div
-        class="select-item"
+        class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
         v-if="reply.articles && reply.articles.length > 0"
       >
         <WxNews :articles="reply.articles" />
-        <Col class="ope-row">
-          <Button type="primary" danger shape="circle" @click="onDelete">
+        <ElCol class="pt-[10px] text-center">
+          <ElButton type="danger" circle @click="onDelete">
             <IconifyIcon icon="ep:delete" />
-          </Button>
-        </Col>
+          </ElButton>
+        </ElCol>
       </div>
       <!-- 选择素材 -->
-      <Col :span="24" v-if="!reply.content">
-        <Row style="text-align: center" align="middle">
-          <Col :span="24">
-            <Button type="primary" @click="showDialog = true">
+      <ElCol :span="24" v-if="!reply.content">
+        <ElRow class="text-center" align="middle">
+          <ElCol :span="24">
+            <ElButton type="success" @click="showDialog = true">
               {{
                 newsType === NewsType.Published
                   ? '选择已发布图文'
                   : '选择草稿箱图文'
               }}
               <IconifyIcon icon="ep:circle-check" />
-            </Button>
-          </Col>
-        </Row>
-      </Col>
-      <Modal
+            </ElButton>
+          </ElCol>
+        </ElRow>
+      </ElCol>
+      <ElDialog
         title="选择图文"
-        v-model:open="showDialog"
+        v-model="showDialog"
         width="90%"
+        append-to-body
         destroy-on-close
       >
         <WxMaterialSelect
@@ -79,21 +80,9 @@ function onDelete() {
           :news-type="newsType"
           @select-material="selectMaterial"
         />
-      </Modal>
-    </Row>
+      </ElDialog>
+    </ElRow>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.select-item {
-  width: 280px;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-
-  .ope-row {
-    padding-top: 10px;
-    text-align: center;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

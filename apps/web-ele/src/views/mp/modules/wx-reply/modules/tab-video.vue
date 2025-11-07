@@ -90,21 +90,17 @@ function selectMaterial(item: any) {
 <template>
   <div>
     <ElRow>
+      <ElInput v-model="reply.title" class="mb-[2%]" placeholder="请输入标题" />
       <ElInput
-        v-model="reply.title"
-        class="input-margin-bottom"
-        placeholder="请输入标题"
-      />
-      <ElInput
-        class="input-margin-bottom"
+        class="mb-[2%]"
         v-model="reply.description"
         placeholder="请输入描述"
       />
-      <ElRow class="ope-row" justify="center">
+      <ElRow class="w-full pt-[10px] text-center" justify="center">
         <WxVideoPlayer v-if="reply.url" :url="reply.url" />
       </ElRow>
       <ElCol>
-        <ElRow style="text-align: center" align="middle">
+        <ElRow class="text-center" align="middle">
           <!-- 选择素材 -->
           <ElCol :span="12">
             <ElButton type="success" @click="showDialog = true">
@@ -147,14 +143,4 @@ function selectMaterial(item: any) {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.input-margin-bottom {
-  margin-bottom: 2%;
-}
-
-.ope-row {
-  width: 100%;
-  padding-top: 10px;
-  text-align: center;
-}
-</style>
+<style lang="scss" scoped></style>
