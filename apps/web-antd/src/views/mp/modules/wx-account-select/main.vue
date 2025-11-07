@@ -113,11 +113,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Select
-    v-model:value="currentId"
-    placeholder="请选择公众号"
-    style="width: 240px"
-  >
+  <Select v-model:value="currentId" placeholder="请选择公众号" class="w-full">
     <SelectOption v-for="item in accountList" :key="item.id" :value="item.id">
       {{ item.name }}
     </SelectOption>

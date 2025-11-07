@@ -85,7 +85,7 @@ function deleteMaterial() {
     <div class="configure-page">
       <div class="delete-btn">
         <Button type="primary" danger @click="emit('delete')">
-          <IconifyIcon icon="ep:delete" />
+          <IconifyIcon icon="lucide:trash-2" />
           删除当前菜单
         </Button>
       </div>
@@ -182,7 +182,7 @@ function deleteMaterial() {
                   shape="circle"
                   @click="deleteMaterial"
                 >
-                  <IconifyIcon icon="ep:delete" />
+                  <IconifyIcon icon="lucide:trash-2" />
                 </Button>
               </Row>
             </div>
@@ -191,7 +191,7 @@ function deleteMaterial() {
                 <Col :span="24" style="text-align: center">
                   <Button type="primary" @click="showNewsDialog = true">
                     素材库选择
-                    <IconifyIcon icon="ep:circle-check" />
+                    <IconifyIcon icon="lucide:circle-check" />
                   </Button>
                 </Col>
               </Row>

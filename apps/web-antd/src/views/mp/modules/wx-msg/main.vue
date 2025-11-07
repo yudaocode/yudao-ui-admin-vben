@@ -168,10 +168,7 @@ async function scrollToBottom() {
 <template>
   <ContentWrap>
     <Spin :spinning="loading">
-      <div
-        class="ml-[10px] mr-[10px] h-[50vh] overflow-auto bg-[#eaeaea]"
-        ref="msgDivRef"
-      >
+      <div class="bg-background ml-2 mr-2 h-12 overflow-auto" ref="msgDivRef">
         <!-- 加载更多 -->
         <div v-if="!loading">
           <div
@@ -179,10 +176,10 @@ async function scrollToBottom() {
             v-if="hasMore"
             @click="loadMore"
           >
-            <span class="text-[#999]">点击加载更多</span>
+            <span class="text-foreground">点击加载更多</span>
           </div>
           <div class="py-5 text-center" v-if="!hasMore">
-            <span class="text-[#999]">没有更多了</span>
+            <span class="text-foreground">没有更多了</span>
           </div>
         </div>
 
@@ -201,5 +198,3 @@ async function scrollToBottom() {
     </Spin>
   </ContentWrap>
 </template>
-
-<style lang="scss" scoped></style>

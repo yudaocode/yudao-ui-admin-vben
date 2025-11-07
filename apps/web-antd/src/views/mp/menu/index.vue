@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Menu, RawMenu } from './modules/types';
+import type { Menu, RawMenu } from './components/types';
 
 import { ref } from 'vue';
 
@@ -9,9 +9,8 @@ import { handleTree } from '@vben/utils';
 import { Button, Form, message } from 'ant-design-vue';
 
 import * as MpMenuApi from '#/api/mp/menu';
+import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/components';
 import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
-import MenuEditor from '#/views/mp/menu/modules/menu-editor.vue';
-import MenuPreviewer from '#/views/mp/menu/modules/menu-previewer.vue';
 import WxAccountSelect from '#/views/mp/modules/wx-account-select/main.vue';
 
 defineOptions({ name: 'MpMenu' });
