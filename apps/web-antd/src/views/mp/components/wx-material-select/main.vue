@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { reactive, ref, watch } from 'vue';
+
+import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate2 } from '@vben/utils';
 
-import { Button, Pagination, Row, Spin, Table } from 'ant-design-vue';
+import { Button, Pagination, Row, Spin } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpDraftApi from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
 import * as MpMaterialApi from '#/api/mp/material';
@@ -45,26 +48,157 @@ const queryParams = reactive({
   pageSize: 10,
 });
 
+const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
+  {
+    field: 'mediaId',
+    title: '编号',
+    align: 'center',
+    minWidth: 160,
+  },
+  {
+    field: 'name',
+    title: '文件名',
+    minWidth: 200,
+  },
+  {
+    field: 'voice',
+    title: '语音',
+    minWidth: 200,
+    align: 'center',
+    slots: { default: 'voice' },
+  },
+  {
+    field: 'createTime',
+    title: '上传时间',
+    width: 180,
+    formatter: 'formatDateTime',
+  },
+  {
+    title: '操作',
+    width: 140,
+    fixed: 'right',
+    align: 'center',
+    slots: { default: 'actions' },
+  },
+];
+
+const videoGridColumns: VxeTableGridOptions<any>['columns'] = [
+  {
+    field: 'mediaId',
+    title: '编号',
+    minWidth: 160,
+  },
+  {
+    field: 'name',
+    title: '文件名',
+    minWidth: 200,
+  },
+  {
+    field: 'title',
+    title: '标题',
+    minWidth: 200,
+  },
+  {
+    field: 'introduction',
+    title: '介绍',
+    minWidth: 220,
+  },
+  {
+    field: 'video',
+    title: '视频',
+    minWidth: 220,
+    align: 'center',
+    slots: { default: 'video' },
+  },
+  {
+    field: 'createTime',
+    title: '上传时间',
+    width: 180,
+    formatter: 'formatDateTime',
+  },
+  {
+    title: '操作',
+    width: 140,
+    fixed: 'right',
+    align: 'center',
+    slots: { default: 'actions' },
+  },
+];
+
+const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: voiceGridColumns,
+    height: 'auto',
+    keepSource: true,
+    pagerConfig: {
+      enabled: true,
+      pageSize: 10,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, { accountId }) => {
+          const finalAccountId = accountId ?? queryParams.accountId;
+          if (finalAccountId === undefined || finalAccountId === null) {
+            return { list: [], total: 0 };
+          }
+          return await MpMaterialApi.getMaterialPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            accountId: finalAccountId,
+            type: 'voice',
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'mediaId',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<any>,
+});
+
+const [VideoGrid, videoGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: videoGridColumns,
+    height: 'auto',
+    keepSource: true,
+    pagerConfig: {
+      enabled: true,
+      pageSize: 10,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, { accountId }) => {
+          const finalAccountId = accountId ?? queryParams.accountId;
+          if (finalAccountId === undefined || finalAccountId === null) {
+            return { list: [], total: 0 };
+          }
+          return await MpMaterialApi.getMaterialPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            accountId: finalAccountId,
+            type: 'video',
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'mediaId',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<any>,
+});
+
 function selectMaterialFun(item: any) {
   emit('selectMaterial', item);
-}
-
-async function getPage() {
-  loading.value = true;
-  try {
-    if (props.type === 'news' && props.newsType === NewsType.Published) {
-      // 【图文】+ 【已发布】
-      await getFreePublishPageFun();
-    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
-      // 【图文】+ 【草稿】
-      await getDraftPageFun();
-    } else {
-      // 【素材】
-      await getMaterialPageFun();
-    }
-  } finally {
-    loading.value = false;
-  }
 }
 
 async function getMaterialPageFun() {
@@ -100,87 +234,63 @@ async function getDraftPageFun() {
   total.value = data.total;
 }
 
-const voiceColumns = [
-  {
-    title: '编号',
-    dataIndex: 'mediaId',
-    align: 'center' as const,
-  },
-  {
-    title: '文件名',
-    dataIndex: 'name',
-    align: 'center' as const,
-  },
-  {
-    title: '语音',
-    key: 'voice',
-    align: 'center' as const,
-  },
-  {
-    title: '上传时间',
-    dataIndex: 'createTime',
-    align: 'center' as const,
-    width: 180,
-    customRender: ({ record }: any) => formatDate2(record.createTime),
-  },
-  {
-    title: '操作',
-    key: 'action',
-    align: 'center' as const,
-    fixed: 'right' as const,
-  },
-];
+async function getPage() {
+  if (props.type === 'voice') {
+    await voiceGridApi.reload({ accountId: queryParams.accountId });
+    return;
+  }
+  if (props.type === 'video') {
+    await videoGridApi.reload({ accountId: queryParams.accountId });
+    return;
+  }
 
-const videoColumns = [
-  {
-    title: '编号',
-    dataIndex: 'mediaId',
-    align: 'center' as const,
-  },
-  {
-    title: '文件名',
-    dataIndex: 'name',
-    align: 'center' as const,
-  },
-  {
-    title: '标题',
-    dataIndex: 'title',
-    align: 'center' as const,
-  },
-  {
-    title: '介绍',
-    dataIndex: 'introduction',
-    align: 'center' as const,
-  },
-  {
-    title: '视频',
-    key: 'video',
-    align: 'center' as const,
-  },
-  {
-    title: '上传时间',
-    dataIndex: 'createTime',
-    align: 'center' as const,
-    width: 180,
-    customRender: ({ record }: any) => formatDate2(record.createTime),
-  },
-  {
-    title: '操作',
-    key: 'action',
-    align: 'center' as const,
-    fixed: 'right' as const,
-  },
-];
+  loading.value = true;
+  try {
+    if (props.type === 'news' && props.newsType === NewsType.Published) {
+      await getFreePublishPageFun();
+    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
+      await getDraftPageFun();
+    } else {
+      await getMaterialPageFun();
+    }
+  } finally {
+    loading.value = false;
+  }
+}
 
-onMounted(async () => {
-  getPage();
-});
+watch(
+  () => props.accountId,
+  (accountId) => {
+    queryParams.accountId = accountId;
+    queryParams.pageNo = 1;
+    getPage();
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.type,
+  () => {
+    queryParams.pageNo = 1;
+    getPage();
+  },
+);
+
+watch(
+  () => props.newsType,
+  () => {
+    if (props.type === 'news') {
+      queryParams.pageNo = 1;
+      getPage();
+    }
+  },
+);
 </script>
 
 <template>
-  <div class="pb-8">
+  <Page :bordered="false" class="pb-8">
     <!-- 类型：image -->
-    <div v-if="props.type === 'image'">
+    <template v-if="props.type === 'image'">
       <Spin :spinning="loading">
         <div class="waterfall">
           <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
@@ -197,84 +307,52 @@ onMounted(async () => {
           </div>
         </div>
       </Spin>
-      <!-- 分页组件 -->
-      <Pagination
-        v-model:current="queryParams.pageNo"
-        v-model:page-size="queryParams.pageSize"
-        :total="total"
-        class="mt-4"
-        @change="getMaterialPageFun"
-      />
-    </div>
-
-    <!-- 类型：voice -->
-    <div v-else-if="props.type === 'voice'">
-      <Table
-        :columns="voiceColumns"
-        :data-source="list"
-        :loading="loading"
-        :pagination="false"
-        row-key="mediaId"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'voice'">
-            <WxVoicePlayer :url="record.url" />
-          </template>
-          <template v-else-if="column.key === 'action'">
-            <Button type="link" @click="selectMaterialFun(record)">
-              选择
-              <template #icon>
-                <IconifyIcon icon="mdi:plus" />
-              </template>
-            </Button>
-          </template>
-        </template>
-      </Table>
-      <!-- 分页组件 -->
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
         :total="total"
         class="mt-4"
         @change="getPage"
+        @show-size-change="getPage"
       />
-    </div>
+    </template>
+
+    <!-- 类型：voice -->
+    <template v-else-if="props.type === 'voice'">
+      <VoiceGrid>
+        <template #voice="{ row }">
+          <WxVoicePlayer :url="row.url" />
+        </template>
+        <template #actions="{ row }">
+          <Button type="link" @click="selectMaterialFun(row)">
+            选择
+            <template #icon>
+              <IconifyIcon icon="mdi:plus" />
+            </template>
+          </Button>
+        </template>
+      </VoiceGrid>
+    </template>
 
     <!-- 类型：video -->
-    <div v-else-if="props.type === 'video'">
-      <Table
-        :columns="videoColumns"
-        :data-source="list"
-        :loading="loading"
-        :pagination="false"
-        row-key="mediaId"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'video'">
-            <WxVideoPlayer :url="record.url" />
-          </template>
-          <template v-else-if="column.key === 'action'">
-            <Button type="link" @click="selectMaterialFun(record)">
-              选择
-              <template #icon>
-                <IconifyIcon icon="mdi:plus-circle" />
-              </template>
-            </Button>
-          </template>
+    <template v-else-if="props.type === 'video'">
+      <VideoGrid>
+        <template #video="{ row }">
+          <WxVideoPlayer :url="row.url" />
         </template>
-      </Table>
-      <!-- 分页组件 -->
-      <Pagination
-        v-model:current="queryParams.pageNo"
-        v-model:page-size="queryParams.pageSize"
-        :total="total"
-        class="mt-4"
-        @change="getMaterialPageFun"
-      />
-    </div>
+        <template #actions="{ row }">
+          <Button type="link" @click="selectMaterialFun(row)">
+            选择
+            <template #icon>
+              <IconifyIcon icon="mdi:plus-circle" />
+            </template>
+          </Button>
+        </template>
+      </VideoGrid>
+    </template>
 
     <!-- 类型：news -->
-    <div v-else-if="props.type === 'news'">
+    <template v-else-if="props.type === 'news'">
       <Spin :spinning="loading">
         <div class="waterfall">
           <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
@@ -292,16 +370,16 @@ onMounted(async () => {
           </div>
         </div>
       </Spin>
-      <!-- 分页组件 -->
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
         :total="total"
         class="mt-4"
-        @change="getMaterialPageFun"
+        @change="getPage"
+        @show-size-change="getPage"
       />
-    </div>
-  </div>
+    </template>
+  </Page>
 </template>
 
 <style lang="scss" scoped>

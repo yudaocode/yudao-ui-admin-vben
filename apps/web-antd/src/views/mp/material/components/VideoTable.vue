@@ -1,10 +1,15 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+
+import { watch } from 'vue';
+
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate2 } from '@vben/utils';
 
-import { Button, Table } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
 
 const props = defineProps<{
@@ -18,74 +23,119 @@ const emit = defineEmits<{
 
 const { hasAccessByCodes } = useAccess();
 
-const columns = [
+const columns: VxeTableGridOptions<any>['columns'] = [
   {
-    align: 'center' as const,
-    dataIndex: 'mediaId',
-    key: 'mediaId',
+    field: 'mediaId',
     title: '编号',
+    align: 'center',
+    width: 160,
   },
-  { align: 'center' as const, dataIndex: 'name', key: 'name', title: '文件名' },
-  { align: 'center' as const, dataIndex: 'title', key: 'title', title: '标题' },
   {
-    align: 'center' as const,
-    dataIndex: 'introduction',
-    key: 'introduction',
+    field: 'name',
+    title: '文件名',
+    align: 'center',
+    minWidth: 200,
+  },
+  {
+    field: 'title',
+    title: '标题',
+    align: 'center',
+    minWidth: 200,
+  },
+  {
+    field: 'introduction',
     title: '介绍',
+    align: 'center',
+    minWidth: 220,
   },
-  { align: 'center' as const, key: 'video', title: '视频' },
   {
-    align: 'center' as const,
-    key: 'createTime',
+    field: 'video',
+    title: '视频',
+    align: 'center',
+    width: 220,
+    slots: { default: 'video' },
+  },
+  {
+    field: 'createTime',
     title: '上传时间',
+    align: 'center',
     width: 180,
+    slots: { default: 'createTime' },
   },
   {
-    align: 'center' as const,
-    fixed: 'right' as const,
-    key: 'action',
+    field: 'actions',
     title: '操作',
+    align: 'center',
+    fixed: 'right',
+    width: 180,
+    slots: { default: 'actions' },
   },
 ];
 
-// 下载文件
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns,
+    keepSource: true,
+    pagerConfig: {
+      enabled: false,
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    showOverflow: 'tooltip',
+  } as VxeTableGridOptions<any>,
+});
+
 function handleDownload(url: string) {
   window.open(url, '_blank');
 }
+
+watch(
+  () => props.list,
+  (list: any[]) => {
+    const data = Array.isArray(list) ? list : [];
+    if (gridApi.grid?.loadData) {
+      gridApi.grid.loadData(data);
+    } else {
+      gridApi.setGridOptions({ data });
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.loading,
+  (loading: boolean) => {
+    gridApi.setLoading(!!loading);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-  <Table
-    :columns="columns"
-    :data-source="props.list"
-    :loading="props.loading"
-    :pagination="false"
-    bordered
-    class="mt-4"
-    row-key="id"
-  >
-    <template #bodyCell="{ column, record }">
-      <template v-if="column.key === 'video'">
-        <WxVideoPlayer v-if="record.url" :url="record.url" />
-      </template>
-      <template v-else-if="column.key === 'createTime'">
-        {{ formatDate2(record.createTime) }}
-      </template>
-      <template v-else-if="column.key === 'action'">
-        <Button type="link" @click="handleDownload(record.url)">
-          <IconifyIcon icon="mdi:download" />
-          下载
-        </Button>
-        <Button
-          v-if="hasAccessByCodes(['mp:material:delete'])"
-          danger
-          type="link"
-          @click="emit('delete', record.id)"
-        >
-          <IconifyIcon icon="mdi:delete" />
-          删除
-        </Button>
-      </template>
+  <Grid class="mt-4">
+    <template #video="{ row }">
+      <WxVideoPlayer v-if="row.url" :url="row.url" />
     </template>
-  </Table>
+    <template #createTime="{ row }">
+      {{ formatDate2(row.createTime) }}
+    </template>
+    <template #actions="{ row }">
+      <Button type="link" @click="handleDownload(row.url)">
+        <IconifyIcon icon="mdi:download" />
+        下载
+      </Button>
+      <Button
+        v-if="hasAccessByCodes(['mp:material:delete'])"
+        danger
+        type="link"
+        @click="emit('delete', row.id)"
+      >
+        <IconifyIcon icon="mdi:delete" />
+        删除
+      </Button>
+    </template>
+  </Grid>
 </template>
