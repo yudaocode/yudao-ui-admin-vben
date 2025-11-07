@@ -272,7 +272,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
         </template>
         <Condition
           :ref="(el) => (conditionRef[index] = el)"
-          :model-value="routerGroups[index] as Record<string, any>"
+          :model-value="routerGroups[index]"
           @update:model-value="(val) => (routerGroups[index] = val)"
         />
       </Card>
