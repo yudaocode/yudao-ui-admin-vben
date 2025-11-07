@@ -166,9 +166,7 @@ async function onDeleteMenu() {
     activeMenu.value = {};
     showRightPanel.value = false;
     activeIndex.value = MENU_NOT_SELECTED;
-  } catch {
-    //
-  }
+  } catch {}
 }
 
 // ======================== 菜单编辑 ========================
