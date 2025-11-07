@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { WxLocation } from '#/views/mp/modules/wx-location';
 import { WxMusic } from '#/views/mp/modules/wx-music';
 import { WxNews } from '#/views/mp/modules/wx-news';
@@ -47,7 +49,7 @@ const item = ref<any>(props.item);
         <div
           class="mb-3 text-base text-[rgba(0,0,0,0.85)] hover:text-[#1890ff]"
         >
-          <Icon icon="ep:link" />{{ item.title }}
+          <IconifyIcon icon="lucide:link" />{{ item.title }}
         </div>
       </a>
       <div

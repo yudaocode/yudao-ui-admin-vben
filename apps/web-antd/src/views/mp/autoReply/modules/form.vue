@@ -7,12 +7,12 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import * as MpAutoReplyApi from '#/api/mp/autoReply';
+import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 import { ReplyType } from '#/views/mp/modules/wx-reply/types';
 
-import ReplyForm from './ReplyForm.vue';
-import { MsgType } from './types';
+import ReplyForm from '../components/ReplyForm.vue';
+import { MsgType } from '../components/types';
 
 const emit = defineEmits(['success']);
 
@@ -52,10 +52,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       if (replyForm.value.id === undefined) {
-        await MpAutoReplyApi.createAutoReply(submitForm);
+        await createAutoReply(submitForm);
         message.success('新增成功');
       } else {
-        await MpAutoReplyApi.updateAutoReply(submitForm);
+        await updateAutoReply(submitForm);
         message.success('修改成功');
       }
       await modalApi.close();

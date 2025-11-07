@@ -2,6 +2,8 @@
   【微信消息 - 定位】TODO @Dhb52 目前未启用
 -->
 <script lang="ts" setup>
+import { IconifyIcon } from '@vben/icons';
+
 import { Col, Row } from 'ant-design-vue';
 
 defineOptions({ name: 'WxLocation' });
@@ -53,7 +55,7 @@ defineExpose({
           />
         </Row>
         <Row>
-          <Icon icon="ep:location" />
+          <IconifyIcon icon="lucide:map-pin" />
           {{ label }}
         </Row>
       </Col>

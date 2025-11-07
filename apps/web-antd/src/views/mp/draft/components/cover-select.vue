@@ -97,7 +97,7 @@ function onUploadError(err: Error) {
       />
       <IconifyIcon
         v-else
-        icon="ep:plus"
+        icon="lucide:plus"
         class="avatar-uploader-icon"
         :class="isFirst ? 'avatar' : 'avatar1'"
       />

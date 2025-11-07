@@ -7,7 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 
 import { WxAccountSelect } from '#/views/mp/modules/wx-account-select';
 
-import { MsgType } from './modules/types';
+import { MsgType } from './components/types';
 
 /** 获取表格列配置 */
 export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {

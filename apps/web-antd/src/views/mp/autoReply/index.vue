@@ -18,10 +18,10 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpAutoReplyApi from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 
+import ReplyContentCell from './components/ReplyTable.vue';
+import { MsgType } from './components/types';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
-import ReplyContentCell from './modules/ReplyTable.vue';
-import { MsgType } from './modules/types';
 
 defineOptions({ name: 'MpAutoReply' });
 

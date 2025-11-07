@@ -109,7 +109,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </Button>
               <Button
                 v-if="isCreating"
@@ -119,7 +119,7 @@ function plusNews() {
                 size="small"
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </Button>
             </div>
           </div>
@@ -143,7 +143,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </Button>
               <Button
                 v-if="index > 0"
@@ -152,7 +152,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveUpNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-up-bold" />
+                <IconifyIcon icon="lucide:arrow-up" />
               </Button>
               <Button
                 v-if="isCreating"
@@ -162,7 +162,7 @@ function plusNews() {
                 shape="circle"
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </Button>
             </div>
           </div>
@@ -174,7 +174,7 @@ function plusNews() {
             @click="plusNews"
             v-if="newsList.length < 8 && isCreating"
           >
-            <IconifyIcon icon="ep:plus" />
+            <IconifyIcon icon="lucide:plus" />
           </Button>
         </Row>
       </div>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Article } from './modules/types';
+import type { Article } from './components/types';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
@@ -12,10 +12,10 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpDraftApi from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
-import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
+import { createEmptyNewsItem } from '#/views/mp/draft/components/types';
 
+import DraftTableCell from './components/draft-table.vue';
 import { useGridColumns, useGridFormSchema } from './data';
-import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpDraft' });

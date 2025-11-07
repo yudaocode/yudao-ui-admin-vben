@@ -12,6 +12,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { Tag } from 'ant-design-vue';
 // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 import BenzAMRRecorder from 'benz-amr-recorder';
@@ -35,7 +37,7 @@ const playing = ref(false);
 const duration = ref();
 
 /** 处理点击，播放或暂停 */
-const playVoice = () => {
+function playVoice() {
   // 情况一：未初始化，则创建 BenzAMRRecorder
   if (amr.value === undefined) {
     amrInit();
@@ -47,10 +49,10 @@ const playVoice = () => {
   } else {
     amrPlay();
   }
-};
+}
 
 /** 音频初始化 */
-const amrInit = () => {
+function amrInit() {
   amr.value = new BenzAMRRecorder();
   // 设置播放
   amr.value.initWithUrl(props.url).then(() => {
@@ -61,26 +63,26 @@ const amrInit = () => {
   amr.value.onEnded(() => {
     playing.value = false;
   });
-};
+}
 
 /** 音频播放 */
-const amrPlay = () => {
+function amrPlay() {
   playing.value = true;
   amr.value.play();
-};
+}
 
 /** 音频暂停 */
-const amrStop = () => {
+function amrStop() {
   playing.value = false;
   amr.value.stop();
-};
+}
 // TODO 芋艿：下面样式有点问题
 </script>
 
 <template>
   <div class="wx-voice-div" @click="playVoice">
-    <Icon v-if="playing !== true" icon="ep:video-play" :size="32" />
-    <Icon v-else icon="ep:video-pause" :size="32" />
+    <IconifyIcon v-if="playing !== true" icon="lucide:circle-play" :size="32" />
+    <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
     <span class="amr-duration" v-if="duration">{{ duration }} 秒</span>
     <div v-if="content">
       <Tag color="success" size="small">语音识别</Tag>

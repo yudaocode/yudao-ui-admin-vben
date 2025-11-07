@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { NewsItem } from '../components/types';
 
 import { computed, ref } from 'vue';
 
@@ -7,9 +7,9 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 
 import { message, Spin } from 'ant-design-vue';
 
-import * as MpDraftApi from '#/api/mp/draft';
+import { createDraft, updateDraft } from '#/api/mp/draft';
 
-import NewsForm from './news-form.vue';
+import NewsForm from '../components/news-form.vue';
 
 const emit = defineEmits(['success']);
 
@@ -37,10 +37,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       if (formData.value.isCreating) {
-        await MpDraftApi.createDraft(formData.value.accountId, newsList.value);
+        await createDraft(formData.value.accountId, newsList.value);
         message.success('新增成功');
       } else if (formData.value.mediaId) {
-        await MpDraftApi.updateDraft(
+        await updateDraft(
           formData.value.accountId,
           formData.value.mediaId,
           newsList.value,

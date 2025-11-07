@@ -8,7 +8,7 @@ import { handleTree } from '@vben/utils';
 
 import { Button, Form, message } from 'ant-design-vue';
 
-import * as MpMenuApi from '#/api/mp/menu';
+import { deleteMenu, getMenuList, saveMenu } from '#/api/mp/menu';
 import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/components';
 import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
 import { WxAccountSelect } from '#/views/mp/modules/wx-account-select';
@@ -60,7 +60,7 @@ function onAccountChanged(id: number, name: string) {
 async function getList() {
   loading.value = true;
   try {
-    const data = await MpMenuApi.getMenuList(accountId.value);
+    const data = await getMenuList(accountId.value);
     const menuData = menuListToFrontend(data);
     menuList.value = handleTree(menuData, 'id') as Menu[];
   } finally {
@@ -178,7 +178,7 @@ async function onSave() {
       duration: 0,
     });
     try {
-      await MpMenuApi.saveMenu(accountId.value, menuListToBackend());
+      await saveMenu(accountId.value, menuListToBackend());
       getList();
       message.success('发布成功');
     } finally {
@@ -198,7 +198,7 @@ async function onClear() {
       duration: 0,
     });
     try {
-      await MpMenuApi.deleteMenu(accountId.value);
+      await deleteMenu(accountId.value);
       handleQuery();
       message.success('清空成功');
     } finally {

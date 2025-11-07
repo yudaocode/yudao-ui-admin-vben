@@ -6,9 +6,9 @@ import { formatTime } from '@vben/utils';
 
 import { Button, Pagination, Row, Spin, Table } from 'ant-design-vue';
 
-import * as MpDraftApi from '#/api/mp/draft';
-import * as MpFreePublishApi from '#/api/mp/freePublish';
-import * as MpMaterialApi from '#/api/mp/material';
+import { getDraftPage } from '#/api/mp/draft';
+import { getFreePublishPage } from '#/api/mp/freePublish';
+import { getMaterialPage } from '#/api/mp/material';
 import { WxNews } from '#/views/mp/modules/wx-news';
 import { WxVideoPlayer } from '#/views/mp/modules/wx-video-play';
 import { WxVoicePlayer } from '#/views/mp/modules/wx-voice-play';
@@ -69,7 +69,7 @@ async function getPage() {
 
 /** 获取素材分页 */
 async function getMaterialPageFun() {
-  const data = await MpMaterialApi.getMaterialPage({
+  const data = await getMaterialPage({
     ...queryParams,
     type: props.type,
   });
@@ -79,7 +79,7 @@ async function getMaterialPageFun() {
 
 /** 获取已发布图文分页 */
 async function getFreePublishPageFun() {
-  const data = await MpFreePublishApi.getFreePublishPage(queryParams);
+  const data = await getFreePublishPage(queryParams);
   data.list.forEach((item: any) => {
     const articles = item.content.newsItem;
     articles.forEach((article: any) => {
@@ -92,7 +92,7 @@ async function getFreePublishPageFun() {
 
 /** 获取草稿图文分页 */
 async function getDraftPageFun() {
-  const data = await MpDraftApi.getDraftPage(queryParams);
+  const data = await getDraftPage(queryParams);
   data.list.forEach((draft: any) => {
     const articles = draft.content.newsItem;
     articles.forEach((article: any) => {

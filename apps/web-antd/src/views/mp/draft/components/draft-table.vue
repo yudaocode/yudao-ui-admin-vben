@@ -11,15 +11,9 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="draft-content">
+  <div class="p-2.5">
     <div v-if="props.row.content && props.row.content.newsItem">
       <WxNews :articles="props.row.content.newsItem" />
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.draft-content {
-  padding: 10px;
-}
-</style>

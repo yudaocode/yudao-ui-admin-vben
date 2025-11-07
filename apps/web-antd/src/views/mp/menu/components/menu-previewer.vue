@@ -134,7 +134,8 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
           class="menu-item"
           :class="{ active: props.activeIndex === `${x}` }"
         >
-          <IconifyIcon icon="ep:fold" color="black" />{{ parent.name }}
+          <IconifyIcon icon="lucide:panel-right-open" color="black" />
+          {{ parent.name }}
         </div>
         <!-- 以下为二级菜单-->
         <div class="submenu" v-if="props.parentIndex === x && parent.children">
@@ -164,7 +165,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
             v-if="!parent.children || parent.children.length < 5"
             @click="addSubMenu(x, parent)"
           >
-            <IconifyIcon icon="ep:plus" class="plus" />
+            <IconifyIcon icon="lucide:plus" class="plus" />
           </div>
         </div>
       </div>
@@ -177,7 +178,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
     v-if="menuList.length < 3"
     @click="addMenu"
   >
-    <IconifyIcon icon="ep:plus" class="plus" />
+    <IconifyIcon icon="lucide:plus" class="plus" />
   </div>
 </template>
 
