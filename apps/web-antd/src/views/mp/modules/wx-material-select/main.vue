@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { formatTime } from '@vben/utils';
 
 import { Button, Pagination, Row, Spin, Table } from 'ant-design-vue';
@@ -119,7 +120,7 @@ onMounted(async () => {
             <Row class="ope-row">
               <Button type="primary" @click="selectMaterialFun(item)">
                 选择
-                <Icon icon="ep:circle-check" />
+                <IconifyIcon icon="lucide:circle-check" />
               </Button>
             </Row>
           </div>
@@ -154,7 +155,7 @@ onMounted(async () => {
             <template #default="{ record }">
               <Button type="link" @click="selectMaterialFun(record)">
                 选择
-                <Icon icon="ep:plus" />
+                <IconifyIcon icon="lucide:plus" />
               </Button>
             </template>
           </Table.Column>
@@ -191,7 +192,7 @@ onMounted(async () => {
             <template #default="{ record }">
               <Button type="link" @click="selectMaterialFun(record)">
                 选择
-                <Icon icon="akar-icons:circle-plus" />
+                <IconifyIcon icon="lucide:circle-plus" />
               </Button>
             </template>
           </Table.Column>
@@ -215,7 +216,7 @@ onMounted(async () => {
               <Row class="ope-row">
                 <Button type="primary" @click="selectMaterialFun(item)">
                   选择
-                  <Icon icon="ep:circle-check" />
+                  <IconifyIcon icon="lucide:circle-check" />
                 </Button>
               </Row>
             </div>
