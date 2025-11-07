@@ -10,7 +10,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { Form, FormItem, Input, Select, SelectOption } from 'ant-design-vue';
 
-import WxReplySelect from '#/views/mp/modules/wx-reply';
+import { WxReplySelect } from '#/views/mp/modules/wx-reply';
 
 import { MsgType } from './types';
 

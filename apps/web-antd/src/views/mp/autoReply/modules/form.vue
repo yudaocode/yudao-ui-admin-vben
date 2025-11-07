@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 
 import * as MpAutoReplyApi from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/modules/wx-reply/modules/types';
+import { ReplyType } from '#/views/mp/modules/wx-reply/types';
 
 import ReplyForm from './ReplyForm.vue';
 import { MsgType } from './types';

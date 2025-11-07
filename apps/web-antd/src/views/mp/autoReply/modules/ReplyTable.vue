@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import WxMusic from '#/views/mp/modules/wx-music';
-import WxNews from '#/views/mp/modules/wx-news';
-import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
-import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
+import { WxMusic } from '#/views/mp/modules/wx-music';
+import { WxNews } from '#/views/mp/modules/wx-news';
+import { WxVideoPlayer } from '#/views/mp/modules/wx-video-play';
+import { WxVoicePlayer } from '#/views/mp/modules/wx-voice-play';
 
 defineOptions({ name: 'ReplyContentCell' });
 

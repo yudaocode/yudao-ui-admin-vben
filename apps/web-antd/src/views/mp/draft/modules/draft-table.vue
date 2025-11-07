@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Article } from './types';
 
-import WxNews from '#/views/mp/modules/wx-news/main.vue';
+import { WxNews } from '#/views/mp/modules/wx-news';
 
 defineOptions({ name: 'DraftTableCell' });
 

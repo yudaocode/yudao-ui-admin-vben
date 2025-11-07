@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import WxLocation from '#/views/mp/modules/wx-location';
-import WxMusic from '#/views/mp/modules/wx-music';
-import WxNews from '#/views/mp/modules/wx-news';
-import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
-import WxVoicePlayer from '#/views/mp/modules/wx-voice-play';
+import { WxLocation } from '#/views/mp/modules/wx-location';
+import { WxMusic } from '#/views/mp/modules/wx-music';
+import { WxNews } from '#/views/mp/modules/wx-news';
+import { WxVideoPlayer } from '#/views/mp/modules/wx-video-play';
+import { WxVoicePlayer } from '#/views/mp/modules/wx-voice-play';
 
-import { MsgType } from '../types';
 import MsgEvent from './msg-event.vue';
+import { MsgType } from './types';
 
 defineOptions({ name: 'Msg' });
 

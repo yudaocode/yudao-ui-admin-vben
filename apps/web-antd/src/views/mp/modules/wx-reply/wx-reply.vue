@@ -8,7 +8,7 @@
   ④ 支持发送【视频】消息时，支持新建视频
 -->
 <script lang="ts" setup>
-import type { Reply } from './modules/types';
+import type { Reply } from './types';
 
 import { computed, ref, unref, watch } from 'vue';
 
@@ -16,13 +16,13 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Row, Tabs } from 'ant-design-vue';
 
-import TabImage from './modules/tab-image.vue';
-import TabMusic from './modules/tab-music.vue';
-import TabNews from './modules/tab-news.vue';
-import TabText from './modules/tab-text.vue';
-import TabVideo from './modules/tab-video.vue';
-import TabVoice from './modules/tab-voice.vue';
-import { createEmptyReply, NewsType, ReplyType } from './modules/types';
+import TabImage from './tab-image.vue';
+import TabMusic from './tab-music.vue';
+import TabNews from './tab-news.vue';
+import TabText from './tab-text.vue';
+import TabVideo from './tab-video.vue';
+import TabVoice from './tab-voice.vue';
+import { createEmptyReply, NewsType, ReplyType } from './types';
 
 defineOptions({ name: 'WxReplySelect' });
 

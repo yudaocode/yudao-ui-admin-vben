@@ -1,8 +1,3 @@
-export { default } from './main.vue';
+export { createEmptyReply, NewsType, type Reply, ReplyType } from './types';
 
-export {
-  createEmptyReply,
-  NewsType,
-  type Reply,
-  ReplyType,
-} from './modules/types';
+export { default as WxReplySelect } from './wx-reply.vue';

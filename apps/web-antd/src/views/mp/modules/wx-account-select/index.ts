@@ -1,1 +1,1 @@
-export { default } from './main.vue';
+export { default as WxAccountSelect } from './wx-account-select.vue';

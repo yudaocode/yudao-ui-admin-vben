@@ -11,7 +11,7 @@ import { Button, Form, message } from 'ant-design-vue';
 import * as MpMenuApi from '#/api/mp/menu';
 import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/components';
 import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
-import WxAccountSelect from '#/views/mp/modules/wx-account-select/main.vue';
+import { WxAccountSelect } from '#/views/mp/modules/wx-account-select';
 
 defineOptions({ name: 'MpMenu' });
 

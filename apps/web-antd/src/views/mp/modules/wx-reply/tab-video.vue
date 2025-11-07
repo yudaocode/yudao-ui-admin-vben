@@ -20,8 +20,8 @@ import {
 } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
-import WxVideoPlayer from '#/views/mp/modules/wx-video-play';
+import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
+import { WxVideoPlayer } from '#/views/mp/modules/wx-video-play';
 
 const props = defineProps<{
   modelValue: Reply;

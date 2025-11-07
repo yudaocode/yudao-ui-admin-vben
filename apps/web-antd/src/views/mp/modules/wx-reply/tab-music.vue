@@ -20,7 +20,7 @@ import {
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 // import { getAccessToken } from '@/utils/auth'
-import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
 
 // 设置上传的请求头部
 

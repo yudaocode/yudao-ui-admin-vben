@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
 
 // 设置上传的请求头部
 

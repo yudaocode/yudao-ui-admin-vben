@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Col, message, Modal, Row, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
 
 const props = defineProps<{
   modelValue: Reply;

@@ -5,7 +5,7 @@ import { markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import WxAccountSelect from '#/views/mp/modules/wx-account-select/main.vue';
+import { WxAccountSelect } from '#/views/mp/modules/wx-account-select';
 
 import { MsgType } from './modules/types';
 

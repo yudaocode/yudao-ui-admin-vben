@@ -17,9 +17,9 @@ import { Button, message, Spin } from 'ant-design-vue';
 import { getMessagePage, sendMessage } from '#/api/mp/message';
 import { getUser } from '#/api/mp/user';
 import profile from '#/assets/imgs/profile.jpg';
-import WxReplySelect, { ReplyType } from '#/views/mp/modules/wx-reply';
+import { ReplyType, WxReplySelect } from '#/views/mp/modules/wx-reply';
 
-import MsgList from './modules/msg-list.vue';
+import MsgList from './msg-list.vue';
 
 defineOptions({ name: 'WxMsg' });
 
