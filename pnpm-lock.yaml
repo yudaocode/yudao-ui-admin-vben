@@ -597,6 +597,9 @@ catalogs:
     vue-tsc:
       specifier: 2.2.10
       version: 2.2.10
+    vue3-print-nb:
+      specifier: ^0.1.4
+      version: 0.1.4
     vue3-signature:
       specifier: ^0.2.4
       version: 0.2.4
@@ -857,6 +860,9 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.6.3(vue@3.5.22(typescript@5.9.3))
+      vue3-print-nb:
+        specifier: 'catalog:'
+        version: 0.1.4(typescript@5.9.3)
       vue3-signature:
         specifier: 'catalog:'
         version: 0.2.4(vue@3.5.22(typescript@5.9.3))
@@ -11329,6 +11335,9 @@ packages:
     engines: {node: '>=10.15.0'}
     peerDependencies:
       vue: ^3.5.17
+
+  vue3-print-nb@0.1.4:
+    resolution: {integrity: sha512-LExI7viEzplR6ZKQ2b+V4U0cwGYbVD4fut/XHvk3UPGlT5CcvIGs6VlwGp107aKgk6P8Pgx4rco3Rehv2lti3A==}
 
   vue3-signature@0.2.4:
     resolution: {integrity: sha512-XFwwFVK9OG3F085pKIq2SlNVqx32WdFH+TXbGEWc5FfEKpx8oMmZuAwZZ50K/pH2FgmJSE8IRwU9DDhrLpd6iA==}
@@ -22021,6 +22030,12 @@ snapshots:
     dependencies:
       is-plain-object: 3.0.1
       vue: 3.5.22(typescript@5.9.3)
+
+  vue3-print-nb@0.1.4(typescript@5.9.3):
+    dependencies:
+      vue: 3.5.22(typescript@5.9.3)
+    transitivePeerDependencies:
+      - typescript
 
   vue3-signature@0.2.4(vue@3.5.22(typescript@5.9.3)):
     dependencies:

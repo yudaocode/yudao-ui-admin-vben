@@ -217,6 +217,7 @@ catalog:
   vue-router: ^4.5.1
   vue-tippy: ^6.7.1
   vue-tsc: 2.2.10
+  vue3-print-nb: "^0.1.4"
   vue3-signature: ^0.2.4
   vuedraggable: ^4.1.0
   vxe-pc-ui: ^4.9.29
