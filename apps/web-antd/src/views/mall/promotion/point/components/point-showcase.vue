@@ -137,7 +137,7 @@ watch(
           />
           <IconifyIcon
             v-show="!disabled"
-            icon="ep:circle-close-filled"
+            icon="lucide:x"
             class="absolute -right-2 -top-2 z-10 h-5 w-5 cursor-pointer text-red-500 hover:text-red-600"
             @click="handleRemoveActivity(index)"
           />
@@ -148,10 +148,10 @@ watch(
     <!-- 添加按钮 -->
     <Tooltip v-if="canAdd" title="选择活动">
       <div
-        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
+        class="flex h-14 w-14 cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
         @click="openPointActivityTableSelect"
       >
-        <IconifyIcon icon="ep:plus" class="text-lg text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-lg text-gray-400" />
       </div>
     </Tooltip>
   </div>

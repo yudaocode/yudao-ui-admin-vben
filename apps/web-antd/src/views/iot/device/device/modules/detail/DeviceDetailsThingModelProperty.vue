@@ -165,18 +165,15 @@ onMounted(() => {
           >
             <!-- 添加渐变背景层 -->
             <div
-              class="pointer-events-none absolute left-0 right-0 top-0 h-[50px] bg-gradient-to-b from-[#eefaff] to-transparent"
+              class="from-muted pointer-events-none absolute left-0 right-0 top-0 h-12 bg-gradient-to-b to-transparent"
             ></div>
             <div class="relative p-4">
               <!-- 标题区域 -->
               <div class="mb-3 flex items-center">
                 <div class="mr-2.5 flex items-center">
-                  <IconifyIcon
-                    icon="ep:cpu"
-                    class="text-[18px] text-[#0070ff]"
-                  />
+                  <IconifyIcon icon="ep:cpu" class="text-primary text-lg" />
                 </div>
-                <div class="font-600 flex-1 text-[16px]">{{ item.name }}</div>
+                <div class="flex-1 text-base font-bold">{{ item.name }}</div>
                 <!-- 标识符 -->
                 <div class="mr-2 inline-flex items-center">
                   <Tag size="small" color="blue">
@@ -198,22 +195,22 @@ onMounted(() => {
                 >
                   <IconifyIcon
                     icon="ep:data-line"
-                    class="text-[18px] text-[#0070ff]"
+                    class="text-primary text-lg"
                   />
                 </div>
               </div>
 
               <!-- 信息区域 -->
-              <div class="text-[14px]">
+              <div class="text-sm">
                 <div class="mb-2.5 last:mb-0">
-                  <span class="mr-2.5 text-[#717c8e]">属性值</span>
-                  <span class="font-600 text-[#0b1d30]">
+                  <span class="text-muted-foreground mr-2.5">属性值</span>
+                  <span class="text-foreground font-bold">
                     {{ formatValueWithUnit(item) }}
                   </span>
                 </div>
                 <div class="mb-2.5 last:mb-0">
-                  <span class="mr-2.5 text-[#717c8e]">更新时间</span>
-                  <span class="text-[12px] text-[#0b1d30]">
+                  <span class="text-muted-foreground mr-2.5">更新时间</span>
+                  <span class="text-foreground text-sm">
                     {{ item.updateTime ? formatDate(item.updateTime) : '-' }}
                   </span>
                 </div>

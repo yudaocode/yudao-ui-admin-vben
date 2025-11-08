@@ -5,7 +5,6 @@ import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import {
-  Card,
   Form,
   FormItem,
   Radio,
@@ -33,17 +32,18 @@ const formData = useVModel(props, 'modelValue', emit);
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <Form label-width="80px" :model="formData">
-      <Card header="样式设置" class="property-group" shadow="never">
+      <p class="text-base font-bold">样式设置：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <FormItem label="样式" prop="type">
           <RadioGroup v-model="formData.type">
             <Tooltip class="item" content="默认" placement="bottom">
               <RadioButton value="default">
-                <IconifyIcon icon="system-uicons:carousel" />
+                <IconifyIcon icon="system-uicons:carousel" class="size-6" />
               </RadioButton>
             </Tooltip>
             <Tooltip class="item" content="卡片" placement="bottom">
               <RadioButton value="card">
-                <IconifyIcon icon="ic:round-view-carousel" />
+                <IconifyIcon icon="ic:round-view-carousel" class="size-6" />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
@@ -69,8 +69,9 @@ const formData = useVModel(props, 'modelValue', emit);
           />
           <p class="text-info">单位：秒</p>
         </FormItem>
-      </Card>
-      <Card header="内容设置" class="property-group" shadow="never">
+      </div>
+      <p class="text-base font-bold">内容设置：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Draggable v-model="formData.items" :empty-item="{ type: 'img' }">
           <template #default="{ element }">
             <FormItem label="类型" prop="type" class="mb-2" label-width="40px">
@@ -90,7 +91,7 @@ const formData = useVModel(props, 'modelValue', emit);
                 draggable="false"
                 height="80px"
                 width="100%"
-                class="min-w-[80px]"
+                class="min-w-20"
                 :show-description="false"
               />
             </FormItem>
@@ -102,7 +103,7 @@ const formData = useVModel(props, 'modelValue', emit);
                   :show-description="false"
                   height="80px"
                   width="100%"
-                  class="min-w-[80px]"
+                  class="min-w-20"
                 />
               </FormItem>
               <FormItem label="视频" class="mb-2" label-width="40px">
@@ -111,7 +112,7 @@ const formData = useVModel(props, 'modelValue', emit);
                   :file-type="['mp4']"
                   :limit="1"
                   :file-size="100"
-                  class="min-w-[80px]"
+                  class="min-w-20"
                 />
               </FormItem>
             </template>
@@ -120,9 +121,7 @@ const formData = useVModel(props, 'modelValue', emit);
             </FormItem>
           </template>
         </Draggable>
-      </Card>
+      </div>
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

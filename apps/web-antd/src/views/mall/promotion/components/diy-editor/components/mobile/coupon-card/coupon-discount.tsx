@@ -17,7 +17,7 @@ export const CouponDiscount = defineComponent({
   setup(props) {
     const coupon = props.coupon as MallCouponTemplateApi.CouponTemplate;
     // 折扣
-    let value = `${coupon.discountPercent ?? 0 / 10}`;
+    let value = `${(coupon.discountPercent ?? 0) / 10}`;
     let suffix = ' 折';
     // 满减
     if (coupon.discountType === PromotionDiscountTypeEnum.PRICE.type) {

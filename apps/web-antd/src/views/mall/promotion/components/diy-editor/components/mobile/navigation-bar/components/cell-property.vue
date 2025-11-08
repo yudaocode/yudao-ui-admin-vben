@@ -78,12 +78,7 @@ const handleHotAreaSelected = (
       class="m-b-16px"
       @hot-area-selected="handleHotAreaSelected"
     />
-    <Image
-      v-if="isMp"
-      alt=""
-      style="width: 76px; height: 30px"
-      :src="appNavBarMp"
-    />
+    <Image v-if="isMp" alt="" class="w-19 h-8" :src="appNavBarMp" />
   </div>
   <template v-for="(cell, cellIndex) in cellList" :key="cellIndex">
     <template v-if="selectedHotAreaIndex === Number(cellIndex)">
@@ -112,12 +107,10 @@ const handleHotAreaSelected = (
           <UploadImg
             v-model="cell.imgUrl"
             :limit="1"
-            height="56px"
-            width="56px"
             :show-description="false"
-          >
-            <template #tip>建议尺寸 56*56</template>
-          </UploadImg>
+            class="size-14"
+          />
+          <span class="text-xs text-gray-500">建议尺寸 56*56</span>
         </FormItem>
         <FormItem label="链接">
           <AppLinkInput v-model="cell.url" />
@@ -135,5 +128,3 @@ const handleHotAreaSelected = (
     </template>
   </template>
 </template>
-
-<style lang="scss" scoped></style>

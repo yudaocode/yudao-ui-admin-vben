@@ -102,7 +102,7 @@ defineExpose({
 <template>
   <div class="product-card-view">
     <!-- 产品卡片列表 -->
-    <div v-loading="loading" class="min-h-[400px]">
+    <div v-loading="loading" class="min-h-96">
       <Row v-if="list.length > 0" :gutter="[16, 16]">
         <Col
           v-for="item in list"
@@ -119,7 +119,7 @@ defineExpose({
               <div class="product-icon">
                 <IconifyIcon
                   :icon="item.icon || 'ant-design:inbox-outlined'"
-                  class="text-[32px]"
+                  class="text-3xl"
                 />
               </div>
               <div class="ml-3 min-w-0 flex-1">
@@ -162,7 +162,7 @@ defineExpose({
               <div class="product-3d-icon">
                 <IconifyIcon
                   icon="ant-design:box-plot-outlined"
-                  class="text-[80px]"
+                  class="text-2xl"
                 />
               </div>
             </div>
@@ -201,11 +201,11 @@ defineExpose({
                   size="small"
                   danger
                   disabled
-                  class="action-btn action-btn-delete !w-[32px]"
+                  class="action-btn action-btn-delete !w-8"
                 >
                   <IconifyIcon
                     icon="ant-design:delete-outlined"
-                    class="text-[14px]"
+                    class="text-sm"
                   />
                 </Button>
               </Tooltip>
@@ -217,11 +217,11 @@ defineExpose({
                 <Button
                   size="small"
                   danger
-                  class="action-btn action-btn-delete !w-[32px]"
+                  class="action-btn action-btn-delete !w-8"
                 >
                   <IconifyIcon
                     icon="ant-design:delete-outlined"
-                    class="text-[14px]"
+                    class="text-sm"
                   />
                 </Button>
               </Popconfirm>

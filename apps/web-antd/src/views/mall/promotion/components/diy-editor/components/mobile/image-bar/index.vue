@@ -3,6 +3,8 @@ import type { ImageBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Image } from 'ant-design-vue';
+
 /** 图片展示 */
 defineOptions({ name: 'ImageBar' });
 
@@ -11,24 +13,15 @@ defineProps<{ property: ImageBarProperty }>();
 <template>
   <!-- 无图片 -->
   <div
-    class="flex h-12 items-center justify-center bg-gray-300"
+    class="bg-card flex h-12 items-center justify-center"
     v-if="!property.imgUrl"
   >
-    <IconifyIcon icon="ep:picture" class="text-3xl text-gray-600" />
+    <IconifyIcon icon="lucide:image" class="text-3xl text-gray-600" />
   </div>
   <Image
-    class="min-h-8 w-full"
+    class="block h-full min-h-8 w-full"
     v-else
     :src="property.imgUrl"
     :preview="false"
   />
 </template>
-
-<style scoped lang="scss">
-/* 图片 */
-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-</style>

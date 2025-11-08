@@ -70,12 +70,12 @@ watch(
           <RadioGroup v-model:value="formData!.borderRadius">
             <Tooltip title="方形" placement="top">
               <RadioButton :value="0">
-                <IconifyIcon icon="tabler:input-search" />
+                <IconifyIcon icon="tabler:input-search" class="size-6" />
               </RadioButton>
             </Tooltip>
             <Tooltip title="圆形" placement="top">
               <RadioButton :value="10">
-                <IconifyIcon icon="iconoir:input-search" />
+                <IconifyIcon icon="iconoir:input-search" class="size-6" />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
@@ -87,12 +87,18 @@ watch(
           <RadioGroup v-model:value="formData!.placeholderPosition">
             <Tooltip title="居左" placement="top">
               <RadioButton value="left">
-                <IconifyIcon icon="ant-design:align-left-outlined" />
+                <IconifyIcon
+                  icon="ant-design:align-left-outlined"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="居中" placement="top">
               <RadioButton value="center">
-                <IconifyIcon icon="ant-design:align-center-outlined" />
+                <IconifyIcon
+                  icon="ant-design:align-center-outlined"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
           </RadioGroup>

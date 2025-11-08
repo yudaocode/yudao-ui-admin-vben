@@ -1,27 +1,28 @@
 <script lang="ts" setup>
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 
-import { defineOptions, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
-import { Layout, message } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useMallKefuStore } from '#/store/mall/kefu';
 
-import {
-  KeFuConversationList,
-  KeFuMessageList,
-  MemberInfo,
-} from './components';
-import { WebSocketMessageTypeConstants } from './components/tools/constants';
-
-defineOptions({ name: 'KeFu' });
+import ConversationList from './modules/conversation-list.vue';
+import MemberInfo from './modules/member/member-info.vue';
+import MessageList from './modules/message-list.vue';
+import { WebSocketMessageTypeConstants } from './modules/tools/constants';
 
 const accessStore = useAccessStore();
 const kefuStore = useMallKefuStore(); // 客服缓存
+
+/** 组件引用 */
+const messageListRef = ref<InstanceType<typeof MessageList>>();
+const memberInfoRef = ref<InstanceType<typeof MemberInfo>>();
+const conversationListRef = ref<InstanceType<typeof ConversationList>>();
 
 // ======================= WebSocket start =======================
 const url = `${`${import.meta.env.VITE_BASE_URL}/infra/ws`.replace(
@@ -59,7 +60,7 @@ watch(
         // 刷新会话列表
         kefuStore.updateConversation(message.conversationId);
         // 刷新消息列表
-        keFuChatBoxRef.value?.refreshMessageList(message);
+        messageListRef.value?.refreshMessageList(message);
         return;
       }
 
@@ -79,21 +80,16 @@ watch(
 );
 // ======================= WebSocket end =======================
 
-/** 加载指定会话的消息列表 */
-const keFuChatBoxRef = ref<InstanceType<typeof KeFuMessageList>>();
-const memberInfoRef = ref<InstanceType<typeof MemberInfo>>();
-// TODO @jawe：这里没导入
 function handleChange(conversation: MallKefuConversationApi.Conversation) {
-  keFuChatBoxRef.value?.getNewMessageList(conversation as any);
+  messageListRef.value?.getNewMessageList(conversation);
   memberInfoRef.value?.initHistory(conversation);
 }
 
-const keFuConversationRef = ref<InstanceType<typeof KeFuConversationList>>();
 /** 初始化 */
 onMounted(() => {
   // 加载会话列表
   kefuStore.setConversationList().then(() => {
-    keFuConversationRef.value?.calculationLastMessageTime();
+    conversationListRef.value?.calculationLastMessageTime();
   });
   // 打开 websocket 连接
   open();
@@ -107,30 +103,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Page>
-    <!-- TODO @jawe：style 使用 tailwindcss，AI 友好； -->
-    <Layout.Content class="kefu-layout hrow">
-      <!-- 会话列表 -->
-      <KeFuConversationList ref="keFuConversationRef" @change="handleChange" />
-      <!-- 会话详情（选中会话的消息列表） -->
-      <KeFuMessageList ref="keFuChatBoxRef" />
-      <!-- 会员信息（选中会话的会员信息） -->
-      <MemberInfo ref="memberInfoRef" />
-    </Layout.Content>
+  <Page auto-content-height>
+    <div class="flex h-full antialiased">
+      <div class="flex h-full w-full flex-row overflow-x-hidden">
+        <!-- 会话列表 -->
+        <ConversationList
+          class="w-1/6"
+          ref="conversationListRef"
+          @change="handleChange"
+        />
+        <!-- 会话详情（选中会话的消息列表） -->
+        <MessageList class="w-4/6" ref="messageListRef" />
+        <!-- 会员信息（选中会话的会员信息） -->
+        <MemberInfo class="w-[280px]" ref="memberInfoRef" />
+      </div>
+    </div>
   </Page>
 </template>
-
-<style lang="scss">
-.kefu-layout {
-  position: absolute;
-  top: 0;
-  left: 0;
-  flex: 1;
-  width: 100%;
-  height: 100%;
-}
-
-.hrow {
-  display: flex;
-}
-</style>

@@ -4,7 +4,7 @@ import type { HotZoneProperty } from './config';
 import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Form, FormItem, Typography } from 'ant-design-vue';
+import { Button, Form, FormItem } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 
@@ -40,19 +40,14 @@ const handleOpenEditDialog = () => {
           v-model="formData.imgUrl"
           height="50px"
           width="auto"
-          class="min-w-[80px]"
+          class="min-w-20"
           :show-description="false"
-        >
-          <template #tip>
-            <Typography.Text type="secondary" class="text-xs">
-              推荐宽度 750
-            </Typography.Text>
-          </template>
-        </UploadImg>
+        />
       </FormItem>
+      <p class="text-center text-sm text-gray-500">推荐宽度 750</p>
     </Form>
 
-    <Button type="primary" class="w-full" @click="handleOpenEditDialog">
+    <Button type="primary" class="mt-4 w-full" @click="handleOpenEditDialog">
       设置热区
     </Button>
   </ComponentContainerProperty>
@@ -71,10 +66,10 @@ const handleOpenEditDialog = () => {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #fff;
+  color: hsl(var(--text-color));
   cursor: move;
-  background: #409effbf;
-  border: 1px solid var(--el-color-primary);
+  background: color-mix(in srgb, hsl(var(--primary)) 30%, transparent);
+  border: 1px solid hsl(var(--primary));
 
   /* 控制点 */
   .ctrl-dot {

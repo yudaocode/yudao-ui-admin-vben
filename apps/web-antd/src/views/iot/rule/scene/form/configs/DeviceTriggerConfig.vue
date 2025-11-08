@@ -161,11 +161,11 @@ function removeConditionGroup() {
               @click="addSubGroup"
               :disabled="(trigger.conditionGroups?.length || 0) >= maxSubGroups"
             >
-              <IconifyIcon icon="ep:plus" />
+              <IconifyIcon icon="lucide:plus" />
               添加子条件组
             </Button>
             <Button danger size="small" text @click="removeConditionGroup">
-              <IconifyIcon icon="ep:delete" />
+              <IconifyIcon icon="lucide:trash-2" />
               删除条件组
             </Button>
           </div>
@@ -215,7 +215,7 @@ function removeConditionGroup() {
                     @click="removeSubGroup(subGroupIndex)"
                     class="hover:bg-red-50"
                   >
-                    <IconifyIcon icon="ep:delete" />
+                    <IconifyIcon icon="lucide:trash-2" />
                     删除组
                   </Button>
                 </div>
@@ -258,7 +258,7 @@ function removeConditionGroup() {
           class="p-24px rounded-8px border-2 border-dashed border-orange-200 bg-orange-50 text-center"
         >
           <div class="gap-12px flex flex-col items-center">
-            <IconifyIcon icon="ep:plus" class="text-32px text-orange-400" />
+            <IconifyIcon icon="lucide:plus" class="text-32px text-orange-400" />
             <div class="text-orange-600">
               <p class="text-14px font-500 mb-4px">暂无子条件组</p>
               <p class="text-12px">点击上方"添加子条件组"按钮开始配置</p>

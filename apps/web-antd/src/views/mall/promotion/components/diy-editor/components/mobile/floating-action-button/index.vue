@@ -25,7 +25,7 @@ const handleActive = (index: number) => {
 </script>
 <template>
   <div
-    class="absolute bottom-8 right-[calc(50%-375px/2+32px)] z-20 flex items-center gap-3"
+    class="absolute bottom-8 right-[calc(50%-384px/2+32px)] z-20 flex items-center gap-3"
     :class="[
       {
         'flex-row': property.direction === 'horizontal',
@@ -43,7 +43,11 @@ const handleActive = (index: number) => {
         <Image :src="item.imgUrl" fit="contain" class="h-7 w-7">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" :color="item.textColor" />
+              <IconifyIcon
+                icon="lucide:image"
+                :color="item.textColor"
+                class="inset-0 size-6 items-center"
+              />
             </div>
           </template>
         </Image>
@@ -59,7 +63,7 @@ const handleActive = (index: number) => {
     <!-- todo: @owen 使用APP主题色 -->
     <Button type="primary" size="large" circle @click="handleToggleFab">
       <IconifyIcon
-        icon="ep:plus"
+        icon="lucide:plus"
         class="fab-icon"
         :class="[{ active: expanded }]"
       />
@@ -74,9 +78,9 @@ const handleActive = (index: number) => {
 .modal-bg {
   position: absolute;
   top: 0;
-  left: calc(50% - 375px / 2);
+  left: calc(50% - 384px / 2);
   z-index: 11;
-  width: 375px;
+  width: 384px;
   height: 100%;
   background-color: rgb(0 0 0 / 40%);
 }

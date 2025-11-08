@@ -3,15 +3,15 @@ import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
 import type { MallDiyTemplateApi } from '#/api/mall/promotion/diy/template';
 import type { DiyComponentLibrary } from '#/views/mall/promotion/components'; // 商城的 DIY 组件，在 DiyEditor 目录下
 
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
-import { isEmpty } from '@vben/utils';
+import { isEmpty, isNumber } from '@vben/utils';
 
-import { message, Radio, RadioGroup, Tooltip } from 'ant-design-vue';
+import { message, Radio, RadioGroup } from 'ant-design-vue';
 
 import { updateDiyPageProperty } from '#/api/mall/promotion/diy/page';
 import {
@@ -26,28 +26,35 @@ defineOptions({ name: 'DiyTemplateDecorate' });
 const route = useRoute();
 const { refreshTab } = useTabs();
 
-const DIY_PAGE_INDEX_KEY = 'diy_page_index'; // 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复
+/** 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复 */
+const DIY_PAGE_INDEX_KEY = 'diy_page_index';
 
 const selectedTemplateItem = ref(0);
-const templateItems = reactive([
-  { name: '基础设置', icon: 'ep:iphone' },
-  { name: '首页', icon: 'ep:home-filled' },
-  { name: '我的', icon: 'ep:user-filled' },
-]); // 左上角工具栏操作按钮
+/** 左上角工具栏操作按钮 */
+const templateItems = ref([
+  { name: '基础设置', icon: 'lucide:settings' },
+  { name: '首页', icon: 'lucide:home' },
+  { name: '我的', icon: 'lucide:user' },
+]);
 
 const formData = ref<MallDiyTemplateApi.DiyTemplateProperty>();
+/** 当前编辑的属性 */
 const currentFormData = ref<
   MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty
 >({
   property: '',
-} as MallDiyPageApi.DiyPage); // 当前编辑的属性
+} as MallDiyPageApi.DiyPage);
+/** templateItem 对应的缓存 */
 const currentFormDataMap = ref<
   Map<string, MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty>
->(new Map()); // templateItem 对应的缓存
+>(new Map());
 
-const previewUrl = ref(''); // 商城 H5 预览地址
+/** 商城 H5 预览地址 */
+const previewUrl = ref('');
 
-const templateLibs = [] as DiyComponentLibrary[]; // 模板组件库
+/** 模板组件库 */
+const templateLibs = [] as DiyComponentLibrary[];
+/** 当前组件库 */
 const libs = ref<DiyComponentLibrary[]>(templateLibs); // 当前组件库
 
 /** 获取详情 */
@@ -69,17 +76,23 @@ async function getPageDetail(id: any) {
 }
 
 /** 模板选项切换 */
-function handleTemplateItemChange(val: any) {
+function handleTemplateItemChange(event: any) {
+  // 从事件对象中获取值
+  const val = event.target?.value ?? event;
+  // 切换模版
+  selectedTemplateItem.value = isNumber(val)
+    ? val
+    : templateItems.value.findIndex((item) => item.name === val.name);
+
   // 缓存模版编辑数据
   currentFormDataMap.value.set(
-    templateItems[selectedTemplateItem.value]?.name || '',
+    templateItems.value[selectedTemplateItem.value]?.name || '',
     currentFormData.value!,
   );
   // 读取模版缓存
-  const data = currentFormDataMap.value.get(templateItems[val]?.name || '');
-
-  // 切换模版
-  selectedTemplateItem.value = val;
+  const data = currentFormDataMap.value.get(
+    templateItems.value[selectedTemplateItem.value]?.name || '',
+  );
 
   // 情况一：编辑模板
   if (val === 0) {
@@ -92,14 +105,22 @@ function handleTemplateItemChange(val: any) {
 
   // 情况二：编辑页面
   libs.value = PAGE_LIBS;
-  currentFormData.value = (
-    isEmpty(data)
-      ? formData.value!.pages.find(
-          (page: MallDiyPageApi.DiyPage) =>
-            page.name === templateItems[val]?.name,
-        )
-      : data
-  ) as MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty;
+  const pageData = isEmpty(data)
+    ? formData.value!.pages.find(
+        (page: MallDiyPageApi.DiyPage) =>
+          page.name === templateItems.value[val]?.name,
+      )
+    : data;
+
+  // 如果找不到页面数据，使用默认值
+  currentFormData.value = pageData
+    ? (pageData as
+        | MallDiyPageApi.DiyPage
+        | MallDiyTemplateApi.DiyTemplateProperty)
+    : ({
+        property: '',
+        name: templateItems.value[val]?.name || '',
+      } as MallDiyPageApi.DiyPage);
 }
 
 /** 提交表单 */
@@ -110,7 +131,7 @@ async function submitForm() {
   });
   try {
     // 对所有的 templateItems 都进行保存，有缓存则保存缓存，解决都有修改时只保存了当前所编辑的 templateItem，导致装修效果存在差异
-    for (const [i, templateItem] of templateItems.entries()) {
+    for (const [i, templateItem] of templateItems.value.entries()) {
       const data = currentFormDataMap.value.get(templateItem.name) as any;
       // 情况一：基础设置
       if (i === 0) {
@@ -191,18 +212,25 @@ onMounted(async () => {
     <template #toolBarLeft>
       <RadioGroup
         :value="selectedTemplateItem"
-        class="h-full!"
+        class="flex items-center"
+        size="large"
         @change="handleTemplateItemChange"
       >
-        <Tooltip
-          v-for="(item, index) in templateItems"
-          :key="index"
-          :title="item.name"
-        >
-          <Radio.Button :value="index">
-            <IconifyIcon :icon="item.icon" :size="24" />
+        <template v-for="(item, index) in templateItems" :key="index">
+          <Radio.Button
+            :value="item"
+            :class="
+              index === selectedTemplateItem
+                ? 'bg-primary text-primary-foreground'
+                : ''
+            "
+          >
+            <IconifyIcon
+              :icon="item.icon"
+              class="mt-2 flex size-6 items-center"
+            />
           </Radio.Button>
-        </Tooltip>
+        </template>
       </RadioGroup>
     </template>
   </DiyEditor>

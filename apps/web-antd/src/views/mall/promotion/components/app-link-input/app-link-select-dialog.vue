@@ -161,25 +161,22 @@ function handleProductCategorySelected(id: number) {
     @ok="handleSubmit"
   >
     <div class="flex h-[500px] gap-2">
-      <div class="flex flex-col">
-        <!-- 左侧分组列表 -->
-        <div
-          class="h-full overflow-y-auto border-r border-gray-200 pr-2"
-          ref="groupScrollbar"
+      <!-- 左侧分组列表 -->
+      <div
+        class="flex h-full flex-col overflow-y-auto border-r border-gray-200 pr-2"
+        ref="groupScrollbar"
+      >
+        <Button
+          v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
+          :key="groupIndex"
+          class="!ml-0 mb-1 mr-4 !justify-start"
+          :class="[{ active: activeGroup === group.name }]"
+          ref="groupBtnRefs"
+          :type="activeGroup === group.name ? 'primary' : 'default'"
+          @click="handleGroupSelected(group.name)"
         >
-          <Button
-            v-for="(group, groupIndex) in APP_LINK_GROUP_LIST"
-            :key="groupIndex"
-            class="!ml-0 mb-1 mr-4 !justify-start"
-            :class="[{ active: activeGroup === group.name }]"
-            ref="groupBtnRefs"
-            :type="activeGroup === group.name ? 'primary' : 'default'"
-            :ghost="activeGroup !== group.name"
-            @click="handleGroupSelected(group.name)"
-          >
-            {{ group.name }}
-          </Button>
-        </div>
+          {{ group.name }}
+        </Button>
       </div>
       <!-- 右侧链接列表 -->
       <div

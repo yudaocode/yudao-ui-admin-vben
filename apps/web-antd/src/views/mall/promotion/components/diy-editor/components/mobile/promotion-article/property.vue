@@ -64,5 +64,3 @@ onMounted(() => {
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

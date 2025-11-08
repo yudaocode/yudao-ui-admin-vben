@@ -54,12 +54,18 @@ const rules = {}; // 表单校验
           <RadioGroup v-model:value="formData!.textAlign">
             <Tooltip title="居左" placement="top">
               <RadioButton value="left">
-                <IconifyIcon icon="ant-design:align-left-outlined" />
+                <IconifyIcon
+                  icon="ant-design:align-left-outlined"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="居中" placement="top">
               <RadioButton value="center">
-                <IconifyIcon icon="ant-design:align-center-outlined" />
+                <IconifyIcon
+                  icon="ant-design:align-center-outlined"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
           </RadioGroup>

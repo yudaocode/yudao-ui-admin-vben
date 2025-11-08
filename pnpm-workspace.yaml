@@ -12,6 +12,7 @@ packages:
   - scripts/*
   - docs
   - playground
+
 catalog:
   '@ast-grep/napi': ^0.37.0
   '@changesets/changelog-github': ^0.5.1
@@ -58,7 +59,7 @@ catalog:
   '@types/lodash.isequal': ^4.5.8
   '@types/lodash.set': ^4.3.9
   '@types/markdown-it': ^14.1.2
-  '@types/node': ^22.16.0
+  '@types/node': ^24.9.2
   '@types/nprogress': ^0.2.3
   '@types/postcss-import': ^14.0.3
   '@types/qrcode': ^1.5.5
@@ -73,15 +74,16 @@ catalog:
   '@vue/reactivity': ^3.5.17
   '@vue/shared': ^3.5.17
   '@vue/test-utils': ^2.4.6
-  '@vueuse/components': ^13.4.0
   '@vueuse/core': ^13.4.0
-  '@vueuse/integrations': ^13.4.0
+  '@vueuse/integrations': ^14.0.0
   '@vueuse/motion': ^3.0.3
+  '@videojs-player/vue': ^1.0.0
   ant-design-vue: ^4.2.6
   archiver: ^7.0.1
   autoprefixer: ^10.4.21
   axios: ^1.10.0
   axios-mock-adapter: ^2.1.0
+  benz-amr-recorder: ^1.1.5
   bpmn-js: ^17.11.1
   bpmn-js-properties-panel: 5.23.0
   bpmn-js-token-simulation: ^0.36.3
@@ -170,7 +172,7 @@ catalog:
   publint: ^0.3.12
   qrcode: ^1.5.4
   qs: ^6.14.0
-  radix-vue: ^1.9.17
+  reka-ui: ^2.6.0
   resolve.exports: ^2.0.3
   rimraf: ^6.0.1
   rollup: ^4.44.1
@@ -222,6 +224,7 @@ catalog:
   vuedraggable: ^4.1.0
   vxe-pc-ui: ^4.9.29
   vxe-table: ^4.16.11
+  video.js: ^7.21.6
   watermark-js-plus: ^1.6.2
   zod: ^3.25.67
   zod-defaults: ^0.1.3

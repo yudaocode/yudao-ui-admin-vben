@@ -16,7 +16,6 @@ import { floatToFixed2 } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import {
   Button,
-  Card,
   Form,
   FormItem,
   RadioButton,
@@ -39,8 +38,6 @@ defineOptions({ name: 'CouponCardProperty' });
 const props = defineProps<{ modelValue: CouponCardProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-const { Text: ATypographyText } = Typography;
 
 const formData = useVModel(props, 'modelValue', emit);
 
@@ -84,28 +81,31 @@ watch(
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <Form :model="formData">
-      <Card title="优惠券列表" class="property-group">
+      <p class="text-base font-bold">优惠券列表：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <div
           v-for="(coupon, index) in couponList"
           :key="index"
           class="flex items-center justify-between"
         >
-          <ATypographyText ellipsis class="text-base">
-            {{ coupon.name }}
-          </ATypographyText>
-          <ATypographyText type="secondary" ellipsis>
-            <span v-if="coupon.usePrice > 0">
-              满{{ floatToFixed2(coupon.usePrice) }}元，
-            </span>
-            <span
-              v-if="
-                coupon.discountType === PromotionDiscountTypeEnum.PRICE.type
-              "
-            >
-              减{{ floatToFixed2(coupon.discountPrice) }}元
-            </span>
-            <span v-else> 打{{ coupon.discountPercent }}折 </span>
-          </ATypographyText>
+          <Typography>
+            <Typography.Title :level="5">
+              {{ coupon.name }}
+            </Typography.Title>
+            <Typography.Text type="secondary">
+              <span v-if="coupon.usePrice > 0">
+                满{{ floatToFixed2(coupon.usePrice) }}元，
+              </span>
+              <span
+                v-if="
+                  coupon.discountType === PromotionDiscountTypeEnum.PRICE.type
+                "
+              >
+                减{{ floatToFixed2(coupon.discountPrice) }}元
+              </span>
+              <span v-else> 打{{ (coupon.discountPercent ?? 0) / 10 }}折 </span>
+            </Typography.Text>
+          </Typography>
         </div>
         <FormItem>
           <Button
@@ -114,29 +114,37 @@ watch(
             ghost
             class="mt-2 w-full"
           >
-            <template #icon>
-              <IconifyIcon icon="ep:plus" />
-            </template>
+            <IconifyIcon icon="lucide:plus" />
             添加
           </Button>
         </FormItem>
-      </Card>
-      <Card title="优惠券样式" class="property-group">
+      </div>
+      <p class="text-base font-bold">优惠券样式：</p>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <FormItem label="列数" name="type">
           <RadioGroup v-model:value="formData.columns">
             <Tooltip title="一列" placement="bottom">
               <RadioButton :value="1">
-                <IconifyIcon icon="fluent:text-column-one-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-one-24-filled"
+                  class="inset-0 size-6 items-center"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="二列" placement="bottom">
               <RadioButton :value="2">
-                <IconifyIcon icon="fluent:text-column-two-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-two-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="三列" placement="bottom">
               <RadioButton :value="3">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-three-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
@@ -162,7 +170,7 @@ watch(
         <FormItem label="间隔" name="space">
           <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
-      </Card>
+      </div>
     </Form>
   </ComponentContainerProperty>
 

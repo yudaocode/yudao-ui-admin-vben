@@ -46,17 +46,23 @@ const formData = useVModel(props, 'modelValue', emit);
           <RadioGroup v-model:value="formData.layoutType">
             <Tooltip title="双列" placement="bottom">
               <RadioButton value="twoCol">
-                <IconifyIcon icon="fluent:text-column-two-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-two-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="三列" placement="bottom">
               <RadioButton value="threeCol">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
+                <IconifyIcon
+                  icon="fluent:text-column-three-24-filled"
+                  class="size-6"
+                />
               </RadioButton>
             </Tooltip>
             <Tooltip title="水平滑动" placement="bottom">
               <RadioButton value="horizSwiper">
-                <IconifyIcon icon="system-uicons:carousel" />
+                <IconifyIcon icon="system-uicons:carousel" class="size-6" />
               </RadioButton>
             </Tooltip>
           </RadioGroup>

@@ -200,10 +200,10 @@ const handleAppLinkChange = (appLink: AppLink) => {
           height: `${item.height}px`,
           top: `${item.top}px`,
           left: `${item.left}px`,
-          color: 'var(--ant-color-primary)',
+          color: 'hsl(var(--primary))',
           background:
-            'color-mix(in srgb, var(--ant-color-primary) 30%, transparent)',
-          borderColor: 'var(--ant-color-primary)',
+            'color-mix(in srgb, hsl(var(--primary)) 30%, transparent)',
+          borderColor: 'hsl(var(--primary))',
         }"
         @mousedown="handleMove(item, $event)"
         @dblclick="handleShowAppLinkDialog(item)"
@@ -212,10 +212,9 @@ const handleAppLinkChange = (appLink: AppLink) => {
           {{ item.name || '双击选择链接' }}
         </span>
         <IconifyIcon
-          icon="ep:close"
-          class="absolute right-0 top-0 hidden cursor-pointer rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
-          :style="{ backgroundColor: 'var(--ant-color-primary)' }"
-          :size="14"
+          icon="lucide:x"
+          class="absolute inset-0 right-0 top-0 hidden size-6 cursor-pointer items-center rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
+          :style="{ backgroundColor: 'hsl(var(--primary))' }"
           @click="handleRemove(item)"
         />
 
@@ -232,7 +231,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
     <template #prepend-footer>
       <Button @click="handleAdd" type="primary" ghost>
         <template #icon>
-          <IconifyIcon icon="ep:plus" />
+          <IconifyIcon icon="lucide:plus" />
         </template>
         添加热区
       </Button>
