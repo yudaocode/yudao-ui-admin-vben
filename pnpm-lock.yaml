@@ -22146,7 +22146,13 @@ snapshots:
       is-plain-object: 3.0.1
       vue: 3.5.23(typescript@5.9.3)
 
-  vue3-signature@0.2.4(vue@3.5.22(typescript@5.9.3)):
+  vue3-print-nb@0.1.4(typescript@5.9.3):
+    dependencies:
+      vue: 3.5.23(typescript@5.9.3)
+    transitivePeerDependencies:
+      - typescript
+
+  vue3-signature@0.2.4(vue@3.5.23(typescript@5.9.3)):
     dependencies:
       default-passive-events: 2.0.0
       signature_pad: 3.0.0-beta.4
