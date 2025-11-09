@@ -26,10 +26,12 @@ import Form from './modules/form.vue';
 defineOptions({ name: 'MpAutoReply' });
 
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
-async function onTabChange(_tabName: string) {
-  msgType.value = _tabName;
-  // 等待 msgType 更新完成
+
+/** 切换回复类型 */
+async function onTabChange(tabName: string) {
+  msgType.value = tabName;
   await nextTick();
+  // 更新 columns
   const columns = useGridColumns(Number(msgType.value) as MsgType);
   if (columns) {
     // 使用 setGridOptions 更新列配置
@@ -37,15 +39,14 @@ async function onTabChange(_tabName: string) {
     // 等待列配置更新完成
     await nextTick();
   }
+  // 查询数据
   await gridApi.query();
-  // 查询完成后更新数据长度
   updateTableDataLength();
 }
 
 /** 新增按钮操作 */
 async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
-
   formModalApi
     .setData({
       isCreating: true,
@@ -93,13 +94,11 @@ const [FormModal, formModalApi] = useVbenModal({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    // 表单值变化时自动提交，这样 accountId 会被正确传递到查询函数
-    submitOnChange: true,
+    submitOnChange: true, // 表单值变化时自动提交，这样 accountId 会被正确传递到查询函数
   },
   gridOptions: {
     columns: useGridColumns(Number(msgType.value) as MsgType),
     height: 'calc(100vh - 300px)',
-    // height: '600px',
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -112,8 +111,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
-      // 禁用自动加载，等表单初始化完成后再加载
-      autoLoad: false,
+      autoLoad: false, // 禁用自动加载，等表单初始化完成后再加载
     },
     rowConfig: {
       keyField: 'id',
@@ -126,10 +124,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>,
 });
 
-// 表格数据长度，用于判断是否显示新增按钮
-const tableDataLength = ref(0);
+// TODO @hw：按道理说，不太需呀哦这个？可以微信讨论下哈；
+const tableDataLength = ref(0); // 表格数据长度，用于判断是否显示新增按钮
 
-// 更新表格数据长度（避免在模板中直接调用 getTableData 导致响应式循环）
+/** 更新表格数据长度（避免在模板中直接调用 getTableData 导致响应式循环） */
 function updateTableDataLength() {
   try {
     if (!gridApi.grid) {
@@ -142,6 +140,7 @@ function updateTableDataLength() {
   }
 }
 
+// TODO @hw：这个要不改成，直接 tableaction 那判断；
 // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
 const showCreateButton = computed(() => {
   if (Number(msgType.value) !== MsgType.Follow) {
@@ -150,20 +149,21 @@ const showCreateButton = computed(() => {
   return tableDataLength.value <= 0;
 });
 
-// 页面挂载后，等待表单初始化完成再加载数据
+/** 页面挂载后，等待表单初始化完成再加载数据 */
 onMounted(async () => {
   // 等待 WxAccountSelect 组件加载并设置默认值
   await nextTick();
-  if (gridApi.formApi) {
-    const formValues = await gridApi.formApi.getValues();
-    // 如果 accountId 有值，说明已经准备好了
-    if (formValues.accountId) {
-      // 设置为最新提交的值
-      gridApi.formApi.setLatestSubmissionValues(formValues);
-      // 触发首次查询
-      await gridApi.query();
-      updateTableDataLength();
-    }
+  if (!gridApi.formApi) {
+    return;
+  }
+  const formValues = await gridApi.formApi.getValues();
+  // 如果 accountId 有值，说明已经准备好了
+  if (formValues.accountId) {
+    // 设置为最新提交的值
+    gridApi.formApi.setLatestSubmissionValues(formValues);
+    // 触发首次查询
+    await gridApi.query();
+    updateTableDataLength();
   }
 });
 </script>
@@ -173,6 +173,7 @@ onMounted(async () => {
     <DocAlert title="自动回复" url="https://doc.iocoder.cn/mp/auto-reply/" />
 
     <!-- tab 切换 -->
+    <!-- TODO @hw：貌似 tabs 里面套 table 的样式在 vben 里有点丑，要不我们按照 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/trade/afterSale/index.vue：1）第一层是公众号的选择；2）第二层是 tab；3）第三层是 table -->
     <ContentWrap>
       <Tabs
         v-model:active-key="msgType"

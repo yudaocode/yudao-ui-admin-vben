@@ -13,6 +13,7 @@ import { ReplyType } from '#/views/mp/modules/wx-reply/types';
 
 import ReplyForm from '../components/ReplyForm.vue';
 import { MsgType } from '../components/types';
+import Form from '#/views/system/user/modules/form.vue';
 
 const emit = defineEmits(['success']);
 
@@ -24,7 +25,6 @@ const reply = ref<Reply>({
   type: ReplyType.Text,
   accountId: -1,
 });
-
 const getTitle = computed(() => {
   return formData.value?.isCreating
     ? $t('ui.actionTitle.create', ['自动回复'])
@@ -130,6 +130,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
+  <!-- TODO @hw：可以使用 <Form class="mx-4" /> 这种组件形式么？ -->
   <Modal :title="getTitle" class="w-4/5">
     <ReplyForm
       v-if="formData"

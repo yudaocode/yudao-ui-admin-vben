@@ -68,6 +68,7 @@ defineExpose({
 </script>
 
 <template>
+  <!-- TODO @hw：可以使用 <Form class="mx-4" /> 这种组件形式么？ 融合到 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mp/autoReply/modules/form.vue -->
   <div>
     <Form
       ref="formRef"
@@ -135,5 +136,3 @@ defineExpose({
     </Form>
   </div>
 </template>
-
-<style scoped></style>

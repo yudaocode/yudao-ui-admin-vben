@@ -39,11 +39,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    /** 提交表单 */
+    // 提交表单
     const values = (await formApi.getValues()) as MpUserApi.User;
     try {
       await updateUser({ ...formData.value, ...values });
-      /** 关闭并提示 */
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -56,7 +56,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    /** 加载数据 */
+    // 加载数据
     const data = modalApi.getData<{ id: number }>();
     if (!data || !data.id) {
       return;
@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getUser(data.id);
-      /** 设置到 values */
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
