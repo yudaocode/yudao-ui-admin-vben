@@ -42,10 +42,9 @@ const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
 });
-// 作为多个标签保存各自Reply的缓存
-const tabCache = new Map<ReplyType, Reply>();
-// 采用独立的ref来保存当前tab，避免在watch标签变化，对reply进行赋值会产生了循环调用
-const currentTab = ref<ReplyType>(props.modelValue.type || ReplyType.Text);
+
+const tabCache = new Map<ReplyType, Reply>(); // 作为多个标签保存各自 Reply 的缓存
+const currentTab = ref<ReplyType>(props.modelValue.type || ReplyType.Text); // 采用独立的 ref 来保存当前 tab，避免在 watch 标签变化，对 reply进行赋值会产生了循环调用
 
 watch(
   currentTab,
@@ -136,5 +135,3 @@ defineExpose({
     </Tabs.TabPane>
   </Tabs>
 </template>
-
-<style lang="scss" scoped></style>

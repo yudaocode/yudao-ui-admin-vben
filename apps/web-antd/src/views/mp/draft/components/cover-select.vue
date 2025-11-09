@@ -131,6 +131,7 @@ function onUploadError(err: Error) {
           支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
         </div>
       </div>
+      <!-- TODO @hw：是不是使用 vben 自带的 Modal 哈；这样 ele 通用性更好点。其它模块，涉及到 Modal 也按照这个调整噢 -->
       <Modal
         title="选择图片"
         v-model:open="showImageDialog"

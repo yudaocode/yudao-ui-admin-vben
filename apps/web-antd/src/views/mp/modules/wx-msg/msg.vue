@@ -83,5 +83,3 @@ const item = ref<any>(props.item);
     </div>
   </div>
 </template>
-
-<style scoped></style>

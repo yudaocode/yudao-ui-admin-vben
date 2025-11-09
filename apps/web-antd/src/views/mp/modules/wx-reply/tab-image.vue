@@ -21,8 +21,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-// 消息弹窗
-
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
@@ -154,5 +152,3 @@ function selectMaterial(item: any) {
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

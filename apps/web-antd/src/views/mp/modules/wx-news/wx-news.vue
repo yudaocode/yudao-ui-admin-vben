@@ -63,6 +63,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：tindwind 替代 */
 .news-home {
   width: 100%;
   margin: auto;

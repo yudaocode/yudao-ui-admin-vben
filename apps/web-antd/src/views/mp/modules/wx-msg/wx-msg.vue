@@ -30,7 +30,6 @@ const props = defineProps({
   },
 });
 
-// 消息弹窗
 const accountId = ref(-1); // 公众号ID，需要通过userId初始化
 const loading = ref(false); // 消息列表是否正在加载中
 const hasMore = ref(true); // 是否可以加载更多
@@ -41,21 +40,19 @@ const queryParams = reactive({
   accountId,
 });
 
-// 由于微信不再提供昵称，直接使用"用户"展示
 const user: User = reactive({
-  nickname: '用户',
+  nickname: '用户', // 由于微信不再提供昵称，直接使用"用户"展示
   avatar: profile,
   accountId, // 公众号账号编号
 });
 
 // ========= 消息发送 =========
 const sendLoading = ref(false); // 发送消息是否加载中
-// 微信发送消息
 const reply = ref<Reply>({
   type: ReplyType.Text,
   accountId: -1,
   articles: [],
-});
+}); // 微信发送消息
 
 const replySelectRef = ref<InstanceType<typeof WxReplySelect> | null>(null); // WxReplySelect组件ref，用于消息发送成功后清除内容
 const msgDivRef = ref<HTMLDivElement | null>(null); // 消息显示窗口ref，用于滚动到底部

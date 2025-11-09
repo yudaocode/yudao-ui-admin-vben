@@ -18,6 +18,7 @@ const item = ref(props.item);
     <div v-else-if="item.event === 'unsubscribe'">
       <Tag color="error">取消关注</Tag>
     </div>
+    <!-- @hw：看看能不能处理下 linter 报错哈； -->
     <div v-else-if="item.event === 'CLICK'">
       <Tag>点击菜单</Tag>
       【{{ item.eventKey }}】

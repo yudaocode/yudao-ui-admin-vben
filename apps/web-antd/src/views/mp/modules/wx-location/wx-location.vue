@@ -1,5 +1,5 @@
 <!--
-  【微信消息 - 定位】TODO @Dhb52 目前未启用
+  【微信消息 - 定位】TODO @Dhb52 目前未启用；TODO @芋艿：需要测试下；
 -->
 <script lang="ts" setup>
 import { IconifyIcon } from '@vben/icons';
@@ -23,6 +23,7 @@ const props = defineProps({
     type: String,
   },
   qqMapKey: {
+    // TODO @芋艿：是不是要换成全局的读取？
     // QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
     required: false,
     type: String,

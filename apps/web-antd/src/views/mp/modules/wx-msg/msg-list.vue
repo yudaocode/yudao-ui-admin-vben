@@ -18,11 +18,10 @@ const props = defineProps<{
   user: PropsUser;
 }>();
 
-// 使用常量对象替代枚举，避免 linter 误报
 const SendFrom = {
   MpBot: 2,
   User: 1,
-} as const;
+} as const; // 使用常量对象替代枚举，避免 linter 误报
 
 type SendFromType = (typeof SendFrom)[keyof typeof SendFrom];
 
@@ -72,6 +71,7 @@ const getNickname = (sendFrom: SendFromType) =>
 
 <style lang="scss" scoped>
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
+/** TODO @hw：这里有没办法重构掉哈。辛苦~~~ */
 @import url('../comment.scss');
 @import url('../card.scss');
 </style>

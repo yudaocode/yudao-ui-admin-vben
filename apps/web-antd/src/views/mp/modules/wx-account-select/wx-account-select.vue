@@ -10,6 +10,8 @@ import { message, Select, SelectOption } from 'ant-design-vue';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
+// TODO @hw：【可讨论】如果这个组件，有办法调整下，让接入的 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mp/draft/index.vue 判断简单点，也可以。
+
 defineOptions({ name: 'WxAccountSelect' });
 
 const props = defineProps<{

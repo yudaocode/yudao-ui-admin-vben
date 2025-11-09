@@ -30,18 +30,14 @@ const props = withDefaults(
 
 const emit = defineEmits(['selectMaterial']);
 
-// 遮罩层
-const loading = ref(false);
-// 总条数
-const total = ref(0);
-// 数据列表
-const list = ref<any[]>([]);
-// 查询参数
+const loading = ref(false); // 遮罩层
+const total = ref(0); // 总条数
+const list = ref<any[]>([]); // 数据列表
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   accountId: props.accountId,
-});
+}); // 查询参数
 
 /** 选择素材 */
 function selectMaterialFun(item: any) {
@@ -103,6 +99,7 @@ async function getDraftPageFun() {
   total.value = data.total;
 }
 
+// TODO @hw：改成 grid 风格；
 onMounted(async () => {
   getPage();
 });
@@ -234,6 +231,7 @@ onMounted(async () => {
   </div>
 </template>
 <style lang="scss" scoped>
+/** TODO @hw：tindwind 风格 */
 @media (width >= 992px) and (width <= 1300px) {
   .waterfall {
     column-count: 3;

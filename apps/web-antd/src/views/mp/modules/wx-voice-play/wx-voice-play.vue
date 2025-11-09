@@ -91,6 +91,7 @@ function amrStop() {
   </div>
 </template>
 <style lang="scss" scoped>
+/** TODO @hw：tindwind 替代 */
 .wx-voice-div {
   display: flex;
   align-items: center;

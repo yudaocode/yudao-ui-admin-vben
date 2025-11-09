@@ -64,6 +64,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：这里有没办法重构掉哈。辛苦~~~ */
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 card.scss  */
 @import url('../wx-msg/card.scss');
 </style>

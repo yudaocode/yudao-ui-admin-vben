@@ -14,8 +14,6 @@ import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
 import { WxVoicePlayer } from '#/views/mp/modules/wx-voice-play';
 
-// 设置上传的请求头部
-
 const props = defineProps<{
   modelValue: Reply;
 }>();
@@ -23,8 +21,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
-
-// 消息弹窗
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -153,5 +149,3 @@ function selectMaterial(item: Reply) {
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped></style>
