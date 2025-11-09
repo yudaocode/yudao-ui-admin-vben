@@ -149,6 +149,7 @@ const showCreateButton = computed(() => {
   return tableDataLength.value <= 0;
 });
 
+// TODO @hw：看看能不能参考 tag/index.vue 简化下
 /** 页面挂载后，等待表单初始化完成再加载数据 */
 onMounted(async () => {
   // 等待 WxAccountSelect 组件加载并设置默认值

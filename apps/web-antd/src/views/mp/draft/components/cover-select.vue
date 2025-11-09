@@ -13,8 +13,6 @@ import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
 
-// 设置上传的请求头部
-
 const props = defineProps<{
   isFirst: boolean;
   modelValue: NewsItem;
@@ -54,10 +52,11 @@ function onMaterialSelected(item: any) {
   newsItem.value.thumbMediaId = item.mediaId;
   newsItem.value.thumbUrl = item.url;
 }
-
+// TODO @hw：注释都补充下哈；
 const onBeforeUpload = (file: UploadFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 
+// TODO @hw：注释都补充下哈；
 function onUploadChange(info: any) {
   if (info.file.status === 'done') {
     onUploadSuccess(info.file.response || info.file);
@@ -66,6 +65,7 @@ function onUploadChange(info: any) {
   }
 }
 
+// TODO @hw：注释都补充下哈；
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
     message.error(`上传出错：${res.msg}`);
@@ -74,12 +74,12 @@ function onUploadSuccess(res: any) {
 
   // 重置上传文件的表单
   fileList.value = [];
-
   // 设置草稿的封面字段
   newsItem.value.thumbMediaId = res.data.mediaId;
   newsItem.value.thumbUrl = res.data.url;
 }
 
+// TODO @hw：注释都补充下哈；
 function onUploadError(err: Error) {
   message.error(`上传失败: ${err.message}`);
 }
@@ -88,6 +88,7 @@ function onUploadError(err: Error) {
 <template>
   <div>
     <p>封面:</p>
+    <!-- TODO @hw：我貌似上传不成功。不确定是不是我这边的问题；；；可以微信沟通下哈。 -->
     <div class="thumb-div">
       <Image
         v-if="newsItem.thumbUrl"
@@ -115,6 +116,7 @@ function onUploadError(err: Error) {
               <Button size="small" type="primary">本地上传</Button>
             </template>
           </Upload>
+          <!-- TODO @hw：tindwind -->
           <Button
             size="small"
             type="primary"
@@ -146,6 +148,7 @@ function onUploadError(err: Error) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
 .upload-tip {
   margin-top: 5px;
   margin-left: 5px;

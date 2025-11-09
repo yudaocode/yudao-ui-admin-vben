@@ -6,6 +6,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { nextTick, onMounted, provide, ref, watch } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { message } from 'ant-design-vue';
 
@@ -25,6 +26,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+// TODO @hw：下面的方法，放到这个前面，和别的保持一致；
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -47,6 +49,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             ...formValues,
           });
           // 处理 API 返回的数据，兼容不同的数据结构
+          // TODO @wx：看 yudao-ui-admin-vue3/src/views/mp/draft/index.vue 项目里，转换没这么复杂。。。是不是这里有办法简化下？
           const formattedList: Article[] = drafts.list.map((draft: any) => {
             // 如果已经是 content.newsItem 格式，直接使用
             if (draft.content?.newsItem) {
@@ -116,9 +119,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 // 提供 accountId 给子组件
+// TODO @hw：参考 tag/index.vue 放到 formValues.accountId;
 const accountId = ref<number>(-1);
 
 // 监听表单提交，更新 accountId
+// TODO @hw：看看这个 watch、provide 能不能简化掉；
 watch(
   () => gridApi.formApi?.getLatestSubmissionValues?.()?.accountId,
   (newAccountId) => {
@@ -138,7 +143,6 @@ async function handleCreate() {
     message.warning('请先选择公众号');
     return;
   }
-
   formModalApi
     .setData({
       isCreating: true,
@@ -156,7 +160,6 @@ async function handleEdit(row: Article) {
     message.warning('请先选择公众号');
     return;
   }
-
   formModalApi
     .setData({
       isCreating: false,
@@ -171,30 +174,27 @@ async function handleEdit(row: Article) {
 async function handlePublish(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
+  // TODO @hw：看看能不能去掉 -1 的判断哈？
   if (!accountId || accountId === -1) {
     message.warning('请先选择公众号');
     return;
   }
-
-  const content =
+  await confirm(
     '你正在通过发布的方式发表内容。 发布不占用群发次数，一天可多次发布。' +
-    '已发布内容不会推送给用户，也不会展示在公众号主页中。 ' +
-    '发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。';
+      '已发布内容不会推送给用户，也不会展示在公众号主页中。 ' +
+      '发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。',
+  );
+  const hideLoading = message.loading({
+    content: '发布中...',
+    duration: 0,
+  });
+  // TODO @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
   try {
-    await confirm(content);
-    const hideLoading = message.loading({
-      content: '发布中...',
-      duration: 0,
-    });
-    try {
-      await MpFreePublishApi.submitFreePublish(accountId, row.mediaId);
-      message.success('发布成功');
-      await gridApi.query();
-    } finally {
-      hideLoading();
-    }
-  } catch {
-    //
+    await MpFreePublishApi.submitFreePublish(accountId, row.mediaId);
+    message.success('发布成功');
+    await gridApi.query();
+  } finally {
+    hideLoading();
   }
 }
 
@@ -206,25 +206,21 @@ async function handleDelete(row: Article) {
     message.warning('请先选择公众号');
     return;
   }
-
+  await confirm('此操作将永久删除该草稿, 是否继续?');
+  const hideLoading = message.loading({
+    content: '删除中...',
+    duration: 0,
+  });
   try {
-    await confirm('此操作将永久删除该草稿, 是否继续?');
-    const hideLoading = message.loading({
-      content: '删除中...',
-      duration: 0,
-    });
-    try {
-      await MpDraftApi.deleteDraft(accountId, row.mediaId);
-      message.success('删除成功');
-      await gridApi.query();
-    } finally {
-      hideLoading();
-    }
-  } catch {
-    //
+    await MpDraftApi.deleteDraft(accountId, row.mediaId);
+    message.success('删除成功');
+    await gridApi.query();
+  } finally {
+    hideLoading();
   }
 }
 
+// TODO @hw：看看能不能参考 tag/index.vue 简化下
 // 页面挂载后，等待表单初始化完成再加载数据
 onMounted(async () => {
   await nextTick();
@@ -243,6 +239,7 @@ onMounted(async () => {
   <Page auto-content-height>
     <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
 
+    <!-- TODO @hw：参考别的模块 @success 调用 refresh 方法； -->
     <FormModal
       @success="
         () => {
@@ -256,7 +253,7 @@ onMounted(async () => {
         <TableAction
           :actions="[
             {
-              label: '新增',
+              label: $t('ui.actionTitle.create', ['图文草稿']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['mp:draft:create'],

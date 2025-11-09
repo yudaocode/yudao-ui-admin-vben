@@ -15,12 +15,15 @@ const emit = defineEmits(['success']);
 
 const formData = ref<{
   accountId: number;
+  // TODO @hw：是不是通过 id 字段判断是否为新增？类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue
   isCreating: boolean;
   mediaId?: string;
   newsList?: NewsItem[];
 }>();
 const newsList = ref<NewsItem[]>([]);
+// TODO @hw：不需要 isSave，通过 modal 去 lock 就好啦。
 const isSubmitting = ref(false);
+// TODO @hw：不需要 isSave，通过 modal 去 lock 就好啦。
 const isSaved = ref(false);
 
 const getTitle = computed(() => {

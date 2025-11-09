@@ -1,3 +1,4 @@
+// TODO @hw：要不把 components 里的部分，拿到 modules 里。
 interface NewsItem {
   title: string;
   thumbMediaId: string;

@@ -20,7 +20,6 @@ const props = defineProps<{
   modelValue: NewsItem[] | null;
 }>();
 
-// v-model=newsList
 const emit = defineEmits<{
   (e: 'update:modelValue', v: NewsItem[]): void;
 }>();
@@ -45,6 +44,7 @@ const activeNewsItem = computed(() => {
   return item;
 });
 
+// TODO @hw：注释使用 /** */
 // 将图文向下移动
 function moveDownNews(index: number) {
   const current = newsList.value[index];
@@ -69,14 +69,10 @@ function moveUpNews(index: number) {
 
 // 删除指定 index 的图文
 async function removeNews(index: number) {
-  try {
-    await confirm('确定删除该图文吗?');
-    newsList.value.splice(index, 1);
-    if (activeNewsIndex.value === index) {
-      activeNewsIndex.value = 0;
-    }
-  } catch {
-    // empty
+  await confirm('确定删除该图文吗?');
+  newsList.value.splice(index, 1);
+  if (activeNewsIndex.value === index) {
+    activeNewsIndex.value = 0;
   }
 }
 
@@ -234,6 +230,7 @@ function plusNews() {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
 .ope-row {
   padding-top: 5px;
   margin-top: 5px;
