@@ -1,3 +1,4 @@
+// TODO @hw：这个要不合并到 types 里；
 export default [
   {
     value: 'view',

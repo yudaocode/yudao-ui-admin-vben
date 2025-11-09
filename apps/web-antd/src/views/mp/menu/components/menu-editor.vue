@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @hw：名字可以缩写成 editor.vue，文件名
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
@@ -136,6 +137,7 @@ function deleteMaterial() {
             allow-clear
           />
         </div>
+        <!-- TODO @hw：1）左侧 filed 宽度，看看要不要统一；2）右侧的 input 宽度也处理下； -->
         <div class="configur-content" v-if="menu.type === 'miniprogram'">
           <div class="applet">
             <span>小程序的 appid ：</span>
@@ -188,6 +190,7 @@ function deleteMaterial() {
             </div>
             <div v-else>
               <Row justify="center">
+                <!-- TODO @hw：html 标签里的 style 要用 tindwind 替代下； -->
                 <Col :span="24" style="text-align: center">
                   <Button type="primary" @click="showNewsDialog = true">
                     素材库选择
@@ -210,18 +213,21 @@ function deleteMaterial() {
             </Modal>
           </Row>
         </div>
+        <!-- TODO @hw：貌似这个组件出不来 -->
         <div
           class="configur-content"
           v-if="menu.type === 'click' || menu.type === 'scancode_waitmsg'"
         >
           <WxReplySelect v-if="hackResetWxReplySelect" v-model="menu.reply" />
         </div>
+        <!-- TODO @hw：扫码回复，这个帮忙看看，是不是有点问题。= = 好像 vue3 + element-plus 就有点问题； -->
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
 :deep(.ant-input) {
   // width: 70%;
   margin-right: 2%;

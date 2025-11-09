@@ -76,7 +76,9 @@ function handleQuery() {
 
 /** 将后端返回的 menuList，转换成前端的 menuList */
 function menuListToFrontend(list: any[]) {
-  if (!list) return [];
+  if (!list) {
+    return [];
+  }
 
   const result: RawMenu[] = [];
   list.forEach((item: RawMenu) => {
@@ -146,66 +148,56 @@ function subMenuClicked(child: Menu, x: number, y: number) {
 
 /** 删除当前菜单 */
 async function onDeleteMenu() {
-  try {
-    await confirm('确定要删除吗?');
-    if (tempSelfObj.value.grand === Level.Parent) {
-      // 一级菜单的删除方法
-      menuList.value.splice(tempSelfObj.value.x, 1);
-    } else if (tempSelfObj.value.grand === Level.Child) {
-      // 二级菜单的删除方法
-      menuList.value[tempSelfObj.value.x]?.children?.splice(
-        tempSelfObj.value.y,
-        1,
-      );
-    }
-    // 提示
-    message.success('删除成功');
+  await confirm('确定要删除吗?');
+  if (tempSelfObj.value.grand === Level.Parent) {
+    // 一级菜单的删除方法
+    menuList.value.splice(tempSelfObj.value.x, 1);
+  } else if (tempSelfObj.value.grand === Level.Child) {
+    // 二级菜单的删除方法
+    menuList.value[tempSelfObj.value.x]?.children?.splice(
+      tempSelfObj.value.y,
+      1,
+    );
+  }
+  // 提示
+  message.success('删除成功');
 
-    // 处理菜单的选中
-    activeMenu.value = {};
-    showRightPanel.value = false;
-    activeIndex.value = MENU_NOT_SELECTED;
-  } catch {}
+  // 处理菜单的选中
+  activeMenu.value = {};
+  showRightPanel.value = false;
+  activeIndex.value = MENU_NOT_SELECTED;
 }
 
 // ======================== 菜单编辑 ========================
 /** 保存菜单 */
 async function onSave() {
+  await confirm('确定要保存吗?');
+  const hideLoading = message.loading({
+    content: '保存中...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要保存吗?');
-    const hideLoading = message.loading({
-      content: '保存中...',
-      duration: 0,
-    });
-    try {
-      await saveMenu(accountId.value, menuListToBackend());
-      getList();
-      message.success('发布成功');
-    } finally {
-      hideLoading();
-    }
-  } catch {
-    //
+    await saveMenu(accountId.value, menuListToBackend());
+    await getList();
+    message.success('发布成功');
+  } finally {
+    hideLoading();
   }
 }
 
 /** 清空菜单 */
 async function onClear() {
+  await confirm('确定要删除吗?');
+  const hideLoading = message.loading({
+    content: '删除中...',
+    duration: 0,
+  });
   try {
-    await confirm('确定要删除吗?');
-    const hideLoading = message.loading({
-      content: '删除中...',
-      duration: 0,
-    });
-    try {
-      await deleteMenu(accountId.value);
-      handleQuery();
-      message.success('清空成功');
-    } finally {
-      hideLoading();
-    }
-  } catch {
-    //
+    await deleteMenu(accountId.value);
+    handleQuery();
+    message.success('清空成功');
+  } finally {
+    hideLoading();
   }
 }
 
@@ -229,7 +221,7 @@ function menuListToBackend() {
 }
 
 /** 将前端的 menu，转换成后端接收的 menu */
-// TODO: @芋艿，需要根据后台API删除不需要的字段
+// TODO: @芋艿，需要根据后台 API 删除不需要的字段
 function menuToBackend(menu: any) {
   const result = {
     ...menu,
@@ -247,7 +239,6 @@ function menuToBackend(menu: any) {
   result.replyArticles = menu.reply.articles;
   result.replyMusicUrl = menu.reply.musicUrl;
   result.replyHqMusicUrl = menu.reply.hqMusicUrl;
-
   return result;
 }
 </script>
@@ -259,6 +250,7 @@ function menuToBackend(menu: any) {
     </template>
 
     <!-- 搜索工作栏 -->
+    <!-- TODO @hw：是不是少了一个框子哈？ -->
     <!-- <ContentWrap> -->
     <Form layout="inline" class="-mb-15px w-240px">
       <Form.Item label="公众号" prop="accountId" class="w-240px">
@@ -267,6 +259,7 @@ function menuToBackend(menu: any) {
     </Form>
     <!-- </ContentWrap> -->
 
+    <!-- TODO @hw：貌似高度高了点。就是手机下面部分，空了一大块。 -->
     <ContentWrap>
       <div class="clearfix public-account-management" v-loading="loading">
         <!--左边配置菜单-->
@@ -322,6 +315,7 @@ function menuToBackend(menu: any) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
 /* 公共颜色变量 */
 .clearfix {
   *zoom: 1;

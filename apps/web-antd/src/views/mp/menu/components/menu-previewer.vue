@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @hw：名字可以缩写成 previewer.vue，文件名
 import type { Menu } from './types';
 
 import { computed } from 'vue';
@@ -43,7 +44,8 @@ function addMenu() {
 
 /** 添加横向二级菜单；parent 表示要操作的父菜单 */
 function addSubMenu(i: number, parent: any) {
-  const subMenuKeyLength = parent.children.length; // 获取二级菜单key长度
+  const subMenuKeyLength = parent.children.length; // 获取二级菜单 key 长度
+  // TODO @hw：可以 inline 掉。idea 或者 vscode 的一些告警，处理掉会更干净一些。
   const addButton = {
     name: '子菜单名称',
     reply: {
@@ -183,6 +185,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
 .menu-bottom {
   position: relative;
   float: left;
