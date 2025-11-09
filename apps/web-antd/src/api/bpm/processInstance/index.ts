@@ -20,6 +20,7 @@ export namespace BpmProcessInstanceApi {
 
   export interface User {
     avatar: string;
+    deptName?: string;
     id: number;
     nickname: string;
   }
@@ -100,6 +101,22 @@ export namespace BpmProcessInstanceApi {
       value: string;
     }[];
     taskId: string;
+  }
+
+  /** 打印数据任务信息 */
+  export interface PrintTask {
+    description: string;
+    id: number;
+    name: string;
+    signPicUrl?: string;
+  }
+
+  /** 打印数据 */
+  export interface PrintData {
+    printTemplateEnable: boolean;
+    printTemplateHtml?: string;
+    processInstance: ProcessInstance;
+    tasks: PrintTask[];
   }
 }
 
@@ -203,5 +220,12 @@ export async function getFormFieldsPermission(params: any) {
 export async function getProcessInstanceBpmnModelView(id: string) {
   return requestClient.get<BpmProcessInstanceApi.ProcessInstance>(
     `/bpm/process-instance/get-bpmn-model-view?id=${id}`,
+  );
+}
+
+/** 获取流程实例打印数据 */
+export async function getProcessInstancePrintData(id: string) {
+  return requestClient.get<BpmProcessInstanceApi.PrintData>(
+    `/bpm/process-instance/get-print-data?processInstanceId=${id}`,
   );
 }
