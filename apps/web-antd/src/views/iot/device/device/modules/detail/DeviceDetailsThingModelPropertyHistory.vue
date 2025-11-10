@@ -354,7 +354,7 @@ async function handleExport() {
       ...list.value.map((item, index) => {
         return [
           index + 1,
-          formatDate(new Date(item.updateTime)),
+          formatDateTime(new Date(item.updateTime)),
           isComplexDataType.value
             ? `"${JSON.stringify(item.value)}"`
             : item.value,
