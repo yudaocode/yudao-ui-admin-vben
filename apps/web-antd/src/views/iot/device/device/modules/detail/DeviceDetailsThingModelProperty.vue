@@ -123,10 +123,12 @@ onMounted(() => {
           style="width: 240px"
           @press-enter="handleQuery"
         />
-        <div class="flex items-center" style="gap: 8px">
-          <span style="font-size: 14px; color: #666">自动刷新</span>
-          <Switch v-model:checked="autoRefresh" size="small" />
-        </div>
+        <Switch
+          v-model:checked="autoRefresh"
+          class="ml-20px"
+          checked-children="定时刷新"
+          un-checked-children="定时刷新"
+        />
       </div>
       <Button.Group>
         <Button
