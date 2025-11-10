@@ -9,11 +9,13 @@ import UploadImg from '#/components/upload/image-upload.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 视频播放属性面板
+/** 视频播放属性面板 */
 defineOptions({ name: 'VideoPlayerProperty' });
 
 const props = defineProps<{ modelValue: VideoPlayerProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

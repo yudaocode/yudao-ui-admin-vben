@@ -3,11 +3,12 @@ import type { AppLink } from './data';
 
 import { nextTick, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { getUrlNumberValue } from '@vben/utils';
 
-import { Button, Form, FormItem, Modal, Tooltip } from 'ant-design-vue';
+import { Button, Form, FormItem, Tooltip } from 'ant-design-vue';
 
-import ProductCategorySelect from '#/views/mall/product/category/components/product-category-select.vue';
+import { ProductCategorySelect } from '#/views/mall/product/category/components/';
 
 import { APP_LINK_GROUP_LIST, APP_LINK_TYPE_ENUM } from './data';
 
@@ -30,21 +31,31 @@ const groupBtnRefs = ref<HTMLButtonElement[]>([]); // 分组引用列表
 const detailSelectDialog = ref<{
   id?: number;
   type?: APP_LINK_TYPE_ENUM;
-  visible: boolean;
 }>({
-  visible: false,
   id: undefined,
   type: undefined,
 }); // 详情选择对话框
 
-const dialogVisible = ref(false);
+const [Modal, modalApi] = useVbenModal({
+  onConfirm() {
+    emit('change', activeAppLink.value.path);
+    emit('appLinkChange', activeAppLink.value);
+    modalApi.close();
+  },
+});
+
+const [DetailSelectModal, detailSelectModalApi] = useVbenModal({
+  onConfirm() {
+    detailSelectModalApi.close();
+  },
+});
 
 defineExpose({ open });
 
 /** 打开弹窗 */
 async function open(link: string) {
   activeAppLink.value.path = link;
-  dialogVisible.value = true;
+  modalApi.open();
   // 滚动到当前的链接
   const group = APP_LINK_GROUP_LIST.find((group) =>
     group.links.some((linkItem) => {
@@ -76,20 +87,13 @@ function handleAppLinkSelected(appLink: AppLink) {
           'id',
           `http://127.0.0.1${activeAppLink.value.path}`,
         ) || undefined;
-      detailSelectDialog.value.visible = true;
+      detailSelectModalApi.open();
       break;
     }
     default: {
       break;
     }
   }
-}
-
-/** 处理确认提交 */
-function handleSubmit() {
-  emit('change', activeAppLink.value.path);
-  emit('appLinkChange', activeAppLink.value);
-  dialogVisible.value = false;
 }
 
 /**
@@ -138,7 +142,7 @@ function scrollToGroupBtn(group: string) {
 
 /** 是否为相同的链接（不比较参数，只比较链接） */
 function isSameLink(link1: string, link2: string) {
-  return link2 ? link1.split('?')[0] === link2.split('?')[0] : false;
+  return link2 ? link1?.split('?')[0] === link2.split('?')[0] : false;
 }
 
 /** 处理详情选择 */
@@ -149,17 +153,12 @@ function handleProductCategorySelected(id: number) {
   activeAppLink.value.path = `${url.pathname}${url.search}`;
 
   // 关闭对话框，并重置 id
-  detailSelectDialog.value.visible = false;
+  detailSelectModalApi.close();
   detailSelectDialog.value.id = undefined;
 }
 </script>
 <template>
-  <Modal
-    v-model:open="dialogVisible"
-    title="选择链接"
-    width="65%"
-    @ok="handleSubmit"
-  >
+  <Modal title="选择链接" class="w-[65%]">
     <div class="flex h-[500px] gap-2">
       <!-- 左侧分组列表 -->
       <div
@@ -218,7 +217,7 @@ function handleProductCategorySelected(id: number) {
     </div>
   </Modal>
 
-  <Modal v-model:open="detailSelectDialog.visible" title="选择分类" width="65%">
+  <DetailSelectModal title="选择分类" class="w-[65%]">
     <Form class="min-h-[200px]">
       <FormItem
         label="选择分类"
@@ -233,11 +232,5 @@ function handleProductCategorySelected(id: number) {
         />
       </FormItem>
     </Form>
-  </Modal>
+  </DetailSelectModal>
 </template>
-
-<style lang="scss" scoped>
-:deep(.ant-btn + .ant-btn) {
-  margin-left: 0 !important;
-}
-</style>

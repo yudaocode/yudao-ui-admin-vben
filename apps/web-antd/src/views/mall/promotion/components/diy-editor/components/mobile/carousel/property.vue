@@ -21,11 +21,13 @@ import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 轮播图属性面板
+/** 轮播图属性面板 */
 defineOptions({ name: 'CarouselProperty' });
 
 const props = defineProps<{ modelValue: CarouselProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

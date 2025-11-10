@@ -5,7 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElImage } from 'element-plus';
 
-/** 底部导航 */
+/** 页面底部导航栏 */
 defineOptions({ name: 'TabBar' });
 
 defineProps<{ property: TabBarProperty }>();
@@ -26,7 +26,7 @@ defineProps<{ property: TabBarProperty }>();
       <div
         v-for="(item, index) in property.items"
         :key="index"
-        class="tab-bar-item flex w-full flex-col items-center justify-center text-xs"
+        class="flex w-full flex-col items-center justify-center text-xs"
       >
         <ElImage
           :src="index === 0 ? item.activeIconUrl : item.iconUrl"
@@ -35,7 +35,7 @@ defineProps<{ property: TabBarProperty }>();
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
               <IconifyIcon
-                icon="ep:picture"
+                icon="lucide:image"
                 class="h-[26px] w-[26px] rounded"
               />
             </div>

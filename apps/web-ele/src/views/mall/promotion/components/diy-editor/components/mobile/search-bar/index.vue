@@ -30,7 +30,7 @@ defineProps<{ property: SearchProperty }>();
           justifyContent: property.placeholderPosition,
         }"
       >
-        <IconifyIcon icon="ep:search" />
+        <IconifyIcon icon="lucide:search" />
         <span>{{ property.placeholder || '搜索商品' }}</span>
       </div>
       <div class="absolute right-2 flex items-center justify-center gap-2">
@@ -39,10 +39,7 @@ defineProps<{ property: SearchProperty }>();
           {{ keyword }}
         </span>
         <!-- 扫一扫 -->
-        <IconifyIcon
-          icon="ant-design:scan-outlined"
-          v-show="property.showScan"
-        />
+        <IconifyIcon icon="lucide:scan-barcode" v-show="property.showScan" />
       </div>
     </div>
   </div>

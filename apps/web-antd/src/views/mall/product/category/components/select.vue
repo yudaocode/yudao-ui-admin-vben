@@ -11,25 +11,24 @@ import { getCategoryList } from '#/api/mall/product/category';
 defineOptions({ name: 'ProductCategorySelect' });
 
 const props = defineProps({
-  // 选中的ID
   modelValue: {
     type: [Number, Array<Number>],
     default: undefined,
-  },
-  // 是否多选
+  }, // 选中的 ID
   multiple: {
     type: Boolean,
     default: false,
-  },
-  // 上级品类的编号
+  }, // 是否多选
   parentId: {
     type: Number,
     default: undefined,
-  },
+  }, // 上级品类的编号
 });
 
 /** 分类选择 */
 const emit = defineEmits(['update:modelValue']);
+
+const categoryList = ref<any[]>([]); // 分类树
 
 /** 选中的分类 ID */
 const selectCategoryId = computed({
@@ -42,7 +41,6 @@ const selectCategoryId = computed({
 });
 
 /** 初始化 */
-const categoryList = ref<any[]>([]); // 分类树
 onMounted(async () => {
   const data = await getCategoryList({
     parentId: props.parentId,

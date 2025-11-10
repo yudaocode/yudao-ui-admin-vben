@@ -183,7 +183,7 @@ function exitHotAreaSelectMode() {
  * 迭代魔方矩阵
  * @param callback 回调
  */
-const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
+function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
   for (const [x, row] of cubes.value.entries()) {
     if (!row) continue;
     for (const [y, cube] of row.entries()) {
@@ -192,7 +192,7 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
       }
     }
   }
-};
+}
 </script>
 <template>
   <div class="relative">
