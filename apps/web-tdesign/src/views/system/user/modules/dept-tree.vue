@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { onMounted, ref } from 'vue';

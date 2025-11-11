@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemSocialClientApi } from '#/api/system/social/client';
 
 import { computed, ref } from 'vue';

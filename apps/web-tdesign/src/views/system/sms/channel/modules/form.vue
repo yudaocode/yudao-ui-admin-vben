@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { computed, ref } from 'vue';

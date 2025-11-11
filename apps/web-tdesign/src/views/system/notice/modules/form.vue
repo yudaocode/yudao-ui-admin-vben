@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemNoticeApi } from '#/api/system/notice';
 
 import { computed, ref } from 'vue';

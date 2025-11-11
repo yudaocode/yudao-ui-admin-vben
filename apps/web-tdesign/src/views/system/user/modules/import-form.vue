@@ -1,12 +1,13 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { UploadFile } from 'tdesign-vue-next';
 
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, Upload } from 'tdesign-vue-next';
-import { message } from '#/adapter/tdesign';
+
 import { useVbenForm } from '#/adapter/form';
+import { message } from '#/adapter/tdesign';
 import { importUser, importUserTemplate } from '#/api/system/user';
 import { $t } from '#/locales';
 

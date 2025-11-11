@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemTenantApi } from '#/api/system/tenant';
 
 import { computed, ref } from 'vue';

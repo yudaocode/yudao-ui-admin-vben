@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemPostApi } from '#/api/system/post';
 
 import { computed, ref } from 'vue';

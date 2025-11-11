@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemMenuApi } from '#/api/system/menu';
 import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 
@@ -8,9 +8,9 @@ import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox } from 'tdesign-vue-next';
-import { message } from '#/adapter/tdesign';
 
 import { useVbenForm } from '#/adapter/form';
+import { message } from '#/adapter/tdesign';
 import { getMenuList } from '#/api/system/menu';
 import {
   createTenantPackage,

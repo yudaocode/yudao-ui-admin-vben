@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { Recordable } from '@vben/types';
 
 import type { SystemMenuApi } from '#/api/system/menu';
@@ -11,9 +11,9 @@ import { SystemMenuTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox } from 'tdesign-vue-next';
-import { message } from '#/adapter/tdesign';
 
 import { useVbenForm } from '#/adapter/form';
+import { message } from '#/adapter/tdesign';
 import { getSimpleMenusList } from '#/api/system/menu';
 import { assignRoleMenu, getRoleMenuList } from '#/api/system/permission';
 import { $t } from '#/locales';

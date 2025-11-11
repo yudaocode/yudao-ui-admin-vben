@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemOAuth2ClientApi } from '#/api/system/oauth2/client';
 
 import { computed, ref } from 'vue';

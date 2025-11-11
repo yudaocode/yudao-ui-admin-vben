@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemRoleApi } from '#/api/system/role';
 
@@ -9,9 +9,9 @@ import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
 import { Checkbox } from 'tdesign-vue-next';
-import { message } from '#/adapter/tdesign';
 
 import { useVbenForm } from '#/adapter/form';
+import { message } from '#/adapter/tdesign';
 import { getDeptList } from '#/api/system/dept';
 import { assignRoleDataScope } from '#/api/system/permission';
 import { getRole } from '#/api/system/role';

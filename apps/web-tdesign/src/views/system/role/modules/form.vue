@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { computed, ref } from 'vue';

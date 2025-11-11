@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { SystemUserApi } from '#/api/system/user';
 
 import { computed, ref } from 'vue';
