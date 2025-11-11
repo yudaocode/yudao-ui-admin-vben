@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import type { PromotionCombinationProperty } from './config';
 
-import type { MallCombinationActivityApi } from '#/api/mall/promotion/combination/combinationActivity';
-
-import { onMounted, ref } from 'vue';
-
-import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
@@ -22,27 +17,20 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { getCombinationActivityPage } from '#/api/mall/promotion/combination/combinationActivity';
 import UploadImg from '#/components/upload/image-upload.vue';
-// import CombinationShowcase from '#/views/mall/promotion/combination/components/combination-showcase.vue';
+import { CombinationShowcase } from '#/views/mall/promotion/combination/components';
 import { ColorInput } from '#/views/mall/promotion/components';
 
-// 拼团属性面板
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 拼团属性面板 */
 defineOptions({ name: 'PromotionCombinationProperty' });
 
 const props = defineProps<{ modelValue: PromotionCombinationProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
-// 活动列表
-const activityList = ref<MallCombinationActivityApi.CombinationActivity[]>([]);
-onMounted(async () => {
-  const { list } = await getCombinationActivityPage({
-    pageNo: 1,
-    pageSize: 10,
-    status: CommonStatusEnum.ENABLE,
-  });
-  activityList.value = list;
-});
 </script>
 
 <template>
@@ -184,5 +172,3 @@ onMounted(async () => {
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

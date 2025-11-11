@@ -1,23 +1,14 @@
 <script setup lang="ts">
 import type { NoticeBarProperty } from './config';
 
-import { ref } from 'vue';
-
 import { IconifyIcon } from '@vben/icons';
 
-import { Divider, Image } from 'ant-design-vue';
+import { Carousel, Divider, Image } from 'ant-design-vue';
 
 /** 公告栏 */
 defineOptions({ name: 'NoticeBar' });
 
-const props = defineProps<{ property: NoticeBarProperty }>();
-
-// 自动轮播
-const activeIndex = ref(0);
-setInterval(() => {
-  const contents = props.property.contents || [];
-  activeIndex.value = (activeIndex.value + 1) % (contents.length || 1);
-}, 3000);
+defineProps<{ property: NoticeBarProperty }>();
 </script>
 
 <template>
@@ -30,11 +21,17 @@ setInterval(() => {
   >
     <Image :src="property.iconUrl" class="h-[18px]" :preview="false" />
     <Divider type="vertical" />
-    <div class="h-6 flex-1 truncate pr-2 leading-6">
-      {{ property.contents?.[activeIndex]?.text }}
-    </div>
+    <Carousel
+      :autoplay="true"
+      :dots="false"
+      vertical
+      class="flex-1 pr-2"
+      style="height: 24px"
+    >
+      <div v-for="(item, index) in property.contents" :key="index">
+        <div class="h-6 truncate leading-6">{{ item.text }}</div>
+      </div>
+    </Carousel>
     <IconifyIcon icon="lucide:arrow-right" />
   </div>
 </template>
-
-<style scoped lang="scss"></style>

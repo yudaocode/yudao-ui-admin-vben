@@ -54,11 +54,6 @@ const formData = useVModel(props, 'modelValue', emit);
                 <IconifyIcon icon="fluent:text-column-two-24-filled" />
               </ElRadioButton>
             </ElTooltip>
-            <!--<ElTooltip class="item" content="三列" placement="bottom">
-              <ElRadioButton value="threeCol">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
-              </ElRadioButton>
-            </ElTooltip>-->
           </ElRadioGroup>
         </ElFormItem>
         <ElFormItem label="商品名称" prop="fields.name.show">
