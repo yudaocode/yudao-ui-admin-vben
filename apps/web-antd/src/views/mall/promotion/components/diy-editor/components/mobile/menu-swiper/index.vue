@@ -8,21 +8,17 @@ import { Image } from 'ant-design-vue';
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });
 const props = defineProps<{ property: MenuSwiperProperty }>();
-// 标题的高度
-const TITLE_HEIGHT = 20;
-// 图标的高度
-const ICON_SIZE = 32;
-// 垂直间距：一行上下的间距
-const SPACE_Y = 16;
 
-// 分页
-const pages = ref<MenuSwiperItemProperty[][]>([]);
-// 轮播图高度
-const carouselHeight = ref(0);
-// 行高
-const rowHeight = ref(0);
-// 列宽
-const columnWidth = ref('');
+const TITLE_HEIGHT = 20; // 标题的高度
+const ICON_SIZE = 32; // 图标的高度
+const SPACE_Y = 16; // 垂直间距：一行上下的间距
+
+const pages = ref<MenuSwiperItemProperty[][]>([]); // 分页
+const carouselHeight = ref(0); // 轮播图高度
+
+const rowHeight = ref(0); // 行高
+const columnWidth = ref(''); // 列宽
+
 watch(
   () => props.property,
   () => {

@@ -20,7 +20,7 @@ export type PlaceholderPosition = 'center' | 'left';
 export const component = {
   id: 'SearchBar',
   name: '搜索框',
-  icon: 'ep:search',
+  icon: 'lucide:search',
   property: {
     height: 28,
     showScan: false,

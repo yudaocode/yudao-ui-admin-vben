@@ -9,11 +9,13 @@ import { AppLinkInput } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 图片展示属性面板
+/** 图片展示属性面板 */
 defineOptions({ name: 'ImageBarProperty' });
 
 const props = defineProps<{ modelValue: ImageBarProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

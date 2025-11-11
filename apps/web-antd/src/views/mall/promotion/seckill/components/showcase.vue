@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { ElImage, ElTooltip } from 'element-plus';
+import { Image, Tooltip } from 'ant-design-vue';
 
 import { getSeckillActivityListByIds } from '#/api/mall/promotion/seckill/seckillActivity';
 
@@ -106,36 +106,37 @@ function emitActivityChange() {
     <div
       v-for="(activity, index) in activityList"
       :key="activity.id"
-      class="group relative h-[60px] w-[60px] overflow-hidden rounded-lg"
+      class="relative h-[60px] w-[60px] overflow-hidden rounded-lg border border-dashed border-gray-300"
     >
-      <ElTooltip :content="activity.name">
+      <Tooltip :title="activity.name">
         <div class="relative h-full w-full">
-          <ElImage
+          <Image
+            :preview="true"
             :src="activity.picUrl"
             class="h-full w-full rounded-lg object-cover"
-            :preview-src-list="[activity.picUrl!]"
-            fit="cover"
           />
           <!-- 删除按钮 -->
+          <!-- TODO @芋艿：等待和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/product/spu/components/spu-showcase.vue 进一步统一 -->
           <IconifyIcon
             v-if="!disabled"
-            icon="ep:circle-close-filled"
-            class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
+            icon="lucide:x"
+            class="absolute -right-2 -top-2 z-10 h-5 w-5 cursor-pointer text-red-500 hover:text-red-600"
             @click="handleRemoveActivity(index)"
           />
         </div>
-      </ElTooltip>
+      </Tooltip>
     </div>
 
     <!-- 添加活动按钮 -->
-    <ElTooltip v-if="canAdd" content="选择活动">
+    <Tooltip v-if="canAdd" title="选择活动">
       <div
-        class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
+        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
         @click="handleOpenActivitySelect"
       >
+        <!-- TODO @芋艿：等待和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/product/spu/components/spu-showcase.vue 进一步统一 -->
         <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
-    </ElTooltip>
+    </Tooltip>
   </div>
 
   <!-- 活动选择对话框 -->

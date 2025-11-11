@@ -11,7 +11,6 @@ defineOptions({ name: 'ImageBar' });
 defineProps<{ property: ImageBarProperty }>();
 </script>
 <template>
-  <!-- 无图片 -->
   <div
     class="bg-card flex h-12 items-center justify-center"
     v-if="!property.imgUrl"

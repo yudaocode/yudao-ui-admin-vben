@@ -27,14 +27,11 @@ export interface DiyComponentLibrary {
   components: string[]; // 组件列表
 }
 
-// 组件样式
+/** 组件样式 */
 export interface ComponentStyle {
-  // 背景类型
-  bgType: 'color' | 'img';
-  // 背景颜色
-  bgColor: string;
-  // 背景图片
-  bgImg: string;
+  bgType: 'color' | 'img'; // 背景类型
+  bgColor: string; // 背景颜色
+  bgImg: string; // 背景图片
   // 外边距
   margin: number;
   marginTop: number;

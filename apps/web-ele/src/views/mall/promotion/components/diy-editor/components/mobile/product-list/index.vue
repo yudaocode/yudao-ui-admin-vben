@@ -9,7 +9,7 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElImage, ElScrollbar } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
+import { getSpuDetailList } from '#/api/mall/product/spu';
 
 /** 商品栏 */
 defineOptions({ name: 'ProductList' });
@@ -21,7 +21,7 @@ const spuList = ref<MallSpuApi.Spu[]>([]);
 watch(
   () => props.property.spuIds,
   async () => {
-    spuList.value = await ProductSpuApi.getSpuDetailList(props.property.spuIds);
+    spuList.value = await getSpuDetailList(props.property.spuIds);
   },
   {
     immediate: true,

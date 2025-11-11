@@ -17,17 +17,18 @@ import {
 } from 'ant-design-vue';
 
 import UploadImg from '#/components/upload/image-upload.vue';
-import { InputWithColor as ColorInput } from '#/views/mall/promotion/components';
+import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
+import { ColorInput } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
-// TODO: 添加组件
-// import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';
 
-// 商品栏属性面板
+/** 商品栏属性面板 */
 defineOptions({ name: 'ProductListProperty' });
 
 const props = defineProps<{ modelValue: ProductListProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -39,7 +40,7 @@ const formData = useVModel(props, 'modelValue', emit);
       :model="formData"
     >
       <Card title="商品列表" class="property-group" :bordered="false">
-        <!-- <SpuShowcase v-model="formData.spuIds" /> -->
+        <SpuShowcase v-model="formData.spuIds" />
       </Card>
       <Card title="商品样式" class="property-group" :bordered="false">
         <FormItem label="布局" prop="type">
@@ -117,5 +118,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </Form>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

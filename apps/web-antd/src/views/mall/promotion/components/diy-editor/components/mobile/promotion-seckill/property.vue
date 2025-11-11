@@ -19,8 +19,7 @@ import {
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
-// TODO: 添加组件
-// import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
+import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
