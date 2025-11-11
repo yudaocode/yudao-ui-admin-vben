@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 该文件可自行根据业务逻辑进行调整
  */
 import type { RequestClientOptions } from '@vben/request';

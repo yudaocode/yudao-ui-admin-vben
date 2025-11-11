@@ -1,4 +1,4 @@
-﻿import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
+import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import { h } from 'vue';
 

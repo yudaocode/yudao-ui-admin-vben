@@ -1,4 +1,4 @@
-﻿import { message } from '#/adapter/tdesign';
+import { message } from '#/adapter/tdesign';
 
 enum UploadType {
   Image = 'image',

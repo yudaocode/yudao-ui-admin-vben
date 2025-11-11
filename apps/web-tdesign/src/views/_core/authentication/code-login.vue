@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 

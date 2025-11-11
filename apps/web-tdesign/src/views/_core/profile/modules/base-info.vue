@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { Recordable } from '@vben/types';
 
 import type { SystemUserProfileApi } from '#/api/system/user/profile';

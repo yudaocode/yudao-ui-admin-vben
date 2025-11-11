@@ -1,4 +1,4 @@
-﻿export {
+export {
   DialogPlugin as dialog,
   MessagePlugin as message,
   NotifyPlugin as notification,
