@@ -10,8 +10,8 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
-import * as SeckillActivityApi from '#/api/mall/promotion/seckill/seckillActivity';
+import { getSpuDetailList } from '#/api/mall/product/spu';
+import { getSeckillActivityListByIds } from '#/api/mall/promotion/seckill/seckillActivity';
 
 /** 秒杀卡片 */
 defineOptions({ name: 'PromotionSeckill' });
@@ -31,7 +31,7 @@ watch(
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取秒杀活动详情列表
         seckillActivityList.value =
-          await SeckillActivityApi.getSeckillActivityListByIds(activityIds);
+          await getSeckillActivityListByIds(activityIds);
 
         // 获取秒杀活动的 SPU 详情列表
         spuList.value = [];
@@ -39,7 +39,7 @@ watch(
           .map((activity) => activity.spuId)
           .filter((spuId): spuId is number => typeof spuId === 'number');
         if (spuIdList.value.length > 0) {
-          spuList.value = await ProductSpuApi.getSpuDetailList(spuIdList.value);
+          spuList.value = await getSpuDetailList(spuIdList.value);
         }
 
         // 更新 SPU 的最低价格
@@ -73,7 +73,7 @@ function calculateSpace(index: number) {
   return { marginLeft, marginTop };
 }
 
-const containerRef = ref();
+const containerRef = ref(); // 容器
 
 /** 计算商品的宽度 */
 function calculateWidth() {

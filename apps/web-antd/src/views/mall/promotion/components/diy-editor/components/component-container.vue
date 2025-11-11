@@ -110,6 +110,7 @@ const handleDeleteComponent = () => {
         v-if="showToolbar && component.name && active"
       >
         <!-- TODO @xingyu：按钮少的时候，会存在遮住的情况； -->
+        <!-- TODO @xingyu：貌似中间的选中框框，没全部框柱。上面多了点，下面少了点。 -->
         <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"

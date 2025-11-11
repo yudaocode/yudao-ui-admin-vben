@@ -11,7 +11,10 @@ defineOptions({ name: 'TitleBar' });
 defineProps<{ property: TitleBarProperty }>();
 </script>
 <template>
-  <div class="title-bar" :style="{ height: `${property.height}px` }">
+  <div
+    class="relative box-border min-h-[20px] w-full"
+    :style="{ height: `${property.height}px` }"
+  >
     <Image
       v-if="property.bgImgUrl"
       :src="property.bgImgUrl"
@@ -51,7 +54,7 @@ defineProps<{ property: TitleBarProperty }>();
     </div>
     <!-- 更多 -->
     <div
-      class="more"
+      class="absolute bottom-0 right-2 top-0 m-auto flex items-center justify-center text-[10px] text-[#969799]"
       v-show="property.more.show"
       :style="{
         color: property.descriptionColor,
@@ -67,25 +70,3 @@ defineProps<{ property: TitleBarProperty }>();
     </div>
   </div>
 </template>
-<style scoped lang="scss">
-.title-bar {
-  position: relative;
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 20px;
-
-  /* 更多 */
-  .more {
-    position: absolute;
-    top: 0;
-    right: 8px;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    font-size: 10px;
-    color: #969799;
-  }
-}
-</style>
