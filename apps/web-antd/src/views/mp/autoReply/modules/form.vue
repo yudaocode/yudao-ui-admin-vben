@@ -13,7 +13,6 @@ import { ReplyType } from '#/views/mp/modules/wx-reply/types';
 
 import ReplyForm from '../components/ReplyForm.vue';
 import { MsgType } from '../components/types';
-import Form from '#/views/system/user/modules/form.vue';
 
 const emit = defineEmits(['success']);
 
