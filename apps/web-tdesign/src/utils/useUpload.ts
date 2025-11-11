@@ -1,4 +1,4 @@
-import { message } from 'ant-design-vue';
+﻿import { message } from '#/adapter/tdesign';
 
 enum UploadType {
   Image = 'image',

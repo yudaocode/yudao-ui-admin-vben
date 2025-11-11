@@ -1,4 +1,4 @@
-import type { Component } from 'vue';
+﻿import type { Component } from 'vue';
 
 import type { BaseFormComponentType } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';

@@ -1,4 +1,4 @@
-<script setup lang="tsx">
+﻿<script setup lang="tsx">
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
