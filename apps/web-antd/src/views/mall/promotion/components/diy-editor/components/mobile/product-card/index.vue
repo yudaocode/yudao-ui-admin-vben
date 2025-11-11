@@ -13,10 +13,11 @@ import { getSpuDetailList } from '#/api/mall/product/spu';
 
 /** 商品卡片 */
 defineOptions({ name: 'ProductCard' });
-// 定义属性
+
 const props = defineProps<{ property: ProductCardProperty }>();
-// 商品列表
-const spuList = ref<MallSpuApi.Spu[]>([]);
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
+
 watch(
   () => props.property.spuIds,
   async () => {
@@ -28,28 +29,21 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
+/** 计算商品的间距 */
 function calculateSpace(index: number) {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
 }
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
 function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
@@ -61,7 +55,7 @@ function calculateWidth() {
     ref="containerRef"
   >
     <div
-      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
+      class="relative box-content flex flex-row flex-wrap overflow-hidden"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),

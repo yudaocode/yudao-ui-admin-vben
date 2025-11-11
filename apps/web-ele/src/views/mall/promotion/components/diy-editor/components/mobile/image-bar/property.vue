@@ -13,7 +13,9 @@ import ComponentContainerProperty from '../../component-container-property.vue';
 defineOptions({ name: 'ImageBarProperty' });
 
 const props = defineProps<{ modelValue: ImageBarProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

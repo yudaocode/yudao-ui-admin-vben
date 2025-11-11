@@ -49,6 +49,7 @@ const emits = defineEmits<{
 type DiyComponentWithStyle = DiyComponent<any> & {
   property: { style?: ComponentStyle };
 };
+
 /** 组件样式 */
 const style = computed(() => {
   const componentStyle = props.component.property.style;
@@ -108,6 +109,7 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
+        <!-- TODO @xingyu：按钮少的时候，会存在遮住的情况； -->
         <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"
