@@ -7,6 +7,7 @@ import { useVModel } from '@vueuse/core';
 import {
   Form,
   FormItem,
+  InputNumber,
   Radio,
   RadioButton,
   RadioGroup,
@@ -37,7 +38,7 @@ const formData = useVModel(props, 'modelValue', emit);
       <p class="text-base font-bold">样式设置：</p>
       <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <FormItem label="样式" prop="type">
-          <RadioGroup v-model="formData.type">
+          <RadioGroup v-model:value="formData.type">
             <Tooltip class="item" content="默认" placement="bottom">
               <RadioButton value="default">
                 <IconifyIcon icon="system-uicons:carousel" class="size-6" />
@@ -50,18 +51,26 @@ const formData = useVModel(props, 'modelValue', emit);
             </Tooltip>
           </RadioGroup>
         </FormItem>
+        <FormItem label="高度" prop="height">
+          <InputNumber
+            v-model:value="formData.height"
+            class="mr-[10px] !w-1/2"
+            controls-position="right"
+          />
+          px
+        </FormItem>
         <FormItem label="指示器" prop="indicator">
-          <RadioGroup v-model="formData.indicator">
+          <RadioGroup v-model:value="formData.indicator">
             <Radio value="dot">小圆点</Radio>
             <Radio value="number">数字</Radio>
           </RadioGroup>
         </FormItem>
         <FormItem label="是否轮播" prop="autoplay">
-          <Switch v-model="formData.autoplay" />
+          <Switch v-model:checked="formData.autoplay" />
         </FormItem>
         <FormItem label="播放间隔" prop="interval" v-if="formData.autoplay">
           <Slider
-            v-model="formData.interval"
+            v-model:value="formData.interval"
             :max="10"
             :min="0.5"
             :step="0.5"
@@ -77,7 +86,7 @@ const formData = useVModel(props, 'modelValue', emit);
         <Draggable v-model="formData.items" :empty-item="{ type: 'img' }">
           <template #default="{ element }">
             <FormItem label="类型" prop="type" class="mb-2" label-width="40px">
-              <RadioGroup v-model="element.type">
+              <RadioGroup v-model:value="element.type">
                 <Radio value="img">图片</Radio>
                 <Radio value="video">视频</Radio>
               </RadioGroup>
