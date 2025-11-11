@@ -23,7 +23,7 @@ import {
   MagicCubeEditor,
 } from '#/views/mall/promotion/components';
 
-// 导航栏属性面板
+/** 导航栏单元格属性面板 */
 defineOptions({ name: 'NavigationBarCellProperty' });
 
 const props = defineProps({
@@ -36,26 +36,21 @@ const props = defineProps({
     default: () => [],
   },
 });
+
 const emit = defineEmits(['update:modelValue']);
+
 const cellList = useVModel(props, 'modelValue', emit);
 
-// 单元格数量：小程序6个（右侧胶囊按钮占了2个），其它平台8个
+/**
+ * 计算单元格数量
+ * 1. 小程序：6 个（因为右侧有胶囊按钮占据 2 个格子的空间）
+ * 2. 其它平台：8 个（全部空间可用）
+ */
 const cellCount = computed(() => (props.isMp ? 6 : 8));
 
-// 转换为Rect格式的数据
-const rectList = computed<Rect[]>(() => {
-  return cellList.value.map((cell) => ({
-    left: cell.left,
-    top: cell.top,
-    width: cell.width,
-    height: cell.height,
-    right: cell.left + cell.width,
-    bottom: cell.top + cell.height,
-  }));
-});
+const selectedHotAreaIndex = ref(0); // 选中的热区
 
-// 选中的热区
-const selectedHotAreaIndex = ref(0);
+/** 处理热区被选中事件 */
 const handleHotAreaSelected = (
   cellValue: NavigationBarCellProperty,
   index: number,
@@ -71,7 +66,7 @@ const handleHotAreaSelected = (
 <template>
   <div class="h-40px flex items-center justify-center">
     <MagicCubeEditor
-      v-model="rectList"
+      v-model="cellList as any"
       :cols="cellCount"
       :cube-size="38"
       :rows="1"

@@ -9,6 +9,7 @@ import {
   AppLinkInput,
   ColorInput,
   Draggable,
+  InputWithColor,
 } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
@@ -18,7 +19,9 @@ import { EMPTY_MENU_GRID_ITEM_PROPERTY } from './config';
 defineOptions({ name: 'MenuGridProperty' });
 
 const props = defineProps<{ modelValue: MenuGridProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -32,7 +35,6 @@ const formData = useVModel(props, 'modelValue', emit);
           <Radio :value="4">4个</Radio>
         </RadioGroup>
       </FormItem>
-
       <p class="text-base font-bold">菜单设置</p>
       <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Draggable
@@ -47,17 +49,17 @@ const formData = useVModel(props, 'modelValue', emit);
                 width="80px"
                 :show-description="false"
               >
-                <template #tip> 建议尺寸：44 * 44 </template>
+                <template #tip> 建议尺寸：44 * 44</template>
               </UploadImg>
             </FormItem>
             <FormItem label="标题" prop="title">
-              <ColorInput
+              <InputWithColor
                 v-model="element.title"
                 v-model:color="element.titleColor"
               />
             </FormItem>
             <FormItem label="副标题" prop="subtitle">
-              <ColorInput
+              <InputWithColor
                 v-model="element.subtitle"
                 v-model:color="element.subtitleColor"
               />
@@ -70,7 +72,7 @@ const formData = useVModel(props, 'modelValue', emit);
             </FormItem>
             <template v-if="element.badge.show">
               <FormItem label="角标内容" prop="badge.text">
-                <ColorInput
+                <InputWithColor
                   v-model="element.badge.text"
                   v-model:color="element.badge.textColor"
                 />

@@ -19,7 +19,6 @@ function handleActive(index: number) {
   activeIndex.value = index;
 }
 </script>
-
 <template>
   <div
     v-for="(item, index) in props.property.list"
@@ -35,7 +34,7 @@ function handleActive(index: number) {
     <ElImage :src="item.imgUrl" fit="contain" class="h-full w-full">
       <template #error>
         <div class="flex h-full w-full items-center justify-center">
-          <IconifyIcon icon="ep:picture" />
+          <IconifyIcon icon="lucide:image" />
         </div>
       </template>
     </ElImage>

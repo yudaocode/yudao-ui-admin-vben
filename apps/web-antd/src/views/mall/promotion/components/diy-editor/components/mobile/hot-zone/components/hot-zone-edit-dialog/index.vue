@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Image } from 'ant-design-vue';
 
-import AppLinkSelectDialog from '#/views/mall/promotion/components/app-link-input/app-link-select-dialog.vue';
+import { AppLinkSelectDialog } from '#/views/mall/promotion/components';
 
 import {
   CONTROL_DOT_LIST,
