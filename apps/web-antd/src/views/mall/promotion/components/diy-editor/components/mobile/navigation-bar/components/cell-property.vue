@@ -3,6 +3,8 @@ import type { NavigationBarCellProperty } from '../config';
 
 import { computed, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
 import {
   FormItem,
@@ -156,14 +158,7 @@ function handleHotAreaSelected(
           <Switch v-model:checked="cell!.showScan" />
         </FormItem>
         <FormItem :prop="`cell[${cellIndex}].borderRadius`" label="圆角">
-          <Slider
-            v-model:value="cell.borderRadius"
-            :max="100"
-            :min="0"
-            :show-input-controls="false"
-            input-size="small"
-            show-input
-          />
+          <Slider v-model:value="cell.borderRadius" :max="100" :min="0" />
         </FormItem>
       </template>
     </template>

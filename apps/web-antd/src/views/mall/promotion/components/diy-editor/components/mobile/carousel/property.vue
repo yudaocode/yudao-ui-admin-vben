@@ -74,9 +74,6 @@ const formData = useVModel(props, 'modelValue', emit);
             :max="10"
             :min="0.5"
             :step="0.5"
-            show-input
-            input-size="small"
-            :show-input-controls="false"
           />
           <p class="text-info">单位：秒</p>
         </FormItem>
