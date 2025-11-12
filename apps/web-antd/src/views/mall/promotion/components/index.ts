@@ -1,4 +1,5 @@
 export { default as AppLinkInput } from './app-link-input/index.vue';
+export { default as AppLinkSelectDialog } from './app-link-input/select-dialog.vue';
 export { default as ColorInput } from './color-input/index.vue';
 export { default as DiyEditor } from './diy-editor/index.vue';
 export { type DiyComponentLibrary, PAGE_LIBS } from './diy-editor/util';
