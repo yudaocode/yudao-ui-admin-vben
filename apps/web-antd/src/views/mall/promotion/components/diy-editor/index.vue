@@ -38,6 +38,12 @@ const props = defineProps({
 
 const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
+// TODO @xingyu：要不要加这个？
+// const qrcode = useQRCode(props.previewUrl, {
+//   errorCorrectionLevel: 'H',
+//   margin: 4,
+// }); // 预览二维码
+
 const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
   cloneDeep(PAGE_CONFIG_COMPONENT),
@@ -169,6 +175,7 @@ function handleComponentSelected(
   index: number = -1,
 ) {
   // 使用深拷贝避免响应式追踪循环警告
+  // TODO @xingyu：这个是必须的么？ele 没有哈。
   selectedComponent.value = cloneDeep(component);
   selectedComponentIndex.value = index;
 }
@@ -308,17 +315,17 @@ onMounted(() => {
         >
           <Tooltip title="重置">
             <Button @click="handleReset">
-              <IconifyIcon class="size-6" icon="lucide:refresh-cw" />
+              <IconifyIcon class="size-5" icon="lucide:refresh-cw" />
             </Button>
           </Tooltip>
           <Tooltip v-if="previewUrl" title="预览">
             <Button @click="handlePreview">
-              <IconifyIcon class="size-6" icon="lucide:eye" />
+              <IconifyIcon class="size-5" icon="lucide:eye" />
             </Button>
           </Tooltip>
           <Tooltip title="保存">
             <Button @click="handleSave">
-              <IconifyIcon class="size-6" icon="lucide:check" />
+              <IconifyIcon class="size-5" icon="lucide:check" />
             </Button>
           </Tooltip>
         </Button.Group>
@@ -501,4 +508,5 @@ onMounted(() => {
       </div>
     </PreviewModal>
   </Page>
+  <!-- TODO @xingyu：这里改造完后，类似 web-ele/src/views/mall/promotion/components/diy-editor/index.vue 里的全局样式（递推到子组件）里的就没没了，类似 property-group -->
 </template>

@@ -39,7 +39,7 @@ function handleToggleFab() {
         <ElImage :src="item.imgUrl" fit="contain" class="h-7 w-7">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" :color="item.textColor" />
+              <IconifyIcon icon="lucide:image" :color="item.textColor" />
             </div>
           </template>
         </ElImage>
@@ -55,7 +55,7 @@ function handleToggleFab() {
     <!-- todo: @owen 使用APP主题色 -->
     <ElButton type="primary" size="large" circle @click="handleToggleFab">
       <IconifyIcon
-        icon="ep:plus"
+        icon="lucide:plus"
         class="transition-transform duration-300"
         :class="expanded ? 'rotate-[135deg]' : 'rotate-0'"
       />

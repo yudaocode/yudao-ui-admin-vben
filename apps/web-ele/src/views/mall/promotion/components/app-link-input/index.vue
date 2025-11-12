@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI：一些 modal 是否使用 Modal 组件，而不是 el-modal？
 import { ref, watch } from 'vue';
 
 import { ElButton, ElInput } from 'element-plus';

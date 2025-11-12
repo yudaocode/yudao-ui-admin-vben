@@ -16,6 +16,7 @@ const SvgGoogleIcon = createIconifyIcon('svg:google');
 const SvgQQChatIcon = createIconifyIcon('svg:qqchat');
 const SvgWeChatIcon = createIconifyIcon('svg:wechat');
 const SvgDingDingIcon = createIconifyIcon('svg:dingding');
+const SvgTDesignIcon = createIconifyIcon('svg:tdesign-logo');
 
 /** AI */
 const SvgGptIcon = createIconifyIcon('svg:gpt');
@@ -65,6 +66,7 @@ export {
   SvgGptIcon,
   SvgMockIcon,
   SvgQQChatIcon,
+  SvgTDesignIcon,
   SvgWalletIcon,
   SvgWeChatIcon,
   SvgWxAppIcon,

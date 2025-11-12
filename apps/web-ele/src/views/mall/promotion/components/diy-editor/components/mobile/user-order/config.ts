@@ -9,7 +9,7 @@ export interface UserOrderProperty {
 export const component = {
   id: 'UserOrder',
   name: '用户订单',
-  icon: 'ep:list',
+  icon: 'lucide:clipboard-list',
   property: {
     style: {
       bgType: 'color',

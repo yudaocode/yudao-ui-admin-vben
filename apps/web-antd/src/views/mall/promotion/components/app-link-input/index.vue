@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 
 import { Button, Input } from 'ant-design-vue';
 
-import AppLinkSelectDialog from './app-link-select-dialog.vue';
+import AppLinkSelectDialog from './select-dialog.vue';
 
 /** APP 链接输入框 */
 defineOptions({ name: 'AppLinkInput' });
@@ -56,5 +56,6 @@ watch(
       </Button>
     </template>
   </Input>
+
   <AppLinkSelectDialog ref="dialogRef" @change="handleLinkSelected" />
 </template>

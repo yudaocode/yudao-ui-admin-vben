@@ -4,7 +4,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import {
   BpmFieldPermissionType,
   BpmModelFormType,
@@ -13,6 +13,7 @@ import {
   DICT_TYPE,
 } from '@vben/constants';
 import {
+  IconifyIcon,
   SvgBpmApproveIcon,
   SvgBpmCancelIcon,
   SvgBpmRejectIcon,
@@ -33,6 +34,7 @@ import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
 import ProcessInstanceOperationButton from './modules/operation-button.vue';
+import ProcessssPrint from './modules/processs-print.vue';
 import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
 import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';
@@ -189,6 +191,16 @@ const refresh = () => {
   getDetail();
 };
 
+const [PrintModal, printModalApi] = useVbenModal({
+  connectedComponent: ProcessssPrint,
+  destroyOnClose: true,
+});
+
+/** 打开打印对话框 */
+function handlePrint() {
+  printModalApi.setData({ processInstanceId: props.id }).open();
+}
+
 /** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */
 watch(
   () => activeTab.value,
@@ -218,7 +230,14 @@ onMounted(async () => {
       }"
     >
       <template #title>
-        <span class="text-gray-500">编号：{{ id || '-' }}</span>
+        <div class="flex items-center gap-4">
+          <span class="text-gray-500">编号：{{ id || '-' }}</span>
+          <IconifyIcon
+            icon="lucide:printer"
+            class="hover:text-primary cursor-pointer"
+            @click="handlePrint"
+          />
+        </div>
       </template>
 
       <div class="flex h-full flex-col">
@@ -371,6 +390,8 @@ onMounted(async () => {
         </div>
       </template>
     </Card>
+    <!-- 打印对话框 -->
+    <PrintModal />
   </Page>
 </template>
 

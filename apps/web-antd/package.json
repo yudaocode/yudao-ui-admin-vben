@@ -61,10 +61,11 @@
     "pinia": "catalog:",
     "steady-xml": "catalog:",
     "tinymce": "catalog:",
-    "video.js": "^7.21.5",
+    "video.js": "catalog:",
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:",
+    "vue3-print-nb": "catalog:",
     "vue3-signature": "catalog:",
     "vuedraggable": "catalog:"
   }

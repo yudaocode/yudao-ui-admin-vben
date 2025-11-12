@@ -57,6 +57,7 @@ const handleHotAreaSelected = (_: any, index: number) => {
           </FormItem>
         </template>
       </template>
+      <!-- TODO @芋艿：距离不一致，需要看看怎么统一； -->
       <FormItem label="上圆角" name="borderRadiusTop">
         <Slider v-model:value="formData.borderRadiusTop" :max="100" :min="0" />
       </FormItem>

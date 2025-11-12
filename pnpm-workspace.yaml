@@ -78,11 +78,13 @@ catalog:
   '@vueuse/core': ^13.4.0
   '@vueuse/integrations': ^14.0.0
   '@vueuse/motion': ^3.0.3
+  '@videojs-player/vue': ^1.0.0
   ant-design-vue: ^4.2.6
   archiver: ^7.0.1
   autoprefixer: ^10.4.21
   axios: ^1.10.0
   axios-mock-adapter: ^2.1.0
+  benz-amr-recorder: ^1.1.5
   bpmn-js: ^17.11.1
   bpmn-js-properties-panel: 5.23.0
   bpmn-js-token-simulation: ^0.36.3
@@ -218,10 +220,12 @@ catalog:
   vue-router: ^4.5.1
   vue-tippy: ^6.7.1
   vue-tsc: 2.2.10
+  vue3-print-nb: "^0.1.4"
   vue3-signature: ^0.2.4
   vuedraggable: ^4.1.0
   vxe-pc-ui: ^4.9.29
   vxe-table: ^4.16.11
+  video.js: ^7.21.6
   watermark-js-plus: ^1.6.2
   zod: ^3.25.67
   zod-defaults: ^0.1.3

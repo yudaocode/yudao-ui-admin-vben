@@ -1,3 +1,5 @@
+import type { Rule } from '@form-create/ant-design-vue';
+
 import type { Ref } from 'vue';
 
 import type { Menu } from '#/components/form-create/typing';
@@ -34,7 +36,7 @@ export function encodeFields(designerRef: any) {
 
 // 解码表单 Fields
 export function decodeFields(fields: string[]) {
-  const rule: object[] = [];
+  const rule: Rule[] = [];
   fields.forEach((item) => {
     rule.push(formCreate.parseJson(item));
   });

@@ -63,9 +63,8 @@ const handleDelete = function (index: number) {
         >
           <ElTooltip content="拖动排序">
             <IconifyIcon
-              icon="ic:round-drag-indicator"
-              class="drag-icon cursor-move"
-              style="color: #8a909c"
+              icon="lucide:move"
+              class="drag-icon cursor-move text-gray-500"
             />
           </ElTooltip>
           <ElTooltip content="删除">
@@ -90,7 +89,7 @@ const handleDelete = function (index: number) {
       :disabled="limit > 0 && formData.length >= limit"
       @click="handleAdd"
     >
-      <IconifyIcon icon="ep:plus" /><span>添加</span>
+      <IconifyIcon icon="lucide:plus" /><span>添加</span>
     </ElButton>
   </ElTooltip>
 </template>

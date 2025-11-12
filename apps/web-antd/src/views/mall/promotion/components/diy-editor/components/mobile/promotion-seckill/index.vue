@@ -15,10 +15,9 @@ import { getSeckillActivityListByIds } from '#/api/mall/promotion/seckill/seckil
 
 /** 秒杀卡片 */
 defineOptions({ name: 'PromotionSeckill' });
-// 定义属性
 const props = defineProps<{ property: PromotionSeckillProperty }>();
-// 商品列表
-const spuList = ref<MallSpuApi.Spu[]>([]);
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const seckillActivityList = ref<MallSeckillActivityApi.SeckillActivity[]>([]);
 
@@ -28,7 +27,7 @@ watch(
     try {
       // 新添加的秒杀组件，是没有活动ID的
       const activityIds = props.property.activityIds;
-      // 检查活动ID的有效性
+      // 检查活动 ID 的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取秒杀活动详情列表
         seckillActivityList.value =
@@ -66,32 +65,25 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div

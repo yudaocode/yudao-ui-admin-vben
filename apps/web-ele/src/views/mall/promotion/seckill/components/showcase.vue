@@ -133,7 +133,7 @@ function emitActivityChange() {
         class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
         @click="handleOpenActivitySelect"
       >
-        <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </ElTooltip>
   </div>

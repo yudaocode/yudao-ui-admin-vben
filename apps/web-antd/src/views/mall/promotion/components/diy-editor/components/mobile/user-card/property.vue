@@ -5,11 +5,13 @@ import { useVModel } from '@vueuse/core';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 用户卡片属性面板
+/** 用户卡片属性面板 */
 defineOptions({ name: 'UserCardProperty' });
 
 const props = defineProps<{ modelValue: UserCardProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 

@@ -17,16 +17,16 @@ import { ColorInput } from '#/views/mall/promotion/components';
 
 import NavigationBarCellProperty from './components/cell-property.vue';
 
-// 导航栏属性面板
+/** 导航栏属性面板 */
 defineOptions({ name: 'NavigationBarProperty' });
+
 const props = defineProps<{ modelValue: NavigationBarProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
 
-// 表单校验
 const rules: Record<string, any> = {
   name: [{ required: true, message: '请输入页面名称', trigger: 'blur' }],
-};
+}; // 表单校验
 
 const formData = useVModel(props, 'modelValue', emit);
 if (!formData.value._local) {

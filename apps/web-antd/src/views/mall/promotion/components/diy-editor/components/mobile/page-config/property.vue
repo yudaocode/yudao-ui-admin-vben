@@ -7,25 +7,18 @@ import { Form, FormItem, Textarea } from 'ant-design-vue';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
-// 导航栏属性面板
+/** 导航栏属性面板 */
 defineOptions({ name: 'PageConfigProperty' });
+
 const props = defineProps<{ modelValue: PageConfigProperty }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-// 表单校验
-const rules = {};
 
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <Form
-    :model="formData"
-    :rules="rules"
-    :label-col="{ span: 6 }"
-    :wrapper-col="{ span: 18 }"
-  >
+  <Form :model="formData" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
     <FormItem label="页面描述" name="description">
       <Textarea
         v-model:value="formData!.description"
@@ -47,5 +40,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </FormItem>
   </Form>
 </template>
-
-<style scoped lang="scss"></style>

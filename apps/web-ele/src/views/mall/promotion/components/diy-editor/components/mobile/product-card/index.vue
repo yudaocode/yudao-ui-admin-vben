@@ -9,19 +9,19 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
+import { getSpuDetailList } from '#/api/mall/product/spu';
 
 /** 商品卡片 */
 defineOptions({ name: 'ProductCard' });
 
 const props = defineProps<{ property: ProductCardProperty }>();
 
-const spuList = ref<MallSpuApi.Spu[]>([]);
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
 
 watch(
   () => props.property.spuIds,
   async () => {
-    spuList.value = await ProductSpuApi.getSpuDetailList(props.property.spuIds);
+    spuList.value = await getSpuDetailList(props.property.spuIds);
   },
   {
     immediate: true,
@@ -37,17 +37,17 @@ function calculateSpace(index: number) {
   return { marginLeft, marginTop };
 }
 
-const containerRef = ref();
+const containerRef = ref(); // 容器
 
 /** 计算商品的宽度 */
-const calculateWidth = () => {
+function calculateWidth() {
   let width = '100%';
   if (props.property.layoutType === 'twoCol') {
     // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div

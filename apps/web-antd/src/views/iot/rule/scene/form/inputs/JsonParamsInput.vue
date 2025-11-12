@@ -197,6 +197,27 @@ const emptyMessage = computed(() => {
   }
 });
 
+// 计算属性：无配置消息
+// const noConfigMessage = computed(() => {
+//   switch (props.type) {
+//     case JsonParamsInputTypeEnum.CUSTOM: {
+//       return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.CUSTOM;
+//     }
+//     case JsonParamsInputTypeEnum.EVENT: {
+//       return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.EVENT;
+//     }
+//     case JsonParamsInputTypeEnum.PROPERTY: {
+//       return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.PROPERTY;
+//     }
+//     case JsonParamsInputTypeEnum.SERVICE: {
+//       return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.SERVICE;
+//     }
+//     default: {
+//       return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.DEFAULT;
+//     }
+//   }
+// });
+
 /**
  * 处理参数变化事件
  */
