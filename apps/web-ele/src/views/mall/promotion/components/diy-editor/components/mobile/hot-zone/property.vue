@@ -23,9 +23,9 @@ const formData = useVModel(props, 'modelValue', emit);
 const editDialogRef = ref(); // 热区编辑对话框
 
 /** 打开热区编辑对话框 */
-const handleOpenEditDialog = () => {
+function handleOpenEditDialog() {
   editDialogRef.value.open();
-};
+}
 </script>
 
 <template>

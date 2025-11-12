@@ -5,7 +5,7 @@ import type { MallArticleApi } from '#/api/mall/promotion/article';
 
 import { ref, watch } from 'vue';
 
-import * as ArticleApi from '#/api/mall/promotion/article/index';
+import { getArticle } from '#/api/mall/promotion/article';
 
 /** 营销文章 */
 defineOptions({ name: 'PromotionArticle' });
@@ -18,7 +18,7 @@ watch(
   () => props.property.id,
   async () => {
     if (props.property.id) {
-      article.value = await ArticleApi.getArticle(props.property.id);
+      article.value = await getArticle(props.property.id);
     }
   },
   {

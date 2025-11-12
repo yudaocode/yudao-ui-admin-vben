@@ -59,7 +59,7 @@ onMounted(async () => {
     }"
     :multiple="multiple"
     :tree-checkable="multiple"
-    class="w-1/1"
+    class="w-full"
     placeholder="请选择商品分类"
     allow-clear
     tree-default-expand-all

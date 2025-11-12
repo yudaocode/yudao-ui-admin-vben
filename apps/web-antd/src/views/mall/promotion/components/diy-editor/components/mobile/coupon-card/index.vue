@@ -13,12 +13,19 @@ import {
   CouponValidTerm,
 } from './component';
 
-/** 商品卡片 */
+/** 优惠劵卡片 */
 defineOptions({ name: 'CouponCard' });
-// 定义属性
+
+/** 定义属性 */
 const props = defineProps<{ property: CouponCardProperty }>();
-// 商品列表
-const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]);
+
+const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]); // 优惠劵列表
+const phoneWidth = ref(375); // 手机宽度
+const containerRef = ref(); // 容器引用
+const scrollbarWidth = ref('100%'); // 滚动条宽度
+const couponWidth = ref(375); // 优惠券宽度
+
+/** 监听优惠券 ID 变化，加载优惠券列表 */
 watch(
   () => props.property.couponIds,
   async () => {
@@ -32,15 +39,7 @@ watch(
   },
 );
 
-// 手机宽度
-const phoneWidth = ref(384);
-// 容器
-const containerRef = ref();
-// 滚动条宽度
-const scrollbarWidth = ref('100%');
-// 优惠券的宽度
-const couponWidth = ref(384);
-// 计算布局参数
+/** 计算布局参数 */
 watch(
   () => [props.property, phoneWidth, couponList.value.length],
   () => {
@@ -56,9 +55,10 @@ watch(
   },
   { immediate: true, deep: true },
 );
+
+/** 初始化 */
 onMounted(() => {
-  // 提取手机宽度
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 384;
+  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
 });
 </script>
 <template>
@@ -82,17 +82,14 @@ onMounted(() => {
         v-for="(coupon, index) in couponList"
         :key="index"
       >
-        <!-- 布局1：1列-->
+        <!-- 布局 1：1 列-->
         <div
           v-if="property.columns === 1"
           class="ml-4 flex flex-row justify-between p-2"
         >
           <div class="flex flex-col justify-evenly gap-1">
-            <!-- 优惠值 -->
             <CouponDiscount :coupon="coupon" />
-            <!-- 优惠描述 -->
             <CouponDiscountDesc :coupon="coupon" />
-            <!-- 有效期 -->
             <CouponValidTerm :coupon="coupon" />
           </div>
           <div class="flex flex-col justify-evenly">
@@ -107,17 +104,14 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <!-- 布局2：2列-->
+        <!-- 布局 2：2 列-->
         <div
           v-else-if="property.columns === 2"
           class="ml-4 flex flex-row justify-between p-2"
         >
           <div class="flex flex-col justify-evenly gap-1">
-            <!-- 优惠值 -->
             <CouponDiscount :coupon="coupon" />
-            <!-- 优惠描述 -->
             <CouponDiscountDesc :coupon="coupon" />
-            <!-- 领取说明 -->
             <div v-if="coupon.totalCount >= 0">
               仅剩：{{ coupon.totalCount - coupon.takeCount }}张
             </div>
@@ -135,11 +129,9 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <!-- 布局3：3列-->
+        <!-- 布局 3：3 列-->
         <div v-else class="flex flex-col items-center justify-around gap-1 p-1">
-          <!-- 优惠值 -->
           <CouponDiscount :coupon="coupon" />
-          <!-- 优惠描述 -->
           <CouponDiscountDesc :coupon="coupon" />
           <div
             class="rounded-full px-2 py-0.5"

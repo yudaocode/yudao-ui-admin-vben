@@ -74,7 +74,7 @@ function calculateSpace(index: number) {
   return { marginLeft, marginTop };
 }
 
-const containerRef = ref();
+const containerRef = ref(); // 容器
 
 /** 计算商品的宽度 */
 function calculateWidth() {

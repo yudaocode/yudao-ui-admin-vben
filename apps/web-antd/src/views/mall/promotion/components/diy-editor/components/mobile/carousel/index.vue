@@ -22,10 +22,13 @@ const handleIndexChange = (index: number) => {
 <template>
   <!-- 无图片 -->
   <div
-    class="bg-card flex h-64 items-center justify-center"
+    class="flex items-center justify-center bg-gray-300"
+    :style="{
+      height: property.items.length === 0 ? '250px' : `${property.height}px`,
+    }"
     v-if="property.items.length === 0"
   >
-    <IconifyIcon icon="tdesign:image" class="size-6 text-gray-800" />
+    <IconifyIcon icon="tdesign:image" class="text-[120px] text-gray-800" />
   </div>
   <div v-else class="relative">
     <Carousel
@@ -33,7 +36,7 @@ const handleIndexChange = (index: number) => {
       :autoplay-speed="property.interval * 1000"
       :dots="property.indicator !== 'number'"
       @change="handleIndexChange"
-      class="h-44"
+      :style="{ height: `${property.height}px` }"
     >
       <div v-for="(item, index) in property.items" :key="index">
         <Image
@@ -45,7 +48,7 @@ const handleIndexChange = (index: number) => {
     </Carousel>
     <div
       v-if="property.indicator === 'number'"
-      class="absolute bottom-2.5 right-2.5 rounded-xl bg-black px-2 py-1 text-xs text-white opacity-40"
+      class="absolute bottom-[10px] right-[10px] rounded-xl bg-black px-[8px] py-[2px] text-[10px] text-white opacity-40"
     >
       {{ currentIndex }} / {{ property.items.length }}
     </div>

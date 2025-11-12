@@ -7,6 +7,7 @@ import { Image } from 'ant-design-vue';
 
 /** 列表导航 */
 defineOptions({ name: 'MenuList' });
+
 defineProps<{ property: MenuListProperty }>();
 </script>
 
