@@ -30,7 +30,7 @@ const formData = useVModel(props, 'modelValue', emit);
     <!-- 表单 -->
     <Form label-width="80px" :model="formData" class="mt-2">
       <FormItem label="每行数量" prop="column">
-        <RadioGroup v-model="formData.column">
+        <RadioGroup v-model:value="formData.column">
           <Radio :value="3">3个</Radio>
           <Radio :value="4">4个</Radio>
         </RadioGroup>

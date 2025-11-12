@@ -7,6 +7,7 @@ import { Image } from 'ant-design-vue';
 
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });
+
 const props = defineProps<{ property: MenuSwiperProperty }>();
 
 const TITLE_HEIGHT = 20; // 标题的高度
@@ -71,9 +72,7 @@ watch(
           class="relative flex flex-col items-center justify-center"
           :style="{ width: columnWidth, height: `${rowHeight}px` }"
         >
-          <!-- 图标 + 角标 -->
           <div class="relative" :class="`h-${ICON_SIZE}px w-${ICON_SIZE}px`">
-            <!-- 右上角角标 -->
             <span
               v-if="item.badge?.show"
               class="absolute -right-2.5 -top-2.5 z-10 h-5 rounded-[10px] px-1.5 text-center text-xs leading-5"
@@ -91,7 +90,6 @@ watch(
               :preview="false"
             />
           </div>
-          <!-- 标题 -->
           <span
             v-if="property.layout === 'iconText'"
             class="text-xs"
