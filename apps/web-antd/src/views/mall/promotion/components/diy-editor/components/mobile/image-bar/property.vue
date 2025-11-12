@@ -26,7 +26,7 @@ const formData = useVModel(props, 'modelValue', emit);
       :wrapper-col="{ span: 18 }"
       :model="formData"
     >
-      <FormItem label="上传图片" prop="imgUrl">
+      <FormItem label="上传图片" name="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
           draggable="false"
@@ -34,9 +34,12 @@ const formData = useVModel(props, 'modelValue', emit);
           width="100%"
           class="min-w-20"
           :show-description="false"
-        />
+        >
+          <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
+          <template #tip> 建议宽度750 </template>
+        </UploadImg>
       </FormItem>
-      <FormItem label="链接" prop="url">
+      <FormItem label="链接" name="url">
         <AppLinkInput v-model="formData.url" />
       </FormItem>
     </Form>

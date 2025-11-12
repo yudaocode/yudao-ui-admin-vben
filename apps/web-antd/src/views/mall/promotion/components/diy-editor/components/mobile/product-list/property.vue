@@ -43,7 +43,7 @@ const formData = useVModel(props, 'modelValue', emit);
         <SpuShowcase v-model="formData.spuIds" />
       </Card>
       <Card title="商品样式" class="property-group" :bordered="false">
-        <FormItem label="布局" prop="type">
+        <FormItem label="布局" name="type">
           <RadioGroup v-model:value="formData.layoutType">
             <Tooltip title="双列" placement="bottom">
               <RadioButton value="twoCol">
@@ -68,13 +68,13 @@ const formData = useVModel(props, 'modelValue', emit);
             </Tooltip>
           </RadioGroup>
         </FormItem>
-        <FormItem label="商品名称" prop="fields.name.show">
+        <FormItem label="商品名称" name="fields.name.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.name.color" />
             <Checkbox v-model:checked="formData.fields.name.show" />
           </div>
         </FormItem>
-        <FormItem label="商品价格" prop="fields.price.show">
+        <FormItem label="商品价格" name="fields.price.show">
           <div class="flex gap-2">
             <ColorInput v-model="formData.fields.price.color" />
             <Checkbox v-model:checked="formData.fields.price.show" />
@@ -82,36 +82,37 @@ const formData = useVModel(props, 'modelValue', emit);
         </FormItem>
       </Card>
       <Card title="角标" class="property-group" :bordered="false">
-        <FormItem label="角标" prop="badge.show">
+        <FormItem label="角标" name="badge.show">
           <Switch v-model:checked="formData.badge.show" />
         </FormItem>
-        <FormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
+        <FormItem label="角标" name="badge.imgUrl" v-if="formData.badge.show">
           <UploadImg
             v-model="formData.badge.imgUrl"
             height="44px"
             width="72px"
             :show-description="false"
           >
+            <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
             <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </FormItem>
       </Card>
       <Card title="商品样式" class="property-group" :bordered="false">
-        <FormItem label="上圆角" prop="borderRadiusTop">
+        <FormItem label="上圆角" name="borderRadiusTop">
           <Slider
             v-model:value="formData.borderRadiusTop"
             :max="100"
             :min="0"
           />
         </FormItem>
-        <FormItem label="下圆角" prop="borderRadiusBottom">
+        <FormItem label="下圆角" name="borderRadiusBottom">
           <Slider
             v-model:value="formData.borderRadiusBottom"
             :max="100"
             :min="0"
           />
         </FormItem>
-        <FormItem label="间隔" prop="space">
+        <FormItem label="间隔" name="space">
           <Slider v-model:value="formData.space" :max="100" :min="0" />
         </FormItem>
       </Card>

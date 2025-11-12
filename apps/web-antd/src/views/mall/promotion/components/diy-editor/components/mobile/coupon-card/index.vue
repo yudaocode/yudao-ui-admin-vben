@@ -58,11 +58,11 @@ watch(
 
 /** 初始化 */
 onMounted(() => {
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
+  phoneWidth.value = containerRef.value?.offsetWidth || 375;
 });
 </script>
 <template>
-  <div class="z-10 min-h-8" wrap-class="w-full" ref="containerRef">
+  <div class="z-10 min-h-8 overflow-x-auto" ref="containerRef">
     <div
       class="flex flex-row text-xs"
       :style="{

@@ -49,6 +49,7 @@ const formData = useVModel(props, 'modelValue', emit);
           class="min-w-[80px]"
           :show-description="false"
         >
+          <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
           <template #tip> 建议宽度750 </template>
         </UploadImg>
       </FormItem>

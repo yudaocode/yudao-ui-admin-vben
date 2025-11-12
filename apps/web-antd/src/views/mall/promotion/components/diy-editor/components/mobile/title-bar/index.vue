@@ -18,8 +18,8 @@ defineProps<{ property: TitleBarProperty }>();
     <Image
       v-if="property.bgImgUrl"
       :src="property.bgImgUrl"
-      fit="cover"
-      class="w-full"
+      :preview="false"
+      class="w-full object-cover"
     />
     <div
       class="absolute left-0 top-0 flex h-full w-full flex-col justify-center"

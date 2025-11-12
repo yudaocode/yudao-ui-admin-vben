@@ -19,7 +19,12 @@ defineProps<{ property: MenuListProperty }>();
       class="flex h-10 flex-row items-center justify-between gap-1 border-t border-gray-200 px-3 first:border-t-0"
     >
       <div class="flex flex-1 flex-row items-center gap-2">
-        <Image v-if="item.iconUrl" class="h-4 w-4" :src="item.iconUrl" />
+        <Image
+          v-if="item.iconUrl"
+          class="h-4 w-4"
+          :src="item.iconUrl"
+          :preview="false"
+        />
         <span class="text-base" :style="{ color: item.titleColor }">
           {{ item.title }}
         </span>
@@ -28,7 +33,7 @@ defineProps<{ property: MenuListProperty }>();
         <span class="text-xs" :style="{ color: item.subtitleColor }">
           {{ item.subtitle }}
         </span>
-        <IconifyIcon icon="lucide:arrow-right" class="size-4" />
+        <IconifyIcon icon="ep:arrow-right" color="#000" :size="16" />
       </div>
     </div>
   </div>

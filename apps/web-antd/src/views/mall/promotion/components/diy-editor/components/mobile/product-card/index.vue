@@ -72,7 +72,11 @@ function calculateWidth() {
         v-if="property.badge.show && property.badge.imgUrl"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image fit="cover" :src="property.badge.imgUrl" class="h-6 w-8" />
+        <Image
+          :src="property.badge.imgUrl"
+          :preview="false"
+          class="h-6 w-8 object-cover"
+        />
       </div>
       <!-- 商品封面图 -->
       <div
@@ -84,7 +88,11 @@ function calculateWidth() {
           },
         ]"
       >
-        <Image fit="cover" class="h-full w-full" :src="spu.picUrl" />
+        <Image
+          class="h-full w-full object-cover"
+          :src="spu.picUrl"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
@@ -168,9 +176,9 @@ function calculateWidth() {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="size-7 rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
           :src="property.btnBuy.imgUrl"
+          :preview="false"
         />
       </div>
     </div>

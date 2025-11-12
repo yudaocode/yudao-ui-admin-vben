@@ -18,7 +18,7 @@ const formData = useVModel(props, 'modelValue', emit);
 </script>
 
 <template>
-  <Form :model="formData">
+  <Form :label-col="{ style: { width: '80px' } }" :model="formData">
     <Draggable v-model="formData.list" :empty-item="{ showType: 'once' }">
       <template #default="{ element, index }">
         <FormItem label="图片" :name="`list[${index}].imgUrl`">

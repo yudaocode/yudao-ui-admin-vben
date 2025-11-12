@@ -88,7 +88,7 @@ function calculateWidth() {
 <template>
   <div
     ref="containerRef"
-    class="box-content flex min-h-9 w-full flex-row flex-wrap"
+    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
   >
     <div
       v-for="(spu, index) in spuList"
@@ -108,19 +108,27 @@ function calculateWidth() {
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image :src="property.badge.imgUrl" class="h-6 w-10" fit="cover" />
+        <Image
+          :src="property.badge.imgUrl"
+          class="h-6 w-10 object-cover"
+          :preview="false"
+        />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-36"
+        class="h-[140px]"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-36': property.layoutType === 'oneColSmallImg',
+            'w-[140px]': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
-        <Image :src="spu.picUrl" class="h-full w-full" fit="cover" />
+        <Image
+          :src="spu.picUrl"
+          class="h-full w-full object-cover"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
@@ -211,8 +219,8 @@ function calculateWidth() {
         <Image
           v-else
           :src="property.btnBuy.imgUrl"
-          class="size-7 rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
+          :preview="false"
         />
       </div>
     </div>

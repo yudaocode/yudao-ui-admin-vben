@@ -103,7 +103,7 @@ watch(
               >
                 减{{ floatToFixed2(coupon.discountPrice) }}元
               </span>
-              <span v-else> 打{{ (coupon.discountPercent ?? 0) / 10 }}折 </span>
+              <span v-else> 打{{ coupon.discountPercent }}折 </span>
             </Typography.Text>
           </Typography>
         </div>

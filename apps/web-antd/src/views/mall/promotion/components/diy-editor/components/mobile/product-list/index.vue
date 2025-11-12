@@ -69,11 +69,11 @@ watch(
 
 /** 初始化 */
 onMounted(() => {
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 375;
+  phoneWidth.value = containerRef.value?.offsetWidth || 375;
 });
 </script>
 <template>
-  <div class="z-10 min-h-[30px]" wrap-class="w-full" ref="containerRef">
+  <div class="z-10 min-h-[30px] w-full" ref="containerRef">
     <!-- 商品网格 -->
     <div
       class="grid overflow-x-auto"
@@ -101,16 +101,16 @@ onMounted(() => {
           class="absolute left-0 top-0 z-10 items-center justify-center"
         >
           <Image
-            fit="cover"
             :src="property.badge.imgUrl"
-            class="h-[26px] w-[38px]"
+            :preview="false"
+            class="h-[26px] w-[38px] object-cover"
           />
         </div>
         <!-- 商品封面图 -->
         <Image
-          fit="cover"
           :src="spu.picUrl"
-          :style="{ width: imageSize, height: imageSize }"
+          :style="{ width: imageSize, height: imageSize, objectFit: 'cover' }"
+          :preview="false"
         />
         <div
           class="box-border flex flex-col gap-2 p-2"

@@ -36,7 +36,7 @@ function handleToggleFab() {
         :key="index"
         class="flex flex-col items-center"
       >
-        <Image :src="item.imgUrl" fit="contain" class="!h-7 !w-7">
+        <Image :src="item.imgUrl" :width="28" :height="28" :preview="false">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
               <IconifyIcon
@@ -57,7 +57,7 @@ function handleToggleFab() {
       </div>
     </template>
     <!-- todo: @owen 使用APP主题色 -->
-    <Button type="primary" size="large" circle @click="handleToggleFab">
+    <Button type="primary" size="large" shape="circle" @click="handleToggleFab">
       <IconifyIcon
         icon="lucide:plus"
         class="transition-transform duration-300"
@@ -68,7 +68,7 @@ function handleToggleFab() {
   <!-- 模态背景：展开时显示，点击后折叠 -->
   <div
     v-if="expanded"
-    class="absolute left-[calc(50%-384px/2)] top-0 z-[11] h-full w-[384px] bg-black/40"
+    class="absolute left-[calc(50%-375px/2)] top-0 z-[11] h-full w-[375px] bg-black/40"
     @click="handleToggleFab"
   ></div>
 </template>

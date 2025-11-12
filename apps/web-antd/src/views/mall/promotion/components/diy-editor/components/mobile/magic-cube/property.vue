@@ -33,31 +33,36 @@ const handleHotAreaSelected = (_: any, index: number) => {
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :model="formData" class="mt-2">
+    <Form
+      :model="formData"
+      :label-col="{ style: { width: '80px' } }"
+      label-align="right"
+    >
       <p class="text-base font-bold">魔方设置：</p>
-      <MagicCubeEditor
-        class="my-4"
-        v-model="formData.list"
-        :rows="4"
-        :cols="4"
-        @hot-area-selected="handleHotAreaSelected"
-      />
-      <template v-for="(hotArea, index) in formData.list" :key="index">
-        <template v-if="selectedHotAreaIndex === index">
-          <FormItem label="上传图片" :name="`list[${index}].imgUrl`">
-            <UploadImg
-              v-model="hotArea.imgUrl"
-              height="80px"
-              width="80px"
-              :show-description="false"
-            />
-          </FormItem>
-          <FormItem label="链接" :name="`list[${index}].url`">
-            <AppLinkInput v-model="hotArea.url" />
-          </FormItem>
+      <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
+        <p class="text-xs text-gray-500">每格尺寸 187 * 187</p>
+        <MagicCubeEditor
+          v-model="formData.list"
+          :rows="4"
+          :cols="4"
+          @hot-area-selected="handleHotAreaSelected"
+        />
+        <template v-for="(hotArea, index) in formData.list" :key="index">
+          <template v-if="selectedHotAreaIndex === index">
+            <FormItem label="上传图片" :name="`list[${index}].imgUrl`">
+              <UploadImg
+                v-model="hotArea.imgUrl"
+                height="80px"
+                width="80px"
+                :show-description="false"
+              />
+            </FormItem>
+            <FormItem label="链接" :name="`list[${index}].url`">
+              <AppLinkInput v-model="hotArea.url" />
+            </FormItem>
+          </template>
         </template>
-      </template>
-      <!-- TODO @芋艿：距离不一致，需要看看怎么统一； -->
+      </div>
       <FormItem label="上圆角" name="borderRadiusTop">
         <Slider v-model:value="formData.borderRadiusTop" :max="100" :min="0" />
       </FormItem>
