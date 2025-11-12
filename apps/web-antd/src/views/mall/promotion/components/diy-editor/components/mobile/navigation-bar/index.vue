@@ -42,13 +42,13 @@ const cellWidth = computed(() => {
 });
 
 /** 获取单元格样式 */
-const getCellStyle = (cell: NavigationBarCellProperty) => {
+function getCellStyle(cell: NavigationBarCellProperty) {
   return {
     width: `${cell.width * cellWidth.value + (cell.width - 1) * 10}px`,
     left: `${cell.left * cellWidth.value + (cell.left + 1) * 10}px`,
     position: 'absolute',
   } as StyleValue;
-};
+}
 
 /** 获取搜索框属性配置 */
 const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
@@ -61,7 +61,10 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
 });
 </script>
 <template>
-  <div class="navigation-bar" :style="bgStyle">
+  <div
+    class="flex h-[50px] items-center justify-between bg-white px-[6px]"
+    :style="bgStyle"
+  >
     <div class="flex h-full w-full items-center">
       <div
         v-for="(cell, cellIndex) in cellList"
@@ -82,35 +85,7 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
       v-if="property._local?.previewMp"
       :src="appNavbarMp"
       alt=""
-      class="w-22 h-8"
+      style="width: 86px; height: 30px"
     />
   </div>
 </template>
-<style lang="scss" scoped>
-.navigation-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 50px;
-  padding: 0 6px;
-  background: #fff;
-
-  /* 左边 */
-  .left {
-    margin-left: 8px;
-  }
-
-  .center {
-    flex: 1;
-    font-size: 14px;
-    line-height: 35px;
-    color: #333;
-    text-align: center;
-  }
-
-  /* 右边 */
-  .right {
-    margin-right: 8px;
-  }
-}
-</style>
