@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import type { Article } from './components/types';
+import type { Article } from './modules/types';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-
-import { nextTick, onMounted, provide, ref, watch } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -12,13 +10,16 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpDraftApi from '#/api/mp/draft';
-import * as MpFreePublishApi from '#/api/mp/freePublish';
-import { createEmptyNewsItem } from '#/views/mp/draft/components/types';
+// DONE @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
+import { submitFreePublish } from '#/api/mp/freePublish';
+import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
 
-import DraftTableCell from './components/draft-table.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
+// DONE @hw：参考 tag/index.vue 放到 formValues.accountId;
+// DONE @hw：看看这个 watch、provide 能不能简化掉；
 defineOptions({ name: 'MpDraft' });
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -26,120 +27,16 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// TODO @hw：下面的方法，放到这个前面，和别的保持一致；
-const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: {
-    schema: useGridFormSchema(),
-    submitOnChange: true,
-  },
-  gridOptions: {
-    columns: useGridColumns(),
-    height: 'auto',
-    keepSource: true,
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, formValues) => {
-          // 更新 accountId
-          if (formValues?.accountId) {
-            accountId.value = formValues.accountId;
-          }
-          const drafts = await MpDraftApi.getDraftPage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            ...formValues,
-          });
-          // 处理 API 返回的数据，兼容不同的数据结构
-          // TODO @wx：看 yudao-ui-admin-vue3/src/views/mp/draft/index.vue 项目里，转换没这么复杂。。。是不是这里有办法简化下？
-          const formattedList: Article[] = drafts.list.map((draft: any) => {
-            // 如果已经是 content.newsItem 格式，直接使用
-            if (draft.content?.newsItem) {
-              const newsItem = draft.content.newsItem.map((item: any) => ({
-                ...item,
-                picUrl: item.thumbUrl || item.picUrl,
-              }));
-              return {
-                mediaId: draft.mediaId,
-                content: {
-                  newsItem,
-                },
-                updateTime:
-                  draft.updateTime ||
-                  (draft.createTime
-                    ? new Date(draft.createTime).getTime()
-                    : Date.now()),
-              };
-            }
-            // 如果是 articles 格式，转换为 content.newsItem 格式
-            if (draft.articles) {
-              const newsItem = draft.articles.map((article: any) => ({
-                ...article,
-                thumbUrl: article.thumbUrl || article.thumbMediaId,
-                picUrl: article.thumbUrl || article.thumbMediaId,
-              }));
-              return {
-                mediaId: draft.mediaId,
-                content: {
-                  newsItem,
-                },
-                updateTime:
-                  draft.updateTime ||
-                  (draft.createTime
-                    ? new Date(draft.createTime).getTime()
-                    : Date.now()),
-              };
-            }
-            // 默认返回空结构
-            return {
-              mediaId: draft.mediaId || '',
-              content: {
-                newsItem: [],
-              },
-              updateTime: draft.updateTime || Date.now(),
-            };
-          });
-          return {
-            page: {
-              total: drafts.total,
-            },
-            result: formattedList,
-          };
-        },
-      },
-      autoLoad: false,
-    },
-    rowConfig: {
-      keyField: 'mediaId',
-      isHover: true,
-    },
-    toolbarConfig: {
-      refresh: true,
-      search: true,
-    },
-  } as VxeTableGridOptions<Article>,
-});
-
-// 提供 accountId 给子组件
-// TODO @hw：参考 tag/index.vue 放到 formValues.accountId;
-const accountId = ref<number>(-1);
-
-// 监听表单提交，更新 accountId
-// TODO @hw：看看这个 watch、provide 能不能简化掉；
-watch(
-  () => gridApi.formApi?.getLatestSubmissionValues?.()?.accountId,
-  (newAccountId) => {
-    if (newAccountId !== undefined) {
-      accountId.value = newAccountId;
-    }
-  },
-);
-
-provide('accountId', accountId);
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
 
 /** 新增按钮操作 */
 async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  if (!accountId || accountId === -1) {
+  if (!accountId) {
     message.warning('请先选择公众号');
     return;
   }
@@ -156,7 +53,7 @@ async function handleCreate() {
 async function handleEdit(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  if (!accountId || accountId === -1) {
+  if (!accountId) {
     message.warning('请先选择公众号');
     return;
   }
@@ -165,7 +62,7 @@ async function handleEdit(row: Article) {
       isCreating: false,
       accountId,
       mediaId: row.mediaId,
-      newsList: structuredClone(row.content.newsItem),
+      newsList: row.content.newsItem,
     })
     .open();
 }
@@ -174,8 +71,8 @@ async function handleEdit(row: Article) {
 async function handlePublish(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  // TODO @hw：看看能不能去掉 -1 的判断哈？
-  if (!accountId || accountId === -1) {
+  // DONE @hw：看看能不能去掉 -1 的判断哈？
+  if (!accountId) {
     message.warning('请先选择公众号');
     return;
   }
@@ -188,11 +85,10 @@ async function handlePublish(row: Article) {
     content: '发布中...',
     duration: 0,
   });
-  // TODO @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
   try {
-    await MpFreePublishApi.submitFreePublish(accountId, row.mediaId);
+    await submitFreePublish(accountId, row.mediaId);
     message.success('发布成功');
-    await gridApi.query();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -202,7 +98,7 @@ async function handlePublish(row: Article) {
 async function handleDelete(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  if (!accountId || accountId === -1) {
+  if (!accountId) {
     message.warning('请先选择公众号');
     return;
   }
@@ -214,39 +110,67 @@ async function handleDelete(row: Article) {
   try {
     await MpDraftApi.deleteDraft(accountId, row.mediaId);
     message.success('删除成功');
-    await gridApi.query();
+    handleRefresh();
   } finally {
     hideLoading();
   }
 }
 
-// TODO @hw：看看能不能参考 tag/index.vue 简化下
-// 页面挂载后，等待表单初始化完成再加载数据
-onMounted(async () => {
-  await nextTick();
-  if (gridApi.formApi) {
-    const formValues = await gridApi.formApi.getValues();
-    if (formValues.accountId) {
-      accountId.value = formValues.accountId;
-      gridApi.formApi.setLatestSubmissionValues(formValues);
-      await gridApi.query();
-    }
-  }
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+    submitOnChange: true,
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          const drafts = await MpDraftApi.getDraftPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+          // 将 thumbUrl 转成 picUrl，保证 wx-news 组件可以预览封面
+          drafts.list.forEach((draft: any) => {
+            const newsList = draft.content?.newsItem;
+            if (newsList) {
+              newsList.forEach((item: any) => {
+                item.picUrl = item.thumbUrl || item.picUrl;
+              });
+            }
+          });
+          return {
+            list: drafts.list as unknown as Article[],
+            total: drafts.total,
+          };
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'mediaId',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<Article>,
 });
+
+// DONE @hw：看看能不能参考 tag/index.vue 简化下
 </script>
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
+    <template #doc>
+      <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
+    </template>
 
-    <!-- TODO @hw：参考别的模块 @success 调用 refresh 方法； -->
-    <FormModal
-      @success="
-        () => {
-          gridApi.query();
-        }
-      "
-    />
+    <!-- DONE @hw：参考别的模块 @success 调用 refresh 方法； -->
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="草稿列表">
       <template #toolbar-tools>

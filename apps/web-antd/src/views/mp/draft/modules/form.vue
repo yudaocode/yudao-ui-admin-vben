@@ -1,34 +1,37 @@
 <script lang="ts" setup>
-import type { NewsItem } from '../components/types';
+import type { NewsItem } from './types';
 
-import { computed, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { message, Spin } from 'ant-design-vue';
 
 import { createDraft, updateDraft } from '#/api/mp/draft';
 
-import NewsForm from '../components/news-form.vue';
+import NewsForm from './news-form.vue';
 
 const emit = defineEmits(['success']);
 
+// DONE @hw：是不是通过 id 字段判断是否为新增？类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue
 const formData = ref<{
   accountId: number;
-  // TODO @hw：是不是通过 id 字段判断是否为新增？类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue
-  isCreating: boolean;
   mediaId?: string;
   newsList?: NewsItem[];
 }>();
 const newsList = ref<NewsItem[]>([]);
-// TODO @hw：不需要 isSave，通过 modal 去 lock 就好啦。
+// DONE @hw：不需要 isSave，通过 modal 去 lock 就好啦。
 const isSubmitting = ref(false);
-// TODO @hw：不需要 isSave，通过 modal 去 lock 就好啦。
-const isSaved = ref(false);
 
 const getTitle = computed(() => {
-  return formData.value?.isCreating ? '新建图文' : '修改图文';
+  return formData.value?.mediaId ? '修改图文' : '新建图文';
 });
+
+// 提供 accountId 给子组件
+provide(
+  'accountId',
+  computed(() => formData.value?.accountId),
+);
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -39,18 +42,17 @@ const [Modal, modalApi] = useVbenModal({
     isSubmitting.value = true;
     modalApi.lock();
     try {
-      if (formData.value.isCreating) {
-        await createDraft(formData.value.accountId, newsList.value);
-        message.success('新增成功');
-      } else if (formData.value.mediaId) {
+      if (formData.value.mediaId) {
         await updateDraft(
           formData.value.accountId,
           formData.value.mediaId,
           newsList.value,
         );
         message.success('更新成功');
+      } else {
+        await createDraft(formData.value.accountId, newsList.value);
+        message.success('新增成功');
       }
-      isSaved.value = true;
       await modalApi.close();
       emit('success');
     } finally {
@@ -58,26 +60,12 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onBeforeClose() {
-    // 如果已经成功保存，直接关闭，不显示提示
-    if (isSaved.value) {
-      return true;
-    }
-    try {
-      await confirm('修改内容可能还未保存，确定关闭吗?');
-      return true;
-    } catch {
-      return false;
-    }
-  },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       newsList.value = [];
-      isSaved.value = false;
       return;
     }
-    isSaved.value = false;
     const data = modalApi.getData<{
       accountId: number;
       isCreating: boolean;
@@ -87,7 +75,11 @@ const [Modal, modalApi] = useVbenModal({
     if (!data) {
       return;
     }
-    formData.value = data;
+    formData.value = {
+      accountId: data.accountId,
+      mediaId: data.mediaId,
+      newsList: data.newsList,
+    };
     newsList.value = data.newsList || [];
   },
 });
@@ -99,7 +91,7 @@ const [Modal, modalApi] = useVbenModal({
       <NewsForm
         v-if="formData"
         v-model="newsList"
-        :is-creating="formData.isCreating"
+        :is-creating="!formData.mediaId"
       />
     </Spin>
   </Modal>
