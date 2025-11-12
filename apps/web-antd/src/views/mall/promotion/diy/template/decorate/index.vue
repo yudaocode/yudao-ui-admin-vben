@@ -26,35 +26,28 @@ defineOptions({ name: 'DiyTemplateDecorate' });
 const route = useRoute();
 const { refreshTab } = useTabs();
 
-/** 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复 */
-const DIY_PAGE_INDEX_KEY = 'diy_page_index';
+const DIY_PAGE_INDEX_KEY = 'diy_page_index'; // 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复
 
 const selectedTemplateItem = ref(0);
-/** 左上角工具栏操作按钮 */
 const templateItems = ref([
   { name: '基础设置', icon: 'lucide:settings' },
   { name: '首页', icon: 'lucide:home' },
   { name: '我的', icon: 'lucide:user' },
-]);
+]); // 左上角工具栏操作按钮
 
 const formData = ref<MallDiyTemplateApi.DiyTemplateProperty>();
-/** 当前编辑的属性 */
 const currentFormData = ref<
   MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty
 >({
   property: '',
-} as MallDiyPageApi.DiyPage);
-/** templateItem 对应的缓存 */
+} as MallDiyPageApi.DiyPage); // 当前编辑的属性
 const currentFormDataMap = ref<
   Map<string, MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty>
->(new Map());
+>(new Map()); // templateItem 对应的缓存
 
-/** 商城 H5 预览地址 */
-const previewUrl = ref('');
+const previewUrl = ref(''); // 商城 H5 预览地址
 
-/** 模板组件库 */
-const templateLibs = [] as DiyComponentLibrary[];
-/** 当前组件库 */
+const templateLibs = [] as DiyComponentLibrary[]; // 模板组件库
 const libs = ref<DiyComponentLibrary[]>(templateLibs); // 当前组件库
 
 /** 获取详情 */
@@ -76,6 +69,7 @@ async function getPageDetail(id: any) {
 }
 
 /** 模板选项切换 */
+// TODO @xingyu：貌似切换不对；“个人中心”切换不过去；
 function handleTemplateItemChange(event: any) {
   // 从事件对象中获取值
   const val = event.target?.value ?? event;
@@ -227,7 +221,7 @@ onMounted(async () => {
           >
             <IconifyIcon
               :icon="item.icon"
-              class="mt-2 flex size-6 items-center"
+              class="mt-2 flex size-5 items-center"
             />
           </Radio.Button>
         </template>

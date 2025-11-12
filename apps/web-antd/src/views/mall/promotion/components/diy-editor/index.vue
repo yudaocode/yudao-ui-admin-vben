@@ -315,17 +315,17 @@ onMounted(() => {
         >
           <Tooltip title="重置">
             <Button @click="handleReset">
-              <IconifyIcon class="size-6" icon="lucide:refresh-cw" />
+              <IconifyIcon class="size-5" icon="lucide:refresh-cw" />
             </Button>
           </Tooltip>
           <Tooltip v-if="previewUrl" title="预览">
             <Button @click="handlePreview">
-              <IconifyIcon class="size-6" icon="lucide:eye" />
+              <IconifyIcon class="size-5" icon="lucide:eye" />
             </Button>
           </Tooltip>
           <Tooltip title="保存">
             <Button @click="handleSave">
-              <IconifyIcon class="size-6" icon="lucide:check" />
+              <IconifyIcon class="size-5" icon="lucide:check" />
             </Button>
           </Tooltip>
         </Button.Group>
