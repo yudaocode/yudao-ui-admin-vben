@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import { MaterialSelect } from '#/views/mp/modules';
+import { MaterialSelect } from '#/views/mp/components';
 
 const props = defineProps<{
   isFirst: boolean;

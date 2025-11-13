@@ -1,61 +1,88 @@
 <script lang="ts" setup>
-import type { Reply } from '#/views/mp/modules/wx-reply';
+import type { Reply } from '#/views/mp/components/reply/types';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
-import * as MpAutoReplyApi from '#/api/mp/autoReply';
+import { useVbenForm } from '#/adapter/form';
+import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/modules/wx-reply/modules/types';
+import { ReplyType } from '#/views/mp/components/reply/types';
 
-import ReplyForm from './ReplyForm.vue';
+import { useFormSchema } from '../data';
 import { MsgType } from './types';
 
 const emit = defineEmits(['success']);
 
-const formRef = ref<InstanceType<typeof ReplyForm> | null>(null);
-
-const formData = ref<{ isCreating: boolean; msgType: MsgType; row?: any }>();
-const replyForm = ref<any>({});
-const reply = ref<Reply>({
-  type: ReplyType.Text,
-  accountId: -1,
-});
-
+const formData = ref<{
+  accountId?: number;
+  msgType: MsgType;
+  row?: any;
+}>();
 const getTitle = computed(() => {
-  return formData.value?.isCreating
-    ? $t('ui.actionTitle.create', ['自动回复'])
-    : $t('ui.actionTitle.edit', ['自动回复']);
+  return formData.value?.row?.id
+    ? $t('ui.actionTitle.edit', ['自动回复'])
+    : $t('ui.actionTitle.create', ['自动回复']);
 });
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
+  schema: useFormSchema(Number(formData.value?.msgType) as MsgType),
+  showDefaultActions: false,
+});
+
+// 注意：schema 的更新现在在 onOpenChange 中手动处理，避免时序问题
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
 
     // 处理回复消息
-    const submitForm: any = { ...replyForm.value };
-    submitForm.responseMessageType = reply.value.type;
-    submitForm.responseContent = reply.value.content;
-    submitForm.responseMediaId = reply.value.mediaId;
-    submitForm.responseMediaUrl = reply.value.url;
-    submitForm.responseTitle = reply.value.title;
-    submitForm.responseDescription = reply.value.description;
-    submitForm.responseThumbMediaId = reply.value.thumbMediaId;
-    submitForm.responseThumbMediaUrl = reply.value.thumbMediaUrl;
-    submitForm.responseArticles = reply.value.articles;
-    submitForm.responseMusicUrl = reply.value.musicUrl;
-    submitForm.responseHqMusicUrl = reply.value.hqMusicUrl;
+    const submitForm: any = await formApi.getValues();
+    // 确保 type 字段使用当前选中的 tab 值
+    submitForm.type = formData.value?.msgType;
+    // 确保 accountId 字段存在
+    submitForm.accountId = formData.value?.accountId;
+    // 编辑模式下，确保 id 字段存在（从 row 中获取，因为表单 schema 中没有 id 字段）
+    if (formData.value?.row?.id && !submitForm.id) {
+      submitForm.id = formData.value.row.id;
+    }
+    const reply = submitForm.reply as Reply | undefined;
+    if (reply) {
+      submitForm.responseMessageType = reply.type;
+      submitForm.responseContent = reply.content;
+      submitForm.responseMediaId = reply.mediaId;
+      submitForm.responseMediaUrl = reply.url;
+      submitForm.responseTitle = reply.title;
+      submitForm.responseDescription = reply.description;
+      submitForm.responseThumbMediaId = reply.thumbMediaId;
+      submitForm.responseThumbMediaUrl = reply.thumbMediaUrl;
+      submitForm.responseArticles = reply.articles;
+      submitForm.responseMusicUrl = reply.musicUrl;
+      submitForm.responseHqMusicUrl = reply.hqMusicUrl;
+    }
+    delete submitForm.reply;
 
     modalApi.lock();
     try {
-      if (replyForm.value.id === undefined) {
-        await MpAutoReplyApi.createAutoReply(submitForm);
+      if (submitForm.id === undefined) {
+        await createAutoReply(submitForm);
         ElMessage.success('新增成功');
       } else {
-        await MpAutoReplyApi.updateAutoReply(submitForm);
+        await updateAutoReply(submitForm);
         ElMessage.success('修改成功');
       }
       await modalApi.close();
@@ -67,50 +94,28 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
-      replyForm.value = {};
-      reply.value = {
-        type: ReplyType.Text,
-        accountId: -1,
-      };
       return;
     }
     // 加载数据
     const data = modalApi.getData<{
       accountId?: number;
-      isCreating: boolean;
       msgType: MsgType;
       row?: any;
     }>();
     if (!data) {
       return;
     }
-    formData.value = data;
+    // 先更新 schema，确保表单字段正确
+    formApi.setState({ schema: useFormSchema(data.msgType) });
+    // 等待 schema 更新完成
+    await nextTick();
 
-    if (data.isCreating) {
-      // 新建：初始化表单
-      replyForm.value = {
-        id: undefined,
-        accountId: data.accountId || -1,
-        type: data.msgType,
-        requestKeyword: undefined,
-        requestMatch: data.msgType === MsgType.Keyword ? 1 : undefined,
-        requestMessageType: undefined,
-      };
-      reply.value = {
-        type: ReplyType.Text,
-        accountId: data.accountId || -1,
-      };
-    } else if (data.row) {
+    formData.value = data;
+    if (data.row?.id) {
       // 编辑：加载数据
       const rowData = data.row;
-      replyForm.value = { ...rowData };
-      delete replyForm.value.responseMessageType;
-      delete replyForm.value.responseContent;
-      delete replyForm.value.responseMediaId;
-      delete replyForm.value.responseMediaUrl;
-      delete replyForm.value.responseDescription;
-      delete replyForm.value.responseArticles;
-      reply.value = {
+      const formValues: any = { ...rowData };
+      formValues.reply = {
         type: rowData.responseMessageType,
         accountId: data.accountId || -1,
         content: rowData.responseContent,
@@ -124,6 +129,22 @@ const [Modal, modalApi] = useVbenModal({
         musicUrl: rowData.responseMusicUrl,
         hqMusicUrl: rowData.responseHqMusicUrl,
       };
+      await formApi.setValues(formValues);
+    } else {
+      // 新建：初始化表单
+      const initialValues: any = {
+        id: undefined,
+        accountId: data.accountId || -1,
+        type: data.msgType,
+        requestKeyword: undefined,
+        requestMatch: data.msgType === MsgType.Keyword ? 1 : undefined,
+        requestMessageType: undefined,
+        reply: {
+          type: ReplyType.Text,
+          accountId: data.accountId || -1,
+        },
+      };
+      await formApi.setValues(initialValues);
     }
   },
 });
@@ -131,12 +152,6 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle" class="w-4/5">
-    <ReplyForm
-      v-if="formData"
-      v-model="replyForm"
-      v-model:reply="reply"
-      :msg-type="formData.msgType"
-      ref="formRef"
-    />
+    <Form class="mx-4" />
   </Modal>
 </template>

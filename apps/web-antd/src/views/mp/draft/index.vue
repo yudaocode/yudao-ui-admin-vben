@@ -230,6 +230,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     .vxe-body--column {
       .vxe-cell {
         padding: 0;
+        height: auto !important;
+        img {
+          width: 300px !important;
+        }
       }
     }
   }

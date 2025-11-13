@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Article } from './types';
 
-import { News } from '#/views/mp/modules';
+import { News } from '#/views/mp/components';
 
 defineOptions({ name: 'DraftTableCell' });
 

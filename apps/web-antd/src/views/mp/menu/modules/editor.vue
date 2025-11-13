@@ -14,7 +14,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { MaterialSelect, News, ReplySelect } from '#/views/mp/modules';
+import { MaterialSelect, News, ReplySelect } from '#/views/mp/components';
 
 import { menuOptions } from './types';
 

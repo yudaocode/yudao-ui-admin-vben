@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleAccountList } from '#/api/mp/account';
-import { ReplySelect } from '#/views/mp/modules';
+import { ReplySelect } from '#/views/mp/components';
 
 import { MsgType } from './types';
 

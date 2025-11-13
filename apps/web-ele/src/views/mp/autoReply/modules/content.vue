@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Music, News, VideoPlayer, VoicePlayer } from '#/views/mp/components';
-// DONE @hw：迁移到 /apps/web-antd/src/views/mp/autoReply/modules 里；组件名可能要换一个，= = 之前写的不太好；类似 content.vue ？本质是内容~
+
 defineOptions({ name: 'ReplyContentCell' });
 
 const props = defineProps<{
@@ -21,7 +21,7 @@ const props = defineProps<{
     </div>
     <div v-else-if="props.row.responseMessageType === 'image'">
       <a target="_blank" :href="props.row.responseMediaUrl">
-        <img :src="props.row.responseMediaUrl" style="width: 100px" />
+        <img :src="props.row.responseMediaUrl" class="w-[100px]" />
       </a>
     </div>
     <div
@@ -33,7 +33,7 @@ const props = defineProps<{
       <VideoPlayer
         v-if="props.row.responseMediaUrl"
         :url="props.row.responseMediaUrl"
-        style="margin-top: 10px"
+        class="mt-[10px]"
       />
     </div>
     <div v-else-if="props.row.responseMessageType === 'news'">

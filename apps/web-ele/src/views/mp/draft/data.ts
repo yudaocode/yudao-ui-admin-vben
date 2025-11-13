@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { markRaw } from 'vue';
 
-import WxAccountSelect from '#/views/mp/modules/wx-account-select/main.vue';
+import AccountSelect from '#/views/mp/components/account-select/account-select.vue';
 
 /** 获取表格列配置 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
@@ -35,7 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: markRaw(WxAccountSelect),
+      component: markRaw(AccountSelect),
     },
   ];
 }
