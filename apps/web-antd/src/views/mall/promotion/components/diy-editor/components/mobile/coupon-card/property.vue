@@ -25,7 +25,7 @@ import {
   Typography,
 } from 'ant-design-vue';
 
-import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
+import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 import CouponSelect from '#/views/mall/promotion/coupon/components/select.vue';
@@ -66,9 +66,7 @@ watch(
   () => formData.value.couponIds,
   async () => {
     if (formData.value.couponIds?.length > 0) {
-      couponList.value = await CouponTemplateApi.getCouponTemplateList(
-        formData.value.couponIds,
-      );
+      couponList.value = await getCouponTemplateList(formData.value.couponIds);
     }
   },
   {

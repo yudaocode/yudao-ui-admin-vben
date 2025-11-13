@@ -1,5 +1,5 @@
 /* 来自 https://github.com/nmxiaowei/avue/blob/master/styles/src/element-ui/comment.scss  */
-.avue-comment {
+.mp-comment {
   display: flex;
   align-items: flex-start;
   margin-bottom: 30px;
@@ -7,7 +7,7 @@
   &--reverse {
     flex-direction: row-reverse;
 
-    .avue-comment__main {
+    .mp-comment__main {
       &::before,
       &::after {
         right: -8px;

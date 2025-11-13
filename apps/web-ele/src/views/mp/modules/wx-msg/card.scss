@@ -1,4 +1,4 @@
-.avue-card {
+.mp-card {
   &__item {
     box-sizing: border-box;
     height: 200px;
@@ -99,18 +99,18 @@
 }
 
 /** joolun 额外加的 */
-.avue-comment__main {
+.mp-comment__main {
   flex: unset !important;
   margin: 0 8px !important;
   border-radius: 5px !important;
 }
 
-.avue-comment__header {
+.mp-comment__header {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
-.avue-comment__body {
+.mp-comment__body {
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
 }

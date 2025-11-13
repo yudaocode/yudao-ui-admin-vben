@@ -126,7 +126,7 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
       class="mb-4"
     >
       <Button type="primary">
-        <IconifyIcon icon="mdi:video-plus" class="mr-1" />
+        <IconifyIcon icon="lucide:video" class="mr-1" />
         选择视频
       </Button>
     </Upload>

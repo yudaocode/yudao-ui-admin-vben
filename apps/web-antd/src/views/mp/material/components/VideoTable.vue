@@ -5,12 +5,12 @@ import { watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate2 } from '@vben/utils';
+import { formatDate2, openWindow } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
+import { WxVideoPlayer } from '#/views/mp/components';
 
 // TODO @dylan：vue 组件名小写 + 中划线
 
@@ -93,10 +93,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>, // TODO @dylan：这里有个告警哈；
 });
 
-function handleDownload(url: string) {
-  window.open(url, '_blank');
-}
-
 watch(
   () => props.list,
   (list: any[]) => {
@@ -130,8 +126,8 @@ watch(
     </template>
     <!-- TODO @dylan：用 tableaction 哈：yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/index.vue -->
     <template #actions="{ row }">
-      <Button type="link" @click="handleDownload(row.url)">
-        <IconifyIcon icon="mdi:download" />
+      <Button type="link" @click="openWindow(row.url)">
+        <IconifyIcon icon="lucide:download" />
         下载
       </Button>
       <Button
@@ -140,7 +136,7 @@ watch(
         type="link"
         @click="emit('delete', row.id)"
       >
-        <IconifyIcon icon="mdi:delete" />
+        <IconifyIcon icon="lucide:trash-2" />
         删除
       </Button>
     </template>

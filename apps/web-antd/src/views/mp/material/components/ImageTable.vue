@@ -36,7 +36,7 @@ const { hasAccessByCodes } = useAccess();
             @click="emit('delete', item.id)"
           >
             <template #icon>
-              <IconifyIcon icon="mdi:delete" />
+              <IconifyIcon icon="lucide:trash-2" />
             </template>
           </Button>
         </div>

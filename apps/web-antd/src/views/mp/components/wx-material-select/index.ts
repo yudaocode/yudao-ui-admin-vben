@@ -1,3 +1,1 @@
-export { default as WxMaterialSelect } from './main.vue';
-
-export { MaterialType, NewsType } from './types';
+export { default as WxMaterialSelect } from './wx-material-select.vue';

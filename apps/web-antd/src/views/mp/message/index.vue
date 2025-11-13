@@ -9,18 +9,18 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
+  Button,
   DatePicker,
   Form,
   FormItem,
   Input,
   Modal,
+  Pagination,
   Select,
 } from 'ant-design-vue';
 
 import { getMessagePage } from '#/api/mp/message';
-import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
-import { WxMsg } from '#/views/mp/components/wx-msg';
-import { MsgType } from '#/views/mp/components/wx-msg/types';
+import { MsgType, WxAccountSelect, WxMsg } from '#/views/mp/components';
 
 import MessageTable from './MessageTable.vue';
 
@@ -108,7 +108,7 @@ function showTotal(total: number) {
 <template>
   <Page auto-content-height class="flex flex-col">
     <!-- 搜索工作栏 -->
-    <div class="mb-4 rounded-lg bg-white p-4">
+    <div class="bg-background mb-4 rounded-lg p-4">
       <Form
         ref="queryFormRef"
         :model="queryParams"
@@ -149,28 +149,27 @@ function showTotal(total: number) {
           />
         </FormItem>
         <FormItem>
-          <a-button type="primary" @click="handleQuery">
+          <Button type="primary" @click="handleQuery">
             <template #icon>
               <IconifyIcon icon="mdi:magnify" />
             </template>
             搜索
-          </a-button>
-          <a-button class="ml-2" @click="resetQuery">
+          </Button>
+          <Button class="ml-2" @click="resetQuery">
             <template #icon>
               <IconifyIcon icon="mdi:refresh" />
             </template>
             重置
-          </a-button>
+          </Button>
         </FormItem>
       </Form>
     </div>
 
     <!-- 列表 -->
-    <div class="flex-1 rounded-lg bg-white p-4">
-      <!-- TODO @dylan：走 Grid -->
+    <div class="bg-background flex-1 rounded-lg p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
-        <a-pagination
+        <Pagination
           v-model:current="queryParams.pageNo"
           v-model:page-size="queryParams.pageSize"
           :total="total"

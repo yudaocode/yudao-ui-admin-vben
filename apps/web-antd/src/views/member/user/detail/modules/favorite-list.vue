@@ -5,7 +5,7 @@ import type { MallFavoriteApi } from '#/api/mall/product/favorite';
 import { DICT_TYPE } from '@vben/constants';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as FavoriteApi from '#/api/mall/product/favorite';
+import { getFavoritePage } from '#/api/mall/product/favorite';
 
 const props = defineProps<{
   userId: number;
@@ -72,7 +72,7 @@ const [Grid] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await FavoriteApi.getFavoritePage({
+          return await getFavoritePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             userId: props.userId,

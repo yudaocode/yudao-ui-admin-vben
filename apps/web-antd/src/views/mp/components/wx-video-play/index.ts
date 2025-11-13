@@ -1,1 +1,1 @@
-export { default as WxVideoPlayer } from './main.vue';
+export { default as WxVideoPlayer } from './wx-video-play.vue';
