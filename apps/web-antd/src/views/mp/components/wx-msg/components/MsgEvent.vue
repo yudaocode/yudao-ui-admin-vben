@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { Tag } from 'ant-design-vue';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 defineOptions({ name: 'MsgEvent' });
 
 defineProps<{

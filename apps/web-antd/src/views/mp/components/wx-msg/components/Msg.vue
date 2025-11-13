@@ -10,6 +10,8 @@ import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 import { MsgType } from '../types';
 import MsgEvent from './MsgEvent.vue';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 defineOptions({ name: 'Msg' });
 
 defineProps<{

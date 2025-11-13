@@ -35,20 +35,17 @@ const emit = defineEmits<{
   (e: 'selectMaterial', item: any): void;
 }>();
 
-// 遮罩层
-const loading = ref(false);
-// 总条数
-const total = ref(0);
-// 数据列表
-const list = ref<any[]>([]);
-// 查询参数
+const loading = ref(false); // 遮罩层
+const total = ref(0); // 总条数
+const list = ref<any[]>([]); // 数据列表
 const queryParams = reactive({
   accountId: props.accountId,
   pageNo: 1,
   pageSize: 10,
-});
+}); // 查询参数
 
 const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -83,6 +80,7 @@ const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
 ];
 
 const videoGridColumns: VxeTableGridOptions<any>['columns'] = [
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -139,9 +137,11 @@ const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, { accountId }) => {
           const finalAccountId = accountId ?? queryParams.accountId;
+          // TODO @dylan 这里简化成 !finalAccountId 是不是可以哈。
           if (finalAccountId === undefined || finalAccountId === null) {
             return { list: [], total: 0 };
           }
+          // TODO @dylan：不要带 MpMaterialApi；
           return await MpMaterialApi.getMaterialPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -158,7 +158,7 @@ const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: true,
     },
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<any>, // TODO @dylan：这里有 linter 告警；看看别的模块哈
 });
 
 const [VideoGrid, videoGridApi] = useVbenVxeGrid({
@@ -383,6 +383,7 @@ watch(
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 @media (width >= 992px) and (width <= 1300px) {
   .waterfall {
     column-count: 3;

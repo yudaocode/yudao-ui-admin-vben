@@ -29,21 +29,19 @@ const queryParams = reactive({
   pageSize: 14, // 每页显示多少条
 });
 
-// 由于微信不再提供昵称，直接使用"用户"展示
 const user: User = reactive({
   accountId, // 公众号账号编号
   avatar: preferences.app.defaultAvatar,
-  nickname: '用户',
+  nickname: '用户', // 由于微信不再提供昵称，直接使用"用户"展示
 });
 
 // ========= 消息发送 =========
 const sendLoading = ref(false); // 发送消息是否加载中
-// 微信发送消息
 const reply = ref<any>({
   accountId: -1,
   articles: [],
   type: 'text',
-});
+}); // 微信发送消息
 
 const replySelectRef = ref<InstanceType<typeof WxReplySelect> | null>(null); // WxReplySelect组件ref，用于消息发送成功后清除内容
 const msgDivRef = ref<HTMLDivElement | null>(null); // 消息显示窗口ref，用于滚动到底部
@@ -59,7 +57,7 @@ onMounted(async () => {
   refreshChange();
 });
 
-// 执行发送
+/** 执行发送 */
 async function sendMsg() {
   if (!unref(reply)) {
     return;

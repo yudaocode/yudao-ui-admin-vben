@@ -21,6 +21,8 @@ import {
 import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
+// TODO @dylan：文件名的大小写
+
 defineOptions({ name: 'TabMusic' });
 
 const props = defineProps<{
@@ -53,7 +55,7 @@ function beforeImageUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Image, 2)(rawFile);
 }
 
-// 自定义上传请求
+/** 自定义上传请求 */
 async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
@@ -182,6 +184,7 @@ function selectMaterial(item: any) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .thumb-container {
   display: flex;
   flex-direction: column;

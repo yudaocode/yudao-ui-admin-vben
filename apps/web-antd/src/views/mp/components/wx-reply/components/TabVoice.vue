@@ -14,6 +14,8 @@ import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
 import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
+// TODO @dylan：文件名的大小写
+
 defineOptions({ name: 'TabVoice' });
 
 const props = defineProps<{
@@ -46,7 +48,7 @@ function beforeVoiceUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Voice, 10)(rawFile);
 }
 
-// 自定义上传请求
+/** 自定义上传请求 */
 async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
@@ -166,6 +168,7 @@ function selectMaterial(item: Reply) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .select-item {
   padding: 10px;
   margin: 0 auto 10px;

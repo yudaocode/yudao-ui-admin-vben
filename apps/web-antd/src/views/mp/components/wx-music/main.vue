@@ -44,6 +44,8 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+
 .music-card {
   display: flex;
   padding: 10px;

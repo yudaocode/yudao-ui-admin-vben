@@ -30,7 +30,6 @@ const loading = ref(false);
 const total = ref(0); // 数据的总页数
 const list = ref<any[]>([]); // 当前页的列表数据
 
-// 搜索参数
 const queryParams = reactive<{
   accountId: number;
   createTime: [Dayjs, Dayjs] | undefined;
@@ -45,7 +44,7 @@ const queryParams = reactive<{
   pageNo: 1,
   pageSize: 10,
   type: MsgType.Text,
-});
+}); // 搜索参数
 
 const queryFormRef = ref(); // 搜索的表单
 
@@ -53,7 +52,7 @@ const queryFormRef = ref(); // 搜索的表单
 const messageBoxVisible = ref(false);
 const messageBoxUserId = ref(0);
 
-/** 侦听accountId */
+/** 侦听 accountId */
 function onAccountChanged(id: number) {
   queryParams.accountId = id;
   queryParams.pageNo = 1;

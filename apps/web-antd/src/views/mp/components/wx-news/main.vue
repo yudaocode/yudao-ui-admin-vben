@@ -52,6 +52,8 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+
 .news-home {
   width: 100%;
   margin: auto;

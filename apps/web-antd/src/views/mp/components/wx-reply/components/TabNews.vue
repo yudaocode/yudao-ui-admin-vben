@@ -12,6 +12,8 @@ import { WxNews } from '#/views/mp/components/wx-news';
 
 import { NewsType } from './types';
 
+// TODO @dylan：文件名的大小写
+
 defineOptions({ name: 'TabNews' });
 
 const props = defineProps<{
@@ -94,6 +96,7 @@ function onDelete() {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .select-item {
   width: 280px;
   padding: 10px;

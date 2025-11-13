@@ -4,6 +4,8 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Spin } from 'ant-design-vue';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 const props = defineProps<{
   list: any[];
   loading: boolean;
@@ -43,6 +45,8 @@ const { hasAccessByCodes } = useAccess();
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+
 @media (width >= 992px) and (width <= 1300px) {
   .waterfall {
     column-count: 3;
