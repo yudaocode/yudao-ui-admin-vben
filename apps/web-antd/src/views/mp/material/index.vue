@@ -85,6 +85,7 @@ function onTabChange() {
 
 /** 处理删除操作 */
 async function handleDelete(id: number) {
+  // TODO @dylan：参考别的模块的  dylan 哈；
   Modal.confirm({
     content: '此操作将永久删除该文件, 是否继续?',
     title: '提示',
@@ -98,6 +99,7 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
+  <!-- TODO @dylan：这里不太对哈，应该是 doc-alert 展示文档 -->
   <Page
     description="公众号素材"
     doc-link="https://doc.iocoder.cn/mp/material/"
@@ -144,6 +146,7 @@ async function handleDelete(id: number) {
           </div>
         </Tabs.TabPane>
 
+        <!-- TODO @dylan：语音和视频的 tab 下，有了两个外框，需要优化下； -->
         <!-- tab 2：语音  -->
         <Tabs.TabPane :key="UploadType.Voice">
           <template #tab>
@@ -190,6 +193,7 @@ async function handleDelete(id: number) {
             新建视频
           </Button>
           <!-- 新建视频的弹窗 -->
+          <!-- TODO @dlyan：是不是用 Modal 自带的 api 就好啦？modal.open 哪个 -->
           <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
           <!-- 列表 -->
           <VideoTable :list="list" :loading="loading" @delete="handleDelete" />

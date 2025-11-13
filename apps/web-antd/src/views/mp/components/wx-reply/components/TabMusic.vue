@@ -137,6 +137,7 @@ function selectMaterial(item: any) {
             </Button>
           </div>
         </div>
+        <!-- TODO @dylan：这里应该不是图片哇？ -->
         <Modal
           v-model:open="showDialog"
           title="选择图片"
@@ -152,6 +153,7 @@ function selectMaterial(item: any) {
         </Modal>
       </Col>
       <Col :span="18">
+        <!-- TODO @dylan：input 两个之间的间距可以调整下。现在和左侧的图片，距离有点远了。 -->
         <div class="input-group">
           <Input
             :value="reply.title || undefined"

@@ -56,6 +56,7 @@ export const useBeforeUpload = (type: UploadType, maxSizeMB?: number) => {
     const finalMaxSize = maxSizeMB ?? config.maxSizeMB;
 
     // 格式不正确
+    // TODO @dylan：貌似没国际化；
     if (!config.allowTypes.includes(rawFile.type)) {
       message.error($t('mp.upload.invalidFormat', [config.name]));
       return false;

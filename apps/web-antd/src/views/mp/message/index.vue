@@ -30,6 +30,7 @@ const loading = ref(false);
 const total = ref(0); // 数据的总页数
 const list = ref<any[]>([]); // 当前页的列表数据
 
+// TODO @dylan：是不是参考别的模块简化哈。尽量使用 Grid
 const queryParams = reactive<{
   accountId: number;
   createTime: [Dayjs, Dayjs] | undefined;
@@ -166,6 +167,7 @@ function showTotal(total: number) {
 
     <!-- 列表 -->
     <div class="flex-1 rounded-lg bg-white p-4">
+      <!-- TODO @dylan：走 Grid -->
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
         <a-pagination

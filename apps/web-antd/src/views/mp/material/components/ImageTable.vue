@@ -23,6 +23,7 @@ const { hasAccessByCodes } = useAccess();
     <div class="waterfall">
       <div v-for="item in props.list" :key="item.id" class="waterfall-item">
         <a :href="item.url" target="_blank">
+          <!-- TODO @dylan：要不用 Image 组件？ -->
           <img :src="item.url" class="material-img" />
           <div class="item-name">{{ item.name }}</div>
         </a>

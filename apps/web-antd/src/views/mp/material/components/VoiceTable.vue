@@ -14,6 +14,8 @@ import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 
 // TODO @dylan：vue 组件名小写 + 中划线
 
+// TODO @dylan：组件内，尽量用 modules 哈。只有对外共享，才用 components
+
 const props = defineProps<{
   list: any[];
   loading: boolean;
@@ -25,6 +27,8 @@ const emit = defineEmits<{
 
 const { hasAccessByCodes } = useAccess();
 
+// TODO @dylan：这里有个告警哈；
+// TODO @dylan：放到 data.ts 里；
 const columns: VxeTableGridOptions<any>['columns'] = [
   {
     field: 'mediaId',
@@ -38,6 +42,7 @@ const columns: VxeTableGridOptions<any>['columns'] = [
     align: 'center',
     minWidth: 200,
   },
+  // TODO @dylan：语音的样式，有点奇怪。
   {
     field: 'voice',
     title: '语音',
@@ -109,10 +114,12 @@ watch(
     <template #voice="{ row }">
       <WxVoicePlayer v-if="row.url" :url="row.url" />
     </template>
+    <!-- TODO @dylan：应该 data.ts 里 formatDate 就好了。别的模块有的哈。 -->
     <template #createTime="{ row }">
       {{ formatDate2(row.createTime) }}
     </template>
     <template #actions="{ row }">
+      <!-- TODO @dylan：用 tableaction 哈：yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/index.vue -->
       <Button type="link" @click="handleDownload(row.url)">
         <IconifyIcon icon="mdi:download" />
         下载

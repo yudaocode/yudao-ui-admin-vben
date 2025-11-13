@@ -290,6 +290,7 @@ watch(
 <template>
   <Page :bordered="false" class="pb-8">
     <!-- 类型：image -->
+    <!-- TODO @dylan：看看图片的小卡片，是不是可以整齐点，类似微信公众号，图片的高度是一致的哈；https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=1646383362&lang=zh_CN -->
     <template v-if="props.type === 'image'">
       <Spin :spinning="loading">
         <div class="waterfall">

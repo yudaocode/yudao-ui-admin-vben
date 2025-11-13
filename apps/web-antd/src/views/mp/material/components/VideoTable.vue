@@ -25,6 +25,8 @@ const emit = defineEmits<{
 
 const { hasAccessByCodes } = useAccess();
 
+// TODO @dylan：这里有个告警哈；
+// TODO @dylan：放到 data.ts 里；
 const columns: VxeTableGridOptions<any>['columns'] = [
   {
     field: 'mediaId',
@@ -50,6 +52,7 @@ const columns: VxeTableGridOptions<any>['columns'] = [
     align: 'center',
     minWidth: 220,
   },
+  // TODO @dylan：视频的样式，有点奇怪。
   {
     field: 'video',
     title: '视频',
@@ -87,7 +90,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     showOverflow: 'tooltip',
-  } as VxeTableGridOptions<any>,  // TODO @dylan：这里有个告警哈；
+  } as VxeTableGridOptions<any>, // TODO @dylan：这里有个告警哈；
 });
 
 function handleDownload(url: string) {
@@ -121,9 +124,11 @@ watch(
     <template #video="{ row }">
       <WxVideoPlayer v-if="row.url" :url="row.url" />
     </template>
+    <!-- TODO @dylan：应该 data.ts 里 formatDate 就好了。别的模块有的哈。 -->
     <template #createTime="{ row }">
       {{ formatDate2(row.createTime) }}
     </template>
+    <!-- TODO @dylan：用 tableaction 哈：yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/index.vue -->
     <template #actions="{ row }">
       <Button type="link" @click="handleDownload(row.url)">
         <IconifyIcon icon="mdi:download" />

@@ -163,8 +163,10 @@ function selectMaterial(item: any) {
           <!-- 选择素材 -->
           <Col :span="12">
             <Button type="primary" @click="showDialog = true">
+              <!-- TODO @dylan：IconifyIcon 里的 icon 尽量用中立的，例如说，lucide 开头的，这样 el 项目继续复用； -->
               素材库选择 <IconifyIcon icon="ep:circle-check" />
             </Button>
+            <!-- TODO @dylan：貌似 modal 打开后，列表长度无限延伸； -->
             <Modal
               title="选择视频"
               v-model:open="showDialog"
