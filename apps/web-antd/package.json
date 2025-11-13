@@ -44,7 +44,6 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@videojs-player/vue": "catalog:",
-    "@vueuse/components": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",
