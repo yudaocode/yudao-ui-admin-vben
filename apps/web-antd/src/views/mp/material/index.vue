@@ -99,109 +99,123 @@ async function handleDelete(id: number) {
 
 <template>
   <Page auto-content-height>
-    <!-- 搜索工作栏 -->
-    <Card class="mb-4" :bordered="false">
-      <Form :model="queryParams" layout="inline">
-        <Form.Item label="公众号">
-          <WxAccountSelect @change="onAccountChanged" />
-        </Form.Item>
-      </Form>
-    </Card>
+    <div class="h-full">
+      <!-- 搜索工作栏 -->
+      <Card class="h-[10%]" :bordered="false">
+        <Form :model="queryParams" layout="inline">
+          <Form.Item label="公众号">
+            <WxAccountSelect @change="onAccountChanged" />
+          </Form.Item>
+        </Form>
+      </Card>
 
-    <Card :bordered="false">
-      <Tabs v-model:active-key="type" @change="onTabChange">
-        <!-- tab 1：图片  -->
-        <Tabs.TabPane :key="UploadType.Image">
-          <template #tab>
-            <span class="flex items-center">
-              <IconifyIcon icon="mdi:image" class="mr-1" />
-              图片
-            </span>
-          </template>
-          <UploadFile
-            v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-            :type="UploadType.Image"
-            @uploaded="getList"
-          >
-            支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
-          </UploadFile>
-          <!-- 列表 -->
-          <ImageTable :list="list" :loading="loading" @delete="handleDelete" />
-          <!-- 分页组件 -->
-          <div class="mt-4 flex justify-end">
-            <Pagination
-              v-model:current="queryParams.pageNo"
-              v-model:page-size="queryParams.pageSize"
-              :total="total"
-              show-size-changer
-              @change="getList"
-              @show-size-change="getList"
+      <Card :bordered="false" class="mt-4 h-[90%]">
+        <Tabs v-model:active-key="type" @change="onTabChange">
+          <!-- tab 1：图片  -->
+          <Tabs.TabPane :key="UploadType.Image">
+            <template #tab>
+              <span class="flex items-center">
+                <IconifyIcon icon="mdi:image" class="mr-1" />
+                图片
+              </span>
+            </template>
+            <UploadFile
+              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+              :type="UploadType.Image"
+              @uploaded="getList"
+            >
+              支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
+            </UploadFile>
+            <!-- 列表 -->
+            <ImageTable
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
             />
-          </div>
-        </Tabs.TabPane>
+            <!-- 分页组件 -->
+            <div class="mt-4 flex justify-end">
+              <Pagination
+                v-model:current="queryParams.pageNo"
+                v-model:page-size="queryParams.pageSize"
+                :total="total"
+                show-size-changer
+                @change="getList"
+                @show-size-change="getList"
+              />
+            </div>
+          </Tabs.TabPane>
 
-        <!-- tab 2：语音  -->
-        <Tabs.TabPane :key="UploadType.Voice">
-          <template #tab>
-            <span class="flex items-center">
-              <IconifyIcon icon="mdi:microphone" class="mr-1" />
-              语音
-            </span>
-          </template>
-          <UploadFile
-            v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-            :type="UploadType.Voice"
-            @uploaded="getList"
-          >
-            格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
-          </UploadFile>
-          <!-- 列表 -->
-          <VoiceTable :list="list" :loading="loading" @delete="handleDelete" />
-          <!-- 分页组件 -->
-          <div class="mt-4 flex justify-end">
-            <Pagination
-              v-model:current="queryParams.pageNo"
-              v-model:page-size="queryParams.pageSize"
-              :total="total"
-              show-size-changer
-              @change="getList"
-              @show-size-change="getList"
+          <!-- tab 2：语音  -->
+          <Tabs.TabPane :key="UploadType.Voice">
+            <template #tab>
+              <span class="flex items-center">
+                <IconifyIcon icon="mdi:microphone" class="mr-1" />
+                语音
+              </span>
+            </template>
+            <UploadFile
+              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+              :type="UploadType.Voice"
+              @uploaded="getList"
+            >
+              格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
+            </UploadFile>
+            <!-- 列表 -->
+            <VoiceTable
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
             />
-          </div>
-        </Tabs.TabPane>
+            <!-- 分页组件 -->
+            <div class="mt-4 flex justify-end">
+              <Pagination
+                v-model:current="queryParams.pageNo"
+                v-model:page-size="queryParams.pageSize"
+                :total="total"
+                show-size-changer
+                @change="getList"
+                @show-size-change="getList"
+              />
+            </div>
+          </Tabs.TabPane>
 
-        <!-- tab 3：视频 -->
-        <Tabs.TabPane :key="UploadType.Video">
-          <template #tab>
-            <span class="flex items-center">
-              <IconifyIcon icon="mdi:video" class="mr-1" />
-              视频
-            </span>
-          </template>
-          <Button
-            v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-            type="primary"
-            @click="showCreateVideo = true"
-          >
-            新建视频
-          </Button>
-          <!-- 新建视频的弹窗 -->
-          <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
-          <!-- 列表 -->
-          <VideoTable :list="list" :loading="loading" @delete="handleDelete" />
-          <!-- 分页组件 -->
-          <div class="mt-4 flex justify-end">
-            <Pagination
-              v-model:current="queryParams.pageNo"
-              v-model:page-size="queryParams.pageSize"
-              :total="total"
-              show-size-changer
-              @change="getList"
-              @show-size-change="getList"
+          <!-- tab 3：视频 -->
+          <Tabs.TabPane :key="UploadType.Video">
+            <template #tab>
+              <span class="flex items-center">
+                <IconifyIcon icon="mdi:video" class="mr-1" />
+                视频
+              </span>
+            </template>
+            <Button
+              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+              type="primary"
+              @click="showCreateVideo = true"
+            >
+              新建视频
+            </Button>
+            <!-- 新建视频的弹窗 -->
+            <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
+            <!-- 列表 -->
+            <VideoTable
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
             />
-          </div>
-        </Tabs.TabPane>
-      </Tabs>
-    </Card>
+            <!-- 分页组件 -->
+            <div class="mt-4 flex justify-end">
+              <Pagination
+                v-model:current="queryParams.pageNo"
+                v-model:page-size="queryParams.pageSize"
+                :total="total"
+                show-size-changer
+                @change="getList"
+                @show-size-change="getList"
+              />
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
+      </Card>
+    </div>
   </Page>
 </template>

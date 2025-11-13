@@ -166,7 +166,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="自动回复" url="https://doc.iocoder.cn/mp/auto-reply/" />
+    <template #doc>
+      <DocAlert title="自动回复" url="https://doc.iocoder.cn/mp/auto-reply/" />
+    </template>
 
     <!-- tab 切换 -->
     <ContentWrap>
