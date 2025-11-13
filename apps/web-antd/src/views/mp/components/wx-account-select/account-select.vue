@@ -3,7 +3,7 @@ import type { SelectValue } from 'ant-design-vue/es/select';
 
 import type { MpAccountApi } from '#/api/mp/account';
 
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { message, Select } from 'ant-design-vue';
@@ -18,7 +18,7 @@ const emit = defineEmits<{
 
 const { push } = useRouter();
 
-const account: MpAccountApi.Account = reactive({
+const account = ref<MpAccountApi.Account>({
   id: -1,
   name: '',
 }); // 当前选中的公众号
@@ -36,9 +36,9 @@ async function handleQuery() {
   // 默认选中第一个，如无数据则不执行
   const first = accountList.value[0];
   if (first) {
-    account.id = first.id;
-    account.name = first.name;
-    emit('change', account.id, account.name);
+    account.value.id = first.id;
+    account.value.name = first.name;
+    emit('change', account.value.id, account.value.name);
   }
 }
 
@@ -46,8 +46,8 @@ async function handleQuery() {
 function onChanged(id: SelectValue) {
   const found = accountList.value.find((v) => v.id === id);
   if (found) {
-    account.name = found.name;
-    emit('change', account.id, account.name);
+    account.value.name = found.name;
+    emit('change', account.value.id, account.value.name);
   }
 }
 

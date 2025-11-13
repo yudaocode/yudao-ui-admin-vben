@@ -11,8 +11,8 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpDraftApi from '#/api/mp/draft';
-import * as MpFreePublishApi from '#/api/mp/freePublish';
+import { deleteDraft, getDraftPage } from '#/api/mp/draft';
+import { submitFreePublish } from '#/api/mp/freePublish';
 import { createEmptyNewsItem } from '#/views/mp/draft/components/types';
 
 import DraftTableCell from './components/draft-table.vue';
@@ -20,6 +20,11 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpDraft' });
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -43,7 +48,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           if (formValues?.accountId) {
             accountId.value = formValues.accountId;
           }
-          const drafts = await MpDraftApi.getDraftPage({
+          const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -190,7 +195,7 @@ async function handlePublish(row: Article) {
   });
   // TODO @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
   try {
-    await MpFreePublishApi.submitFreePublish(accountId, row.mediaId);
+    await submitFreePublish(accountId, row.mediaId);
     message.success('发布成功');
     await gridApi.query();
   } finally {
@@ -212,7 +217,7 @@ async function handleDelete(row: Article) {
     duration: 0,
   });
   try {
-    await MpDraftApi.deleteDraft(accountId, row.mediaId);
+    await deleteDraft(accountId, row.mediaId);
     message.success('删除成功');
     await gridApi.query();
   } finally {
@@ -237,16 +242,11 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
+    <template #doc>
+      <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
+    </template>
 
-    <!-- TODO @hw：参考别的模块 @success 调用 refresh 方法； -->
-    <FormModal
-      @success="
-        () => {
-          gridApi.query();
-        }
-      "
-    />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="草稿列表">
       <template #toolbar-tools>

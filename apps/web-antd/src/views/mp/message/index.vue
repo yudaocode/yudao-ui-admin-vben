@@ -14,6 +14,7 @@ import {
   FormItem,
   Input,
   Modal,
+  Pagination,
   Select,
 } from 'ant-design-vue';
 
@@ -166,7 +167,7 @@ function showTotal(total: number) {
     <div class="flex-1 rounded-lg bg-white p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
-        <a-pagination
+        <Pagination
           v-model:current="queryParams.pageNo"
           v-model:page-size="queryParams.pageSize"
           :total="total"

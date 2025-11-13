@@ -98,11 +98,7 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
-  <Page
-    description="公众号素材"
-    doc-link="https://doc.iocoder.cn/mp/material/"
-    title="公众号素材"
-  >
+  <Page auto-content-height>
     <!-- 搜索工作栏 -->
     <Card class="mb-4" :bordered="false">
       <Form :model="queryParams" layout="inline">

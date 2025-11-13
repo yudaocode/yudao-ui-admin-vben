@@ -249,19 +249,15 @@ function menuToBackend(menu: any) {
       <DocAlert title="公众号菜单" url="https://doc.iocoder.cn/mp/menu/" />
     </template>
 
-    <!-- 搜索工作栏 -->
-    <!-- TODO @hw：是不是少了一个框子哈？ -->
-    <!-- <ContentWrap> -->
-    <Form layout="inline" class="-mb-15px w-240px">
-      <Form.Item label="公众号" prop="accountId" class="w-240px">
-        <WxAccountSelect @change="onAccountChanged" />
-      </Form.Item>
-    </Form>
-    <!-- </ContentWrap> -->
-
-    <!-- TODO @hw：貌似高度高了点。就是手机下面部分，空了一大块。 -->
     <ContentWrap>
-      <div class="clearfix public-account-management" v-loading="loading">
+      <!-- 搜索工作栏 -->
+      <Form class="mb-10 w-full">
+        <Form.Item label="公众号" prop="accountId" class="w-60">
+          <WxAccountSelect @change="onAccountChanged" />
+        </Form.Item>
+      </Form>
+
+      <div class="clearfix public-account-management mt-10" v-loading="loading">
         <!--左边配置菜单-->
         <div class="left">
           <div class="weixin-hd">

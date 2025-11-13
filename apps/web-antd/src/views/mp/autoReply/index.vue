@@ -3,19 +3,17 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 
-import {
-  confirm,
-  ContentWrap,
-  DocAlert,
-  Page,
-  useVbenModal,
-} from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { message, Row, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpAutoReplyApi from '#/api/mp/autoReply';
+import {
+  deleteAutoReply,
+  getAutoReply,
+  getAutoReplyPage,
+} from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 
 import ReplyContentCell from './components/ReplyTable.vue';
@@ -25,10 +23,17 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpAutoReply' });
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query().then(() => {
+    updateTableDataLength();
+  });
+}
+
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
 
 /** 切换回复类型 */
-async function onTabChange(tabName: string) {
+async function onTabChange(tabName: any) {
   msgType.value = tabName;
   await nextTick();
   // 更新 columns
@@ -58,7 +63,7 @@ async function handleCreate() {
 
 /** 修改按钮操作 */
 async function handleEdit(row: any) {
-  const data = (await MpAutoReplyApi.getAutoReply(row.id)) as any;
+  const data = (await getAutoReply(row.id)) as any;
   formModalApi
     .setData({
       isCreating: false,
@@ -76,7 +81,7 @@ async function handleDelete(row: any) {
     duration: 0,
   });
   try {
-    await MpAutoReplyApi.deleteAutoReply(row.id);
+    await deleteAutoReply(row.id);
     message.success('删除成功');
     await gridApi.query();
     // 查询完成后更新数据长度
@@ -103,7 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await MpAutoReplyApi.getAutoReplyPage({
+          return await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type: Number(msgType.value) as MsgType,
@@ -173,89 +178,79 @@ onMounted(async () => {
   <Page auto-content-height>
     <DocAlert title="自动回复" url="https://doc.iocoder.cn/mp/auto-reply/" />
 
-    <!-- tab 切换 -->
-    <!-- TODO @hw：貌似 tabs 里面套 table 的样式在 vben 里有点丑，要不我们按照 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/trade/afterSale/index.vue：1）第一层是公众号的选择；2）第二层是 tab；3）第三层是 table -->
-    <ContentWrap>
-      <Tabs
-        v-model:active-key="msgType"
-        @change="(activeKey) => onTabChange(activeKey as string)"
-      >
-        <!-- tab 项 -->
-        <Tabs.TabPane :key="String(MsgType.Follow)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="ep:star" class="mr-2px" /> 关注时回复
-            </Row>
-          </template>
-        </Tabs.TabPane>
-        <Tabs.TabPane :key="String(MsgType.Message)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="ep:chat-line-round" class="mr-2px" /> 消息回复
-            </Row>
-          </template>
-        </Tabs.TabPane>
-        <Tabs.TabPane :key="String(MsgType.Keyword)">
-          <template #tab>
-            <Row align="middle">
-              <IconifyIcon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
-            </Row>
-          </template>
-        </Tabs.TabPane>
-      </Tabs>
-      <!-- 列表 -->
-      <FormModal
-        @success="
-          () => {
-            gridApi.query().then(() => {
-              updateTableDataLength();
-            });
-          }
-        "
-      />
-      <Grid table-title="自动回复列表">
-        <template #toolbar-tools>
-          <TableAction
-            v-if="showCreateButton"
-            :actions="[
-              {
-                label: $t('ui.actionTitle.create', ['自动回复']),
-                type: 'primary',
-                icon: ACTION_ICON.ADD,
-                auth: ['mp:auto-reply:create'],
-                onClick: handleCreate,
+    <FormModal @success="handleRefresh" />
+
+    <Grid>
+      <template #toolbar-actions>
+        <!-- tab 切换 -->
+        <Tabs v-model:active-key="msgType" class="w-full" @change="onTabChange">
+          <!-- tab 项 -->
+          <Tabs.TabPane :key="String(MsgType.Follow)">
+            <template #tab>
+              <Row align="middle">
+                <IconifyIcon icon="lucide:star" class="mr-2px" /> 关注时回复
+              </Row>
+            </template>
+          </Tabs.TabPane>
+          <Tabs.TabPane :key="String(MsgType.Message)">
+            <template #tab>
+              <Row align="middle">
+                <IconifyIcon icon="lucide:message-circle" class="mr-2px" />
+                消息回复
+              </Row>
+            </template>
+          </Tabs.TabPane>
+          <Tabs.TabPane :key="String(MsgType.Keyword)">
+            <template #tab>
+              <Row align="middle">
+                <IconifyIcon icon="lucide:newspaper" class="mr-2px" />
+                关键词回复
+              </Row>
+            </template>
+          </Tabs.TabPane>
+        </Tabs>
+      </template>
+      <template #toolbar-tools>
+        <TableAction
+          v-if="showCreateButton"
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['自动回复']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['mp:auto-reply:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #replyContent="{ row }">
+        <ReplyContentCell :row="row" />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['mp:auto-reply:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['mp:auto-reply:delete'],
+              popConfirm: {
+                title: '是否确认删除此数据?',
+                confirm: handleDelete.bind(null, row),
               },
-            ]"
-          />
-        </template>
-        <template #replyContent="{ row }">
-          <ReplyContentCell :row="row" />
-        </template>
-        <template #actions="{ row }">
-          <TableAction
-            :actions="[
-              {
-                label: $t('common.edit'),
-                type: 'link',
-                icon: ACTION_ICON.EDIT,
-                auth: ['mp:auto-reply:update'],
-                onClick: handleEdit.bind(null, row),
-              },
-              {
-                label: $t('common.delete'),
-                type: 'link',
-                danger: true,
-                icon: ACTION_ICON.DELETE,
-                auth: ['mp:auto-reply:delete'],
-                popConfirm: {
-                  title: '是否确认删除此数据?',
-                  confirm: handleDelete.bind(null, row),
-                },
-              },
-            ]"
-          />
-        </template>
-      </Grid>
-    </ContentWrap>
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

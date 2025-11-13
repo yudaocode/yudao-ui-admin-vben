@@ -32,23 +32,23 @@ function getNickname(sendFrom: number) {
 <template>
   <div class="execution" v-for="item in props.list" :key="item.id">
     <div
-      class="avue-comment"
-      :class="{ 'avue-comment--reverse': item.sendFrom === SendFrom.MpBot }"
+      class="mp-comment"
+      :class="{ 'mp-comment--reverse': item.sendFrom === SendFrom.MpBot }"
     >
       <div class="avatar-div">
-        <img :src="getAvatar(item.sendFrom)" class="avue-comment__avatar" />
-        <div class="avue-comment__author">
+        <img :src="getAvatar(item.sendFrom)" class="mp-comment__avatar" />
+        <div class="mp-comment__author">
           {{ getNickname(item.sendFrom) }}
         </div>
       </div>
-      <div class="avue-comment__main">
-        <div class="avue-comment__header">
-          <div class="avue-comment__create_time">
+      <div class="mp-comment__main">
+        <div class="mp-comment__header">
+          <div class="mp-comment__create_time">
             {{ formatDateTime(item.createTime) }}
           </div>
         </div>
         <div
-          class="avue-comment__body"
+          class="mp-comment__body"
           :style="
             item.sendFrom === SendFrom.MpBot ? 'background: #6BED72;' : ''
           "
@@ -65,8 +65,8 @@ function getNickname(sendFrom: number) {
 
 /** TODO @dylan：看看有没适合 tindwind 的哈。 */
 
-@import url('../comment.scss');
-@import url('../card.scss');
+@import url('./comment.scss');
+@import url('./card.scss');
 
 .avatar-div {
   width: 80px;
