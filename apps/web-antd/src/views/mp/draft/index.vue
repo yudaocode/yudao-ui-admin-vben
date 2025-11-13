@@ -229,8 +229,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   .vxe-table--body {
     .vxe-body--column {
       .vxe-cell {
-        padding: 0;
         height: auto !important;
+        padding: 0;
+
         img {
           width: 300px !important;
         }
