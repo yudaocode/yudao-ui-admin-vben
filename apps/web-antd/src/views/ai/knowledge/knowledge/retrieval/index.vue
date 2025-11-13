@@ -50,8 +50,6 @@ async function getRetrievalResult() {
       similarityThreshold: queryParams.similarityThreshold,
     });
     segments.value = data || [];
-  } catch (error) {
-    console.error(error);
   } finally {
     loading.value = false;
   }
@@ -157,43 +155,44 @@ onMounted(() => {
             <div
               v-for="(segment, index) in segments"
               :key="index"
-              class="p-15 mb-20 rounded border border-solid border-gray-200"
+              class="mt-2 rounded border border-solid border-gray-200 px-2 py-2"
             >
-              <div class="mb-5 flex justify-between text-sm text-gray-500">
+              <div
+                class="mb-2 flex items-center justify-between gap-8 text-sm text-gray-500"
+              >
                 <span>
                   分段({{ segment.id }}) · {{ segment.contentLength }} 字符数 ·
                   {{ segment.tokens }} Token
                 </span>
                 <span
-                  class="rounded-full bg-blue-50 py-4 text-sm font-bold text-blue-500"
+                  class="whitespace-nowrap rounded-full bg-blue-50 px-2 py-1 text-sm text-blue-500"
                 >
                   score: {{ segment.score }}
                 </span>
               </div>
               <div
-                class="mb-10 overflow-hidden whitespace-pre-wrap rounded bg-gray-50 p-10 text-sm transition-all duration-100"
+                class="mb-2 overflow-hidden whitespace-pre-wrap rounded bg-gray-50 text-sm transition-all duration-100"
                 :class="{
-                  'max-h-50 line-clamp-2': !segment.expanded,
+                  'line-clamp-2 max-h-40': !segment.expanded,
                   'max-h-[1500px]': segment.expanded,
                 }"
               >
                 {{ segment.content }}
               </div>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center text-sm text-gray-500">
-                  <IconifyIcon icon="lucide:file-text" class="mr-5" />
+              <div class="flex items-center justify-between gap-8">
+                <div class="flex items-center gap-1 text-sm text-gray-500">
+                  <IconifyIcon icon="lucide:file-text" />
                   <span>{{ segment.documentName || '未知文档' }}</span>
                 </div>
                 <Button size="small" @click="toggleExpand(segment)">
                   {{ segment.expanded ? '收起' : '展开' }}
-                  <span
-                    class="mr-5"
-                    :class="
+                  <IconifyIcon
+                    :icon="
                       segment.expanded
                         ? 'lucide:chevron-up'
                         : 'lucide:chevron-down'
                     "
-                  ></span>
+                  />
                 </Button>
               </div>
             </div>

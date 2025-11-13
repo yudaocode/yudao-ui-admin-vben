@@ -131,23 +131,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['ai:knowledge:update'],
               onClick: handleEdit.bind(null, row),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: $t('ui.widgets.document'),
               type: 'link',
+              icon: ACTION_ICON.BOOK,
               auth: ['ai:knowledge:query'],
               onClick: handleDocument.bind(null, row.id),
             },
             {
               label: '召回测试',
               type: 'link',
+              icon: ACTION_ICON.SEARCH,
               auth: ['ai:knowledge:query'],
               onClick: handleRetrieval.bind(null, row.id),
             },
             {
               label: $t('common.delete'),
               type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
               auth: ['ai:knowledge:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
