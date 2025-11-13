@@ -2,7 +2,7 @@
 import { provide, reactive, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -99,6 +99,9 @@ async function handleDelete(id: number) {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="公众号素材" url="https://doc.iocoder.cn/mp/material/" />
+    </template>
     <div class="h-full">
       <!-- 搜索工作栏 -->
       <Card class="h-[10%]" :bordered="false">
@@ -109,13 +112,13 @@ async function handleDelete(id: number) {
         </Form>
       </Card>
 
-      <Card :bordered="false" class="mt-4 h-[90%]">
+      <Card :bordered="false" class="mt-4 h-[88%]">
         <Tabs v-model:active-key="type" @change="onTabChange">
           <!-- tab 1：图片  -->
           <Tabs.TabPane :key="UploadType.Image">
             <template #tab>
               <span class="flex items-center">
-                <IconifyIcon icon="mdi:image" class="mr-1" />
+                <IconifyIcon icon="lucide:image" class="mr-1" />
                 图片
               </span>
             </template>
@@ -149,7 +152,7 @@ async function handleDelete(id: number) {
           <Tabs.TabPane :key="UploadType.Voice">
             <template #tab>
               <span class="flex items-center">
-                <IconifyIcon icon="mdi:microphone" class="mr-1" />
+                <IconifyIcon icon="lucide:mic" class="mr-1" />
                 语音
               </span>
             </template>
@@ -183,7 +186,7 @@ async function handleDelete(id: number) {
           <Tabs.TabPane :key="UploadType.Video">
             <template #tab>
               <span class="flex items-center">
-                <IconifyIcon icon="mdi:video" class="mr-1" />
+                <IconifyIcon icon="lucide:video" class="mr-1" />
                 视频
               </span>
             </template>

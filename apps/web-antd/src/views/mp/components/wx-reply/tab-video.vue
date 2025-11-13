@@ -140,7 +140,7 @@ function selectMaterial(item: any) {
             <Button type="primary" @click="showDialog = true">
               素材库选择
               <template #icon>
-                <IconifyIcon icon="mdi:check-circle" />
+                <IconifyIcon icon="lucide:circle-check" />
               </template>
             </Button>
             <Modal
@@ -171,7 +171,7 @@ function selectMaterial(item: any) {
               <Button type="primary">
                 新建视频
                 <template #icon>
-                  <IconifyIcon icon="mdi:upload" />
+                  <IconifyIcon icon="lucide:upload" />
                 </template>
               </Button>
             </Upload>

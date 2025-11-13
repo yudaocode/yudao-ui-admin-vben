@@ -45,7 +45,7 @@ defineProps<{
     <div v-else-if="item.type === MsgType.Link" class="flex flex-col gap-2">
       <a :href="item.url" target="_blank" class="text-success no-underline">
         <div class="flex items-center text-sm font-medium text-[#52c41a]">
-          <IconifyIcon icon="mdi:link" class="mr-1" />
+          <IconifyIcon icon="lucide:link" class="mr-1" />
           {{ item.title }}
         </div>
       </a>

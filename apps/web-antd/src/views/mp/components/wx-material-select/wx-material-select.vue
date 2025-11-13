@@ -298,7 +298,7 @@ watch(
               <Button type="primary" @click="selectMaterialFun(item)">
                 选择
                 <template #icon>
-                  <IconifyIcon icon="mdi:check-circle" />
+                  <IconifyIcon icon="lucide:circle-check" />
                 </template>
               </Button>
             </Row>
@@ -325,7 +325,7 @@ watch(
           <Button type="link" @click="selectMaterialFun(row)">
             选择
             <template #icon>
-              <IconifyIcon icon="mdi:plus" />
+              <IconifyIcon icon="lucide:plus" />
             </template>
           </Button>
         </template>
@@ -342,7 +342,7 @@ watch(
           <Button type="link" @click="selectMaterialFun(row)">
             选择
             <template #icon>
-              <IconifyIcon icon="mdi:plus-circle" />
+              <IconifyIcon icon="lucide:circle-plus" />
             </template>
           </Button>
         </template>
@@ -360,7 +360,7 @@ watch(
                 <Button type="primary" @click="selectMaterialFun(item)">
                   选择
                   <template #icon>
-                    <IconifyIcon icon="mdi:check-circle" />
+                    <IconifyIcon icon="lucide:circle-check" />
                   </template>
                 </Button>
               </Row>

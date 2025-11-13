@@ -89,7 +89,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.Text">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:text" class="mr-1" />
+          <IconifyIcon icon="lucide:file-text" class="mr-1" />
           文本
         </Row>
       </template>
@@ -100,7 +100,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.Image">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:image" class="mr-1" />
+          <IconifyIcon icon="lucide:image" class="mr-1" />
           图片
         </Row>
       </template>
@@ -111,7 +111,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.Voice">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:microphone" class="mr-1" />
+          <IconifyIcon icon="lucide:mic" class="mr-1" />
           语音
         </Row>
       </template>
@@ -122,7 +122,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.Video">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:video" class="mr-1" />
+          <IconifyIcon icon="lucide:video" class="mr-1" />
           视频
         </Row>
       </template>
@@ -133,7 +133,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.News">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:newspaper" class="mr-1" />
+          <IconifyIcon icon="lucide:newspaper" class="mr-1" />
           图文
         </Row>
       </template>
@@ -144,7 +144,7 @@ defineExpose({
     <Tabs.TabPane :key="ReplyType.Music">
       <template #tab>
         <Row align="middle">
-          <IconifyIcon icon="mdi:music" class="mr-1" />
+          <IconifyIcon icon="lucide:music" class="mr-1" />
           音乐
         </Row>
       </template>

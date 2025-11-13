@@ -50,7 +50,7 @@ function onDelete() {
         <Col class="ope-row">
           <Button danger shape="circle" @click="onDelete">
             <template #icon>
-              <IconifyIcon icon="mdi:delete" />
+              <IconifyIcon icon="lucide:trash-2" />
             </template>
           </Button>
         </Col>
@@ -67,7 +67,7 @@ function onDelete() {
                   : '选择草稿箱图文'
               }}
               <template #icon>
-                <IconifyIcon icon="mdi:check-circle" />
+                <IconifyIcon icon="lucide:circle-check" />
               </template>
             </Button>
           </Col>

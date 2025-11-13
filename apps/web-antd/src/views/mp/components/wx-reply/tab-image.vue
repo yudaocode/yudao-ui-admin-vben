@@ -108,7 +108,7 @@ function selectMaterial(item: any) {
       <Row class="ope-row" justify="center">
         <Button danger shape="circle" @click="onDelete">
           <template #icon>
-            <IconifyIcon icon="mdi:delete" />
+            <IconifyIcon icon="lucide:trash-2" />
           </template>
         </Button>
       </Row>
@@ -121,7 +121,7 @@ function selectMaterial(item: any) {
         <Button type="primary" @click="showDialog = true">
           素材库选择
           <template #icon>
-            <IconifyIcon icon="mdi:check-circle" />
+            <IconifyIcon icon="lucide:circle-check" />
           </template>
         </Button>
         <Modal
@@ -152,7 +152,7 @@ function selectMaterial(item: any) {
           <Button type="primary">
             上传图片
             <template #icon>
-              <IconifyIcon icon="mdi:upload" />
+              <IconifyIcon icon="lucide:upload" />
             </template>
           </Button>
         </Upload>

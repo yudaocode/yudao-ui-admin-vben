@@ -103,7 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(Number(msgType.value) as MsgType),
-    height: 'calc(100vh - 300px)',
+    height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {

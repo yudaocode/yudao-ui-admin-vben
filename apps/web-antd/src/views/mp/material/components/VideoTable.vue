@@ -5,7 +5,7 @@ import { watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate2 } from '@vben/utils';
+import { formatDate2, openWindow } from '@vben/utils';
 
 import { Button } from 'ant-design-vue';
 
@@ -90,10 +90,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>, // TODO @dylan：这里有个告警哈；
 });
 
-function handleDownload(url: string) {
-  window.open(url, '_blank');
-}
-
 watch(
   () => props.list,
   (list: any[]) => {
@@ -125,8 +121,8 @@ watch(
       {{ formatDate2(row.createTime) }}
     </template>
     <template #actions="{ row }">
-      <Button type="link" @click="handleDownload(row.url)">
-        <IconifyIcon icon="mdi:download" />
+      <Button type="link" @click="openWindow(row.url)">
+        <IconifyIcon icon="lucide:download" />
         下载
       </Button>
       <Button
@@ -135,7 +131,7 @@ watch(
         type="link"
         @click="emit('delete', row.id)"
       >
-        <IconifyIcon icon="mdi:delete" />
+        <IconifyIcon icon="lucide:trash-2" />
         删除
       </Button>
     </template>

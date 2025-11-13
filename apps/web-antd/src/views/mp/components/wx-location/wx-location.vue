@@ -39,7 +39,7 @@ defineExpose({
           <img :src="mapImageUrl" alt="地图位置" />
         </Row>
         <Row class="mt-2">
-          <IconifyIcon icon="mdi:map-marker" class="mr-1" />
+          <IconifyIcon icon="lucide:map-pin" class="mr-1" />
           {{ label }}
         </Row>
       </Col>

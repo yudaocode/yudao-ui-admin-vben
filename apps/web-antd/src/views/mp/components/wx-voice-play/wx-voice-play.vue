@@ -68,8 +68,12 @@ function amrStop() {
   <!-- 微信消息 - 语音播放 -->
   <div class="wx-voice-div cursor-pointer" @click="playVoice">
     <div class="flex items-center">
-      <IconifyIcon v-if="playing !== true" icon="mdi:play-circle" :size="32" />
-      <IconifyIcon v-else icon="mdi:pause-circle" :size="32" />
+      <IconifyIcon
+        v-if="playing !== true"
+        icon="lucide:circle-play"
+        :size="32"
+      />
+      <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
       <span v-if="duration" class="amr-duration">{{ duration }} 秒</span>
     </div>
     <div v-if="content" class="mt-2">

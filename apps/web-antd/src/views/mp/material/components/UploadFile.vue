@@ -89,7 +89,7 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
     class="mb-4"
   >
     <Button type="primary">
-      <IconifyIcon icon="mdi:upload" class="mr-1" />
+      <IconifyIcon icon="lucide:upload" class="mr-1" />
       点击上传
     </Button>
     <template #itemRender="{ file, actions }">

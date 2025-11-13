@@ -114,7 +114,7 @@ function selectMaterial(item: any) {
             />
             <IconifyIcon
               v-else
-              icon="mdi:plus"
+              icon="lucide:plus"
               :size="40"
               class="text-gray-400"
             />

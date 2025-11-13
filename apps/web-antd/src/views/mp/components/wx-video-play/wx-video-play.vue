@@ -26,7 +26,7 @@ function playVideo() {
   <div class="cursor-pointer" @click="playVideo()">
     <!-- 提示 -->
     <div class="flex items-center">
-      <IconifyIcon icon="mdi:play-circle" :size="32" class="mr-2" />
+      <IconifyIcon icon="lucide:circle-play" :size="32" class="mr-2" />
       <p class="text-sm">点击播放视频</p>
     </div>
 

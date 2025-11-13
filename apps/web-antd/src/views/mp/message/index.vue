@@ -9,6 +9,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
+  Button,
   DatePicker,
   Form,
   FormItem,
@@ -106,7 +107,7 @@ function showTotal(total: number) {
 <template>
   <Page auto-content-height class="flex flex-col">
     <!-- 搜索工作栏 -->
-    <div class="mb-4 rounded-lg bg-white p-4">
+    <div class="bg-background mb-4 rounded-lg p-4">
       <Form
         ref="queryFormRef"
         :model="queryParams"
@@ -147,24 +148,24 @@ function showTotal(total: number) {
           />
         </FormItem>
         <FormItem>
-          <a-button type="primary" @click="handleQuery">
+          <Button type="primary" @click="handleQuery">
             <template #icon>
               <IconifyIcon icon="mdi:magnify" />
             </template>
             搜索
-          </a-button>
-          <a-button class="ml-2" @click="resetQuery">
+          </Button>
+          <Button class="ml-2" @click="resetQuery">
             <template #icon>
               <IconifyIcon icon="mdi:refresh" />
             </template>
             重置
-          </a-button>
+          </Button>
         </FormItem>
       </Form>
     </div>
 
     <!-- 列表 -->
-    <div class="flex-1 rounded-lg bg-white p-4">
+    <div class="bg-background flex-1 rounded-lg p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
         <Pagination
