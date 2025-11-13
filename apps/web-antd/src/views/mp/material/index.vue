@@ -15,7 +15,7 @@ import {
   Tabs,
 } from 'ant-design-vue';
 
-import * as MpMaterialApi from '#/api/mp/material';
+import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import ImageTable from './components/ImageTable.vue';
@@ -57,7 +57,7 @@ function onAccountChanged(id: number) {
 async function getList() {
   loading.value = true;
   try {
-    const data = await MpMaterialApi.getMaterialPage({
+    const data = await getMaterialPage({
       ...queryParams,
       type: type.value,
     });
@@ -89,7 +89,7 @@ async function handleDelete(id: number) {
     content: '此操作将永久删除该文件, 是否继续?',
     title: '提示',
     async onOk() {
-      await MpMaterialApi.deletePermanentMaterial(id);
+      await deletePermanentMaterial(id);
       message.success('删除成功');
       await getList();
     },

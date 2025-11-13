@@ -9,9 +9,9 @@ import { IconifyIcon } from '@vben/icons';
 import { Button, Pagination, Row, Spin } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpDraftApi from '#/api/mp/draft';
-import * as MpFreePublishApi from '#/api/mp/freePublish';
-import * as MpMaterialApi from '#/api/mp/material';
+import { getDraftPage } from '#/api/mp/draft';
+import { getFreePublishPage } from '#/api/mp/freePublish';
+import { getMaterialPage } from '#/api/mp/material';
 import { WxNews, WxVideoPlayer, WxVoicePlayer } from '#/views/mp/components';
 
 import { NewsType } from '../constants';
@@ -140,7 +140,7 @@ const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
             return { list: [], total: 0 };
           }
           // TODO @dylan：不要带 MpMaterialApi；
-          return await MpMaterialApi.getMaterialPage({
+          return await getMaterialPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             accountId: finalAccountId,
@@ -176,7 +176,7 @@ const [VideoGrid, videoGridApi] = useVbenVxeGrid({
           if (finalAccountId === undefined || finalAccountId === null) {
             return { list: [], total: 0 };
           }
-          return await MpMaterialApi.getMaterialPage({
+          return await getMaterialPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             accountId: finalAccountId,
@@ -200,7 +200,7 @@ function selectMaterialFun(item: any) {
 }
 
 async function getMaterialPageFun() {
-  const data = await MpMaterialApi.getMaterialPage({
+  const data = await getMaterialPage({
     ...queryParams,
     type: props.type,
   });
@@ -209,7 +209,7 @@ async function getMaterialPageFun() {
 }
 
 async function getFreePublishPageFun() {
-  const data = await MpFreePublishApi.getFreePublishPage(queryParams);
+  const data = await getFreePublishPage(queryParams);
   data.list.forEach((item: any) => {
     const articles = item.content.newsItem;
     articles.forEach((article: any) => {
@@ -221,7 +221,7 @@ async function getFreePublishPageFun() {
 }
 
 async function getDraftPageFun() {
-  const data = await MpDraftApi.getDraftPage(queryParams);
+  const data = await getDraftPage(queryParams);
   data.list.forEach((draft: any) => {
     const articles = draft.content.newsItem;
     articles.forEach((article: any) => {
