@@ -14,9 +14,9 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
-import { WxNews } from '#/views/mp/modules/wx-news';
-import { WxReplySelect } from '#/views/mp/modules/wx-reply';
+import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
+import { WxNews } from '#/views/mp/components/wx-news';
+import { WxReplySelect } from '#/views/mp/components/wx-reply';
 
 import menuOptions from './menuOptions';
 

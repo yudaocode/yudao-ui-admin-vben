@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
 
-import type { Reply } from '#/views/mp/modules/wx-reply';
+import type { Reply } from '#/views/mp/components/wx-reply';
 
 import { computed, ref } from 'vue';
 
@@ -10,7 +10,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { Form, FormItem, Input, Select, SelectOption } from 'ant-design-vue';
 
-import { WxReplySelect } from '#/views/mp/modules/wx-reply';
+import { WxReplySelect } from '#/views/mp/components/wx-reply';
 
 import { MsgType } from './types';
 

@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import { WxMaterialSelect } from '#/views/mp/modules/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
 
 const props = defineProps<{
   isFirst: boolean;

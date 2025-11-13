@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { markRaw } from 'vue';
 
-import { WxAccountSelect } from '#/views/mp/modules/wx-account-select';
+import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
 
 /** 获取表格列配置 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {

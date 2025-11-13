@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { WxMusic } from '#/views/mp/modules/wx-music';
-import { WxNews } from '#/views/mp/modules/wx-news';
-import { WxVideoPlayer } from '#/views/mp/modules/wx-video-play';
-import { WxVoicePlayer } from '#/views/mp/modules/wx-voice-play';
+import { WxMusic } from '#/views/mp/components/wx-music';
+import { WxNews } from '#/views/mp/components/wx-news';
+import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
+import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 // TODO @hw：迁移到 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mp/autoReply/modules 里；组件名可能要换一个，= = 之前写的不太好；类似 content.vue ？本质是内容~
 defineOptions({ name: 'ReplyContentCell' });
 
