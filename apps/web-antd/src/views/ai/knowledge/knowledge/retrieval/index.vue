@@ -17,7 +17,7 @@ import {
 import { getKnowledge } from '#/api/ai/knowledge/knowledge';
 import { searchKnowledgeSegment } from '#/api/ai/knowledge/segment';
 
-/** 文档召回测试 */
+/** 知识库文档召回测试 */
 defineOptions({ name: 'KnowledgeDocumentRetrieval' });
 
 const route = useRoute();
@@ -32,7 +32,7 @@ const queryParams = reactive({
   similarityThreshold: 0.5,
 });
 
-/** 调用文档召回测试接口 */
+/** 执行召回测试 */
 async function getRetrievalResult() {
   if (!queryParams.content) {
     message.warning('请输入查询文本');
@@ -57,12 +57,12 @@ async function getRetrievalResult() {
   }
 }
 
-/** 展开/收起段落内容 */
+/** 切换段落展开状态 */
 function toggleExpand(segment: any) {
   segment.expanded = !segment.expanded;
 }
 
-/** 获取知识库信息 */
+/** 获取知识库配置信息 */
 async function getKnowledgeInfo(id: number) {
   try {
     const knowledge = await getKnowledge(id);

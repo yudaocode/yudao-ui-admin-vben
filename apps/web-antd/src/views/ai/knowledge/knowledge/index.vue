@@ -28,17 +28,17 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建 */
+/** 创建知识库 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑 */
+/** 编辑知识库 */
 function handleEdit(row: AiKnowledgeKnowledgeApi.Knowledge) {
   formModalApi.setData(row).open();
 }
 
-/** 删除 */
+/** 删除知识库 */
 async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
@@ -46,15 +46,14 @@ async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
   });
   try {
     await deleteKnowledge(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
   }
 }
-/** 文档按钮操作 */
+
+/** 跳转到知识库文档页面 */
 const router = useRouter();
 function handleDocument(id: number) {
   router.push({
@@ -92,6 +91,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
