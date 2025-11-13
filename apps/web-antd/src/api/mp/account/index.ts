@@ -17,6 +17,7 @@ export namespace MpAccountApi {
     createTime?: Date;
   }
 
+  // TODO @dylan：这个直接使用 Account，简化一点；
   export interface AccountSimple {
     id: number;
     name: string;

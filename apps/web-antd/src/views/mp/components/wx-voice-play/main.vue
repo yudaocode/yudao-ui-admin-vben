@@ -4,8 +4,7 @@ import { ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { Tag } from 'ant-design-vue';
-// 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
-import BenzAMRRecorder from 'benz-amr-recorder';
+import BenzAMRRecorder from 'benz-amr-recorder'; // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 
 defineOptions({ name: 'WxVoicePlayer' });
 
@@ -81,6 +80,7 @@ function amrStop() {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .wx-voice-div {
   display: flex;
   flex-direction: column;

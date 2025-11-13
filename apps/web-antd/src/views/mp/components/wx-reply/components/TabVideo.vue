@@ -22,6 +22,8 @@ import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
 import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
+// TODO @dylan：文件名的大小写
+
 defineOptions({ name: 'TabVideo' });
 
 const props = defineProps<{
@@ -54,7 +56,7 @@ function beforeVideoUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Video, 10)(rawFile);
 }
 
-// 自定义上传请求
+/** 自定义上传请求 */
 async function customRequest(options: any) {
   const { file, onSuccess, onError } = options;
 
@@ -184,6 +186,7 @@ function selectMaterial(item: any) {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .ope-row {
   width: 100%;
   padding-top: 10px;

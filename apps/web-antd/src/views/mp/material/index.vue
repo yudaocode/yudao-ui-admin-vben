@@ -37,13 +37,12 @@ const total = ref(0); // 总条数
 const accountId = ref(-1);
 provide('accountId', accountId);
 
-// 查询参数
 const queryParams = reactive({
   accountId,
   pageNo: 1,
   pageSize: 10,
   permanent: true,
-});
+}); // 查询参数
 const showCreateVideo = ref(false); // 是否新建视频的弹窗
 
 /** 侦听公众号变化 */

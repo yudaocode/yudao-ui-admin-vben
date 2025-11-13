@@ -6,6 +6,8 @@ import { formatDateTime } from '@vben/utils';
 
 import Msg from './Msg.vue';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 defineOptions({ name: 'MsgList' });
 
 const props = defineProps<{
@@ -24,6 +26,7 @@ function getAvatar(sendFrom: number) {
     : preferences.app.defaultAvatar;
 }
 
+// TODO @dylan：SendFrom 告警；
 function getNickname(sendFrom: SendFrom) {
   return sendFrom === SendFrom.User ? props.user.nickname : '公众号';
 }
@@ -61,6 +64,8 @@ function getNickname(sendFrom: SendFrom) {
 
 <style lang="scss" scoped>
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+
 @import url('../comment.scss');
 @import url('../card.scss');
 

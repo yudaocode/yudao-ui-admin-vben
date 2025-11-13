@@ -15,6 +15,8 @@ import { WxNews } from '#/views/mp/components/wx-news';
 import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
 import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 const props = withDefaults(
   defineProps<{
     list?: any[];
@@ -33,6 +35,7 @@ const emit = defineEmits<{
 }>();
 
 const columns: VxeTableGridOptions<any>['columns'] = [
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'createTime',
     title: '发送时间',
@@ -104,11 +107,6 @@ function updateGridData(data: any[]) {
   }
 }
 
-onMounted(() => {
-  updateGridData(normalizeList(props.list));
-  gridApi.setLoading(!!props.loading);
-});
-
 watch(
   () => props.list,
   (list) => {
@@ -120,9 +118,15 @@ watch(
 watch(
   () => props.loading,
   (loading) => {
-    gridApi.setLoading(!!loading);
+    gridApi.setLoading(loading);
   },
 );
+
+/** 初始化 */
+onMounted(() => {
+  updateGridData(normalizeList(props.list));
+  gridApi.setLoading(props.loading);
+});
 </script>
 
 <template>

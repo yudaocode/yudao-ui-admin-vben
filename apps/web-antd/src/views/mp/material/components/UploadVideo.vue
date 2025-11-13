@@ -59,12 +59,8 @@ const uploadFormRef = ref<FormInstance | null>(null);
 const uploadVideoRef = ref<any>(null);
 
 async function submitVideo() {
-  try {
-    await uploadFormRef.value?.validate();
-    uploadVideoRef.value?.submit();
-  } catch {
-    // Validation failed
-  }
+  await uploadFormRef.value?.validate();
+  uploadVideoRef.value?.submit();
 }
 
 /** 自定义上传 */

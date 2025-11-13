@@ -7,6 +7,7 @@ import { Col, Row } from 'ant-design-vue';
 
 defineOptions({ name: 'WxLocation' });
 
+// TODO @dylan：apps/web-antd/src/views/mall/trade/delivery/pickUpStore/modules/form.vue 参考这个，从后端拿 key 哈
 const props = withDefaults(
   defineProps<{
     label: string;

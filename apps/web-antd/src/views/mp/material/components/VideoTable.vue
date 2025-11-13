@@ -12,6 +12,8 @@ import { Button } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
 
+// TODO @dylan：vue 组件名小写 + 中划线
+
 const props = defineProps<{
   list: any[];
   loading: boolean;
@@ -85,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     showOverflow: 'tooltip',
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<any>,  // TODO @dylan：这里有个告警哈；
 });
 
 function handleDownload(url: string) {
@@ -108,7 +110,7 @@ watch(
 watch(
   () => props.loading,
   (loading: boolean) => {
-    gridApi.setLoading(!!loading);
+    gridApi.setLoading(loading);
   },
   { immediate: true },
 );
