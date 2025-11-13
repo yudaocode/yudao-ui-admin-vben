@@ -1,1 +1,2 @@
-export { default as WxLocation } from './main.vue';
+export * from './types';
+export { default as WxLocation } from './wx-location.vue';

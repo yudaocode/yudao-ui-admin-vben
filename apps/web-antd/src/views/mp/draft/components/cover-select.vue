@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
+import { WxMaterialSelect } from '#/views/mp/components';
 
 const props = defineProps<{
   isFirst: boolean;
@@ -53,8 +53,9 @@ function onMaterialSelected(item: any) {
   newsItem.value.thumbUrl = item.url;
 }
 // TODO @hw：注释都补充下哈；
-const onBeforeUpload = (file: UploadFile) =>
-  useBeforeUpload(UploadType.Image, 2)(file as any);
+function onBeforeUpload(file: UploadFile) {
+  return useBeforeUpload(UploadType.Image, 2)(file as any);
+}
 
 // TODO @hw：注释都补充下哈；
 function onUploadChange(info: any) {

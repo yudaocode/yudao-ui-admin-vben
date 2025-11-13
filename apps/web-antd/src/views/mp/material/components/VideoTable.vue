@@ -10,7 +10,7 @@ import { formatDate2 } from '@vben/utils';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
+import { WxVideoPlayer } from '#/views/mp/components';
 
 // TODO @dylan：vue 组件名小写 + 中划线
 
@@ -87,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     showOverflow: 'tooltip',
-  } as VxeTableGridOptions<any>,  // TODO @dylan：这里有个告警哈；
+  } as VxeTableGridOptions<any>, // TODO @dylan：这里有个告警哈；
 });
 
 function handleDownload(url: string) {

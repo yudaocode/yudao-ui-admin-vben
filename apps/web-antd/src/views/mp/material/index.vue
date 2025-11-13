@@ -16,7 +16,7 @@ import {
 } from 'ant-design-vue';
 
 import * as MpMaterialApi from '#/api/mp/material';
-import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import ImageTable from './components/ImageTable.vue';
 import { UploadType } from './components/upload';

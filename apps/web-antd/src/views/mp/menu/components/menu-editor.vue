@@ -14,9 +14,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { WxMaterialSelect } from '#/views/mp/components/wx-material-select';
-import { WxNews } from '#/views/mp/components/wx-news';
-import { WxReplySelect } from '#/views/mp/components/wx-reply';
+import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
 
 import menuOptions from './menuOptions';
 
@@ -218,7 +216,7 @@ function deleteMaterial() {
           class="configur-content"
           v-if="menu.type === 'click' || menu.type === 'scancode_waitmsg'"
         >
-          <WxReplySelect v-if="hackResetWxReplySelect" v-model="menu.reply" />
+          <WxReply v-if="hackResetWxReplySelect" v-model="menu.reply" />
         </div>
         <!-- TODO @hw：扫码回复，这个帮忙看看，是不是有点问题。= = 好像 vue3 + element-plus 就有点问题； -->
       </div>

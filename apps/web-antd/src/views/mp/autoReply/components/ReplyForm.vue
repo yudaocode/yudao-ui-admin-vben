@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
 
-import type { Reply } from '#/views/mp/components/wx-reply';
+import type { Reply } from '#/views/mp/components';
 
 import { computed, ref } from 'vue';
 
@@ -10,7 +10,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { Form, FormItem, Input, Select, SelectOption } from 'ant-design-vue';
 
-import { WxReplySelect } from '#/views/mp/components/wx-reply';
+import { WxReply } from '#/views/mp/components';
 
 import { MsgType } from './types';
 
@@ -131,7 +131,7 @@ defineExpose({
         />
       </FormItem>
       <FormItem label="回复消息">
-        <WxReplySelect v-model="reply" />
+        <WxReply v-model="reply" />
       </FormItem>
     </Form>
   </div>

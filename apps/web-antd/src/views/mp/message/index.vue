@@ -18,9 +18,7 @@ import {
 } from 'ant-design-vue';
 
 import { getMessagePage } from '#/api/mp/message';
-import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
-import { WxMsg } from '#/views/mp/components/wx-msg';
-import { MsgType } from '#/views/mp/components/wx-msg/types';
+import { MsgType, WxAccountSelect, WxMsg } from '#/views/mp/components';
 
 import MessageTable from './MessageTable.vue';
 

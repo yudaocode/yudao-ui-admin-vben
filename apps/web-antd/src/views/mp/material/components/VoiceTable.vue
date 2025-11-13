@@ -10,7 +10,7 @@ import { formatDate2 } from '@vben/utils';
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
+import { WxVoicePlayer } from '#/views/mp/components';
 
 // TODO @dylan：vue 组件名小写 + 中划线
 

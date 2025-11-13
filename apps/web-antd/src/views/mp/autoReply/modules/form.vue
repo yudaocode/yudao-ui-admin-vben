@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Reply } from '#/views/mp/components/wx-reply';
+import type { Reply } from '#/views/mp/components';
 
 import { computed, ref } from 'vue';
 
@@ -9,7 +9,7 @@ import { message } from 'ant-design-vue';
 
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/components/wx-reply/types';
+import { ReplyType } from '#/views/mp/components';
 
 import ReplyForm from '../components/ReplyForm.vue';
 import { MsgType } from '../components/types';

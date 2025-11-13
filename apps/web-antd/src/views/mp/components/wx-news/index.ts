@@ -1,1 +1,1 @@
-export { default as WxNews } from './main.vue';
+export { default as WxNews } from './wx-news.vue';

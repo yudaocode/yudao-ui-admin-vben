@@ -9,7 +9,7 @@ import { handleTree } from '@vben/utils';
 import { Button, Form, message } from 'ant-design-vue';
 
 import { deleteMenu, getMenuList, saveMenu } from '#/api/mp/menu';
-import { WxAccountSelect } from '#/views/mp/components/wx-account-select';
+import { WxAccountSelect } from '#/views/mp/components';
 import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/components';
 import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
 

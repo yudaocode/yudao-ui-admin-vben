@@ -8,12 +8,14 @@ import { formatDate2 } from '@vben/utils';
 import { Button, Image, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { WxLocation } from '#/views/mp/components/wx-location';
-import { MsgType } from '#/views/mp/components/wx-msg/types';
-import { WxMusic } from '#/views/mp/components/wx-music';
-import { WxNews } from '#/views/mp/components/wx-news';
-import { WxVideoPlayer } from '#/views/mp/components/wx-video-play';
-import { WxVoicePlayer } from '#/views/mp/components/wx-voice-play';
+import {
+  MsgType,
+  WxLocation,
+  WxMusic,
+  WxNews,
+  WxVideoPlayer,
+  WxVoicePlayer,
+} from '#/views/mp/components';
 
 // TODO @dylan：vue 组件名小写 + 中划线
 
