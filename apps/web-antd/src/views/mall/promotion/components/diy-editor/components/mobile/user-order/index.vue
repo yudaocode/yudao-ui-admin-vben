@@ -12,5 +12,6 @@ defineProps<{ property: UserOrderProperty }>();
 <template>
   <Image
     src="https://shopro.sheepjs.com/admin/static/images/shop/decorate/orderCardStyle.png"
+    :preview="false"
   />
 </template>

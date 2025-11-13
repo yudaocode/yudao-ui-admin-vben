@@ -11,5 +11,6 @@ defineProps<{ property: UserCouponProperty }>();
 <template>
   <Image
     src="https://shopro.sheepjs.com/admin/static/images/shop/decorate/couponCardStyle.png"
+    :preview="false"
   />
 </template>

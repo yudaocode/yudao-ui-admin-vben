@@ -3,6 +3,8 @@ import type { NavigationBarCellProperty } from '../config';
 
 import { computed, ref } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
+
 import { useVModel } from '@vueuse/core';
 import {
   FormItem,
@@ -89,7 +91,7 @@ function handleHotAreaSelected(
   </div>
   <template v-for="(cell, cellIndex) in cellList" :key="cellIndex">
     <template v-if="selectedHotAreaIndex === Number(cellIndex)">
-      <FormItem :prop="`cell[${cellIndex}].type`" label="类型">
+      <FormItem :name="`cell[${cellIndex}].type`" label="类型">
         <RadioGroup
           v-model:value="cell.type"
           @change="handleHotAreaSelected(cell, cellIndex)"
@@ -101,19 +103,19 @@ function handleHotAreaSelected(
       </FormItem>
       <!-- 1. 文字 -->
       <template v-if="cell.type === 'text'">
-        <FormItem :prop="`cell[${cellIndex}].text`" label="内容">
+        <FormItem :name="`cell[${cellIndex}].text`" label="内容">
           <Input v-model:value="cell!.text" :maxlength="10" show-count />
         </FormItem>
-        <FormItem :prop="`cell[${cellIndex}].text`" label="颜色">
+        <FormItem :name="`cell[${cellIndex}].text`" label="颜色">
           <ColorInput v-model="cell!.textColor" />
         </FormItem>
-        <FormItem :prop="`cell[${cellIndex}].url`" label="链接">
+        <FormItem :name="`cell[${cellIndex}].url`" label="链接">
           <AppLinkInput v-model="cell.url" />
         </FormItem>
       </template>
       <!-- 2. 图片 -->
       <template v-else-if="cell.type === 'image'">
-        <FormItem :prop="`cell[${cellIndex}].imgUrl`" label="图片">
+        <FormItem :name="`cell[${cellIndex}].imgUrl`" label="图片">
           <UploadImg
             v-model="cell.imgUrl"
             :limit="1"
@@ -123,47 +125,40 @@ function handleHotAreaSelected(
           />
           <span class="text-xs text-gray-500">建议尺寸 56*56</span>
         </FormItem>
-        <FormItem :prop="`cell[${cellIndex}].url`" label="链接">
+        <FormItem :name="`cell[${cellIndex}].url`" label="链接">
           <AppLinkInput v-model="cell.url" />
         </FormItem>
       </template>
       <!-- 3. 搜索框 -->
       <template v-else>
-        <FormItem label="框体颜色" prop="backgroundColor">
+        <FormItem label="框体颜色" name="backgroundColor">
           <ColorInput v-model="cell.backgroundColor" />
         </FormItem>
-        <FormItem class="lef" label="文本颜色" prop="textColor">
+        <FormItem class="lef" label="文本颜色" name="textColor">
           <ColorInput v-model="cell.textColor" />
         </FormItem>
-        <FormItem :prop="`cell[${cellIndex}].placeholder`" label="提示文字">
+        <FormItem :name="`cell[${cellIndex}].placeholder`" label="提示文字">
           <Input v-model:value="cell.placeholder" :maxlength="10" show-count />
         </FormItem>
-        <FormItem label="文本位置" prop="placeholderPosition">
+        <FormItem label="文本位置" name="placeholderPosition">
           <RadioGroup v-model:value="cell!.placeholderPosition">
-            <Tooltip content="居左" placement="top">
+            <Tooltip title="居左" placement="top">
               <RadioButton value="left">
                 <IconifyIcon icon="ant-design:align-left-outlined" />
               </RadioButton>
             </Tooltip>
-            <Tooltip content="居中" placement="top">
+            <Tooltip title="居中" placement="top">
               <RadioButton value="center">
                 <IconifyIcon icon="ant-design:align-center-outlined" />
               </RadioButton>
             </Tooltip>
           </RadioGroup>
         </FormItem>
-        <FormItem label="扫一扫" prop="showScan">
+        <FormItem label="扫一扫" name="showScan">
           <Switch v-model:checked="cell!.showScan" />
         </FormItem>
-        <FormItem :prop="`cell[${cellIndex}].borderRadius`" label="圆角">
-          <Slider
-            v-model:value="cell.borderRadius"
-            :max="100"
-            :min="0"
-            :show-input-controls="false"
-            input-size="small"
-            show-input
-          />
+        <FormItem :name="`cell[${cellIndex}].borderRadius`" label="圆角">
+          <Slider v-model:value="cell.borderRadius" :max="100" :min="0" />
         </FormItem>
       </template>
     </template>

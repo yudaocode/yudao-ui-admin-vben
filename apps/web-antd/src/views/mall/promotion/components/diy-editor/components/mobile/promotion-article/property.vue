@@ -48,12 +48,12 @@ onMounted(() => {
       :wrapper-col="{ span: 18 }"
       :model="formData"
     >
-      <FormItem label="文章" prop="id">
+      <FormItem label="文章" name="id">
         <Select
           v-model:value="formData.id"
           placeholder="请选择文章"
           class="w-full"
-          filterable
+          :show-search="true"
           :loading="loading"
           :options="
             articles.map((item: any) => ({ label: item.title, value: item.id }))

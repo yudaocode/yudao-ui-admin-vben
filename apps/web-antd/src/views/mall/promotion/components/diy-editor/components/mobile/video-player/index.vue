@@ -14,6 +14,7 @@ defineProps<{ property: VideoPlayerProperty }>();
       class="h-full w-full"
       :src="property.posterUrl"
       v-if="property.posterUrl"
+      :preview="false"
     />
     <video
       v-else

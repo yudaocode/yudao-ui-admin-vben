@@ -31,7 +31,11 @@ function handleActive(index: number) {
     }"
     @click="handleActive(index)"
   >
-    <Image :src="item.imgUrl" fit="contain" class="h-full w-full">
+    <Image
+      :src="item.imgUrl"
+      :preview="false"
+      class="h-full w-full object-contain"
+    >
       <template #error>
         <div class="flex h-full w-full items-center justify-center">
           <IconifyIcon icon="lucide:image" />

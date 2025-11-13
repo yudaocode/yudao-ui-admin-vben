@@ -87,7 +87,7 @@ function calculateWidth() {
 </script>
 <template>
   <div
-    class="box-content flex min-h-9 w-full flex-row flex-wrap"
+    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
     ref="containerRef"
   >
     <div
@@ -108,26 +108,34 @@ function calculateWidth() {
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image fit="cover" :src="property.badge.imgUrl" class="h-6 w-8" />
+        <Image
+          :src="property.badge.imgUrl"
+          class="h-6 w-8 object-cover"
+          :preview="false"
+        />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-36"
+        class="h-[140px]"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-36': property.layoutType === 'oneColSmallImg',
+            'w-[140px]': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
-        <Image fit="cover" class="h-full w-full" :src="spu.picUrl" />
+        <Image
+          class="h-full w-full object-cover"
+          :src="spu.picUrl"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[calc(100vw-140px-16px)]':
+            'w-[calc(100%-140px-16px)]':
               property.layoutType === 'oneColSmallImg',
           },
         ]"
@@ -205,9 +213,9 @@ function calculateWidth() {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="size-7 rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
           :src="property.btnBuy.imgUrl"
+          :preview="false"
         />
       </div>
     </div>

@@ -55,9 +55,9 @@ const rowCount = computed(() => {
       }"
     >
       <Image
-        class="h-full w-full"
-        fit="cover"
+        class="h-full w-full object-cover"
         :src="item.imgUrl"
+        :preview="false"
         :style="{
           borderTopLeftRadius: `${property.borderRadiusTop}px`,
           borderTopRightRadius: `${property.borderRadiusTop}px`,

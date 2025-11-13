@@ -31,6 +31,7 @@ defineProps<{ property: TabBarProperty }>();
         <Image
           :src="index === 0 ? item.activeIconUrl : item.iconUrl"
           class="!h-[26px] w-[26px] rounded"
+          :preview="false"
         >
           <template #error>
             <div class="flex h-full w-full items-center justify-center">

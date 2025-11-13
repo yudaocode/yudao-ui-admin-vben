@@ -138,7 +138,11 @@ function handleSliderChange(prop: string) {
       <p class="text-lg font-bold">组件样式：</p>
       <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Form :model="formData">
-          <FormItem label="组件背景" name="bgType">
+          <FormItem
+            label="组件背景"
+            name="bgType"
+            :label-col="{ style: { width: '109px' } }"
+          >
             <RadioGroup v-model:value="formData.bgType">
               <Radio value="color">纯色</Radio>
               <Radio value="img">图片</Radio>
@@ -147,11 +151,17 @@ function handleSliderChange(prop: string) {
           <FormItem
             label="选择颜色"
             name="bgColor"
+            :label-col="{ style: { width: '109px' } }"
             v-if="formData.bgType === 'color'"
           >
             <ColorInput v-model="formData.bgColor" />
           </FormItem>
-          <FormItem label="上传图片" name="bgImg" v-else>
+          <FormItem
+            label="上传图片"
+            name="bgImg"
+            :label-col="{ style: { width: '109px' } }"
+            v-else
+          >
             <UploadImg
               v-model="formData.bgImg"
               :limit="1"
@@ -160,20 +170,18 @@ function handleSliderChange(prop: string) {
               <template #tip>建议宽度 750px</template>
             </UploadImg>
           </FormItem>
-          <!-- TODO @xingyu：没完全对齐 -->
           <Tree :tree-data="treeData" default-expand-all :block-node="true">
             <template #title="{ dataRef }">
               <FormItem
                 :label="dataRef.label"
                 :name="dataRef.prop"
-                :label-col="
-                  dataRef.children ? { span: 6 } : { span: 5, offset: 1 }
-                "
-                :wrapper-col="dataRef.children ? { span: 18 } : { span: 18 }"
+                :label-col="{
+                  style: { width: dataRef.children ? '80px' : '58px' },
+                }"
                 class="mb-0 w-full"
               >
                 <Row>
-                  <Col :span="12">
+                  <Col :span="11">
                     <Slider
                       v-model:value="
                         formData[dataRef.prop as keyof ComponentStyle]
@@ -181,9 +189,10 @@ function handleSliderChange(prop: string) {
                       :max="100"
                       :min="0"
                       @change="handleSliderChange(dataRef.prop)"
+                      class="mr-[16px]"
                     />
                   </Col>
-                  <Col :span="4">
+                  <Col :span="2">
                     <InputNumber
                       :max="100"
                       :min="0"
@@ -202,23 +211,3 @@ function handleSliderChange(prop: string) {
     </TabPane>
   </Tabs>
 </template>
-
-<style scoped lang="scss">
-:deep(.ant-slider) {
-  margin-right: 16px;
-}
-
-:deep(.ant-input-number) {
-  width: 50px;
-}
-
-:deep(.ant-tree) {
-  .ant-tree-node-content-wrapper {
-    flex: 1;
-  }
-
-  .ant-form-item {
-    margin-bottom: 0;
-  }
-}
-</style>

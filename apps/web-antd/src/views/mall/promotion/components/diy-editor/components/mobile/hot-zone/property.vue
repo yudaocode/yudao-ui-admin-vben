@@ -31,20 +31,26 @@ function handleOpenEditDialog() {
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <!-- 表单 -->
-    <Form label-width="80px" :model="formData" class="mt-2">
-      <FormItem label="上传图片" prop="imgUrl">
+    <Form
+      :label-col="{ style: { width: '80px' } }"
+      :model="formData"
+      class="mt-2"
+    >
+      <FormItem label="上传图片" name="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
           height="50px"
           width="auto"
           class="min-w-[80px]"
           :show-description="false"
-        />
-        <p class="text-xs text-gray-500">推荐宽度 750</p>
+        >
+          <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
+          <template #tip> 推荐宽度 750 </template>
+        </UploadImg>
       </FormItem>
     </Form>
 
-    <Button type="primary" plain class="w-full" @click="handleOpenEditDialog">
+    <Button type="primary" ghost class="w-full" @click="handleOpenEditDialog">
       设置热区
     </Button>
   </ComponentContainerProperty>
