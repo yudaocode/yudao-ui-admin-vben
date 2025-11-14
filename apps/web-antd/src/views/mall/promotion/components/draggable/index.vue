@@ -66,10 +66,11 @@ const handleDelete = function (index: number) {
               class="drag-icon cursor-move text-gray-500"
             />
           </Tooltip>
-          <Tooltip v-if="formData.length > min" title="删除">
+          <Tooltip title="删除">
             <IconifyIcon
-              icon="lucide:trash-2"
-              class="cursor-pointer text-red-500 hover:text-red-600"
+              icon="ep:delete"
+              class="cursor-pointer text-red-500"
+              v-if="formData.length > min"
               @click="handleDelete(index)"
             />
           </Tooltip>
@@ -79,11 +80,7 @@ const handleDelete = function (index: number) {
       </div>
     </template>
   </VueDraggable>
-  <Tooltip
-    :title="
-      limit > 0 && limit < Number.MAX_VALUE ? `最多添加${limit}个` : undefined
-    "
-  >
+  <Tooltip :title="limit < Number.MAX_VALUE ? `最多添加${limit}个` : undefined">
     <Button
       type="primary"
       ghost
@@ -98,5 +95,3 @@ const handleDelete = function (index: number) {
     </Button>
   </Tooltip>
 </template>
-
-<style scoped lang="scss"></style>

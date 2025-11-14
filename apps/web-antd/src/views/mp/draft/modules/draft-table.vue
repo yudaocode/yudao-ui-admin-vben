@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Article } from './types';
 
-import { News } from '#/views/mp/components';
+import { WxNews } from '#/views/mp/components';
 
 defineOptions({ name: 'DraftTableCell' });
 
@@ -13,7 +13,7 @@ const props = defineProps<{
 <template>
   <div class="p-2.5">
     <div v-if="props.row.content && props.row.content.newsItem">
-      <News :articles="props.row.content.newsItem" />
+      <WxNews :articles="props.row.content.newsItem" />
     </div>
   </div>
 </template>

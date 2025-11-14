@@ -47,6 +47,7 @@ const rules = {}; // 表单校验
             height="40px"
             :show-description="false"
           >
+            <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
             <template #tip>建议尺寸 750*80</template>
           </UploadImg>
         </FormItem>

@@ -14,7 +14,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { MaterialSelect, News, ReplySelect } from '#/views/mp/components';
+import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
 
 import { menuOptions } from './types';
 
@@ -184,7 +184,7 @@ function deleteMaterial() {
               class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
               v-if="menu && menu.replyArticles"
             >
-              <News :articles="menu.replyArticles" />
+              <WxNews :articles="menu.replyArticles" />
               <Row
                 class="pt-[10px] text-center"
                 justify="center"
@@ -217,7 +217,7 @@ function deleteMaterial() {
               width="80%"
               destroy-on-close
             >
-              <MaterialSelect
+              <WxMaterialSelect
                 type="news"
                 :account-id="props.accountId"
                 @select-material="selectMaterial"
@@ -225,15 +225,12 @@ function deleteMaterial() {
             </Modal>
           </Row>
         </div>
-        <!-- TODO @hw：貌似这个组件出不来 -->
-        <!--TODO @hw 这个组件显示逻辑是要有两个菜单才会显示，之前的代码逻辑我这边也不是很清楚，待沟通 -->
         <div
           class="configur-content mt-5"
           v-if="menu.type === 'click' || menu.type === 'scancode_waitmsg'"
         >
-          <ReplySelect v-model="menu.reply" />
+          <WxReply v-model="menu.reply" />
         </div>
-        <!-- TODO @hw：扫码回复，这个帮忙看看，是不是有点问题。= = 好像 vue3 + element-plus 就有点问题； -->
       </div>
     </div>
   </div>

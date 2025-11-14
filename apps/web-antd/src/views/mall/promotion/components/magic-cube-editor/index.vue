@@ -29,7 +29,6 @@ const props = defineProps({
     type: Number,
     default: 4,
   }, // 行数，默认 4 行
-
   cols: {
     type: Number,
     default: 4,
@@ -167,9 +166,7 @@ function handleHotAreaSelected(hotArea: Rect, index: number) {
   emit('hotAreaSelected', hotArea, index);
 }
 
-/**
- * 结束热区选择模式
- */
+/** 结束热区选择模式 */
 function exitHotAreaSelectMode() {
   // 移除方块激活标记
   eachCube((_, __, cube) => {

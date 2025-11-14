@@ -90,6 +90,23 @@ const coreRoutes: RouteRecordRaw[] = [
           title: $t('page.auth.register'),
         },
       },
+      {
+        name: 'SocialLogin',
+        path: 'social-login',
+        component: () =>
+          import('#/views/_core/authentication/social-login.vue'),
+        meta: {
+          title: $t('page.auth.login'),
+        },
+      },
+      {
+        name: 'SSOLogin',
+        path: 'sso-login',
+        component: () => import('#/views/_core/authentication/sso-login.vue'),
+        meta: {
+          title: $t('page.auth.login'),
+        },
+      },
     ],
   },
 ];

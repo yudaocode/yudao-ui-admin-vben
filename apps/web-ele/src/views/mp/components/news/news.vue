@@ -6,9 +6,7 @@
   ① 代码优化，补充注释，提升阅读性
 -->
 <script lang="ts" setup>
-import { ElImage } from 'element-plus';
-
-defineOptions({ name: 'News' });
+defineOptions({ name: 'WxNews' });
 
 const props = withDefaults(
   defineProps<{
@@ -31,7 +29,7 @@ defineExpose({
       <a v-if="index === 0" :href="article.url" target="_blank">
         <div class="news-main">
           <div class="news-content">
-            <ElImage
+            <el-image
               :src="article.picUrl || article.thumbUrl"
               class="material-img"
               style="width: 100%; height: 120px"
@@ -48,7 +46,7 @@ defineExpose({
           <div class="news-content-item">
             <div class="news-content-item-title">{{ article.title }}</div>
             <div class="news-content-item-img">
-              <ElImage
+              <img
                 :src="article.picUrl || article.thumbUrl"
                 class="material-img"
                 height="100%"

@@ -53,11 +53,11 @@ watch(
 );
 
 /** 克隆组件 */
-const handleCloneComponent = (component: DiyComponent<any>) => {
+function handleCloneComponent(component: DiyComponent<any>) {
   const instance = cloneDeep(component);
   instance.uid = Date.now();
   return instance;
-};
+}
 </script>
 
 <template>

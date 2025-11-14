@@ -22,7 +22,8 @@ import {
 } from '#/views/mall/promotion/components';
 
 import { component, THEME_LIST } from './config';
-// 底部导航栏
+
+/** 底部导航栏 */
 defineOptions({ name: 'TabBarProperty' });
 
 const props = defineProps<{ modelValue: TabBarProperty }>();
@@ -32,7 +33,7 @@ const formData = useVModel(props, 'modelValue', emit);
 // 将数据库的值更新到右侧属性栏
 component.property.items = formData.value.items;
 
-// 要的主题
+/** 处理主题变更 */
 const handleThemeChange = () => {
   const theme = THEME_LIST.find((theme) => theme.id === formData.value.theme);
   if (theme?.color) {
@@ -42,7 +43,7 @@ const handleThemeChange = () => {
 </script>
 
 <template>
-  <div class="tab-bar">
+  <div>
     <!-- 表单 -->
     <Form
       :model="formData"
@@ -87,6 +88,7 @@ const handleThemeChange = () => {
           class="min-w-[200px]"
           :show-description="false"
         >
+          <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
           <template #tip> 建议尺寸 375 * 50 </template>
         </UploadImg>
       </FormItem>
@@ -142,5 +144,3 @@ const handleThemeChange = () => {
     </Form>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

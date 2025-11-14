@@ -44,18 +44,15 @@ defineExpose({
       target="_blank"
       :href="hqMusicUrl ? hqMusicUrl : musicUrl"
     >
-      <div
-        class="avue-card__body"
-        style="padding: 10px; background-color: #fff; border-radius: 5px"
-      >
-        <div class="avue-card__avatar">
+      <div class="mp-card__body bg-background rounded-sm p-2.5">
+        <div class="mp-card__avatar">
           <img :src="thumbMediaUrl" alt="" />
         </div>
-        <div class="avue-card__detail">
-          <div class="avue-card__title" style="margin-bottom: unset">
+        <div class="mp-card__detail">
+          <div class="mp-card__title" style="margin-bottom: unset">
             {{ title }}
           </div>
-          <div class="avue-card__info" style="height: unset">
+          <div class="mp-card__info" style="height: unset">
             {{ description }}
           </div>
         </div>

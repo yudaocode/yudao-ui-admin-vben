@@ -1,20 +1,11 @@
-// 统一导出所有模块组件
+export * from './constants';
 
-export { default as Location } from './location/location.vue';
-
-export { default as MaterialSelect } from './material-select/material-select.vue';
-export * from './material-select/types';
-
-export * from './msg/types';
-
-export { default as Music } from './music/music.vue';
-
-export { default as News } from './news/news.vue';
-
-export { default as ReplySelect } from './reply/reply.vue';
-
-export * from './reply/types';
-
-export { default as VideoPlayer } from './video-play/video-play.vue';
-
-export { default as VoicePlayer } from './voice-play/voice-play.vue';
+export * from './wx-account-select';
+export * from './wx-location';
+export * from './wx-material-select';
+export * from './wx-msg';
+export * from './wx-music';
+export * from './wx-news';
+export * from './wx-reply';
+export * from './wx-video-play';
+export * from './wx-voice-play';

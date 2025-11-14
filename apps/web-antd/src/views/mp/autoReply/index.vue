@@ -9,7 +9,11 @@ import { IconifyIcon } from '@vben/icons';
 import { message, Row, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpAutoReplyApi from '#/api/mp/autoReply';
+import {
+  deleteAutoReply,
+  getAutoReply,
+  getAutoReplyPage,
+} from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -22,7 +26,7 @@ defineOptions({ name: 'MpAutoReply' });
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
 
 /** 切换回复类型 */
-async function onTabChange(tabName: string) {
+async function onTabChange(tabName: any) {
   msgType.value = tabName;
   await nextTick();
   // 更新 columns
@@ -50,7 +54,7 @@ async function handleCreate() {
 
 /** 修改按钮操作 */
 async function handleEdit(row: any) {
-  const data = (await MpAutoReplyApi.getAutoReply(row.id)) as any;
+  const data = (await getAutoReply(row.id)) as any;
   formModalApi
     .setData({
       msgType: Number(msgType.value) as MsgType,
@@ -68,7 +72,7 @@ async function handleDelete(row: any) {
     duration: 0,
   });
   try {
-    await MpAutoReplyApi.deleteAutoReply(row.id);
+    await deleteAutoReply(row.id);
     message.success('删除成功');
     handleRefresh();
   } finally {
@@ -93,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await MpAutoReplyApi.getAutoReplyPage({
+          return await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type: Number(msgType.value) as MsgType,

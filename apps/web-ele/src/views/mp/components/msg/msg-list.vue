@@ -55,7 +55,7 @@ const getNickname = (sendFrom: SendFromType) =>
         <div
           class="flex items-center justify-between rounded-t-[5px] border-b border-[#eee] bg-[#f8f8f8] px-[15px] py-[5px]"
         >
-          <div class="avue-comment__create_time">
+          <div class="mp-comment__create_time">
             {{ formatDateTime(item.createTime) }}
           </div>
         </div>

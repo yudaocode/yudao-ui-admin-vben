@@ -5,6 +5,7 @@ import { Image } from 'ant-design-vue';
 
 /** 宫格导航 */
 defineOptions({ name: 'MenuGrid' });
+
 defineProps<{ property: MenuGridProperty }>();
 </script>
 

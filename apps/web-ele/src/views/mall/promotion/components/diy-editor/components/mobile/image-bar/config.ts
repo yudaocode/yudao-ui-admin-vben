@@ -11,7 +11,7 @@ export interface ImageBarProperty {
 export const component = {
   id: 'ImageBar',
   name: '图片展示',
-  icon: 'ep:picture',
+  icon: 'lucide:image',
   property: {
     imgUrl: '',
     url: '',

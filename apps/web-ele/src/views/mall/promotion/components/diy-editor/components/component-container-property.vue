@@ -27,7 +27,7 @@ const props = defineProps<{ modelValue: ComponentStyle }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 
-const treeData = [
+const treeData: any[] = [
   {
     label: '外部边距',
     prop: 'margin',
@@ -96,7 +96,7 @@ const treeData = [
   },
 ];
 
-const handleSliderChange = (prop: string) => {
+function handleSliderChange(prop: string) {
   switch (prop) {
     case 'borderRadius': {
       formData.value.borderTopLeftRadius = formData.value.borderRadius;
@@ -120,7 +120,7 @@ const handleSliderChange = (prop: string) => {
       break;
     }
   }
-};
+}
 </script>
 
 <template>

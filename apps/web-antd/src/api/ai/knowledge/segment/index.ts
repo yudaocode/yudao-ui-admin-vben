@@ -32,6 +32,7 @@ export function getKnowledgeSegment(id: number) {
     `/ai/knowledge/segment/get?id=${id}`,
   );
 }
+
 // 新增知识库分段
 export function createKnowledgeSegment(
   data: AiKnowledgeSegmentApi.KnowledgeSegment,
@@ -47,9 +48,13 @@ export function updateKnowledgeSegment(
 }
 
 // 修改知识库分段状态
-export function updateKnowledgeSegmentStatus(data: any) {
-  return requestClient.put('/ai/knowledge/segment/update-status', data);
+export function updateKnowledgeSegmentStatus(id: number, status: number) {
+  return requestClient.put('/ai/knowledge/segment/update-status', {
+    id,
+    status,
+  });
 }
+
 // 删除知识库分段
 export function deleteKnowledgeSegment(id: number) {
   return requestClient.delete(`/ai/knowledge/segment/delete?id=${id}`);

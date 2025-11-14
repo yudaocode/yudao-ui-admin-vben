@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleAccountList } from '#/api/mp/account';
-import { ReplySelect } from '#/views/mp/components';
+import { WxReply } from '#/views/mp/components';
 
 import { MsgType } from './types';
 
@@ -147,11 +147,11 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   schema.push({
     fieldName: 'reply',
     label: '回复消息',
-    component: markRaw(ReplySelect),
+    component: markRaw(WxReply),
     // componentProps: {
     //   modelValue: { type: 'video', content: '12456' },
     // },
-    // modelPropName: 'modelValue',
+    modelPropName: 'modelValue',
   });
   return schema;
 }

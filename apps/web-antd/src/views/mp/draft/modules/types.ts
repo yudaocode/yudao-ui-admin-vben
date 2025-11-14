@@ -23,7 +23,7 @@ interface Article {
   updateTime: number;
 }
 
-const createEmptyNewsItem = (): NewsItem => {
+function createEmptyNewsItem(): NewsItem {
   return {
     title: '',
     thumbMediaId: '',
@@ -36,7 +36,7 @@ const createEmptyNewsItem = (): NewsItem => {
     onlyFansCanComment: 0,
     thumbUrl: '',
   };
-};
+}
 
 export type { Article, NewsItem, NewsItemList };
 export { createEmptyNewsItem };

@@ -2,10 +2,9 @@ import type { StyleValue } from 'vue';
 
 import type { HotZoneItemProperty } from '../../config';
 
-// 热区的最小宽高
-export const HOT_ZONE_MIN_SIZE = 100;
+export const HOT_ZONE_MIN_SIZE = 100; // 热区的最小宽高
 
-// 控制的类型
+/** 控制的类型 */
 export enum CONTROL_TYPE_ENUM {
   LEFT,
   TOP,
@@ -13,14 +12,14 @@ export enum CONTROL_TYPE_ENUM {
   HEIGHT,
 }
 
-// 定义热区的控制点
+/** 定义热区的控制点 */
 export interface ControlDot {
   position: string;
   types: CONTROL_TYPE_ENUM[];
   style: StyleValue;
 }
 
-// 热区的8个控制点
+/** 热区的 8 个控制点 */
 export const CONTROL_DOT_LIST = [
   {
     position: '左上角',
@@ -98,10 +97,10 @@ export const CONTROL_DOT_LIST = [
 ] as ControlDot[];
 
 // region 热区的缩放
-// 热区的缩放比例
-export const HOT_ZONE_SCALE_RATE = 2;
-// 缩小：缩回适合手机屏幕的大小
-export const zoomOut = (list?: HotZoneItemProperty[]) => {
+export const HOT_ZONE_SCALE_RATE = 2; // 热区的缩放比例
+
+/** 缩小：缩回适合手机屏幕的大小 */
+export function zoomOut(list?: HotZoneItemProperty[]) {
   return (
     list?.map((hotZone) => ({
       ...hotZone,
@@ -111,9 +110,10 @@ export const zoomOut = (list?: HotZoneItemProperty[]) => {
       height: (hotZone.height /= HOT_ZONE_SCALE_RATE),
     })) || []
   );
-};
-// 放大：作用是为了方便在电脑屏幕上编辑
-export const zoomIn = (list?: HotZoneItemProperty[]) => {
+}
+
+/** 放大：作用是为了方便在电脑屏幕上编辑 */
+export function zoomIn(list?: HotZoneItemProperty[]) {
   return (
     list?.map((hotZone) => ({
       ...hotZone,
@@ -123,7 +123,8 @@ export const zoomIn = (list?: HotZoneItemProperty[]) => {
       height: (hotZone.height *= HOT_ZONE_SCALE_RATE),
     })) || []
   );
-};
+}
+
 // endregion
 
 /**

@@ -9,7 +9,7 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpDraftApi from '#/api/mp/draft';
+import { deleteDraft, getDraftPage } from '#/api/mp/draft';
 // DONE @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
 import { submitFreePublish } from '#/api/mp/freePublish';
 import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
@@ -22,15 +22,15 @@ import Form from './modules/form.vue';
 // DONE @hw：看看这个 watch、provide 能不能简化掉；
 defineOptions({ name: 'MpDraft' });
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
-  destroyOnClose: true,
-});
-
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 /** 新增按钮操作 */
 async function handleCreate() {
@@ -108,7 +108,7 @@ async function handleDelete(row: Article) {
     duration: 0,
   });
   try {
-    await MpDraftApi.deleteDraft(accountId, row.mediaId);
+    await deleteDraft(accountId, row.mediaId);
     message.success('删除成功');
     handleRefresh();
   } finally {
@@ -128,7 +128,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const drafts = await MpDraftApi.getDraftPage({
+          const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -169,7 +169,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
     </template>
 
-    <!-- DONE @hw：参考别的模块 @success 调用 refresh 方法； -->
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="草稿列表">

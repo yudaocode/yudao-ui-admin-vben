@@ -17,12 +17,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 300,
       slots: { default: 'content' },
     },
-    // {
-    //   field: 'updateTime',
-    //   title: '更新时间',
-    //   minWidth: 180,
-    //   formatter: 'formatDateTime', // TODO @YunaiV 接口返回数据不对，需要乘1000
-    // },
     {
       title: '操作',
       width: 200,
