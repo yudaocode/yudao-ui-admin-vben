@@ -87,4 +87,3 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
   </Modal>
 </template>
-

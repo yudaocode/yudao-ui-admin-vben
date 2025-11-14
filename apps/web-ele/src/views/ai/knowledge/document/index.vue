@@ -164,12 +164,11 @@ onMounted(() => {
               auth: ['ai:knowledge:update'],
               onClick: handleEdit.bind(null, row.id),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '分段',
               type: 'primary',
               link: true,
+              icon: ACTION_ICON.BOOK,
               auth: ['ai:knowledge:query'],
               onClick: handleSegment.bind(null, row.id),
             },

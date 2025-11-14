@@ -109,8 +109,8 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
-          checkedValue: CommonStatusEnum.ENABLE,
-          unCheckedValue: CommonStatusEnum.DISABLE,
+          activeValue: CommonStatusEnum.ENABLE,
+          inactiveValue: CommonStatusEnum.DISABLE,
         },
       },
     },
@@ -128,4 +128,3 @@ export function useGridColumns(
     },
   ];
 }
-

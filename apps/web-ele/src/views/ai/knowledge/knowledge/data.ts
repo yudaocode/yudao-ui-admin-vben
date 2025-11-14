@@ -56,10 +56,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入检索 topK',
-        controlsPosition: 'right',
-        class: '!w-full',
         min: 0,
         max: 10,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -69,12 +69,12 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入检索相似度阈值',
-        controlsPosition: 'right',
-        class: '!w-full',
         min: 0,
         max: 1,
         step: 0.01,
         precision: 2,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -170,4 +170,3 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
-
