@@ -69,7 +69,7 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
 /** 清空 API 配额 */
 async function handleCleanQuota(row: MpAccountApi.Account) {
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.processing', ['清空 API 配额']),
+    text: '正在清空 API 配额',
   });
   try {
     await clearAccountQuota(row.id!);
@@ -155,6 +155,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '生成二维码',
               type: 'primary',
               link: true,
+              icon: 'qrcode',
               auth: ['mp:account:qr-code'],
               onClick: handleGenerateQrCode.bind(null, row),
             },
@@ -162,6 +163,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '清空 API 配额',
               type: 'danger',
               link: true,
+              icon: 'clear',
               auth: ['mp:account:clear-quota'],
               popConfirm: {
                 title: '你确认要清空 API 配额？',
