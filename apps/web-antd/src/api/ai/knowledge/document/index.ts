@@ -26,10 +26,12 @@ export function getKnowledgeDocumentPage(params: PageParam) {
 export function getKnowledgeDocument(id: number) {
   return requestClient.get(`/ai/knowledge/document/get?id=${id}`);
 }
+
 // 新增知识库文档（单个）
 export function createKnowledge(data: any) {
   return requestClient.post('/ai/knowledge/document/create', data);
 }
+
 // 新增知识库文档（多个）
 export function createKnowledgeDocumentList(data: any) {
   return requestClient.post('/ai/knowledge/document/create-list', data);
@@ -44,6 +46,7 @@ export function updateKnowledgeDocument(data: any) {
 export function updateKnowledgeDocumentStatus(data: any) {
   return requestClient.put('/ai/knowledge/document/update-status', data);
 }
+
 // 删除知识库文档
 export function deleteKnowledgeDocument(id: number) {
   return requestClient.delete(`/ai/knowledge/document/delete?id=${id}`);

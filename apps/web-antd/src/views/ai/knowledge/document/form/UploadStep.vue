@@ -9,7 +9,6 @@ import type { AxiosProgressEvent } from '#/api/infra/file';
 import { computed, getCurrentInstance, inject, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
-import { $t } from '@vben/locales';
 import { generateAcceptedFileTypes } from '@vben/utils';
 
 import { Button, Form, message, UploadDragger } from 'ant-design-vue';
@@ -124,7 +123,7 @@ async function customRequest(info: UploadRequestOption<any>) {
     };
     const res = await httpRequest(info.file as File, progressEvent);
     info.onSuccess!(res);
-    message.success($t('ui.upload.uploadSuccess'));
+    message.success('上传成功');
     ensureListExists();
     emit('update:modelValue', {
       ...props.modelValue,
