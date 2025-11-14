@@ -67,6 +67,7 @@ async function splitContentFile(file: any) {
     splitLoading.value = false;
   }
 }
+
 /** 处理预览分段 */
 async function handleAutoSegment() {
   // 如果没有选中文件，默认选中第一个
@@ -228,7 +229,7 @@ onMounted(async () => {
               >
                 {{ file.name }}
                 <span v-if="file.segments" class="ml-1 text-sm text-gray-500">
-                  ({{ file.segments.length }}个分片)
+                  ({{ file.segments.length }} 个分片)
                 </span>
               </Menu.Item>
             </Menu>

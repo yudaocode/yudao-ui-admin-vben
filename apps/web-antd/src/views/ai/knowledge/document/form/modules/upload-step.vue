@@ -30,7 +30,6 @@ const { uploadUrl, httpRequest } = useUpload(); // 使用上传组件的钩子
 const fileList = ref<UploadProps['fileList']>([]); // 文件列表
 const uploadingCount = ref(0); // 上传中的文件数量
 
-// 支持的文件类型和大小限制
 const supportedFileTypes = [
   'TXT',
   'MARKDOWN',
@@ -50,16 +49,14 @@ const supportedFileTypes = [
   'PPT',
   'MD',
   'HTM',
-];
+]; // 支持的文件类型和大小限制
 const allowedExtensions = new Set(
   supportedFileTypes.map((ext) => ext.toLowerCase()),
 ); // 小写的扩展名列表
 const maxFileSize = 15; // 最大文件大小(MB)
-
-// 构建 accept 属性值，用于限制文件选择对话框中可见的文件类型
 const acceptedFileTypes = computed(() =>
   generateAcceptedFileTypes(supportedFileTypes),
-);
+); // 构建 accept 属性值，用于限制文件选择对话框中可见的文件类型
 
 /** 表单数据 */
 const modelData = computed({
@@ -68,6 +65,7 @@ const modelData = computed({
   },
   set: (val) => emit('update:modelValue', val),
 });
+
 /** 确保 list 属性存在 */
 function ensureListExists() {
   if (!props.modelValue.list) {
@@ -77,6 +75,7 @@ function ensureListExists() {
     });
   }
 }
+
 /** 是否所有文件都已上传完成 */
 const isAllUploaded = computed(() => {
   return (
@@ -112,7 +111,8 @@ function beforeUpload(file: any) {
   uploadingCount.value++;
   return true;
 }
-async function customRequest(info: UploadRequestOption<any>) {
+
+async function customRequest(info: UploadRequestOption) {
   const file = info.file as File;
   const name = file?.name;
   try {
@@ -142,6 +142,7 @@ async function customRequest(info: UploadRequestOption<any>) {
     uploadingCount.value = Math.max(0, uploadingCount.value - 1);
   }
 }
+
 /**
  * 从列表中移除文件
  *
@@ -231,9 +232,9 @@ onMounted(() => {
           >
             <div class="flex items-center">
               <IconifyIcon icon="lucide:file-text" class="mr-2 text-blue-500" />
-              <span class="break-all text-sm text-gray-600">{{
-                file.name
-              }}</span>
+              <span class="break-all text-sm text-gray-600">
+                {{ file.name }}
+              </span>
             </div>
             <Button
               danger
