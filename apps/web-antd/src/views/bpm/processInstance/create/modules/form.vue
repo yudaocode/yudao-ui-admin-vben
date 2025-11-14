@@ -138,11 +138,12 @@ async function initProcessInfo(row: any, formVariables?: any) {
     }
     setConfAndFields2(detailForm, row.formConf, row.formFields, formVariables);
 
+    // 隐藏 form-create 的提交按钮和重置按钮
+    detailForm.value.option.submitBtn = false;
+    detailForm.value.option.resetBtn = false;
+
     // 设置表单就绪状态
     isFormReady.value = true;
-
-    await nextTick();
-    fApi.value?.btn.show(false); // 隐藏提交按钮
 
     // 获取流程审批信息,当再次发起时，流程审批节点要根据原始表单参数预测出来
     await getApprovalDetail({
