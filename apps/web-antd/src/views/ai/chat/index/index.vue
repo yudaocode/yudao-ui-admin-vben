@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @gjd：https://t.zsxq.com/pmNb1 AI 对话、绘图底部没对齐，特别是样式方面
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
@@ -101,8 +100,7 @@ async function handleConversationClick(
   // 刷新 message 列表
   await getMessageList();
   // 滚动底部
-  // TODO @AI：看看要不要 await
-  scrollToBottom(true);
+  await scrollToBottom(true);
   prompt.value = '';
   // 清空输入框
   prompt.value = '';
@@ -156,7 +154,7 @@ async function handleConversationCreateSuccess() {
   // 创建新的对话，清空输入框
   prompt.value = '';
   // 清空文件列表
-  uploadFiles.value = []
+  uploadFiles.value = [];
 }
 
 // =========== 【消息列表】相关 ===========
@@ -363,8 +361,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
     await nextTick();
     await scrollToBottom(); // 底部
     // 1.3 开始滚动
-    // TODO @AI：要不要 await
-    textRoll();
+    textRoll().then();
 
     // 2. 发送 event stream
     let isFirstChunk = true; // 是否是第一个 chunk 消息段
@@ -538,11 +535,6 @@ onMounted(async () => {
   activeMessageListLoading.value = true;
   await getMessageList();
 });
-// TODO @芋艿：深度思考
-// TODO @芋艿：联网搜索
-// TODO @芋艿：附件支持
-// TODO @芋艿：mcp 相关
-// TODO @芋艿：异常消息的处理
 </script>
 
 <template>

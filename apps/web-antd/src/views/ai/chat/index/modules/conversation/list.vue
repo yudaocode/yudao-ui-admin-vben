@@ -352,9 +352,11 @@ onMounted(async () => {
             class="mt-1"
           >
             <div
-              class="mb-2 flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10"
+              class="mb-2 flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
               :class="[
-                conversation.id === activeConversationId ? 'bg-success' : '',
+                conversation.id === activeConversationId
+                  ? 'bg-primary/10 dark:bg-primary/20'
+                  : '',
               ]"
             >
               <div class="flex items-center">
@@ -371,7 +373,6 @@ onMounted(async () => {
                 </span>
               </div>
 
-              <!-- TODO @AI：目前选中的颜色有点丑，好像是绿色，看看怎么优化下！ -->
               <div
                 v-show="hoverConversationId === conversation.id"
                 class="relative right-0.5 flex items-center text-gray-400"
