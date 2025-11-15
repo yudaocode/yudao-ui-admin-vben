@@ -194,30 +194,21 @@ defineExpose({ settingValues });
     <div>
       <b>图片尺寸</b>
     </div>
-    <ElSpace wrap class="mt-4 flex flex-wrap gap-x-5">
-      <!-- TODO @AI：是不是可以 ElInputNumber 里面；另外，宽、高在一行里； <template #prepend>Http://</template>；<template #append>.com</template>
- -->
-      <div class="flex items-center gap-2">
-        <span>宽</span>
-        <ElInputNumber
-          v-model="width"
-          placeholder="图片宽度"
-          controls-position="right"
-          class="!w-32"
-        />
-        <span>px</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span>高</span>
-        <ElInputNumber
-          v-model="height"
-          placeholder="图片高度"
-          controls-position="right"
-          class="!w-32"
-        />
-        <span>px</span>
-      </div>
-    </ElSpace>
+    <div class="mt-4 flex items-center gap-2">
+      <ElInputNumber
+        v-model="width"
+        placeholder="图片宽度"
+        controls-position="right"
+        class="!w-32"
+      />
+      <span class="mx-2">×</span>
+      <ElInputNumber
+        v-model="height"
+        placeholder="图片高度"
+        controls-position="right"
+        class="!w-32"
+      />
+    </div>
   </div>
 
   <div class="mt-12 flex justify-center">

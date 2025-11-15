@@ -232,24 +232,21 @@ defineExpose({ settingValues });
     <div><b>图片尺寸</b></div>
     <ElSpace wrap class="mt-4 w-full">
       <div class="flex items-center gap-2">
-        <span>宽</span>
         <ElInputNumber
           v-model="width"
           placeholder="图片宽度"
           controls-position="right"
           class="!w-32"
         />
-        <span>px</span>
       </div>
+      <span class="mx-2">×</span>
       <div class="flex items-center gap-2">
-        <span>高</span>
         <ElInputNumber
           v-model="height"
           placeholder="图片高度"
           controls-position="right"
           class="!w-32"
         />
-        <span>px</span>
       </div>
     </ElSpace>
   </div>

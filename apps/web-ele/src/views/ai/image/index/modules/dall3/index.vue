@@ -182,13 +182,13 @@ defineExpose({ settingValues });
         ]"
         v-for="model in Dall3Models"
         :key="model.key"
+        @click="handleModelClick(model)"
       >
-        <!-- TODO @AI：图片无法展示； -->
         <ElImage
           :preview-src-list="[]"
           :src="model.image"
           fit="contain"
-          @click="handleModelClick(model)"
+          class="w-full"
         />
         <div class="text-sm font-bold text-gray-600">
           {{ model.name }}
