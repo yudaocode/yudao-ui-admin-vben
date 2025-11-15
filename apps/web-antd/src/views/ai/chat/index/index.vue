@@ -337,6 +337,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         conversationId: activeConversationId.value,
         type: 'assistant',
         content: '思考中...',
+        reasoningContent: '', // 初始化推理内容
         createTime: new Date(),
       } as AiChatMessageApi.ChatMessage,
     );
@@ -366,10 +367,11 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
           return;
         }
 
-        // 如果内容为空，就不处理。
-        if (data.receive.content === '') {
+        // 如果内容和推理内容都为空，就不处理
+        if (data.receive.content === '' && !data.receive.reasoningContent) {
           return;
         }
+
         // 首次返回需要添加一个 message 到页面，后面的都是更新
         if (isFirstChunk) {
           isFirstChunk = false;
@@ -379,9 +381,23 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
           // 更新返回的数据
           activeMessageList.value.push(data.send, data.receive);
         }
-        // debugger
-        receiveMessageFullText.value =
-          receiveMessageFullText.value + data.receive.content;
+
+        // 处理 reasoningContent
+        if (data.receive.reasoningContent) {
+          const lastMessage =
+            activeMessageList.value[activeMessageList.value.length - 1];
+          // 累加推理内容
+          lastMessage.reasoningContent =
+            (lastMessage.reasoningContent || '') +
+            data.receive.reasoningContent;
+        }
+
+        // 处理正常内容
+        if (data.receive.content !== '') {
+          receiveMessageFullText.value =
+            receiveMessageFullText.value + data.receive.content;
+        }
+
         // 滚动到最下面
         await scrollToBottom();
       },

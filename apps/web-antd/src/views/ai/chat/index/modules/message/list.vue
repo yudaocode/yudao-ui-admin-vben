@@ -18,6 +18,7 @@ import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';
 
 import MessageKnowledge from './knowledge.vue';
+import MessageReasoning from './reasoning.vue';
 import MessageWebSearch from './web-search.vue';
 
 const props = defineProps({
@@ -132,6 +133,10 @@ onMounted(async () => {
           <div
             class="relative flex flex-col break-words rounded-lg bg-gray-100 p-2.5 pb-1 pt-2.5 shadow-sm"
           >
+            <MessageReasoning
+              :reasoning-content="item.reasoningContent || ''"
+              :content="item.content || ''"
+            />
             <MarkdownView
               class="text-sm text-gray-600"
               :content="item.content"
