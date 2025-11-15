@@ -22,7 +22,8 @@ import {
 
 import { getLatestDeviceProperties } from '#/api/iot/device/device';
 
-import DeviceDetailsThingModelPropertyHistory from './DeviceDetailsThingModelPropertyHistory.vue';
+import DeviceDetailsThingModelPropertyHistory
+  from './device-details-thing-model-property-history.vue';
 
 const props = defineProps<{ deviceId: number }>();
 

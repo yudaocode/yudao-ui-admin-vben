@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 
 import { Button, Card, Descriptions, message } from 'ant-design-vue';
 
-import DeviceForm from '../DeviceForm.vue';
+import DeviceForm from '../device-form.vue';
 
 interface Props {
   product: IotProductApi.Product;

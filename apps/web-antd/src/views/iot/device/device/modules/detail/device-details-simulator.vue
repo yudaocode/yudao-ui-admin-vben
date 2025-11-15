@@ -22,13 +22,13 @@ import {
 } from 'ant-design-vue';
 
 import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
-import DataDefinition from '#/views/iot/thingmodel/modules/components/DataDefinition.vue';
+import DataDefinition from '#/views/iot/thingmodel/modules/components/data-definition.vue';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import DeviceDetailsMessage from './DeviceDetailsMessage.vue';
+import DeviceDetailsMessage from './device-details-message.vue';
 
 const props = defineProps<{
   device: IotDeviceApi.Device;

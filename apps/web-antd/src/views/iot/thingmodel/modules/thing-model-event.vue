@@ -14,7 +14,7 @@ import {
   IoTThingModelParamDirectionEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelInputOutputParam from './ThingModelInputOutputParam.vue';
+import ThingModelInputOutputParam from './thing-model-input-output-param.vue';
 
 /** IoT 物模型事件 */
 defineOptions({ name: 'ThingModelEvent' });

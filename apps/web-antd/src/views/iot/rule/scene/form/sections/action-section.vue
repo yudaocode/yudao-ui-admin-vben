@@ -13,8 +13,8 @@ import {
   IotRuleSceneActionTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import AlertConfig from '../configs/AlertConfig.vue';
-import DeviceControlConfig from '../configs/DeviceControlConfig.vue';
+import AlertConfig from '../configs/alert-config.vue';
+import DeviceControlConfig from '../configs/device-control-config.vue';
 
 /** 执行器配置组件 */
 defineOptions({ name: 'ActionSection' });

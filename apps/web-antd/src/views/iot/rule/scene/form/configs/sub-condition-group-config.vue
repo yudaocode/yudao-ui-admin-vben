@@ -13,7 +13,7 @@ import {
   IotRuleSceneTriggerConditionTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ConditionConfig from './ConditionConfig.vue';
+import ConditionConfig from './condition-config.vue';
 
 /** 子条件组配置组件 */
 defineOptions({ name: 'SubConditionGroupConfig' });

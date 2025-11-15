@@ -12,7 +12,7 @@ import { getOtaFirmware } from '#/api/iot/ota/firmware';
 import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
-import OtaTaskList from '../task/OtaTaskList.vue';
+import OtaTaskList from '../task/ota-task-list.vue';
 
 /** IoT OTA 固件详情 */
 defineOptions({ name: 'IoTOtaFirmwareDetail' });

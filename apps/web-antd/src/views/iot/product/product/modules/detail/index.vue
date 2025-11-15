@@ -12,8 +12,8 @@ import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
 import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 
-import ProductDetailsHeader from './ProductDetailsHeader.vue';
-import ProductDetailsInfo from './ProductDetailsInfo.vue';
+import ProductDetailsHeader from './product-details-header.vue';
+import ProductDetailsInfo from './product-details-info.vue';
 
 defineOptions({ name: 'IoTProductDetail' });
 

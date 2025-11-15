@@ -10,7 +10,7 @@ import { deleteDataSink, getDataSinkPage } from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DataSinkForm from './DataSinkForm.vue';
+import DataSinkForm from './data-sink-form.vue';
 
 /** IoT 数据流转目的 列表 */
 defineOptions({ name: 'IotDataSink' });

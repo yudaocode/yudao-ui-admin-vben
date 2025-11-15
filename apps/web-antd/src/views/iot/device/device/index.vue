@@ -32,10 +32,10 @@ import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
-import DeviceCardView from './modules/DeviceCardView.vue';
-import DeviceForm from './modules/DeviceForm.vue';
-import DeviceGroupForm from './modules/DeviceGroupForm.vue';
-import DeviceImportForm from './modules/DeviceImportForm.vue';
+import DeviceCardView from './modules/device-card-view.vue';
+import DeviceForm from './modules/device-form.vue';
+import DeviceGroupForm from './modules/device-group-form.vue';
+import DeviceImportForm from './modules/device-import-form.vue';
 
 /** IoT 设备列表 */
 defineOptions({ name: 'IoTDevice' });

@@ -14,12 +14,12 @@ import {
   triggerTypeOptions,
 } from '#/views/iot/utils/constants';
 
-import JsonParamsInput from '../inputs/JsonParamsInput.vue';
-import ValueInput from '../inputs/ValueInput.vue';
-import DeviceSelector from '../selectors/DeviceSelector.vue';
-import OperatorSelector from '../selectors/OperatorSelector.vue';
-import ProductSelector from '../selectors/ProductSelector.vue';
-import PropertySelector from '../selectors/PropertySelector.vue';
+import JsonParamsInput from '../inputs/json-params-input.vue';
+import ValueInput from '../inputs/value-input.vue';
+import DeviceSelector from '../selectors/device-selector.vue';
+import OperatorSelector from '../selectors/operator-selector.vue';
+import ProductSelector from '../selectors/product-selector.vue';
+import PropertySelector from '../selectors/property-selector.vue';
 
 /** 主条件内部配置组件 */
 defineOptions({ name: 'MainConditionInnerConfig' });

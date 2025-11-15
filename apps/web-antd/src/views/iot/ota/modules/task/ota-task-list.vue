@@ -22,8 +22,8 @@ import {
 import { getOtaTaskPage } from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
-import OtaTaskDetail from './OtaTaskDetail.vue';
-import OtaTaskForm from './OtaTaskForm.vue';
+import OtaTaskDetail from './ota-task-detail.vue';
+import OtaTaskForm from './ota-task-form.vue';
 
 /** IoT OTA 任务列表 */
 defineOptions({ name: 'OtaTaskList' });

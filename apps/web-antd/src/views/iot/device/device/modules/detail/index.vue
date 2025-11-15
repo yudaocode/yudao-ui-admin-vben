@@ -14,11 +14,11 @@ import { getDevice } from '#/api/iot/device/device';
 import { DeviceTypeEnum, getProduct } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 
-import DeviceDetailConfig from './DeviceDetailConfig.vue';
-import DeviceDetailsHeader from './DeviceDetailsHeader.vue';
-import DeviceDetailsInfo from './DeviceDetailsInfo.vue';
-import DeviceDetailsMessage from './DeviceDetailsMessage.vue';
-import DeviceDetailsSimulator from './DeviceDetailsSimulator.vue';
+import DeviceDetailConfig from './device-detail-config.vue';
+import DeviceDetailsHeader from './device-details-header.vue';
+import DeviceDetailsInfo from './device-details-info.vue';
+import DeviceDetailsMessage from './device-details-message.vue';
+import DeviceDetailsSimulator from './device-details-simulator.vue';
 import DeviceDetailsSubDevice from './DeviceDetailsSubDevice.vue';
 import DeviceDetailsThingModel from './DeviceDetailsThingModel.vue';
 

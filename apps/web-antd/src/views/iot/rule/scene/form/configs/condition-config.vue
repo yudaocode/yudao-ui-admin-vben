@@ -14,12 +14,12 @@ import {
   IotRuleSceneTriggerConditionTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ValueInput from '../inputs/ValueInput.vue';
-import DeviceSelector from '../selectors/DeviceSelector.vue';
-import OperatorSelector from '../selectors/OperatorSelector.vue';
-import ProductSelector from '../selectors/ProductSelector.vue';
-import PropertySelector from '../selectors/PropertySelector.vue';
-import CurrentTimeConditionConfig from './CurrentTimeConditionConfig.vue';
+import ValueInput from '../inputs/value-input.vue';
+import DeviceSelector from '../selectors/device-selector.vue';
+import OperatorSelector from '../selectors/operator-selector.vue';
+import ProductSelector from '../selectors/product-selector.vue';
+import PropertySelector from '../selectors/property-selector.vue';
+import CurrentTimeConditionConfig from './current-time-condition-config.vue';
 
 /** 单个条件配置组件 */
 defineOptions({ name: 'ConditionConfig' });

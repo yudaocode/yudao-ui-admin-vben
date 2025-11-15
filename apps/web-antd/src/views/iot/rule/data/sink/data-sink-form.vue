@@ -15,11 +15,11 @@ import { $t } from '#/locales';
 
 import {
   HttpConfigForm,
-  KafkaMQConfigForm,
+  KafkaMqConfigForm,
   MqttConfigForm,
-  RabbitMQConfigForm,
+  RabbitMqConfigForm,
   RedisStreamConfigForm,
-  RocketMQConfigForm,
+  RocketMqConfigForm,
 } from './config';
 import { useSinkFormSchema } from './data';
 
@@ -128,15 +128,15 @@ watch(
         v-if="IotDataSinkTypeEnum.MQTT === formData.type"
         v-model="formData.config"
       />
-      <RocketMQConfigForm
+      <RocketMqConfigForm
         v-if="IotDataSinkTypeEnum.ROCKETMQ === formData.type"
         v-model="formData.config"
       />
-      <KafkaMQConfigForm
+      <KafkaMqConfigForm
         v-if="IotDataSinkTypeEnum.KAFKA === formData.type"
         v-model="formData.config"
       />
-      <RabbitMQConfigForm
+      <RabbitMqConfigForm
         v-if="IotDataSinkTypeEnum.RABBITMQ === formData.type"
         v-model="formData.config"
       />

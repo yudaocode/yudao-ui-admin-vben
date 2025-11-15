@@ -16,9 +16,9 @@ import {
   isDeviceTrigger,
 } from '#/views/iot/utils/constants';
 
-import ActionSection from './sections/ActionSection.vue';
-import BasicInfoSection from './sections/BasicInfoSection.vue';
-import TriggerSection from './sections/TriggerSection.vue';
+import ActionSection from './sections/action-section.vue';
+import BasicInfoSection from './sections/basic-info-section.vue';
+import TriggerSection from './sections/trigger-section.vue';
 
 /** IoT 场景联动规则表单 - 主表单组件 */
 defineOptions({ name: 'RuleSceneForm' });

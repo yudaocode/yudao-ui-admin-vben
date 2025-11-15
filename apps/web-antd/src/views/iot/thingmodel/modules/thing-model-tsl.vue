@@ -10,7 +10,7 @@ import { Modal, Radio, Textarea } from 'ant-design-vue';
 import { getThingModelTSL } from '#/api/iot/thingmodel';
 import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 
-defineOptions({ name: 'ThingModelTSL' });
+defineOptions({name: 'ThingModelTsl'});
 
 const dialogVisible = ref(false); // 弹窗的是否展示
 const dialogTitle = ref('物模型 TSL'); // 弹窗的标题

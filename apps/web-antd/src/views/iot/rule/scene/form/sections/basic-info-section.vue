@@ -8,6 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Card, Col, Form, Input, Radio, Row } from 'ant-design-vue';
+import { DictTag } from "#/components/dict-tag";
 
 /** 基础信息配置组件 */
 defineOptions({ name: 'BasicInfoSection' });

@@ -6,7 +6,7 @@ import { isEmpty } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import { FormItem, Input, Select } from 'ant-design-vue';
 
-import KeyValueEditor from './components/KeyValueEditor.vue';
+import KeyValueEditor from './components/key-value-editor.vue';
 
 defineOptions({ name: 'HttpConfigForm' });
 

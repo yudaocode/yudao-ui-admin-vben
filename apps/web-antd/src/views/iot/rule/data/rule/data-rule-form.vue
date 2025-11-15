@@ -14,7 +14,7 @@ import {
 import { getDataSinkSimpleList } from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
-import SourceConfigForm from './components/SourceConfigForm.vue';
+import SourceConfigForm from './components/source-config-form.vue';
 import { useRuleFormSchema } from './data';
 
 const emit = defineEmits(['success']);

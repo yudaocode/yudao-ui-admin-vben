@@ -20,9 +20,9 @@ import {
   IoTThingModelAccessModeEnum,
 } from '#/views/iot/utils/constants';
 
-import JsonParamsInput from '../inputs/JsonParamsInput.vue';
-import DeviceSelector from '../selectors/DeviceSelector.vue';
-import ProductSelector from '../selectors/ProductSelector.vue';
+import JsonParamsInput from '../inputs/json-params-input.vue';
+import DeviceSelector from '../selectors/device-selector.vue';
+import ProductSelector from '../selectors/product-selector.vue';
 
 /** 设备控制配置组件 */
 defineOptions({ name: 'DeviceControlConfig' });
