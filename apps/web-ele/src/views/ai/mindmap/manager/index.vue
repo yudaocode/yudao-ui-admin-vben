@@ -30,7 +30,7 @@ async function handleDelete(row: AiMindmapApi.MindMap) {
     text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteMindMap(row.id as number);
+    await deleteMindMap(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

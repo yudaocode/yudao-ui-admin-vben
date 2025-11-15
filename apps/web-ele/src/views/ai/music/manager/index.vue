@@ -23,7 +23,7 @@ async function handleDelete(row: AiMusicApi.Music) {
     text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteMusic(row.id as number);
+    await deleteMusic(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

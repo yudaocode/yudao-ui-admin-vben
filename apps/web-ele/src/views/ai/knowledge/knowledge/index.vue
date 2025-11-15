@@ -44,7 +44,7 @@ async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteKnowledge(row.id as number);
+    await deleteKnowledge(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

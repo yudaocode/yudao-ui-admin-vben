@@ -45,7 +45,7 @@ async function handleDelete(row: AiKnowledgeKnowledgeApi.Knowledge) {
     duration: 0,
   });
   try {
-    await deleteKnowledge(row.id as number);
+    await deleteKnowledge(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

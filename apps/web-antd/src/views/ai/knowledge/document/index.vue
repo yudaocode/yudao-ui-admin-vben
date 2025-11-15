@@ -55,7 +55,7 @@ async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocument) {
     duration: 0,
   });
   try {
-    await deleteKnowledgeDocument(row.id as number);
+    await deleteKnowledgeDocument(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

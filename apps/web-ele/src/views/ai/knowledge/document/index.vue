@@ -54,7 +54,7 @@ async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocument) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteKnowledgeDocument(row.id as number);
+    await deleteKnowledgeDocument(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

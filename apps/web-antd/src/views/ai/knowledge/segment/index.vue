@@ -51,7 +51,7 @@ async function handleDelete(row: AiKnowledgeSegmentApi.KnowledgeSegment) {
     duration: 0,
   });
   try {
-    await deleteKnowledgeSegment(row.id as number);
+    await deleteKnowledgeSegment(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

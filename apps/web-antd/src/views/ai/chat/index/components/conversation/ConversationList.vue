@@ -203,7 +203,7 @@ async function updateConversationTitle(
               filterConversationList.length > 0 &&
               filterConversationList[0] && // tip：避免切换对话
               activeConversationId.value ===
-                (filterConversationList[0].id as number)
+                (filterConversationList[0].id!)
             ) {
               emits('onConversationClick', filterConversationList[0]);
             }
