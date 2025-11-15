@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide, ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import {
   BpmAutoApproveType,
   BpmModelFormType,
@@ -9,6 +10,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import {
+  Button,
   Checkbox,
   Col,
   Form,
@@ -31,6 +33,8 @@ import {
   HttpRequestSetting,
   parseFormFields,
 } from '#/views/bpm/components/simple-process-design';
+
+import PrintTemplate from './custom-print-template.vue';
 
 const modelData = defineModel<any>();
 
@@ -147,9 +151,9 @@ function handleTaskAfterTriggerEnableChange(val: boolean | number | string) {
 }
 
 /** 表单字段 */
-const formField = ref<Array<{ field: string; title: string }>>([]);
+const formFields = ref<Array<{ field: string; title: string }>>([]);
 const formFieldOptions4Title = computed(() => {
-  const cloneFormField = formField.value.map((item) => {
+  const cloneFormField = formFields.value.map((item) => {
     return {
       label: item.title,
       value: item.field,
@@ -171,7 +175,7 @@ const formFieldOptions4Title = computed(() => {
   return cloneFormField;
 });
 const formFieldOptions4Summary = computed(() => {
-  return formField.value.map((item) => {
+  return formFields.value.map((item) => {
     return {
       label: item.title,
       value: item.field,
@@ -190,6 +194,12 @@ function initData() {
       infix: '',
       postfix: '',
       length: 5,
+    };
+  }
+  if (!modelData.value.printTemplateSetting) {
+    modelData.value.printTemplateSetting = {
+      enable: false,
+      template: '',
     };
   }
   if (!modelData.value.autoApprovalType) {
@@ -237,9 +247,9 @@ watch(
           parseFormFields(JSON.parse(fieldStr), result);
         });
       }
-      formField.value = result;
+      formFields.value = result;
     } else {
-      formField.value = [];
+      formFields.value = [];
       unParsedFormFields.value = [];
     }
   },
@@ -251,6 +261,86 @@ const formRef = ref(); // 表单引用
 async function validate() {
   await formRef.value?.validate();
 }
+
+/** 自定义打印模板模态框 */
+const [PrintTemplateModal, printTemplateModalApi] = useVbenModal({
+  connectedComponent: PrintTemplate,
+  destroyOnClose: true,
+  onConfirm() {
+    /** 从 modalApi 获取确认的数据 */
+    const { confirmedTemplate } = printTemplateModalApi.getData<{
+      confirmedTemplate: string;
+    }>();
+    if (confirmedTemplate !== undefined) {
+      modelData.value.printTemplateSetting.template = confirmedTemplate;
+    }
+  },
+});
+
+/** 弹出自定义打印模板弹窗 */
+const openPrintTemplateModal = () => {
+  printTemplateModalApi
+    .setData({ template: modelData.value.printTemplateSetting.template })
+    .open();
+};
+
+/** 默认的打印模板， 目前自定义模板没有引入自定义样式。 看后续是否需要 */
+const defaultTemplate = `<p style="text-align: center;font-size: 1.25rem;"><strong><span data-w-e-type="mention" data-value="流程名称" data-info="%7B%22id%22%3A%22processName%22%7D">@流程名称</span></strong></p>
+<p style="text-align: right;">打印人员：<span data-w-e-type="mention" data-info="%7B%22id%22%3A%22printUser%22%7D">@打印人</span></p>
+<p style="text-align: left;">流程编号：<span data-w-e-type="mention" data-value="流程编号" data-info="%7B%22id%22%3A%22processNum%22%7D">@流程编号</span></p>
+<p>&nbsp;</p>
+<table style="width: 100%; height: 72.2159px;">
+<tbody>
+<tr style="height: 36.108px;">
+<td style="width: 21.7532%; border: 1px solid;" colspan="1" rowspan="1" width="auto">发起人</td>
+<td style="width: 30.5551%; border: 1px solid;" colspan="1" rowspan="1" width="auto"><span data-w-e-type="mention" data-value="发起人" data-info="%7B%22id%22%3A%22startUser%22%7D">@发起人</span></td>
+<td style="width: 21.7532%; border: 1px solid;" colspan="1" rowspan="1" width="auto">发起时间</td>
+<td style="width: 26.0284%; border: 1px solid;" colspan="1" rowspan="1" width="auto"><span data-w-e-type="mention" data-value="发起时间" data-info="%7B%22id%22%3A%22startTime%22%7D">@发起时间</span></td>
+</tr>
+<tr style="height: 36.108px;">
+<td style="width: 21.7532%; border: 1px solid;" colspan="1" rowspan="1" width="auto">所属部门</td>
+<td style="width: 30.5551%; border: 1px solid;" colspan="1" rowspan="1" width="auto"><span data-w-e-type="mention" data-w-e-is-void="" data-w-e-is-inline="" data-value="发起人部门" data-info="%7B%22id%22%3A%22startUserDept%22%7D">@发起人部门</span></td>
+<td style="width: 21.7532%; border: 1px solid;" colspan="1" rowspan="1" width="auto">流程状态</td>
+<td style="width: 26.0284%; border: 1px solid;" colspan="1" rowspan="1" width="auto"><span data-w-e-type="mention" data-value="流程状态" data-info="%7B%22id%22%3A%22processStatus%22%7D">@流程状态</span></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<div contenteditable="false" data-w-e-type="process-record" data-w-e-is-void="">
+<table class="process-record-table" style="width: 100%; border-collapse: collapse; border: 1px solid;">
+<tr>
+	<td style="width: 100%; border: 1px solid; text-align: center;" colspan="2">流程记录</td>
+</tr>
+<tr>
+	<td style="width: 25%; border: 1px solid;">节点</td>
+	<td style="width: 75%; border: 1px solid;">操作</td>
+</tr>
+</table>
+</div>
+<p>&nbsp;</p>`;
+
+const handlePrintTemplateEnableChange = (checked: any) => {
+  const val = !!checked;
+  if (val && !modelData.value.printTemplateSetting.template) {
+    modelData.value.printTemplateSetting.template = defaultTemplate;
+  }
+};
+
+// 自定义打印模板开关
+const printTemplateEnable = computed<boolean>({
+  get() {
+    return !!modelData.value?.printTemplateSetting?.enable;
+  },
+  set(val: boolean) {
+    if (!modelData.value.printTemplateSetting) {
+      modelData.value.printTemplateSetting = {
+        enable: false,
+        template: '',
+      };
+    }
+    modelData.value.printTemplateSetting.enable = !!val;
+  },
+});
 
 defineExpose({ initData, validate });
 </script>
@@ -515,6 +605,27 @@ defineExpose({ initData, validate });
         </Col>
       </Row>
     </FormItem>
-    <!-- TODO @jason：这里有个 “自定义打印模板” -->
+    <FormItem class="mb-5" label="自定义打印模板">
+      <div class="flex w-full flex-col">
+        <div class="flex items-center">
+          <Switch
+            v-model:checked="printTemplateEnable"
+            @change="handlePrintTemplateEnableChange"
+          />
+          <Button
+            v-if="printTemplateEnable"
+            class="ml-2 flex items-center"
+            type="link"
+            @click="openPrintTemplateModal"
+          >
+            <template #icon>
+              <IconifyIcon icon="lucide:pencil" />
+            </template>
+            编辑模板
+          </Button>
+        </div>
+      </div>
+    </FormItem>
+    <PrintTemplateModal :form-fields="formFields" />
   </Form>
 </template>
