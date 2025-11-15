@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Tinyflow } from '@vben/plugins/tinyflow';
 import { isNumber } from '@vben/utils';
 
-import { Button, Input, Select } from 'ant-design-vue';
+import { ElButton, ElInput, ElOption, ElSelect } from 'element-plus';
 
 import { testWorkflow } from '#/api/ai/workflow';
 
@@ -207,13 +207,13 @@ defineExpose({ validate });
       :provider="provider"
     />
     <div class="absolute right-8 top-8">
-      <Button
+      <ElButton
         @click="testWorkflowModel"
         type="primary"
         v-access:code="['ai:workflow:test']"
       >
         测试
-      </Button>
+      </ElButton>
     </div>
 
     <Drawer title="工作流测试">
@@ -229,30 +229,29 @@ defineExpose({ validate });
             v-for="(param, index) in params4Test"
             :key="index"
           >
-            <Select class="w-48" v-model="param.key" placeholder="参数名">
-              <Select.Option
+            <ElSelect class="w-48" v-model="param.key" placeholder="参数名">
+              <ElOption
                 v-for="(value, key) in paramsOfStartNode"
                 :key="key"
                 :value="key"
                 :disabled="!!value?.disabled"
-              >
-                {{ value?.description || key }}
-              </Select.Option>
-            </Select>
-            <Input
+                :label="value?.description || key"
+              />
+            </ElSelect>
+            <ElInput
               class="mx-2 w-48"
-              v-model:value="param.value"
+              v-model="param.value"
               placeholder="参数值"
             />
-            <Button danger plain circle @click="removeParam(index)">
+            <ElButton type="danger" circle @click="removeParam(index)">
               <template #icon>
                 <IconifyIcon icon="lucide:trash" />
               </template>
-            </Button>
+            </ElButton>
           </div>
-          <Button type="primary" plain class="mt-2" @click="addParam">
+          <ElButton type="primary" plain class="mt-2" @click="addParam">
             添加参数
-          </Button>
+          </ElButton>
         </div>
       </fieldset>
 
@@ -275,13 +274,13 @@ defineExpose({ validate });
         </div>
       </fieldset>
 
-      <Button
+      <ElButton
         size="large"
         class="mt-2 w-full bg-green-500 text-white"
         @click="goRun"
       >
         运行流程
-      </Button>
+      </ElButton>
     </Drawer>
   </div>
 </template>
