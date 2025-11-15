@@ -9,7 +9,7 @@ import { computed, nextTick, onMounted, ref, toRefs } from 'vue';
 import { IconifyIcon, SvgGptIcon } from '@vben/icons';
 import { preferences } from '@vben/preferences';
 import { useUserStore } from '@vben/stores';
-import { formatDate } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
 import { Avatar, Button, message } from 'ant-design-vue';
@@ -50,14 +50,15 @@ const { list } = toRefs(props); // 定义 emits
 // ============ 处理对话滚动 ==============
 
 /** 滚动到底部 */
-const scrollToBottom = async (isIgnore?: boolean) => {
+async function scrollToBottom(isIgnore?: boolean) {
   // 注意要使用 nextTick 以免获取不到 dom
   await nextTick();
   if (isIgnore || !isScrolling.value) {
     messageContainer.value.scrollTop =
       messageContainer.value.scrollHeight - messageContainer.value.offsetHeight;
   }
-};
+}
+
 function handleScroll() {
   const scrollContainer = messageContainer.value;
   const scrollTop = scrollContainer.scrollTop;
@@ -124,12 +125,13 @@ onMounted(async () => {
           <Avatar
             v-if="conversation.roleAvatar"
             :src="conversation.roleAvatar"
+            :size="28"
           />
-          <SvgGptIcon v-else class="size-8" />
+          <SvgGptIcon v-else class="size-7" />
         </div>
         <div class="mx-4 flex flex-col text-left">
           <div class="text-left leading-10">
-            {{ formatDate(item.createTime) }}
+            {{ formatDateTime(item.createTime) }}
           </div>
           <div
             class="relative flex flex-col break-words rounded-lg bg-gray-100 p-2.5 pb-1 pt-2.5 shadow-sm"
@@ -172,11 +174,11 @@ onMounted(async () => {
       <!-- 右侧消息：user -->
       <div v-else class="flex flex-row-reverse justify-start">
         <div class="avatar">
-          <Avatar :src="userAvatar" />
+          <Avatar :src="userAvatar" :size="28" />
         </div>
         <div class="mx-4 flex flex-col text-left">
           <div class="text-left leading-8">
-            {{ formatDate(item.createTime) }}
+            {{ formatDateTime(item.createTime) }}
           </div>
           <div
             v-if="item.attachmentUrls && item.attachmentUrls.length > 0"

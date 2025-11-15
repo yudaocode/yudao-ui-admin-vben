@@ -564,6 +564,7 @@ onMounted(async () => {
         <Layout.Header
           class="!bg-card border-border flex !h-12 items-center justify-between border-b"
         >
+          <!-- TODO @AI：距离左侧的间距有点大 -->
           <div class="text-lg font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
             <span v-if="activeMessageList.length > 0">
@@ -571,6 +572,7 @@ onMounted(async () => {
             </span>
           </div>
 
+          <!-- TODO @AI：距离右侧的间距有点大 -->
           <div class="flex w-72 justify-end" v-if="activeConversation">
             <Button
               type="primary"
@@ -621,6 +623,7 @@ onMounted(async () => {
           </div>
         </Layout.Content>
 
+        <!-- TODO @AI：宽度没满 -->
         <Layout.Footer class="!bg-card m-0 flex flex-col p-0">
           <form class="border-border m-2 flex flex-col rounded-xl border p-2">
             <textarea
