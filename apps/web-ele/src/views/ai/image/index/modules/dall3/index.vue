@@ -183,6 +183,7 @@ defineExpose({ settingValues });
         v-for="model in Dall3Models"
         :key="model.key"
       >
+        <!-- TODO @AI：图片无法展示； -->
         <ElImage
           :preview-src-list="[]"
           :src="model.image"

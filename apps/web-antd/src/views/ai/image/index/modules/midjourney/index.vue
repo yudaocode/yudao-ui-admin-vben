@@ -135,7 +135,6 @@ async function settingValues(detail: AiImageApi.Image) {
   referImageUrl.value = detail.options.referImageUrl;
 }
 
-/** 暴露组件方法 */
 defineExpose({ settingValues });
 </script>
 <template>

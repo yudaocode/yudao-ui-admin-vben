@@ -91,10 +91,7 @@ onMounted(async () => {
     <div class="absolute inset-0 m-4 flex h-full w-full flex-row">
       <div class="bg-card left-0 mr-4 flex w-96 flex-col rounded-lg p-4">
         <div class="flex justify-center">
-          <ElSegmented
-            v-model="selectPlatform"
-            :options="platformOptions"
-          />
+          <ElSegmented v-model="selectPlatform" :options="platformOptions" />
         </div>
         <div class="mt-8 h-full overflow-y-auto">
           <Common
@@ -129,4 +126,3 @@ onMounted(async () => {
     </div>
   </Page>
 </template>
-

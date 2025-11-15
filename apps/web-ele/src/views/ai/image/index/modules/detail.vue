@@ -10,7 +10,7 @@ import {
   StableDiffusionSamplers,
   StableDiffusionStylePresets,
 } from '@vben/constants';
-import { formatDate } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
@@ -53,12 +53,8 @@ watch(
   <div class="mb-5 w-full overflow-hidden break-words">
     <div class="text-lg font-bold">时间</div>
     <div class="mt-2">
-      <div>
-        提交时间：{{ formatDate(detail.createTime, 'yyyy-MM-dd HH:mm:ss') }}
-      </div>
-      <div>
-        生成时间：{{ formatDate(detail.finishTime, 'yyyy-MM-dd HH:mm:ss') }}
-      </div>
+      <div>提交时间：{{ formatDateTime(detail.createTime) }}</div>
+      <div>生成时间：{{ formatDateTime(detail.finishTime) }}</div>
     </div>
   </div>
 

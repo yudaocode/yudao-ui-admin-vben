@@ -101,7 +101,7 @@ watch(
   },
   { immediate: true, deep: true },
 );
-/** 暴露组件方法 */
+
 defineExpose({ settingValues });
 </script>
 <template>

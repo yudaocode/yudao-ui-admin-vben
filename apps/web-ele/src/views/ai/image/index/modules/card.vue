@@ -48,7 +48,6 @@ async function handleLoading(status: number) {
     loading.value = ElMessage({
       message: `生成中...`,
       type: 'info',
-      duration: 0,
     });
   } else {
     // 情况二：如果已经生成结束，则移除 loading
@@ -74,7 +73,10 @@ onMounted(async () => {
         <ElButton v-else-if="detail?.status === AiImageStatusEnum.SUCCESS">
           已完成
         </ElButton>
-        <ElButton type="danger" v-else-if="detail?.status === AiImageStatusEnum.FAIL">
+        <ElButton
+          type="danger"
+          v-else-if="detail?.status === AiImageStatusEnum.FAIL"
+        >
           异常
         </ElButton>
       </div>
@@ -132,4 +134,3 @@ onMounted(async () => {
     </div>
   </ElCard>
 </template>
-

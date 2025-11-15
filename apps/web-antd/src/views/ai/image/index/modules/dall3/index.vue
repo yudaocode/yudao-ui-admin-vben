@@ -138,7 +138,6 @@ async function settingValues(detail: AiImageApi.Image) {
   await handleSizeClick(imageSize);
 }
 
-/** 暴露组件方法 */
 defineExpose({ settingValues });
 </script>
 <template>

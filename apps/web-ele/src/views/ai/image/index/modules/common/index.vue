@@ -107,7 +107,7 @@ watch(
   },
   { immediate: true, deep: true },
 );
-/** 暴露组件方法 */
+
 defineExpose({ settingValues });
 </script>
 <template>
@@ -195,6 +195,8 @@ defineExpose({ settingValues });
       <b>图片尺寸</b>
     </div>
     <ElSpace wrap class="mt-4 flex flex-wrap gap-x-5">
+      <!-- TODO @AI：是不是可以 ElInputNumber 里面；另外，宽、高在一行里； <template #prepend>Http://</template>；<template #append>.com</template>
+ -->
       <div class="flex items-center gap-2">
         <span>宽</span>
         <ElInputNumber
