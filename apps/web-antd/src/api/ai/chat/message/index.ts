@@ -8,6 +8,7 @@ import { requestClient } from '#/api/request';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
+
 export namespace AiChatMessageApi {
   export interface ChatMessage {
     id: number; // 编号
@@ -26,9 +27,20 @@ export namespace AiChatMessageApi {
       documentName: string; // 文档名称
       id: number; // 段落编号
     }[];
+    webSearchPages?: WebSearchPage[]; // 联网搜索结果
     createTime: Date; // 创建时间
     roleAvatar: string; // 角色头像
     userAvatar: string; // 用户头像
+  }
+
+  /** 联网搜索页面接口 */
+  export interface WebSearchPage {
+    name: string; // 网站名称
+    icon: string; // 网站图标 URL
+    title: string; // 页面标题
+    url: string; // 页面 URL
+    snippet: string; // 简短描述
+    summary: string; // 内容摘要
   }
 }
 
@@ -47,6 +59,7 @@ export function sendChatMessageStream(
   content: string,
   ctrl: any,
   enableContext: boolean,
+  enableWebSearch: boolean,
   onMessage: any,
   onError: any,
   onClose: any,
@@ -63,6 +76,7 @@ export function sendChatMessageStream(
       conversationId,
       content,
       useContext: enableContext,
+      useSearch: enableWebSearch,
     }),
     onmessage: onMessage,
     onerror: onError,

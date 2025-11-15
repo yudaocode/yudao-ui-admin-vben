@@ -359,6 +359,10 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         const { code, data, msg } = JSON.parse(res.data);
         if (code !== 0) {
           await alert(`对话异常! ${msg}`);
+          // 如果未接收到消息，则进行删除
+          if (receiveMessageFullText.value === '') {
+            activeMessageList.value.pop();
+          }
           return;
         }
 
@@ -382,7 +386,8 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         await scrollToBottom();
       },
       (error: any) => {
-        alert(`对话异常! ${error}`);
+        // 异常提示，并停止流
+        alert(`对话异常!`);
         stopStream();
         // 需要抛出异常，禁止重试
         throw error;
