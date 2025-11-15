@@ -19,8 +19,8 @@ import DeviceDetailsHeader from './device-details-header.vue';
 import DeviceDetailsInfo from './device-details-info.vue';
 import DeviceDetailsMessage from './device-details-message.vue';
 import DeviceDetailsSimulator from './device-details-simulator.vue';
-import DeviceDetailsSubDevice from './DeviceDetailsSubDevice.vue';
-import DeviceDetailsThingModel from './DeviceDetailsThingModel.vue';
+import DeviceDetailsSubDevice from './device-details-sub-device.vue';
+import DeviceDetailsThingModel from './device-details-thing-model.vue';
 
 defineOptions({ name: 'IoTDeviceDetail' });
 
