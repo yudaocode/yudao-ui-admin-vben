@@ -19,8 +19,7 @@ import {
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
-// TODO: 添加组件
-// import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
+import { SeckillShowcase } from '#/views/mall/promotion/seckill/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -36,7 +35,11 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :model="formData">
+    <Form
+      :model="formData"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+    >
       <Card title="秒杀活动" class="property-group">
         <SeckillShowcase v-model="formData.activityIds" />
       </Card>
@@ -117,6 +120,7 @@ const formData = useVModel(props, 'modelValue', emit);
             width="72px"
             :show-description="false"
           >
+            <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
             <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </FormItem>
@@ -147,6 +151,7 @@ const formData = useVModel(props, 'modelValue', emit);
               width="56px"
               :show-description="false"
             >
+              <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
               <template #tip> 建议尺寸：56 * 56</template>
             </UploadImg>
           </FormItem>

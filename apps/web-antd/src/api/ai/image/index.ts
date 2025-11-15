@@ -9,7 +9,8 @@ export namespace AiImageApi {
     label: string; // Make Variations 文本
     style: number; // 样式: 2（Primary）、3（Green）
   }
-  // AI 绘图
+
+  /** AI 绘图 */
   export interface Image {
     id: number; // 编号
     userId: number;
@@ -83,6 +84,7 @@ export function deleteImageMy(id: number) {
 }
 
 // ================ midjourney 专属 ================
+
 // 【Midjourney】生成图片
 export function midjourneyImagine(data: AiImageApi.ImageMidjourneyImagineReq) {
   return requestClient.post(`/ai/image/midjourney/imagine`, data);
@@ -94,6 +96,7 @@ export function midjourneyAction(data: AiImageApi.ImageMidjourneyAction) {
 }
 
 // ================ 绘图管理 ================
+
 // 查询绘画分页
 export function getImagePage(params: any) {
   return requestClient.get<AiImageApi.Image[]>(`/ai/image/page`, { params });

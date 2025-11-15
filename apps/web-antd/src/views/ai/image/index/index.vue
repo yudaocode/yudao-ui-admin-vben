@@ -11,11 +11,11 @@ import { Segmented } from 'ant-design-vue';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
 
-import Common from './components/common/index.vue';
-import Dall3 from './components/dall3/index.vue';
-import ImageList from './components/ImageList.vue';
-import Midjourney from './components/midjourney/index.vue';
-import StableDiffusion from './components/stableDiffusion/index.vue';
+import Common from './modules/common/index.vue';
+import Dall3 from './modules/dall3/index.vue';
+import ImageList from './modules/list.vue';
+import Midjourney from './modules/midjourney/index.vue';
+import StableDiffusion from './modules/stable-diffusion/index.vue';
 
 const imageListRef = ref<any>(); // image 列表 ref
 const dall3Ref = ref<any>(); // dall3(openai) ref
@@ -23,7 +23,6 @@ const midjourneyRef = ref<any>(); // midjourney ref
 const stableDiffusionRef = ref<any>(); // stable diffusion ref
 const commonRef = ref<any>(); // stable diffusion ref
 
-// 定义属性
 const selectPlatform = ref('common'); // 选中的平台
 const platformOptions = [
   {
@@ -43,7 +42,6 @@ const platformOptions = [
     value: AiPlatformEnum.STABLE_DIFFUSION,
   },
 ];
-
 const models = ref<AiModelModelApi.Model[]>([]); // 模型列表
 
 /** 绘画 start  */

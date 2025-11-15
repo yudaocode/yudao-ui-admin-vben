@@ -1,5 +1,3 @@
-import type { PageResult } from '@vben/request';
-
 import { requestClient } from '#/api/request';
 
 export namespace MallKefuConversationApi {
@@ -28,7 +26,7 @@ export namespace MallKefuConversationApi {
 
 /** 获得客服会话列表 */
 export function getConversationList() {
-  return requestClient.get<PageResult<MallKefuConversationApi.Conversation>>(
+  return requestClient.get<MallKefuConversationApi.Conversation[]>(
     '/promotion/kefu-conversation/list',
   );
 }

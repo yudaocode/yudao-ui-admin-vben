@@ -27,7 +27,12 @@ const formData = useVModel(props, 'modelValue', emit);
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <p class="text-base font-bold">菜单设置</p>
-    <Form :model="formData" class="mt-2">
+    <p class="text-xs text-gray-500">拖动左侧的小圆点可以调整顺序</p>
+    <Form
+      :label-col="{ style: { width: '60px' } }"
+      :model="formData"
+      class="mt-2"
+    >
       <Draggable
         v-model="formData.list"
         :empty-item="EMPTY_MENU_LIST_ITEM_PROPERTY"
@@ -39,8 +44,10 @@ const formData = useVModel(props, 'modelValue', emit);
               height="80px"
               width="80px"
               :show-description="false"
-            />
-            <p class="text-sm text-gray-500">建议尺寸：44 * 44</p>
+            >
+              <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
+              <template #tip> 建议尺寸：44 * 44 </template>
+            </UploadImg>
           </FormItem>
           <FormItem label="标题" name="title">
             <InputWithColor

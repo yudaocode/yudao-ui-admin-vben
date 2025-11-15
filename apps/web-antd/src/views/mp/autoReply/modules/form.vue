@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Reply } from '#/views/mp/modules/wx-reply';
+import type { Reply } from '#/views/mp/components';
 
 import { computed, ref } from 'vue';
 
@@ -9,11 +9,10 @@ import { message } from 'ant-design-vue';
 
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/modules/wx-reply/types';
+import { ReplyType } from '#/views/mp/components';
 
 import ReplyForm from '../components/ReplyForm.vue';
 import { MsgType } from '../components/types';
-import Form from '#/views/system/user/modules/form.vue';
 
 const emit = defineEmits(['success']);
 

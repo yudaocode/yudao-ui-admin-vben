@@ -2,11 +2,10 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 用户卡券属性 */
 export interface UserCouponProperty {
-  // 组件样式
-  style: ComponentStyle;
+  style: ComponentStyle; // 组件样式
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'UserCoupon',
   name: '用户卡券',

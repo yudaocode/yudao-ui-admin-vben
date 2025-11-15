@@ -1050,6 +1050,9 @@ importers:
 
   apps/web-tdesign:
     dependencies:
+      '@tinymce/tinymce-vue':
+        specifier: 'catalog:'
+        version: 6.3.0(tinymce@7.9.1)(vue@3.5.24(typescript@5.9.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -1095,6 +1098,9 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.9.0(vue@3.5.24(typescript@5.9.3))
+      cropperjs:
+        specifier: 'catalog:'
+        version: 1.6.2
       dayjs:
         specifier: 'catalog:'
         version: 1.11.19
@@ -1107,6 +1113,9 @@ importers:
       tdesign-vue-next:
         specifier: ^1.17.1
         version: 1.17.2(vue@3.5.24(typescript@5.9.3))
+      tinymce:
+        specifier: 'catalog:'
+        version: 7.9.1
       vue:
         specifier: ^3.5.17
         version: 3.5.24(typescript@5.9.3)

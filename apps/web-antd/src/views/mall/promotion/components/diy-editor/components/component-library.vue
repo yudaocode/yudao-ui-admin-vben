@@ -19,6 +19,7 @@ const props = defineProps<{
   list: DiyComponentLibrary[];
 }>();
 
+// TODO @xingyu：要不要换成 reactive，和 ele 一致
 const groups = ref<any[]>([]); // 组件分组
 const extendGroups = ref<string[]>([]); // 展开的折叠面板
 
@@ -99,4 +100,5 @@ function handleCloneComponent(component: DiyComponent<any>) {
       </Collapse.Panel>
     </Collapse>
   </div>
+  <!-- TODO @xingyu：ele 里面有一些 style，看看是不是都迁移完了；特别是 drag-area 是全局样式； -->
 </template>

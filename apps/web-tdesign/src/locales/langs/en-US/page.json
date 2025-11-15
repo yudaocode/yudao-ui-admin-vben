@@ -10,5 +10,24 @@
     "title": "Dashboard",
     "analytics": "Analytics",
     "workspace": "Workspace"
+  },
+  "action": {
+    "action": "Action",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "import": "Import",
+    "export": "Export",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "reset": "Reset",
+    "search": "Search",
+    "more": "More"
+  },
+  "tenant": {
+    "placeholder": "Please select tenant",
+    "success": "Switch tenant success"
   }
 }

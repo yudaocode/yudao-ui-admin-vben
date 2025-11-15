@@ -3,26 +3,23 @@ import type { MenuSwiperItemProperty, MenuSwiperProperty } from './config';
 
 import { ref, watch } from 'vue';
 
-import { Image } from 'ant-design-vue';
+import { Carousel, Image } from 'ant-design-vue';
 
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });
-const props = defineProps<{ property: MenuSwiperProperty }>();
-// 标题的高度
-const TITLE_HEIGHT = 20;
-// 图标的高度
-const ICON_SIZE = 32;
-// 垂直间距：一行上下的间距
-const SPACE_Y = 16;
 
-// 分页
-const pages = ref<MenuSwiperItemProperty[][]>([]);
-// 轮播图高度
-const carouselHeight = ref(0);
-// 行高
-const rowHeight = ref(0);
-// 列宽
-const columnWidth = ref('');
+const props = defineProps<{ property: MenuSwiperProperty }>();
+
+const TITLE_HEIGHT = 20; // 标题的高度
+const ICON_SIZE = 32; // 图标的高度
+const SPACE_Y = 16; // 垂直间距：一行上下的间距
+
+const pages = ref<MenuSwiperItemProperty[][]>([]); // 分页
+const carouselHeight = ref(0); // 轮播图高度
+
+const rowHeight = ref(0); // 行高
+const columnWidth = ref(''); // 列宽
+
 watch(
   () => props.property,
   () => {
@@ -75,9 +72,7 @@ watch(
           class="relative flex flex-col items-center justify-center"
           :style="{ width: columnWidth, height: `${rowHeight}px` }"
         >
-          <!-- 图标 + 角标 -->
           <div class="relative" :class="`h-${ICON_SIZE}px w-${ICON_SIZE}px`">
-            <!-- 右上角角标 -->
             <span
               v-if="item.badge?.show"
               class="absolute -right-2.5 -top-2.5 z-10 h-5 rounded-[10px] px-1.5 text-center text-xs leading-5"
@@ -95,7 +90,6 @@ watch(
               :preview="false"
             />
           </div>
-          <!-- 标题 -->
           <span
             v-if="property.layout === 'iconText'"
             class="text-xs"

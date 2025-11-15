@@ -11,9 +11,9 @@ defineOptions({ name: 'TabBar' });
 defineProps<{ property: TabBarProperty }>();
 </script>
 <template>
-  <div class="tab-bar">
+  <div class="z-[2] w-full">
     <div
-      class="tab-bar-bg"
+      class="flex flex-row items-center justify-around py-2"
       :style="{
         background:
           property.style.bgType === 'color'
@@ -26,12 +26,19 @@ defineProps<{ property: TabBarProperty }>();
       <div
         v-for="(item, index) in property.items"
         :key="index"
-        class="tab-bar-item"
+        class="flex w-full flex-col items-center justify-center text-xs"
       >
-        <Image :src="index === 0 ? item.activeIconUrl : item.iconUrl">
+        <Image
+          :src="index === 0 ? item.activeIconUrl : item.iconUrl"
+          class="!h-[26px] w-[26px] rounded"
+          :preview="false"
+        >
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="lucide:image" />
+              <IconifyIcon
+                icon="lucide:image"
+                class="h-[26px] w-[26px] rounded"
+              />
             </div>
           </template>
         </Image>
@@ -47,33 +54,3 @@ defineProps<{ property: TabBarProperty }>();
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-.tab-bar {
-  z-index: 2;
-  width: 100%;
-
-  .tab-bar-bg {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    padding: 8px 0;
-
-    .tab-bar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      font-size: 12px;
-
-      :deep(img),
-      .el-icon {
-        width: 26px;
-        height: 26px;
-        border-radius: 4px;
-      }
-    }
-  }
-}
-</style>

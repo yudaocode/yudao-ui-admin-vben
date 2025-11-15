@@ -48,7 +48,7 @@ watch(
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <Form :model="formData">
+    <Form :model="formData" :label-col="{ style: { width: '80px' } }">
       <Card title="搜索热词" class="property-group">
         <Draggable
           v-model="formData.hotKeywords"

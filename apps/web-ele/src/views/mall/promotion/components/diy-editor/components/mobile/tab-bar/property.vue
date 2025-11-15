@@ -44,7 +44,7 @@ const handleThemeChange = () => {
 </script>
 
 <template>
-  <div class="tab-bar">
+  <div>
     <ElForm :model="formData" label-width="80px">
       <ElFormItem label="主题" prop="theme">
         <ElSelect v-model="formData!.theme" @change="handleThemeChange">

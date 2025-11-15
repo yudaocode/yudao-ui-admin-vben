@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Image } from 'ant-design-vue';
 
-import AppLinkSelectDialog from '#/views/mall/promotion/components/app-link-input/app-link-select-dialog.vue';
+import { AppLinkSelectDialog } from '#/views/mall/promotion/components';
 
 import {
   CONTROL_DOT_LIST,
@@ -213,8 +213,9 @@ const handleAppLinkChange = (appLink: AppLink) => {
         </span>
         <IconifyIcon
           icon="lucide:x"
-          class="absolute inset-0 right-0 top-0 hidden size-6 cursor-pointer items-center rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
+          class="absolute right-0 top-0 hidden cursor-pointer rounded-bl-[80%] p-[2px_2px_6px_6px] text-right text-white group-hover:block"
           :style="{ backgroundColor: 'hsl(var(--primary))' }"
+          :size="14"
           @click="handleRemove(item)"
         />
 
@@ -230,9 +231,7 @@ const handleAppLinkChange = (appLink: AppLink) => {
     </div>
     <template #prepend-footer>
       <Button @click="handleAdd" type="primary" ghost>
-        <template #icon>
-          <IconifyIcon icon="lucide:plus" />
-        </template>
+        <IconifyIcon icon="lucide:plus" class="mr-5px" />
         添加热区
       </Button>
     </template>

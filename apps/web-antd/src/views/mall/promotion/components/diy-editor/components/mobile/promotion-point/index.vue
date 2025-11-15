@@ -14,10 +14,10 @@ import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
 /** 积分商城卡片 */
 defineOptions({ name: 'PromotionPoint' });
-// 定义属性
+
 const props = defineProps<{ property: PromotionPointProperty }>();
-// 商品列表
-const spuList = ref<MallPointActivityApi.SpuExtensionWithPoint[]>([]);
+
+const spuList = ref<MallPointActivityApi.SpuExtensionWithPoint[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]);
 
@@ -27,7 +27,7 @@ watch(
     try {
       // 新添加的积分商城组件，是没有活动ID的
       const activityIds = props.property.activityIds;
-      // 检查活动ID的有效性
+      // 检查活动 ID 的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取积分商城活动详情列表
         pointActivityList.value = await getPointActivityListByIds(activityIds);
@@ -65,37 +65,30 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
     ref="containerRef"
-    class="box-content flex min-h-9 w-full flex-row flex-wrap"
+    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
   >
     <div
       v-for="(spu, index) in spuList"
@@ -115,19 +108,27 @@ const calculateWidth = () => {
         v-if="property.badge.show"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
-        <Image :src="property.badge.imgUrl" class="h-6 w-10" fit="cover" />
+        <Image
+          :src="property.badge.imgUrl"
+          class="h-6 w-10 object-cover"
+          :preview="false"
+        />
       </div>
       <!-- 商品封面图 -->
       <div
-        class="h-36"
+        class="h-[140px]"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-36': property.layoutType === 'oneColSmallImg',
+            'w-[140px]': property.layoutType === 'oneColSmallImg',
           },
         ]"
       >
-        <Image :src="spu.picUrl" class="h-full w-full" fit="cover" />
+        <Image
+          :src="spu.picUrl"
+          class="h-full w-full object-cover"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
@@ -218,8 +219,8 @@ const calculateWidth = () => {
         <Image
           v-else
           :src="property.btnBuy.imgUrl"
-          class="size-7 rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
+          :preview="false"
         />
       </div>
     </div>

@@ -15,42 +15,46 @@ import HotZoneEditDialog from './components/hot-zone-edit-dialog/index.vue';
 defineOptions({ name: 'HotZoneProperty' });
 
 const props = defineProps<{ modelValue: HotZoneProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 热区编辑对话框
-const editDialogRef = ref();
-// 打开热区编辑对话框
-const handleOpenEditDialog = () => {
+const editDialogRef = ref(); // 热区编辑对话框
+
+/** 打开热区编辑对话框 */
+function handleOpenEditDialog() {
   editDialogRef.value.open();
-};
+}
 </script>
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
     <!-- 表单 -->
     <Form
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 18 }"
+      :label-col="{ style: { width: '80px' } }"
       :model="formData"
       class="mt-2"
     >
-      <FormItem label="上传图片" prop="imgUrl">
+      <FormItem label="上传图片" name="imgUrl">
         <UploadImg
           v-model="formData.imgUrl"
           height="50px"
           width="auto"
-          class="min-w-20"
+          class="min-w-[80px]"
           :show-description="false"
-        />
+        >
+          <!-- TODO @芋艿：这里不提示；是不是组件得封装下；-->
+          <template #tip> 推荐宽度 750 </template>
+        </UploadImg>
       </FormItem>
-      <p class="text-center text-sm text-gray-500">推荐宽度 750</p>
     </Form>
 
-    <Button type="primary" class="mt-4 w-full" @click="handleOpenEditDialog">
+    <Button type="primary" ghost class="w-full" @click="handleOpenEditDialog">
       设置热区
     </Button>
   </ComponentContainerProperty>
+
   <!-- 热区编辑对话框 -->
   <HotZoneEditDialog
     ref="editDialogRef"
@@ -58,26 +62,3 @@ const handleOpenEditDialog = () => {
     :img-url="formData.imgUrl"
   />
 </template>
-
-<style scoped lang="scss">
-.hot-zone {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: hsl(var(--text-color));
-  cursor: move;
-  background: color-mix(in srgb, hsl(var(--primary)) 30%, transparent);
-  border: 1px solid hsl(var(--primary));
-
-  /* 控制点 */
-  .ctrl-dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #fff;
-    border-radius: 50%;
-  }
-}
-</style>

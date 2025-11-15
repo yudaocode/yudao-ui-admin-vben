@@ -13,10 +13,11 @@ import { getSpuDetailList } from '#/api/mall/product/spu';
 
 /** 商品栏 */
 defineOptions({ name: 'ProductList' });
-// 定义属性
+
 const props = defineProps<{ property: ProductListProperty }>();
-// 商品列表
+
 const spuList = ref<MallSpuApi.Spu[]>([]);
+
 watch(
   () => props.property.spuIds,
   async () => {
@@ -27,19 +28,15 @@ watch(
     deep: true,
   },
 );
-// 手机宽度
-const phoneWidth = ref(384);
-// 容器
-const containerRef = ref();
-// 商品的列数
-const columns = ref(2);
-// 滚动条宽度
-const scrollbarWidth = ref('100%');
-// 商品图大小
-const imageSize = ref('0');
-// 商品网络列数
-const gridTemplateColumns = ref('');
-// 计算布局参数
+
+const phoneWidth = ref(375); // 手机宽度
+const containerRef = ref(); // 容器
+const columns = ref(2); // 商品的列数
+const scrollbarWidth = ref('100%'); // 滚动条宽度
+const imageSize = ref('0'); // 商品图大小
+const gridTemplateColumns = ref(''); // 商品网络列数
+
+/** 计算布局参数 */
 watch(
   () => [props.property, phoneWidth, spuList.value.length],
   () => {
@@ -69,13 +66,14 @@ watch(
   },
   { immediate: true, deep: true },
 );
+
+/** 初始化 */
 onMounted(() => {
-  // 提取手机宽度
-  phoneWidth.value = containerRef.value?.wrapRef?.offsetWidth || 384;
+  phoneWidth.value = containerRef.value?.offsetWidth || 375;
 });
 </script>
 <template>
-  <div class="z-10 min-h-[30px]" wrap-class="w-full" ref="containerRef">
+  <div class="z-10 min-h-[30px] w-full" ref="containerRef">
     <!-- 商品网格 -->
     <div
       class="grid overflow-x-auto"
@@ -103,16 +101,16 @@ onMounted(() => {
           class="absolute left-0 top-0 z-10 items-center justify-center"
         >
           <Image
-            fit="cover"
             :src="property.badge.imgUrl"
-            class="h-[26px] w-[38px]"
+            :preview="false"
+            class="h-[26px] w-[38px] object-cover"
           />
         </div>
         <!-- 商品封面图 -->
         <Image
-          fit="cover"
           :src="spu.picUrl"
-          :style="{ width: imageSize, height: imageSize }"
+          :style="{ width: imageSize, height: imageSize, objectFit: 'cover' }"
+          :preview="false"
         />
         <div
           class="box-border flex flex-col gap-2 p-2"
@@ -146,5 +144,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

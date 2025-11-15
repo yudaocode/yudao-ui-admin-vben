@@ -27,6 +27,7 @@ export function getKnowledge(id: number) {
     `/ai/knowledge/get?id=${id}`,
   );
 }
+
 // 新增知识库
 export function createKnowledge(data: AiKnowledgeKnowledgeApi.Knowledge) {
   return requestClient.post('/ai/knowledge/create', data);
