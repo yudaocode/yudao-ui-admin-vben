@@ -57,6 +57,7 @@ const conversationInAbortController = ref<any>(); // 对话进行中 abort 控�
 const inputTimeout = ref<any>(); // 处理输入中回车的定时器
 const prompt = ref<string>(); // prompt
 const enableContext = ref<boolean>(true); // 是否开启上下文
+const enableWebSearch = ref<boolean>(false); // 是否开启联网搜索
 // 接收 Stream 消息
 const receiveMessageFullText = ref('');
 const receiveMessageDisplayedText = ref('');
@@ -353,6 +354,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
       userMessage.content,
       conversationInAbortController.value,
       enableContext.value,
+      enableWebSearch.value,
       async (res: any) => {
         const { code, data, msg } = JSON.parse(res.data);
         if (code !== 0) {
@@ -590,9 +592,15 @@ onMounted(async () => {
               placeholder="问我任何问题...（Shift+Enter 换行，按下 Enter 发送）"
             ></textarea>
             <div class="flex justify-between pb-0 pt-1">
-              <div class="flex items-center">
-                <Switch v-model:checked="enableContext" />
-                <span class="ml-1 text-sm text-gray-400">上下文</span>
+              <div class="flex items-center gap-3">
+                <div class="flex items-center">
+                  <Switch v-model:checked="enableContext" size="small" />
+                  <span class="ml-1 text-sm text-gray-400">上下文</span>
+                </div>
+                <div class="flex items-center">
+                  <Switch v-model:checked="enableWebSearch" size="small" />
+                  <span class="ml-1 text-sm text-gray-400">联网搜索</span>
+                </div>
               </div>
               <Button
                 type="primary"

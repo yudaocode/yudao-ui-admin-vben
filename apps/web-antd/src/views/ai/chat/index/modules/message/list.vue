@@ -18,6 +18,7 @@ import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';
 
 import MessageKnowledge from './knowledge.vue';
+import MessageWebSearch from './web-search.vue';
 
 const props = defineProps({
   conversation: {
@@ -136,6 +137,10 @@ onMounted(async () => {
               :content="item.content"
             />
             <MessageKnowledge v-if="item.segments" :segments="item.segments" />
+            <MessageWebSearch
+              v-if="item.webSearchPages"
+              :web-search-pages="item.webSearchPages"
+            />
           </div>
           <div class="mt-2 flex flex-row">
             <Button
