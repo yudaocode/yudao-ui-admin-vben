@@ -20,16 +20,14 @@ import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
 
-// 接收父组件传入的模型列表
 const props = defineProps({
   models: {
     type: Array<AiModelModelApi.Model>,
     default: () => [] as AiModelModelApi.Model[],
   },
-});
+}); // 接收父组件传入的模型列表
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
 
-// 定义属性
 const prompt = ref<string>(''); // 提示词
 const drawIn = ref<boolean>(false); // 生成中
 const selectHotWord = ref<string>(''); // 选中的热词
@@ -44,7 +42,6 @@ async function handleHotWordClick(hotWord: string) {
     selectHotWord.value = '';
     return;
   }
-
   // 情况二：选中
   selectHotWord.value = hotWord;
   prompt.value = hotWord;

@@ -25,14 +25,12 @@ import {
 
 import { drawImage } from '#/api/ai/image';
 
-// 接收父组件传入的模型列表
 const props = defineProps({
   models: {
     type: Array<AiModelModelApi.Model>,
     default: () => [] as AiModelModelApi.Model[],
   },
-});
-
+}); // 接收父组件传入的模型列表
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
 
 function hasChinese(str: string) {
@@ -60,7 +58,6 @@ async function handleHotWordClick(hotWord: string) {
     selectHotWord.value = '';
     return;
   }
-
   // 情况二：选中
   selectHotWord.value = hotWord; // 选中
   prompt.value = hotWord; // 替换提示词
@@ -82,7 +79,7 @@ async function handleGenerateImage() {
 
   // 二次确认
   if (hasChinese(prompt.value)) {
-    alert('暂不支持中文！');
+    await alert('暂不支持中文！');
     return;
   }
   await confirm(`确认生成内容?`);

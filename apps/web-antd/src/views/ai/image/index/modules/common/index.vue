@@ -16,21 +16,17 @@ import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
 
-// 消息弹窗
-
-// 接收父组件传入的模型列表
 const props = defineProps({
   models: {
     type: Array<AiModelModelApi.Model>,
     default: () => [] as AiModelModelApi.Model[],
   },
-});
+}); // 接收父组件传入的模型列表
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
 
-// 定义属性
 const drawIn = ref<boolean>(false); // 生成中
 const selectHotWord = ref<string>(''); // 选中的热词
-// 表单
+
 const prompt = ref<string>(''); // 提示词
 const width = ref<number>(512); // 图片宽度
 const height = ref<number>(512); // 图片高度
@@ -45,7 +41,6 @@ async function handleHotWordClick(hotWord: string) {
     selectHotWord.value = '';
     return;
   }
-
   // 情况二：选中
   selectHotWord.value = hotWord; // 选中
   prompt.value = hotWord; // 替换提示词
@@ -91,11 +86,11 @@ async function handlerPlatformChange(platform: any) {
   platformModels.value = props.models.filter(
     (item: AiModelModelApi.Model) => item.platform === platform,
   );
+  // 切换平台，默认选择一个模型
   modelId.value =
     platformModels.value.length > 0 && platformModels.value[0]
       ? platformModels.value[0].id
       : undefined;
-  // 切换平台，默认选择一个模型
 }
 
 /** 监听 models 变化 */

@@ -18,10 +18,8 @@ import {
   midjourneyAction,
 } from '#/api/ai/image';
 
-import ImageCard from './ImageCard.vue';
-import ImageDetail from './ImageDetail.vue';
-
-// 暴露组件方法
+import ImageCard from './card.vue';
+import ImageDetail from './detail.vue';
 
 const emits = defineEmits(['onRegeneration']);
 const router = useRouter();
@@ -29,15 +27,14 @@ const [Drawer, drawerApi] = useVbenDrawer({
   title: '图片详情',
   footer: false,
 });
-// 图片分页相关的参数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-});
+}); // 图片分页相关的参数
 const pageTotal = ref<number>(0); // page size
 const imageList = ref<AiImageApi.Image[]>([]); // image 列表
 const imageListRef = ref<any>(); // ref
-// 图片轮询相关的参数（正在生成中的）
+
 const inProgressImageMap = ref<{}>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image
 const inProgressTimer = ref<any>(); // 生成中的 image 定时器，轮询生成进展
 const showImageDetailId = ref<number>(0); // 图片详情的图片编号
@@ -60,7 +57,6 @@ async function getImageList() {
   });
   try {
     // 1. 加载图片列表
-
     const { list, total } = await getImagePageMy(queryParams);
     imageList.value = list;
     pageTotal.value = total;
@@ -78,6 +74,7 @@ async function getImageList() {
     loading();
   }
 }
+
 const debounceGetImageList = useDebounceFn(getImageList, 80);
 /** 轮询生成中的 image 列表 */
 async function refreshWatchImages() {
@@ -132,7 +129,7 @@ async function handleImageButtonClick(
   }
   // 重新生成
   if (type === 'regeneration') {
-    await emits('onRegeneration', imageDetail);
+    emits('onRegeneration', imageDetail);
   }
 }
 
@@ -152,7 +149,9 @@ async function handleImageMidjourneyButtonClick(
   await getImageList();
 }
 
-defineExpose({ getImageList }); /** 组件挂在的时候 */
+defineExpose({ getImageList });
+
+/** 组件挂在的时候 */
 onMounted(async () => {
   // 获取 image 列表
   await getImageList();
@@ -189,6 +188,7 @@ onUnmounted(async () => {
       <Button @click="handleViewPublic">绘画作品</Button>
     </template>
 
+    <!-- TODO @AI：一行应该有 3 个，目前只有两个。 -->
     <div
       class="flex flex-1 flex-wrap content-start overflow-y-auto p-5 pb-28 pt-5"
       ref="imageListRef"

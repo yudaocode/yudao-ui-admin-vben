@@ -11,8 +11,6 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, Image, message } from 'ant-design-vue';
 
-// 消息
-
 const props = defineProps({
   detail: {
     type: Object as PropType<AiImageApi.Image>,
@@ -32,7 +30,6 @@ async function handleButtonClick(type: string, detail: AiImageApi.Image) {
 async function handleMidjourneyBtnClick(
   button: AiImageApi.ImageMidjourneyButtons,
 ) {
-  // 确认窗体
   await confirm(`确认操作 "${button.label} ${button.emoji}" ?`);
   emits('onMjBtnClick', button, props.detail);
 }
@@ -43,6 +40,7 @@ watch(detail, async (newVal) => {
   await handleLoading(newVal.status);
 });
 const loading = ref();
+
 /** 处理加载状态 */
 async function handleLoading(status: number) {
   // 情况一：如果是生成中，则设置加载中的 loading
@@ -50,10 +48,11 @@ async function handleLoading(status: number) {
     loading.value = message.loading({
       content: `生成中...`,
     });
-
-    // 情况二：如果已经生成结束，则移除 loading
   } else {
-    if (loading.value) setTimeout(loading.value, 100);
+    // 情况二：如果已经生成结束，则移除 loading
+    if (loading.value) {
+      setTimeout(loading.value, 100);
+    }
   }
 }
 

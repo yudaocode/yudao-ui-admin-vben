@@ -16,16 +16,16 @@ import { Image } from 'ant-design-vue';
 
 import { getImageMy } from '#/api/ai/image';
 
-// 图片详细信息
 const props = defineProps({
   id: {
     type: Number,
     required: true,
   },
 });
-const detail = ref<AiImageApi.Image>({} as AiImageApi.Image);
 
-/**  获取图片详情  */
+const detail = ref<AiImageApi.Image>({} as AiImageApi.Image); // 图片详细信息
+
+/** 获取图片详情  */
 async function getImageDetail(id: number) {
   detail.value = await getImageMy(id);
 }
