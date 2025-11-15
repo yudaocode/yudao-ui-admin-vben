@@ -361,8 +361,9 @@ onMounted(async () => {
                 <Avatar
                   v-if="conversation.roleAvatar"
                   :src="conversation.roleAvatar"
+                  :size="28"
                 />
-                <SvgGptIcon v-else class="size-8" />
+                <SvgGptIcon v-else class="size-6" />
                 <span
                   class="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap p-2 text-sm font-normal"
                 >
@@ -370,6 +371,7 @@ onMounted(async () => {
                 </span>
               </div>
 
+              <!-- TODO @AI：目前选中的颜色有点丑，好像是绿色，看看怎么优化下！ -->
               <div
                 v-show="hoverConversationId === conversation.id"
                 class="relative right-0.5 flex items-center text-gray-400"

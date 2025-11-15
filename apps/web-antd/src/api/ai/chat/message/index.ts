@@ -29,6 +29,7 @@ export namespace AiChatMessageApi {
       id: number; // 段落编号
     }[];
     webSearchPages?: WebSearchPage[]; // 联网搜索结果
+    attachmentUrls?: string[]; // 附件 URL 数组
     createTime: Date; // 创建时间
     roleAvatar: string; // 角色头像
     userAvatar: string; // 用户头像
@@ -64,6 +65,7 @@ export function sendChatMessageStream(
   onMessage: any,
   onError: any,
   onClose: any,
+  attachmentUrls?: string[],
 ) {
   const token = accessStore.accessToken;
   return fetchEventSource(`${apiURL}/ai/chat/message/send-stream`, {
@@ -78,6 +80,7 @@ export function sendChatMessageStream(
       content,
       useContext: enableContext,
       useSearch: enableWebSearch,
+      attachmentUrls: attachmentUrls || [],
     }),
     onmessage: onMessage,
     onerror: onError,

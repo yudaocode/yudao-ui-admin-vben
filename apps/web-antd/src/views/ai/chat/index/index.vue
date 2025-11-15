@@ -20,6 +20,7 @@ import {
 
 import ConversationList from './modules/conversation/list.vue';
 import ConversationUpdateForm from './modules/conversation/update-form.vue';
+import MessageFileUpload from './modules/message/file-upload.vue';
 import MessageListEmpty from './modules/message/list-empty.vue';
 import MessageList from './modules/message/list.vue';
 import MessageLoading from './modules/message/loading.vue';
@@ -58,6 +59,7 @@ const inputTimeout = ref<any>(); // 处理输入中回车的定时器
 const prompt = ref<string>(); // prompt
 const enableContext = ref<boolean>(true); // 是否开启上下文
 const enableWebSearch = ref<boolean>(false); // 是否开启联网搜索
+const uploadFiles = ref<string[]>([]); // 上传的文件 URL 列表
 // 接收 Stream 消息
 const receiveMessageFullText = ref('');
 const receiveMessageDisplayedText = ref('');
@@ -101,8 +103,11 @@ async function handleConversationClick(
   // 滚动底部
   // TODO @AI：看看要不要 await
   scrollToBottom(true);
+  prompt.value = '';
   // 清空输入框
   prompt.value = '';
+  // 清空文件列表
+  uploadFiles.value = [];
   return true;
 }
 
@@ -126,6 +131,9 @@ async function handleConversationClear() {
   activeConversationId.value = null;
   activeConversation.value = null;
   activeMessageList.value = [];
+  // 清空输入框和文件列表
+  prompt.value = '';
+  uploadFiles.value = [];
 }
 
 async function openChatConversationUpdateForm() {
@@ -147,6 +155,8 @@ async function handleConversationCreate() {
 async function handleConversationCreateSuccess() {
   // 创建新的对话，清空输入框
   prompt.value = '';
+  // 清空文件列表
+  uploadFiles.value = []
 }
 
 // =========== 【消息列表】相关 ===========
@@ -304,12 +314,19 @@ async function doSendMessage(content: string) {
     message.error('还没创建对话，不能发送!');
     return;
   }
-  // 清空输入框
+
+  // 准备附件 URL 数组
+  const attachmentUrls = [...uploadFiles.value];
+
+  // 清空输入框和文件列表
   prompt.value = '';
+  uploadFiles.value = [];
+
   // 执行发送
   await doSendMessageStream({
     conversationId: activeConversationId.value,
     content,
+    attachmentUrls,
   } as AiChatMessageApi.ChatMessage);
 }
 
@@ -330,6 +347,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         conversationId: activeConversationId.value,
         type: 'user',
         content: userMessage.content,
+        attachmentUrls: userMessage.attachmentUrls || [],
         createTime: new Date(),
       } as AiChatMessageApi.ChatMessage,
       {
@@ -337,7 +355,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         conversationId: activeConversationId.value,
         type: 'assistant',
         content: '思考中...',
-        reasoningContent: '', // 初始化推理内容
+        reasoningContent: '',
         createTime: new Date(),
       } as AiChatMessageApi.ChatMessage,
     );
@@ -380,6 +398,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
           activeMessageList.value.pop();
           // 更新返回的数据
           activeMessageList.value.push(data.send, data.receive);
+          data.send.attachmentUrls = userMessage.attachmentUrls;
         }
 
         // 处理 reasoningContent
@@ -411,6 +430,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
       () => {
         stopStream();
       },
+      userMessage.attachmentUrls,
     );
   } catch {}
 }
@@ -614,6 +634,10 @@ onMounted(async () => {
             ></textarea>
             <div class="flex justify-between pb-0 pt-1">
               <div class="flex items-center gap-3">
+                <MessageFileUpload
+                  v-model="uploadFiles"
+                  :disabled="conversationInProgress"
+                />
                 <div class="flex items-center">
                   <Switch v-model:checked="enableContext" size="small" />
                   <span class="ml-1 text-sm text-gray-400">上下文</span>

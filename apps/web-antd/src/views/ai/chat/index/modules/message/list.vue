@@ -17,6 +17,7 @@ import { Avatar, Button, message } from 'ant-design-vue';
 import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';
 
+import MessageFiles from './files.vue';
 import MessageKnowledge from './knowledge.vue';
 import MessageReasoning from './reasoning.vue';
 import MessageWebSearch from './web-search.vue';
@@ -141,6 +142,7 @@ onMounted(async () => {
               class="text-sm text-gray-600"
               :content="item.content"
             />
+            <MessageFiles :attachment-urls="item.attachmentUrls" />
             <MessageKnowledge v-if="item.segments" :segments="item.segments" />
             <MessageWebSearch
               v-if="item.webSearchPages"
@@ -176,8 +178,15 @@ onMounted(async () => {
           <div class="text-left leading-8">
             {{ formatDate(item.createTime) }}
           </div>
+          <div
+            v-if="item.attachmentUrls && item.attachmentUrls.length > 0"
+            class="mb-2 flex flex-row-reverse"
+          >
+            <MessageFiles :attachment-urls="item.attachmentUrls" />
+          </div>
           <div class="flex flex-row-reverse">
             <div
+              v-if="item.content && item.content.trim()"
               class="inline w-auto whitespace-pre-wrap break-words rounded-lg bg-blue-500 p-2.5 text-sm text-white shadow-sm"
             >
               {{ item.content }}
