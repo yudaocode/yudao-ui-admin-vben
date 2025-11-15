@@ -188,9 +188,8 @@ onUnmounted(async () => {
       <Button @click="handleViewPublic">绘画作品</Button>
     </template>
 
-    <!-- TODO @AI：一行应该有 3 个，目前只有两个。 -->
     <div
-      class="flex flex-1 flex-wrap content-start overflow-y-auto p-5 pb-28 pt-5"
+      class="flex flex-1 flex-wrap content-start overflow-y-auto p-3 pb-28 pt-5"
       ref="imageListRef"
     >
       <ImageCard
@@ -199,7 +198,7 @@ onUnmounted(async () => {
         :detail="image"
         @on-btn-click="handleImageButtonClick"
         @on-mj-btn-click="handleImageMidjourneyButtonClick"
-        class="mb-5 mr-5"
+        class="mb-3 mr-3"
       />
     </div>
 
