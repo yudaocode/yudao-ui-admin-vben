@@ -267,7 +267,7 @@ const [PrintTemplateModal, printTemplateModalApi] = useVbenModal({
   connectedComponent: PrintTemplate,
   destroyOnClose: true,
   onConfirm() {
-    /** 从 modalApi 获取确认的数据 */
+    // 会在内部模态框中设置数据，这里获取数据， 内部模态框中不能有 onConfirm 方法
     const { confirmedTemplate } = printTemplateModalApi.getData<{
       confirmedTemplate: string;
     }>();
