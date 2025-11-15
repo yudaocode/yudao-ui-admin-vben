@@ -2,7 +2,7 @@
 import type { PropType } from 'vue';
 
 import { Button } from 'ant-design-vue';
-// 定义属性
+
 defineProps({
   categoryList: {
     type: Array as PropType<string[]>,
@@ -15,8 +15,7 @@ defineProps({
   },
 });
 
-// 定义回调
-const emits = defineEmits(['onCategoryClick']);
+const emits = defineEmits(['onCategoryClick']); // 定义回调
 
 /** 处理分类点击事件 */
 async function handleCategoryClick(category: string) {

@@ -9,9 +9,6 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Avatar, Button, Card, Dropdown, Menu } from 'ant-design-vue';
 
-// tabs ref
-
-// 定义属性
 const props = defineProps({
   loading: {
     type: Boolean,
@@ -28,8 +25,8 @@ const props = defineProps({
   },
 });
 
-// 定义钩子
 const emits = defineEmits(['onDelete', 'onEdit', 'onUse', 'onPage']);
+
 const tabsRef = ref<any>();
 
 /** 操作：编辑、删除 */
@@ -53,7 +50,7 @@ async function handleTabsScroll() {
   if (tabsRef.value) {
     const { scrollTop, scrollHeight, clientHeight } = tabsRef.value;
     if (scrollTop + clientHeight >= scrollHeight - 20 && !props.loading) {
-      await emits('onPage');
+      emits('onPage');
     }
   }
 }

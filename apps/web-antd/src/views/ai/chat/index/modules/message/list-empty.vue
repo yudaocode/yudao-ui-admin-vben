@@ -1,8 +1,7 @@
 <!-- 消息列表为空时，展示 prompt 列表 -->
 <script setup lang="ts">
-// prompt 列表
-
 const emits = defineEmits(['onPrompt']);
+
 const promptList = [
   {
     prompt: '今天气怎么样?',
@@ -10,7 +9,9 @@ const promptList = [
   {
     prompt: '写一首好听的诗歌?',
   },
-]; /** 选中 prompt 点击 */
+]; // prompt 列表
+
+/** 选中 prompt 点击 */
 async function handlerPromptClick(prompt: any) {
   emits('onPrompt', prompt.prompt);
 }

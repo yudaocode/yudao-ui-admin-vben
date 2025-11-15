@@ -19,9 +19,8 @@ import {
 } from '#/api/ai/chat/conversation';
 import { $t } from '#/locales';
 
-import RoleRepository from '../role/RoleRepository.vue';
+import RoleRepository from '../role/repository.vue';
 
-// 定义组件 props
 const props = defineProps({
   activeId: {
     type: [Number, null] as PropType<null | number>,
@@ -29,7 +28,6 @@ const props = defineProps({
   },
 });
 
-// 定义钩子
 const emits = defineEmits([
   'onConversationCreate',
   'onConversationClick',
@@ -41,7 +39,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
   connectedComponent: RoleRepository,
 });
 
-// 定义属性
 const searchName = ref<string>(''); // 对话搜索
 const activeConversationId = ref<null | number>(null); // 选中的对话，默认为 null
 const hoverConversationId = ref<null | number>(null); // 悬浮上去的对话
@@ -180,7 +177,7 @@ async function updateConversationTitle(
   conversation: AiChatConversationApi.ChatConversation,
 ) {
   // 1. 二次确认
-  prompt({
+  await prompt({
     async beforeClose(scope) {
       if (scope.isConfirm) {
         if (scope.value) {
@@ -202,8 +199,7 @@ async function updateConversationTitle(
             if (
               filterConversationList.length > 0 &&
               filterConversationList[0] && // tip：避免切换对话
-              activeConversationId.value ===
-                (filterConversationList[0].id!)
+              activeConversationId.value === filterConversationList[0].id!
             ) {
               emits('onConversationClick', filterConversationList[0]);
             }
@@ -252,9 +248,9 @@ async function handleClearConversation() {
     await confirm('确认后对话会全部清空，置顶的对话除外。');
     await deleteChatConversationMyByUnpinned();
     message.success($t('ui.actionMessage.operationSuccess'));
-    // 清空 对话 和 对话内容
+    // 清空对话、对话内容
     activeConversationId.value = null;
-    // 获取 对话列表
+    // 获取对话列表
     await getChatConversationList();
     // 回调 方法
     emits('onConversationClear');
@@ -283,7 +279,6 @@ watch(activeId, async (newValue) => {
   activeConversationId.value = newValue;
 });
 
-// 定义 public 方法
 defineExpose({ createConversation });
 
 /** 初始化 */
@@ -298,7 +293,7 @@ onMounted(async () => {
     if (conversationList.value.length > 0 && conversationList.value[0]) {
       activeConversationId.value = conversationList.value[0].id;
       // 回调 onConversationClick
-      await emits('onConversationClick', conversationList.value[0]);
+      emits('onConversationClick', conversationList.value[0]);
     }
   }
 });

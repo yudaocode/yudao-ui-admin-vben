@@ -18,12 +18,12 @@ import {
   sendChatMessageStream,
 } from '#/api/ai/chat/message';
 
-import ConversationList from './components/conversation/ConversationList.vue';
-import ConversationUpdateForm from './components/conversation/ConversationUpdateForm.vue';
-import MessageList from './components/message/MessageList.vue';
-import MessageListEmpty from './components/message/MessageListEmpty.vue';
-import MessageLoading from './components/message/MessageLoading.vue';
-import MessageNewConversation from './components/message/MessageNewConversation.vue';
+import ConversationList from './modules/conversation/list.vue';
+import ConversationUpdateForm from './modules/conversation/update-form.vue';
+import MessageListEmpty from './modules/message/list-empty.vue';
+import MessageList from './modules/message/list.vue';
+import MessageLoading from './modules/message/loading.vue';
+import MessageNewConversation from './modules/message/new-conversation.vue';
 
 /** AI 聊天对话 列表 */
 defineOptions({ name: 'AiChat' });
@@ -33,6 +33,7 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: ConversationUpdateForm,
   destroyOnClose: true,
 });
+
 // 聊天对话
 const conversationListRef = ref();
 const activeConversationId = ref<null | number>(null); // 选中的对话编号
@@ -87,7 +88,7 @@ async function handleConversationClick(
 ) {
   // 对话进行中，不允许切换
   if (conversationInProgress.value) {
-    alert('对话中，不允许切换!');
+    await alert('对话中，不允许切换!');
     return false;
   }
 
@@ -97,6 +98,7 @@ async function handleConversationClick(
   // 刷新 message 列表
   await getMessageList();
   // 滚动底部
+  // TODO @AI：看看要不要 await
   scrollToBottom(true);
   // 清空输入框
   prompt.value = '';
@@ -117,7 +119,7 @@ async function handlerConversationDelete(
 async function handleConversationClear() {
   // 对话进行中，不允许切换
   if (conversationInProgress.value) {
-    alert('对话中，不允许切换!');
+    await alert('对话中，不允许切换!');
     return false;
   }
   activeConversationId.value = null;
@@ -128,8 +130,9 @@ async function handleConversationClear() {
 async function openChatConversationUpdateForm() {
   formModalApi.setData({ id: activeConversationId.value }).open();
 }
+
+/** 对话更新成功，刷新最新信息 */
 async function handleConversationUpdateSuccess() {
-  // 对话更新成功，刷新最新信息
   await getConversation(activeConversationId.value);
 }
 
@@ -138,6 +141,7 @@ async function handleConversationCreate() {
   // 创建对话
   await conversationListRef.value.createConversation();
 }
+
 /** 处理聊天对话的创建成功 */
 async function handleConversationCreateSuccess() {
   // 创建新的对话，清空输入框
@@ -228,6 +232,7 @@ function handleGoTopMessage() {
 }
 
 // =========== 【发送消息】相关 ===========
+
 /** 处理来自 keydown 的发送消息 */
 async function handleSendByKeydown(event: any) {
   // 判断用户是否在输入
@@ -282,7 +287,6 @@ function onCompositionstart() {
 }
 
 function onCompositionend() {
-  // console.log('输入结束...')
   setTimeout(() => {
     isComposing.value = false;
   }, 200);
@@ -339,6 +343,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
     await nextTick();
     await scrollToBottom(); // 底部
     // 1.3 开始滚动
+    // TODO @AI：要不要 await
     textRoll();
 
     // 2. 发送 event stream
@@ -351,7 +356,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
       async (res: any) => {
         const { code, data, msg } = JSON.parse(res.data);
         if (code !== 0) {
-          alert(`对话异常! ${msg}`);
+          await alert(`对话异常! ${msg}`);
           return;
         }
 

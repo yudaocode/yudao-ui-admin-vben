@@ -14,10 +14,11 @@ import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';
 
 import Form from '../../../../model/chatRole/modules/form.vue';
-import RoleCategoryList from './RoleCategoryList.vue';
-import RoleList from './RoleList.vue';
+import RoleCategoryList from './category-list.vue';
+import RoleList from './list.vue';
 
 const router = useRouter();
+
 const [Drawer] = useVbenDrawer({
   title: '角色管理',
   footer: false,
@@ -28,7 +29,7 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
-// 属性定义
+
 const loading = ref<boolean>(false); // 加载中
 const activeTab = ref<string>('my-role'); // 选中的角色 Tab
 const search = ref<string>(''); // 加载中

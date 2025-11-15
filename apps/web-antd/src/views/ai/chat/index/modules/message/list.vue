@@ -17,8 +17,8 @@ import { Avatar, Button, message } from 'ant-design-vue';
 import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';
 
-import MessageKnowledge from './MessageKnowledge.vue';
-// 定义 props
+import MessageKnowledge from './knowledge.vue';
+
 const props = defineProps({
   conversation: {
     type: Object as PropType<AiChatConversationApi.ChatConversation>,
@@ -29,7 +29,6 @@ const props = defineProps({
     required: true,
   },
 });
-// 消息列表
 
 const emits = defineEmits(['onDeleteSuccess', 'onRefresh', 'onEdit']);
 const { copy } = useClipboard(); // 初始化 copy 到粘贴板
