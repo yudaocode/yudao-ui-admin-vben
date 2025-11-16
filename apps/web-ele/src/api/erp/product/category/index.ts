@@ -1,7 +1,7 @@
 import { requestClient } from '#/api/request';
 
 export namespace ErpProductCategoryApi {
-  /** ERP 产品分类信息 */
+  /** 产品分类信息 */
   export interface ProductCategory {
     id?: number; // 分类编号
     parentId?: number; // 父分类编号

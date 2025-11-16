@@ -74,6 +74,7 @@ async function handleDefaultStatusChange(
         await updateAccountDefaultStatus(row.id!, newStatus);
         // 提示并返回成功
         ElMessage.success(`${text}默认成功`);
+        handleRefresh();
         resolve(true);
       })
       .catch(() => {
