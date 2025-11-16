@@ -40,7 +40,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '选择出库时间',
-        showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: '!w-full',

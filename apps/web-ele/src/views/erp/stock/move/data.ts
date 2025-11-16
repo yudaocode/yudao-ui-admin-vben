@@ -35,7 +35,6 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '选择调度时间',
-        showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: '!w-full',
