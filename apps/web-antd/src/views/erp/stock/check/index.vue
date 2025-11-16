@@ -210,7 +210,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.delete'),
               type: 'link',
               danger: true,
-              color: 'error',
               auth: ['erp:stock-check:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.no]),

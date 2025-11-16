@@ -158,6 +158,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['erp:stock-check:export'],
               onClick: handleExport,
             },
+            {
+              label: '批量删除',
+              type: 'danger',
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['erp:stock-check:delete'],
+              popConfirm: {
+                title: `是否删除所选中数据？`,
+                confirm: handleDelete.bind(null, checkedIds),
+              },
+            },
           ]"
         />
       </template>
