@@ -155,6 +155,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['erp:stock-in:export'],
               onClick: handleExport,
             },
+            {
+              label: '批量删除',
+              type: 'danger',
+              disabled: isEmpty(checkedIds),
+              icon: ACTION_ICON.DELETE,
+              auth: ['erp:stock-in:delete'],
+              popConfirm: {
+                title: `是否删除所选中数据？`,
+                confirm: handleDelete.bind(null, checkedIds),
+              },
+            },
           ]"
         />
       </template>
@@ -182,7 +193,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: row.status === 10 ? '审批' : '反审批',
               type: 'primary',
               link: true,
-              icon: row.status === 10 ? ACTION_ICON.AUDIT : ACTION_ICON.REJECT,
+              icon: ACTION_ICON.AUDIT,
               auth: ['erp:stock-in:update-status'],
               popConfirm: {
                 title: `确认${row.status === 10 ? '审批' : '反审批'}${row.no}吗？`,

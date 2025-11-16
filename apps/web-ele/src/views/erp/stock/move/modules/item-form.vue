@@ -285,7 +285,6 @@ onMounted(async () => {
             label: '删除',
             type: 'danger',
             link: true,
-            icon: 'ant-design:delete-outlined',
             popConfirm: {
               title: '确认删除该产品吗？',
               confirm: handleDelete.bind(null, row),
