@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { getAccountSimpleList } from '#/api/erp/finance/account';
@@ -119,7 +119,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       itemFormInstance.validate();
     } catch (error: any) {
-      message.error(error.message || '子表单验证失败');
+      ElMessage.error(error.message || '子表单验证失败');
       return;
     }
 
@@ -134,7 +134,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }

@@ -37,9 +37,10 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '选择收款时间',
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -133,6 +134,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
     {
@@ -144,6 +147,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         placeholder: '请输入优惠金额',
         precision: 2,
         formatter: erpPriceInputFormatter,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
     {
@@ -155,6 +160,8 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         precision: 2,
         formatter: erpPriceInputFormatter,
         disabled: true,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       dependencies: {
         triggerFields: ['totalPrice', 'discountPrice'],

@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -52,16 +52,15 @@ function handleEdit(row: ErpFinanceReceiptApi.FinanceReceipt) {
 
 /** 删除收款单 */
 async function handleDelete(ids: number[]) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
   });
   try {
     await deleteFinanceReceipt(ids);
-    message.success($t('ui.actionMessage.deleteSuccess'));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -70,16 +69,15 @@ async function handleUpdateStatus(
   row: ErpFinanceReceiptApi.FinanceReceipt,
   status: number,
 ) {
-  const hideLoading = message.loading({
-    content: `确定${status === 20 ? '审批' : '反审批'}该收款单吗？`,
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: `确定${status === 20 ? '审批' : '反审批'}该收款单吗？`,
   });
   try {
     await updateFinanceReceiptStatus(row.id!, status);
-    message.success(`${status === 20 ? '审批' : '反审批'}成功`);
+    ElMessage.success(`${status === 20 ? '审批' : '反审批'}成功`);
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -162,8 +160,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '批量删除',
-              type: 'primary',
-              danger: true,
+              type: 'danger',
               disabled: isEmpty(checkedIds),
               icon: ACTION_ICON.DELETE,
               auth: ['erp:finance-receipt:delete'],
@@ -180,14 +177,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.detail'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.VIEW,
               auth: ['erp:finance-receipt:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['erp:finance-receipt:update'],
               ifShow: () => row.status !== 20,
@@ -195,7 +194,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: row.status === 10 ? '审批' : '反审批',
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.AUDIT,
               auth: ['erp:finance-receipt:update-status'],
               popConfirm: {
@@ -209,8 +209,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['erp:finance-receipt:delete'],
               popConfirm: {
