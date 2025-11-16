@@ -26,17 +26,17 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /** 销售统计数据 */
-const saleSummary = ref<ErpSaleStatisticsApi.SaleSummary>(); // 销售概况统计
-const saleTimeSummaryList = ref<ErpSaleStatisticsApi.SaleTimeSummary[]>(); // 销售时段统计
+const saleSummary = ref<ErpSaleStatisticsApi.SaleSummaryRespVO>(); // 销售概况统计
+const saleTimeSummaryList = ref<ErpSaleStatisticsApi.SaleTimeSummaryRespVO[]>(); // 销售时段统计
 const getSaleStatistics = async () => {
   saleSummary.value = await getSaleSummary();
   saleTimeSummaryList.value = await getSaleTimeSummary();
 };
 
 /** 采购统计数据 */
-const purchaseSummary = ref<ErpPurchaseStatisticsApi.PurchaseSummary>(); // 采购概况统计
+const purchaseSummary = ref<ErpPurchaseStatisticsApi.PurchaseSummaryRespVO>(); // 采购概况统计
 const purchaseTimeSummaryList =
-  ref<ErpPurchaseStatisticsApi.PurchaseTimeSummary[]>(); // 采购时段统计
+  ref<ErpPurchaseStatisticsApi.PurchaseTimeSummaryRespVO[]>(); // 采购时段统计
 const getPurchaseStatistics = async () => {
   purchaseSummary.value = await getPurchaseSummary();
   purchaseTimeSummaryList.value = await getPurchaseTimeSummary();
