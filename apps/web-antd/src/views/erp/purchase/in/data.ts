@@ -196,6 +196,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
 /** 表单的明细表格列 */
 export function useFormItemColumns(
   formData?: any[],
+  disabled?: boolean,
 ): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', minWidth: 50, fixed: 'left' },
@@ -295,6 +296,7 @@ export function useFormItemColumns(
       width: 50,
       fixed: 'right',
       slots: { default: 'actions' },
+      visible: !disabled,
     },
   ];
 }

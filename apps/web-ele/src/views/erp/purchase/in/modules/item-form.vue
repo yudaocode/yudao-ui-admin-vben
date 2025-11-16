@@ -65,7 +65,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(tableData.value),
+    columns: useFormItemColumns(tableData.value, props.disabled),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
@@ -95,7 +95,7 @@ watch(
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
     // 更新表格列配置（目的：原数量、已入库动态列）
-    const columns = useFormItemColumns(tableData.value);
+    const columns = useFormItemColumns(tableData.value, props.disabled);
     await gridApi.grid.reloadColumn(columns || []);
   },
   {
@@ -274,7 +274,6 @@ onMounted(async () => {
     </template>
     <template #actions="{ row }">
       <TableAction
-        v-if="!disabled"
         :actions="[
           {
             label: '删除',
