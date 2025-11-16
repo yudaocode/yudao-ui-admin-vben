@@ -3,16 +3,24 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace ErpProductUnitApi {
-  /** 产品单位信息 */
+  /** ERP 产品单位信息 */
   export interface ProductUnit {
     id?: number; // 单位编号
     name: string; // 单位名字
     status: number; // 单位状态
   }
+
+  /** 产品单位分页查询参数 */
+  export interface ProductUnitPageParam extends PageParam {
+    name?: string;
+    status?: number;
+  }
 }
 
 /** 查询产品单位分页 */
-export function getProductUnitPage(params: PageParam) {
+export function getProductUnitPage(
+  params: ErpProductUnitApi.ProductUnitPageParam,
+) {
   return requestClient.get<PageResult<ErpProductUnitApi.ProductUnit>>(
     '/erp/product-unit/page',
     { params },
