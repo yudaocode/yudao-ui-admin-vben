@@ -196,7 +196,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: row.status === 10 ? '审批' : '反审批',
               type: 'primary',
               link: true,
-              icon: row.status === 10 ? ACTION_ICON.CHECK : ACTION_ICON.CLOSE,
+              icon: ACTION_ICON.AUDIT,
               auth: ['erp:sale-return:update-status'],
               popConfirm: {
                 title: `确认${row.status === 10 ? '审批' : '反审批'}${row.no}吗？`,

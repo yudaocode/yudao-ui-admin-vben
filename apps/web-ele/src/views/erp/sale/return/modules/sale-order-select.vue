@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { ElInput, ElMessage } from 'element-plus';
+import { ElButton, ElDialog, ElInput, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSaleOrderPage } from '#/api/erp/sale/order';
@@ -107,17 +107,18 @@ function handleOk() {
         </div>
       </template>
     </ElInput>
-    <el-dialog
+    <ElDialog
       v-model="open"
       title="选择关联订单"
       width="50%"
       @confirm="handleOk"
+      :append-to-body="true"
     >
       <Grid class="max-h-[600px]" table-title="销售订单列表(仅展示可退货)" />
       <template #footer>
-        <el-button @click="open = false">取消</el-button>
-        <el-button type="primary" @click="handleOk">确定</el-button>
+        <ElButton @click="open = false">取消</ElButton>
+        <ElButton type="primary" @click="handleOk">确定</ElButton>
       </template>
-    </el-dialog>
+    </ElDialog>
   </div>
 </template>
