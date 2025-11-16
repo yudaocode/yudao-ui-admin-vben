@@ -5,7 +5,7 @@ import type { ErpSupplierApi } from '#/api/erp/purchase/supplier';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -38,16 +38,15 @@ function handleEdit(row: ErpSupplierApi.Supplier) {
 
 /** 删除供应商 */
 async function handleDelete(row: ErpSupplierApi.Supplier) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
     await deleteSupplier(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -129,15 +128,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['erp:supplier:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['erp:supplier:delete'],
               popConfirm: {
