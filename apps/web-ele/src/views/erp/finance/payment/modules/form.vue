@@ -187,6 +187,7 @@ const [Modal, modalApi] = useVbenModal({
           @update:items="handleUpdateItems"
           @update:total-price="handleUpdateTotalPrice"
           @update:payment-price="handleUpdatePaymentPrice"
+          class="w-full"
         />
       </template>
     </Form>

@@ -4,7 +4,7 @@ import type { ErpPurchaseReturnApi } from '#/api/erp/purchase/return';
 
 import { ref } from 'vue';
 
-import { ElDialog, ElMessage } from 'element-plus';
+import { ElButton, ElDialog, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPurchaseReturnPage } from '#/api/erp/purchase/return';
@@ -15,7 +15,7 @@ const emit = defineEmits<{
   success: [rows: ErpPurchaseReturnApi.PurchaseReturn[]];
 }>();
 
-const supplierId = ref<number>(); // 供应商ID
+const supplierId = ref<number>(); // 供应商 ID
 const open = ref<boolean>(false); // 弹窗是否打开
 const selectedRows = ref<ErpPurchaseReturnApi.PurchaseReturn[]>([]); // 选中的行
 
@@ -103,14 +103,15 @@ defineExpose({ open: openModal });
     v-model="open"
     title="选择采购退货单"
     @confirm="handleOk"
+    :append-to-body="true"
   >
     <Grid
       class="max-h-[600px]"
       table-title="采购退货单列表(仅展示需退款的单据)"
     />
     <template #footer>
-      <el-button @click="open = false">取消</el-button>
-      <el-button type="primary" @click="handleOk">确定</el-button>
+      <ElButton @click="open = false">取消</ElButton>
+      <ElButton type="primary" @click="handleOk">确定</ElButton>
     </template>
   </ElDialog>
 </template>

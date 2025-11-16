@@ -12,4 +12,5 @@ export const ACTION_ICON = {
   COPY: 'lucide:copy',
   CLOSE: 'lucide:x',
   BOOK: 'lucide:book',
+  AUDIT: 'lucide:file-check',
 };

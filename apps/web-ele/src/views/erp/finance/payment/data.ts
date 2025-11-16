@@ -40,6 +40,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -391,7 +392,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
     {
       title: '操作',
-      width: 220,
+      width: 260,
       fixed: 'right',
       slots: { default: 'actions' },
     },
