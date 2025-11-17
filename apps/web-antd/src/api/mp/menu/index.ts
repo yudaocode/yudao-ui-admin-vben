@@ -1,6 +1,7 @@
 import { requestClient } from '#/api/request';
 
 /** 菜单类型枚举 */
+// TODO @xingyu：芋艿，可能要整理下枚举；
 export enum MenuType {
   CLICK = 'click', // 点击推事件
   LOCATION_SELECT = 'location_select', // 发送位置
@@ -11,7 +12,7 @@ export enum MenuType {
   PIC_WEIXIN = 'pic_weixin', // 微信相册发图
   SCANCODE_PUSH = 'scancode_push', // 扫码推事件
   SCANCODE_WAITMSG = 'scancode_waitmsg', // 扫码带提示
-  VIEW = 'view', // 跳转URL
+  VIEW = 'view', // 跳转 URL
   VIEW_LIMITED = 'view_limited', // 跳转图文消息URL
 }
 

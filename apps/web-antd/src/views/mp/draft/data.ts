@@ -27,7 +27,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 }
 
 /** 列表的搜索表单 */
-//  DONE @hw：这里的公众号选择，要改参考 /apps/web-antd/src/views/mp/tag/data.ts；相关联的代码还简单点~
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {

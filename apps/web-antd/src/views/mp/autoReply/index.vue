@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -25,6 +26,23 @@ defineOptions({ name: 'MpAutoReply' });
 
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
 
+const showCreateButton = computed(() => {
+  if (Number(msgType.value) !== MsgType.Follow) {
+    return true;
+  }
+  try {
+    const tableData = gridApi.grid?.getTableData();
+    return (tableData?.tableData?.length || 0) <= 0;
+  } catch {
+    return true;
+  }
+}); // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
 /** 切换回复类型 */
 async function onTabChange(tabName: any) {
   msgType.value = tabName;
@@ -41,7 +59,7 @@ async function onTabChange(tabName: any) {
   await gridApi.query();
 }
 
-/** 新增按钮操作 */
+/** 新增自动回复 */
 async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   formModalApi
@@ -52,7 +70,7 @@ async function handleCreate() {
     .open();
 }
 
-/** 修改按钮操作 */
+/** 修改自动回复 */
 async function handleEdit(row: any) {
   const data = (await getAutoReply(row.id)) as any;
   formModalApi
@@ -64,7 +82,7 @@ async function handleEdit(row: any) {
     .open();
 }
 
-/** 删除按钮操作 */
+/** 删除自动回复 */
 async function handleDelete(row: any) {
   await confirm('是否确认删除此数据?');
   const hideLoading = message.loading({
@@ -114,28 +132,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<MpAutoReplyApi.AutoReply>,
 });
-
-/** 刷新表格 */
-function handleRefresh() {
-  gridApi.query();
-}
-
-// 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
-const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== MsgType.Follow) {
-    return true;
-  }
-  try {
-    const tableData = gridApi.grid?.getTableData();
-    return (tableData?.tableData?.length || 0) <= 0;
-  } catch {
-    return true;
-  }
-});
-
-// DONE @hw：看看能不能参考 tag/index.vue 简化下
 </script>
 
 <template>
@@ -145,9 +143,7 @@ const showCreateButton = computed(() => {
     </template>
 
     <FormModal @success="handleRefresh" />
-    <Grid table-title="自动回复列表">
-      <!-- 第一层：公众号选择（在表单中） -->
-      <!-- 第二层：tab 切换 -->
+    <Grid>
       <template #toolbar-actions>
         <Tabs
           v-model:active-key="msgType"

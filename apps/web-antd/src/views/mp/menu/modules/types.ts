@@ -72,7 +72,6 @@ interface _Menu extends RawMenu {
 
 export type Menu = Partial<_Menu>;
 
-// DONE @hw：这个要不合并到 types 里；
 export const menuOptions = [
   {
     value: 'view',

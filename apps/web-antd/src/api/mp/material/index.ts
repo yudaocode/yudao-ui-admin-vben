@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 /** 素材类型枚举 */
+// TODO @xingyu：芋艿，可能要整理下枚举；
 export enum MaterialType {
   IMAGE = 1, // 图片
   THUMB = 4, // 缩略图

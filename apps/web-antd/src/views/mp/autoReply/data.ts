@@ -16,6 +16,7 @@ import { MsgType } from './types';
 let accountList: MpAccountApi.AccountSimple[] = [];
 getSimpleAccountList().then((data) => (accountList = data));
 
+// TODO @芋艿：要不要使用统一枚举？
 const RequestMessageTypes = new Set([
   'image',
   'link',
@@ -148,6 +149,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
     fieldName: 'reply',
     label: '回复消息',
     component: markRaw(WxReply),
+    // TODO @hw：这里注释，要不要删除掉？
     // componentProps: {
     //   modelValue: { type: 'video', content: '12456' },
     // },
@@ -157,6 +159,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
+// TODO @芋艿：貌似可能微信号拿不到。
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
