@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { ElButton, ElDialog, ElImage, ElMessage, ElUpload } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import WxMaterialSelect from '#/views/mp/modules/wx-material-select';
+import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
 
 // 设置上传的请求头部
 
@@ -130,7 +130,7 @@ function onUploadError(err: Error) {
         append-to-body
         destroy-on-close
       >
-        <WxMaterialSelect
+        <MaterialSelect
           type="image"
           :account-id="accountId!"
           @select-material="onMaterialSelected"

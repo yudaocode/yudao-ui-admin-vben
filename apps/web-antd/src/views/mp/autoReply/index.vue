@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -16,19 +16,12 @@ import {
 } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 
-import ReplyContentCell from './components/ReplyTable.vue';
-import { MsgType } from './components/types';
 import { useGridColumns, useGridFormSchema } from './data';
+import ReplyContentCell from './modules/content.vue';
 import Form from './modules/form.vue';
+import { MsgType } from './types';
 
 defineOptions({ name: 'MpAutoReply' });
-
-/** 刷新表格 */
-function handleRefresh() {
-  gridApi.query().then(() => {
-    updateTableDataLength();
-  });
-}
 
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
 
@@ -46,7 +39,6 @@ async function onTabChange(tabName: any) {
   }
   // 查询数据
   await gridApi.query();
-  updateTableDataLength();
 }
 
 /** 新增按钮操作 */
@@ -54,7 +46,6 @@ async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   formModalApi
     .setData({
-      isCreating: true,
       msgType: Number(msgType.value) as MsgType,
       accountId: formValues.accountId,
     })
@@ -66,8 +57,8 @@ async function handleEdit(row: any) {
   const data = (await getAutoReply(row.id)) as any;
   formModalApi
     .setData({
-      isCreating: false,
       msgType: Number(msgType.value) as MsgType,
+      accountId: row.accountId,
       row: data,
     })
     .open();
@@ -83,9 +74,7 @@ async function handleDelete(row: any) {
   try {
     await deleteAutoReply(row.id);
     message.success('删除成功');
-    await gridApi.query();
-    // 查询完成后更新数据长度
-    updateTableDataLength();
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -116,7 +105,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
-      autoLoad: false, // 禁用自动加载，等表单初始化完成后再加载
     },
     rowConfig: {
       keyField: 'id',
@@ -129,49 +117,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>,
 });
 
-// TODO @hw：按道理说，不太需呀哦这个？可以微信讨论下哈；
-const tableDataLength = ref(0); // 表格数据长度，用于判断是否显示新增按钮
-
-/** 更新表格数据长度（避免在模板中直接调用 getTableData 导致响应式循环） */
-function updateTableDataLength() {
-  try {
-    if (!gridApi.grid) {
-      return;
-    }
-    const tableData = gridApi.grid.getTableData();
-    tableDataLength.value = tableData?.tableData?.length || 0;
-  } catch {
-    tableDataLength.value = 0;
-  }
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
 }
 
-// TODO @hw：这个要不改成，直接 tableaction 那判断；
 // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
 const showCreateButton = computed(() => {
   if (Number(msgType.value) !== MsgType.Follow) {
     return true;
   }
-  return tableDataLength.value <= 0;
+  try {
+    const tableData = gridApi.grid?.getTableData();
+    return (tableData?.tableData?.length || 0) <= 0;
+  } catch {
+    return true;
+  }
 });
 
-// TODO @hw：看看能不能参考 tag/index.vue 简化下
-/** 页面挂载后，等待表单初始化完成再加载数据 */
-onMounted(async () => {
-  // 等待 WxAccountSelect 组件加载并设置默认值
-  await nextTick();
-  if (!gridApi.formApi) {
-    return;
-  }
-  const formValues = await gridApi.formApi.getValues();
-  // 如果 accountId 有值，说明已经准备好了
-  if (formValues.accountId) {
-    // 设置为最新提交的值
-    gridApi.formApi.setLatestSubmissionValues(formValues);
-    // 触发首次查询
-    await gridApi.query();
-    updateTableDataLength();
-  }
-});
+// DONE @hw：看看能不能参考 tag/index.vue 简化下
 </script>
 
 <template>
@@ -181,23 +145,26 @@ onMounted(async () => {
     </template>
 
     <FormModal @success="handleRefresh" />
-
-    <Grid>
+    <Grid table-title="自动回复列表">
+      <!-- 第一层：公众号选择（在表单中） -->
+      <!-- 第二层：tab 切换 -->
       <template #toolbar-actions>
-        <!-- tab 切换 -->
-        <Tabs v-model:active-key="msgType" class="w-full" @change="onTabChange">
-          <!-- tab 项 -->
+        <Tabs
+          v-model:active-key="msgType"
+          class="w-full"
+          @change="(activeKey) => onTabChange(activeKey as string)"
+        >
           <Tabs.TabPane :key="String(MsgType.Follow)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="lucide:star" class="mr-2px" /> 关注时回复
+                <IconifyIcon icon="ep:star" class="mr-2px" /> 关注时回复
               </Row>
             </template>
           </Tabs.TabPane>
           <Tabs.TabPane :key="String(MsgType.Message)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="lucide:message-circle" class="mr-2px" />
+                <IconifyIcon icon="ep:chat-line-round" class="mr-2px" />
                 消息回复
               </Row>
             </template>
@@ -205,13 +172,13 @@ onMounted(async () => {
           <Tabs.TabPane :key="String(MsgType.Keyword)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="lucide:newspaper" class="mr-2px" />
-                关键词回复
+                <IconifyIcon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
               </Row>
             </template>
           </Tabs.TabPane>
         </Tabs>
       </template>
+      <!-- 第三层：table -->
       <template #toolbar-tools>
         <TableAction
           v-if="showCreateButton"

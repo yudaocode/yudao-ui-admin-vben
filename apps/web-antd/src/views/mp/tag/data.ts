@@ -41,6 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
+// TODO @YunaiV 这种方式获取刷新浏览器会导致空白
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {

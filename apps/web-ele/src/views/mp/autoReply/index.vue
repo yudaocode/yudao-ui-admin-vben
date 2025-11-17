@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import type { TabPaneName } from 'element-plus';
-
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
-import { ContentWrap, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   ElLoading,
@@ -21,26 +20,27 @@ import * as MpAutoReplyApi from '#/api/mp/autoReply';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Content from './modules/content.vue';
 import Form from './modules/form.vue';
-import ReplyContentCell from './modules/ReplyTable.vue';
 import { MsgType } from './modules/types';
 
 defineOptions({ name: 'MpAutoReply' });
 
-const msgType = ref<MsgType>(MsgType.Keyword); // 消息类型
-async function onTabChange(_tabName: TabPaneName) {
-  // 等待 msgType 更新完成
+const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
+/** 切换回复类型 */
+async function onTabChange(tabName: string) {
+  msgType.value = tabName;
   await nextTick();
-  const columns = useGridColumns(msgType.value);
+  // 更新 columns
+  const columns = useGridColumns(Number(msgType.value) as MsgType);
   if (columns) {
     // 使用 setGridOptions 更新列配置
     gridApi.setGridOptions({ columns });
     // 等待列配置更新完成
     await nextTick();
   }
+  // 查询数据
   await gridApi.query();
-  // 查询完成后更新数据长度
-  updateTableDataLength();
 }
 
 /** 新增按钮操作 */
@@ -49,7 +49,6 @@ async function handleCreate() {
 
   formModalApi
     .setData({
-      isCreating: true,
       msgType: msgType.value,
       accountId: formValues.accountId,
     })
@@ -59,8 +58,13 @@ async function handleCreate() {
 /** 修改按钮操作 */
 async function handleEdit(row: any) {
   const data = (await MpAutoReplyApi.getAutoReply(row.id)) as any;
+  const formValues = await gridApi.formApi.getValues();
   formModalApi
-    .setData({ isCreating: false, msgType: msgType.value, row: data })
+    .setData({
+      msgType: msgType.value,
+      row: data,
+      accountId: formValues.accountId,
+    })
     .open();
 }
 
@@ -73,9 +77,7 @@ async function handleDelete(row: any) {
   try {
     await MpAutoReplyApi.deleteAutoReply(row.id);
     ElMessage.success('删除成功');
-    await gridApi.query();
-    // 查询完成后更新数据长度
-    updateTableDataLength();
+    handleRefresh();
   } finally {
     loadingInstance.close();
   }
@@ -93,9 +95,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useGridColumns(msgType.value),
-    height: 'calc(100vh - 300px)',
-    // height: '600px',
+    columns: useGridColumns(Number(msgType.value) as MsgType),
+    height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -103,13 +104,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await MpAutoReplyApi.getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: msgType.value,
+            type: Number(msgType.value) as MsgType,
             ...formValues,
           });
         },
       },
-      // 禁用自动加载，等表单初始化完成后再加载
-      autoLoad: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -122,44 +121,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<any>,
 });
 
-// 表格数据长度，用于判断是否显示新增按钮
-const tableDataLength = ref(0);
-
-// 更新表格数据长度（避免在模板中直接调用 getTableData 导致响应式循环）
-function updateTableDataLength() {
-  try {
-    if (!gridApi.grid) {
-      return;
-    }
-    const tableData = gridApi.grid.getTableData();
-    tableDataLength.value = tableData?.tableData?.length || 0;
-  } catch {
-    tableDataLength.value = 0;
-  }
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
 }
 
 // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
 const showCreateButton = computed(() => {
-  if (msgType.value !== MsgType.Follow) {
+  if (Number(msgType.value) !== MsgType.Follow) {
     return true;
   }
-  return tableDataLength.value <= 0;
-});
-
-// 页面挂载后，等待表单初始化完成再加载数据
-onMounted(async () => {
-  // 等待 WxAccountSelect 组件加载并设置默认值
-  await nextTick();
-  if (gridApi.formApi) {
-    const formValues = await gridApi.formApi.getValues();
-    // 如果 accountId 有值，说明已经准备好了
-    if (formValues.accountId) {
-      // 设置为最新提交的值
-      gridApi.formApi.setLatestSubmissionValues(formValues);
-      // 触发首次查询
-      await gridApi.query();
-      updateTableDataLength();
-    }
+  try {
+    const tableData = gridApi.grid?.getTableData();
+    return (tableData?.tableData?.length || 0) <= 0;
+  } catch {
+    return true;
   }
 });
 </script>
@@ -170,86 +146,83 @@ onMounted(async () => {
       <DocAlert title="自动回复" url="https://doc.iocoder.cn/mp/auto-reply/" />
     </template>
 
-    <!-- tab 切换 -->
-    <ContentWrap>
-      <ElTabs v-model="msgType" @tab-change="onTabChange">
-        <!-- tab 项 -->
-        <ElTabPane :name="MsgType.Follow">
-          <template #label>
-            <ElRow align="middle">
-              <Icon icon="ep:star" class="mr-2px" /> 关注时回复
-            </ElRow>
-          </template>
-        </ElTabPane>
-        <ElTabPane :name="MsgType.Message">
-          <template #label>
-            <ElRow align="middle">
-              <Icon icon="ep:chat-line-round" class="mr-2px" /> 消息回复
-            </ElRow>
-          </template>
-        </ElTabPane>
-        <ElTabPane :name="MsgType.Keyword">
-          <template #label>
-            <ElRow align="middle">
-              <Icon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
-            </ElRow>
-          </template>
-        </ElTabPane>
-      </ElTabs>
-      <!-- 列表 -->
-      <FormModal
-        @success="
-          () => {
-            gridApi.query().then(() => {
-              updateTableDataLength();
-            });
-          }
-        "
-      />
-      <Grid table-title="自动回复列表">
-        <template #toolbar-tools>
-          <TableAction
-            v-if="showCreateButton"
-            :actions="[
-              {
-                label: $t('ui.actionTitle.create', ['自动回复']),
-                type: 'primary',
-                icon: ACTION_ICON.ADD,
-                auth: ['mp:auto-reply:create'],
-                onClick: handleCreate,
+    <FormModal @success="handleRefresh" />
+    <Grid table-title="自动回复列表">
+      <!-- 在工具栏上方放置 Tab 切换 -->
+      <template #toolbar-actions>
+        <ElTabs
+          v-model="msgType"
+          class="w-full"
+          @tab-change="(activeName) => onTabChange(activeName as string)"
+        >
+          <ElTabPane :name="String(MsgType.Follow)">
+            <template #label>
+              <ElRow align="middle">
+                <IconifyIcon icon="ep:star" class="mr-[2px]" /> 关注时回复
+              </ElRow>
+            </template>
+          </ElTabPane>
+          <ElTabPane :name="String(MsgType.Message)">
+            <template #label>
+              <ElRow align="middle">
+                <IconifyIcon icon="ep:chat-line-round" class="mr-[2px]" />
+                消息回复
+              </ElRow>
+            </template>
+          </ElTabPane>
+          <ElTabPane :name="String(MsgType.Keyword)">
+            <template #label>
+              <ElRow align="middle">
+                <IconifyIcon icon="fa:newspaper-o" class="mr-[2px]" />
+                关键词回复
+              </ElRow>
+            </template>
+          </ElTabPane>
+        </ElTabs>
+      </template>
+      <!-- 工具栏按钮 -->
+      <template #toolbar-tools>
+        <TableAction
+          v-if="showCreateButton"
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['自动回复']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['mp:auto-reply:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #replyContent="{ row }">
+        <Content :row="row" />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['mp:auto-reply:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['mp:auto-reply:delete'],
+              popConfirm: {
+                title: '是否确认删除此数据?',
+                confirm: handleDelete.bind(null, row),
               },
-            ]"
-          />
-        </template>
-        <template #replyContent="{ row }">
-          <ReplyContentCell :row="row" />
-        </template>
-        <template #actions="{ row }">
-          <TableAction
-            :actions="[
-              {
-                label: $t('common.edit'),
-                type: 'primary',
-                link: true,
-                icon: ACTION_ICON.EDIT,
-                auth: ['mp:auto-reply:update'],
-                onClick: handleEdit.bind(null, row),
-              },
-              {
-                label: $t('common.delete'),
-                type: 'danger',
-                link: true,
-                icon: ACTION_ICON.DELETE,
-                auth: ['mp:auto-reply:delete'],
-                popConfirm: {
-                  title: '是否确认删除此数据?',
-                  confirm: handleDelete.bind(null, row),
-                },
-              },
-            ]"
-          />
-        </template>
-      </Grid>
-    </ContentWrap>
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

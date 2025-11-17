@@ -35,17 +35,41 @@ const emit = defineEmits<{
 }>();
 
 interface Props {
-  modelValue: Reply;
+  modelValue: Reply | undefined;
   newsType?: NewsType;
 }
 
+// 提供一个默认的 Reply 对象，避免 undefined 导致的错误
+const defaultReply: Reply = {
+  accountId: -1,
+  type: ReplyType.Text,
+};
+
 const reply = computed<Reply>({
-  get: () => props.modelValue,
+  get: () => props.modelValue || defaultReply,
   set: (val) => emit('update:modelValue', val),
 });
 
 const tabCache = new Map<ReplyType, Reply>(); // 作为多个标签保存各自 Reply 的缓存
-const currentTab = ref<ReplyType>(props.modelValue.type || ReplyType.Text); // 采用独立的 ref 来保存当前 tab，避免在 watch 标签变化，对 reply 进行赋值会产生了循环调用
+const currentTab = ref<ReplyType>(props.modelValue?.type || ReplyType.Text); // 采用独立的 ref 来保存当前 tab，避免在 watch 标签变化，对 reply 进行赋值会产生了循环调用
+
+// 监听 modelValue 变化，同步更新 currentTab 和缓存
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue?.type) {
+      // 如果类型变化，更新 currentTab
+      if (newValue.type !== currentTab.value) {
+        currentTab.value = newValue.type;
+      }
+      // 如果 modelValue 有数据，更新对应 tab 的缓存
+      if (newValue.type) {
+        tabCache.set(newValue.type, { ...newValue });
+      }
+    }
+  },
+  { immediate: true, deep: true },
+);
 
 watch(
   currentTab,
@@ -56,16 +80,30 @@ watch(
       return;
     }
 
-    tabCache.set(oldTab, unref(reply));
+    // 保存旧tab的数据到缓存
+    const oldReply = unref(reply);
+    // 只有当旧tab的reply有实际数据时才缓存（避免缓存空数据）
+    if (oldReply && oldTab === oldReply.type) {
+      tabCache.set(oldTab, oldReply);
+    }
 
     // 从缓存里面取出新tab内容，有则覆盖Reply，没有则创建空Reply
     const temp = tabCache.get(newTab);
     if (temp) {
       reply.value = temp;
     } else {
-      const newData = createEmptyReply(reply);
-      newData.type = newTab;
-      reply.value = newData;
+      // 如果当前reply的类型就是新tab的类型，说明这是从外部传入的数据，应该保留
+      const currentReply = unref(reply);
+      if (currentReply && currentReply.type === newTab) {
+        // 这是从外部传入的数据，直接缓存并使用
+        tabCache.set(newTab, currentReply);
+        // 不需要修改reply.value，因为它已经是正确的了
+      } else {
+        // 创建新的空reply
+        const newData = createEmptyReply(reply);
+        newData.type = newTab;
+        reply.value = newData;
+      }
     }
   },
   {

@@ -1,13 +1,30 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
+import type { MpAccountApi } from '#/api/mp/account';
 
 import { markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
-import { WxAccountSelect } from '#/views/mp/components';
+import { getSimpleAccountList } from '#/api/mp/account';
+import { WxReply } from '#/views/mp/components';
 
-import { MsgType } from './components/types';
+import { MsgType } from './types';
+
+/** 关联数据 */
+let accountList: MpAccountApi.AccountSimple[] = [];
+getSimpleAccountList().then((data) => (accountList = data));
+
+const RequestMessageTypes = new Set([
+  'image',
+  'link',
+  'location',
+  'shortvideo',
+  'text',
+  'video',
+  'voice',
+]); // 允许选择的请求消息类型
 
 /** 获取表格列配置 */
 export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
@@ -76,13 +93,84 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   return columns;
 }
 
+/** 新增/修改的表单 */
+export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
+  const schema: VbenFormSchema[] = [];
+
+  // 消息类型（仅消息回复显示）
+  if (msgType === MsgType.Message) {
+    schema.push({
+      fieldName: 'requestMessageType',
+      label: '消息类型',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择',
+        options: getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE).filter((d) =>
+          RequestMessageTypes.has(d.value as string),
+        ),
+      },
+    });
+  }
+
+  // 匹配类型（仅关键词回复显示）
+  if (msgType === MsgType.Keyword) {
+    schema.push({
+      fieldName: 'requestMatch',
+      label: '匹配类型',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择匹配类型',
+        allowClear: true,
+        options: getDictOptions(
+          DICT_TYPE.MP_AUTO_REPLY_REQUEST_MATCH,
+          'number',
+        ),
+      },
+      rules: 'required',
+    });
+  }
+
+  // 关键词（仅关键词回复显示）
+  if (msgType === MsgType.Keyword) {
+    schema.push({
+      fieldName: 'requestKeyword',
+      label: '关键词',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入内容',
+        allowClear: true,
+      },
+      rules: 'required',
+    });
+  }
+  // 回复消息
+  schema.push({
+    fieldName: 'reply',
+    label: '回复消息',
+    component: markRaw(WxReply),
+    // componentProps: {
+    //   modelValue: { type: 'video', content: '12456' },
+    // },
+    modelPropName: 'modelValue',
+  });
+  return schema;
+}
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: markRaw(WxAccountSelect),
+      component: 'ApiSelect',
+      componentProps: {
+        options: accountList.map((item) => ({
+          label: item.name,
+          value: item.id,
+        })),
+        placeholder: '请选择公众号',
+      },
+      defaultValue: accountList[0]?.id,
     },
   ];
 }

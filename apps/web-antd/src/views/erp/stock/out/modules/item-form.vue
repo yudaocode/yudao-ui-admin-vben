@@ -49,7 +49,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(),
+    columns: useFormItemColumns(props.disabled),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
@@ -252,7 +252,6 @@ onMounted(async () => {
     </template>
     <template #actions="{ row }">
       <TableAction
-        v-if="!disabled"
         :actions="[
           {
             label: '删除',

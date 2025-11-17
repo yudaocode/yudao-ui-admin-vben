@@ -1,17 +1,26 @@
 <script lang="ts" setup>
-import type { Menu, RawMenu } from './components/types';
+import type { Menu, RawMenu } from './modules/types';
 
-import { ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 
 import { confirm, ContentWrap, DocAlert, Page } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Button, Form, message } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
+import { getSimpleAccountList } from '#/api/mp/account';
 import { deleteMenu, getMenuList, saveMenu } from '#/api/mp/menu';
-import { WxAccountSelect } from '#/views/mp/components';
-import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/components';
-import { Level, MENU_NOT_SELECTED } from '#/views/mp/menu/data';
+import {
+  Level,
+  MENU_NOT_SELECTED,
+  useGridFormSchema,
+} from '#/views/mp/menu/data';
+import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/modules';
+
+import iphoneBackImg from './modules/assets/iphone_backImg.png';
+import menuFootImg from './modules/assets/menu_foot.png';
+import menuHeadImg from './modules/assets/menu_head.png';
 
 defineOptions({ name: 'MpMenu' });
 
@@ -20,6 +29,25 @@ const loading = ref(false); // 遮罩层
 const accountId = ref(-1);
 const accountName = ref<string>('');
 const menuList = ref<Menu[]>([]);
+
+// 创建表单
+const [AccountForm, accountFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-[240px]',
+    },
+  },
+  layout: 'horizontal',
+  schema: useGridFormSchema(),
+  wrapperClass: 'grid-cols-1',
+  showDefaultActions: false,
+  handleValuesChange: async (values, changedFields) => {
+    // 当 accountId 字段变化时（包括 autoSelect 自动选择），同步更新 accountId
+    if (changedFields.includes('accountId') && values.accountId) {
+      await onAccountChanged(values);
+    }
+  },
+});
 
 // ======================== 菜单操作 ========================
 // 当前选中菜单编码：
@@ -50,11 +78,35 @@ const tempSelfObj = ref<{
 const dialogNewsVisible = ref(false); // 跳转图文时的素材选择弹窗
 
 /** 侦听公众号变化 */
-function onAccountChanged(id: number, name: string) {
-  accountId.value = id;
-  accountName.value = name;
+async function onAccountChanged(values: Record<string, any>) {
+  accountId.value = values.accountId;
+  // 从 API 获取公众号列表并查找对应的公众号名称
+  const accountList = await getSimpleAccountList();
+  const account = accountList.find((item) => item.id === values.accountId);
+  accountName.value = account?.name || '';
   getList();
 }
+
+/** 初始化账号ID - 作为备用方案，防止 handleValuesChange 未触发 */
+async function initAccountId() {
+  // 等待表单初始化完成
+  await nextTick();
+  try {
+    const values = await accountFormApi.getValues();
+    if (values?.accountId && accountId.value === -1) {
+      // 如果表单有值但 accountId 还是初始值，则手动触发一次
+      await onAccountChanged(values);
+    }
+  } catch {
+    // 忽略错误
+  }
+}
+
+// 组件挂载时初始化账号ID
+onMounted(async () => {
+  await nextTick();
+  await initAccountId();
+});
 
 /** 查询并转换菜单 */
 async function getList() {
@@ -249,21 +301,37 @@ function menuToBackend(menu: any) {
       <DocAlert title="公众号菜单" url="https://doc.iocoder.cn/mp/menu/" />
     </template>
 
-    <ContentWrap>
-      <!-- 搜索工作栏 -->
-      <Form class="mb-10 w-full">
-        <Form.Item label="公众号" prop="accountId" class="w-60">
-          <WxAccountSelect @change="onAccountChanged" />
-        </Form.Item>
-      </Form>
+    <!-- 搜索工作栏 -->
+    <!-- <ContentWrap> -->
+    <AccountForm class="-mb-15px w-240px" @values-change="onAccountChanged" />
+    <!-- </ContentWrap> -->
 
-      <div class="clearfix public-account-management mt-10" v-loading="loading">
+    <!-- DONE @hw：貌似高度高了点。就是手机下面部分，空了一大块。 -->
+    <ContentWrap>
+      <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
+      <div
+        class="mx-auto w-[1200px] after:clear-both after:table after:content-['']"
+        v-loading="loading"
+      >
         <!--左边配置菜单-->
-        <div class="left">
-          <div class="weixin-hd">
-            <div class="weixin-title">{{ accountName }}</div>
+        <div
+          class="relative float-left box-border block h-[715px] w-[350px] bg-[length:100%_auto] bg-no-repeat p-[518px_25px_88px]"
+          :style="{ backgroundImage: `url(${iphoneBackImg})` }"
+        >
+          <div
+            class="relative bottom-[426px] left-0 h-[64px] w-[300px] bg-[length:100%] bg-[position:0_0] bg-no-repeat text-center text-white"
+            :style="{ backgroundImage: `url(${menuHeadImg})` }"
+          >
+            <div
+              class="absolute left-0 top-[33px] w-full text-center text-sm text-white"
+            >
+              {{ accountName }}
+            </div>
           </div>
-          <div class="clearfix weixin-menu">
+          <div
+            class="bg-[position:0_0] bg-no-repeat pl-[43px] text-xs after:clear-both after:table after:content-['']"
+            :style="{ backgroundImage: `url(${menuFootImg})` }"
+          >
             <MenuPreviewer
               v-model="menuList"
               :account-id="accountId"
@@ -273,27 +341,25 @@ function menuToBackend(menu: any) {
               @submenu-clicked="(child, x, y) => subMenuClicked(child, x, y)"
             />
           </div>
-          <div class="save-div">
+          <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
+          <div class="mt-[15px] flex items-center justify-center gap-[10px]">
             <Button
-              class="save-btn"
               type="primary"
               @click="onSave"
               v-access:code="['mp:menu:save']"
             >
               保存并发布菜单
             </Button>
-            <Button
-              class="save-btn"
-              danger
-              @click="onClear"
-              v-access:code="['mp:menu:delete']"
-            >
+            <Button danger @click="onClear" v-access:code="['mp:menu:delete']">
               清空菜单
             </Button>
           </div>
         </div>
         <!--右边配置-->
-        <div class="right" v-if="showRightPanel">
+        <div
+          class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5"
+          v-if="showRightPanel"
+        >
           <MenuEditor
             :account-id="accountId"
             :is-parent="isParent"
@@ -302,94 +368,10 @@ function menuToBackend(menu: any) {
           />
         </div>
         <!-- 一进页面就显示的默认页面，当点击左边按钮的时候，就不显示了-->
-        <div v-else class="right">
+        <div v-else class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5">
           <p>请选择菜单配置</p>
         </div>
       </div>
     </ContentWrap>
   </Page>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 */
-
-/* 公共颜色变量 */
-.clearfix {
-  *zoom: 1;
-}
-
-.clearfix::after {
-  clear: both;
-  display: table;
-  content: '';
-}
-
-div {
-  text-align: left;
-}
-
-.weixin-hd {
-  position: relative;
-  bottom: 426px;
-  left: 0;
-  width: 300px;
-  height: 64px;
-  color: #fff;
-  text-align: center;
-  background: transparent url('./components/assets/menu_head.png') no-repeat 0 0;
-  background-position: 0 0;
-  background-size: 100%;
-}
-
-.weixin-title {
-  position: absolute;
-  top: 33px;
-  left: 0;
-  width: 100%;
-  font-size: 14px;
-  color: #fff;
-  text-align: center;
-}
-
-.weixin-menu {
-  padding-left: 43px;
-  font-size: 12px;
-  background: transparent url('./components/assets/menu_foot.png') no-repeat 0 0;
-}
-
-.public-account-management {
-  width: 1200px;
-  // min-width: 1200px;
-  margin: 0 auto;
-
-  .left {
-    position: relative;
-    float: left;
-    box-sizing: border-box;
-    display: block;
-    width: 350px;
-    height: 715px;
-    padding: 518px 25px 88px;
-    background: url('./components/assets/iphone_backImg.png') no-repeat;
-    background-size: 100% auto;
-
-    .save-div {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: center;
-      margin-top: 15px;
-    }
-  }
-
-  /* 右边菜单内容 */
-  .right {
-    float: left;
-    box-sizing: border-box;
-    width: 63%;
-    padding: 20px;
-    margin-left: 20px;
-    background-color: #e8e7e7;
-  }
-}
-</style>
