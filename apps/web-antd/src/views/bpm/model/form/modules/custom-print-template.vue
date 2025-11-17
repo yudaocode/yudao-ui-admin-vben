@@ -5,8 +5,8 @@ import { computed, onBeforeUnmount, ref, shallowRef } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-// @ts-ignore - tinymce vue 声明文件按项目依赖提供
 import Editor from '@tinymce/tinymce-vue';
+import { Alert, Button } from 'ant-design-vue';
 
 import { setupTinyPlugins } from './tinymce-plugin';
 
@@ -23,9 +23,7 @@ const props = withDefaults(
 const tinymceScriptSrc = `${import.meta.env.VITE_BASE}tinymce/tinymce.min.js`;
 
 const [Modal, modalApi] = useVbenModal({
-  closable: true,
   footer: false,
-  title: '自定义模板',
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
@@ -51,7 +49,6 @@ const handleConfirm = () => {
   modalApi.close();
 };
 
-// 提供给 @ 自动补全的字段（默认 + 表单字段）
 const mentionList = computed<MentionItem[]>(() => {
   const base: MentionItem[] = [
     { id: 'startUser', name: '发起人' },
@@ -70,11 +67,10 @@ const mentionList = computed<MentionItem[]>(() => {
     name: `[表单]${it.title}`,
   }));
   return [...base, ...extras];
-});
+}); // 提供给 @ 自动补全的字段（默认 + 表单字段）
 
-// 编辑器
 const valueHtml = ref<string>('');
-const editorRef = shallowRef<any>();
+const editorRef = shallowRef<any>(); // 编辑器
 
 const tinyInit = {
   height: 400,
@@ -103,9 +99,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Modal class="w-3/4">
+  <!-- TODO @jason：a-button 改成 Modal 自带的 onConfirm 替代；= = 我貌似试着改了下，有点问题，略奇怪 -->
+  <Modal class="w-3/4" title="自定义模板">
     <div class="mb-3">
-      <a-alert
+      <Alert
         message="输入 @ 可选择插入流程选项和表单选项"
         type="info"
         show-icon
@@ -119,8 +116,8 @@ onBeforeUnmount(() => {
     />
     <template #footer>
       <div class="flex justify-end gap-2">
-        <a-button @click="modalApi.onCancel()">取 消</a-button>
-        <a-button type="primary" @click="handleConfirm">确 定</a-button>
+        <Button @click="modalApi.onCancel()">取 消</Button>
+        <Button type="primary" @click="handleConfirm">确 定</Button>
       </div>
     </template>
   </Modal>

@@ -319,14 +319,6 @@ const defaultTemplate = `<p style="text-align: center;font-size: 1.25rem;"><stro
 </div>
 <p>&nbsp;</p>`;
 
-const handlePrintTemplateEnableChange = (checked: any) => {
-  const val = !!checked;
-  if (val && !modelData.value.printTemplateSetting.template) {
-    modelData.value.printTemplateSetting.template = defaultTemplate;
-  }
-};
-
-// 自定义打印模板开关
 const printTemplateEnable = computed<boolean>({
   get() {
     return !!modelData.value?.printTemplateSetting?.enable;
@@ -338,9 +330,16 @@ const printTemplateEnable = computed<boolean>({
         template: '',
       };
     }
-    modelData.value.printTemplateSetting.enable = !!val;
+    modelData.value.printTemplateSetting.enable = val;
   },
-});
+}); // 自定义打印模板开关
+
+function handlePrintTemplateEnableChange(checked: any) {
+  const val = !!checked;
+  if (val && !modelData.value.printTemplateSetting.template) {
+    modelData.value.printTemplateSetting.template = defaultTemplate;
+  }
+}
 
 defineExpose({ initData, validate });
 </script>
