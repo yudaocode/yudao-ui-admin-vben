@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// DONE @hw：名字可以缩写成 editor.vue，文件名
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
@@ -49,6 +48,7 @@ watch(menu, () => {
 });
 
 // ======================== 菜单编辑（素材选择） ========================
+
 /** 选择素材 */
 function selectMaterial(item: any) {
   const articleId = item.articleId;
@@ -81,7 +81,6 @@ function deleteMaterial() {
 
 <template>
   <div>
-    <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
     <div>
       <div class="mb-[15px] text-right">
         <Button type="primary" danger @click="emit('delete')">
@@ -139,7 +138,6 @@ function deleteMaterial() {
             allow-clear
           />
         </div>
-        <!-- DONE @hw：1）左侧 filed 宽度，看看要不要统一；2）右侧的 input 宽度也处理下； -->
         <div
           class="mt-5 rounded-[5px] bg-white p-[20px_10px]"
           v-if="menu.type === 'miniprogram'"
@@ -202,7 +200,6 @@ function deleteMaterial() {
             </div>
             <div v-else>
               <Row justify="center">
-                <!-- DONE @hw：html 标签里的 style 要用 tindwind 替代下； -->
                 <Col :span="24" class="text-center">
                   <Button type="primary" @click="showNewsDialog = true">
                     素材库选择

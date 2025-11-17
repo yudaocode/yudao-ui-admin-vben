@@ -25,12 +25,12 @@ import menuHeadImg from './modules/assets/menu_head.png';
 defineOptions({ name: 'MpMenu' });
 
 // ======================== 列表查询 ========================
+
 const loading = ref(false); // 遮罩层
 const accountId = ref(-1);
 const accountName = ref<string>('');
 const menuList = ref<Menu[]>([]);
 
-// 创建表单
 const [AccountForm, accountFormApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -50,6 +50,7 @@ const [AccountForm, accountFormApi] = useVbenForm({
 });
 
 // ======================== 菜单操作 ========================
+
 // 当前选中菜单编码：
 //  * 一级（'x'）
 //  * 二级（'x-y'）
@@ -61,6 +62,7 @@ const activeIndex = ref<string>(MENU_NOT_SELECTED);
 const parentIndex = ref(-1);
 
 // ======================== 菜单编辑 ========================
+
 const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
 const isParent = ref<boolean>(true); // 是否一级菜单，控制MenuEditor中name字段长度
 const activeMenu = ref<Menu>({}); // 选中菜单，MenuEditor的modelValue
@@ -84,25 +86,20 @@ async function onAccountChanged(values: Record<string, any>) {
   const accountList = await getSimpleAccountList();
   const account = accountList.find((item) => item.id === values.accountId);
   accountName.value = account?.name || '';
-  getList();
+  await getList();
 }
 
 /** 初始化账号ID - 作为备用方案，防止 handleValuesChange 未触发 */
 async function initAccountId() {
-  // 等待表单初始化完成
-  await nextTick();
-  try {
-    const values = await accountFormApi.getValues();
-    if (values?.accountId && accountId.value === -1) {
-      // 如果表单有值但 accountId 还是初始值，则手动触发一次
-      await onAccountChanged(values);
-    }
-  } catch {
-    // 忽略错误
+  await nextTick(); // 等待表单初始化完成
+  const values = await accountFormApi.getValues();
+  if (values?.accountId && accountId.value === -1) {
+    // 如果表单有值但 accountId 还是初始值，则手动触发一次
+    await onAccountChanged(values);
   }
 }
 
-// 组件挂载时初始化账号ID
+/** 组件挂载时初始化账号 ID */
 onMounted(async () => {
   await nextTick();
   await initAccountId();
@@ -170,6 +167,7 @@ function resetForm() {
 }
 
 // ======================== 菜单操作 ========================
+
 /** 一级菜单点击事件 */
 function menuClicked(parent: Menu, x: number) {
   // 右侧的表单相关
@@ -221,6 +219,7 @@ async function onDeleteMenu() {
 }
 
 // ======================== 菜单编辑 ========================
+
 /** 保存菜单 */
 async function onSave() {
   await confirm('确定要保存吗?');
@@ -302,13 +301,9 @@ function menuToBackend(menu: any) {
     </template>
 
     <!-- 搜索工作栏 -->
-    <!-- <ContentWrap> -->
     <AccountForm class="-mb-15px w-240px" @values-change="onAccountChanged" />
-    <!-- </ContentWrap> -->
 
-    <!-- DONE @hw：貌似高度高了点。就是手机下面部分，空了一大块。 -->
     <ContentWrap>
-      <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
       <div
         class="mx-auto w-[1200px] after:clear-both after:table after:content-['']"
         v-loading="loading"
@@ -341,7 +336,6 @@ function menuToBackend(menu: any) {
               @submenu-clicked="(child, x, y) => subMenuClicked(child, x, y)"
             />
           </div>
-          <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
           <div class="mt-[15px] flex items-center justify-center gap-[10px]">
             <Button
               type="primary"

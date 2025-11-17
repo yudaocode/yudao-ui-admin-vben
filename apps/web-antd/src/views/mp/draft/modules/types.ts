@@ -1,4 +1,4 @@
-// DONE @hw：要不把 components 里的部分，拿到 modules 里。
+// TODO @hw：这个要融合到 draftApi 里么？类似其他模块的。
 interface NewsItem {
   title: string;
   thumbMediaId: string;

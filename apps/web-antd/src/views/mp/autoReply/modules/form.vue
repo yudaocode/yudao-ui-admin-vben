@@ -41,8 +41,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// 注意：schema 的更新现在在 onOpenChange 中手动处理，避免时序问题
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -115,6 +113,7 @@ const [Modal, modalApi] = useVbenModal({
       // 编辑：加载数据
       const rowData = data.row;
       const formValues: any = { ...rowData };
+      // TODO @hw：下面要删除掉么，注释。
       // delete formValues.responseMessageType;
       // delete formValues.responseContent;
       // delete formValues.responseMediaId;
