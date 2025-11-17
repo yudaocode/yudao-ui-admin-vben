@@ -143,7 +143,7 @@ function initPrintDataMap() {
   printDataMap.value.printTime = printTime.value;
 }
 
-/** 获取打印模板 HTML （TODO 需求实现配置打印模板） */
+/** 获取打印模板 HTML  */
 function getPrintTemplateHTML() {
   if (!printData.value?.printTemplateHtml) return '';
 
@@ -152,16 +152,6 @@ function getPrintTemplateHTML() {
     printData.value.printTemplateHtml,
     'text/html',
   );
-
-  // table 添加 border
-  const tables = doc.querySelectorAll('table');
-  tables.forEach((item) => {
-    item.setAttribute('border', '1');
-    item.setAttribute(
-      'style',
-      `${item.getAttribute('style') || ''}border-collapse:collapse;`,
-    );
-  });
 
   // 替换 mentions
   const mentions = doc.querySelectorAll('[data-w-e-type="mention"]');
@@ -181,26 +171,23 @@ function getPrintTemplateHTML() {
 
   if (processRecords.length > 0) {
     // 构建流程记录 html
-    processRecordTable.setAttribute('border', '1');
-    processRecordTable.setAttribute(
-      'style',
-      'width:100%;border-collapse:collapse;',
-    );
+    processRecordTable.setAttribute('class', 'w-full border-collapse');
 
     const headTr = document.createElement('tr');
     const headTd = document.createElement('td');
     headTd.setAttribute('colspan', '2');
-    headTd.setAttribute('width', 'auto');
-    headTd.setAttribute('style', 'text-align: center;');
-    headTd.innerHTML = '流程节点';
+    headTd.setAttribute('class', 'border border-black p-1.5 text-center');
+    headTd.innerHTML = '流程记录';
     headTr.append(headTd);
     processRecordTable.append(headTr);
 
     printData.value?.tasks.forEach((item) => {
       const tr = document.createElement('tr');
       const td1 = document.createElement('td');
+      td1.setAttribute('class', 'border border-black p-1.5');
       td1.innerHTML = item.name;
       const td2 = document.createElement('td');
+      td2.setAttribute('class', 'border border-black p-1.5');
       td2.innerHTML = item.description;
       tr.append(td1);
       tr.append(td2);
@@ -229,35 +216,34 @@ function getPrintTemplateHTML() {
         <h2 class="mb-3 text-center text-xl font-bold">
           {{ printData.processInstance.name }}
         </h2>
-        <div class="mb-2 text-right text-sm">
-          {{ `打印人员: ${userName}` }}
-        </div>
         <div class="mb-2 flex justify-between text-sm">
           <div>
             {{ `流程编号: ${printData.processInstance.id}` }}
           </div>
-          <div>{{ `打印时间: ${printTime}` }}</div>
+          <div>
+            {{ `打印人员: ${userName}` }}
+          </div>
         </div>
-        <table class="mt-3 w-full border-collapse border border-gray-400">
+        <table class="mt-3 w-full border-collapse">
           <tbody>
             <tr>
-              <td class="w-1/4 border border-gray-400 p-1.5">发起人</td>
-              <td class="w-1/4 border border-gray-400 p-1.5">
+              <td class="w-1/4 border border-black p-1.5">发起人</td>
+              <td class="w-1/4 border border-black p-1.5">
                 {{ printData.processInstance.startUser?.nickname }}
               </td>
-              <td class="w-1/4 border border-gray-400 p-1.5">发起时间</td>
-              <td class="w-1/4 border border-gray-400 p-1.5">
-                <!-- TODO @jason：这里会告警呢 -->
+              <td class="w-1/4 border border-black p-1.5">发起时间</td>
+              <td class="w-1/4 border border-black p-1.5">
+                <!-- TODO @jason：这里会告警呢 TODO @芋艿 我这边不会有警告呀 -->
                 {{ formatDate(printData.processInstance.startTime) }}
               </td>
             </tr>
             <tr>
-              <td class="w-1/4 border border-gray-400 p-1.5">所属部门</td>
-              <td class="w-1/4 border border-gray-400 p-1.5">
+              <td class="w-1/4 border border-black p-1.5">所属部门</td>
+              <td class="w-1/4 border border-black p-1.5">
                 {{ printData.processInstance.startUser?.deptName }}
               </td>
-              <td class="w-1/4 border border-gray-400 p-1.5">流程状态</td>
-              <td class="w-1/4 border border-gray-400 p-1.5">
+              <td class="w-1/4 border border-black p-1.5">流程状态</td>
+              <td class="w-1/4 border border-black p-1.5">
                 {{
                   getDictLabel(
                     DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS,
@@ -268,33 +254,33 @@ function getPrintTemplateHTML() {
             </tr>
             <tr>
               <td
-                class="w-full border border-gray-400 p-1.5 text-center"
+                class="w-full border border-black p-1.5 text-center"
                 colspan="4"
               >
                 <h4>表单内容</h4>
               </td>
             </tr>
             <tr v-for="item in formFields" :key="item.id">
-              <td class="w-1/5 border border-gray-400 p-1.5">
+              <td class="w-1/5 border border-black p-1.5">
                 {{ item.name }}
               </td>
-              <td class="w-4/5 border border-gray-400 p-1.5" colspan="3">
+              <td class="w-4/5 border border-black p-1.5" colspan="3">
                 <div v-html="item.html"></div>
               </td>
             </tr>
             <tr>
               <td
-                class="w-full border border-gray-400 p-1.5 text-center"
+                class="w-full border border-black p-1.5 text-center"
                 colspan="4"
               >
-                <h4>流程节点</h4>
+                <h4>流程记录</h4>
               </td>
             </tr>
             <tr v-for="item in printData.tasks" :key="item.id">
-              <td class="w-1/5 border border-gray-400 p-1.5">
+              <td class="w-1/5 border border-black p-1.5">
                 {{ item.name }}
               </td>
-              <td class="w-4/5 border border-gray-400 p-1.5" colspan="3">
+              <td class="w-4/5 border border-black p-1.5" colspan="3">
                 {{ item.description }}
                 <div v-if="item.signPicUrl && item.signPicUrl.length > 0">
                   <img class="h-10 w-[90px]" :src="item.signPicUrl" alt="" />
