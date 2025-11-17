@@ -143,4 +143,3 @@ function emitActivityChange() {
     @change="handleActivitySelected"
   />
 </template>
-

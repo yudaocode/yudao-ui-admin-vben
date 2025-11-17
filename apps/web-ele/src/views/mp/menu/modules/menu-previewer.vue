@@ -127,17 +127,26 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
     @end="onParentDragEnd"
   >
     <template #item="{ element: parent, index: x }">
-      <div class="menu-bottom">
+      <div
+        class="relative float-left box-border block w-[85.5px] cursor-pointer border border-[#ebedee] bg-white text-center"
+      >
         <!-- 一级菜单 -->
         <div
+          class="flex h-11 w-full items-center justify-center border leading-[44px]"
+          :class="
+            props.activeIndex === `${x}`
+              ? 'border-[#2bb673]'
+              : 'border-transparent'
+          "
           @click="menuClicked(parent, x)"
-          class="menu-item"
-          :class="{ active: props.activeIndex === `${x}` }"
         >
           <IconifyIcon icon="ep:fold" color="black" />{{ parent.name }}
         </div>
         <!-- 以下为二级菜单-->
-        <div class="submenu" v-if="props.parentIndex === x && parent.children">
+        <div
+          class="absolute bottom-[45px] w-[85.5px]"
+          v-if="props.parentIndex === x && parent.children"
+        >
           <draggable
             v-model="parent.children"
             item-key="id"
@@ -146,11 +155,17 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
             @end="onChildDragEnd"
           >
             <template #item="{ element: child, index: y }">
-              <div class="menu-bottom subtitle">
+              <div
+                class="relative float-left box-border block w-[85.5px] border border-[#ebedee] bg-white text-center"
+              >
                 <div
-                  class="menu-sub-item"
+                  class="box-border h-11 border leading-[44px]"
+                  :class="
+                    props.activeIndex === `${x}-${y}`
+                      ? 'border-[#2bb673]'
+                      : 'border-transparent'
+                  "
                   v-if="parent.children"
-                  :class="{ active: props.activeIndex === `${x}-${y}` }"
                   @click="subMenuClicked(child, x, y)"
                 >
                   {{ child.name }}
@@ -160,11 +175,11 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
           </draggable>
           <!-- 二级菜单加号， 当长度 小于 5 才显示二级菜单的加号  -->
           <div
-            class="menu-bottom menu-addicon"
+            class="relative float-left box-border flex h-[46px] w-[85.5px] cursor-pointer items-center justify-center border border-[#ebedee] bg-white text-center"
             v-if="!parent.children || parent.children.length < 5"
             @click="addSubMenu(x, parent)"
           >
-            <IconifyIcon icon="ep:plus" class="plus" />
+            <IconifyIcon icon="ep:plus" class="" />
           </div>
         </div>
       </div>
@@ -173,80 +188,15 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
 
   <!-- 一级菜单加号 -->
   <div
-    class="menu-bottom menu-addicon"
+    class="relative float-left box-border flex h-[46px] w-[85.5px] cursor-pointer items-center justify-center border border-[#ebedee] bg-white text-center"
     v-if="menuList.length < 3"
     @click="addMenu"
   >
-    <IconifyIcon icon="ep:plus" class="plus" />
+    <IconifyIcon icon="ep:plus" class="" />
   </div>
 </template>
-
 <style lang="scss" scoped>
-.menu-bottom {
-  position: relative;
-  float: left;
-  box-sizing: border-box;
-  display: block;
-  width: 85.5px;
-  text-align: center;
-  cursor: pointer;
-  background-color: #fff;
-  border: 1px solid #ebedee;
-
-  &.menu-addicon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 46px;
-    line-height: 46px;
-
-    .plus {
-      color: #2bb673;
-    }
-  }
-
-  .menu-item {
-    // text-align: center;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 44px;
-    line-height: 44px;
-
-    &.active {
-      border: 1px solid #2bb673;
-    }
-  }
-
-  .menu-sub-item {
-    box-sizing: border-box;
-    height: 44px;
-    line-height: 44px;
-    text-align: center;
-
-    &.active {
-      border: 1px solid #2bb673;
-    }
-  }
-}
-
-/* 第二级菜单 */
-.submenu {
-  position: absolute;
-  bottom: 45px;
-  width: 85.5px;
-
-  .subtitle {
-    box-sizing: border-box;
-    background-color: #fff;
-  }
-}
-
 .draggable-ghost {
-  background: #f7fafc;
-  border: 1px solid #4299e1;
-  opacity: 0.5;
+  @apply border border-[#4299e1] bg-[#f7fafc] opacity-50;
 }
 </style>

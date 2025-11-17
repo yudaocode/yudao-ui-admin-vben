@@ -1,0 +1,312 @@
+<!--
+  - Copyright (C) 2018-2019
+  - All rights reserved, Designed By www.joolun.com
+  芋道源码：
+-->
+<script lang="ts" setup>
+import { onMounted, reactive, ref } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
+import { formatTime } from '@vben/utils';
+
+import {
+  ElButton,
+  ElPagination,
+  ElRow,
+  ElTable,
+  ElTableColumn,
+} from 'element-plus';
+
+import * as MpDraftApi from '#/api/mp/draft';
+import * as MpFreePublishApi from '#/api/mp/freePublish';
+import * as MpMaterialApi from '#/api/mp/material';
+import News from '#/views/mp/components/news/news.vue';
+import VideoPlayer from '#/views/mp/components/video-play/video-play.vue';
+import VoicePlayer from '#/views/mp/components/voice-play/voice-play.vue';
+
+import { NewsType } from './types';
+
+defineOptions({ name: 'MaterialSelect' });
+
+const props = withDefaults(
+  defineProps<{
+    accountId: number;
+    newsType?: NewsType;
+    type: string;
+  }>(),
+  {
+    newsType: NewsType.Published,
+  },
+);
+
+const emit = defineEmits(['selectMaterial']);
+
+// 遮罩层
+const loading = ref(false);
+// 总条数
+const total = ref(0);
+// 数据列表
+const list = ref<any[]>([]);
+// 查询参数
+const queryParams = reactive({
+  pageNo: 1,
+  pageSize: 10,
+  accountId: props.accountId,
+});
+
+/** 选择素材 */
+function selectMaterialFun(item: any) {
+  emit('selectMaterial', item);
+}
+
+/** 获取分页数据 */
+async function getPage() {
+  loading.value = true;
+  try {
+    if (props.type === 'news' && props.newsType === NewsType.Published) {
+      // 【图文】+ 【已发布】
+      await getFreePublishPageFun();
+    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
+      // 【图文】+ 【草稿】
+      await getDraftPageFun();
+    } else {
+      // 【素材】
+      await getMaterialPageFun();
+    }
+  } finally {
+    loading.value = false;
+  }
+}
+
+/** 获取素材分页 */
+async function getMaterialPageFun() {
+  const data = await MpMaterialApi.getMaterialPage({
+    ...queryParams,
+    type: props.type,
+  });
+  list.value = data.list;
+  total.value = data.total;
+}
+
+/** 获取已发布图文分页 */
+async function getFreePublishPageFun() {
+  const data = await MpFreePublishApi.getFreePublishPage(queryParams);
+  data.list.forEach((item: any) => {
+    const articles = item.content.newsItem;
+    articles.forEach((article: any) => {
+      article.picUrl = article.thumbUrl;
+    });
+  });
+  list.value = data.list;
+  total.value = data.total;
+}
+
+/** 获取草稿图文分页 */
+async function getDraftPageFun() {
+  const data = await MpDraftApi.getDraftPage(queryParams);
+  data.list.forEach((draft: any) => {
+    const articles = draft.content.newsItem;
+    articles.forEach((article: any) => {
+      article.picUrl = article.thumbUrl;
+    });
+  });
+  list.value = data.list;
+  total.value = data.total;
+}
+
+onMounted(async () => {
+  getPage();
+});
+</script>
+
+<template>
+  <div class="pb-30px">
+    <!-- 类型：image -->
+    <div v-if="props.type === 'image'">
+      <div class="waterfall" v-loading="loading">
+        <div class="waterfall-item" v-for="item in list" :key="item.mediaId">
+          <img class="material-img" :src="item.url" />
+          <p class="item-name">{{ item.name }}</p>
+          <ElRow class="ope-row">
+            <ElButton type="success" @click="selectMaterialFun(item)">
+              选择
+              <IconifyIcon icon="ep:circle-check" />
+            </ElButton>
+          </ElRow>
+        </div>
+      </div>
+      <!-- 分页组件 -->
+      <ElPagination
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="total"
+        v-model:current-page="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        @current-change="getMaterialPageFun"
+        @size-change="getMaterialPageFun"
+      />
+    </div>
+    <!-- 类型：voice -->
+    <div v-else-if="props.type === 'voice'">
+      <!-- 列表 -->
+      <ElTable v-loading="loading" :data="list">
+        <ElTableColumn label="编号" align="center" prop="mediaId" />
+        <ElTableColumn label="文件名" align="center" prop="name" />
+        <ElTableColumn label="语音" align="center">
+          <template #default="scope">
+            <VoicePlayer :url="scope.row.url" />
+          </template>
+        </ElTableColumn>
+        <ElTableColumn
+          label="上传时间"
+          align="center"
+          prop="createTime"
+          width="180"
+          :formatter="
+            (row: any) => formatTime(row.createTime, 'YYYY-MM-DD HH:mm:ss')
+          "
+        />
+        <ElTableColumn label="操作" align="center" fixed="right">
+          <template #default="scope">
+            <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
+              选择
+              <IconifyIcon icon="ep:plus" />
+            </ElButton>
+          </template>
+        </ElTableColumn>
+      </ElTable>
+      <!-- 分页组件 -->
+      <ElPagination
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="total"
+        v-model:current-page="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        @current-change="getPage"
+        @size-change="getPage"
+      />
+    </div>
+    <!-- 类型：video -->
+    <div v-else-if="props.type === 'video'">
+      <!-- 列表 -->
+      <ElTable v-loading="loading" :data="list">
+        <ElTableColumn label="编号" align="center" prop="mediaId" />
+        <ElTableColumn label="文件名" align="center" prop="name" />
+        <ElTableColumn label="标题" align="center" prop="title" />
+        <ElTableColumn label="介绍" align="center" prop="introduction" />
+        <ElTableColumn label="视频" align="center">
+          <template #default="scope">
+            <VideoPlayer :url="scope.row.url" />
+          </template>
+        </ElTableColumn>
+        <ElTableColumn
+          label="上传时间"
+          align="center"
+          prop="createTime"
+          width="180"
+          :formatter="
+            (row: any) => formatTime(row.createTime, 'YYYY-MM-DD HH:mm:ss')
+          "
+        />
+        <ElTableColumn
+          label="操作"
+          align="center"
+          fixed="right"
+          class-name="small-padding fixed-width"
+        >
+          <template #default="scope">
+            <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
+              选择
+              <IconifyIcon icon="akar-icons:circle-plus" />
+            </ElButton>
+          </template>
+        </ElTableColumn>
+      </ElTable>
+      <!-- 分页组件 -->
+      <ElPagination
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="total"
+        v-model:current-page="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        @current-change="getMaterialPageFun"
+        @size-change="getMaterialPageFun"
+      />
+    </div>
+    <!-- 类型：news -->
+    <div v-else-if="props.type === 'news'">
+      <div class="waterfall" v-loading="loading">
+        <div class="waterfall-item" v-for="item in list" :key="item.mediaId">
+          <div v-if="item.content && item.content.newsItem">
+            <News :articles="item.content.newsItem" />
+            <ElRow class="ope-row">
+              <ElButton type="success" @click="selectMaterialFun(item)">
+                选择
+                <IconifyIcon icon="ep:circle-check" />
+              </ElButton>
+            </ElRow>
+          </div>
+        </div>
+      </div>
+      <!-- 分页组件 -->
+      <ElPagination
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="total"
+        v-model:current-page="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        @current-change="getMaterialPageFun"
+        @size-change="getMaterialPageFun"
+      />
+    </div>
+  </div>
+</template>
+<style lang="scss" scoped>
+@media (width >= 992px) and (width <= 1300px) {
+  .waterfall {
+    column-count: 3;
+  }
+
+  p {
+    color: red;
+  }
+}
+
+@media (width >= 768px) and (width <= 991px) {
+  .waterfall {
+    column-count: 2;
+  }
+
+  p {
+    color: orange;
+  }
+}
+
+@media (width <= 767px) {
+  .waterfall {
+    column-count: 1;
+  }
+}
+
+.waterfall {
+  column-gap: 10px;
+  width: 100%;
+  margin: 0 auto;
+  column-count: 5;
+}
+
+.waterfall-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #eaeaea;
+  break-inside: avoid;
+}
+
+.material-img {
+  width: 100%;
+}
+
+p {
+  line-height: 30px;
+}
+</style>

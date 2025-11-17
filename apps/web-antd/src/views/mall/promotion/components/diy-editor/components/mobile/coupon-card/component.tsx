@@ -1,3 +1,5 @@
+/*  eslint-disable vue/one-component-per-file */
+// TODO @YunaiV eslint检测了
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
 import { defineComponent } from 'vue';
