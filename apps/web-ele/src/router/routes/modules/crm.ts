@@ -83,6 +83,54 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/product/detail/index.vue'),
       },
+      {
+        path: 'statistics/customer',
+        name: 'CrmStatisticsCustomer',
+        meta: {
+          title: '客户统计',
+          activePath: '/crm/statistics/customer',
+        },
+        component: () =>
+          import('#/views/crm/statistics/customer/index.vue'),
+      },
+      {
+        path: 'statistics/funnel',
+        name: 'CrmStatisticsFunnel',
+        meta: {
+          title: '销售漏斗',
+          activePath: '/crm/statistics/funnel',
+        },
+        component: () => import('#/views/crm/statistics/funnel/index.vue'),
+      },
+      {
+        path: 'statistics/performance',
+        name: 'CrmStatisticsPerformance',
+        meta: {
+          title: '员工业绩',
+          activePath: '/crm/statistics/performance',
+        },
+        component: () =>
+          import('#/views/crm/statistics/performance/index.vue'),
+      },
+      {
+        path: 'statistics/portrait',
+        name: 'CrmStatisticsPortrait',
+        meta: {
+          title: '客户画像',
+          activePath: '/crm/statistics/portrait',
+        },
+        component: () =>
+          import('#/views/crm/statistics/portrait/index.vue'),
+      },
+      {
+        path: 'statistics/rank',
+        name: 'CrmStatisticsRank',
+        meta: {
+          title: '排行榜',
+          activePath: '/crm/statistics/rank',
+        },
+        component: () => import('#/views/crm/statistics/rank/index.vue'),
+      },
     ],
   },
 ];

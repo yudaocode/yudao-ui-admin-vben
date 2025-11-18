@@ -8,7 +8,13 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage, ElTabPane, ElTabs } from 'element-plus';
+import {
+  ElButton,
+  ElLoading,
+  ElMessage,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

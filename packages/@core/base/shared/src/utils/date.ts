@@ -20,6 +20,10 @@ type Format =
   | (string & {});
 
 export function formatDate(time?: FormatDate, format: Format = 'YYYY-MM-DD') {
+  // 日期不存在，则返回空
+  if (!time) {
+    return '';
+  }
   try {
     const date = dayjs.isDayjs(time) ? time : dayjs(time);
     if (!date.isValid()) {
