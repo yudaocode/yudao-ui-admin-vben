@@ -385,7 +385,7 @@ onMounted(() => {
             }"
           >
             <div
-              class="bg-size-[auto_auto] relative mx-auto my-0 min-h-full w-96 items-center justify-center bg-no-repeat"
+              class="relative mx-auto my-0 min-h-full w-96 items-center justify-center bg-auto bg-no-repeat"
             >
               <draggable
                 v-model="pageComponents"
