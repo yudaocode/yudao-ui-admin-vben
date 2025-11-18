@@ -36,14 +36,13 @@ const tabs = useTabs();
 const loading = ref(false); // 加载中
 const contractId = ref(0); // 合同编号
 const contract = ref<CrmContractApi.Contract>({} as CrmContractApi.Contract); // 合同详情
-const activeTabName = ref('1'); // 选中 Tab 名
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+const activeTabName = ref('1'); // 选中 Tab 名
 
 const [Descriptions] = useDescription({
   border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 
@@ -143,11 +142,7 @@ onMounted(() => {
             :biz-type="BizTypeEnum.CRM_CONTRACT"
           />
         </ElTabPane>
-        <ElTabPane
-          label="回款"
-          name="4"
-          v-if="contract.customerId"
-        >
+        <ElTabPane label="回款" name="4" v-if="contract.customerId">
           <ReceivablePlanDetailsList
             :contract-id="contractId"
             :customer-id="contract.customerId"

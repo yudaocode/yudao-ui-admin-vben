@@ -197,6 +197,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        placeholder: '请输入产品总金额',
       },
       rules: z.number().min(0).optional().default(0),
     },
@@ -207,6 +208,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        placeholder: '请输入整单折扣',
       },
       rules: z.number().min(0).max(100).optional().default(0),
     },
