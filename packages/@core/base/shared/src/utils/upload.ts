@@ -110,14 +110,14 @@ export function isImage(filename: null | string | undefined): boolean {
  * @param bytes 文件大小（字节）
  * @returns 格式化后的文件大小字符串
  */
-export function formatFileSize(bytes: number): string {
+export function formatFileSize(bytes: number, digits = 2): string {
   if (bytes === 0) {
     return '0 B';
   }
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
+  const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const index = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${Number.parseFloat((bytes / k ** index).toFixed(digits))} ${unitArr[index]}`;
 }
 
 /**
