@@ -167,9 +167,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid>
       <template #toolbar-actions>
         <ElTabs
-          v-model:model-value="sceneType"
           class="w-full"
           @tab-change="handleChangeSceneType"
+          v-model:model-value="sceneType"
         >
           <ElTabPane label="我负责的" name="1" />
           <ElTabPane label="我参与的" name="2" />
