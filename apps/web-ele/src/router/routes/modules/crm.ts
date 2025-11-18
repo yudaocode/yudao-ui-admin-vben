@@ -11,15 +11,15 @@ const routes: RouteRecordRaw[] = [
       hideInMenu: true,
     },
     children: [
-      // {
-      //   path: 'clue/detail/:id',
-      //   name: 'CrmClueDetail',
-      //   meta: {
-      //     title: '线索详情',
-      //     activePath: '/crm/clue',
-      //   },
-      //   component: () => import('#/views/crm/clue/detail/index.vue'),
-      // },
+      {
+        path: 'clue/detail/:id',
+        name: 'CrmClueDetail',
+        meta: {
+          title: '线索详情',
+          activePath: '/crm/clue',
+        },
+        component: () => import('#/views/crm/clue/detail/index.vue'),
+      },
       // {
       //   path: 'customer/detail/:id',
       //   name: 'CrmCustomerDetail',

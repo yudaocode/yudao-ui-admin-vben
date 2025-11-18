@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, Tabs } from 'ant-design-vue';
+import { ElCard, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -32,9 +32,10 @@ const clueId = ref(0); // 线索编号
 const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue); // 线索详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+const activeTabName = ref('1'); // 选中 Tab 名
 
 const [Descriptions] = useDescription({
-  bordered: false,
+  border: false,
   column: 4,
   schema: useDetailSchema(),
 });
@@ -91,7 +92,7 @@ async function handleTransform(): Promise<boolean | undefined> {
         // 转化为客户
         await transformClue(clueId.value);
         // 提示并返回成功
-        message.success('转化客户成功');
+        ElMessage.success('转化客户成功');
         resolve(true);
       })
       .catch(() => {
@@ -144,18 +145,18 @@ onMounted(() => {
         ]"
       />
     </template>
-    <Card class="min-h-[10%]">
+    <ElCard class="min-h-[10%]">
       <Descriptions :data="clue" />
-    </Card>
-    <Card class="mt-4 min-h-[60%]">
-      <Tabs :tab-bar-gutter="16">
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+    </ElCard>
+    <ElCard class="mt-4 min-h-[60%]">
+      <ElTabs v-model:model-value="activeTabName">
+        <ElTabPane label="跟进记录" name="1">
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
+        </ElTabPane>
+        <ElTabPane label="基本信息" name="2">
           <Info :clue="clue" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
+        </ElTabPane>
+        <ElTabPane label="团队成员" name="3">
           <PermissionList
             ref="permissionListRef"
             :biz-id="clueId"
@@ -163,11 +164,11 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
+        </ElTabPane>
+        <ElTabPane label="操作日志" name="4">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
-      </Tabs>
-    </Card>
+        </ElTabPane>
+      </ElTabs>
+    </ElCard>
   </Page>
 </template>

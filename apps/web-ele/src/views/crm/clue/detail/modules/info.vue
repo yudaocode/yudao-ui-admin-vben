@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CrmClueApi } from '#/api/crm/clue';
 
-import { Divider } from 'ant-design-vue';
+import { ElDivider } from 'element-plus';
 
 import { useDescription } from '#/components/description';
 import { useFollowUpDetailSchema } from '#/views/crm/followup/data';
@@ -14,25 +14,23 @@ defineProps<{
 
 const [BaseDescriptions] = useDescription({
   title: '基本信息',
-  bordered: false,
+  border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailBaseSchema(),
 });
 
 const [SystemDescriptions] = useDescription({
   title: '系统信息',
-  bordered: false,
+  border: false,
   column: 3,
-  class: 'mx-4',
   schema: useFollowUpDetailSchema(),
 });
 </script>
 
 <template>
-  <div>
+  <div class="p-4">
     <BaseDescriptions :data="clue" />
-    <Divider />
+    <ElDivider />
     <SystemDescriptions :data="clue" />
   </div>
 </template>
