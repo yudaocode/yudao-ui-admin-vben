@@ -34,14 +34,11 @@ const receivablePlan = ref<CrmReceivablePlanApi.Plan>(
 );
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
-
-// 校验编辑权限
-const validateWrite = () => permissionListRef.value?.validateWrite;
+const validateWrite = () => permissionListRef.value?.validateWrite; // 校验编辑权限
 
 const [Descriptions] = useDescription({
   bordered: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

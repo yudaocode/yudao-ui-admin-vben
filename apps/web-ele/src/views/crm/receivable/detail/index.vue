@@ -34,14 +34,13 @@ const receivableId = ref(0); // 回款编号
 const receivable = ref<CrmReceivableApi.Receivable>(
   {} as CrmReceivableApi.Receivable,
 ); // 回款详情
-const activeTabName = ref('1'); // 选中 Tab 名
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+const activeTabName = ref('1'); // 选中 Tab 名
 
 const [Descriptions] = useDescription({
   border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 
