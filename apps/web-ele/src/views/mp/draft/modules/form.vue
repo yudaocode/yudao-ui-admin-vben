@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { NewsItem } from './types';
 
-import { computed, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -27,6 +27,11 @@ const getTitle = computed(() => {
   return formData.value?.isCreating ? '新建图文' : '修改图文';
 });
 
+// 提供 accountId 给子组件
+provide(
+  'accountId',
+  computed(() => formData.value?.accountId),
+);
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (!formData.value) {

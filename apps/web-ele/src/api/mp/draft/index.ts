@@ -50,13 +50,9 @@ export function updateDraft(
   mediaId: string,
   articles: MpDraftApi.Article[],
 ) {
-  return requestClient.put(
-    '/mp/draft/update',
-    { articles },
-    {
-      params: { accountId, mediaId },
-    },
-  );
+  return requestClient.put('/mp/draft/update', articles, {
+    params: { accountId, mediaId },
+  });
 }
 
 /** 删除草稿 */

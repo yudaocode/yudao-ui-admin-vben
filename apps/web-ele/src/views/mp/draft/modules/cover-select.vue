@@ -80,20 +80,22 @@ function onUploadError(err: Error) {
 <template>
   <div>
     <p>封面:</p>
-    <div class="thumb-div">
+    <div
+      class="inline-flex w-full flex-col items-center justify-center text-center"
+    >
       <ElImage
         v-if="newsItem.thumbUrl"
-        style="width: 300px; max-height: 300px"
+        class="max-h-[300px] w-[300px]"
         :src="newsItem.thumbUrl"
         fit="contain"
       />
       <IconifyIcon
         v-else
         icon="ep:plus"
-        class="avatar-uploader-icon"
-        :class="isFirst ? 'avatar' : 'avatar1'"
+        class="border border-[#d9d9d9] text-center text-[28px] leading-[120px] text-[#8c939d]"
+        :class="isFirst ? 'h-[120px] w-[230px]' : 'h-[120px] w-[120px]'"
       />
-      <div class="thumb-but">
+      <div class="m-1.5">
         <ElUpload
           :action="UPLOAD_URL"
           :headers="HEADERS"
@@ -112,12 +114,12 @@ function onUploadError(err: Error) {
             size="small"
             type="primary"
             @click="showImageDialog = true"
-            style="margin-left: 5px"
+            class="ml-1.5"
           >
             素材库选择
           </ElButton>
           <template #tip>
-            <div class="el-upload__tip">
+            <div class="ml-1.5">
               支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
             </div>
           </template>
@@ -139,43 +141,3 @@ function onUploadError(err: Error) {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.el-upload__tip {
-  margin-left: 5px;
-}
-
-.thumb-div {
-  display: inline-block;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
-
-  .avatar-uploader-icon {
-    width: 120px;
-    height: 120px;
-    font-size: 28px;
-    line-height: 120px;
-    color: #8c939d;
-    text-align: center;
-    border: 1px solid #d9d9d9;
-  }
-
-  .avatar {
-    width: 230px;
-    height: 120px;
-  }
-
-  .avatar1 {
-    width: 120px;
-    height: 120px;
-  }
-
-  .thumb-but {
-    margin: 5px;
-  }
-}
-</style>
