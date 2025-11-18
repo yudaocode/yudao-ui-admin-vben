@@ -9,13 +9,19 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isNumber, isObject, isString } from '@vben/utils';
+import {
+  defaultImageAccepts,
+  isFunction,
+  isImage,
+  isNumber,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { Dialog, Upload } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 
-import { checkImgType, defaultImageAccepts } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 
@@ -164,7 +170,7 @@ async function beforeUpload(file: UploadFile) {
   }
 
   const { maxSize, accept } = props;
-  const isAct = checkImgType(file.raw!, accept);
+  const isAct = isImage(file.raw!.name, accept);
   if (!isAct) {
     message.error($t('ui.upload.acceptUpload', [accept]));
     isActMsg.value = false;

@@ -15,11 +15,16 @@ import { ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isObject, isString } from '@vben/utils';
+import {
+  defaultImageAccepts,
+  isFunction,
+  isImage,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { ElMessage, ElUpload } from 'element-plus';
 
-import { checkImgType, defaultImageAccepts } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 
@@ -173,7 +178,7 @@ const handleRemove = async (file: UploadFile) => {
 
 const beforeUpload = async (file: File) => {
   const { maxSize, accept } = props;
-  const isAct = checkImgType(file, accept);
+  const isAct = isImage(file.name, accept);
   if (!isAct) {
     ElMessage.error($t('ui.upload.acceptUpload', [accept]));
     isActMsg.value = false;

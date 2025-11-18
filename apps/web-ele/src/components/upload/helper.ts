@@ -6,15 +6,3 @@ export function checkFileType(file: File, accepts: string[]) {
   const reg = new RegExp(`${String.raw`\.(` + newTypes})$`, 'i');
   return reg.test(file.name);
 }
-
-/**
- * 默认图片类型
- */
-export const defaultImageAccepts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-export function checkImgType(
-  file: File,
-  accepts: string[] = defaultImageAccepts,
-) {
-  return checkFileType(file, accepts);
-}

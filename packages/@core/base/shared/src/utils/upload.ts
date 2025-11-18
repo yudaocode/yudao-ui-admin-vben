@@ -91,17 +91,33 @@ export function getFileNameFromUrl(url: null | string | undefined): string {
 }
 
 /**
+ * 默认图片类型
+ */
+export const defaultImageAccepts = [
+  'bmp',
+  'gif',
+  'jpeg',
+  'jpg',
+  'png',
+  'svg',
+  'webp',
+];
+
+/**
  * 判断文件是否为图片
  *
  * @param filename 文件名
  * @returns 是否为图片
  */
-export function isImage(filename: null | string | undefined): boolean {
-  if (!filename) {
+export function isImage(
+  filename: null | string | undefined,
+  accepts: string[] = defaultImageAccepts,
+): boolean {
+  if (!filename || accepts.length === 0) {
     return false;
   }
   const ext = filename.split('.').pop()?.toLowerCase() || '';
-  return ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp'].includes(ext);
+  return accepts.includes(ext);
 }
 
 /**
