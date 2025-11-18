@@ -6,7 +6,7 @@ import { computed, onBeforeUnmount, ref, shallowRef } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import Editor from '@tinymce/tinymce-vue';
-import { Alert, Button } from 'ant-design-vue';
+import { Alert } from 'ant-design-vue';
 
 import { setupTinyPlugins } from './tinymce-plugin';
 
@@ -19,11 +19,14 @@ const props = withDefaults(
   },
 );
 
+const emits = defineEmits<{
+  (e: 'confirm', value: string): void;
+}>();
+
 /** TinyMCE 自托管：https://www.jianshu.com/p/59a9c3802443 */
 const tinymceScriptSrc = `${import.meta.env.VITE_BASE}tinymce/tinymce.min.js`;
 
 const [Modal, modalApi] = useVbenModal({
-  footer: false,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
@@ -40,14 +43,11 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  onConfirm() {
+    emits('confirm', valueHtml.value);
+    modalApi.close();
+  },
 });
-
-const handleConfirm = () => {
-  /** 通过 setData 传递确认的数据，在父组件的 onConfirm 中获取 */
-  modalApi.setData({ confirmedTemplate: valueHtml.value as string });
-  modalApi.onConfirm();
-  modalApi.close();
-};
 
 const mentionList = computed<MentionItem[]>(() => {
   const base: MentionItem[] = [
@@ -99,7 +99,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- TODO @jason：a-button 改成 Modal 自带的 onConfirm 替代；= = 我貌似试着改了下，有点问题，略奇怪 -->
   <Modal class="w-3/4" title="自定义模板">
     <div class="mb-3">
       <Alert
@@ -114,11 +113,5 @@ onBeforeUnmount(() => {
       :tinymce-script-src="tinymceScriptSrc"
       license-key="gpl"
     />
-    <template #footer>
-      <div class="flex justify-end gap-2">
-        <Button @click="modalApi.onCancel()">取 消</Button>
-        <Button type="primary" @click="handleConfirm">确 定</Button>
-      </div>
-    </template>
   </Modal>
 </template>

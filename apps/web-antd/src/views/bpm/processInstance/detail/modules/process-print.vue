@@ -233,7 +233,6 @@ function getPrintTemplateHTML() {
               </td>
               <td class="w-1/4 border border-black p-1.5">发起时间</td>
               <td class="w-1/4 border border-black p-1.5">
-                <!-- TODO @jason：这里会告警呢 TODO @芋艿 我这边不会有警告呀 -->
                 {{ formatDate(printData.processInstance.startTime) }}
               </td>
             </tr>
