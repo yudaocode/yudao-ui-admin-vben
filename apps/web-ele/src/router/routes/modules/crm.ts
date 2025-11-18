@@ -29,15 +29,15 @@ const routes: RouteRecordRaw[] = [
       //   },
       //   component: () => import('#/views/crm/customer/detail/index.vue'),
       // },
-      // {
-      //   path: 'business/detail/:id',
-      //   name: 'CrmBusinessDetail',
-      //   meta: {
-      //     title: '商机详情',
-      //     activePath: '/crm/business',
-      //   },
-      //   component: () => import('#/views/crm/business/detail/index.vue'),
-      // },
+      {
+        path: 'business/detail/:id',
+        name: 'CrmBusinessDetail',
+        meta: {
+          title: '商机详情',
+          activePath: '/crm/business',
+        },
+        component: () => import('#/views/crm/business/detail/index.vue'),
+      },
       {
         path: 'contract/detail/:id',
         name: 'CrmContractDetail',
