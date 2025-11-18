@@ -107,6 +107,7 @@ export const defaultImageAccepts = [
  * 判断文件是否为图片
  *
  * @param filename 文件名
+ * @param accepts 支持的文件类型
  * @returns 是否为图片
  */
 export function isImage(
@@ -118,6 +119,22 @@ export function isImage(
   }
   const ext = filename.split('.').pop()?.toLowerCase() || '';
   return accepts.includes(ext);
+}
+
+/**
+ * 判断文件是否为指定类型
+ *
+ * @param file 文件
+ * @param accepts 支持的文件类型
+ * @returns 是否为指定类型
+ */
+export function checkFileType(file: File, accepts: string[]) {
+  if (!accepts || accepts.length === 0) {
+    return true;
+  }
+  const newTypes = accepts.join('|');
+  const reg = new RegExp(`${String.raw`\.(` + newTypes})$`, 'i');
+  return reg.test(file.name);
 }
 
 /**
