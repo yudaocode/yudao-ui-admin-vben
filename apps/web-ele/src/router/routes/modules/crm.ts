@@ -47,24 +47,24 @@ const routes: RouteRecordRaw[] = [
       //   },
       //   component: () => import('#/views/crm/contract/detail/index.vue'),
       // },
-      // {
-      //   path: 'receivable-plan/detail/:id',
-      //   name: 'CrmReceivablePlanDetail',
-      //   meta: {
-      //     title: '回款计划详情',
-      //     activePath: '/crm/receivable-plan',
-      //   },
-      //   component: () => import('#/views/crm/receivable/plan/detail/index.vue'),
-      // },
-      // {
-      //   path: 'receivable/detail/:id',
-      //   name: 'CrmReceivableDetail',
-      //   meta: {
-      //     title: '回款详情',
-      //     activePath: '/crm/receivable',
-      //   },
-      //   component: () => import('#/views/crm/receivable/detail/index.vue'),
-      // },
+      {
+        path: 'receivable-plan/detail/:id',
+        name: 'CrmReceivablePlanDetail',
+        meta: {
+          title: '回款计划详情',
+          activePath: '/crm/receivable-plan',
+        },
+        component: () => import('#/views/crm/receivable/plan/detail/index.vue'),
+      },
+      {
+        path: 'receivable/detail/:id',
+        name: 'CrmReceivableDetail',
+        meta: {
+          title: '回款详情',
+          activePath: '/crm/receivable',
+        },
+        component: () => import('#/views/crm/receivable/detail/index.vue'),
+      },
       // {
       //   path: 'contact/detail/:id',
       //   name: 'CrmContactDetail',
