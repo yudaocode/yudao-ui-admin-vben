@@ -27,11 +27,11 @@ const loading = ref(false); // 加载中
 const productId = ref(0); // 产品编号
 const product = ref<CrmProductApi.Product>({} as CrmProductApi.Product); // 产品详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
+const activeTabName = ref('1'); // 选中 Tab 名
 
 const [Descriptions] = useDescription({
-  bordered: false,
+  border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 
@@ -76,7 +76,7 @@ onMounted(() => {
       <Descriptions :data="product" />
     </ElCard>
     <ElCard class="mt-4 min-h-[60%]">
-      <ElTabs>
+      <ElTabs v-model:model-value="activeTabName">
         <ElTabPane label="详细资料" name="1">
           <Info :product="product" />
         </ElTabPane>
