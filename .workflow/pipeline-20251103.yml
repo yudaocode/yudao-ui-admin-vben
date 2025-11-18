@@ -41,12 +41,15 @@ stages:
           - pnpm build:ele
           - '# 执行编译命令naive'
           - pnpm build:naive
+          - '# 执行编译命令tdesign'
+          - pnpm build:tdesign
         artifacts:
           - name: BUILD_ARTIFACT
             path:
               - ./apps/web-antd/dist/
               - ./apps/web-ele/dist/
               - ./apps/web-naive/dist/
+              - ./apps/web-tdesign/dist/
         caches:
           - ~/.npm
           - ~/.yarn
