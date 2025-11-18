@@ -63,7 +63,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUser>,
+  } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUserRespVO>,
 });
 
 /** tab 切换 */
