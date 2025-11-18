@@ -5,18 +5,19 @@ import { requestClient } from '#/api/request';
 export namespace MpAccountApi {
   /** 公众号账号信息 */
   export interface Account {
-    id?: number;
+    id: number;
     name: string;
-    account: string;
-    appId: string;
-    appSecret: string;
-    token: string;
+    account?: string;
+    appId?: string;
+    appSecret?: string;
+    token?: string;
     aesKey?: string;
     qrCodeUrl?: string;
     remark?: string;
     createTime?: Date;
   }
 
+  // TODO @dylan：这个直接使用 Account，简化一点；
   export interface AccountSimple {
     id: number;
     name: string;

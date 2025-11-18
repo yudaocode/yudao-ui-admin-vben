@@ -29,7 +29,7 @@ const [SystemDescriptions] = useDescription({
 </script>
 
 <template>
-  <div class="p-4">
+  <div>
     <BaseDescriptions :data="receivablePlan" />
     <Divider />
     <SystemDescriptions :data="receivablePlan" />

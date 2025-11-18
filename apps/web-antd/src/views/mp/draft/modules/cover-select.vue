@@ -56,12 +56,11 @@ function onMaterialSelected(item: any) {
   newsItem.value.thumbMediaId = item.mediaId;
   newsItem.value.thumbUrl = item.url;
 }
-// DONE @hw：注释都补充下哈；
+
 /** 上传前校验 */
 const onBeforeUpload = (file: UploadFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 
-// DONE @hw：注释都补充下哈；
 /** 上传错误处理 */
 function onUploadChange(info: any) {
   if (info.file.status === 'error') {
@@ -69,7 +68,6 @@ function onUploadChange(info: any) {
   }
 }
 
-// DONE @hw：注释都补充下哈；
 /** 上传成功处理 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
@@ -84,7 +82,6 @@ function onUploadSuccess(res: any) {
   newsItem.value.thumbUrl = res.data.url;
 }
 
-// DONE @hw：注释都补充下哈；
 /** 上传失败处理 */
 function onUploadError(err: Error) {
   message.error(`上传失败: ${err.message}`);
@@ -94,8 +91,6 @@ function onUploadError(err: Error) {
 <template>
   <div>
     <p>封面:</p>
-    <!-- DONE @hw：我貌似上传不成功。不确定是不是我这边的问题；；；可以微信沟通下哈。 -->
-    <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
     <div class="flex w-full flex-col items-center justify-center text-center">
       <Image
         v-if="newsItem.thumbUrl"
@@ -138,7 +133,6 @@ function onUploadError(err: Error) {
           支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
         </div>
       </div>
-      <!-- DONE @hw：是不是使用 vben 自带的 Modal 哈；这样 ele 通用性更好点。其它模块，涉及到 Modal 也按照这个调整噢 -->
       <Modal
         v-model:open="dialogVisible"
         title="图片选择"

@@ -24,7 +24,7 @@ async function handleDelete(row: AiMusicApi.Music) {
     duration: 0,
   });
   try {
-    await deleteMusic(row.id as number);
+    await deleteMusic(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 /** 消息类型枚举 */
+// TODO @xingyu：芋艿，可能要整理下枚举；
 export enum MessageType {
   IMAGE = 'image', // 图片消息
   MPNEWS = 'mpnews', // 公众号图文消息
@@ -29,7 +30,7 @@ export namespace MpMessageApi {
   }
 
   /** 发送消息请求 */
-  export interface SendMessageRequest {
+  export interface MessageSendRequestVO {
     accountId: number;
     openid: string;
     type: MessageType;
@@ -49,6 +50,6 @@ export function getMessagePage(params: PageParam) {
 }
 
 /** 发送消息 */
-export function sendMessage(data: MpMessageApi.SendMessageRequest) {
+export function sendMessage(data: MpMessageApi.MessageSendRequestVO) {
   return requestClient.post('/mp/message/send', data);
 }

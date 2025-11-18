@@ -31,7 +31,7 @@ async function handleDelete(row: AiMindmapApi.MindMap) {
     duration: 0,
   });
   try {
-    await deleteMindMap(row.id as number);
+    await deleteMindMap(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

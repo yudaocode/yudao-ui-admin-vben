@@ -34,7 +34,7 @@ import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
 import ProcessInstanceOperationButton from './modules/operation-button.vue';
-import ProcessssPrint from './modules/processs-print.vue';
+import ProcessssPrint from './modules/process-print.vue';
 import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
 import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';

@@ -74,7 +74,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<CrmStatisticsFunnelApi.BusinessSummaryByDate>,
+  } as VxeTableGridOptions<CrmStatisticsFunnelApi.BusinessSummaryByDateRespVO>,
 });
 
 /** tab 切换 */

@@ -2,7 +2,7 @@ import type { MpStatisticsApi } from '#/api/mp/statistics';
 
 /** 用户增减数据图表配置项 */
 export function userSummaryOption(
-  data: MpStatisticsApi.UserSummary[],
+  data: MpStatisticsApi.StatisticsUserSummaryRespVO[],
   dates: string[],
 ): any {
   return {
@@ -41,7 +41,7 @@ export function userSummaryOption(
 
 /** 累计用户数据图表配置项 */
 export function userCumulateOption(
-  data: MpStatisticsApi.UserCumulate[],
+  data: MpStatisticsApi.StatisticsUserCumulateRespVO[],
   dates: string[],
 ): any {
   return {
@@ -71,7 +71,7 @@ export function userCumulateOption(
 
 /** 消息发送概况数据图表配置项 */
 export function upstreamMessageOption(
-  data: MpStatisticsApi.UpstreamMessage[],
+  data: MpStatisticsApi.StatisticsUpstreamMessageRespVO[],
   dates: string[],
 ): any {
   return {
@@ -111,7 +111,7 @@ export function upstreamMessageOption(
 
 /** 接口分析况数据图表配置项 */
 export function interfaceSummaryOption(
-  data: MpStatisticsApi.InterfaceSummary[],
+  data: MpStatisticsApi.StatisticsInterfaceSummaryRespVO[],
   dates: string[],
 ): any {
   return {

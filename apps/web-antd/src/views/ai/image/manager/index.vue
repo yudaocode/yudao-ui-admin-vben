@@ -24,7 +24,7 @@ async function handleDelete(row: AiImageApi.Image) {
     duration: 0,
   });
   try {
-    await deleteImage(row.id as number);
+    await deleteImage(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

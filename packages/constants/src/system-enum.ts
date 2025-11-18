@@ -3,6 +3,7 @@
  *
  * 枚举类
  */
+// TODO @AI：后面拆分成 AI、ERP、OA 这种枚举
 
 /**
  * AI 平台的枚举
@@ -29,11 +30,13 @@ export const AiModelTypeEnum = {
   EMBEDDING: 5, // 向量
   RERANK: 6, // 重排
 };
+
 export interface ImageModel {
   image?: string;
   key: string;
   name: string;
 }
+
 export const OtherPlatformEnum: ImageModel[] = [
   {
     key: AiPlatformEnum.TONG_YI,
@@ -52,6 +55,7 @@ export const OtherPlatformEnum: ImageModel[] = [
     name: '硅基流动',
   },
 ];
+
 /**
  * AI 图像生成状态的枚举
  */
@@ -60,6 +64,7 @@ export const AiImageStatusEnum = {
   SUCCESS: 20, // 已完成
   FAIL: 30, // 已失败
 };
+
 /**
  * AI 音乐生成状态的枚举
  */
@@ -397,6 +402,7 @@ export const MidjourneyModels: ImageModel[] = [
     image: 'https://bigpt8.com/pc/_nuxt/nj.ca79b143.png',
   },
 ];
+
 export const MidjourneyVersions = [
   {
     value: '6.0',
@@ -459,6 +465,7 @@ export const MidjourneySizeList: ImageSize[] = [
     style: 'width: 50px; height: 30px;background-color: #dcdcdc;',
   },
 ];
+
 // ========== PAY 模块 ==========
 /**
  * 支付渠道枚举

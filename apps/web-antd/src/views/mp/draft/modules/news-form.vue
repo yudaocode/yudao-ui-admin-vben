@@ -44,7 +44,6 @@ const activeNewsItem = computed(() => {
   return item;
 });
 
-// DONE @hw：注释使用 /** */
 /** 将图文向下移动 */
 function moveDownNews(index: number) {
   const current = newsList.value[index];
@@ -86,7 +85,6 @@ function plusNews() {
 <template>
   <Layout>
     <Layout.Sider width="40%" theme="light">
-      <!-- DONE @hw：尽量使用 tindwind 替代。ps：如果多个组件复用，那就不用调整 -->
       <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
         <div v-for="(news, index) in newsList" :key="index">
           <div

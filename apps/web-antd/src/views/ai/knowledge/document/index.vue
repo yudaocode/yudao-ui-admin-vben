@@ -55,7 +55,7 @@ async function handleDelete(row: AiKnowledgeDocumentApi.KnowledgeDocument) {
     duration: 0,
   });
   try {
-    await deleteKnowledgeDocument(row.id as number);
+    await deleteKnowledgeDocument(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -164,11 +164,10 @@ onMounted(() => {
               auth: ['ai:knowledge:update'],
               onClick: handleEdit.bind(null, row.id),
             },
-          ]"
-          :drop-down-actions="[
             {
               label: '分段',
               type: 'link',
+              icon: ACTION_ICON.BOOK,
               auth: ['ai:knowledge:query'],
               onClick: handleSegment.bind(null, row.id),
             },

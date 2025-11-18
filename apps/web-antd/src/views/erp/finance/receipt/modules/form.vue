@@ -201,6 +201,7 @@ const [Modal, modalApi] = useVbenModal({
           @update:items="handleUpdateItems"
           @update:total-price="handleUpdateTotalPrice"
           @update:receipt-price="handleUpdateReceiptPrice"
+          class="w-full"
         />
       </template>
     </Form>

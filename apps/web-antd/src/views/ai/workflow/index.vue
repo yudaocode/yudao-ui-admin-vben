@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiWorkflowApi } from '#/api/ai/workflow';
 
 import { Page } from '@vben/common-ui';
 
@@ -17,14 +18,14 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建 */
+/** 创建工作流 */
 function handleCreate() {
   router.push({
     name: 'AiWorkflowCreate',
   });
 }
 
-/** 编辑 */
+/** 编辑工作流 */
 function handleEdit(row: any) {
   router.push({
     name: 'AiWorkflowCreate',
@@ -32,17 +33,15 @@ function handleEdit(row: any) {
   });
 }
 
-/** 删除 */
+/** 删除工作流 */
 async function handleDelete(row: any) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteWorkflow(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    await deleteWorkflow(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -70,12 +69,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<AiWorkflowApi.Workflow>,
 });
 </script>
 

@@ -13,25 +13,22 @@ import NewsForm from './news-form.vue';
 
 const emit = defineEmits(['success']);
 
-// DONE @hw：是不是通过 id 字段判断是否为新增？类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue
 const formData = ref<{
   accountId: number;
   mediaId?: string;
   newsList?: NewsItem[];
 }>();
 const newsList = ref<NewsItem[]>([]);
-// DONE @hw：不需要 isSave，通过 modal 去 lock 就好啦。
 const isSubmitting = ref(false);
 
 const getTitle = computed(() => {
   return formData.value?.mediaId ? '修改图文' : '新建图文';
 });
 
-// 提供 accountId 给子组件
 provide(
   'accountId',
   computed(() => formData.value?.accountId),
-);
+); // 提供 accountId 给子组件
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -39,6 +36,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // TODO @hw：是不是 isSubmitting 非必须哈？因为 modal 已经去 lock 啦。
     isSubmitting.value = true;
     modalApi.lock();
     try {

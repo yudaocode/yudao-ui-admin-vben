@@ -10,4 +10,6 @@ export const ACTION_ICON = {
   MORE: 'lucide:ellipsis-vertical',
   VIEW: 'lucide:eye',
   COPY: 'lucide:copy',
+  BOOK: 'lucide:book',
+  AUDIT: 'lucide:file-check',
 };

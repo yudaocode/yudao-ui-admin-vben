@@ -10,7 +10,6 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDraft, getDraftPage } from '#/api/mp/draft';
-// DONE @hw：MpFreePublishApi 去掉，直接 import；参考别的模块哈；
 import { submitFreePublish } from '#/api/mp/freePublish';
 import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
 
@@ -18,8 +17,6 @@ import { useGridColumns, useGridFormSchema } from './data';
 import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
-// DONE @hw：参考 tag/index.vue 放到 formValues.accountId;
-// DONE @hw：看看这个 watch、provide 能不能简化掉；
 defineOptions({ name: 'MpDraft' });
 
 /** 刷新表格 */
@@ -27,12 +24,7 @@ function handleRefresh() {
   gridApi.query();
 }
 
-const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
-  destroyOnClose: true,
-});
-
-/** 新增按钮操作 */
+/** 新增草稿 */
 async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
@@ -49,7 +41,7 @@ async function handleCreate() {
     .open();
 }
 
-/** 修改按钮操作 */
+/** 修改草稿 */
 async function handleEdit(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
@@ -67,11 +59,32 @@ async function handleEdit(row: Article) {
     .open();
 }
 
-/** 发布按钮操作 */
+/** 删除草稿 */
+async function handleDelete(row: Article) {
+  const formValues = await gridApi.formApi.getValues();
+  const accountId = formValues.accountId;
+  if (!accountId) {
+    message.warning('请先选择公众号');
+    return;
+  }
+  await confirm('此操作将永久删除该草稿, 是否继续?');
+  const hideLoading = message.loading({
+    content: '删除中...',
+    duration: 0,
+  });
+  try {
+    await deleteDraft(accountId, row.mediaId);
+    message.success('删除成功');
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 发布草稿 */
 async function handlePublish(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  // DONE @hw：看看能不能去掉 -1 的判断哈？
   if (!accountId) {
     message.warning('请先选择公众号');
     return;
@@ -94,27 +107,10 @@ async function handlePublish(row: Article) {
   }
 }
 
-/** 删除按钮操作 */
-async function handleDelete(row: Article) {
-  const formValues = await gridApi.formApi.getValues();
-  const accountId = formValues.accountId;
-  if (!accountId) {
-    message.warning('请先选择公众号');
-    return;
-  }
-  await confirm('此操作将永久删除该草稿, 是否继续?');
-  const hideLoading = message.loading({
-    content: '删除中...',
-    duration: 0,
-  });
-  try {
-    await deleteDraft(accountId, row.mediaId);
-    message.success('删除成功');
-    handleRefresh();
-  } finally {
-    hideLoading();
-  }
-}
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -157,10 +153,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
+    // TODO @hw：这里有点纠结，一般是 MpDraftApi.Article，但是一改貌似就 linter 告警了。
   } as VxeTableGridOptions<Article>,
 });
-
-// DONE @hw：看看能不能参考 tag/index.vue 简化下
 </script>
 
 <template>

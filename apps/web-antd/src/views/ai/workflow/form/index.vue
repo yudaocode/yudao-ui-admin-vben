@@ -25,10 +25,27 @@ const route = useRoute();
 const workflowId = ref<string>('');
 const actionType = ref<string>('');
 
-// 基础信息组件引用
-const basicInfoRef = ref<InstanceType<typeof BasicInfo>>();
-// 工作流设计组件引用
-const workflowDesignRef = ref<InstanceType<typeof WorkflowDesign>>();
+const basicInfoRef = ref<InstanceType<typeof BasicInfo>>(); // 基础信息组件引用
+const workflowDesignRef = ref<InstanceType<typeof WorkflowDesign>>(); // 工作流设计组件引用
+
+const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
+const steps = [
+  { title: '基本信息', validator: validateBasic },
+  { title: '工作流设计', validator: validateWorkflow },
+];
+
+const formData: any = ref({
+  id: undefined,
+  name: '',
+  code: '',
+  remark: '',
+  graph: '',
+  status: CommonStatusEnum.ENABLE,
+}); // 表单数据
+
+const llmProvider = ref<any>([]);
+const workflowData = ref<any>({});
+provide('workflowData', workflowData);
 
 /** 步骤校验函数 */
 async function validateBasic() {
@@ -40,30 +57,9 @@ async function validateWorkflow() {
   await workflowDesignRef.value?.validate();
 }
 
-const currentStep = ref(-1); // 步骤控制。-1 用于，一开始全部不展示等当前页面数据初始化完成
-
-const steps = [
-  { title: '基本信息', validator: validateBasic },
-  { title: '工作流设计', validator: validateWorkflow },
-];
-
-// 表单数据
-const formData: any = ref({
-  id: undefined,
-  name: '',
-  code: '',
-  remark: '',
-  graph: '',
-  status: CommonStatusEnum.ENABLE,
-});
-
-const llmProvider = ref<any>([]);
-const workflowData = ref<any>({});
-provide('workflowData', workflowData);
-
 async function initData() {
   if (actionType.value === 'update' && workflowId.value) {
-    formData.value = await getWorkflow(workflowId.value);
+    formData.value = await getWorkflow(workflowId.value as any);
     workflowData.value = JSON.parse(formData.value.graph);
   }
   const models = await getModelSimpleList(AiModelTypeEnum.CHAT);
