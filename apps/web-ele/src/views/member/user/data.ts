@@ -31,6 +31,9 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'mobile',
       label: '手机号',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入手机号',
+      },
       rules: 'required',
     },
     {
