@@ -98,9 +98,9 @@ const [Grid] = useVbenVxeGrid({
       </ElButton>
     </template>
     <template #actions="{ row }">
-      <ElButton type="primary" link @click="handleProcessDetail(row)"
-        >查看审批</ElButton
-      >
+      <ElButton type="primary" link @click="handleProcessDetail(row)">
+        查看审批
+      </ElButton>
     </template>
   </Grid>
 </template>

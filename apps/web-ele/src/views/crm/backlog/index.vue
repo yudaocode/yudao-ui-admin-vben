@@ -97,7 +97,7 @@ onMounted(() => {
       <ElCard class="w-1/5">
         <div v-for="item in leftSides" :key="item.menu">
           <div
-            class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-between px-4 py-3 border-b"
+            class="flex cursor-pointer items-center justify-between border-b px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
             @click="sideClick(item)"
           >
             <div>{{ item.name }}</div>

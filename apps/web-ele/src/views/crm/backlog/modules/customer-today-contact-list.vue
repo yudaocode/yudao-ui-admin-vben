@@ -76,14 +76,14 @@ const [Grid] = useVbenVxeGrid({
 <template>
   <Grid>
     <template #name="{ row }">
-      <ElButton type="primary" link @click="handleDetail(row)">{{
-        row.name
-      }}</ElButton>
+      <ElButton type="primary" link @click="handleDetail(row)">
+        {{ row.name }}
+      </ElButton>
     </template>
     <template #actions="{ row }">
-      <ElButton type="primary" link @click="handleDetail(row)"
-        >查看详情</ElButton
-      >
+      <ElButton type="primary" link @click="handleDetail(row)">
+        查看详情
+      </ElButton>
     </template>
   </Grid>
 </template>

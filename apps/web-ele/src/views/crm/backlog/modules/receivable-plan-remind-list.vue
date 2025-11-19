@@ -90,9 +90,9 @@ const [Grid] = useVbenVxeGrid({
         </ElButton>
       </template>
       <template #period="{ row }">
-        <ElButton type="primary" link @click="handleDetail(row)">{{
-          row.period
-        }}</ElButton>
+        <ElButton type="primary" link @click="handleDetail(row)">
+          {{ row.period }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <ElButton type="primary" link @click="handleCreateReceivable(row)">
