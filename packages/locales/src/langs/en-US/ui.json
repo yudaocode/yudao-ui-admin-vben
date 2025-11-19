@@ -134,6 +134,7 @@
     "maxSizeMultiple": "Only upload files up to {0}MB!",
     "maxNumber": "Only upload up to {0} files",
     "uploadSuccess": "Upload successfully",
+    "uploadError": "Upload failed",
     "imgUploading": "Image sending, please wait..."
   },
   "cropper": {

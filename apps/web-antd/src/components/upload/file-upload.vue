@@ -10,11 +10,10 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isObject, isString } from '@vben/utils';
+import { checkFileType, isFunction, isObject, isString } from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
 
-import { checkFileType } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 

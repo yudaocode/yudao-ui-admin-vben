@@ -20,33 +20,33 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/clue/detail/index.vue'),
       },
-      // {
-      //   path: 'customer/detail/:id',
-      //   name: 'CrmCustomerDetail',
-      //   meta: {
-      //     title: '客户详情',
-      //     activePath: '/crm/customer',
-      //   },
-      //   component: () => import('#/views/crm/customer/detail/index.vue'),
-      // },
-      // {
-      //   path: 'business/detail/:id',
-      //   name: 'CrmBusinessDetail',
-      //   meta: {
-      //     title: '商机详情',
-      //     activePath: '/crm/business',
-      //   },
-      //   component: () => import('#/views/crm/business/detail/index.vue'),
-      // },
-      // {
-      //   path: 'contract/detail/:id',
-      //   name: 'CrmContractDetail',
-      //   meta: {
-      //     title: '合同详情',
-      //     activePath: '/crm/contract',
-      //   },
-      //   component: () => import('#/views/crm/contract/detail/index.vue'),
-      // },
+      {
+        path: 'customer/detail/:id',
+        name: 'CrmCustomerDetail',
+        meta: {
+          title: '客户详情',
+          activePath: '/crm/customer',
+        },
+        component: () => import('#/views/crm/customer/detail/index.vue'),
+      },
+      {
+        path: 'business/detail/:id',
+        name: 'CrmBusinessDetail',
+        meta: {
+          title: '商机详情',
+          activePath: '/crm/business',
+        },
+        component: () => import('#/views/crm/business/detail/index.vue'),
+      },
+      {
+        path: 'contract/detail/:id',
+        name: 'CrmContractDetail',
+        meta: {
+          title: '合同详情',
+          activePath: '/crm/contract',
+        },
+        component: () => import('#/views/crm/contract/detail/index.vue'),
+      },
       {
         path: 'receivable-plan/detail/:id',
         name: 'CrmReceivablePlanDetail',
@@ -65,15 +65,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/receivable/detail/index.vue'),
       },
-      // {
-      //   path: 'contact/detail/:id',
-      //   name: 'CrmContactDetail',
-      //   meta: {
-      //     title: '联系人详情',
-      //     activePath: '/crm/contact',
-      //   },
-      //   component: () => import('#/views/crm/contact/detail/index.vue'),
-      // },
+      {
+        path: 'contact/detail/:id',
+        name: 'CrmContactDetail',
+        meta: {
+          title: '联系人详情',
+          activePath: '/crm/contact',
+        },
+        component: () => import('#/views/crm/contact/detail/index.vue'),
+      },
       {
         path: 'product/detail/:id',
         name: 'CrmProductDetail',
@@ -82,6 +82,54 @@ const routes: RouteRecordRaw[] = [
           activePath: '/crm/product',
         },
         component: () => import('#/views/crm/product/detail/index.vue'),
+      },
+      {
+        path: 'statistics/customer',
+        name: 'CrmStatisticsCustomer',
+        meta: {
+          title: '客户统计',
+          activePath: '/crm/statistics/customer',
+        },
+        component: () =>
+          import('#/views/crm/statistics/customer/index.vue'),
+      },
+      {
+        path: 'statistics/funnel',
+        name: 'CrmStatisticsFunnel',
+        meta: {
+          title: '销售漏斗',
+          activePath: '/crm/statistics/funnel',
+        },
+        component: () => import('#/views/crm/statistics/funnel/index.vue'),
+      },
+      {
+        path: 'statistics/performance',
+        name: 'CrmStatisticsPerformance',
+        meta: {
+          title: '员工业绩',
+          activePath: '/crm/statistics/performance',
+        },
+        component: () =>
+          import('#/views/crm/statistics/performance/index.vue'),
+      },
+      {
+        path: 'statistics/portrait',
+        name: 'CrmStatisticsPortrait',
+        meta: {
+          title: '客户画像',
+          activePath: '/crm/statistics/portrait',
+        },
+        component: () =>
+          import('#/views/crm/statistics/portrait/index.vue'),
+      },
+      {
+        path: 'statistics/rank',
+        name: 'CrmStatisticsRank',
+        meta: {
+          title: '排行榜',
+          activePath: '/crm/statistics/rank',
+        },
+        component: () => import('#/views/crm/statistics/rank/index.vue'),
       },
     ],
   },

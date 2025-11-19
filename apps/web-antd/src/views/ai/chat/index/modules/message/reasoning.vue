@@ -71,12 +71,15 @@ function toggleExpanded() {
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb {
   @apply rounded-sm bg-gray-400/40;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400/60;
 }

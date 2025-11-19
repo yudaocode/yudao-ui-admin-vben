@@ -9,11 +9,10 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isObject, isString } from '@vben/utils';
+import { checkFileType, isFunction, isObject, isString } from '@vben/utils';
 
 import { NButton, NUpload, useMessage } from 'naive-ui';
 
-import { checkFileType } from './helper';
 import { useUpload, useUploadType } from './use-upload';
 
 defineOptions({ name: 'FileUpload', inheritAttrs: false });
