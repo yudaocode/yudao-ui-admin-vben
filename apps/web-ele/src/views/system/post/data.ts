@@ -35,6 +35,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },

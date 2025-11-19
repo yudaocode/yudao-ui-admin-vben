@@ -66,6 +66,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入用户数量',
         min: 2,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -76,6 +78,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入限制时长(小时)',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -86,6 +90,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入总限购数量',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
     {
@@ -95,6 +101,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入单次限购数量',
         min: 0,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
     {

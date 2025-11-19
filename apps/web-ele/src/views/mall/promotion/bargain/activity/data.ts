@@ -56,6 +56,8 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 2,
         step: 0.01,
         placeholder: '请输入砍价起始价格',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -68,6 +70,8 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 2,
         step: 0.01,
         placeholder: '请输入砍价底价',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -78,6 +82,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 1,
         placeholder: '请输入活动库存',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -88,6 +94,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 1,
         placeholder: '请输入助力人数',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -98,6 +106,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 1,
         placeholder: '请输入砍价次数',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -108,6 +118,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 1,
         placeholder: '请输入购买限制',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       rules: 'required',
     },
@@ -120,6 +132,8 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 2,
         step: 0.01,
         placeholder: '请输入最小砍价金额',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
     {
@@ -131,6 +145,8 @@ export function useFormSchema(): VbenFormSchema[] {
         precision: 2,
         step: 0.01,
         placeholder: '请输入最大砍价金额',
+        controlsPosition: 'right',
+        class: '!w-full',
       },
     },
   ];
