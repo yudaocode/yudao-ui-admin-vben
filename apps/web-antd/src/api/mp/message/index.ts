@@ -3,7 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 /** 消息类型枚举 */
-// TODO @xingyu：芋艿，可能要整理下枚举；
+// TODO @hw：mp 相关的枚举，可以考虑放这里来。
 export enum MessageType {
   IMAGE = 'image', // 图片消息
   MPNEWS = 'mpnews', // 公众号图文消息
