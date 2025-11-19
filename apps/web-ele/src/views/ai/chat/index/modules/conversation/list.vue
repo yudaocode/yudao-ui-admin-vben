@@ -166,87 +166,119 @@ async function getConversationGroupByCreateTime(
   return groupMap;
 }
 
-/** 新建对话 */
-async function handleConversationCreate() {
-  // 1. 创建对话
-  const conversationId = await createChatConversationMy({
-    roleId: undefined,
-  } as unknown as AiChatConversationApi.ChatConversation);
-
-  // 2. 刷新列表
+async function createConversation() {
+  // 1. 新建对话
+  const conversationId = await createChatConversationMy(
+    {} as unknown as AiChatConversationApi.ChatConversation,
+  );
+  // 2. 获取对话内容
   await getChatConversationList();
-
-  // 3. 回调
-  emits('onConversationCreate', conversationId);
+  // 3. 选中对话
+  await handleConversationClick(conversationId);
+  // 4. 回调
+  emits('onConversationCreate');
 }
 
 /** 清空未置顶的对话 */
-async function handleConversationClear() {
-  await confirm({
-    title: '清空未置顶的对话',
-    content: h('div', {}, [
-      h('p', '确认清空未置顶的对话吗？'),
-      h('p', '清空后，未置顶的对话将被删除，无法恢复！'),
-    ]),
+async function handleClearConversation() {
+  try {
+    await confirm('确认后对话会全部清空，置顶的对话除外。');
+    await deleteChatConversationMyByUnpinned();
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    // 清空对话、对话内容
+    activeConversationId.value = null;
+    // 获取对话列表
+    await getChatConversationList();
+    // 回调 方法
+    emits('onConversationClear');
+  } catch {}
+}
+
+/** 删除聊天对话 */
+async function deleteChatConversation(
+  conversation: AiChatConversationApi.ChatConversation,
+) {
+  try {
+    // 删除的二次确认
+    await confirm(`是否确认删除对话 - ${conversation.title}?`);
+    // 发起删除
+    await deleteChatConversationMy(conversation.id);
+    ElMessage.success('对话已删除');
+    // 刷新列表
+    await getChatConversationList();
+    // 回调
+    emits('onConversationDelete', conversation);
+  } catch {}
+}
+
+/** 对话置顶 */
+async function handleTop(conversation: AiChatConversationApi.ChatConversation) {
+  // 更新对话置顶
+  conversation.pinned = !conversation.pinned;
+  await updateChatConversationMy(conversation);
+  // 刷新对话
+  await getChatConversationList();
+}
+
+/** 修改对话的标题 */
+async function updateConversationTitle(
+  conversation: AiChatConversationApi.ChatConversation,
+) {
+  // 1. 二次确认
+  await prompt({
+    async beforeClose(scope) {
+      if (scope.isConfirm) {
+        if (scope.value) {
+          try {
+            // 2. 发起修改
+            await updateChatConversationMy({
+              id: conversation.id,
+              title: scope.value,
+            } as AiChatConversationApi.ChatConversation);
+            ElMessage.success('重命名成功');
+            // 3. 刷新列表
+            await getChatConversationList();
+            // 4. 过滤当前切换的
+            const filterConversationList = conversationList.value.filter(
+              (item) => {
+                return item.id === conversation.id;
+              },
+            );
+            if (
+              filterConversationList.length > 0 &&
+              filterConversationList[0] && // tip：避免切换对话
+              activeConversationId.value === filterConversationList[0].id!
+            ) {
+              emits('onConversationClick', filterConversationList[0]);
+            }
+          } catch {
+            return false;
+          }
+        } else {
+          ElMessage.error('请输入标题');
+          return false;
+        }
+      }
+    },
+    component: () => {
+      return h(ElInput, {
+        placeholder: '请输入标题',
+        clearable: true,
+        modelValue: conversation.title,
+      });
+    },
+    content: '请输入标题',
+    title: '修改标题',
+    modelPropName: 'modelValue',
   });
-  // 清空
-  await deleteChatConversationMyByUnpinned();
-  // 刷新列表
-  await getChatConversationList();
-  // 回调
-  emits('onConversationClear');
 }
 
-/** 删除对话 */
-async function handleConversationDelete(id: number) {
-  await confirm({
-    title: '删除对话',
-    content: h('div', {}, [
-      h('p', '确认删除该对话吗？'),
-      h('p', '删除后，该对话将被删除，无法恢复！'),
-    ]),
-  });
-  // 删除
-  await deleteChatConversationMy(id);
-  // 刷新列表
-  await getChatConversationList();
-  // 回调
-  emits('onConversationDelete', id);
-}
+// ============ 角色仓库 ============
 
-/** 置顶对话 */
-async function handleConversationPin(conversation: any) {
-  // 更新
-  await updateChatConversationMy({
-    id: conversation.id,
-    pinned: !conversation.pinned,
-  } as AiChatConversationApi.ChatConversation);
-  // 刷新列表
-  await getChatConversationList();
-}
-
-/** 编辑对话 */
-async function handleConversationEdit(conversation: any) {
-  const title = await prompt({
-    title: '编辑对话',
-    content: '请输入对话标题',
-    defaultValue: conversation.title,
-  });
-  // 更新
-  await updateChatConversationMy({
-    id: conversation.id,
-    title,
-  } as AiChatConversationApi.ChatConversation);
-  // 刷新列表
-  await getChatConversationList();
-  // 提示
-  ElMessage.success($t('ui.actionMessage.operationSuccess'));
-}
-
-/** 打开角色仓库 */
-async function handleRoleRepositoryOpen() {
+/** 角色仓库抽屉 */
+const handleRoleRepository = async () => {
   drawerApi.open();
-}
+};
 
 /** 监听 activeId 变化 */
 watch(
@@ -260,137 +292,157 @@ const { activeId } = toRefs(props);
 
 /** 初始化 */
 onMounted(async () => {
-  // 获取对话列表
+  // 获取 对话列表
   await getChatConversationList();
-  // 设置选中的对话
-  if (activeId.value) {
-    activeConversationId.value = activeId.value;
+  // 默认选中
+  if (props.activeId) {
+    activeConversationId.value = props.activeId;
+  } else {
+    // 首次默认选中第一个
+    if (conversationList.value.length > 0 && conversationList.value[0]) {
+      activeConversationId.value = conversationList.value[0].id;
+      // 回调 onConversationClick
+      emits('onConversationClick', conversationList.value[0]);
+    }
   }
 });
 
-defineExpose({ getChatConversationList });
+defineExpose({ createConversation });
 </script>
 
 <template>
   <ElAside
-    class="bg-card relative flex h-full flex-col overflow-hidden border-r border-gray-200"
     width="280px"
+    class="relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
     <Drawer />
-    <!-- 头部 -->
-    <div class="flex flex-col p-4">
-      <div class="mb-4 flex flex-row items-center justify-between">
-        <div class="text-lg font-bold">对话</div>
-        <div class="flex flex-row">
-          <ElButton
-            class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-            text
-            @click="handleConversationCreate"
-          >
-            <IconifyIcon icon="lucide:plus" />
-          </ElButton>
-          <ElButton
-            class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-            text
-            @click="handleConversationClear"
-          >
-            <IconifyIcon icon="lucide:trash" />
-          </ElButton>
-          <ElButton
-            class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-            text
-            @click="handleRoleRepositoryOpen"
-          >
-            <IconifyIcon icon="lucide:user" />
-          </ElButton>
-        </div>
-      </div>
+    <!-- 左顶部：对话 -->
+    <div class="flex h-full flex-col">
+      <ElButton class="h-9 w-full" type="primary" @click="createConversation">
+        <IconifyIcon icon="lucide:plus" class="mr-1" />
+        新建对话
+      </ElButton>
+
       <ElInput
         v-model="searchName"
-        placeholder="搜索对话"
-        @keyup.enter="searchConversation"
+        size="large"
+        class="search-input mt-4"
+        placeholder="搜索历史记录"
+        @keyup="searchConversation"
       >
-        <template #suffix>
+        <template #prefix>
           <IconifyIcon icon="lucide:search" />
         </template>
       </ElInput>
-    </div>
 
-    <!-- 对话列表 -->
-    <div class="flex-1 overflow-y-auto px-4">
-      <div v-if="loading" class="flex h-full items-center justify-center">
-        <div class="text-sm text-gray-400">加载中...</div>
-      </div>
-      <div v-else-if="Object.keys(conversationMap).length === 0">
-        <ElEmpty description="暂无对话" />
-      </div>
-      <div v-else>
+      <!-- 左中间：对话列表 -->
+      <div class="mt-2 flex-1 overflow-auto">
+        <!-- 情况一：加载中 -->
+        <ElEmpty v-if="loading" description="." v-loading="loading" />
+
+        <!-- 情况二：按照 group 分组 -->
         <div
-          v-for="(conversations, groupName) in conversationMap"
-          :key="groupName"
+          v-for="conversationKey in Object.keys(conversationMap)"
+          :key="conversationKey"
         >
           <div
-            v-if="conversations.length > 0"
-            class="mb-2 mt-4 text-xs text-gray-400"
+            v-if="conversationMap[conversationKey].length > 0"
+            class="classify-title pt-2"
           >
-            {{ groupName }}
+            <p class="mx-1">
+              {{ conversationKey }}
+            </p>
           </div>
+
           <div
-            v-for="conversation in conversations"
+            v-for="conversation in conversationMap[conversationKey]"
             :key="conversation.id"
-            class="group relative mb-2 cursor-pointer rounded-lg p-2 transition-all hover:bg-gray-100"
-            :class="{
-              'bg-gray-100': activeConversationId === conversation.id,
-            }"
             @click="handleConversationClick(conversation.id)"
-            @mouseenter="hoverConversationId = conversation.id"
-            @mouseleave="hoverConversationId = null"
+            @mouseover="hoverConversationId = conversation.id"
+            @mouseout="hoverConversationId = null"
+            class="mt-1"
           >
-            <div class="flex items-center">
-              <ElAvatar
-                v-if="conversation.roleAvatar"
-                :src="conversation.roleAvatar"
-                :size="28"
-              />
-              <SvgGptIcon v-else class="size-7" />
-              <div class="ml-2 flex-1 overflow-hidden">
-                <div class="truncate text-sm font-medium">
+            <div
+              class="mb-2 flex cursor-pointer flex-row items-center justify-between rounded-lg px-2 leading-10 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              :class="[
+                conversation.id === activeConversationId
+                  ? 'bg-primary/10 dark:bg-primary/20'
+                  : '',
+              ]"
+            >
+              <div class="flex items-center">
+                <ElAvatar
+                  v-if="conversation.roleAvatar"
+                  :src="conversation.roleAvatar"
+                  :size="28"
+                />
+                <SvgGptIcon v-else class="size-6" />
+                <span
+                  class="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap p-2 text-sm font-normal"
+                >
                   {{ conversation.title }}
-                </div>
+                </span>
               </div>
+
               <div
-                v-if="hoverConversationId === conversation.id"
-                class="flex flex-row"
+                v-show="hoverConversationId === conversation.id"
+                class="relative right-0.5 flex items-center text-gray-400"
               >
                 <ElButton
-                  class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-                  text
-                  @click.stop="handleConversationPin(conversation)"
+                  class="mr-0 px-1"
+                  link
+                  @click.stop="handleTop(conversation)"
                 >
                   <IconifyIcon
-                    :icon="
-                      conversation.pinned ? 'lucide:pin-off' : 'lucide:pin'
-                    "
+                    v-if="!conversation.pinned"
+                    icon="lucide:arrow-up-to-line"
+                  />
+                  <IconifyIcon
+                    v-if="conversation.pinned"
+                    icon="lucide:arrow-down-from-line"
                   />
                 </ElButton>
                 <ElButton
-                  class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-                  text
-                  @click.stop="handleConversationEdit(conversation)"
+                  class="mr-0 px-1"
+                  link
+                  @click.stop="updateConversationTitle(conversation)"
                 >
                   <IconifyIcon icon="lucide:edit" />
                 </ElButton>
                 <ElButton
-                  class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
-                  text
-                  @click.stop="handleConversationDelete(conversation.id)"
+                  class="mr-0 px-1"
+                  link
+                  @click.stop="deleteChatConversation(conversation)"
                 >
-                  <IconifyIcon icon="lucide:trash" />
+                  <IconifyIcon icon="lucide:trash-2" />
                 </ElButton>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- 底部占位 -->
+      <div class="h-12 w-full"></div>
+    </div>
+
+    <!-- 左底部：工具栏 -->
+    <div
+      class="bg-card absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between px-5 leading-9 text-gray-400 shadow-sm"
+    >
+      <div
+        class="flex cursor-pointer items-center text-gray-400"
+        @click="handleRoleRepository"
+      >
+        <IconifyIcon icon="lucide:user" />
+        <span class="ml-1">角色仓库</span>
+      </div>
+      <div
+        class="flex cursor-pointer items-center text-gray-400"
+        @click="handleClearConversation"
+      >
+        <IconifyIcon icon="lucide:trash" />
+        <span class="ml-1">清空未置顶对话</span>
       </div>
     </div>
   </ElAside>

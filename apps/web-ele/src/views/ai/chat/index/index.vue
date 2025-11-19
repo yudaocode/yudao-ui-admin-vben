@@ -673,7 +673,8 @@ onMounted(async () => {
                 {{ conversationInProgress ? '进行中' : '发送' }}
               </ElButton>
               <ElButton
-                type="danger"
+                type="primary"
+                :danger="true"
                 @click="stopStream()"
                 v-if="conversationInProgress === true"
               >
