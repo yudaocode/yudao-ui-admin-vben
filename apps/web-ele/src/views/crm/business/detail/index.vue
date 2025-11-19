@@ -42,7 +42,6 @@ const activeTabName = ref('1'); // 选中 Tab 名
 const [Descriptions] = useDescription({
   border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

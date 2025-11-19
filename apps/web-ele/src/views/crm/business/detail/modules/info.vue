@@ -16,7 +16,6 @@ const [BaseDescription] = useDescription({
   title: '基本信息',
   border: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailBaseSchema(),
 });
 
@@ -24,13 +23,12 @@ const [SystemDescription] = useDescription({
   title: '系统信息',
   border: false,
   column: 3,
-  class: 'mx-4',
   schema: useFollowUpDetailSchema(),
 });
 </script>
 
 <template>
-  <div class="p-4">
+  <div>
     <BaseDescription :data="business" />
     <ElDivider />
     <SystemDescription :data="business" />
