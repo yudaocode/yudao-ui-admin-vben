@@ -58,6 +58,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         treeDefaultExpandAll: true,
+        placeholder: '请选择归属部门',
       },
       defaultValue: userStore.userInfo?.deptId,
     },

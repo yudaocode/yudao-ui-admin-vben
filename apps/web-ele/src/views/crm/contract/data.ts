@@ -109,6 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择下单日期',
         class: '!w-full',
       },
     },
@@ -119,6 +120,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择合同开始时间',
         class: '!w-full',
       },
     },
@@ -129,6 +131,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择合同结束时间',
         class: '!w-full',
       },
     },
