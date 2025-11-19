@@ -8,6 +8,7 @@ import { onMounted, ref } from 'vue';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
+import { beginOfDay, endOfDay, formatDate } from '@vben/utils';
 
 import { ElTabPane, ElTabs } from 'element-plus';
 
@@ -68,6 +69,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function handleTabChange(key: any) {
   activeTabName.value = key;
   const queryParams = (await formApi.getValues()) as any;
+  // 将年份转换为年初和年末的日期时间
+  const selectYear = Number.parseInt(queryParams.time);
+  queryParams.times = [];
+  queryParams.times[0] = formatDate(
+    beginOfDay(new Date(selectYear, 0, 1)),
+    'YYYY-MM-DD HH:mm:ss',
+  );
+  queryParams.times[1] = formatDate(
+    endOfDay(new Date(selectYear, 11, 31)),
+    'YYYY-MM-DD HH:mm:ss',
+  );
   let data: any[] = [];
   const columnsData: any[] = [];
   let tableData: any[] = [];
