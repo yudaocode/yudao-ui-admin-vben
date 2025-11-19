@@ -52,7 +52,9 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
           return handleTree(data);
         },
         multiple: true,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择规则适用部门',
         treeDefaultExpandAll: true,
       },

@@ -114,7 +114,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-actions>
-        <ElTabs class="w-full" v-model:model-value="configType" @tab-change="handleChangeConfigType">
+        <ElTabs
+          class="w-full"
+          @tab-change="handleChangeConfigType"
+          v-model:model-value="configType"
+        >
           <ElTabPane
             label="拥有客户数限制"
             :name="LimitConfType.CUSTOMER_QUANTITY_LIMIT"
