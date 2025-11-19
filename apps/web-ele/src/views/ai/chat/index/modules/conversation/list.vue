@@ -179,47 +179,6 @@ async function createConversation() {
   emits('onConversationCreate');
 }
 
-/** 清空未置顶的对话 */
-async function handleClearConversation() {
-  try {
-    await confirm('确认后对话会全部清空，置顶的对话除外。');
-    await deleteChatConversationMyByUnpinned();
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    // 清空对话、对话内容
-    activeConversationId.value = null;
-    // 获取对话列表
-    await getChatConversationList();
-    // 回调 方法
-    emits('onConversationClear');
-  } catch {}
-}
-
-/** 删除聊天对话 */
-async function deleteChatConversation(
-  conversation: AiChatConversationApi.ChatConversation,
-) {
-  try {
-    // 删除的二次确认
-    await confirm(`是否确认删除对话 - ${conversation.title}?`);
-    // 发起删除
-    await deleteChatConversationMy(conversation.id);
-    ElMessage.success('对话已删除');
-    // 刷新列表
-    await getChatConversationList();
-    // 回调
-    emits('onConversationDelete', conversation);
-  } catch {}
-}
-
-/** 对话置顶 */
-async function handleTop(conversation: AiChatConversationApi.ChatConversation) {
-  // 更新对话置顶
-  conversation.pinned = !conversation.pinned;
-  await updateChatConversationMy(conversation);
-  // 刷新对话
-  await getChatConversationList();
-}
-
 /** 修改对话的标题 */
 async function updateConversationTitle(
   conversation: AiChatConversationApi.ChatConversation,
@@ -273,6 +232,43 @@ async function updateConversationTitle(
   });
 }
 
+/** 删除聊天对话 */
+async function deleteChatConversation(
+  conversation: AiChatConversationApi.ChatConversation,
+) {
+  // 删除的二次确认
+  await confirm(`是否确认删除对话 - ${conversation.title}?`);
+  // 发起删除
+  await deleteChatConversationMy(conversation.id);
+  ElMessage.success('对话已删除');
+  // 刷新列表
+  await getChatConversationList();
+  // 回调
+  emits('onConversationDelete', conversation);
+}
+
+/** 清空未置顶的对话 */
+async function handleClearConversation() {
+  await confirm('确认后对话会全部清空，置顶的对话除外。');
+  await deleteChatConversationMyByUnpinned();
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  // 清空对话、对话内容
+  activeConversationId.value = null;
+  // 获取对话列表
+  await getChatConversationList();
+  // 回调 方法
+  emits('onConversationClear');
+}
+
+/** 对话置顶 */
+async function handleTop(conversation: AiChatConversationApi.ChatConversation) {
+  // 更新对话置顶
+  conversation.pinned = !conversation.pinned;
+  await updateChatConversationMy(conversation);
+  // 刷新对话
+  await getChatConversationList();
+}
+
 // ============ 角色仓库 ============
 
 /** 角色仓库抽屉 */
@@ -280,15 +276,13 @@ const handleRoleRepository = async () => {
   drawerApi.open();
 };
 
-/** 监听 activeId 变化 */
-watch(
-  () => props.activeId,
-  (newValue) => {
-    activeConversationId.value = newValue;
-  },
-);
-
+/** 监听选中的对话 */
 const { activeId } = toRefs(props);
+watch(activeId, async (newValue) => {
+  activeConversationId.value = newValue;
+});
+
+defineExpose({ createConversation });
 
 /** 初始化 */
 onMounted(async () => {
@@ -306,8 +300,6 @@ onMounted(async () => {
     }
   }
 });
-
-defineExpose({ createConversation });
 </script>
 
 <template>
@@ -388,6 +380,7 @@ defineExpose({ createConversation });
                 v-show="hoverConversationId === conversation.id"
                 class="relative right-0.5 flex items-center text-gray-400"
               >
+                <!-- TODO @AI：三个按钮之间，间隙太大了。 -->
                 <ElButton
                   class="mr-0 px-1"
                   link

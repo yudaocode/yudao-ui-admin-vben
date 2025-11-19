@@ -88,6 +88,7 @@ async function copyContent(content: string) {
   await copy(content);
   message.success('复制成功！');
 }
+
 /** 删除 */
 async function handleDelete(id: number) {
   // 删除 message

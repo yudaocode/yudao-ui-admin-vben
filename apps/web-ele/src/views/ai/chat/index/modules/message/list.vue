@@ -37,7 +37,7 @@ const emits = defineEmits(['onDeleteSuccess', 'onRefresh', 'onEdit']);
 const { copy } = useClipboard(); // 初始化 copy 到粘贴板
 const userStore = useUserStore();
 
-// 判断"消息列表"滚动的位置(用于判断是否需要滚动到消息最下方)
+// 判断“消息列表”滚动的位置(用于判断是否需要滚动到消息最下方)
 const messageContainer: any = ref(null);
 const isScrolling = ref(false); // 用于判断用户是否在滚动
 
@@ -88,6 +88,7 @@ async function copyContent(content: string) {
   await copy(content);
   ElMessage.success('复制成功！');
 }
+
 /** 删除 */
 async function handleDelete(id: number) {
   // 删除 message
@@ -152,6 +153,7 @@ onMounted(async () => {
             />
           </div>
           <div class="mt-2 flex flex-row">
+            <!-- TODO @AI：按钮之间，空隙太大 -->
             <ElButton
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               text
@@ -195,6 +197,7 @@ onMounted(async () => {
             </div>
           </div>
           <div class="mt-2 flex flex-row-reverse">
+            <!-- TODO @AI：按钮之间，空隙太大 -->
             <ElButton
               class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
               text

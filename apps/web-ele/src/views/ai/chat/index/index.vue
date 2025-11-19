@@ -547,6 +547,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <!-- TODO @AI：高度暂时没占满 -->
     <ElContainer
       direction="horizontal"
       class="absolute left-0 top-0 m-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)]"
@@ -574,6 +575,7 @@ onMounted(async () => {
             </span>
           </div>
 
+          <!-- TODO @AI：间隙太大 -->
           <div class="flex w-72 justify-end" v-if="activeConversation">
             <ElButton
               type="primary"
