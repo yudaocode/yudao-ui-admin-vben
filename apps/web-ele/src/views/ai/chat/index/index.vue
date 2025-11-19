@@ -547,10 +547,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <!-- TODO @AI：高度暂时没占满 -->
     <ElContainer
       direction="horizontal"
-      class="absolute left-0 top-0 m-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)]"
+      class="absolute left-0 top-0 m-4 h-full w-full flex-1"
     >
       <!-- 左侧：对话列表 -->
       <ConversationList
@@ -575,12 +574,11 @@ onMounted(async () => {
             </span>
           </div>
 
-          <!-- TODO @AI：间隙太大 -->
-          <div class="flex w-72 justify-end" v-if="activeConversation">
+          <div class="flex w-72 justify-end gap-2" v-if="activeConversation">
             <ElButton
               type="primary"
               plain
-              class="mr-2 px-2"
+              class="px-2"
               size="small"
               @click="openChatConversationUpdateForm"
             >
@@ -589,17 +587,17 @@ onMounted(async () => {
             </ElButton>
             <ElButton
               size="small"
-              class="mr-2 px-2"
+              class="px-2"
               @click="handlerMessageClear"
             >
               <IconifyIcon icon="lucide:trash-2" color="#787878" />
             </ElButton>
-            <ElButton size="small" class="mr-2 px-2">
+            <ElButton size="small" class="px-2">
               <IconifyIcon icon="lucide:download" color="#787878" />
             </ElButton>
             <ElButton
               size="small"
-              class="mr-2 px-2"
+              class="px-2"
               @click="handleGoTopMessage"
             >
               <IconifyIcon icon="lucide:arrow-up" color="#787878" />
@@ -636,7 +634,7 @@ onMounted(async () => {
 
         <ElFooter height="auto" class="!bg-card flex flex-col !p-0">
           <form
-            class="border-border mx-4 mb-4 mt-2 flex flex-col rounded-xl border p-2"
+            class="border-border mx-4 mb-8 mt-2 flex flex-col rounded-xl border p-2"
           >
             <textarea
               class="box-border h-24 resize-none overflow-auto rounded-md p-2 focus:outline-none"
