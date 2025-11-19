@@ -49,7 +49,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskManager>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 </script>
 
