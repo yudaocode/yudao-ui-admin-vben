@@ -153,9 +153,8 @@ onMounted(async () => {
             />
           </div>
           <div class="mt-2 flex flex-row">
-            <!-- TODO @AI：按钮之间，空隙太大 -->
             <ElButton
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="copyContent(item.content)"
             >
@@ -163,7 +162,7 @@ onMounted(async () => {
             </ElButton>
             <ElButton
               v-if="item.id > 0"
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="handleDelete(item.id)"
             >
@@ -197,30 +196,29 @@ onMounted(async () => {
             </div>
           </div>
           <div class="mt-2 flex flex-row-reverse">
-            <!-- TODO @AI：按钮之间，空隙太大 -->
             <ElButton
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="copyContent(item.content)"
             >
               <IconifyIcon icon="lucide:copy" />
             </ElButton>
             <ElButton
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="handleDelete(item.id)"
             >
               <IconifyIcon icon="lucide:trash" />
             </ElButton>
             <ElButton
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="handleRefresh(item)"
             >
               <IconifyIcon icon="lucide:refresh-cw" />
             </ElButton>
             <ElButton
-              class="flex items-center bg-transparent px-1.5 hover:bg-gray-100"
+              class="!ml-1 flex items-center bg-transparent !px-1.5 hover:bg-gray-100"
               text
               @click="handleEdit(item)"
             >

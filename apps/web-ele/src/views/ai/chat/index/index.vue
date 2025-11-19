@@ -578,26 +578,26 @@ onMounted(async () => {
             <ElButton
               type="primary"
               plain
-              class="px-2"
+              class="!px-2"
               size="small"
               @click="openChatConversationUpdateForm"
             >
               <span v-html="activeConversation?.modelName"></span>
-              <IconifyIcon icon="lucide:settings" class="ml-2 size-4" />
+              <IconifyIcon icon="lucide:settings" class="!ml-2 size-4" />
             </ElButton>
             <ElButton
               size="small"
-              class="px-2"
+              class="!ml-0 !px-2"
               @click="handlerMessageClear"
             >
               <IconifyIcon icon="lucide:trash-2" color="#787878" />
             </ElButton>
-            <ElButton size="small" class="px-2">
+            <ElButton size="small" class="!ml-0 !px-2">
               <IconifyIcon icon="lucide:download" color="#787878" />
             </ElButton>
             <ElButton
               size="small"
-              class="px-2"
+              class="!ml-0 !px-2"
               @click="handleGoTopMessage"
             >
               <IconifyIcon icon="lucide:arrow-up" color="#787878" />
