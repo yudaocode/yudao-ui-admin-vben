@@ -8,6 +8,7 @@ import {
   beginOfDay,
   endOfDay,
   erpCalculatePercentage,
+  formatDateTime,
   handleTree,
 } from '@vben/utils';
 
@@ -63,8 +64,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
         ...getRangePickerDefaultProps(),
       },
       defaultValue: [
-        beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7)),
-        endOfDay(new Date(Date.now() - 3600 * 1000 * 24)),
+        formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
+        formatDateTime(endOfDay(new Date(Date.now() - 3600 * 1000 * 24))),
       ],
     },
     {

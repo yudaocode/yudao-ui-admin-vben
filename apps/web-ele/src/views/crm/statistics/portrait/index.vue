@@ -9,7 +9,7 @@ import { onMounted, ref } from 'vue';
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { ElTabs, ElTabPane } from 'element-plus';
+import { ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -27,13 +27,11 @@ const { renderEcharts: renderRightEcharts } = useEcharts(rightChartRef);
 
 const [QueryForm, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
     componentProps: {
       class: 'w-full',
     },
   },
   schema: useGridFormSchema(),
-  // 是否可展开
   showCollapseButton: true,
   submitButtonOptions: {
     content: $t('common.query'),

@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
 import { useUserStore } from '@vben/stores';
-import { beginOfDay, endOfDay, handleTree } from '@vben/utils';
+import { beginOfDay, endOfDay, formatDate, handleTree } from '@vben/utils';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
@@ -33,12 +33,20 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        shortcuts: [],
+        // TODO @AI：这里有问题，只选择年份
         type: 'year',
         format: 'YYYY',
       },
       defaultValue: [
-        beginOfDay(new Date(new Date().getFullYear(), 0, 1)),
-        endOfDay(new Date(new Date().getFullYear(), 11, 31)),
+        formatDate(
+          beginOfDay(new Date(new Date().getFullYear(), 0, 1)),
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+        formatDate(
+          endOfDay(new Date(new Date().getFullYear(), 11, 31)),
+          'YYYY-MM-DD HH:mm:ss',
+        ),
       ],
     },
     {

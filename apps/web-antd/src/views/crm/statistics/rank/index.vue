@@ -25,13 +25,11 @@ const { renderEcharts } = useEcharts(chartRef);
 
 const [QueryForm, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
     componentProps: {
       class: 'w-full',
     },
   },
   schema: useGridFormSchema(),
-  // 是否可展开
   showCollapseButton: true,
   submitButtonOptions: {
     content: $t('common.query'),

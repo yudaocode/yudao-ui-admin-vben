@@ -12,7 +12,7 @@ import { reactive, ref } from 'vue';
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { ElButton, ElButtonGroup, ElTabs, ElTabPane } from 'element-plus';
+import { ElButton, ElButtonGroup, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -42,13 +42,11 @@ const gridEvents: VxeGridListeners = {
 };
 const [QueryForm, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
     componentProps: {
       class: 'w-full',
     },
   },
   schema: useGridFormSchema(),
-  // 是否可展开
   showCollapseButton: true,
   submitButtonOptions: {
     content: $t('common.query'),

@@ -31,17 +31,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'times',
       label: '时间范围',
       component: 'RangePicker',
+      // TODO @AI：这里有问题，只选择年份
       componentProps: {
         ...getRangePickerDefaultProps(),
+        presets: {},
         picker: 'year',
         showTime: false,
         format: 'YYYY',
-        ranges: {},
       },
       defaultValue: [
         formatDateTime(beginOfDay(new Date(new Date().getFullYear(), 0, 1))),
         formatDateTime(endOfDay(new Date(new Date().getFullYear(), 11, 31))),
-      ] as [Date, Date],
+      ],
     },
     {
       fieldName: 'deptId',

@@ -66,7 +66,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       defaultValue: [
         formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
         formatDateTime(endOfDay(new Date(Date.now() - 3600 * 1000 * 24))),
-      ] as [Date, Date],
+      ],
     },
     {
       fieldName: 'interval',

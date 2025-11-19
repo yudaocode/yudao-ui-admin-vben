@@ -39,13 +39,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        format: 'YYYY-MM-DD',
-        picker: 'year',
       },
       defaultValue: [
         formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
         formatDateTime(endOfDay(new Date(Date.now() - 3600 * 1000 * 24))),
-      ] as [Date, Date],
+      ],
     },
     {
       fieldName: 'deptId',
