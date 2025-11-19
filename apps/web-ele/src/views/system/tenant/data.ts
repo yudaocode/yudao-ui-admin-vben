@@ -95,6 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择过期时间',
+        class: '!w-full',
       },
       rules: 'required',
     },

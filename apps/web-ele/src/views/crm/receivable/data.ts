@@ -157,6 +157,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择回款日期',
         valueFormat: 'x',
         format: 'YYYY-MM-DD',
+        class: '!w-full',
       },
     },
     {

@@ -112,6 +112,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择计划回款日期',
         valueFormat: 'x',
         format: 'YYYY-MM-DD',
+        class: '!w-full',
       },
       defaultValue: new Date(),
     },

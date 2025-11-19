@@ -101,6 +101,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择预计成交日期',
+        class: '!w-full',
       },
     },
     {

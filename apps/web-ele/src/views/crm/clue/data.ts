@@ -143,6 +143,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
+        class: '!w-full',
       },
     },
     {

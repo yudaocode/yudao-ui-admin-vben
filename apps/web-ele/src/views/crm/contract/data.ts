@@ -109,6 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        class: '!w-full',
       },
     },
     {
@@ -118,6 +119,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        class: '!w-full',
       },
     },
     {
@@ -127,6 +129,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        class: '!w-full',
       },
     },
     {

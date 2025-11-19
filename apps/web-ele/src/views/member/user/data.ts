@@ -79,6 +79,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择出生日期',
+        class: '!w-full',
       },
     },
     {

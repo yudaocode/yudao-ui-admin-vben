@@ -155,6 +155,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
         allowClear: true,
+        class: '!w-full',
       },
     },
     {
