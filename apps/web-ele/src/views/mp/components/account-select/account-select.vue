@@ -124,7 +124,7 @@ onMounted(() => {
   <ElSelect
     v-model="currentId"
     placeholder="请选择公众号"
-    class="!w-240px"
+    class="!w-full"
     @change="onChanged"
   >
     <ElOption

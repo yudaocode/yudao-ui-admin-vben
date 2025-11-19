@@ -1,12 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { MpAccountApi } from '#/api/mp/account';
-
-import { getSimpleAccountList } from '#/api/mp/account';
-
-/** 关联数据 */
-let accountList: MpAccountApi.AccountSimple[] = [];
-getSimpleAccountList().then((data) => (accountList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -46,15 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: 'ApiSelect',
-      componentProps: {
-        options: accountList.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-        placeholder: '请选择公众号',
-      },
-      defaultValue: accountList[0]?.id,
+      component: 'Input',
     },
   ];
 }

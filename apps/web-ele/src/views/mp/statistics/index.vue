@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
@@ -16,6 +16,7 @@ import {
   getUserCumulate,
   getUserSummary,
 } from '#/api/mp/statistics';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import {
   interfaceSummaryOption,
@@ -95,6 +96,12 @@ async function getSummary(values: Record<string, any>) {
   );
 }
 
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  queryFormApi.setValues({ accountId });
+  queryFormApi.submitForm();
+}
+
 const [QueryForm, queryFormApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -106,17 +113,16 @@ const [QueryForm, queryFormApi] = useVbenForm({
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
   handleSubmit: getSummary,
 });
-
-/** 初始化 */
-onMounted(() => {
-  queryFormApi.submitForm();
-});
 </script>
 
 <template>
   <Page auto-content-height>
     <ContentWrap class="h-full w-full">
-      <QueryForm />
+      <QueryForm>
+        <template #accountId>
+          <WxAccountSelect @change="handleAccountChange" />
+        </template>
+      </QueryForm>
 
       <div class="flex h-1/3 w-full gap-4">
         <ElCard class="h-full w-1/2">

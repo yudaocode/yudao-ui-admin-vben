@@ -9,6 +9,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTag, getTagPage, syncTag } from '#/api/mp/tag';
 import { $t } from '#/locales';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -21,6 +22,12 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
 }
 
 /** 创建标签 */
@@ -101,6 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
+      autoLoad: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -118,6 +126,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
     <Grid table-title="公众号标签列表">
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[
