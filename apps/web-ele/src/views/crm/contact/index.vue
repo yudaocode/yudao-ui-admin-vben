@@ -8,7 +8,13 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElLoading, ElMessage, ElTabPane, ElTabs } from 'element-plus';
+import {
+  ElButton,
+  ElLoading,
+  ElMessage,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -132,7 +138,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-actions>
-        <ElTabs class="w-full" v-model:model-value="sceneType" @tab-change="handleChangeSceneType">
+        <ElTabs
+          class="w-full"
+          @tab-change="handleChangeSceneType"
+          v-model:model-value="sceneType"
+        >
           <ElTabPane label="我负责的" name="1" />
           <ElTabPane label="我参与的" name="2" />
           <ElTabPane label="下属负责的" name="3" />
