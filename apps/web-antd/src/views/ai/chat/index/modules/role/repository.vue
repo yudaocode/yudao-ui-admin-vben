@@ -112,6 +112,7 @@ async function handlerCategoryClick(category: string) {
 async function handlerAddRole() {
   formModalApi.setData({ formType: 'my-create' }).open();
 }
+
 /** 编辑角色 */
 async function handlerCardEdit(role: any) {
   formModalApi.setData({ formType: 'my-update', id: role.id }).open();
@@ -219,7 +220,6 @@ onMounted(async () => {
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('my')"
-              class="mt-5"
             />
           </Tabs.TabPane>
 
