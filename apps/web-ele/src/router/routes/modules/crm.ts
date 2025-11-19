@@ -65,15 +65,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/receivable/detail/index.vue'),
       },
-      // {
-      //   path: 'contact/detail/:id',
-      //   name: 'CrmContactDetail',
-      //   meta: {
-      //     title: '联系人详情',
-      //     activePath: '/crm/contact',
-      //   },
-      //   component: () => import('#/views/crm/contact/detail/index.vue'),
-      // },
+      {
+        path: 'contact/detail/:id',
+        name: 'CrmContactDetail',
+        meta: {
+          title: '联系人详情',
+          activePath: '/crm/contact',
+        },
+        component: () => import('#/views/crm/contact/detail/index.vue'),
+      },
       {
         path: 'product/detail/:id',
         name: 'CrmProductDetail',
