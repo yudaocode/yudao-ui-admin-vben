@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { Article } from './modules/types';
-
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -9,9 +8,8 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDraft, getDraftPage } from '#/api/mp/draft';
+import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
 import { submitFreePublish } from '#/api/mp/freePublish';
-import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import DraftTableCell from './modules/draft-table.vue';
@@ -42,7 +40,7 @@ async function handleCreate() {
 }
 
 /** 修改草稿 */
-async function handleEdit(row: Article) {
+async function handleEdit(row: MpDraftApi.DraftArticle) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
@@ -60,7 +58,7 @@ async function handleEdit(row: Article) {
 }
 
 /** 删除草稿 */
-async function handleDelete(row: Article) {
+async function handleDelete(row: MpDraftApi.DraftArticle) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
@@ -82,7 +80,7 @@ async function handleDelete(row: Article) {
 }
 
 /** 发布草稿 */
-async function handlePublish(row: Article) {
+async function handlePublish(row: MpDraftApi.DraftArticle) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
   if (!accountId) {
@@ -139,7 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             }
           });
           return {
-            list: drafts.list as unknown as Article[],
+            list: drafts.list as unknown as MpDraftApi.DraftArticle[],
             total: drafts.total,
           };
         },
@@ -153,8 +151,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-    // TODO @hw：这里有点纠结，一般是 MpDraftApi.Article，但是一改貌似就 linter 告警了。
-  } as VxeTableGridOptions<Article>,
+  } as VxeTableGridOptions<MpDraftApi.DraftArticle>,
 });
 </script>
 

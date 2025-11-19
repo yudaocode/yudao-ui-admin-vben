@@ -113,13 +113,6 @@ const [Modal, modalApi] = useVbenModal({
       // 编辑：加载数据
       const rowData = data.row;
       const formValues: any = { ...rowData };
-      // TODO @hw：下面要删除掉么，注释。
-      // delete formValues.responseMessageType;
-      // delete formValues.responseContent;
-      // delete formValues.responseMediaId;
-      // delete formValues.responseMediaUrl;
-      // delete formValues.responseDescription;
-      // delete formValues.responseArticles;
       formValues.reply = {
         type: rowData.responseMessageType,
         accountId: data.accountId || -1,

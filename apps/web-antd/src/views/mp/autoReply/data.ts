@@ -149,10 +149,6 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
     fieldName: 'reply',
     label: '回复消息',
     component: markRaw(WxReply),
-    // TODO @hw：这里注释，要不要删除掉？
-    // componentProps: {
-    //   modelValue: { type: 'video', content: '12456' },
-    // },
     modelPropName: 'modelValue',
   });
   return schema;

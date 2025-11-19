@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, ref } from 'vue';
 
@@ -8,23 +8,23 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Col, Input, Layout, Row, Textarea } from 'ant-design-vue';
 
+import { createEmptyNewsItem } from '#/api/mp/draft';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
-import { createEmptyNewsItem } from './types';
 
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
   isCreating: boolean;
-  modelValue: NewsItem[] | null;
+  modelValue: MpDraftApi.NewsItem[] | null;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem[]): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem[]): void;
 }>();
 
-const newsList = computed<NewsItem[]>({
+const newsList = computed<MpDraftApi.NewsItem[]>({
   get() {
     return props.modelValue === null
       ? [createEmptyNewsItem()]
