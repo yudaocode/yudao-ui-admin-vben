@@ -103,7 +103,7 @@ async function handleGenerateImage() {
         clipGuidancePreset: clipGuidancePreset.value, // 文本提示相匹配的图像 CLIP
         stylePreset: stylePreset.value, // 风格
       },
-    } as unknown as AiImageApi.ImageDrawReq;
+    } as unknown as AiImageApi.ImageDrawReqVO;
     await drawImage(form);
   } finally {
     // 回调

@@ -547,7 +547,10 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <ElContainer class="absolute left-0 top-0 m-4 h-full w-full flex-1">
+    <ElContainer
+      direction="horizontal"
+      class="absolute left-0 top-0 m-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)]"
+    >
       <!-- 左侧：对话列表 -->
       <ConversationList
         class="!bg-card"
@@ -560,7 +563,7 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <ElContainer class="bg-card mx-4">
+      <ElContainer direction="vertical" class="bg-card mx-4 flex-1">
         <ElHeader
           class="!bg-card border-border flex !h-12 items-center justify-between border-b !px-4"
         >
@@ -629,9 +632,9 @@ onMounted(async () => {
           </div>
         </ElMain>
 
-        <ElFooter class="!bg-card flex flex-col !p-0">
+        <ElFooter height="auto" class="!bg-card flex flex-col !p-0">
           <form
-            class="border-border mx-4 mb-8 mt-2 flex flex-col rounded-xl border p-2"
+            class="border-border mx-4 mb-4 mt-2 flex flex-col rounded-xl border p-2"
           >
             <textarea
               class="box-border h-24 resize-none overflow-auto rounded-md p-2 focus:outline-none"

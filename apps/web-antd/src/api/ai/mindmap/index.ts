@@ -8,7 +8,6 @@ const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const accessStore = useAccessStore();
 
 export namespace AiMindmapApi {
-  // AI 思维导图
   export interface MindMap {
     id: number; // 编号
     userId: number; // 用户编号
@@ -19,12 +18,12 @@ export namespace AiMindmapApi {
     errorMessage: string; // 错误信息
   }
 
-  // AI 思维导图生成
   export interface AiMindMapGenerateReqVO {
     prompt: string;
   }
 }
 
+/** 生成思维导图 Stream */
 export function generateMindMap({
   data,
   onClose,

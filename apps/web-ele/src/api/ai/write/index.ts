@@ -36,6 +36,7 @@ export namespace AiWriteApi {
   }
 }
 
+/** 写作 Stream */
 export function writeStream({
   data,
   onClose,
