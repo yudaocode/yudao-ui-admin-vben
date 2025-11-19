@@ -63,59 +63,59 @@ async function handleTabsScroll() {
 
 <template>
   <div
-    class="relative flex h-full flex-wrap content-start items-start overflow-auto px-6 pb-36"
+    class="relative flex h-full flex-wrap content-start items-start overflow-auto pb-36"
     ref="tabsRef"
     @scroll="handleTabsScroll"
   >
-    <div class="mb-5 mr-5 inline-block" v-for="role in roleList" :key="role.id">
+    <div class="mb-3 mr-3 inline-block" v-for="role in roleList" :key="role.id">
       <ElCard
         class="relative rounded-lg"
-        body-style="position: relative; display: flex; flex-direction: row; justify-content: flex-start; width: 240px; max-width: 240px; padding: 15px 15px 10px;"
+        body-style="position: relative; display: flex; flex-direction: column; justify-content: flex-start; width: 240px; max-width: 240px; padding: 15px;"
       >
-        <!-- 更多操作 -->
-        <div v-if="showMore" class="absolute right-2 top-0">
-          <ElDropdown>
-            <ElButton link>
-              <IconifyIcon icon="lucide:ellipsis-vertical" />
+        <!-- 头部：头像、名称 -->
+        <div class="flex items-center justify-between">
+          <div class="flex min-w-0 flex-1 items-center">
+            <ElAvatar
+              :src="role.avatar"
+              class="h-8 w-8 flex-shrink-0 overflow-hidden"
+            />
+            <div class="ml-2 truncate text-base font-medium">
+              {{ role.name }}
+            </div>
+          </div>
+        </div>
+        <!-- 描述信息 -->
+        <div
+          class="mt-2 line-clamp-2 h-10 overflow-hidden text-sm text-gray-600"
+        >
+          {{ role.description }}
+        </div>
+        <!-- 底部操作按钮 -->
+        <div class="flex items-center justify-end gap-2">
+          <ElDropdown v-if="showMore">
+            <ElButton size="small">
+              <IconifyIcon icon="lucide:ellipsis" />
             </ElButton>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem @click="handleMoreClick('edit', role)">
-                  <div class="flex items-center">
-                    <IconifyIcon icon="lucide:edit" color="#787878" />
-                    <span class="text-primary">编辑</span>
-                  </div>
-                </ElDropdownItem>
                 <ElDropdownItem @click="handleMoreClick('delete', role)">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:trash" color="red" />
-                    <span class="text-red-500">删除</span>
+                    <span class="ml-2 text-red-500">删除</span>
+                  </div>
+                </ElDropdownItem>
+                <ElDropdownItem @click="handleMoreClick('edit', role)">
+                  <div class="flex items-center">
+                    <IconifyIcon icon="lucide:edit" color="#787878" />
+                    <span class="text-primary ml-2">编辑</span>
                   </div>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
           </ElDropdown>
-        </div>
-
-        <!-- 角色信息 -->
-        <div>
-          <ElAvatar :src="role.avatar" class="h-10 w-10 overflow-hidden" />
-        </div>
-
-        <div class="ml-2 w-4/5">
-          <div class="h-20">
-            <div class="max-w-32 text-lg font-bold">
-              {{ role.name }}
-            </div>
-            <div class="mt-2 text-sm">
-              {{ role.description }}
-            </div>
-          </div>
-          <div class="mt-1 flex flex-row-reverse">
-            <ElButton type="primary" size="small" @click="handleUseClick(role)">
-              使用
-            </ElButton>
-          </div>
+          <ElButton type="primary" size="small" @click="handleUseClick(role)">
+            使用
+          </ElButton>
         </div>
       </ElCard>
     </div>
