@@ -20,15 +20,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/crm/clue/detail/index.vue'),
       },
-      // {
-      //   path: 'customer/detail/:id',
-      //   name: 'CrmCustomerDetail',
-      //   meta: {
-      //     title: '客户详情',
-      //     activePath: '/crm/customer',
-      //   },
-      //   component: () => import('#/views/crm/customer/detail/index.vue'),
-      // },
+      {
+        path: 'customer/detail/:id',
+        name: 'CrmCustomerDetail',
+        meta: {
+          title: '客户详情',
+          activePath: '/crm/customer',
+        },
+        component: () => import('#/views/crm/customer/detail/index.vue'),
+      },
       {
         path: 'business/detail/:id',
         name: 'CrmBusinessDetail',
