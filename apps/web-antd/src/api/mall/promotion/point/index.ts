@@ -36,6 +36,7 @@ export namespace MallPointActivityApi {
     price: number; // 兑换金额，单位：分
   }
 
+  // TODO @puhui999：这些还需要么？
   /** 扩展 SKU 配置 */
   export type SkuExtension = {
     productConfig: PointProduct; // 积分商城商品配置

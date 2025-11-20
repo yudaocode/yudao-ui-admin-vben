@@ -26,6 +26,7 @@ export namespace MallDiscountActivityApi {
     products?: DiscountProduct[]; // 商品列表
   }
 
+  // TODO @puhui999：要不要删除？
   /** 扩展 SKU 配置 */
   export type SkuExtension = {
     productConfig: DiscountProduct; // 限时折扣配置

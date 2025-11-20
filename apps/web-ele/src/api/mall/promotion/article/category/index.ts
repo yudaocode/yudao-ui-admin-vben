@@ -5,16 +5,11 @@ import { requestClient } from '#/api/request';
 export namespace MallArticleCategoryApi {
   /** 文章分类 */
   export interface ArticleCategory {
-    /** 分类编号 */
-    id: number;
-    /** 分类名称 */
-    name: string;
-    /** 分类图片 */
-    picUrl: string;
-    /** 状态 */
-    status: number;
-    /** 排序 */
-    sort: number;
+    id: number; // 分类编号
+    name: string; // 分类名称
+    picUrl: string; // 分类图片
+    status: number; // 状态
+    sort: number; // 排序
   }
 }
 

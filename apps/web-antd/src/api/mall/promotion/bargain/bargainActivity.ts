@@ -33,6 +33,7 @@ export namespace MallBargainActivityApi {
     stock: number; // 活动库存
   }
 
+  // TODO @puhui999：要不要删除？
   /** 扩展 SKU 配置 */
   export type SkuExtension = {
     productConfig: BargainProduct; // 砍价活动配置
