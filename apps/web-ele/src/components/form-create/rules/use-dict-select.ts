@@ -11,10 +11,8 @@ import {
 } from '#/components/form-create/helpers';
 import { selectRule } from '#/components/form-create/rules/data';
 
-/**
- * 字典选择器规则，如果规则使用到动态数据则需要单独配置不能使用 useSelectRule
- */
-export const useDictSelectRule = () => {
+/** 字典选择器规则，如果规则使用到动态数据则需要单独配置不能使用 useSelectRule */
+export function useDictSelectRule() {
   const label = '字典选择器';
   const name = 'DictSelect';
   const rules = cloneDeep(selectRule);
@@ -41,6 +39,7 @@ export const useDictSelectRule = () => {
         title: label,
         info: '',
         $required: false,
+        // TODO @puhui999：vben 版本里，这里有个 modelField: 'value', 需要添加么？
       };
     },
     props(_: any, { t }: any) {
@@ -68,4 +67,4 @@ export const useDictSelectRule = () => {
       ]);
     },
   };
-};
+}

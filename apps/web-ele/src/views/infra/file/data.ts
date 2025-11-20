@@ -9,7 +9,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'file',
       label: '文件上传',
-      component: 'FileUpload',
+      component: 'Upload',
       componentProps: {
         placeholder: '请选择要上传的文件',
       },

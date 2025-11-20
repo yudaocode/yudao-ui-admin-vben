@@ -4,7 +4,7 @@ import { fenToYuan } from '@vben/utils';
 
 /** 交易趋势折线图配置 */
 export function getTradeTrendChartOptions(
-  data: MallTradeStatisticsApi.TradeTrendSummary[],
+  data: MallTradeStatisticsApi.TradeTrendSummaryRespVO[],
 ): any {
   // 处理数据：将分转换为元
   const processedData = data.map((item) => ({

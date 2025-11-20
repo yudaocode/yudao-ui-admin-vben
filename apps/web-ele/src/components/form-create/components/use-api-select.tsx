@@ -15,7 +15,7 @@ import {
 
 import { requestClient } from '#/api/request';
 
-export const useApiSelect = (option: ApiSelectProps) => {
+export function useApiSelect(option: ApiSelectProps) {
   return defineComponent({
     name: option.name,
     props: {
@@ -285,4 +285,4 @@ export const useApiSelect = (option: ApiSelectProps) => {
       );
     },
   });
-};
+}

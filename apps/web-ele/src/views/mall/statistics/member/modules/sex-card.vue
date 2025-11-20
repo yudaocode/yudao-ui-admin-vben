@@ -31,7 +31,7 @@ async function loadMemberSexStatisticsList() {
     dictDataList.push({ label: '未知', value: null } as any);
     const chartData = dictDataList.map((dictData: any) => {
       const userCount = list.find(
-        (item: MallMemberStatisticsApi.SexStatistics) =>
+        (item: MallMemberStatisticsApi.SexStatisticsRespVO) =>
           item.sex === dictData.value,
       )?.userCount;
       return {

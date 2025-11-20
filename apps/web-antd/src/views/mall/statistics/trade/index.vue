@@ -18,7 +18,7 @@ defineOptions({ name: 'TradeStatistics' });
 
 const loading = ref(true); // 加载中
 const summary =
-  ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>>(); // 交易统计数据
+  ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeSummaryRespVO>>(); // 交易统计数据
 
 /** 计算环比百分比 */
 function calculateRelativeRate(value?: number, reference?: number): string {
