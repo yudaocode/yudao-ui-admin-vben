@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+// TODO @hw：这里 Reply 貌似不存在
 import type { Reply } from '#/views/mp/components';
 
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { AutoReplyMsgType as MsgType, ReplyType } from '@vben/constants';
+import { AutoReplyMsgType, ReplyType } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
@@ -18,7 +19,7 @@ const emit = defineEmits(['success']);
 
 const formData = ref<{
   accountId?: number;
-  msgType: MsgType;
+  msgType: AutoReplyMsgType;
   row?: any;
 }>();
 const getTitle = computed(() => {
@@ -36,7 +37,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 100,
   },
   layout: 'horizontal',
-  schema: useFormSchema(MsgType.Keyword),
+  schema: useFormSchema(AutoReplyMsgType.Keyword),
   showDefaultActions: false,
 });
 
@@ -96,7 +97,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<{
       accountId?: number;
-      msgType: MsgType;
+      msgType: AutoReplyMsgType;
       row?: any;
     }>();
     if (!data) {
@@ -134,7 +135,7 @@ const [Modal, modalApi] = useVbenModal({
         accountId: data.accountId || -1,
         type: data.msgType,
         requestKeyword: undefined,
-        requestMatch: data.msgType === MsgType.Keyword ? 1 : undefined,
+        requestMatch: data.msgType === AutoReplyMsgType.Keyword ? 1 : undefined,
         requestMessageType: undefined,
         reply: {
           type: ReplyType.Text,

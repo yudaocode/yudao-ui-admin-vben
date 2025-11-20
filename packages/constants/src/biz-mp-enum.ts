@@ -30,6 +30,7 @@ export enum MpMsgType {
   Location = 'location',
   Music = 'music',
   News = 'news',
+  ShortVideo = 'shortvideo',
   Text = 'text',
   Video = 'video',
   Voice = 'voice',

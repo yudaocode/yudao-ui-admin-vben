@@ -4,7 +4,7 @@ import type { Dayjs } from 'dayjs';
 import { reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { DICT_TYPE, MpMsgType as MsgType } from '@vben/constants';
+import { DICT_TYPE, MpMsgType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
@@ -44,7 +44,7 @@ const queryParams = reactive<{
   openid: '',
   pageNo: 1,
   pageSize: 10,
-  type: MsgType.Text,
+  type: MpMsgType.Text,
 }); // 搜索参数
 
 const queryFormRef = ref(); // 搜索的表单
@@ -189,6 +189,7 @@ function showTotal(total: number) {
       :footer="null"
       destroy-on-close
     >
+      <!-- TODO @hw，@dlayn：这里有告警； -->
       <WxMsg :user-id="messageBoxUserId" />
     </Modal>
   </Page>
