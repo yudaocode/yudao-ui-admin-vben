@@ -5,3 +5,4 @@ node_modules
 dist
 .turbo
 dist.zip
+.env
