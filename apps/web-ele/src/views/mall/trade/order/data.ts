@@ -12,7 +12,7 @@ import { getAreaTree } from '#/api/system/area';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
-let pickUpStoreList: MallDeliveryPickUpStoreApi.PickUpStore[] = [];
+let pickUpStoreList: MallDeliveryPickUpStoreApi.DeliveryPickUpStore[] = [];
 getSimpleDeliveryPickUpStoreList().then((data) => {
   pickUpStoreList = data;
 });

@@ -20,7 +20,7 @@ import {
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-const summary = ref<MallOrderApi.OrderSummary>();
+const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 
 /** 刷新表格 */
 function handleRefresh() {
