@@ -266,23 +266,14 @@ async function validate() {
 const [PrintTemplateModal, printTemplateModalApi] = useVbenModal({
   connectedComponent: PrintTemplate,
   destroyOnClose: true,
-  onConfirm() {
-    // 会在内部模态框中设置数据，这里获取数据， 内部模态框中不能有 onConfirm 方法
-    const { confirmedTemplate } = printTemplateModalApi.getData<{
-      confirmedTemplate: string;
-    }>();
-    if (confirmedTemplate !== undefined) {
-      modelData.value.printTemplateSetting.template = confirmedTemplate;
-    }
-  },
 });
 
 /** 弹出自定义打印模板弹窗 */
-const openPrintTemplateModal = () => {
+function openPrintTemplateModal() {
   printTemplateModalApi
     .setData({ template: modelData.value.printTemplateSetting.template })
     .open();
-};
+}
 
 /** 默认的打印模板， 目前自定义模板没有引入自定义样式。 看后续是否需要 */
 const defaultTemplate = `<p style="text-align: center;font-size: 1.25rem;"><strong><span data-w-e-type="mention" data-value="流程名称" data-info="%7B%22id%22%3A%22processName%22%7D">@流程名称</span></strong></p>
@@ -339,6 +330,10 @@ function handlePrintTemplateEnableChange(checked: any) {
   if (val && !modelData.value.printTemplateSetting.template) {
     modelData.value.printTemplateSetting.template = defaultTemplate;
   }
+}
+
+function confirmPrintTemplate(template: string) {
+  modelData.value.printTemplateSetting.template = template;
 }
 
 defineExpose({ initData, validate });
@@ -625,6 +620,9 @@ defineExpose({ initData, validate });
         </div>
       </div>
     </FormItem>
-    <PrintTemplateModal :form-fields="formFields" />
+    <PrintTemplateModal
+      :form-fields="formFields"
+      @confirm="confirmPrintTemplate"
+    />
   </Form>
 </template>

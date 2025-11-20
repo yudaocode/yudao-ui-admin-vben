@@ -9,24 +9,24 @@ const routes: RouteRecordRaw[] = [
       hideInMenu: true,
     },
     children: [
-      // {
-      //   path: 'task',
-      //   name: 'BpmTask',
-      //   meta: {
-      //     title: '审批中心',
-      //     icon: 'ant-design:history-outlined',
-      //   },
-      //   children: [
-      //     {
-      //       path: 'my',
-      //       name: 'BpmTaskMy',
-      //       component: () => import('#/views/bpm/processInstance/index.vue'),
-      //       meta: {
-      //         title: '我的流程',
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        path: 'task',
+        name: 'BpmTask',
+        meta: {
+          title: '审批中心',
+          icon: 'ant-design:history-outlined',
+        },
+        children: [
+          {
+            path: 'my',
+            name: 'BpmTaskMy',
+            component: () => import('#/views/bpm/processInstance/index.vue'),
+            meta: {
+              title: '我的流程',
+            },
+          },
+        ],
+      },
       // {
       //   path: 'process-instance/detail',
       //   component: () => import('#/views/bpm/processInstance/detail/index.vue'),
@@ -86,18 +86,18 @@ const routes: RouteRecordRaw[] = [
       //     keepAlive: true,
       //   },
       // },
-      // {
-      //   path: 'manager/definition',
-      //   component: () => import('#/views/bpm/model/definition/index.vue'),
-      //   name: 'BpmProcessDefinition',
-      //   meta: {
-      //     title: '流程定义',
-      //     activePath: '/bpm/manager/model',
-      //     icon: 'carbon:flow-modeler',
-      //     hideInMenu: true,
-      //     keepAlive: true,
-      //   },
-      // },
+      {
+        path: 'manager/definition',
+        component: () => import('#/views/bpm/model/definition/index.vue'),
+        name: 'BpmProcessDefinition',
+        meta: {
+          title: '流程定义',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-modeler',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
       {
         path: 'process-instance/report',
         component: () => import('#/views/bpm/processInstance/report/index.vue'),
