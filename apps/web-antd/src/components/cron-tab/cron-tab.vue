@@ -254,14 +254,13 @@ function open() {
 function set() {
   defaultValue.value = props.modelValue;
   let arr = (props.modelValue || '* * * * * ?').split(' ');
-
-  /** 简单检查 */
+  // 简单检查
   if (arr.length < 6) {
     message.warning('cron表达式错误，已转换为默认表达式');
     arr = '* * * * * ?'.split(' ');
   }
 
-  /** 秒 */
+  // 秒
   if (arr[0] === '*') {
     cronValue.second.type = '0';
   } else if (arr[0]?.includes('-')) {
@@ -277,7 +276,7 @@ function set() {
     cronValue.second.appoint = arr[0]?.split(',') || [];
   }
 
-  /** 分 */
+  // 分
   if (arr[1] === '*') {
     cronValue.minute.type = '0';
   } else if (arr[1]?.includes('-')) {
@@ -293,7 +292,7 @@ function set() {
     cronValue.minute.appoint = arr[1]?.split(',') || [];
   }
 
-  /** 小时 */
+  // 小时
   if (arr[2] === '*') {
     cronValue.hour.type = '0';
   } else if (arr[2]?.includes('-')) {
@@ -309,21 +308,18 @@ function set() {
     cronValue.hour.appoint = arr[2]?.split(',') || [];
   }
 
-  /** 日 */
+  // 日
   switch (arr[3]) {
     case '*': {
       cronValue.day.type = '0';
-
       break;
     }
     case '?': {
       cronValue.day.type = '5';
-
       break;
     }
     case 'L': {
       cronValue.day.type = '4';
-
       break;
     }
     default: {
@@ -342,7 +338,7 @@ function set() {
     }
   }
 
-  /** 月 */
+  // 月
   if (arr[4] === '*') {
     cronValue.month.type = '0';
   } else if (arr[4]?.includes('-')) {
@@ -358,7 +354,7 @@ function set() {
     cronValue.month.appoint = arr[4]?.split(',') || [];
   }
 
-  /** 周 */
+  // 周
   if (arr[5] === '*') {
     cronValue.week.type = '0';
   } else if (arr[5] === '?') {
@@ -379,7 +375,7 @@ function set() {
     cronValue.week.appoint = arr[5]?.split(',') || [];
   }
 
-  /** 年 */
+  // 年
   if (!arr[6]) {
     cronValue.year.type = '-1';
   } else if (arr[6] === '*') {
