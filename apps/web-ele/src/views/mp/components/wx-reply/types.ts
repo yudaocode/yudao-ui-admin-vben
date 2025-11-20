@@ -2,6 +2,7 @@ import type { Ref } from 'vue';
 
 import { unref } from 'vue';
 
+// TODO @hw：和 antd 风格，保持一致；
 enum ReplyType {
   Image = 'image',
   Music = 'music',
@@ -30,7 +31,7 @@ interface _Reply {
 
 type Reply = _Reply; // Partial<_Reply>
 
-/** 利用旧的reply[accountId, type]初始化新的Reply */
+/** 利用旧的 reply[accountId, type] 初始化新的 Reply */
 const createEmptyReply = (old: Ref<Reply> | Reply): Reply => {
   return {
     accountId: unref(old).accountId,

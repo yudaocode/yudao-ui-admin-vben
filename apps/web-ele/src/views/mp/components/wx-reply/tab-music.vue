@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { UploadRawFile } from 'element-plus';
 
+// TODO @hw：类似 tab-image.vue 的建议
 import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
@@ -19,10 +20,7 @@ import {
 } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-// import { getAccessToken } from '@/utils/auth'
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
-
-// 设置上传的请求头部
 
 const props = defineProps<{
   modelValue: Reply;
@@ -45,9 +43,9 @@ const showDialog = ref(false);
 const fileList = ref([]);
 const uploadData = reactive({
   accountId: reply.value.accountId,
-  type: 'thumb', // 音乐类型为thumb
-  title: '',
   introduction: '',
+  title: '',
+  type: 'thumb', // 音乐类型为 thumb
 });
 
 /** 图片上传前校验 */

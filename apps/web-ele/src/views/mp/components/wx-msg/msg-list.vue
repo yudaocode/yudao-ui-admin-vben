@@ -8,6 +8,7 @@ import avatarWechat from '#/assets/imgs/wechat.png';
 import Msg from './wx-msg.vue';
 
 // 确保 User 类型被识别为已使用
+// TODO @hw：是不是不用 PropsUser 哈？
 type PropsUser = User;
 
 defineOptions({ name: 'MsgList' });
@@ -18,15 +19,16 @@ const props = defineProps<{
   user: PropsUser;
 }>();
 
-// 使用常量对象替代枚举，避免 linter 误报
 const SendFrom = {
   MpBot: 2,
   User: 1,
-} as const;
+} as const; // 发送来源
 
+// TODO @hw：是不是用 SendFrom ，或者 number？
 type SendFromType = (typeof SendFrom)[keyof typeof SendFrom];
 
 // 显式引用枚举成员供模板使用
+// TODO @hw：是不是用 SendFrom 就好啦？
 const MpBotValue = SendFrom.MpBot;
 const UserValue = SendFrom.User;
 
@@ -72,6 +74,8 @@ const getNickname = (sendFrom: SendFromType) =>
 
 <style lang="scss" scoped>
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
+/** TODO @dylan：@hw 看看有没适合 tindwind 的哈。 */
+
 @import url('../comment.scss');
 @import url('../card.scss');
 </style>

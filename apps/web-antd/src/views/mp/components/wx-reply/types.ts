@@ -21,7 +21,7 @@ export interface Reply {
   url?: null | string;
 }
 
-/** 利用旧的reply[accountId, type]初始化新的Reply */
+/** 利用旧的 reply[accountId, type] 初始化新的 Reply */
 export function createEmptyReply(old: Ref<Reply> | Reply): Reply {
   return {
     accountId: unref(old).accountId,

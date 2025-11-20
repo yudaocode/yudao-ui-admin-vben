@@ -22,6 +22,8 @@ import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
 
+defineOptions({ name: 'TabVideo' });
+
 const props = defineProps<{
   modelValue: Reply;
 }>();
@@ -30,13 +32,16 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
+// TODO @hw：还是用 ElMessage
 const message = ElMessage;
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
+// TODO @hw：这里 antd 和 ele 有差异，要统一么？
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 
 const reply = computed<Reply>({
   get: () => props.modelValue,
+  // TODO @hw：这里 antd 和 ele 有差异，要统一么？
   set: (val: Reply) => emit('update:modelValue', val),
 });
 
@@ -44,9 +49,9 @@ const showDialog = ref(false);
 const fileList = ref([]);
 const uploadData = reactive({
   accountId: reply.value.accountId,
-  type: 'video',
-  title: '',
   introduction: '',
+  title: '',
+  type: 'video',
 });
 
 /** 视频上传前校验 */
@@ -142,5 +147,3 @@ function selectMaterial(item: any) {
     </ElRow>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

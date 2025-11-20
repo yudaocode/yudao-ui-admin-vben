@@ -49,6 +49,7 @@ const uploadData = reactive({
   type: 'video',
 });
 
+/** 视频上传前校验 */
 function beforeVideoUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Video, 10)(rawFile);
 }
@@ -73,6 +74,7 @@ async function customRequest(options: any) {
 
     const result = await response.json();
 
+    // TODO @hw：也采用类似 ele 的 if return(res.code !== 0) return 写法；
     if (result.code === 0) {
       // 清空上传时的各种数据
       fileList.value = [];

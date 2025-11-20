@@ -1,12 +1,3 @@
-<!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  芋道源码：
-  ① 移除多余的 rep 为前缀的变量，让 message 消息更简单
-  ② 代码优化，补充注释，提升阅读性
-  ③ 优化消息的临时缓存策略，发送消息时，只清理被发送消息的 tab，不会强制切回到 text 输入
-  ④ 支持发送【视频】消息时，支持新建视频
--->
 <script lang="ts" setup>
 import type { Reply } from './types';
 
@@ -25,6 +16,7 @@ import TabVideo from './tab-video.vue';
 import TabVoice from './tab-voice.vue';
 import { createEmptyReply } from './types';
 
+/** 消息回复选择 */
 defineOptions({ name: 'WxReplySelect' });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,16 +26,16 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
+// TODO @hw：antd 和 ele 风格不同，需要统一；
 interface Props {
   modelValue: Reply | undefined;
   newsType?: NewsType;
 }
 
-// 提供一个默认的 Reply 对象，避免 undefined 导致的错误
 const defaultReply: Reply = {
   accountId: -1,
   type: ReplyType.Text,
-};
+}; // 提供一个默认的 Reply 对象，避免 undefined 导致的错误
 
 const reply = computed<Reply>({
   get: () => props.modelValue || defaultReply,
@@ -53,6 +45,7 @@ const reply = computed<Reply>({
 const tabCache = new Map<ReplyType, Reply>(); // 作为多个标签保存各自 Reply 的缓存
 const currentTab = ref<ReplyType>(props.modelValue?.type || ReplyType.Text); // 采用独立的 ref 来保存当前 tab，避免在 watch 标签变化，对 reply 进行赋值会产生了循环调用
 
+// TODO @hw：antd 和 ele 风格不同，需要统一；
 // 监听 modelValue 变化，同步更新 currentTab 和缓存
 watch(
   () => props.modelValue,
@@ -71,6 +64,7 @@ watch(
   { immediate: true, deep: true },
 );
 
+// TODO @hw：antd 和 ele 风格不同，需要统一；
 watch(
   currentTab,
   (newTab, oldTab) => {

@@ -28,11 +28,13 @@ const reply = computed<Reply>({
 
 const showDialog = ref(false);
 
+/** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.articles = item.content.newsItem;
 }
 
+/** 删除图文 */
 function onDelete() {
   reply.value.articles = [];
 }
@@ -72,7 +74,6 @@ function onDelete() {
           </Col>
         </Row>
       </Col>
-
       <Modal
         v-model:open="showDialog"
         title="选择图文"
@@ -92,7 +93,7 @@ function onDelete() {
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
 .select-item {
   width: 280px;
   padding: 10px;

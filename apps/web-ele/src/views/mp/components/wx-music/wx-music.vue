@@ -1,7 +1,5 @@
-<!--
-  【微信消息 - 音乐】
--->
 <script lang="ts" setup>
+/** 微信消息 - 音乐 */
 defineOptions({ name: 'Music' });
 
 const props = defineProps({
@@ -38,6 +36,7 @@ defineExpose({
 
 <template>
   <div>
+    <!-- TODO @hw：ElLink -->
     <el-link
       type="success"
       :underline="false"
@@ -62,6 +61,8 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
+
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 card.scss  */
 @import url('../wx-msg/card.scss');
 </style>

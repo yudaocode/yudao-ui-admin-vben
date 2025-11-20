@@ -1,13 +1,15 @@
 <!--
-  【微信消息 - 定位】TODO @Dhb52 目前未启用
+  【微信消息 - 定位】TODO @Dhb52 目前未启用；；；；@hw：看看目前是不是没用起来哈？
 -->
 <script lang="ts" setup>
 import { IconifyIcon } from '@vben/icons';
 
+// TODO @dylan：@hw：apps/web-antd/src/views/mall/trade/delivery/pickUpStore/modules/form.vue 参考这个，从后端拿 key 哈
 import { ElCol, ElLink, ElRow } from 'element-plus';
 
 defineOptions({ name: 'Location' });
 
+// TODO @hw：antd 和 ele 这里的风格，看看怎么统一！
 const props = defineProps({
   locationX: {
     required: true,
@@ -39,6 +41,7 @@ defineExpose({
 </script>
 
 <template>
+  <!-- 微信消息 - 定位 -->
   <div>
     <ElLink
       type="primary"

@@ -28,9 +28,11 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
+// TODO @hw：直接用 ElMessage
 const message = ElMessage;
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
+// TODO @hw：看看要不要和 antd 保持一致的风格；
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,
@@ -41,9 +43,9 @@ const showDialog = ref(false);
 const fileList = ref([]);
 const uploadData = reactive({
   accountId: reply.value.accountId,
-  type: 'image',
-  title: '',
   introduction: '',
+  title: '',
+  type: 'image',
 });
 
 /** 图片上传前校验 */
@@ -157,5 +159,3 @@ function selectMaterial(item: any) {
     </ElRow>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

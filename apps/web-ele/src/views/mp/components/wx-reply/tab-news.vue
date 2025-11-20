@@ -12,13 +12,17 @@ import News from '#/views/mp/components/wx-news/wx-news.vue';
 
 import { NewsType } from '../wx-material-select/types';
 
+defineOptions({ name: 'TabNews' });
+
 const props = defineProps<{
   modelValue: Reply;
   newsType: NewsType;
 }>();
+
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
+
 const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
@@ -84,5 +88,3 @@ function onDelete() {
     </ElRow>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

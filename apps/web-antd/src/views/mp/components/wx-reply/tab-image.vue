@@ -26,7 +26,6 @@ const emit = defineEmits<{
 const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
-
 const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
@@ -41,6 +40,7 @@ const uploadData = reactive({
   type: 'image',
 });
 
+/** 图片上传前校验 */
 function beforeImageUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Image, 2)(rawFile);
 }
@@ -65,6 +65,7 @@ async function customRequest(options: any) {
 
     const result = await response.json();
 
+    // TODO @hw：if return 风格，简化掉。if (result.code !=== 0) { ... }
     if (result.code === 0) {
       // 清空上传时的各种数据
       fileList.value = [];

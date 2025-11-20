@@ -21,7 +21,7 @@ import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
-// 设置上传的请求头部
+defineOptions({ name: 'TabVoice' });
 
 const props = defineProps<{
   modelValue: Reply;
@@ -31,12 +31,15 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
+// TODO @hw：用 ElMessage
 const message = ElMessage;
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
+// TODO @hw：antd 和 ele 写法的统一；
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,
+  // TODO @hw：这里要和 antd 统一么？还是 ele 和它统一
   set: (val: Reply) => emit('update:modelValue', val),
 });
 
@@ -44,9 +47,9 @@ const showDialog = ref(false);
 const fileList = ref([]);
 const uploadData = reactive({
   accountId: reply.value.accountId,
-  type: 'voice',
-  title: '',
   introduction: '',
+  title: '',
+  type: 'voice',
 });
 
 /** 语音上传前校验 */
@@ -156,5 +159,3 @@ function selectMaterial(item: Reply) {
     </ElRow>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

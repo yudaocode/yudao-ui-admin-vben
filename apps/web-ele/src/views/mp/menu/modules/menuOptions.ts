@@ -1,3 +1,4 @@
+// TODO @hw：合并到 types；
 export default [
   {
     value: 'view',

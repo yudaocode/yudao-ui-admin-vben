@@ -1,3 +1,4 @@
+// TODO @hw：合并到 api 里，参考 antd 的做法；
 interface NewsItem {
   title: string;
   thumbMediaId: string;

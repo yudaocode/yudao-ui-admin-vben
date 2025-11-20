@@ -6,6 +6,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Tag } from 'ant-design-vue';
 import BenzAMRRecorder from 'benz-amr-recorder'; // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 
+/** 微信消息 - 语音 */
 defineOptions({ name: 'WxVoicePlayer' });
 
 const props = withDefaults(
@@ -62,10 +63,10 @@ function amrStop() {
   playing.value = false;
   amr.value.stop();
 }
+// TODO 芋艿：下面样式有点问题
 </script>
 
 <template>
-  <!-- 微信消息 - 语音播放 -->
   <div class="wx-voice-div cursor-pointer" @click="playVoice">
     <div class="flex items-center">
       <IconifyIcon

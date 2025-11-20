@@ -1,4 +1,4 @@
-export { default as WxAccountSelect } from './wx-account-select/account-select.vue';
+export { default as WxAccountSelect } from './wx-account-select/wx-account-select.vue';
 export { default as WxLocation } from './wx-location/wx-location.vue';
 export { default as WxMaterialSelect } from './wx-material-select/wx-material-select.vue';
 export { default as WxMsg } from './wx-msg/msg.vue';

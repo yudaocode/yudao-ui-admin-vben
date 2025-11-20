@@ -20,6 +20,7 @@ import MenuEditor from '#/views/mp/menu/modules/menu-editor.vue';
 import MenuPreviewer from '#/views/mp/menu/modules/menu-previewer.vue';
 
 // Assets for backgrounds
+// TODO @hw：是不是资源的地址，统一下；antd 和 ele，目录不同。建议按照 ele 的方法先；
 import iphoneBackImg from './assets/iphone_backImg.png';
 import menuFootImg from './assets/menu_foot.png';
 import menuHeadImg from './assets/menu_head.png';

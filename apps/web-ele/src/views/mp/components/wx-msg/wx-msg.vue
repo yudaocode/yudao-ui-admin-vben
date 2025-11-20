@@ -12,6 +12,8 @@ import MsgEvent from './msg-event.vue';
 
 defineOptions({ name: 'Msg' });
 
+// TODO @hw：这个貌似和 antd 的差很多？
+
 const props = defineProps<{
   item: any;
 }>();
@@ -86,5 +88,3 @@ const item = ref<any>(props.item);
     </div>
   </div>
 </template>
-
-<style scoped></style>

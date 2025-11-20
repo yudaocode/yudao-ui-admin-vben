@@ -10,6 +10,7 @@ import { ElMessage, ElOption, ElSelect } from 'element-plus';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
+// TODO @hw：调整下代码，和 antd 代码风格，尽量保持一致；
 defineOptions({ name: 'AccountSelect' });
 
 const props = defineProps<{

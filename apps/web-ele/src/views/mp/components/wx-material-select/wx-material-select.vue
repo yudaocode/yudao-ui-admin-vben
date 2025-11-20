@@ -1,8 +1,3 @@
-<!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  芋道源码：
--->
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
 
@@ -26,6 +21,9 @@ import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
 import { NewsType } from './types';
 
+// TODO @hw：代码风格，看看 antd 和 ele 是不是统一下；
+
+/** 微信素材选择 */
 defineOptions({ name: 'MaterialSelect' });
 
 const props = withDefaults(
@@ -41,18 +39,14 @@ const props = withDefaults(
 
 const emit = defineEmits(['selectMaterial']);
 
-// 遮罩层
-const loading = ref(false);
-// 总条数
-const total = ref(0);
-// 数据列表
-const list = ref<any[]>([]);
-// 查询参数
+const loading = ref(false); // 遮罩层
+const total = ref(0); // 总条数
+const list = ref<any[]>([]); // 数据列表
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   accountId: props.accountId,
-});
+}); // 查询参数
 
 /** 选择素材 */
 function selectMaterialFun(item: any) {
@@ -287,6 +281,8 @@ onMounted(async () => {
     column-count: 1;
   }
 }
+
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
 
 .waterfall {
   column-gap: 10px;
