@@ -3,18 +3,12 @@ import { requestClient } from '#/api/request';
 export namespace MallCategoryApi {
   /** 产品分类 */
   export interface Category {
-    /** 分类编号 */
-    id?: number;
-    /** 父分类编号 */
-    parentId?: number;
-    /** 分类名称 */
-    name: string;
-    /** 移动端分类图 */
-    picUrl: string;
-    /** 分类排序 */
-    sort: number;
-    /** 开启状态 */
-    status: number;
+    id?: number; // 分类编号
+    parentId?: number; // 父分类编号
+    name: string; // 分类名称
+    picUrl: string; // 移动端分类图
+    sort: number; // 分类排序
+    status: number; // 开启状态
   }
 }
 
@@ -47,12 +41,5 @@ export function getCategoryList(params: any) {
     {
       params,
     },
-  );
-}
-
-/** 获得商品分类列表 */
-export function getCategorySimpleList() {
-  return requestClient.get<MallCategoryApi.Category[]>(
-    '/product/category/list',
   );
 }

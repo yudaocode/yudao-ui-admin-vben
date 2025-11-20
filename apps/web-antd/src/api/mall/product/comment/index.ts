@@ -3,12 +3,6 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace MallCommentApi {
-  export interface Property {
-    propertyId: number; // 属性 ID
-    propertyName: string; // 属性名称
-    valueId: number; // 属性值 ID
-    valueName: string; // 属性值名称
-  }
   /** 商品评论 */
   export interface Comment {
     id: number; // 评论编号
@@ -32,17 +26,22 @@ export namespace MallCommentApi {
     replyContent: string; // 回复内容
     replyTime: Date; // 回复时间
     createTime: Date; // 创建时间
-    skuProperties: Property[]; // SKU 属性数组
+    skuProperties: {
+      propertyId: number; // 属性 ID
+      propertyName: string; // 属性名称
+      valueId: number; // 属性值 ID
+      valueName: string; // 属性值名称
+    }[]; // SKU 属性数组
   }
 
-  /** 评论可见性更新 */
-  export interface CommentVisibleUpdate {
+  /** 评论可见性更新请求 */
+  export interface CommentVisibleUpdateReqVO {
     id: number; // 评论编号
     visible: boolean; // 是否可见
   }
 
-  /** 评论回复 */
-  export interface CommentReply {
+  /** 评论回复请求 */
+  export interface CommentReplyReqVO {
     id: number; // 评论编号
     replyContent: string; // 回复内容
   }
@@ -70,12 +69,12 @@ export function createComment(data: MallCommentApi.Comment) {
 
 /** 显示 / 隐藏评论 */
 export function updateCommentVisible(
-  data: MallCommentApi.CommentVisibleUpdate,
+  data: MallCommentApi.CommentVisibleUpdateReqVO,
 ) {
   return requestClient.put('/product/comment/update-visible', data);
 }
 
 /** 商家回复 */
-export function replyComment(data: MallCommentApi.CommentReply) {
+export function replyComment(data: MallCommentApi.CommentReplyReqVO) {
   return requestClient.put('/product/comment/reply', data);
 }

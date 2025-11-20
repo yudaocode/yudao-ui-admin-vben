@@ -5,29 +5,17 @@ import { requestClient } from '#/api/request';
 export namespace MallPropertyApi {
   /** 商品属性 */
   export interface Property {
-    /** 属性编号 */
-    id?: number;
-    /** 名称 */
-    name: string;
-    /** 备注 */
-    remark?: string;
+    id?: number; // 属性编号
+    name: string; // 名称
+    remark?: string; // 备注
   }
 
   /** 属性值 */
   export interface PropertyValue {
-    /** 属性值编号 */
-    id?: number;
-    /** 属性项的编号 */
-    propertyId?: number;
-    /** 名称 */
-    name: string;
-    /** 备注 */
-    remark?: string;
-  }
-
-  /** 属性值查询参数 */
-  export interface PropertyValueQuery extends PageParam {
-    propertyId?: number;
+    id?: number; // 属性值编号
+    propertyId?: number; // 属性项的编号
+    name: string; // 名称
+    remark?: string; // 备注
   }
 }
 
@@ -69,9 +57,7 @@ export function getPropertySimpleList() {
 }
 
 /** 获得属性值分页 */
-export function getPropertyValuePage(
-  params: MallPropertyApi.PropertyValueQuery,
-) {
+export function getPropertyValuePage(params: PageParam) {
   return requestClient.get<PageResult<MallPropertyApi.PropertyValue>>(
     '/product/property/value/page',
     { params },

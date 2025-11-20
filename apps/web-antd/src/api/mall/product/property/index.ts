@@ -17,11 +17,6 @@ export namespace MallPropertyApi {
     name: string; // 名称
     remark?: string; // 备注
   }
-
-  /** 属性值查询参数 */
-  export interface PropertyValueQuery extends PageParam {
-    propertyId?: number; // 属性编号
-  }
 }
 
 /** 创建属性项 */
@@ -62,9 +57,7 @@ export function getPropertySimpleList() {
 }
 
 /** 获得属性值分页 */
-export function getPropertyValuePage(
-  params: MallPropertyApi.PropertyValueQuery,
-) {
+export function getPropertyValuePage(params: PageParam) {
   return requestClient.get<PageResult<MallPropertyApi.PropertyValue>>(
     '/product/property/value/page',
     { params },

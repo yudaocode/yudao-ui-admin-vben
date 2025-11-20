@@ -12,9 +12,7 @@ export namespace MallHistoryApi {
   }
 }
 
-/**
- * 获得商品浏览记录分页
- */
+/** 获得商品浏览记录分页 */
 export function getBrowseHistoryPage(params: PageParam) {
   return requestClient.get<PageResult<MallHistoryApi.BrowseHistory>>(
     '/product/browse-history/page',

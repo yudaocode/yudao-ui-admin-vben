@@ -3,39 +3,6 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace MallSpuApi {
-  /** 商品属性 */
-  export interface Property {
-    propertyId?: number; // 属性编号
-    propertyName?: string; // 属性名称
-    valueId?: number; // 属性值编号
-    valueName?: string; // 属性值名称
-  }
-
-  /** 商品 SKU */
-  export interface Sku {
-    id?: number; // 商品 SKU 编号
-    name?: string; // 商品 SKU 名称
-    spuId?: number; // SPU 编号
-    properties?: Property[]; // 属性数组
-    price?: number | string; // 商品价格
-    marketPrice?: number | string; // 市场价
-    costPrice?: number | string; // 成本价
-    barCode?: string; // 商品条码
-    picUrl?: string; // 图片地址
-    stock?: number; // 库存
-    weight?: number; // 商品重量，单位：kg 千克
-    volume?: number; // 商品体积，单位：m^3 平米
-    firstBrokeragePrice?: number | string; // 一级分销的佣金
-    secondBrokeragePrice?: number | string; // 二级分销的佣金
-    salesCount?: number; // 商品销量
-  }
-
-  /** 优惠券模板 */
-  export interface GiveCouponTemplate {
-    id?: number; // 优惠券编号
-    name?: string; // 优惠券名称
-  }
-
   /** 商品 SPU */
   export interface Spu {
     id?: number; // 商品编号
@@ -68,8 +35,42 @@ export namespace MallSpuApi {
     browseCount?: number; // 浏览量
   }
 
-  /** 商品状态更新 */
-  export interface StatusUpdate {
+  /** 商品 SKU */
+  export interface Sku {
+    id?: number; // 商品 SKU 编号
+    name?: string; // 商品 SKU 名称
+    spuId?: number; // SPU 编号
+    properties?: Property[]; // 属性数组
+    price?: number | string; // 商品价格
+    marketPrice?: number | string; // 市场价
+    costPrice?: number | string; // 成本价
+    barCode?: string; // 商品条码
+    picUrl?: string; // 图片地址
+    stock?: number; // 库存
+    weight?: number; // 商品重量，单位：kg 千克
+    volume?: number; // 商品体积，单位：m^3 平米
+    firstBrokeragePrice?: number | string; // 一级分销的佣金
+    secondBrokeragePrice?: number | string; // 二级分销的佣金
+    salesCount?: number; // 商品销量
+  }
+
+  /** 商品属性 */
+  export interface Property {
+    propertyId?: number; // 属性编号
+    propertyName?: string; // 属性名称
+    valueId?: number; // 属性值编号
+    valueName?: string; // 属性值名称
+  }
+
+  // TODO @puhui999：这个还要么？
+  /** 优惠券模板 */
+  export interface GiveCouponTemplate {
+    id?: number; // 优惠券编号
+    name?: string; // 优惠券名称
+  }
+
+  /** 商品状态更新请求 */
+  export interface SpuStatusUpdateReqVO {
     id: number; // 商品编号
     status: number; // 商品状态
   }
@@ -98,7 +99,7 @@ export function updateSpu(data: MallSpuApi.Spu) {
 }
 
 /** 更新商品 SPU 状态 */
-export function updateStatus(data: MallSpuApi.StatusUpdate) {
+export function updateStatus(data: MallSpuApi.SpuStatusUpdateReqVO) {
   return requestClient.put('/product/spu/update-status', data);
 }
 

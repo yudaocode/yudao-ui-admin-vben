@@ -5,12 +5,9 @@ import { requestClient } from '#/api/request';
 export namespace MallFavoriteApi {
   /** 商品收藏 */
   export interface Favorite {
-    /** 收藏编号 */
-    id?: number;
-    /** 用户编号 */
-    userId?: string;
-    /** 商品 SPU 编号 */
-    spuId?: null | number;
+    id?: number; // 收藏编号
+    userId?: string; // 用户编号
+    spuId?: number; // 商品 SPU 编号
   }
 }
 
