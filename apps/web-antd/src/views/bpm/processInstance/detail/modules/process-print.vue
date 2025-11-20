@@ -18,7 +18,7 @@ import { decodeFields } from '#/components/form-create';
 
 const userStore = useUserStore();
 
-const printData = ref<BpmProcessInstanceApi.PrintData>();
+const printData = ref<BpmProcessInstanceApi.ProcessPrintDataRespVO>();
 const userName = computed(() => userStore.userInfo?.nickname ?? '');
 const printTime = ref(formatDate(new Date(), 'YYYY-MM-DD HH:mm'));
 const formFields = ref<any[]>([]);

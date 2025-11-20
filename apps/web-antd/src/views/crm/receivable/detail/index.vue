@@ -40,7 +40,6 @@ const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队�
 const [Descriptions] = useDescription({
   bordered: false,
   column: 4,
-  class: 'mx-4',
   schema: useDetailSchema(),
 });
 

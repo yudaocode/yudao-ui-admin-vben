@@ -10,11 +10,16 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isObject, isString } from '@vben/utils';
+import {
+  defaultImageAccepts,
+  isFunction,
+  isImage,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { message, Modal, Upload } from 'ant-design-vue';
 
-import { checkImgType, defaultImageAccepts } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 
@@ -159,7 +164,7 @@ async function beforeUpload(file: File) {
   }
 
   const { maxSize, accept } = props;
-  const isAct = checkImgType(file, accept);
+  const isAct = isImage(file.name, accept);
   if (!isAct) {
     message.error($t('ui.upload.acceptUpload', [accept]));
     isActMsg.value = false;

@@ -5,7 +5,7 @@ import { fenToYuan } from '@vben/utils';
 
 /** 会员地域分布图表配置 */
 export function getAreaChartOptions(
-  data: MallMemberStatisticsApi.AreaStatistics[],
+  data: MallMemberStatisticsApi.AreaStatisticsRespVO[],
 ): any {
   if (!data || data.length === 0) {
     return {

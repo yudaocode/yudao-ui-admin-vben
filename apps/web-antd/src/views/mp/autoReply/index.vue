@@ -16,6 +16,7 @@ import {
   getAutoReplyPage,
 } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import ReplyContentCell from './modules/content.vue';
@@ -41,6 +42,12 @@ const showCreateButton = computed(() => {
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
 }
 
 /** 切换回复类型 */
@@ -106,7 +113,6 @@ const [FormModal, formModalApi] = useVbenModal({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    submitOnChange: true, // 表单值变化时自动提交，这样 accountId 会被正确传递到查询函数
   },
   gridOptions: {
     columns: useGridColumns(Number(msgType.value) as MsgType),
@@ -123,6 +129,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
+      autoLoad: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -144,6 +151,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <FormModal @success="handleRefresh" />
     <Grid>
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <template #toolbar-actions>
         <Tabs
           v-model:active-key="msgType"

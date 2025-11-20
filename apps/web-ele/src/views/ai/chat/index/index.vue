@@ -547,7 +547,10 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <ElContainer class="absolute left-0 top-0 m-4 h-full w-full flex-1">
+    <ElContainer
+      direction="horizontal"
+      class="absolute left-0 top-0 m-4 h-full w-full flex-1"
+    >
       <!-- 左侧：对话列表 -->
       <ConversationList
         class="!bg-card"
@@ -560,7 +563,7 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <ElContainer class="bg-card mx-4">
+      <ElContainer direction="vertical" class="bg-card mx-4 flex-1">
         <ElHeader
           class="!bg-card border-border flex !h-12 items-center justify-between border-b !px-4"
         >
@@ -571,30 +574,30 @@ onMounted(async () => {
             </span>
           </div>
 
-          <div class="flex w-72 justify-end" v-if="activeConversation">
+          <div class="flex w-72 justify-end gap-2" v-if="activeConversation">
             <ElButton
               type="primary"
               plain
-              class="mr-2 px-2"
+              class="!px-2"
               size="small"
               @click="openChatConversationUpdateForm"
             >
               <span v-html="activeConversation?.modelName"></span>
-              <IconifyIcon icon="lucide:settings" class="ml-2 size-4" />
+              <IconifyIcon icon="lucide:settings" class="!ml-2 size-4" />
             </ElButton>
             <ElButton
               size="small"
-              class="mr-2 px-2"
+              class="!ml-0 !px-2"
               @click="handlerMessageClear"
             >
               <IconifyIcon icon="lucide:trash-2" color="#787878" />
             </ElButton>
-            <ElButton size="small" class="mr-2 px-2">
+            <ElButton size="small" class="!ml-0 !px-2">
               <IconifyIcon icon="lucide:download" color="#787878" />
             </ElButton>
             <ElButton
               size="small"
-              class="mr-2 px-2"
+              class="!ml-0 !px-2"
               @click="handleGoTopMessage"
             >
               <IconifyIcon icon="lucide:arrow-up" color="#787878" />
@@ -629,7 +632,7 @@ onMounted(async () => {
           </div>
         </ElMain>
 
-        <ElFooter class="!bg-card flex flex-col !p-0">
+        <ElFooter height="auto" class="!bg-card flex flex-col !p-0">
           <form
             class="border-border mx-4 mb-8 mt-2 flex flex-col rounded-xl border p-2"
           >
@@ -673,7 +676,8 @@ onMounted(async () => {
                 {{ conversationInProgress ? '进行中' : '发送' }}
               </ElButton>
               <ElButton
-                type="danger"
+                type="primary"
+                :danger="true"
                 @click="stopStream()"
                 v-if="conversationInProgress === true"
               >

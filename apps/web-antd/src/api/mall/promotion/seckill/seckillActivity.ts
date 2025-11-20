@@ -35,6 +35,7 @@ export namespace MallSeckillActivityApi {
     products?: SeckillProduct[]; // 秒杀商品列表
   }
 
+  // TODO @puhui999：这些还需要么？
   /** 扩展 SKU 配置 */
   export type SkuExtension = {
     productConfig: SeckillProduct; // 秒杀商品配置

@@ -27,13 +27,11 @@ const { renderEcharts: renderRightEcharts } = useEcharts(rightChartRef);
 
 const [QueryForm, formApi] = useVbenForm({
   commonConfig: {
-    // 所有表单项
     componentProps: {
       class: 'w-full',
     },
   },
   schema: useGridFormSchema(),
-  // 是否可展开
   showCollapseButton: true,
   submitButtonOptions: {
     content: $t('common.query'),
@@ -58,7 +56,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUser>,
+  } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUserRespVO>,
 });
 
 /** tab 切换 */

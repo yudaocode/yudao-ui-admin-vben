@@ -46,7 +46,7 @@ export namespace AiChatMessageApi {
   }
 }
 
-// 消息列表
+/** 消息列表 */
 export function getChatMessageListByConversationId(
   conversationId: null | number,
 ) {
@@ -55,7 +55,7 @@ export function getChatMessageListByConversationId(
   );
 }
 
-// 发送 Stream 消息
+/** 发送 Stream 消息 */
 export function sendChatMessageStream(
   conversationId: number,
   content: string,
@@ -89,25 +89,27 @@ export function sendChatMessageStream(
   });
 }
 
-// 删除消息
+/** 删除消息 */
 export function deleteChatMessage(id: number) {
   return requestClient.delete(`/ai/chat/message/delete?id=${id}`);
 }
 
-// 删除指定对话的消息
+/** 删除指定对话的消息 */
 export function deleteByConversationId(conversationId: number) {
   return requestClient.delete(
     `/ai/chat/message/delete-by-conversation-id?conversationId=${conversationId}`,
   );
 }
-// 获得消息分页
+
+/** 获得消息分页 */
 export function getChatMessagePage(params: any) {
   return requestClient.get<PageResult<AiChatMessageApi.ChatMessage>>(
     '/ai/chat/message/page',
     { params },
   );
 }
-// 管理员删除消息
+
+/** 管理员删除消息 */
 export function deleteChatMessageByAdmin(id: number) {
   return requestClient.delete(`/ai/chat/message/delete-by-admin?id=${id}`);
 }

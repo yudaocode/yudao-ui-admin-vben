@@ -110,6 +110,7 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: false,
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择下单日期',
       },
     },
     {
@@ -120,6 +121,7 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: false,
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择合同开始时间',
       },
     },
     {
@@ -130,6 +132,7 @@ export function useFormSchema(): VbenFormSchema[] {
         showTime: false,
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
+        placeholder: '请选择合同结束时间',
       },
     },
     {
@@ -197,6 +200,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        placeholder: '请输入产品总金额',
       },
       rules: z.number().min(0).optional().default(0),
     },
@@ -207,6 +211,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        placeholder: '请输入整单折扣',
       },
       rules: z.number().min(0).max(100).optional().default(0),
     },

@@ -13,13 +13,18 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { isFunction, isNumber, isObject, isString } from '@vben/utils';
+import {
+  checkFileType,
+  isFunction,
+  isNumber,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { Button, Upload } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 
-import { checkFileType } from './helper';
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 

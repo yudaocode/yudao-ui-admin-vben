@@ -1,4 +1,5 @@
 import { message } from 'ant-design-vue';
+// TODO @xingyu：这种，要想办法全局共享起来么？
 
 import { $t } from '#/locales';
 

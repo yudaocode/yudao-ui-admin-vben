@@ -1,7 +1,7 @@
 import { requestClient } from '#/api/request';
 
 /** 菜单类型枚举 */
-// TODO @xingyu：芋艿，可能要整理下枚举；
+// TODO @hw：mp 相关的枚举，可以考虑放这里来。
 export enum MenuType {
   CLICK = 'click', // 点击推事件
   LOCATION_SELECT = 'location_select', // 发送位置

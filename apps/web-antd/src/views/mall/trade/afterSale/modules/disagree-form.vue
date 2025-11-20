@@ -39,7 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const data =
-        (await formApi.getValues()) as MallAfterSaleApi.DisagreeRequest;
+        (await formApi.getValues()) as MallAfterSaleApi.AfterSaleDisagreeReqVO;
       await disagreeAfterSale(data);
       // 关闭并提示
       await modalApi.close();

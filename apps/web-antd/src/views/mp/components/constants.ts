@@ -1,3 +1,4 @@
+// TODO @hw：看看要不要迁移到 packages/constants/src/biz-mp-enum.ts
 export enum ReplyType {
   Image = 'image',
   Music = 'music',

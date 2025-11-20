@@ -69,7 +69,7 @@ async function handleGenerateImage() {
       width: width.value, // 图片宽度
       height: height.value, // 图片高度
       options: {},
-    } as unknown as AiImageApi.ImageDrawReq;
+    } as unknown as AiImageApi.ImageDrawReqVO;
     await drawImage(form);
   } finally {
     // 回调

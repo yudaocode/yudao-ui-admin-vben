@@ -105,10 +105,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入温度参数',
-        controlsPosition: 'right',
-        class: '!w-full',
         min: 0,
         max: 2,
+        controlsPosition: 'right',
+        class: '!w-full',
       },
       dependencies: {
         triggerFields: ['type'],

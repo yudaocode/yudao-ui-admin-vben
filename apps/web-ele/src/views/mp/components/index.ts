@@ -1,7 +1,9 @@
 // 统一导出所有模块组件
 
 export { default as AccountSelect } from './account-select/account-select.vue';
+export { default as WxAccountSelect } from './account-select/account-select.vue';
 
+// TODO @hw：还是带着 wx 前缀。。。貌似好点，我的锅！！！
 export { default as Location } from './location/location.vue';
 export { default as MaterialSelect } from './material-select/material-select.vue';
 

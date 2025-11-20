@@ -191,11 +191,17 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: '角色名称',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入角色名称',
+      },
     },
     {
       fieldName: 'category',
       label: '角色类别',
       component: 'Input',
+      componentProps: {
+        placeholder: '请输入角色类别',
+      },
     },
     {
       fieldName: 'publicStatus',

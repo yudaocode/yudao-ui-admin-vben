@@ -1,25 +1,25 @@
 import type { DataComparisonRespVO } from './common';
 
-import { formatDate, formatDateTime } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
 export namespace MallTradeStatisticsApi {
+  /** 交易状况 Request */
+  export interface TradeTrendReqVO {
+    times: [Date, Date];
+  }
+
   /** 交易统计 Response */
-  export interface TradeSummary {
+  export interface TradeSummaryRespVO {
     yesterdayOrderCount: number;
     monthOrderCount: number;
     yesterdayPayPrice: number;
     monthPayPrice: number;
   }
 
-  /** 交易状况 Request */
-  export interface TradeTrendReq {
-    times: [Date, Date];
-  }
-
   /** 交易状况统计 Response */
-  export interface TradeTrendSummary {
+  export interface TradeTrendSummaryRespVO {
     time: string;
     turnoverPrice: number;
     orderPayPrice: number;
@@ -31,60 +31,46 @@ export namespace MallTradeStatisticsApi {
   }
 
   /** 交易订单数量 Response */
-  export interface TradeOrderCount {
-    /** 待发货 */
-    undelivered?: number;
-    /** 待核销 */
-    pickUp?: number;
-    /** 退款中 */
-    afterSaleApply?: number;
-    /** 提现待审核 */
-    auditingWithdraw?: number;
+  export interface TradeOrderCountRespVO {
+    undelivered?: number; // 待发货
+    pickUp?: number; // 待核销
+    afterSaleApply?: number; // 退款中
+    auditingWithdraw?: number; // 提现待审核
   }
 
   /** 交易订单统计 Response */
   export interface TradeOrderSummaryRespVO {
-    /** 支付订单商品数 */
-    orderPayCount?: number;
-    /** 总支付金额，单位：分 */
-    orderPayPrice?: number;
+    orderPayCount?: number; // 支付订单商品数
+    orderPayPrice?: number; // 总支付金额，单位：分
   }
 
   /** 订单量趋势统计 Response */
-  export interface TradeOrderTrend {
-    /** 日期 */
-    date: string;
-    /** 订单数量 */
-    orderPayCount: number;
-    /** 订单支付金额 */
-    orderPayPrice: number;
+  export interface TradeOrderTrendRespVO {
+    date: string; // 日期
+    orderPayCount: number; // 订单数量
+    orderPayPrice: number; // 订单支付金额
   }
 }
-
-/** 时间参数需要格式化, 确保接口能识别 */
-const formatDateParam = (params: MallTradeStatisticsApi.TradeTrendReq) => {
-  return {
-    times: [formatDate(params.times[0]), formatDate(params.times[1])],
-  } as MallTradeStatisticsApi.TradeTrendReq;
-};
 
 /** 查询交易统计 */
 export function getTradeStatisticsSummary() {
   return requestClient.get<
-    DataComparisonRespVO<MallTradeStatisticsApi.TradeSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeSummaryRespVO>
   >('/statistics/trade/summary');
 }
 
 /** 获得交易状况统计 */
-export function getTradeStatisticsAnalyse(params: any) {
+export function getTradeStatisticsAnalyse(
+  params: MallTradeStatisticsApi.TradeTrendReqVO,
+) {
   return requestClient.get<
-    DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummaryRespVO>
   >('/statistics/trade/analyse', { params });
 }
 
 /** 获得交易状况明细 */
 export function getTradeStatisticsList(params: any) {
-  return requestClient.get<MallTradeStatisticsApi.TradeTrendSummary[]>(
+  return requestClient.get<MallTradeStatisticsApi.TradeTrendSummaryRespVO[]>(
     '/statistics/trade/list',
     { params },
   );
@@ -97,7 +83,7 @@ export function exportTradeStatisticsExcel(params: any) {
 
 /** 获得交易订单数量 */
 export function getOrderCount() {
-  return requestClient.get<MallTradeStatisticsApi.TradeOrderCount>(
+  return requestClient.get<MallTradeStatisticsApi.TradeOrderCountRespVO>(
     '/statistics/trade/order-count',
   );
 }
@@ -116,7 +102,7 @@ export function getOrderCountTrendComparison(
   endTime: Date,
 ) {
   return requestClient.get<
-    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderTrend>[]
+    DataComparisonRespVO<MallTradeStatisticsApi.TradeOrderTrendRespVO>[]
   >('/statistics/trade/order-count-trend', {
     params: {
       type,

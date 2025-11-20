@@ -31,7 +31,9 @@ export function useFormSchema(): VbenFormSchema[] {
           } as CrmProductCategoryApi.ProductCategory);
           return handleTree(data);
         },
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择上级分类',
         showSearch: true,
         treeDefaultExpandAll: true,
@@ -85,7 +87,7 @@ export function useGridColumns(): VxeTableGridOptions<CrmProductCategoryApi.Prod
     {
       field: 'actions',
       title: '操作',
-      width: 200,
+      width: 250,
       fixed: 'right',
       slots: {
         default: 'actions',

@@ -189,7 +189,7 @@ function handleSliderChange(prop: string) {
                       :max="100"
                       :min="0"
                       @change="handleSliderChange(dataRef.prop)"
-                      class="mr-[16px]"
+                      class="mr-4"
                     />
                   </Col>
                   <Col :span="2">

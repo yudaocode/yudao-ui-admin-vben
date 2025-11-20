@@ -119,6 +119,7 @@ async function handlerCategoryClick(category: string) {
 async function handlerAddRole() {
   formModalApi.setData({ formType: 'my-create' }).open();
 }
+
 /** 编辑角色 */
 async function handlerCardEdit(role: any) {
   formModalApi.setData({ formType: 'my-update', id: role.id }).open();
@@ -187,7 +188,7 @@ onMounted(async () => {
       <FormModal @success="handlerAddRoleSuccess" />
 
       <ElMain class="relative m-0 flex-1 overflow-hidden p-0">
-        <div class="z-100 absolute right-0 top--1 mr-5 mt-5">
+        <div class="z-100 absolute right-5 top-5 flex items-center">
           <!-- 搜索输入框 -->
           <ElInput
             v-model="search"
@@ -196,7 +197,11 @@ onMounted(async () => {
             @keyup.enter="getActiveTabsRole"
           >
             <template #suffix>
-              <IconifyIcon icon="lucide:search" />
+              <IconifyIcon
+                icon="lucide:search"
+                class="cursor-pointer"
+                @click="getActiveTabsRole"
+              />
             </template>
           </ElInput>
           <ElButton
@@ -209,11 +214,10 @@ onMounted(async () => {
             添加角色
           </ElButton>
         </div>
-
         <!-- 标签页内容 -->
         <ElTabs
           v-model="activeTab"
-          class="relative h-full p-4"
+          class="relative h-full pb-4 pr-4"
           @tab-click="handleTabsClick"
         >
           <ElTabPane
@@ -229,10 +233,8 @@ onMounted(async () => {
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('my')"
-              class="mt-5"
             />
           </ElTabPane>
-
           <ElTabPane
             name="public-role"
             class="flex h-full flex-col overflow-y-auto"

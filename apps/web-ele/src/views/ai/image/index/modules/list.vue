@@ -144,7 +144,7 @@ async function handleImageMidjourneyButtonClick(
   const data = {
     id: imageDetail.id,
     customId: button.customId,
-  } as AiImageApi.ImageMidjourneyAction;
+  } as AiImageApi.ImageMidjourneyActionVO;
   // 2. 发送 action
   await midjourneyAction(data);
   // 3. 刷新列表

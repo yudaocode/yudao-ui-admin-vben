@@ -54,11 +54,11 @@ const orderId = ref(0);
 const order = ref<MallOrderApi.Order>({
   logs: [],
 });
-const deliveryExpressList = ref<MallDeliveryExpressApi.SimpleDeliveryExpress[]>(
-  [],
-);
+const deliveryExpressList = ref<MallDeliveryExpressApi.DeliveryExpress[]>([]);
 const expressTrackList = ref<any[]>([]);
-const pickUpStore = ref<MallDeliveryPickUpStoreApi.PickUpStore | undefined>();
+const pickUpStore = ref<
+  MallDeliveryPickUpStoreApi.DeliveryPickUpStore | undefined
+>();
 
 const [OrderInfoDescriptions] = useDescription({
   title: '订单信息',
