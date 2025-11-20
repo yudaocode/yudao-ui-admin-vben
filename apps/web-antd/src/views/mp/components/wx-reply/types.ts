@@ -1,6 +1,6 @@
 import type { Ref } from 'vue';
 
-import type { ReplyType } from '../constants';
+import type { ReplyType } from '@vben/constants';
 
 import { unref } from 'vue';
 

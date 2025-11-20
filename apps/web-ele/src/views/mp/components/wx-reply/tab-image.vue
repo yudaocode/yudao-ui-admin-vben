@@ -18,10 +18,7 @@ import {
 } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
-import VoicePlayer from '#/views/mp/components/voice-play/voice-play.vue';
-
-// 设置上传的请求头部
+import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
 const props = defineProps<{
   modelValue: Reply;
@@ -37,21 +34,21 @@ const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/uploa
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,
-  set: (val: Reply) => emit('update:modelValue', val),
+  set: (val) => emit('update:modelValue', val),
 });
 
 const showDialog = ref(false);
 const fileList = ref([]);
 const uploadData = reactive({
   accountId: reply.value.accountId,
-  type: 'voice',
+  type: 'image',
   title: '',
   introduction: '',
 });
 
-/** 语音上传前校验 */
-function beforeVoiceUpload(rawFile: UploadRawFile) {
-  return useBeforeUpload(UploadType.Voice, 10)(rawFile);
+/** 图片上传前校验 */
+function beforeImageUpload(rawFile: UploadRawFile) {
+  return useBeforeUpload(UploadType.Image, 2)(rawFile);
 }
 
 /** 上传成功 */
@@ -70,7 +67,7 @@ function onUploadSuccess(res: any) {
   selectMaterial(res.data);
 }
 
-/** 删除语音 */
+/** 删除图片 */
 function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
@@ -78,53 +75,55 @@ function onDelete() {
 }
 
 /** 选择素材 */
-function selectMaterial(item: Reply) {
+function selectMaterial(item: any) {
   showDialog.value = false;
 
-  // reply.value.type = ReplyType.Voice
+  // reply.value.type = 'image'
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
 }
 </script>
+
 <template>
   <div>
+    <!-- 情况一：已经选择好素材、或者上传好图片 -->
     <div
-      class="mx-auto mb-[10px] border border-[#eaeaea] p-[10px]"
+      class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
       v-if="reply.url"
     >
+      <img class="w-full" :src="reply.url" />
       <p
         class="overflow-hidden text-ellipsis whitespace-nowrap text-center text-xs"
+        v-if="reply.name"
       >
         {{ reply.name }}
       </p>
-      <ElRow class="w-full pt-[10px] text-center" justify="center">
-        <VoicePlayer :url="reply.url" />
-      </ElRow>
-      <ElRow class="w-full pt-[10px] text-center" justify="center">
+      <ElRow class="pt-[10px] text-center" justify="center">
         <ElButton type="danger" circle @click="onDelete">
           <IconifyIcon icon="ep:delete" />
         </ElButton>
       </ElRow>
     </div>
-    <ElRow v-else class="text-center">
+    <!-- 情况二：未做完上述操作 -->
+    <ElRow v-else class="text-center" align="middle">
       <!-- 选择素材 -->
       <ElCol
         :span="12"
         class="h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
       >
         <ElButton type="success" @click="showDialog = true">
-          素材库选择<IconifyIcon icon="ep:circle-check" />
+          素材库选择 <IconifyIcon icon="ep:circle-check" />
         </ElButton>
         <ElDialog
-          title="选择语音"
+          title="选择图片"
           v-model="showDialog"
           width="90%"
           append-to-body
           destroy-on-close
         >
           <MaterialSelect
-            type="voice"
+            type="image"
             :account-id="reply.accountId"
             @select-material="selectMaterial"
           />
@@ -142,14 +141,16 @@ function selectMaterial(item: Reply) {
           :limit="1"
           :file-list="fileList"
           :data="uploadData"
-          :before-upload="beforeVoiceUpload"
+          :before-upload="beforeImageUpload"
           :on-success="onUploadSuccess"
         >
-          <ElButton type="primary">点击上传</ElButton>
+          <ElButton type="primary">上传图片</ElButton>
           <template #tip>
-            <div class="text-center leading-[18px]">
-              格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
-            </div>
+            <span>
+              <div class="text-center leading-[18px]">
+                支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
+              </div>
+            </span>
           </template>
         </ElUpload>
       </ElCol>

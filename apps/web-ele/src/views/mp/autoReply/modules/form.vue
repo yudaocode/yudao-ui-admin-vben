@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Reply } from '#/views/mp/components/reply/types';
+import type { Reply } from '#/views/mp/components/wx-reply/types';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -10,7 +10,7 @@ import { ElMessage } from 'element-plus';
 import { useVbenForm } from '#/adapter/form';
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/components/reply/types';
+import { ReplyType } from '#/views/mp/components/wx-reply/types';
 
 import { useFormSchema } from '../data';
 import { MsgType } from './types';

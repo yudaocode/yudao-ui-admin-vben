@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, provide, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message, Spin } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { createDraft, updateDraft } from '#/api/mp/draft';
 
@@ -16,10 +16,9 @@ const emit = defineEmits(['success']);
 const formData = ref<{
   accountId: number;
   mediaId?: string;
-  newsList?: NewsItem[];
+  newsList?: MpDraftApi.NewsItem[];
 }>();
-const newsList = ref<NewsItem[]>([]);
-const isSubmitting = ref(false);
+const newsList = ref<MpDraftApi.NewsItem[]>([]);
 
 const getTitle = computed(() => {
   return formData.value?.mediaId ? '修改图文' : '新建图文';
@@ -35,9 +34,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!formData.value) {
       return;
     }
-
-    // TODO @hw：是不是 isSubmitting 非必须哈？因为 modal 已经去 lock 啦。
-    isSubmitting.value = true;
     modalApi.lock();
     try {
       if (formData.value.mediaId) {
@@ -54,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
     } finally {
-      isSubmitting.value = false;
       modalApi.unlock();
     }
   },
@@ -68,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       accountId: number;
       isCreating: boolean;
       mediaId?: string;
-      newsList?: NewsItem[];
+      newsList?: MpDraftApi.NewsItem[];
     }>();
     if (!data) {
       return;
@@ -85,12 +80,10 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle" class="w-4/5" destroy-on-close>
-    <Spin :spinning="isSubmitting">
-      <NewsForm
-        v-if="formData"
-        v-model="newsList"
-        :is-creating="!formData.mediaId"
-      />
-    </Spin>
+    <NewsForm
+      v-if="formData"
+      v-model="newsList"
+      :is-creating="!formData.mediaId"
+    />
   </Modal>
 </template>

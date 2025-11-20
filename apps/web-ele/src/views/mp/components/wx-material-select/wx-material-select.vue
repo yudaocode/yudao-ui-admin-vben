@@ -20,9 +20,9 @@ import {
 import * as MpDraftApi from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
 import * as MpMaterialApi from '#/api/mp/material';
-import News from '#/views/mp/components/news/news.vue';
-import VideoPlayer from '#/views/mp/components/video-play/video-play.vue';
-import VoicePlayer from '#/views/mp/components/voice-play/voice-play.vue';
+import News from '#/views/mp/components/wx-news/wx-news.vue';
+import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
+import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
 import { NewsType } from './types';
 

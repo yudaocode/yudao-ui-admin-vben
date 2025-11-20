@@ -16,7 +16,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElRow, ElTabPane, ElTabs } from 'element-plus';
 
-import { NewsType } from '../material-select/types';
+import { NewsType } from '../wx-material-select/types';
 import TabImage from './tab-image.vue';
 import TabMusic from './tab-music.vue';
 import TabNews from './tab-news.vue';

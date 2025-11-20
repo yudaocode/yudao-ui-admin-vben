@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { UploadFile } from 'ant-design-vue';
 
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, inject, reactive, ref } from 'vue';
 
@@ -14,16 +14,16 @@ import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 
 const props = defineProps<{
   isFirst: boolean;
-  modelValue: NewsItem;
+  modelValue: MpDraftApi.NewsItem;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem): void;
 }>();
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传永久素材的地址
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
-const newsItem = computed<NewsItem>({
+const newsItem = computed<MpDraftApi.NewsItem>({
   get() {
     return props.modelValue;
   },

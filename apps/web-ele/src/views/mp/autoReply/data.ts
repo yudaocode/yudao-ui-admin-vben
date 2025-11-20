@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictObj, getDictOptions } from '@vben/hooks';
 
 import { getSimpleAccountList } from '#/api/mp/account';
-import { ReplySelect } from '#/views/mp/components';
+import { WxReplySelect } from '#/views/mp/components';
 
 import { MsgType } from './modules/types';
 
@@ -143,7 +143,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   schema.push({
     fieldName: 'reply',
     label: '回复消息',
-    component: markRaw(ReplySelect),
+    component: markRaw(WxReplySelect),
   });
   return schema;
 }

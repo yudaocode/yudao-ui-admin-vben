@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { Article } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { WxNews } from '#/views/mp/components';
 
 defineOptions({ name: 'DraftTableCell' });
 
 const props = defineProps<{
-  row: Article;
+  row: MpDraftApi.DraftArticle;
 }>();
 </script>
 

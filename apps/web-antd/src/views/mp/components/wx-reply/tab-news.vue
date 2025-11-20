@@ -3,13 +3,12 @@ import type { Reply } from './types';
 
 import { computed, ref } from 'vue';
 
+import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Col, Modal, Row } from 'ant-design-vue';
 
 import { WxMaterialSelect, WxNews } from '#/views/mp/components';
-
-import { NewsType } from '../constants';
 
 defineOptions({ name: 'TabNews' });
 

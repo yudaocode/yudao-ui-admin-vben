@@ -98,19 +98,28 @@ function plusNews() {
 <template>
   <ElContainer>
     <ElAside width="40%">
-      <div class="select-item">
+      <div class="mx-auto mb-2.5 w-3/5 border border-gray-200 p-2.5">
         <div v-for="(news, index) in newsList" :key="index">
           <div
-            class="news-main father"
+            class="group mx-auto h-[120px] w-full cursor-pointer bg-white"
             v-if="index === 0"
-            :class="{ activeAddNews: activeNewsIndex === index }"
+            :class="{
+              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
+            }"
             @click="activeNewsIndex = index"
           >
-            <div class="news-content">
-              <img class="material-img" :src="news.thumbUrl" />
-              <div class="news-content-title">{{ news.title }}</div>
+            <div class="relative h-[120px] w-full bg-[#acadae]">
+              <img class="h-full w-full" :src="news.thumbUrl" />
+              <div
+                class="absolute bottom-0 left-0 inline-block h-[25px] w-[98%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-[15px] text-white opacity-65"
+              >
+                {{ news.title }}
+              </div>
             </div>
-            <div class="child" v-if="newsList.length > 1">
+            <div
+              v-if="newsList.length > 1"
+              class="relative -bottom-6 hidden text-center group-hover:block"
+            >
               <ElButton
                 type="info"
                 circle
@@ -131,18 +140,22 @@ function plusNews() {
             </div>
           </div>
           <div
-            class="news-main-item father"
+            class="group mx-auto w-full cursor-pointer border-t border-gray-200 bg-white py-1.5"
             v-if="index > 0"
-            :class="{ activeAddNews: activeNewsIndex === index }"
+            :class="{
+              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
+            }"
             @click="activeNewsIndex = index"
           >
-            <div class="news-content-item">
-              <div class="news-content-item-title">{{ news.title }}</div>
-              <div class="news-content-item-img">
-                <img class="material-img" :src="news.thumbUrl" width="100%" />
+            <div class="relative -ml-0.5">
+              <div class="inline-block w-[70%] text-xs">{{ news.title }}</div>
+              <div class="inline-block w-1/4 bg-[#acadae]">
+                <img class="h-full w-full" :src="news.thumbUrl" width="100%" />
               </div>
             </div>
-            <div class="child">
+            <div
+              class="relative -bottom-6 hidden text-center group-hover:block"
+            >
               <ElButton
                 v-if="newsList.length > index + 1"
                 circle
@@ -173,7 +186,10 @@ function plusNews() {
             </div>
           </div>
         </div>
-        <ElRow justify="center" class="ope-row">
+        <ElRow
+          justify="center"
+          class="mt-1.5 border-t border-gray-200 pt-1.5 text-center"
+        >
           <ElButton
             type="primary"
             circle
@@ -188,7 +204,7 @@ function plusNews() {
     <ElMain>
       <div v-if="newsList.length > 0 && activeNewsItem">
         <!-- 标题、作者、原文地址 -->
-        <ElRow :gutter="20">
+        <ElRow :gutter="20" class="mb-5 last:mb-0">
           <ElInput
             v-model="activeNewsItem.title"
             placeholder="请输入标题（必填）"
@@ -196,16 +212,16 @@ function plusNews() {
           <ElInput
             v-model="activeNewsItem.author"
             placeholder="请输入作者"
-            style="margin-top: 5px"
+            class="mt-1.5"
           />
           <ElInput
             v-model="activeNewsItem.contentSourceUrl"
             placeholder="请输入原文地址"
-            style="margin-top: 5px"
+            class="mt-1.5"
           />
         </ElRow>
         <!-- 封面和摘要 -->
-        <ElRow :gutter="20">
+        <ElRow :gutter="20" class="mb-5 last:mb-0">
           <ElCol :span="12">
             <CoverSelect
               v-model="activeNewsItem"
@@ -219,123 +235,16 @@ function plusNews() {
               type="textarea"
               v-model="activeNewsItem.digest"
               placeholder="请输入摘要"
-              class="digest"
+              class="inline-block w-full align-top"
               maxlength="120"
             />
           </ElCol>
         </ElRow>
         <!--富文本编辑器组件-->
-        <ElRow>
+        <ElRow class="mb-5 last:mb-0">
           <RichTextarea v-model="activeNewsItem.content" />
         </ElRow>
       </div>
     </ElMain>
   </ElContainer>
 </template>
-
-<style lang="scss" scoped>
-.ope-row {
-  padding-top: 5px;
-  margin-top: 5px;
-  text-align: center;
-  border-top: 1px solid #eaeaea;
-}
-
-.el-row {
-  margin-bottom: 20px;
-}
-
-.el-row:last-child {
-  margin-bottom: 0;
-}
-
-.digest {
-  display: inline-block;
-  width: 100%;
-  vertical-align: top;
-}
-
-/* 新增图文 */
-.news-main {
-  width: 100%;
-  height: 120px;
-  margin: auto;
-  background-color: #fff;
-}
-
-.news-content {
-  position: relative;
-  width: 100%;
-  height: 120px;
-  background-color: #acadae;
-}
-
-.news-content-title {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  display: inline-block;
-  width: 98%;
-  height: 25px;
-  padding: 1%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 15px;
-  color: #fff;
-  white-space: nowrap;
-  background-color: black;
-  opacity: 0.65;
-}
-
-.news-main-item {
-  width: 100%;
-  padding: 5px 0;
-  margin: auto;
-  background-color: #fff;
-  border-top: 1px solid #eaeaea;
-}
-
-.news-content-item {
-  position: relative;
-  margin-left: -3px;
-}
-
-.news-content-item-title {
-  display: inline-block;
-  width: 70%;
-  font-size: 12px;
-}
-
-.news-content-item-img {
-  display: inline-block;
-  width: 25%;
-  background-color: #acadae;
-}
-
-.select-item {
-  width: 60%;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-
-  .activeAddNews {
-    border: 5px solid #2bb673;
-  }
-}
-
-.father .child {
-  position: relative;
-  bottom: 25px;
-  display: none;
-  text-align: center;
-}
-
-.father:hover .child {
-  display: block;
-}
-
-.material-img {
-  width: 100%;
-  height: 100%;
-}
-</style>

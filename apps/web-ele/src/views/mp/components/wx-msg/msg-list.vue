@@ -5,7 +5,7 @@ import { formatDateTime } from '@vben/utils';
 
 import avatarWechat from '#/assets/imgs/wechat.png';
 
-import Msg from './msg.vue';
+import Msg from './wx-msg.vue';
 
 // 确保 User 类型被识别为已使用
 type PropsUser = User;

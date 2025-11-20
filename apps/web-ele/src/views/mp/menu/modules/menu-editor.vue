@@ -14,9 +14,9 @@ import {
   ElSelect,
 } from 'element-plus';
 
-import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
-import News from '#/views/mp/components/news/news.vue';
-import ReplySelect from '#/views/mp/components/reply/reply.vue';
+import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
+import News from '#/views/mp/components/wx-news/wx-news.vue';
+import ReplySelect from '#/views/mp/components/wx-reply/wx-reply.vue';
 
 import menuOptions from './menuOptions';
 

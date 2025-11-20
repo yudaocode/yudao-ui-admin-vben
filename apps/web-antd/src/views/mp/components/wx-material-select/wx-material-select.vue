@@ -4,6 +4,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { reactive, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Pagination, Row, Spin } from 'ant-design-vue';
@@ -13,8 +14,6 @@ import { getDraftPage } from '#/api/mp/draft';
 import { getFreePublishPage } from '#/api/mp/freePublish';
 import { getMaterialPage } from '#/api/mp/material';
 import { WxNews, WxVideoPlayer, WxVoicePlayer } from '#/views/mp/components';
-
-import { NewsType } from '../constants';
 
 defineOptions({ name: 'WxMaterialSelect' });
 

@@ -28,7 +28,7 @@ defineExpose({
             <Image
               :src="article.picUrl"
               :preview="false"
-              class="material-img"
+              class="material-img flex items-center justify-center"
             />
             <div class="news-content-title">
               <span>{{ article.title }}</span>

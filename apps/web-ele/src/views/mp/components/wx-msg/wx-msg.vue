@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import Location from '#/views/mp/components/location/location.vue';
-import Music from '#/views/mp/components/music/music.vue';
-import News from '#/views/mp/components/news/news.vue';
-import VideoPlayer from '#/views/mp/components/video-play/video-play.vue';
-import VoicePlayer from '#/views/mp/components/voice-play/voice-play.vue';
+import Location from '#/views/mp/components/wx-location/wx-location.vue';
+import Music from '#/views/mp/components/wx-music/wx-music.vue';
+import News from '#/views/mp/components/wx-news/wx-news.vue';
+import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
+import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
 import { MsgType } from '../types';
 import MsgEvent from './msg-event.vue';

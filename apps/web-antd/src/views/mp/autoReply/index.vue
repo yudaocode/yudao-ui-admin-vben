@@ -5,6 +5,7 @@ import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { AutoReplyMsgType as MsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { message, Row, Tabs } from 'ant-design-vue';
@@ -21,7 +22,6 @@ import { WxAccountSelect } from '#/views/mp/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import ReplyContentCell from './modules/content.vue';
 import Form from './modules/form.vue';
-import { MsgType } from './types';
 
 defineOptions({ name: 'MpAutoReply' });
 

@@ -4,7 +4,7 @@ import type { Dayjs } from 'dayjs';
 import { reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MpMsgType as MsgType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
@@ -20,7 +20,7 @@ import {
 } from 'ant-design-vue';
 
 import { getMessagePage } from '#/api/mp/message';
-import { MsgType, WxAccountSelect, WxMsg } from '#/views/mp/components';
+import { WxAccountSelect, WxMsg } from '#/views/mp/components';
 
 import MessageTable from './MessageTable.vue';
 

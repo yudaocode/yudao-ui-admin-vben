@@ -6,6 +6,8 @@
   ① 代码优化，补充注释，提升阅读性
 -->
 <script lang="ts" setup>
+import { ElImage } from 'element-plus';
+
 defineOptions({ name: 'WxNews' });
 
 const props = withDefaults(
@@ -28,11 +30,10 @@ defineExpose({
       <!-- 头条 -->
       <a v-if="index === 0" :href="article.url" target="_blank">
         <div class="news-main">
-          <div class="news-content">
-            <el-image
+          <div class="news-content flex items-center justify-center">
+            <ElImage
               :src="article.picUrl || article.thumbUrl"
               class="material-img"
-              style="width: 100%; height: 120px"
             />
             <div class="news-content-title">
               <span>{{ article.title }}</span>
@@ -45,7 +46,7 @@ defineExpose({
         <div class="news-main-item">
           <div class="news-content-item">
             <div class="news-content-item-title">{{ article.title }}</div>
-            <div class="news-content-item-img">
+            <div class="news-content-item-img flex items-center justify-center">
               <img
                 :src="article.picUrl || article.thumbUrl"
                 class="material-img"
@@ -118,6 +119,9 @@ defineExpose({
 }
 
 .material-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 </style>

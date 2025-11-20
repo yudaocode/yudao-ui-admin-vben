@@ -7,10 +7,10 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
 
-import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
-import News from '#/views/mp/components/news/news.vue';
+import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
+import News from '#/views/mp/components/wx-news/wx-news.vue';
 
-import { NewsType } from '../material-select/types';
+import { NewsType } from '../wx-material-select/types';
 
 const props = defineProps<{
   modelValue: Reply;

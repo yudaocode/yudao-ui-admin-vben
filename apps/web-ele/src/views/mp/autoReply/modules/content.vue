@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { Music, News, VideoPlayer, VoicePlayer } from '#/views/mp/components';
+import {
+  WxMusic,
+  WxNews,
+  WxVideoPlayer,
+  WxVoicePlayer,
+} from '#/views/mp/components';
 
 defineOptions({ name: 'ReplyContentCell' });
 
@@ -14,7 +19,7 @@ const props = defineProps<{
       {{ props.row.responseContent }}
     </div>
     <div v-else-if="props.row.responseMessageType === 'voice'">
-      <VoicePlayer
+      <WxVoicePlayer
         v-if="props.row.responseMediaUrl"
         :url="props.row.responseMediaUrl"
       />
@@ -30,17 +35,17 @@ const props = defineProps<{
         props.row.responseMessageType === 'shortvideo'
       "
     >
-      <VideoPlayer
+      <WxVideoPlayer
         v-if="props.row.responseMediaUrl"
         :url="props.row.responseMediaUrl"
         class="mt-[10px]"
       />
     </div>
     <div v-else-if="props.row.responseMessageType === 'news'">
-      <News :articles="props.row.responseArticles" />
+      <WxNews :articles="props.row.responseArticles" />
     </div>
     <div v-else-if="props.row.responseMessageType === 'music'">
-      <Music
+      <WxMusic
         :title="props.row.responseTitle"
         :description="props.row.responseDescription"
         :thumb-media-url="props.row.responseThumbMediaUrl"

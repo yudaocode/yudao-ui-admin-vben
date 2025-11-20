@@ -19,8 +19,8 @@ import {
 } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
-import VideoPlayer from '#/views/mp/components/video-play/video-play.vue';
+import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
+import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
 
 const props = defineProps<{
   modelValue: Reply;
