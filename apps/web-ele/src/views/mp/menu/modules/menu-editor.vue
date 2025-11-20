@@ -20,6 +20,7 @@ import ReplySelect from '#/views/mp/components/wx-reply/wx-reply.vue';
 
 import menuOptions from './menuOptions';
 
+// TODO @hw：去掉 menu- 前缀
 const props = defineProps<{
   accountId: number;
   isParent: boolean;
@@ -40,6 +41,7 @@ const menu = computed({
   },
 });
 const showNewsDialog = ref(false);
+// TODO @hw：这个 reset 还有用么？
 const hackResetWxReplySelect = ref(false);
 const isLeave = computed<boolean>(() => !(menu.value.children?.length > 0));
 
@@ -51,6 +53,7 @@ watch(menu, () => {
 });
 
 // ======================== 菜单编辑（素材选择） ========================
+
 /** 选择素材 */
 function selectMaterial(item: any) {
   const articleId = item.articleId;
