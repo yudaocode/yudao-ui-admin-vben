@@ -5,6 +5,7 @@ import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+// TODO @hw：直接使用 AutoReplyMsgType，不用 as
 import { AutoReplyMsgType as MsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
@@ -51,7 +52,7 @@ function handleAccountChange(accountId: number) {
 }
 
 /** 切换回复类型 */
-async function onTabChange(tabName: any) {
+async function onTabChange(tabName: string) {
   msgType.value = tabName;
   await nextTick();
   // 更新 columns

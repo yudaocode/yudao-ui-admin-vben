@@ -26,7 +26,7 @@ const props = defineProps<{
     </div>
     <div v-else-if="props.row.responseMessageType === 'image'">
       <a target="_blank" :href="props.row.responseMediaUrl">
-        <img :src="props.row.responseMediaUrl" style="width: 100px" />
+        <img :src="props.row.responseMediaUrl" class="w-[100px]" />
       </a>
     </div>
     <div
@@ -38,7 +38,7 @@ const props = defineProps<{
       <WxVideoPlayer
         v-if="props.row.responseMediaUrl"
         :url="props.row.responseMediaUrl"
-        style="margin-top: 10px"
+        class="mt-[10px]"
       />
     </div>
     <div v-else-if="props.row.responseMessageType === 'news'">

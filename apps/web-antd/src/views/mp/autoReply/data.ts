@@ -8,7 +8,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { WxReply } from '#/views/mp/components';
 
-// TODO @芋艿：要不要使用统一枚举？
+// TODO @hw：要不要使用统一枚举？
 const RequestMessageTypes = new Set([
   'image',
   'link',

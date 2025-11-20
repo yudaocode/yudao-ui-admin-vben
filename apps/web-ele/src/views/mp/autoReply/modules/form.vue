@@ -37,11 +37,10 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 100,
   },
   layout: 'horizontal',
+  // TODO @hw：antd 和 ele 存在差异
   schema: useFormSchema(Number(formData.value?.msgType) as MsgType),
   showDefaultActions: false,
 });
-
-// 注意：schema 的更新现在在 onOpenChange 中手动处理，避免时序问题
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -60,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     if (formData.value?.row?.id && !submitForm.id) {
       submitForm.id = formData.value.row.id;
     }
+    // TODO @hw：antd 和 ele 存在差异
     const reply = submitForm.reply as Reply | undefined;
     if (reply) {
       submitForm.responseMessageType = reply.type;
@@ -99,6 +99,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<{
       accountId?: number;
+      // TODO @hw：antd 和 ele 存在差异
       msgType: MsgType;
       row?: any;
     }>();
@@ -137,6 +138,7 @@ const [Modal, modalApi] = useVbenModal({
         accountId: data.accountId || -1,
         type: data.msgType,
         requestKeyword: undefined,
+        // TODO @hw：antd 和 ele 存在差异
         requestMatch: data.msgType === MsgType.Keyword ? 1 : undefined,
         requestMessageType: undefined,
         reply: {
