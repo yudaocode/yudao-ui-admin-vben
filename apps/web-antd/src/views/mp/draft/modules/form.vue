@@ -34,8 +34,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!formData.value) {
       return;
     }
-
-    // DONE @hw：是不是 isSubmitting 非必须哈？因为 modal 已经去 lock 啦。
     modalApi.lock();
     try {
       if (formData.value.mediaId) {

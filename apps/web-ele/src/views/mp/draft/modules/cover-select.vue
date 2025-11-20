@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { ElButton, ElDialog, ElImage, ElMessage, ElUpload } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import MaterialSelect from '#/views/mp/components/material-select/material-select.vue';
+import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
 // 设置上传的请求头部
 

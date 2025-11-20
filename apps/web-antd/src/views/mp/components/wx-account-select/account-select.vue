@@ -59,7 +59,7 @@ onMounted(handleQuery);
   <Select
     v-model:value="account.id"
     placeholder="请选择公众号"
-    class="!w-[240px]"
+    class="!w-full"
     @change="onChanged"
   >
     <Select.Option v-for="item in accountList" :key="item.id" :value="item.id">

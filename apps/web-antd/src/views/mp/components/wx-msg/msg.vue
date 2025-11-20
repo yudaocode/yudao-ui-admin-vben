@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { MpMsgType as MsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -9,7 +10,6 @@ import {
   WxVoicePlayer,
 } from '#/views/mp/components';
 
-import { MsgType } from '../constants';
 import MsgEvent from './msg-event.vue';
 
 defineOptions({ name: 'Msg' });

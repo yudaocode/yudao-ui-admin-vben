@@ -12,11 +12,11 @@ import type { Reply } from './types';
 
 import { computed, ref, unref, watch } from 'vue';
 
+import { NewsType, ReplyType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Row, Tabs } from 'ant-design-vue';
 
-import { NewsType, ReplyType } from '../constants';
 import TabImage from './tab-image.vue';
 import TabMusic from './tab-music.vue';
 import TabNews from './tab-news.vue';

@@ -116,7 +116,7 @@ async function handleGenerateImage() {
       options: {
         style: style.value, // 图像生成的风格
       },
-    } as AiImageApi.ImageDrawReq;
+    } as AiImageApi.ImageDrawReqVO;
     // 发送请求
     await drawImage(form);
   } finally {

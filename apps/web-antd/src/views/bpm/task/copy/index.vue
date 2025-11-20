@@ -14,7 +14,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'BpmCopyTask' });
 
 /** 任务详情 */
-function handleDetail(row: BpmProcessInstanceApi.Copy) {
+function handleDetail(row: BpmProcessInstanceApi.ProcessInstanceCopyRespVO) {
   const query = {
     id: row.processInstanceId,
     ...(row.activityId && { activityId: row.activityId }),
@@ -52,7 +52,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<BpmProcessInstanceApi.Copy>,
+  } as VxeTableGridOptions<BpmProcessInstanceApi.ProcessInstanceCopyRespVO>,
 });
 </script>
 

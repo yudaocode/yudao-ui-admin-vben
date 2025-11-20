@@ -18,7 +18,7 @@ export namespace MallKefuConversationApi {
   }
 
   /** 会话置顶请求 */
-  export interface ConversationPinnedUpdate {
+  export interface ConversationPinnedUpdateReqVO {
     id: number; // 会话编号
     pinned: boolean; // 是否置顶
   }
@@ -40,7 +40,7 @@ export function getConversation(id: number) {
 
 /** 客服会话置顶 */
 export function updateConversationPinned(
-  data: MallKefuConversationApi.ConversationPinnedUpdate,
+  data: MallKefuConversationApi.ConversationPinnedUpdateReqVO,
 ) {
   return requestClient.put(
     '/promotion/kefu-conversation/update-conversation-pinned',

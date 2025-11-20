@@ -3,13 +3,13 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { onMounted, watch } from 'vue';
 
+import { MpMsgType as MsgType } from '@vben/constants';
 import { formatDate2 } from '@vben/utils';
 
 import { Button, Image, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  MsgType,
   WxLocation,
   WxMusic,
   WxNews,

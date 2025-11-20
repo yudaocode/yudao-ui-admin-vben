@@ -4,16 +4,15 @@ import type { Reply } from '#/views/mp/components';
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { AutoReplyMsgType as MsgType, ReplyType } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/components/constants';
 
 import { useFormSchema } from '../data';
-import { MsgType } from '../types';
 
 const emit = defineEmits(['success']);
 

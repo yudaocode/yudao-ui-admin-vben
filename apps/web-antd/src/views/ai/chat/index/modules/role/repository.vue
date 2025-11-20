@@ -112,6 +112,7 @@ async function handlerCategoryClick(category: string) {
 async function handlerAddRole() {
   formModalApi.setData({ formType: 'my-create' }).open();
 }
+
 /** 编辑角色 */
 async function handlerCardEdit(role: any) {
   formModalApi.setData({ formType: 'my-update', id: role.id }).open();
@@ -199,7 +200,6 @@ onMounted(async () => {
             添加角色
           </Button>
         </div>
-
         <!-- 标签页内容 -->
         <Tabs
           v-model:value="activeTab"
@@ -219,10 +219,8 @@ onMounted(async () => {
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('my')"
-              class="mt-5"
             />
           </Tabs.TabPane>
-
           <Tabs.TabPane
             key="public-role"
             class="flex h-full flex-col overflow-y-auto"

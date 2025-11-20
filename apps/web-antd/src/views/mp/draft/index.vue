@@ -10,6 +10,7 @@ import { message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
 import { submitFreePublish } from '#/api/mp/freePublish';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import DraftTableCell from './modules/draft-table.vue';
@@ -20,6 +21,12 @@ defineOptions({ name: 'MpDraft' });
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
 }
 
 /** 新增草稿 */
@@ -113,7 +120,6 @@ const [FormModal, formModalApi] = useVbenModal({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    submitOnChange: true,
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -142,6 +148,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           };
         },
       },
+      autoLoad: false,
     },
     rowConfig: {
       keyField: 'mediaId',
@@ -164,6 +171,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="草稿列表">
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[

@@ -1,19 +1,8 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import { requestClient } from '#/api/request';
+import { MessageType } from '@vben/constants';
 
-/** 消息类型枚举 */
-// TODO @xingyu：芋艿，可能要整理下枚举；
-export enum MessageType {
-  IMAGE = 'image', // 图片消息
-  MPNEWS = 'mpnews', // 公众号图文消息
-  MUSIC = 'music', // 音乐消息
-  NEWS = 'news', // 图文消息
-  TEXT = 'text', // 文本消息
-  VIDEO = 'video', // 视频消息
-  VOICE = 'voice', // 语音消息
-  WXCARD = 'wxcard', // 卡券消息
-}
+import { requestClient } from '#/api/request';
 
 export namespace MpMessageApi {
   /** 消息信息 */

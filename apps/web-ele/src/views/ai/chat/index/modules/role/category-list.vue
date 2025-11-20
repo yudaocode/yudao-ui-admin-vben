@@ -24,7 +24,7 @@ async function handleCategoryClick(category: string) {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center">
+  <div class="mx-0 flex flex-wrap items-center">
     <div
       class="mr-2 flex flex-row"
       v-for="category in categoryList"

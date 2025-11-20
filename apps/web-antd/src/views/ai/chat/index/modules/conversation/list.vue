@@ -230,31 +230,28 @@ async function updateConversationTitle(
 async function deleteChatConversation(
   conversation: AiChatConversationApi.ChatConversation,
 ) {
-  try {
-    // 删除的二次确认
-    await confirm(`是否确认删除对话 - ${conversation.title}?`);
-    // 发起删除
-    await deleteChatConversationMy(conversation.id);
-    message.success('对话已删除');
-    // 刷新列表
-    await getChatConversationList();
-    // 回调
-    emits('onConversationDelete', conversation);
-  } catch {}
+  // 删除的二次确认
+  await confirm(`是否确认删除对话 - ${conversation.title}?`);
+  // 发起删除
+  await deleteChatConversationMy(conversation.id);
+  message.success('对话已删除');
+  // 刷新列表
+  await getChatConversationList();
+  // 回调
+  emits('onConversationDelete', conversation);
 }
 
+/** 清空未置顶的对话 */
 async function handleClearConversation() {
-  try {
-    await confirm('确认后对话会全部清空，置顶的对话除外。');
-    await deleteChatConversationMyByUnpinned();
-    message.success($t('ui.actionMessage.operationSuccess'));
-    // 清空对话、对话内容
-    activeConversationId.value = null;
-    // 获取对话列表
-    await getChatConversationList();
-    // 回调 方法
-    emits('onConversationClear');
-  } catch {}
+  await confirm('确认后对话会全部清空，置顶的对话除外。');
+  await deleteChatConversationMyByUnpinned();
+  message.success($t('ui.actionMessage.operationSuccess'));
+  // 清空对话、对话内容
+  activeConversationId.value = null;
+  // 获取对话列表
+  await getChatConversationList();
+  // 回调 方法
+  emits('onConversationClear');
 }
 
 /** 对话置顶 */

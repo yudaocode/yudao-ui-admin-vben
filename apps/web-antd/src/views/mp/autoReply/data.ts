@@ -1,20 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { MpAccountApi } from '#/api/mp/account';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, AutoReplyMsgType as MsgType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { getSimpleAccountList } from '#/api/mp/account';
 import { WxReply } from '#/views/mp/components';
-
-import { MsgType } from './types';
-
-/** 关联数据 */
-let accountList: MpAccountApi.AccountSimple[] = [];
-getSimpleAccountList().then((data) => (accountList = data));
 
 // TODO @芋艿：要不要使用统一枚举？
 const RequestMessageTypes = new Set([
@@ -155,21 +147,12 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
 }
 
 /** 列表的搜索表单 */
-// TODO @芋艿：貌似可能微信号拿不到。
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: 'ApiSelect',
-      componentProps: {
-        options: accountList.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-        placeholder: '请选择公众号',
-      },
-      defaultValue: accountList[0]?.id,
+      component: 'Input',
     },
   ];
 }

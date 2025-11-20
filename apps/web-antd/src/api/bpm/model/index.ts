@@ -1,28 +1,6 @@
 import { requestClient } from '#/api/request';
 
 export namespace BpmModelApi {
-  /** 用户信息 TODO 这个是不是可以抽取出来定义在公共模块 */
-  // TODO @芋艿：一起看看。
-  export interface UserInfo {
-    id: number;
-    nickname: string;
-    avatar?: string;
-    deptId?: number;
-    deptName?: string;
-  }
-
-  /** 流程定义 */
-  export interface ProcessDefinition {
-    id: string;
-    key?: string;
-    version: number;
-    deploymentTime: number;
-    suspensionState: number;
-    formType?: number;
-    formCustomViewPath?: string;
-    formFields?: string[];
-  }
-
   /** 流程模型 */
   export interface Model {
     id: number;
@@ -42,6 +20,27 @@ export namespace BpmModelApi {
     createTime: string;
     bpmnXml: string;
     startUsers?: UserInfo[];
+  }
+
+  /** 流程定义 */
+  export interface ProcessDefinition {
+    id: string;
+    key?: string;
+    version: number;
+    deploymentTime: number;
+    suspensionState: number;
+    formType?: number;
+    formCustomViewPath?: string;
+    formFields?: string[];
+  }
+
+  /** 用户信息 */
+  export interface UserInfo {
+    id: number;
+    nickname: string;
+    avatar?: string;
+    deptId?: number;
+    deptName?: string;
   }
 }
 

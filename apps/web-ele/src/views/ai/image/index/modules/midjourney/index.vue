@@ -103,7 +103,7 @@ async function handleGenerateImage() {
       height: imageSize.height,
       version: selectVersion.value,
       referImageUrl: referImageUrl.value,
-    } as AiImageApi.ImageMidjourneyImagineReq;
+    } as AiImageApi.ImageMidjourneyImagineReqVO;
     await midjourneyImagine(req);
   } finally {
     // 回调
