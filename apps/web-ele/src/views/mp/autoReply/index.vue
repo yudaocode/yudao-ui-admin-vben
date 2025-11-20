@@ -18,6 +18,7 @@ import {
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import * as MpAutoReplyApi from '#/api/mp/autoReply';
 import { $t } from '#/locales';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Content from './modules/content.vue';
@@ -27,6 +28,12 @@ import { MsgType } from './modules/types';
 defineOptions({ name: 'MpAutoReply' });
 
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
+}
 /** 切换回复类型 */
 async function onTabChange(tabName: string) {
   msgType.value = tabName;
@@ -91,8 +98,6 @@ const [FormModal, formModalApi] = useVbenModal({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    // 表单值变化时自动提交，这样 accountId 会被正确传递到查询函数
-    submitOnChange: true,
   },
   gridOptions: {
     columns: useGridColumns(Number(msgType.value) as MsgType),
@@ -109,6 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
+      autoLoad: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -148,6 +154,9 @@ const showCreateButton = computed(() => {
 
     <FormModal @success="handleRefresh" />
     <Grid table-title="自动回复列表">
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <!-- 在工具栏上方放置 Tab 切换 -->
       <template #toolbar-actions>
         <ElTabs

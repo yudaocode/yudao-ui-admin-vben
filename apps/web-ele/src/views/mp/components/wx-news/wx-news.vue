@@ -119,9 +119,9 @@ defineExpose({
 }
 
 .material-img {
-  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 </style>
