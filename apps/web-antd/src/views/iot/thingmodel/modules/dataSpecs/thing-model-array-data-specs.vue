@@ -10,7 +10,7 @@ import {
   IoTDataSpecsDataTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelStructDataSpecs from './ThingModelStructDataSpecs.vue';
+import ThingModelStructDataSpecs from './thing-model-struct-data-specs.vue';
 
 /** 数组型的 dataSpecs 配置组件 */
 defineOptions({ name: 'ThingModelArrayDataSpecs' });

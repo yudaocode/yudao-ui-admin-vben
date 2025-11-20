@@ -20,8 +20,8 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useImagePreview } from './data';
-import ProductCardView from './modules/ProductCardView.vue';
-import ProductForm from './modules/ProductForm.vue';
+import ProductCardView from './modules/product-card-view.vue';
+import ProductForm from './modules/product-form.vue';
 
 defineOptions({ name: 'IoTProduct' });
 

@@ -25,9 +25,9 @@ import {
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelEvent from './ThingModelEvent.vue';
-import ThingModelProperty from './ThingModelProperty.vue';
-import ThingModelService from './ThingModelService.vue';
+import ThingModelEvent from './thing-model-event.vue';
+import ThingModelProperty from './thing-model-property.vue';
+import ThingModelService from './thing-model-service.vue';
 
 /** IoT 物模型数据表单 */
 defineOptions({ name: 'IoTThingModelForm' });

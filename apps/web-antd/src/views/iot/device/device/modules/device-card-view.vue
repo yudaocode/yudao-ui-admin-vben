@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
+import { getDictLabel, getDictObj } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { isValidColor, TinyColor } from '@vben/utils';
 
 import {
   Button,
@@ -52,6 +53,91 @@ const queryParams = ref({
   pageSize: 12,
 });
 
+const DEFAULT_STATUS_MAP: Record<
+  'default' | number,
+  { bgColor: string; borderColor: string; color: string; text: string }
+> = {
+  [DeviceStateEnum.ONLINE]: {
+    text: '在线',
+    color: '#52c41a',
+    bgColor: '#f6ffed',
+    borderColor: '#b7eb8f',
+  },
+  [DeviceStateEnum.OFFLINE]: {
+    text: '离线',
+    color: '#faad14',
+    bgColor: '#fffbe6',
+    borderColor: '#ffe58f',
+  },
+  [DeviceStateEnum.INACTIVE]: {
+    text: '未激活',
+    color: '#ff4d4f',
+    bgColor: '#fff1f0',
+    borderColor: '#ffccc7',
+  },
+  default: {
+    text: '未知状态',
+    color: '#595959',
+    bgColor: '#fafafa',
+    borderColor: '#d9d9d9',
+  },
+};
+
+const COLOR_TYPE_PRESETS: Record<
+  string,
+  { bgColor: string; borderColor: string; color: string }
+> = {
+  success: {
+    color: '#52c41a',
+    bgColor: '#f6ffed',
+    borderColor: '#b7eb8f',
+  },
+  processing: {
+    color: '#1890ff',
+    bgColor: '#e6f7ff',
+    borderColor: '#91d5ff',
+  },
+  warning: {
+    color: '#faad14',
+    bgColor: '#fffbe6',
+    borderColor: '#ffe58f',
+  },
+  error: {
+    color: '#ff4d4f',
+    bgColor: '#fff1f0',
+    borderColor: '#ffccc7',
+  },
+  default: {
+    color: '#595959',
+    bgColor: '#fafafa',
+    borderColor: '#d9d9d9',
+  },
+};
+
+function normalizeColorType(colorType?: string) {
+  switch (colorType) {
+    case 'danger': {
+      return 'error';
+    }
+    case 'default':
+    case 'error':
+    case 'processing':
+    case 'success':
+    case 'warning': {
+      return colorType;
+    }
+    case 'info': {
+      return 'default';
+    }
+    case 'primary': {
+      return 'processing';
+    }
+    default: {
+      return 'default';
+    }
+  }
+}
+
 // 获取产品名称
 function getProductName(productId: number) {
   const product = props.products.find((p: any) => p.id === productId);
@@ -90,21 +176,41 @@ function getDeviceTypeColor(deviceType: number) {
 }
 
 // 获取设备状态信息
-function getStatusInfo(state: number) {
-  if (state === DeviceStateEnum.ONLINE) {
+function getStatusInfo(state: number | string | null | undefined) {
+  const parsedState = Number(state);
+  const hasNumericState = Number.isFinite(parsedState);
+  const fallback = hasNumericState
+    ? DEFAULT_STATUS_MAP[parsedState] || DEFAULT_STATUS_MAP.default
+    : DEFAULT_STATUS_MAP.default;
+  const dict = getDictObj(
+    DICT_TYPE.IOT_DEVICE_STATE,
+    hasNumericState ? parsedState : state,
+  );
+  if (dict) {
+    if (!dict.colorType && !dict.cssClass) {
+      return {
+        ...fallback,
+        text: dict.label || fallback.text,
+      };
+    }
+    const presetKey = normalizeColorType(dict.colorType);
+    if (isValidColor(dict.cssClass)) {
+      const baseColor = new TinyColor(dict.cssClass);
+      return {
+        text: dict.label || fallback.text,
+        color: baseColor.toHexString(),
+        bgColor: baseColor.clone().setAlpha(0.15).toRgbString(),
+        borderColor: baseColor.clone().lighten(30).toHexString(),
+      };
+    }
+    const preset = COLOR_TYPE_PRESETS[presetKey] || COLOR_TYPE_PRESETS.default;
     return {
-      text: '在线',
-      color: '#52c41a',
-      bgColor: '#f6ffed',
-      borderColor: '#b7eb8f',
+      text: dict.label || fallback.text,
+      ...preset,
     };
   }
-  return {
-    text: '未激活',
-    color: '#ff4d4f',
-    bgColor: '#fff1f0',
-    borderColor: '#ffccc7',
-  };
+
+  return fallback;
 }
 
 onMounted(() => {
@@ -290,21 +396,21 @@ defineExpose({
   .device-card {
     height: 100%;
     overflow: hidden;
-    background: #fff;
-    border: 1px solid #f0f0f0;
+    background: hsl(var(--card) / 0.95);
+    border: 1px solid hsl(var(--border) / 0.6);
     border-radius: 8px;
     box-shadow:
-      0 1px 2px 0 rgb(0 0 0 / 3%),
-      0 1px 6px -1px rgb(0 0 0 / 2%),
-      0 2px 4px 0 rgb(0 0 0 / 2%);
+      0 1px 2px 0 hsl(var(--foreground) / 0.04),
+      0 1px 6px -1px hsl(var(--foreground) / 0.05),
+      0 2px 4px 0 hsl(var(--foreground) / 0.05);
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     &:hover {
-      border-color: #e6e6e6;
+      border-color: hsl(var(--border));
       box-shadow:
-        0 1px 2px -2px rgb(0 0 0 / 16%),
-        0 3px 6px 0 rgb(0 0 0 / 12%),
-        0 5px 12px 4px rgb(0 0 0 / 9%);
+        0 1px 2px -2px hsl(var(--foreground) / 0.12),
+        0 3px 6px 0 hsl(var(--foreground) / 0.1),
+        0 5px 12px 4px hsl(var(--foreground) / 0.08);
       transform: translateY(-4px);
     }
 
@@ -367,7 +473,7 @@ defineExpose({
       font-size: 16px;
       font-weight: 600;
       line-height: 24px;
-      color: #262626;
+      color: hsl(var(--foreground) / 0.9);
       white-space: nowrap;
     }
 
@@ -390,7 +496,7 @@ defineExpose({
         .label {
           flex-shrink: 0;
           font-size: 13px;
-          color: #8c8c8c;
+          color: hsl(var(--foreground) / 0.6);
         }
 
         .value {
@@ -399,17 +505,17 @@ defineExpose({
           overflow: hidden;
           text-overflow: ellipsis;
           font-size: 13px;
-          color: #262626;
+          color: hsl(var(--foreground) / 0.85);
           text-align: right;
           white-space: nowrap;
 
           &.link {
-            color: #1890ff;
+            color: hsl(var(--primary));
             cursor: pointer;
             transition: color 0.2s;
 
             &:hover {
-              color: #40a9ff;
+              color: hsl(var(--primary) / 0.85);
             }
           }
 
@@ -418,7 +524,7 @@ defineExpose({
               'SF Mono', Monaco, Inconsolata, 'Fira Code', Consolas, monospace;
             font-size: 12px;
             font-weight: 500;
-            color: #595959;
+            color: hsl(var(--foreground) / 0.6);
           }
         }
       }
@@ -431,7 +537,7 @@ defineExpose({
       display: flex;
       gap: 8px;
       padding-top: 12px;
-      border-top: 1px solid #f5f5f5;
+      border-top: 1px solid hsl(var(--border) / 0.4);
 
       .action-btn {
         display: flex;
@@ -445,7 +551,7 @@ defineExpose({
         font-weight: 400;
         pointer-events: auto;
         cursor: pointer;
-        border: 1px solid;
+        border: 1px solid transparent;
         border-radius: 6px;
         transition: all 0.2s;
 
@@ -454,52 +560,60 @@ defineExpose({
         }
 
         &.btn-edit {
-          color: #1890ff;
-          background: #e6f7ff;
-          border-color: #91d5ff;
+          color: hsl(var(--primary));
+          background: hsl(var(--primary) / 0.12);
+          border-color: hsl(var(--primary) / 0.25);
 
           &:hover {
-            color: #fff;
-            background: #1890ff;
-            border-color: #1890ff;
+            color: hsl(var(--primary-foreground));
+            background: hsl(var(--primary));
+            border-color: hsl(var(--primary));
           }
         }
 
         &.btn-view {
-          color: #faad14;
-          background: #fffbe6;
-          border-color: #ffe58f;
+          color: hsl(var(--warning));
+          background: hsl(var(--warning) / 0.12);
+          border-color: hsl(var(--warning) / 0.25);
 
           &:hover {
             color: #fff;
-            background: #faad14;
-            border-color: #faad14;
+            background: hsl(var(--warning));
+            border-color: hsl(var(--warning));
           }
         }
 
         &.btn-data {
-          color: #722ed1;
-          background: #f9f0ff;
-          border-color: #d3adf7;
+          color: hsl(var(--accent-foreground));
+          background: color-mix(
+            in srgb,
+            hsl(var(--accent)) 40%,
+            hsl(var(--card)) 60%
+          );
+          border-color: color-mix(
+            in srgb,
+            hsl(var(--accent)) 55%,
+            transparent
+          );
 
           &:hover {
-            color: #fff;
-            background: #722ed1;
-            border-color: #722ed1;
+            color: hsl(var(--accent-foreground));
+            background: hsl(var(--accent));
+            border-color: hsl(var(--accent));
           }
         }
 
         &.btn-delete {
           flex: 0 0 32px;
           padding: 4px;
-          color: #ff4d4f;
-          background: #fff1f0;
-          border-color: #ffa39e;
+          color: hsl(var(--destructive));
+          background: hsl(var(--destructive) / 0.12);
+          border-color: hsl(var(--destructive) / 0.3);
 
           &:hover {
-            color: #fff;
-            background: #ff4d4f;
-            border-color: #ff4d4f;
+            color: hsl(var(--destructive-foreground));
+            background: hsl(var(--destructive));
+            border-color: hsl(var(--destructive));
           }
         }
       }

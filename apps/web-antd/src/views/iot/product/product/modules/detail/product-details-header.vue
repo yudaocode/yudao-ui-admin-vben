@@ -8,7 +8,7 @@ import { Button, Card, Descriptions, message } from 'ant-design-vue';
 
 import { updateProductStatus } from '#/api/iot/product/product';
 
-import ProductForm from '../ProductForm.vue';
+import ProductForm from '../product-form.vue';
 
 interface Props {
   product: IotProductApi.Product;

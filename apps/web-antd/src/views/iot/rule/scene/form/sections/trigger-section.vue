@@ -15,7 +15,7 @@ import {
   isDeviceTrigger,
 } from '#/views/iot/utils/constants';
 
-import DeviceTriggerConfig from '../configs/DeviceTriggerConfig.vue';
+import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
 
 /** 触发器配置组件 */
 defineOptions({ name: 'TriggerSection' });

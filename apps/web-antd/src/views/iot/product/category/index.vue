@@ -14,12 +14,12 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/ProductCategoryForm.vue';
+import ProductCategoryForm from './modules/product-category-form.vue';
 
 defineOptions({ name: 'IoTProductCategory' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+  connectedComponent: ProductCategoryForm,
   destroyOnClose: true,
 });
 

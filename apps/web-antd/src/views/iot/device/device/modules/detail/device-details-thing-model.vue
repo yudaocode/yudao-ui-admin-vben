@@ -8,9 +8,9 @@ import { ContentWrap } from '@vben/common-ui';
 
 import { Tabs } from 'ant-design-vue';
 
-import DeviceDetailsThingModelEvent from './DeviceDetailsThingModelEvent.vue';
-import DeviceDetailsThingModelProperty from './DeviceDetailsThingModelProperty.vue';
-import DeviceDetailsThingModelService from './DeviceDetailsThingModelService.vue';
+import DeviceDetailsThingModelEvent from './device-details-thing-model-event.vue';
+import DeviceDetailsThingModelProperty from './device-details-thing-model-property.vue';
+import DeviceDetailsThingModelService from './device-details-thing-model-service.vue';
 
 const props = defineProps<{
   deviceId: number;

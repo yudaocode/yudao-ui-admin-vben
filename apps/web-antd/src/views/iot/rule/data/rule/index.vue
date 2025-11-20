@@ -10,7 +10,7 @@ import { deleteDataRule, getDataRulePage } from '#/api/iot/rule/data/rule';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DataRuleForm from './DataRuleForm.vue';
+import DataRuleForm from './data-rule-form.vue';
 
 /** IoT 数据流转规则列表 */
 defineOptions({ name: 'IotDataRule' });

@@ -9,8 +9,8 @@ import { IconifyIcon } from '@vben/icons';
 import { useVModel } from '@vueuse/core';
 import { Button, Tag } from 'ant-design-vue';
 
-import MainConditionInnerConfig from './MainConditionInnerConfig.vue';
-import SubConditionGroupConfig from './SubConditionGroupConfig.vue';
+import MainConditionInnerConfig from './main-condition-inner-config.vue';
+import SubConditionGroupConfig from './sub-condition-group-config.vue';
 
 /** 设备触发配置组件 */
 defineOptions({ name: 'DeviceTriggerConfig' });

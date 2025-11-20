@@ -14,8 +14,8 @@ import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
 import { getDataTypeOptionsLabel, IOT_PROVIDE_KEY } from '../utils/constants';
 import { useGridColumns, useGridFormSchema } from './data';
 import { DataDefinition } from './modules/components';
-import ThingModelForm from './modules/ThingModelForm.vue';
-import ThingModelTSL from './modules/ThingModelTSL.vue';
+import ThingModelForm from './modules/thing-model-form.vue';
+import ThingModelTsl from './modules/thing-model-tsl.vue';
 
 defineOptions({ name: 'IoTThingModel' });
 
@@ -180,6 +180,6 @@ onMounted(async () => {
     <ThingModelForm ref="thingModelFormRef" @success="handleRefresh" />
 
     <!-- TSL 弹窗 -->
-    <ThingModelTSL ref="thingModelTSLRef" />
+    <ThingModelTsl ref="thingModelTSLRef"/>
   </Page>
 </template>

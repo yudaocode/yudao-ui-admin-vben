@@ -14,7 +14,7 @@ import {
   IoTThingModelServiceCallTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelInputOutputParam from './ThingModelInputOutputParam.vue';
+import ThingModelInputOutputParam from './thing-model-input-output-param.vue';
 
 /** IoT 物模型服务 */
 defineOptions({ name: 'ThingModelService' });
