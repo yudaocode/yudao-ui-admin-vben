@@ -37,7 +37,7 @@ defineOptions({ name: 'ProductSummaryCard' });
 const trendLoading = ref(true); // 商品状态加载中
 const exportLoading = ref(false); // 导出的加载中
 const trendSummary =
-  ref<DataComparisonRespVO<MallProductStatisticsApi.ProductStatistics>>(); // 商品状况统计数据
+  ref<DataComparisonRespVO<MallProductStatisticsApi.ProductStatisticsRespVO>>(); // 商品状况统计数据
 const searchTimes = ref<string[]>([]);
 
 const chartRef = ref<EchartsUIType>();
