@@ -13,6 +13,8 @@ import NewsForm from './news-form.vue';
 
 const emit = defineEmits(['success']);
 
+// TODO @hw：代码风格，要和对应的 antd index.vue 一致，类似方法的顺序，注释等。原因是，这样后续两端迭代，会方便很多。
+
 const formData = ref<{
   accountId: number;
   isCreating: boolean;

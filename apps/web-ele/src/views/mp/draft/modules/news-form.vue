@@ -3,6 +3,7 @@ import type { NewsItem } from './types';
 
 import { computed, ref } from 'vue';
 
+import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -12,7 +13,6 @@ import {
   ElContainer,
   ElInput,
   ElMain,
-  ElMessageBox,
   ElRow,
 } from 'element-plus';
 
@@ -28,7 +28,6 @@ const props = defineProps<{
   modelValue: NewsItem[] | null;
 }>();
 
-// v-model=newsList
 const emit = defineEmits<{
   (e: 'update:modelValue', v: NewsItem[]): void;
 }>();
@@ -53,7 +52,7 @@ const activeNewsItem = computed(() => {
   return item;
 });
 
-// 将图文向下移动
+/** 将图文向下移动 */
 function moveDownNews(index: number) {
   const current = newsList.value[index];
   const next = newsList.value[index + 1];
@@ -64,7 +63,7 @@ function moveDownNews(index: number) {
   }
 }
 
-// 将图文向上移动
+/** 将图文向上移动 */
 function moveUpNews(index: number) {
   const current = newsList.value[index];
   const prev = newsList.value[index - 1];
@@ -75,20 +74,16 @@ function moveUpNews(index: number) {
   }
 }
 
-// 删除指定 index 的图文
+/** 删除指定 index 的图文 */
 async function removeNews(index: number) {
-  try {
-    await ElMessageBox.confirm('确定删除该图文吗?');
-    newsList.value.splice(index, 1);
-    if (activeNewsIndex.value === index) {
-      activeNewsIndex.value = 0;
-    }
-  } catch {
-    // empty
+  await confirm('确定删除该图文吗?');
+  newsList.value.splice(index, 1);
+  if (activeNewsIndex.value === index) {
+    activeNewsIndex.value = 0;
   }
 }
 
-// 添加一个图文
+/** 添加一个图文 */
 function plusNews() {
   newsList.value.push(createEmptyNewsItem());
   activeNewsIndex.value = newsList.value.length - 1;
@@ -139,6 +134,7 @@ function plusNews() {
               </ElButton>
             </div>
           </div>
+          <!-- TODO @hw：1）每个文章的选中框太粗了；2）没完全覆盖住文章；；；最好首个文章，和第个文章的情况，都看看 -->
           <div
             class="group mx-auto w-full cursor-pointer border-t border-gray-200 bg-white py-1.5"
             v-if="index > 0"
@@ -153,6 +149,8 @@ function plusNews() {
                 <img class="h-full w-full" :src="news.thumbUrl" width="100%" />
               </div>
             </div>
+            <!-- TODO @hw：这里的按钮，交互不太对。应该在每个卡片的里面；或者类似公众号现在的交互，放到右侧；。。。复现本周：如果有 2 个文章的时候 -->
+            <!-- TODO @hw：当有 2 个文章的时候，挪到第二个文章的时候，卡片会变大。期望：不变大 -->
             <div
               class="relative -bottom-6 hidden text-center group-hover:block"
             >

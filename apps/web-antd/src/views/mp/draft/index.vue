@@ -187,8 +187,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
+      <!-- TODO @hw：按照微信群沟通的，换下卡片的样式。 -->
       <template #content="{ row }">
         <DraftTableCell :row="row" />
+        <!-- TODO @hw：增加一列，更新时间。 -->
       </template>
       <template #actions="{ row }">
         <TableAction

@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+
 /** 获取表格列配置 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [

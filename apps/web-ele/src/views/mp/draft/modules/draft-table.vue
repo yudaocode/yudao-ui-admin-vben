@@ -3,6 +3,7 @@ import type { Article } from './types';
 
 import News from '#/views/mp/components/wx-news/wx-news.vue';
 
+// TODO @hw：按照微信里说的，感觉这个可以干掉。少点组件哈。= = mp 模块，小组件可太多了。。。
 defineOptions({ name: 'DraftTableCell' });
 
 const props = defineProps<{

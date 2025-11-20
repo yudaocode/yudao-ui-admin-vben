@@ -133,6 +133,7 @@ function onUploadError(err: Error) {
           支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
         </div>
       </div>
+      <!-- TODO @hw：这个貌似不行；ele 我试了下，可以的 -->
       <Modal
         v-model:open="dialogVisible"
         title="图片选择"

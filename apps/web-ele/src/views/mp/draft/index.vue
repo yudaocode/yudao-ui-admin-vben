@@ -35,6 +35,8 @@ function handleAccountChange(accountId: number) {
   gridApi.formApi.submitForm();
 }
 
+// TODO @hw：代码风格，要和对应的 antd index.vue 一致，类似方法的顺序，注释等。原因是，这样后续两端迭代，会方便很多。
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -189,7 +191,7 @@ async function handleDelete(row: Article) {
         <TableAction
           :actions="[
             {
-              label: '新增',
+              label: $t('ui.actionTitle.create', ['图文草稿']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['mp:draft:create'],

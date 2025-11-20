@@ -13,7 +13,7 @@ import { ElButton, ElDialog, ElImage, ElMessage, ElUpload } from 'element-plus';
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
-// 设置上传的请求头部
+// TODO @hw：代码风格，要和对应的 antd index.vue 一致，类似方法的顺序，注释等。原因是，这样后续两端迭代，会方便很多。
 
 const props = defineProps<{
   isFirst: boolean;
