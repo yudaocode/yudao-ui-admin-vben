@@ -85,6 +85,10 @@ setupVbenVxeTable({
           src,
           previewSrcList: [src],
           class: props?.class,
+          style: {
+            width: props?.width ? `${props.width}px` : undefined,
+            height: props?.height ? `${props.height}px` : undefined,
+          },
           previewTeleported: true,
         });
       },
