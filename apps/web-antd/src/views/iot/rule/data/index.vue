@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @haohao：应该先有【规则】【目的】两个 tab；然后，在进行管理操作；类似，apps/web-antd/src/views/ai/chat/manager
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -42,10 +43,8 @@ async function handleDelete(row: any) {
     duration: 0,
   });
   try {
-    await deleteDataRule(row.id);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    await deleteDataRule(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
