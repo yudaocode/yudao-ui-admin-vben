@@ -5,7 +5,7 @@ import { useAccess } from '@vben/access';
 import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-// TODO @dlyan、@hw：可以先 antd 迁移完，在搞 ele；避免搞两遍；
+// TODO @dlyan、可以先 antd 迁移完，在搞 ele；避免搞两遍；
 import {
   Button,
   Card,
@@ -117,8 +117,8 @@ async function handleDelete(id: number) {
       <Card :bordered="false" class="mt-4 h-[88%]">
         <Tabs v-model:active-key="type" @change="onTabChange">
           <!-- tab 1：图片  -->
-          <!-- TODO @hw：要不这里，也改成 grid 视图；然后操作按钮，都改成右上角； -->
-          <!-- TODO @hw：图片展示时，就编号、文件名、图片、上传时间、操作； -->
+          <!-- TODO @dylan：要不这里，也改成 grid 视图；然后操作按钮，都改成右上角； -->
+          <!-- TODO @dylan：图片展示时，就编号、文件名、图片、上传时间、操作； -->
           <Tabs.TabPane :key="UploadType.Image">
             <template #tab>
               <span class="flex items-center">

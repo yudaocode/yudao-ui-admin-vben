@@ -28,12 +28,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-// TODO @hw：直接用 ElMessage
-const message = ElMessage;
-
+const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-// TODO @hw：看看要不要和 antd 保持一致的风格；
-const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
+const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
@@ -56,7 +53,7 @@ function beforeImageUpload(rawFile: UploadRawFile) {
 /** 上传成功 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+    ElMessage.error(`上传出错：${res.msg}`);
     return false;
   }
 
@@ -136,6 +133,7 @@ function selectMaterial(item: any) {
         :span="12"
         class="float-right h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
       >
+        {{ uploadData }}
         <ElUpload
           :action="UPLOAD_URL"
           :headers="HEADERS"

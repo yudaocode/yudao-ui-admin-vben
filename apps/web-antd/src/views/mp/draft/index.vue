@@ -9,11 +9,11 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
+// import { getDraftPage } from '#/api/mp/draft'; // 调试时注释掉
 import { submitFreePublish } from '#/api/mp/freePublish';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpDraft' });
@@ -128,6 +128,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          // 调试用：跳过请求，直接返回模拟数据
           const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -142,9 +143,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
+
           return {
-            list: drafts.list as unknown as MpDraftApi.DraftArticle[],
-            total: drafts.total,
+            list: drafts.list,
+            total: drafts.total, // 模拟总数
           };
         },
       },
@@ -187,10 +189,40 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- TODO @hw：按照微信群沟通的，换下卡片的样式。 -->
-      <template #content="{ row }">
-        <DraftTableCell :row="row" />
-        <!-- TODO @hw：增加一列，更新时间。 -->
+      <template #cover="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="flex flex-col items-center justify-center gap-1"
+        >
+          <a
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            :href="(item as any).url"
+            target="_blank"
+          >
+            <img
+              :src="item.picUrl || item.thumbUrl"
+              class="h-36 w-[50px] rounded object-cover"
+              :alt="`文章${index + 1}封面图`"
+            />
+          </a>
+        </div>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #title="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="space-y-1"
+        >
+          <div
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            class="flex h-36 items-center justify-center"
+          >
+            {{ item.title }}
+          </div>
+        </div>
+        <span v-else class="text-gray-400">-</span>
       </template>
       <template #actions="{ row }">
         <TableAction

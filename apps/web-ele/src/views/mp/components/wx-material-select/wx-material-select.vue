@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
 
+import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatTime } from '@vben/utils';
 
@@ -19,9 +20,7 @@ import News from '#/views/mp/components/wx-news/wx-news.vue';
 import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
 import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
-import { NewsType } from './types';
-
-// TODO @hw：代码风格，看看 antd 和 ele 是不是统一下；
+// TODO @hw：代码风格，看看 antd 和 ele 是不是统一下； 等antd此组件修改完再调整
 
 /** 微信素材选择 */
 defineOptions({ name: 'MaterialSelect' });

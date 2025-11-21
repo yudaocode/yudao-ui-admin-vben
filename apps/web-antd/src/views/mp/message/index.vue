@@ -189,7 +189,7 @@ function showTotal(total: number) {
       :footer="null"
       destroy-on-close
     >
-      <!-- TODO @hw，@dlayn：这里有告警； -->
+      <!-- TODO @dlayn：这里有告警； -->
       <WxMsg :user-id="messageBoxUserId" />
     </Modal>
   </Page>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-// TODO @hw：这里 Reply 貌似不存在
-import type { Reply } from '#/views/mp/components';
+import type { Reply } from '#/views/mp/components/wx-reply/types';
 
 import { computed, nextTick, ref } from 'vue';
 

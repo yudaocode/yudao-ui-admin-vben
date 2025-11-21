@@ -77,3 +77,14 @@ export enum MenuType {
   VIEW = 'view', // 跳转 URL
   VIEW_LIMITED = 'view_limited', // 跳转图文消息URL
 }
+
+/** 允许选择的请求消息类型 */
+export const RequestMessageTypes = new Set([
+  'image',
+  'link',
+  'location',
+  'shortvideo',
+  'text',
+  'video',
+  'voice',
+]);

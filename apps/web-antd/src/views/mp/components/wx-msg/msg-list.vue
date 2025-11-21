@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { User } from './types';
+import type { MpUserApi } from '#/api/mp/user/index';
 
 import { preferences } from '@vben/preferences';
 import { formatDateTime } from '@vben/utils';
@@ -11,7 +11,7 @@ defineOptions({ name: 'MsgList' });
 const props = defineProps<{
   accountId: number;
   list: any[];
-  user: User;
+  user: Partial<MpUserApi.User>;
 }>();
 
 const SendFrom = {
@@ -63,7 +63,7 @@ function getNickname(sendFrom: number) {
 <style lang="scss" scoped>
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
 
-/** TODO @dylan：@hw 看看有没适合 tindwind 的哈。 */
+/** TODO @dylan： 看看有没适合 tindwind 的哈。 */
 
 @import url('./comment.scss');
 @import url('./card.scss');

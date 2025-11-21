@@ -43,7 +43,7 @@ const queryParams = reactive({
 }); // 查询参数
 
 const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @hw：@dylan：any 有 linter 告警；看看别的模块哈
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -78,7 +78,7 @@ const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
 ];
 
 const videoGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @hw：@dylan：any 有 linter 告警；看看别的模块哈
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -382,7 +382,7 @@ watch(
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 @media (width >= 992px) and (width <= 1300px) {
   .waterfall {
     column-count: 3;

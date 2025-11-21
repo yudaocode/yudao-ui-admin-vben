@@ -7,8 +7,6 @@ import { IconifyIcon } from '@vben/icons';
 
 import draggable from 'vuedraggable';
 
-// TODO @hw：文件名，不用带 menu- 前缀；
-
 const props = defineProps<{
   accountId: number;
   activeIndex: string;
@@ -199,6 +197,8 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
 </template>
 <style lang="scss" scoped>
 .draggable-ghost {
-  @apply border border-[#4299e1] bg-[#f7fafc] opacity-50;
+  background: #f7fafc;
+  border: 1px solid #4299e1;
+  opacity: 0.5;
 }
 </style>

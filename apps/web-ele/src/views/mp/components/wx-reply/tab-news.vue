@@ -3,14 +3,13 @@ import type { Reply } from './types';
 
 import { computed, ref } from 'vue';
 
+import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
 
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 import News from '#/views/mp/components/wx-news/wx-news.vue';
-
-import { NewsType } from '../wx-material-select/types';
 
 defineOptions({ name: 'TabNews' });
 

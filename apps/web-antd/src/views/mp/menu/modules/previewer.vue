@@ -193,8 +193,6 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
 </template>
 
 <style lang="scss" scoped>
-/** todo @hw：antd 和 ele 这里的写法，看看能不能统一； */
-
 .draggable-ghost {
   background: #f7fafc;
   border: 1px solid #4299e1;
