@@ -9,6 +9,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -26,8 +27,9 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-// import { DeptSelectModal, UserSelectModal } from '#/components/select-modal';
 import { ImageUpload } from '#/components/upload';
+import { DeptSelectModal } from '#/views/system/dept/components';
+import { UserSelectModal } from '#/views/system/user/components';
 
 const props = defineProps({
   categoryList: {
@@ -44,15 +46,15 @@ const props = defineProps({
   },
 });
 
-// const [UserSelectModalComp, userSelectModalApi] = useVbenModal({
-//   connectedComponent: UserSelectModal,
-//   destroyOnClose: true,
-// });
+const [UserSelectModalComp, userSelectModalApi] = useVbenModal({
+  connectedComponent: UserSelectModal,
+  destroyOnClose: true,
+});
 
-// const [DeptSelectModalComp, deptSelectModalApi] = useVbenModal({
-//   connectedComponent: DeptSelectModal,
-//   destroyOnClose: true,
-// });
+const [DeptSelectModalComp, deptSelectModalApi] = useVbenModal({
+  connectedComponent: DeptSelectModal,
+  destroyOnClose: true,
+});
 
 const formRef = ref(); // 表单引用
 const modelData = defineModel<any>(); // 创建本地数据副本
@@ -125,21 +127,22 @@ function openStartUserSelect() {
   selectedUsers.value = selectedStartUsers.value.map(
     (user) => user.id,
   ) as number[];
-  // userSelectModalApi.setData({ userIds: selectedUsers.value }).open();
+  userSelectModalApi.setData({ userIds: selectedUsers.value }).open();
 }
 
 /** 打开部门选择 */
 function openStartDeptSelect() {
-  // deptSelectModalApi.setData({ selectedList: selectedStartDepts.value }).open();
+  deptSelectModalApi.setData({ selectedList: selectedStartDepts.value }).open();
 }
 
-// /** 处理部门选择确认 */
-// function handleDeptSelectConfirm(depts: SystemDeptApi.Dept[]) {
-//   modelData.value = {
-//     ...modelData.value,
-//     startDeptIds: depts.map((d) => d.id),
-//   };
-// }
+/** 处理部门选择确认 */
+function handleDeptSelectConfirm(depts: SystemDeptApi.Dept[]) {
+  selectedStartDepts.value = depts;
+  modelData.value = {
+    ...modelData.value,
+    startDeptIds: depts.map((d) => d.id),
+  };
+}
 
 /** 打开管理员选择 */
 function openManagerUserSelect() {
@@ -147,32 +150,32 @@ function openManagerUserSelect() {
   selectedUsers.value = selectedManagerUsers.value.map(
     (user) => user.id,
   ) as number[];
-  // userSelectModalApi.setData({ userIds: selectedUsers.value }).open();
+  userSelectModalApi.setData({ userIds: selectedUsers.value }).open();
 }
 
-// /** 处理用户选择确认 */
-// function handleUserSelectConfirm(userList: SystemUserApi.User[]) {
-//   modelData.value =
-//     currentSelectType.value === 'start'
-//       ? {
-//           ...modelData.value,
-//           startUserIds: userList.map((u) => u.id),
-//         }
-//       : {
-//           ...modelData.value,
-//           managerUserIds: userList.map((u) => u.id),
-//         };
-// }
+/** 处理用户选择确认 */
+function handleUserSelectConfirm(userList: SystemUserApi.User[]) {
+  modelData.value =
+    currentSelectType.value === 'start'
+      ? {
+          ...modelData.value,
+          startUserIds: userList.map((u) => u.id),
+        }
+      : {
+          ...modelData.value,
+          managerUserIds: userList.map((u) => u.id),
+        };
+}
 
-// /** 用户选择弹窗关闭 */
-// function handleUserSelectClosed() {
-//   selectedUsers.value = [];
-// }
+/** 用户选择弹窗关闭 */
+function handleUserSelectClosed() {
+  selectedUsers.value = [];
+}
 
-// /** 用户选择弹窗取消 */
-// function handleUserSelectCancel() {
-//   selectedUsers.value = [];
-// }
+/** 用户选择弹窗取消 */
+function handleUserSelectCancel() {
+  selectedUsers.value = [];
+}
 
 /** 处理发起人类型变化 */
 function handleStartUserTypeChange(value: number) {
@@ -285,7 +288,12 @@ defineExpose({ validate });
         </ElSelect>
       </ElFormItem>
       <ElFormItem label="流程图标">
-        <ImageUpload v-model:value="modelData.icon" />
+        <ImageUpload
+          v-model:value="modelData.icon"
+          :show-description="false"
+          :width="120"
+          :height="120"
+        />
       </ElFormItem>
       <ElFormItem label="流程描述" prop="description">
         <ElInput v-model="modelData.description" type="textarea" clearable />
@@ -424,19 +432,19 @@ defineExpose({ validate });
     </ElForm>
 
     <!-- 用户选择弹窗 -->
-    <!-- <UserSelectModalComp
+    <UserSelectModalComp
       class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
       @confirm="handleUserSelectConfirm"
       @closed="handleUserSelectClosed"
       @cancel="handleUserSelectCancel"
-    /> -->
+    />
     <!-- 部门选择对话框 -->
-    <!-- <DeptSelectModalComp
+    <DeptSelectModalComp
       class="w-3/5"
       :check-strictly="true"
       @confirm="handleDeptSelectConfirm"
-    /> -->
+    />
   </div>
 </template>
