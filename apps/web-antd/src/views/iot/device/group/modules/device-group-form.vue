@@ -19,6 +19,8 @@ import { useFormSchema } from '../data';
 
 defineOptions({ name: 'IoTDeviceGroupForm' });
 
+// TODO @haohao：web-antd/src/views/iot/product/category/modules/product-category-form.vue 类似问题
+
 const emit = defineEmits<{
   success: [];
 }>();

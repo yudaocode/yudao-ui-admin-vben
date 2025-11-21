@@ -25,12 +25,11 @@ const formRules: any = reactive({
 });
 const formRef = ref(); // 表单 Ref
 
-// 获取上行消息方法列表
 const upstreamMethods = computed(() => {
   return Object.values(IotDeviceMessageMethodEnum).filter(
     (item) => item.upstream,
   );
-});
+}); // 获取上行消息方法列表
 
 /** 根据产品 ID 过滤设备 */
 function getFilteredDevices(productId: number) {
@@ -193,7 +192,7 @@ const columns = [
   {
     title: '操作',
     width: 80,
-    fixed: 'right' as const,
+    fixed: 'right',
   },
 ];
 
@@ -202,6 +201,8 @@ defineExpose({ validate, getData, setData });
 
 <template>
   <Form ref="formRef" :model="{ data: formData }">
+    <!-- TODO @haohao：貌似有告警。 -->
+    <!-- TODO @haohao：是不是搞成 web-antd/src/views/erp/finance/receipt/modules/item-form.vue 的做法，通过 Grid；或 apps/web-antd/src/views/infra/demo/demo03/erp/modules/demo03-grade-list.vue；目的：后续 ele 通用性更好！ -->
     <Table
       :columns="columns"
       :data-source="formData"

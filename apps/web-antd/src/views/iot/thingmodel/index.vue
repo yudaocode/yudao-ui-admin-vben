@@ -23,16 +23,65 @@ const props = defineProps<{
   productId: number;
 }>();
 
-// 产品信息
-const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
+const product = ref<IotProductApi.Product>({} as IotProductApi.Product); // 产品信息
 
-// 提供产品信息给子组件
-provide(IOT_PROVIDE_KEY.PRODUCT, product);
+provide(IOT_PROVIDE_KEY.PRODUCT, product); // 提供产品信息给子组件
 
-// 组件引用
+// TODO @haohao：form 是不是用 web-antd/src/views/system/user/index.vue 里 open 的风格；
 const thingModelFormRef = ref();
+// TODO @haohao：thingModelTSLRef 应该是个 modal，也可以调整下风格；
 const thingModelTSLRef = ref();
 
+// TODO @haohao：方法的顺序、注释、调整的和别的模块一致。
+
+// 新增功能
+function handleCreate() {
+  thingModelFormRef.value?.open('create');
+}
+
+// 编辑功能
+function handleEdit(row: any) {
+  thingModelFormRef.value?.open('update', row.id);
+}
+
+// 删除功能
+async function handleDelete(row: any) {
+  // TODO @haohao：应该有个 loading，类似别的模块写法；
+  try {
+    await deleteThingModel(row.id);
+    message.success('删除成功');
+    gridApi.reload();
+  } catch (error) {
+    console.error('删除失败:', error);
+  }
+}
+
+// 打开 TSL
+function handleOpenTSL() {
+  thingModelTSLRef.value?.open();
+}
+
+// 获取数据类型标签
+// TODO @haohao：可以直接在 data.ts 就写掉这个逻辑；
+function getDataTypeLabel(row: any) {
+  return getDataTypeOptionsLabel(row.property?.dataType) || '-';
+}
+
+// 刷新表格
+function handleRefresh() {
+  gridApi.reload();
+}
+
+// 获取产品信息
+async function getProductData() {
+  try {
+    product.value = await getProduct(props.productId);
+  } catch (error) {
+    console.error('获取产品信息失败:', error);
+  }
+}
+
+// TODO @haohao：字段的顺序，调整成别的模块一直；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -64,51 +113,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-// 新增功能
-function handleCreate() {
-  thingModelFormRef.value?.open('create');
-}
-
-// 编辑功能
-function handleEdit(row: any) {
-  thingModelFormRef.value?.open('update', row.id);
-}
-
-// 删除功能
-async function handleDelete(row: any) {
-  try {
-    await deleteThingModel(row.id);
-    message.success('删除成功');
-    gridApi.reload();
-  } catch (error) {
-    console.error('删除失败:', error);
-  }
-}
-
-// 打开 TSL
-function handleOpenTSL() {
-  thingModelTSLRef.value?.open();
-}
-
-// 获取数据类型标签
-function getDataTypeLabel(row: any) {
-  return getDataTypeOptionsLabel(row.property?.dataType) || '-';
-}
-
-// 刷新表格
-function handleRefresh() {
-  gridApi.reload();
-}
-
-// 获取产品信息
-async function getProductData() {
-  try {
-    product.value = await getProduct(props.productId);
-  } catch (error) {
-    console.error('获取产品信息失败:', error);
-  }
-}
-
 // 初始化
 onMounted(async () => {
   await getProductData();
@@ -116,11 +120,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Page
-    auto-content-height
-    description="管理产品的物模型定义，包括属性、服务和事件"
-    title="物模型管理"
-  >
+  <Page auto-content-height>
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -134,23 +134,21 @@ onMounted(async () => {
             {
               label: 'TSL',
               type: 'default',
-              color: 'success',
+              color: 'success', // TODO @haohao：貌似 color 可以去掉？应该是不生效的哈。ps：另外，也给搞个 icon？
               onClick: handleOpenTSL,
             },
           ]"
         />
       </template>
-
       <!-- 数据类型列 -->
       <template #dataType="{ row }">
         <span>{{ getDataTypeLabel(row) }}</span>
       </template>
-
       <!-- 数据定义列 -->
+      <!-- TODO @haohao：可以在 data.ts 就写掉这个逻辑； -->
       <template #dataDefinition="{ row }">
         <DataDefinition :data="row" />
       </template>
-
       <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
@@ -178,8 +176,7 @@ onMounted(async () => {
 
     <!-- 物模型表单 -->
     <ThingModelForm ref="thingModelFormRef" @success="handleRefresh" />
-
     <!-- TSL 弹窗 -->
-    <ThingModelTsl ref="thingModelTSLRef"/>
+    <ThingModelTsl ref="thingModelTSLRef" />
   </Page>
 </template>

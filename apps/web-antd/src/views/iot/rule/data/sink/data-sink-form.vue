@@ -120,6 +120,7 @@ watch(
     <Form class="mx-4" />
     <div v-if="formData" class="mx-4 mt-4">
       <div class="mb-2 text-sm font-medium">配置信息</div>
+      <!-- TODO @haohao：下面的 form，看看有没办法，搞成 form schema 的，方便后续 ele 的迁移！ -->
       <HttpConfigForm
         v-if="IotDataSinkTypeEnum.HTTP === formData.type"
         v-model="formData.config"

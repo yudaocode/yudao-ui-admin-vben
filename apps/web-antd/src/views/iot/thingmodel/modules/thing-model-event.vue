@@ -23,7 +23,7 @@ const props = defineProps<{ isStructDataSpecs?: boolean; modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
 const thingModelEvent = useVModel(props, 'modelValue', emits) as Ref<any>;
 
-// 默认选中，INFO 信息
+/** 默认选中，INFO 信息 */
 watch(
   () => thingModelEvent.value.type,
   (val: string | undefined) =>

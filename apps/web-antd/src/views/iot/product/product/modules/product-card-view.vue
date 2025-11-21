@@ -19,6 +19,8 @@ import {
 
 import { getProductPage } from '#/api/iot/product/product';
 
+// TODO @haohao：应该是 card-view.vue；
+
 // TODO @haohao：命名不太对；可以简化下；
 defineOptions({ name: 'ProductCardView' });
 
@@ -48,6 +50,7 @@ const queryParams = ref({
   pageSize: 12,
 });
 
+// TODO @haohao：注释的优化；
 // 获取分类名称
 function getCategoryName(categoryId: number) {
   const category = props.categoryList.find((c: any) => c.id === categoryId);
@@ -85,17 +88,17 @@ function getDeviceTypeColor(deviceType: number) {
   return colors[deviceType] || 'default';
 }
 
-onMounted(() => {
-  getList();
-});
-
-// 暴露方法供父组件调用
 defineExpose({
   reload: getList,
   search: () => {
     queryParams.value.pageNo = 1;
     getList();
   },
+});
+
+/** 初始化 */
+onMounted(() => {
+  getList();
 });
 </script>
 
@@ -113,9 +116,11 @@ defineExpose({
           :lg="6"
           class="mb-4"
         >
+          <!-- TODO @haohao：卡片之间的上下距离，太宽了。 -->
           <Card :body-style="{ padding: '20px' }" class="product-card h-full">
             <!-- 顶部标题区域 -->
             <div class="mb-4 flex items-start">
+              <!-- TODO @haohao：图标太大了；看看是不是参考 vue3 + element-plus 搞小点；然后标题居中。 -->
               <div class="product-icon">
                 <IconifyIcon
                   :icon="item.icon || 'ant-design:inbox-outlined'"
@@ -126,7 +131,6 @@ defineExpose({
                 <div class="product-title">{{ item.name }}</div>
               </div>
             </div>
-
             <!-- 内容区域 -->
             <div class="mb-4 flex items-start">
               <div class="info-list flex-1">
@@ -152,6 +156,7 @@ defineExpose({
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
+                  <!-- TODO @haohao：展示 ？有点奇怪，要不小手？ -->
                   <Tooltip :title="item.productKey || item.id" placement="top">
                     <span class="info-value product-key">
                       {{ item.productKey || item.id }}
@@ -159,6 +164,8 @@ defineExpose({
                   </Tooltip>
                 </div>
               </div>
+              <!-- TODO @haohao：这里是不是有 image？然后默认 icon -->
+              <!-- TODO @haohao：高度太高了。建议和左侧（产品分类 + 产品类型 + 产品标识）高度保持一致 -->
               <div class="product-3d-icon">
                 <IconifyIcon
                   icon="ant-design:box-plot-outlined"
@@ -166,7 +173,6 @@ defineExpose({
                 />
               </div>
             </div>
-
             <!-- 按钮组 -->
             <div class="action-buttons">
               <Button
@@ -174,6 +180,7 @@ defineExpose({
                 class="action-btn action-btn-edit"
                 @click="emit('edit', item)"
               >
+                <!-- TODO @haohao：按钮尽量用中立的按钮，方便迁移 ele；  -->
                 <IconifyIcon icon="ant-design:edit-outlined" class="mr-1" />
                 编辑
               </Button>
@@ -229,13 +236,13 @@ defineExpose({
           </Card>
         </Col>
       </Row>
-
       <!-- 空状态 -->
       <Empty v-else description="暂无产品数据" class="my-20" />
     </div>
 
     <!-- 分页 -->
-    <div v-if="list.length > 0" class="mt-6 flex justify-center">
+    <!-- TODO @haohao：放到最右侧好点 -->
+    <div v-if="list.length > 0" class="flex justify-center">
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
@@ -251,6 +258,7 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
+/** TODO @haohao：看看哪些可以 tindwind 掉 */
 .product-card-view {
   .product-card {
     height: 100%;

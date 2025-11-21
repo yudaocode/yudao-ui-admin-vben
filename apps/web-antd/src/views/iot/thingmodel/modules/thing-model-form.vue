@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
+// TODO @haohao：使用 form.vue；
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
@@ -61,6 +62,7 @@ const formData = ref<any>({
 const formRef = ref(); // 表单 Ref
 
 /** 打开弹窗 */
+// TODO @haohao：Modal 的写法。
 async function open(type: string, id?: number) {
   dialogVisible.value = true;
   // 设置标题：create -> 新增，update -> 编辑
@@ -244,6 +246,7 @@ function resetForm() {
     :confirm-loading="formLoading"
     @ok="submitForm"
   >
+    <!-- TODO @haohao：这个可以改造成 data.ts schema 形式么？可能是有一定成本，后续迁移 ele 版本，会容易很多。 -->
     <Form
       ref="formRef"
       :model="formData"

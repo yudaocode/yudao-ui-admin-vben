@@ -21,6 +21,7 @@ const emit = defineEmits(['success']);
 const formData = ref<any>();
 const sourceConfigRef = ref();
 
+// TODO @haohao：应该放到 modules
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['数据规则'])
@@ -40,6 +41,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// TODO @haohao：这里需要优化下，参考别的模块写法；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
