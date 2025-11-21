@@ -56,16 +56,11 @@ async function handleDelete(row: IotProductCategoryApi.ProductCategory) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    showCollapseButton: true,
-    collapsed: true,
   },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
-    pagerConfig: {
-      enabled: true,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {

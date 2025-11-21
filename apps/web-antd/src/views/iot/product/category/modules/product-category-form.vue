@@ -17,6 +17,8 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
+// TODO @haohao：应该是 form.vue，不用前缀；
+
 const emit = defineEmits(['success']);
 const formData = ref<IotProductCategoryApi.ProductCategory>();
 const getTitle = computed(() => {
@@ -38,7 +40,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// TODO @haohao：参考别的 form；1）文件的命名可以简化；2）代码可以在简化下；
+// TODO @haohao：参考 apps/web-antd/src/views/system/dept/modules/form.vue 简化 useVbenModal 里的代码；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
