@@ -20,6 +20,8 @@ import {
   useBasicFormSchema,
 } from '../data';
 
+// TODO @haohao：应该是 form.vue；
+
 defineOptions({ name: 'IoTProductForm' });
 
 const emit = defineEmits(['success']);
@@ -30,10 +32,9 @@ const formData = ref<any>();
 const getTitle = computed(() => {
   return formData.value?.id ? '编辑产品' : '新增产品';
 });
+const activeKey = ref<string[]>([]); // 折叠面板的激活 key，默认不展开
 
-// 折叠面板的激活key，默认不展开
-const activeKey = ref<string[]>([]);
-
+// TODO @haohao：每一行一个；
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -46,7 +47,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// 创建高级设置表单
+// TODO @haohao：每一行一个；
 const [AdvancedForm, advancedFormApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -59,7 +60,7 @@ const [AdvancedForm, advancedFormApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// 在 formApi 创建后设置 schema
+// TODO @haohao：看看是不是可以参考别的 form 模块，优化表单这块的逻辑；从 61 到 156 行。体感有点冗余、以及代码风格，不够统一；
 formApi.setState({ schema: useBasicFormSchema(formApi) });
 advancedFormApi.setState({ schema: useAdvancedFormSchema() });
 

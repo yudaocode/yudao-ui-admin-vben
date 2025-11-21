@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @haohao：放到 detail/modules 里。然后名字就是 header.vue
 import type { IotProductApi } from '#/api/iot/product/product';
 
 import { ref } from 'vue';
@@ -51,8 +52,9 @@ function openForm(type: string, id?: number) {
 
 /** 发布产品 */
 async function confirmPublish(id: number) {
+  // TODO @haohao：最好类似；async function handleDeleteBatch() { 的做法：1）有个 confirm；2）有个 loading
   try {
-    await updateProductStatus(id, 1);
+    await updateProductStatus(id, 1); // TODO @好好】：1 和 0，最好用枚举；
     message.success('发布成功');
     emit('refresh');
   } catch {
@@ -62,6 +64,7 @@ async function confirmPublish(id: number) {
 
 /** 撤销发布 */
 async function confirmUnpublish(id: number) {
+  // TODO @haohao：最好类似；async function handleDeleteBatch() { 的做法：1）有个 confirm；2）有个 loading
   try {
     await updateProductStatus(id, 0);
     message.success('撤销发布成功');
@@ -126,6 +129,7 @@ async function confirmUnpublish(id: number) {
     </Card>
 
     <!-- 表单弹窗 -->
+    <!-- TODO @haohao：弹不出来；另外，应该用 index.vue 里，Form 的声明方式哈。 -->
     <ProductForm ref="formRef" @success="emit('refresh')" />
   </div>
 </template>

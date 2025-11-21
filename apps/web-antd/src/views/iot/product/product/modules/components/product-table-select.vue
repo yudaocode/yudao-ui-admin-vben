@@ -1,5 +1,6 @@
 <!-- IoT 产品选择器，使用弹窗展示 -->
 <script setup lang="ts">
+// TODO @haohao：这个貌似暂时没看到，在哪里用？
 import type { IotProductApi } from '#/api/iot/product/product';
 
 import { reactive, ref } from 'vue';
@@ -28,6 +29,7 @@ interface Props {
 
 const [Modal, modalApi] = useVbenModal({
   title: '产品选择器',
+  // TODO @haohao：handleConfirm 直接放到这里，不用单独声明
   onConfirm: handleConfirm,
 });
 
@@ -39,6 +41,7 @@ const queryParams = reactive({
   name: '',
   productKey: '',
 });
+// TODO @haohao：是不是 form 应该也在 Grid 里；
 
 // 配置表格
 const [Grid, gridApi] = useVbenVxeGrid({
