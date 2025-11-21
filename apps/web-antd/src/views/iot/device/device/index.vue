@@ -48,6 +48,7 @@ const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 
 // Modal instances
+// TODO @haohao：这个界面，等 product 改完，在一起看看怎么弄更好。
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,
   destroyOnClose: true,
