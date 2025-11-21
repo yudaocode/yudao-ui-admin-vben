@@ -28,13 +28,17 @@ const hasData = computed(() => {
 
 /** 初始化图表 */
 function initChart() {
-  if (!hasData.value) return;
+  if (!hasData.value) {
+    return;
+  }
 
+  // TODO @haohao：await nextTick();
   nextTick(() => {
     const data = Object.entries(
       props.statsData.productCategoryDeviceCounts,
     ).map(([name, value]) => ({ name, value }));
 
+    // TODO @haohao：看看 chart-options 怎么提取出去，类似 apps/web-antd/src/views/mall/statistics/member/modules/area-chart-options.ts 写法
     renderEcharts({
       tooltip: {
         trigger: 'item',
@@ -132,6 +136,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/** TODO tindwind */
 .chart-card {
   height: 100%;
 }

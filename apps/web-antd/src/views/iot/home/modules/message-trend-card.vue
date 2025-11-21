@@ -24,6 +24,8 @@ const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDate[]>([]);
 const activeTimeRange = ref('7d'); // 当前选中的时间范围
 const dateRange = ref<[Dayjs, Dayjs] | undefined>(undefined);
 
+// TODO @haohao：这个貌似没迁移对。它是时间范围、事件间隔；
+
 const queryParams = reactive<IotStatisticsApi.DeviceMessageReq>({
   interval: 1, // 按天
   times: [],
@@ -34,6 +36,7 @@ const hasData = computed(() => {
   return messageData.value && messageData.value.length > 0;
 });
 
+// TODO @haohao：注释风格，应该是 /** */ 在方法上；然后变量在字段后面 // 。。。
 // 设置时间范围
 function setTimeRange(range: string) {
   activeTimeRange.value = range;
@@ -64,6 +67,7 @@ function setTimeRange(range: string) {
     }
   }
 
+  // TODO @haohao：可以使用 formatDateTime；
   queryParams.times = [
     start.format('YYYY-MM-DD HH:mm:ss'),
     end.format('YYYY-MM-DD HH:mm:ss'),
@@ -78,6 +82,7 @@ function handleDateChange() {
     activeTimeRange.value = ''; // 清空快捷选择
     queryParams.interval = 1; // 按天
     queryParams.times = [
+      // TODO @haohao：可以使用 formatDateTime；
       dateRange.value[0].startOf('day').format('YYYY-MM-DD HH:mm:ss'),
       dateRange.value[1].endOf('day').format('YYYY-MM-DD HH:mm:ss'),
     ];
@@ -110,6 +115,7 @@ function initChart() {
   const upstreamData = messageData.value.map((item) => item.upstreamCount);
   const downstreamData = messageData.value.map((item) => item.downstreamCount);
 
+  // TODO @haohao：看看 chart-options 怎么提取出去，类似 apps/web-antd/src/views/mall/statistics/member/modules/area-chart-options.ts 写法
   renderEcharts({
     tooltip: {
       trigger: 'axis',

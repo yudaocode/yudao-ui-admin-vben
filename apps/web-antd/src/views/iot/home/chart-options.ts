@@ -1,6 +1,5 @@
-/**
- * 设备数量饼图配置
- */
+/** 设备数量饼图配置 */
+// TODO @haohao：貌似没用到？？
 export function getDeviceCountChartOptions(
   productCategoryDeviceCounts: Record<string, number>,
 ): any {

@@ -6,6 +6,8 @@ import { createIconifyIcon } from '@vben/icons';
 
 import { Card } from 'ant-design-vue';
 
+// TODO @haohao：这个可以迁移到 packages/effects/common-ui/src/components/card/comparison-card
+
 defineOptions({ name: 'ComparisonCard' });
 
 const props = defineProps<{
@@ -59,6 +61,7 @@ const IconComponent = computed(() => iconMap[props.icon] || iconMap.menu);
 </template>
 
 <style scoped>
+/** TODO tindwind */
 .stat-card {
   height: 160px;
   cursor: pointer;

@@ -31,6 +31,7 @@ const hasData = computed(() => {
 });
 
 /** 获取仪表盘配置 */
+// TODO @haohao：看看 chart-options 怎么提取出去，类似 apps/web-antd/src/views/mall/statistics/member/modules/area-chart-options.ts 写法
 const getGaugeOption = (value: number, color: string, title: string): any => {
   return {
     series: [
@@ -81,8 +82,11 @@ const getGaugeOption = (value: number, color: string, title: string): any => {
 
 /** 初始化图表 */
 function initCharts() {
-  if (!hasData.value) return;
+  if (!hasData.value) {
+    return;
+  }
 
+  // TODO @haohao：await nextTick();
   nextTick(() => {
     // 在线设备
     renderOnlineChart(
@@ -147,6 +151,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/** TODO tindwind */
 .chart-card {
   height: 100%;
 }
