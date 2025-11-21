@@ -1,3 +1,4 @@
+<!-- TODO @haohao：如果是模块内用的，就用 modules 里。（等后面点在看，优先级：低） -->
 <script lang="ts" setup>
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
@@ -17,7 +18,6 @@ defineOptions({ name: 'DataDefinition' });
 
 const props = defineProps<{ data: ThingModelData }>();
 
-// 格式化布尔值和枚举值列表为字符串
 const formattedDataSpecsList = computed(() => {
   if (
     !props.data.property?.dataSpecsList ||
@@ -28,9 +28,8 @@ const formattedDataSpecsList = computed(() => {
   return props.data.property.dataSpecsList
     .map((item) => `${item.value}-${item.name}`)
     .join('、');
-});
+}); // 格式化布尔值和枚举值列表为字符串
 
-// 显示的简短文本（第一个值）
 const shortText = computed(() => {
   if (
     !props.data.property?.dataSpecsList ||
@@ -43,7 +42,7 @@ const shortText = computed(() => {
   return count > 1
     ? `${first.value}-${first.name} 等${count}项`
     : `${first.value}-${first.name}`;
-});
+}); // 显示的简短文本（第一个值）
 </script>
 
 <template>
@@ -100,9 +99,8 @@ const shortText = computed(() => {
   </template>
   <!-- 服务 -->
   <div v-if="Number(data.type) === IoTThingModelTypeEnum.SERVICE">
-    调用方式：{{
-      getThingModelServiceCallTypeLabel(data.service?.callType as any)
-    }}
+    调用方式：
+    {{ getThingModelServiceCallTypeLabel(data.service?.callType as any) }}
   </div>
   <!-- 事件 -->
   <div v-if="Number(data.type) === IoTThingModelTypeEnum.EVENT">
@@ -111,6 +109,7 @@ const shortText = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+/** TODO @haohao：tindwind */
 .data-specs-text {
   cursor: help;
   border-bottom: 1px dashed #d9d9d9;
