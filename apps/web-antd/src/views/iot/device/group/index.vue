@@ -43,9 +43,7 @@ async function handleDelete(row: IotDeviceGroupApi.DeviceGroup) {
   });
   try {
     await deleteDeviceGroup(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -55,7 +53,6 @@ async function handleDelete(row: IotDeviceGroupApi.DeviceGroup) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    showCollapseButton: true,
   },
   gridOptions: {
     columns: useGridColumns(),
