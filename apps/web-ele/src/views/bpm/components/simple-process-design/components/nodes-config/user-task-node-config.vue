@@ -32,7 +32,6 @@ import {
   ElSwitch,
   ElTabPane,
   ElTabs,
-  ElText,
   ElTreeSelect,
 } from 'element-plus';
 
@@ -927,43 +926,30 @@ onMounted(() => {
               <ElFormItem
                 label="超时时间设置"
                 v-if="configForm.timeoutHandlerEnable"
-                class="h-8"
               >
-                <ElRow>
-                  <ElCol>
-                    <ElText class="mr-2 mt-2 inline-flex text-sm">
-                      当超时
-                    </ElText>
-                  </ElCol>
-                  <ElCol>
-                    <ElFormItem name="timeDuration">
-                      <ElInputNumber
-                        class="mr-2 mt-0.5"
-                        v-model="configForm.timeDuration"
-                        :min="1"
-                        controls-position="right"
-                      />
-                    </ElFormItem>
-                  </ElCol>
-                  <ElCol>
-                    <ElSelect
-                      v-model="timeUnit"
-                      class="mr-2"
-                      :style="{ width: '100px' }"
-                      @change="timeUnitChange"
-                    >
-                      <ElOption
-                        v-for="item in TIME_UNIT_TYPES"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </ElSelect>
-                    <ElText class="mr-2 mt-2 inline-flex text-sm">
-                      未处理
-                    </ElText>
-                  </ElCol>
-                </ElRow>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">当超时</span>
+                  <ElFormItem name="timeDuration" class="!mb-0">
+                    <ElInputNumber
+                      v-model="configForm.timeDuration"
+                      :min="1"
+                      controls-position="right"
+                    />
+                  </ElFormItem>
+                  <ElSelect
+                    v-model="timeUnit"
+                    class="!w-24"
+                    @change="timeUnitChange"
+                  >
+                    <ElOption
+                      v-for="item in TIME_UNIT_TYPES"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </ElSelect>
+                  <span class="text-sm">未处理</span>
+                </div>
               </ElFormItem>
               <ElFormItem
                 label="最大提醒次数"
@@ -1135,33 +1121,25 @@ onMounted(() => {
           <!-- 表头 -->
           <ElRow class="border border-gray-200 px-4 py-3">
             <ElCol :span="8" class="font-bold">字段名称</ElCol>
-            <ElCol :span="16">
-              <ElRow>
-                <ElCol :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('READ')"
-                  >
-                    只读
-                  </span>
-                </ElCol>
-                <ElCol :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('WRITE')"
-                  >
-                    可编�?
-                  </span>
-                </ElCol>
-                <ElCol :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('NONE')"
-                  >
-                    隐藏
-                  </span>
-                </ElCol>
-              </ElRow>
+            <ElCol :span="16" class="!flex">
+              <span
+                class="flex-1 cursor-pointer text-center font-bold"
+                @click="updatePermission('READ')"
+              >
+                只读
+              </span>
+              <span
+                class="flex-1 cursor-pointer text-center font-bold"
+                @click="updatePermission('WRITE')"
+              >
+                可编辑
+              </span>
+              <span
+                class="flex-1 cursor-pointer text-center font-bold"
+                @click="updatePermission('NONE')"
+              >
+                隐藏
+              </span>
             </ElCol>
           </ElRow>
 
@@ -1172,18 +1150,16 @@ onMounted(() => {
                 {{ item.title }}
               </ElCol>
               <ElCol :span="16">
-                <ElRadioGroup v-model="item.permission" class="w-full">
-                  <ElRow>
-                    <ElCol :span="8" class="flex items-center justify-center">
-                      <ElRadio :value="FieldPermissionType.READ" />
-                    </ElCol>
-                    <ElCol :span="8" class="flex items-center justify-center">
-                      <ElRadio :value="FieldPermissionType.WRITE" />
-                    </ElCol>
-                    <ElCol :span="8" class="flex items-center justify-center">
-                      <ElRadio :value="FieldPermissionType.NONE" />
-                    </ElCol>
-                  </ElRow>
+                <ElRadioGroup v-model="item.permission" class="flex w-full">
+                  <div class="flex flex-1 justify-center">
+                    <ElRadio :value="FieldPermissionType.READ" />
+                  </div>
+                  <div class="flex flex-1 justify-center">
+                    <ElRadio :value="FieldPermissionType.WRITE" />
+                  </div>
+                  <div class="flex flex-1 justify-center">
+                    <ElRadio :value="FieldPermissionType.NONE" />
+                  </div>
                 </ElRadioGroup>
               </ElCol>
             </ElRow>

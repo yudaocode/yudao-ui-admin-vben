@@ -5,11 +5,9 @@ import { IconifyIcon } from '@vben/icons';
 
 import {
   ElButton,
-  ElCol,
   ElFormItem,
   ElInput,
   ElOption,
-  ElRow,
   ElSelect,
 } from 'element-plus';
 
@@ -57,8 +55,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
 </script>
 <template>
   <ElFormItem label="请求头">
-    <ElRow :gutter="8" v-for="(item, index) in props.header" :key="index">
-      <ElCol :span="7">
+    <div
+      v-for="(item, index) in props.header"
+      :key="index"
+      class="mb-2 flex items-center gap-2"
+    >
+      <!-- 参数名 -->
+      <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
           :name="[bind, 'header', index, 'key']"
           :rules="{
@@ -69,20 +72,24 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         >
           <ElInput placeholder="参数名不能为空" v-model="item.key" />
         </ElFormItem>
-      </ElCol>
-      <ElCol :span="5">
-        <ElSelect v-model="item.type">
-          <ElOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </ElOption>
-        </ElSelect>
-      </ElCol>
-      <ElCol :span="10">
+      </div>
+
+      <!-- 类型选择 -->
+      <div class="w-[24%] min-w-11 shrink-0">
+        <ElFormItem class="w-full">
+          <ElSelect v-model="item.type">
+            <ElOption
+              v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
+              :key="types.value"
+              :label="types.label"
+              :value="types.value"
+            />
+          </ElSelect>
+        </ElFormItem>
+      </div>
+
+      <!-- 参数值 -->
+      <div class="w-[42%] flex-1">
         <ElFormItem
           :name="[bind, 'header', index, 'value']"
           :rules="{
@@ -103,7 +110,11 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           }"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <ElSelect v-model="item.value" placeholder="请选择表单字段">
+          <ElSelect
+            class="min-w-36"
+            v-model="item.value"
+            placeholder="请选择表单字段"
+          >
             <ElOption
               v-for="(field, fIdx) in formFieldOptions"
               :key="fIdx"
@@ -115,17 +126,17 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
             </ElOption>
           </ElSelect>
         </ElFormItem>
-      </ElCol>
-      <ElCol :span="2">
-        <div class="flex h-8 items-center">
-          <IconifyIcon
-            class="size-4 cursor-pointer text-red-500"
-            icon="lucide:trash-2"
-            @click="deleteHttpRequestParam(props.header, index)"
-          />
-        </div>
-      </ElCol>
-    </ElRow>
+      </div>
+
+      <!-- 删除按钮 -->
+      <div class="flex w-[8%] shrink-0 items-center">
+        <IconifyIcon
+          class="size-4 cursor-pointer text-red-500"
+          icon="lucide:trash-2"
+          @click="deleteHttpRequestParam(props.header, index)"
+        />
+      </div>
+    </div>
     <ElButton
       link
       @click="addHttpRequestParam(props.header)"
@@ -138,8 +149,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
     </ElButton>
   </ElFormItem>
   <ElFormItem label="请求体">
-    <ElRow :gutter="8" v-for="(item, index) in props.body" :key="index">
-      <ElCol :span="7">
+    <div
+      v-for="(item, index) in props.body"
+      :key="index"
+      class="mb-2 flex items-center gap-2"
+    >
+      <!-- 参数名 -->
+      <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
           :name="[bind, 'body', index, 'key']"
           :rules="{
@@ -150,20 +166,24 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         >
           <ElInput placeholder="参数名" v-model="item.key" />
         </ElFormItem>
-      </ElCol>
-      <ElCol :span="5">
-        <ElSelect v-model="item.type">
-          <ElOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </ElOption>
-        </ElSelect>
-      </ElCol>
-      <ElCol :span="10">
+      </div>
+
+      <!-- 类型选择 -->
+      <div class="w-[24%] min-w-11 shrink-0">
+        <ElFormItem>
+          <ElSelect v-model="item.type">
+            <ElOption
+              v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
+              :key="types.value"
+              :label="types.label"
+              :value="types.value"
+            />
+          </ElSelect>
+        </ElFormItem>
+      </div>
+
+      <!-- 参数值 -->
+      <div class="w-[42%] flex-1">
         <ElFormItem
           :name="[bind, 'body', index, 'value']"
           :rules="{
@@ -171,7 +191,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
             message: '参数值不能为空',
             trigger: ['blur', 'change'],
           }"
-          v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
+          v-show="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <ElInput placeholder="参数值" v-model="item.value" />
         </ElFormItem>
@@ -182,9 +202,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
             message: '参数值不能为空',
             trigger: 'change',
           }"
-          v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
+          v-show="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <ElSelect v-model="item.value" placeholder="请选择表单字段">
+          <ElSelect
+            class="min-w-36"
+            v-model="item.value"
+            placeholder="请选择表单字段"
+          >
             <ElOption
               v-for="(field, fIdx) in formFieldOptions"
               :key="fIdx"
@@ -196,17 +220,17 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
             </ElOption>
           </ElSelect>
         </ElFormItem>
-      </ElCol>
-      <ElCol :span="2">
-        <div class="flex h-8 items-center">
-          <IconifyIcon
-            class="size-4 cursor-pointer text-red-500"
-            icon="lucide:trash-2"
-            @click="deleteHttpRequestParam(props.body, index)"
-          />
-        </div>
-      </ElCol>
-    </ElRow>
+      </div>
+
+      <!-- 删除按钮 -->
+      <div class="flex w-[8%] shrink-0 items-center">
+        <IconifyIcon
+          class="size-4 cursor-pointer text-red-500"
+          icon="lucide:trash-2"
+          @click="deleteHttpRequestParam(props.body, index)"
+        />
+      </div>
+    </div>
     <ElButton
       link
       @click="addHttpRequestParam(props.body)"

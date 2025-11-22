@@ -159,16 +159,18 @@ defineExpose({ validate });
         <div class="flex items-center">
           <div class="mr-4">条件组关系</div>
           <ElSwitch
-            v-model:checked="condition.conditionGroups.and"
-            checked-children="且"
-            un-checked-children="或"
+            v-model="condition.conditionGroups.and"
+            active-text="且"
+            inactive-text="或"
           />
         </div>
       </div>
-      <ElSpace direction="vertical" size="small" class="w-11/12 pl-1">
-        <template #split>
-          {{ condition.conditionGroups.and ? '且' : '或' }}
-        </template>
+      <ElSpace
+        direction="vertical"
+        size="small"
+        :spacer="condition.conditionGroups.and ? '且' : '或'"
+        class="w-full"
+      >
         <ElCard
           class="group relative w-full hover:border-blue-500"
           v-for="(equation, cIdx) in condition.conditionGroups.conditions"
@@ -193,9 +195,9 @@ defineExpose({ validate });
               <div class="flex">
                 <div class="mr-4">规则关系</div>
                 <ElSwitch
-                  v-model:checked="equation.and"
-                  checked-children="且"
-                  un-checked-children="或"
+                  v-model="equation.and"
+                  active-text="且"
+                  inactive-text="或"
                 />
               </div>
             </div>
@@ -203,11 +205,12 @@ defineExpose({ validate });
 
           <ElRow
             :gutter="8"
+            align="middle"
             class="mb-2"
             v-for="(rule, rIdx) in equation.rules"
             :key="rIdx"
           >
-            <ElCol :span="8">
+            <ElCol :span="7">
               <ElFormItem
                 :name="[
                   'conditionGroups',
@@ -225,7 +228,7 @@ defineExpose({ validate });
               >
                 <ElSelect
                   v-model="rule.leftSide"
-                  allow-clear
+                  clearable
                   placeholder="请选择表单字段"
                 >
                   <ElOption
@@ -236,7 +239,7 @@ defineExpose({ validate });
                     :disabled="!field.required"
                   >
                     <ElTooltip
-                      title="表单字段非必填时不能作为流程分支条件"
+                      content="表单字段非必填时不能作为流程分支条件"
                       placement="right"
                       v-if="!field.required"
                     >
@@ -247,19 +250,21 @@ defineExpose({ validate });
                 </ElSelect>
               </ElFormItem>
             </ElCol>
-            <ElCol :span="6">
-              <ElSelect v-model="rule.opCode" placeholder="请选择操作符">
-                <ElOption
-                  v-for="operator in COMPARISON_OPERATORS"
-                  :key="operator.value"
-                  :label="operator.label"
-                  :value="operator.value"
-                >
-                  {{ operator.label }}
-                </ElOption>
-              </ElSelect>
+            <ElCol :span="5">
+              <ElFormItem>
+                <ElSelect v-model="rule.opCode" placeholder="请选择操作符">
+                  <ElOption
+                    v-for="operator in COMPARISON_OPERATORS"
+                    :key="operator.value"
+                    :label="operator.label"
+                    :value="operator.value"
+                  >
+                    {{ operator.label }}
+                  </ElOption>
+                </ElSelect>
+              </ElFormItem>
             </ElCol>
-            <ElCol :span="7">
+            <ElCol :span="9">
               <ElFormItem
                 :name="[
                   'conditionGroups',
@@ -279,7 +284,7 @@ defineExpose({ validate });
               </ElFormItem>
             </ElCol>
             <ElCol :span="3">
-              <div class="flex h-8 items-center">
+              <div class="flex items-center">
                 <Trash2
                   v-if="equation.rules.length > 1"
                   class="mr-2 size-4 cursor-pointer text-red-500"
@@ -294,11 +299,12 @@ defineExpose({ validate });
           </ElRow>
         </ElCard>
       </ElSpace>
-      <div title="添加条件组" class="mt-4 cursor-pointer">
-        <Plus
-          class="size-6 text-blue-500"
-          @click="addConditionGroup(condition.conditionGroups?.conditions)"
-        />
+      <div
+        class="mt-4 flex cursor-pointer items-center text-blue-500 hover:text-blue-600"
+        @click="addConditionGroup(condition.conditionGroups?.conditions)"
+      >
+        <Plus class="mr-1 size-5" />
+        <span>添加条件组</span>
       </div>
     </ElFormItem>
     <ElFormItem
@@ -308,9 +314,10 @@ defineExpose({ validate });
     >
       <ElInput
         v-model="condition.conditionExpression"
+        type="textarea"
         placeholder="请输入条件表达式"
-        allow-clear
-        :auto-size="{ minRows: 3, maxRows: 6 }"
+        clearable
+        :autosize="{ minRows: 3, maxRows: 6 }"
       />
     </ElFormItem>
   </ElForm>
