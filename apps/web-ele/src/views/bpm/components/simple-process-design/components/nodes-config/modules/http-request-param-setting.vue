@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { HttpRequestParam } from '../../../consts';
 
 import { IconifyIcon } from '@vben/icons';

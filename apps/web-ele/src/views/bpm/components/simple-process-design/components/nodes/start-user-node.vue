@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 // TODO @芋艿：后续是不是把业务组件，挪到每个模块里；待定
 import type { Ref } from 'vue';
 

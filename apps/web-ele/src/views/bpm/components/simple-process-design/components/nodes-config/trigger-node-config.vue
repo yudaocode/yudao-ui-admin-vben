@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 // SelectValue type removed - use string | number | boolean directly
 

@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
 import { inject, ref } from 'vue';

@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { ConditionGroup } from '../../../consts';
 
 import { ref } from 'vue';

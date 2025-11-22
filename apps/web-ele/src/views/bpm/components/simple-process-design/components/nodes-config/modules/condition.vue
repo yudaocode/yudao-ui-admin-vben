@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 
 import type { Ref } from 'vue';
@@ -40,7 +40,6 @@ defineOptions({
 const props = defineProps({
   modelValue: {
     type: Object,
-    required: true,
     default: () => ({}),
   },
 });

@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 
 import type { ComponentPublicInstance, Ref } from 'vue';

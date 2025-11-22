@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { SimpleFlowNode } from '../../consts';
 
 import { nextTick, ref, watch } from 'vue';

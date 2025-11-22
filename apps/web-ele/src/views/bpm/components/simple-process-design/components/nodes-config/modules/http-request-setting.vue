@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
