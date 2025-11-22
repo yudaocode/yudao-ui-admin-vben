@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref } from 'vue';
+import type { Ref } from 'vue';
+
+import { computed, inject, nextTick, ref } from 'vue';
 
 import { BpmModelType } from '@vben/constants';
 
@@ -7,23 +9,23 @@ import BpmModelEditor from './bpm-model-editor.vue';
 import SimpleModelDesign from './simple-model-design.vue';
 
 const modelData = defineModel<any>(); // 创建本地数据副本
-// const processData = inject('processData') as Ref;
+const processData = inject('processData') as Ref;
 
 const simpleDesign = ref();
 
 /** 表单校验 */
 async function validate() {
   // 获取最新的流程数据
-  // if (!processData.value) {
-  //   throw new Error('请设计流程');
-  // }
-  // if (modelData.value.type === BpmModelType.SIMPLE) {
-  //   // 简易设计器校验
-  //   const validateResult = await simpleDesign.value?.validateConfig();
-  //   if (!validateResult) {
-  //     throw new Error('请完善设计配置');
-  //   }
-  // }
+  if (!processData.value) {
+    throw new Error('请设计流程');
+  }
+  if (modelData.value.type === BpmModelType.SIMPLE) {
+    // 简易设计器校验
+    const validateResult = await simpleDesign.value?.validateConfig();
+    if (!validateResult) {
+      throw new Error('请完善设计配置');
+    }
+  }
   return true;
 }
 

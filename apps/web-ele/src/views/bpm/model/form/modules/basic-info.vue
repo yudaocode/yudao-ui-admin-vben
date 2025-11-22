@@ -291,8 +291,8 @@ defineExpose({ validate });
         <ImageUpload
           v-model:value="modelData.icon"
           :show-description="false"
-          :width="120"
-          :height="120"
+          width="120px"
+          height="120px"
         />
       </ElFormItem>
       <ElFormItem label="流程描述" prop="description">
