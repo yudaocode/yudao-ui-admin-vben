@@ -669,7 +669,7 @@ function handleRenameSuccess() {
                   size="small"
                   class="px-1"
                   @click="modelOperation('update', row.id)"
-                  :disabled="!isManagerUser(row) || !hasPermiUpdate"
+                  :disabled="!isManagerUser(row) && !hasPermiUpdate"
                 >
                   修改
                 </Button>
@@ -678,7 +678,7 @@ function handleRenameSuccess() {
                   size="small"
                   class="px-1"
                   @click="handleDeploy(row)"
-                  :disabled="!isManagerUser(row) || !hasPermiDeploy"
+                  :disabled="!isManagerUser(row) && !hasPermiDeploy"
                 >
                   发布
                 </Button>
@@ -718,7 +718,7 @@ function handleRenameSuccess() {
                       <Menu.Item
                         danger
                         key="handleDelete"
-                        :disabled="!isManagerUser(row) || !hasPermiDelete"
+                        :disabled="!isManagerUser(row) && !hasPermiDelete"
                       >
                         删除
                       </Menu.Item>
