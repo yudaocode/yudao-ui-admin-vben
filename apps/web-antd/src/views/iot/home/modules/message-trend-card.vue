@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Dayjs } from 'dayjs';
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
@@ -7,16 +8,15 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, DatePicker, Empty, Select } from 'ant-design-vue';
+import { Card, Empty, Select } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
+import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 import { getDeviceMessageSummaryByDate } from '#/api/iot/statistics';
 
 import { getMessageTrendChartOptions } from '../chart-options';
 
 defineOptions({ name: 'MessageTrendCard' });
-
-const { RangePicker } = DatePicker;
 
 const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
@@ -68,12 +68,15 @@ function handleQuery() {
 }
 
 /** 处理时间范围变化 */
-function handleDateRangeChange() {
-  if (dateRange.value && dateRange.value.length === 2) {
-    // 将选择的日期转换为带时分秒的格式（开始日期 00:00:00，结束日期 23:59:59）
-    queryParams.times = formatDateRangeWithTime(dateRange.value);
-    handleQuery();
-  }
+function handleDateRangeChange(times?: [Dayjs, Dayjs]) {
+  if (!times || times.length !== 2) return;
+  dateRange.value = [
+    dayjs(times[0]).format('YYYY-MM-DD'),
+    dayjs(times[1]).format('YYYY-MM-DD'),
+  ];
+  // 将选择的日期转换为带时分秒的格式（开始日期 00:00:00，结束日期 23:59:59）
+  queryParams.times = formatDateRangeWithTime(dateRange.value);
+  handleQuery();
 }
 
 /** 处理时间间隔变化 */
@@ -134,16 +137,9 @@ onMounted(() => {
       <div class="flex flex-wrap items-center justify-between gap-4">
         <span class="text-base font-medium text-gray-600">消息量统计</span>
         <div class="flex flex-wrap items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-500">时间范围</span>
-            <RangePicker
-              v-model:value="dateRange"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              :placeholder="['开始日期', '结束日期']"
-              class="!w-240px"
-              @change="handleDateRangeChange"
-            />
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-500 whitespace-nowrap">时间范围</span>
+            <ShortcutDateRangePicker @change="handleDateRangeChange" />
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-500">时间间隔</span>
