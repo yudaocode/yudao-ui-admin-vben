@@ -175,7 +175,6 @@ const childFormFieldOptions = ref<any[]>([]);
 const saveConfig = async () => {
   activeTabName.value = 'child';
   if (!formRef.value) return false;
-
   const valid = await formRef.value.validate().catch(() => false);
   if (!valid) return false;
 
@@ -400,13 +399,7 @@ onMounted(async () => {
         label-position="top"
         :rules="formRules"
       >
-        <ElFormItem
-          label="是否异步执行"
-          name="async"
-          label-align="left"
-          :label-col="{ span: 8 }"
-          :wrapper-col="{ span: 4 }"
-        >
+        <ElFormItem label="是否异步执行" prop="async">
           <ElSwitch
             v-model="configForm.async"
             active-text="是"
@@ -423,9 +416,8 @@ onMounted(async () => {
               v-for="(item, index) in childProcessOptions"
               :key="index"
               :value="item.key"
-            >
-              {{ item.name }}
-            </ElOption>
+              :label="item.name"
+            />
           </ElSelect>
         </ElFormItem>
         <ElFormItem label="是否自动跳过子流程发起节点" prop="skipStartUserNode">
@@ -441,9 +433,9 @@ onMounted(async () => {
             v-for="(item, index) in configForm.inVariables"
             :key="index"
           >
-            <div class="mr-2">
+            <div class="mr-2 mt-1">
               <ElFormItem
-                :name="['inVariables', index, 'source']"
+                :prop="['inVariables', index, 'source']"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -455,15 +447,14 @@ onMounted(async () => {
                     v-for="(field, fIdx) in formFieldOptions"
                     :key="fIdx"
                     :value="field.field"
-                  >
-                    {{ field.title }}
-                  </ElOption>
+                    :label="field.title"
+                  />
                 </ElSelect>
               </ElFormItem>
             </div>
-            <div class="mr-2">
+            <div class="mr-2 mt-1">
               <ElFormItem
-                :name="['inVariables', index, 'target']"
+                :prop="['inVariables', index, 'target']"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -475,13 +466,12 @@ onMounted(async () => {
                     v-for="(field, fIdx) in childFormFieldOptions"
                     :key="fIdx"
                     :value="field.field"
-                  >
-                    {{ field.title }}
-                  </ElOption>
+                    :label="field.title"
+                  />
                 </ElSelect>
               </ElFormItem>
             </div>
-            <div class="mr-1 flex h-8 items-center">
+            <div class="mr-1 mt-1 flex h-8 items-center">
               <IconifyIcon
                 icon="lucide:trash-2"
                 :size="18"
@@ -493,7 +483,7 @@ onMounted(async () => {
           <ElButton
             link
             @click="addVariable(configForm.inVariables)"
-            class="flex items-center"
+            class="mt-1 flex items-center"
           >
             <template #icon>
               <IconifyIcon class="size-4" icon="lucide:plus" />
@@ -511,9 +501,9 @@ onMounted(async () => {
             v-for="(item, index) in configForm.outVariables"
             :key="index"
           >
-            <div class="mr-2">
+            <div class="mr-2 mt-1">
               <ElFormItem
-                :name="['outVariables', index, 'source']"
+                :prop="['outVariables', index, 'source']"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -525,15 +515,14 @@ onMounted(async () => {
                     v-for="(field, fIdx) in childFormFieldOptions"
                     :key="fIdx"
                     :value="field.field"
-                  >
-                    {{ field.title }}
-                  </ElOption>
+                    :label="field.title"
+                  />
                 </ElSelect>
               </ElFormItem>
             </div>
-            <div class="mr-2">
+            <div class="mr-2 mt-1">
               <ElFormItem
-                :name="['outVariables', index, 'target']"
+                :prop="['outVariables', index, 'target']"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -545,13 +534,12 @@ onMounted(async () => {
                     v-for="(field, fIdx) in formFieldOptions"
                     :key="fIdx"
                     :value="field.field"
-                  >
-                    {{ field.title }}
-                  </ElOption>
+                    :label="field.title"
+                  />
                 </ElSelect>
               </ElFormItem>
             </div>
-            <div class="mr-1 flex h-8 items-center">
+            <div class="mr-1 mt-1 flex h-8 items-center">
               <IconifyIcon
                 icon="lucide:trash-2"
                 :size="18"
@@ -563,7 +551,7 @@ onMounted(async () => {
           <ElButton
             link
             @click="addVariable(configForm.outVariables)"
-            class="flex items-center"
+            class="mt-1 flex items-center"
           >
             <template #icon>
               <IconifyIcon class="size-4" icon="lucide:plus" />
@@ -571,7 +559,7 @@ onMounted(async () => {
             添加一个
           </ElButton>
         </ElFormItem>
-        <ElFormItem label="子流程发起人" name="startUserType">
+        <ElFormItem label="子流程发起人" prop="startUserType">
           <ElRadioGroup v-model="configForm.startUserType">
             <ElRadio
               v-for="item in CHILD_PROCESS_START_USER_TYPE"
@@ -587,7 +575,7 @@ onMounted(async () => {
             configForm.startUserType === ChildProcessStartUserTypeEnum.FROM_FORM
           "
           label="子流程发起人字段"
-          name="startUserFormField"
+          prop="startUserFormField"
         >
           <ElSelect v-model="configForm.startUserFormField" clearable>
             <ElOption
@@ -595,9 +583,7 @@ onMounted(async () => {
               :key="fIdx"
               :label="field.title"
               :value="field.field"
-            >
-              {{ field.title }}
-            </ElOption>
+            />
           </ElSelect>
         </ElFormItem>
         <ElFormItem
@@ -605,7 +591,7 @@ onMounted(async () => {
             configForm.startUserType === ChildProcessStartUserTypeEnum.FROM_FORM
           "
           label="当子流程发起人为空时"
-          name="startUserEmptyType"
+          prop="startUserEmptyType"
         >
           <ElRadioGroup v-model="configForm.startUserEmptyType">
             <ElRadio
@@ -627,7 +613,7 @@ onMounted(async () => {
           />
         </ElFormItem>
         <div v-if="configForm.timeoutEnable">
-          <ElFormItem name="timeoutType">
+          <ElFormItem prop="timeoutType">
             <ElRadioGroup v-model="configForm.timeoutType">
               <ElRadioButton
                 v-for="item in DELAY_TYPE"
@@ -641,22 +627,18 @@ onMounted(async () => {
           <ElFormItem
             v-if="configForm.timeoutType === DelayTypeEnum.FIXED_TIME_DURATION"
           >
-            <ElRow :gutter="8">
-              <ElCol>
-                <span class="inline-flex h-8 items-center"> 当超过</span>
-              </ElCol>
-              <ElCol>
-                <ElFormItem name="timeDuration">
-                  <ElInputNumber
-                    class="w-24"
-                    v-model="configForm.timeDuration"
-                    :min="1"
-                    controls-position="right"
-                  />
-                </ElFormItem>
-              </ElCol>
-              <ElCol>
-                <ElSelect v-model="configForm.timeUnit" class="w-24">
+            <div class="flex items-center gap-2">
+              <span>当超过</span>
+              <ElFormItem prop="timeDuration" class="!mb-0">
+                <ElInputNumber
+                  class="!w-24"
+                  v-model="configForm.timeDuration"
+                  :min="1"
+                  controls-position="right"
+                />
+              </ElFormItem>
+              <ElFormItem class="!mb-0">
+                <ElSelect v-model="configForm.timeUnit" class="!w-24">
                   <ElOption
                     v-for="item in TIME_UNIT_TYPES"
                     :key="item.value"
@@ -666,32 +648,23 @@ onMounted(async () => {
                     {{ item.label }}
                   </ElOption>
                 </ElSelect>
-              </ElCol>
-              <ElCol>
-                <span class="inline-flex h-8 items-center">后进入下一节点</span>
-              </ElCol>
-            </ElRow>
+              </ElFormItem>
+              <span>后进入下一节点</span>
+            </div>
           </ElFormItem>
           <ElFormItem
             v-if="configForm.timeoutType === DelayTypeEnum.FIXED_DATE_TIME"
-            name="dateTime"
+            prop="dateTime"
           >
-            <ElRow :gutter="8">
-              <ElCol>
-                <ElDatePicker
-                  class="mr-2"
-                  v-model="configForm.dateTime"
-                  type="datetime"
-                  placeholder="请选择日期和时间"
-                  value-format="YYYY-MM-DDTHH:mm:ss"
-                />
-              </ElCol>
-              <ElCol>
-                <span class="inline-flex h-8 items-center">
-                  后进入下一节点
-                </span>
-              </ElCol>
-            </ElRow>
+            <div class="flex items-center gap-2">
+              <ElDatePicker
+                v-model="configForm.dateTime"
+                type="datetime"
+                placeholder="请选择日期和时间"
+                value-format="YYYY-MM-DDTHH:mm:ss"
+              />
+              <span>后进入下一节点</span>
+            </div>
           </ElFormItem>
         </div>
 
@@ -704,26 +677,14 @@ onMounted(async () => {
           />
         </ElFormItem>
         <div v-if="configForm.multiInstanceEnable">
-          <ElFormItem
-            name="sequential"
-            label="是否串行"
-            label-align="left"
-            :label-col="{ span: 5 }"
-            :wrapper-col="{ span: 4 }"
-          >
+          <ElFormItem prop="sequential" label="是否串行">
             <ElSwitch
               v-model="configForm.sequential"
               active-text="是"
               inactive-text="否"
             />
           </ElFormItem>
-          <ElFormItem
-            name="approveRatio"
-            label="完成比例(%)"
-            label-align="left"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 4 }"
-          >
+          <ElFormItem prop="approveRatio" label="完成比例(%)">
             <ElInputNumber
               v-model="configForm.approveRatio"
               :min="10"
@@ -731,13 +692,7 @@ onMounted(async () => {
               :step="10"
             />
           </ElFormItem>
-          <ElFormItem
-            name="multiInstanceSourceType"
-            label="实例数量"
-            label-align="left"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
-          >
+          <ElFormItem prop="multiInstanceSourceType" label="实例数量">
             <ElSelect
               v-model="configForm.multiInstanceSourceType"
               @change="handleMultiInstanceSourceTypeChange"
@@ -757,11 +712,8 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.FIXED_QUANTITY
             "
-            name="multiInstanceSource"
+            prop="multiInstanceSource"
             label="固定数量"
-            label-align="left"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
             :rules="{
               required: true,
               message: '固定数量不能为空',
@@ -775,11 +727,8 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.NUMBER_FORM
             "
-            name="multiInstanceSource"
+            prop="multiInstanceSource"
             label="数字表单"
-            label-align="left"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
             :rules="{
               required: true,
               message: '数字表单字段不能为空',
@@ -802,7 +751,7 @@ onMounted(async () => {
               configForm.multiInstanceSourceType ===
               ChildProcessMultiInstanceSourceTypeEnum.MULTIPLE_FORM
             "
-            name="multiInstanceSource"
+            prop="multiInstanceSource"
             label="多选表单"
             :rules="{
               required: true,
