@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
+import type { FormRules } from 'element-plus';
 
 import type { Ref } from 'vue';
 
@@ -10,21 +10,20 @@ import { IconifyIcon, Plus, Trash2 } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import {
-  Card,
-  Col,
-  Form,
-  FormItem,
-  Input,
-  Radio,
-  RadioGroup,
-  Row,
-  Select,
-  SelectOption,
-  Space,
-  Switch,
-  Textarea,
-  Tooltip,
-} from 'ant-design-vue';
+  ElCard,
+  ElCol,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElOption,
+  ElRadio,
+  ElRadioGroup,
+  ElRow,
+  ElSelect,
+  ElSpace,
+  ElSwitch,
+  ElTooltip,
+} from 'element-plus';
 
 import {
   COMPARISON_OPERATORS,
@@ -41,7 +40,6 @@ defineOptions({
 const props = defineProps({
   modelValue: {
     type: Object,
-    required: false,
     default: () => ({}),
   },
 });
@@ -72,7 +70,7 @@ const conditionConfigTypes = computed(() => {
 const fieldOptions = useFormFieldsAndStartUser();
 
 // 表单校验规则
-const formRules: Record<string, Rule[]> = reactive({
+const formRules: FormRules = reactive({
   conditionType: [
     { required: true, message: '配置方式不能为空', trigger: 'change' },
   ],
@@ -136,28 +134,22 @@ async function validate() {
 defineExpose({ validate });
 </script>
 <template>
-  <Form
-    ref="formRef"
-    :model="condition"
-    :rules="formRules"
-    :label-col="{ span: 24 }"
-    :wrapper-col="{ span: 24 }"
-  >
-    <FormItem label="配置方式" name="conditionType">
-      <RadioGroup
-        v-model:value="condition.conditionType"
+  <ElForm ref="formRef" :model="condition" :rules="formRules">
+    <ElFormItem label="配置方式" prop="conditionType">
+      <ElRadioGroup
+        v-model="condition.conditionType"
         @change="changeConditionType"
       >
-        <Radio
+        <ElRadio
           v-for="(dict, indexConditionType) in conditionConfigTypes"
           :key="indexConditionType"
           :value="dict.value"
         >
           {{ dict.label }}
-        </Radio>
-      </RadioGroup>
-    </FormItem>
-    <FormItem
+        </ElRadio>
+      </ElRadioGroup>
+    </ElFormItem>
+    <ElFormItem
       v-if="
         condition.conditionType === ConditionType.RULE &&
         condition.conditionGroups
@@ -166,18 +158,22 @@ defineExpose({ validate });
       <div class="mb-5 flex w-full justify-between">
         <div class="flex items-center">
           <div class="mr-4">条件组关系</div>
-          <Switch
-            v-model:checked="condition.conditionGroups.and"
-            checked-children="且"
-            un-checked-children="或"
+          <ElSwitch
+            v-model="condition.conditionGroups.and"
+            active-text="且"
+            inactive-text="或"
           />
         </div>
       </div>
-      <Space direction="vertical" size="small" class="w-11/12 pl-1">
-        <template #split>
-          {{ condition.conditionGroups.and ? '且' : '或' }}
-        </template>
-        <Card
+      <ElSpace
+        direction="vertical"
+        size="small"
+        :spacer="condition.conditionGroups.and ? '且' : '或'"
+        class="w-full"
+        fill
+        :fill-ratio="100"
+      >
+        <ElCard
           class="group relative w-full hover:border-blue-500"
           v-for="(equation, cIdx) in condition.conditionGroups.conditions"
           :key="cIdx"
@@ -200,129 +196,117 @@ defineExpose({ validate });
               <div>条件组</div>
               <div class="flex">
                 <div class="mr-4">规则关系</div>
-                <Switch
-                  v-model:checked="equation.and"
-                  checked-children="且"
-                  un-checked-children="或"
+                <ElSwitch
+                  v-model="equation.and"
+                  active-text="且"
+                  inactive-text="或"
                 />
               </div>
             </div>
           </template>
 
-          <Row
+          <ElRow
             :gutter="8"
+            align="middle"
             class="mb-2"
             v-for="(rule, rIdx) in equation.rules"
             :key="rIdx"
           >
-            <Col :span="8">
-              <FormItem
-                :name="[
-                  'conditionGroups',
-                  'conditions',
-                  cIdx,
-                  'rules',
-                  rIdx,
-                  'leftSide',
-                ]"
+            <ElCol :span="7">
+              <ElFormItem
+                :prop="`conditionGroups.conditions.${cIdx}.rules.${rIdx}.leftSide`"
                 :rules="{
                   required: true,
                   message: '左值不能为空',
                   trigger: 'change',
                 }"
               >
-                <Select
-                  v-model:value="rule.leftSide"
-                  allow-clear
+                <ElSelect
+                  v-model="rule.leftSide"
+                  clearable
                   placeholder="请选择表单字段"
                 >
-                  <SelectOption
+                  <ElOption
                     v-for="(field, fIdx) in fieldOptions"
                     :key="fIdx"
                     :label="field.title"
                     :value="field.field"
                     :disabled="!field.required"
                   >
-                    <Tooltip
-                      title="表单字段非必填时不能作为流程分支条件"
+                    <ElTooltip
+                      content="表单字段非必填时不能作为流程分支条件"
                       placement="right"
                       v-if="!field.required"
                     >
                       <span>{{ field.title }}</span>
-                    </Tooltip>
+                    </ElTooltip>
                     <template v-else>{{ field.title }}</template>
-                  </SelectOption>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col :span="6">
-              <Select v-model:value="rule.opCode" placeholder="请选择操作符">
-                <SelectOption
-                  v-for="operator in COMPARISON_OPERATORS"
-                  :key="operator.value"
-                  :label="operator.label"
-                  :value="operator.value"
-                >
-                  {{ operator.label }}
-                </SelectOption>
-              </Select>
-            </Col>
-            <Col :span="7">
-              <FormItem
-                :name="[
-                  'conditionGroups',
-                  'conditions',
-                  cIdx,
-                  'rules',
-                  rIdx,
-                  'rightSide',
-                ]"
+                  </ElOption>
+                </ElSelect>
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="6">
+              <ElFormItem>
+                <ElSelect v-model="rule.opCode" placeholder="请选择操作符">
+                  <ElOption
+                    v-for="operator in COMPARISON_OPERATORS"
+                    :key="operator.value"
+                    :label="operator.label"
+                    :value="operator.value"
+                  >
+                    {{ operator.label }}
+                  </ElOption>
+                </ElSelect>
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="8">
+              <ElFormItem
+                :prop="`conditionGroups.conditions.${cIdx}.rules.${rIdx}.rightSide`"
                 :rules="{
                   required: true,
                   message: '右值不能为空',
                   trigger: ['blur', 'change'],
                 }"
               >
-                <Input
-                  v-model:value="rule.rightSide"
-                  placeholder="请输入右值"
-                />
-              </FormItem>
-            </Col>
-            <Col :span="3">
-              <div class="flex h-8 items-center">
-                <Trash2
-                  v-if="equation.rules.length > 1"
-                  class="mr-2 size-4 cursor-pointer text-red-500"
-                  @click="deleteConditionRule(equation, rIdx)"
-                />
+                <ElInput v-model="rule.rightSide" placeholder="请输入右值" />
+              </ElFormItem>
+            </ElCol>
+            <ElCol :span="3">
+              <div class="flex items-center">
                 <Plus
-                  class="size-4 cursor-pointer text-blue-500"
+                  class="mr-2 size-4 cursor-pointer text-blue-500"
                   @click="addConditionRule(equation, rIdx)"
                 />
+                <Trash2
+                  v-show="equation.rules.length > 1"
+                  class="size-4 cursor-pointer text-red-500"
+                  @click="deleteConditionRule(equation, rIdx)"
+                />
               </div>
-            </Col>
-          </Row>
-        </Card>
-      </Space>
-      <div title="添加条件组" class="mt-4 cursor-pointer">
-        <Plus
-          class="size-6 text-blue-500"
-          @click="addConditionGroup(condition.conditionGroups?.conditions)"
-        />
+            </ElCol>
+          </ElRow>
+        </ElCard>
+      </ElSpace>
+      <div
+        class="mt-4 flex cursor-pointer items-center text-blue-500 hover:text-blue-600"
+        @click="addConditionGroup(condition.conditionGroups?.conditions)"
+      >
+        <Plus class="mr-1 size-5" />
+        <span>添加条件组</span>
       </div>
-    </FormItem>
-    <FormItem
+    </ElFormItem>
+    <ElFormItem
       v-if="condition.conditionType === ConditionType.EXPRESSION"
       label="条件表达式"
-      name="conditionExpression"
+      prop="conditionExpression"
     >
-      <Textarea
-        v-model:value="condition.conditionExpression"
+      <ElInput
+        v-model="condition.conditionExpression"
+        type="textarea"
         placeholder="请输入条件表达式"
-        allow-clear
-        :auto-size="{ minRows: 3, maxRows: 6 }"
+        clearable
+        :autosize="{ minRows: 3, maxRows: 6 }"
       />
-    </FormItem>
-  </Form>
+    </ElFormItem>
+  </ElForm>
 </template>

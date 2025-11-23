@@ -62,30 +62,30 @@ const routes: RouteRecordRaw[] = [
           };
         },
       },
-      // {
-      //   path: 'manager/model/create',
-      //   component: () => import('#/views/bpm/model/form/index.vue'),
-      //   name: 'BpmModelCreate',
-      //   meta: {
-      //     title: '创建流程',
-      //     activePath: '/bpm/manager/model',
-      //     icon: 'carbon:flow-connection',
-      //     hideInMenu: true,
-      //     keepAlive: true,
-      //   },
-      // },
-      // {
-      //   path: 'manager/model/:type/:id',
-      //   component: () => import('#/views/bpm/model/form/index.vue'),
-      //   name: 'BpmModelUpdate',
-      //   meta: {
-      //     title: '修改流程',
-      //     activePath: '/bpm/manager/model',
-      //     icon: 'carbon:flow-connection',
-      //     hideInMenu: true,
-      //     keepAlive: true,
-      //   },
-      // },
+      {
+        path: 'manager/model/create',
+        component: () => import('#/views/bpm/model/form/index.vue'),
+        name: 'BpmModelCreate',
+        meta: {
+          title: '创建流程',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-connection',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
+      {
+        path: 'manager/model/:type/:id',
+        component: () => import('#/views/bpm/model/form/index.vue'),
+        name: 'BpmModelUpdate',
+        meta: {
+          title: '修改流程',
+          activePath: '/bpm/manager/model',
+          icon: 'carbon:flow-connection',
+          hideInMenu: true,
+          keepAlive: true,
+        },
+      },
       {
         path: 'manager/definition',
         component: () => import('#/views/bpm/model/definition/index.vue'),
