@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -14,6 +14,7 @@ import {
   ElSelect,
 } from 'element-plus';
 
+// TODO @hw：import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 import News from '#/views/mp/components/wx-news/wx-news.vue';
 import ReplySelect from '#/views/mp/components/wx-reply/wx-reply.vue';
@@ -40,16 +41,7 @@ const menu = computed({
   },
 });
 const showNewsDialog = ref(false);
-// TODO @hw：这个 reset 还有用么？
-const hackResetWxReplySelect = ref(false);
 const isLeave = computed<boolean>(() => !(menu.value.children?.length > 0));
-
-watch(menu, () => {
-  hackResetWxReplySelect.value = false; // 销毁组件
-  nextTick(() => {
-    hackResetWxReplySelect.value = true; // 重建组件
-  });
-});
 
 // ======================== 菜单编辑（素材选择） ========================
 

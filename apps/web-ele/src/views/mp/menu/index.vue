@@ -291,6 +291,7 @@ function menuToBackend(menu: any) {
   result.replyHqMusicUrl = menu.reply.hqMusicUrl;
   return result;
 }
+// TODO @hw：antd 和 ele 版本，基本没用自定义组件，他们的 tindwind 需要进一步对齐么？（主要还是考虑维护性哈。）
 </script>
 
 <template>
@@ -300,14 +301,11 @@ function menuToBackend(menu: any) {
     </template>
 
     <!-- 搜索工作栏 -->
-    <!-- <ContentWrap> -->
     <AccountForm class="-mb-15px w-240px" @values-change="onAccountChanged" />
-
-    <!-- </ContentWrap> -->
 
     <ContentWrap>
       <div
-        class="public-account-management mx-auto flex w-full max-w-[1200px] flex-wrap items-start gap-[20px]"
+        class="mx-auto flex w-full max-w-[1200px] flex-wrap items-start gap-[20px]"
         v-loading="loading"
       >
         <!--左边配置菜单-->
@@ -326,7 +324,7 @@ function menuToBackend(menu: any) {
             </div>
           </div>
           <div
-            class="weixin-menu h-[46px] bg-no-repeat pl-[43px] text-[12px]"
+            class="h-[46px] bg-no-repeat pl-[43px] text-[12px]"
             :style="{ backgroundImage: `url(${menuFootImg})` }"
           >
             <Previewer

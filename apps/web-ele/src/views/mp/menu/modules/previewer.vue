@@ -140,6 +140,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
           "
           @click="menuClicked(parent, x)"
         >
+          <!-- TODO @hw：尽量用中立的 lucide icon -->
           <IconifyIcon icon="ep:fold" color="black" />{{ parent.name }}
         </div>
         <!-- 以下为二级菜单-->
@@ -179,6 +180,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
             v-if="!parent.children || parent.children.length < 5"
             @click="addSubMenu(x, parent)"
           >
+            <!-- TODO @hw：尽量用中立的 lucide icon -->
             <IconifyIcon icon="ep:plus" class="" />
           </div>
         </div>
@@ -192,9 +194,11 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
     v-if="menuList.length < 3"
     @click="addMenu"
   >
+    <!-- TODO @hw：尽量用中立的 lucide icon -->
     <IconifyIcon icon="ep:plus" class="" />
   </div>
 </template>
+
 <style lang="scss" scoped>
 .draggable-ghost {
   background: #f7fafc;
