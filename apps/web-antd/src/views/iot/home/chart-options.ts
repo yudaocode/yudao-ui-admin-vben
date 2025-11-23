@@ -1,39 +1,74 @@
-/** 设备数量饼图配置 */
-// TODO @haohao：貌似没用到？？
-export function getDeviceCountChartOptions(
-  productCategoryDeviceCounts: Record<string, number>,
+/**
+ * 消息趋势图表配置
+ */
+export function getMessageTrendChartOptions(
+  times: string[],
+  upstreamData: number[],
+  downstreamData: number[],
 ): any {
-  const data = Object.entries(productCategoryDeviceCounts).map(
-    ([name, value]) => ({ name, value }),
-  );
-
   return {
     tooltip: {
-      trigger: 'item',
-      formatter: '{b}: {c} 个 ({d}%)',
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985',
+        },
+      },
     },
     legend: {
+      data: ['上行消息', '下行消息'],
       top: '5%',
-      right: '10%',
-      orient: 'vertical',
     },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: '15%',
+      containLabel: true,
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: times,
+      },
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: '消息数量',
+      },
+    ],
     series: [
       {
-        name: '设备数量',
-        type: 'pie',
-        radius: ['50%', '80%'],
-        center: ['30%', '50%'],
-        data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
+        name: '上行消息',
+        type: 'line',
+        smooth: true,
+        areaStyle: {
+          opacity: 0.3,
         },
-        label: {
-          show: true,
-          formatter: '{b}: {c}',
+        emphasis: {
+          focus: 'series',
+        },
+        data: upstreamData,
+        itemStyle: {
+          color: '#1890ff',
+        },
+      },
+      {
+        name: '下行消息',
+        type: 'line',
+        smooth: true,
+        areaStyle: {
+          opacity: 0.3,
+        },
+        emphasis: {
+          focus: 'series',
+        },
+        data: downstreamData,
+        itemStyle: {
+          color: '#52c41a',
         },
       },
     ],
@@ -41,9 +76,9 @@ export function getDeviceCountChartOptions(
 }
 
 /**
- * 仪表盘图表配置
+ * 设备状态仪表盘图表配置
  */
-export function getGaugeChartOptions(
+export function getDeviceStateGaugeChartOptions(
   value: number,
   max: number,
   color: string,
@@ -53,12 +88,12 @@ export function getGaugeChartOptions(
     series: [
       {
         type: 'gauge',
-        startAngle: 180,
-        endAngle: 0,
+        startAngle: 225,
+        endAngle: -45,
         min: 0,
         max,
-        center: ['50%', '70%'],
-        radius: '120%',
+        center: ['50%', '50%'],
+        radius: '80%',
         progress: {
           show: true,
           width: 12,
@@ -69,28 +104,94 @@ export function getGaugeChartOptions(
         axisLine: {
           lineStyle: {
             width: 12,
-            color: [[1, '#E5E7EB']],
+            color: [[1, '#E5E7EB']] as [number, string][],
           },
         },
         axisTick: { show: false },
         splitLine: { show: false },
         axisLabel: { show: false },
         pointer: { show: false },
-        detail: {
-          valueAnimation: true,
-          fontSize: 24,
-          fontWeight: 'bold',
-          color,
-          offsetCenter: [0, '-20%'],
-          formatter: '{value}',
-        },
         title: {
           show: true,
-          offsetCenter: [0, '20%'],
+          offsetCenter: [0, '80%'],
           fontSize: 14,
           color: '#666',
         },
+        detail: {
+          valueAnimation: true,
+          fontSize: 32,
+          fontWeight: 'bold',
+          color,
+          offsetCenter: [0, '10%'],
+          formatter: (val: number) => `${val} 个`,
+        },
         data: [{ value, name: title }],
+      },
+    ],
+  };
+}
+
+/**
+ * 设备数量饼图配置
+ */
+export function getDeviceCountPieChartOptions(
+  data: Array<{ name: string; value: number }>,
+): any {
+  return {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} 个 ({d}%)',
+    },
+    legend: {
+      type: 'scroll',
+      orient: 'horizontal',
+      bottom: '10px',
+      left: 'center',
+      icon: 'circle',
+      itemWidth: 10,
+      itemHeight: 10,
+      itemGap: 12,
+      textStyle: {
+        fontSize: 12,
+      },
+      pageButtonPosition: 'end',
+      pageIconSize: 12,
+      pageTextStyle: {
+        fontSize: 12,
+      },
+      pageFormatter: '{current}/{total}',
+    },
+    series: [
+      {
+        name: '设备数量',
+        type: 'pie',
+        radius: ['35%', '55%'],
+        center: ['50%', '40%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 8,
+          borderColor: '#fff',
+          borderWidth: 2,
+        },
+        label: {
+          show: false,
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 16,
+            fontWeight: 'bold',
+          },
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data,
       },
     ],
   };

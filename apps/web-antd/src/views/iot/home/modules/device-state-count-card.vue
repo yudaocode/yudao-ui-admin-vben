@@ -7,6 +7,8 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { Card, Col, Empty, Row } from 'ant-design-vue';
 
+import { getDeviceStateGaugeChartOptions } from '../chart-options';
+
 defineOptions({ name: 'DeviceStateCountCard' });
 
 const props = defineProps<{
@@ -30,81 +32,41 @@ const hasData = computed(() => {
   return props.statsData.deviceCount !== 0;
 });
 
-/** 获取仪表盘配置 */
-// TODO @haohao：看看 chart-options 怎么提取出去，类似 apps/web-antd/src/views/mall/statistics/member/modules/area-chart-options.ts 写法
-const getGaugeOption = (value: number, color: string, title: string): any => {
-  return {
-    series: [
-      {
-        type: 'gauge',
-        startAngle: 225,
-        endAngle: -45,
-        min: 0,
-        max: props.statsData.deviceCount || 100,
-        center: ['50%', '50%'],
-        radius: '80%',
-        progress: {
-          show: true,
-          width: 12,
-          itemStyle: {
-            color,
-          },
-        },
-        axisLine: {
-          lineStyle: {
-            width: 12,
-            color: [[1, '#E5E7EB']] as [number, string][],
-          },
-        },
-        axisTick: { show: false },
-        splitLine: { show: false },
-        axisLabel: { show: false },
-        pointer: { show: false },
-        title: {
-          show: true,
-          offsetCenter: [0, '80%'],
-          fontSize: 14,
-          color: '#666',
-        },
-        detail: {
-          valueAnimation: true,
-          fontSize: 32,
-          fontWeight: 'bold',
-          color,
-          offsetCenter: [0, '10%'],
-          formatter: (val: number) => `${val} 个`,
-        },
-        data: [{ value, name: title }],
-      },
-    ],
-  };
-};
-
 /** 初始化图表 */
-function initCharts() {
+async function initCharts() {
   if (!hasData.value) {
     return;
   }
 
-  // TODO @haohao：await nextTick();
-  nextTick(() => {
-    // 在线设备
-    renderOnlineChart(
-      getGaugeOption(props.statsData.deviceOnlineCount, '#52c41a', '在线设备'),
-    );
-    // 离线设备
-    renderOfflineChart(
-      getGaugeOption(props.statsData.deviceOfflineCount, '#ff4d4f', '离线设备'),
-    );
-    // 待激活设备
-    renderInactiveChart(
-      getGaugeOption(
-        props.statsData.deviceInactiveCount,
-        '#1890ff',
-        '待激活设备',
-      ),
-    );
-  });
+  await nextTick();
+  const max = props.statsData.deviceCount || 100;
+  // 在线设备
+  renderOnlineChart(
+    getDeviceStateGaugeChartOptions(
+      props.statsData.deviceOnlineCount,
+      max,
+      '#52c41a',
+      '在线设备',
+    ),
+  );
+  // 离线设备
+  renderOfflineChart(
+    getDeviceStateGaugeChartOptions(
+      props.statsData.deviceOfflineCount,
+      max,
+      '#ff4d4f',
+      '离线设备',
+    ),
+  );
+  // 待激活设备
+  renderInactiveChart(
+    getDeviceStateGaugeChartOptions(
+      props.statsData.deviceInactiveCount,
+      max,
+      '#1890ff',
+      '待激活设备',
+    ),
+  );
 }
 
 /** 监听数据变化 */
@@ -123,7 +85,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card title="设备状态统计" :loading="loading" class="chart-card">
+  <Card title="设备状态统计" :loading="loading" class="h-full">
     <div
       v-if="loading && !hasData"
       class="flex h-[300px] items-center justify-center"
@@ -151,12 +113,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/** TODO tindwind */
-.chart-card {
-  height: 100%;
-}
-
-.chart-card :deep(.ant-card-body) {
+:deep(.ant-card-body) {
   padding: 20px;
 }
 </style>
