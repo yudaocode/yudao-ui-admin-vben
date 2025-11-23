@@ -158,7 +158,7 @@ function changeNodeName() {
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>
 <template>
-  <Drawer class="w-1/3">
+  <Drawer class="w-2/5">
     <template #title>
       <div class="flex items-center">
         <ElInput
@@ -190,7 +190,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
         未满足其它条件时，将进入此分支（该分支不可编辑和删除）
       </div>
       <div v-else>
-        <Condition ref="conditionRef" v-model:model-value="condition" />
+        <Condition ref="conditionRef" v-model="condition" />
       </div>
     </div>
   </Drawer>

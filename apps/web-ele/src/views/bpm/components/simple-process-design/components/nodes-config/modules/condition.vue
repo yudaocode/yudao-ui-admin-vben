@@ -135,7 +135,7 @@ defineExpose({ validate });
 </script>
 <template>
   <ElForm ref="formRef" :model="condition" :rules="formRules">
-    <ElFormItem label="配置方式" name="conditionType">
+    <ElFormItem label="配置方式" prop="conditionType">
       <ElRadioGroup
         v-model="condition.conditionType"
         @change="changeConditionType"
@@ -170,6 +170,8 @@ defineExpose({ validate });
         size="small"
         :spacer="condition.conditionGroups.and ? '且' : '或'"
         class="w-full"
+        fill
+        :fill-ratio="100"
       >
         <ElCard
           class="group relative w-full hover:border-blue-500"
@@ -212,14 +214,7 @@ defineExpose({ validate });
           >
             <ElCol :span="7">
               <ElFormItem
-                :name="[
-                  'conditionGroups',
-                  'conditions',
-                  cIdx,
-                  'rules',
-                  rIdx,
-                  'leftSide',
-                ]"
+                :prop="`conditionGroups.conditions.${cIdx}.rules.${rIdx}.leftSide`"
                 :rules="{
                   required: true,
                   message: '左值不能为空',
@@ -250,7 +245,7 @@ defineExpose({ validate });
                 </ElSelect>
               </ElFormItem>
             </ElCol>
-            <ElCol :span="5">
+            <ElCol :span="6">
               <ElFormItem>
                 <ElSelect v-model="rule.opCode" placeholder="请选择操作符">
                   <ElOption
@@ -264,16 +259,9 @@ defineExpose({ validate });
                 </ElSelect>
               </ElFormItem>
             </ElCol>
-            <ElCol :span="9">
+            <ElCol :span="8">
               <ElFormItem
-                :name="[
-                  'conditionGroups',
-                  'conditions',
-                  cIdx,
-                  'rules',
-                  rIdx,
-                  'rightSide',
-                ]"
+                :prop="`conditionGroups.conditions.${cIdx}.rules.${rIdx}.rightSide`"
                 :rules="{
                   required: true,
                   message: '右值不能为空',
@@ -285,14 +273,14 @@ defineExpose({ validate });
             </ElCol>
             <ElCol :span="3">
               <div class="flex items-center">
-                <Trash2
-                  v-if="equation.rules.length > 1"
-                  class="mr-2 size-4 cursor-pointer text-red-500"
-                  @click="deleteConditionRule(equation, rIdx)"
-                />
                 <Plus
-                  class="size-4 cursor-pointer text-blue-500"
+                  class="mr-2 size-4 cursor-pointer text-blue-500"
                   @click="addConditionRule(equation, rIdx)"
+                />
+                <Trash2
+                  v-show="equation.rules.length > 1"
+                  class="size-4 cursor-pointer text-red-500"
+                  @click="deleteConditionRule(equation, rIdx)"
                 />
               </div>
             </ElCol>
@@ -310,7 +298,7 @@ defineExpose({ validate });
     <ElFormItem
       v-if="condition.conditionType === ConditionType.EXPRESSION"
       label="条件表达式"
-      name="conditionExpression"
+      prop="conditionExpression"
     >
       <ElInput
         v-model="condition.conditionExpression"

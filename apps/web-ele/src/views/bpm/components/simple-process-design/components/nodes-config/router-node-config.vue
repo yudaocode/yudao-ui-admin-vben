@@ -230,13 +230,13 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
         v-for="(item, index) in routerGroups"
         :key="index"
       >
-        <template #title>
-          <div class="flex h-16 w-full items-center justify-between">
-            <div class="flex items-center font-normal">
+        <template #header>
+          <div class="flex w-full items-center justify-between py-2">
+            <div class="flex items-center gap-4">
               <span class="font-medium">路由{{ index + 1 }}</span>
               <ElFormItem
-                class="mb-0 ml-4 inline-block w-48"
-                :name="['routerGroups', index, 'nodeId']"
+                class="!mb-0 w-64"
+                :prop="`routerGroups.${index}.nodeId`"
                 :rules="{
                   required: true,
                   message: '路由目标节点不能为空',
@@ -251,17 +251,16 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
                   <ElOption
                     v-for="node in nodeOptions"
                     :key="node.value"
+                    :label="node.label"
                     :value="node.value"
-                  >
-                    {{ node.label }}
-                  </ElOption>
+                  />
                 </ElSelect>
               </ElFormItem>
             </div>
             <ElButton
               v-if="routerGroups.length > 1"
               circle
-              class="flex items-center justify-center"
+              size="small"
               @click="deleteRouterGroup(index)"
             >
               <template #icon>

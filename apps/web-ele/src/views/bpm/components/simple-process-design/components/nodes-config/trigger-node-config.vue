@@ -241,7 +241,7 @@ function showConditionText(formSetting: FormTriggerSetting) {
   );
 }
 
-/** 添加修改字段设置�?*/
+/** 添加修改字段设置项 */
 function addFormFieldSetting(formSetting: FormTriggerSetting) {
   if (!formSetting) return;
   if (!formSetting.updateFormFields) {
@@ -383,10 +383,10 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Drawer class="w-1/3">
+  <Drawer class="w-2/5">
     <template #title>
       <div class="config-header">
-        <AInput
+        <ElInput
           ref="inputRef"
           v-if="showInput"
           type="text"
@@ -416,12 +416,10 @@ onMounted(() => {
               :key="index"
               :value="item.value"
               :label="item.label"
-            >
-              {{ item.label }}
-            </ElOption>
+            />
           </ElSelect>
         </ElFormItem>
-        <!-- HTTP 请求触发�?-->
+        <!-- HTTP 请求触发器 -->
         <div
           v-if="
             [
@@ -437,20 +435,19 @@ onMounted(() => {
           />
         </div>
 
-        <!-- 表单数据修改触发�?-->
+        <!-- 表单数据修改触发器 -->
         <div v-if="configForm.type === TriggerTypeEnum.FORM_UPDATE">
           <div
             v-for="(formSetting, index) in configForm.formSettings"
             :key="index"
           >
             <ElCard class="mt-4">
-              <template #title>
+              <template #header>
                 <div class="flex w-full items-center justify-between">
                   <span>修改表单设置 {{ index + 1 }}</span>
                   <ElButton
                     v-if="configForm.formSettings!.length > 1"
-                    shape="circle"
-                    class="flex items-center justify-center"
+                    circle
                     @click="deleteFormSetting(index)"
                   >
                     <template #icon>
@@ -588,20 +585,19 @@ onMounted(() => {
           </ElRow>
         </div>
 
-        <!-- 表单数据删除触发�?-->
+        <!-- 表单数据删除触发器 -->
         <div v-if="configForm.type === TriggerTypeEnum.FORM_DELETE">
           <div
             v-for="(formSetting, index) in configForm.formSettings"
             :key="index"
           >
             <ElCard class="mt-4">
-              <template #title>
+              <template #header>
                 <div class="flex w-full items-center justify-between">
                   <span>删除表单设置 {{ index + 1 }}</span>
                   <ElButton
                     v-if="configForm.formSettings!.length > 1"
-                    shape="circle"
-                    class="flex items-center justify-center"
+                    circle
                     @click="deleteFormSetting(index)"
                   >
                     <template #icon>

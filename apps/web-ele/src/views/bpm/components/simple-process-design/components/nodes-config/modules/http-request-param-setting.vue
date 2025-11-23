@@ -63,7 +63,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <!-- 参数名 -->
       <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
-          :name="[bind, 'header', index, 'key']"
+          :prop="`${bind}.header.${index}.key`"
           :rules="{
             required: true,
             message: '参数名不能为空',
@@ -91,7 +91,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <!-- 参数值 -->
       <div class="w-[42%] flex-1">
         <ElFormItem
-          :name="[bind, 'header', index, 'value']"
+          :prop="`${bind}.header.${index}.value`"
           :rules="{
             required: true,
             message: '参数值不能为空',
@@ -102,7 +102,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           <ElInput placeholder="请求头" v-model="item.value" />
         </ElFormItem>
         <ElFormItem
-          :name="[bind, 'header', index, 'value']"
+          :prop="`${bind}.header.${index}.value`"
           :rules="{
             required: true,
             message: '参数值不能为空',
@@ -121,9 +121,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
               :label="field.title"
               :value="field.field"
               :disabled="!field.required"
-            >
-              {{ field.title }}
-            </ElOption>
+            />
           </ElSelect>
         </ElFormItem>
       </div>
@@ -137,17 +135,15 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         />
       </div>
     </div>
-    <ElButton
-      link
-      @click="addHttpRequestParam(props.header)"
-      class="flex items-center"
-    >
+  </ElFormItem>
+  <div class="-mt-2.5 mb-2">
+    <ElButton link @click="addHttpRequestParam(props.header)">
       <template #icon>
         <IconifyIcon class="size-4" icon="lucide:plus" />
       </template>
       添加一行
     </ElButton>
-  </ElFormItem>
+  </div>
   <ElFormItem label="请求体">
     <div
       v-for="(item, index) in props.body"
@@ -157,7 +153,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <!-- 参数名 -->
       <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
-          :name="[bind, 'body', index, 'key']"
+          :prop="`${bind}.body.${index}.key`"
           :rules="{
             required: true,
             message: '参数名不能为空',
@@ -185,7 +181,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <!-- 参数值 -->
       <div class="w-[42%] flex-1">
         <ElFormItem
-          :name="[bind, 'body', index, 'value']"
+          :prop="`${bind}.body.${index}.value`"
           :rules="{
             required: true,
             message: '参数值不能为空',
@@ -196,7 +192,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           <ElInput placeholder="参数值" v-model="item.value" />
         </ElFormItem>
         <ElFormItem
-          :name="[bind, 'body', index, 'value']"
+          :prop="`${bind}.body.${index}.value`"
           :rules="{
             required: true,
             message: '参数值不能为空',
@@ -215,9 +211,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
               :label="field.title"
               :value="field.field"
               :disabled="!field.required"
-            >
-              {{ field.title }}
-            </ElOption>
+            />
           </ElSelect>
         </ElFormItem>
       </div>
@@ -231,15 +225,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         />
       </div>
     </div>
-    <ElButton
-      link
-      @click="addHttpRequestParam(props.body)"
-      class="flex items-center"
-    >
+  </ElFormItem>
+  <div class="-mt-2.5 mb-2">
+    <ElButton link @click="addHttpRequestParam(props.body)">
       <template #icon>
         <IconifyIcon class="size-4" icon="lucide:plus" />
       </template>
       添加一行
     </ElButton>
-  </ElFormItem>
+  </div>
 </template>

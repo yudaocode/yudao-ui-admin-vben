@@ -10,7 +10,6 @@ import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  ElCol,
   ElDatePicker,
   ElForm,
   ElFormItem,
@@ -19,7 +18,6 @@ import {
   ElOption,
   ElRadio,
   ElRadioGroup,
-  ElRow,
   ElSelect,
 } from 'element-plus';
 
@@ -77,7 +75,7 @@ function getShowText(): string {
     showText = `延迟${configForm.value.timeDuration}${TIME_UNIT_TYPES?.find((item) => item.value === configForm.value.timeUnit)?.label}`;
   }
   if (configForm.value.delayType === DelayTypeEnum.FIXED_DATE_TIME) {
-    showText = `延迟�?{configForm.value.dateTime.replace('T', ' ')}`;
+    showText = `延迟至${configForm.value.dateTime.replace('T', ' ')}`;
   }
   return showText;
 }
@@ -196,51 +194,40 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
         <ElFormItem
           v-if="configForm.delayType === DelayTypeEnum.FIXED_TIME_DURATION"
         >
-          <ElRow :gutter="8">
-            <ElCol>
-              <ElFormItem prop="timeDuration">
-                <ElInputNumber
-                  class="w-28"
-                  v-model="configForm.timeDuration"
-                  :min="1"
-                />
-              </ElFormItem>
-            </ElCol>
-            <ElCol>
-              <ElSelect v-model="configForm.timeUnit" class="w-28">
-                <ElOption
-                  v-for="item in TIME_UNIT_TYPES"
-                  :key="item.value"
-                  :value="item.value"
-                  :label="item.label"
-                >
-                  {{ item.label }}
-                </ElOption>
-              </ElSelect>
-            </ElCol>
-            <ElCol>
-              <span class="inline-flex h-8 items-center">后进入下一节点</span>
-            </ElCol>
-          </ElRow>
+          <div class="flex items-center gap-2">
+            <ElInputNumber
+              v-model="configForm.timeDuration"
+              :min="1"
+              controls-position="right"
+              class="!w-48"
+            />
+            <ElSelect v-model="configForm.timeUnit" class="w-24">
+              <ElOption
+                v-for="item in TIME_UNIT_TYPES"
+                :key="item.value"
+                :value="item.value"
+                :label="item.label"
+              >
+                {{ item.label }}
+              </ElOption>
+            </ElSelect>
+            <span class="whitespace-nowrap">后进入下一节点</span>
+          </div>
         </ElFormItem>
         <ElFormItem
           v-if="configForm.delayType === DelayTypeEnum.FIXED_DATE_TIME"
           prop="dateTime"
         >
-          <ElRow :gutter="8">
-            <ElCol>
-              <ElDatePicker
-                class="mr-2"
-                v-model="configForm.dateTime"
-                type="datetime"
-                placeholder="请选择日期和时间"
-                value-format="YYYY-MM-DDTHH:mm:ss"
-              />
-            </ElCol>
-            <ElCol>
-              <span class="inline-flex h-8 items-center">后进入下一节点</span>
-            </ElCol>
-          </ElRow>
+          <div class="flex items-center gap-2">
+            <ElDatePicker
+              v-model="configForm.dateTime"
+              type="datetime"
+              placeholder="请选择日期和时间"
+              value-format="YYYY-MM-DDTHH:mm:ss"
+              class="flex-1"
+            />
+            <span class="whitespace-nowrap">后进入下一节点</span>
+          </div>
         </ElFormItem>
       </ElForm>
     </div>
