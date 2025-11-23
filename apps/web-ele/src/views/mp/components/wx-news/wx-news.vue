@@ -1,10 +1,3 @@
-<!--
-  - Copyright (C) 2018-2019
-  - All rights reserved, Designed By www.joolun.com
-  【微信消息 - 图文】
-  芋道源码：
-  ① 代码优化，补充注释，提升阅读性
--->
 <script lang="ts" setup>
 import { ElImage } from 'element-plus';
 
@@ -29,6 +22,7 @@ defineExpose({
   <div class="news-home">
     <div v-for="(article, index) in articles" :key="index" class="news-div">
       <!-- 头条 -->
+      <!-- TODO @hw：第一篇文章（头条）图片是铺满，不过要限制高度；第二篇文章开始（次条），图片是在右侧，也是需要限制宽高 -->
       <a v-if="index === 0" :href="article.url" target="_blank">
         <div class="news-main">
           <div class="news-content flex items-center justify-center">

@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { ElButton, ElDialog, ElImage, ElMessage, ElUpload } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
+import { WxMaterialSelect } from '#/views/mp/components/';
 
 const props = defineProps<{
   isFirst: boolean;
@@ -50,7 +50,7 @@ function handleOpenDialog() {
   dialogVisible.value = true;
 }
 
-/** 素材选择完成事件*/
+/** 素材选择完成事件 */
 function onMaterialSelected(item: any) {
   dialogVisible.value = false;
   newsItem.value.thumbMediaId = item.mediaId;
@@ -68,12 +68,12 @@ function onUploadSuccess(res: any) {
 
   // 重置上传文件的表单
   fileList.value = [];
-
   // 设置草稿的封面字段
   newsItem.value.thumbMediaId = res.data.mediaId;
   newsItem.value.thumbUrl = res.data.url;
 }
 
+/** 上传失败处理 */
 function onUploadError(err: Error) {
   ElMessage.error(`上传失败: ${err.message}`);
 }
@@ -134,7 +134,7 @@ function onUploadError(err: Error) {
         append-to-body
         destroy-on-close
       >
-        <MaterialSelect
+        <WxMaterialSelect
           type="image"
           :account-id="accountId!"
           @select-material="onMaterialSelected"

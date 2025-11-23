@@ -1,5 +1,5 @@
 <!--
-  【微信消息 - 定位】TODO @Dhb52 目前未启用；；；；@hw：看看目前是不是没用起来哈？
+  【微信消息 - 定位】TODO @Dhb52 目前未启用；；；；@dylan：看看目前是不是没用起来哈？
 -->
 <script lang="ts" setup>
 import type { WxLocationProps } from './types';

@@ -32,6 +32,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: NewsItem[]): void;
 }>();
 
+// TODO @hw: 对齐 antd，应该是 MpDraftApi.NewsItem 这种哈。
 const newsList = computed<NewsItem[]>({
   get() {
     return props.modelValue === null

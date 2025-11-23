@@ -2,18 +2,17 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpDraftApi } from '#/api/mp/draft';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
+import { ElImage, ElLink, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDraft, getDraftPage } from '#/api/mp/draft';
+import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
 import { submitFreePublish } from '#/api/mp/freePublish';
 import { WxAccountSelect } from '#/views/mp/components';
-import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpDraft' });
@@ -72,7 +71,6 @@ async function handleDelete(row: MpDraftApi.DraftArticle) {
     ElMessage.warning('请先选择公众号');
     return;
   }
-  await ElMessageBox.confirm('此操作将永久删除该草稿, 是否继续?');
   const hideLoading = ElLoading.service({
     text: '删除中...',
   });
@@ -93,7 +91,7 @@ async function handlePublish(row: MpDraftApi.DraftArticle) {
     ElMessage.warning('请先选择公众号');
     return;
   }
-  await ElMessageBox.confirm(
+  await confirm(
     '你正在通过发布的方式发表内容。 发布不占用群发次数，一天可多次发布。' +
       '已发布内容不会推送给用户，也不会展示在公众号主页中。 ' +
       '发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。',
@@ -126,7 +124,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // 调试用：跳过请求，直接返回模拟数据
           const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -141,13 +138,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
-
-          // 模拟数据
-          // const mockList = [
-
           return {
             list: drafts.list,
-            total: drafts.total, // 模拟总数
+            total: drafts.total,
           };
         },
       },
@@ -190,15 +183,45 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <template #content="{ row }">
-        <DraftTableCell :row="row" />
+      <template #cover="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="flex flex-col items-center justify-center gap-1"
+        >
+          <ElImage
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            :src="item.picUrl || item.thumbUrl"
+            :preview-src-list="[item.picUrl || item.thumbUrl]"
+            class="h-36 !w-[300px] rounded object-cover"
+            :alt="`文章 ${index + 1} 封面图`"
+          />
+        </div>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #title="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="space-y-1"
+        >
+          <div
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            class="flex h-36 items-center justify-center"
+          >
+            <ElLink :href="(item as any).url" target="_blank">
+              {{ item.title }}
+            </ElLink>
+          </div>
+        </div>
+        <span v-else class="text-gray-400">-</span>
       </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: '发布',
-              type: 'success',
+              type: 'primary',
               link: true,
               icon: ACTION_ICON.UPLOAD,
               auth: ['mp:free-publish:submit'],
@@ -237,10 +260,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       .vxe-cell {
         height: auto !important;
         padding: 0;
-
-        img {
-          width: 300px !important;
-        }
       }
     }
   }

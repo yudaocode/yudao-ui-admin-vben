@@ -5,11 +5,10 @@ import type { MpDraftApi } from '#/api/mp/draft';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { Image, message, Typography } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
-// import { getDraftPage } from '#/api/mp/draft'; // 调试时注释掉
 import { submitFreePublish } from '#/api/mp/freePublish';
 import { WxAccountSelect } from '#/views/mp/components';
 
@@ -72,7 +71,6 @@ async function handleDelete(row: MpDraftApi.DraftArticle) {
     message.warning('请先选择公众号');
     return;
   }
-  await confirm('此操作将永久删除该草稿, 是否继续?');
   const hideLoading = message.loading({
     content: '删除中...',
     duration: 0,
@@ -128,7 +126,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // 调试用：跳过请求，直接返回模拟数据
           const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -143,10 +140,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
-
           return {
             list: drafts.list,
-            total: drafts.total, // 模拟总数
+            total: drafts.total,
           };
         },
       },
@@ -194,18 +190,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-if="row.content?.newsItem && row.content.newsItem.length > 0"
           class="flex flex-col items-center justify-center gap-1"
         >
-          <a
+          <Image
             v-for="(item, index) in row.content.newsItem"
             :key="index"
-            :href="(item as any).url"
-            target="_blank"
-          >
-            <img
-              :src="item.picUrl || item.thumbUrl"
-              class="h-36 w-[50px] rounded object-cover"
-              :alt="`文章${index + 1}封面图`"
-            />
-          </a>
+            :src="item.picUrl || item.thumbUrl"
+            class="h-36 !w-[300px] rounded object-cover"
+            :alt="`文章 ${index + 1} 封面图`"
+          />
         </div>
         <span v-else class="text-gray-400">-</span>
       </template>
@@ -219,7 +210,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             :key="index"
             class="flex h-36 items-center justify-center"
           >
-            {{ item.title }}
+            <Typography.Link :href="(item as any).url" target="_blank">
+              {{ item.title }}
+            </Typography.Link>
           </div>
         </div>
         <span v-else class="text-gray-400">-</span>
@@ -266,10 +259,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       .vxe-cell {
         height: auto !important;
         padding: 0;
-
-        img {
-          width: 300px !important;
-        }
       }
     }
   }

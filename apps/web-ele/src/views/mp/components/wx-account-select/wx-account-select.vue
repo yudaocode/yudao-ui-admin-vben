@@ -70,8 +70,3 @@ onMounted(handleQuery);
     />
   </ElSelect>
 </template>
-<style lang="scss" scoped>
-:deep(.el-select__wrapper) {
-  width: 240px !important;
-}
-</style>

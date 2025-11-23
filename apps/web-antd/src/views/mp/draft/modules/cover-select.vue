@@ -11,7 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import WxMaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
+import { WxMaterialSelect } from '#/views/mp/components/';
 
 const props = defineProps<{
   isFirst: boolean;
@@ -33,9 +33,8 @@ const newsItem = computed<MpDraftApi.NewsItem>({
   },
 });
 
-const dialogVisible = ref(false);
-
 const accountId = inject<number>('accountId');
+const dialogVisible = ref(false);
 
 const fileList = ref<UploadFile[]>([]);
 interface UploadData {
