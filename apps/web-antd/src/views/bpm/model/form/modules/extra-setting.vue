@@ -351,11 +351,6 @@ defineExpose({ initData, validate });
         <Checkbox v-model:checked="modelData.allowCancelRunningProcess">
           允许撤销审批中的申请
         </Checkbox>
-        <div class="ml-6">
-          <TypographyText type="warning">
-            第一个审批节点通过后，提交人仍可撤销申请
-          </TypographyText>
-        </div>
       </div>
     </FormItem>
     <FormItem class="mb-5" label="审批人权限">
