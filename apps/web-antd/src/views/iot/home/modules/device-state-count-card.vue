@@ -41,7 +41,7 @@ async function initCharts() {
   await nextTick();
   const max = props.statsData.deviceCount || 100;
   // 在线设备
-  renderOnlineChart(
+  await renderOnlineChart(
     getDeviceStateGaugeChartOptions(
       props.statsData.deviceOnlineCount,
       max,
@@ -50,7 +50,7 @@ async function initCharts() {
     ),
   );
   // 离线设备
-  renderOfflineChart(
+  await renderOfflineChart(
     getDeviceStateGaugeChartOptions(
       props.statsData.deviceOfflineCount,
       max,
@@ -59,7 +59,7 @@ async function initCharts() {
     ),
   );
   // 待激活设备
-  renderInactiveChart(
+  await renderInactiveChart(
     getDeviceStateGaugeChartOptions(
       props.statsData.deviceInactiveCount,
       max,

@@ -1,15 +1,8 @@
 export interface ComparisonCardProps {
-  /** 图标名称 */
-  icon: string;
-  /** 图标颜色类名 */
-  iconColor?: string;
-  /** 加载状态 */
-  loading?: boolean;
-  /** 标题 */
-  title: string;
-  /** 今日新增数量 */
-  todayCount: number;
-  /** 数值 */
-  value: number;
+  icon: string; // 图标名称
+  iconColor?: string; // 图标颜色类名
+  loading?: boolean; // 加载状态
+  title: string; // 标题
+  todayCount: number; // 今日新增数量
+  value: number; // 数值
 }
-

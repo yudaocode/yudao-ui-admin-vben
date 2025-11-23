@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ComparisonCard, Page } from '@vben/common-ui';
+import {ComparisonCard, Page} from '@vben/common-ui';
 
-import { Col, Row } from 'ant-design-vue';
-import { onMounted, ref } from 'vue';
+import {Col, Row} from 'ant-design-vue';
+import {onMounted, ref} from 'vue';
 
-import { getStatisticsSummary } from '#/api/iot/statistics';
+import {getStatisticsSummary} from '#/api/iot/statistics';
 
-import { defaultStatsData, type StatsData } from './data';
+import {defaultStatsData, type StatsData} from './data';
 import DeviceCountCard from './modules/device-count-card.vue';
 import DeviceStateCountCard from './modules/device-state-count-card.vue';
 import MessageTrendCard from './modules/message-trend-card.vue';
@@ -16,20 +16,18 @@ defineOptions({ name: 'IoTHome' });
 const loading = ref(true);
 const statsData = ref<StatsData>(defaultStatsData);
 
-/**
- * 加载统计数据
- * @returns Promise<StatsData>
- */
+/** 加载统计数据 */
 async function loadStatisticsData(): Promise<StatsData> {
   try {
-    const data = await getStatisticsSummary();
-    return data;
+    return await getStatisticsSummary();
   } catch (error) {
+    // TODO @haohao：后续记得删除下哈。catch 部分可以删除
     // 开发环境：记录错误信息，便于调试
     console.error('获取统计数据出错:', error);
     // 开发环境：提示使用 Mock 数据，提醒检查后端接口
     console.warn('使用 Mock 数据，请检查后端接口是否已实现');
 
+    // TODO @haohao：后续记得删除下哈。
     // 开发调试：返回 Mock 数据，确保前端功能正常开发
     // 生产环境：建议移除 Mock 数据，直接抛出错误或返回空数据
     return {
@@ -54,15 +52,13 @@ async function loadStatisticsData(): Promise<StatsData> {
   }
 }
 
-/**
- * 加载数据
- */
+/** 加载数据 */
 async function loadData() {
   loading.value = true;
   try {
     statsData.value = await loadStatisticsData();
   } catch (error) {
-    // 开发环境：记录错误信息，便于调试
+    // TODO @haohao：后续记得删除下哈。catch 部分可以删除
     console.error('获取统计数据出错:', error);
   } finally {
     loading.value = false;

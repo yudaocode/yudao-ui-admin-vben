@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Dayjs } from 'dayjs';
+
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
@@ -11,8 +12,8 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { Card, Empty, Select } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 import { getDeviceMessageSummaryByDate } from '#/api/iot/statistics';
+import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
 import { getMessageTrendChartOptions } from '../chart-options';
 
@@ -31,16 +32,9 @@ const dateRange = ref<[string, string]>([
   dayjs().format('YYYY-MM-DD'),
 ]);
 
-/**
- * 将日期范围转换为带时分秒的格式
- * @param dates 日期范围 [开始日期, 结束日期]，格式为 YYYY-MM-DD
- * @returns 带时分秒的日期范围 [开始日期 00:00:00, 结束日期 23:59:59]
- */
+/** 将日期范围转换为带时分秒的格式 */
 function formatDateRangeWithTime(dates: [string, string]): [string, string] {
-  return [
-    `${dates[0]} 00:00:00`,
-    `${dates[1]} 23:59:59`,
-  ];
+  return [`${dates[0]} 00:00:00`, `${dates[1]} 23:59:59`];
 }
 
 /** 查询参数 */
@@ -69,7 +63,9 @@ function handleQuery() {
 
 /** 处理时间范围变化 */
 function handleDateRangeChange(times?: [Dayjs, Dayjs]) {
-  if (!times || times.length !== 2) return;
+  if (!times || times.length !== 2) {
+    return;
+  }
   dateRange.value = [
     dayjs(times[0]).format('YYYY-MM-DD'),
     dayjs(times[1]).format('YYYY-MM-DD'),
@@ -86,12 +82,15 @@ function handleIntervalChange() {
 
 /** 获取消息统计数据 */
 async function fetchMessageData() {
-  if (!queryParams.times || queryParams.times.length !== 2) return;
+  if (!queryParams.times || queryParams.times.length !== 2) {
+    return;
+  }
 
   loading.value = true;
   try {
     messageData.value = await getDeviceMessageSummaryByDate(queryParams);
   } catch (error) {
+    // TODO @haohao：catch 可以删除哈；
     // 开发环境：记录错误信息，便于调试
     console.error('获取消息统计数据失败:', error);
     // 错误时清空数据，避免显示错误的数据
@@ -105,12 +104,13 @@ async function fetchMessageData() {
 /** 初始化图表 */
 function initChart() {
   // 检查数据是否存在
-  if (!hasData.value) return;
+  if (!hasData.value) {
+    return;
+  }
 
   const times = messageData.value.map((item) => item.time);
   const upstreamData = messageData.value.map((item) => item.upstreamCount);
   const downstreamData = messageData.value.map((item) => item.downstreamCount);
-
   renderEcharts(
     getMessageTrendChartOptions(times, upstreamData, downstreamData),
   );
@@ -118,7 +118,9 @@ function initChart() {
 
 /** 确保图表容器已经可见后再渲染 */
 async function renderChartWhenReady() {
-  if (!hasData.value) return;
+  if (!hasData.value) {
+    return;
+  }
   // 等待 Card loading 状态、v-show 等 DOM 更新完成
   await nextTick();
   await nextTick();
@@ -138,7 +140,9 @@ onMounted(() => {
         <span class="text-base font-medium text-gray-600">消息量统计</span>
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-3">
-            <span class="text-sm text-gray-500 whitespace-nowrap">时间范围</span>
+            <span class="whitespace-nowrap text-sm text-gray-500"
+              >时间范围</span
+            >
             <ShortcutDateRangePicker @change="handleDateRangeChange" />
           </div>
           <div class="flex items-center gap-2">
@@ -175,7 +179,3 @@ onMounted(() => {
     </div>
   </Card>
 </template>
-
-<style scoped>
-
-</style>

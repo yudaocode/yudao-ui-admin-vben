@@ -16,6 +16,7 @@ defineOptions({ name: 'ComparisonCard' });
 
 const props = defineProps<ComparisonCardProps>();
 
+// TODO @haohao：看看能不能用中立的 icon，类似 ADD、EDIT 那种。目的：方便后续迁移到 ele 版本里。
 const iconMap: Record<string, string> = {
   menu: 'ant-design:appstore-outlined',
   box: 'ant-design:box-plot-outlined',
@@ -39,11 +40,7 @@ const iconName = computed(() => iconMap[props.icon] || iconMap.menu);
           </span>
           <span class="text-3xl font-bold text-gray-800">
             <span v-if="value === -1">--</span>
-            <VbenCountToAnimator
-              v-else
-              :end-val="value"
-              :duration="1000"
-            />
+            <VbenCountToAnimator v-else :end-val="value" :duration="1000" />
           </span>
         </div>
         <div :class="`text-4xl ${iconColor || ''}`">
@@ -63,4 +60,3 @@ const iconName = computed(() => iconMap[props.icon] || iconMap.menu);
     </CardContent>
   </Card>
 </template>
-

@@ -1,6 +1,4 @@
-/**
- * 消息趋势图表配置
- */
+/** 消息趋势图表配置 */
 export function getMessageTrendChartOptions(
   times: string[],
   upstreamData: number[],

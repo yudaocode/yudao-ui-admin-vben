@@ -35,11 +35,10 @@ async function initChart() {
   }
 
   await nextTick();
-  const data = Object.entries(
-    props.statsData.productCategoryDeviceCounts,
-  ).map(([name, value]) => ({ name, value }));
-
-  renderEcharts(getDeviceCountPieChartOptions(data));
+  const data = Object.entries(props.statsData.productCategoryDeviceCounts).map(
+    ([name, value]) => ({ name, value }),
+  );
+  await renderEcharts(getDeviceCountPieChartOptions(data));
 }
 
 /** 监听数据变化 */
