@@ -93,27 +93,29 @@ function plusNews() {
 <template>
   <ElContainer>
     <ElAside width="40%">
-      <div class="mx-auto mb-2.5 w-3/5 border border-gray-200 p-2.5">
+      <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
         <div v-for="(news, index) in newsList" :key="index">
           <div
-            class="group mx-auto h-[120px] w-full cursor-pointer bg-white"
+            class="group relative mx-auto mb-[10px] w-full cursor-pointer border-[2px] bg-white"
             v-if="index === 0"
-            :class="{
-              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
-            }"
+            :class="
+              activeNewsIndex === index
+                ? 'border-green-500'
+                : 'border-transparent'
+            "
             @click="activeNewsIndex = index"
           >
-            <div class="relative h-[120px] w-full bg-[#acadae]">
+            <div class="relative w-full bg-[#acadae]">
               <img class="h-full w-full" :src="news.thumbUrl" />
               <div
-                class="absolute bottom-0 left-0 inline-block h-[25px] w-[98%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-[15px] text-white opacity-65"
+                class="absolute bottom-0 left-0 inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-center text-[15px] text-white opacity-65"
               >
                 {{ news.title }}
               </div>
             </div>
             <div
+              class="relative flex justify-center gap-[10px] py-[5px] text-center"
               v-if="newsList.length > 1"
-              class="relative -bottom-6 hidden text-center group-hover:block"
             >
               <ElButton
                 type="info"
@@ -134,25 +136,29 @@ function plusNews() {
               </ElButton>
             </div>
           </div>
-          <!-- TODO @hw：1）每个文章的选中框太粗了；2）没完全覆盖住文章；；；最好首个文章，和第个文章的情况，都看看 -->
           <div
-            class="group mx-auto w-full cursor-pointer border-t border-gray-200 bg-white py-1.5"
+            class="group relative mx-auto mb-[10px] cursor-pointer border-[2px] bg-white"
             v-if="index > 0"
-            :class="{
-              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
-            }"
+            :class="
+              activeNewsIndex === index
+                ? 'border-green-500'
+                : 'border-transparent'
+            "
             @click="activeNewsIndex = index"
           >
-            <div class="relative -ml-0.5">
-              <div class="inline-block w-[70%] text-xs">{{ news.title }}</div>
-              <div class="inline-block w-1/4 bg-[#acadae]">
-                <img class="h-full w-full" :src="news.thumbUrl" width="100%" />
+            <div class="relative">
+              <div class="bg-[#acadae]">
+                <img class="block h-full w-full" :src="news.thumbUrl" />
+                <div
+                  class="absolute bottom-0 left-0 inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-center text-[15px] text-white opacity-65"
+                >
+                  {{ news.title }}
+                </div>
               </div>
             </div>
-            <!-- TODO @hw：这里的按钮，交互不太对。应该在每个卡片的里面；或者类似公众号现在的交互，放到右侧；。。。复现本周：如果有 2 个文章的时候 -->
-            <!-- TODO @hw：当有 2 个文章的时候，挪到第二个文章的时候，卡片会变大。期望：不变大 -->
+
             <div
-              class="relative -bottom-6 hidden text-center group-hover:block"
+              class="relative flex justify-center gap-[10px] py-[5px] text-center"
             >
               <ElButton
                 v-if="newsList.length > index + 1"

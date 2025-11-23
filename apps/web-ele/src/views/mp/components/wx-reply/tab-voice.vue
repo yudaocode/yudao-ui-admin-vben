@@ -31,16 +31,13 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-// TODO @hw：用 ElMessage
-const message = ElMessage;
-
+const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-// TODO @hw：antd 和 ele 写法的统一；
-const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
+const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
+
 const reply = computed<Reply>({
   get: () => props.modelValue,
-  // TODO @hw：这里要和 antd 统一么？还是 ele 和它统一
-  set: (val: Reply) => emit('update:modelValue', val),
+  set: (val) => emit('update:modelValue', val),
 });
 
 const showDialog = ref(false);
@@ -60,7 +57,7 @@ function beforeVoiceUpload(rawFile: UploadRawFile) {
 /** 上传成功 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+    ElMessage.error(`上传出错：${res.msg}`);
     return false;
   }
 

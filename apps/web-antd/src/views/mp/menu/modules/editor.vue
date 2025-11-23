@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -37,16 +37,7 @@ const menu = computed({
   },
 });
 const showNewsDialog = ref(false);
-// TODO @hw：这个 reset 还有用么？
-const hackResetReplySelect = ref(false);
 const isLeave = computed<boolean>(() => !(menu.value.children?.length > 0));
-
-watch(menu, () => {
-  hackResetReplySelect.value = false; // 销毁组件
-  nextTick(() => {
-    hackResetReplySelect.value = true; // 重建组件
-  });
-});
 
 // ======================== 菜单编辑（素材选择） ========================
 

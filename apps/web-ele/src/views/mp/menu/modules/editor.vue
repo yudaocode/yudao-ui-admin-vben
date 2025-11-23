@@ -18,9 +18,8 @@ import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material
 import News from '#/views/mp/components/wx-news/wx-news.vue';
 import ReplySelect from '#/views/mp/components/wx-reply/wx-reply.vue';
 
-import menuOptions from './menuOptions';
+import { menuOptions } from './types';
 
-// TODO @hw：去掉 menu- 前缀
 const props = defineProps<{
   accountId: number;
   isParent: boolean;

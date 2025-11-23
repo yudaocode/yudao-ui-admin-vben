@@ -3,27 +3,22 @@ import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE, AutoReplyMsgType as MsgType } from '@vben/constants';
+import {
+  AutoReplyMsgType,
+  DICT_TYPE,
+  RequestMessageTypes,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { WxReply } from '#/views/mp/components';
 
-// TODO @hw：要不要使用统一枚举？
-const RequestMessageTypes = new Set([
-  'image',
-  'link',
-  'location',
-  'shortvideo',
-  'text',
-  'video',
-  'voice',
-]); // 允许选择的请求消息类型
-
 /** 获取表格列配置 */
-export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
+export function useGridColumns(
+  msgType: AutoReplyMsgType,
+): VxeGridPropTypes.Columns {
   const columns: VxeGridPropTypes.Columns = [];
   // 请求消息类型列（仅消息回复显示）
-  if (msgType === MsgType.Message) {
+  if (msgType === AutoReplyMsgType.Message) {
     columns.push({
       field: 'requestMessageType',
       title: '请求消息类型',
@@ -32,7 +27,7 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   }
 
   // 关键词列（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
       field: 'requestKeyword',
       title: '关键词',
@@ -41,7 +36,7 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   }
 
   // 匹配类型列（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
       field: 'requestMatch',
       title: '匹配类型',
@@ -87,11 +82,11 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
 }
 
 /** 新增/修改的表单 */
-export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
+export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
   const schema: VbenFormSchema[] = [];
 
   // 消息类型（仅消息回复显示）
-  if (msgType === MsgType.Message) {
+  if (msgType === AutoReplyMsgType.Message) {
     schema.push({
       fieldName: 'requestMessageType',
       label: '消息类型',
@@ -106,7 +101,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 匹配类型（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({
       fieldName: 'requestMatch',
       label: '匹配类型',
@@ -124,7 +119,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 关键词（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({
       fieldName: 'requestKeyword',
       label: '关键词',

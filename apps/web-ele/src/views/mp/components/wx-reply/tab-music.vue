@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { UploadRawFile } from 'element-plus';
 
-// TODO @hw：类似 tab-image.vue 的建议
 import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
@@ -30,8 +29,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-const message = ElMessage;
-
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
@@ -56,7 +53,7 @@ function beforeImageUpload(rawFile: UploadRawFile) {
 /** 上传成功 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+    ElMessage.error(`上传出错：${res.msg}`);
     return false;
   }
 

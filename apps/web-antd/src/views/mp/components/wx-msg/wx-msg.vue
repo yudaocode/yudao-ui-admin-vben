@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { User } from './types';
+import type { MpUserApi } from '#/api/mp/user/index';
 
 import { nextTick, onMounted, reactive, ref, unref } from 'vue';
 
@@ -29,7 +29,7 @@ const queryParams = reactive({
   pageSize: 14, // 每页显示多少条
 });
 
-const user: User = reactive({
+const user: Partial<MpUserApi.User> = reactive({
   accountId, // 公众号账号编号
   avatar: preferences.app.defaultAvatar,
   nickname: '用户', // 由于微信不再提供昵称，直接使用"用户"展示

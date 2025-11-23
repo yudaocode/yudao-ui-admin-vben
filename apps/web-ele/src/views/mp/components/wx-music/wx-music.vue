@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ElLink } from 'element-plus';
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'Music' });
 
@@ -36,8 +37,7 @@ defineExpose({
 
 <template>
   <div>
-    <!-- TODO @hw：ElLink -->
-    <el-link
+    <ElLink
       type="success"
       :underline="false"
       target="_blank"
@@ -56,7 +56,7 @@ defineExpose({
           </div>
         </div>
       </div>
-    </el-link>
+    </ElLink>
   </div>
 </template>
 

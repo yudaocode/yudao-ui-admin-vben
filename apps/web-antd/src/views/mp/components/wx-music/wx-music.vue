@@ -3,6 +3,8 @@ import type { WxMusicProps } from './types';
 
 import { computed } from 'vue';
 
+import { Typography } from 'ant-design-vue';
+
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });
 
@@ -14,6 +16,8 @@ const props = withDefaults(defineProps<WxMusicProps>(), {
   thumbMediaUrl: '',
 });
 
+const { Link } = Typography;
+
 const href = computed(() => props.hqMusicUrl || props.musicUrl);
 
 defineExpose({
@@ -23,8 +27,7 @@ defineExpose({
 
 <template>
   <div>
-    <!-- TODO @hw：是不是用 antd link 更好？ -->
-    <a :href="href" target="_blank" class="text-success no-underline">
+    <Link :href="href" target="_blank" class="text-success no-underline">
       <div class="music-card">
         <div class="music-avatar">
           <img :src="thumbMediaUrl" alt="音乐封面" />
@@ -34,12 +37,12 @@ defineExpose({
           <div class="music-description">{{ description }}</div>
         </div>
       </div>
-    </a>
+    </Link>
   </div>
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 
 .music-card {
   display: flex;

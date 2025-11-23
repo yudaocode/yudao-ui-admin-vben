@@ -16,11 +16,12 @@ import {
   MENU_NOT_SELECTED,
   useGridFormSchema,
 } from '#/views/mp/menu/data';
-import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/modules';
+import Editor from '#/views/mp/menu/modules/editor.vue';
+import Previewer from '#/views/mp/menu/modules/previewer.vue';
 
-import iphoneBackImg from './modules/assets/iphone_backImg.png';
-import menuFootImg from './modules/assets/menu_foot.png';
-import menuHeadImg from './modules/assets/menu_head.png';
+import iphoneBackImg from './assets/iphone_backImg.png';
+import menuFootImg from './assets/menu_foot.png';
+import menuHeadImg from './assets/menu_head.png';
 
 defineOptions({ name: 'MpMenu' });
 
@@ -64,8 +65,8 @@ const parentIndex = ref(-1);
 // ======================== 菜单编辑 ========================
 
 const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
-const isParent = ref<boolean>(true); // 是否一级菜单，控制MenuEditor中name字段长度
-const activeMenu = ref<Menu>({}); // 选中菜单，MenuEditor的modelValue
+const isParent = ref<boolean>(true); // 是否一级菜单，控制Editor中name字段长度
+const activeMenu = ref<Menu>({}); // 选中菜单，Editor的modelValue
 
 // 一些临时值放在这里进行判断，如果放在 activeMenu，由于引用关系，menu 也会多了多余的参数
 const tempSelfObj = ref<{
@@ -327,7 +328,7 @@ function menuToBackend(menu: any) {
             class="bg-[position:0_0] bg-no-repeat pl-[43px] text-xs after:clear-both after:table after:content-['']"
             :style="{ backgroundImage: `url(${menuFootImg})` }"
           >
-            <MenuPreviewer
+            <Previewer
               v-model="menuList"
               :account-id="accountId"
               :active-index="activeIndex"
@@ -354,7 +355,7 @@ function menuToBackend(menu: any) {
           class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5"
           v-if="showRightPanel"
         >
-          <MenuEditor
+          <Editor
             :account-id="accountId"
             :is-parent="isParent"
             v-model="activeMenu"

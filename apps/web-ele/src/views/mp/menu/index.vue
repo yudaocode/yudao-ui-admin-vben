@@ -4,22 +4,21 @@ import type { Menu, RawMenu } from './modules/types';
 import { nextTick, onMounted, ref } from 'vue';
 
 import { confirm, ContentWrap, DocAlert, Page } from '@vben/common-ui';
+import { handleTree } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { getSimpleAccountList } from '#/api/mp/account';
-import * as MpMenuApi from '#/api/mp/menu';
-import * as UtilsTree from '#/utils/tree';
+import { deleteMenu, getMenuList, saveMenu } from '#/api/mp/menu';
 import {
   Level,
   MENU_NOT_SELECTED,
   useGridFormSchema,
 } from '#/views/mp/menu/data';
-import MenuEditor from '#/views/mp/menu/modules/menu-editor.vue';
-import MenuPreviewer from '#/views/mp/menu/modules/menu-previewer.vue';
+import Editor from '#/views/mp/menu/modules/editor.vue';
+import Previewer from '#/views/mp/menu/modules/previewer.vue';
 
-// TODO @hw：是不是资源的地址，统一下；antd 和 ele，目录不同。建议按照 ele 的方法先；
 import iphoneBackImg from './assets/iphone_backImg.png';
 import menuFootImg from './assets/menu_foot.png';
 import menuHeadImg from './assets/menu_head.png';
@@ -32,36 +31,6 @@ const loading = ref(false); // 遮罩层
 const accountId = ref(-1);
 const accountName = ref<string>('');
 const menuList = ref<Menu[]>([]);
-
-// ======================== 菜单操作 ========================
-
-// 当前选中菜单编码：
-//  * 一级（'x'）
-//  * 二级（'x-y'）
-//  * 未选中（MENU_NOT_SELECTED）
-const activeIndex = ref<string>(MENU_NOT_SELECTED);
-// 二级菜单显示标志: 归属的一级菜单index
-// * 未初始化：-1
-// * 初始化：x
-const parentIndex = ref(-1);
-
-// ======================== 菜单编辑 ========================
-
-const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
-const isParent = ref<boolean>(true); // 是否一级菜单，控制MenuEditor中name字段长度
-const activeMenu = ref<Menu>({}); // 选中菜单，MenuEditor的modelValue
-
-// 一些临时值放在这里进行判断，如果放在 activeMenu，由于引用关系，menu 也会多了多余的参数
-const tempSelfObj = ref<{
-  grand: Level;
-  x: number;
-  y: number;
-}>({
-  grand: Level.Undefined,
-  x: 0,
-  y: 0,
-});
-const dialogNewsVisible = ref(false); // 跳转图文时的素材选择弹窗
 
 const [AccountForm, accountFormApi] = useVbenForm({
   commonConfig: {
@@ -81,6 +50,36 @@ const [AccountForm, accountFormApi] = useVbenForm({
   },
 });
 
+// ======================== 菜单操作 ========================
+
+// 当前选中菜单编码：
+//  * 一级（'x'）
+//  * 二级（'x-y'）
+//  * 未选中（MENU_NOT_SELECTED）
+const activeIndex = ref<string>(MENU_NOT_SELECTED);
+// 二级菜单显示标志: 归属的一级菜单index
+// * 未初始化：-1
+// * 初始化：x
+const parentIndex = ref(-1);
+
+// ======================== 菜单编辑 ========================
+
+const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
+const isParent = ref<boolean>(true); // 是否一级菜单，控制Editor中name字段长度
+const activeMenu = ref<Menu>({}); // 选中菜单，Editor的modelValue
+
+// 一些临时值放在这里进行判断，如果放在 activeMenu，由于引用关系，menu 也会多了多余的参数
+const tempSelfObj = ref<{
+  grand: Level;
+  x: number;
+  y: number;
+}>({
+  grand: Level.Undefined,
+  x: 0,
+  y: 0,
+});
+const dialogNewsVisible = ref(false); // 跳转图文时的素材选择弹窗
+
 /** 侦听公众号变化 */
 async function onAccountChanged(values: Record<string, any>) {
   accountId.value = values.accountId;
@@ -88,16 +87,32 @@ async function onAccountChanged(values: Record<string, any>) {
   const accountList = await getSimpleAccountList();
   const account = accountList.find((item) => item.id === values.accountId);
   accountName.value = account?.name || '';
-  getList();
+  await getList();
 }
+
+/** 初始化账号ID - 作为备用方案，防止 handleValuesChange 未触发 */
+async function initAccountId() {
+  await nextTick(); // 等待表单初始化完成
+  const values = await accountFormApi.getValues();
+  if (values?.accountId && accountId.value === -1) {
+    // 如果表单有值但 accountId 还是初始值，则手动触发一次
+    await onAccountChanged(values);
+  }
+}
+
+/** 组件挂载时初始化账号 ID */
+onMounted(async () => {
+  await nextTick();
+  await initAccountId();
+});
 
 /** 查询并转换菜单 */
 async function getList() {
   loading.value = true;
   try {
-    const data = await MpMenuApi.getMenuList(accountId.value);
+    const data = await getMenuList(accountId.value);
     const menuData = menuListToFrontend(data);
-    menuList.value = UtilsTree.handleTree(menuData, 'id');
+    menuList.value = handleTree(menuData, 'id') as Menu[];
   } finally {
     loading.value = false;
   }
@@ -111,7 +126,9 @@ function handleQuery() {
 
 /** 将后端返回的 menuList，转换成前端的 menuList */
 function menuListToFrontend(list: any[]) {
-  if (!list) return [];
+  if (!list) {
+    return [];
+  }
 
   const result: RawMenu[] = [];
   list.forEach((item: RawMenu) => {
@@ -151,6 +168,7 @@ function resetForm() {
 }
 
 // ======================== 菜单操作 ========================
+
 /** 一级菜单点击事件 */
 function menuClicked(parent: Menu, x: number) {
   // 右侧的表单相关
@@ -181,66 +199,55 @@ function subMenuClicked(child: Menu, x: number, y: number) {
 
 /** 删除当前菜单 */
 async function onDeleteMenu() {
-  try {
-    await confirm('确定要删除吗?');
-    if (tempSelfObj.value.grand === Level.Parent) {
-      // 一级菜单的删除方法
-      menuList.value.splice(tempSelfObj.value.x, 1);
-    } else if (tempSelfObj.value.grand === Level.Child) {
-      // 二级菜单的删除方法
-      menuList.value[tempSelfObj.value.x]?.children?.splice(
-        tempSelfObj.value.y,
-        1,
-      );
-    }
-    // 提示
-    ElMessage.success('删除成功');
-
-    // 处理菜单的选中
-    activeMenu.value = {};
-    showRightPanel.value = false;
-    activeIndex.value = MENU_NOT_SELECTED;
-  } catch {
-    //
+  await confirm('确定要删除吗?');
+  if (tempSelfObj.value.grand === Level.Parent) {
+    // 一级菜单的删除方法
+    menuList.value.splice(tempSelfObj.value.x, 1);
+  } else if (tempSelfObj.value.grand === Level.Child) {
+    // 二级菜单的删除方法
+    menuList.value[tempSelfObj.value.x]?.children?.splice(
+      tempSelfObj.value.y,
+      1,
+    );
   }
+  // 提示
+  ElMessage.success('删除成功');
+
+  // 处理菜单的选中
+  activeMenu.value = {};
+  showRightPanel.value = false;
+  activeIndex.value = MENU_NOT_SELECTED;
 }
 
 // ======================== 菜单编辑 ========================
+
 /** 保存菜单 */
 async function onSave() {
+  await confirm('确定要保存吗?');
+  const hideLoading = ElLoading.service({
+    text: '保存中...',
+  });
   try {
-    await confirm('确定要保存吗?');
-    const loadingInstance = ElLoading.service({
-      text: '保存中...',
-    });
-    try {
-      await MpMenuApi.saveMenu(accountId.value, menuListToBackend());
-      getList();
-      ElMessage.success('发布成功');
-    } finally {
-      loadingInstance.close();
-    }
-  } catch {
-    //
+    await saveMenu(accountId.value, menuListToBackend());
+    await getList();
+    ElMessage.success('发布成功');
+  } finally {
+    hideLoading.close();
   }
 }
 
 /** 清空菜单 */
 async function onClear() {
+  await confirm('确定要删除吗?');
+  const hideLoading = ElLoading.service({
+    text: '删除中...',
+  });
   try {
-    await confirm('确定要删除吗?');
-    const loadingInstance = ElLoading.service({
-      text: '删除中...',
-    });
-    try {
-      await MpMenuApi.deleteMenu(accountId.value);
-      handleQuery();
-      ElMessage.success('清空成功');
-    } finally {
-      loadingInstance.close();
-    }
-  } catch {
-    //
+    await deleteMenu(accountId.value);
+    handleQuery();
+    ElMessage.success('清空成功');
+  } finally {
+    hideLoading.close();
   }
 }
 
@@ -264,7 +271,7 @@ function menuListToBackend() {
 }
 
 /** 将前端的 menu，转换成后端接收的 menu */
-// TODO: @芋艿，需要根据后台API删除不需要的字段
+// TODO: @芋艿，需要根据后台 API 删除不需要的字段
 function menuToBackend(menu: any) {
   const result = {
     ...menu,
@@ -282,31 +289,8 @@ function menuToBackend(menu: any) {
   result.replyArticles = menu.reply.articles;
   result.replyMusicUrl = menu.reply.musicUrl;
   result.replyHqMusicUrl = menu.reply.hqMusicUrl;
-
   return result;
 }
-
-/** 初始化账号ID - 作为备用方案，防止 handleValuesChange 未触发 */
-async function initAccountId() {
-  // 等待表单初始化完成
-  await nextTick();
-  try {
-    const values = await accountFormApi.getValues();
-    if (values?.accountId && accountId.value === -1) {
-      // 如果表单有值但 accountId 还是初始值，则手动触发一次
-      await onAccountChanged(values);
-    }
-  } catch {
-    // 忽略错误
-  }
-}
-
-// 组件挂载时初始化账号ID
-onMounted(async () => {
-  await nextTick();
-  await initAccountId();
-});
-// TODO @hw：这个界面：整理下代码，整体的风格、方法的顺序、注释，参考 antd 哈；
 </script>
 
 <template>
@@ -345,7 +329,7 @@ onMounted(async () => {
             class="weixin-menu h-[46px] bg-no-repeat pl-[43px] text-[12px]"
             :style="{ backgroundImage: `url(${menuFootImg})` }"
           >
-            <MenuPreviewer
+            <Previewer
               v-model="menuList"
               :account-id="accountId"
               :active-index="activeIndex"
@@ -378,7 +362,7 @@ onMounted(async () => {
           class="right box-border flex-1 basis-[63%] bg-[#e8e7e7] p-[20px]"
           v-if="showRightPanel"
         >
-          <MenuEditor
+          <Editor
             :account-id="accountId"
             :is-parent="isParent"
             v-model="activeMenu"

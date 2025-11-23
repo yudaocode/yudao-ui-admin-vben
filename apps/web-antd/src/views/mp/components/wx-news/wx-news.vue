@@ -52,7 +52,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：看看有没适合 tindwind 的哈。 */
 
 .news-home {
   width: 100%;

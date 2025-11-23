@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 
 import { computed, nextTick, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  ElLoading,
   ElMessage,
   ElMessageBox,
   ElRow,
@@ -27,14 +28,13 @@ import { WxAccountSelect } from '#/views/mp/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import Content from './modules/content.vue';
 import Form from './modules/form.vue';
-import { MsgType } from './modules/types';
 
 defineOptions({ name: 'MpAutoReply' });
 
-const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
+const msgType = ref<string>(String(AutoReplyMsgType.Keyword)); // 消息类型
 
 const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== MsgType.Follow) {
+  if (Number(msgType.value) !== AutoReplyMsgType.Follow) {
     return true;
   }
   try {
@@ -61,7 +61,7 @@ async function onTabChange(tabName: string) {
   msgType.value = tabName;
   await nextTick();
   // 更新 columns
-  const columns = useGridColumns(Number(msgType.value) as MsgType);
+  const columns = useGridColumns(Number(msgType.value) as AutoReplyMsgType);
   if (columns) {
     // 使用 setGridOptions 更新列配置
     gridApi.setGridOptions({ columns });
@@ -77,8 +77,7 @@ async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   formModalApi
     .setData({
-      // TODO @hw：这里和 antd 不同，需要 number 下么？
-      msgType: msgType.value,
+      msgType: Number(msgType.value) as AutoReplyMsgType,
       accountId: formValues.accountId,
     })
     .open();
@@ -87,14 +86,11 @@ async function handleCreate() {
 /** 修改自动回复 */
 async function handleEdit(row: any) {
   const data = (await getAutoReply(row.id)) as any;
-  // TODO @hw：这里使用 formValues，还是使用 row？
-  const formValues = await gridApi.formApi.getValues();
   formModalApi
     .setData({
-      // TODO @hw：这里和 antd 不同，需要 number 下么？
-      msgType: msgType.value,
+      msgType: Number(msgType.value) as AutoReplyMsgType,
+      accountId: row.accountId,
       row: data,
-      accountId: formValues.accountId,
     })
     .open();
 }
@@ -102,16 +98,10 @@ async function handleEdit(row: any) {
 /** 删除自动回复 */
 async function handleDelete(row: any) {
   await ElMessageBox.confirm('是否确认删除此数据?');
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', ['自动回复']),
-  });
-  try {
-    await deleteAutoReply(row.id);
-    ElMessage.success('删除成功');
-    handleRefresh();
-  } finally {
-    loadingInstance.close();
-  }
+
+  await deleteAutoReply(row.id);
+  ElMessage.success('删除成功');
+  handleRefresh();
 }
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -124,7 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(Number(msgType.value) as MsgType),
+    columns: useGridColumns(Number(msgType.value) as AutoReplyMsgType),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -133,7 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: Number(msgType.value) as MsgType,
+            type: Number(msgType.value) as AutoReplyMsgType,
             ...formValues,
           });
         },
@@ -148,8 +138,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-    // TODO @hw：这里要调整下，linter 报错；
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<MpAutoReplyApi.AutoReply>,
 });
 </script>
 
@@ -170,14 +159,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
           class="w-full"
           @tab-change="(activeName) => onTabChange(activeName as string)"
         >
-          <ElTabPane :name="String(MsgType.Follow)">
+          <ElTabPane :name="String(AutoReplyMsgType.Follow)">
             <template #label>
               <ElRow align="middle">
                 <IconifyIcon icon="ep:star" class="mr-[2px]" /> 关注时回复
               </ElRow>
             </template>
           </ElTabPane>
-          <ElTabPane :name="String(MsgType.Message)">
+          <ElTabPane :name="String(AutoReplyMsgType.Message)">
             <template #label>
               <ElRow align="middle">
                 <IconifyIcon icon="ep:chat-line-round" class="mr-[2px]" />
@@ -185,7 +174,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               </ElRow>
             </template>
           </ElTabPane>
-          <ElTabPane :name="String(MsgType.Keyword)">
+          <ElTabPane :name="String(AutoReplyMsgType.Keyword)">
             <template #label>
               <ElRow align="middle">
                 <IconifyIcon icon="fa:newspaper-o" class="mr-[2px]" />

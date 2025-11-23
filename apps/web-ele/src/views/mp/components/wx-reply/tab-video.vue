@@ -31,18 +31,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
-
-// TODO @hw：还是用 ElMessage
-const message = ElMessage;
-
+const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-// TODO @hw：这里 antd 和 ele 有差异，要统一么？
-const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
+const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
 
 const reply = computed<Reply>({
   get: () => props.modelValue,
-  // TODO @hw：这里 antd 和 ele 有差异，要统一么？
-  set: (val: Reply) => emit('update:modelValue', val),
+  set: (val) => emit('update:modelValue', val),
 });
 
 const showDialog = ref(false);
@@ -62,7 +57,7 @@ function beforeVideoUpload(rawFile: UploadRawFile) {
 /** 上传成功 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+    ElMessage.error(`上传出错：${res.msg}`);
     return false;
   }
 

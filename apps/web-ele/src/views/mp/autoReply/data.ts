@@ -1,37 +1,24 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
-import type { MpAccountApi } from '#/api/mp/account';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
-import { getDictObj, getDictOptions } from '@vben/hooks';
+import {
+  AutoReplyMsgType,
+  DICT_TYPE,
+  RequestMessageTypes,
+} from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
-import { getSimpleAccountList } from '#/api/mp/account';
-import { WxReplySelect } from '#/views/mp/components';
-
-import { MsgType } from './modules/types';
-
-/** 关联数据 */
-let accountList: MpAccountApi.AccountSimple[] = [];
-getSimpleAccountList().then((data) => (accountList = data));
-
-// TODO @hw：要不要使用统一枚举？
-const RequestMessageTypes = new Set([
-  'image',
-  'link',
-  'location',
-  'shortvideo',
-  'text',
-  'video',
-  'voice',
-]); // 允许选择的请求消息类型
+import { WxReply } from '#/views/mp/components';
 
 /** 获取表格列配置 */
-export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
+export function useGridColumns(
+  msgType: AutoReplyMsgType,
+): VxeGridPropTypes.Columns {
   const columns: VxeGridPropTypes.Columns = [];
   // 请求消息类型列（仅消息回复显示）
-  if (msgType === MsgType.Message) {
+  if (msgType === AutoReplyMsgType.Message) {
     columns.push({
       field: 'requestMessageType',
       title: '请求消息类型',
@@ -40,7 +27,7 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   }
 
   // 关键词列（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
       field: 'requestKeyword',
       title: '关键词',
@@ -49,7 +36,7 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   }
 
   // 匹配类型列（仅关键词回复显示）
-  if (msgType === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
       field: 'requestMatch',
       title: '匹配类型',
@@ -67,9 +54,10 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
       field: 'responseMessageType',
       title: '回复消息类型',
       minWidth: 120,
-      // TODO @hw：这里和 antd 有差别。两侧尽量统一；
-      formatter: ({ cellValue }) =>
-        getDictObj(DICT_TYPE.MP_MESSAGE_TYPE, String(cellValue))?.label ?? '',
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MP_MESSAGE_TYPE },
+      },
     },
     {
       field: 'responseContent',
@@ -94,12 +82,11 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
 }
 
 /** 新增/修改的表单 */
-export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
+export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
   const schema: VbenFormSchema[] = [];
 
   // 消息类型（仅消息回复显示）
-  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
-  if (Number(msgType) === MsgType.Message) {
+  if (msgType === AutoReplyMsgType.Message) {
     schema.push({
       fieldName: 'requestMessageType',
       label: '消息类型',
@@ -114,8 +101,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 匹配类型（仅关键词回复显示）
-  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
-  if (Number(msgType) === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({
       fieldName: 'requestMatch',
       label: '匹配类型',
@@ -133,8 +119,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 关键词（仅关键词回复显示）
-  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
-  if (Number(msgType) === MsgType.Keyword) {
+  if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({
       fieldName: 'requestKeyword',
       label: '关键词',
@@ -147,31 +132,22 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
     });
   }
   // 回复消息
-  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
   schema.push({
     fieldName: 'reply',
     label: '回复消息',
-    component: markRaw(WxReplySelect),
+    component: markRaw(WxReply),
+    modelPropName: 'modelValue',
   });
   return schema;
 }
 
 /** 列表的搜索表单 */
-// TODO @hw：是不是用 wxselect 组件哈？
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'accountId',
       label: '公众号',
-      component: 'ApiSelect',
-      componentProps: {
-        options: accountList.map((item) => ({
-          label: item.name,
-          value: item.id,
-        })),
-        placeholder: '请选择公众号',
-      },
-      defaultValue: accountList[0]?.id,
+      component: 'Input',
     },
   ];
 }
