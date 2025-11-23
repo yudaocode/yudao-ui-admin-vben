@@ -6,7 +6,6 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { beginOfDay, endOfDay, formatDateTime } from '@vben/utils';
 
 import { Card, DatePicker, Empty, Select } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -89,8 +88,6 @@ async function fetchMessageData() {
   loading.value = true;
   try {
     messageData.value = await getDeviceMessageSummaryByDate(queryParams);
-    await nextTick();
-    initChart();
   } catch (error) {
     // 开发环境：记录错误信息，便于调试
     console.error('获取消息统计数据失败:', error);
@@ -98,11 +95,13 @@ async function fetchMessageData() {
     messageData.value = [];
   } finally {
     loading.value = false;
+    await renderChartWhenReady();
   }
 }
 
 /** 初始化图表 */
 function initChart() {
+  // 检查数据是否存在
   if (!hasData.value) return;
 
   const times = messageData.value.map((item) => item.time);
@@ -114,6 +113,15 @@ function initChart() {
   );
 }
 
+/** 确保图表容器已经可见后再渲染 */
+async function renderChartWhenReady() {
+  if (!hasData.value) return;
+  // 等待 Card loading 状态、v-show 等 DOM 更新完成
+  await nextTick();
+  await nextTick();
+  initChart();
+}
+
 /** 组件挂载时查询数据 */
 onMounted(() => {
   fetchMessageData();
@@ -121,7 +129,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card class="h-full" :loading="loading">
+  <Card class="h-full">
     <template #title>
       <div class="flex flex-wrap items-center justify-between gap-4">
         <span class="text-base font-medium text-gray-600">消息量统计</span>
@@ -143,7 +151,7 @@ onMounted(() => {
               v-model:value="queryParams.interval"
               :options="intervalOptions"
               placeholder="间隔类型"
-              class="!w-160px"
+              :style="{ width: '80px' }"
               @change="handleIntervalChange"
             />
           </div>
@@ -151,30 +159,27 @@ onMounted(() => {
       </div>
     </template>
 
+    <!-- 加载中状态 -->
     <div
-      v-if="loading && !hasData"
+      v-show="loading && !hasData"
       class="flex h-[300px] items-center justify-center"
     >
       <Empty description="加载中..." />
     </div>
+    <!-- 无数据状态 -->
     <div
-      v-else-if="!hasData"
+      v-show="!loading && !hasData"
       class="flex h-[300px] items-center justify-center"
     >
       <Empty description="暂无数据" />
     </div>
-    <div v-else>
+    <!-- 图表容器 - 使用 v-show 而非 v-if，确保组件始终挂载 -->
+    <div v-show="hasData">
       <EchartsUI ref="messageChartRef" class="h-[300px] w-full" />
     </div>
   </Card>
 </template>
 
 <style scoped>
-:deep(.ant-card-body) {
-  padding: 20px;
-}
 
-:deep(.ant-card-head) {
-  border-bottom: 1px solid #f0f0f0;
-}
 </style>
