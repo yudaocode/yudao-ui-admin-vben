@@ -4,7 +4,7 @@ import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 
 import { computed, nextTick, ref } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
@@ -20,7 +20,7 @@ import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import ReplyContentCell from './modules/content.vue';
+import ReplyContent from './modules/content.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpAutoReply' });
@@ -78,8 +78,8 @@ async function handleCreate() {
 }
 
 /** 修改自动回复 */
-async function handleEdit(row: any) {
-  const data = (await getAutoReply(row.id)) as any;
+async function handleEdit(row: MpAutoReplyApi.AutoReply) {
+  const data = await getAutoReply(row.id!);
   formModalApi
     .setData({
       msgType: Number(msgType.value) as AutoReplyMsgType,
@@ -90,15 +90,14 @@ async function handleEdit(row: any) {
 }
 
 /** 删除自动回复 */
-async function handleDelete(row: any) {
-  await confirm('是否确认删除此数据?');
+async function handleDelete(row: MpAutoReplyApi.AutoReply) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', ['自动回复']),
     duration: 0,
   });
   try {
-    await deleteAutoReply(row.id);
-    message.success('删除成功');
+    await deleteAutoReply(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -184,7 +183,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           </Tabs.TabPane>
         </Tabs>
       </template>
-      <!-- 第三层：table -->
       <template #toolbar-tools>
         <TableAction
           v-if="showCreateButton"
@@ -200,7 +198,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #replyContent="{ row }">
-        <ReplyContentCell :row="row" />
+        <ReplyContent :row="row" />
       </template>
       <template #actions="{ row }">
         <TableAction

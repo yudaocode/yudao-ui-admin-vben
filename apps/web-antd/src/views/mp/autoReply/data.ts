@@ -25,7 +25,6 @@ export function useGridColumns(
       minWidth: 120,
     });
   }
-
   // 关键词列（仅关键词回复显示）
   if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
@@ -34,7 +33,6 @@ export function useGridColumns(
       minWidth: 150,
     });
   }
-
   // 匹配类型列（仅关键词回复显示）
   if (msgType === AutoReplyMsgType.Keyword) {
     columns.push({
@@ -47,7 +45,6 @@ export function useGridColumns(
       },
     });
   }
-
   // 回复消息类型列
   columns.push(
     {
@@ -84,7 +81,6 @@ export function useGridColumns(
 /** 新增/修改的表单 */
 export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
   const schema: VbenFormSchema[] = [];
-
   // 消息类型（仅消息回复显示）
   if (msgType === AutoReplyMsgType.Message) {
     schema.push({
@@ -99,7 +95,6 @@ export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
       },
     });
   }
-
   // 匹配类型（仅关键词回复显示）
   if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({
@@ -117,7 +112,6 @@ export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
       rules: 'required',
     });
   }
-
   // 关键词（仅关键词回复显示）
   if (msgType === AutoReplyMsgType.Keyword) {
     schema.push({

@@ -8,13 +8,7 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  ElMessage,
-  ElMessageBox,
-  ElRow,
-  ElTabPane,
-  ElTabs,
-} from 'element-plus';
+import { ElLoading, ElMessage, ElRow, ElTabPane, ElTabs } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -26,7 +20,7 @@ import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Content from './modules/content.vue';
+import ReplyContent from './modules/content.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpAutoReply' });
@@ -84,8 +78,8 @@ async function handleCreate() {
 }
 
 /** 修改自动回复 */
-async function handleEdit(row: any) {
-  const data = (await getAutoReply(row.id)) as any;
+async function handleEdit(row: MpAutoReplyApi.AutoReply) {
+  const data = await getAutoReply(row.id!);
   formModalApi
     .setData({
       msgType: Number(msgType.value) as AutoReplyMsgType,
@@ -96,12 +90,17 @@ async function handleEdit(row: any) {
 }
 
 /** 删除自动回复 */
-async function handleDelete(row: any) {
-  await ElMessageBox.confirm('是否确认删除此数据?');
-
-  await deleteAutoReply(row.id);
-  ElMessage.success('删除成功');
-  handleRefresh();
+async function handleDelete(row: MpAutoReplyApi.AutoReply) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', ['自动回复']),
+  });
+  try {
+    await deleteAutoReply(row.id!);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -184,7 +183,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           </ElTabPane>
         </ElTabs>
       </template>
-      <!-- 工具栏按钮 -->
       <template #toolbar-tools>
         <TableAction
           v-if="showCreateButton"
@@ -200,7 +198,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #replyContent="{ row }">
-        <Content :row="row" />
+        <ReplyContent :row="row" />
       </template>
       <template #actions="{ row }">
         <TableAction
