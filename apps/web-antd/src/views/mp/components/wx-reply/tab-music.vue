@@ -21,6 +21,8 @@ import {
 import { WxMaterialSelect } from '#/views/mp/components';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
+// TODO @hw：类似 tab-image.vue 的建议
+
 defineOptions({ name: 'TabMusic' });
 
 const props = defineProps<{
@@ -46,9 +48,10 @@ const uploadData = reactive({
   accountId: reply.value.accountId,
   introduction: '',
   title: '',
-  type: 'thumb', // 音乐类型为thumb
+  type: 'thumb', // 音乐类型为 thumb
 });
 
+/** 图片上传前校验 */
 function beforeImageUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Image, 2)(rawFile);
 }

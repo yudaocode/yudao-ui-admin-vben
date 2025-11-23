@@ -3,6 +3,7 @@ import type { WxMusicProps } from './types';
 
 import { computed } from 'vue';
 
+/** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });
 
 const props = withDefaults(defineProps<WxMusicProps>(), {
@@ -21,8 +22,8 @@ defineExpose({
 </script>
 
 <template>
-  <!-- 微信消息 - 音乐 -->
   <div>
+    <!-- TODO @hw：是不是用 antd link 更好？ -->
     <a :href="href" target="_blank" class="text-success no-underline">
       <div class="music-card">
         <div class="music-avatar">
@@ -38,7 +39,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
 
 .music-card {
   display: flex;

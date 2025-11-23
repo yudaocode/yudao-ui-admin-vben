@@ -1,24 +1,22 @@
-// 统一导出所有模块组件
+export { default as WxAccountSelect } from './wx-account-select/wx-account-select.vue';
 
-export { default as AccountSelect } from './account-select/account-select.vue';
-export { default as WxAccountSelect } from './account-select/account-select.vue';
+export { default as WxLocation } from './wx-location/wx-location.vue';
+export * from './wx-material-select/types';
 
-// TODO @hw：还是带着 wx 前缀。。。貌似好点，我的锅！！！
-export { default as Location } from './location/location.vue';
-export { default as MaterialSelect } from './material-select/material-select.vue';
+export { default as WxMaterialSelect } from './wx-material-select/wx-material-select.vue';
 
-export * from './material-select/types';
+export * from './wx-msg/types';
 
-export * from './msg/types';
+export { default as WxMusic } from './wx-music/wx-music.vue';
 
-export { default as Music } from './music/music.vue';
+export { default as WxNews } from './wx-news/wx-news.vue';
 
-export { default as News } from './news/news.vue';
+export * from './wx-reply/types';
 
-export { default as ReplySelect } from './reply/reply.vue';
+export { default as WxReplySelect } from './wx-reply/wx-reply.vue';
 
-export * from './reply/types';
+export { default as WxVideoPlayer } from './wx-video-play/wx-video-play.vue';
 
-export { default as VideoPlayer } from './video-play/video-play.vue';
+export { default as WxVoicePlayer } from './wx-voice-play/wx-voice-play.vue';
 
-export { default as VoicePlayer } from './voice-play/voice-play.vue';
+// TODO @hw：是不是要和 antd 保持一致哈？

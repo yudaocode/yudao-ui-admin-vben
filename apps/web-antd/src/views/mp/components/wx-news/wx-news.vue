@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Image } from 'ant-design-vue';
 
+/** 微信消息 - 图文 */
 defineOptions({ name: 'WxNews' });
 
 const props = withDefaults(
@@ -18,7 +19,6 @@ defineExpose({
 </script>
 
 <template>
-  <!-- 微信消息 - 图文 -->
   <div class="news-home">
     <div v-for="(article, index) in articles" :key="index" class="news-div">
       <!-- 头条 -->
@@ -28,7 +28,7 @@ defineExpose({
             <Image
               :src="article.picUrl"
               :preview="false"
-              class="material-img"
+              class="material-img flex items-center justify-center"
             />
             <div class="news-content-title">
               <span>{{ article.title }}</span>
@@ -52,7 +52,7 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
 
 .news-home {
   width: 100%;

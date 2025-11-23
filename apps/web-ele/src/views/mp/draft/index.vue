@@ -3,15 +3,14 @@ import type { Article } from './modules/types';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { nextTick, onMounted, provide, ref, watch } from 'vue';
-
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpDraftApi from '#/api/mp/draft';
+import { deleteDraft, getDraftPage } from '#/api/mp/draft';
 import * as MpFreePublishApi from '#/api/mp/freePublish';
+import { WxAccountSelect } from '#/views/mp/components';
 import { createEmptyNewsItem } from '#/views/mp/draft/modules/types';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -25,10 +24,22 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
+}
+
+// TODO @hw：代码风格，要和对应的 antd index.vue 一致，类似方法的顺序，注释等。原因是，这样后续两端迭代，会方便很多。
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    submitOnChange: true,
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -37,68 +48,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          // 更新 accountId
-          if (formValues?.accountId) {
-            accountId.value = formValues.accountId;
-          }
-          const drafts = await MpDraftApi.getDraftPage({
+          const drafts = await getDraftPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
           });
-          // 处理 API 返回的数据，兼容不同的数据结构
-          const formattedList: Article[] = drafts.list.map((draft: any) => {
-            // 如果已经是 content.newsItem 格式，直接使用
-            if (draft.content?.newsItem) {
-              const newsItem = draft.content.newsItem.map((item: any) => ({
-                ...item,
-                picUrl: item.thumbUrl || item.picUrl,
-              }));
-              return {
-                mediaId: draft.mediaId,
-                content: {
-                  newsItem,
-                },
-                updateTime:
-                  draft.updateTime ||
-                  (draft.createTime
-                    ? new Date(draft.createTime).getTime()
-                    : Date.now()),
-              };
+          // 将 thumbUrl 转成 picUrl，保证 wx-news 组件可以预览封面
+          drafts.list.forEach((draft: any) => {
+            const newsList = draft.content?.newsItem;
+            if (newsList) {
+              newsList.forEach((item: any) => {
+                item.picUrl = item.thumbUrl || item.picUrl;
+              });
             }
-            // 如果是 articles 格式，转换为 content.newsItem 格式
-            if (draft.articles) {
-              const newsItem = draft.articles.map((article: any) => ({
-                ...article,
-                thumbUrl: article.thumbUrl || article.thumbMediaId,
-                picUrl: article.thumbUrl || article.thumbMediaId,
-              }));
-              return {
-                mediaId: draft.mediaId,
-                content: {
-                  newsItem,
-                },
-                updateTime:
-                  draft.updateTime ||
-                  (draft.createTime
-                    ? new Date(draft.createTime).getTime()
-                    : Date.now()),
-              };
-            }
-            // 默认返回空结构
-            return {
-              mediaId: draft.mediaId || '',
-              content: {
-                newsItem: [],
-              },
-              updateTime: draft.updateTime || Date.now(),
-            };
           });
           return {
-            page: {
-              total: drafts.total,
-            },
-            result: formattedList,
+            list: drafts.list as unknown as Article[],
+            total: drafts.total,
           };
         },
       },
@@ -114,21 +80,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<Article>,
 });
-
-// 提供 accountId 给子组件
-const accountId = ref<number>(-1);
-
-// 监听表单提交，更新 accountId
-watch(
-  () => gridApi.formApi?.getLatestSubmissionValues?.()?.accountId,
-  (newAccountId) => {
-    if (newAccountId !== undefined) {
-      accountId.value = newAccountId;
-    }
-  },
-);
-
-provide('accountId', accountId);
 
 /** 新增按钮操作 */
 async function handleCreate() {
@@ -162,7 +113,7 @@ async function handleEdit(row: Article) {
       isCreating: false,
       accountId,
       mediaId: row.mediaId,
-      newsList: structuredClone(row.content.newsItem),
+      newsList: row.content.newsItem,
     })
     .open();
 }
@@ -201,7 +152,7 @@ async function handlePublish(row: Article) {
 async function handleDelete(row: Article) {
   const formValues = await gridApi.formApi.getValues();
   const accountId = formValues.accountId;
-  if (!accountId || accountId === -1) {
+  if (!accountId) {
     ElMessage.warning('请先选择公众号');
     return;
   }
@@ -212,9 +163,9 @@ async function handleDelete(row: Article) {
       text: '删除中...',
     });
     try {
-      await MpDraftApi.deleteDraft(accountId, row.mediaId);
+      await deleteDraft(accountId, row.mediaId);
       ElMessage.success('删除成功');
-      await gridApi.query();
+      handleRefresh();
     } finally {
       loadingInstance.close();
     }
@@ -222,19 +173,6 @@ async function handleDelete(row: Article) {
     //
   }
 }
-
-// 页面挂载后，等待表单初始化完成再加载数据
-onMounted(async () => {
-  await nextTick();
-  if (gridApi.formApi) {
-    const formValues = await gridApi.formApi.getValues();
-    if (formValues.accountId) {
-      accountId.value = formValues.accountId;
-      gridApi.formApi.setLatestSubmissionValues(formValues);
-      await gridApi.query();
-    }
-  }
-});
 </script>
 
 <template>
@@ -243,20 +181,17 @@ onMounted(async () => {
       <DocAlert title="公众号图文" url="https://doc.iocoder.cn/mp/article/" />
     </template>
 
-    <FormModal
-      @success="
-        () => {
-          gridApi.query();
-        }
-      "
-    />
+    <FormModal @success="handleRefresh" />
 
     <Grid table-title="草稿列表">
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <template #toolbar-tools>
         <TableAction
           :actions="[
             {
-              label: '新增',
+              label: $t('ui.actionTitle.create', ['图文草稿']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['mp:draft:create'],
@@ -310,7 +245,12 @@ onMounted(async () => {
   .vxe-table--body {
     .vxe-body--column {
       .vxe-cell {
+        height: auto !important;
         padding: 0;
+
+        img {
+          width: 300px !important;
+        }
       }
     }
   }

@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictObj, getDictOptions } from '@vben/hooks';
 
 import { getSimpleAccountList } from '#/api/mp/account';
-import { ReplySelect } from '#/views/mp/components';
+import { WxReplySelect } from '#/views/mp/components';
 
 import { MsgType } from './modules/types';
 
@@ -16,6 +16,7 @@ import { MsgType } from './modules/types';
 let accountList: MpAccountApi.AccountSimple[] = [];
 getSimpleAccountList().then((data) => (accountList = data));
 
+// TODO @hw：要不要使用统一枚举？
 const RequestMessageTypes = new Set([
   'image',
   'link',
@@ -25,6 +26,7 @@ const RequestMessageTypes = new Set([
   'video',
   'voice',
 ]); // 允许选择的请求消息类型
+
 /** 获取表格列配置 */
 export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
   const columns: VxeGridPropTypes.Columns = [];
@@ -65,6 +67,7 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
       field: 'responseMessageType',
       title: '回复消息类型',
       minWidth: 120,
+      // TODO @hw：这里和 antd 有差别。两侧尽量统一；
       formatter: ({ cellValue }) =>
         getDictObj(DICT_TYPE.MP_MESSAGE_TYPE, String(cellValue))?.label ?? '',
     },
@@ -93,7 +96,9 @@ export function useGridColumns(msgType: MsgType): VxeGridPropTypes.Columns {
 /** 新增/修改的表单 */
 export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   const schema: VbenFormSchema[] = [];
+
   // 消息类型（仅消息回复显示）
+  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
   if (Number(msgType) === MsgType.Message) {
     schema.push({
       fieldName: 'requestMessageType',
@@ -109,6 +114,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 匹配类型（仅关键词回复显示）
+  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
   if (Number(msgType) === MsgType.Keyword) {
     schema.push({
       fieldName: 'requestMatch',
@@ -127,6 +133,7 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
   }
 
   // 关键词（仅关键词回复显示）
+  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
   if (Number(msgType) === MsgType.Keyword) {
     schema.push({
       fieldName: 'requestKeyword',
@@ -140,15 +147,17 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
     });
   }
   // 回复消息
+  // TODO @hw：这里和 antd 有差别。两侧尽量统一；
   schema.push({
     fieldName: 'reply',
     label: '回复消息',
-    component: markRaw(ReplySelect),
+    component: markRaw(WxReplySelect),
   });
   return schema;
 }
 
 /** 列表的搜索表单 */
+// TODO @hw：是不是用 wxselect 组件哈？
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {

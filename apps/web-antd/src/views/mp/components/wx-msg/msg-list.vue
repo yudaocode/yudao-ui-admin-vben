@@ -17,7 +17,7 @@ const props = defineProps<{
 const SendFrom = {
   MpBot: 2,
   User: 1,
-} as const;
+} as const; // 发送来源
 
 function getAvatar(sendFrom: number) {
   return sendFrom === SendFrom.User
@@ -63,7 +63,7 @@ function getNickname(sendFrom: number) {
 <style lang="scss" scoped>
 /* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
 
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：@hw 看看有没适合 tindwind 的哈。 */
 
 @import url('./comment.scss');
 @import url('./card.scss');

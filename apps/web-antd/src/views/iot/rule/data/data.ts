@@ -68,12 +68,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 150,
     },
     {
-      field: 'productId',
-      title: '所属产品',
-      minWidth: 150,
-      slots: { default: 'product' },
-    },
-    {
       field: 'description',
       title: '规则描述',
       minWidth: 200,
@@ -87,6 +81,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
+    // TODO @haohao：这里是【数据源】【数据目的】
     {
       field: 'sinkCount',
       title: '数据流转数',

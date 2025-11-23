@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
 import { getSimpleAccountList } from '#/api/mp/account';
+
 /** 菜单未选中标识 */
 export const MENU_NOT_SELECTED = '__MENU_NOT_SELECTED__';
 
@@ -10,6 +11,7 @@ export enum Level {
   Parent = '1',
   Undefined = '0',
 }
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [

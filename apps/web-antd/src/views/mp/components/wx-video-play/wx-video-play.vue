@@ -8,6 +8,7 @@ import { Modal } from 'ant-design-vue';
 
 import 'video.js/dist/video-js.css';
 
+/** 微信消息 - 视频 */
 defineOptions({ name: 'WxVideoPlayer' });
 
 const props = defineProps<{
@@ -22,7 +23,6 @@ function playVideo() {
 </script>
 
 <template>
-  <!-- 微信消息 - 视频播放 -->
   <div class="cursor-pointer" @click="playVideo()">
     <!-- 提示 -->
     <div class="flex items-center">

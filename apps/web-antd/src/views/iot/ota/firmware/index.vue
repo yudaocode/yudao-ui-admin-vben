@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import Form from '../modules/OtaFirmwareForm.vue';
+import OtaFirmwareForm from '../modules/ota-firmware-form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTOtaFirmware' });
@@ -21,7 +21,7 @@ defineOptions({ name: 'IoTOtaFirmware' });
 const { push } = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+  connectedComponent: OtaFirmwareForm,
   destroyOnClose: true,
 });
 

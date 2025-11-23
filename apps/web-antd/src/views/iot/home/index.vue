@@ -3,17 +3,15 @@ import { Page } from '@vben/common-ui';
 
 import { Col, Row } from 'ant-design-vue';
 
-// 导入业务逻辑
 import { useIotHome } from './data';
-// 导入组件
-import ComparisonCard from './modules/ComparisonCard.vue';
-import DeviceCountCard from './modules/DeviceCountCard.vue';
-import DeviceStateCountCard from './modules/DeviceStateCountCard.vue';
-import MessageTrendCard from './modules/MessageTrendCard.vue';
+import ComparisonCard from './modules/comparison-card.vue';
+import DeviceCountCard from './modules/device-count-card.vue';
+import DeviceStateCountCard from './modules/device-state-count-card.vue';
+import MessageTrendCard from './modules/message-trend-card.vue';
 
 defineOptions({ name: 'IoTHome' });
 
-// 使用业务逻辑 Hook
+// TODO @haohao：相关的方法，拿到 index.vue 里，data.ts 只放 schema；
 const { loading, statsData } = useIotHome();
 </script>
 

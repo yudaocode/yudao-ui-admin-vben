@@ -21,15 +21,21 @@ import {
 
 /** 编码表单 Conf */
 export function encodeConf(designerRef: any) {
-  return JSON.stringify(designerRef.value.getOption());
+  // 关联案例：https://gitee.com/yudaocode/yudao-ui-admin-vue3/pulls/834/
+  return formCreate.toJson(designerRef.value.getOption());
+}
+
+/** 解码表单 Conf */
+export function decodeConf(conf: string) {
+  return formCreate.parseJson(conf);
 }
 
 /** 编码表单 Fields */
 export function encodeFields(designerRef: any) {
-  const rule = JSON.parse(designerRef.value.getJson());
+  const rule = designerRef.value.getRule();
   const fields: string[] = [];
-  rule.forEach((item: unknown) => {
-    fields.push(JSON.stringify(item));
+  rule.forEach((item: any) => {
+    fields.push(formCreate.toJson(item));
   });
   return fields;
 }
@@ -49,7 +55,7 @@ export function setConfAndFields(
   conf: string,
   fields: string | string[],
 ) {
-  designerRef.value.setOption(formCreate.parseJson(conf));
+  designerRef.value.setOption(decodeConf(conf));
   // 处理 fields 参数类型，确保传入 decodeFields 的是 string[] 类型
   const fieldsArray = Array.isArray(fields) ? fields : [fields];
   designerRef.value.setRule(decodeFields(fieldsArray));
@@ -65,7 +71,7 @@ export function setConfAndFields2(
   if (isRef(detailPreview)) {
     detailPreview = detailPreview.value;
   }
-  detailPreview.option = formCreate.parseJson(conf);
+  detailPreview.option = decodeConf(conf);
   detailPreview.rule = decodeFields(fields);
   if (value) {
     detailPreview.value = value;

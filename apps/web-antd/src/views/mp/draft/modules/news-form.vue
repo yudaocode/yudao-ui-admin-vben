@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, ref } from 'vue';
 
@@ -8,23 +8,23 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, Col, Input, Layout, Row, Textarea } from 'ant-design-vue';
 
+import { createEmptyNewsItem } from '#/api/mp/draft';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
-import { createEmptyNewsItem } from './types';
 
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
   isCreating: boolean;
-  modelValue: NewsItem[] | null;
+  modelValue: MpDraftApi.NewsItem[] | null;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem[]): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem[]): void;
 }>();
 
-const newsList = computed<NewsItem[]>({
+const newsList = computed<MpDraftApi.NewsItem[]>({
   get() {
     return props.modelValue === null
       ? [createEmptyNewsItem()]
@@ -127,6 +127,7 @@ function plusNews() {
               </Button>
             </div>
           </div>
+          <!-- TODO @hw：1）每个文章的选中框太粗了；2）没完全覆盖住文章；；；最好首个文章，和第个文章的情况，都看看 -->
           <div
             class="group relative mx-auto w-full cursor-pointer border-t border-[#eaeaea] bg-white py-[5px]"
             v-if="index > 0"
@@ -141,6 +142,8 @@ function plusNews() {
                 <img class="h-full w-full" :src="news.thumbUrl" />
               </div>
             </div>
+            <!-- TODO @hw：这里的按钮，交互不太对。应该在每个卡片的里面；或者类似公众号现在的交互，放到右侧；。。。复现本周：如果有 2 个文章的时候 -->
+            <!-- TODO @hw：当有 2 个文章的时候，挪到第二个文章的时候，卡片会变大。期望：不变大 -->
             <div
               class="relative -bottom-[25px] hidden text-center group-hover:block"
             >

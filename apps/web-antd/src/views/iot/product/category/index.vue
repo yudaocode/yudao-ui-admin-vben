@@ -14,12 +14,12 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import Form from './modules/ProductCategoryForm.vue';
+import ProductCategoryForm from './modules/product-category-form.vue';
 
 defineOptions({ name: 'IoTProductCategory' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: Form,
+  connectedComponent: ProductCategoryForm,
   destroyOnClose: true,
 });
 
@@ -56,16 +56,11 @@ async function handleDelete(row: IotProductCategoryApi.ProductCategory) {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    showCollapseButton: true,
-    collapsed: true,
   },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
-    pagerConfig: {
-      enabled: true,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {

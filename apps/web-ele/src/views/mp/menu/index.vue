@@ -19,7 +19,7 @@ import {
 import MenuEditor from '#/views/mp/menu/modules/menu-editor.vue';
 import MenuPreviewer from '#/views/mp/menu/modules/menu-previewer.vue';
 
-// Assets for backgrounds
+// TODO @hw：是不是资源的地址，统一下；antd 和 ele，目录不同。建议按照 ele 的方法先；
 import iphoneBackImg from './assets/iphone_backImg.png';
 import menuFootImg from './assets/menu_foot.png';
 import menuHeadImg from './assets/menu_head.png';
@@ -27,12 +27,14 @@ import menuHeadImg from './assets/menu_head.png';
 defineOptions({ name: 'MpMenu' });
 
 // ======================== 列表查询 ========================
+
 const loading = ref(false); // 遮罩层
 const accountId = ref(-1);
 const accountName = ref<string>('');
 const menuList = ref<Menu[]>([]);
 
 // ======================== 菜单操作 ========================
+
 // 当前选中菜单编码：
 //  * 一级（'x'）
 //  * 二级（'x-y'）
@@ -44,6 +46,7 @@ const activeIndex = ref<string>(MENU_NOT_SELECTED);
 const parentIndex = ref(-1);
 
 // ======================== 菜单编辑 ========================
+
 const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
 const isParent = ref<boolean>(true); // 是否一级菜单，控制MenuEditor中name字段长度
 const activeMenu = ref<Menu>({}); // 选中菜单，MenuEditor的modelValue
@@ -60,7 +63,6 @@ const tempSelfObj = ref<{
 });
 const dialogNewsVisible = ref(false); // 跳转图文时的素材选择弹窗
 
-// 创建表单
 const [AccountForm, accountFormApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -304,6 +306,7 @@ onMounted(async () => {
   await nextTick();
   await initAccountId();
 });
+// TODO @hw：这个界面：整理下代码，整体的风格、方法的顺序、注释，参考 antd 哈；
 </script>
 
 <template>

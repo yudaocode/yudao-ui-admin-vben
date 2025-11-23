@@ -41,6 +41,7 @@ const uploadData = reactive({
   type: 'voice',
 });
 
+/** 语音上传前校验 */
 function beforeVoiceUpload(rawFile: UploadRawFile) {
   return useBeforeUpload(UploadType.Voice, 10)(rawFile);
 }
@@ -65,6 +66,7 @@ async function customRequest(options: any) {
 
     const result = await response.json();
 
+    // TODO @hw：if result.code !== 0 return，代码简洁一点。
     if (result.code === 0) {
       // 清空上传时的各种数据
       fileList.value = [];
@@ -85,12 +87,14 @@ async function customRequest(options: any) {
   }
 }
 
+/** 删除语音 */
 function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
 }
 
+/** 选择素材 */
 function selectMaterial(item: Reply) {
   showDialog.value = false;
   reply.value.mediaId = item.mediaId;
@@ -165,7 +169,7 @@ function selectMaterial(item: Reply) {
 </template>
 
 <style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
+/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
 .select-item {
   padding: 10px;
   margin: 0 auto 10px;

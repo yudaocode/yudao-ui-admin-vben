@@ -101,6 +101,7 @@ export function useIotHome() {
   };
 }
 
+// TODO @haohao：是不是删除下哈；
 /** 格式化数字 - 大数字显示为 K/M */
 export function formatNumber(num: number): string {
   if (num >= 1_000_000) {

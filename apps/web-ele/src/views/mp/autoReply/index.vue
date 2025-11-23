@@ -16,8 +16,13 @@ import {
 } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import * as MpAutoReplyApi from '#/api/mp/autoReply';
+import {
+  deleteAutoReply,
+  getAutoReply,
+  getAutoReplyPage,
+} from '#/api/mp/autoReply';
 import { $t } from '#/locales';
+import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Content from './modules/content.vue';
@@ -27,6 +32,30 @@ import { MsgType } from './modules/types';
 defineOptions({ name: 'MpAutoReply' });
 
 const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
+
+const showCreateButton = computed(() => {
+  if (Number(msgType.value) !== MsgType.Follow) {
+    return true;
+  }
+  try {
+    const tableData = gridApi.grid?.getTableData();
+    return (tableData?.tableData?.length || 0) <= 0;
+  } catch {
+    return true;
+  }
+}); // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
+}
+
 /** 切换回复类型 */
 async function onTabChange(tabName: string) {
   msgType.value = tabName;
@@ -43,24 +72,26 @@ async function onTabChange(tabName: string) {
   await gridApi.query();
 }
 
-/** 新增按钮操作 */
+/** 新增自动回复 */
 async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
-
   formModalApi
     .setData({
+      // TODO @hw：这里和 antd 不同，需要 number 下么？
       msgType: msgType.value,
       accountId: formValues.accountId,
     })
     .open();
 }
 
-/** 修改按钮操作 */
+/** 修改自动回复 */
 async function handleEdit(row: any) {
-  const data = (await MpAutoReplyApi.getAutoReply(row.id)) as any;
+  const data = (await getAutoReply(row.id)) as any;
+  // TODO @hw：这里使用 formValues，还是使用 row？
   const formValues = await gridApi.formApi.getValues();
   formModalApi
     .setData({
+      // TODO @hw：这里和 antd 不同，需要 number 下么？
       msgType: msgType.value,
       row: data,
       accountId: formValues.accountId,
@@ -68,14 +99,14 @@ async function handleEdit(row: any) {
     .open();
 }
 
-/** 删除按钮操作 */
+/** 删除自动回复 */
 async function handleDelete(row: any) {
   await ElMessageBox.confirm('是否确认删除此数据?');
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', ['自动回复']),
   });
   try {
-    await MpAutoReplyApi.deleteAutoReply(row.id);
+    await deleteAutoReply(row.id);
     ElMessage.success('删除成功');
     handleRefresh();
   } finally {
@@ -91,8 +122,6 @@ const [FormModal, formModalApi] = useVbenModal({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
-    // 表单值变化时自动提交，这样 accountId 会被正确传递到查询函数
-    submitOnChange: true,
   },
   gridOptions: {
     columns: useGridColumns(Number(msgType.value) as MsgType),
@@ -101,7 +130,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await MpAutoReplyApi.getAutoReplyPage({
+          return await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type: Number(msgType.value) as MsgType,
@@ -109,6 +138,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
+      autoLoad: false,
     },
     rowConfig: {
       keyField: 'id',
@@ -118,25 +148,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
+    // TODO @hw：这里要调整下，linter 报错；
   } as VxeTableGridOptions<any>,
-});
-
-/** 刷新表格 */
-function handleRefresh() {
-  gridApi.query();
-}
-
-// 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
-const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== MsgType.Follow) {
-    return true;
-  }
-  try {
-    const tableData = gridApi.grid?.getTableData();
-    return (tableData?.tableData?.length || 0) <= 0;
-  } catch {
-    return true;
-  }
 });
 </script>
 
@@ -147,8 +160,10 @@ const showCreateButton = computed(() => {
     </template>
 
     <FormModal @success="handleRefresh" />
-    <Grid table-title="自动回复列表">
-      <!-- 在工具栏上方放置 Tab 切换 -->
+    <Grid>
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
       <template #toolbar-actions>
         <ElTabs
           v-model="msgType"

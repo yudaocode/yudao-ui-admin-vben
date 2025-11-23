@@ -1,13 +1,9 @@
-export * from './constants';
-
-export * from './wx-account-select';
-export * from './wx-location';
-export * from './wx-material-select';
-export * from './wx-msg';
-export * from './wx-music';
-export * from './wx-news';
-export * from './wx-reply';
-export * from './wx-video-play';
-export * from './wx-voice-play';
-
-// TODO @hw：要不使用 export { default as WxAccountSelect } from './account-select.vue'; 形式；
+export { default as WxAccountSelect } from './wx-account-select/wx-account-select.vue';
+export { default as WxLocation } from './wx-location/wx-location.vue';
+export { default as WxMaterialSelect } from './wx-material-select/wx-material-select.vue';
+export { default as WxMsg } from './wx-msg/msg.vue';
+export { default as WxMusic } from './wx-music/wx-music.vue';
+export { default as WxNews } from './wx-news/wx-news.vue';
+export { default as WxReply } from './wx-reply/wx-reply.vue';
+export { default as WxVideoPlayer } from './wx-video-play/wx-video-play.vue';
+export { default as WxVoicePlayer } from './wx-voice-play/wx-voice-play.vue';

@@ -3,14 +3,12 @@ import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, AutoReplyMsgType as MsgType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { WxReply } from '#/views/mp/components';
 
-import { MsgType } from './types';
-
-// TODO @芋艿：要不要使用统一枚举？
+// TODO @hw：要不要使用统一枚举？
 const RequestMessageTypes = new Set([
   'image',
   'link',
@@ -143,10 +141,6 @@ export function useFormSchema(msgType: MsgType): VbenFormSchema[] {
     fieldName: 'reply',
     label: '回复消息',
     component: markRaw(WxReply),
-    // TODO @hw：这里注释，要不要删除掉？
-    // componentProps: {
-    //   modelValue: { type: 'video', content: '12456' },
-    // },
     modelPropName: 'modelValue',
   });
   return schema;
