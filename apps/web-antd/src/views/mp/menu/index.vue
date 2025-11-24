@@ -134,20 +134,20 @@ function menuListToFrontend(list: any[]) {
   list.forEach((item: RawMenu) => {
     const menu: any = {
       ...item,
-    };
-    menu.reply = {
-      type: item.replyMessageType,
-      accountId: item.accountId,
-      content: item.replyContent,
-      mediaId: item.replyMediaId,
-      url: item.replyMediaUrl,
-      title: item.replyTitle,
-      description: item.replyDescription,
-      thumbMediaId: item.replyThumbMediaId,
-      thumbMediaUrl: item.replyThumbMediaUrl,
-      articles: item.replyArticles,
-      musicUrl: item.replyMusicUrl,
-      hqMusicUrl: item.replyHqMusicUrl,
+      reply: {
+        type: item.replyMessageType,
+        accountId: item.accountId,
+        content: item.replyContent,
+        mediaId: item.replyMediaId,
+        url: item.replyMediaUrl,
+        title: item.replyTitle,
+        description: item.replyDescription,
+        thumbMediaId: item.replyThumbMediaId,
+        thumbMediaUrl: item.replyThumbMediaUrl,
+        articles: item.replyArticles,
+        musicUrl: item.replyMusicUrl,
+        hqMusicUrl: item.replyHqMusicUrl,
+      },
     };
     result.push(menu as RawMenu);
   });
@@ -275,23 +275,22 @@ function menuListToBackend() {
 /** 将前端的 menu，转换成后端接收的 menu */
 // TODO: @芋艿，需要根据后台 API 删除不需要的字段
 function menuToBackend(menu: any) {
-  const result = {
+  return {
     ...menu,
     children: undefined, // 不处理子节点
     reply: undefined, // 稍后复制
+    replyMessageType: menu.reply.type,
+    replyContent: menu.reply.content,
+    replyMediaId: menu.reply.mediaId,
+    replyMediaUrl: menu.reply.url,
+    replyTitle: menu.reply.title,
+    replyDescription: menu.reply.description,
+    replyThumbMediaId: menu.reply.thumbMediaId,
+    replyThumbMediaUrl: menu.reply.thumbMediaUrl,
+    replyArticles: menu.reply.articles,
+    replyMusicUrl: menu.reply.musicUrl,
+    replyHqMusicUrl: menu.reply.hqMusicUrl,
   };
-  result.replyMessageType = menu.reply.type;
-  result.replyContent = menu.reply.content;
-  result.replyMediaId = menu.reply.mediaId;
-  result.replyMediaUrl = menu.reply.url;
-  result.replyTitle = menu.reply.title;
-  result.replyDescription = menu.reply.description;
-  result.replyThumbMediaId = menu.reply.thumbMediaId;
-  result.replyThumbMediaUrl = menu.reply.thumbMediaUrl;
-  result.replyArticles = menu.reply.articles;
-  result.replyMusicUrl = menu.reply.musicUrl;
-  result.replyHqMusicUrl = menu.reply.hqMusicUrl;
-  return result;
 }
 </script>
 

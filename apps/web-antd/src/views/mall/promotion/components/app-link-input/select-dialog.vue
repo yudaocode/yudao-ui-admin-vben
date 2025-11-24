@@ -99,8 +99,8 @@ function handleAppLinkSelected(appLink: AppLink) {
 /**
  * 处理右侧链接列表滚动
  *
- * @param {object} param0 滚动事件参数
- * @param {number} param0.scrollTop 滚动条的位置
+ * @param {Event} event 滚动事件
+ * @param {number} event.target.scrollTop 滚动条的位置
  */
 function handleScroll(event: Event) {
   const scrollTop = (event.target as HTMLDivElement).scrollTop;

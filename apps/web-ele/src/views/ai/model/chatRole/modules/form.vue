@@ -13,7 +13,6 @@ import {
   getChatRole,
   updateChatRole,
 } from '#/api/ai/model/chatRole';
-import {} from '#/api/bpm/model';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

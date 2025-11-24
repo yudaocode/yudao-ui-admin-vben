@@ -112,7 +112,7 @@ function setDuration(type, val) {
   // 组装ISO 8601字符串
   let d = isoDuration.value;
   if (d.includes(type)) {
-    d = d.replace(new RegExp(`\\d+${type}`), val + type);
+    d = d.replace(new RegExp(String.raw`\d+${type}`), val + type);
   } else {
     d += val + type;
   }

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { UploadRawFile } from 'element-plus';
-
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 

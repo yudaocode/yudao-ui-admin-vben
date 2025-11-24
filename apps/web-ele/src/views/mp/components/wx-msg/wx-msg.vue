@@ -106,7 +106,7 @@ async function getPage(page: any, params: any = null) {
 
   const scrollHeight = msgDivRef.value?.scrollHeight ?? 0;
   // 处理数据
-  const data = dataTemp.list.reverse();
+  const data = dataTemp.list.toReversed();
   list.value = [...data, ...list.value];
   loading.value = false;
   if (data.length < queryParams.pageSize || data.length === 0) {

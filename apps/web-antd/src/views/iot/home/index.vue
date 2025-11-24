@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import {ComparisonCard, Page} from '@vben/common-ui';
+// TODO @芋艿
+import type { StatsData } from './data';
 
-import {Col, Row} from 'ant-design-vue';
-import {onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 
-import {getStatisticsSummary} from '#/api/iot/statistics';
+import { ComparisonCard, Page } from '@vben/common-ui';
 
-import {defaultStatsData, type StatsData} from './data';
+import { Col, Row } from 'ant-design-vue';
+
+import { getStatisticsSummary } from '#/api/iot/statistics';
+
+import { defaultStatsData } from './data';
 import DeviceCountCard from './modules/device-count-card.vue';
 import DeviceStateCountCard from './modules/device-state-count-card.vue';
 import MessageTrendCard from './modules/message-trend-card.vue';

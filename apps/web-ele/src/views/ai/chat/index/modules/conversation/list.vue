@@ -97,7 +97,7 @@ async function getChatConversationList() {
     // 1.1 获取 对话数据
     conversationList.value = await getChatConversationMyList();
     // 1.2 排序
-    conversationList.value.sort((a, b) => {
+    conversationList.value.toSorted((a, b) => {
       return Number(b.createTime) - Number(a.createTime);
     });
     // 1.3 没有任何对话情况

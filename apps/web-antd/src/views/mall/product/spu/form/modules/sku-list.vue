@@ -126,7 +126,8 @@ function validateSku() {
 /**
  * 选择时触发
  *
- * @param records 传递过来的选中的 sku 是一个数组
+ * @param {object} param0 参数对象
+ * @param {MallSpuApi.Sku[]} param0.records 传递过来的选中的 sku 是一个数组
  */
 function handleSelectionChange({ records }: { records: MallSpuApi.Sku[] }) {
   emit('selectionChange', records);

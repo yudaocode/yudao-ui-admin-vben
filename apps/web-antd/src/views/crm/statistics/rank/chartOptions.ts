@@ -6,7 +6,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -54,7 +54,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -102,7 +102,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -150,7 +150,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -198,7 +198,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -246,7 +246,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -294,7 +294,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,
@@ -342,7 +342,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
       return {
         dataset: {
           dimensions: ['nickname', 'count'],
-          source: cloneDeep(res).reverse(),
+          source: cloneDeep(res).toReversed(),
         },
         grid: {
           left: 20,

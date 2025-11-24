@@ -105,6 +105,7 @@ function handleAdd() {
 
 /** 处理删除 */
 function handleDelete(row: ErpStockOutApi.StockOutItem) {
+  // TODO @芋艿
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index !== -1) {
     tableData.value.splice(index, 1);
@@ -271,7 +272,7 @@ onMounted(async () => {
     </template>
 
     <template #bottom>
-      <div class="border-border bg-muted mt-2 rounded border p-2">
+      <div class="mt-2 rounded border border-border bg-muted p-2">
         <div class="text-muted-foreground flex justify-between text-sm">
           <span class="text-foreground font-medium">合计：</span>
           <div class="flex space-x-4">
