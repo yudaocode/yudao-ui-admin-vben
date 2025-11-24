@@ -3,7 +3,7 @@ import type { MpFreePublishApi } from '#/api/mp/freePublish';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { Image, message, Typography } from 'ant-design-vue';
+import { ElImage, ElLink, ElLoading } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFreePublish, getFreePublishPage } from '#/api/mp/freePublish';
@@ -11,6 +11,7 @@ import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
+
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -21,13 +22,13 @@ function handleAccountChange(accountId: number) {
   gridApi.formApi.setValues({ accountId });
   gridApi.formApi.submitForm();
 }
+
 /** 删除文章 */
 async function handleDelete(row: MpFreePublishApi.FreePublish) {
   // 二次确认提示
   await confirm($t('ui.actionMessage.deleteConfirm', ['文章']));
-  const hideLoading = message.loading({
-    content: '删除中...',
-    duration: 0,
+  const hideLoading = ElLoading.service({
+    text: '删除中...',
   });
   try {
     const formValues = await gridApi.formApi.getValues();
@@ -106,10 +107,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-if="row.content?.newsItem && row.content.newsItem.length > 0"
           class="flex flex-col items-center justify-center gap-1"
         >
-          <Image
+          <ElImage
             v-for="(item, index) in row.content.newsItem"
             :key="index"
             :src="item.picUrl || item.thumbUrl"
+            :preview-src-list="[item.picUrl || item.thumbUrl]"
             class="h-36 !w-[300px] rounded object-cover"
             :alt="`文章 ${index + 1} 封面图`"
           />
@@ -126,9 +128,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             :key="index"
             class="flex h-36 items-center justify-center"
           >
-            <Typography.Link :href="(item as any).url" target="_blank">
+            <ElLink :href="(item as any).url" target="_blank">
               {{ item.title }}
-            </Typography.Link>
+            </ElLink>
           </div>
         </div>
         <span v-else class="text-gray-400">-</span>
@@ -138,8 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '删除',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['mp:free-publish:delete'],
               popConfirm: {
