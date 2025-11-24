@@ -41,7 +41,7 @@ catalogs:
       version: 3.2.33
     '@iconify/json':
       specifier: ^2.2.406
-      version: 2.2.409
+      version: 2.2.410
     '@iconify/tailwind':
       specifier: ^1.2.0
       version: 1.2.0
@@ -1322,7 +1322,7 @@ importers:
     dependencies:
       '@iconify/json':
         specifier: 'catalog:'
-        version: 2.2.409
+        version: 2.2.410
       '@iconify/tailwind':
         specifier: 'catalog:'
         version: 1.2.0
@@ -3912,14 +3912,14 @@ packages:
   '@iconify-json/octicon@1.2.19':
     resolution: {integrity: sha512-q1a9fpyg0Cw/Bt9hEfP86eJlgKtMXzNIRQnsbPZi1MBoHlPyi056TdzV72zY/F+oJSJ8b5Ub8njL2fWs/iLJAg==}
 
-  '@iconify-json/simple-icons@1.2.59':
-    resolution: {integrity: sha512-fYx/InyQsWFW4wVxWka3CGDJ6m/fXoTqWBSl+oA3FBXO5RhPAb6S3Y5bRgCPnrYevErH8VjAL0TZevIqlN2PhQ==}
+  '@iconify-json/simple-icons@1.2.60':
+    resolution: {integrity: sha512-KlwLBKCdMCqfySdkAA+jehdUx6VSjnj6lvzQKus7HjkPSQ6QP58d6xiptkIp0jd/Hw3PW2++nRuGvCvSYaF0Mg==}
 
   '@iconify-json/vscode-icons@1.2.36':
     resolution: {integrity: sha512-hs17ocmWK5pGnF5KgFRgHBZVRnMVAIpwPDDvLWSwRiM/uHwIS0Jo0y93DvcHXEsP+d3sqogTGhgkgj3on3eabQ==}
 
-  '@iconify/json@2.2.409':
-    resolution: {integrity: sha512-PnTFu5JSM+GTL2mPwLBi6UDFiQvqG+OVITz9JNfZgSjFuWcF67LhedfjKd4jO/0EgLQLl0StjGbDEu1B19V5vw==}
+  '@iconify/json@2.2.410':
+    resolution: {integrity: sha512-0IhW9Sfudf3cPQHoCwr2gJMMUUkLW01WIkGoP9PbwVKXl1I/KTRHtM9IchLufT8M86QHBWRcinApzkL60TH9vA==}
 
   '@iconify/tailwind@1.2.0':
     resolution: {integrity: sha512-KgpIHWOTcRYw1XcoUqyNSrmYyfLLqZYu3AmP8zdfLk0F5TqRO8YerhlvlQmGfn7rJXgPeZN569xPAJnJ53zZxA==}
@@ -13833,7 +13833,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.59':
+  '@iconify-json/simple-icons@1.2.60':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -13841,7 +13841,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify/json@2.2.409':
+  '@iconify/json@2.2.410':
     dependencies:
       '@iconify/types': 2.0.0
       pathe: 2.0.3
@@ -21943,7 +21943,7 @@ snapshots:
     dependencies:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.44.0)(search-insights@2.17.3)
-      '@iconify-json/simple-icons': 1.2.59
+      '@iconify-json/simple-icons': 1.2.60
       '@shikijs/core': 2.5.0
       '@shikijs/transformers': 2.5.0
       '@shikijs/types': 2.5.0
