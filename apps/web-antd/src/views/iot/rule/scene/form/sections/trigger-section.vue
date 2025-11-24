@@ -118,7 +118,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card class="rounded-8px mb-10px border-primary border" shadow="never">
+  <Card class="rounded-8px mb-10px border border-primary" shadow="never">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
@@ -201,7 +201,7 @@ onMounted(() => {
               class="gap-16px flex flex-col"
             >
               <div
-                class="gap-8px p-12px px-16px rounded-6px border-primary bg-background flex items-center border"
+                class="gap-8px p-12px px-16px rounded-6px flex items-center border border-primary bg-background"
               >
                 <IconifyIcon
                   icon="lucide:timer"
@@ -214,7 +214,7 @@ onMounted(() => {
 
               <!-- CRON 表达式配置 -->
               <div
-                class="p-16px rounded-6px border-primary bg-background border"
+                class="p-16px rounded-6px border border-primary bg-background"
               >
                 <Form.Item label="CRON表达式" required>
                   <CronTab

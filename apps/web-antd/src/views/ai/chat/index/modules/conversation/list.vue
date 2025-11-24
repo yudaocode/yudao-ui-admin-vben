@@ -414,7 +414,7 @@ onMounted(async () => {
 
     <!-- 左底部：工具栏 -->
     <div
-      class="bg-card absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between px-5 leading-9 text-gray-400 shadow-sm"
+      class="absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between bg-card px-5 leading-9 text-gray-400 shadow-sm"
     >
       <div
         class="flex cursor-pointer items-center text-gray-400"

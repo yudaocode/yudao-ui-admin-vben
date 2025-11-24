@@ -553,17 +553,17 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
   .toolbar-wrapper {
     padding: 16px;
-    background-color: hsl(var(--card) / 0.9);
+    background-color: hsl(var(--card) / 90%);
+    border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
-    border: 1px solid hsl(var(--border) / 0.6);
   }
 
   .chart-container,
   .table-container {
     padding: 16px;
     background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
-    border: 1px solid hsl(var(--border) / 0.6);
   }
 }
 </style>

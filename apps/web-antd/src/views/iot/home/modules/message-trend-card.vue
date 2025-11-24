@@ -140,9 +140,9 @@ onMounted(() => {
         <span class="text-base font-medium text-gray-600">消息量统计</span>
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-3">
-            <span class="whitespace-nowrap text-sm text-gray-500"
-              >时间范围</span
-            >
+            <span class="whitespace-nowrap text-sm text-gray-500">
+              时间范围
+            </span>
             <ShortcutDateRangePicker @change="handleDateRangeChange" />
           </div>
           <div class="flex items-center gap-2">

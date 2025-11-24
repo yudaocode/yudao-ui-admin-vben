@@ -259,7 +259,7 @@ onMounted(async () => {
               分片-{{ index + 1 }} · {{ segment.contentLength || 0 }} 字符数 ·
               {{ segment.tokens || 0 }} Token
             </div>
-            <div class="bg-card rounded-md p-2">
+            <div class="rounded-md bg-card p-2">
               {{ segment.content }}
             </div>
           </div>

@@ -234,7 +234,7 @@ onMounted(async () => {
           <span class="text-gray-500">编号：{{ id || '-' }}</span>
           <IconifyIcon
             icon="lucide:printer"
-            class="hover:text-primary cursor-pointer"
+            class="cursor-pointer hover:text-primary"
             @click="handlePrint"
           />
         </div>

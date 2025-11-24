@@ -101,7 +101,7 @@ function calculateWidth() {
         borderBottomLeftRadius: `${property.borderRadiusBottom}px`,
         borderBottomRightRadius: `${property.borderRadiusBottom}px`,
       }"
-      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
+      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-card"
     >
       <!-- 角标 -->
       <div

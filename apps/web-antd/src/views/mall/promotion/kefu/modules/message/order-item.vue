@@ -78,7 +78,7 @@ function formatOrderStatus(order: any) {
       <div class="flex flex-row text-sm">
         <div>订单号：</div>
         <span
-          class="text-primary cursor-pointer hover:underline"
+          class="cursor-pointer text-primary hover:underline"
           @click="openDetail(getMessageContent.id)"
         >
           {{ getMessageContent.no }}

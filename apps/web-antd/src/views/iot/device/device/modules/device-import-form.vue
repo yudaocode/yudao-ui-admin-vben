@@ -125,7 +125,7 @@ async function handleDownloadTemplate() {
   <Modal :title="getTitle" class="w-1/3">
     <Form class="mx-4" />
     <div class="mx-4 mt-4 text-center">
-      <a class="text-primary cursor-pointer" @click="handleDownloadTemplate">
+      <a class="cursor-pointer text-primary" @click="handleDownloadTemplate">
         下载导入模板
       </a>
     </div>

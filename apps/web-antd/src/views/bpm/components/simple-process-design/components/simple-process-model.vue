@@ -200,7 +200,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="simple-process-model-container">
-    <div class="bg-card absolute right-0 top-0">
+    <div class="absolute right-0 top-0 bg-card">
       <Row type="flex" justify="end">
         <ButtonGroup key="scale-control">
           <Button v-if="!readonly" @click="exportJson">

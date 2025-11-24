@@ -66,7 +66,7 @@ function handleClick(doc: any) {
       <div
         v-for="(doc, index) in documentList"
         :key="index"
-        class="bg-card cursor-pointer rounded-lg p-2 px-3 transition-all hover:bg-blue-50"
+        class="cursor-pointer rounded-lg bg-card p-2 px-3 transition-all hover:bg-blue-50"
         @click="handleClick(doc)"
       >
         <div class="mb-1 text-sm text-gray-600">

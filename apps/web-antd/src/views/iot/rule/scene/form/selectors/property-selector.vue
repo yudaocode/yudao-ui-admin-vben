@@ -41,6 +41,7 @@ const emit = defineEmits<{
   (e: 'change', value: { config: any; type: string }): void;
 }>();
 
+// TODO 芋艿
 /** 属性选择器内部使用的统一数据结构 */
 interface PropertySelectorItem {
   identifier: string;
@@ -296,7 +297,7 @@ watch(
           :value="property.identifier"
         >
           <div class="py-2px flex w-full items-center justify-between">
-            <span class="text-14px font-500 text-primary flex-1 truncate">
+            <span class="text-14px font-500 flex-1 truncate text-primary">
               {{ property.name }}
             </span>
             <Tag
@@ -351,10 +352,10 @@ watch(
 
         <div class="space-y-8px ml-24px">
           <div class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               标识符：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ selectedProperty.identifier }}
             </span>
           </div>
@@ -363,28 +364,28 @@ watch(
             v-if="selectedProperty.description"
             class="gap-8px flex items-start"
           >
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               描述：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ selectedProperty.description }}
             </span>
           </div>
 
           <div v-if="selectedProperty.unit" class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               单位：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ selectedProperty.unit }}
             </span>
           </div>
 
           <div v-if="selectedProperty.range" class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               取值范围：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ selectedProperty.range }}
             </span>
           </div>
@@ -397,10 +398,10 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               访问模式：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ getAccessModeLabel(selectedProperty.accessMode) }}
             </span>
           </div>
@@ -412,10 +413,10 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               事件类型：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ getEventTypeLabel(selectedProperty.eventType) }}
             </span>
           </div>
@@ -427,10 +428,10 @@ watch(
             "
             class="gap-8px flex items-start"
           >
-            <span class="text-12px min-w-60px text-secondary flex-shrink-0">
+            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
               调用类型：
             </span>
-            <span class="text-12px text-primary flex-1">
+            <span class="text-12px flex-1 text-primary">
               {{ getThingModelServiceCallTypeLabel(selectedProperty.callType) }}
             </span>
           </div>

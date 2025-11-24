@@ -81,7 +81,7 @@ function handleAuthInfoDialogClose() {
         <Card class="h-full">
           <template #title>
             <div class="flex items-center">
-              <IconifyIcon icon="ep:info-filled" class="text-primary mr-2" />
+              <IconifyIcon icon="ep:info-filled" class="mr-2 text-primary" />
               <span>设备信息</span>
             </div>
           </template>
@@ -141,7 +141,7 @@ function handleAuthInfoDialogClose() {
           <template #title>
             <div class="flex items-center justify-between">
               <div class="flex items-center">
-                <IconifyIcon icon="ep:location" class="text-primary mr-2" />
+                <IconifyIcon icon="ep:location" class="mr-2 text-primary" />
                 <span>设备位置</span>
               </div>
             </div>

@@ -153,7 +153,7 @@ function onActionTypeChange(action: Action, type: any) {
 </script>
 
 <template>
-  <Card class="border-primary rounded-lg border" shadow="never">
+  <Card class="rounded-lg border border-primary" shadow="never">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
@@ -275,14 +275,14 @@ function onActionTypeChange(action: Action, type: any) {
                 action.type ===
                 IotRuleSceneActionTypeEnum.ALERT_TRIGGER.toString()
               "
-              class="border-border bg-fill-color-blank rounded-lg border p-4"
+              class="bg-fill-color-blank rounded-lg border border-border p-4"
             >
               <div class="mb-2 flex items-center gap-2">
-                <IconifyIcon icon="ep:warning" class="text-warning text-base" />
-                <span class="font-600 text-primary text-sm">触发告警</span>
+                <IconifyIcon icon="ep:warning" class="text-base text-warning" />
+                <span class="font-600 text-sm text-primary">触发告警</span>
                 <Tag size="small" type="warning">自动执行</Tag>
               </div>
-              <div class="text-secondary text-xs leading-relaxed">
+              <div class="text-xs leading-relaxed text-secondary">
                 当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
                 告警配置] 管理。
               </div>

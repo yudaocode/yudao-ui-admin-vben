@@ -32,7 +32,7 @@ function handleSelect(item: Emoji) {
             v-for="(item, index) in emojiList"
             :key="index"
             :title="item.name"
-            class="w-1/10 border-primary m-2 flex cursor-pointer items-center justify-center border border-solid p-2"
+            class="w-1/10 m-2 flex cursor-pointer items-center justify-center border border-solid border-primary p-2"
             @click="handleSelect(item)"
           >
             <img :src="item.url" class="size-4" />

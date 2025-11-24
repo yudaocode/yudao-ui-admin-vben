@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="bg-background flex flex-shrink-0 flex-col border-r border-gray-200 p-4"
+    class="flex flex-shrink-0 flex-col border-r border-gray-200 bg-background p-4"
   >
     <div class="flex h-12 w-full flex-row items-center justify-between">
       <span class="text-lg font-bold">会话记录</span>
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
     <ul
       v-show="showRightMenu"
       :style="rightMenuStyle"
-      class="bg-background absolute z-[9999] m-0 w-32 list-none rounded-xl p-1 shadow-md"
+      class="absolute z-[9999] m-0 w-32 list-none rounded-xl bg-background p-1 shadow-md"
     >
       <li
         v-show="!rightClickConversation.adminPinned"
