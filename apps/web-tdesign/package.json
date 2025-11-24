@@ -44,14 +44,11 @@
     "@vueuse/core": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
-    "lodash-es": "^4.17.21",
+    "es-toolkit": "catalog:",
     "pinia": "catalog:",
-    "tdesign-vue-next": "^1.17.1",
+    "tdesign-vue-next": "catalog:",
     "tinymce": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
-  },
-  "devDependencies": {
-    "@types/lodash-es": "^4.17.12"
   }
 }
