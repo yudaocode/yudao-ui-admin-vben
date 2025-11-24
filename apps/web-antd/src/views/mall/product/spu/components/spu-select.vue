@@ -2,6 +2,7 @@
 import type { PropertyAndValues } from './type';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallCategoryApi } from '#/api/mall/product/category';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed, onMounted, ref } from 'vue';
@@ -38,12 +39,8 @@ interface SpuSelectProps {
 }
 
 // ============ 数据状态 ============
-const categoryList = ref<Array<{ id: number; name: string; parentId: number }>>(
-  [],
-); // 分类列表
-const categoryTreeList = ref<
-  Array<{ id: number; name: string; parentId: number }>
->([]); // 分类树
+const categoryList = ref<MallCategoryApi.Category[]>([]); // 分类列表
+const categoryTreeList = ref<MallCategoryApi.Category[]>([]); // 分类树
 const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const spuData = ref<MallSpuApi.Spu>(); // 当前展开的商品详情
 const isExpand = ref(false); // 控制 SKU 列表显示
@@ -67,16 +64,24 @@ function selectSku(val: MallSpuApi.Sku[]) {
   }
   if (props.radio) {
     // 只选择一个
-    selectedSkuIds.value = [val.map((sku) => sku.id!)[0]];
+    const firstId = val[0]?.id;
+    if (firstId !== undefined) {
+      selectedSkuIds.value = [firstId];
+    }
     // 如果大于1个
     if (val.length > 1) {
       // 清空选择
       skuTable?.clearSelection();
       // 变更为最后一次选择的
-      skuTable?.toggleRowSelection(val.pop(), true);
+      const lastItem = val.pop();
+      if (lastItem) {
+        skuTable?.toggleRowSelection(lastItem, true);
+      }
     }
   } else {
-    selectedSkuIds.value = val.map((sku) => sku.id!);
+    selectedSkuIds.value = val
+      .map((sku) => sku.id!)
+      .filter((id): id is number => id !== undefined);
   }
 }
 
@@ -87,7 +92,10 @@ function selectSpu(val: MallSpuApi.Spu[]) {
     return;
   }
   // 只选择一个
-  selectedSpuId.value = val.map((spu) => spu.id!)[0];
+  const firstId = val[0]?.id;
+  if (firstId !== undefined) {
+    selectedSpuId.value = firstId;
+  }
   // 切换选择 spu 如果有选择的 sku 则清空,确保选择的 sku 是对应的 spu 下面的
   if (selectedSkuIds.value.length > 0) {
     selectedSkuIds.value = [];
@@ -119,8 +127,17 @@ async function expandChange(
   if (selectedSpuId.value !== 0) {
     if (row.id !== selectedSpuId.value) {
       message.warning('你已选择商品请先取消');
-      // 阻止展开，保持当前选中行的展开状态
-      await gridApi.grid.setExpandRowKeys([selectedSpuId.value]);
+      // 阻止展开，通过重新设置展开状态来保持当前选中行的展开
+      if (row.id !== undefined) {
+        const tableData = gridApi.grid.getTableData().fullData;
+        const selectedRow = tableData.find(
+          (item: MallSpuApi.Spu) => item.id === selectedSpuId.value,
+        );
+        if (selectedRow) {
+          // 关闭当前行，重新展开选中行
+          gridApi.grid.setRowExpand(selectedRow, true);
+        }
+      }
       return;
     }
     // 如果已展开 skuList 则选择此对应的 spu 不需要重新获取渲染 skuList
@@ -132,28 +149,36 @@ async function expandChange(
   propertyList.value = [];
   isExpand.value = false;
   if (expandedRows?.length === 0) {
-    // 如果展开个数为 0
-    expandRowKeys.value = [];
+    // 如果展开个数为 0，直接返回
     return;
   }
   // 获取 SPU 详情
-  const res = (await getSpu(row.id as number)) as MallSpuApi.Spu;
+  if (row.id === undefined) {
+    return;
+  }
+  const res = (await getSpu(row.id)) as MallSpuApi.Spu;
   // 注意：API 返回的价格应该已经是分为单位，无需转换
   // 如果 API 返回的是元，则需要转换为分：
   res.skus?.forEach((item) => {
-    if (item.price) item.price = Math.round(item.price * 100);
-    if (item.marketPrice) item.marketPrice = Math.round(item.marketPrice * 100);
-    if (item.costPrice) item.costPrice = Math.round(item.costPrice * 100);
-    if (item.firstBrokeragePrice)
+    if (typeof item.price === 'number') {
+      item.price = Math.round(item.price * 100);
+    }
+    if (typeof item.marketPrice === 'number') {
+      item.marketPrice = Math.round(item.marketPrice * 100);
+    }
+    if (typeof item.costPrice === 'number') {
+      item.costPrice = Math.round(item.costPrice * 100);
+    }
+    if (typeof item.firstBrokeragePrice === 'number') {
       item.firstBrokeragePrice = Math.round(item.firstBrokeragePrice * 100);
-    if (item.secondBrokeragePrice)
+    }
+    if (typeof item.secondBrokeragePrice === 'number') {
       item.secondBrokeragePrice = Math.round(item.secondBrokeragePrice * 100);
+    }
   });
   propertyList.value = getPropertyList(res);
   spuData.value = res;
   isExpand.value = true;
-  // 设置展开行（通过 grid API）
-  await gridApi.grid.setExpandRowKeys([row.id!]);
 }
 
 /** 确认选择时的触发事件 */
@@ -222,11 +247,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   },
   gridEvents: {
-    checkboxChange: ({ records }) => {
+    checkboxChange: ({ records }: { records: unknown[] }) => {
       selectSpu(records as MallSpuApi.Spu[]);
     },
-    expandChange: ({ row, expandedRows }) => {
-      expandChange(row as MallSpuApi.Spu, expandedRows as MallSpuApi.Spu[]);
+    toggleRowExpand: ({
+      row,
+      expanded,
+    }: {
+      expanded: boolean;
+      row: unknown;
+    }) => {
+      if (expanded) {
+        expandChange(row as MallSpuApi.Spu, [row as MallSpuApi.Spu]);
+      } else {
+        expandChange(row as MallSpuApi.Spu, []);
+      }
     },
   },
 });
@@ -238,7 +273,11 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       await gridApi.grid.clearCheckboxRow();
-      await gridApi.grid.setExpandRowKeys([]);
+      // 关闭所有展开的行
+      const tableData = gridApi.grid.getTableData().fullData;
+      tableData.forEach((row: MallSpuApi.Spu) => {
+        gridApi.grid.setRowExpand(row, false);
+      });
       selectedSpuId.value = 0;
       selectedSkuIds.value = [];
       spuData.value = undefined;
@@ -261,7 +300,11 @@ defineExpose({
 /** 初始化分类数据 */
 onMounted(async () => {
   categoryList.value = await getCategoryList({});
-  categoryTreeList.value = handleTree(categoryList.value, 'id', 'parentId');
+  categoryTreeList.value = handleTree(
+    categoryList.value,
+    'id',
+    'parentId',
+  ) as MallCategoryApi.Category[];
 });
 </script>
 

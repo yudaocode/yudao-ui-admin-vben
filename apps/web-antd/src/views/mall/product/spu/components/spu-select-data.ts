@@ -14,7 +14,7 @@ import { getRangePickerDefaultProps } from '#/utils';
  * @description: 列表的搜索表单
  */
 export function useGridFormSchema(
-  categoryTreeList: Ref<MallCategoryApi.Category[]>,
+  categoryTreeList: Ref<MallCategoryApi.Category[] | unknown[]>,
 ): VbenFormSchema[] {
   return [
     {
