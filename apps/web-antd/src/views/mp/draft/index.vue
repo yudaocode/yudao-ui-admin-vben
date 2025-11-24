@@ -72,12 +72,12 @@ async function handleDelete(row: MpDraftApi.DraftArticle) {
     return;
   }
   const hideLoading = message.loading({
-    content: '删除中...',
+    content: $t('ui.actionMessage.deleting'),
     duration: 0,
   });
   try {
     await deleteDraft(accountId, row.mediaId);
-    message.success('删除成功');
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
