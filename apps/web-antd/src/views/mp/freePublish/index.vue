@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpFreePublishApi } from '#/api/mp/freePublish';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Image, message, Typography } from 'ant-design-vue';
 
@@ -11,6 +12,7 @@ import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
+
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -21,20 +23,22 @@ function handleAccountChange(accountId: number) {
   gridApi.formApi.setValues({ accountId });
   gridApi.formApi.submitForm();
 }
+
 /** 删除文章 */
 async function handleDelete(row: MpFreePublishApi.FreePublish) {
-  // 二次确认提示
-  await confirm($t('ui.actionMessage.deleteConfirm', ['文章']));
+  const formValues = await gridApi.formApi.getValues();
+  const accountId = formValues.accountId;
+  if (!accountId) {
+    message.warning('请先选择公众号');
+    return;
+  }
   const hideLoading = message.loading({
-    content: '删除中...',
+    content: $t('ui.actionMessage.deleting'),
     duration: 0,
   });
   try {
-    const formValues = await gridApi.formApi.getValues();
-    const accountId = formValues.accountId;
     await deleteFreePublish(accountId, row.articleId!);
-    message.success($t('ui.actionMessage.deleteSuccess', ['文章']));
-    // 刷新列表
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -73,6 +77,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
+          // TODO @jawe：Article 类型，报错；
           return {
             list: res.list as unknown as Article[],
             total: res.total,

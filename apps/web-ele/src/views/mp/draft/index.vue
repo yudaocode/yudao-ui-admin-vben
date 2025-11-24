@@ -72,11 +72,11 @@ async function handleDelete(row: MpDraftApi.DraftArticle) {
     return;
   }
   const hideLoading = ElLoading.service({
-    text: '删除中...',
+    text: $t('ui.actionMessage.deleting'),
   });
   try {
     await deleteDraft(accountId, row.mediaId);
-    ElMessage.success('删除成功');
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading.close();

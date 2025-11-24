@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpFreePublishApi } from '#/api/mp/freePublish';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
-import { ElImage, ElLink, ElLoading } from 'element-plus';
+import { ElImage, ElLink, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFreePublish, getFreePublishPage } from '#/api/mp/freePublish';
@@ -25,20 +26,21 @@ function handleAccountChange(accountId: number) {
 
 /** 删除文章 */
 async function handleDelete(row: MpFreePublishApi.FreePublish) {
-  // 二次确认提示
-  await confirm($t('ui.actionMessage.deleteConfirm', ['文章']));
-  const hideLoading = ElLoading.service({
-    text: '删除中...',
+  const formValues = await gridApi.formApi.getValues();
+  const accountId = formValues.accountId;
+  if (!accountId) {
+    ElMessage.warning('请先选择公众号');
+    return;
+  }
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting'),
   });
   try {
-    const formValues = await gridApi.formApi.getValues();
-    const accountId = formValues.accountId;
     await deleteFreePublish(accountId, row.articleId!);
-    message.success($t('ui.actionMessage.deleteSuccess', ['文章']));
-    // 刷新列表
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -74,6 +76,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
+          // TODO @jawe：Article 类型，报错；
           return {
             list: res.list as unknown as Article[],
             total: res.total,
