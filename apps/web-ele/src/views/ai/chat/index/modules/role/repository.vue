@@ -183,12 +183,12 @@ onMounted(async () => {
 <template>
   <Drawer>
     <ElContainer
-      class="bg-card absolute inset-0 flex h-full w-full flex-col overflow-hidden"
+      class="absolute inset-0 flex h-full w-full flex-col overflow-hidden bg-card"
     >
       <FormModal @success="handlerAddRoleSuccess" />
 
       <ElMain class="relative m-0 flex-1 overflow-hidden p-0">
-        <div class="z-100 absolute right-5 top-5 flex items-center">
+        <div class="absolute right-5 top-5 z-100 flex items-center">
           <!-- 搜索输入框 -->
           <ElInput
             v-model="search"

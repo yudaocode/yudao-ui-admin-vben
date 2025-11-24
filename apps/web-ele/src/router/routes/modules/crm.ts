@@ -90,8 +90,7 @@ const routes: RouteRecordRaw[] = [
           title: '客户统计',
           activePath: '/crm/statistics/customer',
         },
-        component: () =>
-          import('#/views/crm/statistics/customer/index.vue'),
+        component: () => import('#/views/crm/statistics/customer/index.vue'),
       },
       {
         path: 'statistics/funnel',
@@ -109,8 +108,7 @@ const routes: RouteRecordRaw[] = [
           title: '员工业绩',
           activePath: '/crm/statistics/performance',
         },
-        component: () =>
-          import('#/views/crm/statistics/performance/index.vue'),
+        component: () => import('#/views/crm/statistics/performance/index.vue'),
       },
       {
         path: 'statistics/portrait',
@@ -119,8 +117,7 @@ const routes: RouteRecordRaw[] = [
           title: '客户画像',
           activePath: '/crm/statistics/portrait',
         },
-        component: () =>
-          import('#/views/crm/statistics/portrait/index.vue'),
+        component: () => import('#/views/crm/statistics/portrait/index.vue'),
       },
       {
         path: 'statistics/rank',

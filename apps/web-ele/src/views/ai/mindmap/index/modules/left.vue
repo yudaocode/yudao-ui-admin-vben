@@ -25,8 +25,8 @@ defineExpose({
 });
 </script>
 <template>
-  <div class="bg-card flex w-80 flex-col rounded-lg p-5">
-    <h3 class="text-primary h-7 w-full text-center text-xl leading-7">
+  <div class="flex w-80 flex-col rounded-lg bg-card p-5">
+    <h3 class="h-7 w-full text-center text-xl leading-7 text-primary">
       思维导图创作中心
     </h3>
     <div class="mt-4 flex-grow overflow-y-auto">

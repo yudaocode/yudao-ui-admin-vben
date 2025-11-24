@@ -107,7 +107,7 @@ async function handleTabsScroll() {
                 <ElDropdownItem @click="handleMoreClick('edit', role)">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:edit" color="#787878" />
-                    <span class="text-primary ml-2">编辑</span>
+                    <span class="ml-2 text-primary">编辑</span>
                   </div>
                 </ElDropdownItem>
               </ElDropdownMenu>

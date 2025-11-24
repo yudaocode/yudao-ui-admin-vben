@@ -43,7 +43,7 @@ defineExpose({
       target="_blank"
       :href="hqMusicUrl ? hqMusicUrl : musicUrl"
     >
-      <div class="mp-card__body bg-background rounded-sm p-2.5">
+      <div class="mp-card__body rounded-sm bg-background p-2.5">
         <div class="mp-card__avatar">
           <img :src="thumbMediaUrl" alt="" />
         </div>

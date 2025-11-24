@@ -136,7 +136,7 @@ function handleSubmit() {
       <span>{{ label }}</span>
       <span
         v-if="hint"
-        class="text-primary-500 flex cursor-pointer select-none items-center text-xs"
+        class="flex cursor-pointer select-none items-center text-xs text-primary-500"
         @click="hintClick"
       >
         <IconifyIcon icon="lucide:circle-help" />
@@ -145,14 +145,14 @@ function handleSubmit() {
     </h3>
   </DefineLabel>
   <div class="flex flex-col" v-bind="$attrs">
-    <div class="bg-card flex w-full justify-center pt-2">
-      <div class="bg-card z-10 w-72 rounded-full p-1">
+    <div class="flex w-full justify-center bg-card pt-2">
+      <div class="z-10 w-72 rounded-full bg-card p-1">
         <div
           :class="
             selectedTab === AiWriteTypeEnum.REPLY &&
             'after:translate-x-[100%] after:transform'
           "
-          class="after:bg-card relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-7 after:w-1/2 after:rounded-full after:transition-transform after:content-['']"
+          class="relative flex items-center after:absolute after:left-0 after:top-0 after:block after:h-7 after:w-1/2 after:rounded-full after:bg-card after:transition-transform after:content-['']"
         >
           <ReuseTab
             v-for="tab in tabs"
@@ -166,7 +166,7 @@ function handleSubmit() {
       </div>
     </div>
     <div
-      class="bg-card box-border h-full w-96 flex-grow overflow-y-auto px-7 pb-2 lg:block"
+      class="box-border h-full w-96 flex-grow overflow-y-auto bg-card px-7 pb-2 lg:block"
     >
       <div>
         <template v-if="selectedTab === AiWriteTypeEnum.WRITING">
