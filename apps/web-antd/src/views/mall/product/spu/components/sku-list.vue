@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { PropertyAndValues, RuleConfig } from '../index';
-
 import type { MallSpuApi } from '#/api/mall/product/spu';
+import type {
+  PropertyAndValues,
+  RuleConfig,
+} from '#/views/mall/product/spu/components';
 
 import { ref, watch } from 'vue';
 

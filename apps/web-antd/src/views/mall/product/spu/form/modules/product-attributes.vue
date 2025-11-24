@@ -1,8 +1,7 @@
 <!-- 商品发布 - 库存价格 - 属性列表 -->
 <script lang="ts" setup>
-import type { PropertyAndValues } from '../index';
-
 import type { MallPropertyApi } from '#/api/mall/product/property';
+import type { PropertyAndValues } from '#/views/mall/product/spu/components';
 
 import { computed, ref, watch } from 'vue';
 

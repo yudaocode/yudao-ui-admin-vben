@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
-import type { RuleConfig } from '#/views/mall/product/spu/form';
+import type { RuleConfig } from '#/views/mall/product/spu/components';
 // TODO @puhui999：有问题
 // import type { SpuProperty } from '#/views/mall/promotion/components/types';
 
@@ -20,7 +20,7 @@ import {
   updatePointActivity,
 } from '#/api/mall/promotion/point';
 import { $t } from '#/locales';
-import { getPropertyList } from '#/views/mall/product/spu/form';
+import { getPropertyList } from '#/views/mall/product/spu/components';
 
 // TODO @puhui999：有问题
 // import { SpuAndSkuList, SpuSkuSelect } from '../../../components';

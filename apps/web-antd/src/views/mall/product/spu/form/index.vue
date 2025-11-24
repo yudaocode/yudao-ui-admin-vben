@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import type { PropertyAndValues, RuleConfig } from './index';
-
 import type { MallSpuApi } from '#/api/mall/product/spu';
+import type {
+  PropertyAndValues,
+  RuleConfig,
+} from '#/views/mall/product/spu/components';
 
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -14,6 +16,7 @@ import { Button, Card, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';
+import { getPropertyList, SkuList } from '#/views/mall/product/spu/components';
 
 import {
   useDeliveryFormSchema,
@@ -22,10 +25,8 @@ import {
   useOtherFormSchema,
   useSkuFormSchema,
 } from './data';
-import { getPropertyList } from './index';
 import ProductAttributes from './modules/product-attributes.vue';
 import ProductPropertyAddForm from './modules/product-property-add-form.vue';
-import SkuList from './modules/sku-list.vue';
 
 const spuId = ref<number>();
 const { params, name } = useRoute();
