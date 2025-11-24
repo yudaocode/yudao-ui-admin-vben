@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
-import type { RuleConfig } from '#/views/mall/product/spu/components';
-// TODO @puhui999：有问题
-// import type { SpuProperty } from '#/views/mall/promotion/components/types';
+import type {
+  RuleConfig,
+  SpuProperty,
+} from '#/views/mall/product/spu/components';
 
 import { computed, ref } from 'vue';
 
@@ -20,10 +21,12 @@ import {
   updatePointActivity,
 } from '#/api/mall/promotion/point';
 import { $t } from '#/locales';
-import { getPropertyList } from '#/views/mall/product/spu/components';
+import {
+  getPropertyList,
+  SpuAndSkuList,
+  SpuSkuSelect,
+} from '#/views/mall/product/spu/components';
 
-// TODO @puhui999：有问题
-// import { SpuAndSkuList, SpuSkuSelect } from '../../../components';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
@@ -72,8 +75,7 @@ const ruleConfig: RuleConfig[] = [
 
 const spuList = ref<any[]>([]); // 选择的 SPU 列表
 // TODO @puhui999：有问题
-// const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
-const spuPropertyList = ref<any[]>([]); // SPU 属性列表
+const spuPropertyList = ref<SpuProperty<any>[]>([]); // SPU 属性列表
 
 /** 打开商品选择器 */
 // TODO @puhui999：spuSkuSelectRef.value.open is not a function

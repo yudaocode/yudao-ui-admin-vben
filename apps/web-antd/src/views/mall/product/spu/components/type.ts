@@ -20,3 +20,9 @@ export interface RuleConfig {
   // 校验不通过时的消息提示
   message: string;
 }
+
+export interface SpuProperty<T> {
+  propertyList: PropertyAndValues[];
+  spuDetail: T;
+  spuId: number;
+}
