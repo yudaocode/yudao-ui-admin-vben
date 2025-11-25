@@ -117,7 +117,9 @@ defineExpose({
     <!-- 类型 1：文本 -->
     <ElTabPane :name="ReplyType.Text">
       <template #label>
-        <ElRow align="middle"><IconifyIcon icon="ep:document" /> 文本</ElRow>
+        <ElRow align="middle">
+          <IconifyIcon icon="lucide:file-text" /> 文本
+        </ElRow>
       </template>
       <TabText v-model="reply.content" />
     </ElTabPane>
@@ -126,7 +128,7 @@ defineExpose({
     <ElTabPane :name="ReplyType.Image">
       <template #label>
         <ElRow align="middle">
-          <IconifyIcon icon="ep:picture" class="mr-5px" /> 图片
+          <IconifyIcon icon="lucide:image" class="mr-5px" /> 图片
         </ElRow>
       </template>
       <TabImage v-model="reply" />
@@ -135,7 +137,7 @@ defineExpose({
     <!-- 类型 3：语音 -->
     <ElTabPane :name="ReplyType.Voice">
       <template #label>
-        <ElRow align="middle"><IconifyIcon icon="ep:phone" /> 语音</ElRow>
+        <ElRow align="middle"> <IconifyIcon icon="lucide:mic" /> 语音 </ElRow>
       </template>
       <TabVoice v-model="reply" />
     </ElTabPane>
@@ -143,7 +145,7 @@ defineExpose({
     <!-- 类型 4：视频 -->
     <ElTabPane :name="ReplyType.Video">
       <template #label>
-        <ElRow align="middle"><IconifyIcon icon="ep:share" /> 视频</ElRow>
+        <ElRow align="middle"><IconifyIcon icon="lucide:video" /> 视频</ElRow>
       </template>
       <TabVideo v-model="reply" />
     </ElTabPane>
@@ -151,7 +153,9 @@ defineExpose({
     <!-- 类型 5：图文 -->
     <ElTabPane :name="ReplyType.News">
       <template #label>
-        <ElRow align="middle"><IconifyIcon icon="ep:reading" /> 图文</ElRow>
+        <ElRow align="middle">
+          <IconifyIcon icon="lucide:newspaper" /> 图文
+        </ElRow>
       </template>
       <TabNews v-model="reply" :news-type="newsType" />
     </ElTabPane>
@@ -159,7 +163,7 @@ defineExpose({
     <!-- 类型 6：音乐 -->
     <ElTabPane :name="ReplyType.Music">
       <template #label>
-        <ElRow align="middle"><IconifyIcon icon="ep:service" />音乐</ElRow>
+        <ElRow align="middle"> <IconifyIcon icon="lucide:music" />音乐 </ElRow>
       </template>
       <TabMusic v-model="reply" />
     </ElTabPane>

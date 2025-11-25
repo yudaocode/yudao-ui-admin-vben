@@ -14,10 +14,7 @@ import {
   ElSelect,
 } from 'element-plus';
 
-// TODO @hw：import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
-import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
-import News from '#/views/mp/components/wx-news/wx-news.vue';
-import ReplySelect from '#/views/mp/components/wx-reply/wx-reply.vue';
+import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
 
 import { menuOptions } from './types';
 
@@ -79,7 +76,7 @@ function deleteMaterial() {
   <div class="space-y-5">
     <div class="flex justify-end">
       <ElButton type="danger" @click="emit('delete')">
-        <IconifyIcon icon="ep:delete" />
+        <IconifyIcon icon="lucide:trash-2" />
         删除当前菜单
       </ElButton>
     </div>
@@ -183,10 +180,10 @@ function deleteMaterial() {
             class="mx-auto mb-2.5 w-[280px] border border-[#eaeaea] p-2.5"
             v-if="menu && menu.replyArticles"
           >
-            <News :articles="menu.replyArticles" />
+            <WxNews :articles="menu.replyArticles" />
             <ElRow class="pt-2.5 text-center" justify="center" align="middle">
               <ElButton type="danger" circle @click="deleteMaterial">
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="ep:trash-2" />
               </ElButton>
             </ElRow>
           </div>
@@ -195,7 +192,7 @@ function deleteMaterial() {
               <ElCol :span="24" class="text-center">
                 <ElButton type="success" @click="showNewsDialog = true">
                   素材库选择
-                  <IconifyIcon icon="ep:circle-check" />
+                  <IconifyIcon icon="lucide:circle-check" />
                 </ElButton>
               </ElCol>
             </ElRow>
@@ -206,7 +203,7 @@ function deleteMaterial() {
             width="80%"
             destroy-on-close
           >
-            <MaterialSelect
+            <WxMaterialSelect
               type="news"
               :account-id="props.accountId"
               @select-material="selectMaterial"
@@ -218,7 +215,7 @@ function deleteMaterial() {
         class="rounded bg-white px-3 py-5 shadow-sm"
         v-if="menu.type === 'click' || menu.type === 'scancode_waitmsg'"
       >
-        <ReplySelect v-model="menu.reply" />
+        <WxReply v-model="menu.reply" />
       </div>
     </div>
   </div>

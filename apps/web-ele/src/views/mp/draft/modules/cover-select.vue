@@ -93,7 +93,7 @@ function onUploadError(err: Error) {
       />
       <IconifyIcon
         v-else
-        icon="ep:plus"
+        icon="lucide:plus"
         class="border border-[#d9d9d9] text-center text-[28px] leading-[120px] text-[#8c939d]"
         :class="isFirst ? 'h-[120px] w-[230px]' : 'h-[120px] w-[120px]'"
       />

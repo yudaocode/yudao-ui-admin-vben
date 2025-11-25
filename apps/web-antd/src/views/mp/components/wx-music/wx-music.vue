@@ -28,64 +28,27 @@ defineExpose({
 <template>
   <div>
     <Link :href="href" target="_blank" class="text-success no-underline">
-      <div class="music-card">
-        <div class="music-avatar">
-          <img :src="thumbMediaUrl" alt="音乐封面" />
+      <div
+        class="flex items-center rounded-[5px] border border-[#e8e8e8] bg-white p-2.5 transition hover:border-black/10 hover:shadow-sm"
+      >
+        <div
+          class="mr-3 h-[60px] w-[60px] overflow-hidden rounded-[4px] border border-transparent"
+        >
+          <img
+            :src="thumbMediaUrl"
+            alt="音乐封面"
+            class="h-full w-full object-cover"
+          />
         </div>
-        <div class="music-detail">
-          <div class="music-title">{{ title }}</div>
-          <div class="music-description">{{ description }}</div>
+        <div class="min-w-0 flex-1">
+          <div class="mb-2 truncate text-sm font-medium text-[#333]">
+            {{ title }}
+          </div>
+          <div class="truncate text-xs text-[#666]">
+            {{ description }}
+          </div>
         </div>
       </div>
     </Link>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-
-.music-card {
-  display: flex;
-  padding: 10px;
-  background-color: #fff;
-  border-radius: 5px;
-}
-
-.music-avatar {
-  flex-shrink: 0;
-  width: 60px;
-  height: 60px;
-  margin-right: 12px;
-  overflow: hidden;
-  border-radius: 4px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.music-detail {
-  flex: 1;
-  overflow: hidden;
-}
-
-.music-title {
-  margin-bottom: 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  white-space: nowrap;
-}
-
-.music-description {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  color: #666;
-  white-space: nowrap;
-}
-</style>

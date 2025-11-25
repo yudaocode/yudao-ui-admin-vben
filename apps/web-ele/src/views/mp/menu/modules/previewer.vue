@@ -140,8 +140,9 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
           "
           @click="menuClicked(parent, x)"
         >
-          <!-- TODO @hw：尽量用中立的 lucide icon -->
-          <IconifyIcon icon="ep:fold" color="black" />{{ parent.name }}
+          <IconifyIcon icon="lucide:list-collapse" color="black" />{{
+            parent.name
+          }}
         </div>
         <!-- 以下为二级菜单-->
         <div
@@ -180,8 +181,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
             v-if="!parent.children || parent.children.length < 5"
             @click="addSubMenu(x, parent)"
           >
-            <!-- TODO @hw：尽量用中立的 lucide icon -->
-            <IconifyIcon icon="ep:plus" class="" />
+            <IconifyIcon icon="lucide:plus" class="" />
           </div>
         </div>
       </div>
@@ -194,8 +194,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
     v-if="menuList.length < 3"
     @click="addMenu"
   >
-    <!-- TODO @hw：尽量用中立的 lucide icon -->
-    <IconifyIcon icon="ep:plus" class="" />
+    <IconifyIcon icon="lucide:plus" class="" />
   </div>
 </template>
 

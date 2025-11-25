@@ -36,8 +36,9 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits(['selectMaterial']);
-
+const emit = defineEmits<{
+  (e: 'selectMaterial', item: any): void;
+}>();
 const loading = ref(false); // 遮罩层
 const total = ref(0); // 总条数
 const list = ref<any[]>([]); // 数据列表
@@ -116,14 +117,23 @@ onMounted(async () => {
   <div class="pb-30px">
     <!-- 类型：image -->
     <div v-if="props.type === 'image'">
-      <div class="waterfall" v-loading="loading">
-        <div class="waterfall-item" v-for="item in list" :key="item.mediaId">
-          <img class="material-img" :src="item.url" />
-          <p class="item-name">{{ item.name }}</p>
-          <ElRow class="ope-row">
+      <div
+        class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+        v-loading="loading"
+      >
+        <div
+          class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
+          v-for="item in list"
+          :key="item.mediaId"
+        >
+          <img class="w-full" :src="item.url" />
+          <p class="truncate text-center text-xs leading-[30px]">
+            {{ item.name }}
+          </p>
+          <ElRow class="flex justify-center pt-2.5">
             <ElButton type="success" @click="selectMaterialFun(item)">
               选择
-              <IconifyIcon icon="ep:circle-check" />
+              <IconifyIcon icon="lucide:circle-check" />
             </ElButton>
           </ElRow>
         </div>
@@ -163,7 +173,7 @@ onMounted(async () => {
           <template #default="scope">
             <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
               选择
-              <IconifyIcon icon="ep:plus" />
+              <IconifyIcon icon="lucide:plus" />
             </ElButton>
           </template>
         </ElTableColumn>
@@ -210,7 +220,7 @@ onMounted(async () => {
           <template #default="scope">
             <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
               选择
-              <IconifyIcon icon="akar-icons:circle-plus" />
+              <IconifyIcon icon="lucide:circle-plus" />
             </ElButton>
           </template>
         </ElTableColumn>
@@ -228,14 +238,21 @@ onMounted(async () => {
     </div>
     <!-- 类型：news -->
     <div v-else-if="props.type === 'news'">
-      <div class="waterfall" v-loading="loading">
-        <div class="waterfall-item" v-for="item in list" :key="item.mediaId">
+      <div
+        class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+        v-loading="loading"
+      >
+        <div
+          class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
+          v-for="item in list"
+          :key="item.mediaId"
+        >
           <div v-if="item.content && item.content.newsItem">
             <News :articles="item.content.newsItem" />
-            <ElRow class="ope-row">
+            <ElRow class="flex justify-center pt-2.5">
               <ElButton type="success" @click="selectMaterialFun(item)">
                 选择
-                <IconifyIcon icon="ep:circle-check" />
+                <IconifyIcon icon="lucide:circle-check" />
               </ElButton>
             </ElRow>
           </div>
@@ -254,54 +271,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-@media (width >= 992px) and (width <= 1300px) {
-  .waterfall {
-    column-count: 3;
-  }
-
-  p {
-    color: red;
-  }
-}
-
-@media (width >= 768px) and (width <= 991px) {
-  .waterfall {
-    column-count: 2;
-  }
-
-  p {
-    color: orange;
-  }
-}
-
-@media (width <= 767px) {
-  .waterfall {
-    column-count: 1;
-  }
-}
-
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
-
-.waterfall {
-  column-gap: 10px;
-  width: 100%;
-  margin: 0 auto;
-  column-count: 5;
-}
-
-.waterfall-item {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #eaeaea;
-  break-inside: avoid;
-}
-
-.material-img {
-  width: 100%;
-}
-
-p {
-  line-height: 30px;
-}
-</style>

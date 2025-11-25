@@ -87,7 +87,7 @@ function selectMaterial(item: any) {
                 v-if="reply.thumbMediaUrl"
                 :src="reply.thumbMediaUrl"
               />
-              <IconifyIcon v-else icon="ep:plus" />
+              <IconifyIcon v-else icon="lucide:plus" />
             </ElRow>
             <ElRow align="middle" justify="center" class="mt-[2%]">
               <div>

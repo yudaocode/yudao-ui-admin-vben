@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, ref } from 'vue';
 
@@ -16,24 +16,23 @@ import {
   ElRow,
 } from 'element-plus';
 
+import { createEmptyNewsItem } from '#/api/mp/draft';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
-import { createEmptyNewsItem } from './types';
 
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
   isCreating: boolean;
-  modelValue: NewsItem[] | null;
+  modelValue: MpDraftApi.NewsItem[] | null;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem[]): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem[]): void;
 }>();
 
-// TODO @hw: 对齐 antd，应该是 MpDraftApi.NewsItem 这种哈。
-const newsList = computed<NewsItem[]>({
+const newsList = computed<MpDraftApi.NewsItem[]>({
   get() {
     return props.modelValue === null
       ? [createEmptyNewsItem()]
@@ -124,7 +123,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </ElButton>
               <ElButton
                 v-if="isCreating"
@@ -133,7 +132,7 @@ function plusNews() {
                 size="small"
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </ElButton>
             </div>
           </div>
@@ -168,7 +167,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </ElButton>
               <ElButton
                 v-if="index > 0"
@@ -177,7 +176,7 @@ function plusNews() {
                 size="small"
                 @click="() => moveUpNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-up-bold" />
+                <IconifyIcon icon="lucide:arrow-up" />
               </ElButton>
               <ElButton
                 v-if="isCreating"
@@ -186,7 +185,7 @@ function plusNews() {
                 circle
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </ElButton>
             </div>
           </div>
@@ -201,7 +200,7 @@ function plusNews() {
             @click="plusNews"
             v-if="newsList.length < 8 && isCreating"
           >
-            <IconifyIcon icon="ep:plus" />
+            <IconifyIcon icon="lucide:plus" />
           </ElButton>
         </ElRow>
       </div>

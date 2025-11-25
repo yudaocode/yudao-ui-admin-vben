@@ -104,7 +104,7 @@ function selectMaterial(item: any) {
           <!-- 选择素材 -->
           <ElCol :span="12">
             <ElButton type="success" @click="showDialog = true">
-              素材库选择 <IconifyIcon icon="ep:circle-check" />
+              素材库选择 <IconifyIcon icon="lucide:circle-check" />
             </ElButton>
             <ElDialog
               title="选择视频"
@@ -133,7 +133,7 @@ function selectMaterial(item: any) {
               :on-success="onUploadSuccess"
             >
               <ElButton type="primary">
-                新建视频 <IconifyIcon icon="ep:upload" />
+                新建视频 <IconifyIcon icon="lucide:upload" />
               </ElButton>
             </ElUpload>
           </ElCol>

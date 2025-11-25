@@ -291,7 +291,6 @@ function menuToBackend(menu: any) {
   };
   return result;
 }
-// TODO @hw：antd 和 ele 版本，基本没用自定义组件，他们的 tindwind 需要进一步对齐么？（主要还是考虑维护性哈。）
 </script>
 
 <template>
@@ -310,21 +309,21 @@ function menuToBackend(menu: any) {
       >
         <!--左边配置菜单-->
         <div
-          class="left relative box-border block h-[715px] w-[350px] flex-shrink-0 bg-[length:100%_auto] bg-no-repeat px-[25px] pb-[88px] pt-[518px]"
+          class="relative float-left box-border block h-[715px] w-[350px] bg-[length:100%_auto] bg-no-repeat p-[518px_25px_88px]"
           :style="{ backgroundImage: `url(${iphoneBackImg})` }"
         >
           <div
-            class="relative bottom-[426px] left-0 h-[64px] w-[300px] bg-[length:100%_auto] bg-no-repeat text-center text-white"
+            class="relative bottom-[426px] left-0 h-[64px] w-[300px] bg-[length:100%] bg-[position:0_0] bg-no-repeat text-center text-white"
             :style="{ backgroundImage: `url(${menuHeadImg})` }"
           >
             <div
-              class="absolute left-0 top-[33px] w-full text-center text-[14px] text-white"
+              class="absolute left-0 top-[33px] w-full text-center text-sm text-white"
             >
               {{ accountName }}
             </div>
           </div>
           <div
-            class="h-[46px] bg-no-repeat pl-[43px] text-[12px]"
+            class="bg-[position:0_0] bg-no-repeat pl-[43px] text-xs after:clear-both after:table after:content-['']"
             :style="{ backgroundImage: `url(${menuFootImg})` }"
           >
             <Previewer
@@ -336,7 +335,7 @@ function menuToBackend(menu: any) {
               @submenu-clicked="(child, x, y) => subMenuClicked(child, x, y)"
             />
           </div>
-          <div class="mt-[15px] text-center">
+          <div class="mt-[15px] flex items-center justify-center gap-[10px]">
             <ElButton
               class="mx-2"
               type="success"
@@ -357,7 +356,7 @@ function menuToBackend(menu: any) {
         </div>
         <!--右边配置-->
         <div
-          class="right box-border flex-1 basis-[63%] bg-[#e8e7e7] p-[20px]"
+          class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5"
           v-if="showRightPanel"
         >
           <Editor
@@ -368,11 +367,8 @@ function menuToBackend(menu: any) {
           />
         </div>
         <!-- 一进页面就显示的默认页面，当点击左边按钮的时候，就不显示了-->
-        <div
-          v-else
-          class="right box-border flex-1 basis-[63%] bg-[#e8e7e7] p-[20px]"
-        >
-          <p class="text-left">请选择菜单配置</p>
+        <div v-else class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5">
+          <p>请选择菜单配置</p>
         </div>
       </div>
     </ContentWrap>
