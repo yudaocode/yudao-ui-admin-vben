@@ -24,11 +24,11 @@ const getTitle = computed(() => {
   return formData.value?.mediaId ? '修改图文' : '新建图文';
 });
 
-// 提供 accountId 给子组件
 provide(
   'accountId',
   computed(() => formData.value?.accountId),
-);
+); // 提供 accountId 给子组件
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (!formData.value) {

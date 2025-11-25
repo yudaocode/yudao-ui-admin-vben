@@ -1,6 +1,3 @@
-<!--
-  【微信消息 - 定位】TODO @Dhb52 目前未启用；；；；@dylan：看看目前是不是没用起来哈？
--->
 <script lang="ts" setup>
 import type { WxLocationProps } from './types';
 
@@ -12,6 +9,7 @@ import { ElCol, ElLink, ElMessage, ElRow } from 'element-plus';
 
 import { getTradeConfig } from '#/api/mall/trade/config';
 
+/** 微信消息 - 定位 */
 defineOptions({ name: 'Location' });
 
 const props = defineProps<WxLocationProps>();
@@ -56,7 +54,6 @@ defineExpose({
 </script>
 
 <template>
-  <!-- 微信消息 - 定位 -->
   <div>
     <ElLink type="primary" target="_blank" :href="mapUrl">
       <ElCol>

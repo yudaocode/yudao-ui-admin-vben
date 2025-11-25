@@ -43,7 +43,7 @@ const reply = ref<any>({
   type: 'text',
 }); // 微信发送消息
 
-const replySelectRef = ref<InstanceType<typeof WxReply> | null>(null); // WxReplySelect组件ref，用于消息发送成功后清除内容
+const replySelectRef = ref<InstanceType<typeof WxReply> | null>(null); // WxReply组件ref，用于消息发送成功后清除内容
 const msgDivRef = ref<HTMLDivElement | null>(null); // 消息显示窗口ref，用于滚动到底部
 
 /** 完成加载 */

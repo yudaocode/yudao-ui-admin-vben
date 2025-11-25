@@ -57,6 +57,7 @@ function onMaterialSelected(item: any) {
   newsItem.value.thumbUrl = item.url;
 }
 
+/** 上传前校验 */
 const onBeforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 

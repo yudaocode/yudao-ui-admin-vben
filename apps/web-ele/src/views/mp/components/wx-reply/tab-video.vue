@@ -31,6 +31,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
+
 const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };

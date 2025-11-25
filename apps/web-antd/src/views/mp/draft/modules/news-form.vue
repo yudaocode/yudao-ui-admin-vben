@@ -86,6 +86,7 @@ function plusNews() {
   <Layout>
     <Layout.Sider width="40%" theme="light">
       <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
+        <!-- TODO @hw：头条、次条的展示不对。微信聊过的呀~ -->
         <div v-for="(news, index) in newsList" :key="index">
           <div
             class="group relative mx-auto mb-[10px] w-full cursor-pointer border-[2px] bg-white"

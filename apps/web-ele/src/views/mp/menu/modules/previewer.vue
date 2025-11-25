@@ -140,9 +140,8 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
           "
           @click="menuClicked(parent, x)"
         >
-          <IconifyIcon icon="lucide:list-collapse" color="black" />{{
-            parent.name
-          }}
+          <IconifyIcon icon="lucide:list-collapse" color="black" />
+          {{ parent.name }}
         </div>
         <!-- 以下为二级菜单-->
         <div

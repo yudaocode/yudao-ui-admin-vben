@@ -21,6 +21,8 @@ import {
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
+defineOptions({ name: 'TabMusic' });
+
 const props = defineProps<{
   modelValue: Reply;
 }>();
@@ -69,7 +71,6 @@ function onUploadSuccess(res: any) {
 /** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
-
   reply.value.thumbMediaId = item.mediaId;
   reply.value.thumbMediaUrl = item.url;
 }

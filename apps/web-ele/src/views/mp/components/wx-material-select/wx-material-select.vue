@@ -23,7 +23,7 @@ import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 // TODO @hw：代码风格，看看 antd 和 ele 是不是统一下； 等antd此组件修改完再调整
 
 /** 微信素材选择 */
-defineOptions({ name: 'MaterialSelect' });
+defineOptions({ name: 'WxMaterialSelect' });
 
 const props = withDefaults(
   defineProps<{
@@ -39,13 +39,14 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'selectMaterial', item: any): void;
 }>();
+
 const loading = ref(false); // 遮罩层
 const total = ref(0); // 总条数
 const list = ref<any[]>([]); // 数据列表
 const queryParams = reactive({
+  accountId: props.accountId,
   pageNo: 1,
   pageSize: 10,
-  accountId: props.accountId,
 }); // 查询参数
 
 /** 选择素材 */

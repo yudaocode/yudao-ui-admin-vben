@@ -11,6 +11,7 @@ import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
 
 import MsgEvent from './msg-event.vue';
 
+// TODO @hw：antd 和 ele 保持一致；例如说：1）props；2）WxVoicePlayer 这种；
 defineOptions({ name: 'Msg' });
 
 const props = defineProps<{

@@ -55,6 +55,7 @@ function onDelete() {
           </ElButton>
         </ElCol>
       </div>
+
       <!-- 选择素材 -->
       <ElCol :span="24" v-if="!reply.content">
         <ElRow class="text-center" align="middle">

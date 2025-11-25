@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ElLink } from 'element-plus';
+
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'Music' });
+// TODO @hw：antd 和 ele 的代码风格不一致，例如说：props；
 
 const props = defineProps({
   title: {

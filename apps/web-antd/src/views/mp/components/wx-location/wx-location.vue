@@ -7,9 +7,10 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Col, Row } from 'ant-design-vue';
 
+/** 微信消息 - 定位 */
 defineOptions({ name: 'WxLocation' });
 
-// TODO @dylan：apps/web-antd/src/views/mall/trade/delivery/pickUpStore/modules/form.vue 参考这个，从后端拿 key 哈
+// TODO @dylan：apps/web-antd/src/views/mall/trade/delivery/pickUpStore/modules/form.vue 参考这个，从后端拿 key 哈；参考 apps/web-ele/src/views/mp/components/wx-location/wx-location.vue
 const props = withDefaults(defineProps<WxLocationProps>(), {
   qqMapKey: 'TVDBZ-TDILD-4ON4B-PFDZA-RNLKH-VVF6E', // QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
 });
@@ -31,7 +32,6 @@ defineExpose({
 </script>
 
 <template>
-  <!-- 微信消息 - 定位 -->
   <div>
     <a :href="mapUrl" target="_blank" class="text-primary">
       <Col>

@@ -85,12 +85,14 @@ async function customRequest(options: any) {
   }
 }
 
+/** 删除图片 */
 function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
 }
 
+/** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.mediaId = item.mediaId;

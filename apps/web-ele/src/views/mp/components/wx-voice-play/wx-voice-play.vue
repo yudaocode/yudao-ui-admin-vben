@@ -7,7 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 import BenzAMRRecorder from 'benz-amr-recorder';
 
 /** 微信消息 - 语音 */
-defineOptions({ name: 'VoicePlayer' });
+defineOptions({ name: 'WxVoicePlayer' });
 
 const props = withDefaults(
   defineProps<{
@@ -19,12 +19,12 @@ const props = withDefaults(
   },
 );
 
-const amr = ref();
+const amr = ref<any>();
 const playing = ref(false);
-const duration = ref();
+const duration = ref<number>();
 
 /** 处理点击，播放或暂停 */
-const playVoice = () => {
+function playVoice() {
   // 情况一：未初始化，则创建 BenzAMRRecorder
   if (amr.value === undefined) {
     amrInit();
@@ -36,10 +36,10 @@ const playVoice = () => {
   } else {
     amrPlay();
   }
-};
+}
 
 /** 音频初始化 */
-const amrInit = () => {
+function amrInit() {
   amr.value = new BenzAMRRecorder();
   // 设置播放
   amr.value.initWithUrl(props.url).then(() => {
@@ -50,20 +50,20 @@ const amrInit = () => {
   amr.value.onEnded(() => {
     playing.value = false;
   });
-};
+}
 
 /** 音频播放 */
-const amrPlay = () => {
+function amrPlay() {
   playing.value = true;
   amr.value.play();
-};
+}
 
 /** 音频暂停 */
-const amrStop = () => {
+function amrStop() {
   playing.value = false;
   amr.value.stop();
-};
-// TODO 芋艿：下面样式有点问题
+}
+// TODO dylan：下面样式有点问题
 </script>
 
 <template>

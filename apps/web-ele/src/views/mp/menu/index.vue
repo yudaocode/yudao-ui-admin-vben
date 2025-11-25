@@ -271,9 +271,8 @@ function menuListToBackend() {
 }
 
 /** 将前端的 menu，转换成后端接收的 menu */
-// TODO: @芋艿，需要根据后台 API 删除不需要的字段
 function menuToBackend(menu: any) {
-  const result = {
+  return {
     ...menu,
     children: undefined, // 不处理子节点
     reply: undefined, // 稍后复制
@@ -289,7 +288,6 @@ function menuToBackend(menu: any) {
     replyMusicUrl: menu.reply.musicUrl,
     replyHqMusicUrl: menu.reply.hqMusicUrl,
   };
-  return result;
 }
 </script>
 

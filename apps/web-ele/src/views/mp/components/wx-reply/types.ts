@@ -22,21 +22,21 @@ export interface Reply {
 }
 
 /** 利用旧的 reply[accountId, type] 初始化新的 Reply */
-export const createEmptyReply = (old: Ref<Reply> | Reply): Reply => {
+export function createEmptyReply(old: Ref<Reply> | Reply): Reply {
   return {
     accountId: unref(old).accountId,
-    type: unref(old).type,
-    name: null,
+    articles: [],
     content: null,
-    mediaId: null,
-    url: null,
-    title: null,
     description: null,
-    thumbMediaId: null,
-    thumbMediaUrl: null,
-    musicUrl: null,
     hqMusicUrl: null,
     introduction: null,
-    articles: [],
+    mediaId: null,
+    musicUrl: null,
+    name: null,
+    thumbMediaId: null,
+    thumbMediaUrl: null,
+    title: null,
+    type: unref(old).type,
+    url: null,
   };
-};
+}

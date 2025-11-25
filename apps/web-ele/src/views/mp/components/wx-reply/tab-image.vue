@@ -20,6 +20,8 @@ import {
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
+defineOptions({ name: 'TabImage' });
+
 const props = defineProps<{
   modelValue: Reply;
 }>();

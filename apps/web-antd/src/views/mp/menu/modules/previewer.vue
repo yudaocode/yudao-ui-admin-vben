@@ -170,6 +170,7 @@ function onChildDragEnd({ newIndex }: { newIndex: number }) {
               </div>
             </template>
           </draggable>
+          <!-- 二级菜单加号， 当长度 小于 5 才显示二级菜单的加号  -->
           <div
             class="relative float-left box-border block flex h-[46px] w-[85.5px] cursor-pointer items-center justify-center border border-[#ebedee] bg-white text-center leading-[46px]"
             v-if="!parent.children || parent.children.length < 5"

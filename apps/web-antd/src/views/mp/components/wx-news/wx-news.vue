@@ -104,7 +104,6 @@ defineExpose({
 .news-content-item-title {
   flex: 1;
   font-size: 14px;
-  // padding-left: 10px;
 }
 
 .news-content-item-img {
