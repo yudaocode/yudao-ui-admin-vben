@@ -5,7 +5,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { MallCategoryApi } from '#/api/mall/product/category';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
@@ -168,31 +168,35 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function openModal(data?: MallSpuApi.Spu | MallSpuApi.Spu[]) {
   initData.value = data;
   visible.value = true;
-  // 1. 先查询数据
-  await gridApi.query();
-  // 2. 设置已选中行
-  if (props.multiple && Array.isArray(data) && data.length > 0) {
-    setTimeout(() => {
-      const tableData = gridApi.grid.getTableData().fullData;
-      data.forEach((spu) => {
+  // 等待 Grid 组件完全初始化后再查询数据
+  await nextTick();
+  if (gridApi.grid) {
+    // 1. 先查询数据
+    await gridApi.query();
+    // 2. 设置已选中行
+    if (props.multiple && Array.isArray(data) && data.length > 0) {
+      setTimeout(() => {
+        const tableData = gridApi.grid.getTableData().fullData;
+        data.forEach((spu) => {
+          const row = tableData.find(
+            (item: MallSpuApi.Spu) => item.id === spu.id,
+          );
+          if (row) {
+            gridApi.grid.setCheckboxRow(row, true);
+          }
+        });
+      }, 300);
+    } else if (!props.multiple && data && !Array.isArray(data)) {
+      setTimeout(() => {
+        const tableData = gridApi.grid.getTableData().fullData;
         const row = tableData.find(
-          (item: MallSpuApi.Spu) => item.id === spu.id,
+          (item: MallSpuApi.Spu) => item.id === data.id,
         );
         if (row) {
-          gridApi.grid.setCheckboxRow(row, true);
+          gridApi.grid.setRadioRow(row);
         }
-      });
-    }, 300);
-  } else if (!props.multiple && data && !Array.isArray(data)) {
-    setTimeout(() => {
-      const tableData = gridApi.grid.getTableData().fullData;
-      const row = tableData.find(
-        (item: MallSpuApi.Spu) => item.id === data.id,
-      );
-      if (row) {
-        gridApi.grid.setRadioRow(row);
-      }
-    }, 300);
+      }, 300);
+    }
   }
 }
 
