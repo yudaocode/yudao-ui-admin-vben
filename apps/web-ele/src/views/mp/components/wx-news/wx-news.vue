@@ -58,12 +58,12 @@ defineExpose({
 /** TODO @dylan：看看有没适合 tindwind 的哈。 */
 
 .news-home {
-  width: 100%;
-  margin: auto;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  margin: auto;
+  background-color: #fff;
 }
 
 .news-main {
@@ -85,10 +85,10 @@ defineExpose({
   display: inline-block;
   width: 98%;
   padding: 1%;
+  margin-left: 10px;
   font-size: 16px;
   color: #fff;
   white-space: normal;
-  margin-left: 10px;
 }
 
 .news-main-item {
@@ -96,9 +96,9 @@ defineExpose({
 }
 
 .news-content-item {
-  padding: 10px;
-  box-sizing: border-box;
   position: relative;
+  box-sizing: border-box;
+  padding: 10px;
 }
 
 .news-content-item-title {

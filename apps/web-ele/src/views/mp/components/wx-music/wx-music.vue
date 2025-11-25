@@ -45,7 +45,7 @@ defineExpose({
       class="block"
     >
       <div
-        class="bg-background flex items-center rounded-sm border border-[#e8e8e8] p-4 transition hover:border-black/10 hover:shadow-sm"
+        class="flex items-center rounded-sm border border-[#e8e8e8] bg-background p-4 transition hover:border-black/10 hover:shadow-sm"
       >
         <div
           class="mr-3 h-12 w-12 overflow-hidden rounded-full border border-transparent"
