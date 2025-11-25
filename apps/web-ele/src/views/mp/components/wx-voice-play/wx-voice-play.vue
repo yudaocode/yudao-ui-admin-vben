@@ -9,18 +9,15 @@ import BenzAMRRecorder from 'benz-amr-recorder';
 /** 微信消息 - 语音 */
 defineOptions({ name: 'VoicePlayer' });
 
-// TODO @hw：antd 和 ele 代码风格一致；
-const props = defineProps({
-  url: {
-    type: String, // 语音地址，例如说：https://www.iocoder.cn/xxx.amr
-    required: true,
+const props = withDefaults(
+  defineProps<{
+    content?: string; // 语音文本
+    url: string; // 语音地址，例如说：https://www.iocoder.cn/xxx.amr
+  }>(),
+  {
+    content: '',
   },
-  content: {
-    type: String, // 语音文本
-    required: false,
-    default: '',
-  },
-});
+);
 
 const amr = ref();
 const playing = ref(false);
@@ -72,8 +69,12 @@ const amrStop = () => {
 <template>
   <div class="wx-voice-div" @click="playVoice">
     <el-icon>
-      <IconifyIcon v-if="playing !== true" icon="ep:video-play" :size="32" />
-      <IconifyIcon v-else icon="ep:video-pause" :size="32" />
+      <IconifyIcon
+        v-if="playing !== true"
+        icon="lucide:circle-play"
+        :size="32"
+      />
+      <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
       <span class="amr-duration" v-if="duration">{{ duration }} 秒</span>
     </el-icon>
     <div v-if="content">

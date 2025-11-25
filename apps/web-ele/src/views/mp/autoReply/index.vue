@@ -161,14 +161,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <ElTabPane :name="String(AutoReplyMsgType.Follow)">
             <template #label>
               <ElRow align="middle">
-                <IconifyIcon icon="ep:star" class="mr-[2px]" /> 关注时回复
+                <IconifyIcon icon="lucide:star" class="mr-[2px]" /> 关注时回复
               </ElRow>
             </template>
           </ElTabPane>
           <ElTabPane :name="String(AutoReplyMsgType.Message)">
             <template #label>
               <ElRow align="middle">
-                <IconifyIcon icon="ep:chat-line-round" class="mr-[2px]" />
+                <IconifyIcon
+                  icon="lucide:message-circle-more"
+                  class="mr-[2px]"
+                />
                 消息回复
               </ElRow>
             </template>
@@ -176,7 +179,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <ElTabPane :name="String(AutoReplyMsgType.Keyword)">
             <template #label>
               <ElRow align="middle">
-                <IconifyIcon icon="fa:newspaper-o" class="mr-[2px]" />
+                <IconifyIcon icon="lucide:newspaper" class="mr-[2px]" />
                 关键词回复
               </ElRow>
             </template>

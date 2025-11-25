@@ -4,32 +4,54 @@
 <script lang="ts" setup>
 import type { WxLocationProps } from './types';
 
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-// TODO @dylan：@hw：apps/web-antd/src/views/mall/trade/delivery/pickUpStore/modules/form.vue 参考这个，从后端拿 key 哈
-import { ElCol, ElLink, ElRow } from 'element-plus';
+import { ElCol, ElLink, ElMessage, ElRow } from 'element-plus';
+
+import { getTradeConfig } from '#/api/mall/trade/config';
 
 defineOptions({ name: 'Location' });
 
-const props = withDefaults(defineProps<WxLocationProps>(), {
-  qqMapKey: 'TVDBZ-TDILD-4ON4B-PFDZA-RNLKH-VVF6E', // QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
-});
+const props = defineProps<WxLocationProps>();
+
+const fetchedQqMapKey = ref('');
+const resolvedQqMapKey = computed(
+  () => props.qqMapKey || fetchedQqMapKey.value || '',
+);
 
 const mapUrl = computed(() => {
   return `https://map.qq.com/?type=marker&isopeninfowin=1&markertype=1&pointx=${props.locationY}&pointy=${props.locationX}&name=${props.label}&ref=yudao`;
 });
 
 const mapImageUrl = computed(() => {
-  return `https://apis.map.qq.com/ws/staticmap/v2/?zoom=10&markers=color:blue|label:A|${props.locationX},${props.locationY}&key=${props.qqMapKey}&size=250*180`;
+  return `https://apis.map.qq.com/ws/staticmap/v2/?zoom=10&markers=color:blue|label:A|${props.locationX},${props.locationY}&key=${resolvedQqMapKey.value}&size=250*180`;
+});
+
+async function fetchQqMapKey() {
+  try {
+    const data = await getTradeConfig();
+    fetchedQqMapKey.value = data.tencentLbsKey ?? '';
+    if (!fetchedQqMapKey.value) {
+      ElMessage.warning('请先配置腾讯位置服务密钥');
+    }
+  } catch {
+    ElMessage.error('获取腾讯位置服务密钥失败');
+  }
+}
+
+onMounted(async () => {
+  if (!props.qqMapKey) {
+    await fetchQqMapKey();
+  }
 });
 
 defineExpose({
   locationX: props.locationX,
   locationY: props.locationY,
   label: props.label,
-  qqMapKey: props.qqMapKey,
+  qqMapKey: resolvedQqMapKey,
 });
 </script>
 
@@ -42,7 +64,7 @@ defineExpose({
           <img :src="mapImageUrl" alt="地图位置" />
         </ElRow>
         <ElRow>
-          <IconifyIcon icon="ep:location" />
+          <IconifyIcon icon="lucide:map-pin" />
           {{ label }}
         </ElRow>
       </ElCol>

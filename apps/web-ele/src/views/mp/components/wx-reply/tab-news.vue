@@ -51,7 +51,7 @@ function onDelete() {
         <News :articles="reply.articles" />
         <ElCol class="pt-[10px] text-center">
           <ElButton type="danger" circle @click="onDelete">
-            <IconifyIcon icon="ep:delete" />
+            <IconifyIcon icon="lucide:trash-2" />
           </ElButton>
         </ElCol>
       </div>
@@ -65,7 +65,7 @@ function onDelete() {
                   ? '选择已发布图文'
                   : '选择草稿箱图文'
               }}
-              <IconifyIcon icon="ep:circle-check" />
+              <IconifyIcon icon="lucide:circle-check" />
             </ElButton>
           </ElCol>
         </ElRow>

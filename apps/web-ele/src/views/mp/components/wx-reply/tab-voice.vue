@@ -103,7 +103,7 @@ function selectMaterial(item: Reply) {
       </ElRow>
       <ElRow class="w-full pt-[10px] text-center" justify="center">
         <ElButton type="danger" circle @click="onDelete">
-          <IconifyIcon icon="ep:delete" />
+          <IconifyIcon icon="lucide:trash-2" />
         </ElButton>
       </ElRow>
     </div>
@@ -114,7 +114,7 @@ function selectMaterial(item: Reply) {
         class="h-[160px] w-[49.5%] border border-[rgb(234,234,234)] py-[50px]"
       >
         <ElButton type="success" @click="showDialog = true">
-          素材库选择<IconifyIcon icon="ep:circle-check" />
+          素材库选择<IconifyIcon icon="lucide:circle-check" />
         </ElButton>
         <ElDialog
           title="选择语音"

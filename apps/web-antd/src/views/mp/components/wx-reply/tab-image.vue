@@ -167,7 +167,7 @@ function selectMaterial(item: any) {
 <style lang="scss" scoped>
 /** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .select-item {
-  width: 280px;
+  // width: 280px;
   padding: 10px;
   margin: 0 auto 10px;
   border: 1px solid #eaeaea;
