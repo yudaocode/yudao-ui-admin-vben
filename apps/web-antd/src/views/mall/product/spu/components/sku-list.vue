@@ -464,7 +464,7 @@ defineExpose({
       @checkbox-change="handleSelectionChange"
       @checkbox-all="handleSelectionChange"
     >
-      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
       <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
