@@ -220,75 +220,77 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-[70%]">
-    <Form class="mx-4">
-      <!-- 商品选择 -->
-      <template #spuId>
-        <div class="w-full">
-          <Button v-if="!formData?.id" type="primary" @click="openSpuSelect">
-            选择商品
-          </Button>
+  <div>
+    <Modal :title="getTitle" class="w-[70%]">
+      <Form class="mx-4">
+        <!-- 商品选择 -->
+        <template #spuId>
+          <div class="w-full">
+            <Button v-if="!formData?.id" type="primary" @click="openSpuSelect">
+              选择商品
+            </Button>
 
-          <!-- SPU 和 SKU 列表展示 -->
-          <SpuAndSkuList
-            ref="spuAndSkuListRef"
-            :rule-config="ruleConfig"
-            :spu-list="spuList"
-            :spu-property-list-p="spuPropertyList"
-            class="mt-4"
-          >
-            <!-- 扩展列：积分商城特有配置 -->
-            <template #default>
-              <VxeColumn align="center" min-width="168" title="可兑换库存">
-                <template #default="{ row: sku }">
-                  <InputNumber
-                    v-model:value="sku.productConfig.stock"
-                    :max="sku.stock"
-                    :min="0"
-                    class="w-full"
-                  />
-                </template>
-              </VxeColumn>
-              <VxeColumn align="center" min-width="168" title="可兑换次数">
-                <template #default="{ row: sku }">
-                  <InputNumber
-                    v-model:value="sku.productConfig.count"
-                    :min="0"
-                    class="w-full"
-                  />
-                </template>
-              </VxeColumn>
-              <VxeColumn align="center" min-width="168" title="所需积分">
-                <template #default="{ row: sku }">
-                  <InputNumber
-                    v-model:value="sku.productConfig.point"
-                    :min="0"
-                    class="w-full"
-                  />
-                </template>
-              </VxeColumn>
-              <VxeColumn align="center" min-width="168" title="所需金额(元)">
-                <template #default="{ row: sku }">
-                  <InputNumber
-                    v-model:value="sku.productConfig.price"
-                    :min="0"
-                    :precision="2"
-                    :step="0.1"
-                    class="w-full"
-                  />
-                </template>
-              </VxeColumn>
-            </template>
-          </SpuAndSkuList>
-        </div>
-      </template>
-    </Form>
+            <!-- SPU 和 SKU 列表展示 -->
+            <SpuAndSkuList
+              ref="spuAndSkuListRef"
+              :rule-config="ruleConfig"
+              :spu-list="spuList"
+              :spu-property-list-p="spuPropertyList"
+              class="mt-4"
+            >
+              <!-- 扩展列：积分商城特有配置 -->
+              <template #default>
+                <VxeColumn align="center" min-width="168" title="可兑换库存">
+                  <template #default="{ row: sku }">
+                    <InputNumber
+                      v-model:value="sku.productConfig.stock"
+                      :max="sku.stock"
+                      :min="0"
+                      class="w-full"
+                    />
+                  </template>
+                </VxeColumn>
+                <VxeColumn align="center" min-width="168" title="可兑换次数">
+                  <template #default="{ row: sku }">
+                    <InputNumber
+                      v-model:value="sku.productConfig.count"
+                      :min="0"
+                      class="w-full"
+                    />
+                  </template>
+                </VxeColumn>
+                <VxeColumn align="center" min-width="168" title="所需积分">
+                  <template #default="{ row: sku }">
+                    <InputNumber
+                      v-model:value="sku.productConfig.point"
+                      :min="0"
+                      class="w-full"
+                    />
+                  </template>
+                </VxeColumn>
+                <VxeColumn align="center" min-width="168" title="所需金额(元)">
+                  <template #default="{ row: sku }">
+                    <InputNumber
+                      v-model:value="sku.productConfig.price"
+                      :min="0"
+                      :precision="2"
+                      :step="0.1"
+                      class="w-full"
+                    />
+                  </template>
+                </VxeColumn>
+              </template>
+            </SpuAndSkuList>
+          </div>
+        </template>
+      </Form>
+    </Modal>
 
     <!-- 商品选择器弹窗 -->
     <SpuSkuSelect
       ref="spuSkuSelectRef"
       :is-select-sku="true"
-      @confirm="handleSpuSelected"
+      @select="handleSpuSelected"
     />
-  </Modal>
+  </div>
 </template>

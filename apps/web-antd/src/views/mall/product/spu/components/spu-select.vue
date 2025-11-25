@@ -7,10 +7,9 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
@@ -28,7 +27,7 @@ const props = withDefaults(defineProps<SpuSelectProps>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'confirm', spuId: number, skuIds?: number[]): void;
+  (e: 'select', spuId: number, skuIds?: number[]): void;
 }>();
 
 interface SpuSelectProps {
@@ -96,11 +95,6 @@ function selectSpu(row: MallSpuApi.Spu) {
   // 切换选择 spu 如果有选择的 sku 则清空,确保选择的 sku 是对应的 spu 下面的
   if (selectedSkuIds.value.length > 0) {
     selectedSkuIds.value = [];
-  }
-
-  // 自动展开选中的 SPU
-  if (props.isSelectSku) {
-    expandChange(row, [row]);
   }
 }
 
@@ -222,8 +216,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   },
   gridEvents: {
-    radioChange: ({ row }: { row: MallSpuApi.Spu }) => {
+    radioChange: ({ row, $grid }: { $grid: any; row: MallSpuApi.Spu }) => {
       selectSpu(row);
+      if (props.isSelectSku) {
+        $grid.clearRowExpand();
+        $grid.setRowExpand(row, true);
+        expandChange(row, [row]);
+      }
     },
     toggleRowExpand: ({
       row,
@@ -241,50 +240,51 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-/** 初始化弹窗 */
-const [Modal, modalApi] = useVbenModal({
-  destroyOnClose: true,
-  onConfirm: () => {
-    if (selectedSpuId.value === 0) {
-      message.warning('没有选择任何商品');
-      return;
-    }
-    if (props.isSelectSku && selectedSkuIds.value.length === 0) {
-      message.warning('没有选择任何商品属性');
-      return;
-    }
-    // 返回各自 id 列表
-    props.isSelectSku
-      ? emit('confirm', selectedSpuId.value, selectedSkuIds.value)
-      : emit('confirm', selectedSpuId.value);
+/** 弹窗显示状态 */
+const visible = ref(false);
 
-    // 重置选中状态
-    selectedSpuId.value = 0;
-    selectedSkuIds.value = [];
-    modalApi.close();
-  },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      selectedSpuId.value = 0;
-      selectedSkuIds.value = [];
-      spuData.value = undefined;
-      propertyList.value = [];
-      isExpand.value = false;
-      return;
-    }
-    // 等待 Grid 组件完全初始化后再查询数据
-    await nextTick();
-    if (gridApi.grid) {
-      await gridApi.query();
-    }
-  },
-});
+/** 打开弹窗 */
+async function openModal() {
+  visible.value = true;
+  // 等待 Grid 组件完全初始化后再查询数据
+  await nextTick();
+  if (gridApi.grid) {
+    await gridApi.query();
+  }
+}
+
+/** 关闭弹窗 */
+function closeModal() {
+  visible.value = false;
+  selectedSpuId.value = 0;
+  selectedSkuIds.value = [];
+  spuData.value = undefined;
+  propertyList.value = [];
+  isExpand.value = false;
+}
+
+/** 确认选择 */
+function handleConfirm() {
+  if (selectedSpuId.value === 0) {
+    message.warning('没有选择任何商品');
+    return;
+  }
+  if (props.isSelectSku && selectedSkuIds.value.length === 0) {
+    message.warning('没有选择任何商品属性');
+    return;
+  }
+  // 返回各自 id 列表
+  props.isSelectSku
+    ? emit('select', selectedSpuId.value, selectedSkuIds.value)
+    : emit('select', selectedSpuId.value);
+
+  // 重置选中状态
+  closeModal();
+}
 
 /** 对外暴露的方法 */
 defineExpose({
-  open: () => {
-    modalApi.open();
-  },
+  open: openModal,
 });
 
 /** 初始化分类数据 */
@@ -299,7 +299,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Modal title="商品选择" class="w-[70%]">
+  <Modal
+    v-model:open="visible"
+    title="商品选择"
+    width="70%"
+    :destroy-on-close="true"
+    @ok="handleConfirm"
+    @cancel="closeModal"
+  >
     <Grid>
       <!-- 展开列内容（SKU 列表） -->
       <template v-if="isSelectSku" #expand_content="{ row }">
