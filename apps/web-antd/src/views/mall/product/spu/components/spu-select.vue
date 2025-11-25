@@ -5,7 +5,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCategoryApi } from '#/api/mall/product/category';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
@@ -86,34 +86,21 @@ function selectSku(val: MallSpuApi.Sku[]) {
 }
 
 /** 处理 SPU 选择变化 */
-function selectSpu(val: MallSpuApi.Spu[]) {
-  if (val.length === 0) {
+function selectSpu(row: MallSpuApi.Spu) {
+  if (!row) {
     selectedSpuId.value = 0;
     return;
   }
-  // 只选择一个
-  const firstId = val[0]?.id;
-  if (firstId !== undefined) {
-    selectedSpuId.value = firstId;
-  }
+  selectedSpuId.value = row.id!;
+
   // 切换选择 spu 如果有选择的 sku 则清空,确保选择的 sku 是对应的 spu 下面的
   if (selectedSkuIds.value.length > 0) {
     selectedSkuIds.value = [];
   }
-  // 如果大于1个
-  if (val.length > 1) {
-    // 清空选择
-    gridApi.grid.clearCheckboxRow();
-    // 变更为最后一次选择的
-    const lastRow = val.pop();
-    if (lastRow) {
-      gridApi.grid.setCheckboxRow(lastRow, true);
-    }
-    return;
-  }
+
   // 自动展开选中的 SPU
-  if (props.isSelectSku && val[0]) {
-    expandChange(val[0], [val[0]]);
+  if (props.isSelectSku) {
+    expandChange(row, [row]);
   }
 }
 
@@ -181,33 +168,20 @@ async function expandChange(
   isExpand.value = true;
 }
 
-/** 确认选择时的触发事件 */
-function confirm() {
-  if (selectedSpuId.value === 0) {
-    message.warning('没有选择任何商品');
-    return;
-  }
-  if (props.isSelectSku && selectedSkuIds.value.length === 0) {
-    message.warning('没有选择任何商品属性');
-    return;
-  }
-  // 返回各自 id 列表
-  props.isSelectSku
-    ? emit('confirm', selectedSpuId.value, selectedSkuIds.value)
-    : emit('confirm', selectedSpuId.value);
-  // 关闭弹窗
-  modalApi.close();
-  selectedSpuId.value = 0;
-  selectedSkuIds.value = [];
-}
-
 /** 搜索表单 Schema */
 const formSchema = computed(() => useGridFormSchema(categoryTreeList));
 
 /** 表格列配置 */
-const gridColumns = computed<VxeTableGridOptions['columns']>(() =>
-  useGridColumns(props.isSelectSku),
-);
+const gridColumns = computed<VxeTableGridOptions['columns']>(() => {
+  const columns = useGridColumns(props.isSelectSku);
+  // 将 checkbox 替换为 radio
+  return columns?.map((col) => {
+    if (col.type === 'checkbox') {
+      return { ...col, type: 'radio' };
+    }
+    return col;
+  });
+});
 
 /** 初始化列表 */
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -218,10 +192,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: gridColumns.value,
-    height: 500,
+    height: 800,
     border: true,
-    checkboxConfig: {
+    radioConfig: {
       reserve: true,
+      highlight: true,
     },
     rowConfig: {
       keyField: 'id',
@@ -247,8 +222,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   },
   gridEvents: {
-    checkboxChange: ({ records }: { records: unknown[] }) => {
-      selectSpu(records as MallSpuApi.Spu[]);
+    radioChange: ({ row }: { row: MallSpuApi.Spu }) => {
+      selectSpu(row);
     },
     toggleRowExpand: ({
       row,
@@ -269,15 +244,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 初始化弹窗 */
 const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
-  onConfirm: confirm,
+  onConfirm: () => {
+    if (selectedSpuId.value === 0) {
+      message.warning('没有选择任何商品');
+      return;
+    }
+    if (props.isSelectSku && selectedSkuIds.value.length === 0) {
+      message.warning('没有选择任何商品属性');
+      return;
+    }
+    // 返回各自 id 列表
+    props.isSelectSku
+      ? emit('confirm', selectedSpuId.value, selectedSkuIds.value)
+      : emit('confirm', selectedSpuId.value);
+
+    // 重置选中状态
+    selectedSpuId.value = 0;
+    selectedSkuIds.value = [];
+    modalApi.close();
+  },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      await gridApi.grid.clearCheckboxRow();
-      // 关闭所有展开的行
-      const tableData = gridApi.grid.getTableData().fullData;
-      tableData.forEach((row: MallSpuApi.Spu) => {
-        gridApi.grid.setRowExpand(row, false);
-      });
       selectedSpuId.value = 0;
       selectedSkuIds.value = [];
       spuData.value = undefined;
@@ -285,8 +272,11 @@ const [Modal, modalApi] = useVbenModal({
       isExpand.value = false;
       return;
     }
-    // 打开时查询数据
-    await gridApi.query();
+    // 等待 Grid 组件完全初始化后再查询数据
+    await nextTick();
+    if (gridApi.grid) {
+      await gridApi.query();
+    }
   },
 });
 
