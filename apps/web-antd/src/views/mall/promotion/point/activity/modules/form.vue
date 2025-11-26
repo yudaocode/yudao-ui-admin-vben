@@ -132,14 +132,13 @@ async function getSpuDetails(
   });
   res.skus = selectSkus;
 
-  // 构建 SPU 属性列表
   const spuProperties: SpuProperty<MallSpuApi.Spu>[] = [
     {
       spuId: res.id!,
       spuDetail: res,
       propertyList: getPropertyList(res),
     },
-  ];
+  ]; // 构建 SPU 属性列表
 
   // 直接赋值，因为每次只选择一个 SPU
   spuList.value = [res];
@@ -187,13 +186,15 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 重置表单数据（新增和编辑模式都需要）
+    // TODO @puhui999：这里的重置，是不是在 183 到 185 已经处理了呀。
     formData.value = undefined;
     spuList.value = [];
     spuPropertyList.value = [];
-    // 加载数据（仅编辑模式）
+    // 加载数据
     const data = modalApi.getData<MallPointActivityApi.PointActivity>();
     if (!data || !data.id) {
       // 新增模式：重置表单字段
+      // TODO @puhui999：197 到 201 这块的 setValues 的设置，是不是必要哈。可以看看。
       await formApi.setValues({
         sort: 0,
         remark: '',
@@ -201,7 +202,7 @@ const [Modal, modalApi] = useVbenModal({
       });
       return;
     }
-    // 编辑模式：加载数据
+    // 加载数据
     modalApi.lock();
     try {
       formData.value = await getPointActivity(data.id);

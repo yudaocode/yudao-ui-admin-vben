@@ -215,10 +215,9 @@ function handleConfirm() {
   closeModal();
 }
 
-/** 对外暴露的方法 */
 defineExpose({
   open: openModal,
-});
+}); // 对外暴露的方法
 
 /** 初始化分类数据 */
 onMounted(async () => {

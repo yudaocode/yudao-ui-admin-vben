@@ -16,7 +16,6 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
-    // TODO @puhui999：商品的选择
     {
       fieldName: 'spuId',
       label: '商品',
@@ -24,11 +23,9 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择商品',
       },
-      renderComponentContent: () => ({
-        default: () => null,
-      }),
       rules: 'required',
     },
+    // TODO @puhui999：商品的选择：上面 spuId 可以选择了，下面的 skuId 打开后，没商品。
     {
       fieldName: 'skuId',
       label: '商品规格',
@@ -40,9 +37,6 @@ export function useFormSchema(): VbenFormSchema[] {
         triggerFields: ['spuId'],
         show: (values) => !!values.spuId,
       },
-      renderComponentContent: () => ({
-        default: () => null,
-      }),
       rules: 'required',
     },
     {

@@ -45,6 +45,7 @@ const expandRowKeys = ref<string[]>([]); // 控制展开行需要设置 row-key 
 function getSkuConfigs(extendedAttribute: string) {
   // 验证 SKU 数据（如果有 ref 的话）
   if (skuListRef.value) {
+    // TODO @puhui999：这里有个 linter 错误；
     try {
       skuListRef.value.validateSku();
     } catch (error) {
@@ -64,8 +65,7 @@ function getSkuConfigs(extendedAttribute: string) {
   return seckillProducts;
 }
 
-// 暴露出给表单提交时使用
-defineExpose({ getSkuConfigs });
+defineExpose({ getSkuConfigs }); // 暴露出给表单提交时使用
 
 /** 多选时可以删除 SPU */
 async function deleteSpu(spuId: number) {
@@ -77,9 +77,7 @@ async function deleteSpu(spuId: number) {
   }
 }
 
-/**
- * 将传进来的值赋值给 spuData
- */
+/** 将传进来的值赋值给 spuData */
 watch(
   () => props.spuList,
   (data) => {
@@ -92,9 +90,7 @@ watch(
   },
 );
 
-/**
- * 将传进来的值赋值给 spuPropertyList
- */
+/** 将传进来的值赋值给 spuPropertyList */
 watch(
   () => props.spuPropertyListP,
   (data) => {

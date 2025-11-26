@@ -6,13 +6,9 @@ import type { MallCategoryApi } from '#/api/mall/product/category';
 
 import { computed } from 'vue';
 
-import { formatToFraction } from '@vben/utils';
-
 import { getRangePickerDefaultProps } from '#/utils';
 
-/**
- * @description: 列表的搜索表单
- */
+/** 列表的搜索表单 */
 export function useGridFormSchema(
   categoryTreeList: Ref<MallCategoryApi.Category[] | unknown[]>,
 ): VbenFormSchema[] {
@@ -55,9 +51,7 @@ export function useGridFormSchema(
   ];
 }
 
-/**
- * @description: 列表的字段
- */
+/** 列表的字段 */
 export function useGridColumns(
   isSelectSku: boolean,
 ): VxeTableGridOptions['columns'] {
@@ -95,10 +89,7 @@ export function useGridColumns(
       title: '商品售价',
       minWidth: 90,
       align: 'center',
-      formatter: ({ cellValue }) => {
-        // 格式化价格显示（价格以分为单位存储）
-        return formatToFraction(cellValue);
-      },
+      formatter: 'formatAmount2',
     },
     {
       field: 'salesCount',

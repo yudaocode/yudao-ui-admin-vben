@@ -104,7 +104,7 @@ async function expandChange(
   expandedRows?: MallSpuApi.Spu[],
 ) {
   // 判断需要展开的 spuId === 选择的 spuId。如果选择了 A 就展开 A 的 skuList。如果选择了 A 手动展开 B 则阻断
-  // 目的防止误选 sku
+  // 目的：防止误选 sku
   if (selectedSpuId.value !== 0) {
     if (row.id !== selectedSpuId.value) {
       message.warning('你已选择商品请先取消');
@@ -138,8 +138,6 @@ async function expandChange(
     return;
   }
   const res = (await getSpu(row.id)) as MallSpuApi.Spu;
-  // 注意：API 返回的价格应该已经是分为单位，无需转换
-  // 如果 API 返回的是元，则需要转换为分：
   res.skus?.forEach((item) => {
     if (typeof item.price === 'number') {
       item.price = Math.round(item.price * 100);
@@ -162,10 +160,7 @@ async function expandChange(
   isExpand.value = true;
 }
 
-/** 搜索表单 Schema */
-const formSchema = computed(() => useGridFormSchema(categoryTreeList));
-
-/** 表格列配置 */
+const formSchema = computed(() => useGridFormSchema(categoryTreeList)); // 搜索表单 Schema
 const gridColumns = computed<VxeTableGridOptions['columns']>(() => {
   const columns = useGridColumns(props.isSelectSku);
   // 将 checkbox 替换为 radio
@@ -175,9 +170,8 @@ const gridColumns = computed<VxeTableGridOptions['columns']>(() => {
     }
     return col;
   });
-});
+}); // 表格列配置
 
-/** 初始化列表 */
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: formSchema.value,
@@ -196,6 +190,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    // TODO @puhui999：貌似直接 { trigger: 'row', reserve: true } 就可以了？不会影响 radio 的哈。（可以测试下。）
     expandConfig: props.isSelectSku
       ? {
           trigger: 'row',
@@ -240,8 +235,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-/** 弹窗显示状态 */
-const visible = ref(false);
+const visible = ref(false); // 弹窗显示状态
 
 /** 打开弹窗 */
 async function openModal() {

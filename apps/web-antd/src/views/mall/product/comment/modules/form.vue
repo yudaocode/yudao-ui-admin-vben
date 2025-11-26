@@ -48,6 +48,7 @@ const [Form, formApi] = useVbenForm({
 const skuTableSelectRef = ref<InstanceType<typeof SkuTableSelect>>();
 const selectedSku = ref<MallSpuApi.Sku>();
 
+/** 处理商品的选择变化 */
 async function handleSpuChange(spu?: MallSpuApi.Spu | null) {
   // 处理商品选择：如果 spu 为 null 或 id 为 0，表示清空选择
   const spuId = spu?.id && spu.id ? spu.id : undefined;
@@ -59,6 +60,7 @@ async function handleSpuChange(spu?: MallSpuApi.Spu | null) {
   await formApi.setFieldValue('skuId', undefined);
 }
 
+/** 打开商品规格的选择弹框 */
 async function openSkuSelect() {
   const currentValues =
     (await formApi.getValues()) as Partial<MallCommentApi.Comment>;
@@ -70,6 +72,7 @@ async function openSkuSelect() {
   skuTableSelectRef.value?.open({ spuId: currentSpuId });
 }
 
+/** 处理商品规格的选择 */
 async function handleSkuSelected(sku: MallSpuApi.Sku) {
   selectedSku.value = sku;
   formData.value.skuId = sku.id;
@@ -98,6 +101,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       // 重置表单数据
+      // TODO @puhui999：105 到 108 的代码，不需要的呀？（可以测试下）
       formData.value = {
         descriptionScores: 5,
         benefitScores: 5,
@@ -108,6 +112,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<MallCommentApi.Comment>();
     if (!data || !data.id) {
+      // TODO @puhui999：115 到 121 的代码，不需要的呀？（可以测试下）
       // 新建模式：重置表单
       formData.value = {
         descriptionScores: 5,
@@ -123,7 +128,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getComment(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
-      // 回显已选规格
+      // 回显已选的商品规格
       if (formData.value?.spuId && formData.value?.skuId) {
         const spu = await getSpu(formData.value.spuId);
         const sku = spu.skus?.find((item) => item.id === formData.value!.skuId);
@@ -166,9 +171,8 @@ const [Modal, modalApi] = useVbenModal({
               selectedSku.properties.length > 0
             "
           >
-            已选：{{
-              selectedSku.properties.map((p: any) => p.valueName).join('/')
-            }}
+            已选：
+            {{ selectedSku.properties.map((p: any) => p.valueName).join('/') }}
           </span>
           <span v-else-if="selectedSku">已选：{{ selectedSku.id }}</span>
         </div>

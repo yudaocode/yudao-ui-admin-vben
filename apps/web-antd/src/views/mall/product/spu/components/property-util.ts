@@ -2,7 +2,7 @@
 import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { PropertyAndValues } from '#/views/mall/product/spu/components/type';
 
-/** 获得商品的规格列表 - 商品相关的公共函数（被其他模块如 promotion 使用） */
+/** 获得商品的规格列表 - 商品相关的公共函数（被其它模块如 promotion 使用） */
 const getPropertyList = (spu: MallSpuApi.Spu): PropertyAndValues[] => {
   //  直接拿返回的 skus 属性逆向生成出 propertyList
   const properties: PropertyAndValues[] = [];

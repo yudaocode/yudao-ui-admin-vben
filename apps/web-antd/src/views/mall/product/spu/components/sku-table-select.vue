@@ -78,6 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: false,
     },
     proxyConfig: {
+      // TODO @puhui999：看看注释的部分，后续要不要删除
       // autoLoad: false, // 禁用自动加载，手动触发查询
       ajax: {
         query: async () => {
@@ -121,6 +122,7 @@ async function openModal(data?: SpuData) {
   }
   spuId.value = data.spuId;
   visible.value = true;
+  // TODO @puhui999：看看注释的部分，后续要不要删除
   // // 等待弹窗和 Grid 组件完全渲染后再查询数据
   // await nextTick();
   // if (gridApi.grid) {
