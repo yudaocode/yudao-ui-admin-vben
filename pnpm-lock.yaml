@@ -938,6 +938,12 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.6.3(vue@3.5.24(typescript@5.9.3))
+      vue3-print-nb:
+        specifier: 'catalog:'
+        version: 0.1.4(typescript@5.9.3)
+      vue3-signature:
+        specifier: 'catalog:'
+        version: 0.2.4(vue@3.5.24(typescript@5.9.3))
       vuedraggable:
         specifier: 'catalog:'
         version: 4.1.0(vue@3.5.24(typescript@5.9.3))

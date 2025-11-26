@@ -15,6 +15,33 @@ export namespace BpmTaskApi {
     valueType: string; // 监听器值类型
     processInstance?: BpmProcessInstanceApi.ProcessInstance; // 流程实例
   }
+
+  // 流程任务
+  export interface TaskManager {
+    id: string; // 编号
+    name: string; // 任务名称
+    createTime: number; // 创建时间
+    endTime: number; // 结束时间
+    durationInMillis: number; // 持续时间
+    status: number; // 状态
+    reason: string; // 原因
+    ownerUser: any; // 负责人
+    assigneeUser: any; // 处理人
+    taskDefinitionKey: string; // 任务定义key
+    processInstanceId: string; // 流程实例id
+    processInstance: BpmProcessInstanceApi.ProcessInstance; // 流程实例
+    parentTaskId: any; // 父任务id
+    children: any; // 子任务
+    formId: any; // 表单id
+    formName: any; // 表单名称
+    formConf: any; // 表单配置
+    formFields: any; // 表单字段
+    formVariables: any; // 表单变量
+    buttonsSetting: any; // 按钮设置
+    signEnable: any; // 签名设置
+    reasonRequire: any; // 原因设置
+    nodeType: any; // 节点类型
+  }
 }
 
 /** 查询待办任务分页 */
