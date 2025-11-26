@@ -76,9 +76,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               });
             }
           });
-          // TODO @jawe：Article 类型，报错；
           return {
-            list: res.list as unknown as Article[],
+            list: res.list as unknown as MpFreePublishApi.FreePublish[],
             total: res.total,
           };
         },
@@ -92,7 +91,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<Article>,
+  } as VxeTableGridOptions<MpFreePublishApi.FreePublish>,
 });
 </script>
 
