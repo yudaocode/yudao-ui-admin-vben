@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { PropertyAndValues, RuleConfig } from '../index';
-
 import type { MallSpuApi } from '#/api/mall/product/spu';
+import type {
+  PropertyAndValues,
+  RuleConfig,
+} from '#/views/mall/product/spu/components';
 
 import { ref, watch } from 'vue';
 
@@ -463,7 +465,7 @@ defineExpose({
       @checkbox-change="handleSelectionChange"
       @checkbox-all="handleSelectionChange"
     >
-      <VxeColumn v-if="isComponent" type="checkbox" width="45" />
+      <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
       <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <Image
