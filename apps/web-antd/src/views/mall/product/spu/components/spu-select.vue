@@ -190,13 +190,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-    // TODO @puhui999：貌似直接 { trigger: 'row', reserve: true } 就可以了？不会影响 radio 的哈。（可以测试下。）
-    expandConfig: props.isSelectSku
-      ? {
-          trigger: 'row',
-          reserve: true,
-        }
-      : undefined,
+    expandConfig: {
+      trigger: 'row',
+      reserve: true,
+    },
     proxyConfig: {
       ajax: {
         async query({ page }: any, formValues: any) {
