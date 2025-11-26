@@ -27,25 +27,25 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
-      // {
-      //   path: 'process-instance/detail',
-      //   component: () => import('#/views/bpm/processInstance/detail/index.vue'),
-      //   name: 'BpmProcessInstanceDetail',
-      //   meta: {
-      //     title: '流程详情',
-      //     activePath: '/bpm/task/my',
-      //     icon: 'ant-design:history-outlined',
-      //     keepAlive: false,
-      //     hideInMenu: true,
-      //   },
-      //   props: (route) => {
-      //     return {
-      //       id: route.query.id,
-      //       taskId: route.query.taskId,
-      //       activityId: route.query.activityId,
-      //     };
-      //   },
-      // },
+      {
+        path: 'process-instance/detail',
+        component: () => import('#/views/bpm/processInstance/detail/index.vue'),
+        name: 'BpmProcessInstanceDetail',
+        meta: {
+          title: '流程详情',
+          activePath: '/bpm/task/my',
+          icon: 'ant-design:history-outlined',
+          keepAlive: false,
+          hideInMenu: true,
+        },
+        props: (route) => {
+          return {
+            id: route.query.id,
+            taskId: route.query.taskId,
+            activityId: route.query.activityId,
+          };
+        },
+      },
       {
         path: '/bpm/manager/form/edit',
         name: 'BpmFormEditor',

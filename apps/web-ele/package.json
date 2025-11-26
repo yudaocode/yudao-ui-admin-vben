@@ -57,6 +57,8 @@
     "vue": "catalog:",
     "vue-dompurify-html": "catalog:",
     "vue-router": "catalog:",
+    "vue3-print-nb": "catalog:",
+    "vue3-signature": "catalog:",
     "vuedraggable": "catalog:"
   },
   "devDependencies": {
