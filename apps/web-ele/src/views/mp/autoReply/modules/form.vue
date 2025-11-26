@@ -4,22 +4,21 @@ import type { Reply } from '#/views/mp/components/wx-reply/types';
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { AutoReplyMsgType, ReplyType } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';
 import { $t } from '#/locales';
-import { ReplyType } from '#/views/mp/components/wx-reply/types';
 
 import { useFormSchema } from '../data';
-import { MsgType } from './types';
 
 const emit = defineEmits(['success']);
 
 const formData = ref<{
   accountId?: number;
-  msgType: MsgType;
+  msgType: AutoReplyMsgType;
   row?: any;
 }>();
 const getTitle = computed(() => {
@@ -37,8 +36,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 100,
   },
   layout: 'horizontal',
-  // TODO @hw：antd 和 ele 存在差异
-  schema: useFormSchema(Number(formData.value?.msgType) as MsgType),
+  schema: useFormSchema(AutoReplyMsgType.Keyword),
   showDefaultActions: false,
 });
 
@@ -59,8 +57,7 @@ const [Modal, modalApi] = useVbenModal({
     if (formData.value?.row?.id && !submitForm.id) {
       submitForm.id = formData.value.row.id;
     }
-    // TODO @hw：antd 和 ele 存在差异
-    const reply = submitForm.reply as Reply | undefined;
+    const reply = submitForm.reply as Reply;
     if (reply) {
       submitForm.responseMessageType = reply.type;
       submitForm.responseContent = reply.content;
@@ -99,8 +96,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<{
       accountId?: number;
-      // TODO @hw：antd 和 ele 存在差异
-      msgType: MsgType;
+      msgType: AutoReplyMsgType;
       row?: any;
     }>();
     if (!data) {
@@ -115,20 +111,22 @@ const [Modal, modalApi] = useVbenModal({
     if (data.row?.id) {
       // 编辑：加载数据
       const rowData = data.row;
-      const formValues: any = { ...rowData };
-      formValues.reply = {
-        type: rowData.responseMessageType,
-        accountId: data.accountId || -1,
-        content: rowData.responseContent,
-        mediaId: rowData.responseMediaId,
-        url: rowData.responseMediaUrl,
-        title: rowData.responseTitle,
-        description: rowData.responseDescription,
-        thumbMediaId: rowData.responseThumbMediaId,
-        thumbMediaUrl: rowData.responseThumbMediaUrl,
-        articles: rowData.responseArticles,
-        musicUrl: rowData.responseMusicUrl,
-        hqMusicUrl: rowData.responseHqMusicUrl,
+      const formValues: any = {
+        ...rowData,
+        reply: {
+          type: rowData.responseMessageType,
+          accountId: data.accountId || -1,
+          content: rowData.responseContent,
+          mediaId: rowData.responseMediaId,
+          url: rowData.responseMediaUrl,
+          title: rowData.responseTitle,
+          description: rowData.responseDescription,
+          thumbMediaId: rowData.responseThumbMediaId,
+          thumbMediaUrl: rowData.responseThumbMediaUrl,
+          articles: rowData.responseArticles,
+          musicUrl: rowData.responseMusicUrl,
+          hqMusicUrl: rowData.responseHqMusicUrl,
+        },
       };
       await formApi.setValues(formValues);
     } else {
@@ -138,8 +136,7 @@ const [Modal, modalApi] = useVbenModal({
         accountId: data.accountId || -1,
         type: data.msgType,
         requestKeyword: undefined,
-        // TODO @hw：antd 和 ele 存在差异
-        requestMatch: data.msgType === MsgType.Keyword ? 1 : undefined,
+        requestMatch: data.msgType === AutoReplyMsgType.Keyword ? 1 : undefined,
         requestMessageType: undefined,
         reply: {
           type: ReplyType.Text,

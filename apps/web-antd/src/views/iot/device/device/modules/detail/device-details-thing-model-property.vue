@@ -22,8 +22,7 @@ import {
 
 import { getLatestDeviceProperties } from '#/api/iot/device/device';
 
-import DeviceDetailsThingModelPropertyHistory
-  from './device-details-thing-model-property-history.vue';
+import DeviceDetailsThingModelPropertyHistory from './device-details-thing-model-property-history.vue';
 
 const props = defineProps<{ deviceId: number }>();
 
@@ -168,13 +167,13 @@ onMounted(() => {
           >
             <!-- 添加渐变背景层 -->
             <div
-              class="from-muted pointer-events-none absolute left-0 right-0 top-0 h-12 bg-gradient-to-b to-transparent"
+              class="pointer-events-none absolute left-0 right-0 top-0 h-12 bg-gradient-to-b from-muted to-transparent"
             ></div>
             <div class="relative p-4">
               <!-- 标题区域 -->
               <div class="mb-3 flex items-center">
                 <div class="mr-2.5 flex items-center">
-                  <IconifyIcon icon="ep:cpu" class="text-primary text-lg" />
+                  <IconifyIcon icon="ep:cpu" class="text-lg text-primary" />
                 </div>
                 <div class="flex-1 text-base font-bold">{{ item.name }}</div>
                 <!-- 标识符 -->
@@ -198,7 +197,7 @@ onMounted(() => {
                 >
                   <IconifyIcon
                     icon="ep:data-line"
-                    class="text-primary text-lg"
+                    class="text-lg text-primary"
                   />
                 </div>
               </div>
@@ -206,14 +205,14 @@ onMounted(() => {
               <!-- 信息区域 -->
               <div class="text-sm">
                 <div class="mb-2.5 last:mb-0">
-                  <span class="text-muted-foreground mr-2.5">属性值</span>
-                  <span class="text-foreground font-bold">
+                  <span class="mr-2.5 text-muted-foreground">属性值</span>
+                  <span class="font-bold text-foreground">
                     {{ formatValueWithUnit(item) }}
                   </span>
                 </div>
                 <div class="mb-2.5 last:mb-0">
-                  <span class="text-muted-foreground mr-2.5">更新时间</span>
-                  <span class="text-foreground text-sm">
+                  <span class="mr-2.5 text-muted-foreground">更新时间</span>
+                  <span class="text-sm text-foreground">
                     {{ item.updateTime ? formatDate(item.updateTime) : '-' }}
                   </span>
                 </div>

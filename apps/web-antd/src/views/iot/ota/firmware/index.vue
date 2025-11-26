@@ -123,13 +123,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
         >
           <IconifyIcon
             icon="ant-design:download-outlined"
-            class="text-primary shrink-0 align-middle text-base"
+            class="shrink-0 align-middle text-base text-primary"
           />
           <a
             :href="row.fileUrl"
             target="_blank"
             download
-            class="text-primary cursor-pointer align-middle hover:underline"
+            class="cursor-pointer align-middle text-primary hover:underline"
           >
             下载固件
           </a>

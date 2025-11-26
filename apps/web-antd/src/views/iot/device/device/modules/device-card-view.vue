@@ -176,7 +176,7 @@ function getDeviceTypeColor(deviceType: number) {
 }
 
 // 获取设备状态信息
-function getStatusInfo(state: number | string | null | undefined) {
+function getStatusInfo(state: null | number | string | undefined) {
   const parsedState = Number(state);
   const hasNumericState = Number.isFinite(parsedState);
   const fallback = hasNumericState
@@ -396,21 +396,21 @@ defineExpose({
   .device-card {
     height: 100%;
     overflow: hidden;
-    background: hsl(var(--card) / 0.95);
-    border: 1px solid hsl(var(--border) / 0.6);
+    background: hsl(var(--card) / 95%);
+    border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
     box-shadow:
-      0 1px 2px 0 hsl(var(--foreground) / 0.04),
-      0 1px 6px -1px hsl(var(--foreground) / 0.05),
-      0 2px 4px 0 hsl(var(--foreground) / 0.05);
+      0 1px 2px 0 hsl(var(--foreground) / 4%),
+      0 1px 6px -1px hsl(var(--foreground) / 5%),
+      0 2px 4px 0 hsl(var(--foreground) / 5%);
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     &:hover {
       border-color: hsl(var(--border));
       box-shadow:
-        0 1px 2px -2px hsl(var(--foreground) / 0.12),
-        0 3px 6px 0 hsl(var(--foreground) / 0.1),
-        0 5px 12px 4px hsl(var(--foreground) / 0.08);
+        0 1px 2px -2px hsl(var(--foreground) / 12%),
+        0 3px 6px 0 hsl(var(--foreground) / 10%),
+        0 5px 12px 4px hsl(var(--foreground) / 8%);
       transform: translateY(-4px);
     }
 
@@ -473,7 +473,7 @@ defineExpose({
       font-size: 16px;
       font-weight: 600;
       line-height: 24px;
-      color: hsl(var(--foreground) / 0.9);
+      color: hsl(var(--foreground) / 90%);
       white-space: nowrap;
     }
 
@@ -496,7 +496,7 @@ defineExpose({
         .label {
           flex-shrink: 0;
           font-size: 13px;
-          color: hsl(var(--foreground) / 0.6);
+          color: hsl(var(--foreground) / 60%);
         }
 
         .value {
@@ -505,7 +505,7 @@ defineExpose({
           overflow: hidden;
           text-overflow: ellipsis;
           font-size: 13px;
-          color: hsl(var(--foreground) / 0.85);
+          color: hsl(var(--foreground) / 85%);
           text-align: right;
           white-space: nowrap;
 
@@ -515,7 +515,7 @@ defineExpose({
             transition: color 0.2s;
 
             &:hover {
-              color: hsl(var(--primary) / 0.85);
+              color: hsl(var(--primary) / 85%);
             }
           }
 
@@ -524,7 +524,7 @@ defineExpose({
               'SF Mono', Monaco, Inconsolata, 'Fira Code', Consolas, monospace;
             font-size: 12px;
             font-weight: 500;
-            color: hsl(var(--foreground) / 0.6);
+            color: hsl(var(--foreground) / 60%);
           }
         }
       }
@@ -537,7 +537,7 @@ defineExpose({
       display: flex;
       gap: 8px;
       padding-top: 12px;
-      border-top: 1px solid hsl(var(--border) / 0.4);
+      border-top: 1px solid hsl(var(--border) / 40%);
 
       .action-btn {
         display: flex;
@@ -561,8 +561,8 @@ defineExpose({
 
         &.btn-edit {
           color: hsl(var(--primary));
-          background: hsl(var(--primary) / 0.12);
-          border-color: hsl(var(--primary) / 0.25);
+          background: hsl(var(--primary) / 12%);
+          border-color: hsl(var(--primary) / 25%);
 
           &:hover {
             color: hsl(var(--primary-foreground));
@@ -573,8 +573,8 @@ defineExpose({
 
         &.btn-view {
           color: hsl(var(--warning));
-          background: hsl(var(--warning) / 0.12);
-          border-color: hsl(var(--warning) / 0.25);
+          background: hsl(var(--warning) / 12%);
+          border-color: hsl(var(--warning) / 25%);
 
           &:hover {
             color: #fff;
@@ -590,11 +590,7 @@ defineExpose({
             hsl(var(--accent)) 40%,
             hsl(var(--card)) 60%
           );
-          border-color: color-mix(
-            in srgb,
-            hsl(var(--accent)) 55%,
-            transparent
-          );
+          border-color: color-mix(in srgb, hsl(var(--accent)) 55%, transparent);
 
           &:hover {
             color: hsl(var(--accent-foreground));
@@ -607,8 +603,8 @@ defineExpose({
           flex: 0 0 32px;
           padding: 4px;
           color: hsl(var(--destructive));
-          background: hsl(var(--destructive) / 0.12);
-          border-color: hsl(var(--destructive) / 0.3);
+          background: hsl(var(--destructive) / 12%);
+          border-color: hsl(var(--destructive) / 30%);
 
           &:hover {
             color: hsl(var(--destructive-foreground));

@@ -21,8 +21,6 @@ import {
 import { WxMaterialSelect } from '#/views/mp/components';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
-// TODO @hw：类似 tab-image.vue 的建议
-
 defineOptions({ name: 'TabMusic' });
 
 const props = defineProps<{
@@ -76,20 +74,20 @@ async function customRequest(options: any) {
 
     const result = await response.json();
 
-    if (result.code === 0) {
-      // 清空上传时的各种数据
-      fileList.value = [];
-      uploadData.title = '';
-      uploadData.introduction = '';
-
-      // 上传好的文件，本质是个素材，所以可以进行选中
-      selectMaterial(result.data);
-      message.success('上传成功');
-      onSuccess(result, file);
-    } else {
+    if (result.code !== 0) {
       message.error(result.msg || '上传出错');
       onError(new Error(result.msg || '上传失败'));
+      return;
     }
+    // 清空上传时的各种数据
+    fileList.value = [];
+    uploadData.title = '';
+    uploadData.introduction = '';
+
+    // 上传好的文件，本质是个素材，所以可以进行选中
+    selectMaterial(result.data);
+    message.success('上传成功');
+    onSuccess(result, file);
   } catch (error) {
     message.error('上传失败，请重试');
     onError(error);

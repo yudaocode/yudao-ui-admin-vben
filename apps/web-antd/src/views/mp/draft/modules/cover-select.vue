@@ -11,6 +11,7 @@ import { useAccessStore } from '@vben/stores';
 import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
+import { WxMaterialSelect } from '#/views/mp/components/';
 
 const props = defineProps<{
   isFirst: boolean;
@@ -32,9 +33,8 @@ const newsItem = computed<MpDraftApi.NewsItem>({
   },
 });
 
-const dialogVisible = ref(false);
-
 const accountId = inject<number>('accountId');
+const dialogVisible = ref(false);
 
 const fileList = ref<UploadFile[]>([]);
 interface UploadData {
@@ -133,14 +133,13 @@ function onUploadError(err: Error) {
           支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
         </div>
       </div>
-      <!-- TODO @hw：这个貌似不行；ele 我试了下，可以的 -->
       <Modal
         v-model:open="dialogVisible"
         title="图片选择"
         width="65%"
         :footer="null"
       >
-        <MaterialSelect
+        <WxMaterialSelect
           type="image"
           :account-id="accountId!"
           @select-material="onMaterialSelected"

@@ -26,7 +26,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-// TODO @hw：antd 和 ele 风格不同，需要统一；
 interface Props {
   modelValue: Reply | undefined;
   newsType?: NewsType;
@@ -45,7 +44,6 @@ const reply = computed<Reply>({
 const tabCache = new Map<ReplyType, Reply>(); // 作为多个标签保存各自 Reply 的缓存
 const currentTab = ref<ReplyType>(props.modelValue?.type || ReplyType.Text); // 采用独立的 ref 来保存当前 tab，避免在 watch 标签变化，对 reply 进行赋值会产生了循环调用
 
-// TODO @hw：antd 和 ele 风格不同，需要统一；
 // 监听 modelValue 变化，同步更新 currentTab 和缓存
 watch(
   () => props.modelValue,
@@ -64,7 +62,6 @@ watch(
   { immediate: true, deep: true },
 );
 
-// TODO @hw：antd 和 ele 风格不同，需要统一；
 watch(
   currentTab,
   (newTab, oldTab) => {

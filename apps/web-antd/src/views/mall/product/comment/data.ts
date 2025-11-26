@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCommentApi } from '#/api/mall/product/comment';
 
 import { z } from '#/adapter/form';
-import { getSpuSimpleList } from '#/api/mall/product/spu';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -17,19 +16,16 @@ export function useFormSchema(): VbenFormSchema[] {
         show: () => false,
       },
     },
-    // TODO @puhui999：商品的选择
     {
       fieldName: 'spuId',
       label: '商品',
-      component: 'ApiSelect',
+      component: 'Input',
       componentProps: {
-        api: getSpuSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择商品',
       },
       rules: 'required',
     },
+    // TODO @puhui999：商品的选择：上面 spuId 可以选择了，下面的 skuId 打开后，没商品。
     {
       fieldName: 'skuId',
       label: '商品规格',

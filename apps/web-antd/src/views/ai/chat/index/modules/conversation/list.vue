@@ -90,7 +90,7 @@ async function getChatConversationList() {
     // 1.1 获取 对话数据
     conversationList.value = await getChatConversationMyList();
     // 1.2 排序
-    conversationList.value.sort((a, b) => {
+    conversationList.value.toSorted((a, b) => {
       return Number(b.createTime) - Number(a.createTime);
     });
     // 1.3 没有任何对话情况
@@ -414,7 +414,7 @@ onMounted(async () => {
 
     <!-- 左底部：工具栏 -->
     <div
-      class="bg-card absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between px-5 leading-9 text-gray-400 shadow-sm"
+      class="absolute bottom-1 left-0 right-0 mb-4 flex items-center justify-between bg-card px-5 leading-9 text-gray-400 shadow-sm"
     >
       <div
         class="flex cursor-pointer items-center text-gray-400"

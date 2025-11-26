@@ -89,7 +89,7 @@ onMounted(async () => {
 <template>
   <Page auto-content-height>
     <div class="absolute inset-0 m-4 flex h-full w-full flex-row">
-      <div class="bg-card left-0 mr-4 flex w-96 flex-col rounded-lg p-4">
+      <div class="left-0 mr-4 flex w-96 flex-col rounded-lg bg-card p-4">
         <div class="flex justify-center">
           <ElSegmented v-model="selectPlatform" :options="platformOptions" />
         </div>
@@ -120,7 +120,7 @@ onMounted(async () => {
           />
         </div>
       </div>
-      <div class="bg-card flex-1">
+      <div class="flex-1 bg-card">
         <ImageList ref="imageListRef" @on-regeneration="handleRegeneration" />
       </div>
     </div>

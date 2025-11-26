@@ -43,7 +43,7 @@ const queryParams = reactive({
 }); // 查询参数
 
 const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @hw：@dylan：any 有 linter 告警；看看别的模块哈
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -78,7 +78,7 @@ const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
 ];
 
 const videoGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @hw：@dylan：any 有 linter 告警；看看别的模块哈
+  // TODO @dylan：any 有 linter 告警；看看别的模块哈
   {
     field: 'mediaId',
     title: '编号',
@@ -291,11 +291,19 @@ watch(
     <!-- TODO @dylan：看看图片的小卡片，是不是可以整齐点，类似微信公众号，图片的高度是一致的哈；https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=1646383362&lang=zh_CN -->
     <template v-if="props.type === 'image'">
       <Spin :spinning="loading">
-        <div class="waterfall">
-          <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
-            <img class="material-img" :src="item.url" alt="素材图片" />
-            <p class="item-name">{{ item.name }}</p>
-            <Row class="ope-row">
+        <div
+          class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+        >
+          <div
+            v-for="item in list"
+            :key="item.mediaId"
+            class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
+          >
+            <img class="w-full" :src="item.url" alt="素材图片" />
+            <p class="truncate text-center text-xs leading-[30px]">
+              {{ item.name }}
+            </p>
+            <Row class="flex justify-center pt-2.5">
               <Button type="primary" @click="selectMaterialFun(item)">
                 选择
                 <template #icon>
@@ -353,11 +361,17 @@ watch(
     <!-- 类型：news -->
     <template v-else-if="props.type === 'news'">
       <Spin :spinning="loading">
-        <div class="waterfall">
-          <div v-for="item in list" :key="item.mediaId" class="waterfall-item">
+        <div
+          class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+        >
+          <div
+            v-for="item in list"
+            :key="item.mediaId"
+            class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
+          >
             <div v-if="item.content && item.content.newsItem">
               <WxNews :articles="item.content.newsItem" />
-              <Row class="ope-row">
+              <Row class="flex justify-center pt-2.5">
                 <Button type="primary" @click="selectMaterialFun(item)">
                   选择
                   <template #icon>
@@ -380,67 +394,3 @@ watch(
     </template>
   </Page>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
-@media (width >= 992px) and (width <= 1300px) {
-  .waterfall {
-    column-count: 3;
-  }
-
-  p {
-    color: red;
-  }
-}
-
-@media (width >= 768px) and (width <= 991px) {
-  .waterfall {
-    column-count: 2;
-  }
-
-  p {
-    color: orange;
-  }
-}
-
-@media (width <= 767px) {
-  .waterfall {
-    column-count: 1;
-  }
-}
-
-.waterfall {
-  column-count: 5;
-  column-gap: 10px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.waterfall-item {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #eaeaea;
-  break-inside: avoid;
-}
-
-.material-img {
-  width: 100%;
-}
-
-p {
-  line-height: 30px;
-}
-
-.ope-row {
-  padding-top: 10px;
-  text-align: center;
-}
-
-.item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-</style>

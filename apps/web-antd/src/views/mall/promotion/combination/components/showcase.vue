@@ -111,6 +111,7 @@ function emitActivityChange() {
     >
       <Tooltip :title="activity.name">
         <div class="relative h-full w-full">
+          <!-- TODO @芋艿 -->
           <Image
             :src="activity.picUrl"
             class="h-full w-full rounded-lg object-cover"
@@ -128,7 +129,7 @@ function emitActivityChange() {
     <!-- 添加活动按钮 -->
     <Tooltip v-if="canAdd" title="选择活动">
       <div
-        class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
+        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenActivitySelect"
       >
         <PlusOutlined class="text-xl text-gray-400" />

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, ref } from 'vue';
 
@@ -16,23 +16,23 @@ import {
   ElRow,
 } from 'element-plus';
 
+import { createEmptyNewsItem } from '#/api/mp/draft';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
-import { createEmptyNewsItem } from './types';
 
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
   isCreating: boolean;
-  modelValue: NewsItem[] | null;
+  modelValue: MpDraftApi.NewsItem[] | null;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem[]): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem[]): void;
 }>();
 
-const newsList = computed<NewsItem[]>({
+const newsList = computed<MpDraftApi.NewsItem[]>({
   get() {
     return props.modelValue === null
       ? [createEmptyNewsItem()]
@@ -93,27 +93,32 @@ function plusNews() {
 <template>
   <ElContainer>
     <ElAside width="40%">
-      <div class="mx-auto mb-2.5 w-3/5 border border-gray-200 p-2.5">
+      <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
         <div v-for="(news, index) in newsList" :key="index">
           <div
-            class="group mx-auto h-[120px] w-full cursor-pointer bg-white"
+            class="group relative mx-auto mb-[10px] w-full cursor-pointer border-[2px] bg-white"
             v-if="index === 0"
-            :class="{
-              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
-            }"
+            :class="
+              activeNewsIndex === index
+                ? 'border-green-500'
+                : 'border-transparent'
+            "
             @click="activeNewsIndex = index"
           >
-            <div class="relative h-[120px] w-full bg-[#acadae]">
-              <img class="h-full w-full" :src="news.thumbUrl" />
+            <div class="relative w-full bg-[#acadae]">
+              <img
+                class="max-h-[200px] min-h-[100px] w-full object-cover"
+                :src="news.thumbUrl"
+              />
               <div
-                class="absolute bottom-0 left-0 inline-block h-[25px] w-[98%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-[15px] text-white opacity-65"
+                class="absolute bottom-0 left-0 mb-[5px] ml-[5px] inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap p-[1%] text-[18px] text-white"
               >
                 {{ news.title }}
               </div>
             </div>
             <div
+              class="absolute bottom-0 right-[-45px] top-0 flex flex-col justify-center gap-[10px] py-[5px] text-center"
               v-if="newsList.length > 1"
-              class="relative -bottom-6 hidden text-center group-hover:block"
             >
               <ElButton
                 type="info"
@@ -121,38 +126,43 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </ElButton>
               <ElButton
                 v-if="isCreating"
                 type="danger"
                 circle
                 size="small"
+                class="!ml-0"
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </ElButton>
             </div>
           </div>
-          <!-- TODO @hw：1）每个文章的选中框太粗了；2）没完全覆盖住文章；；；最好首个文章，和第个文章的情况，都看看 -->
           <div
-            class="group mx-auto w-full cursor-pointer border-t border-gray-200 bg-white py-1.5"
+            class="group relative mx-auto mb-[10px] cursor-pointer border-[2px] bg-white"
             v-if="index > 0"
-            :class="{
-              'border-[5px] border-[#2bb673]': activeNewsIndex === index,
-            }"
+            :class="
+              activeNewsIndex === index
+                ? 'border-green-500'
+                : 'border-transparent'
+            "
             @click="activeNewsIndex = index"
           >
-            <div class="relative -ml-0.5">
-              <div class="inline-block w-[70%] text-xs">{{ news.title }}</div>
-              <div class="inline-block w-1/4 bg-[#acadae]">
-                <img class="h-full w-full" :src="news.thumbUrl" width="100%" />
+            <div class="relative flex items-center justify-between">
+              <div
+                class="mb-[5px] ml-[5px] h-[25px] flex-1 overflow-hidden text-ellipsis whitespace-nowrap p-[1%] text-[16px]"
+              >
+                {{ news.title }}
               </div>
+              <img
+                class="block h-[90px] w-[90px] object-cover"
+                :src="news.thumbUrl"
+              />
             </div>
-            <!-- TODO @hw：这里的按钮，交互不太对。应该在每个卡片的里面；或者类似公众号现在的交互，放到右侧；。。。复现本周：如果有 2 个文章的时候 -->
-            <!-- TODO @hw：当有 2 个文章的时候，挪到第二个文章的时候，卡片会变大。期望：不变大 -->
             <div
-              class="relative -bottom-6 hidden text-center group-hover:block"
+              class="absolute bottom-0 right-[-45px] top-0 flex flex-col justify-center gap-[10px] py-[5px] text-center"
             >
               <ElButton
                 v-if="newsList.length > index + 1"
@@ -161,25 +171,27 @@ function plusNews() {
                 size="small"
                 @click="() => moveDownNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-down-bold" />
+                <IconifyIcon icon="lucide:arrow-down" />
               </ElButton>
               <ElButton
                 v-if="index > 0"
                 type="info"
                 circle
                 size="small"
+                class="!ml-0"
                 @click="() => moveUpNews(index)"
               >
-                <IconifyIcon icon="ep:arrow-up-bold" />
+                <IconifyIcon icon="lucide:arrow-up" />
               </ElButton>
               <ElButton
                 v-if="isCreating"
                 type="danger"
                 size="small"
                 circle
+                class="!ml-0"
                 @click="() => removeNews(index)"
               >
-                <IconifyIcon icon="ep:delete" />
+                <IconifyIcon icon="lucide:trash-2" />
               </ElButton>
             </div>
           </div>
@@ -194,7 +206,7 @@ function plusNews() {
             @click="plusNews"
             v-if="newsList.length < 8 && isCreating"
           >
-            <IconifyIcon icon="ep:plus" />
+            <IconifyIcon icon="lucide:plus" />
           </ElButton>
         </ElRow>
       </div>

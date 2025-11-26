@@ -225,7 +225,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-secondary text-sm">无需设置时间值</div>
+          <div v-else class="text-sm text-secondary">无需设置时间值</div>
         </Form.Item>
       </Col>
 

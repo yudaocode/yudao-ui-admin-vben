@@ -113,7 +113,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallDeliveryPickUpStoreApi.DeliveryPickUpStore>();
+    const data =
+      modalApi.getData<MallDeliveryPickUpStoreApi.DeliveryPickUpStore>();
     if (!data || !data.id) {
       // 初始化地图
       await initTencentLbsMap();

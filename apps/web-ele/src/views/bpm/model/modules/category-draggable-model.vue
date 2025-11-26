@@ -665,7 +665,7 @@ function handleRenameSuccess() {
                   link
                   size="small"
                   @click="modelOperation('update', row.id)"
-                  :disabled="!isManagerUser(row) || !hasPermiUpdate"
+                  :disabled="!isManagerUser(row) && !hasPermiUpdate"
                 >
                   修改
                 </ElButton>
@@ -673,7 +673,7 @@ function handleRenameSuccess() {
                   link
                   size="small"
                   @click="handleDeploy(row)"
-                  :disabled="!isManagerUser(row) || !hasPermiDeploy"
+                  :disabled="!isManagerUser(row) && !hasPermiDeploy"
                 >
                   发布
                 </ElButton>
@@ -717,7 +717,7 @@ function handleRenameSuccess() {
                       </el-dropdown-item>
                       <el-dropdown-item
                         @click="handleModelCommand('handleDelete', row)"
-                        :disabled="!isManagerUser(row) || !hasPermiDelete"
+                        :disabled="!isManagerUser(row) && !hasPermiDelete"
                       >
                         删除
                       </el-dropdown-item>

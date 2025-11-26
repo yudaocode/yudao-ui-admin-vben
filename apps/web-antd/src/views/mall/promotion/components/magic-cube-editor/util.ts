@@ -57,10 +57,10 @@ export function isContains(hotArea: Rect, point: Point): boolean {
  */
 export function createRect(a: Point, b: Point): Rect {
   // 计算矩形的范围
-  let [left, left2] = [a.x, b.x].sort();
+  let [left, left2] = [a.x, b.x].toSorted();
   left = left ?? 0;
   left2 = left2 ?? 0;
-  let [top, top2] = [a.y, b.y].sort();
+  let [top, top2] = [a.y, b.y].toSorted();
   top = top ?? 0;
   top2 = top2 ?? 0;
   const right = left2 + 1;

@@ -297,7 +297,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <!-- 顶部：工具栏 -->
-    <Row class="bg-card flex max-h-12 rounded-lg">
+    <Row class="flex max-h-12 rounded-lg bg-card">
       <!-- 左侧操作区 -->
       <Col :span="8">
         <slot name="toolBarLeft"></slot>
@@ -350,7 +350,7 @@ onMounted(() => {
           <!-- 手机顶部 -->
           <div class="mx-auto flex w-96 flex-col">
             <!-- 手机顶部状态栏 -->
-            <img alt="" class="bg-card h-6" :src="statusBarImg" />
+            <img alt="" class="h-6 bg-card" :src="statusBarImg" />
             <!-- 手机顶部导航栏 -->
             <ComponentContainer
               v-if="showNavigationBar"

@@ -80,7 +80,7 @@ export const useMallKefuStore = defineStore('mall-kefu', {
     },
     conversationSort() {
       // 按置顶属性和最后消息时间排序
-      this.conversationList.sort((a, b) => {
+      this.conversationList.toSorted((a, b) => {
         // 按照置顶排序，置顶的会在前面
         if (a.adminPinned !== b.adminPinned) {
           return a.adminPinned ? -1 : 1;

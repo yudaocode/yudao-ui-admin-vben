@@ -5,7 +5,7 @@ import { onMounted } from 'vue';
 
 import { usePreferences } from '@vben/preferences';
 
-import { merge } from 'lodash-es';
+import { merge } from 'es-toolkit/compat';
 import { ConfigProvider } from 'tdesign-vue-next';
 import zhConfig from 'tdesign-vue-next/es/locale/zh_CN';
 

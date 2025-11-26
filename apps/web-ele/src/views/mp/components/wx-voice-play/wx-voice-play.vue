@@ -5,29 +5,27 @@ import { IconifyIcon } from '@vben/icons';
 
 // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 import BenzAMRRecorder from 'benz-amr-recorder';
+import { ElTag } from 'element-plus';
 
 /** 微信消息 - 语音 */
-defineOptions({ name: 'VoicePlayer' });
+defineOptions({ name: 'WxVoicePlayer' });
 
-// TODO @hw：antd 和 ele 代码风格一致；
-const props = defineProps({
-  url: {
-    type: String, // 语音地址，例如说：https://www.iocoder.cn/xxx.amr
-    required: true,
+const props = withDefaults(
+  defineProps<{
+    content?: string; // 语音文本
+    url: string; // 语音地址，例如说：https://www.iocoder.cn/xxx.amr
+  }>(),
+  {
+    content: '',
   },
-  content: {
-    type: String, // 语音文本
-    required: false,
-    default: '',
-  },
-});
+);
 
-const amr = ref();
+const amr = ref<any>();
 const playing = ref(false);
-const duration = ref();
+const duration = ref<number>();
 
 /** 处理点击，播放或暂停 */
-const playVoice = () => {
+function playVoice() {
   // 情况一：未初始化，则创建 BenzAMRRecorder
   if (amr.value === undefined) {
     amrInit();
@@ -39,10 +37,10 @@ const playVoice = () => {
   } else {
     amrPlay();
   }
-};
+}
 
 /** 音频初始化 */
-const amrInit = () => {
+function amrInit() {
   amr.value = new BenzAMRRecorder();
   // 设置播放
   amr.value.initWithUrl(props.url).then(() => {
@@ -53,50 +51,39 @@ const amrInit = () => {
   amr.value.onEnded(() => {
     playing.value = false;
   });
-};
+}
 
 /** 音频播放 */
-const amrPlay = () => {
+function amrPlay() {
   playing.value = true;
   amr.value.play();
-};
+}
 
 /** 音频暂停 */
-const amrStop = () => {
+function amrStop() {
   playing.value = false;
   amr.value.stop();
-};
-// TODO 芋艿：下面样式有点问题
+}
+// TODO dylan：下面样式有点问题
 </script>
 
 <template>
-  <div class="wx-voice-div" @click="playVoice">
-    <el-icon>
-      <IconifyIcon v-if="playing !== true" icon="ep:video-play" :size="32" />
-      <IconifyIcon v-else icon="ep:video-pause" :size="32" />
-      <span class="amr-duration" v-if="duration">{{ duration }} 秒</span>
-    </el-icon>
+  <div
+    class="flex min-h-[50px] min-w-[120px] flex-col items-center justify-center rounded-[10px] bg-[#eaeaea] px-3 py-2"
+    @click="playVoice"
+  >
+    <div class="flex items-center">
+      <IconifyIcon
+        v-if="playing !== true"
+        icon="lucide:circle-play"
+        :size="32"
+      />
+      <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
+      <span class="ml-2 text-xs" v-if="duration">{{ duration }} 秒</span>
+    </div>
     <div v-if="content">
-      <el-tag type="success" size="small">语音识别</el-tag>
+      <ElTag type="success" size="small">语音识别</ElTag>
       {{ content }}
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.wx-voice-div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 50px;
-  padding: 5px;
-  background-color: #eaeaea;
-  border-radius: 10px;
-}
-
-.amr-duration {
-  margin-left: 5px;
-  font-size: 11px;
-}
-</style>

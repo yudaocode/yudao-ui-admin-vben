@@ -1,8 +1,7 @@
 <!-- 商品发布 - 库存价格 - 属性列表 -->
 <script lang="ts" setup>
-import type { PropertyAndValues } from '../index';
-
 import type { MallPropertyApi } from '#/api/mall/product/property';
+import type { PropertyAndValues } from '#/views/mall/product/spu/components';
 
 import { computed, ref, watch } from 'vue';
 
@@ -83,10 +82,10 @@ watch(
 
 /** 删除属性值 */
 function handleCloseValue(index: number, value: PropertyAndValues) {
-  if (attributeList.value[index]) {
-    attributeList.value[index].values = attributeList.value?.[
+  if (attributeList.value[index]?.values) {
+    attributeList.value[index].values = attributeList.value[
       index
-    ]?.values?.filter((item) => item.id !== value.id);
+    ].values?.filter((item) => item.id !== value.id);
   }
 }
 
@@ -167,9 +166,8 @@ async function getAttributeOptions(propertyId: number) {
 
 <template>
   <Col v-for="(attribute, index) in attributeList" :key="index">
-    <Divider class="my-4" />
-    <!-- TODO @puhui999：1）间隙可以看看；2)vue3 + element-plus 添加属性这个按钮，是和属性名在一排，感觉更好看点。 -->
-    <div class="mt-1">
+    <Divider class="my-3" />
+    <div class="mt-2 flex flex-wrap items-center gap-2">
       <span class="mx-1">属性名：</span>
       <Tag
         :closable="!isDetail"
@@ -180,7 +178,7 @@ async function getAttributeOptions(propertyId: number) {
         {{ attribute.name }}
       </Tag>
     </div>
-    <div class="mt-2">
+    <div class="mt-2 flex flex-wrap items-center gap-2">
       <span class="mx-1">属性值：</span>
       <Tag
         v-for="(value, valueIndex) in attribute.values"
@@ -189,8 +187,7 @@ async function getAttributeOptions(propertyId: number) {
         class="mx-1"
         @close="handleCloseValue(index, value)"
       >
-        <!-- TODO @puhui999：这里貌似爆红？！idea -->
-        {{ value.name }}
+        {{ value?.name }}
       </Tag>
       <Select
         v-show="inputVisible(index)"

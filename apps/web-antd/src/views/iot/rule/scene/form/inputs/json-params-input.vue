@@ -451,8 +451,8 @@ watch(
           <!-- 弹出层内容 -->
           <div class="json-params-detail-content">
             <div class="mb-4 flex items-center gap-2">
-              <IconifyIcon :icon="titleIcon" class="text-primary text-lg" />
-              <span class="text-primary text-base font-bold">
+              <IconifyIcon :icon="titleIcon" class="text-lg text-primary" />
+              <span class="text-base font-bold text-primary">
                 {{ title }}
               </span>
             </div>
@@ -463,9 +463,9 @@ watch(
                 <div class="mb-2 flex items-center gap-2">
                   <IconifyIcon
                     :icon="paramsIcon"
-                    class="text-primary text-base"
+                    class="text-base text-primary"
                   />
-                  <span class="text-primary text-base font-bold">
+                  <span class="text-base font-bold text-primary">
                     {{ paramsLabel }}
                   </span>
                 </div>
@@ -473,10 +473,10 @@ watch(
                   <div
                     v-for="param in paramsList"
                     :key="param.identifier"
-                    class="bg-card flex items-center justify-between rounded-lg p-2"
+                    class="flex items-center justify-between rounded-lg bg-card p-2"
                   >
                     <div class="flex-1">
-                      <div class="text-primary text-base font-bold">
+                      <div class="text-base font-bold text-primary">
                         {{ param.name }}
                         <Tag
                           v-if="param.required"
@@ -487,7 +487,7 @@ watch(
                           {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
                         </Tag>
                       </div>
-                      <div class="text-secondary text-xs">
+                      <div class="text-xs text-secondary">
                         {{ param.identifier }}
                       </div>
                     </div>
@@ -495,7 +495,7 @@ watch(
                       <Tag :type="getParamTypeTag(param.dataType)" size="small">
                         {{ getParamTypeName(param.dataType) }}
                       </Tag>
-                      <span class="text-secondary text-xs">
+                      <span class="text-xs text-secondary">
                         {{ getExampleValue(param) }}
                       </span>
                     </div>
@@ -503,11 +503,11 @@ watch(
                 </div>
 
                 <div class="ml-6 mt-3">
-                  <div class="text-secondary mb-1 text-xs">
+                  <div class="mb-1 text-xs text-secondary">
                     {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                   </div>
                   <pre
-                    class="bg-card border-l-3px border-primary text-primary overflow-x-auto rounded-lg p-3 text-sm"
+                    class="border-l-3px overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-primary"
                   >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>
@@ -517,7 +517,7 @@ watch(
               <!-- 无参数提示 -->
               <div v-else>
                 <div class="py-4 text-center">
-                  <p class="text-secondary text-sm">
+                  <p class="text-sm text-secondary">
                     {{ emptyMessage }}
                   </p>
                 </div>
@@ -550,7 +550,7 @@ watch(
 
       <!-- 快速填充按钮 -->
       <div v-if="paramsList.length > 0" class="flex items-center gap-2">
-        <span class="text-secondary text-xs">
+        <span class="text-xs text-secondary">
           {{ JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL }}
         </span>
         <Button size="small" type="primary" plain @click="fillExampleJson">

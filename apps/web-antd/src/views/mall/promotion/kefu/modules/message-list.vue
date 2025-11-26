@@ -91,7 +91,7 @@ function pushMessage(message: any) {
 /** 按照时间倒序，获取消息列表 */
 const getMessageList0 = computed(() => {
   // 使用展开运算符创建新数组，避免直接修改原数组
-  return [...messageList.value].sort(
+  return [...messageList.value].toSorted(
     (a: any, b: any) => a.createTime - b.createTime,
   );
 });
@@ -261,7 +261,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
 <template>
   <div
     v-if="showMessageList()"
-    class="bg-background flex h-full flex-auto flex-col p-4"
+    class="flex h-full flex-auto flex-col bg-background p-4"
   >
     <div class="flex h-full flex-auto flex-shrink-0 flex-col">
       <div class="flex h-12 w-full flex-row items-center justify-between">
@@ -415,7 +415,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
       </div>
     </div>
   </div>
-  <div v-else class="bg-background relative">
+  <div v-else class="relative bg-background">
     <Empty description="请选择左侧的一个会话后开始" class="mt-[20%]" />
   </div>
 </template>

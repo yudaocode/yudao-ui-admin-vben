@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { UploadFiles, UploadProps, UploadRawFile } from 'element-plus';
 
-import type { NewsItem } from './types';
+import type { MpDraftApi } from '#/api/mp/draft';
 
 import { computed, inject, reactive, ref } from 'vue';
 
@@ -11,22 +11,20 @@ import { useAccessStore } from '@vben/stores';
 import { ElButton, ElDialog, ElImage, ElMessage, ElUpload } from 'element-plus';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
-import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
-
-// TODO @hw：代码风格，要和对应的 antd index.vue 一致，类似方法的顺序，注释等。原因是，这样后续两端迭代，会方便很多。
+import { WxMaterialSelect } from '#/views/mp/components/';
 
 const props = defineProps<{
   isFirst: boolean;
-  modelValue: NewsItem;
+  modelValue: MpDraftApi.NewsItem;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: NewsItem): void;
+  (e: 'update:modelValue', v: MpDraftApi.NewsItem): void;
 }>();
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传永久素材的地址
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
-const newsItem = computed<NewsItem>({
+const newsItem = computed<MpDraftApi.NewsItem>({
   get() {
     return props.modelValue;
   },
@@ -36,7 +34,7 @@ const newsItem = computed<NewsItem>({
 });
 
 const accountId = inject<number>('accountId');
-const showImageDialog = ref(false);
+const dialogVisible = ref(false);
 
 const fileList = ref<UploadFiles>([]);
 interface UploadData {
@@ -48,15 +46,20 @@ const uploadData: UploadData = reactive({
   accountId: accountId!,
 });
 
-/** 素材选择完成事件*/
+function handleOpenDialog() {
+  dialogVisible.value = true;
+}
+
+/** 素材选择完成事件 */
 function onMaterialSelected(item: any) {
-  showImageDialog.value = false;
+  dialogVisible.value = false;
   newsItem.value.thumbMediaId = item.mediaId;
   newsItem.value.thumbUrl = item.url;
 }
 
-const onBeforeUpload: UploadProps['beforeUpload'] = (rawFile: UploadRawFile) =>
-  useBeforeUpload(UploadType.Image, 2)(rawFile);
+/** 上传前校验 */
+const onBeforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) =>
+  useBeforeUpload(UploadType.Image, 2)(file as any);
 
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
@@ -66,12 +69,12 @@ function onUploadSuccess(res: any) {
 
   // 重置上传文件的表单
   fileList.value = [];
-
   // 设置草稿的封面字段
   newsItem.value.thumbMediaId = res.data.mediaId;
   newsItem.value.thumbUrl = res.data.url;
 }
 
+/** 上传失败处理 */
 function onUploadError(err: Error) {
   ElMessage.error(`上传失败: ${err.message}`);
 }
@@ -91,7 +94,7 @@ function onUploadError(err: Error) {
       />
       <IconifyIcon
         v-else
-        icon="ep:plus"
+        icon="lucide:plus"
         class="border border-[#d9d9d9] text-center text-[28px] leading-[120px] text-[#8c939d]"
         :class="isFirst ? 'h-[120px] w-[230px]' : 'h-[120px] w-[120px]'"
       />
@@ -113,7 +116,7 @@ function onUploadError(err: Error) {
           <ElButton
             size="small"
             type="primary"
-            @click="showImageDialog = true"
+            @click="handleOpenDialog"
             class="ml-1.5"
           >
             素材库选择
@@ -127,12 +130,12 @@ function onUploadError(err: Error) {
       </div>
       <ElDialog
         title="选择图片"
-        v-model="showImageDialog"
+        v-model="dialogVisible"
         width="80%"
         append-to-body
         destroy-on-close
       >
-        <MaterialSelect
+        <WxMaterialSelect
           type="image"
           :account-id="accountId!"
           @select-material="onMaterialSelected"

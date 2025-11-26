@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-
 import { ElTag } from 'element-plus';
 
-const props = defineProps<{
+defineOptions({ name: 'MsgEvent' });
+
+defineProps<{
   item: any;
 }>();
-
-// TODO @hw：看看用 antd 的风格，还是 ele 的风格，就是下面的 item。
-const item = ref(props.item);
 </script>
 
 <template>

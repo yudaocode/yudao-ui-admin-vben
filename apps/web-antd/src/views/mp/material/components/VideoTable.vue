@@ -12,7 +12,7 @@ import { Button } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { WxVideoPlayer } from '#/views/mp/components';
 
-// TODO @dylan：@hw：vue 组件名小写 + 中划线
+// TODO @dylan：vue 组件名小写 + 中划线
 
 const props = defineProps<{
   list: any[];

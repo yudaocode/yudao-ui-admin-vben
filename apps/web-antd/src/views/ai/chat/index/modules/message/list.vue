@@ -233,7 +233,7 @@ onMounted(async () => {
   <!-- 回到底部按钮 -->
   <div
     v-if="isScrolling"
-    class="z-1000 absolute bottom-0 right-1/2"
+    class="absolute bottom-0 right-1/2 z-1000"
     @click="handleGoBottom"
   >
     <Button shape="circle">

@@ -16,11 +16,12 @@ import {
   MENU_NOT_SELECTED,
   useGridFormSchema,
 } from '#/views/mp/menu/data';
-import { MenuEditor, MenuPreviewer } from '#/views/mp/menu/modules';
+import Editor from '#/views/mp/menu/modules/editor.vue';
+import Previewer from '#/views/mp/menu/modules/previewer.vue';
 
-import iphoneBackImg from './modules/assets/iphone_backImg.png';
-import menuFootImg from './modules/assets/menu_foot.png';
-import menuHeadImg from './modules/assets/menu_head.png';
+import iphoneBackImg from './assets/iphone_backImg.png';
+import menuFootImg from './assets/menu_foot.png';
+import menuHeadImg from './assets/menu_head.png';
 
 defineOptions({ name: 'MpMenu' });
 
@@ -64,8 +65,8 @@ const parentIndex = ref(-1);
 // ======================== 菜单编辑 ========================
 
 const showRightPanel = ref(false); // 右边配置显示默认详情还是配置详情
-const isParent = ref<boolean>(true); // 是否一级菜单，控制MenuEditor中name字段长度
-const activeMenu = ref<Menu>({}); // 选中菜单，MenuEditor的modelValue
+const isParent = ref<boolean>(true); // 是否一级菜单，控制Editor中name字段长度
+const activeMenu = ref<Menu>({}); // 选中菜单，Editor的modelValue
 
 // 一些临时值放在这里进行判断，如果放在 activeMenu，由于引用关系，menu 也会多了多余的参数
 const tempSelfObj = ref<{
@@ -133,20 +134,20 @@ function menuListToFrontend(list: any[]) {
   list.forEach((item: RawMenu) => {
     const menu: any = {
       ...item,
-    };
-    menu.reply = {
-      type: item.replyMessageType,
-      accountId: item.accountId,
-      content: item.replyContent,
-      mediaId: item.replyMediaId,
-      url: item.replyMediaUrl,
-      title: item.replyTitle,
-      description: item.replyDescription,
-      thumbMediaId: item.replyThumbMediaId,
-      thumbMediaUrl: item.replyThumbMediaUrl,
-      articles: item.replyArticles,
-      musicUrl: item.replyMusicUrl,
-      hqMusicUrl: item.replyHqMusicUrl,
+      reply: {
+        type: item.replyMessageType,
+        accountId: item.accountId,
+        content: item.replyContent,
+        mediaId: item.replyMediaId,
+        url: item.replyMediaUrl,
+        title: item.replyTitle,
+        description: item.replyDescription,
+        thumbMediaId: item.replyThumbMediaId,
+        thumbMediaUrl: item.replyThumbMediaUrl,
+        articles: item.replyArticles,
+        musicUrl: item.replyMusicUrl,
+        hqMusicUrl: item.replyHqMusicUrl,
+      },
     };
     result.push(menu as RawMenu);
   });
@@ -274,23 +275,22 @@ function menuListToBackend() {
 /** 将前端的 menu，转换成后端接收的 menu */
 // TODO: @芋艿，需要根据后台 API 删除不需要的字段
 function menuToBackend(menu: any) {
-  const result = {
+  return {
     ...menu,
     children: undefined, // 不处理子节点
     reply: undefined, // 稍后复制
+    replyMessageType: menu.reply.type,
+    replyContent: menu.reply.content,
+    replyMediaId: menu.reply.mediaId,
+    replyMediaUrl: menu.reply.url,
+    replyTitle: menu.reply.title,
+    replyDescription: menu.reply.description,
+    replyThumbMediaId: menu.reply.thumbMediaId,
+    replyThumbMediaUrl: menu.reply.thumbMediaUrl,
+    replyArticles: menu.reply.articles,
+    replyMusicUrl: menu.reply.musicUrl,
+    replyHqMusicUrl: menu.reply.hqMusicUrl,
   };
-  result.replyMessageType = menu.reply.type;
-  result.replyContent = menu.reply.content;
-  result.replyMediaId = menu.reply.mediaId;
-  result.replyMediaUrl = menu.reply.url;
-  result.replyTitle = menu.reply.title;
-  result.replyDescription = menu.reply.description;
-  result.replyThumbMediaId = menu.reply.thumbMediaId;
-  result.replyThumbMediaUrl = menu.reply.thumbMediaUrl;
-  result.replyArticles = menu.reply.articles;
-  result.replyMusicUrl = menu.reply.musicUrl;
-  result.replyHqMusicUrl = menu.reply.hqMusicUrl;
-  return result;
 }
 </script>
 
@@ -327,7 +327,7 @@ function menuToBackend(menu: any) {
             class="bg-[position:0_0] bg-no-repeat pl-[43px] text-xs after:clear-both after:table after:content-['']"
             :style="{ backgroundImage: `url(${menuFootImg})` }"
           >
-            <MenuPreviewer
+            <Previewer
               v-model="menuList"
               :account-id="accountId"
               :active-index="activeIndex"
@@ -354,7 +354,7 @@ function menuToBackend(menu: any) {
           class="float-left ml-5 box-border w-[63%] bg-[#e8e7e7] p-5"
           v-if="showRightPanel"
         >
-          <MenuEditor
+          <Editor
             :account-id="accountId"
             :is-parent="isParent"
             v-model="activeMenu"

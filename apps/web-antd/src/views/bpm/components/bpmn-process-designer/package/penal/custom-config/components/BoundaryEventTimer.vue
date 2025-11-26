@@ -62,16 +62,16 @@ const resetElement = () => {
     bpmnInstances().moddle.create('bpmn:ExtensionElements', { values: [] });
 
   // 是否开启自定义用户任务超时处理
-  boundaryEventType.value = elExtensionElements.value.values?.filter(
+  boundaryEventType.value = elExtensionElements.value.values?.find(
     (ex: any) => ex.$type === `${prefix}:BoundaryEventType`,
-  )?.[0];
+  );
   if (boundaryEventType.value && boundaryEventType.value.value === 1) {
     timeoutHandlerEnable.value = true;
     configExtensions.value.push(boundaryEventType.value);
   }
 
   // 执行动作
-  timeoutHandlerType.value = elExtensionElements.value.values?.filter(
+  timeoutHandlerType.value = elExtensionElements.value.values?.find(
     (ex: any) => ex.$type === `${prefix}:TimeoutHandlerType`,
   )?.[0];
   if (timeoutHandlerType.value) {

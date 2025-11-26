@@ -3,14 +3,13 @@ import type { Reply } from './types';
 
 import { computed, ref } from 'vue';
 
+import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
 
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 import News from '#/views/mp/components/wx-news/wx-news.vue';
-
-import { NewsType } from '../wx-material-select/types';
 
 defineOptions({ name: 'TabNews' });
 
@@ -52,10 +51,11 @@ function onDelete() {
         <News :articles="reply.articles" />
         <ElCol class="pt-[10px] text-center">
           <ElButton type="danger" circle @click="onDelete">
-            <IconifyIcon icon="ep:delete" />
+            <IconifyIcon icon="lucide:trash-2" />
           </ElButton>
         </ElCol>
       </div>
+
       <!-- 选择素材 -->
       <ElCol :span="24" v-if="!reply.content">
         <ElRow class="text-center" align="middle">
@@ -66,7 +66,7 @@ function onDelete() {
                   ? '选择已发布图文'
                   : '选择草稿箱图文'
               }}
-              <IconifyIcon icon="ep:circle-check" />
+              <IconifyIcon icon="lucide:circle-check" />
             </ElButton>
           </ElCol>
         </ElRow>

@@ -39,7 +39,7 @@ function audioTimeUpdate(args: any) {
 
 <template>
   <div
-    class="b-1 b-l-none h-18 bg-card flex items-center justify-between border border-solid border-rose-100 px-2"
+    class="b-1 b-l-none h-18 flex items-center justify-between border border-solid border-rose-100 bg-card px-2"
   >
     <!-- 歌曲信息 -->
     <div class="flex gap-2.5">

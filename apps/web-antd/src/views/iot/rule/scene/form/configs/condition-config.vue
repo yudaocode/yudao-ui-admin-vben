@@ -135,7 +135,8 @@ function handleDeviceChange(_: any) {
 
 /**
  * 处理属性变化事件
- * @param propertyInfo 属性信息对象
+ * @param propertyInfo.config 属性配置
+ * @param propertyInfo.type 属性类型
  */
 function handlePropertyChange(propertyInfo: { config: any; type: string }) {
   propertyType.value = propertyInfo.type;

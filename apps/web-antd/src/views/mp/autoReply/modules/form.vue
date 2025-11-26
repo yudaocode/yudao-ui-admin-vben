@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-// TODO @hw：这里 Reply 貌似不存在
-import type { Reply } from '#/views/mp/components';
+import type { Reply } from '#/views/mp/components/wx-reply/types';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -112,20 +111,22 @@ const [Modal, modalApi] = useVbenModal({
     if (data.row?.id) {
       // 编辑：加载数据
       const rowData = data.row;
-      const formValues: any = { ...rowData };
-      formValues.reply = {
-        type: rowData.responseMessageType,
-        accountId: data.accountId || -1,
-        content: rowData.responseContent,
-        mediaId: rowData.responseMediaId,
-        url: rowData.responseMediaUrl,
-        title: rowData.responseTitle,
-        description: rowData.responseDescription,
-        thumbMediaId: rowData.responseThumbMediaId,
-        thumbMediaUrl: rowData.responseThumbMediaUrl,
-        articles: rowData.responseArticles,
-        musicUrl: rowData.responseMusicUrl,
-        hqMusicUrl: rowData.responseHqMusicUrl,
+      const formValues: any = {
+        ...rowData,
+        reply: {
+          type: rowData.responseMessageType,
+          accountId: data.accountId || -1,
+          content: rowData.responseContent,
+          mediaId: rowData.responseMediaId,
+          url: rowData.responseMediaUrl,
+          title: rowData.responseTitle,
+          description: rowData.responseDescription,
+          thumbMediaId: rowData.responseThumbMediaId,
+          thumbMediaUrl: rowData.responseThumbMediaUrl,
+          articles: rowData.responseArticles,
+          musicUrl: rowData.responseMusicUrl,
+          hqMusicUrl: rowData.responseHqMusicUrl,
+        },
       };
       await formApi.setValues(formValues);
     } else {

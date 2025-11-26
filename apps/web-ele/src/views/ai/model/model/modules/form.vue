@@ -9,7 +9,6 @@ import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createModel, getModel, updateModel } from '#/api/ai/model/model';
-import {} from '#/api/bpm/model';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

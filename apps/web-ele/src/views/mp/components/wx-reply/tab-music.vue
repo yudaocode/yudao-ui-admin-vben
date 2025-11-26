@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { UploadRawFile } from 'element-plus';
 
-// TODO @hw：类似 tab-image.vue 的建议
 import type { Reply } from './types';
 
 import { computed, reactive, ref } from 'vue';
@@ -22,6 +21,8 @@ import {
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
 
+defineOptions({ name: 'TabMusic' });
+
 const props = defineProps<{
   modelValue: Reply;
 }>();
@@ -29,8 +30,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
-
-const message = ElMessage;
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
@@ -56,7 +55,7 @@ function beforeImageUpload(rawFile: UploadRawFile) {
 /** 上传成功 */
 function onUploadSuccess(res: any) {
   if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+    ElMessage.error(`上传出错：${res.msg}`);
     return false;
   }
 
@@ -72,7 +71,6 @@ function onUploadSuccess(res: any) {
 /** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
-
   reply.value.thumbMediaId = item.mediaId;
   reply.value.thumbMediaUrl = item.url;
 }
@@ -90,7 +88,7 @@ function selectMaterial(item: any) {
                 v-if="reply.thumbMediaUrl"
                 :src="reply.thumbMediaUrl"
               />
-              <IconifyIcon v-else icon="ep:plus" />
+              <IconifyIcon v-else icon="lucide:plus" />
             </ElRow>
             <ElRow align="middle" justify="center" class="mt-[2%]">
               <div>

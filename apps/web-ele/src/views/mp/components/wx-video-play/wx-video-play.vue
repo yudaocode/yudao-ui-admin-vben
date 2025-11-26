@@ -11,26 +11,22 @@ import 'video.js/dist/video-js.css';
 /** 微信消息 - 视频 */
 defineOptions({ name: 'WxVideoPlayer' });
 
-// TODO @hw：antd 或者 ele，props 保持一致；
-const props = defineProps({
-  url: {
-    type: String,
-    required: true,
-  },
-});
+const props = defineProps<{
+  url: string;
+}>();
 
 const dialogVideo = ref(false);
 
-const playVideo = () => {
+function playVideo() {
   dialogVideo.value = true;
-};
+}
 </script>
 
 <template>
   <div @click="playVideo()">
     <!-- 提示 -->
     <div class="flex cursor-pointer flex-col items-center">
-      <IconifyIcon icon="ep:video-play" :size="32" class="mr-5px" />
+      <IconifyIcon icon="lucide:circle-play" :size="32" class="mr-5px" />
       <p class="text-sm">点击播放视频</p>
     </div>
 
@@ -47,19 +43,6 @@ const playVideo = () => {
         :width="800"
         :playback-rates="[0.7, 1.0, 1.5, 2.0]"
       />
-      <!-- TODO @hw：删除掉？ -->
-      <!--     事件，暫時沒用
-      @mounted="handleMounted"-->
-      <!--        @ready="handleEvent($event)"-->
-      <!--        @play="handleEvent($event)"-->
-      <!--        @pause="handleEvent($event)"-->
-      <!--        @ended="handleEvent($event)"-->
-      <!--        @loadeddata="handleEvent($event)"-->
-      <!--        @waiting="handleEvent($event)"-->
-      <!--        @playing="handleEvent($event)"-->
-      <!--        @canplay="handleEvent($event)"-->
-      <!--        @canplaythrough="handleEvent($event)"-->
-      <!--        @timeupdate="handleEvent(player?.currentTime())"-->
     </ElDialog>
   </div>
 </template>

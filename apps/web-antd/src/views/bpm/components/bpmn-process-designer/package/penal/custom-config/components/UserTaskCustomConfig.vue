@@ -112,7 +112,7 @@ const resetCustomConfigList = () => {
 
   // 审批类型
   approveType.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:ApproveType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:ApproveType`, {
@@ -121,7 +121,7 @@ const resetCustomConfigList = () => {
 
   // 审批人与提交人为同一人时
   assignStartUserHandlerTypeEl.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignStartUserHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignStartUserHandlerType`, {
@@ -131,13 +131,13 @@ const resetCustomConfigList = () => {
 
   // 审批人拒绝时
   rejectHandlerTypeEl.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:RejectHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:RejectHandlerType`, { value: 1 });
   rejectHandlerType.value = rejectHandlerTypeEl.value.value;
   returnNodeIdEl.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:RejectReturnTaskId`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:RejectReturnTaskId`, {
@@ -147,7 +147,7 @@ const resetCustomConfigList = () => {
 
   // 审批人为空时
   assignEmptyHandlerTypeEl.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignEmptyHandlerType`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyHandlerType`, {
@@ -155,7 +155,7 @@ const resetCustomConfigList = () => {
     });
   assignEmptyHandlerType.value = assignEmptyHandlerTypeEl.value.value;
   assignEmptyUserIdsEl.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignEmptyUserIds`,
     )?.[0] ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyUserIds`, {
@@ -172,7 +172,7 @@ const resetCustomConfigList = () => {
     });
 
   // 操作按钮
-  buttonsSettingEl.value = elExtensionElements.value.values?.filter(
+  buttonsSettingEl.value = elExtensionElements.value.values?.find(
     (ex: any) => ex.$type === `${prefix}:ButtonsSetting`,
   );
   if (buttonsSettingEl.value.length === 0) {
@@ -189,7 +189,7 @@ const resetCustomConfigList = () => {
 
   // 字段权限
   if (formType.value === BpmModelFormType.NORMAL) {
-    const fieldsPermissionList = elExtensionElements.value.values?.filter(
+    const fieldsPermissionList = elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:FieldsPermission`,
     );
     fieldsPermissionEl.value = [];
@@ -206,21 +206,21 @@ const resetCustomConfigList = () => {
 
   // 是否需要签名
   signEnable.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:SignEnable`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:SignEnable`, { value: false });
 
   // 审批意见
   reasonRequire.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:ReasonRequire`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:ReasonRequire`, { value: false });
 
   // 保留剩余扩展元素，便于后面更新该元素对应属性
   otherExtensions.value =
-    elExtensionElements.value.values?.filter(
+    elExtensionElements.value.values?.find(
       (ex: any) =>
         ex.$type !== `${prefix}:AssignStartUserHandlerType` &&
         ex.$type !== `${prefix}:RejectHandlerType` &&

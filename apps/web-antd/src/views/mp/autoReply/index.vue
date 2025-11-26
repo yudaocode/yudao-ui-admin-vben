@@ -4,9 +4,8 @@ import type { MpAutoReplyApi } from '#/api/mp/autoReply';
 
 import { computed, nextTick, ref } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-// TODO @hw：直接使用 AutoReplyMsgType，不用 as
-import { AutoReplyMsgType as MsgType } from '@vben/constants';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { message, Row, Tabs } from 'ant-design-vue';
@@ -21,15 +20,15 @@ import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import ReplyContentCell from './modules/content.vue';
+import ReplyContent from './modules/content.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpAutoReply' });
 
-const msgType = ref<string>(String(MsgType.Keyword)); // 消息类型
+const msgType = ref<string>(String(AutoReplyMsgType.Keyword)); // 消息类型
 
 const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== MsgType.Follow) {
+  if (Number(msgType.value) !== AutoReplyMsgType.Follow) {
     return true;
   }
   try {
@@ -56,7 +55,7 @@ async function onTabChange(tabName: string) {
   msgType.value = tabName;
   await nextTick();
   // 更新 columns
-  const columns = useGridColumns(Number(msgType.value) as MsgType);
+  const columns = useGridColumns(Number(msgType.value) as AutoReplyMsgType);
   if (columns) {
     // 使用 setGridOptions 更新列配置
     gridApi.setGridOptions({ columns });
@@ -72,18 +71,18 @@ async function handleCreate() {
   const formValues = await gridApi.formApi.getValues();
   formModalApi
     .setData({
-      msgType: Number(msgType.value) as MsgType,
+      msgType: Number(msgType.value) as AutoReplyMsgType,
       accountId: formValues.accountId,
     })
     .open();
 }
 
 /** 修改自动回复 */
-async function handleEdit(row: any) {
-  const data = (await getAutoReply(row.id)) as any;
+async function handleEdit(row: MpAutoReplyApi.AutoReply) {
+  const data = await getAutoReply(row.id!);
   formModalApi
     .setData({
-      msgType: Number(msgType.value) as MsgType,
+      msgType: Number(msgType.value) as AutoReplyMsgType,
       accountId: row.accountId,
       row: data,
     })
@@ -91,15 +90,14 @@ async function handleEdit(row: any) {
 }
 
 /** 删除自动回复 */
-async function handleDelete(row: any) {
-  await confirm('是否确认删除此数据?');
+async function handleDelete(row: MpAutoReplyApi.AutoReply) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', ['自动回复']),
     duration: 0,
   });
   try {
-    await deleteAutoReply(row.id);
-    message.success('删除成功');
+    await deleteAutoReply(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -116,7 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(Number(msgType.value) as MsgType),
+    columns: useGridColumns(Number(msgType.value) as AutoReplyMsgType),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -125,7 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: Number(msgType.value) as MsgType,
+            type: Number(msgType.value) as AutoReplyMsgType,
             ...formValues,
           });
         },
@@ -161,31 +159,31 @@ const [Grid, gridApi] = useVbenVxeGrid({
           class="w-full"
           @change="(activeKey) => onTabChange(activeKey as string)"
         >
-          <Tabs.TabPane :key="String(MsgType.Follow)">
+          <Tabs.TabPane :key="String(AutoReplyMsgType.Follow)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="ep:star" class="mr-2px" /> 关注时回复
+                <IconifyIcon icon="lucide:star" class="mr-2px" /> 关注时回复
               </Row>
             </template>
           </Tabs.TabPane>
-          <Tabs.TabPane :key="String(MsgType.Message)">
+          <Tabs.TabPane :key="String(AutoReplyMsgType.Message)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="ep:chat-line-round" class="mr-2px" />
+                <IconifyIcon icon="lucide:message-circle-more" class="mr-2px" />
                 消息回复
               </Row>
             </template>
           </Tabs.TabPane>
-          <Tabs.TabPane :key="String(MsgType.Keyword)">
+          <Tabs.TabPane :key="String(AutoReplyMsgType.Keyword)">
             <template #tab>
               <Row align="middle">
-                <IconifyIcon icon="fa:newspaper-o" class="mr-2px" /> 关键词回复
+                <IconifyIcon icon="lucide:newspaper" class="mr-2px" />
+                关键词回复
               </Row>
             </template>
           </Tabs.TabPane>
         </Tabs>
       </template>
-      <!-- 第三层：table -->
       <template #toolbar-tools>
         <TableAction
           v-if="showCreateButton"
@@ -201,7 +199,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #replyContent="{ row }">
-        <ReplyContentCell :row="row" />
+        <ReplyContent :row="row" />
       </template>
       <template #actions="{ row }">
         <TableAction

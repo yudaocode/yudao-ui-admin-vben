@@ -176,12 +176,12 @@ onMounted(async () => {
 <template>
   <Drawer>
     <Layout
-      class="bg-card absolute inset-0 flex h-full w-full flex-col overflow-hidden"
+      class="absolute inset-0 flex h-full w-full flex-col overflow-hidden bg-card"
     >
       <FormModal @success="handlerAddRoleSuccess" />
 
       <Layout.Content class="relative m-0 flex-1 overflow-hidden p-0">
-        <div class="z-100 absolute right-0 top--1 mr-5 mt-5">
+        <div class="absolute right-0 top--1 z-100 mr-5 mt-5">
           <!-- 搜索输入框 -->
           <Input.Search
             :loading="loading"

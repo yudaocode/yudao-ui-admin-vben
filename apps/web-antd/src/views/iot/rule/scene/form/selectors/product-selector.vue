@@ -7,7 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { Select } from 'ant-design-vue';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
-import { DictTag } from "#/components/dict-tag";
+import { DictTag } from '#/components/dict-tag';
 
 /** 产品选择器组件 */
 defineOptions({ name: 'ProductSelector' });
@@ -78,7 +78,7 @@ onMounted(() => {
             {{ product.productKey }}
           </div>
         </div>
-        <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
+        <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
       </div>
     </Select.Option>
   </Select>

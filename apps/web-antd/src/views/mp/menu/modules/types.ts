@@ -113,4 +113,4 @@ export const menuOptions = [
     value: 'location_select',
     label: '选择地理位置',
   },
-] as const;
+];

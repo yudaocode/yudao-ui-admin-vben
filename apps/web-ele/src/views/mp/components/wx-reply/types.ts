@@ -1,54 +1,42 @@
 import type { Ref } from 'vue';
 
+import type { ReplyType } from '@vben/constants';
+
 import { unref } from 'vue';
 
-// TODO @hw：和 antd 风格，保持一致；
-enum ReplyType {
-  Image = 'image',
-  Music = 'music',
-  News = 'news',
-  Text = 'text',
-  Video = 'video',
-  Voice = 'voice',
-}
-
-interface _Reply {
+export interface Reply {
   accountId: number;
-  type: ReplyType;
-  name?: null | string;
+  articles?: any[];
   content?: null | string;
-  mediaId?: null | string;
-  url?: null | string;
-  title?: null | string;
   description?: null | string;
-  thumbMediaId?: null | string;
-  thumbMediaUrl?: null | string;
-  musicUrl?: null | string;
   hqMusicUrl?: null | string;
   introduction?: null | string;
-  articles?: any[];
+  mediaId?: null | string;
+  musicUrl?: null | string;
+  name?: null | string;
+  thumbMediaId?: null | string;
+  thumbMediaUrl?: null | string;
+  title?: null | string;
+  type: ReplyType;
+  url?: null | string;
 }
 
-type Reply = _Reply; // Partial<_Reply>
-
 /** 利用旧的 reply[accountId, type] 初始化新的 Reply */
-const createEmptyReply = (old: Ref<Reply> | Reply): Reply => {
+export function createEmptyReply(old: Ref<Reply> | Reply): Reply {
   return {
     accountId: unref(old).accountId,
-    type: unref(old).type,
-    name: null,
+    articles: [],
     content: null,
-    mediaId: null,
-    url: null,
-    title: null,
     description: null,
-    thumbMediaId: null,
-    thumbMediaUrl: null,
-    musicUrl: null,
     hqMusicUrl: null,
     introduction: null,
-    articles: [],
+    mediaId: null,
+    musicUrl: null,
+    name: null,
+    thumbMediaId: null,
+    thumbMediaUrl: null,
+    title: null,
+    type: unref(old).type,
+    url: null,
   };
-};
-
-export { createEmptyReply, type Reply, ReplyType };
+}

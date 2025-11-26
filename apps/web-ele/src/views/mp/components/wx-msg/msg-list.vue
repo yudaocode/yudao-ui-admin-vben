@@ -1,22 +1,17 @@
 <script lang="ts" setup>
-import type { User } from '../types';
+import type { MpUserApi } from '#/api/mp/user/index';
 
+import { preferences } from '@vben/preferences';
 import { formatDateTime } from '@vben/utils';
 
-import avatarWechat from '#/assets/imgs/wechat.png';
-
-import Msg from './wx-msg.vue';
-
-// 确保 User 类型被识别为已使用
-// TODO @hw：是不是不用 PropsUser 哈？
-type PropsUser = User;
+import Msg from './msg.vue';
 
 defineOptions({ name: 'MsgList' });
 
 const props = defineProps<{
   accountId: number;
   list: any[];
-  user: PropsUser;
+  user: Partial<MpUserApi.User>;
 }>();
 
 const SendFrom = {
@@ -24,46 +19,58 @@ const SendFrom = {
   User: 1,
 } as const; // 发送来源
 
-// TODO @hw：是不是用 SendFrom ，或者 number？
-type SendFromType = (typeof SendFrom)[keyof typeof SendFrom];
+function getAvatar(sendFrom: number) {
+  return sendFrom === SendFrom.User
+    ? props.user.avatar
+    : preferences.app.defaultAvatar;
+}
 
-// 显式引用枚举成员供模板使用
-// TODO @hw：是不是用 SendFrom 就好啦？
-const MpBotValue = SendFrom.MpBot;
-const UserValue = SendFrom.User;
-
-const getAvatar = (sendFrom: SendFromType) =>
-  sendFrom === UserValue ? props.user.avatar : avatarWechat;
-
-const getNickname = (sendFrom: SendFromType) =>
-  sendFrom === UserValue ? props.user.nickname : '公众号';
+function getNickname(sendFrom: number) {
+  return sendFrom === SendFrom.User ? props.user.nickname : '公众号';
+}
 </script>
 <template>
-  <div v-for="item in props.list" :key="item.id">
+  <div class="execution" v-for="item in props.list" :key="item.id">
     <div
       class="mb-[30px] flex items-start"
-      :class="{ 'flex-row-reverse': item.sendFrom === MpBotValue }"
+      :class="{ 'flex-row-reverse': item.sendFrom === SendFrom.MpBot }"
     >
-      <div class="w-20 text-center">
+      <div class="flex w-20 flex-col items-center text-center">
         <img
           :src="getAvatar(item.sendFrom)"
-          class="box-border h-12 w-12 rounded-full border border-transparent align-middle"
+          class="mb-2 h-12 w-12 rounded-full border border-transparent object-cover"
         />
-        <div class="text-sm font-bold text-[#999]">
+        <div class="text-sm font-semibold text-[#999]">
           {{ getNickname(item.sendFrom) }}
         </div>
       </div>
-      <div class="relative mx-5 flex-1 rounded-[5px] border border-[#dedede]">
+      <div class="relative mx-2 flex-1 rounded-[5px] border border-[#dedede]">
+        <span
+          class="pointer-events-none absolute -left-2 top-[10px] h-0 w-0 border-y-[8px] border-r-[8px] border-y-transparent border-r-[#dedede]"
+          :class="{
+            '-right-2 left-auto border-l-[8px] border-r-0 border-l-[#dedede]':
+              item.sendFrom === SendFrom.MpBot,
+          }"
+        ></span>
+        <span
+          class="pointer-events-none absolute -left-[7px] top-[10px] h-0 w-0 border-y-[8px] border-r-[8px] border-y-transparent border-r-[#f8f8f8]"
+          :class="{
+            '-right-[7px] left-auto border-l-[8px] border-r-0 border-l-[#f8f8f8]':
+              item.sendFrom === SendFrom.MpBot,
+          }"
+        ></span>
         <div
           class="flex items-center justify-between rounded-t-[5px] border-b border-[#eee] bg-[#f8f8f8] px-[15px] py-[5px]"
         >
-          <div class="mp-comment__create_time">
+          <div class="text-xs text-gray-500">
             {{ formatDateTime(item.createTime) }}
           </div>
         </div>
         <div
-          class="overflow-hidden rounded-b-[5px] bg-white px-[15px] py-[15px] text-sm text-[#333]"
-          :style="item.sendFrom === MpBotValue ? 'background: #6BED72;' : ''"
+          class="overflow-hidden rounded-b-[5px] p-[15px] text-sm text-[#333]"
+          :class="
+            item.sendFrom === SendFrom.MpBot ? 'bg-[#6BED72]' : 'bg-white'
+          "
         >
           <Msg :item="item" />
         </div>
@@ -71,11 +78,3 @@ const getNickname = (sendFrom: SendFromType) =>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/* 因为 joolun 实现依赖 avue 组件，该页面使用了 comment.scss、card.scc  */
-/** TODO @dylan：@hw 看看有没适合 tindwind 的哈。 */
-
-@import url('../comment.scss');
-@import url('../card.scss');
-</style>

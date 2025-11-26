@@ -72,7 +72,7 @@ watch(copied, (val) => {
       class="hide-scroll-bar box-border h-full overflow-y-auto"
     >
       <div
-        class="bg-card relative box-border min-h-full w-full flex-grow p-2 sm:p-5"
+        class="relative box-border min-h-full w-full flex-grow bg-card p-2 sm:p-5"
       >
         <ElButton
           v-show="isWriting"

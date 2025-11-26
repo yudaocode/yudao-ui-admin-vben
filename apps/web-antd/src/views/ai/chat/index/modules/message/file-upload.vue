@@ -138,14 +138,14 @@ async function uploadFile(fileItem: FileItem) {
     fileItem.progress = 100;
 
     // 调试日志
-    console.log('上传响应:', response);
+    console.warn('上传响应:', response);
 
     // 兼容不同的返回格式：{ url: '...' } 或 { data: '...' } 或直接是字符串
     const fileUrl =
       (response as any)?.url || (response as any)?.data || response;
     fileItem.url = fileUrl;
 
-    console.log('提取的文件 URL:', fileUrl);
+    console.warn('提取的文件 URL:', fileUrl);
 
     // 只有当 URL 有效时才添加到列表
     if (fileUrl && typeof fileUrl === 'string') {
@@ -242,7 +242,7 @@ onUnmounted(() => {
     <!-- Hover 显示的文件列表 -->
     <div
       v-if="hasFiles && showTooltip"
-      class="animate-in fade-in slide-in-from-bottom-1 absolute bottom-[calc(100%+8px)] left-1/2 z-[1000] min-w-[240px] max-w-[320px] -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-2 shadow-lg duration-200"
+      class="absolute bottom-[calc(100%+8px)] left-1/2 z-[1000] min-w-[240px] max-w-[320px] -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-2 shadow-lg duration-200 animate-in fade-in slide-in-from-bottom-1"
       @mouseenter="showTooltipHandler"
       @mouseleave="hideTooltipHandler"
     >

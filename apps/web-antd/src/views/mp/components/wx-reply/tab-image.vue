@@ -65,33 +65,34 @@ async function customRequest(options: any) {
 
     const result = await response.json();
 
-    // TODO @hw：if return 风格，简化掉。if (result.code !=== 0) { ... }
-    if (result.code === 0) {
-      // 清空上传时的各种数据
-      fileList.value = [];
-      uploadData.title = '';
-      uploadData.introduction = '';
-
-      // 上传好的文件，本质是个素材，所以可以进行选中
-      selectMaterial(result.data);
-      message.success('上传成功');
-      onSuccess(result, file);
-    } else {
+    if (result.code !== 0) {
       message.error(result.msg || '上传出错');
       onError(new Error(result.msg || '上传失败'));
+      return;
     }
+    // 清空上传时的各种数据
+    fileList.value = [];
+    uploadData.title = '';
+    uploadData.introduction = '';
+
+    // 上传好的文件，本质是个素材，所以可以进行选中
+    selectMaterial(result.data);
+    message.success('上传成功');
+    onSuccess(result, file);
   } catch (error) {
     message.error('上传失败，请重试');
     onError(error);
   }
 }
 
+/** 删除图片 */
 function onDelete() {
   reply.value.mediaId = null;
   reply.value.url = null;
   reply.value.name = null;
 }
 
+/** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.mediaId = item.mediaId;
@@ -168,7 +169,7 @@ function selectMaterial(item: any) {
 <style lang="scss" scoped>
 /** TODO @dylan：看看有没适合 tindwind 的哈。 */
 .select-item {
-  width: 280px;
+  // width: 280px;
   padding: 10px;
   margin: 0 auto 10px;
   border: 1px solid #eaeaea;

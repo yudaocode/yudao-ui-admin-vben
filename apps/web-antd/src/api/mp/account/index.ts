@@ -68,5 +68,5 @@ export function generateAccountQrCode(id: number) {
 
 /** 清空公众号账号 API 配额 */
 export function clearAccountQuota(id: number) {
-  return requestClient.post(`/mp/account/clear-quota?id=${id}`);
+  return requestClient.put(`/mp/account/clear-quota?id=${id}`);
 }

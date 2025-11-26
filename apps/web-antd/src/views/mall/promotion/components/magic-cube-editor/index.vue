@@ -202,7 +202,7 @@ function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
         <td
           v-for="(cube, col) in rowCubes"
           :key="col"
-          class="active:bg-primary-200 hover:bg-primary-100 box-border cursor-pointer border text-center align-middle"
+          class="box-border cursor-pointer border text-center align-middle hover:bg-primary-100 active:bg-primary-200"
           :class="[{ active: cube.active }]"
           :style="{
             width: `${cubeSize}px`,
@@ -219,7 +219,7 @@ function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
     <div
       v-for="(hotArea, index) in hotAreas"
       :key="index"
-      class="bg-primary-200 border-primary absolute box-border flex items-center justify-center border"
+      class="absolute box-border flex items-center justify-center border border-primary bg-primary-200"
       :style="{
         top: `${cubeSize * hotArea.top}px`,
         left: `${cubeSize * hotArea.left}px`,
@@ -232,12 +232,12 @@ function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
       <!-- 右上角热区删除按钮 -->
       <div
         v-if="selectedHotAreaIndex === index && hotArea.width && hotArea.height"
-        class="bg-card absolute -right-2 -top-2 z-[1] size-6 h-4 w-4 items-center rounded-lg"
+        class="absolute -right-2 -top-2 z-[1] size-6 h-4 w-4 items-center rounded-lg bg-card"
         @click="handleDeleteHotArea(index)"
       >
         <IconifyIcon
           icon="lucide:x"
-          class="bg-primary inset-0 items-center text-white"
+          class="inset-0 items-center bg-primary text-white"
         />
       </div>
       <span v-if="hotArea.width">

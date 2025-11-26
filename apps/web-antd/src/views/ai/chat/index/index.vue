@@ -403,8 +403,8 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
           const lastMessage =
             activeMessageList.value[activeMessageList.value.length - 1];
           // 累加推理内容
-          lastMessage.reasoningContent =
-            (lastMessage.reasoningContent || '') +
+          lastMessage!.reasoningContent =
+            (lastMessage!.reasoningContent || '') +
             data.receive.reasoningContent;
         }
 
@@ -552,9 +552,9 @@ onMounted(async () => {
       />
 
       <!-- 右侧：详情部分 -->
-      <Layout class="bg-card mx-4">
+      <Layout class="mx-4 bg-card">
         <Layout.Header
-          class="!bg-card border-border flex !h-12 items-center justify-between border-b !px-4"
+          class="flex !h-12 items-center justify-between border-b border-border !bg-card !px-4"
         >
           <div class="text-lg font-bold">
             {{ activeConversation?.title ? activeConversation?.title : '对话' }}
@@ -613,9 +613,9 @@ onMounted(async () => {
           </div>
         </Layout.Content>
 
-        <Layout.Footer class="!bg-card flex flex-col !p-0">
+        <Layout.Footer class="flex flex-col !bg-card !p-0">
           <form
-            class="border-border mx-4 mb-8 mt-2 flex flex-col rounded-xl border p-2"
+            class="mx-4 mb-8 mt-2 flex flex-col rounded-xl border border-border p-2"
           >
             <textarea
               class="box-border h-24 resize-none overflow-auto rounded-md p-2 focus:outline-none"

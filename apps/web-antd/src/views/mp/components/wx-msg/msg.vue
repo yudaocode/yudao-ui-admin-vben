@@ -2,7 +2,6 @@
 import { MpMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-// TODO @hw：貌似这个 antd 才有？ele 需要有么？
 import {
   WxLocation,
   WxMusic,
@@ -13,11 +12,16 @@ import {
 
 import MsgEvent from './msg-event.vue';
 
-defineOptions({ name: 'Msg' });
+defineOptions({ name: 'WxMsg' });
 
-defineProps<{
-  item: any;
-}>();
+withDefaults(
+  defineProps<{
+    item?: any;
+  }>(),
+  {
+    item: {},
+  },
+);
 </script>
 
 <template>

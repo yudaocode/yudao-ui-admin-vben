@@ -231,7 +231,7 @@ defineExpose({ settingValues });
         @click="handleSizeClick(imageSize)"
       >
         <div
-          class="bg-card flex h-12 w-12 flex-col items-center justify-center rounded-lg border p-0"
+          class="flex h-12 w-12 flex-col items-center justify-center rounded-lg border bg-card p-0"
           :class="[
             selectSize === imageSize.key ? 'border-blue-500' : 'border-white',
           ]"

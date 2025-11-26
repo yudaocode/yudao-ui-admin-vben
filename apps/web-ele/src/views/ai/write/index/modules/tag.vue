@@ -21,7 +21,7 @@ const emits = defineEmits<{
     <span
       v-for="tag in props.tags"
       :key="tag.value"
-      class="bg-card border-card-100 mb-2 cursor-pointer rounded border-2 border-solid px-1 text-xs leading-6"
+      class="border-card-100 mb-2 cursor-pointer rounded border-2 border-solid bg-card px-1 text-xs leading-6"
       :class="
         modelValue === tag.value && '!border-primary-500 !text-primary-500'
       "

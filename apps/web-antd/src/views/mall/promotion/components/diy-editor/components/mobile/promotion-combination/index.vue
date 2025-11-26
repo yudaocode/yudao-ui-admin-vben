@@ -94,7 +94,7 @@ function calculateWidth() {
     ref="containerRef"
   >
     <div
-      class="bg-card relative box-content flex flex-row flex-wrap overflow-hidden"
+      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-card"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),

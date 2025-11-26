@@ -1,33 +1,22 @@
 <script lang="ts" setup>
-/** 微信消息 - 音乐 */
-defineOptions({ name: 'Music' });
+import type { WxMusicProps } from './types';
 
-const props = defineProps({
-  title: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  description: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  musicUrl: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  hqMusicUrl: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  thumbMediaUrl: {
-    required: true,
-    type: String,
-  },
+import { computed } from 'vue';
+
+import { ElLink } from 'element-plus';
+
+/** 微信消息 - 音乐 */
+defineOptions({ name: 'WxMusic' });
+
+const props = withDefaults(defineProps<WxMusicProps>(), {
+  title: '',
+  description: '',
+  musicUrl: '',
+  hqMusicUrl: '',
+  thumbMediaUrl: '',
 });
+
+const href = computed(() => props.hqMusicUrl || props.musicUrl);
 
 defineExpose({
   musicUrl: props.musicUrl,
@@ -36,33 +25,30 @@ defineExpose({
 
 <template>
   <div>
-    <!-- TODO @hw：ElLink -->
-    <el-link
+    <ElLink
       type="success"
       :underline="false"
       target="_blank"
-      :href="hqMusicUrl ? hqMusicUrl : musicUrl"
+      :href="href"
+      class="block"
     >
-      <div class="mp-card__body bg-background rounded-sm p-2.5">
-        <div class="mp-card__avatar">
-          <img :src="thumbMediaUrl" alt="" />
+      <div
+        class="flex items-center rounded-sm border border-[#e8e8e8] bg-background p-4 transition hover:border-black/10 hover:shadow-sm"
+      >
+        <div
+          class="mr-3 h-12 w-12 overflow-hidden rounded-full border border-transparent"
+        >
+          <img :src="thumbMediaUrl" alt="" class="h-full w-full object-cover" />
         </div>
-        <div class="mp-card__detail">
-          <div class="mp-card__title" style="margin-bottom: unset">
+        <div class="flex-1">
+          <div class="mb-3 text-base font-medium text-[#000000d9]">
             {{ title }}
           </div>
-          <div class="mp-card__info" style="height: unset">
+          <div class="line-clamp-3 h-16 overflow-hidden text-sm text-black/45">
             {{ description }}
           </div>
         </div>
       </div>
-    </el-link>
+    </ElLink>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：@hw：看看有没适合 tindwind 的哈。 */
-
-/* 因为 joolun 实现依赖 avue 组件，该页面使用了 card.scss  */
-@import url('../wx-msg/card.scss');
-</style>

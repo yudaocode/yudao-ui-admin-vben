@@ -17,7 +17,7 @@ const currentSong = ref({}); // 当前音乐
 const mySongList = ref<Recordable<any>[]>([]);
 const squareSongList = ref<Recordable<any>[]>([]);
 
-function generateMusic(formData: Recordable<any>) {
+function generateMusic(_formData: Recordable<any>) {
   loading.value = true;
   setTimeout(() => {
     mySongList.value = Array.from({ length: 20 }, (_, index) => {

@@ -5,7 +5,7 @@ import type { MpDraftApi } from '#/api/mp/draft';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { Image, message, Typography } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';
@@ -13,7 +13,6 @@ import { submitFreePublish } from '#/api/mp/freePublish';
 import { WxAccountSelect } from '#/views/mp/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DraftTableCell from './modules/draft-table.vue';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpDraft' });
@@ -72,14 +71,13 @@ async function handleDelete(row: MpDraftApi.DraftArticle) {
     message.warning('请先选择公众号');
     return;
   }
-  await confirm('此操作将永久删除该草稿, 是否继续?');
   const hideLoading = message.loading({
-    content: '删除中...',
+    content: $t('ui.actionMessage.deleting'),
     duration: 0,
   });
   try {
     await deleteDraft(accountId, row.mediaId);
-    message.success('删除成功');
+    message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
     hideLoading();
@@ -143,7 +141,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             }
           });
           return {
-            list: drafts.list as unknown as MpDraftApi.DraftArticle[],
+            list: drafts.list,
             total: drafts.total,
           };
         },
@@ -187,10 +185,37 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- TODO @hw：按照微信群沟通的，换下卡片的样式。 -->
-      <template #content="{ row }">
-        <DraftTableCell :row="row" />
-        <!-- TODO @hw：增加一列，更新时间。 -->
+      <template #cover="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="flex flex-col items-center justify-center gap-1"
+        >
+          <Image
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            :src="item.picUrl || item.thumbUrl"
+            class="h-36 !w-[300px] rounded object-cover"
+            :alt="`文章 ${index + 1} 封面图`"
+          />
+        </div>
+        <span v-else class="text-gray-400">-</span>
+      </template>
+      <template #title="{ row }">
+        <div
+          v-if="row.content?.newsItem && row.content.newsItem.length > 0"
+          class="space-y-1"
+        >
+          <div
+            v-for="(item, index) in row.content.newsItem"
+            :key="index"
+            class="flex h-36 items-center justify-center"
+          >
+            <Typography.Link :href="(item as any).url" target="_blank">
+              {{ item.title }}
+            </Typography.Link>
+          </div>
+        </div>
+        <span v-else class="text-gray-400">-</span>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -234,10 +259,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       .vxe-cell {
         height: auto !important;
         padding: 0;
-
-        img {
-          width: 300px !important;
-        }
       }
     }
   }

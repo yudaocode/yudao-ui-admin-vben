@@ -108,7 +108,7 @@ function showTotal(total: number) {
 <template>
   <Page auto-content-height class="flex flex-col">
     <!-- 搜索工作栏 -->
-    <div class="bg-background mb-4 rounded-lg p-4">
+    <div class="mb-4 rounded-lg bg-background p-4">
       <Form
         ref="queryFormRef"
         :model="queryParams"
@@ -166,7 +166,7 @@ function showTotal(total: number) {
     </div>
 
     <!-- 列表 -->
-    <div class="bg-background flex-1 rounded-lg p-4">
+    <div class="flex-1 rounded-lg bg-background p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
         <Pagination
@@ -189,7 +189,7 @@ function showTotal(total: number) {
       :footer="null"
       destroy-on-close
     >
-      <!-- TODO @hw，@dlayn：这里有告警； -->
+      <!-- TODO @dlayn：这里有告警； -->
       <WxMsg :user-id="messageBoxUserId" />
     </Modal>
   </Page>

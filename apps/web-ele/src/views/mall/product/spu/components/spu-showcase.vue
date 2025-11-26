@@ -125,7 +125,7 @@ function emitSpuChange() {
     <!-- 添加商品按钮 -->
     <ElTooltip v-if="canAdd" content="选择商品">
       <div
-        class="hover:border-primary hover:bg-primary/5 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors"
+        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenSpuSelect"
       >
         <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />

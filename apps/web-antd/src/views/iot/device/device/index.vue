@@ -407,7 +407,7 @@ onMounted(async () => {
       <!-- 所属产品列 -->
       <template #product="{ row }">
         <a
-          class="text-primary cursor-pointer"
+          class="cursor-pointer text-primary"
           @click="openProductDetail(row.productId)"
         >
           {{ products.find((p: any) => p.id === row.productId)?.name || '-' }}

@@ -256,7 +256,7 @@ defineExpose({ validate });
       </fieldset>
 
       <fieldset
-        class="bg-card m-0 mt-10 rounded-lg border border-gray-200 px-3 py-4"
+        class="m-0 mt-10 rounded-lg border border-gray-200 bg-card px-3 py-4"
       >
         <legend class="ml-2 px-2.5 text-base font-semibold text-gray-600">
           <h3>运行结果</h3>

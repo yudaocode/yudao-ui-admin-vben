@@ -144,7 +144,7 @@ async function handleImageMidjourneyButtonClick(
   const data = {
     id: imageDetail.id,
     customId: button.customId,
-  } as AiImageApi.ImageMidjourneyActionVO;
+  } as AiImageApi.ImageMidjourneyAction;
   // 2. 发送 action
   await midjourneyAction(data);
   // 3. 刷新列表
@@ -206,7 +206,7 @@ onUnmounted(async () => {
     </div>
 
     <div
-      class="bg-card sticky bottom-0 z-50 flex h-16 items-center justify-center shadow-sm"
+      class="sticky bottom-0 z-50 flex h-16 items-center justify-center bg-card shadow-sm"
     >
       <ElPagination
         :total="pageTotal"

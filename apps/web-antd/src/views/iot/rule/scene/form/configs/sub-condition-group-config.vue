@@ -108,18 +108,18 @@ function updateCondition(index: number, condition: TriggerCondition) {
       >
         <!-- 条件配置 -->
         <div
-          class="rounded-3px border-border bg-fill-color-blank border shadow-sm"
+          class="rounded-3px bg-fill-color-blank border border-border shadow-sm"
         >
           <div
-            class="rounded-t-1 border-border bg-fill-color-blank flex items-center justify-between border-b p-3"
+            class="rounded-t-1 bg-fill-color-blank flex items-center justify-between border-b border-border p-3"
           >
             <div class="flex items-center gap-2">
               <div
-                class="bg-primary flex size-5 items-center justify-center rounded-full text-xs font-bold text-white"
+                class="flex size-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
               >
                 {{ conditionIndex + 1 }}
               </div>
-              <span class="text-primary text-base font-bold">
+              <span class="text-base font-bold text-primary">
                 条件 {{ conditionIndex + 1 }}
               </span>
             </div>
@@ -159,7 +159,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
           <IconifyIcon icon="lucide:plus" />
           继续添加条件
         </Button>
-        <span class="text-secondary mt-2 block text-xs">
+        <span class="mt-2 block text-xs text-secondary">
           最多可添加 {{ maxConditions }} 个条件
         </span>
       </div>

@@ -256,7 +256,7 @@ watch(
               {{ operator.label }}
             </div>
             <div
-              class="text-12px px-6px py-2px rounded-4px bg-primary-light-9 text-primary font-mono"
+              class="text-12px px-6px py-2px rounded-4px bg-primary-light-9 font-mono text-primary"
             >
               {{ operator.symbol }}
             </div>
