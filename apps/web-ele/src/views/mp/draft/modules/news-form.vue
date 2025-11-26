@@ -133,7 +133,7 @@ function plusNews() {
                 type="danger"
                 circle
                 size="small"
-                style="margin-left: 0"
+                class="!ml-0"
                 @click="() => removeNews(index)"
               >
                 <IconifyIcon icon="lucide:trash-2" />
@@ -169,7 +169,6 @@ function plusNews() {
                 circle
                 type="info"
                 size="small"
-                class="ml-0"
                 @click="() => moveDownNews(index)"
               >
                 <IconifyIcon icon="lucide:arrow-down" />
@@ -179,7 +178,7 @@ function plusNews() {
                 type="info"
                 circle
                 size="small"
-                style="margin-left: 0"
+                class="!ml-0"
                 @click="() => moveUpNews(index)"
               >
                 <IconifyIcon icon="lucide:arrow-up" />
@@ -189,7 +188,7 @@ function plusNews() {
                 type="danger"
                 size="small"
                 circle
-                style="margin-left: 0"
+                class="!ml-0"
                 @click="() => removeNews(index)"
               >
                 <IconifyIcon icon="lucide:trash-2" />
