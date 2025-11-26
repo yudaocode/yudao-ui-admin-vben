@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
 

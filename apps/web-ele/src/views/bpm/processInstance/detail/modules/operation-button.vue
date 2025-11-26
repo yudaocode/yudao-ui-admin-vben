@@ -1,4 +1,4 @@
-﻿<script lang="ts" setup>
+<script lang="ts" setup>
 // TODO @jason：你感觉要拆分下，按照表单么？
 import type { FormInstance, FormRules } from 'element-plus';
 
