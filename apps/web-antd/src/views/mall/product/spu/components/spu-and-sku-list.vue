@@ -45,13 +45,7 @@ const expandRowKeys = ref<string[]>([]); // 控制展开行需要设置 row-key 
 function getSkuConfigs(extendedAttribute: string) {
   // 验证 SKU 数据（如果有 ref 的话）
   if (skuListRef.value) {
-    // TODO @puhui999：这里有个 linter 错误；
-    try {
-      skuListRef.value.validateSku();
-    } catch (error) {
-      // 验证失败时抛出错误
-      throw error;
-    }
+    skuListRef.value.validateSku();
   }
   const seckillProducts: unknown[] = [];
   spuPropertyList.value.forEach((item) => {
