@@ -7,8 +7,6 @@ import { Typography } from 'ant-design-vue';
 
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });
-// TODO @hw：antd 和 ele 的代码风格不一致，例如说：props；
-
 const props = withDefaults(defineProps<WxMusicProps>(), {
   title: '',
   description: '',

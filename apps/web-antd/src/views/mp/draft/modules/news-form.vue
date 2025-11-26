@@ -86,7 +86,6 @@ function plusNews() {
   <Layout>
     <Layout.Sider width="40%" theme="light">
       <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
-        <!-- TODO @hw：头条、次条的展示不对。微信聊过的呀~ -->
         <div v-for="(news, index) in newsList" :key="index">
           <div
             class="group relative mx-auto mb-[10px] w-full cursor-pointer border-[2px] bg-white"
@@ -99,15 +98,18 @@ function plusNews() {
             @click="activeNewsIndex = index"
           >
             <div class="relative w-full bg-[#acadae]">
-              <img class="h-full w-full" :src="news.thumbUrl" />
+              <img
+                class="max-h-[200px] min-h-[100px] w-full object-cover"
+                :src="news.thumbUrl"
+              />
               <div
-                class="absolute bottom-0 left-0 inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-center text-[15px] text-white opacity-65"
+                class="absolute bottom-0 left-0 mb-[5px] ml-[5px] inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap p-[1%] text-[18px] text-white"
               >
                 {{ news.title }}
               </div>
             </div>
             <div
-              class="relative flex justify-center gap-[10px] py-[5px] text-center"
+              class="absolute bottom-0 right-[-45px] top-0 flex flex-col justify-center gap-[10px] py-[5px] text-center"
               v-if="newsList.length > 1"
             >
               <Button
@@ -140,18 +142,19 @@ function plusNews() {
             "
             @click="activeNewsIndex = index"
           >
-            <div class="relative">
-              <div class="bg-[#acadae]">
-                <img class="block h-full w-full" :src="news.thumbUrl" />
-                <div
-                  class="absolute bottom-0 left-0 inline-block h-[25px] w-[100%] overflow-hidden text-ellipsis whitespace-nowrap bg-black p-[1%] text-center text-[15px] text-white opacity-65"
-                >
-                  {{ news.title }}
-                </div>
+            <div class="relative flex items-center justify-between">
+              <div
+                class="mb-[5px] ml-[5px] h-[25px] flex-1 overflow-hidden text-ellipsis whitespace-nowrap p-[1%] text-[16px]"
+              >
+                {{ news.title }}
               </div>
+              <img
+                class="block h-[90px] w-[90px] object-cover"
+                :src="news.thumbUrl"
+              />
             </div>
             <div
-              class="relative flex justify-center gap-[10px] py-[5px] text-center"
+              class="absolute bottom-0 right-[-45px] top-0 flex flex-col justify-center gap-[10px] py-[5px] text-center"
             >
               <Button
                 v-if="newsList.length > index + 1"

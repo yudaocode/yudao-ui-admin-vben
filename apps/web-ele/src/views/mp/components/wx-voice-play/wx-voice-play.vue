@@ -5,6 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 import BenzAMRRecorder from 'benz-amr-recorder';
+import { ElTag } from 'element-plus';
 
 /** 微信消息 - 语音 */
 defineOptions({ name: 'WxVoicePlayer' });
@@ -67,37 +68,22 @@ function amrStop() {
 </script>
 
 <template>
-  <div class="wx-voice-div" @click="playVoice">
-    <el-icon>
+  <div
+    class="flex min-h-[50px] min-w-[120px] flex-col items-center justify-center rounded-[10px] bg-[#eaeaea] px-3 py-2"
+    @click="playVoice"
+  >
+    <div class="flex items-center">
       <IconifyIcon
         v-if="playing !== true"
         icon="lucide:circle-play"
         :size="32"
       />
       <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
-      <span class="amr-duration" v-if="duration">{{ duration }} 秒</span>
-    </el-icon>
+      <span class="ml-2 text-xs" v-if="duration">{{ duration }} 秒</span>
+    </div>
     <div v-if="content">
-      <el-tag type="success" size="small">语音识别</el-tag>
+      <ElTag type="success" size="small">语音识别</ElTag>
       {{ content }}
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.wx-voice-div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 50px;
-  padding: 5px;
-  background-color: #eaeaea;
-  border-radius: 10px;
-}
-
-.amr-duration {
-  margin-left: 5px;
-  font-size: 11px;
-}
-</style>
