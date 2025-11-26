@@ -7,6 +7,7 @@ import { Typography } from 'ant-design-vue';
 
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });
+
 const props = withDefaults(defineProps<WxMusicProps>(), {
   title: '',
   description: '',
@@ -14,8 +15,6 @@ const props = withDefaults(defineProps<WxMusicProps>(), {
   hqMusicUrl: '',
   thumbMediaUrl: '',
 });
-
-const { Link } = Typography;
 
 const href = computed(() => props.hqMusicUrl || props.musicUrl);
 
@@ -26,7 +25,11 @@ defineExpose({
 
 <template>
   <div>
-    <Link :href="href" target="_blank" class="text-success no-underline">
+    <Typography.Link
+      :href="href"
+      target="_blank"
+      class="text-success no-underline"
+    >
       <div
         class="flex items-center rounded-[5px] border border-[#e8e8e8] bg-white p-2.5 transition hover:border-black/10 hover:shadow-sm"
       >
@@ -48,6 +51,6 @@ defineExpose({
           </div>
         </div>
       </div>
-    </Link>
+    </Typography.Link>
   </div>
 </template>

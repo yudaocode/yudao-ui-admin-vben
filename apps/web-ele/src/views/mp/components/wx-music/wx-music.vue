@@ -4,6 +4,7 @@ import type { WxMusicProps } from './types';
 import { computed } from 'vue';
 
 import { ElLink } from 'element-plus';
+
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });
 
