@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MallRewardActivityApi } from '#/api/mall/promotion/reward/rewardActivity';
 
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 import { PromotionConditionTypeEnum } from '@vben/constants';
 
@@ -31,8 +31,6 @@ const emits = defineEmits<{
 }>();
 
 const formData = useVModel(props, 'modelValue', emits);
-const rewardRuleCouponSelectRef =
-  ref<InstanceType<typeof RewardRuleCouponSelect>[]>();
 
 const isPriceCondition = computed(() => {
   return (
@@ -57,17 +55,6 @@ function handleAdd() {
 function handleDelete(ruleIndex: number) {
   formData.value.rules?.splice(ruleIndex, 1);
 }
-
-function setRuleCoupon() {
-  if (!rewardRuleCouponSelectRef.value) {
-    return;
-  }
-  rewardRuleCouponSelectRef.value.forEach((item: any) =>
-    item.setGiveCouponList(),
-  );
-}
-
-defineExpose({ setRuleCoupon });
 </script>
 
 <template>
@@ -158,8 +145,8 @@ defineExpose({ setRuleCoupon });
               <div class="flex items-center gap-2">
                 <span class="w-20">送优惠券:</span>
                 <RewardRuleCouponSelect
-                  ref="rewardRuleCouponSelectRef"
                   :model-value="rule"
+                  @update:model-value="(val) => (formData.rules![index] = val)"
                 />
               </div>
             </div>

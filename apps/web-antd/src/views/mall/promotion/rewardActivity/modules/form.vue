@@ -38,8 +38,6 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['满减送']);
 });
 
-const rewardRuleRef = ref<InstanceType<typeof RewardRule>>();
-
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -62,7 +60,6 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const values = await formApi.getValues();
-      rewardRuleRef.value?.setRuleCoupon();
       // 合并表单值和 formData（含 id、productSpuIds、productCategoryIds 等）
       const data = { ...formData.value, ...values };
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
@@ -139,7 +136,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-6">
       <!-- 自定义插槽：优惠规则 -->
       <template #rules>
-        <RewardRule ref="rewardRuleRef" v-model="formData" />
+        <RewardRule v-model="formData" />
       </template>
 
       <!-- 自定义插槽：商品选择 -->
