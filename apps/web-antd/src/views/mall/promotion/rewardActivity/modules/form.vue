@@ -138,12 +138,10 @@ const [Modal, modalApi] = useVbenModal({
       <template #rules>
         <RewardRule v-model="formData" />
       </template>
-
       <!-- 自定义插槽：商品选择 -->
       <template #productSpuIds>
         <SpuShowcase v-model="formData.productSpuIds" />
       </template>
-
       <!-- 自定义插槽：分类选择 -->
       <template #productCategoryIds>
         <ProductCategorySelect v-model="formData.productCategoryIds" multiple />

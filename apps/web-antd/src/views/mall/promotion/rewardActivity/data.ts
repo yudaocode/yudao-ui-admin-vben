@@ -224,9 +224,8 @@ export function useFormSchema(): VbenFormSchema[] {
       formItemClass: 'items-start',
       rules: 'required',
     },
-    // 隐藏字段：用于自动同步 productScopeValues
     {
-      fieldName: 'productScopeValues',
+      fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
       component: 'Input',
       dependencies: {
         triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],

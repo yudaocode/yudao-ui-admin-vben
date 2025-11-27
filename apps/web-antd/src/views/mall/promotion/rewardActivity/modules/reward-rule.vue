@@ -100,7 +100,6 @@ function handleDelete(ruleIndex: number) {
               <span>{{ isPriceCondition ? '元' : '件' }}</span>
             </div>
           </FormItem>
-
           <!-- 优惠内容 -->
           <FormItem
             label="优惠内容"
