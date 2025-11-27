@@ -274,9 +274,9 @@ onMounted(async () => {
     </template>
 
     <template #bottom>
-      <div class="border-border bg-muted mt-2 rounded border p-2">
-        <div class="text-muted-foreground flex justify-between text-sm">
-          <span class="text-foreground font-medium">合计：</span>
+      <div class="mt-2 rounded border border-border bg-muted p-2">
+        <div class="flex justify-between text-sm text-muted-foreground">
+          <span class="font-medium text-foreground">合计：</span>
           <div class="flex space-x-4">
             <span>数量：{{ erpCountInputFormatter(summaries.count) }}</span>
             <span>
