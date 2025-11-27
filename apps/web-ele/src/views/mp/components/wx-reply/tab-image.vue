@@ -78,8 +78,6 @@ function onDelete() {
 /** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
-
-  // reply.value.type = 'image'
   reply.value.mediaId = item.mediaId;
   reply.value.url = item.url;
   reply.value.name = item.name;
