@@ -1,5 +1,3 @@
-'use strict';
-
 import extension from './extension';
 
 export default {

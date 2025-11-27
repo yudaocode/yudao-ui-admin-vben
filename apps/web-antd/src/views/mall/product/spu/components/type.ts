@@ -1,5 +1,3 @@
-import type { MallSpuApi } from '#/api/mall/product/spu';
-
 /** 商品属性及其值的树形结构（用于前端展示和操作） */
 export interface PropertyAndValues {
   id: number;
@@ -30,4 +28,5 @@ export interface SpuProperty<T> {
 }
 
 // Re-export for use in generic constraint
-export type { MallSpuApi };
+
+export { type MallSpuApi } from '#/api/mall/product/spu';

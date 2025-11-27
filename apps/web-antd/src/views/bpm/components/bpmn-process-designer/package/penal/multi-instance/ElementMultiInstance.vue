@@ -1,3 +1,4 @@
+<!-- eslint-disable unused-imports/no-unused-vars -->
 <script lang="ts" setup>
 import { inject, nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
@@ -65,6 +66,7 @@ const bpmnElement = ref<any>(null);
 const multiLoopInstance = ref<any>(null);
 declare global {
   interface Window {
+    // @ts-ignore
     bpmnInstances?: () => any;
   }
 }

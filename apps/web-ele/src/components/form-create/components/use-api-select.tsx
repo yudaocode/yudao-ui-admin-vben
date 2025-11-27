@@ -145,8 +145,8 @@ export function useApiSelect(option: ApiSelectProps) {
             }
 
             return {
-              label: label,
-              value: value,
+              label,
+              value,
             };
           });
           return;

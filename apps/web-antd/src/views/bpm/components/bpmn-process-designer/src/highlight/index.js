@@ -1,5 +1,8 @@
-const hljs = require('highlight.js/lib/core');
-hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('json', require('highlight.js/lib/languages/json'));
+import hljs from 'highlight.js/lib/core';
+import jsonLanguage from 'highlight.js/lib/languages/json';
+import xmlLanguage from 'highlight.js/lib/languages/xml';
 
-module.exports = hljs;
+hljs.registerLanguage('xml', xmlLanguage);
+hljs.registerLanguage('json', jsonLanguage);
+
+export default hljs;

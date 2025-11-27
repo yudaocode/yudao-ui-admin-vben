@@ -50,8 +50,8 @@ interface JsonParamsConfig {
 interface Props {
   modelValue: string;
   config: JsonParamsConfig;
-  type: JsonParamsInputType;
-  placeholder: string;
+  type?: JsonParamsInputType;
+  placeholder?: string;
 }
 
 interface Emits {
