@@ -180,26 +180,16 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      // 重置表单数据（新增和编辑模式都需要）
       formData.value = undefined;
       spuList.value = [];
       spuPropertyList.value = [];
       return;
     }
-    // 重置表单数据（新增和编辑模式都需要）
-    // TODO @puhui999：这里的重置，是不是在 183 到 185 已经处理了呀。
-    formData.value = undefined;
-    spuList.value = [];
-    spuPropertyList.value = [];
+
     // 加载数据
     const data = modalApi.getData<MallPointActivityApi.PointActivity>();
     if (!data || !data.id) {
-      // 新增模式：重置表单字段
-      // TODO @puhui999：197 到 201 这块的 setValues 的设置，是不是必要哈。可以看看。
-      await formApi.setValues({
-        sort: 0,
-        remark: '',
-        spuId: undefined,
-      });
       return;
     }
     // 加载数据
