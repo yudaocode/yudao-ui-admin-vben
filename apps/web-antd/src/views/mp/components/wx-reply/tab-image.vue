@@ -104,10 +104,18 @@ function selectMaterial(item: any) {
 <template>
   <div>
     <!-- 情况一：已经选择好素材、或者上传好图片 -->
-    <div v-if="reply.url" class="select-item">
-      <img class="material-img" :src="reply.url" alt="图片素材" />
-      <p v-if="reply.name" class="item-name">{{ reply.name }}</p>
-      <Row class="ope-row" justify="center">
+    <div
+      v-if="reply.url"
+      class="mx-auto mb-[10px] border border-[#eaeaea] p-[10px]"
+    >
+      <img class="w-full" :src="reply.url" alt="图片素材" />
+      <p
+        v-if="reply.name"
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-center text-xs"
+      >
+        {{ reply.name }}
+      </p>
+      <Row class="pt-[10px] text-center" justify="center">
         <Button danger shape="circle" @click="onDelete">
           <template #icon>
             <IconifyIcon icon="lucide:trash-2" />
@@ -119,7 +127,10 @@ function selectMaterial(item: any) {
     <!-- 情况二：未做完上述操作 -->
     <Row v-else class="text-center" align="middle">
       <!-- 选择素材 -->
-      <Col :span="12" class="col-select">
+      <Col
+        :span="12"
+        class="flex h-[160px] w-[49.5%] flex-col items-center justify-center border border-[#eaeaea] py-[50px]"
+      >
         <Button type="primary" @click="showDialog = true">
           素材库选择
           <template #icon>
@@ -142,7 +153,10 @@ function selectMaterial(item: any) {
       </Col>
 
       <!-- 文件上传 -->
-      <Col :span="12" class="col-add">
+      <Col
+        :span="12"
+        class="float-right flex h-[160px] w-[49.5%] flex-col items-center justify-center border border-[#eaeaea] py-[50px]"
+      >
         <Upload
           :custom-request="customRequest"
           :multiple="true"
@@ -158,65 +172,10 @@ function selectMaterial(item: any) {
             </template>
           </Button>
         </Upload>
-        <div class="upload-tip">
+        <div class="mt-2 text-center text-xs leading-[18px] text-[#666]">
           支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
         </div>
       </Col>
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.select-item {
-  // width: 280px;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-}
-
-.material-img {
-  width: 100%;
-}
-
-.item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.ope-row {
-  padding-top: 10px;
-  text-align: center;
-}
-
-.col-select,
-.col-add {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 160px;
-  padding: 50px 0;
-  border: 1px solid rgb(234 234 234);
-}
-
-.col-select {
-  width: 49.5%;
-}
-
-.col-add {
-  float: right;
-  width: 49.5%;
-}
-
-.upload-tip {
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 18px;
-  color: #666;
-  text-align: center;
-}
-</style>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpMessageApi } from '#/api/mp/message';
 
 import { onMounted, watch } from 'vue';
 
@@ -17,11 +18,9 @@ import {
   WxVoicePlayer,
 } from '#/views/mp/components';
 
-// TODO @dylan：vue 组件名小写 + 中划线
-
 const props = withDefaults(
   defineProps<{
-    list?: any[];
+    list?: MpMessageApi.Message[];
     loading?: boolean;
   }>(),
   {
@@ -36,8 +35,7 @@ const emit = defineEmits<{
   (e: 'send', userId: number): void;
 }>();
 
-const columns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @dylan：any 有 linter 告警；看看别的模块哈
+const columns: VxeTableGridOptions<MpMessageApi.Message>['columns'] = [
   {
     field: 'createTime',
     title: '发送时间',
@@ -81,7 +79,7 @@ const columns: VxeTableGridOptions<any>['columns'] = [
   },
 ];
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid<MpMessageApi.Message>({
   gridOptions: {
     border: true,
     columns,
@@ -94,14 +92,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     showOverflow: 'tooltip',
-  } as VxeTableGridOptions<any>,
+  },
 });
 
-function normalizeList(list?: any[]) {
+function normalizeList(list?: MpMessageApi.Message[]) {
   return Array.isArray(list) ? list : [];
 }
 
-function updateGridData(data: any[]) {
+function updateGridData(data: MpMessageApi.Message[]) {
   if (gridApi.grid?.loadData) {
     gridApi.grid.loadData(data);
   } else {
@@ -134,7 +132,7 @@ onMounted(() => {
 <template>
   <Grid>
     <template #createTime="{ row }">
-      {{ formatDate2(row.createTime) }}
+      {{ row.createTime ? formatDate2(row.createTime) : '' }}
     </template>
 
     <template #sendFrom="{ row }">
@@ -143,15 +141,28 @@ onMounted(() => {
     </template>
 
     <template #content="{ row }">
-      <div v-if="row.type === MsgType.Event && row.event === 'subscribe'">
+      <div
+        v-if="
+          (row.type as string) === (MsgType.Event as string) &&
+          (row.event as string) === 'subscribe'
+        "
+      >
         <Tag color="success">关注</Tag>
       </div>
       <div
-        v-else-if="row.type === MsgType.Event && row.event === 'unsubscribe'"
+        v-else-if="
+          (row.type as string) === (MsgType.Event as string) &&
+          (row.event as string) === 'unsubscribe'
+        "
       >
         <Tag color="error">取消关注</Tag>
       </div>
-      <div v-else-if="row.type === MsgType.Event && row.event === 'CLICK'">
+      <div
+        v-else-if="
+          (row.type as string) === (MsgType.Event as string) &&
+          (row.event as string) === 'CLICK'
+        "
+      >
         <Tag>点击菜单</Tag>
         【{{ row.eventKey }}】
       </div>
@@ -201,7 +212,10 @@ onMounted(() => {
 
       <div v-else-if="row.type === MsgType.Text">{{ row.content }}</div>
       <div v-else-if="row.type === MsgType.Voice">
-        <WxVoicePlayer :url="row.mediaUrl" :content="row.recognition" />
+        <WxVoicePlayer
+          :url="row.mediaUrl || ''"
+          :content="row.recognition || ''"
+        />
       </div>
       <div v-else-if="row.type === MsgType.Image">
         <a :href="row.mediaUrl" target="_blank">
@@ -209,7 +223,7 @@ onMounted(() => {
         </a>
       </div>
       <div v-else-if="row.type === MsgType.Video || row.type === 'shortvideo'">
-        <WxVideoPlayer :url="row.mediaUrl" class="mt-2" />
+        <WxVideoPlayer :url="row.mediaUrl || ''" class="mt-2" />
       </div>
       <div v-else-if="row.type === MsgType.Link">
         <Tag>链接</Tag>
@@ -218,16 +232,16 @@ onMounted(() => {
       </div>
       <div v-else-if="row.type === MsgType.Location">
         <WxLocation
-          :label="row.label"
-          :location-y="row.locationY"
-          :location-x="row.locationX"
+          :label="row.label || ''"
+          :location-y="row.locationY || 0"
+          :location-x="row.locationX || 0"
         />
       </div>
       <div v-else-if="row.type === MsgType.Music">
         <WxMusic
           :title="row.title"
           :description="row.description"
-          :thumb-media-url="row.thumbMediaUrl"
+          :thumb-media-url="row.thumbMediaUrl || ''"
           :music-url="row.musicUrl"
           :hq-music-url="row.hqMusicUrl"
         />
@@ -241,7 +255,7 @@ onMounted(() => {
     </template>
 
     <template #actions="{ row }">
-      <Button type="link" @click="emit('send', row.userId)"> 消息 </Button>
+      <Button type="link" @click="emit('send', row.userId || 0)"> 消息 </Button>
     </template>
   </Grid>
 </template>

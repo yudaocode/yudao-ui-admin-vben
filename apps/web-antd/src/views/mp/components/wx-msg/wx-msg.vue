@@ -168,7 +168,7 @@ async function scrollToBottom() {
 
     <div class="p-2.5">
       <Spin :spinning="sendLoading">
-        <WxReplySelect ref="replySelectRef" v-model="reply" />
+        <WxReply ref="replySelectRef" v-model="reply" />
         <Button type="primary" class="float-right mb-2 mt-2" @click="sendMsg">
           发送(S)
         </Button>

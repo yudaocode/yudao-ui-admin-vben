@@ -16,12 +16,6 @@ export namespace MpAccountApi {
     remark?: string;
     createTime?: Date;
   }
-
-  // TODO @dylan：这个直接使用 Account，简化一点；
-  export interface AccountSimple {
-    id: number;
-    name: string;
-  }
 }
 
 /** 查询公众号账号列表 */
@@ -41,7 +35,7 @@ export function getAccount(id: number) {
 
 /** 查询公众号账号列表 */
 export function getSimpleAccountList() {
-  return requestClient.get<MpAccountApi.AccountSimple[]>(
+  return requestClient.get<MpAccountApi.Account[]>(
     '/mp/account/list-all-simple',
   );
 }

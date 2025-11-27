@@ -12,7 +12,7 @@ export enum UploadType {
 interface UploadTypeConfig {
   allowTypes: string[];
   maxSizeMB: number;
-  name: string;
+  i18nKey: string;
 }
 
 export interface UploadRawFile {
@@ -31,12 +31,12 @@ const UPLOAD_CONFIGS: Record<UploadType, UploadTypeConfig> = {
       'image/jpg',
     ],
     maxSizeMB: 2,
-    name: '图片',
+    i18nKey: 'mp.upload.image',
   },
   [UploadType.Video]: {
     allowTypes: ['video/mp4'],
     maxSizeMB: 10,
-    name: '视频',
+    i18nKey: 'mp.upload.video',
   },
   [UploadType.Voice]: {
     allowTypes: [
@@ -47,7 +47,7 @@ const UPLOAD_CONFIGS: Record<UploadType, UploadTypeConfig> = {
       'audio/amr',
     ],
     maxSizeMB: 2,
-    name: '语音',
+    i18nKey: 'mp.upload.voice',
   },
 };
 
@@ -57,15 +57,16 @@ export const useBeforeUpload = (type: UploadType, maxSizeMB?: number) => {
     const finalMaxSize = maxSizeMB ?? config.maxSizeMB;
 
     // 格式不正确
-    // TODO @dylan：貌似没国际化；
     if (!config.allowTypes.includes(rawFile.type)) {
-      message.error($t('mp.upload.invalidFormat', [config.name]));
+      const typeName = $t(config.i18nKey);
+      message.error($t('mp.upload.invalidFormat', [typeName]));
       return false;
     }
 
     // 大小不正确
     if (rawFile.size / 1024 / 1024 > finalMaxSize) {
-      message.error($t('mp.upload.maxSize', [config.name, finalMaxSize]));
+      const typeName = $t(config.i18nKey);
+      message.error($t('mp.upload.maxSize', [typeName, finalMaxSize]));
       return false;
     }
 

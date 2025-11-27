@@ -45,10 +45,10 @@ function onDelete() {
     <Row>
       <div
         v-if="reply.articles && reply.articles.length > 0"
-        class="select-item"
+        class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
       >
         <WxNews :articles="reply.articles" />
-        <Col class="ope-row">
+        <Col class="pt-[10px] text-center">
           <Button danger shape="circle" @click="onDelete">
             <template #icon>
               <IconifyIcon icon="lucide:trash-2" />
@@ -91,18 +91,3 @@ function onDelete() {
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.select-item {
-  width: 280px;
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-}
-
-.ope-row {
-  padding-top: 10px;
-  text-align: center;
-}
-</style>

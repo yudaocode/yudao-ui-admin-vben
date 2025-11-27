@@ -9,13 +9,29 @@ export namespace MpMessageApi {
   export interface Message {
     id?: number;
     accountId: number;
-    type: MessageType;
+    type: MessageType | string;
     openid: string;
     content: string;
     mediaId?: string;
     status: number;
     remark?: string;
     createTime?: Date;
+    sendFrom?: number;
+    userId?: number;
+    event?: string;
+    eventKey?: string;
+    mediaUrl?: string;
+    recognition?: string;
+    url?: string;
+    title?: string;
+    label?: string;
+    locationX?: number;
+    locationY?: number;
+    thumbMediaUrl?: string;
+    musicUrl?: string;
+    hqMusicUrl?: string;
+    description?: string;
+    articles?: any[];
   }
 
   /** 发送消息请求 */

@@ -6,7 +6,7 @@ import { formatDateTime } from '@vben/utils';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
-let accountList: MpAccountApi.AccountSimple[] = [];
+let accountList: MpAccountApi.Account[] = [];
 getSimpleAccountList().then((data) => (accountList = data));
 
 /** 搜索表单配置 */

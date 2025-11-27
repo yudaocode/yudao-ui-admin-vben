@@ -105,12 +105,19 @@ function selectMaterial(item: Reply) {
 
 <template>
   <div>
-    <div v-if="reply.url" class="select-item">
-      <p class="item-name">{{ reply.name }}</p>
-      <Row class="ope-row" justify="center">
+    <div
+      v-if="reply.url"
+      class="mx-auto mb-[10px] border border-[#eaeaea] p-[10px]"
+    >
+      <p
+        class="overflow-hidden text-ellipsis whitespace-nowrap text-center text-xs"
+      >
+        {{ reply.name }}
+      </p>
+      <Row class="w-full pt-[10px] text-center" justify="center">
         <WxVoicePlayer :url="reply.url" />
       </Row>
-      <Row class="ope-row" justify="center">
+      <Row class="w-full pt-[10px] text-center" justify="center">
         <Button danger shape="circle" @click="onDelete">
           <template #icon>
             <IconifyIcon icon="lucide:trash-2" />
@@ -121,7 +128,10 @@ function selectMaterial(item: Reply) {
 
     <Row v-else class="text-center">
       <!-- 选择素材 -->
-      <Col :span="12" class="col-select">
+      <Col
+        :span="12"
+        class="flex h-[160px] w-[49.5%] flex-col items-center justify-center border border-[#eaeaea] py-[50px]"
+      >
         <Button type="primary" @click="showDialog = true">
           素材库选择
           <template #icon>
@@ -144,7 +154,10 @@ function selectMaterial(item: Reply) {
       </Col>
 
       <!-- 文件上传 -->
-      <Col :span="12" class="col-add">
+      <Col
+        :span="12"
+        class="float-right flex h-[160px] w-[49.5%] flex-col items-center justify-center border border-[#eaeaea] py-[50px]"
+      >
         <Upload
           :custom-request="customRequest"
           :multiple="true"
@@ -160,61 +173,10 @@ function selectMaterial(item: Reply) {
             </template>
           </Button>
         </Upload>
-        <div class="upload-tip">
+        <div class="mt-2 text-center text-xs leading-[18px] text-[#666]">
           格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
         </div>
       </Col>
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.select-item {
-  padding: 10px;
-  margin: 0 auto 10px;
-  border: 1px solid #eaeaea;
-}
-
-.item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.ope-row {
-  width: 100%;
-  padding-top: 10px;
-  text-align: center;
-}
-
-.col-select,
-.col-add {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 160px;
-  padding: 50px 0;
-  border: 1px solid rgb(234 234 234);
-}
-
-.col-select {
-  width: 49.5%;
-}
-
-.col-add {
-  float: right;
-  width: 49.5%;
-}
-
-.upload-tip {
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 18px;
-  color: #666;
-  text-align: center;
-}
-</style>
