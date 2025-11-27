@@ -67,7 +67,10 @@ function amrStop() {
 </script>
 
 <template>
-  <div class="wx-voice-div cursor-pointer" @click="playVoice">
+  <div
+    class="flex min-h-[50px] min-w-[120px] cursor-pointer flex-col items-center justify-center rounded-[10px] bg-[#eaeaea] p-[8px_12px]"
+    @click="playVoice"
+  >
     <div class="flex items-center">
       <IconifyIcon
         v-if="playing !== true"
@@ -75,7 +78,7 @@ function amrStop() {
         :size="32"
       />
       <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
-      <span v-if="duration" class="amr-duration">{{ duration }} 秒</span>
+      <span v-if="duration" class="ml-2 text-xs">{{ duration }} 秒</span>
     </div>
     <div v-if="content" class="mt-2">
       <Tag color="success">语音识别</Tag>
@@ -83,23 +86,3 @@ function amrStop() {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.wx-voice-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 120px;
-  min-height: 50px;
-  padding: 8px 12px;
-  background-color: #eaeaea;
-  border-radius: 10px;
-}
-
-.amr-duration {
-  margin-left: 8px;
-  font-size: 12px;
-}
-</style>

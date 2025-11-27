@@ -46,13 +46,15 @@ function getNickname(sendFrom: number) {
       </div>
       <div class="relative mx-2 flex-1 rounded-[5px] border border-[#dedede]">
         <span
-          class="pointer-events-none absolute -left-2 top-[10px] h-0 w-0 border-y-[8px] border-r-[8px] border-y-transparent border-r-[#dedede]"
+          v-if="item.sendFrom === SendFrom.MpBot"
+          class="pointer-events-none absolute -left-2 top-[10px] h-0 w-0 border-y-[8px] border-r-[8px] border-y-transparent border-r-[transparent]"
           :class="{
-            '-right-2 left-auto border-l-[8px] border-r-0 border-l-[#dedede]':
+            '-right-4 left-auto border-l-[8px] border-r-0 border-l-[#f8f8f8]':
               item.sendFrom === SendFrom.MpBot,
           }"
         ></span>
         <span
+          v-if="item.sendFrom === SendFrom.User"
           class="pointer-events-none absolute -left-[7px] top-[10px] h-0 w-0 border-y-[8px] border-r-[8px] border-y-transparent border-r-[#f8f8f8]"
           :class="{
             '-right-[7px] left-auto border-l-[8px] border-r-0 border-l-[#f8f8f8]':

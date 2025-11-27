@@ -105,13 +105,15 @@ function selectMaterial(item: any) {
   <div>
     <Row align="middle" justify="center">
       <Col :span="6">
-        <div class="thumb-container">
-          <div class="thumb-preview">
+        <div class="flex flex-col items-center gap-2">
+          <div
+            class="flex h-[100px] w-[100px] items-center justify-center rounded border border-[#d9d9d9]"
+          >
             <img
               v-if="reply.thumbMediaUrl"
               :src="reply.thumbMediaUrl"
               alt="音乐封面"
-              class="thumb-img"
+              class="h-full w-full object-cover"
             />
             <IconifyIcon
               v-else
@@ -120,7 +122,7 @@ function selectMaterial(item: any) {
               class="text-gray-400"
             />
           </div>
-          <div class="thumb-actions">
+          <div class="flex items-center justify-center">
             <Upload
               :custom-request="customRequest"
               :multiple="true"
@@ -136,10 +138,9 @@ function selectMaterial(item: any) {
             </Button>
           </div>
         </div>
-        <!-- TODO @dylan：这里应该不是图片哇？ -->
         <Modal
           v-model:open="showDialog"
-          title="选择图片"
+          title="选择封面图"
           :width="1200"
           :footer="null"
           destroy-on-close
@@ -152,8 +153,7 @@ function selectMaterial(item: any) {
         </Modal>
       </Col>
       <Col :span="18">
-        <!-- TODO @dylan：input 两个之间的间距可以调整下。现在和左侧的图片，距离有点远了。 -->
-        <div class="input-group">
+        <div class="flex flex-col gap-4">
           <Input
             :value="reply.title || undefined"
             placeholder="请输入标题"
@@ -183,41 +183,3 @@ function selectMaterial(item: any) {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.thumb-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
-
-.thumb-preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-</style>

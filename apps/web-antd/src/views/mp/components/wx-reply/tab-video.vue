@@ -130,7 +130,7 @@ function selectMaterial(item: any) {
         />
       </Col>
       <Col :span="24">
-        <Row class="ope-row" justify="center">
+        <Row class="w-full pt-[10px] text-center" justify="center">
           <WxVideoPlayer v-if="reply.url" :url="reply.url" />
         </Row>
       </Col>
@@ -182,12 +182,3 @@ function selectMaterial(item: any) {
     </Row>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/** TODO @dylan：看看有没适合 tindwind 的哈。 */
-.ope-row {
-  width: 100%;
-  padding-top: 10px;
-  text-align: center;
-}
-</style>
