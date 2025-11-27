@@ -96,7 +96,7 @@ onMounted(async () => {
 
 <template>
   <div class="w-full">
-    <Button type="link" class="ml-2" @click="selectCoupon">添加优惠劵</Button>
+    <Button type="link" class="pl-0" @click="selectCoupon">添加优惠券</Button>
 
     <div
       v-for="(item, index) in list"
