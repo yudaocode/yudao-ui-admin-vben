@@ -75,7 +75,7 @@ function handleHotAreaSelected(
 <template>
   <div class="h-40px flex items-center justify-center">
     <MagicCubeEditor
-      v-model="cellList as any"
+      v-model="cellList"
       :cols="cellCount"
       :cube-size="38"
       :rows="1"

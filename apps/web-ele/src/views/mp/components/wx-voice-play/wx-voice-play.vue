@@ -5,6 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 
 // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 import BenzAMRRecorder from 'benz-amr-recorder';
+import { ElTag } from 'element-plus';
 
 /** 微信消息 - 语音 */
 defineOptions({ name: 'WxVoicePlayer' });
@@ -82,7 +83,7 @@ function amrStop() {
       </span>
     </el-icon>
     <div v-if="content">
-      <el-tag type="success" size="small">语音识别</el-tag>
+      <ElTag type="success" size="small">语音识别</ElTag>
       {{ content }}
     </div>
   </div>

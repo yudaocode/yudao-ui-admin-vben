@@ -12,11 +12,16 @@ import {
 
 import MsgEvent from './msg-event.vue';
 
-defineOptions({ name: 'Msg' });
+defineOptions({ name: 'WxMsg' });
 
-defineProps<{
-  item: any;
-}>();
+withDefaults(
+  defineProps<{
+    item?: any;
+  }>(),
+  {
+    item: {},
+  },
+);
 </script>
 
 <template>

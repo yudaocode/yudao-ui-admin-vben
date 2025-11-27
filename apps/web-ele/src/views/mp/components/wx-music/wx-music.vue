@@ -1,36 +1,22 @@
 <script lang="ts" setup>
+import type { WxMusicProps } from './types';
+
+import { computed } from 'vue';
+
 import { ElLink } from 'element-plus';
 
 /** 微信消息 - 音乐 */
-defineOptions({ name: 'Music' });
-// TODO @hw：antd 和 ele 的代码风格不一致，例如说：props；
+defineOptions({ name: 'WxMusic' });
 
-const props = defineProps({
-  title: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  description: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  musicUrl: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  hqMusicUrl: {
-    required: false,
-    type: String,
-    default: '',
-  },
-  thumbMediaUrl: {
-    required: true,
-    type: String,
-  },
+const props = withDefaults(defineProps<WxMusicProps>(), {
+  title: '',
+  description: '',
+  musicUrl: '',
+  hqMusicUrl: '',
+  thumbMediaUrl: '',
 });
+
+const href = computed(() => props.hqMusicUrl || props.musicUrl);
 
 defineExpose({
   musicUrl: props.musicUrl,
@@ -43,7 +29,7 @@ defineExpose({
       type="success"
       :underline="false"
       target="_blank"
-      :href="hqMusicUrl ? hqMusicUrl : musicUrl"
+      :href="href"
       class="block"
     >
       <div

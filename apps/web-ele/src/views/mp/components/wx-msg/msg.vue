@@ -1,24 +1,26 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-
 import { MpMsgType } from '@vben/constants';
 
-import Location from '#/views/mp/components/wx-location/wx-location.vue';
-import Music from '#/views/mp/components/wx-music/wx-music.vue';
-import News from '#/views/mp/components/wx-news/wx-news.vue';
-import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
-import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
+import {
+  WxLocation,
+  WxMusic,
+  WxNews,
+  WxVideoPlayer,
+  WxVoicePlayer,
+} from '#/views/mp/components';
 
 import MsgEvent from './msg-event.vue';
 
-// TODO @hw：antd 和 ele 保持一致；例如说：1）props；2）WxVoicePlayer 这种；
-defineOptions({ name: 'Msg' });
+defineOptions({ name: 'WxMsg' });
 
-const props = defineProps<{
-  item: any;
-}>();
-
-const item = ref<any>(props.item);
+withDefaults(
+  defineProps<{
+    item?: any;
+  }>(),
+  {
+    item: {},
+  },
+);
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const item = ref<any>(props.item);
     <div v-else-if="item.type === MpMsgType.Text">{{ item.content }}</div>
 
     <div v-else-if="item.type === MpMsgType.Voice">
-      <VoicePlayer :url="item.mediaUrl" :content="item.recognition" />
+      <WxVideoPlayer :url="item.mediaUrl" :content="item.recognition" />
     </div>
 
     <div v-else-if="item.type === MpMsgType.Image">
@@ -41,7 +43,7 @@ const item = ref<any>(props.item);
       v-else-if="item.type === MpMsgType.Video || item.type === 'shortvideo'"
       class="text-center"
     >
-      <VideoPlayer :url="item.mediaUrl" />
+      <WxVoicePlayer :url="item.mediaUrl" />
     </div>
 
     <div v-else-if="item.type === MpMsgType.Link" class="flex-1">
@@ -66,7 +68,7 @@ const item = ref<any>(props.item);
     </div>
 
     <div v-else-if="item.type === MpMsgType.Location">
-      <Location
+      <WxLocation
         :label="item.label"
         :location-y="item.locationY"
         :location-x="item.locationX"
@@ -74,11 +76,11 @@ const item = ref<any>(props.item);
     </div>
 
     <div v-else-if="item.type === MpMsgType.News" class="w-[300px]">
-      <News :articles="item.articles" />
+      <WxNews :articles="item.articles" />
     </div>
 
     <div v-else-if="item.type === MpMsgType.Music">
-      <Music
+      <WxMusic
         :title="item.title"
         :description="item.description"
         :thumb-media-url="item.thumbMediaUrl"
