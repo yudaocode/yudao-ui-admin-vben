@@ -63,7 +63,6 @@ function amrStop() {
   playing.value = false;
   amr.value.stop();
 }
-// TODO 芋艿：下面样式有点问题
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMaterialApi } from '#/api/mp/material';
 
+// TODO @dylan：看看 ele 要迁移一个么？
 /** 视频表格列配置 */
 export function useVideoGridColumns(): VxeTableGridOptions<MpMaterialApi.Material>['columns'] {
   return [

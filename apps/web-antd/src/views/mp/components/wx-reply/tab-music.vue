@@ -31,10 +31,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;
 }>();
 
-const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
-
+const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
@@ -94,6 +92,7 @@ async function customRequest(options: any) {
   }
 }
 
+/** 选择素材 */
 function selectMaterial(item: any) {
   showDialog.value = false;
   reply.value.thumbMediaId = item.mediaId;

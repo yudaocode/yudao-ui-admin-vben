@@ -8,8 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { ElButton, ElCol, ElDialog, ElRow } from 'element-plus';
 
-import MaterialSelect from '#/views/mp/components/wx-material-select/wx-material-select.vue';
-import News from '#/views/mp/components/wx-news/wx-news.vue';
+import { WxMaterialSelect, WxNews } from '#/views/mp/components';
 
 defineOptions({ name: 'TabNews' });
 
@@ -48,7 +47,7 @@ function onDelete() {
         class="mx-auto mb-[10px] w-[280px] border border-[#eaeaea] p-[10px]"
         v-if="reply.articles && reply.articles.length > 0"
       >
-        <News :articles="reply.articles" />
+        <WxNews :articles="reply.articles" />
         <ElCol class="pt-[10px] text-center">
           <ElButton type="danger" circle @click="onDelete">
             <IconifyIcon icon="lucide:trash-2" />
@@ -78,7 +77,7 @@ function onDelete() {
         append-to-body
         destroy-on-close
       >
-        <MaterialSelect
+        <WxMaterialSelect
           type="news"
           :account-id="reply.accountId"
           :news-type="newsType"
