@@ -74,7 +74,7 @@ onMounted(async () => {
 <template>
   <Grid class="image-table-grid mt-4 pb-0">
     <template #toolbar-tools>
-      <slot name="toolbar-tools" />
+      <slot name="toolbar-tools"></slot>
     </template>
     <template #image="{ row }">
       <div class="flex items-center justify-center" style="height: 192px">
