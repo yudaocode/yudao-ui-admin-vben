@@ -10,12 +10,12 @@ import { Button, Card, Form, message, Pagination, Tabs } from 'ant-design-vue';
 import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
 import { WxAccountSelect } from '#/views/mp/components';
 
-import ImageTable from './components/image-table.vue';
-import { UploadType } from './components/upload';
-import UploadFile from './components/UploadFile.vue';
-import UploadVideo from './components/UploadVideo.vue';
-import VideoTable from './components/video-table.vue';
-import VoiceTable from './components/voice-table.vue';
+import ImageTable from './modules/image-table.vue';
+import { UploadType } from './modules/upload';
+import UploadFile from './modules/UploadFile.vue';
+import UploadVideo from './modules/UploadVideo.vue';
+import VideoTable from './modules/video-table.vue';
+import VoiceTable from './modules/voice-table.vue';
 
 defineOptions({ name: 'MpMaterial' });
 
@@ -117,19 +117,16 @@ async function handleDelete(id: number) {
                 图片
               </span>
             </template>
-            <UploadFile
-              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-              :type="UploadType.Image"
-              @uploaded="getList"
-            >
-              支持 bmp/png/jpeg/jpg/gif 格式，大小不超过 2M
-            </UploadFile>
             <!-- 列表 -->
-            <ImageTable
-              :list="list"
-              :loading="loading"
-              @delete="handleDelete"
-            />
+            <ImageTable :list="list" :loading="loading" @delete="handleDelete">
+              <template #toolbar-tools>
+                <UploadFile
+                  v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+                  :type="UploadType.Image"
+                  @uploaded="getList"
+                />
+              </template>
+            </ImageTable>
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
               <Pagination
@@ -151,19 +148,16 @@ async function handleDelete(id: number) {
                 语音
               </span>
             </template>
-            <UploadFile
-              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-              :type="UploadType.Voice"
-              @uploaded="getList"
-            >
-              格式支持 mp3/wma/wav/amr，文件大小不超过 2M，播放长度不超过 60s
-            </UploadFile>
             <!-- 列表 -->
-            <VoiceTable
-              :list="list"
-              :loading="loading"
-              @delete="handleDelete"
-            />
+            <VoiceTable :list="list" :loading="loading" @delete="handleDelete">
+              <template #toolbar-tools>
+                <UploadFile
+                  v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+                  :type="UploadType.Voice"
+                  @uploaded="getList"
+                />
+              </template>
+            </VoiceTable>
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
               <Pagination
@@ -185,21 +179,20 @@ async function handleDelete(id: number) {
                 视频
               </span>
             </template>
-            <Button
-              v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
-              type="primary"
-              @click="showCreateVideo = true"
-            >
-              新建视频
-            </Button>
+            <!-- 列表 -->
+            <VideoTable :list="list" :loading="loading" @delete="handleDelete">
+              <template #toolbar-tools>
+                <Button
+                  v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
+                  type="primary"
+                  @click="showCreateVideo = true"
+                >
+                  新建视频
+                </Button>
+              </template>
+            </VideoTable>
             <!-- 新建视频的弹窗 -->
             <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
-            <!-- 列表 -->
-            <VideoTable
-              :list="list"
-              :loading="loading"
-              @delete="handleDelete"
-            />
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
               <Pagination

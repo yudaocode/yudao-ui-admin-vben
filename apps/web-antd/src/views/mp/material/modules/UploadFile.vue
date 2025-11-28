@@ -86,7 +86,6 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
     :file-list="fileList"
     :headers="HEADERS"
     :multiple="true"
-    class="mb-4"
   >
     <Button type="primary">
       <IconifyIcon icon="lucide:upload" class="mr-1" />
