@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 /**
  * This is a sample file that should be replaced with the actual translation.
  *

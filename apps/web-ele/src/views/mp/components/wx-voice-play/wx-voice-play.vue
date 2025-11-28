@@ -3,8 +3,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-// 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
-import BenzAMRRecorder from 'benz-amr-recorder';
+import BenzAMRRecorder from 'benz-amr-recorder'; // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
 import { ElTag } from 'element-plus';
 
 /** 微信消息 - 语音 */
@@ -64,23 +63,24 @@ function amrStop() {
   playing.value = false;
   amr.value.stop();
 }
-// TODO dylan：下面样式有点问题
 </script>
 
 <template>
   <div
-    class="flex min-h-[50px] min-w-[120px] flex-col items-center justify-center rounded-[10px] bg-[#eaeaea] px-3 py-2"
+    class="flex h-[50px] w-[120px] cursor-pointer items-center justify-center rounded-[10px] bg-[#eaeaea] p-[5px]"
     @click="playVoice"
   >
-    <div class="flex items-center">
+    <el-icon>
       <IconifyIcon
         v-if="playing !== true"
         icon="lucide:circle-play"
         :size="32"
       />
       <IconifyIcon v-else icon="lucide:circle-pause" :size="32" />
-      <span class="ml-2 text-xs" v-if="duration">{{ duration }} 秒</span>
-    </div>
+      <span v-if="duration" class="ml-[5px] text-[11px]">
+        {{ duration }} 秒
+      </span>
+    </el-icon>
     <div v-if="content">
       <ElTag type="success" size="small">语音识别</ElTag>
       {{ content }}

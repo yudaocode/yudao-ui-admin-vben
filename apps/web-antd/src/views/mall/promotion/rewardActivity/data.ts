@@ -166,26 +166,86 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(PromotionProductScopeEnum.ALL.scope),
     },
-    // TODO @puhui999：选择完删除后，自动就退出了 modal；
     {
       fieldName: 'productSpuIds',
       label: '选择商品',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope'],
+        triggerFields: ['productScope', 'productScopeValues'],
         show: (values) => {
           return values.productScope === PromotionProductScopeEnum.SPU.scope;
+        },
+        trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
+          if (
+            values.productScope === PromotionProductScopeEnum.SPU.scope &&
+            values.productScopeValues
+          ) {
+            form.setFieldValue('productSpuIds', values.productScopeValues);
+          }
         },
       },
       rules: 'required',
     },
-    // TODO @puhui999：这里还有个分类；
+    {
+      fieldName: 'productCategoryIds',
+      label: '选择分类',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['productScope', 'productScopeValues'],
+        show: (values) => {
+          return (
+            values.productScope === PromotionProductScopeEnum.CATEGORY.scope
+          );
+        },
+        trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
+          if (
+            values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
+            values.productScopeValues
+          ) {
+            const categoryIds = values.productScopeValues;
+            // 单选时使用数组不能反显，取第一个元素
+            form.setFieldValue(
+              'productCategoryIds',
+              Array.isArray(categoryIds) && categoryIds.length > 0
+                ? categoryIds[0]
+                : categoryIds,
+            );
+          }
+        },
+      },
+      rules: 'required',
+    },
     {
       fieldName: 'rules',
       label: '优惠设置',
       component: 'Input',
       formItemClass: 'items-start',
-      // TODO @puhui999：这里可能要加个 rules: 'required',
+      rules: 'required',
+    },
+    {
+      fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],
+        show: () => false,
+        trigger(values, form) {
+          switch (values.productScope) {
+            case PromotionProductScopeEnum.CATEGORY.scope: {
+              const categoryIds = Array.isArray(values.productCategoryIds)
+                ? values.productCategoryIds
+                : [values.productCategoryIds];
+              form.setFieldValue('productScopeValues', categoryIds);
+              break;
+            }
+            case PromotionProductScopeEnum.SPU.scope: {
+              form.setFieldValue('productScopeValues', values.productSpuIds);
+              break;
+            }
+          }
+        },
+      },
     },
   ];
 }

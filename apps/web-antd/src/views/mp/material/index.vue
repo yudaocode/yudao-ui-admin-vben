@@ -2,29 +2,20 @@
 import { provide, reactive, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-// TODO @dlyan、可以先 antd 迁移完，在搞 ele；避免搞两遍；
-import {
-  Button,
-  Card,
-  Form,
-  message,
-  Modal,
-  Pagination,
-  Tabs,
-} from 'ant-design-vue';
+import { Button, Card, Form, message, Pagination, Tabs } from 'ant-design-vue';
 
 import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
 import { WxAccountSelect } from '#/views/mp/components';
 
-import ImageTable from './components/ImageTable.vue';
+import ImageTable from './components/image-table.vue';
 import { UploadType } from './components/upload';
 import UploadFile from './components/UploadFile.vue';
 import UploadVideo from './components/UploadVideo.vue';
-import VideoTable from './components/VideoTable.vue';
-import VoiceTable from './components/VoiceTable.vue';
+import VideoTable from './components/video-table.vue';
+import VoiceTable from './components/voice-table.vue';
 
 defineOptions({ name: 'MpMaterial' });
 
@@ -86,16 +77,18 @@ function onTabChange() {
 
 /** 处理删除操作 */
 async function handleDelete(id: number) {
-  // TODO @dylan：参考别的模块的  dylan 哈；
-  Modal.confirm({
-    content: '此操作将永久删除该文件, 是否继续?',
-    title: '提示',
-    async onOk() {
-      await deletePermanentMaterial(id);
-      message.success('删除成功');
-      await getList();
-    },
+  await confirm('此操作将永久删除该文件, 是否继续?');
+  const hideLoading = message.loading({
+    content: '正在删除...',
+    duration: 0,
   });
+  try {
+    await deletePermanentMaterial(id);
+    message.success('删除成功');
+    await getList();
+  } finally {
+    hideLoading();
+  }
 }
 </script>
 
@@ -114,11 +107,9 @@ async function handleDelete(id: number) {
         </Form>
       </Card>
 
-      <Card :bordered="false" class="mt-4 h-[88%]">
+      <Card :bordered="false" class="mt-4 h-auto">
         <Tabs v-model:active-key="type" @change="onTabChange">
           <!-- tab 1：图片  -->
-          <!-- TODO @dylan：要不这里，也改成 grid 视图；然后操作按钮，都改成右上角； -->
-          <!-- TODO @dylan：图片展示时，就编号、文件名、图片、上传时间、操作； -->
           <Tabs.TabPane :key="UploadType.Image">
             <template #tab>
               <span class="flex items-center">

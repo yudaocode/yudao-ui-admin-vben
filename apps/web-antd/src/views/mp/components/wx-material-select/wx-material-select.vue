@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpMaterialApi } from '#/api/mp/material';
 
 import { reactive, ref, watch } from 'vue';
 
@@ -42,84 +43,85 @@ const queryParams = reactive({
   pageSize: 10,
 }); // 查询参数
 
-const voiceGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @dylan：any 有 linter 告警；看看别的模块哈
-  {
-    field: 'mediaId',
-    title: '编号',
-    align: 'center',
-    minWidth: 160,
-  },
-  {
-    field: 'name',
-    title: '文件名',
-    minWidth: 200,
-  },
-  {
-    field: 'voice',
-    title: '语音',
-    minWidth: 200,
-    align: 'center',
-    slots: { default: 'voice' },
-  },
-  {
-    field: 'createTime',
-    title: '上传时间',
-    width: 180,
-    formatter: 'formatDateTime',
-  },
-  {
-    title: '操作',
-    width: 140,
-    fixed: 'right',
-    align: 'center',
-    slots: { default: 'actions' },
-  },
-];
+// TODO @dylan：可以把【点击上传】3 个 tab 的按钮，放到右侧的 toolbar 一起，和刷新按钮放在一行；
+const voiceGridColumns: VxeTableGridOptions<MpMaterialApi.Material>['columns'] =
+  [
+    {
+      field: 'mediaId',
+      title: '编号',
+      align: 'center',
+      minWidth: 160,
+    },
+    {
+      field: 'name',
+      title: '文件名',
+      minWidth: 200,
+    },
+    {
+      field: 'voice',
+      title: '语音',
+      minWidth: 200,
+      align: 'center',
+      slots: { default: 'voice' },
+    },
+    {
+      field: 'createTime',
+      title: '上传时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 140,
+      fixed: 'right',
+      align: 'center',
+      slots: { default: 'actions' },
+    },
+  ];
 
-const videoGridColumns: VxeTableGridOptions<any>['columns'] = [
-  // TODO @dylan：any 有 linter 告警；看看别的模块哈
-  {
-    field: 'mediaId',
-    title: '编号',
-    minWidth: 160,
-  },
-  {
-    field: 'name',
-    title: '文件名',
-    minWidth: 200,
-  },
-  {
-    field: 'title',
-    title: '标题',
-    minWidth: 200,
-  },
-  {
-    field: 'introduction',
-    title: '介绍',
-    minWidth: 220,
-  },
-  {
-    field: 'video',
-    title: '视频',
-    minWidth: 220,
-    align: 'center',
-    slots: { default: 'video' },
-  },
-  {
-    field: 'createTime',
-    title: '上传时间',
-    width: 180,
-    formatter: 'formatDateTime',
-  },
-  {
-    title: '操作',
-    width: 140,
-    fixed: 'right',
-    align: 'center',
-    slots: { default: 'actions' },
-  },
-];
+const videoGridColumns: VxeTableGridOptions<MpMaterialApi.Material>['columns'] =
+  [
+    {
+      field: 'mediaId',
+      title: '编号',
+      minWidth: 160,
+    },
+    {
+      field: 'name',
+      title: '文件名',
+      minWidth: 200,
+    },
+    {
+      field: 'title',
+      title: '标题',
+      minWidth: 200,
+    },
+    {
+      field: 'introduction',
+      title: '介绍',
+      minWidth: 220,
+    },
+    {
+      field: 'video',
+      title: '视频',
+      minWidth: 220,
+      align: 'center',
+      slots: { default: 'video' },
+    },
+    {
+      field: 'createTime',
+      title: '上传时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 140,
+      fixed: 'right',
+      align: 'center',
+      slots: { default: 'actions' },
+    },
+  ];
 
 const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -135,11 +137,9 @@ const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, { accountId }) => {
           const finalAccountId = accountId ?? queryParams.accountId;
-          // TODO @dylan 这里简化成 !finalAccountId 是不是可以哈。
-          if (finalAccountId === undefined || finalAccountId === null) {
+          if (!finalAccountId) {
             return { list: [], total: 0 };
           }
-          // TODO @dylan：不要带 MpMaterialApi；
           return await getMaterialPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -156,7 +156,7 @@ const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: true,
     },
-  } as VxeTableGridOptions<any>, // TODO @dylan：这里有 linter 告警；看看别的模块哈
+  } as VxeTableGridOptions<MpMaterialApi.Material>,
 });
 
 const [VideoGrid, videoGridApi] = useVbenVxeGrid({
@@ -192,7 +192,7 @@ const [VideoGrid, videoGridApi] = useVbenVxeGrid({
     toolbarConfig: {
       refresh: true,
     },
-  } as VxeTableGridOptions<any>,
+  } as VxeTableGridOptions<MpMaterialApi.Material>,
 });
 
 function selectMaterialFun(item: any) {
@@ -288,7 +288,6 @@ watch(
 <template>
   <Page :bordered="false" class="pb-8">
     <!-- 类型：image -->
-    <!-- TODO @dylan：看看图片的小卡片，是不是可以整齐点，类似微信公众号，图片的高度是一致的哈；https://mp.weixin.qq.com/cgi-bin/filepage?type=2&begin=0&count=12&token=1646383362&lang=zh_CN -->
     <template v-if="props.type === 'image'">
       <Spin :spinning="loading">
         <div
@@ -297,9 +296,13 @@ watch(
           <div
             v-for="item in list"
             :key="item.mediaId"
-            class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
+            class="mb-2.5 h-72 break-inside-avoid border border-[#eaeaea] p-2.5"
           >
-            <img class="w-full" :src="item.url" alt="素材图片" />
+            <img
+              class="h-48 w-full object-contain"
+              :src="item.url"
+              alt="素材图片"
+            />
             <p class="truncate text-center text-xs leading-[30px]">
               {{ item.name }}
             </p>

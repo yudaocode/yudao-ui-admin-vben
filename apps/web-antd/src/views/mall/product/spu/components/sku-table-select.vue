@@ -1,16 +1,15 @@
 <!-- SKU 选择弹窗组件 -->
 <script lang="ts" setup>
-import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { ref } from 'vue';
-
-import { fenToYuan } from '@vben/utils';
 
 import { Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';
+
+import { useSkuGridColumns } from './spu-select-data';
 
 interface SpuData {
   spuId: number;
@@ -23,52 +22,14 @@ const emit = defineEmits<{
 const visible = ref(false);
 const spuId = ref<number>();
 
-/** 表格列配置 */
-const gridColumns: VxeGridProps['columns'] = [
-  {
-    type: 'radio',
-    width: 55,
-  },
-  {
-    field: 'picUrl',
-    title: '图片',
-    width: 100,
-    align: 'center',
-    cellRender: {
-      name: 'CellImage',
-    },
-  },
-  {
-    field: 'properties',
-    title: '规格',
-    minWidth: 120,
-    align: 'center',
-    formatter: ({ cellValue }) => {
-      return (
-        cellValue?.map((p: MallSpuApi.Property) => p.valueName)?.join(' ') ||
-        '-'
-      );
-    },
-  },
-  {
-    field: 'price',
-    title: '销售价(元)',
-    width: 120,
-    align: 'center',
-    formatter: ({ cellValue }) => {
-      return fenToYuan(cellValue);
-    },
-  },
-];
-
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: gridColumns,
+    columns: useSkuGridColumns(),
     height: 400,
     border: true,
-    showOverflow: true,
     radioConfig: {
       reserve: true,
+      highlight: true,
     },
     rowConfig: {
       keyField: 'id',
@@ -76,22 +37,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     pagerConfig: {
       enabled: false,
-    },
-    proxyConfig: {
-      // TODO @puhui999：看看注释的部分，后续要不要删除
-      // autoLoad: false, // 禁用自动加载，手动触发查询
-      ajax: {
-        query: async () => {
-          if (!spuId.value) {
-            return { list: [], total: 0 };
-          }
-          const spu = await getSpu(spuId.value);
-          return {
-            list: spu.skus || [],
-            total: spu.skus?.length || 0,
-          };
-        },
-      },
     },
   },
   gridEvents: {
@@ -111,7 +56,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 关闭弹窗 */
 function closeModal() {
   visible.value = false;
-  gridApi.grid.clearRadioRow();
   spuId.value = undefined;
 }
 
@@ -122,12 +66,14 @@ async function openModal(data?: SpuData) {
   }
   spuId.value = data.spuId;
   visible.value = true;
-  // TODO @puhui999：看看注释的部分，后续要不要删除
-  // // 等待弹窗和 Grid 组件完全渲染后再查询数据
-  // await nextTick();
-  // if (gridApi.grid) {
-  //   await gridApi.query();
-  // }
+  // 注意：useVbenVxeGrid 关闭分页(pagerConfig.enabled=false)后，proxyConfig.ajax.query 的结果不会传递到 vxe-table
+  // 需要手动调用 reloadData 设置表格数据
+  if (!spuId.value) {
+    gridApi.grid?.reloadData([]);
+    return;
+  }
+  const spu = await getSpu(spuId.value);
+  gridApi.grid?.reloadData(spu.skus || []);
 }
 
 /** 对外暴露的方法 */

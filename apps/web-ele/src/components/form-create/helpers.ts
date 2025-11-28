@@ -202,10 +202,10 @@ export async function useFormCreateDesigner(designer: Ref) {
         value: 'id',
         options: [
           { label: '部门编号', value: 'id' },
-          { label: '部门名称', value: 'name' }
-        ]
-      }
-    ]
+          { label: '部门名称', value: 'name' },
+        ],
+      },
+    ],
   });
   const dictSelectRule = useDictSelectRule();
   const apiSelectRule0 = useSelectRule({

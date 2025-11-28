@@ -26,3 +26,7 @@ export interface SpuProperty<T> {
   spuDetail: T;
   spuId: number;
 }
+
+// Re-export for use in generic constraint
+
+export { type MallSpuApi } from '#/api/mall/product/spu';

@@ -139,13 +139,13 @@ async function getUserData() {
 </script>
 
 <template>
-  <div class="bg-background flex h-full flex-auto flex-col">
+  <div class="flex h-full flex-auto flex-col bg-background">
     <div
       class="mt-4 flex h-12 items-center justify-around before:absolute before:bottom-0 before:left-0 before:h-1 before:w-full before:scale-y-[0.3] before:bg-gray-200 before:content-['']"
     >
       <div
         :class="{
-          'before:border-primary before:border-b-2': tabActivation('会员信息'),
+          'before:border-b-2 before:border-primary': tabActivation('会员信息'),
         }"
         class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('会员信息')"
@@ -154,7 +154,7 @@ async function getUserData() {
       </div>
       <div
         :class="{
-          'before:border-primary before:border-b-2': tabActivation('最近浏览'),
+          'before:border-b-2 before:border-primary': tabActivation('最近浏览'),
         }"
         class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('最近浏览')"
@@ -163,7 +163,7 @@ async function getUserData() {
       </div>
       <div
         :class="{
-          'before:border-primary before:border-b-2': tabActivation('交易订单'),
+          'before:border-b-2 before:border-primary': tabActivation('交易订单'),
         }"
         class="relative flex w-full cursor-pointer items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:content-[''] hover:before:border-b-2 hover:before:border-gray-500/50"
         @click="handleClick('交易订单')"

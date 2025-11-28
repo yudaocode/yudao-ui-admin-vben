@@ -10,9 +10,11 @@ import { ElCol, ElLink, ElMessage, ElRow } from 'element-plus';
 import { getTradeConfig } from '#/api/mall/trade/config';
 
 /** 微信消息 - 定位 */
-defineOptions({ name: 'Location' });
+defineOptions({ name: 'WxLocation' });
 
-const props = defineProps<WxLocationProps>();
+const props = withDefaults(defineProps<WxLocationProps>(), {
+  qqMapKey: '', // QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
+});
 
 const fetchedQqMapKey = ref('');
 const resolvedQqMapKey = computed(

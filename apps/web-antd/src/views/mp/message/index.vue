@@ -22,7 +22,7 @@ import {
 import { getMessagePage } from '#/api/mp/message';
 import { WxAccountSelect, WxMsg } from '#/views/mp/components';
 
-import MessageTable from './MessageTable.vue';
+import MessageTable from './message-table.vue';
 
 defineOptions({ name: 'MpMessage' });
 
@@ -30,7 +30,6 @@ const loading = ref(false);
 const total = ref(0); // 数据的总页数
 const list = ref<any[]>([]); // 当前页的列表数据
 
-// TODO @dylan：是不是参考别的模块简化哈。尽量使用 Grid
 const queryParams = reactive<{
   accountId: number;
   createTime: [Dayjs, Dayjs] | undefined;
@@ -189,7 +188,6 @@ function showTotal(total: number) {
       :footer="null"
       destroy-on-close
     >
-      <!-- TODO @dlayn：这里有告警； -->
       <WxMsg :user-id="messageBoxUserId" />
     </Modal>
   </Page>

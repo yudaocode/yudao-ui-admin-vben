@@ -136,8 +136,8 @@ catalog:
   highlight.js: ^11.11.1
   html-minifier-terser: ^7.2.0
   is-ci: ^4.1.0
-  jsencrypt: ^3.3.2
   jiti: ^2.6.1
+  jsencrypt: ^3.3.2
   json-bigint: ^1.0.0
   jsonc-eslint-parser: ^2.4.1
   jsonwebtoken: ^9.0.2
@@ -220,9 +220,9 @@ catalog:
   vue-router: ^4.5.1
   vue-tippy: ^6.7.1
   vue-tsc: ^3.1.4
+  vuedraggable: ^4.1.0
   vue3-print-nb: "^0.1.4"
   vue3-signature: ^0.2.4
-  vuedraggable: ^4.1.0
   video.js: ^7.21.6
   vxe-pc-ui: ^4.10.22
   vxe-table: ^4.17.14

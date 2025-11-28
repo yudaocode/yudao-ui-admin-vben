@@ -25,7 +25,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @puhui999：商品的选择：上面 spuId 可以选择了，下面的 skuId 打开后，没商品。
     {
       fieldName: 'skuId',
       label: '商品规格',
