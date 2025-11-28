@@ -3,6 +3,8 @@ import type { UserCardProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
+import { Avatar } from 'ant-design-vue';
+
 /** 用户卡片 */
 defineOptions({ name: 'UserCard' });
 // 定义属性
@@ -10,8 +12,8 @@ defineProps<{ property: UserCardProperty }>();
 </script>
 <template>
   <div class="flex flex-col">
-    <div class="flex items-center justify-between px-[18px] py-[24px]">
-      <div class="flex flex-1 items-center gap-[16px]">
+    <div class="flex items-center justify-between px-4 py-6">
+      <div class="flex flex-1 items-center gap-4">
         <Avatar :size="60">
           <IconifyIcon icon="ep:avatar" :size="60" />
         </Avatar>
@@ -19,15 +21,11 @@ defineProps<{ property: UserCardProperty }>();
       </div>
       <IconifyIcon icon="tdesign:qrcode" :size="20" />
     </div>
-    <div
-      class="flex items-center justify-between bg-white px-[20px] py-[8px] text-[12px]"
-    >
-      <span class="text-[#ff690d]">点击绑定手机号</span>
-      <span class="rounded-[26px] bg-[#ff6100] px-[8px] py-[5px] text-white">
+    <div class="flex items-center justify-between bg-card px-5 py-2 text-xs">
+      <span class="text-orange-500">点击绑定手机号</span>
+      <span class="rounded-lg bg-orange-500 px-2 py-1 text-white">
         去绑定
       </span>
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

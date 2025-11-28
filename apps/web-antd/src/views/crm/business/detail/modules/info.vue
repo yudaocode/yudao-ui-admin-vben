@@ -30,7 +30,7 @@ const [SystemDescription] = useDescription({
 </script>
 
 <template>
-  <div class="p-4">
+  <div>
     <BaseDescription :data="business" />
     <Divider />
     <SystemDescription :data="business" />

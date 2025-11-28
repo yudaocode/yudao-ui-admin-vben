@@ -95,9 +95,9 @@ onActivated(() => {
 
 /** 初始化 */
 onMounted(() => {
-  getOrderData();
-  getProductData();
-  getWalletRechargeData();
+  loadOrderData();
+  loadProductData();
+  loadWalletRechargeData();
 });
 </script>
 

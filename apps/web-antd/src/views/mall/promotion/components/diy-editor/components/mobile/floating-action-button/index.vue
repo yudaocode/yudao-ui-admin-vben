@@ -5,27 +5,24 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image, message } from 'ant-design-vue';
+import { Button, Image } from 'ant-design-vue';
 
 /** 悬浮按钮 */
 defineOptions({ name: 'FloatingActionButton' });
-// 定义属性
+
+/** 定义属性 */
 defineProps<{ property: FloatingActionButtonProperty }>();
 
-// 是否展开
-const expanded = ref(false);
-// 处理展开/折叠
-const handleToggleFab = () => {
-  expanded.value = !expanded.value;
-};
+const expanded = ref(false); // 是否展开
 
-const handleActive = (index: number) => {
-  message.success(`点击了${index}`);
-};
+/** 处理展开/折叠 */
+function handleToggleFab() {
+  expanded.value = !expanded.value;
+}
 </script>
 <template>
   <div
-    class="absolute bottom-8 right-[calc(50%-375px/2+32px)] z-20 flex items-center gap-3"
+    class="absolute bottom-8 right-[calc(50%-384px/2+32px)] z-20 flex items-center gap-3"
     :class="[
       {
         'flex-row': property.direction === 'horizontal',
@@ -38,12 +35,15 @@ const handleActive = (index: number) => {
         v-for="(item, index) in property.list"
         :key="index"
         class="flex flex-col items-center"
-        @click="handleActive(index)"
       >
-        <Image :src="item.imgUrl" fit="contain" class="h-7 w-7">
+        <Image :src="item.imgUrl" :width="28" :height="28" :preview="false">
           <template #error>
             <div class="flex h-full w-full items-center justify-center">
-              <IconifyIcon icon="ep:picture" :color="item.textColor" />
+              <IconifyIcon
+                icon="lucide:image"
+                :color="item.textColor"
+                class="inset-0 size-6 items-center"
+              />
             </div>
           </template>
         </Image>
@@ -57,36 +57,18 @@ const handleActive = (index: number) => {
       </div>
     </template>
     <!-- todo: @owen 使用APP主题色 -->
-    <el-button type="primary" size="large" circle @click="handleToggleFab">
+    <Button type="primary" size="large" shape="circle" @click="handleToggleFab">
       <IconifyIcon
-        icon="ep:plus"
-        class="fab-icon"
-        :class="[{ active: expanded }]"
+        icon="lucide:plus"
+        class="transition-transform duration-300"
+        :class="expanded ? 'rotate-[135deg]' : 'rotate-0'"
       />
-    </el-button>
+    </Button>
   </div>
   <!-- 模态背景：展开时显示，点击后折叠 -->
-  <div v-if="expanded" class="modal-bg" @click="handleToggleFab"></div>
+  <div
+    v-if="expanded"
+    class="absolute left-[calc(50%-375px/2)] top-0 z-[11] h-full w-[375px] bg-black/40"
+    @click="handleToggleFab"
+  ></div>
 </template>
-
-<style scoped lang="scss">
-/* 模态背景 */
-.modal-bg {
-  position: absolute;
-  top: 0;
-  left: calc(50% - 375px / 2);
-  z-index: 11;
-  width: 375px;
-  height: 100%;
-  background-color: rgb(0 0 0 / 40%);
-}
-
-.fab-icon {
-  transform: rotate(0deg);
-  transition: transform 0.3s;
-
-  &.active {
-    transform: rotate(135deg);
-  }
-}
-</style>

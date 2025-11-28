@@ -18,7 +18,7 @@ defineOptions({ name: 'NavigationBar' });
 
 const props = defineProps<{ property: NavigationBarProperty }>();
 
-// 背景
+/** 计算背景样式 */
 const bgStyle = computed(() => {
   const background =
     props.property.bgType === 'img' && props.property.bgImg
@@ -26,27 +26,31 @@ const bgStyle = computed(() => {
       : props.property.bgColor;
   return { background };
 });
-// 单元格列表
+
+/** 获取当前预览的单元格列表 */
 const cellList = computed(() =>
   props.property._local?.previewMp
     ? props.property.mpCells
     : props.property.otherCells,
 );
-// 单元格宽度
+
+/** 计算单元格宽度 */
 const cellWidth = computed(() => {
   return props.property._local?.previewMp
     ? (375 - 80 - 86) / 6
     : (375 - 90) / 8;
 });
-// 获得单元格样式
-const getCellStyle = (cell: NavigationBarCellProperty) => {
+
+/** 获取单元格样式 */
+function getCellStyle(cell: NavigationBarCellProperty) {
   return {
     width: `${cell.width * cellWidth.value + (cell.width - 1) * 10}px`,
     left: `${cell.left * cellWidth.value + (cell.left + 1) * 10}px`,
     position: 'absolute',
   } as StyleValue;
-};
-// 获得搜索框属性
+}
+
+/** 获取搜索框属性配置 */
 const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
   return {
     height: 30,
@@ -57,7 +61,10 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
 });
 </script>
 <template>
-  <div class="navigation-bar" :style="bgStyle">
+  <div
+    class="flex h-[50px] items-center justify-between bg-white px-[6px]"
+    :style="bgStyle"
+  >
     <div class="flex h-full w-full items-center">
       <div
         v-for="(cell, cellIndex) in cellList"
@@ -82,31 +89,3 @@ const getSearchProp = computed(() => (cell: NavigationBarCellProperty) => {
     />
   </div>
 </template>
-<style lang="scss" scoped>
-.navigation-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 50px;
-  padding: 0 6px;
-  background: #fff;
-
-  /* 左边 */
-  .left {
-    margin-left: 8px;
-  }
-
-  .center {
-    flex: 1;
-    font-size: 14px;
-    line-height: 35px;
-    color: #333;
-    text-align: center;
-  }
-
-  /* 右边 */
-  .right {
-    margin-right: 8px;
-  }
-}
-</style>

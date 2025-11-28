@@ -309,8 +309,6 @@ async function handleSave() {
     }
   } catch (error: any) {
     console.error('保存失败:', error);
-    // TODO @jason：这个提示，还要么？？？
-    // message.warning(error.msg || '请完善所有步骤的必填信息');
   }
 }
 
@@ -397,7 +395,7 @@ onBeforeUnmount(() => {
     <div class="mx-auto">
       <!-- 头部导航栏 -->
       <div
-        class="bg-card absolute inset-x-0 top-0 z-10 flex h-12 items-center border-b px-5"
+        class="absolute inset-x-0 top-0 z-10 flex h-12 items-center border-b bg-card px-5"
       >
         <!-- 左侧标题 -->
         <div class="flex w-48 items-center overflow-hidden">

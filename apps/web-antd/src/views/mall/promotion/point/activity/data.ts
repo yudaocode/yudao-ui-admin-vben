@@ -113,6 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入排序',
         class: '!w-full',
       },
+      defaultValue: 0,
       rules: 'required',
     },
     {

@@ -82,10 +82,12 @@ export function updateElementExtensions(element, extensionList) {
 }
 
 // 创建一个id
-export function uuid(length = 8, chars?) {
+export function uuid(
+  length = 8,
+  charsString = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+) {
   let result = '';
-  const charsString =
-    chars || '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
   for (let i = length; i > 0; --i) {
     result += charsString[Math.floor(Math.random() * charsString.length)];
   }

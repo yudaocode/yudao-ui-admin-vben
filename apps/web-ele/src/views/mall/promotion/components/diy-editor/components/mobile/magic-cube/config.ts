@@ -2,39 +2,24 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 广告魔方属性 */
 export interface MagicCubeProperty {
-  // 上圆角
-  borderRadiusTop: number;
-  // 下圆角
-  borderRadiusBottom: number;
-  // 间隔
-  space: number;
-  // 导航菜单列表
-  list: MagicCubeItemProperty[];
-  // 组件样式
-  style: ComponentStyle;
+  borderRadiusTop: number; // 上圆角
+  borderRadiusBottom: number; // 下圆角
+  space: number; // 间隔
+  list: MagicCubeItemProperty[]; // 导航菜单列表
+  style: ComponentStyle; // 组件样式
 }
 
 /** 广告魔方项目属性 */
 export interface MagicCubeItemProperty {
-  // 图标链接
-  imgUrl: string;
-  // 链接
-  url: string;
-  // 宽
-  width: number;
-  // 高
-  height: number;
-  // 上
-  top: number;
-  // 左
-  left: number;
-  // 右
-  right: number;
-  // 下
-  bottom: number;
+  imgUrl: string; // 图标链接
+  url: string; // 链接
+  width: number; // 宽
+  height: number; // 高
+  top: number; // 上
+  left: number; // 左
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'MagicCube',
   name: '广告魔方',

@@ -5,7 +5,7 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button } from 'ant-design-vue';
 
 import { VerticalButtonGroup } from '#/views/mall/promotion/components';
 
@@ -49,9 +49,8 @@ const emits = defineEmits<{
 type DiyComponentWithStyle = DiyComponent<any> & {
   property: { style?: ComponentStyle };
 };
-/**
- * 组件样式
- */
+
+/** 组件样式 */
 const style = computed(() => {
   const componentStyle = props.component.property.style;
   if (!componentStyle) {
@@ -78,38 +77,29 @@ const style = computed(() => {
   };
 });
 
-/**
- * 移动组件
- * @param direction 移动方向
- */
+/** 移动组件 */
 const handleMoveComponent = (direction: number) => {
   emits('move', direction);
 };
 
-/**
- * 复制组件
- */
+/** 复制组件 */
 const handleCopyComponent = () => {
   emits('copy');
 };
 
-/**
- * 删除组件
- */
+/** 删除组件 */
 const handleDeleteComponent = () => {
   emits('delete');
 };
 </script>
 <template>
-  <div class="component" :class="[{ active }]">
-    <div
-      :style="{
-        ...style,
-      }"
-    >
+  <div class="component relative cursor-move" :class="[{ active }]">
+    <div :style="style">
       <component :is="component.id" :property="component.property" />
     </div>
-    <div class="component-wrap">
+    <div
+      class="component-wrap absolute -bottom-1 -left-0.5 -right-0.5 -top-1 block h-full w-full"
+    >
       <!-- 左侧：组件名（悬浮的小贴条） -->
       <div class="component-name" v-if="component.name">
         {{ component.name }}
@@ -119,33 +109,63 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <VerticalButtonGroup type="primary">
-          <Tooltip title="上移" placement="right">
-            <Button
-              :disabled="!canMoveUp"
-              @click.stop="handleMoveComponent(-1)"
-            >
-              <IconifyIcon icon="ep:arrow-up" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="下移" placement="right">
-            <Button
-              :disabled="!canMoveDown"
-              @click.stop="handleMoveComponent(1)"
-            >
-              <IconifyIcon icon="ep:arrow-down" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="复制" placement="right">
-            <Button @click.stop="handleCopyComponent()">
-              <IconifyIcon icon="ep:copy-document" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="删除" placement="right">
-            <Button @click.stop="handleDeleteComponent()">
-              <IconifyIcon icon="ep:delete" />
-            </Button>
-          </Tooltip>
+        <!-- TODO @xingyu：按钮少的时候，会存在遮住的情况； -->
+        <!-- TODO @xingyu：貌似中间的选中框框，没全部框柱。上面多了点，下面少了点。 -->
+        <VerticalButtonGroup size="small">
+          <Button
+            :disabled="!canMoveUp"
+            type="primary"
+            size="small"
+            @click.stop="handleMoveComponent(-1)"
+            v-tippy="{
+              content: '上移',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="lucide:arrow-up" />
+          </Button>
+          <Button
+            :disabled="!canMoveDown"
+            type="primary"
+            size="small"
+            @click.stop="handleMoveComponent(1)"
+            v-tippy="{
+              content: '下移',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="lucide:arrow-down" />
+          </Button>
+          <Button
+            type="primary"
+            size="small"
+            @click.stop="handleCopyComponent()"
+            v-tippy="{
+              content: '复制',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="lucide:copy" />
+          </Button>
+          <Button
+            type="primary"
+            size="small"
+            @click.stop="handleDeleteComponent()"
+            v-tippy="{
+              content: '删除',
+              delay: 100,
+              placement: 'right',
+              arrow: true,
+            }"
+          >
+            <IconifyIcon icon="lucide:trash-2" />
+          </Button>
         </VerticalButtonGroup>
       </div>
     </div>
@@ -158,22 +178,11 @@ $hover-border-width: 1px;
 $name-position: -85px;
 $toolbar-position: -55px;
 
-/* 组件 */
 .component {
-  position: relative;
-  cursor: move;
-
   .component-wrap {
-    position: absolute;
-    top: 0;
-    left: -$active-border-width;
-    display: block;
-    width: 100%;
-    height: 100%;
-
     /* 鼠标放到组件上时 */
     &:hover {
-      border: $hover-border-width dashed var(--ant-color-primary);
+      border: $hover-border-width dashed hsl(var(--primary));
       box-shadow: 0 0 5px 0 rgb(24 144 255 / 30%);
 
       .component-name {
@@ -194,9 +203,9 @@ $toolbar-position: -55px;
       height: 25px;
       font-size: 12px;
       line-height: 25px;
-      color: #6a6a6a;
+      color: hsl(var(--text-color));
       text-align: center;
-      background: #fff;
+      background: hsl(var(--background));
       box-shadow:
         0 0 4px #00000014,
         0 2px 6px #0000000f,
@@ -211,7 +220,7 @@ $toolbar-position: -55px;
         height: 0;
         content: ' ';
         border: 5px solid transparent;
-        border-left-color: #fff;
+        border-left-color: hsl(var(--background));
       }
     }
 
@@ -231,18 +240,18 @@ $toolbar-position: -55px;
         height: 0;
         content: ' ';
         border: 5px solid transparent;
-        border-right-color: #2d8cf0;
+        border-right-color: hsl(var(--primary));
       }
     }
   }
 
-  /* 组件选中时 */
+  /* 选中状态 */
   &.active {
     margin-bottom: 4px;
 
     .component-wrap {
       margin-bottom: $active-border-width + $active-border-width;
-      border: $active-border-width solid var(--ant-color-primary) !important;
+      border: $active-border-width solid hsl(var(--primary)) !important;
       box-shadow: 0 0 10px 0 rgb(24 144 255 / 30%);
 
       .component-name {
@@ -251,10 +260,10 @@ $toolbar-position: -55px;
         /* 防止加了边框之后，位置移动 */
         left: $name-position - $active-border-width !important;
         color: #fff;
-        background: var(--ant-color-primary);
+        background: hsl(var(--primary));
 
         &::after {
-          border-left-color: var(--ant-color-primary);
+          border-left-color: hsl(var(--primary));
         }
       }
 

@@ -8,37 +8,24 @@ import type { Recordable } from '@vben/types';
 export interface DescriptionItemSchema {
   labelMinWidth?: number;
   contentMinWidth?: number;
-  // 自定义标签样式
-  labelStyle?: CSSProperties;
-  // 对应 data 中的字段名
-  field: string;
-  // 内容的描述
-  label: JSX.Element | string | VNode;
-  // 包含列的数量
-  span?: number;
-  // 是否显示
-  show?: (...arg: any) => boolean;
-  // 插槽名称
-  slot?: string;
-  // 自定义需要展示的内容
+  labelStyle?: CSSProperties; // 自定义标签样式
+  field: string; // 对应 data 中的字段名
+  label: JSX.Element | string | VNode; // 内容的描述
+  span?: number; // 包含列的数量
+  show?: (...arg: any) => boolean; // 是否显示
+  slot?: string; // 插槽名称
   render?: (
     val: any,
     data?: Recordable<any>,
-  ) => Element | JSX.Element | number | string | undefined | VNode;
+  ) => Element | JSX.Element | number | string | undefined | VNode; // 自定义需要展示的内容
 }
 
 export interface DescriptionProps extends DescriptionsProps {
-  // 是否包含卡片组件
-  useCard?: boolean;
-  // 描述项配置
-  schema: DescriptionItemSchema[];
-  // 数据
-  data: Recordable<any>;
-  // 标题
-  title?: string;
-  // 是否包含边框
-  bordered?: boolean;
-  // 列数
+  useCard?: boolean; // 是否包含卡片组件
+  schema: DescriptionItemSchema[]; // 描述项配置
+  data: Recordable<any>; // 数据
+  title?: string; // 标题
+  bordered?: boolean; // 是否包含边框
   column?:
     | number
     | {
@@ -48,7 +35,7 @@ export interface DescriptionProps extends DescriptionsProps {
         xl: number;
         xs: number;
         xxl: number;
-      };
+      }; // 列数
 }
 
 export interface DescInstance {

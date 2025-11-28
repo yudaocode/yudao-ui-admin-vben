@@ -16,10 +16,13 @@ import {
   ElTooltip,
 } from 'element-plus';
 
+import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
-import PointShowcase from '#/views/mall/promotion/point/components/point-showcase.vue';
+import { PointShowcase } from '#/views/mall/promotion/point/components';
 
-// 秒杀属性面板
+import ComponentContainerProperty from '../../component-container-property.vue';
+
+/** 积分属性面板 */
 defineOptions({ name: 'PromotionPointProperty' });
 
 const props = defineProps<{ modelValue: PromotionPointProperty }>();
@@ -29,11 +32,11 @@ const formData = useVModel(props, 'modelValue', emit);
 
 <template>
   <ComponentContainerProperty v-model="formData.style">
-    <ElForm :model="formData" label-width="80px">
-      <ElCard class="property-group" header="积分商城活动" shadow="never">
+    <ElForm label-width="80px" :model="formData">
+      <ElCard header="积分商城活动" class="property-group" shadow="never">
         <PointShowcase v-model="formData.activityIds" />
       </ElCard>
-      <ElCard class="property-group" header="商品样式" shadow="never">
+      <ElCard header="商品样式" class="property-group" shadow="never">
         <ElFormItem label="布局" prop="type">
           <ElRadioGroup v-model="formData.layoutType">
             <ElTooltip class="item" content="单列大图" placement="bottom">
@@ -51,11 +54,6 @@ const formData = useVModel(props, 'modelValue', emit);
                 <IconifyIcon icon="fluent:text-column-two-24-filled" />
               </ElRadioButton>
             </ElTooltip>
-            <!--<el-tooltip class="item" content="三列" placement="bottom">
-              <el-radio-button value="threeCol">
-                <IconifyIcon icon="fluent:text-column-three-24-filled" />
-              </el-radio-button>
-            </el-tooltip>-->
           </ElRadioGroup>
         </ElFormItem>
         <ElFormItem label="商品名称" prop="fields.name.show">
@@ -95,22 +93,22 @@ const formData = useVModel(props, 'modelValue', emit);
           </div>
         </ElFormItem>
       </ElCard>
-      <ElCard class="property-group" header="角标" shadow="never">
+      <ElCard header="角标" class="property-group" shadow="never">
         <ElFormItem label="角标" prop="badge.show">
           <ElSwitch v-model="formData.badge.show" />
         </ElFormItem>
-        <ElFormItem v-if="formData.badge.show" label="角标" prop="badge.imgUrl">
+        <ElFormItem label="角标" prop="badge.imgUrl" v-if="formData.badge.show">
           <UploadImg
             v-model="formData.badge.imgUrl"
             height="44px"
             width="72px"
             :show-description="false"
           >
-            <template #tip> 建议尺寸：36 * 22</template>
+            <template #tip> 建议尺寸：36 * 22 </template>
           </UploadImg>
         </ElFormItem>
       </ElCard>
-      <ElCard class="property-group" header="按钮" shadow="never">
+      <ElCard header="按钮" class="property-group" shadow="never">
         <ElFormItem label="按钮类型" prop="btnBuy.type">
           <ElRadioGroup v-model="formData.btnBuy.type">
             <ElRadioButton value="text">文字</ElRadioButton>
@@ -136,20 +134,20 @@ const formData = useVModel(props, 'modelValue', emit);
               width="56px"
               :show-description="false"
             >
-              <template #tip> 建议尺寸：56 * 56</template>
+              <template #tip> 建议尺寸：56 * 56 </template>
             </UploadImg>
           </ElFormItem>
         </template>
       </ElCard>
-      <ElCard class="property-group" header="商品样式" shadow="never">
+      <ElCard header="商品样式" class="property-group" shadow="never">
         <ElFormItem label="上圆角" prop="borderRadiusTop">
           <ElSlider
             v-model="formData.borderRadiusTop"
             :max="100"
             :min="0"
-            :show-input-controls="false"
-            input-size="small"
             show-input
+            input-size="small"
+            :show-input-controls="false"
           />
         </ElFormItem>
         <ElFormItem label="下圆角" prop="borderRadiusBottom">
@@ -157,9 +155,9 @@ const formData = useVModel(props, 'modelValue', emit);
             v-model="formData.borderRadiusBottom"
             :max="100"
             :min="0"
-            :show-input-controls="false"
-            input-size="small"
             show-input
+            input-size="small"
+            :show-input-controls="false"
           />
         </ElFormItem>
         <ElFormItem label="间隔" prop="space">
@@ -167,14 +165,12 @@ const formData = useVModel(props, 'modelValue', emit);
             v-model="formData.space"
             :max="100"
             :min="0"
-            :show-input-controls="false"
-            input-size="small"
             show-input
+            input-size="small"
+            :show-input-controls="false"
           />
         </ElFormItem>
       </ElCard>
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style lang="scss" scoped></style>

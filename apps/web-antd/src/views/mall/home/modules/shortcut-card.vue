@@ -14,7 +14,7 @@ const router = useRouter();
 const menuList = [
   {
     name: '用户管理',
-    icon: 'ep:user-filled',
+    icon: 'lucide:user',
     bgColor: 'bg-red-400',
     routerName: 'MemberUser',
   },
@@ -26,7 +26,7 @@ const menuList = [
   },
   {
     name: '订单管理',
-    icon: 'ep:list',
+    icon: 'lucide:list',
     bgColor: 'bg-yellow-500',
     routerName: 'TradeOrder',
   },
@@ -44,13 +44,13 @@ const menuList = [
   },
   {
     name: '优惠券',
-    icon: 'ep:ticket',
+    icon: 'lucide:ticket',
     bgColor: 'bg-blue-500',
     routerName: 'PromotionCoupon',
   },
   {
     name: '拼团活动',
-    icon: 'fa:group',
+    icon: 'lucide:users',
     bgColor: 'bg-purple-500',
     routerName: 'PromotionBargainActivity',
   },

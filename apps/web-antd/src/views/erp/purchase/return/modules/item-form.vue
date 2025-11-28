@@ -65,7 +65,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(tableData.value),
+    columns: useFormItemColumns(tableData.value, props.disabled),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
@@ -95,7 +95,7 @@ watch(
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(tableData.value);
     // 更新表格列配置（目的：已入库、已退货动态列）
-    const columns = useFormItemColumns(tableData.value);
+    const columns = useFormItemColumns(tableData.value, props.disabled);
     await gridApi.grid.reloadColumn(columns || []);
   },
   {
@@ -131,6 +131,7 @@ watch(
 
 /** 处理删除 */
 function handleDelete(row: ErpPurchaseReturnApi.PurchaseReturnItem) {
+  // TODO 芋艿
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index !== -1) {
     tableData.value.splice(index, 1);
@@ -153,6 +154,7 @@ async function handleWarehouseChange(
 
 /** 处理行数据变更 */
 function handleRowChange(row: any) {
+  // TODO 芋艿
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index === -1) {
     tableData.value.push(row);
@@ -260,7 +262,6 @@ onMounted(async () => {
     </template>
     <template #actions="{ row }">
       <TableAction
-        v-if="!disabled"
         :actions="[
           {
             label: '删除',
@@ -276,9 +277,9 @@ onMounted(async () => {
     </template>
 
     <template #bottom>
-      <div class="border-border bg-muted mt-2 rounded border p-2">
-        <div class="text-muted-foreground flex justify-between text-sm">
-          <span class="text-foreground font-medium">合计：</span>
+      <div class="mt-2 rounded border border-border bg-muted p-2">
+        <div class="flex justify-between text-sm text-muted-foreground">
+          <span class="font-medium text-foreground">合计：</span>
           <div class="flex space-x-4">
             <span>数量：{{ erpCountInputFormatter(summaries.count) }}</span>
             <span>

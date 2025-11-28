@@ -15,10 +15,10 @@ import { getCombinationActivityListByIds } from '#/api/mall/promotion/combinatio
 
 /** 拼团卡片 */
 defineOptions({ name: 'PromotionCombination' });
-// 定义属性
+
 const props = defineProps<{ property: PromotionCombinationProperty }>();
-// 商品列表
-const spuList = ref<MallSpuApi.Spu[]>([]);
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const combinationActivityList = ref<
   MallCombinationActivityApi.CombinationActivity[]
@@ -30,7 +30,7 @@ watch(
     try {
       // 新添加的拼团组件，是没有活动ID的
       const activityIds = props.property.activityIds;
-      // 检查活动ID的有效性
+      // 检查活动 ID 的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取拼团活动详情列表
         combinationActivityList.value =
@@ -68,40 +68,33 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
-    class="box-content flex min-h-[30px] w-full flex-row flex-wrap"
+    class="box-content flex min-h-8 w-full flex-row flex-wrap"
     ref="containerRef"
   >
     <div
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-card"
       :style="{
         ...calculateSpace(index),
         ...calculateWidth(),
@@ -119,9 +112,9 @@ const calculateWidth = () => {
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
         <Image
-          fit="cover"
           :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
+          class="h-6 w-8 object-cover"
+          :preview="false"
         />
       </div>
       <!-- 商品封面图 -->
@@ -134,7 +127,11 @@ const calculateWidth = () => {
           },
         ]"
       >
-        <Image fit="cover" class="h-full w-full" :src="spu.picUrl" />
+        <Image
+          class="h-full w-full object-cover"
+          :src="spu.picUrl"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
@@ -149,7 +146,7 @@ const calculateWidth = () => {
         <!-- 商品名称 -->
         <div
           v-if="property.fields.name.show"
-          class="text-[14px]"
+          class="text-sm"
           :class="[
             {
               truncate: property.layoutType !== 'oneColSmallImg',
@@ -164,7 +161,7 @@ const calculateWidth = () => {
         <!-- 商品简介 -->
         <div
           v-if="property.fields.introduction.show"
-          class="truncate text-[12px]"
+          class="truncate text-xs"
           :style="{ color: property.fields.introduction.color }"
         >
           {{ spu.introduction }}
@@ -173,7 +170,7 @@ const calculateWidth = () => {
           <!-- 价格 -->
           <span
             v-if="property.fields.price.show"
-            class="text-[16px]"
+            class="text-base"
             :style="{ color: property.fields.price.color }"
           >
             ￥{{ fenToYuan(spu.price || Infinity) }}
@@ -181,13 +178,13 @@ const calculateWidth = () => {
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
-            class="ml-[4px] text-[10px] line-through"
+            class="ml-1 text-xs line-through"
             :style="{ color: property.fields.marketPrice.color }"
           >
             ￥{{ fenToYuan(spu.marketPrice) }}
           </span>
         </div>
-        <div class="text-[12px]">
+        <div class="text-xs">
           <!-- 销量 -->
           <span
             v-if="property.fields.salesCount.show"
@@ -205,11 +202,11 @@ const calculateWidth = () => {
         </div>
       </div>
       <!-- 购买按钮 -->
-      <div class="absolute bottom-[8px] right-[8px]">
+      <div class="absolute bottom-2 right-2">
         <!-- 文字按钮 -->
         <span
           v-if="property.btnBuy.type === 'text'"
-          class="rounded-full px-[12px] py-[4px] text-[12px] text-white"
+          class="rounded-full px-3 py-1 text-sm text-white"
           :style="{
             background: `linear-gradient(to right, ${property.btnBuy.bgBeginColor}, ${property.btnBuy.bgEndColor}`,
           }"
@@ -219,13 +216,11 @@ const calculateWidth = () => {
         <!-- 图片按钮 -->
         <Image
           v-else
-          class="h-[28px] w-[28px] rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
           :src="property.btnBuy.imgUrl"
+          :preview="false"
         />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

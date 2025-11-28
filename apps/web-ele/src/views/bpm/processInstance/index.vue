@@ -138,7 +138,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <template
           v-if="
             row.status === BpmProcessInstanceStatus.RUNNING &&
-            row.tasks!.length > 0
+            row.tasks?.length! > 0
           "
         >
           <!-- 单人审批 -->
@@ -203,5 +203,3 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </Grid>
   </Page>
 </template>
-
-

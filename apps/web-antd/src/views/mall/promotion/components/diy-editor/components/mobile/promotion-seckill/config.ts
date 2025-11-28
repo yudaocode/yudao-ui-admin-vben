@@ -2,64 +2,40 @@ import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 秒杀属性 */
 export interface PromotionSeckillProperty {
-  // 布局类型：单列 | 三列
-  layoutType: 'oneColBigImg' | 'oneColSmallImg' | 'twoCol';
-  // 商品字段
+  layoutType: 'oneColBigImg' | 'oneColSmallImg' | 'twoCol'; // 布局类型：单列 | 三列
   fields: {
-    // 商品简介
-    introduction: PromotionSeckillFieldProperty;
-    // 市场价
-    marketPrice: PromotionSeckillFieldProperty;
-    // 商品名称
-    name: PromotionSeckillFieldProperty;
-    // 商品价格
-    price: PromotionSeckillFieldProperty;
-    // 商品销量
-    salesCount: PromotionSeckillFieldProperty;
-    // 商品库存
-    stock: PromotionSeckillFieldProperty;
-  };
-  // 角标
+    introduction: PromotionSeckillFieldProperty; // 商品简介
+    marketPrice: PromotionSeckillFieldProperty; // 市场价
+    name: PromotionSeckillFieldProperty; // 商品名称
+    price: PromotionSeckillFieldProperty; // 商品价格
+    salesCount: PromotionSeckillFieldProperty; // 商品销量
+    stock: PromotionSeckillFieldProperty; // 商品库存
+  }; // 商品字段
   badge: {
-    // 角标图片
-    imgUrl: string;
-    // 是否显示
-    show: boolean;
-  };
-  // 按钮
+    imgUrl: string; // 角标图片
+    show: boolean; // 是否显示
+  }; // 角标
   btnBuy: {
-    // 文字按钮：背景渐变起始颜色
-    bgBeginColor: string;
-    // 文字按钮：背景渐变结束颜色
-    bgEndColor: string;
-    // 图片按钮：图片地址
-    imgUrl: string;
-    // 文字
-    text: string;
-    // 类型：文字 | 图片
-    type: 'img' | 'text';
-  };
-  // 上圆角
-  borderRadiusTop: number;
-  // 下圆角
-  borderRadiusBottom: number;
-  // 间距
-  space: number;
-  // 秒杀活动编号
-  activityIds: number[];
-  // 组件样式
-  style: ComponentStyle;
+    bgBeginColor: string; // 文字按钮：背景渐变起始颜色
+    bgEndColor: string; // 文字按钮：背景渐变结束颜色
+    imgUrl: string; // 图片按钮：图片地址
+    text: string; // 文字
+    type: 'img' | 'text'; // 类型：文字 | 图片
+  }; // 按钮
+  borderRadiusTop: number; // 上圆角
+  borderRadiusBottom: number; // 下圆角
+  space: number; // 间距
+  activityIds: number[]; // 秒杀活动编号
+  style: ComponentStyle; // 组件样式
 }
 
-// 商品字段
+/** 商品字段属性 */
 export interface PromotionSeckillFieldProperty {
-  // 是否显示
-  show: boolean;
-  // 颜色
-  color: string;
+  show: boolean; // 是否显示
+  color: string; // 颜色
 }
 
-// 定义组件
+/** 定义组件 */
 export const component = {
   id: 'PromotionSeckill',
   name: '秒杀',

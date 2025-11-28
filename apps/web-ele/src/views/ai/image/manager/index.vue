@@ -23,7 +23,7 @@ async function handleDelete(row: AiImageApi.Image) {
     text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteImage(row.id as number);
+    await deleteImage(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

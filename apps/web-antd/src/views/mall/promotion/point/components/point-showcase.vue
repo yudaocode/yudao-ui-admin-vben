@@ -1,6 +1,5 @@
-<!-- 积分活动橱窗组件 - 用于装修时展示和选择积分活动 -->
+<!-- 积分商城活动橱窗组件：用于展示和选择积分商城活动 -->
 <script lang="ts" setup>
-// TODO @puhui999：看看是不是整体优化下代码风格，参考别的模块
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
 import { computed, ref, watch } from 'vue';
@@ -14,129 +13,114 @@ import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 import PointTableSelect from './point-table-select.vue';
 
 interface PointShowcaseProps {
-  modelValue: number | number[];
+  modelValue?: number | number[];
   limit?: number;
   disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<PointShowcaseProps>(), {
+  modelValue: undefined,
   limit: Number.MAX_VALUE,
   disabled: false,
 });
 
-const emit = defineEmits<{
-  change: [value: any];
-  'update:modelValue': [value: number | number[]];
-}>();
+const emit = defineEmits(['update:modelValue', 'change']);
 
-// 积分活动列表
-const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]);
+const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]); // 已选择的活动列表
+const pointTableSelectRef = ref<InstanceType<typeof PointTableSelect>>(); // 活动选择表格组件引用
+const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
-// 计算是否可以添加
+/** 计算是否可以添加 */
 const canAdd = computed(() => {
-  if (props.disabled) return false;
-  if (!props.limit) return true;
+  if (props.disabled) {
+    return false;
+  }
+  if (!props.limit) {
+    return true;
+  }
   return pointActivityList.value.length < props.limit;
 });
 
-// 积分活动选择器引用
-const pointActivityTableSelectRef = ref();
-
-/**
- * 打开积分活动选择器
- */
-function openPointActivityTableSelect() {
-  pointActivityTableSelectRef.value.open(pointActivityList.value);
-}
-
-/**
- * 选择活动后触发
- */
-function handleActivitySelected(
-  activityList:
-    | MallPointActivityApi.PointActivity
-    | MallPointActivityApi.PointActivity[],
-) {
-  pointActivityList.value = Array.isArray(activityList)
-    ? activityList
-    : [activityList];
-  emitActivityChange();
-}
-
-/**
- * 删除活动
- */
-function handleRemoveActivity(index: number) {
-  pointActivityList.value.splice(index, 1);
-  emitActivityChange();
-}
-
-/**
- * 发送变更事件
- */
-function emitActivityChange() {
-  if (props.limit === 1) {
-    const pointActivity =
-      pointActivityList.value.length > 0 ? pointActivityList.value[0] : null;
-    emit('update:modelValue', pointActivity?.id || 0);
-    emit('change', pointActivity);
-  } else {
-    emit(
-      'update:modelValue',
-      pointActivityList.value.map((pointActivity) => pointActivity.id),
-    );
-    emit('change', pointActivityList.value);
-  }
-}
-
-// 监听 modelValue 变化
+/** 监听 modelValue 变化，加载活动详情 */
 watch(
   () => props.modelValue,
-  async () => {
-    const ids = Array.isArray(props.modelValue)
-      ? props.modelValue
-      : (props.modelValue
-        ? [props.modelValue]
-        : []);
-
-    // 不需要返显
+  async (newValue) => {
+    // eslint-disable-next-line unicorn/no-nested-ternary
+    const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
     if (ids.length === 0) {
       pointActivityList.value = [];
       return;
     }
-
-    // 只有活动发生变化之后，才会查询活动
+    // 只有活动发生变化时才重新查询
     if (
       pointActivityList.value.length === 0 ||
-      pointActivityList.value.some(
-        (pointActivity) => !ids.includes(pointActivity.id!),
-      )
+      pointActivityList.value.some((activity) => !ids.includes(activity.id!))
     ) {
       pointActivityList.value = await getPointActivityListByIds(ids);
     }
   },
   { immediate: true },
 );
+
+/** 打开活动选择对话框 */
+function handleOpenActivitySelect() {
+  pointTableSelectRef.value?.open(pointActivityList.value);
+}
+
+/** 选择活动后触发 */
+function handleActivitySelected(
+  activities:
+    | MallPointActivityApi.PointActivity
+    | MallPointActivityApi.PointActivity[],
+) {
+  pointActivityList.value = Array.isArray(activities)
+    ? activities
+    : [activities];
+  emitActivityChange();
+}
+
+/** 删除活动 */
+function handleRemoveActivity(index: number) {
+  pointActivityList.value.splice(index, 1);
+  emitActivityChange();
+}
+
+/** 触发变更事件 */
+function emitActivityChange() {
+  if (props.limit === 1) {
+    const activity =
+      pointActivityList.value.length > 0 ? pointActivityList.value[0] : null;
+    emit('update:modelValue', activity?.id || 0);
+    emit('change', activity);
+  } else {
+    emit(
+      'update:modelValue',
+      pointActivityList.value.map((activity) => activity.id!),
+    );
+    emit('change', pointActivityList.value);
+  }
+}
 </script>
 
 <template>
   <div class="flex flex-wrap items-center gap-2">
-    <!-- 活动图片列表 -->
+    <!-- 已选活动列表 -->
     <div
-      v-for="(pointActivity, index) in pointActivityList"
-      :key="pointActivity.id"
-      class="relative flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300"
+      v-for="(activity, index) in pointActivityList"
+      :key="activity.id"
+      class="relative h-[60px] w-[60px] overflow-hidden rounded-lg border border-dashed border-gray-300"
     >
-      <Tooltip :title="pointActivity.spuName">
+      <Tooltip :title="activity.spuName">
         <div class="relative h-full w-full">
           <Image
             :preview="true"
-            :src="pointActivity.picUrl"
+            :src="activity.picUrl"
             class="h-full w-full rounded-lg object-cover"
           />
+          <!-- 删除按钮 -->
           <IconifyIcon
-            v-show="!disabled"
-            icon="ep:circle-close-filled"
+            v-if="!disabled"
+            icon="lucide:x"
             class="absolute -right-2 -top-2 z-10 h-5 w-5 cursor-pointer text-red-500 hover:text-red-600"
             @click="handleRemoveActivity(index)"
           />
@@ -144,21 +128,21 @@ watch(
       </Tooltip>
     </div>
 
-    <!-- 添加按钮 -->
+    <!-- 添加活动按钮 -->
     <Tooltip v-if="canAdd" title="选择活动">
       <div
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
-        @click="openPointActivityTableSelect"
+        @click="handleOpenActivitySelect"
       >
-        <IconifyIcon icon="ep:plus" class="text-lg text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </Tooltip>
   </div>
 
-  <!-- 积分活动选择对话框 -->
+  <!-- 活动选择对话框 -->
   <PointTableSelect
-    ref="pointActivityTableSelectRef"
-    :multiple="limit != 1"
+    ref="pointTableSelectRef"
+    :multiple="isMultiple"
     @change="handleActivitySelected"
   />
 </template>

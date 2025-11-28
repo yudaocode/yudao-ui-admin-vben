@@ -14,10 +14,10 @@ import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
 /** 积分商城卡片 */
 defineOptions({ name: 'PromotionPoint' });
-// 定义属性
+
 const props = defineProps<{ property: PromotionPointProperty }>();
-// 商品列表
-const spuList = ref<MallPointActivityApi.SpuExtensionWithPoint[]>([]);
+
+const spuList = ref<MallPointActivityApi.SpuExtensionWithPoint[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]);
 
@@ -27,7 +27,7 @@ watch(
     try {
       // 新添加的积分商城组件，是没有活动ID的
       const activityIds = props.property.activityIds;
-      // 检查活动ID的有效性
+      // 检查活动 ID 的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取积分商城活动详情列表
         pointActivityList.value = await getPointActivityListByIds(activityIds);
@@ -65,32 +65,25 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
@@ -108,7 +101,7 @@ const calculateWidth = () => {
         borderBottomLeftRadius: `${property.borderRadiusBottom}px`,
         borderBottomRightRadius: `${property.borderRadiusBottom}px`,
       }"
-      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-white"
+      class="relative box-content flex flex-row flex-wrap overflow-hidden bg-card"
     >
       <!-- 角标 -->
       <div
@@ -117,8 +110,8 @@ const calculateWidth = () => {
       >
         <Image
           :src="property.badge.imgUrl"
-          class="h-[26px] w-[38px]"
-          fit="cover"
+          class="h-6 w-10 object-cover"
+          :preview="false"
         />
       </div>
       <!-- 商品封面图 -->
@@ -131,7 +124,11 @@ const calculateWidth = () => {
           },
         ]"
       >
-        <Image :src="spu.picUrl" class="h-full w-full" fit="cover" />
+        <Image
+          :src="spu.picUrl"
+          class="h-full w-full object-cover"
+          :preview="false"
+        />
       </div>
       <div
         class="box-border flex flex-col gap-2 p-2"
@@ -146,7 +143,7 @@ const calculateWidth = () => {
         <!-- 商品名称 -->
         <div
           v-if="property.fields.name.show"
-          class="text-[14px]"
+          class="text-sm"
           :class="[
             {
               truncate: property.layoutType !== 'oneColSmallImg',
@@ -162,7 +159,7 @@ const calculateWidth = () => {
         <div
           v-if="property.fields.introduction.show"
           :style="{ color: property.fields.introduction.color }"
-          class="truncate text-[12px]"
+          class="truncate text-xs"
         >
           {{ spu.introduction }}
         </div>
@@ -171,7 +168,7 @@ const calculateWidth = () => {
           <span
             v-if="property.fields.price.show"
             :style="{ color: property.fields.price.color }"
-            class="text-[16px]"
+            class="text-base"
           >
             {{ spu.point }}积分
             {{
@@ -184,12 +181,12 @@ const calculateWidth = () => {
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
             :style="{ color: property.fields.marketPrice.color }"
-            class="ml-[4px] text-[10px] line-through"
+            class="ml-1 text-xs line-through"
           >
             ￥{{ fenToYuan(spu.marketPrice) }}
           </span>
         </div>
-        <div class="text-[12px]">
+        <div class="text-xs">
           <!-- 销量 -->
           <span
             v-if="property.fields.salesCount.show"
@@ -207,14 +204,14 @@ const calculateWidth = () => {
         </div>
       </div>
       <!-- 购买按钮 -->
-      <div class="absolute bottom-[8px] right-[8px]">
+      <div class="absolute bottom-2 right-2">
         <!-- 文字按钮 -->
         <span
           v-if="property.btnBuy.type === 'text'"
           :style="{
             background: `linear-gradient(to right, ${property.btnBuy.bgBeginColor}, ${property.btnBuy.bgEndColor}`,
           }"
-          class="rounded-full px-[12px] py-[4px] text-[12px] text-white"
+          class="rounded-full px-3 py-1 text-sm text-white"
         >
           {{ property.btnBuy.text }}
         </span>
@@ -222,12 +219,10 @@ const calculateWidth = () => {
         <Image
           v-else
           :src="property.btnBuy.imgUrl"
-          class="h-[28px] w-[28px] rounded-full"
-          fit="cover"
+          class="size-7 rounded-full object-cover"
+          :preview="false"
         />
       </div>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

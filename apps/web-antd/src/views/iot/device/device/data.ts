@@ -239,7 +239,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备状态',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_DEVICE_STATUS, 'number'),
+        options: getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number'),
         placeholder: '请选择设备状态',
         allowClear: true,
       },
@@ -295,12 +295,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'groups' },
     },
     {
-      field: 'status',
+      field: 'state',
       title: '设备状态',
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.IOT_DEVICE_STATUS },
+        props: { type: DICT_TYPE.IOT_DEVICE_STATE },
       },
     },
     {

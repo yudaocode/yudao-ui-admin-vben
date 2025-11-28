@@ -1,10 +1,9 @@
 <script setup lang="ts">
-// TODO @芋艿：后续合并到 diy-editor 里，并不是通用的；
-
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
+import { ElButton, ElText, ElTooltip } from 'element-plus';
 import VueDraggable from 'vuedraggable';
 
 /** 拖拽组件封装 */
@@ -46,7 +45,7 @@ const handleDelete = function (index: number) {
 </script>
 
 <template>
-  <el-text type="info" size="small"> 拖动左上角的小圆点可对其排序 </el-text>
+  <ElText type="info" size="small"> 拖动左上角的小圆点可对其排序 </ElText>
   <VueDraggable
     :list="formData"
     :force-fallback="true"
@@ -58,43 +57,39 @@ const handleDelete = function (index: number) {
     <template #item="{ element, index }">
       <div class="mb-1 flex flex-col gap-1 rounded border border-gray-200 p-2">
         <!-- 操作按钮区 -->
-        <!-- TODO @AI：是不是用错了？看看项目里，有没替代的 -->
         <div
           class="-m-2 mb-1 flex flex-row items-center justify-between p-2"
-          style="background-color: var(--app-content-bg-color)"
+          style="background-color: var(--el-bg-color-page)"
         >
-          <el-tooltip content="拖动排序">
+          <ElTooltip content="拖动排序">
             <IconifyIcon
-              icon="ic:round-drag-indicator"
-              class="drag-icon cursor-move"
-              style="color: #8a909c"
+              icon="lucide:move"
+              class="drag-icon cursor-move text-gray-500"
             />
-          </el-tooltip>
-          <el-tooltip content="删除">
+          </ElTooltip>
+          <ElTooltip content="删除">
             <IconifyIcon
               icon="ep:delete"
               class="cursor-pointer text-red-500"
               v-if="formData.length > min"
               @click="handleDelete(index)"
             />
-          </el-tooltip>
+          </ElTooltip>
         </div>
         <!-- 内容区 -->
         <slot :element="element" :index="index"></slot>
       </div>
     </template>
   </VueDraggable>
-  <el-tooltip :disabled="limit < 1" :content="`最多添加${limit}个`">
-    <el-button
+  <ElTooltip :disabled="limit < 1" :content="`最多添加${limit}个`">
+    <ElButton
       type="primary"
       plain
       class="mt-1 w-full"
       :disabled="limit > 0 && formData.length >= limit"
       @click="handleAdd"
     >
-      <IconifyIcon icon="ep:plus" /><span>添加</span>
-    </el-button>
-  </el-tooltip>
+      <IconifyIcon icon="lucide:plus" /><span>添加</span>
+    </ElButton>
+  </ElTooltip>
 </template>
-
-<style scoped lang="scss"></style>

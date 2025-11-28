@@ -10,15 +10,15 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
-import * as CombinationActivityApi from '#/api/mall/promotion/combination/combinationActivity';
+import { getSpuDetailList } from '#/api/mall/product/spu';
+import { getCombinationActivityListByIds } from '#/api/mall/promotion/combination/combinationActivity';
 
 /** 拼团卡片 */
 defineOptions({ name: 'PromotionCombination' });
-// 定义属性
+
 const props = defineProps<{ property: PromotionCombinationProperty }>();
-// 商品列表
-const spuList = ref<MallSpuApi.Spu[]>([]);
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
 const spuIdList = ref<number[]>([]);
 const combinationActivityList = ref<
   MallCombinationActivityApi.CombinationActivity[]
@@ -30,13 +30,11 @@ watch(
     try {
       // 新添加的拼团组件，是没有活动ID的
       const activityIds = props.property.activityIds;
-      // 检查活动ID的有效性
+      // 检查活动 ID 的有效性
       if (Array.isArray(activityIds) && activityIds.length > 0) {
         // 获取拼团活动详情列表
         combinationActivityList.value =
-          await CombinationActivityApi.getCombinationActivityListByIds(
-            activityIds,
-          );
+          await getCombinationActivityListByIds(activityIds);
 
         // 获取拼团活动的 SPU 详情列表
         spuList.value = [];
@@ -44,7 +42,7 @@ watch(
           .map((activity) => activity.spuId)
           .filter((spuId): spuId is number => typeof spuId === 'number');
         if (spuIdList.value.length > 0) {
-          spuList.value = await ProductSpuApi.getSpuDetailList(spuIdList.value);
+          spuList.value = await getSpuDetailList(spuIdList.value);
         }
 
         // 更新 SPU 的最低价格
@@ -70,32 +68,25 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
@@ -117,7 +108,7 @@ const calculateWidth = () => {
     >
       <!-- 角标 -->
       <div
-        v-if="property.badge.show"
+        v-if="property.badge.show && property.badge.imgUrl"
         class="absolute left-0 top-0 z-[1] items-center justify-center"
       >
         <ElImage
@@ -139,7 +130,7 @@ const calculateWidth = () => {
         <ElImage fit="cover" class="h-full w-full" :src="spu.picUrl" />
       </div>
       <div
-        class="box-border flex flex-col gap-2 p-2"
+        class="box-border flex flex-col gap-[8px] p-[8px]"
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
@@ -186,7 +177,7 @@ const calculateWidth = () => {
             class="ml-[4px] text-[10px] line-through"
             :style="{ color: property.fields.marketPrice.color }"
           >
-            ￥{{ fenToYuan(spu.marketPrice) }}
+            ￥{{ fenToYuan(spu.marketPrice!) }}
           </span>
         </div>
         <div class="text-[12px]">
@@ -229,5 +220,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

@@ -18,9 +18,9 @@ import { getAreaChartOptions, getAreaTableColumns } from './area-chart-options';
 defineOptions({ name: 'MemberAreaCard' });
 
 const loading = ref(true);
-const areaStatisticsList = shallowRef<MallMemberStatisticsApi.AreaStatistics[]>(
-  [],
-);
+const areaStatisticsList = shallowRef<
+  MallMemberStatisticsApi.AreaStatisticsRespVO[]
+>([]);
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
@@ -49,7 +49,7 @@ async function loadMemberAreaStatisticsList() {
   try {
     const list = await getMemberAreaStatisticsList();
     areaStatisticsList.value = list.map(
-      (item: MallMemberStatisticsApi.AreaStatistics) => ({
+      (item: MallMemberStatisticsApi.AreaStatisticsRespVO) => ({
         ...item,
         areaName: areaReplace(item.areaName),
       }),

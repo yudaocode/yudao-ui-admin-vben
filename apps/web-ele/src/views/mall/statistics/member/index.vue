@@ -19,7 +19,7 @@ import MemberTerminalCard from './modules/terminal-card.vue';
 defineOptions({ name: 'MemberStatistics' });
 
 const loading = ref(true); // 加载中
-const summary = ref<MallMemberStatisticsApi.Summary>(); // 会员统计数据
+const summary = ref<MallMemberStatisticsApi.SummaryRespVO>(); // 会员统计数据
 
 /** 查询会员统计 */
 async function loadMemberSummary() {

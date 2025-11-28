@@ -206,7 +206,7 @@ onMounted(() => {
 defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
 </script>
 <template>
-  <Drawer class="w-1/3">
+  <Drawer class="w-2/5">
     <template #title>
       <div class="config-header">
         <Input

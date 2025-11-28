@@ -36,6 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           format: 'HH:mm:ss',
           defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
         },
+        class: '!w-full',
       },
     },
     {

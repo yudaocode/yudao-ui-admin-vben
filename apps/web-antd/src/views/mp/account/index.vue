@@ -71,7 +71,7 @@ async function handleGenerateQrCode(row: MpAccountApi.Account) {
 /** 清空 API 配额 */
 async function handleCleanQuota(row: MpAccountApi.Account) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.processing', ['清空 API 配额']),
+    content: '正在清空 API 配额',
     duration: 0,
   });
   try {

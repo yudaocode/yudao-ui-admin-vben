@@ -4,16 +4,18 @@ import type { ImageBarProperty } from './config';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem } from 'element-plus';
 
-import UploadImg from '#/components/upload/image-upload.vue';
+import { ImageUpload } from '#/components/upload/';
 import { AppLinkInput } from '#/views/mall/promotion/components';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 图片展示属性面板
+/** 图片展示属性面板 */
 defineOptions({ name: 'ImageBarProperty' });
 
 const props = defineProps<{ modelValue: ImageBarProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -21,7 +23,7 @@ const formData = useVModel(props, 'modelValue', emit);
   <ComponentContainerProperty v-model="formData.style">
     <ElForm label-width="80px" :model="formData">
       <ElFormItem label="上传图片" prop="imgUrl">
-        <UploadImg
+        <ImageUpload
           v-model="formData.imgUrl"
           draggable="false"
           height="80px"
@@ -30,7 +32,7 @@ const formData = useVModel(props, 'modelValue', emit);
           :show-description="false"
         >
           <template #tip> 建议宽度750 </template>
-        </UploadImg>
+        </ImageUpload>
       </ElFormItem>
       <ElFormItem label="链接" prop="url">
         <AppLinkInput v-model="formData.url" />
@@ -38,5 +40,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

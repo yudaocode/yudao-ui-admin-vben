@@ -11,7 +11,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { Card, message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -52,6 +52,7 @@ const [OrderDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
   column: 3,
+  class: 'mx-4',
   schema: useOrderInfoSchema(),
 });
 
@@ -59,6 +60,7 @@ const [AfterSaleDescriptions] = useDescription({
   title: '售后信息',
   bordered: false,
   column: 3,
+  class: 'mx-4',
   schema: useAfterSaleInfoSchema(),
 });
 
@@ -66,6 +68,7 @@ const [RefundStatusDescriptions] = useDescription({
   title: '退款状态',
   bordered: false,
   column: 1,
+  class: 'mx-4',
   schema: useRefundStatusSchema(),
 });
 
@@ -261,17 +264,17 @@ onMounted(() => {
     <DisagreeModal @success="getDetail" />
 
     <!-- 订单信息 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <OrderDescriptions :data="afterSale" />
-    </Card>
+    </div>
     <!-- 售后信息 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <AfterSaleDescriptions :data="afterSale" />
-    </Card>
+    </div>
     <!-- 退款状态 -->
-    <Card class="mb-4">
+    <div class="mb-4">
       <RefundStatusDescriptions :data="afterSale" />
-    </Card>
+    </div>
     <!-- 商品信息 -->
     <div class="mb-4">
       <ProductGrid table-title="商品信息">

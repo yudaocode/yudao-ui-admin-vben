@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-// import { PREDEFINE_COLORS } from '@vben/constants';
-
 import { useVModels } from '@vueuse/core';
-import { Input, InputGroup } from 'ant-design-vue';
+import { Input } from 'ant-design-vue';
 
 /** 带颜色选择器输入框 */
 defineOptions({ name: 'InputWithColor' });
@@ -24,11 +22,25 @@ const { modelValue, color } = useVModels(props, emit);
 </script>
 
 <template>
-  <InputGroup compact>
+  <div class="flex gap-2">
     <Input v-model:value="modelValue" v-bind="$attrs" class="flex-1" />
-    <!-- TODO 芋艿：后续在处理，antd 不支持该组件；
-    <ColorPicker v-model:value="color" :presets="PREDEFINE_COLORS" />
-    -->
-  </InputGroup>
+    <input
+      v-model="color"
+      type="color"
+      class="h-8 w-10 cursor-pointer rounded border border-gray-300"
+    />
+  </div>
 </template>
-<style scoped lang="scss"></style>
+
+<style scoped lang="scss">
+input[type='color'] {
+  &::-webkit-color-swatch-wrapper {
+    padding: 2px;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+  }
+}
+</style>

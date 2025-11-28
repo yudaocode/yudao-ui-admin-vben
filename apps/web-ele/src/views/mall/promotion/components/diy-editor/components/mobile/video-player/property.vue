@@ -9,11 +9,13 @@ import UploadImg from '#/components/upload/image-upload.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
-// 视频播放属性面板
+/** 视频播放属性面板 */
 defineOptions({ name: 'VideoPlayerProperty' });
 
 const props = defineProps<{ modelValue: VideoPlayerProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 </script>
 
@@ -38,7 +40,7 @@ const formData = useVModel(props, 'modelValue', emit);
           :file-type="['mp4']"
           :limit="1"
           :file-size="100"
-          class="min-w-[80px]"
+          class="min-w-20"
         />
       </ElFormItem>
       <ElFormItem label="上传封面" prop="posterUrl">
@@ -47,7 +49,7 @@ const formData = useVModel(props, 'modelValue', emit);
           draggable="false"
           height="80px"
           width="100%"
-          class="min-w-[80px]"
+          class="min-w-20"
           :show-description="false"
         >
           <template #tip> 建议宽度750 </template>
@@ -59,5 +61,3 @@ const formData = useVModel(props, 'modelValue', emit);
     </ElForm>
   </ComponentContainerProperty>
 </template>
-
-<style scoped lang="scss"></style>

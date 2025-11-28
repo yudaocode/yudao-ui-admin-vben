@@ -27,6 +27,7 @@ import {
   getTradeStatisticsList,
 } from '#/api/mall/statistics/trade';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
+import { $t } from '#/locales';
 
 import { getTradeTrendChartOptions } from './trend-chart-options';
 
@@ -36,7 +37,7 @@ defineOptions({ name: 'TradeTrendCard' });
 const trendLoading = ref(true); // 交易状态加载中
 const exportLoading = ref(false); // 导出的加载中
 const trendSummary =
-  ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummary>>(); // 交易状况统计数据
+  ref<DataComparisonRespVO<MallTradeStatisticsApi.TradeTrendSummaryRespVO>>(); // 交易状况统计数据
 const searchTimes = ref<string[]>([]);
 
 const chartRef = ref<EchartsUIType>();
@@ -138,7 +139,7 @@ async function handleExport() {
               <template #icon>
                 <IconifyIcon icon="lucide:download" />
               </template>
-              导出
+              {{ $t('page.action.export') }}
             </ElButton>
           </ShortcutDateRangePicker>
         </div>

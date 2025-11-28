@@ -145,7 +145,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellDict',
         props: {
-          dictType: DICT_TYPE.COMMON_STATUS,
+          type: DICT_TYPE.COMMON_STATUS,
         },
       },
     },
@@ -156,7 +156,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       cellRender: {
         name: 'CellDict',
         props: {
-          dictType: DICT_TYPE.PROMOTION_BANNER_POSITION,
+          type: DICT_TYPE.PROMOTION_BANNER_POSITION,
         },
       },
     },

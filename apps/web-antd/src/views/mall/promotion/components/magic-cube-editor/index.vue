@@ -7,16 +7,16 @@ import { IconifyIcon } from '@vben/icons';
 
 import { createRect, isContains, isOverlap } from './util';
 
-// TODO @AI: 改成标准注释
-// 魔方编辑器
-// 有两部分组成：
-// 1. 魔方矩阵：位于底层，由方块组件的二维表格，用于创建热区
-//    操作方法：
-//    1.1 点击其中一个方块就会进入热区选择模式
-//    1.2 再次点击另外一个方块时，结束热区选择模式
-//    1.3 在两个方块中间的区域创建热区
-//    如果两次点击的都是同一方块，就只创建一个格子的热区
-// 2. 热区：位于顶层，采用绝对定位，覆盖在魔方矩阵上面。
+/**
+ * 魔方编辑器，有两部分组成：
+ *  1. 魔方矩阵：位于底层，由方块组件的二维表格，用于创建热区
+ *    操作方法：
+ *       1.1 点击其中一个方块就会进入热区选择模式
+ *       1.2 再次点击另外一个方块时，结束热区选择模式
+ *       1.3 在两个方块中间的区域创建热区
+ *    如果两次点击的都是同一方块，就只创建一个格子的热区
+ *  2. 热区：位于顶层，采用绝对定位，覆盖在魔方矩阵上面。
+ */
 defineOptions({ name: 'MagicCubeEditor' });
 
 /** 定义属性 */
@@ -29,12 +29,10 @@ const props = defineProps({
     type: Number,
     default: 4,
   }, // 行数，默认 4 行
-
   cols: {
     type: Number,
     default: 4,
   }, // 列数，默认 4 列
-
   cubeSize: {
     type: Number,
     default: 75,
@@ -70,6 +68,7 @@ watch(
 );
 
 const hotAreas = ref<Rect[]>([]); // 热区列表
+
 /** 初始化热区 */
 watch(
   () => props.modelValue,
@@ -86,20 +85,20 @@ const isHotAreaSelectMode = () => !!hotAreaBeginCube.value; // 是否开启了�
  * @param currentRow 当前行号
  * @param currentCol 当前列号
  */
-const handleCubeClick = (currentRow: number, currentCol: number) => {
+function handleCubeClick(currentRow: number, currentCol: number) {
   const currentCube = cubes.value[currentRow]?.[currentCol];
   if (!currentCube) {
     return;
   }
 
-  // 情况1：进入热区选择模式
+  // 情况 1：进入热区选择模式
   if (!isHotAreaSelectMode()) {
     hotAreaBeginCube.value = currentCube;
     hotAreaBeginCube.value!.active = true;
     return;
   }
 
-  // 情况2：结束热区选择模式
+  // 情况 2：结束热区选择模式
   hotAreas.value.push(createRect(hotAreaBeginCube.value!, currentCube));
   // 结束热区选择模式
   exitHotAreaSelectMode();
@@ -111,7 +110,7 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
   }
   // 发送热区变动通知
   emitUpdateModelValue();
-};
+}
 
 /**
  * 处理鼠标经过方块
@@ -119,7 +118,7 @@ const handleCubeClick = (currentRow: number, currentCol: number) => {
  * @param currentRow 当前行号
  * @param currentCol 当前列号
  */
-const handleCellHover = (currentRow: number, currentCol: number) => {
+function handleCellHover(currentRow: number, currentCol: number) {
   // 当前没有进入热区选择模式
   if (!isHotAreaSelectMode()) {
     return;
@@ -138,7 +137,6 @@ const handleCellHover = (currentRow: number, currentCol: number) => {
     if (isOverlap(hotArea, currentSelectedArea)) {
       // 结束热区选择模式
       exitHotAreaSelectMode();
-
       return;
     }
   }
@@ -147,13 +145,9 @@ const handleCellHover = (currentRow: number, currentCol: number) => {
   eachCube((_, __, cube) => {
     cube.active = isContains(currentSelectedArea, cube);
   });
-};
+}
 
-/**
- * 处理热区删除
- *
- * @param index 热区索引
- */
+/** 处理热区删除 */
 function handleDeleteHotArea(index: number) {
   hotAreas.value.splice(index, 1);
   // 结束热区选择模式
@@ -165,14 +159,14 @@ function handleDeleteHotArea(index: number) {
 const emitUpdateModelValue = () => emit('update:modelValue', hotAreas.value); // 发送热区变动通知
 
 const selectedHotAreaIndex = ref(0); // 热区选中
-const handleHotAreaSelected = (hotArea: Rect, index: number) => {
+
+/** 处理热区选中 */
+function handleHotAreaSelected(hotArea: Rect, index: number) {
   selectedHotAreaIndex.value = index;
   emit('hotAreaSelected', hotArea, index);
-};
+}
 
-/**
- * 结束热区选择模式
- */
+/** 结束热区选择模式 */
 function exitHotAreaSelectMode() {
   // 移除方块激活标记
   eachCube((_, __, cube) => {
@@ -189,7 +183,7 @@ function exitHotAreaSelectMode() {
  * 迭代魔方矩阵
  * @param callback 回调
  */
-const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
+function eachCube(callback: (x: number, y: number, cube: Cube) => void) {
   for (const [x, row] of cubes.value.entries()) {
     if (!row) continue;
     for (const [y, cube] of row.entries()) {
@@ -198,105 +192,57 @@ const eachCube = (callback: (x: number, y: number, cube: Cube) => void) => {
       }
     }
   }
-};
+}
 </script>
 <template>
-  <div class="relative">
-    <table class="cube-table">
-      <!-- 底层：魔方矩阵 -->
-      <tbody>
-        <tr v-for="(rowCubes, row) in cubes" :key="row">
-          <td
-            v-for="(cube, col) in rowCubes"
-            :key="col"
-            class="cube"
-            :class="[{ active: cube.active }]"
-            :style="{
-              width: `${cubeSize}px`,
-              height: `${cubeSize}px`,
-            }"
-            @click="handleCubeClick(row, col)"
-            @mouseenter="handleCellHover(row, col)"
-          >
-            <IconifyIcon icon="ep-plus" />
-          </td>
-        </tr>
-      </tbody>
-      <!-- 顶层：热区 -->
-      <div
-        v-for="(hotArea, index) in hotAreas"
-        :key="index"
-        class="hot-area"
-        :style="{
-          top: `${cubeSize * hotArea.top}px`,
-          left: `${cubeSize * hotArea.left}px`,
-          height: `${cubeSize * hotArea.height}px`,
-          width: `${cubeSize * hotArea.width}px`,
-        }"
-        @click="handleHotAreaSelected(hotArea, index)"
-        @mouseover="exitHotAreaSelectMode"
-      >
-        <!-- 右上角热区删除按钮 -->
-        <div
-          v-if="
-            selectedHotAreaIndex === index && hotArea.width && hotArea.height
-          "
-          class="btn-delete"
-          @click="handleDeleteHotArea(index)"
+  <table class="relative border-collapse border-spacing-0">
+    <!-- 底层：魔方矩阵 -->
+    <tbody>
+      <tr v-for="(rowCubes, row) in cubes" :key="row">
+        <td
+          v-for="(cube, col) in rowCubes"
+          :key="col"
+          class="box-border cursor-pointer border text-center align-middle hover:bg-primary-100 active:bg-primary-200"
+          :class="[{ active: cube.active }]"
+          :style="{
+            width: `${cubeSize}px`,
+            height: `${cubeSize}px`,
+          }"
+          @click="handleCubeClick(row, col)"
+          @mouseenter="handleCellHover(row, col)"
         >
-          <IconifyIcon icon="ep:circle-close-filled" />
-        </div>
-        <span v-if="hotArea.width">{{
-          `${hotArea.width}×${hotArea.height}`
-        }}</span>
+          <IconifyIcon icon="lucide:plus" class="inline-block size-6" />
+        </td>
+      </tr>
+    </tbody>
+    <!-- 顶层：热区 -->
+    <div
+      v-for="(hotArea, index) in hotAreas"
+      :key="index"
+      class="absolute box-border flex items-center justify-center border border-primary bg-primary-200"
+      :style="{
+        top: `${cubeSize * hotArea.top}px`,
+        left: `${cubeSize * hotArea.left}px`,
+        height: `${cubeSize * hotArea.height}px`,
+        width: `${cubeSize * hotArea.width}px`,
+      }"
+      @click="handleHotAreaSelected(hotArea, index)"
+      @mouseover="exitHotAreaSelectMode"
+    >
+      <!-- 右上角热区删除按钮 -->
+      <div
+        v-if="selectedHotAreaIndex === index && hotArea.width && hotArea.height"
+        class="absolute -right-2 -top-2 z-[1] size-6 h-4 w-4 items-center rounded-lg bg-card"
+        @click="handleDeleteHotArea(index)"
+      >
+        <IconifyIcon
+          icon="lucide:x"
+          class="inset-0 items-center bg-primary text-white"
+        />
       </div>
-    </table>
-  </div>
+      <span v-if="hotArea.width">
+        {{ `${hotArea.width}×${hotArea.height}` }}
+      </span>
+    </div>
+  </table>
 </template>
-<style lang="scss" scoped>
-.cube-table {
-  position: relative;
-  border-spacing: 0;
-  border-collapse: collapse;
-
-  .cube {
-    box-sizing: border-box;
-    color: var(--el-text-color-secondary);
-    text-align: center;
-    cursor: pointer;
-    border: 1px solid var(--el-border-color);
-
-    &.active {
-      background: var(--el-color-primary-light-9);
-    }
-  }
-
-  .hot-area {
-    position: absolute;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--el-color-primary);
-    cursor: pointer;
-    border-spacing: 0;
-    border-collapse: collapse;
-    background: var(--el-color-primary-light-8);
-    border: 1px solid var(--el-color-primary);
-
-    .btn-delete {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      background-color: #fff;
-      border-radius: 50%;
-    }
-  }
-}
-</style>

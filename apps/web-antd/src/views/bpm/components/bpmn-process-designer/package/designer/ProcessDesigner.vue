@@ -660,16 +660,15 @@ onBeforeUnmount(() => {
       <!-- <div id="js-properties-panel" class="panel"></div> -->
       <!-- <div class="my-process-designer__canvas" ref="bpmn-canvas"></div> -->
     </div>
-    <Dialog
+    <Modal
       title="预览"
       v-model:open="previewModelVisible"
-      width="80%"
+      class="max-h-[600px] w-4/5"
       :scroll="true"
-      style="max-height: 600px"
     >
       <div>
         <pre><code v-dompurify-html="highlightedCode(previewResult)" class="hljs"></code></pre>
       </div>
-    </Dialog>
+    </Modal>
   </div>
 </template>

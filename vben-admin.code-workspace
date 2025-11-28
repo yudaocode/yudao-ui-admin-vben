@@ -1,10 +1,6 @@
 {
   "folders": [
     {
-      "name": "@vben/backend-mock",
-      "path": "apps/backend-mock",
-    },
-    {
       "name": "@vben/web-antd",
       "path": "apps/web-antd",
     },
@@ -15,6 +11,10 @@
     {
       "name": "@vben/web-naive",
       "path": "apps/web-naive",
+    },
+    {
+      "name": "@vben/web-tdesign",
+      "path": "apps/web-tdesign",
     },
     {
       "name": "@vben/docs",
@@ -155,10 +155,6 @@
     {
       "name": "@vben/utils",
       "path": "packages/utils",
-    },
-    {
-      "name": "@vben/playground",
-      "path": "playground",
     },
     {
       "name": "@vben/turbo-run",

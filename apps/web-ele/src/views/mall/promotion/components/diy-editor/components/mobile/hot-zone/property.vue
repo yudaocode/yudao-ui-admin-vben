@@ -15,15 +15,17 @@ import HotZoneEditDialog from './components/hot-zone-edit-dialog/index.vue';
 defineOptions({ name: 'HotZoneProperty' });
 
 const props = defineProps<{ modelValue: HotZoneProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 热区编辑对话框
-const editDialogRef = ref();
-// 打开热区编辑对话框
-const handleOpenEditDialog = () => {
+const editDialogRef = ref(); // 热区编辑对话框
+
+/** 打开热区编辑对话框 */
+function handleOpenEditDialog() {
   editDialogRef.value.open();
-};
+}
 </script>
 
 <template>
@@ -49,6 +51,7 @@ const handleOpenEditDialog = () => {
       设置热区
     </ElButton>
   </ComponentContainerProperty>
+
   <!-- 热区编辑对话框 -->
   <HotZoneEditDialog
     ref="editDialogRef"
@@ -56,26 +59,3 @@ const handleOpenEditDialog = () => {
     :img-url="formData.imgUrl"
   />
 </template>
-
-<style scoped lang="scss">
-.hot-zone {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: #fff;
-  cursor: move;
-  background: #409effbf;
-  border: 1px solid var(--el-color-primary);
-
-  /* 控制点 */
-  .ctrl-dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #fff;
-    border-radius: 50%;
-  }
-}
-</style>

@@ -15,7 +15,7 @@ const emit = defineEmits<{
   success: [rows: ErpPurchaseReturnApi.PurchaseReturn[]];
 }>();
 
-const supplierId = ref<number>(); // 供应商ID
+const supplierId = ref<number>(); // 供应商 ID
 const open = ref<boolean>(false); // 弹窗是否打开
 const selectedRows = ref<ErpPurchaseReturnApi.PurchaseReturn[]>([]); // 选中的行
 

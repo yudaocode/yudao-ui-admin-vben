@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMusicApi } from '#/api/ai/music';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
-import { AiMusicStatusEnum } from '@vben/constants';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
@@ -24,7 +23,7 @@ async function handleDelete(row: AiMusicApi.Music) {
     text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteMusic(row.id as number);
+    await deleteMusic(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {

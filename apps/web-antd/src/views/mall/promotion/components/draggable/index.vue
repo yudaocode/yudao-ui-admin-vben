@@ -45,7 +45,7 @@ const handleDelete = function (index: number) {
 </script>
 
 <template>
-  <div class="text-xs text-gray-500">拖动左上角的小圆点可对其排序</div>
+  <div class="text-sm text-gray-500">拖动左上角的小圆点可对其排序</div>
   <VueDraggable
     :list="formData"
     :force-fallback="true"
@@ -58,14 +58,12 @@ const handleDelete = function (index: number) {
       <div class="mb-1 flex flex-col gap-1 rounded border border-gray-200 p-2">
         <!-- 操作按钮区 -->
         <div
-          class="-m-2 mb-1 flex flex-row items-center justify-between p-2"
-          style="background-color: var(--app-content-bg-color)"
+          class="-m-2 mb-1 flex flex-row items-center justify-between rounded-t bg-secondary p-2"
         >
           <Tooltip title="拖动排序">
             <IconifyIcon
-              icon="ic:round-drag-indicator"
-              class="drag-icon cursor-move"
-              style="color: #8a909c"
+              icon="lucide:move"
+              class="drag-icon cursor-move text-gray-500"
             />
           </Tooltip>
           <Tooltip title="删除">
@@ -82,7 +80,7 @@ const handleDelete = function (index: number) {
       </div>
     </template>
   </VueDraggable>
-  <Tooltip :title="limit < 1 ? undefined : `最多添加${limit}个`">
+  <Tooltip :title="limit < Number.MAX_VALUE ? `最多添加${limit}个` : undefined">
     <Button
       type="primary"
       ghost
@@ -90,9 +88,10 @@ const handleDelete = function (index: number) {
       :disabled="limit > 0 && formData.length >= limit"
       @click="handleAdd"
     >
-      <IconifyIcon icon="ep:plus" /><span>添加</span>
+      <template #icon>
+        <IconifyIcon icon="lucide:plus" />
+      </template>
+      添加
     </Button>
   </Tooltip>
 </template>
-
-<style scoped lang="scss"></style>

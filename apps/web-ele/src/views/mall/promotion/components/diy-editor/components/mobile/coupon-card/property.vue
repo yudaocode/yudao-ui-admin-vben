@@ -5,6 +5,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import {
   CouponTemplateTakeTypeEnum,
   PromotionDiscountTypeEnum,
@@ -23,39 +24,48 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import * as CouponTemplateApi from '#/api/mall/promotion/coupon/couponTemplate';
+import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
+import CouponSelect from '#/views/mall/promotion/coupon/components/select.vue';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
-// TODO: 添加组件
-// import CouponSelect from '#/views/mall/promotion/coupon/components/coupon-select.vue';
 
-// 优惠券卡片属性面板
+/** 优惠券卡片属性面板 */
 defineOptions({ name: 'CouponCardProperty' });
 
 const props = defineProps<{ modelValue: CouponCardProperty }>();
+
 const emit = defineEmits(['update:modelValue']);
+
 const formData = useVModel(props, 'modelValue', emit);
 
-// 优惠券列表
-const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]);
-const couponSelectDialog = ref();
-// 添加优惠券
+const couponList = ref<MallCouponTemplateApi.CouponTemplate[]>([]); // 已选择的优惠券列表
+
+const [CouponSelectModal, couponSelectModalApi] = useVbenModal({
+  connectedComponent: CouponSelect,
+  destroyOnClose: true,
+});
+
+/** 添加优惠劵 */
 const handleAddCoupon = () => {
-  couponSelectDialog.value.open();
-};
-const handleCouponSelect = () => {
-  formData.value.couponIds = couponList.value.map((coupon) => coupon.id);
+  couponSelectModalApi.open();
 };
 
+/** 处理优惠劵选择 */
+const handleCouponSelect = (
+  selectedCoupons: MallCouponTemplateApi.CouponTemplate[],
+) => {
+  couponList.value = selectedCoupons;
+  formData.value.couponIds = selectedCoupons.map((coupon) => coupon.id);
+};
+
+/** 监听优惠券 ID 变化，加载优惠券列表 */
 watch(
   () => formData.value.couponIds,
   async () => {
     if (formData.value.couponIds?.length > 0) {
-      couponList.value = await CouponTemplateApi.getCouponTemplateList(
-        formData.value.couponIds,
-      );
+      couponList.value = await getCouponTemplateList(formData.value.couponIds);
     }
   },
   {
@@ -151,13 +161,10 @@ watch(
       </ElCard>
     </ElForm>
   </ComponentContainerProperty>
+
   <!-- 优惠券选择 -->
-  <CouponSelect
-    ref="couponSelectDialog"
-    v-model:multiple-selection="couponList"
+  <CouponSelectModal
     :take-type="CouponTemplateTakeTypeEnum.USER.type"
-    @change="handleCouponSelect"
+    @success="handleCouponSelect"
   />
 </template>
-
-<style scoped lang="scss"></style>

@@ -12,7 +12,9 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 const userStore = useUserStore();
-const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.PickUpStore[]>([]);
+const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.DeliveryPickUpStore[]>(
+  [],
+);
 getSimpleDeliveryPickUpStoreList().then((res) => {
   pickUpStoreList.value = res;
   // 移除自己无法核销的门店

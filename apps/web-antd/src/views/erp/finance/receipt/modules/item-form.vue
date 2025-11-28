@@ -59,7 +59,7 @@ const summaries = computed(() => {
 /** 表格配置 */
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useFormItemColumns(),
+    columns: useFormItemColumns(props.disabled),
     data: tableData.value,
     minHeight: 250,
     autoResize: true,
@@ -128,6 +128,7 @@ function handleOpenSaleOut() {
 
 function handleAddSaleOut(rows: ErpSaleOutApi.SaleOut[]) {
   rows.forEach((row) => {
+    // TODO 芋艿
     const newItem: ErpFinanceReceiptApi.FinanceReceiptItem = {
       bizId: row.id,
       bizType: ErpBizType.SALE_OUT,
@@ -153,6 +154,7 @@ function handleOpenSaleReturn() {
 }
 
 function handleAddSaleReturn(rows: ErpSaleReturnApi.SaleReturn[]) {
+  // TODO 芋艿
   rows.forEach((row) => {
     const newItem: ErpFinanceReceiptApi.FinanceReceiptItem = {
       bizId: row.id,
@@ -234,7 +236,6 @@ defineExpose({ validate });
       </template>
       <template #actions="{ row }">
         <TableAction
-          v-if="!disabled"
           :actions="[
             {
               label: '删除',
@@ -250,9 +251,9 @@ defineExpose({ validate });
       </template>
 
       <template #bottom>
-        <div class="border-border bg-muted mt-2 rounded border p-2">
-          <div class="text-muted-foreground flex justify-between text-sm">
-            <span class="text-foreground font-medium">合计：</span>
+        <div class="mt-2 rounded border border-border bg-muted p-2">
+          <div class="flex justify-between text-sm text-muted-foreground">
+            <span class="font-medium text-foreground">合计：</span>
             <div class="flex space-x-4">
               <span>
                 合计收款：{{ erpPriceInputFormatter(summaries.totalPrice) }}

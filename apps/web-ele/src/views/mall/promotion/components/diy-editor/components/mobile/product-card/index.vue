@@ -9,18 +9,19 @@ import { fenToYuan } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
-import * as ProductSpuApi from '#/api/mall/product/spu';
+import { getSpuDetailList } from '#/api/mall/product/spu';
 
 /** 商品卡片 */
 defineOptions({ name: 'ProductCard' });
-// 定义属性
+
 const props = defineProps<{ property: ProductCardProperty }>();
-// 商品列表
-const spuList = ref<MallSpuApi.Spu[]>([]);
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 商品列表
+
 watch(
   () => props.property.spuIds,
   async () => {
-    spuList.value = await ProductSpuApi.getSpuDetailList(props.property.spuIds);
+    spuList.value = await getSpuDetailList(props.property.spuIds);
   },
   {
     immediate: true,
@@ -28,32 +29,25 @@ watch(
   },
 );
 
-/**
- * 计算商品的间距
- * @param index 商品索引
- */
-const calculateSpace = (index: number) => {
-  // 商品的列数
-  const columns = props.property.layoutType === 'twoCol' ? 2 : 1;
-  // 第一列没有左边距
-  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`;
-  // 第一行没有上边距
-  const marginTop = index < columns ? '0' : `${props.property.space}px`;
-
+/** 计算商品的间距 */
+function calculateSpace(index: number) {
+  const columns = props.property.layoutType === 'twoCol' ? 2 : 1; // 商品的列数
+  const marginLeft = index % columns === 0 ? '0' : `${props.property.space}px`; // 第一列没有左边距
+  const marginTop = index < columns ? '0' : `${props.property.space}px`; // 第一行没有上边距
   return { marginLeft, marginTop };
-};
+}
 
-// 容器
-const containerRef = ref();
-// 计算商品的宽度
-const calculateWidth = () => {
+const containerRef = ref(); // 容器
+
+/** 计算商品的宽度 */
+function calculateWidth() {
   let width = '100%';
-  // 双列时每列的宽度为：（总宽度 - 间距）/ 2
   if (props.property.layoutType === 'twoCol') {
+    // 双列时每列的宽度为：（总宽度 - 间距）/ 2
     width = `${(containerRef.value.offsetWidth - props.property.space) / 2}px`;
   }
   return { width };
-};
+}
 </script>
 <template>
   <div
@@ -136,14 +130,14 @@ const calculateWidth = () => {
             class="text-[16px]"
             :style="{ color: property.fields.price.color }"
           >
-            ￥{{ fenToYuan(spu.price as any) }}
+            ￥{{ fenToYuan(spu.price!) }}
           </span>
           <!-- 市场价 -->
           <span
             v-if="property.fields.marketPrice.show && spu.marketPrice"
             class="ml-[4px] text-[10px] line-through"
             :style="{ color: property.fields.marketPrice.color }"
-            >￥{{ fenToYuan(spu.marketPrice) }}
+            >￥{{ fenToYuan(spu.marketPrice!) }}
           </span>
         </div>
         <div class="text-[12px]">
@@ -186,5 +180,3 @@ const calculateWidth = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>

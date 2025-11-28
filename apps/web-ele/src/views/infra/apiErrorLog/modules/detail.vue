@@ -12,8 +12,8 @@ import { useDetailSchema } from '../data';
 const formData = ref<InfraApiErrorLogApi.ApiErrorLog>();
 
 const [Descriptions] = useDescription({
+  border: true,
   column: 1,
-  labelWidth: 110,
   schema: useDetailSchema(),
 });
 
