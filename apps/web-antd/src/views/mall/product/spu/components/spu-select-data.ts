@@ -1,10 +1,13 @@
 import type { Ref } from 'vue';
 
 import type { VbenFormSchema } from '#/adapter/form';
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeGridProps, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { MallCategoryApi } from '#/api/mall/product/category';
 
 import { computed } from 'vue';
+
+import { fenToYuan } from '@vben/utils';
 
 import { getRangePickerDefaultProps } from '#/utils';
 
@@ -117,4 +120,50 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
   ] as VxeTableGridOptions['columns'];
+}
+
+/** SKU 列表的字段 */
+export function useSkuGridColumns(): VxeGridProps['columns'] {
+  return [
+    {
+      type: 'radio',
+      width: 55,
+    },
+    {
+      field: 'id',
+      title: '商品编号',
+      minWidth: 100,
+      align: 'center',
+    },
+    {
+      field: 'picUrl',
+      title: '图片',
+      width: 100,
+      align: 'center',
+      cellRender: {
+        name: 'CellImage',
+      },
+    },
+    {
+      field: 'properties',
+      title: '规格',
+      minWidth: 120,
+      align: 'center',
+      formatter: ({ cellValue }) => {
+        return (
+          cellValue?.map((p: MallSpuApi.Property) => p.valueName)?.join(' ') ||
+          '-'
+        );
+      },
+    },
+    {
+      field: 'price',
+      title: '销售价(元)',
+      width: 120,
+      align: 'center',
+      formatter: ({ cellValue }) => {
+        return fenToYuan(cellValue);
+      },
+    },
+  ];
 }

@@ -101,23 +101,13 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       // 重置表单数据
-      // TODO @puhui999：105 到 108 的代码，不需要的呀？（可以测试下）
-      formData.value = {
-        descriptionScores: 5,
-        benefitScores: 5,
-      } as Partial<MallCommentApi.Comment>;
       selectedSku.value = undefined;
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallCommentApi.Comment>();
     if (!data || !data.id) {
-      // TODO @puhui999：115 到 121 的代码，不需要的呀？（可以测试下）
       // 新建模式：重置表单
-      formData.value = {
-        descriptionScores: 5,
-        benefitScores: 5,
-      } as Partial<MallCommentApi.Comment>;
       selectedSku.value = undefined;
       await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;

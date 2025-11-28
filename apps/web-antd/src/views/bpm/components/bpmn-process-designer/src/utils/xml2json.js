@@ -33,13 +33,13 @@ function xml2json(xml) {
     }
     return obj;
   } catch (error) {
-    console.log(error.message);
+    console.warn(error.message);
   }
 }
 
 function xmlObj2json(xml) {
   const xmlObj = xmlStr2XmlObj(xml);
-  console.log(xmlObj);
+  console.warn(xmlObj);
   let jsonObj = {};
   if (xmlObj.childNodes.length > 0) {
     jsonObj = xml2json(xmlObj);

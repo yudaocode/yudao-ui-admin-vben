@@ -1,4 +1,4 @@
-export default (key, name, type) => {
+function defaultEmpty(key, name, type) {
   if (!type) type = 'camunda';
   const TYPE_TARGET = {
     activiti: 'http://activiti.org/bpmn',
@@ -21,4 +21,6 @@ export default (key, name, type) => {
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>`;
-};
+}
+
+export default defaultEmpty;
