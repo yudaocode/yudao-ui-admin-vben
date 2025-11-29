@@ -220,17 +220,22 @@ watch(
     }
   },
 );
-
+const loading = ref(false);
 /** 初始化 */
 onMounted(async () => {
-  await getDetail();
-  // 获得用户列表
-  userOptions.value = await getSimpleUserList();
+  loading.value = true;
+  try {
+    await getDetail();
+    // 获得用户列表
+    userOptions.value = await getSimpleUserList();
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <template>
-  <Page auto-content-height>
+  <Page auto-content-height v-loading="loading">
     <ElCard
       class="flex h-full flex-col"
       :body-style="{
