@@ -41,6 +41,14 @@ const modelConfig = computed(() => {
 });
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
+// 生成规范化的ID
+const generateStandardId = (type: string): string => {
+  const prefix = type === 'message' ? 'Message_' : 'Signal_';
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${prefix}${timestamp}_${random}`;
+};
+
 const initDataList = () => {
   // console.log(window, 'window');
   rootElements.value = bpmnInstances().modeler.getDefinitions().rootElements;
@@ -63,7 +71,10 @@ const initDataList = () => {
 const openModel = (type: any) => {
   modelType.value = type;
   editingIndex.value = -1;
-  modelObjectForm.value = {};
+  modelObjectForm.value = {
+    id: generateStandardId(type),
+    name: '',
+  };
   dialogVisible.value = true;
 };
 
