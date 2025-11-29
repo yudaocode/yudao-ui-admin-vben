@@ -15,6 +15,7 @@ const props = defineProps<{
   takeType?: number; // 领取方式
 }>();
 
+// TODO @puhui999：这个也要调整，和 antd 保持统一。
 const emit = defineEmits(['success']);
 
 const [Grid, gridApi] = useVbenVxeGrid({

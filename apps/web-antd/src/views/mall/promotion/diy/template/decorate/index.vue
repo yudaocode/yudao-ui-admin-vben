@@ -20,6 +20,7 @@ import {
 } from '#/api/mall/promotion/diy/template';
 import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
+// TODO @xingyu：【装修】左上角的“基础设施”、“首页”、“我的”切换时，中间的编辑器内容没有正确切换。可对比 ele 版本的效果！
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
 

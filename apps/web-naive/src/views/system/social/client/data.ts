@@ -80,6 +80,18 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'publicKey',
+      label: 'publicKey',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入 publicKey 公钥',
+      },
+      dependencies: {
+        triggerFields: ['socialType'],
+        show: (values) => values.socialType === 40,
+      },
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'RadioGroup',

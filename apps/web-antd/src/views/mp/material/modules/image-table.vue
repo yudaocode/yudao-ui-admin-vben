@@ -31,6 +31,9 @@ const [Grid, gridApi] = useVbenVxeGrid<MpMaterialApi.Material>({
       isHover: true,
       height: 220,
     },
+    toolbarConfig: {
+      refresh: true,
+    },
     showOverflow: 'tooltip',
   },
 });
@@ -70,6 +73,9 @@ onMounted(async () => {
 
 <template>
   <Grid class="image-table-grid mt-4 pb-0">
+    <template #toolbar-tools>
+      <slot name="toolbar-tools"></slot>
+    </template>
     <template #image="{ row }">
       <div class="flex items-center justify-center" style="height: 192px">
         <img

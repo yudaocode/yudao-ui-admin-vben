@@ -154,6 +154,7 @@ const [Modal, modalApi] = useVbenModal({
       <Form />
 
       <!-- 商品选择区域 -->
+      <!-- TODO @puhui999：这里缺少商品的选择； -->
       <div class="mt-4">
         <div class="mb-2 flex items-center">
           <span class="text-sm font-medium">秒杀活动商品:</span>

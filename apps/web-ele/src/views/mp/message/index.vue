@@ -9,15 +9,16 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  Button,
-  DatePicker,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Pagination,
-  Select,
-} from 'ant-design-vue';
+  ElButton,
+  ElDatePicker,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElOption,
+  ElPagination,
+  ElSelect,
+} from 'element-plus';
 
 import { getMessagePage } from '#/api/mp/message';
 import { WxAccountSelect, WxMsg } from '#/views/mp/components';
@@ -92,9 +93,15 @@ async function handleSend(userId: number) {
 }
 
 /** 分页改变事件 */
-function handlePageChange(page: number, pageSize: number) {
+function handlePageChange(page: number) {
   queryParams.pageNo = page;
+  getList();
+}
+
+/** 每页条数改变事件 */
+function handleSizeChange(pageSize: number) {
   queryParams.pageSize = pageSize;
+  queryParams.pageNo = 1;
   getList();
 }
 
@@ -102,100 +109,103 @@ function handlePageChange(page: number, pageSize: number) {
 function showTotal(total: number) {
   return `共 ${total} 条`;
 }
-// TODO @dylan：是不是应该都用 Grid 哈：1）message-table 大部分合并到 index.vue；2）message-table 的 schema 放到 data.ts 里；
+// TODO @dylan：是不是应该都用 Grid 哈？
 </script>
 
 <template>
   <Page auto-content-height class="flex flex-col">
     <!-- 搜索工作栏 -->
     <div class="mb-4 rounded-lg bg-background p-4">
-      <Form
+      <ElForm
         ref="queryFormRef"
         :model="queryParams"
-        layout="inline"
+        :inline="true"
         class="search-form"
       >
-        <FormItem label="公众号" name="accountId">
+        <ElFormItem label="公众号" prop="accountId">
           <WxAccountSelect @change="onAccountChanged" />
-        </FormItem>
-        <FormItem label="消息类型" name="type">
-          <Select
-            v-model:value="queryParams.type"
+        </ElFormItem>
+        <ElFormItem label="消息类型" prop="type">
+          <ElSelect
+            v-model="queryParams.type"
             placeholder="请选择消息类型"
             class="!w-[240px]"
           >
-            <Select.Option
+            <ElOption
               v-for="dict in getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE)"
               :key="dict.value"
               :value="dict.value"
-            >
-              {{ dict.label }}
-            </Select.Option>
-          </Select>
-        </FormItem>
-        <FormItem label="用户标识" name="openid">
-          <Input
-            v-model:value="queryParams.openid"
+              :label="dict.label"
+            />
+          </ElSelect>
+        </ElFormItem>
+        <ElFormItem label="用户标识" prop="openid">
+          <ElInput
+            v-model="queryParams.openid"
             placeholder="请输入用户标识"
-            allow-clear
+            clearable
             class="!w-[240px]"
           />
-        </FormItem>
-        <FormItem label="创建时间" name="createTime">
-          <DatePicker.RangePicker
-            v-model:value="queryParams.createTime"
-            :show-time="true"
+        </ElFormItem>
+        <ElFormItem label="创建时间" prop="createTime">
+          <ElDatePicker
+            v-model="queryParams.createTime"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             class="!w-[240px]"
           />
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleQuery">
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton type="primary" @click="handleQuery">
             <template #icon>
               <IconifyIcon icon="mdi:magnify" />
             </template>
             搜索
-          </Button>
-          <Button class="ml-2" @click="resetQuery">
+          </ElButton>
+          <ElButton class="ml-2" @click="resetQuery">
             <template #icon>
               <IconifyIcon icon="mdi:refresh" />
             </template>
             重置
-          </Button>
-        </FormItem>
-      </Form>
+          </ElButton>
+        </ElFormItem>
+      </ElForm>
     </div>
 
     <!-- 列表 -->
     <div class="flex-1 rounded-lg bg-background p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
-        <Pagination
-          v-model:current="queryParams.pageNo"
+        <ElPagination
+          v-model:current-page="queryParams.pageNo"
           v-model:page-size="queryParams.pageSize"
           :total="total"
-          show-size-changer
-          show-quick-jumper
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
           :show-total="showTotal"
-          @change="handlePageChange"
+          @current-change="handlePageChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
 
     <!-- 发送消息的弹窗 -->
-    <Modal
-      v-model:open="messageBoxVisible"
+    <ElDialog
+      v-model="messageBoxVisible"
       title="粉丝消息列表"
-      :width="800"
-      :footer="null"
+      width="800"
+      :close-on-click-modal="false"
       destroy-on-close
     >
       <WxMsg :user-id="messageBoxUserId" />
-    </Modal>
+    </ElDialog>
   </Page>
 </template>
 
 <style scoped>
-.search-form :deep(.ant-form-item) {
+.search-form :deep(.el-form-item) {
   margin-bottom: 16px;
 }
 </style>

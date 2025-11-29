@@ -74,9 +74,16 @@ const assignEmptyUserIdsEl = ref<any>();
 const assignEmptyUserIds = ref<any>();
 
 // 操作按钮
+// TODO @puhui999：这块迁移有点问题，按钮不能操作；另外，label 也没展示。
 const buttonsSettingEl = ref<any>();
-const { btnDisplayNameEdit, changeBtnDisplayName, btnDisplayNameBlurEvent } =
-  useButtonsSetting();
+const { btnDisplayNameEdit, changeBtnDisplayName } = useButtonsSetting();
+const btnDisplayNameBlurEvent = (index: number) => {
+  btnDisplayNameEdit.value[index] = false;
+  const buttonItem = buttonsSettingEl.value[index];
+  buttonItem.displayName =
+    buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+  updateElementExtensions();
+};
 
 // 字段权限
 const fieldsPermissionEl = ref<any[]>([]);
@@ -358,19 +365,10 @@ function useButtonsSetting() {
   const changeBtnDisplayName = (index: number) => {
     btnDisplayNameEdit.value[index] = true;
   };
-  const btnDisplayNameBlurEvent = (index: number) => {
-    btnDisplayNameEdit.value[index] = false;
-    const buttonItem = buttonsSetting.value?.[index];
-    if (buttonItem) {
-      buttonItem.displayName =
-        buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
-    }
-  };
   return {
     buttonsSetting,
     btnDisplayNameEdit,
     changeBtnDisplayName,
-    btnDisplayNameBlurEvent,
   };
 }
 
@@ -532,7 +530,7 @@ onMounted(async () => {
           </Button>
         </div>
         <div class="button-setting-item-label">
-          <Switch v-model:checked="item.enable" />
+          <Switch v-model:checked="item.enable" @change="updateElementExtensions" />
         </div>
       </div>
     </div>

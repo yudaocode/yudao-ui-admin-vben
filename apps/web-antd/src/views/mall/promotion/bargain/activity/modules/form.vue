@@ -86,6 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
+  <!-- TODO @puhui999：这里缺少商品的选择； -->
   <Modal class="w-2/5" :title="getTitle">
     <Form class="mx-4" />
   </Modal>
