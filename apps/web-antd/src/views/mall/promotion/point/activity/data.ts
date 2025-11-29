@@ -126,12 +126,14 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       formItemClass: 'col-span-2',
     },
+    // TODO @puhui999：商品图太大了。
     {
       fieldName: 'spuId',
       label: '活动商品',
       component: 'Input',
       rules: 'required',
       formItemClass: 'col-span-2',
+      // TODO @puhui999：貌似 renderComponentContent 不需要哇？
       renderComponentContent: () => ({
         default: () => null,
       }),

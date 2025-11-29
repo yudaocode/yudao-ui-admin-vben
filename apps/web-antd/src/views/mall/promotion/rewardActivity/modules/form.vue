@@ -32,6 +32,7 @@ const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
   rules: [],
 });
 
+// TODO @puhui999：点击“编辑”后，会出现 Cannot read properties of null (reading 'type') 报错；
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['满减送'])
