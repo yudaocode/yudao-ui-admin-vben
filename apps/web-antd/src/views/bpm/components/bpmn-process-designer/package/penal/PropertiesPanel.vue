@@ -390,8 +390,9 @@ watch(() => props.businessObject, syncFromBusinessObject, { deep: true });
         <template #extra>
           <IconifyIcon icon="ep:timer" />
         </template>
+        <!-- 相关 issue：https://gitee.com/yudaocode/yudao-ui-admin-vue3/issues/ICNRW2 -->
         <TimeEventConfig
-          :business-object="bpmnElement.value?.businessObject"
+          :business-object="elementBusinessObject"
           :key="elementId"
         />
       </CollapsePanel>
