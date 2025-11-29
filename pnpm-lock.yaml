@@ -220,8 +220,8 @@ catalogs:
       specifier: ^0.7.1
       version: 0.7.1
     codemirror:
-      specifier: ^5.65.15
-      version: 5.65.20
+      specifier: ^6.0.2
+      version: 6.65.7
     commitlint-plugin-function-rules:
       specifier: ^4.1.1
       version: 4.1.1
@@ -1965,7 +1965,7 @@ importers:
         version: 3.0.3(magicast@0.5.1)(vue@3.5.25(typescript@5.9.3))
       codemirror:
         specifier: 'catalog:'
-        version: 5.65.20
+        version: 6.65.7
       echarts:
         specifier: 'catalog:'
         version: 6.0.0
@@ -6057,9 +6057,6 @@ packages:
   cluster-key-slot@1.1.2:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
-
-  codemirror@5.65.20:
-    resolution: {integrity: sha512-i5dLDDxwkFCbhjvL2pNjShsojoL3XHyDwsGv1jqETUoW+lzpBKKqNTUWgQwVAOa0tUm4BwekT455ujafi8payA==}
 
   codemirror@6.65.7:
     resolution: {integrity: sha512-HcfnUFJwI2FvH73YWVbbMh7ObWxZiHIycEhv9ZEXy6e8ZKDjtZKbbYFUtsLN46HFXPvU5V2Uvc2d55Z//oFW5A==}
@@ -16307,8 +16304,6 @@ snapshots:
   clsx@2.1.1: {}
 
   cluster-key-slot@1.1.2: {}
-
-  codemirror@5.65.20: {}
 
   codemirror@6.65.7: {}
 

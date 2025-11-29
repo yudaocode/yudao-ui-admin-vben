@@ -93,7 +93,7 @@ catalog:
   circular-dependency-scanner: ^2.3.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
-  codemirror: ^5.65.15
+  codemirror: ^6.0.2
   commitlint-plugin-function-rules: ^4.1.1
   consola: ^3.4.2
   cropperjs: ^1.6.2
