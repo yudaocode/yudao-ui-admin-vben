@@ -77,7 +77,8 @@ function handleRowCheckboxChange({
 }: {
   records: InfraDataSourceConfigApi.DataSourceConfig[];
 }) {
-  checkedIds.value = records.map((item) => item.id!);
+  // 过滤掉id为 0 的主数据源
+  checkedIds.value = records.map((item) => item.id!).filter((id) => id !== 0);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -138,6 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               variant: 'text',
               icon: ACTION_ICON.EDIT,
               auth: ['infra:data-source-config:update'],
+              disabled: row.id === 0,
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -146,6 +148,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'danger',
               icon: ACTION_ICON.DELETE,
               auth: ['infra:data-source-config:delete'],
+              disabled: row.id === 0,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
