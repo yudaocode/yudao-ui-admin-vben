@@ -133,7 +133,7 @@ function handleSliderChange(prop: string) {
     </TabPane>
 
     <!-- 每个组件的通用内容 -->
-    <!-- TODO @xingyu：这里的样式，貌似没 ele 版本的好看。 -->
+    <!-- TODO @xingyu：【装修】这里的样式，貌似没 ele 版本的好看。 -->
     <TabPane tab="样式" key="style" force-render>
       <p class="text-lg font-bold">组件样式：</p>
       <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">

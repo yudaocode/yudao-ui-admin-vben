@@ -109,8 +109,9 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <!-- TODO @xingyu：按钮少的时候，会存在遮住的情况； -->
-        <!-- TODO @xingyu：貌似中间的选中框框，没全部框柱。上面多了点，下面少了点。 -->
+        <!-- TODO @xingyu：【装修】按钮少的时候，会存在遮住的情况； -->
+        <!-- TODO @xingyu：【装修】貌似中间的选中框框，没全部框柱。上面多了点，下面少了点。 -->
+        <!-- TODO @xingyu：【装修】从左侧的组件，拖拽到中间时，没有这个组件的小卡片预览。ele 版本是有的 -->
         <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"

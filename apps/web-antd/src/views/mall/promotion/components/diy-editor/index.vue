@@ -38,7 +38,7 @@ const props = defineProps({
 
 const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
-// TODO @xingyu：要不要加这个？
+// TODO @xingyu：要不要加这个？ele 里是有这个的。
 // const qrcode = useQRCode(props.previewUrl, {
 //   errorCorrectionLevel: 'H',
 //   margin: 4,
@@ -175,7 +175,7 @@ function handleComponentSelected(
   index: number = -1,
 ) {
   // 使用深拷贝避免响应式追踪循环警告
-  // TODO @xingyu：这个是必须的么？ele 没有哈。
+  // TODO @xingyu：【装修】这个是必须的么？ele 没有哈。
   selectedComponent.value = cloneDeep(component);
   selectedComponentIndex.value = index;
 }
@@ -508,5 +508,5 @@ onMounted(() => {
       </div>
     </PreviewModal>
   </Page>
-  <!-- TODO @xingyu：这里改造完后，类似 web-ele/src/views/mall/promotion/components/diy-editor/index.vue 里的全局样式（递推到子组件）里的就没没了，类似 property-group -->
+  <!-- TODO @xingyu：【装修】这里改造完后，类似 web-ele/src/views/mall/promotion/components/diy-editor/index.vue 里的全局样式（递推到子组件）里的就没没了，类似 property-group -->
 </template>
