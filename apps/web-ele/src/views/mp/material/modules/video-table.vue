@@ -7,10 +7,9 @@ import { watch } from 'vue';
 import { openWindow } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { WxVoicePlayer } from '#/views/mp/components';
+import { WxVideoPlayer } from '#/views/mp/components';
 
-import { useVoiceGridColumns } from './data';
-// TODO @dylan：组件内，尽量用 modules 哈。只有对外共享，才用 components
+import { useVideoGridColumns } from './data';
 
 const props = defineProps<{
   list: MpMaterialApi.Material[];
@@ -21,7 +20,7 @@ const emit = defineEmits<{
   delete: [v: number];
 }>();
 
-const columns = useVoiceGridColumns();
+const columns = useVideoGridColumns();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -34,6 +33,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
     },
     showOverflow: 'tooltip',
   } as VxeTableGridOptions<MpMaterialApi.Material>,
@@ -63,8 +65,11 @@ watch(
 
 <template>
   <Grid class="mt-4">
-    <template #voice="{ row }">
-      <WxVoicePlayer v-if="row.url" :url="row.url" />
+    <template #toolbar-tools>
+      <slot name="toolbar-tools" />
+    </template>
+    <template #video="{ row }">
+      <WxVideoPlayer v-if="row.url" :url="row.url" />
     </template>
     <template #actions="{ row }">
       <TableAction
@@ -82,7 +87,7 @@ watch(
             icon: ACTION_ICON.DELETE,
             auth: ['mp:material:delete'],
             popConfirm: {
-              title: '确定要删除该语音吗？',
+              title: '确定要删除该视频吗？',
               confirm: () => emit('delete', row.id!),
             },
           },
@@ -91,3 +96,4 @@ watch(
     </template>
   </Grid>
 </template>
+

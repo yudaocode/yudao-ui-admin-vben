@@ -7,7 +7,7 @@ import { onMounted, watch } from 'vue';
 import { MpMsgType as MsgType } from '@vben/constants';
 import { formatDate2 } from '@vben/utils';
 
-import { Button, Image, Tag } from 'ant-design-vue';
+import { ElButton, ElImage, ElTag } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -136,8 +136,8 @@ onMounted(() => {
     </template>
 
     <template #sendFrom="{ row }">
-      <Tag v-if="row.sendFrom === 1" color="success">粉丝</Tag>
-      <Tag v-else color="default">公众号</Tag>
+      <ElTag v-if="row.sendFrom === 1" type="success">粉丝</ElTag>
+      <ElTag v-else>公众号</ElTag>
     </template>
 
     <template #content="{ row }">
@@ -147,7 +147,7 @@ onMounted(() => {
           (row.event as string) === 'subscribe'
         "
       >
-        <Tag color="success">关注</Tag>
+        <ElTag type="success">关注</ElTag>
       </div>
       <div
         v-else-if="
@@ -155,7 +155,7 @@ onMounted(() => {
           (row.event as string) === 'unsubscribe'
         "
       >
-        <Tag color="error">取消关注</Tag>
+        <ElTag type="danger">取消关注</ElTag>
       </div>
       <div
         v-else-if="
@@ -163,11 +163,11 @@ onMounted(() => {
           (row.event as string) === 'CLICK'
         "
       >
-        <Tag>点击菜单</Tag>
+        <ElTag>点击菜单</ElTag>
         【{{ row.eventKey }}】
       </div>
       <div v-else-if="row.type === MsgType.Event && row.event === 'VIEW'">
-        <Tag>点击菜单链接</Tag>
+        <ElTag>点击菜单链接</ElTag>
         【{{ row.eventKey }}】
       </div>
       <div
@@ -175,39 +175,39 @@ onMounted(() => {
           row.type === MsgType.Event && row.event === 'scancode_waitmsg'
         "
       >
-        <Tag>扫码结果</Tag>
+        <ElTag>扫码结果</ElTag>
         【{{ row.eventKey }}】
       </div>
       <div
         v-else-if="row.type === MsgType.Event && row.event === 'scancode_push'"
       >
-        <Tag>扫码结果</Tag>
+        <ElTag>扫码结果</ElTag>
         【{{ row.eventKey }}】
       </div>
       <div
         v-else-if="row.type === MsgType.Event && row.event === 'pic_sysphoto'"
       >
-        <Tag>系统拍照发图</Tag>
+        <ElTag>系统拍照发图</ElTag>
       </div>
       <div
         v-else-if="
           row.type === MsgType.Event && row.event === 'pic_photo_or_album'
         "
       >
-        <Tag>拍照或者相册</Tag>
+        <ElTag>拍照或者相册</ElTag>
       </div>
       <div v-else-if="row.type === MsgType.Event && row.event === 'pic_weixin'">
-        <Tag>微信相册</Tag>
+        <ElTag>微信相册</ElTag>
       </div>
       <div
         v-else-if="
           row.type === MsgType.Event && row.event === 'location_select'
         "
       >
-        <Tag>选择地理位置</Tag>
+        <ElTag>选择地理位置</ElTag>
       </div>
       <div v-else-if="row.type === MsgType.Event">
-        <Tag color="error">未知事件类型</Tag>
+        <ElTag type="danger">未知事件类型</ElTag>
       </div>
 
       <div v-else-if="row.type === MsgType.Text">{{ row.content }}</div>
@@ -219,14 +219,14 @@ onMounted(() => {
       </div>
       <div v-else-if="row.type === MsgType.Image">
         <a :href="row.mediaUrl" target="_blank">
-          <Image :src="row.mediaUrl" :width="100" :preview="false" />
+          <ElImage :src="row.mediaUrl" :width="100" :preview-src-list="[]" />
         </a>
       </div>
       <div v-else-if="row.type === MsgType.Video || row.type === 'shortvideo'">
         <WxVideoPlayer :url="row.mediaUrl || ''" class="mt-2" />
       </div>
       <div v-else-if="row.type === MsgType.Link">
-        <Tag>链接</Tag>
+        <ElTag>链接</ElTag>
         ：
         <a :href="row.url" target="_blank">{{ row.title }}</a>
       </div>
@@ -250,12 +250,14 @@ onMounted(() => {
         <WxNews :articles="row.articles" />
       </div>
       <div v-else>
-        <Tag color="error">未知消息类型</Tag>
+        <ElTag type="danger">未知消息类型</ElTag>
       </div>
     </template>
 
     <template #actions="{ row }">
-      <Button type="link" @click="emit('send', row.userId || 0)"> 消息 </Button>
+      <ElButton type="primary" link @click="emit('send', row.userId || 0)">
+        消息
+      </ElButton>
     </template>
   </Grid>
 </template>

@@ -5,7 +5,17 @@ import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, Form, message, Pagination, Tabs } from 'ant-design-vue';
+import {
+  ElButton,
+  ElCard,
+  ElForm,
+  ElFormItem,
+  ElLoading,
+  ElMessage,
+  ElPagination,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
 import { WxAccountSelect } from '#/views/mp/components';
@@ -78,17 +88,30 @@ function onTabChange() {
 /** 处理删除操作 */
 async function handleDelete(id: number) {
   await confirm('此操作将永久删除该文件, 是否继续?');
-  const hideLoading = message.loading({
-    content: '正在删除...',
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: '正在删除...',
+    lock: true,
   });
   try {
     await deletePermanentMaterial(id);
-    message.success('删除成功');
+    ElMessage.success('删除成功');
     await getList();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
+}
+
+/** 分页改变事件 */
+function handlePageChange(page: number) {
+  queryParams.pageNo = page;
+  getList();
+}
+
+/** 每页条数改变事件 */
+function handleSizeChange(pageSize: number) {
+  queryParams.pageSize = pageSize;
+  queryParams.pageNo = 1;
+  getList();
 }
 </script>
 
@@ -99,19 +122,19 @@ async function handleDelete(id: number) {
     </template>
     <div class="h-full">
       <!-- 搜索工作栏 -->
-      <Card class="h-[10%]" :bordered="false">
-        <Form :model="queryParams" layout="inline">
-          <Form.Item label="公众号">
+      <ElCard class="h-[10%]" shadow="never">
+        <ElForm :model="queryParams" :inline="true">
+          <ElFormItem label="公众号" class="w-52">
             <WxAccountSelect @change="onAccountChanged" />
-          </Form.Item>
-        </Form>
-      </Card>
+          </ElFormItem>
+        </ElForm>
+      </ElCard>
 
-      <Card :bordered="false" class="mt-4 h-auto">
-        <Tabs v-model:active-key="type" @change="onTabChange">
+      <ElCard shadow="never" class="mt-4 h-auto">
+        <ElTabs v-model="type" @tab-change="onTabChange">
           <!-- tab 1：图片  -->
-          <Tabs.TabPane :key="UploadType.Image">
-            <template #tab>
+          <ElTabPane :name="UploadType.Image">
+            <template #label>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:image" class="mr-1" />
                 图片
@@ -129,20 +152,21 @@ async function handleDelete(id: number) {
             </ImageTable>
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
-              <Pagination
-                v-model:current="queryParams.pageNo"
+              <ElPagination
+                v-model:current-page="queryParams.pageNo"
                 v-model:page-size="queryParams.pageSize"
                 :total="total"
-                show-size-changer
-                @change="getList"
-                @show-size-change="getList"
+                :page-sizes="[10, 20, 50, 100]"
+                layout="total, sizes, prev, pager, next, jumper"
+                @current-change="handlePageChange"
+                @size-change="handleSizeChange"
               />
             </div>
-          </Tabs.TabPane>
+          </ElTabPane>
 
           <!-- tab 2：语音  -->
-          <Tabs.TabPane :key="UploadType.Voice">
-            <template #tab>
+          <ElTabPane :name="UploadType.Voice">
+            <template #label>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:mic" class="mr-1" />
                 语音
@@ -160,20 +184,21 @@ async function handleDelete(id: number) {
             </VoiceTable>
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
-              <Pagination
-                v-model:current="queryParams.pageNo"
+              <ElPagination
+                v-model:current-page="queryParams.pageNo"
                 v-model:page-size="queryParams.pageSize"
                 :total="total"
-                show-size-changer
-                @change="getList"
-                @show-size-change="getList"
+                :page-sizes="[10, 20, 50, 100]"
+                layout="total, sizes, prev, pager, next, jumper"
+                @current-change="handlePageChange"
+                @size-change="handleSizeChange"
               />
             </div>
-          </Tabs.TabPane>
+          </ElTabPane>
 
           <!-- tab 3：视频 -->
-          <Tabs.TabPane :key="UploadType.Video">
-            <template #tab>
+          <ElTabPane :name="UploadType.Video">
+            <template #label>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:video" class="mr-1" />
                 视频
@@ -182,31 +207,32 @@ async function handleDelete(id: number) {
             <!-- 列表 -->
             <VideoTable :list="list" :loading="loading" @delete="handleDelete">
               <template #toolbar-tools>
-                <Button
+                <ElButton
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
                   type="primary"
                   @click="showCreateVideo = true"
                 >
                   新建视频
-                </Button>
+                </ElButton>
               </template>
             </VideoTable>
             <!-- 新建视频的弹窗 -->
-            <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
+            <UploadVideo v-model="showCreateVideo" @uploaded="getList" />
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
-              <Pagination
-                v-model:current="queryParams.pageNo"
+              <ElPagination
+                v-model:current-page="queryParams.pageNo"
                 v-model:page-size="queryParams.pageSize"
                 :total="total"
-                show-size-changer
-                @change="getList"
-                @show-size-change="getList"
+                :page-sizes="[10, 20, 50, 100]"
+                layout="total, sizes, prev, pager, next, jumper"
+                @current-change="handlePageChange"
+                @size-change="handleSizeChange"
               />
             </div>
-          </Tabs.TabPane>
-        </Tabs>
-      </Card>
+          </ElTabPane>
+        </ElTabs>
+      </ElCard>
     </div>
   </Page>
 </template>
