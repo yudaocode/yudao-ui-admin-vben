@@ -20,6 +20,7 @@ import {
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
+// TODO @dylan：是不是要和 antd 的 props 定义相同哈？这样后续两侧维护方便点
 withDefaults(
   defineProps<{
     modelValue?: boolean;
@@ -163,4 +164,3 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
     </ElForm>
   </ElDialog>
 </template>
-

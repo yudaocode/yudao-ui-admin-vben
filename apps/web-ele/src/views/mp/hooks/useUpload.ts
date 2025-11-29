@@ -74,4 +74,3 @@ export const useBeforeUpload = (type: UploadType, maxSizeMB?: number) => {
 
   return fn;
 };
-

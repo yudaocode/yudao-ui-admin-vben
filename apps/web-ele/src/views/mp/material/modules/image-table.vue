@@ -3,6 +3,8 @@ import type { MpMaterialApi } from '#/api/mp/material';
 
 import { nextTick, onMounted, watch } from 'vue';
 
+import { $t } from '@vben/locales';
+
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { useImageGridColumns } from './data';
@@ -74,7 +76,7 @@ onMounted(async () => {
 <template>
   <Grid class="image-table-grid mt-4 pb-0">
     <template #toolbar-tools>
-      <slot name="toolbar-tools" />
+      <slot name="toolbar-tools"></slot>
     </template>
     <template #image="{ row }">
       <div class="flex items-center justify-center" style="height: 192px">
@@ -89,9 +91,9 @@ onMounted(async () => {
       <TableAction
         :actions="[
           {
-            label: '删除',
-            type: 'link',
-            danger: true,
+            label: $t('common.delete'),
+            type: 'primary',
+            link: true,
             icon: ACTION_ICON.DELETE,
             auth: ['mp:material:delete'],
             popConfirm: {
@@ -104,4 +106,3 @@ onMounted(async () => {
     </template>
   </Grid>
 </template>
-

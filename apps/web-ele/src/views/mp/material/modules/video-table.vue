@@ -66,7 +66,7 @@ watch(
 <template>
   <Grid class="mt-4">
     <template #toolbar-tools>
-      <slot name="toolbar-tools" />
+      <slot name="toolbar-tools"></slot>
     </template>
     <template #video="{ row }">
       <WxVideoPlayer v-if="row.url" :url="row.url" />
@@ -76,14 +76,15 @@ watch(
         :actions="[
           {
             label: '下载',
-            type: 'link',
+            type: 'primary',
+            link: true,
             icon: ACTION_ICON.DOWNLOAD,
             onClick: () => openWindow(row.url),
           },
           {
-            label: '删除',
-            type: 'link',
-            danger: true,
+            label: $t('common.delete'),
+            type: 'danger',
+            link: true,
             icon: ACTION_ICON.DELETE,
             auth: ['mp:material:delete'],
             popConfirm: {
@@ -96,4 +97,3 @@ watch(
     </template>
   </Grid>
 </template>
-

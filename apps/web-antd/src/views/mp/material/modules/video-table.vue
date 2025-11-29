@@ -10,6 +10,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { WxVideoPlayer } from '#/views/mp/components';
 
 import { useVideoGridColumns } from './data';
+import {$t} from '@vben/locales';
 
 const props = defineProps<{
   list: MpMaterialApi.Material[];
@@ -81,7 +82,7 @@ watch(
             onClick: () => openWindow(row.url),
           },
           {
-            label: '删除',
+            label: $t('common.delete'),
             type: 'link',
             danger: true,
             icon: ACTION_ICON.DELETE,

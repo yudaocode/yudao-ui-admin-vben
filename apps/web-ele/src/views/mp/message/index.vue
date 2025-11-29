@@ -109,12 +109,13 @@ function handleSizeChange(pageSize: number) {
 function showTotal(total: number) {
   return `共 ${total} 条`;
 }
+// TODO @dylan：是不是应该都用 Grid 哈？
 </script>
 
 <template>
   <Page auto-content-height class="flex flex-col">
     <!-- 搜索工作栏 -->
-    <div class="bg-background mb-4 rounded-lg p-4">
+    <div class="mb-4 rounded-lg bg-background p-4">
       <ElForm
         ref="queryFormRef"
         :model="queryParams"
@@ -174,7 +175,7 @@ function showTotal(total: number) {
     </div>
 
     <!-- 列表 -->
-    <div class="bg-background flex-1 rounded-lg p-4">
+    <div class="flex-1 rounded-lg bg-background p-4">
       <MessageTable :list="list" :loading="loading" @send="handleSend" />
       <div v-show="total > 0" class="mt-4 flex justify-end">
         <ElPagination
@@ -208,4 +209,3 @@ function showTotal(total: number) {
   margin-bottom: 16px;
 }
 </style>
-

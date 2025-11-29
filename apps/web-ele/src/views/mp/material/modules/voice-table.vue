@@ -4,6 +4,7 @@ import type { MpMaterialApi } from '#/api/mp/material';
 
 import { watch } from 'vue';
 
+import { $t } from '@vben/locales';
 import { openWindow } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -76,14 +77,15 @@ watch(
         :actions="[
           {
             label: '下载',
-            type: 'link',
+            type: 'primary',
+            link: true,
             icon: ACTION_ICON.DOWNLOAD,
             onClick: () => openWindow(row.url),
           },
           {
-            label: '删除',
-            type: 'link',
-            danger: true,
+            label: $t('common.delete'),
+            type: 'danger',
+            link: true,
             icon: ACTION_ICON.DELETE,
             auth: ['mp:material:delete'],
             popConfirm: {
@@ -96,4 +98,3 @@ watch(
     </template>
   </Grid>
 </template>
-
