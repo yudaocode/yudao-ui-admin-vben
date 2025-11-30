@@ -259,6 +259,7 @@ async function validateAllSteps() {
   return true;
 }
 
+const saveLoading = ref<boolean>(false);
 /** 保存操作 */
 async function handleSave() {
   try {
@@ -272,7 +273,7 @@ async function handleSave() {
     const modelData = {
       ...formData.value,
     };
-
+    saveLoading.value = true;
     switch (actionType) {
       case 'copy': {
         // 情况三：复制场景
@@ -309,9 +310,12 @@ async function handleSave() {
     }
   } catch (error: any) {
     console.error('保存失败:', error);
+  } finally {
+    saveLoading.value = false;
   }
 }
-
+// 发布加载中状态
+const deployLoading = ref<boolean>(false);
 /** 发布操作 */
 async function handleDeploy() {
   try {
@@ -321,6 +325,8 @@ async function handleDeploy() {
     }
     // 1.2 校验所有步骤
     await validateAllSteps();
+
+    deployLoading.value = true;
 
     // 2.1 更新表单数据
     const modelData = {
@@ -342,6 +348,8 @@ async function handleDeploy() {
   } catch (error: any) {
     console.error('发布失败:', error);
     ElMessage.warning(error.message || '发布失败');
+  } finally {
+    deployLoading.value = false;
   }
 }
 
@@ -448,11 +456,12 @@ onBeforeUnmount(() => {
           <ElButton
             v-if="actionType === 'update'"
             type="primary"
+            :loading="deployLoading"
             @click="handleDeploy"
           >
             发 布
           </ElButton>
-          <ElButton type="primary" @click="handleSave">
+          <ElButton type="primary" @click="handleSave" :loading="saveLoading">
             <span v-if="actionType === 'definition'">恢 复</span>
             <span v-else>保 存</span>
           </ElButton>
