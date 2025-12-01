@@ -8,12 +8,14 @@ import { useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSpu } from '#/api/mall/product/spu';
 import {
   createSeckillActivity,
   getSeckillActivity,
   updateSeckillActivity,
 } from '#/api/mall/promotion/seckill/seckillActivity';
 import { $t } from '#/locales';
+import { SpuSkuSelect } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
@@ -31,24 +33,36 @@ const spuId = ref<number>();
 const spuName = ref<string>('');
 const skuTableData = ref<any[]>([]);
 
-// 选择商品（占位函数，实际需要对接商品选择组件）
+const spuSkuSelectRef = ref(); // 商品选择弹窗 Ref
+
+/** 打开商品选择弹窗 */
 const handleSelectProduct = () => {
-  message.info('商品选择功能需要对接商品选择组件');
-  // TODO: 打开商品选择弹窗
-  // 实际使用时需要：
-  // 1. 打开商品选择弹窗
-  // 2. 选择商品后调用以下逻辑设置数据：
-  //    spuId.value = selectedSpu.id;
-  //    spuName.value = selectedSpu.name;
-  //    skuTableData.value = selectedSkus.map(sku => ({
-  //      skuId: sku.id,
-  //      skuName: sku.name || '',
-  //      picUrl: sku.picUrl || selectedSpu.picUrl || '',
-  //      price: sku.price || 0,
-  //      stock: 0,
-  //      seckillPrice: 0,
-  //    }));
+  spuSkuSelectRef.value?.open();
 };
+
+/** 选择商品后的回调 */
+async function handleSpuSelected(selectedSpuId: number, skuIds?: number[]) {
+  const spu = await getSpu(selectedSpuId);
+  if (!spu) return;
+
+  spuId.value = spu.id;
+  spuName.value = spu.name || '';
+
+  // 筛选指定的 SKU
+  const selectedSkus = skuIds
+    ? spu.skus?.filter((sku) => skuIds.includes(sku.id!))
+    : spu.skus;
+
+  skuTableData.value =
+    selectedSkus?.map((sku) => ({
+      skuId: sku.id!,
+      skuName: sku.name || '',
+      picUrl: sku.picUrl || spu.picUrl || '',
+      price: sku.price || 0,
+      stock: 0,
+      seckillPrice: 0,
+    })) || [];
+}
 
 // ================= end =================
 
@@ -137,10 +151,30 @@ const [Modal, modalApi] = useVbenModal({
       await nextTick();
       await formApi.setValues(formData.value);
 
-      // TODO: 加载商品和 SKU 信息
-      // 需要调用商品 API 获取 SPU 详情
-      // spuId.value = formData.value.spuId;
-      // await loadProductDetails(formData.value.spuId, formData.value.products);
+      // 加载商品和 SKU 信息
+      if (formData.value.spuId) {
+        const spu = await getSpu(formData.value.spuId);
+        if (spu) {
+          spuId.value = spu.id;
+          spuName.value = spu.name || '';
+          // 回填 SKU 配置
+          const products = formData.value.products || [];
+          skuTableData.value =
+            spu.skus
+              ?.filter((sku) => products.some((p) => p.skuId === sku.id))
+              .map((sku) => {
+                const product = products.find((p) => p.skuId === sku.id);
+                return {
+                  skuId: sku.id!,
+                  skuName: sku.name || '',
+                  picUrl: sku.picUrl || spu.picUrl || '',
+                  price: sku.price || 0,
+                  stock: product?.stock || 0,
+                  seckillPrice: (product?.seckillPrice || 0) / 100, // 分转元
+                };
+              }) || [];
+        }
+      }
     } finally {
       modalApi.unlock();
     }
@@ -154,7 +188,6 @@ const [Modal, modalApi] = useVbenModal({
       <Form />
 
       <!-- 商品选择区域 -->
-      <!-- TODO @puhui999：这里缺少商品的选择； -->
       <div class="mt-4">
         <div class="mb-2 flex items-center">
           <span class="text-sm font-medium">秒杀活动商品:</span>
@@ -218,4 +251,11 @@ const [Modal, modalApi] = useVbenModal({
       </div>
     </div>
   </Modal>
+
+  <!-- 商品选择器弹窗 -->
+  <SpuSkuSelect
+    ref="spuSkuSelectRef"
+    :is-select-sku="true"
+    @select="handleSpuSelected"
+  />
 </template>

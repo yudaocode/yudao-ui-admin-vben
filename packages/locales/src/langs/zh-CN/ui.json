@@ -36,7 +36,9 @@
     "downloadTemplateFail": "下载模板失败",
     "updating": "正在更新 {0}...",
     "updateSuccess": "更新 {0} 成功",
-    "updateFailed": "更新 {0} 失败"
+    "updateFailed": "更新 {0} 失败",
+    "closing": "正在关闭 {0} ...",
+    "closeSuccess": "{0} 关闭成功"
   },
   "placeholder": {
     "input": "请输入",

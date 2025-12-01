@@ -21,6 +21,7 @@ export namespace MallCombinationActivityApi {
     limitDuration?: number; // 限制时长
     combinationPrice?: number; // 拼团价格
     products: CombinationProduct[]; // 商品列表
+    picUrl?: any;
   }
 
   /** 拼团活动所需属性 */

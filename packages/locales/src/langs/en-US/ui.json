@@ -36,7 +36,9 @@
     "downloadTemplateFail": "Download template failed",
     "updating": "Updating {0}...",
     "updateSuccess": "Update {0} successfully",
-    "updateFailed": "Update {0} failed"
+    "updateFailed": "Update {0} failed",
+    "closing": "Closing {0} ...",
+    "closeSuccess": "{0} closed successfully"
   },
   "placeholder": {
     "input": "Please enter",

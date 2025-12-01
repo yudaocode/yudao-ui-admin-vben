@@ -42,7 +42,6 @@ function handleEdit(row: MallRewardActivityApi.RewardActivity) {
 
 /** 关闭满减送活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
-  // TODO @puhui999：这个国际化，需要加下哈；closing、closeSuccess；
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.closing', [row.name]),
     duration: 0,

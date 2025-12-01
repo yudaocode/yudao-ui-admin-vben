@@ -133,6 +133,12 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入最大砍价金额',
       },
     },
+    {
+      fieldName: 'spuId',
+      label: '砍价商品',
+      component: 'Input',
+      rules: 'required',
+    },
   ];
 }
 

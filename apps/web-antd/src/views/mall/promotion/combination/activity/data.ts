@@ -106,10 +106,10 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      // TODO <!-- TODO @puhui999：这里缺少商品的选择； -->
       fieldName: 'spuId',
       label: '拼团商品',
       component: 'Input',
+      rules: 'required',
     },
   ];
 }
