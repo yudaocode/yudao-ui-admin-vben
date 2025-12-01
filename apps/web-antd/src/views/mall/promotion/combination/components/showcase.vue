@@ -111,7 +111,6 @@ function emitActivityChange() {
     >
       <Tooltip :title="activity.name">
         <div class="relative h-full w-full">
-          <!-- TODO @芋艿 -->
           <Image
             :src="activity.picUrl"
             class="h-full w-full rounded-lg object-cover"

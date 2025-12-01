@@ -13,13 +13,16 @@ import {
   updateCombinationActivity,
 } from '#/api/mall/promotion/combination/combinationActivity';
 import { $t } from '#/locales';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
 defineOptions({ name: 'CombinationActivityForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<MallCombinationActivityApi.CombinationActivity>();
+const formData = ref<Partial<MallCombinationActivityApi.CombinationActivity>>(
+  {},
+);
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['拼团活动'])
@@ -47,8 +50,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as MallCombinationActivityApi.CombinationActivity;
+    const values = await formApi.getValues();
+    const data = {
+      ...values,
+      spuId: formData.value.spuId,
+    } as MallCombinationActivityApi.CombinationActivity;
     try {
       await (formData.value?.id
         ? updateCombinationActivity(data)
@@ -63,7 +69,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -86,6 +92,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-3/5" :title="getTitle">
-    <Form />
+    <Form>
+      <!-- 自定义插槽：商品选择 -->
+      <template #spuId>
+        <SpuShowcase v-model="formData.spuId" :limit="1" />
+      </template>
+    </Form>
   </Modal>
 </template>

@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <script lang="ts" setup>
 import { inject, nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
@@ -203,7 +204,7 @@ const updateHttpExtensions = (force = false) => {
       ? String(!!rawValue)
       : (rawValue === undefined
         ? ''
-        : String(rawValue));
+        : rawValue.toString());
 
     desiredEntries.push([name, persisted]);
   });

@@ -4,13 +4,13 @@ import type { MpMaterialApi } from '#/api/mp/material';
 
 import { watch } from 'vue';
 
+import { $t } from '@vben/locales';
 import { openWindow } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { WxVideoPlayer } from '#/views/mp/components';
 
 import { useVideoGridColumns } from './data';
-import {$t} from '@vben/locales';
 
 const props = defineProps<{
   list: MpMaterialApi.Material[];
