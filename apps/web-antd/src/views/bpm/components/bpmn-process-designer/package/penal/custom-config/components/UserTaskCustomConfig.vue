@@ -530,7 +530,10 @@ onMounted(async () => {
           </Button>
         </div>
         <div class="button-setting-item-label">
-          <Switch v-model:checked="item.enable" @change="updateElementExtensions" />
+          <Switch
+            v-model:checked="item.enable"
+            @change="updateElementExtensions"
+          />
         </div>
       </div>
     </div>

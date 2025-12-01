@@ -45,7 +45,7 @@ const bpmnInstances = () => (window as any)?.bpmnInstances;
 const generateStandardId = (type: string): string => {
   const prefix = type === 'message' ? 'Message_' : 'Signal_';
   const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  const random = Math.random().toString(36).slice(2, 6).toUpperCase();
   return `${prefix}${timestamp}_${random}`;
 };
 
