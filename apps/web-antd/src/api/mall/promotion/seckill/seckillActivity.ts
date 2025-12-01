@@ -31,6 +31,7 @@ export namespace MallSeckillActivityApi {
     totalStock?: number; // 秒杀总库存
     seckillPrice?: number; // 秒杀价格
     products?: SeckillProduct[]; // 秒杀商品列表
+    picUrl?: any;
   }
 }
 
