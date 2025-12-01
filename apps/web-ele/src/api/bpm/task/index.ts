@@ -7,7 +7,7 @@ import { requestClient } from '#/api/request';
 export namespace BpmTaskApi {
   /** 流程任务 */
   export interface Task {
-    id: number; // 编号
+    id: string; // 编号
     name: string; // 任务名字
     status: number; // 任务状态
     createTime: number; // 创建时间

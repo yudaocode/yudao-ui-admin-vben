@@ -78,7 +78,6 @@ const [Modal, modalApi] = useVbenModal({
       switch (data.productScope) {
         case PromotionProductScopeEnum.CATEGORY.scope: {
           const categoryIds = data.productCategoryIds;
-
           data.productScopeValues = Array.isArray(categoryIds)
             ? categoryIds
             : categoryIds
