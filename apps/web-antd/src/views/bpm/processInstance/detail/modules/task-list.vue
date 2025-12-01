@@ -44,7 +44,7 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'approver',
       title: '审批人',
       slots: {
-        default: ({ row }: { row: BpmTaskApi.TaskManager }) => {
+        default: ({ row }: { row: BpmTaskApi.Task }) => {
           return row.assigneeUser?.nickname || row.ownerUser?.nickname;
         },
       },
@@ -106,7 +106,7 @@ function handleRefresh() {
 }
 
 /** 显示表单详情 */
-async function handleShowFormDetail(row: BpmTaskApi.TaskManager) {
+async function handleShowFormDetail(row: BpmTaskApi.Task) {
   // 设置表单配置和表单字段
   taskForm.value = {
     rule: [],
@@ -141,7 +141,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     showFooter: true,
     border: true,
-    height: 'auto',
     proxyConfig: {
       ajax: {
         query: async () => {
@@ -159,7 +158,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskManager>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 
 defineExpose({
@@ -168,7 +167,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div>
     <Grid>
       <template #slot-reason="{ row }">
         <div class="flex flex-wrap items-center justify-center">
@@ -188,13 +187,13 @@ defineExpose({
         </div>
       </template>
     </Grid>
-    <Modal class="w-[800px]">
-      <form-create
-        ref="formRef"
-        v-model="taskForm.value"
-        :option="taskForm.option"
-        :rule="taskForm.rule"
-      />
-    </Modal>
   </div>
+  <Modal class="w-3/5">
+    <form-create
+      ref="formRef"
+      v-model="taskForm.value"
+      :option="taskForm.option"
+      :rule="taskForm.rule"
+    />
+  </Modal>
 </template>
