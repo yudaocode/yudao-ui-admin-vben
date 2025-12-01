@@ -1,26 +1,19 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpMaterialApi } from '#/api/mp/material';
+
+import { reactive, ref, watch } from 'vue';
 
 import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { formatTime } from '@vben/utils';
 
-import {
-  ElButton,
-  ElPagination,
-  ElRow,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElPagination, ElRow } from 'element-plus';
 
-import * as MpDraftApi from '#/api/mp/draft';
-import * as MpFreePublishApi from '#/api/mp/freePublish';
-import * as MpMaterialApi from '#/api/mp/material';
-import News from '#/views/mp/components/wx-news/wx-news.vue';
-import VideoPlayer from '#/views/mp/components/wx-video-play/wx-video-play.vue';
-import VoicePlayer from '#/views/mp/components/wx-voice-play/wx-voice-play.vue';
-
-// TODO @hw：代码风格，看看 antd 和 ele 是不是统一下； 等antd此组件修改完再调整
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getDraftPage } from '#/api/mp/draft';
+import { getFreePublishPage } from '#/api/mp/freePublish';
+import { getMaterialPage } from '#/api/mp/material';
+import { WxNews, WxVideoPlayer, WxVoicePlayer } from '#/views/mp/components';
 
 /** 微信素材选择 */
 defineOptions({ name: 'WxMaterialSelect' });
@@ -49,33 +42,163 @@ const queryParams = reactive({
   pageSize: 10,
 }); // 查询参数
 
-/** 选择素材 */
+const voiceGridColumns: VxeTableGridOptions<MpMaterialApi.Material>['columns'] =
+  [
+    {
+      field: 'mediaId',
+      title: '编号',
+      align: 'center',
+      minWidth: 160,
+    },
+    {
+      field: 'name',
+      title: '文件名',
+      minWidth: 200,
+    },
+    {
+      field: 'voice',
+      title: '语音',
+      minWidth: 200,
+      align: 'center',
+      slots: { default: 'voice' },
+    },
+    {
+      field: 'createTime',
+      title: '上传时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 140,
+      fixed: 'right',
+      align: 'center',
+      slots: { default: 'actions' },
+    },
+  ];
+
+const videoGridColumns: VxeTableGridOptions<MpMaterialApi.Material>['columns'] =
+  [
+    {
+      field: 'mediaId',
+      title: '编号',
+      minWidth: 160,
+    },
+    {
+      field: 'name',
+      title: '文件名',
+      minWidth: 200,
+    },
+    {
+      field: 'title',
+      title: '标题',
+      minWidth: 200,
+    },
+    {
+      field: 'introduction',
+      title: '介绍',
+      minWidth: 220,
+    },
+    {
+      field: 'video',
+      title: '视频',
+      minWidth: 220,
+      align: 'center',
+      slots: { default: 'video' },
+    },
+    {
+      field: 'createTime',
+      title: '上传时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 140,
+      fixed: 'right',
+      align: 'center',
+      slots: { default: 'actions' },
+    },
+  ];
+
+const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: voiceGridColumns,
+    height: 'auto',
+    keepSource: true,
+    pagerConfig: {
+      enabled: true,
+      pageSize: 10,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, { accountId }) => {
+          const finalAccountId = accountId ?? queryParams.accountId;
+          if (!finalAccountId) {
+            return { list: [], total: 0 };
+          }
+          return await getMaterialPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            accountId: finalAccountId,
+            type: 'voice',
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'mediaId',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<MpMaterialApi.Material>,
+});
+
+const [VideoGrid, videoGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: videoGridColumns,
+    height: 'auto',
+    keepSource: true,
+    pagerConfig: {
+      enabled: true,
+      pageSize: 10,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, { accountId }) => {
+          const finalAccountId = accountId ?? queryParams.accountId;
+          if (finalAccountId === undefined || finalAccountId === null) {
+            return { list: [], total: 0 };
+          }
+          return await getMaterialPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            accountId: finalAccountId,
+            type: 'video',
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'mediaId',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<MpMaterialApi.Material>,
+});
+
 function selectMaterialFun(item: any) {
   emit('selectMaterial', item);
 }
 
-/** 获取分页数据 */
-async function getPage() {
-  loading.value = true;
-  try {
-    if (props.type === 'news' && props.newsType === NewsType.Published) {
-      // 【图文】+ 【已发布】
-      await getFreePublishPageFun();
-    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
-      // 【图文】+ 【草稿】
-      await getDraftPageFun();
-    } else {
-      // 【素材】
-      await getMaterialPageFun();
-    }
-  } finally {
-    loading.value = false;
-  }
-}
-
-/** 获取素材分页 */
 async function getMaterialPageFun() {
-  const data = await MpMaterialApi.getMaterialPage({
+  const data = await getMaterialPage({
     ...queryParams,
     type: props.type,
   });
@@ -83,9 +206,8 @@ async function getMaterialPageFun() {
   total.value = data.total;
 }
 
-/** 获取已发布图文分页 */
 async function getFreePublishPageFun() {
-  const data = await MpFreePublishApi.getFreePublishPage(queryParams);
+  const data = await getFreePublishPage(queryParams);
   data.list.forEach((item: any) => {
     const articles = item.content.newsItem;
     articles.forEach((article: any) => {
@@ -96,9 +218,8 @@ async function getFreePublishPageFun() {
   total.value = data.total;
 }
 
-/** 获取草稿图文分页 */
 async function getDraftPageFun() {
-  const data = await MpDraftApi.getDraftPage(queryParams);
+  const data = await getDraftPage(queryParams);
   data.list.forEach((draft: any) => {
     const articles = draft.content.newsItem;
     articles.forEach((article: any) => {
@@ -109,9 +230,57 @@ async function getDraftPageFun() {
   total.value = data.total;
 }
 
-onMounted(async () => {
-  getPage();
-});
+async function getPage() {
+  if (props.type === 'voice') {
+    await voiceGridApi.reload({ accountId: queryParams.accountId });
+    return;
+  }
+  if (props.type === 'video') {
+    await videoGridApi.reload({ accountId: queryParams.accountId });
+    return;
+  }
+
+  loading.value = true;
+  try {
+    if (props.type === 'news' && props.newsType === NewsType.Published) {
+      await getFreePublishPageFun();
+    } else if (props.type === 'news' && props.newsType === NewsType.Draft) {
+      await getDraftPageFun();
+    } else {
+      await getMaterialPageFun();
+    }
+  } finally {
+    loading.value = false;
+  }
+}
+
+watch(
+  () => props.accountId,
+  (accountId) => {
+    queryParams.accountId = accountId;
+    queryParams.pageNo = 1;
+    getPage();
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.type,
+  () => {
+    queryParams.pageNo = 1;
+    getPage();
+  },
+);
+
+watch(
+  () => props.newsType,
+  () => {
+    if (props.type === 'news') {
+      queryParams.pageNo = 1;
+      getPage();
+    }
+  },
+);
 </script>
 
 <template>
@@ -152,90 +321,31 @@ onMounted(async () => {
     </div>
     <!-- 类型：voice -->
     <div v-else-if="props.type === 'voice'">
-      <!-- 列表 -->
-      <ElTable v-loading="loading" :data="list">
-        <ElTableColumn label="编号" align="center" prop="mediaId" />
-        <ElTableColumn label="文件名" align="center" prop="name" />
-        <ElTableColumn label="语音" align="center">
-          <template #default="scope">
-            <VoicePlayer :url="scope.row.url" />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          label="上传时间"
-          align="center"
-          prop="createTime"
-          width="180"
-          :formatter="
-            (row: any) => formatTime(row.createTime, 'YYYY-MM-DD HH:mm:ss')
-          "
-        />
-        <ElTableColumn label="操作" align="center" fixed="right">
-          <template #default="scope">
-            <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
-              选择
-              <IconifyIcon icon="lucide:plus" />
-            </ElButton>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-      <!-- 分页组件 -->
-      <ElPagination
-        background
-        layout="prev, pager, next, sizes, total"
-        :total="total"
-        v-model:current-page="queryParams.pageNo"
-        v-model:page-size="queryParams.pageSize"
-        @current-change="getPage"
-        @size-change="getPage"
-      />
+      <VoiceGrid>
+        <template #voice="{ row }">
+          <WxVoicePlayer :url="row.url" />
+        </template>
+        <template #actions="{ row }">
+          <ElButton type="primary" link @click="selectMaterialFun(row)">
+            选择
+            <IconifyIcon icon="lucide:plus" />
+          </ElButton>
+        </template>
+      </VoiceGrid>
     </div>
     <!-- 类型：video -->
     <div v-else-if="props.type === 'video'">
-      <!-- 列表 -->
-      <ElTable v-loading="loading" :data="list">
-        <ElTableColumn label="编号" align="center" prop="mediaId" />
-        <ElTableColumn label="文件名" align="center" prop="name" />
-        <ElTableColumn label="标题" align="center" prop="title" />
-        <ElTableColumn label="介绍" align="center" prop="introduction" />
-        <ElTableColumn label="视频" align="center">
-          <template #default="scope">
-            <VideoPlayer :url="scope.row.url" />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          label="上传时间"
-          align="center"
-          prop="createTime"
-          width="180"
-          :formatter="
-            (row: any) => formatTime(row.createTime, 'YYYY-MM-DD HH:mm:ss')
-          "
-        />
-        <ElTableColumn
-          label="操作"
-          align="center"
-          fixed="right"
-          class-name="small-padding fixed-width"
-        >
-          <template #default="scope">
-            <ElButton type="primary" link @click="selectMaterialFun(scope.row)">
-              选择
-              <IconifyIcon icon="lucide:circle-plus" />
-            </ElButton>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-      <!-- 分页组件 -->
-      <ElPagination
-        background
-        layout="prev, pager, next, sizes, total"
-        :total="total"
-        v-model:current-page="queryParams.pageNo"
-        v-model:page-size="queryParams.pageSize"
-        @current-change="getMaterialPageFun"
-        @size-change="getMaterialPageFun"
-      />
+      <VideoGrid>
+        <template #video="{ row }">
+          <WxVideoPlayer :url="row.url" />
+        </template>
+        <template #actions="{ row }">
+          <ElButton type="primary" link @click="selectMaterialFun(row)">
+            选择
+            <IconifyIcon icon="lucide:circle-plus" />
+          </ElButton>
+        </template>
+      </VideoGrid>
     </div>
     <!-- 类型：news -->
     <div v-else-if="props.type === 'news'">
@@ -249,7 +359,7 @@ onMounted(async () => {
           :key="item.mediaId"
         >
           <div v-if="item.content && item.content.newsItem">
-            <News :articles="item.content.newsItem" />
+            <WxNews :articles="item.content.newsItem" />
             <ElRow class="flex justify-center pt-2.5">
               <ElButton type="success" @click="selectMaterialFun(item)">
                 选择
