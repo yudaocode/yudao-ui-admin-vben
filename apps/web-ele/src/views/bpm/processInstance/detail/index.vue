@@ -344,24 +344,22 @@ onMounted(async () => {
               </ElRow>
             </ElTabPane>
             <ElTabPane label="流程图" name="diagram" class="pb-20 pr-3">
-              <div>
-                <ProcessInstanceSimpleViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.SIMPLE
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-                <ProcessInstanceBpmnViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.BPMN
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-              </div>
+              <ProcessInstanceSimpleViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.SIMPLE
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
+              <ProcessInstanceBpmnViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.BPMN
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
             </ElTabPane>
             <ElTabPane label="流转记录" name="record" class="pb-20 pr-3">
               <BpmProcessInstanceTaskList
