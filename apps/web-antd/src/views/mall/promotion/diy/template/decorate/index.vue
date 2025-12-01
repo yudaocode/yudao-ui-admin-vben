@@ -20,7 +20,6 @@ import {
 } from '#/api/mall/promotion/diy/template';
 import { DiyEditor, PAGE_LIBS } from '#/views/mall/promotion/components';
 
-// TODO @xingyu：【装修】左上角的“基础设施”、“首页”、“我的”切换时，中间的编辑器内容没有正确切换。可对比 ele 版本的效果！
 /** 装修模板表单 */
 defineOptions({ name: 'DiyTemplateDecorate' });
 
@@ -74,23 +73,24 @@ async function getPageDetail(id: any) {
 }
 
 /** 模板选项切换 */
+/** 模板选项切换 */
 function handleTemplateItemChange(val: any) {
-  const changeValue = val.target.value;
+  const valIndex = val.target.value;
   // 缓存模版编辑数据
   currentFormDataMap.value.set(
-    templateItems.value[changeValue]!.name,
+    templateItems.value[selectedTemplateItem.value]?.name || '',
     currentFormData.value!,
   );
-  // 切换模版
-  selectedTemplateItem.value = changeValue;
-
   // 读取模版缓存
   const data = currentFormDataMap.value.get(
-    templateItems.value[changeValue]!.name,
+    templateItems.value[valIndex]?.name || '',
   );
 
+  // 切换模版
+  selectedTemplateItem.value = valIndex;
+
   // 情况一：编辑模板
-  if (changeValue === 0) {
+  if (valIndex === 0) {
     libs.value = templateLibs;
     currentFormData.value = (isEmpty(data) ? formData.value : data) as
       | MallDiyPageApi.DiyPage
@@ -104,7 +104,7 @@ function handleTemplateItemChange(val: any) {
     isEmpty(data)
       ? formData.value!.pages.find(
           (page: MallDiyPageApi.DiyPage) =>
-            page.name === templateItems.value[changeValue]!.name,
+            page.name === templateItems.value[valIndex]?.name,
         )
       : data
   ) as MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty;
