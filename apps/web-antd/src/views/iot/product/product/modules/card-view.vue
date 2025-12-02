@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -10,6 +10,7 @@ import {
   Card,
   Col,
   Empty,
+  Image,
   Pagination,
   Popconfirm,
   Row,
@@ -19,10 +20,13 @@ import {
 
 import { getProductPage } from '#/api/iot/product/product';
 
-// TODO @haohao：应该是 card-view.vue；
-
-// TODO @haohao：命名不太对；可以简化下；
-defineOptions({ name: 'ProductCardView' });
+interface Props {
+  categoryList: any[];
+  searchParams?: {
+    name: string;
+    productKey: string;
+  };
+}
 
 const props = defineProps<Props>();
 
@@ -34,14 +38,6 @@ const emit = defineEmits<{
   thingModel: [productId: number];
 }>();
 
-interface Props {
-  categoryList: any[];
-  searchParams?: {
-    name: string;
-    productKey: string;
-  };
-}
-
 const loading = ref(false);
 const list = ref<any[]>([]);
 const total = ref(0);
@@ -50,14 +46,13 @@ const queryParams = ref({
   pageSize: 12,
 });
 
-// TODO @haohao：注释的优化；
-// 获取分类名称
+/** 获取分类名称 */
 function getCategoryName(categoryId: number) {
   const category = props.categoryList.find((c: any) => c.id === categoryId);
   return category?.name || '未分类';
 }
 
-// 获取产品列表
+/** 获取产品列表 */
 async function getList() {
   loading.value = true;
   try {
@@ -72,14 +67,14 @@ async function getList() {
   }
 }
 
-// 处理页码变化
+/** 处理页码变化 */
 function handlePageChange(page: number, pageSize: number) {
   queryParams.value.pageNo = page;
   queryParams.value.pageSize = pageSize;
   getList();
 }
 
-// 获取设备类型颜色
+/** 获取设备类型颜色 */
 function getDeviceTypeColor(deviceType: number) {
   const colors: Record<number, string> = {
     0: 'blue',
@@ -114,17 +109,17 @@ onMounted(() => {
           :sm="12"
           :md="12"
           :lg="6"
-          class="mb-4"
         >
-          <!-- TODO @haohao：卡片之间的上下距离，太宽了。 -->
-          <Card :body-style="{ padding: '20px' }" class="product-card h-full">
+          <Card
+            :body-style="{ padding: '16px' }"
+            class="product-card h-full rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+          >
             <!-- 顶部标题区域 -->
-            <div class="mb-4 flex items-start">
-              <!-- TODO @haohao：图标太大了；看看是不是参考 vue3 + element-plus 搞小点；然后标题居中。 -->
+            <div class="mb-3 flex items-center">
               <div class="product-icon">
                 <IconifyIcon
-                  :icon="item.icon || 'ant-design:inbox-outlined'"
-                  class="text-3xl"
+                  :icon="item.icon || 'lucide:box'"
+                  class="text-xl"
                 />
               </div>
               <div class="ml-3 min-w-0 flex-1">
@@ -132,7 +127,7 @@ onMounted(() => {
               </div>
             </div>
             <!-- 内容区域 -->
-            <div class="mb-4 flex items-start">
+            <div class="mb-3 flex items-start">
               <div class="info-list flex-1">
                 <div class="info-item">
                   <span class="info-label">产品分类</span>
@@ -156,20 +151,25 @@ onMounted(() => {
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
-                  <!-- TODO @haohao：展示 ？有点奇怪，要不小手？ -->
                   <Tooltip :title="item.productKey || item.id" placement="top">
-                    <span class="info-value product-key">
+                    <span class="info-value product-key cursor-pointer">
                       {{ item.productKey || item.id }}
                     </span>
                   </Tooltip>
                 </div>
               </div>
-              <!-- TODO @haohao：这里是不是有 image？然后默认 icon -->
-              <!-- TODO @haohao：高度太高了。建议和左侧（产品分类 + 产品类型 + 产品标识）高度保持一致 -->
-              <div class="product-3d-icon">
+              <!-- 产品图片 -->
+              <div class="product-image">
+                <Image
+                  v-if="item.picUrl"
+                  :src="item.picUrl"
+                  :preview="true"
+                  class="size-full rounded object-cover"
+                />
                 <IconifyIcon
-                  icon="ant-design:box-plot-outlined"
-                  class="text-2xl"
+                  v-else
+                  icon="lucide:image"
+                  class="text-2xl opacity-50"
                 />
               </div>
             </div>
@@ -180,8 +180,7 @@ onMounted(() => {
                 class="action-btn action-btn-edit"
                 @click="emit('edit', item)"
               >
-                <!-- TODO @haohao：按钮尽量用中立的按钮，方便迁移 ele；  -->
-                <IconifyIcon icon="ant-design:edit-outlined" class="mr-1" />
+                <IconifyIcon icon="lucide:edit" class="mr-1" />
                 编辑
               </Button>
               <Button
@@ -189,7 +188,7 @@ onMounted(() => {
                 class="action-btn action-btn-detail"
                 @click="emit('detail', item.id)"
               >
-                <IconifyIcon icon="ant-design:eye-outlined" class="mr-1" />
+                <IconifyIcon icon="lucide:eye" class="mr-1" />
                 详情
               </Button>
               <Button
@@ -197,23 +196,17 @@ onMounted(() => {
                 class="action-btn action-btn-model"
                 @click="emit('thingModel', item.id)"
               >
-                <IconifyIcon
-                  icon="ant-design:apartment-outlined"
-                  class="mr-1"
-                />
+                <IconifyIcon icon="lucide:git-branch" class="mr-1" />
                 物模型
               </Button>
-              <Tooltip v-if="item.status === 1" title="启用状态的产品不能删除">
+              <Tooltip v-if="item.status === 1" title="已发布的产品不能删除">
                 <Button
                   size="small"
                   danger
                   disabled
                   class="action-btn action-btn-delete !w-8"
                 >
-                  <IconifyIcon
-                    icon="ant-design:delete-outlined"
-                    class="text-sm"
-                  />
+                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                 </Button>
               </Tooltip>
               <Popconfirm
@@ -226,10 +219,7 @@ onMounted(() => {
                   danger
                   class="action-btn action-btn-delete !w-8"
                 >
-                  <IconifyIcon
-                    icon="ant-design:delete-outlined"
-                    class="text-sm"
-                  />
+                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                 </Button>
               </Popconfirm>
             </div>
@@ -241,8 +231,7 @@ onMounted(() => {
     </div>
 
     <!-- 分页 -->
-    <!-- TODO @haohao：放到最右侧好点 -->
-    <div v-if="list.length > 0" class="flex justify-center">
+    <div v-if="list.length > 0" class="flex justify-end">
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
@@ -258,18 +247,9 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-/** TODO @haohao：看看哪些可以 tindwind 掉 */
 .product-card-view {
   .product-card {
-    height: 100%;
     overflow: hidden;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-      box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
-      transform: translateY(-2px);
-    }
 
     :deep(.ant-card-body) {
       display: flex;
@@ -283,8 +263,8 @@ onMounted(() => {
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
+      width: 36px;
+      height: 36px;
       color: white;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 8px;
@@ -294,9 +274,9 @@ onMounted(() => {
     .product-title {
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      line-height: 1.5;
+      line-height: 36px;
       white-space: nowrap;
     }
 
@@ -305,7 +285,7 @@ onMounted(() => {
       .info-item {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         font-size: 13px;
 
         &:last-child {
@@ -338,7 +318,6 @@ onMounted(() => {
           font-size: 12px;
           vertical-align: middle;
           white-space: nowrap;
-          cursor: help;
           opacity: 0.85;
         }
 
@@ -348,18 +327,17 @@ onMounted(() => {
       }
     }
 
-    // 3D 图标
-    .product-3d-icon {
+    // 产品图片
+    .product-image {
       display: flex;
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       color: #667eea;
       background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
       border-radius: 8px;
-      opacity: 0.8;
     }
 
     // 按钮组
@@ -420,10 +398,6 @@ onMounted(() => {
 html.dark {
   .product-card-view {
     .product-card {
-      &:hover {
-        box-shadow: 0 4px 16px rgb(0 0 0 / 30%);
-      }
-
       .product-title {
         color: rgb(255 255 255 / 85%);
       }
@@ -442,7 +416,7 @@ html.dark {
         }
       }
 
-      .product-3d-icon {
+      .product-image {
         color: #8b9cff;
         background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
       }

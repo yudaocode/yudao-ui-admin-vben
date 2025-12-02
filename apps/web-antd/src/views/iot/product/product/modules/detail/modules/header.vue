@@ -1,15 +1,18 @@
-<script setup lang="ts">
-// TODO @haohao：放到 detail/modules 里。然后名字就是 header.vue
+<script lang="ts" setup>
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Button, Card, Descriptions, message } from 'ant-design-vue';
+import { useVbenModal } from '@vben/common-ui';
 
-import { updateProductStatus } from '#/api/iot/product/product';
+import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
 
-import ProductForm from '../product-form.vue';
+import {
+  ProductStatusEnum,
+  updateProductStatus,
+} from '#/api/iot/product/product';
+
+import Form from '../../form.vue';
 
 interface Props {
   product: IotProductApi.Product;
@@ -25,7 +28,11 @@ const emit = defineEmits<{
 }>();
 
 const router = useRouter();
-const formRef = ref();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 /** 复制到剪贴板 */
 async function copyToClipboard(text: string) {
@@ -46,59 +53,63 @@ function goToDeviceList(productId: number) {
 }
 
 /** 打开编辑表单 */
-function openForm(type: string, id?: number) {
-  formRef.value?.open(type, id);
+function openEditForm(row: IotProductApi.Product) {
+  formModalApi.setData(row).open();
 }
 
 /** 发布产品 */
-async function confirmPublish(id: number) {
-  // TODO @haohao：最好类似；async function handleDeleteBatch() { 的做法：1）有个 confirm；2）有个 loading
-  try {
-    await updateProductStatus(id, 1); // TODO @好好】：1 和 0，最好用枚举；
-    message.success('发布成功');
-    emit('refresh');
-  } catch {
-    message.error('发布失败');
-  }
+function handlePublish(product: IotProductApi.Product) {
+  Modal.confirm({
+    title: '确认发布',
+    content: `确认要发布产品「${product.name}」吗？`,
+    async onOk() {
+      await updateProductStatus(product.id!, ProductStatusEnum.PUBLISHED);
+      message.success('发布成功');
+      emit('refresh');
+    },
+  });
 }
 
 /** 撤销发布 */
-async function confirmUnpublish(id: number) {
-  // TODO @haohao：最好类似；async function handleDeleteBatch() { 的做法：1）有个 confirm；2）有个 loading
-  try {
-    await updateProductStatus(id, 0);
-    message.success('撤销发布成功');
-    emit('refresh');
-  } catch {
-    message.error('撤销发布失败');
-  }
+function handleUnpublish(product: IotProductApi.Product) {
+  Modal.confirm({
+    title: '确认撤销发布',
+    content: `确认要撤销发布产品「${product.name}」吗？`,
+    async onOk() {
+      await updateProductStatus(product.id!, ProductStatusEnum.UNPUBLISHED);
+      message.success('撤销发布成功');
+      emit('refresh');
+    },
+  });
 }
 </script>
 
 <template>
   <div class="mb-4">
+    <FormModal @success="emit('refresh')" />
+
     <div class="flex items-start justify-between">
       <div>
         <h2 class="text-xl font-bold">{{ product.name }}</h2>
       </div>
       <div class="space-x-2">
         <Button
-          :disabled="product.status === 1"
-          @click="openForm('update', product.id)"
+          :disabled="product.status === ProductStatusEnum.PUBLISHED"
+          @click="openEditForm(product)"
         >
           编辑
         </Button>
         <Button
-          v-if="product.status === 0"
+          v-if="product.status === ProductStatusEnum.UNPUBLISHED"
           type="primary"
-          @click="confirmPublish(product.id!)"
+          @click="handlePublish(product)"
         >
           发布
         </Button>
         <Button
-          v-if="product.status === 1"
+          v-if="product.status === ProductStatusEnum.PUBLISHED"
           danger
-          @click="confirmUnpublish(product.id!)"
+          @click="handleUnpublish(product)"
         >
           撤销发布
         </Button>
@@ -127,9 +138,5 @@ async function confirmUnpublish(id: number) {
         </Descriptions.Item>
       </Descriptions>
     </Card>
-
-    <!-- 表单弹窗 -->
-    <!-- TODO @haohao：弹不出来；另外，应该用 index.vue 里，Form 的声明方式哈。 -->
-    <ProductForm ref="formRef" @success="emit('refresh')" />
   </div>
 </template>

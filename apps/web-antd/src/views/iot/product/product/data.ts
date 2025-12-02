@@ -1,7 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
-import { h, ref } from 'vue';
+import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -10,7 +11,17 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
-import { getProductPage } from '#/api/iot/product/product';
+
+/** 产品分类列表缓存 */
+let categoryList: IotProductCategoryApi.ProductCategory[] = [];
+
+/** 加载产品分类数据 */
+async function loadCategoryData() {
+  categoryList = await getSimpleProductCategoryList();
+}
+
+// 初始化加载分类数据
+loadCategoryData();
 
 /** 新增/修改产品的表单 */
 export function useFormSchema(formApi?: any): VbenFormSchema[] {
@@ -134,7 +145,7 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
       label: '产品状态',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        options: getDictOptions(DICT_TYPE.IOT_PRODUCT_STATUS, 'number'),
         buttonStyle: 'solid',
         optionType: 'button',
       },
@@ -283,7 +294,7 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
       label: '产品状态',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        options: getDictOptions(DICT_TYPE.IOT_PRODUCT_STATUS, 'number'),
         buttonStyle: 'solid',
         optionType: 'button',
       },
@@ -308,11 +319,10 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'icon',
       label: '产品图标',
-      component: 'IconPicker', // 用这个组件 产品卡片列表 可以根据这个显示 否则就显示默认的
+      component: 'IconPicker',
       componentProps: {
         placeholder: '请选择产品图标',
         prefix: 'carbon',
-        autoFetchApi: false,
       },
     },
     {
@@ -329,31 +339,6 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
         rows: 3,
       },
       formItemClass: 'col-span-2', // 让描述占满两列
-    },
-  ];
-}
-
-/** 列表的搜索表单 */
-// TODO @haohao：貌似用不上？
-export function useGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      fieldName: 'name',
-      label: '产品名称',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入产品名称',
-        allowClear: true,
-      },
-    },
-    {
-      fieldName: 'productKey',
-      label: 'ProductKey',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入产品标识',
-        allowClear: true,
-      },
     },
   ];
 }
@@ -375,7 +360,8 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'categoryId',
       title: '品类',
       minWidth: 120,
-      slots: { default: 'category' },
+      formatter: ({ cellValue }) =>
+        categoryList.find((c) => c.id === cellValue)?.name || '未分类',
     },
     {
       field: 'deviceType',
@@ -390,13 +376,17 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'icon',
       title: '产品图标',
       width: 100,
-      slots: { default: 'icon' },
+      cellRender: {
+        name: 'CellImage',
+      },
     },
     {
       field: 'picUrl',
       title: '产品图片',
       width: 100,
-      slots: { default: 'picUrl' },
+      cellRender: {
+        name: 'CellImage',
+      },
     },
     {
       field: 'createTime',
@@ -413,35 +403,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 查询产品列表 */
-// TODO @haohao：貌似可以删除？
-export async function queryProductList({ page }: any, searchParams: any) {
-  return await getProductPage({
-    pageNo: page.currentPage,
-    pageSize: page.pageSize,
-    ...searchParams,
-  });
-}
-
-/** 创建图片预览状态 */
-// TODO @haohao：可能不一定用的上；
-export function useImagePreview() {
-  const previewVisible = ref(false);
-  const previewImage = ref('');
-
-  function handlePreviewImage(url: string) {
-    previewImage.value = url;
-    previewVisible.value = true;
-  }
-
-  return {
-    previewVisible,
-    previewImage,
-    handlePreviewImage,
-  };
-}
-
-// TODO @haohao：放到对应的 form 里
 /** 生成 ProductKey（包含大小写字母和数字） */
 export function generateProductKey(): string {
   const chars =
