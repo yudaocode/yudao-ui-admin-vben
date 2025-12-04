@@ -1,5 +1,4 @@
-<script setup lang="ts">
-// TODO @haohao：放到 detail/modules 里。然后名字就是 info.vue
+<script lang="ts" setup>
 import type { IotProductApi } from '#/api/iot/product/product';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -24,7 +23,6 @@ function formatDate(date?: Date | string) {
 
 <template>
   <Card title="产品信息">
-    <!-- TODO @haohao：看看是不是用 description 组件 -->
     <Descriptions bordered :column="3" size="small">
       <Descriptions.Item label="产品名称">
         {{ product.name }}
@@ -48,7 +46,7 @@ function formatDate(date?: Date | string) {
         {{ product.codecType || '-' }}
       </Descriptions.Item>
       <Descriptions.Item label="产品状态">
-        <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
+        <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
       </Descriptions.Item>
       <Descriptions.Item
         v-if="

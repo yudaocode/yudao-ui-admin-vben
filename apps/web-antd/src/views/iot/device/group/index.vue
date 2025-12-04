@@ -11,12 +11,12 @@ import { deleteDeviceGroup, getDeviceGroupPage } from '#/api/iot/device/group';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DeviceGroupForm from './modules/device-group-form.vue';
+import Form from './modules/form.vue';
 
 defineOptions({ name: 'IoTDeviceGroup' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: DeviceGroupForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 

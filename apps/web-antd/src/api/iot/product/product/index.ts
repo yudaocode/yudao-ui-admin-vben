@@ -48,6 +48,12 @@ export enum CodecTypeEnum {
   ALINK = 'Alink', // 阿里云 Alink 协议
 }
 
+/** IOT 产品状态枚举类 */
+export enum ProductStatusEnum {
+  UNPUBLISHED = 0, // 开发中
+  PUBLISHED = 1, // 已发布
+}
+
 /** 查询产品分页 */
 export function getProductPage(params: PageParam) {
   return requestClient.get<PageResult<IotProductApi.Product>>(

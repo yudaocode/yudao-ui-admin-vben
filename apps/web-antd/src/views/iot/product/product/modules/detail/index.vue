@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { IotProductApi } from '#/api/iot/product/product';
 
-// TODO @haohao：detail 挪到 yudao-ui-admin-vben-v5/apps/web-antd/src/views/iot/product/product/detail 下。独立一个，不放在 modules 里。
 import { onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -13,8 +12,8 @@ import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
 import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 
-import ProductDetailsHeader from './product-details-header.vue';
-import ProductDetailsInfo from './product-details-info.vue';
+import ProductDetailsHeader from './modules/header.vue';
+import ProductDetailsInfo from './modules/info.vue';
 
 defineOptions({ name: 'IoTProductDetail' });
 
