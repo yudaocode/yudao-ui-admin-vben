@@ -1,4 +1,3 @@
-// TODO @芋艿：是否有更好的组织形式？！
 <script lang="ts" setup>
 import type { DataNode } from 'ant-design-vue/es/tree';
 
