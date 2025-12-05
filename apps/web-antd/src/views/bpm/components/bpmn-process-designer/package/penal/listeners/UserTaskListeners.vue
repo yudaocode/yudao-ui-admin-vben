@@ -19,6 +19,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import ProcessListenerSelectModal from '#/views/bpm/processListener/components/process-listener-select-modal.vue';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
+import ListenerFieldModal from './ListenerFieldModal.vue';
 import {
   eventType,
   fieldType,
@@ -47,12 +48,10 @@ const fieldTypeObject = ref(fieldType);
 const fieldsListOfListener = ref<any[]>([]);
 const editingListenerIndex = ref(-1);
 const editingListenerFieldIndex = ref<any>(-1);
-const listenerFieldForm = ref<any>({});
 const bpmnElement = ref<any>();
 const bpmnElementListeners = ref<any[]>([]);
 const otherExtensionList = ref<any[]>([]);
 const listenerFormRef = ref<any>({});
-const listenerFieldFormRef = ref<any>({});
 
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
@@ -143,12 +142,9 @@ async function saveListenerConfig() {
 }
 
 const openListenerFieldForm = (field: any, index?: number) => {
-  listenerFieldForm.value = field ? cloneDeep(field) : {};
+  const data = field ? cloneDeep(field) : {};
   editingListenerFieldIndex.value = field ? index : -1;
-  fieldModalApi.open();
-  nextTick(() => {
-    if (listenerFieldFormRef.value) listenerFieldFormRef.value.clearValidate();
-  });
+  fieldModalApi.setData(data).open();
 };
 
 const [ListenerGrid, listenerGridApi] = useVbenVxeGrid({
@@ -189,28 +185,13 @@ const [ListenerGrid, listenerGridApi] = useVbenVxeGrid({
   },
 });
 
-async function saveListenerField() {
-  try {
-    await listenerFieldFormRef.value.validate();
-    if (editingListenerFieldIndex.value === -1) {
-      fieldsListOfListener.value.push(cloneDeep(listenerFieldForm.value));
-      listenerForm.value.fields.push(cloneDeep(listenerFieldForm.value));
-    } else {
-      fieldsListOfListener.value.splice(
-        editingListenerFieldIndex.value,
-        1,
-        cloneDeep(listenerFieldForm.value),
-      );
-      listenerForm.value.fields.splice(
-        editingListenerFieldIndex.value,
-        1,
-        cloneDeep(listenerFieldForm.value),
-      );
-    }
-    fieldModalApi.close();
-    listenerFieldForm.value = {};
-  } catch (error) {
-    console.error(error);
+async function saveListenerField(data: any) {
+  if (editingListenerFieldIndex.value === -1) {
+    fieldsListOfListener.value.push(data);
+    listenerForm.value.fields.push(data);
+  } else {
+    fieldsListOfListener.value.splice(editingListenerFieldIndex.value, 1, data);
+    listenerForm.value.fields.splice(editingListenerFieldIndex.value, 1, data);
   }
 }
 
@@ -251,8 +232,7 @@ const [ListenerDrawer, listenerDrawerApi] = useVbenDrawer({
 });
 
 const [FieldModal, fieldModalApi] = useVbenModal({
-  title: '字段配置',
-  onConfirm: saveListenerField,
+  connectedComponent: ListenerFieldModal,
 });
 
 const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
@@ -556,55 +536,7 @@ watch(
     </ListenerDrawer>
 
     <!-- 注入字段 编辑/创建 部分 -->
-    <FieldModal class="w-3/5">
-      <Form
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 18 }"
-        :model="listenerFieldForm"
-        ref="listenerFieldFormRef"
-      >
-        <FormItem
-          label="字段名称："
-          name="name"
-          :rules="[{ required: true, message: '请输入字段名称' }]"
-        >
-          <Input v-model:value="listenerFieldForm.name" allow-clear />
-        </FormItem>
-        <FormItem
-          label="字段类型："
-          name="fieldType"
-          :rules="[{ required: true, message: '请选择字段类型' }]"
-        >
-          <Select v-model:value="listenerFieldForm.fieldType">
-            <SelectOption
-              v-for="i in Object.keys(fieldTypeObject)"
-              :key="i"
-              :value="i"
-            >
-              {{ fieldTypeObject[i as keyof typeof fieldType] }}
-            </SelectOption>
-          </Select>
-        </FormItem>
-        <FormItem
-          v-if="listenerFieldForm.fieldType === 'string'"
-          label="字段值："
-          name="string"
-          key="field-string"
-          :rules="[{ required: true, message: '请输入字段值' }]"
-        >
-          <Input v-model:value="listenerFieldForm.string" allow-clear />
-        </FormItem>
-        <FormItem
-          v-if="listenerFieldForm.fieldType === 'expression'"
-          label="表达式："
-          name="expression"
-          key="field-expression"
-          :rules="[{ required: true, message: '请输入表达式' }]"
-        >
-          <Input v-model:value="listenerFieldForm.expression" allow-clear />
-        </FormItem>
-      </Form>
-    </FieldModal>
+    <FieldModal @confirm="saveListenerField" />
   </div>
 
   <!-- 选择弹窗 -->
