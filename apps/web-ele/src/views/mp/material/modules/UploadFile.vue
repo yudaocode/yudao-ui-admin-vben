@@ -19,7 +19,6 @@ import {
 
 const props = defineProps<{ type: UploadType }>();
 
-// TODO @dylan：是不是要和 antd 的 props 定义相同哈？这样后续两侧维护方便点
 const emit = defineEmits<{
   uploaded: [v: void];
 }>();
@@ -60,8 +59,11 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
 
     if (res.code !== 0) {
       ElMessage.error(`上传出错：${res.msg}`);
-      // TODO @dylan：这里有个 linter 错误。
-      onError?.(new Error(res.msg));
+      const error = new Error(res.msg) as any;
+      error.status = 200;
+      error.method = 'POST';
+      error.url = UPLOAD_URL;
+      onError?.(error);
       return;
     }
 

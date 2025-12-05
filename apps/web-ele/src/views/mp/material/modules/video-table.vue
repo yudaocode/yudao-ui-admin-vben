@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMaterialApi } from '#/api/mp/material';
 
-import { watch } from 'vue';
+import { nextTick, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 import { openWindow } from '@vben/utils';
@@ -19,6 +19,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   delete: [v: number];
+  refresh: [];
 }>();
 
 const columns = useVideoGridColumns();
@@ -39,20 +40,40 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
     },
     showOverflow: 'tooltip',
+    proxyConfig: {
+      ajax: {
+        query: async () => {
+          // 数据由父组件管理，触发刷新事件后返回当前数据
+          emit('refresh');
+          // 返回当前数据，避免覆盖
+          return {
+            list: Array.isArray(props.list) ? props.list : [],
+            total: props.list?.length || 0,
+          };
+        },
+      },
+      enabled: true,
+      autoLoad: false,
+    },
   } as VxeTableGridOptions<MpMaterialApi.Material>,
 });
 
+function updateGridData(data: MpMaterialApi.Material[]) {
+  if (gridApi.grid?.loadData) {
+    gridApi.grid.loadData(data);
+  } else {
+    gridApi.setGridOptions({ data });
+  }
+}
+
 watch(
   () => props.list,
-  (list: MpMaterialApi.Material[]) => {
+  async (list: MpMaterialApi.Material[]) => {
     const data = Array.isArray(list) ? list : [];
-    if (gridApi.grid?.loadData) {
-      gridApi.grid.loadData(data);
-    } else {
-      gridApi.setGridOptions({ data });
-    }
+    await nextTick();
+    updateGridData(data);
   },
-  { immediate: true },
+  { immediate: true, flush: 'post' },
 );
 
 watch(

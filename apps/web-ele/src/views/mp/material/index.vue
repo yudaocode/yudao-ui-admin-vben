@@ -142,7 +142,13 @@ function handleSizeChange(pageSize: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <ImageTable :list="list" :loading="loading" @delete="handleDelete">
+            <ImageTable
+              :key="`image-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -174,7 +180,13 @@ function handleSizeChange(pageSize: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VoiceTable :list="list" :loading="loading" @delete="handleDelete">
+            <VoiceTable
+              :key="`voice-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -206,7 +218,13 @@ function handleSizeChange(pageSize: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VideoTable :list="list" :loading="loading" @delete="handleDelete">
+            <VideoTable
+              :key="`video-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <ElButton
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -218,7 +236,7 @@ function handleSizeChange(pageSize: number) {
               </template>
             </VideoTable>
             <!-- 新建视频的弹窗 -->
-            <UploadVideo v-model="showCreateVideo" @uploaded="getList" />
+            <UploadVideo v-model:open="showCreateVideo" @uploaded="getList" />
             <!-- 分页组件 -->
             <div class="mt-4 flex justify-end">
               <ElPagination
