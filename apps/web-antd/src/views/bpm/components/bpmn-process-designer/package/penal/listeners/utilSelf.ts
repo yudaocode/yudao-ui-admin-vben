@@ -53,6 +53,7 @@ export function initListenerForm2(processListener: any) {
         class: processListener.value,
         event: processListener.event,
         fields: [],
+        id: undefined,
       };
     }
     case 'delegateExpression': {
@@ -61,6 +62,7 @@ export function initListenerForm2(processListener: any) {
         delegateExpression: processListener.value,
         event: processListener.event,
         fields: [],
+        id: undefined,
       };
     }
     case 'expression': {
@@ -69,6 +71,7 @@ export function initListenerForm2(processListener: any) {
         expression: processListener.value,
         event: processListener.event,
         fields: [],
+        id: undefined,
       };
     }
     // No default

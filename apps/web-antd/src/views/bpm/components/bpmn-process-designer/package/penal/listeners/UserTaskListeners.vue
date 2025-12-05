@@ -16,7 +16,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import ProcessListenerDialog from '#/views/bpm/components/bpmn-process-designer/package/penal/listeners/ProcessListenerDialog.vue';
+import ProcessListenerSelectModal from '#/views/bpm/processListener/components/process-listener-select-modal.vue';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
 import {
@@ -224,12 +224,12 @@ const removeListenerField = (_: any, index: number) => {
   });
 };
 
-const processListenerDialogRef = ref<any>();
 const openProcessListenerDialog = async () => {
-  processListenerDialogRef.value.open('task');
+  processListenerSelectModalApi.setData({ type: 'task' }).open();
 };
 const selectProcessListener = (listener: any) => {
   const listenerForm = initListenerForm2(listener);
+  listenerForm.id = listener.id;
   const listenerObject = createListenerObject(listenerForm, true, prefix);
   bpmnElementListeners.value.push(listenerObject);
   elementListenersList.value.push(listenerForm);
@@ -254,6 +254,12 @@ const [FieldModal, fieldModalApi] = useVbenModal({
   title: '字段配置',
   onConfirm: saveListenerField,
 });
+
+const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
+  useVbenModal({
+    connectedComponent: ProcessListenerSelectModal,
+    destroyOnClose: true,
+  });
 
 const [FieldsGrid, fieldsGridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -602,8 +608,5 @@ watch(
   </div>
 
   <!-- 选择弹窗 -->
-  <ProcessListenerDialog
-    ref="processListenerDialogRef"
-    @select="selectProcessListener"
-  />
+  <ProcessListenerSelectModalComp @select="selectProcessListener" />
 </template>
