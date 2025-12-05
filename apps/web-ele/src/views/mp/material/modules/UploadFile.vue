@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadProps, UploadRawFile } from 'element-plus';
+import type { UploadProps } from 'element-plus';
 
 import type { UploadData } from './upload';
 

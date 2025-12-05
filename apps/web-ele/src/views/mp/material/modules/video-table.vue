@@ -66,7 +66,7 @@ watch(
 <template>
   <Grid class="mt-4">
     <template #toolbar-tools>
-      <slot name="toolbar-tools" />
+      <slot name="toolbar-tools"></slot>
     </template>
     <template #video="{ row }">
       <WxVideoPlayer v-if="row.url" :url="row.url" />
@@ -96,4 +96,3 @@ watch(
     </template>
   </Grid>
 </template>
-
