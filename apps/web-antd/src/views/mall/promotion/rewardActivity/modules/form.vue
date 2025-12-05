@@ -29,6 +29,7 @@ const emit = defineEmits(['success']);
 
 const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
   conditionType: PromotionConditionTypeEnum.PRICE.type,
+  productScope: PromotionProductScopeEnum.ALL.scope,
   rules: [],
 });
 

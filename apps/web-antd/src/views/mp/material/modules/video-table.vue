@@ -4,6 +4,7 @@ import type { MpMaterialApi } from '#/api/mp/material';
 
 import { watch } from 'vue';
 
+import { $t } from '@vben/locales';
 import { openWindow } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -81,7 +82,7 @@ watch(
             onClick: () => openWindow(row.url),
           },
           {
-            label: '删除',
+            label: $t('common.delete'),
             type: 'link',
             danger: true,
             icon: ACTION_ICON.DELETE,

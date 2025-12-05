@@ -102,6 +102,7 @@ function handlePageChange(page: number, pageSize: number) {
 function showTotal(total: number) {
   return `共 ${total} 条`;
 }
+// TODO @dylan：是不是应该都用 Grid 哈：1）message-table 大部分合并到 index.vue；2）message-table 的 schema 放到 data.ts 里；
 </script>
 
 <template>

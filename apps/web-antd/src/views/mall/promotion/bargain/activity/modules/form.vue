@@ -14,6 +14,7 @@ import {
   updateBargainActivity,
 } from '#/api/mall/promotion/bargain/bargainActivity';
 import { $t } from '#/locales';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
@@ -21,7 +22,7 @@ defineOptions({ name: 'PromotionBargainActivityForm' });
 
 const emit = defineEmits(['success']);
 
-const formData = ref<MallBargainActivityApi.BargainActivity>();
+const formData = ref<Partial<MallBargainActivityApi.BargainActivity>>({});
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['砍价活动'])
@@ -49,8 +50,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as MallBargainActivityApi.BargainActivity;
+    const values = await formApi.getValues();
+    const data = {
+      ...values,
+      spuId: formData.value.spuId,
+    } as MallBargainActivityApi.BargainActivity;
     try {
       await (formData.value?.id
         ? updateBargainActivity(data)
@@ -65,7 +69,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -87,6 +91,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-2/5" :title="getTitle">
-    <Form class="mx-4" />
+    <Form class="mx-4">
+      <!-- 自定义插槽：商品选择 -->
+      <template #spuId>
+        <SpuShowcase v-model="formData.spuId" :limit="1" />
+      </template>
+    </Form>
   </Modal>
 </template>

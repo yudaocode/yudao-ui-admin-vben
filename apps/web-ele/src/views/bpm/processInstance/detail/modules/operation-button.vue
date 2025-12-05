@@ -275,7 +275,7 @@ async function openPopover(type: string) {
     }
   }
   Object.keys(popOverVisible.value).forEach((item) => {
-    if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
+    popOverVisible.value[item] = item === type;
   });
 }
 
@@ -704,14 +704,6 @@ function handleSignFinish(url: string) {
   approveFormRef.value?.validateField('signPicUrl');
 }
 
-/** 处理弹窗可见性 */
-function handlePopoverVisible(visible: boolean) {
-  if (!visible) {
-    // 拦截关闭事件
-    popOverVisible.value.approve = true;
-  }
-}
-
 defineExpose({ loadTodoTask });
 </script>
 <template>
@@ -720,11 +712,10 @@ defineExpose({ loadTodoTask });
     <!-- z-index 设置为300 避免覆盖签名弹窗 -->
     <ElSpace size="default">
       <ElPopover
-        v-model:visible="popOverVisible.approve"
+        :visible="popOverVisible.approve"
         placement="top"
         :popper-style="{ minWidth: '400px', zIndex: 300 }"
         trigger="click"
-        @open-change="handlePopoverVisible"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -825,7 +816,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【拒绝】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.reject"
+        :visible="popOverVisible.reject"
         placement="top"
         :popper-style="{ minWidth: '400px' }"
         trigger="click"
@@ -885,7 +876,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【抄送】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.copy"
+        :visible="popOverVisible.copy"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -960,7 +951,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【转办】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.transfer"
+        :visible="popOverVisible.transfer"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -1036,7 +1027,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【委派】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.delegate"
+        :visible="popOverVisible.delegate"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -1112,7 +1103,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【加签】按钮 当前任务审批人为A，向前加签选了一个C，则需要C先审批，然后再是A审批，向后加签B，A审批完，需要B再审批完，才算完成这个任务节点 -->
       <ElPopover
-        v-model:visible="popOverVisible.addSign"
+        :visible="popOverVisible.addSign"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -1200,7 +1191,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【减签】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.deleteSign"
+        :visible="popOverVisible.deleteSign"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -1268,7 +1259,7 @@ defineExpose({ loadTodoTask });
 
       <!-- 【退回】按钮 -->
       <ElPopover
-        v-model:visible="popOverVisible.return"
+        :visible="popOverVisible.return"
         placement="top"
         :popper-style="{ width: '400px' }"
         trigger="click"
@@ -1342,7 +1333,7 @@ defineExpose({ loadTodoTask });
 
       <!--【取消】按钮 这个对应发起人的取消, 只有发起人可以取消 -->
       <ElPopover
-        v-model:visible="popOverVisible.cancel"
+        :visible="popOverVisible.cancel"
         placement="top"
         :popper-style="{ width: '460px' }"
         trigger="click"

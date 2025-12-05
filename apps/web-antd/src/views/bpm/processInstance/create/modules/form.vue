@@ -104,7 +104,7 @@ async function submitForm() {
     // 关闭并提示
     message.success('发起流程成功');
     await closeCurrentTab();
-    await router.push({ name: 'BpmTaskMy' });
+    await router.push({ name: 'BpmProcessInstanceMy' });
   } finally {
     processInstanceStartLoading.value = false;
   }

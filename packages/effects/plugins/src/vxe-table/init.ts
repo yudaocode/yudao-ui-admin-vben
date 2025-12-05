@@ -24,8 +24,8 @@ import {
   // VxeOptgroup,
   // VxeOption,
   // VxePulldown,
-  // VxeRadio,
-  // VxeRadioButton,
+  VxeRadio,
+  VxeRadioButton,
   VxeRadioGroup,
   VxeSelect,
   VxeTooltip,
@@ -88,8 +88,8 @@ export function initVxeTable() {
   // VxeUI.component(VxeOption);
   VxeUI.component(VxePager);
   // VxeUI.component(VxePulldown);
-  // VxeUI.component(VxeRadio);
-  // VxeUI.component(VxeRadioButton);
+  VxeUI.component(VxeRadio);
+  VxeUI.component(VxeRadioButton);
   VxeUI.component(VxeRadioGroup);
   VxeUI.component(VxeSelect);
   // VxeUI.component(VxeSwitch);

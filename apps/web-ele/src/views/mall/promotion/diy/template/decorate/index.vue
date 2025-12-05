@@ -3,7 +3,7 @@ import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
 import type { MallDiyTemplateApi } from '#/api/mall/promotion/diy/template';
 import type { DiyComponentLibrary } from '#/views/mall/promotion/components'; // 商城的 DIY 组件，在 DiyEditor 目录下
 
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useTabs } from '@vben/hooks';
@@ -35,7 +35,7 @@ const { refreshTab } = useTabs();
 const DIY_PAGE_INDEX_KEY = 'diy_page_index'; // 特殊：存储 reset 重置时，当前 selectedTemplateItem 值，从而进行恢复
 
 const selectedTemplateItem = ref(0);
-const templateItems = reactive([
+const templateItems = ref([
   { name: '基础设置', icon: 'ep:iphone' },
   { name: '首页', icon: 'ep:home-filled' },
   { name: '我的', icon: 'ep:user-filled' },
@@ -77,11 +77,13 @@ async function getPageDetail(id: any) {
 function handleTemplateItemChange(val: any) {
   // 缓存模版编辑数据
   currentFormDataMap.value.set(
-    templateItems[selectedTemplateItem.value]?.name || '',
+    templateItems.value[selectedTemplateItem.value]?.name || '',
     currentFormData.value!,
   );
   // 读取模版缓存
-  const data = currentFormDataMap.value.get(templateItems[val]?.name || '');
+  const data = currentFormDataMap.value.get(
+    templateItems.value[val]?.name || '',
+  );
 
   // 切换模版
   selectedTemplateItem.value = val;
@@ -101,7 +103,7 @@ function handleTemplateItemChange(val: any) {
     isEmpty(data)
       ? formData.value!.pages.find(
           (page: MallDiyPageApi.DiyPage) =>
-            page.name === templateItems[val]?.name,
+            page.name === templateItems.value[val]?.name,
         )
       : data
   ) as MallDiyPageApi.DiyPage | MallDiyTemplateApi.DiyTemplateProperty;
@@ -114,7 +116,7 @@ async function submitForm() {
   });
   try {
     // 对所有的 templateItems 都进行保存，有缓存则保存缓存，解决都有修改时只保存了当前所编辑的 templateItem，导致装修效果存在差异
-    for (const [i, templateItem] of templateItems.entries()) {
+    for (const [i, templateItem] of templateItems.value.entries()) {
       const data = currentFormDataMap.value.get(templateItem.name) as any;
       // 情况一：基础设置
       if (i === 0) {
@@ -188,7 +190,7 @@ onMounted(async () => {
     :show-navigation-bar="selectedTemplateItem !== 0"
     :show-page-config="selectedTemplateItem !== 0"
     :show-tab-bar="selectedTemplateItem === 0"
-    :title="templateItems[selectedTemplateItem]?.name || ''"
+    :title="templateItems[selectedTemplateItem]?.name ?? ''"
     @reset="handleEditorReset"
     @save="submitForm"
   >

@@ -14,7 +14,7 @@ defineOptions({ name: 'TabNews' });
 
 const props = defineProps<{
   modelValue: Reply;
-  newsType: NewsType;
+  newsType?: NewsType;
 }>();
 
 const emit = defineEmits<{

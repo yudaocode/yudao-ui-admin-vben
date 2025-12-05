@@ -75,8 +75,14 @@ const assignEmptyUserIds = ref<any>();
 
 // 操作按钮
 const buttonsSettingEl = ref<any>();
-const { btnDisplayNameEdit, changeBtnDisplayName, btnDisplayNameBlurEvent } =
-  useButtonsSetting();
+const { btnDisplayNameEdit, changeBtnDisplayName } = useButtonsSetting();
+const btnDisplayNameBlurEvent = (index: number) => {
+  btnDisplayNameEdit.value[index] = false;
+  const buttonItem = buttonsSettingEl.value[index];
+  buttonItem.displayName =
+    buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+  updateElementExtensions();
+};
 
 // 字段权限
 const fieldsPermissionEl = ref<any[]>([]);
@@ -172,7 +178,7 @@ const resetCustomConfigList = () => {
     });
 
   // 操作按钮
-  buttonsSettingEl.value = elExtensionElements.value.values?.find(
+  buttonsSettingEl.value = elExtensionElements.value.values?.filter(
     (ex: any) => ex.$type === `${prefix}:ButtonsSetting`,
   );
   if (buttonsSettingEl.value.length === 0) {
@@ -189,7 +195,7 @@ const resetCustomConfigList = () => {
 
   // 字段权限
   if (formType.value === BpmModelFormType.NORMAL) {
-    const fieldsPermissionList = elExtensionElements.value.values?.find(
+    const fieldsPermissionList = elExtensionElements.value.values?.filter(
       (ex: any) => ex.$type === `${prefix}:FieldsPermission`,
     );
     fieldsPermissionEl.value = [];
@@ -358,24 +364,14 @@ function useButtonsSetting() {
   const changeBtnDisplayName = (index: number) => {
     btnDisplayNameEdit.value[index] = true;
   };
-  const btnDisplayNameBlurEvent = (index: number) => {
-    btnDisplayNameEdit.value[index] = false;
-    const buttonItem = buttonsSetting.value?.[index];
-    if (buttonItem) {
-      buttonItem.displayName =
-        buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
-    }
-  };
   return {
     buttonsSetting,
     btnDisplayNameEdit,
     changeBtnDisplayName,
-    btnDisplayNameBlurEvent,
   };
 }
 
 /** 批量更新权限 */
-// TODO @lesan：这个页面，有一些 idea 红色报错，咱要不要 fix 下！
 const updatePermission = (type: string) => {
   fieldsPermissionEl.value.forEach((field: any) => {
     if (type === 'READ') {
@@ -532,7 +528,10 @@ onMounted(async () => {
           </Button>
         </div>
         <div class="button-setting-item-label">
-          <Switch v-model:checked="item.enable" />
+          <Switch
+            v-model:checked="item.enable"
+            @change="updateElementExtensions"
+          />
         </div>
       </div>
     </div>
