@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IotProductCategoryApi } from '#/api/iot/product/category';
+import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 
 import { computed, ref } from 'vue';
 
@@ -9,22 +9,20 @@ import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createProductCategory,
-  getProductCategory,
-  updateProductCategory,
-} from '#/api/iot/product/category';
+  createDeviceGroup,
+  getDeviceGroup,
+  updateDeviceGroup,
+} from '#/api/iot/device/group';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-// TODO @haohao：应该是 form.vue，不用前缀；
-
 const emit = defineEmits(['success']);
-const formData = ref<IotProductCategoryApi.ProductCategory>();
+const formData = ref<IotDeviceGroupApi.DeviceGroup>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['产品分类'])
-    : $t('ui.actionTitle.create', ['产品分类']);
+    ? $t('ui.actionTitle.edit', ['设备分组'])
+    : $t('ui.actionTitle.create', ['设备分组']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -32,15 +30,11 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    formItemClass: 'col-span-2',
-    labelWidth: 80,
   },
-  layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
 
-// TODO @haohao：参考 apps/web-antd/src/views/system/dept/modules/form.vue 简化 useVbenModal 里的代码；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -49,12 +43,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as IotProductCategoryApi.ProductCategory;
+    const data = (await formApi.getValues()) as IotDeviceGroupApi.DeviceGroup;
     try {
       await (formData.value?.id
-        ? updateProductCategory(data)
-        : createProductCategory(data));
+        ? updateDeviceGroup(data)
+        : createDeviceGroup(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -66,29 +59,17 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
-      formApi.resetForm();
       return;
     }
-
-    // 重置表单
-    await formApi.resetForm();
-
-    const data = modalApi.getData<IotProductCategoryApi.ProductCategory>();
-    // 如果没有数据或没有 id，表示是新增
+    // 加载数据
+    const data = modalApi.getData<IotDeviceGroupApi.DeviceGroup>();
     if (!data || !data.id) {
-      formData.value = undefined;
-      // 新增模式：设置默认值
-      await formApi.setValues({
-        sort: 0,
-        status: 1,
-      });
       return;
     }
-
-    // 编辑模式：加载数据
     modalApi.lock();
     try {
-      formData.value = await getProductCategory(data.id);
+      formData.value = await getDeviceGroup(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -98,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-2/5" :title="getTitle">
+  <Modal :title="getTitle">
     <Form class="mx-4" />
   </Modal>
 </template>
