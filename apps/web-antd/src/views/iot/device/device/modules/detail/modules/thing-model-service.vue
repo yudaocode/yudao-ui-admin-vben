@@ -1,5 +1,5 @@
 <!-- 设备服务调用 -->
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, reactive, ref } from 'vue';

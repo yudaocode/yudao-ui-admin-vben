@@ -5,7 +5,7 @@ import { DICT_TYPE } from '@vben/constants';
 
 import { Card, Descriptions } from 'ant-design-vue';
 
-import { DeviceTypeEnum } from '#/api/iot/product/product';
+import { DeviceTypeEnum } from '@vben/constants';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {

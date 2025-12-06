@@ -1,6 +1,5 @@
 <!-- 设备物模型 -> 运行状态 -> 查看数据（设备的属性值历史）-->
-// 重新关闭打开图表,图表不显示可能图例注销失败等大佬修复
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
 import type { EchartsUIType } from '@vben/plugins/echarts';
@@ -11,20 +10,21 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { beginOfDay, endOfDay, formatDate, formatDateTime } from '@vben/utils';
+import { formatDate, formatDateTime } from '@vben/utils';
 
 import {
   Button,
   Empty,
   message,
   Modal,
-  RangePicker,
   Space,
   Spin,
   Table,
   Tag,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
+
+import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
@@ -42,18 +42,22 @@ const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 列表的数据
 const total = ref(0); // 总数据量
 const thingModelDataType = ref<string>(''); // 物模型数据类型
 const propertyIdentifier = ref<string>(''); // 属性标识符
-const dateRange = ref<[Dayjs, Dayjs]>([
-  dayjs().subtract(7, 'day').startOf('day'),
-  dayjs().endOf('day'),
+
+/** 时间范围（仅日期，不包含时分秒） */
+const dateRange = ref<[string, string]>([
+  dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
+  dayjs().format('YYYY-MM-DD'),
 ]);
+
+/** 将日期范围转换为带时分秒的格式 */
+function formatDateRangeWithTime(dates: [string, string]): [string, string] {
+  return [`${dates[0]} 00:00:00`, `${dates[1]} 23:59:59`];
+}
 
 const queryParams = reactive({
   deviceId: -1,
   identifier: '',
-  times: [
-    formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 7))),
-    formatDateTime(endOfDay(new Date())),
-  ],
+  times: formatDateRangeWithTime(dateRange.value),
 });
 
 // Echarts 相关
@@ -142,16 +146,13 @@ async function getList() {
     ) as IotDeviceApi.DevicePropertyDetail[];
     total.value = list.value.length;
 
-    // 如果是图表模式且不是复杂数据类型，渲染图表
+    // 如果是图表模式且不是复杂数据类型，等待渲染图表
     if (
       viewMode.value === 'chart' &&
       !isComplexDataType.value &&
       list.value.length > 0
     ) {
-      // 等待 DOM 更新完成后再渲染图表
-      await nextTick();
-      await nextTick(); // 双重 nextTick 确保 DOM 完全准备好
-      renderChart();
+      await renderChartWhenReady();
     }
   } catch {
     message.error('获取数据失败');
@@ -162,126 +163,115 @@ async function getList() {
   }
 }
 
+/** 确保图表容器已经可见后再渲染 */
+async function renderChartWhenReady() {
+  if (!list.value || list.value.length === 0) {
+    return;
+  }
+  // 等待 Modal、Card loading 状态、v-show 等 DOM 更新完成
+  await nextTick();
+  await nextTick();
+  renderChart();
+}
+
 /** 渲染图表 */
 function renderChart() {
   if (!list.value || list.value.length === 0) {
     return;
   }
 
-  const chartData = list.value.map((item) => [item.updateTime, item.value]);
+  const times = list.value.map((item) =>
+    formatDate(new Date(item.updateTime), 'YYYY-MM-DD HH:mm:ss'),
+  );
+  const values = list.value.map((item) => Number(item.value));
 
-  // 使用 setTimeout 延迟渲染，避免 ECharts 主进程冲突
-  setTimeout(() => {
-    // 检查 chartRef 是否存在且已挂载
-    if (!chartRef.value || !chartRef.value.$el) {
-      return;
-    }
-
-    renderEcharts({
-      title: {
-        text: '属性值趋势',
-        left: 'center',
-        textStyle: {
-          fontSize: 16,
-          fontWeight: 'normal',
-        },
+  renderEcharts({
+    title: {
+      text: '属性值趋势',
+      left: 'center',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 'normal',
       },
-      grid: {
-        left: 60,
-        right: 60,
-        bottom: 100,
-        top: 80,
-        containLabel: true,
+    },
+    grid: {
+      left: 60,
+      right: 60,
+      bottom: 100,
+      top: 80,
+      containLabel: true,
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
       },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross',
-        },
-        formatter: (params: any) => {
-          const param = params[0];
-          return `
-          <div style="padding: 8px;">
-            <div style="margin-bottom: 4px; font-weight: bold;">
-              ${formatDate(new Date(param.value[0]), 'YYYY-MM-DD HH:mm:ss')}
-            </div>
-            <div>
-              <span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;background-color:${param.color};"></span>
-              <span>属性值: <strong>${param.value[1]}</strong></span>
-            </div>
-          </div>
-        `;
-        },
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      name: '时间',
+      nameTextStyle: {
+        padding: [10, 0, 0, 0],
       },
-      xAxis: {
-        type: 'time',
-        name: '时间',
-        nameTextStyle: {
-          padding: [10, 0, 0, 0],
-        },
-        axisLabel: {
-          formatter: (value: number) => {
-            return String(formatDate(new Date(value), 'MM-DD HH:mm') || '');
-          },
-        },
+      data: times,
+    },
+    yAxis: {
+      type: 'value',
+      name: '属性值',
+      nameTextStyle: {
+        padding: [0, 0, 10, 0],
       },
-      yAxis: {
-        type: 'value',
+    },
+    series: [
+      {
         name: '属性值',
-        nameTextStyle: {
-          padding: [0, 0, 10, 0],
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: {
+          width: 2,
+          color: '#1890FF',
         },
+        itemStyle: {
+          color: '#1890FF',
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0,
+                color: 'rgba(24, 144, 255, 0.3)',
+              },
+              {
+                offset: 1,
+                color: 'rgba(24, 144, 255, 0.05)',
+              },
+            ],
+          },
+        },
+        data: values,
       },
-      series: [
-        {
-          name: '属性值',
-          type: 'line',
-          smooth: true,
-          symbol: 'circle',
-          symbolSize: 6,
-          lineStyle: {
-            width: 2,
-            color: '#1890FF',
-          },
-          itemStyle: {
-            color: '#1890FF',
-          },
-          areaStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: 'rgba(24, 144, 255, 0.3)',
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(24, 144, 255, 0.05)',
-                },
-              ],
-            },
-          },
-          data: chartData,
-        },
-      ],
-      dataZoom: [
-        {
-          type: 'inside',
-          start: 0,
-          end: 100,
-        },
-        {
-          type: 'slider',
-          height: 30,
-          bottom: 20,
-        },
-      ],
-    });
-  }, 300); // 延迟300ms渲染，确保 DOM 完全准备好
+    ],
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 0,
+        end: 100,
+      },
+      {
+        type: 'slider',
+        height: 30,
+        bottom: 20,
+      },
+    ],
+  });
 }
 
 /** 打开弹窗 */
@@ -294,42 +284,33 @@ async function open(deviceId: number, identifier: string, dataType: string) {
 
   // 重置时间范围为最近7天
   dateRange.value = [
-    dayjs().subtract(7, 'day').startOf('day'),
-    dayjs().endOf('day'),
+    dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
+    dayjs().format('YYYY-MM-DD'),
   ];
 
   // 更新查询参数的时间
-  queryParams.times = [
-    formatDateTime(dateRange.value[0].toDate()),
-    formatDateTime(dateRange.value[1].toDate()),
-  ];
+  queryParams.times = formatDateRangeWithTime(dateRange.value);
 
   // 如果物模型是 struct、array，需要默认使用 list 模式
   viewMode.value = isComplexDataType.value ? 'list' : 'chart';
 
   // 等待弹窗完全渲染后再获取数据
   await nextTick();
+  await nextTick(); // 双重 nextTick 确保 Modal 完全渲染
   await getList();
-
-  // 如果是图表模式，延迟渲染图表
-  if (viewMode.value === 'chart' && !isComplexDataType.value) {
-    setTimeout(() => {
-      renderChart();
-    }, 500);
-  }
 }
 
-/** 时间变化处理 */
-function handleTimeChange() {
-  if (!dateRange.value || dateRange.value.length !== 2) {
+/** 处理时间范围变化 */
+function handleDateRangeChange(times?: [Dayjs, Dayjs]) {
+  if (!times || times.length !== 2) {
     return;
   }
-
-  queryParams.times = [
-    formatDateTime(dateRange.value[0].toDate()),
-    formatDateTime(dateRange.value[1].toDate()),
+  dateRange.value = [
+    dayjs(times[0]).format('YYYY-MM-DD'),
+    dayjs(times[1]).format('YYYY-MM-DD'),
   ];
-
+  // 将选择的日期转换为带时分秒的格式（开始日期 00:00:00，结束日期 23:59:59）
+  queryParams.times = formatDateRangeWithTime(dateRange.value);
   getList();
 }
 
@@ -408,14 +389,7 @@ watch(viewMode, async (newMode) => {
     !isComplexDataType.value &&
     list.value.length > 0
   ) {
-    // 等待 DOM 显示完成
-    await nextTick();
-    await nextTick();
-
-    // 延迟渲染图表
-    setTimeout(() => {
-      renderChart();
-    }, 300);
+    await renderChartWhenReady();
   }
 });
 
@@ -434,14 +408,10 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
       <div class="toolbar-wrapper mb-4">
         <Space :size="12" class="w-full" wrap>
           <!-- 时间选择 -->
-          <RangePicker
-            v-model:value="dateRange"
-            :show-time="{ format: 'HH:mm:ss' }"
-            format="YYYY-MM-DD HH:mm:ss"
-            :placeholder="['开始时间', '结束时间']"
-            class="!w-[400px]"
-            @change="handleTimeChange"
-          />
+          <div class="flex items-center gap-3">
+            <span class="whitespace-nowrap text-sm text-gray-500">时间范围</span>
+            <ShortcutDateRangePicker @change="handleDateRangeChange" />
+          </div>
 
           <!-- 刷新按钮 -->
           <Button @click="handleRefresh" :loading="loading">
@@ -501,7 +471,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
       <!-- 数据展示区域 -->
       <Spin :spinning="loading" :delay="200">
-        <!-- 图表模式 -->
+        <!-- 图表模式 - 使用 v-show 确保图表组件始终挂载 -->
         <div v-show="viewMode === 'chart'" class="chart-container">
           <Empty
             v-if="list.length === 0"
@@ -509,7 +479,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             description="暂无数据"
             class="py-20"
           />
-          <div v-else>
+          <div v-show="list.length > 0">
             <EchartsUI ref="chartRef" height="500px" />
           </div>
         </div>

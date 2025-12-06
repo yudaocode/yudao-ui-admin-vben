@@ -1,14 +1,14 @@
-<!-- 设备信息（头部） -->
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Card, Descriptions, message } from 'ant-design-vue';
 
-import DeviceForm from '../device-form.vue';
+import DeviceForm from '../../form.vue';
 
 interface Props {
   product: IotProductApi.Product;
@@ -26,20 +26,19 @@ const emit = defineEmits<{
 
 const router = useRouter();
 
-/** 操作修改 */
-const formRef = ref();
-function openForm(type: string, id?: number) {
-  formRef.value.open(type, id);
-}
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: DeviceForm,
+  destroyOnClose: true,
+});
 
-/** 复制到剪贴板方法 */
+/** 复制到剪贴板 */
 async function copyToClipboard(text: string | undefined) {
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
-    message.success({ content: '复制成功' });
+    message.success('复制成功');
   } catch {
-    message.error({ content: '复制失败' });
+    message.error('复制失败');
   }
 }
 
@@ -49,19 +48,25 @@ function goToProductDetail(productId: number | undefined) {
     router.push({ name: 'IoTProductDetail', params: { id: productId } });
   }
 }
+
+/** 打开编辑表单 */
+function openEditForm(row: IotDeviceApi.Device) {
+  formModalApi.setData(row).open();
+}
 </script>
 <template>
   <div class="mb-4">
+    <FormModal @success="emit('refresh')" />
+
     <div class="flex items-start justify-between">
       <div>
         <h2 class="text-xl font-bold">{{ device.deviceName }}</h2>
       </div>
       <div class="space-x-2">
-        <!-- 右上：按钮 -->
         <Button
           v-if="product.status === 0"
           v-access:code="['iot:device:update']"
-          @click="openForm('update', device.id)"
+          @click="openEditForm(device)"
         >
           编辑
         </Button>
@@ -72,8 +77,8 @@ function goToProductDetail(productId: number | undefined) {
       <Descriptions :column="1">
         <Descriptions.Item label="产品">
           <a
-            @click="goToProductDetail(product.id)"
             class="cursor-pointer text-blue-600"
+            @click="goToProductDetail(product.id)"
           >
             {{ product.name }}
           </a>
@@ -90,8 +95,5 @@ function goToProductDetail(productId: number | undefined) {
         </Descriptions.Item>
       </Descriptions>
     </Card>
-
-    <!-- 表单弹窗：添加/修改 -->
-    <DeviceForm ref="formRef" @success="emit('refresh')" />
   </div>
 </template>
