@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
   computed,
   onBeforeUnmount,
@@ -26,6 +26,8 @@ import {
 import { getDeviceMessagePage } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
 import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
+
+// TODO @haohao：看看能不能调整成 Grid 风格~方便 element-plus 的迁移
 
 const props = defineProps<{
   deviceId: number;

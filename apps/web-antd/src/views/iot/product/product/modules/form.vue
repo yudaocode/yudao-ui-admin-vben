@@ -40,6 +40,7 @@ const [Form, formApi] = useVbenForm({
   wrapperClass: 'grid-cols-2',
 });
 
+// TODO @haohao：这个要不还是一行一个？这样样式好看点哈。
 const [AdvancedForm, advancedFormApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
@@ -51,10 +52,10 @@ const [AdvancedForm, advancedFormApi] = useVbenForm({
 });
 
 /** 基础表单需要 formApi 引用，所以通过 setState 设置 schema */
+// TODO haohao：@haohao：要不要把 generateProductKey 拿到这个 vue 里，作为参数传递到 useBasicFormSchema 里？
 formApi.setState({ schema: useBasicFormSchema(formApi) });
 
 const [Modal, modalApi] = useVbenModal({
-  /** 提交表单 */
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -63,6 +64,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 合并两个表单的值
     const basicValues = await formApi.getValues();
+    // TODO @haohao：有 linter 修复下；“formData.value?.id”；另外，这里直接两个表单合并，是不是就可以了呀？因为 2 个 schema 本身不同，字段就不同，不会冲突。
     const advancedValues = activeKey.value.includes('advanced')
       ? await advancedFormApi.getValues()
       : formData.value?.id
@@ -85,7 +87,6 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  /** 弹窗打开/关闭 */
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
@@ -96,9 +97,11 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<IotProductApi.Product>();
     if (!data || !data.id) {
       // 新增：设置默认值
+      // TODO @AI：
       await formApi.setValues({
+        // TODO @haohao：要不要把 generateProductKey 拿到这个 vue 里，作为参数传递到 useBasicFormSchema 里？
         productKey: generateProductKey(),
-        status: 0,
+        status: 0, // TODO @haohao：通过 defaultValue 即可；
       });
       return;
     }
@@ -108,12 +111,15 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getProduct(data.id);
       await formApi.setValues(formData.value);
       // 设置高级表单（不等待）
+      // TODO @haohao：直接把 formData 传过去？没关系的哈。因为会 filter 掉不存在的值，可以试试哈。
+      // TODO @haohao：这里是不是要 await 下呀？有黄色的告警；
       advancedFormApi.setValues({
         icon: formData.value.icon,
         picUrl: formData.value.picUrl,
         description: formData.value.description,
       });
       // 有高级字段时自动展开
+      // TODO @haohao：默认不用展开哈。
       if (
         formData.value.icon ||
         formData.value.picUrl ||

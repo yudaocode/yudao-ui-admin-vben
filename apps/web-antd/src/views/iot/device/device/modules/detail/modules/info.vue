@@ -1,5 +1,4 @@
-<!-- 设备信息 -->
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
@@ -24,51 +23,46 @@ import {
 import { getDeviceAuthInfo } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
 
-// 消息提示
-
-const { product, device } = defineProps<{
+interface Props {
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-}>(); // 定义 Props
-// const emit = defineEmits(['refresh']); // 定义 Emits
+}
 
-const authDialogVisible = ref(false); // 定义设备认证信息弹框的可见性
-const authPasswordVisible = ref(false); // 定义密码可见性状态
+const props = defineProps<Props>();
+
+const authDialogVisible = ref(false);
+const authPasswordVisible = ref(false);
 const authInfo = ref<IotDeviceApi.DeviceAuthInfo>(
   {} as IotDeviceApi.DeviceAuthInfo,
-); // 定义设备认证信息对象
+);
 
 /** 控制地图显示的标志 */
 const showMap = computed(() => {
-  return !!(device.longitude && device.latitude);
+  return !!(props.device.longitude && props.device.latitude);
 });
 
-/** 复制到剪贴板方法 */
+/** 复制到剪贴板 */
 async function copyToClipboard(text: string) {
   try {
     await navigator.clipboard.writeText(text);
-    message.success({ content: '复制成功' });
+    message.success('复制成功');
   } catch {
-    message.error({ content: '复制失败' });
+    message.error('复制失败');
   }
 }
 
-/** 打开设备认证信息弹框的方法 */
+/** 打开设备认证信息弹框 */
 async function handleAuthInfoDialogOpen() {
-  if (!device.id) return;
+  if (!props.device.id) return;
   try {
-    authInfo.value = await getDeviceAuthInfo(device.id);
-    // 显示设备认证信息弹框
+    authInfo.value = await getDeviceAuthInfo(props.device.id);
     authDialogVisible.value = true;
-  } catch (error) {
-    console.error('获取设备认证信息出错：', error);
-    message.error({
-      content: '获取设备认证信息失败，请检查网络连接或联系管理员',
-    });
+  } catch {
+    message.error('获取设备认证信息失败，请检查网络连接或联系管理员');
   }
 }
 
-/** 关闭设备认证信息弹框的方法 */
+/** 关闭设备认证信息弹框 */
 function handleAuthInfoDialogClose() {
   authDialogVisible.value = false;
 }
@@ -87,40 +81,40 @@ function handleAuthInfoDialogClose() {
           </template>
           <Descriptions :column="1" bordered size="small">
             <Descriptions.Item label="产品名称">
-              {{ product.name }}
+              {{ props.product.name }}
             </Descriptions.Item>
             <Descriptions.Item label="ProductKey">
-              {{ product.productKey }}
+              {{ props.product.productKey }}
             </Descriptions.Item>
             <Descriptions.Item label="设备类型">
               <DictTag
                 :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
-                :value="product.deviceType"
+                :value="props.product.deviceType"
               />
             </Descriptions.Item>
             <Descriptions.Item label="DeviceName">
-              {{ device.deviceName }}
+              {{ props.device.deviceName }}
             </Descriptions.Item>
             <Descriptions.Item label="备注名称">
-              {{ device.nickname || '--' }}
+              {{ props.device.nickname || '--' }}
             </Descriptions.Item>
             <Descriptions.Item label="当前状态">
               <DictTag
                 :type="DICT_TYPE.IOT_DEVICE_STATE"
-                :value="device.state"
+                :value="props.device.state"
               />
             </Descriptions.Item>
             <Descriptions.Item label="创建时间">
-              {{ formatDate(device.createTime) }}
+              {{ formatDate(props.device.createTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="激活时间">
-              {{ formatDate(device.activeTime) }}
+              {{ formatDate(props.device.activeTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="最后上线时间">
-              {{ formatDate(device.onlineTime) }}
+              {{ formatDate(props.device.onlineTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="最后离线时间">
-              {{ formatDate(device.offlineTime) }}
+              {{ formatDate(props.device.offlineTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="MQTT 连接参数">
               <Button

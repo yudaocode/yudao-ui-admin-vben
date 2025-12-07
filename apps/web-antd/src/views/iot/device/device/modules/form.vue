@@ -3,10 +3,11 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
@@ -15,9 +16,11 @@ import { useFormSchema } from '../data';
 defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<any>();
+const formData = ref<IotDeviceApi.Device>();
 const getTitle = computed(() => {
-  return formData.value?.id ? '编辑设备' : '新增设备';
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['设备'])
+    : $t('ui.actionTitle.create', ['设备']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -57,14 +60,17 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<any>();
+    const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
+      // 新增模式：设置默认值（如果需要）
+      // TODO @haohao：是不是 return 就好啦；不用这里 undefined 啦；
+      formData.value = undefined;
       return;
     }
+    // 编辑模式：加载数据
     modalApi.lock();
     try {
       formData.value = await getDevice(data.id);
-      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { Card, Descriptions } from 'ant-design-vue';
 
-import { DeviceTypeEnum } from '#/api/iot/product/product';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {

@@ -1,195 +1,229 @@
 <script lang="ts" setup>
-import type { Dayjs } from 'dayjs';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpMessageApi } from '#/api/mp/message';
 
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { DICT_TYPE, MpMsgType } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
+import { MpMsgType as MsgType } from '@vben/constants';
+import { formatDate2 } from '@vben/utils';
 
-import {
-  ElButton,
-  ElDatePicker,
-  ElDialog,
-  ElForm,
-  ElFormItem,
-  ElInput,
-  ElOption,
-  ElPagination,
-  ElSelect,
-} from 'element-plus';
+import { ElDialog, ElImage, ElTag } from 'element-plus';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMessagePage } from '#/api/mp/message';
-import { WxAccountSelect, WxMsg } from '#/views/mp/components';
+import {
+  WxAccountSelect,
+  WxLocation,
+  WxMsg,
+  WxMusic,
+  WxNews,
+  WxVideoPlayer,
+  WxVoicePlayer,
+} from '#/views/mp/components';
 
-import MessageTable from './message-table.vue';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'MpMessage' });
-
-const loading = ref(false);
-const total = ref(0); // 数据的总页数
-const list = ref<any[]>([]); // 当前页的列表数据
-
-const queryParams = reactive<{
-  accountId: number;
-  createTime: [Dayjs, Dayjs] | undefined;
-  openid: string;
-  pageNo: number;
-  pageSize: number;
-  type: string;
-}>({
-  accountId: -1,
-  createTime: undefined,
-  openid: '',
-  pageNo: 1,
-  pageSize: 10,
-  type: MpMsgType.Text,
-}); // 搜索参数
-
-const queryFormRef = ref(); // 搜索的表单
 
 // 消息对话框
 const messageBoxVisible = ref(false);
 const messageBoxUserId = ref(0);
 
-/** 侦听 accountId */
-function onAccountChanged(id: number) {
-  queryParams.accountId = id;
-  queryParams.pageNo = 1;
-  handleQuery();
-}
-
-/** 查询列表 */
-function handleQuery() {
-  queryParams.pageNo = 1;
-  getList();
-}
-
-async function getList() {
-  try {
-    loading.value = true;
-    const data = await getMessagePage(queryParams);
-    list.value = data.list;
-    total.value = data.total;
-  } finally {
-    loading.value = false;
-  }
-}
-
-/** 重置按钮操作 */
-async function resetQuery() {
-  // 暂存 accountId，并在 reset 后恢复
-  const accountId = queryParams.accountId;
-  queryFormRef.value?.resetFields();
-  queryParams.accountId = accountId;
-  handleQuery();
+/** 公众号变化时查询数据 */
+function handleAccountChange(accountId: number) {
+  gridApi.formApi.setValues({ accountId });
+  gridApi.formApi.submitForm();
 }
 
 /** 打开消息发送窗口 */
-async function handleSend(userId: number) {
+function handleSend(userId: number) {
   messageBoxUserId.value = userId;
   messageBoxVisible.value = true;
 }
 
-/** 分页改变事件 */
-function handlePageChange(page: number) {
-  queryParams.pageNo = page;
-  getList();
-}
-
-/** 每页条数改变事件 */
-function handleSizeChange(pageSize: number) {
-  queryParams.pageSize = pageSize;
-  queryParams.pageNo = 1;
-  getList();
-}
-
-/** 显示总条数 */
-function showTotal(total: number) {
-  return `共 ${total} 条`;
-}
-// TODO @dylan：是不是应该都用 Grid 哈？
+const [Grid, gridApi] = useVbenVxeGrid<MpMessageApi.Message>({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getMessagePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+      autoLoad: false,
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+    showOverflow: 'tooltip',
+  } as VxeTableGridOptions<MpMessageApi.Message>,
+});
 </script>
 
 <template>
-  <Page auto-content-height class="flex flex-col">
-    <!-- 搜索工作栏 -->
-    <div class="mb-4 rounded-lg bg-background p-4">
-      <ElForm
-        ref="queryFormRef"
-        :model="queryParams"
-        :inline="true"
-        class="search-form"
-      >
-        <ElFormItem label="公众号" prop="accountId">
-          <WxAccountSelect @change="onAccountChanged" />
-        </ElFormItem>
-        <ElFormItem label="消息类型" prop="type">
-          <ElSelect
-            v-model="queryParams.type"
-            placeholder="请选择消息类型"
-            class="!w-[240px]"
-          >
-            <ElOption
-              v-for="dict in getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE)"
-              :key="dict.value"
-              :value="dict.value"
-              :label="dict.label"
-            />
-          </ElSelect>
-        </ElFormItem>
-        <ElFormItem label="用户标识" prop="openid">
-          <ElInput
-            v-model="queryParams.openid"
-            placeholder="请输入用户标识"
-            clearable
-            class="!w-[240px]"
-          />
-        </ElFormItem>
-        <ElFormItem label="创建时间" prop="createTime">
-          <ElDatePicker
-            v-model="queryParams.createTime"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-            class="!w-[240px]"
-          />
-        </ElFormItem>
-        <ElFormItem>
-          <ElButton type="primary" @click="handleQuery">
-            <template #icon>
-              <IconifyIcon icon="mdi:magnify" />
-            </template>
-            搜索
-          </ElButton>
-          <ElButton class="ml-2" @click="resetQuery">
-            <template #icon>
-              <IconifyIcon icon="mdi:refresh" />
-            </template>
-            重置
-          </ElButton>
-        </ElFormItem>
-      </ElForm>
-    </div>
+  <Page auto-content-height>
+    <Grid>
+      <template #form-accountId>
+        <WxAccountSelect @change="handleAccountChange" />
+      </template>
+      <template #createTime="{ row }">
+        {{ row.createTime ? formatDate2(row.createTime) : '' }}
+      </template>
 
-    <!-- 列表 -->
-    <div class="flex-1 rounded-lg bg-background p-4">
-      <MessageTable :list="list" :loading="loading" @send="handleSend" />
-      <div v-show="total > 0" class="mt-4 flex justify-end">
-        <ElPagination
-          v-model:current-page="queryParams.pageNo"
-          v-model:page-size="queryParams.pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :show-total="showTotal"
-          @current-change="handlePageChange"
-          @size-change="handleSizeChange"
+      <template #sendFrom="{ row }">
+        <ElTag v-if="row.sendFrom === 1" type="success">粉丝</ElTag>
+        <ElTag v-else>公众号</ElTag>
+      </template>
+
+      <template #content="{ row }">
+        <div
+          v-if="
+            (row.type as string) === (MsgType.Event as string) &&
+            (row.event as string) === 'subscribe'
+          "
+        >
+          <ElTag type="success">关注</ElTag>
+        </div>
+        <div
+          v-else-if="
+            (row.type as string) === (MsgType.Event as string) &&
+            (row.event as string) === 'unsubscribe'
+          "
+        >
+          <ElTag type="danger">取消关注</ElTag>
+        </div>
+        <div
+          v-else-if="
+            (row.type as string) === (MsgType.Event as string) &&
+            (row.event as string) === 'CLICK'
+          "
+        >
+          <ElTag>点击菜单</ElTag>
+          【{{ row.eventKey }}】
+        </div>
+        <div v-else-if="row.type === MsgType.Event && row.event === 'VIEW'">
+          <ElTag>点击菜单链接</ElTag>
+          【{{ row.eventKey }}】
+        </div>
+        <div
+          v-else-if="
+            row.type === MsgType.Event && row.event === 'scancode_waitmsg'
+          "
+        >
+          <ElTag>扫码结果</ElTag>
+          【{{ row.eventKey }}】
+        </div>
+        <div
+          v-else-if="
+            row.type === MsgType.Event && row.event === 'scancode_push'
+          "
+        >
+          <ElTag>扫码结果</ElTag>
+          【{{ row.eventKey }}】
+        </div>
+        <div
+          v-else-if="row.type === MsgType.Event && row.event === 'pic_sysphoto'"
+        >
+          <ElTag>系统拍照发图</ElTag>
+        </div>
+        <div
+          v-else-if="
+            row.type === MsgType.Event && row.event === 'pic_photo_or_album'
+          "
+        >
+          <ElTag>拍照或者相册</ElTag>
+        </div>
+        <div
+          v-else-if="row.type === MsgType.Event && row.event === 'pic_weixin'"
+        >
+          <ElTag>微信相册</ElTag>
+        </div>
+        <div
+          v-else-if="
+            row.type === MsgType.Event && row.event === 'location_select'
+          "
+        >
+          <ElTag>选择地理位置</ElTag>
+        </div>
+        <div v-else-if="row.type === MsgType.Event">
+          <ElTag type="danger">未知事件类型</ElTag>
+        </div>
+
+        <div v-else-if="row.type === MsgType.Text">{{ row.content }}</div>
+        <div v-else-if="row.type === MsgType.Voice">
+          <WxVoicePlayer
+            :url="row.mediaUrl || ''"
+            :content="row.recognition || ''"
+          />
+        </div>
+        <div v-else-if="row.type === MsgType.Image">
+          <a :href="row.mediaUrl" target="_blank">
+            <ElImage :src="row.mediaUrl" :width="100" :preview-src-list="[]" />
+          </a>
+        </div>
+        <div
+          v-else-if="row.type === MsgType.Video || row.type === 'shortvideo'"
+        >
+          <WxVideoPlayer :url="row.mediaUrl || ''" class="mt-2" />
+        </div>
+        <div v-else-if="row.type === MsgType.Link">
+          <ElTag>链接</ElTag>
+          ：
+          <a :href="row.url" target="_blank">{{ row.title }}</a>
+        </div>
+        <div v-else-if="row.type === MsgType.Location">
+          <WxLocation
+            :label="row.label || ''"
+            :location-y="row.locationY || 0"
+            :location-x="row.locationX || 0"
+          />
+        </div>
+        <div v-else-if="row.type === MsgType.Music">
+          <WxMusic
+            :title="row.title"
+            :description="row.description"
+            :thumb-media-url="row.thumbMediaUrl || ''"
+            :music-url="row.musicUrl"
+            :hq-music-url="row.hqMusicUrl"
+          />
+        </div>
+        <div v-else-if="row.type === MsgType.News">
+          <WxNews :articles="row.articles" />
+        </div>
+        <div v-else>
+          <ElTag type="danger">未知消息类型</ElTag>
+        </div>
+      </template>
+
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '消息',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.VIEW,
+              onClick: () => handleSend(row.userId || 0),
+            },
+          ]"
         />
-      </div>
-    </div>
+      </template>
+    </Grid>
 
     <!-- 发送消息的弹窗 -->
     <ElDialog
@@ -203,9 +237,3 @@ function showTotal(total: number) {
     </ElDialog>
   </Page>
 </template>
-
-<style scoped>
-.search-form :deep(.el-form-item) {
-  margin-bottom: 16px;
-}
-</style>

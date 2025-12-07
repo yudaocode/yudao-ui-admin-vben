@@ -29,6 +29,7 @@ const total = ref(0); // 总条数
 const accountId = ref(-1);
 provide('accountId', accountId);
 
+// TODO @dlyan @AI：这里是不是应该都用 grid；类似 yudao-ui-admin-vben-v5/apps/web-ele/src/views/mp/autoReply/index.vue
 const queryParams = reactive({
   accountId,
   pageNo: 1,
@@ -118,7 +119,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <ImageTable :list="list" :loading="loading" @delete="handleDelete">
+            <ImageTable
+              :key="`image-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -149,7 +156,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VoiceTable :list="list" :loading="loading" @delete="handleDelete">
+            <VoiceTable
+              :key="`voice-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -180,7 +193,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VideoTable :list="list" :loading="loading" @delete="handleDelete">
+            <VideoTable
+              :key="`video-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <Button
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"

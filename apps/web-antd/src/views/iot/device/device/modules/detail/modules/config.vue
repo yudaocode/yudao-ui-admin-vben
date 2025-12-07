@@ -56,14 +56,14 @@ const hasConfigData = computed(() => {
 });
 
 /** 启用编辑模式的函数 */
-function enableEdit() {
+function handleEdit() {
   isEditing.value = true;
   // 重新同步编辑器内容
   configString.value = JSON.stringify(config.value, null, 2);
 }
 
 /** 取消编辑的函数 */
-function cancelEdit() {
+function handleCancelEdit() {
   try {
     config.value = props.device.config ? JSON.parse(props.device.config) : {};
     configString.value = JSON.stringify(config.value, null, 2);
@@ -84,29 +84,23 @@ async function saveConfig() {
     message.error({ content: 'JSON格式错误，请修正后再提交！' });
     return;
   }
-
+  // TODO @haohao：这里要不要做个类似下面的 pushLoading 避免重复提交；
   await updateDeviceConfig();
   isEditing.value = false;
 }
 
 /** 配置推送处理函数 */
 async function handleConfigPush() {
+  pushLoading.value = true;
   try {
-    pushLoading.value = true;
-
     // 调用配置推送接口
     await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.CONFIG_PUSH.method,
       params: config.value,
     });
-
+    // 提示成功
     message.success({ content: '配置推送成功！' });
-  } catch (error) {
-    if (error !== 'cancel') {
-      message.error({ content: '配置推送失败！' });
-      console.error('配置推送错误:', error);
-    }
   } finally {
     pushLoading.value = false;
   }
@@ -124,8 +118,6 @@ async function updateDeviceConfig() {
     message.success({ content: '更新成功！' });
     // 触发 success 事件
     emit('success');
-  } catch (error) {
-    console.error(error);
   } finally {
     loading.value = false;
   }
@@ -143,8 +135,9 @@ async function updateDeviceConfig() {
       class="my-4"
       description="如需编辑文件，请点击下方编辑按钮"
     />
+    <!-- TODO @haohao：应该按钮，是在下方，可以参考 element-plus 的版本 -->
     <div class="mt-5 text-center">
-      <Button v-if="isEditing" @click="cancelEdit">取消</Button>
+      <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
       <Button
         v-if="isEditing"
         type="primary"
@@ -153,7 +146,7 @@ async function updateDeviceConfig() {
       >
         保存
       </Button>
-      <Button v-else @click="enableEdit">编辑</Button>
+      <Button v-else @click="handleEdit">编辑</Button>
       <Button
         v-if="!isEditing"
         type="primary"

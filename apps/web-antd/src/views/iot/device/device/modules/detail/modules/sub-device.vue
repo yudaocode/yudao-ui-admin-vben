@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue';
 
 import { Card, Empty } from 'ant-design-vue';
 
+// TODO @haohao：这里要实现一把么？
+
 interface Props {
   deviceId: number;
 }

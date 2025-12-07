@@ -21,6 +21,7 @@ async function loadCategoryData() {
 }
 
 // 初始化加载分类数据
+// TODO @haohao：可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/tenant/data.ts 简洁一点。
 loadCategoryData();
 
 /** 新增/修改产品的表单 */

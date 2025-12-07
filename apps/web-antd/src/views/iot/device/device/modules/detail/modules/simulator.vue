@@ -9,6 +9,7 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 import { computed, ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
+import { DeviceStateEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -21,14 +22,14 @@ import {
   Textarea,
 } from 'ant-design-vue';
 
-import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
-import DataDefinition from '#/views/iot/thingmodel/modules/components/data-definition.vue';
+import { sendDeviceMessage } from '#/api/iot/device/device';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import DeviceDetailsMessage from './device-details-message.vue';
+import DataDefinition from '../../../../../thingmodel/modules/components/data-definition.vue';
+import DeviceDetailsMessage from './message.vue';
 
 const props = defineProps<{
   device: IotDeviceApi.Device;
@@ -339,6 +340,7 @@ async function handleServiceInvoke(row: ThingModelData) {
 <template>
   <ContentWrap>
     <!-- 上方：指令调试区域 -->
+    <!-- TODO @haohao：要不要改成左右； -->
     <Card class="simulator-tabs mb-4">
       <template #title>
         <div class="flex items-center justify-between">

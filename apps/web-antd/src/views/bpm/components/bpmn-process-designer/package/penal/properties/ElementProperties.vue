@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, nextTick, ref, toRaw, watch } from 'vue';
+import { inject, nextTick, ref, watch } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -27,7 +27,6 @@ const prefix = inject('prefix');
 const elementPropertyList = ref<Array<{ name: string; value: string }>>([]);
 const propertyForm = ref<{ name?: string; value?: string }>({});
 const editingPropertyIndex = ref(-1);
-const bpmnElement = ref<any>();
 const otherExtensionList = ref<any[]>([]);
 const bpmnElementProperties = ref<any[]>([]);
 const bpmnElementPropertyList = ref<any[]>([]);
@@ -35,17 +34,21 @@ const attributeFormRef = ref<any>();
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetAttributesList = () => {
-  bpmnElement.value = bpmnInstances().bpmnElement;
-  otherExtensionList.value = [];
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement;
+  const businessObject = bpmnElement.businessObject;
+
+  otherExtensionList.value = []; // 其他扩展配置
   bpmnElementProperties.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
-      (ex: any) => {
-        if (ex.$type !== `${prefix}:Properties`) {
-          otherExtensionList.value.push(ex);
-        }
-        return ex.$type === `${prefix}:Properties`;
-      },
-    ) ?? [];
+    businessObject?.extensionElements?.values?.filter((ex: any) => {
+      if (ex.$type !== `${prefix}:Properties`) {
+        otherExtensionList.value.push(ex);
+      }
+      return ex.$type === `${prefix}:Properties`;
+    }) ?? [];
 
   bpmnElementPropertyList.value = bpmnElementProperties.value.flatMap(
     (current: any) => current.values,
@@ -83,27 +86,26 @@ const saveAttribute = async () => {
   }
 
   const { name, value } = propertyForm.value;
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  const bpmnElement = instances.bpmnElement;
+
   if (editingPropertyIndex.value === -1) {
     // 新建属性字段
-    const newPropertyObject = bpmnInstances().moddle.create(
-      `${prefix}:Property`,
-      {
-        name,
-        value,
-      },
-    );
+    const newPropertyObject = instances.moddle.create(`${prefix}:Property`, {
+      name,
+      value,
+    });
     // 新建一个属性字段的保存列表
-    const propertiesObject = bpmnInstances().moddle.create(
-      `${prefix}:Properties`,
-      {
-        values: [...bpmnElementPropertyList.value, newPropertyObject],
-      },
-    );
+    const propertiesObject = instances.moddle.create(`${prefix}:Properties`, {
+      values: [...bpmnElementPropertyList.value, newPropertyObject],
+    });
     updateElementExtensions(propertiesObject);
   } else {
-    bpmnInstances().modeling.updateModdleProperties(
-      toRaw(bpmnElement.value),
-      toRaw(bpmnElementPropertyList.value)[toRaw(editingPropertyIndex.value)],
+    instances.modeling.updateModdleProperties(
+      bpmnElement,
+      bpmnElementPropertyList.value[editingPropertyIndex.value],
       {
         name,
         value,
@@ -115,10 +117,14 @@ const saveAttribute = async () => {
 };
 
 const updateElementExtensions = (properties: any) => {
-  const extensions = bpmnInstances().moddle.create('bpmn:ExtensionElements', {
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  const bpmnElement = instances.bpmnElement;
+  const extensions = instances.moddle.create('bpmn:ExtensionElements', {
     values: [...otherExtensionList.value, properties],
   });
-  bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
+  instances.modeling.updateProperties(bpmnElement, {
     extensionElements: extensions,
   });
 };

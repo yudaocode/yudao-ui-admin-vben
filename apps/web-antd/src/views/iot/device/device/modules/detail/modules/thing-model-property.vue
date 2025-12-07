@@ -1,5 +1,6 @@
 <!-- 设备属性管理 -->
-<script setup lang="ts">
+<script lang="ts" setup>
+// TODO @haohao：看看能不能用 Grid 实现下，方便 element-plus 迁移
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
@@ -22,7 +23,7 @@ import {
 
 import { getLatestDeviceProperties } from '#/api/iot/device/device';
 
-import DeviceDetailsThingModelPropertyHistory from './device-details-thing-model-property-history.vue';
+import DeviceDetailsThingModelPropertyHistory from './thing-model-property-history.vue';
 
 const props = defineProps<{ deviceId: number }>();
 

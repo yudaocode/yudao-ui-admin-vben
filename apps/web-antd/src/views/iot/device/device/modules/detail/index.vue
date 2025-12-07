@@ -7,20 +7,21 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { DeviceTypeEnum } from '@vben/constants';
 
 import { message, Tabs } from 'ant-design-vue';
 
 import { getDevice } from '#/api/iot/device/device';
-import { DeviceTypeEnum, getProduct } from '#/api/iot/product/product';
+import { getProduct } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 
-import DeviceDetailConfig from './device-detail-config.vue';
-import DeviceDetailsHeader from './device-details-header.vue';
-import DeviceDetailsInfo from './device-details-info.vue';
-import DeviceDetailsMessage from './device-details-message.vue';
-import DeviceDetailsSimulator from './device-details-simulator.vue';
-import DeviceDetailsSubDevice from './device-details-sub-device.vue';
-import DeviceDetailsThingModel from './device-details-thing-model.vue';
+import DeviceDetailConfig from './modules/config.vue';
+import DeviceDetailsHeader from './modules/header.vue';
+import DeviceDetailsInfo from './modules/info.vue';
+import DeviceDetailsMessage from './modules/message.vue';
+import DeviceDetailsSimulator from './modules/simulator.vue';
+import DeviceDetailsSubDevice from './modules/sub-device.vue';
+import DeviceDetailsThingModel from './modules/thing-model.vue';
 
 defineOptions({ name: 'IoTDeviceDetail' });
 
@@ -33,6 +34,8 @@ const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);
 const activeTab = ref('info');
 const thingModelList = ref<ThingModelData[]>([]);
+
+// TODO @haohao：类似 device/detail/index.vue 挪出去哈。
 
 /** 获取设备详情 */
 async function getDeviceData(deviceId: number) {
@@ -52,8 +55,8 @@ async function getDeviceData(deviceId: number) {
 async function getProductData(productId: number) {
   try {
     product.value = await getProduct(productId);
-  } catch (error) {
-    console.error('获取产品详情失败:', error);
+  } catch {
+    message.error('获取产品详情失败');
   }
 }
 
@@ -62,8 +65,8 @@ async function getThingModelList(productId: number) {
   try {
     const data = await getThingModelListByProductId(productId);
     thingModelList.value = data || [];
-  } catch (error) {
-    console.error('获取物模型列表失败:', error);
+  } catch {
+    message.error('获取物模型列表失败');
     thingModelList.value = [];
   }
 }

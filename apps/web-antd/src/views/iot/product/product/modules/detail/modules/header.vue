@@ -4,13 +4,11 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
+import { ProductStatusEnum } from '@vben/constants';
 
 import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
 
-import {
-  ProductStatusEnum,
-  updateProductStatus,
-} from '#/api/iot/product/product';
+import { updateProductStatus } from '#/api/iot/product/product';
 
 import Form from '../../form.vue';
 

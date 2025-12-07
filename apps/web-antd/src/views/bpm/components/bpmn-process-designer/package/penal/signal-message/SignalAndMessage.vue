@@ -50,7 +50,6 @@ const generateStandardId = (type: string): string => {
 };
 
 const initDataList = () => {
-  // console.log(window, 'window');
   rootElements.value = bpmnInstances().modeler.getDefinitions().rootElements;
   messageIdMap.value = {};
   signalIdMap.value = {};
@@ -143,6 +142,8 @@ const addNewObject = async () => {
     }
   }
   modelModalApi.close();
+  // 触发建模器更新以保存更改。
+  saveChanges();
   initDataList();
 };
 
@@ -164,6 +165,39 @@ const removeObject = (type: any, row: any) => {
     initDataList();
     message.success('移除成功');
   });
+};
+
+// 触发建模器更新以保存更改
+const saveChanges = () => {
+  const modeler = bpmnInstances().modeler;
+  if (!modeler) return;
+
+  try {
+    // 获取 canvas，通过它来触发图表的重新渲染
+    const canvas = modeler.get('canvas');
+
+    // 获取根元素（Process）
+    const rootElement = canvas.getRootElement();
+
+    // 触发 changed 事件，通知建模器数据已更改
+    const eventBus = modeler.get('eventBus');
+    if (eventBus) {
+      eventBus.fire('root.added', { element: rootElement });
+      eventBus.fire('elements.changed', { elements: [rootElement] });
+    }
+
+    // 标记建模器为已修改状态
+    const commandStack = modeler.get('commandStack');
+    if (commandStack && commandStack._stack) {
+      // 添加一个空命令以标记为已修改
+      commandStack.execute('element.updateProperties', {
+        element: rootElement,
+        properties: {},
+      });
+    }
+  } catch (error) {
+    console.warn('保存更改时出错:', error);
+  }
 };
 
 const [MessageGrid, messageGridApi] = useVbenVxeGrid({

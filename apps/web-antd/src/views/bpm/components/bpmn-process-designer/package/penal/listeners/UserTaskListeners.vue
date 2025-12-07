@@ -48,7 +48,6 @@ const fieldTypeObject = ref(fieldType);
 const fieldsListOfListener = ref<any[]>([]);
 const editingListenerIndex = ref(-1);
 const editingListenerFieldIndex = ref<any>(-1);
-const bpmnElement = ref<any>();
 const bpmnElementListeners = ref<any[]>([]);
 const otherExtensionList = ref<any[]>([]);
 const listenerFormRef = ref<any>({});
@@ -56,13 +55,19 @@ const listenerFormRef = ref<any>({});
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetListenersList = () => {
-  bpmnElement.value = bpmnInstances()?.bpmnElement;
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement;
+  const businessObject = bpmnElement.businessObject;
+
   otherExtensionList.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    businessObject?.extensionElements?.values?.filter(
       (ex: any) => ex.$type !== `${prefix}:TaskListener`,
     ) ?? [];
   bpmnElementListeners.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    businessObject?.extensionElements?.values?.filter(
       (ex: any) => ex.$type === `${prefix}:TaskListener`,
     ) ?? [];
   elementListenersList.value = bpmnElementListeners.value.map((listener) =>
@@ -98,9 +103,12 @@ const removeListener = (_: any, index: number) => {
     title: '提示',
     content: '确认移除该监听器吗？',
   }).then(() => {
+    const instances = bpmnInstances();
+    if (!instances || !instances.bpmnElement) return;
+
     bpmnElementListeners.value.splice(index, 1);
     elementListenersList.value.splice(index, 1);
-    updateElementExtensions(bpmnElement.value, [
+    updateElementExtensions(instances.bpmnElement, [
       ...otherExtensionList.value,
       ...bpmnElementListeners.value,
     ]);
@@ -113,7 +121,13 @@ async function saveListenerConfig() {
   } catch {
     return;
   }
+
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  const bpmnElement = instances.bpmnElement;
   const listenerObject = createListenerObject(listenerForm.value, true, prefix);
+
   if (editingListenerIndex.value === -1) {
     bpmnElementListeners.value.push(listenerObject);
     elementListenersList.value.push(listenerForm.value);
@@ -130,10 +144,10 @@ async function saveListenerConfig() {
     );
   }
   otherExtensionList.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    bpmnElement.businessObject?.extensionElements?.values?.filter(
       (ex: any) => ex.$type !== `${prefix}:TaskListener`,
     ) ?? [];
-  updateElementExtensions(bpmnElement.value, [
+  updateElementExtensions(bpmnElement, [
     ...otherExtensionList.value,
     ...bpmnElementListeners.value,
   ]);
@@ -209,6 +223,10 @@ const openProcessListenerDialog = async () => {
   processListenerSelectModalApi.setData({ type: 'task' }).open();
 };
 const selectProcessListener = (listener: any) => {
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+
+  const bpmnElement = instances.bpmnElement;
   const listenerForm = initListenerForm2(listener);
   listenerForm.id = listener.id;
   const listenerObject = createListenerObject(listenerForm, true, prefix);
@@ -216,11 +234,11 @@ const selectProcessListener = (listener: any) => {
   elementListenersList.value.push(listenerForm);
 
   otherExtensionList.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    bpmnElement.businessObject?.extensionElements?.values?.filter(
       (ex: any) => ex.$type !== `${prefix}:TaskListener`,
     ) ?? [];
   updateElementExtensions(
-    bpmnElement.value,
+    bpmnElement,
     otherExtensionList.value?.concat(bpmnElementListeners.value),
   );
 };

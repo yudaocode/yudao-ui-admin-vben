@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -32,10 +33,10 @@ import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
 import { useGridColumns } from './data';
-import DeviceCardView from './modules/device-card-view.vue';
-import DeviceForm from './modules/device-form.vue';
-import DeviceGroupForm from './modules/device-group-form.vue';
-import DeviceImportForm from './modules/device-import-form.vue';
+import DeviceCardView from './modules/card-view.vue';
+import DeviceForm from './modules/form.vue';
+import DeviceGroupForm from './modules/group-form.vue';
+import DeviceImportForm from './modules/import-form.vue';
 
 /** IoT 设备列表 */
 defineOptions({ name: 'IoTDevice' });
@@ -47,8 +48,6 @@ const deviceGroups = ref<any[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 
-// Modal instances
-// TODO @haohao：这个界面，等 product 改完，在一起看看怎么弄更好。
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,
   destroyOnClose: true,
@@ -64,17 +63,17 @@ const [DeviceImportFormModal, deviceImportFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// 搜索参数
-const searchParams = ref({
+const queryParams = ref({
   deviceName: '',
   nickname: '',
   productId: undefined as number | undefined,
   deviceType: undefined as number | undefined,
   status: undefined as number | undefined,
   groupId: undefined as number | undefined,
-});
+}); // 搜索参数
 
 // 获取字典选项
+// TODO @haohao：直接使用 getDictOptions 哈，不用包装方法；
 const getIntDictOptions = (dictType: string) => {
   return getDictOptions(dictType, 'number');
 };
@@ -82,23 +81,22 @@ const getIntDictOptions = (dictType: string) => {
 /** 搜索 */
 function handleSearch() {
   if (viewMode.value === 'list') {
-    gridApi.formApi.setValues(searchParams.value);
+    gridApi.formApi.setValues(queryParams.value);
     gridApi.query();
   } else {
-    cardViewRef.value?.search(searchParams.value);
+    // todo @haohao：改成 query 方法，更统一；
+    cardViewRef.value?.search(queryParams.value);
   }
 }
 
 /** 重置 */
 function handleReset() {
-  searchParams.value = {
-    deviceName: '',
-    nickname: '',
-    productId: undefined,
-    deviceType: undefined,
-    status: undefined,
-    groupId: undefined,
-  };
+  queryParams.value.deviceName = '';
+  queryParams.value.nickname = '';
+  queryParams.value.productId = undefined;
+  queryParams.value.deviceType = undefined;
+  queryParams.value.status = undefined;
+  queryParams.value.groupId = undefined;
   handleSearch();
 }
 
@@ -113,7 +111,7 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportDeviceExcel(searchParams.value);
+  const data = await exportDeviceExcel(queryParams.value);
   downloadFileFromBlobPart({ fileName: '物联网设备.xls', source: data });
 }
 
@@ -142,18 +140,18 @@ function handleCreate() {
 }
 
 /** 编辑设备 */
-function handleEdit(row: any) {
+function handleEdit(row: IotDeviceApi.Device) {
   deviceFormModalApi.setData(row).open();
 }
 
 /** 删除设备 */
-async function handleDelete(row: any) {
+async function handleDelete(row: IotDeviceApi.Device) {
   const hideLoading = message.loading({
-    content: `正在删除设备...`,
+    content: $t('ui.actionMessage.deleting', [row.deviceName]),
     duration: 0,
   });
   try {
-    await deleteDevice(row.id);
+    await deleteDevice(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } finally {
@@ -163,7 +161,8 @@ async function handleDelete(row: any) {
 
 /** 批量删除设备 */
 async function handleDeleteBatch() {
-  const checkedRows = gridApi.grid?.getCheckboxRecords() || [];
+  const checkedRows = (gridApi.grid?.getCheckboxRecords() ||
+    []) as IotDeviceApi.Device[];
   if (checkedRows.length === 0) {
     message.warning('请选择要删除的设备');
     return;
@@ -173,7 +172,7 @@ async function handleDeleteBatch() {
     duration: 0,
   });
   try {
-    const ids = checkedRows.map((row: any) => row.id);
+    const ids = checkedRows.map((row) => row.id!);
     await deleteDeviceList(ids);
     message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
@@ -184,12 +183,13 @@ async function handleDeleteBatch() {
 
 /** 添加到分组 */
 function handleAddToGroup() {
-  const checkedRows = gridApi.grid?.getCheckboxRecords() || [];
+  const checkedRows = (gridApi.grid?.getCheckboxRecords() ||
+    []) as IotDeviceApi.Device[];
   if (checkedRows.length === 0) {
     message.warning('请选择要添加到分组的设备');
     return;
   }
-  const ids = checkedRows.map((row: any) => row.id);
+  const ids = checkedRows.map((row) => row.id!);
   deviceGroupFormModalApi.setData(ids).open();
 }
 
@@ -199,9 +199,6 @@ function handleImport() {
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: {
-    schema: [],
-  },
   gridOptions: {
     checkboxConfig: {
       highlight: true,
@@ -216,7 +213,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getDevicePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...searchParams.value,
+            ...queryParams.value,
           });
         },
       },
@@ -229,7 +226,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<IotDeviceApi.Device>,
 });
 
 /** 初始化 */
@@ -242,7 +239,7 @@ onMounted(async () => {
   // 处理 productId 参数
   const { productId } = route.query;
   if (productId) {
-    searchParams.value.productId = Number(productId);
+    queryParams.value.productId = Number(productId);
     // 自动触发搜索
     handleSearch();
   }
@@ -260,7 +257,7 @@ onMounted(async () => {
       <!-- 搜索表单 -->
       <div class="mb-3 flex flex-wrap items-center gap-3">
         <Select
-          v-model:value="searchParams.productId"
+          v-model:value="queryParams.productId"
           placeholder="请选择产品"
           allow-clear
           style="width: 200px"
@@ -274,21 +271,21 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Input
-          v-model:value="searchParams.deviceName"
+          v-model:value="queryParams.deviceName"
           placeholder="请输入 DeviceName"
           allow-clear
           style="width: 200px"
           @press-enter="handleSearch"
         />
         <Input
-          v-model:value="searchParams.nickname"
+          v-model:value="queryParams.nickname"
           placeholder="请输入备注名称"
           allow-clear
           style="width: 200px"
           @press-enter="handleSearch"
         />
         <Select
-          v-model:value="searchParams.deviceType"
+          v-model:value="queryParams.deviceType"
           placeholder="请选择设备类型"
           allow-clear
           style="width: 200px"
@@ -302,7 +299,7 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Select
-          v-model:value="searchParams.status"
+          v-model:value="queryParams.status"
           placeholder="请选择设备状态"
           allow-clear
           style="width: 200px"
@@ -316,7 +313,7 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Select
-          v-model:value="searchParams.groupId"
+          v-model:value="queryParams.groupId"
           placeholder="请选择设备分组"
           allow-clear
           style="width: 200px"
@@ -341,45 +338,50 @@ onMounted(async () => {
 
       <!-- 操作按钮 -->
       <div class="flex items-center justify-between">
-        <Space :size="12">
-          <Button
-            type="primary"
-            @click="handleCreate"
-            v-access:code="['iot:device:create']"
-          >
-            <IconifyIcon icon="ant-design:plus-outlined" class="mr-1" />
-            新增
-          </Button>
-          <Button
-            type="primary"
-            @click="handleExport"
-            v-access:code="['iot:device:export']"
-          >
-            <IconifyIcon icon="ant-design:download-outlined" class="mr-1" />
-            导出
-          </Button>
-          <Button @click="handleImport" v-access:code="['iot:device:import']">
-            <IconifyIcon icon="ant-design:upload-outlined" class="mr-1" />
-            导入
-          </Button>
-          <Button
-            v-show="viewMode === 'list'"
-            @click="handleAddToGroup"
-            v-access:code="['iot:device:update']"
-          >
-            <IconifyIcon icon="ant-design:folder-add-outlined" class="mr-1" />
-            添加到分组
-          </Button>
-          <Button
-            v-show="viewMode === 'list'"
-            danger
-            @click="handleDeleteBatch"
-            v-access:code="['iot:device:delete']"
-          >
-            <IconifyIcon icon="ant-design:delete-outlined" class="mr-1" />
-            批量删除
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: '新增',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['iot:device:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: '导出',
+              type: 'primary',
+              icon: ACTION_ICON.DOWNLOAD,
+              auth: ['iot:device:export'],
+              onClick: handleExport,
+            },
+            {
+              label: '导入',
+              type: 'primary',
+              icon: ACTION_ICON.UPLOAD,
+              auth: ['iot:device:import'],
+              onClick: handleImport,
+            },
+            // TODO @haohao：应该是选中后，才可用
+            {
+              label: '添加到分组',
+              type: 'primary',
+              icon: 'ant-design:folder-add-outlined',
+              auth: ['iot:device:update'],
+              ifShow: () => viewMode === 'list',
+              onClick: handleAddToGroup,
+            },
+            // TODO @haohao：应该是选中后，才可用；然后，然后 danger 颜色；
+            {
+              label: '批量删除',
+              type: 'primary',
+              color: 'error',
+              icon: ACTION_ICON.DELETE,
+              auth: ['iot:device:delete'],
+              ifShow: () => viewMode === 'list',
+              onClick: handleDeleteBatch,
+            },
+          ]"
+        />
 
         <!-- 视图切换 -->
         <Space :size="4">
@@ -399,7 +401,7 @@ onMounted(async () => {
       </div>
     </Card>
 
-    <Grid v-show="viewMode === 'list'">
+    <Grid table-title="设备列表" v-show="viewMode === 'list'">
       <template #toolbar-tools>
         <div></div>
       </template>
@@ -436,12 +438,12 @@ onMounted(async () => {
             {
               label: '查看',
               type: 'link',
-              onClick: openDetail.bind(null, row.id),
+              onClick: openDetail.bind(null, row.id!),
             },
             {
               label: '日志',
               type: 'link',
-              onClick: openModel.bind(null, row.id),
+              onClick: openModel.bind(null, row.id!),
             },
             {
               label: $t('common.edit'),
@@ -455,7 +457,7 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               popConfirm: {
-                title: `确认删除设备吗?`,
+                title: `确认删除设备 ${row.deviceName} 吗?`,
                 confirm: handleDelete.bind(null, row),
               },
             },
@@ -470,7 +472,7 @@ onMounted(async () => {
       ref="cardViewRef"
       :products="products"
       :device-groups="deviceGroups"
-      :search-params="searchParams"
+      :search-params="queryParams"
       @create="handleCreate"
       @edit="handleEdit"
       @delete="handleDelete"

@@ -69,6 +69,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<IotProductCategoryApi.ProductCategory>();
     if (!data || !data.id) {
       // 新增模式：设置默认值
+      // TODO @AI：可以参考部门，进一步简化代码；通过 defaultValue 在 schema 里设置默认值
       formData.value = undefined;
       await formApi.setValues({
         sort: 0,
