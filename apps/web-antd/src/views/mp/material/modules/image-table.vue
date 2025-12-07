@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   delete: [v: number];
+  refresh: [];
 }>();
 
 const columns = useImageGridColumns();
@@ -35,6 +36,21 @@ const [Grid, gridApi] = useVbenVxeGrid<MpMaterialApi.Material>({
       refresh: true,
     },
     showOverflow: 'tooltip',
+    proxyConfig: {
+      ajax: {
+        query: async () => {
+          // 数据由父组件管理，触发刷新事件后返回当前数据
+          emit('refresh');
+          // 返回当前数据，避免覆盖
+          return {
+            list: Array.isArray(props.list) ? props.list : [],
+            total: props.list?.length || 0,
+          };
+        },
+      },
+      enabled: true,
+      autoLoad: false,
+    },
   },
 });
 
@@ -53,7 +69,7 @@ watch(
     await nextTick();
     updateGridData(data);
   },
-  { flush: 'post' },
+  { immediate: true, flush: 'post' },
 );
 
 watch(

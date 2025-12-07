@@ -20,18 +20,17 @@ import {
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
-// TODO @dylan：是不是要和 antd 的 props 定义相同哈？这样后续两侧维护方便点
 withDefaults(
   defineProps<{
-    modelValue?: boolean;
+    open?: boolean;
   }>(),
   {
-    modelValue: false,
+    open: false,
   },
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [v: boolean];
+  'update:open': [v: boolean];
   uploaded: [v: void];
 }>();
 
@@ -45,7 +44,7 @@ const uploadRules = {
 };
 
 function handleCancel() {
-  emit('update:modelValue', false);
+  emit('update:open', false);
 }
 
 const fileList = ref<any[]>([]);
@@ -87,7 +86,11 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
 
     if (res.code !== 0) {
       ElMessage.error(`上传出错：${res.msg}`);
-      onError?.(new Error(res.msg));
+      const error = new Error(res.msg) as any;
+      error.status = 200;
+      error.method = 'POST';
+      error.url = UPLOAD_URL;
+      onError?.(error);
       return;
     }
 
@@ -96,7 +99,7 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
     uploadData.title = '';
     uploadData.introduction = '';
 
-    emit('update:modelValue', false);
+    emit('update:open', false);
     ElMessage.success('上传成功');
     onSuccess?.(res);
     emit('uploaded');
@@ -109,7 +112,7 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
 
 <template>
   <ElDialog
-    :model-value="modelValue"
+    :model-value="open"
     title="新建视频"
     width="600px"
     @close="handleCancel"

@@ -118,7 +118,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <ImageTable :list="list" :loading="loading" @delete="handleDelete">
+            <ImageTable
+              :key="`image-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -149,7 +155,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VoiceTable :list="list" :loading="loading" @delete="handleDelete">
+            <VoiceTable
+              :key="`voice-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <UploadFile
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
@@ -180,7 +192,13 @@ async function handleDelete(id: number) {
               </span>
             </template>
             <!-- 列表 -->
-            <VideoTable :list="list" :loading="loading" @delete="handleDelete">
+            <VideoTable
+              :key="`video-${type}`"
+              :list="list"
+              :loading="loading"
+              @delete="handleDelete"
+              @refresh="getList"
+            >
               <template #toolbar-tools>
                 <Button
                   v-if="hasAccessByCodes(['mp:material:upload-permanent'])"
