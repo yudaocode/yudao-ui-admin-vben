@@ -12,6 +12,8 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, Card, Input, message, Space } from 'ant-design-vue';
 
+import { ProductStatusEnum } from '@vben/constants';
+
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 import {
@@ -253,6 +255,7 @@ onMounted(() => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              disabled: row.status === ProductStatusEnum.PUBLISHED,
               popConfirm: {
                 title: `确认删除产品 ${row.name} 吗?`,
                 confirm: handleDelete.bind(null, row),

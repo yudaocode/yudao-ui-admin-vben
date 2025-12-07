@@ -7,10 +7,9 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
-import {
-  DeviceTypeEnum,
-  getSimpleProductList,
-} from '#/api/iot/product/product';
+import { DeviceTypeEnum } from '@vben/constants';
+
+import { getSimpleProductList } from '#/api/iot/product/product';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -33,6 +32,10 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         placeholder: '请选择产品',
       },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values: any) => !!values?.id,
+      },
       rules: 'required',
     },
     {
@@ -41,6 +44,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入 DeviceName',
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values: any) => !!values?.id,
       },
       rules: z
         .string()

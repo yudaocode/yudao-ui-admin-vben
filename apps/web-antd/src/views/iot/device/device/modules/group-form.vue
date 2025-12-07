@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import { updateDeviceGroup } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
@@ -28,6 +29,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [Modal, modalApi] = useVbenModal({
+  /** 提交表单 */
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -41,7 +43,6 @@ const [Modal, modalApi] = useVbenModal({
         ids: deviceIds.value,
         groupIds: data.groupIds as number[],
       });
-      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -49,6 +50,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  /** 弹窗打开/关闭 */
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       deviceIds.value = [];

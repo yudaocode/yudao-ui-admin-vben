@@ -21,14 +21,16 @@ import {
   Textarea,
 } from 'ant-design-vue';
 
-import { DeviceStateEnum, sendDeviceMessage } from '#/api/iot/device/device';
-import DataDefinition from '#/views/iot/thingmodel/modules/components/data-definition.vue';
+import { DeviceStateEnum } from '@vben/constants';
+
+import { sendDeviceMessage } from '#/api/iot/device/device';
+import DataDefinition from '../../../../../thingmodel/modules/components/data-definition.vue';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import DeviceDetailsMessage from './device-details-message.vue';
+import DeviceDetailsMessage from './message.vue';
 
 const props = defineProps<{
   device: IotDeviceApi.Device;

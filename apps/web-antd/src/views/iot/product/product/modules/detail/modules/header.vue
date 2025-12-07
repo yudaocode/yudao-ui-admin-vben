@@ -7,10 +7,9 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
 
-import {
-  ProductStatusEnum,
-  updateProductStatus,
-} from '#/api/iot/product/product';
+import { ProductStatusEnum } from '@vben/constants';
+
+import { updateProductStatus } from '#/api/iot/product/product';
 
 import Form from '../../form.vue';
 

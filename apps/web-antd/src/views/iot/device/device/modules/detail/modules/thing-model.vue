@@ -1,5 +1,5 @@
 <!-- 设备物模型：设备属性、事件管理、服务调用 -->
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { ref } from 'vue';
@@ -8,9 +8,9 @@ import { ContentWrap } from '@vben/common-ui';
 
 import { Tabs } from 'ant-design-vue';
 
-import DeviceDetailsThingModelEvent from './device-details-thing-model-event.vue';
-import DeviceDetailsThingModelProperty from './device-details-thing-model-property.vue';
-import DeviceDetailsThingModelService from './device-details-thing-model-service.vue';
+import DeviceDetailsThingModelEvent from './thing-model-event.vue';
+import DeviceDetailsThingModelProperty from './thing-model-property.vue';
+import DeviceDetailsThingModelService from './thing-model-service.vue';
 
 const props = defineProps<{
   deviceId: number;

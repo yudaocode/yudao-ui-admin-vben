@@ -3,11 +3,16 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
+import { useVbenForm } from '#/adapter/form';
+import {
+  createDevice,
+  getDevice,
+  updateDevice,
+} from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -15,9 +20,11 @@ import { useFormSchema } from '../data';
 defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<any>();
+const formData = ref<IotDeviceApi.Device>();
 const getTitle = computed(() => {
-  return formData.value?.id ? '编辑设备' : '新增设备';
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['设备'])
+    : $t('ui.actionTitle.create', ['设备']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -33,6 +40,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [Modal, modalApi] = useVbenModal({
+  /** 提交表单 */
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -43,7 +51,6 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as IotDeviceApi.Device;
     try {
       await (formData.value?.id ? updateDevice(data) : createDevice(data));
-      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -51,20 +58,23 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  /** 弹窗打开/关闭 */
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       return;
     }
     // 加载数据
-    const data = modalApi.getData<any>();
+    const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
+      // 新增模式：设置默认值（如果需要）
+      formData.value = undefined;
       return;
     }
+    // 编辑模式：加载数据
     modalApi.lock();
     try {
       formData.value = await getDevice(data.id);
-      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
