@@ -137,6 +137,7 @@ onMounted(() => {
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品类型</span>
+                  <!-- TODO @AI：这个要不完全用字典的 dict-tag？ -->
                   <Tag
                     :color="getDeviceTypeColor(item.deviceType)"
                     class="info-tag m-0"
@@ -231,7 +232,7 @@ onMounted(() => {
     </div>
 
     <!-- 分页 -->
-    <div v-if="list.length > 0" class="flex justify-end">
+    <div v-if="list.length > 0" class="mt-3 flex justify-end">
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"
@@ -266,6 +267,7 @@ onMounted(() => {
       width: 36px;
       height: 36px;
       color: white;
+      // TODO @haohao：这里的紫色，和下面的紫色按钮，看看能不能换下。嘿嘿，感觉 AI 比较喜欢用紫色，但是放现有的后台，有点突兀
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 8px;
     }

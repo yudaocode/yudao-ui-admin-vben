@@ -24,9 +24,8 @@ import {
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
-import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
-
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
+import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 /** IoT 设备属性历史数据详情 */
@@ -43,16 +42,10 @@ const total = ref(0); // 总数据量
 const thingModelDataType = ref<string>(''); // 物模型数据类型
 const propertyIdentifier = ref<string>(''); // 属性标识符
 
-/** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
   dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
   dayjs().format('YYYY-MM-DD'),
-]);
-
-/** 将日期范围转换为带时分秒的格式 */
-function formatDateRangeWithTime(dates: [string, string]): [string, string] {
-  return [`${dates[0]} 00:00:00`, `${dates[1]} 23:59:59`];
-}
+]); // 时间范围（仅日期，不包含时分秒）
 
 const queryParams = reactive({
   deviceId: -1,
@@ -64,23 +57,21 @@ const queryParams = reactive({
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
-// 判断是否为复杂数据类型（struct 或 array）
 const isComplexDataType = computed(() => {
   if (!thingModelDataType.value) return false;
   return [
     IoTDataSpecsDataTypeEnum.ARRAY,
     IoTDataSpecsDataTypeEnum.STRUCT,
   ].includes(thingModelDataType.value as any);
-});
+}); // 判断是否为复杂数据类型（struct 或 array）
 
-// 统计数据
 const maxValue = computed(() => {
   if (isComplexDataType.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
     .filter((v) => !Number.isNaN(v));
   return values.length > 0 ? Math.max(...values).toFixed(2) : '-';
-});
+}); // 统计数据
 
 const minValue = computed(() => {
   if (isComplexDataType.value || list.value.length === 0) return '-';
@@ -99,6 +90,11 @@ const avgValue = computed(() => {
   const sum = values.reduce((acc, val) => acc + val, 0);
   return (sum / values.length).toFixed(2);
 });
+
+/** 将日期范围转换为带时分秒的格式 */
+function formatDateRangeWithTime(dates: [string, string]): [string, string] {
+  return [`${dates[0]} 00:00:00`, `${dates[1]} 23:59:59`];
+}
 
 // 表格列配置
 const tableColumns = computed(() => [
@@ -409,7 +405,9 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
         <Space :size="12" class="w-full" wrap>
           <!-- 时间选择 -->
           <div class="flex items-center gap-3">
-            <span class="whitespace-nowrap text-sm text-gray-500">时间范围</span>
+            <span class="whitespace-nowrap text-sm text-gray-500">
+              时间范围
+            </span>
             <ShortcutDateRangePicker @change="handleDateRangeChange" />
           </div>
 
@@ -531,7 +529,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
   .chart-container,
   .table-container {
     padding: 16px;
-    background-color: hsl(var(--card));
+    background-color: hsl(var(--card)); // TODO @haohao：看看这个能不能 fix 下~ idea 爆红了；
     border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
   }

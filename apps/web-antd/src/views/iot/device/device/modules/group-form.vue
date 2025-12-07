@@ -29,7 +29,6 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [Modal, modalApi] = useVbenModal({
-  /** 提交表单 */
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -43,6 +42,7 @@ const [Modal, modalApi] = useVbenModal({
         ids: deviceIds.value,
         groupIds: data.groupIds as number[],
       });
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -50,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  /** 弹窗打开/关闭 */
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       deviceIds.value = [];

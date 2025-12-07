@@ -63,17 +63,17 @@ const [DeviceImportFormModal, deviceImportFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// 搜索参数
-const searchParams = ref({
+const queryParams = ref({
   deviceName: '',
   nickname: '',
   productId: undefined as number | undefined,
   deviceType: undefined as number | undefined,
   status: undefined as number | undefined,
   groupId: undefined as number | undefined,
-});
+}); // 搜索参数
 
 // 获取字典选项
+// TODO @haohao：直接使用 getDictOptions 哈，不用包装方法；
 const getIntDictOptions = (dictType: string) => {
   return getDictOptions(dictType, 'number');
 };
@@ -81,21 +81,22 @@ const getIntDictOptions = (dictType: string) => {
 /** 搜索 */
 function handleSearch() {
   if (viewMode.value === 'list') {
-    gridApi.formApi.setValues(searchParams.value);
+    gridApi.formApi.setValues(queryParams.value);
     gridApi.query();
   } else {
-    cardViewRef.value?.search(searchParams.value);
+    // todo @haohao：改成 query 方法，更统一；
+    cardViewRef.value?.search(queryParams.value);
   }
 }
 
 /** 重置 */
 function handleReset() {
-  searchParams.value.deviceName = '';
-  searchParams.value.nickname = '';
-  searchParams.value.productId = undefined;
-  searchParams.value.deviceType = undefined;
-  searchParams.value.status = undefined;
-  searchParams.value.groupId = undefined;
+  queryParams.value.deviceName = '';
+  queryParams.value.nickname = '';
+  queryParams.value.productId = undefined;
+  queryParams.value.deviceType = undefined;
+  queryParams.value.status = undefined;
+  queryParams.value.groupId = undefined;
   handleSearch();
 }
 
@@ -110,7 +111,7 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportDeviceExcel(searchParams.value);
+  const data = await exportDeviceExcel(queryParams.value);
   downloadFileFromBlobPart({ fileName: '物联网设备.xls', source: data });
 }
 
@@ -212,7 +213,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getDevicePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...searchParams.value,
+            ...queryParams.value,
           });
         },
       },
@@ -238,7 +239,7 @@ onMounted(async () => {
   // 处理 productId 参数
   const { productId } = route.query;
   if (productId) {
-    searchParams.value.productId = Number(productId);
+    queryParams.value.productId = Number(productId);
     // 自动触发搜索
     handleSearch();
   }
@@ -256,7 +257,7 @@ onMounted(async () => {
       <!-- 搜索表单 -->
       <div class="mb-3 flex flex-wrap items-center gap-3">
         <Select
-          v-model:value="searchParams.productId"
+          v-model:value="queryParams.productId"
           placeholder="请选择产品"
           allow-clear
           style="width: 200px"
@@ -270,21 +271,21 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Input
-          v-model:value="searchParams.deviceName"
+          v-model:value="queryParams.deviceName"
           placeholder="请输入 DeviceName"
           allow-clear
           style="width: 200px"
           @press-enter="handleSearch"
         />
         <Input
-          v-model:value="searchParams.nickname"
+          v-model:value="queryParams.nickname"
           placeholder="请输入备注名称"
           allow-clear
           style="width: 200px"
           @press-enter="handleSearch"
         />
         <Select
-          v-model:value="searchParams.deviceType"
+          v-model:value="queryParams.deviceType"
           placeholder="请选择设备类型"
           allow-clear
           style="width: 200px"
@@ -298,7 +299,7 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Select
-          v-model:value="searchParams.status"
+          v-model:value="queryParams.status"
           placeholder="请选择设备状态"
           allow-clear
           style="width: 200px"
@@ -312,7 +313,7 @@ onMounted(async () => {
           </Select.Option>
         </Select>
         <Select
-          v-model:value="searchParams.groupId"
+          v-model:value="queryParams.groupId"
           placeholder="请选择设备分组"
           allow-clear
           style="width: 200px"
@@ -360,6 +361,7 @@ onMounted(async () => {
               auth: ['iot:device:import'],
               onClick: handleImport,
             },
+            // TODO @haohao：应该是选中后，才可用
             {
               label: '添加到分组',
               type: 'primary',
@@ -368,6 +370,7 @@ onMounted(async () => {
               ifShow: () => viewMode === 'list',
               onClick: handleAddToGroup,
             },
+            // TODO @haohao：应该是选中后，才可用；然后，然后 danger 颜色；
             {
               label: '批量删除',
               type: 'primary',
@@ -398,7 +401,7 @@ onMounted(async () => {
       </div>
     </Card>
 
-    <Grid v-show="viewMode === 'list'">
+    <Grid table-title="设备列表" v-show="viewMode === 'list'">
       <template #toolbar-tools>
         <div></div>
       </template>
@@ -469,7 +472,7 @@ onMounted(async () => {
       ref="cardViewRef"
       :products="products"
       :device-groups="deviceGroups"
-      :search-params="searchParams"
+      :search-params="queryParams"
       @create="handleCreate"
       @edit="handleEdit"
       @delete="handleDelete"

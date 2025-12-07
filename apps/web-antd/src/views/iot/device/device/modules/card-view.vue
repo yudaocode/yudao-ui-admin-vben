@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+// TODO @haohao：product 的 card-view 的意见，这里看看要不要也改改下。
 import { onMounted, ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceStateEnum, DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictObj } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { isValidColor, TinyColor } from '@vben/utils';
@@ -17,8 +18,6 @@ import {
   Tag,
   Tooltip,
 } from 'ant-design-vue';
-
-import { DeviceStateEnum } from '@vben/constants';
 
 import { getDevicePage } from '#/api/iot/device/device';
 
@@ -180,6 +179,7 @@ function getDeviceTypeColor(deviceType: number) {
 }
 
 /** 获取设备状态信息 */
+// TODO @haohao：这里可以简化下么？体感看着有点复杂哈；
 function getStatusInfo(state: null | number | string | undefined) {
   const parsedState = Number(state);
   const hasNumericState = Number.isFinite(parsedState);
@@ -274,7 +274,7 @@ onMounted(() => {
                 <div class="info-item">
                   <span class="info-label">所属产品</span>
                   <a
-                    class="info-value text-primary cursor-pointer"
+                    class="info-value cursor-pointer text-primary"
                     @click="
                       (e) => {
                         e.stopPropagation();
@@ -301,10 +301,7 @@ onMounted(() => {
                 </div>
                 <div class="info-item">
                   <span class="info-label">Deviceid</span>
-                  <Tooltip
-                    :title="item.Deviceid || item.id"
-                    placement="top"
-                  >
+                  <Tooltip :title="item.Deviceid || item.id" placement="top">
                     <span class="info-value device-id cursor-pointer">
                       {{ item.Deviceid || item.id }}
                     </span>
@@ -359,7 +356,7 @@ onMounted(() => {
     </div>
 
     <!-- 分页 -->
-    <div v-if="list.length > 0" class="flex justify-end">
+    <div v-if="list.length > 0" class="mt-3 flex justify-end">
       <Pagination
         v-model:current="queryParams.pageNo"
         v-model:page-size="queryParams.pageSize"

@@ -341,6 +341,7 @@ async function handleServiceInvoke(row: ThingModelData) {
 <template>
   <ContentWrap>
     <!-- 上方：指令调试区域 -->
+    <!-- TODO @haohao：要不要改成左右； -->
     <Card class="simulator-tabs mb-4">
       <template #title>
         <div class="flex items-center justify-between">

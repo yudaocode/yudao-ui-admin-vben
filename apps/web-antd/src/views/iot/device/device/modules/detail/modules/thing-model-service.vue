@@ -1,5 +1,6 @@
 <!-- 设备服务调用 -->
 <script lang="ts" setup>
+// TODO @haohao：看看能不能调整成 Grid 风格~方便 element-plus 的迁移
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, reactive, ref } from 'vue';

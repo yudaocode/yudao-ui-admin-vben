@@ -8,11 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createDevice,
-  getDevice,
-  updateDevice,
-} from '#/api/iot/device/device';
+import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -40,7 +36,6 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [Modal, modalApi] = useVbenModal({
-  /** 提交表单 */
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -51,6 +46,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as IotDeviceApi.Device;
     try {
       await (formData.value?.id ? updateDevice(data) : createDevice(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -58,7 +54,6 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  /** 弹窗打开/关闭 */
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
@@ -68,6 +63,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
       // 新增模式：设置默认值（如果需要）
+      // TODO @haohao：是不是 return 就好啦；不用这里 undefined 啦；
       formData.value = undefined;
       return;
     }

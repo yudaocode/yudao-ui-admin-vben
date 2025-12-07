@@ -1,5 +1,6 @@
 <!-- 设备事件管理 -->
 <script lang="ts" setup>
+// TODO @haohao：看看能不能用 Grid 实现下，方便 element-plus 迁移
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, reactive, ref } from 'vue';

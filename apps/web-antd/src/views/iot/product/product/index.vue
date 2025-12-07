@@ -7,12 +7,11 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, Card, Input, message, Space } from 'ant-design-vue';
-
-import { ProductStatusEnum } from '@vben/constants';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
@@ -33,7 +32,7 @@ const router = useRouter();
 const categoryList = ref<IotProductCategoryApi.ProductCategory[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
-const searchParams = ref({
+const queryParams = ref({
   name: '',
   productKey: '',
 }); // 搜索参数
@@ -51,17 +50,18 @@ async function loadCategories() {
 /** 搜索产品 */
 function handleSearch() {
   if (viewMode.value === 'list') {
-    gridApi.formApi.setValues(searchParams.value);
+    gridApi.formApi.setValues(queryParams.value);
     gridApi.query();
   } else {
-    cardViewRef.value?.search(searchParams.value);
+    // TODO @haohao：要不 search 也改成 query 方法，更统一一点哈。
+    cardViewRef.value?.search(queryParams.value);
   }
 }
 
 /** 重置搜索 */
 function handleReset() {
-  searchParams.value.name = '';
-  searchParams.value.productKey = '';
+  queryParams.value.name = '';
+  queryParams.value.productKey = '';
   handleSearch();
 }
 
@@ -76,7 +76,7 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportProduct(searchParams.value);
+  const data = await exportProduct(queryParams.value);
   downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
 }
 
@@ -133,7 +133,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getProductPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...searchParams.value,
+            ...queryParams.value,
           });
         },
       },
@@ -164,7 +164,7 @@ onMounted(() => {
       <!-- 搜索表单 -->
       <div class="mb-3 flex items-center gap-3">
         <Input
-          v-model:value="searchParams.name"
+          v-model:value="queryParams.name"
           placeholder="请输入产品名称"
           allow-clear
           class="w-[220px]"
@@ -175,7 +175,7 @@ onMounted(() => {
           </template>
         </Input>
         <Input
-          v-model:value="searchParams.productKey"
+          v-model:value="queryParams.productKey"
           placeholder="请输入产品标识"
           allow-clear
           class="w-[220px]"
@@ -230,7 +230,7 @@ onMounted(() => {
       </div>
     </Card>
 
-    <Grid v-show="viewMode === 'list'">
+    <Grid table-title="产品列表" v-show="viewMode === 'list'">
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -271,14 +271,13 @@ onMounted(() => {
       v-show="viewMode === 'card'"
       ref="cardViewRef"
       :category-list="categoryList"
-      :search-params="searchParams"
+      :search-params="queryParams"
       @create="handleCreate"
       @edit="handleEdit"
       @delete="handleDelete"
       @detail="openProductDetail"
       @thing-model="openThingModel"
     />
-
   </Page>
 </template>
 <style scoped>
