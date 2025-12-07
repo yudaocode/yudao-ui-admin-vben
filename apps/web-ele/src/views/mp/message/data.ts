@@ -5,6 +5,8 @@ import type { MpMessageApi } from '#/api/mp/message';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { getRangePickerDefaultProps } from '#/utils';
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -37,10 +39,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '创建时间',
       component: 'RangePicker',
       componentProps: {
-        type: 'datetimerange',
-        rangeSeparator: '至',
-        startPlaceholder: '开始时间',
-        endPlaceholder: '结束时间',
+        ...getRangePickerDefaultProps(),
+        clearable: true,
       },
     },
   ];
@@ -92,4 +92,3 @@ export function useGridColumns(): VxeTableGridOptions<MpMessageApi.Message>['col
     },
   ];
 }
-

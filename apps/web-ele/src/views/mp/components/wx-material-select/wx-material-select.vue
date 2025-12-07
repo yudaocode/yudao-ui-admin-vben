@@ -36,6 +36,7 @@ const emit = defineEmits<{
 const loading = ref(false); // 遮罩层
 const total = ref(0); // 总条数
 const list = ref<any[]>([]); // 数据列表
+// TODO @dlyan @AI：这里是不是应该都用 grid；
 const queryParams = reactive({
   accountId: props.accountId,
   pageNo: 1,

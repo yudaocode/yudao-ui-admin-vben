@@ -6,6 +6,7 @@ import { nextTick, onMounted, watch } from 'vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { useImageGridColumns } from './data';
+import {$t} from '@vben/locales';
 
 const props = defineProps<{
   list: MpMaterialApi.Material[];
@@ -105,7 +106,7 @@ onMounted(async () => {
       <TableAction
         :actions="[
           {
-            label: '删除',
+            label: $t('common.delete'),
             type: 'link',
             danger: true,
             icon: ACTION_ICON.DELETE,

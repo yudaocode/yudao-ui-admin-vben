@@ -108,7 +108,7 @@ onMounted(async () => {
         :actions="[
           {
             label: $t('common.delete'),
-            type: 'primary',
+            type: 'danger',
             link: true,
             icon: ACTION_ICON.DELETE,
             auth: ['mp:material:delete'],
