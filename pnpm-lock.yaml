@@ -322,8 +322,8 @@ catalogs:
       specifier: ^10.5.1
       version: 10.6.1
     execa:
-      specifier: ^9.6.0
-      version: 9.6.0
+      specifier: ^9.6.1
+      version: 9.6.1
     fast-xml-parser:
       specifier: ^4.5.3
       version: 4.5.3
@@ -1307,7 +1307,7 @@ importers:
         version: 1.11.19
       execa:
         specifier: 'catalog:'
-        version: 9.6.0
+        version: 9.6.1
       find-up:
         specifier: 'catalog:'
         version: 7.0.0
@@ -7259,6 +7259,10 @@ packages:
 
   execa@9.6.0:
     resolution: {integrity: sha512-jpWzZ1ZhwUmeWRhS7Qv3mhpOhLfwI+uAX4e5fOcXqwMR7EcJ0pj2kV1CVzHVMX/LphnKWD3LObjZCoJ71lKpHw==}
+    engines: {node: ^18.19.0 || >=20.5.0}
+
+  execa@9.6.1:
+    resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
     engines: {node: ^18.19.0 || >=20.5.0}
 
   expand-tilde@2.0.2:
@@ -17675,6 +17679,21 @@ snapshots:
       strip-final-newline: 3.0.0
 
   execa@9.6.0:
+    dependencies:
+      '@sindresorhus/merge-streams': 4.0.0
+      cross-spawn: 7.0.6
+      figures: 6.1.0
+      get-stream: 9.0.1
+      human-signals: 8.0.1
+      is-plain-obj: 4.1.0
+      is-stream: 4.0.1
+      npm-run-path: 6.0.0
+      pretty-ms: 9.3.0
+      signal-exit: 4.1.0
+      strip-final-newline: 4.0.0
+      yoctocolors: 2.1.2
+
+  execa@9.6.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       cross-spawn: 7.0.6

@@ -126,7 +126,7 @@ catalog:
   eslint-plugin-unused-imports: ^4.3.0
   eslint-plugin-vitest: ^0.5.4
   eslint-plugin-vue: ^10.5.1
-  execa: ^9.6.0
+  execa: ^9.6.1
   fast-xml-parser: ^4.5.3
   find-up: ^7.0.0
   get-port: ^7.1.0
