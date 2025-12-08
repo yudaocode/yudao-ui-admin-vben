@@ -6,7 +6,7 @@ import { nextTick, onMounted, watch } from 'vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 
 import { useImageGridColumns } from './data';
-import {$t} from '@vben/locales';
+import { $t } from '@vben/locales';
 
 const props = defineProps<{
   list: MpMaterialApi.Material[];

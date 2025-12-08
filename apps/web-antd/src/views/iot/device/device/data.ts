@@ -1,14 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
-import { DeviceTypeEnum } from '@vben/constants';
-
 import { getSimpleProductList } from '#/api/iot/product/product';
 
 /** 新增/修改的表单 */

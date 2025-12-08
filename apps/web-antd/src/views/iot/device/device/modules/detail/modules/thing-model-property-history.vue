@@ -529,7 +529,10 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
   .chart-container,
   .table-container {
     padding: 16px;
-    background-color: hsl(var(--card)); // TODO @haohao：看看这个能不能 fix 下~ idea 爆红了；
+    background-color: hsl(
+      var(--card)
+    ); // TODO @haohao：看看这个能不能 fix 下~ idea 爆红了；
+
     border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
   }

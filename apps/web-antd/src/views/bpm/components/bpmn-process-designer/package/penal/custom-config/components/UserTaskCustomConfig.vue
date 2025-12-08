@@ -8,17 +8,20 @@
      7. 是否需要签名
 -->
 <script lang="ts" setup>
+import type { ComponentPublicInstance } from 'vue';
+
 import type { SystemUserApi } from '#/api/system/user';
-import type { ButtonSetting } from '#/views/bpm/components/simple-process-design/consts';
 
 import { inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
 import { BpmModelFormType } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   Button,
   Divider,
   Form,
+  Input,
   Radio,
   RadioGroup,
   Select,
@@ -74,15 +77,67 @@ const assignEmptyUserIdsEl = ref<any>();
 const assignEmptyUserIds = ref<any>();
 
 // 操作按钮
-const buttonsSettingEl = ref<any>();
-const { btnDisplayNameEdit, changeBtnDisplayName } = useButtonsSetting();
-const btnDisplayNameBlurEvent = (index: number) => {
-  btnDisplayNameEdit.value[index] = false;
-  const buttonItem = buttonsSettingEl.value[index];
-  buttonItem.displayName =
-    buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
-  updateElementExtensions();
-};
+// const buttonsSettingEl = ref<any>();
+// const { btnDisplayNameEdit, changeBtnDisplayName } = useButtonsSetting();
+// const btnDisplayNameBlurEvent = (index: number) => {
+//   btnDisplayNameEdit.value[index] = false;
+//   const buttonItem = buttonsSettingEl.value[index];
+//   buttonItem.displayName =
+//     buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+//   updateElementExtensions();
+// };
+
+// 操作按钮设置
+const {
+  buttonsSetting,
+  btnDisplayNameEdit,
+  changeBtnDisplayName,
+  btnDisplayNameBlurEvent,
+  setInputRef,
+} = useButtonsSetting();
+
+/** 操作按钮设置 */
+function useButtonsSetting() {
+  const buttonsSetting = ref<any[]>([]);
+  // 操作按钮显示名称可编辑
+  const btnDisplayNameEdit = ref<boolean[]>([]);
+  // 输入框的引用数组 - 内部使用，不暴露出去
+  const _btnDisplayNameInputRefs = ref<Array<HTMLInputElement | null>>([]);
+
+  const changeBtnDisplayName = (index: number) => {
+    btnDisplayNameEdit.value[index] = true;
+    // 输入框自动聚集
+    nextTick(() => {
+      if (_btnDisplayNameInputRefs.value[index]) {
+        _btnDisplayNameInputRefs.value[index]?.focus();
+      }
+    });
+  };
+
+  const btnDisplayNameBlurEvent = (index: number) => {
+    btnDisplayNameEdit.value[index] = false;
+    const buttonItem = buttonsSetting.value![index];
+    if (buttonItem)
+      buttonItem.displayName =
+        buttonItem.displayName || OPERATION_BUTTON_NAME.get(buttonItem.id)!;
+  };
+
+  // 设置 ref 引用的方法
+  const setInputRef = (
+    el: ComponentPublicInstance | Element | null,
+    index: number,
+  ) => {
+    _btnDisplayNameInputRefs.value[index] = el as HTMLInputElement;
+  };
+
+  return {
+    buttonsSetting,
+    btnDisplayNameEdit,
+    changeBtnDisplayName,
+    btnDisplayNameBlurEvent,
+    setInputRef,
+  };
+}
 
 // 字段权限
 const fieldsPermissionEl = ref<any[]>([]);
@@ -178,12 +233,12 @@ const resetCustomConfigList = () => {
     });
 
   // 操作按钮
-  buttonsSettingEl.value = elExtensionElements.value.values?.filter(
+  buttonsSetting.value = elExtensionElements.value.values?.filter(
     (ex: any) => ex.$type === `${prefix}:ButtonsSetting`,
   );
-  if (buttonsSettingEl.value.length === 0) {
+  if (buttonsSetting.value.length === 0) {
     DEFAULT_BUTTON_SETTING.forEach((item) => {
-      buttonsSettingEl.value.push(
+      buttonsSetting.value.push(
         bpmnInstances().moddle.create(`${prefix}:ButtonsSetting`, {
           'flowable:id': item.id,
           'flowable:displayName': item.displayName,
@@ -226,7 +281,7 @@ const resetCustomConfigList = () => {
 
   // 保留剩余扩展元素，便于后面更新该元素对应属性
   otherExtensions.value =
-    elExtensionElements.value.values?.find(
+    elExtensionElements.value.values?.filter(
       (ex: any) =>
         ex.$type !== `${prefix}:AssignStartUserHandlerType` &&
         ex.$type !== `${prefix}:RejectHandlerType` &&
@@ -287,7 +342,7 @@ const updateElementExtensions = () => {
       assignEmptyHandlerTypeEl.value,
       assignEmptyUserIdsEl.value,
       approveType.value,
-      ...buttonsSettingEl.value,
+      ...buttonsSetting.value,
       ...fieldsPermissionEl.value,
       signEnable.value,
       reasonRequire.value,
@@ -357,19 +412,19 @@ function findAllPredecessorsExcludingStart(elementId: string, modeler: any) {
   return [...predecessors]; // 返回前置节点数组
 }
 
-function useButtonsSetting() {
-  const buttonsSetting = ref<ButtonSetting[]>();
-  // 操作按钮显示名称可编辑
-  const btnDisplayNameEdit = ref<boolean[]>([]);
-  const changeBtnDisplayName = (index: number) => {
-    btnDisplayNameEdit.value[index] = true;
-  };
-  return {
-    buttonsSetting,
-    btnDisplayNameEdit,
-    changeBtnDisplayName,
-  };
-}
+// function useButtonsSetting() {
+//   const buttonsSetting = ref<ButtonSetting[]>();
+//   // 操作按钮显示名称可编辑
+//   const btnDisplayNameEdit = ref<boolean[]>([]);
+//   const changeBtnDisplayName = (index: number) => {
+//     btnDisplayNameEdit.value[index] = true;
+//   };
+//   return {
+//     buttonsSetting,
+//     btnDisplayNameEdit,
+//     changeBtnDisplayName,
+//   };
+// }
 
 /** 批量更新权限 */
 const updatePermission = (type: string) => {
@@ -413,13 +468,13 @@ onMounted(async () => {
         :disabled="returnTaskList.length === 0"
         @change="updateRejectHandlerType"
       >
-        <div class="flex-col">
-          <div v-for="(item, index) in REJECT_HANDLER_TYPES" :key="index">
-            <Radio :key="item.value" :value="item.value">
-              {{ item.label }}
-            </Radio>
-          </div>
-        </div>
+        <Radio
+          v-for="(item, index) in REJECT_HANDLER_TYPES"
+          :key="index"
+          :value="item.value"
+        >
+          {{ item.label }}
+        </Radio>
       </RadioGroup>
     </Form.Item>
     <Form.Item
@@ -450,7 +505,7 @@ onMounted(async () => {
         v-model:value="assignEmptyHandlerType"
         @change="updateAssignEmptyHandlerType"
       >
-        <div class="flex-col">
+        <div class="flex flex-col gap-2">
           <div v-for="(item, index) in ASSIGN_EMPTY_HANDLER_TYPES" :key="index">
             <Radio :key="item.value" :value="item.value">
               {{ item.label }}
@@ -486,7 +541,7 @@ onMounted(async () => {
       v-model:value="assignStartUserHandlerType"
       @change="updateAssignStartUserHandlerType"
     >
-      <div class="flex-col">
+      <div class="flex flex-col gap-2">
         <div
           v-for="(item, index) in ASSIGN_START_USER_HANDLER_TYPES"
           :key="index"
@@ -499,35 +554,44 @@ onMounted(async () => {
     </RadioGroup>
 
     <Divider orientation="left">操作按钮</Divider>
-    <div class="button-setting-pane">
-      <div class="button-setting-title">
-        <div class="button-title-label">操作按钮</div>
-        <div class="button-title-label pl-4">显示名称</div>
-        <div class="button-title-label">启用</div>
-      </div>
+    <div class="mt-2 text-sm">
+      <!-- 头部标题行 -->
       <div
-        class="button-setting-item"
-        v-for="(item, index) in buttonsSettingEl"
-        :key="index"
+        class="flex items-center justify-between border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900"
       >
-        <div class="button-setting-item-label">
+        <div class="w-28 text-left">操作按钮</div>
+        <div class="w-40 pl-2 text-left">显示名称</div>
+        <div class="w-20 text-center">启用</div>
+      </div>
+
+      <!-- 按钮配置行 -->
+      <div
+        v-for="(item, index) in buttonsSetting"
+        :key="index"
+        class="flex items-center justify-between border border-t-0 border-slate-200 px-3 py-2 text-sm"
+      >
+        <div class="w-28 truncate text-left">
           {{ OPERATION_BUTTON_NAME.get(item.id) }}
         </div>
-        <div class="button-setting-item-label">
-          <input
-            type="text"
-            class="editable-title-input"
-            @blur="btnDisplayNameBlurEvent(index)"
-            v-mounted-focus
-            v-model="item.displayName"
-            :placeholder="item.displayName"
+        <div class="flex w-40 items-center truncate text-left">
+          <Input
             v-if="btnDisplayNameEdit[index]"
+            :ref="(el) => setInputRef(el, index)"
+            @blur="btnDisplayNameBlurEvent(index)"
+            @press-enter="btnDisplayNameBlurEvent(index)"
+            type="text"
+            v-model:value="item.displayName"
+            :placeholder="item.displayName"
+            class="max-w-32 focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           />
-          <Button v-else type="text" @click="changeBtnDisplayName(index)">
-            {{ item.displayName }}
+          <Button v-else @click="changeBtnDisplayName(index)">
+            <div class="flex items-center">
+              {{ item.displayName }}
+              <IconifyIcon icon="lucide:edit" class="ml-2" />
+            </div>
           </Button>
         </div>
-        <div class="button-setting-item-label">
+        <div class="flex w-20 items-center justify-center">
           <Switch
             v-model:checked="item.enable"
             @change="updateElementExtensions"
@@ -537,40 +601,50 @@ onMounted(async () => {
     </div>
 
     <Divider orientation="left">字段权限</Divider>
-    <div class="field-setting-pane" v-if="formType === BpmModelFormType.NORMAL">
-      <div class="field-permit-title">
-        <div class="setting-title-label first-title">字段名称</div>
-        <div class="other-titles">
+    <div v-if="formType === BpmModelFormType.NORMAL" class="mt-2 text-sm">
+      <!-- 头部标题行 -->
+      <div
+        class="flex items-center justify-between border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900"
+      >
+        <div class="w-28 text-left">字段名称</div>
+        <div class="flex flex-1 justify-between">
           <span
-            class="setting-title-label cursor-pointer"
+            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
             @click="updatePermission('READ')"
-            >只读
+          >
+            只读
           </span>
           <span
-            class="setting-title-label cursor-pointer"
+            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
             @click="updatePermission('WRITE')"
           >
             可编辑
           </span>
           <span
-            class="setting-title-label cursor-pointer"
+            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
             @click="updatePermission('NONE')"
-            >隐藏
+          >
+            隐藏
           </span>
         </div>
       </div>
+
+      <!-- 字段权限行 -->
       <div
-        class="field-setting-item"
         v-for="(item, index) in fieldsPermissionEl"
         :key="index"
+        class="flex items-center justify-between border border-t-0 border-slate-200 px-3 py-2 text-sm"
       >
-        <div class="field-setting-item-label">{{ item.title }}</div>
+        <div class="w-28 truncate text-left" :title="item.title">
+          {{ item.title }}
+        </div>
         <RadioGroup
-          class="field-setting-item-group"
           v-model:value="item.permission"
+          class="flex flex-1 justify-between"
         >
-          <div class="item-radio-wrap">
+          <div class="flex w-24 items-center justify-center">
             <Radio
+              class="ml-5"
               :value="FieldPermissionType.READ"
               size="large"
               @change="updateElementExtensions"
@@ -578,8 +652,9 @@ onMounted(async () => {
               <span></span>
             </Radio>
           </div>
-          <div class="item-radio-wrap">
+          <div class="flex w-24 items-center justify-center">
             <Radio
+              class="ml-5"
               :value="FieldPermissionType.WRITE"
               size="large"
               @change="updateElementExtensions"
@@ -587,8 +662,9 @@ onMounted(async () => {
               <span></span>
             </Radio>
           </div>
-          <div class="item-radio-wrap">
+          <div class="flex w-24 items-center justify-center">
             <Radio
+              class="ml-5"
               :value="FieldPermissionType.NONE"
               size="large"
               @change="updateElementExtensions"

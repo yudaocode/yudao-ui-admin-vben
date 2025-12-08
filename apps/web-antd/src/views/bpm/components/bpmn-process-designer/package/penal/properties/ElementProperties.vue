@@ -1,19 +1,13 @@
 <script lang="ts" setup>
 import { inject, nextTick, ref, watch } from 'vue';
 
+import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import {
-  Button,
-  Divider,
-  Form,
-  FormItem,
-  Input,
-  Modal,
-  Table,
-  TableColumn,
-} from 'ant-design-vue';
+import { Button, Divider, Form, FormItem, Input } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
 defineOptions({ name: 'ElementProperties' });
 
@@ -29,12 +23,10 @@ const props = defineProps({
 });
 
 const prefix = inject('prefix');
-// const width = inject('width')
 
 const elementPropertyList = ref<Array<{ name: string; value: string }>>([]);
 const propertyForm = ref<{ name?: string; value?: string }>({});
 const editingPropertyIndex = ref(-1);
-const propertyFormModelVisible = ref(false);
 const otherExtensionList = ref<any[]>([]);
 const bpmnElementProperties = ref<any[]>([]);
 const bpmnElementPropertyList = ref<any[]>([]);
@@ -58,57 +50,41 @@ const resetAttributesList = () => {
       return ex.$type === `${prefix}:Properties`;
     }) ?? [];
 
-  // 保存所有的 扩展属性字段
   bpmnElementPropertyList.value = bpmnElementProperties.value.flatMap(
     (current: any) => current.values,
   );
-  // 复制 显示
   elementPropertyList.value = cloneDeep(bpmnElementPropertyList.value ?? []);
-};
-
-const openAttributesForm = (
-  attr: null | { name: string; value: string },
-  index: number,
-) => {
-  editingPropertyIndex.value = index;
-  // @ts-ignore
-  propertyForm.value = index === -1 ? {} : cloneDeep(attr);
-  propertyFormModelVisible.value = true;
-  nextTick(() => {
-    if (attributeFormRef.value) attributeFormRef.value.clearValidate();
-  });
 };
 
 const removeAttributes = (
   _attr: { name: string; value: string },
   index: number,
 ) => {
-  Modal.confirm({
+  confirm({
     title: '提示',
     content: '确认移除该属性吗？',
-    okText: '确 认',
-    cancelText: '取 消',
-    onOk() {
-      elementPropertyList.value.splice(index, 1);
-      bpmnElementPropertyList.value.splice(index, 1);
-      // 新建一个属性字段的保存列表
-      const propertiesObject = bpmnInstances().moddle.create(
-        `${prefix}:Properties`,
-        {
-          values: bpmnElementPropertyList.value,
-        },
-      );
-      updateElementExtensions(propertiesObject);
-      resetAttributesList();
-    },
-    onCancel() {
-      // console.info('操作取消');
-    },
+  }).then(() => {
+    elementPropertyList.value.splice(index, 1);
+    bpmnElementPropertyList.value.splice(index, 1);
+    const propertiesObject = bpmnInstances().moddle.create(
+      `${prefix}:Properties`,
+      {
+        values: bpmnElementPropertyList.value,
+      },
+    );
+    updateElementExtensions(propertiesObject);
+    resetAttributesList();
   });
 };
 
-const saveAttribute = () => {
-  // console.log(propertyForm.value, 'propertyForm.value');
+const saveAttribute = async () => {
+  try {
+    await attributeFormRef.value?.validate();
+  } catch {
+    // 校验未通过，直接返回
+    return;
+  }
+
   const { name, value } = propertyForm.value;
   const instances = bpmnInstances();
   if (!instances || !instances.bpmnElement) return;
@@ -136,7 +112,7 @@ const saveAttribute = () => {
       },
     );
   }
-  propertyFormModelVisible.value = false;
+  fieldModalApi.close();
   resetAttributesList();
 };
 
@@ -153,11 +129,61 @@ const updateElementExtensions = (properties: any) => {
   });
 };
 
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: [
+      { type: 'seq', width: 50, title: '序号' },
+      { field: 'name', title: '属性名', minWidth: 120 },
+      { field: 'value', title: '属性值', minWidth: 120 },
+      {
+        title: '操作',
+        width: 120,
+        slots: { default: 'action' },
+        fixed: 'right',
+      },
+    ],
+    border: true,
+    showOverflow: true,
+    height: 'auto',
+    toolbarConfig: {
+      enabled: false,
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+  },
+});
+
+const [FieldModal, fieldModalApi] = useVbenModal({
+  title: '属性配置',
+  onConfirm: saveAttribute,
+});
+
+const openAttributesForm = (
+  attr: null | { name: string; value: string },
+  index: number,
+) => {
+  editingPropertyIndex.value = index;
+  propertyForm.value = index === -1 ? {} : cloneDeep(attr || {});
+  fieldModalApi.open();
+  nextTick(() => {
+    if (attributeFormRef.value) attributeFormRef.value.clearValidate();
+  });
+};
+
+watch(
+  elementPropertyList,
+  (val) => {
+    gridApi.setGridOptions({ data: val });
+  },
+  { deep: true },
+);
+
 watch(
   () => props.id,
   (val) => {
-    if (val) {
-      val && val.length > 0 && resetAttributesList();
+    if (val && val.length > 0) {
+      resetAttributesList();
     }
   },
   { immediate: true },
@@ -165,38 +191,34 @@ watch(
 </script>
 
 <template>
-  <div class="panel-tab__content">
-    <Table :data="elementPropertyList" size="small" bordered>
-      <TableColumn title="序号" width="50">
-        <template #default="{ index }">
-          {{ index + 1 }}
-        </template>
-      </TableColumn>
-      <TableColumn title="属性名" data-index="name" />
-      <TableColumn title="属性值" data-index="value" />
-      <TableColumn title="操作">
-        <template #default="{ record, index }">
-          <Button
-            type="link"
-            @click="openAttributesForm(record, index)"
-            size="small"
-          >
-            编辑
-          </Button>
-          <Divider type="vertical" />
-          <Button
-            type="link"
-            size="small"
-            danger
-            @click="removeAttributes(record, index)"
-          >
-            移除
-          </Button>
-        </template>
-      </TableColumn>
-    </Table>
-    <div class="element-drawer__button">
-      <Button type="primary" @click="openAttributesForm(null, -1)">
+  <div class="-mx-2">
+    <Grid :data="elementPropertyList">
+      <template #action="{ row, rowIndex }">
+        <Button
+          size="small"
+          type="link"
+          @click="openAttributesForm(row, rowIndex)"
+        >
+          编辑
+        </Button>
+        <Divider type="vertical" />
+        <Button
+          size="small"
+          type="link"
+          danger
+          @click="removeAttributes(row, rowIndex)"
+        >
+          移除
+        </Button>
+      </template>
+    </Grid>
+    <div class="mt-1 flex w-full items-center justify-center gap-2 px-2">
+      <Button
+        class="flex flex-1 items-center justify-center"
+        type="primary"
+        size="small"
+        @click="openAttributesForm(null, -1)"
+      >
         <template #icon>
           <IconifyIcon icon="ep:plus" />
         </template>
@@ -204,24 +226,28 @@ watch(
       </Button>
     </div>
 
-    <Modal
-      v-model:open="propertyFormModelVisible"
-      title="属性配置"
-      :width="600"
-      :destroy-on-close="true"
-    >
-      <Form :model="propertyForm" ref="attributeFormRef">
-        <FormItem label="属性名：" name="name">
+    <FieldModal class="w-3/5">
+      <Form
+        :model="propertyForm"
+        ref="attributeFormRef"
+        :label-col="{ span: 5 }"
+        :wrapper-col="{ span: 17 }"
+      >
+        <FormItem
+          label="属性名："
+          name="name"
+          :rules="[{ required: true, message: '请输入属性名' }]"
+        >
           <Input v-model:value="propertyForm.name" allow-clear />
         </FormItem>
-        <FormItem label="属性值：" name="value">
+        <FormItem
+          label="属性值："
+          name="value"
+          :rules="[{ required: true, message: '请输入属性值' }]"
+        >
           <Input v-model:value="propertyForm.value" allow-clear />
         </FormItem>
       </Form>
-      <template #footer>
-        <Button @click="propertyFormModelVisible = false">取 消</Button>
-        <Button type="primary" @click="saveAttribute">确 定</Button>
-      </template>
-    </Modal>
+    </FieldModal>
   </div>
 </template>

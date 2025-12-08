@@ -9,6 +9,7 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 import { computed, ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
+import { DeviceStateEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -21,15 +22,13 @@ import {
   Textarea,
 } from 'ant-design-vue';
 
-import { DeviceStateEnum } from '@vben/constants';
-
 import { sendDeviceMessage } from '#/api/iot/device/device';
-import DataDefinition from '../../../../../thingmodel/modules/components/data-definition.vue';
 import {
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 
+import DataDefinition from '../../../../../thingmodel/modules/components/data-definition.vue';
 import DeviceDetailsMessage from './message.vue';
 
 const props = defineProps<{
