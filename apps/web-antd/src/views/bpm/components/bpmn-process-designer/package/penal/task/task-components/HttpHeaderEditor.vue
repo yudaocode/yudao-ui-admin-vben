@@ -1,34 +1,19 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Modal } from 'ant-design-vue';
+import { Button, Input } from 'ant-design-vue';
 
 defineOptions({ name: 'HttpHeaderEditor' });
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  headers: {
-    type: String,
-    default: '',
-  },
-});
-
-const emit = defineEmits(['update:modelValue', 'save']);
+const emit = defineEmits(['save']);
 
 interface HeaderItem {
   key: string;
   value: string;
 }
-
-const dialogVisible = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val),
-});
 
 const headerList = ref<HeaderItem[]>([]);
 
@@ -80,52 +65,42 @@ const removeHeader = (index: number) => {
 const handleSave = () => {
   const headersStr = stringifyHeaders(headerList.value);
   emit('save', headersStr);
-  dialogVisible.value = false;
+  modalApi.close();
 };
 
-// 关闭
-const handleClose = () => {
-  dialogVisible.value = false;
-};
-
-// 监听对话框打开，初始化数据
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (val) {
-      headerList.value = parseHeaders(props.headers);
+const [Modal, modalApi] = useVbenModal({
+  destroyOnClose: true,
+  onOpenChange(isOpen) {
+    if (!isOpen) {
+      return;
     }
+    const { headers } = modalApi.getData();
+    headerList.value = parseHeaders(headers);
   },
-  { immediate: true },
-);
+  onConfirm: handleSave,
+});
 </script>
 
 <template>
-  <Modal
-    v-model:open="dialogVisible"
-    title="编辑请求头"
-    width="600px"
-    :mask-closable="false"
-    @cancel="handleClose"
-  >
-    <div class="header-editor">
-      <div class="header-list">
+  <Modal title="编辑请求头" class="w-3/5">
+    <div class="space-y-4">
+      <div class="mb-2 space-y-3 overflow-y-auto">
         <div
           v-for="(item, index) in headerList"
           :key="index"
-          class="header-item"
+          class="flex items-center gap-2"
         >
           <Input
             v-model:value="item.key"
             placeholder="请输入参数名"
-            class="header-key"
+            class="w-48"
             allow-clear
           />
-          <span class="separator">:</span>
+          <span class="font-medium text-gray-600">:</span>
           <Input
             v-model:value="item.value"
             placeholder="请输入参数值 (支持表达式 ${变量名})"
-            class="header-value"
+            class="flex-1"
             allow-clear
           />
           <Button type="text" danger size="small" @click="removeHeader(index)">
@@ -135,50 +110,12 @@ watch(
           </Button>
         </div>
       </div>
-      <Button type="primary" class="add-btn" @click="addHeader">
+      <Button type="primary" class="w-full" @click="addHeader">
         <template #icon>
           <IconifyIcon icon="ep:plus" />
         </template>
         添加请求头
       </Button>
     </div>
-    <template #footer>
-      <Button @click="handleClose">取消</Button>
-      <Button type="primary" @click="handleSave">保存</Button>
-    </template>
   </Modal>
 </template>
-
-<style lang="scss" scoped>
-.header-editor {
-  .header-list {
-    max-height: 400px;
-    margin-bottom: 16px;
-    overflow-y: auto;
-  }
-
-  .header-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 12px;
-
-    .header-key {
-      flex: 0 0 180px;
-    }
-
-    .separator {
-      font-weight: 500;
-      color: #606266;
-    }
-
-    .header-value {
-      flex: 1;
-    }
-  }
-
-  .add-btn {
-    width: 100%;
-  }
-}
-</style>

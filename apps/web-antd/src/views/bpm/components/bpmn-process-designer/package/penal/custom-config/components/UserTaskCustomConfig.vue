@@ -500,7 +500,7 @@ onMounted(async () => {
     </Form.Item>
 
     <Divider orientation="left">审批人为空时</Divider>
-    <Form.Item prop="assignEmptyHandlerType">
+    <Form.Item name="assignEmptyHandlerType">
       <RadioGroup
         v-model:value="assignEmptyHandlerType"
         @change="updateAssignEmptyHandlerType"
@@ -517,7 +517,7 @@ onMounted(async () => {
     <Form.Item
       v-if="assignEmptyHandlerType === AssignEmptyHandlerType.ASSIGN_USER"
       label="指定用户"
-      prop="assignEmptyHandlerUserIds"
+      name="assignEmptyHandlerUserIds"
     >
       <Select
         v-model:value="assignEmptyUserIds"
@@ -677,7 +677,7 @@ onMounted(async () => {
     </div>
 
     <Divider orientation="left">是否需要签名</Divider>
-    <Form.Item prop="signEnable">
+    <Form.Item name="signEnable">
       <Switch
         v-model:checked="signEnable.value"
         checked-children="是"
@@ -687,7 +687,7 @@ onMounted(async () => {
     </Form.Item>
 
     <Divider orientation="left">审批意见</Divider>
-    <Form.Item prop="reasonRequire">
+    <Form.Item name="reasonRequire">
       <Switch
         v-model:checked="reasonRequire.value"
         checked-children="必填"
@@ -697,162 +697,3 @@ onMounted(async () => {
     </Form.Item>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.button-setting-pane {
-  display: flex;
-  flex-direction: column;
-  margin-top: 8px;
-  font-size: 14px;
-
-  .button-setting-desc {
-    padding-right: 8px;
-    margin-bottom: 16px;
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .button-setting-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 45px;
-    padding-left: 12px;
-    background-color: #f8fafc0a;
-    border: 1px solid #1f38581a;
-
-    & > :first-child {
-      width: 100px !important;
-      text-align: left !important;
-    }
-
-    & > :last-child {
-      text-align: center !important;
-    }
-
-    .button-title-label {
-      width: 150px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #000;
-      text-align: left;
-    }
-  }
-
-  .button-setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 38px;
-    padding-left: 12px;
-    border: 1px solid #1f38581a;
-    border-top: 0;
-
-    & > :first-child {
-      width: 100px !important;
-    }
-
-    & > :last-child {
-      text-align: center !important;
-    }
-
-    .button-setting-item-label {
-      width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .editable-title-input {
-      max-width: 130px;
-      height: 24px;
-      margin-left: 4px;
-      line-height: 24px;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      transition: all 0.3s;
-
-      &:focus {
-        outline: 0;
-        border-color: #40a9ff;
-        box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
-      }
-    }
-  }
-}
-
-.field-setting-pane {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-
-  .field-setting-desc {
-    padding-right: 8px;
-    margin-bottom: 16px;
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .field-permit-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 45px;
-    padding-left: 12px;
-    line-height: 45px;
-    background-color: #f8fafc0a;
-    border: 1px solid #1f38581a;
-
-    .first-title {
-      text-align: left !important;
-    }
-
-    .other-titles {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .setting-title-label {
-      display: inline-block;
-      width: 100px;
-      padding: 5px 0;
-      font-size: 13px;
-      font-weight: 700;
-      color: #000;
-      text-align: center;
-    }
-  }
-
-  .field-setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 38px;
-    padding-left: 12px;
-    border: 1px solid #1f38581a;
-    border-top: 0;
-
-    .field-setting-item-label {
-      display: inline-block;
-      width: 100px;
-      min-height: 16px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: text;
-    }
-
-    .field-setting-item-group {
-      display: flex;
-      justify-content: space-between;
-
-      .item-radio-wrap {
-        display: inline-block;
-        width: 100px;
-        text-align: center;
-      }
-    }
-  }
-}
-</style>
