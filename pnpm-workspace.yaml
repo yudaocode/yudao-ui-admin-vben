@@ -223,7 +223,7 @@ catalog:
   vuedraggable: ^4.1.0
   vue3-print-nb: "^0.1.4"
   vue3-signature: ^0.2.4
-  video.js: ^7.21.6
+  video.js: ^8.23.4
   vxe-pc-ui: ^4.10.22
   vxe-table: ^4.17.14
   watermark-js-plus: ^1.6.2
