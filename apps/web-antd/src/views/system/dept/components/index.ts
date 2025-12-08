@@ -1,1 +1,1 @@
-export { default as DeptSelectModal } from './dept-select-modal.vue';
+export { default as DeptSelectModal } from './select-modal.vue';

@@ -16,16 +16,11 @@ defineOptions({ name: 'DeptSelectModal' });
 
 const props = withDefaults(
   defineProps<{
-    // 取消按钮文本
-    cancelText?: string;
-    // checkable 状态下节点选择完全受控
-    checkStrictly?: boolean;
-    // 确认按钮文本
-    confirmText?: string;
-    // 是否支持多选
-    multiple?: boolean;
-    // 标题
-    title?: string;
+    cancelText?: string; // 取消按钮文本
+    checkStrictly?: boolean; // checkable 状态下节点选择完全受控
+    confirmText?: string; // 确认按钮文本
+    multiple?: boolean; // 是否支持多选
+    title?: string; // 标题
   }>(),
   {
     cancelText: '取消',
@@ -41,17 +36,13 @@ const emit = defineEmits<{
 }>();
 
 type checkedKeys = number[] | { checked: number[]; halfChecked: number[] };
-// 部门树形结构
-const deptTree = ref<DataNode[]>([]);
-// 选中的部门 ID 列表
-const selectedDeptIds = ref<checkedKeys>([]);
-// 部门数据
-const deptData = ref<SystemDeptApi.Dept[]>([]);
+const deptTree = ref<DataNode[]>([]); // 部门树形结构
+const selectedDeptIds = ref<checkedKeys>([]); // 选中的部门 ID 列表
+const deptData = ref<SystemDeptApi.Dept[]>([]); // 部门数据
 
-// 对话框配置
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // 获取选中的部门ID
+    // 获取选中的部门 ID
     const selectedIds: number[] = Array.isArray(selectedDeptIds.value)
       ? selectedDeptIds.value
       : selectedDeptIds.value.checked || [];

@@ -23,7 +23,7 @@ import {
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getUserPage } from '#/api/system/user';
 
-// 部门树节点接口
+/** 部门树节点接口 */
 interface DeptTreeNode {
   key: string;
   title: string;
@@ -67,7 +67,6 @@ const deptSearchKeys = ref('');
 const userList = ref<SystemUserApi.User[]>([]); // 存储所有已知用户
 const selectedUserIds = ref<string[]>([]);
 
-// 弹窗配置
 const [Modal, modalApi] = useVbenModal({
   onCancel: handleCancel,
   onClosed: handleClosed,
@@ -121,7 +120,6 @@ const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-// 左侧列表状态
 const leftListState = ref({
   searchValue: '',
   dataSource: [] as SystemUserApi.User[],
@@ -130,9 +128,8 @@ const leftListState = ref({
     pageSize: 10,
     total: 0,
   },
-});
+}); // 左侧列表状态
 
-// 右侧列表状态
 const rightListState = ref({
   searchValue: '',
   dataSource: [] as SystemUserApi.User[],
@@ -141,17 +138,15 @@ const rightListState = ref({
     pageSize: 10,
     total: 0,
   },
-});
+}); // 右侧列表状态
 
-// 计算属性：Transfer 数据源
 const transferDataSource = computed(() => {
   return [
     ...leftListState.value.dataSource,
     ...rightListState.value.dataSource,
   ];
-});
+}); // 计算属性：Transfer 数据源
 
-// 过滤部门树数据
 const filteredDeptTree = computed(() => {
   if (!deptSearchKeys.value) return deptTree.value;
 
@@ -189,9 +184,9 @@ const filteredDeptTree = computed(() => {
   };
 
   return deptTree.value.map((node: any) => filterNode(node)).filter(Boolean);
-});
+}); // 过滤部门树数据
 
-// 加载用户数据
+/** 加载用户数据 */
 async function loadUserData(pageNo: number, pageSize: number) {
   try {
     const { list, total } = await getUserPage({
@@ -218,9 +213,9 @@ async function loadUserData(pageNo: number, pageSize: number) {
   }
 }
 
-// 更新右侧列表数据
+/** 更新右侧列表数据 */
 function updateRightListData() {
-  // 使用 Set 来去重选中的用户ID
+  // 使用 Set 来去重选中的用户 ID
   const uniqueSelectedIds = new Set(selectedUserIds.value);
 
   // 获取选中的用户，确保不重复
@@ -250,19 +245,19 @@ function updateRightListData() {
   rightListState.value.dataSource = filteredUsers.slice(startIndex, endIndex);
 }
 
-// 处理左侧分页变化
+/** 处理左侧分页变化 */
 async function handleLeftPaginationChange(page: number, pageSize: number) {
   await loadUserData(page, pageSize);
 }
 
-// 处理右侧分页变化
+/** 处理右侧分页变化 */
 function handleRightPaginationChange(page: number, pageSize: number) {
   rightListState.value.pagination.current = page;
   rightListState.value.pagination.pageSize = pageSize;
   updateRightListData();
 }
 
-// 处理用户搜索
+/** 处理用户搜索 */
 async function handleUserSearch(direction: string, value: string) {
   if (direction === 'left') {
     leftListState.value.searchValue = value;
@@ -275,7 +270,7 @@ async function handleUserSearch(direction: string, value: string) {
   }
 }
 
-// 处理用户选择变化
+/** 处理用户选择变化 */
 function handleUserChange(targetKeys: string[]) {
   // 使用 Set 来去重选中的用户ID
   selectedUserIds.value = [...new Set(targetKeys)];
@@ -283,14 +278,13 @@ function handleUserChange(targetKeys: string[]) {
   updateRightListData();
 }
 
-// 重置数据
+/** 重置数据 */
 function resetData() {
   userList.value = [];
   selectedUserIds.value = [];
 
   // 取消部门选中
   selectedDeptId.value = undefined;
-
   // 取消选中的用户
   selectedUserIds.value = [];
 
@@ -320,12 +314,12 @@ function filterOption(inputValue: string, option: any) {
   return option.username.toLowerCase().includes(inputValue.toLowerCase());
 }
 
-// 处理部门树展开/折叠
+/** 处理部门树展开/折叠 */
 function handleExpand(keys: Key[]) {
   expandedKeys.value = keys;
 }
 
-// 处理部门搜索
+/** 处理部门搜索 */
 function handleDeptSearch(value: string) {
   deptSearchKeys.value = value;
 
@@ -348,9 +342,9 @@ function handleDeptSearch(value: string) {
   }
 }
 
-// 处理部门选择
+/** 处理部门选择 */
 async function handleDeptSelect(selectedKeys: Key[], _info: any) {
-  // 更新选中的部门ID
+  // 更新选中的部门 ID
   const newDeptId =
     selectedKeys.length > 0 ? Number(selectedKeys[0]) : undefined;
   selectedDeptId.value =
@@ -362,7 +356,7 @@ async function handleDeptSelect(selectedKeys: Key[], _info: any) {
   await loadUserData(1, pageSize);
 }
 
-// 确认选择
+/** 确认选择 */
 function handleConfirm() {
   if (selectedUserIds.value.length === 0) {
     message.warning('请选择用户');
@@ -377,7 +371,7 @@ function handleConfirm() {
   modalApi.close();
 }
 
-// 取消选择
+/** 取消选择 */
 function handleCancel() {
   emit('cancel');
   modalApi.close();
@@ -387,13 +381,13 @@ function handleCancel() {
   }, 300);
 }
 
-// 关闭弹窗
+/** 关闭弹窗 */
 function handleClosed() {
   emit('closed');
   resetData();
 }
 
-// 递归处理部门树节点
+/** 递归处理部门树节点 */
 function processDeptNode(node: any): DeptTreeNode {
   return {
     key: String(node.id),
