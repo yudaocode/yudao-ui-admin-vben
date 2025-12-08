@@ -73,7 +73,7 @@ catalog:
   '@vue/reactivity': ^3.5.17
   '@vue/shared': ^3.5.24
   '@vue/test-utils': ^2.4.6
-  '@vueuse/core': ^13.4.0
+  '@vueuse/core': ^14.1.0
   '@vueuse/integrations': ^14.0.0
   '@vueuse/motion': ^3.0.3
   '@videojs-player/vue': ^1.0.0
