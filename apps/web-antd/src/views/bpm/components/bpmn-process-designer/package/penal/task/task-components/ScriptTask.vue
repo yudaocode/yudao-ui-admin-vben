@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
 import {
+  Form,
   FormItem,
   Input,
   Select,
@@ -75,47 +76,50 @@ watch(
 
 <template>
   <div class="mt-4">
-    <FormItem label="脚本格式">
-      <Input
-        v-model:value="scriptTaskForm.scriptFormat"
-        allow-clear
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </FormItem>
-    <FormItem label="脚本类型">
-      <Select v-model:value="scriptTaskForm.scriptType">
-        <SelectOption value="inline">内联脚本</SelectOption>
-        <SelectOption value="external">外部资源</SelectOption>
-      </Select>
-    </FormItem>
-    <FormItem label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
-      <Textarea
-        v-model:value="scriptTaskForm.script"
-        :auto-size="{ minRows: 2, maxRows: 4 }"
-        allow-clear
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </FormItem>
-    <FormItem
-      label="资源地址"
-      v-show="scriptTaskForm.scriptType === 'external'"
-    >
-      <Input
-        v-model:value="scriptTaskForm.resource"
-        allow-clear
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </FormItem>
-    <FormItem label="结果变量">
-      <Input
-        v-model:value="scriptTaskForm.resultVariable"
-        allow-clear
-        @input="updateElementTask()"
-        @change="updateElementTask()"
-      />
-    </FormItem>
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <FormItem label="脚本格式">
+        <Input
+          v-model:value="scriptTaskForm.scriptFormat"
+          allow-clear
+          @input="updateElementTask()"
+          @change="updateElementTask()"
+        />
+      </FormItem>
+      <!-- TODO scriptType  外部资源 和 内联脚本，  flowable 文档 https://www.flowable.com/open-source/docs/bpmn/ch07b-BPMN-Constructs#script-task  没看到到有相应的属性 -->
+      <FormItem label="脚本类型">
+        <Select v-model:value="scriptTaskForm.scriptType">
+          <SelectOption value="inline">内联脚本</SelectOption>
+          <SelectOption value="external">外部资源</SelectOption>
+        </Select>
+      </FormItem>
+      <FormItem label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
+        <Textarea
+          v-model:value="scriptTaskForm.script"
+          :auto-size="{ minRows: 2, maxRows: 4 }"
+          allow-clear
+          @input="updateElementTask()"
+          @change="updateElementTask()"
+        />
+      </FormItem>
+      <FormItem
+        label="资源地址"
+        v-show="scriptTaskForm.scriptType === 'external'"
+      >
+        <Input
+          v-model:value="scriptTaskForm.resource"
+          allow-clear
+          @input="updateElementTask()"
+          @change="updateElementTask()"
+        />
+      </FormItem>
+      <FormItem label="结果变量">
+        <Input
+          v-model:value="scriptTaskForm.resultVariable"
+          allow-clear
+          @input="updateElementTask()"
+          @change="updateElementTask()"
+        />
+      </FormItem>
+    </Form>
   </div>
 </template>

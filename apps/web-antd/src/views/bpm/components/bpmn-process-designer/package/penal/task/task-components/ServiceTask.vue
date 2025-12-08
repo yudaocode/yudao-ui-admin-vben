@@ -73,7 +73,6 @@ const httpTaskForm = ref<any>({ ...DEFAULT_HTTP_FORM });
 const bpmnElement = ref();
 const httpInitializing = ref(false);
 
-
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 // 判断字符串是否包含表达式
@@ -84,7 +83,6 @@ const isExpression = (value: string): boolean => {
 };
 
 const collectHttpExtensionInfo = () => {
-
   const businessObject = bpmnElement.value?.businessObject;
   const extensionElements = businessObject?.extensionElements;
   const httpFields = new Map<string, string>();
@@ -311,9 +309,11 @@ const handleExecuteTypeChange = (value: any) => {
 
 /** 打开请求头编辑器 */
 const openHttpHeaderEditor = () => {
-  httpHeaderEditorApi.setData ({
-    headers: httpTaskForm.value.requestHeaders
-  }).open();
+  httpHeaderEditorApi
+    .setData({
+      headers: httpTaskForm.value.requestHeaders,
+    })
+    .open();
 };
 
 /** 保存请求头 */
@@ -321,9 +321,9 @@ const handleHeadersSave = (headersStr: string) => {
   httpTaskForm.value.requestHeaders = headersStr;
 };
 
-const [HttpHeaderEditorModal, httpHeaderEditorApi] = useVbenModal( {
+const [HttpHeaderEditorModal, httpHeaderEditorApi] = useVbenModal({
   connectedComponent: HttpHeaderEditor,
-})
+});
 
 onBeforeUnmount(() => {
   bpmnElement.value = null;
