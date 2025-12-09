@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { h, inject, nextTick, ref, toRaw, watch } from 'vue';
+import { inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
-import { alert } from '@vben/common-ui';
-import { PlusOutlined } from '@vben/icons';
+import { confirm, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
 import {
   Button,
@@ -10,11 +10,13 @@ import {
   Form,
   FormItem,
   Input,
-  Modal,
+  Select,
+  SelectOption,
   Switch,
-  Table,
-  TableColumn,
 } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getModelList } from '#/api/bpm/model';
 
 interface FormData {
   processInstanceName: string;
@@ -44,8 +46,7 @@ const inVariableList = ref<any[]>([]);
 const outVariableList = ref<any[]>([]);
 const variableType = ref<string>(); // 参数类型
 const editingVariableIndex = ref<number>(-1); // 编辑参数下标
-const variableDialogVisible = ref<boolean>(false);
-const varialbeFormRef = ref<any>();
+const varialbeFormRef = ref();
 const varialbeFormData = ref<{
   source: string;
   target: string;
@@ -57,10 +58,10 @@ const varialbeFormData = ref<{
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 const bpmnElement = ref<any>();
 const otherExtensionList = ref<any[]>([]);
+const childProcessOptions = ref<{ key: string; name: string }[]>([]);
 
 const initCallActivity = () => {
   bpmnElement.value = bpmnInstances().bpmnElement;
-  // console.log(bpmnElement.value.businessObject, 'callActivity');
 
   // 初始化所有配置项
   Object.keys(formData.value).forEach((key: string) => {
@@ -85,11 +86,6 @@ const initCallActivity = () => {
       }
     },
   );
-
-  // 默认添加
-  // bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
-  //   calledElementType: 'key'
-  // })
 };
 
 const updateCallActivityAttr = (attr: keyof FormData) => {
@@ -98,16 +94,26 @@ const updateCallActivityAttr = (attr: keyof FormData) => {
   });
 };
 
+const [VariableModal, variableModalApi] = useVbenModal({
+  title: '参数配置',
+  onConfirm: () => {
+    saveVariable();
+  },
+});
+
 const openVariableForm = (type: string, data: any, index: number) => {
   editingVariableIndex.value = index;
   variableType.value = type;
   varialbeFormData.value = index === -1 ? {} : { ...data };
-  variableDialogVisible.value = true;
+  variableModalApi.open();
 };
 
 const removeVariable = async (type: string, index: number) => {
   try {
-    await alert('是否确认删除？');
+    await confirm({
+      title: '提示',
+      content: '是否确认删除？',
+    });
     if (type === 'in') {
       inVariableList.value.splice(index, 1);
     }
@@ -115,10 +121,19 @@ const removeVariable = async (type: string, index: number) => {
       outVariableList.value.splice(index, 1);
     }
     updateElementExtensions();
-  } catch {}
+  } catch (error: any) {
+    console.error(`[removeVariable error ]: ${error.message || error}`);
+  }
 };
 
-const saveVariable = () => {
+const saveVariable = async () => {
+  try {
+    await varialbeFormRef.value?.validate();
+  } catch {
+    // 验证失败直接返回
+    return;
+  }
+
   if (editingVariableIndex.value === -1) {
     if (variableType.value === 'in') {
       inVariableList.value.push(
@@ -149,7 +164,7 @@ const saveVariable = () => {
         varialbeFormData.value.target;
     }
   }
-  variableDialogVisible.value = false;
+  variableModalApi.close();
 };
 
 const updateElementExtensions = () => {
@@ -176,28 +191,93 @@ watch(
   },
   { immediate: true },
 );
+
+const gridOptions = {
+  columns: [
+    { title: '源', field: 'source', minWidth: 100 },
+    { title: '目标', field: 'target', minWidth: 100 },
+    {
+      title: '操作',
+      width: 130,
+      slots: { default: 'action' },
+      fixed: 'right' as const,
+    },
+  ],
+  border: true,
+  showOverflow: true,
+  height: 'auto',
+  toolbarConfig: { enabled: false },
+  pagerConfig: { enabled: false },
+};
+
+const [InVariableGrid, inVariableGridApi] = useVbenVxeGrid({
+  gridOptions,
+});
+
+const [OutVariableGrid, outVariableGridApi] = useVbenVxeGrid({
+  gridOptions,
+});
+
+// 使用浅层监听，避免无限循环
+watch(
+  () => [...inVariableList.value],
+  (val) => {
+    inVariableGridApi.setGridOptions({ data: val });
+  },
+);
+
+watch(
+  () => [...outVariableList.value],
+  (val) => {
+    outVariableGridApi.setGridOptions({ data: val });
+  },
+);
+
+/** 选择子流程, 更新 bpmn callActivity calledElement 和 processInstanceName 属性 */
+const handleChildProcessChange = (key: any) => {
+  if (!key) return;
+  const selected = childProcessOptions.value.find((item) => item.key === key);
+  if (selected) {
+    formData.value.calledElement = selected.key;
+    formData.value.processInstanceName = selected.name;
+    updateCallActivityAttr('calledElement');
+    updateCallActivityAttr('processInstanceName');
+  }
+};
+
+onMounted(async () => {
+  try {
+    // 获取流程模型列表
+    const list = await getModelList(undefined);
+    childProcessOptions.value = list.map((item) => ({
+      key: item.key,
+      name: item.name,
+    }));
+  } catch (error) {
+    console.error('获取子流程列表失败', error);
+  }
+});
 </script>
 
 <template>
-  <div>
-    <Form>
-      <FormItem label="实例名称">
-        <Input
-          v-model:value="formData.processInstanceName"
-          allow-clear
-          placeholder="请输入实例名称"
-          @change="updateCallActivityAttr('processInstanceName')"
-        />
-      </FormItem>
-
-      <!-- TODO 需要可选择已存在的流程 -->
-      <FormItem label="被调用流程">
-        <Input
+  <div class="-mx-2">
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <FormItem label="被调用子流程">
+        <Select
           v-model:value="formData.calledElement"
+          placeholder="请选择子流程"
           allow-clear
-          placeholder="请输入被调用流程"
-          @change="updateCallActivityAttr('calledElement')"
-        />
+          @change="handleChildProcessChange"
+        >
+          <SelectOption
+            v-for="item in childProcessOptions"
+            :key="item.key"
+            :value="item.key"
+            :label="item.name"
+          >
+            {{ item.name }}
+          </SelectOption>
+        </Select>
       </FormItem>
 
       <FormItem label="继承变量">
@@ -223,134 +303,115 @@ watch(
         />
       </FormItem>
 
-      <Divider />
-      <div>
-        <div class="mb-10px flex">
-          <span>输入参数</span>
-          <Button
-            class="ml-auto"
-            type="primary"
-            :icon="h(PlusOutlined)"
-            title="添加参数"
-            size="small"
-            @click="openVariableForm('in', null, -1)"
-          />
-        </div>
-        <Table
-          :data-source="inVariableList"
-          :scroll="{ y: 240 }"
-          bordered
-          :pagination="false"
+      <div
+        class="mb-1 mt-2 flex items-center justify-between border-t border-gray-200 pt-2"
+      >
+        <span class="flex items-center text-sm font-medium"> 输入参数 </span>
+        <Button
+          class="flex items-center"
+          size="small"
+          type="link"
+          @click="openVariableForm('in', null, -1)"
         >
-          <TableColumn
-            title="源"
-            data-index="source"
-            :min-width="100"
-            :ellipsis="true"
-          />
-          <TableColumn
-            title="目标"
-            data-index="target"
-            :min-width="100"
-            :ellipsis="true"
-          />
-          <TableColumn title="操作" :width="110">
-            <template #default="{ record, index }">
-              <Button
-                type="link"
-                @click="openVariableForm('in', record, index)"
-                size="small"
-              >
-                编辑
-              </Button>
-              <Divider type="vertical" />
-              <Button
-                type="link"
-                size="small"
-                danger
-                @click="removeVariable('in', index)"
-              >
-                移除
-              </Button>
-            </template>
-          </TableColumn>
-        </Table>
+          <template #icon>
+            <IconifyIcon icon="ep:plus" />
+          </template>
+          添加参数
+        </Button>
       </div>
+      <InVariableGrid class="-mx-2 mb-4">
+        <template #action="{ row, rowIndex }">
+          <Button
+            size="small"
+            type="link"
+            @click="openVariableForm('in', row, rowIndex)"
+          >
+            编辑
+          </Button>
+          <Divider type="vertical" />
+          <Button
+            size="small"
+            type="link"
+            danger
+            @click="removeVariable('in', rowIndex)"
+          >
+            移除
+          </Button>
+        </template>
+      </InVariableGrid>
 
-      <Divider />
-      <div>
-        <div class="mb-10px flex">
-          <span>输出参数</span>
-          <Button
-            class="ml-auto"
-            type="primary"
-            :icon="h(PlusOutlined)"
-            title="添加参数"
-            size="small"
-            @click="openVariableForm('out', null, -1)"
-          />
-        </div>
-        <Table
-          :data-source="outVariableList"
-          :scroll="{ y: 240 }"
-          bordered
-          :pagination="false"
+      <div
+        class="mb-1 mt-2 flex items-center justify-between border-t border-gray-200 pt-2"
+      >
+        <span class="flex items-center text-sm font-medium"> 输出参数 </span>
+        <Button
+          class="flex items-center"
+          size="small"
+          type="link"
+          @click="openVariableForm('out', null, -1)"
         >
-          <TableColumn
-            title="源"
-            data-index="source"
-            :min-width="100"
-            :ellipsis="true"
-          />
-          <TableColumn
-            title="目标"
-            data-index="target"
-            :min-width="100"
-            :ellipsis="true"
-          />
-          <TableColumn title="操作" :width="110">
-            <template #default="{ record, index }">
-              <Button
-                type="link"
-                @click="openVariableForm('out', record, index)"
-                size="small"
-              >
-                编辑
-              </Button>
-              <Divider type="vertical" />
-              <Button
-                type="link"
-                size="small"
-                danger
-                @click="removeVariable('out', index)"
-              >
-                移除
-              </Button>
-            </template>
-          </TableColumn>
-        </Table>
+          <template #icon>
+            <IconifyIcon icon="lucide:plus" class="size-4" />
+          </template>
+          添加参数
+        </Button>
       </div>
+      <OutVariableGrid class="-mx-2">
+        <template #action="{ row, rowIndex }">
+          <Button
+            size="small"
+            type="link"
+            @click="openVariableForm('out', row, rowIndex)"
+          >
+            编辑
+          </Button>
+          <Divider type="vertical" />
+          <Button
+            size="small"
+            type="link"
+            danger
+            @click="removeVariable('out', rowIndex)"
+          >
+            移除
+          </Button>
+        </template>
+      </OutVariableGrid>
     </Form>
 
-    <!-- 添加或修改参数 -->
-    <Modal
-      v-model:open="variableDialogVisible"
-      title="参数配置"
-      :width="600"
-      :destroy-on-close="true"
-      @ok="saveVariable"
-      @cancel="variableDialogVisible = false"
-    >
-      <Form :model="varialbeFormData" ref="varialbeFormRef">
-        <FormItem label="源：" name="source">
+    <VariableModal>
+      <Form
+        :model="varialbeFormData"
+        ref="varialbeFormRef"
+        :label-col="{ span: 4 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <FormItem
+          label="源"
+          name="source"
+          :rules="[
+            {
+              required: true,
+              message: '源不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
+        >
           <Input v-model:value="varialbeFormData.source" allow-clear />
         </FormItem>
-        <FormItem label="目标：" name="target">
+        <FormItem
+          label="目标"
+          name="target"
+          :rules="[
+            {
+              required: true,
+              message: '目标不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
+        >
           <Input v-model:value="varialbeFormData.target" allow-clear />
         </FormItem>
       </Form>
-    </Modal>
+    </VariableModal>
   </div>
 </template>
-
-<style lang="scss" scoped></style>
