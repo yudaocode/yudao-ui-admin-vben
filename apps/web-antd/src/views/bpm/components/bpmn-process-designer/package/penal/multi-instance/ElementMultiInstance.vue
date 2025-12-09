@@ -526,7 +526,7 @@ watch(
         </FormItem>
         <FormItem
           label="重试周期"
-          prop="timeCycle"
+          name="timeCycle"
           v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
           key="timeCycle"
         >

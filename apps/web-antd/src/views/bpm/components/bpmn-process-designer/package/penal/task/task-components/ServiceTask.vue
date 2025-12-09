@@ -1,11 +1,13 @@
 <!-- eslint-disable prettier/prettier -->
 <script lang="ts" setup>
-import { inject, nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
+import { inject, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
   Button,
+  Form,
   FormItem,
   Input,
   RadioButton,
@@ -70,7 +72,6 @@ const serviceTaskForm = ref({ ...DEFAULT_TASK_FORM });
 const httpTaskForm = ref<any>({ ...DEFAULT_HTTP_FORM });
 const bpmnElement = ref();
 const httpInitializing = ref(false);
-const showHeaderEditor = ref(false);
 
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
@@ -179,7 +180,10 @@ const shouldPersistField = (name: string, value: any) => {
 };
 
 const updateHttpExtensions = (force = false) => {
-  if (!bpmnElement.value) return;
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement;
   if (
     !force &&
     (httpInitializing.value || serviceTaskForm.value.executeType !== 'http')
@@ -236,31 +240,37 @@ const updateHttpExtensions = (force = false) => {
     });
   });
 
-  updateElementExtensions(bpmnElement.value, [
+  updateElementExtensions(bpmnElement, [
     ...otherExtensions,
     ...httpFieldElements,
   ]);
 };
 
 const removeHttpExtensions = () => {
-  if (!bpmnElement.value) return;
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement;
   const { httpFields, otherExtensions } = collectHttpExtensionInfo();
   if (httpFields.size === 0) {
     return;
   }
 
   if (otherExtensions.length === 0) {
-    bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
+    bpmnInstances().modeling.updateProperties(bpmnElement, {
       extensionElements: null,
     });
     return;
   }
 
-  updateElementExtensions(bpmnElement.value, otherExtensions);
+  updateElementExtensions(bpmnElement, otherExtensions);
 };
 
 const updateElementTask = () => {
-  if (!bpmnElement.value) return;
+  const instances = bpmnInstances();
+  if (!instances || !instances.bpmnElement) return;
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement;
 
   const taskAttr: Record<string, any> = {
     class: null,
@@ -280,7 +290,7 @@ const updateElementTask = () => {
     taskAttr[flowableTypeKey] = 'http';
   }
 
-  bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), taskAttr);
+  bpmnInstances().modeling.updateProperties(bpmnElement, taskAttr);
 
   if (type === 'http') {
     updateHttpExtensions(true);
@@ -297,9 +307,23 @@ const handleExecuteTypeChange = (value: any) => {
   updateElementTask();
 };
 
+/** 打开请求头编辑器 */
+const openHttpHeaderEditor = () => {
+  httpHeaderEditorApi
+    .setData({
+      headers: httpTaskForm.value.requestHeaders,
+    })
+    .open();
+};
+
+/** 保存请求头 */
 const handleHeadersSave = (headersStr: string) => {
   httpTaskForm.value.requestHeaders = headersStr;
 };
+
+const [HttpHeaderEditorModal, httpHeaderEditorApi] = useVbenModal({
+  connectedComponent: HttpHeaderEditor,
+});
 
 onBeforeUnmount(() => {
   bpmnElement.value = null;
@@ -327,110 +351,140 @@ watch(
 
 <template>
   <div>
-    <FormItem label="执行类型" key="executeType">
-      <Select
-        v-model:value="serviceTaskForm.executeType"
-        :options="[
-          { label: 'Java类', value: 'class' },
-          { label: '表达式', value: 'expression' },
-          { label: '代理表达式', value: 'delegateExpression' },
-          { label: 'HTTP 调用', value: 'http' },
-        ]"
-        @change="handleExecuteTypeChange"
-      />
-    </FormItem>
-    <FormItem
-      v-if="serviceTaskForm.executeType === 'class'"
-      label="Java类"
-      name="class"
-      key="execute-class"
-    >
-      <Input
-        v-model:value="serviceTaskForm.class"
-        allow-clear
-        @change="updateElementTask"
-      />
-    </FormItem>
-    <FormItem
-      v-if="serviceTaskForm.executeType === 'expression'"
-      label="表达式"
-      name="expression"
-      key="execute-expression"
-    >
-      <Input
-        v-model:value="serviceTaskForm.expression"
-        allow-clear
-        @change="updateElementTask"
-      />
-    </FormItem>
-    <FormItem
-      v-if="serviceTaskForm.executeType === 'delegateExpression'"
-      label="代理表达式"
-      name="delegateExpression"
-      key="execute-delegate"
-    >
-      <Input
-        v-model:value="serviceTaskForm.delegateExpression"
-        allow-clear
-        @change="updateElementTask"
-      />
-    </FormItem>
-    <template v-if="serviceTaskForm.executeType === 'http'">
-      <FormItem label="请求方法" key="http-method">
-        <RadioGroup v-model:value="httpTaskForm.requestMethod">
-          <RadioButton value="GET">GET</RadioButton>
-          <RadioButton value="POST">POST</RadioButton>
-          <RadioButton value="PUT">PUT</RadioButton>
-          <RadioButton value="DELETE">DELETE</RadioButton>
-        </RadioGroup>
-      </FormItem>
-      <FormItem label="请求地址" key="http-url" name="requestUrl">
-        <Input v-model:value="httpTaskForm.requestUrl" allow-clear />
-      </FormItem>
-      <FormItem label="请求头" key="http-headers">
-        <div class="flex w-full items-start gap-2">
-          <Textarea
-            v-model:value="httpTaskForm.requestHeaders"
-            :auto-size="{ minRows: 4, maxRows: 8 }"
-            readonly
-            placeholder="点击右侧编辑按钮添加请求头"
-            class="min-w-0 flex-1"
-          />
-          <Button type="primary" @click="showHeaderEditor = true">
-            <template #icon>
-              <IconifyIcon icon="ep:edit" />
-            </template>
-            编辑
-          </Button>
-        </div>
-      </FormItem>
-      <FormItem label="禁止重定向" key="http-disallow-redirects">
-        <Switch v-model:checked="httpTaskForm.disallowRedirects" />
-      </FormItem>
-      <FormItem label="忽略异常" key="http-ignore-exception">
-        <Switch v-model:checked="httpTaskForm.ignoreException" />
-      </FormItem>
-      <FormItem label="保存返回变量" key="http-save-response">
-        <Switch v-model:checked="httpTaskForm.saveResponseParameters" />
-      </FormItem>
-      <FormItem label="是否瞬间变量" key="http-save-transient">
-        <Switch
-          v-model:checked="httpTaskForm.saveResponseParametersTransient"
+    <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <FormItem label="执行类型" key="executeType">
+        <Select
+          v-model:value="serviceTaskForm.executeType"
+          :options="[
+            { label: 'Java类', value: 'class' },
+            { label: '表达式', value: 'expression' },
+            { label: '代理表达式', value: 'delegateExpression' },
+            { label: 'HTTP 调用', value: 'http' },
+          ]"
+          @change="handleExecuteTypeChange"
         />
       </FormItem>
-      <FormItem label="返回变量前缀" key="http-result-variable-prefix">
-        <Input v-model:value="httpTaskForm.resultVariablePrefix" />
+      <FormItem
+        v-if="serviceTaskForm.executeType === 'class'"
+        label="Java类"
+        name="class"
+        key="execute-class"
+      >
+        <Input
+          v-model:value="serviceTaskForm.class"
+          allow-clear
+          @change="updateElementTask"
+        />
       </FormItem>
-      <FormItem label="格式化返回为JSON" key="http-save-json">
-        <Switch v-model:checked="httpTaskForm.saveResponseVariableAsJson" />
+      <FormItem
+        v-if="serviceTaskForm.executeType === 'expression'"
+        label="表达式"
+        name="expression"
+        key="execute-expression"
+      >
+        <Input
+          v-model:value="serviceTaskForm.expression"
+          allow-clear
+          @change="updateElementTask"
+        />
       </FormItem>
-    </template>
-
+      <FormItem
+        v-if="serviceTaskForm.executeType === 'delegateExpression'"
+        label="代理表达式"
+        name="delegateExpression"
+        key="execute-delegate"
+      >
+        <Input
+          v-model:value="serviceTaskForm.delegateExpression"
+          allow-clear
+          @change="updateElementTask"
+        />
+      </FormItem>
+      <template v-if="serviceTaskForm.executeType === 'http'">
+        <FormItem label="请求方法" key="http-method" name="requestMethod">
+          <RadioGroup v-model:value="httpTaskForm.requestMethod">
+            <RadioButton value="GET">GET</RadioButton>
+            <RadioButton value="POST">POST</RadioButton>
+            <RadioButton value="PUT">PUT</RadioButton>
+            <RadioButton value="DELETE">DELETE</RadioButton>
+          </RadioGroup>
+        </FormItem>
+        <FormItem label="请求地址" key="http-url" name="requestUrl">
+          <Input v-model:value="httpTaskForm.requestUrl" allow-clear />
+        </FormItem>
+        <FormItem label="请求头" key="http-headers" name="requestHeaders">
+          <div class="flex w-full flex-col gap-2">
+            <Textarea
+              v-model:value="httpTaskForm.requestHeaders"
+              :auto-size="{ minRows: 4, maxRows: 8 }"
+              readonly
+              placeholder="点击右侧编辑按钮添加请求头"
+              class="min-w-0 flex-1"
+            />
+            <div class="flex w-full items-center justify-center">
+              <Button
+                class="flex flex-1 items-center justify-center"
+                size="small"
+                type="primary"
+                @click="openHttpHeaderEditor"
+              >
+                <template #icon>
+                  <IconifyIcon icon="ep:edit" />
+                </template>
+                编辑
+              </Button>
+            </div>
+          </div>
+        </FormItem>
+        <FormItem
+          label="禁止重定向"
+          key="http-disallow-redirects"
+          name="disallowRedirects"
+        >
+          <Switch v-model:checked="httpTaskForm.disallowRedirects" />
+        </FormItem>
+        <FormItem
+          label="忽略异常"
+          key="http-ignore-exception"
+          name="ignoreException"
+        >
+          <Switch v-model:checked="httpTaskForm.ignoreException" />
+        </FormItem>
+        <FormItem
+          label="保存返回变量"
+          key="http-save-response"
+          name="saveResponseParameters"
+        >
+          <Switch v-model:checked="httpTaskForm.saveResponseParameters" />
+        </FormItem>
+        <FormItem
+          label="是否瞬间变量"
+          key="http-save-transient"
+          name="saveResponseParametersTransient"
+        >
+          <Switch
+            v-model:checked="httpTaskForm.saveResponseParametersTransient"
+          />
+        </FormItem>
+        <FormItem
+          label="返回变量前缀"
+          key="http-result-variable-prefix"
+          name="resultVariablePrefix"
+        >
+          <Input v-model:value="httpTaskForm.resultVariablePrefix" />
+        </FormItem>
+        <FormItem
+          label="保存为 JSON 变量"
+          :label-col="{ span: 8 }"
+          :wrapper-col="{ span: 16 }"
+          key="http-save-json"
+          name="saveResponseVariableAsJson"
+        >
+          <Switch v-model:checked="httpTaskForm.saveResponseVariableAsJson" />
+        </FormItem>
+      </template>
+    </Form>
     <!-- 请求头编辑器 -->
-    <HttpHeaderEditor
-      v-model="showHeaderEditor"
-      :headers="httpTaskForm.requestHeaders"
-      @save="handleHeadersSave"
-    />
+    <HttpHeaderEditorModal @save="handleHeadersSave" />
   </div>
 </template>
