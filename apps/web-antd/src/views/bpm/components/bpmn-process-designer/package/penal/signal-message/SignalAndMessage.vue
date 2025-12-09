@@ -1,44 +1,23 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Divider,
-  Form,
-  FormItem,
-  Input,
-  message,
-} from 'ant-design-vue';
+import { Button, Divider, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
+
+import SignalMessageModal from './SignalMessageModal.vue';
 
 defineOptions({ name: 'SignalAndMassage' });
 const signalList = ref<any[]>([]);
 const messageList = ref<any[]>([]);
-const modelType = ref('');
-const modelObjectForm = ref<any>({});
-const formRef = ref();
+const modelType = ref<'message' | 'signal'>('message');
 const rootElements = ref();
 const messageIdMap = ref();
 const signalIdMap = ref();
 const editingIndex = ref(-1); // 正在编辑的索引，-1 表示新建
-const modelConfig = computed(() => {
-  const isEdit = editingIndex.value !== -1;
-  return modelType.value === 'message'
-    ? {
-        title: isEdit ? '编辑消息' : '创建消息',
-        idLabel: '消息ID',
-        nameLabel: '消息名称',
-      }
-    : {
-        title: isEdit ? '编辑信号' : '创建信号',
-        idLabel: '信号ID',
-        nameLabel: '信号名称',
-      };
-});
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 // 生成规范化的ID
@@ -67,82 +46,78 @@ const initDataList = () => {
   });
 };
 
-const openModel = (type: any) => {
+const openModel = (type: 'message' | 'signal') => {
   modelType.value = type;
   editingIndex.value = -1;
-  modelObjectForm.value = {
-    id: generateStandardId(type),
-    name: '',
-  };
-  modelModalApi.open();
+  modalApi
+    .setData({
+      id: generateStandardId(type),
+      isEdit: false,
+      name: '',
+      type,
+    })
+    .open();
 };
 
-const openEditModel = (type: any, row: any, index: number) => {
+const openEditModel = (type: 'message' | 'signal', row: any, index: number) => {
   modelType.value = type;
   editingIndex.value = index;
-  modelObjectForm.value = { ...row };
-  modelModalApi.open();
+  modalApi
+    .setData({
+      id: row.id,
+      isEdit: true,
+      name: row.name,
+      type,
+    })
+    .open();
 };
 
-const addNewObject = async () => {
-  try {
-    await formRef.value?.validate();
-  } catch {
-    // 校验未通过，直接返回
-    return;
-  }
-
+const handleConfirm = (formData: { id: string; name: string }) => {
   if (modelType.value === 'message') {
-    // 编辑模式
     if (editingIndex.value === -1) {
       // 新建模式
-      if (messageIdMap.value[modelObjectForm.value.id]) {
+      if (messageIdMap.value[formData.id]) {
         message.error('该消息已存在，请修改id后重新保存');
         return;
       }
       const messageRef = bpmnInstances().moddle.create(
         'bpmn:Message',
-        modelObjectForm.value,
+        formData,
       );
       rootElements.value.push(messageRef);
     } else {
+      // 编辑模式
       const targetMessage = messageList.value[editingIndex.value];
-      // 查找 rootElements 中的原始对象
       const rootMessage = rootElements.value.find(
         (el: any) => el.$type === 'bpmn:Message' && el.id === targetMessage.id,
       );
       if (rootMessage) {
-        rootMessage.id = modelObjectForm.value.id;
-        rootMessage.name = modelObjectForm.value.name;
+        rootMessage.id = formData.id;
+        rootMessage.name = formData.name;
       }
     }
   } else {
-    // 编辑模式
     if (editingIndex.value === -1) {
       // 新建模式
-      if (signalIdMap.value[modelObjectForm.value.id]) {
+      if (signalIdMap.value[formData.id]) {
         message.error('该信号已存在，请修改id后重新保存');
         return;
       }
-      const signalRef = bpmnInstances().moddle.create(
-        'bpmn:Signal',
-        modelObjectForm.value,
-      );
+      const signalRef = bpmnInstances().moddle.create('bpmn:Signal', formData);
       rootElements.value.push(signalRef);
     } else {
+      // 编辑模式
       const targetSignal = signalList.value[editingIndex.value];
-      // 查找 rootElements 中的原始对象
       const rootSignal = rootElements.value.find(
         (el: any) => el.$type === 'bpmn:Signal' && el.id === targetSignal.id,
       );
       if (rootSignal) {
-        rootSignal.id = modelObjectForm.value.id;
-        rootSignal.name = modelObjectForm.value.name;
+        rootSignal.id = formData.id;
+        rootSignal.name = formData.name;
       }
     }
   }
-  modelModalApi.close();
-  // 触发建模器更新以保存更改。
+  // 触发建模器更新以保存更改
   saveChanges();
   initDataList();
 };
@@ -250,9 +225,8 @@ const [SignalGrid, signalGridApi] = useVbenVxeGrid({
   },
 });
 
-const [ModelModal, modelModalApi] = useVbenModal({
-  destroyOnClose: true,
-  onConfirm: addNewObject,
+const [Modal, modalApi] = useVbenModal({
+  connectedComponent: SignalMessageModal,
 });
 
 onMounted(() => {
@@ -354,24 +328,6 @@ watch(
       </template>
     </SignalGrid>
 
-    <ModelModal :title="modelConfig.title" class="w-3/5">
-      <Form
-        :model="modelObjectForm"
-        ref="formRef"
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 18 }"
-      >
-        <FormItem
-          :label="modelConfig.idLabel"
-          name="id"
-          :rules="[{ required: true, message: '请输入 ID' }]"
-        >
-          <Input v-model:value="modelObjectForm.id" allow-clear />
-        </FormItem>
-        <FormItem :label="modelConfig.nameLabel">
-          <Input v-model:value="modelObjectForm.name" allow-clear />
-        </FormItem>
-      </Form>
-    </ModelModal>
+    <Modal @confirm="handleConfirm" />
   </div>
 </template>
