@@ -120,10 +120,10 @@ const resetTaskForm = () => {
     bpmnInstances().moddle.create('bpmn:ExtensionElements', { values: [] });
   userTaskForm.value.candidateStrategy = extensionElements.values?.find(
     (ex: any) => ex.$type === `${prefix}:CandidateStrategy`,
-  )?.[0]?.value;
+  )?.value;
   const candidateParamStr = extensionElements.values?.find(
     (ex: any) => ex.$type === `${prefix}:CandidateParam`,
-  )?.[0]?.value;
+  )?.value;
   if (candidateParamStr && candidateParamStr.length > 0) {
     // eslint-disable-next-line unicorn/prefer-switch
     if (userTaskForm.value.candidateStrategy === CandidateStrategy.EXPRESSION) {
