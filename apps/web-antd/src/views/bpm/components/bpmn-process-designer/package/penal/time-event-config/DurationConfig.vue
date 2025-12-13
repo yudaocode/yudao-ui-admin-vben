@@ -68,14 +68,10 @@ watch(
 
 <template>
   <div>
-    <div style="margin-bottom: 10px">
-      当前选择：<Input
-        v-model:value="isoString"
-        readonly
-        style="width: 300px"
-      />
+    <div class="mb-2.5">
+      当前选择：<Input v-model:value="isoString" readonly class="w-[300px]" />
     </div>
-    <div v-for="unit in units" :key="unit.key" style="margin-bottom: 8px">
+    <div v-for="unit in units" :key="unit.key" class="mb-2">
       <span>{{ unit.label }}：</span>
       <Button.Group>
         <Button
@@ -89,7 +85,7 @@ watch(
         <Input
           v-model:value="custom[unit.key]"
           size="small"
-          style="width: 60px; margin-left: 8px"
+          class="ml-2 w-[60px]"
           placeholder="自定义"
           @change="setUnit(unit.key, custom[unit.key])"
         />
