@@ -4,7 +4,6 @@ import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getSimpleBrandList } from '#/api/mall/product/brand';
 import { getCategoryList } from '#/api/mall/product/category';
 import { getSimpleTemplateList } from '#/api/mall/trade/delivery/expressTemplate';
@@ -25,7 +24,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
       label: '商品名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商品名称',
       },
       rules: 'required',
@@ -33,14 +32,15 @@ export function useInfoFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'categoryId',
       label: '分类名称',
-      // component: 'ApiCascader',
       component: 'ApiTreeSelect',
       componentProps: {
         api: async () => {
           const data = await getCategoryList({});
           return handleTree(data);
         },
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择商品分类',
       },
       rules: 'required',
@@ -53,7 +53,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
         api: getSimpleBrandList,
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择商品品牌',
       },
       rules: 'required',
@@ -73,10 +73,10 @@ export function useInfoFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入商品简介',
-        autoSize: { minRows: 2, maxRows: 2 },
-        showCount: true,
+        autosize: { minRows: 2, maxRows: 2 },
+        showWordLimit: true,
         maxlength: 128,
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -104,7 +104,10 @@ export function useInfoFormSchema(): VbenFormSchema[] {
 }
 
 /** 价格库存的表单 */
-export function useSkuFormSchema(): VbenFormSchema[] {
+export function useSkuFormSchema(
+  propertyList: any[] = [],
+  isDetail: boolean = false,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -119,7 +122,7 @@ export function useSkuFormSchema(): VbenFormSchema[] {
       label: '分销类型',
       component: 'RadioGroup',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: [
           {
             label: '默认设置',
@@ -138,7 +141,7 @@ export function useSkuFormSchema(): VbenFormSchema[] {
       label: '商品规格',
       component: 'RadioGroup',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: [
           {
             label: '单规格',
@@ -152,7 +155,51 @@ export function useSkuFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @xingyu：待补充商品属性
+    // 单规格时显示的 SkuList
+    {
+      fieldName: 'singleSkuList',
+      label: '',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 false（单规格）时显示
+        show: (values) => values.specType === false,
+      },
+    },
+    // 多规格时显示的商品属性（占位，实际通过插槽渲染）
+    {
+      fieldName: 'productAttributes',
+      label: '商品属性',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）时显示
+        show: (values) => values.specType === true,
+      },
+    },
+    // 多规格 - 批量设置
+    {
+      fieldName: 'batchSkuList',
+      label: '批量设置',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）且 propertyList 有数据时显示，且非详情模式
+        show: (values) =>
+          values.specType === true && propertyList.length > 0 && !isDetail,
+      },
+    },
+    // 多规格 - 规格列表
+    {
+      fieldName: 'multiSkuList',
+      label: '规格列表',
+      component: 'Input',
+      dependencies: {
+        triggerFields: ['specType'],
+        // 当 specType 为 true（多规格）且 propertyList 有数据时显示
+        show: (values) => values.specType === true && propertyList.length > 0,
+      },
+    },
   ];
 }
 
@@ -237,10 +284,8 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
     {
       fieldName: 'giveIntegral',
@@ -248,10 +293,8 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
     {
       fieldName: 'virtualSalesCount',
@@ -259,10 +302,8 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
-      rules: z.number().min(0).optional().default(0),
+      rules: 'required',
     },
   ];
 }
