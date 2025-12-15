@@ -412,7 +412,7 @@ watch(
 </script>
 
 <template>
-  <div class="-mx-2 px-2">
+  <div class="-mx-2 mb-2 px-2">
     <ElRadioGroup
       v-if="type === 'UserTask'"
       v-model="approveMethod"

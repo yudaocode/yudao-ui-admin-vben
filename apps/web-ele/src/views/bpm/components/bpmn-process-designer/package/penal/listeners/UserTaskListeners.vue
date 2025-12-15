@@ -324,7 +324,7 @@ watch(
 );
 </script>
 <template>
-  <div class="-mx-2">
+  <div class="-mx-2 mb-2">
     <ListenerGrid>
       <template #action="{ row, rowIndex }">
         <ElButton

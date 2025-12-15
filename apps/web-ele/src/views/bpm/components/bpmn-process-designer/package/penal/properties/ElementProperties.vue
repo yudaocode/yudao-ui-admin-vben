@@ -191,7 +191,7 @@ watch(
 </script>
 
 <template>
-  <div class="-mx-2">
+  <div class="-mx-2 mb-2">
     <Grid :data="elementPropertyList">
       <template #action="{ row, rowIndex }">
         <ElButton

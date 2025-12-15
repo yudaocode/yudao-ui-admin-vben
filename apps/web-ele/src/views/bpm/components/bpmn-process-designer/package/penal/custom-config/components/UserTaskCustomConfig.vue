@@ -608,13 +608,9 @@ onMounted(async () => {
         <div class="w-28 truncate text-left" :title="item.title">
           {{ item.title }}
         </div>
-        <ElRadioGroup
-          v-model="item.permission"
-          class="flex flex-1 justify-between"
-        >
-          <div class="flex w-24 items-center justify-center">
+        <ElRadioGroup v-model="item.permission" class="ml-7 w-full">
+          <div class="flex flex-1 items-center justify-center">
             <ElRadio
-              class="ml-5"
               :value="FieldPermissionType.READ"
               size="large"
               @change="updateElementExtensions"
@@ -622,9 +618,8 @@ onMounted(async () => {
               <span></span>
             </ElRadio>
           </div>
-          <div class="flex w-24 items-center justify-center">
+          <div class="flex flex-1 items-center justify-center">
             <ElRadio
-              class="ml-5"
               :value="FieldPermissionType.WRITE"
               size="large"
               @change="updateElementExtensions"
@@ -632,9 +627,8 @@ onMounted(async () => {
               <span></span>
             </ElRadio>
           </div>
-          <div class="flex w-24 items-center justify-center">
+          <div class="flex flex-1 items-center justify-center">
             <ElRadio
-              class="ml-5"
               :value="FieldPermissionType.NONE"
               size="large"
               @change="updateElementExtensions"
