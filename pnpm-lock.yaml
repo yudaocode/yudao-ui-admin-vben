@@ -262,8 +262,8 @@ catalogs:
       specifier: ^12.8.1
       version: 12.8.1
     dotenv:
-      specifier: ^16.6.1
-      version: 16.6.1
+      specifier: ^17.2.3
+      version: 17.2.3
     echarts:
       specifier: ^6.0.0
       version: 6.0.0
@@ -1438,7 +1438,7 @@ importers:
         version: 1.11.19
       dotenv:
         specifier: 'catalog:'
-        version: 16.6.1
+        version: 17.2.3
       rollup:
         specifier: 'catalog:'
         version: 4.53.3

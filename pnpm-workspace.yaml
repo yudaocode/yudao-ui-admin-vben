@@ -107,7 +107,7 @@ catalog:
   defu: ^6.1.4
   depcheck: ^1.4.7
   diagram-js: ^12.8.1
-  dotenv: ^16.6.1
+  dotenv: ^17.2.3
   echarts: ^6.0.0
   element-plus: ^2.10.2
   eslint: ^9.39.1
