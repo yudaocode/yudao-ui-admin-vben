@@ -105,13 +105,6 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
     },
-    // TODO @puhui999：这里交互不太对，可以对比下 element-plus 版本呢
-    {
-      fieldName: 'spuId',
-      label: '拼团商品',
-      component: 'Input',
-      rules: 'required',
-    },
   ];
 }
 

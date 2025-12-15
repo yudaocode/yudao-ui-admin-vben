@@ -115,12 +115,6 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
     },
-    {
-      // TODO
-      fieldName: 'spuId',
-      label: '拼团商品',
-      component: 'Input',
-    },
   ];
 }
 
