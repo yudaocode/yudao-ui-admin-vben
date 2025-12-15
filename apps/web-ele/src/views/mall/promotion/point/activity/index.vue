@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
-import { computed } from 'vue';
-
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -17,51 +14,52 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import PointActivityForm from './modules/form.vue';
+import Form from './modules/form.vue';
 
 defineOptions({ name: 'PromotionPointActivity' });
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: PointActivityForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
-
-/** 获得商品已兑换数量 */
-const getRedeemedQuantity = computed(
-  () => (row: MallPointActivityApi.PointActivity) =>
-    (row.totalStock || 0) - (row.stock || 0),
-);
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
-/** 创建积分活动 */
+/** 创建积分商城活动 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
-/** 编辑积分活动 */
-function handleEdit(row: MallPointActivityApi.PointActivity) {
+/** 编辑积分商城活动 */
+function handleEdit(row: any) {
   formModalApi.setData(row).open();
 }
 
-/** 关闭积分活动 */
-async function handleClose(row: MallPointActivityApi.PointActivity) {
-  await confirm('确认关闭该积分商城活动吗？');
-  await closePointActivity(row.id);
-  ElMessage.success('关闭成功');
-  handleRefresh();
+/** 关闭积分商城活动 */
+async function handleClose(row: any) {
+  const loadingInstance = ElLoading.service({
+    text: '正在关闭中...',
+  });
+  try {
+    await closePointActivity(row.id);
+    ElMessage.success('关闭成功');
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
-/** 删除积分活动 */
-async function handleDelete(row: MallPointActivityApi.PointActivity) {
+/** 删除积分商城活动 */
+async function handleDelete(row: any) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.spuName]),
   });
   try {
     await deletePointActivity(row.id);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.spuName]));
     handleRefresh();
   } finally {
     loadingInstance.close();
@@ -95,21 +93,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<MallPointActivityApi.PointActivity>,
+  } as VxeTableGridOptions,
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <template #doc>
-      <DocAlert
-        title="【营销】积分商城活动"
-        url="https://doc.iocoder.cn/mall/promotion-point/"
-      />
-    </template>
-
     <FormModal @success="handleRefresh" />
-
     <Grid table-title="积分商城活动列表">
       <template #toolbar-tools>
         <TableAction
@@ -123,9 +113,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
-      </template>
-      <template #redeemedQuantity="{ row }">
-        {{ getRedeemedQuantity(row) }}
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -142,17 +129,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '关闭',
               type: 'danger',
               link: true,
-              auth: ['promotion:point-activity:close'],
+              icon: ACTION_ICON.CLOSE,
               ifShow: row.status === 0,
-              onClick: handleClose.bind(null, row),
+              auth: ['promotion:point-activity:close'],
+              popConfirm: {
+                title: '确认关闭该积分商城活动吗？',
+                confirm: handleClose.bind(null, row),
+              },
             },
             {
               label: $t('common.delete'),
               type: 'danger',
               link: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['promotion:point-activity:delete'],
               ifShow: row.status !== 0,
+              auth: ['promotion:point-activity:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.spuName]),
                 confirm: handleDelete.bind(null, row),
