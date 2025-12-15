@@ -28,7 +28,6 @@ const activeTab = ref('info');
 provide('product', product); // 提供产品信息给子组件
 
 /** 获取产品详情 */
-// TODO @haohao：因为 detail 是独立界面，所以不放在 modules 里，应该放在 web-antd/src/views/iot/product/product/detail/index.vue 里，更合理一些哈。
 async function getProductData(productId: number) {
   loading.value = true;
   try {
@@ -91,3 +90,4 @@ onMounted(async () => {
     </Tabs>
   </Page>
 </template>
+
