@@ -191,7 +191,7 @@ const initFormOnChanged = (element: any) => {
     conditionFormVisible.value =
       elementType.value === 'SequenceFlow' &&
       activatedElement.source &&
-      (activatedElement.source.type as string).includes('StartEvent');
+      !(activatedElement.source.type as string).includes('StartEvent');
     formVisible.value =
       elementType.value === 'UserTask' || elementType.value === 'StartEvent';
   } catch (error) {

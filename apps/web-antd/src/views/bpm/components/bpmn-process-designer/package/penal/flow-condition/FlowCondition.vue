@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import { Form, Input, Select } from 'ant-design-vue';
+import { Form, FormItem, Input, Select, Textarea } from 'ant-design-vue';
 
 defineOptions({ name: 'FlowCondition' });
 
@@ -15,8 +15,6 @@ const props = defineProps({
     default: '',
   },
 });
-
-const { TextArea } = Input;
 
 const flowConditionForm = ref<any>({});
 const bpmnElement = ref();
@@ -153,15 +151,19 @@ watch(
 
 <template>
   <div class="panel-tab__content">
-    <Form :model="flowConditionForm">
-      <Form.Item label="流转类型">
+    <Form
+      :model="flowConditionForm"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 18 }"
+    >
+      <FormItem label="流转类型">
         <Select v-model:value="flowConditionForm.type" @change="updateFlowType">
           <Select.Option value="normal">普通流转路径</Select.Option>
           <Select.Option value="default">默认流转路径</Select.Option>
           <Select.Option value="condition">条件流转路径</Select.Option>
         </Select>
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         label="条件格式"
         v-if="flowConditionForm.type === 'condition'"
         key="condition"
@@ -170,8 +172,8 @@ watch(
           <Select.Option value="expression">表达式</Select.Option>
           <Select.Option value="script">脚本</Select.Option>
         </Select>
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         label="表达式"
         v-if="
           flowConditionForm.conditionType &&
@@ -179,45 +181,45 @@ watch(
         "
         key="express"
       >
-        <Input
+        <Textarea
           v-model:value="flowConditionForm.body"
-          style="width: 192px"
+          :auto-size="{ minRows: 2, maxRows: 6 }"
           allow-clear
           @change="updateFlowCondition"
         />
-      </Form.Item>
+      </FormItem>
       <template
         v-if="
           flowConditionForm.conditionType &&
           flowConditionForm.conditionType === 'script'
         "
       >
-        <Form.Item label="脚本语言" key="language">
+        <FormItem label="脚本语言" key="language">
           <Input
             v-model:value="flowConditionForm.language"
             allow-clear
             @change="updateFlowCondition"
           />
-        </Form.Item>
-        <Form.Item label="脚本类型" key="scriptType">
+        </FormItem>
+        <FormItem label="脚本类型" key="scriptType">
           <Select v-model:value="flowConditionForm.scriptType">
             <Select.Option value="inlineScript">内联脚本</Select.Option>
             <Select.Option value="externalScript">外部脚本</Select.Option>
           </Select>
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           label="脚本"
           v-if="flowConditionForm.scriptType === 'inlineScript'"
           key="body"
         >
-          <TextArea
+          <Textarea
             v-model:value="flowConditionForm.body"
             :auto-size="{ minRows: 2, maxRows: 6 }"
             allow-clear
             @change="updateFlowCondition"
           />
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           label="资源地址"
           v-if="flowConditionForm.scriptType === 'externalScript'"
           key="resource"
@@ -227,7 +229,7 @@ watch(
             allow-clear
             @change="updateFlowCondition"
           />
-        </Form.Item>
+        </FormItem>
       </template>
     </Form>
   </div>
