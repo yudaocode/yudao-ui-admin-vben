@@ -21,7 +21,6 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MallSeckillActivityApi.SeckillActivity>();
-
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['秒杀活动'])
@@ -90,12 +89,10 @@ const [Modal, modalApi] = useVbenModal({
       message.error('请选择秒杀商品');
       return;
     }
-
     if (skuTableData.value.length === 0) {
       message.error('请至少配置一个 SKU');
       return;
     }
-
     // 验证 SKU 配置
     const hasInvalidSku = skuTableData.value.some(
       (sku) => sku.stock < 1 || sku.seckillPrice < 0.01,
@@ -105,11 +102,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // 提交表单
     modalApi.lock();
     try {
       const values = await formApi.getValues();
-
-      // 构建提交数据
       const data: any = {
         ...values,
         spuId: spuId.value,
@@ -119,11 +115,10 @@ const [Modal, modalApi] = useVbenModal({
           seckillPrice: Math.round(sku.seckillPrice * 100), // 转换为分
         })),
       };
-
       await (formData.value?.id
         ? updateSeckillActivity(data)
         : createSeckillActivity(data));
-
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -140,18 +135,18 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // 加载数据
     const data = modalApi.getData<MallSeckillActivityApi.SeckillActivity>();
     if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getSeckillActivity(data.id);
       await nextTick();
       await formApi.setValues(formData.value);
-
       // 加载商品和 SKU 信息
+      // TODO @puhui999：if return 简化括号层级
       if (formData.value.spuId) {
         const spu = await getSpu(formData.value.spuId);
         if (spu) {
@@ -201,6 +196,7 @@ const [Modal, modalApi] = useVbenModal({
 
         <!-- SKU 配置表格 -->
         <div v-if="skuTableData.length > 0" class="mt-4">
+          <!-- TODO @puhui999：Grid？或者 VXETable 哇？ -->
           <table class="w-full border-collapse border border-gray-300">
             <thead>
               <tr class="bg-gray-100">

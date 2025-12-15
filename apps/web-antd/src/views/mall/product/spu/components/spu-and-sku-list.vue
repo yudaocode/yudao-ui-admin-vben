@@ -127,7 +127,7 @@ watch(
         </SkuList>
       </template>
     </VxeColumn>
-    <VxeColumn field="id" align="center" title="商品编号" />
+    <VxeColumn field="id" align="center" title="商品编号" min-width="30" />
     <VxeColumn title="商品图" min-width="80">
       <template #default="{ row }">
         <Image

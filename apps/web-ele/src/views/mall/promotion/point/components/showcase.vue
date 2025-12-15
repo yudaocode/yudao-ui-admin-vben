@@ -1,4 +1,5 @@
 <!-- 积分商城活动橱窗组件：用于展示和选择积分商城活动 -->
+<!-- TODO @puhui999：antd 多了一个，看着 ele 要迁移下？ --->
 <script lang="ts" setup>
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 

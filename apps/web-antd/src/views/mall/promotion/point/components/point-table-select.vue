@@ -1,4 +1,5 @@
 <!-- 积分商城活动选择弹窗组件 -->
+<!-- TODO @puhui999：不需要 point- 前缀 --->
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';

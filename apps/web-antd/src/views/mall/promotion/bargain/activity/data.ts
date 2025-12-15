@@ -24,6 +24,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入活动名称',
       },
       rules: 'required',
+      formItemClass: 'col-span-2',
     },
     {
       fieldName: 'startTime',
@@ -132,13 +133,6 @@ export function useFormSchema(): VbenFormSchema[] {
         step: 0.01,
         placeholder: '请输入最大砍价金额',
       },
-    },
-    // TODO @puhui999：这里交互不太对，可以对比下 element-plus 版本呢
-    {
-      fieldName: 'spuId',
-      label: '砍价商品',
-      component: 'Input',
-      rules: 'required',
     },
   ];
 }

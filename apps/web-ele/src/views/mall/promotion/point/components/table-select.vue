@@ -1,4 +1,5 @@
 <!-- 积分商城活动选择弹窗组件 -->
+<!-- TODO @puhui999：antd 多了一个，看着 ele 要迁移下？ --->
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';

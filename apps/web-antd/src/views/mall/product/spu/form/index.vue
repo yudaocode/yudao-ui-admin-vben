@@ -32,6 +32,7 @@ const spuId = ref<number>();
 const { params, name } = useRoute();
 const { closeCurrentTab } = useTabs();
 const activeTabName = ref('info');
+// TODO @puhui999：这个要不要类似 ele 里，直接写到 html 里？
 const tabList = ref([
   {
     key: 'info',
