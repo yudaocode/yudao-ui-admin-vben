@@ -469,8 +469,8 @@ catalogs:
       specifier: ^16.21.0
       version: 16.26.0
     stylelint-config-recess-order:
-      specifier: ^6.1.0
-      version: 6.1.0
+      specifier: ^7.4.0
+      version: 7.4.0
     stylelint-config-recommended:
       specifier: ^17.0.0
       version: 17.0.0
@@ -1249,7 +1249,7 @@ importers:
         version: 3.1.3(stylelint@16.26.0(typescript@5.9.3))
       stylelint-config-recess-order:
         specifier: 'catalog:'
-        version: 6.1.0(stylelint@16.26.0(typescript@5.9.3))
+        version: 7.4.0(stylelint-order@7.0.0(stylelint@16.26.0(typescript@5.9.3)))(stylelint@16.26.0(typescript@5.9.3))
       stylelint-scss:
         specifier: 'catalog:'
         version: 6.12.1(stylelint@16.26.0(typescript@5.9.3))
@@ -9652,11 +9652,6 @@ packages:
     resolution: {integrity: sha512-8sLjZwK0R+JlxlYcTuVnyT2v+htpdrjDOKuMcOVdYjt52Lh8hWRYpxBPoKx/Zg+bcjc3wx6fmQevMmUztS/ccA==}
     engines: {node: '>=4'}
 
-  postcss-sorting@8.0.2:
-    resolution: {integrity: sha512-M9dkSrmU00t/jK7rF6BZSZauA5MAaBW4i5EnJXspMwt4iqTh/L9j6fgMnbElEOfyRyfLfVbIHj/R52zHzAPe1Q==}
-    peerDependencies:
-      postcss: ^8.4.20
-
   postcss-sorting@9.1.0:
     resolution: {integrity: sha512-Mn8KJ45HNNG6JBpBizXcyf6LqY/qyqetGcou/nprDnFwBFBLGj0j/sNKV2lj2KMOVOwdXu14aEzqJv8CIV6e8g==}
     peerDependencies:
@@ -10496,10 +10491,11 @@ packages:
       postcss-html: ^1.0.0
       stylelint: '>=14.0.0'
 
-  stylelint-config-recess-order@6.1.0:
-    resolution: {integrity: sha512-0rGZgJQjUKqv1PXZnRJxr13f3hb3i2snx2nIL6luDWUf4nD3BAweB8noS7jdfBQ56HQG3RKSF0a+MAHfBGFxgw==}
+  stylelint-config-recess-order@7.4.0:
+    resolution: {integrity: sha512-W3G517cBaMDYRX5Fzhro4fhRkkLafLgVSPfQnhxbiLyMnbLq47RMF/NRaOJ4OQsKWYhsIHOIc2Q3VL0X3Q7oPg==}
     peerDependencies:
-      stylelint: '>=16'
+      stylelint: '>=16.18'
+      stylelint-order: '>=7'
 
   stylelint-config-recommended-scss@14.1.0:
     resolution: {integrity: sha512-bhaMhh1u5dQqSsf6ri2GVWWQW5iUjBYgcHkh7SgDDn92ijoItC/cfO/W+fpXshgTQWhwFkP1rVcewcv4jaftRg==}
@@ -10541,11 +10537,6 @@ packages:
     engines: {node: '>=18.12.0'}
     peerDependencies:
       stylelint: ^16.18.0
-
-  stylelint-order@6.0.4:
-    resolution: {integrity: sha512-0UuKo4+s1hgQ/uAxlYU4h0o0HS4NiQDud0NAUNI0aa8FJdmYHA5ZZTFHiV5FpmE3071e9pZx5j0QpVJW5zOCUA==}
-    peerDependencies:
-      stylelint: ^14.0.0 || ^15.0.0 || ^16.0.1
 
   stylelint-order@7.0.0:
     resolution: {integrity: sha512-rSWxx0KscYfxU02wEskKXES9lkRzuuONMMNkZ7SUc6uiF3tDKm7e+sE0Ax/SBlG4TUf1sp1R6f3/SlsPGmzthg==}
@@ -20189,10 +20180,6 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sorting@8.0.2(postcss@8.5.6):
-    dependencies:
-      postcss: 8.5.6
-
   postcss-sorting@9.1.0(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
@@ -21023,10 +21010,10 @@ snapshots:
       postcss-html: 1.8.0
       stylelint: 16.26.0(typescript@5.9.3)
 
-  stylelint-config-recess-order@6.1.0(stylelint@16.26.0(typescript@5.9.3)):
+  stylelint-config-recess-order@7.4.0(stylelint-order@7.0.0(stylelint@16.26.0(typescript@5.9.3)))(stylelint@16.26.0(typescript@5.9.3)):
     dependencies:
       stylelint: 16.26.0(typescript@5.9.3)
-      stylelint-order: 6.0.4(stylelint@16.26.0(typescript@5.9.3))
+      stylelint-order: 7.0.0(stylelint@16.26.0(typescript@5.9.3))
 
   stylelint-config-recommended-scss@14.1.0(postcss@8.5.6)(stylelint@16.26.0(typescript@5.9.3)):
     dependencies:
@@ -21061,12 +21048,6 @@ snapshots:
     dependencies:
       stylelint: 16.26.0(typescript@5.9.3)
       stylelint-config-recommended: 16.0.0(stylelint@16.26.0(typescript@5.9.3))
-
-  stylelint-order@6.0.4(stylelint@16.26.0(typescript@5.9.3)):
-    dependencies:
-      postcss: 8.5.6
-      postcss-sorting: 8.0.2(postcss@8.5.6)
-      stylelint: 16.26.0(typescript@5.9.3)
 
   stylelint-order@7.0.0(stylelint@16.26.0(typescript@5.9.3)):
     dependencies:
