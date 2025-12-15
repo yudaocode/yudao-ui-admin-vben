@@ -70,6 +70,7 @@ const formData = ref<MallSpuApi.Spu>({
 }); // spu 表单数据
 const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const ruleConfig: RuleConfig[] = [
+  // TODO @puhui999：ele 这里都有 :number，antd 要不要加？
   {
     name: 'stock',
     rule: (arg: number) => arg >= 0,
@@ -199,7 +200,7 @@ async function handleSubmit() {
       item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice);
     });
   }
-  // 处理轮播图列表
+  // 处理轮播图列表 TODO @puhui999：这个是必须的哇？
   const newSliderPicUrls: any[] = [];
   values.sliderPicUrls!.forEach((item: any) => {
     // 如果是前端选的图

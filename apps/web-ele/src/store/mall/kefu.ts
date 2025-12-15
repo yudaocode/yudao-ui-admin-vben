@@ -5,7 +5,10 @@ import { isEmpty } from '@vben/utils';
 
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import * as KeFuConversationApi from '#/api/mall/promotion/kefu/conversation';
+import {
+  getConversation,
+  getConversationList,
+} from '#/api/mall/promotion/kefu/conversation';
 
 interface MallKefuInfoVO {
   conversationList: MallKefuConversationApi.Conversation[]; // 会话列表
@@ -41,9 +44,7 @@ export const useMallKefuStore = defineStore('mall-kefu', {
     // ======================= 会话相关 =======================
     /** 加载会话缓存列表 */
     async setConversationList() {
-      // TODO @jave：idea linter 告警，修复下；
-      // TODO @jave：不使用 KeFuConversationApi.，直接用 getConversationList
-      this.conversationList = await KeFuConversationApi.getConversationList();
+      this.conversationList = await getConversationList();
       this.conversationSort();
     },
     /** 更新会话缓存已读 */
@@ -51,8 +52,11 @@ export const useMallKefuStore = defineStore('mall-kefu', {
       if (isEmpty(this.conversationList)) {
         return;
       }
-      const conversation = this.conversationList.find(
-        (item) => item.id === conversationId,
+      const conversationList = this
+        .conversationList as MallKefuConversationApi.Conversation[];
+      const conversation = conversationList.find(
+        (item: MallKefuConversationApi.Conversation) =>
+          item.id === conversationId,
       );
       conversation && (conversation.adminUnreadMessageCount = 0);
     },
@@ -62,10 +66,16 @@ export const useMallKefuStore = defineStore('mall-kefu', {
         return;
       }
 
-      const conversation =
-        await KeFuConversationApi.getConversation(conversationId);
+      const conversation = await getConversation(conversationId);
       this.deleteConversation(conversationId);
-      conversation && this.conversationList.push(conversation);
+      if (conversation && this.conversationList) {
+        const conversationList = this
+          .conversationList as MallKefuConversationApi.Conversation[];
+        this.conversationList = [
+          ...conversationList,
+          conversation as MallKefuConversationApi.Conversation,
+        ];
+      }
       this.conversationSort();
     },
     /** 删除会话缓存 */

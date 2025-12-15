@@ -112,6 +112,7 @@ function emitSpuChange() {
             fit="cover"
           />
           <!-- 删除按钮 -->
+          <!-- TODO @puhui999：还是使用 IconifyIcon：使用自己的中立的图标，方便 antd 和 ele 共享 -->
           <IconifyIcon
             v-if="!disabled"
             icon="ep:circle-close-filled"
@@ -128,6 +129,7 @@ function emitSpuChange() {
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenSpuSelect"
       >
+        <!-- TODO @puhui999：还是使用 IconifyIcon：使用自己的中立的图标，方便 antd 和 ele 共享 -->
         <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />
       </div>
     </ElTooltip>

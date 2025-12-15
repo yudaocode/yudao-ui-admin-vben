@@ -110,7 +110,7 @@ function emitSpuChange() {
             class="h-full w-full rounded-lg object-cover"
           />
           <!-- 删除按钮 -->
-          <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
+          <!-- TODO @puhui999：还是使用 IconifyIcon：使用自己的中立的图标，方便 antd 和 ele 共享 -->
           <CloseCircleFilled
             v-if="!disabled"
             class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
@@ -126,7 +126,7 @@ function emitSpuChange() {
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenSpuSelect"
       >
-        <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
+        <!-- TODO @puhui999：还是使用 IconifyIcon：使用自己的中立的图标，方便 antd 和 ele 共享 -->
         <PlusOutlined class="text-xl text-gray-400" />
       </div>
     </Tooltip>
