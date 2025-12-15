@@ -26,6 +26,7 @@ import { useFormSchema } from '../data';
 import RewardRule from './reward-rule.vue';
 
 const emit = defineEmits(['success']);
+
 const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
   conditionType: PromotionConditionTypeEnum.PRICE.type,
   productScope: PromotionProductScopeEnum.ALL.scope,
@@ -56,6 +57,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     try {
       const values = await formApi.getValues();
       const data = { ...formData.value, ...values };
@@ -71,6 +73,7 @@ const [Modal, modalApi] = useVbenModal({
         }
       });
       switch (data.productScope) {
+        // TODO @puhui999：是不是也可以类似优惠劵的处理策略哈；
         case PromotionProductScopeEnum.CATEGORY.scope: {
           const categoryIds = data.productCategoryIds;
           data.productScopeValues = Array.isArray(categoryIds)
@@ -88,6 +91,7 @@ const [Modal, modalApi] = useVbenModal({
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -100,6 +104,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = {};
       return;
     }
+    // 加载数据
     const data = modalApi.getData<MallRewardActivityApi.RewardActivity>();
     if (!data || !data.id) {
       return;
@@ -115,6 +120,7 @@ const [Modal, modalApi] = useVbenModal({
         }
       });
       formData.value = result;
+      // 设置到 values
       await formApi.setValues(result);
     } finally {
       modalApi.unlock();
@@ -126,12 +132,15 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-2/3">
     <Form class="mx-6">
+      <!-- 自定义插槽：优惠规则 -->
       <template #rules>
         <RewardRule v-model="formData" />
       </template>
+      <!-- 自定义插槽：商品选择 -->
       <template #productSpuIds>
         <SpuShowcase v-model="formData.productSpuIds" />
       </template>
+      <!-- 自定义插槽：分类选择 -->
       <template #productCategoryIds>
         <ProductCategorySelect v-model="formData.productCategoryIds" multiple />
       </template>

@@ -84,6 +84,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         },
       },
     },
+    // TODO @puhui999：antd 没有，是不是要统一哈。
     cellConfig: {
       height: 250,
     },
@@ -164,6 +165,7 @@ onMounted(async () => {
               link: true,
               auth: ['promotion:seckill-activity:close'],
               ifShow: row.status === 0,
+              // TODO @puhui999：antd 这里是 popConfirm，看看要不要统一
               onClick: handleClose.bind(null, row),
             },
             {

@@ -21,7 +21,6 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-// 初始化 formData，确保始终有值
 const formData = ref<Partial<MallCommentApi.Comment>>({
   descriptionScores: 5,
   benefitScores: 5,
@@ -100,7 +99,6 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // 重置表单数据
       selectedSku.value = undefined;
       return;
     }
@@ -108,6 +106,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<MallCommentApi.Comment>();
     if (!data || !data.id) {
       // 新建模式：重置表单
+      // TODO @puhui999：这里的重置，可以统一到 103 行那么？
       selectedSku.value = undefined;
       await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;

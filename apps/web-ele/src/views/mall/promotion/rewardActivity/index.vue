@@ -25,28 +25,32 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
+/** 创建满减送活动 */
 function handleCreate() {
   formModalApi.setData(null).open();
 }
 
+/** 编辑满减送活动 */
 function handleEdit(row: MallRewardActivityApi.RewardActivity) {
   formModalApi.setData({ id: row.id }).open();
 }
 
+/** 关闭满减送活动 */
 async function handleClose(row: MallRewardActivityApi.RewardActivity) {
-  const loading = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.closing', [row.name]),
   });
   try {
-    await closeRewardActivity(row.id as number);
+    await closeRewardActivity(row.id!);
     ElMessage.success($t('ui.actionMessage.closeSuccess', [row.name]));
     handleRefresh();
   } finally {
-    loading.close();
+    loadingInstance.close();
   }
 }
 
@@ -55,7 +59,7 @@ async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteRewardActivity(row.id as number);
+    await deleteRewardActivity(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -97,7 +101,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-
     <Grid table-title="满减送活动">
       <template #toolbar-tools>
         <TableAction
@@ -122,6 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['promotion:reward-activity:update'],
               onClick: handleEdit.bind(null, row),
             },
+            // TODO @puhui999：下面两个按钮，type、danger 属性无效，应该是 el 不是这个哈。
             {
               label: '关闭',
               type: 'link',

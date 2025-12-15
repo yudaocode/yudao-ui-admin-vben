@@ -18,6 +18,7 @@ import { useFormSchema } from '../data';
 
 defineOptions({ name: 'DiscountActivityForm' });
 
+// TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样
 const emit = defineEmits(['success']);
 const formData = ref<MallDiscountActivityApi.DiscountActivity>();
 const getTitle = computed(() => {
@@ -69,6 +70,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      // TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样
       formData.value = undefined;
       return;
     }
@@ -91,6 +93,7 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-3/5" :title="getTitle">
+    <!-- TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样 -->
     <Form />
   </Modal>
 </template>

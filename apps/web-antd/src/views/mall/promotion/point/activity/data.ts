@@ -126,7 +126,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       formItemClass: 'col-span-2',
     },
-    // TODO @puhui999：商品图太大了。
     {
       fieldName: 'spuId',
       label: '活动商品',

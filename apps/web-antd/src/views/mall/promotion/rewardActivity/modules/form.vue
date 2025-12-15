@@ -32,7 +32,6 @@ const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
   productScope: PromotionProductScopeEnum.ALL.scope,
   rules: [],
 });
-
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['满减送'])
@@ -76,6 +75,7 @@ const [Modal, modalApi] = useVbenModal({
       });
       // 设置 productScopeValues
       switch (data.productScope) {
+        // TODO @puhui999：这里要不要搞成类似优惠劵的
         case PromotionProductScopeEnum.CATEGORY.scope: {
           const categoryIds = data.productCategoryIds;
           data.productScopeValues = Array.isArray(categoryIds)
@@ -90,7 +90,6 @@ const [Modal, modalApi] = useVbenModal({
           break;
         }
       }
-
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));

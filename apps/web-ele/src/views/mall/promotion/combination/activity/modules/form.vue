@@ -91,12 +91,10 @@ const [Modal, modalApi] = useVbenModal({
       ElMessage.error('请选择拼团商品');
       return;
     }
-
     if (skuTableData.value.length === 0) {
       ElMessage.error('请至少配置一个 SKU');
       return;
     }
-
     // 验证 SKU 配置
     const hasInvalidSku = skuTableData.value.some(
       (sku) => sku.combinationPrice < 0.01,
@@ -106,11 +104,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // 提交表单
     modalApi.lock();
     try {
       const values = await formApi.getValues();
-
-      // 构建提交数据
       const data: any = {
         ...values,
         spuId: spuId.value,
@@ -119,11 +116,10 @@ const [Modal, modalApi] = useVbenModal({
           combinationPrice: Math.round(sku.combinationPrice * 100), // 转换为分
         })),
       };
-
       await (formData.value?.id
         ? updateCombinationActivity(data)
         : createCombinationActivity(data));
-
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -139,20 +135,19 @@ const [Modal, modalApi] = useVbenModal({
       skuTableData.value = [];
       return;
     }
-
+    // 加载数据
     const data =
       modalApi.getData<MallCombinationActivityApi.CombinationActivity>();
     if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getCombinationActivity(data.id);
       await nextTick();
       await formApi.setValues(formData.value);
-
       // 加载商品和 SKU 信息
+      // TODO @puhui999：if return，简化括号层级
       if (formData.value.spuId) {
         const spu = await getSpu(formData.value.spuId);
         if (spu) {
@@ -220,6 +215,15 @@ const [Modal, modalApi] = useVbenModal({
                     class="h-16 w-16 object-cover"
                   />
                 </td>
+                <!-- TODO @puhui999：这里貌似和 element-plus 没对齐；；ps：是不是用 grid 组件呀？或者 vxe 组件
+                 图片
+                  商品条码
+                  销售价(元)
+                  市场价(元)
+                  成本价(元)
+                  库存
+                  拼团价格(元)
+                 -->
                 <td class="border border-gray-300 px-4 py-2">
                   {{ sku.skuName }}
                 </td>
@@ -227,6 +231,7 @@ const [Modal, modalApi] = useVbenModal({
                   ¥{{ (sku.price / 100).toFixed(2) }}
                 </td>
                 <td class="border border-gray-300 px-4 py-2">
+                  <!-- TODO @puhui999：是不是要使用 antd 的哈？ -->
                   <input
                     v-model.number="sku.combinationPrice"
                     type="number"

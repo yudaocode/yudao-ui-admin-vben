@@ -180,7 +180,6 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // 重置表单数据（新增和编辑模式都需要）
       formData.value = undefined;
       spuList.value = [];
       spuPropertyList.value = [];

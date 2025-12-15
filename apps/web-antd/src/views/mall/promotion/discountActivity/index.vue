@@ -41,23 +41,14 @@ function handleEdit(row: MallDiscountActivityApi.DiscountActivity) {
 
 /** 关闭满减活动 */
 async function handleClose(row: MallDiscountActivityApi.DiscountActivity) {
-  try {
-    await confirm({
-      content: '确认关闭该限时折扣活动吗？',
-    });
-  } catch {
-    return;
-  }
-
+  await confirm('确认关闭该限时折扣活动吗？');
   const hideLoading = message.loading({
-    content: '正在关闭中',
+    content: '正在关闭中...',
     duration: 0,
   });
   try {
-    await closeDiscountActivity(row.id as number);
-    message.success({
-      content: '关闭成功',
-    });
+    await closeDiscountActivity(row.id!);
+    message.success('关闭成功');
     handleRefresh();
   } finally {
     hideLoading();
@@ -71,7 +62,7 @@ async function handleDelete(row: MallDiscountActivityApi.DiscountActivity) {
     duration: 0,
   });
   try {
-    await deleteDiscountActivity(row.id as number);
+    await deleteDiscountActivity(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });

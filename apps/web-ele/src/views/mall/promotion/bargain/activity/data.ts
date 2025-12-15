@@ -24,6 +24,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入活动名称',
       },
       rules: 'required',
+      // TODO @puhui999：这里和 antd 里的不太一样，可以看看。
     },
     {
       fieldName: 'startTime',
@@ -222,12 +223,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'bargainFirstPrice',
       title: '起始价格',
       minWidth: 100,
+      // TODO @puhui999：这里和 antd 不太一样，得看看
       formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'bargainMinPrice',
       title: '砍价底价',
       minWidth: 100,
+      // TODO @puhui999：这里和 antd 不太一样，得看看
       formatter: 'formatFenToYuanAmount',
     },
     {

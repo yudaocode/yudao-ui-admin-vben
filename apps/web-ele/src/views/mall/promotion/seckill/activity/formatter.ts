@@ -9,7 +9,7 @@ export function setConfigList(list: any[]) {
 }
 
 /** 格式化配置名称 */
-export function formatConfigNames(configId: number): string {
+export function formatConfigNames(configId: number | string): string {
   const config = configList.find((item) => item.id === configId);
   return config === null || config === undefined
     ? ''
@@ -27,8 +27,11 @@ export function formatSeckillPrice(products: any[]): string {
 
 /** 格式化活动时间范围 */
 export function formatTimeRange(
-  startTime: Date | string,
-  endTime: Date | string,
+  startTime: Date | string | undefined,
+  endTime: Date | string | undefined,
 ): string {
-  return `${formatDate(startTime, 'YYYY-MM-DD')} ~ ${formatDate(endTime, 'YYYY-MM-DD')}`;
+  if (startTime && endTime) {
+    return `${formatDate(startTime, 'YYYY-MM-DD')} ~ ${formatDate(endTime, 'YYYY-MM-DD')}`;
+  }
+  return '';
 }

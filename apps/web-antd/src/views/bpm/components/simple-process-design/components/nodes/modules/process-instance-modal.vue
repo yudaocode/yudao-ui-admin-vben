@@ -30,7 +30,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       const data = modalApi.getData<any[]>();
       // 填充列表数据
-      await gridApi.setGridOptions({ data });
+      gridApi.setGridOptions({ data });
     } finally {
       modalApi.unlock();
     }

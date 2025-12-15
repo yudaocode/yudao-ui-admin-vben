@@ -57,12 +57,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 打开弹窗 */
 async function open() {
   visible.value = true;
-  // 重置查询条件并重新加载数据，与 antd 行为一致
   await gridApi.query();
 }
 
 /** 确认选择 */
-async function handleConfirm() {
+function handleConfirm() {
   const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
     []) as MallCouponTemplateApi.CouponTemplate[];
   emit('change', selectedRecords);
@@ -74,6 +73,7 @@ function closeModal() {
   visible.value = false;
 }
 
+/** 对外暴露的方法 */
 defineExpose({
   open,
 });

@@ -19,22 +19,26 @@ defineOptions({ name: 'RewardRuleCouponSelect' });
 const props = defineProps<{
   modelValue: MallRewardActivityApi.RewardRule;
 }>();
+
 const emits = defineEmits<{
   (e: 'update:modelValue', v: any): void;
 }>();
 
+/** 选择赠送的优惠类型拓展 */
 interface GiveCoupon extends MallCouponTemplateApi.CouponTemplate {
   giveCount?: number;
 }
 
 const rewardRule = useVModel(props, 'modelValue', emits);
-const list = ref<GiveCoupon[]>([]);
+const list = ref<GiveCoupon[]>([]); // 选择的优惠劵列表
 
+/** 选择优惠券 */
 const selectRef = ref<InstanceType<typeof CouponSelect>>();
 function handleSelect() {
   selectRef.value?.open();
 }
 
+/** 选择优惠券后的回调 */
 function handleChange(val: any[]) {
   for (const item of val) {
     if (list.value.some((v) => v.id === item.id)) {
@@ -44,11 +48,14 @@ function handleChange(val: any[]) {
   }
 }
 
+/** 删除优惠券 */
 function handleDelete(index: number) {
   list.value.splice(index, 1);
 }
 
+/** 初始化赠送的优惠券列表 */
 async function initGiveCouponList() {
+  // 校验优惠券存在
   if (
     !rewardRule.value ||
     !rewardRule.value.giveCouponTemplateCounts ||
@@ -71,13 +78,16 @@ async function initGiveCouponList() {
   });
 }
 
+/** 监听 list 变化，自动同步到 rewardRule */
 watch(
   list,
   (val) => {
     if (!rewardRule.value) {
       return;
     }
+    // 核心：清空 giveCouponTemplateCounts，解决删除不生效的问题
     rewardRule.value.giveCouponTemplateCounts = {};
+    // 设置优惠券和其数量的对应
     val.forEach((item) => {
       rewardRule.value.giveCouponTemplateCounts![item.id] = item.giveCount!;
     });
@@ -93,6 +103,7 @@ onMounted(async () => {
 
 <template>
   <div>
+    <!-- 已选优惠券列表 -->
     <div v-if="list.length > 0" class="mb-2 flex flex-col gap-2">
       <div
         v-for="(item, index) in list"
@@ -136,8 +147,10 @@ onMounted(async () => {
       </div>
     </div>
 
+    <!-- 添加按钮 -->
     <ElButton link class="!pl-0" @click="handleSelect">+ 添加优惠券</ElButton>
 
+    <!-- 优惠券选择弹窗 -->
     <CouponSelect
       ref="selectRef"
       :take-type="CouponTemplateTakeTypeEnum.ADMIN.type"

@@ -27,15 +27,19 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['秒杀活动']);
 });
 
+// ================= 商品选择相关 =================
 const spuId = ref<number>();
 const spuName = ref<string>('');
 const skuTableData = ref<any[]>([]);
-const spuSkuSelectRef = ref();
 
+const spuSkuSelectRef = ref(); // 商品选择弹窗 Ref
+
+/** 打开商品选择弹窗 */
 const handleSelectProduct = () => {
   spuSkuSelectRef.value?.open();
 };
 
+/** 选择商品后的回调 */
 async function handleSpuSelected(selectedSpuId: number, skuIds?: number[]) {
   const spu = await getSpu(selectedSpuId);
   if (!spu) return;
@@ -43,6 +47,7 @@ async function handleSpuSelected(selectedSpuId: number, skuIds?: number[]) {
   spuId.value = spu.id;
   spuName.value = spu.name || '';
 
+  // 筛选指定的 SKU
   const selectedSkus = skuIds
     ? spu.skus?.filter((sku) => skuIds.includes(sku.id!))
     : spu.skus;
@@ -57,6 +62,8 @@ async function handleSpuSelected(selectedSpuId: number, skuIds?: number[]) {
       seckillPrice: 0,
     })) || [];
 }
+
+// ================= end =================
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -77,6 +84,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // 验证商品和 SKU 配置
     if (!spuId.value) {
       ElMessage.error('请选择秒杀商品');
       return;
@@ -85,6 +93,7 @@ const [Modal, modalApi] = useVbenModal({
       ElMessage.error('请至少配置一个 SKU');
       return;
     }
+    // 验证 SKU 配置
     const hasInvalidSku = skuTableData.value.some(
       (sku) => sku.stock < 1 || sku.seckillPrice < 0.01,
     );
@@ -93,6 +102,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    // 提交表单
     modalApi.lock();
     try {
       const values = await formApi.getValues();
@@ -102,12 +112,13 @@ const [Modal, modalApi] = useVbenModal({
         products: skuTableData.value.map((sku) => ({
           skuId: sku.skuId,
           stock: sku.stock,
-          seckillPrice: Math.round(sku.seckillPrice * 100),
+          seckillPrice: Math.round(sku.seckillPrice * 100), // 转换为分
         })),
       };
       await (formData.value?.id
         ? updateSeckillActivity(data)
         : createSeckillActivity(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -123,6 +134,8 @@ const [Modal, modalApi] = useVbenModal({
       skuTableData.value = [];
       return;
     }
+
+    // 加载数据
     const data = modalApi.getData<MallSeckillActivityApi.SeckillActivity>();
     if (!data || !data.id) {
       return;
@@ -130,12 +143,16 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getSeckillActivity(data.id);
+      // TODO @puhui999：这里需要 nextTick 么？因为 antd 有
       await formApi.setValues(formData.value);
+      // 加载商品和 SKU 信息
+      // TODO @puhui999：if return 简化括号层级
       if (formData.value.spuId) {
         const spu = await getSpu(formData.value.spuId);
         if (spu) {
           spuId.value = spu.id;
           spuName.value = spu.name || '';
+          // 回填 SKU 配置
           const products = formData.value.products || [];
           skuTableData.value =
             spu.skus
@@ -148,7 +165,7 @@ const [Modal, modalApi] = useVbenModal({
                   picUrl: sku.picUrl || spu.picUrl || '',
                   price: sku.price || 0,
                   stock: product?.stock || 0,
-                  seckillPrice: (product?.seckillPrice || 0) / 100,
+                  seckillPrice: (product?.seckillPrice || 0) / 100, // 分转元
                 };
               }) || [];
         }
@@ -164,9 +181,12 @@ const [Modal, modalApi] = useVbenModal({
   <Modal class="w-4/5" :title="getTitle">
     <div class="mx-4">
       <Form />
+
+      <!-- 商品选择区域 -->
       <div class="mt-4">
         <div class="mb-2 flex items-center">
           <span class="text-sm font-medium">秒杀活动商品:</span>
+          <!-- TODO @puhui999：使用 ElButton 这种哈 -->
           <el-button class="ml-2" type="primary" @click="handleSelectProduct">
             选择商品
           </el-button>
@@ -174,7 +194,10 @@ const [Modal, modalApi] = useVbenModal({
             已选择: {{ spuName }}
           </span>
         </div>
+
+        <!-- SKU 配置表格 -->
         <div v-if="skuTableData.length > 0" class="mt-4">
+          <!-- TODO @puhui999：Grid？或者 VXETable 哇？ -->
           <table class="w-full border-collapse border border-gray-300">
             <thead>
               <tr class="bg-gray-100">
@@ -225,6 +248,8 @@ const [Modal, modalApi] = useVbenModal({
       </div>
     </div>
   </Modal>
+
+  <!-- 商品选择器弹窗 -->
   <SpuSkuSelect
     ref="spuSkuSelectRef"
     :is-select-sku="true"

@@ -1,7 +1,5 @@
 import type { PageParam, PageResult } from '@vben/request';
 
-import type { MallSpuApi } from '#/api/mall/product/spu';
-
 import { requestClient } from '#/api/request';
 
 export namespace MallCombinationActivityApi {
@@ -23,24 +21,14 @@ export namespace MallCombinationActivityApi {
     limitDuration?: number; // 限制时长
     combinationPrice?: number; // 拼团价格
     products: CombinationProduct[]; // 商品列表
+    picUrl?: any;
   }
 
-  // TODO @puhui999：要不要删除？
   /** 拼团活动所需属性 */
   export interface CombinationProduct {
     spuId: number; // 商品 SPU 编号
     skuId: number; // 商品 SKU 编号
     combinationPrice: number; // 拼团价格
-  }
-
-  /** 扩展 SKU 配置 */
-  export type SkuExtension = {
-    productConfig: CombinationProduct; // 拼团活动配置
-  } & MallSpuApi.Sku;
-
-  /** 扩展 SPU 配置 */
-  export interface SpuExtension extends MallSpuApi.Spu {
-    skus: SkuExtension[]; // SKU 列表
   }
 }
 

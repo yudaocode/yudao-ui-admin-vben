@@ -23,6 +23,7 @@ import {
 import { UploadType } from './modules/upload';
 import UploadFile from './modules/UploadFile.vue';
 import UploadVideo from './modules/UploadVideo.vue';
+import {$t} from '@vben/locales';
 
 defineOptions({ name: 'MpMaterial' });
 
@@ -95,7 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 // 当 tab 切换时，更新 Grid 的 columns 和 rowConfig
 async function onTabChange() {
   const columns = getColumnsByType();
-  await gridApi.setGridOptions({
+  gridApi.setGridOptions({
     columns,
     rowConfig: {
       keyField: 'id',
@@ -109,7 +110,7 @@ async function onTabChange() {
 async function handleAccountChange(id: number) {
   accountId.value = id;
   // 同步设置表单值
-  gridApi.formApi.setValues({ accountId: id });
+  await gridApi.formApi.setValues({ accountId: id });
   await gridApi.formApi.submitForm();
 }
 
@@ -127,7 +128,7 @@ async function handleDelete(id: number) {
   try {
     await deletePermanentMaterial(id);
     message.success('删除成功');
-    handleRefresh();
+    await handleRefresh();
   } finally {
     hideLoading();
   }
@@ -205,7 +206,7 @@ async function handleDelete(id: number) {
         </Button>
       </template>
 
-      <!-- 图片列的slot -->
+      <!-- 图片列的 slot -->
       <template #image="{ row }">
         <div class="flex items-center justify-center" style="height: 192px">
           <img
@@ -216,12 +217,12 @@ async function handleDelete(id: number) {
         </div>
       </template>
 
-      <!-- 语音列的slot -->
+      <!-- 语音列的 slot -->
       <template #voice="{ row }">
         <audio :src="row.url" controls style="width: 160px"></audio>
       </template>
 
-      <!-- 视频列的slot -->
+      <!-- 视频列的 slot -->
       <template #video="{ row }">
         <video
           :src="row.url"
@@ -230,16 +231,17 @@ async function handleDelete(id: number) {
         ></video>
       </template>
 
-      <!-- 操作列的slot -->
+      <!-- 操作列的 slot -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
-              label: '删除',
-              icon: ACTION_ICON.delete,
-              color: 'danger',
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
               auth: ['mp:material:delete'],
-              onClick: () => handleDelete(row.id),
+              onClick: () => handleDelete(row.id!),
             },
           ]"
         />

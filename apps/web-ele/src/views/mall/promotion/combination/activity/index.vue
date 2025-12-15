@@ -43,10 +43,17 @@ function handleEdit(row: MallCombinationActivityApi.CombinationActivity) {
 async function handleClose(
   row: MallCombinationActivityApi.CombinationActivity,
 ) {
-  await confirm('确定关闭该拼团活动吗？');
-  await closeCombinationActivity(row.id as number);
-  ElMessage.success('关闭成功');
-  handleRefresh();
+  await confirm('确认关闭该拼团活动吗？');
+  const loadingInstance = ElLoading.service({
+    text: '关闭中...',
+  });
+  try {
+    await closeCombinationActivity(row.id!);
+    ElMessage.success('关闭成功');
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 删除拼团活动 */
@@ -57,7 +64,7 @@ async function handleDelete(
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteCombinationActivity(row.id as number);
+    await deleteCombinationActivity(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

@@ -7,6 +7,31 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getSimpleSeckillConfigList } from '#/api/mall/promotion/seckill/seckillConfig';
 
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '活动名称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入活动名称',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '活动状态',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择活动状态',
+        clearable: true,
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+      },
+    },
+  ];
+}
+
 /** 新增/编辑的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -111,31 +136,6 @@ export function useFormSchema(): VbenFormSchema[] {
         rows: 4,
       },
       formItemClass: 'col-span-2',
-    },
-  ];
-}
-
-/** 列表的搜索表单 */
-export function useGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      fieldName: 'name',
-      label: '活动名称',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入活动名称',
-        clearable: true,
-      },
-    },
-    {
-      fieldName: 'status',
-      label: '活动状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择活动状态',
-        clearable: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
     },
   ];
 }

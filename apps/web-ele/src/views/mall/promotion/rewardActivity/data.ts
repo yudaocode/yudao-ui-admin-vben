@@ -12,6 +12,7 @@ import { $t } from '@vben/locales';
 import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
 
+/** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -45,6 +46,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 列表的表格列 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
@@ -97,6 +99,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
+/** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -173,6 +176,7 @@ export function useFormSchema(): VbenFormSchema[] {
           return values.productScope === PromotionProductScopeEnum.SPU.scope;
         },
         trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
           if (
             values.productScope === PromotionProductScopeEnum.SPU.scope &&
             values.productScopeValues
@@ -195,11 +199,13 @@ export function useFormSchema(): VbenFormSchema[] {
           );
         },
         trigger(values, form) {
+          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
           if (
             values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
             values.productScopeValues
           ) {
             const categoryIds = values.productScopeValues;
+            // 单选时使用数组不能反显，取第一个元素
             form.setFieldValue(
               'productCategoryIds',
               Array.isArray(categoryIds) && categoryIds.length > 0
@@ -219,7 +225,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'productScopeValues',
+      fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
       component: 'Input',
       dependencies: {
         triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],

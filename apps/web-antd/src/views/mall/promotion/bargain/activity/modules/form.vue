@@ -96,17 +96,15 @@ const [Modal, modalApi] = useVbenModal({
       message.error('请选择砍价商品');
       return;
     }
-
     if (!skuId.value) {
       message.error('请选择商品 SKU');
       return;
     }
 
+    // 提交表单
     modalApi.lock();
     try {
       const values = await formApi.getValues();
-
-      // 构建提交数据，价格字段转换为分
       const data = {
         ...values,
         spuId: spuId.value,
@@ -120,11 +118,10 @@ const [Modal, modalApi] = useVbenModal({
           ? Math.round(values.randomMaxPrice * 100)
           : undefined,
       } as MallBargainActivityApi.BargainActivity;
-
       await (formData.value?.id
         ? updateBargainActivity(data)
         : createBargainActivity(data));
-
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -141,17 +138,15 @@ const [Modal, modalApi] = useVbenModal({
       skuInfo.value = undefined;
       return;
     }
-
+    // 加载表单数据
     const data = modalApi.getData<MallBargainActivityApi.BargainActivity>();
     if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       formData.value = await getBargainActivity(data.id);
       await nextTick();
-
       // 设置表单值时，价格字段从分转换为元
       await formApi.setValues({
         ...formData.value,
@@ -164,14 +159,12 @@ const [Modal, modalApi] = useVbenModal({
           ? formData.value.randomMaxPrice / 100
           : undefined,
       });
-
       // 加载商品和 SKU 信息
       if (formData.value.spuId) {
         const spu = await getSpu(formData.value.spuId);
         if (spu) {
           spuId.value = spu.id;
           spuName.value = spu.name || '';
-
           if (formData.value.skuId) {
             const selectedSku = spu.skus?.find(
               (sku) => sku.id === formData.value?.skuId,
@@ -214,6 +207,19 @@ const [Modal, modalApi] = useVbenModal({
         <!-- SKU 信息展示 -->
         <div v-if="skuInfo" class="mt-4">
           <table class="w-full border-collapse border border-gray-300">
+            <!-- TODO @puhui999：和 element-plus 有点差别哈；ps：是不是用 grid 组件呀？或者 vxe 组件
+             图片
+颜色
+版本
+商品条码
+销售价(元)
+市场价(元)
+成本价(元)
+库存
+砍价起始价格(元)
+砍价底价(元)
+活动库存
+             -->
             <thead>
               <tr class="bg-gray-100">
                 <th class="border border-gray-300 px-4 py-2">商品图片</th>
