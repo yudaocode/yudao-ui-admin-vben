@@ -13,7 +13,7 @@ defineOptions({ name: 'DeviceStateCountCard' });
 
 const props = defineProps<{
   loading?: boolean;
-  statsData: IotStatisticsApi.StatisticsSummary;
+  statsData: IotStatisticsApi.StatisticsSummaryRespVO;
 }>();
 
 const deviceOnlineChartRef = ref();
@@ -111,9 +111,3 @@ onMounted(() => {
     </Row>
   </Card>
 </template>
-
-<style scoped>
-:deep(.ant-card-body) {
-  padding: 20px;
-}
-</style>

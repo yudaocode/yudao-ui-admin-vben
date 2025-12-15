@@ -1,7 +1,10 @@
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
+/** 统计数据 */
+export type StatsData = IotStatisticsApi.StatisticsSummaryRespVO;
+
 /** 默认统计数据 */
-export const defaultStatsData: IotStatisticsApi.StatisticsSummary = {
+export const defaultStatsData: StatsData = {
   productCategoryCount: 0,
   productCount: 0,
   deviceCount: 0,
