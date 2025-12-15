@@ -308,11 +308,7 @@ watch(
   <div class="panel-tab__content">
     <ElForm label-width="80px">
       <ElFormItem label="流程表单">
-        <ElSelect
-          v-model="formKey"
-          clearable
-          @change="updateElementFormKey"
-        >
+        <ElSelect v-model="formKey" clearable @change="updateElementFormKey">
           <ElOption
             v-for="item in formOptions"
             :key="item.value"
@@ -327,7 +323,12 @@ watch(
           @change="_updateElementBusinessKey"
           clearable
         >
-          <ElOption v-for="i in fieldList" :key="i.id" :value="i.id" :label="i.label" />
+          <ElOption
+            v-for="i in fieldList"
+            :key="i.id"
+            :value="i.id"
+            :label="i.label"
+          />
           <ElOption value="" label="无" />
         </ElSelect>
       </ElFormItem>

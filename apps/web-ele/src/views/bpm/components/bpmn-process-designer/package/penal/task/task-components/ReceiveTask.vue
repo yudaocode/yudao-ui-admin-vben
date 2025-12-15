@@ -108,7 +108,13 @@ watch(
 <template>
   <div class="mt-2">
     <div class="mb-2 flex justify-end">
-      <ElButton type="primary" link size="small" class="p-0" @click="openCreateModal">
+      <ElButton
+        type="primary"
+        link
+        size="small"
+        class="p-0"
+        @click="openCreateModal"
+      >
         <template #icon>
           <IconifyIcon class="size-4" icon="lucide:plus" />
         </template>
