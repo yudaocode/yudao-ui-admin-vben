@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMaterialApi } from '#/api/mp/material';
 
-import { computed, provide, ref } from 'vue';
+import { provide, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page } from '@vben/common-ui';

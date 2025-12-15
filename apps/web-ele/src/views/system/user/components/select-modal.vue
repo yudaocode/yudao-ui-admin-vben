@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-// TODO @芋艿：是否有更好的组织形式？！
-// TODO @xingyu：你感觉，这个放到每个 system、infra 模块下，然后新建一个 components，表示每个模块，有一些共享的组件？然后，全局只放通用的（无业务含义的），可以哇？
+// TODO @jason：看看这个有没办法，整体代码的文件顺序，注释风格等，和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/components/select-modal.vue 一致。原因是：好维护~
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 

@@ -493,6 +493,7 @@ watch(
         </template>
       </VoiceGrid>
     </div>
+
     <!-- 类型：video -->
     <div v-else-if="props.type === 'video'">
       <VideoGrid>
@@ -507,6 +508,7 @@ watch(
         </template>
       </VideoGrid>
     </div>
+
     <!-- 类型：news -->
     <div v-else-if="props.type === 'news'" class="news-grid-wrapper">
       <NewsGrid>
