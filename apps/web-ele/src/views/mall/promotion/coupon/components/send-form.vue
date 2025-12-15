@@ -73,8 +73,7 @@ const [Modal, modalApi] = useVbenModal({
           :actions="[
             {
               label: '发送',
-              type: 'primary',
-              link: true,
+              type: 'text',
               auth: ['promotion:coupon:send'],
               onClick: () => handleSendCoupon(row),
             },
