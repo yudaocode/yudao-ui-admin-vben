@@ -223,6 +223,10 @@ defineExpose({
     queryParams.value.pageNo = 1;
     getList();
   },
+  query: () => {
+    queryParams.value.pageNo = 1;
+    getList();
+  },
 });
 
 /** 初始化 */

@@ -2,14 +2,14 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import {
   Button,
@@ -72,24 +72,16 @@ const queryParams = ref({
   groupId: undefined as number | undefined,
 }); // 搜索参数
 
-// 获取字典选项
-// TODO @haohao：直接使用 getDictOptions 哈，不用包装方法；
-const getIntDictOptions = (dictType: string) => {
-  return getDictOptions(dictType, 'number');
-};
 
 /** 搜索 */
 function handleSearch() {
   if (viewMode.value === 'list') {
     gridApi.formApi.setValues(queryParams.value);
-    gridApi.query();
-  } else {
-    // todo @haohao：改成 query 方法，更统一；
-    cardViewRef.value?.search(queryParams.value);
   }
+  gridApi.query();
 }
 
-/** 重置 */
+/** 重置搜索 */
 function handleReset() {
   queryParams.value.deviceName = '';
   queryParams.value.nickname = '';
@@ -100,13 +92,20 @@ function handleReset() {
   handleSearch();
 }
 
-/** 刷新 */
+/** 刷新表格 */
 function handleRefresh() {
-  if (viewMode.value === 'list') {
-    gridApi.query();
-  } else {
-    cardViewRef.value?.reload();
+  gridApi.query();
+}
+
+/** 视图切换 */
+async function handleViewModeChange(mode: 'card' | 'list') {
+  if (viewMode.value === mode) {
+    return; // 如果已经是目标视图，不需要切换
   }
+  viewMode.value = mode;
+  // 等待视图更新后再触发查询
+  await nextTick();
+  gridApi.query();
 }
 
 /** 导出表格 */
@@ -161,9 +160,7 @@ async function handleDelete(row: IotDeviceApi.Device) {
 
 /** 批量删除设备 */
 async function handleDeleteBatch() {
-  const checkedRows = (gridApi.grid?.getCheckboxRecords() ||
-    []) as IotDeviceApi.Device[];
-  if (checkedRows.length === 0) {
+  if (checkedIds.value.length === 0) {
     message.warning('请选择要删除的设备');
     return;
   }
@@ -172,9 +169,9 @@ async function handleDeleteBatch() {
     duration: 0,
   });
   try {
-    const ids = checkedRows.map((row) => row.id!);
-    await deleteDeviceList(ids);
+    await deleteDeviceList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
+    checkedIds.value = [];
     handleRefresh();
   } finally {
     hideLoading();
@@ -183,20 +180,27 @@ async function handleDeleteBatch() {
 
 /** 添加到分组 */
 function handleAddToGroup() {
-  const checkedRows = (gridApi.grid?.getCheckboxRecords() ||
-    []) as IotDeviceApi.Device[];
-  if (checkedRows.length === 0) {
+  if (checkedIds.value.length === 0) {
     message.warning('请选择要添加到分组的设备');
     return;
   }
-  const ids = checkedRows.map((row) => row.id!);
-  deviceGroupFormModalApi.setData(ids).open();
+  deviceGroupFormModalApi.setData(checkedIds.value).open();
 }
 
 /** 设备导入 */
 function handleImport() {
   deviceImportFormModalApi.open();
 }
+
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: IotDeviceApi.Device[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -227,7 +231,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<IotDeviceApi.Device>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
 });
+
+// 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口
+const originalQuery = gridApi.query.bind(gridApi);
+gridApi.query = async (params?: Record<string, any>) => {
+  if (viewMode.value === 'list') {
+    return await originalQuery(params);
+  } else {
+    // 卡片视图：调用卡片组件的 query 方法
+    cardViewRef.value?.query();
+  }
+};
 
 /** 初始化 */
 onMounted(async () => {
@@ -291,7 +310,7 @@ onMounted(async () => {
           style="width: 200px"
         >
           <Select.Option
-            v-for="dict in getIntDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE)"
+            v-for="dict in getDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, 'number')"
             :key="dict.value"
             :value="dict.value"
           >
@@ -305,7 +324,7 @@ onMounted(async () => {
           style="width: 200px"
         >
           <Select.Option
-            v-for="dict in getIntDictOptions(DICT_TYPE.IOT_DEVICE_STATE)"
+            v-for="dict in getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number')"
             :key="dict.value"
             :value="dict.value"
           >
@@ -361,23 +380,23 @@ onMounted(async () => {
               auth: ['iot:device:import'],
               onClick: handleImport,
             },
-            // TODO @haohao：应该是选中后，才可用
             {
               label: '添加到分组',
               type: 'primary',
               icon: 'ant-design:folder-add-outlined',
               auth: ['iot:device:update'],
               ifShow: () => viewMode === 'list',
+              disabled: isEmpty(checkedIds),
               onClick: handleAddToGroup,
             },
-            // TODO @haohao：应该是选中后，才可用；然后，然后 danger 颜色；
             {
               label: '批量删除',
               type: 'primary',
-              color: 'error',
+              danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['iot:device:delete'],
               ifShow: () => viewMode === 'list',
+              disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"
@@ -387,13 +406,13 @@ onMounted(async () => {
         <Space :size="4">
           <Button
             :type="viewMode === 'card' ? 'primary' : 'default'"
-            @click="viewMode = 'card'"
+            @click="handleViewModeChange('card')"
           >
             <IconifyIcon icon="ant-design:appstore-outlined" />
           </Button>
           <Button
             :type="viewMode === 'list' ? 'primary' : 'default'"
-            @click="viewMode = 'list'"
+            @click="handleViewModeChange('list')"
           >
             <IconifyIcon icon="ant-design:unordered-list-outlined" />
           </Button>
@@ -402,10 +421,6 @@ onMounted(async () => {
     </Card>
 
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
-      <template #toolbar-tools>
-        <div></div>
-      </template>
-
       <!-- 所属产品列 -->
       <template #product="{ row }">
         <a
@@ -484,10 +499,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-:deep(.vxe-toolbar div) {
-  z-index: 1;
-}
-
 /* 隐藏 VxeGrid 自带的搜索表单区域 */
 :deep(.vxe-grid--form-wrapper) {
   display: none !important;

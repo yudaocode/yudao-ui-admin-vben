@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import {
   Button,
@@ -92,6 +92,12 @@ function handleAuthInfoDialogClose() {
                 :value="props.product.deviceType"
               />
             </Descriptions.Item>
+            <Descriptions.Item label="定位类型">
+              <DictTag
+                :type="DICT_TYPE.IOT_LOCATION_TYPE"
+                :value="props.product.locationType"
+              />
+            </Descriptions.Item>
             <Descriptions.Item label="DeviceName">
               {{ props.device.deviceName }}
             </Descriptions.Item>
@@ -105,16 +111,16 @@ function handleAuthInfoDialogClose() {
               />
             </Descriptions.Item>
             <Descriptions.Item label="创建时间">
-              {{ formatDate(props.device.createTime) }}
+              {{ formatDateTime(props.device.createTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="激活时间">
-              {{ formatDate(props.device.activeTime) }}
+              {{ formatDateTime(props.device.activeTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="最后上线时间">
-              {{ formatDate(props.device.onlineTime) }}
+              {{ formatDateTime(props.device.onlineTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="最后离线时间">
-              {{ formatDate(props.device.offlineTime) }}
+              {{ formatDateTime(props.device.offlineTime) }}
             </Descriptions.Item>
             <Descriptions.Item label="MQTT 连接参数">
               <Button
@@ -137,6 +143,9 @@ function handleAuthInfoDialogClose() {
               <div class="flex items-center">
                 <IconifyIcon icon="ep:location" class="mr-2 text-primary" />
                 <span>设备位置</span>
+              </div>
+              <div class="text-sm text-gray-500">
+                最后上线：{{ formatDateTime(props.device.onlineTime) || '--' }}
               </div>
             </div>
           </template>

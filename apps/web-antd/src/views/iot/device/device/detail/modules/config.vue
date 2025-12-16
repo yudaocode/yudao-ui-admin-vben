@@ -21,6 +21,7 @@ const emit = defineEmits<{
 
 const loading = ref(false); // 加载中
 const pushLoading = ref(false); // 推送加载中
+const saveLoading = ref(false); // 保存加载中
 const config = ref<any>({}); // 只存储 config 字段
 const configString = ref(''); // 用于编辑器的字符串格式
 
@@ -48,11 +49,6 @@ const formattedConfig = computed(() => {
   } catch {
     return JSON.stringify(config.value, null, 2);
   }
-});
-
-/** 判断配置是否有数据 */
-const hasConfigData = computed(() => {
-  return config.value && Object.keys(config.value).length > 0;
 });
 
 /** 启用编辑模式的函数 */
@@ -84,9 +80,13 @@ async function saveConfig() {
     message.error({ content: 'JSON格式错误，请修正后再提交！' });
     return;
   }
-  // TODO @haohao：这里要不要做个类似下面的 pushLoading 避免重复提交；
-  await updateDeviceConfig();
-  isEditing.value = false;
+  saveLoading.value = true;
+  try {
+    await updateDeviceConfig();
+    isEditing.value = false;
+  } finally {
+    saveLoading.value = false;
+  }
 }
 
 /** 配置推送处理函数 */
@@ -126,36 +126,14 @@ async function updateDeviceConfig() {
 
 <template>
   <div>
-    <!-- 只在没有配置数据时显示提示 -->
+    <!-- 使用说明提示 -->
     <Alert
-      v-if="!hasConfigData"
-      message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「下发」按钮，设备即可进行远程配置。"
+      message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「配置推送」按钮，设备即可进行远程配置。"
       type="info"
       show-icon
       class="my-4"
       description="如需编辑文件，请点击下方编辑按钮"
     />
-    <!-- TODO @haohao：应该按钮，是在下方，可以参考 element-plus 的版本 -->
-    <div class="mt-5 text-center">
-      <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
-      <Button
-        v-if="isEditing"
-        type="primary"
-        @click="saveConfig"
-        :loading="loading"
-      >
-        保存
-      </Button>
-      <Button v-else @click="handleEdit">编辑</Button>
-      <Button
-        v-if="!isEditing"
-        type="primary"
-        @click="handleConfigPush"
-        :loading="pushLoading"
-      >
-        配置推送
-      </Button>
-    </div>
 
     <!-- 代码视图 - 只读展示 -->
     <div v-if="!isEditing" class="json-viewer-container">
@@ -170,6 +148,28 @@ async function updateDeviceConfig() {
       placeholder="请输入 JSON 格式的配置信息"
       class="json-editor"
     />
+
+    <!-- 操作按钮 -->
+    <div class="mt-5 text-center">
+      <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
+      <Button
+        v-if="isEditing"
+        type="primary"
+        @click="saveConfig"
+        :loading="saveLoading"
+      >
+        保存
+      </Button>
+      <Button v-else @click="handleEdit">编辑</Button>
+      <Button
+        v-if="!isEditing"
+        type="primary"
+        @click="handleConfigPush"
+        :loading="pushLoading"
+      >
+        配置推送
+      </Button>
+    </div>
   </div>
 </template>
 

@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductCategoryApi } from '#/api/iot/product/category';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -64,6 +64,17 @@ function handleReset() {
 
 /** 刷新表格 */
 function handleRefresh() {
+  gridApi.query();
+}
+
+/** 视图切换 */
+async function handleViewModeChange(mode: 'card' | 'list') {
+  if (viewMode.value === mode) {
+    return; // 如果已经是目标视图，不需要切换
+  }
+  viewMode.value = mode;
+  // 等待视图更新后再触发查询
+  await nextTick();
   gridApi.query();
 }
 
@@ -220,13 +231,13 @@ onMounted(() => {
         <Space :size="4">
           <Button
             :type="viewMode === 'card' ? 'primary' : 'default'"
-            @click="viewMode = 'card'"
+            @click="handleViewModeChange('card')"
           >
             <IconifyIcon icon="ant-design:appstore-outlined" />
           </Button>
           <Button
             :type="viewMode === 'list' ? 'primary' : 'default'"
-            @click="viewMode = 'list'"
+            @click="handleViewModeChange('list')"
           >
             <IconifyIcon icon="ant-design:unordered-list-outlined" />
           </Button>

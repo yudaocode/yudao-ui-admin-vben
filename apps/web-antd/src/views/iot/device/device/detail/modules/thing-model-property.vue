@@ -1,13 +1,13 @@
 <!-- 设备属性管理 -->
 <script lang="ts" setup>
-// TODO @haohao：看看能不能用 Grid 实现下，方便 element-plus 迁移
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
-import { ContentWrap } from '@vben/common-ui';
+import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate } from '@vben/utils';
+import { formatDateTime } from '@vben/utils';
 
 import {
   Button,
@@ -17,37 +17,168 @@ import {
   Input,
   Row,
   Switch,
-  Table,
   Tag,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLatestDeviceProperties } from '#/api/iot/device/device';
 
 import DeviceDetailsThingModelPropertyHistory from './thing-model-property-history.vue';
 
 const props = defineProps<{ deviceId: number }>();
 
-const loading = ref(true); // 列表的加载中
-const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 显示的列表数据
-const filterList = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 完整的数据列表
+/** 列表的加载中 */
+const loading = ref(true);
+/** 显示的列表数据 */
+const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]);
+/** 完整的数据列表 */
+const filterList = ref<IotDeviceApi.DevicePropertyDetail[]>([]);
+/** 查询参数 */
 const queryParams = reactive({
   keyword: '' as string,
 });
-const autoRefresh = ref(false); // 自动刷新开关
-let autoRefreshTimer: any = null; // 定时器
-const viewMode = ref<'card' | 'list'>('card'); // 视图模式状态
+/** 自动刷新开关 */
+const autoRefresh = ref(false);
+/** 定时器 */
+let autoRefreshTimer: any = null;
+/** 视图模式状态 */
+const viewMode = ref<'card' | 'list'>('card');
+
+/** Grid 列定义 */
+function useGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'identifier',
+      title: '属性标识符',
+    },
+    {
+      field: 'name',
+      title: '属性名称',
+    },
+    {
+      field: 'dataType',
+      title: '数据类型',
+    },
+    {
+      field: 'value',
+      title: '属性值',
+      slots: { default: 'value' },
+    },
+    {
+      field: 'updateTime',
+      title: '更新时间',
+      width: 180,
+      slots: { default: 'updateTime' },
+    },
+    {
+      title: '操作',
+      width: 120,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 创建 Grid 实例 */
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    rowConfig: {
+      keyField: 'identifier',
+      isHover: true,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async () => {
+          if (!props.deviceId) {
+            return { list: [], total: 0 };
+          }
+          const data = await getLatestDeviceProperties({
+            deviceId: props.deviceId,
+            identifier: undefined,
+            name: undefined,
+          });
+          // 筛选数据
+          let filteredData = data;
+          if (queryParams.keyword.trim()) {
+            const keyword = queryParams.keyword.toLowerCase();
+            filteredData = data.filter(
+              (item: IotDeviceApi.DevicePropertyDetail) =>
+                item.identifier?.toLowerCase().includes(keyword) ||
+                item.name?.toLowerCase().includes(keyword),
+            );
+          }
+          // 更新本地列表用于卡片视图
+          filterList.value = data;
+          list.value = filteredData;
+          return {
+            list: filteredData,
+            total: filteredData.length,
+          };
+        },
+      },
+    },
+    toolbarConfig: {
+      refresh: false,
+      search: false,
+    },
+    pagerConfig: {
+      enabled: false,
+    },
+  } as VxeTableGridOptions<IotDeviceApi.DevicePropertyDetail>,
+});
+
+// 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口
+gridApi.query = async () => {
+  if (viewMode.value === 'list') {
+    // 列表视图：手动获取数据并加载到 Grid
+    if (!props.deviceId) {
+      return;
+    }
+    const data = await getLatestDeviceProperties({
+      deviceId: props.deviceId,
+      identifier: undefined,
+      name: undefined,
+    });
+    const dataArray = Array.isArray(data) ? data : [];
+    let filteredData = dataArray;
+    if (queryParams.keyword.trim()) {
+      const keyword = queryParams.keyword.toLowerCase();
+      filteredData = dataArray.filter(
+        (item: IotDeviceApi.DevicePropertyDetail) =>
+          item.identifier?.toLowerCase().includes(keyword) ||
+          item.name?.toLowerCase().includes(keyword),
+      );
+    }
+    filterList.value = dataArray;
+    list.value = filteredData;
+    // 直接加载数据到 Grid
+    if (gridApi.grid) {
+      gridApi.grid.loadData(filteredData);
+    }
+  } else {
+    // 卡片视图：调用 getList 方法
+    await getList();
+  }
+};
 
 /** 查询列表 */
 async function getList() {
   loading.value = true;
   try {
-    const params = {
-      deviceId: props.deviceId,
-      identifier: undefined as string | undefined,
-      name: undefined as string | undefined,
-    };
-    filterList.value = await getLatestDeviceProperties(params);
-    handleFilter();
+    if (viewMode.value === 'list') {
+      await gridApi.query();
+    } else {
+      // 卡片视图：手动获取数据
+      const params = {
+        deviceId: props.deviceId,
+        identifier: undefined as string | undefined,
+        name: undefined as string | undefined,
+      };
+      filterList.value = await getLatestDeviceProperties(params);
+      handleFilter();
+    }
   } finally {
     loading.value = false;
   }
@@ -69,7 +200,21 @@ function handleFilter() {
 
 /** 搜索按钮操作 */
 function handleQuery() {
-  handleFilter();
+  if (viewMode.value === 'list') {
+    gridApi.query();
+  } else {
+    handleFilter();
+  }
+}
+
+/** 视图切换 */
+async function handleViewModeChange(mode: 'card' | 'list') {
+  if (viewMode.value === mode) {
+    return;
+  }
+  viewMode.value = mode;
+  await nextTick();
+  gridApi.query();
 }
 
 /** 历史操作 */
@@ -91,11 +236,29 @@ function formatValueWithUnit(item: IotDeviceApi.DevicePropertyDetail) {
 watch(autoRefresh, (newValue) => {
   if (newValue) {
     autoRefreshTimer = setInterval(() => {
-      getList();
-    }, 5000); // 每 5 秒刷新一次
+      gridApi.query();
+    }, 5000);
   } else {
     clearInterval(autoRefreshTimer);
     autoRefreshTimer = null;
+  }
+});
+
+/** 监听设备标识变化 */
+watch(
+  () => props.deviceId,
+  (newValue) => {
+    if (newValue) {
+      gridApi.query();
+    }
+  },
+);
+
+/** 初始化 */
+onMounted(async () => {
+  if (props.deviceId) {
+    await nextTick();
+    gridApi.query();
   }
 });
 
@@ -103,17 +266,13 @@ watch(autoRefresh, (newValue) => {
 onBeforeUnmount(() => {
   if (autoRefreshTimer) {
     clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
   }
-});
-
-/** 初始化 */
-onMounted(() => {
-  getList();
 });
 </script>
 
 <template>
-  <ContentWrap>
+  <Page auto-content-height>
     <!-- 搜索工作栏 -->
     <div class="flex items-center justify-between" style="margin-bottom: 16px">
       <div class="flex items-center" style="gap: 16px">
@@ -134,13 +293,13 @@ onMounted(() => {
       <Button.Group>
         <Button
           :type="viewMode === 'card' ? 'primary' : 'default'"
-          @click="viewMode = 'card'"
+          @click="handleViewModeChange('card')"
         >
           <IconifyIcon icon="ep:grid" />
         </Button>
         <Button
           :type="viewMode === 'list' ? 'primary' : 'default'"
-          @click="viewMode = 'list'"
+          @click="handleViewModeChange('list')"
         >
           <IconifyIcon icon="ep:list" />
         </Button>
@@ -214,7 +373,7 @@ onMounted(() => {
                 <div class="mb-2.5 last:mb-0">
                   <span class="mr-2.5 text-muted-foreground">更新时间</span>
                   <span class="text-sm text-foreground">
-                    {{ item.updateTime ? formatDate(item.updateTime) : '-' }}
+                    {{ item.updateTime ? formatDateTime(item.updateTime) : '-' }}
                   </span>
                 </div>
               </div>
@@ -225,45 +384,31 @@ onMounted(() => {
     </template>
 
     <!-- 列表视图 -->
-    <Table v-else v-loading="loading" :data-source="list" :pagination="false">
-      <Table.Column title="属性标识符" align="center" data-index="identifier" />
-      <Table.Column title="属性名称" align="center" data-index="name" />
-      <Table.Column title="数据类型" align="center" data-index="dataType" />
-      <Table.Column title="属性值" align="center" data-index="value">
-        <template #default="{ record }">
-          {{ formatValueWithUnit(record) }}
-        </template>
-      </Table.Column>
-      <Table.Column
-        title="更新时间"
-        align="center"
-        data-index="updateTime"
-        :width="180"
-      >
-        <template #default="{ record }">
-          {{ record.updateTime ? formatDate(record.updateTime) : '-' }}
-        </template>
-      </Table.Column>
-      <Table.Column title="操作" align="center">
-        <template #default="{ record }">
-          <Button
-            type="link"
-            @click="
-              openHistory(props.deviceId, record.identifier, record.dataType)
-            "
-          >
-            查看数据
-          </Button>
-        </template>
-      </Table.Column>
-    </Table>
+    <Grid v-show="viewMode === 'list'">
+      <template #value="{ row }">
+        {{ formatValueWithUnit(row) }}
+      </template>
+      <template #updateTime="{ row }">
+        {{ row.updateTime ? formatDateTime(row.updateTime) : '-' }}
+      </template>
+      <template #actions="{ row }">
+        <Button
+          type="link"
+          @click="
+            openHistory(props.deviceId, row.identifier, row.dataType)
+          "
+        >
+          查看数据
+        </Button>
+      </template>
+    </Grid>
 
     <!-- 表单弹窗：添加/修改 -->
     <DeviceDetailsThingModelPropertyHistory
       ref="historyRef"
       :device-id="props.deviceId"
     />
-  </ContentWrap>
+  </Page>
 </template>
 <style scoped>
 /* 移除 a-row 的额外边距 */
