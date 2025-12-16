@@ -8,7 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Card, Descriptions, message } from 'ant-design-vue';
 
-import DeviceForm from '../../form.vue';
+import DeviceForm from '../../modules/form.vue';
 
 interface Props {
   product: IotProductApi.Product;
@@ -74,7 +74,7 @@ function openEditForm(row: IotDeviceApi.Device) {
     </div>
 
     <Card class="mt-4">
-      <Descriptions :column="1">
+      <Descriptions :column="2">
         <Descriptions.Item label="产品">
           <a
             class="cursor-pointer text-blue-600"

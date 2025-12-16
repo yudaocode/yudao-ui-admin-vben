@@ -57,32 +57,54 @@ const queryParams = reactive({
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
+/** 不支持图表展示的数据类型列表 */
+const CHART_DISABLED_DATA_TYPES = [
+  IoTDataSpecsDataTypeEnum.ARRAY, // 数组
+  IoTDataSpecsDataTypeEnum.STRUCT, // 结构体
+  IoTDataSpecsDataTypeEnum.TEXT, // 文本型
+  IoTDataSpecsDataTypeEnum.BOOL, // 布尔型
+  IoTDataSpecsDataTypeEnum.ENUM, // 枚举型
+  IoTDataSpecsDataTypeEnum.DATE, // 时间型
+] as const;
+
+/** 判断是否支持图表展示（仅数值类型支持：int、float、double） */
+const canShowChart = computed(() => {
+  if (!thingModelDataType.value) return false;
+  return !CHART_DISABLED_DATA_TYPES.includes(
+    thingModelDataType.value as (typeof CHART_DISABLED_DATA_TYPES)[number],
+  );
+});
+
+/** 判断是否为复杂数据类型（用于格式化显示） */
 const isComplexDataType = computed(() => {
   if (!thingModelDataType.value) return false;
-  return [
-    IoTDataSpecsDataTypeEnum.ARRAY,
-    IoTDataSpecsDataTypeEnum.STRUCT,
-  ].includes(thingModelDataType.value as any);
-}); // 判断是否为复杂数据类型（struct 或 array）
+  return (
+    thingModelDataType.value === IoTDataSpecsDataTypeEnum.ARRAY ||
+    thingModelDataType.value === IoTDataSpecsDataTypeEnum.STRUCT
+  );
+});
 
+/** 最大值统计 */
 const maxValue = computed(() => {
-  if (isComplexDataType.value || list.value.length === 0) return '-';
+  if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
     .filter((v) => !Number.isNaN(v));
   return values.length > 0 ? Math.max(...values).toFixed(2) : '-';
-}); // 统计数据
+});
 
+/** 最小值统计 */
 const minValue = computed(() => {
-  if (isComplexDataType.value || list.value.length === 0) return '-';
+  if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
     .filter((v) => !Number.isNaN(v));
   return values.length > 0 ? Math.min(...values).toFixed(2) : '-';
 });
 
+/** 平均值统计 */
 const avgValue = computed(() => {
-  if (isComplexDataType.value || list.value.length === 0) return '-';
+  if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
     .filter((v) => !Number.isNaN(v));
@@ -142,10 +164,10 @@ async function getList() {
     ) as IotDeviceApi.DevicePropertyDetail[];
     total.value = list.value.length;
 
-    // 如果是图表模式且不是复杂数据类型，等待渲染图表
+    // 如果是图表模式且支持图表展示，等待渲染图表
     if (
       viewMode.value === 'chart' &&
-      !isComplexDataType.value &&
+      canShowChart.value &&
       list.value.length > 0
     ) {
       await renderChartWhenReady();
@@ -287,8 +309,8 @@ async function open(deviceId: number, identifier: string, dataType: string) {
   // 更新查询参数的时间
   queryParams.times = formatDateRangeWithTime(dateRange.value);
 
-  // 如果物模型是 struct、array，需要默认使用 list 模式
-  viewMode.value = isComplexDataType.value ? 'list' : 'chart';
+  // 如果不支持图表展示，默认使用列表模式
+  viewMode.value = canShowChart.value ? 'chart' : 'list';
 
   // 等待弹窗完全渲染后再获取数据
   await nextTick();
@@ -380,11 +402,7 @@ function formatComplexValue(value: any) {
 
 /** 监听视图模式变化，重新渲染图表 */
 watch(viewMode, async (newMode) => {
-  if (
-    newMode === 'chart' &&
-    !isComplexDataType.value &&
-    list.value.length > 0
-  ) {
+  if (newMode === 'chart' && canShowChart.value && list.value.length > 0) {
     await renderChartWhenReady();
   }
 });
@@ -396,7 +414,6 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
     v-model:open="dialogVisible"
     title="查看数据"
     width="1200px"
-    :destroy-on-close="true"
     @cancel="handleClose"
   >
     <div class="property-history-container">
@@ -436,7 +453,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             <Button
               :type="viewMode === 'chart' ? 'primary' : 'default'"
               @click="viewMode = 'chart'"
-              :disabled="isComplexDataType"
+              :disabled="!canShowChart"
             >
               <template #icon>
                 <IconifyIcon icon="ant-design:line-chart-outlined" />
@@ -459,7 +476,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
         <div v-if="list.length > 0" class="mt-3 text-sm text-gray-600">
           <Space :size="16">
             <span>共 {{ total }} 条数据</span>
-            <span v-if="viewMode === 'chart' && !isComplexDataType">
+            <span v-if="viewMode === 'chart' && canShowChart">
               最大值: {{ maxValue }} | 最小值: {{ minValue }} | 平均值:
               {{ avgValue }}
             </span>
@@ -529,10 +546,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
   .chart-container,
   .table-container {
     padding: 16px;
-    background-color: hsl(
-      var(--card)
-    ); // TODO @haohao：看看这个能不能 fix 下~ idea 爆红了；
-
+    background-color: hsl(var(--card) / 100%);
     border: 1px solid hsl(var(--border) / 60%);
     border-radius: 8px;
   }

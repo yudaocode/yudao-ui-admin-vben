@@ -35,8 +35,6 @@ const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);
 const activeTab = ref('info');
 const thingModelList = ref<ThingModelData[]>([]);
 
-// TODO @haohao：类似 device/detail/index.vue 挪出去哈。
-
 /** 获取设备详情 */
 async function getDeviceData(deviceId: number) {
   loading.value = true;
