@@ -10,7 +10,7 @@ import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
 
 import { updateProductStatus } from '#/api/iot/product/product';
 
-import Form from '../../form.vue';
+import Form from '../../modules/form.vue';
 
 interface Props {
   product: IotProductApi.Product;

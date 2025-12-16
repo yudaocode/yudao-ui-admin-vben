@@ -51,11 +51,8 @@ async function loadCategories() {
 function handleSearch() {
   if (viewMode.value === 'list') {
     gridApi.formApi.setValues(queryParams.value);
-    gridApi.query();
-  } else {
-    // TODO @haohao：要不 search 也改成 query 方法，更统一一点哈。
-    cardViewRef.value?.search(queryParams.value);
   }
+  gridApi.query();
 }
 
 /** 重置搜索 */
@@ -67,11 +64,7 @@ function handleReset() {
 
 /** 刷新表格 */
 function handleRefresh() {
-  if (viewMode.value === 'list') {
-    gridApi.query();
-  } else {
-    cardViewRef.value?.reload();
-  }
+  gridApi.query();
 }
 
 /** 导出表格 */
@@ -148,6 +141,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<IotProductApi.Product>,
 });
+
+// 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口
+const originalQuery = gridApi.query.bind(gridApi);
+gridApi.query = async (params?: Record<string, any>) => {
+  if (viewMode.value === 'list') {
+    return await originalQuery(params);
+  } else {
+    // 卡片视图：调用卡片组件的 query 方法
+    cardViewRef.value?.query();
+  }
+};
 
 /** 初始化 */
 onMounted(() => {

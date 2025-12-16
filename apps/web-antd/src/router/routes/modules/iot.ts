@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
           activePath: '/iot/device/product',
         },
         component: () =>
-          import('#/views/iot/product/product/modules/detail/index.vue'),
+          import('#/views/iot/product/product/detail/index.vue'),
       },
       {
         path: 'device/detail/:id',
