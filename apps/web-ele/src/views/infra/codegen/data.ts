@@ -181,7 +181,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
           return name.includes(input) || $t(name).includes(input);
         },
         showSearch: true,
-        treeDefaultExpandedKeys: [0],
+        defaultExpandedKeys: [0],
       },
       rules: 'selectRequired',
       renderComponentContent() {

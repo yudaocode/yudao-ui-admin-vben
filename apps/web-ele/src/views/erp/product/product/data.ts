@@ -52,7 +52,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择分类',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
       rules: 'required',
     },
@@ -181,7 +181,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择分类',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
     },
   ];

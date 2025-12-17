@@ -37,7 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
         multiple: true,
         fieldNames: { label: 'name', value: 'id', children: 'children' },
         placeholder: '请选择应用部门',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
       help: '不选择部门时，默认全公司生效',
     },

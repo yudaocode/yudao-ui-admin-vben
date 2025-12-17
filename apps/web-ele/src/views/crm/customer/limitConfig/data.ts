@@ -56,7 +56,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择规则适用部门',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
     },
     {
