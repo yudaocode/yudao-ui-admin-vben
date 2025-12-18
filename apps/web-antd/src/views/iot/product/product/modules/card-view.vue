@@ -85,7 +85,7 @@ function getDeviceTypeColor(deviceType: number) {
 
 defineExpose({
   reload: getList,
-  search: () => {
+  query: () => {
     queryParams.value.pageNo = 1;
     getList();
   },

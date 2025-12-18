@@ -14,18 +14,13 @@ import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 
 /** 产品分类列表缓存 */
 let categoryList: IotProductCategoryApi.ProductCategory[] = [];
-
-/** 加载产品分类数据 */
-async function loadCategoryData() {
-  categoryList = await getSimpleProductCategoryList();
-}
-
-// 初始化加载分类数据
-// TODO @haohao：可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/tenant/data.ts 简洁一点。
-loadCategoryData();
+getSimpleProductCategoryList().then((data) => (categoryList = data));
 
 /** 新增/修改产品的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(
+  formApi?: any,
+  generateProductKey?: () => string,
+): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -59,7 +54,9 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
           {
             type: 'default',
             onClick: () => {
-              formApi?.setFieldValue('productKey', generateProductKey());
+              if (generateProductKey) {
+                formApi?.setFieldValue('productKey', generateProductKey());
+              }
             },
           },
           { default: () => '重新生成' },
@@ -175,7 +172,10 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
 }
 
 /** 基础表单字段（不含图标、图片、描述） */
-export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
+export function useBasicFormSchema(
+  formApi?: any,
+  generateProductKey?: () => string,
+): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -208,7 +208,9 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
           {
             type: 'default',
             onClick: () => {
-              formApi?.setFieldValue('productKey', generateProductKey());
+              if (generateProductKey) {
+                formApi?.setFieldValue('productKey', generateProductKey());
+              }
             },
           },
           { default: () => '重新生成' },
@@ -299,6 +301,7 @@ export function useBasicFormSchema(formApi?: any): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      defaultValue: 0,
       rules: 'required',
     },
     {
@@ -339,7 +342,6 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
         placeholder: '请输入产品描述',
         rows: 3,
       },
-      formItemClass: 'col-span-2', // 让描述占满两列
     },
   ];
 }
@@ -404,13 +406,3 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 生成 ProductKey（包含大小写字母和数字） */
-export function generateProductKey(): string {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 16; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}

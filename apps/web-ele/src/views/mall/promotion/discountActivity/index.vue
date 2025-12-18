@@ -52,6 +52,7 @@ async function handleClose(row: MallDiscountActivityApi.DiscountActivity) {
   } finally {
     loadingInstance.close();
   }
+}
 
 /** 删除满减活动 */
 async function handleDelete(row: MallDiscountActivityApi.DiscountActivity) {

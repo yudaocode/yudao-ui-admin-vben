@@ -2,9 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
+import { DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
 import { getSimpleUserList } from '#/api/system/user';
+import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -138,6 +142,11 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'userId',
       label: '操作人编号',
+    },
+    {
+      field: 'userType',
+      label: '操作人类型',
+      render: (val) => h(DictTag, { type: DICT_TYPE.USER_TYPE, value: val }),
     },
     {
       field: 'userName',
