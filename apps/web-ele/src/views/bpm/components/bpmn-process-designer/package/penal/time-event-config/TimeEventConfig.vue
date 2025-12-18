@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Dayjs } from 'dayjs';
-
 import type { Ref } from 'vue';
 
 import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue';
@@ -30,7 +28,7 @@ const bpmnInstances = () => (window as any).bpmnInstances;
 const type: Ref<string> = ref('time');
 const condition: Ref<string> = ref('');
 const valid: Ref<boolean> = ref(false);
-const dateValue = ref<Dayjs>();
+const dateValue = ref();
 
 const placeholder = computed<string>(() => {
   if (type.value === 'time') return '请输入时间';
@@ -108,7 +106,6 @@ function validate(): boolean {
 // 选择时间 Modal
 const [DateModal, dateModalApi] = useVbenModal({
   title: '选择时间',
-  class: 'w-[400px]',
   onConfirm: onDateConfirm,
 });
 
@@ -126,7 +123,6 @@ function onDateConfirm(): void {
 // 持续时长 Modal
 const [DurationModal, durationModalApi] = useVbenModal({
   title: '时间配置',
-  class: 'w-[600px]',
   onConfirm: onDurationConfirm,
 });
 
@@ -141,7 +137,6 @@ function onDurationConfirm(): void {
 // 循环配置 Modal
 const [CycleModal, cycleModalApi] = useVbenModal({
   title: '时间配置',
-  class: 'w-[800px]',
   onConfirm: onCycleConfirm,
 });
 
@@ -338,7 +333,7 @@ watch(
         v-model="dateValue"
         type="datetime"
         placeholder="选择日期时间"
-        class="w-full"
+        class="!w-full"
         @change="onDateChange"
       />
     </DateModal>
@@ -349,7 +344,7 @@ watch(
     </DurationModal>
 
     <!-- 循环配置器 -->
-    <CycleModal>
+    <CycleModal class="w-2/3">
       <CycleConfig :value="condition" @change="onCycleChange" />
     </CycleModal>
 
