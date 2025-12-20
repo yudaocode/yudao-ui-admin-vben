@@ -20,9 +20,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'createTime',
       label: '创建时间',
-      component: 'RangePicker',
+      component: 'DatePicker',
       componentProps: {
-        placeholder: ['开始时间', '结束时间'],
+        type: 'daterange',
+        startPlaceholder: '开始时间',
+        endPlaceholder: '结束时间',
         clearable: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
       },
