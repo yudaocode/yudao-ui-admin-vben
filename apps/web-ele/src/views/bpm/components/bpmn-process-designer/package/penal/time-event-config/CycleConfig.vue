@@ -211,7 +211,7 @@ watch(
         <ElInput
           v-model="cronStr"
           readonly
-          class="w-[400px] font-bold"
+          class="!w-[400px] font-bold"
           key="cronStr"
         />
       </div>
@@ -273,7 +273,7 @@ watch(
                   :min="f.min"
                   :max="f.max"
                   size="small"
-                  class="w-[60px]"
+                  class="!w-[100px]"
                   :key="`range0-${f.key}`"
                 />
                 到
@@ -282,7 +282,7 @@ watch(
                   :min="f.min"
                   :max="f.max"
                   size="small"
-                  class="w-[60px]"
+                  class="!w-[100px]"
                   :key="`range1-${f.key}`"
                 />
                 之间每{{ f.label }}
@@ -294,7 +294,7 @@ watch(
                   :min="f.min"
                   :max="f.max"
                   size="small"
-                  class="w-[60px]"
+                  class="!w-[100px]"
                   :key="`step0-${f.key}`"
                 />
                 开始每
@@ -303,7 +303,7 @@ watch(
                   :min="1"
                   :max="f.max"
                   size="small"
-                  class="w-[60px]"
+                  class="!w-[100px]"
                   :key="`step1-${f.key}`"
                 />
                 {{ f.label }}
@@ -342,7 +342,7 @@ watch(
         循环次数：<ElInputNumber
           v-model="repeat"
           :min="1"
-          class="w-[100px]"
+          class="!w-[100px]"
           key="repeat"
         />
       </div>
@@ -351,7 +351,7 @@ watch(
           v-model="isoDate"
           type="datetime"
           placeholder="选择开始时间"
-          class="w-[200px]"
+          class="!w-[200px]"
           key="isoDate"
         />
       </div>
@@ -360,7 +360,7 @@ watch(
           v-model="isoDuration"
           readonly
           placeholder="如P3DT30M30S"
-          class="w-[200px]"
+          class="!w-[200px]"
           key="isoDuration"
         />
       </div>
@@ -380,7 +380,7 @@ watch(
           <ElInput
             v-model="durationCustom[unit.key]"
             size="small"
-            class="ml-2 w-[60px]"
+            class="ml-2 !w-[60px]"
             placeholder="自定义"
             @change="setDuration(unit.key, durationCustom[unit.key])"
           />

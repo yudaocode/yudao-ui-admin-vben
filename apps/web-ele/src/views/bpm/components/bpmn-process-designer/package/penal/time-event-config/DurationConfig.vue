@@ -69,7 +69,7 @@ watch(
 <template>
   <div>
     <div class="mb-2.5">
-      当前选择：<ElInput v-model="isoString" readonly class="w-[300px]" />
+      当前选择：<ElInput v-model="isoString" readonly class="!w-[300px]" />
     </div>
     <div v-for="unit in units" :key="unit.key" class="mb-2">
       <span>{{ unit.label }}：</span>
@@ -86,7 +86,7 @@ watch(
       <ElInput
         v-model="custom[unit.key]"
         size="small"
-        class="ml-2 w-[60px]"
+        class="ml-2 !w-[60px]"
         placeholder="自定义"
         @change="setUnit(unit.key, custom[unit.key])"
       />

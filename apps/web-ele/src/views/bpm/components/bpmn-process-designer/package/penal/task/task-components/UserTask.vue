@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { BpmProcessExpressionApi } from '#/api/bpm/processExpression';
 import type { BpmUserGroupApi } from '#/api/bpm/userGroup';
 import type { SystemPostApi } from '#/api/system/post';
 import type { SystemRoleApi } from '#/api/system/role';
@@ -16,6 +17,7 @@ import {
   watch,
 } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { SelectOutlined } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
@@ -41,7 +43,7 @@ import {
   MULTI_LEVEL_DEPT,
 } from '#/views/bpm/components/simple-process-design/consts';
 import { useFormFieldsPermission } from '#/views/bpm/components/simple-process-design/helpers';
-// import ProcessExpressionSelectModal from '#/views/bpm/processExpression/components/process-expression-select-modal.vue';
+import { ProcessExpressionSelectModal } from '#/views/bpm/processExpression/components';
 
 defineOptions({ name: 'UserTask' });
 const props = defineProps({
@@ -290,21 +292,21 @@ const updateSkipExpression = () => {
 };
 
 // 打开监听器弹窗
-// const [ProcessExpressionSelectModalComp, ProcessExpressionSelectModalApi] =
-//   useVbenModal({
-//     connectedComponent: ProcessExpressionSelectModal,
-//     destroyOnClose: true,
-//   });
+const [ProcessExpressionSelectModalComp, ProcessExpressionSelectModalApi] =
+  useVbenModal({
+    connectedComponent: ProcessExpressionSelectModal,
+    destroyOnClose: true,
+  });
 const openProcessExpressionDialog = async () => {
-  // ProcessExpressionSelectModalApi.open();
+  ProcessExpressionSelectModalApi.open();
 };
-// const selectProcessExpression = (
-//   expression: BpmProcessExpressionApi.ProcessExpression,
-// ) => {
-//   // @ts-ignore
-//   userTaskForm.value.candidateParam = [expression.expression];
-//   updateElementTask();
-// };
+const selectProcessExpression = (
+  expression: BpmProcessExpressionApi.ProcessExpression,
+) => {
+  // @ts-ignore
+  userTaskForm.value.candidateParam = [expression.expression];
+  updateElementTask();
+};
 
 const handleFormUserChange = (e: any) => {
   if (e === 'PROCESS_START_USER_ID') {
@@ -551,9 +553,8 @@ onBeforeUnmount(() => {
           选择表达式
         </ElButton>
       </div>
-      <!-- 选择弹窗
+      <!-- 选择弹窗 -->
       <ProcessExpressionSelectModalComp @select="selectProcessExpression" />
-      -->
     </ElFormItem>
 
     <ElFormItem label="跳过表达式" prop="skipExpression">

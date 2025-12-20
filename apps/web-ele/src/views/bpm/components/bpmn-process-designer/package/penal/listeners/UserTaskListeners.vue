@@ -16,7 +16,7 @@ import {
 } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-// import ProcessListenerSelectModal from '#/views/bpm/processListener/components/process-listener-select-modal.vue';
+import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
 import ListenerFieldModal from './ListenerFieldModal.vue';
@@ -220,7 +220,7 @@ const removeListenerField = (_: any, index: number) => {
 };
 
 const openProcessListenerDialog = async () => {
-  // processListenerSelectModalApi.setData({ type: 'task' }).open();
+  processListenerSelectModalApi.setData({ type: 'task' }).open();
 };
 const selectProcessListener = (listener: any) => {
   const instances = bpmnInstances();
@@ -253,11 +253,11 @@ const [FieldModal, fieldModalApi] = useVbenModal({
   connectedComponent: ListenerFieldModal,
 });
 
-// const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
-//   useVbenModal({
-//     connectedComponent: ProcessListenerSelectModal,
-//     destroyOnClose: true,
-//   });
+const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
+  useVbenModal({
+    connectedComponent: ProcessListenerSelectModal,
+    destroyOnClose: true,
+  });
 
 const [FieldsGrid, fieldsGridApi] = useVbenVxeGrid({
   gridOptions: {

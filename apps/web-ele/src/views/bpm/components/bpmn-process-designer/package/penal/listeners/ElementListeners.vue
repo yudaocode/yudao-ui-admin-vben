@@ -16,7 +16,7 @@ import {
 } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-// import ProcessListenerSelectModal from '#/views/bpm/processListener/components/process-listener-select-modal.vue';
+import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
 import ListenerFieldModal from './ListenerFieldModal.vue';
@@ -268,15 +268,15 @@ const [FieldModal, fieldModalApi] = useVbenModal({
 });
 
 // 配置选择监听器 Modal
-// const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
-//   useVbenModal({
-//     connectedComponent: ProcessListenerSelectModal,
-//     destroyOnClose: true,
-//   });
+const [ProcessListenerSelectModalComp, processListenerSelectModalApi] =
+  useVbenModal({
+    connectedComponent: ProcessListenerSelectModal,
+    destroyOnClose: true,
+  });
 
 // 打开监听器弹窗
 const openProcessListenerDialog = async () => {
-  // processListenerSelectModalApi.setData({ type: 'execution' }).open();
+  processListenerSelectModalApi.setData({ type: 'execution' }).open();
 };
 const selectProcessListener = (listener: any) => {
   const instances = bpmnInstances();
