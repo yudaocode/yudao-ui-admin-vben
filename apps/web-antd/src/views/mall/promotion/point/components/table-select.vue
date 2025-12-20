@@ -9,7 +9,6 @@ import { computed } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { dateFormatter, fenToYuanFormat } from '@vben/utils';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPointActivityPage } from '#/api/mall/promotion/point';
@@ -92,7 +91,9 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       title: '原价',
       minWidth: 100,
       align: 'center',
-      formatter: ({ cellValue }) => fenToYuanFormat(cellValue),
+      formatter: ({ cellValue }) => {
+        return `¥${(cellValue / 100).toFixed(2)}`;
+      },
     },
     {
       field: 'status',
@@ -128,7 +129,7 @@ const gridColumns = computed<VxeGridProps['columns']>(() => {
       title: '创建时间',
       width: 180,
       align: 'center',
-      formatter: ({ cellValue }) => dateFormatter(cellValue),
+      formatter: 'formatDateTime',
     },
   );
   return columns;
