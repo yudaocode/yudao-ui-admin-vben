@@ -13,14 +13,18 @@ import {
   updateDiscountActivity,
 } from '#/api/mall/promotion/discount/discountActivity';
 import { $t } from '#/locales';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
 defineOptions({ name: 'DiscountActivityForm' });
 
-// TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样
 const emit = defineEmits(['success']);
-const formData = ref<MallDiscountActivityApi.DiscountActivity>();
+const formData = ref<
+  Partial<MallDiscountActivityApi.DiscountActivity> & {
+    spuIds?: number[];
+  }
+>({});
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['限时折扣活动'])
@@ -70,8 +74,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -93,7 +96,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-3/5" :title="getTitle">
-    <!-- TODO @puhui999：这里和 yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/promotion/discountActivity/modules/form.vue 不太一样 -->
-    <Form />
+    <Form>
+      <!-- 自定义插槽：商品选择 -->
+      <template #spuIds>
+        <SpuShowcase v-model="formData.spuIds" />
+      </template>
+    </Form>
   </Modal>
 </template>
