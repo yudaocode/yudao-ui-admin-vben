@@ -32,7 +32,6 @@ const spuId = ref<number>();
 const { params, name } = useRoute();
 const { closeCurrentTab } = useTabs();
 const activeTabName = ref('info');
-
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(name === 'ProductSpuDetail'); // 是否查看详情
 const skuListRef = ref(); // 商品属性列表 Ref
@@ -70,7 +69,6 @@ const formData = ref<MallSpuApi.Spu>({
 }); // spu 表单数据
 const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const ruleConfig: RuleConfig[] = [
-  // TODO @puhui999：ele 这里都有 :number，antd 要不要加？
   {
     name: 'stock',
     rule: (arg: number) => arg >= 0,
@@ -200,7 +198,7 @@ async function handleSubmit() {
       item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice);
     });
   }
-  // 处理轮播图列表 TODO @puhui999：这个是必须的哇？
+  // 处理轮播图列表：上传组件可能返回对象或字符串，统一处理成字符串数组
   const newSliderPicUrls: any[] = [];
   values.sliderPicUrls!.forEach((item: any) => {
     // 如果是前端选的图
@@ -319,13 +317,10 @@ onMounted(async () => {
     <ProductPropertyAddFormModal :property-list="propertyList" />
 
     <Page auto-content-height>
-      <ElCard class="spu-form-card h-full w-full" v-loading="formLoading">
+      <ElCard class="h-full w-full" v-loading="formLoading">
         <template #header>
           <div class="flex items-center justify-between">
-            <ElTabs
-              v-model="activeTabName"
-              @tab-click="(tab: any) => handleTabChange(tab.paneName)"
-            >
+            <ElTabs v-model="activeTabName" @tab-change="handleTabChange">
               <ElTabPane label="基础设置" name="info" />
               <ElTabPane label="价格库存" name="sku" />
               <ElTabPane label="物流设置" name="delivery" />
@@ -333,7 +328,7 @@ onMounted(async () => {
               <ElTabPane label="其它设置" name="other" />
             </ElTabs>
             <div>
-              <ElButton v-if="!isDetail" type="primary" @click="handleSubmit">
+              <ElButton type="primary" v-if="!isDetail" @click="handleSubmit">
                 保存
               </ElButton>
               <ElButton v-else @click="() => closeCurrentTab()">
@@ -343,71 +338,61 @@ onMounted(async () => {
           </div>
         </template>
 
-        <div class="flex-1 overflow-auto">
-          <InfoForm class="w-3/5" v-show="activeTabName === 'info'" />
-          <SkuForm class="w-full" v-show="activeTabName === 'sku'">
-            <template #singleSkuList>
-              <SkuList
-                ref="skuListRef"
-                class="w-full"
+        <InfoForm class="w-3/5" v-show="activeTabName === 'info'" />
+        <SkuForm class="w-full" v-show="activeTabName === 'sku'">
+          <template #singleSkuList>
+            <SkuList
+              ref="skuListRef"
+              class="w-full"
+              :is-detail="isDetail"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+              :rule-config="ruleConfig"
+            />
+          </template>
+          <template #productAttributes>
+            <div>
+              <ElButton class="mb-10px mr-15px" @click="openPropertyAddForm">
+                添加属性
+              </ElButton>
+              <ProductAttributes
                 :is-detail="isDetail"
-                :prop-form-data="formData"
                 :property-list="propertyList"
-                :rule-config="ruleConfig"
+                @success="generateSkus"
               />
-            </template>
-            <template #productAttributes>
-              <div>
-                <ElButton class="mb-10px mr-15px" @click="openPropertyAddForm">
-                  添加属性
-                </ElButton>
-                <ProductAttributes
-                  :is-detail="isDetail"
-                  :property-list="propertyList"
-                  @success="generateSkus"
-                />
-              </div>
-            </template>
-            <template #batchSkuList>
-              <SkuList
-                :is-batch="true"
-                :is-detail="isDetail"
-                :prop-form-data="formData"
-                :property-list="propertyList"
-              />
-            </template>
-            <template #multiSkuList>
-              <SkuList
-                ref="skuListRef"
-                :is-detail="isDetail"
-                :prop-form-data="formData"
-                :property-list="propertyList"
-                :rule-config="ruleConfig"
-              />
-            </template>
-          </SkuForm>
-          <DeliveryForm class="w-3/5" v-show="activeTabName === 'delivery'" />
-          <DescriptionForm
-            class="w-3/5"
-            v-show="activeTabName === 'description'"
-          />
-          <OtherForm class="w-3/5" v-show="activeTabName === 'other'" />
-        </div>
+            </div>
+          </template>
+          <template #batchSkuList>
+            <SkuList
+              :is-batch="true"
+              :is-detail="isDetail"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+            />
+          </template>
+          <template #multiSkuList>
+            <SkuList
+              ref="skuListRef"
+              :is-detail="isDetail"
+              :prop-form-data="formData"
+              :property-list="propertyList"
+              :rule-config="ruleConfig"
+            />
+          </template>
+        </SkuForm>
+        <DeliveryForm class="w-3/5" v-show="activeTabName === 'delivery'" />
+        <DescriptionForm
+          class="w-3/5"
+          v-show="activeTabName === 'description'"
+        />
+        <OtherForm class="w-3/5" v-show="activeTabName === 'other'" />
       </ElCard>
     </Page>
   </div>
 </template>
 
-<style scoped>
-.spu-form-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.spu-form-card :deep(.el-card__body) {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+<style lang="scss" scoped>
+:deep(.el-tabs__nav-wrap::after) {
+  display: none;
 }
 </style>

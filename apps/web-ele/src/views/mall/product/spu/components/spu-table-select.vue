@@ -52,19 +52,23 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入商品名称',
-      clearable: true,
+      allowClear: true,
     },
   },
   {
     fieldName: 'categoryId',
     label: '商品分类',
-    component: 'ApiTreeSelect',
+    component: 'TreeSelect',
     componentProps: {
-      options: categoryTreeList,
-      props: { label: 'name', children: 'children' },
-      nodeKey: 'id',
+      data: categoryTreeList,
+      props: {
+        label: 'name',
+        value: 'id',
+      },
+      checkStrictly: true,
       placeholder: '请选择商品分类',
       clearable: true,
+      filterable: true,
     },
   },
   {
@@ -73,7 +77,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'RangePicker',
     componentProps: {
       ...getRangePickerDefaultProps(),
-      clearable: true,
+      allowClear: true,
     },
   },
 ]);
@@ -162,40 +166,35 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function openModal(data?: MallSpuApi.Spu | MallSpuApi.Spu[]) {
   initData.value = data;
   visible.value = true;
+  // 等待 Grid 组件完全初始化后再查询数据
   await nextTick();
-  // 1. 查询数据
-  await gridApi.query();
-  // 2. 设置已选中行
-  const tableData = gridApi.grid.getTableData().fullData;
-  if (
-    props.multiple &&
-    Array.isArray(initData.value) &&
-    initData.value.length > 0
-  ) {
-    setTimeout(() => {
-      (initData.value as unknown as MallSpuApi.Spu[])!.forEach((spu) => {
+  if (gridApi.grid) {
+    // 1. 先查询数据
+    await gridApi.query();
+    // 2. 设置已选中行
+    if (props.multiple && Array.isArray(data) && data.length > 0) {
+      setTimeout(() => {
+        const tableData = gridApi.grid.getTableData().fullData;
+        data.forEach((spu) => {
+          const row = tableData.find(
+            (item: MallSpuApi.Spu) => item.id === spu.id,
+          );
+          if (row) {
+            gridApi.grid.setCheckboxRow(row, true);
+          }
+        });
+      }, 300);
+    } else if (!props.multiple && data && !Array.isArray(data)) {
+      setTimeout(() => {
+        const tableData = gridApi.grid.getTableData().fullData;
         const row = tableData.find(
-          (item: MallSpuApi.Spu) => item.id === spu.id,
+          (item: MallSpuApi.Spu) => item.id === data.id,
         );
         if (row) {
-          gridApi.grid.setCheckboxRow(row, true);
+          gridApi.grid.setRadioRow(row);
         }
-      });
-    }, 300);
-  } else if (
-    !props.multiple &&
-    initData.value &&
-    !Array.isArray(initData.value)
-  ) {
-    setTimeout(() => {
-      const row = tableData.find(
-        (item: MallSpuApi.Spu) =>
-          item.id === (initData.value as MallSpuApi.Spu).id,
-      );
-      if (row) {
-        gridApi.grid.setRadioRow(row);
-      }
-    }, 300);
+      }, 300);
+    }
   }
 }
 
@@ -214,10 +213,9 @@ function handleConfirm() {
   closeModal();
 }
 
-/** 对外暴露的方法 */
 defineExpose({
   open: openModal,
-});
+}); // 对外暴露的方法
 
 /** 初始化分类数据 */
 onMounted(async () => {
@@ -232,13 +230,14 @@ onMounted(async () => {
     title="选择商品"
     width="950px"
     :destroy-on-close="true"
-    :append-to-body="true"
     @close="closeModal"
   >
     <Grid />
-    <template v-if="props.multiple" #footer>
-      <el-button @click="closeModal">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
+    <template #footer>
+      <span v-if="props.multiple" class="dialog-footer">
+        <el-button @click="closeModal">取消</el-button>
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+      </span>
     </template>
   </ElDialog>
 </template>
