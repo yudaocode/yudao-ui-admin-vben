@@ -230,6 +230,7 @@ onMounted(async () => {
     title="选择商品"
     width="950px"
     :destroy-on-close="true"
+    :append-to-body="true"
     @close="closeModal"
   >
     <Grid />
