@@ -59,8 +59,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '请选择活动开始时间',
-        showTime: false,
-        format: 'YYYY-MM-DD',
+        type: 'datetime',
+        format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: 'w-full',
       },
@@ -72,8 +72,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '请选择活动结束时间',
-        showTime: false,
-        format: 'YYYY-MM-DD',
+        type: 'datetime',
+        format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: 'w-full',
       },
@@ -85,7 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择秒杀时段',
-        mode: 'multiple',
+        multiple: true,
         api: getSimpleSeckillConfigList,
         labelField: 'name',
         valueField: 'id',
@@ -135,6 +135,12 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 4,
       },
+      formItemClass: 'col-span-2',
+    },
+    {
+      fieldName: 'spuId',
+      label: '秒杀商品',
+      component: 'Input',
       formItemClass: 'col-span-2',
     },
   ];
