@@ -36,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
         childrenField: 'children',
         placeholder: '请选择上级分类',
         showSearch: true,
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
       rules: 'selectRequired',
     },
