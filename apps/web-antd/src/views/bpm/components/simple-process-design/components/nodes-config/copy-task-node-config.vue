@@ -137,7 +137,7 @@ const {
 } = useNodeForm(BpmNodeTypeEnum.COPY_TASK_NODE);
 
 const configForm = tempConfigForm as Ref<CopyTaskFormType>;
-// 抄送人策略， 去掉发起人自选 和 发起人自己
+// 抄送人策略，去掉发起人自选 和 发起人自己
 const copyUserStrategies = computed(() => {
   return CANDIDATE_STRATEGY.filter(
     (item) => item.value !== CandidateStrategy.START_USER,

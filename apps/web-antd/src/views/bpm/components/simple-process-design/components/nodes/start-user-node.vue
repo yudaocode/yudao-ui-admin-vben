@@ -27,7 +27,7 @@ const props = defineProps({
   },
 });
 
-// 定义事件，更新父组件。
+// 定义事件，更新父组件
 defineEmits<{
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();

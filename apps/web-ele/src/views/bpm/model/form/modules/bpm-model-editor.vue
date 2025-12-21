@@ -8,6 +8,8 @@ import { inject, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue';
 import { ContentWrap } from '@vben/common-ui';
 import { BpmModelFormType } from '@vben/constants';
 
+import { ElMessage } from 'element-plus';
+
 import { getForm } from '#/api/bpm/form';
 import {
   MyProcessDesigner,
@@ -47,7 +49,6 @@ const controlForm = ref({
   headerButtonSize: 'mini',
   additionalModel: [CustomContentPadProvider, CustomPaletteProvider],
 });
-
 const model = ref<BpmModelApi.Model>(); // 流程模型的信息
 
 /** 初始化 modeler */
@@ -63,7 +64,7 @@ const save = async (bpmnXml: string) => {
     emit('success', bpmnXml);
   } catch (error) {
     console.error('保存失败:', error);
-    // ElMessage.error('保存失败');
+    ElMessage.error('保存失败');
   }
 };
 

@@ -275,6 +275,7 @@ async function openPopover(type: string) {
     }
   }
   Object.keys(popOverVisible.value).forEach((item) => {
+    // TODO @jason：这里是不是保持和 antd 一致？
     popOverVisible.value[item] = item === type;
   });
 }
@@ -704,6 +705,8 @@ function handleSignFinish(url: string) {
   approveFormRef.value?.validateField('signPicUrl');
 }
 
+// TODO @jason：handlePopoverVisible 需要要有么？
+
 defineExpose({ loadTodoTask });
 </script>
 <template>
@@ -725,9 +728,9 @@ defineExpose({ loadTodoTask });
         <template #reference>
           <ElButton plain type="primary" @click="openPopover('approve')">
             <IconifyIcon icon="lucide:check" />
-            <span class="ml-1">{{
-              getButtonDisplayName(BpmTaskOperationButtonTypeEnum.APPROVE)
-            }}</span>
+            <span class="ml-1">
+              {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.APPROVE) }}
+            </span>
           </ElButton>
         </template>
         <!-- 办理表单 -->
@@ -979,6 +982,7 @@ defineExpose({ loadTodoTask });
             label-width="100px"
           >
             <ElFormItem label="新审批人" prop="assigneeUserId">
+              <!-- TODO @jason：是不是用 unocss 哈？antd 和 ele 都要改下 -->
               <ElSelect
                 v-model="transferForm.assigneeUserId"
                 clearable
@@ -1040,9 +1044,11 @@ defineExpose({ loadTodoTask });
         <template #reference>
           <ElButton plain @click="openPopover('delegate')">
             <IconifyIcon :size="14" icon="icon-park-outline:user-positioning" />
-            <span class="ml-1">{{
-              getButtonDisplayName(BpmTaskOperationButtonTypeEnum.DELEGATE)
-            }}</span>
+            <span class="ml-1">
+              {{
+                getButtonDisplayName(BpmTaskOperationButtonTypeEnum.DELEGATE)
+              }}
+            </span>
           </ElButton>
         </template>
         <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
@@ -1116,9 +1122,11 @@ defineExpose({ loadTodoTask });
         <template #reference>
           <ElButton plain @click="openPopover('addSign')">
             <IconifyIcon :size="14" icon="icon-park-outline:plus" />
-            <span class="ml-1">{{
-              getButtonDisplayName(BpmTaskOperationButtonTypeEnum.ADD_SIGN)
-            }}</span>
+            <span class="ml-1">
+              {{
+                getButtonDisplayName(BpmTaskOperationButtonTypeEnum.ADD_SIGN)
+              }}
+            </span>
           </ElButton>
         </template>
         <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
@@ -1272,9 +1280,9 @@ defineExpose({ loadTodoTask });
         <template #reference>
           <ElButton plain @click="openPopover('return')">
             <IconifyIcon :size="14" icon="lucide:arrow-left" />
-            <span class="ml-1">{{
-              getButtonDisplayName(BpmTaskOperationButtonTypeEnum.RETURN)
-            }}</span>
+            <span class="ml-1">
+              {{ getButtonDisplayName(BpmTaskOperationButtonTypeEnum.RETURN) }}
+            </span>
           </ElButton>
         </template>
         <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">

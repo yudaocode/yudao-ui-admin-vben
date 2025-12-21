@@ -223,8 +223,8 @@ watch(
 const loading = ref(false);
 /** 初始化 */
 onMounted(async () => {
-  loading.value = true;
   try {
+    loading.value = true;
     await getDetail();
     // 获得用户列表
     userOptions.value = await getSimpleUserList();

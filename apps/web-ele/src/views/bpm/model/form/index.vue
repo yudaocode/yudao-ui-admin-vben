@@ -263,6 +263,7 @@ const saveLoading = ref<boolean>(false);
 /** 保存操作 */
 async function handleSave() {
   try {
+    saveLoading.value = true;
     // 保存前校验所有步骤的数据
     const result = await validateAllSteps();
     if (!result) {
@@ -273,7 +274,7 @@ async function handleSave() {
     const modelData = {
       ...formData.value,
     };
-    saveLoading.value = true;
+
     switch (actionType) {
       case 'copy': {
         // 情况三：复制场景
@@ -323,10 +324,9 @@ async function handleDeploy() {
     if (!formData.value.id) {
       await confirm('是否确认发布该流程？');
     }
+    deployLoading.value = true;
     // 1.2 校验所有步骤
     await validateAllSteps();
-
-    deployLoading.value = true;
 
     // 2.1 更新表单数据
     const modelData = {

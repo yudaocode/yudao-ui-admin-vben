@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await formRef.value?.validate();
       emit('confirm', { ...form.value });
-      modalApi.close();
+      await modalApi.close();
     } catch {
       // validate failed
     }

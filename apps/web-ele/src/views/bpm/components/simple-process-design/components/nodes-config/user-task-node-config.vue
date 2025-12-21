@@ -373,7 +373,7 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
     return;
   }
 
-  // 2.1 审批人设置策略
+  // 2.1 审批人设置
   configForm.value.candidateStrategy = node.candidateStrategy!;
   // 解析候选人参数
   parseCandidateParam(node.candidateStrategy!, node?.candidateParam);
@@ -402,7 +402,7 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
   // 2.5 设置审批人为空时
   configForm.value.assignEmptyHandlerType = node.assignEmptyHandler?.type;
   configForm.value.assignEmptyHandlerUserIds = node.assignEmptyHandler?.userIds;
-  // 2.6 设置用户任务的审批人与发起人相同处理
+  // 2.6 设置用户任务的审批人与发起人相同时
   configForm.value.assignStartUserHandlerType = node.assignStartUserHandlerType;
   // 3. 操作按钮设置
   buttonsSetting.value =
@@ -456,7 +456,7 @@ function useButtonsSetting() {
 
   const changeBtnDisplayName = (index: number) => {
     btnDisplayNameEdit.value[index] = true;
-    // 输入框自动聚焦
+    // 输入框自动聚集
     nextTick(() => {
       if (_btnDisplayNameInputRefs.value[index]) {
         _btnDisplayNameInputRefs.value[index]?.focus();
@@ -533,7 +533,7 @@ function useTimeoutHandler() {
       configForm.value.timeDuration = 1;
     }
   };
-  // 超时时间 ISO 表示
+  // 超时时间的 ISO 表示
   const isoTimeDuration = computed(() => {
     if (!configForm.value.timeoutHandlerEnable) {
       return undefined;
@@ -586,12 +586,12 @@ function updatePermission(type: string) {
   });
 }
 
-// 在组件初始化时记录初始值
+// 在组件初始化时记录初始位置
 onMounted(() => {
   // 固定添加发起人ID字段
   formFieldOptions.unshift({
     field: ProcessVariableEnum.START_USER_ID,
-    title: '发起人ID',
+    title: '发起人',
     type: 'UserSelect',
     required: true,
   });
