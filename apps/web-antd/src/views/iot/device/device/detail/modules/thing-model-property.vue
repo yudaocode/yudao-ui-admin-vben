@@ -3,7 +3,14 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import {
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -27,6 +34,7 @@ import DeviceDetailsThingModelPropertyHistory from './thing-model-property-histo
 
 const props = defineProps<{ deviceId: number }>();
 
+// TODO @haohao：变量写在 // 列表的加载中 这种注释哈，变量后面；
 /** 列表的加载中 */
 const loading = ref(true);
 /** 显示的列表数据 */
@@ -373,7 +381,9 @@ onBeforeUnmount(() => {
                 <div class="mb-2.5 last:mb-0">
                   <span class="mr-2.5 text-muted-foreground">更新时间</span>
                   <span class="text-sm text-foreground">
-                    {{ item.updateTime ? formatDateTime(item.updateTime) : '-' }}
+                    {{
+                      item.updateTime ? formatDateTime(item.updateTime) : '-'
+                    }}
                   </span>
                 </div>
               </div>
@@ -394,9 +404,7 @@ onBeforeUnmount(() => {
       <template #actions="{ row }">
         <Button
           type="link"
-          @click="
-            openHistory(props.deviceId, row.identifier, row.dataType)
-          "
+          @click="openHistory(props.deviceId, row.identifier, row.dataType)"
         >
           查看数据
         </Button>

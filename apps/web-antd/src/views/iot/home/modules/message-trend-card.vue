@@ -23,7 +23,9 @@ const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
 const loading = ref(false);
-const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>([]);
+const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
+  [],
+);
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([

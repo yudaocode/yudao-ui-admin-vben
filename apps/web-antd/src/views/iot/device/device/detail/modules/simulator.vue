@@ -593,8 +593,14 @@ async function handleServiceInvoke(row: ThingModelData) {
                 size="small"
                 @click="messageCollapsed = !messageCollapsed"
               >
-                <IconifyIcon icon="lucide:chevron-down" v-if="!messageCollapsed" />
-                <IconifyIcon icon="lucide:chevron-down" v-if="messageCollapsed" />
+                <IconifyIcon
+                  icon="lucide:chevron-down"
+                  v-if="!messageCollapsed"
+                />
+                <IconifyIcon
+                  icon="lucide:chevron-down"
+                  v-if="messageCollapsed"
+                />
               </Button>
             </div>
           </template>

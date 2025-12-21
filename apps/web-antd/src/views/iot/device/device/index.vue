@@ -72,7 +72,6 @@ const queryParams = ref({
   groupId: undefined as number | undefined,
 }); // 搜索参数
 
-
 /** 搜索 */
 function handleSearch() {
   if (viewMode.value === 'list') {
@@ -201,7 +200,6 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     checkboxConfig: {
@@ -310,7 +308,10 @@ onMounted(async () => {
           style="width: 200px"
         >
           <Select.Option
-            v-for="dict in getDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, 'number')"
+            v-for="dict in getDictOptions(
+              DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
+              'number',
+            )"
             :key="dict.value"
             :value="dict.value"
           >

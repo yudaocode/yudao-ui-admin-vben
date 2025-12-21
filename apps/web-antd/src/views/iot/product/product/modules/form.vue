@@ -17,6 +17,8 @@ import { $t } from '#/locales';
 
 import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
 
+const emit = defineEmits(['success']);
+
 /** 生成 ProductKey（包含大小写字母和数字） */
 function generateProductKey(): string {
   const chars =
@@ -28,7 +30,6 @@ function generateProductKey(): string {
   return result;
 }
 
-const emit = defineEmits(['success']);
 const formData = ref<IotProductApi.Product>();
 const activeKey = ref<string[]>([]);
 const getTitle = computed(() => {

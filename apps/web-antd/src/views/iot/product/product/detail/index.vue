@@ -90,4 +90,3 @@ onMounted(async () => {
     </Tabs>
   </Page>
 </template>
-

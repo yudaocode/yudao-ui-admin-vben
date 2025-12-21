@@ -9,13 +9,7 @@ import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  Button,
-  RangePicker,
-  Select,
-  Space,
-  Tag,
-} from 'ant-design-vue';
+import { Button, RangePicker, Select, Space, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
@@ -254,15 +248,11 @@ defineExpose({
     <Grid>
       <template #requestTime="{ row }">
         {{
-          row.request?.reportTime
-            ? formatDateTime(row.request.reportTime)
-            : '-'
+          row.request?.reportTime ? formatDateTime(row.request.reportTime) : '-'
         }}
       </template>
       <template #responseTime="{ row }">
-        {{
-          row.reply?.reportTime ? formatDateTime(row.reply.reportTime) : '-'
-        }}
+        {{ row.reply?.reportTime ? formatDateTime(row.reply.reportTime) : '-' }}
       </template>
       <template #identifier="{ row }">
         <Tag color="blue" size="small">

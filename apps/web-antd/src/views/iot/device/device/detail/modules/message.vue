@@ -15,13 +15,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  Button,
-  Select,
-  Space,
-  Switch,
-  Tag,
-} from 'ant-design-vue';
+import { Button, Select, Space, Switch, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
@@ -241,9 +235,7 @@ defineExpose({
       </template>
       <template #params="{ row }">
         <span v-if="row.reply">
-          {{
-            `{"code":${row.code},"msg":"${row.msg}","data":${row.data}\}`
-          }}
+          {{ `{"code":${row.code},"msg":"${row.msg}","data":${row.data}\}` }}
         </span>
         <span v-else>{{ row.params }}</span>
       </template>
