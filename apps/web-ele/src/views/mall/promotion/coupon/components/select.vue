@@ -4,7 +4,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { ref } from 'vue';
 
-import { ElDialog } from 'element-plus';
+import { ElButton, ElDialog } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCouponTemplatePage } from '#/api/mall/promotion/coupon/couponTemplate';
@@ -90,8 +90,8 @@ defineExpose({
   >
     <Grid />
     <template #footer>
-      <el-button @click="closeModal">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
+      <ElButton @click="closeModal">取消</ElButton>
+      <ElButton type="primary" @click="handleConfirm">确定</ElButton>
     </template>
   </ElDialog>
 </template>

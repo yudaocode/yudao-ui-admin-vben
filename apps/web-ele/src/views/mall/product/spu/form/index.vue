@@ -320,6 +320,7 @@ onMounted(async () => {
       <ElCard class="h-full w-full" v-loading="formLoading">
         <template #header>
           <div class="flex items-center justify-between">
+            <!-- TODO @puhui999：这里有告警，需要修复下。 -->
             <ElTabs v-model="activeTabName" @tab-change="handleTabChange">
               <ElTabPane label="基础设置" name="info" />
               <ElTabPane label="价格库存" name="sku" />

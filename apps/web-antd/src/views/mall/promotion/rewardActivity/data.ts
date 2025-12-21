@@ -217,6 +217,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @puhui999：1）新增时：一直报：“请输入优惠设置”；2）修改老数据，出现报“请求参数类型错误:50.00”；
     {
       fieldName: 'rules',
       label: '优惠设置',

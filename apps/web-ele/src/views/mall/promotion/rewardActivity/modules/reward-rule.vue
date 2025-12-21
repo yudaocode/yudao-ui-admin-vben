@@ -107,7 +107,7 @@ function handleDelete(ruleIndex: number) {
                 <span>{{ isPriceCondition ? '元' : '件' }}</span>
               </div>
             </ElFormItem>
-
+            <!-- 优惠内容 -->
             <ElFormItem label="优惠内容:" class="!mb-0">
               <div class="flex flex-col gap-3">
                 <div
@@ -134,7 +134,7 @@ function handleDelete(ruleIndex: number) {
                   <span class="w-20 shrink-0 text-sm text-gray-500">包邮</span>
                   <ElSwitch v-model="rule.freeDelivery" />
                 </div>
-
+                <!-- 送积分 -->
                 <div
                   class="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2"
                 >

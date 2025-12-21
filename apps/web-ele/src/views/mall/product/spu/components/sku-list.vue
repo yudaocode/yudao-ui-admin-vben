@@ -490,6 +490,7 @@ defineExpose({
       @checkbox-all="handleSelectionChange"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
+      <!-- TODO @puhui999：这里的宽度貌似有点问题，图片会寄出来； -->
       <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <ElImage
@@ -582,6 +583,7 @@ defineExpose({
       }"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
+      <!-- TODO @puhui999：这里的宽度貌似有点问题，图片会寄出来； -->
       <VxeColumn align="center" title="图片" max-width="140" fixed="left">
         <template #default="{ row }">
           <ElImage

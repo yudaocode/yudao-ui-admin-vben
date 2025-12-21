@@ -61,7 +61,6 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const values = await formApi.getValues();
-      // 合并表单值和 formData（含 id、productSpuIds、productCategoryIds 等）
       const data = { ...formData.value, ...values };
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
         data.startTime = data.startAndEndTime[0];
@@ -74,7 +73,6 @@ const [Modal, modalApi] = useVbenModal({
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-      // productScopeValues 已通过 data.ts 中的 dependencies.trigger 自动同步到表单值中
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));
@@ -99,7 +97,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-      // antd RangePicker 需要 dayjs 对象
       result.startAndEndTime = [
         result.startTime ? dayjs(result.startTime) : undefined,
         result.endTime ? dayjs(result.endTime) : undefined,

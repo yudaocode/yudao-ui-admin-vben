@@ -141,7 +141,7 @@ async function getSpuDetails(
 
 // ================= end =================
 
-const [Dialog, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -214,7 +214,7 @@ const [Dialog, modalApi] = useVbenModal({
 
 <template>
   <div>
-    <Dialog :title="getTitle" class="w-[70%]">
+    <Modal :title="getTitle" class="w-[70%]">
       <Form class="mx-4">
         <!-- 商品选择 -->
         <template #spuId>
@@ -253,7 +253,7 @@ const [Dialog, modalApi] = useVbenModal({
           </div>
         </template>
       </Form>
-    </Dialog>
+    </Modal>
 
     <!-- 商品选择器弹窗 -->
     <SpuSkuSelect

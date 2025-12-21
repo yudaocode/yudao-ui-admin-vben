@@ -133,7 +133,7 @@ watch(
         <Image
           v-if="row.picUrl"
           :src="row.picUrl"
-          class="h-[30px] w-[30px] cursor-pointer"
+          class="!h-[30px] !w-[30px] cursor-pointer"
           :preview="true"
         />
       </template>

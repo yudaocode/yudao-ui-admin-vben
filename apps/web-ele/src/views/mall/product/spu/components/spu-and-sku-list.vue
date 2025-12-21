@@ -130,6 +130,7 @@ watch(
     <VxeColumn field="id" align="center" title="商品编号" min-width="30" />
     <VxeColumn title="商品图" min-width="80">
       <template #default="{ row }">
+        <!-- TODO @puhui999：它的 preview 貌似展示有点奇怪，不像 antd 是全屏的。。。 -->
         <ElImage
           v-if="row.picUrl"
           :src="row.picUrl"

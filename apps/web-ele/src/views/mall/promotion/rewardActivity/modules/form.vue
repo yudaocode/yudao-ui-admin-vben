@@ -72,7 +72,6 @@ const [Modal, modalApi] = useVbenModal({
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-      // productScopeValues 已通过 data.ts 中的 dependencies.trigger 自动同步到表单值中
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));

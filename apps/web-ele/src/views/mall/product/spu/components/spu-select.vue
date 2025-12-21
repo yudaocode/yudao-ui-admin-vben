@@ -9,7 +9,7 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
-import { ElDialog, ElMessage } from 'element-plus';
+import { ElButton, ElDialog, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
@@ -314,8 +314,8 @@ onMounted(async () => {
     </Grid>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="closeModal">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">确定</el-button>
+        <ElButton @click="closeModal">取消</ElButton>
+        <ElButton type="primary" @click="handleConfirm">确定</ElButton>
       </span>
     </template>
   </ElDialog>
