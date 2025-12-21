@@ -54,6 +54,7 @@ async function handleClose(row: MallRewardActivityApi.RewardActivity) {
   }
 }
 
+/** 删除满减送活动 */
 async function handleDelete(row: MallRewardActivityApi.RewardActivity) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
@@ -120,16 +121,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['promotion:reward-activity:update'],
               onClick: handleEdit.bind(null, row),
             },
-            // TODO @puhui999：下面两个按钮，type、danger 属性无效，应该是 el 不是这个哈。
             {
               label: '关闭',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.CLOSE,
               auth: ['promotion:reward-activity:close'],
               ifShow: row.status === CommonStatusEnum.ENABLE,
@@ -140,8 +141,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['promotion:reward-activity:delete'],
               popConfirm: {

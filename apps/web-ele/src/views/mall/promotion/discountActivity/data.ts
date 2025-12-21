@@ -69,8 +69,15 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 4,
       },
+      formItemClass: 'col-span-2',
     },
-    // TODO @puhui999：这里和 antd 对应的不太一样；
+    {
+      fieldName: 'spuIds',
+      label: '活动商品',
+      component: 'Input',
+      rules: 'required',
+      formItemClass: 'col-span-2',
+    },
   ];
 }
 

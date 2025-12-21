@@ -1,13 +1,20 @@
 <script lang="ts" setup>
+import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { MallBargainActivityApi } from '#/api/mall/promotion/bargain/bargainActivity';
+import type {
+  RuleConfig,
+  SpuProperty,
+} from '#/views/mall/product/spu/components';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { cloneDeep, convertToInteger, formatToFraction } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import { ElButton, ElInputNumber, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
+import { VxeColumn } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';
 import {
   createBargainActivity,
@@ -15,7 +22,11 @@ import {
   updateBargainActivity,
 } from '#/api/mall/promotion/bargain/bargainActivity';
 import { $t } from '#/locales';
-import { SpuSkuSelect } from '#/views/mall/product/spu/components';
+import {
+  getPropertyList,
+  SpuAndSkuList,
+  SpuSkuSelect,
+} from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
@@ -30,47 +41,6 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['砍价活动']);
 });
 
-// ================= 商品选择相关 =================
-const spuId = ref<number>();
-const skuId = ref<number>();
-const spuName = ref<string>('');
-const skuInfo = ref<{
-  picUrl: string;
-  price: number;
-  skuName: string;
-}>();
-
-const spuSkuSelectRef = ref(); // 商品选择弹窗 Ref
-
-/** 打开商品选择弹窗 */
-const handleSelectProduct = () => {
-  spuSkuSelectRef.value?.open();
-};
-
-/** 选择商品后的回调 */
-async function handleSpuSelected(selectedSpuId: number, skuIds?: number[]) {
-  const spu = await getSpu(selectedSpuId);
-  if (!spu) return;
-
-  spuId.value = spu.id;
-  spuName.value = spu.name || '';
-
-  // 砍价活动只选择一个 SKU
-  if (skuIds && skuIds.length > 0) {
-    const selectedSku = spu.skus?.find((sku) => sku.id === skuIds[0]);
-    if (selectedSku) {
-      skuId.value = selectedSku.id;
-      skuInfo.value = {
-        skuName: selectedSku.name || '',
-        picUrl: selectedSku.picUrl || spu.picUrl || '',
-        price: Number(selectedSku.price) || 0,
-      };
-    }
-  }
-}
-
-// ================= end =================
-
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -78,11 +48,113 @@ const [Form, formApi] = useVbenForm({
     },
     labelWidth: 130,
   },
-  wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
+
+// ================= 商品选择相关 =================
+
+const spuSkuSelectRef = ref(); // 商品和属性选择 Ref
+const spuAndSkuListRef = ref(); // SPU 和 SKU 列表组件 Ref
+
+const ruleConfig: RuleConfig[] = [
+  {
+    name: 'productConfig.bargainFirstPrice',
+    rule: (arg) => arg > 0,
+    message: '商品砍价起始价格必须大于 0 ！！！',
+  },
+  {
+    name: 'productConfig.bargainMinPrice',
+    rule: (arg) => arg >= 0,
+    message: '商品砍价底价不能小于 0 ！！！',
+  },
+  {
+    name: 'productConfig.stock',
+    rule: (arg) => arg >= 1,
+    message: '商品活动库存必须大于等于 1 ！！！',
+  },
+];
+
+const spuList = ref<MallSpuApi.Spu[]>([]); // 选择的 SPU 列表
+const spuPropertyList = ref<SpuProperty<MallSpuApi.Spu>[]>([]); // SPU 属性列表
+
+/** 打开商品选择器 */
+function openSpuSelect() {
+  spuSkuSelectRef.value?.open();
+}
+
+/** 选择商品后的回调 */
+async function handleSpuSelected(spuId: number, skuIds?: number[]) {
+  await formApi.setFieldValue('spuId', spuId);
+  await getSpuDetails(spuId, skuIds);
+}
+
+/** 获取 SPU 详情 */
+async function getSpuDetails(
+  spuId: number,
+  skuIds?: number[],
+  products?: MallBargainActivityApi.BargainProduct[],
+) {
+  const res = await getSpu(spuId);
+  if (!res) {
+    return;
+  }
+
+  spuList.value = [];
+
+  // 筛选指定的 SKU（砍价活动只选择一个 SKU）
+  const selectSkus =
+    skuIds === undefined
+      ? res.skus
+      : res.skus?.filter((sku) => skuIds.includes(sku.id!));
+
+  // 为每个 SKU 配置砍价活动相关的配置
+  selectSkus?.forEach((sku) => {
+    let config: MallBargainActivityApi.BargainProduct = {
+      spuId: res.id!,
+      skuId: sku.id!,
+      bargainFirstPrice: 1,
+      bargainMinPrice: 1,
+      stock: 1,
+    };
+    // 如果是编辑模式，回填已有配置
+    if (products !== undefined) {
+      const product = products.find((item) => item.skuId === sku.id);
+      if (product) {
+        // 分转元
+        product.bargainFirstPrice = formatToFraction(
+          product.bargainFirstPrice,
+        ) as unknown as number;
+        product.bargainMinPrice = formatToFraction(
+          product.bargainMinPrice,
+        ) as unknown as number;
+      }
+      config = product || config;
+    }
+    // 动态添加 productConfig 属性到 SKU
+    (
+      sku as MallSpuApi.Sku & {
+        productConfig: MallBargainActivityApi.BargainProduct;
+      }
+    ).productConfig = config;
+  });
+  res.skus = selectSkus;
+
+  const spuProperties: SpuProperty<MallSpuApi.Spu>[] = [
+    {
+      spuId: res.id!,
+      spuDetail: res,
+      propertyList: getPropertyList(res),
+    },
+  ];
+
+  // 直接赋值，因为砍价活动只选择一个 SPU
+  spuList.value = [res];
+  spuPropertyList.value = spuProperties;
+}
+
+// ================= end =================
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -90,34 +162,37 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-
-    // 验证商品和 SKU 选择
-    if (!spuId.value) {
-      ElMessage.error('请选择砍价商品');
-      return;
-    }
-    if (!skuId.value) {
-      ElMessage.error('请选择商品 SKU');
-      return;
-    }
-
-    // 提交表单
     modalApi.lock();
     try {
+      // 获取砍价商品配置（深拷贝避免直接修改原对象）
+      const products: MallBargainActivityApi.BargainProduct[] = cloneDeep(
+        spuAndSkuListRef.value?.getSkuConfigs('productConfig') || [],
+      );
+      if (products.length === 0) {
+        ElMessage.error('请选择砍价商品');
+        return;
+      }
+      // 价格需要转为分
+      products.forEach((item) => {
+        item.bargainFirstPrice = convertToInteger(item.bargainFirstPrice);
+        item.bargainMinPrice = convertToInteger(item.bargainMinPrice);
+      });
+
+      // 提交表单
       const values = await formApi.getValues();
       const data = {
         ...values,
-        spuId: spuId.value,
-        skuId: skuId.value,
-        bargainFirstPrice: Math.round((values.bargainFirstPrice || 0) * 100),
-        bargainMinPrice: Math.round((values.bargainMinPrice || 0) * 100),
+        // 用户每次砍价金额元转分
         randomMinPrice: values.randomMinPrice
-          ? Math.round(values.randomMinPrice * 100)
+          ? convertToInteger(values.randomMinPrice)
           : undefined,
         randomMaxPrice: values.randomMaxPrice
-          ? Math.round(values.randomMaxPrice * 100)
+          ? convertToInteger(values.randomMaxPrice)
           : undefined,
+        // 合并砍价商品配置（砍价活动只有一个商品）
+        ...products[0],
       } as MallBargainActivityApi.BargainActivity;
+
       await (formData.value?.id
         ? updateBargainActivity(data)
         : createBargainActivity(data));
@@ -132,54 +207,44 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
-      spuId.value = undefined;
-      skuId.value = undefined;
-      spuName.value = '';
-      skuInfo.value = undefined;
+      spuList.value = [];
+      spuPropertyList.value = [];
       return;
     }
-    // 加载表单数据
+
+    // 加载数据
     const data = modalApi.getData<MallBargainActivityApi.BargainActivity>();
     if (!data || !data.id) {
       return;
     }
+    // 加载数据
     modalApi.lock();
     try {
       formData.value = await getBargainActivity(data.id);
-      await nextTick();
+      // 对齐活动商品处理结构
+      await getSpuDetails(
+        formData.value.spuId,
+        [formData.value.skuId],
+        [
+          {
+            spuId: formData.value.spuId,
+            skuId: formData.value.skuId,
+            bargainFirstPrice: formData.value.bargainFirstPrice, // 砍价起始价格，单位分
+            bargainMinPrice: formData.value.bargainMinPrice, // 砍价底价
+            stock: formData.value.stock, // 活动库存
+          },
+        ],
+      );
       // 设置表单值时，价格字段从分转换为元
       await formApi.setValues({
         ...formData.value,
-        bargainFirstPrice: (formData.value.bargainFirstPrice || 0) / 100,
-        bargainMinPrice: (formData.value.bargainMinPrice || 0) / 100,
         randomMinPrice: formData.value.randomMinPrice
-          ? formData.value.randomMinPrice / 100
+          ? formatToFraction(formData.value.randomMinPrice)
           : undefined,
         randomMaxPrice: formData.value.randomMaxPrice
-          ? formData.value.randomMaxPrice / 100
+          ? formatToFraction(formData.value.randomMaxPrice)
           : undefined,
       });
-      // 加载商品和 SKU 信息
-      if (formData.value.spuId) {
-        const spu = await getSpu(formData.value.spuId);
-        if (spu) {
-          spuId.value = spu.id;
-          spuName.value = spu.name || '';
-          if (formData.value.skuId) {
-            const selectedSku = spu.skus?.find(
-              (sku) => sku.id === formData.value?.skuId,
-            );
-            if (selectedSku) {
-              skuId.value = selectedSku.id;
-              skuInfo.value = {
-                skuName: selectedSku.name || '',
-                picUrl: selectedSku.picUrl || spu.picUrl || '',
-                price: Number(selectedSku.price) || 0,
-              };
-            }
-          }
-        }
-      }
     } finally {
       modalApi.unlock();
     }
@@ -188,74 +253,82 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-3/5" :title="getTitle">
-    <div class="mx-4">
-      <Form />
+  <div>
+    <Modal :title="getTitle" class="w-[70%]">
+      <Form class="mx-4">
+        <!-- 商品选择 -->
+        <template #spuId>
+          <div class="w-full">
+            <ElButton
+              v-if="!formData?.id"
+              type="primary"
+              @click="openSpuSelect"
+            >
+              选择商品
+            </ElButton>
 
-      <!-- 商品选择区域 -->
-      <div class="mt-4">
-        <div class="mb-2 flex items-center">
-          <span class="text-sm font-medium">砍价活动商品:</span>
-          <el-button class="ml-2" type="primary" @click="handleSelectProduct">
-            选择商品
-          </el-button>
-          <span v-if="spuName" class="ml-4 text-sm text-gray-600">
-            已选择: {{ spuName }}
-          </span>
-        </div>
+            <!-- SPU 和 SKU 列表展示 -->
+            <SpuAndSkuList
+              ref="spuAndSkuListRef"
+              :rule-config="ruleConfig"
+              :spu-list="spuList"
+              :spu-property-list-p="spuPropertyList"
+              class="mt-4"
+            >
+              <!-- 扩展列：砍价活动特有配置 -->
+              <template #default>
+                <VxeColumn
+                  align="center"
+                  min-width="168"
+                  title="砍价起始价格(元)"
+                >
+                  <template #default="{ row: sku }">
+                    <ElInputNumber
+                      v-model="sku.productConfig.bargainFirstPrice"
+                      :min="0"
+                      :precision="2"
+                      :step="0.1"
+                      class="w-full"
+                      controls-position="right"
+                    />
+                  </template>
+                </VxeColumn>
+                <VxeColumn align="center" min-width="168" title="砍价底价(元)">
+                  <template #default="{ row: sku }">
+                    <ElInputNumber
+                      v-model="sku.productConfig.bargainMinPrice"
+                      :min="0"
+                      :precision="2"
+                      :step="0.1"
+                      class="w-full"
+                      controls-position="right"
+                    />
+                  </template>
+                </VxeColumn>
+                <VxeColumn align="center" min-width="168" title="活动库存">
+                  <template #default="{ row: sku }">
+                    <ElInputNumber
+                      v-model="sku.productConfig.stock"
+                      :max="sku.stock"
+                      :min="0"
+                      class="w-full"
+                      controls-position="right"
+                    />
+                  </template>
+                </VxeColumn>
+              </template>
+            </SpuAndSkuList>
+          </div>
+        </template>
+      </Form>
+    </Modal>
 
-        <!-- SKU 信息展示 -->
-        <div v-if="skuInfo" class="mt-4">
-          <table class="w-full border-collapse border border-gray-300">
-            <!-- TODO @puhui999：和 element-plus 有点差别哈；ps：是不是用 grid 组件呀？或者 vxe 组件
-             图片
-颜色
-版本
-商品条码
-销售价(元)
-市场价(元)
-成本价(元)
-库存
-砍价起始价格(元)
-砍价底价(元)
-活动库存
-             -->
-            <thead>
-              <tr class="bg-gray-100">
-                <th class="border border-gray-300 px-4 py-2">商品图片</th>
-                <th class="border border-gray-300 px-4 py-2">SKU 名称</th>
-                <th class="border border-gray-300 px-4 py-2">原价(元)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="border border-gray-300 px-4 py-2 text-center">
-                  <img
-                    v-if="skuInfo.picUrl"
-                    :src="skuInfo.picUrl"
-                    alt="商品图片"
-                    class="h-16 w-16 object-cover"
-                  />
-                </td>
-                <td class="border border-gray-300 px-4 py-2">
-                  {{ skuInfo.skuName }}
-                </td>
-                <td class="border border-gray-300 px-4 py-2 text-center">
-                  ¥{{ (skuInfo.price / 100).toFixed(2) }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </Modal>
-
-  <!-- 商品选择器弹窗（单选模式） -->
-  <SpuSkuSelect
-    ref="spuSkuSelectRef"
-    :is-select-sku="true"
-    :radio="true"
-    @select="handleSpuSelected"
-  />
+    <!-- 商品选择器弹窗（单选模式） -->
+    <SpuSkuSelect
+      ref="spuSkuSelectRef"
+      :is-select-sku="true"
+      :radio="true"
+      @select="handleSpuSelected"
+    />
+  </div>
 </template>

@@ -11,6 +11,7 @@ import {
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -73,23 +74,7 @@ const [Modal, modalApi] = useVbenModal({
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-      // 设置 productScopeValues
-      switch (data.productScope) {
-        // TODO @puhui999：这里要不要搞成类似优惠劵的
-        case PromotionProductScopeEnum.CATEGORY.scope: {
-          const categoryIds = data.productCategoryIds;
-          data.productScopeValues = Array.isArray(categoryIds)
-            ? categoryIds
-            : categoryIds
-              ? [categoryIds]
-              : [];
-          break;
-        }
-        case PromotionProductScopeEnum.SPU.scope: {
-          data.productScopeValues = data.productSpuIds;
-          break;
-        }
-      }
+      // productScopeValues 已通过 data.ts 中的 dependencies.trigger 自动同步到表单值中
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));
@@ -114,7 +99,11 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-      result.startAndEndTime = [result.startTime, result.endTime] as any[];
+      // antd RangePicker 需要 dayjs 对象
+      result.startAndEndTime = [
+        result.startTime ? dayjs(result.startTime) : undefined,
+        result.endTime ? dayjs(result.endTime) : undefined,
+      ] as any[];
       result.rules?.forEach((item: any) => {
         item.discountPrice = formatToFraction(item.discountPrice || 0);
         if (result.conditionType === PromotionConditionTypeEnum.PRICE.type) {

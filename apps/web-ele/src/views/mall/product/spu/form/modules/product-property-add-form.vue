@@ -61,9 +61,9 @@ const formSchema: VbenFormSchema[] = [
         }));
       },
       filterable: true,
+      allowCreate: true,
       placeholder: '请选择属性名称。如果不存在，可手动输入选择',
       multiple: true,
-      allowCreate: true,
       clearable: true,
     },
     rules: 'required',

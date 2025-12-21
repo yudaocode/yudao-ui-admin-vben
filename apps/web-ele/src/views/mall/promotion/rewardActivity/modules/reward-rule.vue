@@ -58,8 +58,7 @@ function handleDelete(ruleIndex: number) {
 </script>
 
 <template>
-  <!-- TODO @puhui999：这里报错了；idea -->
-  <ElRow :gutter="[16, 16]">
+  <ElRow :gutter="16">
     <template v-if="formData.rules">
       <ElCol v-for="(rule, index) in formData.rules" :key="index" :span="24">
         <ElCard size="small" class="rounded-lg">
@@ -174,9 +173,9 @@ function handleDelete(ruleIndex: number) {
     </template>
 
     <!-- 添加规则按钮 -->
-    <Col :span="24" class="mt-2">
-      <Button type="primary" @click="handleAdd">+ 添加优惠规则</Button>
-    </Col>
+    <ElCol :span="24" class="mt-2">
+      <ElButton type="primary" @click="handleAdd">+ 添加优惠规则</ElButton>
+    </ElCol>
 
     <!-- 提示信息 -->
     <ElCol :span="24" class="mt-2">

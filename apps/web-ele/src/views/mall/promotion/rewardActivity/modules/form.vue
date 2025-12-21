@@ -72,22 +72,7 @@ const [Modal, modalApi] = useVbenModal({
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-      switch (data.productScope) {
-        // TODO @puhui999：是不是也可以类似优惠劵的处理策略哈；
-        case PromotionProductScopeEnum.CATEGORY.scope: {
-          const categoryIds = data.productCategoryIds;
-          data.productScopeValues = Array.isArray(categoryIds)
-            ? categoryIds
-            : categoryIds
-              ? [categoryIds]
-              : [];
-          break;
-        }
-        case PromotionProductScopeEnum.SPU.scope: {
-          data.productScopeValues = data.productSpuIds;
-          break;
-        }
-      }
+      // productScopeValues 已通过 data.ts 中的 dependencies.trigger 自动同步到表单值中
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));

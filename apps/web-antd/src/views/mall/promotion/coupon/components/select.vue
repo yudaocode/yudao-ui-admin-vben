@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { Modal } from 'ant-design-vue';
 
@@ -57,6 +57,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 打开弹窗 */
 async function open() {
   visible.value = true;
+  // 等待 Modal 和 Grid 组件挂载完成后再查询
+  await nextTick();
   await gridApi.query();
 }
 

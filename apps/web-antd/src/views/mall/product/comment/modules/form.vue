@@ -99,16 +99,14 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      // 关闭时重置表单状态
       selectedSku.value = undefined;
+      await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallCommentApi.Comment>();
     if (!data || !data.id) {
-      // 新建模式：重置表单
-      // TODO @puhui999：这里的重置，可以统一到 103 行那么？
-      selectedSku.value = undefined;
-      await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;
     }
     // 编辑模式：加载数据

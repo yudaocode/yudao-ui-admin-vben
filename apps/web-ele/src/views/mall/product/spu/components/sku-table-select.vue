@@ -22,16 +22,6 @@ const emit = defineEmits<{
 const visible = ref(false);
 const spuId = ref<number>();
 
-/** 处理选中 */
-function handleRadioChange() {
-  const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Sku;
-  if (selectedRow) {
-    emit('change', selectedRow);
-    closeModal();
-  }
-}
-
-// TODO @puhui999：这里的代码风格，对齐 antd 的；可以使用 idea 对比两个文件哈；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useSkuGridColumns(),
@@ -39,20 +29,33 @@ const [Grid, gridApi] = useVbenVxeGrid({
     border: true,
     radioConfig: {
       reserve: true,
+      highlight: true,
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
     },
     pagerConfig: {
       enabled: false,
     },
   },
   gridEvents: {
-    radioChange: handleRadioChange,
+    radioChange: () => {
+      const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Sku;
+      if (selectedRow) {
+        emit('change', selectedRow);
+        // 关闭弹窗
+        visible.value = false;
+        gridApi.grid.clearRadioRow();
+        spuId.value = undefined;
+      }
+    },
   },
 });
 
 /** 关闭弹窗 */
 function closeModal() {
   visible.value = false;
-  gridApi.grid.clearRadioRow();
   spuId.value = undefined;
 }
 
@@ -63,6 +66,8 @@ async function openModal(data?: SpuData) {
   }
   spuId.value = data.spuId;
   visible.value = true;
+  // 注意：useVbenVxeGrid 关闭分页(pagerConfig.enabled=false)后，proxyConfig.ajax.query 的结果不会传递到 vxe-table
+  // 需要手动调用 reloadData 设置表格数据
   if (!spuId.value) {
     gridApi.grid?.reloadData([]);
     return;

@@ -24,7 +24,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入活动名称',
       },
       rules: 'required',
-      // TODO @puhui999：这里和 antd 里的不太一样，可以看看。
+      formItemClass: 'col-span-2',
     },
     {
       fieldName: 'startTime',
@@ -33,8 +33,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        type: 'datetime',
         placeholder: '请选择开始时间',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -45,48 +45,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        type: 'datetime',
         placeholder: '请选择结束时间',
-        class: '!w-full',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'bargainFirstPrice',
-      label: '砍价起始价格(元)',
-      component: 'InputNumber',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        step: 0.01,
-        placeholder: '请输入砍价起始价格',
-        controlsPosition: 'right',
-        class: '!w-full',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'bargainMinPrice',
-      label: '砍价底价(元)',
-      component: 'InputNumber',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        step: 0.01,
-        placeholder: '请输入砍价底价',
-        controlsPosition: 'right',
-        class: '!w-full',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'stock',
-      label: '活动库存',
-      component: 'InputNumber',
-      componentProps: {
-        min: 1,
-        placeholder: '请输入活动库存',
-        controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -96,9 +56,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入助力人数',
+        placeholder: '达到该人数才能砍到低价',
         controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -108,9 +67,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入砍价次数',
+        placeholder: '最大帮砍次数',
         controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -120,9 +78,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入购买限制',
+        placeholder: '最大购买次数',
         controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -134,9 +91,8 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
-        placeholder: '请输入最小砍价金额',
+        placeholder: '用户每次砍价的最小金额',
         controlsPosition: 'right',
-        class: '!w-full',
       },
     },
     {
@@ -147,10 +103,16 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
-        placeholder: '请输入最大砍价金额',
+        placeholder: '用户每次砍价的最大金额',
         controlsPosition: 'right',
-        class: '!w-full',
       },
+    },
+    {
+      fieldName: 'spuId',
+      label: '砍价商品',
+      component: 'Input',
+      rules: 'required',
+      formItemClass: 'col-span-2',
     },
   ];
 }
@@ -223,15 +185,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'bargainFirstPrice',
       title: '起始价格',
       minWidth: 100,
-      // TODO @puhui999：这里和 antd 不太一样，得看看
-      formatter: 'formatFenToYuanAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'bargainMinPrice',
       title: '砍价底价',
       minWidth: 100,
-      // TODO @puhui999：这里和 antd 不太一样，得看看
-      formatter: 'formatFenToYuanAmount',
+      formatter: 'formatAmount2',
     },
     {
       field: 'recordUserCount',

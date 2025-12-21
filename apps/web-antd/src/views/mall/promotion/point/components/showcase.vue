@@ -1,5 +1,4 @@
 <!-- 积分商城活动橱窗组件：用于展示和选择积分商城活动 -->
-<!-- TODO @puhui999：不需要 point- 前缀 --->
 <script lang="ts" setup>
 import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 
@@ -11,7 +10,7 @@ import { Image, Tooltip } from 'ant-design-vue';
 
 import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
-import PointTableSelect from './point-table-select.vue';
+import TableSelect from './table-select.vue';
 
 interface PointShowcaseProps {
   modelValue?: number | number[];
@@ -28,7 +27,7 @@ const props = withDefaults(defineProps<PointShowcaseProps>(), {
 const emit = defineEmits(['update:modelValue', 'change']);
 
 const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]); // 已选择的活动列表
-const pointTableSelectRef = ref<InstanceType<typeof PointTableSelect>>(); // 活动选择表格组件引用
+const pointTableSelectRef = ref<InstanceType<typeof TableSelect>>(); // 活动选择表格组件引用
 const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
 /** 计算是否可以添加 */
@@ -141,7 +140,7 @@ function emitActivityChange() {
   </div>
 
   <!-- 活动选择对话框 -->
-  <PointTableSelect
+  <TableSelect
     ref="pointTableSelectRef"
     :multiple="isMultiple"
     @change="handleActivitySelected"

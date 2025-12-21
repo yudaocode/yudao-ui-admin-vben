@@ -46,7 +46,7 @@ async function handleClose(row: MallDiscountActivityApi.DiscountActivity) {
     text: '正在关闭中...',
   });
   try {
-    await closeDiscountActivity(row.id as number);
+    await closeDiscountActivity(row.id!);
     ElMessage.success('关闭成功');
     handleRefresh();
   } finally {
@@ -60,7 +60,7 @@ async function handleDelete(row: MallDiscountActivityApi.DiscountActivity) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteDiscountActivity(row.id as number);
+    await deleteDiscountActivity(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

@@ -215,18 +215,17 @@ async function getAttributeOptions(propertyId: number) {
         <ElOption
           v-for="item2 in attributeOptions"
           :key="item2.id"
-          :value="item2.name"
           :label="item2.name"
+          :value="item2.name"
         />
       </ElSelect>
       <ElTag
         v-show="!inputVisible(index)"
         @click="showInput(index)"
-        class="mx-1 cursor-pointer"
-        effect="plain"
+        class="mx-1 cursor-pointer border-dashed bg-gray-100"
       >
         <div class="flex items-center">
-          <IconifyIcon class="mr-2" icon="ep:plus" />
+          <IconifyIcon class="mr-2" icon="lucide:plus" />
           添加
         </div>
       </ElTag>

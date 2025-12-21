@@ -33,6 +33,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        showTime: true,
         placeholder: '请选择开始时间',
       },
       rules: 'required',
@@ -44,41 +45,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
+        showTime: true,
         placeholder: '请选择结束时间',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'bargainFirstPrice',
-      label: '砍价起始价格(元)',
-      component: 'InputNumber',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        step: 0.01,
-        placeholder: '请输入砍价起始价格',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'bargainMinPrice',
-      label: '砍价底价(元)',
-      component: 'InputNumber',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        step: 0.01,
-        placeholder: '请输入砍价底价',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'stock',
-      label: '活动库存',
-      component: 'InputNumber',
-      componentProps: {
-        min: 1,
-        placeholder: '请输入活动库存',
       },
       rules: 'required',
     },
@@ -88,7 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入助力人数',
+        placeholder: '达到该人数才能砍到低价',
       },
       rules: 'required',
     },
@@ -98,7 +66,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入砍价次数',
+        placeholder: '最大帮砍次数',
       },
       rules: 'required',
     },
@@ -108,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         min: 1,
-        placeholder: '请输入购买限制',
+        placeholder: '最大购买次数',
       },
       rules: 'required',
     },
@@ -120,7 +88,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
-        placeholder: '请输入最小砍价金额',
+        placeholder: '用户每次砍价的最小金额',
       },
     },
     {
@@ -131,8 +99,15 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         precision: 2,
         step: 0.01,
-        placeholder: '请输入最大砍价金额',
+        placeholder: '用户每次砍价的最大金额',
       },
+    },
+    {
+      fieldName: 'spuId',
+      label: '砍价商品',
+      component: 'Input',
+      rules: 'required',
+      formItemClass: 'col-span-2',
     },
   ];
 }

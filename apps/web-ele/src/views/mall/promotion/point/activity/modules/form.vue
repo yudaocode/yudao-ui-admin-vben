@@ -4,7 +4,7 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 import type {
   RuleConfig,
   SpuProperty,
-} from '#/views/mall/product/spu/components/type';
+} from '#/views/mall/product/spu/components';
 
 import { computed, ref } from 'vue';
 
@@ -23,11 +23,10 @@ import {
 } from '#/api/mall/promotion/point';
 import { $t } from '#/locales';
 import {
+  getPropertyList,
   SpuAndSkuList,
   SpuSkuSelect,
 } from '#/views/mall/product/spu/components';
-// TODO @puhui999：getPropertyList 在 antd 和 el 导入的路径不同；是不是要统一下哈；
-import { getPropertyList } from '#/views/mall/product/spu/components/property-util';
 
 import { useFormSchema } from '../data';
 
@@ -100,7 +99,6 @@ async function getSpuDetails(
     return;
   }
 
-  // TODO @puhui999：这里的 spuList，是不是直接放到 145 行就 ok 啦；（尾部）；
   spuList.value = [];
 
   // 筛选指定的 SKU
@@ -134,7 +132,6 @@ async function getSpuDetails(
   });
   res.skus = selectSkus;
 
-  // TODO @puhui999：这里的逻辑，是不是放到 147 行（尾部）；
   const spuProperties: SpuProperty<MallSpuApi.Spu>[] = [
     {
       spuId: res.id!,

@@ -295,6 +295,7 @@ onMounted(async () => {
     title="商品选择"
     width="70%"
     :destroy-on-close="true"
+    :append-to-body="true"
     @close="closeModal"
   >
     <Grid>
@@ -312,8 +313,10 @@ onMounted(async () => {
       </template>
     </Grid>
     <template #footer>
-      <el-button @click="closeModal">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
+      <span class="dialog-footer">
+        <el-button @click="closeModal">取消</el-button>
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+      </span>
     </template>
   </ElDialog>
 </template>

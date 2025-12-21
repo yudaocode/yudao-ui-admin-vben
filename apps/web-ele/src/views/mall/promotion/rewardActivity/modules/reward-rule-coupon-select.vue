@@ -130,7 +130,7 @@ onMounted(async () => {
           <span class="text-gray-500">送</span>
           <ElInputNumber
             v-model="item.giveCount"
-            class="!w-20"
+            class="!w-32"
             :min="0"
             :step="1"
           />
