@@ -32,7 +32,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择商品分类',
         clearable: true,
-        options: categoryList,
+        api: async () => {
+          return categoryList;
+        },
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
