@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
@@ -89,9 +89,9 @@ onMounted(async () => {
 <template>
   <Page>
     <DeviceDetailsHeader
+      :device="device"
       :loading="loading"
       :product="product"
-      :device="device"
       @refresh="() => getDeviceData(id)"
     />
 
@@ -99,8 +99,8 @@ onMounted(async () => {
       <Tabs.TabPane key="info" tab="设备信息">
         <DeviceDetailsInfo
           v-if="activeTab === 'info'"
-          :product="product"
           :device="device"
+          :product="product"
         />
       </Tabs.TabPane>
       <Tabs.TabPane key="model" tab="物模型数据">
@@ -129,8 +129,8 @@ onMounted(async () => {
       <Tabs.TabPane key="simulator" tab="模拟设备">
         <DeviceDetailsSimulator
           v-if="activeTab === 'simulator'"
-          :product="product"
           :device="device"
+          :product="product"
           :thing-model-list="thingModelList"
         />
       </Tabs.TabPane>

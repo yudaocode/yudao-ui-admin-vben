@@ -22,7 +22,7 @@ function formatDate(date?: Date | string) {
 
 <template>
   <Card title="产品信息">
-    <Descriptions bordered :column="3" size="small">
+    <Descriptions :column="3" bordered size="small">
       <Descriptions.Item label="产品名称">
         {{ product.name }}
       </Descriptions.Item>
@@ -57,7 +57,7 @@ function formatDate(date?: Date | string) {
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />
       </Descriptions.Item>
-      <Descriptions.Item label="产品描述" :span="3">
+      <Descriptions.Item :span="3" label="产品描述">
         {{ product.description || '-' }}
       </Descriptions.Item>
     </Descriptions>

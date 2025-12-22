@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductCategoryApi } from '#/api/iot/product/category';
 import type { IotProductApi } from '#/api/iot/product/product';
@@ -107,19 +107,19 @@ function handleCreate() {
 }
 
 /** 编辑产品 */
-function handleEdit(row: any) {
+function handleEdit(row: IotProductApi.Product) {
   formModalApi.setData(row).open();
 }
 
 /** 删除产品 */
-async function handleDelete(row: any) {
+async function handleDelete(row: IotProductApi.Product) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
     await deleteProduct(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -153,7 +153,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<IotProductApi.Product>,
 });
 
-// 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口
+/** 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口 */
 const originalQuery = gridApi.query.bind(gridApi);
 gridApi.query = async (params?: Record<string, any>) => {
   if (viewMode.value === 'list') {
@@ -180,9 +180,9 @@ onMounted(() => {
       <div class="mb-3 flex items-center gap-3">
         <Input
           v-model:value="queryParams.name"
-          placeholder="请输入产品名称"
           allow-clear
           class="w-[220px]"
+          placeholder="请输入产品名称"
           @press-enter="handleSearch"
         >
           <template #prefix>
@@ -191,9 +191,9 @@ onMounted(() => {
         </Input>
         <Input
           v-model:value="queryParams.productKey"
-          placeholder="请输入产品标识"
           allow-clear
           class="w-[220px]"
+          placeholder="请输入产品标识"
           @press-enter="handleSearch"
         >
           <template #prefix>
@@ -201,11 +201,11 @@ onMounted(() => {
           </template>
         </Input>
         <Button type="primary" @click="handleSearch">
-          <IconifyIcon icon="ant-design:search-outlined" class="mr-1" />
+          <IconifyIcon class="mr-1" icon="ant-design:search-outlined" />
           搜索
         </Button>
         <Button @click="handleReset">
-          <IconifyIcon icon="ant-design:reload-outlined" class="mr-1" />
+          <IconifyIcon class="mr-1" icon="ant-design:reload-outlined" />
           重置
         </Button>
       </div>
@@ -214,13 +214,13 @@ onMounted(() => {
         <TableAction
           :actions="[
             {
-              label: '新增产品',
+              label: $t('ui.actionTitle.create', ['产品']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               onClick: handleCreate,
             },
             {
-              label: '导出',
+              label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               onClick: handleExport,
@@ -245,12 +245,12 @@ onMounted(() => {
       </div>
     </Card>
 
-    <Grid table-title="产品列表" v-show="viewMode === 'list'">
+    <Grid v-show="viewMode === 'list'" table-title="产品列表">
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
-              label: '详情',
+              label: $t('common.detail'),
               type: 'link',
               onClick: openProductDetail.bind(null, row.id!),
             },
@@ -272,7 +272,7 @@ onMounted(() => {
               icon: ACTION_ICON.DELETE,
               disabled: row.status === ProductStatusEnum.PUBLISHED,
               popConfirm: {
-                title: `确认删除产品 ${row.name} 吗?`,
+                title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
               },
             },
@@ -288,16 +288,10 @@ onMounted(() => {
       :category-list="categoryList"
       :search-params="queryParams"
       @create="handleCreate"
-      @edit="handleEdit"
       @delete="handleDelete"
       @detail="openProductDetail"
+      @edit="handleEdit"
       @thing-model="openThingModel"
     />
   </Page>
 </template>
-<style scoped>
-/* 隐藏 VxeGrid 自带的搜索表单区域 */
-:deep(.vxe-grid--form-wrapper) {
-  display: none !important;
-}
-</style>

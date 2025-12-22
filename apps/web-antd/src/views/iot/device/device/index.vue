@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
+import type { IotDeviceGroupApi } from '#/api/iot/device/group';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -43,10 +45,11 @@ defineOptions({ name: 'IoTDevice' });
 
 const route = useRoute();
 const router = useRouter();
-const products = ref<any[]>([]);
-const deviceGroups = ref<any[]>([]);
+const products = ref<IotProductApi.Product[]>([]);
+const deviceGroups = ref<IotDeviceGroupApi.DeviceGroup[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
+const checkedIds = ref<number[]>([]);
 
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,
@@ -150,7 +153,7 @@ async function handleDelete(row: IotDeviceApi.Device) {
   });
   try {
     await deleteDevice(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess'));
+    message.success($t('ui.actionMessage.deleteSuccess', [row.deviceName]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -164,7 +167,7 @@ async function handleDeleteBatch() {
     return;
   }
   const hideLoading = message.loading({
-    content: '正在批量删除...',
+    content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,
   });
   try {
@@ -191,7 +194,6 @@ function handleImport() {
   deviceImportFormModalApi.open();
 }
 
-const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
@@ -235,7 +237,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-// 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口
+/** 包装 gridApi.query() 方法，统一列表视图和卡片视图的查询接口 */
 const originalQuery = gridApi.query.bind(gridApi);
 gridApi.query = async (params?: Record<string, any>) => {
   if (viewMode.value === 'list') {
@@ -348,11 +350,11 @@ onMounted(async () => {
         </Select>
         <Button type="primary" @click="handleSearch">
           <IconifyIcon icon="ant-design:search-outlined" class="mr-1" />
-          搜索
+          {{ $t('common.search') }}
         </Button>
         <Button @click="handleReset">
           <IconifyIcon icon="ant-design:reload-outlined" class="mr-1" />
-          重置
+          {{ $t('common.reset') }}
         </Button>
       </div>
 
@@ -361,21 +363,21 @@ onMounted(async () => {
         <TableAction
           :actions="[
             {
-              label: '新增',
+              label: $t('ui.actionTitle.create', ['设备']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['iot:device:create'],
               onClick: handleCreate,
             },
             {
-              label: '导出',
+              label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
               auth: ['iot:device:export'],
               onClick: handleExport,
             },
             {
-              label: '导入',
+              label: $t('ui.actionTitle.import'),
               type: 'primary',
               icon: ACTION_ICON.UPLOAD,
               auth: ['iot:device:import'],
@@ -391,7 +393,7 @@ onMounted(async () => {
               onClick: handleAddToGroup,
             },
             {
-              label: '批量删除',
+              label: $t('ui.actionTitle.deleteBatch'),
               type: 'primary',
               danger: true,
               icon: ACTION_ICON.DELETE,
@@ -428,7 +430,7 @@ onMounted(async () => {
           class="cursor-pointer text-primary"
           @click="openProductDetail(row.productId)"
         >
-          {{ products.find((p: any) => p.id === row.productId)?.name || '-' }}
+          {{ products.find((p) => p.id === row.productId)?.name || '-' }}
         </a>
       </template>
 
@@ -441,7 +443,7 @@ onMounted(async () => {
             size="small"
             class="mr-1"
           >
-            {{ deviceGroups.find((g: any) => g.id === groupId)?.name }}
+            {{ deviceGroups.find((g) => g.id === groupId)?.name }}
           </Tag>
         </template>
         <span v-else>-</span>
@@ -452,7 +454,7 @@ onMounted(async () => {
         <TableAction
           :actions="[
             {
-              label: '查看',
+              label: $t('common.detail'),
               type: 'link',
               onClick: openDetail.bind(null, row.id!),
             },
@@ -473,7 +475,7 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               popConfirm: {
-                title: `确认删除设备 ${row.deviceName} 吗?`,
+                title: $t('ui.actionMessage.deleteConfirm', [row.deviceName]),
                 confirm: handleDelete.bind(null, row),
               },
             },

@@ -62,9 +62,6 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
-      // 新增模式：设置默认值（如果需要）
-      // TODO @haohao：是不是 return 就好啦；不用这里 undefined 啦；
-      formData.value = undefined;
       return;
     }
     // 编辑模式：加载数据

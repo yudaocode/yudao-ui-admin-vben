@@ -34,23 +34,15 @@ import DeviceDetailsThingModelPropertyHistory from './thing-model-property-histo
 
 const props = defineProps<{ deviceId: number }>();
 
-// TODO @haohao：变量写在 // 列表的加载中 这种注释哈，变量后面；
-/** 列表的加载中 */
-const loading = ref(true);
-/** 显示的列表数据 */
-const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]);
-/** 完整的数据列表 */
-const filterList = ref<IotDeviceApi.DevicePropertyDetail[]>([]);
-/** 查询参数 */
+const loading = ref(true); // 列表的加载中
+const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 显示的列表数据
+const filterList = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 完整的数据列表
 const queryParams = reactive({
   keyword: '' as string,
-});
-/** 自动刷新开关 */
-const autoRefresh = ref(false);
-/** 定时器 */
-let autoRefreshTimer: any = null;
-/** 视图模式状态 */
-const viewMode = ref<'card' | 'list'>('card');
+}); // 查询参数
+const autoRefresh = ref(false); // 自动刷新开关
+let autoRefreshTimer: any = null; // 定时器
+const viewMode = ref<'card' | 'list'>('card'); // 视图模式状态
 
 /** Grid 列定义 */
 function useGridColumns(): VxeTableGridOptions['columns'] {
@@ -286,15 +278,15 @@ onBeforeUnmount(() => {
       <div class="flex items-center" style="gap: 16px">
         <Input
           v-model:value="queryParams.keyword"
-          placeholder="请输入属性名称、标识符"
           allow-clear
+          placeholder="请输入属性名称、标识符"
           style="width: 240px"
           @press-enter="handleQuery"
         />
         <Switch
           v-model:checked="autoRefresh"
-          class="ml-20px"
           checked-children="定时刷新"
+          class="ml-20px"
           un-checked-children="定时刷新"
         />
       </div>
@@ -319,19 +311,19 @@ onBeforeUnmount(() => {
 
     <!-- 卡片视图 -->
     <template v-if="viewMode === 'card'">
-      <Row :gutter="16" v-loading="loading">
+      <Row v-loading="loading" :gutter="16">
         <Col
           v-for="item in list"
           :key="item.identifier"
-          :xs="24"
-          :sm="12"
-          :md="12"
           :lg="6"
+          :md="12"
+          :sm="12"
+          :xs="24"
           class="mb-4"
         >
           <Card
-            class="relative h-full overflow-hidden transition-colors"
             :body-style="{ padding: '0' }"
+            class="relative h-full overflow-hidden transition-colors"
           >
             <!-- 添加渐变背景层 -->
             <div
@@ -341,12 +333,12 @@ onBeforeUnmount(() => {
               <!-- 标题区域 -->
               <div class="mb-3 flex items-center">
                 <div class="mr-2.5 flex items-center">
-                  <IconifyIcon icon="ep:cpu" class="text-lg text-primary" />
+                  <IconifyIcon class="text-lg text-primary" icon="ep:cpu" />
                 </div>
                 <div class="flex-1 text-base font-bold">{{ item.name }}</div>
                 <!-- 标识符 -->
                 <div class="mr-2 inline-flex items-center">
-                  <Tag size="small" color="blue">
+                  <Tag color="blue" size="small">
                     {{ item.identifier }}
                   </Tag>
                 </div>
@@ -364,8 +356,8 @@ onBeforeUnmount(() => {
                   "
                 >
                   <IconifyIcon
-                    icon="ep:data-line"
                     class="text-lg text-primary"
+                    icon="ep:data-line"
                   />
                 </div>
               </div>

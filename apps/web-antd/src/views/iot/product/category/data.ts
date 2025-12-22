@@ -38,8 +38,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入分类排序',
         class: 'w-full',
         min: 0,
+        precision: 0,
       },
-      rules: z.number().min(0, '分类排序不能为空'),
+      defaultValue: 0,
+      rules: z.number().min(0, '分类排序不能小于 0'),
     },
     {
       fieldName: 'status',

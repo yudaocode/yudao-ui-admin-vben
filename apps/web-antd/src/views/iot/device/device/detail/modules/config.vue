@@ -128,11 +128,11 @@ async function updateDeviceConfig() {
   <div>
     <!-- 使用说明提示 -->
     <Alert
-      message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「配置推送」按钮，设备即可进行远程配置。"
-      type="info"
-      show-icon
       class="my-4"
       description="如需编辑文件，请点击下方编辑按钮"
+      message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「配置推送」按钮，设备即可进行远程配置。"
+      show-icon
+      type="info"
     />
 
     <!-- 代码视图 - 只读展示 -->
@@ -145,8 +145,8 @@ async function updateDeviceConfig() {
       v-else
       v-model:value="configString"
       :rows="20"
-      placeholder="请输入 JSON 格式的配置信息"
       class="json-editor"
+      placeholder="请输入 JSON 格式的配置信息"
     />
 
     <!-- 操作按钮 -->
@@ -154,18 +154,18 @@ async function updateDeviceConfig() {
       <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
       <Button
         v-if="isEditing"
+        :loading="saveLoading"
         type="primary"
         @click="saveConfig"
-        :loading="saveLoading"
       >
         保存
       </Button>
       <Button v-else @click="handleEdit">编辑</Button>
       <Button
         v-if="!isEditing"
+        :loading="pushLoading"
         type="primary"
         @click="handleConfigPush"
-        :loading="pushLoading"
       >
         配置推送
       </Button>

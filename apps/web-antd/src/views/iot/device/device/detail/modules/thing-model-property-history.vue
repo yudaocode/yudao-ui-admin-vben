@@ -118,7 +118,6 @@ function formatDateRangeWithTime(dates: [string, string]): [string, string] {
   return [`${dates[0]} 00:00:00`, `${dates[1]} 23:59:59`];
 }
 
-// 表格列配置
 const tableColumns = computed(() => [
   {
     title: '序号',
@@ -140,9 +139,8 @@ const tableColumns = computed(() => [
     dataIndex: 'value',
     align: 'center' as const,
   },
-]);
+]); // 表格列配置
 
-// 分页配置
 const paginationConfig = computed(() => ({
   current: 1,
   pageSize: 10,
@@ -151,7 +149,7 @@ const paginationConfig = computed(() => ({
   showQuickJumper: true,
   pageSizeOptions: ['10', '20', '50', '100'],
   showTotal: (total: number) => `共 ${total} 条数据`,
-}));
+})); // 分页配置
 
 /** 获得设备历史数据 */
 async function getList() {
@@ -429,7 +427,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           </div>
 
           <!-- 刷新按钮 -->
-          <Button @click="handleRefresh" :loading="loading">
+          <Button :loading="loading" @click="handleRefresh">
             <template #icon>
               <IconifyIcon icon="ant-design:reload-outlined" />
             </template>
@@ -438,9 +436,9 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
           <!-- 导出按钮 -->
           <Button
-            @click="handleExport"
-            :loading="exporting"
             :disabled="list.length === 0"
+            :loading="exporting"
+            @click="handleExport"
           >
             <template #icon>
               <IconifyIcon icon="ant-design:export-outlined" />
@@ -451,9 +449,9 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           <!-- 视图切换 -->
           <Button.Group class="ml-auto">
             <Button
+              :disabled="!canShowChart"
               :type="viewMode === 'chart' ? 'primary' : 'default'"
               @click="viewMode = 'chart'"
-              :disabled="!canShowChart"
             >
               <template #icon>
                 <IconifyIcon icon="ant-design:line-chart-outlined" />
@@ -485,14 +483,14 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
       </div>
 
       <!-- 数据展示区域 -->
-      <Spin :spinning="loading" :delay="200">
+      <Spin :delay="200" :spinning="loading">
         <!-- 图表模式 - 使用 v-show 确保图表组件始终挂载 -->
         <div v-show="viewMode === 'chart'" class="chart-container">
           <Empty
             v-if="list.length === 0"
             :image="Empty.PRESENTED_IMAGE_SIMPLE"
-            description="暂无数据"
             class="py-20"
+            :description="$t('common.noData')"
           />
           <div v-show="list.length > 0">
             <EchartsUI ref="chartRef" height="500px" />
@@ -502,8 +500,8 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
         <!-- 表格模式 -->
         <div v-show="viewMode === 'list'" class="table-container">
           <Table
-            :data-source="list"
             :columns="tableColumns"
+            :data-source="list"
             :pagination="paginationConfig"
             :scroll="{ y: 500 }"
             row-key="updateTime"
@@ -531,7 +529,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
   </Modal>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .property-history-container {
   max-height: 70vh;
   overflow: auto;

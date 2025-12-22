@@ -191,8 +191,8 @@ defineExpose({
         <span>标识符：</span>
         <Select
           v-model:value="queryParams.identifier"
-          placeholder="请选择事件标识符"
           allow-clear
+          placeholder="请选择事件标识符"
           style="width: 240px"
         >
           <Select.Option
@@ -208,10 +208,10 @@ defineExpose({
         <span>时间范围：</span>
         <RangePicker
           v-model:value="queryParams.times"
-          show-time
           format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
+          show-time
           style="width: 360px"
+          value-format="YYYY-MM-DD HH:mm:ss"
         />
       </div>
       <Space>
