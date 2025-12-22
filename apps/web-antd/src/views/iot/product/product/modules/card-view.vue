@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -14,10 +13,10 @@ import {
   Pagination,
   Popconfirm,
   Row,
-  Tag,
   Tooltip,
 } from 'ant-design-vue';
 
+import { DictTag } from '#/components/dict-tag';
 import { getProductPage } from '#/api/iot/product/product';
 
 interface Props {
@@ -74,15 +73,6 @@ function handlePageChange(page: number, pageSize: number) {
   getList();
 }
 
-/** 获取设备类型颜色 */
-function getDeviceTypeColor(deviceType: number) {
-  const colors: Record<number, string> = {
-    0: 'blue',
-    1: 'green',
-  };
-  return colors[deviceType] || 'default';
-}
-
 defineExpose({
   reload: getList,
   query: () => {
@@ -137,18 +127,11 @@ onMounted(() => {
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品类型</span>
-                  <!-- TODO @AI：这个要不完全用字典的 dict-tag？ -->
-                  <Tag
-                    :color="getDeviceTypeColor(item.deviceType)"
+                  <DictTag
+                    :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
+                    :value="item.deviceType"
                     class="info-tag m-0"
-                  >
-                    {{
-                      getDictLabel(
-                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
-                        item.deviceType,
-                      )
-                    }}
-                  </Tag>
+                  />
                 </div>
                 <div class="info-item">
                   <span class="info-label">产品标识</span>
@@ -267,8 +250,7 @@ onMounted(() => {
       width: 36px;
       height: 36px;
       color: white;
-      // TODO @haohao：这里的紫色，和下面的紫色按钮，看看能不能换下。嘿嘿，感觉 AI 比较喜欢用紫色，但是放现有的后台，有点突兀
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
       border-radius: 8px;
     }
 
@@ -337,8 +319,8 @@ onMounted(() => {
       justify-content: center;
       width: 80px;
       height: 80px;
-      color: #667eea;
-      background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+      color: #1890ff;
+      background: linear-gradient(135deg, #40a9ff15 0%, #1890ff15 100%);
       border-radius: 8px;
     }
 
@@ -378,12 +360,12 @@ onMounted(() => {
         }
 
         &.action-btn-model {
-          color: #722ed1;
-          border-color: #722ed1;
+          color: #fa8c16;
+          border-color: #fa8c16;
 
           &:hover {
             color: white;
-            background: #722ed1;
+            background: #fa8c16;
           }
         }
 
@@ -419,8 +401,8 @@ html.dark {
       }
 
       .product-image {
-        color: #8b9cff;
-        background: linear-gradient(135deg, #667eea25 0%, #764ba225 100%);
+        color: #69c0ff;
+        background: linear-gradient(135deg, #40a9ff25 0%, #1890ff25 100%);
       }
     }
   }

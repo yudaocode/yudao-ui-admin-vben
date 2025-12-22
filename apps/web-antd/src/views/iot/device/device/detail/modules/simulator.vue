@@ -343,18 +343,18 @@ async function handleServiceInvoke(row: ThingModelData) {
   <ContentWrap>
     <Row :gutter="16">
       <!-- 左侧：指令调试区域 -->
-      <Col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+      <Col :lg="12" :md="24" :sm="24" :xl="12" :xs="24">
         <Card class="simulator-tabs h-full">
           <template #title>
             <div class="flex items-center justify-between">
               <span>指令调试</span>
               <Button
-                type="text"
                 size="small"
+                type="text"
                 @click="debugCollapsed = !debugCollapsed"
               >
-                <IconifyIcon icon="lucide:chevron-up" v-if="!debugCollapsed" />
-                <IconifyIcon icon="lucide:chevron-down" v-if="debugCollapsed" />
+                <IconifyIcon v-if="!debugCollapsed" icon="lucide:chevron-up" />
+                <IconifyIcon v-if="debugCollapsed" icon="lucide:chevron-down" />
               </Button>
             </div>
           </template>
@@ -374,11 +374,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                   >
                     <ContentWrap>
                       <Table
-                        :data-source="propertyList"
-                        align="center"
                         :columns="propertyColumns"
+                        :data-source="propertyList"
                         :pagination="false"
                         :scroll="{ x: 'max-content', y: 300 }"
+                        align="center"
                         size="small"
                       >
                         <template #bodyCell="{ column, record }">
@@ -391,11 +391,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                           <template v-else-if="column.key === 'value'">
                             <Input
                               :value="getFormValue(record.identifier)"
+                              placeholder="输入值"
+                              size="small"
                               @update:value="
                                 setFormValue(record.identifier, $event)
                               "
-                              placeholder="输入值"
-                              size="small"
                             />
                           </template>
                         </template>
@@ -418,11 +418,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                   >
                     <ContentWrap>
                       <Table
-                        :data-source="eventList"
-                        align="center"
                         :columns="eventColumns"
+                        :data-source="eventList"
                         :pagination="false"
                         :scroll="{ x: 'max-content', y: 300 }"
+                        align="center"
                         size="small"
                       >
                         <template #bodyCell="{ column, record }">
@@ -434,19 +434,19 @@ async function handleServiceInvoke(row: ThingModelData) {
                           </template>
                           <template v-else-if="column.key === 'value'">
                             <Textarea
+                              :rows="3"
                               :value="getFormValue(record.identifier)"
+                              placeholder="输入事件参数（JSON格式）"
+                              size="small"
                               @update:value="
                                 setFormValue(record.identifier, $event)
                               "
-                              :rows="3"
-                              placeholder="输入事件参数（JSON格式）"
-                              size="small"
                             />
                           </template>
                           <template v-else-if="column.key === 'action'">
                             <Button
-                              type="primary"
                               size="small"
+                              type="primary"
                               @click="handleEventPost(record)"
                             >
                               上报事件
@@ -496,11 +496,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                   >
                     <ContentWrap>
                       <Table
-                        :data-source="propertyList"
-                        align="center"
                         :columns="propertyColumns"
+                        :data-source="propertyList"
                         :pagination="false"
                         :scroll="{ x: 'max-content', y: 300 }"
+                        align="center"
                         size="small"
                       >
                         <template #bodyCell="{ column, record }">
@@ -513,11 +513,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                           <template v-else-if="column.key === 'value'">
                             <Input
                               :value="getFormValue(record.identifier)"
+                              placeholder="输入值"
+                              size="small"
                               @update:value="
                                 setFormValue(record.identifier, $event)
                               "
-                              placeholder="输入值"
-                              size="small"
                             />
                           </template>
                         </template>
@@ -540,11 +540,11 @@ async function handleServiceInvoke(row: ThingModelData) {
                   >
                     <ContentWrap>
                       <Table
-                        :data-source="serviceList"
-                        align="center"
                         :columns="serviceColumns"
+                        :data-source="serviceList"
                         :pagination="false"
                         :scroll="{ x: 'max-content', y: 300 }"
+                        align="center"
                         size="small"
                       >
                         <template #bodyCell="{ column, record }">
@@ -553,19 +553,19 @@ async function handleServiceInvoke(row: ThingModelData) {
                           </template>
                           <template v-else-if="column.key === 'value'">
                             <Textarea
+                              :rows="3"
                               :value="getFormValue(record.identifier)"
+                              placeholder="输入服务参数（JSON格式）"
+                              size="small"
                               @update:value="
                                 setFormValue(record.identifier, $event)
                               "
-                              :rows="3"
-                              placeholder="输入服务参数（JSON格式）"
-                              size="small"
                             />
                           </template>
                           <template v-else-if="column.key === 'action'">
                             <Button
-                              type="primary"
                               size="small"
+                              type="primary"
                               @click="handleServiceInvoke(record)"
                             >
                               服务调用
@@ -583,23 +583,23 @@ async function handleServiceInvoke(row: ThingModelData) {
       </Col>
 
       <!-- 右侧：设备消息区域 -->
-      <Col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
+      <Col :lg="12" :md="24" :sm="24" :xl="12" :xs="24">
         <Card class="h-full">
           <template #title>
             <div class="flex items-center justify-between">
               <span>设备消息</span>
               <Button
-                type="text"
                 size="small"
+                type="text"
                 @click="messageCollapsed = !messageCollapsed"
               >
                 <IconifyIcon
-                  icon="lucide:chevron-down"
                   v-if="!messageCollapsed"
+                  icon="lucide:chevron-down"
                 />
                 <IconifyIcon
-                  icon="lucide:chevron-down"
                   v-if="messageCollapsed"
+                  icon="lucide:chevron-down"
                 />
               </Button>
             </div>

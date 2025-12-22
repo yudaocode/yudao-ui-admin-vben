@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-// TODO @haohao：product 的 card-view 的意见，这里看看要不要也改改下。
 import { onMounted, ref } from 'vue';
 
-import { DeviceStateEnum, DICT_TYPE } from '@vben/constants';
-import { getDictLabel, getDictObj } from '@vben/hooks';
+import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { isValidColor, TinyColor } from '@vben/utils';
 
 import {
   Button,
@@ -15,10 +12,10 @@ import {
   Pagination,
   Popconfirm,
   Row,
-  Tag,
   Tooltip,
 } from 'ant-design-vue';
 
+import { DictTag } from '#/components/dict-tag';
 import { getDevicePage } from '#/api/iot/device/device';
 
 interface Props {
@@ -53,94 +50,6 @@ const queryParams = ref({
   pageSize: 12,
 });
 
-/** 默认状态映射 */
-const DEFAULT_STATUS_MAP: Record<
-  'default' | number,
-  { bgColor: string; borderColor: string; color: string; text: string }
-> = {
-  [DeviceStateEnum.ONLINE]: {
-    text: '在线',
-    color: '#52c41a',
-    bgColor: '#f6ffed',
-    borderColor: '#b7eb8f',
-  },
-  [DeviceStateEnum.OFFLINE]: {
-    text: '离线',
-    color: '#faad14',
-    bgColor: '#fffbe6',
-    borderColor: '#ffe58f',
-  },
-  [DeviceStateEnum.INACTIVE]: {
-    text: '未激活',
-    color: '#ff4d4f',
-    bgColor: '#fff1f0',
-    borderColor: '#ffccc7',
-  },
-  default: {
-    text: '未知状态',
-    color: '#595959',
-    bgColor: '#fafafa',
-    borderColor: '#d9d9d9',
-  },
-};
-
-/** 颜色类型预设 */
-const COLOR_TYPE_PRESETS: Record<
-  string,
-  { bgColor: string; borderColor: string; color: string }
-> = {
-  success: {
-    color: '#52c41a',
-    bgColor: '#f6ffed',
-    borderColor: '#b7eb8f',
-  },
-  processing: {
-    color: '#1890ff',
-    bgColor: '#e6f7ff',
-    borderColor: '#91d5ff',
-  },
-  warning: {
-    color: '#faad14',
-    bgColor: '#fffbe6',
-    borderColor: '#ffe58f',
-  },
-  error: {
-    color: '#ff4d4f',
-    bgColor: '#fff1f0',
-    borderColor: '#ffccc7',
-  },
-  default: {
-    color: '#595959',
-    bgColor: '#fafafa',
-    borderColor: '#d9d9d9',
-  },
-};
-
-/** 规范化颜色类型 */
-function normalizeColorType(colorType?: string) {
-  switch (colorType) {
-    case 'danger': {
-      return 'error';
-    }
-    case 'default':
-    case 'error':
-    case 'processing':
-    case 'success':
-    case 'warning': {
-      return colorType;
-    }
-    case 'info': {
-      return 'default';
-    }
-    case 'primary': {
-      return 'processing';
-    }
-    default: {
-      return 'default';
-    }
-  }
-}
-
 /** 获取产品名称 */
 function getProductName(productId: number) {
   const product = props.products.find((p: any) => p.id === productId);
@@ -167,54 +76,6 @@ function handlePageChange(page: number, pageSize: number) {
   queryParams.value.pageNo = page;
   queryParams.value.pageSize = pageSize;
   getList();
-}
-
-/** 获取设备类型颜色 */
-function getDeviceTypeColor(deviceType: number) {
-  const colors: Record<number, string> = {
-    0: 'blue',
-    1: 'cyan',
-  };
-  return colors[deviceType] || 'default';
-}
-
-/** 获取设备状态信息 */
-// TODO @haohao：这里可以简化下么？体感看着有点复杂哈；
-function getStatusInfo(state: null | number | string | undefined) {
-  const parsedState = Number(state);
-  const hasNumericState = Number.isFinite(parsedState);
-  const fallback = hasNumericState
-    ? DEFAULT_STATUS_MAP[parsedState] || DEFAULT_STATUS_MAP.default
-    : DEFAULT_STATUS_MAP.default;
-  const dict = getDictObj(
-    DICT_TYPE.IOT_DEVICE_STATE,
-    hasNumericState ? parsedState : state,
-  );
-  if (dict) {
-    if (!dict.colorType && !dict.cssClass) {
-      return {
-        ...fallback,
-        text: dict.label || fallback.text,
-      };
-    }
-    const presetKey = normalizeColorType(dict.colorType);
-    if (isValidColor(dict.cssClass)) {
-      const baseColor = new TinyColor(dict.cssClass);
-      return {
-        text: dict.label || fallback.text,
-        color: baseColor.toHexString(),
-        bgColor: baseColor.clone().setAlpha(0.15).toRgbString(),
-        borderColor: baseColor.clone().lighten(30).toHexString(),
-      };
-    }
-    const preset = COLOR_TYPE_PRESETS[presetKey] || COLOR_TYPE_PRESETS.default;
-    return {
-      text: dict.label || fallback.text,
-      ...preset,
-    };
-  }
-
-  return fallback;
 }
 
 defineExpose({
@@ -260,17 +121,11 @@ onMounted(() => {
               <div class="ml-3 min-w-0 flex-1">
                 <div class="device-title">{{ item.deviceName }}</div>
               </div>
-              <div
-                class="status-badge"
-                :style="{
-                  color: getStatusInfo(item.state).color,
-                  backgroundColor: getStatusInfo(item.state).bgColor,
-                  borderColor: getStatusInfo(item.state).borderColor,
-                }"
-              >
-                <span class="status-dot"></span>
-                {{ getStatusInfo(item.state).text }}
-              </div>
+              <DictTag
+                :type="DICT_TYPE.IOT_DEVICE_STATE"
+                :value="item.state"
+                class="status-tag"
+              />
             </div>
             <!-- 内容区域 -->
             <div class="mb-3">
@@ -291,17 +146,11 @@ onMounted(() => {
                 </div>
                 <div class="info-item">
                   <span class="info-label">设备类型</span>
-                  <Tag
-                    :color="getDeviceTypeColor(item.deviceType)"
+                  <DictTag
+                    :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
+                    :value="item.deviceType"
                     class="info-tag m-0"
-                  >
-                    {{
-                      getDictLabel(
-                        DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
-                        item.deviceType,
-                      )
-                    }}
-                  </Tag>
+                  />
                 </div>
                 <div class="info-item">
                   <span class="info-label">Deviceid</span>
@@ -395,7 +244,7 @@ onMounted(() => {
       width: 36px;
       height: 36px;
       color: white;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
       border-radius: 8px;
     }
 
@@ -409,24 +258,9 @@ onMounted(() => {
       white-space: nowrap;
     }
 
-    // 状态徽章
-    .status-badge {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      padding: 2px 10px;
+    // 状态标签
+    .status-tag {
       font-size: 12px;
-      font-weight: 500;
-      line-height: 18px;
-      border: 1px solid;
-      border-radius: 12px;
-
-      .status-dot {
-        width: 6px;
-        height: 6px;
-        background: currentcolor;
-        border-radius: 50%;
-      }
     }
 
     // 信息列表
@@ -512,12 +346,12 @@ onMounted(() => {
         }
 
         &.action-btn-data {
-          color: #722ed1;
-          border-color: #722ed1;
+          color: #fa8c16;
+          border-color: #fa8c16;
 
           &:hover {
             color: white;
-            background: #722ed1;
+            background: #fa8c16;
           }
         }
 

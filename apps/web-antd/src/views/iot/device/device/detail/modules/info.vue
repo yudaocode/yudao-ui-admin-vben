@@ -75,7 +75,7 @@ function handleAuthInfoDialogClose() {
         <Card class="h-full">
           <template #title>
             <div class="flex items-center">
-              <IconifyIcon icon="ep:info-filled" class="mr-2 text-primary" />
+              <IconifyIcon class="mr-2 text-primary" icon="ep:info-filled" />
               <span>设备信息</span>
             </div>
           </template>
@@ -124,9 +124,9 @@ function handleAuthInfoDialogClose() {
             </Descriptions.Item>
             <Descriptions.Item label="MQTT 连接参数">
               <Button
+                size="small"
                 type="link"
                 @click="handleAuthInfoDialogOpen"
-                size="small"
               >
                 查看
               </Button>
@@ -141,7 +141,7 @@ function handleAuthInfoDialogClose() {
           <template #title>
             <div class="flex items-center justify-between">
               <div class="flex items-center">
-                <IconifyIcon icon="ep:location" class="mr-2 text-primary" />
+                <IconifyIcon class="mr-2 text-primary" icon="ep:location" />
                 <span>设备位置</span>
               </div>
               <div class="text-sm text-gray-500">
@@ -160,7 +160,7 @@ function handleAuthInfoDialogClose() {
               v-else
               class="flex h-full w-full items-center justify-center rounded bg-gray-50 text-gray-400"
             >
-              <IconifyIcon icon="ep:warning" class="mr-2" />
+              <IconifyIcon class="mr-2" icon="ep:warning" />
               <span>暂无位置信息</span>
             </div>
           </div>
@@ -171,9 +171,9 @@ function handleAuthInfoDialogClose() {
     <!-- 认证信息弹框 -->
     <Modal
       v-model:open="authDialogVisible"
+      :footer="null"
       title="MQTT 连接参数"
       width="640px"
-      :footer="null"
     >
       <Form :label-col="{ span: 6 }">
         <Form.Item label="clientId">
@@ -183,7 +183,7 @@ function handleAuthInfoDialogClose() {
               readonly
               style="width: calc(100% - 80px)"
             />
-            <Button @click="copyToClipboard(authInfo.clientId)" type="primary">
+            <Button type="primary" @click="copyToClipboard(authInfo.clientId)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
@@ -195,7 +195,7 @@ function handleAuthInfoDialogClose() {
               readonly
               style="width: calc(100% - 80px)"
             />
-            <Button @click="copyToClipboard(authInfo.username)" type="primary">
+            <Button type="primary" @click="copyToClipboard(authInfo.username)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
@@ -204,19 +204,19 @@ function handleAuthInfoDialogClose() {
           <Input.Group compact>
             <Input
               v-model:value="authInfo.password"
-              readonly
               :type="authPasswordVisible ? 'text' : 'password'"
+              readonly
               style="width: calc(100% - 160px)"
             />
             <Button
-              @click="authPasswordVisible = !authPasswordVisible"
               type="primary"
+              @click="authPasswordVisible = !authPasswordVisible"
             >
               <IconifyIcon
                 :icon="authPasswordVisible ? 'lucide:eye-off' : 'lucide:eye'"
               />
             </Button>
-            <Button @click="copyToClipboard(authInfo.password)" type="primary">
+            <Button type="primary" @click="copyToClipboard(authInfo.password)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>

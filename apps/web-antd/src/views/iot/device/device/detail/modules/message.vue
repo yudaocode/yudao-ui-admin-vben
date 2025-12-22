@@ -186,9 +186,9 @@ defineExpose({
     <div class="mb-4 flex flex-wrap items-center gap-3">
       <Select
         v-model:value="queryParams.method"
+        allow-clear
         placeholder="所有方法"
         style="width: 160px"
-        allow-clear
       >
         <Select.Option
           v-for="item in methodOptions"
@@ -201,9 +201,9 @@ defineExpose({
       </Select>
       <Select
         v-model:value="queryParams.upstream"
+        allow-clear
         placeholder="上行/下行"
         style="width: 160px"
-        allow-clear
       >
         <Select.Option label="上行" value="true">上行</Select.Option>
         <Select.Option label="下行" value="false">下行</Select.Option>

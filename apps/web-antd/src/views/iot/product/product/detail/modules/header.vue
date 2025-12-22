@@ -119,8 +119,8 @@ function handleUnpublish(product: IotProductApi.Product) {
         <Descriptions.Item label="ProductKey">
           {{ product.productKey }}
           <Button
-            size="small"
             class="ml-2"
+            size="small"
             @click="copyToClipboard(product.productKey || '')"
           >
             复制

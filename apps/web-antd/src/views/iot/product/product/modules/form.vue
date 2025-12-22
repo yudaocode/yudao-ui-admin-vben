@@ -106,7 +106,8 @@ const [Modal, modalApi] = useVbenModal({
     // 加载数据
     const data = modalApi.getData<IotProductApi.Product>();
     if (!data || !data.id) {
-      // 新增：设置默认值（status 通过 schema 中的 defaultValue 自动设置为 0）
+      // 新增：确保 Collapse 折叠，并设置默认值
+      activeKey.value = [];
       await formApi.setValues({
         productKey: generateProductKey(),
       });
@@ -117,10 +118,19 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getProduct(data.id);
       await formApi.setValues(formData.value);
-      // 设置高级表单（如果已挂载）
-      await nextTick();
-      if (advancedFormApi.isMounted) {
-        await advancedFormApi.setValues(formData.value);
+      // 如果存在高级字段数据，自动展开 Collapse
+      if (
+        formData.value?.icon ||
+        formData.value?.picUrl ||
+        formData.value?.description
+      ) {
+        activeKey.value = ['advanced'];
+        // 等待 Collapse 展开后表单挂载
+        await nextTick();
+        await nextTick();
+        if (advancedFormApi.isMounted) {
+          await advancedFormApi.setValues(formData.value);
+        }
       }
     } finally {
       modalApi.unlock();

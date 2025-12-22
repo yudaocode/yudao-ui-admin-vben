@@ -89,9 +89,9 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <Upload
+            :before-upload="beforeUpload"
             :max-count="1"
             accept=".xls,.xlsx"
-            :before-upload="beforeUpload"
           >
             <Button type="primary"> 选择 Excel 文件</Button>
           </Upload>
