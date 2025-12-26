@@ -8,7 +8,12 @@ import type {
   RouteRecordStringComponent,
 } from '@vben-core/typings';
 
-import { filterTree, isHttpUrl, mapTree } from '@vben-core/shared/utils';
+import {
+  filterTree,
+  isHttpUrl,
+  mapTree,
+  sortTree,
+} from '@vben-core/shared/utils';
 
 /**
  * 根据 routes 生成菜单列表
@@ -83,7 +88,7 @@ function generateMenus(
   });
 
   // 对菜单进行排序，避免order=0时被替换成999的问题
-  menus = menus.toSorted((a, b) => (a?.order ?? 999) - (b?.order ?? 999));
+  menus = sortTree(menus, (a, b) => (a?.order ?? 999) - (b?.order ?? 999));
 
   // 过滤掉隐藏的菜单项
   return filterTree(menus, (menu) => !!menu.show);
