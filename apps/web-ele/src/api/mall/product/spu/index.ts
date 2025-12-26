@@ -62,13 +62,6 @@ export namespace MallSpuApi {
     valueName?: string; // 属性值名称
   }
 
-  // TODO @puhui999：这个还要么？
-  /** 优惠券模板 */
-  export interface GiveCouponTemplate {
-    id?: number; // 优惠券编号
-    name?: string; // 优惠券名称
-  }
-
   /** 商品状态更新请求 */
   export interface SpuStatusUpdateReqVO {
     id: number; // 商品编号

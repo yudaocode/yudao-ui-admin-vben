@@ -98,7 +98,7 @@ const handleDeleteComponent = () => {
       <component :is="component.id" :property="component.property" />
     </div>
     <div
-      class="component-wrap absolute -bottom-1 -left-0.5 -right-0.5 -top-1 block h-full w-full"
+      class="component-wrap absolute -bottom-1 -left-0.5 -right-0.5 block h-full w-full"
     >
       <!-- 左侧：组件名（悬浮的小贴条） -->
       <div class="component-name" v-if="component.name">
@@ -109,8 +109,6 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <!-- TODO @xingyu：按钮少的时候，会存在遮住的情况； -->
-        <!-- TODO @xingyu：貌似中间的选中框框，没全部框柱。上面多了点，下面少了点。 -->
         <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"
@@ -171,7 +169,6 @@ const handleDeleteComponent = () => {
     </div>
   </div>
 </template>
-
 <style scoped lang="scss">
 $active-border-width: 2px;
 $hover-border-width: 1px;

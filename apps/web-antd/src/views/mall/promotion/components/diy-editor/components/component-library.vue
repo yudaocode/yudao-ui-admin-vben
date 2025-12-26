@@ -100,5 +100,4 @@ function handleCloneComponent(component: DiyComponent<any>) {
       </Collapse.Panel>
     </Collapse>
   </div>
-  <!-- TODO @xingyu：ele 里面有一些 style，看看是不是都迁移完了；特别是 drag-area 是全局样式； -->
 </template>

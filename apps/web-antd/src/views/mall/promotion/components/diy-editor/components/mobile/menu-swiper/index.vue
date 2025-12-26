@@ -106,7 +106,6 @@ watch(
     </div>
   </Carousel>
 </template>
-
 <style lang="scss">
 // Ant Design Vue Carousel 样式调整
 :deep(.ant-carousel .ant-carousel-dots) {

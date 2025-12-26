@@ -68,7 +68,8 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择归属部门',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
+        checkStrictly: true,
       },
     },
     {

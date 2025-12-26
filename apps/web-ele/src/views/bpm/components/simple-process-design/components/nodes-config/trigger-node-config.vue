@@ -262,7 +262,7 @@ function updateFormFieldKey(
   formSetting.updateFormFields[String(newKey)] = value;
 }
 
-/** 删除修改字段设置 */
+/** 删除修改字段设置项 */
 function deleteFormFieldSetting(formSetting: FormTriggerSetting, key: string) {
   if (!formSetting?.updateFormFields) return;
   delete formSetting.updateFormFields[key];
@@ -383,6 +383,7 @@ onMounted(() => {
 });
 </script>
 <template>
+  <!-- TODO @jason：antd 这里是 1/3，需要保持一致么？ -->
   <Drawer class="w-2/5">
     <template #title>
       <div class="config-header">

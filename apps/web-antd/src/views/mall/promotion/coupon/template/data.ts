@@ -60,14 +60,10 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       defaultValue: PromotionProductScopeEnum.ALL.scope,
     },
-    // TODO @puhui999： 商品选择器优化
     {
       fieldName: 'productSpuIds',
       label: '商品',
       component: 'Input',
-      componentProps: {
-        placeholder: '请选择商品',
-      },
       dependencies: {
         triggerFields: ['productScope', 'productScopeValues'],
         show: (model) =>
@@ -84,14 +80,10 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @puhui999： 商品分类选择器优化
     {
       fieldName: 'productCategoryIds',
       label: '商品分类',
       component: 'Input',
-      componentProps: {
-        placeholder: '请选择商品分类',
-      },
       dependencies: {
         triggerFields: ['productScope', 'productScopeValues'],
         show: (model) =>

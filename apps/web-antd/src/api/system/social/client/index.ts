@@ -12,6 +12,7 @@ export namespace SystemSocialClientApi {
     clientId: string;
     clientSecret: string;
     agentId?: string;
+    publicKey?: string;
     status: number;
     createTime?: Date;
   }

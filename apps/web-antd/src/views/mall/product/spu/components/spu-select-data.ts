@@ -2,8 +2,8 @@ import type { Ref } from 'vue';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridProps, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { MallCategoryApi } from '#/api/mall/product/category';
+import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed } from 'vue';
 

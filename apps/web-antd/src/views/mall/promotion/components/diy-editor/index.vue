@@ -38,7 +38,7 @@ const props = defineProps({
 
 const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
-// TODO @xingyu：要不要加这个？
+// TODO @xingyu：要不要加这个？ele 里是有这个的。
 // const qrcode = useQRCode(props.previewUrl, {
 //   errorCorrectionLevel: 'H',
 //   margin: 4,
@@ -175,8 +175,7 @@ function handleComponentSelected(
   index: number = -1,
 ) {
   // 使用深拷贝避免响应式追踪循环警告
-  // TODO @xingyu：这个是必须的么？ele 没有哈。
-  selectedComponent.value = cloneDeep(component);
+  selectedComponent.value = component;
   selectedComponentIndex.value = index;
 }
 
@@ -344,7 +343,7 @@ onMounted(() => {
       <!-- 中心：设计区域（ComponentContainer） -->
       <Col :span="12">
         <div
-          class="relative flex max-h-[calc(80vh)] w-full flex-1 flex-col justify-center overflow-y-auto"
+          class="editor-center relative flex max-h-[calc(80vh)] w-full flex-1 flex-col overflow-y-auto"
           @click="handlePageSelected"
         >
           <!-- 手机顶部 -->
@@ -378,20 +377,20 @@ onMounted(() => {
           </div>
           <!-- 手机页面编辑区域 -->
           <div
-            class="min-h-full w-full"
+            class="mx-auto min-h-full w-96 bg-no-repeat"
             :style="{
               // backgroundColor: pageConfigComponent.property.backgroundColor,
               backgroundImage: `url(${pageConfigComponent.property.backgroundImage})`,
             }"
           >
             <div
-              class="relative mx-auto my-0 min-h-full w-96 items-center justify-center bg-auto bg-no-repeat"
+              class="relative my-0 min-h-full w-full items-center justify-center bg-auto bg-no-repeat"
             >
               <draggable
                 v-model="pageComponents"
                 :animation="200"
                 :force-fallback="false"
-                class="min-h-full w-full"
+                class="min-h-[70vh] w-full"
                 filter=".component-toolbar"
                 ghost-class="draggable-ghost"
                 group="component"
@@ -508,5 +507,4 @@ onMounted(() => {
       </div>
     </PreviewModal>
   </Page>
-  <!-- TODO @xingyu：这里改造完后，类似 web-ele/src/views/mall/promotion/components/diy-editor/index.vue 里的全局样式（递推到子组件）里的就没没了，类似 property-group -->
 </template>

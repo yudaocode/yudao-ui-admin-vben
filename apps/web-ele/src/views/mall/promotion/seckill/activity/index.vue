@@ -4,8 +4,7 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 
 import { onMounted } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { $t } from '@vben/locales';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
@@ -16,6 +15,7 @@ import {
   getSeckillActivityPage,
 } from '#/api/mall/promotion/seckill/seckillActivity';
 import { getSimpleSeckillConfigList } from '#/api/mall/promotion/seckill/seckillConfig';
+import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import { formatConfigNames, formatTimeRange, setConfigList } from './formatter';
@@ -45,10 +45,16 @@ function handleCreate() {
 
 /** 关闭活动 */
 async function handleClose(row: MallSeckillActivityApi.SeckillActivity) {
-  await confirm('确认关闭该秒杀活动吗？');
-  await closeSeckillActivity(row.id as number);
-  ElMessage.success('关闭成功');
-  handleRefresh();
+  const loadingInstance = ElLoading.service({
+    text: '活动关闭中...',
+  });
+  try {
+    await closeSeckillActivity(row.id as number);
+    ElMessage.success('关闭成功');
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 删除活动 */
@@ -83,9 +89,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           });
         },
       },
-    },
-    cellConfig: {
-      height: 250,
     },
     rowConfig: {
       keyField: 'id',
@@ -164,7 +167,10 @@ onMounted(async () => {
               link: true,
               auth: ['promotion:seckill-activity:close'],
               ifShow: row.status === 0,
-              onClick: handleClose.bind(null, row),
+              popConfirm: {
+                title: '确认关闭该秒杀活动吗？',
+                confirm: handleClose.bind(null, row),
+              },
             },
             {
               label: $t('common.delete'),

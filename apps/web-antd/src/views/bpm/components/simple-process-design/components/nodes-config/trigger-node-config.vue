@@ -348,7 +348,7 @@ function getShowText(): string {
   return showText;
 }
 
-/** 显示触发器节点配置， 由父组件传过来 */
+/** 显示触发器节点配置，由父组件传过来 */
 function showTriggerNodeConfig(node: SimpleFlowNode) {
   nodeName.value = node.name;
   originalSetting = node.triggerSetting

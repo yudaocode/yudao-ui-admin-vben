@@ -96,7 +96,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 function open() {
-  // 使用三元表达式代替if-else，解决linter 警告
+  // 使用三元表达式代替 if-else，解决 linter 警告
   condition.value = currentNode.value.conditionSetting
     ? cloneDeep(currentNode.value.conditionSetting)
     : {
@@ -132,7 +132,7 @@ watch(
 const showInput = ref(false);
 // 输入框的引用
 const inputRef = ref<HTMLInputElement | null>(null);
-// 监听 showInput 的变化，当变为true 时自动聚焦
+// 监听 showInput 的变化，当变为 true 时自动聚焦
 watch(showInput, (value) => {
   if (value) {
     nextTick(() => {
@@ -158,6 +158,7 @@ function changeNodeName() {
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>
 <template>
+  <!-- TODO @jason：antd 是 1/3，这里要统一么？ -->
   <Drawer class="w-2/5">
     <template #title>
       <div class="flex items-center">

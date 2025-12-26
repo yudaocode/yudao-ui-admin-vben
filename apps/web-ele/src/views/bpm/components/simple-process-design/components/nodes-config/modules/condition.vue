@@ -40,6 +40,7 @@ defineOptions({
 const props = defineProps({
   modelValue: {
     type: Object,
+    // TODO @jason：这里 required: false,
     default: () => ({}),
   },
 });

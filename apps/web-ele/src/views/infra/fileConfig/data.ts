@@ -225,6 +225,18 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       defaultValue: false,
     },
+    {
+      fieldName: 'config.region',
+      label: '区域',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请填写区域，一般仅 AWS 需要填写',
+      },
+      dependencies: {
+        triggerFields: ['storage'],
+        show: (formValues) => formValues.storage === 20,
+      },
+    },
     // 通用
     {
       fieldName: 'config.domain',

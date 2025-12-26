@@ -228,9 +228,10 @@ onMounted(() => {
                 >
                   <Card
                     hoverable
-                    class="definition-item-card w-full cursor-pointer"
+                    class="w-full cursor-pointer"
                     :class="{
-                      'search-match': searchName.trim().length > 0,
+                      'animate-bounce-once !bg-[rgb(63_115_247_/_10%)]':
+                        searchName.trim().length > 0,
                     }"
                     :body-style="{
                       width: '100%',
@@ -241,10 +242,13 @@ onMounted(() => {
                       <img
                         v-if="definition.icon"
                         :src="definition.icon"
-                        class="flow-icon-img object-contain"
+                        class="size-12 rounded object-contain"
                         alt="流程图标"
                       />
-                      <div v-else class="flow-icon flex-shrink-0">
+                      <div
+                        v-else
+                        class="flex size-12 flex-shrink-0 items-center justify-center rounded bg-primary"
+                      >
                         <span class="text-xs text-white">
                           {{ definition.name?.slice(0, 2) }}
                         </span>
@@ -283,7 +287,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-// @jason：看看能不能通过 tailwindcss 简化下
 @keyframes bounce {
   0%,
   50% {
@@ -295,30 +298,7 @@ onMounted(() => {
   }
 }
 
-.process-definition-container {
-  .definition-item-card {
-    .flow-icon-img {
-      width: 48px;
-      height: 48px;
-      border-radius: 0.25rem;
-    }
-
-    .flow-icon {
-      @apply bg-primary;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 0.25rem;
-    }
-
-    &.search-match {
-      background-color: rgb(63 115 247 / 10%);
-      border: 1px solid var(--primary);
-      animation: bounce 0.5s ease;
-    }
-  }
+.animate-bounce-once {
+  animation: bounce 0.5s ease;
 }
 </style>

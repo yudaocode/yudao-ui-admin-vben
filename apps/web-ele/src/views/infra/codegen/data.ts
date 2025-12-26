@@ -172,6 +172,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择上级菜单',
+        checkStrictly: true,
         filterTreeNode(input: string, node: Recordable<any>) {
           if (!input || input.length === 0) {
             return true;
@@ -181,7 +182,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
           return name.includes(input) || $t(name).includes(input);
         },
         showSearch: true,
-        treeDefaultExpandedKeys: [0],
+        defaultExpandedKeys: [0],
       },
       rules: 'selectRequired',
       renderComponentContent() {

@@ -10,24 +10,6 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'task',
-        name: 'BpmTask',
-        meta: {
-          title: '审批中心',
-          icon: 'ant-design:history-outlined',
-        },
-        children: [
-          {
-            path: 'my',
-            name: 'BpmTaskMy',
-            component: () => import('#/views/bpm/processInstance/index.vue'),
-            meta: {
-              title: '我的流程',
-            },
-          },
-        ],
-      },
-      {
         path: 'process-instance/detail',
         component: () => import('#/views/bpm/processInstance/detail/index.vue'),
         name: 'BpmProcessInstanceDetail',

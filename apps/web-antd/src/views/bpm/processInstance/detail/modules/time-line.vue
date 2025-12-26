@@ -16,7 +16,7 @@ import { formatDateTime, isEmpty } from '@vben/utils';
 
 import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
 
-import { UserSelectModal } from '#/components/select-modal';
+import { UserSelectModal } from '#/views/system/user/components';
 
 defineOptions({ name: 'BpmProcessInstanceTimeline' });
 

@@ -10,7 +10,7 @@ import { ElImage, ElTooltip } from 'element-plus';
 
 import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 
-import PointTableSelect from './table-select.vue';
+import TableSelect from './table-select.vue';
 
 interface PointShowcaseProps {
   modelValue?: number | number[];
@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<PointShowcaseProps>(), {
 const emit = defineEmits(['update:modelValue', 'change']);
 
 const pointActivityList = ref<MallPointActivityApi.PointActivity[]>([]); // 已选择的活动列表
-const pointTableSelectRef = ref<InstanceType<typeof PointTableSelect>>(); // 活动选择表格组件引用
+const pointTableSelectRef = ref<InstanceType<typeof TableSelect>>(); // 活动选择表格组件引用
 const isMultiple = computed(() => props.limit !== 1); // 是否为多选模式
 
 /** 计算是否可以添加 */
@@ -108,21 +108,21 @@ function emitActivityChange() {
     <div
       v-for="(activity, index) in pointActivityList"
       :key="activity.id"
-      class="group relative h-[60px] w-[60px] overflow-hidden rounded-lg"
+      class="relative h-[60px] w-[60px] overflow-hidden rounded-lg border border-dashed border-gray-300"
     >
       <ElTooltip :content="activity.spuName">
         <div class="relative h-full w-full">
           <ElImage
+            :preview-src-list="[activity.picUrl!]"
             :src="activity.picUrl"
             class="h-full w-full rounded-lg object-cover"
-            :preview-src-list="[activity.picUrl!]"
             fit="cover"
           />
           <!-- 删除按钮 -->
           <IconifyIcon
             v-if="!disabled"
-            icon="ep:circle-close-filled"
-            class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
+            icon="lucide:x"
+            class="absolute -right-2 -top-2 z-10 h-5 w-5 cursor-pointer text-red-500 hover:text-red-600"
             @click="handleRemoveActivity(index)"
           />
         </div>
@@ -132,16 +132,16 @@ function emitActivityChange() {
     <!-- 添加活动按钮 -->
     <ElTooltip v-if="canAdd" content="选择活动">
       <div
-        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
+        class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
         @click="handleOpenActivitySelect"
       >
-        <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </ElTooltip>
   </div>
 
   <!-- 活动选择对话框 -->
-  <PointTableSelect
+  <TableSelect
     ref="pointTableSelectRef"
     :multiple="isMultiple"
     @change="handleActivitySelected"

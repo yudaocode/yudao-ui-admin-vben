@@ -16,11 +16,18 @@ import {
   updateCouponTemplate,
 } from '#/api/mall/promotion/coupon/couponTemplate';
 import { $t } from '#/locales';
+import { ProductCategorySelect } from '#/views/mall/product/category/components';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<MallCouponTemplateApi.CouponTemplate>();
+const formData = ref<
+  Partial<MallCouponTemplateApi.CouponTemplate> & {
+    productCategoryIds?: number | number[];
+    productSpuIds?: number[];
+  }
+>({});
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['优惠券模板'])
@@ -64,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -75,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getCouponTemplate(data.id);
-      const processedData = await processLoadData(formData.value);
+      const processedData = await processLoadData(formData.value as any);
       // 设置到表单
       await formApi.setValues(processedData);
     } finally {
@@ -144,6 +151,15 @@ async function processLoadData(
 
 <template>
   <Modal :title="getTitle" class="w-2/5">
-    <Form class="mx-4" />
+    <Form class="mx-4">
+      <!-- 自定义插槽：商品选择 -->
+      <template #productSpuIds>
+        <SpuShowcase v-model="formData.productSpuIds" />
+      </template>
+      <!-- 自定义插槽：分类选择 -->
+      <template #productCategoryIds>
+        <ProductCategorySelect v-model="formData.productCategoryIds" />
+      </template>
+    </Form>
   </Modal>
 </template>

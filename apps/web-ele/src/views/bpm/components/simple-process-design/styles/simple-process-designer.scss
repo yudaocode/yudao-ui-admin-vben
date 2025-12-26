@@ -146,7 +146,6 @@
     background: url('./svg/simple-process-bg.svg') 0 0 repeat;
     transform: scale(1);
     transform-origin: 50% 0 0;
-    transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     // 节点容器 定义节点宽度
     .node-container {
       width: 200px;

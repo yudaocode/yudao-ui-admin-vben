@@ -8,6 +8,7 @@ import { PromotionConditionTypeEnum } from '@vben/constants';
 import { useVModel } from '@vueuse/core';
 import {
   Button,
+  Card,
   Col,
   Form,
   FormItem,
@@ -61,76 +62,92 @@ function handleDelete(ruleIndex: number) {
   <Row :gutter="[16, 16]">
     <template v-if="formData.rules">
       <Col v-for="(rule, index) in formData.rules" :key="index" :span="24">
-        <!-- 规则标题 -->
-        <div class="mb-4 flex items-center">
-          <span class="text-base font-bold">活动层级 {{ index + 1 }}</span>
-          <Button
-            v-if="index !== 0"
-            type="link"
-            danger
-            class="ml-2"
-            @click="handleDelete(index)"
-          >
-            删除
-          </Button>
-        </div>
-
-        <Form :model="rule" layout="horizontal">
-          <!-- 优惠门槛 -->
-          <FormItem label="优惠门槛" :label-col="{ span: 4 }">
-            <div class="flex items-center gap-2">
-              <span>满</span>
-              <InputNumber
-                v-if="isPriceCondition"
-                v-model:value="rule.limit"
-                :min="0"
-                :precision="2"
-                :step="0.1"
-                class="!w-40"
-                placeholder="请输入金额"
-              />
-              <Input
-                v-else
-                v-model:value="rule.limit"
-                :min="0"
-                class="!w-40"
-                placeholder="请输入数量"
-                type="number"
-              />
-              <span>{{ isPriceCondition ? '元' : '件' }}</span>
+        <Card size="small" class="rounded-lg">
+          <!-- 规则标题 -->
+          <template #title>
+            <div class="flex items-center">
+              <span class="text-base font-medium">
+                活动层级 {{ index + 1 }}
+              </span>
             </div>
-          </FormItem>
-          <!-- 优惠内容 -->
-          <FormItem
-            label="优惠内容"
-            :label-col="{ span: 4 }"
-            :wrapper-col="{ span: 20 }"
-          >
-            <div class="flex flex-col gap-2">
-              <span>订单金额优惠</span>
-              <div class="flex items-center gap-2">
-                <span>减</span>
+          </template>
+          <template v-if="index !== 0" #extra>
+            <Button
+              type="link"
+              danger
+              size="small"
+              @click="handleDelete(index)"
+            >
+              删除
+            </Button>
+          </template>
+
+          <Form :model="rule" layout="horizontal">
+            <!-- 优惠门槛 -->
+            <FormItem label="优惠门槛:" :colon="false" class="mb-3">
+              <div
+                class="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2"
+              >
+                <span>满</span>
                 <InputNumber
-                  v-model:value="rule.discountPrice"
+                  v-if="isPriceCondition"
+                  v-model:value="rule.limit"
                   :min="0"
                   :precision="2"
                   :step="0.1"
-                  class="!w-32"
+                  class="!w-40"
                   placeholder="请输入金额"
                 />
-                <span>元</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span>包邮:</span>
-                <Switch
-                  v-model:checked="rule.freeDelivery"
-                  checked-children="是"
-                  un-checked-children="否"
+                <Input
+                  v-else
+                  v-model:value="rule.limit"
+                  :min="0"
+                  class="!w-40"
+                  placeholder="请输入数量"
+                  type="number"
                 />
+                <span>{{ isPriceCondition ? '元' : '件' }}</span>
               </div>
-              <div>
-                <div>送积分:</div>
-                <div class="mt-2 flex items-center gap-2">
+            </FormItem>
+            <!-- 优惠内容 -->
+            <FormItem label="优惠内容:" :colon="false" class="!mb-0">
+              <div class="flex flex-col gap-3">
+                <!-- 订单金额优惠 -->
+                <div
+                  class="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2"
+                >
+                  <span class="!w-21 shrink-0 text-sm text-gray-500">
+                    订单金额优惠
+                  </span>
+                  <span>减</span>
+                  <InputNumber
+                    v-model:value="rule.discountPrice"
+                    :min="0"
+                    :precision="2"
+                    :step="0.1"
+                    class="!w-32"
+                    placeholder="请输入金额"
+                  />
+                  <span>元</span>
+                </div>
+                <!-- 包邮 -->
+                <div
+                  class="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2"
+                >
+                  <span class="w-20 shrink-0 text-sm text-gray-500">包邮</span>
+                  <Switch
+                    v-model:checked="rule.freeDelivery"
+                    checked-children="是"
+                    un-checked-children="否"
+                  />
+                </div>
+                <!-- 送积分 -->
+                <div
+                  class="flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2"
+                >
+                  <span class="w-20 shrink-0 text-sm text-gray-500">
+                    送积分
+                  </span>
                   <span>送</span>
                   <InputNumber
                     v-model:value="rule.point"
@@ -140,17 +157,24 @@ function handleDelete(ruleIndex: number) {
                   />
                   <span>积分</span>
                 </div>
+                <!-- 送优惠券 -->
+                <div
+                  class="flex flex-col items-start gap-2 rounded-md bg-gray-50 px-3 py-2"
+                >
+                  <span class="w-20 shrink-0 text-sm text-gray-500">
+                    送优惠券
+                  </span>
+                  <RewardRuleCouponSelect
+                    :model-value="rule"
+                    @update:model-value="
+                      (val) => (formData.rules![index] = val)
+                    "
+                  />
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="w-20">送优惠券:</span>
-                <RewardRuleCouponSelect
-                  :model-value="rule"
-                  @update:model-value="(val) => (formData.rules![index] = val)"
-                />
-              </div>
-            </div>
-          </FormItem>
-        </Form>
+            </FormItem>
+          </Form>
+        </Card>
       </Col>
     </template>
 

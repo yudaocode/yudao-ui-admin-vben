@@ -212,20 +212,27 @@ watch(
     }
   },
 );
-
+const loading = ref(false);
 /** 初始化 */
 onMounted(async () => {
-  await getDetail();
-  // 获得用户列表
-  userOptions.value = await getSimpleUserList();
+  try {
+    loading.value = true;
+    await getDetail();
+    // 获得用户列表
+    userOptions.value = await getSimpleUserList();
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <template>
-  <Page auto-content-height>
+  <Page auto-content-height v-loading="loading">
     <Card
+      class="flex h-full flex-col"
       :body-style="{
-        overflowY: 'auto',
+        flex: 1,
+        overflowY: 'hidden',
         paddingTop: '12px',
       }"
     >
@@ -286,24 +293,16 @@ onMounted(async () => {
         </div>
 
         <!-- 流程操作 -->
-        <div class="process-tabs-container flex flex-1 flex-col">
-          <Tabs v-model:active-key="activeTab" class="mt-0 h-full">
-            <TabPane tab="审批详情" key="form" class="tab-pane-content">
-              <Row :gutter="[48, 24]" class="h-full">
-                <Col
-                  :xs="24"
-                  :sm="24"
-                  :md="18"
-                  :lg="18"
-                  :xl="16"
-                  class="h-full"
-                >
+        <div class="flex h-full flex-1 flex-col">
+          <Tabs v-model:active-key="activeTab">
+            <TabPane tab="审批详情" key="form" class="pb-20 pr-3">
+              <Row :gutter="[48, 24]">
+                <Col :xs="24" :sm="24" :md="18" :lg="18" :xl="16">
                   <!-- 流程表单 -->
                   <div
                     v-if="
                       processDefinition?.formType === BpmModelFormType.NORMAL
                     "
-                    class="h-full"
                   >
                     <form-create
                       v-model="detailForm.value"
@@ -316,13 +315,12 @@ onMounted(async () => {
                     v-else-if="
                       processDefinition?.formType === BpmModelFormType.CUSTOM
                     "
-                    class="h-full"
                   >
                     <BusinessFormComponent :id="processInstance?.businessKey" />
                   </div>
                 </Col>
-                <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8" class="h-full">
-                  <div class="mt-4 h-full">
+                <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="8">
+                  <div class="mt-4">
                     <ProcessInstanceTimeline :activity-nodes="activityNodes" />
                   </div>
                 </Col>
@@ -331,44 +329,35 @@ onMounted(async () => {
             <TabPane
               tab="流程图"
               key="diagram"
-              class="tab-pane-content"
+              class="pb-20 pr-3"
               :force-render="true"
             >
-              <div class="h-full">
-                <ProcessInstanceSimpleViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.SIMPLE
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-                <ProcessInstanceBpmnViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.BPMN
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-              </div>
+              <ProcessInstanceSimpleViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.SIMPLE
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
+              <ProcessInstanceBpmnViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.BPMN
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
             </TabPane>
-            <TabPane tab="流转记录" key="record" class="tab-pane-content">
-              <div class="h-full">
-                <BpmProcessInstanceTaskList
-                  ref="taskListRef"
-                  :loading="processInstanceLoading"
-                  :id="id"
-                />
-              </div>
+            <TabPane tab="流转记录" key="record" class="pb-20 pr-3">
+              <BpmProcessInstanceTaskList
+                ref="taskListRef"
+                :loading="processInstanceLoading"
+                :id="id"
+              />
             </TabPane>
             <!-- TODO 待开发 -->
-            <TabPane
-              tab="流转评论"
-              key="comment"
-              v-if="false"
-              class="tab-pane-content"
-            >
+            <TabPane tab="流转评论" key="comment" v-if="false" class="pr-3">
               <div class="h-full">待开发</div>
             </TabPane>
           </Tabs>
@@ -396,35 +385,18 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-// @jason：看看能不能通过 tailwindcss 简化下
-.ant-tabs-content {
-  height: 100%;
-}
-
-.process-tabs-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 :deep(.ant-tabs) {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
 
-:deep(.ant-tabs-content) {
-  flex: 1;
-  overflow-y: auto;
+  .ant-tabs-content {
+    height: 100%;
+  }
 }
 
 :deep(.ant-tabs-tabpane) {
   height: 100%;
-}
-
-.tab-pane-content {
-  height: calc(100vh - 420px);
-  padding-right: 12px;
-  overflow: hidden auto;
+  overflow-y: auto;
 }
 </style>

@@ -35,30 +35,29 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="流程签名" class="w-3/5">
-    <div class="mb-2 flex justify-end">
-      <ElSpace>
+    <div class="flex h-[50vh] flex-col">
+      <div class="mb-2 flex justify-end">
         <ElTooltip content="撤销上一步操作">
-          <ElButton @click="signature?.undo()">
+          <ElButton @click="signature?.undo()" size="small">
             <template #icon>
-              <IconifyIcon icon="lucide:undo" class="mb-1 size-4" />
+              <IconifyIcon icon="lucide:undo" class="size-4" />
             </template>
             撤销
           </ElButton>
         </ElTooltip>
         <ElTooltip content="清空画布">
-          <ElButton @click="signature?.clear()">
+          <ElButton @click="signature?.clear()" size="small">
             <template #icon>
-              <IconifyIcon icon="lucide:trash" class="mb-1 size-4" />
+              <IconifyIcon icon="lucide:trash" class="size-4" />
             </template>
             <span>清除</span>
           </ElButton>
         </ElTooltip>
-      </ElSpace>
+      </div>
+      <Vue3Signature
+        class="h-full flex-1 border border-solid border-gray-300"
+        ref="signature"
+      />
     </div>
-
-    <Vue3Signature
-      class="mx-auto !h-80 border border-solid border-gray-300"
-      ref="signature"
-    />
   </Modal>
 </template>

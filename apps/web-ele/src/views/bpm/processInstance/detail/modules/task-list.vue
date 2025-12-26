@@ -42,7 +42,7 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'approver',
       title: '审批人',
       slots: {
-        default: ({ row }: { row: BpmTaskApi.TaskManager }) => {
+        default: ({ row }: { row: BpmTaskApi.Task }) => {
           return row.assigneeUser?.nickname || row.ownerUser?.nickname;
         },
       },
@@ -86,6 +86,8 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
+// TODO @jason：是不是要 const formRef = ref<formCreate>();
+
 const formRef = ref();
 const taskForm = ref<TaskForm>({
   rule: [],
@@ -104,7 +106,7 @@ function handleRefresh() {
 }
 
 /** 显示表单详情 */
-async function handleShowFormDetail(row: BpmTaskApi.TaskManager) {
+async function handleShowFormDetail(row: BpmTaskApi.Task) {
   // 设置表单配置和表单字段
   taskForm.value = {
     rule: [],
@@ -156,7 +158,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskManager>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 
 defineExpose({
@@ -186,7 +188,8 @@ defineExpose({
       </template>
     </Grid>
   </div>
-  <Modal class="w-[800px]">
+  <Modal class="w-3/5">
+    <!-- TODO @jason：是不是 antd 和 ele 保持统一？ -->
     <FormCreate
       ref="formRef"
       v-model="taskForm.value"

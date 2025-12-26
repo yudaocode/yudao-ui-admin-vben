@@ -102,46 +102,53 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full">
-    <Button type="link" class="pl-0" @click="handleSelect">添加优惠券</Button>
-
-    <div
-      v-for="(item, index) in list"
-      :key="item.id"
-      class="coupon-list-item mb-2 flex justify-between rounded-lg border border-dashed border-gray-300 p-2"
-    >
-      <div class="coupon-list-item-left flex flex-wrap items-center gap-2">
-        <div>优惠券名称：{{ item.name }}</div>
-        <div>
-          范围：
-          <DictTag
-            :type="DICT_TYPE.PROMOTION_PRODUCT_SCOPE"
-            :value="item.productScope"
-          />
+  <div>
+    <!-- 已选优惠券列表 -->
+    <div v-if="list.length > 0" class="mb-2 flex flex-col gap-2">
+      <div
+        v-for="(item, index) in list"
+        :key="item.id"
+        class="flex items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 transition-all hover:border-blue-400 hover:shadow-sm"
+      >
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="font-medium text-gray-800">{{ item.name }}</span>
+          <span class="flex items-center gap-1 text-sm text-gray-500">
+            <DictTag
+              :type="DICT_TYPE.PROMOTION_PRODUCT_SCOPE"
+              :value="item.productScope"
+            />
+          </span>
+          <span class="flex items-center gap-1 text-sm text-gray-500">
+            <DictTag
+              :type="DICT_TYPE.PROMOTION_DISCOUNT_TYPE"
+              :value="item.discountType"
+            />
+            {{ discountFormat(item) }}
+          </span>
         </div>
-        <div class="flex items-center">
-          优惠：
-          <DictTag
-            :type="DICT_TYPE.PROMOTION_DISCOUNT_TYPE"
-            :value="item.discountType"
+        <div class="flex shrink-0 items-center gap-2">
+          <span class="text-gray-500">送</span>
+          <Input
+            v-model:value="item.giveCount"
+            class="!w-20"
+            placeholder=""
+            type="number"
+            size="small"
           />
-          {{ discountFormat(item) }}
+          <span class="text-gray-500">张</span>
+          <Button type="link" danger size="small" @click="handleDelete(index)">
+            删除
+          </Button>
         </div>
-      </div>
-      <div class="coupon-list-item-right flex items-center gap-2">
-        <span>送</span>
-        <Input
-          v-model:value="item.giveCount"
-          class="!w-150px"
-          placeholder=""
-          type="number"
-        />
-        <span>张</span>
-        <Button type="link" danger @click="handleDelete(index)">删除</Button>
       </div>
     </div>
 
-    <!-- 优惠券选择 -->
+    <!-- 添加按钮 -->
+    <Button type="link" class="!pl-0" @click="handleSelect">
+      + 添加优惠券
+    </Button>
+
+    <!-- 优惠券选择弹窗 -->
     <CouponSelect
       ref="selectRef"
       :take-type="CouponTemplateTakeTypeEnum.ADMIN.type"

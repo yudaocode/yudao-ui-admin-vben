@@ -14,7 +14,7 @@ defineProps<{ property: UserCardProperty }>();
   <div class="flex flex-col">
     <div class="flex items-center justify-between px-4 py-6">
       <div class="flex flex-1 items-center gap-4">
-        <Avatar :size="60">
+        <Avatar :size="60" class="flex items-center">
           <IconifyIcon icon="ep:avatar" :size="60" />
         </Avatar>
         <span class="text-[18px] font-bold">芋道源码</span>

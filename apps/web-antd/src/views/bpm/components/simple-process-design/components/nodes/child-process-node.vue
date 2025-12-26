@@ -19,7 +19,7 @@ const props = defineProps<{
   flowNode: SimpleFlowNode;
 }>();
 
-/** 定义事件，更新父组件。 */
+/** 定义事件，更新父组件 */
 const emits = defineEmits<{
   'update:flowNode': [node: SimpleFlowNode | undefined];
 }>();

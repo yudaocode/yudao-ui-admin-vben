@@ -132,9 +132,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
       formItemClass: 'col-span-2',
-      renderComponentContent: () => ({
-        default: () => null,
-      }),
     },
   ];
 }

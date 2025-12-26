@@ -220,17 +220,22 @@ watch(
     }
   },
 );
-
+const loading = ref(false);
 /** 初始化 */
 onMounted(async () => {
-  await getDetail();
-  // 获得用户列表
-  userOptions.value = await getSimpleUserList();
+  try {
+    loading.value = true;
+    await getDetail();
+    // 获得用户列表
+    userOptions.value = await getSimpleUserList();
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
 <template>
-  <Page auto-content-height>
+  <Page auto-content-height v-loading="loading">
     <ElCard
       class="flex h-full flex-col"
       :body-style="{
@@ -339,24 +344,22 @@ onMounted(async () => {
               </ElRow>
             </ElTabPane>
             <ElTabPane label="流程图" name="diagram" class="pb-20 pr-3">
-              <div>
-                <ProcessInstanceSimpleViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.SIMPLE
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-                <ProcessInstanceBpmnViewer
-                  v-show="
-                    processDefinition.modelType &&
-                    processDefinition.modelType === BpmModelType.BPMN
-                  "
-                  :loading="processInstanceLoading"
-                  :model-view="processModelView"
-                />
-              </div>
+              <ProcessInstanceSimpleViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.SIMPLE
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
+              <ProcessInstanceBpmnViewer
+                v-show="
+                  processDefinition.modelType &&
+                  processDefinition.modelType === BpmModelType.BPMN
+                "
+                :loading="processInstanceLoading"
+                :model-view="processModelView"
+              />
             </ElTabPane>
             <ElTabPane label="流转记录" name="record" class="pb-20 pr-3">
               <BpmProcessInstanceTaskList

@@ -53,10 +53,10 @@ const showInputs = ref<boolean[]>([]);
 watch(
   showInputs,
   (newValues) => {
-    // 当输入框显示时, 自动聚焦
+    // 当输入框显示时 自动聚焦
     newValues.forEach((value, index) => {
       if (value) {
-        // 当显示状态从 false 变为 true 时, 自动聚焦
+        // 当显示状态从 false 变为 true 时 自动聚焦
         nextTick(() => {
           inputRefs.value[index]?.focus();
         });
@@ -212,7 +212,7 @@ function recursiveFindParentNode(
             />
           </div>
         </div>
-        <!-- 递归显示子节点  -->
+        <!-- 递归显示子节点 -->
         <ProcessNodeTree
           v-if="item && item.childNode"
           :parent-node="item"

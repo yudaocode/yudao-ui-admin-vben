@@ -108,13 +108,12 @@ function emitSpuChange() {
           <ElImage
             :src="spu.picUrl"
             class="h-full w-full rounded-lg object-cover"
-            :preview-src-list="[spu.picUrl!]"
             fit="cover"
           />
           <!-- 删除按钮 -->
           <IconifyIcon
             v-if="!disabled"
-            icon="ep:circle-close-filled"
+            icon="lucide:circle-x"
             class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
             @click="handleRemoveSpu(index)"
           />
@@ -128,7 +127,7 @@ function emitSpuChange() {
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenSpuSelect"
       >
-        <IconifyIcon icon="ep:plus" class="text-xl text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </ElTooltip>
   </div>

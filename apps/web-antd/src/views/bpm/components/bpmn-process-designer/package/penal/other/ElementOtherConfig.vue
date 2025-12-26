@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import { Input } from 'ant-design-vue';
+import { Textarea } from 'ant-design-vue';
 
 defineOptions({ name: 'ElementOtherConfig' });
 
@@ -11,8 +11,6 @@ const props = defineProps({
     default: '',
   },
 });
-
-const { Textarea } = Input;
 
 const documentation = ref('');
 const bpmnElement = ref();
@@ -58,10 +56,10 @@ watch(
 </script>
 
 <template>
-  <div class="panel-tab__content">
-    <div class="element-property input-property">
-      <div class="element-property__label">元素文档：</div>
-      <div class="element-property__value">
+  <div class="px-2 py-1">
+    <div class="flex items-start gap-2">
+      <div class="w-20 pt-1 text-sm text-gray-700">元素文档：</div>
+      <div class="flex-1">
         <Textarea
           v-model:value="documentation"
           :auto-size="{ minRows: 2, maxRows: 4 }"

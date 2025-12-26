@@ -11,6 +11,7 @@ import {
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
+import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -29,9 +30,9 @@ const emit = defineEmits(['success']);
 
 const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
   conditionType: PromotionConditionTypeEnum.PRICE.type,
+  productScope: PromotionProductScopeEnum.ALL.scope,
   rules: [],
 });
-
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['满减送'])
@@ -60,7 +61,6 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const values = await formApi.getValues();
-      // 合并表单值和 formData（含 id、productSpuIds、productCategoryIds 等）
       const data = { ...formData.value, ...values };
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
         data.startTime = data.startAndEndTime[0];
@@ -73,23 +73,6 @@ const [Modal, modalApi] = useVbenModal({
           item.limit = convertToInteger(item.limit || 0);
         }
       });
-      // 设置 productScopeValues
-      switch (data.productScope) {
-        case PromotionProductScopeEnum.CATEGORY.scope: {
-          const categoryIds = data.productCategoryIds;
-          data.productScopeValues = Array.isArray(categoryIds)
-            ? categoryIds
-            : categoryIds
-              ? [categoryIds]
-              : [];
-          break;
-        }
-        case PromotionProductScopeEnum.SPU.scope: {
-          data.productScopeValues = data.productSpuIds;
-          break;
-        }
-      }
-
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));
@@ -114,7 +97,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-      result.startAndEndTime = [result.startTime, result.endTime] as any[];
+      result.startAndEndTime = [
+        result.startTime ? dayjs(result.startTime) : undefined,
+        result.endTime ? dayjs(result.endTime) : undefined,
+      ] as any[];
       result.rules?.forEach((item: any) => {
         item.discountPrice = formatToFraction(item.discountPrice || 0);
         if (result.conditionType === PromotionConditionTypeEnum.PRICE.type) {

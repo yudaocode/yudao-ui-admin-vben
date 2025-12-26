@@ -194,10 +194,10 @@ const saveConfig = async () => {
     // 3. 是否跳过发起人
     currentNode.value.childProcessSetting.skipStartUserNode =
       configForm.value.skipStartUserNode;
-    // 4. 主→子变量
+    // 4. 主->子变量
     currentNode.value.childProcessSetting.inVariables =
       configForm.value.inVariables;
-    // 5. 子→主变量
+    // 5. 子->主变量
     currentNode.value.childProcessSetting.outVariables =
       configForm.value.outVariables;
     // 6. 发起人设置
@@ -256,9 +256,9 @@ const showChildProcessNodeConfig = (node: SimpleFlowNode) => {
     // 3. 是否跳过发起人
     configForm.value.skipStartUserNode =
       node.childProcessSetting.skipStartUserNode;
-    // 4. 主流程→子流程变量
+    // 4. 主->子变量
     configForm.value.inVariables = node.childProcessSetting.inVariables ?? [];
-    // 5. 子流程→主流程变量
+    // 5. 子->主变量
     configForm.value.outVariables = node.childProcessSetting.outVariables ?? [];
     // 6. 发起人设置
     configForm.value.startUserType =

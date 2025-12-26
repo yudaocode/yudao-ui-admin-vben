@@ -83,7 +83,6 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<any>();
-
     if (!data || !data.id) {
       formData.value = {
         type: IotDataSinkTypeEnum.HTTP,

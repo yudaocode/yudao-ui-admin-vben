@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { Modal } from 'ant-design-vue';
 
@@ -57,22 +57,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 打开弹窗 */
 async function open() {
   visible.value = true;
-  // 重置查询条件并重新加载数据，与老组件行为一致
+  // 等待 Modal 和 Grid 组件挂载完成后再查询
+  await nextTick();
   await gridApi.query();
+}
+
+/** 确认选择 */
+function handleConfirm() {
+  const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
+    []) as MallCouponTemplateApi.CouponTemplate[];
+  emit('change', selectedRecords);
+  closeModal();
 }
 
 /** 关闭弹窗 */
 function closeModal() {
   visible.value = false;
-}
-
-/** 确认选择 */
-function handleConfirm() {
-  // 从 gridApi 获取选中的记录
-  const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
-    []) as MallCouponTemplateApi.CouponTemplate[];
-  emit('change', selectedRecords);
-  closeModal();
 }
 
 /** 对外暴露的方法 */

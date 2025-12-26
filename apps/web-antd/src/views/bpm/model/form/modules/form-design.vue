@@ -132,7 +132,7 @@ defineExpose({ validate });
           placeholder="请输入表单提交路由"
         />
         <Tooltip
-          title="自定义表单的提交路径，使用 Vue 的路由地址, 例如说: bpm/oa/leave/create.vue"
+          title="自定义表单的提交路径，使用 Vue 的路由地址，例如说: /bpm/oa/leave/create.vue"
           placement="top"
         >
           <IconifyIcon
@@ -154,7 +154,7 @@ defineExpose({ validate });
           placeholder="请输入表单查看的组件地址"
         />
         <Tooltip
-          title="自定义表单的查看组件地址，使用 Vue 的组件地址，例如说：bpm/oa/leave/detail.vue"
+          title="自定义表单的查看组件地址，使用 Vue 的组件地址，例如说：/bpm/oa/leave/detail.vue"
           placement="top"
         >
           <IconifyIcon

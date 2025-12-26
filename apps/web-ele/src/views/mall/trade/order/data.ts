@@ -376,7 +376,7 @@ export function useAddressFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择收件人所在地',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
       rules: 'required',
     },

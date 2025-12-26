@@ -83,14 +83,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
   ];
 }
 

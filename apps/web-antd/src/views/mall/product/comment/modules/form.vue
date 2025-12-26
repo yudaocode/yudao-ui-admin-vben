@@ -21,7 +21,6 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-// 初始化 formData，确保始终有值
 const formData = ref<Partial<MallCommentApi.Comment>>({
   descriptionScores: 5,
   benefitScores: 5,
@@ -100,16 +99,14 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      // 重置表单数据
+      // 关闭时重置表单状态
       selectedSku.value = undefined;
+      await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallCommentApi.Comment>();
     if (!data || !data.id) {
-      // 新建模式：重置表单
-      selectedSku.value = undefined;
-      await formApi.setValues({ spuId: undefined, skuId: undefined });
       return;
     }
     // 编辑模式：加载数据

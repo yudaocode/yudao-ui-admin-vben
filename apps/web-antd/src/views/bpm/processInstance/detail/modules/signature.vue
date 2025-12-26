@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { base64ToFile } from '@vben/utils';
 
-import { Button, Space, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip } from 'ant-design-vue';
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';
@@ -36,30 +36,29 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="流程签名" class="w-3/5">
-    <div class="mb-2 flex justify-end">
-      <Space>
+    <div class="flex h-[50vh] flex-col">
+      <div class="mb-2 flex justify-end gap-2">
         <Tooltip title="撤销上一步操作">
-          <Button @click="signature?.undo()">
+          <Button @click="signature?.undo()" size="small">
             <template #icon>
-              <IconifyIcon icon="lucide:undo" class="mb-1 size-4" />
+              <IconifyIcon icon="lucide:undo" class="mb-1 size-3" />
             </template>
             撤销
           </Button>
         </Tooltip>
         <Tooltip title="清空画布">
-          <Button @click="signature?.clear()">
+          <Button @click="signature?.clear()" size="small">
             <template #icon>
-              <IconifyIcon icon="lucide:trash" class="mb-1 size-4" />
+              <IconifyIcon icon="lucide:trash" class="mb-1 size-3" />
             </template>
             <span>清除</span>
           </Button>
         </Tooltip>
-      </Space>
+      </div>
+      <Vue3Signature
+        class="h-full flex-1 border border-solid border-gray-300"
+        ref="signature"
+      />
     </div>
-
-    <Vue3Signature
-      class="mx-auto !h-80 border border-solid border-gray-300"
-      ref="signature"
-    />
   </Modal>
 </template>

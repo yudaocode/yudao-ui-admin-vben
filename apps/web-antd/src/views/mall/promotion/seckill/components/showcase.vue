@@ -133,7 +133,6 @@ function emitActivityChange() {
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-300 hover:border-blue-400"
         @click="handleOpenActivitySelect"
       >
-        <!-- TODO @芋艿：等待和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/mall/product/spu/components/spu-showcase.vue 进一步统一 -->
         <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </Tooltip>

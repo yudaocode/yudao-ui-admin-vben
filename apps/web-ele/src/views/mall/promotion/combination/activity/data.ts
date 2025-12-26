@@ -24,16 +24,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入活动名称',
       },
       rules: 'required',
-    },
-    {
-      fieldName: 'status',
-      label: '活动状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择活动状态',
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-      rules: 'required',
+      formItemClass: 'col-span-2',
     },
     {
       fieldName: 'startTime',
@@ -41,10 +32,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '请选择开始时间',
-        showTime: false,
+        type: 'datetime',
         valueFormat: 'x',
-        format: 'YYYY-MM-DD',
-        class: '!w-full',
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
       rules: 'required',
     },
@@ -54,22 +44,19 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '请选择结束时间',
-        showTime: false,
+        type: 'datetime',
         valueFormat: 'x',
-        format: 'YYYY-MM-DD',
-        class: '!w-full',
+        format: 'YYYY-MM-DD HH:mm:ss',
       },
       rules: 'required',
     },
     {
       fieldName: 'userSize',
-      label: '用户数量',
+      label: '拼团人数',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入用户数量',
+        placeholder: '达到该人数即成团',
         min: 2,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -78,10 +65,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '限制时长',
       component: 'InputNumber',
       componentProps: {
-        placeholder: '请输入限制时长(小时)',
+        placeholder: '限制时长(小时)',
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
       rules: 'required',
     },
@@ -92,8 +77,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入总限购数量',
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
     },
     {
@@ -103,8 +86,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入单次限购数量',
         min: 0,
-        controlsPosition: 'right',
-        class: '!w-full',
       },
     },
     {
@@ -116,10 +97,11 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      // TODO
       fieldName: 'spuId',
       label: '拼团商品',
       component: 'Input',
+      rules: 'required',
+      formItemClass: 'col-span-2',
     },
   ];
 }

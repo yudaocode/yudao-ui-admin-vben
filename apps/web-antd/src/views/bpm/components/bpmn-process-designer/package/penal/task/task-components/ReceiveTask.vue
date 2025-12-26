@@ -1,25 +1,12 @@
 <script lang="ts" setup>
-import {
-  h,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  toRaw,
-  watch,
-} from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue';
 
-import { PlusOutlined } from '@vben/icons';
+import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Modal,
-  Select,
-  SelectOption,
-} from 'ant-design-vue';
+import { Button, message, Select, SelectOption } from 'ant-design-vue';
+
+import SignalMessageModal from '../../signal-message/SignalMessageModal.vue';
 
 defineOptions({ name: 'ReceiveTask' });
 const props = defineProps({
@@ -28,40 +15,54 @@ const props = defineProps({
 });
 
 const bindMessageId = ref('');
-const newMessageForm = ref<Record<string, any>>({});
 const messageMap = ref<Record<string, any>>({});
-const messageModelVisible = ref(false);
 const bpmnElement = ref<any>();
 const bpmnMessageRefsMap = ref<Record<string, any>>();
 const bpmnRootElements = ref<any>();
 
 const bpmnInstances = () => (window as any).bpmnInstances;
+
 const getBindMessage = () => {
   bpmnElement.value = bpmnInstances().bpmnElement;
   bindMessageId.value =
     bpmnElement.value.businessObject?.messageRef?.id || '-1';
 };
-const openMessageModel = () => {
-  messageModelVisible.value = true;
-  newMessageForm.value = {};
+
+/** 生成消息 ID */
+const generateMessageId = (): string => {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `Message_${timestamp}_${random}`;
 };
-const createNewMessage = () => {
-  if (messageMap.value[newMessageForm.value.id]) {
-    message.error('该消息已存在，请修改id后重新保存');
+
+/** 打开创建消息弹窗 */
+const openCreateModal = () => {
+  modalApi
+    .setData({
+      id: generateMessageId(),
+      isEdit: false,
+      name: '',
+      type: 'message',
+    })
+    .open();
+};
+
+const handleConfirm = (formData: { id: string; name: string }) => {
+  if (messageMap.value[formData.id]) {
+    message.error('该消息已存在, 请修改id后重新保存');
     return;
   }
-  const newMessage = bpmnInstances().moddle.create(
-    'bpmn:Message',
-    newMessageForm.value,
-  );
+  const newMessage = bpmnInstances().moddle.create('bpmn:Message', formData);
   bpmnRootElements.value.push(newMessage);
-  messageMap.value[newMessageForm.value.id] = newMessageForm.value.name;
-  // @ts-ignore
+  messageMap.value[formData.id] = formData.name;
   if (bpmnMessageRefsMap.value) {
-    bpmnMessageRefsMap.value[newMessageForm.value.id] = newMessage;
+    bpmnMessageRefsMap.value[formData.id] = newMessage;
   }
-  messageModelVisible.value = false;
 };
+
+const [Modal, modalApi] = useVbenModal({
+  connectedComponent: SignalMessageModal,
+});
 const updateTaskMessage = (messageId: string) => {
   if (messageId === '-1') {
     bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
@@ -96,7 +97,6 @@ onBeforeUnmount(() => {
 watch(
   () => props.id,
   () => {
-    // bpmnElement.value = bpmnInstances().bpmnElement
     nextTick(() => {
       getBindMessage();
     });
@@ -106,56 +106,31 @@ watch(
 </script>
 
 <template>
-  <div style="margin-top: 16px">
-    <Form.Item label="消息实例">
-      <div
-        style="
-          display: flex;
-          flex-wrap: nowrap;
-          align-items: center;
-          justify-content: space-between;
-        "
+  <div class="mt-2">
+    <div class="mb-2 flex justify-end">
+      <Button type="link" size="small" class="p-0" @click="openCreateModal">
+        <template #icon>
+          <IconifyIcon class="size-4" icon="lucide:plus" />
+        </template>
+        创建新消息
+      </Button>
+    </div>
+    <div class="mb-1 flex items-center">
+      <span class="w-20 text-foreground">消息实例:</span>
+      <Select
+        v-model:value="bindMessageId"
+        class="w-full"
+        @change="(value: any) => updateTaskMessage(value)"
       >
-        <Select
-          v-model:value="bindMessageId"
-          @change="(value: any) => updateTaskMessage(value)"
+        <SelectOption
+          v-for="key in Object.keys(messageMap)"
+          :key="key"
+          :value="key"
         >
-          <SelectOption
-            v-for="key in Object.keys(messageMap)"
-            :value="key"
-            :key="key"
-          >
-            {{ messageMap[key] }}
-          </SelectOption>
-        </Select>
-        <Button
-          type="primary"
-          :icon="h(PlusOutlined)"
-          style="margin-left: 8px"
-          @click="openMessageModel"
-        />
-      </div>
-    </Form.Item>
-    <Modal
-      v-model:open="messageModelVisible"
-      :mask-closable="false"
-      title="创建新消息"
-      width="400px"
-      :destroy-on-close="true"
-    >
-      <Form :model="newMessageForm" size="small">
-        <Form.Item label="消息ID">
-          <Input v-model:value="newMessageForm.id" allow-clear />
-        </Form.Item>
-        <Form.Item label="消息名称">
-          <Input v-model:value="newMessageForm.name" allow-clear />
-        </Form.Item>
-      </Form>
-      <template #footer>
-        <Button size="small" type="primary" @click="createNewMessage">
-          确 认
-        </Button>
-      </template>
-    </Modal>
+          {{ messageMap[key] }}
+        </SelectOption>
+      </Select>
+    </div>
+    <Modal @confirm="handleConfirm" />
   </div>
 </template>

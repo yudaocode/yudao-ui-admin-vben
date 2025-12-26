@@ -8,22 +8,22 @@ import { z } from '#/adapter/form';
 
 export const EVENT_EXECUTION_OPTIONS = [
   {
-    label: 'start',
+    label: '开始',
     value: 'start',
   },
   {
-    label: 'end',
+    label: '结束',
     value: 'end',
   },
 ];
 
 export const EVENT_OPTIONS = [
-  { label: 'create', value: 'create' },
-  { label: 'assignment', value: 'assignment' },
-  { label: 'complete', value: 'complete' },
-  { label: 'delete', value: 'delete' },
-  { label: 'update', value: 'update' },
-  { label: 'timeout', value: 'timeout' },
+  { label: '创建', value: 'create' },
+  { label: '指派', value: 'assignment' },
+  { label: '完成', value: 'complete' },
+  { label: '删除', value: 'delete' },
+  { label: '更新', value: 'update' },
+  { label: '超时', value: 'timeout' },
 ];
 
 /** 新增/修改的表单 */

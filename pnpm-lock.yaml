@@ -908,21 +908,42 @@ importers:
       benz-amr-recorder:
         specifier: 'catalog:'
         version: 1.1.5
+      bpmn-js:
+        specifier: 'catalog:'
+        version: 17.11.1
+      bpmn-js-properties-panel:
+        specifier: 'catalog:'
+        version: 5.23.0(@bpmn-io/properties-panel@3.34.0)(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.11.3(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.11.0))(diagram-js@12.8.1)
+      bpmn-js-token-simulation:
+        specifier: 'catalog:'
+        version: 0.36.3
+      camunda-bpmn-moddle:
+        specifier: 'catalog:'
+        version: 7.0.1
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.2
       dayjs:
         specifier: 'catalog:'
         version: 1.11.19
+      diagram-js:
+        specifier: 'catalog:'
+        version: 12.8.1
       element-plus:
         specifier: 'catalog:'
         version: 2.11.8(vue@3.5.25(typescript@5.9.3))
+      fast-xml-parser:
+        specifier: 'catalog:'
+        version: 4.5.3
       highlight.js:
         specifier: 'catalog:'
         version: 11.11.1
       pinia:
         specifier: ^3.0.3
         version: 3.0.4(typescript@5.9.3)(vue@3.5.25(typescript@5.9.3))
+      steady-xml:
+        specifier: 'catalog:'
+        version: 0.1.0
       tinymce:
         specifier: 'catalog:'
         version: 7.9.1

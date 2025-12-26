@@ -193,7 +193,6 @@ const childFormFieldOptions = ref<any[]>([]);
 const saveConfig = async () => {
   activeTabName.value = 'child';
   if (!formRef.value) return false;
-
   const valid = await formRef.value.validate().catch(() => false);
   if (!valid) return false;
 

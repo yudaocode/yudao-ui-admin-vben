@@ -32,29 +32,6 @@ const spuId = ref<number>();
 const { params, name } = useRoute();
 const { closeCurrentTab } = useTabs();
 const activeTabName = ref('info');
-const tabList = ref([
-  {
-    key: 'info',
-    tab: '基础设置',
-  },
-  {
-    key: 'sku',
-    tab: '价格库存',
-  },
-  {
-    key: 'delivery',
-    tab: '物流设置',
-  },
-  {
-    key: 'description',
-    tab: '商品详情',
-  },
-  {
-    key: 'other',
-    tab: '其它设置',
-  },
-]);
-
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(name === 'ProductSpuDetail'); // 是否查看详情
 const skuListRef = ref(); // 商品属性列表 Ref
@@ -94,22 +71,22 @@ const propertyList = ref<PropertyAndValues[]>([]); // 商品属性列表
 const ruleConfig: RuleConfig[] = [
   {
     name: 'stock',
-    rule: (arg) => arg >= 0,
+    rule: (arg: number) => arg >= 0,
     message: '商品库存必须大于等于 1 ！！！',
   },
   {
     name: 'price',
-    rule: (arg) => arg >= 0.01,
+    rule: (arg: number) => arg >= 0.01,
     message: '商品销售价格必须大于等于 0.01 元！！！',
   },
   {
     name: 'marketPrice',
-    rule: (arg) => arg >= 0.01,
+    rule: (arg: number) => arg >= 0.01,
     message: '商品市场价格必须大于等于 0.01 元！！！',
   },
   {
     name: 'costPrice',
-    rule: (arg) => arg >= 0.01,
+    rule: (arg: number) => arg >= 0.01,
     message: '商品成本价格必须大于等于 0.00 元！！！',
   },
 ]; // sku 相关属性校验规则
@@ -221,7 +198,7 @@ async function handleSubmit() {
       item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice);
     });
   }
-  // 处理轮播图列表 TODO @puhui999：这个是必须的哇？
+  // 处理轮播图列表：上传组件可能返回对象或字符串，统一处理成字符串数组
   const newSliderPicUrls: any[] = [];
   values.sliderPicUrls!.forEach((item: any) => {
     // 如果是前端选的图
@@ -343,7 +320,28 @@ onMounted(async () => {
       <Card
         class="h-full w-full"
         :loading="formLoading"
-        :tab-list="tabList"
+        :tab-list="[
+          {
+            key: 'info',
+            tab: '基础设置',
+          },
+          {
+            key: 'sku',
+            tab: '价格库存',
+          },
+          {
+            key: 'delivery',
+            tab: '物流设置',
+          },
+          {
+            key: 'description',
+            tab: '商品详情',
+          },
+          {
+            key: 'other',
+            tab: '其它设置',
+          },
+        ]"
         :active-key="activeTabName"
         @tab-change="handleTabChange"
       >
@@ -409,7 +407,6 @@ onMounted(async () => {
   </div>
 </template>
 <style lang="scss" scoped>
-// TODO @puhui999：这个样式是必须的哇？
 :deep(.ant-tabs-tab-btn) {
   font-size: 14px !important;
 }

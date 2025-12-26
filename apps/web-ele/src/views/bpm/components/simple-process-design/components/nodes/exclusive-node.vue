@@ -59,10 +59,10 @@ const showInputs = ref<boolean[]>([]);
 watch(
   showInputs,
   (newValues) => {
-    // 当状态为 true 时
+    // 当状态为 true 时, 自动聚焦
     newValues.forEach((value, index) => {
       if (value) {
-        // 当显示状态从 false 变为 true 时
+        // 当显示状态从 false 变为 true 时, 自动聚焦
         nextTick(() => {
           inputRefs.value[index]?.focus();
         });
@@ -137,7 +137,7 @@ function deleteCondition(index: number) {
 
 // 移动节点
 function moveNode(index: number, to: number) {
-  // -1 ：向左 1：向右
+  // -1 ：向左  1： 向右
   if (
     currentNode.value.conditionNodes &&
     currentNode.value.conditionNodes[index]

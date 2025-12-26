@@ -42,9 +42,16 @@ function handleEdit(row: MallBargainActivityApi.BargainActivity) {
 /** 关闭砍价活动 */
 async function handleClose(row: MallBargainActivityApi.BargainActivity) {
   await confirm('确定关闭该砍价活动吗？');
-  await closeBargainActivity(row.id as number);
-  ElMessage.success('关闭成功');
-  handleRefresh();
+  const loadingInstance = ElLoading.service({
+    text: '关闭中...',
+  });
+  try {
+    await closeBargainActivity(row.id!);
+    ElMessage.success('关闭成功');
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 删除砍价活动 */
@@ -53,7 +60,7 @@ async function handleDelete(row: MallBargainActivityApi.BargainActivity) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteBargainActivity(row.id as number);
+    await deleteBargainActivity(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

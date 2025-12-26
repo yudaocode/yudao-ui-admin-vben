@@ -13,13 +13,18 @@ import {
   updateDiscountActivity,
 } from '#/api/mall/promotion/discount/discountActivity';
 import { $t } from '#/locales';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
 defineOptions({ name: 'DiscountActivityForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<MallDiscountActivityApi.DiscountActivity>();
+const formData = ref<
+  Partial<MallDiscountActivityApi.DiscountActivity> & {
+    spuIds?: number[];
+  }
+>({});
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['限时折扣活动'])
@@ -39,6 +44,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// TODO @puhui999：antd 和 ele 里，修改时，商品都没展示。
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -69,7 +75,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -91,6 +97,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal class="w-3/5" :title="getTitle">
-    <Form />
+    <Form>
+      <!-- 自定义插槽：商品选择 -->
+      <template #spuIds>
+        <SpuShowcase v-model="formData.spuIds" />
+      </template>
+    </Form>
   </Modal>
 </template>

@@ -71,7 +71,7 @@ function recursiveFindParentNode(
 }
 </script>
 <template>
-  <!-- 发起人节�?-->
+  <!-- 发起人节点 -->
   <StartUserNode
     v-if="currentNode && currentNode.type === BpmNodeTypeEnum.START_USER_NODE"
     :flow-node="currentNode"
@@ -87,7 +87,7 @@ function recursiveFindParentNode(
     @update:flow-node="handleModelValueUpdate"
     @find-parent-node="findParentNode"
   />
-  <!-- 抄送节�?-->
+  <!-- 抄送节点 -->
   <CopyTaskNode
     v-if="currentNode && currentNode.type === BpmNodeTypeEnum.COPY_TASK_NODE"
     :flow-node="currentNode"
@@ -120,7 +120,7 @@ function recursiveFindParentNode(
     @update:model-value="handleModelValueUpdate"
     @find-parent-node="findParentNode"
   />
-  <!-- 延迟器节�?-->
+  <!-- 延迟器节点 -->
   <DelayTimerNode
     v-if="currentNode && currentNode.type === BpmNodeTypeEnum.DELAY_TIMER_NODE"
     :flow-node="currentNode"
@@ -134,13 +134,13 @@ function recursiveFindParentNode(
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
-  <!-- 触发器节�?-->
+  <!-- 触发器节点 -->
   <TriggerNode
     v-if="currentNode && currentNode.type === BpmNodeTypeEnum.TRIGGER_NODE"
     :flow-node="currentNode"
     @update:flow-node="handleModelValueUpdate"
   />
-  <!-- 子流程节�?-->
+  <!-- 子流程节点 -->
   <ChildProcessNode
     v-if="
       currentNode && currentNode.type === BpmNodeTypeEnum.CHILD_PROCESS_NODE

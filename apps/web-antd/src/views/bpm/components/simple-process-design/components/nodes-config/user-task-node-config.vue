@@ -532,7 +532,7 @@ function useTimeoutHandler() {
     if (timeUnit.value === TimeUnitType.HOUR) {
       configForm.value.timeDuration = 6;
     }
-    // 天， 默认 1天
+    // 天， 默认 1 天
     if (timeUnit.value === TimeUnitType.DAY) {
       configForm.value.timeDuration = 1;
     }

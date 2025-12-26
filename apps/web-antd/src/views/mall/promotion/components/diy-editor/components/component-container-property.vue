@@ -133,9 +133,8 @@ function handleSliderChange(prop: string) {
     </TabPane>
 
     <!-- 每个组件的通用内容 -->
-    <!-- TODO @xingyu：这里的样式，貌似没 ele 版本的好看。 -->
     <TabPane tab="样式" key="style" force-render>
-      <p class="text-lg font-bold">组件样式：</p>
+      <div class="mb-2 bg-gray-100 p-2 text-sm">组件样式：</div>
       <div class="flex flex-col gap-2 rounded-md p-4 shadow-lg">
         <Form :model="formData">
           <FormItem
@@ -181,7 +180,7 @@ function handleSliderChange(prop: string) {
                 class="mb-0 w-full"
               >
                 <Row>
-                  <Col :span="11">
+                  <Col :span="19">
                     <Slider
                       v-model:value="
                         formData[dataRef.prop as keyof ComponentStyle]
@@ -192,8 +191,9 @@ function handleSliderChange(prop: string) {
                       class="mr-4"
                     />
                   </Col>
-                  <Col :span="2">
+                  <Col :span="4">
                     <InputNumber
+                      class="w-[50px]"
                       :max="100"
                       :min="0"
                       v-model:value="

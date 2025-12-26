@@ -7,13 +7,29 @@ import { requestClient } from '#/api/request';
 export namespace BpmTaskApi {
   /** 流程任务 */
   export interface Task {
-    id: number; // 编号
-    name: string; // 监听器名字
-    type: string; // 监听器类型
-    status: number; // 监听器状态
-    event: string; // 监听事件
-    valueType: string; // 监听器值类型
-    processInstance?: BpmProcessInstanceApi.ProcessInstance; // 流程实例
+    id: string; // 编号
+    name: string; // 任务名字
+    status: number; // 任务状态
+    createTime: number; // 创建时间
+    endTime: number; // 结束时间
+    durationInMillis: number; // 持续时间
+    reason: string; // 审批理由
+    ownerUser: any; // 负责人
+    assigneeUser: any; // 处理人
+    taskDefinitionKey: string; // 任务定义的标识
+    processInstanceId: string; // 流程实例id
+    processInstance: BpmProcessInstanceApi.ProcessInstance; // 流程实例
+    parentTaskId: any; // 父任务id
+    children: any; // 子任务
+    formId: any; // 表单id
+    formName: any; // 表单名称
+    formConf: any; // 表单配置
+    formFields: any; // 表单字段
+    formVariables: any; // 表单变量
+    buttonsSetting: any; // 按钮设置
+    signEnable: any; // 签名设置
+    reasonRequire: any; // 原因设置
+    nodeType: any; // 节点类型
   }
 }
 

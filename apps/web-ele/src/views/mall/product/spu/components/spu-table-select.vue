@@ -5,10 +5,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { MallCategoryApi } from '#/api/mall/product/category';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
+
+import { ElButton, ElDialog } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';
@@ -30,12 +31,16 @@ const emit = defineEmits<{
 const categoryList = ref<MallCategoryApi.Category[]>([]); // 分类列表
 const categoryTreeList = ref<any[]>([]); // 分类树
 
+/** 弹窗显示状态 */
+const visible = ref(false);
+const initData = ref<MallSpuApi.Spu | MallSpuApi.Spu[]>();
+
 /** 单选：处理选中变化 */
 function handleRadioChange() {
   const selectedRow = gridApi.grid.getRadioRecord() as MallSpuApi.Spu;
   if (selectedRow) {
     emit('change', selectedRow);
-    modalApi.close();
+    closeModal();
   }
 }
 
@@ -47,19 +52,23 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入商品名称',
-      clearable: true,
+      allowClear: true,
     },
   },
   {
     fieldName: 'categoryId',
     label: '商品分类',
-    component: 'ApiTreeSelect',
+    component: 'TreeSelect',
     componentProps: {
-      options: categoryTreeList,
-      props: { label: 'name', children: 'children' },
-      nodeKey: 'id',
+      data: categoryTreeList,
+      props: {
+        label: 'name',
+        value: 'id',
+      },
+      checkStrictly: true,
       placeholder: '请选择商品分类',
       clearable: true,
+      filterable: true,
     },
   },
   {
@@ -68,7 +77,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'RangePicker',
     componentProps: {
       ...getRangePickerDefaultProps(),
-      clearable: true,
+      allowClear: true,
     },
   },
 ]);
@@ -153,25 +162,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-const [Modal, modalApi] = useVbenModal({
-  destroyOnClose: true,
-  showConfirmButton: props.multiple, // 特殊：radio 单选情况下，走 handleRadioChange 处理。
-  onConfirm: () => {
-    const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
-    emit('change', selectedRows);
-    modalApi.close();
-  },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      await gridApi.grid.clearCheckboxRow();
-      await gridApi.grid.clearRadioRow();
-      return;
-    }
-
+/** 打开弹窗 */
+async function openModal(data?: MallSpuApi.Spu | MallSpuApi.Spu[]) {
+  initData.value = data;
+  visible.value = true;
+  // 等待 Grid 组件完全初始化后再查询数据
+  await nextTick();
+  if (gridApi.grid) {
     // 1. 先查询数据
     await gridApi.query();
     // 2. 设置已选中行
-    const data = modalApi.getData<MallSpuApi.Spu | MallSpuApi.Spu[]>();
     if (props.multiple && Array.isArray(data) && data.length > 0) {
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData().fullData;
@@ -195,15 +195,27 @@ const [Modal, modalApi] = useVbenModal({
         }
       }, 300);
     }
-  },
-});
+  }
+}
 
-/** 对外暴露的方法 */
+/** 关闭弹窗 */
+async function closeModal() {
+  visible.value = false;
+  await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearRadioRow();
+  initData.value = undefined;
+}
+
+/** 确认选择（多选模式） */
+function handleConfirm() {
+  const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
+  emit('change', selectedRows);
+  closeModal();
+}
+
 defineExpose({
-  open: (data?: MallSpuApi.Spu | MallSpuApi.Spu[]) => {
-    modalApi.setData(data).open();
-  },
-});
+  open: openModal,
+}); // 对外暴露的方法
 
 /** 初始化分类数据 */
 onMounted(async () => {
@@ -213,7 +225,20 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Modal title="选择商品" class="w-[950px]">
+  <ElDialog
+    v-model="visible"
+    title="选择商品"
+    width="950px"
+    :destroy-on-close="true"
+    :append-to-body="true"
+    @close="closeModal"
+  >
     <Grid />
-  </Modal>
+    <template #footer>
+      <span v-if="props.multiple" class="dialog-footer">
+        <ElButton @click="closeModal">取消</ElButton>
+        <ElButton type="primary" @click="handleConfirm">确定</ElButton>
+      </span>
+    </template>
+  </ElDialog>
 </template>

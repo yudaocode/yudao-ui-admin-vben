@@ -25,8 +25,9 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { DeptSelectModal, UserSelectModal } from '#/components/select-modal';
 import { ImageUpload } from '#/components/upload';
+import { DeptSelectModal } from '#/views/system/dept/components';
+import { UserSelectModal } from '#/views/system/user/components';
 
 const props = defineProps({
   categoryList: {

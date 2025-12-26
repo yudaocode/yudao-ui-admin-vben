@@ -7,17 +7,11 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { ProductSpuStatusEnum } from '@vben/constants';
-import {
-  downloadFileFromBlobPart,
-  fenToYuan,
-  handleTree,
-  treeToString,
-} from '@vben/utils';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElDescriptions, ElLoading, ElMessage, ElTabs } from 'element-plus';
+import { ElLoading, ElMessage, ElTabs } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCategoryList } from '#/api/mall/product/category';
 import {
   deleteSpu,
   exportSpu,
@@ -30,11 +24,8 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
-const tabType = ref(0);
 const route = useRoute();
-const categoryList = ref();
-
-// tabs 数据
+const tabType = ref('0');
 const tabsData = ref([
   {
     name: '出售中',
@@ -69,13 +60,19 @@ async function handleRefresh() {
   await getTabCount();
 }
 
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportSpu(await gridApi.formApi.getValues());
+  downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
+}
+
 /** 获得每个 Tab 的数量 */
 async function getTabCount() {
   const res = await getTabsCount();
   for (const objName in res) {
     const index = Number(objName);
     if (tabsData.value[index]) {
-      tabsData.value[index].count = res[objName] as number;
+      tabsData.value[index].count = res[objName]!;
     }
   }
 }
@@ -83,12 +80,6 @@ async function getTabCount() {
 /** 创建商品 */
 function handleCreate() {
   push({ name: 'ProductSpuAdd' });
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportSpu(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
 }
 
 /** 编辑商品 */
@@ -102,25 +93,12 @@ async function handleDelete(row: MallSpuApi.Spu) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteSpu(row.id as number);
+    await deleteSpu(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     await handleRefresh();
   } finally {
     loadingInstance.close();
   }
-}
-
-/** 添加到仓库 / 回收站的状态 */
-async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
-  // 二次确认
-  const text =
-    newStatus === ProductSpuStatusEnum.RECYCLE.status
-      ? '加入到回收站'
-      : '恢复到仓库';
-  await confirm(`确认要"${row.name}"${text}吗？`);
-  await updateStatus({ id: row.id as number, status: newStatus });
-  ElMessage.success(`${text}成功`);
-  await handleRefresh();
 }
 
 /** 更新状态 */
@@ -130,14 +108,14 @@ async function handleStatusChange(
 ): Promise<boolean | undefined> {
   return new Promise((resolve, reject) => {
     // 二次确认
-    const text = row.status ? '上架' : '下架';
+    const text = newStatus ? '上架' : '下架';
     confirm({
       content: `确认要${text + row.name}吗?`,
     })
       .then(async () => {
         // 更新状态
         await updateStatus({
-          id: row.id as number,
+          id: row.id!,
           status: newStatus,
         });
         // 提示并返回成功
@@ -148,6 +126,27 @@ async function handleStatusChange(
         reject(new Error('取消操作'));
       });
   });
+}
+
+/** 添加到仓库 / 回收站的状态 */
+async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
+  const text =
+    newStatus === ProductSpuStatusEnum.RECYCLE.status
+      ? '加入到回收站'
+      : '恢复到仓库';
+  await confirm({
+    content: `确认要"${row.name}"${text}吗？`,
+  });
+  const loadingInstance = ElLoading.service({
+    text: `正在${text}中...`,
+  });
+  try {
+    await updateStatus({ id: row.id!, status: newStatus });
+    ElMessage.success(`${text}成功`);
+    await handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 查看商品详情 */
@@ -162,12 +161,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(handleStatusChange),
     height: 'auto',
-    cellConfig: {
-      height: 80,
-    },
-    expandConfig: {
-      height: 100,
-    },
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -175,7 +168,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getSpuPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            tabType: tabType.value,
+            tabType: Number(tabType.value),
             ...formValues,
           });
         },
@@ -183,7 +176,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: {
       keyField: 'id',
-      resizable: true,
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
@@ -192,8 +185,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MallSpuApi.Spu>,
 });
 
-function onChangeTab(key: any) {
-  tabType.value = Number(key);
+function onChangeTab(key: number | string) {
+  tabType.value = key.toString();
   gridApi.query();
 }
 
@@ -204,9 +197,8 @@ onMounted(async () => {
       categoryId: Number(route.query.categoryId),
     });
   }
+  // 获得每个 Tab 的数量
   await getTabCount();
-  const categoryRes = await getCategoryList({});
-  categoryList.value = handleTree(categoryRes, 'id', 'parentId', 'children');
 });
 </script>
 
@@ -221,12 +213,12 @@ onMounted(async () => {
 
     <Grid>
       <template #toolbar-actions>
-        <ElTabs class="w-full" @tab-change="onChangeTab" :stretch="true">
+        <ElTabs v-model="tabType" class="w-full" @tab-change="onChangeTab">
           <ElTabs.TabPane
             v-for="item in tabsData"
             :key="item.type"
             :label="`${item.name} (${item.count})`"
-            :name="item.type"
+            :name="String(item.type)"
           />
         </ElTabs>
       </template>
@@ -249,39 +241,6 @@ onMounted(async () => {
             },
           ]"
         />
-      </template>
-      <!-- TODO @霖：展开的样子，不展示信息 -->
-      <template #expand_content="{ row }">
-        <ElDescriptions
-          :column="4"
-          class="mt-4"
-          :label-style="{
-            width: '100px',
-            fontWeight: 'bold',
-            fontSize: '14px',
-          }"
-          :content-style="{ width: '100px', fontSize: '14px' }"
-        >
-          <ElDescriptions.Item label="商品分类">
-            {{ treeToString(categoryList, row.categoryId || 0) }}
-          </ElDescriptions.Item>
-          <ElDescriptions.Item label="商品名称">
-            {{ row.name }}
-          </ElDescriptions.Item>
-
-          <ElDescriptions.Item label="市场价">
-            {{ fenToYuan(row.marketPrice || 0) }} 元
-          </ElDescriptions.Item>
-          <ElDescriptions.Item label="成本价">
-            {{ fenToYuan(row.costPrice || 0) }} 元
-          </ElDescriptions.Item>
-          <ElDescriptions.Item label="浏览量">
-            {{ row.browseCount || 0 }}
-          </ElDescriptions.Item>
-          <ElDescriptions.Item label="虚拟销量">
-            {{ row.virtualSalesCount || 0 }}
-          </ElDescriptions.Item>
-        </ElDescriptions>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -307,7 +266,7 @@ onMounted(async () => {
               link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => tabType === 4,
+              ifShow: () => tabType === '4',
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -319,7 +278,6 @@ onMounted(async () => {
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => tabType === 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,
@@ -332,7 +290,6 @@ onMounted(async () => {
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
-              ifShow: () => tabType !== 4,
               onClick: handleStatus02Change.bind(
                 null,
                 row,

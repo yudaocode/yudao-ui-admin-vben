@@ -15,7 +15,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 defineOptions({ name: 'BpmDoneTask' });
 
 /** 查看历史 */
-function handleHistory(row: BpmTaskApi.TaskManager) {
+function handleHistory(row: BpmTaskApi.Task) {
   router.push({
     name: 'BpmProcessInstanceDetail',
     query: {
@@ -26,7 +26,7 @@ function handleHistory(row: BpmTaskApi.TaskManager) {
 }
 
 /** 撤回任务 */
-async function handleWithdraw(row: BpmTaskApi.TaskManager) {
+async function handleWithdraw(row: BpmTaskApi.Task) {
   const loadingInstance = ElLoading.service({
     text: '正在撤回中...',
   });
@@ -66,7 +66,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<BpmTaskApi.TaskManager>,
+  } as VxeTableGridOptions<BpmTaskApi.Task>,
 });
 </script>
 

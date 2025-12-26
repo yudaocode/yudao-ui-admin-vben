@@ -4,7 +4,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { computed, ref, watch } from 'vue';
 
-import { CloseCircleFilled, PlusOutlined } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
 import { Image, Tooltip } from 'ant-design-vue';
 
@@ -110,9 +110,9 @@ function emitSpuChange() {
             class="h-full w-full rounded-lg object-cover"
           />
           <!-- 删除按钮 -->
-          <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
-          <CloseCircleFilled
+          <IconifyIcon
             v-if="!disabled"
+            icon="lucide:circle-x"
             class="absolute -right-2 -top-2 cursor-pointer text-xl text-red-500 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100"
             @click="handleRemoveSpu(index)"
           />
@@ -126,8 +126,7 @@ function emitSpuChange() {
         class="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary hover:bg-primary/5"
         @click="handleOpenSpuSelect"
       >
-        <!-- TODO @AI：还是使用 IconifyIcon：使用自己的 + 图标 -->
-        <PlusOutlined class="text-xl text-gray-400" />
+        <IconifyIcon icon="lucide:plus" class="text-xl text-gray-400" />
       </div>
     </Tooltip>
   </div>

@@ -2,7 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTemplate';
 
-import { useVbenModal } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { ElButton, ElDialog } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCouponTemplatePage } from '#/api/mall/promotion/coupon/couponTemplate';
@@ -15,7 +17,11 @@ const props = defineProps<{
   takeType?: number; // 领取方式
 }>();
 
-const emit = defineEmits(['success']);
+const emit = defineEmits<{
+  (e: 'change', v: MallCouponTemplateApi.CouponTemplate[]): void;
+}>();
+
+const visible = ref(false); // 弹窗显示状态
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -48,19 +54,44 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MallCouponTemplateApi.CouponTemplate>,
 });
 
-const [Modal, modalApi] = useVbenModal({
-  async onConfirm() {
-    // 从 gridApi 获取选中的记录
-    const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
-      []) as MallCouponTemplateApi.CouponTemplate[];
-    await modalApi.close();
-    emit('success', selectedRecords);
-  },
+/** 打开弹窗 */
+async function open() {
+  visible.value = true;
+  await gridApi.query();
+}
+
+/** 确认选择 */
+function handleConfirm() {
+  const selectedRecords = (gridApi.grid?.getCheckboxRecords() ||
+    []) as MallCouponTemplateApi.CouponTemplate[];
+  emit('change', selectedRecords);
+  closeModal();
+}
+
+/** 关闭弹窗 */
+function closeModal() {
+  visible.value = false;
+}
+
+/** 对外暴露的方法 */
+defineExpose({
+  open,
 });
 </script>
 
 <template>
-  <Modal title="选择优惠券" class="w-2/3">
+  <ElDialog
+    v-model="visible"
+    title="选择优惠券"
+    width="65%"
+    :destroy-on-close="true"
+    :append-to-body="true"
+    @close="closeModal"
+  >
     <Grid />
-  </Modal>
+    <template #footer>
+      <ElButton @click="closeModal">取消</ElButton>
+      <ElButton type="primary" @click="handleConfirm">确定</ElButton>
+    </template>
+  </ElDialog>
 </template>

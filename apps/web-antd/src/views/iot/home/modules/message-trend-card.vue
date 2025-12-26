@@ -23,7 +23,9 @@ const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
 const loading = ref(false);
-const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDate[]>([]);
+const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
+  [],
+);
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
@@ -38,7 +40,7 @@ function formatDateRangeWithTime(dates: [string, string]): [string, string] {
 }
 
 /** 查询参数 */
-const queryParams = reactive<IotStatisticsApi.DeviceMessageReq>({
+const queryParams = reactive<IotStatisticsApi.DeviceMessageReqVO>({
   interval: 1, // 默认按天
   times: formatDateRangeWithTime(dateRange.value),
 });
@@ -89,12 +91,6 @@ async function fetchMessageData() {
   loading.value = true;
   try {
     messageData.value = await getDeviceMessageSummaryByDate(queryParams);
-  } catch (error) {
-    // TODO @haohao：catch 可以删除哈；
-    // 开发环境：记录错误信息，便于调试
-    console.error('获取消息统计数据失败:', error);
-    // 错误时清空数据，避免显示错误的数据
-    messageData.value = [];
   } finally {
     loading.value = false;
     await renderChartWhenReady();

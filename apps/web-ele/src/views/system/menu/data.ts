@@ -58,7 +58,8 @@ export function useFormSchema(): VbenFormSchema[] {
           return name.includes(input) || $t(name).includes(input);
         },
         showSearch: true,
-        treeDefaultExpandedKeys: [0],
+        defaultExpandedKeys: [0],
+        checkStrictly: true,
       },
       rules: 'selectRequired',
       renderComponentContent() {

@@ -17,6 +17,7 @@ import {
   watch,
 } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { SelectOutlined } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
@@ -42,8 +43,7 @@ import {
   MULTI_LEVEL_DEPT,
 } from '#/views/bpm/components/simple-process-design/consts';
 import { useFormFieldsPermission } from '#/views/bpm/components/simple-process-design/helpers';
-
-import ProcessExpressionDialog from './ProcessExpressionDialog.vue';
+import ProcessExpressionSelectModal from '#/views/bpm/processExpression/components/process-expression-select-modal.vue';
 
 defineOptions({ name: 'UserTask' });
 const props = defineProps({
@@ -120,10 +120,10 @@ const resetTaskForm = () => {
     bpmnInstances().moddle.create('bpmn:ExtensionElements', { values: [] });
   userTaskForm.value.candidateStrategy = extensionElements.values?.find(
     (ex: any) => ex.$type === `${prefix}:CandidateStrategy`,
-  )?.[0]?.value;
+  )?.value;
   const candidateParamStr = extensionElements.values?.find(
     (ex: any) => ex.$type === `${prefix}:CandidateParam`,
-  )?.[0]?.value;
+  )?.value;
   if (candidateParamStr && candidateParamStr.length > 0) {
     // eslint-disable-next-line unicorn/prefer-switch
     if (userTaskForm.value.candidateStrategy === CandidateStrategy.EXPRESSION) {
@@ -292,9 +292,13 @@ const updateSkipExpression = () => {
 };
 
 // 打开监听器弹窗
-const processExpressionDialogRef = ref<any>();
+const [ProcessExpressionSelectModalComp, ProcessExpressionSelectModalApi] =
+  useVbenModal({
+    connectedComponent: ProcessExpressionSelectModal,
+    destroyOnClose: true,
+  });
 const openProcessExpressionDialog = async () => {
-  processExpressionDialogRef.value.open();
+  ProcessExpressionSelectModalApi.open();
 };
 const selectProcessExpression = (
   expression: BpmProcessExpressionApi.ProcessExpression,
@@ -344,7 +348,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Form>
+  <Form :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
     <FormItem label="规则类型" name="candidateStrategy">
       <Select
         v-model:value="userTaskForm.candidateStrategy"
@@ -544,19 +548,19 @@ onBeforeUnmount(() => {
         style="width: 100%"
         @change="updateElementTask"
       />
-      <Button
-        class="!w-1/1 mt-5px"
-        type="primary"
-        :icon="h(SelectOutlined)"
-        @click="openProcessExpressionDialog"
-      >
-        选择表达式
-      </Button>
+      <div class="mt-2 flex w-full items-center justify-center">
+        <Button
+          class="flex flex-1 items-center justify-center"
+          type="primary"
+          size="small"
+          :icon="h(SelectOutlined)"
+          @click="openProcessExpressionDialog"
+        >
+          选择表达式
+        </Button>
+      </div>
       <!-- 选择弹窗 -->
-      <ProcessExpressionDialog
-        ref="processExpressionDialogRef"
-        @select="selectProcessExpression"
-      />
+      <ProcessExpressionSelectModalComp @select="selectProcessExpression" />
     </FormItem>
 
     <FormItem label="跳过表达式" name="skipExpression">

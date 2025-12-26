@@ -77,14 +77,6 @@ export namespace IotDeviceApi {
   }
 }
 
-/** IoT 设备状态枚举 */
-// TODO @haohao：packages/constants/src/biz-iot-enum.ts 枚举；
-export enum DeviceStateEnum {
-  INACTIVE = 0, // 未激活
-  OFFLINE = 2, // 离线
-  ONLINE = 1, // 在线
-}
-
 /** 查询设备分页 */
 export function getDevicePage(params: PageParam) {
   return requestClient.get<PageResult<IotDeviceApi.Device>>(
@@ -152,6 +144,14 @@ export function getDeviceListByProductId(productId: number) {
 /** 获取导入模板 */
 export function importDeviceTemplate() {
   return requestClient.download('/iot/device/get-import-template');
+}
+
+/** 导入设备 */
+export function importDevice(file: File, updateSupport: boolean) {
+  return requestClient.upload('/iot/device/import', {
+    file,
+    updateSupport,
+  });
 }
 
 /** 获取设备属性最新数据 */
