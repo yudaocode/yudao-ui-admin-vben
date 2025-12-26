@@ -16,8 +16,8 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import { DictTag } from '#/components/dict-tag';
 import { getProductPage } from '#/api/iot/product/product';
+import { DictTag } from '#/components/dict-tag';
 
 interface Props {
   categoryList: any[];
