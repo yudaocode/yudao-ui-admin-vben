@@ -33,6 +33,16 @@ function handleCreate() {
   });
 }
 
+/** 重新发起请假 */
+function handleReCreate(row: BpmOALeaveApi.Leave) {
+  router.push({
+    name: 'OALeaveCreate',
+    query: {
+      id: row.id,
+    },
+  });
+}
+
 /** 取消请假 */
 function handleCancel(row: BpmOALeaveApi.Leave) {
   prompt({
@@ -161,8 +171,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
-              ifShow: row.result === BpmProcessInstanceStatus.RUNNING,
+              ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
               onClick: handleCancel.bind(null, row),
+            },
+            {
+              label: '重新发起',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              ifShow: row.status !== BpmProcessInstanceStatus.RUNNING,
+              onClick: handleReCreate.bind(null, row),
             },
           ]"
         />
