@@ -38,9 +38,9 @@ export function getChartOptions(activeTabName: any, res: any): any {
                 name: item.time,
                 value: item.customerCreateCount
                   ? (
-                    (item.customerDealCount / item.customerCreateCount) *
-                    100
-                  ).toFixed(2)
+                      (item.customerDealCount / item.customerCreateCount) *
+                      100
+                    ).toFixed(2)
                   : 0,
               };
             }),
