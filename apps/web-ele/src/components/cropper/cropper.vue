@@ -33,8 +33,6 @@ const imgElRef = ref<ElRef<HTMLImageElement>>();
 const cropper = ref<Cropper | null>();
 const isReady = ref(false);
 
-// TODO @puhui999：这个有办法去掉么？
-const prefixCls = 'cropper-image';
 const debounceRealTimeCropped = useDebounceFn(realTimeCropped, 80);
 
 const getImageStyle = computed((): CSSProperties => {
@@ -47,10 +45,9 @@ const getImageStyle = computed((): CSSProperties => {
 
 const getClass = computed(() => {
   return [
-    prefixCls,
     attrs.class,
     {
-      [`${prefixCls}--circled`]: props.circled,
+      'cropper-image--circled': props.circled,
     },
   ];
 });
@@ -158,6 +155,7 @@ function getRoundedCanvas() {
       :crossorigin="crossorigin"
       :src="src"
       :style="getImageStyle"
+      class="h-auto max-w-full"
     />
   </div>
 </template>

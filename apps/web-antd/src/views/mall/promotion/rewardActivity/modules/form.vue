@@ -8,10 +8,9 @@ import {
   PromotionConditionTypeEnum,
   PromotionProductScopeEnum,
 } from '@vben/constants';
-import { convertToInteger, formatToFraction } from '@vben/utils';
+import { cloneDeep, convertToInteger, formatToFraction } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
-import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -53,6 +52,8 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
+    // 在验证前同步 formData.rules 到表单中
+    await formApi.setFieldValue('rules', formData.value.rules || []);
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
@@ -61,18 +62,24 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const values = await formApi.getValues();
-      const data = { ...formData.value, ...values };
+      // 使用 formData.value 作为基础，确保 rules 来自 formData
+      const data = { ...values, ...formData.value };
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
         data.startTime = data.startAndEndTime[0];
         data.endTime = data.startAndEndTime[1];
         delete data.startAndEndTime;
       }
-      data.rules?.forEach((item: any) => {
+      // 深拷贝 rules 避免修改原始数据
+      const rules = cloneDeep(
+        data.rules,
+      ) as unknown as MallRewardActivityApi.RewardRule[];
+      rules.forEach((item: any) => {
         item.discountPrice = convertToInteger(item.discountPrice || 0);
         if (data.conditionType === PromotionConditionTypeEnum.PRICE.type) {
           item.limit = convertToInteger(item.limit || 0);
         }
       });
+      data.rules = rules;
       await (data.id
         ? updateRewardActivity(data as MallRewardActivityApi.RewardActivity)
         : createRewardActivity(data as MallRewardActivityApi.RewardActivity));
@@ -97,9 +104,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
+      // valueFormat: 'x' 配置下，直接使用时间戳
       result.startAndEndTime = [
-        result.startTime ? dayjs(result.startTime) : undefined,
-        result.endTime ? dayjs(result.endTime) : undefined,
+        result.startTime ? String(result.startTime) : undefined,
+        result.endTime ? String(result.endTime) : undefined,
       ] as any[];
       result.rules?.forEach((item: any) => {
         item.discountPrice = formatToFraction(item.discountPrice || 0);
