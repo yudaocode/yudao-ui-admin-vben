@@ -53,6 +53,7 @@ const [Form, formApi] = useVbenForm({
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 在验证前同步 formData.rules 到表单中
+    // TODO @puhui999：选择了分类、或者商品，还是报没选择；
     await formApi.setFieldValue('rules', formData.value.rules || []);
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -104,7 +105,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-      // valueFormat: 'x' 配置下，直接使用时间戳
       result.startAndEndTime = [
         result.startTime ? String(result.startTime) : undefined,
         result.endTime ? String(result.endTime) : undefined,

@@ -65,6 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       // 使用 formData.value 作为基础，确保 rules 来自 formData
       const data = { ...values, ...formData.value };
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
+        // TODO @puhui999：这里 ele 会告警；antd 不会告警，可能要看看；
         data.startTime = Number(data.startAndEndTime[0]);
         data.endTime = Number(data.startAndEndTime[1]);
         delete data.startAndEndTime;
