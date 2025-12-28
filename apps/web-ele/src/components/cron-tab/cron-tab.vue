@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 
+import type { CronData, CronValue, ShortcutsType } from './types';
+
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import {
@@ -19,6 +21,8 @@ import {
   ElTabs,
 } from 'element-plus';
 
+import { CronDataDefault, CronValueDefault } from './types';
+
 defineOptions({ name: 'Crontab' });
 
 const props = defineProps({
@@ -26,237 +30,20 @@ const props = defineProps({
     type: String,
     default: '* * * * * ?',
   },
-  shortcuts: { type: Array as PropType<shortcutsType[]>, default: () => [] },
+  shortcuts: {
+    type: Array as PropType<ShortcutsType[]>,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-// TODO @puhui999：可以参考 apps/web-antd/src/components/cron-tab/cron-tab.vue 简化到 types；ps：可以用 idea 对比两个 ts 或者 vue 文件，看看差异的地方。差异的地方越少越好（容易维护）
-interface shortcutsType {
-  text: string;
-  value: string;
-}
-
 const defaultValue = ref('');
 const dialogVisible = ref(false);
-const getYear = () => {
-  const v: number[] = [];
-  const y = new Date().getFullYear();
-  for (let i = 0; i < 11; i++) {
-    v.push(y + i);
-  }
-  return v;
-};
-// TODO @puhui999：可以参考 apps/web-antd/src/components/cron-tab/cron-tab.vue 简化到 types
-const cronValue = reactive({
-  second: {
-    type: '0',
-    range: {
-      start: 1,
-      end: 2,
-    },
-    loop: {
-      start: 0,
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-  minute: {
-    type: '0',
-    range: {
-      start: 1,
-      end: 2,
-    },
-    loop: {
-      start: 0,
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-  hour: {
-    type: '0',
-    range: {
-      start: 1,
-      end: 2,
-    },
-    loop: {
-      start: 0,
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-  day: {
-    type: '0',
-    range: {
-      start: 1,
-      end: 2,
-    },
-    loop: {
-      start: 1,
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-  month: {
-    type: '0',
-    range: {
-      start: 1,
-      end: 2,
-    },
-    loop: {
-      start: 1,
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-  week: {
-    type: '5',
-    range: {
-      start: '2',
-      end: '3',
-    },
-    loop: {
-      start: 0,
-      end: '2',
-    },
-    last: '2',
-    appoint: [] as string[],
-  },
-  year: {
-    type: '-1',
-    range: {
-      start: getYear()[0],
-      end: getYear()[1],
-    },
-    loop: {
-      start: getYear()[0],
-      end: 1,
-    },
-    appoint: [] as string[],
-  },
-});
-const data = reactive({
-  second: [
-    '0',
-    '5',
-    '15',
-    '20',
-    '25',
-    '30',
-    '35',
-    '40',
-    '45',
-    '50',
-    '55',
-    '59',
-  ],
-  minute: [
-    '0',
-    '5',
-    '15',
-    '20',
-    '25',
-    '30',
-    '35',
-    '40',
-    '45',
-    '50',
-    '55',
-    '59',
-  ],
-  hour: [
-    '0',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-  ],
-  day: [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-    '24',
-    '25',
-    '26',
-    '27',
-    '28',
-    '29',
-    '30',
-    '31',
-  ],
-  month: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  week: [
-    {
-      value: '1',
-      label: '周日',
-    },
-    {
-      value: '2',
-      label: '周一',
-    },
-    {
-      value: '3',
-      label: '周二',
-    },
-    {
-      value: '4',
-      label: '周三',
-    },
-    {
-      value: '5',
-      label: '周四',
-    },
-    {
-      value: '6',
-      label: '周五',
-    },
-    {
-      value: '7',
-      label: '周六',
-    },
-  ],
-  year: getYear(),
-});
 
+const cronValue = reactive<CronValue>(CronValueDefault);
+
+const data = reactive<CronData>(CronDataDefault);
 const value_second = computed(() => {
   const v = cronValue.second;
   switch (v.type) {

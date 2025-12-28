@@ -22,6 +22,14 @@ enum UPLOAD_TYPE {
   SERVER = 'server',
 }
 
+/**
+ * 上传类型钩子函数
+ * @param acceptRef 接受的文件类型
+ * @param helpTextRef 帮助文本
+ * @param maxNumberRef 最大文件数量
+ * @param maxSizeRef 最大文件大小
+ * @returns 文件类型限制和帮助文本的计算属性
+ */
 export function useUploadType({
   acceptRef,
   helpTextRef,
@@ -78,7 +86,11 @@ export function useUploadType({
   return { getAccept, getStringAccept, getHelpText };
 }
 
-// TODO @芋艿：目前保持和 admin-vue3 一致，后续可能重构
+/**
+ * 上传钩子函数
+ * @param directory 上传目录
+ * @returns 上传 URL 和自定义上传方法
+ */
 export function useUpload(directory?: string) {
   // 后端上传地址
   const uploadUrl = getUploadUrl();

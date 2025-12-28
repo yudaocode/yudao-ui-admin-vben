@@ -6,7 +6,7 @@ import type { FileUploadProps } from './typing';
 import { computed } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Col, Input, Row, Textarea } from 'ant-design-vue';
+import { Input, Textarea } from 'ant-design-vue';
 
 import FileUpload from './file-upload.vue';
 
@@ -30,6 +30,7 @@ const modelValue = useVModel(props, 'modelValue', emits, {
   passive: true,
 });
 
+/** 处理文件内容返回 */
 function handleReturnText(text: string) {
   modelValue.value = text;
   emits('change', modelValue.value);
@@ -37,6 +38,7 @@ function handleReturnText(text: string) {
   emits('update:modelValue', modelValue.value);
 }
 
+/** 计算输入框属性 */
 const inputProps = computed(() => {
   return {
     ...props.inputProps,
@@ -44,6 +46,7 @@ const inputProps = computed(() => {
   };
 });
 
+/** 计算文本域属性 */
 const textareaProps = computed(() => {
   return {
     ...props.textareaProps,
@@ -51,6 +54,7 @@ const textareaProps = computed(() => {
   };
 });
 
+/** 计算文件上传属性 */
 const fileUploadProps = computed(() => {
   return {
     ...props.fileUploadProps,
@@ -58,17 +62,17 @@ const fileUploadProps = computed(() => {
 });
 </script>
 <template>
-  <Row>
-    <Col :span="18">
-      <Input readonly v-if="inputType === 'input'" v-bind="inputProps" />
-      <Textarea readonly v-else :row="4" v-bind="textareaProps" />
-    </Col>
-    <Col :span="6">
-      <FileUpload
-        class="ml-4"
-        v-bind="fileUploadProps"
-        @return-text="handleReturnText"
-      />
-    </Col>
-  </Row>
+  <div class="w-full">
+    <Input v-if="inputType === 'input'" readonly v-bind="inputProps">
+      <template #suffix>
+        <FileUpload v-bind="fileUploadProps" @return-text="handleReturnText" />
+      </template>
+    </Input>
+    <div v-else class="relative w-full">
+      <Textarea readonly :rows="4" v-bind="textareaProps" />
+      <div class="absolute bottom-2 right-2">
+        <FileUpload v-bind="fileUploadProps" @return-text="handleReturnText" />
+      </div>
+    </div>
+  </div>
 </template>

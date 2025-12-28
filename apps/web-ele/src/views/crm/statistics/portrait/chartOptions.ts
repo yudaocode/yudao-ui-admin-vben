@@ -13,6 +13,71 @@ function areaReplace(areaName: string) {
     .replace('省', '');
 }
 
+const getPieTooltip = (extra: Record<string, any> = {}) => ({
+  trigger: 'item',
+  ...extra,
+});
+
+const getPieLegend = (extra: Record<string, any> = {}) => ({
+  orient: 'vertical',
+  left: 'left',
+  ...extra,
+});
+
+const getPieSeries = (name: string, data: any[]) => ({
+  name,
+  type: 'pie',
+  radius: ['40%', '70%'],
+  avoidLabelOverlap: false,
+  itemStyle: {
+    borderRadius: 10,
+    borderColor: '#fff',
+    borderWidth: 2,
+  },
+  label: {
+    show: false,
+    position: 'center',
+  },
+  emphasis: {
+    label: {
+      show: true,
+      fontSize: 40,
+      fontWeight: 'bold',
+    },
+  },
+  labelLine: {
+    show: false,
+  },
+  data,
+});
+
+const getPiePanel = ({
+  data,
+  legendExtra,
+  seriesName,
+  title,
+  tooltipExtra,
+}: {
+  data: any[];
+  legendExtra?: Record<string, any>;
+  seriesName: string;
+  title: string;
+  tooltipExtra?: Record<string, any>;
+}) => ({
+  title: {
+    text: title,
+    left: 'center',
+  },
+  tooltip: getPieTooltip(tooltipExtra),
+  legend: getPieLegend(legendExtra),
+  toolbox: {
+    feature: {
+      saveAsImage: { show: true, name: title },
+    },
+  },
+  series: [getPieSeries(seriesName, data)],
+});
+
 export function getChartOptions(activeTabName: any, res: any): any {
   switch (activeTabName) {
     case 'area': {
@@ -111,326 +176,62 @@ export function getChartOptions(activeTabName: any, res: any): any {
     }
     case 'industry': {
       return {
-        left: {
-          title: {
-            text: '全部客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '全部客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '全部客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(
-                    DICT_TYPE.CRM_CUSTOMER_INDUSTRY,
-                    r.industryId,
-                  ),
-                  value: r.customerCount,
-                };
-              }),
-            },
-          ],
-        },
-        right: {
-          title: {
-            text: '成交客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '成交客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '成交客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(
-                    DICT_TYPE.CRM_CUSTOMER_INDUSTRY,
-                    r.industryId,
-                  ),
-                  value: r.dealCount,
-                };
-              }),
-            },
-          ],
-        },
+        left: getPiePanel({
+          title: '全部客户',
+          seriesName: '全部客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, r.industryId),
+            value: r.customerCount,
+          })),
+        }),
+        right: getPiePanel({
+          title: '成交客户',
+          seriesName: '成交客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, r.industryId),
+            value: r.dealCount,
+          })),
+        }),
       };
     }
     case 'level': {
       return {
-        left: {
-          title: {
-            text: '全部客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '全部客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '全部客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_LEVEL, r.level),
-                  value: r.customerCount,
-                };
-              }),
-            },
-          ],
-        },
-        right: {
-          title: {
-            text: '成交客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '成交客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '成交客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_LEVEL, r.level),
-                  value: r.dealCount,
-                };
-              }),
-            },
-          ],
-        },
+        left: getPiePanel({
+          title: '全部客户',
+          seriesName: '全部客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_LEVEL, r.level),
+            value: r.customerCount,
+          })),
+        }),
+        right: getPiePanel({
+          title: '成交客户',
+          seriesName: '成交客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_LEVEL, r.level),
+            value: r.dealCount,
+          })),
+        }),
       };
     }
     case 'source': {
       return {
-        left: {
-          title: {
-            text: '全部客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '全部客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '全部客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_SOURCE, r.source),
-                  value: r.customerCount,
-                };
-              }),
-            },
-          ],
-        },
-        right: {
-          title: {
-            text: '成交客户',
-            left: 'center',
-          },
-          tooltip: {
-            trigger: 'item',
-          },
-          legend: {
-            orient: 'vertical',
-            left: 'left',
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: { show: true, name: '成交客户' }, // 保存为图片
-            },
-          },
-          series: [
-            {
-              name: '成交客户',
-              type: 'pie',
-              radius: ['40%', '70%'],
-              avoidLabelOverlap: false,
-              itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2,
-              },
-              label: {
-                show: false,
-                position: 'center',
-              },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 40,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: {
-                show: false,
-              },
-              data: res.map((r: any) => {
-                return {
-                  name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_SOURCE, r.source),
-                  value: r.dealCount,
-                };
-              }),
-            },
-          ],
-        },
+        left: getPiePanel({
+          title: '全部客户',
+          seriesName: '全部客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_SOURCE, r.source),
+            value: r.customerCount,
+          })),
+        }),
+        right: getPiePanel({
+          title: '成交客户',
+          seriesName: '成交客户',
+          data: res.map((r: any) => ({
+            name: getDictLabel(DICT_TYPE.CRM_CUSTOMER_SOURCE, r.source),
+            value: r.dealCount,
+          })),
+        }),
       };
     }
     default: {

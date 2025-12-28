@@ -5,13 +5,11 @@ import type {
   UploadRequestOptions,
 } from 'element-plus';
 
-import type { AxiosResponse } from '@vben/request';
-
-import type { UploadListType } from './typing';
+import type { FileUploadProps } from './typing';
 
 import type { AxiosProgressEvent } from '#/api/infra/file';
 
-import { ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -23,67 +21,35 @@ import {
   isString,
 } from '@vben/utils';
 
-import { ElMessage, ElUpload } from 'element-plus';
+import { ElDialog, ElMessage, ElUpload } from 'element-plus';
 
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
 
 defineOptions({ name: 'ImageUpload', inheritAttrs: false });
 
-// TODO @xingyu：这个要不要抽时间看看，upload 组件，和 antd 要不要进一步对齐下；（主要是代码风格。微信沟通~~~）
-const props = withDefaults(
-  defineProps<{
-    // 根据后缀，或者其他
-    accept?: string[];
-    api?: (
-      file: File,
-      onUploadProgress?: AxiosProgressEvent,
-    ) => Promise<AxiosResponse<any>>;
-    // 组件边框圆角
-    borderradius?: string;
-    // 上传的目录
-    directory?: string;
-    disabled?: boolean;
-    // 上传框高度
-    height?: number | string;
-    helpText?: string;
-    listType?: UploadListType;
-    // 最大数量的文件，Infinity不限制
-    maxNumber?: number;
-    // 文件最大多少MB
-    maxSize?: number;
-    modelValue?: string | string[];
-    // 是否支持多选
-    multiple?: boolean;
-    // support xxx.xxx.xx
-    resultField?: string;
-    // 是否显示下面的描述
-    showDescription?: boolean;
-    // 上传框宽度
-    width?: number | string;
-  }>(),
-  {
-    modelValue: () => [],
-    directory: undefined,
-    disabled: false,
-    listType: 'picture-card',
-    helpText: '',
-    maxSize: 2,
-    maxNumber: 1,
-    accept: () => defaultImageAccepts,
-    multiple: false,
-    api: undefined,
-    resultField: '',
-    showDescription: true,
-    width: '',
-    height: '',
-    borderradius: '8px',
-  },
-);
-
-const emit = defineEmits(['change', 'update:modelValue', 'delete']);
-const { accept, helpText, maxNumber, maxSize, width, height, borderradius } =
-  toRefs(props);
+const props = withDefaults(defineProps<FileUploadProps>(), {
+  value: () => [],
+  modelValue: undefined,
+  directory: undefined,
+  disabled: false,
+  listType: 'picture-card',
+  helpText: '',
+  maxSize: 2,
+  maxNumber: 1,
+  accept: () => defaultImageAccepts,
+  multiple: false,
+  api: undefined,
+  resultField: '',
+  showDescription: true,
+});
+const emit = defineEmits([
+  'change',
+  'update:value',
+  'update:modelValue',
+  'delete',
+]);
+const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
 const { getStringAccept } = useUploadType({
   acceptRef: accept,
@@ -92,13 +58,28 @@ const { getStringAccept } = useUploadType({
   maxSizeRef: maxSize,
 });
 
+/** 计算当前绑定的值，优先使用 modelValue */
+const currentValue = computed(() => {
+  return props.modelValue === undefined ? props.value : props.modelValue;
+});
+
+/** 判断是否使用 modelValue */
+const isUsingModelValue = computed(() => {
+  return props.modelValue !== undefined;
+});
+const previewOpen = ref<boolean>(false); // 是否展示预览
+const previewImage = ref<string>(''); // 预览图片
+const previewTitle = ref<string>(''); // 预览标题
+
 const fileList = ref<UploadFile[]>([]);
 const isLtMsg = ref<boolean>(true); // 文件大小错误提示
 const isActMsg = ref<boolean>(true); // 文件类型错误提示
 const isFirstRender = ref<boolean>(true); // 是否第一次渲染
+const uploadNumber = ref<number>(0); // 上传文件计数器
+const uploadList = ref<any[]>([]); // 临时上传列表
 
 watch(
-  () => props.modelValue,
+  currentValue,
   async (v) => {
     if (isInnerOperate.value) {
       isInnerOperate.value = false;
@@ -121,11 +102,11 @@ watch(
               url: item,
             } as UploadFile;
           } else if (item && isObject(item)) {
-            const file = item as Record<string, any>;
+            const file = item as unknown as Record<string, any>;
             return {
-              uid: file.uid || -i,
-              name: file.name || '',
-              status: UploadResultStatus.SUCCESS,
+              uid: file.uid ?? -i,
+              name: file.name ?? '',
+              status: file.status ?? UploadResultStatus.SUCCESS,
               url: file.url,
             } as UploadFile;
           }
@@ -144,6 +125,7 @@ watch(
   },
 );
 
+/** 将文件转换为 Base64 格式 */
 function getBase64<T extends ArrayBuffer | null | string>(file: File) {
   return new Promise<T>((resolve, reject) => {
     const reader = new FileReader();
@@ -155,28 +137,52 @@ function getBase64<T extends ArrayBuffer | null | string>(file: File) {
   });
 }
 
-const handlePreview = async (file: UploadFile) => {
+/** 处理图片预览 */
+async function handlePreview(file: UploadFile) {
   if (!file.url) {
-    const preview = await getBase64<string>(file.raw!);
-    window.open(preview || '');
-    return;
+    file.url = await getBase64<string>(file.raw!);
   }
-  window.open(file.url);
-};
+  previewImage.value = file.url || '';
+  previewOpen.value = true;
+  previewTitle.value =
+    file.name ||
+    previewImage.value.slice(
+      Math.max(0, previewImage.value.lastIndexOf('/') + 1),
+    );
+}
 
-const handleRemove = async (file: UploadFile) => {
+/** 处理文件删除 */
+async function handleRemove(file: UploadFile) {
   if (fileList.value) {
     const index = fileList.value.findIndex((item) => item.uid === file.uid);
     index !== -1 && fileList.value.splice(index, 1);
     const value = getValue();
     isInnerOperate.value = true;
+    emit('update:value', value);
     emit('update:modelValue', value);
     emit('change', value);
     emit('delete', file);
   }
-};
+}
 
-const beforeUpload = async (file: File) => {
+/** 关闭预览弹窗 */
+function handleCancel() {
+  previewOpen.value = false;
+  previewTitle.value = '';
+}
+
+/**
+ * 上传前校验
+ * @param file 待上传的文件
+ * @returns 是否允许上传
+ */
+async function beforeUpload(file: File) {
+  // 检查文件数量限制
+  if (fileList.value!.length >= props.maxNumber) {
+    ElMessage.error($t('ui.upload.maxNumber', [props.maxNumber]));
+    return false;
+  }
+
   const { maxSize, accept } = props;
   const isAct = isImage(file.name, accept);
   if (!isAct) {
@@ -194,9 +200,13 @@ const beforeUpload = async (file: File) => {
     setTimeout(() => (isLtMsg.value = true), 1000);
     return false;
   }
-  return true;
-};
 
+  // 只有在验证通过后才增加计数器
+  uploadNumber.value++;
+  return true;
+}
+
+/** 自定义上传请求 */
 async function customRequest(options: UploadRequestOptions) {
   let { api } = props;
   if (!api || !isFunction(api)) {
@@ -215,33 +225,66 @@ async function customRequest(options: UploadRequestOptions) {
     };
     const res = await api?.(options.file, progressEvent);
 
-    // TODO @xingyu：看看有没更好的实现代码。
-    // 更新 fileList 中对应文件的 URL 为服务器返回的真实 URL
-    const uploadedFile = fileList.value.find(
-      (file) => file.uid === (options.file as any).uid,
-    );
-    if (uploadedFile) {
-      const responseData = res?.data || res;
-      uploadedFile.url =
-        props.resultField && responseData[props.resultField]
-          ? responseData[props.resultField]
-          : responseData.url || responseData;
-    }
+    // 处理上传成功后的逻辑
+    handleUploadSuccess(res, options.file as File);
 
     options.onSuccess!(res);
     ElMessage.success($t('ui.upload.uploadSuccess'));
-
-    // 更新文件
-    const value = getValue();
-    isInnerOperate.value = true;
-    emit('update:modelValue', value);
-    emit('change', value);
   } catch (error: any) {
     console.error(error);
     options.onError!(error);
+    handleUploadError(error);
   }
 }
 
+/**
+ * 处理上传成功
+ * @param res 上传响应结果
+ * @param file 上传的文件
+ */
+function handleUploadSuccess(res: any, file: File) {
+  // 删除临时文件
+  const index = fileList.value?.findIndex((item) => item.name === file.name);
+  if (index !== -1) {
+    fileList.value?.splice(index!, 1);
+  }
+
+  // 添加到临时上传列表
+  const fileUrl = res?.url || res?.data || res;
+  uploadList.value.push({
+    name: file.name,
+    url: fileUrl,
+    status: UploadResultStatus.SUCCESS,
+    uid: file.name + Date.now(),
+  });
+
+  // 检查是否所有文件都上传完成
+  if (uploadList.value.length >= uploadNumber.value) {
+    fileList.value?.push(...uploadList.value);
+    uploadList.value = [];
+    uploadNumber.value = 0;
+
+    // 更新值
+    const value = getValue();
+    isInnerOperate.value = true;
+    emit('update:value', value);
+    emit('update:modelValue', value);
+    emit('change', value);
+  }
+}
+
+/** 处理上传错误 */
+function handleUploadError(error: any) {
+  console.error('上传错误:', error);
+  ElMessage.error($t('ui.upload.uploadError'));
+  // 上传失败时减少计数器
+  uploadNumber.value = Math.max(0, uploadNumber.value - 1);
+}
+
+/**
+ * 获取当前文件列表的值
+ * @returns 文件 URL 列表或字符串
+ */
 function getValue() {
   const list = (fileList.value || [])
     .filter((item) => item?.status === UploadResultStatus.SUCCESS)
@@ -249,171 +292,77 @@ function getValue() {
       if (item?.response && props?.resultField) {
         return item?.response;
       }
-      return item?.response?.url || item?.response;
+      return item?.url || item?.response?.url || item?.response;
     });
-  // add by 芋艿：【特殊】单个文件的情况，获取首个元素，保证返回的是 String 类型
+
+  // 单个文件的情况，根据输入参数类型决定返回格式
   if (props.maxNumber === 1) {
-    return list.length > 0 ? list[0] : '';
+    const singleValue = list.length > 0 ? list[0] : '';
+    // 如果原始值是字符串或 modelValue 是字符串，返回字符串
+    if (
+      isString(props.value) ||
+      (isUsingModelValue.value && isString(props.modelValue))
+    ) {
+      return singleValue;
+    }
+    return singleValue;
   }
-  return list;
+
+  // 多文件情况，根据输入参数类型决定返回格式
+  if (isUsingModelValue.value) {
+    return Array.isArray(props.modelValue) ? list : list.join(',');
+  }
+
+  return Array.isArray(props.value) ? list : list.join(',');
 }
 </script>
 
 <template>
-  <div
-    class="upload-box"
-    :style="{
-      width: width || '150px',
-      height: height || '150px',
-      borderRadius: borderradius,
-    }"
-  >
-    <template
-      v-if="
-        fileList.length > 0 &&
-        fileList[0] &&
-        fileList[0].status === UploadResultStatus.SUCCESS
-      "
+  <div>
+    <ElUpload
+      v-bind="$attrs"
+      v-model:file-list="fileList"
+      :accept="getStringAccept"
+      :before-upload="beforeUpload"
+      :http-request="customRequest"
+      :disabled="disabled"
+      :list-type="listType"
+      :limit="maxNumber"
+      :multiple="multiple"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :class="{ 'upload-limit-reached': fileList.length >= maxNumber }"
     >
-      <div class="upload-image-wrapper">
-        <img :src="fileList[0].url" class="upload-image" />
-        <div class="upload-handle">
-          <div class="handle-icon" @click="handlePreview(fileList[0]!)">
-            <IconifyIcon icon="lucide:circle-plus" />
-            <span>详情</span>
-          </div>
-          <div
-            v-if="!disabled"
-            class="handle-icon"
-            @click="handleRemove(fileList[0]!)"
-          >
-            <IconifyIcon icon="lucide:trash" />
-            <span>删除</span>
-          </div>
-        </div>
+      <div class="flex flex-col items-center justify-center">
+        <IconifyIcon icon="lucide:cloud-upload" :size="24" />
+        <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
       </div>
-    </template>
-    <template v-else>
-      <ElUpload
-        v-bind="$attrs"
-        v-model:file-list="fileList"
-        :accept="getStringAccept"
-        :before-upload="beforeUpload"
-        :http-request="customRequest"
-        :disabled="disabled"
-        :list-type="listType"
-        :limit="maxNumber"
-        :multiple="multiple"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        class="upload"
-        :style="{
-          width: width || '150px',
-          height: height || '150px',
-          borderRadius: borderradius,
-        }"
-      >
-        <div class="upload-content flex flex-col items-center justify-center">
-          <IconifyIcon icon="lucide:plus" />
-        </div>
-      </ElUpload>
-    </template>
-    <!-- TODO @xingyu：相比 antd 来说，EL 有点丑；貌似是这里展示的位置不太对； -->
-    <div v-if="showDescription" class="mt-2 text-xs text-gray-500">
-      {{ getStringAccept }}
+    </ElUpload>
+    <div
+      v-if="showDescription"
+      class="mt-2 flex flex-wrap items-center text-sm"
+    >
+      请上传不超过
+      <span class="mx-1 font-bold text-primary">{{ maxSize }}MB</span>
+      的
+      <span class="mx-1 font-bold text-primary">{{ accept.join('/') }}</span>
+      格式文件
     </div>
+    <ElDialog v-model="previewOpen" :title="previewTitle" @close="handleCancel">
+      <img :src="previewImage" alt="" class="w-full" />
+    </ElDialog>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.upload-box {
-  position: relative;
+<style scoped>
+.el-upload--picture-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background: #fafafa;
-  border: 1px dashed var(--el-border-color-darker);
-  transition: border-color 0.2s;
+}
 
-  .upload {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100% !important;
-    height: 100% !important;
-    background: transparent;
-    border: none !important;
-  }
-
-  .upload-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  .upload-image-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #fff;
-    border-radius: inherit;
-  }
-
-  .upload-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: inherit;
-  }
-
-  .upload-handle {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    background: rgb(0 0 0 / 50%);
-    opacity: 0;
-    transition: opacity 0.2s;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    .handle-icon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0 8px;
-      font-size: 18px;
-      color: #fff;
-
-      span {
-        margin-top: 2px;
-        font-size: 12px;
-      }
-    }
-  }
-
-  .upload-image-wrapper:hover .upload-handle {
-    opacity: 1;
-  }
+/* 达到上传限制时隐藏上传按钮 */
+.upload-limit-reached :deep(.el-upload--picture-card) {
+  display: none;
 }
 </style>

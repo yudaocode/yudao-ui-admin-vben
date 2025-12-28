@@ -1,17 +1,34 @@
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
+const getLegend = (extra: Record<string, any> = {}) => ({
+  top: 10,
+  ...extra,
+});
+
+const getGrid = (extra: Record<string, any> = {}) => ({
+  left: 20,
+  right: 20,
+  bottom: 20,
+  containLabel: true,
+  ...extra,
+});
+
+const getTooltip = (extra: Record<string, any> = {}) => ({
+  trigger: 'axis',
+  axisPointer: {
+    type: 'shadow',
+  },
+  ...extra,
+});
+
 export function getChartOptions(activeTabName: any, res: any): any {
   switch (activeTabName) {
+    // 客户转化率分析
     case 'conversionStat': {
       return {
-        grid: {
-          left: 20,
-          right: 40, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '客户转化率',
@@ -40,12 +57,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '客户转化率分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: {
           type: 'value',
           name: '转化率(%)',
@@ -59,14 +71,13 @@ export function getChartOptions(activeTabName: any, res: any): any {
     }
     case 'customerSummary': {
       return {
-        grid: {
-          bottom: '5%',
-          containLabel: true,
+        grid: getGrid({
+          bottom: '8%',
           left: '5%',
           right: '5%',
-          top: '5 %',
-        },
-        legend: {},
+          top: 80,
+        }),
+        legend: getLegend(),
         series: [
           {
             name: '新增客户数',
@@ -92,12 +103,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '客户总量分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -134,13 +140,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
         };
       });
       return {
-        grid: {
-          left: 20,
-          right: 40, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '成交周期(天)',
@@ -166,12 +167,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '成交周期分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -208,13 +204,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
         };
       });
       return {
-        grid: {
-          left: 20,
-          right: 40, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '成交周期(天)',
@@ -240,12 +231,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '成交周期分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -277,13 +263,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
       const customerDealCycleByDate = res.customerDealCycleByDate;
       const customerDealCycleByUser = res.customerDealCycleByUser;
       return {
-        grid: {
-          left: 20,
-          right: 40, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '成交周期(天)',
@@ -309,12 +290,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '成交周期分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -342,15 +318,13 @@ export function getChartOptions(activeTabName: any, res: any): any {
         },
       };
     }
+    // 客户跟进次数分析
     case 'followUpSummary': {
       return {
-        grid: {
-          left: 20,
+        grid: getGrid({
           right: 30, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        }),
+        legend: getLegend(),
         series: [
           {
             name: '跟进客户数',
@@ -376,12 +350,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '客户跟进次数分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -412,20 +381,21 @@ export function getChartOptions(activeTabName: any, res: any): any {
         },
       };
     }
+    // 客户跟进方式分析
     case 'followUpType': {
       return {
         title: {
           text: '客户跟进方式分析',
           left: 'center',
         },
-        legend: {
-          orient: 'vertical',
+        legend: getLegend({
           left: 'left',
-        },
-        tooltip: {
+        }),
+        tooltip: getTooltip({
           trigger: 'item',
+          axisPointer: undefined,
           formatter: '{b} : {c}% ',
-        },
+        }),
         toolbox: {
           feature: {
             saveAsImage: { show: true, name: '客户跟进方式分析' }, // 保存为图片
@@ -458,13 +428,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
     }
     case 'poolSummary': {
       return {
-        grid: {
-          left: 20,
-          right: 40, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '进入公海客户数',
@@ -490,12 +455,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '公海客户分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',

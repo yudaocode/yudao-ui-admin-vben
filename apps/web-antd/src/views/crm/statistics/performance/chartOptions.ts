@@ -1,14 +1,30 @@
+const getLegend = (extra: Record<string, any> = {}) => ({
+  top: 10,
+  ...extra,
+});
+
+const getGrid = (extra: Record<string, any> = {}) => ({
+  left: 20,
+  right: 20,
+  bottom: 20,
+  containLabel: true,
+  ...extra,
+});
+
+const getTooltip = (extra: Record<string, any> = {}) => ({
+  trigger: 'axis',
+  axisPointer: {
+    type: 'shadow',
+  },
+  ...extra,
+});
+
 export function getChartOptions(activeTabName: any, res: any): any {
   switch (activeTabName) {
     case 'ContractCountPerformance': {
       return {
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '当月合同数量（个）',
@@ -65,12 +81,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '客户总量分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -131,13 +142,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
     }
     case 'ContractPricePerformance': {
       return {
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '当月合同金额（元）',
@@ -260,13 +266,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
     }
     case 'ReceivablePricePerformance': {
       return {
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '当月回款金额（元）',

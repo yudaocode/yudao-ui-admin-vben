@@ -30,6 +30,7 @@ export namespace BpmModelApi {
     deploymentTime: number;
     suspensionState: number;
     formType?: number;
+    formCustomCreatePath?: string;
     formCustomViewPath?: string;
     formFields?: string[];
   }

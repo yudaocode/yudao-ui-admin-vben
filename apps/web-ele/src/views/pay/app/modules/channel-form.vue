@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as PayChannelApi.Channel;
-    data.config = JSON.stringify(data.config);
+    data.config = JSON.stringify(data.config || {});
     try {
       await (data.id ? updateChannel(data) : createChannel(data));
       // 关闭并提示

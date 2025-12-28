@@ -1,5 +1,26 @@
 import { erpCalculatePercentage } from '@vben/utils';
 
+const getLegend = (extra: Record<string, any> = {}) => ({
+  top: 10,
+  ...extra,
+});
+
+const getGrid = (extra: Record<string, any> = {}) => ({
+  left: 20,
+  right: 20,
+  bottom: 20,
+  containLabel: true,
+  ...extra,
+});
+
+const getTooltip = (extra: Record<string, any> = {}) => ({
+  trigger: 'axis',
+  axisPointer: {
+    type: 'shadow',
+  },
+  ...extra,
+});
+
 export function getChartOptions(
   activeTabName: any,
   active: boolean,
@@ -9,26 +30,19 @@ export function getChartOptions(
     case 'businessInversionRateSummary': {
       return {
         color: ['#6ca2ff', '#6ac9d7', '#ff7474'],
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
-          },
-        },
-        legend: {
+        tooltip: getTooltip(),
+        legend: getLegend({
           data: ['赢单转化率', '商机总数', '赢单商机数'],
           bottom: '0px',
           itemWidth: 14,
-        },
-        grid: {
+        }),
+        grid: getGrid({
           top: '40px',
           left: '40px',
           right: '40px',
           bottom: '40px',
-          containLabel: true,
           borderColor: '#fff',
-        },
+        }),
         xAxis: [
           {
             type: 'category',
@@ -117,13 +131,11 @@ export function getChartOptions(
     }
     case 'businessSummary': {
       return {
-        grid: {
+        grid: getGrid({
           left: 30,
           right: 30, // 让 X 轴右侧显示完整
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {},
+        }),
+        legend: getLegend(),
         series: [
           {
             name: '新增商机数量',
@@ -149,12 +161,7 @@ export function getChartOptions(
             saveAsImage: { show: true, name: '新增商机分析' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         yAxis: [
           {
             type: 'value',
@@ -211,10 +218,11 @@ export function getChartOptions(
         title: {
           text: '销售漏斗',
         },
-        tooltip: {
+        tooltip: getTooltip({
           trigger: 'item',
+          axisPointer: undefined,
           formatter: '{a} <br/>{b}',
-        },
+        }),
         toolbox: {
           feature: {
             dataView: { readOnly: false },
@@ -222,9 +230,9 @@ export function getChartOptions(
             saveAsImage: {},
           },
         },
-        legend: {
+        legend: getLegend({
           data: ['客户', '商机', '赢单'],
-        },
+        }),
         series: [
           {
             name: '销售漏斗',
