@@ -75,6 +75,7 @@ function handleAuthInfoDialogClose() {
         <Card class="h-full">
           <template #title>
             <div class="flex items-center">
+              <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
               <IconifyIcon class="mr-2 text-primary" icon="ep:info-filled" />
               <span>设备信息</span>
             </div>
@@ -141,6 +142,7 @@ function handleAuthInfoDialogClose() {
           <template #title>
             <div class="flex items-center justify-between">
               <div class="flex items-center">
+                <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
                 <IconifyIcon class="mr-2 text-primary" icon="ep:location" />
                 <span>设备位置</span>
               </div>
@@ -160,6 +162,7 @@ function handleAuthInfoDialogClose() {
               v-else
               class="flex h-full w-full items-center justify-center rounded bg-gray-50 text-gray-400"
             >
+              <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
               <IconifyIcon class="mr-2" icon="ep:warning" />
               <span>暂无位置信息</span>
             </div>

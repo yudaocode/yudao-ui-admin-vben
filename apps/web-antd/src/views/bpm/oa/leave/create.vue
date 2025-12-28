@@ -3,6 +3,7 @@ import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
 import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { confirm, Page, useVbenForm } from '@vben/common-ui';
 import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
@@ -13,7 +14,7 @@ import { Button, Card, message, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
-import { createLeave, updateLeave } from '#/api/bpm/oa/leave';
+import { createLeave, getLeave, updateLeave } from '#/api/bpm/oa/leave';
 import { getApprovalDetail as getApprovalDetailApi } from '#/api/bpm/processInstance';
 import { $t } from '#/locales';
 import { router } from '#/router';
@@ -22,6 +23,7 @@ import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/
 import { useFormSchema } from './data';
 
 const { closeCurrentTab } = useTabs();
+const { query } = useRoute();
 
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 
@@ -35,7 +37,7 @@ const processDefinitionId = ref('');
 const formData = ref<BpmOALeaveApi.Leave>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['请假'])
+    ? '重新发起请假'
     : $t('ui.actionTitle.create', ['请假']);
 });
 
@@ -157,6 +159,34 @@ function selectUserConfirm(id: string, userList: any[]) {
   startUserSelectAssignees.value[id] = userList?.map((item: any) => item.id);
 }
 
+/** 获取请假数据，用于重新发起时自动填充 */
+async function getDetail(id: number) {
+  try {
+    formLoading.value = true;
+    const data = await getLeave(id);
+    if (!data) {
+      message.error('重新发起请假失败，原因：请假数据不存在');
+      return;
+    }
+    formData.value = {
+      ...formData.value,
+      id: data.id,
+      type: data.type,
+      reason: data.reason,
+      startTime: data.startTime,
+      endTime: data.endTime,
+    } as BpmOALeaveApi.Leave;
+    await formApi.setValues({
+      type: data.type,
+      reason: data.reason,
+      startTime: data.startTime,
+      endTime: data.endTime,
+    });
+  } finally {
+    formLoading.value = false;
+  }
+}
+
 /** 审批相关：预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次, formData.value可改成实际业务中的特定字段 */
 watch(
   formData.value as object,
@@ -189,6 +219,11 @@ onMounted(async () => {
   }
   processDefinitionId.value = processDefinitionDetail.id;
   startUserSelectTasks.value = processDefinitionDetail.startUserSelectTasks;
+
+  // 如果是重新发起，则加载请假数据
+  if (query.id) {
+    await getDetail(Number(query.id));
+  }
 
   await getApprovalDetail();
 });

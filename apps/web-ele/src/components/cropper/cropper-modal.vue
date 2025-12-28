@@ -36,7 +36,6 @@ const cropper = ref<CropperType>();
 let scaleX = 1;
 let scaleY = 1;
 
-const prefixCls = 'cropper-am';
 const [Modal, modalApi] = useVbenModal({
   onConfirm: handleOk,
   onOpenChange(isOpen) {
@@ -120,11 +119,34 @@ async function handleOk() {
     :title="$t('ui.cropper.modalTitle')"
     class="w-[800px]"
   >
-    <div :class="prefixCls">
+    <div class="flex">
       <!-- 左侧区域 -->
-      <div :class="`${prefixCls}-left`" class="w-full">
+      <div class="h-[340px] w-[55%]">
         <!-- 裁剪器容器 -->
-        <div :class="`${prefixCls}-cropper`">
+        <div
+          class="h-[300px] bg-[#eee]"
+          style="
+            background-image:
+              linear-gradient(
+                45deg,
+                rgb(0 0 0 / 25%) 25%,
+                transparent 0,
+                transparent 75%,
+                rgb(0 0 0 / 25%) 0
+              ),
+              linear-gradient(
+                45deg,
+                rgb(0 0 0 / 25%) 25%,
+                transparent 0,
+                transparent 75%,
+                rgb(0 0 0 / 25%) 0
+              );
+            background-position:
+              0 0,
+              12px 12px;
+            background-size: 24px 24px;
+          "
+        >
           <CropperImage
             v-if="src"
             :circled="circled"
@@ -136,7 +158,7 @@ async function handleOk() {
         </div>
 
         <!-- 工具栏 -->
-        <div :class="`${prefixCls}-toolbar`">
+        <div class="mt-2.5 flex items-center justify-between">
           <ElUpload
             :before-upload="handleBeforeUpload"
             :file-list="[]"
@@ -281,18 +303,23 @@ async function handleOk() {
       </div>
 
       <!-- 右侧区域 -->
-      <div :class="`${prefixCls}-right`">
+      <div class="h-[340px] w-[45%]">
         <!-- 预览区域 -->
-        <div :class="`${prefixCls}-preview`">
+        <div
+          class="mx-auto h-[220px] w-[220px] overflow-hidden rounded-full border border-gray-200"
+        >
           <img
             v-if="previewSource"
             :alt="$t('ui.cropper.preview')"
             :src="previewSource"
+            class="h-full w-full"
           />
         </div>
         <!-- 头像组合预览 -->
         <template v-if="previewSource">
-          <div :class="`${prefixCls}-group`">
+          <div
+            class="mt-2 flex items-center justify-around border-t border-gray-200 pt-2"
+          >
             <ElAvatar :src="previewSource" size="large" />
             <ElAvatar :size="48" :src="previewSource" />
             <ElAvatar :size="64" :src="previewSource" />
@@ -303,77 +330,3 @@ async function handleOk() {
     </div>
   </Modal>
 </template>
-
-<style lang="scss">
-/* TODO @puhui999：要类似 web-antd/src/components/cropper/cropper-avatar.vue 减少 scss，通过 tindwind 么？ */
-.cropper-am {
-  display: flex;
-
-  &-left,
-  &-right {
-    height: 340px;
-  }
-
-  &-left {
-    width: 55%;
-  }
-
-  &-right {
-    width: 45%;
-  }
-
-  &-cropper {
-    height: 300px;
-    background: #eee;
-    background-image:
-      linear-gradient(
-        45deg,
-        rgb(0 0 0 / 25%) 25%,
-        transparent 0,
-        transparent 75%,
-        rgb(0 0 0 / 25%) 0
-      ),
-      linear-gradient(
-        45deg,
-        rgb(0 0 0 / 25%) 25%,
-        transparent 0,
-        transparent 75%,
-        rgb(0 0 0 / 25%) 0
-      );
-    background-position:
-      0 0,
-      12px 12px;
-    background-size: 24px 24px;
-  }
-
-  &-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  &-preview {
-    width: 220px;
-    height: 220px;
-    margin: 0 auto;
-    overflow: hidden;
-    border: 1px solid #eee;
-    border-radius: 50%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  &-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding-top: 8px;
-    margin-top: 8px;
-    border-top: 1px solid #eee;
-  }
-}
-</style>

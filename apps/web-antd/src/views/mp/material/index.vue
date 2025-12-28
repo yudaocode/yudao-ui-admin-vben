@@ -7,6 +7,7 @@ import { provide, ref } from 'vue';
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { $t } from '@vben/locales';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
@@ -23,7 +24,6 @@ import {
 import { UploadType } from './modules/upload';
 import UploadFile from './modules/UploadFile.vue';
 import UploadVideo from './modules/UploadVideo.vue';
-import {$t} from '@vben/locales';
 
 defineOptions({ name: 'MpMaterial' });
 
@@ -84,7 +84,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
-      height: type.value === UploadType.Image ? 220 : 'auto',
+    },
+    cellConfig: {
+      height: type.value === UploadType.Image ? 220 : undefined,
     },
     toolbarConfig: {
       refresh: true,
@@ -101,7 +103,9 @@ async function onTabChange() {
     rowConfig: {
       keyField: 'id',
       isHover: true,
-      height: type.value === UploadType.Image ? 220 : 'auto',
+    },
+    cellConfig: {
+      height: type.value === UploadType.Image ? 220 : undefined,
     },
   });
   await gridApi.reload();

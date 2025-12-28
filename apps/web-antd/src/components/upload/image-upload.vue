@@ -55,12 +55,12 @@ const { getStringAccept } = useUploadType({
   maxSizeRef: maxSize,
 });
 
-// 计算当前绑定的值，优先使用 modelValue
+/** 计算当前绑定的值，优先使用 modelValue */
 const currentValue = computed(() => {
   return props.modelValue === undefined ? props.value : props.modelValue;
 });
 
-// 判断是否使用 modelValue
+/** 判断是否使用 modelValue */
 const isUsingModelValue = computed(() => {
   return props.modelValue !== undefined;
 });
@@ -89,19 +89,21 @@ watch(
       } else {
         value.push(v);
       }
-      fileList.value = value.map((item, i) => {
-        if (item && isString(item)) {
-          return {
-            uid: `${-i}`,
-            name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
-            status: UploadResultStatus.DONE,
-            url: item,
-          };
-        } else if (item && isObject(item)) {
-          return item;
-        }
-        return null;
-      }) as UploadProps['fileList'];
+      fileList.value = value
+        .map((item, i) => {
+          if (item && isString(item)) {
+            return {
+              uid: `${-i}`,
+              name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
+              status: UploadResultStatus.DONE,
+              url: item,
+            };
+          } else if (item && isObject(item)) {
+            return item;
+          }
+          return null;
+        })
+        .filter(Boolean) as UploadProps['fileList'];
     }
     if (!isFirstRender.value) {
       emit('change', value);
@@ -114,6 +116,7 @@ watch(
   },
 );
 
+/** 将文件转换为 Base64 格式 */
 function getBase64<T extends ArrayBuffer | null | string>(file: File) {
   return new Promise<T>((resolve, reject) => {
     const reader = new FileReader();
@@ -125,6 +128,7 @@ function getBase64<T extends ArrayBuffer | null | string>(file: File) {
   });
 }
 
+/** 处理图片预览 */
 async function handlePreview(file: UploadFile) {
   if (!file.url && !file.preview) {
     file.preview = await getBase64<string>(file.originFileObj!);
@@ -138,6 +142,7 @@ async function handlePreview(file: UploadFile) {
     );
 }
 
+/** 处理文件删除 */
 async function handleRemove(file: UploadFile) {
   if (fileList.value) {
     const index = fileList.value.findIndex((item) => item.uid === file.uid);
@@ -151,11 +156,17 @@ async function handleRemove(file: UploadFile) {
   }
 }
 
+/** 关闭预览弹窗 */
 function handleCancel() {
   previewOpen.value = false;
   previewTitle.value = '';
 }
 
+/**
+ * 上传前校验
+ * @param file 待上传的文件
+ * @returns 是否允许上传
+ */
 async function beforeUpload(file: File) {
   // 检查文件数量限制
   if (fileList.value!.length >= props.maxNumber) {
@@ -186,7 +197,8 @@ async function beforeUpload(file: File) {
   return true;
 }
 
-async function customRequest(info: UploadRequestOption<any>) {
+/** 自定义上传请求 */
+async function customRequest(info: UploadRequestOption) {
   let { api } = props;
   if (!api || !isFunction(api)) {
     api = useUpload(props.directory).httpRequest;
@@ -211,7 +223,11 @@ async function customRequest(info: UploadRequestOption<any>) {
   }
 }
 
-// 处理上传成功
+/**
+ * 处理上传成功
+ * @param res 上传响应结果
+ * @param file 上传的文件
+ */
 function handleUploadSuccess(res: any, file: File) {
   // 删除临时文件
   const index = fileList.value?.findIndex((item) => item.name === file.name);
@@ -243,14 +259,18 @@ function handleUploadSuccess(res: any, file: File) {
   }
 }
 
-// 处理上传错误
+/** 处理上传错误 */
 function handleUploadError(error: any) {
   console.error('上传错误:', error);
-  message.error('上传错误！！！');
+  message.error($t('ui.upload.uploadError'));
   // 上传失败时减少计数器
   uploadNumber.value = Math.max(0, uploadNumber.value - 1);
 }
 
+/**
+ * 获取当前文件列表的值
+ * @returns 文件 URL 列表或字符串
+ */
 function getValue() {
   const list = (fileList.value || [])
     .filter((item) => item?.status === UploadResultStatus.DONE)

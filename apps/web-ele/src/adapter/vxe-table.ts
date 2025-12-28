@@ -91,6 +91,7 @@ setupVbenVxeTable({
           },
           previewTeleported: true,
         });
+        // return h(ElImage, { src, previewSrcList: [src], ...props });
       },
     });
 

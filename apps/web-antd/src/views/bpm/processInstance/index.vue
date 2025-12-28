@@ -5,7 +5,11 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { h } from 'vue';
 
 import { DocAlert, Page, prompt } from '@vben/common-ui';
-import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
+import {
+  BpmModelFormType,
+  BpmProcessInstanceStatus,
+  DICT_TYPE,
+} from '@vben/constants';
 
 import { Button, message, Textarea } from 'ant-design-vue';
 
@@ -37,23 +41,34 @@ function handleDetail(row: BpmProcessInstanceApi.ProcessInstance) {
 }
 
 /** 重新发起流程 */
-async function handleCreate(row: BpmProcessInstanceApi.ProcessInstance) {
-  // 如果是【业务表单】，不支持重新发起
+async function handleCreate(row?: BpmProcessInstanceApi.ProcessInstance) {
   if (row?.id) {
     const processDefinitionDetail = await getProcessDefinition(
       row.processDefinitionId,
     );
-    if (processDefinitionDetail.formType === 20) {
-      message.error(
-        '重新发起流程失败，原因：该流程使用业务表单，不支持重新发起',
-      );
+    if (processDefinitionDetail?.formType === BpmModelFormType.CUSTOM) {
+      if (!processDefinitionDetail.formCustomCreatePath) {
+        message.error('未配置业务表单的提交路由，无法重新发起');
+        return;
+      }
+      await router.push({
+        path: processDefinitionDetail.formCustomCreatePath,
+        query: {
+          id: row.businessKey,
+        },
+      });
+      return;
+    } else if (processDefinitionDetail?.formType === BpmModelFormType.NORMAL) {
+      await router.push({
+        name: 'BpmProcessInstanceCreate',
+        query: { processInstanceId: row.id },
+      });
       return;
     }
   }
-  // 跳转发起流程界面
   await router.push({
     name: 'BpmProcessInstanceCreate',
-    query: { processInstanceId: row?.id },
+    query: row?.id ? { processInstanceId: row.id } : {},
   });
 }
 

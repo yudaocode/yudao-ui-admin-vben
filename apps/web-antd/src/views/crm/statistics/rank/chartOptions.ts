@@ -1,5 +1,25 @@
 import { cloneDeep } from '@vben/utils';
 
+const getLegend = (extra: Record<string, any> = {}) => ({
+  top: 10,
+  ...extra,
+});
+
+const getGrid = (extra: Record<string, any> = {}) => ({
+  left: 20,
+  right: 20,
+  bottom: 20,
+  containLabel: true,
+  ...extra,
+});
+
+const getTooltip = () => ({
+  trigger: 'axis',
+  axisPointer: {
+    type: 'shadow',
+  },
+});
+
 export function getChartOptions(activeTabName: any, res: any): any {
   switch (activeTabName) {
     case 'contactCountRank': {
@@ -8,15 +28,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
           dimensions: ['nickname', 'count'],
           source: cloneDeep(res).toReversed(),
         },
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {
-          top: 50,
-        },
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '新增联系人数排行',
@@ -34,12 +47,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '新增联系人数排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '新增联系人数（个）',
@@ -56,15 +64,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
           dimensions: ['nickname', 'count'],
           source: cloneDeep(res).toReversed(),
         },
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {
-          top: 50,
-        },
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '签约合同排行',
@@ -82,12 +83,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '签约合同排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '签约合同数（个）',
@@ -104,15 +100,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
           dimensions: ['nickname', 'count'],
           source: cloneDeep(res).toReversed(),
         },
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {
-          top: 50,
-        },
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '合同金额排行',
@@ -130,12 +119,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '合同金额排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '合同金额（元）',
@@ -152,15 +136,8 @@ export function getChartOptions(activeTabName: any, res: any): any {
           dimensions: ['nickname', 'count'],
           source: cloneDeep(res).toReversed(),
         },
-        grid: {
-          left: 20,
-          right: 20,
-          bottom: 20,
-          containLabel: true,
-        },
-        legend: {
-          top: 50,
-        },
+        grid: getGrid(),
+        legend: getLegend(),
         series: [
           {
             name: '新增客户数排行',
@@ -178,12 +155,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '新增客户数排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '新增客户数（个）',
@@ -226,12 +198,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '跟进次数排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '跟进次数（次）',
@@ -274,12 +241,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '跟进客户数排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '跟进客户数（个）',
@@ -322,12 +284,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '产品销量排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '产品销量',
@@ -370,12 +327,7 @@ export function getChartOptions(activeTabName: any, res: any): any {
             saveAsImage: { show: true, name: '回款金额排行' }, // 保存为图片
           },
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-          },
-        },
+        tooltip: getTooltip(),
         xAxis: {
           type: 'value',
           name: '回款金额（元）',
