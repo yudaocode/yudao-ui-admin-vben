@@ -39,7 +39,7 @@ export function useDictSelectRule() {
         title: label,
         info: '',
         $required: false,
-        // TODO @puhui999：vben 版本里，这里有个 modelField: 'value', 需要添加么？
+        modelField: 'model-value',
       };
     },
     props(_: any, { t }: any) {
