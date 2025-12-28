@@ -73,7 +73,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'spuIds',
       label: '活动商品',
       component: 'Input',
-      rules: 'required',
       formItemClass: 'col-span-2',
     },
   ];
