@@ -25,7 +25,6 @@ const avatar = computed(
   () => props.profile?.avatar || preferences.app.defaultAvatar,
 );
 
-// TODO @puhui999：头像上传没跑通
 async function handelUpload({
   file,
   filename,
@@ -37,9 +36,9 @@ async function handelUpload({
   const { httpRequest } = useUpload();
   // 将 Blob 转换为 File
   const fileObj = new File([file], filename, { type: file.type });
-  const avatar = await httpRequest(fileObj);
-  // 2. 更新用户头像
-  await updateUserProfile({ avatar });
+  const res = await httpRequest(fileObj);
+  // 2. 更新用户头像（httpRequest 返回 { url: string }）
+  await updateUserProfile({ avatar: res.url });
 }
 </script>
 
@@ -57,8 +56,8 @@ async function handelUpload({
       </ElTooltip>
     </div>
     <div class="mt-8">
-      <ElDescriptions :column="2">
-        <ElDescriptionsItem>
+      <ElDescriptions :column="2" border>
+        <ElDescriptionsItem label="用户账号">
           <template #label>
             <div class="flex items-center">
               <IconifyIcon icon="ant-design:user-outlined" class="mr-1" />
@@ -116,7 +115,11 @@ async function handelUpload({
               所属岗位
             </div>
           </template>
-          {{ profile.posts.map((post) => post.name).join(',') }}
+          {{
+            profile.posts && profile.posts.length > 0
+              ? profile.posts.map((post) => post.name).join(',')
+              : '-'
+          }}
         </ElDescriptionsItem>
         <ElDescriptionsItem>
           <template #label>

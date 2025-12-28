@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<SystemSocialUserApi.SocialUser>,
+  },
 });
 
 /** 解绑账号 */
@@ -167,13 +167,12 @@ onMounted(() => {
       >
         <ElCard v-for="item in allBindList" :key="item.type" class="!mb-2">
           <div class="flex w-full items-center gap-4">
-            <!-- TODO @puhui999：图片大小不太对 -->
             <ElImage
               :src="item.img"
-              :width="40"
-              :height="40"
+              style="width: 40px; height: 40px"
               :alt="item.title"
-              :preview="false"
+              :preview-disabled="true"
+              fit="contain"
             />
             <div class="flex flex-1 items-center justify-between">
               <div class="flex flex-col">
