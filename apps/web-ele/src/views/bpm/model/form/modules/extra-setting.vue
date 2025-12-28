@@ -30,12 +30,12 @@ import {
 } from 'element-plus';
 
 import { getForm } from '#/api/bpm/form';
+import { parseFormFields } from '#/components/form-create';
 // TODO @jason：这里要迁移下么？
 // import {
 //   HttpRequestSetting,
 //   parseFormFields,
 // } from '#/views/bpm/components/simple-process-design';
-import { parseFormFields } from '#/components/form-create';
 
 import PrintTemplate from './custom-print-template.vue';
 
@@ -516,11 +516,11 @@ defineExpose({ initData, validate });
       </ElRow>
       <ElRow v-if="processBeforeTriggerEnable">
         <ElCol :span="24" class="mt-6">
-          <!-- <HttpRequestSetting
+          <HttpRequestSetting
             v-model:setting="modelData.processBeforeTriggerSetting"
             :response-enable="true"
             form-item-prefix="processBeforeTriggerSetting"
-          /> -->
+          />
         </ElCol>
       </ElRow>
     </ElFormItem>

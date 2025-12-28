@@ -158,7 +158,6 @@ function changeNodeName() {
 defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </script>
 <template>
-  <!-- TODO @jason：antd 是 1/3，这里要统一么？ -->
   <Drawer class="w-2/5">
     <template #title>
       <div class="flex items-center">
