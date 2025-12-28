@@ -138,6 +138,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
         placeholder: [
           $t('utils.rangePicker.beginTime'),
           $t('utils.rangePicker.endTime'),
@@ -222,7 +223,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '优惠设置',
       component: 'Input',
       formItemClass: 'items-start',
-      rules: 'required',
+      rules: z
+        .array(z.any())
+        .min(1, { message: '请添加至少一条优惠规则' })
+        .default([]),
     },
     {
       fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
