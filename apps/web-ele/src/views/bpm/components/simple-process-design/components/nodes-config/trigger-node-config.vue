@@ -383,7 +383,6 @@ onMounted(() => {
 });
 </script>
 <template>
-  <!-- TODO @jason：antd 这里是 1/3，需要保持一致么？ -->
   <Drawer class="w-2/5">
     <template #title>
       <div class="config-header">
