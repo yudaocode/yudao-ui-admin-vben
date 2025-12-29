@@ -176,9 +176,7 @@ onMounted(() => {
             />
             <div class="flex flex-1 items-center justify-between">
               <div class="flex flex-col">
-                <h4
-                  class="mb-[4px] text-[14px] text-black/85 dark:text-white/85"
-                >
+                <h4 class="mb-1 text-sm text-black/85 dark:text-white/85">
                   {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
                 </h4>
                 <span class="text-black/45 dark:text-white/45">
@@ -186,9 +184,9 @@ onMounted(() => {
                     {{ item.socialUser?.nickname || item.socialUser?.openid }}
                   </template>
                   <template v-else>
-                    绑定{{
-                      getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type)
-                    }}账号
+                    绑定
+                    {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
+                    账号
                   </template>
                 </span>
               </div>
