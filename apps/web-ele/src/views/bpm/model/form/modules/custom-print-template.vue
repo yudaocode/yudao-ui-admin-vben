@@ -102,8 +102,8 @@ onBeforeUnmount(() => {
   <Modal class="w-3/4" title="自定义模板">
     <div class="mb-3">
       <ElAlert
-        message="输入 @ 可选择插入流程选项和表单选项"
-        type="info"
+        title="输入 @ 可选择插入流程选项和表单选项"
+        type="primary"
         show-icon
       />
     </div>

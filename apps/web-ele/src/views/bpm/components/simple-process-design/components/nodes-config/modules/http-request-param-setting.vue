@@ -54,7 +54,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
 }
 </script>
 <template>
-  <ElFormItem label="请求头">
+  <ElFormItem label="请求头" label-position="top">
     <div
       v-for="(item, index) in props.header"
       :key="index"
@@ -144,7 +144,7 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       添加一行
     </ElButton>
   </div>
-  <ElFormItem label="请求体">
+  <ElFormItem label="请求体" label-position="top">
     <div
       v-for="(item, index) in props.body"
       :key="index"

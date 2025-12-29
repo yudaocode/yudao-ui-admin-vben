@@ -29,10 +29,8 @@ import {
 import dayjs from 'dayjs';
 
 import { getForm } from '#/api/bpm/form';
-import {
-  HttpRequestSetting,
-  parseFormFields,
-} from '#/views/bpm/components/simple-process-design';
+import { parseFormFields } from '#/components/form-create';
+import { HttpRequestSetting } from '#/views/bpm/components/simple-process-design';
 
 import PrintTemplate from './custom-print-template.vue';
 
