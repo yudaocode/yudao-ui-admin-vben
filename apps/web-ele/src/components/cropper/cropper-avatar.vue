@@ -83,6 +83,7 @@ defineExpose({
         class="duration-400 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black bg-opacity-40 opacity-0 transition-opacity group-hover:opacity-100"
         :style="getImageWrapperStyle"
       >
+        <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-avatar.vue 里的 Icon 么？ -->
         <span
           :style="{
             ...getImageWrapperStyle,

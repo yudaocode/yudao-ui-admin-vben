@@ -43,6 +43,7 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       // 打开时，进行 loading 加载。后续 CropperImage 组件加载完毕，会自动关闭 loading（通过 handleReady）
       modalLoading(true);
+      // TODO @puhui999：这里比 ele 多了，是符合预期的哇？
       const img = new Image();
       img.src = src.value;
       img.addEventListener('load', () => {
