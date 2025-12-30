@@ -10,7 +10,7 @@ import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, message, Space } from 'ant-design-vue';
+import { Button, Card, Col, message, Row, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
@@ -95,6 +95,7 @@ async function onSubmit() {
       content: $t('ui.actionMessage.operationSuccess'),
       key: 'action_process_msg',
     });
+    closeCurrentTab();
     await router.push({
       name: 'BpmOALeave',
     });
@@ -231,30 +232,35 @@ onMounted(async () => {
 
 <template>
   <Page>
-    <div class="mx-auto w-[80vw] max-w-[920px]">
-      <Card :title="getTitle" class="w-full">
-        <template #extra>
-          <Button type="default" @click="onBack">
-            <IconifyIcon icon="lucide:arrow-left" />
-            返回
-          </Button>
-        </template>
+    <Row :gutter="16">
+      <Col :span="16">
+        <Card :title="getTitle" class="w-full" v-loading="formLoading">
+          <template #extra>
+            <Button type="default" @click="onBack">
+              <IconifyIcon icon="lucide:arrow-left" />
+              返回
+            </Button>
+          </template>
 
-        <Form />
-      </Card>
-
-      <Card title="流程" class="mt-2 w-full">
-        <ProcessInstanceTimeline
-          :activity-nodes="activityNodes"
-          :show-status-icon="false"
-          @select-user-confirm="selectUserConfirm"
-        />
-        <template #actions>
-          <Space warp :size="12" class="w-full px-6">
-            <Button type="primary" @click="onSubmit"> 提交 </Button>
-          </Space>
-        </template>
-      </Card>
-    </div>
+          <Form />
+          <template #actions>
+            <Space warp :size="12" class="w-full px-6">
+              <Button type="primary" @click="onSubmit" :loading="formLoading">
+                提交
+              </Button>
+            </Space>
+          </template>
+        </Card>
+      </Col>
+      <Col :span="8">
+        <Card title="流程" class="w-full">
+          <ProcessInstanceTimeline
+            :activity-nodes="activityNodes"
+            :show-status-icon="false"
+            @select-user-confirm="selectUserConfirm"
+          />
+        </Card>
+      </Col>
+    </Row>
   </Page>
 </template>
