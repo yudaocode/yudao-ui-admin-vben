@@ -22,6 +22,7 @@ import { useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
 import AnalyticsVisitsSource from '../analytics/analytics-visits-source.vue';
+import WorkbenchUserInfo from './workbench-user-info.vue';
 
 const userStore = useUserStore();
 
@@ -244,9 +245,10 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
         <WorkbenchTrends :items="trendItems" class="mt-5" title="最新动态" />
       </div>
       <div class="w-full lg:w-2/5">
+        <WorkbenchUserInfo class="mt-5 lg:mt-0" />
         <WorkbenchQuickNav
           :items="quickNavItems"
-          class="mt-5 lg:mt-0"
+          class="mt-5"
           title="快捷导航"
           @click="navTo"
         />

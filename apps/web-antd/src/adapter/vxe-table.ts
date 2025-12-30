@@ -82,11 +82,37 @@ setupVbenVxeTable({
       } as VxeTableGridOptions,
     });
 
+    // 增强型CellImage——CellImagePro，src读取prop中src，表格配置项可以用 cellRender: { name: 'CellImage' },
+    vxeUI.renderer.add('CellImagePro', {
+      renderTableDefault(_renderOpts, params) {
+        const { column, row } = params;
+        // const { attrs, props } = _renderOpts;
+        const { props } = _renderOpts;
+        return h(Image, { ...props, src: row[column.field] || props.src(row) });
+      },
+    });
+
     // 表格配置项可以用 cellRender: { name: 'CellImage' },
     vxeUI.renderer.add('CellImage', {
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
         return h(Image, { src: row[column.field] });
+      },
+    });
+
+    // 增强型CellImages
+    vxeUI.renderer.add('CellImagesPro', {
+      renderTableDefault(_renderOpts, params) {
+        const { column, row } = params;
+        const { props } = _renderOpts;
+        if (column && column.field && (row[column.field] || props.src(row))) {
+          return h(ImagePreviewGroup, {}, () => {
+            return (row[column.field] || props.src(row)).map((item: any) =>
+              h(Image, { ...props, src: item }),
+            );
+          });
+        }
+        return '';
       },
     });
 
@@ -106,12 +132,21 @@ setupVbenVxeTable({
 
     // 表格配置项可以用 cellRender: { name: 'CellLink' },
     vxeUI.renderer.add('CellLink', {
-      renderTableDefault(renderOpts) {
+      renderTableDefault(renderOpts, params) {
         const { props } = renderOpts;
+        // const { column, row } = params;
+        const { row } = params;
+        const href =
+          typeof props?.href === 'function' ? props?.href(row) : props?.href;
         return h(
           Button,
-          { size: 'small', type: 'link' },
-          { default: () => props?.text },
+          { size: 'small', type: 'link', href, target: props.target },
+          {
+            default: () =>
+              typeof props?.text === 'function'
+                ? props?.text(row)
+                : props?.text,
+          },
         );
       },
     });

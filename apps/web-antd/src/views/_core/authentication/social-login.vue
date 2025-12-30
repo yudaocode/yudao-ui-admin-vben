@@ -6,7 +6,7 @@ import type { AuthApi } from '#/api/core/auth';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
+import { AuthenticationSocialLogin, Verification, z } from '@vben/common-ui';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
@@ -94,7 +94,8 @@ async function tryLogin() {
 }
 
 /** 处理登录 */
-async function handleLogin(values: any) {
+// eslint-disable-next-line no-unused-vars
+async function _handleLogin(values: any) {
   // 如果开启验证码，则先验证验证码
   if (captchaEnable) {
     verifyRef.value.show();
@@ -132,7 +133,8 @@ onMounted(async () => {
   await tryLogin();
 });
 
-const formSchema = computed((): VbenFormSchema[] => {
+// eslint-disable-next-line no-unused-vars
+const _formSchema = computed((): VbenFormSchema[] => {
   return [
     {
       component: 'VbenSelect',
@@ -186,15 +188,15 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 <template>
   <div>
-    <AuthenticationLogin
+    <AuthenticationSocialLogin
       ref="loginRef"
-      :form-schema="formSchema"
+      title="正在登陆，请稍后……"
       :loading="authStore.loginLoading"
       :show-code-login="false"
       :show-qrcode-login="false"
       :show-third-party-login="false"
       :show-register="false"
-      @submit="handleLogin"
+      @submit="tryLogin"
     />
     <Verification
       ref="verifyRef"

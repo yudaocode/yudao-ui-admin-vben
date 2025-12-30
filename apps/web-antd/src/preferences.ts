@@ -13,13 +13,22 @@ export const overridesPreferences = defineOverridesPreferences({
     name: import.meta.env.VITE_APP_TITLE,
     enableRefreshToken: true,
   },
+  logo: {
+    enable: true,
+    fit: 'contain',
+    source: 'https://unpkg.com/@vbenjs/static-source@0.1.7/source/logo-v1.webp',
+  },
+  theme: {
+    mode: 'light',
+  },
   footer: {
     /** 默认关闭 footer 页脚，因为有一定遮挡 */
     enable: false,
     fixed: false,
   },
   copyright: {
+    date: '2025',
     companyName: import.meta.env.VITE_APP_TITLE,
-    companySiteLink: 'https://gitee.com/yudaocode/yudao-ui-admin-vben',
+    companySiteLink: 'https://mpreseller.com',
   },
 });

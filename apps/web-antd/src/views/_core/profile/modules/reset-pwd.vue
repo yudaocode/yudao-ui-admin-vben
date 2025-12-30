@@ -6,7 +6,17 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm, z } from '#/adapter/form';
-import { updateUserPassword } from '#/api/system/user/profile';
+import {
+  updateUserPassword,
+  updateUserPassword1,
+} from '#/api/system/user/profile';
+
+const props = defineProps<{
+  isAutoCreate: 0 | number;
+}>();
+const emit = defineEmits<{
+  (e: 'success'): void;
+}>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -17,6 +27,10 @@ const [Form, formApi] = useVbenForm({
       component: 'InputPassword',
       fieldName: 'oldPassword',
       label: '旧密码',
+      dependencies: {
+        triggerFields: [''],
+        if: props.isAutoCreate !== 1,
+      },
       rules: z
         .string({ message: '请输入密码' })
         .min(5, '密码长度不能少于 5 个字符')
@@ -74,10 +88,19 @@ async function handleSubmit(values: Recordable<any>) {
   try {
     formApi.setLoading(true);
     // 提交表单
-    await updateUserPassword({
-      oldPassword: values.oldPassword,
-      newPassword: values.newPassword,
-    });
+    // eslint-disable-next-line unicorn/prefer-ternary
+    if (props.isAutoCreate === 1) {
+      // 通过第三方登陆自动创建的，首次不需要校验旧密码
+      await updateUserPassword1({
+        newPassword: values.newPassword,
+      });
+    } else {
+      await updateUserPassword({
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword,
+      });
+    }
+    emit('success');
     message.success($t('ui.actionMessage.operationSuccess'));
   } catch (error) {
     console.error(error);

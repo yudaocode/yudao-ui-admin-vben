@@ -1,0 +1,4 @@
+export default {
+  'OAuth 2.0': 'OAuth 2.0安全认证',
+  OAuth2: 'OAuth 2.0安全认证!',
+};

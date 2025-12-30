@@ -10,7 +10,7 @@
   "password": "密码",
   "nickname": "昵称",
   "tenant": "租户",
-  "usernameTip": "请输入用户名",
+  "usernameTip": "请输入邮箱",
   "passwordTip": "请输入密码",
   "nicknameTip": "请输入昵称",
   "tenantTip": "请选择租户",

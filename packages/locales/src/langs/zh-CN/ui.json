@@ -23,6 +23,7 @@
     "export": "导出"
   },
   "actionMessage": {
+    "cancelFavoriteConfirm": "确定取消收藏 {0} 吗？",
     "deleteConfirm": "确定删除 {0} 吗？",
     "deleting": "正在删除 {0} ...",
     "deleteSuccess": "{0} 删除成功",

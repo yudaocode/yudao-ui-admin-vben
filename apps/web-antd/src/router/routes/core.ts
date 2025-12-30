@@ -40,6 +40,14 @@ const coreRoutes: RouteRecordRaw[] = [
   },
   {
     component: AuthPageLayout,
+    props: {
+      sloganImage: '/static/images/Ara-transparent.png',
+      pageTitle: 'Ara转卖助手每周帮你多赚$500',
+      pageDescription:
+        'MPReseller.com提供的转卖助理服务可以全年无休的持续帮你在Marketplace上准确的搜索有转卖价值的商品， Ara是MPReseller.com提供的增强型转卖助手，并且Ara会在第一时间帮你主动跟卖家建立联系，让你抢在别的买家前面买下市场上最有转卖价值的二手物品。 通过转卖这些物品，你可以轻松的每周多赚$500！',
+      toolbar: true,
+      toolbarList: ['color', 'language', 'layout', 'theme'],
+    },
     meta: {
       hideInTab: true,
       title: 'Authentication',
@@ -88,6 +96,21 @@ const coreRoutes: RouteRecordRaw[] = [
         component: () => import('#/views/_core/authentication/register.vue'),
         meta: {
           title: $t('page.auth.register'),
+        },
+      },
+      {
+        path: 'social-login/:type',
+        redirect: (to) => {
+          return {
+            path: '/auth/social-login',
+            query: { ...to.query, type: to.params.type },
+          };
+        },
+        name: 'SocialLoginG',
+        meta: {
+          hidden: true,
+          title: $t('router.socialLogin'),
+          noTagsView: true,
         },
       },
       {

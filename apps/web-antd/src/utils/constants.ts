@@ -289,17 +289,37 @@ export const SystemDataScopeEnum = {
  * 用户的社交平台的类型枚举
  */
 export const SystemUserSocialTypeEnum = {
+  GOOGLE: {
+    title: 'GOOGLE',
+    type: 40,
+    source: 'GOOGLE',
+    img: '/static/images/google.png',
+  },
+  APPLE: {
+    title: 'APPLE',
+    type: 41,
+    source: 'APPLE',
+    img: '/static/images/apple.png',
+  },
+  META: {
+    title: 'META',
+    type: 42,
+    source: 'META',
+    img: 'https://static.xx.fbcdn.net/rsrc.php/y3/r/y6QsbGgc866.svg',
+  },
   DINGTALK: {
     title: '钉钉',
     type: 20,
     source: 'dingtalk',
     img: 'https://s1.ax1x.com/2022/05/22/OzMDRs.png',
+    disabled: true,
   },
   WECHAT_ENTERPRISE: {
     title: '企业微信',
     type: 30,
     source: 'wechat_enterprise',
     img: 'https://s1.ax1x.com/2022/05/22/OzMrzn.png',
+    disabled: true,
   },
 };
 

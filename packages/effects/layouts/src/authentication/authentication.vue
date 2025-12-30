@@ -91,14 +91,14 @@ const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
             <img
               :alt="appName"
               :src="sloganImage"
-              class="animate-float h-64 w-2/5"
+              class="animate-float w-2/5"
             />
           </template>
           <SloganIcon v-else :alt="appName" class="animate-float h-64 w-2/5" />
           <div class="text-1xl text-foreground mt-6 font-sans lg:text-2xl">
             {{ pageTitle }}
           </div>
-          <div class="dark:text-muted-foreground mt-2">
+          <div class="dark:text-muted-foreground ml-5 mt-2 w-3/5">
             {{ pageDescription }}
           </div>
         </div>

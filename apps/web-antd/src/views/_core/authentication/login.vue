@@ -99,12 +99,15 @@ async function handleThirdLogin(type: number) {
   try {
     // 计算 redirectUri
     // tricky: type、redirect 需要先 encode 一次，否则钉钉回调会丢失。配合 social-login.vue#getUrlValue() 使用
-    const redirectUri = `${
+    let redirectUri = `${
       location.origin
     }/auth/social-login?${encodeURIComponent(
       `type=${type}&redirect=${redirect || '/'}`,
     )}`;
 
+    if (type === 40) {
+      redirectUri = `${location.origin}/auth/social-login/40`;
+    }
     // 进行跳转
     window.location.href = await socialAuthRedirect(type, redirectUri);
   } catch (error) {

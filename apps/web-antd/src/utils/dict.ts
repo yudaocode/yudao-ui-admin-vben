@@ -183,6 +183,7 @@ export const deleteDictCache = (dictType: string): void => {
 
 /** 字典类型枚举 - 按模块分组和排序 */
 enum DICT_TYPE {
+  // ========== ai ==========
   AI_GENERATE_MODE = 'ai_generate_mode', // AI 生成模式
   AI_IMAGE_STATUS = 'ai_image_status', // AI 图片状态
   AI_MODEL_TYPE = 'ai_model_type', // AI 模型类型
@@ -205,9 +206,9 @@ enum DICT_TYPE {
   BPM_TASK_STATUS = 'bpm_task_status',
   BROKERAGE_BANK_NAME = 'brokerage_bank_name', // 佣金提现银行
   BROKERAGE_BIND_MODE = 'brokerage_bind_mode', // 分销关系绑定模式
-
   BROKERAGE_ENABLED_CONDITION = 'brokerage_enabled_condition', // 分佣模式
   BROKERAGE_RECORD_BIZ_TYPE = 'brokerage_record_biz_type', // 佣金业务类型
+
   BROKERAGE_RECORD_STATUS = 'brokerage_record_status', // 佣金状态
   BROKERAGE_WITHDRAW_STATUS = 'brokerage_withdraw_status', // 佣金提现状态
   BROKERAGE_WITHDRAW_TYPE = 'brokerage_withdraw_type', // 佣金提现类型
@@ -217,19 +218,19 @@ enum DICT_TYPE {
   CRM_BIZ_TYPE = 'crm_biz_type', // CRM 业务类型
   CRM_BUSINESS_END_STATUS_TYPE = 'crm_business_end_status_type', // CRM 商机结束状态类型
   CRM_CUSTOMER_INDUSTRY = 'crm_customer_industry', // CRM 客户所属行业
-
   CRM_CUSTOMER_LEVEL = 'crm_customer_level', // CRM 客户级别
   CRM_CUSTOMER_SOURCE = 'crm_customer_source', // CRM 客户来源
+
   CRM_FOLLOW_UP_TYPE = 'crm_follow_up_type', // CRM 跟进方式
   CRM_PERMISSION_LEVEL = 'crm_permission_level', // CRM 数据权限的级别
   CRM_PRODUCT_STATUS = 'crm_product_status', // CRM 商品状态
   CRM_PRODUCT_UNIT = 'crm_product_unit', // CRM 产品单位
   CRM_RECEIVABLE_RETURN_TYPE = 'crm_receivable_return_type', // CRM 回款的还款方式
   DATE_INTERVAL = 'date_interval', // 数据间隔
-
   // ========== ERP - 企业资源计划模块  ==========
   ERP_AUDIT_STATUS = 'erp_audit_status', // ERP 审批状态
   ERP_STOCK_RECORD_BIZ_TYPE = 'erp_stock_record_biz_type', // 库存明细的业务类型
+
   // ========== MALL - 交易模块 ==========
   EXPRESS_CHARGE_MODE = 'trade_delivery_express_charge_mode', // 快递的计费方式
   INFRA_API_ERROR_LOG_PROCESS_STATUS = 'infra_api_error_log_process_status',
@@ -237,7 +238,6 @@ enum DICT_TYPE {
   INFRA_BOOLEAN_STRING = 'infra_boolean_string',
   INFRA_CODEGEN_FRONT_TYPE = 'infra_codegen_front_type',
   INFRA_CODEGEN_SCENE = 'infra_codegen_scene',
-
   INFRA_CODEGEN_TEMPLATE_TYPE = 'infra_codegen_template_type',
   INFRA_CONFIG_TYPE = 'infra_config_type',
 
@@ -245,9 +245,10 @@ enum DICT_TYPE {
   INFRA_JOB_LOG_STATUS = 'infra_job_log_status',
 
   INFRA_JOB_STATUS = 'infra_job_status',
-
   INFRA_OPERATE_TYPE = 'infra_operate_type',
+
   IOT_DATA_FORMAT = 'iot_data_format', // IOT 数据格式
+
   IOT_DATA_TYPE = 'iot_data_type', // IOT 数据类型
   IOT_DEVICE_STATUS = 'iot_device_status', // IOT 设备状态
   // ========== IOT - 物联网模块  ==========
@@ -264,8 +265,22 @@ enum DICT_TYPE {
   MEMBER_POINT_BIZ_TYPE = 'member_point_biz_type', // 积分的业务类型
   // ========== MP 模块 ==========
   MP_AUTO_REPLY_REQUEST_MATCH = 'mp_auto_reply_request_match', // 自动回复请求匹配类型
-
   MP_MESSAGE_TYPE = 'mp_message_type', // 消息类型
+
+  // ========== MPR 模块 ==========
+  MPR_ASSISTANT_STATUS = 'mpr_assistant_status',
+  MPR_BILLING_MODE = 'mpr_billing_mode',
+  MPR_BILLING_TYPE = 'mpr_billing_type',
+  MPR_BOOLEAN_NUMBER = 'mpr_boolean_number',
+  MPR_CONTACT_TEMPLATE_TYPE = 'mpr_contact_template_type',
+  MPR_CURRENCY_TYPE = 'mpr_currency_type',
+  MPR_FB_SEARCH_AVAILABILITY = 'mpr_fb_search_availability',
+  MPR_FB_SEARCH_DATE = 'mpr_fb_search_date',
+  MPR_FB_SEARCH_ITEM_CONDITION = 'mpr_fb_search_item_condition',
+  MPR_FB_SEARCH_SORT_BY = 'mpr_fb_search_sort_by',
+  MPR_GOODS_PHASE = 'mpr_goods_phase',
+  MPR_PRICE_REFERENCE_SOURCE = 'mpr_price_reference_source',
+
   // ========== PAY 模块 ==========
   PAY_CHANNEL_CODE = 'pay_channel_code', // 支付渠道编码类型
   PAY_NOTIFY_STATUS = 'pay_notify_status', // 商户支付回调状态

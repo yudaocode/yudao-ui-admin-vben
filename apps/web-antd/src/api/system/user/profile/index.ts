@@ -45,6 +45,12 @@ export function getUserProfile() {
 export function updateUserProfile(data: SystemUserProfileApi.UpdateProfileReq) {
   return requestClient.put('/system/user/profile/update', data);
 }
+/** 修改服务区域 */
+export const updateUserServiceArea = (serviceAreaId: number) => {
+  return requestClient.put(
+    `/system/user/profile/updateUserServiceArea?serviceAreaId=${serviceAreaId}`,
+  );
+};
 
 /** 修改用户个人密码 */
 export function updateUserPassword(
@@ -52,3 +58,14 @@ export function updateUserPassword(
 ) {
   return requestClient.put('/system/user/profile/update-password', data);
 }
+/** 修改用户个人密码 */
+export function updateUserPassword1(
+  data: SystemUserProfileApi.UpdatePasswordReq,
+) {
+  return requestClient.put('/system/user/profile/update-password1', data);
+}
+
+/** 验证邮箱 */
+export const verifyEmail = () => {
+  return requestClient.put('/system/user/profile/verifyEmail');
+};

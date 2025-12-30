@@ -52,7 +52,10 @@ onMounted(loadProfile);
             <BaseInfo :profile="profile" @success="refreshProfile" />
           </Tabs.TabPane>
           <Tabs.TabPane key="resetPwd" tab="密码设置">
-            <ResetPwd />
+            <ResetPwd
+              :is-auto-create="profile.isAutoCreate"
+              @success="refreshProfile"
+            />
           </Tabs.TabPane>
           <Tabs.TabPane key="userSocial" tab="社交绑定" force-render>
             <UserSocial @update:active-name="activeName = $event" />

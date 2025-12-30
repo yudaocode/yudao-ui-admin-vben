@@ -27,8 +27,11 @@ const emit = defineEmits<{
 const route = useRoute();
 /** 已经绑定的平台 */
 const bindList = ref<SystemSocialUserApi.SocialUser[]>([]);
+const enabledSocialTypes = Object.values(SystemUserSocialTypeEnum).filter(
+  (item) => !item.disabled,
+);
 const allBindList = computed<any[]>(() => {
-  return Object.values(SystemUserSocialTypeEnum).map((social) => {
+  return Object.values(enabledSocialTypes).map((social) => {
     const socialUser = bindList.value.find((item) => item.type === social.type);
     return {
       ...social,
@@ -167,6 +170,7 @@ onMounted(() => {
         <Card v-for="item in allBindList" :key="item.type" class="!mb-2">
           <div class="flex w-full items-center gap-4">
             <Image
+              style="min-width: 40px"
               :src="item.img"
               :width="40"
               :height="40"

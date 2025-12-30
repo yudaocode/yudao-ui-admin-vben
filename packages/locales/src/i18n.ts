@@ -17,7 +17,14 @@ const i18n = createI18n({
   globalInjection: true,
   legacy: false,
   locale: '',
-  messages: {},
+  messages: {
+    zh: {
+      'OAuth 2.0': 'OAuth 2.0安全认证',
+    },
+    en: {
+      'OAuth 2.0': 'OAuth 2.0安全认证',
+    },
+  },
 });
 
 const modules = import.meta.glob('./langs/**/*.json');

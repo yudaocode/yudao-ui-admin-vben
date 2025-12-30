@@ -26,9 +26,12 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
+    "@stripe/stripe-js": "^8.1.0",
     "@tinymce/tinymce-vue": "catalog:",
+    "@vben-core/shadcn-ui": "workspace:*",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -45,7 +48,6 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
-    "@vben-core/shadcn-ui": "workspace:*",
     "ant-design-vue": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
