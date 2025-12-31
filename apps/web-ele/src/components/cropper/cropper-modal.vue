@@ -112,6 +112,7 @@ async function handleOk() {
 </script>
 
 <template>
+  <!-- TODO @puhui999：antd 版本里是 2/3 宽度，两边要对齐么？ -->
   <Modal
     v-bind="$attrs"
     :confirm-text="$t('ui.cropper.okText')"
@@ -119,10 +120,13 @@ async function handleOk() {
     :title="$t('ui.cropper.modalTitle')"
     class="w-[800px]"
   >
+    <!-- TODO @puhui999：antd 版本有个 h-96，两边要对齐么？ -->
     <div class="flex">
       <!-- 左侧区域 -->
+      <!-- TODO @puhui999：antd 版本是 h-full w-3/5 两边要对齐么？ -->
       <div class="h-[340px] w-[55%]">
         <!-- 裁剪器容器 -->
+        <!-- TODO @puhui999：antd class 简单一点，看看要不要对齐 -->
         <div
           class="h-[300px] bg-[#eee]"
           style="
@@ -158,6 +162,7 @@ async function handleOk() {
         </div>
 
         <!-- 工具栏 -->
+        <!-- TODO @puhui999：antd 是 mt-4，看看两边要不要对齐 -->
         <div class="mt-2.5 flex items-center justify-between">
           <ElUpload
             :before-upload="handleBeforeUpload"
@@ -169,6 +174,7 @@ async function handleOk() {
               placement="bottom"
             >
               <ElButton size="small" type="primary">
+                <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                 <template #icon>
                   <div class="flex items-center justify-center">
                     <span class="icon-[ant-design--upload-outlined]"></span>
@@ -186,6 +192,7 @@ async function handleOk() {
                 @click="handlerToolbar('reset')"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span class="icon-[ant-design--reload-outlined]"></span>
                   </div>
@@ -204,6 +211,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
+                    <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                     <span
                       class="icon-[ant-design--rotate-left-outlined]"
                     ></span>
@@ -222,6 +230,7 @@ async function handleOk() {
                 @click="handlerToolbar('rotate', 45)"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span
                       class="icon-[ant-design--rotate-right-outlined]"
@@ -241,6 +250,7 @@ async function handleOk() {
                 @click="handlerToolbar('scaleX')"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span class="icon-[vaadin--arrows-long-h]"></span>
                   </div>
@@ -258,6 +268,7 @@ async function handleOk() {
                 @click="handlerToolbar('scaleY')"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span class="icon-[vaadin--arrows-long-v]"></span>
                   </div>
@@ -275,6 +286,7 @@ async function handleOk() {
                 @click="handlerToolbar('zoom', 0.1)"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span class="icon-[ant-design--zoom-in-outlined]"></span>
                   </div>
@@ -292,6 +304,7 @@ async function handleOk() {
                 @click="handlerToolbar('zoom', -0.1)"
               >
                 <template #icon>
+                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
                     <span class="icon-[ant-design--zoom-out-outlined]"></span>
                   </div>

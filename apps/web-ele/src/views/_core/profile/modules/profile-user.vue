@@ -36,9 +36,9 @@ async function handelUpload({
   const { httpRequest } = useUpload();
   // 将 Blob 转换为 File
   const fileObj = new File([file], filename, { type: file.type });
-  const res = await httpRequest(fileObj);
-  // 2. 更新用户头像（httpRequest 返回 { url: string }）
-  await updateUserProfile({ avatar: res.url });
+  const avatar = await httpRequest(fileObj);
+  // 2. 更新用户头像
+  await updateUserProfile({ avatar });
 }
 </script>
 

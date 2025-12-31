@@ -39,7 +39,7 @@ export function useDictSelectRule() {
         title: label,
         info: '',
         $required: false,
-        modelField: 'value',
+        modelField: 'value', // 特殊：ele 里是 model-value，antd 里是 value
       };
     },
     props(_: any, { t }: any) {
