@@ -10,8 +10,15 @@ import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, Col, message, Row, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
+import {
+  ElButton,
+  ElCard,
+  ElCol,
+  ElMessage,
+  ElRow,
+  ElSpace,
+} from 'element-plus';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
 import { createLeave, getLeave, updateLeave } from '#/api/bpm/oa/leave';
@@ -69,7 +76,7 @@ async function onSubmit() {
         Array.isArray(startUserSelectAssignees.value[userTask.id]) &&
         startUserSelectAssignees.value[userTask.id].length === 0
       ) {
-        return message.warning(`请选择${userTask.name}的审批人`);
+        return ElMessage.warning(`请选择${userTask.name}的审批人`);
       }
     }
   }
@@ -92,10 +99,7 @@ async function onSubmit() {
       ? updateLeave(submitData)
       : createLeave(submitData));
     // 关闭并提示
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
     closeCurrentTab();
     await router.push({
       name: 'BpmOALeave',
@@ -135,7 +139,7 @@ async function getApprovalDetail() {
       }), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
     });
     if (!data) {
-      message.error('查询不到审批详情信息！');
+      ElMessage.error('查询不到审批详情信息！');
       return;
     }
     // 获取审批节点，显示 Timeline 的数据
@@ -168,11 +172,11 @@ function selectUserConfirm(id: string, userList: any[]) {
 
 /** 获取请假数据，用于重新发起时自动填充 */
 async function getDetail(id: number) {
+  formLoading.value = true;
   try {
-    formLoading.value = true;
     const data = await getLeave(id);
     if (!data) {
-      message.error('重新发起请假失败，原因：请假数据不存在');
+      ElMessage.error('重新发起请假失败，原因：请假数据不存在');
       return;
     }
     formData.value = {
@@ -221,7 +225,7 @@ onMounted(async () => {
     processDefineKey,
   );
   if (!processDefinitionDetail) {
-    message.error('OA 请假的流程模型未配置，请检查！');
+    ElMessage.error('OA 请假的流程模型未配置，请检查！');
     return;
   }
   processDefinitionId.value = processDefinitionDetail.id;
@@ -238,35 +242,41 @@ onMounted(async () => {
 
 <template>
   <Page>
-    <Row :gutter="16">
-      <Col :span="16">
-        <Card :title="getTitle" class="w-full" v-loading="formLoading">
-          <template #extra>
-            <Button type="default" @click="onBack">
-              <IconifyIcon icon="lucide:arrow-left" />
-              返回
-            </Button>
+    <ElRow :gutter="16">
+      <ElCol :span="16">
+        <ElCard v-loading="formLoading">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <span>{{ getTitle }}</span>
+              <ElButton @click="onBack">
+                <IconifyIcon icon="lucide:arrow-left" />
+                返回
+              </ElButton>
+            </div>
           </template>
 
           <Form />
-          <template #actions>
-            <Space warp :size="12" class="w-full px-6">
-              <Button type="primary" @click="onSubmit" :loading="formLoading">
+          <template #footer>
+            <ElSpace wrap :size="12" class="w-full px-6">
+              <ElButton type="primary" @click="onSubmit" :loading="formLoading">
                 提交
-              </Button>
-            </Space>
+              </ElButton>
+            </ElSpace>
           </template>
-        </Card>
-      </Col>
-      <Col :span="8">
-        <Card title="流程" class="w-full" v-loading="processTimeLineLoading">
+        </ElCard>
+      </ElCol>
+      <ElCol :span="8">
+        <ElCard v-loading="processTimeLineLoading">
+          <template #header>
+            <span>流程</span>
+          </template>
           <ProcessInstanceTimeline
             :activity-nodes="activityNodes"
             :show-status-icon="false"
             @select-user-confirm="selectUserConfirm"
           />
-        </Card>
-      </Col>
-    </Row>
+        </ElCard>
+      </ElCol>
+    </ElRow>
   </Page>
 </template>
