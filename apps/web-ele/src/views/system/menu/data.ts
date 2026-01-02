@@ -217,6 +217,28 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
+      fieldName: 'visible',
+      label: '显示状态',
+      component: 'RadioGroup',
+      componentProps: {
+        options: [
+          { label: '显示', value: true },
+          { label: '隐藏', value: false },
+        ],
+      },
+      rules: 'required',
+      defaultValue: true,
+      help: '选择隐藏时，路由将不会出现在侧边栏，但仍然可以访问',
+      dependencies: {
+        triggerFields: ['type'],
+        show: (values) => {
+          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+            values.type,
+          );
+        },
+      },
+    },
+    {
       fieldName: 'alwaysShow',
       label: '总是显示',
       component: 'RadioGroup',
