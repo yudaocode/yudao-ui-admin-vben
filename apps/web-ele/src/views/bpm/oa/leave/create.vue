@@ -100,7 +100,7 @@ async function onSubmit() {
       : createLeave(submitData));
     // 关闭并提示
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    closeCurrentTab();
+    await closeCurrentTab();
     await router.push({
       name: 'BpmOALeave',
     });
@@ -172,8 +172,8 @@ function selectUserConfirm(id: string, userList: any[]) {
 
 /** 获取请假数据，用于重新发起时自动填充 */
 async function getDetail(id: number) {
-  formLoading.value = true;
   try {
+    formLoading.value = true;
     const data = await getLeave(id);
     if (!data) {
       ElMessage.error('重新发起请假失败，原因：请假数据不存在');

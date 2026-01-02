@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 
-import { h } from 'vue';
+import { h, onActivated } from 'vue';
 
 import { DocAlert, Page, prompt } from '@vben/common-ui';
 import { BpmProcessInstanceStatus } from '@vben/constants';
@@ -17,7 +17,6 @@ import { router } from '#/router';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-// TODO @jason：这里是不是要迁移下？
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -126,6 +125,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<BpmOALeaveApi.Leave>,
+});
+
+/** 激活时 */
+onActivated(() => {
+  handleRefresh();
 });
 </script>
 

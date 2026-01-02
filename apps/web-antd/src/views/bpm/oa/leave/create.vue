@@ -92,11 +92,8 @@ async function onSubmit() {
       ? updateLeave(submitData)
       : createLeave(submitData));
     // 关闭并提示
-    message.success({
-      content: $t('ui.actionMessage.operationSuccess'),
-      key: 'action_process_msg',
-    });
-    closeCurrentTab();
+    message.success($t('ui.actionMessage.operationSuccess'));
+    await closeCurrentTab();
     await router.push({
       name: 'BpmOALeave',
     });

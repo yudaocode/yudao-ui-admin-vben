@@ -60,7 +60,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       :key="index"
       class="mb-2 flex items-center gap-2"
     >
-      <!-- 参数名 -->
       <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
           :prop="`${bind}.header.${index}.key`"
@@ -73,8 +72,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           <ElInput placeholder="参数名不能为空" v-model="item.key" />
         </ElFormItem>
       </div>
-
-      <!-- 类型选择 -->
       <div class="w-[24%] min-w-11 shrink-0">
         <ElFormItem class="w-full">
           <ElSelect v-model="item.type">
@@ -87,8 +84,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           </ElSelect>
         </ElFormItem>
       </div>
-
-      <!-- 参数值 -->
       <div class="w-[42%] flex-1">
         <ElFormItem
           :prop="`${bind}.header.${index}.value`"
@@ -125,8 +120,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           </ElSelect>
         </ElFormItem>
       </div>
-
-      <!-- 删除按钮 -->
       <div class="flex w-[8%] shrink-0 items-center">
         <IconifyIcon
           class="size-4 cursor-pointer text-red-500"
@@ -150,7 +143,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       :key="index"
       class="mb-2 flex items-center gap-2"
     >
-      <!-- 参数名 -->
       <div class="w-[26%] min-w-32 shrink-0">
         <ElFormItem
           :prop="`${bind}.body.${index}.key`"
@@ -163,8 +155,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           <ElInput placeholder="参数名" v-model="item.key" />
         </ElFormItem>
       </div>
-
-      <!-- 类型选择 -->
       <div class="w-[24%] min-w-11 shrink-0">
         <ElFormItem>
           <ElSelect v-model="item.type">
@@ -177,8 +167,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           </ElSelect>
         </ElFormItem>
       </div>
-
-      <!-- 参数值 -->
       <div class="w-[42%] flex-1">
         <ElFormItem
           :prop="`${bind}.body.${index}.value`"
@@ -215,8 +203,6 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           </ElSelect>
         </ElFormItem>
       </div>
-
-      <!-- 删除按钮 -->
       <div class="flex w-[8%] shrink-0 items-center">
         <IconifyIcon
           class="size-4 cursor-pointer text-red-500"

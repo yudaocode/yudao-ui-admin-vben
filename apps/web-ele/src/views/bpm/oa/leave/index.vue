@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 
 import { onActivated } from 'vue';
@@ -106,10 +107,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async (
-          { page }: { page: { currentPage: number; pageSize: number } },
-          formValues: Record<string, any>,
-        ) => {
+        query: async ({ page }, formValues) => {
           return await getLeavePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -126,7 +124,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  },
+  } as VxeTableGridOptions<BpmOALeaveApi.Leave>,
 });
 
 /** 激活时 */
