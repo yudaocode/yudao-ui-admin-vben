@@ -2,7 +2,7 @@
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { ElCheckbox, ElInput, ElOption, ElSelect } from 'element-plus';
 
@@ -60,6 +60,25 @@ defineExpose({
 const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
+});
+
+/** 字典类型过滤方法 */
+const dictTypeQuery = ref('');
+function filterDictTypeMethod(query: string) {
+  dictTypeQuery.value = query;
+}
+
+/** 过滤后的字典类型选项：支持 type 或 name，忽略大小写 */
+const filteredDictTypeOptions = computed(() => {
+  const query = dictTypeQuery.value.toLowerCase();
+  if (!query) {
+    return dictTypeOptions.value;
+  }
+  return dictTypeOptions.value.filter(
+    (item) =>
+      item.type.toLowerCase().includes(query) ||
+      item.name.toLowerCase().includes(query),
+  );
 });
 </script>
 
@@ -134,9 +153,15 @@ onMounted(async () => {
 
     <!-- 字典类型 -->
     <template #dictType="{ row }">
-      <ElSelect v-model="row.dictType" class="w-full" clearable filterable>
+      <ElSelect
+        v-model="row.dictType"
+        class="w-full"
+        clearable
+        filterable
+        :filter-method="filterDictTypeMethod"
+      >
         <ElOption
-          v-for="option in dictTypeOptions"
+          v-for="option in filteredDictTypeOptions"
           :key="option.type"
           :label="option.name"
           :value="option.type"
