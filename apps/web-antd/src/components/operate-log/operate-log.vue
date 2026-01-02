@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @xingyu：要不要改成 yudao-ui-admin-vue3/src/components/OperateLogV2/src/OperateLogV2.vue 这种；一行：时间、userType、userName、action
 import type { OperateLogProps } from './typing';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -14,37 +13,46 @@ withDefaults(defineProps<OperateLogProps>(), {
   logList: () => [],
 });
 
+/** 获得 userType 颜色 */
 function getUserTypeColor(userType: number) {
   const dict = getDictObj(DICT_TYPE.USER_TYPE, userType);
-  if (dict && dict.colorType) {
-    return `hsl(var(--${dict.colorType}))`;
+  switch (dict?.colorType) {
+    case 'danger': {
+      return '#F56C6C';
+    }
+    case 'info': {
+      return '#909399';
+    }
+    case 'success': {
+      return '#67C23A';
+    }
+    case 'warning': {
+      return '#E6A23C';
+    }
   }
-  return 'hsl(var(--primary))';
+  return '#409EFF';
 }
 </script>
+
 <template>
-  <div>
+  <div class="pt-5">
     <Timeline>
-      <Timeline.Item
-        v-for="log in logList"
-        :key="log.id"
-        :color="getUserTypeColor(log.userType)"
-      >
+      <Timeline.Item v-for="log in logList" :key="log.id">
         <template #dot>
-          <p
+          <span
             :style="{ backgroundColor: getUserTypeColor(log.userType) }"
-            class="absolute left-1 top-0 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
+            class="flex h-5 w-5 items-center justify-center rounded-full text-[10px] text-white"
           >
             {{ getDictLabel(DICT_TYPE.USER_TYPE, log.userType)[0] }}
-          </p>
+          </span>
         </template>
-        <p class="ml-2">{{ formatDateTime(log.createTime) }}</p>
-        <p class="ml-2 mt-2">
-          <Tag :color="getUserTypeColor(log.userType)">
-            {{ log.userName }}
-          </Tag>
-          {{ log.action }}
-        </p>
+        <div class="ml-2 flex flex-wrap items-center gap-2 leading-[22px]">
+          <span class="w-[140px] shrink-0 text-[13px] text-gray-400">
+            {{ formatDateTime(log.createTime) }}
+          </span>
+          <Tag color="success" class="!mr-0">{{ log.userName }}</Tag>
+          <span>{{ log.action }}</span>
+        </div>
       </Timeline.Item>
     </Timeline>
   </div>
