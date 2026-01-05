@@ -31,7 +31,7 @@ const router = useRouter();
 const id = Number(route.params.id);
 const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
-const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);
+const device = ref<IotDeviceApi.DeviceRespVO>({} as IotDeviceApi.DeviceRespVO);
 const activeTab = ref('info');
 const thingModelList = ref<ThingModelData[]>([]);
 

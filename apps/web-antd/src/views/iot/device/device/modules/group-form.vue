@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { IotDeviceApi } from '#/api/iot/device/device';
+
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -41,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
       await updateDeviceGroup({
         ids: deviceIds.value,
         groupIds: data.groupIds as number[],
-      });
+      } as IotDeviceApi.DeviceUpdateGroupReqVO);
       // 关闭并提示
       await modalApi.close();
       emit('success');

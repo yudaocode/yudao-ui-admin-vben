@@ -1,22 +1,27 @@
 <script setup lang="ts">
 import type { IotDeviceApi } from '#/api/iot/device/device';
+import type { IotProductApi } from '#/api/iot/product/product';
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { Collapse, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
+import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
-import { useFormSchema } from '../data';
+import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
 
 defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<IotDeviceApi.Device>();
+const formData = ref<IotDeviceApi.DeviceRespVO>();
+const products = ref<IotProductApi.Product[]>([]);
+const activeKey = ref<string[]>([]);
+
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['设备'])
@@ -31,9 +36,53 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: useBasicFormSchema(),
+  showDefaultActions: false,
+  handleValuesChange: async (values, changedFields) => {
+    // 当产品 ProductId 变化时，自动设置设备类型
+    if (changedFields.includes('productId')) {
+      const productId = values.productId;
+      if (!productId) {
+        await formApi.setFieldValue('deviceType', undefined);
+        return;
+      }
+      // 从产品列表中查找产品
+      const product = products.value.find((p) => p.id === productId);
+      if (product?.deviceType !== undefined) {
+        await formApi.setFieldValue('deviceType', product.deviceType);
+      }
+    }
+  },
+});
+
+const [AdvancedForm, advancedFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+  },
+  wrapperClass: 'grid-cols-1',
+  layout: 'horizontal',
+  schema: useAdvancedFormSchema(),
   showDefaultActions: false,
 });
+
+/** 获取高级表单的值（如果表单未挂载，则从 formData 中获取） */
+async function getAdvancedFormValues() {
+  if (advancedFormApi.isMounted) {
+    return await advancedFormApi.getValues();
+  }
+  // 表单未挂载（折叠状态），从 formData 中获取
+  return {
+    nickname: formData.value?.nickname,
+    picUrl: formData.value?.picUrl,
+    groupIds: formData.value?.groupIds,
+    serialNumber: formData.value?.serialNumber,
+    locationType: formData.value?.locationType,
+    longitude: formData.value?.longitude,
+    latitude: formData.value?.latitude,
+  };
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -42,8 +91,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 提交表单
-    const data = (await formApi.getValues()) as IotDeviceApi.Device;
+    // 合并两个表单的值（字段不冲突，可直接合并）
+    const basicValues = await formApi.getValues();
+    const advancedValues = await getAdvancedFormValues();
+    const data = {
+      ...basicValues,
+      ...advancedValues,
+    } as IotDeviceApi.DeviceSaveReqVO;
     try {
       await (formData.value?.id ? updateDevice(data) : createDevice(data));
       // 关闭并提示
@@ -57,11 +111,14 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
+      activeKey.value = [];
       return;
     }
     // 加载数据
-    const data = modalApi.getData<IotDeviceApi.Device>();
+    const data = modalApi.getData<IotDeviceApi.DeviceRespVO>();
     if (!data || !data.id) {
+      // 新增：确保 Collapse 折叠
+      activeKey.value = [];
       return;
     }
     // 编辑模式：加载数据
@@ -69,15 +126,43 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getDevice(data.id);
       await formApi.setValues(formData.value);
+      // 如果存在高级字段数据，自动展开 Collapse
+      if (
+        formData.value?.nickname ||
+        formData.value?.picUrl ||
+        formData.value?.groupIds?.length ||
+        formData.value?.serialNumber ||
+        formData.value?.locationType !== undefined
+      ) {
+        activeKey.value = ['advanced'];
+        // 等待 Collapse 展开后表单挂载
+        await nextTick();
+        await nextTick();
+        if (advancedFormApi.isMounted) {
+          await advancedFormApi.setValues(formData.value);
+        }
+      }
     } finally {
       modalApi.unlock();
     }
   },
 });
+
+/** 初始化产品列表 */
+onMounted(async () => {
+  products.value = await getSimpleProductList();
+});
 </script>
 
 <template>
   <Modal :title="getTitle" class="w-2/5">
-    <Form class="mx-4" />
+    <div class="mx-4">
+      <Form />
+      <Collapse v-model:active-key="activeKey" class="mt-4">
+        <Collapse.Panel key="advanced" header="更多设置">
+          <AdvancedForm />
+        </Collapse.Panel>
+      </Collapse>
+    </div>
   </Modal>
 </template>

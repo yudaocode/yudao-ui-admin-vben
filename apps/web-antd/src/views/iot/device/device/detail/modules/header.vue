@@ -12,7 +12,7 @@ import DeviceForm from '../../modules/form.vue';
 
 interface Props {
   product: IotProductApi.Product;
-  device: IotDeviceApi.Device;
+  device: IotDeviceApi.DeviceRespVO;
   loading?: boolean;
 }
 
@@ -50,7 +50,7 @@ function goToProductDetail(productId: number | undefined) {
 }
 
 /** 打开编辑表单 */
-function openEditForm(row: IotDeviceApi.Device) {
+function openEditForm(row: IotDeviceApi.DeviceRespVO) {
   formModalApi.setData(row).open();
 }
 </script>

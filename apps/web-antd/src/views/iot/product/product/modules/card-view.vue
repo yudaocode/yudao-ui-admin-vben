@@ -115,6 +115,11 @@ onMounted(() => {
               <div class="ml-3 min-w-0 flex-1">
                 <div class="product-title">{{ item.name }}</div>
               </div>
+              <DictTag
+                :type="DICT_TYPE.IOT_PRODUCT_STATUS"
+                :value="item.status"
+                class="status-tag"
+              />
             </div>
             <!-- 内容区域 -->
             <div class="mb-3 flex items-start">
@@ -262,6 +267,11 @@ onMounted(() => {
       font-weight: 600;
       line-height: 36px;
       white-space: nowrap;
+    }
+
+    // 状态标签
+    .status-tag {
+      font-size: 12px;
     }
 
     // 信息列表
