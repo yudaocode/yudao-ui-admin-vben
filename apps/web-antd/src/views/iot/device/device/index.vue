@@ -117,7 +117,7 @@ async function handleExport() {
   const data = await exportDeviceExcel({
     ...queryParams.value,
     pageNo: 1,
-    pageSize: 999999,
+    pageSize: 999_999,
   } as IotDeviceApi.DevicePageReqVO);
   downloadFileFromBlobPart({ fileName: '物联网设备.xls', source: data });
 }
@@ -414,7 +414,6 @@ onMounted(async () => {
             },
           ]"
         />
-
         <!-- 视图切换 -->
         <Space :size="4">
           <Button
@@ -433,8 +432,8 @@ onMounted(async () => {
       </div>
     </Card>
 
+    <!-- 列表视图 -->
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
-      <!-- 所属产品列 -->
       <template #product="{ row }">
         <a
           class="cursor-pointer text-primary"
@@ -443,8 +442,6 @@ onMounted(async () => {
           {{ products.find((p) => p.id === row.productId)?.name || '-' }}
         </a>
       </template>
-
-      <!-- 所属分组列 -->
       <template #groups="{ row }">
         <template v-if="row.groupIds?.length">
           <Tag
@@ -458,8 +455,6 @@ onMounted(async () => {
         </template>
         <span v-else>-</span>
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[

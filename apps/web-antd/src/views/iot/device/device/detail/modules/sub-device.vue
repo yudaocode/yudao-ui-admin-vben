@@ -24,16 +24,12 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-/** 产品列表 */
-const products = ref<IotProductApi.Product[]>([]);
-
-/** 查询参数 */
+const products = ref<IotProductApi.Product[]>([]); // 产品列表
 const queryParams = reactive({
   deviceName: '',
   status: undefined as number | undefined,
-});
+}); // 查询参数
 
-/** Grid 列定义 */
 function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
@@ -76,7 +72,6 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 创建 Grid 实例 */
 const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
   gridOptions: {
     columns: useGridColumns(),
@@ -164,6 +159,7 @@ onMounted(async () => {
 <template>
   <Page auto-content-height>
     <!-- 搜索区域 -->
+    <!-- TODO @haohao：这个 search 能不能融合到 Grid 里； -->
     <div class="mb-4 flex flex-wrap items-center gap-3">
       <Input
         v-model:value="queryParams.deviceName"
@@ -200,12 +196,9 @@ onMounted(async () => {
 
     <!-- 子设备列表 -->
     <Grid>
-      <!-- 所属产品列 -->
       <template #product="{ row }">
         {{ getProductName(row.productId) }}
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[

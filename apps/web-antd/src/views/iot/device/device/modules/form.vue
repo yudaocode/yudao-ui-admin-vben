@@ -118,6 +118,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<IotDeviceApi.DeviceRespVO>();
     if (!data || !data.id) {
       // 新增：确保 Collapse 折叠
+      // TODO @haohao：是不是 activeKey 在上面的 112 到 115 就已经处理了哈；
       activeKey.value = [];
       return;
     }
@@ -127,6 +128,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getDevice(data.id);
       await formApi.setValues(formData.value);
       // 如果存在高级字段数据，自动展开 Collapse
+      // TODO @haohao：默认不用展开哈；
       if (
         formData.value?.nickname ||
         formData.value?.picUrl ||

@@ -4,6 +4,7 @@ import { requestClient } from '#/api/request';
 
 export namespace IotDeviceApi {
   /** 设备新增/修改 Request VO */
+  // TODO @haohao：可以降低一些 VO 哈：DeviceSaveReqVO、DeviceRespVO 合并成 Device 就好，类似别的模块
   export interface DeviceSaveReqVO {
     id?: number; // 设备编号
     deviceName: string; // 设备名称
@@ -26,6 +27,7 @@ export namespace IotDeviceApi {
   }
 
   /** 设备分页 Request VO */
+  // TODO @haohao：可以不用 DevicePageReqVO，直接 PageParam 即可，简洁一点。这里的强类型，收益不大；
   export interface DevicePageReqVO extends PageParam {
     deviceName?: string; // 设备名称
     nickname?: string; // 备注名称
