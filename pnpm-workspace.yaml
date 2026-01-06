@@ -130,7 +130,7 @@ catalog:
   fast-xml-parser: ^4.5.3
   find-up: ^7.0.0
   get-port: ^7.1.0
-  globals: ^16.3.0
+  globals: ^17.0.0
   h3: ^1.15.3
   happy-dom: ^17.6.3
   highlight.js: ^11.11.1
