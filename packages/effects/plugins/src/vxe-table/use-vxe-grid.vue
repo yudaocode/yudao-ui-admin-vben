@@ -245,10 +245,18 @@ function onSearchBtnClick() {
   props.api?.toggleSearchForm?.();
 }
 
+function onCheckboxAll(event: VxeGridDefines.CheckboxAllEventParams) {
+  // 代理 checkbox-all 事件到用户定义的 checkboxAll 处理函数
+  (
+    gridEvents.value?.checkboxAll as VxeGridListeners['checkboxAll']
+  )?.(event);
+}
+
 const events = computed(() => {
   return {
     ...gridEvents.value,
     toolbarToolClick: onToolbarToolClick,
+    checkboxAll: onCheckboxAll,
   };
 });
 
@@ -378,7 +386,6 @@ onUnmounted(() => {
       <template v-if="showToolbar" #toolbar-actions="slotProps">
         <slot v-if="showTableTitle" name="table-title">
           <div class="mr-1 pl-1 text-[1rem]">
-            {{ tableTitle }}
             <VbenHelpTooltip v-if="tableTitleHelp" trigger-class="pb-1">
               {{ tableTitleHelp }}
             </VbenHelpTooltip>
