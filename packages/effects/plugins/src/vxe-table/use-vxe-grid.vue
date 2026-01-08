@@ -245,10 +245,16 @@ function onSearchBtnClick() {
   props.api?.toggleSearchForm?.();
 }
 
+function onCheckboxAll(event: VxeGridDefines.CheckboxAllEventParams) {
+  // 代理 checkbox-all 事件到用户定义的 checkboxAll 处理函数
+  (gridEvents.value?.checkboxAll as VxeGridListeners['checkboxAll'])?.(event);
+}
+
 const events = computed(() => {
   return {
     ...gridEvents.value,
     toolbarToolClick: onToolbarToolClick,
+    checkboxAll: onCheckboxAll,
   };
 });
 
