@@ -10,7 +10,9 @@ import type {
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { PromotionDiscountTypeEnum } from '@vben/constants';
 import {
+  cloneDeep,
   convertToInteger,
   erpCalculatePercentage,
   formatToFraction,
@@ -38,13 +40,6 @@ import { useFormSchema } from '../data';
 defineOptions({ name: 'DiscountActivityForm' });
 
 const emit = defineEmits(['success']);
-
-/** 折扣类型枚举 */
-// TODO @puhui999：这里可以使用 biz-mall 里的枚举噢；
-const PromotionDiscountTypeEnum = {
-  PRICE: { type: 1 }, // 满减
-  PERCENT: { type: 2 }, // 折扣
-};
 
 // ================= 表单相关 =================
 const formData = ref<Partial<MallDiscountActivityApi.DiscountActivity>>({});
@@ -243,8 +238,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       // 获取折扣商品配置
-      // TODO @puhui999：structuredClone 执行会报错；
-      const products = structuredClone(
+      const products = cloneDeep(
         spuAndSkuListRef.value?.getSkuConfigs('productConfig') || [],
       ) as MallDiscountActivityApi.DiscountProduct[];
       // 转换金额为分
@@ -252,7 +246,7 @@ const [Modal, modalApi] = useVbenModal({
         item.discountPercent = convertToInteger(item.discountPercent);
         item.discountPrice = convertToInteger(item.discountPrice);
       });
-      const data = structuredClone(
+      const data = cloneDeep(
         await formApi.getValues(),
       ) as MallDiscountActivityApi.DiscountActivity;
       data.products = products;

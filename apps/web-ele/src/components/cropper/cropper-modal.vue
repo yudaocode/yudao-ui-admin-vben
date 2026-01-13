@@ -4,6 +4,7 @@ import type { CropendResult, CropperModalProps, CropperType } from './typing';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { dataURLtoBlob, isFunction } from '@vben/utils';
 
@@ -112,44 +113,19 @@ async function handleOk() {
 </script>
 
 <template>
-  <!-- TODO @puhui999：antd 版本里是 2/3 宽度，两边要对齐么？ -->
   <Modal
     v-bind="$attrs"
     :confirm-text="$t('ui.cropper.okText')"
     :fullscreen-button="false"
     :title="$t('ui.cropper.modalTitle')"
-    class="w-[800px]"
+    class="w-2/3"
   >
-    <!-- TODO @puhui999：antd 版本有个 h-96，两边要对齐么？ -->
-    <div class="flex">
+    <div class="flex h-96">
       <!-- 左侧区域 -->
-      <!-- TODO @puhui999：antd 版本是 h-full w-3/5 两边要对齐么？ -->
-      <div class="h-[340px] w-[55%]">
+      <div class="h-full w-3/5">
         <!-- 裁剪器容器 -->
-        <!-- TODO @puhui999：antd class 简单一点，看看要不要对齐 -->
         <div
-          class="h-[300px] bg-[#eee]"
-          style="
-            background-image:
-              linear-gradient(
-                45deg,
-                rgb(0 0 0 / 25%) 25%,
-                transparent 0,
-                transparent 75%,
-                rgb(0 0 0 / 25%) 0
-              ),
-              linear-gradient(
-                45deg,
-                rgb(0 0 0 / 25%) 25%,
-                transparent 0,
-                transparent 75%,
-                rgb(0 0 0 / 25%) 0
-              );
-            background-position:
-              0 0,
-              12px 12px;
-            background-size: 24px 24px;
-          "
+          class="relative h-[300px] bg-gradient-to-b from-neutral-50 to-neutral-200"
         >
           <CropperImage
             v-if="src"
@@ -162,8 +138,7 @@ async function handleOk() {
         </div>
 
         <!-- 工具栏 -->
-        <!-- TODO @puhui999：antd 是 mt-4，看看两边要不要对齐 -->
-        <div class="mt-2.5 flex items-center justify-between">
+        <div class="mt-4 flex items-center justify-between">
           <ElUpload
             :before-upload="handleBeforeUpload"
             :file-list="[]"
@@ -174,10 +149,9 @@ async function handleOk() {
               placement="bottom"
             >
               <ElButton size="small" type="primary">
-                <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--upload-outlined]"></span>
+                    <IconifyIcon icon="lucide:upload" />
                   </div>
                 </template>
               </ElButton>
@@ -192,9 +166,8 @@ async function handleOk() {
                 @click="handlerToolbar('reset')"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--reload-outlined]"></span>
+                    <IconifyIcon icon="lucide:rotate-ccw" />
                   </div>
                 </template>
               </ElButton>
@@ -211,10 +184,7 @@ async function handleOk() {
               >
                 <template #icon>
                   <div class="flex items-center justify-center">
-                    <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
-                    <span
-                      class="icon-[ant-design--rotate-left-outlined]"
-                    ></span>
+                    <IconifyIcon icon="ant-design:rotate-left-outlined" />
                   </div>
                 </template>
               </ElButton>
@@ -230,11 +200,8 @@ async function handleOk() {
                 @click="handlerToolbar('rotate', 45)"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span
-                      class="icon-[ant-design--rotate-right-outlined]"
-                    ></span>
+                    <IconifyIcon icon="ant-design:rotate-right-outlined" />
                   </div>
                 </template>
               </ElButton>
@@ -250,9 +217,8 @@ async function handleOk() {
                 @click="handlerToolbar('scaleX')"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-h]"></span>
+                    <IconifyIcon icon="vaadin:arrows-long-h" />
                   </div>
                 </template>
               </ElButton>
@@ -268,9 +234,8 @@ async function handleOk() {
                 @click="handlerToolbar('scaleY')"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span class="icon-[vaadin--arrows-long-v]"></span>
+                    <IconifyIcon icon="vaadin:arrows-long-v" />
                   </div>
                 </template>
               </ElButton>
@@ -286,9 +251,8 @@ async function handleOk() {
                 @click="handlerToolbar('zoom', 0.1)"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-in-outlined]"></span>
+                    <IconifyIcon icon="lucide:zoom-in" />
                   </div>
                 </template>
               </ElButton>
@@ -304,9 +268,8 @@ async function handleOk() {
                 @click="handlerToolbar('zoom', -0.1)"
               >
                 <template #icon>
-                  <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-modal.vue 里的 Icon 么？ -->
                   <div class="flex items-center justify-center">
-                    <span class="icon-[ant-design--zoom-out-outlined]"></span>
+                    <IconifyIcon icon="lucide:zoom-out" />
                   </div>
                 </template>
               </ElButton>
@@ -316,16 +279,16 @@ async function handleOk() {
       </div>
 
       <!-- 右侧区域 -->
-      <div class="h-[340px] w-[45%]">
+      <div class="h-full w-2/5">
         <!-- 预览区域 -->
         <div
-          class="mx-auto h-[220px] w-[220px] overflow-hidden rounded-full border border-gray-200"
+          class="mx-auto h-56 w-56 overflow-hidden rounded-full border border-gray-200"
         >
           <img
             v-if="previewSource"
             :alt="$t('ui.cropper.preview')"
             :src="previewSource"
-            class="h-full w-full"
+            class="h-full w-full object-cover"
           />
         </div>
         <!-- 头像组合预览 -->

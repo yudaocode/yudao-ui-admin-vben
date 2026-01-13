@@ -10,7 +10,9 @@ import type {
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { PromotionDiscountTypeEnum } from '@vben/constants';
 import {
+  cloneDeep,
   convertToInteger,
   erpCalculatePercentage,
   formatToFraction,
@@ -36,12 +38,6 @@ import {
 import { useFormSchema } from '../data';
 
 defineOptions({ name: 'DiscountActivityForm' });
-
-/** 折扣类型枚举 */
-const PromotionDiscountTypeEnum = {
-  PRICE: { type: 1 }, // 满减
-  PERCENT: { type: 2 }, // 折扣
-};
 
 const emit = defineEmits(['success']);
 
@@ -243,7 +239,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 获取折扣商品配置
-      const products = structuredClone(
+      const products = cloneDeep(
         spuAndSkuListRef.value?.getSkuConfigs('productConfig') || [],
       ) as MallDiscountActivityApi.DiscountProduct[];
 
@@ -253,7 +249,7 @@ const [Modal, modalApi] = useVbenModal({
         item.discountPrice = convertToInteger(item.discountPrice);
       });
 
-      const data = structuredClone(
+      const data = cloneDeep(
         await formApi.getValues(),
       ) as MallDiscountActivityApi.DiscountActivity;
       data.products = products;

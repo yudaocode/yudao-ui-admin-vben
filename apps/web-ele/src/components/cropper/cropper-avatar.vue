@@ -6,6 +6,7 @@ import type { CropperAvatarProps } from './typing';
 import { computed, ref, unref, watch, watchEffect } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { ElButton, ElMessage } from 'element-plus';
@@ -83,16 +84,16 @@ defineExpose({
         class="duration-400 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black bg-opacity-40 opacity-0 transition-opacity group-hover:opacity-100"
         :style="getImageWrapperStyle"
       >
-        <!-- TODO @puhui999：可以改成类似 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/components/cropper/cropper-avatar.vue 里的 Icon 么？ -->
-        <span
+        <IconifyIcon
+          icon="lucide:cloud-upload"
+          class="m-auto text-gray-400"
           :style="{
             ...getImageWrapperStyle,
             width: getIconWidth,
             height: getIconWidth,
             lineHeight: getIconWidth,
           }"
-          class="icon-[ant-design--cloud-upload-outlined] text-gray-400"
-        ></span>
+        />
       </div>
       <!-- 头像图片 -->
       <img
