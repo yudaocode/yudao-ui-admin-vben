@@ -52,8 +52,21 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // 在验证前同步 formData.rules 到表单中
+    // 在验证前同步 formData 中的值到表单中
     await formApi.setFieldValue('rules', formData.value.rules || []);
+    // 同步商品/分类选择到表单，确保验证时能获取到值
+    if (formData.value.productSpuIds) {
+      await formApi.setFieldValue(
+        'productSpuIds',
+        formData.value.productSpuIds,
+      );
+    }
+    if (formData.value.productCategoryIds) {
+      await formApi.setFieldValue(
+        'productCategoryIds',
+        formData.value.productCategoryIds,
+      );
+    }
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
