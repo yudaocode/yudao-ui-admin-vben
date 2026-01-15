@@ -4,18 +4,19 @@ import type { SystemUserProfileApi } from '#/api/system/user/profile';
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
 
 import { Card, Tabs } from 'ant-design-vue';
 
+import { getAuthPermissionInfoApi } from '#/api';
 import { getUserProfile } from '#/api/system/user/profile';
-import { useAuthStore } from '#/store';
 
 import BaseInfo from './modules/base-info.vue';
 import ProfileUser from './modules/profile-user.vue';
 import ResetPwd from './modules/reset-pwd.vue';
 import UserSocial from './modules/user-social.vue';
 
-const authStore = useAuthStore();
+const userStore = useUserStore();
 const activeName = ref('basicInfo');
 
 /** 加载个人信息 */
@@ -30,7 +31,8 @@ async function refreshProfile() {
   await loadProfile();
 
   // 更新 store
-  await authStore.fetchUserInfo();
+  const authPermissionInfo = await getAuthPermissionInfoApi();
+  userStore.setUserInfo(authPermissionInfo.user);
 }
 
 /** 初始化 */
