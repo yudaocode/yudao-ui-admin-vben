@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+import type { PageParam } from '@vben/request';
+
+import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
-
-import { Button, Input, Select, Space } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDevicePage } from '#/api/iot/device/device';
@@ -25,10 +25,6 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 const products = ref<IotProductApi.Product[]>([]); // 产品列表
-const queryParams = reactive({
-  deviceName: '',
-  status: undefined as number | undefined,
-}); // 查询参数
 
 function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
@@ -72,7 +68,35 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
+/** 搜索表单 schema */
+function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'deviceName',
+      label: 'DeviceName',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入 DeviceName',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '设备状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number'),
+        placeholder: '请选择设备状态',
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
@@ -82,11 +106,14 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
     },
     proxyConfig: {
       ajax: {
-        query: async ({
-          page,
-        }: {
-          page: { currentPage: number; pageSize: number };
-        }) => {
+        query: async (
+          {
+            page,
+          }: {
+            page: { currentPage: number; pageSize: number };
+          },
+          formValues?: { deviceName?: string; status?: number },
+        ) => {
           if (!props.deviceId) {
             return { list: [], total: 0 };
           }
@@ -95,33 +122,21 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
             pageSize: page.pageSize,
             gatewayId: props.deviceId,
             deviceType: DeviceTypeEnum.GATEWAY_SUB,
-            deviceName: queryParams.deviceName || undefined,
-            status: queryParams.status,
-          } as IotDeviceApi.DevicePageReqVO);
+            deviceName: formValues?.deviceName || undefined,
+            status: formValues?.status,
+          } as PageParam);
         },
       },
     },
     toolbarConfig: {
       refresh: true,
-      search: false,
+      search: true,
     },
     pagerConfig: {
       enabled: true,
     },
   },
 });
-
-/** 搜索操作 */
-function handleQuery() {
-  gridApi.query();
-}
-
-/** 重置搜索 */
-function resetQuery() {
-  queryParams.deviceName = '';
-  queryParams.status = undefined;
-  handleQuery();
-}
 
 /** 获取产品名称 */
 function getProductName(productId: number) {
@@ -139,7 +154,7 @@ watch(
   () => props.deviceId,
   (newValue) => {
     if (newValue) {
-      handleQuery();
+      gridApi.query();
     }
   },
 );
@@ -151,49 +166,13 @@ onMounted(async () => {
 
   // 如果设备ID存在，则查询列表
   if (props.deviceId) {
-    handleQuery();
+    gridApi.query();
   }
 });
 </script>
 
 <template>
   <Page auto-content-height>
-    <!-- 搜索区域 -->
-    <!-- TODO @haohao：这个 search 能不能融合到 Grid 里； -->
-    <div class="mb-4 flex flex-wrap items-center gap-3">
-      <Input
-        v-model:value="queryParams.deviceName"
-        placeholder="请输入设备名称"
-        style="width: 200px"
-        allow-clear
-        @press-enter="handleQuery"
-      />
-      <Select
-        v-model:value="queryParams.status"
-        allow-clear
-        placeholder="请选择设备状态"
-        style="width: 160px"
-      >
-        <Select.Option
-          v-for="dict in getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number')"
-          :key="dict.value"
-          :value="dict.value"
-        >
-          {{ dict.label }}
-        </Select.Option>
-      </Select>
-      <Space>
-        <Button type="primary" @click="handleQuery">
-          <IconifyIcon icon="ep:search" class="mr-5px" />
-          搜索
-        </Button>
-        <Button @click="resetQuery">
-          <IconifyIcon icon="ep:refresh-right" class="mr-5px" />
-          重置
-        </Button>
-      </Space>
-    </div>
-
     <!-- 子设备列表 -->
     <Grid>
       <template #product="{ row }">

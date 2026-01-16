@@ -2,7 +2,7 @@
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -18,7 +18,7 @@ import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
 defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<IotDeviceApi.DeviceRespVO>();
+const formData = ref<IotDeviceApi.Device>();
 const products = ref<IotProductApi.Product[]>([]);
 const activeKey = ref<string[]>([]);
 
@@ -97,7 +97,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = {
       ...basicValues,
       ...advancedValues,
-    } as IotDeviceApi.DeviceSaveReqVO;
+    } as IotDeviceApi.Device;
     try {
       await (formData.value?.id ? updateDevice(data) : createDevice(data));
       // 关闭并提示
@@ -115,11 +115,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<IotDeviceApi.DeviceRespVO>();
+    const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
-      // 新增：确保 Collapse 折叠
-      // TODO @haohao：是不是 activeKey 在上面的 112 到 115 就已经处理了哈；
-      activeKey.value = [];
       return;
     }
     // 编辑模式：加载数据
@@ -127,28 +124,28 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getDevice(data.id);
       await formApi.setValues(formData.value);
-      // 如果存在高级字段数据，自动展开 Collapse
-      // TODO @haohao：默认不用展开哈；
-      if (
-        formData.value?.nickname ||
-        formData.value?.picUrl ||
-        formData.value?.groupIds?.length ||
-        formData.value?.serialNumber ||
-        formData.value?.locationType !== undefined
-      ) {
-        activeKey.value = ['advanced'];
-        // 等待 Collapse 展开后表单挂载
-        await nextTick();
-        await nextTick();
-        if (advancedFormApi.isMounted) {
-          await advancedFormApi.setValues(formData.value);
-        }
-      }
     } finally {
       modalApi.unlock();
     }
   },
 });
+
+/** 监听 Collapse 展开，自动设置高级表单的值 */
+watch(
+  activeKey,
+  async (newKeys) => {
+    // 当用户手动展开 Collapse 且存在表单数据时，设置高级表单的值
+    if (newKeys.includes('advanced') && formData.value) {
+      // 等待表单挂载
+      await nextTick();
+      await nextTick();
+      if (advancedFormApi.isMounted) {
+        await advancedFormApi.setValues(formData.value);
+      }
+    }
+  },
+  { immediate: false },
+);
 
 /** 初始化产品列表 */
 onMounted(async () => {

@@ -3,46 +3,11 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace IotDeviceApi {
-  /** 设备新增/修改 Request VO */
-  // TODO @haohao：可以降低一些 VO 哈：DeviceSaveReqVO、DeviceRespVO 合并成 Device 就好，类似别的模块
-  export interface DeviceSaveReqVO {
+  /** 设备 */
+  export interface Device {
     id?: number; // 设备编号
     deviceName: string; // 设备名称
     nickname?: string; // 备注名称
-    serialNumber?: string; // 设备序列号
-    picUrl?: string; // 设备图片
-    groupIds?: number[]; // 设备分组编号数组
-    productId: number; // 产品编号（必填）
-    gatewayId?: number; // 网关设备 ID
-    config?: string; // 设备配置
-    locationType: number; // 定位类型（必填）
-    latitude?: number; // 设备位置的纬度
-    longitude?: number; // 设备位置的经度
-  }
-
-  /** 设备更新分组 Request VO */
-  export interface DeviceUpdateGroupReqVO {
-    ids: number[]; // 设备编号列表（必填）
-    groupIds: number[]; // 分组编号列表（必填）
-  }
-
-  /** 设备分页 Request VO */
-  // TODO @haohao：可以不用 DevicePageReqVO，直接 PageParam 即可，简洁一点。这里的强类型，收益不大；
-  export interface DevicePageReqVO extends PageParam {
-    deviceName?: string; // 设备名称
-    nickname?: string; // 备注名称
-    productId?: number; // 产品编号
-    deviceType?: number; // 设备类型
-    status?: number; // 设备状态
-    groupId?: number; // 设备分组编号
-    gatewayId?: number; // 网关设备 ID
-  }
-
-  /** 设备 Response VO */
-  export interface DeviceRespVO {
-    id: number; // 设备编号
-    deviceName: string; // 设备名称
-    nickname?: string; // 设备备注名称
     serialNumber?: string; // 设备序列号
     picUrl?: string; // 设备图片
     groupIds?: number[]; // 设备分组编号数组
@@ -57,10 +22,16 @@ export namespace IotDeviceApi {
     deviceSecret?: string; // 设备密钥，用于设备认证
     authType?: string; // 认证类型（如一机一密、动态注册）
     config?: string; // 设备配置
-    locationType?: number; // 定位方式
+    locationType?: number; // 定位类型
     latitude?: number; // 设备位置的纬度
     longitude?: number; // 设备位置的经度
     createTime?: Date; // 创建时间
+  }
+
+  /** 设备更新分组 Request VO */
+  export interface DeviceUpdateGroupReqVO {
+    ids: number[]; // 设备编号列表（必填）
+    groupIds: number[]; // 分组编号列表（必填）
   }
 
   /** 设备认证信息 Response VO */
@@ -104,8 +75,8 @@ export namespace IotDeviceApi {
 }
 
 /** 查询设备分页 */
-export function getDevicePage(params: IotDeviceApi.DevicePageReqVO) {
-  return requestClient.get<PageResult<IotDeviceApi.DeviceRespVO>>(
+export function getDevicePage(params: PageParam) {
+  return requestClient.get<PageResult<IotDeviceApi.Device>>(
     '/iot/device/page',
     { params },
   );
@@ -113,18 +84,16 @@ export function getDevicePage(params: IotDeviceApi.DevicePageReqVO) {
 
 /** 查询设备详情 */
 export function getDevice(id: number) {
-  return requestClient.get<IotDeviceApi.DeviceRespVO>(
-    `/iot/device/get?id=${id}`,
-  );
+  return requestClient.get<IotDeviceApi.Device>(`/iot/device/get?id=${id}`);
 }
 
 /** 新增设备 */
-export function createDevice(data: IotDeviceApi.DeviceSaveReqVO) {
+export function createDevice(data: IotDeviceApi.Device) {
   return requestClient.post<number>('/iot/device/create', data);
 }
 
 /** 修改设备 */
-export function updateDevice(data: IotDeviceApi.DeviceSaveReqVO) {
+export function updateDevice(data: IotDeviceApi.Device) {
   return requestClient.put<boolean>('/iot/device/update', data);
 }
 
@@ -146,7 +115,7 @@ export function deleteDeviceList(ids: number[]) {
 }
 
 /** 导出设备 */
-export function exportDeviceExcel(params: IotDeviceApi.DevicePageReqVO) {
+export function exportDeviceExcel(params: PageParam) {
   return requestClient.download('/iot/device/export-excel', { params });
 }
 
@@ -157,22 +126,16 @@ export function getDeviceCount(productId: number) {
 
 /** 获取设备的精简信息列表 */
 export function getSimpleDeviceList(deviceType?: number, productId?: number) {
-  return requestClient.get<IotDeviceApi.DeviceRespVO[]>(
-    '/iot/device/simple-list',
-    {
-      params: { deviceType, productId },
-    },
-  );
+  return requestClient.get<IotDeviceApi.Device[]>('/iot/device/simple-list', {
+    params: { deviceType, productId },
+  });
 }
 
 /** 根据产品编号，获取设备的精简信息列表 */
 export function getDeviceListByProductId(productId: number) {
-  return requestClient.get<IotDeviceApi.DeviceRespVO[]>(
-    '/iot/device/simple-list',
-    {
-      params: { productId },
-    },
-  );
+  return requestClient.get<IotDeviceApi.Device[]>('/iot/device/simple-list', {
+    params: { productId },
+  });
 }
 
 /** 获取导入模板 */

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DeviceRespVO, IotDeviceApi } from '#/api/iot/device/device';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { OtaTask } from '#/api/iot/ota/task';
 
 import { computed, ref } from 'vue';
@@ -57,7 +57,7 @@ const formRules = {
     },
   ],
 };
-const devices = ref<IotDeviceApi.DeviceRespVO[]>([]);
+const devices = ref<IotDeviceApi.Device[]>([]);
 
 /** 设备选项 */
 const deviceOptions = computed(() => {

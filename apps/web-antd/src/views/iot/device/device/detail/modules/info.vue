@@ -24,7 +24,7 @@ import { getDeviceAuthInfo } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {
-  device: IotDeviceApi.DeviceRespVO;
+  device: IotDeviceApi.Device;
   product: IotProductApi.Product;
 }
 

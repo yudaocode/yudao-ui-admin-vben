@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { PageParam } from '@vben/request';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 import type { IotProductApi } from '#/api/iot/product/product';
@@ -68,7 +70,7 @@ const [DeviceImportFormModal, deviceImportFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const queryParams = ref<Partial<IotDeviceApi.DevicePageReqVO>>({
+const queryParams = ref<Partial<PageParam>>({
   deviceName: '',
   nickname: '',
   productId: undefined,
@@ -118,7 +120,7 @@ async function handleExport() {
     ...queryParams.value,
     pageNo: 1,
     pageSize: 999_999,
-  } as IotDeviceApi.DevicePageReqVO);
+  } as PageParam);
   downloadFileFromBlobPart({ fileName: '物联网设备.xls', source: data });
 }
 
@@ -147,12 +149,12 @@ function handleCreate() {
 }
 
 /** 编辑设备 */
-function handleEdit(row: IotDeviceApi.DeviceRespVO) {
+function handleEdit(row: IotDeviceApi.Device) {
   deviceFormModalApi.setData(row).open();
 }
 
 /** 删除设备 */
-async function handleDelete(row: IotDeviceApi.DeviceRespVO) {
+async function handleDelete(row: IotDeviceApi.Device) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.deviceName]),
     duration: 0,
@@ -203,12 +205,12 @@ function handleImport() {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: IotDeviceApi.DeviceRespVO[];
+  records: IotDeviceApi.Device[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
+const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
   gridOptions: {
     checkboxConfig: {
       highlight: true,
@@ -228,7 +230,7 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...queryParams.value,
-          } as IotDeviceApi.DevicePageReqVO);
+          } as PageParam);
         },
       },
     },

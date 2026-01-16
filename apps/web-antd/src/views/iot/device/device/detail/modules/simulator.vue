@@ -34,7 +34,7 @@ import DataDefinition from '../../../../thingmodel/modules/components/data-defin
 import DeviceDetailsMessage from './message.vue';
 
 const props = defineProps<{
-  device: IotDeviceApi.DeviceRespVO;
+  device: IotDeviceApi.Device;
   product: IotProductApi.Product;
   thingModelList: ThingModelData[];
 }>();

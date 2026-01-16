@@ -12,7 +12,7 @@ import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
 defineOptions({ name: 'DeviceDetailConfig' });
 
 const props = defineProps<{
-  device: IotDeviceApi.DeviceRespVO;
+  device: IotDeviceApi.Device;
 }>();
 
 const emit = defineEmits<{
@@ -114,7 +114,7 @@ async function updateDeviceConfig() {
     await updateDevice({
       id: props.device.id,
       config: JSON.stringify(config.value),
-    } as IotDeviceApi.DeviceSaveReqVO);
+    } as IotDeviceApi.Device);
     message.success({ content: '更新成功！' });
     // 触发 success 事件
     emit('success');
