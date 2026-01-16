@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { PageParam } from '@vben/request';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { onMounted, ref } from 'vue';
@@ -46,9 +48,9 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const list = ref<IotDeviceApi.DeviceRespVO[]>([]);
+const list = ref<IotDeviceApi.Device[]>([]);
 const total = ref(0);
-const queryParams = ref<Partial<IotDeviceApi.DevicePageReqVO>>({
+const queryParams = ref<Partial<PageParam>>({
   pageNo: 1,
   pageSize: 12,
 });
@@ -66,7 +68,7 @@ async function getList() {
     const data = await getDevicePage({
       ...queryParams.value,
       ...props.searchParams,
-    } as IotDeviceApi.DevicePageReqVO);
+    } as PageParam);
     list.value = data.list || [];
     total.value = data.total || 0;
   } finally {
@@ -192,7 +194,7 @@ onMounted(() => {
               <Button
                 size="small"
                 class="action-btn action-btn-detail"
-                @click="emit('detail', item.id)"
+                @click="emit('detail', item.id!)"
               >
                 <IconifyIcon icon="lucide:eye" class="mr-1" />
                 详情
@@ -200,7 +202,7 @@ onMounted(() => {
               <Button
                 size="small"
                 class="action-btn action-btn-data"
-                @click="emit('model', item.id)"
+                @click="emit('model', item.id!)"
               >
                 <IconifyIcon icon="lucide:database" class="mr-1" />
                 数据
