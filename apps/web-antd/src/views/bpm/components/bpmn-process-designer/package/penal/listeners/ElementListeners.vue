@@ -16,7 +16,7 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import ProcessListenerSelectModal from '#/views/bpm/processListener/components/process-listener-select-modal.vue';
+import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';
 
 import { createListenerObject, updateElementExtensions } from '../../utils';
 import ListenerFieldModal from './ListenerFieldModal.vue';
