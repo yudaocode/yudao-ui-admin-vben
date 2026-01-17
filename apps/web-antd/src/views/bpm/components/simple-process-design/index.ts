@@ -7,5 +7,3 @@ export { default as SimpleProcessDesigner } from './components/simple-process-de
 export { default as SimpleProcessViewer } from './components/simple-process-viewer.vue';
 
 export type { SimpleFlowNode } from './consts';
-
-export { parseFormFields } from './helpers';
