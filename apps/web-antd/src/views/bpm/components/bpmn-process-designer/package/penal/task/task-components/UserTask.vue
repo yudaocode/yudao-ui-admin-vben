@@ -43,7 +43,7 @@ import {
   MULTI_LEVEL_DEPT,
 } from '#/views/bpm/components/simple-process-design/consts';
 import { useFormFieldsPermission } from '#/views/bpm/components/simple-process-design/helpers';
-import ProcessExpressionSelectModal from '#/views/bpm/processExpression/components/process-expression-select-modal.vue';
+import { ProcessExpressionSelectModal } from '#/views/bpm/processExpression/components';
 
 defineOptions({ name: 'UserTask' });
 const props = defineProps({

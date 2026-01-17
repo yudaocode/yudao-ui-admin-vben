@@ -32,7 +32,7 @@ defineProps<{
 const emit = defineEmits(['success', 'init-finished']);
 
 const formFields = ref<string[]>([]); // 表单信息
-const formType = ref(BpmModelFormType.NORMAL); // 表单类型，暂仅限流程表单 TODO @jason：是不是已经支持 业务表单 了？
+const formType = ref(BpmModelFormType.NORMAL); // 表单类型
 provide('formFields', formFields);
 provide('formType', formType);
 
@@ -40,7 +40,6 @@ const xmlString = inject('processData') as Ref; // 注入流程数据
 const modelData = inject('modelData') as Ref; // 注入模型数据
 
 const modeler = shallowRef(); // BPMN Modeler
-const processDesigner = ref();
 const controlForm = ref({
   simulation: true,
   labelEditing: false,
@@ -102,7 +101,6 @@ onBeforeUnmount(() => {
       :value="xmlString"
       v-bind="controlForm"
       keyboard
-      ref="processDesigner"
       @init-finished="initModeler"
       :additional-model="controlForm.additionalModel"
       :model="model"
