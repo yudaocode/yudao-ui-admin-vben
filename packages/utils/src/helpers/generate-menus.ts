@@ -108,8 +108,8 @@ function convertServerMenuToRouteRecordStringComponent(
 ): RouteRecordStringComponent[] {
   const menus: RouteRecordStringComponent[] = [];
   menuList.forEach((menu) => {
-    // 处理顶级链接菜单
-    if (isHttpUrl(menu.path) && menu.parentId === 0) {
+    // 处理外链菜单（顶级或子级）
+    if (isHttpUrl(menu.path)) {
       // add by 芋艿：如果有 ?_iframe 参数，则作为内嵌页面处理
       // 如果有 _iframe 参数，则使用 iframeSrc；如果没有，则使用 link
       const url = new URL(menu.path);
