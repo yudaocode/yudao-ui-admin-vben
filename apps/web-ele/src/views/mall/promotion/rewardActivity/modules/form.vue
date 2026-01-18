@@ -117,7 +117,6 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getReward(data.id);
-      // valueFormat: 'x' 配置下，直接使用时间戳字符串
       result.startAndEndTime = [
         result.startTime ? String(result.startTime) : undefined,
         result.endTime ? String(result.endTime) : undefined,

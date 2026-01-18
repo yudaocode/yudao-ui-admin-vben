@@ -229,36 +229,32 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-
     // 校验是否选择了商品
     if (spuList.value.length === 0) {
       ElMessage.warning('请选择活动商品');
       return;
     }
-
     modalApi.lock();
+    // 提交表单
     try {
       // 获取折扣商品配置
       const products = cloneDeep(
         spuAndSkuListRef.value?.getSkuConfigs('productConfig') || [],
       ) as MallDiscountActivityApi.DiscountProduct[];
-
       // 转换金额为分
       products.forEach((item) => {
         item.discountPercent = convertToInteger(item.discountPercent);
         item.discountPrice = convertToInteger(item.discountPrice);
       });
-
       const data = cloneDeep(
         await formApi.getValues(),
       ) as MallDiscountActivityApi.DiscountActivity;
       data.products = products;
-
       // 提交请求
       await (formData.value?.id
         ? updateDiscountActivity(data)
         : createDiscountActivity(data));
-
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -271,18 +267,15 @@ const [Modal, modalApi] = useVbenModal({
       await resetForm();
       return;
     }
-
     // 加载数据
     const data = modalApi.getData<MallDiscountActivityApi.DiscountActivity>();
     if (!data || !data.id) {
       return;
     }
-
     modalApi.lock();
     try {
       const activityData = await getDiscountActivity(data.id);
       formData.value = activityData;
-
       // 加载商品详情
       if (activityData.products && activityData.products.length > 0) {
         // 按 spuId 分组
@@ -297,15 +290,13 @@ const [Modal, modalApi] = useVbenModal({
           }
           spuProductsMap.get(spuId)!.push(product);
         }
-
         // 加载每个 SPU 的详情
         for (const [spuId, products] of spuProductsMap) {
           const skuIdArr = products.map((p) => p.skuId);
           await getSpuDetails(spuId, skuIdArr, products, 'load');
         }
       }
-
-      // 设置表单值
+      // 设置到 values
       await formApi.setValues(activityData);
     } finally {
       modalApi.unlock();
