@@ -490,16 +490,25 @@ defineExpose({
       @checkbox-all="handleSelectionChange"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
-      <!-- TODO @puhui999：这里的宽度貌似有点问题，图片会寄出来； -->
-      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
+      <VxeColumn
+        align="center"
+        title="图片"
+        width="80"
+        min-width="80"
+        fixed="left"
+      >
         <template #default="{ row }">
-          <ElImage
-            v-if="row.picUrl"
-            :src="row.picUrl"
-            class="h-[50px] w-[50px] cursor-pointer"
-            :preview-src-list="[row.picUrl]"
-            fit="cover"
-          />
+          <div class="flex items-center justify-center overflow-hidden">
+            <ElImage
+              v-if="row.picUrl"
+              :src="row.picUrl"
+              class="h-[50px] w-[50px] cursor-pointer"
+              :preview-src-list="[row.picUrl]"
+              :preview-teleported="true"
+              :z-index="3000"
+              fit="cover"
+            />
+          </div>
         </template>
       </VxeColumn>
       <template v-if="formData?.specType && !isBatch">
@@ -583,15 +592,24 @@ defineExpose({
       }"
     >
       <VxeColumn v-if="isComponent" type="checkbox" width="45" fixed="left" />
-      <!-- TODO @puhui999：这里的宽度貌似有点问题，图片会寄出来； -->
-      <VxeColumn align="center" title="图片" max-width="140" fixed="left">
+      <VxeColumn
+        align="center"
+        title="图片"
+        width="80"
+        min-width="80"
+        fixed="left"
+      >
         <template #default="{ row }">
-          <ElImage
-            :src="row.picUrl"
-            class="h-[60px] w-[60px] cursor-pointer"
-            :preview-src-list="[row.picUrl]"
-            fit="cover"
-          />
+          <div class="flex items-center justify-center overflow-hidden">
+            <ElImage
+              :src="row.picUrl"
+              class="h-[60px] w-[60px] cursor-pointer"
+              :preview-src-list="[row.picUrl]"
+              :preview-teleported="true"
+              :z-index="3000"
+              fit="cover"
+            />
+          </div>
         </template>
       </VxeColumn>
       <template v-if="formData?.specType">

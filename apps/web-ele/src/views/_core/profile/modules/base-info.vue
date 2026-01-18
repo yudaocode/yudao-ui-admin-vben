@@ -21,7 +21,6 @@ const emit = defineEmits<{
   (e: 'success'): void;
 }>();
 
-// TODO @puhui999：展示貌似不太对；应该是左右，不是上下哈
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     labelWidth: 70,
@@ -101,7 +100,7 @@ watch(
 </script>
 
 <template>
-  <div class="mt-16px md:w-full lg:w-1/2 2xl:w-2/5">
+  <div class="mt-4 md:w-full lg:w-1/2 2xl:w-2/5">
     <Form />
   </div>
 </template>

@@ -65,7 +65,7 @@ function deleteHttpResponseSetting(
 }
 </script>
 <template>
-  <ElFormItem>
+  <ElFormItem label-position="top">
     <ElAlert
       title="仅支持 POST 请求，以请求体方式接收参数"
       type="warning"
@@ -75,6 +75,7 @@ function deleteHttpResponseSetting(
   </ElFormItem>
   <!-- 请求地址-->
   <ElFormItem
+    label-position="top"
     label="请求地址"
     :prop="`${formItemPrefix}.url`"
     :rules="{
@@ -93,7 +94,7 @@ function deleteHttpResponseSetting(
   />
   <!-- 返回值设置-->
   <div v-if="responseEnable">
-    <ElFormItem label="返回值">
+    <ElFormItem label="返回值" label-position="top">
       <ElAlert
         title="通过请求返回值, 可以修改流程表单的值"
         type="warning"
@@ -101,6 +102,7 @@ function deleteHttpResponseSetting(
         :closable="false"
       />
     </ElFormItem>
+    <!-- todo jason 更多设置排版需要优化一下-->
     <ElRow
       :gutter="8"
       v-for="(item, index) in setting.response"

@@ -30,12 +30,8 @@ import {
 } from 'element-plus';
 
 import { getForm } from '#/api/bpm/form';
-// TODO @jason：这里要迁移下么？
-// import {
-//   HttpRequestSetting,
-//   parseFormFields,
-// } from '#/views/bpm/components/simple-process-design';
 import { parseFormFields } from '#/components/form-create';
+import { HttpRequestSetting } from '#/views/bpm/components/simple-process-design';
 
 import PrintTemplate from './custom-print-template.vue';
 
@@ -514,16 +510,17 @@ defineExpose({ initData, validate });
           </div>
         </ElCol>
       </ElRow>
-      <ElRow v-if="processBeforeTriggerEnable">
-        <ElCol :span="24" class="mt-6">
-          <!-- <HttpRequestSetting
-            v-model:setting="modelData.processBeforeTriggerSetting"
-            :response-enable="true"
-            form-item-prefix="processBeforeTriggerSetting"
-          /> -->
-        </ElCol>
-      </ElRow>
     </ElFormItem>
+    <ElRow v-if="processBeforeTriggerEnable">
+      <ElCol :span="2" />
+      <ElCol :span="22" class="mt-2">
+        <HttpRequestSetting
+          v-model:setting="modelData.processBeforeTriggerSetting"
+          :response-enable="true"
+          form-item-prefix="processBeforeTriggerSetting"
+        />
+      </ElCol>
+    </ElRow>
     <ElFormItem class="mb-5" label="流程后置通知">
       <ElRow class="mt-1">
         <ElCol :span="24">
@@ -536,16 +533,17 @@ defineExpose({ initData, validate });
           </div>
         </ElCol>
       </ElRow>
-      <ElRow v-if="processAfterTriggerEnable" class="mt-2">
-        <ElCol :span="24">
-          <HttpRequestSetting
-            v-model:setting="modelData.processAfterTriggerSetting"
-            :response-enable="true"
-            form-item-prefix="processAfterTriggerSetting"
-          />
-        </ElCol>
-      </ElRow>
     </ElFormItem>
+    <ElRow v-if="processAfterTriggerEnable" class="mt-1">
+      <ElCol :span="2" />
+      <ElCol :span="22">
+        <HttpRequestSetting
+          v-model:setting="modelData.processAfterTriggerSetting"
+          :response-enable="true"
+          form-item-prefix="processAfterTriggerSetting"
+        />
+      </ElCol>
+    </ElRow>
     <ElFormItem class="mb-5" label="任务前置通知">
       <ElRow class="mt-1">
         <ElCol :span="24">
@@ -558,16 +556,17 @@ defineExpose({ initData, validate });
           </div>
         </ElCol>
       </ElRow>
-      <ElRow v-if="taskBeforeTriggerEnable" class="mt-2">
-        <ElCol :span="24">
-          <HttpRequestSetting
-            v-model:setting="modelData.taskBeforeTriggerSetting"
-            :response-enable="true"
-            form-item-prefix="taskBeforeTriggerSetting"
-          />
-        </ElCol>
-      </ElRow>
     </ElFormItem>
+    <ElRow v-if="taskBeforeTriggerEnable" class="mt-1">
+      <ElCol :span="2" />
+      <ElCol :span="22">
+        <HttpRequestSetting
+          v-model:setting="modelData.taskBeforeTriggerSetting"
+          :response-enable="true"
+          form-item-prefix="taskBeforeTriggerSetting"
+        />
+      </ElCol>
+    </ElRow>
     <ElFormItem class="mb-5" label="任务后置通知">
       <ElRow class="mt-1">
         <ElCol :span="24">
@@ -580,16 +579,17 @@ defineExpose({ initData, validate });
           </div>
         </ElCol>
       </ElRow>
-      <ElRow v-if="taskAfterTriggerEnable" class="mt-2">
-        <ElCol :span="24">
-          <HttpRequestSetting
-            v-model:setting="modelData.taskAfterTriggerSetting"
-            :response-enable="true"
-            form-item-prefix="taskAfterTriggerSetting"
-          />
-        </ElCol>
-      </ElRow>
     </ElFormItem>
+    <ElRow v-if="taskAfterTriggerEnable" class="mt-1">
+      <ElCol :span="2" />
+      <ElCol :span="22">
+        <HttpRequestSetting
+          v-model:setting="modelData.taskAfterTriggerSetting"
+          :response-enable="true"
+          form-item-prefix="taskAfterTriggerSetting"
+        />
+      </ElCol>
+    </ElRow>
     <ElFormItem class="mb-5" label="自定义打印模板">
       <div class="flex w-full flex-col">
         <div class="flex items-center">

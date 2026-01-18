@@ -464,7 +464,6 @@ function handleRenameSuccess() {
     >
       <div class="flex h-12 items-center">
         <!-- 头部：分类名 -->
-        <!-- TODO @jason：2）拖动后，直接请求排序，不用有个【保存】；排序模型分类，和排序分类里的模型，交互有点不同哈。@芋艿 好像 yudao-ui-admin-vue3 交互也是这样的，需要改吗? -->
         <div class="flex items-center">
           <Tooltip v-if="isCategorySorting" title="拖动排序">
             <!-- drag-handle 标识可以拖动，不能删掉 -->

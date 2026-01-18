@@ -43,14 +43,6 @@ const [Modal, modalApi] = useVbenModal({
     if (isOpen) {
       // 打开时，进行 loading 加载。后续 CropperImage 组件加载完毕，会自动关闭 loading（通过 handleReady）
       modalLoading(true);
-      const img = new Image();
-      img.src = src.value;
-      img.addEventListener('load', () => {
-        modalLoading(false);
-      });
-      img.addEventListener('error', () => {
-        modalLoading(false);
-      });
     } else {
       // 关闭时，清空右侧预览
       previewSource.value = '';

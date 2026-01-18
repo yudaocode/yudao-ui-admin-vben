@@ -15,8 +15,7 @@ import {
   cancelProcessInstanceByAdmin,
   getProcessInstanceManagerPage,
 } from '#/api/bpm/processInstance';
-// TODO @jason：现在 ele 和 antd 使用的 parseFormFields 路径不同；看看以哪个为主。ele 是 import { parseFormFields } from '#/components/form-create';
-import { parseFormFields } from '#/views/bpm/components/simple-process-design';
+import { parseFormFields } from '#/components/form-create';
 
 import { useGridColumns, useGridFormSchema } from './data';
 

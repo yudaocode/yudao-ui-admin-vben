@@ -92,14 +92,10 @@ export function useFormSchema(): VbenFormSchema[] {
       defaultValue: true,
     },
     {
-      // TODO: @puhui999：商品关联
       fieldName: 'spuId',
       label: '商品关联',
       component: 'Input',
       formItemClass: 'col-span-2',
-      componentProps: {
-        placeholder: '请输入商品 SPU 编号',
-      },
     },
     {
       fieldName: 'sort',

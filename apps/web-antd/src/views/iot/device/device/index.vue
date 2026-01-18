@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 import type { IotProductApi } from '#/api/iot/product/product';
@@ -51,6 +50,9 @@ const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 const checkedIds = ref<number[]>([]);
 
+/** 判断是否为列表视图 */
+const isListView = () => viewMode.value === 'list';
+
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,
   destroyOnClose: true,
@@ -66,13 +68,13 @@ const [DeviceImportFormModal, deviceImportFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const queryParams = ref({
+const queryParams = ref<Partial<IotDeviceApi.DevicePageReqVO>>({
   deviceName: '',
   nickname: '',
-  productId: undefined as number | undefined,
-  deviceType: undefined as number | undefined,
-  status: undefined as number | undefined,
-  groupId: undefined as number | undefined,
+  productId: undefined,
+  deviceType: undefined,
+  status: undefined,
+  groupId: undefined,
 }); // 搜索参数
 
 /** 搜索 */
@@ -112,7 +114,11 @@ async function handleViewModeChange(mode: 'card' | 'list') {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportDeviceExcel(queryParams.value);
+  const data = await exportDeviceExcel({
+    ...queryParams.value,
+    pageNo: 1,
+    pageSize: 999_999,
+  } as IotDeviceApi.DevicePageReqVO);
   downloadFileFromBlobPart({ fileName: '物联网设备.xls', source: data });
 }
 
@@ -141,12 +147,12 @@ function handleCreate() {
 }
 
 /** 编辑设备 */
-function handleEdit(row: IotDeviceApi.Device) {
+function handleEdit(row: IotDeviceApi.DeviceRespVO) {
   deviceFormModalApi.setData(row).open();
 }
 
 /** 删除设备 */
-async function handleDelete(row: IotDeviceApi.Device) {
+async function handleDelete(row: IotDeviceApi.DeviceRespVO) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.deviceName]),
     duration: 0,
@@ -197,12 +203,12 @@ function handleImport() {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: IotDeviceApi.Device[];
+  records: IotDeviceApi.DeviceRespVO[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
 }
 
-const [Grid, gridApi] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
   gridOptions: {
     checkboxConfig: {
       highlight: true,
@@ -213,12 +219,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page }) => {
+        query: async ({
+          page,
+        }: {
+          page: { currentPage: number; pageSize: number };
+        }) => {
           return await getDevicePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...queryParams.value,
-          });
+          } as IotDeviceApi.DevicePageReqVO);
         },
       },
     },
@@ -230,7 +240,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<IotDeviceApi.Device>,
+  },
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,
@@ -388,7 +398,7 @@ onMounted(async () => {
               type: 'primary',
               icon: 'ant-design:folder-add-outlined',
               auth: ['iot:device:update'],
-              ifShow: () => viewMode === 'list',
+              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleAddToGroup,
             },
@@ -398,13 +408,12 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['iot:device:delete'],
-              ifShow: () => viewMode === 'list',
+              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
           ]"
         />
-
         <!-- 视图切换 -->
         <Space :size="4">
           <Button
@@ -423,8 +432,8 @@ onMounted(async () => {
       </div>
     </Card>
 
+    <!-- 列表视图 -->
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
-      <!-- 所属产品列 -->
       <template #product="{ row }">
         <a
           class="cursor-pointer text-primary"
@@ -433,8 +442,6 @@ onMounted(async () => {
           {{ products.find((p) => p.id === row.productId)?.name || '-' }}
         </a>
       </template>
-
-      <!-- 所属分组列 -->
       <template #groups="{ row }">
         <template v-if="row.groupIds?.length">
           <Tag
@@ -448,8 +455,6 @@ onMounted(async () => {
         </template>
         <span v-else>-</span>
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -490,7 +495,14 @@ onMounted(async () => {
       ref="cardViewRef"
       :products="products"
       :device-groups="deviceGroups"
-      :search-params="queryParams"
+      :search-params="{
+        deviceName: queryParams.deviceName || '',
+        nickname: queryParams.nickname || '',
+        productId: queryParams.productId,
+        deviceType: queryParams.deviceType,
+        status: queryParams.status,
+        groupId: queryParams.groupId,
+      }"
       @create="handleCreate"
       @edit="handleEdit"
       @delete="handleDelete"

@@ -24,7 +24,7 @@ import { getDeviceAuthInfo } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {
-  device: IotDeviceApi.Device;
+  device: IotDeviceApi.DeviceRespVO;
   product: IotProductApi.Product;
 }
 
@@ -32,8 +32,8 @@ const props = defineProps<Props>();
 
 const authDialogVisible = ref(false);
 const authPasswordVisible = ref(false);
-const authInfo = ref<IotDeviceApi.DeviceAuthInfo>(
-  {} as IotDeviceApi.DeviceAuthInfo,
+const authInfo = ref<IotDeviceApi.DeviceAuthInfoRespVO>(
+  {} as IotDeviceApi.DeviceAuthInfoRespVO,
 );
 
 /** 控制地图显示的标志 */
@@ -75,8 +75,7 @@ function handleAuthInfoDialogClose() {
         <Card class="h-full">
           <template #title>
             <div class="flex items-center">
-              <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
-              <IconifyIcon class="mr-2 text-primary" icon="ep:info-filled" />
+              <IconifyIcon class="mr-2 text-primary" icon="lucide:info" />
               <span>设备信息</span>
             </div>
           </template>
@@ -142,8 +141,7 @@ function handleAuthInfoDialogClose() {
           <template #title>
             <div class="flex items-center justify-between">
               <div class="flex items-center">
-                <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
-                <IconifyIcon class="mr-2 text-primary" icon="ep:location" />
+                <IconifyIcon class="mr-2 text-primary" icon="lucide:map-pin" />
                 <span>设备位置</span>
               </div>
               <div class="text-sm text-gray-500">
@@ -162,8 +160,7 @@ function handleAuthInfoDialogClose() {
               v-else
               class="flex h-full w-full items-center justify-center rounded bg-gray-50 text-gray-400"
             >
-              <!-- TODO @haohao：图标尽量使用中立的，这样 ep 版本呢好迁移 -->
-              <IconifyIcon class="mr-2" icon="ep:warning" />
+              <IconifyIcon class="mr-2" icon="lucide:alert-triangle" />
               <span>暂无位置信息</span>
             </div>
           </div>

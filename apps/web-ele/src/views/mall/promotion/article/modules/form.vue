@@ -14,6 +14,7 @@ import {
   updateArticle,
 } from '#/api/mall/promotion/article';
 import { $t } from '#/locales';
+import { SpuShowcase } from '#/views/mall/product/spu/components';
 
 import { useFormSchema } from '../data';
 
@@ -41,6 +42,10 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
+    // 同步商品选择到表单，确保验证时能获取到值
+    if (formData.value?.spuId) {
+      await formApi.setFieldValue('spuId', formData.value.spuId);
+    }
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
@@ -82,6 +87,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle" class="w-2/5">
-    <Form class="mx-4" />
+    <Form class="mx-4">
+      <!-- 自定义插槽：商品选择 -->
+      <template #spuId>
+        <SpuShowcase v-model="formData!.spuId" :limit="1" />
+      </template>
+    </Form>
   </Modal>
 </template>

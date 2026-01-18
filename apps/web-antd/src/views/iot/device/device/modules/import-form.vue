@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FileType } from 'ant-design-vue/es/upload/interface';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
@@ -38,7 +39,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       const result = await importDevice(data.file, data.updateSupport);
       // 处理导入结果提示
-      const importData = result.data || result;
+      const importData = result as IotDeviceApi.DeviceImportRespVO;
       if (importData) {
         let text = `上传成功数量：${importData.createDeviceNames?.length || 0};`;
         if (importData.createDeviceNames?.length) {

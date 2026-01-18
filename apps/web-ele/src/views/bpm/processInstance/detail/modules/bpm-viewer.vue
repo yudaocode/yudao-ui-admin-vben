@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-// TODO @jason：这个貌似暂时还没迁移的样子？
-// import { MyProcessViewer } from '#/views/bpm/components/bpmn-process-designer/package';
+import { MyProcessViewer } from '#/views/bpm/components/bpmn-process-designer/package';
 
 defineOptions({ name: 'ProcessInstanceBpmnViewer' });
 
@@ -50,11 +49,11 @@ watch(
     v-loading="loading"
     class="h-full w-full overflow-auto rounded-lg border border-gray-200 bg-white p-4"
   >
-    <!-- <MyProcessViewer
+    <MyProcessViewer
       key="processViewer"
       :xml="view.bpmnXml"
       :view="view"
       class="h-full min-h-[500px] w-full"
-    /> -->
+    />
   </div>
 </template>

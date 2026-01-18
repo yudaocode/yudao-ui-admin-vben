@@ -6,9 +6,9 @@ import type { ComponentPublicInstance, Ref } from 'vue';
 import type { ButtonSetting, SimpleFlowNode } from '../../consts';
 import type { UserTaskFormType } from '../../helpers';
 
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watchEffect } from 'vue';
 
-import { useVbenDrawer } from '@vben/common-ui';
+import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import {
   BpmModelFormType,
   BpmNodeTypeEnum,
@@ -38,6 +38,8 @@ import {
   TreeSelect,
   TypographyText,
 } from 'ant-design-vue';
+
+import { ProcessExpressionSelectModal } from '#/views/bpm/processExpression/components';
 
 import {
   APPROVE_METHODS,
@@ -112,9 +114,19 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 });
 
+const [ExpressionSelectModal, expressionSelectModalApi] = useVbenModal({
+  connectedComponent: ProcessExpressionSelectModal,
+  destroyOnClose: true,
+  showConfirmButton: false,
+});
+
 // 节点名称配置
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.USER_TASK_NODE);
+
+watchEffect(() => {
+  void inputRef.value;
+});
 
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
@@ -218,7 +230,16 @@ function changeCandidateStrategy() {
   configForm.value.deptLevel = 1;
   configForm.value.formUser = '';
   configForm.value.formDept = '';
+  configForm.value.expression = '';
   configForm.value.approveMethod = ApproveMethodType.SEQUENTIAL_APPROVE;
+}
+
+function openExpressionSelect() {
+  expressionSelectModalApi.open();
+}
+
+function handleExpressionSelected(row: any) {
+  configForm.value.expression = row?.expression ?? '';
 }
 
 /** 审批方式改变 */
@@ -843,7 +864,6 @@ onMounted(() => {
                 </SelectOption>
               </Select>
             </FormItem>
-            <!-- TODO @jason：后续要支持选择已经存好的表达式 -->
             <FormItem
               v-if="
                 configForm.candidateStrategy === CandidateStrategy.EXPRESSION
@@ -851,7 +871,15 @@ onMounted(() => {
               label="流程表达式"
               name="expression"
             >
-              <Textarea v-model:value="configForm.expression" allow-clear />
+              <div class="flex gap-2">
+                <Textarea v-model:value="configForm.expression" :rows="2" />
+                <div class="flex flex-col gap-2">
+                  <Button type="primary" @click="openExpressionSelect">
+                    选择
+                  </Button>
+                  <Button @click="configForm.expression = ''">清空</Button>
+                </div>
+              </div>
             </FormItem>
             <!-- 多人审批/办理 方式 -->
             <FormItem :label="`多人${nodeTypeName}方式`" name="approveMethod">
@@ -1266,4 +1294,6 @@ onMounted(() => {
       </TabPane>
     </Tabs>
   </Drawer>
+
+  <ExpressionSelectModal @select="handleExpressionSelected" />
 </template>

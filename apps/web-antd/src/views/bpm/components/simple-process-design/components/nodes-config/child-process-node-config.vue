@@ -29,6 +29,7 @@ import {
 
 import { getForm } from '#/api/bpm/form';
 import { getModelList } from '#/api/bpm/model';
+import { parseFormFields } from '#/components/form-create';
 
 import {
   CHILD_PROCESS_MULTI_INSTANCE_SOURCE_TYPE,
@@ -42,12 +43,7 @@ import {
   TIME_UNIT_TYPES,
   TimeUnitType,
 } from '../../consts';
-import {
-  parseFormFields,
-  useFormFields,
-  useNodeName,
-  useWatchNode,
-} from '../../helpers';
+import { useFormFields, useNodeName, useWatchNode } from '../../helpers';
 import { convertTimeUnit } from './utils';
 
 defineOptions({ name: 'ChildProcessNodeConfig' });

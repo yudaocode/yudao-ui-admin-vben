@@ -138,6 +138,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
+        valueFormat: 'x',
         placeholder: [
           $t('utils.rangePicker.beginTime'),
           $t('utils.rangePicker.endTime'),
@@ -217,13 +218,15 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @puhui999：1）新增时：一直报：“请输入优惠设置”；2）修改老数据，出现报“请求参数类型错误:50.00”；
     {
       fieldName: 'rules',
       label: '优惠设置',
       component: 'Input',
       formItemClass: 'items-start',
-      rules: 'required',
+      rules: z
+        .array(z.any())
+        .min(1, { message: '请添加至少一条优惠规则' })
+        .default([]),
     },
     {
       fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues

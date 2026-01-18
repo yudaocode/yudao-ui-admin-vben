@@ -108,19 +108,32 @@ function convertServerMenuToRouteRecordStringComponent(
 ): RouteRecordStringComponent[] {
   const menus: RouteRecordStringComponent[] = [];
   menuList.forEach((menu) => {
-    // 处理顶级链接菜单
-    if (isHttpUrl(menu.path) && menu.parentId === 0) {
+    // 处理外链菜单（顶级或子级）
+    if (isHttpUrl(menu.path)) {
+      // add by 芋艿：如果有 ?_iframe 参数，则作为内嵌页面处理
+      // 如果有 _iframe 参数，则使用 iframeSrc；如果没有，则使用 link
+      const url = new URL(menu.path);
+      let link: string | undefined;
+      let iframeSrc: string | undefined;
+      if (url.searchParams.has('_iframe')) {
+        url.searchParams.delete('_iframe');
+        iframeSrc = url.toString();
+      } else {
+        link = menu.path;
+      }
+
       const urlMenu: RouteRecordStringComponent = {
         component: 'IFrameView',
         meta: {
           hideInMenu: !menu.visible,
           icon: menu.icon,
-          link: menu.path,
+          iframeSrc,
+          link,
           order: menu.sort,
           title: menu.name,
         },
         name: menu.name,
-        path: `/${menu.path}/index`,
+        path: `${menu.id}`,
       };
       menus.push(urlMenu);
       return;
@@ -154,6 +167,18 @@ function convertServerMenuToRouteRecordStringComponent(
     }
     nameSet.add(finalName);
 
+    // add by 芋艿：处理 menu.component 中的 query 参数
+    // https://doc.vben.pro/guide/essentials/route.html#query
+    let query: Record<string, string> | undefined;
+    const queryIndex = menu.component.indexOf('?');
+    if (queryIndex !== -1) {
+      // 提取 query 字符串并解析为对象
+      const queryString = menu.component.slice(queryIndex + 1);
+      query = Object.fromEntries(new URLSearchParams(queryString).entries());
+      // 移除 component 中的 query 部分
+      menu.component = menu.component.slice(0, queryIndex);
+    }
+
     const buildMenu: RouteRecordStringComponent = {
       component: menu.component,
       meta: {
@@ -162,6 +187,7 @@ function convertServerMenuToRouteRecordStringComponent(
         keepAlive: menu.keepAlive,
         order: menu.sort,
         title: menu.name,
+        ...(query && { query }),
       },
       name: finalName,
       path: menu.path,

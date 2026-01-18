@@ -237,6 +237,15 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       },
     },
     {
+      field: 'status',
+      title: '产品状态',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_PRODUCT_STATUS },
+      },
+    },
+    {
       field: 'createTime',
       title: '创建时间',
       minWidth: 180,

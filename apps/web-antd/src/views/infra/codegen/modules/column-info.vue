@@ -61,6 +61,24 @@ const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型�
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
 });
+
+/** 字典类型过滤：支持 type 或 name，忽略大小写 */
+function filterDictTypeOption(input: string, option: any) {
+  if (!option?.key) {
+    return false;
+  }
+  const searchValue = input.toLowerCase();
+  const dictType = dictTypeOptions.value.find(
+    (item) => item.type === option.key,
+  );
+  if (!dictType) {
+    return false;
+  }
+  return (
+    dictType.type.toLowerCase().includes(searchValue) ||
+    dictType.name.toLowerCase().includes(searchValue)
+  );
+}
 </script>
 
 <template>
@@ -142,6 +160,7 @@ onMounted(async () => {
         class="w-full"
         allow-clear
         show-search
+        :filter-option="filterDictTypeOption"
       >
         <Select.Option
           v-for="option in dictTypeOptions"

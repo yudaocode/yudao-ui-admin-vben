@@ -25,7 +25,6 @@ const avatar = computed(
   () => props.profile?.avatar || preferences.app.defaultAvatar,
 );
 
-// TODO @puhui999：头像上传没跑通
 async function handelUpload({
   file,
   filename,
@@ -57,8 +56,8 @@ async function handelUpload({
       </ElTooltip>
     </div>
     <div class="mt-8">
-      <ElDescriptions :column="2">
-        <ElDescriptionsItem>
+      <ElDescriptions :column="2" border>
+        <ElDescriptionsItem label="用户账号">
           <template #label>
             <div class="flex items-center">
               <IconifyIcon icon="ant-design:user-outlined" class="mr-1" />
@@ -116,7 +115,11 @@ async function handelUpload({
               所属岗位
             </div>
           </template>
-          {{ profile.posts.map((post) => post.name).join(',') }}
+          {{
+            profile.posts && profile.posts.length > 0
+              ? profile.posts.map((post) => post.name).join(',')
+              : '-'
+          }}
         </ElDescriptionsItem>
         <ElDescriptionsItem>
           <template #label>

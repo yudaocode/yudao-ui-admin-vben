@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<SystemSocialUserApi.SocialUser>,
+  },
 });
 
 /** 解绑账号 */

@@ -9,8 +9,8 @@ import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
 import { getSimpleProductList } from '#/api/iot/product/product';
 
-/** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+/** 基础表单字段 */
+export function useBasicFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -35,6 +35,14 @@ export function useFormSchema(): VbenFormSchema[] {
         disabled: (values: any) => !!values?.id,
       },
       rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'deviceType',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
       fieldName: 'deviceName',
@@ -62,7 +70,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: () => getSimpleDeviceList(DeviceTypeEnum.GATEWAY),
-        labelField: 'nickname',
+        labelField: 'deviceName',
         valueField: 'id',
         placeholder: '子设备可选择父设备',
       },
@@ -71,6 +79,12 @@ export function useFormSchema(): VbenFormSchema[] {
         show: (values) => values.deviceType === DeviceTypeEnum.GATEWAY_SUB,
       },
     },
+  ];
+}
+
+/** 高级设置表单字段（更多设置） */
+export function useAdvancedFormSchema(): VbenFormSchema[] {
+  return [
     {
       fieldName: 'nickname',
       label: '备注名称',
@@ -88,6 +102,11 @@ export function useFormSchema(): VbenFormSchema[] {
         )
         .optional()
         .or(z.literal('')),
+    },
+    {
+      fieldName: 'picUrl',
+      label: '设备图片',
+      component: 'ImageUpload',
     },
     {
       fieldName: 'groupIds',
@@ -277,6 +296,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'nickname',
       title: '备注名称',
       minWidth: 120,
+    },
+    {
+      field: 'picUrl',
+      title: '设备图片',
+      width: 100,
+      cellRender: {
+        name: 'CellImage',
+      },
     },
     {
       field: 'productId',

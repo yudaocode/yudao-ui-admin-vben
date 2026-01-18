@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<SystemSocialUserApi.SocialUser>,
+  },
 });
 
 /** 解绑账号 */
@@ -167,19 +167,16 @@ onMounted(() => {
       >
         <ElCard v-for="item in allBindList" :key="item.type" class="!mb-2">
           <div class="flex w-full items-center gap-4">
-            <!-- TODO @puhui999：图片大小不太对 -->
             <ElImage
               :src="item.img"
-              :width="40"
-              :height="40"
+              style="width: 40px; height: 40px"
               :alt="item.title"
-              :preview="false"
+              :preview-disabled="true"
+              fit="contain"
             />
             <div class="flex flex-1 items-center justify-between">
               <div class="flex flex-col">
-                <h4
-                  class="mb-[4px] text-[14px] text-black/85 dark:text-white/85"
-                >
+                <h4 class="mb-1 text-sm text-black/85 dark:text-white/85">
                   {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
                 </h4>
                 <span class="text-black/45 dark:text-white/45">
@@ -187,9 +184,9 @@ onMounted(() => {
                     {{ item.socialUser?.nickname || item.socialUser?.openid }}
                   </template>
                   <template v-else>
-                    绑定{{
-                      getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type)
-                    }}账号
+                    绑定
+                    {{ getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, item.type) }}
+                    账号
                   </template>
                 </span>
               </div>

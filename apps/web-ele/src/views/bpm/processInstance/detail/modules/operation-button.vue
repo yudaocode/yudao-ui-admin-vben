@@ -275,8 +275,7 @@ async function openPopover(type: string) {
     }
   }
   Object.keys(popOverVisible.value).forEach((item) => {
-    // TODO @jason：这里是不是保持和 antd 一致？
-    popOverVisible.value[item] = item === type;
+    if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
 }
 

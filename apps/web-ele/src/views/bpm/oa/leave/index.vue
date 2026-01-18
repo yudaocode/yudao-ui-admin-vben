@@ -2,12 +2,12 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 
-import { h, onActivated } from 'vue';
+import { onActivated } from 'vue';
 
 import { DocAlert, Page, prompt } from '@vben/common-ui';
 import { BpmProcessInstanceStatus } from '@vben/constants';
 
-import { message, Textarea } from 'ant-design-vue';
+import { ElInput, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLeavePage } from '#/api/bpm/oa/leave';
@@ -47,35 +47,35 @@ function handleCancel(row: BpmOALeaveApi.Leave) {
   prompt({
     title: '取消流程',
     content: '请输入取消原因',
-    modelPropName: 'value',
-    component: () => {
-      return h(Textarea, {
-        placeholder: '请输入取消原因',
-        allowClear: true,
-        rows: 2,
-        rules: [{ required: true, message: '请输入取消原因' }],
-      });
+    component: ElInput,
+    componentProps: {
+      placeholder: '请输入取消原因',
+      clearable: true,
+      type: 'textarea',
+      rows: 2,
     },
+    modelPropName: 'modelValue',
     async beforeClose(scope) {
       if (!scope.isConfirm) {
         return;
       }
       if (!scope.value) {
-        message.error('请输入取消原因');
+        ElMessage.error('请输入取消原因');
         return false;
       }
-      const hideLoading = message.loading({
-        content: '正在取消中...',
+      const hideLoading = ElMessage({
+        type: 'info',
+        message: '正在取消中...',
         duration: 0,
       });
       try {
         await cancelProcessInstanceByStartUser(row.id, scope.value);
-        message.success('取消成功');
+        ElMessage.success('取消成功');
         handleRefresh();
       } catch {
         return false;
       } finally {
-        hideLoading();
+        hideLoading.close();
       }
     },
   });
@@ -160,27 +160,30 @@ onActivated(() => {
           :actions="[
             {
               label: $t('common.detail'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.VIEW,
               onClick: handleDetail.bind(null, row),
             },
             {
               label: '审批进度',
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.VIEW,
               onClick: handleProgress.bind(null, row),
             },
             {
               label: '取消',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
               onClick: handleCancel.bind(null, row),
             },
             {
               label: '重新发起',
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.ADD,
               ifShow: row.status !== BpmProcessInstanceStatus.RUNNING,
               onClick: handleReCreate.bind(null, row),
