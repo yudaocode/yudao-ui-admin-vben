@@ -419,11 +419,13 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
                     task.signPicUrl &&
                     activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
                   "
-                  class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+                  class="mt-1 flex w-full items-center rounded-md bg-gray-100 p-2 text-sm text-gray-500"
                 >
                   签名：
                   <Image
-                    class="ml-1 h-10 w-24"
+                    class="ml-2"
+                    :width="180"
+                    :height="60"
                     :src="task.signPicUrl"
                     :preview="{ src: task.signPicUrl }"
                   />
