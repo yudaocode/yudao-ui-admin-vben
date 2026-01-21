@@ -13,6 +13,7 @@ export namespace IotDeviceApi {
     groupIds?: number[]; // 设备分组编号数组
     productId: number; // 产品编号
     productKey?: string; // 产品标识
+    productName?: string; // 产品名称（只有部分接口返回，例如 getDeviceLocationList）
     deviceType?: number; // 设备类型
     gatewayId?: number; // 网关设备 ID
     state?: number; // 设备状态
@@ -22,7 +23,6 @@ export namespace IotDeviceApi {
     deviceSecret?: string; // 设备密钥，用于设备认证
     authType?: string; // 认证类型（如一机一密、动态注册）
     config?: string; // 设备配置
-    locationType?: number; // 定位类型
     latitude?: number; // 设备位置的纬度
     longitude?: number; // 设备位置的经度
     createTime?: Date; // 创建时间
@@ -136,6 +136,11 @@ export function getDeviceListByProductId(productId: number) {
   return requestClient.get<IotDeviceApi.Device[]>('/iot/device/simple-list', {
     params: { productId },
   });
+}
+
+/** 获取设备位置列表（用于地图展示） */
+export function getDeviceLocationList() {
+  return requestClient.get<IotDeviceApi.Device[]>('/iot/device/location-list');
 }
 
 /** 获取导入模板 */

@@ -6,11 +6,12 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Collapse, message } from 'ant-design-vue';
+import { Button, Collapse, message, Space } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
+import { MapDialog } from '#/components/map';
 import { $t } from '#/locales';
 
 import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
@@ -21,6 +22,7 @@ const emit = defineEmits(['success']);
 const formData = ref<IotDeviceApi.Device>();
 const products = ref<IotProductApi.Product[]>([]);
 const activeKey = ref<string[]>([]);
+const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
 const getTitle = computed(() => {
   return formData.value?.id
@@ -78,10 +80,36 @@ async function getAdvancedFormValues() {
     picUrl: formData.value?.picUrl,
     groupIds: formData.value?.groupIds,
     serialNumber: formData.value?.serialNumber,
-    locationType: formData.value?.locationType,
     longitude: formData.value?.longitude,
     latitude: formData.value?.latitude,
   };
+}
+
+/** 打开地图选择弹窗 */
+async function openMapDialog() {
+  // 如果高级表单未挂载，先展开 Collapse
+  if (!advancedFormApi.isMounted) {
+    activeKey.value = ['advanced'];
+    await nextTick();
+    await nextTick();
+  }
+  const values = await advancedFormApi.getValues();
+  mapDialogRef.value?.open(
+    values.longitude ? Number(values.longitude) : undefined,
+    values.latitude ? Number(values.latitude) : undefined,
+  );
+}
+
+/** 处理地图选择确认 */
+async function handleMapConfirm(data: {
+  address: string;
+  latitude: string;
+  longitude: string;
+}) {
+  if (advancedFormApi.isMounted) {
+    await advancedFormApi.setFieldValue('longitude', Number(data.longitude));
+    await advancedFormApi.setFieldValue('latitude', Number(data.latitude));
+  }
 }
 
 const [Modal, modalApi] = useVbenModal({
@@ -160,8 +188,13 @@ onMounted(async () => {
       <Collapse v-model:active-key="activeKey" class="mt-4">
         <Collapse.Panel key="advanced" header="更多设置">
           <AdvancedForm />
+          <Space class="mt-2">
+            <Button type="primary" @click="openMapDialog">坐标拾取</Button>
+          </Space>
         </Collapse.Panel>
       </Collapse>
     </div>
   </Modal>
+  <!-- 地图选择弹窗 -->
+  <MapDialog ref="mapDialogRef" @confirm="handleMapConfirm" />
 </template>

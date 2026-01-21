@@ -137,6 +137,7 @@ export function useBasicFormSchema(
       },
       rules: 'required',
     },
+    // TODO @haohao：这个貌似不需要？！
     {
       fieldName: 'status',
       label: '产品状态',
@@ -147,16 +148,6 @@ export function useBasicFormSchema(
         optionType: 'button',
       },
       defaultValue: 0,
-      rules: 'required',
-    },
-    {
-      fieldName: 'locationType',
-      label: '定位类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_LOCATION_TYPE, 'number'),
-        placeholder: '请选择定位类型',
-      },
       rules: 'required',
     },
   ];

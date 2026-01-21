@@ -11,17 +11,16 @@ import { formatDateTime } from '@vben/utils';
 import {
   Button,
   Card,
-  Col,
   Descriptions,
   Form,
   Input,
   message,
   Modal,
-  Row,
 } from 'ant-design-vue';
 
 import { getDeviceAuthInfo } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
+import { MapDialog } from '#/components/map';
 
 interface Props {
   device: IotDeviceApi.Device;
@@ -35,11 +34,17 @@ const authPasswordVisible = ref(false);
 const authInfo = ref<IotDeviceApi.DeviceAuthInfoRespVO>(
   {} as IotDeviceApi.DeviceAuthInfoRespVO,
 );
+const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
-/** 控制地图显示的标志 */
-const showMap = computed(() => {
+/** 是否有位置信息 */
+const hasLocation = computed(() => {
   return !!(props.device.longitude && props.device.latitude);
 });
+
+/** 打开地图弹窗 */
+function openMapDialog() {
+  mapDialogRef.value?.open(props.device.longitude, props.device.latitude);
+}
 
 /** 复制到剪贴板 */
 async function copyToClipboard(text: string) {
@@ -67,106 +72,63 @@ function handleAuthInfoDialogClose() {
   authDialogVisible.value = false;
 }
 </script>
+
 <template>
   <div>
-    <Row :gutter="16">
-      <!-- 左侧设备信息 -->
-      <Col :span="12">
-        <Card class="h-full">
-          <template #title>
-            <div class="flex items-center">
-              <IconifyIcon class="mr-2 text-primary" icon="lucide:info" />
-              <span>设备信息</span>
-            </div>
+    <Card title="设备信息">
+      <Descriptions :column="3" bordered size="small">
+        <Descriptions.Item label="产品名称">
+          {{ product.name }}
+        </Descriptions.Item>
+        <Descriptions.Item label="ProductKey">
+          {{ product.productKey }}
+        </Descriptions.Item>
+        <Descriptions.Item label="设备类型">
+          <DictTag
+            :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
+            :value="product.deviceType"
+          />
+        </Descriptions.Item>
+        <Descriptions.Item label="DeviceName">
+          {{ device.deviceName }}
+        </Descriptions.Item>
+        <Descriptions.Item label="备注名称">
+          {{ device.nickname || '--' }}
+        </Descriptions.Item>
+        <Descriptions.Item label="当前状态">
+          <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
+        </Descriptions.Item>
+        <Descriptions.Item label="创建时间">
+          {{ formatDateTime(device.createTime) }}
+        </Descriptions.Item>
+        <Descriptions.Item label="激活时间">
+          {{ formatDateTime(device.activeTime) }}
+        </Descriptions.Item>
+        <Descriptions.Item label="最后上线时间">
+          {{ formatDateTime(device.onlineTime) }}
+        </Descriptions.Item>
+        <Descriptions.Item label="最后离线时间">
+          {{ formatDateTime(device.offlineTime) }}
+        </Descriptions.Item>
+        <Descriptions.Item label="设备位置">
+          <template v-if="hasLocation">
+            <span class="mr-2">
+              {{ device.longitude }}, {{ device.latitude }}
+            </span>
+            <Button type="link" size="small" @click="openMapDialog">
+              <IconifyIcon icon="lucide:map-pin" class="mr-1" />
+              查看地图
+            </Button>
           </template>
-          <Descriptions :column="1" bordered size="small">
-            <Descriptions.Item label="产品名称">
-              {{ props.product.name }}
-            </Descriptions.Item>
-            <Descriptions.Item label="ProductKey">
-              {{ props.product.productKey }}
-            </Descriptions.Item>
-            <Descriptions.Item label="设备类型">
-              <DictTag
-                :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
-                :value="props.product.deviceType"
-              />
-            </Descriptions.Item>
-            <Descriptions.Item label="定位类型">
-              <DictTag
-                :type="DICT_TYPE.IOT_LOCATION_TYPE"
-                :value="props.product.locationType"
-              />
-            </Descriptions.Item>
-            <Descriptions.Item label="DeviceName">
-              {{ props.device.deviceName }}
-            </Descriptions.Item>
-            <Descriptions.Item label="备注名称">
-              {{ props.device.nickname || '--' }}
-            </Descriptions.Item>
-            <Descriptions.Item label="当前状态">
-              <DictTag
-                :type="DICT_TYPE.IOT_DEVICE_STATE"
-                :value="props.device.state"
-              />
-            </Descriptions.Item>
-            <Descriptions.Item label="创建时间">
-              {{ formatDateTime(props.device.createTime) }}
-            </Descriptions.Item>
-            <Descriptions.Item label="激活时间">
-              {{ formatDateTime(props.device.activeTime) }}
-            </Descriptions.Item>
-            <Descriptions.Item label="最后上线时间">
-              {{ formatDateTime(props.device.onlineTime) }}
-            </Descriptions.Item>
-            <Descriptions.Item label="最后离线时间">
-              {{ formatDateTime(props.device.offlineTime) }}
-            </Descriptions.Item>
-            <Descriptions.Item label="MQTT 连接参数">
-              <Button
-                size="small"
-                type="link"
-                @click="handleAuthInfoDialogOpen"
-              >
-                查看
-              </Button>
-            </Descriptions.Item>
-          </Descriptions>
-        </Card>
-      </Col>
-
-      <!-- 右侧地图 -->
-      <Col :span="12">
-        <Card class="h-full">
-          <template #title>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <IconifyIcon class="mr-2 text-primary" icon="lucide:map-pin" />
-                <span>设备位置</span>
-              </div>
-              <div class="text-sm text-gray-500">
-                最后上线：{{ formatDateTime(props.device.onlineTime) || '--' }}
-              </div>
-            </div>
-          </template>
-          <div class="h-[500px] w-full">
-            <div
-              v-if="showMap"
-              class="flex h-full w-full items-center justify-center rounded bg-gray-100"
-            >
-              <span class="text-gray-400">地图组件</span>
-            </div>
-            <div
-              v-else
-              class="flex h-full w-full items-center justify-center rounded bg-gray-50 text-gray-400"
-            >
-              <IconifyIcon class="mr-2" icon="lucide:alert-triangle" />
-              <span>暂无位置信息</span>
-            </div>
-          </div>
-        </Card>
-      </Col>
-    </Row>
+          <span v-else class="text-gray-400">暂无位置信息</span>
+        </Descriptions.Item>
+        <Descriptions.Item label="MQTT 连接参数">
+          <Button size="small" type="link" @click="handleAuthInfoDialogOpen">
+            查看
+          </Button>
+        </Descriptions.Item>
+      </Descriptions>
+    </Card>
 
     <!-- 认证信息弹框 -->
     <Modal
@@ -226,5 +188,8 @@ function handleAuthInfoDialogClose() {
         <Button @click="handleAuthInfoDialogClose">关闭</Button>
       </div>
     </Modal>
+
+    <!-- 地图弹窗 -->
+    <MapDialog ref="mapDialogRef" />
   </div>
 </template>
