@@ -35,9 +35,6 @@ function formatDate(date?: Date | string) {
           :value="product.deviceType"
         />
       </Descriptions.Item>
-      <Descriptions.Item label="定位类型">
-        {{ product.locationType ?? '-' }}
-      </Descriptions.Item>
       <Descriptions.Item label="创建时间">
         {{ formatDate(product.createTime) }}
       </Descriptions.Item>
