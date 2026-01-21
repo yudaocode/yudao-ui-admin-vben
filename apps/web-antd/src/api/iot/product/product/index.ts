@@ -17,7 +17,6 @@ export namespace IotProductApi {
     description?: string; // 产品描述
     status?: number; // 产品状态
     deviceType?: number; // 设备类型
-    locationType?: number; // 定位类型
     netType?: number; // 联网方式
     codecType?: string; // 数据格式（编解码器类型）
     dataFormat?: number; // 数据格式

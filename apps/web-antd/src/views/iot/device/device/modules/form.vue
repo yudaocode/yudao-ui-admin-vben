@@ -2,15 +2,16 @@
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Collapse, message } from 'ant-design-vue';
+import { Button, Collapse, message, Space } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
+import { MapDialog } from '#/components/map';
 import { $t } from '#/locales';
 
 import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
@@ -18,9 +19,10 @@ import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
 defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<IotDeviceApi.DeviceRespVO>();
+const formData = ref<IotDeviceApi.Device>();
 const products = ref<IotProductApi.Product[]>([]);
 const activeKey = ref<string[]>([]);
+const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
 const getTitle = computed(() => {
   return formData.value?.id
@@ -78,10 +80,36 @@ async function getAdvancedFormValues() {
     picUrl: formData.value?.picUrl,
     groupIds: formData.value?.groupIds,
     serialNumber: formData.value?.serialNumber,
-    locationType: formData.value?.locationType,
     longitude: formData.value?.longitude,
     latitude: formData.value?.latitude,
   };
+}
+
+/** 打开地图选择弹窗 */
+async function openMapDialog() {
+  // 如果高级表单未挂载，先展开 Collapse
+  if (!advancedFormApi.isMounted) {
+    activeKey.value = ['advanced'];
+    await nextTick();
+    await nextTick();
+  }
+  const values = await advancedFormApi.getValues();
+  mapDialogRef.value?.open(
+    values.longitude ? Number(values.longitude) : undefined,
+    values.latitude ? Number(values.latitude) : undefined,
+  );
+}
+
+/** 处理地图选择确认 */
+async function handleMapConfirm(data: {
+  address: string;
+  latitude: string;
+  longitude: string;
+}) {
+  if (advancedFormApi.isMounted) {
+    await advancedFormApi.setFieldValue('longitude', Number(data.longitude));
+    await advancedFormApi.setFieldValue('latitude', Number(data.latitude));
+  }
 }
 
 const [Modal, modalApi] = useVbenModal({
@@ -97,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = {
       ...basicValues,
       ...advancedValues,
-    } as IotDeviceApi.DeviceSaveReqVO;
+    } as IotDeviceApi.Device;
     try {
       await (formData.value?.id ? updateDevice(data) : createDevice(data));
       // 关闭并提示
@@ -115,11 +143,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<IotDeviceApi.DeviceRespVO>();
+    const data = modalApi.getData<IotDeviceApi.Device>();
     if (!data || !data.id) {
-      // 新增：确保 Collapse 折叠
-      // TODO @haohao：是不是 activeKey 在上面的 112 到 115 就已经处理了哈；
-      activeKey.value = [];
       return;
     }
     // 编辑模式：加载数据
@@ -127,28 +152,28 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getDevice(data.id);
       await formApi.setValues(formData.value);
-      // 如果存在高级字段数据，自动展开 Collapse
-      // TODO @haohao：默认不用展开哈；
-      if (
-        formData.value?.nickname ||
-        formData.value?.picUrl ||
-        formData.value?.groupIds?.length ||
-        formData.value?.serialNumber ||
-        formData.value?.locationType !== undefined
-      ) {
-        activeKey.value = ['advanced'];
-        // 等待 Collapse 展开后表单挂载
-        await nextTick();
-        await nextTick();
-        if (advancedFormApi.isMounted) {
-          await advancedFormApi.setValues(formData.value);
-        }
-      }
     } finally {
       modalApi.unlock();
     }
   },
 });
+
+/** 监听 Collapse 展开，自动设置高级表单的值 */
+watch(
+  activeKey,
+  async (newKeys) => {
+    // 当用户手动展开 Collapse 且存在表单数据时，设置高级表单的值
+    if (newKeys.includes('advanced') && formData.value) {
+      // 等待表单挂载
+      await nextTick();
+      await nextTick();
+      if (advancedFormApi.isMounted) {
+        await advancedFormApi.setValues(formData.value);
+      }
+    }
+  },
+  { immediate: false },
+);
 
 /** 初始化产品列表 */
 onMounted(async () => {
@@ -163,8 +188,13 @@ onMounted(async () => {
       <Collapse v-model:active-key="activeKey" class="mt-4">
         <Collapse.Panel key="advanced" header="更多设置">
           <AdvancedForm />
+          <Space class="mt-2">
+            <Button type="primary" @click="openMapDialog">坐标拾取</Button>
+          </Space>
         </Collapse.Panel>
       </Collapse>
     </div>
   </Modal>
+  <!-- 地图选择弹窗 -->
+  <MapDialog ref="mapDialogRef" @confirm="handleMapConfirm" />
 </template>

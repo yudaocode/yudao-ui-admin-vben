@@ -11,6 +11,7 @@ import { getStatisticsSummary } from '#/api/iot/statistics';
 
 import { defaultStatsData } from './data';
 import DeviceCountCard from './modules/device-count-card.vue';
+import DeviceMapCard from './modules/device-map-card.vue';
 import DeviceStateCountCard from './modules/device-state-count-card.vue';
 import MessageTrendCard from './modules/message-trend-card.vue';
 
@@ -97,9 +98,16 @@ onMounted(() => {
     </Row>
 
     <!-- 第三行：消息统计 -->
-    <Row :gutter="16">
+    <Row :gutter="16" class="mb-4">
       <Col :span="24">
         <MessageTrendCard />
+      </Col>
+    </Row>
+
+    <!-- 第四行：设备分布地图 -->
+    <Row :gutter="16">
+      <Col :span="24">
+        <DeviceMapCard />
       </Col>
     </Row>
   </Page>

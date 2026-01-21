@@ -25,8 +25,17 @@ const formData = reactive<InfraCodegenApi.CodegenCreateListReqVO>({
   tableNames: [], // 已选择的表列表
 });
 
+/** 处理选择变化 */
+function handleCheckboxChange({
+  records,
+}: {
+  records: InfraCodegenApi.DatabaseTable[];
+}) {
+  formData.tableNames = records.map((item) => item.name);
+}
+
 /** 表格实例 */
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useImportTableFormSchema(),
     submitOnChange: true,
@@ -66,13 +75,8 @@ const [Grid] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<InfraCodegenApi.DatabaseTable>,
   gridEvents: {
-    checkboxChange: ({
-      records,
-    }: {
-      records: InfraCodegenApi.DatabaseTable[];
-    }) => {
-      formData.tableNames = records.map((item) => item.name);
-    },
+    checkboxChange: handleCheckboxChange,
+    checkboxAll: handleCheckboxChange,
   },
 });
 
@@ -80,6 +84,13 @@ const [Grid] = useVbenVxeGrid({
 const [Modal, modalApi] = useVbenModal({
   title: '导入表',
   class: 'w-1/2',
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 关闭时清空选择状态
+      formData.tableNames = [];
+      await gridApi.grid?.clearCheckboxRow();
+    }
+  },
   async onConfirm() {
     modalApi.lock();
     // 1.1 获取表单值
