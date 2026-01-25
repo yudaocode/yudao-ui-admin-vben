@@ -8,6 +8,7 @@ export namespace IotProductApi {
     id?: number; // 产品编号
     name: string; // 产品名称
     productKey?: string; // 产品标识
+    productSecret?: string; // 产品密钥
     protocolId?: number; // 协议编号
     protocolType?: number; // 接入协议类型
     categoryId?: number; // 产品所属品类标识符
@@ -21,6 +22,7 @@ export namespace IotProductApi {
     codecType?: string; // 数据格式（编解码器类型）
     dataFormat?: number; // 数据格式
     validateType?: number; // 认证方式
+    registerEnabled?: boolean; // 是否开启动态注册
     deviceCount?: number; // 设备数量
     createTime?: Date; // 创建时间
   }
@@ -67,8 +69,13 @@ export function updateProductStatus(id: number, status: number) {
 }
 
 /** 查询产品（精简）列表 */
-export function getSimpleProductList() {
-  return requestClient.get<IotProductApi.Product[]>('/iot/product/simple-list');
+export function getSimpleProductList(deviceType?: number) {
+  return requestClient.get<IotProductApi.Product[]>(
+    '/iot/product/simple-list',
+    {
+      params: { deviceType },
+    },
+  );
 }
 
 /** 根据 ProductKey 获取产品信息 */

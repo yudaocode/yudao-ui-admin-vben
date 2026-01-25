@@ -21,7 +21,6 @@ export namespace IotDeviceApi {
     offlineTime?: Date; // 最后离线时间
     activeTime?: Date; // 设备激活时间
     deviceSecret?: string; // 设备密钥，用于设备认证
-    authType?: string; // 认证类型（如一机一密、动态注册）
     config?: string; // 设备配置
     latitude?: number; // 设备位置的纬度
     longitude?: number; // 设备位置的经度
@@ -200,4 +199,36 @@ export function getDeviceMessagePairPage(params: PageParam) {
 /** 发送设备消息 */
 export function sendDeviceMessage(params: IotDeviceApi.DeviceMessageSendReq) {
   return requestClient.post('/iot/device/message/send', params);
+}
+
+/** 绑定子设备到网关设备 */
+export function bindDeviceGateway(gatewayId: number, subIds: number[]) {
+  return requestClient.put<boolean>('/iot/device/bind-gateway', {
+    gatewayId,
+    subIds,
+  });
+}
+
+/** 解绑子设备与网关设备 */
+export function unbindDeviceGateway(gatewayId: number, subIds: number[]) {
+  return requestClient.put<boolean>('/iot/device/unbind-gateway', {
+    gatewayId,
+    subIds,
+  });
+}
+
+/** 获取网关设备的子设备列表 */
+export function getSubDeviceList(gatewayId: number) {
+  return requestClient.get<IotDeviceApi.Device[]>(
+    '/iot/device/sub-device-list',
+    { params: { gatewayId } },
+  );
+}
+
+/** 获取未绑定的子设备分页 */
+export function getUnboundSubDevicePage(params: PageParam) {
+  return requestClient.get<PageResult<IotDeviceApi.Device>>(
+    '/iot/device/unbound-sub-device-page',
+    { params },
+  );
 }

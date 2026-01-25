@@ -11,7 +11,7 @@ import {
 } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -19,7 +19,6 @@ import { Button, Select, Space, Switch, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
-import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
 
 const props = defineProps<{
   deviceId: number;

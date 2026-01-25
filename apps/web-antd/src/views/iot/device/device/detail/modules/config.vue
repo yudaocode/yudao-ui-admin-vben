@@ -4,10 +4,11 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, ref, watchEffect } from 'vue';
 
+import { IotDeviceMessageMethodEnum } from '@vben/constants';
+
 import { Alert, Button, message, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
-import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceDetailConfig' });
 

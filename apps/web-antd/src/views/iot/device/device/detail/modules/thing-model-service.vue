@@ -6,6 +6,7 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 import { computed, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -15,7 +16,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
 import {
   getThingModelServiceCallTypeLabel,
-  IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '#/views/iot/utils/constants';
 

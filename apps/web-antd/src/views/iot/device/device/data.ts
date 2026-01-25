@@ -1,11 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
 import { getSimpleProductList } from '#/api/iot/product/product';
 
@@ -63,21 +62,6 @@ export function useBasicFormSchema(): VbenFormSchema[] {
           /^[\w.\-:@]{4,32}$/,
           '支持英文字母、数字、下划线（_）、中划线（-）、点号（.）、半角冒号（:）和特殊字符@',
         ),
-    },
-    {
-      fieldName: 'gatewayId',
-      label: '网关设备',
-      component: 'ApiSelect',
-      componentProps: {
-        api: () => getSimpleDeviceList(DeviceTypeEnum.GATEWAY),
-        labelField: 'deviceName',
-        valueField: 'id',
-        placeholder: '子设备可选择父设备',
-      },
-      dependencies: {
-        triggerFields: ['deviceType'],
-        show: (values) => values.deviceType === DeviceTypeEnum.GATEWAY_SUB,
-      },
     },
   ];
 }
