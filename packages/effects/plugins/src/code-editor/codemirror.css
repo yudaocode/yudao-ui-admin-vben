@@ -407,7 +407,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   font-variant-ligatures: contextual;
   line-height: inherit;
   color: inherit;
-  word-wrap: normal;
+  overflow-wrap: normal;
   white-space: pre;
   background: transparent;
   border-width: 0;
@@ -419,7 +419,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-wrap pre {
   word-break: normal;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
 }
 

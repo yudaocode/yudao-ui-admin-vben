@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FileType } from 'ant-design-vue/es/upload/interface';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { useVbenModal } from '@vben/common-ui';

@@ -72,7 +72,7 @@
   .element-listener-item {
     display: inline-grid;
     grid-template-columns: 16px auto 32px 32px;
-    grid-column-gap: 8px;
+    column-gap: 8px;
     width: 100%;
   }
 

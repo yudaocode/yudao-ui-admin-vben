@@ -106,7 +106,7 @@ watch(tslString, (newValue) => {
   font-size: 13px;
   line-height: 1.5;
   color: #333;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
 }
 
