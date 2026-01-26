@@ -16,6 +16,9 @@ import { $t } from '@vben/locales';
 import { message } from '#/adapter/naive';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
+const NAutoComplete = defineAsyncComponent(() =>
+  import('naive-ui/es/auto-complete').then((res) => res.NAutoComplete),
+);
 const NButton = defineAsyncComponent(() =>
   import('naive-ui/es/button').then((res) => res.NButton),
 );
@@ -103,6 +106,7 @@ const withDefaultPlaceholder = <T extends Component>(
 export type ComponentType =
   | 'ApiSelect'
   | 'ApiTreeSelect'
+  | 'AutoComplete'
   | 'Checkbox'
   | 'CheckboxGroup'
   | 'DatePicker'
@@ -154,6 +158,7 @@ async function initComponentAdapter() {
         visibleEvent: 'onVisibleChange',
       },
     ),
+    AutoComplete: NAutoComplete,
     Checkbox: NCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
       let defaultSlot;
