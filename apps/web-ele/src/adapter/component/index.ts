@@ -18,7 +18,7 @@ import { ElNotification } from 'element-plus';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
-const AutoComplete = defineAsyncComponent(() =>
+const ElAutoComplete = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/autocomplete/index'),
     import('element-plus/es/components/autocomplete/style/css'),
@@ -250,7 +250,7 @@ async function initComponentAdapter() {
         visibleEvent: 'onVisibleChange',
       },
     ),
-    AutoComplete,
+    AutoComplete: ElAutoComplete,
     Checkbox: ElCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
       let defaultSlot;
