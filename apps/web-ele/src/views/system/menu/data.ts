@@ -179,7 +179,6 @@ export function useFormSchema(): VbenFormSchema[] {
           cb(results);
         },
         placeholder: '请选择组件名称',
-        options: componentKeys.map((v) => ({ value: v })),
       },
       dependencies: {
         triggerFields: ['type'],
