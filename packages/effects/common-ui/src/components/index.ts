@@ -7,6 +7,7 @@ export * from './col-page';
 export * from './content-wrap';
 export * from './count-to';
 export * from './doc-alert';
+export * from './cropper';
 export * from './ellipsis-text';
 export * from './icon-picker';
 export * from './iframe';
@@ -26,6 +27,7 @@ export {
   VbenButtonGroup,
   VbenCheckbox,
   VbenCheckButtonGroup,
+  VbenContextMenu,
   VbenCountToAnimator,
   VbenFullScreen,
   VbenInputPassword,

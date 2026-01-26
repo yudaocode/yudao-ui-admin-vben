@@ -11,13 +11,16 @@
     "astro",
     "axios",
     "brotli",
+    "cascader",
     "clsx",
     "cropperjs",
     "defu",
+    "kefu",
     "demi",
     "dotenv",
     "echarts",
     "ependencies",
+    "esbuild",
     "esno",
     "etag",
     "execa",
@@ -27,7 +30,6 @@
     "intlify",
     "isequal",
     "jspm",
-    "kefu",
     "lockb",
     "lucide",
     "minh",
@@ -72,14 +74,14 @@
     "yxxx"
   ],
   "ignorePaths": [
-    "**/node_modules/**",
-    "**/dist/**",
     "**/*-dist/**",
-    "**/icons/**",
-    "pnpm-lock.yaml",
     "**/*.log",
-    "**/*.test.ts",
     "**/*.spec.ts",
-    "**/__tests__/**"
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "**/dist/**",
+    "**/icons/**",
+    "**/node_modules/**",
+    "pnpm-lock.yaml"
   ]
 }

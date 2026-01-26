@@ -96,9 +96,6 @@
   "devDependencies": {
     "@types/crypto-js": "catalog:",
     "@types/lodash.clonedeep": "catalog:",
-    "@types/lodash.get": "catalog:",
-    "@types/lodash.isequal": "catalog:",
-    "@types/lodash.set": "catalog:",
     "@types/nprogress": "catalog:"
   }
 }
