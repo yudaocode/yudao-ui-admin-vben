@@ -39,6 +39,9 @@ catalogs:
     '@form-create/element-ui':
       specifier: ^3.2.27
       version: 3.2.37
+    '@form-create/naive-ui':
+      specifier: ^3.2.27
+      version: 3.2.37
     '@iconify/json':
       specifier: ^2.2.431
       version: 2.2.431
@@ -975,6 +978,9 @@ importers:
 
   apps/web-naive:
     dependencies:
+      '@form-create/naive-ui':
+        specifier: 'catalog:'
+        version: 3.2.37(vue@3.5.27(typescript@5.9.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
@@ -3913,6 +3919,21 @@ packages:
   '@form-create/component-elm-upload@3.2.31':
     resolution: {integrity: sha512-2XJr7x8gPf+U0FnPYLyPt0+qLG9+lZSO7tlInT0fw7TJF9pWzrtxicnX6sWvd4EoWCNzYU13HXL33Aq1zP2IeA==}
 
+  '@form-create/component-naive-checkbox@3.2.31':
+    resolution: {integrity: sha512-MLIVLg2A6mHjKnwgrohVX6AtyKJyQ58G3DD6zpS30nPvyaFJNgrL5N1bU5vQ9IwC4YsO8dbBiR1epxRJ+53l2g==}
+
+  '@form-create/component-naive-frame@3.2.31':
+    resolution: {integrity: sha512-XmQ0ywyULRUPyyn0bSKMijRsWIIg1U3Ytju+kQfclOb6gSzSQ0ULJqEQQRXHhIhDMC5g8QsBbq4S/bZgiHWUNA==}
+
+  '@form-create/component-naive-group@3.2.34':
+    resolution: {integrity: sha512-P+6Rsm9yNIkdKQZ/byJoo9ygvOJEZEFqNVh6e1gu70dJGd9HhmiFukIcx/N1tdmQYhM3MUedEgbsvko8XtBD1g==}
+
+  '@form-create/component-naive-radio@3.2.31':
+    resolution: {integrity: sha512-0XRQvtDAz25BDAuBARW2Ds0J5jCCTKgaVlv4/o7A8Ck16PF2rXdwU8XHaKEFQNb8Q8VMAFZjJgsQk5r+xZxCuw==}
+
+  '@form-create/component-naive-upload@3.2.31':
+    resolution: {integrity: sha512-qYAZxtC09AJw8BaN913Gt22H0vymPfAFQMGhLP0gyJQv74dUa3caFrGAZkf5ie+/YbQEGqPnF5ckXGt5yS4VFg==}
+
   '@form-create/component-subform@3.2.34':
     resolution: {integrity: sha512-h1AiMdpHfMr3s1AuX3L5BChc6Na5Megp/UU/FOCbAqt6+XEEEAKWt+2p6X1MMOJRLT+EI8ZRBcUfVbcw4/dHSQ==}
 
@@ -3931,6 +3952,11 @@ packages:
 
   '@form-create/element-ui@3.2.37':
     resolution: {integrity: sha512-KfC+a1zE1SfEpiZR3i+C95GPsoXajrT/b76bvToI6Nxk4SKSG+cqNyrS4FnRU0WbJlxjF9lzPJ+oejOLmqPjmQ==}
+    peerDependencies:
+      vue: ^3.5.27
+
+  '@form-create/naive-ui@3.2.37':
+    resolution: {integrity: sha512-8TuSIWg2DhAq/VV3TVe4kW0RM3lO2tIMNpwdZRciZKIPLI7ePjrZvA+H7ztc160C6DRgNDm+fRGh4H2COX44ig==}
     peerDependencies:
       vue: ^3.5.27
 
@@ -13881,6 +13907,26 @@ snapshots:
     dependencies:
       '@form-create/utils': 3.2.31
 
+  '@form-create/component-naive-checkbox@3.2.31':
+    dependencies:
+      '@form-create/utils': 3.2.31
+
+  '@form-create/component-naive-frame@3.2.31':
+    dependencies:
+      '@form-create/utils': 3.2.31
+
+  '@form-create/component-naive-group@3.2.34':
+    dependencies:
+      '@form-create/utils': 3.2.31
+
+  '@form-create/component-naive-radio@3.2.31':
+    dependencies:
+      '@form-create/utils': 3.2.31
+
+  '@form-create/component-naive-upload@3.2.31':
+    dependencies:
+      '@form-create/utils': 3.2.31
+
   '@form-create/component-subform@3.2.34': {}
 
   '@form-create/component-wangeditor@3.2.14':
@@ -13916,6 +13962,18 @@ snapshots:
       '@form-create/component-elm-select': 3.2.37
       '@form-create/component-elm-tree': 3.2.31
       '@form-create/component-elm-upload': 3.2.31
+      '@form-create/component-subform': 3.2.34
+      '@form-create/core': 3.2.37(vue@3.5.27(typescript@5.9.3))
+      '@form-create/utils': 3.2.31
+      vue: 3.5.27(typescript@5.9.3)
+
+  '@form-create/naive-ui@3.2.37(vue@3.5.27(typescript@5.9.3))':
+    dependencies:
+      '@form-create/component-naive-checkbox': 3.2.31
+      '@form-create/component-naive-frame': 3.2.31
+      '@form-create/component-naive-group': 3.2.34
+      '@form-create/component-naive-radio': 3.2.31
+      '@form-create/component-naive-upload': 3.2.31
       '@form-create/component-subform': 3.2.34
       '@form-create/core': 3.2.37(vue@3.5.27(typescript@5.9.3))
       '@form-create/utils': 3.2.31
