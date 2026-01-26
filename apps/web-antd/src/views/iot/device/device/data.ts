@@ -1,11 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DeviceTypeEnum, DICT_TYPE, LocationTypeEnum } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleDeviceGroupList } from '#/api/iot/device/group';
 import { getSimpleProductList } from '#/api/iot/product/product';
 
@@ -64,21 +63,6 @@ export function useBasicFormSchema(): VbenFormSchema[] {
           '支持英文字母、数字、下划线（_）、中划线（-）、点号（.）、半角冒号（:）和特殊字符@',
         ),
     },
-    {
-      fieldName: 'gatewayId',
-      label: '网关设备',
-      component: 'ApiSelect',
-      componentProps: {
-        api: () => getSimpleDeviceList(DeviceTypeEnum.GATEWAY),
-        labelField: 'deviceName',
-        valueField: 'id',
-        placeholder: '子设备可选择父设备',
-      },
-      dependencies: {
-        triggerFields: ['deviceType'],
-        show: (values) => values.deviceType === DeviceTypeEnum.GATEWAY_SUB,
-      },
-    },
   ];
 }
 
@@ -134,27 +118,22 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
         .or(z.literal('')),
     },
     {
-      fieldName: 'locationType',
-      label: '定位类型',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_LOCATION_TYPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-    },
-    {
       fieldName: 'longitude',
       label: '设备经度',
       component: 'InputNumber',
       componentProps: {
         placeholder: '请输入设备经度',
         class: 'w-full',
+        min: -180,
+        max: 180,
+        precision: 6,
       },
-      dependencies: {
-        triggerFields: ['locationType'],
-        show: (values) => values.locationType === LocationTypeEnum.MANUAL,
-      },
+      rules: z
+        .number()
+        .min(-180, '经度范围为 -180 到 180')
+        .max(180, '经度范围为 -180 到 180')
+        .optional()
+        .nullable(),
     },
     {
       fieldName: 'latitude',
@@ -163,11 +142,16 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入设备纬度',
         class: 'w-full',
+        min: -90,
+        max: 90,
+        precision: 6,
       },
-      dependencies: {
-        triggerFields: ['locationType'],
-        show: (values) => values.locationType === LocationTypeEnum.MANUAL,
-      },
+      rules: z
+        .number()
+        .min(-90, '纬度范围为 -90 到 90')
+        .max(90, '纬度范围为 -90 到 90')
+        .optional()
+        .nullable(),
     },
   ];
 }

@@ -4,6 +4,7 @@
   "language": "en,en-US",
   "allowCompoundWords": true,
   "words": [
+    "Tinymce",
     "acmr",
     "antd",
     "antdv",
@@ -11,6 +12,7 @@
     "astro",
     "axios",
     "brotli",
+    "cascader",
     "clsx",
     "cropperjs",
     "defu",
@@ -18,6 +20,7 @@
     "dotenv",
     "echarts",
     "ependencies",
+    "esbuild",
     "esno",
     "etag",
     "execa",
@@ -53,7 +56,6 @@
     "sortablejs",
     "styl",
     "taze",
-    "Tinymce",
     "tdesign",
     "ui-kit",
     "uicons",
@@ -72,14 +74,14 @@
     "yxxx"
   ],
   "ignorePaths": [
-    "**/node_modules/**",
-    "**/dist/**",
     "**/*-dist/**",
-    "**/icons/**",
-    "pnpm-lock.yaml",
     "**/*.log",
-    "**/*.test.ts",
     "**/*.spec.ts",
-    "**/__tests__/**"
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "**/dist/**",
+    "**/icons/**",
+    "**/node_modules/**",
+    "pnpm-lock.yaml"
   ]
 }

@@ -68,6 +68,7 @@ async function getAdvancedFormValues() {
   }
   // 表单未挂载（折叠状态），从 formData 中获取
   return {
+    registerEnabled: formData.value?.registerEnabled,
     icon: formData.value?.icon,
     picUrl: formData.value?.picUrl,
     description: formData.value?.description,
@@ -120,6 +121,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.setValues(formData.value);
       // 如果存在高级字段数据，自动展开 Collapse
       if (
+        formData.value?.registerEnabled ||
         formData.value?.icon ||
         formData.value?.picUrl ||
         formData.value?.description

@@ -9,7 +9,7 @@
 
 ## 🐶 新手必读
 
-- nodejs > 20.12.0 && pnpm > 10.22.0 (强制使用pnpm)
+- nodejs > 20.19.0 && pnpm > 10.28.1 (强制使用pnpm)
 - 演示地址【Vue3 + element-plus】：<http://dashboard-vue3.yudao.iocoder.cn>
 - 演示地址【Vue3 + vben5(ant-design-vue)】：<http://dashboard-vben.yudao.iocoder.cn>
 - 演示地址【Vue2 + element-ui】：<http://dashboard.yudao.iocoder.cn>
@@ -41,26 +41,26 @@
 
 | 框架 | 说明 | 版本 |
 | --- | --- | --- |
-| [Vue](https://staging-cn.vuejs.org/) | vue框架 | 3.5.24 |
-| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 7.2.2 |
+| [Vue](https://staging-cn.vuejs.org/) | vue框架 | 3.5.27 |
+| [Vite](https://cn.vitejs.dev//) | 开发与构建工具 | 7.3.1 |
 | [Ant Design Vue](https://www.antdv.com/) | Ant Design Vue | 4.2.6 |
-| [Element Plus](https://element-plus.org/zh-CN/) | Element Plus | 2.10.2 |
-| [Naive UI](https://www.naiveui.com/) | Naive UI | 2.42.0 |
-| [TDesign](https://tdesign.tencent.com/) | TDesign | 1.17.1 |
+| [Element Plus](https://element-plus.org/zh-CN/) | Element Plus | 2.13.1 |
+| [Naive UI](https://www.naiveui.com/) | Naive UI | 2.43.2 |
+| [TDesign](https://tdesign.tencent.com/) | TDesign | 1.18.0 |
 | [TypeScript](https://www.typescriptlang.org/docs/) | JavaScript 超集 | 5.9.3 |
-| [pinia](https://pinia.vuejs.org/) | Vue 存储库替代 vuex5 | 3.0.3 |
-| [vueuse](https://vueuse.org/) | 常用工具集 | 13.4.0 |
-| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 11.1.7 |
-| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.5.1 |
-| [Tailwind CSS](https://tailwindcss.com/) | 原子 CSS | 3.4.18 |
+| [pinia](https://pinia.vuejs.org/) | Vue 存储库替代 vuex5 | 3.0.4 |
+| [vueuse](https://vueuse.org/) | 常用工具集 | 14.1.0 |
+| [vue-i18n](https://kazupon.github.io/vue-i18n/zh/introduction.html/) | 国际化 | 11.2.8 |
+| [vue-router](https://router.vuejs.org/) | Vue 路由 | 4.6.4 |
+| [Tailwind CSS](https://tailwindcss.com/) | 原子 CSS | 3.4.19 |
 | [Iconify](https://iconify.design/) | 图标组件 | 5.0.0 |
-| [Iconify](https://icon-sets.iconify.design/) | 在线图标库 | 2.2.406 |
-| [TinyMCE](https://www.tiny.cloud/) | 富文本编辑器 | 6.1.0 |
+| [Iconify](https://icon-sets.iconify.design/) | 在线图标库 | 2.2.431 |
+| [TinyMCE](https://www.tiny.cloud/) | 富文本编辑器 | 7.3.0 |
 | [Echarts](https://echarts.apache.org/) | 图表库 | 6.0.0 |
-| [axios](https://axios-http.com/) | http客户端 | 1.10.0 |
-| [dayjs](https://day.js.org/) | 日期处理库 | 1.11.13 |
+| [axios](https://axios-http.com/) | http客户端 | 1.13.2 |
+| [dayjs](https://day.js.org/) | 日期处理库 | 1.11.19 |
 | [vee-validate](https://vee-validate.logaretm.com/) | 表单验证 | 4.15.1 |
-| [zod](https://zod.dev/) | 数据验证 | 3.25.67 |
+| [zod](https://zod.dev/) | 数据验证 | 3.25.76 |
 
 ## 🔥 后端架构
 

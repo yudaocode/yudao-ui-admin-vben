@@ -9,7 +9,7 @@ import {
   BpmFieldPermissionType,
   BpmModelFormType,
   BpmModelType,
-  BpmTaskStatusEnum,
+  BpmProcessInstanceStatus,
   DICT_TYPE,
 } from '@vben/constants';
 import {
@@ -61,13 +61,10 @@ const auditIconsMap: {
     | typeof SvgBpmRejectIcon
     | typeof SvgBpmRunningIcon;
 } = {
-  [BpmTaskStatusEnum.RUNNING]: SvgBpmRunningIcon,
-  [BpmTaskStatusEnum.APPROVE]: SvgBpmApproveIcon,
-  [BpmTaskStatusEnum.REJECT]: SvgBpmRejectIcon,
-  [BpmTaskStatusEnum.CANCEL]: SvgBpmCancelIcon,
-  [BpmTaskStatusEnum.APPROVING]: SvgBpmApproveIcon,
-  [BpmTaskStatusEnum.RETURN]: SvgBpmRejectIcon,
-  [BpmTaskStatusEnum.WAIT]: SvgBpmRunningIcon,
+  [BpmProcessInstanceStatus.RUNNING]: SvgBpmRunningIcon,
+  [BpmProcessInstanceStatus.APPROVE]: SvgBpmApproveIcon,
+  [BpmProcessInstanceStatus.REJECT]: SvgBpmRejectIcon,
+  [BpmProcessInstanceStatus.CANCEL]: SvgBpmCancelIcon,
 };
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表

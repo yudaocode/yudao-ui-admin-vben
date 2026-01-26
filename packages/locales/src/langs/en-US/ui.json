@@ -8,7 +8,9 @@
     "alreadyExists": "{0} `{1}` already exists",
     "startWith": "{0} must start with `{1}`",
     "invalidURL": "Please input a valid URL",
-    "mobile": "Please input a valid {0}"
+    "mobile": "Please input a valid {0}",
+    "sizeLimit": "The file size cannot exceed {0}MB",
+    "previewWarning": "Unable to open the file, there is no available URL or preview address"
   },
   "actionTitle": {
     "copy": "Copy {0}",
@@ -42,7 +44,8 @@
   },
   "placeholder": {
     "input": "Please enter",
-    "select": "Please select"
+    "select": "Please select",
+    "upload": "Click to upload"
   },
   "captcha": {
     "title": "Please complete the security verification",
@@ -68,6 +71,13 @@
   "jsonViewer": {
     "copy": "Copy",
     "copied": "Copied"
+  },
+  "crop": {
+    "title": "Image Cropping",
+    "titleTip": "Cropping Ratio {0}",
+    "confirm": "Crop",
+    "cancel": "Cancel cropping",
+    "errorTip": "Cropping error"
   },
   "fallback": {
     "pageNotFound": "Oops! Page Not Found",

@@ -1,20 +1,23 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VbenFormSchema, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
-import type { IotProductApi } from '#/api/iot/product/product';
 
-import { onMounted, reactive, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
+import { formatDateTime, isEmpty } from '@vben/utils';
 
-import { Button, Input, Select, Space } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getDevicePage } from '#/api/iot/device/device';
+import {
+  bindDeviceGateway,
+  getSubDeviceList,
+  getUnboundSubDevicePage,
+  unbindDeviceGateway,
+} from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
 
 interface Props {
@@ -24,14 +27,10 @@ interface Props {
 const props = defineProps<Props>();
 const router = useRouter();
 
-const products = ref<IotProductApi.Product[]>([]); // 产品列表
-const queryParams = reactive({
-  deviceName: '',
-  status: undefined as number | undefined,
-}); // 查询参数
-
+/** 子设备列表表格列配置 */
 function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { type: 'checkbox', width: 40 },
     {
       field: 'deviceName',
       title: 'DeviceName',
@@ -43,10 +42,9 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
     },
     {
-      field: 'productId',
-      title: '所属产品',
+      field: 'productName',
+      title: '产品名称',
       minWidth: 120,
-      slots: { default: 'product' },
     },
     {
       field: 'state',
@@ -60,157 +58,299 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'onlineTime',
       title: '最后上线时间',
-      minWidth: 180,
-      formatter: 'formatDateTime',
+      minWidth: 160,
+      formatter: ({ cellValue }) => formatDateTime(cellValue),
     },
     {
+      field: 'actions',
       title: '操作',
-      width: 150,
+      width: 120,
       fixed: 'right',
       slots: { default: 'actions' },
     },
   ];
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.DeviceRespVO>({
+const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async () => {
+          if (!props.deviceId) {
+            return [];
+          }
+          return await getSubDeviceList(props.deviceId);
+        },
+      },
+    },
     rowConfig: {
       keyField: 'id',
       isHover: true,
     },
-    proxyConfig: {
-      ajax: {
-        query: async ({
-          page,
-        }: {
-          page: { currentPage: number; pageSize: number };
-        }) => {
-          if (!props.deviceId) {
-            return { list: [], total: 0 };
-          }
-          return await getDevicePage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            gatewayId: props.deviceId,
-            deviceType: DeviceTypeEnum.GATEWAY_SUB,
-            deviceName: queryParams.deviceName || undefined,
-            status: queryParams.status,
-          } as IotDeviceApi.DevicePageReqVO);
-        },
-      },
-    },
     toolbarConfig: {
       refresh: true,
-      search: false,
     },
     pagerConfig: {
-      enabled: true,
+      enabled: false,
     },
+  },
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
   },
 });
 
-/** 搜索操作 */
-function handleQuery() {
+/** 获取子设备列表 */
+function getList() {
   gridApi.query();
 }
 
-/** 重置搜索 */
-function resetQuery() {
-  queryParams.deviceName = '';
-  queryParams.status = undefined;
-  handleQuery();
-}
-
-/** 获取产品名称 */
-function getProductName(productId: number) {
-  const product = products.value.find((p) => p.id === productId);
-  return product?.name || '-';
-}
-
-/** 查看详情 */
-function openDetail(id: number) {
+/** 打开设备详情 */
+function openDeviceDetail(id: number) {
   router.push({ name: 'IoTDeviceDetail', params: { id } });
 }
 
-/** 监听设备ID变化 */
-watch(
-  () => props.deviceId,
-  (newValue) => {
-    if (newValue) {
-      handleQuery();
+/** 多选框选中数据 */
+const checkedIds = ref<number[]>([]);
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: IotDeviceApi.Device[];
+}) {
+  checkedIds.value = records.map((item) => item.id!);
+}
+
+/** 解绑单个设备 */
+async function handleUnbind(row: IotDeviceApi.Device) {
+  await confirm({ content: `确定要解绑子设备【${row.deviceName}】吗？` });
+  const hideLoading = message.loading({
+    content: `正在解绑【${row.deviceName}】...`,
+    duration: 0,
+  });
+  try {
+    await unbindDeviceGateway(props.deviceId, [row.id!]);
+    message.success('解绑成功');
+    getList();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 批量解绑 */
+async function handleUnbindBatch() {
+  await confirm({
+    content: `确定要解绑选中的 ${checkedIds.value.length} 个子设备吗？`,
+  });
+  const hideLoading = message.loading({
+    content: '正在批量解绑...',
+    duration: 0,
+  });
+  try {
+    await unbindDeviceGateway(props.deviceId, checkedIds.value);
+    checkedIds.value = [];
+    message.success('批量解绑成功');
+    getList();
+  } finally {
+    hideLoading();
+  }
+}
+
+// ===================== 添加子设备弹窗 =====================
+
+const addSelectedRowKeys = ref<number[]>([]);
+
+/** 添加弹窗搜索表单 schema */
+function useAddGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'productId',
+      label: '产品',
+      component: 'ApiSelect',
+      componentProps: {
+        api: () => getSimpleProductList(DeviceTypeEnum.GATEWAY_SUB),
+        labelField: 'name',
+        valueField: 'id',
+        placeholder: '请选择产品',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'deviceName',
+      label: 'DeviceName',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入 DeviceName',
+        allowClear: true,
+      },
+    },
+  ];
+}
+
+function useAddGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { type: 'checkbox', width: 40 },
+    {
+      field: 'deviceName',
+      title: 'DeviceName',
+      minWidth: 150,
+    },
+    {
+      field: 'nickname',
+      title: '备注名称',
+      minWidth: 120,
+    },
+    {
+      field: 'productName',
+      title: '产品名称',
+      minWidth: 120,
+    },
+    {
+      field: 'state',
+      title: '设备状态',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_DEVICE_STATE },
+      },
+    },
+  ];
+}
+
+const [AddGrid, addGridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
+  formOptions: {
+    schema: useAddGridFormSchema(),
+    submitOnChange: true,
+  },
+  gridOptions: {
+    columns: useAddGridColumns(),
+    height: 400,
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getUnboundSubDevicePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  },
+  gridEvents: {
+    checkboxAll: handleAddSelectionChange,
+    checkboxChange: handleAddSelectionChange,
+  },
+});
+
+/** 处理添加弹窗表格选择变化 */
+function handleAddSelectionChange() {
+  const records = addGridApi.grid?.getCheckboxRecords() || [];
+  addSelectedRowKeys.value = records.map(
+    (record: IotDeviceApi.Device) => record.id!,
+  );
+}
+
+const [AddModal, addModalApi] = useVbenModal({
+  async onConfirm() {
+    if (addSelectedRowKeys.value.length === 0) {
+      message.warning('请先选择要添加的子设备');
+      return;
+    }
+    addModalApi.lock();
+    try {
+      await bindDeviceGateway(props.deviceId, addSelectedRowKeys.value);
+      message.success('绑定成功');
+      await addModalApi.close();
+      addSelectedRowKeys.value = [];
+      getList();
+    } finally {
+      addModalApi.unlock();
     }
   },
-);
-
-/** 初始化 */
-onMounted(async () => {
-  // 获取产品列表
-  products.value = await getSimpleProductList();
-
-  // 如果设备ID存在，则查询列表
-  if (props.deviceId) {
-    handleQuery();
-  }
+  async onOpenChange(isOpen: boolean) {
+    if (isOpen) {
+      addSelectedRowKeys.value = [];
+      await addGridApi.formApi?.resetForm();
+      await addGridApi.query();
+    }
+  },
 });
+
+/** 打开添加子设备弹窗 */
+function openAddModal() {
+  addModalApi.open();
+}
+
+/** 监听 deviceId 变化 */
+watch(
+  () => props.deviceId,
+  (newVal) => {
+    if (newVal) {
+      getList();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
   <Page auto-content-height>
-    <!-- 搜索区域 -->
-    <!-- TODO @haohao：这个 search 能不能融合到 Grid 里； -->
-    <div class="mb-4 flex flex-wrap items-center gap-3">
-      <Input
-        v-model:value="queryParams.deviceName"
-        placeholder="请输入设备名称"
-        style="width: 200px"
-        allow-clear
-        @press-enter="handleQuery"
-      />
-      <Select
-        v-model:value="queryParams.status"
-        allow-clear
-        placeholder="请选择设备状态"
-        style="width: 160px"
-      >
-        <Select.Option
-          v-for="dict in getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number')"
-          :key="dict.value"
-          :value="dict.value"
-        >
-          {{ dict.label }}
-        </Select.Option>
-      </Select>
-      <Space>
-        <Button type="primary" @click="handleQuery">
-          <IconifyIcon icon="ep:search" class="mr-5px" />
-          搜索
-        </Button>
-        <Button @click="resetQuery">
-          <IconifyIcon icon="ep:refresh-right" class="mr-5px" />
-          重置
-        </Button>
-      </Space>
-    </div>
-
     <!-- 子设备列表 -->
-    <Grid>
-      <template #product="{ row }">
-        {{ getProductName(row.productId) }}
+    <Grid table-title="子设备列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '添加子设备',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              onClick: openAddModal,
+            },
+            {
+              label: '批量解绑',
+              type: 'primary',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: isEmpty(checkedIds),
+              onClick: handleUnbindBatch,
+            },
+          ]"
+        />
       </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
-              label: '查看详情',
+              label: '查看',
               type: 'link',
-              icon: ACTION_ICON.VIEW,
-              onClick: openDetail.bind(null, row.id!),
+              onClick: () => openDeviceDetail(row.id!),
+            },
+            {
+              label: '解绑',
+              type: 'link',
+              danger: true,
+              onClick: () => handleUnbind(row),
             },
           ]"
         />
       </template>
     </Grid>
+
+    <!-- 添加子设备弹窗 -->
+    <AddModal title="添加子设备" class="w-3/5">
+      <AddGrid />
+    </AddModal>
   </Page>
 </template>

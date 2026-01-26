@@ -166,11 +166,19 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'AutoComplete',
       componentProps: {
         clearable: true,
-        filterOption(input: string, option: { value: string }) {
-          return option.value.toLowerCase().includes(input.toLowerCase());
+        fetchSuggestions(queryString: string, cb: any) {
+          const options = componentKeys.map((v) => ({ value: v }));
+          const createFilter = (qs: string) => {
+            return (restaurant: any) => {
+              return restaurant.value.toLowerCase().includes(qs.toLowerCase());
+            };
+          };
+          const results = queryString
+            ? options.filter(createFilter(queryString))
+            : options;
+          cb(results);
         },
         placeholder: '请选择组件名称',
-        options: componentKeys.map((v) => ({ value: v })),
       },
       dependencies: {
         triggerFields: ['type'],

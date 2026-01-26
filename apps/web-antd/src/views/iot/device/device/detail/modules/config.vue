@@ -4,15 +4,16 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, ref, watchEffect } from 'vue';
 
+import { IotDeviceMessageMethodEnum } from '@vben/constants';
+
 import { Alert, Button, message, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
-import { IotDeviceMessageMethodEnum } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceDetailConfig' });
 
 const props = defineProps<{
-  device: IotDeviceApi.DeviceRespVO;
+  device: IotDeviceApi.Device;
 }>();
 
 const emit = defineEmits<{
@@ -114,7 +115,7 @@ async function updateDeviceConfig() {
     await updateDevice({
       id: props.device.id,
       config: JSON.stringify(config.value),
-    } as IotDeviceApi.DeviceSaveReqVO);
+    } as IotDeviceApi.Device);
     message.success({ content: '更新成功！' });
     // 触发 success 事件
     emit('success');
@@ -189,7 +190,7 @@ async function updateDeviceConfig() {
   font-size: 13px;
   line-height: 1.5;
   color: #333;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
 }
 

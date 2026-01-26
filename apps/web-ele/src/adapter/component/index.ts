@@ -18,6 +18,12 @@ import { ElNotification } from 'element-plus';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
+const ElAutoComplete = defineAsyncComponent(() =>
+  Promise.all([
+    import('element-plus/es/components/autocomplete/index'),
+    import('element-plus/es/components/autocomplete/style/css'),
+  ]).then(([res]) => res.ElAutocomplete),
+);
 const ElButton = defineAsyncComponent(() =>
   Promise.all([
     import('element-plus/es/components/button/index'),
@@ -178,6 +184,7 @@ export type ComponentType =
   | 'ApiCascader'
   | 'ApiSelect'
   | 'ApiTreeSelect'
+  | 'AutoComplete'
   | 'Checkbox'
   | 'CheckboxGroup'
   | 'DatePicker'
@@ -243,6 +250,7 @@ async function initComponentAdapter() {
         visibleEvent: 'onVisibleChange',
       },
     ),
+    AutoComplete: ElAutoComplete,
     Checkbox: ElCheckbox,
     CheckboxGroup: (props, { attrs, slots }) => {
       let defaultSlot;
