@@ -56,6 +56,7 @@ const tableHeaders = ref<{ label: string; prop: string }[]>([]);
 /** 创建空 SKU 数据 */
 function createEmptySku(): MallSpuApi.Sku {
   return {
+    name: '', // SKU 名称，提交时会自动使用 SPU 名称
     price: 0,
     marketPrice: 0,
     costPrice: 0,

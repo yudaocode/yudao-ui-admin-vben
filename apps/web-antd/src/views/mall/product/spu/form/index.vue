@@ -50,6 +50,7 @@ const formData = ref<MallSpuApi.Spu>({
   subCommissionType: false,
   skus: [
     {
+      name: '', // SKU 名称，提交时会自动使用 SPU 名称
       price: 0,
       marketPrice: 0,
       costPrice: 0,
@@ -181,6 +182,11 @@ async function handleSubmit() {
     .merge(otherFormApi)
     .submitAllForm(true);
   values.skus = formData.value.skus;
+  // 校验商品名称不能为空（用于 SKU name）
+  if (!values.name || values.name.trim() === '') {
+    message.error('商品名称不能为空');
+    return;
+  }
   if (values.skus) {
     try {
       // 校验 sku
@@ -190,6 +196,8 @@ async function handleSubmit() {
       return;
     }
     values.skus.forEach((item) => {
+      // 给 sku name 赋值（使用商品名称作为 SKU 名称）
+      item.name = values.name;
       // 金额转换：元转分
       item.price = convertToInteger(item.price);
       item.marketPrice = convertToInteger(item.marketPrice);
@@ -277,6 +285,7 @@ function handleChangeSpec() {
   // 重置 sku 列表
   formData.value.skus = [
     {
+      name: '', // SKU 名称，提交时会自动使用 SPU 名称
       price: 0,
       marketPrice: 0,
       costPrice: 0,

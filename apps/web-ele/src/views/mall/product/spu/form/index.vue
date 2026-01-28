@@ -50,6 +50,7 @@ const formData = ref<MallSpuApi.Spu>({
   subCommissionType: false,
   skus: [
     {
+      name: '', // SKU 名称，提交时会自动使用 SPU 名称
       price: 0,
       marketPrice: 0,
       costPrice: 0,
@@ -168,8 +169,8 @@ const [OtherForm, otherFormApi] = useVbenForm({
 });
 
 /** tab 切换 */
-function handleTabChange(key: string) {
-  activeTabName.value = key;
+function handleTabChange(key: number | string) {
+  activeTabName.value = key as string;
 }
 
 /** 提交表单 */
@@ -181,6 +182,11 @@ async function handleSubmit() {
     .merge(otherFormApi)
     .submitAllForm(true);
   values.skus = formData.value.skus;
+  // 校验商品名称不能为空（用于 SKU name）
+  if (!values.name || values.name.trim() === '') {
+    ElMessage.error('商品名称不能为空');
+    return;
+  }
   if (values.skus) {
     try {
       // 校验 sku
@@ -190,6 +196,8 @@ async function handleSubmit() {
       return;
     }
     values.skus.forEach((item) => {
+      // 给 sku name 赋值（使用商品名称作为 SKU 名称）
+      item.name = values.name;
       // 金额转换：元转分
       item.price = convertToInteger(item.price);
       item.marketPrice = convertToInteger(item.marketPrice);
@@ -277,6 +285,7 @@ function handleChangeSpec() {
   // 重置 sku 列表
   formData.value.skus = [
     {
+      name: '', // SKU 名称，提交时会自动使用 SPU 名称
       price: 0,
       marketPrice: 0,
       costPrice: 0,
@@ -320,7 +329,6 @@ onMounted(async () => {
       <ElCard class="h-full w-full" v-loading="formLoading">
         <template #header>
           <div class="flex items-center justify-between">
-            <!-- @puhui999：idea 这边会有告警 -->
             <ElTabs v-model="activeTabName" @tab-change="handleTabChange">
               <ElTabPane label="基础设置" name="info" />
               <ElTabPane label="价格库存" name="sku" />
