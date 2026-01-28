@@ -189,6 +189,14 @@ export async function useFormCreateDesigner(designer: Ref) {
     name: 'UserSelect',
     label: '用户选择器',
     icon: 'icon-eye',
+    props: [
+      {
+        type: 'switch',
+        field: 'defaultCurrentUser',
+        title: '默认选中当前用户',
+        value: true,
+      },
+    ],
   });
   const deptSelectRule = useSelectRule({
     name: 'DeptSelect',
@@ -204,6 +212,12 @@ export async function useFormCreateDesigner(designer: Ref) {
           { label: '部门编号', value: 'id' },
           { label: '部门名称', value: 'name' },
         ],
+      },
+      {
+        type: 'switch',
+        field: 'defaultCurrentDept',
+        title: '默认选中当前部门',
+        value: true,
       },
     ],
   });

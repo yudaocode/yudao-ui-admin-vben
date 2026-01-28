@@ -34,6 +34,7 @@ import {
 
 // ======================= 自定义组件 =======================
 import { useApiSelect } from '#/components/form-create';
+import DeptSelect from '#/components/form-create/components/dept-select.vue';
 import DictSelect from '#/components/form-create/components/dict-select.vue';
 import { useImagesUpload } from '#/components/form-create/components/use-images-upload';
 import { Tinymce } from '#/components/tinymce';
@@ -44,12 +45,6 @@ const UserSelect = useApiSelect({
   labelField: 'nickname',
   valueField: 'id',
   url: '/system/user/simple-list',
-});
-const DeptSelect = useApiSelect({
-  name: 'DeptSelect',
-  labelField: 'name',
-  valueField: 'id',
-  url: '/system/dept/simple-list',
 });
 const ApiSelect = useApiSelect({
   name: 'ApiSelect',
