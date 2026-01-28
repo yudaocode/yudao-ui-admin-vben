@@ -9,7 +9,7 @@
 
 ## 🐶 新手必读
 
-- nodejs > 20.19.0 && pnpm > 10.28.1 (强制使用pnpm)
+- nodejs > v20.19.0 | v22 | v24 && pnpm > 10.20.0 (强制使用pnpm)
 - 演示地址【Vue3 + element-plus】：<http://dashboard-vue3.yudao.iocoder.cn>
 - 演示地址【Vue3 + vben5(ant-design-vue)】：<http://dashboard-vben.yudao.iocoder.cn>
 - 演示地址【Vue2 + element-ui】：<http://dashboard.yudao.iocoder.cn>
@@ -25,7 +25,7 @@
 
 ![首页](.gitee/image/demo/vben.png)
 
-- **最新技术栈**：使用 Vue3、Vite6 等前端前沿技术开发
+- **最新技术栈**：使用 Vue3、Vite7 等前端前沿技术开发
 - **TypeScript**: 应用程序级 JavaScript 的语言
 - **主题**: 提供多套主题色彩，可配置自定义主题
 - **国际化**：内置完善的国际化方案
@@ -33,7 +33,7 @@
 - **组件**：二次封装了多个常用的组件
 - **示例**：内置丰富的示例
 
-## [外包项目请联系【非项目需求请勿扫码，非客服，不解答项目问题】](https://www.shuduokeji.com)
+## [外包项目请联系【非项目需求请勿扫码，非客服，不解答项目问题】](https://www.shuduokeji.com?yudao)
 
 ![alt 软件定制开发 数舵科技](.gitee/image/wx-xingyu.png)
 
