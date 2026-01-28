@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 /**
  * 百度地图 SDK 加载工具
  */
@@ -49,12 +50,12 @@ export const loadBaiduMapSdk = (timeout = 10_000): Promise<void> => {
     script.src = `https://api.map.baidu.com/api?v=1.0&type=webgl&ak=${
       import.meta.env.VITE_BAIDU_MAP_KEY
     }&callback=${CALLBACK_NAME}`;
-    script.onerror = () => {
+    script.addEventListener('onerror', () => {
       clearTimeout(timeoutId);
       loadPromise = null;
       delete (window as any)[CALLBACK_NAME];
       reject(new Error('百度地图 SDK 加载失败'));
-    };
+    });
     document.body.append(script);
   });
 
