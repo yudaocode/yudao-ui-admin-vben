@@ -1,4 +1,4 @@
-<!-- 部门选择器 - 树形结构显示 (Element Plus 版本) -->
+<!-- 部门选择器 - 树形结构显示 -->
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 
@@ -26,7 +26,8 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-// 部门数据接口
+// todo @puhui999：是不是可以简化，使用 api 的；
+/** 部门数据接口 */
 interface DeptVO {
   id: number;
   name: string;
@@ -38,7 +39,8 @@ interface DeptVO {
   status?: number;
 }
 
-// 接受父组件参数
+// TODO @puhui999：linter 报错；
+/** 接受父组件参数 */
 interface Props {
   modelValue?: number | number[] | string | string[];
   multiple?: boolean;
@@ -49,6 +51,7 @@ interface Props {
   formCreateInject?: any;
 }
 
+// TODO @AI：可以使用 element plus 自带的对象么？
 // Element Plus TreeSelect 的 props 配置
 const treeProps = {
   label: 'name',
@@ -56,14 +59,11 @@ const treeProps = {
   children: 'children',
 };
 
-// 部门树形数据
-const deptTree = ref<any[]>([]);
-// 原始部门列表（用于 returnType='name' 时查找名称）
-const deptList = ref<DeptVO[]>([]);
-// 当前选中值
-const selectedValue = ref<number | number[] | undefined>();
+const deptTree = ref<any[]>([]); // 部门树形数据
+const deptList = ref<DeptVO[]>([]); // 原始部门列表（用于 returnType='name' 时查找名称）
+const selectedValue = ref<number | number[] | undefined>(); // 当前选中值
 
-// 加载部门树形数据
+/** 加载部门树形数据 */
 async function loadDeptTree(): Promise<void> {
   try {
     const data = await requestClient.get<DeptVO[]>('/system/dept/simple-list');
@@ -75,22 +75,22 @@ async function loadDeptTree(): Promise<void> {
   }
 }
 
-// 根据 ID 获取部门名称
+/** 根据 ID 获取部门名称 */
 function getDeptNameById(id: number): string | undefined {
-  const dept = deptList.value.find((item) => item.id === id);
+  const dept = deptList.value.find((item: DeptVO) => item.id === id);
   if (!dept) {
     console.warn(`[DeptSelect] 未找到 ID 为 ${id} 的部门`);
   }
   return dept?.name;
 }
 
-// 根据名称获取部门 ID
+/** 根据名称获取部门 ID */
 function getDeptIdByName(name: string): number | undefined {
-  const dept = deptList.value.find((item) => item.name === name);
+  const dept = deptList.value.find((item: DeptVO) => item.name === name);
   return dept?.id;
 }
 
-// 处理选中值变化
+/** 处理选中值变化 */
 function handleChange(value: number | number[] | undefined): void {
   if (value === undefined || value === null) {
     emit('update:modelValue', props.multiple ? [] : undefined);
@@ -113,13 +113,13 @@ function handleChange(value: number | number[] | undefined): void {
   }
 }
 
-// 树节点过滤方法（支持搜索过滤）
+/** 树节点过滤方法（支持搜索过滤） */
 function filterNode(value: string, data: any): boolean {
   if (!value) return true;
   return data.name?.toLowerCase().includes(value.toLowerCase());
 }
 
-// 同步 modelValue 到内部选中值
+/** 同步 modelValue 到内部选中值 */
 function syncSelectedValue(): void {
   const newValue = props.modelValue;
   if (newValue === undefined || newValue === null) {
@@ -134,26 +134,24 @@ function syncSelectedValue(): void {
       return;
     }
     if (props.multiple && Array.isArray(newValue)) {
-      const ids = (newValue as string[])
+      selectedValue.value = (newValue as string[])
         .map((name) => getDeptIdByName(name))
         .filter(Boolean) as number[];
-      selectedValue.value = ids;
     } else if (!props.multiple && typeof newValue === 'string') {
-      const id = getDeptIdByName(newValue);
-      selectedValue.value = id;
+      selectedValue.value = getDeptIdByName(newValue);
     }
   } else {
     selectedValue.value = newValue as number | number[];
   }
 }
 
-// 监听 modelValue 变化，同步到内部选中值
+/** 监听 modelValue 变化，同步到内部选中值 */
 watch(() => props.modelValue, syncSelectedValue, { immediate: true });
 
-// 监听 deptList 变化，重新同步选中值（解决数据加载完成后的回显问题）
+/** 监听 deptList 变化，重新同步选中值（解决数据加载完成后的回显问题） */
 watch(() => deptList.value, syncSelectedValue);
 
-// 检查是否有有效的预设值
+/** 检查是否有有效的预设值 */
 function hasValidPresetValue(): boolean {
   const value = props.modelValue;
   if (value === undefined || value === null || value === '') {
@@ -165,13 +163,12 @@ function hasValidPresetValue(): boolean {
   return true;
 }
 
-// 设置默认值（当前用户部门）
+/** 设置默认值（当前用户部门） */
 function setDefaultValue(): void {
   // 仅当 defaultCurrentDept 为 true 时处理
   if (!props.defaultCurrentDept) {
     return;
   }
-
   // 检查是否已有预设值（预设值优先级高于默认当前部门）
   if (hasValidPresetValue()) {
     return;
@@ -180,7 +177,6 @@ function setDefaultValue(): void {
   // 获取当前用户的部门 ID
   const userStore = useUserStore();
   const deptId = userStore.userInfo?.deptId as number | undefined;
-
   // 处理 deptId 为空或 0 的边界情况
   if (!deptId || deptId === 0) {
     return;
@@ -191,7 +187,7 @@ function setDefaultValue(): void {
   emit('update:modelValue', defaultValue);
 }
 
-// 组件挂载时加载数据并设置默认值
+/** 组件挂载时加载数据并设置默认值 */
 onMounted(async () => {
   await loadDeptTree();
   // 数据加载完成后设置默认值
