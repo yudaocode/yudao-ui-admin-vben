@@ -2,6 +2,7 @@ import type { ApiSelectProps } from '#/components/form-create/typing';
 
 import { defineComponent, onMounted, ref, useAttrs } from 'vue';
 
+import { useUserStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
 import {
@@ -74,12 +75,46 @@ export function useApiSelect(option: ApiSelectProps) {
         type: String,
         default: 'id',
       },
+      // 是否默认选中当前用户（仅用于 UserSelect）
+      defaultCurrentUser: {
+        type: Boolean,
+        default: false,
+      },
     },
-    setup(props) {
+    setup(props, { emit }) {
       const attrs = useAttrs();
       const options = ref<any[]>([]); // 下拉数据
       const loading = ref(false); // 是否正在从远程获取数据
       const queryParam = ref<any>(); // 当前输入的值
+
+      // 检查是否有有效的预设值
+      function hasValidPresetValue(): boolean {
+        const value = attrs.modelValue;
+        if (value === undefined || value === null || value === '') {
+          return false;
+        }
+        if (Array.isArray(value)) {
+          return value.length > 0;
+        }
+        return true;
+      }
+
+      // 设置默认当前用户
+      function setDefaultCurrentUser(): void {
+        if (option.name !== 'UserSelect' || !props.defaultCurrentUser) {
+          return;
+        }
+        if (hasValidPresetValue()) {
+          return;
+        }
+        const userStore = useUserStore();
+        const currentUserId = userStore.userInfo?.id;
+        if (currentUserId) {
+          const defaultValue = props.multiple ? [currentUserId] : currentUserId;
+          emit('update:modelValue', defaultValue);
+        }
+      }
+
       const getOptions = async () => {
         options.value = [];
         // 接口选择器
@@ -199,6 +234,8 @@ export function useApiSelect(option: ApiSelectProps) {
 
       onMounted(async () => {
         await getOptions();
+        // 设置默认当前用户（仅用于 UserSelect）
+        setDefaultCurrentUser();
       });
 
       const buildSelect = () => {

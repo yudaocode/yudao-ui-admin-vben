@@ -46,6 +46,7 @@ export function useWatchNode(props: {
 }
 
 // 解析 formCreate 所有表单字段, 并返回
+// TODO @jason：这个逻辑，和 antd 对应的逻辑不太一致；
 function parseFormCreateFields(formFields?: string[]) {
   const result: Array<Record<string, any>> = [];
   if (formFields) {
