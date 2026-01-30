@@ -184,7 +184,7 @@ catalog:
   stylelint: ^16.26.1
   stylelint-config-recess-order: ^7.6.0
   stylelint-config-recommended: ^17.0.0
-  stylelint-config-recommended-scss: ^16.0.2
+  stylelint-config-recommended-scss: ^17.0.0
   stylelint-config-recommended-vue: ^1.6.1
   stylelint-config-standard: ^39.0.1
   stylelint-order: ^7.0.1
