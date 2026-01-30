@@ -181,7 +181,7 @@ catalog:
   secure-ls: ^2.0.0
   sortablejs: ^1.15.6
   steady-xml: ^0.1.0
-  stylelint: ^16.26.1
+  stylelint: ^17.0.0
   stylelint-config-recess-order: ^7.6.0
   stylelint-config-recommended: ^17.0.0
   stylelint-config-recommended-scss: ^16.0.2
