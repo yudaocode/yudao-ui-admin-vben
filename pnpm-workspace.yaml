@@ -22,7 +22,7 @@ overrides:
   vue: 'catalog:'
 
 catalog:
-  '@ast-grep/napi': ^0.39.9
+  '@ast-grep/napi': ^0.40.5
   '@changesets/changelog-github': ^0.5.2
   '@changesets/cli': ^2.29.8
   '@changesets/git': ^3.0.4
@@ -36,16 +36,16 @@ catalog:
   '@form-create/designer': ^3.4.0
   '@form-create/element-ui': ^3.2.37
   '@form-create/naive-ui': ^3.2.37
-  '@iconify/json': ^2.2.431
+  '@iconify/json': ^2.2.435
   '@iconify/tailwind': ^1.2.0
   '@iconify/vue': ^5.0.0
   '@intlify/core-base': ^11.2.8
   '@intlify/unplugin-vue-i18n': ^6.0.8
-  '@jspm/generator': ^2.9.0
+  '@jspm/generator': ^2.10.0
   '@manypkg/get-packages': ^3.1.0
   '@microsoft/fetch-event-source': ^2.0.1
   '@nolebase/vitepress-plugin-git-changelog': ^2.18.2
-  '@playwright/test': ^1.58.0
+  '@playwright/test': ^1.58.1
   '@pnpm/workspace.read-manifest': ^1000.2.6
   '@stylistic/stylelint-plugin': ^4.0.1
   '@tailwindcss/nesting': 0.0.0-insiders.565cd3e
@@ -66,13 +66,13 @@ catalog:
   '@types/qrcode': ^1.5.6
   '@types/qs': ^6.14.0
   '@types/sortablejs': ^1.15.9
-  '@typescript-eslint/eslint-plugin': ^8.53.1
-  '@typescript-eslint/parser': ^8.53.1
+  '@typescript-eslint/eslint-plugin': ^8.54.0
+  '@typescript-eslint/parser': ^8.54.0
   '@vee-validate/zod': ^4.15.1
   '@videojs-player/vue': ^1.0.0
   '@vite-pwa/vitepress': ^1.1.0
   '@vitejs/plugin-vue': ^6.0.3
-  '@vitejs/plugin-vue-jsx': ^5.1.3
+  '@vitejs/plugin-vue-jsx': ^5.1.4
   '@vue/shared': ^3.5.27
   '@vue/test-utils': ^2.4.6
   '@vueuse/core': ^14.1.0
@@ -80,17 +80,17 @@ catalog:
   '@vueuse/motion': ^3.0.3
   ant-design-vue: ^4.2.6
   archiver: ^7.0.1
-  autoprefixer: ^10.4.23
-  axios: ^1.13.2
+  autoprefixer: ^10.4.24
+  axios: ^1.13.4
   axios-mock-adapter: ^2.1.0
   benz-amr-recorder: ^1.1.5
   bpmn-js: ^17.11.1
   bpmn-js-properties-panel: 5.23.0
-  bpmn-js-token-simulation: ^0.36.3
+  bpmn-js-token-simulation: ^0.38.2
   cac: ^6.7.14
   camunda-bpmn-moddle: ^7.0.1
   chalk: ^5.6.2
-  cheerio: ^1.1.2
+  cheerio: ^1.2.0
   circular-dependency-scanner: ^2.3.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
@@ -100,7 +100,7 @@ catalog:
   cropperjs: ^1.6.2
   cross-env: ^10.1.0
   crypto-js: ^4.2.0
-  cspell: ^9.6.0
+  cspell: ^9.6.4
   cssnano: ^7.1.2
   cz-git: ^1.12.0
   czg: ^1.12.0
@@ -110,11 +110,11 @@ catalog:
   diagram-js: ^12.8.1
   dotenv: ^16.6.1
   echarts: ^6.0.0
-  element-plus: ^2.13.1
+  element-plus: ^2.13.2
   es-toolkit: ^1.44.0
-  esbuild: ^0.25.12
+  esbuild: ^0.27.2
   eslint: ^9.39.2
-  eslint-config-turbo: ^2.7.5
+  eslint-config-turbo: ^2.8.3
   eslint-plugin-command: ^3.4.0
   eslint-plugin-eslint-comments: ^3.2.0
   eslint-plugin-import-x: ^4.16.1
@@ -144,14 +144,14 @@ catalog:
   jsencrypt: ^3.5.4
   json-bigint: ^1.0.0
   jsonc-eslint-parser: ^2.4.2
-  lefthook: ^2.0.15
+  lefthook: ^2.1.0
   lodash.clonedeep: ^4.5.0
-  lucide-vue-next: ^0.553.0
+  lucide-vue-next: ^0.563.0
   markdown-it: ^14.1.0
-  markmap-common: ^0.16.0
-  markmap-lib: ^0.16.1
-  markmap-toolbar: ^0.17.2
-  markmap-view: ^0.16.0
+  markmap-common: ^0.18.9
+  markmap-lib: ^0.18.12
+  markmap-toolbar: ^0.18.12
+  markmap-view: ^0.18.12
   medium-zoom: ^1.1.0
   naive-ui: ^2.43.2
   nitropack: ^2.13.1
@@ -160,7 +160,7 @@ catalog:
   pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.0
-  playwright: ^1.58.0
+  playwright: ^1.58.1
   postcss: ^8.5.6
   postcss-antd-fixes: ^0.2.0
   postcss-html: ^1.8.1
@@ -172,7 +172,7 @@ catalog:
   publint: ^0.3.17
   qrcode: ^1.5.4
   qs: ^6.14.1
-  reka-ui: ^2.7.0
+  reka-ui: ^2.8.0
   resolve.exports: ^2.0.3
   rimraf: ^6.1.2
   rollup: ^4.56.0
@@ -193,11 +193,11 @@ catalog:
   tailwind-merge: ^2.6.0
   tailwindcss: ^3.4.19
   tailwindcss-animate: ^1.0.7
-  tdesign-vue-next: ^1.18.0
+  tdesign-vue-next: ^1.18.2
   theme-colors: ^0.1.0
   tinymce: ^7.3.0
   tippy.js: ^6.3.7
-  turbo: ^2.7.6
+  turbo: ^2.8.3
   typescript: ^5.9.3
   unbuild: ^3.6.1
   unplugin-element-plus: ^0.11.2
@@ -209,7 +209,7 @@ catalog:
   vite-plugin-html: ^3.2.2
   vite-plugin-lazy-import: ^1.0.7
   vite-plugin-pwa: ^1.2.0
-  vite-plugin-vue-devtools: ^8.0.5
+  vite-plugin-vue-devtools: ^8.0.6
   vitepress: ^1.6.4
   vitepress-plugin-group-icons: ^1.7.1
   vitest: ^3.2.4
@@ -220,13 +220,13 @@ catalog:
   vue-json-viewer: ^3.0.4
   vue-router: ^4.6.4
   vue-tippy: ^6.7.1
-  vue-tsc: ^3.2.3
+  vue-tsc: ^3.2.4
   vue3-print-nb: ^0.1.4
-  vue3-signature: ^0.2.4
+  vue3-signature: ^0.4.4
   vuedraggable: ^4.1.0
-  vxe-pc-ui: ^4.12.10
-  vxe-table: ^4.17.46
+  vxe-pc-ui: ^4.12.33
+  vxe-table: ^4.17.48
   watermark-js-plus: ^1.6.3
   yaml-eslint-parser: ^1.3.2
   zod: ^3.25.76
-  zod-defaults: 0.1.3
+  zod-defaults: 0.2.3
