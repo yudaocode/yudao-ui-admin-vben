@@ -200,7 +200,7 @@ export async function useFormCreateDesigner(designer: Ref) {
         type: 'switch',
         field: 'defaultCurrentUser',
         title: '默认选中当前用户',
-        value: true,
+        value: false,
       },
     ],
   });
@@ -223,7 +223,7 @@ export async function useFormCreateDesigner(designer: Ref) {
         type: 'switch',
         field: 'defaultCurrentDept',
         title: '默认选中当前部门',
-        value: true,
+        value: false,
       },
     ],
   });

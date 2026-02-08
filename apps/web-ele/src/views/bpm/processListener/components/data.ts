@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import { DICT_TYPE } from '@vben/constants';
 
 /** 选择监听器弹窗的列表字段 */
+// TODO @jason：和 antd 对应的，不太一致；
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { field: 'name', title: '名字', minWidth: 120 },
