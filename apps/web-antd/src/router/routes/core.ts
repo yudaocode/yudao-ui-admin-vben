@@ -109,6 +109,21 @@ const coreRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+  /**
+   * 用于 bpm 移动端流程表单 web-view 的嵌入
+   */
+  {
+    component: () => import('#/views/bpm/form/mobile/index.vue'),
+    meta: {
+      hideInBreadcrumb: true,
+      hideInMenu: true,
+      hideInTab: true,
+      ignoreAccess: true,
+      title: '移动端流程表单展示',
+    },
+    name: 'BpmMobileFormPreview',
+    path: '/bpm/mobile/form-preview',
+  },
 ];
 
 export { coreRoutes, fallbackNotFoundRoute };
