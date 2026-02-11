@@ -119,7 +119,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     });
   };
 
-  const updateDate = (
+  const updateData = (
     option: EChartsOption,
     notMerge = false, // false = 合并（保留动画），true = 完全替换
     lazyUpdate = false, // true 时不立即重绘，适合短时间内多次调用
@@ -184,7 +184,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
   return {
     renderEcharts,
     resize,
-    updateDate,
+    updateData,
     getChartInstance: () => chartInstance,
   };
 }

@@ -3,7 +3,7 @@ import type { TabDefinition } from '@vben-core/typings';
 
 import type { TabConfig, TabsProps } from '../../types';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { Pin, X } from '@vben-core/icons';
 import { VbenContextMenu, VbenIcon } from '@vben-core/shadcn-ui';
@@ -28,8 +28,10 @@ const emit = defineEmits<{
 }>();
 const active = defineModel<string>('active');
 
-// const contentRef = ref();
-// const tabRef = ref();
+// @ts-expect-error unused
+const contentRef = ref();
+// @ts-expect-error unused
+const tabRef = ref();
 
 const style = computed(() => {
   const { gap } = props;
@@ -73,6 +75,7 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
 
 <template>
   <div
+    ref="contentRef"
     :class="contentClass"
     :style="style"
     class="tabs-chrome !flex h-full w-max overflow-y-hidden pr-6"
@@ -81,6 +84,7 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
       <div
         v-for="(tab, i) in tabsView"
         :key="tab.key"
+        ref="tabRef"
         :class="[
           {
             'is-active': tab.key === active,
@@ -154,7 +158,7 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
               <VbenIcon
                 v-if="showIcon"
                 :icon="tab.icon"
-                class="mr-1 flex size-4 items-center overflow-hidden"
+                class="mr-1 flex size-4 items-center overflow-hidden group-hover:animate-[shrink_0.3s_ease-in-out]"
               />
 
               <span class="flex-1 overflow-hidden whitespace-nowrap text-sm">
