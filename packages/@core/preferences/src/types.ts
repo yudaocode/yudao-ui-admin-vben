@@ -222,8 +222,12 @@ interface TabbarPreferences {
   showMaximize: boolean;
   /** 显示更多按钮 */
   showMore: boolean;
+  /** 显示刷新按钮 */
+  showRefresh: boolean;
   /** 标签页风格 */
   styleType: TabsStyleType;
+  /** 是否开启访问历史记录 */
+  visitHistory: boolean;
   /** 是否开启鼠标滚轮响应 */
   wheelable: boolean;
 }

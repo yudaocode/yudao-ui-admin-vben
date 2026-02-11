@@ -170,6 +170,10 @@ function convertServerMenuToRouteRecordStringComponent(
     // add by 芋艿：处理 menu.component 中的 query 参数
     // https://doc.vben.pro/guide/essentials/route.html#query
     let query: Record<string, string> | undefined;
+    // add by 芋艿：防止 component 为 null 时，调用 indexOf 报错；关联
+    if (!menu.component) {
+      menu.component = '';
+    }
     const queryIndex = menu.component.indexOf('?');
     if (queryIndex !== -1) {
       // 提取 query 字符串并解析为对象
