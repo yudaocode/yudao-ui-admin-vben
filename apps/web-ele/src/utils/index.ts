@@ -28,3 +28,16 @@ export const findIndex = <T = Recordable<any>>(
   });
   return index;
 };
+
+/**
+ * URL 验证
+ * @param path URL 路径
+ */
+export const isUrl = (path: string): boolean => {
+  // fix:修复hash路由无法跳转的问题
+  /* eslint-disable regexp/no-unused-capturing-group, regexp/no-super-linear-backtracking, regexp/no-useless-quantifier */
+  const reg =
+    /(((^https?:(?:\/\/)?)(?:[-:&=+$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%#/.\w-]*)?\??[-+=&%@.\w]*(?:#\w*)?)?)$/;
+  return reg.test(path);
+  /* eslint-enable regexp/no-unused-capturing-group, regexp/no-super-linear-backtracking, regexp/no-useless-quantifier */
+};

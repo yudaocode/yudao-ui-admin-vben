@@ -57,3 +57,12 @@ export const SystemUserSocialTypeEnum = {
     img: 'https://s1.ax1x.com/2022/05/22/OzMrzn.png',
   },
 };
+
+/**
+ * 地区选择器层级枚举
+ */
+export const AreaLevelEnum = {
+  PROVINCE: 1, // 省
+  CITY: 2, // 市
+  DISTRICT: 3, // 区
+} as const;

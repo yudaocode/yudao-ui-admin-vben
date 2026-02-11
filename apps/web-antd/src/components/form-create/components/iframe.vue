@@ -1,6 +1,8 @@
 <!-- 网页 iframe 组件 (Ant Design Vue 版本) -->
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
+
+import { isUrl } from '#/utils';
 
 defineOptions({ name: 'IframeComponent' });
 
@@ -15,11 +17,6 @@ const props = withDefaults(defineProps<Props>(), {
   loading: 'lazy',
   sandbox: '',
 });
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
-  (e: 'update:value', value: string): void;
-}>();
 
 // 接受父组件参数
 interface Props {
@@ -36,23 +33,14 @@ interface Props {
 }
 
 // 显示的 URL（优先使用 url prop，其次使用 value 或 modelValue）
-const displayUrl = computed(() => props.url || props.value || props.modelValue || '');
+const displayUrl = computed(
+  () => props.url || props.value || props.modelValue || '',
+);
 
 // 是否显示预览
 const showPreview = computed(() => {
-  return displayUrl.value && isValidUrl(displayUrl.value);
+  return displayUrl.value && isUrl(displayUrl.value);
 });
-
-// URL 验证
-function isValidUrl(url: string): boolean {
-  if (!url || url.trim() === '') return false;
-  try {
-    const urlObj = new URL(url);
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
 </script>
 
 <template>
@@ -104,4 +92,3 @@ function isValidUrl(url: string): boolean {
   background-color: #fafafa;
 }
 </style>
-
