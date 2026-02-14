@@ -12,13 +12,14 @@ import { DeviceTypeEnum } from '@vben/constants';
 import { message, Tabs } from 'ant-design-vue';
 
 import { getDevice } from '#/api/iot/device/device';
-import { getProduct } from '#/api/iot/product/product';
+import { getProduct, ProtocolTypeEnum } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 
 import DeviceDetailConfig from './modules/config.vue';
 import DeviceDetailsHeader from './modules/header.vue';
 import DeviceDetailsInfo from './modules/info.vue';
 import DeviceDetailsMessage from './modules/message.vue';
+import DeviceModbusConfig from './modules/modbus-config.vue';
 import DeviceDetailsSimulator from './modules/simulator.vue';
 import DeviceDetailsSubDevice from './modules/sub-device.vue';
 import DeviceDetailsThingModel from './modules/thing-model.vue';
@@ -139,6 +140,23 @@ onMounted(async () => {
           v-if="activeTab === 'config'"
           :device="device"
           @success="() => getDeviceData(id)"
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        v-if="
+          [
+            ProtocolTypeEnum.MODBUS_TCP_CLIENT,
+            ProtocolTypeEnum.MODBUS_TCP_SERVER,
+          ].includes(product.protocolType as ProtocolTypeEnum)
+        "
+        key="modbus"
+        tab="Modbus 配置"
+      >
+        <DeviceModbusConfig
+          v-if="activeTab === 'modbus'"
+          :device="device"
+          :product="product"
+          :thing-model-list="thingModelList"
         />
       </Tabs.TabPane>
     </Tabs>

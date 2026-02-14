@@ -150,7 +150,7 @@ const AI_DICT = {
 const IOT_DICT = {
   IOT_ALERT_LEVEL: 'iot_alert_level', // IoT 告警级别
   IOT_ALERT_RECEIVE_TYPE: 'iot_alert_receive_type', // IoT 告警接收类型
-  IOT_CODEC_TYPE: 'iot_codec_type', // IOT 数据格式（编解码器类型）
+  IOT_SERIALIZE_TYPE: 'iot_serialize_type', // IOT 序列化类型
   IOT_DATA_FORMAT: 'iot_data_format', // IOT 数据格式
   IOT_DATA_SINK_TYPE_ENUM: 'iot_data_sink_type_enum', // IoT 数据流转目的类型
   IOT_DATA_TYPE: 'iot_data_type', // IOT 数据类型
@@ -171,6 +171,8 @@ const IOT_DICT = {
   IOT_THING_MODEL_UNIT: 'iot_thing_model_unit', // IOT 物模型单位
   IOT_UNIT_TYPE: 'iot_unit_type', // IOT 单位类型
   IOT_VALIDATE_TYPE: 'iot_validate_type', // IOT 数据校验级别
+  IOT_MODBUS_MODE: 'iot_modbus_mode', // IoT Modbus 工作模式
+  IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
 /** 字典类型枚举 - 统一导出 */
