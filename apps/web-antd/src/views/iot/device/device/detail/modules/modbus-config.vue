@@ -13,7 +13,7 @@ import { computed, h, onMounted, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
-import { Button, message, Tag } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getModbusConfig } from '#/api/iot/device/modbus/config';
@@ -180,7 +180,7 @@ function usePointColumns(): VxeTableGridOptions['columns'] {
       field: 'identifier',
       title: '标识符',
       minWidth: 100,
-      slots: { default: 'identifier' },
+      cellRender: { name: 'CellTag', props: { color: 'blue' } },
     },
     {
       field: 'functionCode',
@@ -199,7 +199,7 @@ function usePointColumns(): VxeTableGridOptions['columns'] {
       field: 'rawDataType',
       title: '数据类型',
       minWidth: 90,
-      slots: { default: 'rawDataType' },
+      cellRender: { name: 'CellTag' },
     },
     { field: 'byteOrder', title: '字节序', minWidth: 80 },
     { field: 'scale', title: '缩放因子', minWidth: 80 },
@@ -314,8 +314,7 @@ onMounted(async () => {
     </ConfigDescriptions>
 
     <!-- 点位配置区域 -->
-    <!-- TODO @AI：这里高度一直涨，怎么限制下。 -->
-    <Grid table-title="点位配置">
+    <Grid table-title="点位配置" class="h-[600px] overflow-auto">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -327,14 +326,6 @@ onMounted(async () => {
             },
           ]"
         />
-      </template>
-      <!-- TODO@AI：这里可以在 data 里声明么》 -->
-      <template #identifier="{ row }">
-        <Tag color="blue">{{ row.identifier }}</Tag>
-      </template>
-      <!-- TODO@AI：这里可以在 data 里声明么》 -->
-      <template #rawDataType="{ row }">
-        <Tag>{{ row.rawDataType }}</Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

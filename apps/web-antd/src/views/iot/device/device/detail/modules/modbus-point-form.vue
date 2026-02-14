@@ -18,6 +18,7 @@ import {
   getModbusPoint,
   updateModbusPoint,
 } from '#/api/iot/device/modbus/point';
+import { $t } from '#/locales';
 import {
   getByteOrderOptions,
   IoTThingModelTypeEnum,
@@ -30,33 +31,17 @@ defineOptions({ name: 'DeviceModbusPointForm' });
 const emit = defineEmits(['success']);
 
 const formData = ref<IotDeviceModbusPointApi.ModbusPoint>();
-const deviceId = ref<number>(0);
-const thingModelList = ref<ThingModelData[]>([]);
-
 const getTitle = computed(() => {
   return formData.value?.id ? '编辑点位' : '新增点位';
 });
+const deviceId = ref<number>(0);
+const thingModelList = ref<ThingModelData[]>([]);
 
 /** 筛选属性类型的物模型 */
-// TODO @AI：这里 linter 报错：TS2367: This comparison appears to be unintentional because the types string | undefined and number have no overlap.
 const propertyList = computed(() => {
   return thingModelList.value.filter(
-    (item) => item.type === IoTThingModelTypeEnum.PROPERTY,
+    (item) => Number(item.type) === IoTThingModelTypeEnum.PROPERTY,
   );
-});
-
-/** 当前选中的数据类型 */
-const currentRawDataType = ref<string>('');
-
-/** 当前字节序选项（根据数据类型动态变化） */
-const currentByteOrderOptions = computed(() => {
-  if (!currentRawDataType.value) {
-    return [];
-  }
-  return getByteOrderOptions(currentRawDataType.value).map((item) => ({
-    value: item.value,
-    label: `${item.label} - ${item.description}`,
-  }));
 });
 
 /** 表单 Schema */
@@ -93,13 +78,18 @@ function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择物模型属性',
         showSearch: true,
-        // TODO @AI：不用这种 => 格式，看起来不够清晰。只处理这里的。
-        filterOption: (input: string, option: any) =>
-          option.label.toLowerCase().includes(input.toLowerCase()),
-        options: propertyList.value.map((item) => ({
-          value: item.id,
-          label: `${item.name} (${item.identifier})`,
-        })),
+        filterOption(input: string, option: any) {
+          return option.label.toLowerCase().includes(input.toLowerCase());
+        },
+      },
+      dependencies: {
+        triggerFields: [''],
+        componentProps: () => ({
+          options: propertyList.value.map((item) => ({
+            value: item.id,
+            label: `${item.name} (${item.identifier})`,
+          })),
+        }),
       },
       rules: 'required',
     },
@@ -125,11 +115,12 @@ function useFormSchema(): VbenFormSchema[] {
         min: 0,
         max: 65_535,
       },
-      rules: z.number().min(0, '请输入寄存器地址').max(65_535),
+      rules: 'required',
       suffix: () => {
-        const values = formApi.form.values;
-        const addr = values?.registerAddress;
-        if (addr === undefined || addr === null) return '';
+        const addr = formApi.form.values?.registerAddress;
+        if (addr == null) {
+          return '';
+        }
         return h(
           'span',
           { class: 'text-gray-400' },
@@ -146,7 +137,7 @@ function useFormSchema(): VbenFormSchema[] {
         min: 1,
         max: 125,
       },
-      rules: z.number().min(1, '请输入寄存器数量').max(125),
+      rules: 'required',
     },
     {
       fieldName: 'rawDataType',
@@ -167,8 +158,19 @@ function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择字节序',
-        options: currentByteOrderOptions.value,
       },
+      dependencies: {
+        triggerFields: ['rawDataType'],
+        componentProps: (values) => ({
+          options: values.rawDataType
+            ? getByteOrderOptions(values.rawDataType).map((item) => ({
+                value: item.value,
+                label: `${item.label} - ${item.description}`,
+              }))
+            : [],
+        }),
+      },
+      rules: 'required',
     },
     {
       fieldName: 'scale',
@@ -191,6 +193,7 @@ function useFormSchema(): VbenFormSchema[] {
         step: 1000,
       },
       rules: z.number().min(100, '请输入轮询间隔'),
+      defaultValue: 5000,
     },
     {
       fieldName: 'status',
@@ -232,7 +235,6 @@ const [Form, formApi] = useVbenForm({
     // 数据类型变化：自动设置寄存器数量和字节序
     if (changedFields.includes('rawDataType')) {
       const rawDataType = await formApi.getFieldValue('rawDataType');
-      currentRawDataType.value = rawDataType || '';
       if (rawDataType) {
         // 根据数据类型自动设置寄存器数量
         const option = ModbusRawDataTypeOptions.find(
@@ -246,18 +248,6 @@ const [Form, formApi] = useVbenForm({
         if (byteOrderOptions.length > 0) {
           await formApi.setFieldValue('byteOrder', byteOrderOptions[0]!.value);
         }
-        // 更新字节序下拉选项
-        formApi.updateSchema([
-          {
-            fieldName: 'byteOrder',
-            componentProps: {
-              options: byteOrderOptions.map((item) => ({
-                value: item.value,
-                label: `${item.label} - ${item.description}`,
-              })),
-            },
-          },
-        ]);
       }
     }
   },
@@ -265,12 +255,12 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // TODO @AI：这里的处理，可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue 的注释风格；
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data =
       (await formApi.getValues()) as IotDeviceModbusPointApi.ModbusPoint;
     try {
@@ -278,9 +268,10 @@ const [Modal, modalApi] = useVbenModal({
       await (formData.value?.id
         ? updateModbusPoint(data)
         : createModbusPoint(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success(formData.value?.id ? '更新成功' : '创建成功');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -288,71 +279,29 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
-      currentRawDataType.value = '';
       return;
     }
-    // TODO @AI：这里的处理，可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue 的注释风格；
+    // 加载数据
     const data = modalApi.getData<{
       deviceId: number;
       id?: number;
       thingModelList: ThingModelData[];
     }>();
-    if (!data) return;
-
+    if (!data) {
+      return;
+    }
     deviceId.value = data.deviceId;
     thingModelList.value = data.thingModelList || [];
-
-    // 更新物模型属性下拉选项
-    const properties = thingModelList.value.filter(
-      (item) => item.type === IoTThingModelTypeEnum.PROPERTY,
-    );
-    formApi.updateSchema([
-      {
-        fieldName: 'thingModelId',
-        componentProps: {
-          options: properties.map((item) => ({
-            value: item.id,
-            label: `${item.name} (${item.identifier})`,
-          })),
-        },
-      },
-    ]);
-
-    if (data.id) {
-      // 编辑模式：加载数据
-      modalApi.lock();
-      try {
-        formData.value = await getModbusPoint(data.id);
-        // 先设置 rawDataType 以便更新字节序选项
-        currentRawDataType.value = formData.value.rawDataType || '';
-        if (formData.value.rawDataType) {
-          const byteOrderOptions = getByteOrderOptions(
-            formData.value.rawDataType,
-          );
-          formApi.updateSchema([
-            {
-              fieldName: 'byteOrder',
-              componentProps: {
-                options: byteOrderOptions.map((item) => ({
-                  value: item.value,
-                  label: `${item.label} - ${item.description}`,
-                })),
-              },
-            },
-          ]);
-        }
-        await formApi.setValues(formData.value);
-      } finally {
-        modalApi.unlock();
-      }
-    } else {
-      // 新增模式：设置默认值
-      // TODO @AI：这个是不是在 data 里处理；
-      await formApi.setValues({
-        scale: 1,
-        pollInterval: 5000,
-        status: 0,
-      });
+    if (!data.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getModbusPoint(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
   },
 });

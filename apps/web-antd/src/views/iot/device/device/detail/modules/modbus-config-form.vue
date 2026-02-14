@@ -13,6 +13,7 @@ import { message } from 'ant-design-vue';
 import { useVbenForm, z } from '#/adapter/form';
 import { saveModbusConfig } from '#/api/iot/device/modbus/config';
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
+import { $t } from '#/locales';
 import {
   ModbusFrameFormatEnum,
   ModbusModeEnum,
@@ -78,6 +79,7 @@ const [Form, formApi] = useVbenForm({
         show: () => isClient.value, // Client 模式专有字段：端口
       },
       rules: z.number().min(1).max(65_535).optional(),
+      defaultValue: 502,
     },
     {
       fieldName: 'slaveId',
@@ -89,6 +91,7 @@ const [Form, formApi] = useVbenForm({
         max: 247,
       },
       rules: z.number().min(1, '请输入从站地址').max(247),
+      defaultValue: 1,
     },
     {
       fieldName: 'timeout',
@@ -104,6 +107,7 @@ const [Form, formApi] = useVbenForm({
         show: () => isClient.value, // Client 模式专有字段：连接超时
       },
       rules: z.number().min(1000).optional(),
+      defaultValue: 3000,
     },
     {
       fieldName: 'retryInterval',
@@ -119,6 +123,7 @@ const [Form, formApi] = useVbenForm({
         show: () => isClient.value, // Client 模式专有字段：重试间隔
       },
       rules: z.number().min(1000).optional(),
+      defaultValue: 10_000,
     },
     {
       fieldName: 'mode',
@@ -132,6 +137,7 @@ const [Form, formApi] = useVbenForm({
         show: () => isServer.value, // Server 模式专有字段：工作模式
       },
       rules: 'required',
+      defaultValue: ModbusModeEnum.POLLING,
     },
     {
       fieldName: 'frameFormat',
@@ -145,6 +151,7 @@ const [Form, formApi] = useVbenForm({
         show: () => isServer.value, // Server 模式专有字段：帧格式
       },
       rules: 'required',
+      defaultValue: ModbusFrameFormatEnum.MODBUS_TCP,
     },
     {
       fieldName: 'status',
@@ -167,16 +174,17 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    // TODO @AI：这里的处理，可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue 的注释风格；
     modalApi.lock();
+    // 提交表单
     const data =
       (await formApi.getValues()) as IotDeviceModbusConfigApi.ModbusConfig;
     try {
       data.deviceId = deviceId.value;
       await saveModbusConfig(data);
-      message.success('保存成功');
+      // 关闭并提示
       await modalApi.close();
       emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -186,34 +194,23 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
+    // 加载数据
     const data = modalApi.getData<{
       config?: IotDeviceModbusConfigApi.ModbusConfig;
       deviceId: number;
       protocolType: string;
     }>();
-    if (!data) return;
-
-    // TODO @AI：这里的处理，可以参考 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/modules/form.vue 的注释风格；
+    if (!data) {
+      return;
+    }
     deviceId.value = data.deviceId;
     protocolType.value = data.protocolType;
-
-    if (data.config && data.config.id) {
-      // 编辑模式：加载已有配置
-      formData.value = { ...data.config };
-      await formApi.setValues(formData.value);
-    } else {
-      // 新增模式：设置默认值
-      await formApi.setValues({
-        ip: '',
-        port: 502,
-        slaveId: 1,
-        timeout: 3000,
-        retryInterval: 10_000,
-        mode: ModbusModeEnum.POLLING,
-        frameFormat: ModbusFrameFormatEnum.MODBUS_TCP,
-        status: 0,
-      });
+    if (!data.config) {
+      return;
     }
+    // 设置到 values
+    formData.value = { ...data.config };
+    await formApi.setValues(formData.value);
   },
 });
 </script>
