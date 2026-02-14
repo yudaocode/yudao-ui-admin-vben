@@ -84,7 +84,7 @@ catalog:
   axios: ^1.13.4
   axios-mock-adapter: ^2.1.0
   benz-amr-recorder: ^1.1.5
-  bpmn-js: ^17.11.1
+  bpmn-js: ^18.12.0
   bpmn-js-properties-panel: 5.23.0
   bpmn-js-token-simulation: ^0.36.3
   cac: ^6.7.14
