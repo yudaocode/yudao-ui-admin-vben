@@ -127,14 +127,24 @@ export function useBasicFormSchema(
       rules: 'required',
     },
     {
-      fieldName: 'codecType',
-      label: '数据格式',
-      component: 'RadioGroup',
+      fieldName: 'protocolType',
+      label: '协议类型',
+      component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_CODEC_TYPE, 'string'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        options: getDictOptions(DICT_TYPE.IOT_PROTOCOL_TYPE, 'string'),
+        placeholder: '请选择协议类型',
       },
+      rules: 'required',
+    },
+    {
+      fieldName: 'serializeType',
+      label: '序列化类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.IOT_SERIALIZE_TYPE, 'string'),
+        placeholder: '请选择序列化类型',
+      },
+      help: 'iot-gateway-server 默认根据接入的协议类型确定数据格式，仅 MQTT、EMQX 协议支持自定义序列化类型',
       rules: 'required',
     },
     // TODO @haohao：这个貌似不需要？！

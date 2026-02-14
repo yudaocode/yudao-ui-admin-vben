@@ -57,8 +57,17 @@ async function copyToClipboard(text: string) {
       <Descriptions.Item label="创建时间">
         {{ formatDate(product.createTime) }}
       </Descriptions.Item>
-      <Descriptions.Item label="数据格式">
-        {{ product.codecType || '-' }}
+      <Descriptions.Item label="协议类型">
+        <DictTag
+          :type="DICT_TYPE.IOT_PROTOCOL_TYPE"
+          :value="product.protocolType"
+        />
+      </Descriptions.Item>
+      <Descriptions.Item label="序列化类型">
+        <DictTag
+          :type="DICT_TYPE.IOT_SERIALIZE_TYPE"
+          :value="product.serializeType"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="产品状态">
         <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />

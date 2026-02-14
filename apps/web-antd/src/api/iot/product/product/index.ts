@@ -10,7 +10,7 @@ export namespace IotProductApi {
     productKey?: string; // 产品标识
     productSecret?: string; // 产品密钥
     protocolId?: number; // 协议编号
-    protocolType?: number; // 接入协议类型
+    protocolType?: string; // 协议类型
     categoryId?: number; // 产品所属品类标识符
     categoryName?: string; // 产品所属品类名称
     icon?: string; // 产品图标
@@ -19,13 +19,32 @@ export namespace IotProductApi {
     status?: number; // 产品状态
     deviceType?: number; // 设备类型
     netType?: number; // 联网方式
-    codecType?: string; // 数据格式（编解码器类型）
+    serializeType?: string; // 序列化类型
     dataFormat?: number; // 数据格式
     validateType?: number; // 认证方式
     registerEnabled?: boolean; // 是否开启动态注册
     deviceCount?: number; // 设备数量
     createTime?: Date; // 创建时间
   }
+}
+
+// IoT 协议类型枚举
+export enum ProtocolTypeEnum {
+  COAP = 'coap',
+  EMQX = 'emqx',
+  HTTP = 'http',
+  MODBUS_TCP_CLIENT = 'modbus_tcp_client',
+  MODBUS_TCP_SERVER = 'modbus_tcp_server',
+  MQTT = 'mqtt',
+  TCP = 'tcp',
+  UDP = 'udp',
+  WEBSOCKET = 'websocket',
+}
+
+// IoT 序列化类型枚举
+export enum SerializeTypeEnum {
+  BINARY = 'binary',
+  JSON = 'json',
 }
 
 /** 查询产品分页 */

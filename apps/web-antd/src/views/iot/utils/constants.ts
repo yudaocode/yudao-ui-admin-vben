@@ -522,3 +522,135 @@ export const JSON_PARAMS_EXAMPLE_VALUES: Record<string, any> = {
   [IoTDataSpecsDataTypeEnum.ARRAY]: { display: '[]', value: [] },
   DEFAULT: { display: '""', value: '' },
 };
+
+// ========== Modbus 通用常量 ==========
+
+/** Modbus 模式枚举 */
+export const ModbusModeEnum = {
+  POLLING: 1, // 云端轮询
+  ACTIVE_REPORT: 2, // 主动上报
+} as const;
+
+/** Modbus 帧格式枚举 */
+export const ModbusFrameFormatEnum = {
+  MODBUS_TCP: 1, // Modbus TCP
+  MODBUS_RTU: 2, // Modbus RTU
+} as const;
+
+/** Modbus 功能码枚举 */
+export const ModbusFunctionCodeEnum = {
+  READ_COILS: 1, // 读线圈
+  READ_DISCRETE_INPUTS: 2, // 读离散输入
+  READ_HOLDING_REGISTERS: 3, // 读保持寄存器
+  READ_INPUT_REGISTERS: 4, // 读输入寄存器
+} as const;
+
+/** Modbus 功能码选项 */
+export const ModbusFunctionCodeOptions = [
+  { value: 1, label: '01 - 读线圈 (Coils)', description: '可读写布尔值' },
+  {
+    value: 2,
+    label: '02 - 读离散输入 (Discrete Inputs)',
+    description: '只读布尔值',
+  },
+  {
+    value: 3,
+    label: '03 - 读保持寄存器 (Holding Registers)',
+    description: '可读写 16 位数据',
+  },
+  {
+    value: 4,
+    label: '04 - 读输入寄存器 (Input Registers)',
+    description: '只读 16 位数据',
+  },
+];
+
+/** Modbus 原始数据类型枚举 */
+export const ModbusRawDataTypeEnum = {
+  INT16: 'INT16',
+  UINT16: 'UINT16',
+  INT32: 'INT32',
+  UINT32: 'UINT32',
+  FLOAT: 'FLOAT',
+  DOUBLE: 'DOUBLE',
+  BOOLEAN: 'BOOLEAN',
+  STRING: 'STRING',
+} as const;
+
+/** Modbus 原始数据类型选项 */
+export const ModbusRawDataTypeOptions = [
+  {
+    value: 'INT16',
+    label: 'INT16',
+    description: '有符号16位整数',
+    registerCount: 1,
+  },
+  {
+    value: 'UINT16',
+    label: 'UINT16',
+    description: '无符号16位整数',
+    registerCount: 1,
+  },
+  {
+    value: 'INT32',
+    label: 'INT32',
+    description: '有符号32位整数',
+    registerCount: 2,
+  },
+  {
+    value: 'UINT32',
+    label: 'UINT32',
+    description: '无符号32位整数',
+    registerCount: 2,
+  },
+  {
+    value: 'FLOAT',
+    label: 'FLOAT',
+    description: '32位浮点数',
+    registerCount: 2,
+  },
+  {
+    value: 'DOUBLE',
+    label: 'DOUBLE',
+    description: '64位浮点数',
+    registerCount: 4,
+  },
+  {
+    value: 'BOOLEAN',
+    label: 'BOOLEAN',
+    description: '布尔值',
+    registerCount: 1,
+  },
+  {
+    value: 'STRING',
+    label: 'STRING',
+    description: '字符串',
+    registerCount: 0,
+  },
+];
+
+/** Modbus 字节序选项 - 16位 */
+export const ModbusByteOrder16Options = [
+  { value: 'AB', label: 'AB', description: '大端序' },
+  { value: 'BA', label: 'BA', description: '小端序' },
+];
+
+/** Modbus 字节序选项 - 32位 */
+export const ModbusByteOrder32Options = [
+  { value: 'ABCD', label: 'ABCD', description: '大端序' },
+  { value: 'CDAB', label: 'CDAB', description: '大端字交换' },
+  { value: 'DCBA', label: 'DCBA', description: '小端序' },
+  { value: 'BADC', label: 'BADC', description: '小端字交换' },
+];
+
+/** 根据数据类型获取字节序选项 */
+export const getByteOrderOptions = (rawDataType: string) => {
+  if (['FLOAT', 'INT32', 'UINT32'].includes(rawDataType)) {
+    return ModbusByteOrder32Options;
+  }
+  if (rawDataType === 'DOUBLE') {
+    // 64 位暂时复用 32 位字节序
+    return ModbusByteOrder32Options;
+  }
+  return ModbusByteOrder16Options;
+};
