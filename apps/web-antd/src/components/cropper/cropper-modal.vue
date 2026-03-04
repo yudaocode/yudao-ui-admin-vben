@@ -41,8 +41,8 @@ const [Modal, modalApi] = useVbenModal({
   onConfirm: handleOk,
   onOpenChange(isOpen) {
     if (isOpen) {
-      // 打开时，进行 loading 加载。后续 CropperImage 组件加载完毕，会自动关闭 loading（通过 handleReady）
-      modalLoading(true);
+      // 只有存在可加载图片时才显示 loading，避免空图或异常链接导致一直 loading
+      modalLoading(!!src.value);
     } else {
       // 关闭时，清空右侧预览
       previewSource.value = '';
@@ -65,9 +65,13 @@ function handleBeforeUpload(file: File) {
   reader.readAsDataURL(file);
   src.value = '';
   previewSource.value = '';
+  modalLoading(true);
   reader.addEventListener('load', (e) => {
     src.value = (e.target?.result as string) ?? '';
     filename = file.name;
+  });
+  reader.addEventListener('error', () => {
+    modalLoading(false);
   });
   return false;
 }
@@ -79,6 +83,10 @@ function handleCropend({ imgBase64 }: CropendResult) {
 function handleReady(cropperInstance: CropperType) {
   cropper.value = cropperInstance;
   // 画布加载完毕 关闭 loading
+  modalLoading(false);
+}
+
+function handleCropperError() {
   modalLoading(false);
 }
 
@@ -133,6 +141,7 @@ async function handleOk() {
             :src="src"
             height="300px"
             @cropend="handleCropend"
+            @cropend-error="handleCropperError"
             @ready="handleReady"
           />
         </div>
