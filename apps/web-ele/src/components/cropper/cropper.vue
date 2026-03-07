@@ -144,6 +144,10 @@ function getRoundedCanvas() {
   context.fill();
   return canvas;
 }
+
+function handleImageError() {
+  emit('cropendError');
+}
 </script>
 
 <template>
@@ -155,6 +159,7 @@ function getRoundedCanvas() {
       :crossorigin="crossorigin"
       :src="src"
       :style="getImageStyle"
+      @error="handleImageError"
       class="h-auto max-w-full"
     />
   </div>
