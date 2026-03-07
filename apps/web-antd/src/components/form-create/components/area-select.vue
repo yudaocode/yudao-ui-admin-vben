@@ -2,10 +2,11 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 
+import { AreaLevelEnum } from '@vben/constants';
+
 import { Cascader } from 'ant-design-vue';
 
 import { getAreaTree } from '#/api/system/area';
-import { AreaLevelEnum } from '@vben/constants';
 
 defineOptions({ name: 'AreaSelect' });
 
@@ -40,7 +41,7 @@ interface AreaVO {
 interface Props {
   modelValue?: number[] | string[];
   value?: number[] | string[];
-  level?: typeof AreaLevelEnum[keyof typeof AreaLevelEnum];
+  level?: (typeof AreaLevelEnum)[keyof typeof AreaLevelEnum];
   disabled?: boolean;
   placeholder?: string;
   clearable?: boolean;

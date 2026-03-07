@@ -68,9 +68,9 @@ const showPreview = computed(() => {
 }
 
 .iframe-preview {
+  overflow: hidden;
   border: 1px solid #dcdfe6;
   border-radius: 4px;
-  overflow: hidden;
 }
 
 .iframe-content {
@@ -83,8 +83,8 @@ const showPreview = computed(() => {
   align-items: center;
   justify-content: center;
   min-height: 200px;
+  background-color: #fafafa;
   border: 1px dashed #dcdfe6;
   border-radius: 4px;
-  background-color: #fafafa;
 }
 </style>
