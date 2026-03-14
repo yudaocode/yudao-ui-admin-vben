@@ -139,6 +139,7 @@ const emit = defineEmits([
   'element-click',
 ]);
 
+//@ts-expect-error unused-imports/no-unused-vars
 const bpmnCanvas = ref();
 const refFile = ref();
 
@@ -185,6 +186,7 @@ const additionalModules = computed(() => {
   ) {
     Modules.push(...(props.additionalModel as any[]));
   } else {
+    // oxlint-disable-next-line no-unused-expressions
     props.additionalModel && Modules.push(props.additionalModel);
   }
 
@@ -424,6 +426,7 @@ const processSimulation = () => {
   //   bpmnModeler.get('toggleMode', 'strict'),
   //   "bpmnModeler.get('toggleMode')",
   // );
+  // oxlint-disable-next-line no-unused-expressions
   props.simulation && bpmnModeler.get('toggleMode', 'strict').toggleMode();
 };
 const processRedo = () => {

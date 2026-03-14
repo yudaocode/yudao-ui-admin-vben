@@ -21,6 +21,7 @@ const imageListRef = ref<any>(); // image 列表 ref
 const dall3Ref = ref<any>(); // dall3(openai) ref
 const midjourneyRef = ref<any>(); // midjourney ref
 const stableDiffusionRef = ref<any>(); // stable diffusion ref
+//@ts-expect-error unused-imports/no-unused-vars
 const commonRef = ref<any>(); // stable diffusion ref
 
 const selectPlatform = ref('common'); // 选中的平台

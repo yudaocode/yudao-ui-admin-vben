@@ -1,4 +1,3 @@
-<!-- eslint-disable no-unused-vars -->
 <script lang="ts" setup>
 import { inject, nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
@@ -72,7 +71,7 @@ declare global {
 
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
-// @ts-expect-error
+// @ts-expect-error no-unused-vars
 // eslint-disable-next-line unused-imports/no-unused-vars
 const getElementLoop = (businessObject: any): void => {
   if (!businessObject.loopCharacteristics) {

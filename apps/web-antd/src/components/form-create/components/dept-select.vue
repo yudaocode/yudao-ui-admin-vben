@@ -39,15 +39,16 @@ interface DeptVO {
   status?: number;
 }
 
-// TODO @puhui999：linter 报错；
 /** 接受父组件参数 */
 interface Props {
+  // eslint-disable-next-line vue/require-default-prop
   modelValue?: number | number[] | string | string[];
   multiple?: boolean;
   returnType?: 'id' | 'name';
   defaultCurrentDept?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  // eslint-disable-next-line vue/require-default-prop
   formCreateInject?: any;
 }
 
