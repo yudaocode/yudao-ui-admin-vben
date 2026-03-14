@@ -114,9 +114,9 @@ function cropped() {
         imgInfo,
       });
     };
-    fileReader.onerror = () => {
+    fileReader.addEventListener('error', () => {
       emit('cropendError');
-    };
+    });
   }, 'image/png');
 }
 
