@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { VbenFormSchema, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { ref, watch } from 'vue';
@@ -71,7 +72,7 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
@@ -96,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
     pagerConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<IotDeviceApi.Device>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,
@@ -219,7 +220,7 @@ function useAddGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-const [AddGrid, addGridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
+const [AddGrid, addGridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useAddGridFormSchema(),
     submitOnChange: true,
@@ -247,7 +248,7 @@ const [AddGrid, addGridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
       refresh: true,
       search: true,
     },
-  },
+  } as VxeTableGridOptions<IotDeviceApi.Device>,
   gridEvents: {
     checkboxAll: handleAddSelectionChange,
     checkboxChange: handleAddSelectionChange,

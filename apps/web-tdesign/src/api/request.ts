@@ -118,7 +118,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
           response.data = apiEncrypt.decryptResponse(response.data);
         } catch (error) {
           console.error('响应数据解密失败:', error);
-          throw new Error(`响应数据解密失败: ${(error as Error).message}`);
+          throw new Error(`响应数据解密失败: ${(error as Error).message}`, {
+            cause: error,
+          });
         }
       }
       return response;
@@ -158,6 +160,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         return;
       }
       // 如果没有错误信息，则会根据状态码进行提示
+      // oxlint-disable-next-line typescript/no-floating-promises
       message.error(errorMessage || msg);
     }),
   );

@@ -1,7 +1,8 @@
 import BpmnRules from 'bpmn-js/lib/features/rules/BpmnRules';
+// eslint-disable-next-line n/no-extraneous-import
 import inherits from 'inherits';
 
-export default function CustomRules(eventBus) {
+function CustomRules(eventBus) {
   BpmnRules.call(this, eventBus);
 }
 
@@ -14,3 +15,5 @@ CustomRules.prototype.canDrop = function () {
 CustomRules.prototype.canMove = function () {
   return false;
 };
+
+export default CustomRules;

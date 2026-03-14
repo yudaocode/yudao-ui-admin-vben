@@ -39,8 +39,8 @@ export enum MpMsgType {
 /** 自动回复消息类型枚举（Follow: 关注时回复；Message: 消息回复；Keyword: 关键词回复） */
 export enum AutoReplyMsgType {
   Follow = 1,
-  Keyword = 3,
   Message = 2,
+  Keyword = 3,
 }
 
 /** 消息类型枚举 */
@@ -58,9 +58,9 @@ export enum MessageType {
 /** 素材类型枚举 */
 export enum MaterialType {
   IMAGE = 1, // 图片
-  THUMB = 4, // 缩略图
-  VIDEO = 3, // 视频
   VOICE = 2, // 语音
+  VIDEO = 3, // 视频
+  THUMB = 4, // 缩略图
 }
 
 /** 菜单类型枚举 */

@@ -102,6 +102,7 @@ async function showInput(index: number) {
   attributeIndex.value = index;
   inputRef.value?.[index]?.focus();
   // 获取属性下拉选项
+  // oxlint-disable-next-line typescript/no-non-null-asserted-optional-chain
   await getAttributeOptions(attributeList.value?.[index]?.id!);
 }
 

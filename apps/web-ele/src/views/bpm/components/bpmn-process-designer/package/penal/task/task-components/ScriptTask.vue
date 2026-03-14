@@ -27,7 +27,7 @@ const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 const resetTaskForm = () => {
   for (const key in defaultTaskForm.value) {
-    // @ts-ignore
+    // @ts-expect-error: form state is updated through dynamic schema keys
     scriptTaskForm.value[key] =
       bpmnElement.value?.businessObject[
         key as keyof typeof defaultTaskForm.value

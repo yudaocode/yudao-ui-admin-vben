@@ -7,7 +7,7 @@ import { hasPrimaryModifier } from 'diagram-js/lib/util/Mouse';
 /**
  * A provider for BPMN 2.0 elements context pad
  */
-export default function ContextPadProvider(
+function ContextPadProvider(
   config,
   injector,
   eventBus,
@@ -56,6 +56,8 @@ export default function ContextPadProvider(
     }
   });
 }
+
+export default ContextPadProvider;
 
 ContextPadProvider.$inject = [
   'config.contextPad',

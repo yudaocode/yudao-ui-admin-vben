@@ -83,6 +83,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
         } else {
+          // oxlint-disable-next-line no-unused-expressions
           onSuccess
             ? await onSuccess?.()
             : await router.push(
@@ -91,6 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         if (userInfo?.nickname) {
+          // oxlint-disable-next-line typescript/no-floating-promises
           notification.success({
             title: $t('authentication.loginSuccess'),
             content: `${$t('authentication.loginSuccessDesc')}:${userInfo?.nickname}`,
@@ -132,6 +134,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     // 加载
+    // eslint-disable-next-line no-useless-assignment
     let authPermissionInfo: AuthPermissionInfo | null = null;
     authPermissionInfo = await getAuthPermissionInfoApi();
     // userStore

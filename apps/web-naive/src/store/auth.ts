@@ -83,6 +83,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
         } else {
+          // oxlint-disable-next-line no-unused-expressions
           onSuccess
             ? await onSuccess?.()
             : await router.push(
@@ -132,6 +133,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     // 加载
+    // eslint-disable-next-line no-useless-assignment
     let authPermissionInfo: AuthPermissionInfo | null = null;
     authPermissionInfo = await getAuthPermissionInfoApi();
     // userStore

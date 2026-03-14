@@ -107,6 +107,7 @@ const nodeTypeName = ref('审批'); // 节点类型名称
 
 const reasonRequire = ref();
 const approveFormRef = ref<FormInstance>(); // 审批通过意见表单
+// @ts-expect-error: template ref is retained for future provider expansion
 const approveSignFormRef = ref();
 const nextAssigneesActivityNode = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>(
   [],

@@ -41,7 +41,7 @@ const emits = defineEmits<{
 
 const { proxy } = getCurrentInstance() as any;
 // 是否只读
-const readonly = inject<Boolean>('readonly');
+const readonly = inject<boolean>('readonly');
 const currentNode = ref<SimpleFlowNode>(props.flowNode);
 
 watch(

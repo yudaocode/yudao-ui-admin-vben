@@ -32,11 +32,12 @@ defineEmits<{
   'update:modelValue': [node: SimpleFlowNode | undefined];
 }>();
 
-const readonly = inject<Boolean>('readonly'); // 是否只读
+const readonly = inject<boolean>('readonly'); // 是否只读
 const tasks = inject<Ref<any[]>>('tasks', ref([]));
 // 监控节点变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
+// @ts-expect-error: composable typing does not preserve this node schema exactly
 const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.START_USER_NODE,

@@ -82,7 +82,6 @@ onMounted(() => {
   bpmnRootElements.value
     .filter((el: any) => el.$type === 'bpmn:Message')
     .forEach((m: any) => {
-      // @ts-ignore
       if (bpmnMessageRefsMap.value) {
         bpmnMessageRefsMap.value[m.id] = m;
       }

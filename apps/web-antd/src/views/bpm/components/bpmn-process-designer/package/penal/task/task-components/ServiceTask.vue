@@ -1,3 +1,4 @@
+<!-- eslint-disable unicorn/no-nested-ternary -->
 <!-- eslint-disable prettier/prettier -->
 <script lang="ts" setup>
 import { inject, nextTick, onBeforeUnmount, ref, watch } from 'vue';
@@ -206,9 +207,9 @@ const updateHttpExtensions = (force = false) => {
 
     const persisted = HTTP_BOOLEAN_FIELDS.has(name)
       ? String(!!rawValue)
-      : (rawValue === undefined
+      : rawValue === undefined
         ? ''
-        : rawValue.toString());
+        : rawValue.toString();
 
     desiredEntries.push([name, persisted]);
   });

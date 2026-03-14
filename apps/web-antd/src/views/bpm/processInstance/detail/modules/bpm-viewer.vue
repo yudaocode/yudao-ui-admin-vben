@@ -9,7 +9,7 @@ const props = withDefaults(
   defineProps<{
     bpmnXml?: string;
     loading?: boolean; // 是否加载中
-    modelView?: Object;
+    modelView?: object;
   }>(),
   {
     loading: false,
@@ -29,7 +29,7 @@ watch(
   async (newModelView) => {
     // 加载最新
     if (newModelView) {
-      // @ts-ignore
+      // @ts-expect-error: viewer instance type is broader than local ref typing
       view.value = newModelView;
     }
   },

@@ -20,6 +20,7 @@ exports[`defaultPreferences immutability test > should not modify the config obj
     "defaultHomePath": "/analytics",
     "dynamicTitle": true,
     "enableCheckUpdates": true,
+    "enableCopyPreferences": true,
     "enablePreferences": true,
     "enableRefreshToken": false,
     "enableStickyPreferencesNavigationBar": true,
@@ -84,6 +85,7 @@ exports[`defaultPreferences immutability test > should not modify the config obj
     "collapsed": false,
     "collapsedButton": true,
     "collapsedShowTitle": false,
+    "draggable": true,
     "enable": true,
     "expandOnHover": true,
     "extraCollapse": false,
@@ -120,6 +122,7 @@ exports[`defaultPreferences immutability test > should not modify the config obj
     "radius": "0.5",
     "semiDarkHeader": false,
     "semiDarkSidebar": false,
+    "semiDarkSidebarSub": false,
   },
   "transition": {
     "enable": true,

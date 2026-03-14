@@ -119,7 +119,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
           response.data = apiEncrypt.decryptResponse(response.data);
         } catch (error) {
           console.error('响应数据解密失败:', error);
-          throw new Error(`响应数据解密失败: ${(error as Error).message}`);
+          throw new Error(`响应数据解密失败: ${(error as Error).message}`, {
+            cause: error,
+          });
         }
       }
       return response;

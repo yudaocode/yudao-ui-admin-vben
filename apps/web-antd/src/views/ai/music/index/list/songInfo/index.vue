@@ -20,6 +20,7 @@ const currentSong = inject<any>('currentSong', {});
       {{ currentSong.date }}
     </div>
     <Button size="small" shape="round" class="my-2">信息复用</Button>
+    <!-- eslint-disable-next-line vue/no-v-html -->
     <div class="text-xs" v-html="currentSong.lyric"></div>
   </Card>
 </template>

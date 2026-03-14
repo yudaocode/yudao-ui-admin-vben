@@ -10,6 +10,7 @@ defineProps<IFrameProps>();
 
 const loading = ref(true);
 const height = ref('');
+// @ts-expect-error: composable typing does not preserve this node schema exactly
 const frameRef = ref<HTMLElement | null>(null);
 
 function init() {

@@ -70,6 +70,7 @@ const deptTreeOptions = ref<any>(); // 部门树
 const postOptions = ref<SystemPostApi.Post[]>([]); // 岗位列表
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 const userGroupOptions = ref<BpmUserGroupApi.UserGroup[]>([]); // 用户组列表
+// @ts-expect-error: tree ref instance type is provided by the UI library at runtime
 const treeRef = ref<any>();
 
 const { formFieldOptions } = useFormFieldsPermission(FieldPermissionType.READ);
@@ -128,7 +129,7 @@ const resetTaskForm = () => {
     // eslint-disable-next-line unicorn/prefer-switch
     if (userTaskForm.value.candidateStrategy === CandidateStrategy.EXPRESSION) {
       // 特殊：流程表达式，只有一个 input 输入框
-      // @ts-ignore
+      // @ts-expect-error: expression strategy stores a scalar in an array-shaped field
       userTaskForm.value.candidateParam = [candidateParamStr];
     } else if (
       userTaskForm.value.candidateStrategy ===
@@ -152,7 +153,7 @@ const resetTaskForm = () => {
       userTaskForm.value.candidateStrategy ===
         CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER
     ) {
-      // @ts-ignore
+      // @ts-expect-error: dynamic candidate param shape varies by strategy
       userTaskForm.value.candidateParam = +candidateParamStr;
       deptLevel.value = +candidateParamStr;
     } else if (
@@ -303,7 +304,7 @@ const openProcessExpressionDialog = async () => {
 const selectProcessExpression = (
   expression: BpmProcessExpressionApi.ProcessExpression,
 ) => {
-  // @ts-ignore
+  // @ts-expect-error: modal helper exposes runtime methods outside static typing
   userTaskForm.value.candidateParam = [expression.expression];
   updateElementTask();
 };
@@ -311,7 +312,7 @@ const selectProcessExpression = (
 const handleFormUserChange = (e: any) => {
   if (e === 'PROCESS_START_USER_ID') {
     userTaskForm.value.candidateParam = [];
-    // @ts-ignore
+    // @ts-expect-error: modal helper exposes runtime methods outside static typing
     userTaskForm.value.candidateStrategy = CandidateStrategy.START_USER;
   }
   updateElementTask();

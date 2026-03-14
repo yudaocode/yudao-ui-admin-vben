@@ -20,6 +20,7 @@ const defaultPreferences: Preferences = {
     defaultHomePath: '/analytics',
     dynamicTitle: true,
     enableCheckUpdates: true,
+    enableCopyPreferences: true,
     enablePreferences: true,
     enableRefreshToken: false,
     enableStickyPreferencesNavigationBar: true,
@@ -85,6 +86,7 @@ const defaultPreferences: Preferences = {
     collapsedButton: true,
     collapsedShowTitle: false,
     collapseWidth: 60,
+    draggable: true,
     enable: true,
     expandOnHover: true,
     extraCollapse: false,
@@ -121,6 +123,7 @@ const defaultPreferences: Preferences = {
     fontSize: 16,
     semiDarkHeader: false,
     semiDarkSidebar: false,
+    semiDarkSidebarSub: false,
   },
   transition: {
     enable: true,

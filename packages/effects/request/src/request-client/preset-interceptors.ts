@@ -130,7 +130,7 @@ export const errorMessageResponseInterceptor = (
         return Promise.reject(error);
       }
 
-      let errorMessage = '';
+      let errorMessage: string;
       const status =
         error?.code || error?.response?.data?.code || error?.response?.status;
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 /**
  * This is a sample file that should be replaced with the actual translation.
  *
@@ -238,10 +237,8 @@ export default {
   'Due Date': '到期时间',
   'Follow Up Date': '跟踪日期',
   Priority: '优先级',
-  'The follow up date as an EL expression (e.g. ${someDate} or an ISO date (e.g. 2015-06-26T09:54:00)':
-    '跟踪日期必须符合EL表达式，如： ${someDate} ,或者一个ISO标准日期，如：2015-06-26T09:54:00',
-  'The due date as an EL expression (e.g. ${someDate} or an ISO date (e.g. 2015-06-26T09:54:00)':
-    '跟踪日期必须符合EL表达式，如： ${someDate} ,或者一个ISO标准日期，如：2015-06-26T09:54:00',
+  [`The follow up date as an EL expression (e.g. \${someDate} or an ISO date (e.g. 2015-06-26T09:54:00)`]: `跟踪日期必须符合EL表达式，如： \${someDate} ,或者一个ISO标准日期，如：2015-06-26T09:54:00`,
+  [`The due date as an EL expression (e.g. \${someDate} or an ISO date (e.g. 2015-06-26T09:54:00)`]: `跟踪日期必须符合EL表达式，如： \${someDate} ,或者一个ISO标准日期，如：2015-06-26T09:54:00`,
   Variables: '变量',
   'Candidate Starter Configuration': '候选人起动器配置',
   'Candidate Starter Groups': '候选人起动器组',

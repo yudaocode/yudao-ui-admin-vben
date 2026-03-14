@@ -155,10 +155,12 @@ defineExpose({
         ref="mdContainerRef"
         class="wh-full overflow-y-auto"
       >
+        <!-- eslint-disable vue/no-v-html -->
         <div
           class="flex flex-col items-center justify-center"
           v-html="html"
         ></div>
+        <!-- eslint-enable vue/no-v-html -->
       </div>
       <div ref="mindMapRef" class="wh-full">
         <svg

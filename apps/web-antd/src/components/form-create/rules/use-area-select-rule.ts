@@ -1,8 +1,9 @@
+import { AreaLevelEnum } from '@vben/constants';
+
 import {
   localeProps,
   makeRequiredRule,
 } from '#/components/form-create/helpers';
-import { AreaLevelEnum } from '@vben/constants';
 
 /** 省市区选择器规则 */
 export function useAreaSelectRule() {

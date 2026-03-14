@@ -71,6 +71,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
+// @ts-expect-error: composable typing does not preserve this node schema exactly
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.TRIGGER_NODE);
 // 触发器表单配置

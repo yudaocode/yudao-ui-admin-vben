@@ -89,6 +89,7 @@ async function init() {
 
 // Real-time display preview
 function realTimeCropped() {
+  // oxlint-disable-next-line no-unused-expressions
   props.realTimePreview && cropped();
 }
 
@@ -113,10 +114,9 @@ function cropped() {
         imgInfo,
       });
     };
-    // eslint-disable-next-line unicorn/prefer-add-event-listener
-    fileReader.onerror = () => {
+    fileReader.addEventListener('error', () => {
       emit('cropendError');
-    };
+    });
   }, 'image/png');
 }
 

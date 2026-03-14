@@ -42,7 +42,7 @@ function handleSend(userId: number) {
   messageBoxVisible.value = true;
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<MpMessageApi.Message>({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
   },

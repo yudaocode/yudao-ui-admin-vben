@@ -50,7 +50,7 @@ const selectedSku = ref<MallSpuApi.Sku>();
 /** 处理商品的选择变化 */
 async function handleSpuChange(spu?: MallSpuApi.Spu | null) {
   // 处理商品选择：如果 spu 为 null 或 id 为 0，表示清空选择
-  const spuId = spu?.id && spu.id ? spu.id : undefined;
+  const spuId = spu && spu.id ? spu.id : undefined;
   formData.value.spuId = spuId;
   await formApi.setFieldValue('spuId', spuId);
   // 清空已选规格

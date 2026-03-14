@@ -36,7 +36,7 @@ const emits = defineEmits<{
 
 const currentNode = ref<SimpleFlowNode>(props.flowNode);
 // 是否只读
-const readonly = inject<Boolean>('readonly');
+const readonly = inject<boolean>('readonly');
 
 watch(
   () => props.flowNode,
