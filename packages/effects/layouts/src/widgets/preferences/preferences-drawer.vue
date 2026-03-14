@@ -70,6 +70,9 @@ const appContentCompact = defineModel<ContentCompactType>('appContentCompact');
 const appWatermark = defineModel<boolean>('appWatermark');
 const appWatermarkContent = defineModel<string>('appWatermarkContent');
 const appEnableCheckUpdates = defineModel<boolean>('appEnableCheckUpdates');
+const appEnableCopyPreferences = defineModel<boolean>(
+  'appEnableCopyPreferences',
+);
 const appEnableStickyPreferencesNavigationBar = defineModel<boolean>(
   'appEnableStickyPreferencesNavigationBar',
 );
@@ -88,10 +91,12 @@ const themeMode = defineModel<ThemeModeType>('themeMode');
 const themeRadius = defineModel<string>('themeRadius');
 const themeFontSize = defineModel<number>('themeFontSize');
 const themeSemiDarkSidebar = defineModel<boolean>('themeSemiDarkSidebar');
+const themeSemiDarkSidebarSub = defineModel<boolean>('themeSemiDarkSidebarSub');
 const themeSemiDarkHeader = defineModel<boolean>('themeSemiDarkHeader');
 
 const sidebarEnable = defineModel<boolean>('sidebarEnable');
 const sidebarWidth = defineModel<number>('sidebarWidth');
+const sidebarDraggable = defineModel<boolean>('sidebarDraggable');
 const sidebarCollapsed = defineModel<boolean>('sidebarCollapsed');
 const sidebarCollapsedShowTitle = defineModel<boolean>(
   'sidebarCollapsedShowTitle',
@@ -247,7 +252,7 @@ async function handleReset() {
     <Drawer
       :description="$t('preferences.subtitle')"
       :title="$t('preferences.title')"
-      class="!border-0 sm:max-w-sm"
+      class="border-0! sm:max-w-sm"
     >
       <template #extra>
         <div class="flex items-center">
@@ -259,7 +264,7 @@ async function handleReset() {
           >
             <span
               v-if="diffPreference"
-              class="bg-primary absolute right-0.5 top-0.5 h-2 w-2 rounded"
+              class="absolute top-0.5 right-0.5 size-2 rounded-sm bg-primary"
             ></span>
             <RotateCw class="size-4" />
           </VbenIconButton>
@@ -298,6 +303,7 @@ async function handleReset() {
               <General
                 v-model:app-dynamic-title="appDynamicTitle"
                 v-model:app-enable-check-updates="appEnableCheckUpdates"
+                v-model:app-enable-copy-preferences="appEnableCopyPreferences"
                 v-model:app-locale="appLocale"
                 v-model:app-watermark="appWatermark"
                 v-model:app-watermark-content="appWatermarkContent"
@@ -319,6 +325,7 @@ async function handleReset() {
                 v-model="themeMode"
                 v-model:theme-semi-dark-header="themeSemiDarkHeader"
                 v-model:theme-semi-dark-sidebar="themeSemiDarkSidebar"
+                v-model:theme-semi-dark-sidebar-sub="themeSemiDarkSidebarSub"
               />
             </Block>
             <Block :title="$t('preferences.theme.builtin.title')">
@@ -352,6 +359,7 @@ async function handleReset() {
             <Block :title="$t('preferences.sidebar.title')">
               <Sidebar
                 v-model:sidebar-auto-activate-child="sidebarAutoActivateChild"
+                v-model:sidebar-draggable="sidebarDraggable"
                 v-model:sidebar-collapsed="sidebarCollapsed"
                 v-model:sidebar-collapsed-show-title="sidebarCollapsedShowTitle"
                 v-model:sidebar-enable="sidebarEnable"
@@ -463,6 +471,7 @@ async function handleReset() {
 
       <template #footer>
         <VbenButton
+          v-if="appEnableCopyPreferences"
           :disabled="!diffPreference"
           class="mx-4 w-full"
           size="sm"

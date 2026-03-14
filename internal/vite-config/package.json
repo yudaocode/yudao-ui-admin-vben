@@ -1,6 +1,6 @@
 {
   "name": "@vben/vite-config",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "private": true,
   "homepage": "https://github.com/vbenjs/vue-vben-admin",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
@@ -29,6 +29,7 @@
   "dependencies": {
     "@intlify/unplugin-vue-i18n": "catalog:",
     "@jspm/generator": "catalog:",
+    "@tailwindcss/vite": "catalog:",
     "archiver": "catalog:",
     "cheerio": "catalog:",
     "get-port": "catalog:",
@@ -50,6 +51,7 @@
     "rollup": "catalog:",
     "rollup-plugin-visualizer": "catalog:",
     "sass": "catalog:",
+    "sass-embedded": "catalog:",
     "vite": "catalog:",
     "vite-plugin-compression": "catalog:",
     "vite-plugin-dts": "catalog:",

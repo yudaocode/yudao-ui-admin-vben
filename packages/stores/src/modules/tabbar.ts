@@ -1,13 +1,15 @@
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, VNode } from 'vue';
 import type {
   RouteLocationNormalized,
+  RouteLocationNormalizedLoaded,
+  RouteLocationNormalizedLoadedGeneric,
   Router,
   RouteRecordNormalized,
 } from 'vue-router';
 
 import type { TabDefinition } from '@vben-core/typings';
 
-import { toRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 
 import { preferences } from '@vben-core/preferences';
 import {
@@ -20,7 +22,14 @@ import {
 
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
+interface RouteCached {
+  component: VNode;
+  key: string;
+  route: RouteLocationNormalizedLoadedGeneric;
+}
+
 interface TabbarState {
+  cachedRoutes: Map<string, RouteCached>;
   /**
    * @zh_CN 当前打开的标签页列表缓存
    */
@@ -553,6 +562,25 @@ export const useTabbarStore = defineStore('core-tabbar', {
       }
       this.cachedTabs = cacheMap;
     },
+    /**
+     * 添加缓存的route
+     * @param component
+     * @param route
+     */
+    addCachedRoute(component: VNode, route: RouteLocationNormalizedLoaded) {
+      const key = getTabKey(route);
+      if (this.cachedRoutes.has(key)) {
+        return;
+      }
+      this.cachedRoutes.set(key, {
+        key,
+        component: markRaw(component),
+        route: markRaw(route),
+      });
+    },
+    removeCachedRoute(key: string) {
+      this.cachedRoutes.delete(key);
+    },
   },
   getters: {
     affixTabs(): TabDefinition[] {
@@ -577,16 +605,37 @@ export const useTabbarStore = defineStore('core-tabbar', {
       const normalTabs = this.tabs.filter((tab) => !isAffixTab(tab));
       return [...this.affixTabs, ...normalTabs].filter(Boolean);
     },
+    getCachedRoutes(): Map<string, RouteCached> {
+      return this.cachedRoutes;
+    },
   },
   persist: [
     // tabs不需要保存在localStorage
     {
       pick: ['tabs', 'visitHistory'],
       storage: sessionStorage,
+      serializer: {
+        serialize: JSON.stringify,
+        deserialize(value: string) {
+          const parsed = JSON.parse(value);
+          // Stack 类实例经 JSON 序列化后会变成普通对象 {dedup, items, maxSize}，
+          // 丢失所有方法和 getter，需要重新构建 Stack 实例
+          if (parsed.visitHistory && !(parsed.visitHistory instanceof Stack)) {
+            const raw = parsed.visitHistory;
+            const stack = createStack<string>(true, MAX_VISIT_HISTORY);
+            if (Array.isArray(raw.items)) {
+              stack.push(...raw.items);
+            }
+            parsed.visitHistory = stack;
+          }
+          return parsed;
+        },
+      },
     },
   ],
   state: (): TabbarState => ({
     visitHistory: createStack<string>(true, MAX_VISIT_HISTORY),
+    cachedRoutes: new Map<string, RouteCached>(),
     cachedTabs: new Set(),
     dragEndIndex: 0,
     excludeCachedTabs: new Set(),
