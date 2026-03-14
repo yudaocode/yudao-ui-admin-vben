@@ -1,6 +1,6 @@
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 
-export default function CustomPalette(
+function CustomPalette(
   palette,
   create,
   elementFactory,
@@ -24,11 +24,21 @@ export default function CustomPalette(
   );
 }
 
-const F = function () {}; // 核心，利用空对象作为中介；
-F.prototype = PaletteProvider.prototype; // 核心，将父类的原型赋值给空对象F；
+CustomPalette.$inject = [
+  'palette',
+  'create',
+  'elementFactory',
+  'spaceTool',
+  'lassoTool',
+  'handTool',
+  'globalConnect',
+  'translate',
+];
 
-// 利用中介函数重写原型链方法
-F.prototype.getPaletteEntries = function () {
+CustomPalette.prototype = Object.create(PaletteProvider.prototype);
+CustomPalette.prototype.constructor = CustomPalette;
+
+CustomPalette.prototype.getPaletteEntries = function () {
   const actions = {};
   const create = this._create;
   const elementFactory = this._elementFactory;
@@ -94,8 +104,7 @@ F.prototype.getPaletteEntries = function () {
     'hand-tool': {
       group: 'tools',
       className: 'bpmn-icon-hand-tool',
-      title: '激活抓手工具',
-      // title: translate("Activate the hand tool"),
+      title: translate('Activate the hand tool'),
       action: {
         click(event) {
           handTool.activateHand(event);
@@ -219,16 +228,4 @@ F.prototype.getPaletteEntries = function () {
   return actions;
 };
 
-CustomPalette.$inject = [
-  'palette',
-  'create',
-  'elementFactory',
-  'spaceTool',
-  'lassoTool',
-  'handTool',
-  'globalConnect',
-  'translate',
-];
-
-CustomPalette.prototype = new F(); // 核心，将 F的实例赋值给子类；
-CustomPalette.prototype.constructor = CustomPalette; // 修复子类CustomPalette的构造器指向，防止原型链的混乱；
+export default CustomPalette;
