@@ -29,7 +29,7 @@ watch(
   async (newModelView) => {
     // 加载最新
     if (newModelView) {
-      // @ts-expect-error
+      // @ts-expect-error: viewer instance type is broader than local ref typing
       view.value = newModelView;
     }
   },

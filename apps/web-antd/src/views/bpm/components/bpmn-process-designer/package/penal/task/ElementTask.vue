@@ -53,7 +53,7 @@ watch(
   () => props.type,
   () => {
     if (props.type) {
-      // @ts-expect-error
+      // @ts-expect-error: installed task component map is indexed dynamically
       witchTaskComponent.value = installedComponent[props.type].component;
     }
   },

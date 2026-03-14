@@ -73,7 +73,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const currentNode = useWatchNode(props);
 
 // 节点名称
-// @ts-expect-error
+// @ts-expect-error: composable typing does not preserve this node schema exactly
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.COPY_TASK_NODE);
 
@@ -284,7 +284,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
                 :data="deptTreeOptions"
                 :props="{
                   label: 'name',
-                  // @ts-expect-error
+                  // @ts-expect-error: dynamic node config access is narrower than runtime shape
                   value: 'id',
                   children: 'children',
                 }"

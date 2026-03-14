@@ -21,7 +21,7 @@ import {
 } from '@vben/icons';
 
 // 模拟流转流程
-// @ts-expect-error
+// @ts-expect-error: token simulation package does not ship compatible types
 import tokenSimulation from 'bpmn-js-token-simulation';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import {
@@ -139,7 +139,7 @@ const emit = defineEmits([
   'element-click',
 ]);
 
-//@ts-expect-error unused-imports/no-unused-vars
+// @ts-expect-error: file input ref is set imperatively by the template
 const bpmnCanvas = ref();
 const refFile = ref();
 

@@ -65,7 +65,7 @@ const initCallActivity = () => {
 
   // 初始化所有配置项
   Object.keys(formData.value).forEach((key: string) => {
-    // @ts-expect-error
+    // @ts-expect-error: form state is updated through dynamic schema keys
     formData.value[key] =
       bpmnElement.value.businessObject[key] ??
       formData.value[key as keyof FormData];
