@@ -30,11 +30,11 @@ catalog:
   '@ctrl/tinycolor': ^4.2.0
   '@eslint-community/eslint-plugin-eslint-comments': ^4.7.1
   '@eslint/js': ^10.0.1
-  '@form-create/ant-design-vue': ^3.2.37
+  '@form-create/ant-design-vue': ^3.2.38
   '@form-create/antd-designer': ^3.4.0
   '@form-create/designer': ^3.4.0
-  '@form-create/element-ui': ^3.2.37
-  '@form-create/naive-ui': ^3.2.37
+  '@form-create/element-ui': ^3.2.38
+  '@form-create/naive-ui': ^3.2.38
   '@faker-js/faker': ^10.3.0
   '@iconify/json': ^2.2.449
   '@iconify/tailwind4': ^1.2.3
@@ -95,13 +95,13 @@ catalog:
   circular-dependency-scanner: ^3.0.1
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
-  codemirror: ^5.65.20
+  codemirror: ^5.65.21
   commitlint-plugin-function-rules: ^4.3.2
   consola: ^3.4.2
   cropperjs: ^1.6.2
   cross-env: ^10.1.0
   crypto-js: ^4.2.0
-  cssnano: ^7.1.2
+  cssnano: ^7.1.3
   cspell: ^9.7.0
   cz-git: ^1.12.0
   czg: ^1.12.0
@@ -128,10 +128,10 @@ catalog:
   eslint-plugin-vue: ^10.8.0
   eslint-plugin-yml: ^3.3.1
   execa: ^9.6.1
-  fast-xml-parser: ^4.5.3
+  fast-xml-parser: ^4.5.4
   highlight.js: ^11.11.1
   jsencrypt: ^3.5.4
-  markdown-it: ^14.1.0
+  markdown-it: ^14.1.1
   markmap-common: ^0.16.0
   markmap-lib: ^0.16.1
   markmap-toolbar: ^0.17.2
