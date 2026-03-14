@@ -36,7 +36,7 @@ const props = defineProps({
 
 const emits = defineEmits(['update:childNode']);
 const popoverShow = ref(false);
-const readonly = inject<Boolean>('readonly'); // 是否只读
+const readonly = inject<boolean>('readonly'); // 是否只读
 
 function addNode(type: number) {
   // 校验：条件分支、包容分支后面，不允许直接添加并行分支

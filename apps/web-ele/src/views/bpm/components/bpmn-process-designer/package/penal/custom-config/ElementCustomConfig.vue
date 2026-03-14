@@ -39,7 +39,7 @@ watch(
         val +=
           props.businessObject.eventDefinitions[0]?.$type.split(':')[1] || '';
       }
-      // @ts-ignore
+      // @ts-expect-error
       customConfigComponent.value = (
         CustomConfigMap as Record<string, { component: Component }>
       )[val]?.component;

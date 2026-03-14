@@ -30,7 +30,7 @@ const emits = defineEmits<{
 }>();
 
 // 是否只读
-const readonly = inject<Boolean>('readonly');
+const readonly = inject<boolean>('readonly');
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑

@@ -66,13 +66,13 @@ const bpmnElement = ref<any>(null);
 const multiLoopInstance = ref<any>(null);
 declare global {
   interface Window {
-    // @ts-ignore
     bpmnInstances?: () => any;
   }
 }
 
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
+// @ts-expect-error
 // eslint-disable-next-line unused-imports/no-unused-vars
 const getElementLoop = (businessObject: any): void => {
   if (!businessObject.loopCharacteristics) {
@@ -141,7 +141,6 @@ const changeLoopCharacteristicsType = (type: any): void => {
           isSequential: true,
         })
       : bpmnInstances().moddle.create('bpmn:MultiInstanceLoopCharacteristics', {
-          // eslint-disable-next-line no-template-curly-in-string
           collection: '${coll_userList}',
         });
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
@@ -233,7 +232,7 @@ const updateLoopAsync = (key: any): void => {
       extensionElements: null,
     };
   } else {
-    // @ts-ignore
+    // @ts-expect-error
     asyncAttr[key] = loopInstanceForm.value[key];
   }
   bpmnInstances().modeling.updateModdleProperties(
@@ -247,7 +246,7 @@ const changeConfig = (config: string): void => {
   switch (config) {
     case '会签': {
       changeLoopCharacteristicsType('ParallelMultiInstance');
-      // eslint-disable-next-line no-template-curly-in-string
+
       updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
 
       break;
@@ -255,14 +254,14 @@ const changeConfig = (config: string): void => {
     case '依次审批': {
       changeLoopCharacteristicsType('SequentialMultiInstance');
       updateLoopCardinality('1');
-      // eslint-disable-next-line no-template-curly-in-string
+
       updateLoopCondition('${ nrOfCompletedInstances >= nrOfInstances }');
 
       break;
     }
     case '或签': {
       changeLoopCharacteristicsType('ParallelMultiInstance');
-      // eslint-disable-next-line no-template-curly-in-string
+
       updateLoopCondition('${ nrOfCompletedInstances > 0 }');
 
       break;
@@ -331,7 +330,7 @@ const updateLoopCharacteristics = (): void => {
     if (approveMethod.value === ApproveMethodType.APPROVE_BY_RATIO) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
-        // eslint-disable-next-line no-template-curly-in-string
+
         { isSequential: false, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.completionCondition =
@@ -344,19 +343,18 @@ const updateLoopCharacteristics = (): void => {
     if (approveMethod.value === ApproveMethodType.ANY_APPROVE) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
-        // eslint-disable-next-line no-template-curly-in-string
+
         { isSequential: false, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.completionCondition =
         bpmnInstances().moddle.create('bpmn:FormalExpression', {
-          // eslint-disable-next-line no-template-curly-in-string
           body: '${ nrOfCompletedInstances > 0 }',
         });
     }
     if (approveMethod.value === ApproveMethodType.SEQUENTIAL_APPROVE) {
       multiLoopInstance.value = bpmnInstances().moddle.create(
         'bpmn:MultiInstanceLoopCharacteristics',
-        // eslint-disable-next-line no-template-curly-in-string
+
         { isSequential: true, collection: '${coll_userList}' },
       );
       multiLoopInstance.value.loopCardinality = bpmnInstances().moddle.create(
@@ -367,7 +365,6 @@ const updateLoopCharacteristics = (): void => {
       );
       multiLoopInstance.value.completionCondition =
         bpmnInstances().moddle.create('bpmn:FormalExpression', {
-          // eslint-disable-next-line no-template-curly-in-string
           body: '${ nrOfCompletedInstances >= nrOfInstances }',
         });
     }

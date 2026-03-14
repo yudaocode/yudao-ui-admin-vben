@@ -21,7 +21,7 @@ import {
 } from '@vben/icons';
 
 // 模拟流转流程
-// @ts-ignore
+// @ts-expect-error
 import tokenSimulation from 'bpmn-js-token-simulation';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import {

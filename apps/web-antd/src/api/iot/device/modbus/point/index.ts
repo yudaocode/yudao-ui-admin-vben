@@ -37,16 +37,12 @@ export function getModbusPoint(id: number) {
 }
 
 /** 创建 Modbus 点位配置 */
-export function createModbusPoint(
-  data: IotDeviceModbusPointApi.ModbusPoint,
-) {
+export function createModbusPoint(data: IotDeviceModbusPointApi.ModbusPoint) {
   return requestClient.post('/iot/device-modbus-point/create', data);
 }
 
 /** 更新 Modbus 点位配置 */
-export function updateModbusPoint(
-  data: IotDeviceModbusPointApi.ModbusPoint,
-) {
+export function updateModbusPoint(data: IotDeviceModbusPointApi.ModbusPoint) {
   return requestClient.put('/iot/device-modbus-point/update', data);
 }
 

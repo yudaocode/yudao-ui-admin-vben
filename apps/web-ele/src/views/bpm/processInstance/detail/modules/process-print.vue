@@ -9,7 +9,7 @@ import { getDictLabel } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 import { formatDate } from '@vben/utils';
 
-// @ts-ignore - 安装 vue3-print-nb 局部指令 v-print
+// @ts-expect-error - 安装 vue3-print-nb 局部指令 v-print
 import vPrint from 'vue3-print-nb';
 
 import { getProcessInstancePrintData } from '#/api/bpm/processInstance';

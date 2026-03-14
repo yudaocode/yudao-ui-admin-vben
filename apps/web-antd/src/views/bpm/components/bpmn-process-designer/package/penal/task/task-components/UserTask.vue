@@ -128,7 +128,7 @@ const resetTaskForm = () => {
     // eslint-disable-next-line unicorn/prefer-switch
     if (userTaskForm.value.candidateStrategy === CandidateStrategy.EXPRESSION) {
       // 特殊：流程表达式，只有一个 input 输入框
-      // @ts-ignore
+      // @ts-expect-error
       userTaskForm.value.candidateParam = [candidateParamStr];
     } else if (
       userTaskForm.value.candidateStrategy ===
@@ -152,7 +152,7 @@ const resetTaskForm = () => {
       userTaskForm.value.candidateStrategy ===
         CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER
     ) {
-      // @ts-ignore
+      // @ts-expect-error
       userTaskForm.value.candidateParam = +candidateParamStr;
       deptLevel.value = +candidateParamStr;
     } else if (
@@ -303,7 +303,7 @@ const openProcessExpressionDialog = async () => {
 const selectProcessExpression = (
   expression: BpmProcessExpressionApi.ProcessExpression,
 ) => {
-  // @ts-ignore
+  // @ts-expect-error
   userTaskForm.value.candidateParam = [expression.expression];
   updateElementTask();
 };
@@ -311,7 +311,7 @@ const selectProcessExpression = (
 const handleFormUserChange = (e: any) => {
   if (e === 'PROCESS_START_USER_ID') {
     userTaskForm.value.candidateParam = [];
-    // @ts-ignore
+    // @ts-expect-error
     userTaskForm.value.candidateStrategy = CandidateStrategy.START_USER;
   }
   updateElementTask();

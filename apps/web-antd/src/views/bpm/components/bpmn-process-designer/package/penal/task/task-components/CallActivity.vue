@@ -65,7 +65,7 @@ const initCallActivity = () => {
 
   // 初始化所有配置项
   Object.keys(formData.value).forEach((key: string) => {
-    // @ts-ignore
+    // @ts-expect-error
     formData.value[key] =
       bpmnElement.value.businessObject[key] ??
       formData.value[key as keyof FormData];
@@ -183,6 +183,7 @@ const updateElementExtensions = () => {
 watch(
   () => props.id,
   (val) => {
+    // oxlint-disable-next-line no-unused-expressions
     val &&
       val.length > 0 &&
       nextTick(() => {

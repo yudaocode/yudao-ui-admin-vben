@@ -53,7 +53,7 @@ watch(
   () => props.type,
   () => {
     if (props.type) {
-      // @ts-ignore
+      // @ts-expect-error
       witchTaskComponent.value = installedComponent[props.type].component;
     }
   },

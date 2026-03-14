@@ -73,6 +73,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const currentNode = useWatchNode(props);
 
 // 节点名称
+// @ts-expect-error
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.COPY_TASK_NODE);
 
@@ -283,6 +284,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
                 :data="deptTreeOptions"
                 :props="{
                   label: 'name',
+                  // @ts-expect-error
                   value: 'id',
                   children: 'children',
                 }"

@@ -1,41 +1,37 @@
 // 候选人策略枚举 （ 用于审批节点。抄送节点 )
 export enum BpmCandidateStrategyEnum {
   /**
-   * 审批人自选
+   * 指定角色
    */
-  APPROVE_USER_SELECT = 34,
-  /**
-   * 部门的负责人
-   */
-  DEPT_LEADER = 21,
+  ROLE = 10,
   /**
    * 部门成员
    */
   DEPT_MEMBER = 20,
   /**
-   * 流程表达式
+   * 部门的负责人
    */
-  EXPRESSION = 60,
-  /**
-   * 表单内部门负责人
-   */
-  FORM_DEPT_LEADER = 51,
-  /**
-   * 表单内用户字段
-   */
-  FORM_USER = 50,
-  /**
-   * 连续多级部门的负责人
-   */
-  MULTI_LEVEL_DEPT_LEADER = 23,
+  DEPT_LEADER = 21,
   /**
    * 指定岗位
    */
   POST = 22,
   /**
-   * 指定角色
+   * 连续多级部门的负责人
    */
-  ROLE = 10,
+  MULTI_LEVEL_DEPT_LEADER = 23,
+  /**
+   * 指定用户
+   */
+  USER = 30,
+  /**
+   * 审批人自选
+   */
+  APPROVE_USER_SELECT = 34,
+  /**
+   * 发起人自选
+   */
+  START_USER_SELECT = 35,
   /**
    * 发起人自己
    */
@@ -49,17 +45,21 @@ export enum BpmCandidateStrategyEnum {
    */
   START_USER_MULTI_LEVEL_DEPT_LEADER = 38,
   /**
-   * 发起人自选
-   */
-  START_USER_SELECT = 35,
-  /**
-   * 指定用户
-   */
-  USER = 30,
-  /**
    * 指定用户组
    */
   USER_GROUP = 40,
+  /**
+   * 表单内用户字段
+   */
+  FORM_USER = 50,
+  /**
+   * 表单内部门负责人
+   */
+  FORM_DEPT_LEADER = 51,
+  /**
+   * 流程表达式
+   */
+  EXPRESSION = 60,
 }
 
 /**
@@ -67,17 +67,17 @@ export enum BpmCandidateStrategyEnum {
  */
 export enum BpmNodeTypeEnum {
   /**
-   * 子流程节点
+   * 结束节点
    */
-  CHILD_PROCESS_NODE = 20,
+  END_EVENT_NODE = 1,
   /**
-   * 条件分支节点 (对应排他网关)
+   * 发起人节点
    */
-  CONDITION_BRANCH_NODE = 51,
+  START_USER_NODE = 10,
   /**
-   * 条件节点
+   * 审批人节点
    */
-  CONDITION_NODE = 50,
+  USER_TASK_NODE = 11,
 
   /**
    * 抄送人节点
@@ -85,46 +85,46 @@ export enum BpmNodeTypeEnum {
   COPY_TASK_NODE = 12,
 
   /**
+   * 办理人节点
+   */
+  TRANSACTOR_NODE = 13,
+
+  /**
    * 延迟器节点
    */
   DELAY_TIMER_NODE = 14,
 
   /**
-   * 结束节点
+   * 触发器节点
    */
-  END_EVENT_NODE = 1,
+  TRIGGER_NODE = 15,
 
   /**
-   * 包容分支节点 (对应包容网关)
+   * 子流程节点
    */
-  INCLUSIVE_BRANCH_NODE = 53,
+  CHILD_PROCESS_NODE = 20,
 
+  /**
+   * 条件节点
+   */
+  CONDITION_NODE = 50,
+  /**
+   * 条件分支节点 (对应排他网关)
+   */
+  CONDITION_BRANCH_NODE = 51,
   /**
    * 并行分支节点 (对应并行网关)
    */
   PARALLEL_BRANCH_NODE = 52,
 
   /**
+   * 包容分支节点 (对应包容网关)
+   */
+  INCLUSIVE_BRANCH_NODE = 53,
+  /**
    * 路由分支节点
    */
   ROUTER_BRANCH_NODE = 54,
-  /**
-   * 发起人节点
-   */
-  START_USER_NODE = 10,
-  /**
-   * 办理人节点
-   */
-  TRANSACTOR_NODE = 13,
-
-  /**
-   * 触发器节点
-   */
-  TRIGGER_NODE = 15,
-  /**
-   * 审批人节点
-   */
-  USER_TASK_NODE = 11,
 }
 
 /**
@@ -132,33 +132,33 @@ export enum BpmNodeTypeEnum {
  */
 export enum BpmTaskOperationButtonTypeEnum {
   /**
-   * 加签
-   */
-  ADD_SIGN = 5,
-  /**
    * 通过
    */
   APPROVE = 1,
-  /**
-   * 抄送
-   */
-  COPY = 7,
-  /**
-   * 委派
-   */
-  DELEGATE = 4,
   /**
    * 拒绝
    */
   REJECT = 2,
   /**
+   * 转办
+   */
+  TRANSFER = 3,
+  /**
+   * 委派
+   */
+  DELEGATE = 4,
+  /**
+   * 加签
+   */
+  ADD_SIGN = 5,
+  /**
    * 退回
    */
   RETURN = 6,
   /**
-   * 转办
+   * 抄送
    */
-  TRANSFER = 3,
+  COPY = 7,
 }
 
 /**
@@ -166,44 +166,44 @@ export enum BpmTaskOperationButtonTypeEnum {
  */
 export enum BpmTaskStatusEnum {
   /**
-   * 审批通过
+   * 跳过
    */
-  APPROVE = 2,
-  /**
-   * 审批通过中
-   */
-  APPROVING = 7,
-
-  /**
-   * 已取消
-   */
-  CANCEL = 4,
+  SKIP = -2,
   /**
    * 未开始
    */
   NOT_START = -1,
+
+  /**
+   * 待审批
+   */
+  WAIT = 0,
+  /**
+   * 审批中
+   */
+  RUNNING = 1,
+  /**
+   * 审批通过
+   */
+  APPROVE = 2,
+
   /**
    * 审批不通过
    */
   REJECT = 3,
 
   /**
+   * 已取消
+   */
+  CANCEL = 4,
+  /**
    * 已退回
    */
   RETURN = 5,
-
   /**
-   * 审批中
+   * 审批通过中
    */
-  RUNNING = 1,
-  /**
-   * 跳过
-   */
-  SKIP = -2,
-  /**
-   * 待审批
-   */
-  WAIT = 0,
+  APPROVING = 7,
 }
 
 /**

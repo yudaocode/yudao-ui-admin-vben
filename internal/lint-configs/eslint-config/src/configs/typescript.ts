@@ -4,7 +4,6 @@ import { interopDefault } from '../util';
 
 const rulesCoveredByOxlint = new Set([
   '@typescript-eslint/ban-ts-comment',
-  '@typescript-eslint/no-non-null-assertion',
   '@typescript-eslint/no-unused-expressions',
   '@typescript-eslint/no-unused-vars',
   '@typescript-eslint/triple-slash-reference',

@@ -194,6 +194,7 @@ setupVbenVxeTable({
           class: '!p-0',
           ...props,
         };
+        // eslint-disable-next-line no-useless-assignment
         let align = 'end';
         switch (column.align) {
           case 'center': {

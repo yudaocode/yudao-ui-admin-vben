@@ -8,6 +8,10 @@ interface DictDataType {
 // 用户任务的审批类型。 【参考飞书】
 export enum ApproveType {
   /**
+   * 人工审批
+   */
+  USER = 1,
+  /**
    * 自动通过
    */
   AUTO_APPROVE = 2,
@@ -15,18 +19,14 @@ export enum ApproveType {
    * 自动拒绝
    */
   AUTO_REJECT = 3,
-  /**
-   * 人工审批
-   */
-  USER = 1,
 }
 
 // 多人审批方式类型枚举 （ 用于审批节点 ）
 export enum ApproveMethodType {
   /**
-   * 多人或签(通过只需一人，拒绝只需一人)
+   * 随机挑选一人审批
    */
-  ANY_APPROVE = 3,
+  RANDOM_SELECT_ONE_APPROVE = 1,
 
   /**
    * 多人会签(按通过比例)
@@ -34,9 +34,9 @@ export enum ApproveMethodType {
   APPROVE_BY_RATIO = 2,
 
   /**
-   * 随机挑选一人审批
+   * 多人或签(通过只需一人，拒绝只需一人)
    */
-  RANDOM_SELECT_ONE_APPROVE = 1,
+  ANY_APPROVE = 3,
   /**
    * 多人依次审批
    */
@@ -71,33 +71,33 @@ export enum ConditionType {
 // 操作按钮类型枚举 (用于审批节点)
 export enum OperationButtonType {
   /**
-   * 加签
-   */
-  ADD_SIGN = 5,
-  /**
    * 通过
    */
   APPROVE = 1,
-  /**
-   * 抄送
-   */
-  COPY = 7,
-  /**
-   * 委派
-   */
-  DELEGATE = 4,
   /**
    * 拒绝
    */
   REJECT = 2,
   /**
+   * 转办
+   */
+  TRANSFER = 3,
+  /**
+   * 委派
+   */
+  DELEGATE = 4,
+  /**
+   * 加签
+   */
+  ADD_SIGN = 5,
+  /**
    * 退回
    */
   RETURN = 6,
   /**
-   * 转办
+   * 抄送
    */
-  TRANSFER = 3,
+  COPY = 7,
 }
 
 // 审批拒绝类型枚举
@@ -115,6 +115,10 @@ export enum RejectHandlerType {
 // 用户任务超时处理类型枚举
 export enum TimeoutHandlerType {
   /**
+   * 自动提醒
+   */
+  REMINDER = 1,
+  /**
    * 自动同意
    */
   APPROVE = 2,
@@ -122,10 +126,6 @@ export enum TimeoutHandlerType {
    * 自动拒绝
    */
   REJECT = 3,
-  /**
-   * 自动提醒
-   */
-  REMINDER = 1,
 }
 
 // 用户任务的审批人为空时，处理类型枚举
@@ -135,49 +135,49 @@ export enum AssignEmptyHandlerType {
    */
   APPROVE = 1,
   /**
-   * 转交给流程管理员
+   * 自动拒绝
    */
-  ASSIGN_ADMIN = 4,
+  REJECT = 2,
   /**
    * 指定人员审批
    */
   ASSIGN_USER = 3,
   /**
-   * 自动拒绝
+   * 转交给流程管理员
    */
-  REJECT = 2,
+  ASSIGN_ADMIN = 4,
 }
 
 // 用户任务的审批人与发起人相同时，处理类型枚举
 export enum AssignStartUserHandlerType {
   /**
-   * 转交给部门负责人审批
+   * 由发起人对自己审批
    */
-  ASSIGN_DEPT_LEADER = 3,
+  START_USER_AUDIT = 1,
   /**
    * 自动跳过【参考飞书】：1）如果当前节点还有其他审批人，则交由其他审批人进行审批；2）如果当前节点没有其他审批人，则该节点自动通过
    */
   SKIP = 2,
   /**
-   * 由发起人对自己审批
+   * 转交给部门负责人审批
    */
-  START_USER_AUDIT = 1,
+  ASSIGN_DEPT_LEADER = 3,
 }
 
 // 时间单位枚举
 export enum TimeUnitType {
   /**
-   * 天
+   * 分钟
    */
-  DAY = 3,
+  MINUTE = 1,
   /**
    * 小时
    */
   HOUR = 2,
   /**
-   * 分钟
+   * 天
    */
-  MINUTE = 1,
+  DAY = 3,
 }
 
 /**
@@ -203,13 +203,13 @@ export enum FieldPermissionType {
  */
 export enum DelayTypeEnum {
   /**
-   * 固定日期时间
-   */
-  FIXED_DATE_TIME = 2,
-  /**
    * 固定时长
    */
   FIXED_TIME_DURATION = 1,
+  /**
+   * 固定日期时间
+   */
+  FIXED_DATE_TIME = 2,
 }
 
 /**
@@ -217,35 +217,39 @@ export enum DelayTypeEnum {
  */
 export enum TriggerTypeEnum {
   /**
-   * 表单数据删除触发器
+   * 发送 HTTP 请求触发器
    */
-  FORM_DELETE = 11,
-  /**
-   * 表单数据更新触发器
-   */
-  FORM_UPDATE = 10,
+  HTTP_REQUEST = 1,
   /**
    * 接收 HTTP 回调请求触发器
    */
   HTTP_CALLBACK = 2,
   /**
-   * 发送 HTTP 请求触发器
+   * 表单数据更新触发器
    */
-  HTTP_REQUEST = 1,
+  FORM_UPDATE = 10,
+  /**
+   * 表单数据删除触发器
+   */
+  FORM_DELETE = 11,
 }
 
 export enum ChildProcessStartUserTypeEnum {
   /**
+   * 同主流程发起人
+   */
+  MAIN_PROCESS_START_USER = 1,
+  /**
    * 表单
    */
   FROM_FORM = 2,
+}
+
+export enum ChildProcessStartUserEmptyTypeEnum {
   /**
    * 同主流程发起人
    */
   MAIN_PROCESS_START_USER = 1,
-}
-
-export enum ChildProcessStartUserEmptyTypeEnum {
   /**
    * 子流程管理员
    */
@@ -254,10 +258,6 @@ export enum ChildProcessStartUserEmptyTypeEnum {
    * 主流程管理员
    */
   MAIN_PROCESS_ADMIN = 3,
-  /**
-   * 同主流程发起人
-   */
-  MAIN_PROCESS_START_USER = 1,
 }
 
 export enum ChildProcessMultiInstanceSourceTypeEnum {
@@ -266,53 +266,49 @@ export enum ChildProcessMultiInstanceSourceTypeEnum {
    */
   FIXED_QUANTITY = 1,
   /**
-   * 多选表单
-   */
-  MULTIPLE_FORM = 3,
-  /**
    * 数字表单
    */
   NUMBER_FORM = 2,
+  /**
+   * 多选表单
+   */
+  MULTIPLE_FORM = 3,
 }
 
 // 候选人策略枚举 （ 用于审批节点。抄送节点 )
 export enum CandidateStrategy {
   /**
-   * 审批人自选
+   * 指定角色
    */
-  APPROVE_USER_SELECT = 34,
-  /**
-   * 部门的负责人
-   */
-  DEPT_LEADER = 21,
+  ROLE = 10,
   /**
    * 部门成员
    */
   DEPT_MEMBER = 20,
   /**
-   * 流程表达式
+   * 部门的负责人
    */
-  EXPRESSION = 60,
-  /**
-   * 表单内部门负责人
-   */
-  FORM_DEPT_LEADER = 51,
-  /**
-   * 表单内用户字段
-   */
-  FORM_USER = 50,
-  /**
-   * 连续多级部门的负责人
-   */
-  MULTI_LEVEL_DEPT_LEADER = 23,
+  DEPT_LEADER = 21,
   /**
    * 指定岗位
    */
   POST = 22,
   /**
-   * 指定角色
+   * 连续多级部门的负责人
    */
-  ROLE = 10,
+  MULTI_LEVEL_DEPT_LEADER = 23,
+  /**
+   * 指定用户
+   */
+  USER = 30,
+  /**
+   * 审批人自选
+   */
+  APPROVE_USER_SELECT = 34,
+  /**
+   * 发起人自选
+   */
+  START_USER_SELECT = 35,
   /**
    * 发起人自己
    */
@@ -326,17 +322,21 @@ export enum CandidateStrategy {
    */
   START_USER_MULTI_LEVEL_DEPT_LEADER = 38,
   /**
-   * 发起人自选
-   */
-  START_USER_SELECT = 35,
-  /**
-   * 指定用户
-   */
-  USER = 30,
-  /**
    * 指定用户组
    */
   USER_GROUP = 40,
+  /**
+   * 表单内用户字段
+   */
+  FORM_USER = 50,
+  /**
+   * 表单内部门负责人
+   */
+  FORM_DEPT_LEADER = 51,
+  /**
+   * 流程表达式
+   */
+  EXPRESSION = 60,
 }
 
 export enum BpmHttpRequestParamTypeEnum {

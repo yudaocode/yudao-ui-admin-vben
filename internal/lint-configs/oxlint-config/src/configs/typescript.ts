@@ -10,7 +10,7 @@ const typescript: OxlintConfig = {
     'typescript/no-duplicate-type-constituents': 'off',
     'typescript/no-floating-promises': 'off',
     'typescript/no-misused-spread': 'off',
-    'typescript/no-non-null-assertion': 'error',
+    'typescript/no-non-null-assertion': 'off',
     'typescript/no-redundant-type-constituents': 'off',
     'typescript/no-unnecessary-boolean-literal-compare': 'off',
     'typescript/no-unnecessary-type-assertion': 'off',

@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 const selectRule = [
   {
     type: 'select',
