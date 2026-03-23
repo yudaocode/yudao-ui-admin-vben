@@ -57,7 +57,7 @@ const loadHistory = ref(false); // 加载历史消息
 
 /** 获悉消息内容 */
 const getMessageContent = computed(
-  () => (item: any) => jsonParse(item.content),
+  () =>  (item: any) => jsonParse(item.content),
 );
 
 /** 获得消息列表 */

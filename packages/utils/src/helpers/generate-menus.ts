@@ -50,6 +50,7 @@ function generateMenus(
       link,
       order,
       title = '',
+      query,
     } = meta;
 
     // 确保菜单名称不为空
@@ -78,6 +79,7 @@ function generateMenus(
       badgeVariants,
       icon,
       name,
+      query,
       order,
       parent: route.parent,
       parents: route.parents,
