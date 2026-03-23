@@ -130,6 +130,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
             chartInstance?.dispose();
             const instance = initCharts();
             if (!instance) return;
+            chartInstance = instance;
           }
           clear && chartInstance?.clear();
           chartInstance?.setOption(currentOptions);

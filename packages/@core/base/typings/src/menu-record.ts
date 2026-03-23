@@ -1,6 +1,8 @@
 import type { Component } from 'vue';
 import type { RouteMeta, RouteRecordRaw } from 'vue-router';
 
+import type { Recordable } from './helper';
+
 /** 路由元信息 */
 interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
   children?: AppRouteRecordRaw[];
@@ -84,6 +86,10 @@ interface MenuRecordRaw extends MenuRecordBadgeRaw {
    * 菜单路径，唯一，可当作key
    */
   path: string;
+  /**
+   * 菜单参数
+   */
+  query?: Recordable<any>;
   /**
    * 是否显示菜单
    * @default true

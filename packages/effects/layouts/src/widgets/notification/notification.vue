@@ -93,10 +93,7 @@ function handleOpen() {
 }
 </script>
 <template>
-  <VbenPopover
-    v-model:open="open"
-    content-class="relative right-2 w-[360px] p-0"
-  >
+  <VbenPopover v-model:open="open" content-class="relative right-2 w-90 p-0">
     <template #trigger>
       <div class="mr-2 flex-center h-full" @click.stop="handleOpen">
         <VbenIconButton class="bell-button relative text-foreground">
@@ -121,7 +118,7 @@ function handleOpen() {
         </VbenIconButton>
       </div>
       <VbenScrollbar v-if="notifications.length > 0">
-        <ul class="flex! max-h-[360px] w-full flex-col">
+        <ul class="flex! max-h-90 w-full flex-col">
           <template v-for="item in notifications" :key="item.id ?? item.title">
             <li
               class="relative flex w-full cursor-pointer items-start gap-5 border-t border-border p-3 hover:bg-accent"
@@ -179,7 +176,7 @@ function handleOpen() {
       </VbenScrollbar>
 
       <template v-else>
-        <div class="flex-center min-h-[150px] w-full text-muted-foreground">
+        <div class="flex-center min-h-37.5 w-full text-muted-foreground">
           {{ $t('common.noData') }}
         </div>
       </template>

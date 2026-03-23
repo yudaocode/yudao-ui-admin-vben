@@ -1,16 +1,12 @@
 import type { Linter } from 'eslint';
 
 import {
-  command,
-  comments,
   ignores,
   javascript,
   jsonc,
   node,
-  oxcCompat,
   perfectionist,
   pnpm,
-  turbo,
   typescript,
   unicorn,
   vue,
@@ -35,14 +31,10 @@ async function defineConfig(config: FlatConfig[] = []) {
     jsonc(),
     node(),
     perfectionist(),
-    comments(),
     unicorn(),
-    command(),
-    turbo(),
     yaml(),
     pnpm(),
     ...customConfig,
-    oxcCompat(),
     ...config,
   ];
 

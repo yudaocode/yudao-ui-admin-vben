@@ -82,7 +82,6 @@ const toggleKeydownListener = () => {
 };
 
 const toggleOpen = () => {
-  // oxlint-disable-next-line no-unused-expressions
   open.value ? modalApi.close() : modalApi.open();
 };
 
@@ -101,7 +100,7 @@ onMounted(() => {
   <div>
     <Modal
       :fullscreen-button="false"
-      class="w-[600px]"
+      class="w-150"
       header-class="py-2 border-b"
     >
       <template #title>
