@@ -27,7 +27,7 @@ type EnvType = 'h5' | 'miniapp'; // 环境类型
 
 // UniApp WebView 类型声明
 interface UniWebView {
-  postMessage: (options: { data: any }) => void;
+  postMessage: (options: { data: any }, targetOrigin?: string) => void;
   getEnv: (callback: (res: any) => void) => void;
   navigateTo: (options: {
     fail?: () => void;
@@ -182,7 +182,7 @@ function postMessageToParent(message: { data: any; type: string }) {
   if (envType.value === 'miniapp') {
     if (window.uni?.postMessage) {
       // 传递的消息信息，必须写在 data 对象中
-      window.uni.postMessage({ data: message.data });
+      window.uni.postMessage({ data: message.data }, window.location.origin);
     } else {
       console.error('小程序环境下 uni 对象未定义');
     }

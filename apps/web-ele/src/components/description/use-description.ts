@@ -21,7 +21,6 @@ export function useDescription(options?: Partial<DescriptionProps>) {
     inheritAttrs: false,
     setup(_props, { attrs, slots }) {
       return () => {
-        // @ts-ignore - 避免类型实例化过深
         return h(Description, { ...propsState, ...attrs }, slots);
       };
     },

@@ -1,3 +1,5 @@
+@reference "@vben/tailwind-config/theme";
+
 :root .vxe-grid {
   --vxe-ui-font-color: hsl(var(--foreground));
   --vxe-ui-font-primary-color: hsl(var(--primary));

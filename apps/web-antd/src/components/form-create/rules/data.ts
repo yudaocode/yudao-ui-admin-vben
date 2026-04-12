@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 const selectRule = [
   {
     type: 'select',
@@ -134,7 +133,7 @@ const apiSelectRule = [
     type: 'input',
     field: 'labelField',
     title: 'label 属性',
-    info: '可以使用 el 表达式：${属性}，来实现复杂数据组合。如：${nickname}-${id}',
+    info: `可以使用 el 表达式：\${属性}，来实现复杂数据组合。如：\${nickname}-\${id}`,
     props: {
       placeholder: 'nickname',
     },
@@ -143,7 +142,7 @@ const apiSelectRule = [
     type: 'input',
     field: 'valueField',
     title: 'value 属性',
-    info: '可以使用 el 表达式：${属性}，来实现复杂数据组合。如：${nickname}-${id}',
+    info: `可以使用 el 表达式：\${属性}，来实现复杂数据组合。如：\${nickname}-\${id}`,
     props: {
       placeholder: 'id',
     },

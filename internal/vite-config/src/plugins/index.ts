@@ -8,11 +8,12 @@ import type {
 } from '../typing';
 
 import viteVueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import tailwindcss from '@tailwindcss/vite';
 import viteVue from '@vitejs/plugin-vue';
 import viteVueJsx from '@vitejs/plugin-vue-jsx';
 import { visualizer as viteVisualizerPlugin } from 'rollup-plugin-visualizer';
+import viteDtsPlugin from 'unplugin-dts/vite';
 import viteCompressPlugin from 'vite-plugin-compression';
-import viteDtsPlugin from 'vite-plugin-dts';
 import { createHtmlPlugin as viteHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 import viteVueDevTools from 'vite-plugin-vue-devtools';
@@ -25,6 +26,7 @@ import { viteMetadataPlugin } from './inject-metadata';
 import { viteLicensePlugin } from './license';
 import { viteNitroMockPlugin } from './nitro-mock';
 import { vitePrintPlugin } from './print';
+import { viteTailwindReferencePlugin } from './tailwind-reference';
 import { viteVxeTableImportsPlugin } from './vxe-table';
 
 /**
@@ -60,6 +62,8 @@ async function loadCommonPlugins(
           },
         }),
         viteVueJsx(),
+        viteTailwindReferencePlugin(),
+        tailwindcss(),
       ],
     },
 
@@ -73,11 +77,13 @@ async function loadCommonPlugins(
     },
     {
       condition: isBuild && !!visualizer,
-      plugins: () => [<PluginOption>viteVisualizerPlugin({
+      plugins: () => [
+        viteVisualizerPlugin({
           filename: './node_modules/.cache/visualizer/stats.html',
           gzipSize: true,
           open: true,
-        })],
+        }) as PluginOption,
+      ],
     },
   ];
 }
@@ -225,12 +231,13 @@ async function loadLibraryPlugins(
   // 单独取，否则commonOptions拿不到
   const isBuild = options.isBuild;
   const { dts, ...commonOptions } = options;
+  const dtsOptions = typeof dts === 'object' ? dts : undefined;
   const commonPlugins = await loadCommonPlugins(commonOptions);
   return await loadConditionPlugins([
     ...commonPlugins,
     {
       condition: isBuild && !!dts,
-      plugins: () => [viteDtsPlugin({ logLevel: 'error' })],
+      plugins: () => [viteDtsPlugin(dtsOptions)],
     },
   ]);
 }

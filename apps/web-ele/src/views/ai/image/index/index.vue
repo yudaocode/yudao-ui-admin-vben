@@ -21,6 +21,7 @@ const imageListRef = ref<any>(); // image 列表 ref
 const dall3Ref = ref<any>(); // dall3(openai) ref
 const midjourneyRef = ref<any>(); // midjourney ref
 const stableDiffusionRef = ref<any>(); // stable diffusion ref
+// @ts-expect-error: template ref is retained for future provider expansion
 const commonRef = ref<any>(); // stable diffusion ref
 
 const selectPlatform = ref('common'); // 选中的平台
@@ -45,7 +46,9 @@ const platformOptions = [
 const models = ref<AiModelModelApi.Model[]>([]); // 模型列表
 
 /** 绘画 start  */
-async function handleDrawStart() {}
+function handleDrawStart() {
+  // drawing state is handled by child components
+}
 
 /** 绘画 complete */
 async function handleDrawComplete() {

@@ -110,7 +110,7 @@ function validateSku() {
   let validate = true;
 
   for (const sku of formData.value!.skus!) {
-    for (const rule of props?.ruleConfig as RuleConfig[]) {
+    for (const rule of props.ruleConfig as RuleConfig[]) {
       const value = getNestedValue(sku, rule.name);
       if (!rule.rule(value)) {
         validate = false;

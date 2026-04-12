@@ -118,7 +118,7 @@ function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       suffix: () => {
         const addr = formApi.form.values?.registerAddress;
-        if (addr == null) {
+        if (addr === null || addr === undefined) {
           return '';
         }
         return h(

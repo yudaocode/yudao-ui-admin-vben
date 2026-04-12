@@ -1,4 +1,5 @@
 function xmlStr2XmlObj(xmlStr) {
+  // eslint-disable-next-line no-useless-assignment
   let xmlObj = {};
   if (document.all) {
     const xmlDom = new window.ActiveXObject('Microsoft.XMLDOM');

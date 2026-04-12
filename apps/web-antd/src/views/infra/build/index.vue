@@ -1,5 +1,5 @@
-<!-- eslint-disable no-useless-escape -->
 <script setup lang="ts">
+// oxlint-disable no-useless-escape
 import { onMounted, ref, unref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';

@@ -22,7 +22,7 @@ import {
 
 import { Button, ButtonGroup, message, Modal, Tooltip } from 'ant-design-vue';
 // 模拟流转流程
-// @ts-ignore
+// @ts-expect-error: token simulation package does not ship compatible types
 import tokenSimulation from 'bpmn-js-token-simulation';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 // 代码高亮插件
@@ -132,6 +132,7 @@ const emit = defineEmits([
   'element-click',
 ]);
 
+// @ts-expect-error: file input ref is set imperatively by the template
 const bpmnCanvas = ref();
 const refFile = ref();
 
@@ -178,6 +179,7 @@ const additionalModules = computed(() => {
   ) {
     Modules.push(...(props.additionalModel as any[]));
   } else {
+    // oxlint-disable-next-line no-unused-expressions
     props.additionalModel && Modules.push(props.additionalModel);
   }
 
@@ -417,6 +419,7 @@ const processSimulation = () => {
   //   bpmnModeler.get('toggleMode', 'strict'),
   //   "bpmnModeler.get('toggleMode')",
   // );
+  // oxlint-disable-next-line no-unused-expressions
   props.simulation && bpmnModeler.get('toggleMode', 'strict').toggleMode();
 };
 const processRedo = () => {

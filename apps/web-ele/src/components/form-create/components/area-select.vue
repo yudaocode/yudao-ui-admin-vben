@@ -44,6 +44,7 @@ interface Props {
   clearable?: boolean;
   showAllLevels?: boolean;
   separator?: string;
+  // eslint-disable-next-line vue/require-default-prop
   formCreateInject?: any;
 }
 
@@ -70,7 +71,7 @@ async function loadAreaTree(): Promise<void> {
     const data = await getAreaTree();
 
     // 根据 level 限制层级
-    areaTree.value = filterTreeByLevel(data || [], props.level);
+    areaTree.value = filterTreeByLevel((data || []) as AreaVO[], props.level);
   } catch (error) {
     console.warn('[AreaSelect] 加载地区数据失败:', error);
     areaTree.value = [];
@@ -99,7 +100,7 @@ function filterTreeByLevel(tree: AreaVO[], maxLevel: number): AreaVO[] {
 }
 
 // 处理选中值变化
-function handleChange(value: number[] | undefined): void {
+function handleChange(value: any): void {
   if (value === undefined || value === null) {
     emit('update:modelValue', undefined);
     return;

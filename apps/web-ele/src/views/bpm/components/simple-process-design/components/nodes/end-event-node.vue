@@ -20,7 +20,7 @@ const props = defineProps({
 // 监控节点变化
 const currentNode = useWatchNode(props);
 // 是否只读
-const readonly = inject<Boolean>('readonly');
+const readonly = inject<boolean>('readonly');
 const processInstance = inject<Ref<any>>('processInstance', ref({}));
 
 const [Modal, modalApi] = useVbenModal({

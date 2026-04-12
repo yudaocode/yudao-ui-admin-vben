@@ -12,7 +12,7 @@ defineOptions({ name: 'ProductCategorySelect' });
 
 const props = defineProps({
   modelValue: {
-    type: [Number, Array<Number>],
+    type: [Number, Array<number>],
     default: undefined,
   }, // 选中的 ID
   multiple: {

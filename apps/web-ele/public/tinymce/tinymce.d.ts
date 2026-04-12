@@ -2537,12 +2537,12 @@ interface EditorSelection {
     normalize: () => Range;
     selectorChanged: (selector: string, callback: (active: boolean, args: {
         node: Node;
-        selector: String;
+        selector: string;
         parents: Node[];
     }) => void) => EditorSelection;
     selectorChangedWithUnbind: (selector: string, callback: (active: boolean, args: {
         node: Node;
-        selector: String;
+        selector: string;
         parents: Node[];
     }) => void) => {
         unbind: () => void;
@@ -3217,9 +3217,9 @@ interface Tools {
         <T, R>(arr: ArrayLike<T> | null | undefined, cb: ArrayCallback<T, R>): R[];
         <T, R>(obj: Record<string, T> | null | undefined, cb: ObjCallback<T, R>): R[];
     };
-    extend: (obj: Object, ext: Object, ...objs: Object[]) => any;
+    extend: (obj: object, ext: object, ...objs: object[]) => any;
     walk: <T extends Record<string, any>>(obj: T, f: WalkCallback<T>, n?: keyof T, scope?: any) => void;
-    resolve: (path: string, o?: Object) => any;
+    resolve: (path: string, o?: object) => any;
     explode: (s: string | string[], d?: string | RegExp) => string[];
     _addCacheSuffix: (url: string) => string;
 }

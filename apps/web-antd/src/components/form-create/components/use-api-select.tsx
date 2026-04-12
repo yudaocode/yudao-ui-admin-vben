@@ -193,7 +193,8 @@ export function useApiSelect(option: ApiSelectProps) {
         let parse: any = null;
         if (props.parseFunc) {
           // 解析字符串函数
-          // eslint-disable-next-line no-new-func
+          // oxlint-disable-next-line typescript/no-implied-eval
+          // oxlint-disable-next-line no-new-func, typescript/no-implied-eval
           parse = new Function(`return ${props.parseFunc}`)();
         }
         return parse;

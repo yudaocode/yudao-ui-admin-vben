@@ -27,6 +27,7 @@ interface Props {
   allowfullscreen?: boolean;
   loading?: 'eager' | 'lazy';
   sandbox?: string;
+  // eslint-disable-next-line vue/require-default-prop
   formCreateInject?: any;
 }
 

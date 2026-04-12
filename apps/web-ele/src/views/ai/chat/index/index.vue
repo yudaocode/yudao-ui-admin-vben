@@ -582,7 +582,7 @@ onMounted(async () => {
               size="small"
               @click="openChatConversationUpdateForm"
             >
-              <span v-html="activeConversation?.modelName"></span>
+              <span>{{ activeConversation?.modelName }}</span>
               <IconifyIcon icon="lucide:settings" class="!ml-2 size-4" />
             </ElButton>
             <ElButton

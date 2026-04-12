@@ -21,7 +21,7 @@ import ProductBrowsingHistory from './product-browsing-history.vue';
 
 const activeTab = ref<string>('会员信息');
 
-const tabActivation = computed(() => (tab: string) => activeTab.value === tab);
+const tabActivation = computed(() =>  (tab: string) => activeTab.value === tab);
 
 /** tab 切换 */
 const productBrowsingHistoryRef =

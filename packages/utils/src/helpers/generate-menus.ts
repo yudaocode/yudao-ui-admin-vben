@@ -50,6 +50,7 @@ function generateMenus(
       link,
       order,
       title = '',
+      query,
     } = meta;
 
     // 确保菜单名称不为空
@@ -78,6 +79,7 @@ function generateMenus(
       badgeVariants,
       icon,
       name,
+      query,
       order,
       parent: route.parent,
       parents: route.parents,
@@ -139,8 +141,6 @@ function convertServerMenuToRouteRecordStringComponent(
       return;
     } else if (menu.children && menu.parentId === 0) {
       menu.component = 'BasicLayout';
-    } else if (!menu.children) {
-      menu.component = menu.component as string;
     }
     if (menu.component === 'Layout') {
       menu.component = 'BasicLayout';

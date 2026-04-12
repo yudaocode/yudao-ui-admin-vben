@@ -1,7 +1,7 @@
 /**
  * A palette provider for BPMN 2.0 elements.
  */
-export default function PaletteProvider(
+function PaletteProvider(
   palette,
   create,
   elementFactory,
@@ -22,6 +22,8 @@ export default function PaletteProvider(
 
   palette.registerProvider(this);
 }
+
+export default PaletteProvider;
 
 PaletteProvider.$inject = [
   'palette',

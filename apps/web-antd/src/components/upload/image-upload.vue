@@ -146,6 +146,7 @@ async function handlePreview(file: UploadFile) {
 async function handleRemove(file: UploadFile) {
   if (fileList.value) {
     const index = fileList.value.findIndex((item) => item.uid === file.uid);
+    // oxlint-disable-next-line no-unused-expressions
     index !== -1 && fileList.value.splice(index, 1);
     const value = getValue();
     isInnerOperate.value = true;
@@ -350,6 +351,8 @@ function getValue() {
 
 <style>
 .ant-upload-select-picture-card {
-  @apply flex items-center justify-center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

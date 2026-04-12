@@ -1,6 +1,7 @@
 <!-- Modbus 配置 -->
 <script lang="ts" setup>
-import type { VbenFormSchema, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
@@ -227,7 +228,7 @@ function usePointColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceModbusPointApi.ModbusPoint>({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: usePointFormSchema(),
     submitOnChange: true,
@@ -255,7 +256,7 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceModbusPointApi.ModbusPoint>({
       refresh: true,
       search: true,
     },
-  },
+  } as VxeTableGridOptions<IotDeviceModbusPointApi.ModbusPoint>,
 });
 
 /** 新增点位 - 使用 useVbenModal */

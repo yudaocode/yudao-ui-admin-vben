@@ -210,7 +210,7 @@ function handleRowCheckboxChange({
   checkedIds.value = records.map((item) => item.id!);
 }
 
-const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
+const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     checkboxConfig: {
       highlight: true,
@@ -242,7 +242,7 @@ const [Grid, gridApi] = useVbenVxeGrid<IotDeviceApi.Device>({
       refresh: true,
       search: true,
     },
-  },
+  } as VxeTableGridOptions<IotDeviceApi.Device>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

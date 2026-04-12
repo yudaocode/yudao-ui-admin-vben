@@ -11,14 +11,14 @@ import formCreate from '@form-create/element-ui';
 import { apiSelectRule } from '#/components/form-create/rules/data';
 
 import {
+  useAreaSelectRule,
   useDictSelectRule,
   useEditorRule,
+  useIframeRule,
   useSelectRule,
   useUploadFileRule,
   useUploadImageRule,
   useUploadImagesRule,
-  useIframeRule,
-  useAreaSelectRule,
 } from './rules';
 
 /** 编码表单 Conf */

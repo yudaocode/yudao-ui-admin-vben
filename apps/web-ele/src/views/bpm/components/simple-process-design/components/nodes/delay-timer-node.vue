@@ -25,10 +25,11 @@ const emits = defineEmits<{
   'update:flowNode': [node: SimpleFlowNode | undefined];
 }>();
 // 是否只读
-const readonly = inject<Boolean>('readonly');
+const readonly = inject<boolean>('readonly');
 // 监控节点的变化
 const currentNode = useWatchNode(props);
 // 节点名称编辑
+// @ts-expect-error: composable typing does not preserve this node schema exactly
 const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   currentNode,
   BpmNodeTypeEnum.DELAY_TIMER_NODE,

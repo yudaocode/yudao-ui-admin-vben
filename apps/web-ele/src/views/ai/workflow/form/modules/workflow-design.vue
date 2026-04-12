@@ -106,7 +106,9 @@ async function goRun() {
       try {
         convertedParams[paramKey] = convertParamValue(value, dataType);
       } catch (error: any) {
-        throw new Error(`参数 ${paramKey} 转换失败: ${error.message}`);
+        throw new Error(`参数 ${paramKey} 转换失败: ${error.message}`, {
+          cause: error,
+        });
       }
     }
 
@@ -175,7 +177,7 @@ function convertParamValue(value: string, dataType: string) {
       try {
         return JSON.parse(value);
       } catch (error: any) {
-        throw new Error(`JSON格式错误: ${error.message}`);
+        throw new Error(`JSON格式错误: ${error.message}`, { cause: error });
       }
     }
     default: {

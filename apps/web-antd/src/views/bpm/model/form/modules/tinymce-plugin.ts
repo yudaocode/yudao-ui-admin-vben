@@ -3,7 +3,7 @@
  * - @ 自动补全：插入 mention 占位元素
  */
 
-// @ts-ignore TinyMCE 全局或通过打包器提供
+// TinyMCE 全局或通过打包器提供
 import type { Editor } from 'tinymce';
 
 export interface MentionItem {
