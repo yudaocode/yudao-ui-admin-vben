@@ -27,7 +27,6 @@ import {
   RadarChart,
 } from 'echarts/charts';
 import {
-  // 数据集组件
   DatasetComponent,
   DataZoomComponent,
   DataZoomInsideComponent,
@@ -38,7 +37,6 @@ import {
   TitleComponent,
   ToolboxComponent,
   TooltipComponent,
-  // 内置数据转换器组件 (filter, sort)
   TransformComponent,
   VisualMapComponent,
 } from 'echarts/components';
@@ -91,5 +89,6 @@ echarts.use([
   MapChart,
   GeoComponent,
 ]);
+export type { ECOption } from './types';
 
 export default echarts;

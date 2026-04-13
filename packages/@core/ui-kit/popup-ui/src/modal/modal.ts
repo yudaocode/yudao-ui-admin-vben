@@ -97,7 +97,7 @@ export interface ModalProps {
   header?: boolean;
   headerClass?: ClassType;
   /**
-   * 弹窗是否显示
+   * 弹窗加载状态
    * @default false
    */
   loading?: boolean;
@@ -110,6 +110,11 @@ export interface ModalProps {
    * 是否自动聚焦
    */
   openAutoFocus?: boolean;
+  /**
+   * 拖动范围是否可以超出可视区
+   * @default false
+   */
+  overflow?: boolean;
   /**
    * 弹窗遮罩模糊效果
    */

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { ZodType } from 'zod';
 
-import type { FormActions, FormSchema, MaybeComponentProps } from '../types';
+import type {
+  FormActions,
+  FormFieldProps,
+  MaybeComponentProps,
+} from '../types';
 
 import { computed, nextTick, onUnmounted, useTemplateRef, watch } from 'vue';
 
@@ -26,7 +30,7 @@ import useDependencies from './dependencies';
 import FormLabel from './form-label.vue';
 import { isEventObjectLike } from './helper';
 
-interface Props extends FormSchema {}
+interface Props extends FormFieldProps {}
 
 const {
   colon,
@@ -48,6 +52,7 @@ const {
   modelPropName,
   renderComponentContent,
   rules,
+  help,
 } = defineProps<
   Props & {
     commonComponentProps: MaybeComponentProps;
@@ -174,6 +179,18 @@ const computedProps = computed(() => {
     ...finalComponentProps,
     ...dynamicComponentProps.value,
   };
+});
+
+// 自定义帮助信息
+const computedHelp = computed(() => {
+  const helpContent = help;
+  if (!helpContent) {
+    return undefined;
+  }
+  return () =>
+    isFunction(helpContent)
+      ? helpContent(values.value, getFormApi())
+      : helpContent;
 });
 
 watch(
@@ -324,7 +341,7 @@ onUnmounted(() => {
             labelClass,
           )
         "
-        :help="help"
+        :help="computedHelp"
         :colon="colon"
         :label="label"
         :required="shouldRequired && !hideRequiredMark"

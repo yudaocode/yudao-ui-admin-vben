@@ -67,6 +67,14 @@ export type FormActions = FormContext<GenericObject>;
 
 export type CustomRenderType = (() => Component | string) | string;
 
+// 动态渲染参数
+export type CustomParamsRenderType =
+  | ((
+      value: Partial<Record<string, any>>,
+      actions: FormActions,
+    ) => Component | string)
+  | string;
+
 export type FormSchemaRuleType =
   | 'mobile'
   | 'mobileRequired'
@@ -215,6 +223,79 @@ type RenderComponentContentType = (
   api: FormActions,
 ) => Record<string, any>;
 
+type MappedComponentProps<P> =
+  | ((
+      value: Partial<Record<string, any>>,
+      actions: FormActions,
+    ) => P & Record<string, any>)
+  | (P & Record<string, any>);
+
+/**
+ * 格式化 `getValues()` 输出中的当前字段值。
+ * - 返回 `undefined`：保留当前字段已被移除的状态，通常配合 `setValue(key, nextValue)`
+ *   把一个字段拆分写入到其他字段，例如 `startTime` / `endTime`
+ * - 返回其他值：会将当前字段恢复/写回为该返回值
+ * - `setValue` 回调签名为 `(key, nextValue) => void`
+ */
+export type FormValueFormat = (
+  value: any,
+  setValue: (fieldName: string, value: any) => void,
+  values: Record<string, any>,
+) => any;
+
+interface FormSchemaBody extends Omit<FormCommonConfig, 'componentProps'> {
+  /** 默认值 */
+  defaultValue?: any;
+  /** 依赖 */
+  dependencies?: FormItemDependencies;
+  /** 描述 */
+  description?: CustomRenderType;
+  /** 字段名 */
+  fieldName: string;
+  /** 帮助信息 */
+  help?: CustomParamsRenderType;
+  /** 是否隐藏表单项 */
+  hide?: boolean;
+  /** 表单项 */
+  label?: CustomRenderType;
+  // 自定义组件内部渲染
+  renderComponentContent?: RenderComponentContentType;
+  /** 字段规则 */
+  rules?: FormSchemaRuleType;
+  /** 后缀 */
+  suffix?: CustomRenderType;
+  /**
+   * 获取表单值时格式化当前字段。
+   * - 返回值不为 `undefined` 时，会回写到当前 fieldName
+   * - 返回值为 `undefined` 时，可通过 setValue 写入一个或多个目标字段
+   */
+  valueFormat?: FormValueFormat;
+}
+
+type FormSchemaDiscriminated<
+  T extends BaseFormComponentType,
+  P extends Record<string, any>,
+> = {
+  [K in Extract<keyof P, T>]: {
+    /** 组件 */
+    component: K;
+    /** 组件参数 */
+    componentProps?: MappedComponentProps<P[K]>;
+  } & FormSchemaBody;
+}[Extract<keyof P, T>];
+
+type FormSchemaFallback<T extends BaseFormComponentType> = {
+  /** 组件 */
+  component: Component | T;
+  /** 组件参数 */
+  componentProps?: ComponentProps;
+} & FormSchemaBody;
+
+export type FormSchema<
+  T extends BaseFormComponentType = BaseFormComponentType,
+  P extends Record<string, any> = Record<never, never>,
+> = FormSchemaDiscriminated<T, P> | FormSchemaFallback<T>;
+
 export type HandleSubmitFn = (
   values: Record<string, any>,
 ) => Promise<void> | void;
@@ -240,41 +321,18 @@ export type ArrayToStringFields = Array<
   | string[] // 简单数组格式，最后一个元素可以是分隔符
 >;
 
-export interface FormSchema<
+export interface FormFieldProps<
   T extends BaseFormComponentType = BaseFormComponentType,
-> extends FormCommonConfig {
+> extends FormSchemaBody {
   /** 组件 */
   component: Component | T;
   /** 组件参数 */
   componentProps?: ComponentProps;
-  /** 默认值 */
-  defaultValue?: any;
-  /** 依赖 */
-  dependencies?: FormItemDependencies;
-  /** 描述 */
-  description?: CustomRenderType;
-  /** 字段名 */
-  fieldName: string;
-  /** 帮助信息 */
-  help?: CustomRenderType;
-  /** 是否隐藏表单项 */
-  hide?: boolean;
-  /** 表单项 */
-  label?: CustomRenderType;
-  // 自定义组件内部渲染
-  renderComponentContent?: RenderComponentContentType;
-  /** 字段规则 */
-  rules?: FormSchemaRuleType;
-  /** 后缀 */
-  suffix?: CustomRenderType;
-}
-
-export interface FormFieldProps extends FormSchema {
-  required?: boolean;
 }
 
 export interface FormRenderProps<
   T extends BaseFormComponentType = BaseFormComponentType,
+  P extends Record<string, any> = Record<never, never>,
 > {
   /**
    * 表单字段数组映射字符串配置 默认使用","
@@ -326,7 +384,7 @@ export interface FormRenderProps<
   /**
    * 表单定义
    */
-  schema?: FormSchema<T>[];
+  schema?: FormSchema<T, P>[];
 
   /**
    * 是否显示展开/折叠
@@ -351,8 +409,9 @@ export interface ActionButtonOptions extends VbenButtonProps {
 
 export interface VbenFormProps<
   T extends BaseFormComponentType = BaseFormComponentType,
+  P extends Record<string, any> = Record<never, never>,
 > extends Omit<
-  FormRenderProps<T>,
+  FormRenderProps<T, P>,
   'componentBindEventMap' | 'componentMap' | 'form'
 > {
   /**

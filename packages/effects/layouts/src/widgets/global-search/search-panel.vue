@@ -47,6 +47,8 @@ function search(searchKey: string) {
     searchResults.value = [];
     return;
   }
+  // 将搜索关键词转换为小写，确保大小写不敏感的搜索
+  searchKey = searchKey.toLowerCase();
 
   // 使用搜索关键词创建正则表达式
   const reg = createSearchReg(searchKey);
@@ -196,7 +198,7 @@ watch(
     if (val) {
       handleSearch(val);
     } else {
-      searchResults.value = [...searchHistory.value];
+      searchResults.value = searchHistory.value;
     }
   },
 );

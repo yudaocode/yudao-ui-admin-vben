@@ -1,5 +1,7 @@
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
+import type { ComponentPropsMap, ComponentType } from './component';
+
 import { h } from 'vue';
 
 import {
@@ -7,7 +9,7 @@ import {
   AsyncVxeTable,
   createRequiredValidation,
   setupVbenVxeTable,
-  useVbenVxeGrid,
+  useVbenVxeGrid as useGrid,
 } from '@vben/plugins/vxe-table';
 import {
   erpCountInputFormatter,
@@ -220,10 +222,13 @@ setupVbenVxeTable({
   useVbenForm,
 });
 
-export { createRequiredValidation, useVbenVxeGrid };
+export { createRequiredValidation };
 
 export const [VxeTable, VxeColumn] = [AsyncVxeTable, AsyncVxeColumn];
 
 export * from '#/components/table-action';
+export const useVbenVxeGrid = <T extends Record<string, any>>(
+  ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
+) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
 
 export type * from '@vben/plugins/vxe-table';

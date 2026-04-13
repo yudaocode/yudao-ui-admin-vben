@@ -72,6 +72,7 @@ const {
   gridEvents,
   formOptions,
   tableTitle,
+  tableData,
   tableTitleHelp,
   showSearchForm,
   separator,
@@ -229,6 +230,9 @@ const options = computed(() => {
   }
   if (mergedOptions.formConfig) {
     mergedOptions.formConfig.enabled = false;
+    if (tableData.value && tableData.value.length > 0) {
+      mergedOptions.data = tableData.value;
+    }
   }
   return mergedOptions;
 });
@@ -327,7 +331,7 @@ async function init() {
 watch(
   formOptions,
   () => {
-    formApi.setState((prev) => {
+    formApi.setState((prev: Record<string, any>) => {
       const finalFormOptions: VbenFormProps = mergeWithArrayOverride(
         {},
         formOptions.value,

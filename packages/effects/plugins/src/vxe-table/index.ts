@@ -2,7 +2,7 @@ import { defineAsyncComponent } from 'vue';
 
 export { setupVbenVxeTable } from './init';
 export { default as VbenVxeTableToolbar } from './table-toolbar.vue';
-export type { VxeTableGridOptions } from './types';
+export type { VxeTableGridColumns, VxeTableGridOptions } from './types';
 export * from './use-vxe-grid';
 export { default as VbenVxeGrid } from './use-vxe-grid.vue';
 export { useTableToolbar } from './use-vxe-toolbar';

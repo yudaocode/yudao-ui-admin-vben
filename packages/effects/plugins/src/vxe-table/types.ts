@@ -26,6 +26,8 @@ interface ToolbarConfigOptions extends VxeGridPropTypes.ToolbarConfig {
   search?: boolean;
 }
 
+export type VxeTableGridColumns<T = any> = VxeTableGridOptions<T>['columns'];
+
 export interface VxeTableGridOptions<T = any> extends VxeTableGridProps<T> {
   /** 工具栏配置 */
   toolbarConfig?: ToolbarConfigOptions;
@@ -39,7 +41,12 @@ export interface SeparatorOptions {
 export interface VxeGridProps<
   T extends Record<string, any> = any,
   D extends BaseFormComponentType = BaseFormComponentType,
+  P extends Record<string, any> = Record<never, never>,
 > {
+  /**
+   * 数据
+   */
+  tableData?: any[];
   /**
    * 标题
    */
@@ -67,7 +74,7 @@ export interface VxeGridProps<
   /**
    * 表单配置
    */
-  formOptions?: VbenFormProps<D>;
+  formOptions?: VbenFormProps<D, P>;
   /**
    * 显示搜索表单
    */
@@ -81,13 +88,14 @@ export interface VxeGridProps<
 export type ExtendedVxeGridApi<
   D extends Record<string, any> = any,
   F extends BaseFormComponentType = BaseFormComponentType,
-> = VxeGridApi<D> & {
-  useStore: <T = NoInfer<VxeGridProps<D, F>>>(
-    selector?: (state: NoInfer<VxeGridProps<any, any>>) => T,
-  ) => Readonly<Ref<T>>;
+  P extends Record<string, any> = Record<never, never>,
+> = VxeGridApi<D, F, P> & {
+  useStore: <S = NoInfer<VxeGridProps<D, F, P>>>(
+    selector?: (state: NoInfer<VxeGridProps<D, F, P>>) => S,
+  ) => Readonly<Ref<S>>;
 };
 
 export interface SetupVxeTable {
   configVxeTable: (ui: VxeUIExport) => void;
-  useVbenForm: typeof useVbenForm;
+  useVbenForm?: typeof useVbenForm;
 }

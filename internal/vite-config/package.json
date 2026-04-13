@@ -48,13 +48,13 @@
     "@vitejs/plugin-vue-jsx": "catalog:",
     "dayjs": "catalog:",
     "dotenv": "catalog:",
+    "rolldown": "catalog:",
     "rollup-plugin-visualizer": "catalog:",
     "sass": "catalog:",
     "sass-embedded": "catalog:",
     "unplugin-dts": "catalog:",
     "vite": "catalog:",
     "vite-plugin-compression": "catalog:",
-    "vite-plugin-html": "catalog:",
     "vite-plugin-lazy-import": "catalog:"
   }
 }
