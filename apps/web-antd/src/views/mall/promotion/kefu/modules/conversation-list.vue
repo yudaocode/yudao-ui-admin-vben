@@ -50,7 +50,7 @@ function openRightMessage(item: MallKefuConversationApi.Conversation) {
 
 /** 获得消息类型 */
 const getConversationDisplayText = computed(
-  () =>  (lastMessageContentType: number, lastMessageContent: string) => {
+  () => (lastMessageContentType: number, lastMessageContent: string) => {
     switch (lastMessageContentType) {
       case KeFuMessageContentTypeEnum.IMAGE: {
         return '[图片消息]';

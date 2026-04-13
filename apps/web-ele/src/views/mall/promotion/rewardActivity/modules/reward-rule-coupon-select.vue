@@ -25,7 +25,7 @@ const emits = defineEmits<{
 }>();
 
 /** 选择赠送的优惠类型拓展 */
-interface GiveCoupon  extends MallCouponTemplateApi.CouponTemplate {
+interface GiveCoupon extends MallCouponTemplateApi.CouponTemplate {
   giveCount?: number;
 }
 

@@ -64,12 +64,12 @@ const [Form, formApi] = useVbenForm({
 
 // ================= 商品选择相关 =================
 /** SKU 扩展类型 */
-interface SkuExtension  extends MallSpuApi.Sku {
+interface SkuExtension extends MallSpuApi.Sku {
   productConfig: MallDiscountActivityApi.DiscountProduct;
 }
 
 /** SPU 扩展类型 */
-interface SpuExtension  extends MallSpuApi.Spu {
+interface SpuExtension extends MallSpuApi.Spu {
   skus?: SkuExtension[];
 }
 

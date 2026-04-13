@@ -4,8 +4,7 @@
  */
 export function isUrl(path: string): boolean {
   try {
-    new URL(path);
-    return true;
+    return Boolean(new URL(path));
   } catch {
     return false;
   }
