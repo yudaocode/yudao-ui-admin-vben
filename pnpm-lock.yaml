@@ -286,7 +286,7 @@ catalogs:
       specifier: ^12.8.1
       version: 12.8.1
     dotenv:
-      specifier: ^17.4.1
+      specifier: ^17.4.2
       version: 17.4.2
     echarts:
       specifier: ^6.0.0
@@ -9255,6 +9255,11 @@ packages:
   lefthook-linux-arm64@2.1.5:
     resolution: {integrity: sha512-57TDKC5ewWpsCLZQKIJMHumFEObYKVundmPpiWhX491hINRZYYOL/26yrnVnNcidThRzTiTC+HLcuplLcaXtbA==}
     cpu: [arm64]
+    os: [linux]
+
+  lefthook-linux-x64@2.1.5:
+    resolution: {integrity: sha512-bqK3LrAB5l5YaCaoHk6qRWlITrGWzP4FbwRxA31elbxjd0wgNWZ2Sn3zEfSEcxz442g7/PPkEwqqsTx0kSFzpg==}
+    cpu: [x64]
     os: [linux]
 
   lefthook-openbsd-arm64@2.1.5:
@@ -19840,6 +19845,9 @@ snapshots:
   lefthook-linux-arm64@2.1.5:
     optional: true
 
+  lefthook-linux-x64@2.1.5:
+    optional: true
+
   lefthook-openbsd-arm64@2.1.5:
     optional: true
 
@@ -19859,6 +19867,7 @@ snapshots:
       lefthook-freebsd-arm64: 2.1.5
       lefthook-freebsd-x64: 2.1.5
       lefthook-linux-arm64: 2.1.5
+      lefthook-linux-x64: 2.1.5
       lefthook-openbsd-arm64: 2.1.5
       lefthook-openbsd-x64: 2.1.5
       lefthook-windows-arm64: 2.1.5
