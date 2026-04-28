@@ -59,7 +59,7 @@ async function customRequest(
   // 2. 执行上传
   const { httpRequest } = useUpload();
   try {
-    const url = await httpRequest(file);
+    const { url } = await httpRequest(file);
     emit('done', name, url);
     uploadFile.onSuccess?.(url);
     return {

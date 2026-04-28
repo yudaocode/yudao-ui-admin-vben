@@ -45,7 +45,7 @@ async function customRequest(info: UploadRequestOption<any>) {
   // 2. 执行上传
   const { httpRequest } = useUpload();
   try {
-    const url = await httpRequest(file);
+    const { url } = await httpRequest(file);
     emit('done', name, url);
   } catch {
     emit('error', name);
