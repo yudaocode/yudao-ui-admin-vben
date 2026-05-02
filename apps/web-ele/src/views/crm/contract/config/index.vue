@@ -18,7 +18,7 @@ import { schema } from './data';
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    labelClass: 'w-100',
+    labelWidth: 120,
   },
   layout: 'horizontal',
   schema,
