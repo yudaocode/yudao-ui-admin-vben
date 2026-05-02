@@ -25,14 +25,8 @@ export function useUploadImagesRule() {
       return localeProps(t, `${name}.props`, [
         makeRequiredRule(),
         {
-          type: 'switch',
-          field: 'drag',
-          title: '拖拽上传',
-          value: false,
-        },
-        {
           type: 'select',
-          field: 'fileType',
+          field: 'accept',
           title: '图片类型限制',
           value: ['image/jpeg', 'image/png', 'image/gif'],
           options: [
@@ -48,40 +42,27 @@ export function useUploadImagesRule() {
           ],
           props: {
             mode: 'multiple',
-            maxNumber: 5,
           },
         },
         {
           type: 'inputNumber',
-          field: 'fileSize',
+          field: 'maxSize',
           title: '大小限制(MB)',
           value: 5,
           props: { min: 0 },
         },
         {
           type: 'inputNumber',
-          field: 'limit',
+          field: 'maxNumber',
           title: '数量限制',
           value: 5,
-          props: { min: 0 },
+          props: { min: 1 },
         },
         {
-          type: 'input',
-          field: 'height',
-          title: '组件高度',
-          value: '150px',
-        },
-        {
-          type: 'input',
-          field: 'width',
-          title: '组件宽度',
-          value: '150px',
-        },
-        {
-          type: 'input',
-          field: 'borderradius',
-          title: '组件边框圆角',
-          value: '8px',
+          type: 'switch',
+          field: 'disabled',
+          title: '是否禁用',
+          value: false,
         },
       ]);
     },

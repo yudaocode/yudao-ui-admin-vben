@@ -6,18 +6,36 @@ export function useImagesUpload() {
   return defineComponent({
     name: 'ImagesUpload',
     props: {
-      multiple: {
+      accept: {
+        type: Array,
+        default: () => ['image/jpeg', 'image/png', 'image/gif'],
+      },
+      disabled: {
         type: Boolean,
-        default: true,
+        default: false,
       },
       maxNumber: {
         type: Number,
         default: 5,
       },
+      maxSize: {
+        type: Number,
+        default: 5,
+      },
+      multiple: {
+        type: Boolean,
+        default: true,
+      },
     },
     setup(props) {
       return () => (
-        <ImageUpload maxNumber={props.maxNumber} multiple={props.multiple} />
+        <ImageUpload
+          accept={props.accept as string[]}
+          disabled={props.disabled}
+          maxNumber={props.maxNumber}
+          maxSize={props.maxSize}
+          multiple={props.multiple}
+        />
       );
     },
   });

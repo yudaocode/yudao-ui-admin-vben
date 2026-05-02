@@ -104,10 +104,36 @@ export const defaultImageAccepts = [
 ];
 
 /**
+ * 图片类 MIME 子类型到扩展名的别名映射；未列出的子类型按字面量与扩展名比较
+ */
+const IMAGE_MIME_SUBTYPE_ALIASES: Record<string, string[]> = {
+  apng: ['apng', 'png'],
+  jpeg: ['jpeg', 'jpg'],
+  pjpeg: ['jpeg', 'jpg'],
+  'svg+xml': ['svg'],
+  tiff: ['tif', 'tiff'],
+  'x-icon': ['ico'],
+};
+
+/**
+ * 判断 MIME 子类型是否与文件扩展名匹配；image/* 限定为已知图片扩展名集合
+ */
+function matchMimeSubtype(subtype: string, ext: string): boolean {
+  if (subtype === '*') {
+    return defaultImageAccepts.includes(ext);
+  }
+  const aliases = IMAGE_MIME_SUBTYPE_ALIASES[subtype];
+  if (aliases) {
+    return aliases.includes(ext);
+  }
+  return subtype === ext;
+}
+
+/**
  * 判断文件是否为图片
  *
  * @param filename 文件名
- * @param accepts 支持的文件类型
+ * @param accepts 支持的文件类型，兼容 MIME（如 image/png）、.ext（如 .png）与纯后缀（如 png）
  * @returns 是否为图片
  */
 export function isImage(
@@ -118,7 +144,23 @@ export function isImage(
     return false;
   }
   const ext = filename.split('.').pop()?.toLowerCase() || '';
-  return accepts.includes(ext);
+  if (!ext) {
+    return false;
+  }
+  return accepts.some((accept) => {
+    const lower = accept.toLowerCase();
+    // MIME 类型，例如 image/png ；image/* 仅放行已知图片扩展
+    if (lower.includes('/')) {
+      const subtype = lower.split('/').pop() || '';
+      return matchMimeSubtype(subtype, ext);
+    }
+    // 以点号开头的扩展名，例如 .png
+    if (lower.startsWith('.')) {
+      return lower.slice(1) === ext;
+    }
+    // 纯后缀
+    return lower === ext;
+  });
 }
 
 /**

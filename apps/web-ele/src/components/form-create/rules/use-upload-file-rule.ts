@@ -26,7 +26,7 @@ export function useUploadFileRule() {
         makeRequiredRule(),
         {
           type: 'select',
-          field: 'fileType',
+          field: 'accept',
           title: '文件类型',
           value: ['doc', 'xls', 'ppt', 'txt', 'pdf'],
           options: [
@@ -42,35 +42,29 @@ export function useUploadFileRule() {
         },
         {
           type: 'switch',
-          field: 'autoUpload',
-          title: '是否在选取文件后立即进行上传',
-          value: true,
-        },
-        {
-          type: 'switch',
           field: 'drag',
           title: '拖拽上传',
           value: false,
         },
         {
           type: 'switch',
-          field: 'isShowTip',
+          field: 'showDescription',
           title: '是否显示提示',
           value: true,
         },
         {
           type: 'inputNumber',
-          field: 'fileSize',
+          field: 'maxSize',
           title: '大小限制(MB)',
           value: 5,
           props: { min: 0 },
         },
         {
           type: 'inputNumber',
-          field: 'limit',
+          field: 'maxNumber',
           title: '数量限制',
           value: 5,
-          props: { min: 0 },
+          props: { min: 1 },
         },
         {
           type: 'switch',
