@@ -181,31 +181,28 @@ async function handleSubmit() {
     .merge(descriptionFormApi)
     .merge(otherFormApi)
     .submitAllForm(true);
-  values.skus = formData.value.skus;
   // 校验商品名称不能为空（用于 SKU name）
   if (!values.name || values.name.trim() === '') {
     ElMessage.error('商品名称不能为空');
     return;
   }
-  if (values.skus) {
-    try {
-      // 校验 sku
-      skuListRef.value.validateSku();
-    } catch {
-      ElMessage.error('【库存价格】不完善，请填写相关信息');
-      return;
-    }
-    values.skus.forEach((item) => {
-      // 给 sku name 赋值（使用商品名称作为 SKU 名称）
-      item.name = values.name;
-      // 金额转换：元转分
-      item.price = convertToInteger(item.price);
-      item.marketPrice = convertToInteger(item.marketPrice);
-      item.costPrice = convertToInteger(item.costPrice);
-      item.firstBrokeragePrice = convertToInteger(item.firstBrokeragePrice);
-      item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice);
-    });
+  try {
+    // 校验 sku
+    skuListRef.value.validateSku();
+  } catch {
+    ElMessage.error('【库存价格】不完善，请填写相关信息');
+    return;
   }
+  // 金额转换：元转分
+  values.skus = formData.value.skus!.map((item) => ({
+    ...item,
+    name: values.name,
+    price: convertToInteger(item.price),
+    marketPrice: convertToInteger(item.marketPrice),
+    costPrice: convertToInteger(item.costPrice),
+    firstBrokeragePrice: convertToInteger(item.firstBrokeragePrice),
+    secondBrokeragePrice: convertToInteger(item.secondBrokeragePrice),
+  }));
   // 处理轮播图列表：上传组件可能返回对象或字符串，统一处理成字符串数组
   const newSliderPicUrls: any[] = [];
   values.sliderPicUrls!.forEach((item: any) => {
@@ -235,14 +232,15 @@ async function getDetail() {
   formLoading.value = true;
   try {
     const res = await getSpu(spuId.value!);
-    // 金额转换：元转分
-    res.skus?.forEach((item) => {
-      item.price = formatToFraction(item.price);
-      item.marketPrice = formatToFraction(item.marketPrice);
-      item.costPrice = formatToFraction(item.costPrice);
-      item.firstBrokeragePrice = formatToFraction(item.firstBrokeragePrice);
-      item.secondBrokeragePrice = formatToFraction(item.secondBrokeragePrice);
-    });
+    // 金额转换：分转元
+    res.skus = res.skus?.map((item) => ({
+      ...item,
+      price: formatToFraction(item.price),
+      marketPrice: formatToFraction(item.marketPrice),
+      costPrice: formatToFraction(item.costPrice),
+      firstBrokeragePrice: formatToFraction(item.firstBrokeragePrice),
+      secondBrokeragePrice: formatToFraction(item.secondBrokeragePrice),
+    }));
     formData.value = res;
     // 初始化各表单值
     infoFormApi.setValues(res).then();
