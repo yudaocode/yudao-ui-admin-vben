@@ -70,7 +70,9 @@ export function useFormSchema(): VbenFormSchema[] {
           const data = await getProductCategoryList();
           return handleTree(data);
         },
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择产品类型',
         clearable: true,
       },
