@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { fenToYuan, handleTree, treeToString } from '@vben/utils';
+import { handleTree, treeToString } from '@vben/utils';
 
 import { getCategoryList } from '#/api/mall/product/category';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -105,25 +105,21 @@ export function useGridColumns(
     },
     {
       field: 'price',
-      title: '价格',
+      title: '价格(元)',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'marketPrice',
-      title: '市场价',
+      title: '市场价(元)',
       minWidth: 100,
-      formatter: ({ row }) => {
-        return `${fenToYuan(row.marketPrice)} 元`;
-      },
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'costPrice',
-      title: '成本价',
+      title: '成本价(元)',
       minWidth: 100,
-      formatter: ({ row }) => {
-        return `${fenToYuan(row.costPrice)} 元`;
-      },
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'salesCount',

@@ -89,10 +89,10 @@ export function useGridColumns(
     },
     {
       field: 'price',
-      title: '商品售价',
+      title: '商品售价(元)',
       minWidth: 90,
       align: 'center',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'salesCount',
