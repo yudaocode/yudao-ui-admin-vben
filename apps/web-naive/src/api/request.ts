@@ -127,6 +127,49 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     },
   });
 
+  // add by 芋艿：对应 https://t.zsxq.com/SHqWw 反馈
+  // 处理 Blob 响应中的业务错误（如 401）：后端把「账号未登录」包成 HTTP 200 + body {code: 401, msg: ...}，
+  // download 强制 responseType: 'blob' 后被 axios 包成 application/json 的 Blob，defaultResponseInterceptor 走
+  // responseReturn === 'body' 分支直接返回，绕过了 authenticateResponseInterceptor 的 401 token 刷新；
+  // 这里把这种 Blob 解析回 JSON，再以 axios 风格抛出，让后续拦截器接管
+  client.addResponseInterceptor({
+    fulfilled: async (response) => {
+      const blob = response.data;
+      if (!(blob instanceof Blob)) {
+        return response;
+      }
+      // Blob.type 在部分环境可能为空或大小写不一，叠加 response header 一起判断更稳
+      const blobType = (blob.type || '').toLowerCase();
+      const headerType = String(
+        response.headers?.['content-type'] ??
+          response.headers?.['Content-Type'] ??
+          '',
+      ).toLowerCase();
+      if (
+        !blobType.includes('application/json') &&
+        !headerType.includes('application/json')
+      ) {
+        return response;
+      }
+      let parsed: any;
+      try {
+        parsed = JSON.parse(await blob.text());
+      } catch {
+        return response;
+      }
+      if (parsed && parsed.code !== undefined && parsed.code !== 0) {
+        response.data = parsed;
+        throw Object.assign(new Error(parsed.msg ?? 'Request failed'), {
+          config: response.config,
+          response,
+          data: parsed,
+          isAxiosError: true,
+        });
+      }
+      return response;
+    },
+  });
+
   // 处理返回的响应数据格式
   client.addResponseInterceptor(
     defaultResponseInterceptor({
