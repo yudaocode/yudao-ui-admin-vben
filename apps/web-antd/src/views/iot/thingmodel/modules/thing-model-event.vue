@@ -35,9 +35,9 @@ watch(
 
 <template>
   <Form.Item
+    :name="['event', 'type']"
     :rules="[{ required: true, message: '请选择事件类型', trigger: 'change' }]"
     label="事件类型"
-    name="event.type"
   >
     <Radio.Group v-model:value="thingModelEvent.type">
       <Radio

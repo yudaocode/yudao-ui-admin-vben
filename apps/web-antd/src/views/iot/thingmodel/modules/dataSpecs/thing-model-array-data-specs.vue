@@ -29,7 +29,10 @@ function handleChange(val: any) {
 </script>
 
 <template>
-  <Form.Item label="元素类型" name="property.dataSpecs.childDataType">
+  <Form.Item
+    :name="['property', 'dataSpecs', 'childDataType']"
+    label="元素类型"
+  >
     <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
       <template v-for="item in getDataTypeOptions()" :key="item.value">
         <Radio
@@ -50,7 +53,7 @@ function handleChange(val: any) {
       </template>
     </Radio.Group>
   </Form.Item>
-  <Form.Item label="元素个数" name="property.dataSpecs.size">
+  <Form.Item :name="['property', 'dataSpecs', 'size']" label="元素个数">
     <Input
       v-model:value="dataSpecs.size"
       placeholder="请输入数组中的元素个数"

@@ -35,9 +35,9 @@ watch(
 
 <template>
   <Form.Item
+    :name="['service', 'callType']"
     :rules="[{ required: true, message: '请选择调用方式', trigger: 'change' }]"
     label="调用方式"
-    name="service.callType"
   >
     <Radio.Group v-model:value="service.callType">
       <Radio

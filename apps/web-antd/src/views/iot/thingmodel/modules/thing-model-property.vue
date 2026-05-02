@@ -154,8 +154,8 @@ watch(
   <!-- 文本型配置 -->
   <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
+    :name="['property', 'dataSpecs', 'length']"
     label="数据长度"
-    name="property.dataSpecs.length"
   >
     <Input
       v-model:value="property.dataSpecs.length"
@@ -189,8 +189,8 @@ watch(
   />
   <Form.Item
     v-if="!isStructDataSpecs && !isParams"
+    :name="['property', 'accessMode']"
     label="读写类型"
-    name="property.accessMode"
   >
     <Radio.Group v-model:value="property.accessMode">
       <Radio
