@@ -767,6 +767,14 @@ export const COMPARISON_OPERATORS: DictDataType[] = [
     value: '<=',
     label: '小于等于',
   },
+  {
+    value: 'contain',
+    label: '包含',
+  },
+  {
+    value: '!contain',
+    label: '不包含',
+  },
 ];
 // 审批操作按钮名称
 export const OPERATION_BUTTON_NAME = new Map<number, string>();
