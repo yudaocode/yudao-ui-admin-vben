@@ -164,7 +164,7 @@ const resetCustomConfigList = () => {
   approveType.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:ApproveType`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:ApproveType`, {
       value: ApproveType.USER,
     });
@@ -173,7 +173,7 @@ const resetCustomConfigList = () => {
   assignStartUserHandlerTypeEl.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignStartUserHandlerType`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:AssignStartUserHandlerType`, {
       value: 1,
     });
@@ -183,13 +183,13 @@ const resetCustomConfigList = () => {
   rejectHandlerTypeEl.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:RejectHandlerType`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:RejectHandlerType`, { value: 1 });
   rejectHandlerType.value = rejectHandlerTypeEl.value.value;
   returnNodeIdEl.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:RejectReturnTaskId`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:RejectReturnTaskId`, {
       value: '',
     });
@@ -199,7 +199,7 @@ const resetCustomConfigList = () => {
   assignEmptyHandlerTypeEl.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignEmptyHandlerType`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyHandlerType`, {
       value: 1,
     });
@@ -207,7 +207,7 @@ const resetCustomConfigList = () => {
   assignEmptyUserIdsEl.value =
     elExtensionElements.value.values?.find(
       (ex: any) => ex.$type === `${prefix}:AssignEmptyUserIds`,
-    )?.[0] ||
+    ) ||
     bpmnInstances().moddle.create(`${prefix}:AssignEmptyUserIds`, {
       value: '',
     });
