@@ -370,8 +370,8 @@ catalogs:
       specifier: ^4.5.0
       version: 4.5.0
     lucide-vue-next:
-      specifier: ^0.577.0
-      version: 0.577.0
+      specifier: ^1.0.0
+      version: 1.0.0
     markdown-it:
       specifier: ^14.1.1
       version: 14.1.1
@@ -1206,7 +1206,7 @@ importers:
         version: 4.2.6(vue@3.5.32(typescript@6.0.2))
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.32(typescript@6.0.2))
+        version: 1.0.0(vue@3.5.32(typescript@6.0.2))
       medium-zoom:
         specifier: 'catalog:'
         version: 1.1.0
@@ -1527,7 +1527,7 @@ importers:
         version: 5.0.0(vue@3.5.32(typescript@6.0.2))
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.32(typescript@6.0.2))
+        version: 1.0.0(vue@3.5.32(typescript@6.0.2))
       vue:
         specifier: ^3.5.32
         version: 3.5.32(typescript@6.0.2)
@@ -1788,7 +1788,7 @@ importers:
         version: 0.7.1
       lucide-vue-next:
         specifier: 'catalog:'
-        version: 0.577.0(vue@3.5.32(typescript@6.0.2))
+        version: 1.0.0(vue@3.5.32(typescript@6.0.2))
       reka-ui:
         specifier: 'catalog:'
         version: 2.9.5(vue@3.5.32(typescript@6.0.2))
@@ -9257,6 +9257,11 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  lefthook-linux-x64@2.1.5:
+    resolution: {integrity: sha512-bqK3LrAB5l5YaCaoHk6qRWlITrGWzP4FbwRxA31elbxjd0wgNWZ2Sn3zEfSEcxz442g7/PPkEwqqsTx0kSFzpg==}
+    cpu: [x64]
+    os: [linux]
+
   lefthook-openbsd-arm64@2.1.5:
     resolution: {integrity: sha512-5aSwK7vV3A6t0w9PnxCMiVjQlcvopBP50BtmnnLnNJyAYHnFbZ0Baq5M0WkE9IsUkWSux0fe6fd0jDkuG711MA==}
     cpu: [arm64]
@@ -9488,8 +9493,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-vue-next@0.577.0:
-    resolution: {integrity: sha512-py05bAfv9SHVJqscbiOnjcnLlEmOffA58a+7XhZuFxrs6txe1E8VoR1ngWGTYO+9aVKABAz8l3ee3PqiQN9QPA==}
+  lucide-vue-next@1.0.0:
+    resolution: {integrity: sha512-V6SPvx1IHTj/UY+FrIYWV5faISsPSb8BnWSFDxAtezWKvWc9ZZ40PDrdu1/Qb5vg4lHWr1hs1BAMGVGm6V1Xdg==}
     peerDependencies:
       vue: ^3.5.32
 
@@ -19840,6 +19845,9 @@ snapshots:
   lefthook-linux-arm64@2.1.5:
     optional: true
 
+  lefthook-linux-x64@2.1.5:
+    optional: true
+
   lefthook-openbsd-arm64@2.1.5:
     optional: true
 
@@ -19859,6 +19867,7 @@ snapshots:
       lefthook-freebsd-arm64: 2.1.5
       lefthook-freebsd-x64: 2.1.5
       lefthook-linux-arm64: 2.1.5
+      lefthook-linux-x64: 2.1.5
       lefthook-openbsd-arm64: 2.1.5
       lefthook-openbsd-x64: 2.1.5
       lefthook-windows-arm64: 2.1.5
@@ -20060,7 +20069,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-vue-next@0.577.0(vue@3.5.32(typescript@6.0.2)):
+  lucide-vue-next@1.0.0(vue@3.5.32(typescript@6.0.2)):
     dependencies:
       vue: 3.5.32(typescript@6.0.2)
 

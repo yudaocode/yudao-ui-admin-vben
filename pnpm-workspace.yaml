@@ -142,7 +142,7 @@ catalog:
   json-bigint: ^1.0.0
   lefthook: ^2.1.5
   lodash.clonedeep: ^4.5.0
-  lucide-vue-next: ^0.577.0
+  lucide-vue-next: ^1.0.0
   markdown-it: ^14.1.1
   markmap-common: ^0.16.0
   markmap-lib: ^0.16.1
