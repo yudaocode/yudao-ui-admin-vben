@@ -7,7 +7,6 @@ import { computed } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { Popover } from 'antdv-next';
-// TODO: List component not available in antdv-next, needs manual migration
 
 import { useEmoji } from './emoji';
 
@@ -27,7 +26,8 @@ function handleSelect(item: Emoji) {
 <template>
   <Popover placement="top" trigger="click">
     <template #content>
-      <List height="300px" class="w-[500px]">
+      <!-- TODO: antdv-next 暂不支持 List 组件，后续组件库会新增 Listy 组件替代 List -->
+      <div class="h-[300px] w-[500px] overflow-auto">
         <ul class="ml-2 flex flex-wrap px-2">
           <li
             v-for="(item, index) in emojiList"
@@ -39,7 +39,7 @@ function handleSelect(item: Emoji) {
             <img :src="item.url" class="size-4" />
           </li>
         </ul>
-      </List>
+      </div>
     </template>
     <IconifyIcon
       class="ml-2.5 size-6 cursor-pointer"

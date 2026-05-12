@@ -8,7 +8,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { Image, Tag } from 'antdv-next';
-// TODO: List component not available in antdv-next, needs manual migration
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage } from '#/api/mall/trade/order';
@@ -80,37 +79,38 @@ const [Grid] = useVbenVxeGrid({
 <template>
   <Grid table-title="订单列表">
     <template #expand_content="{ row }">
-      <List item-layout="vertical" :data-source="row.items">
-        <template #renderItem="{ item }">
-          <List.Item>
-            <List.Item.Meta>
-              <template #title>
-                {{ item.spuName }}
-                <Tag
-                  color="blue"
-                  v-for="property in item.properties"
-                  :key="property.propertyId"
-                >
-                  {{ property.propertyName }} : {{ property.valueName }}
-                </Tag>
-              </template>
-              <template #avatar>
-                <Image :src="item.picUrl" :width="40" :height="40" />
-              </template>
-              <template #description>
-                {{
-                  `原价：${fenToYuan(item.price)} 元 / 数量：${item.count} 个`
-                }}
-                |
-                <DictTag
-                  :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
-                  :value="item.afterSaleStatus"
-                />
-              </template>
-            </List.Item.Meta>
-          </List.Item>
-        </template>
-      </List>
+      <!-- TODO: antdv-next 暂不支持 List 组件，后续组件库会新增 Listy 组件替代 List -->
+      <div>
+        <div
+          v-for="item in row.items"
+          :key="item.id"
+          class="flex items-start gap-3 border-b border-gray-100 py-3 last:border-b-0"
+        >
+          <Image :src="item.picUrl" :width="40" :height="40" />
+          <div class="flex-1">
+            <div>
+              {{ item.spuName }}
+              <Tag
+                color="blue"
+                v-for="property in item.properties"
+                :key="property.propertyId"
+              >
+                {{ property.propertyName }} : {{ property.valueName }}
+              </Tag>
+            </div>
+            <div class="text-gray-500">
+              {{
+                `原价：${fenToYuan(item.price!)} 元 / 数量：${item.count} 个`
+              }}
+              |
+              <DictTag
+                :type="DICT_TYPE.TRADE_ORDER_ITEM_AFTER_SALE_STATUS"
+                :value="item.afterSaleStatus"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
     <template #actions="{ row }">
       <TableAction

@@ -4,7 +4,6 @@ import { computed, onActivated, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 
 import { Badge, Card } from 'antdv-next';
-// TODO: List component not available in antdv-next, needs manual migration
 
 import { getFollowClueCount } from '#/api/crm/clue';
 import {
@@ -96,27 +95,22 @@ onMounted(() => {
   <Page auto-content-height>
     <div class="flex h-full w-full">
       <Card class="w-1/5">
-        <List item-layout="horizontal" :data-source="leftSides">
-          <template #renderItem="{ item }">
-            <List.Item
-              @click="sideClick(item)"
-              class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <List.Item.Meta>
-                <template #title>
-                  {{ item.name }}
-                </template>
-              </List.Item.Meta>
-              <template #extra>
-                <Badge
-                  v-if="item.count.value > 0"
-                  :color="item.menu === leftMenu ? 'blue' : 'red'"
-                  :count="item.count.value"
-                />
-              </template>
-            </List.Item>
-          </template>
-        </List>
+        <!-- TODO: antdv-next 暂不支持 List 组件，后续组件库会新增 Listy 组件替代 List -->
+        <div>
+          <div
+            v-for="item in leftSides"
+            :key="item.menu"
+            class="flex cursor-pointer items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+            @click="sideClick(item)"
+          >
+            <span>{{ item.name }}</span>
+            <Badge
+              v-if="item.count.value > 0"
+              :color="item.menu === leftMenu ? 'blue' : 'red'"
+              :count="item.count.value"
+            />
+          </div>
+        </div>
       </Card>
       <component class="ml-4 w-4/5" :is="currentComponent" />
     </div>
