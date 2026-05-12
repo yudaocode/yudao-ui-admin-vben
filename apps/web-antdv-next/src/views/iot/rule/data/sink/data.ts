@@ -73,7 +73,7 @@ export function useSinkFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '目的描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入目的描述',
         rows: 3,

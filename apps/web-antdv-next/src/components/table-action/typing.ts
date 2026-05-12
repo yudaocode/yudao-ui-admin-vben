@@ -1,8 +1,4 @@
-import type {
-  ButtonProps,
-  ButtonType,
-} from 'ant-design-vue/es/button/buttonTypes';
-import type { TooltipProps } from 'ant-design-vue/es/tooltip/Tooltip';
+import type { ButtonProps, ButtonType, TooltipProps } from 'antdv-next';
 
 export interface PopConfirm {
   title: string;

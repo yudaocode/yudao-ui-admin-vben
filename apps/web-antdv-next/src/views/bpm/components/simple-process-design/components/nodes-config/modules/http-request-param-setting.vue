@@ -11,7 +11,7 @@ import {
   Row,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   BPM_HTTP_REQUEST_PARAM_TYPES,

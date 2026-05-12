@@ -7,7 +7,7 @@ import { nextTick } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Tag } from 'ant-design-vue';
+import { Button, Tag } from 'antdv-next';
 
 import MainConditionInnerConfig from './main-condition-inner-config.vue';
 import SubConditionGroupConfig from './sub-condition-group-config.vue';

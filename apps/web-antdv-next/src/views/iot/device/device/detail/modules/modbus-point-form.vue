@@ -10,7 +10,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm, z } from '#/adapter/form';
 import {

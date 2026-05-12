@@ -1,4 +1,4 @@
-import type { DescriptionsProps } from 'ant-design-vue/es/descriptions';
+import type { DescriptionsProps } from 'antdv-next';
 import type { JSX } from 'vue/jsx-runtime';
 
 import type { CSSProperties, VNode } from 'vue';

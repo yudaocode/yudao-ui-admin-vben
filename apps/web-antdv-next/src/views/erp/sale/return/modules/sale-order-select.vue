@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Input, message, Modal } from 'ant-design-vue';
+import { Input, message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSaleOrderPage } from '#/api/erp/sale/order';

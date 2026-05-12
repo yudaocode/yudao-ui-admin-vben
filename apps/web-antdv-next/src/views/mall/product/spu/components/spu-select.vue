@@ -9,7 +9,7 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 
 import { handleTree } from '@vben/utils';
 
-import { message, Modal } from 'ant-design-vue';
+import { message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCategoryList } from '#/api/mall/product/category';

@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { formatToFraction } from '@vben/utils';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button, Image } from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 

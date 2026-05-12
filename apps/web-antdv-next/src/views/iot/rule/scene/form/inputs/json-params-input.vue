@@ -7,7 +7,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Input, Popover, Tag } from 'ant-design-vue';
+import { Button, Input, Popover, Tag } from 'antdv-next';
 
 import {
   IoTDataSpecsDataTypeEnum,

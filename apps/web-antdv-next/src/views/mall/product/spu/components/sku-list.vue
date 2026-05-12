@@ -16,7 +16,7 @@ import {
   isEmpty,
 } from '@vben/utils';
 
-import { Button, Image, Input, InputNumber, message } from 'ant-design-vue';
+import { Button, Image, Input, InputNumber, message } from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { ImageUpload } from '#/components/upload';

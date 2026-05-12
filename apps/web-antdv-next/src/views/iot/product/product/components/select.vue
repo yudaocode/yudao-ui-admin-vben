@@ -3,7 +3,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 
 import { onMounted, ref } from 'vue';
 
-import { Select } from 'ant-design-vue';
+import { Select } from 'antdv-next';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 

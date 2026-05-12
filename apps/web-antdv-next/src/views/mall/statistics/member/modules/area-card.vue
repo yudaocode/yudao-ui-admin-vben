@@ -7,7 +7,7 @@ import { onMounted, ref, shallowRef } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Spin } from 'ant-design-vue';
+import { Card, Spin } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMemberAreaStatisticsList } from '#/api/mall/statistics/member';

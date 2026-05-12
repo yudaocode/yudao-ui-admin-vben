@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { Card, Tabs } from 'ant-design-vue';
+import { Card, Tabs } from 'antdv-next';
 
 import { getAuthPermissionInfoApi } from '#/api';
 import { getUserProfile } from '#/api/system/user/profile';
@@ -50,15 +50,15 @@ onMounted(loadProfile);
       <!-- 右侧 标签页 -->
       <Card class="ml-3 w-3/5">
         <Tabs v-model:active-key="activeName" class="-mt-4">
-          <Tabs.TabPane key="basicInfo" tab="基本设置">
+          <TabPane key="basicInfo" tab="基本设置">
             <BaseInfo :profile="profile" @success="refreshProfile" />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="resetPwd" tab="密码设置">
+          </TabPane>
+          <TabPane key="resetPwd" tab="密码设置">
             <ResetPwd />
-          </Tabs.TabPane>
-          <Tabs.TabPane key="userSocial" tab="社交绑定" force-render>
+          </TabPane>
+          <TabPane key="userSocial" tab="社交绑定" force-render>
             <UserSocial @update:active-name="activeName = $event" />
-          </Tabs.TabPane>
+          </TabPane>
           <!-- TODO @芋艿：在线设备 -->
         </Tabs>
       </Card>

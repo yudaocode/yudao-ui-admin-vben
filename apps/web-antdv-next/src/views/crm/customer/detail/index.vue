@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, Tabs } from 'ant-design-vue';
+import { Card, message, Tabs } from 'antdv-next';
 
 import {
   getCustomer,
@@ -262,20 +262,20 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+        <TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="基本信息" key="2" :force-render="true">
           <Info :customer="customer" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="联系人" key="3" :force-render="true">
+        </TabPane>
+        <TabPane tab="联系人" key="3" :force-render="true">
           <ContactDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
+        </TabPane>
+        <TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="customerId"
@@ -283,27 +283,27 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="商机" key="5" :force-render="true">
+        </TabPane>
+        <TabPane tab="商机" key="5" :force-render="true">
           <BusinessDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="合同" key="6" :force-render="true">
+        </TabPane>
+        <TabPane tab="合同" key="6" :force-render="true">
           <ContractDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="回款" key="7" :force-render="true">
+        </TabPane>
+        <TabPane tab="回款" key="7" :force-render="true">
           <ReceivablePlanDetailsList :customer-id="customerId" />
           <ReceivableDetailsList :customer-id="customerId" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="8" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

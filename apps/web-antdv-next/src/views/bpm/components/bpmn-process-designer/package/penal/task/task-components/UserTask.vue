@@ -27,9 +27,9 @@ import {
   FormItem,
   Select,
   SelectOption,
-  Textarea,
+  TextArea,
   TreeSelect,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getUserGroupSimpleList } from '#/api/bpm/userGroup';
 import { getSimpleDeptList } from '#/api/system/dept';
@@ -543,7 +543,7 @@ onBeforeUnmount(() => {
       label="流程表达式"
       name="candidateParam"
     >
-      <Textarea
+      <TextArea
         v-model:value="userTaskForm.candidateParam[0]"
         allow-clear
         style="width: 100%"
@@ -565,7 +565,7 @@ onBeforeUnmount(() => {
     </FormItem>
 
     <FormItem label="跳过表达式" name="skipExpression">
-      <Textarea
+      <TextArea
         v-model:value="userTaskForm.skipExpression"
         allow-clear
         style="width: 100%"

@@ -59,7 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '评论内容',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入评论内容',
       },

@@ -8,7 +8,7 @@ import { onMounted, ref, watch } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import {
   getPurchaseSummary,

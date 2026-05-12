@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CrmReceivablePlanApi } from '#/api/crm/receivable/plan';
 
-import { Divider } from 'ant-design-vue';
+import { Divider } from 'antdv-next';
 
 import { useDescription } from '#/components/description';
 

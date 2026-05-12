@@ -7,7 +7,7 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
@@ -194,7 +194,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '产品描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入产品描述',
         rows: 3,

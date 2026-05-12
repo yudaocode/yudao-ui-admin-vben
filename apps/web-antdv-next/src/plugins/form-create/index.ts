@@ -30,7 +30,7 @@ import {
   Tabs,
   Tag,
   Transfer,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 // ======================= 自定义组件 =======================
 import { useApiSelect } from '#/components/form-create';

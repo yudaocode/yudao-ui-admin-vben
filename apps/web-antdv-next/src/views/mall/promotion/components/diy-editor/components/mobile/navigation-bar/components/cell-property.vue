@@ -15,7 +15,7 @@ import {
   Slider,
   Switch,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import appNavBarMp from '#/assets/imgs/diy/app-nav-bar-mp.png';
 import UploadImg from '#/components/upload/image-upload.vue';

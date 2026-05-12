@@ -4,7 +4,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { Checkbox, Input, Select } from 'ant-design-vue';
+import { Checkbox, Input, Select } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
@@ -91,13 +91,13 @@ function filterDictTypeOption(input: string, option: any) {
     <!-- Java 类型 -->
     <template #javaType="{ row, column }">
       <Select v-model:value="row.javaType" style="width: 100%">
-        <Select.Option
+        <SelectOption
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
         >
           {{ option.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </template>
     <!-- Java 属性 -->
@@ -125,13 +125,13 @@ function filterDictTypeOption(input: string, option: any) {
     <!-- 查询方式 -->
     <template #listOperationCondition="{ row, column }">
       <Select v-model:value="row.listOperationCondition" class="w-full">
-        <Select.Option
+        <SelectOption
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
         >
           {{ option.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </template>
 
@@ -143,13 +143,13 @@ function filterDictTypeOption(input: string, option: any) {
     <!-- 显示类型 -->
     <template #htmlType="{ row, column }">
       <Select v-model:value="row.htmlType" class="w-full">
-        <Select.Option
+        <SelectOption
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
         >
           {{ option.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </template>
 
@@ -162,13 +162,13 @@ function filterDictTypeOption(input: string, option: any) {
         show-search
         :filter-option="filterDictTypeOption"
       >
-        <Select.Option
+        <SelectOption
           v-for="option in dictTypeOptions"
           :key="option.type"
           :value="option.type"
         >
           {{ option.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </template>
 

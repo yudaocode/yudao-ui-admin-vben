@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -105,15 +105,15 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <!-- 子表的表单 -->
     <Tabs v-model:active-key="subTabsName">
-      <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+      <TabPane key="demo03Course" tab="学生课程" force-render>
         <Demo03CourseForm
           ref="demo03CourseFormRef"
           :student-id="formData?.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+      </TabPane>
+      <TabPane key="demo03Grade" tab="学生班级" force-render>
         <Demo03GradeForm ref="demo03GradeFormRef" :student-id="formData?.id" />
-      </Tabs.TabPane>
+      </TabPane>
     </Tabs>
   </Modal>
 </template>

@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { disagreeAfterSale } from '#/api/mall/trade/afterSale';

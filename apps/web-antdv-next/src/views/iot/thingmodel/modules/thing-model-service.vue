@@ -7,7 +7,7 @@ import { watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Radio } from 'ant-design-vue';
+import { Radio } from 'antdv-next';
 
 import {
   IoTThingModelParamDirectionEnum,
@@ -34,12 +34,12 @@ watch(
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['service', 'callType']"
     :rules="[{ required: true, message: '请选择调用方式', trigger: 'change' }]"
     label="调用方式"
   >
-    <Radio.Group v-model:value="service.callType">
+    <RadioGroup v-model:value="service.callType">
       <Radio
         v-for="callType in Object.values(IoTThingModelServiceCallTypeEnum)"
         :key="callType.value"
@@ -47,20 +47,20 @@ watch(
       >
         {{ callType.label }}
       </Radio>
-    </Radio.Group>
-  </Form.Item>
-  <Form.Item label="输入参数">
+    </RadioGroup>
+  </FormItem>
+  <FormItem label="输入参数">
     <ThingModelInputOutputParam
       v-model="service.inputParams"
       :direction="IoTThingModelParamDirectionEnum.INPUT"
     />
-  </Form.Item>
-  <Form.Item label="输出参数">
+  </FormItem>
+  <FormItem label="输出参数">
     <ThingModelInputOutputParam
       v-model="service.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
     />
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

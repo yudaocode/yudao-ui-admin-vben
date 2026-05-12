@@ -11,7 +11,7 @@ import {
   DICT_TYPE,
 } from '@vben/constants';
 
-import { Button, message, Textarea } from 'ant-design-vue';
+import { Button, message, TextArea } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinition } from '#/api/bpm/definition';
@@ -76,7 +76,7 @@ async function handleCreate(row?: BpmProcessInstanceApi.ProcessInstance) {
 function handleCancel(row: BpmProcessInstanceApi.ProcessInstance) {
   prompt({
     component: () => {
-      return h(Textarea, {
+      return h(TextArea, {
         placeholder: '请输入取消原因',
         allowClear: true,
         rows: 2,

@@ -9,7 +9,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Empty, Select } from 'ant-design-vue';
+import { Card, Empty, Select } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getDeviceMessageSummaryByDate } from '#/api/iot/statistics';

@@ -14,7 +14,7 @@ import {
   Popconfirm,
   Row,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getProductPage } from '#/api/iot/product/product';
 import { DictTag } from '#/components/dict-tag';

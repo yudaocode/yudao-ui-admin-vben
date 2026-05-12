@@ -7,7 +7,7 @@ import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { addTime, betweenDay, formatDate } from '@vben/utils';
 
-import { Card, message } from 'ant-design-vue';
+import { Card, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

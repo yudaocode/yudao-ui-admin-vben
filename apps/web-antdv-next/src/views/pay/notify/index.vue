@@ -5,7 +5,7 @@ import type { PayNotifyApi } from '#/api/pay/notify';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyTaskPage } from '#/api/pay/notify';

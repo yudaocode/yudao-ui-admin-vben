@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Demo02CategoryApi } from '#/api/infra/demo/demo02';
 
 import { computed, ref } from 'vue';
@@ -8,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Form, Input, message, TreeSelect } from 'ant-design-vue';
+import { Form, Input, message, TreeSelect } from 'antdv-next';
 
 import {
   createDemo02Category,
@@ -18,6 +16,7 @@ import {
 } from '#/api/infra/demo/demo02';
 import { $t } from '#/locales';
 
+type Rule = any;
 const emit = defineEmits(['success']);
 
 const formRef = ref();
@@ -110,10 +109,10 @@ const [Modal, modalApi] = useVbenModal({
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="名字" name="name">
+      <FormItem label="名字" name="name">
         <Input v-model:value="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="父级编号" name="parentId">
+      </FormItem>
+      <FormItem label="父级编号" name="parentId">
         <TreeSelect
           v-model:value="formData.parentId"
           :tree-data="demo02CategoryTree"
@@ -126,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
           tree-default-expand-all
           placeholder="请选择父级编号"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

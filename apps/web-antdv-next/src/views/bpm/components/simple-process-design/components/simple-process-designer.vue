@@ -15,7 +15,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import { getUserGroupSimpleList } from '#/api/bpm/userGroup';

@@ -7,7 +7,7 @@ import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlob, isString } from '@vben/utils';
 
-import { Button, ButtonGroup, Modal, Row } from 'ant-design-vue';
+import { Button, Modal, Row, Space } from 'antdv-next';
 
 import { NODE_DEFAULT_TEXT } from '../consts';
 import { useWatchNode } from '../helpers';
@@ -202,7 +202,7 @@ onMounted(() => {
   <div class="simple-process-model-container">
     <div class="absolute right-0 top-0 bg-card">
       <Row type="flex" justify="end">
-        <ButtonGroup key="scale-control">
+        <Space key="scale-control">
           <Button v-if="!readonly" @click="exportJson">
             <IconifyIcon icon="lucide:download" /> 导出
           </Button>
@@ -230,7 +230,7 @@ onMounted(() => {
             <IconifyIcon icon="lucide:zoom-in" />
           </Button>
           <Button @click="resetPosition">重置</Button>
-        </ButtonGroup>
+        </Space>
       </Row>
     </div>
     <div

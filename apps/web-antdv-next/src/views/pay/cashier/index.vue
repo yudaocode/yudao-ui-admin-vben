@@ -13,14 +13,7 @@ import {
 import { useTabs } from '@vben/hooks';
 import { fenToYuan, formatDate } from '@vben/utils';
 
-import {
-  Button,
-  Card,
-  Descriptions,
-  Input,
-  message,
-  QRCode,
-} from 'ant-design-vue';
+import { Button, Card, Descriptions, Input, message, QRCode } from 'antdv-next';
 
 import { getOrder, submitOrder } from '#/api/pay/order';
 
@@ -307,24 +300,24 @@ onBeforeUnmount(() => {
   <Page auto-content-height>
     <Card class="mt-4">
       <Descriptions :column="3" :title="payOrder?.subject ?? '商品详情'">
-        <Descriptions.Item label="支付单号">
+        <DescriptionsItem label="支付单号">
           {{ payOrder?.id }}
-        </Descriptions.Item>
-        <Descriptions.Item label="商品标题">
+        </DescriptionsItem>
+        <DescriptionsItem label="商品标题">
           {{ payOrder?.subject }}
-        </Descriptions.Item>
-        <Descriptions.Item label="商品内容">
+        </DescriptionsItem>
+        <DescriptionsItem label="商品内容">
           {{ payOrder?.body }}
-        </Descriptions.Item>
-        <Descriptions.Item label="支付金额">
+        </DescriptionsItem>
+        <DescriptionsItem label="支付金额">
           {{ `￥${fenToYuan(payOrder?.price || 0)}` }}
-        </Descriptions.Item>
-        <Descriptions.Item label="创建时间">
+        </DescriptionsItem>
+        <DescriptionsItem label="创建时间">
           {{ formatDate(payOrder?.createTime) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="过期时间">
+        </DescriptionsItem>
+        <DescriptionsItem label="过期时间">
           {{ formatDate(payOrder?.expireTime) }}
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </Card>
     <Card title="选择支付宝支付" class="mt-4">

@@ -7,7 +7,7 @@ import { watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Radio } from 'ant-design-vue';
+import { Radio } from 'antdv-next';
 
 import {
   IoTThingModelEventTypeEnum,
@@ -34,12 +34,12 @@ watch(
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['event', 'type']"
     :rules="[{ required: true, message: '请选择事件类型', trigger: 'change' }]"
     label="事件类型"
   >
-    <Radio.Group v-model:value="thingModelEvent.type">
+    <RadioGroup v-model:value="thingModelEvent.type">
       <Radio
         v-for="eventType in Object.values(IoTThingModelEventTypeEnum)"
         :key="eventType.value"
@@ -47,14 +47,14 @@ watch(
       >
         {{ eventType.label }}
       </Radio>
-    </Radio.Group>
-  </Form.Item>
-  <Form.Item label="输出参数">
+    </RadioGroup>
+  </FormItem>
+  <FormItem label="输出参数">
     <ThingModelInputOutputParam
       v-model="thingModelEvent.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
     />
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

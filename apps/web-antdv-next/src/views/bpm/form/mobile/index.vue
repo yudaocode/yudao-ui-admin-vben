@@ -18,7 +18,7 @@ import { BpmFieldPermissionType, BpmModelFormType } from '@vben/constants';
 import { updatePreferences } from '@vben/preferences';
 import { useAccessStore } from '@vben/stores';
 
-import { Button, Empty, Spin } from 'ant-design-vue';
+import { Button, Empty, Spin } from 'antdv-next';
 
 import { getApprovalDetail } from '#/api/bpm/processInstance';
 import { setConfAndFields2 } from '#/components/form-create';

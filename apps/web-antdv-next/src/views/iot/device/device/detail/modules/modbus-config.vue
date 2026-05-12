@@ -14,7 +14,7 @@ import { computed, h, onMounted, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getModbusConfig } from '#/api/iot/device/modbus/config';

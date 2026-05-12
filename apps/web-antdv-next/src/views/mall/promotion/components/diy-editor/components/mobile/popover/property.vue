@@ -2,7 +2,7 @@
 import type { PopoverProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Radio, RadioGroup, Tooltip } from 'ant-design-vue';
+import { Form, FormItem, Radio, RadioGroup, Tooltip } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { AppLinkInput, Draggable } from '#/views/mall/promotion/components';

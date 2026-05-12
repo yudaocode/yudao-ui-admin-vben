@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { updateOrderPrice } from '#/api/mall/trade/order';

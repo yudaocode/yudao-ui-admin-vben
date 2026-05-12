@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import { Textarea } from 'ant-design-vue';
+import { TextArea } from 'antdv-next';
 
 defineOptions({ name: 'ElementOtherConfig' });
 
@@ -60,7 +60,7 @@ watch(
     <div class="flex items-start gap-2">
       <div class="w-20 pt-1 text-sm text-gray-700">元素文档：</div>
       <div class="flex-1">
-        <Textarea
+        <TextArea
           v-model:value="documentation"
           :auto-size="{ minRows: 2, maxRows: 4 }"
           @change="updateDocumentation"

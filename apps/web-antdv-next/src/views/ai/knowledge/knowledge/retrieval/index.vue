@@ -11,8 +11,8 @@ import {
   Empty,
   InputNumber,
   message,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 import { getKnowledge } from '#/api/ai/knowledge/knowledge';
 import { searchKnowledgeSegment } from '#/api/ai/knowledge/segment';
@@ -100,7 +100,7 @@ onMounted(() => {
         </div>
         <div>
           <div class="relative m-2">
-            <Textarea
+            <TextArea
               v-model:value="queryParams.content"
               :rows="8"
               placeholder="请输入文本"

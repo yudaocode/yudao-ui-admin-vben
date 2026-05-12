@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
-
 import { computed, ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Button, Upload } from 'ant-design-vue';
+import { Button, Upload } from 'antdv-next';
 
 import { useUpload } from '#/components/upload/use-upload';
+
+type UploadRequestOption = any;
 
 defineOptions({ name: 'TinymceImageUpload' });
 

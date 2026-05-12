@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { WriteExample } from '@vben/constants';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { writeStream } from '#/api/ai/write';
 

@@ -57,7 +57,7 @@ export function useFormSchema(
     {
       fieldName: 'content',
       label: '跟进内容',
-      component: 'Textarea',
+      component: 'TextArea',
       rules: 'required',
     },
     {

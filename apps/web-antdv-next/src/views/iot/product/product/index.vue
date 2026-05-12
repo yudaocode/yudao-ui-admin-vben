@@ -11,7 +11,7 @@ import { ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, Card, Input, message, Space } from 'ant-design-vue';
+import { Button, Card, Input, message, Space } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';

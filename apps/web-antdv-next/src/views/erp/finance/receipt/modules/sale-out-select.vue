@@ -4,7 +4,7 @@ import type { ErpSaleOutApi } from '#/api/erp/sale/out';
 
 import { ref } from 'vue';
 
-import { message, Modal } from 'ant-design-vue';
+import { message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSaleOutPage } from '#/api/erp/sale/out';

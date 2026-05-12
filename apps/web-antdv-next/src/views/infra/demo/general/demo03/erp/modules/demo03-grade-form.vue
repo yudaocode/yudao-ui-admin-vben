@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, Input, message } from 'ant-design-vue';
+import { Form, Input, message } from 'antdv-next';
 
 import {
   createDemo03Grade,
@@ -16,6 +14,7 @@ import {
 } from '#/api/infra/demo/demo03/erp';
 import { $t } from '#/locales';
 
+type Rule = any;
 const emit = defineEmits(['success']);
 const getTitle = computed(() => {
   return formData.value?.id
@@ -100,18 +99,18 @@ function resetForm() {
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="学生编号" name="studentId">
+      <FormItem label="学生编号" name="studentId">
         <Input
           v-model:value="formData.studentId"
           placeholder="请输入学生编号"
         />
-      </Form.Item>
-      <Form.Item label="名字" name="name">
+      </FormItem>
+      <FormItem label="名字" name="name">
         <Input v-model:value="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="班主任" name="teacher">
+      </FormItem>
+      <FormItem label="班主任" name="teacher">
         <Input v-model:value="formData.teacher" placeholder="请输入班主任" />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

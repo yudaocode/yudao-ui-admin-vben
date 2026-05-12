@@ -3,7 +3,7 @@ import type { NoticeBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Carousel, Divider, Image } from 'ant-design-vue';
+import { Carousel, Divider, Image } from 'antdv-next';
 
 /** 公告栏 */
 defineOptions({ name: 'NoticeBar' });

@@ -7,7 +7,7 @@ import { onMounted, ref, watch } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 import { getSpuDetailList } from '#/api/mall/product/spu';
 

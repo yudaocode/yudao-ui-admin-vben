@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { BpmFormApi } from '#/api/bpm/form';
 
 import { ref, watch } from 'vue';
@@ -19,11 +17,11 @@ import {
   Select,
   SelectOption,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import { setConfAndFields2 } from '#/components/form-create';
-
+type Rule = any;
 const props = defineProps({
   formList: {
     type: Array<BpmFormApi.Form>,

@@ -15,7 +15,7 @@ import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, Select, Space, Switch, Tag } from 'ant-design-vue';
+import { Button, Select, Space, Switch, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
@@ -189,14 +189,14 @@ defineExpose({
         placeholder="所有方法"
         style="width: 160px"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in methodOptions"
           :key="item.value"
           :label="item.label"
           :value="item.value"
         >
           {{ item.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
       <Select
         v-model:value="queryParams.upstream"
@@ -204,8 +204,8 @@ defineExpose({
         placeholder="上行/下行"
         style="width: 160px"
       >
-        <Select.Option label="上行" value="true">上行</Select.Option>
-        <Select.Option label="下行" value="false">下行</Select.Option>
+        <SelectOption label="上行" value="true">上行</SelectOption>
+        <SelectOption label="下行" value="false">下行</SelectOption>
       </Select>
       <Space>
         <Button type="primary" @click="handleQuery">

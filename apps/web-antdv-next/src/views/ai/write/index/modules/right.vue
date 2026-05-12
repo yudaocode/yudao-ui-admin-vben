@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, Card, message, Textarea } from 'ant-design-vue';
+import { Button, Card, message, TextArea } from 'antdv-next';
 
 const props = defineProps({
   content: {
@@ -87,7 +87,7 @@ watch(copied, (val) => {
           </template>
           终止生成
         </Button>
-        <Textarea
+        <TextArea
           id="inputId"
           v-model:value="compContent"
           :auto-size="true"

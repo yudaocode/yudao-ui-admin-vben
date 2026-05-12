@@ -4,7 +4,7 @@ import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';

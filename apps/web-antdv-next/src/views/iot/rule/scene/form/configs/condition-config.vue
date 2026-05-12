@@ -5,7 +5,7 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 import { computed, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select } from 'ant-design-vue';
+import { Col, Row, Select } from 'antdv-next';
 
 import {
   getConditionTypeOptions,
@@ -160,7 +160,7 @@ function handleOperatorChange() {
     <!-- 条件类型选择 -->
     <Row :gutter="16">
       <Col :span="8">
-        <Form.Item label="条件类型" required>
+        <FormItem label="条件类型" required>
           <Select
             :model-value="condition.type"
             @update:model-value="
@@ -170,21 +170,21 @@ function handleOperatorChange() {
             placeholder="请选择条件类型"
             class="w-full"
           >
-            <Select.Option
+            <SelectOption
               v-for="option in getConditionTypeOptions()"
               :key="option.value"
               :label="option.label"
               :value="option.value"
             />
           </Select>
-        </Form.Item>
+        </FormItem>
       </Col>
     </Row>
 
     <!-- 产品设备选择 - 设备相关条件的公共部分 -->
     <Row v-if="isDeviceCondition" :gutter="16">
       <Col :span="12">
-        <Form.Item label="产品" required>
+        <FormItem label="产品" required>
           <ProductSelector
             :model-value="condition.productId"
             @update:model-value="
@@ -192,10 +192,10 @@ function handleOperatorChange() {
             "
             @change="handleProductChange"
           />
-        </Form.Item>
+        </FormItem>
       </Col>
       <Col :span="12">
-        <Form.Item label="设备" required>
+        <FormItem label="设备" required>
           <DeviceSelector
             :model-value="condition.deviceId"
             @update:model-value="
@@ -204,7 +204,7 @@ function handleOperatorChange() {
             :product-id="condition.productId"
             @change="handleDeviceChange"
           />
-        </Form.Item>
+        </FormItem>
       </Col>
     </Row>
 
@@ -220,7 +220,7 @@ function handleOperatorChange() {
       <Row :gutter="16">
         <!-- 操作符选择 -->
         <Col :span="12">
-          <Form.Item label="操作符" required>
+          <FormItem label="操作符" required>
             <Select
               :model-value="condition.operator"
               @update:model-value="
@@ -229,19 +229,19 @@ function handleOperatorChange() {
               placeholder="请选择操作符"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 v-for="option in statusOperatorOptions"
                 :key="option.value"
                 :label="option.label"
                 :value="option.value"
               />
             </Select>
-          </Form.Item>
+          </FormItem>
         </Col>
 
         <!-- 状态选择 -->
         <Col :span="12">
-          <Form.Item label="设备状态" required>
+          <FormItem label="设备状态" required>
             <Select
               :model-value="condition.param"
               @update:model-value="
@@ -250,14 +250,14 @@ function handleOperatorChange() {
               placeholder="请选择设备状态"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 v-for="option in deviceStatusOptions"
                 :key="option.value"
                 :label="option.label"
                 :value="option.value"
               />
             </Select>
-          </Form.Item>
+          </FormItem>
         </Col>
       </Row>
     </div>
@@ -274,7 +274,7 @@ function handleOperatorChange() {
       <Row :gutter="16">
         <!-- 属性/事件/服务选择 -->
         <Col :span="6">
-          <Form.Item label="监控项" required>
+          <FormItem label="监控项" required>
             <PropertySelector
               :model-value="condition.identifier"
               @update:model-value="
@@ -285,12 +285,12 @@ function handleOperatorChange() {
               :device-id="condition.deviceId"
               @change="handlePropertyChange"
             />
-          </Form.Item>
+          </FormItem>
         </Col>
 
         <!-- 操作符选择 -->
         <Col :span="6">
-          <Form.Item label="操作符" required>
+          <FormItem label="操作符" required>
             <OperatorSelector
               :model-value="condition.operator"
               @update:model-value="
@@ -299,12 +299,12 @@ function handleOperatorChange() {
               :property-type="propertyType"
               @change="handleOperatorChange"
             />
-          </Form.Item>
+          </FormItem>
         </Col>
 
         <!-- 值输入 -->
         <Col :span="12">
-          <Form.Item label="比较值" required>
+          <FormItem label="比较值" required>
             <ValueInput
               :model-value="condition.param"
               @update:model-value="
@@ -314,7 +314,7 @@ function handleOperatorChange() {
               :operator="condition.operator"
               :property-config="propertyConfig"
             />
-          </Form.Item>
+          </FormItem>
         </Col>
       </Row>
     </div>

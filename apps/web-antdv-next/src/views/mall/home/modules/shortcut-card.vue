@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 /** 快捷入口卡片 */
 defineOptions({ name: 'ShortcutCard' });

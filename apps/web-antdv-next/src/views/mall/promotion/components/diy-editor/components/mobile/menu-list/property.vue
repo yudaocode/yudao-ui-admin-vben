@@ -2,7 +2,7 @@
 import type { MenuListProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem } from 'ant-design-vue';
+import { Form, FormItem } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

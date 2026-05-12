@@ -8,7 +8,7 @@ import { computed, nextTick, ref, watch } from 'vue';
 import { ErpBizType } from '@vben/constants';
 import { erpPriceInputFormatter } from '@vben/utils';
 
-import { Input, InputNumber, message } from 'ant-design-vue';
+import { Input, InputNumber, message } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 

@@ -10,7 +10,7 @@ import {
 } from '@vben/constants';
 import { cloneDeep, convertToInteger, formatToFraction } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

@@ -3,7 +3,8 @@ import { computed, onActivated, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { Badge, Card, List } from 'ant-design-vue';
+import { Badge, Card } from 'antdv-next';
+// TODO: List component not available in antdv-next, needs manual migration
 
 import { getFollowClueCount } from '#/api/crm/clue';
 import {

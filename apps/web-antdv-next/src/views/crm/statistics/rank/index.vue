@@ -9,7 +9,7 @@ import { onMounted, ref } from 'vue';
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Tabs } from 'ant-design-vue';
+import { Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -93,7 +93,7 @@ onMounted(() => {
         class="w-full"
         @change="handleTabChange"
       >
-        <Tabs.TabPane
+        <TabPane
           v-for="item in customerSummaryTabs"
           :key="item.key"
           :tab="item.tab"

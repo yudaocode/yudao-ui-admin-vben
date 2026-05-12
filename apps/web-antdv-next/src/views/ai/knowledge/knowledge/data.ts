@@ -31,7 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '知识库描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         rows: 3,
         placeholder: '请输入知识库描述',

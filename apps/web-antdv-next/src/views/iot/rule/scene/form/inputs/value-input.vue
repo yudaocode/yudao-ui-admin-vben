@@ -3,7 +3,7 @@
 import { computed, ref, watch } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
+import { DatePicker, Input, Select, Tag, Tooltip } from 'antdv-next';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -159,8 +159,8 @@ watch(
       placeholder="请选择布尔值"
       class="w-full!"
     >
-      <Select.Option label="真 (true)" :value="true" />
-      <Select.Option label="假 (false)" :value="false" />
+      <SelectOption label="真 (true)" :value="true" />
+      <SelectOption label="假 (false)" :value="false" />
     </Select>
 
     <!-- 枚举值选择 -->
@@ -172,7 +172,7 @@ watch(
       placeholder="请选择枚举值"
       class="w-full!"
     >
-      <Select.Option
+      <SelectOption
         v-for="option in enumOptions"
         :key="option.value"
         :label="option.label"

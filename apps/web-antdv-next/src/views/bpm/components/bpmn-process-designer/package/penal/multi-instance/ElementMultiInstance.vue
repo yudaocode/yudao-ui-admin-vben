@@ -11,7 +11,7 @@ import {
   Radio,
   RadioGroup,
   Select,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   APPROVE_METHODS,
@@ -448,13 +448,13 @@ watch(
           v-model:value="loopCharacteristics"
           @change="changeLoopCharacteristicsType"
         >
-          <Select.Option value="ParallelMultiInstance">
+          <SelectOption value="ParallelMultiInstance">
             并行多重事件
-          </Select.Option>
-          <Select.Option value="SequentialMultiInstance">
+          </SelectOption>
+          <SelectOption value="SequentialMultiInstance">
             时序多重事件
-          </Select.Option>
-          <Select.Option value="Null">无</Select.Option>
+          </SelectOption>
+          <SelectOption value="Null">无</SelectOption>
         </Select>
       </FormItem>
       <template

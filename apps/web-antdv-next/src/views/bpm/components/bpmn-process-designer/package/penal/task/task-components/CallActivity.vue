@@ -13,7 +13,7 @@ import {
   Select,
   SelectOption,
   Switch,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getModelList } from '#/api/bpm/model';

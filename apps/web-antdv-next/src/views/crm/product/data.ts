@@ -99,7 +99,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       fieldName: 'description',
       label: '产品描述',
       componentProps: {

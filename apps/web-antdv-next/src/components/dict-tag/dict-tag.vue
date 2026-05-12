@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import { getDictObj } from '@vben/hooks';
 import { isValidColor, TinyColor } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 interface DictTagProps {
   type: string; // 字典类型

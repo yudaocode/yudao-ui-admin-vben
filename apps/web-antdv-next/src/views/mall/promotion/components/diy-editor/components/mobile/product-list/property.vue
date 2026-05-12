@@ -14,7 +14,7 @@ import {
   Slider,
   Switch,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import SpuShowcase from '#/views/mall/product/spu/components/spu-showcase.vue';

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { InputProps, TextAreaProps } from 'ant-design-vue';
+import type { InputProps, TextAreaProps } from 'antdv-next';
 
 import type { FileUploadProps } from './typing';
 
 import { computed } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Input, Textarea } from 'ant-design-vue';
+import { Input, TextArea } from 'antdv-next';
 
 import FileUpload from './file-upload.vue';
 
@@ -69,7 +69,7 @@ const fileUploadProps = computed(() => {
       </template>
     </Input>
     <div v-else class="relative w-full">
-      <Textarea readonly :rows="4" v-bind="textareaProps" />
+      <TextArea readonly :rows="4" v-bind="textareaProps" />
       <div class="absolute bottom-2 right-2">
         <FileUpload v-bind="fileUploadProps" @return-text="handleReturnText" />
       </div>

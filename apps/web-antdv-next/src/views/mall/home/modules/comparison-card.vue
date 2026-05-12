@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Card, Tag } from 'ant-design-vue';
+import { Card, Tag } from 'antdv-next';
 
 /** 交易对照卡片 */
 defineOptions({ name: 'ComparisonCard' });

@@ -27,7 +27,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { formatDateTime, openWindow } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import {
   getUnreadNotifyMessageCount,

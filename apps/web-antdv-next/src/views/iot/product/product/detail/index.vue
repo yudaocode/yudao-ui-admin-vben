@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
-import { message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'antdv-next';
 
 import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
@@ -78,15 +78,15 @@ onMounted(async () => {
       @refresh="() => getProductData(id)"
     />
     <Tabs v-model:active-key="activeTab" class="mt-4">
-      <Tabs.TabPane key="info" tab="产品信息">
+      <TabPane key="info" tab="产品信息">
         <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="thingModel" tab="物模型（功能定义）">
+      </TabPane>
+      <TabPane key="thingModel" tab="物模型（功能定义）">
         <IoTProductThingModel
           v-if="activeTab === 'thingModel'"
           :product-id="id"
         />
-      </Tabs.TabPane>
+      </TabPane>
     </Tabs>
   </Page>
 </template>

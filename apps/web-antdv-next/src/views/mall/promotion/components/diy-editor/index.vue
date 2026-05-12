@@ -7,7 +7,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
-import { Button, Card, Col, QRCode, Row, Tag, Tooltip } from 'ant-design-vue';
+import { Button, Card, Col, QRCode, Row, Tag, Tooltip } from 'antdv-next';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
@@ -307,11 +307,7 @@ onMounted(() => {
       </Col>
       <!-- 右侧操作区 -->
       <Col :span="8">
-        <Button.Group
-          direction="vertical"
-          size="large"
-          class="flex justify-end"
-        >
+        <Space direction="vertical" size="large" class="flex justify-end">
           <Tooltip title="重置">
             <Button @click="handleReset">
               <IconifyIcon class="size-5" icon="lucide:refresh-cw" />
@@ -327,7 +323,7 @@ onMounted(() => {
               <IconifyIcon class="size-5" icon="lucide:check" />
             </Button>
           </Tooltip>
-        </Button.Group>
+        </Space>
       </Col>
     </Row>
     <!-- 中心区域 -->

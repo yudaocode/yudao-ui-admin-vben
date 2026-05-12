@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, Tabs } from 'ant-design-vue';
+import { Button, Card, Tabs } from 'antdv-next';
 
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
@@ -76,12 +76,12 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
+        <TabPane tab="详细资料" key="1" :force-render="true">
           <Info :product="product" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="2" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

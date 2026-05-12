@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, Tabs } from 'ant-design-vue';
+import { Button, Card, Tabs } from 'antdv-next';
 
 import { getBusiness } from '#/api/crm/business';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -135,37 +135,37 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+        <TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="businessId" :biz-type="BizTypeEnum.CRM_BUSINESS" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="详细资料" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="详细资料" key="2" :force-render="true">
           <BusinessDetailsInfo :business="business" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="联系人" key="3" :force-render="true">
+        </TabPane>
+        <TabPane tab="联系人" key="3" :force-render="true">
           <ContactDetailsList
             :biz-id="businessId"
             :biz-type="BizTypeEnum.CRM_BUSINESS"
             :business-id="businessId"
             :customer-id="business.customerId"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="产品" key="4" :force-render="true">
+        </TabPane>
+        <TabPane tab="产品" key="4" :force-render="true">
           <ProductDetailsList
             :biz-id="businessId"
             :biz-type="BizTypeEnum.CRM_BUSINESS"
             :business="business"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="合同" key="5" :force-render="true">
+        </TabPane>
+        <TabPane tab="合同" key="5" :force-render="true">
           <ContractDetailsList
             :biz-id="businessId"
             :biz-type="BizTypeEnum.CRM_BUSINESS"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="6" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="6" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="7" :force-render="true">
+        </TabPane>
+        <TabPane tab="团队成员" key="7" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="businessId"
@@ -173,7 +173,7 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

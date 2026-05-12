@@ -4,7 +4,7 @@ import { onMounted, ref, watch } from 'vue';
 
 import { AreaLevelEnum } from '@vben/constants';
 
-import { Cascader } from 'ant-design-vue';
+import { Cascader } from 'antdv-next';
 
 import { getAreaTree } from '#/api/system/area';
 

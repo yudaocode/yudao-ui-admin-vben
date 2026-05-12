@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { MpMsgType as MsgType } from '@vben/constants';
 import { formatDate2 } from '@vben/utils';
 
-import { Image, Modal, Tag } from 'ant-design-vue';
+import { Image, Modal, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getMessagePage } from '#/api/mp/message';

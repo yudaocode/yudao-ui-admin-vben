@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { buildSortingField } from '@vben/request';
 import { formatDateTime } from '@vben/utils';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductStatisticsRankPage } from '#/api/mall/statistics/product';

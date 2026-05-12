@@ -23,7 +23,7 @@ import {
   Slider,
   Tooltip,
   Typography,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
 import UploadImg from '#/components/upload/image-upload.vue';

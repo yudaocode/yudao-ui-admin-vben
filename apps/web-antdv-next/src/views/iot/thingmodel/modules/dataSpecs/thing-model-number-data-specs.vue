@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Select } from 'ant-design-vue';
+import { Input, Select } from 'antdv-next';
 
 /** 数值型的 dataSpecs 配置组件 */
 defineOptions({ name: 'ThingModelNumberDataSpecs' });
@@ -31,7 +31,7 @@ const unitChange = (UnitSpecs: any) => {
 </script>
 
 <template>
-  <Form.Item label="取值范围">
+  <FormItem label="取值范围">
     <div class="flex items-center justify-between">
       <div class="flex-1">
         <Input v-model:value="dataSpecs.min" placeholder="请输入最小值" />
@@ -41,11 +41,11 @@ const unitChange = (UnitSpecs: any) => {
         <Input v-model:value="dataSpecs.max" placeholder="请输入最大值" />
       </div>
     </div>
-  </Form.Item>
-  <Form.Item label="步长">
+  </FormItem>
+  <FormItem label="步长">
     <Input v-model:value="dataSpecs.step" placeholder="请输入步长" />
-  </Form.Item>
-  <Form.Item label="单位">
+  </FormItem>
+  <FormItem label="单位">
     <Select
       :model-value="
         dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''
@@ -55,7 +55,7 @@ const unitChange = (UnitSpecs: any) => {
       class="w-1/1"
       @change="unitChange"
     >
-      <Select.Option
+      <SelectOption
         v-for="(item, index) in getDictOptions(
           DICT_TYPE.IOT_THING_MODEL_UNIT,
           'string',
@@ -64,9 +64,9 @@ const unitChange = (UnitSpecs: any) => {
         :value="`${item.label}-${item.value}`"
       >
         {{ `${item.label}-${item.value}` }}
-      </Select.Option>
+      </SelectOption>
     </Select>
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { createChannel, getChannel, updateChannel } from '#/api/pay/channel';

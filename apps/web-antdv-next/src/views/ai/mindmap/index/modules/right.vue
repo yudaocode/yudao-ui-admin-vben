@@ -10,7 +10,7 @@ import {
 } from '@vben/plugins/markmap';
 import { downloadImageByCanvas } from '@vben/utils';
 
-import { Button, Card, message } from 'ant-design-vue';
+import { Button, Card, message } from 'antdv-next';
 
 const props = defineProps<{
   generatedContent: string; // 生成结果

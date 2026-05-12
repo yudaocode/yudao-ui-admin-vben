@@ -9,7 +9,7 @@ import { AiImageStatusEnum } from '@vben/constants';
 import { downloadFileFromImageUrl } from '@vben/utils';
 
 import { useDebounceFn } from '@vueuse/core';
-import { Button, Card, message, Pagination } from 'ant-design-vue';
+import { Button, Card, message, Pagination } from 'antdv-next';
 
 import {
   deleteImageMy,

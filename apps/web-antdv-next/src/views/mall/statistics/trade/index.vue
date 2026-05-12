@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page, StatisticCard } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'antdv-next';
 
 import { getTradeStatisticsSummary } from '#/api/mall/statistics/trade';
 

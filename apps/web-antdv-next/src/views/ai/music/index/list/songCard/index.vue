@@ -3,7 +3,7 @@ import { inject } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 defineOptions({ name: 'AiMusicSongCardIndex' });
 

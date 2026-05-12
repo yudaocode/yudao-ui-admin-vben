@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HotZoneProperty } from './config';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 热区 */
 defineOptions({ name: 'HotZone' });

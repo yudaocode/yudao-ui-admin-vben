@@ -8,7 +8,7 @@ import { inject, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue';
 import { ContentWrap } from '@vben/common-ui';
 import { BpmModelFormType } from '@vben/constants';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import {

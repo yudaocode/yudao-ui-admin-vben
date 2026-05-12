@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { DataNode } from 'ant-design-vue/es/tree';
+import type { TreeDataNode as DataNode } from 'antdv-next';
 
 import type { SystemDeptApi } from '#/api/system/dept';
 
@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Card, Col, Row, Tree } from 'ant-design-vue';
+import { Card, Col, Row, Tree } from 'antdv-next';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 

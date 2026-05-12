@@ -7,7 +7,7 @@ import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Col, Divider, message, Select, Tag } from 'ant-design-vue';
+import { Col, Divider, message, Select, Tag } from 'antdv-next';
 
 import {
   createPropertyValue,
@@ -205,13 +205,13 @@ async function getAttributeOptions(propertyId: number) {
         @change="handleInputConfirm(index, attribute.id)"
         @keyup.enter="handleInputConfirm(index, attribute.id)"
       >
-        <Select.Option
+        <SelectOption
           v-for="item2 in attributeOptions"
           :key="item2.id"
           :value="item2.name"
         >
           {{ item2.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
       <Tag
         v-show="!inputVisible(index)"

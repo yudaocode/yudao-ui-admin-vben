@@ -1,6 +1,6 @@
 <!-- 图片选择 -->
 <script lang="ts" setup>
-import { Image, message } from 'ant-design-vue';
+import { Image, message } from 'antdv-next';
 
 import { useUpload } from '#/components/upload/use-upload';
 import { $t } from '#/locales';

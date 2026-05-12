@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 import AppLinkSelectDialog from './select-dialog.vue';
 

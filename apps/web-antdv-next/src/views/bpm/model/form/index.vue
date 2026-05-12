@@ -18,7 +18,7 @@ import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
-import { Button, Card, message } from 'ant-design-vue';
+import { Button, Card, message } from 'antdv-next';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getProcessDefinition } from '#/api/bpm/definition';

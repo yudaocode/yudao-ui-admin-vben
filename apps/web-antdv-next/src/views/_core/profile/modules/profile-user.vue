@@ -7,7 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 import { preferences } from '@vben/preferences';
 import { formatDateTime } from '@vben/utils';
 
-import { Descriptions, DescriptionsItem, Tooltip } from 'ant-design-vue';
+import { Descriptions, DescriptionsItem, Tooltip } from 'antdv-next';
 
 import { updateUserProfile } from '#/api/system/user/profile';
 import { CropperAvatar } from '#/components/cropper';

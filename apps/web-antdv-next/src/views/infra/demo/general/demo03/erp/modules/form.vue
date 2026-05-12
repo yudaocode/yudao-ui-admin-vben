@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
 import { computed, ref } from 'vue';
@@ -16,7 +14,7 @@ import {
   message,
   Radio,
   RadioGroup,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   createDemo03Student,
@@ -26,6 +24,7 @@ import {
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
 
+type Rule = any;
 const emit = defineEmits(['success']);
 
 const formRef = ref();
@@ -110,10 +109,10 @@ const [Modal, modalApi] = useVbenModal({
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="名字" name="name">
+      <FormItem label="名字" name="name">
         <Input v-model:value="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="性别" name="sex">
+      </FormItem>
+      <FormItem label="性别" name="sex">
         <RadioGroup v-model:value="formData.sex">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
@@ -123,17 +122,17 @@ const [Modal, modalApi] = useVbenModal({
             {{ dict.label }}
           </Radio>
         </RadioGroup>
-      </Form.Item>
-      <Form.Item label="出生日期" name="birthday">
+      </FormItem>
+      <FormItem label="出生日期" name="birthday">
         <DatePicker
           v-model:value="formData.birthday"
           value-format="x"
           placeholder="选择出生日期"
         />
-      </Form.Item>
-      <Form.Item label="简介" name="description">
+      </FormItem>
+      <FormItem label="简介" name="description">
         <RichTextarea v-model="formData.description" height="500px" />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

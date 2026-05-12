@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Pagination, Row, Spin } from 'ant-design-vue';
+import { Button, Pagination, Row, Spin } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDraftPage } from '#/api/mp/draft';

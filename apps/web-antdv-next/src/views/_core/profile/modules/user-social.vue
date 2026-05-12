@@ -10,7 +10,7 @@ import { DICT_TYPE, SystemUserSocialTypeEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { getUrlValue } from '@vben/utils';
 
-import { Button, Card, Image, message } from 'ant-design-vue';
+import { Button, Card, Image, message } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { socialAuthRedirect } from '#/api/core/auth';

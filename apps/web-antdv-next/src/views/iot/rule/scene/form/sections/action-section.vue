@@ -5,7 +5,7 @@ import type { Action } from '#/api/iot/rule/scene';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, Form, Select, Tag } from 'ant-design-vue';
+import { Button, Card, Empty, Select, Tag } from 'antdv-next';
 
 import {
   getActionTypeLabel,
@@ -230,7 +230,7 @@ function onActionTypeChange(action: Action, type: any) {
           <div class="p-16px space-y-16px">
             <!-- 执行类型选择 -->
             <div class="w-full">
-              <Form.Item label="执行类型" required>
+              <FormItem label="执行类型" required>
                 <Select
                   :model-value="action.type"
                   @update:model-value="
@@ -240,14 +240,14 @@ function onActionTypeChange(action: Action, type: any) {
                   placeholder="请选择执行类型"
                   class="w-full"
                 >
-                  <Select.Option
+                  <SelectOption
                     v-for="option in getActionTypeOptions()"
                     :key="option.value"
                     :label="option.label"
                     :value="option.value"
                   />
                 </Select>
-              </Form.Item>
+              </FormItem>
             </div>
 
             <!-- 设备控制配置 -->

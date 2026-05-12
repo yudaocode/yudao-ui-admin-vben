@@ -4,7 +4,7 @@ import type { ErpPurchaseInApi } from '#/api/erp/purchase/in';
 
 import { ref } from 'vue';
 
-import { message, Modal } from 'ant-design-vue';
+import { message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPurchaseInPage } from '#/api/erp/purchase/in';

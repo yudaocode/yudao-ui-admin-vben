@@ -14,8 +14,8 @@ import {
   Input,
   message,
   Pagination,
-  RangePicker,
-} from 'ant-design-vue';
+  DateRangePicker as RangePicker,
+} from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
@@ -166,7 +166,7 @@ onMounted(() => {
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
       <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="学生编号" name="studentId">
+        <FormItem label="学生编号" name="studentId">
           <Input
             v-model:value="queryParams.studentId"
             placeholder="请输入学生编号"
@@ -174,8 +174,8 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="名字" name="name">
+        </FormItem>
+        <FormItem label="名字" name="name">
           <Input
             v-model:value="queryParams.name"
             placeholder="请输入名字"
@@ -183,8 +183,8 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="班主任" name="teacher">
+        </FormItem>
+        <FormItem label="班主任" name="teacher">
           <Input
             v-model:value="queryParams.teacher"
             placeholder="请输入班主任"
@@ -192,20 +192,20 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
+        </FormItem>
+        <FormItem label="创建时间" name="createTime">
           <RangePicker
             v-model:value="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem>
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" type="primary">
             搜索
           </Button>
-        </Form.Item>
+        </FormItem>
       </Form>
     </ContentWrap>
 

@@ -6,7 +6,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { confirm, ContentWrap, DocAlert, Page } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getSimpleAccountList } from '#/api/mp/account';

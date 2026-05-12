@@ -3,7 +3,7 @@
 import type { Ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Radio } from 'ant-design-vue';
+import { Input, Radio } from 'antdv-next';
 
 import {
   getDataTypeOptions,
@@ -29,11 +29,8 @@ function handleChange(val: any) {
 </script>
 
 <template>
-  <Form.Item
-    :name="['property', 'dataSpecs', 'childDataType']"
-    label="元素类型"
-  >
-    <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
+  <FormItem :name="['property', 'dataSpecs', 'childDataType']" label="元素类型">
+    <RadioGroup v-model:value="dataSpecs.childDataType" @change="handleChange">
       <template v-for="item in getDataTypeOptions()" :key="item.value">
         <Radio
           v-if="
@@ -51,14 +48,14 @@ function handleChange(val: any) {
           {{ `${item.value}(${item.label})` }}
         </Radio>
       </template>
-    </Radio.Group>
-  </Form.Item>
-  <Form.Item :name="['property', 'dataSpecs', 'size']" label="元素个数">
+    </RadioGroup>
+  </FormItem>
+  <FormItem :name="['property', 'dataSpecs', 'size']" label="元素个数">
     <Input
       v-model:value="dataSpecs.size"
       placeholder="请输入数组中的元素个数"
     />
-  </Form.Item>
+  </FormItem>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs
     v-if="dataSpecs.childDataType === IoTDataSpecsDataTypeEnum.STRUCT"

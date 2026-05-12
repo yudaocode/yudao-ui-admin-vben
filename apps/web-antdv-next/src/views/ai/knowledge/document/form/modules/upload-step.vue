@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { UploadProps } from 'ant-design-vue';
-import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
+import type { UploadProps } from 'antdv-next';
 
 import type { PropType } from 'vue';
 
@@ -11,10 +10,10 @@ import { computed, getCurrentInstance, inject, onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { generateAcceptedFileTypes } from '@vben/utils';
 
-import { Button, Form, message, UploadDragger } from 'ant-design-vue';
+import { Button, Form, message, UploadDragger } from 'antdv-next';
 
 import { useUpload } from '#/components/upload/use-upload';
-
+type UploadRequestOption = any;
 const props = defineProps({
   modelValue: {
     type: Object as PropType<any>,
@@ -187,7 +186,7 @@ onMounted(() => {
 
 <template>
   <Form ref="formRef" :model="modelData" label-width="0" class="mt-5">
-    <Form.Item class="mb-5">
+    <FormItem class="mb-5">
       <div class="w-full">
         <div
           class="w-full rounded-md border-2 border-dashed border-gray-200 p-5 text-center hover:border-blue-500"
@@ -248,8 +247,8 @@ onMounted(() => {
           </div>
         </div>
       </div>
-    </Form.Item>
-    <Form.Item>
+    </FormItem>
+    <FormItem>
       <div class="flex w-full justify-end">
         <Button
           type="primary"
@@ -259,6 +258,6 @@ onMounted(() => {
           下一步
         </Button>
       </div>
-    </Form.Item>
+    </FormItem>
   </Form>
 </template>

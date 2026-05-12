@@ -20,8 +20,8 @@ import {
   message,
   Select,
   Space,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 import { drawImage } from '#/api/ai/image';
 
@@ -132,7 +132,7 @@ defineExpose({ settingValues });
   <div class="prompt">
     <b>画面描述</b>
     <p>建议使用“形容词 + 动词 + 风格”的格式，使用“，”隔开</p>
-    <Textarea
+    <TextArea
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
@@ -169,13 +169,13 @@ defineExpose({ settingValues });
         size="large"
         class="!w-80"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in StableDiffusionSamplers"
           :key="item.key"
           :value="item.key"
         >
           {{ item.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>
@@ -190,13 +190,13 @@ defineExpose({ settingValues });
         size="large"
         class="!w-80"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in StableDiffusionClipGuidancePresets"
           :key="item.key"
           :value="item.key"
         >
           {{ item.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>
@@ -211,14 +211,14 @@ defineExpose({ settingValues });
         size="large"
         class="!w-80"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in StableDiffusionStylePresets"
           :key="item.key"
           :label="item.name"
           :value="item.key"
         >
           {{ item.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>

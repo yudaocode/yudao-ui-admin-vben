@@ -50,7 +50,7 @@ export function useFormSchema(): VbenFormSchema[] {
       help: '推荐 180x180 图片分辨率',
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       fieldName: 'introduction',
       label: '门店简介',
       formItemClass: 'col-span-2',

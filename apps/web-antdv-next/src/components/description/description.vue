@@ -1,5 +1,5 @@
 <script lang="tsx">
-import type { DescriptionsProps } from 'ant-design-vue/es/descriptions';
+import type { DescriptionsProps } from 'antdv-next';
 
 import type { CSSProperties, PropType, Slots } from 'vue';
 
@@ -9,7 +9,7 @@ import { computed, defineComponent, ref, unref, useAttrs } from 'vue';
 
 import { get, getNestedValue, isFunction } from '@vben/utils';
 
-import { Card, Descriptions } from 'ant-design-vue';
+import { Card, Descriptions } from 'antdv-next';
 
 const props = {
   bordered: { default: true, type: Boolean },
@@ -126,7 +126,7 @@ export default defineComponent({
 
           const width = contentMinWidth;
           return (
-            <Descriptions.Item
+            <DescriptionsItem
               key={field}
               label={renderLabel(item)}
               span={span}
@@ -143,7 +143,7 @@ export default defineComponent({
                 };
                 return <div style={style}>{getContent()}</div>;
               }}
-            </Descriptions.Item>
+            </DescriptionsItem>
           );
         })
         .filter((item) => !!item);

@@ -18,7 +18,7 @@ import {
   isSameDay,
 } from '@vben/utils';
 
-import { Button, Card, Col, Row, Spin } from 'ant-design-vue';
+import { Button, Card, Col, Row, Spin } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import {

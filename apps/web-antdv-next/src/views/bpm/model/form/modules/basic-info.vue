@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-import type { SelectValue } from 'ant-design-vue/es/select';
+import type { SelectValue } from 'antdv-next';
 
 import type { PropType } from 'vue';
 
@@ -23,12 +22,12 @@ import {
   Radio,
   Select,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { ImageUpload } from '#/components/upload';
 import { DeptSelectModal } from '#/views/system/dept/components';
 import { UserSelectModal } from '#/views/system/user/components';
-
+type Rule = any;
 const props = defineProps({
   categoryList: {
     type: Array as PropType<BpmCategoryApi.Category[]>,
@@ -250,7 +249,7 @@ defineExpose({ validate });
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 20 }"
     >
-      <Form.Item label="流程标识" name="key">
+      <FormItem label="流程标识" name="key">
         <div class="flex items-center">
           <Input
             class="w-full"
@@ -267,39 +266,39 @@ defineExpose({ validate });
             <IconifyIcon icon="lucide:circle-help" class="ml-1 size-5" />
           </Tooltip>
         </div>
-      </Form.Item>
-      <Form.Item label="流程名称" name="name">
+      </FormItem>
+      <FormItem label="流程名称" name="name">
         <Input
           v-model:value="modelData.name"
           :disabled="!!modelData.id"
           allow-clear
           placeholder="请输入流程名称"
         />
-      </Form.Item>
-      <Form.Item label="流程分类" name="category">
+      </FormItem>
+      <FormItem label="流程分类" name="category">
         <Select
           class="w-full"
           v-model:value="modelData.category"
           allow-clear
           placeholder="请选择流程分类"
         >
-          <Select.Option
+          <SelectOption
             v-for="category in categoryList"
             :key="category.code"
             :value="category.code"
           >
             {{ category.name }}
-          </Select.Option>
+          </SelectOption>
         </Select>
-      </Form.Item>
-      <Form.Item label="流程图标">
+      </FormItem>
+      <FormItem label="流程图标">
         <ImageUpload v-model:value="modelData.icon" />
-      </Form.Item>
-      <Form.Item label="流程描述" name="description">
+      </FormItem>
+      <FormItem label="流程描述" name="description">
         <Input.TextArea v-model:value="modelData.description" allow-clear />
-      </Form.Item>
-      <Form.Item label="流程类型" name="type">
-        <Radio.Group v-model:value="modelData.type">
+      </FormItem>
+      <FormItem label="流程类型" name="type">
+        <RadioGroup v-model:value="modelData.type">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.BPM_MODEL_TYPE, 'number')"
             :key="dict.value as number"
@@ -307,10 +306,10 @@ defineExpose({ validate });
           >
             {{ dict.label }}
           </Radio>
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item label="是否可见" name="visible">
-        <Radio.Group v-model:value="modelData.visible">
+        </RadioGroup>
+      </FormItem>
+      <FormItem label="是否可见" name="visible">
+        <RadioGroup v-model:value="modelData.visible">
           <Radio
             v-for="dict in getDictOptions(
               DICT_TYPE.INFRA_BOOLEAN_STRING,
@@ -321,17 +320,17 @@ defineExpose({ validate });
           >
             {{ dict.label }}
           </Radio>
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item label="谁可以发起" name="startUserType">
+        </RadioGroup>
+      </FormItem>
+      <FormItem label="谁可以发起" name="startUserType">
         <Select
           v-model:value="modelData.startUserType"
           placeholder="请选择谁可以发起"
           @change="handleStartUserTypeChange"
         >
-          <Select.Option :value="0">全员</Select.Option>
-          <Select.Option :value="1">指定人员</Select.Option>
-          <Select.Option :value="2">指定部门</Select.Option>
+          <SelectOption :value="0">全员</SelectOption>
+          <SelectOption :value="1">指定人员</SelectOption>
+          <SelectOption :value="2">指定部门</SelectOption>
         </Select>
         <div
           v-if="modelData.startUserType === 1"
@@ -396,8 +395,8 @@ defineExpose({ validate });
             选择部门
           </Button>
         </div>
-      </Form.Item>
-      <Form.Item label="流程管理员" name="managerUserIds">
+      </FormItem>
+      <FormItem label="流程管理员" name="managerUserIds">
         <div class="flex flex-wrap gap-1">
           <div
             v-for="user in selectedManagerUsers"
@@ -428,7 +427,7 @@ defineExpose({ validate });
             选择人员
           </Button>
         </div>
-      </Form.Item>
+      </FormItem>
     </Form>
 
     <!-- 用户选择弹窗 -->

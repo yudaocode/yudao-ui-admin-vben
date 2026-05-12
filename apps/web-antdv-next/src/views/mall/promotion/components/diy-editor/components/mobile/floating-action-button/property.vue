@@ -2,7 +2,7 @@
 import type { FloatingActionButtonProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Radio, RadioGroup, Switch } from 'ant-design-vue';
+import { Form, FormItem, Radio, RadioGroup, Switch } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

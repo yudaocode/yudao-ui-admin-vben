@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 import { alert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Layout, message, Switch } from 'ant-design-vue';
+import { Button, Layout, message, Switch } from 'antdv-next';
 
 import { getChatConversationMy } from '#/api/ai/chat/conversation';
 import {
@@ -553,7 +553,7 @@ onMounted(async () => {
 
       <!-- 右侧：详情部分 -->
       <Layout class="mx-4 bg-card">
-        <Layout.Header
+        <LayoutHeader
           class="flex !h-12 items-center justify-between border-b border-border !bg-card !px-4"
         >
           <div class="text-lg font-bold">
@@ -585,9 +585,9 @@ onMounted(async () => {
               <IconifyIcon icon="lucide:arrow-up" color="#787878" />
             </Button>
           </div>
-        </Layout.Header>
+        </LayoutHeader>
 
-        <Layout.Content class="relative m-0 h-full w-full p-0">
+        <LayoutContent class="relative m-0 h-full w-full p-0">
           <div class="absolute inset-0 m-0 overflow-y-hidden p-0">
             <MessageLoading v-if="activeMessageListLoading" />
             <MessageNewConversation
@@ -612,9 +612,9 @@ onMounted(async () => {
               @on-refresh="handleMessageRefresh"
             />
           </div>
-        </Layout.Content>
+        </LayoutContent>
 
-        <Layout.Footer class="flex flex-col !bg-card !p-0">
+        <LayoutFooter class="flex flex-col !bg-card !p-0">
           <form
             class="mx-4 mb-8 mt-2 flex flex-col rounded-xl border border-border p-2"
           >
@@ -668,7 +668,7 @@ onMounted(async () => {
               </Button>
             </div>
           </form>
-        </Layout.Footer>
+        </LayoutFooter>
       </Layout>
     </Layout>
     <FormModal @success="handleConversationUpdateSuccess" />

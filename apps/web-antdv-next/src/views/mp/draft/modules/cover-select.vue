@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadFile } from 'ant-design-vue';
+import type { UploadFile } from 'antdv-next';
 
 import type { MpDraftApi } from '#/api/mp/draft';
 
@@ -8,7 +8,7 @@ import { computed, inject, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
+import { Button, Image, message, Modal, Upload } from 'antdv-next';
 
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/components/';

@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
-import { Input, message } from 'ant-design-vue';
+import { Input, message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

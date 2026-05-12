@@ -10,7 +10,7 @@ import {
   Radio,
   TabPane,
   Tabs,
-} from 'ant-design-vue';
+} from 'antdv-next';
 import dayjs from 'dayjs';
 
 const props = defineProps({
@@ -257,12 +257,9 @@ watch(
         />
       </div>
       <Tabs v-model:active-key="activeField" type="card" class="mb-2">
-        <Tabs.TabPane v-for="f in cronFieldList" :key="f.key" :tab="f.label">
+        <TabPane v-for="f in cronFieldList" :key="f.key" :tab="f.label">
           <div class="mb-2">
-            <Radio.Group
-              v-model:value="cronMode[f.key]"
-              :key="`radio-${f.key}`"
-            >
+            <RadioGroup v-model:value="cronMode[f.key]" :key="`radio-${f.key}`">
               <Radio value="every" :key="`every-${f.key}`">
                 每{{ f.label }}
               </Radio>
@@ -309,7 +306,7 @@ watch(
                 {{ f.label }}
               </Radio>
               <Radio value="appoint" :key="`appoint-${f.key}`"> 指定 </Radio>
-            </Radio.Group>
+            </RadioGroup>
           </div>
           <div v-if="cronMode[f.key] === 'appoint'">
             <Checkbox.Group
@@ -325,7 +322,7 @@ watch(
               </Checkbox>
             </Checkbox.Group>
           </div>
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </TabPane>
     <TabPane key="iso" tab="标准格式">
@@ -366,7 +363,7 @@ watch(
       <div>
         <div v-for="unit in durationUnits" :key="unit.key" class="mb-2">
           <span>{{ unit.label }}：</span>
-          <Button.Group>
+          <Space>
             <Button
               v-for="val in unit.presets"
               :key="val"
@@ -382,7 +379,7 @@ watch(
               placeholder="自定义"
               @change="setDuration(unit.key, durationCustom[unit.key])"
             />
-          </Button.Group>
+          </Space>
         </div>
       </div>
     </TabPane>

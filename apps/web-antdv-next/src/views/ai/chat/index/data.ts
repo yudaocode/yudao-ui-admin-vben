@@ -17,7 +17,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'systemMessage',
       label: '角色设定',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         rows: 4,
         placeholder: '请输入角色设定',

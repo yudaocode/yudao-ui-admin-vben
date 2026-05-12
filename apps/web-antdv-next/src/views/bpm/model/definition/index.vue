@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmModelFormType } from '@vben/constants';
 
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinitionPage } from '#/api/bpm/definition';

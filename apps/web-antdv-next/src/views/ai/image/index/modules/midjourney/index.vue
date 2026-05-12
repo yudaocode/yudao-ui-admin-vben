@@ -17,14 +17,7 @@ import {
   NijiVersionList,
 } from '@vben/constants';
 
-import {
-  Button,
-  Image,
-  message,
-  Select,
-  Space,
-  Textarea,
-} from 'ant-design-vue';
+import { Button, Image, message, Select, Space, TextArea } from 'antdv-next';
 
 import { midjourneyImagine } from '#/api/ai/image';
 import { ImageUpload } from '#/components/upload';
@@ -141,7 +134,7 @@ defineExpose({ settingValues });
   <div class="prompt">
     <b>画面描述</b>
     <p>建议使用“形容词+动词+风格”的格式，使用“，”隔开.</p>
-    <Textarea
+    <TextArea
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
@@ -222,13 +215,13 @@ defineExpose({ settingValues });
         allow-clear
         placeholder="请选择版本"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in versionList"
           :key="item.value"
           :value="item.value"
         >
           {{ item.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>

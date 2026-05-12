@@ -4,7 +4,7 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed } from 'vue';
 
-import { Tooltip } from 'ant-design-vue';
+import { Tooltip } from 'antdv-next';
 
 import {
   getEventTypeLabel,

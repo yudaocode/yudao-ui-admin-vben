@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { Input } from 'ant-design-vue';
+import { Input } from 'antdv-next';
 
 /** 颜色输入框 */
 defineOptions({ name: 'ColorInput' });

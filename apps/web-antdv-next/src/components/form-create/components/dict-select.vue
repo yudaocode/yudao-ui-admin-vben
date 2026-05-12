@@ -13,7 +13,7 @@ import {
   RadioGroup,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 defineOptions({ name: 'DictSelect' });
 

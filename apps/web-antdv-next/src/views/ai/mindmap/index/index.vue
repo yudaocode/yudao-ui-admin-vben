@@ -6,7 +6,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { MindMapContentExample } from '@vben/constants';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { generateMindMap } from '#/api/ai/mindmap';
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Skeleton } from 'ant-design-vue';
+import { Skeleton } from 'antdv-next';
 </script>
 
 <template>

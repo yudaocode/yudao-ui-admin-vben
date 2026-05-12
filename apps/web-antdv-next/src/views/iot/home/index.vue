@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { ComparisonCard, Page } from '@vben/common-ui';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'antdv-next';
 
 import { getStatisticsSummary } from '#/api/iot/statistics';
 

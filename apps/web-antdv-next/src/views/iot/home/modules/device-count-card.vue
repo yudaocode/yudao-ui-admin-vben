@@ -5,7 +5,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Empty } from 'ant-design-vue';
+import { Card, Empty } from 'antdv-next';
 
 import { getDeviceCountPieChartOptions } from '../chart-options';
 

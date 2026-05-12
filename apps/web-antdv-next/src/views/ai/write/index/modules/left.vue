@@ -8,7 +8,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { createReusableTemplate } from '@vueuse/core';
-import { Button, message, Textarea } from 'ant-design-vue';
+import { Button, message, TextArea } from 'antdv-next';
 
 import Tag from './tag.vue';
 
@@ -175,7 +175,7 @@ function handleSubmit() {
             hint="示例"
             label="写作内容"
           />
-          <Textarea
+          <TextArea
             v-model:value="formData.prompt"
             :maxlength="500"
             :rows="5"
@@ -189,7 +189,7 @@ function handleSubmit() {
             hint="示例"
             label="原文"
           />
-          <Textarea
+          <TextArea
             v-model:value="formData.originalContent"
             :maxlength="500"
             :rows="5"
@@ -197,7 +197,7 @@ function handleSubmit() {
             show-count
           />
           <ReuseLabel label="回复内容" />
-          <Textarea
+          <TextArea
             v-model:value="formData.prompt"
             :maxlength="500"
             :rows="5"

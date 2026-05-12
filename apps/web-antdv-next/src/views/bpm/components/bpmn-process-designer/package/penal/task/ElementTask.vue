@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-import { Checkbox, Form, FormItem } from 'ant-design-vue';
+import { Checkbox, Form, FormItem } from 'antdv-next';
 
 import { installedComponent } from './data';
 

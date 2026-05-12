@@ -14,15 +14,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import {
-  Button,
-  Card,
-  Input,
-  message,
-  Select,
-  Space,
-  Tag,
-} from 'ant-design-vue';
+import { Button, Card, Input, message, Select, Space, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -293,13 +285,13 @@ onMounted(async () => {
           allow-clear
           style="width: 200px"
         >
-          <Select.Option
+          <SelectOption
             v-for="product in products"
             :key="product.id"
             :value="product.id"
           >
             {{ product.name }}
-          </Select.Option>
+          </SelectOption>
         </Select>
         <Input
           v-model:value="queryParams.deviceName"
@@ -321,7 +313,7 @@ onMounted(async () => {
           allow-clear
           style="width: 200px"
         >
-          <Select.Option
+          <SelectOption
             v-for="dict in getDictOptions(
               DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
               'number',
@@ -330,7 +322,7 @@ onMounted(async () => {
             :value="dict.value"
           >
             {{ dict.label }}
-          </Select.Option>
+          </SelectOption>
         </Select>
         <Select
           v-model:value="queryParams.status"
@@ -338,13 +330,13 @@ onMounted(async () => {
           allow-clear
           style="width: 200px"
         >
-          <Select.Option
+          <SelectOption
             v-for="dict in getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number')"
             :key="dict.value"
             :value="dict.value"
           >
             {{ dict.label }}
-          </Select.Option>
+          </SelectOption>
         </Select>
         <Select
           v-model:value="queryParams.groupId"
@@ -352,13 +344,13 @@ onMounted(async () => {
           allow-clear
           style="width: 200px"
         >
-          <Select.Option
+          <SelectOption
             v-for="group in deviceGroups"
             :key="group.id"
             :value="group.id"
           >
             {{ group.name }}
-          </Select.Option>
+          </SelectOption>
         </Select>
         <Button type="primary" @click="handleSearch">
           <IconifyIcon icon="ant-design:search-outlined" class="mr-1" />

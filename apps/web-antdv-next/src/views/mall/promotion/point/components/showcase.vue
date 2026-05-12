@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image, Tooltip } from 'ant-design-vue';
+import { Image, Tooltip } from 'antdv-next';
 
 import { getPointActivityListByIds } from '#/api/mall/promotion/point';
 

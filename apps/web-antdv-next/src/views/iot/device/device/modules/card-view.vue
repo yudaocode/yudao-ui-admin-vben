@@ -18,7 +18,7 @@ import {
   Popconfirm,
   Row,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getDevicePage } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';

@@ -10,7 +10,7 @@ import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message, Spin } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getSimpleMenusList } from '#/api/system/menu';

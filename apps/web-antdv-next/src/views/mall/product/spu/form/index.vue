@@ -12,7 +12,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
-import { Button, Card, message } from 'ant-design-vue';
+import { Button, Card, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { createSpu, getSpu, updateSpu } from '#/api/mall/product/spu';

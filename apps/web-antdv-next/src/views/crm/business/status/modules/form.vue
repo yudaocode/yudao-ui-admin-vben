@@ -5,7 +5,7 @@ import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Input, InputNumber, message } from 'ant-design-vue';
+import { Input, InputNumber, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';

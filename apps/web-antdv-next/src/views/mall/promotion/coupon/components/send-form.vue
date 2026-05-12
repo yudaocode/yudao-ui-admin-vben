@@ -5,7 +5,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { useVbenModal } from '@vben/common-ui';
 import { CouponTemplateTakeTypeEnum } from '@vben/constants';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { sendCoupon } from '#/api/mall/promotion/coupon/coupon';

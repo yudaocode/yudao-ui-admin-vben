@@ -4,7 +4,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 
 import { ref } from 'vue';
 
-import { Modal } from 'ant-design-vue';
+import { Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSpu } from '#/api/mall/product/spu';

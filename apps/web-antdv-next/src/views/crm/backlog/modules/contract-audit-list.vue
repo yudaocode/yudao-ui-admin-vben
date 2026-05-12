@@ -5,7 +5,7 @@ import type { CrmContractApi } from '#/api/crm/contract';
 
 import { useRouter } from 'vue-router';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getContractPage } from '#/api/crm/contract';

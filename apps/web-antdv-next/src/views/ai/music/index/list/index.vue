@@ -3,7 +3,7 @@ import type { Recordable } from '@vben/types';
 
 import { provide, ref } from 'vue';
 
-import { Col, Empty, Row, TabPane, Tabs } from 'ant-design-vue';
+import { Col, Empty, Row, TabPane, Tabs } from 'antdv-next';
 
 import audioBar from './audioBar/index.vue';
 import songCard from './songCard/index.vue';

@@ -8,7 +8,7 @@ import { ref, watch } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 import { getSpuDetailList } from '#/api/mall/product/spu';
 import { getCombinationActivityListByIds } from '#/api/mall/promotion/combination/combinationActivity';

@@ -12,7 +12,7 @@ import { useUserStore } from '@vben/stores';
 import { formatDateTime } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
-import { Avatar, Button, message } from 'ant-design-vue';
+import { Avatar, Button, message } from 'antdv-next';
 
 import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';

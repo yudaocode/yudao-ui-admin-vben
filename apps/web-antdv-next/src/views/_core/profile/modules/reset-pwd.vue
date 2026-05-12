@@ -3,7 +3,7 @@ import type { Recordable } from '@vben/types';
 
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { updateUserPassword } from '#/api/system/user/profile';

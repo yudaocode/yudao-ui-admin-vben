@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import {
   createCustomer,

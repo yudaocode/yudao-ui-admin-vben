@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { fenToYuan } from '@vben/utils';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { getMemberAnalyse } from '#/api/mall/statistics/member';
 import { ShortcutDateRangePicker } from '#/components/shortcut-date-range-picker';

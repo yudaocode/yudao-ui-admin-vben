@@ -3,7 +3,7 @@ import type { Dayjs } from 'dayjs';
 
 import { onMounted, ref } from 'vue';
 
-import { DatePicker, Radio, RadioGroup } from 'ant-design-vue';
+import { Radio, RadioGroup } from 'antdv-next';
 
 import { getRangePickerDefaultProps } from '#/utils/rangePickerProps';
 
@@ -75,7 +75,7 @@ onMounted(() => {
         {{ option.label }}
       </Radio>
     </RadioGroup>
-    <DatePicker.RangePicker
+    <DateRangePicker
       v-model:value="times"
       :format="rangePickerProps.format"
       :value-format="rangePickerProps.valueFormat"

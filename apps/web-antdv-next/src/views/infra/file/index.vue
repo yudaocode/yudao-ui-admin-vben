@@ -8,7 +8,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, Image, message } from 'ant-design-vue';
+import { Button, Image, message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFile, deleteFileList, getFilePage } from '#/api/infra/file';

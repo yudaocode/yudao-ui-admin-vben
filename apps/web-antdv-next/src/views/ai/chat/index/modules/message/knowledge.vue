@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Tooltip } from 'ant-design-vue';
+import { Tooltip } from 'antdv-next';
 
 const props = defineProps<{
   segments: {

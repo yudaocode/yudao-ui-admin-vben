@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { fenToYuan, yuanToFen } from '@vben/utils';
 
-import { Card, message } from 'ant-design-vue';
+import { Card, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getConfig, saveConfig } from '#/api/member/config';

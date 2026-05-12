@@ -18,6 +18,7 @@ import type {
   MentionsProps,
   RadioGroupProps,
   RadioProps,
+  RangePickerProps,
   RateProps,
   SelectProps,
   SpaceProps,
@@ -28,8 +29,7 @@ import type {
   UploadChangeParam,
   UploadFile,
   UploadProps,
-} from 'ant-design-vue';
-import type { RangePickerProps } from 'ant-design-vue/es/date-picker';
+} from 'antdv-next';
 
 import type { Component, Ref } from 'vue';
 
@@ -43,7 +43,6 @@ import type { Recordable } from '@vben/types';
 
 import {
   computed,
-  defineAsyncComponent,
   defineComponent,
   h,
   nextTick,
@@ -66,7 +65,36 @@ import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isEmpty } from '@vben/utils';
 
-import { message, Modal, notification } from 'ant-design-vue';
+import {
+  AutoComplete as AutoCompleteComponent,
+  Button,
+  Cascader as CascaderComponent,
+  Checkbox as CheckboxComponent,
+  CheckboxGroup as CheckboxGroupComponent,
+  DatePicker as DatePickerComponent,
+  Divider as DividerComponent,
+  Image as ImageComponent,
+  ImagePreviewGroup,
+  Input as InputComponent,
+  InputNumber as InputNumberComponent,
+  InputPassword,
+  Mentions as MentionsComponent,
+  message,
+  Modal,
+  notification,
+  Radio as RadioComponent,
+  RadioGroup as RadioGroupComponent,
+  DateRangePicker as RangePickerComponent,
+  Rate as RateComponent,
+  Select as SelectComponent,
+  Space as SpaceComponent,
+  Switch as SwitchComponent,
+  TextArea as TextareaComponent,
+  TimePicker as TimePickerComponent,
+  TimeRangePicker as TimeRangePickerComponent,
+  TreeSelect as TreeSelectComponent,
+  Upload as UploadComponent,
+} from 'antdv-next';
 
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
@@ -80,61 +108,29 @@ type AdapterUploadProps = UploadProps & {
   onHandleChange?: (event: UploadChangeParam) => void;
 };
 
-const AutoComplete = defineAsyncComponent(
-  () => import('ant-design-vue/es/auto-complete'),
-);
-const Button = defineAsyncComponent(() => import('ant-design-vue/es/button'));
-const Checkbox = defineAsyncComponent(
-  () => import('ant-design-vue/es/checkbox'),
-);
-const CheckboxGroup = defineAsyncComponent(() =>
-  import('ant-design-vue/es/checkbox').then((res) => res.CheckboxGroup),
-);
-const DatePicker = defineAsyncComponent(
-  () => import('ant-design-vue/es/date-picker'),
-);
-const Divider = defineAsyncComponent(() => import('ant-design-vue/es/divider'));
-const Input = defineAsyncComponent(() => import('ant-design-vue/es/input'));
-const InputNumber = defineAsyncComponent(
-  () => import('ant-design-vue/es/input-number'),
-);
-const InputPassword = defineAsyncComponent(() =>
-  import('ant-design-vue/es/input').then((res) => res.InputPassword),
-);
-const Mentions = defineAsyncComponent(
-  () => import('ant-design-vue/es/mentions'),
-);
-const Radio = defineAsyncComponent(() => import('ant-design-vue/es/radio'));
-const RadioGroup = defineAsyncComponent(() =>
-  import('ant-design-vue/es/radio').then((res) => res.RadioGroup),
-);
-const RangePicker = defineAsyncComponent(() =>
-  import('ant-design-vue/es/date-picker').then((res) => res.RangePicker),
-);
-const Rate = defineAsyncComponent(() => import('ant-design-vue/es/rate'));
-const Select = defineAsyncComponent(() => import('ant-design-vue/es/select'));
-const Space = defineAsyncComponent(() => import('ant-design-vue/es/space'));
-const Switch = defineAsyncComponent(() => import('ant-design-vue/es/switch'));
-const Textarea = defineAsyncComponent(() =>
-  import('ant-design-vue/es/input').then((res) => res.Textarea),
-);
-const TimePicker = defineAsyncComponent(
-  () => import('ant-design-vue/es/time-picker'),
-);
-const TimeRangePicker = defineAsyncComponent(() =>
-  import('ant-design-vue/es/time-picker').then((res) => res.TimeRangePicker),
-);
-const TreeSelect = defineAsyncComponent(
-  () => import('ant-design-vue/es/tree-select'),
-);
-const Cascader = defineAsyncComponent(
-  () => import('ant-design-vue/es/cascader'),
-);
-const Upload = defineAsyncComponent(() => import('ant-design-vue/es/upload'));
-const Image = defineAsyncComponent(() => import('ant-design-vue/es/image'));
-const PreviewGroup = defineAsyncComponent(() =>
-  import('ant-design-vue/es/image').then((res) => res.ImagePreviewGroup),
-);
+const AutoComplete = AutoCompleteComponent;
+const Checkbox = CheckboxComponent;
+const CheckboxGroup = CheckboxGroupComponent;
+const DatePicker = DatePickerComponent;
+const Divider = DividerComponent;
+const Input = InputComponent;
+const InputNumber = InputNumberComponent;
+const Mentions = MentionsComponent;
+const Radio = RadioComponent;
+const RadioGroup = RadioGroupComponent;
+const RangePicker = RangePickerComponent;
+const Rate = RateComponent;
+const Select = SelectComponent;
+const Space = SpaceComponent;
+const Switch = SwitchComponent;
+const Textarea = TextareaComponent;
+const TimePicker = TimePickerComponent;
+const TimeRangePicker = TimeRangePickerComponent;
+const TreeSelect = TreeSelectComponent;
+const Cascader = CascaderComponent;
+const Upload = UploadComponent;
+const Image = ImageComponent;
+const PreviewGroup = ImagePreviewGroup;
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -745,7 +741,7 @@ async function initComponentAdapter() {
     copyPreferencesSuccess: (title, content) => {
       notification.success({
         description: content,
-        message: title,
+        title,
         placement: 'bottomRight',
       });
     },

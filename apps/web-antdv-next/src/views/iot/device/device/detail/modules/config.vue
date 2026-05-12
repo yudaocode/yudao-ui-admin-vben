@@ -6,7 +6,7 @@ import { computed, ref, watchEffect } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 
-import { Alert, Button, message, Textarea } from 'ant-design-vue';
+import { Alert, Button, message, TextArea } from 'antdv-next';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
 
@@ -142,7 +142,7 @@ async function updateDeviceConfig() {
     </div>
 
     <!-- 编辑器视图 - 可编辑 -->
-    <Textarea
+    <TextArea
       v-else
       v-model:value="configString"
       :rows="20"

@@ -9,7 +9,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { updateUserProfile } from '#/api/system/user/profile';

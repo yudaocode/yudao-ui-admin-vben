@@ -15,8 +15,8 @@ import {
   RadioGroup,
   Select,
   Switch,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 import { updateElementExtensions } from '../../../utils';
 import HttpHeaderEditor from './HttpHeaderEditor.vue';
@@ -415,7 +415,7 @@ watch(
         </FormItem>
         <FormItem label="请求头" key="http-headers" name="requestHeaders">
           <div class="flex w-full flex-col gap-2">
-            <Textarea
+            <TextArea
               v-model:value="httpTaskForm.requestHeaders"
               :auto-size="{ minRows: 4, maxRows: 8 }"
               readonly

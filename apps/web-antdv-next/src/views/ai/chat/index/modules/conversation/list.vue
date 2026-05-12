@@ -8,7 +8,7 @@ import { h, onMounted, ref, toRefs, watch } from 'vue';
 import { confirm, prompt, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, SvgGptIcon } from '@vben/icons';
 
-import { Avatar, Button, Empty, Input, Layout, message } from 'ant-design-vue';
+import { Avatar, Button, Empty, Input, message } from 'antdv-next';
 
 import {
   createChatConversationMy,
@@ -297,7 +297,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Layout.Sider
+  <LayoutSider
     width="280px"
     class="relative flex h-full flex-col justify-between overflow-hidden p-4"
   >
@@ -431,5 +431,5 @@ onMounted(async () => {
         <span class="ml-1">清空未置顶对话</span>
       </div>
     </div>
-  </Layout.Sider>
+  </LayoutSider>
 </template>

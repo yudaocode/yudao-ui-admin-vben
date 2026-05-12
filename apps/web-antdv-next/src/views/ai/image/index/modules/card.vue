@@ -9,7 +9,7 @@ import { confirm } from '@vben/common-ui';
 import { AiImageStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, Image, message } from 'ant-design-vue';
+import { Button, Card, Image, message } from 'antdv-next';
 
 const props = defineProps({
   detail: {

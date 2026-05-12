@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page, SummaryCard } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'antdv-next';
 
 import { getMemberSummary } from '#/api/mall/statistics/member';
 

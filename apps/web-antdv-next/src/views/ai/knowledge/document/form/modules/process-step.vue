@@ -3,7 +3,7 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Progress } from 'ant-design-vue';
+import { Button, Progress } from 'antdv-next';
 
 import { getKnowledgeSegmentProcessList } from '#/api/ai/knowledge/segment';
 

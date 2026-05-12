@@ -20,14 +20,13 @@ import { IconifyIcon } from '@vben/icons';
 import {
   Button,
   Divider,
-  Form,
   Input,
   Radio,
   RadioGroup,
   Select,
   SelectOption,
   Switch,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getSimpleUserList } from '#/api/system/user';
 import {
@@ -449,7 +448,7 @@ onMounted(async () => {
 <template>
   <div>
     <Divider orientation="left">审批类型</Divider>
-    <Form.Item name="approveType" label="审批类型">
+    <FormItem name="approveType" label="审批类型">
       <RadioGroup v-model:value="approveType.value">
         <Radio
           v-for="(item, index) in APPROVE_TYPE"
@@ -459,10 +458,10 @@ onMounted(async () => {
           {{ item.label }}
         </Radio>
       </RadioGroup>
-    </Form.Item>
+    </FormItem>
 
     <Divider orientation="left">审批人拒绝时</Divider>
-    <Form.Item name="rejectHandlerType" label="处理方式">
+    <FormItem name="rejectHandlerType" label="处理方式">
       <RadioGroup
         v-model:value="rejectHandlerType"
         :disabled="returnTaskList.length === 0"
@@ -476,8 +475,8 @@ onMounted(async () => {
           {{ item.label }}
         </Radio>
       </RadioGroup>
-    </Form.Item>
-    <Form.Item
+    </FormItem>
+    <FormItem
       v-if="rejectHandlerType === RejectHandlerType.RETURN_USER_TASK"
       name="returnNodeId"
       label="驳回节点"
@@ -497,10 +496,10 @@ onMounted(async () => {
           {{ item.name }}
         </SelectOption>
       </Select>
-    </Form.Item>
+    </FormItem>
 
     <Divider orientation="left">审批人为空时</Divider>
-    <Form.Item name="assignEmptyHandlerType">
+    <FormItem name="assignEmptyHandlerType">
       <RadioGroup
         v-model:value="assignEmptyHandlerType"
         @change="updateAssignEmptyHandlerType"
@@ -513,8 +512,8 @@ onMounted(async () => {
           </div>
         </div>
       </RadioGroup>
-    </Form.Item>
-    <Form.Item
+    </FormItem>
+    <FormItem
       v-if="assignEmptyHandlerType === AssignEmptyHandlerType.ASSIGN_USER"
       label="指定用户"
       name="assignEmptyHandlerUserIds"
@@ -534,7 +533,7 @@ onMounted(async () => {
           {{ item.nickname }}
         </SelectOption>
       </Select>
-    </Form.Item>
+    </FormItem>
 
     <Divider orientation="left">审批人与提交人为同一人时</Divider>
     <RadioGroup
@@ -677,23 +676,23 @@ onMounted(async () => {
     </div>
 
     <Divider orientation="left">是否需要签名</Divider>
-    <Form.Item name="signEnable">
+    <FormItem name="signEnable">
       <Switch
         v-model:checked="signEnable.value"
         checked-children="是"
         un-checked-children="否"
         @change="updateElementExtensions"
       />
-    </Form.Item>
+    </FormItem>
 
     <Divider orientation="left">审批意见</Divider>
-    <Form.Item name="reasonRequire">
+    <FormItem name="reasonRequire">
       <Switch
         v-model:checked="reasonRequire.value"
         checked-children="必填"
         un-checked-children="非必填"
         @change="updateElementExtensions"
       />
-    </Form.Item>
+    </FormItem>
   </div>
 </template>

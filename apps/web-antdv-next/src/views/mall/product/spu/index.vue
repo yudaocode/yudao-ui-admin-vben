@@ -9,7 +9,7 @@ import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { ProductSpuStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -216,7 +216,7 @@ onMounted(async () => {
     <Grid>
       <template #toolbar-actions>
         <Tabs @change="onChangeTab" class="w-full">
-          <Tabs.TabPane
+          <TabPane
             v-for="item in tabsData"
             :key="item.type"
             :tab="`${item.name} (${item.count})`"

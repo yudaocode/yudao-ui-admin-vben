@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UserOrderProperty } from './config';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 用户订单 */
 defineOptions({ name: 'UserOrder' });

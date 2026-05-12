@@ -5,7 +5,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Col, Empty, Row } from 'ant-design-vue';
+import { Card, Col, Empty, Row } from 'antdv-next';
 
 import { getDeviceStateGaugeChartOptions } from '../chart-options';
 

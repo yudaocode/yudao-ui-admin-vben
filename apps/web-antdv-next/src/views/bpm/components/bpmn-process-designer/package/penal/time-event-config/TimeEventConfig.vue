@@ -8,7 +8,7 @@ import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, DatePicker, Input, Tooltip } from 'ant-design-vue';
+import { Button, DatePicker, Input, Tooltip } from 'antdv-next';
 
 import CycleConfig from './CycleConfig.vue';
 import DurationConfig from './DurationConfig.vue';
@@ -240,7 +240,7 @@ watch(
   <div class="panel-tab__content">
     <div class="mt-2 flex items-center">
       <span class="w-14">类型：</span>
-      <Button.Group>
+      <Space>
         <Button
           size="small"
           :type="type === 'time' ? 'primary' : 'default'"
@@ -262,7 +262,7 @@ watch(
         >
           循环
         </Button>
-      </Button.Group>
+      </Space>
       <IconifyIcon
         icon="ant-design:check-circle-filled"
         v-if="valid"

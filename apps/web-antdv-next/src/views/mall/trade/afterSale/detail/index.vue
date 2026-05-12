@@ -11,7 +11,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

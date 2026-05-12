@@ -4,7 +4,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Card, Empty, Spin } from 'ant-design-vue';
+import { Card, Empty, Spin } from 'antdv-next';
 
 import { getDeviceLocationList } from '#/api/iot/device/device';
 import { loadBaiduMapSdk } from '#/components/map';

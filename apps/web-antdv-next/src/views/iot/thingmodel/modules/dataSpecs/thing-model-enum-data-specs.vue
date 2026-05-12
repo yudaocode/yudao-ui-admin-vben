@@ -3,7 +3,7 @@
 import type { Ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Form, Input, message } from 'ant-design-vue';
+import { Button, Input, message } from 'antdv-next';
 
 /** 枚举型的 dataSpecs 配置组件 */
 defineOptions({ name: 'ThingModelEnumDataSpecs' });
@@ -31,7 +31,7 @@ function deleteEnum(index: number) {
 </script>
 
 <template>
-  <Form.Item label="枚举项">
+  <FormItem label="枚举项">
     <div class="flex flex-col">
       <div class="flex items-center">
         <span class="flex-1"> 参数值 </span>
@@ -55,7 +55,7 @@ function deleteEnum(index: number) {
       </div>
       <Button type="link" @click="addEnum">+添加枚举项</Button>
     </div>
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

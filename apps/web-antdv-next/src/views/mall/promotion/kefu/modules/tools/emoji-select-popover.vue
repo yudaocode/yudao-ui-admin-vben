@@ -6,7 +6,8 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { List, Popover } from 'ant-design-vue';
+import { Popover } from 'antdv-next';
+// TODO: List component not available in antdv-next, needs manual migration
 
 import { useEmoji } from './emoji';
 

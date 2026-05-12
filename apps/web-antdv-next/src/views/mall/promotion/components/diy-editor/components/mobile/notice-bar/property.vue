@@ -2,7 +2,7 @@
 import type { NoticeBarProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Card, Form, FormItem, Input } from 'ant-design-vue';
+import { Card, Form, FormItem, Input } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

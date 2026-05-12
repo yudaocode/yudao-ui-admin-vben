@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FormInstance, UploadProps } from 'ant-design-vue';
+import type { FormInstance, UploadProps } from 'antdv-next';
 
 import type { UploadData } from './upload';
 
@@ -15,7 +15,7 @@ import {
   message,
   Modal,
   Upload,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
@@ -142,19 +142,19 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
       :rules="uploadRules"
       layout="vertical"
     >
-      <Form.Item label="标题" name="title">
+      <FormItem label="标题" name="title">
         <Input
           v-model:value="uploadData.title"
           placeholder="标题将展示在相关播放页面，建议填写清晰、准确、生动的标题"
         />
-      </Form.Item>
-      <Form.Item label="描述" name="introduction">
+      </FormItem>
+      <FormItem label="描述" name="introduction">
         <Input.TextArea
           v-model:value="uploadData.introduction"
           :rows="3"
           placeholder="介绍语将展示在相关播放页面，建议填写简洁明确、有信息量的内容"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, Tabs } from 'ant-design-vue';
+import { Card, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -113,13 +113,13 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="详细资料" key="1" :force-render="true">
+        <TabPane tab="详细资料" key="1" :force-render="true">
           <ReceivablePlanDetailsInfo :receivable-plan="receivablePlan" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="2" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
+        </TabPane>
+        <TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="receivablePlanId"
@@ -127,7 +127,7 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

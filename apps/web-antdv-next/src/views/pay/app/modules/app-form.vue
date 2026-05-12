@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { createApp, getApp, updateApp } from '#/api/pay/app';

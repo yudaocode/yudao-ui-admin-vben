@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 // TODO @jason：你感觉要拆分下，按照表单么？
-import type { FormInstance } from 'ant-design-vue';
-import type { Rule } from 'ant-design-vue/es/form';
+import type { FormInstance } from 'antdv-next';
 
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemUserApi } from '#/api/system/user';
@@ -37,8 +36,8 @@ import {
   Select,
   SelectOption,
   Space,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 import {
   cancelProcessInstanceByStartUser,
@@ -61,6 +60,7 @@ import { $t } from '#/locales';
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
 
+type Rule = any;
 defineOptions({ name: 'ProcessInstanceBtnContainer' });
 
 const props = defineProps<{
@@ -837,7 +837,7 @@ defineExpose({ loadTodoTask });
                 </div>
               </FormItem>
               <FormItem :label="`${nodeTypeName}意见`" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="approveReasonForm.reason"
                   :placeholder="`请输入${nodeTypeName}意见`"
                   :rows="4"
@@ -894,7 +894,7 @@ defineExpose({ loadTodoTask });
               label-width="100px"
             >
               <FormItem label="审批意见" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="rejectReasonForm.reason"
                   placeholder="请输入审批意见"
                   :rows="4"
@@ -968,7 +968,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="抄送意见" name="copyReason">
-                <Textarea
+                <TextArea
                   v-model:value="copyForm.copyReason"
                   placeholder="请输入抄送意见"
                   :rows="3"
@@ -1038,7 +1038,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="审批意见" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="transferForm.reason"
                   allow-clear
                   placeholder="请输入审批意见"
@@ -1111,7 +1111,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="审批意见" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="delegateForm.reason"
                   allow-clear
                   placeholder="请输入审批意见"
@@ -1185,7 +1185,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="审批意见" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="addSignForm.reason"
                   allow-clear
                   placeholder="请输入审批意见"
@@ -1264,7 +1264,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="审批意见" name="reason">
-                <Textarea
+                <TextArea
                   v-model:value="deleteSignForm.reason"
                   allow-clear
                   placeholder="请输入审批意见"
@@ -1335,7 +1335,7 @@ defineExpose({ loadTodoTask });
                 </Select>
               </FormItem>
               <FormItem label="退回理由" name="returnReason">
-                <Textarea
+                <TextArea
                   v-model:value="returnForm.returnReason"
                   allow-clear
                   placeholder="请输入退回理由"
@@ -1401,7 +1401,7 @@ defineExpose({ loadTodoTask });
                   show-icon
                   message="友情提醒：取消后，该审批流程将自动结束。"
                 />
-                <Textarea
+                <TextArea
                   v-model:value="cancelForm.cancelReason"
                   allow-clear
                   placeholder="请输入取消理由"

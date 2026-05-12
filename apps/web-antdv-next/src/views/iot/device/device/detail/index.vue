@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { DeviceTypeEnum } from '@vben/constants';
 
-import { message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'antdv-next';
 
 import { getDevice } from '#/api/iot/device/device';
 import { getProduct, ProtocolTypeEnum } from '#/api/iot/product/product';
@@ -97,21 +97,21 @@ onMounted(async () => {
     />
 
     <Tabs v-model:active-key="activeTab" class="mt-4">
-      <Tabs.TabPane key="info" tab="设备信息">
+      <TabPane key="info" tab="设备信息">
         <DeviceDetailsInfo
           v-if="activeTab === 'info'"
           :device="device"
           :product="product"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="model" tab="物模型数据">
+      </TabPane>
+      <TabPane key="model" tab="物模型数据">
         <DeviceDetailsThingModel
           v-if="activeTab === 'model' && device.id"
           :device-id="device.id"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane
+      </TabPane>
+      <TabPane
         v-if="product.deviceType === DeviceTypeEnum.GATEWAY"
         key="sub-device"
         tab="子设备管理"
@@ -120,29 +120,29 @@ onMounted(async () => {
           v-if="activeTab === 'sub-device' && device.id"
           :device-id="device.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="log" tab="设备消息">
+      </TabPane>
+      <TabPane key="log" tab="设备消息">
         <DeviceDetailsMessage
           v-if="activeTab === 'log' && device.id"
           :device-id="device.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="simulator" tab="模拟设备">
+      </TabPane>
+      <TabPane key="simulator" tab="模拟设备">
         <DeviceDetailsSimulator
           v-if="activeTab === 'simulator'"
           :device="device"
           :product="product"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="config" tab="设备配置">
+      </TabPane>
+      <TabPane key="config" tab="设备配置">
         <DeviceDetailConfig
           v-if="activeTab === 'config'"
           :device="device"
           @success="() => getDeviceData(id)"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane
+      </TabPane>
+      <TabPane
         v-if="
           [
             ProtocolTypeEnum.MODBUS_TCP_CLIENT,
@@ -158,7 +158,7 @@ onMounted(async () => {
           :product="product"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
+      </TabPane>
     </Tabs>
   </Page>
 </template>

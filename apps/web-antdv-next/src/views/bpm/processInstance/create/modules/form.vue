@@ -15,7 +15,7 @@ import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import formCreate from '@form-create/ant-design-vue';
-import { Button, Card, Col, message, Row, Space, Tabs } from 'ant-design-vue';
+import { Button, Card, Col, message, Row, Space, Tabs } from 'antdv-next';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
 import {
@@ -283,7 +283,7 @@ defineExpose({ initProcessInfo });
       v-model:active-key="activeTab"
       class="flex flex-1 flex-col overflow-hidden"
     >
-      <Tabs.TabPane tab="表单填写" key="form">
+      <TabPane tab="表单填写" key="form">
         <Row :gutter="[48, 16]" class="pt-4">
           <Col
             :xs="24"
@@ -310,8 +310,8 @@ defineExpose({ initProcessInfo });
             />
           </Col>
         </Row>
-      </Tabs.TabPane>
-      <Tabs.TabPane
+      </TabPane>
+      <TabPane
         tab="流程图"
         key="flow"
         class="flex flex-1 overflow-hidden"
@@ -328,7 +328,7 @@ defineExpose({ initProcessInfo });
             v-if="BpmModelType.SIMPLE === selectProcessDefinition.modelType"
           />
         </div>
-      </Tabs.TabPane>
+      </TabPane>
     </Tabs>
 
     <template #actions>

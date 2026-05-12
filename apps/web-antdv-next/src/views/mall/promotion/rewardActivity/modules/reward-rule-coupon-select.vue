@@ -7,7 +7,7 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
 import { DictTag } from '#/components/dict-tag';

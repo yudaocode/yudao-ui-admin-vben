@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, Tabs } from 'ant-design-vue';
+import { Card, Tabs } from 'antdv-next';
 
 import { getContract } from '#/api/crm/contract';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -129,19 +129,19 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+        <TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="contractId" :biz-type="BizTypeEnum.CRM_CONTRACT" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="基本信息" key="2" :force-render="true">
           <ContractDetailsInfo :contract="contract" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="产品" key="3" :force-render="true">
+        </TabPane>
+        <TabPane tab="产品" key="3" :force-render="true">
           <ProductDetailsList
             :biz-id="contractId"
             :biz-type="BizTypeEnum.CRM_CONTRACT"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane
+        </TabPane>
+        <TabPane
           tab="回款"
           key="4"
           :force-render="true"
@@ -155,8 +155,8 @@ onMounted(() => {
             :contract-id="contractId"
             :customer-id="contract.customerId"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="5" :force-render="true">
+        </TabPane>
+        <TabPane tab="团队成员" key="5" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="contractId"
@@ -164,10 +164,10 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="6" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="6" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

@@ -4,7 +4,7 @@ import type { MpFreePublishApi } from '#/api/mp/freePublish';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Image, message, Typography } from 'ant-design-vue';
+import { Image, message, Typography } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteFreePublish, getFreePublishPage } from '#/api/mp/freePublish';

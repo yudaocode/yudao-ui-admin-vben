@@ -5,7 +5,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 
 import { computed, inject, ref, watch } from 'vue';
 
-import { Modal, Radio, Textarea } from 'ant-design-vue';
+import { Modal, TextArea } from 'antdv-next';
 
 import { getThingModelTSL } from '#/api/iot/thingmodel';
 import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
@@ -70,17 +70,17 @@ watch(tslString, (newValue) => {
     width="800px"
   >
     <div class="mb-4">
-      <Radio.Group v-model:value="viewMode" size="small">
-        <Radio.Button value="view">代码视图</Radio.Button>
-        <Radio.Button value="editor">编辑器视图</Radio.Button>
-      </Radio.Group>
+      <RadioGroup v-model:value="viewMode" size="small">
+        <RadioButton value="view">代码视图</RadioButton>
+        <RadioButton value="editor">编辑器视图</RadioButton>
+      </RadioGroup>
     </div>
     <!-- 代码视图 - 只读展示 -->
     <div v-if="viewMode === 'view'" class="json-viewer-container">
       <pre class="json-code"><code>{{ formattedTSL }}</code></pre>
     </div>
     <!-- 编辑器视图 - 可编辑 -->
-    <Textarea
+    <TextArea
       v-else
       v-model:value="tslString"
       :rows="20"

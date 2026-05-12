@@ -6,7 +6,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Collapse, message, Space } from 'ant-design-vue';
+import { Button, Collapse, message, Space } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';
@@ -186,12 +186,12 @@ onMounted(async () => {
     <div class="mx-4">
       <Form />
       <Collapse v-model:active-key="activeKey" class="mt-4">
-        <Collapse.Panel key="advanced" header="更多设置">
+        <CollapsePanel key="advanced" header="更多设置">
           <AdvancedForm />
           <Space class="mt-2">
             <Button type="primary" @click="openMapDialog">坐标拾取</Button>
           </Space>
-        </Collapse.Panel>
+        </CollapsePanel>
       </Collapse>
     </div>
   </Modal>

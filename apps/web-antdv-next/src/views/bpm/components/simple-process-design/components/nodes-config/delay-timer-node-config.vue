@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { SimpleFlowNode } from '../../consts';
 
 import { reactive, ref } from 'vue';
@@ -21,7 +19,7 @@ import {
   Row,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   DELAY_TYPE,
@@ -32,6 +30,7 @@ import {
 import { useNodeName, useWatchNode } from '../../helpers';
 import { convertTimeUnit } from './utils';
 
+type Rule = any;
 defineOptions({ name: 'DelayTimerNodeConfig' });
 
 const props = defineProps({

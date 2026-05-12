@@ -5,7 +5,7 @@ import { nextTick, onMounted, reactive, ref, unref } from 'vue';
 
 import { preferences } from '@vben/preferences';
 
-import { Button, message, Spin } from 'ant-design-vue';
+import { Button, message, Spin } from 'antdv-next';
 
 import { getMessagePage, sendMessage } from '#/api/mp/message';
 import { getUser } from '#/api/mp/user';

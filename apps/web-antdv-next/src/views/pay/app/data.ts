@@ -247,7 +247,7 @@ export function useAppFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         rows: 3,
         placeholder: '请输入备注',
@@ -381,7 +381,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
       {
         label: '应用私钥',
         fieldName: 'config.privateKey',
-        component: 'Textarea',
+        component: 'TextArea',
         rules: 'required',
         componentProps: {
           placeholder: '请输入应用私钥',
@@ -391,7 +391,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
       {
         label: '支付宝公钥',
         fieldName: 'config.alipayPublicKey',
-        component: 'Textarea',
+        component: 'TextArea',
         rules: 'required',
         componentProps: {
           placeholder: '请输入支付宝公钥',

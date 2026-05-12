@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Tabs } from 'ant-design-vue';
+import { Tabs } from 'antdv-next';
 
 import ChatConversationList from './modules/conversation-list.vue';
 import ChatMessageList from './modules/message-list.vue';
@@ -18,12 +18,12 @@ const activeTabName = ref('conversation');
     </template>
 
     <Tabs v-model:active-key="activeTabName">
-      <Tabs.TabPane tab="对话列表" key="conversation">
+      <TabPane tab="对话列表" key="conversation">
         <ChatConversationList />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab="消息列表" key="message">
+      </TabPane>
+      <TabPane tab="消息列表" key="message">
         <ChatMessageList />
-      </Tabs.TabPane>
+      </TabPane>
     </Tabs>
   </Page>
 </template>

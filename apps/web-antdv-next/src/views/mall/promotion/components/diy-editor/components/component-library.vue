@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Collapse } from 'ant-design-vue';
+import { Collapse } from 'antdv-next';
 import draggable from 'vuedraggable';
 
 import { componentConfigs } from './mobile/index';
@@ -68,7 +68,7 @@ function handleCloneComponent(component: DiyComponent<any>) {
       :bordered="false"
       class="bg-card"
     >
-      <Collapse.Panel
+      <CollapsePanel
         v-for="(group, index) in groups"
         :key="group.name"
         :header="group.name"
@@ -97,7 +97,7 @@ function handleCloneComponent(component: DiyComponent<any>) {
             </div>
           </template>
         </draggable>
-      </Collapse.Panel>
+      </CollapsePanel>
     </Collapse>
   </div>
 </template>

@@ -6,7 +6,7 @@ import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import FcDesigner from '@form-create/antd-designer';
-import { Button, message, Spin } from 'ant-design-vue';
+import { Button, message, Spin } from 'antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import {

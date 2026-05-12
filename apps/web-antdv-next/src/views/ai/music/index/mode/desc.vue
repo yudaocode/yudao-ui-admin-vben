@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive } from 'vue';
 
-import { Select, Switch, Textarea } from 'ant-design-vue';
+import { Select, Switch, TextArea } from 'antdv-next';
 
 import Title from '../title/index.vue';
 
@@ -24,7 +24,7 @@ defineExpose({
       title="音乐/歌词说明"
       desc="描述您想要的音乐风格和主题，使用流派和氛围而不是特定的艺术家和歌曲"
     >
-      <Textarea
+      <TextArea
         v-model:value="formData.desc"
         :auto-size="{ minRows: 6, maxRows: 6 }"
         :maxlength="1200"
@@ -48,7 +48,7 @@ defineExpose({
         class="w-full"
         placeholder="请选择"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in [
             {
               value: '3',
@@ -63,7 +63,7 @@ defineExpose({
           :value="item.value"
         >
           {{ item.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Title>
   </div>

@@ -3,7 +3,7 @@ import type { ImageBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 图片展示 */
 defineOptions({ name: 'ImageBar' });

@@ -5,7 +5,7 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 广告魔方 */
 defineOptions({ name: 'MagicCube' });

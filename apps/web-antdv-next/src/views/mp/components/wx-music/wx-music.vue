@@ -3,7 +3,7 @@ import type { WxMusicProps } from './types';
 
 import { computed } from 'vue';
 
-import { Typography } from 'ant-design-vue';
+import { Typography } from 'antdv-next';
 
 /** 微信消息 - 音乐 */
 defineOptions({ name: 'WxMusic' });

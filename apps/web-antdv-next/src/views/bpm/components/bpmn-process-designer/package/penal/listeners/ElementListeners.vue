@@ -13,7 +13,7 @@ import {
   Input,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';

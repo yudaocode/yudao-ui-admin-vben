@@ -1,4 +1,4 @@
-import type { UploadProps } from 'ant-design-vue';
+import type { UploadProps } from 'antdv-next';
 
 import type { UploadRawFile } from '#/views/mp/hooks/useUpload';
 

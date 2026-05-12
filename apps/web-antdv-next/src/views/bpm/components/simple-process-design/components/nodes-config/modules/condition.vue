@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Ref } from 'vue';
 
 import { computed, inject, reactive, ref } from 'vue';
@@ -22,9 +20,9 @@ import {
   SelectOption,
   Space,
   Switch,
-  Textarea,
+  TextArea,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   COMPARISON_OPERATORS,
@@ -34,6 +32,7 @@ import {
 } from '../../../consts';
 import { useFormFieldsAndStartUser } from '../../../helpers';
 
+type Rule = any;
 defineOptions({
   name: 'Condition',
 });
@@ -317,7 +316,7 @@ defineExpose({ validate });
       label="条件表达式"
       name="conditionExpression"
     >
-      <Textarea
+      <TextArea
         v-model:value="condition.conditionExpression"
         placeholder="请输入条件表达式"
         allow-clear

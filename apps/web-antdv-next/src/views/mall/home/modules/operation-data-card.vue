@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import { CountTo } from '@vben/common-ui';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { getTabsCount } from '#/api/mall/product/spu';
 import { getWalletRechargePrice } from '#/api/mall/statistics/pay';

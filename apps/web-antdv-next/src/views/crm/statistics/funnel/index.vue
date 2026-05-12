@@ -12,7 +12,7 @@ import { reactive, ref } from 'vue';
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Button, ButtonGroup, Tabs } from 'ant-design-vue';
+import { Button, Space, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -114,14 +114,14 @@ async function handleActive(value: boolean) {
         class="w-full"
         @change="handleTabChange"
       >
-        <Tabs.TabPane
+        <TabPane
           v-for="item in customerSummaryTabs"
           :key="item.key"
           :tab="item.tab"
           :force-render="true"
         />
       </Tabs>
-      <ButtonGroup>
+      <Space>
         <Button
           :type="active ? 'primary' : 'default'"
           v-if="activeTabName === 'funnel'"
@@ -136,7 +136,7 @@ async function handleActive(value: boolean) {
         >
           动态视角
         </Button>
-      </ButtonGroup>
+      </Space>
       <EchartsUI class="mb-20 h-2/5 w-full" ref="chartRef" />
       <Grid v-on="gridEvents" />
     </ContentWrap>

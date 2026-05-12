@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { IOParameter, SimpleFlowNode } from '../../consts';
 
 import { computed, onMounted, reactive, ref } from 'vue';
@@ -25,7 +23,7 @@ import {
   Select,
   SelectOption,
   Switch,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import { getModelList } from '#/api/bpm/model';
@@ -45,6 +43,7 @@ import {
 } from '../../consts';
 import { useFormFields, useNodeName, useWatchNode } from '../../helpers';
 import { convertTimeUnit } from './utils';
+type Rule = any;
 
 defineOptions({ name: 'ChildProcessNodeConfig' });
 

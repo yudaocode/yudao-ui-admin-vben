@@ -7,7 +7,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { AiModelTypeEnum, AiPlatformEnum } from '@vben/constants';
 
-import { Segmented } from 'ant-design-vue';
+import { Segmented } from 'antdv-next';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
 

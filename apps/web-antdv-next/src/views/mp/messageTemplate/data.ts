@@ -60,7 +60,7 @@ export function useSendFormSchema(accountId?: number): VbenFormSchema[] {
     {
       fieldName: 'data',
       label: '模板数据',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         rows: 4,
         placeholder:

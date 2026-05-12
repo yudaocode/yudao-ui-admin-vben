@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Tinyflow } from '@vben/plugins/tinyflow';
 import { isNumber } from '@vben/utils';
 
-import { Button, Input, Select } from 'ant-design-vue';
+import { Button, Input, Select } from 'antdv-next';
 
 import { testWorkflow } from '#/api/ai/workflow';
 
@@ -232,14 +232,14 @@ defineExpose({ validate });
             :key="index"
           >
             <Select class="w-48" v-model="param.key" placeholder="参数名">
-              <Select.Option
+              <SelectOption
                 v-for="(value, key) in paramsOfStartNode"
                 :key="key"
                 :value="key"
                 :disabled="!!value?.disabled"
               >
                 {{ value?.description || key }}
-              </Select.Option>
+              </SelectOption>
             </Select>
             <Input
               class="mx-2 w-48"

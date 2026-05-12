@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { formatDate, isEmpty, jsonParse } from '@vben/utils';
 
 import { useScroll } from '@vueuse/core';
-import { Avatar, Empty, Image, notification, Textarea } from 'ant-design-vue';
+import { Avatar, Empty, Image, notification, TextArea } from 'antdv-next';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -404,7 +404,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
               @send-picture="handleSendPicture"
             />
           </div>
-          <Textarea
+          <TextArea
             v-model:value="message"
             :rows="4"
             class="border-none p-2"

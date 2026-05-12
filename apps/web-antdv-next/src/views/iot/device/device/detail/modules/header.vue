@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Card, Descriptions, message } from 'ant-design-vue';
+import { Button, Card, Descriptions, message } from 'antdv-next';
 
 import DeviceForm from '../../modules/form.vue';
 
@@ -75,15 +75,15 @@ function openEditForm(row: IotDeviceApi.Device) {
 
     <Card class="mt-4">
       <Descriptions :column="2">
-        <Descriptions.Item label="产品">
+        <DescriptionsItem label="产品">
           <a
             class="cursor-pointer text-blue-600"
             @click="goToProductDetail(product.id)"
           >
             {{ product.name }}
           </a>
-        </Descriptions.Item>
-        <Descriptions.Item label="ProductKey">
+        </DescriptionsItem>
+        <DescriptionsItem label="ProductKey">
           {{ product.productKey }}
           <Button
             class="ml-2"
@@ -92,7 +92,7 @@ function openEditForm(row: IotDeviceApi.Device) {
           >
             复制
           </Button>
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </Card>
   </div>

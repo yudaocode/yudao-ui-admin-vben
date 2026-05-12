@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 
 import { MindMapContentExample } from '@vben/constants';
 
-import { Button, Textarea } from 'ant-design-vue';
+import { Button, TextArea } from 'antdv-next';
 
 defineProps<{
   isGenerating: boolean;
@@ -32,7 +32,7 @@ defineExpose({
     <div class="mt-4 flex-grow overflow-y-auto">
       <div>
         <b>您的需求？</b>
-        <Textarea
+        <TextArea
           v-model:value="formData.prompt"
           :maxlength="1024"
           :rows="8"
@@ -51,7 +51,7 @@ defineExpose({
       </div>
       <div class="mt-7">
         <b>使用已有内容生成？</b>
-        <Textarea
+        <TextArea
           v-model:value="generatedContent"
           :maxlength="1024"
           :rows="8"

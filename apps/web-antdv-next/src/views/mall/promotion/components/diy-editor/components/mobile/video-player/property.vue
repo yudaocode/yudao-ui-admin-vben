@@ -2,7 +2,7 @@
 import type { VideoPlayerProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Slider, Switch } from 'ant-design-vue';
+import { Form, FormItem, Slider, Switch } from 'antdv-next';
 
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';

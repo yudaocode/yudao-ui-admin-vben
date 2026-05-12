@@ -6,10 +6,10 @@ import { computed, ref } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Col, Input, Layout, Row, Textarea } from 'ant-design-vue';
+import { Button, Col, Input, Layout, Row, TextArea } from 'antdv-next';
 
 import { createEmptyNewsItem } from '#/api/mp/draft';
-import { Tinymce as RichTextarea } from '#/components/tinymce';
+import { Tinymce as RichTextArea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
 
@@ -84,7 +84,7 @@ function plusNews() {
 
 <template>
   <Layout>
-    <Layout.Sider width="40%" theme="light">
+    <LayoutSider width="40%" theme="light">
       <div class="mx-auto mb-[10px] w-[60%] border border-[#eaeaea] p-[10px]">
         <div v-for="(news, index) in newsList" :key="index">
           <div
@@ -201,8 +201,8 @@ function plusNews() {
           </Button>
         </Row>
       </div>
-    </Layout.Sider>
-    <Layout.Content class="bg-white">
+    </LayoutSider>
+    <LayoutContent class="bg-white">
       <div v-if="newsList.length > 0 && activeNewsItem">
         <!-- 标题、作者、原文地址 -->
         <Row :gutter="20">
@@ -235,7 +235,7 @@ function plusNews() {
           </Col>
           <Col :span="12">
             <p>摘要:</p>
-            <Textarea
+            <TextArea
               :rows="8"
               v-model:value="activeNewsItem.digest"
               placeholder="请输入摘要"
@@ -248,11 +248,11 @@ function plusNews() {
         <!--富文本编辑器组件-->
         <Row>
           <Col :span="24">
-            <RichTextarea v-model="activeNewsItem.content" />
+            <RichTextArea v-model="activeNewsItem.content" />
           </Col>
         </Row>
       </div>
-    </Layout.Content>
+    </LayoutContent>
   </Layout>
 </template>
 

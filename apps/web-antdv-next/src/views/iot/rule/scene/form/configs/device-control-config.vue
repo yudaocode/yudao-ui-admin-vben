@@ -11,7 +11,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isObject } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select, Tag } from 'ant-design-vue';
+import { Col, Row, Select, Tag } from 'antdv-next';
 
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
@@ -342,27 +342,27 @@ watch(
     <!-- 产品和设备选择 - 与触发器保持一致的分离式选择器 -->
     <Row :gutter="16">
       <Col :span="12">
-        <Form.Item label="产品" required>
+        <FormItem label="产品" required>
           <ProductSelector
             v-model="action.productId"
             @change="handleProductChange"
           />
-        </Form.Item>
+        </FormItem>
       </Col>
       <Col :span="12">
-        <Form.Item label="设备" required>
+        <FormItem label="设备" required>
           <DeviceSelector
             v-model="action.deviceId"
             :product-id="action.productId"
             @change="handleDeviceChange"
           />
-        </Form.Item>
+        </FormItem>
       </Col>
     </Row>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
     <div v-if="action.productId && isServiceInvokeAction" class="space-y-16px">
-      <Form.Item label="服务" required>
+      <FormItem label="服务" required>
         <Select
           v-model="action.identifier"
           placeholder="请选择服务"
@@ -372,7 +372,7 @@ watch(
           :loading="loadingServices"
           @change="handleServiceChange"
         >
-          <Select.Option
+          <SelectOption
             v-for="service in serviceList"
             :key="service.identifier"
             :label="service.name"
@@ -387,34 +387,34 @@ watch(
                 {{ service.callType === 'sync' ? '同步' : '异步' }}
               </Tag>
             </div>
-          </Select.Option>
+          </SelectOption>
         </Select>
-      </Form.Item>
+      </FormItem>
 
       <!-- 服务参数配置 -->
       <div v-if="action.identifier" class="space-y-16px">
-        <Form.Item label="服务参数" required>
+        <FormItem label="服务参数" required>
           <JsonParamsInput
             v-model="paramsValue"
             type="service"
             :config="{ service: selectedService } as any"
             placeholder="请输入 JSON 格式的服务参数"
           />
-        </Form.Item>
+        </FormItem>
       </div>
     </div>
 
     <!-- 控制参数配置 - 属性设置类型时显示 -->
     <div v-if="action.productId && isPropertySetAction" class="space-y-16px">
       <!-- 参数配置 -->
-      <Form.Item label="参数" required>
+      <FormItem label="参数" required>
         <JsonParamsInput
           v-model="paramsValue"
           type="property"
           :config="{ properties: thingModelProperties }"
           placeholder="请输入 JSON 格式的控制参数"
         />
-      </Form.Item>
+      </FormItem>
     </div>
   </div>
 </template>

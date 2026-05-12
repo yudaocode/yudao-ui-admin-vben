@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, FormItem, Input, Select, SelectOption } from 'ant-design-vue';
+import { Form, FormItem, Input, Select, SelectOption } from 'antdv-next';
 
 import { fieldType } from './utilSelf';
 

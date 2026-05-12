@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, FormItem, Input } from 'ant-design-vue';
+import { Form, FormItem, Input } from 'antdv-next';
 
 defineOptions({ name: 'SignalMessageModal' });
 

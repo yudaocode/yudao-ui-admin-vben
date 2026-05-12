@@ -15,7 +15,7 @@ import {
   Divider,
   InputSearch,
   message,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

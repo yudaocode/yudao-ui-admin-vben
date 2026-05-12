@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import { Form, FormItem, Input, Select, Textarea } from 'ant-design-vue';
+import { Form, FormItem, Input, Select, TextArea } from 'antdv-next';
 
 defineOptions({ name: 'FlowCondition' });
 
@@ -158,9 +158,9 @@ watch(
     >
       <FormItem label="流转类型">
         <Select v-model:value="flowConditionForm.type" @change="updateFlowType">
-          <Select.Option value="normal">普通流转路径</Select.Option>
-          <Select.Option value="default">默认流转路径</Select.Option>
-          <Select.Option value="condition">条件流转路径</Select.Option>
+          <SelectOption value="normal">普通流转路径</SelectOption>
+          <SelectOption value="default">默认流转路径</SelectOption>
+          <SelectOption value="condition">条件流转路径</SelectOption>
         </Select>
       </FormItem>
       <FormItem
@@ -169,8 +169,8 @@ watch(
         key="condition"
       >
         <Select v-model:value="flowConditionForm.conditionType">
-          <Select.Option value="expression">表达式</Select.Option>
-          <Select.Option value="script">脚本</Select.Option>
+          <SelectOption value="expression">表达式</SelectOption>
+          <SelectOption value="script">脚本</SelectOption>
         </Select>
       </FormItem>
       <FormItem
@@ -181,7 +181,7 @@ watch(
         "
         key="express"
       >
-        <Textarea
+        <TextArea
           v-model:value="flowConditionForm.body"
           :auto-size="{ minRows: 2, maxRows: 6 }"
           allow-clear
@@ -203,8 +203,8 @@ watch(
         </FormItem>
         <FormItem label="脚本类型" key="scriptType">
           <Select v-model:value="flowConditionForm.scriptType">
-            <Select.Option value="inlineScript">内联脚本</Select.Option>
-            <Select.Option value="externalScript">外部脚本</Select.Option>
+            <SelectOption value="inlineScript">内联脚本</SelectOption>
+            <SelectOption value="externalScript">外部脚本</SelectOption>
           </Select>
         </FormItem>
         <FormItem
@@ -212,7 +212,7 @@ watch(
           v-if="flowConditionForm.scriptType === 'inlineScript'"
           key="body"
         >
-          <Textarea
+          <TextArea
             v-model:value="flowConditionForm.body"
             :auto-size="{ minRows: 2, maxRows: 6 }"
             allow-clear

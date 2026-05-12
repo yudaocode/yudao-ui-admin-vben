@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import { ContentWrap } from '@vben/common-ui';
 
-import { Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 
 import { getLeave } from '#/api/bpm/oa/leave';
 import { useDescription } from '#/components/description';

@@ -4,7 +4,7 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 
 import { nextTick, ref } from 'vue';
 
-import { Modal } from 'ant-design-vue';
+import { Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCouponTemplatePage } from '#/api/mall/promotion/coupon/couponTemplate';

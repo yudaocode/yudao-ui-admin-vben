@@ -3,7 +3,7 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip } from 'antdv-next';
 import VueDraggable from 'vuedraggable';
 
 /** 拖拽组件封装 */

@@ -7,15 +7,7 @@ import { computed, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Col,
-  DatePicker,
-  Form,
-  Row,
-  Select,
-  Tag,
-  TimePicker,
-} from 'ant-design-vue';
+import { Col, DatePicker, Row, Select, Tag, TimePicker } from 'antdv-next';
 
 import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
 
@@ -174,7 +166,7 @@ watch(
     <Row :gutter="16">
       <!-- 时间操作符选择 -->
       <Col :span="8">
-        <Form.Item label="时间条件" required>
+        <FormItem label="时间条件" required>
           <Select
             :model-value="condition.operator"
             @update:model-value="
@@ -183,7 +175,7 @@ watch(
             placeholder="请选择时间条件"
             class="w-full"
           >
-            <Select.Option
+            <SelectOption
               v-for="option in timeOperatorOptions"
               :key="option.value"
               :label="option.label"
@@ -198,14 +190,14 @@ watch(
                   {{ option.category }}
                 </Tag>
               </div>
-            </Select.Option>
+            </SelectOption>
           </Select>
-        </Form.Item>
+        </FormItem>
       </Col>
 
       <!-- 时间值输入 -->
       <Col :span="8">
-        <Form.Item label="时间值" required>
+        <FormItem label="时间值" required>
           <TimePicker
             v-if="needsTimeInput"
             :model-value="timeValue"
@@ -226,12 +218,12 @@ watch(
             class="w-full"
           />
           <div v-else class="text-sm text-secondary">无需设置时间值</div>
-        </Form.Item>
+        </FormItem>
       </Col>
 
       <!-- 第二个时间值（范围条件） -->
       <Col :span="8" v-if="needsSecondTimeInput">
-        <Form.Item label="结束时间" required>
+        <FormItem label="结束时间" required>
           <TimePicker
             v-if="needsTimeInput"
             :model-value="timeValue2"
@@ -251,7 +243,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-        </Form.Item>
+        </FormItem>
       </Col>
     </Row>
   </div>

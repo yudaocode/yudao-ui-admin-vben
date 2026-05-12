@@ -10,7 +10,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Input } from 'ant-design-vue';
+import { Input } from 'antdv-next';
 
 import { NODE_DEFAULT_TEXT } from '../../consts';
 import { useNodeName2, useTaskStatusClass, useWatchNode } from '../../helpers';

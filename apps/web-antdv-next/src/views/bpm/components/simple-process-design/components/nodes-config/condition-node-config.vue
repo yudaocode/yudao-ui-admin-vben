@@ -7,7 +7,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Input } from 'ant-design-vue';
+import { Input } from 'antdv-next';
 
 import { ConditionType } from '../../consts';
 import {

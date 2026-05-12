@@ -7,7 +7,7 @@ import { ref, unref } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Divider, Form, Input, Modal } from 'ant-design-vue';
+import { Button, Divider, Form, Input, Modal } from 'antdv-next';
 
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
@@ -150,12 +150,12 @@ function resetForm() {
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="参数名称" name="name">
+      <FormItem label="参数名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入功能名称" />
-      </Form.Item>
-      <Form.Item label="标识符" name="identifier">
+      </FormItem>
+      <FormItem label="标识符" name="identifier">
         <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
-      </Form.Item>
+      </FormItem>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-params />
     </Form>

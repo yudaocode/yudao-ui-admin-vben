@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CrmBusinessApi } from '#/api/crm/business';
 
-import { Divider } from 'ant-design-vue';
+import { Divider } from 'antdv-next';
 
 import { useDescription } from '#/components/description';
 import { useFollowUpDetailSchema } from '#/views/crm/followup/data';

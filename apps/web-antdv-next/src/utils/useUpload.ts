@@ -1,4 +1,4 @@
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 enum UploadType {
   Image = 'image',

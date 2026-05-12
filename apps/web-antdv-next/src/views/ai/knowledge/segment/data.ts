@@ -27,7 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '切片内容',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入切片内容',
         rows: 6,

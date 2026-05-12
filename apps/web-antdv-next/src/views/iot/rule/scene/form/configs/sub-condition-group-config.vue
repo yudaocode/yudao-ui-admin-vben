@@ -6,7 +6,7 @@ import { computed, nextTick } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import {
   IotRuleSceneTriggerConditionParameterOperatorEnum,

@@ -7,7 +7,7 @@ import { nextTick, onMounted, ref, unref } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Divider, Form, Input, Modal } from 'ant-design-vue';
+import { Button, Divider, Form, Input, Modal } from 'antdv-next';
 
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
@@ -125,7 +125,7 @@ onMounted(async () => {
 
 <template>
   <!-- struct 数据展示 -->
-  <Form.Item label="属性对象">
+  <FormItem label="属性对象">
     <div
       v-for="(item, index) in dataSpecsList"
       :key="index"
@@ -141,7 +141,7 @@ onMounted(async () => {
       </div>
     </div>
     <Button type="link" @click="openStructForm(null)"> +新增参数 </Button>
-  </Form.Item>
+  </FormItem>
 
   <!-- struct 表单 -->
   <Modal
@@ -156,12 +156,12 @@ onMounted(async () => {
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="参数名称" name="name">
+      <FormItem label="参数名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入功能名称" />
-      </Form.Item>
-      <Form.Item label="标识符" name="identifier">
+      </FormItem>
+      <FormItem label="标识符" name="identifier">
         <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
-      </Form.Item>
+      </FormItem>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-struct-data-specs />
     </Form>

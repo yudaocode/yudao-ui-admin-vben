@@ -7,7 +7,7 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';

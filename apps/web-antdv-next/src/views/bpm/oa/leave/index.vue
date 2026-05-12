@@ -7,7 +7,7 @@ import { h, onActivated } from 'vue';
 import { DocAlert, Page, prompt } from '@vben/common-ui';
 import { BpmProcessInstanceStatus } from '@vben/constants';
 
-import { message, Textarea } from 'ant-design-vue';
+import { message, TextArea } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLeavePage } from '#/api/bpm/oa/leave';
@@ -49,7 +49,7 @@ function handleCancel(row: BpmOALeaveApi.Leave) {
     content: '请输入取消原因',
     modelPropName: 'value',
     component: () => {
-      return h(Textarea, {
+      return h(TextArea, {
         placeholder: '请输入取消原因',
         allowClear: true,
         rows: 2,

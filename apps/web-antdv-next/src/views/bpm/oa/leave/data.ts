@@ -61,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'reason',
       label: '原因',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入原因',
       },

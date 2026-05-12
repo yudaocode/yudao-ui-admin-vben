@@ -12,7 +12,7 @@ import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { getKnowledgeDocument } from '#/api/ai/knowledge/document';
 

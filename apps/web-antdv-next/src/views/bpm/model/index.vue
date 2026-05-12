@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useSortable } from '@vueuse/integrations/useSortable';
-import { Button, Card, Dropdown, Input, Menu, message } from 'ant-design-vue';
+import { Button, Card, Dropdown, Input, Menu, message } from 'antdv-next';
 
 import {
   getCategorySimpleList,
@@ -169,7 +169,7 @@ async function handleCategorySortSubmit() {
                 </div>
               </template>
             </Button>
-            <template #overlay>
+            <template #popupRender>
               <Menu @click="(e) => handleCommand(e.key as string)">
                 <Menu.Item key="handleCategoryAdd">
                   <div class="flex items-center gap-1">

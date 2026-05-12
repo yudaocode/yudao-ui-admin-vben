@@ -9,7 +9,7 @@ import { DeliveryTypeEnum } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { fenToYuan } from '@vben/utils';
 
-import { Card, Image, Input, message, Tag } from 'ant-design-vue';
+import { Card, Image, Input, message, Tag } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

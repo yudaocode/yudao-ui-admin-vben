@@ -6,7 +6,7 @@ import { computed, ref, unref, watch } from 'vue';
 import { NewsType, ReplyType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Row, Tabs } from 'ant-design-vue';
+import { Row, Tabs } from 'antdv-next';
 
 import TabImage from './tab-image.vue';
 import TabMusic from './tab-music.vue';
@@ -115,7 +115,7 @@ defineExpose({
 <template>
   <Tabs v-model:active-key="currentTab" type="card">
     <!-- 类型 1：文本 -->
-    <Tabs.TabPane :key="ReplyType.Text">
+    <TabPane :key="ReplyType.Text">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:file-text" class="mr-1" />
@@ -123,10 +123,10 @@ defineExpose({
         </Row>
       </template>
       <TabText v-model="reply.content" />
-    </Tabs.TabPane>
+    </TabPane>
 
     <!-- 类型 2：图片 -->
-    <Tabs.TabPane :key="ReplyType.Image">
+    <TabPane :key="ReplyType.Image">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:image" class="mr-1" />
@@ -134,10 +134,10 @@ defineExpose({
         </Row>
       </template>
       <TabImage v-model="reply" />
-    </Tabs.TabPane>
+    </TabPane>
 
     <!-- 类型 3：语音 -->
-    <Tabs.TabPane :key="ReplyType.Voice">
+    <TabPane :key="ReplyType.Voice">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:mic" class="mr-1" />
@@ -145,10 +145,10 @@ defineExpose({
         </Row>
       </template>
       <TabVoice v-model="reply" />
-    </Tabs.TabPane>
+    </TabPane>
 
     <!-- 类型 4：视频 -->
-    <Tabs.TabPane :key="ReplyType.Video">
+    <TabPane :key="ReplyType.Video">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:video" class="mr-1" />
@@ -156,10 +156,10 @@ defineExpose({
         </Row>
       </template>
       <TabVideo v-model="reply" />
-    </Tabs.TabPane>
+    </TabPane>
 
     <!-- 类型 5：图文 -->
-    <Tabs.TabPane :key="ReplyType.News">
+    <TabPane :key="ReplyType.News">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:newspaper" class="mr-1" />
@@ -167,10 +167,10 @@ defineExpose({
         </Row>
       </template>
       <TabNews v-model="reply" :news-type="newsType" />
-    </Tabs.TabPane>
+    </TabPane>
 
     <!-- 类型 6：音乐 -->
-    <Tabs.TabPane :key="ReplyType.Music">
+    <TabPane :key="ReplyType.Music">
       <template #tab>
         <Row align="middle">
           <IconifyIcon icon="lucide:music" class="mr-1" />
@@ -178,6 +178,6 @@ defineExpose({
         </Row>
       </template>
       <TabMusic v-model="reply" />
-    </Tabs.TabPane>
+    </TabPane>
   </Tabs>
 </template>

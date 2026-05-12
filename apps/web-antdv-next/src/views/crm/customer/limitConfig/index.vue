@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message, Tabs } from 'ant-design-vue';
+import { message, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -116,11 +116,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid>
       <template #toolbar-actions>
         <Tabs class="w-full" @change="handleChangeConfigType">
-          <Tabs.TabPane
+          <TabPane
             tab="拥有客户数限制"
             :key="LimitConfType.CUSTOMER_QUANTITY_LIMIT"
           />
-          <Tabs.TabPane
+          <TabPane
             tab="锁定客户数限制"
             :key="LimitConfType.CUSTOMER_LOCK_LIMIT"
           />

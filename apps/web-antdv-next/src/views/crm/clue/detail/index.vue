@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, Tabs } from 'ant-design-vue';
+import { Card, message, Tabs } from 'antdv-next';
 
 import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -149,13 +149,13 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs :tab-bar-gutter="16">
-        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
+        <TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
+        </TabPane>
+        <TabPane tab="基本信息" key="2" :force-render="true">
           <Info :clue="clue" />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
+        </TabPane>
+        <TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="clueId"
@@ -163,10 +163,10 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
+        </TabPane>
+        <TabPane tab="操作日志" key="4" :force-render="true">
           <OperateLog :log-list="logList" />
-        </Tabs.TabPane>
+        </TabPane>
       </Tabs>
     </Card>
   </Page>

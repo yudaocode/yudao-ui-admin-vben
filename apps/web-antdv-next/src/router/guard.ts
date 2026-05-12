@@ -6,7 +6,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useDictStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { getSimpleDictDataList } from '#/api/system/dict/data';
 import { accessRoutes, coreRouteNames } from '#/router/routes';

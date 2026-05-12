@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CouponTemplateTakeTypeEnum } from '@vben/constants';
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

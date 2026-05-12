@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Select, Tag } from 'ant-design-vue';
+import { Select, Tag } from 'antdv-next';
 
 import { getAlertConfigPage } from '#/api/iot/alert/config';
 
@@ -56,7 +56,7 @@ onMounted(() => {
 
 <template>
   <div class="w-full">
-    <Form.Item label="告警配置" required>
+    <FormItem label="告警配置" required>
       <Select
         v-model="localValue"
         placeholder="请选择告警配置"
@@ -66,7 +66,7 @@ onMounted(() => {
         class="w-full"
         :loading="loading"
       >
-        <Select.Option
+        <SelectOption
           v-for="config in alertConfigs"
           :key="config.id"
           :label="config.name"
@@ -78,8 +78,8 @@ onMounted(() => {
               {{ config.enabled ? '启用' : '禁用' }}
             </Tag>
           </div>
-        </Select.Option>
+        </SelectOption>
       </Select>
-    </Form.Item>
+    </FormItem>
   </div>
 </template>

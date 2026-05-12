@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 defineProps({
   categoryList: {

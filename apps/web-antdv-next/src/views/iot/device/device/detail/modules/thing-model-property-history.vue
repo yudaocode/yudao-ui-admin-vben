@@ -21,7 +21,7 @@ import {
   Spin,
   Table,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
@@ -447,7 +447,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           </Button>
 
           <!-- 视图切换 -->
-          <Button.Group class="ml-auto">
+          <Space class="ml-auto">
             <Button
               :disabled="!canShowChart"
               :type="viewMode === 'chart' ? 'primary' : 'default'"
@@ -467,7 +467,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
               </template>
               列表
             </Button>
-          </Button.Group>
+          </Space>
         </Space>
 
         <!-- 数据统计信息 -->

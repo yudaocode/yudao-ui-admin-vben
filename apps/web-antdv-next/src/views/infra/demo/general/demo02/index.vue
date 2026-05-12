@@ -13,7 +13,7 @@ import {
   isEmpty,
 } from '@vben/utils';
 
-import { Button, Form, Input, message, RangePicker } from 'ant-design-vue';
+import { Button, DateRangePicker, Form, Input, message } from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
@@ -131,7 +131,7 @@ onMounted(() => {
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
       <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="名字" name="name">
+        <FormItem label="名字" name="name">
           <Input
             v-model:value="queryParams.name"
             placeholder="请输入名字"
@@ -139,8 +139,8 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="父级编号" name="parentId">
+        </FormItem>
+        <FormItem label="父级编号" name="parentId">
           <Input
             v-model:value="queryParams.parentId"
             placeholder="请输入父级编号"
@@ -148,20 +148,20 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
-          <RangePicker
+        </FormItem>
+        <FormItem label="创建时间" name="createTime">
+          <DateRangePicker
             v-model:value="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem>
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" type="primary">
             搜索
           </Button>
-        </Form.Item>
+        </FormItem>
       </Form>
     </ContentWrap>
 

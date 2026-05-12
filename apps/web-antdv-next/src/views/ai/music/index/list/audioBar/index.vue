@@ -4,7 +4,7 @@ import { inject, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast } from '@vben/utils';
 
-import { Image, Slider } from 'ant-design-vue';
+import { Image, Slider } from 'antdv-next';
 
 defineOptions({ name: 'AiMusicAudioBarIndex' });
 

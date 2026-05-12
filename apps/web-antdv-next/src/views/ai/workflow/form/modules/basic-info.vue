@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import { ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, Input, Select } from 'ant-design-vue';
+import { Form, Input, Select } from 'antdv-next';
 
+type Rule = any;
 const modelData = defineModel<any>(); // 创建本地数据副本
 const formRef = ref(); // 表单引用
 const rules: Record<string, Rule[]> = {
@@ -33,39 +32,39 @@ defineExpose({ validate });
     :wrapper-col="{ span: 20 }"
     class="mt-5"
   >
-    <Form.Item label="流程标识" name="code" class="mb-5">
+    <FormItem label="流程标识" name="code" class="mb-5">
       <Input
         class="w-full"
         v-model:value="modelData.code"
         allow-clear
         placeholder="请输入流程标识"
       />
-    </Form.Item>
-    <Form.Item label="流程名称" name="name" class="mb-5">
+    </FormItem>
+    <FormItem label="流程名称" name="name" class="mb-5">
       <Input
         v-model:value="modelData.name"
         allow-clear
         placeholder="请输入流程名称"
       />
-    </Form.Item>
-    <Form.Item label="状态" name="status" class="mb-5">
+    </FormItem>
+    <FormItem label="状态" name="status" class="mb-5">
       <Select
         class="w-full"
         v-model:value="modelData.status"
         allow-clear
         placeholder="请选择状态"
       >
-        <Select.Option
+        <SelectOption
           v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
           :key="dict.value"
           :value="dict.value"
         >
           {{ dict.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
-    </Form.Item>
-    <Form.Item label="流程描述" name="description" class="mb-5">
+    </FormItem>
+    <FormItem label="流程描述" name="description" class="mb-5">
       <Input.TextArea v-model:value="modelData.description" allow-clear />
-    </Form.Item>
+    </FormItem>
   </Form>
 </template>

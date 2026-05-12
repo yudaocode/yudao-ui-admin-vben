@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, prompt } from '@vben/common-ui';
 
-import { message, Textarea } from 'ant-design-vue';
+import { message, TextArea } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessDefinition } from '#/api/bpm/definition';
@@ -67,7 +67,7 @@ function handleDetail(row: BpmProcessInstanceApi.ProcessInstance) {
 function handleCancel(row: BpmProcessInstanceApi.ProcessInstance) {
   prompt({
     component: () => {
-      return h(Textarea, {
+      return h(TextArea, {
         placeholder: '请输入取消原因',
         allowClear: true,
         rows: 2,

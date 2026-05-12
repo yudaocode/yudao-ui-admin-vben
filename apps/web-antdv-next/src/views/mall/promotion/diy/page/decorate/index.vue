@@ -4,7 +4,7 @@ import type { MallDiyPageApi } from '#/api/mall/promotion/diy/page';
 import { onMounted, ref, unref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import {
   getDiyPageProperty,

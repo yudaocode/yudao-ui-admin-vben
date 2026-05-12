@@ -7,7 +7,7 @@ import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Drawer, Form, message } from 'ant-design-vue';
+import { Button, Drawer, Form, message } from 'antdv-next';
 
 import { createSceneRule, updateSceneRule } from '#/api/iot/rule/scene';
 import {

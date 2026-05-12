@@ -1,6 +1,6 @@
 <!-- 模拟设备 -->
 <script lang="ts" setup>
-import type { TableColumnType } from 'ant-design-vue';
+import type { TableColumnType } from 'antdv-next';
 
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
@@ -21,8 +21,8 @@ import {
   Row,
   Table,
   Tabs,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 import { sendDeviceMessage } from '#/api/iot/device/device';
 import {
@@ -361,14 +361,14 @@ async function handleServiceInvoke(row: ThingModelData) {
           <div v-show="!debugCollapsed">
             <Tabs v-model:active-key="activeTab" size="small">
               <!-- 上行指令调试 -->
-              <Tabs.TabPane key="upstream" tab="上行指令调试">
+              <TabPane key="upstream" tab="上行指令调试">
                 <Tabs
                   v-if="activeTab === 'upstream'"
                   v-model:active-key="upstreamTab"
                   size="small"
                 >
                   <!-- 属性上报 -->
-                  <Tabs.TabPane
+                  <TabPane
                     :key="IotDeviceMessageMethodEnum.PROPERTY_POST.method"
                     tab="属性上报"
                   >
@@ -409,10 +409,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                         </Button>
                       </div>
                     </ContentWrap>
-                  </Tabs.TabPane>
+                  </TabPane>
 
                   <!-- 事件上报 -->
-                  <Tabs.TabPane
+                  <TabPane
                     :key="IotDeviceMessageMethodEnum.EVENT_POST.method"
                     tab="事件上报"
                   >
@@ -433,7 +433,7 @@ async function handleServiceInvoke(row: ThingModelData) {
                             <DataDefinition :data="record" />
                           </template>
                           <template v-else-if="column.key === 'value'">
-                            <Textarea
+                            <TextArea
                               :rows="3"
                               :value="getFormValue(record.identifier)"
                               placeholder="输入事件参数（JSON格式）"
@@ -455,10 +455,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                         </template>
                       </Table>
                     </ContentWrap>
-                  </Tabs.TabPane>
+                  </TabPane>
 
                   <!-- 状态变更 -->
-                  <Tabs.TabPane
+                  <TabPane
                     :key="IotDeviceMessageMethodEnum.STATE_UPDATE.method"
                     tab="状态变更"
                   >
@@ -478,19 +478,19 @@ async function handleServiceInvoke(row: ThingModelData) {
                         </Button>
                       </div>
                     </ContentWrap>
-                  </Tabs.TabPane>
+                  </TabPane>
                 </Tabs>
-              </Tabs.TabPane>
+              </TabPane>
 
               <!-- 下行指令调试 -->
-              <Tabs.TabPane key="downstream" tab="下行指令调试">
+              <TabPane key="downstream" tab="下行指令调试">
                 <Tabs
                   v-if="activeTab === 'downstream'"
                   v-model:active-key="downstreamTab"
                   size="small"
                 >
                   <!-- 属性调试 -->
-                  <Tabs.TabPane
+                  <TabPane
                     :key="IotDeviceMessageMethodEnum.PROPERTY_SET.method"
                     tab="属性设置"
                   >
@@ -531,10 +531,10 @@ async function handleServiceInvoke(row: ThingModelData) {
                         </Button>
                       </div>
                     </ContentWrap>
-                  </Tabs.TabPane>
+                  </TabPane>
 
                   <!-- 服务调用 -->
-                  <Tabs.TabPane
+                  <TabPane
                     :key="IotDeviceMessageMethodEnum.SERVICE_INVOKE.method"
                     tab="设备服务调用"
                   >
@@ -552,7 +552,7 @@ async function handleServiceInvoke(row: ThingModelData) {
                             <DataDefinition :data="record" />
                           </template>
                           <template v-else-if="column.key === 'value'">
-                            <Textarea
+                            <TextArea
                               :rows="3"
                               :value="getFormValue(record.identifier)"
                               placeholder="输入服务参数（JSON格式）"
@@ -574,9 +574,9 @@ async function handleServiceInvoke(row: ThingModelData) {
                         </template>
                       </Table>
                     </ContentWrap>
-                  </Tabs.TabPane>
+                  </TabPane>
                 </Tabs>
-              </Tabs.TabPane>
+              </TabPane>
             </Tabs>
           </div>
         </Card>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { Textarea } from 'ant-design-vue';
+import { TextArea } from 'antdv-next';
 
 const props = defineProps<{
   modelValue?: null | string;
@@ -22,5 +22,5 @@ const content = computed({
 </script>
 
 <template>
-  <Textarea v-model:value="content" :rows="5" placeholder="请输入内容" />
+  <TextArea v-model:value="content" :rows="5" placeholder="请输入内容" />
 </template>

@@ -6,7 +6,7 @@ import { computed, nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { AutoReplyMsgType, ReplyType } from '@vben/constants';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { createAutoReply, updateAutoReply } from '#/api/mp/autoReply';

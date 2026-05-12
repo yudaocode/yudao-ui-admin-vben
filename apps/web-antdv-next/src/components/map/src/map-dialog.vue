@@ -4,7 +4,7 @@ import { nextTick, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Form, Input, Select, Space } from 'ant-design-vue';
+import { Button, Form, Input, Select, Space } from 'antdv-next';
 
 import { loadBaiduMapSdk } from './utils';
 
@@ -229,7 +229,7 @@ defineExpose({ open });
     <div class="w-full">
       <!-- 第一行：位置搜索 -->
       <Form :label-col="{ span: 4 }">
-        <Form.Item label="定位位置">
+        <FormItem label="定位位置">
           <Select
             v-model:value="state.address"
             :filter-option="false"
@@ -247,9 +247,9 @@ defineExpose({ open });
             @search="autoSearch"
             @select="handleAddressSelect"
           />
-        </Form.Item>
+        </FormItem>
         <!-- 第二行：坐标显示 -->
-        <Form.Item label="当前坐标">
+        <FormItem label="当前坐标">
           <Space>
             <Input
               :value="state.longitude"
@@ -264,7 +264,7 @@ defineExpose({ open });
               style="width: 180px"
             />
           </Space>
-        </Form.Item>
+        </FormItem>
       </Form>
       <!-- 第三行：地图 -->
       <div

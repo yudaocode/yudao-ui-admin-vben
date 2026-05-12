@@ -25,7 +25,7 @@ import {
   Switch,
   Tooltip,
   TypographyText,
-} from 'ant-design-vue';
+} from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getForm } from '#/api/bpm/form';

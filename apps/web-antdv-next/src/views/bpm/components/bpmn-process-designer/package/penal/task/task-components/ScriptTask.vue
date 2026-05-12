@@ -7,8 +7,8 @@ import {
   Input,
   Select,
   SelectOption,
-  Textarea,
-} from 'ant-design-vue';
+  TextArea,
+} from 'antdv-next';
 
 defineOptions({ name: 'ScriptTask' });
 const props = defineProps({
@@ -92,7 +92,7 @@ watch(
         </Select>
       </FormItem>
       <FormItem label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
-        <Textarea
+        <TextArea
           v-model:value="scriptTaskForm.script"
           :auto-size="{ minRows: 2, maxRows: 4 }"
           allow-clear

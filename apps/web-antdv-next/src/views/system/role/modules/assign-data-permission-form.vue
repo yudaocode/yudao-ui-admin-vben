@@ -8,7 +8,7 @@ import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemDataScopeEnum } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message, Spin } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getDeptList } from '#/api/system/dept';

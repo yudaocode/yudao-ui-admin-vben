@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Carousel, Image } from 'ant-design-vue';
+import { Carousel, Image } from 'antdv-next';
 
 /** 轮播图 */
 defineOptions({ name: 'Carousel' });

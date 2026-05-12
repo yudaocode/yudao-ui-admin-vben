@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Switch } from 'ant-design-vue';
+import { FormItem, Input, Switch } from 'antdv-next';
 
 defineOptions({ name: 'KafkaMQConfigForm' });
 

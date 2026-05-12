@@ -7,7 +7,7 @@ import { AiModelTypeEnum, CommonStatusEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, message } from 'ant-design-vue';
+import { Button, Card, message } from 'antdv-next';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { createWorkflow, getWorkflow, updateWorkflow } from '#/api/ai/workflow';

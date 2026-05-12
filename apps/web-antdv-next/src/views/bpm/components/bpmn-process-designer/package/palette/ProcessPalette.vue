@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 defineOptions({ name: 'MyProcessPalette' });
 

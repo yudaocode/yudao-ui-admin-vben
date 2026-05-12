@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-import type { SelectValue } from 'ant-design-vue/es/select';
+import type { SelectValue } from 'antdv-next';
 
 import type {
   FormTriggerSetting,
@@ -28,7 +27,7 @@ import {
   Select,
   SelectOption,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   DEFAULT_CONDITION_GROUP_VALUE,
@@ -45,6 +44,7 @@ import {
 import ConditionDialog from './modules/condition-dialog.vue';
 import HttpRequestSetting from './modules/http-request-setting.vue';
 
+type Rule = any;
 defineOptions({
   name: 'TriggerNodeConfig',
 });

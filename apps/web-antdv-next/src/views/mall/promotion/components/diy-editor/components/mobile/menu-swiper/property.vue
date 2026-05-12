@@ -4,14 +4,7 @@ import type { MenuSwiperProperty } from './config';
 import { cloneDeep } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Card,
-  Form,
-  FormItem,
-  Radio,
-  RadioGroup,
-  Switch,
-} from 'ant-design-vue';
+import { Card, Form, FormItem, Radio, RadioGroup, Switch } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

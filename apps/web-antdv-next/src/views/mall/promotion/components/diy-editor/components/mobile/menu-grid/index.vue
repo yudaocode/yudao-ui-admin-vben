@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { MenuGridProperty } from './config';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 宫格导航 */
 defineOptions({ name: 'MenuGrid' });

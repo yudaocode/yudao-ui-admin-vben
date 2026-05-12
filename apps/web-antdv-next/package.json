@@ -46,7 +46,7 @@
     "@videojs-player/vue": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
-    "ant-design-vue": "catalog:",
+    "antdv-next": "catalog:",
     "benz-amr-recorder": "catalog:",
     "bpmn-js": "catalog:",
     "bpmn-js-properties-panel": "catalog:",

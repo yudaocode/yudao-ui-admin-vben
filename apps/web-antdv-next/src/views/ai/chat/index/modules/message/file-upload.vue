@@ -4,7 +4,7 @@ import { computed, onUnmounted, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { formatFileSize, getFileIcon } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useUpload } from '#/components/upload/use-upload';
 

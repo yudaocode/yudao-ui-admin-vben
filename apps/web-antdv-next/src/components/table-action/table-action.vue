@@ -11,14 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isBoolean, isFunction } from '@vben/utils';
 
-import {
-  Button,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Space,
-  Tooltip,
-} from 'ant-design-vue';
+import { Button, Dropdown, Menu, Popconfirm, Space, Tooltip } from 'antdv-next';
 
 const props = defineProps({
   actions: {
@@ -193,7 +186,7 @@ watch(
           </template>
         </Button>
       </slot>
-      <template #overlay>
+      <template #popupRender>
         <Menu>
           <Menu.Item
             v-for="(action, index) in getDropdownList"

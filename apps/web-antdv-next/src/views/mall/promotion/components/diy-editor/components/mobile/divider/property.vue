@@ -11,7 +11,7 @@ import {
   RadioGroup,
   Slider,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { ColorInput } from '#/views/mall/promotion/components';
 

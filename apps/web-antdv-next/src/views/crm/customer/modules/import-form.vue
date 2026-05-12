@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import type { FileType } from 'ant-design-vue/es/upload/interface';
-
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Upload } from 'ant-design-vue';
+import { Button, message, Upload } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { importCustomer, importCustomerTemplate } from '#/api/crm/customer';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
-
+type FileType = any;
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({

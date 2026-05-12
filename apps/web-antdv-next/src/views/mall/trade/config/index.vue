@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page } from '@vben/common-ui';
 import { fenToYuan, yuanToFen } from '@vben/utils';
 
-import { Card, message, Tabs } from 'ant-design-vue';
+import { Card, message, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getTradeConfig, saveTradeConfig } from '#/api/mall/trade/config';
@@ -89,9 +89,9 @@ onMounted(() => {
     </template>
     <Card>
       <Tabs :active-key="activeKey" @change="handleTabChange">
-        <Tabs.TabPane tab="售后" key="afterSale" :force-render="true" />
-        <Tabs.TabPane tab="配送" key="delivery" :force-render="true" />
-        <Tabs.TabPane tab="分销" key="brokerage" :force-render="true" />
+        <TabPane tab="售后" key="afterSale" :force-render="true" />
+        <TabPane tab="配送" key="delivery" :force-render="true" />
+        <TabPane tab="分销" key="brokerage" :force-render="true" />
       </Tabs>
       <Form class="w-2/5" />
     </Card>

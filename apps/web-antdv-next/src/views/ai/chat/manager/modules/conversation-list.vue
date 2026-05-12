@@ -4,7 +4,7 @@ import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 
 import { Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

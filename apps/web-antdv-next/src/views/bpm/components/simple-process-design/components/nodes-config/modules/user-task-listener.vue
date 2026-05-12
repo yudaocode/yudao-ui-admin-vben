@@ -9,7 +9,7 @@ import {
   Input,
   Switch,
   TypographyText,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import HttpRequestParamSetting from './http-request-param-setting.vue';
 

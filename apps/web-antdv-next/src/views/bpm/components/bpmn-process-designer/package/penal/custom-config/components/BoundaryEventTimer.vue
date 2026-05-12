@@ -13,7 +13,7 @@ import {
   SelectOption,
   Switch,
   TypographyText,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { convertTimeUnit } from '#/views/bpm/components/simple-process-design/components/nodes-config/utils';
 import {

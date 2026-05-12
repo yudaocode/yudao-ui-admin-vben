@@ -5,7 +5,7 @@ import { computed, provide, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { createDraft, updateDraft } from '#/api/mp/draft';
 

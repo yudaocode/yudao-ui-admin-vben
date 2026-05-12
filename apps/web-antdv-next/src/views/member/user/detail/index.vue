@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, message, TabPane, Tabs } from 'ant-design-vue';
+import { Button, Card, message, TabPane, Tabs } from 'antdv-next';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';

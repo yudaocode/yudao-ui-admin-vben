@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { VideoPlayer } from '@videojs-player/vue';
-import { Modal } from 'ant-design-vue';
+import { Modal } from 'antdv-next';
 
 import 'video.js/dist/video-js.css';
 

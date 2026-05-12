@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { ComponentPublicInstance, Ref } from 'vue';
 
 import type { ButtonSetting, SimpleFlowNode } from '../../consts';
@@ -34,10 +32,10 @@ import {
   Switch,
   TabPane,
   Tabs,
-  Textarea,
+  TextArea,
   TreeSelect,
   TypographyText,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { ProcessExpressionSelectModal } from '#/views/bpm/processExpression/components';
 
@@ -72,6 +70,7 @@ import {
 import UserTaskListener from './modules/user-task-listener.vue';
 import { convertTimeUnit, getApproveTypeText } from './utils';
 
+type Rule = any;
 defineOptions({ name: 'UserTaskNodeConfig' });
 
 const props = defineProps({
@@ -872,7 +871,7 @@ onMounted(() => {
               name="expression"
             >
               <div class="flex gap-2">
-                <Textarea v-model:value="configForm.expression" :rows="2" />
+                <TextArea v-model:value="configForm.expression" :rows="2" />
                 <div class="flex flex-col gap-2">
                   <Button type="primary" @click="openExpressionSelect">
                     选择
@@ -1149,7 +1148,7 @@ onMounted(() => {
             <div>
               <Divider content-position="left">跳过表达式</Divider>
               <FormItem prop="skipExpression">
-                <Textarea
+                <TextArea
                   v-model:value="configForm.skipExpression"
                   allow-clear
                   :rows="2"

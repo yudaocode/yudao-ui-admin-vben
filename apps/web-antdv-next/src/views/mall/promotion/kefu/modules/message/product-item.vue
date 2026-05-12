@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 
 import { fenToYuan } from '@vben/utils';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button, Image } from 'antdv-next';
 
 defineProps({
   spuId: {

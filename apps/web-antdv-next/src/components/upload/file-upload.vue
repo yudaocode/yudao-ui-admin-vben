@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadProps } from 'ant-design-vue';
-import type { UploadRequestOption } from 'ant-design-vue/lib/vc-upload/interface';
+import type { UploadFile, UploadProps } from 'antdv-next';
 
 import type { FileUploadProps } from './typing';
 
@@ -12,10 +11,12 @@ import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { checkFileType, isFunction, isObject, isString } from '@vben/utils';
 
-import { Button, message, Upload } from 'ant-design-vue';
+import { Button, message, Upload } from 'antdv-next';
 
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
+
+type UploadRequestOption = any;
 
 defineOptions({ name: 'FileUpload', inheritAttrs: false });
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadProps } from 'ant-design-vue';
+import type { UploadProps } from 'antdv-next';
 
 import type { UploadData } from './upload';
 
@@ -7,7 +7,7 @@ import { inject, reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, message, Upload } from 'ant-design-vue';
+import { Button, message, Upload } from 'antdv-next';
 
 import {
   beforeImageUpload,

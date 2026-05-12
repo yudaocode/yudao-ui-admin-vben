@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TableColumnsType } from 'ant-design-vue';
+import type { TableColumnsType } from 'antdv-next';
 
 import type { OtaTask } from '#/api/iot/ota/task';
 import type { OtaTaskRecord } from '#/api/iot/ota/task/record';
@@ -19,7 +19,7 @@ import {
   Table,
   Tabs,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getOtaTask } from '#/api/iot/ota/task';
 import {
@@ -221,32 +221,32 @@ defineExpose({ open });
       <!-- 任务信息 -->
       <Card title="任务信息" class="mb-5" :loading="taskLoading">
         <Descriptions :column="3" bordered>
-          <Descriptions.Item label="任务编号">{{ task.id }}</Descriptions.Item>
-          <Descriptions.Item label="任务名称">
+          <DescriptionsItem label="任务编号">{{ task.id }}</DescriptionsItem>
+          <DescriptionsItem label="任务名称">
             {{ task.name }}
-          </Descriptions.Item>
-          <Descriptions.Item label="升级范围">
+          </DescriptionsItem>
+          <DescriptionsItem label="升级范围">
             <Tag v-if="task.deviceScope === 1" color="blue">全部设备</Tag>
             <Tag v-else-if="task.deviceScope === 2" color="green">指定设备</Tag>
             <Tag v-else>{{ task.deviceScope }}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="任务状态">
+          </DescriptionsItem>
+          <DescriptionsItem label="任务状态">
             <Tag v-if="task.status === 0" color="orange">待执行</Tag>
             <Tag v-else-if="task.status === 1" color="blue">执行中</Tag>
             <Tag v-else-if="task.status === 2" color="green">已完成</Tag>
             <Tag v-else-if="task.status === 3" color="red">已取消</Tag>
             <Tag v-else>{{ task.status }}</Tag>
-          </Descriptions.Item>
-          <Descriptions.Item label="创建时间">
+          </DescriptionsItem>
+          <DescriptionsItem label="创建时间">
             {{
               task.createTime
                 ? formatDate(task.createTime, 'YYYY-MM-DD HH:mm:ss')
                 : '-'
             }}
-          </Descriptions.Item>
-          <Descriptions.Item label="任务描述" :span="3">
+          </DescriptionsItem>
+          <DescriptionsItem label="任务描述" :span="3">
             {{ task.description }}
-          </Descriptions.Item>
+          </DescriptionsItem>
         </Descriptions>
       </Card>
 
@@ -351,11 +351,7 @@ defineExpose({ open });
           @change="handleTabChange"
           class="mb-4"
         >
-          <Tabs.TabPane
-            v-for="tab in statusTabs"
-            :key="tab.key"
-            :tab="tab.label"
-          />
+          <TabPane v-for="tab in statusTabs" :key="tab.key" :tab="tab.label" />
         </Tabs>
 
         <Table

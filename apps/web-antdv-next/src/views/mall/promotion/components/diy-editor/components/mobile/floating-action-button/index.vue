@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button, Image } from 'antdv-next';
 
 /** 悬浮按钮 */
 defineOptions({ name: 'FloatingActionButton' });

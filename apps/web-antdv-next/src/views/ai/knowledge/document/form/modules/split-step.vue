@@ -14,7 +14,7 @@ import {
   Menu,
   message,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   createKnowledgeDocumentList,
@@ -191,13 +191,13 @@ onMounted(async () => {
       </div>
       <div class="mb-5">
         <Form :label-col="{ span: 5 }">
-          <Form.Item label="最大 Token 数">
+          <FormItem label="最大 Token 数">
             <InputNumber
               v-model:value="modelData.segmentMaxTokens"
               :min="1"
               :max="2048"
             />
-          </Form.Item>
+          </FormItem>
         </Form>
       </div>
     </div>
@@ -220,7 +220,7 @@ onMounted(async () => {
             </span>
             <IconifyIcon icon="lucide:chevron-down" class="ml-1" />
           </div>
-          <template #overlay>
+          <template #popupRender>
             <Menu>
               <Menu.Item
                 v-for="(file, index) in modelData.list"

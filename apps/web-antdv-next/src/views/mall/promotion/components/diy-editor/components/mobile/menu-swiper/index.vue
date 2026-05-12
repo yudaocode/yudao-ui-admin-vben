@@ -3,7 +3,7 @@ import type { MenuSwiperItemProperty, MenuSwiperProperty } from './config';
 
 import { ref, watch } from 'vue';
 
-import { Carousel, Image } from 'ant-design-vue';
+import { Carousel, Image } from 'antdv-next';
 
 /** 菜单导航 */
 defineOptions({ name: 'MenuSwiper' });

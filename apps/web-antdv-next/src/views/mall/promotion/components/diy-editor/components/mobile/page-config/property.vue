@@ -2,7 +2,7 @@
 import type { PageConfigProperty } from './config';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Textarea } from 'ant-design-vue';
+import { Form, FormItem, TextArea } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
@@ -20,7 +20,7 @@ const formData = useVModel(props, 'modelValue', emit);
 <template>
   <Form :model="formData" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
     <FormItem label="页面描述" name="description">
-      <Textarea
+      <TextArea
         v-model:value="formData!.description"
         placeholder="用户通过微信分享给朋友时，会自动显示页面描述"
         :rows="3"

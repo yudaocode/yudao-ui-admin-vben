@@ -22,7 +22,7 @@ import {
   Tabs,
   Tooltip,
   TypographyText,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { FieldPermissionType, START_USER_BUTTON_SETTING } from '../../consts';
 import {

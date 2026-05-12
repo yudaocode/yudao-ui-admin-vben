@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Ref } from 'vue';
 
 import type { SimpleFlowNode } from '../../consts';
@@ -24,9 +22,9 @@ import {
   SelectOption,
   TabPane,
   Tabs,
-  Textarea,
+  TextArea,
   TreeSelect,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import {
   CANDIDATE_STRATEGY,
@@ -40,7 +38,7 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
-
+type Rule = any;
 defineOptions({ name: 'CopyTaskNodeConfig' });
 
 const props = defineProps({
@@ -434,7 +432,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
               label="流程表达式"
               name="expression"
             >
-              <Textarea v-model:value="configForm.expression" clearable />
+              <TextArea v-model:value="configForm.expression" clearable />
             </FormItem>
           </Form>
         </div>

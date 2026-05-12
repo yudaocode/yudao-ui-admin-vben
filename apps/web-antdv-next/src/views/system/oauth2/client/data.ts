@@ -53,7 +53,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '应用描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入应用描述',
       },
@@ -161,7 +161,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'additionalInformation',
       label: '附加信息',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入附加信息，JSON 格式数据',
       },

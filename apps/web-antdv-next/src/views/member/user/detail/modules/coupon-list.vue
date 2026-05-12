@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { message, TabPane, Tabs } from 'ant-design-vue';
+import { message, TabPane, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

@@ -3,7 +3,7 @@ import type { TitleBarProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 标题栏 */
 defineOptions({ name: 'TitleBar' });

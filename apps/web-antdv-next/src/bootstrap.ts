@@ -6,7 +6,7 @@ import { registerLoadingDirective } from '@vben/common-ui/es/loading';
 import { preferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
 import '@vben/styles';
-import '@vben/styles/antd';
+import '@vben/styles/antdv-next';
 
 import { useTitle } from '@vueuse/core';
 

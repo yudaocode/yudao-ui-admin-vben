@@ -9,7 +9,7 @@ import { computed, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Radio, Select } from 'ant-design-vue';
+import { Input, Radio, Select } from 'antdv-next';
 
 import {
   getDataTypeOptions,
@@ -100,22 +100,22 @@ watch(
 </script>
 
 <template>
-  <Form.Item label="数据类型">
+  <FormItem label="数据类型">
     <Select
       v-model:value="property.dataType"
       placeholder="请选择数据类型"
       @change="handleChange"
     >
       <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
-      <Select.Option
+      <SelectOption
         v-for="option in getDataTypeOptions2"
         :key="option.value"
         :value="option.value"
       >
         {{ `${option.value}(${option.label})` }}
-      </Select.Option>
+      </SelectOption>
     </Select>
-  </Form.Item>
+  </FormItem>
   <!-- 数值型配置 -->
   <ThingModelNumberDataSpecs
     v-if="
@@ -133,7 +133,7 @@ watch(
     v-model="property.dataSpecsList"
   />
   <!-- 布尔型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
@@ -150,9 +150,9 @@ watch(
         </div>
       </div>
     </template>
-  </Form.Item>
+  </FormItem>
   <!-- 文本型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
     :name="['property', 'dataSpecs', 'length']"
     label="数据长度"
@@ -164,9 +164,9 @@ watch(
     >
       <template #addonAfter>字节</template>
     </Input>
-  </Form.Item>
+  </FormItem>
   <!-- 时间型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.DATE"
     label="时间格式"
     name="date"
@@ -176,7 +176,7 @@ watch(
       disabled
       placeholder="String 类型的 UTC 时间戳（毫秒）"
     />
-  </Form.Item>
+  </FormItem>
   <!-- 数组型配置-->
   <ThingModelArrayDataSpecs
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.ARRAY"
@@ -187,12 +187,12 @@ watch(
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="property.dataSpecsList"
   />
-  <Form.Item
+  <FormItem
     v-if="!isStructDataSpecs && !isParams"
     :name="['property', 'accessMode']"
     label="读写类型"
   >
-    <Radio.Group v-model:value="property.accessMode">
+    <RadioGroup v-model:value="property.accessMode">
       <Radio
         v-for="accessMode in Object.values(IoTThingModelAccessModeEnum)"
         :key="accessMode.value"
@@ -200,8 +200,8 @@ watch(
       >
         {{ accessMode.label }}
       </Radio>
-    </Radio.Group>
-  </Form.Item>
+    </RadioGroup>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

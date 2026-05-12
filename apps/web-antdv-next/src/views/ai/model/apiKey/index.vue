@@ -4,7 +4,7 @@ import type { AiModelApiKeyApi } from '#/api/ai/model/apiKey';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteApiKey, getApiKeyPage } from '#/api/ai/model/apiKey';

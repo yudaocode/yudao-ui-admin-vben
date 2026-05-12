@@ -17,7 +17,7 @@ import {
   Slider,
   Switch,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { ColorInput, Draggable } from '#/views/mall/promotion/components';
 

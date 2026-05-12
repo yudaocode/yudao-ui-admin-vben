@@ -7,7 +7,7 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 
 import { erpPriceMultiply } from '@vben/utils';
 
-import { InputNumber, Select } from 'ant-design-vue';
+import { InputNumber, Select } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { BizTypeEnum } from '#/api/crm/permission';

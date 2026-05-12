@@ -5,7 +5,7 @@ import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { erpPriceInputFormatter } from '@vben/utils';
 
-import { message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

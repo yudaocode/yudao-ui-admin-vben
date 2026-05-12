@@ -7,7 +7,7 @@ import { Page } from '@vben/common-ui';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useMallKefuStore } from '#/store/mall/kefu';
 

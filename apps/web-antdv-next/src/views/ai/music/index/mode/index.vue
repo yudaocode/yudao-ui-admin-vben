@@ -3,7 +3,7 @@ import type { Nullable, Recordable } from '@vben/types';
 
 import { ref, unref } from 'vue';
 
-import { Button, Card, Radio } from 'ant-design-vue';
+import { Button, Card } from 'antdv-next';
 
 import desc from './desc.vue';
 import lyric from './lyric.vue';
@@ -23,10 +23,10 @@ function generateMusic() {
 
 <template>
   <Card class="!mb-0 h-full w-80">
-    <Radio.Group v-model:value="generateMode" class="mb-4">
-      <Radio.Button value="desc"> 描述模式 </Radio.Button>
-      <Radio.Button value="lyric"> 歌词模式 </Radio.Button>
-    </Radio.Group>
+    <RadioGroup v-model:value="generateMode" class="mb-4">
+      <RadioButton value="desc"> 描述模式 </RadioButton>
+      <RadioButton value="lyric"> 歌词模式 </RadioButton>
+    </RadioGroup>
 
     <!-- 描述模式/歌词模式 切换 -->
     <component :is="generateMode === 'desc' ? desc : lyric" ref="modeRef" />

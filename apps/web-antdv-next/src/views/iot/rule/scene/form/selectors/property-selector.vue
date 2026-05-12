@@ -12,7 +12,7 @@ import { computed, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Popover, Select, Tag } from 'ant-design-vue';
+import { Button, Popover, Select, Tag } from 'antdv-next';
 
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
@@ -285,12 +285,12 @@ watch(
       class="!w-150px"
       :loading="loading"
     >
-      <Select.OptionGroup
+      <SelectOptionGroup
         v-for="group in propertyGroups"
         :key="group.label"
         :label="group.label"
       >
-        <Select.Option
+        <SelectOption
           v-for="property in group.options"
           :key="property.identifier"
           :label="property.name"
@@ -308,8 +308,8 @@ watch(
               {{ property.identifier }}
             </Tag>
           </div>
-        </Select.Option>
-      </Select.OptionGroup>
+        </SelectOption>
+      </SelectOptionGroup>
     </Select>
 
     <!-- 属性详情弹出层 -->

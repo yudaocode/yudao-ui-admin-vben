@@ -12,7 +12,7 @@ import {
   RadioGroup,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { requestClient } from '#/api/request';
 

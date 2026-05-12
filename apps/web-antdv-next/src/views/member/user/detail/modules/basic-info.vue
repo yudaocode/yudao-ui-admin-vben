@@ -6,7 +6,7 @@ import { h } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
-import { Avatar, Card, Col, Row } from 'ant-design-vue';
+import { Avatar, Card, Col, Row } from 'antdv-next';
 
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';

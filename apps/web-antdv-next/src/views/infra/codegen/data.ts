@@ -106,7 +106,7 @@ export function useBasicInfoFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         rows: 3,
         placeholder: '请输入备注',

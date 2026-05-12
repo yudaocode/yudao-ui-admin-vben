@@ -4,7 +4,7 @@ import type { MagicCubeProperty } from './config';
 import { ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Slider } from 'ant-design-vue';
+import { Form, FormItem, Slider } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

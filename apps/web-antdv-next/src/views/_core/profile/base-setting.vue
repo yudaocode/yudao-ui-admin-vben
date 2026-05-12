@@ -10,7 +10,7 @@ import { ProfileBaseSetting, z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { updateUserProfile } from '#/api/system/user/profile';
 import { $t } from '#/locales';

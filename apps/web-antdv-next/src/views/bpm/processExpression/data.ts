@@ -41,7 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'expression',
       label: '表达式',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入表达式',
       },

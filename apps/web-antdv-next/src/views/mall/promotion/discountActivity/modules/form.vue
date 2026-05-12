@@ -19,7 +19,7 @@ import {
   yuanToFen,
 } from '@vben/utils';
 
-import { Button, InputNumber, message } from 'ant-design-vue';
+import { Button, InputNumber, message } from 'antdv-next';
 
 import { VxeColumn } from '#/adapter/vxe-table';
 import { getSpuDetailList } from '#/api/mall/product/spu';

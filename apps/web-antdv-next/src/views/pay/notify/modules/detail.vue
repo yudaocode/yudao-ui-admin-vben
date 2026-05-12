@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Divider } from 'ant-design-vue';
+import { Divider } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getNotifyTaskDetail } from '#/api/pay/notify';

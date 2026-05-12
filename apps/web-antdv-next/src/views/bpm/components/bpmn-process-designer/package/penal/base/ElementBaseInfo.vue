@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, reactive, ref, toRaw, watch } from 'vue';
 
-import { Form, FormItem, Input } from 'ant-design-vue';
+import { Form, FormItem, Input } from 'antdv-next';
 
 defineOptions({ name: 'ElementBaseInfo' });
 

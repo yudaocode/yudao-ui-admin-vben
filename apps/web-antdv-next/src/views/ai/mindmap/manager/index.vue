@@ -4,7 +4,7 @@ import type { AiMindmapApi } from '#/api/ai/mindmap';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMindMap, getMindMapPage } from '#/api/ai/mindmap';

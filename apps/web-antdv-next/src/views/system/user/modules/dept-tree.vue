@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
-import { Input, Spin, Tree } from 'ant-design-vue';
+import { Input, Spin, Tree } from 'antdv-next';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 

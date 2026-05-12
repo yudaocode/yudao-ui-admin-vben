@@ -8,7 +8,7 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Row, Tabs } from 'ant-design-vue';
+import { message, Row, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -159,29 +159,29 @@ const [Grid, gridApi] = useVbenVxeGrid({
           class="w-full"
           @change="(activeKey) => onTabChange(activeKey as string)"
         >
-          <Tabs.TabPane :key="String(AutoReplyMsgType.Follow)">
+          <TabPane :key="String(AutoReplyMsgType.Follow)">
             <template #tab>
               <Row align="middle">
                 <IconifyIcon icon="lucide:star" class="mr-2px" /> 关注时回复
               </Row>
             </template>
-          </Tabs.TabPane>
-          <Tabs.TabPane :key="String(AutoReplyMsgType.Message)">
+          </TabPane>
+          <TabPane :key="String(AutoReplyMsgType.Message)">
             <template #tab>
               <Row align="middle">
                 <IconifyIcon icon="lucide:message-circle-more" class="mr-2px" />
                 消息回复
               </Row>
             </template>
-          </Tabs.TabPane>
-          <Tabs.TabPane :key="String(AutoReplyMsgType.Keyword)">
+          </TabPane>
+          <TabPane :key="String(AutoReplyMsgType.Keyword)">
             <template #tab>
               <Row align="middle">
                 <IconifyIcon icon="lucide:newspaper" class="mr-2px" />
                 关键词回复
               </Row>
             </template>
-          </Tabs.TabPane>
+          </TabPane>
         </Tabs>
       </template>
       <template #toolbar-tools>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 const props = defineProps({
   value: {
@@ -73,7 +73,7 @@ watch(
     </div>
     <div v-for="unit in units" :key="unit.key" class="mb-2">
       <span>{{ unit.label }}：</span>
-      <Button.Group>
+      <Space>
         <Button
           v-for="val in unit.presets"
           :key="val"
@@ -89,7 +89,7 @@ watch(
           placeholder="自定义"
           @change="setUnit(unit.key, custom[unit.key])"
         />
-      </Button.Group>
+      </Space>
     </div>
   </div>
 </template>

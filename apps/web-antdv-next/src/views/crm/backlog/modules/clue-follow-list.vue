@@ -5,7 +5,7 @@ import type { CrmClueApi } from '#/api/crm/clue';
 
 import { useRouter } from 'vue-router';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getCluePage } from '#/api/crm/clue';

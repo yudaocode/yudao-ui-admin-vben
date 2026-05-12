@@ -31,7 +31,7 @@ import {
   Popconfirm,
   Switch,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';

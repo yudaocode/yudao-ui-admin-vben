@@ -21,7 +21,7 @@ import {
 } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'ant-design-vue';
+import { Avatar, Card, Col, message, Row, TabPane, Tabs } from 'antdv-next';
 
 import {
   getApprovalDetail as getApprovalDetailApi,

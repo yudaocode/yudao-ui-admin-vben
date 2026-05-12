@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 const emits = defineEmits(['onNewConversation']);
 

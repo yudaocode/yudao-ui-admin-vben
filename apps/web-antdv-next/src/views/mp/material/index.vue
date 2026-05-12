@@ -9,7 +9,7 @@ import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, message, Tabs } from 'ant-design-vue';
+import { Button, message, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
@@ -151,34 +151,34 @@ async function handleDelete(id: number) {
       <template #toolbar-actions>
         <Tabs v-model:active-key="type" class="w-full" @change="onTabChange">
           <!-- tab 1：图片  -->
-          <Tabs.TabPane :key="UploadType.Image">
+          <TabPane :key="UploadType.Image">
             <template #tab>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:image" class="mr-1" />
                 图片
               </span>
             </template>
-          </Tabs.TabPane>
+          </TabPane>
 
           <!-- tab 2：语音  -->
-          <Tabs.TabPane :key="UploadType.Voice">
+          <TabPane :key="UploadType.Voice">
             <template #tab>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:mic" class="mr-1" />
                 语音
               </span>
             </template>
-          </Tabs.TabPane>
+          </TabPane>
 
           <!-- tab 3：视频 -->
-          <Tabs.TabPane :key="UploadType.Video">
+          <TabPane :key="UploadType.Video">
             <template #tab>
               <span class="flex items-center">
                 <IconifyIcon icon="lucide:video" class="mr-1" />
                 视频
               </span>
             </template>
-          </Tabs.TabPane>
+          </TabPane>
         </Tabs>
       </template>
       <template #toolbar-tools>

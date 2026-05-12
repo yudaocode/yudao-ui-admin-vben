@@ -5,7 +5,7 @@ import type { MpDraftApi } from '#/api/mp/draft';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Image, message, Typography } from 'ant-design-vue';
+import { Image, message, Typography } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createEmptyNewsItem, deleteDraft, getDraftPage } from '#/api/mp/draft';

@@ -17,7 +17,7 @@ import {
   Row,
   Switch,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import RewardRuleCouponSelect from './reward-rule-coupon-select.vue';
 

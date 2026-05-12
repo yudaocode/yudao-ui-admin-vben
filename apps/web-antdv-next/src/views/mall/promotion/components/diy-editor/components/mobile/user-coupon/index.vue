@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UserCouponProperty } from './config';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 用户卡券 */
 defineOptions({ name: 'UserCoupon' });

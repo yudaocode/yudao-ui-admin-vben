@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import { NewsType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Col, Modal, Row } from 'ant-design-vue';
+import { Button, Col, Modal, Row } from 'antdv-next';
 
 import { WxMaterialSelect, WxNews } from '#/views/mp/components';
 

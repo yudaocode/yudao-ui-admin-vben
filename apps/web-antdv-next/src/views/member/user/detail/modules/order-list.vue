@@ -7,7 +7,8 @@ import { useRouter } from 'vue-router';
 import { DICT_TYPE } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
-import { Image, List, Tag } from 'ant-design-vue';
+import { Image, Tag } from 'antdv-next';
+// TODO: List component not available in antdv-next, needs manual migration
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getOrderPage } from '#/api/mall/trade/order';

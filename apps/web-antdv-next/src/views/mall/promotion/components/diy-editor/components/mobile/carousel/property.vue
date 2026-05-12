@@ -14,7 +14,7 @@ import {
   Slider,
   Switch,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import UploadFile from '#/components/upload/file-upload.vue';
 import UploadImg from '#/components/upload/image-upload.vue';

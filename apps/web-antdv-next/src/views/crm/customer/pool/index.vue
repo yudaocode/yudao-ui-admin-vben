@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportCustomer, getCustomerPage } from '#/api/crm/customer';

@@ -5,7 +5,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictObj } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-import { Tag, Timeline } from 'ant-design-vue';
+import { Tag, Timeline } from 'antdv-next';
 
 defineOptions({ name: 'OperateLogV2' });
 
@@ -37,7 +37,7 @@ function getUserTypeColor(userType: number) {
 <template>
   <div class="pt-5">
     <Timeline>
-      <Timeline.Item v-for="log in logList" :key="log.id">
+      <TimelineItem v-for="log in logList" :key="log.id">
         <template #dot>
           <span
             :style="{ backgroundColor: getUserTypeColor(log.userType) }"
@@ -53,7 +53,7 @@ function getUserTypeColor(userType: number) {
           <Tag color="success" class="!mr-0">{{ log.userName }}</Tag>
           <span>{{ log.action }}</span>
         </div>
-      </Timeline.Item>
+      </TimelineItem>
     </Timeline>
   </div>
 </template>

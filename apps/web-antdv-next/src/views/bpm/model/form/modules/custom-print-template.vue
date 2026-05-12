@@ -6,7 +6,7 @@ import { computed, onBeforeUnmount, ref, shallowRef } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import Editor from '@tinymce/tinymce-vue';
-import { Alert } from 'ant-design-vue';
+import { Alert } from 'antdv-next';
 
 import { setupTinyPlugins } from './tinymce-plugin';
 

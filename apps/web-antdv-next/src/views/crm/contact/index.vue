@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Tabs } from 'ant-design-vue';
+import { Button, message, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -134,9 +134,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Grid>
       <template #toolbar-actions>
         <Tabs class="w-full" @change="handleChangeSceneType">
-          <Tabs.TabPane tab="我负责的" key="1" />
-          <Tabs.TabPane tab="我参与的" key="2" />
-          <Tabs.TabPane tab="下属负责的" key="3" />
+          <TabPane tab="我负责的" key="1" />
+          <TabPane tab="我参与的" key="2" />
+          <TabPane tab="下属负责的" key="3" />
         </Tabs>
       </template>
       <template #toolbar-tools>

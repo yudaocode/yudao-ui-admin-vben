@@ -11,7 +11,7 @@ import { isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { sendSmsCode } from '#/api';
 import { getTenantByWebsite, getTenantSimpleList } from '#/api/core/auth';

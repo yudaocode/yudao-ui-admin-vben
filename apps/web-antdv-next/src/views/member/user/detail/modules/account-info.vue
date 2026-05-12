@@ -4,7 +4,7 @@ import type { PayWalletApi } from '#/api/pay/wallet/balance';
 
 import { fenToYuan } from '@vben/utils';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { useDescription } from '#/components/description';
 

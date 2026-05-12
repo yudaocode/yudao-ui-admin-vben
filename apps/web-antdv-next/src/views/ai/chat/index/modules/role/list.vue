@@ -7,7 +7,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Avatar, Button, Card, Dropdown, Menu } from 'ant-design-vue';
+import { Avatar, Button, Card, Dropdown, Menu } from 'antdv-next';
 
 const props = defineProps({
   loading: {
@@ -99,7 +99,7 @@ async function handleTabsScroll() {
             <Button size="small">
               <IconifyIcon icon="lucide:ellipsis" />
             </Button>
-            <template #overlay>
+            <template #popupRender>
               <Menu>
                 <Menu.Item @click="handleMoreClick(['delete', role])">
                   <div class="flex items-center">

@@ -6,7 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { MarkdownIt } from '@vben/plugins/markmap';
 
 import { useClipboard } from '@vueuse/core';
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 import hljs from 'highlight.js';
 
 import 'highlight.js/styles/vs2015.min.css';

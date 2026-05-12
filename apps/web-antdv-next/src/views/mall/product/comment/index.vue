@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
-import { message, Rate, Textarea } from 'ant-design-vue';
+import { message, Rate, TextArea } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -38,7 +38,7 @@ function handleCreate() {
 function handleReply(row: MallCommentApi.Comment) {
   prompt({
     component: () => {
-      return h(Textarea, {
+      return h(TextArea, {
         placeholder: '请输入回复内容',
       });
     },

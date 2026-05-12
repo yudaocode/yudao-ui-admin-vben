@@ -10,7 +10,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';

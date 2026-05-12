@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 
-import { Button, Input, Select, Space, Tag, Textarea } from 'ant-design-vue';
+import { Button, Input, Select, Space, Tag, TextArea } from 'antdv-next';
 
 import Title from '../title/index.vue';
 
@@ -26,7 +26,7 @@ defineExpose({
 <template>
   <div class="">
     <Title title="歌词" desc="自己编写歌词或使用Ai生成歌词，两节/8行效果最佳">
-      <Textarea
+      <TextArea
         v-model:value="formData.lyric"
         :auto-size="{ minRows: 6, maxRows: 6 }"
         :maxlength="1200"
@@ -58,7 +58,7 @@ defineExpose({
       desc="描述您想要的音乐风格，Suno无法识别艺术家的名字，但可以理解流派和氛围"
       class="mt-3"
     >
-      <Textarea
+      <TextArea
         v-model="formData.style"
         :auto-size="{ minRows: 4, maxRows: 4 }"
         :maxlength="256"
@@ -81,7 +81,7 @@ defineExpose({
         class="w-full"
         placeholder="请选择"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in [
             {
               value: '3',
@@ -96,7 +96,7 @@ defineExpose({
           :value="item.value"
         >
           {{ item.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Title>
   </div>

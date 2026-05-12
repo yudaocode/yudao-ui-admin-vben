@@ -6,7 +6,7 @@ import { onMounted } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, Form, Tag } from 'ant-design-vue';
+import { Button, Card, Empty, Tag } from 'antdv-next';
 
 import { CronTab } from '#/components/cron-tab';
 import {
@@ -216,14 +216,14 @@ onMounted(() => {
               <div
                 class="p-16px rounded-6px border border-primary bg-background"
               >
-                <Form.Item label="CRON表达式" required>
+                <FormItem label="CRON表达式" required>
                   <CronTab
                     :model-value="triggerItem.cronExpression || '0 0 12 * * ?'"
                     @update:model-value="
                       (value) => updateTriggerCronConfig(index, value)
                     "
                   />
-                </Form.Item>
+                </FormItem>
               </div>
             </div>
           </div>

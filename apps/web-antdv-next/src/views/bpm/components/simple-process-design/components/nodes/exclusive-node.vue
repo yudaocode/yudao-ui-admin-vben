@@ -7,7 +7,7 @@ import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, buildShortUUID as generateUUID } from '@vben/utils';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 import {
   ConditionType,

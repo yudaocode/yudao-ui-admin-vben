@@ -9,7 +9,7 @@ import { computed, nextTick, ref, toRefs, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useScroll } from '@vueuse/core';
-import { Empty, message } from 'ant-design-vue';
+import { Empty, message } from 'antdv-next';
 
 import { getUser } from '#/api/member/user';
 import { getWallet } from '#/api/pay/wallet/balance';

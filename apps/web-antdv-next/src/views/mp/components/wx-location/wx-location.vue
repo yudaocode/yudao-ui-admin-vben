@@ -5,7 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Col, message, Row } from 'ant-design-vue';
+import { Col, message, Row } from 'antdv-next';
 
 import { getTradeConfig } from '#/api/mall/trade/config';
 

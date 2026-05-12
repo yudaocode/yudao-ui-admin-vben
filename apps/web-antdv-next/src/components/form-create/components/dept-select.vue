@@ -5,7 +5,7 @@ import { onMounted, ref, watch } from 'vue';
 import { useUserStore } from '@vben/stores';
 import { handleTree } from '@vben/utils';
 
-import { TreeSelect } from 'ant-design-vue';
+import { TreeSelect } from 'antdv-next';
 
 import { requestClient } from '#/api/request';
 

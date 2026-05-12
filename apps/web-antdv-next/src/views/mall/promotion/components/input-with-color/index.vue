@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useVModels } from '@vueuse/core';
-import { Input } from 'ant-design-vue';
+import { Input } from 'antdv-next';
 
 /** 带颜色选择器输入框 */
 defineOptions({ name: 'InputWithColor' });

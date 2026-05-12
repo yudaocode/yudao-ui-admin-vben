@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { getUrlNumberValue } from '@vben/utils';
 
-import { Button, Form, FormItem, Tooltip } from 'ant-design-vue';
+import { Button, Form, FormItem, Tooltip } from 'antdv-next';
 
 import { ProductCategorySelect } from '#/views/mall/product/category/components/';
 

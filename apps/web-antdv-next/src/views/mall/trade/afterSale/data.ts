@@ -19,7 +19,7 @@ export function useDisagreeFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       fieldName: 'reason',
       label: '拒绝原因',
       componentProps: {

@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import { formatDate } from '@vben/utils';
 
-import { Card, Col, Descriptions, Row } from 'ant-design-vue';
+import { Card, Col, Descriptions, Row } from 'antdv-next';
 
 import { getOtaFirmware } from '#/api/iot/ota/firmware';
 import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
@@ -60,25 +60,25 @@ onMounted(() => {
     <!-- 固件信息 -->
     <Card title="固件信息" class="mb-5" :loading="firmwareLoading">
       <Descriptions :column="3" bordered>
-        <Descriptions.Item label="固件名称">
+        <DescriptionsItem label="固件名称">
           {{ firmware?.name }}
-        </Descriptions.Item>
-        <Descriptions.Item label="所属产品">
+        </DescriptionsItem>
+        <DescriptionsItem label="所属产品">
           {{ firmware?.productName }}
-        </Descriptions.Item>
-        <Descriptions.Item label="固件版本">
+        </DescriptionsItem>
+        <DescriptionsItem label="固件版本">
           {{ firmware?.version }}
-        </Descriptions.Item>
-        <Descriptions.Item label="创建时间">
+        </DescriptionsItem>
+        <DescriptionsItem label="创建时间">
           {{
             firmware?.createTime
               ? formatDate(firmware.createTime, 'YYYY-MM-DD HH:mm:ss')
               : '-'
           }}
-        </Descriptions.Item>
-        <Descriptions.Item label="固件描述" :span="2">
+        </DescriptionsItem>
+        <DescriptionsItem label="固件描述" :span="2">
           {{ firmware?.description }}
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </Card>
 

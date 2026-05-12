@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, Input, message, Select, Spin } from 'ant-design-vue';
+import { Form, Input, message, Select, Spin } from 'antdv-next';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { createOtaTask } from '#/api/iot/ota/task';
@@ -136,24 +136,24 @@ defineExpose({ open });
         :wrapper-col="{ span: 20 }"
         class="mx-4"
       >
-        <Form.Item label="任务名称" name="name">
+        <FormItem label="任务名称" name="name">
           <Input v-model:value="formData.name" placeholder="请输入任务名称" />
-        </Form.Item>
-        <Form.Item label="任务描述" name="description">
+        </FormItem>
+        <FormItem label="任务描述" name="description">
           <Input.TextArea
             v-model:value="formData.description"
             :rows="3"
             placeholder="请输入任务描述"
           />
-        </Form.Item>
-        <Form.Item label="升级范围" name="deviceScope">
+        </FormItem>
+        <FormItem label="升级范围" name="deviceScope">
           <Select
             v-model:value="formData.deviceScope"
             placeholder="请选择升级范围"
             :options="deviceScopeOptions"
           />
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           v-if="formData.deviceScope === IoTOtaTaskDeviceScopeEnum.SELECT.value"
           label="选择设备"
           name="deviceIds"
@@ -166,7 +166,7 @@ defineExpose({ open });
             :filter-option="true"
             show-search
           />
-        </Form.Item>
+        </FormItem>
       </Form>
     </Spin>
   </Modal>

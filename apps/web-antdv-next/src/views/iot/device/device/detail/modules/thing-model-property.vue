@@ -25,7 +25,7 @@ import {
   Row,
   Switch,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getLatestDeviceProperties } from '#/api/iot/device/device';
@@ -290,7 +290,7 @@ onBeforeUnmount(() => {
           un-checked-children="定时刷新"
         />
       </div>
-      <Button.Group>
+      <Space>
         <Button
           :type="viewMode === 'card' ? 'primary' : 'default'"
           @click="handleViewModeChange('card')"
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
         >
           <IconifyIcon icon="ep:list" />
         </Button>
-      </Button.Group>
+      </Space>
     </div>
 
     <!-- 分隔线 -->

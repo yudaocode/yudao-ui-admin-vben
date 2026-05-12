@@ -20,7 +20,7 @@ import {
   Row,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { ConditionType } from '../../consts';
 import { useNodeName, useWatchNode } from '../../helpers';

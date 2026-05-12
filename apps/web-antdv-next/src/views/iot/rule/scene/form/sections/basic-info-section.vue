@@ -7,7 +7,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Card, Col, Form, Input, Radio, Row } from 'ant-design-vue';
+import { Card, Col, Input, Radio, Row } from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -43,7 +43,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
     <div class="p-0">
       <Row :gutter="24" class="mb-24px">
         <Col :span="12">
-          <Form.Item label="场景名称" prop="name" required>
+          <FormItem label="场景名称" prop="name" required>
             <Input
               v-model="formData.name"
               placeholder="请输入场景名称"
@@ -51,11 +51,11 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
               show-word-limit
               clearable
             />
-          </Form.Item>
+          </FormItem>
         </Col>
         <Col :span="12">
-          <Form.Item label="场景状态" prop="status" required>
-            <Radio.Group v-model="formData.status">
+          <FormItem label="场景状态" prop="status" required>
+            <RadioGroup v-model="formData.status">
               <Radio
                 v-for="(dict, index) in getDictOptions(
                   DICT_TYPE.COMMON_STATUS,
@@ -66,11 +66,11 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
               >
                 {{ dict.label }}
               </Radio>
-            </Radio.Group>
-          </Form.Item>
+            </RadioGroup>
+          </FormItem>
         </Col>
       </Row>
-      <Form.Item label="场景描述" prop="description">
+      <FormItem label="场景描述" prop="description">
         <Input.TextArea
           v-model="formData.description"
           type="text"
@@ -80,7 +80,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
           show-word-limit
           resize="none"
         />
-      </Form.Item>
+      </FormItem>
     </div>
   </Card>
 </template>

@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Spin } from 'ant-design-vue';
+import { Card, Spin } from 'antdv-next';
 
 import { getMemberTerminalStatisticsList } from '#/api/mall/statistics/member';
 

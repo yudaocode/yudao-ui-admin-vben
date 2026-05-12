@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 import { getImageMy } from '#/api/ai/image';
 

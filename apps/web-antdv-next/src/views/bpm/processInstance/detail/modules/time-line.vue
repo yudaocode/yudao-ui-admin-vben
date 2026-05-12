@@ -14,7 +14,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime, isEmpty } from '@vben/utils';
 
-import { Avatar, Button, Image, Timeline, Tooltip } from 'ant-design-vue';
+import { Avatar, Button, Image, Timeline, Tooltip } from 'antdv-next';
 
 import { UserSelectModal } from '#/views/system/user/components';
 
@@ -233,7 +233,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
   <div>
     <Timeline class="pt-5">
       <!-- 遍历每个审批节点 -->
-      <Timeline.Item
+      <TimelineItem
         v-for="(activity, index) in activityNodes"
         :key="index"
         :color="getApprovalNodeColor(activity.status)"
@@ -466,7 +466,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
             </div>
           </div>
         </div>
-      </Timeline.Item>
+      </TimelineItem>
     </Timeline>
 
     <!-- 用户选择弹窗 -->

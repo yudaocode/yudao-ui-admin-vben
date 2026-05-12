@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input } from 'ant-design-vue';
+import { FormItem, Input } from 'antdv-next';
 
 defineOptions({ name: 'RocketMQConfigForm' });
 

@@ -20,7 +20,7 @@ import {
   message,
   Select,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getSimpleUserList } from '#/api/system/user';
 
@@ -228,13 +228,13 @@ onMounted(async () => {
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
         >
-          <Select.Option key="" value="" label="所有人">
+          <SelectOption key="" value="" label="所有人">
             <div class="flex items-center">
               <Avatar size="small" class="mr-2">全</Avatar>
               <span>所有人</span>
             </div>
-          </Select.Option>
-          <Select.Option
+          </SelectOption>
+          <SelectOption
             v-for="user in userList"
             :key="user.id"
             :value="user.id"
@@ -246,7 +246,7 @@ onMounted(async () => {
               </Avatar>
               <span>{{ user.nickname }}</span>
             </div>
-          </Select.Option>
+          </SelectOption>
         </Select>
 
         <Input.TextArea

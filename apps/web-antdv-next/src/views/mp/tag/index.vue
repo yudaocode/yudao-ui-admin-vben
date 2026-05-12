@@ -4,7 +4,7 @@ import type { MpTagApi } from '#/api/mp/tag';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTag, getTagPage, syncTag } from '#/api/mp/tag';

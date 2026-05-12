@@ -4,7 +4,7 @@ import { onMounted, ref, watch } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Divider, message } from 'ant-design-vue';
+import { Button, Divider, message } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 

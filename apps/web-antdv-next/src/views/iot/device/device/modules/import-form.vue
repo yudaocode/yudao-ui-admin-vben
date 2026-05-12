@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-import type { FileType } from 'ant-design-vue/es/upload/interface';
-
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Upload } from 'ant-design-vue';
+import { Button, message, Upload } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { importDevice, importDeviceTemplate } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
-
+type FileType = any;
 defineOptions({ name: 'IoTDeviceImportForm' });
 
 const emit = defineEmits(['success']);

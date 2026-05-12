@@ -7,7 +7,7 @@ import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { z } from '#/adapter/form';
 import { getSimpleGroupList } from '#/api/member/group';
@@ -124,7 +124,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'mark',
       label: '会员备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入会员备注',
       },
@@ -340,7 +340,7 @@ export function useLevelFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'reason',
       label: '修改原因',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入修改原因',
       },

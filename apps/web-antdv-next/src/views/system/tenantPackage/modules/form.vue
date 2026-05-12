@@ -7,7 +7,7 @@ import { computed, ref } from 'vue';
 import { Tree, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Checkbox, message, Spin } from 'ant-design-vue';
+import { Checkbox, message, Spin } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';

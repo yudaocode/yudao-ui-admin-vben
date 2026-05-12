@@ -4,7 +4,7 @@ import type { ErpPurchaseReturnApi } from '#/api/erp/purchase/return';
 
 import { ref } from 'vue';
 
-import { message, Modal } from 'ant-design-vue';
+import { message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPurchaseReturnPage } from '#/api/erp/purchase/return';

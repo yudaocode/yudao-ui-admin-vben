@@ -9,7 +9,7 @@ import {
   erpPriceMultiply,
 } from '@vben/utils';
 
-import { Input, InputNumber, Select } from 'ant-design-vue';
+import { Input, InputNumber, Select } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';

@@ -9,7 +9,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { Card, Spin } from 'ant-design-vue';
+import { Card, Spin } from 'antdv-next';
 
 import { getMemberSexStatisticsList } from '#/api/mall/statistics/member';
 

@@ -4,7 +4,7 @@ import type { ErpSaleReturnApi } from '#/api/erp/sale/return';
 
 import { ref } from 'vue';
 
-import { message, Modal } from 'ant-design-vue';
+import { message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSaleReturnPage } from '#/api/erp/sale/return';

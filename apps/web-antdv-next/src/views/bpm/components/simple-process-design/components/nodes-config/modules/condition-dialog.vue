@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { cloneDeep } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ConditionType, DEFAULT_CONDITION_GROUP_VALUE } from '../../../consts';
 import Condition from './condition.vue';

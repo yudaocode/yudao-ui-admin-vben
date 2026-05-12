@@ -4,7 +4,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Form, Select, Table } from 'ant-design-vue';
+import { Button, Form, Select, Table } from 'antdv-next';
 
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
@@ -210,7 +210,7 @@ defineExpose({ validate, getData, setData });
     >
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === 'productId'">
-          <Form.Item
+          <FormItem
             :name="['data', index, 'productId']"
             :rules="formRules.productId"
             class="mb-0"
@@ -228,10 +228,10 @@ defineExpose({ validate, getData, setData });
               "
               @change="() => handleProductChange(record, index)"
             />
-          </Form.Item>
+          </FormItem>
         </template>
         <template v-else-if="column.dataIndex === 'deviceId'">
-          <Form.Item
+          <FormItem
             :name="['data', index, 'deviceId']"
             :rules="formRules.deviceId"
             class="mb-0"
@@ -252,10 +252,10 @@ defineExpose({ validate, getData, setData });
                 })),
               ]"
             />
-          </Form.Item>
+          </FormItem>
         </template>
         <template v-else-if="column.dataIndex === 'method'">
-          <Form.Item
+          <FormItem
             :name="['data', index, 'method']"
             :rules="formRules.method"
             class="mb-0"
@@ -276,10 +276,10 @@ defineExpose({ validate, getData, setData });
               "
               @change="() => handleMethodChange(record, index)"
             />
-          </Form.Item>
+          </FormItem>
         </template>
         <template v-else-if="column.dataIndex === 'identifier'">
-          <Form.Item :name="['data', index, 'identifier']" class="mb-0">
+          <FormItem :name="['data', index, 'identifier']" class="mb-0">
             <Select
               v-if="shouldShowIdentifierSelect(record)"
               v-model:value="record.identifier"
@@ -292,7 +292,7 @@ defineExpose({ validate, getData, setData });
               "
               :options="getThingModelOptions(record)"
             />
-          </Form.Item>
+          </FormItem>
         </template>
         <template v-else-if="column.title === '操作'">
           <Button type="link" danger @click="handleDelete(index)">删除</Button>

@@ -8,15 +8,7 @@ import { computed, reactive, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import {
-  Button,
-  Col,
-  Input,
-  message,
-  Modal,
-  Row,
-  Upload,
-} from 'ant-design-vue';
+import { Button, Col, Input, message, Modal, Row, Upload } from 'antdv-next';
 
 import { WxMaterialSelect } from '#/views/mp/components';
 import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';

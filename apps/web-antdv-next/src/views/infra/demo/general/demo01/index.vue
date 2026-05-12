@@ -21,9 +21,9 @@ import {
   Input,
   message,
   Pagination,
-  RangePicker,
+  DateRangePicker as RangePicker,
   Select,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
@@ -165,7 +165,7 @@ onMounted(() => {
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
       <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="名字" name="name">
+        <FormItem label="名字" name="name">
           <Input
             v-model:value="queryParams.name"
             placeholder="请输入名字"
@@ -173,15 +173,15 @@ onMounted(() => {
             @press-enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="性别" name="sex">
+        </FormItem>
+        <FormItem label="性别" name="sex">
           <Select
             v-model:value="queryParams.sex"
             placeholder="请选择性别"
             allow-clear
             class="w-full"
           >
-            <Select.Option
+            <SelectOption
               v-for="dict in getDictOptions(
                 DICT_TYPE.SYSTEM_USER_SEX,
                 'number',
@@ -190,22 +190,22 @@ onMounted(() => {
               :value="dict.value"
             >
               {{ dict.label }}
-            </Select.Option>
+            </SelectOption>
           </Select>
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
+        </FormItem>
+        <FormItem label="创建时间" name="createTime">
           <RangePicker
             v-model:value="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem>
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" type="primary">
             搜索
           </Button>
-        </Form.Item>
+        </FormItem>
       </Form>
     </ContentWrap>
 

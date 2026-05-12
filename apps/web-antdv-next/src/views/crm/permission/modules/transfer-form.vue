@@ -5,7 +5,7 @@ import { computed } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { transferBusiness } from '#/api/crm/business';

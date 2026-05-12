@@ -13,7 +13,7 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
-import { Form, Input, message, Modal, Radio } from 'ant-design-vue';
+import { Form, Input, message, Modal } from 'antdv-next';
 
 import {
   createThingModel,
@@ -253,23 +253,23 @@ function resetForm() {
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 18 }"
     >
-      <Form.Item label="功能类型" name="type">
-        <Radio.Group v-model:value="formData.type">
-          <Radio.Button
+      <FormItem label="功能类型" name="type">
+        <RadioGroup v-model:value="formData.type">
+          <RadioButton
             v-for="dict in getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE)"
             :key="String(dict.value)"
             :value="Number(dict.value)"
           >
             {{ dict.label }}
-          </Radio.Button>
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item label="功能名称" name="name">
+          </RadioButton>
+        </RadioGroup>
+      </FormItem>
+      <FormItem label="功能名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入功能名称" />
-      </Form.Item>
-      <Form.Item label="标识符" name="identifier">
+      </FormItem>
+      <FormItem label="标识符" name="identifier">
         <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
-      </Form.Item>
+      </FormItem>
       <!-- 属性配置 -->
       <ThingModelProperty
         v-if="formData.type === IoTThingModelTypeEnum.PROPERTY"
@@ -285,14 +285,14 @@ function resetForm() {
         v-if="formData.type === IoTThingModelTypeEnum.EVENT"
         v-model="formData.event"
       />
-      <Form.Item label="描述" name="desc">
+      <FormItem label="描述" name="desc">
         <Input.TextArea
           v-model:value="formData.desc"
           :maxlength="200"
           :rows="3"
           placeholder="请输入属性描述"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

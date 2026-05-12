@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Layout, Tabs } from 'ant-design-vue';
+import { Button, Input, Layout, Tabs } from 'antdv-next';
 
 import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';
@@ -180,7 +180,7 @@ onMounted(async () => {
     >
       <FormModal @success="handlerAddRoleSuccess" />
 
-      <Layout.Content class="relative m-0 flex-1 overflow-hidden p-0">
+      <LayoutContent class="relative m-0 flex-1 overflow-hidden p-0">
         <div class="absolute right-0 top--1 z-100 mr-5 mt-5">
           <!-- 搜索输入框 -->
           <Input.Search
@@ -206,7 +206,7 @@ onMounted(async () => {
           class="relative h-full p-4"
           @tab-click="handleTabsClick"
         >
-          <Tabs.TabPane
+          <TabPane
             key="my-role"
             class="flex h-full flex-col overflow-y-auto"
             tab="我的角色"
@@ -220,8 +220,8 @@ onMounted(async () => {
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('my')"
             />
-          </Tabs.TabPane>
-          <Tabs.TabPane
+          </TabPane>
+          <TabPane
             key="public-role"
             class="flex h-full flex-col overflow-y-auto"
             tab="公共角色"
@@ -241,9 +241,9 @@ onMounted(async () => {
               class="mt-5"
               loading
             />
-          </Tabs.TabPane>
+          </TabPane>
         </Tabs>
-      </Layout.Content>
+      </LayoutContent>
     </Layout>
   </Drawer>
 </template>

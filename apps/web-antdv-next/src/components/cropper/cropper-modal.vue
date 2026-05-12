@@ -8,14 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { dataURLtoBlob, isFunction } from '@vben/utils';
 
-import {
-  Avatar,
-  Button,
-  message,
-  Space,
-  Tooltip,
-  Upload,
-} from 'ant-design-vue';
+import { Avatar, Button, message, Space, Tooltip, Upload } from 'antdv-next';
 
 import CropperImage from './cropper.vue';
 

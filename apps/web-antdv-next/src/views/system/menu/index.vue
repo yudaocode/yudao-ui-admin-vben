@@ -8,7 +8,7 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';

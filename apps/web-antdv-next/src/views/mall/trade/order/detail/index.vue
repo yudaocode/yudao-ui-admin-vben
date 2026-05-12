@@ -15,7 +15,7 @@ import {
 } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 
-import { message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';

@@ -5,9 +5,9 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
-import { VerticalButtonGroup } from '#/views/mall/promotion/components';
+import { VerticalSpace } from '#/views/mall/promotion/components';
 
 import { components } from './mobile';
 
@@ -109,7 +109,7 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <VerticalButtonGroup size="small">
+        <VerticalSpace size="small">
           <Button
             :disabled="!canMoveUp"
             type="primary"
@@ -164,7 +164,7 @@ const handleDeleteComponent = () => {
           >
             <IconifyIcon icon="lucide:trash-2" />
           </Button>
-        </VerticalButtonGroup>
+        </VerticalSpace>
       </div>
     </div>
   </div>

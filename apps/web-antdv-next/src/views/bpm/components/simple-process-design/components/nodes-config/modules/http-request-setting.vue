@@ -12,7 +12,7 @@ import {
   Row,
   Select,
   SelectOption,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useFormFields } from '../../../helpers';
 import HttpRequestParamSetting from './http-request-param-setting.vue';

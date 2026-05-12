@@ -10,7 +10,7 @@ import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, Col, message, Row, Space } from 'ant-design-vue';
+import { Button, Card, Col, message, Row, Space } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getProcessDefinition } from '#/api/bpm/definition';

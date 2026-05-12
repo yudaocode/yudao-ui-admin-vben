@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { nextTick, ref, watch } from 'vue';
 
-import { Form, Input } from 'ant-design-vue';
+import { Form, Input } from 'antdv-next';
 
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
 
+type Rule = any;
 const props = defineProps<{
   studentId?: number; // 学生编号（主表的关联字段）
 }>();
@@ -54,14 +53,14 @@ watch(
     :label-col="{ span: 5 }"
     :wrapper-col="{ span: 18 }"
   >
-    <Form.Item label="学生编号" name="studentId">
+    <FormItem label="学生编号" name="studentId">
       <Input v-model:value="formData.studentId" placeholder="请输入学生编号" />
-    </Form.Item>
-    <Form.Item label="名字" name="name">
+    </FormItem>
+    <FormItem label="名字" name="name">
       <Input v-model:value="formData.name" placeholder="请输入名字" />
-    </Form.Item>
-    <Form.Item label="班主任" name="teacher">
+    </FormItem>
+    <FormItem label="班主任" name="teacher">
       <Input v-model:value="formData.teacher" placeholder="请输入班主任" />
-    </Form.Item>
+    </FormItem>
   </Form>
 </template>

@@ -5,7 +5,7 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Button, Divider, Form, FormItem, Input } from 'ant-design-vue';
+import { Button, Divider, Form, FormItem, Input } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 

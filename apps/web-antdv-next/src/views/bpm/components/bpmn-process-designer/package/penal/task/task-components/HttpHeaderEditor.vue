@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 defineOptions({ name: 'HttpHeaderEditor' });
 

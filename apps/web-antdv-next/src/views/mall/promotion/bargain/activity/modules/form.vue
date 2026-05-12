@@ -11,7 +11,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { cloneDeep, convertToInteger, formatToFraction } from '@vben/utils';
 
-import { Button, InputNumber, message } from 'ant-design-vue';
+import { Button, InputNumber, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { VxeColumn } from '#/adapter/vxe-table';

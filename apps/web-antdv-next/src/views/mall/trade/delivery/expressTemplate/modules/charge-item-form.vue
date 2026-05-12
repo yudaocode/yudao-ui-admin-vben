@@ -4,7 +4,7 @@ import type { SystemAreaApi } from '#/api/system/area';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
-import { InputNumber, TreeSelect } from 'ant-design-vue';
+import { InputNumber, TreeSelect } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 

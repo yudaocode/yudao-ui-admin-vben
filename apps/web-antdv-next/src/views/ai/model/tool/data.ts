@@ -27,7 +27,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       fieldName: 'description',
       label: '工具描述',
       componentProps: {

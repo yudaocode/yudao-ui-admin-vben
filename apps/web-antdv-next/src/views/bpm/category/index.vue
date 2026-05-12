@@ -4,7 +4,7 @@ import type { BpmCategoryApi } from '#/api/bpm/category';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory, getCategoryPage } from '#/api/bpm/category';

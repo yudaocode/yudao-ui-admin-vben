@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button } from 'ant-design-vue';
+import { Button } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

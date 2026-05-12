@@ -20,7 +20,7 @@ import {
   ZoomOutOutlined,
 } from '@vben/icons';
 
-import { Button, ButtonGroup, message, Modal, Tooltip } from 'ant-design-vue';
+import { Button, message, Modal, Space, Tooltip } from 'antdv-next';
 // 模拟流转流程
 // @ts-expect-error: token simulation package does not ship compatible types
 import tokenSimulation from 'bpmn-js-token-simulation';
@@ -516,7 +516,7 @@ onBeforeUnmount(() => {
     >
       <slot name="control-header"></slot>
       <template v-if="!$slots['control-header']">
-        <ButtonGroup key="file-control">
+        <Space key="file-control">
           <Button
             :icon="h(FolderOpenOutlined)"
             title="打开文件"
@@ -558,8 +558,8 @@ onBeforeUnmount(() => {
               @click="processSimulation"
             />
           </Tooltip>
-        </ButtonGroup>
-        <ButtonGroup key="align-control">
+        </Space>
+        <Space key="align-control">
           <Tooltip title="向左对齐">
             <Button
               :icon="h(AlignLeftOutlined)"
@@ -602,8 +602,8 @@ onBeforeUnmount(() => {
               @click="elementsAlign('middle')"
             />
           </Tooltip>
-        </ButtonGroup>
-        <ButtonGroup key="scale-control">
+        </Space>
+        <Space key="scale-control">
           <Tooltip title="缩小视图">
             <Button
               :icon="h(ZoomOutOutlined)"
@@ -622,8 +622,8 @@ onBeforeUnmount(() => {
           <Tooltip title="重置视图并居中">
             <Button :icon="h(ReloadOutlined)" @click="processReZoom()" />
           </Tooltip>
-        </ButtonGroup>
-        <ButtonGroup key="stack-control">
+        </Space>
+        <Space key="stack-control">
           <Tooltip title="撤销">
             <Button
               :icon="h(UndoOutlined)"
@@ -641,7 +641,7 @@ onBeforeUnmount(() => {
           <Tooltip title="重新绘制">
             <Button :icon="h(ReloadOutlined)" @click="processRestart()" />
           </Tooltip>
-        </ButtonGroup>
+        </Space>
       </template>
       <!-- 用于打开本地文件-->
       <input

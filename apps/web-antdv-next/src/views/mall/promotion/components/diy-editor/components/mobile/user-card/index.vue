@@ -3,7 +3,7 @@ import type { UserCardProperty } from './config';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Avatar } from 'ant-design-vue';
+import { Avatar } from 'antdv-next';
 
 /** 用户卡片 */
 defineOptions({ name: 'UserCard' });

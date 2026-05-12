@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, message, Steps } from 'ant-design-vue';
+import { Button, message, Steps } from 'antdv-next';
 
 import { getCodegenTable, updateCodegenTable } from '#/api/infra/codegen';
 import { $t } from '#/locales';

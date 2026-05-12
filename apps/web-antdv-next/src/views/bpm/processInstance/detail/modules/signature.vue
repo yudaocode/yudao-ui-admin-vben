@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { base64ToFile } from '@vben/utils';
 
-import { Button, Tooltip } from 'ant-design-vue';
+import { Button, Tooltip } from 'antdv-next';
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';

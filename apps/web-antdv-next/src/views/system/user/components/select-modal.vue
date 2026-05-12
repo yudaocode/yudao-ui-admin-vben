@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Key } from 'ant-design-vue/es/table/interface';
-
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
@@ -18,10 +16,12 @@ import {
   Row,
   Transfer,
   Tree,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getUserPage } from '#/api/system/user';
+
+type Key = number | string;
 
 /** 部门树节点接口 */
 interface DeptTreeNode {

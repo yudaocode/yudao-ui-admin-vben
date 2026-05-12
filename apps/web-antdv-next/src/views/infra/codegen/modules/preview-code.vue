@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, DirectoryTree, message, Tabs } from 'ant-design-vue';
+import { Button, DirectoryTree, message, Tabs } from 'antdv-next';
 
 import { previewCodegen } from '#/api/infra/codegen';
 
@@ -230,7 +230,7 @@ const [Modal, modalApi] = useVbenModal({
           type="editable-card"
           @edit="removeCodeMapKey"
         >
-          <Tabs.TabPane
+          <TabPane
             v-for="key in codeMap.keys()"
             :key="key"
             :tab="key.split('/').pop()"
@@ -247,7 +247,7 @@ const [Modal, modalApi] = useVbenModal({
                 :auto-format="false"
               />
             </div>
-          </Tabs.TabPane>
+          </TabPane>
           <template #rightExtra>
             <Button type="primary" ghost @click="copyCode">
               <IconifyIcon icon="lucide:copy" />

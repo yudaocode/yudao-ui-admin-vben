@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
-import { message, Radio, RadioGroup } from 'ant-design-vue';
+import { message, RadioGroup } from 'antdv-next';
 
 import { updateDiyPageProperty } from '#/api/mall/promotion/diy/page';
 import {
@@ -197,12 +197,12 @@ onMounted(async () => {
         @change="handleTemplateItemChange"
       >
         <template v-for="item in templateItems" :key="item.key">
-          <Radio.Button :value="item.key">
+          <RadioButton :value="item.key">
             <IconifyIcon
               :icon="item.icon"
               class="mt-2 flex size-5 items-center"
             />
-          </Radio.Button>
+          </RadioButton>
         </template>
       </RadioGroup>
     </template>

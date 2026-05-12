@@ -8,7 +8,7 @@ import { isString } from '@vben/utils';
 import formCreate from '@form-create/ant-design-vue';
 import FcDesigner from '@form-create/antd-designer';
 import { useClipboard } from '@vueuse/core';
-import { Button, message } from 'ant-design-vue';
+import { Button, message } from 'antdv-next';
 import hljs from 'highlight.js';
 import xml from 'highlight.js/lib/languages/java';
 import json from 'highlight.js/lib/languages/json';

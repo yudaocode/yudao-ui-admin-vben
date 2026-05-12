@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import { getRedisMonitorInfo } from '#/api/infra/redis';
 

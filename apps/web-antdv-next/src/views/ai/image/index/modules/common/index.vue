@@ -12,7 +12,7 @@ import {
   OtherPlatformEnum,
 } from '@vben/constants';
 
-import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
+import { Button, InputNumber, Select, Space, TextArea } from 'antdv-next';
 
 import { drawImage } from '#/api/ai/image';
 
@@ -108,7 +108,7 @@ defineExpose({ settingValues });
   <div class="prompt">
     <b>画面描述</b>
     <p>建议使用“形容词 + 动词 + 风格”的格式，使用“，”隔开</p>
-    <Textarea
+    <TextArea
       v-model:value="prompt"
       :maxlength="1024"
       :rows="5"
@@ -148,13 +148,13 @@ defineExpose({ settingValues });
         class="!w-80"
         @change="handlerPlatformChange"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in OtherPlatformEnum"
           :key="item.key"
           :value="item.key"
         >
           {{ item.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>
@@ -170,13 +170,13 @@ defineExpose({ settingValues });
         size="large"
         class="!w-80"
       >
-        <Select.Option
+        <SelectOption
           v-for="item in platformModels"
           :key="item.id"
           :value="item.id"
         >
           {{ item.name }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </Space>
   </div>

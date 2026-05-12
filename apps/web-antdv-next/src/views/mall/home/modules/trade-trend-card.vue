@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { fenToYuan } from '@vben/utils';
 
-import { Card, Radio, RadioGroup, Spin } from 'ant-design-vue';
+import { Card, Radio, RadioGroup, Spin } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getOrderCountTrendComparison } from '#/api/mall/statistics/trade';

@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 
-import { Button, Card, Descriptions, message } from 'ant-design-vue';
+import { Button, Card, Descriptions, message } from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -42,37 +42,37 @@ async function copyToClipboard(text: string) {
 <template>
   <Card title="产品信息">
     <Descriptions :column="3" bordered size="small">
-      <Descriptions.Item label="产品名称">
+      <DescriptionsItem label="产品名称">
         {{ product.name }}
-      </Descriptions.Item>
-      <Descriptions.Item label="所属分类">
+      </DescriptionsItem>
+      <DescriptionsItem label="所属分类">
         {{ product.categoryName || '-' }}
-      </Descriptions.Item>
-      <Descriptions.Item label="设备类型">
+      </DescriptionsItem>
+      <DescriptionsItem label="设备类型">
         <DictTag
           :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
           :value="product.deviceType"
         />
-      </Descriptions.Item>
-      <Descriptions.Item label="创建时间">
+      </DescriptionsItem>
+      <DescriptionsItem label="创建时间">
         {{ formatDate(product.createTime) }}
-      </Descriptions.Item>
-      <Descriptions.Item label="协议类型">
+      </DescriptionsItem>
+      <DescriptionsItem label="协议类型">
         <DictTag
           :type="DICT_TYPE.IOT_PROTOCOL_TYPE"
           :value="product.protocolType"
         />
-      </Descriptions.Item>
-      <Descriptions.Item label="序列化类型">
+      </DescriptionsItem>
+      <DescriptionsItem label="序列化类型">
         <DictTag
           :type="DICT_TYPE.IOT_SERIALIZE_TYPE"
           :value="product.serializeType"
         />
-      </Descriptions.Item>
-      <Descriptions.Item label="产品状态">
+      </DescriptionsItem>
+      <DescriptionsItem label="产品状态">
         <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
-      </Descriptions.Item>
-      <Descriptions.Item
+      </DescriptionsItem>
+      <DescriptionsItem
         v-if="
           [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
             product.deviceType!,
@@ -81,8 +81,8 @@ async function copyToClipboard(text: string) {
         label="联网方式"
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />
-      </Descriptions.Item>
-      <Descriptions.Item v-if="product.productSecret" label="ProductSecret">
+      </DescriptionsItem>
+      <DescriptionsItem v-if="product.productSecret" label="ProductSecret">
         <span v-if="showProductSecret">{{ product.productSecret }}</span>
         <span v-else>********</span>
         <Button class="ml-2" size="small" @click="toggleProductSecretVisible">
@@ -95,13 +95,13 @@ async function copyToClipboard(text: string) {
         >
           复制
         </Button>
-      </Descriptions.Item>
-      <Descriptions.Item label="动态注册">
+      </DescriptionsItem>
+      <DescriptionsItem label="动态注册">
         {{ product.registerEnabled ? '已开启' : '未开启' }}
-      </Descriptions.Item>
-      <Descriptions.Item :span="3" label="产品描述">
+      </DescriptionsItem>
+      <DescriptionsItem :span="3" label="产品描述">
         {{ product.description || '-' }}
-      </Descriptions.Item>
+      </DescriptionsItem>
     </Descriptions>
   </Card>
 </template>

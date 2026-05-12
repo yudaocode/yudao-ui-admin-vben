@@ -7,7 +7,7 @@ import { ref, watch } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { message, Tag } from 'ant-design-vue';
+import { message, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

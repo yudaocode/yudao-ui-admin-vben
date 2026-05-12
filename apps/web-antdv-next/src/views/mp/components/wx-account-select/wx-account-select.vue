@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { SelectValue } from 'ant-design-vue/es/select';
+import type { SelectValue } from 'antdv-next';
 
 import type { MpAccountApi } from '#/api/mp/account';
 
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { message, Select } from 'ant-design-vue';
+import { message, Select } from 'antdv-next';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
@@ -62,8 +62,8 @@ onMounted(handleQuery);
     class="!w-full"
     @change="onChanged"
   >
-    <Select.Option v-for="item in accountList" :key="item.id" :value="item.id">
+    <SelectOption v-for="item in accountList" :key="item.id" :value="item.id">
       {{ item.name }}
-    </Select.Option>
+    </SelectOption>
   </Select>
 </template>

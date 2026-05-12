@@ -5,7 +5,7 @@ import type { PayOrderApi } from '#/api/pay/order';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportOrder, getOrderPage } from '#/api/pay/order';

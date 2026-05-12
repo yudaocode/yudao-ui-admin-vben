@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 defineOptions({ name: 'MsgEvent' });
 

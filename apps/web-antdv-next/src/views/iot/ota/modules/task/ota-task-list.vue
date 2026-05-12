@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TableColumnsType } from 'ant-design-vue';
+import type { TableColumnsType } from 'antdv-next';
 
 import type { OtaTask } from '#/api/iot/ota/task';
 
@@ -17,7 +17,7 @@ import {
   Space,
   Table,
   Tag,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getOtaTaskPage } from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';

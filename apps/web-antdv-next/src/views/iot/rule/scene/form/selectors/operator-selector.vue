@@ -3,7 +3,7 @@
 import { computed, watch } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Select } from 'ant-design-vue';
+import { Select } from 'antdv-next';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -244,7 +244,7 @@ watch(
       @change="handleChange"
       class="w-full"
     >
-      <Select.Option
+      <SelectOption
         v-for="operator in availableOperators"
         :key="operator.value"
         :label="operator.label"
@@ -265,7 +265,7 @@ watch(
             {{ operator.description }}
           </div>
         </div>
-      </Select.Option>
+      </SelectOption>
     </Select>
   </div>
 </template>

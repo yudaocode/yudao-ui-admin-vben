@@ -6,7 +6,7 @@ import type { MallArticleApi } from '#/api/mall/promotion/article';
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Form, FormItem, Select } from 'ant-design-vue';
+import { Form, FormItem, Select } from 'antdv-next';
 
 import { getArticlePage } from '#/api/mall/promotion/article';
 

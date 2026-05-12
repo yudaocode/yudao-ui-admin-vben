@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject } from 'vue';
 
-import { Button, Card, Image } from 'ant-design-vue';
+import { Button, Card, Image } from 'antdv-next';
 
 defineOptions({ name: 'AiMusicSongInfoIndex' });
 

@@ -9,7 +9,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Button, Image, Tabs, Tag } from 'ant-design-vue';
+import { Button, Image, Tabs, Tag } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';
@@ -104,7 +104,7 @@ onMounted(() => {
           class="w-full"
           @change="handleChangeStatus"
         >
-          <Tabs.TabPane
+          <TabPane
             v-for="tab in statusTabs"
             :key="tab.value"
             :tab="tab.label"

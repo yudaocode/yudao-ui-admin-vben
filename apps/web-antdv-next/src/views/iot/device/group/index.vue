@@ -4,7 +4,7 @@ import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDeviceGroup, getDeviceGroupPage } from '#/api/iot/device/group';

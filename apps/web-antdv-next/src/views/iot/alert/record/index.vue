@@ -7,7 +7,7 @@ import { h, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, message, Modal, Popover, Tag } from 'ant-design-vue';
+import { Button, message, Modal, Popover, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';

@@ -23,7 +23,7 @@ import {
   message,
   Tag,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCategory } from '#/api/bpm/category';
@@ -522,7 +522,7 @@ function handleRenameSuccess() {
                   </template>
                   分类
                 </Button>
-                <template #overlay>
+                <template #popupRender>
                   <Menu @click="(e) => handleCommand(e.key as string)">
                     <Menu.Item key="renameCategory"> 重命名 </Menu.Item>
                     <Menu.Item key="deleteCategory"> 删除分类 </Menu.Item>
@@ -549,7 +549,7 @@ function handleRenameSuccess() {
         :bordered="false"
         class="collapse-no-padding bg-transparent"
       >
-        <Collapse.Panel
+        <CollapsePanel
           key="1"
           :show-arrow="false"
           class="border-0 bg-transparent p-0"
@@ -683,7 +683,7 @@ function handleRenameSuccess() {
                 </Button>
                 <Dropdown placement="bottomRight" arrow>
                   <Button type="link" size="small" class="px-1">更多</Button>
-                  <template #overlay>
+                  <template #popupRender>
                     <Menu
                       @click="(e) => handleModelCommand(e.key as string, row)"
                     >
@@ -727,7 +727,7 @@ function handleRenameSuccess() {
               </div>
             </template>
           </Grid>
-        </Collapse.Panel>
+        </CollapsePanel>
       </Collapse>
     </Card>
 

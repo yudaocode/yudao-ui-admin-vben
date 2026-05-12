@@ -5,7 +5,7 @@ import { onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { Card, message } from 'ant-design-vue';
+import { Card, message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

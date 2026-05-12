@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Image } from 'ant-design-vue';
+import { Image } from 'antdv-next';
 
 /** 弹窗广告 */
 defineOptions({ name: 'Popover' });

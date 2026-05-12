@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'antdv-next';
 
 import { getUserCountComparison } from '#/api/mall/statistics/member';
 import { getOrderComparison } from '#/api/mall/statistics/trade';

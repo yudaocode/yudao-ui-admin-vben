@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input } from 'antdv-next';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/normal';

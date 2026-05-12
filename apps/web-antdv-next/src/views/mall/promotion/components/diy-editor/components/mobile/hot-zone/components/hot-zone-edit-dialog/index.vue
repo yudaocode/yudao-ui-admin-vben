@@ -9,7 +9,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Image } from 'ant-design-vue';
+import { Button, Image } from 'antdv-next';
 
 import { AppLinkSelectDialog } from '#/views/mall/promotion/components';
 

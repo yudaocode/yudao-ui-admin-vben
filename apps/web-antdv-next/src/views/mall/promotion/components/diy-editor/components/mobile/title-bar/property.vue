@@ -15,7 +15,7 @@ import {
   RadioGroup,
   Slider,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
 import {

@@ -4,7 +4,7 @@ import type { AiWriteApi } from '#/api/ai/write';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteWrite, getWritePage } from '#/api/ai/write';

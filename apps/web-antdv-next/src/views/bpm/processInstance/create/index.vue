@@ -17,7 +17,7 @@ import {
   Space,
   Tabs,
   Tooltip,
-} from 'ant-design-vue';
+} from 'antdv-next';
 
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getProcessDefinitionList } from '#/api/bpm/definition';
@@ -210,7 +210,7 @@ onMounted(() => {
 
         <div v-if="filteredProcessDefinitionList?.length" class="-ml-6">
           <Tabs v-model:active-key="activeCategory" tab-position="left">
-            <Tabs.TabPane
+            <TabPane
               v-for="category in availableCategories"
               :key="category.code"
               :tab="category.name"
@@ -265,7 +265,7 @@ onMounted(() => {
                   </Card>
                 </Col>
               </Row>
-            </Tabs.TabPane>
+            </TabPane>
           </Tabs>
         </div>
         <div v-else class="!py-48 text-center">

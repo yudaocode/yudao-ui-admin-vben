@@ -7,7 +7,7 @@ import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
-import { Avatar, message } from 'ant-design-vue';
+import { Avatar, message } from 'antdv-next';
 
 import {
   deleteConversation,
