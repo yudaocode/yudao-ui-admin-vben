@@ -38,13 +38,16 @@ import type {
   BaseFormComponentType,
   IconPickerProps,
 } from '@vben/common-ui';
+import type { Sortable } from '@vben/hooks';
 import type { Recordable } from '@vben/types';
 
 import {
   computed,
-  defineAsyncComponent,
   defineComponent,
   h,
+  nextTick,
+  onMounted,
+  onUnmounted,
   ref,
   render,
   unref,
@@ -57,84 +60,77 @@ import {
   IconPicker,
   VCropper,
 } from '@vben/common-ui';
+import { useSortable } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isEmpty } from '@vben/utils';
 
-import { message, Modal, notification } from 'antdv-next';
+import {
+  AutoComplete as AutoCompleteComponent,
+  Button,
+  Cascader as CascaderComponent,
+  Checkbox as CheckboxComponent,
+  CheckboxGroup as CheckboxGroupComponent,
+  DatePicker as DatePickerComponent,
+  Divider as DividerComponent,
+  Image as ImageComponent,
+  ImagePreviewGroup,
+  Input as InputComponent,
+  InputNumber as InputNumberComponent,
+  InputPassword,
+  Mentions as MentionsComponent,
+  message,
+  Modal,
+  notification,
+  Radio as RadioComponent,
+  RadioGroup as RadioGroupComponent,
+  DateRangePicker as RangePickerComponent,
+  Rate as RateComponent,
+  Select as SelectComponent,
+  Space as SpaceComponent,
+  Switch as SwitchComponent,
+  TextArea as TextareaComponent,
+  TimePicker as TimePickerComponent,
+  TimeRangePicker as TimeRangePickerComponent,
+  TreeSelect as TreeSelectComponent,
+  Upload as UploadComponent,
+} from 'antdv-next';
 
+import { Tinymce as RichTextarea } from '#/components/tinymce';
+import { FileUpload, ImageUpload } from '#/components/upload';
 type AdapterUploadProps = UploadProps & {
   aspectRatio?: string;
   crop?: boolean;
+  draggable?: boolean;
   handleChange?: (event: UploadChangeParam) => void;
   maxSize?: number;
+  onDragSort?: (oldIndex: number, newIndex: number) => void;
   onHandleChange?: (event: UploadChangeParam) => void;
 };
 
-const AutoComplete = defineAsyncComponent(
-  () => import('antdv-next/dist/auto-complete/index'),
-);
-const Button = defineAsyncComponent(
-  () => import('antdv-next/dist/button/index'),
-);
-const Checkbox = defineAsyncComponent(
-  () => import('antdv-next/dist/checkbox/index'),
-);
-const CheckboxGroup = defineAsyncComponent(
-  () => import('antdv-next/dist/checkbox/Group'),
-);
-const DatePicker = defineAsyncComponent(
-  () => import('antdv-next/dist/date-picker/index'),
-);
-const Divider = defineAsyncComponent(
-  () => import('antdv-next/dist/divider/index'),
-);
-const Input = defineAsyncComponent(() => import('antdv-next/dist/input/index'));
-const InputNumber = defineAsyncComponent(
-  () => import('antdv-next/dist/input-number/index'),
-);
-const InputPassword = defineAsyncComponent(() =>
-  import('antdv-next/dist/input/index').then((res) => res.InputPassword),
-);
-const Mentions = defineAsyncComponent(
-  () => import('antdv-next/dist/mentions/index'),
-);
-const Radio = defineAsyncComponent(() => import('antdv-next/dist/radio/index'));
-const RadioGroup = defineAsyncComponent(() =>
-  import('antdv-next/dist/radio/index').then((res) => res.RadioGroup),
-);
-const RangePicker = defineAsyncComponent(() =>
-  import('antdv-next/dist/date-picker/index').then(
-    (res) => res.DateRangePicker,
-  ),
-);
-const Rate = defineAsyncComponent(() => import('antdv-next/dist/rate/index'));
-const Select = defineAsyncComponent(
-  () => import('antdv-next/dist/select/index'),
-);
-const Space = defineAsyncComponent(() => import('antdv-next/dist/space/index'));
-const Switch = defineAsyncComponent(
-  () => import('antdv-next/dist/switch/index'),
-);
-const Textarea = defineAsyncComponent(
-  () => import('antdv-next/dist/input/TextArea'),
-);
-const TimePicker = defineAsyncComponent(
-  () => import('antdv-next/dist/time-picker/index'),
-);
-const TreeSelect = defineAsyncComponent(
-  () => import('antdv-next/dist/tree-select/index'),
-);
-const Cascader = defineAsyncComponent(
-  () => import('antdv-next/dist/cascader/index'),
-);
-const Upload = defineAsyncComponent(
-  () => import('antdv-next/dist/upload/index'),
-);
-const Image = defineAsyncComponent(() => import('antdv-next/dist/image/index'));
-const PreviewGroup = defineAsyncComponent(() =>
-  import('antdv-next/dist/image/index').then((res) => res.ImagePreviewGroup),
-);
+const AutoComplete = AutoCompleteComponent;
+const Checkbox = CheckboxComponent;
+const CheckboxGroup = CheckboxGroupComponent;
+const DatePicker = DatePickerComponent;
+const Divider = DividerComponent;
+const Input = InputComponent;
+const InputNumber = InputNumberComponent;
+const Mentions = MentionsComponent;
+const Radio = RadioComponent;
+const RadioGroup = RadioGroupComponent;
+const RangePicker = RangePickerComponent;
+const Rate = RateComponent;
+const Select = SelectComponent;
+const Space = SpaceComponent;
+const Switch = SwitchComponent;
+const Textarea = TextareaComponent;
+const TimePicker = TimePickerComponent;
+const TimeRangePicker = TimeRangePickerComponent;
+const TreeSelect = TreeSelectComponent;
+const Cascader = CascaderComponent;
+const Upload = UploadComponent;
+const Image = ImageComponent;
+const PreviewGroup = ImagePreviewGroup;
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
@@ -170,260 +166,261 @@ const withDefaultPlaceholder = <T extends Component>(
   });
 };
 
-const withPreviewUpload = () => {
-  // 检查是否为图片文件的辅助函数
-  const isImageFile = (file: UploadFile): boolean => {
-    const imageExtensions = new Set([
-      'bmp',
-      'gif',
-      'jpeg',
-      'jpg',
-      'png',
-      'svg',
-      'webp',
-    ]);
-    if (file.url) {
-      try {
-        const pathname = new URL(file.url, 'http://localhost').pathname;
-        const ext = pathname.split('.').pop()?.toLowerCase();
-        return ext ? imageExtensions.has(ext) : false;
-      } catch {
-        const ext = file.url?.split('.').pop()?.toLowerCase();
-        return ext ? imageExtensions.has(ext) : false;
-      }
+const IMAGE_EXTENSIONS = new Set([
+  'bmp',
+  'gif',
+  'jpeg',
+  'jpg',
+  'png',
+  'svg',
+  'webp',
+]);
+
+/**
+ * 检查是否为图片文件
+ */
+function isImageFile(file: UploadFile): boolean {
+  if (file.url) {
+    try {
+      const pathname = new URL(file.url, 'http://localhost').pathname;
+      const ext = pathname.split('.').pop()?.toLowerCase();
+      return ext ? IMAGE_EXTENSIONS.has(ext) : false;
+    } catch {
+      const ext = file.url?.split('.').pop()?.toLowerCase();
+      return ext ? IMAGE_EXTENSIONS.has(ext) : false;
     }
-    if (!file.type) {
-      const ext = file.name?.split('.').pop()?.toLowerCase();
-      return ext ? imageExtensions.has(ext) : false;
-    }
-    return file.type.startsWith('image/');
+  }
+  if (!file.type) {
+    const ext = file.name?.split('.').pop()?.toLowerCase();
+    return ext ? IMAGE_EXTENSIONS.has(ext) : false;
+  }
+  return file.type.startsWith('image/');
+}
+
+/**
+ * 创建默认的上传按钮插槽
+ */
+function createDefaultUploadSlots(listType: string, placeholder: string) {
+  if (listType === 'picture-card') {
+    return { default: () => placeholder };
+  }
+  return {
+    default: () =>
+      h(
+        Button,
+        {
+          icon: h(IconifyIcon, {
+            icon: 'ant-design:upload-outlined',
+            class: 'mb-1 size-4',
+          }),
+        },
+        () => placeholder,
+      ),
   };
-  // 创建默认的上传按钮插槽
-  const createDefaultSlotsWithUpload = (
-    listType: string,
-    placeholder: string,
-  ) => {
-    switch (listType) {
-      case 'picture-card': {
-        return {
-          default: () => placeholder,
-        };
-      }
-      default: {
-        return {
-          default: () =>
-            h(
-              Button,
-              {
-                icon: h(IconifyIcon, {
-                  icon: 'ant-design:upload-outlined',
-                  class: 'mb-1 size-4',
-                }),
+}
+
+/**
+ * 获取文件的 Base64
+ */
+function getBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.addEventListener('load', () => resolve(reader.result as string));
+    reader.addEventListener('error', reject);
+  });
+}
+
+/**
+ * 预览图片
+ */
+async function previewImage(
+  file: UploadFile,
+  visible: Ref<boolean>,
+  fileList: Ref<UploadProps['fileList']>,
+) {
+  // 非图片文件直接打开链接
+  if (!isImageFile(file)) {
+    const url = file.url || file.preview;
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      message.error($t('ui.formRules.previewWarning'));
+    }
+    return;
+  }
+
+  const [ImageComponent, PreviewGroupComponent] = await Promise.all([
+    Image,
+    PreviewGroup,
+  ]);
+
+  // 过滤图片文件并生成预览
+  const imageFiles = (unref(fileList) || []).filter((f) => isImageFile(f));
+
+  for (const imgFile of imageFiles) {
+    if (!imgFile.url && !imgFile.preview && imgFile.originFileObj) {
+      imgFile.preview = await getBase64(imgFile.originFileObj);
+    }
+  }
+
+  const container = document.createElement('div');
+  document.body.append(container);
+  let isUnmounted = false;
+
+  const currentIndex = imageFiles.findIndex((f) => f.uid === file.uid);
+
+  const PreviewWrapper = {
+    setup() {
+      return () => {
+        if (isUnmounted) return null;
+        return h(
+          PreviewGroupComponent,
+          {
+            class: 'hidden',
+            preview: {
+              visible: visible.value,
+              current: currentIndex,
+              onVisibleChange: (value: boolean) => {
+                visible.value = value;
+                if (!value) {
+                  setTimeout(() => {
+                    if (!isUnmounted && container) {
+                      isUnmounted = true;
+                      render(null, container);
+                      container.remove();
+                    }
+                  }, 300);
+                }
               },
-              () => placeholder,
+            },
+          },
+          () =>
+            imageFiles.map((imgFile) =>
+              h(ImageComponent, {
+                key: imgFile.uid,
+                src: imgFile.url || imgFile.preview,
+              }),
             ),
-        };
-      }
-    }
+        );
+      };
+    },
   };
-  // 构建预览图片组
-  const previewImage = async (
-    file: UploadFile,
-    visible: Ref<boolean>,
-    fileList: Ref<UploadProps['fileList']>,
-  ) => {
-    // 如果当前文件不是图片，直接打开
-    if (!isImageFile(file)) {
-      if (file.url) {
-        window.open(file.url, '_blank');
-      } else if (file.preview) {
-        window.open(file.preview, '_blank');
-      } else {
-        message.error($t('ui.formRules.previewWarning'));
-      }
-      return;
-    }
 
-    // 对于图片文件，继续使用预览组
-    const [ImageComponent, PreviewGroupComponent] = await Promise.all([
-      Image,
-      PreviewGroup,
-    ]);
+  render(h(PreviewWrapper), container);
+}
 
-    const getBase64 = (file: File) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.addEventListener('load', () => resolve(reader.result));
-        reader.addEventListener('error', (error) => reject(error));
-      });
-    };
-    // 从fileList中过滤出所有图片文件
-    const imageFiles = (unref(fileList) || []).filter((element) =>
-      isImageFile(element),
-    );
-
-    // 为所有没有预览地址的图片生成预览
-    for (const imgFile of imageFiles) {
-      if (!imgFile.url && !imgFile.preview && imgFile.originFileObj) {
-        imgFile.preview = (await getBase64(imgFile.originFileObj)) as string;
-      }
-    }
-    const container: HTMLElement | null = document.createElement('div');
+/**
+ * 图片裁剪操作
+ */
+function cropImage(file: File, aspectRatio: string | undefined) {
+  return new Promise<Blob | string | undefined>((resolve, reject) => {
+    const container = document.createElement('div');
     document.body.append(container);
 
-    // 用于追踪组件是否已卸载
     let isUnmounted = false;
+    let objectUrl: null | string = null;
 
-    const PreviewWrapper = {
+    const open = ref<boolean>(true);
+    const cropperRef = ref<InstanceType<typeof VCropper> | null>(null);
+
+    const closeModal = () => {
+      open.value = false;
+      setTimeout(() => {
+        if (!isUnmounted && container) {
+          if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+          }
+          isUnmounted = true;
+          render(null, container);
+          container.remove();
+        }
+      }, 300);
+    };
+
+    const CropperWrapper = {
       setup() {
         return () => {
           if (isUnmounted) return null;
+          if (!objectUrl) {
+            objectUrl = URL.createObjectURL(file);
+          }
           return h(
-            PreviewGroupComponent,
+            Modal,
             {
-              class: 'hidden',
-              preview: {
-                open: visible.value,
-                // 设置初始显示的图片索引
-                current: imageFiles.findIndex((f) => f.uid === file.uid),
-                onOpenChange: (value: boolean) => {
-                  visible.value = value;
-                  if (!value) {
-                    // 延迟清理，确保动画完成
-                    setTimeout(() => {
-                      if (!isUnmounted && container) {
-                        isUnmounted = true;
-                        render(null, container);
-                        container.remove();
-                      }
-                    }, 300);
+              open: open.value,
+              title: h('div', {}, [
+                $t('ui.crop.title'),
+                h(
+                  'span',
+                  {
+                    class: `${aspectRatio ? '' : 'hidden'} ml-2 text-sm text-gray-400 font-normal`,
+                  },
+                  $t('ui.crop.titleTip', [aspectRatio]),
+                ),
+              ]),
+              centered: true,
+              width: 548,
+              keyboard: false,
+              maskClosable: false,
+              closable: false,
+              cancelText: $t('common.cancel'),
+              okText: $t('ui.crop.confirm'),
+              destroyOnClose: true,
+              onOk: async () => {
+                const cropper = cropperRef.value;
+                if (!cropper) {
+                  reject(new Error('Cropper not found'));
+                  closeModal();
+                  return;
+                }
+                try {
+                  const dataUrl = await cropper.getCropImage();
+                  if (dataUrl) {
+                    resolve(dataUrl);
+                  } else {
+                    reject(new Error($t('ui.crop.errorTip')));
                   }
-                },
+                } catch {
+                  reject(new Error($t('ui.crop.errorTip')));
+                } finally {
+                  closeModal();
+                }
+              },
+              onCancel() {
+                resolve('');
+                closeModal();
               },
             },
             () =>
-              // 渲染所有图片文件
-              imageFiles.map((imgFile) =>
-                h(ImageComponent, {
-                  key: imgFile.uid,
-                  src: imgFile.url || imgFile.preview,
-                }),
-              ),
+              h(VCropper, {
+                ref: (ref: any) => (cropperRef.value = ref),
+                img: objectUrl as string,
+                aspectRatio,
+              }),
           );
         };
       },
     };
 
-    render(h(PreviewWrapper), container);
-  };
+    render(h(CropperWrapper), container);
+  });
+}
 
-  // 图片裁剪操作
-  const cropImage = (file: File, aspectRatio: string | undefined) => {
-    return new Promise((resolve, reject) => {
-      const container: HTMLElement | null = document.createElement('div');
-      document.body.append(container);
-
-      // 用于追踪组件是否已卸载
-      let isUnmounted = false;
-      let objectUrl: null | string = null;
-
-      const open = ref<boolean>(true);
-      const cropperRef = ref<InstanceType<typeof VCropper> | null>(null);
-
-      const closeModal = () => {
-        open.value = false;
-        // 延迟清理，确保动画完成
-        setTimeout(() => {
-          if (!isUnmounted && container) {
-            if (objectUrl) {
-              URL.revokeObjectURL(objectUrl);
-            }
-            isUnmounted = true;
-            render(null, container);
-            container.remove();
-          }
-        }, 300);
-      };
-
-      const CropperWrapper = {
-        setup() {
-          return () => {
-            if (isUnmounted) return null;
-            if (!objectUrl) {
-              objectUrl = URL.createObjectURL(file);
-            }
-            return h(
-              Modal,
-              {
-                open: open.value,
-                title: h('div', {}, [
-                  $t('ui.crop.title'),
-                  h(
-                    'span',
-                    {
-                      class: `${aspectRatio ? '' : 'hidden'} ml-2 text-sm text-gray-400 font-normal`,
-                    },
-                    $t('ui.crop.titleTip', [aspectRatio]),
-                  ),
-                ]),
-                centered: true,
-                width: 548,
-                keyboard: false,
-                maskClosable: false,
-                closable: false,
-                cancelText: $t('common.cancel'),
-                okText: $t('ui.crop.confirm'),
-                destroyOnHidden: true,
-                onOk: async () => {
-                  const cropper = cropperRef.value;
-                  if (!cropper) {
-                    reject(new Error('Cropper not found'));
-                    closeModal();
-                    return;
-                  }
-                  try {
-                    const dataUrl = await cropper.getCropImage();
-                    resolve(dataUrl);
-                  } catch {
-                    reject(new Error($t('ui.crop.errorTip')));
-                  } finally {
-                    closeModal();
-                  }
-                },
-                onCancel() {
-                  resolve('');
-                  closeModal();
-                },
-              },
-              () =>
-                h(VCropper, {
-                  ref: (ref: any) => (cropperRef.value = ref),
-                  img: objectUrl as string,
-                  aspectRatio,
-                }),
-            );
-          };
-        },
-      };
-
-      render(h(CropperWrapper), container);
-    });
-  };
-
+/**
+ * 带预览功能的上传组件
+ */
+const withPreviewUpload = () => {
   return defineComponent({
-    name: 'AUpload',
+    name: Upload.name,
     emits: ['update:modelValue'],
-    setup: (
+    setup(
       props: any,
       { attrs, slots, emit }: { attrs: any; emit: any; slots: any },
-    ) => {
+    ) {
       const previewVisible = ref<boolean>(false);
-
-      const placeholder = attrs?.placeholder || $t(`ui.placeholder.upload`);
-
+      const placeholder = attrs?.placeholder || $t('ui.placeholder.upload');
       const listType = attrs?.listType || attrs?.['list-type'] || 'text';
-
       const fileList = ref<UploadProps['fileList']>(
         attrs?.fileList || attrs?.['file-list'] || [],
       );
@@ -437,12 +434,14 @@ const withPreviewUpload = () => {
         file: UploadFile,
         originFileList: Array<File>,
       ) => {
+        // 文件大小限制
         if (maxSize.value && (file.size || 0) / 1024 / 1024 > maxSize.value) {
           message.error($t('ui.formRules.sizeLimit', [maxSize.value]));
           file.status = 'removed';
           return false;
         }
-        // 多选或者非图片不唤起裁剪框
+
+        // 图片裁剪处理
         if (
           attrs.crop &&
           !attrs.multiple &&
@@ -450,14 +449,11 @@ const withPreviewUpload = () => {
           isImageFile(file)
         ) {
           file.status = 'removed';
-          // antd Upload组件问题 file参数获取的是UploadFile类型对象无法取到File类型 所以通过originFileList[0]获取
           const blob = await cropImage(originFileList[0], aspectRatio.value);
-          return new Promise((resolve, reject) => {
-            if (!blob) {
-              return reject(new Error($t('ui.crop.errorTip')));
-            }
-            resolve(blob);
-          });
+          if (!blob) {
+            throw new Error($t('ui.crop.errorTip'));
+          }
+          return blob;
         }
 
         return attrs.beforeUpload?.(file) ?? true;
@@ -465,12 +461,9 @@ const withPreviewUpload = () => {
 
       const handleChange = (event: UploadChangeParam) => {
         try {
-          // 行内写法 handleChange: (event) => {}
           attrs.handleChange?.(event);
-          // template写法 @handle-change="(event) => {}"
           attrs.onHandleChange?.(event);
         } catch (error) {
-          // Avoid breaking internal v-model sync on user handler errors
           console.error(error);
         }
         fileList.value = event.fileList.filter(
@@ -487,21 +480,88 @@ const withPreviewUpload = () => {
         await previewImage(file, previewVisible, fileList);
       };
 
-      const renderUploadButton = (): any => {
-        const isDisabled = attrs.disabled;
-
-        // 如果禁用，不渲染上传按钮
-        if (isDisabled) {
-          return null;
-        }
-
-        // 否则渲染默认上传按钮
+      const renderUploadButton = () => {
+        if (attrs.disabled) return null;
         return isEmpty(slots)
-          ? createDefaultSlotsWithUpload(listType, placeholder)
+          ? createDefaultUploadSlots(listType, placeholder)
           : slots;
       };
 
-      // 可以监听到表单API设置的值
+      // 拖拽排序
+      const draggable = computed(
+        () => (attrs.draggable ?? false) && !attrs.disabled,
+      );
+      const uploadId = `upload-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      const sortableInstance = ref<null | Sortable>(null);
+
+      const styleId = `upload-drag-style-${uploadId}`;
+
+      function injectDragStyle() {
+        if (!document.querySelector(`[id="${styleId}"]`)) {
+          const style = document.createElement('style');
+          style.id = styleId;
+          style.textContent = `
+            [data-upload-id="${uploadId}"] .ant-upload-list-item { cursor: move; }
+            [data-upload-id="${uploadId}"] .ant-upload-list-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+          `;
+          document.head.append(style);
+        }
+      }
+
+      function removeDragStyle() {
+        document.querySelector(`[id="${styleId}"]`)?.remove();
+      }
+
+      async function initSortable(retryCount = 0) {
+        if (!draggable.value) return;
+
+        injectDragStyle();
+        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        const container = document.querySelector(
+          `[data-upload-id="${uploadId}"] .ant-upload-list`,
+        ) as HTMLElement;
+
+        if (!container) {
+          if (retryCount < 5) {
+            setTimeout(() => initSortable(retryCount + 1), 200);
+          }
+          return;
+        }
+
+        const { initializeSortable } = useSortable(container, {
+          animation: 300,
+          delay: 400,
+          delayOnTouchOnly: true,
+          filter:
+            '.ant-upload-select, .ant-upload-list-item-error, .ant-upload-list-item-uploading',
+          onEnd: (evt) => {
+            const { oldIndex, newIndex } = evt;
+            if (
+              oldIndex === undefined ||
+              newIndex === undefined ||
+              oldIndex === newIndex
+            ) {
+              return;
+            }
+
+            const list = [...(fileList.value || [])];
+            const [movedItem] = list.splice(oldIndex, 1);
+            if (movedItem) {
+              list.splice(newIndex, 0, movedItem);
+              fileList.value = list;
+            }
+
+            attrs.onDragSort?.(oldIndex, newIndex);
+            emit('update:modelValue', fileList.value);
+          },
+        });
+
+        sortableInstance.value = await initializeSortable();
+      }
+
+      // 监听表单值变化
       watch(
         () => attrs.modelValue,
         (res) => {
@@ -509,18 +569,28 @@ const withPreviewUpload = () => {
         },
       );
 
+      onMounted(initSortable);
+      onUnmounted(() => {
+        sortableInstance.value?.destroy();
+        removeDragStyle();
+      });
+
       return () =>
         h(
-          Upload,
-          {
-            ...props,
-            ...attrs,
-            fileList: fileList.value,
-            beforeUpload: handleBeforeUpload,
-            onChange: handleChange,
-            onPreview: handlePreview,
-          },
-          renderUploadButton(),
+          'div',
+          { 'data-upload-id': uploadId, class: 'w-full' },
+          h(
+            Upload,
+            {
+              ...props,
+              ...attrs,
+              fileList: fileList.value,
+              beforeUpload: handleBeforeUpload,
+              onChange: handleChange,
+              onPreview: handlePreview,
+            },
+            renderUploadButton() as any,
+          ),
         );
     },
   });
@@ -538,7 +608,9 @@ export type ComponentType =
   | 'DatePicker'
   | 'DefaultButton'
   | 'Divider'
+  | 'FileUpload'
   | 'IconPicker'
+  | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
   | 'InputPassword'
@@ -548,11 +620,13 @@ export type ComponentType =
   | 'RadioGroup'
   | 'RangePicker'
   | 'Rate'
+  | 'RichTextarea'
   | 'Select'
   | 'Space'
   | 'Switch'
   | 'Textarea'
   | 'TimePicker'
+  | 'TimeRangePicker'
   | 'TreeSelect'
   | 'Upload'
   | BaseFormComponentType;
@@ -648,9 +722,14 @@ async function initComponentAdapter() {
     Space,
     Switch,
     Textarea: withDefaultPlaceholder(Textarea, 'input'),
+    RichTextarea,
     TimePicker,
+    TimeRangePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
-    Upload: withPreviewUpload(),
+    Upload,
+    PreviewUpload: withPreviewUpload(),
+    FileUpload,
+    ImageUpload,
   };
 
   // 将组件注册到全局共享状态中

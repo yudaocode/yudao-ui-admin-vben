@@ -4,7 +4,8 @@
   "compilerOptions": {
     "paths": {
       "#/*": ["./src/*"]
-    }
+    },
+    "allowJs": true
   },
   "references": [{ "path": "./tsconfig.node.json" }],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]

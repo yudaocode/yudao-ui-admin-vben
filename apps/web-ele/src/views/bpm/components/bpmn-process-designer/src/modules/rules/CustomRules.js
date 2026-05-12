@@ -1,5 +1,4 @@
 import BpmnRules from 'bpmn-js/lib/features/rules/BpmnRules';
-// eslint-disable-next-line n/no-extraneous-import
 import inherits from 'inherits';
 
 function CustomRules(eventBus) {

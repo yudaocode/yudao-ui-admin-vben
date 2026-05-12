@@ -1,4 +1,5 @@
 import { createApp, watchEffect } from 'vue';
+import VueDOMPurifyHTML from 'vue-dompurify-html';
 
 import { registerAccessDirective } from '@vben/access';
 import { registerLoadingDirective } from '@vben/common-ui/es/loading';
@@ -10,6 +11,7 @@ import '@vben/styles/antdv-next';
 import { useTitle } from '@vueuse/core';
 
 import { $t, setupI18n } from '#/locales';
+import { setupFormCreate } from '#/plugins/form-create';
 
 import { initComponentAdapter } from './adapter/component';
 import { initSetupVbenForm } from './adapter/form';
@@ -33,6 +35,7 @@ async function bootstrap(namespace: string) {
   // });
 
   const app = createApp(App);
+  app.use(VueDOMPurifyHTML);
 
   // 注册v-loading指令
   registerLoadingDirective(app, {
@@ -43,7 +46,7 @@ async function bootstrap(namespace: string) {
   // 国际化 i18n 配置
   await setupI18n(app);
 
-  // 配置 pinia-tore
+  // 配置 pinia-store
   await initStores(app, { namespace });
 
   // 安装权限指令
@@ -55,6 +58,9 @@ async function bootstrap(namespace: string) {
 
   // 配置路由及路由守卫
   app.use(router);
+
+  // formCreate
+  setupFormCreate(app);
 
   // 配置Motion插件
   const { MotionPlugin } = await import('@vben/plugins/motion');

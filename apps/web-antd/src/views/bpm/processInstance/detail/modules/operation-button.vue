@@ -276,9 +276,7 @@ async function openPopover(type: string) {
     // 没有节点表单时，approveFormFApi 永远不会被赋值，跳过等待
     if (runningTask.value?.formId > 0) {
       // 1s 兜底超时；超时 until 会抛错，这里静默吞掉，让首次计算照常进行
-      await until(
-        () => typeof approveFormFApi.value?.validate === 'function',
-      )
+      await until(() => typeof approveFormFApi.value?.validate === 'function')
         .toBeTruthy({ timeout: 1000 })
         .catch(() => {});
     }
