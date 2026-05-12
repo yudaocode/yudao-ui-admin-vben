@@ -5,12 +5,13 @@ export default defineConfig(async () => {
     application: {},
     vite: {
       server: {
+        allowedHosts: true,
         proxy: {
-          '/api': {
+          '/admin-api': {
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api/, ''),
+            rewrite: (path) => path.replace(/^\/admin-api/, ''),
             // mock代理目标地址
-            target: 'http://localhost:5320/api',
+            target: 'http://localhost:48080/admin-api',
             ws: true,
           },
         },

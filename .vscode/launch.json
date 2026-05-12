@@ -6,6 +6,15 @@
       "type": "chrome",
       "name": "vben admin antd dev",
       "request": "launch",
+      "url": "http://localhost:5999",
+      "env": { "NODE_ENV": "development" },
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}/apps/web-antdv-next"
+    },
+    {
+      "type": "chrome",
+      "name": "vben admin antd dev",
+      "request": "launch",
       "url": "http://localhost:5666",
       "env": { "NODE_ENV": "development" },
       "sourceMaps": true,
