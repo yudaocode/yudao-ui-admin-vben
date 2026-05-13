@@ -123,7 +123,7 @@ const Rate = RateComponent;
 const Select = SelectComponent;
 const Space = SpaceComponent;
 const Switch = SwitchComponent;
-const Textarea = TextareaComponent;
+const TextArea = TextareaComponent;
 const TimePicker = TimePickerComponent;
 const TimeRangePicker = TimeRangePickerComponent;
 const TreeSelect = TreeSelectComponent;
@@ -624,7 +624,8 @@ export type ComponentType =
   | 'Select'
   | 'Space'
   | 'Switch'
-  | 'Textarea'
+  | 'TextArea'
+  | 'TextArea'
   | 'TimePicker'
   | 'TimeRangePicker'
   | 'TreeSelect'
@@ -658,7 +659,7 @@ export interface ComponentPropsMap {
   Select: SelectProps;
   Space: SpaceProps;
   Switch: SwitchProps;
-  Textarea: TextAreaProps;
+  TextArea: TextAreaProps;
   TimePicker: TimePickerProps;
   TreeSelect: TreeSelectProps;
   Upload: AdapterUploadProps;
@@ -721,7 +722,7 @@ async function initComponentAdapter() {
     Select: withDefaultPlaceholder(Select, 'select'),
     Space,
     Switch,
-    Textarea: withDefaultPlaceholder(Textarea, 'input'),
+    TextArea: withDefaultPlaceholder(TextArea, 'input'),
     RichTextarea,
     TimePicker,
     TimeRangePicker,
