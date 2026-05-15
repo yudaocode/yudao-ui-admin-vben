@@ -30,6 +30,7 @@ catalog:
   '@eslint/js': ^10.0.1
   '@form-create/ant-design-vue': ^3.2.38
   '@form-create/antd-designer': ^3.4.0
+  '@form-create/antdv-next': ^3.3.0-alpha.0
   '@form-create/designer': ^3.4.0
   '@form-create/element-ui': ^3.2.38
   '@form-create/naive-ui': ^3.2.38

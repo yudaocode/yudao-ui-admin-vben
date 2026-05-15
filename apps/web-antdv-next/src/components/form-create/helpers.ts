@@ -1,4 +1,4 @@
-import type { Rule } from '@form-create/ant-design-vue';
+import type { Rule } from '@form-create/antdv-next';
 
 import type { Ref } from 'vue';
 
@@ -6,7 +6,7 @@ import type { Menu } from '#/components/form-create/typing';
 
 import { isRef, nextTick, onMounted } from 'vue';
 
-import formCreate from '@form-create/ant-design-vue';
+import formCreate from '@form-create/antdv-next';
 
 import { apiSelectRule } from '#/components/form-create/rules/data';
 

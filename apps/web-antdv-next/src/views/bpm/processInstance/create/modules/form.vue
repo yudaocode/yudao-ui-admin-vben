@@ -14,7 +14,7 @@ import {
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import formCreate from '@form-create/ant-design-vue';
+import formCreate from '@form-create/antdv-next';
 import { Button, Card, Col, message, Row, Space, Tabs } from 'antdv-next';
 
 import { getProcessDefinition } from '#/api/bpm/definition';

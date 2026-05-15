@@ -26,8 +26,8 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
+    "@form-create/antdv-next": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",

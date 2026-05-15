@@ -7,7 +7,7 @@ import { BpmModelFormType, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import FormCreate from '@form-create/ant-design-vue';
+import FormCreate from '@form-create/antdv-next';
 import {
   Form,
   FormItem,

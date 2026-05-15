@@ -22,7 +22,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
-import FormCreate from '@form-create/ant-design-vue';
+import FormCreate from '@form-create/antdv-next';
 import { until, useDebounceFn } from '@vueuse/core';
 import {
   Alert,

@@ -5,8 +5,8 @@ import { onMounted, ref, unref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isString } from '@vben/utils';
 
-import formCreate from '@form-create/ant-design-vue';
 import FcDesigner from '@form-create/antd-designer';
+import formCreate from '@form-create/antdv-next';
 import { useClipboard } from '@vueuse/core';
 import { Button, message } from 'antdv-next';
 import hljs from 'highlight.js';
