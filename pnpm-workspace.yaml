@@ -198,7 +198,7 @@ catalog:
   unplugin-element-plus: ^0.11.2
   unplugin-vue: ^7.1.1
   vee-validate: ^4.15.1
-  video.js: ^7.21.7
+  video.js: ^8.23.7
   vite: ^8.0.8
   vite-plugin-compression: ^0.5.1
   vite-plugin-lazy-import: ^1.0.7
