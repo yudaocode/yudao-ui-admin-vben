@@ -330,7 +330,7 @@ function initApp() {
   <div class="mobile-form-preview-antd">
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-container">
-      <Spin size="large" tip="加载中..." />
+      <Spin size="large" description="加载中..." />
     </div>
 
     <!-- 错误状态 -->

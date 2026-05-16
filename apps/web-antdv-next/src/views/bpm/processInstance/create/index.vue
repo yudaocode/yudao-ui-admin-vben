@@ -233,9 +233,8 @@ onMounted(() => {
                       'animate-bounce-once !bg-[rgb(63_115_247_/_10%)]':
                         searchName.trim().length > 0,
                     }"
-                    :body-style="{
-                      width: '100%',
-                      padding: '16px',
+                    :styles="{
+                      body: { width: '100%', padding: '16px' },
                     }"
                   >
                     <div class="flex items-center">
@@ -269,7 +268,7 @@ onMounted(() => {
           </Tabs>
         </div>
         <div v-else class="!py-48 text-center">
-          <Space direction="vertical" size="large">
+          <Space orientation="vertical" size="large">
             <span class="text-gray-500">没有找到搜索结果</span>
           </Space>
         </div>

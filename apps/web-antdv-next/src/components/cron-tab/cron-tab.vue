@@ -438,7 +438,7 @@ function inputChange() {
   <Modal
     v-model:open="dialogVisible"
     :width="720"
-    destroy-on-close
+    destroy-on-hidden
     title="cron规则生成器"
   >
     <div class="sc-cron">

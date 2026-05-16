@@ -131,7 +131,7 @@ function resetForm() {
     <span>参数名称：{{ item.name }}</span>
     <div class="btn">
       <Button type="link" @click="openParamForm(item)">编辑</Button>
-      <Divider type="vertical" />
+      <Divider orientation="vertical" />
       <Button type="link" danger @click="deleteParamItem(index)">删除</Button>
     </div>
   </div>

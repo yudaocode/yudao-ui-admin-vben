@@ -144,7 +144,7 @@ async function handleCategorySortSubmit() {
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
     <Card
-      :body-style="{ padding: '10px' }"
+      :styles="{ body: { padding: '10px' } }"
       class="mb-4"
       title="流程模型"
       v-spinning="modelListSpinning"

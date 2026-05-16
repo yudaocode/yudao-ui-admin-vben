@@ -143,7 +143,7 @@ const columns: TableColumnsType = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center' as const,
-    customRender: ({ text }: any) => formatDate(text, 'YYYY-MM-DD HH:mm:ss'),
+    render: ({ text }: any) => formatDate(text, 'YYYY-MM-DD HH:mm:ss'),
   },
   {
     title: '任务描述',

@@ -265,10 +265,12 @@ defineExpose({ initProcessInfo });
   <Card
     :title="getTitle"
     class="h-full overflow-hidden"
-    :body-style="{
-      height: 'calc(100% - 112px)',
-      paddingTop: '12px',
-      overflowY: 'auto',
+    :styles="{
+      body: {
+        height: 'calc(100% - 112px)',
+        paddingTop: '12px',
+        overflowY: 'auto',
+      },
     }"
   >
     <template #extra>

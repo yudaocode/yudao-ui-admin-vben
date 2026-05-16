@@ -10,7 +10,7 @@ defineOptions({ name: 'VerticalSpace' });
 
 <template>
   <Space v-bind="$attrs">
-    <Space.Compact direction="vertical">
+    <Space.Compact orientation="vertical">
       <slot></slot>
     </Space.Compact>
   </Space>

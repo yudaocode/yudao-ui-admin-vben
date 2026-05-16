@@ -172,13 +172,15 @@ export default defineComponent({
 
       return (
         <Card
-          bodyStyle={{ padding: '8px 0' }}
-          headStyle={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            minHeight: '24px',
-          }}
           style={{ margin: 0 }}
+          styles={{
+            body: { padding: '8px 0' },
+            header: {
+              padding: '8px 16px',
+              fontSize: '14px',
+              minHeight: '24px',
+            },
+          }}
           title={title}
         >
           {{

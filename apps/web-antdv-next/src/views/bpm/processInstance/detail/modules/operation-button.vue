@@ -766,7 +766,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.approve"
         placement="top"
-        :overlay-style="{ minWidth: '400px', zIndex: 300 }"
+        :styles="{ root: { minWidth: '400px', zIndex: 300 } }"
         trigger="click"
         @open-change="handlePopoverVisible"
         v-if="
@@ -870,7 +870,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.reject"
         placement="top"
-        :overlay-style="{ minWidth: '400px' }"
+        :styles="{ root: { minWidth: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&
@@ -927,7 +927,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.copy"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&
@@ -999,7 +999,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.transfer"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&
@@ -1072,7 +1072,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.delegate"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&
@@ -1145,7 +1145,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.addSign"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&
@@ -1230,7 +1230,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.deleteSign"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="runningTask?.children.length > 0"
       >
@@ -1296,7 +1296,7 @@ defineExpose({ loadTodoTask });
       <Popover
         v-model:open="popOverVisible.return"
         placement="top"
-        :overlay-style="{ width: '400px' }"
+        :styles="{ root: { width: '400px' } }"
         trigger="click"
         v-if="
           runningTask &&

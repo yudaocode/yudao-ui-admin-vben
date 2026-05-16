@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false" title="会员终端" class="h-full">
+  <Card variant="borderless" title="会员终端" class="h-full">
     <Spin :spinning="loading">
       <EchartsUI ref="chartRef" />
     </Spin>

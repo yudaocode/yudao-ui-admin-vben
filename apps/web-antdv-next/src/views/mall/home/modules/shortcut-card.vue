@@ -69,7 +69,7 @@ function handleMenuClick(routerName: string) {
 </script>
 
 <template>
-  <Card :bordered="false" title="快捷入口">
+  <Card variant="borderless" title="快捷入口">
     <div class="flex flex-row flex-wrap gap-8 p-4">
       <div
         v-for="menu in menuList"

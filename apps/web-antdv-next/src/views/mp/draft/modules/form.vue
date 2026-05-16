@@ -79,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-4/5" destroy-on-close>
+  <Modal :title="getTitle" class="w-4/5" destroy-on-hidden>
     <NewsForm
       v-if="formData"
       v-model="newsList"

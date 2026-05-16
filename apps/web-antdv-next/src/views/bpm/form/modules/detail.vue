@@ -40,8 +40,8 @@ const [Modal, modalApi] = useVbenModal({
   <Modal
     class="w-2/5"
     title="流程表单详情"
-    :body-style="{
-      maxHeight: '100px',
+    :styles="{
+      body: { maxHeight: '100px' },
     }"
   >
     <FormCreate :option="formConfig.option" :rule="formConfig.rule" />

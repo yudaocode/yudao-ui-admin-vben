@@ -65,14 +65,16 @@ async function handleTabsScroll() {
     <div class="mb-3 mr-3 inline-block" v-for="role in roleList" :key="role.id">
       <Card
         class="relative rounded-lg"
-        :body-style="{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          width: '240px',
-          maxWidth: '240px',
-          padding: '15px',
+        :styles="{
+          body: {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            width: '240px',
+            maxWidth: '240px',
+            padding: '15px',
+          },
         }"
       >
         <!-- 头部：头像、名称 -->

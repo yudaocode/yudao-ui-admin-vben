@@ -225,7 +225,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
 
     <Form ref="formRef" :model="{ routerGroups }">
       <Card
-        :body-style="{ padding: '10px' }"
+        :styles="{ body: { padding: '10px' } }"
         class="mt-4"
         v-for="(item, index) in routerGroups"
         :key="index"

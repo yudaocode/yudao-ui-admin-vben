@@ -54,7 +54,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false" title="会员性别比例" class="h-full">
+  <Card variant="borderless" title="会员性别比例" class="h-full">
     <Spin :spinning="loading">
       <EchartsUI ref="chartRef" />
     </Spin>

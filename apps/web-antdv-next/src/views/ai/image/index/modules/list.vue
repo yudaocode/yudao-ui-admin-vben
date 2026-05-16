@@ -174,13 +174,15 @@ onUnmounted(async () => {
   </Drawer>
   <Card
     class="flex h-full w-full flex-col"
-    :body-style="{
-      margin: 0,
-      padding: 0,
-      height: '100%',
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
+    :styles="{
+      body: {
+        margin: 0,
+        padding: 0,
+        height: '100%',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+      },
     }"
   >
     <template #title>

@@ -459,7 +459,7 @@ function handleRenameSuccess() {
 <template>
   <div>
     <Card
-      :body-style="{ padding: 0 }"
+      :styles="{ body: { padding: 0 } }"
       class="category-draggable-model mb-5 rounded-lg transition-all duration-300 ease-in-out hover:shadow-xl"
     >
       <div class="flex h-12 items-center">
