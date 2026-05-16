@@ -55,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '检索 topK',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入检索 topK',
         min: 0,
         max: 10,
@@ -66,6 +67,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '检索相似度阈值',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入检索相似度阈值',
         min: 0,
         max: 1,

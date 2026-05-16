@@ -111,6 +111,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '寄存器地址',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入寄存器地址',
         min: 0,
         max: 65_535,
@@ -133,6 +134,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '寄存器数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入寄存器数量',
         min: 1,
         max: 125,
@@ -177,6 +179,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '缩放因子',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入缩放因子',
         precision: 6,
         step: 0.1,
@@ -188,6 +191,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '轮询间隔(ms)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入轮询间隔',
         min: 100,
         step: 1000,

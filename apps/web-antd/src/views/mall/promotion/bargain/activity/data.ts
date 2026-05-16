@@ -55,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '助力人数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 1,
         placeholder: '达到该人数才能砍到低价',
       },
@@ -65,6 +66,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '砍价次数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 1,
         placeholder: '最大帮砍次数',
       },
@@ -75,6 +77,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '购买限制',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 1,
         placeholder: '最大购买次数',
       },
@@ -85,6 +88,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '最小砍价金额(元)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.01,
@@ -96,6 +100,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '最大砍价金额(元)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.01,

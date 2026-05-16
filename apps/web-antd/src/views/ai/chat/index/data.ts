@@ -41,6 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '温度参数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入温度参数',
         precision: 2,
         min: 0,
@@ -53,6 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '回复数 Token 数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入回复数 Token 数',
         min: 0,
         max: 8192,
@@ -64,6 +66,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上下文数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入上下文数量',
         min: 0,
         max: 20,

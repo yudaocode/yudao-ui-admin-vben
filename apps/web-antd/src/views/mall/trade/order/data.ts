@@ -306,6 +306,7 @@ export function usePriceFormSchema(): VbenFormSchema[] {
       label: '订单调价',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入订单调价',
         step: 0.1,
         precision: 2,

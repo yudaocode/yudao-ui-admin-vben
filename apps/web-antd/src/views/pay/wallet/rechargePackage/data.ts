@@ -33,6 +33,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: z.number().min(0, '支付金额不能小于0'),
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.01,
@@ -45,6 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: z.number().min(0, '赠送金额不能小于0'),
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.01,

@@ -35,8 +35,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '分类排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入分类排序',
-        class: 'w-full',
         min: 0,
         precision: 0,
       },

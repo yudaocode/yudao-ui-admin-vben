@@ -122,6 +122,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '优惠券面额',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         placeholder: '请输入优惠金额，单位：元',
@@ -139,6 +140,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '优惠券折扣',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 1,
         max: 9.9,
         precision: 1,
@@ -157,6 +159,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '最多优惠',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         placeholder: '请输入最多优惠',
@@ -174,6 +177,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '满多少元可以使用',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         placeholder: '无门槛请设为 0',
@@ -196,6 +200,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '发放数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: -1,
         placeholder: '发放数量，没有之后不能领取或发放，-1 为不限制',
         addonAfter: '张',
@@ -212,6 +217,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '每人限领个数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: -1,
         placeholder: '设置为 -1 时，可无限领取',
         addonAfter: '张',
@@ -255,6 +261,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '领取日期',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '第 0 为今天生效',
         addonBefore: '第',
@@ -271,6 +278,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'fixedEndTerm',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '请输入结束天数',
         addonBefore: '至',

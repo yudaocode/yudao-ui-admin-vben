@@ -99,9 +99,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '总限购数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入总限购数量',
         min: 0,
-        class: 'w-full',
       },
       rules: z.number().min(0).default(0),
     },
@@ -110,9 +110,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '单次限购数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入单次限购数量',
         min: 0,
-        class: 'w-full',
       },
       rules: z.number().min(0).default(0),
     },
@@ -121,9 +121,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入排序',
         min: 0,
-        class: 'w-full',
       },
       rules: z.number().min(0).default(0),
     },

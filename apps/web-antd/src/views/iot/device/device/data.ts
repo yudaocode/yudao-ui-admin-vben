@@ -122,8 +122,8 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       label: '设备经度',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入设备经度',
-        class: 'w-full',
         min: -180,
         max: 180,
         precision: 6,
@@ -140,8 +140,8 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       label: '设备纬度',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入设备纬度',
-        class: 'w-full',
         min: -90,
         max: 90,
         precision: 6,
