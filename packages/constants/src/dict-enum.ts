@@ -175,6 +175,15 @@ const IOT_DICT = {
   IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
+/** ========== WMS - 仓储管理模块 ========== */
+const WMS_DICT = {
+  WMS_MERCHANT_TYPE: 'merchant_type', // WMS 往来企业类型
+  WMS_ORDER_TYPE: 'wms_order_type', // WMS 单据类型
+  WMS_ORDER_STATUS: 'wms_order_status', // WMS 单据状态
+  WMS_RECEIPT_ORDER_TYPE: 'wms_receipt_order_type', // WMS 入库单类型
+  WMS_SHIPMENT_ORDER_TYPE: 'wms_shipment_order_type', // WMS 出库单类型
+} as const;
+
 /** 字典类型枚举 - 统一导出 */
 const DICT_TYPE = {
   ...AI_DICT,
@@ -183,6 +192,7 @@ const DICT_TYPE = {
   ...ERP_DICT,
   ...INFRA_DICT,
   ...IOT_DICT,
+  ...WMS_DICT,
   ...MEMBER_DICT,
   ...MP_DICT,
   ...PAY_DICT,
