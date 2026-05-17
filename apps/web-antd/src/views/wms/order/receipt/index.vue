@@ -53,8 +53,16 @@ const [DetailModal, detailModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 清空展开明细缓存 */
+function clearDetailMap() {
+  for (const id of Object.keys(detailMap)) {
+    delete detailMap[Number(id)];
+  }
+}
+
 /** 刷新表格 */
 function handleRefresh() {
+  clearDetailMap();
   gridApi.query();
 }
 
@@ -162,7 +170,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     expandConfig: {
       padding: true,
-      trigger: 'default',
     },
     height: 'auto',
     keepSource: true,

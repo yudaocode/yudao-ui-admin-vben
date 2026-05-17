@@ -7,6 +7,7 @@ import type { WmsReceiptOrderDetailApi } from '#/api/wms/order/receipt/detail';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { isEqual } from '@vben/utils';
 
 import { ElInputNumber, ElMessage } from 'element-plus';
 
@@ -46,9 +47,9 @@ defineOptions({ name: 'WmsReceiptOrderForm' });
 
 const emit = defineEmits(['success']);
 
-const formData = ref<WmsReceiptOrderApi.ReceiptOrder>();
+const formData = ref<WmsReceiptOrderApi.ReceiptOrder>({});
 const formMode = ref<FormMode>('create');
-const originalSubmitData = ref('');
+const originalSubmitData = ref<WmsReceiptOrderApi.ReceiptOrder>();
 const details = ref<DetailRow[]>([]);
 const detailTableRef = ref<VxeTableInstance>();
 const skuSelectRef = ref<InstanceType<typeof WmsItemSkuSelect>>();
@@ -237,7 +238,7 @@ async function buildSubmitData(): Promise<WmsReceiptOrderApi.ReceiptOrder> {
     totalPrice: _totalPrice,
     totalQuantity: _totalQuantity,
     ...order
-  } = formData.value || {};
+  } = formData.value;
   return {
     ...order,
     ...values,
@@ -255,7 +256,7 @@ async function handleFormComplete() {
   modalApi.lock();
   try {
     const data = await buildSubmitData();
-    if (JSON.stringify(data) !== originalSubmitData.value) {
+    if (!isEqual(data, originalSubmitData.value)) {
       await updateReceiptOrder(data);
     }
     await completeReceiptOrder(formData.value.id);
@@ -307,8 +308,8 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
-      originalSubmitData.value = '';
+      formData.value = {};
+      originalSubmitData.value = undefined;
       setDetails([]);
       return;
     }
@@ -329,7 +330,7 @@ const [Modal, modalApi] = useVbenModal({
         setDetails(orderDetails);
         // 设置到 values
         await formApi.setValues(formData.value);
-        originalSubmitData.value = JSON.stringify(await buildSubmitData());
+        originalSubmitData.value = await buildSubmitData();
       } finally {
         modalApi.unlock();
       }
@@ -343,14 +344,18 @@ const [Modal, modalApi] = useVbenModal({
     };
     setDetails([]);
     await formApi.setValues(formData.value);
-    originalSubmitData.value = JSON.stringify(await buildSubmitData());
+    originalSubmitData.value = await buildSubmitData();
     await nextTick();
   },
 });
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-3/4">
+  <Modal
+    :title="getTitle"
+    class="w-3/4"
+    :show-confirm-button="isPrepareOrder"
+  >
     <div class="mx-4">
       <Form />
       <div class="mt-4">

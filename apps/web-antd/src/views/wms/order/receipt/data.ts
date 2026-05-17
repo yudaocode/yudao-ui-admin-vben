@@ -397,13 +397,17 @@ interface ReceiptOrderDetailFooterRow {
   quantity?: number;
   totalPrice?: number;
 }
+type ReceiptOrderDetailFooterColumn = Pick<
+  NonNullable<NonNullable<VxeTableGridOptions['columns']>[number]>,
+  'field'
+>;
 
 /** 明细表格的合计行 */
 export function getDetailFooter({
   columns,
   data,
 }: {
-  columns: Array<{ field?: string }>;
+  columns: ReceiptOrderDetailFooterColumn[];
   data: ReceiptOrderDetailFooterRow[];
 }) {
   return [

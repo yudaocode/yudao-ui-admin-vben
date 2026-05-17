@@ -169,7 +169,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     expandConfig: {
       padding: true,
-      trigger: 'default',
     },
     height: 'auto',
     keepSource: true,
