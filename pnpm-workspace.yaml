@@ -138,6 +138,7 @@ catalog:
   highlight.js: ^11.11.1
   html-minifier-terser: ^7.2.0
   is-ci: ^4.1.0
+  jsbarcode: ^3.12.3
   jsencrypt: ^3.5.4
   json-bigint: ^1.0.0
   lefthook: ^2.1.5
