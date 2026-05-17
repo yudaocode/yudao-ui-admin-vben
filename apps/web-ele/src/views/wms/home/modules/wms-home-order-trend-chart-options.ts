@@ -4,6 +4,8 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
 
+import { OrderTypeEnum } from '#/views/wms/utils/constants';
+
 interface OrderDefinition {
   color: string;
   title: string;
@@ -14,41 +16,28 @@ interface OrderDefinition {
   type: number;
 }
 
-const OrderTypeEnum = {
-  CHECK: 4,
-  MOVEMENT: 3,
-  RECEIPT: 1,
-  SHIPMENT: 2,
-} as const;
-
-/** 获取 WMS 单据类型标题，用于消除字典里的“单”后缀 */
-function getOrderTypeTitle(type: number, defaultTitle: string) {
-  const label = getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, type) || defaultTitle;
-  return label.endsWith('单') ? label.slice(0, -1) : label;
-}
-
 const orderDefinitions: OrderDefinition[] = [
   {
     color: '#2f7df6',
-    title: getOrderTypeTitle(OrderTypeEnum.RECEIPT, '入库'),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.RECEIPT).replace(/单$/, ''),
     trendField: 'receiptCount',
     type: OrderTypeEnum.RECEIPT,
   },
   {
     color: '#18a058',
-    title: getOrderTypeTitle(OrderTypeEnum.SHIPMENT, '出库'),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.SHIPMENT).replace(/单$/, ''),
     trendField: 'shipmentCount',
     type: OrderTypeEnum.SHIPMENT,
   },
   {
     color: '#f59e0b',
-    title: getOrderTypeTitle(OrderTypeEnum.MOVEMENT, '移库'),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.MOVEMENT).replace(/单$/, ''),
     trendField: 'movementCount',
     type: OrderTypeEnum.MOVEMENT,
   },
   {
     color: '#7c3aed',
-    title: getOrderTypeTitle(OrderTypeEnum.CHECK, '盘库'),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(/单$/, ''),
     trendField: 'checkCount',
     type: OrderTypeEnum.CHECK,
   },

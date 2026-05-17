@@ -1,19 +1,45 @@
 <script lang="ts" setup>
+import type { WmsHomeStatisticsApi } from '#/api/wms/home';
+
 import { ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
 import { getOrderSummary } from '#/api/wms/home';
-import { OrderStatusEnum } from '#/views/wms/utils/constants';
+import { OrderStatusEnum, OrderTypeEnum } from '#/views/wms/utils/constants';
 
 defineOptions({ name: 'WmsHomeOrderSummaryCards' });
 
-const orderDefinitions = [
-  { color: '#2f7df6', title: '入库', type: 1 },
-  { color: '#18a058', title: '出库', type: 2 },
-  { color: '#f59e0b', title: '移库', type: 3 },
-  { color: '#7c3aed', title: '盘库', type: 4 },
+interface OrderSummaryItem {
+  color: string;
+  statuses?: WmsHomeStatisticsApi.OrderStatus[];
+  title: string;
+  total?: number;
+  type: number;
+}
+
+const orderDefinitions: OrderSummaryItem[] = [
+  {
+    color: '#2f7df6',
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.RECEIPT).replace(/单$/, ''),
+    type: OrderTypeEnum.RECEIPT,
+  },
+  {
+    color: '#18a058',
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.SHIPMENT).replace(/单$/, ''),
+    type: OrderTypeEnum.SHIPMENT,
+  },
+  {
+    color: '#f59e0b',
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.MOVEMENT).replace(/单$/, ''),
+    type: OrderTypeEnum.MOVEMENT,
+  },
+  {
+    color: '#7c3aed',
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(/单$/, ''),
+    type: OrderTypeEnum.CHECK,
+  },
 ];
 
 const statusList = [
@@ -23,12 +49,10 @@ const statusList = [
 ];
 
 const loading = ref(false);
-const summaryList = ref<any[]>(
-  orderDefinitions.map((item) => ({ ...item, statuses: [], total: 0 })),
-);
+const summaryList = ref<OrderSummaryItem[]>(orderDefinitions);
 
-function getStatusCount(item: any, status: number) {
-  return item.statuses?.find((row: any) => row.status === status)?.count || 0;
+function getStatusCount(item: OrderSummaryItem, status: number) {
+  return item.statuses?.find((row) => row.status === status)?.count;
 }
 
 async function load(warehouseId?: number) {
@@ -39,11 +63,8 @@ async function load(warehouseId?: number) {
       const summary = data.find((item) => item.type === definition.type);
       return {
         ...definition,
-        title:
-          getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, definition.type)?.replace(/单$/, '') ||
-          definition.title,
-        statuses: summary?.statuses || [],
-        total: summary?.total || 0,
+        statuses: summary?.statuses,
+        total: summary?.total,
       };
     });
   } finally {
