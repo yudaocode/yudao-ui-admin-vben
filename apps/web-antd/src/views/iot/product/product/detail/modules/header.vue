@@ -90,7 +90,7 @@ function handleUnpublish(product: IotProductApi.Product) {
       <div>
         <h2 class="text-xl font-bold">{{ product.name }}</h2>
       </div>
-      <div class="space-x-2">
+      <div class="flex gap-2">
         <Button
           :disabled="product.status === ProductStatusEnum.PUBLISHED"
           @click="openEditForm(product)"
