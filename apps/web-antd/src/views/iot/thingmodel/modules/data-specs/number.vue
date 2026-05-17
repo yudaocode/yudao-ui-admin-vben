@@ -10,9 +10,6 @@ import { getDictOptions } from '@vben/hooks';
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Select } from 'ant-design-vue';
 
-/** 数值型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelNumberDataSpecs' });
-
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
 const dataSpecs = useVModel(
@@ -21,13 +18,15 @@ const dataSpecs = useVModel(
   emits,
 ) as Ref<DataSpecsNumberData>;
 
-/** 单位发生变化时触发 */
-const unitChange = (UnitSpecs: any) => {
-  if (!UnitSpecs) return;
-  const [unitName, unit] = String(UnitSpecs).split('-');
+/** 单位下拉变化时，拆出 unitName 与 unit 回写 */
+function unitChange(unitSpecs: any) {
+  if (!unitSpecs) {
+    return;
+  }
+  const [unitName, unit] = String(unitSpecs).split('-');
   dataSpecs.value.unitName = unitName;
   dataSpecs.value.unit = unit;
-};
+}
 </script>
 
 <template>
@@ -52,7 +51,7 @@ const unitChange = (UnitSpecs: any) => {
       "
       show-search
       placeholder="请选择单位"
-      class="w-1/1"
+      class="w-full"
       @change="unitChange"
     >
       <Select.Option

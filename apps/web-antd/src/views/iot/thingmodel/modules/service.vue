@@ -9,17 +9,15 @@ import { isEmpty } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import { Form, Radio } from 'ant-design-vue';
 
+import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import {
   IoTThingModelParamDirectionEnum,
   IoTThingModelServiceCallTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelInputOutputParam from './thing-model-input-output-param.vue';
+import ThingModelInputOutputParam from './input-output-param.vue';
 
-/** IoT 物模型服务 */
-defineOptions({ name: 'ThingModelService' });
-
-const props = defineProps<{ isStructDataSpecs?: boolean; modelValue: any }>();
+const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
 const service = useVModel(props, 'modelValue', emits) as Ref<any>;
 
@@ -36,7 +34,7 @@ watch(
 <template>
   <Form.Item
     :name="['service', 'callType']"
-    :rules="[{ required: true, message: '请选择调用方式', trigger: 'change' }]"
+    :rules="ThingModelFormRules.callType"
     label="调用方式"
   >
     <Radio.Group v-model:value="service.callType">

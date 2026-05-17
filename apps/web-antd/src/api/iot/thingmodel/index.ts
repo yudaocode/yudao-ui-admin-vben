@@ -1,52 +1,8 @@
 import type { PageParam, PageResult } from '@vben/request';
 
+import { isEmpty } from '@vben/utils';
+
 import { requestClient } from '#/api/request';
-
-export namespace ThingModelApi {
-  /** IoT 物模型数据 VO */
-  export interface ThingModel {
-    id?: number;
-    productId?: number;
-    productKey?: string;
-    identifier: string;
-    name: string;
-    desc?: string;
-    type: string;
-    property?: ThingModelProperty;
-    event?: ThingModelEvent;
-    service?: ThingModelService;
-  }
-
-  /** IoT 物模型属性 */
-  export interface Property {
-    identifier: string;
-    name: string;
-    accessMode: string;
-    dataType: string;
-    dataSpecs?: any;
-    dataSpecsList?: any[];
-    desc?: string;
-  }
-
-  /** IoT 物模型服务 */
-  export interface Service {
-    identifier: string;
-    name: string;
-    callType: string;
-    inputData?: any[];
-    outputData?: any[];
-    desc?: string;
-  }
-
-  /** IoT 物模型事件 */
-  export interface Event {
-    identifier: string;
-    name: string;
-    type: string;
-    outputData?: any[];
-    desc?: string;
-  }
-}
 
 /** IoT 物模型数据 */
 export interface ThingModelData {
@@ -55,9 +11,9 @@ export interface ThingModelData {
   productKey?: string;
   identifier?: string;
   name?: string;
-  desc?: string;
-  type?: string;
+  description?: string;
   dataType?: string;
+  type?: number; // 参见 IoTThingModelTypeEnum 枚举类
   property?: ThingModelProperty;
   event?: ThingModelEvent;
   service?: ThingModelService;
@@ -68,29 +24,45 @@ export interface ThingModelProperty {
   identifier?: string;
   name?: string;
   accessMode?: string;
+  required?: boolean;
   dataType?: string;
+  description?: string;
   dataSpecs?: any;
   dataSpecsList?: any[];
-  desc?: string;
 }
 
 /** IoT 物模型服务 */
 export interface ThingModelService {
   identifier?: string;
   name?: string;
+  required?: boolean;
   callType?: string;
-  inputData?: any[];
-  outputData?: any[];
-  desc?: string;
+  description?: string;
+  inputParams?: ThingModelParam[];
+  outputParams?: ThingModelParam[];
+  method?: string;
 }
 
 /** IoT 物模型事件 */
 export interface ThingModelEvent {
   identifier?: string;
   name?: string;
+  required?: boolean;
   type?: string;
-  outputData?: any[];
-  desc?: string;
+  description?: string;
+  outputParams?: ThingModelParam[];
+  method?: string;
+}
+
+/** IoT 物模型参数 */
+export interface ThingModelParam {
+  identifier?: string;
+  name?: string;
+  direction?: string;
+  paraOrder?: number;
+  dataType?: string;
+  dataSpecs?: any;
+  dataSpecsList?: any[];
 }
 
 /** IoT 数据定义（数值型） */
@@ -108,23 +80,119 @@ export interface DataSpecsEnumOrBoolData {
   name: string;
 }
 
-/** IoT 物模型表单校验规则 */
-export interface ThingModelFormRules {
-  [key: string]: any;
+/** 生成「必填 + 数字」类校验器：拼到 size / length / 枚举值上 */
+function buildRequiredNumberValidator(label: string) {
+  return (_rule: any, value: any, callback: any) => {
+    if (isEmpty(value)) {
+      callback(new Error(`${label}不能为空`));
+      return;
+    }
+    if (Number.isNaN(Number(value))) {
+      callback(new Error(`${label}必须是数字`));
+      return;
+    }
+    callback();
+  };
 }
 
-/** 验证布尔型名称 */
-export function validateBoolName(_rule: any, value: any, callback: any) {
-  if (value) {
+/** 生成「标识符样式」名称校验器：开头需为中文 / 英文 / 数字，整体仅允许中文、英文、数字、下划线、短划线，长度 ≤ 20 */
+export function buildIdentifierLikeNameValidator(label: string) {
+  return (_rule: any, value: string, callback: any) => {
+    if (isEmpty(value)) {
+      callback(new Error(`${label}不能为空`));
+      return;
+    }
+    if (!/^[一-龥A-Za-z0-9]/.test(value)) {
+      callback(new Error(`${label}必须以中文、英文字母或数字开头`));
+      return;
+    }
+    if (!/^[一-龥A-Za-z0-9][\w一-龥-]*$/.test(value)) {
+      callback(
+        new Error(`${label}只能包含中文、英文字母、数字、下划线和短划线`),
+      );
+      return;
+    }
+    if (value.length > 20) {
+      callback(new Error(`${label}长度不能超过 20 个字符`));
+      return;
+    }
     callback();
-  } else {
-    callback(new Error('枚举描述不能为空'));
-  }
+  };
 }
+
+/** IoT 物模型表单校验规则 */
+export const ThingModelFormRules = {
+  name: [
+    { required: true, message: '功能名称不能为空', trigger: 'blur' },
+    {
+      pattern: /^[一-龥A-Za-z0-9][一-龥A-Za-z0-9\-_/.]{0,29}$/,
+      message:
+        '支持中文、大小写字母、日文、数字、短划线、下划线、斜杠和小数点，必须以中文、英文或数字开头，不超过 30 个字符',
+      trigger: 'blur',
+    },
+  ],
+  type: [{ required: true, message: '功能类型不能为空', trigger: 'blur' }],
+  identifier: [
+    { required: true, message: '标识符不能为空', trigger: 'blur' },
+    {
+      pattern: /^\w{1,50}$/,
+      message: '支持大小写字母、数字和下划线，不超过 50 个字符',
+      trigger: 'blur',
+    },
+    {
+      validator: (_rule: any, value: string, callback: any) => {
+        const reservedKeywords = [
+          'set',
+          'get',
+          'post',
+          'property',
+          'event',
+          'time',
+          'value',
+        ];
+        if (reservedKeywords.includes(value)) {
+          callback(
+            new Error(
+              'set, get, post, property, event, time, value 是系统保留字段，不能用于标识符定义',
+            ),
+          );
+          return;
+        }
+        if (/^\d+$/.test(value)) {
+          callback(new Error('标识符不能是纯数字'));
+          return;
+        }
+        callback();
+      },
+      trigger: 'blur',
+    },
+  ],
+  childDataType: [{ required: true, message: '元素类型不能为空' }],
+  size: [
+    {
+      required: true,
+      validator: buildRequiredNumberValidator('元素个数'),
+      trigger: 'blur',
+    },
+  ],
+  length: [
+    {
+      required: true,
+      validator: buildRequiredNumberValidator('文本长度'),
+      trigger: 'blur',
+    },
+  ],
+  accessMode: [{ required: true, message: '请选择读写类型', trigger: 'change' }],
+  callType: [{ required: true, message: '请选择调用方式', trigger: 'change' }],
+  eventType: [{ required: true, message: '请选择事件类型', trigger: 'change' }],
+};
+
+/** 校验布尔值名称 */
+export const validateBoolName = buildIdentifierLikeNameValidator('布尔值名称');
 
 /** 查询产品物模型分页 */
 export function getThingModelPage(params: PageParam) {
-  return requestClient.get<PageResult<ThingModelApi.ThingModel>>(
+  return requestClient.get<PageResult<ThingModelData>>(
     '/iot/thing-model/page',
     { params },
   );
@@ -132,17 +200,14 @@ export function getThingModelPage(params: PageParam) {
 
 /** 查询产品物模型详情 */
 export function getThingModel(id: number) {
-  return requestClient.get<ThingModelApi.ThingModel>(
-    `/iot/thing-model/get?id=${id}`,
-  );
+  return requestClient.get<ThingModelData>(`/iot/thing-model/get?id=${id}`);
 }
 
 /** 根据产品 ID 查询物模型列表 */
 export function getThingModelListByProductId(productId: number) {
-  return requestClient.get<ThingModelApi.ThingModel[]>(
-    '/iot/thing-model/list',
-    { params: { productId } },
-  );
+  return requestClient.get<ThingModelData[]>('/iot/thing-model/list', {
+    params: { productId },
+  });
 }
 
 /** 新增物模型 */
@@ -162,25 +227,7 @@ export function deleteThingModel(id: number) {
 
 /** 获取物模型 TSL */
 export function getThingModelTSL(productId: number) {
-  return requestClient.get<ThingModelApi.ThingModel[]>(
-    '/iot/thing-model/get-tsl',
-    { params: { productId } },
-  );
-}
-
-/** 导入物模型 TSL
-export function importThingModelTSL(productId: number, tslData: any) {
-  return requestClient.post('/iot/thing-model/import-tsl', {
-    productId,
-    tslData,
-  });
-}
- */
-
-/** 导出物模型 TSL
-export function exportThingModelTSL(productId: number) {
-  return requestClient.get<any>('/iot/thing-model/export-tsl', {
+  return requestClient.get<any>('/iot/thing-model/get-tsl', {
     params: { productId },
   });
 }
- */

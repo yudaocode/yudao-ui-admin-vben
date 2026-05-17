@@ -11,6 +11,7 @@ import { isEmpty } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio, Select } from 'ant-design-vue';
 
+import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
@@ -22,10 +23,22 @@ import {
   ThingModelEnumDataSpecs,
   ThingModelNumberDataSpecs,
   ThingModelStructDataSpecs,
-} from './dataSpecs';
+} from './data-specs';
 
-/** IoT 物模型属性 */
-defineOptions({ name: 'ThingModelProperty' });
+/** 嵌套在结构体里时，禁止再选数组 / 结构体（最多支持两层嵌套） */
+const NESTED_EXCLUDED_TYPES = new Set<string>([
+  IoTDataSpecsDataTypeEnum.ARRAY,
+  IoTDataSpecsDataTypeEnum.STRUCT,
+]);
+const STRUCT_CHILD_OPTIONS = getDataTypeOptions().filter(
+  (item) => !NESTED_EXCLUDED_TYPES.has(item.value),
+);
+/** 数值型数据类型集合 */
+const NUMERIC_TYPES = new Set<string>([
+  IoTDataSpecsDataTypeEnum.INT,
+  IoTDataSpecsDataTypeEnum.DOUBLE,
+  IoTDataSpecsDataTypeEnum.FLOAT,
+]);
 
 const props = defineProps<{
   isParams?: boolean;
@@ -38,65 +51,54 @@ const property = useVModel(
   'modelValue',
   emits,
 ) as Ref<ThingModelProperty>;
-const getDataTypeOptions2 = computed(() => {
-  if (!props.isStructDataSpecs) {
-    return getDataTypeOptions();
-  }
-  const excludedTypes = new Set([
-    IoTDataSpecsDataTypeEnum.ARRAY,
-    IoTDataSpecsDataTypeEnum.STRUCT,
-  ]);
-  return getDataTypeOptions().filter(
-    (item: any) => !excludedTypes.has(item.value),
-  );
-}); // 获得数据类型列表
 
-/** 属性值的数据类型切换时初始化相关数据 */
+const dataTypeOptions = computed(() =>
+  props.isStructDataSpecs ? STRUCT_CHILD_OPTIONS : getDataTypeOptions(),
+);
+
+/** 数据类型切换时，重置 dataSpecs / dataSpecsList 并按新类型初始化 */
 function handleChange(dataType: any) {
   property.value.dataSpecs = {};
   property.value.dataSpecsList = [];
-  // 不是列表型数据才设置 dataSpecs.dataType
-  ![
+  // 数值 / 文本 / 时间 / 数组型把 dataType 同步到 dataSpecs；布尔 / 枚举 / 结构走 dataSpecsList
+  const listLike = [
     IoTDataSpecsDataTypeEnum.BOOL,
     IoTDataSpecsDataTypeEnum.ENUM,
     IoTDataSpecsDataTypeEnum.STRUCT,
-  ].includes(dataType) && (property.value.dataSpecs.dataType = dataType);
-  switch (dataType) {
-    case IoTDataSpecsDataTypeEnum.BOOL: {
-      for (let i = 0; i < 2; i++) {
-        property.value.dataSpecsList.push({
-          dataType: IoTDataSpecsDataTypeEnum.BOOL,
-          name: '', // 布尔值的名称
-          value: i, // 布尔值
-        });
-      }
-      break;
-    }
-    case IoTDataSpecsDataTypeEnum.ENUM: {
-      property.value.dataSpecsList.push({
-        dataType: IoTDataSpecsDataTypeEnum.ENUM,
-        name: '', // 枚举项的名称
-        value: undefined, // 枚举值
-      });
-      break;
-    }
+  ];
+  if (!listLike.includes(dataType)) {
+    property.value.dataSpecs.dataType = dataType;
   }
-  // useVModel 会自动同步数据到父组件，不需要手动 emit
+  if (dataType === IoTDataSpecsDataTypeEnum.BOOL) {
+    for (let i = 0; i < 2; i++) {
+      property.value.dataSpecsList.push({
+        dataType: IoTDataSpecsDataTypeEnum.BOOL,
+        name: '', // 布尔描述
+        value: i, // 布尔值
+      });
+    }
+  } else if (dataType === IoTDataSpecsDataTypeEnum.ENUM) {
+    property.value.dataSpecsList.push({
+      dataType: IoTDataSpecsDataTypeEnum.ENUM,
+      name: '', // 枚举项描述
+      value: undefined, // 枚举值
+    });
+  }
 }
 
-/** 默认选中读写 */
-watch(
-  () => property.value.accessMode,
-  (val: string | undefined) => {
-    if (props.isStructDataSpecs || props.isParams) {
-      return;
-    }
-    if (isEmpty(val)) {
-      property.value.accessMode = IoTThingModelAccessModeEnum.READ_WRITE.value;
-    }
-  },
-  { immediate: true },
-);
+/** 顶层属性表单首次进入时，默认选中「读写」 */
+if (!props.isStructDataSpecs && !props.isParams) {
+  watch(
+    () => property.value.accessMode,
+    (val: string | undefined) => {
+      if (isEmpty(val)) {
+        property.value.accessMode =
+          IoTThingModelAccessModeEnum.READ_WRITE.value;
+      }
+    },
+    { immediate: true },
+  );
+}
 </script>
 
 <template>
@@ -108,7 +110,7 @@ watch(
     >
       <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
       <Select.Option
-        v-for="option in getDataTypeOptions2"
+        v-for="option in dataTypeOptions"
         :key="option.value"
         :value="option.value"
       >
@@ -118,13 +120,7 @@ watch(
   </Form.Item>
   <!-- 数值型配置 -->
   <ThingModelNumberDataSpecs
-    v-if="
-      [
-        IoTDataSpecsDataTypeEnum.INT,
-        IoTDataSpecsDataTypeEnum.DOUBLE,
-        IoTDataSpecsDataTypeEnum.FLOAT,
-      ].includes(property.dataType || '')
-    "
+    v-if="NUMERIC_TYPES.has(property.dataType || '')"
     v-model="property.dataSpecs"
   />
   <!-- 枚举型配置 -->
@@ -137,17 +133,27 @@ watch(
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
-    <template v-for="item in property.dataSpecsList" :key="item.value">
-      <div class="w-1/1 mb-5px flex items-center justify-start">
+    <template
+      v-for="(item, index) in property.dataSpecsList"
+      :key="item.value"
+    >
+      <div class="mb-[5px] flex w-full items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
-        <div class="flex-1">
+        <Form.Item
+          :name="['property', 'dataSpecsList', index, 'name']"
+          :rules="[
+            { required: true, message: '布尔描述不能为空', trigger: 'blur' },
+            { validator: validateBoolName, trigger: 'blur' },
+          ]"
+          class="mb-0 flex-1"
+        >
           <Input
             v-model:value="item.name"
             :placeholder="`如：${item.value === 0 ? '关' : '开'}`"
-            class="w-255px!"
+            class="!w-[255px]"
           />
-        </div>
+        </Form.Item>
       </div>
     </template>
   </Form.Item>
@@ -155,11 +161,12 @@ watch(
   <Form.Item
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
     :name="['property', 'dataSpecs', 'length']"
+    :rules="ThingModelFormRules.length"
     label="数据长度"
   >
     <Input
       v-model:value="property.dataSpecs.length"
-      class="w-255px!"
+      class="!w-[255px]"
       placeholder="请输入文本字节长度"
     >
       <template #addonAfter>字节</template>
@@ -172,7 +179,7 @@ watch(
     name="date"
   >
     <Input
-      class="w-255px!"
+      class="!w-[255px]"
       disabled
       placeholder="String 类型的 UTC 时间戳（毫秒）"
     />
@@ -190,6 +197,7 @@ watch(
   <Form.Item
     v-if="!isStructDataSpecs && !isParams"
     :name="['property', 'accessMode']"
+    :rules="ThingModelFormRules.accessMode"
     label="读写类型"
   >
     <Radio.Group v-model:value="property.accessMode">

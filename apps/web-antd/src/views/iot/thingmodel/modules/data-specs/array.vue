@@ -5,21 +5,29 @@ import type { Ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio } from 'ant-design-vue';
 
+import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelStructDataSpecs from './thing-model-struct-data-specs.vue';
+import ThingModelStructDataSpecs from './struct.vue';
 
-/** 数组型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelArrayDataSpecs' });
+/** 数组元素禁止选择的类型 */
+const EXCLUDED_CHILD_TYPES = new Set<string>([
+  IoTDataSpecsDataTypeEnum.ENUM,
+  IoTDataSpecsDataTypeEnum.ARRAY,
+  IoTDataSpecsDataTypeEnum.DATE,
+]);
+const childDataTypeOptions = getDataTypeOptions().filter(
+  (item) => !EXCLUDED_CHILD_TYPES.has(item.value),
+);
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
 const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>;
 
-/** 元素类型改变时间。当值为 struct 时，对 dataSpecs 中的 dataSpecsList 进行初始化 */
+/** 元素类型切到 struct 时，初始化 dataSpecsList 占位 */
 function handleChange(val: any) {
   if (val !== IoTDataSpecsDataTypeEnum.STRUCT) {
     return;
@@ -31,29 +39,25 @@ function handleChange(val: any) {
 <template>
   <Form.Item
     :name="['property', 'dataSpecs', 'childDataType']"
+    :rules="ThingModelFormRules.childDataType"
     label="元素类型"
   >
     <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
-      <template v-for="item in getDataTypeOptions()" :key="item.value">
-        <Radio
-          v-if="
-            !(
-              [
-                IoTDataSpecsDataTypeEnum.ENUM,
-                IoTDataSpecsDataTypeEnum.ARRAY,
-                IoTDataSpecsDataTypeEnum.DATE,
-              ] as any[]
-            ).includes(item.value)
-          "
-          :value="item.value"
-          class="w-1/3"
-        >
-          {{ `${item.value}(${item.label})` }}
-        </Radio>
-      </template>
+      <Radio
+        v-for="item in childDataTypeOptions"
+        :key="item.value"
+        :value="item.value"
+        class="w-1/3"
+      >
+        {{ `${item.value}(${item.label})` }}
+      </Radio>
     </Radio.Group>
   </Form.Item>
-  <Form.Item :name="['property', 'dataSpecs', 'size']" label="元素个数">
+  <Form.Item
+    :name="['property', 'dataSpecs', 'size']"
+    :rules="ThingModelFormRules.size"
+    label="元素个数"
+  >
     <Input
       v-model:value="dataSpecs.size"
       placeholder="请输入数组中的元素个数"

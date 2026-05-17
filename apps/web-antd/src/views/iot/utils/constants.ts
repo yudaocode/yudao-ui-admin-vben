@@ -1,9 +1,6 @@
 // TODO @AI：感觉这块，放到 biz-iot-enum 里好点。
 
-/** 检查值是否为空 */
-const isEmpty = (value: any): boolean => {
-  return value === null || value === undefined || value === '';
-};
+import { isEmpty } from '@vben/utils';
 
 /** IoT 依赖注入 KEY */
 export const IOT_PROVIDE_KEY = {
@@ -104,19 +101,19 @@ export const IoTDataSpecsDataTypeEnum = {
   ARRAY: 'array',
 };
 
-export const getDataTypeOptions = () => {
-  return [
-    { value: IoTDataSpecsDataTypeEnum.INT, label: '整数型' },
-    { value: IoTDataSpecsDataTypeEnum.FLOAT, label: '单精度浮点型' },
-    { value: IoTDataSpecsDataTypeEnum.DOUBLE, label: '双精度浮点型' },
-    { value: IoTDataSpecsDataTypeEnum.ENUM, label: '枚举型' },
-    { value: IoTDataSpecsDataTypeEnum.BOOL, label: '布尔型' },
-    { value: IoTDataSpecsDataTypeEnum.TEXT, label: '文本型' },
-    { value: IoTDataSpecsDataTypeEnum.DATE, label: '时间型' },
-    { value: IoTDataSpecsDataTypeEnum.STRUCT, label: '结构体' },
-    { value: IoTDataSpecsDataTypeEnum.ARRAY, label: '数组' },
-  ];
-};
+const DATA_TYPE_OPTIONS = Object.freeze([
+  { value: IoTDataSpecsDataTypeEnum.INT, label: '整数型' },
+  { value: IoTDataSpecsDataTypeEnum.FLOAT, label: '单精度浮点型' },
+  { value: IoTDataSpecsDataTypeEnum.DOUBLE, label: '双精度浮点型' },
+  { value: IoTDataSpecsDataTypeEnum.ENUM, label: '枚举型' },
+  { value: IoTDataSpecsDataTypeEnum.BOOL, label: '布尔型' },
+  { value: IoTDataSpecsDataTypeEnum.TEXT, label: '文本型' },
+  { value: IoTDataSpecsDataTypeEnum.DATE, label: '时间型' },
+  { value: IoTDataSpecsDataTypeEnum.STRUCT, label: '结构体' },
+  { value: IoTDataSpecsDataTypeEnum.ARRAY, label: '数组' },
+]);
+
+export const getDataTypeOptions = () => DATA_TYPE_OPTIONS;
 
 /** 获得物体模型数据类型配置项名称 */
 export const getDataTypeOptionsLabel = (value: string) => {

@@ -9,17 +9,15 @@ import { isEmpty } from '@vben/utils';
 import { useVModel } from '@vueuse/core';
 import { Form, Radio } from 'ant-design-vue';
 
+import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import {
   IoTThingModelEventTypeEnum,
   IoTThingModelParamDirectionEnum,
 } from '#/views/iot/utils/constants';
 
-import ThingModelInputOutputParam from './thing-model-input-output-param.vue';
+import ThingModelInputOutputParam from './input-output-param.vue';
 
-/** IoT 物模型事件 */
-defineOptions({ name: 'ThingModelEvent' });
-
-const props = defineProps<{ isStructDataSpecs?: boolean; modelValue: any }>();
+const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
 const thingModelEvent = useVModel(props, 'modelValue', emits) as Ref<any>;
 
@@ -36,7 +34,7 @@ watch(
 <template>
   <Form.Item
     :name="['event', 'type']"
-    :rules="[{ required: true, message: '请选择事件类型', trigger: 'change' }]"
+    :rules="ThingModelFormRules.eventType"
     label="事件类型"
   >
     <Radio.Group v-model:value="thingModelEvent.type">

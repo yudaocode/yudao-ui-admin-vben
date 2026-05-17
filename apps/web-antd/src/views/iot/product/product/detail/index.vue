@@ -11,6 +11,7 @@ import { message, Tabs } from 'ant-design-vue';
 import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
 import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
+import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 
 import ProductDetailsHeader from './modules/header.vue';
 import ProductDetailsInfo from './modules/info.vue';
@@ -25,7 +26,8 @@ const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const activeTab = ref('info');
 
-provide('product', product); // 提供产品信息给子组件
+/** 向子组件提供产品信息 */
+provide(IOT_PROVIDE_KEY.PRODUCT, product);
 
 /** 获取产品详情 */
 async function getProductData(productId: number) {
@@ -82,10 +84,7 @@ onMounted(async () => {
         <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
       </Tabs.TabPane>
       <Tabs.TabPane key="thingModel" tab="物模型（功能定义）">
-        <IoTProductThingModel
-          v-if="activeTab === 'thingModel'"
-          :product-id="id"
-        />
+        <IoTProductThingModel v-if="activeTab === 'thingModel'" />
       </Tabs.TabPane>
     </Tabs>
   </Page>
