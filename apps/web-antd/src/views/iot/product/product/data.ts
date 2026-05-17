@@ -147,19 +147,6 @@ export function useBasicFormSchema(
       help: 'iot-gateway-server 默认根据接入的协议类型确定数据格式，仅 MQTT、EMQX 协议支持自定义序列化类型',
       rules: 'required',
     },
-    // TODO @haohao：这个貌似不需要？！
-    {
-      fieldName: 'status',
-      label: '产品状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_PRODUCT_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      defaultValue: 0,
-      rules: 'required',
-    },
   ];
 }
 
@@ -246,15 +233,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 100,
       cellRender: {
         name: 'CellImage',
-      },
-    },
-    {
-      field: 'status',
-      title: '产品状态',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.IOT_PRODUCT_STATUS },
       },
     },
     {
