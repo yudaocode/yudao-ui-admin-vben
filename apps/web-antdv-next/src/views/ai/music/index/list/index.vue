@@ -62,7 +62,7 @@ provide('currentSong', currentSong);
       <Tabs
         v-model:active-key="currentType"
         class="flex-auto px-5"
-        tab-position="bottom"
+        tab-placement="bottom"
       >
         <!-- 我的创作 -->
         <TabPane key="mine" tab="我的创作" v-loading="loading">

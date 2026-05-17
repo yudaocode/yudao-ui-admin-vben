@@ -15,6 +15,7 @@ import {
   RadioButton,
   RadioGroup,
   Select,
+  TabPane,
   Tabs,
 } from 'antdv-next';
 

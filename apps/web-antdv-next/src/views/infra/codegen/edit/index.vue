@@ -49,12 +49,12 @@ async function submitForm() {
   // 表单验证
   const basicInfoValid = await basicInfoRef.value?.validate();
   if (!basicInfoValid) {
-    message.warn('保存失败，原因：基本信息表单校验失败请检查！！！');
+    message.warning('保存失败，原因：基本信息表单校验失败请检查！！！');
     return;
   }
   const generateInfoValid = await generateInfoRef.value?.validate();
   if (!generateInfoValid) {
-    message.warn('保存失败，原因：生成信息表单校验失败请检查！！！');
+    message.warning('保存失败，原因：生成信息表单校验失败请检查！！！');
     return;
   }
 
@@ -125,13 +125,8 @@ getDetail();
         type="navigation"
         v-model:current="currentStep"
         class="mb-8 rounded shadow-sm"
-      >
-        <Steps.Step
-          v-for="(step, index) in steps"
-          :key="index"
-          :title="step.title"
-        />
-      </Steps>
+        :items="steps.map((step) => ({ title: step.title }))"
+      />
 
       <div class="flex-1 overflow-auto py-4">
         <!-- 根据当前步骤显示对应的组件 -->

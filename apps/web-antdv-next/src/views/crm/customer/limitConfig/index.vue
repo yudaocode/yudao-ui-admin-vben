@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message, Tabs } from 'antdv-next';
+import { message, TabPane, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

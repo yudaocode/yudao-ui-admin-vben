@@ -209,7 +209,7 @@ onMounted(() => {
         </template>
 
         <div v-if="filteredProcessDefinitionList?.length" class="-ml-6">
-          <Tabs v-model:active-key="activeCategory" tab-position="left">
+          <Tabs v-model:active-key="activeCategory" tab-placement="start">
             <TabPane
               v-for="category in availableCategories"
               :key="category.code"

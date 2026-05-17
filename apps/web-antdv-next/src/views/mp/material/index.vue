@@ -9,7 +9,7 @@ import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 
-import { Button, message, Tabs } from 'antdv-next';
+import { Button, message, TabPane, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deletePermanentMaterial, getMaterialPage } from '#/api/mp/material';
