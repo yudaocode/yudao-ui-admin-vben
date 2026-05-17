@@ -1,52 +1,28 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDate, formatDateTime } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getSimpleUserList } from '#/api/system/user';
+import { DictTag } from '#/components/dict-tag';
+import { buildNumberRangeSchema } from '#/components/number-range-input';
 import { getRangePickerDefaultProps } from '#/utils';
 import { WmsMerchantSelect } from '#/views/wms/md/merchant/components';
 import { WmsWarehouseSelect } from '#/views/wms/md/warehouse/components';
 import {
+  formatPrice,
+  formatQuantity,
+  formatSumPrice,
+  formatSumQuantity,
   PRICE_PRECISION,
   QUANTITY_PRECISION,
 } from '#/views/wms/utils/format';
-
-import NumberRangeInput from './modules/number-range-input.vue';
-
-function splitNumberRange(minFieldName: string, maxFieldName: string) {
-  return (
-    value: [number | undefined, number | undefined] | undefined,
-    setValue: (fieldName: string, value: any) => void,
-  ) => {
-    setValue(minFieldName, value?.[0]);
-    setValue(maxFieldName, value?.[1]);
-    return undefined;
-  };
-}
-
-function buildNumberRangeSchema(
-  label: string,
-  fieldName: string,
-  minFieldName: string,
-  maxFieldName: string,
-  precision: number,
-): VbenFormSchema {
-  return {
-    component: markRaw(NumberRangeInput),
-    componentProps: {
-      min: 0,
-      precision,
-    },
-    fieldName,
-    label,
-    valueFormat: splitNumberRange(minFieldName, maxFieldName),
-  };
-}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -247,10 +223,97 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
+/** 详情的字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'no',
+      label: '入库单号',
+      render: (val) => val || '-',
+    },
+    {
+      field: 'type',
+      label: '入库类型',
+      render: (val) =>
+        val === undefined || val === null
+          ? '-'
+          : h(DictTag, {
+              type: DICT_TYPE.WMS_RECEIPT_ORDER_TYPE,
+              value: val,
+            }),
+    },
+    {
+      field: 'warehouseName',
+      label: '仓库',
+      render: (val) => val || '-',
+    },
+    {
+      field: 'status',
+      label: '单据状态',
+      render: (val) =>
+        val === undefined || val === null
+          ? '-'
+          : h(DictTag, {
+              type: DICT_TYPE.WMS_ORDER_STATUS,
+              value: val,
+            }),
+    },
+    {
+      field: 'orderTime',
+      label: '单据日期',
+      render: (val) => formatDate(val, 'YYYY-MM-DD') || '-',
+    },
+    {
+      field: 'merchantName',
+      label: '供应商',
+      render: (val) => val || '-',
+    },
+    {
+      field: 'bizOrderNo',
+      label: '业务单号',
+      render: (val) => val || '-',
+    },
+    {
+      field: 'totalQuantity',
+      label: '总数量',
+      render: (val) => formatQuantity(val) || '-',
+    },
+    {
+      field: 'totalPrice',
+      label: '总金额',
+      render: (val) => formatPrice(val) || '-',
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      render: (val) => formatDateTime(val) || '-',
+    },
+    {
+      field: 'creatorName',
+      label: '创建人',
+      render: (val, data) => val || data?.creator || '-',
+    },
+    {
+      field: 'updateTime',
+      label: '更新时间',
+      render: (val) => formatDateTime(val) || '-',
+    },
+    {
+      field: 'updaterName',
+      label: '更新人',
+      render: (val, data) => val || data?.updater || '-',
+    },
+    {
+      field: 'remark',
+      label: '备注',
+      render: (val) => val || '-',
+      span: 2,
+    },
+  ];
+}
+
 /** 表单的配置项 */
-export function useFormSchema(
-  handleWarehouseChange: () => Promise<void> | void,
-): VbenFormSchema[] {
+export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -283,9 +346,6 @@ export function useFormSchema(
     },
     {
       component: markRaw(WmsWarehouseSelect),
-      componentProps: {
-        onChange: handleWarehouseChange,
-      },
       fieldName: 'warehouseId',
       label: '仓库',
       rules: 'required',
@@ -330,5 +390,34 @@ export function useFormSchema(
       formItemClass: 'col-span-2',
       label: '备注',
     },
+  ];
+}
+
+interface ReceiptOrderDetailFooterRow {
+  quantity?: number;
+  totalPrice?: number;
+}
+
+/** 明细表格的合计行 */
+export function getDetailFooter({
+  columns,
+  data,
+}: {
+  columns: Array<{ field?: string }>;
+  data: ReceiptOrderDetailFooterRow[];
+}) {
+  return [
+    columns.map((column, index) => {
+      if (index === 0) {
+        return '合计';
+      }
+      if (column.field === 'quantity') {
+        return formatSumQuantity(data, (detail) => detail.quantity);
+      }
+      if (column.field === 'totalPrice') {
+        return formatSumPrice(data, (detail) => detail.totalPrice);
+      }
+      return '';
+    }),
   ];
 }

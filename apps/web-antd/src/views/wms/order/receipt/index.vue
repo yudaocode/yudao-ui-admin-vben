@@ -3,9 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsReceiptOrderApi } from '#/api/wms/order/receipt';
 import type { WmsReceiptOrderDetailApi } from '#/api/wms/order/receipt/detail';
 
-// TODO @AI：对齐 system user index.vue 的界面，function 上必要的注释，需要加；
-// TODO @AI：row。id 这种防御性编程，建议都去掉，不存在这个情况；；；
-
 import { reactive, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -56,27 +53,24 @@ const [DetailModal, detailModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
+/** 创建入库单 */
 function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
+/** 编辑入库单 */
 function handleEdit(row: WmsReceiptOrderApi.ReceiptOrder) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id!, type: 'update' }).open();
 }
 
+/** 查看入库单详情 */
 function handleDetail(row: WmsReceiptOrderApi.ReceiptOrder) {
-  detailModalApi.setData({ id: row.id }).open();
-}
-
-function handlePrint(row: WmsReceiptOrderApi.ReceiptOrder) {
-  // TODO @AI：不用过度封装；
-  if (row.id) {
-    printRef.value?.print(row.id);
-  }
+  detailModalApi.setData({ id: row.id! }).open();
 }
 
 /** 计算单据明细金额 */
@@ -86,31 +80,34 @@ function getDetailTotalPrice(
   return detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price);
 }
 
+/** 获取已展开行的明细 */
 function getExpandedDetails(row: WmsReceiptOrderApi.ReceiptOrder) {
-  return row.id ? detailMap[row.id] || [] : [];
+  return detailMap[row.id!] || [];
 }
 
 /** 展开列表行时懒加载入库明细 */
-// TODO @AI：点击 > 才展开，不用整行点击都展开；
 async function handleExpandChange(
   row: WmsReceiptOrderApi.ReceiptOrder,
   expanded: boolean,
 ) {
-  if (!row.id || !expanded) {
+  if (!expanded) {
     return;
   }
-  delete detailMap[row.id];
-  detailMap[row.id] = await getReceiptOrderDetailListByOrderId(row.id);
+  delete detailMap[row.id!];
+  detailMap[row.id!] = await getReceiptOrderDetailListByOrderId(row.id!);
 }
 
+/** 判断入库单是否可修改 */
 function canUpdateReceiptOrder(status?: number) {
   return status !== undefined && OrderUpdateStatusList.includes(status);
 }
 
+/** 判断入库单是否可删除 */
 function canDeleteReceiptOrder(status?: number) {
   return status !== undefined && OrderDeleteStatusList.includes(status);
 }
 
+/** 获取修改按钮禁用提示 */
 function getReceiptOrderUpdateTip(status?: number) {
   if (canUpdateReceiptOrder(status)) {
     return undefined;
@@ -124,6 +121,7 @@ function getReceiptOrderUpdateTip(status?: number) {
   return '当前状态无法修改';
 }
 
+/** 获取删除按钮禁用提示 */
 function getReceiptOrderDeleteTip(status?: number) {
   if (canDeleteReceiptOrder(status)) {
     return undefined;
@@ -134,16 +132,14 @@ function getReceiptOrderDeleteTip(status?: number) {
   return '当前状态无法删除';
 }
 
+/** 删除入库单 */
 async function handleDelete(row: WmsReceiptOrderApi.ReceiptOrder) {
-  if (!row.id) {
-    return;
-  }
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.no]),
     duration: 0,
   });
   try {
-    await deleteReceiptOrder(row.id);
+    await deleteReceiptOrder(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.no]));
     handleRefresh();
   } finally {
@@ -151,6 +147,7 @@ async function handleDelete(row: WmsReceiptOrderApi.ReceiptOrder) {
   }
 }
 
+/** 导出入库单 */
 async function handleExport() {
   const data = await exportReceiptOrder(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '入库单.xls', source: data });
@@ -165,7 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     expandConfig: {
       padding: true,
-      trigger: 'row',
+      trigger: 'default',
     },
     height: 'auto',
     keepSource: true,
@@ -331,7 +328,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '打印',
               type: 'link',
               auth: ['wms:receipt-order:query'],
-              onClick: handlePrint.bind(null, row),
+              onClick: () => printRef?.print(row.id!),
             },
           ]"
         />
