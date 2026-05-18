@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { VxeTableInstance } from '#/adapter/vxe-table';
-import type { WmsItemSkuApi } from '#/api/wms/md/item/sku';
-import type { WmsReceiptOrderApi } from '#/api/wms/order/receipt';
-import type { WmsReceiptOrderDetailApi } from '#/api/wms/order/receipt/detail';
+import type { WmsWarehouseApi } from '#/api/wms/md/warehouse';
+import type { WmsMovementOrderApi } from '#/api/wms/order/movement';
+import type { WmsMovementOrderDetailApi } from '#/api/wms/order/movement/detail';
+import type { InventorySelectRow } from '#/views/wms/inventory/components/inventory-select.vue';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -14,21 +15,22 @@ import { InputNumber, message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import { TableAction, VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import {
-  cancelReceiptOrder,
-  completeReceiptOrder,
-  createReceiptOrder,
-  getReceiptOrder,
-  getReceiptOrderDetailListByOrderId,
-  updateReceiptOrder,
-} from '#/api/wms/order/receipt';
+  cancelMovementOrder,
+  completeMovementOrder,
+  createMovementOrder,
+  getMovementOrder,
+  getMovementOrderDetailListByOrderId,
+  updateMovementOrder,
+} from '#/api/wms/order/movement';
 import { $t } from '#/locales';
-import { WmsItemSkuSelect } from '#/views/wms/md/item/sku/components';
+import { WmsInventorySelect } from '#/views/wms/inventory/components';
 import {
   OrderStatusEnum,
   OrderUpdateStatusList,
 } from '#/views/wms/utils/constants';
 import {
   dividePrice,
+  formatQuantity,
   multiplyPrice,
   PRICE_PRECISION,
   QUANTITY_PRECISION,
@@ -37,28 +39,28 @@ import { generateOrderNo } from '#/views/wms/utils/order';
 
 import { getDetailFooter, useFormSchema } from '../data';
 
-interface DetailRow extends WmsReceiptOrderDetailApi.ReceiptOrderDetail {
+interface DetailRow extends WmsMovementOrderDetailApi.MovementOrderDetail {
   seq: number;
 }
 
-defineOptions({ name: 'WmsReceiptOrderForm' });
+defineOptions({ name: 'WmsMovementOrderForm' });
 
 const emit = defineEmits<{
   success: [];
 }>();
 
-const formData = ref<WmsReceiptOrderApi.ReceiptOrder>({});
+const formData = ref<WmsMovementOrderApi.MovementOrder>({});
 const formMode = ref('create');
-const originalSubmitData = ref<WmsReceiptOrderApi.ReceiptOrder>();
+const originalSubmitData = ref<WmsMovementOrderApi.MovementOrder>();
 const details = ref<DetailRow[]>([]);
 const detailTableRef = ref<VxeTableInstance>();
-const skuSelectRef = ref<InstanceType<typeof WmsItemSkuSelect>>();
+const inventorySelectRef = ref<InstanceType<typeof WmsInventorySelect>>();
 let detailSeq = 0; // 明细行可能还没有后端 id，使用本地序号作为 VXE 行操作的稳定标识
 
 const getTitle = computed(() => {
   return formMode.value === 'update'
-    ? $t('ui.actionTitle.edit', ['入库单'])
-    : $t('ui.actionTitle.create', ['入库单']);
+    ? $t('ui.actionTitle.edit', ['移库单'])
+    : $t('ui.actionTitle.create', ['移库单']);
 });
 
 const isPrepareOrder = computed(() => {
@@ -84,14 +86,17 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 100,
   },
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: useFormSchema({
+    onSourceWarehouseChange: handleSourceWarehouseChange,
+    onTargetWarehouseChange: handleTargetWarehouseChange,
+  }),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-3',
 });
 
 /** 标准化明细行，补齐本地序号和金额 */
 function normalizeDetail(
-  detail: WmsReceiptOrderDetailApi.ReceiptOrderDetail,
+  detail: WmsMovementOrderDetailApi.MovementOrderDetail,
 ): DetailRow {
   detailSeq += 1;
   return {
@@ -101,25 +106,30 @@ function normalizeDetail(
   };
 }
 
-/** 根据商品 SKU 构建新的入库明细 */
-function buildDetail(sku: WmsItemSkuApi.ItemSku): DetailRow {
+/** 根据库存构建新的移库明细 */
+function buildDetail(inventory: InventorySelectRow): DetailRow {
   return normalizeDetail({
+    availableQuantity: inventory.availableQuantity,
     id: undefined,
-    itemCode: sku.itemCode,
-    itemId: sku.itemId,
-    itemName: sku.itemName,
+    itemCode: inventory.itemCode,
+    itemId: inventory.itemId,
+    itemName: inventory.itemName,
     price: undefined,
     quantity: undefined,
-    skuCode: sku.code,
-    skuId: sku.id,
-    skuName: sku.name,
+    skuCode: inventory.skuCode,
+    skuId: inventory.skuId,
+    skuName: inventory.skuName,
+    sourceWarehouseId: inventory.warehouseId,
+    sourceWarehouseName: inventory.warehouseName,
+    targetWarehouseId: formData.value.targetWarehouseId,
+    targetWarehouseName: formData.value.targetWarehouseName,
     totalPrice: undefined,
-    unit: sku.unit,
+    unit: inventory.unit,
   });
 }
 
-/** 设置入库明细 */
-function setDetails(list?: WmsReceiptOrderDetailApi.ReceiptOrderDetail[]) {
+/** 设置移库明细 */
+function setDetails(list?: WmsMovementOrderDetailApi.MovementOrderDetail[]) {
   detailSeq = 0;
   details.value = (list || []).map((detail) => normalizeDetail(detail));
   void refreshDetailFooter();
@@ -131,41 +141,55 @@ async function refreshDetailFooter() {
   await detailTableRef.value?.updateFooter();
 }
 
-/** 获取已选择的 SKU 编号，避免重复选择 */
-function getSelectedSkuIds() {
-  return details.value
-    .map((detail) => detail.skuId)
-    .filter((id): id is number => !!id);
-}
-
 /** 添加商品明细 */
 async function handleAddDetail() {
-  const values = (await formApi.getValues()) as WmsReceiptOrderApi.ReceiptOrder;
-  if (!values.warehouseId) {
-    message.warning('请先选择仓库');
+  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
+  if (!values.sourceWarehouseId || !values.targetWarehouseId) {
+    message.warning('请先选择来源仓库和目标仓库');
     return;
   }
-  skuSelectRef.value?.open(getSelectedSkuIds());
+  formData.value.sourceWarehouseId = values.sourceWarehouseId;
+  await nextTick();
+  inventorySelectRef.value?.open(getSelectedInventoryKeys());
 }
 
-/** 选择商品 SKU */
-function handleSelectSku(skus: WmsItemSkuApi.ItemSku[]) {
-  if (skus.length === 0) {
+/** 选择库存 */
+function handleSelectInventory(inventories: InventorySelectRow[]) {
+  if (inventories.length === 0) {
     return;
   }
-  const selectedSkuIds = new Set(getSelectedSkuIds());
   let changed = false;
-  for (const sku of skus) {
-    if (!sku.id || selectedSkuIds.has(sku.id)) {
+  for (const inventory of inventories) {
+    if (!inventory.skuId || isInventorySelected(inventory)) {
       continue;
     }
-    details.value.push(buildDetail(sku));
-    selectedSkuIds.add(sku.id);
+    details.value.push(buildDetail(inventory));
     changed = true;
   }
   if (changed) {
     void refreshDetailFooter();
   }
+}
+
+/** 判断库存是否已选择 */
+function isInventorySelected(inventory: InventorySelectRow) {
+  return details.value.some((detail) => {
+    return (
+      detail.skuId === inventory.skuId &&
+      detail.sourceWarehouseId === inventory.warehouseId
+    );
+  });
+}
+
+/** 获得已选择的库存标识 */
+function getSelectedInventoryKeys() {
+  return details.value
+    .map((detail) =>
+      detail.skuId && detail.sourceWarehouseId
+        ? `${detail.skuId}-${detail.sourceWarehouseId}`
+        : undefined,
+    )
+    .filter((key): key is string => !!key);
 }
 
 /** 删除商品明细 */
@@ -174,6 +198,23 @@ function handleDeleteDetail(row: DetailRow) {
   if (index !== -1) {
     details.value.splice(index, 1);
     void refreshDetailFooter();
+  }
+}
+
+/** 来源仓库变化时清空移库明细 */
+function handleSourceWarehouseChange(warehouse?: WmsWarehouseApi.Warehouse) {
+  formData.value.sourceWarehouseId = warehouse?.id;
+  formData.value.sourceWarehouseName = warehouse?.name;
+  setDetails([]);
+}
+
+/** 目标仓库变化时同步到移库明细 */
+function handleTargetWarehouseChange(warehouse?: WmsWarehouseApi.Warehouse) {
+  formData.value.targetWarehouseId = warehouse?.id;
+  formData.value.targetWarehouseName = warehouse?.name;
+  for (const detail of details.value) {
+    detail.targetWarehouseId = warehouse?.id;
+    detail.targetWarehouseName = warehouse?.name;
   }
 }
 
@@ -201,10 +242,15 @@ function handleDetailTotalPriceChange(detail: DetailRow) {
 }
 
 /** 校验商品明细 */
-function validateDetails(required = false) {
+async function validateDetails(required = false) {
+  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
+  if (values.sourceWarehouseId === values.targetWarehouseId) {
+    message.error('来源仓库和目标仓库不能相同');
+    return false;
+  }
   if (details.value.length === 0) {
     if (required) {
-      message.error('至少包含一条入库明细');
+      message.error('至少包含一条移库明细');
       return false;
     }
     return true;
@@ -216,7 +262,14 @@ function validateDetails(required = false) {
       return false;
     }
     if (!detail.quantity || detail.quantity <= 0) {
-      message.error(`第 ${index + 1} 行明细入库数量必须大于 0`);
+      message.error(`第 ${index + 1} 行明细移库数量必须大于 0`);
+      return false;
+    }
+    if (
+      detail.availableQuantity !== undefined &&
+      detail.quantity > detail.availableQuantity
+    ) {
+      message.error(`第 ${index + 1} 行明细移库数量不能大于可用库存`);
       return false;
     }
   }
@@ -232,8 +285,8 @@ function buildSubmitDetails() {
 }
 
 /** 构建提交用的单据数据 */
-async function buildSubmitData(): Promise<WmsReceiptOrderApi.ReceiptOrder> {
-  const values = (await formApi.getValues()) as WmsReceiptOrderApi.ReceiptOrder;
+async function buildSubmitData(): Promise<WmsMovementOrderApi.MovementOrder> {
+  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
   const {
     details: _details,
     totalPrice: _totalPrice,
@@ -247,37 +300,37 @@ async function buildSubmitData(): Promise<WmsReceiptOrderApi.ReceiptOrder> {
   };
 }
 
-/** 完成入库 */
+/** 完成移库 */
 async function handleFormComplete() {
   const { valid } = await formApi.validate();
-  if (!valid || !validateDetails(true) || !formData.value?.id) {
+  if (!valid || !(await validateDetails(true)) || !formData.value?.id) {
     return;
   }
-  await confirm('确认完成入库？完成后将更新库存。');
+  await confirm('确认完成移库？完成后将更新库存。');
   modalApi.lock();
   try {
     const data = await buildSubmitData();
     if (!isEqual(data, originalSubmitData.value)) {
-      await updateReceiptOrder(data);
+      await updateMovementOrder(data);
     }
-    await completeReceiptOrder(formData.value.id);
+    await completeMovementOrder(formData.value.id);
     await modalApi.close();
     emit('success');
-    message.success('入库成功');
+    message.success('移库成功');
   } finally {
     modalApi.unlock();
   }
 }
 
-/** 作废入库单 */
+/** 作废移库单 */
 async function handleFormCancel() {
   if (!formData.value?.id) {
     return;
   }
-  await confirm('确认作废该入库单？作废后不可恢复。');
+  await confirm('确认作废该移库单？作废后不可恢复。');
   modalApi.lock();
   try {
-    await cancelReceiptOrder(formData.value.id);
+    await cancelMovementOrder(formData.value.id);
     await modalApi.close();
     emit('success');
     message.success('作废成功');
@@ -289,7 +342,7 @@ async function handleFormCancel() {
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
-    if (!valid || !validateDetails(false) || !isPrepareOrder.value) {
+    if (!valid || !(await validateDetails(false)) || !isPrepareOrder.value) {
       return;
     }
     modalApi.lock();
@@ -297,8 +350,8 @@ const [Modal, modalApi] = useVbenModal({
     const data = await buildSubmitData();
     try {
       await (formMode.value === 'update'
-        ? updateReceiptOrder(data)
-        : createReceiptOrder(data));
+        ? updateMovementOrder(data)
+        : createMovementOrder(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -324,9 +377,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       try {
         // 加载数据
-        const order = await getReceiptOrder(data.id);
+        const order = await getMovementOrder(data.id);
         const orderDetails =
-          order.details || (await getReceiptOrderDetailListByOrderId(data.id));
+          order.details || (await getMovementOrderDetailListByOrderId(data.id));
         formData.value = { ...order, details: orderDetails };
         setDetails(orderDetails);
         // 设置到 values
@@ -341,7 +394,7 @@ const [Modal, modalApi] = useVbenModal({
     // 初始化新增表单
     formData.value = {
       details: [],
-      no: generateOrderNo('RK'),
+      no: generateOrderNo('YK'),
       status: OrderStatusEnum.PREPARE,
     };
     setDetails([]);
@@ -362,7 +415,7 @@ const [Modal, modalApi] = useVbenModal({
       <Form />
       <div class="mt-4">
         <div class="mb-3 flex items-center justify-between">
-          <span class="text-sm font-semibold">入库明细</span>
+          <span class="text-sm font-semibold">移库明细</span>
           <TableAction
             :actions="[
               {
@@ -383,7 +436,7 @@ const [Modal, modalApi] = useVbenModal({
           show-footer
           size="small"
         >
-          <VxeColumn title="商品信息" min-width="220">
+          <VxeColumn title="商品信息" min-width="210">
             <template #default="{ row }">
               <div>{{ row.itemName || '-' }}</div>
               <div v-if="row.itemCode" class="text-xs text-gray-500">
@@ -391,7 +444,7 @@ const [Modal, modalApi] = useVbenModal({
               </div>
             </template>
           </VxeColumn>
-          <VxeColumn title="规格信息" min-width="220">
+          <VxeColumn title="规格信息" min-width="210">
             <template #default="{ row }">
               <div>{{ row.skuName || '-' }}</div>
               <div v-if="row.skuCode" class="text-xs text-gray-500">
@@ -399,7 +452,12 @@ const [Modal, modalApi] = useVbenModal({
               </div>
             </template>
           </VxeColumn>
-          <VxeColumn field="quantity" title="入库数量" width="150">
+          <VxeColumn field="availableQuantity" title="可用库存" align="right" width="120">
+            <template #default="{ row }">
+              {{ formatQuantity(row.availableQuantity) || '-' }}
+            </template>
+          </VxeColumn>
+          <VxeColumn field="quantity" title="移库数量" width="150">
             <template #default="{ row }">
               <InputNumber
                 v-model:value="row.quantity"
@@ -460,22 +518,26 @@ const [Modal, modalApi] = useVbenModal({
         <TableAction
           :actions="[
             {
-              label: '完成入库',
+              label: '完成移库',
               type: 'primary',
-              auth: ['wms:receipt-order:complete'],
+              auth: ['wms:movement-order:complete'],
               onClick: handleFormComplete,
             },
             {
               label: '作废',
               type: 'primary',
               danger: true,
-              auth: ['wms:receipt-order:cancel'],
+              auth: ['wms:movement-order:cancel'],
               onClick: handleFormCancel,
             },
           ]"
         />
       </div>
     </template>
-    <WmsItemSkuSelect ref="skuSelectRef" @change="handleSelectSku" />
+    <WmsInventorySelect
+      ref="inventorySelectRef"
+      :warehouse-id="formData.sourceWarehouseId"
+      @change="handleSelectInventory"
+    />
   </Modal>
 </template>

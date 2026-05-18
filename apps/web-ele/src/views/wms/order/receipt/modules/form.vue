@@ -41,8 +41,6 @@ interface DetailRow extends WmsReceiptOrderDetailApi.ReceiptOrderDetail {
   seq: number;
 }
 
-type FormMode = 'create' | 'update';
-
 defineOptions({ name: 'WmsReceiptOrderForm' });
 
 const emit = defineEmits<{
@@ -50,7 +48,7 @@ const emit = defineEmits<{
 }>();
 
 const formData = ref<WmsReceiptOrderApi.ReceiptOrder>({});
-const formMode = ref<FormMode>('create');
+const formMode = ref('create');
 const originalSubmitData = ref<WmsReceiptOrderApi.ReceiptOrder>();
 const details = ref<DetailRow[]>([]);
 const detailTableRef = ref<VxeTableInstance>();
@@ -319,7 +317,7 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     const data = modalApi.getData<{
       id?: number;
-      type?: FormMode;
+      type?: string;
     }>();
     formMode.value = data?.type || (data?.id ? 'update' : 'create');
     if (data?.id) {
