@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h, markRaw } from 'vue';
 
-import { Button } from 'ant-design-vue';
+import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { getItemBrandSimpleList } from '#/api/wms/md/item/brand';
@@ -50,7 +50,7 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
       rules: z.string().min(1, '商品编号不能为空').max(20),
       suffix: () => {
         return h(
-          Button,
+          ElButton,
           {
             type: 'default',
             onClick: () => {
@@ -105,7 +105,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商品编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商品编号',
       },
     },
@@ -114,7 +114,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商品名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商品名称',
       },
     },
@@ -123,11 +123,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '商品品牌',
       component: 'ApiSelect',
       componentProps: {
-        allowClear: true,
         api: getItemBrandSimpleList,
+        clearable: true,
+        filterable: true,
         labelField: 'name',
         placeholder: '请选择商品品牌',
-        showSearch: true,
         valueField: 'id',
       },
     },
@@ -186,7 +186,7 @@ export function useSkuSelectGridFormSchema(): VbenFormSchema[] {
       label: '商品名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商品名称',
       },
     },
@@ -195,7 +195,7 @@ export function useSkuSelectGridFormSchema(): VbenFormSchema[] {
       label: '商品编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入商品编号',
       },
     },
@@ -204,7 +204,7 @@ export function useSkuSelectGridFormSchema(): VbenFormSchema[] {
       label: '规格名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入规格名称',
       },
     },
@@ -213,7 +213,7 @@ export function useSkuSelectGridFormSchema(): VbenFormSchema[] {
       label: '规格编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入规格编号',
       },
     },
@@ -222,7 +222,7 @@ export function useSkuSelectGridFormSchema(): VbenFormSchema[] {
       label: '条码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入条码',
       },
     },

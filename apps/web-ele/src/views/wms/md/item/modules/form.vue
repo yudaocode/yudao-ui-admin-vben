@@ -5,7 +5,7 @@ import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createItem, getItem, updateItem } from '#/api/wms/md/item';
@@ -55,7 +55,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       skuFormRef.value?.validate();
     } catch (error) {
-      message.warning((error as Error).message);
+      ElMessage.warning((error as Error).message);
       return;
     }
     modalApi.lock();
@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }

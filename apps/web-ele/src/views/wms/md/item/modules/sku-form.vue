@@ -4,7 +4,7 @@ import type { WmsItemSkuApi } from '#/api/wms/md/item/sku';
 
 import { nextTick, ref } from 'vue';
 
-import { Button, Input, InputNumber, message } from 'ant-design-vue';
+import { ElButton, ElInput, ElInputNumber, ElMessage } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { generateWmsCode } from '#/views/wms/utils/constants';
@@ -86,7 +86,7 @@ async function handleAddSku() {
 
 async function handleDeleteSku(row: SkuRow) {
   if (tableData.value.length <= 1) {
-    message.error('至少包含一个商品规格');
+    ElMessage.error('至少包含一个商品规格');
     return;
   }
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
@@ -178,101 +178,103 @@ defineExpose({
     </div>
     <Grid class="w-full">
       <template #name="{ row }">
-        <Input
-          v-model:value="row.name"
+        <ElInput
+          v-model="row.name"
           class="w-full"
-          :maxlength="255"
+          maxlength="255"
           placeholder="请输入规格名称"
         />
       </template>
       <template #codeBarCode="{ row }">
         <div class="flex flex-col gap-2 py-1">
-          <Input
-            v-model:value="row.code"
+          <ElInput
+            v-model="row.code"
             class="w-full"
-            :maxlength="64"
+            maxlength="64"
             placeholder="编号"
           >
-            <template #addonAfter>
-              <Button @click="row.code = generateWmsCode('S')">生成</Button>
+            <template #append>
+              <ElButton @click="row.code = generateWmsCode('S')">生成</ElButton>
             </template>
-          </Input>
-          <Input
-            v-model:value="row.barCode"
+          </ElInput>
+          <ElInput
+            v-model="row.barCode"
             class="w-full"
-            :maxlength="64"
+            maxlength="64"
             placeholder="条码"
           >
-            <template #addonAfter>
-              <Button @click="row.barCode = generateWmsCode()">生成</Button>
+            <template #append>
+              <ElButton @click="row.barCode = generateWmsCode()">
+                生成
+              </ElButton>
             </template>
-          </Input>
+          </ElInput>
         </div>
       </template>
       <template #dimension="{ row }">
         <div class="flex w-full gap-1">
-          <InputNumber
-            v-model:value="row.length"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.length"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
+            controls-position="right"
             placeholder="长"
           />
-          <InputNumber
-            v-model:value="row.width"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.width"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
+            controls-position="right"
             placeholder="宽"
           />
-          <InputNumber
-            v-model:value="row.height"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.height"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
+            controls-position="right"
             placeholder="高"
           />
         </div>
       </template>
       <template #weight="{ row }">
         <div class="flex flex-col gap-2 py-1">
-          <InputNumber
-            v-model:value="row.netWeight"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.netWeight"
             :min="0"
             :precision="WEIGHT_PRECISION"
             class="!w-full"
+            controls-position="right"
             placeholder="净重"
           />
-          <InputNumber
-            v-model:value="row.grossWeight"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.grossWeight"
             :min="0"
             :precision="WEIGHT_PRECISION"
             class="!w-full"
+            controls-position="right"
             placeholder="毛重"
           />
         </div>
       </template>
       <template #price="{ row }">
         <div class="flex flex-col gap-2 py-1">
-          <InputNumber
-            v-model:value="row.costPrice"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.costPrice"
             :min="0"
             :precision="PRICE_PRECISION"
             class="!w-full"
+            controls-position="right"
             placeholder="成本价"
           />
-          <InputNumber
-            v-model:value="row.sellingPrice"
-            :controls="false"
+          <ElInputNumber
+            v-model="row.sellingPrice"
             :min="0"
             :precision="PRICE_PRECISION"
             class="!w-full"
+            controls-position="right"
             placeholder="销售价"
           />
         </div>
@@ -282,8 +284,8 @@ defineExpose({
           :actions="[
             {
               label: '删除',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               onClick: handleDeleteSku.bind(null, row),
             },
           ]"

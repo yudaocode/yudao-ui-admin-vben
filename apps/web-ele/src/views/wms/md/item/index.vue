@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Card, message } from 'ant-design-vue';
+import { ElCard, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteItem, exportItem, getItemPage } from '#/api/wms/md/item';
@@ -69,16 +69,15 @@ function handleEdit(row: ItemSkuRow) {
 
 /** 删除商品 */
 async function handleDelete(row: ItemSkuRow) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.itemName]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.itemName]),
   });
   try {
     await deleteItem(row.itemId!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.itemName]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.itemName]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
@@ -177,9 +176,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
 
     <div class="flex h-full w-full">
-      <Card class="mr-4 h-full w-1/6">
+      <ElCard class="mr-4 h-full w-1/6">
         <WmsItemCategoryTree @node-click="handleCategoryNodeClick" />
-      </Card>
+      </ElCard>
       <div class="w-5/6">
         <Grid table-title="商品列表">
           <template #toolbar-tools>
@@ -255,15 +254,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
               :actions="[
                 {
                   label: $t('common.edit'),
-                  type: 'link',
+                  type: 'primary',
+                  link: true,
                   icon: ACTION_ICON.EDIT,
                   auth: ['wms:item:update'],
                   onClick: handleEdit.bind(null, row),
                 },
                 {
                   label: $t('common.delete'),
-                  type: 'link',
-                  danger: true,
+                  type: 'danger',
+                  link: true,
                   icon: ACTION_ICON.DELETE,
                   auth: ['wms:item:delete'],
                   popConfirm: {
