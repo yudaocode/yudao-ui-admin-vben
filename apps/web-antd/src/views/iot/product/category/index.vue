@@ -95,6 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['分类']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:product-category:create'],
               onClick: handleCreate,
             },
           ]"
@@ -107,6 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:product-category:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -114,6 +116,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:product-category:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
