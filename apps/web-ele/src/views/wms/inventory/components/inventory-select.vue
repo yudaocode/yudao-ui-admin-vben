@@ -1,0 +1,172 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { WmsInventoryApi } from '#/api/wms/inventory';
+
+import { nextTick, ref } from 'vue';
+
+import { ElButton, ElDialog, ElMessage } from 'element-plus';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getInventoryPage } from '#/api/wms/inventory';
+import { formatQuantity } from '#/views/wms/utils/format';
+
+import {
+  useInventorySelectGridColumns,
+  useInventorySelectGridFormSchema,
+} from '../index/data';
+
+export interface InventorySelectRow extends WmsInventoryApi.Inventory {
+  availableQuantity?: number;
+  price?: number;
+}
+
+defineOptions({ name: 'WmsInventorySelect' });
+
+const props = defineProps<{
+  warehouseId?: number;
+}>();
+
+const emit = defineEmits<{
+  change: [list: InventorySelectRow[]];
+}>();
+
+const open = ref(false);
+const selectedRows = ref<InventorySelectRow[]>([]);
+const disabledInventoryKeys = ref<Set<string>>(new Set());
+
+/** 获得业务库存标识 */
+function getInventoryKey(row: Pick<InventorySelectRow, 'skuId' | 'warehouseId'>) {
+  return row.skuId && row.warehouseId
+    ? `${row.skuId}-${row.warehouseId}`
+    : undefined;
+}
+
+/** 判断库存是否可选 */
+function isInventorySelectable(row: InventorySelectRow) {
+  const key = getInventoryKey(row);
+  return !key || !disabledInventoryKeys.value.has(key);
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useInventorySelectGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useInventorySelectGridColumns(),
+    height: 560,
+    keepSource: true,
+    checkboxConfig: {
+      checkMethod: ({ row }: { row: InventorySelectRow }) =>
+        isInventorySelectable(row),
+      highlight: true,
+      range: true,
+      reserve: true,
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          const data = await getInventoryPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            type: 'warehouse',
+            warehouseId: props.warehouseId,
+            onlyPositiveQuantity: true,
+            ...formValues,
+          });
+          return {
+            ...data,
+            list: (data.list || []).map((inventory) => ({
+              ...inventory,
+              availableQuantity: inventory.quantity,
+            })),
+          };
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<InventorySelectRow>,
+  gridEvents: {
+    checkboxAll: ({ records }: { records: InventorySelectRow[] }) => {
+      selectedRows.value = records.filter((row) => isInventorySelectable(row));
+    },
+    checkboxChange: ({ records }: { records: InventorySelectRow[] }) => {
+      selectedRows.value = records.filter((row) => isInventorySelectable(row));
+    },
+  },
+});
+
+async function openModal(selectedInventoryKeys: string[] = []) {
+  if (!props.warehouseId) {
+    ElMessage.warning('请先选择仓库');
+    return;
+  }
+  open.value = true;
+  selectedRows.value = [];
+  disabledInventoryKeys.value = new Set(selectedInventoryKeys);
+  await nextTick();
+  await gridApi.grid.clearCheckboxRow();
+  await gridApi.formApi.resetForm();
+  await gridApi.query();
+}
+
+async function closeModal() {
+  open.value = false;
+  selectedRows.value = [];
+  disabledInventoryKeys.value = new Set();
+  await gridApi.grid.clearCheckboxRow();
+}
+
+function handleConfirm() {
+  const selectedList = selectedRows.value.filter((row) =>
+    isInventorySelectable(row),
+  );
+  if (selectedList.length === 0) {
+    ElMessage.warning('请选择库存');
+    return;
+  }
+  emit('change', selectedList);
+  closeModal();
+}
+
+defineExpose({ open: openModal });
+</script>
+
+<template>
+  <ElDialog
+    v-model="open"
+    title="库存选择"
+    width="80%"
+    :append-to-body="true"
+    :destroy-on-close="true"
+    @close="closeModal"
+  >
+    <Grid table-title="库存列表">
+      <template #itemInfo="{ row }">
+        <div>{{ row.itemName || '-' }}</div>
+        <div v-if="row.itemCode" class="text-xs text-gray-500">
+          商品编号：{{ row.itemCode }}
+        </div>
+      </template>
+      <template #skuInfo="{ row }">
+        <div>{{ row.skuName || '-' }}</div>
+        <div v-if="row.skuCode" class="text-xs text-gray-500">
+          规格编号：{{ row.skuCode }}
+        </div>
+      </template>
+      <template #availableQuantity="{ row }">
+        {{ formatQuantity(row.availableQuantity) }}
+      </template>
+    </Grid>
+    <template #footer>
+      <ElButton @click="closeModal">取 消</ElButton>
+      <ElButton type="primary" @click="handleConfirm">确 定</ElButton>
+    </template>
+  </ElDialog>
+</template>
