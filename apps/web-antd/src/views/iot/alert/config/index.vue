@@ -12,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
 import { $t } from '#/locales';
 
-import AlertConfigForm from '../modules/form.vue';
+import AlertConfigForm from './modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTAlertConfig' });
@@ -102,8 +102,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- TODO DONE @AI：告警级别已改用 CellDict 在 data.ts 渲染 -->
-      <!-- TODO DONE @AI：关联场景联动规则计数已改用 formatter 在 data.ts 渲染 -->
       <!-- TODO DONE @AI：接收类型是 number[] 多 Tag，CellDict 只能渲染单值，保留 slot -->
       <template #receiveTypes="{ row }">
         <Tag

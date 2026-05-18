@@ -5,8 +5,6 @@ import type { AlertRecordApi } from '#/api/iot/alert/record';
 import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Input, message, Modal, Popover } from 'ant-design-vue';
@@ -58,53 +56,6 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
   });
 }
 
-/** 查看告警记录详情 */
-// TODO @AI：去掉 view 详情，对齐 vue3 + ep模块；
-function handleView(row: AlertRecordApi.AlertRecord) {
-  const deviceMessageText =
-    row.deviceMessage && typeof row.deviceMessage === 'object'
-      ? JSON.stringify(row.deviceMessage, null, 2)
-      : row.deviceMessage || '-';
-  Modal.info({
-    title: '告警记录详情',
-    width: 600,
-    content: h('div', { class: 'space-y-2' }, [
-      h('div', [
-        h('span', { class: 'font-semibold' }, '告警名称：'),
-        h('span', row.configName || '-'),
-      ]),
-      h('div', [
-        h('span', { class: 'font-semibold' }, '告警级别：'),
-        h(
-          'span',
-          getDictLabel(DICT_TYPE.IOT_ALERT_LEVEL, row.configLevel) || '-',
-        ),
-      ]),
-      h('div', [
-        h('span', { class: 'font-semibold' }, '设备消息：'),
-        h(
-          'pre',
-          { class: 'mt-1 text-xs bg-gray-50 p-2 rounded' },
-          deviceMessageText,
-        ),
-      ]),
-      h('div', [
-        h('span', { class: 'font-semibold' }, '处理结果：'),
-        h('span', row.processRemark || '-'),
-      ]),
-      h('div', [
-        h('span', { class: 'font-semibold' }, '处理时间：'),
-        h(
-          'span',
-          row.processTime
-            ? new Date(row.processTime).toLocaleString('zh-CN')
-            : '-',
-        ),
-      ]),
-    ]),
-  });
-}
-
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGridFormSchema(),
@@ -149,8 +100,6 @@ function stringifyDeviceMessage(deviceMessage: any) {
 <template>
   <Page auto-content-height>
     <Grid table-title="告警记录列表">
-      <!-- TODO DONE @AI：告警级别已改用 CellDict 在 data.ts 渲染 -->
-      <!-- TODO DONE @AI：设备消息是 Popover hover 看 JSON 详情，CellDict 只渲染单值文本，保留 slot -->
       <template #deviceMessage="{ row }">
         <Popover
           v-if="row.deviceMessage"
@@ -179,14 +128,6 @@ function stringifyDeviceMessage(deviceMessage: any) {
               auth: ['iot:alert-record:process'],
               onClick: handleProcess.bind(null, row),
               ifShow: !row.processStatus,
-            },
-            {
-              label: '查看',
-              type: 'link',
-              icon: ACTION_ICON.VIEW,
-              auth: ['iot:alert-record:query'],
-              onClick: handleView.bind(null, row),
-              ifShow: row.processStatus,
             },
           ]"
         />

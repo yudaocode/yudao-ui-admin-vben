@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @AI：是不是应该拿到【config/modules】里？
 import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { computed, ref } from 'vue';
@@ -16,7 +15,7 @@ import {
 } from '#/api/iot/alert/config';
 import { $t } from '#/locales';
 
-import { useFormSchema } from '../config/data';
+import { useFormSchema } from '../data';
 
 defineOptions({ name: 'IoTAlertConfigForm' });
 
@@ -33,6 +32,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    labelWidth: 140,
   },
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',

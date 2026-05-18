@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleRuleSceneList } from '#/api/iot/rule/scene';
@@ -9,7 +9,6 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改告警配置的表单 */
-// TODO @AI：两行=》1 行；
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -29,7 +28,6 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
-    // TODO @AI：vue + ep 貌似也要改成 teatarea！
     {
       fieldName: 'description',
       label: '配置描述',
@@ -58,11 +56,9 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      // TODO @AI：defaultValue 这种要枚举值哇？
-      defaultValue: 0,
+      defaultValue: CommonStatusEnum.ENABLE,
       rules: 'required',
     },
-    // TODO @AI：可能 label 比较宽，需要拉长点。
     {
       fieldName: 'sceneRuleIds',
       label: '关联场景联动规则',
