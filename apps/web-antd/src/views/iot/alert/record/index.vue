@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// TODO @AI：整体风格，是不是对齐现有的 antd 处理的：1）详情独立 modules；2）process 是不是要这样？还是做一个独立的界面出来？
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { AlertRecord } from '#/api/iot/alert/record';
+import type { AlertRecordApi } from '#/api/iot/alert/record';
 
 import { h, ref } from 'vue';
 
@@ -10,7 +9,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, message, Modal, Popover, Tag } from 'ant-design-vue';
+import { Button, Input, message, Modal, Popover } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
@@ -25,7 +24,7 @@ function handleRefresh() {
 }
 
 /** 处理告警记录 */
-function handleProcess(row: AlertRecord) {
+function handleProcess(row: AlertRecordApi.AlertRecord) {
   const processRemark = ref('');
   Modal.confirm({
     title: '处理告警记录',
@@ -60,7 +59,8 @@ function handleProcess(row: AlertRecord) {
 }
 
 /** 查看告警记录详情 */
-function handleView(row: AlertRecord) {
+// TODO @AI：去掉 view 详情，对齐 vue3 + ep模块；
+function handleView(row: AlertRecordApi.AlertRecord) {
   const deviceMessageText =
     row.deviceMessage && typeof row.deviceMessage === 'object'
       ? JSON.stringify(row.deviceMessage, null, 2)
@@ -132,7 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AlertRecord>,
+  } as VxeTableGridOptions<AlertRecordApi.AlertRecord>,
 });
 
 /** 把设备消息序列化成可读字符串 */
@@ -149,15 +149,8 @@ function stringifyDeviceMessage(deviceMessage: any) {
 <template>
   <Page auto-content-height>
     <Grid table-title="告警记录列表">
-      <!-- 告警级别列 -->
-      <!-- TODO @AI：可以在 data 里渲染么？应该 antd 里有例子的； -->
-      <template #configLevel="{ row }">
-        <Tag>
-          {{ getDictLabel(DICT_TYPE.IOT_ALERT_LEVEL, row.configLevel) }}
-        </Tag>
-      </template>
-      <!-- 设备消息列 -->
-      <!-- TODO @AI：可以在 data 里渲染么？应该 antd 里有例子的； -->
+      <!-- TODO DONE @AI：告警级别已改用 CellDict 在 data.ts 渲染 -->
+      <!-- TODO DONE @AI：设备消息是 Popover hover 看 JSON 详情，CellDict 只渲染单值文本，保留 slot -->
       <template #deviceMessage="{ row }">
         <Popover
           v-if="row.deviceMessage"

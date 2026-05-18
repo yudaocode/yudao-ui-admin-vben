@@ -9,6 +9,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改告警配置的表单 */
+// TODO @AI：两行=》1 行；
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -28,6 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       rules: 'required',
     },
+    // TODO @AI：vue + ep 貌似也要改成 teatarea！
     {
       fieldName: 'description',
       label: '配置描述',
@@ -56,8 +58,11 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      // TODO @AI：defaultValue 这种要枚举值哇？
+      defaultValue: 0,
       rules: 'required',
     },
+    // TODO @AI：可能 label 比较宽，需要拉长点。
     {
       fieldName: 'sceneRuleIds',
       label: '关联场景联动规则',
@@ -69,6 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择关联的场景联动规则',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -82,6 +88,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收的用户',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -93,6 +100,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收类型',
       },
+      defaultValue: [],
       rules: 'required',
     },
   ];
@@ -155,7 +163,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'level',
       title: '告警级别',
       minWidth: 100,
-      slots: { default: 'level' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
+      },
     },
     {
       field: 'status',
@@ -170,7 +181,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'sceneRuleIds',
       title: '关联场景联动规则',
       minWidth: 150,
-      slots: { default: 'sceneRules' },
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 条`,
     },
     {
       field: 'receiveUserNames',

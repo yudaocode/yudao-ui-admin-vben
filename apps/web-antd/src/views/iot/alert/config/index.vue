@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { AlertConfig } from '#/api/iot/alert/config';
+import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -12,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
 import { $t } from '#/locales';
 
-import AlertConfigForm from '../modules/alert-config-form.vue';
+import AlertConfigForm from '../modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'IoTAlertConfig' });
@@ -33,12 +33,12 @@ function handleCreate() {
 }
 
 /** 编辑告警配置 */
-function handleEdit(row: AlertConfig) {
+function handleEdit(row: AlertConfigApi.AlertConfig) {
   formModalApi.setData(row).open();
 }
 
 /** 删除告警配置 */
-async function handleDelete(row: AlertConfig) {
+async function handleDelete(row: AlertConfigApi.AlertConfig) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -81,7 +81,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<AlertConfig>,
+  } as VxeTableGridOptions<AlertConfigApi.AlertConfig>,
 });
 </script>
 
@@ -102,20 +102,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- TODO @AI：可以在 data 里渲染么？应该 antd 里有例子的； -->
-      <!-- 告警级别列 -->
-      <template #level="{ row }">
-        <Tag>
-          {{ getDictLabel(DICT_TYPE.IOT_ALERT_LEVEL, row.level) }}
-        </Tag>
-      </template>
-      <!-- TODO @AI：可以在 data 里渲染么？应该 antd 里有例子的； -->
-      <!-- 关联场景联动规则列 -->
-      <template #sceneRules="{ row }">
-        <span>{{ row.sceneRuleIds?.length || 0 }} 条</span>
-      </template>
-      <!-- TODO @AI：可以在 data 里渲染么？应该 antd 里有例子的； -->
-      <!-- 接收类型列 -->
+      <!-- TODO DONE @AI：告警级别已改用 CellDict 在 data.ts 渲染 -->
+      <!-- TODO DONE @AI：关联场景联动规则计数已改用 formatter 在 data.ts 渲染 -->
+      <!-- TODO DONE @AI：接收类型是 number[] 多 Tag，CellDict 只能渲染单值，保留 slot -->
       <template #receiveTypes="{ row }">
         <Tag
           v-for="(type, index) in row.receiveTypes"

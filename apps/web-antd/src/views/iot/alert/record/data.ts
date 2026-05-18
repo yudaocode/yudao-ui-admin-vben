@@ -101,7 +101,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'configLevel',
       title: '告警级别',
       minWidth: 100,
-      slots: { default: 'configLevel' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
+      },
     },
     {
       field: 'productId',

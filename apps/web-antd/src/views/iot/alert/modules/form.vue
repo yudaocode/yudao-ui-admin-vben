@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// TODO @AI：是不是要简化成 form.vue？类似 system user form 的情况？
-// TODO @AI：整体风格，看看是不是要对齐下 system user form 的风格；
-import type { AlertConfig } from '#/api/iot/alert/config';
+// TODO @AI：是不是应该拿到【config/modules】里？
+import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { computed, ref } from 'vue';
 
@@ -22,7 +21,7 @@ import { useFormSchema } from '../config/data';
 defineOptions({ name: 'IoTAlertConfigForm' });
 
 const emit = defineEmits(['success']);
-const formData = ref<AlertConfig>();
+const formData = ref<AlertConfigApi.AlertConfig>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['告警配置'])
@@ -49,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as AlertConfig;
+    const data = (await formApi.getValues()) as AlertConfigApi.AlertConfig;
     try {
       await (formData.value?.id
         ? updateAlertConfig(data)
@@ -68,16 +67,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AlertConfig>();
+    const data = modalApi.getData<AlertConfigApi.AlertConfig>();
     if (!data || !data.id) {
-      // 新增时设置默认值
-      // TODO @AI：这里是不是不用默认值？status 在 data.ts 里默认就好了？
-      await formApi.setValues({
-        status: 0,
-        sceneRuleIds: [],
-        receiveUserIds: [],
-        receiveTypes: [],
-      });
       return;
     }
     modalApi.lock();
