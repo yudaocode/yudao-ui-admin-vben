@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
@@ -36,6 +37,8 @@ const emit = defineEmits<{
   edit: [row: any];
   thingModel: [productId: number];
 }>();
+
+const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
 const list = ref<any[]>([]);
@@ -160,6 +163,7 @@ onMounted(() => {
             <!-- 按钮组 -->
             <div class="action-buttons">
               <Button
+                v-if="hasAccessByCodes(['iot:product:update'])"
                 size="small"
                 class="action-btn action-btn-edit"
                 @click="emit('edit', item)"
@@ -168,6 +172,7 @@ onMounted(() => {
                 编辑
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:product:query'])"
                 size="small"
                 class="action-btn action-btn-detail"
                 @click="emit('detail', item.id)"
@@ -176,6 +181,7 @@ onMounted(() => {
                 详情
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:thing-model:query'])"
                 size="small"
                 class="action-btn action-btn-model"
                 @click="emit('thingModel', item.id)"
@@ -183,29 +189,32 @@ onMounted(() => {
                 <IconifyIcon icon="lucide:git-branch" class="mr-1" />
                 物模型
               </Button>
-              <Tooltip v-if="item.status === 1" title="已发布的产品不能删除">
-                <Button
-                  size="small"
-                  danger
-                  disabled
-                  class="action-btn action-btn-delete !w-8"
+              <template v-if="hasAccessByCodes(['iot:product:delete'])">
+                <!-- TODO @AI：使用枚举 -->
+                <Tooltip v-if="item.status === 1" title="已发布的产品不能删除">
+                  <Button
+                    size="small"
+                    danger
+                    disabled
+                    class="action-btn action-btn-delete !w-8"
+                  >
+                    <IconifyIcon icon="lucide:trash-2" class="text-sm" />
+                  </Button>
+                </Tooltip>
+                <Popconfirm
+                  v-else
+                  :title="`确认删除产品 ${item.name} 吗?`"
+                  @confirm="emit('delete', item)"
                 >
-                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
-                </Button>
-              </Tooltip>
-              <Popconfirm
-                v-else
-                :title="`确认删除产品 ${item.name} 吗?`"
-                @confirm="emit('delete', item)"
-              >
-                <Button
-                  size="small"
-                  danger
-                  class="action-btn action-btn-delete !w-8"
-                >
-                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
-                </Button>
-              </Popconfirm>
+                  <Button
+                    size="small"
+                    danger
+                    class="action-btn action-btn-delete !w-8"
+                  >
+                    <IconifyIcon icon="lucide:trash-2" class="text-sm" />
+                  </Button>
+                </Popconfirm>
+              </template>
             </div>
           </Card>
         </Col>

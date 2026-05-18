@@ -1,6 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
 import { h } from 'vue';
 
@@ -11,10 +10,6 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
-
-/** 产品分类列表缓存 */
-let categoryList: IotProductCategoryApi.ProductCategory[] = [];
-getSimpleProductCategoryList().then((data) => (categoryList = data));
 
 /** 基础表单字段（不含图标、图片、描述） */
 export function useBasicFormSchema(
@@ -114,6 +109,15 @@ export function useBasicFormSchema(
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      // TODO @AI：枚举值。或者这里不要枚举值？对齐 vue3 + ep 版本
+      defaultValue: 0,
+      dependencies: {
+        triggerFields: ['id'],
+        componentProps: (values) => ({
+          // 编辑时设备类型不可改
+          disabled: !!values.id,
+        }),
+      },
       rules: 'required',
     },
     {
@@ -123,6 +127,12 @@ export function useBasicFormSchema(
       componentProps: {
         options: getDictOptions(DICT_TYPE.IOT_NET_TYPE, 'number'),
         placeholder: '请选择联网方式',
+      },
+      // 网关子设备走网关联网，不需要联网方式
+      dependencies: {
+        triggerFields: ['deviceType'],
+        // TODO @AI：枚举值。或者这里不要枚举值？（也看看 vben 里，其它是不是也漏了枚举值。）
+        show: (values) => values.deviceType !== 2,
       },
       rules: 'required',
     },
@@ -134,6 +144,7 @@ export function useBasicFormSchema(
         options: getDictOptions(DICT_TYPE.IOT_PROTOCOL_TYPE, 'string'),
         placeholder: '请选择协议类型',
       },
+      defaultValue: 'mqtt',
       rules: 'required',
     },
     {
@@ -144,6 +155,7 @@ export function useBasicFormSchema(
         options: getDictOptions(DICT_TYPE.IOT_SERIALIZE_TYPE, 'string'),
         placeholder: '请选择序列化类型',
       },
+      defaultValue: 'json',
       help: 'iot-gateway-server 默认根据接入的协议类型确定数据格式，仅 MQTT、EMQX 协议支持自定义序列化类型',
       rules: 'required',
     },
@@ -167,11 +179,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'icon',
       label: '产品图标',
-      component: 'IconPicker',
-      componentProps: {
-        placeholder: '请选择产品图标',
-        prefix: 'carbon',
-      },
+      component: 'ImageUpload',
     },
     {
       fieldName: 'picUrl',
@@ -204,11 +212,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 150,
     },
     {
-      field: 'categoryId',
+      field: 'categoryName',
       title: '品类',
       minWidth: 120,
-      formatter: ({ cellValue }) =>
-        categoryList.find((c) => c.id === cellValue)?.name || '未分类',
+      formatter: ({ row }) => row.categoryName || '未分类',
     },
     {
       field: 'deviceType',

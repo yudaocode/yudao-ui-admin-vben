@@ -3,12 +3,16 @@ import type { IotProductApi } from '#/api/iot/product/product';
 
 import { useRouter } from 'vue-router';
 
+import { useAccess } from '@vben/access';
 import { useVbenModal } from '@vben/common-ui';
 import { ProductStatusEnum } from '@vben/constants';
 
 import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
 
-import { updateProductStatus } from '#/api/iot/product/product';
+import {
+  syncProductPropertyTable,
+  updateProductStatus,
+} from '#/api/iot/product/product';
 
 import Form from '../../modules/form.vue';
 
@@ -26,6 +30,7 @@ const emit = defineEmits<{
 }>();
 
 const router = useRouter();
+const { hasAccessByCodes } = useAccess();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -44,8 +49,9 @@ async function copyToClipboard(text: string) {
 
 /** 跳转到设备管理 */
 function goToDeviceList(productId: number) {
+  // TODO @AI：在检查下，vben 里面有没其他也是这种路由情况的；要尽量使用 name；
   router.push({
-    path: '/iot/device/device',
+    name: 'IoTDevice',
     query: { productId: String(productId) },
   });
 }
@@ -80,6 +86,18 @@ function handleUnpublish(product: IotProductApi.Product) {
     },
   });
 }
+
+/** 同步物模型超级表结构 */
+function handleSyncPropertyTable(product: IotProductApi.Product) {
+  Modal.confirm({
+    title: '确认同步',
+    content: `确认要同步产品「${product.name}」的物模型超级表结构吗？`,
+    async onOk() {
+      await syncProductPropertyTable(product.id!);
+      message.success('同步成功');
+    },
+  });
+}
 </script>
 
 <template>
@@ -92,24 +110,37 @@ function handleUnpublish(product: IotProductApi.Product) {
       </div>
       <div class="flex gap-2">
         <Button
+          v-if="hasAccessByCodes(['iot:product:update'])"
           :disabled="product.status === ProductStatusEnum.PUBLISHED"
           @click="openEditForm(product)"
         >
           编辑
         </Button>
         <Button
-          v-if="product.status === ProductStatusEnum.UNPUBLISHED"
+          v-if="
+            product.status === ProductStatusEnum.UNPUBLISHED &&
+            hasAccessByCodes(['iot:product:update'])
+          "
           type="primary"
           @click="handlePublish(product)"
         >
           发布
         </Button>
         <Button
-          v-if="product.status === ProductStatusEnum.PUBLISHED"
+          v-if="
+            product.status === ProductStatusEnum.PUBLISHED &&
+            hasAccessByCodes(['iot:product:update'])
+          "
           danger
           @click="handleUnpublish(product)"
         >
           撤销发布
+        </Button>
+        <Button
+          v-if="hasAccessByCodes(['iot:product:update'])"
+          @click="handleSyncPropertyTable(product)"
+        >
+          同步物模型表结构
         </Button>
       </div>
     </div>
