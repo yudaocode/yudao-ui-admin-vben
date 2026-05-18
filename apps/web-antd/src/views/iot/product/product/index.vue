@@ -26,8 +26,6 @@ import { useGridColumns } from './data';
 import ProductCardView from './modules/card-view.vue';
 import Form from './modules/form.vue';
 
-defineOptions({ name: 'IoTProduct' });
-
 const router = useRouter();
 const categoryList = ref<IotProductCategoryApi.ProductCategory[]>([]);
 const viewMode = ref<'card' | 'list'>('card');

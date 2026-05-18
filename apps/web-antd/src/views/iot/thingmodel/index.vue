@@ -20,8 +20,6 @@ import { DataDefinition } from './modules/components';
 import Form from './modules/form.vue';
 import Tsl from './modules/tsl.vue';
 
-defineOptions({ name: 'IoTThingModel' });
-
 const product = inject<Ref<IotProductApi.Product>>(IOT_PROVIDE_KEY.PRODUCT);
 const productId = computed(() => product?.value?.id);
 

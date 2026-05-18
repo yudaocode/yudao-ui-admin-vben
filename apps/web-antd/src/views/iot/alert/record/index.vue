@@ -14,8 +14,6 @@ import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
-defineOptions({ name: 'IoTAlertRecord' });
-
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();

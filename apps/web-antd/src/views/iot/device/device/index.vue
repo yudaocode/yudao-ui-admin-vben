@@ -41,9 +41,6 @@ import DeviceForm from './modules/form.vue';
 import DeviceGroupForm from './modules/group-form.vue';
 import DeviceImportForm from './modules/import-form.vue';
 
-/** IoT 设备列表 */
-defineOptions({ name: 'IoTDevice' });
-
 const route = useRoute();
 const router = useRouter();
 const products = ref<IotProductApi.Product[]>([]);
@@ -51,9 +48,6 @@ const deviceGroups = ref<IotDeviceGroupApi.DeviceGroup[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 const checkedIds = ref<number[]>([]);
-
-/** 判断是否为列表视图 */
-const isListView = () => viewMode.value === 'list';
 
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,

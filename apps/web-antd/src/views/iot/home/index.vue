@@ -15,8 +15,6 @@ import DeviceMapCard from './modules/device-map-card.vue';
 import DeviceStateCountCard from './modules/device-state-count-card.vue';
 import MessageTrendCard from './modules/message-trend-card.vue';
 
-defineOptions({ name: 'IoTHome' });
-
 const loading = ref(true);
 const statsData = ref<StatsData>(defaultStatsData);
 

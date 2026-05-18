@@ -24,8 +24,6 @@ import DeviceDetailsSimulator from './modules/simulator.vue';
 import DeviceDetailsSubDevice from './modules/sub-device.vue';
 import DeviceDetailsThingModel from './modules/thing-model.vue';
 
-defineOptions({ name: 'IoTDeviceDetail' });
-
 const route = useRoute();
 const router = useRouter();
 

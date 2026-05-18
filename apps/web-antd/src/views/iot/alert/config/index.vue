@@ -15,8 +15,6 @@ import { $t } from '#/locales';
 import AlertConfigForm from './modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
-defineOptions({ name: 'IoTAlertConfig' });
-
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: AlertConfigForm,
   destroyOnClose: true,

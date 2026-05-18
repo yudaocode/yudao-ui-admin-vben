@@ -16,8 +16,6 @@ import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 import ProductDetailsHeader from './modules/header.vue';
 import ProductDetailsInfo from './modules/info.vue';
 
-defineOptions({ name: 'IoTProductDetail' });
-
 const route = useRoute();
 const router = useRouter();
 
