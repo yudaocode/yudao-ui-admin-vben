@@ -5,6 +5,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { onMounted, ref } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
@@ -46,6 +47,8 @@ const emit = defineEmits<{
   model: [id: number];
   productDetail: [productId: number];
 }>();
+
+const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
 const list = ref<IotDeviceApi.Device[]>([]);
@@ -184,6 +187,7 @@ onMounted(() => {
             <!-- 按钮组 -->
             <div class="action-buttons">
               <Button
+                v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
                 class="action-btn action-btn-edit"
                 @click="emit('edit', item)"
@@ -192,6 +196,7 @@ onMounted(() => {
                 编辑
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
                 class="action-btn action-btn-detail"
                 @click="emit('detail', item.id!)"
@@ -200,6 +205,7 @@ onMounted(() => {
                 详情
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:device:message-query'])"
                 size="small"
                 class="action-btn action-btn-data"
                 @click="emit('model', item.id!)"
@@ -208,6 +214,7 @@ onMounted(() => {
                 数据
               </Button>
               <Popconfirm
+                v-if="hasAccessByCodes(['iot:device:delete'])"
                 :title="`确认删除设备 ${item.deviceName} 吗?`"
                 @confirm="emit('delete', item)"
               >

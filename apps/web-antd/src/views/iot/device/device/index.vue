@@ -400,7 +400,6 @@ onMounted(async () => {
               type: 'primary',
               icon: 'ant-design:folder-add-outlined',
               auth: ['iot:device:update'],
-              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleAddToGroup,
             },
@@ -410,7 +409,6 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['iot:device:delete'],
-              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
@@ -463,17 +461,20 @@ onMounted(async () => {
             {
               label: $t('common.detail'),
               type: 'link',
+              auth: ['iot:device:query'],
               onClick: openDetail.bind(null, row.id!),
             },
             {
               label: '日志',
               type: 'link',
+              auth: ['iot:device:message-query'],
               onClick: openModel.bind(null, row.id!),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:device:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -481,6 +482,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:device:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.deviceName]),
                 confirm: handleDelete.bind(null, row),
