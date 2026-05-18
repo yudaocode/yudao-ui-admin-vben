@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, DirectoryTree, message, Tabs } from 'antdv-next';
+import { Button, DirectoryTree, message, TabPane, Tabs } from 'antdv-next';
 
 import { previewCodegen } from '#/api/infra/codegen';
 

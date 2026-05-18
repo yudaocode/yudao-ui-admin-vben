@@ -101,7 +101,7 @@ onMounted(() => {
           :lg="6"
         >
           <Card
-            :body-style="{ padding: '16px' }"
+            :styles="{ body: { padding: '16px' } }"
             class="product-card h-full rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
             <!-- 顶部标题区域 -->

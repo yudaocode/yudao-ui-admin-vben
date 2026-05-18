@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Card, Tabs } from 'antdv-next';
+import { Button, Card, TabPane, Tabs } from 'antdv-next';
 
 import { getBusiness } from '#/api/crm/business';
 import { getOperateLogPage } from '#/api/crm/operateLog';

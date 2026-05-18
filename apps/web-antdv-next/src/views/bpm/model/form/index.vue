@@ -468,7 +468,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <!-- 主体内容 -->
-      <Card :body-style="{ padding: '10px' }" class="mb-4">
+      <Card :styles="{ body: { padding: '10px' } }" class="mb-4">
         <div class="mt-12">
           <!-- 第一步：基本信息 -->
           <div v-if="currentStep === 0" class="mx-auto w-4/6">

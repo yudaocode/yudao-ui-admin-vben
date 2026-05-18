@@ -307,7 +307,7 @@ onMounted(() => {
       </Col>
       <!-- 右侧操作区 -->
       <Col :span="8">
-        <Space direction="vertical" size="large" class="flex justify-end">
+        <Space orientation="vertical" size="large" class="flex justify-end">
           <Tooltip title="重置">
             <Button @click="handleReset">
               <IconifyIcon class="size-5" icon="lucide:refresh-cw" />
@@ -466,8 +466,10 @@ onMounted(() => {
       <Col :span="6" v-if="selectedComponent?.property">
         <Card
           class="h-[calc(80vh)] px-2 py-4"
-          :body-style="{ padding: 0 }"
-          :head-style="{ padding: 0, minHeight: '40px' }"
+          :styles="{
+            body: { padding: 0 },
+            header: { padding: 0, minHeight: '40px' },
+          }"
         >
           <!-- 组件名称 -->
           <template #title>

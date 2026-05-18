@@ -279,9 +279,9 @@ async function previewImage(
           {
             class: 'hidden',
             preview: {
-              visible: visible.value,
+              open: visible.value,
               current: currentIndex,
-              onVisibleChange: (value: boolean) => {
+              onOpenChange: (value: boolean) => {
                 visible.value = value;
                 if (!value) {
                   setTimeout(() => {
@@ -366,7 +366,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
               closable: false,
               cancelText: $t('common.cancel'),
               okText: $t('ui.crop.confirm'),
-              destroyOnClose: true,
+              destroyOnHidden: true,
               onOk: async () => {
                 const cropper = cropperRef.value;
                 if (!cropper) {
@@ -676,13 +676,13 @@ async function initComponentAdapter() {
       fieldNames: { label: 'label', value: 'value', children: 'children' },
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     ApiSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: Select,
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     ApiTreeSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: TreeSelect,
@@ -690,7 +690,7 @@ async function initComponentAdapter() {
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
       optionsPropName: 'treeData',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     AutoComplete,
     Cascader,

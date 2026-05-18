@@ -30,6 +30,7 @@ catalog:
   '@eslint/js': ^10.0.1
   '@form-create/ant-design-vue': ^3.2.38
   '@form-create/antd-designer': ^3.4.0
+  '@form-create/antdv-next': ^3.3.0-alpha.0
   '@form-create/designer': ^3.4.0
   '@form-create/element-ui': ^3.2.38
   '@form-create/naive-ui': ^3.2.38
@@ -86,7 +87,7 @@ catalog:
   '@vueuse/integrations': ^14.2.1
   '@vueuse/motion': ^3.0.3
   ant-design-vue: ^4.2.6
-  antdv-next: ^1.1.9
+  antdv-next: ^1.3.0
   archiver: ^7.0.1
   axios: ^1.15.0
   axios-mock-adapter: ^2.1.0

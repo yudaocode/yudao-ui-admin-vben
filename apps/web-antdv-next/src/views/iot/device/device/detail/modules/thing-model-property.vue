@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
           class="mb-4"
         >
           <Card
-            :body-style="{ padding: '0' }"
+            :styles="{ body: { padding: '0' } }"
             class="relative h-full overflow-hidden transition-colors"
           >
             <!-- 添加渐变背景层 -->

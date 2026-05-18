@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { Card, Tabs } from 'antdv-next';
+import { Card, TabPane, Tabs } from 'antdv-next';
 
 import { getAuthPermissionInfoApi } from '#/api';
 import { getUserProfile } from '#/api/system/user/profile';

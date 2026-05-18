@@ -126,7 +126,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Card :bordered="false" title="商品排行">
+  <Card variant="borderless" title="商品排行">
     <template #extra>
       <ShortcutDateRangePicker @change="handleDateRangeChange" />
     </template>

@@ -48,7 +48,7 @@ onMounted(() => {
 
 <template>
   <ContentWrap class="m-2">
-    <Spin :spinning="loading" tip="加载中...">
+    <Spin :spinning="loading" description="加载中...">
       <Descriptions :data="formData" />
     </Spin>
   </ContentWrap>

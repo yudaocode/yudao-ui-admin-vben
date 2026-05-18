@@ -92,7 +92,7 @@ if (!formData.value._local) {
         <span class="mb-2 ml-2 text-xs text-gray-400">建议宽度：750</span>
       </div>
     </FormItem>
-    <Card class="property-group" :bordered="false">
+    <Card class="property-group" variant="borderless">
       <template #title>
         <div class="flex items-center justify-between">
           <span>内容（小程序）</span>
@@ -110,7 +110,7 @@ if (!formData.value._local) {
       </template>
       <NavigationBarCellProperty v-model="formData.mpCells" is-mp />
     </Card>
-    <Card class="property-group" :bordered="false">
+    <Card class="property-group" variant="borderless">
       <template #title>
         <div class="flex items-center justify-between">
           <span>内容（非小程序）</span>

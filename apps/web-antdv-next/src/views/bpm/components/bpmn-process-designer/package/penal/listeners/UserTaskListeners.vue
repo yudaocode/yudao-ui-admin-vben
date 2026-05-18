@@ -334,7 +334,7 @@ watch(
         >
           编辑
         </Button>
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <Button
           size="small"
           type="link"
@@ -539,7 +539,7 @@ watch(
             >
               编辑
             </Button>
-            <Divider type="vertical" />
+            <Divider orientation="vertical" />
             <Button
               size="small"
               type="link"

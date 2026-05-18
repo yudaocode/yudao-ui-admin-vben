@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page } from '@vben/common-ui';
 import { fenToYuan, yuanToFen } from '@vben/utils';
 
-import { Card, message, Tabs } from 'antdv-next';
+import { Card, message, TabPane, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { getTradeConfig, saveTradeConfig } from '#/api/mall/trade/config';

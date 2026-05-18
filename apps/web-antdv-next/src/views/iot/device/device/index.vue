@@ -276,7 +276,7 @@ onMounted(async () => {
     <DeviceImportFormModal @success="handleRefresh" />
 
     <!-- 统一搜索工具栏 -->
-    <Card :body-style="{ padding: '16px' }" class="mb-4">
+    <Card :styles="{ body: { padding: '16px' } }" class="mb-4">
       <!-- 搜索表单 -->
       <div class="mb-3 flex flex-wrap items-center gap-3">
         <Select

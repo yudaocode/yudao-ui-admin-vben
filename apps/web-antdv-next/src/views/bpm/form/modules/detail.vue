@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import FormCreate from '@form-create/ant-design-vue';
+import FormCreate from '@form-create/antdv-next';
 
 import { getForm } from '#/api/bpm/form';
 import { setConfAndFields2 } from '#/components/form-create';
@@ -40,8 +40,8 @@ const [Modal, modalApi] = useVbenModal({
   <Modal
     class="w-2/5"
     title="流程表单详情"
-    :body-style="{
-      maxHeight: '100px',
+    :styles="{
+      body: { maxHeight: '100px' },
     }"
   >
     <FormCreate :option="formConfig.option" :rule="formConfig.rule" />

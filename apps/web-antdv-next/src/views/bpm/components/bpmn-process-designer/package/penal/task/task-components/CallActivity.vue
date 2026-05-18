@@ -329,7 +329,7 @@ onMounted(async () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider orientation="vertical" />
           <Button
             size="small"
             type="link"
@@ -366,7 +366,7 @@ onMounted(async () => {
           >
             编辑
           </Button>
-          <Divider type="vertical" />
+          <Divider orientation="vertical" />
           <Button
             size="small"
             type="link"

@@ -40,10 +40,10 @@ const formData = useVModel(props, 'modelValue', emit);
       :wrapper-col="{ span: 18 }"
       :model="formData"
     >
-      <Card title="拼团活动" class="property-group" :bordered="false">
+      <Card title="拼团活动" class="property-group" variant="borderless">
         <CombinationShowcase v-model="formData.activityIds" />
       </Card>
-      <Card title="商品样式" class="property-group" :bordered="false">
+      <Card title="商品样式" class="property-group" variant="borderless">
         <FormItem label="布局" name="type">
           <RadioGroup v-model:value="formData.layoutType">
             <Tooltip title="单列大图" placement="bottom">
@@ -109,7 +109,7 @@ const formData = useVModel(props, 'modelValue', emit);
           </div>
         </FormItem>
       </Card>
-      <Card title="角标" class="property-group" :bordered="false">
+      <Card title="角标" class="property-group" variant="borderless">
         <FormItem label="角标" name="badge.show">
           <Switch v-model:checked="formData.badge.show" />
         </FormItem>
@@ -120,7 +120,7 @@ const formData = useVModel(props, 'modelValue', emit);
           </UploadImg>
         </FormItem>
       </Card>
-      <Card title="按钮" class="property-group" :bordered="false">
+      <Card title="按钮" class="property-group" variant="borderless">
         <FormItem label="按钮类型" name="btnBuy.type">
           <RadioGroup v-model:value="formData.btnBuy.type">
             <RadioButton value="text">文字</RadioButton>
@@ -152,7 +152,7 @@ const formData = useVModel(props, 'modelValue', emit);
           </FormItem>
         </template>
       </Card>
-      <Card title="商品样式" class="property-group" :bordered="false">
+      <Card title="商品样式" class="property-group" variant="borderless">
         <FormItem label="上圆角" name="borderRadiusTop">
           <Slider
             v-model:value="formData.borderRadiusTop"

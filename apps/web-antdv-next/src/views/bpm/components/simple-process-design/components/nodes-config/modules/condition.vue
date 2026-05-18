@@ -172,7 +172,7 @@ defineExpose({ validate });
           />
         </div>
       </div>
-      <Space direction="vertical" size="small" class="w-11/12 pl-1">
+      <Space orientation="vertical" size="small" class="w-11/12 pl-1">
         <template #split>
           {{ condition.conditionGroups.and ? '且' : '或' }}
         </template>

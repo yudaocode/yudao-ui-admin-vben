@@ -87,7 +87,7 @@ defineExpose({
     v-model:open="visible"
     title="选择规格"
     width="700px"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     :footer="null"
     @cancel="closeModal"
   >

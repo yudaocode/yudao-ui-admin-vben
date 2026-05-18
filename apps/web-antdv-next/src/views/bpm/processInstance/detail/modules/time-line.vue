@@ -14,7 +14,14 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime, isEmpty } from '@vben/utils';
 
-import { Avatar, Button, Image, Timeline, Tooltip } from 'antdv-next';
+import {
+  Avatar,
+  Button,
+  Image,
+  Timeline,
+  TimelineItem,
+  Tooltip,
+} from 'antdv-next';
 
 import { UserSelectModal } from '#/views/system/user/components';
 
@@ -238,7 +245,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
         :key="index"
         :color="getApprovalNodeColor(activity.status)"
       >
-        <template #dot>
+        <template #icon>
           <div class="relative">
             <div
               class="position-absolute left--2.5 top--1.5 flex h-8 w-8 items-center justify-center rounded-full border border-solid border-gray-200 bg-blue-500 p-1.5"

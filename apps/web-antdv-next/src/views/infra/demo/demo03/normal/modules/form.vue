@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message, Tabs } from 'antdv-next';
+import { message, TabPane, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

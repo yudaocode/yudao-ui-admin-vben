@@ -8,7 +8,7 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { AutoReplyMsgType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Row, Tabs } from 'antdv-next';
+import { message, Row, TabPane, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

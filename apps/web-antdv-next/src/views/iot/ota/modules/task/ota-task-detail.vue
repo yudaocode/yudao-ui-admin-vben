@@ -104,7 +104,7 @@ const columns: TableColumnsType = [
     key: 'updateTime',
     align: 'center' as const,
     width: 180,
-    customRender: ({ text }: any) => formatDate(text, 'YYYY-MM-DD HH:mm:ss'),
+    render: ({ text }: any) => formatDate(text, 'YYYY-MM-DD HH:mm:ss'),
   },
   {
     title: '操作',
