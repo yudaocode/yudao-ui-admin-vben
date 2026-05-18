@@ -17,21 +17,9 @@ export namespace IotStatisticsApi {
     productCategoryDeviceCounts: Record<string, number>; // 按品类统计的设备数量
   }
 
-  /** 时间戳-数值的键值对类型 */
-  export interface TimeValueItem {
-    [key: string]: number;
-  }
-
-  /** 消息统计数据类型 */
-  export interface DeviceMessageSummary {
-    statType: number;
-    upstreamCounts: TimeValueItem[];
-    downstreamCounts: TimeValueItem[];
-  }
-
   /** 设备消息数量统计（按日期） */
   export interface DeviceMessageSummaryByDateRespVO {
-    time: string; // 时间轴
+    time: Date; // 时间轴
     upstreamCount: number; // 上行消息数量
     downstreamCount: number; // 下行消息数量
   }

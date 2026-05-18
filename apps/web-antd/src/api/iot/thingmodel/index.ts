@@ -4,80 +4,82 @@ import { isEmpty } from '@vben/utils';
 
 import { requestClient } from '#/api/request';
 
-/** IoT 物模型数据 */
-export interface ThingModelData {
-  id?: number;
-  productId?: number;
-  productKey?: string;
-  identifier?: string;
-  name?: string;
-  description?: string;
-  dataType?: string;
-  type?: number; // 参见 IoTThingModelTypeEnum 枚举类
-  property?: ThingModelProperty;
-  event?: ThingModelEvent;
-  service?: ThingModelService;
-}
+export namespace ThingModelApi {
+  /** IoT 物模型数据 */
+  export interface ThingModel {
+    id?: number;
+    productId?: number;
+    productKey?: string;
+    identifier?: string;
+    name?: string;
+    description?: string;
+    dataType?: string;
+    type?: number; // 参见 IoTThingModelTypeEnum 枚举类
+    property?: Property;
+    event?: Event;
+    service?: Service;
+  }
 
-/** IoT 物模型属性 */
-export interface ThingModelProperty {
-  identifier?: string;
-  name?: string;
-  accessMode?: string;
-  required?: boolean;
-  dataType?: string;
-  description?: string;
-  dataSpecs?: any;
-  dataSpecsList?: any[];
-}
+  /** IoT 物模型属性 */
+  export interface Property {
+    identifier?: string;
+    name?: string;
+    accessMode?: string;
+    required?: boolean;
+    dataType?: string;
+    description?: string;
+    dataSpecs?: any;
+    dataSpecsList?: any[];
+  }
 
-/** IoT 物模型服务 */
-export interface ThingModelService {
-  identifier?: string;
-  name?: string;
-  required?: boolean;
-  callType?: string;
-  description?: string;
-  inputParams?: ThingModelParam[];
-  outputParams?: ThingModelParam[];
-  method?: string;
-}
+  /** IoT 物模型服务 */
+  export interface Service {
+    identifier?: string;
+    name?: string;
+    required?: boolean;
+    callType?: string;
+    description?: string;
+    inputParams?: Param[];
+    outputParams?: Param[];
+    method?: string;
+  }
 
-/** IoT 物模型事件 */
-export interface ThingModelEvent {
-  identifier?: string;
-  name?: string;
-  required?: boolean;
-  type?: string;
-  description?: string;
-  outputParams?: ThingModelParam[];
-  method?: string;
-}
+  /** IoT 物模型事件 */
+  export interface Event {
+    identifier?: string;
+    name?: string;
+    required?: boolean;
+    type?: string;
+    description?: string;
+    outputParams?: Param[];
+    method?: string;
+  }
 
-/** IoT 物模型参数 */
-export interface ThingModelParam {
-  identifier?: string;
-  name?: string;
-  direction?: string;
-  paraOrder?: number;
-  dataType?: string;
-  dataSpecs?: any;
-  dataSpecsList?: any[];
-}
+  /** IoT 物模型参数 */
+  export interface Param {
+    identifier?: string;
+    name?: string;
+    direction?: string;
+    paraOrder?: number;
+    dataType?: string;
+    dataSpecs?: any;
+    dataSpecsList?: any[];
+  }
 
-/** IoT 数据定义（数值型） */
-export interface DataSpecsNumberData {
-  min?: number | string;
-  max?: number | string;
-  step?: number | string;
-  unit?: string;
-  unitName?: string;
-}
+  /** IoT 数据定义（数值型） */
+  export interface DataSpecsNumberData {
+    min?: number | string;
+    max?: number | string;
+    step?: number | string;
+    unit?: string;
+    unitName?: string;
+  }
 
-/** IoT 数据定义（枚举/布尔型） */
-export interface DataSpecsEnumOrBoolData {
-  value: number | string;
-  name: string;
+  /** IoT 数据定义（枚举/布尔型） */
+  export interface DataSpecsEnumOrBoolData {
+    value: number | string;
+    name: string;
+  }
 }
 
 /** 生成「必填 + 数字」类校验器：拼到 size / length / 枚举值上 */
@@ -192,7 +194,7 @@ export const validateBoolName = buildIdentifierLikeNameValidator('布尔值名�
 
 /** 查询产品物模型分页 */
 export function getThingModelPage(params: PageParam) {
-  return requestClient.get<PageResult<ThingModelData>>(
+  return requestClient.get<PageResult<ThingModelApi.ThingModel>>(
     '/iot/thing-model/page',
     { params },
   );
@@ -200,23 +202,28 @@ export function getThingModelPage(params: PageParam) {
 
 /** 查询产品物模型详情 */
 export function getThingModel(id: number) {
-  return requestClient.get<ThingModelData>(`/iot/thing-model/get?id=${id}`);
+  return requestClient.get<ThingModelApi.ThingModel>(
+    `/iot/thing-model/get?id=${id}`,
+  );
 }
 
 /** 根据产品 ID 查询物模型列表 */
 export function getThingModelListByProductId(productId: number) {
-  return requestClient.get<ThingModelData[]>('/iot/thing-model/list', {
-    params: { productId },
-  });
+  return requestClient.get<ThingModelApi.ThingModel[]>(
+    '/iot/thing-model/list',
+    {
+      params: { productId },
+    },
+  );
 }
 
 /** 新增物模型 */
-export function createThingModel(data: ThingModelData) {
+export function createThingModel(data: ThingModelApi.ThingModel) {
   return requestClient.post('/iot/thing-model/create', data);
 }
 
 /** 修改物模型 */
-export function updateThingModel(data: ThingModelData) {
+export function updateThingModel(data: ThingModelApi.ThingModel) {
   return requestClient.put('/iot/thing-model/update', data);
 }
 
