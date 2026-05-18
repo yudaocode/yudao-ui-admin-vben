@@ -117,7 +117,6 @@ function stringifyDeviceMessage(deviceMessage: any) {
         </Popover>
         <span v-else class="text-gray-400">-</span>
       </template>
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[

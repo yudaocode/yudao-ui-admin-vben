@@ -4,12 +4,12 @@ import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
 
-import { message, Tag } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import AlertConfigForm from './modules/form.vue';
@@ -102,17 +102,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- TODO DONE @AI：接收类型是 number[] 多 Tag，CellDict 只能渲染单值，保留 slot -->
       <template #receiveTypes="{ row }">
-        <Tag
+        <DictTag
           v-for="(type, index) in row.receiveTypes"
           :key="index"
+          :type="DICT_TYPE.IOT_ALERT_RECEIVE_TYPE"
+          :value="type"
           class="mr-1"
-        >
-          {{ getDictLabel(DICT_TYPE.IOT_ALERT_RECEIVE_TYPE, type) }}
-        </Tag>
+        />
       </template>
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
