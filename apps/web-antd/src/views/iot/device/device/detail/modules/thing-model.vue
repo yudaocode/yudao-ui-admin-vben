@@ -1,6 +1,6 @@
 <!-- 设备物模型：设备属性、事件管理、服务调用 -->
 <script lang="ts" setup>
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { ref } from 'vue';
 
@@ -14,7 +14,7 @@ import DeviceDetailsThingModelService from './thing-model-service.vue';
 
 const props = defineProps<{
   deviceId: number;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 const activeTab = ref('property'); // 默认选中设备属性

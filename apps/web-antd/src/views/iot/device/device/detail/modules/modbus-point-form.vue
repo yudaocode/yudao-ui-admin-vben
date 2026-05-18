@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, h, ref } from 'vue';
 
@@ -35,7 +35,7 @@ const getTitle = computed(() => {
   return formData.value?.id ? '编辑点位' : '新增点位';
 });
 const deviceId = ref<number>(0);
-const thingModelList = ref<ThingModelData[]>([]);
+const thingModelList = ref<ThingModelApi.ThingModel[]>([]);
 
 /** 筛选属性类型的物模型 */
 const propertyList = computed(() => {
@@ -289,7 +289,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{
       deviceId: number;
       id?: number;
-      thingModelList: ThingModelData[];
+      thingModelList: ThingModelApi.ThingModel[];
     }>();
     if (!data) {
       return;

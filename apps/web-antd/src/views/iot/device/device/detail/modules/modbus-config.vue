@@ -6,7 +6,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { computed, h, onMounted, ref } from 'vue';
@@ -35,7 +35,7 @@ defineOptions({ name: 'DeviceModbusConfig' });
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 // ======================= 连接配置 =======================

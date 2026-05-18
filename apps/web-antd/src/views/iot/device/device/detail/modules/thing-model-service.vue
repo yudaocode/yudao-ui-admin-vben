@@ -1,7 +1,7 @@
 <!-- 设备服务调用 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, reactive, watch } from 'vue';
 
@@ -21,7 +21,7 @@ import {
 
 const props = defineProps<{
   deviceId: number;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 /** 查询参数 */
@@ -33,7 +33,7 @@ const queryParams = reactive({
 /** 服务类型的物模型数据 */
 const serviceThingModels = computed(() => {
   return props.thingModelList.filter(
-    (item: ThingModelData) =>
+    (item: ThingModelApi.ThingModel) =>
       String(item.type) === String(IoTThingModelTypeEnum.SERVICE),
   );
 });
@@ -136,7 +136,7 @@ function resetQuery() {
 function getServiceName(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   return service?.name || identifier;
 }
@@ -145,7 +145,7 @@ function getServiceName(identifier: string | undefined) {
 function getCallType(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   if (!service?.service?.callType) return '-';
   return getThingModelServiceCallTypeLabel(service.service.callType) || '-';

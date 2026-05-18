@@ -4,7 +4,7 @@ import type { TableColumnType } from 'ant-design-vue';
 
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, ref } from 'vue';
 
@@ -36,7 +36,7 @@ import DeviceDetailsMessage from './message.vue';
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 // 消息弹窗
@@ -224,7 +224,7 @@ async function handlePropertyPost() {
 }
 
 // 事件上报
-async function handleEventPost(row: ThingModelData) {
+async function handleEventPost(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
     let params: any = {};
@@ -306,7 +306,7 @@ async function handlePropertySet() {
 }
 
 // 服务调用
-async function handleServiceInvoke(row: ThingModelData) {
+async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
     let params: any = {};

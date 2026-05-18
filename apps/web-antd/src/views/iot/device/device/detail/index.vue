@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -34,7 +34,7 @@ const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);
 const activeTab = ref('info');
-const thingModelList = ref<ThingModelData[]>([]);
+const thingModelList = ref<ThingModelApi.ThingModel[]>([]);
 
 /** 获取设备详情 */
 async function getDeviceData(deviceId: number) {
@@ -113,11 +113,11 @@ onMounted(async () => {
       </Tabs.TabPane>
       <Tabs.TabPane
         v-if="product.deviceType === DeviceTypeEnum.GATEWAY"
-        key="sub-device"
+        key="subDevice"
         tab="子设备管理"
       >
         <DeviceDetailsSubDevice
-          v-if="activeTab === 'sub-device' && device.id"
+          v-if="activeTab === 'subDevice' && device.id"
           :device-id="device.id"
         />
       </Tabs.TabPane>

@@ -1,7 +1,7 @@
 <!-- 设备事件管理 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, reactive, watch } from 'vue';
 
@@ -21,7 +21,7 @@ import {
 
 const props = defineProps<{
   deviceId: number;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 /** 查询参数 */
@@ -33,7 +33,7 @@ const queryParams = reactive({
 /** 事件类型的物模型数据 */
 const eventThingModels = computed(() => {
   return props.thingModelList.filter(
-    (item: ThingModelData) =>
+    (item: ThingModelApi.ThingModel) =>
       String(item.type) === String(IoTThingModelTypeEnum.EVENT),
   );
 });
@@ -123,7 +123,7 @@ function resetQuery() {
 function getEventName(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   return event?.name || identifier;
 }
@@ -132,7 +132,7 @@ function getEventName(identifier: string | undefined) {
 function getEventType(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   if (!event?.event?.type) return '-';
   return getEventTypeLabel(event.event.type) || '-';
