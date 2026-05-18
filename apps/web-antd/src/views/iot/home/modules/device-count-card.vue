@@ -25,7 +25,7 @@ const hasData = computed(() => {
   const categories = Object.entries(
     props.statsData.productCategoryDeviceCounts || {},
   );
-  return categories.length > 0 && props.statsData.deviceCount !== 0;
+  return categories.length > 0 && props.statsData.deviceCount !== -1;
 });
 
 /** 初始化图表 */

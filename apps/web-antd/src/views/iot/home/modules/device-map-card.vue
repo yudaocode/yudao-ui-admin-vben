@@ -4,6 +4,9 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+
 import { Card, Empty, Spin } from 'ant-design-vue';
 
 import { getDeviceLocationList } from '#/api/iot/device/device';
@@ -28,15 +31,10 @@ const stateColorMap: Record<number, string> = {
   [DeviceStateEnum.OFFLINE]: '#9CA3AF', // 离线 - 灰色
 };
 
-/** 获取设备状态配置 */
+/** 获取设备状态配置；名称走字典，颜色用本地映射 */
 function getStateConfig(state: number): { color: string; name: string } {
-  const stateNames: Record<number, string> = {
-    [DeviceStateEnum.INACTIVE]: '待激活',
-    [DeviceStateEnum.ONLINE]: '在线',
-    [DeviceStateEnum.OFFLINE]: '离线',
-  };
   return {
-    name: stateNames[state] || '未知',
+    name: getDictLabel(DICT_TYPE.IOT_DEVICE_STATE, state) || '未知',
     color: stateColorMap[state] || '#909399',
   };
 }
@@ -118,7 +116,7 @@ function initMap() {
           if (link) {
             link.addEventListener('click', (e) => {
               e.preventDefault();
-              const deviceId = e.target as HTMLElement.dataset.id;
+              const deviceId = (e.target as HTMLElement).dataset.id;
               if (deviceId) {
                 router.push({
                   name: 'IoTDeviceDetail',

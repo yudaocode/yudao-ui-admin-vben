@@ -29,7 +29,7 @@ const { renderEcharts: renderInactiveChart } = useEcharts(
 /** 是否有数据 */
 const hasData = computed(() => {
   if (!props.statsData) return false;
-  return props.statsData.deviceCount !== 0;
+  return props.statsData.deviceCount !== -1;
 });
 
 /** 初始化图表 */
