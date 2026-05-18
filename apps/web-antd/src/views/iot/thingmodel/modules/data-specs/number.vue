@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { DataSpecsNumberData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -16,7 +16,7 @@ const dataSpecs = useVModel(
   props,
   'modelValue',
   emits,
-) as Ref<DataSpecsNumberData>;
+) as Ref<ThingModelApi.DataSpecsNumberData>;
 
 /** 单位下拉变化时，拆出 unitName 与 unit 回写 */
 function unitChange(unitSpecs: any) {

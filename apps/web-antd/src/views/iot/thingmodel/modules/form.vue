@@ -2,7 +2,7 @@
 import type { Ref } from 'vue';
 
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, inject, ref } from 'vue';
 
@@ -35,7 +35,7 @@ const emit = defineEmits(['success']);
 const product = inject<Ref<IotProductApi.Product>>(IOT_PROVIDE_KEY.PRODUCT);
 
 const formRef = ref();
-const formData = ref<ThingModelData>(buildEmptyFormData());
+const formData = ref<ThingModelApi.ThingModel>(buildEmptyFormData());
 
 const getTitle = computed(() =>
   formData.value.id
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 构造空白表单数据 */
-function buildEmptyFormData(): ThingModelData {
+function buildEmptyFormData(): ThingModelApi.ThingModel {
   return {
     type: IoTThingModelTypeEnum.PROPERTY,
     dataType: IoTDataSpecsDataTypeEnum.INT,
@@ -107,7 +107,7 @@ function buildEmptyFormData(): ThingModelData {
 }
 
 /** 回显数据时，规整各分支字段确保子表单可绑定 */
-function normalizeFormData(result: ThingModelData): ThingModelData {
+function normalizeFormData(result: ThingModelApi.ThingModel): ThingModelApi.ThingModel {
   const next: any = { ...result, type: Number(result.type) };
   if (isEmpty(next.property)) {
     next.dataType = IoTDataSpecsDataTypeEnum.INT;

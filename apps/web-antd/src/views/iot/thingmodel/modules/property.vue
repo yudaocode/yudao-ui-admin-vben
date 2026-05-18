@@ -2,7 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { ThingModelProperty } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, watch } from 'vue';
 
@@ -50,7 +50,7 @@ const property = useVModel(
   props,
   'modelValue',
   emits,
-) as Ref<ThingModelProperty>;
+) as Ref<ThingModelApi.Property>;
 
 const dataTypeOptions = computed(() =>
   props.isStructDataSpecs ? STRUCT_CHILD_OPTIONS : getDataTypeOptions(),

@@ -2,7 +2,7 @@
 import type { Ref } from 'vue';
 
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, inject } from 'vue';
 
@@ -46,12 +46,12 @@ function handleCreate() {
 }
 
 /** 编辑物模型 */
-function handleEdit(row: ThingModelData) {
+function handleEdit(row: ThingModelApi.ThingModel) {
   formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除物模型 */
-async function handleDelete(row: ThingModelData) {
+async function handleDelete(row: ThingModelApi.ThingModel) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,

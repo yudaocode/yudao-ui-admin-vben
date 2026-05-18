@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed } from 'vue';
 
@@ -27,7 +27,7 @@ const LIST_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.ENUM,
 ]);
 
-const props = defineProps<{ data: ThingModelData }>();
+const props = defineProps<{ data: ThingModelApi.ThingModel }>();
 
 const formattedDataSpecsList = computed(() => {
   if (!props.data.property?.dataSpecsList?.length) {
