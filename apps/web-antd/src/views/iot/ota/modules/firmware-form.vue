@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @AI：是不是要挪到 firmware/modules/form.vue？
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { computed, ref } from 'vue';

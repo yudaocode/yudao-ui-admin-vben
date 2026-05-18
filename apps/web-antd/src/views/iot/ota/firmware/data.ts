@@ -129,11 +129,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '固件描述',
       minWidth: 200,
     },
+    // TODO @AI：你看看 vue3 + ep 是这么干的么？
     {
-      field: 'productId',
+      field: 'productName',
       title: '所属产品',
       minWidth: 150,
-      slots: { default: 'product' },
+      formatter: ({ row }) => row.productName || '未知产品',
     },
     {
       field: 'fileUrl',
