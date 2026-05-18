@@ -15,12 +15,10 @@ import { useDescription } from '#/components/description';
 import {
   formatPrice,
   formatQuantity,
-  formatSumPrice,
-  formatSumQuantity,
   multiplyPrice,
 } from '#/views/wms/utils/format';
 
-import { useDetailSchema } from '../data';
+import { getDetailFooter, useDetailSchema } from '../data';
 
 interface DetailRow extends WmsReceiptOrderDetailApi.ReceiptOrderDetail {
   totalPrice?: number;
@@ -79,7 +77,9 @@ const [Modal, modalApi] = useVbenModal({
         :data="detailRows"
         border
         empty-text="暂无商品明细"
+        :footer-method="getDetailFooter"
         :show-overflow="true"
+        show-footer
         size="small"
       >
         <VxeColumn title="商品信息" min-width="220">
@@ -98,7 +98,7 @@ const [Modal, modalApi] = useVbenModal({
             </div>
           </template>
         </VxeColumn>
-        <VxeColumn title="数量" align="right" width="120">
+        <VxeColumn field="quantity" title="数量" align="right" width="120">
           <template #default="{ row }">
             {{ formatQuantity(row.quantity) || '-' }}
           </template>
@@ -109,16 +109,12 @@ const [Modal, modalApi] = useVbenModal({
             {{ formatPrice(row.price) || '-' }}
           </template>
         </VxeColumn>
-        <VxeColumn title="总价" align="right" width="140">
+        <VxeColumn field="totalPrice" title="总价" align="right" width="140">
           <template #default="{ row }">
             {{ formatPrice(row.totalPrice) || '-' }}
           </template>
         </VxeColumn>
       </VxeTable>
-      <div class="flex justify-end gap-6 text-sm">
-        <span>合计数量：{{ formatSumQuantity(detailRows, (detail) => detail.quantity) }}</span>
-        <span>合计金额：{{ formatSumPrice(detailRows, (detail) => detail.totalPrice) }}</span>
-      </div>
     </div>
   </Modal>
 </template>

@@ -45,7 +45,9 @@ type FormMode = 'create' | 'update';
 
 defineOptions({ name: 'WmsReceiptOrderForm' });
 
-const emit = defineEmits(['success']);
+const emit = defineEmits<{
+  success: [];
+}>();
 
 const formData = ref<WmsReceiptOrderApi.ReceiptOrder>({});
 const formMode = ref<FormMode>('create');
@@ -120,6 +122,7 @@ function buildDetail(sku: WmsItemSkuApi.ItemSku): DetailRow {
 
 /** 设置入库明细 */
 function setDetails(list?: WmsReceiptOrderDetailApi.ReceiptOrderDetail[]) {
+  detailSeq = 0;
   details.value = (list || []).map((detail) => normalizeDetail(detail));
   void refreshDetailFooter();
 }
@@ -330,6 +333,7 @@ const [Modal, modalApi] = useVbenModal({
         setDetails(orderDetails);
         // 设置到 values
         await formApi.setValues(formData.value);
+        await nextTick();
         originalSubmitData.value = await buildSubmitData();
       } finally {
         modalApi.unlock();
@@ -344,8 +348,8 @@ const [Modal, modalApi] = useVbenModal({
     };
     setDetails([]);
     await formApi.setValues(formData.value);
-    originalSubmitData.value = await buildSubmitData();
     await nextTick();
+    originalSubmitData.value = await buildSubmitData();
   },
 });
 </script>
