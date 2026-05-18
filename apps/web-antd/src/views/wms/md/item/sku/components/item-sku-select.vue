@@ -91,6 +91,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useSkuSelectGridColumns(),
     height: 560,
     keepSource: true,
+    showOverflow: false,
     checkboxConfig: {
       checkMethod: isRowSelectable,
       highlight: true,
@@ -175,37 +176,45 @@ defineExpose({ open: openModal });
   >
     <Grid table-title="商品 SKU 列表">
       <template #itemInfo="{ row }">
-        <div>{{ row.itemName || '-' }}</div>
-        <div v-if="row.itemCode" class="text-xs text-gray-500">
-          商品编号：{{ row.itemCode }}
-        </div>
-        <div v-if="row.brandName" class="text-xs text-gray-500">
-          品牌：{{ row.brandName }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div>{{ row.itemName || '-' }}</div>
+          <div v-if="row.itemCode" class="text-xs text-gray-500">
+            商品编号：{{ row.itemCode }}
+          </div>
+          <div v-if="row.brandName" class="text-xs text-gray-500">
+            品牌：{{ row.brandName }}
+          </div>
         </div>
       </template>
       <template #skuInfo="{ row }">
-        <div>{{ row.name || '-' }}</div>
-        <div v-if="row.code" class="text-xs text-gray-500">
-          编号：{{ row.code }}
-        </div>
-        <div v-if="row.barCode" class="text-xs text-gray-500">
-          条码：{{ row.barCode }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div>{{ row.name || '-' }}</div>
+          <div v-if="row.code" class="text-xs text-gray-500">
+            编号：{{ row.code }}
+          </div>
+          <div v-if="row.barCode" class="text-xs text-gray-500">
+            条码：{{ row.barCode }}
+          </div>
         </div>
       </template>
       <template #priceInfo="{ row }">
-        <div v-if="row.costPrice !== undefined">
-          成本价：{{ formatPrice(row.costPrice) }}
-        </div>
-        <div v-if="row.sellingPrice !== undefined">
-          销售价：{{ formatPrice(row.sellingPrice) }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div v-if="row.costPrice !== undefined">
+            成本价：{{ formatPrice(row.costPrice) }}
+          </div>
+          <div v-if="row.sellingPrice !== undefined">
+            销售价：{{ formatPrice(row.sellingPrice) }}
+          </div>
         </div>
       </template>
       <template #weightInfo="{ row }">
-        <div v-if="row.netWeight !== undefined">
-          净重：{{ formatWeight(row.netWeight) }}
-        </div>
-        <div v-if="row.grossWeight !== undefined">
-          毛重：{{ formatWeight(row.grossWeight) }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div v-if="row.netWeight !== undefined">
+            净重：{{ formatWeight(row.netWeight) }}
+          </div>
+          <div v-if="row.grossWeight !== undefined">
+            毛重：{{ formatWeight(row.grossWeight) }}
+          </div>
         </div>
       </template>
       <template #dimensionInfo="{ row }">

@@ -55,6 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useInventorySelectGridColumns(),
     height: 560,
     keepSource: true,
+    showOverflow: false,
     checkboxConfig: {
       checkMethod: ({ row }: { row: InventorySelectRow }) =>
         isInventorySelectable(row),
@@ -149,15 +150,19 @@ defineExpose({ open: openModal });
   >
     <Grid table-title="库存列表">
       <template #itemInfo="{ row }">
-        <div>{{ row.itemName || '-' }}</div>
-        <div v-if="row.itemCode" class="text-xs text-gray-500">
-          商品编号：{{ row.itemCode }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div>{{ row.itemName || '-' }}</div>
+          <div v-if="row.itemCode" class="text-xs text-gray-500">
+            商品编号：{{ row.itemCode }}
+          </div>
         </div>
       </template>
       <template #skuInfo="{ row }">
-        <div>{{ row.skuName || '-' }}</div>
-        <div v-if="row.skuCode" class="text-xs text-gray-500">
-          规格编号：{{ row.skuCode }}
+        <div class="flex flex-col gap-1 py-1 leading-5">
+          <div>{{ row.skuName || '-' }}</div>
+          <div v-if="row.skuCode" class="text-xs text-gray-500">
+            规格编号：{{ row.skuCode }}
+          </div>
         </div>
       </template>
       <template #availableQuantity="{ row }">
