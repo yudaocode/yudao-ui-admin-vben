@@ -1,10 +1,36 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
+import { getDictLabel, getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
 import { IoTOtaTaskDeviceScopeEnum } from '#/views/iot/utils/constants';
+
+/** 任务详情的描述字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    { field: 'id', label: '任务编号' },
+    { field: 'name', label: '任务名称' },
+    {
+      field: 'deviceScope',
+      label: '升级范围',
+      render: (val) => getDictLabel(DICT_TYPE.IOT_OTA_TASK_DEVICE_SCOPE, val),
+    },
+    {
+      field: 'status',
+      label: '任务状态',
+      render: (val) => getDictLabel(DICT_TYPE.IOT_OTA_TASK_STATUS, val),
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+    },
+    { field: 'description', label: '任务描述', span: 3 },
+  ];
+}
 
 /** 新增升级任务的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -71,21 +97,7 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 任务列表的搜索表单 */
-export function useGridFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      fieldName: 'name',
-      label: '任务名称',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入任务名称',
-        allowClear: true,
-      },
-    },
-  ];
-}
-
+// TODO DONE @AI：任务列表内嵌固件详情页，单字段搜索意义不大，已去掉搜索表单
 /** 任务列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
@@ -153,58 +165,4 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   ];
 }
 
-/** 升级记录的列表字段 */
-export function useRecordGridColumns(): VxeTableGridOptions['columns'] {
-  return [
-    {
-      field: 'deviceName',
-      title: '设备名称',
-      minWidth: 150,
-      align: 'center',
-    },
-    {
-      field: 'fromFirmwareVersion',
-      title: '当前版本',
-      width: 120,
-      align: 'center',
-    },
-    {
-      field: 'status',
-      title: '升级状态',
-      width: 120,
-      align: 'center',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.IOT_OTA_TASK_RECORD_STATUS },
-      },
-    },
-    {
-      field: 'progress',
-      title: '升级进度',
-      width: 120,
-      align: 'center',
-      formatter: ({ row }) => `${row.progress || 0}%`,
-    },
-    {
-      field: 'description',
-      title: '状态描述',
-      minWidth: 150,
-      align: 'center',
-      showOverflow: 'tooltip',
-    },
-    {
-      field: 'updateTime',
-      title: '更新时间',
-      width: 180,
-      align: 'center',
-      formatter: 'formatDateTime',
-    },
-    {
-      title: '操作',
-      width: 80,
-      fixed: 'right',
-      align: 'center',
-      slots: { default: 'actions' },
-    },
-  ];
-}
+// TODO DONE @AI：record schema 已挪到 task/record/data.ts；list 也独立成 task/record/modules/list.vue

@@ -124,7 +124,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(
+  getProductName?: (productId: number) => string | undefined,
+): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -147,13 +149,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '固件描述',
       minWidth: 200,
     },
-    // TODO DONE @AI：vben 用 row.productName（后端 VO 已返回）；vue3 + ep 用 getProductName(productId) 本地查表；vben 更直接，且 IoTOtaFirmwareApi.Firmware.productName 已是 API 契约
-    // TODO @AI：实际后端没读取哈。看看怎么对齐下 vue3 + ep
+    // TODO DONE @AI：后端 firmware 没返回 productName，formatter 调 getProductName resolver；resolver + productList 反应式状态由 index.vue 注入（对齐 infra/codegen 模式）
     {
-      field: 'productName',
+      field: 'productId',
       title: '所属产品',
       minWidth: 150,
-      formatter: ({ row }) => row.productName || '未知产品',
+      formatter: ({ cellValue }) =>
+        getProductName?.(cellValue) || (cellValue ? '加载中...' : '-'),
     },
     {
       field: 'fileUrl',

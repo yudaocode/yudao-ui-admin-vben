@@ -12,6 +12,7 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
+// TODO @AI：是不是defineOptions、升级任务表单 注释需要？
 /** IoT OTA 升级任务表单 */
 defineOptions({ name: 'IoTOtaTaskForm' });
 
@@ -28,6 +29,7 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// TODO @AI：注释风格，需要对齐其他 form；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();

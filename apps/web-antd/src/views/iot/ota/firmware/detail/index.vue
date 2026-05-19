@@ -4,11 +4,13 @@ import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { Page } from '@vben/common-ui';
+
 import { getOtaFirmware } from '#/api/iot/ota/firmware';
 import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
 
 import OtaTaskList from '../../task/modules/list.vue';
-import UpgradeStatistics from '../../task/modules/upgrade-statistics.vue';
+import UpgradeStatistics from '../../task/modules/statistics.vue';
 import FirmwareInfo from './modules/info.vue';
 
 const route = useRoute();
@@ -50,23 +52,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4">
+  <Page>
     <!-- 固件信息 -->
     <FirmwareInfo :firmware="firmware" :loading="firmwareLoading" />
-
     <!-- 升级设备统计 -->
-    <!-- TODO @AI：需要和上面的 FirmwareInfo 有间隙 -->
-    <UpgradeStatistics
-      :loading="firmwareStatisticsLoading"
-      :statistics="firmwareStatistics"
-    />
-
+    <div class="mt-4">
+      <UpgradeStatistics
+        :loading="firmwareStatisticsLoading"
+        :statistics="firmwareStatistics"
+      />
+    </div>
     <!-- 任务管理 -->
-    <OtaTaskList
-      v-if="firmware?.productId"
-      :firmware-id="firmwareId"
-      :product-id="firmware.productId"
-      @success="getStatistics"
-    />
-  </div>
+    <div v-if="firmware?.productId" class="mt-4">
+      <OtaTaskList
+        :firmware-id="firmwareId"
+        :product-id="firmware.productId"
+        @success="getStatistics"
+      />
+    </div>
+  </Page>
 </template>

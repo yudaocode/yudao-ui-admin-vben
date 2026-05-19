@@ -1,0 +1,30 @@
+<script setup lang="ts">
+import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
+
+import { Card } from 'ant-design-vue';
+
+import { useDescription } from '#/components/description';
+
+import { useDetailSchema } from '../data';
+
+// TODO @AI：这里，是不是可以去掉；
+/** IoT OTA 升级任务基本信息 */
+defineOptions({ name: 'IoTOtaTaskInfo' });
+
+defineProps<{
+  loading?: boolean;
+  task: IoTOtaTaskApi.Task;
+}>();
+
+const [Description] = useDescription({
+  bordered: true,
+  column: 3,
+  schema: useDetailSchema(),
+});
+</script>
+
+<template>
+  <Card title="任务信息" :loading="loading">
+    <Description :data="task" />
+  </Card>
+</template>

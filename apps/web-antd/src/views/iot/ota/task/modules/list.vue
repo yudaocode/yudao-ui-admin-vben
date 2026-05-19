@@ -2,21 +2,19 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 
+import { ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { Input, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { cancelOtaTask, getOtaTaskPage } from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
+import { useGridColumns } from '../data';
 import OtaTaskDetail from './detail.vue';
 import OtaTaskForm from './form.vue';
-import { useGridColumns, useGridFormSchema } from '../data';
-
-/** IoT OTA 任务列表 */
-// TODO @AI：defineOptions 还需要么？
-defineOptions({ name: 'IoTOtaTaskList' });
 
 const props = defineProps<{
   firmwareId: number;
@@ -24,6 +22,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['success']);
+
+const searchName = ref('');
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: OtaTaskForm,
@@ -39,6 +39,11 @@ const [DetailModal, detailModalApi] = useVbenModal({
 async function handleRefresh() {
   await gridApi.query();
   emit('success');
+}
+
+/** 按任务名搜索（嵌入页面里，单字段搜索做成 toolbar 内联输入框，回车 / 清空触发查询） */
+async function handleSearch() {
+  await gridApi.query();
 }
 
 /** 新增任务 */
@@ -61,21 +66,18 @@ async function handleCancel(row: IoTOtaTaskApi.Task) {
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
-  formOptions: {
-    schema: useGridFormSchema(),
-  },
   gridOptions: {
     columns: useGridColumns(),
-    height: 'auto',
+    maxHeight: 500,
     keepSource: true,
     proxyConfig: {
       ajax: {
-        query: async ({ page }, formValues) => {
+        query: async ({ page }) => {
           return await getOtaTaskPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             firmwareId: props.firmwareId,
-            ...formValues,
+            name: searchName.value || undefined,
           });
         },
       },
@@ -86,31 +88,44 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<IoTOtaTaskApi.Task>,
 });
 </script>
 
 <template>
-  <!-- TODO @AI：是不是要有个高度？ -->
   <div>
     <FormModal @success="handleRefresh" />
     <DetailModal @success="handleRefresh" />
 
-    <!-- TODO @AI：上面有个【任务名称】，有没可能包在一起，不然太丑了。/Users/yunai/Downloads/iShot_2026-05-19_11.26.04.png -->
     <Grid table-title="升级任务管理">
       <template #toolbar-tools>
-        <TableAction
-          :actions="[
-            {
-              label: '新增',
-              type: 'primary',
-              icon: ACTION_ICON.ADD,
-              onClick: handleCreate,
-            },
-          ]"
-        />
+        <div class="flex items-center gap-2">
+          <Input
+            v-model:value="searchName"
+            placeholder="请输入任务名称"
+            allow-clear
+            style="width: 200px"
+            @press-enter="handleSearch"
+            @change="(e: any) => !e.target.value && handleSearch()"
+          />
+          <TableAction
+            :actions="[
+              {
+                label: '搜索',
+                type: 'default',
+                icon: 'ant-design:search-outlined',
+                onClick: handleSearch,
+              },
+              {
+                label: '新增',
+                type: 'primary',
+                icon: ACTION_ICON.ADD,
+                onClick: handleCreate,
+              },
+            ]"
+          />
+        </div>
       </template>
       <template #actions="{ row }">
         <TableAction
