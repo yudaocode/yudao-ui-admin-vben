@@ -17,7 +17,7 @@ const route = useRoute();
 
 const firmwareId = ref(Number(route.params.id));
 const firmwareLoading = ref(false);
-const firmware = ref<IoTOtaFirmwareApi.Firmware>({} as IoTOtaFirmwareApi.Firmware);
+const firmware = ref<IoTOtaFirmwareApi.Firmware>();
 
 const firmwareStatisticsLoading = ref(false);
 const firmwareStatistics = ref<Record<string, number>>({});

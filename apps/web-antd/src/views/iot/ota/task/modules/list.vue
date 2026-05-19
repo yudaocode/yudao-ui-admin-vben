@@ -10,6 +10,7 @@ import { Input, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { cancelOtaTask, getOtaTaskPage } from '#/api/iot/ota/task';
+import { $t } from '#/locales';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
 import { useGridColumns } from '../data';
@@ -60,7 +61,7 @@ function handleDetail(row: IoTOtaTaskApi.Task) {
 
 /** 取消任务 */
 async function handleCancel(row: IoTOtaTaskApi.Task) {
-  await cancelOtaTask(row.id as number);
+  await cancelOtaTask(row.id!);
   message.success('取消成功');
   await handleRefresh();
 }
@@ -107,18 +108,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
             allow-clear
             style="width: 200px"
             @press-enter="handleSearch"
-            @change="(e: any) => !e.target.value && handleSearch()"
+            @clear="handleSearch"
           />
           <TableAction
             :actions="[
               {
-                label: '搜索',
+                label: $t('common.search'),
                 type: 'default',
                 icon: 'ant-design:search-outlined',
                 onClick: handleSearch,
               },
               {
-                label: '新增',
+                label: $t('ui.actionTitle.create', ['升级任务']),
                 type: 'primary',
                 icon: ACTION_ICON.ADD,
                 auth: ['iot:ota-task:create'],
@@ -132,14 +133,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
-              label: '详情',
+              label: $t('common.detail'),
               type: 'link',
               icon: ACTION_ICON.VIEW,
               auth: ['iot:ota-task:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
-              label: '取消',
+              label: $t('common.cancel'),
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,

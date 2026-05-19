@@ -11,6 +11,7 @@ import {
   cancelOtaTaskRecord,
   getOtaTaskRecordPage,
 } from '#/api/iot/ota/task/record';
+import { $t } from '#/locales';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 import { useGridColumns } from '../data';
@@ -19,7 +20,7 @@ const props = defineProps<{
   taskId: number | undefined;
 }>();
 
-const emit = defineEmits(['cancelled']);
+const emit = defineEmits(['success']);
 
 const activeTab = ref('');
 
@@ -43,10 +44,10 @@ async function handleTabChange(tabKey: number | string) {
 
 /** 取消单条记录的升级 */
 async function handleCancelUpgrade(record: IoTOtaTaskRecordApi.TaskRecord) {
-  await cancelOtaTaskRecord(record.id as number);
+  await cancelOtaTaskRecord(record.id!);
   message.success('取消成功');
   await gridApi.query();
-  emit('cancelled');
+  emit('success');
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -84,15 +85,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** taskId 变化时重新查询 */
 watch(
   () => props.taskId,
-  (val) => {
+  async (val) => {
     if (val) {
       activeTab.value = '';
-      gridApi.query();
+      await gridApi.query();
     }
   },
 );
-
-defineExpose({ refresh: () => gridApi.query() });
 </script>
 
 <template>
@@ -113,7 +112,7 @@ defineExpose({ refresh: () => gridApi.query() });
         <TableAction
           :actions="[
             {
-              label: '取消',
+              label: $t('common.cancel'),
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,

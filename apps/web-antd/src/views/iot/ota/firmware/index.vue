@@ -45,7 +45,7 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
     duration: 0,
   });
   try {
-    await deleteOtaFirmware(row.id as number);
+    await deleteOtaFirmware(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });

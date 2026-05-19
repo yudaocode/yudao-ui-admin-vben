@@ -97,7 +97,6 @@ export function useFormSchema(): VbenFormSchema[] {
   ];
 }
 
-// TODO DONE @AI：任务列表内嵌固件详情页，单字段搜索意义不大，已去掉搜索表单
 /** 任务列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
@@ -164,5 +163,3 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     },
   ];
 }
-
-// TODO DONE @AI：record schema 已挪到 task/record/data.ts；list 也独立成 task/record/modules/list.vue

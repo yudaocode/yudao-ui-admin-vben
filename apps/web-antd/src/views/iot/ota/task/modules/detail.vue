@@ -6,9 +6,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 
 import { getOtaTask } from '#/api/iot/ota/task';
-import {
-  getOtaTaskRecordStatusStatistics,
-} from '#/api/iot/ota/task/record';
+import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
 
 import OtaTaskRecordList from '../record/modules/list.vue';
 import TaskInfo from './info.vue';
@@ -18,7 +16,7 @@ const emit = defineEmits(['success']);
 
 const taskId = ref<number>();
 const taskLoading = ref(false);
-const task = ref<IoTOtaTaskApi.Task>({} as IoTOtaTaskApi.Task);
+const task = ref<IoTOtaTaskApi.Task>();
 
 const taskStatisticsLoading = ref(false);
 const taskStatistics = ref<Record<string, number>>({});
@@ -53,7 +51,7 @@ async function getStatistics() {
 }
 
 /** 单条记录取消后，刷新任务信息和统计 */
-async function handleRecordCancelled() {
+async function handleRecordSuccess() {
   await getStatistics();
   await getTaskInfo();
   emit('success');
@@ -92,7 +90,7 @@ const [Modal, modalApi] = useVbenModal({
     </div>
     <!-- 升级设备记录 -->
     <div class="mt-4">
-      <OtaTaskRecordList :task-id="taskId" @cancelled="handleRecordCancelled" />
+      <OtaTaskRecordList :task-id="taskId" @success="handleRecordSuccess" />
     </div>
   </Modal>
 </template>

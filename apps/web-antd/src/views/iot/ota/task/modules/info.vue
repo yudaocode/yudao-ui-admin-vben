@@ -9,7 +9,7 @@ import { useDetailSchema } from '../data';
 
 defineProps<{
   loading?: boolean;
-  task: IoTOtaTaskApi.Task;
+  task?: IoTOtaTaskApi.Task;
 }>();
 
 const [Description] = useDescription({

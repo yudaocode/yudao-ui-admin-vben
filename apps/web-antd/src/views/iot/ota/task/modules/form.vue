@@ -83,7 +83,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal class="w-3/5" title="新增升级任务">
+  <Modal class="w-3/5" :title="$t('ui.actionTitle.create', ['升级任务'])">
     <Form class="mx-4" />
   </Modal>
 </template>
