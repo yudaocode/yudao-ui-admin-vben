@@ -66,7 +66,7 @@ function getRowPropertyValue(row: InventoryRow | undefined, property: string) {
 /** 根据统计维度返回需要合并单元格的字段 */
 function getRowSpanProperties() {
   if (currentDimension.value === INVENTORY_DIMENSION.ITEM) {
-    return ['warehouseItemId', 'skuId', 'skuWarehouseId'];
+    return ['itemId', 'skuId', 'skuWarehouseId'];
   }
   return ['warehouseId', 'warehouseItemId'];
 }

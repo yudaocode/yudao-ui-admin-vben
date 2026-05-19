@@ -138,7 +138,7 @@ const warehouseDimensionColumns: VxeTableGridOptions['columns'] = [
 
 const itemDimensionColumns: VxeTableGridOptions['columns'] = [
   {
-    field: 'warehouseItemId',
+    field: 'itemId',
     title: '商品信息',
     minWidth: 240,
     slots: { default: 'itemInfo' },
@@ -150,7 +150,7 @@ const itemDimensionColumns: VxeTableGridOptions['columns'] = [
     slots: { default: 'skuInfo' },
   },
   {
-    field: 'warehouseId',
+    field: 'skuWarehouseId',
     title: '仓库',
     minWidth: 160,
     slots: { default: 'warehouseName' },
