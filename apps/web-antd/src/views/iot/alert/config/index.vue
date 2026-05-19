@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertConfigApi } from '#/api/iot/alert/config';
 
@@ -12,11 +12,11 @@ import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
-import AlertConfigForm from './modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: AlertConfigForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -42,10 +42,8 @@ async function handleDelete(row: AlertConfigApi.AlertConfig) {
     duration: 0,
   });
   try {
-    await deleteAlertConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    await deleteAlertConfig(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();

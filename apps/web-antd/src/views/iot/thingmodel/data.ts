@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -23,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<ThingModelApi.ThingModel>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -49,7 +50,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '数据类型',
       minWidth: 100,
       formatter: ({ row }) =>
-        getDataTypeOptionsLabel(row.property?.dataType) || '-',
+        getDataTypeOptionsLabel(row.property?.dataType ?? '') || '-',
     },
     {
       title: '数据定义',

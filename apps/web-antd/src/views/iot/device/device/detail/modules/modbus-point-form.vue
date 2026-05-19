@@ -26,8 +26,6 @@ import {
   ModbusRawDataTypeOptions,
 } from '#/views/iot/utils/constants';
 
-defineOptions({ name: 'DeviceModbusPointForm' });
-
 const emit = defineEmits(['success']);
 
 const formData = ref<IotDeviceModbusPointApi.ModbusPoint>();
@@ -224,10 +222,10 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
-  handleValuesChange: async (_values, changedFields) => {
+  handleValuesChange: async (values, changedFields) => {
     // 物模型属性变化：自动填充 identifier 和 name
     if (changedFields.includes('thingModelId')) {
-      const thingModelId = await formApi.getFieldValue('thingModelId');
+      const thingModelId = values.thingModelId;
       const thingModel = thingModelList.value.find(
         (item) => item.id === thingModelId,
       );
@@ -238,7 +236,7 @@ const [Form, formApi] = useVbenForm({
     }
     // 数据类型变化：自动设置寄存器数量和字节序
     if (changedFields.includes('rawDataType')) {
-      const rawDataType = await formApi.getFieldValue('rawDataType');
+      const rawDataType = values.rawDataType;
       if (rawDataType) {
         // 根据数据类型自动设置寄存器数量
         const option = ModbusRawDataTypeOptions.find(

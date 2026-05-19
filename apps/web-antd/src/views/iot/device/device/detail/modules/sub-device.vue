@@ -29,7 +29,7 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 /** 子设备列表表格列配置 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -190,7 +190,7 @@ function useAddGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-function useAddGridColumns(): VxeTableGridOptions['columns'] {
+function useAddGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {

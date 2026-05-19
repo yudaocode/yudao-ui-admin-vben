@@ -1,3 +1,5 @@
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { PageParam, PageResult } from '@vben/request';
 
 import { isEmpty } from '@vben/utils';
@@ -123,7 +125,7 @@ export function buildIdentifierLikeNameValidator(label: string) {
 }
 
 /** IoT 物模型表单校验规则 */
-export const ThingModelFormRules = {
+export const ThingModelFormRules: Record<string, Rule[]> = {
   name: [
     { required: true, message: '功能名称不能为空', trigger: 'blur' },
     {

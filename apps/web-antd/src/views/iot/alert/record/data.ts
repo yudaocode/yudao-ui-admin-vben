@@ -1,5 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AlertRecordApi } from '#/api/iot/alert/record';
+import type { IotDeviceApi } from '#/api/iot/device/device';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -8,6 +11,12 @@ import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 关联数据 */
+let productList: IotProductApi.Product[] = [];
+let deviceList: IotDeviceApi.Device[] = [];
+getSimpleProductList().then((data) => (productList = data));
+getSimpleDeviceList().then((data) => (deviceList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -84,7 +93,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<AlertRecordApi.AlertRecord>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -106,17 +115,20 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
       },
     },
+    // TODO @AI：非必要，不缩写；product、device
     {
       field: 'productId',
       title: '产品名称',
       minWidth: 120,
-      slots: { default: 'product' },
+      formatter: ({ cellValue }) =>
+        productList.find((p) => p.id === cellValue)?.name || '-',
     },
     {
       field: 'deviceId',
       title: '设备名称',
       minWidth: 120,
-      slots: { default: 'device' },
+      formatter: ({ cellValue }) =>
+        deviceList.find((d) => d.id === cellValue)?.deviceName || '-',
     },
     {
       field: 'deviceMessage',

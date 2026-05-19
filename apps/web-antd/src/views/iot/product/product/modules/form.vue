@@ -41,21 +41,23 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: [],
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-1',
 });
 
 const [AdvancedForm, advancedFormApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useAdvancedFormSchema(),
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-1',
 });
 
 /** 基础表单需要 formApi 引用，所以通过 setState 设置 schema */

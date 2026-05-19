@@ -85,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <FormModal @success="handleRefresh" />
-    <Grid>
+    <Grid table-title="产品分类列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[

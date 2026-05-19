@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
 import type { IotStatisticsApi } from '#/api/iot/statistics';

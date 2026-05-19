@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertRecordApi } from '#/api/iot/alert/record';
 
@@ -13,6 +13,16 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
 
 import { useGridColumns, useGridFormSchema } from './data';
+
+/** 把设备消息序列化成可读字符串 */
+function stringifyDeviceMessage(deviceMessage: any) {
+  if (!deviceMessage) {
+    return '';
+  }
+  return typeof deviceMessage === 'object'
+    ? JSON.stringify(deviceMessage, null, 2)
+    : String(deviceMessage);
+}
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -44,7 +54,7 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
         duration: 0,
       });
       try {
-        await processAlertRecord(row.id as number, processRemark.value);
+        await processAlertRecord(row.id!, processRemark.value);
         message.success('处理成功');
         handleRefresh();
       } finally {
@@ -83,16 +93,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<AlertRecordApi.AlertRecord>,
 });
-
-/** 把设备消息序列化成可读字符串 */
-function stringifyDeviceMessage(deviceMessage: any) {
-  if (!deviceMessage) {
-    return '';
-  }
-  return typeof deviceMessage === 'object'
-    ? JSON.stringify(deviceMessage, null, 2)
-    : String(deviceMessage);
-}
 </script>
 
 <template>

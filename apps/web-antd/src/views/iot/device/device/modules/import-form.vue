@@ -14,12 +14,13 @@ import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
 
-defineOptions({ name: 'IoTDeviceImportForm' });
-
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
     formItemClass: 'col-span-2',
     labelWidth: 120,
   },

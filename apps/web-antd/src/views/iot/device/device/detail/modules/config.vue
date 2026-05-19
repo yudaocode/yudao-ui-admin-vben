@@ -10,8 +10,6 @@ import { Alert, Button, message, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
 
-defineOptions({ name: 'DeviceDetailConfig' });
-
 const props = defineProps<{
   device: IotDeviceApi.Device;
 }>();
@@ -78,7 +76,7 @@ async function saveConfig() {
     config.value = JSON.parse(configString.value);
   } catch (error) {
     console.error('JSON格式错误:', error);
-    message.error({ content: 'JSON格式错误，请修正后再提交！' });
+    message.error('JSON格式错误，请修正后再提交！');
     return;
   }
   saveLoading.value = true;
@@ -101,7 +99,7 @@ async function handleConfigPush() {
       params: config.value,
     });
     // 提示成功
-    message.success({ content: '配置推送成功！' });
+    message.success('配置推送成功！');
   } finally {
     pushLoading.value = false;
   }
@@ -116,7 +114,7 @@ async function updateDeviceConfig() {
       id: props.device.id,
       config: JSON.stringify(config.value),
     } as IotDeviceApi.Device);
-    message.success({ content: '更新成功！' });
+    message.success('更新成功！');
     // 触发 success 事件
     emit('success');
   } finally {

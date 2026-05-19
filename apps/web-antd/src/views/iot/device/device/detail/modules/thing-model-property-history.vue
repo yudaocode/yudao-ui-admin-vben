@@ -28,9 +28,6 @@ import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
-/** IoT 设备属性历史数据详情 */
-defineOptions({ name: 'DeviceDetailsThingModelPropertyHistory' });
-
 defineProps<{ deviceId: number }>();
 
 const dialogVisible = ref(false); // 弹窗的是否展示
@@ -155,11 +152,9 @@ const paginationConfig = computed(() => ({
 async function getList() {
   loading.value = true;
   try {
+    // 后端直接返回数组
     const data = await getHistoryDevicePropertyList(queryParams);
-    // 后端直接返回数组，不是 { list: [] } 格式
-    list.value = (
-      Array.isArray(data) ? data : data?.list || []
-    ) as IotDeviceApi.DevicePropertyDetail[];
+    list.value = (data || []) as IotDeviceApi.DevicePropertyDetail[];
     total.value = list.value.length;
 
     // 如果是图表模式且支持图表展示，等待渲染图表

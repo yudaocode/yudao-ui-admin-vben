@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Ref } from 'vue';
 
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
@@ -96,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  },
+  } as VxeTableGridOptions<ThingModelApi.ThingModel>,
 });
 </script>
 

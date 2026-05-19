@@ -19,8 +19,6 @@ import {
   ModbusModeEnum,
 } from '#/views/iot/utils/constants';
 
-defineOptions({ name: 'DeviceModbusConfigForm' });
-
 const emit = defineEmits(['success']);
 
 const formData = ref<IotDeviceModbusConfigApi.ModbusConfig>();

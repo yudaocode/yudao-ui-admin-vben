@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { PageParam } from '@vben/request';
 
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 import type { IotProductApi } from '#/api/iot/product/product';

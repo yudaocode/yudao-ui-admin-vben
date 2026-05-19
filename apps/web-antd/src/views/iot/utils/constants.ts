@@ -142,25 +142,25 @@ export const getDataTypeName = (dataType: string): string => {
   return typeMap[dataType] || dataType;
 };
 
-/** 获取数据类型标签类型（用于 tag 的 type 属性） */
-export const getDataTypeTagType = (
+/** 获取数据类型标签颜色（antd Tag `color`） */
+export const getDataTypeTagColor = (
   dataType: string,
-): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
+): 'default' | 'error' | 'processing' | 'success' | 'warning' => {
   const tagMap: Record<
     string,
-    'danger' | 'info' | 'primary' | 'success' | 'warning'
+    'default' | 'error' | 'processing' | 'success' | 'warning'
   > = {
-    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
+    [IoTDataSpecsDataTypeEnum.INT]: 'processing',
     [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
-    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
+    [IoTDataSpecsDataTypeEnum.TEXT]: 'default',
     [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
-    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
-    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
-    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
+    [IoTDataSpecsDataTypeEnum.ENUM]: 'error',
+    [IoTDataSpecsDataTypeEnum.DATE]: 'processing',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: 'default',
     [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
   };
-  return tagMap[dataType] || 'info';
+  return tagMap[dataType] || 'default';
 };
 
 /** 物模型组标签常量 */

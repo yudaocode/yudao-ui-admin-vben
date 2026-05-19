@@ -24,9 +24,9 @@ const loading = ref(false);
 const productList = ref<IotProductApi.Product[]>([]);
 
 /** 处理选择变化 */
-function handleChange(value?: number) {
-  emit('update:modelValue', value);
-  emit('change', value);
+function handleChange(value: any) {
+  emit('update:modelValue', value as number | undefined);
+  emit('change', value as number | undefined);
 }
 
 /** 获取产品列表 */

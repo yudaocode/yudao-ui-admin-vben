@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';

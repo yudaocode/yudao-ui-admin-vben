@@ -49,7 +49,6 @@ async function copyToClipboard(text: string) {
 
 /** 跳转到设备管理 */
 function goToDeviceList(productId: number) {
-  // TODO @AI：在检查下，vben 里面有没其他也是这种路由情况的；要尽量使用 name；
   router.push({
     name: 'IoTDevice',
     query: { productId: String(productId) },

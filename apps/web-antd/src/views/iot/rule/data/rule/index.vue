@@ -12,11 +12,7 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import DataRuleForm from './data-rule-form.vue';
 
-// TODO @haohao：貌似和 apps/web-antd/src/views/iot/rule/data/index.vue 重复的。可能这个是对的。然后把 apps/web-antd/src/views/iot/rule/data/index.vue 搞成 tabs；
-
 /** IoT 数据流转规则列表 */
-defineOptions({ name: 'IotDataRule' });
-
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: DataRuleForm,
   destroyOnClose: true,
@@ -29,12 +25,12 @@ function handleRefresh() {
 
 /** 创建规则 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑规则 */
 function handleEdit(row: any) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除规则 */

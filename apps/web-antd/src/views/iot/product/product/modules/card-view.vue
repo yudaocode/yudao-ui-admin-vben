@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -190,8 +190,10 @@ onMounted(() => {
                 物模型
               </Button>
               <template v-if="hasAccessByCodes(['iot:product:delete'])">
-                <!-- TODO @AI：使用枚举 -->
-                <Tooltip v-if="item.status === 1" title="已发布的产品不能删除">
+                <Tooltip
+                  v-if="item.status === ProductStatusEnum.PUBLISHED"
+                  title="已发布的产品不能删除"
+                >
                   <Button
                     size="small"
                     danger

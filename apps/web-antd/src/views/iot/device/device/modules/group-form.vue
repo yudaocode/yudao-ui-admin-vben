@@ -13,8 +13,6 @@ import { $t } from '#/locales';
 
 import { useGroupFormSchema } from '../data';
 
-defineOptions({ name: 'IoTDeviceGroupForm' });
-
 const emit = defineEmits(['success']);
 const deviceIds = ref<number[]>([]);
 const getTitle = computed(() => '添加设备到分组');
@@ -24,6 +22,8 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useGroupFormSchema(),

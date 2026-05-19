@@ -40,7 +40,7 @@ async function handleDelete(row: IotDeviceGroupApi.DeviceGroup) {
     duration: 0,
   });
   try {
-    await deleteDeviceGroup(row.id as number);
+    await deleteDeviceGroup(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

@@ -30,8 +30,6 @@ import { ModbusFunctionCodeOptions } from '#/views/iot/utils/constants';
 import DeviceModbusConfigForm from './modbus-config-form.vue';
 import DeviceModbusPointForm from './modbus-point-form.vue';
 
-defineOptions({ name: 'DeviceModbusConfig' });
-
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
@@ -174,7 +172,7 @@ function usePointFormSchema(): VbenFormSchema[] {
 }
 
 /** 点位列表列配置 */
-function usePointColumns(): VxeTableGridOptions['columns'] {
+function usePointColumns(): VxeTableGridOptions<IotDeviceModbusPointApi.ModbusPoint>['columns'] {
   return [
     { field: 'name', title: '属性名称', minWidth: 100 },
     {

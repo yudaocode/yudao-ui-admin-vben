@@ -204,7 +204,7 @@ async function handlePropertyPost() {
     });
 
     if (Object.keys(params).length === 0) {
-      message.warning({ content: '请至少输入一个属性值' });
+      message.warning('请至少输入一个属性值');
       return;
     }
 
@@ -214,11 +214,11 @@ async function handlePropertyPost() {
       params,
     });
 
-    message.success({ content: '属性上报成功' });
+    message.success('属性上报成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '属性上报失败' });
+    message.error('属性上报失败');
     console.error(error);
   }
 }
@@ -233,7 +233,7 @@ async function handleEventPost(row: ThingModelApi.ThingModel) {
       try {
         params = JSON.parse(valueStr);
       } catch {
-        message.error({ content: '事件参数格式错误，请输入有效的JSON格式' });
+        message.error('事件参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
@@ -247,11 +247,11 @@ async function handleEventPost(row: ThingModelApi.ThingModel) {
       },
     });
 
-    message.success({ content: '事件上报成功' });
+    message.success('事件上报成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '事件上报失败' });
+    message.error('事件上报失败');
     console.error(error);
   }
 }
@@ -265,11 +265,11 @@ async function handleDeviceState(state: number) {
       params: { state },
     });
 
-    message.success({ content: '状态变更成功' });
+    message.success('状态变更成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '状态变更失败' });
+    message.error('状态变更失败');
     console.error(error);
   }
 }
@@ -286,7 +286,7 @@ async function handlePropertySet() {
     });
 
     if (Object.keys(params).length === 0) {
-      message.warning({ content: '请至少输入一个属性值' });
+      message.warning('请至少输入一个属性值');
       return;
     }
 
@@ -296,11 +296,11 @@ async function handlePropertySet() {
       params,
     });
 
-    message.success({ content: '属性设置成功' });
+    message.success('属性设置成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '属性设置失败' });
+    message.error('属性设置失败');
     console.error(error);
   }
 }
@@ -315,7 +315,7 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
       try {
         params = JSON.parse(valueStr);
       } catch {
-        message.error({ content: '服务参数格式错误，请输入有效的JSON格式' });
+        message.error('服务参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
@@ -329,11 +329,11 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
       },
     });
 
-    message.success({ content: '服务调用成功' });
+    message.success('服务调用成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '服务调用失败' });
+    message.error('服务调用失败');
     console.error(error);
   }
 }
@@ -595,7 +595,7 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
               >
                 <IconifyIcon
                   v-if="!messageCollapsed"
-                  icon="lucide:chevron-down"
+                  icon="lucide:chevron-up"
                 />
                 <IconifyIcon
                   v-if="messageCollapsed"

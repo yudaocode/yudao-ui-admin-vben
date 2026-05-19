@@ -74,7 +74,7 @@ async function copyToClipboard(text: string) {
       </Descriptions.Item>
       <Descriptions.Item
         v-if="
-          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
+          ([DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]).includes(
             product.deviceType!,
           )
         "

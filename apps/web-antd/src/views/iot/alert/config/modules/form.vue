@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { computed, ref } from 'vue';
@@ -17,8 +17,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-defineOptions({ name: 'IoTAlertConfigForm' });
-
 const emit = defineEmits(['success']);
 const formData = ref<AlertConfigApi.AlertConfig>();
 const getTitle = computed(() => {
@@ -32,9 +30,9 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
     labelWidth: 140,
   },
-  wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,

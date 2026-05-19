@@ -1,9 +1,10 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -109,8 +110,7 @@ export function useBasicFormSchema(
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      // TODO @AI：枚举值。或者这里不要枚举值？对齐 vue3 + ep 版本
-      defaultValue: 0,
+      defaultValue: DeviceTypeEnum.DEVICE,
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({
@@ -131,8 +131,7 @@ export function useBasicFormSchema(
       // 网关子设备走网关联网，不需要联网方式
       dependencies: {
         triggerFields: ['deviceType'],
-        // TODO @AI：枚举值。或者这里不要枚举值？（也看看 vben 里，其它是不是也漏了枚举值。）
-        show: (values) => values.deviceType !== 2,
+        show: (values) => values.deviceType !== DeviceTypeEnum.GATEWAY,
       },
       rules: 'required',
     },
@@ -199,7 +198,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<IotProductApi.Product>['columns'] {
   return [
     {
       field: 'id',

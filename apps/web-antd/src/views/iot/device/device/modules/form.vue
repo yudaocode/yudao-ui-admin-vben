@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
@@ -15,8 +15,6 @@ import { MapDialog } from '#/components/map';
 import { $t } from '#/locales';
 
 import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
-
-defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
 const formData = ref<IotDeviceApi.Device>();
@@ -35,8 +33,9 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
-  wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
   schema: useBasicFormSchema(),
   showDefaultActions: false,
@@ -62,8 +61,9 @@ const [AdvancedForm, advancedFormApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
-  wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
   schema: useAdvancedFormSchema(),
   showDefaultActions: false,

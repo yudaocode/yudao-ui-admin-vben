@@ -39,7 +39,7 @@ const eventThingModels = computed(() => {
 });
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
   return [
     {
       field: 'reportTime',

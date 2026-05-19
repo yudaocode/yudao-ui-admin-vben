@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Ref } from 'vue';
 
 import type { IotProductApi } from '#/api/iot/product/product';
