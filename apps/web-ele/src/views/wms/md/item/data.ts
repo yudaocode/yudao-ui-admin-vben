@@ -93,14 +93,6 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      component: 'Input',
-      fieldName: 'categoryId',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
       fieldName: 'code',
       label: '商品编号',
       component: 'Input',

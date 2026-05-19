@@ -88,8 +88,9 @@ async function handleExport() {
 }
 
 /** 分类树点击 */
-async function handleCategoryNodeClick(categoryId: number | undefined) {
-  await gridApi.formApi.setValues({ categoryId });
+const searchCategoryId = ref<number | undefined>(undefined);
+function handleCategoryNodeClick(categoryId: number | undefined) {
+  searchCategoryId.value = categoryId;
   handleRefresh();
 }
 
@@ -142,6 +143,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
+            categoryId: searchCategoryId.value,
           });
           currentRows.value = buildItemSkuRows(data.list || []);
           return {
