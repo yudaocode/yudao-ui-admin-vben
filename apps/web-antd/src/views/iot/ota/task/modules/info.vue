@@ -7,10 +7,6 @@ import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../data';
 
-// TODO @AI：这里，是不是可以去掉；
-/** IoT OTA 升级任务基本信息 */
-defineOptions({ name: 'IoTOtaTaskInfo' });
-
 defineProps<{
   loading?: boolean;
   task: IoTOtaTaskApi.Task;

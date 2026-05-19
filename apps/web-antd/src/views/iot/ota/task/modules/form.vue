@@ -12,10 +12,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-// TODO @AI：是不是defineOptions、升级任务表单 注释需要？
-/** IoT OTA 升级任务表单 */
-defineOptions({ name: 'IoTOtaTaskForm' });
-
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
@@ -29,7 +25,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// TODO @AI：注释风格，需要对齐其他 form；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -37,9 +32,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
+    const data = (await formApi.getValues()) as IoTOtaTaskApi.Task;
     try {
-      const data = (await formApi.getValues()) as IoTOtaTaskApi.Task;
       await createOtaTask(data);
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -51,6 +48,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
+    // 加载数据
     const data = modalApi.getData<{ firmwareId: number; productId: number }>();
     if (!data?.firmwareId || !data?.productId) {
       return;
@@ -61,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.setValues({ firmwareId: data.firmwareId });
       // 加载产品下的设备列表
       const devices = (await getDeviceListByProductId(data.productId)) || [];
+      // 注入到 deviceIds 字段的 options
       formApi.updateSchema([
         {
           fieldName: 'deviceIds',

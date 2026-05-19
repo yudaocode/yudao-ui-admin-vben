@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO DONE @AI：已挪到 firmware/modules/form.vue，对齐 alert/config/modules/form.vue 风格
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { computed, ref } from 'vue';
@@ -17,8 +16,6 @@ import {
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
-
-defineOptions({ name: 'IoTOtaFirmwareForm' });
 
 const emit = defineEmits<{
   success: [];

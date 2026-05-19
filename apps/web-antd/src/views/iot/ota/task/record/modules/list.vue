@@ -15,10 +15,6 @@ import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 import { useGridColumns } from '../data';
 
-/** IoT OTA 升级记录列表 */
-// TODO @AI：defineOptions({ name: 'IoTOtaTaskRecordList' });还需要么？
-defineOptions({ name: 'IoTOtaTaskRecordList' });
-
 const props = defineProps<{
   taskId: number | undefined;
 }>();
@@ -48,7 +44,6 @@ async function handleTabChange(tabKey: number | string) {
 }
 
 /** 取消单条记录的升级 */
-// TODO @AI：需要类似别的，写下注释么？
 async function handleCancelUpgrade(record: IoTOtaTaskRecordApi.TaskRecord) {
   await cancelOtaTaskRecord(record.id as number);
   message.success('取消成功');
@@ -77,7 +72,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             taskId: props.taskId,
-            // TODO @AI：别的模块，一般是独立的属性，还是设置到 formValues 里？（调研下；）
             status: activeTab.value === '' ? undefined : Number(activeTab.value),
           });
         },

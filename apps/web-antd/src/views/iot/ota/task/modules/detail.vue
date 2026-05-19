@@ -14,10 +14,6 @@ import OtaTaskRecordList from '../record/modules/list.vue';
 import TaskInfo from './info.vue';
 import UpgradeStatistics from './statistics.vue';
 
-// TODO @AI：是不是defineOptions、升级任务详情 注释需要？
-/** IoT OTA 升级任务详情 */
-defineOptions({ name: 'IoTOtaTaskDetail' });
-
 const emit = defineEmits(['success']);
 
 const taskId = ref<number>();

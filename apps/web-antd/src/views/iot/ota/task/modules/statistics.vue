@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO @AI：是不是改成 statistics.vue 简化掉？
 import { computed } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
