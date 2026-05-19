@@ -1,11 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { formatDateTime } from '@vben/utils';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 关联数据 */
+let productList: IotProductApi.Product[] = [];
+getSimpleProductList().then((data) => (productList = data));
 
 /** 固件详情的描述字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
@@ -124,9 +129,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(
-  getProductName?: (productId: number) => string | undefined,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -149,13 +152,12 @@ export function useGridColumns(
       title: '固件描述',
       minWidth: 200,
     },
-    // TODO DONE @AI：后端 firmware 没返回 productName，formatter 调 getProductName resolver；resolver + productList 反应式状态由 index.vue 注入（对齐 infra/codegen 模式）
     {
       field: 'productId',
       title: '所属产品',
       minWidth: 150,
       formatter: ({ cellValue }) =>
-        getProductName?.(cellValue) || (cellValue ? '加载中...' : '-'),
+        productList.find((p) => p.id === cellValue)?.name || '-',
     },
     {
       field: 'fileUrl',

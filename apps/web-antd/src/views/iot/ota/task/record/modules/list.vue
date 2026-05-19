@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaTaskRecordApi } from '#/api/iot/ota/task/record';
 
@@ -19,9 +19,7 @@ const props = defineProps<{
   taskId: number | undefined;
 }>();
 
-const emit = defineEmits<{
-  cancelled: [];
-}>();
+const emit = defineEmits(['cancelled']);
 
 const activeTab = ref('');
 
@@ -119,6 +117,7 @@ defineExpose({ refresh: () => gridApi.query() });
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:ota-task-record:cancel'],
               ifShow: [
                 IoTOtaTaskRecordStatusEnum.PENDING.value,
                 IoTOtaTaskRecordStatusEnum.PUSHED.value,

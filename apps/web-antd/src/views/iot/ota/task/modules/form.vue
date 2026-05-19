@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -19,6 +19,8 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
   },
   layout: 'horizontal',
   schema: useFormSchema(),

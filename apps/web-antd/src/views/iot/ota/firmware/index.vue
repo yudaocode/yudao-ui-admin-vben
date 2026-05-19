@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
-import type { IotProductApi } from '#/api/iot/product/product';
 
-import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -13,25 +11,12 @@ import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
-import { getSimpleProductList } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
-import OtaFirmwareForm from './modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
-
-const productList = ref<IotProductApi.Product[]>([]);
-
-/** 根据产品编号查找名称 */
-// TODO @AI：需要类似别的模块，拿到 data.ts 里么？
-function getProductName(productId: number | undefined) {
-  if (!productId) {
-    return '-';
-  }
-  const product = productList.value.find((p) => p.id === productId);
-  return product ? product.name : '加载中...';
-}
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: OtaFirmwareForm,
@@ -80,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(getProductName),
+    columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -103,11 +88,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<IoTOtaFirmwareApi.Firmware>,
-});
-
-/** 初始化加载产品列表 */
-onMounted(async () => {
-  productList.value = (await getSimpleProductList()) || [];
 });
 </script>
 

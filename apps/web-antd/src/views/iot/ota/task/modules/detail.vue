@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 
 import { ref } from 'vue';

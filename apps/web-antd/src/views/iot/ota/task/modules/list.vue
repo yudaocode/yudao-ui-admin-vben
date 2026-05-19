@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 
@@ -121,6 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 label: '新增',
                 type: 'primary',
                 icon: ACTION_ICON.ADD,
+                auth: ['iot:ota-task:create'],
                 onClick: handleCreate,
               },
             ]"
@@ -134,6 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '详情',
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['iot:ota-task:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
@@ -141,6 +143,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:ota-task:cancel'],
               ifShow: row.status === IoTOtaTaskStatusEnum.IN_PROGRESS.value,
               popConfirm: {
                 title: '确认要取消该升级任务吗？',

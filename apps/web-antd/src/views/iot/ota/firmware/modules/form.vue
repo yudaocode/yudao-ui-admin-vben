@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { computed, ref } from 'vue';
@@ -17,9 +17,7 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-const emit = defineEmits<{
-  success: [];
-}>();
+const emit = defineEmits(['success']);
 
 const formData = ref<IoTOtaFirmwareApi.Firmware>();
 
@@ -30,13 +28,15 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
-  schema: useFormSchema(),
   commonConfig: {
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 80,
   },
   layout: 'horizontal',
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
