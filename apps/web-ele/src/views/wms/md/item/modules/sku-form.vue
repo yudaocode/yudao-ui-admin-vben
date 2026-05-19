@@ -18,13 +18,17 @@ interface SkuRow extends WmsItemSkuApi.ItemSku {
   seq: number;
 }
 
-let seq = 0;
+let skuSeq = 0; // SKU 行可能还没有后端 id，使用本地序号作为 VXE 行操作的稳定标识
 const tableData = ref<SkuRow[]>([]);
 
+function nextSkuSeq() {
+  skuSeq += 1;
+  return skuSeq;
+}
+
 function buildEmptySku(): SkuRow {
-  seq += 1;
   return {
-    seq,
+    seq: nextSkuSeq(),
     id: undefined,
     name: undefined,
     barCode: undefined,
@@ -42,7 +46,7 @@ function buildEmptySku(): SkuRow {
 function toSkuRow(sku: WmsItemSkuApi.ItemSku): SkuRow {
   return {
     ...sku,
-    seq: ++seq,
+    seq: nextSkuSeq(),
   };
 }
 
@@ -57,6 +61,7 @@ async function reloadGrid() {
 }
 
 async function setRows(skus?: WmsItemSkuApi.ItemSku[]) {
+  skuSeq = 0;
   tableData.value = skus?.length
     ? skus.map((sku) => toSkuRow(sku))
     : [buildEmptySku()];
