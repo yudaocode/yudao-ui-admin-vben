@@ -215,26 +215,26 @@ defineExpose({
         <div class="flex w-full gap-1">
           <ElInputNumber
             v-model="row.length"
+            :controls="false"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
-            controls-position="right"
             placeholder="长"
           />
           <ElInputNumber
             v-model="row.width"
+            :controls="false"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
-            controls-position="right"
             placeholder="宽"
           />
           <ElInputNumber
             v-model="row.height"
+            :controls="false"
             :min="0"
             :precision="DIMENSION_PRECISION"
             class="!w-1/3"
-            controls-position="right"
             placeholder="高"
           />
         </div>
@@ -243,18 +243,18 @@ defineExpose({
         <div class="flex flex-col gap-2 py-1">
           <ElInputNumber
             v-model="row.netWeight"
+            :controls="false"
             :min="0"
             :precision="WEIGHT_PRECISION"
             class="!w-full"
-            controls-position="right"
             placeholder="净重"
           />
           <ElInputNumber
             v-model="row.grossWeight"
+            :controls="false"
             :min="0"
             :precision="WEIGHT_PRECISION"
             class="!w-full"
-            controls-position="right"
             placeholder="毛重"
           />
         </div>
@@ -263,18 +263,18 @@ defineExpose({
         <div class="flex flex-col gap-2 py-1">
           <ElInputNumber
             v-model="row.costPrice"
+            :controls="false"
             :min="0"
             :precision="PRICE_PRECISION"
             class="!w-full"
-            controls-position="right"
             placeholder="成本价"
           />
           <ElInputNumber
             v-model="row.sellingPrice"
+            :controls="false"
             :min="0"
             :precision="PRICE_PRECISION"
             class="!w-full"
-            controls-position="right"
             placeholder="销售价"
           />
         </div>

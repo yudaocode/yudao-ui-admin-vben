@@ -82,11 +82,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       component: 'ApiSelect',
       componentProps: {
-        clearable: true,
         api: getSimpleUserList,
+        clearable: true,
+        filterable: true,
         labelField: 'nickname',
         placeholder: '请选择创建用户',
-        filterable: true,
         valueField: 'id',
       },
       fieldName: 'creator',
@@ -95,11 +95,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       component: 'ApiSelect',
       componentProps: {
-        clearable: true,
         api: getSimpleUserList,
+        clearable: true,
+        filterable: true,
         labelField: 'nickname',
         placeholder: '请选择更新用户',
-        filterable: true,
         valueField: 'id',
       },
       fieldName: 'updater',

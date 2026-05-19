@@ -518,7 +518,6 @@ const [Modal, modalApi] = useVbenModal({
             {
               label: '作废',
               type: 'danger',
-              link: true,
               auth: ['wms:shipment-order:cancel'],
               onClick: handleFormCancel,
             },
