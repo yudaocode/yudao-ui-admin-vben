@@ -5,6 +5,8 @@ import { nextTick, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
+import { Card } from 'ant-design-vue';
+
 import { getInventorySummary } from '#/api/wms/home';
 
 import {
@@ -68,7 +70,7 @@ defineExpose({ load });
 
 <template>
   <div class="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-    <div class="rounded border bg-card p-4 shadow-sm">
+    <Card :body-style="{ padding: '12px 16px 16px' }">
       <div class="mb-3">
         <div class="font-semibold">货物占比</div>
         <div class="text-sm text-muted-foreground">按商品库存数量汇总 Top 5</div>
@@ -82,8 +84,8 @@ defineExpose({ load });
           加载中
         </div>
       </div>
-    </div>
-    <div class="rounded border bg-card p-4 shadow-sm">
+    </Card>
+    <Card :body-style="{ padding: '12px 16px 16px' }">
       <div class="mb-3 flex justify-between">
         <div>
           <div class="font-semibold">库存分布</div>
@@ -100,6 +102,6 @@ defineExpose({ load });
           加载中
         </div>
       </div>
-    </div>
+    </Card>
   </div>
 </template>

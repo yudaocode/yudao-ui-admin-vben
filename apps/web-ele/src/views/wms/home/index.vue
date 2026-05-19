@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { DocAlert, Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { ElButton } from 'element-plus';
+import { ElButton, ElCard } from 'element-plus';
 
 import { WmsWarehouseSelect } from '#/views/wms/md/warehouse/components';
 
@@ -45,26 +45,28 @@ onMounted(() => {
     <template #doc>
       <DocAlert title="WMS 手册（功能开启）" url="https://doc.iocoder.cn/wms/build/" />
     </template>
-    <div>
-      <div class="mb-4 flex flex-wrap items-center justify-between gap-4 rounded border bg-card p-4">
-        <div>
-          <div class="text-xl font-semibold">WMS 首页</div>
-          <div class="text-sm text-muted-foreground">单据工作台 / 库存概览</div>
+    <div class="flex flex-col gap-2">
+      <ElCard :body-style="{ padding: '16px' }">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="text-xl font-semibold">WMS 首页</div>
+            <div class="text-sm text-muted-foreground">单据工作台 / 库存概览</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <WmsWarehouseSelect
+              v-model="warehouseId"
+              class="!w-[220px]"
+              placeholder="全部仓库"
+              @change="refresh"
+            />
+            <ElButton :loading="loading" @click="refresh">刷新</ElButton>
+          </div>
         </div>
-        <div class="flex items-center gap-2">
-          <WmsWarehouseSelect
-            v-model="warehouseId"
-            class="!w-[220px]"
-            placeholder="全部仓库"
-            @change="refresh"
-          />
-          <ElButton :loading="loading" @click="refresh">刷新</ElButton>
-        </div>
-      </div>
+      </ElCard>
       <WmsHomeOrderSummaryCards ref="orderSummaryCardsRef" />
       <WmsHomeOrderTrendChart ref="orderTrendChartRef" />
       <WmsHomeInventoryCharts ref="inventoryChartsRef" />
-      <div class="mt-3 text-center text-sm text-muted-foreground">
+      <div class="text-center text-sm text-muted-foreground">
         统计时间：{{ statTime }}
       </div>
     </div>

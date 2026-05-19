@@ -5,6 +5,8 @@ import { nextTick, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
+import { Card, Segmented } from 'ant-design-vue';
+
 import { getOrderTrend, type WmsHomeStatisticsApi } from '#/api/wms/home';
 
 import { getOrderTrendChartOptions } from './wms-home-order-trend-chart-options';
@@ -17,6 +19,10 @@ const trendDays = ref(7);
 const trendList = ref<WmsHomeStatisticsApi.OrderTrend[]>([]);
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
+const trendDayOptions = [
+  { label: '近7天', value: 7 },
+  { label: '近30天', value: 30 },
+];
 
 /** 使用最新趋势数据渲染单据趋势图 */
 async function renderChart() {
@@ -40,8 +46,8 @@ async function load(selectedWarehouseId?: number) {
 }
 
 /** 切换趋势统计时间范围并刷新图表 */
-async function setTrendDays(days: number) {
-  trendDays.value = days;
+async function handleTrendDaysChange(value: number | string) {
+  trendDays.value = Number(value);
   await load(warehouseId.value);
 }
 
@@ -49,16 +55,17 @@ defineExpose({ load });
 </script>
 
 <template>
-  <div class="mb-4 rounded border bg-card p-4 shadow-sm">
+  <Card :body-style="{ padding: '12px 16px 16px' }">
     <div class="mb-3 flex items-center justify-between">
       <div>
         <div class="font-semibold">单据趋势</div>
         <div class="text-sm text-muted-foreground">入库、出库、移库、盘库单据数量</div>
       </div>
-      <div class="flex gap-2">
-        <button class="rounded border px-3 py-1" :class="{ 'bg-primary text-white': trendDays === 7 }" @click="setTrendDays(7)">近7天</button>
-        <button class="rounded border px-3 py-1" :class="{ 'bg-primary text-white': trendDays === 30 }" @click="setTrendDays(30)">近30天</button>
-      </div>
+      <Segmented
+        :options="trendDayOptions"
+        :value="trendDays"
+        @change="handleTrendDaysChange"
+      />
     </div>
     <div class="relative min-h-[330px]">
       <EchartsUI ref="chartRef" height="330px" />
@@ -69,5 +76,5 @@ defineExpose({ load });
         加载中
       </div>
     </div>
-  </div>
+  </Card>
 </template>

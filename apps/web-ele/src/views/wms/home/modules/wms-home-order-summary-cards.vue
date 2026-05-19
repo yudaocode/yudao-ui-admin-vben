@@ -120,11 +120,11 @@ defineExpose({ load });
 </script>
 
 <template>
-  <div class="mb-4 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
+  <div class="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
     <ElCard
       v-for="item in summaryList"
       :key="item.type"
-      :body-style="{ padding: '16px' }"
+      :body-style="{ padding: '12px 16px 16px' }"
       class="h-full"
       shadow="never"
       :style="{ borderTop: `3px solid ${item.color}` }"
