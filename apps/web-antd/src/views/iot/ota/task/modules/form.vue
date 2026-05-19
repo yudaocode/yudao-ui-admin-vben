@@ -10,7 +10,7 @@ import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { createOtaTask } from '#/api/iot/ota/task';
 import { $t } from '#/locales';
 
-import { useFormSchema } from './data';
+import { useFormSchema } from '../data';
 
 /** IoT OTA 升级任务表单 */
 defineOptions({ name: 'IoTOtaTaskForm' });

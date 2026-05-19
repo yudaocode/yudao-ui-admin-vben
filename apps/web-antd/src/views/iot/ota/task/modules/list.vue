@@ -11,10 +11,11 @@ import { cancelOtaTask, getOtaTaskPage } from '#/api/iot/ota/task';
 import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
 import OtaTaskDetail from './detail.vue';
-import { useGridColumns, useGridFormSchema } from './data';
 import OtaTaskForm from './form.vue';
+import { useGridColumns, useGridFormSchema } from '../data';
 
 /** IoT OTA 任务列表 */
+// TODO @AI：defineOptions 还需要么？
 defineOptions({ name: 'IoTOtaTaskList' });
 
 const props = defineProps<{
@@ -92,9 +93,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
+  <!-- TODO @AI：是不是要有个高度？ -->
   <div>
     <FormModal @success="handleRefresh" />
     <DetailModal @success="handleRefresh" />
+
+    <!-- TODO @AI：上面有个【任务名称】，有没可能包在一起，不然太丑了。/Users/yunai/Downloads/iShot_2026-05-19_11.26.04.png -->
     <Grid table-title="升级任务管理">
       <template #toolbar-tools>
         <TableAction

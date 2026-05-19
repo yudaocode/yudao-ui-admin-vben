@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import OtaFirmwareForm from '../modules/firmware-form.vue';
+import OtaFirmwareForm from './modules/form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
@@ -110,7 +110,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <!-- 固件文件列 -->
       <template #fileUrl="{ row }">
-        <!-- TODO @AI：使用 TableAction 按钮？ -->
         <div
           v-if="row.fileUrl"
           class="inline-flex items-center gap-1.5 align-middle leading-none"

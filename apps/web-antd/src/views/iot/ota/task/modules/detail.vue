@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO @AI：是不是拆分下，task 里面在新建一个 record/modules 里；这样固件、任务、记录，都拆开了，也看起来更清晰。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 import type { IoTOtaTaskRecordApi } from '#/api/iot/ota/task/record';
@@ -21,8 +22,8 @@ import {
 } from '#/api/iot/ota/task/record';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
-import UpgradeStatistics from '../upgrade-statistics.vue';
-import { useRecordGridColumns } from './data';
+import { useRecordGridColumns } from '../data';
+import UpgradeStatistics from './upgrade-statistics.vue';
 
 /** OTA 任务详情组件 */
 defineOptions({ name: 'IoTOtaTaskDetail' });
@@ -146,8 +147,10 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="升级任务详情" class="w-5/6" :show-cancel-button="false" :show-confirm-button="false">
+    <!-- TODO @AI：是不是不用 p-4 外面的？ -->
     <div class="p-4">
       <!-- 任务信息 -->
+      <!-- TODO @AI：需要抽成一个小 vue 组件。也使用 description 组件； -->
       <Card title="任务信息" class="mb-5" :loading="taskLoading">
         <Descriptions :column="3" bordered>
           <Descriptions.Item label="任务编号">{{ task.id }}</Descriptions.Item>
@@ -178,12 +181,15 @@ const [Modal, modalApi] = useVbenModal({
       </Card>
 
       <!-- 任务升级设备统计 -->
+      <!-- TODO @AI：和上面有间隙 -->
       <UpgradeStatistics
         :loading="taskStatisticsLoading"
         :statistics="taskStatistics"
       />
 
       <!-- 设备管理 -->
+      <!-- TODO @AI：需要抽成一个小 vue 组件。 -->
+      <!-- TODO @AI：和上面有间隙 -->
       <Card title="升级设备记录">
         <Tabs
           v-model:active-key="activeTab"
@@ -209,7 +215,7 @@ const [Modal, modalApi] = useVbenModal({
                     IoTOtaTaskRecordStatusEnum.PENDING.value,
                     IoTOtaTaskRecordStatusEnum.PUSHED.value,
                     IoTOtaTaskRecordStatusEnum.UPGRADING.value,
-                  ].includes(row.status),
+                  ].includes(row.status!),
                   popConfirm: {
                     title: '确认要取消该设备的升级任务吗？',
                     confirm: handleCancelUpgrade.bind(null, row),

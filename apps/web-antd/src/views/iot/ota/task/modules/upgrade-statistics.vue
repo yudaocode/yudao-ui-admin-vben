@@ -6,6 +6,7 @@ import { Card, Col, Row } from 'ant-design-vue';
 import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 /** OTA 升级设备统计卡片 */
+// TODO @AI：是不是去掉 defineOptions
 defineOptions({ name: 'IoTOtaUpgradeStatistics' });
 
 const props = defineProps<{
@@ -24,6 +25,7 @@ const items = computed(() => [
       0,
     ),
   },
+  // TODO @AI：label 名字，是不是通过字典获取名字？包括 vue3 + ep 也是；
   {
     label: '待推送',
     span: 3,

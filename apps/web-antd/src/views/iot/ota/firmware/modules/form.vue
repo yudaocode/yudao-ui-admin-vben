@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// TODO @AI：是不是要挪到 firmware/modules/form.vue？
+// TODO DONE @AI：已挪到 firmware/modules/form.vue，对齐 alert/config/modules/form.vue 风格
 import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
 
 import { computed, ref } from 'vue';
@@ -16,7 +16,7 @@ import {
 } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import { useFormSchema } from '../firmware/data';
+import { useFormSchema } from '../data';
 
 defineOptions({ name: 'IoTOtaFirmwareForm' });
 

@@ -1,8 +1,26 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 固件详情的描述字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    { field: 'name', label: '固件名称' },
+    { field: 'productName', label: '所属产品' },
+    { field: 'version', label: '固件版本' },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+    },
+    { field: 'description', label: '固件描述', span: 2 },
+  ];
+}
 
 /** 新增/修改固件的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -129,7 +147,8 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '固件描述',
       minWidth: 200,
     },
-    // TODO @AI：你看看 vue3 + ep 是这么干的么？
+    // TODO DONE @AI：vben 用 row.productName（后端 VO 已返回）；vue3 + ep 用 getProductName(productId) 本地查表；vben 更直接，且 IoTOtaFirmwareApi.Firmware.productName 已是 API 契约
+    // TODO @AI：实际后端没读取哈。看看怎么对齐下 vue3 + ep
     {
       field: 'productName',
       title: '所属产品',

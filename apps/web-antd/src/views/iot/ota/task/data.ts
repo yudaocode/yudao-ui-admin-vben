@@ -1,4 +1,3 @@
-// TODO @AI：将 task 整个挪出去？放到 /Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/apps/web-antd/src/views/iot/ota/task；
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
