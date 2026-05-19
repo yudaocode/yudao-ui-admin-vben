@@ -31,8 +31,16 @@ const emit = defineEmits<{
 }>();
 
 const open = ref(false);
-const selectedRows = ref<InventorySelectRow[]>([]);
 const disabledInventoryKeys = ref<Set<string>>(new Set());
+
+interface CellDblclickEvent {
+  row: InventorySelectRow;
+}
+
+/** 获得行唯一标识 */
+function getRowKey(row: InventorySelectRow) {
+  return `inventory-${row.id || `${row.skuId}-${row.warehouseId}`}`;
+}
 
 /** 获得业务库存标识 */
 function getInventoryKey(row: Pick<InventorySelectRow, 'skuId' | 'warehouseId'>) {
@@ -45,6 +53,27 @@ function getInventoryKey(row: Pick<InventorySelectRow, 'skuId' | 'warehouseId'>)
 function isInventorySelectable(row: InventorySelectRow) {
   const key = getInventoryKey(row);
   return !key || !disabledInventoryKeys.value.has(key);
+}
+
+/** 合并当前页和跨页保留的选择记录 */
+function mergeSelectedRows(rows: InventorySelectRow[]) {
+  const selectedMap = new Map<string, InventorySelectRow>();
+  rows
+    .filter((row) => isInventorySelectable(row))
+    .forEach((row) => selectedMap.set(getRowKey(row), row));
+  return [...selectedMap.values()];
+}
+
+/** 获取 VXE 当前页和 reserve 中的完整选择 */
+function getSelectedRows() {
+  const records =
+    (gridApi.grid.getCheckboxRecords?.() as InventorySelectRow[] | undefined) ||
+    [];
+  const reserves =
+    (gridApi.grid.getCheckboxReserveRecords?.() as
+      | InventorySelectRow[]
+      | undefined) || [];
+  return mergeSelectedRows([...reserves, ...records]);
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -94,12 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<InventorySelectRow>,
   gridEvents: {
-    checkboxAll: ({ records }: { records: InventorySelectRow[] }) => {
-      selectedRows.value = records.filter((row) => isInventorySelectable(row));
-    },
-    checkboxChange: ({ records }: { records: InventorySelectRow[] }) => {
-      selectedRows.value = records.filter((row) => isInventorySelectable(row));
-    },
+    cellDblclick: handleCellDblclick,
   },
 });
 
@@ -109,31 +133,42 @@ async function openModal(selectedInventoryKeys: string[] = []) {
     return;
   }
   open.value = true;
-  selectedRows.value = [];
   disabledInventoryKeys.value = new Set(selectedInventoryKeys);
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
   await gridApi.formApi.resetForm();
   await gridApi.query();
 }
 
 async function closeModal() {
   open.value = false;
-  selectedRows.value = [];
   disabledInventoryKeys.value = new Set();
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
 }
 
-function handleConfirm() {
-  const selectedList = selectedRows.value.filter((row) =>
-    isInventorySelectable(row),
-  );
+function confirmSelectedRows(rows: InventorySelectRow[]) {
+  const selectedList = mergeSelectedRows(rows);
   if (selectedList.length === 0) {
     message.warning('请选择库存');
     return;
   }
   emit('change', selectedList);
   closeModal();
+}
+
+function handleConfirm() {
+  confirmSelectedRows(getSelectedRows());
+}
+
+/** 双击行直接选择并确认 */
+function handleCellDblclick({ row }: CellDblclickEvent) {
+  if (!isInventorySelectable(row)) {
+    message.warning('该库存已添加');
+    return;
+  }
+  confirmSelectedRows(mergeSelectedRows([...getSelectedRows(), row]));
 }
 
 defineExpose({ open: openModal });
