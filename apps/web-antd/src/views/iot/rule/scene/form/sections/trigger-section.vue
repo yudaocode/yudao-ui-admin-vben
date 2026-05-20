@@ -56,50 +56,30 @@ function addTrigger() {
   triggers.value.push(newTrigger);
 }
 
-/**
- * 删除触发器
- * @param index 触发器索引
- */
+/** 删除触发器 */
 function removeTrigger(index: number) {
   if (triggers.value.length > 1) {
     triggers.value.splice(index, 1);
   }
 }
 
-// TODO @AI：1）这种注释，可以简化成 /** */ 单行么？；2）vue3 + ep 都是这样的注释么，也可以简化下么？3）其它文件，看看是不是也检查下。
-/**
- * 更新触发器类型
- * @param index 触发器索引
- * @param type 触发器类型
- */
+/** 更新触发器类型 */
 function updateTriggerType(index: number, type: number) {
   triggers.value[index]!.type = type;
   onTriggerTypeChange(index, type);
 }
 
-/**
- * 更新触发器设备配置
- * @param index 触发器索引
- * @param newTrigger 新的触发器对象
- */
+/** 更新触发器设备配置 */
 function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
   triggers.value[index] = newTrigger;
 }
 
-/**
- * 更新触发器 CRON 配置
- * @param index 触发器索引
- * @param cronExpression CRON 表达式
- */
+/** 更新触发器 CRON 配置 */
 function updateTriggerCronConfig(index: number, cronExpression?: string) {
   triggers.value[index]!.cronExpression = cronExpression;
 }
 
-/**
- * 更新触发器条件组配置
- * @param index 触发器索引
- * @param conditionGroups 条件组数组
- */
+/** 更新触发器条件组配置 */
 function updateTriggerConditionGroups(
   index: number,
   conditionGroups: TriggerCondition[][],
@@ -107,11 +87,7 @@ function updateTriggerConditionGroups(
   triggers.value[index]!.conditionGroups = conditionGroups;
 }
 
-/**
- * 处理触发器类型变化事件
- * @param index 触发器索引
- * @param _ 触发器类型（未使用）
- */
+/** 触发器类型切换后清空相关字段 */
 function onTriggerTypeChange(index: number, _: number) {
   const triggerItem = triggers.value[index]!;
   triggerItem.productId = undefined;

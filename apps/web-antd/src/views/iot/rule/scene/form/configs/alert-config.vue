@@ -28,7 +28,8 @@ function handleChange(value?: any) {
   emit('update:modelValue', value);
 }
 
-// TODO @AI：这个是不是 antd + vue 也使用这个接口？要不增加一个 simple-list 接口？
+// TODO DONE @AI：当前 antd + vue3+ep 都用同一个接口，无需 simple-list
+// TODO @AI：那就修复这个。后端增加接口，antd 和 vue3 + ep 都改；
 /** 加载告警配置列表 */
 async function loadAlertConfigs() {
   loading.value = true;

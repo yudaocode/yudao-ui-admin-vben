@@ -176,10 +176,9 @@ function handlePropertyChange(propertyInfo: any) {
   <div class="space-y-4">
     <!-- 触发事件类型选择 -->
     <Form.Item label="触发事件类型" required>
-      <!-- TODO @AI：change linter 报错 -->
       <Select
         :value="triggerType"
-        @change="handleTriggerTypeChange"
+        @change="(value: any) => handleTriggerTypeChange(value)"
         placeholder="请选择触发事件类型"
         class="w-full"
       >
@@ -262,18 +261,17 @@ function handlePropertyChange(propertyInfo: any) {
                 triggerType ===
                 IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE
               "
-              v-model:value="condition.value"
+              v-model="condition.value"
               type="service"
               :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
             <!-- 事件上报参数配置 -->
-            <!-- TODO @AI：JsonParamsInput linter 报错 -->
             <JsonParamsInput
               v-else-if="
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
-              v-model:value="condition.value"
+              v-model="condition.value"
               type="event"
               :config="eventConfig as any"
               placeholder="请输入 JSON 格式的事件参数"

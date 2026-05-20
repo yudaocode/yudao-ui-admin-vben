@@ -43,7 +43,7 @@ function updateCondition(condition: RuleSceneApi.Trigger) {
  * @param type 触发器类型
  */
 function handleTriggerTypeChange(type: number) {
-  trigger.value.type = type.toString();
+  trigger.value.type = type;
   emit('triggerTypeChange', type);
 }
 
@@ -120,11 +120,10 @@ function removeConditionGroup() {
           </div>
 
           <!-- 主条件内容配置 -->
-          <!-- TODO @AI：这里有 linter 报错 -->
           <MainConditionInnerConfig
             :model-value="trigger"
             @update:model-value="updateCondition"
-            :trigger-type="trigger.type"
+            :trigger-type="(trigger.type as number)"
             @trigger-type-change="handleTriggerTypeChange"
           />
         </div>
@@ -229,7 +228,7 @@ function removeConditionGroup() {
                   @update:model-value="
                     (value) => updateSubGroup(subGroupIndex, value)
                   "
-                  :trigger-type="trigger.type"
+                  :trigger-type="(trigger.type as number)"
                   :max-conditions="maxConditionsPerGroup"
                 />
               </div>

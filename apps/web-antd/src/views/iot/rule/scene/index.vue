@@ -436,14 +436,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <span v-else class="text-xs text-secondary">无动作</span>
       </template>
       <template #actions="{ row }">
-        <!-- TODO @AI：1）枚举；2）有没必要，对齐别的模块的开启、禁用 -->
         <TableAction
           :actions="[
             {
-              label: row.status === 0 ? '停用' : '启用',
+              label: row.status === CommonStatusEnum.ENABLE ? '停用' : '启用',
               type: 'link',
               icon:
-                row.status === 0
+                row.status === CommonStatusEnum.ENABLE
                   ? 'ant-design:stop-outlined'
                   : 'ant-design:check-circle-outlined',
               onClick: handleToggleStatus.bind(null, row),

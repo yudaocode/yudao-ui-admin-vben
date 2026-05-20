@@ -52,8 +52,7 @@ const paramsValue = computed({
   },
   set: (value: string) => {
     // 直接保存为 JSON 字符串，不进行解析转换
-    // TODO @AI：这里有 linter 报错
-    action.value.params = value.trim() || '';
+    action.value.params = (value.trim() || '') as any;
   },
 });
 
@@ -82,8 +81,8 @@ function handleProductChange(productId?: number) {
   if (action.value.productId !== productId) {
     action.value.deviceId = undefined;
     action.value.identifier = undefined; // 清空服务标识符
-    // TODO @AI：这里有 linter 报错
-    action.value.params = ''; // 清空参数，保存为空字符串
+    // TODO DONE @AI：这里有 linter 报错
+    action.value.params = '' as any; // 清空参数，保存为空字符串
     selectedService.value = null; // 清空选中的服务
     serviceList.value = []; // 清空服务列表
   }
@@ -105,8 +104,8 @@ function handleProductChange(productId?: number) {
 function handleDeviceChange(deviceId?: number) {
   // 当设备变化时，清空参数配置
   if (action.value.deviceId !== deviceId) {
-    // TODO @AI：这里有 linter 报错
-    action.value.params = ''; // 清空参数，保存为空字符串
+    // TODO DONE @AI：这里有 linter 报错
+    action.value.params = '' as any; // 清空参数，保存为空字符串
   }
 }
 
@@ -121,16 +120,16 @@ function handleServiceChange(serviceIdentifier?: any) {
   selectedService.value = service;
 
   // 当服务变化时，清空参数配置
-  action.value.params = '';
+  action.value.params = '' as any;
 
   // 如果选择了服务且有输入参数，生成默认参数结构
   if (service && service.inputParams && service.inputParams.length > 0) {
-    const defaultParams = {};
+    const defaultParams: Record<string, any> = {};
     service.inputParams.forEach((param) => {
-      defaultParams[param.identifier] = getDefaultValueForParam(param);
+      defaultParams[param.identifier!] = getDefaultValueForParam(param);
     });
     // 将默认参数转换为 JSON 字符串保存
-    action.value.params = JSON.stringify(defaultParams, null, 2);
+    action.value.params = JSON.stringify(defaultParams, null, 2) as any;
   }
 }
 
@@ -139,7 +138,7 @@ function handleServiceChange(serviceIdentifier?: any) {
  * @param productId 产品ID
  * @returns 物模型TSL数据
  */
-async function getThingModelTSL(productId: number) {
+async function getThingModelTSL(productId: number): Promise<any> {
   if (!productId) return null;
 
   try {
@@ -164,7 +163,7 @@ async function loadThingModelProperties(productId: number) {
     loadingThingModel.value = true;
     const tslData = await getThingModelTSL(productId);
 
-    // TODO @AI：这里有 linter 报错
+    // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.properties) {
       thingModelProperties.value = [];
       return;
@@ -199,13 +198,13 @@ async function loadServiceList(productId: number) {
     loadingServices.value = true;
     const tslData = await getThingModelTSL(productId);
 
-    // TODO @AI：这里有 linter 报错
+    // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.services) {
       serviceList.value = [];
       return;
     }
 
-    // TODO @AI：这里有 linter 报错
+    // TODO DONE @AI：这里有 linter 报错
     serviceList.value = tslData.services;
   } catch (error) {
     console.error('加载服务列表失败:', error);

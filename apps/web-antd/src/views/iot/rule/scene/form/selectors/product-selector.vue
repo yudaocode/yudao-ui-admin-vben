@@ -47,8 +47,7 @@ async function getProductList() {
   }
 }
 
-// TODO @AI：这种，应该注释 /** */ 把。
-// 组件挂载时获取产品列表
+/** 组件挂载时获取产品列表 */
 onMounted(() => {
   getProductList();
 });
@@ -57,7 +56,7 @@ onMounted(() => {
 <template>
   <Select
     :value="modelValue"
-    @change="handleChange"
+    @change="(value: any) => handleChange(value)"
     placeholder="请选择产品"
     filterable
     clearable

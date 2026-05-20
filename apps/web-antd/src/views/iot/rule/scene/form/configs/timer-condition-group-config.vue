@@ -12,10 +12,6 @@ import { IotRuleSceneTriggerTypeEnum } from '#/views/iot/utils/constants';
 
 import SubConditionGroupConfig from './sub-condition-group-config.vue';
 
-/** 定时触发器条件组配置组件 */
-// TODO @AI：defineOptions 这种，和上面这种注释，是不是可以去掉？（iot 里，其它的看看也检查下。）
-defineOptions({ name: 'TimerConditionGroupConfig' });
-
 const props = defineProps<{
   modelValue?: TriggerCondition[][];
 }>();

@@ -69,10 +69,8 @@ const propertyGroups = computed(() => {
   if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST) {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.PROPERTY,
-      // TODO @AI：不要这种简单的缩写，p 是 property；
-      // TODO @AI：这里好像 linter 报错；
       options: propertyList.value.filter(
-        (p) => p.type === IoTThingModelTypeEnum.PROPERTY,
+        (property: any) => property.type === IoTThingModelTypeEnum.PROPERTY,
       ),
     });
   }
@@ -81,7 +79,7 @@ const propertyGroups = computed(() => {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.EVENT,
       options: propertyList.value.filter(
-        (p) => p.type === IoTThingModelTypeEnum.EVENT,
+        (property: any) => property.type === IoTThingModelTypeEnum.EVENT,
       ),
     });
   }
@@ -90,7 +88,7 @@ const propertyGroups = computed(() => {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.SERVICE,
       options: propertyList.value.filter(
-        (p) => p.type === IoTThingModelTypeEnum.SERVICE,
+        (property: any) => property.type === IoTThingModelTypeEnum.SERVICE,
       ),
     });
   }
@@ -156,6 +154,7 @@ function parseThingModelData() {
     return;
   }
   // 解析属性
+  // TODO @AI：这里的 linter 报错
   if (tsl.properties && Array.isArray(tsl.properties)) {
     tsl.properties.forEach((prop) => {
       properties.push({
@@ -174,6 +173,7 @@ function parseThingModelData() {
   }
 
   // 解析事件
+  // TODO @AI：这里的 linter 报错
   if (tsl.events && Array.isArray(tsl.events)) {
     tsl.events.forEach((event) => {
       properties.push({
