@@ -226,11 +226,8 @@ function onActionTypeChange(action: Action, type: number) {
             <div class="w-full">
               <Form.Item label="执行类型" required>
                 <Select
-                  :model-value="action.type"
-                  @update:model-value="
-                    (value: any) => updateActionType(index, value as number)
-                  "
-                  @change="(value: any) => onActionTypeChange(action, value as number)"
+                  :value="action.type"
+                  @change="(value) => updateActionType(index, value as number)"
                   placeholder="请选择执行类型"
                   class="w-full"
                 >

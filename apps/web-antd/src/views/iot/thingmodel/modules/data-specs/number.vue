@@ -4,6 +4,8 @@ import type { Ref } from 'vue';
 
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
+import { computed } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -17,6 +19,11 @@ const dataSpecs = useVModel(
   'modelValue',
   emits,
 ) as Ref<ThingModelApi.DataSpecsNumberData>;
+
+/** 单位字典选项 */
+const unitOptions = computed(() =>
+  getDictOptions(DICT_TYPE.IOT_THING_MODEL_UNIT, 'string'),
+);
 
 /** 单位下拉变化时，拆出 unitName 与 unit 回写 */
 function unitChange(unitSpecs: any) {
@@ -46,7 +53,7 @@ function unitChange(unitSpecs: any) {
   </Form.Item>
   <Form.Item label="单位">
     <Select
-      :model-value="
+      :value="
         dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''
       "
       show-search
@@ -55,10 +62,7 @@ function unitChange(unitSpecs: any) {
       @change="unitChange"
     >
       <Select.Option
-        v-for="(item, index) in getDictOptions(
-          DICT_TYPE.IOT_THING_MODEL_UNIT,
-          'string',
-        )"
+        v-for="(item, index) in unitOptions"
         :key="index"
         :value="`${item.label}-${item.value}`"
       >
