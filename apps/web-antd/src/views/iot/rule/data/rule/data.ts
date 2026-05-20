@@ -98,6 +98,42 @@ export function useRuleFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 数据源配置（行编辑表）的字段 */
+export function useSourceConfigColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'productId',
+      title: '产品',
+      minWidth: 200,
+      slots: { default: 'productId' },
+    },
+    {
+      field: 'deviceId',
+      title: '设备',
+      minWidth: 200,
+      slots: { default: 'deviceId' },
+    },
+    {
+      field: 'method',
+      title: '消息',
+      minWidth: 200,
+      slots: { default: 'method' },
+    },
+    {
+      field: 'identifier',
+      title: '标识符',
+      minWidth: 250,
+      slots: { default: 'identifier' },
+    },
+    {
+      title: '操作',
+      width: 80,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<DataRuleApi.DataRule>['columns'] {
   return [
