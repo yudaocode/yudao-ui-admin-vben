@@ -2,16 +2,13 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import type { DataSpecsNumberData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Select } from 'ant-design-vue';
-
-/** 数值型的 dataSpecs 配置组件 */
-defineOptions({ name: 'ThingModelNumberDataSpecs' });
+import { ElFormItem, ElInput, ElOption, ElSelect } from 'element-plus';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -19,59 +16,60 @@ const dataSpecs = useVModel(
   props,
   'modelValue',
   emits,
-) as Ref<DataSpecsNumberData>;
+) as Ref<ThingModelApi.DataSpecsNumberData>;
 
-/** 单位发生变化时触发 */
-const unitChange = (UnitSpecs: any) => {
-  if (!UnitSpecs) return;
-  const [unitName, unit] = String(UnitSpecs).split('-');
+/** 单位下拉变化时，拆出 unitName 与 unit 回写 */
+function unitChange(unitSpecs: any) {
+  if (!unitSpecs) {
+    return;
+  }
+  const [unitName, unit] = String(unitSpecs).split('-');
   dataSpecs.value.unitName = unitName;
   dataSpecs.value.unit = unit;
-};
+}
 </script>
 
 <template>
-  <Form.Item label="取值范围">
+  <ElFormItem label="取值范围">
     <div class="flex items-center justify-between">
       <div class="flex-1">
-        <Input v-model:value="dataSpecs.min" placeholder="请输入最小值" />
+        <ElInput v-model="dataSpecs.min" placeholder="请输入最小值" />
       </div>
       <span class="mx-2">~</span>
       <div class="flex-1">
-        <Input v-model:value="dataSpecs.max" placeholder="请输入最大值" />
+        <ElInput v-model="dataSpecs.max" placeholder="请输入最大值" />
       </div>
     </div>
-  </Form.Item>
-  <Form.Item label="步长">
-    <Input v-model:value="dataSpecs.step" placeholder="请输入步长" />
-  </Form.Item>
-  <Form.Item label="单位">
-    <Select
+  </ElFormItem>
+  <ElFormItem label="步长">
+    <ElInput v-model="dataSpecs.step" placeholder="请输入步长" />
+  </ElFormItem>
+  <ElFormItem label="单位">
+    <ElSelect
       :model-value="
         dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''
       "
-      show-search
+      class="w-full"
+      filterable
       placeholder="请选择单位"
-      class="w-1/1"
       @change="unitChange"
     >
-      <Select.Option
+      <ElOption
         v-for="(item, index) in getDictOptions(
           DICT_TYPE.IOT_THING_MODEL_UNIT,
           'string',
         )"
         :key="index"
+        :label="`${item.label}-${item.value}`"
         :value="`${item.label}-${item.value}`"
-      >
-        {{ `${item.label}-${item.value}` }}
-      </Select.Option>
-    </Select>
-  </Form.Item>
+      />
+    </ElSelect>
+  </ElFormItem>
 </template>
 
 <style lang="scss" scoped>
-:deep(.ant-form-item) {
-  .ant-form-item {
+:deep(.el-form-item) {
+  .el-form-item {
     margin-bottom: 0;
   }
 }

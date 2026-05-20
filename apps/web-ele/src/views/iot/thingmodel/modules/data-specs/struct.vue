@@ -7,15 +7,18 @@ import { useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Divider, Form, Input } from 'ant-design-vue';
+import {
+  ElButton,
+  ElDivider,
+  ElForm,
+  ElFormItem,
+  ElInput,
+} from 'element-plus';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
-import ThingModelProperty from '../thing-model-property.vue';
-
-/** Struct 型的 dataSpecs 配置 */
-defineOptions({ name: 'ThingModelStructDataSpecs' });
+import ThingModelProperty from '../property.vue';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -112,7 +115,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item label="属性对象">
+  <ElFormItem label="属性对象">
     <div
       v-for="(item, index) in dataSpecsList"
       :key="index"
@@ -120,41 +123,40 @@ onMounted(() => {
     >
       <span>参数：{{ item.name }}</span>
       <div>
-        <Button type="link" @click="openStructForm(item)">编辑</Button>
-        <Divider type="vertical" />
-        <Button danger type="link" @click="deleteStructItem(index)">
+        <ElButton link type="primary" @click="openStructForm(item)">编辑</ElButton>
+        <ElDivider direction="vertical" />
+        <ElButton link type="danger" @click="deleteStructItem(index)">
           删除
-        </Button>
+        </ElButton>
       </div>
     </div>
-    <Button type="link" @click="openStructForm(null)">+ 新增参数</Button>
-  </Form.Item>
+    <ElButton link type="primary" @click="openStructForm(null)">+ 新增参数</ElButton>
+  </ElFormItem>
 
   <!-- 结构体参数表单 -->
   <Modal class="w-2/5" title="结构体参数">
-    <Form
+    <ElForm
       ref="structFormRef"
-      :label-col="{ span: 6 }"
       :model="formData"
-      :wrapper-col="{ span: 18 }"
       class="mx-4"
+      label-width="140px"
     >
-      <Form.Item
+      <ElFormItem
         :rules="ThingModelFormRules.name"
         label="参数名称"
-        name="name"
+        prop="name"
       >
-        <Input v-model:value="formData.name" placeholder="请输入参数名称" />
-      </Form.Item>
-      <Form.Item
+        <ElInput v-model="formData.name" placeholder="请输入参数名称" />
+      </ElFormItem>
+      <ElFormItem
         :rules="ThingModelFormRules.identifier"
         label="标识符"
-        name="identifier"
+        prop="identifier"
       >
-        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
-      </Form.Item>
+        <ElInput v-model="formData.identifier" placeholder="请输入标识符" />
+      </ElFormItem>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-struct-data-specs />
-    </Form>
+    </ElForm>
   </Modal>
 </template>
