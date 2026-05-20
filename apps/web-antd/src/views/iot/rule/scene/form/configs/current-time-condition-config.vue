@@ -4,6 +4,7 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
 
+import { IotRuleSceneTriggerTimeOperatorEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
@@ -16,8 +17,6 @@ import {
   Tag,
   TimePicker,
 } from 'ant-design-vue';
-
-import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
 
 /** 当前时间条件配置组件 */
 defineOptions({ name: 'CurrentTimeConditionConfig' });
@@ -225,7 +224,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-sm text-secondary">无需设置时间值</div>
+          <div v-else class="text-sm text-muted-foreground">无需设置时间值</div>
         </Form.Item>
       </Col>
 

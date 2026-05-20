@@ -12,7 +12,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { computed, h, onMounted, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, ModbusFunctionCodeOptions } from '@vben/constants';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -25,7 +25,6 @@ import {
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { ModbusFunctionCodeOptions } from '#/views/iot/utils/constants';
 
 import DeviceModbusConfigForm from './modbus-config-form.vue';
 import DeviceModbusPointForm from './modbus-point-form.vue';

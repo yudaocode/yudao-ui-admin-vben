@@ -2,14 +2,15 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+} from '@vben/constants';
+
 import { useVModel } from '@vueuse/core';
 import { ElFormItem, ElInput, ElRadio, ElRadioGroup } from 'element-plus';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelStructDataSpecs from './struct.vue';
 

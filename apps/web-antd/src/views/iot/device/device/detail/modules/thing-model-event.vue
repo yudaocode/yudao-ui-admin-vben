@@ -6,7 +6,11 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { computed, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  getEventTypeLabel,
+  IotDeviceMessageMethodEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -14,10 +18,6 @@ import { Button, RangePicker, Select, Space, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
-import {
-  getEventTypeLabel,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 const props = defineProps<{
   deviceId: number;

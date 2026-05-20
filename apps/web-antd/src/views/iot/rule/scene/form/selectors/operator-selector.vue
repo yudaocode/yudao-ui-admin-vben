@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Select } from 'ant-design-vue';
-
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Select } from 'ant-design-vue';
 
 /** 操作符选择器组件 */
 defineOptions({ name: 'OperatorSelector' });
@@ -252,7 +252,7 @@ watch(
       >
         <div class="py-[4px] flex w-full items-center justify-between">
           <div class="gap-[8px] flex items-center">
-            <div class="text-[14px] font-medium text-primary">
+            <div class="text-[14px] font-medium text-foreground">
               {{ operator.label }}
             </div>
             <div
@@ -261,7 +261,7 @@ watch(
               {{ operator.symbol }}
             </div>
           </div>
-          <div class="text-[12px] text-secondary">
+          <div class="text-[12px] text-muted-foreground">
             {{ operator.description }}
           </div>
         </div>

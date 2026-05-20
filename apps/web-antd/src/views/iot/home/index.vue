@@ -28,6 +28,7 @@ async function loadData() {
   }
 }
 
+/** 初始化 */
 onMounted(() => {
   loadData();
 });

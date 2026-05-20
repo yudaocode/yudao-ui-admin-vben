@@ -7,7 +7,14 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { computed, h, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getByteOrderOptions,
+  IoTThingModelTypeEnum,
+  ModbusFunctionCodeOptions,
+  ModbusRawDataTypeOptions,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
@@ -19,12 +26,6 @@ import {
   updateModbusPoint,
 } from '#/api/iot/device/modbus/point';
 import { $t } from '#/locales';
-import {
-  getByteOrderOptions,
-  IoTThingModelTypeEnum,
-  ModbusFunctionCodeOptions,
-  ModbusRawDataTypeOptions,
-} from '#/views/iot/utils/constants';
 
 const emit = defineEmits(['success']);
 

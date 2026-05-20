@@ -4,6 +4,7 @@ import type { Ref } from 'vue';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
@@ -16,7 +17,6 @@ import {
 } from 'element-plus';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
-import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 import ThingModelProperty from './property.vue';
 
@@ -27,7 +27,6 @@ const thingModelParams = useVModel(props, 'modelValue', emits) as Ref<any[]>;
 const paramFormRef = ref();
 const formData = ref<any>(buildEmptyFormData());
 
-// TODO @AI：这里的注释风格，对齐 system user form 里；（代码段里的。）
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     try {
@@ -38,6 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!thingModelParams.value) {
       thingModelParams.value = [];
     }
+    // 组装表单
     const data = formData.value;
     const item = {
       identifier: data.identifier,
@@ -55,7 +55,7 @@ const [Modal, modalApi] = useVbenModal({
         ? undefined
         : data.property.dataSpecsList,
     };
-    // 按 identifier 去重，存在则更新，否则追加
+    // 按 identifier 去重；存在则更新，否则追加
     const existingIndex = thingModelParams.value.findIndex(
       (spec) => spec.identifier === data.identifier,
     );
@@ -64,6 +64,7 @@ const [Modal, modalApi] = useVbenModal({
     } else {
       thingModelParams.value[existingIndex] = item;
     }
+    // 关闭
     await modalApi.close();
   },
   onOpenChange(isOpen: boolean) {
@@ -72,10 +73,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     formData.value = buildEmptyFormData();
     paramFormRef.value?.clearValidate?.();
+    // 加载数据
     const data = modalApi.getData<any>();
     if (isEmpty(data)) {
       return;
     }
+    // 设置到 values
     formData.value = {
       identifier: data.identifier ?? '',
       name: data.name ?? '',

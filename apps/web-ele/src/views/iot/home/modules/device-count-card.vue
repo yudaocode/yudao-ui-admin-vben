@@ -21,8 +21,9 @@ const { renderEcharts } = useEcharts(deviceCountChartRef);
 
 /** 是否有数据 */
 const hasData = computed(() => {
-  // TODO @AI：即使只有一行，还是希望 return 可以换行；
-  if (!props.statsData) return false;
+  if (!props.statsData) {
+    return false;
+  }
   const categories = Object.entries(
     props.statsData.productCategoryDeviceCounts || {},
   );

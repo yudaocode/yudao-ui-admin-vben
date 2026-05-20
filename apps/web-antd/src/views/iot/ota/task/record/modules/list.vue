@@ -4,6 +4,8 @@ import type { IoTOtaTaskRecordApi } from '#/api/iot/ota/task/record';
 
 import { computed, ref, watch } from 'vue';
 
+import { IoTOtaTaskRecordStatusEnum } from '@vben/constants';
+
 import { Card, message, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -12,7 +14,6 @@ import {
   getOtaTaskRecordPage,
 } from '#/api/iot/ota/task/record';
 import { $t } from '#/locales';
-import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 import { useGridColumns } from '../data';
 

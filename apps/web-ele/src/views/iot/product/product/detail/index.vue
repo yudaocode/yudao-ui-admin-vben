@@ -5,13 +5,13 @@ import { onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { IOT_PROVIDE_KEY } from '@vben/constants';
 
 import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
 import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
-import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 
 import ProductDetailsHeader from './modules/header.vue';
 import ProductDetailsInfo from './modules/info.vue';

@@ -6,17 +6,17 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, watch } from 'vue';
 
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelAccessModeEnum,
+} from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio, Select } from 'ant-design-vue';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelAccessModeEnum,
-} from '#/views/iot/utils/constants';
 
 import {
   ThingModelArrayDataSpecs,
@@ -25,6 +25,12 @@ import {
   ThingModelStructDataSpecs,
 } from './data-specs';
 
+const props = defineProps<{
+  isParams?: boolean;
+  isStructDataSpecs?: boolean;
+  modelValue: any;
+}>();
+const emits = defineEmits(['update:modelValue']);
 /** 嵌套在结构体里时，禁止再选数组 / 结构体（最多支持两层嵌套） */
 const NESTED_EXCLUDED_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.ARRAY,
@@ -35,17 +41,11 @@ const STRUCT_CHILD_OPTIONS = getDataTypeOptions().filter(
 );
 /** 数值型数据类型集合 */
 const NUMERIC_TYPES = new Set<string>([
-  IoTDataSpecsDataTypeEnum.INT,
   IoTDataSpecsDataTypeEnum.DOUBLE,
   IoTDataSpecsDataTypeEnum.FLOAT,
+  IoTDataSpecsDataTypeEnum.INT,
 ]);
 
-const props = defineProps<{
-  isParams?: boolean;
-  isStructDataSpecs?: boolean;
-  modelValue: any;
-}>();
-const emits = defineEmits(['update:modelValue']);
 const property = useVModel(
   props,
   'modelValue',

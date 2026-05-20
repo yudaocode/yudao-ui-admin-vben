@@ -4,15 +4,15 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select } from 'ant-design-vue';
-
 import {
   getConditionTypeOptions,
   IoTDeviceStatusEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerConditionTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Form, Row, Select } from 'ant-design-vue';
 
 import ValueInput from '../inputs/value-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';
@@ -226,7 +226,7 @@ function handleOperatorChange() {
               :value="condition.operator"
               @change="
                 (value: any) => updateConditionField('operator', value)
-              
+
               "
               placeholder="请选择操作符"
               class="w-full"
@@ -249,7 +249,7 @@ function handleOperatorChange() {
               :value="condition.param"
               @change="
                 (value: any) => updateConditionField('param', value)
-              
+
               "
               placeholder="请选择设备状态"
               class="w-full"

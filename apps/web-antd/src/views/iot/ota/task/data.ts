@@ -2,11 +2,9 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, IoTOtaTaskDeviceScopeEnum } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
-
-import { IoTOtaTaskDeviceScopeEnum } from '#/views/iot/utils/constants';
 
 /** 任务详情的描述字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {

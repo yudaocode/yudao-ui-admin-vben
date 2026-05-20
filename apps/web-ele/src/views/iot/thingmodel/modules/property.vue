@@ -6,6 +6,11 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, watch } from 'vue';
 
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelAccessModeEnum,
+} from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
@@ -19,11 +24,6 @@ import {
 } from 'element-plus';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelAccessModeEnum,
-} from '#/views/iot/utils/constants';
 
 import {
   ThingModelArrayDataSpecs,

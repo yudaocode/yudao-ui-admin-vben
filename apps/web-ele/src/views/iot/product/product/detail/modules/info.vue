@@ -25,8 +25,9 @@ const showProductSecret = ref(false); // 是否显示产品密钥
 
 /** 格式化日期 */
 function formatDate(date?: Date | string) {
-  // TODO @AI：即使单行，也需要 return 换行；
-  if (!date) return '-';
+  if (!date) {
+    return '-';
+  }
   return new Date(date).toLocaleString('zh-CN');
 }
 

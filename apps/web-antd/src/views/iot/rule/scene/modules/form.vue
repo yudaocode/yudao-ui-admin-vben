@@ -4,7 +4,12 @@ import type { IotSceneRule, RuleSceneApi } from '#/api/iot/rule/scene';
 import { computed, nextTick, reactive, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  IotRuleSceneActionTypeEnum,
+  IotRuleSceneTriggerTypeEnum,
+  isDeviceTrigger,
+} from '@vben/constants';
 
 import { Form, message } from 'ant-design-vue';
 
@@ -14,11 +19,6 @@ import {
   updateSceneRule,
 } from '#/api/iot/rule/scene';
 import { $t } from '#/locales';
-import {
-  IotRuleSceneActionTypeEnum,
-  IotRuleSceneTriggerTypeEnum,
-  isDeviceTrigger,
-} from '#/views/iot/utils/constants';
 
 import ActionSection from '../form/sections/action-section.vue';
 import BasicInfoSection from '../form/sections/basic-info-section.vue';

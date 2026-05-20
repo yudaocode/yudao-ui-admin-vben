@@ -73,9 +73,7 @@ export function getMessageTrendChartOptions(
   };
 }
 
-/**
- * 设备状态仪表盘图表配置
- */
+/** 设备状态仪表盘图表配置 */
 export function getDeviceStateGaugeChartOptions(
   value: number,
   max: number,
@@ -129,9 +127,7 @@ export function getDeviceStateGaugeChartOptions(
   };
 }
 
-/**
- * 设备数量饼图配置
- */
+/** 设备数量饼图配置 */
 export function getDeviceCountPieChartOptions(
   data: Array<{ name: string; value: number }>,
 ): any {

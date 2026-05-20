@@ -3,12 +3,11 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { nextTick } from 'vue';
 
+import { IotRuleSceneTriggerTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Tag } from 'ant-design-vue';
-
-import { IotRuleSceneTriggerTypeEnum } from '#/views/iot/utils/constants';
 
 import SubConditionGroupConfig from './sub-condition-group-config.vue';
 

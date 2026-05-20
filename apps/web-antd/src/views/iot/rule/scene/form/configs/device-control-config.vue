@@ -5,17 +5,17 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import {
+  IoTDataSpecsDataTypeEnum,
+  IotRuleSceneActionTypeEnum,
+  IoTThingModelAccessModeEnum,
+} from '@vben/constants';
 import { isObject } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Col, Form, Row, Select, Tag } from 'ant-design-vue';
 
-import { getThingModelListByProductId } from '#/api/iot/thingmodel';
-import {
-  IoTDataSpecsDataTypeEnum,
-  IotRuleSceneActionTypeEnum,
-  IoTThingModelAccessModeEnum,
-} from '#/views/iot/utils/constants';
+import { getThingModelTSL } from '#/api/iot/thingmodel';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';
@@ -133,18 +133,13 @@ function handleServiceChange(serviceIdentifier?: any) {
   }
 }
 
-/**
- * 获取物模型TSL数据
- * @param productId 产品ID
- * @returns 物模型TSL数据
- */
-async function getThingModelTSL(productId: number): Promise<any> {
+/** 获取物模型 TSL 数据 */
+async function fetchThingModelTSL(productId: number) {
   if (!productId) return null;
-
   try {
-    return await getThingModelListByProductId(productId);
+    return await getThingModelTSL(productId);
   } catch (error) {
-    console.error('获取物模型TSL数据失败:', error);
+    console.error('获取物模型 TSL 数据失败：', error);
     return null;
   }
 }
@@ -161,7 +156,7 @@ async function loadThingModelProperties(productId: number) {
 
   try {
     loadingThingModel.value = true;
-    const tslData = await getThingModelTSL(productId);
+    const tslData = await fetchThingModelTSL(productId);
 
     // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.properties) {
@@ -196,7 +191,7 @@ async function loadServiceList(productId: number) {
 
   try {
     loadingServices.value = true;
-    const tslData = await getThingModelTSL(productId);
+    const tslData = await fetchThingModelTSL(productId);
 
     // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.services) {
@@ -368,8 +363,8 @@ watch(
         <Select
           v-model:value="action.identifier"
           placeholder="请选择服务"
-          filterable
-          clearable
+          show-search
+          allow-clear
           class="w-full"
           :loading="loadingServices"
           @change="handleServiceChange"

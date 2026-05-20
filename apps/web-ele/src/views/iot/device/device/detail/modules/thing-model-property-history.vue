@@ -8,9 +8,10 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDate, formatDateTime } from '@vben/utils';
+import { formatDate } from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -26,13 +27,11 @@ import {
 
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
-import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 defineProps<{ deviceId: number }>();
 
 const dialogVisible = ref(false); // 弹窗的是否展示
 const loading = ref(false);
-const exporting = ref(false);
 const viewMode = ref<'chart' | 'list'>('chart'); // 视图模式状态
 const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 列表的数据
 const total = ref(0); // 总数据量
@@ -297,54 +296,6 @@ function handleRefresh() {
   getList();
 }
 
-/** 导出数据 */
-async function handleExport() {
-  if (list.value.length === 0) {
-    ElMessage.warning('暂无数据可导出');
-    return;
-  }
-
-  exporting.value = true;
-  try {
-    // 构建CSV内容
-    const headers = ['序号', '时间', '属性值'];
-    const csvContent = [
-      headers.join(','),
-      ...list.value.map((item, index) => {
-        return [
-          index + 1,
-          formatDateTime(new Date(item.updateTime)),
-          isComplexDataType.value
-            ? `"${JSON.stringify(item.value)}"`
-            : item.value,
-        ].join(',');
-      }),
-    ].join('\n');
-
-    // 创建 BOM 头,解决中文乱码
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], {
-      type: 'text/csv;charset=utf-8',
-    });
-
-    // 下载文件
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `设备属性历史_${propertyIdentifier.value}_${formatDate(new Date(), 'YYYYMMDDHHmmss')}.csv`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-
-    ElMessage.success('导出成功');
-  } catch {
-    ElMessage.error('导出失败');
-  } finally {
-    exporting.value = false;
-  }
-}
-
 /** 关闭弹窗 */
 function handleClose() {
   dialogVisible.value = false;
@@ -392,16 +343,6 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           <ElButton :loading="loading" @click="handleRefresh">
             <IconifyIcon icon="ant-design:reload-outlined" class="mr-1" />
             刷新
-          </ElButton>
-
-          <!-- 导出按钮 -->
-          <ElButton
-            :disabled="list.length === 0"
-            :loading="exporting"
-            @click="handleExport"
-          >
-            <IconifyIcon icon="ant-design:export-outlined" class="mr-1" />
-            导出
           </ElButton>
 
           <!-- 视图切换 -->

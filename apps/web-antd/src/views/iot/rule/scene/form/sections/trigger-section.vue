@@ -3,17 +3,17 @@ import type { Trigger, TriggerCondition } from '#/api/iot/rule/scene';
 
 import { onMounted } from 'vue';
 
+import {
+  getTriggerTypeLabel,
+  IotRuleSceneTriggerTypeEnum,
+  isDeviceTrigger,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Card, Empty, Form, Tag } from 'ant-design-vue';
 
 import { CronTab } from '#/components/cron-tab';
-import {
-  getTriggerTypeLabel,
-  IotRuleSceneTriggerTypeEnum,
-  isDeviceTrigger,
-} from '#/views/iot/utils/constants';
 
 import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
 import TimerConditionGroupConfig from '../configs/timer-condition-group-config.vue';
@@ -66,7 +66,7 @@ function removeTrigger(index: number) {
 /** 更新触发器类型 */
 function updateTriggerType(index: number, type: number) {
   triggers.value[index]!.type = type;
-  onTriggerTypeChange(index, type);
+  onTriggerTypeChange(index);
 }
 
 /** 更新触发器设备配置 */
@@ -88,7 +88,7 @@ function updateTriggerConditionGroups(
 }
 
 /** 触发器类型切换后清空相关字段 */
-function onTriggerTypeChange(index: number, _: number) {
+function onTriggerTypeChange(index: number) {
   const triggerItem = triggers.value[index]!;
   triggerItem.productId = undefined;
   triggerItem.deviceId = undefined;
@@ -113,7 +113,7 @@ onMounted(() => {
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
           <IconifyIcon icon="ep:lightning" class="text-[18px] text-primary" />
-          <span class="text-[16px] font-semibold text-primary">触发器配置</span>
+          <span class="text-[16px] font-semibold text-foreground">触发器配置</span>
           <Tag color="default"> {{ triggers.length }} 个触发器 </Tag>
         </div>
         <Button type="primary" size="small" @click="addTrigger">
@@ -196,7 +196,7 @@ onMounted(() => {
                   icon="lucide:timer"
                   class="text-[18px] text-danger"
                 />
-                <span class="text-[14px] font-medium text-primary">
+                <span class="text-[14px] font-medium text-foreground">
                   定时触发配置
                 </span>
               </div>
@@ -232,8 +232,8 @@ onMounted(() => {
         <Empty description="暂无触发器">
           <template #description>
             <div class="space-y-[8px]">
-              <p class="text-secondary">暂无触发器配置</p>
-              <p class="text-[12px] text-primary">
+              <p class="text-muted-foreground">暂无触发器配置</p>
+              <p class="text-[12px] text-muted-foreground">
                 请使用上方的"添加触发器"按钮来设置触发规则
               </p>
             </div>

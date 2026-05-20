@@ -4,16 +4,16 @@ import type { Ref } from 'vue';
 
 import { watch } from 'vue';
 
+import {
+  IoTThingModelEventTypeEnum,
+  IoTThingModelParamDirectionEnum,
+} from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Form, Radio } from 'ant-design-vue';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
-import {
-  IoTThingModelEventTypeEnum,
-  IoTThingModelParamDirectionEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelInputOutputParam from './input-output-param.vue';
 

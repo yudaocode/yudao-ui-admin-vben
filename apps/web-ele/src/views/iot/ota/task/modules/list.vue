@@ -5,13 +5,13 @@ import type { IoTOtaTaskApi } from '#/api/iot/ota/task';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IoTOtaTaskStatusEnum } from '@vben/constants';
 
 import { ElInput, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { cancelOtaTask, getOtaTaskPage } from '#/api/iot/ota/task';
 import { $t } from '#/locales';
-import { IoTOtaTaskStatusEnum } from '#/views/iot/utils/constants';
 
 import { useGridColumns } from '../data';
 import OtaTaskDetail from './detail.vue';

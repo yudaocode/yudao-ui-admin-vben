@@ -7,7 +7,12 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { computed, inject, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  IOT_PROVIDE_KEY,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep, isEmpty } from '@vben/utils';
@@ -27,11 +32,6 @@ import {
   ThingModelFormRules,
   updateThingModel,
 } from '#/api/iot/thingmodel';
-import {
-  IOT_PROVIDE_KEY,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelEvent from './event.vue';
 import ThingModelProperty from './property.vue';
@@ -50,7 +50,6 @@ const getTitle = computed(() =>
     : $t('ui.actionTitle.create', ['物模型']),
 );
 
-// TODO @AI：这里的注释风格，对齐 system user form 里；（代码段里的。）
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     try {
@@ -59,12 +58,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
+    const data = cloneDeep(formData.value);
+    data.productId = product!.value.id;
+    data.productKey = product!.value.productKey;
+    fillExtraAttributes(data);
     try {
-      const data = cloneDeep(formData.value);
-      data.productId = product!.value.id;
-      data.productKey = product!.value.productKey;
-      fillExtraAttributes(data);
       await (data.id ? updateThingModel(data) : createThingModel(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -76,9 +77,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    // 每次打开都先重置到空白，避免上一次的状态残留
+    // 每次打开都重置；避免上一次的状态残留
     formData.value = buildEmptyFormData();
     formRef.value?.clearValidate?.();
+    // 加载数据
     const data = modalApi.getData<{ id?: number }>();
     if (!data?.id) {
       return;
@@ -86,6 +88,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getThingModel(data.id);
+      // 设置到 values
       formData.value = normalizeFormData(result);
     } finally {
       modalApi.unlock();

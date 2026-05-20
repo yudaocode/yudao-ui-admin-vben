@@ -57,8 +57,8 @@ onMounted(() => {
       <Select
         v-model:value="localValue"
         placeholder="请选择告警配置"
-        filterable
-        clearable
+        show-search
+        allow-clear
         @change="handleChange"
         class="w-full"
         :loading="loading"

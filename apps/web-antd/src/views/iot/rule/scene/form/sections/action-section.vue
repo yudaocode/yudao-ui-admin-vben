@@ -2,16 +2,15 @@
 <script setup lang="ts">
 import type { Action } from '#/api/iot/rule/scene';
 
-import { IconifyIcon } from '@vben/icons';
-
-import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, Form, Select, Tag } from 'ant-design-vue';
-
 import {
   getActionTypeLabel,
   getActionTypeOptions,
   IotRuleSceneActionTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Card, Empty, Form, Select, Tag } from 'ant-design-vue';
 
 import AlertConfig from '../configs/alert-config.vue';
 import DeviceControlConfig from '../configs/device-control-config.vue';
@@ -154,7 +153,7 @@ function onActionTypeChange(action: Action, type: number) {
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
           <IconifyIcon icon="ep:setting" class="text-[18px] text-primary" />
-          <span class="text-[16px] font-semibold text-primary"> 执行器配置 </span>
+          <span class="text-[16px] font-semibold text-foreground"> 执行器配置 </span>
           <Tag color="default"> {{ actions.length }} 个执行器 </Tag>
         </div>
         <div class="gap-[8px] flex items-center">
@@ -229,9 +228,9 @@ function onActionTypeChange(action: Action, type: number) {
                 <Select
                   :model-value="action.type"
                   @update:model-value="
-                    (value: number) => updateActionType(index, value)
+                    (value: any) => updateActionType(index, value as number)
                   "
-                  @change="(value) => onActionTypeChange(action, value)"
+                  @change="(value: any) => onActionTypeChange(action, value as number)"
                   placeholder="请选择执行类型"
                   class="w-full"
                 >
@@ -275,10 +274,10 @@ function onActionTypeChange(action: Action, type: number) {
             >
               <div class="mb-2 flex items-center gap-2">
                 <IconifyIcon icon="ep:warning" class="text-base text-warning" />
-                <span class="font-semibold text-sm text-primary">触发告警</span>
+                <span class="font-semibold text-sm text-foreground">触发告警</span>
                 <Tag color="warning">自动执行</Tag>
               </div>
-              <div class="text-xs leading-relaxed text-secondary">
+              <div class="text-xs leading-relaxed text-muted-foreground">
                 当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
                 告警配置] 管理。
               </div>

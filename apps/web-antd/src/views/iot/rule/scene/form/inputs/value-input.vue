@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
-
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
 
 /** 值输入组件 */
 defineOptions({ name: 'ValueInput' });
@@ -197,7 +197,7 @@ watch(
         class="min-w-0 flex-1"
         style="width: auto !important"
       />
-      <span class="whitespace-nowrap text-xs text-secondary"> 至 </span>
+      <span class="whitespace-nowrap text-xs text-muted-foreground"> 至 </span>
       <Input
         v-model:value="rangeEnd"
         :type="getInputType()"
@@ -232,7 +232,7 @@ watch(
         v-if="listPreview.length > 0"
         class="mt-2 flex flex-wrap items-center gap-1"
       >
-        <span class="text-xs text-secondary"> 解析结果： </span>
+        <span class="text-xs text-muted-foreground"> 解析结果： </span>
         <Tag
           v-for="(item, index) in listPreview"
           :key="index"
@@ -282,7 +282,7 @@ watch(
           :content="`单位：${propertyConfig.unit}`"
           placement="top"
         >
-          <span class="px-1 text-xs text-secondary">
+          <span class="px-1 text-xs text-muted-foreground">
             {{ propertyConfig.unit }}
           </span>
         </Tooltip>

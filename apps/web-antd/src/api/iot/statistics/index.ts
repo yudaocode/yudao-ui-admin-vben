@@ -19,7 +19,7 @@ export namespace IotStatisticsApi {
 
   /** 设备消息数量统计（按日期） */
   export interface DeviceMessageSummaryByDateRespVO {
-    time: Date; // 时间轴
+    time: string; // 时间轴
     upstreamCount: number; // 上行消息数量
     downstreamCount: number; // 下行消息数量
   }

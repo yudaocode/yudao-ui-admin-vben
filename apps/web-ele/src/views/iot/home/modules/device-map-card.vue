@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceStateEnum, DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
 import { ElCard, ElEmpty } from 'element-plus';
 
 import { getDeviceLocationList } from '#/api/iot/device/device';
 import { loadBaiduMapSdk } from '#/components/map';
-import { DeviceStateEnum } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceMapCard' });
 
@@ -152,6 +151,8 @@ async function init() {
     return;
   }
   await loadBaiduMapSdk();
+  // 等待 v-show 容器渲染完成；SDK 缓存命中时上一行会同步 resolve，DOM 来不及切换
+  await nextTick();
   initMap();
 }
 

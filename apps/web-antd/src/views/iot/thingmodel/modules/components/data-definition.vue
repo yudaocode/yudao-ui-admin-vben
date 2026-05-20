@@ -3,31 +3,30 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed } from 'vue';
 
-import { Tooltip } from 'ant-design-vue';
-
 import {
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
   IoTDataSpecsDataTypeEnum,
   IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
 
+import { Tooltip } from 'ant-design-vue';
+
+const props = defineProps<{ data: ThingModelApi.ThingModel }>();
 const NUMBER_TYPES = new Set<string>([
-  IoTDataSpecsDataTypeEnum.INT,
   IoTDataSpecsDataTypeEnum.DOUBLE,
   IoTDataSpecsDataTypeEnum.FLOAT,
+  IoTDataSpecsDataTypeEnum.INT,
 ]);
 const PLACEHOLDER_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.ARRAY,
-  IoTDataSpecsDataTypeEnum.STRUCT,
   IoTDataSpecsDataTypeEnum.DATE,
+  IoTDataSpecsDataTypeEnum.STRUCT,
 ]);
 const LIST_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.BOOL,
   IoTDataSpecsDataTypeEnum.ENUM,
 ]);
-
-const props = defineProps<{ data: ThingModelApi.ThingModel }>();
 
 const formattedDataSpecsList = computed(() => {
   if (!props.data.property?.dataSpecsList?.length) {

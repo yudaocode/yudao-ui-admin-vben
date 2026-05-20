@@ -2,10 +2,9 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, getDataTypeOptionsLabel } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { getDataTypeOptionsLabel } from '#/views/iot/utils/constants';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

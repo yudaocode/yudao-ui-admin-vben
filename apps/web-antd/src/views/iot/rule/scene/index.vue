@@ -5,7 +5,13 @@ import type { RuleSceneApi } from '#/api/iot/rule/scene';
 import { ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getActionTypeLabel,
+  getTriggerTypeLabel,
+  IotRuleSceneTriggerTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -17,14 +23,9 @@ import {
   getSceneRulePage,
   updateSceneRuleStatus,
 } from '#/api/iot/rule/scene';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { CronUtils } from '#/utils/cron';
-import {
-  getActionTypeLabel,
-  getTriggerTypeLabel,
-  IotRuleSceneActionTypeEnum,
-  IotRuleSceneTriggerTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -105,109 +106,50 @@ function hasTimerTrigger(row: RuleSceneApi.SceneRule): boolean {
   );
 }
 
-/** 触发器列表项（用于列内多 tag 渲染） */
-interface TriggerCellItem {
-  color: string;
-  label: string;
-  meta?: string;
+/** 触发条件摘要文本（拼接所有触发器） */
+function getTriggerSummary(row: RuleSceneApi.SceneRule): string {
+  if (!row.triggers?.length) return '无触发器';
+  return row.triggers
+    .map((trigger) => {
+      const type = trigger.type ?? 0;
+      let description = getTriggerTypeLabel(type);
+      if (
+        (type === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST ||
+          type === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST ||
+          type === IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE) &&
+        trigger.identifier
+      ) {
+        description += ` (${trigger.identifier})`;
+      } else if (type === IotRuleSceneTriggerTypeEnum.TIMER) {
+        description = `${getTriggerTypeLabel(type)} (${CronUtils.format(trigger.cronExpression || '')})`;
+      }
+      if (trigger.deviceId) {
+        description += ` [设备 ID: ${trigger.deviceId}]`;
+      } else if (trigger.productId) {
+        description += ` [产品 ID: ${trigger.productId}]`;
+      }
+      return description;
+    })
+    .join(', ');
 }
 
-/** 动作列表项 */
-interface ActionCellItem {
-  color: string;
-  label: string;
-  meta?: string;
-}
-
-/** 触发器 → tag 颜色（按 5 种类型区分） */
-function colorOfTrigger(type?: number): string {
-  switch (type) {
-    case IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST: {
-      return 'orange';
-    }
-    case IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST: {
-      return 'blue';
-    }
-    case IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE: {
-      return 'purple';
-    }
-    case IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE: {
-      return 'cyan';
-    }
-    case IotRuleSceneTriggerTypeEnum.TIMER: {
-      return 'gold';
-    }
-    default: {
-      return 'default';
-    }
-  }
-}
-
-/** 动作 → tag 颜色（按 4 种类型区分） */
-function colorOfAction(type?: number): string {
-  switch (type) {
-    case IotRuleSceneActionTypeEnum.ALERT_RECOVER: {
-      return 'green';
-    }
-    case IotRuleSceneActionTypeEnum.ALERT_TRIGGER: {
-      return 'red';
-    }
-    case IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET: {
-      return 'blue';
-    }
-    case IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE: {
-      return 'purple';
-    }
-    default: {
-      return 'default';
-    }
-  }
-}
-
-/** 触发器列：每个触发器一项 */
-function getTriggerCellItems(row: RuleSceneApi.SceneRule): TriggerCellItem[] {
-  if (!row.triggers?.length) {
-    return [];
-  }
-  return row.triggers.map((trigger) => {
-    const type = trigger.type ?? 0;
-    let label = getTriggerTypeLabel(type);
-    if (
-      (type === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST ||
-        type === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST ||
-        type === IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE) &&
-      trigger.identifier
-    ) {
-      label += ` · ${trigger.identifier}`;
-    } else if (type === IotRuleSceneTriggerTypeEnum.TIMER) {
-      label += ` · ${CronUtils.format(trigger.cronExpression || '')}`;
-    }
-    const meta = trigger.deviceId
-      ? `设备 #${trigger.deviceId}`
-      : (trigger.productId
-        ? `产品 #${trigger.productId}`
-        : '');
-    return { color: colorOfTrigger(type), label, meta };
-  });
-}
-
-/** 动作列：每个动作一项 */
-function getActionCellItems(row: RuleSceneApi.SceneRule): ActionCellItem[] {
-  if (!row.actions?.length) {
-    return [];
-  }
-  return row.actions.map((action) => {
-    const type = action.type ?? 0;
-    const label = getActionTypeLabel(type);
-    const meta = action.deviceId
-      ? `设备 #${action.deviceId}`
-      : action.productId
-        ? `产品 #${action.productId}`
-        : action.alertConfigId
-          ? `告警 #${action.alertConfigId}`
-          : '';
-    return { color: colorOfAction(type), label, meta };
-  });
+/** 执行动作摘要文本（拼接所有动作） */
+function getActionSummary(row: RuleSceneApi.SceneRule): string {
+  if (!row.actions?.length) return '无执行器';
+  return row.actions
+    .map((action) => {
+      let description = getActionTypeLabel(action.type ?? 0);
+      if (action.deviceId) {
+        description += ` [设备 ID: ${action.deviceId}]`;
+      } else if (action.productId) {
+        description += ` [产品 ID: ${action.productId}]`;
+      }
+      if (action.alertConfigId) {
+        description += ` [告警配置 ID: ${action.alertConfigId}]`;
+      }
+      return description;
+    })
+    .join(', ');
 }
 
 /** 取定时触发器的 CRON 频率描述 */
@@ -304,7 +246,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <div class="text-xl font-semibold">
                 {{ statistics.total }}
               </div>
-              <div class="text-xs text-secondary">总规则数</div>
+              <div class="text-xs text-muted-foreground">总规则数</div>
             </div>
           </div>
         </Card>
@@ -321,7 +263,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <div class="text-xl font-semibold">
                 {{ statistics.enabled }}
               </div>
-              <div class="text-xs text-secondary">启用规则</div>
+              <div class="text-xs text-muted-foreground">启用规则</div>
             </div>
           </div>
         </Card>
@@ -338,7 +280,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <div class="text-xl font-semibold">
                 {{ statistics.disabled }}
               </div>
-              <div class="text-xs text-secondary">禁用规则</div>
+              <div class="text-xs text-muted-foreground">禁用规则</div>
             </div>
           </div>
         </Card>
@@ -355,7 +297,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               <div class="text-xl font-semibold">
                 {{ statistics.timerRules }}
               </div>
-              <div class="text-xs text-secondary">定时规则</div>
+              <div class="text-xs text-muted-foreground">定时规则</div>
             </div>
           </div>
         </Card>
@@ -375,65 +317,51 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <!-- 规则名称列：名称 + 状态 + 描述 -->
+      <!-- 规则名称列：名称 + 状态 tag inline + 描述 -->
       <template #name="{ row }">
-        <div class="gap-2 flex items-center">
-          <span class="font-medium">{{ row.name }}</span>
+        <div class="flex items-center gap-2">
+          <span class="font-medium text-foreground">{{ row.name }}</span>
+          <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="row.status" />
         </div>
         <Tooltip
           v-if="row.description"
           :title="row.description"
           placement="top"
         >
-          <div class="text-xs text-secondary mt-1 truncate max-w-[160px]">
+          <div class="mt-1 max-w-[200px] truncate text-xs text-muted-foreground">
             {{ row.description }}
           </div>
         </Tooltip>
       </template>
-      <!-- 触发条件列：按触发器各显示一项 -->
+      <!-- 触发条件列：单 tag 汇总 + 定时触发额外信息 -->
       <template #triggers="{ row }">
-        <div v-if="getTriggerCellItems(row).length > 0" class="flex flex-col gap-1">
-          <div
-            v-for="(item, i) in getTriggerCellItems(row)"
-            :key="`trigger-${i}`"
-            class="flex items-center gap-1"
-          >
-            <Tag :color="item.color" class="m-0">{{ item.label }}</Tag>
-            <span v-if="item.meta" class="text-xs text-secondary">
-              {{ item.meta }}
-            </span>
-          </div>
+        <div class="space-y-1">
+          <Tag color="processing" class="m-0">{{ getTriggerSummary(row) }}</Tag>
           <Tooltip
             v-if="hasTimerTrigger(row)"
             :title="getCronExpression(row)"
             placement="top"
           >
-            <span class="text-xs text-secondary">
+            <div class="text-xs text-muted-foreground">
               <IconifyIcon icon="lucide:clock" class="mr-1 inline" />
               {{ getCronFrequency(row) }}
               <template v-if="getNextExecutionTime(row)">
                 · 下次 {{ formatDateTime(getNextExecutionTime(row) as Date) }}
               </template>
-            </span>
+            </div>
           </Tooltip>
         </div>
-        <span v-else class="text-xs text-secondary">无触发器</span>
       </template>
-      <!-- 执行动作列：按动作各显示一项 -->
+      <!-- 执行动作列：单 tag 汇总 -->
       <template #actionsCol="{ row }">
-        <div v-if="getActionCellItems(row).length > 0" class="flex flex-col gap-1">
-          <div
-            v-for="(item, i) in getActionCellItems(row)"
-            :key="`action-${i}`"
-            class="flex items-center gap-1"
-          >
-            <Tag :color="item.color" class="m-0">{{ item.label }}</Tag>
-            <span v-if="item.meta" class="text-xs text-secondary">
-              {{ item.meta }}
-            </span>
-          </div>
-        </div>
-        <span v-else class="text-xs text-secondary">无动作</span>
+        <Tag color="success" class="m-0">{{ getActionSummary(row) }}</Tag>
+      </template>
+      <!-- 最近触发列 -->
+      <template #lastTriggeredTime="{ row }">
+        <span v-if="row.lastTriggeredTime">
+          {{ formatDateTime(row.lastTriggeredTime) }}
+        </span>
+        <span v-else class="text-muted-foreground">未触发</span>
       </template>
       <template #actions="{ row }">
         <TableAction

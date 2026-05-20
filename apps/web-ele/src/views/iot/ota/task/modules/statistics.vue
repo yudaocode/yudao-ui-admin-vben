@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, IoTOtaTaskRecordStatusEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
 import { ElCard, ElCol, ElRow } from 'element-plus';
 
-import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 const props = defineProps<{
   loading?: boolean;

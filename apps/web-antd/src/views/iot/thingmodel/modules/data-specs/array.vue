@@ -2,29 +2,30 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
+import {
+  getDataTypeOptions,
+  IoTDataSpecsDataTypeEnum,
+} from '@vben/constants';
+
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio } from 'ant-design-vue';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelStructDataSpecs from './struct.vue';
 
+const props = defineProps<{ modelValue: any }>();
+const emits = defineEmits(['update:modelValue']);
 /** 数组元素禁止选择的类型 */
 const EXCLUDED_CHILD_TYPES = new Set<string>([
-  IoTDataSpecsDataTypeEnum.ENUM,
   IoTDataSpecsDataTypeEnum.ARRAY,
   IoTDataSpecsDataTypeEnum.DATE,
+  IoTDataSpecsDataTypeEnum.ENUM,
 ]);
 const childDataTypeOptions = getDataTypeOptions().filter(
   (item) => !EXCLUDED_CHILD_TYPES.has(item.value),
 );
 
-const props = defineProps<{ modelValue: any }>();
-const emits = defineEmits(['update:modelValue']);
 const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>;
 
 /** 元素类型切到 struct 时，初始化 dataSpecsList 占位 */

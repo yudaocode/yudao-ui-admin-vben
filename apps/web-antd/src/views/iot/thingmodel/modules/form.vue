@@ -7,7 +7,12 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { computed, inject, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  IOT_PROVIDE_KEY,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep, isEmpty } from '@vben/utils';
@@ -20,11 +25,6 @@ import {
   ThingModelFormRules,
   updateThingModel,
 } from '#/api/iot/thingmodel';
-import {
-  IOT_PROVIDE_KEY,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelEvent from './event.vue';
 import ThingModelProperty from './property.vue';
@@ -51,12 +51,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
+    const data = cloneDeep(formData.value);
+    data.productId = product!.value.id;
+    data.productKey = product!.value.productKey;
+    fillExtraAttributes(data);
     try {
-      const data = cloneDeep(formData.value);
-      data.productId = product!.value.id;
-      data.productKey = product!.value.productKey;
-      fillExtraAttributes(data);
       await (data.id ? updateThingModel(data) : createThingModel(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -68,9 +70,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    // 每次打开都先重置到空白，避免上一次的状态残留
+    // 每次打开都重置；避免上一次的状态残留
     formData.value = buildEmptyFormData();
     formRef.value?.clearValidate?.();
+    // 加载数据
     const data = modalApi.getData<{ id?: number }>();
     if (!data?.id) {
       return;
@@ -78,6 +81,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const result = await getThingModel(data.id);
+      // 设置到 values
       formData.value = normalizeFormData(result);
     } finally {
       modalApi.unlock();
@@ -136,14 +140,31 @@ function normalizeFormData(result: ThingModelApi.ThingModel): ThingModelApi.Thin
 
 /** 按功能类型将子表单数据回写到顶层，并清理无关分支 */
 function fillExtraAttributes(data: any) {
-  if (data.type === IoTThingModelTypeEnum.PROPERTY) {
+  switch (data.type) {
+  case IoTThingModelTypeEnum.EVENT: {
+    removeDataSpecs(data.event);
+    data.dataType = data.event.dataType;
+    data.event.identifier = data.identifier;
+    data.event.name = data.name;
+    if (isEmpty(data.event.outputParams)) {
+      delete data.event.outputParams;
+    }
+    delete data.property;
+    delete data.service;
+
+  break;
+  }
+  case IoTThingModelTypeEnum.PROPERTY: {
     removeDataSpecs(data.property);
     data.dataType = data.property.dataType;
     data.property.identifier = data.identifier;
     data.property.name = data.name;
     delete data.service;
     delete data.event;
-  } else if (data.type === IoTThingModelTypeEnum.SERVICE) {
+
+  break;
+  }
+  case IoTThingModelTypeEnum.SERVICE: {
     removeDataSpecs(data.service);
     data.dataType = data.service.dataType;
     data.service.identifier = data.identifier;
@@ -156,16 +177,10 @@ function fillExtraAttributes(data: any) {
     }
     delete data.property;
     delete data.event;
-  } else if (data.type === IoTThingModelTypeEnum.EVENT) {
-    removeDataSpecs(data.event);
-    data.dataType = data.event.dataType;
-    data.event.identifier = data.identifier;
-    data.event.name = data.name;
-    if (isEmpty(data.event.outputParams)) {
-      delete data.event.outputParams;
-    }
-    delete data.property;
-    delete data.service;
+
+  break;
+  }
+  // No default
   }
 }
 

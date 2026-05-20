@@ -3,16 +3,16 @@ import type { Trigger } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select } from 'ant-design-vue';
-
 import {
   getTriggerTypeLabel,
   IoTDeviceStatusEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerTypeEnum,
   triggerTypeOptions,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Form, Row, Select } from 'ant-design-vue';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -368,10 +368,10 @@ function handlePropertyChange(propertyInfo: any) {
 
     <!-- 其他触发类型的提示 -->
     <div v-else class="py-5 text-center">
-      <p class="mb-1 text-sm text-secondary">
+      <p class="mb-1 text-sm text-muted-foreground">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-secondary">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-muted-foreground">此触发类型暂不需要配置额外条件</p>
     </div>
   </div>
 </template>

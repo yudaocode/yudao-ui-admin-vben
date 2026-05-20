@@ -8,13 +8,13 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { computed, inject } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { IOT_PROVIDE_KEY } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
 import { $t } from '#/locales';
-import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import { DataDefinition } from './modules/components';

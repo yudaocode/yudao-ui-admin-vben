@@ -3,14 +3,14 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed } from 'vue';
 
-import { ElTooltip } from 'element-plus';
-
 import {
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
   IoTDataSpecsDataTypeEnum,
   IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { ElTooltip } from 'element-plus';
 
 const props = defineProps<{ data: ThingModelApi.ThingModel }>();
 const NUMBER_TYPES = new Set<string>([

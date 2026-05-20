@@ -21,7 +21,9 @@ const { renderEcharts } = useEcharts(deviceCountChartRef);
 
 /** 是否有数据 */
 const hasData = computed(() => {
-  if (!props.statsData) return false;
+  if (!props.statsData) {
+    return false;
+  }
   const categories = Object.entries(
     props.statsData.productCategoryDeviceCounts || {},
   );

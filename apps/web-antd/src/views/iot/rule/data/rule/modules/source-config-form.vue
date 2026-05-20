@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, ref } from 'vue';
 
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import { IotDeviceMessageMethodEnum, IoTThingModelTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, message, Select } from 'ant-design-vue';
@@ -10,7 +10,6 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
-import { IoTThingModelTypeEnum } from '#/views/iot/utils/constants';
 
 import { useSourceConfigColumns } from '../data';
 
@@ -184,13 +183,12 @@ async function setData(data: any[]) {
     ...item,
     identifierLoading: false,
   }));
-  // 为已有数据预加载物模型
-  // TODO @AI：这里有 linter 报错：Promise returned from forEach argument is ignored
-  data?.forEach(async (item) => {
-    if (item.productId && shouldShowIdentifierSelect(item)) {
-      await loadThingModel(item.productId);
-    }
-  });
+  // 为已有数据预加载物模型；并行加载，不阻塞 reloadGrid
+  await Promise.all(
+    (data || [])
+      .filter((item) => item.productId && shouldShowIdentifierSelect(item))
+      .map((item) => loadThingModel(item.productId)),
+  );
   await reloadGrid();
 }
 
@@ -274,7 +272,7 @@ defineExpose({ validate, getData, setData });
           :options="getThingModelOptions(formData[rowIndex])"
           class="w-full"
         />
-        <span v-else class="text-xs text-secondary">-</span>
+        <span v-else class="text-xs text-muted-foreground">-</span>
       </template>
       <template #actions="{ rowIndex }">
         <Button danger type="link" @click="handleDelete(rowIndex)">删除</Button>

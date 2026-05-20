@@ -24,16 +24,13 @@ const props = defineProps<{
   deviceId: number;
 }>();
 
-/** 查询参数 */
 const queryParams = reactive({
   method: undefined,
   upstream: undefined,
-});
+}); // 查询参数
 
-/** 自动刷新开关 */
-const autoRefresh = ref(false);
-/** 自动刷新定时器 */
-let autoRefreshTimer: any = null;
+const autoRefresh = ref(false); // 自动刷新开关
+let autoRefreshTimer: any = null; // 自动刷新定时器
 
 /** 消息方法选项 */
 const methodOptions = computed(() => {

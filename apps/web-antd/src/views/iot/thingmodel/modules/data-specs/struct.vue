@@ -4,13 +4,13 @@ import type { Ref } from 'vue';
 import { onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Divider, Form, Input } from 'ant-design-vue';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
-import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 import ThingModelProperty from '../property.vue';
 

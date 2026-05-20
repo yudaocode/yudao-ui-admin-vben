@@ -7,7 +7,6 @@ import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../../data';
 
-/** IoT OTA 固件基本信息 */ // TODO @AI：是不是要去掉折行注释哈？
 defineProps<{
   firmware?: IoTOtaFirmwareApi.Firmware;
   loading?: boolean;

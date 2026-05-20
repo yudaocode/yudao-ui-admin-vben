@@ -28,7 +28,6 @@ async function loadData() {
   }
 }
 
-// TODO @AI：antd 这里，也要加下 /** */
 /** 初始化 */
 onMounted(() => {
   loadData();

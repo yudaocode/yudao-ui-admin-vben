@@ -3,15 +3,14 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, nextTick } from 'vue';
 
+import {
+  IotRuleSceneTriggerConditionParameterOperatorEnum,
+  IotRuleSceneTriggerConditionTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Button } from 'ant-design-vue';
-
-import {
-  IotRuleSceneTriggerConditionParameterOperatorEnum,
-  IotRuleSceneTriggerConditionTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ConditionConfig from './condition-config.vue';
 
@@ -87,8 +86,8 @@ function updateCondition(index: number, condition: TriggerCondition) {
     <!-- 空状态 -->
     <div v-if="!subGroup || subGroup.length === 0" class="py-6 text-center">
       <div class="flex flex-col items-center gap-3">
-        <IconifyIcon icon="lucide:plus" class="text-8 text-secondary" />
-        <div class="text-secondary">
+        <IconifyIcon icon="lucide:plus" class="text-8 text-muted-foreground" />
+        <div class="text-muted-foreground">
           <p class="mb-1 text-base font-bold">暂无条件</p>
           <p class="text-xs">点击下方按钮添加第一个条件</p>
         </div>
@@ -119,7 +118,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
               >
                 {{ conditionIndex + 1 }}
               </div>
-              <span class="text-base font-bold text-primary">
+              <span class="text-base font-bold text-foreground">
                 条件 {{ conditionIndex + 1 }}
               </span>
             </div>
@@ -159,7 +158,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
           <IconifyIcon icon="lucide:plus" />
           继续添加条件
         </Button>
-        <span class="mt-2 block text-xs text-secondary">
+        <span class="mt-2 block text-xs text-muted-foreground">
           最多可添加 {{ maxConditions }} 个条件
         </span>
       </div>
