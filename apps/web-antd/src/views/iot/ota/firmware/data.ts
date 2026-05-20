@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { DescriptionItemSchema } from '#/components/description';
 import type { IotProductApi } from '#/api/iot/product/product';
+import type { DescriptionItemSchema } from '#/components/description';
 
 import { formatDateTime } from '@vben/utils';
 
