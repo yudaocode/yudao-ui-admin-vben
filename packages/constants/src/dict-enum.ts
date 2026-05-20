@@ -175,6 +175,13 @@ const IOT_DICT = {
   IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
+/** ========== MES - 制造执行模块 ========== */
+const MES_DICT = {
+  MES_MD_ITEM_OR_PRODUCT: 'mes_md_item_or_product', // MES 物料/产品标识
+  MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
+  MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
+} as const;
+
 /** ========== WMS - 仓储管理模块 ========== */
 const WMS_DICT = {
   WMS_MERCHANT_TYPE: 'merchant_type', // WMS 往来企业类型
@@ -192,6 +199,7 @@ const DICT_TYPE = {
   ...ERP_DICT,
   ...INFRA_DICT,
   ...IOT_DICT,
+  ...MES_DICT,
   ...WMS_DICT,
   ...MEMBER_DICT,
   ...MP_DICT,
