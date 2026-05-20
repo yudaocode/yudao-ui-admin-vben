@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
@@ -190,7 +190,7 @@ const columns = [
   {
     title: '操作',
     width: 80,
-    fixed: 'right',
+    fixed: 'right' as const,
   },
 ];
 
@@ -199,8 +199,6 @@ defineExpose({ validate, getData, setData });
 
 <template>
   <Form ref="formRef" :model="{ data: formData }">
-    <!-- TODO @haohao：貌似有告警。 -->
-    <!-- TODO @haohao：是不是搞成 web-antd/src/views/erp/finance/receipt/modules/item-form.vue 的做法，通过 Grid；或 apps/web-antd/src/views/infra/demo/demo03/erp/modules/demo03-grade-list.vue；目的：后续 ele 通用性更好！ -->
     <Table
       :columns="columns"
       :data-source="formData"

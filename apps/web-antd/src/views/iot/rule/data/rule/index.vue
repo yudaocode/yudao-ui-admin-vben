@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataRuleApi } from '#/api/iot/rule/data/rule';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -10,11 +11,10 @@ import { deleteDataRule, getDataRulePage } from '#/api/iot/rule/data/rule';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DataRuleForm from './data-rule-form.vue';
+import Form from './modules/form.vue';
 
-/** IoT 数据流转规则列表 */
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: DataRuleForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -29,18 +29,18 @@ function handleCreate() {
 }
 
 /** 编辑规则 */
-function handleEdit(row: any) {
+function handleEdit(row: DataRuleApi.DataRule) {
   formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除规则 */
-async function handleDelete(row: any) {
+async function handleDelete(row: DataRuleApi.DataRule) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteDataRule(row.id);
+    await deleteDataRule(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -75,7 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<DataRuleApi.DataRule>,
 });
 </script>
 

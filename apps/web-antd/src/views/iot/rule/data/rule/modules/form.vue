@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { DataRuleApi } from '#/api/iot/rule/data/rule';
+
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
@@ -11,17 +13,14 @@ import {
   getDataRule,
   updateDataRule,
 } from '#/api/iot/rule/data/rule';
-import { getDataSinkSimpleList } from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
-import SourceConfigForm from './components/source-config-form.vue';
-import { useRuleFormSchema } from './data';
+import { useRuleFormSchema } from '../data';
+import SourceConfigForm from './source-config-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<any>();
-const sourceConfigRef = ref();
-
-// TODO @haohao：应该放到 modules
+const formData = ref<DataRuleApi.DataRule>();
+const sourceConfigRef = ref<InstanceType<typeof SourceConfigForm>>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['数据规则'])
@@ -41,22 +40,18 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// TODO @haohao：这里需要优化下，参考别的模块写法；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
     }
-
     // 校验数据源配置
     await sourceConfigRef.value?.validate();
-
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as any;
+    const data = (await formApi.getValues()) as DataRuleApi.DataRule;
     data.sourceConfigs = sourceConfigRef.value?.getData() || [];
-
     try {
       await (formData.value?.id ? updateDataRule(data) : createDataRule(data));
       // 关闭并提示
@@ -74,22 +69,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<any>();
-
-    // 加载数据目的列表
-    const sinkList = await getDataSinkSimpleList();
-    formApi.updateSchema([
-      {
-        fieldName: 'sinkIds',
-        componentProps: {
-          options: sinkList.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-          })),
-        },
-      },
-    ]);
-
+    const data = modalApi.getData<DataRuleApi.DataRule>();
     if (!data || !data.id) {
       return;
     }

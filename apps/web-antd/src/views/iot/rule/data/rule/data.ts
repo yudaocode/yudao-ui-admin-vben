@@ -1,9 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataRuleApi } from '#/api/iot/rule/data/rule';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { getDataSinkSimpleList } from '#/api/iot/rule/data/sink';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -44,11 +46,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useRuleFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'id',
       component: 'Input',
+      fieldName: 'id',
       dependencies: {
-        show: false,
-        triggerFields: ['id'],
+        triggerFields: [''],
+        show: () => false,
       },
     },
     {
@@ -82,12 +84,14 @@ export function useRuleFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'sinkIds',
       label: '数据目的',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择数据目的',
+        api: getDataSinkSimpleList,
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
         allowClear: true,
-        options: [],
+        placeholder: '请选择数据目的',
       },
       rules: 'required',
     },
@@ -95,7 +99,7 @@ export function useRuleFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<DataRuleApi.DataRule>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -126,13 +130,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'sourceConfigs',
       title: '数据源',
       minWidth: 100,
-      formatter: ({ cellValue }: any) => `${cellValue?.length || 0} 个`,
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 个`,
     },
     {
       field: 'sinkIds',
       title: '数据目的',
       minWidth: 100,
-      formatter: ({ cellValue }: any) => `${cellValue?.length || 0} 个`,
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 个`,
     },
     {
       field: 'createTime',
