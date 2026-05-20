@@ -243,6 +243,7 @@ watch(
       placeholder="请选择操作符"
       @change="handleChange"
       class="w-full"
+      option-label-prop="label"
     >
       <Select.Option
         v-for="operator in availableOperators"

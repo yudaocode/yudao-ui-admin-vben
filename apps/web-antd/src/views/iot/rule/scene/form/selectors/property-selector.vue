@@ -206,6 +206,7 @@ watch(
       allow-clear
       @change="handleChange"
       class="!w-[150px]"
+      option-label-prop="label"
       :loading="loading"
     >
       <Select.OptGroup

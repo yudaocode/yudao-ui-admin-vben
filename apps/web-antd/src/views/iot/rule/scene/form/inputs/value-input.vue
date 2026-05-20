@@ -8,7 +8,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
+import { DatePicker, Input, InputNumber, Select, Tag, Tooltip } from 'ant-design-vue';
 
 /** 值输入组件 */
 defineOptions({ name: 'ValueInput' });
@@ -256,7 +256,7 @@ watch(
     />
 
     <!-- 数字输入 -->
-    <Input.Number
+    <InputNumber
       v-else-if="isNumericType()"
       v-model:value="numberValue"
       :precision="getPrecision()"

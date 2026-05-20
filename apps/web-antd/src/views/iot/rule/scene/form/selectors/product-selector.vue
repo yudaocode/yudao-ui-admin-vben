@@ -61,6 +61,7 @@ onMounted(() => {
     show-search
     allow-clear
     class="w-full"
+    option-label-prop="label"
     :loading="productLoading"
   >
     <Select.Option

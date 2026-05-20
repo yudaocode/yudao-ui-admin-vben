@@ -80,6 +80,7 @@ watch(
     show-search
     allow-clear
     class="w-full"
+    option-label-prop="label"
     :loading="deviceLoading"
     :disabled="!productId"
   >

@@ -26,7 +26,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
 </script>
 
 <template>
-  <Card class="rounded-[8px] mb-[10px] border border-primary" shadow="never">
+  <Card class="rounded-[8px] mb-[10px]! border border-primary" shadow="never">
     <template #title>
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
