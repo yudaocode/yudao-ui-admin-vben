@@ -78,8 +78,8 @@ watch(
 
 <template>
   <Select
-    :model-value="modelValue"
-    @update:model-value="handleChange"
+    :value="modelValue"
+    @change="handleChange"
     placeholder="请选择设备"
     filterable
     clearable
@@ -93,16 +93,16 @@ watch(
       :label="device.deviceName"
       :value="device.id"
     >
-      <div class="py-4px flex w-full items-center justify-between">
+      <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
-          <div class="text-14px font-500 mb-2px text-primary">
+          <div class="text-[14px] font-medium mb-[2px] text-primary">
             {{ device.deviceName }}
           </div>
-          <div class="text-12px text-primary">
+          <div class="text-[12px] text-primary">
             {{ device.deviceKey }}
           </div>
         </div>
-        <div class="gap-4px flex items-center" v-if="device.id > 0">
+        <div class="gap-[4px] flex items-center" v-if="device.id > 0">
           <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
         </div>
       </div>

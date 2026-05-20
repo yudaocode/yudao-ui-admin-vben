@@ -1,11 +1,6 @@
 <!-- 属性选择器组件 -->
 <script setup lang="ts">
-import type {
-  ThingModelApi,
-  ThingModelEvent,
-  ThingModelProperty,
-  ThingModelService,
-} from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, ref, watch } from 'vue';
 
@@ -18,7 +13,7 @@ import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
   getAccessModeLabel,
   getDataTypeName,
-  getDataTypeTagType,
+  getDataTypeTagColor,
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
   IotRuleSceneTriggerTypeEnum,
@@ -41,7 +36,6 @@ const emit = defineEmits<{
   (e: 'change', value: { config: any; type: string }): void;
 }>();
 
-// TODO 芋艿
 /** 属性选择器内部使用的统一数据结构 */
 interface PropertySelectorItem {
   identifier: string;
@@ -55,11 +49,11 @@ interface PropertySelectorItem {
   range?: string;
   eventType?: string;
   callType?: string;
-  inputParams?: ThingModelParam[];
-  outputParams?: ThingModelParam[];
-  property?: ThingModelProperty;
-  event?: ThingModelEvent;
-  service?: ThingModelService;
+  inputParams?: ThingModelApi.Param[];
+  outputParams?: ThingModelApi.Param[];
+  property?: ThingModelApi.Property;
+  event?: ThingModelApi.Event;
+  service?: ThingModelApi.Service;
 }
 
 const localValue = useVModel(props, 'modelValue', emit);
@@ -75,6 +69,8 @@ const propertyGroups = computed(() => {
   if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST) {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.PROPERTY,
+      // TODO @AI：不要这种简单的缩写，p 是 property；
+      // TODO @AI：这里好像 linter 报错；
       options: propertyList.value.filter(
         (p) => p.type === IoTThingModelTypeEnum.PROPERTY,
       ),
@@ -275,14 +271,14 @@ watch(
 </script>
 
 <template>
-  <div class="gap-8px flex items-center">
+  <div class="gap-[8px] flex items-center">
     <Select
-      v-model="localValue"
+      v-model:value="localValue"
       placeholder="请选择监控项"
       filterable
       clearable
       @change="handleChange"
-      class="!w-150px"
+      class="!w-[150px]"
       :loading="loading"
     >
       <Select.OptionGroup
@@ -296,14 +292,13 @@ watch(
           :label="property.name"
           :value="property.identifier"
         >
-          <div class="py-2px flex w-full items-center justify-between">
-            <span class="text-14px font-500 flex-1 truncate text-primary">
+          <div class="py-[2px] flex w-full items-center justify-between">
+            <span class="text-[14px] font-medium flex-1 truncate text-primary">
               {{ property.name }}
             </span>
             <Tag
-              :type="getDataTypeTagType(property.dataType)"
-              size="small"
-              class="ml-8px flex-shrink-0"
+              :color="getDataTypeTagColor(property.dataType)"
+              class="ml-[8px] flex-shrink-0"
             >
               {{ property.identifier }}
             </Tag>
@@ -324,9 +319,8 @@ watch(
     >
       <template #reference>
         <Button
-          type="primary"
-          text
-          circle
+          type="link"
+          shape="circle"
           size="small"
           class="flex-shrink-0"
           title="查看属性详情"
@@ -337,55 +331,52 @@ watch(
 
       <!-- 弹出层内容 -->
       <div class="property-detail-content">
-        <div class="gap-8px mb-12px flex items-center">
-          <IconifyIcon icon="ep:info-filled" class="text-16px text-info" />
-          <span class="text-14px font-500 text-primary">
+        <div class="gap-[8px] mb-[12px] flex items-center">
+          <IconifyIcon icon="ep:info-filled" class="text-[16px] text-info" />
+          <span class="text-[14px] font-medium text-primary">
             {{ selectedProperty.name }}
           </span>
-          <Tag
-            :type="getDataTypeTagType(selectedProperty.dataType)"
-            size="small"
-          >
+          <Tag :color="getDataTypeTagColor(selectedProperty.dataType)">
             {{ getDataTypeName(selectedProperty.dataType) }}
           </Tag>
         </div>
 
-        <div class="space-y-8px ml-24px">
-          <div class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+        <div class="space-y-[8px] ml-[24px]">
+          <div class="gap-[8px] flex items-start">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               标识符：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ selectedProperty.identifier }}
             </span>
           </div>
 
           <div
             v-if="selectedProperty.description"
-            class="gap-8px flex items-start"
+            class="gap-[8px] flex items-start"
           >
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               描述：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ selectedProperty.description }}
             </span>
           </div>
 
-          <div v-if="selectedProperty.unit" class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+          <div v-if="selectedProperty.unit" class="gap-[8px] flex items-start">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               单位：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ selectedProperty.unit }}
             </span>
           </div>
 
-          <div v-if="selectedProperty.range" class="gap-8px flex items-start">
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+          <div v-if="selectedProperty.range" class="gap-[8px] flex items-start">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               取值范围：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ selectedProperty.range }}
             </span>
           </div>
@@ -396,12 +387,12 @@ watch(
               selectedProperty.type === IoTThingModelTypeEnum.PROPERTY &&
               selectedProperty.accessMode
             "
-            class="gap-8px flex items-start"
+            class="gap-[8px] flex items-start"
           >
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               访问模式：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ getAccessModeLabel(selectedProperty.accessMode) }}
             </span>
           </div>
@@ -411,12 +402,12 @@ watch(
               selectedProperty.type === IoTThingModelTypeEnum.EVENT &&
               selectedProperty.eventType
             "
-            class="gap-8px flex items-start"
+            class="gap-[8px] flex items-start"
           >
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               事件类型：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ getEventTypeLabel(selectedProperty.eventType) }}
             </span>
           </div>
@@ -426,12 +417,12 @@ watch(
               selectedProperty.type === IoTThingModelTypeEnum.SERVICE &&
               selectedProperty.callType
             "
-            class="gap-8px flex items-start"
+            class="gap-[8px] flex items-start"
           >
-            <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-secondary">
               调用类型：
             </span>
-            <span class="text-12px flex-1 text-primary">
+            <span class="text-[12px] flex-1 text-primary">
               {{ getThingModelServiceCallTypeLabel(selectedProperty.callType) }}
             </span>
           </div>
@@ -442,24 +433,20 @@ watch(
 </template>
 
 <style scoped>
-/* 下拉选项样式 */
-:deep(.el-select-dropdown__item) {
+:deep(.ant-select-item-option-content) {
   height: auto;
   padding: 6px 20px;
 }
 
-/* 弹出层内容样式 */
 .property-detail-content {
   padding: 4px 0;
 }
 
-/* 弹出层自定义样式 */
 :global(.property-detail-popover) {
-  /* 可以在这里添加全局弹出层样式 */
   max-width: 400px !important;
 }
 
-:global(.property-detail-popover .el-popover__content) {
+:global(.property-detail-popover .ant-popover-inner-content) {
   padding: 16px !important;
 }
 </style>

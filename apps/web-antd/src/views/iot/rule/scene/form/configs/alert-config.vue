@@ -23,17 +23,13 @@ const localValue = useVModel(props, 'modelValue', emit);
 const loading = ref(false); // 加载状态
 const alertConfigs = ref<any[]>([]); // 告警配置列表
 
-/**
- * 处理选择变化事件
- * @param value 选中的值
- */
+/** 处理选择变化事件 */
 function handleChange(value?: any) {
   emit('update:modelValue', value);
 }
 
-/**
- * 加载告警配置列表
- */
+// TODO @AI：这个是不是 antd + vue 也使用这个接口？要不增加一个 simple-list 接口？
+/** 加载告警配置列表 */
 async function loadAlertConfigs() {
   loading.value = true;
   try {
@@ -48,7 +44,7 @@ async function loadAlertConfigs() {
   }
 }
 
-// 组件挂载时加载数据
+/** 初始化 **/
 onMounted(() => {
   loadAlertConfigs();
 });
@@ -58,7 +54,7 @@ onMounted(() => {
   <div class="w-full">
     <Form.Item label="告警配置" required>
       <Select
-        v-model="localValue"
+        v-model:value="localValue"
         placeholder="请选择告警配置"
         filterable
         clearable
@@ -74,7 +70,7 @@ onMounted(() => {
         >
           <div class="flex items-center justify-between">
             <span>{{ config.name }}</span>
-            <Tag :type="config.enabled ? 'success' : 'danger'" size="small">
+            <Tag :color="config.enabled ? 'success' : 'error'">
               {{ config.enabled ? '启用' : '禁用' }}
             </Tag>
           </div>

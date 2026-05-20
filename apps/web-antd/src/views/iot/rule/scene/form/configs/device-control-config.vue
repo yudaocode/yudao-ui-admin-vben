@@ -1,10 +1,7 @@
 <!-- 设备控制配置组件 -->
 <script setup lang="ts">
 import type { Action } from '#/api/iot/rule/scene';
-import type {
-  ThingModelProperty,
-  ThingModelService,
-} from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
@@ -37,10 +34,10 @@ const emit = defineEmits<{
 
 const action = useVModel(props, 'modelValue', emit);
 
-const thingModelProperties = ref<ThingModelProperty[]>([]); // 物模型属性列表
+const thingModelProperties = ref<ThingModelApi.Property[]>([]); // 物模型属性列表
 const loadingThingModel = ref(false); // 物模型加载状态
-const selectedService = ref<null | ThingModelService>(null); // 选中的服务对象
-const serviceList = ref<ThingModelService[]>([]); // 服务列表
+const selectedService = ref<null | ThingModelApi.Service>(null); // 选中的服务对象
+const serviceList = ref<ThingModelApi.Service[]>([]); // 服务列表
 const loadingServices = ref(false); // 服务加载状态
 
 // 参数值的计算属性，用于双向绑定
@@ -55,6 +52,7 @@ const paramsValue = computed({
   },
   set: (value: string) => {
     // 直接保存为 JSON 字符串，不进行解析转换
+    // TODO @AI：这里有 linter 报错
     action.value.params = value.trim() || '';
   },
 });
@@ -63,7 +61,7 @@ const paramsValue = computed({
 const isPropertySetAction = computed(() => {
   return (
     action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET.toString()
+    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET
   );
 });
 
@@ -71,7 +69,7 @@ const isPropertySetAction = computed(() => {
 const isServiceInvokeAction = computed(() => {
   return (
     action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE.toString()
+    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE
   );
 });
 
@@ -84,6 +82,7 @@ function handleProductChange(productId?: number) {
   if (action.value.productId !== productId) {
     action.value.deviceId = undefined;
     action.value.identifier = undefined; // 清空服务标识符
+    // TODO @AI：这里有 linter 报错
     action.value.params = ''; // 清空参数，保存为空字符串
     selectedService.value = null; // 清空选中的服务
     serviceList.value = []; // 清空服务列表
@@ -106,6 +105,7 @@ function handleProductChange(productId?: number) {
 function handleDeviceChange(deviceId?: number) {
   // 当设备变化时，清空参数配置
   if (action.value.deviceId !== deviceId) {
+    // TODO @AI：这里有 linter 报错
     action.value.params = ''; // 清空参数，保存为空字符串
   }
 }
@@ -164,6 +164,7 @@ async function loadThingModelProperties(productId: number) {
     loadingThingModel.value = true;
     const tslData = await getThingModelTSL(productId);
 
+    // TODO @AI：这里有 linter 报错
     if (!tslData?.properties) {
       thingModelProperties.value = [];
       return;
@@ -171,7 +172,7 @@ async function loadThingModelProperties(productId: number) {
 
     // 过滤出可写的属性（accessMode 包含 'w'）
     thingModelProperties.value = tslData.properties.filter(
-      (property: ThingModelProperty) =>
+      (property: ThingModelApi.Property) =>
         property.accessMode &&
         (property.accessMode === IoTThingModelAccessModeEnum.READ_WRITE.value ||
           property.accessMode === IoTThingModelAccessModeEnum.WRITE_ONLY.value),
@@ -198,11 +199,13 @@ async function loadServiceList(productId: number) {
     loadingServices.value = true;
     const tslData = await getThingModelTSL(productId);
 
+    // TODO @AI：这里有 linter 报错
     if (!tslData?.services) {
       serviceList.value = [];
       return;
     }
 
+    // TODO @AI：这里有 linter 报错
     serviceList.value = tslData.services;
   } catch (error) {
     console.error('加载服务列表失败:', error);
@@ -213,8 +216,8 @@ async function loadServiceList(productId: number) {
 }
 
 /**
- * 从TSL加载服务信息（用于编辑模式回显）
- * @param productId 产品ID
+ * 从 TSL 加载服务信息（用于编辑模式回显）
+ * @param productId 产品 ID
  * @param serviceIdentifier 服务标识符
  */
 async function loadServiceFromTSL(
@@ -338,7 +341,7 @@ watch(
 </script>
 
 <template>
-  <div class="gap-16px flex flex-col">
+  <div class="gap-[16px] flex flex-col">
     <!-- 产品和设备选择 - 与触发器保持一致的分离式选择器 -->
     <Row :gutter="16">
       <Col :span="12">
@@ -361,10 +364,10 @@ watch(
     </Row>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
-    <div v-if="action.productId && isServiceInvokeAction" class="space-y-16px">
+    <div v-if="action.productId && isServiceInvokeAction" class="space-y-[16px]">
       <Form.Item label="服务" required>
         <Select
-          v-model="action.identifier"
+          v-model:value="action.identifier"
           placeholder="请选择服务"
           filterable
           clearable
@@ -381,8 +384,7 @@ watch(
             <div class="flex items-center justify-between">
               <span>{{ service.name }}</span>
               <Tag
-                :type="service.callType === 'sync' ? 'primary' : 'success'"
-                size="small"
+                :color="service.callType === 'sync' ? 'processing' : 'success'"
               >
                 {{ service.callType === 'sync' ? '同步' : '异步' }}
               </Tag>
@@ -392,7 +394,7 @@ watch(
       </Form.Item>
 
       <!-- 服务参数配置 -->
-      <div v-if="action.identifier" class="space-y-16px">
+      <div v-if="action.identifier" class="space-y-[16px]">
         <Form.Item label="服务参数" required>
           <JsonParamsInput
             v-model="paramsValue"
@@ -405,7 +407,7 @@ watch(
     </div>
 
     <!-- 控制参数配置 - 属性设置类型时显示 -->
-    <div v-if="action.productId && isPropertySetAction" class="space-y-16px">
+    <div v-if="action.productId && isPropertySetAction" class="space-y-[16px]">
       <!-- 参数配置 -->
       <Form.Item label="参数" required>
         <JsonParamsInput

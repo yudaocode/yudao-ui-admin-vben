@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { Trigger, TriggerCondition } from '#/api/iot/rule/scene';
 
 import { onMounted } from 'vue';
 
@@ -16,6 +16,7 @@ import {
 } from '#/views/iot/utils/constants';
 
 import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
+import TimerConditionGroupConfig from '../configs/timer-condition-group-config.vue';
 
 /** 触发器配置组件 */
 defineOptions({ name: 'TriggerSection' });
@@ -30,20 +31,20 @@ const emit = defineEmits<{
 
 const triggers = useVModel(props, 'triggers', emit);
 
-/** 获取触发器标签类型（用于 el-tag 的 type 属性） */
-function getTriggerTagType(
+/** 获取触发器标签颜色（antd Tag `color`） */
+function getTriggerTagColor(
   type: number,
-): 'danger' | 'info' | 'primary' | 'success' | 'warning' {
+): 'default' | 'error' | 'processing' | 'success' | 'warning' {
   if (type === IotRuleSceneTriggerTypeEnum.TIMER) {
     return 'warning';
   }
-  return isDeviceTrigger(type) ? 'success' : 'info';
+  return isDeviceTrigger(type) ? 'success' : 'default';
 }
 
 /** 添加触发器 */
 function addTrigger() {
   const newTrigger: Trigger = {
-    type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE.toString(),
+    type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE,
     productId: undefined,
     deviceId: undefined,
     identifier: undefined,
@@ -65,13 +66,14 @@ function removeTrigger(index: number) {
   }
 }
 
+// TODO @AI：1）这种注释，可以简化成 /** */ 单行么？；2）vue3 + ep 都是这样的注释么，也可以简化下么？3）其它文件，看看是不是也检查下。
 /**
  * 更新触发器类型
  * @param index 触发器索引
  * @param type 触发器类型
  */
 function updateTriggerType(index: number, type: number) {
-  triggers.value[index]!.type = type.toString();
+  triggers.value[index]!.type = type;
   onTriggerTypeChange(index, type);
 }
 
@@ -91,6 +93,18 @@ function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
  */
 function updateTriggerCronConfig(index: number, cronExpression?: string) {
   triggers.value[index]!.cronExpression = cronExpression;
+}
+
+/**
+ * 更新触发器条件组配置
+ * @param index 触发器索引
+ * @param conditionGroups 条件组数组
+ */
+function updateTriggerConditionGroups(
+  index: number,
+  conditionGroups: TriggerCondition[][],
+) {
+  triggers.value[index]!.conditionGroups = conditionGroups;
 }
 
 /**
@@ -118,13 +132,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card class="rounded-8px mb-10px border border-primary" shadow="never">
+  <Card class="rounded-[8px] mb-[10px] border border-primary" shadow="never">
     <template #title>
       <div class="flex items-center justify-between">
-        <div class="gap-8px flex items-center">
-          <IconifyIcon icon="ep:lightning" class="text-18px text-primary" />
-          <span class="text-16px font-600 text-primary">触发器配置</span>
-          <Tag size="small" type="info"> {{ triggers.length }} 个触发器 </Tag>
+        <div class="gap-[8px] flex items-center">
+          <IconifyIcon icon="ep:lightning" class="text-[18px] text-primary" />
+          <span class="text-[16px] font-semibold text-primary">触发器配置</span>
+          <Tag color="default"> {{ triggers.length }} 个触发器 </Tag>
         </div>
         <Button type="primary" size="small" @click="addTrigger">
           <IconifyIcon icon="lucide:plus" />
@@ -133,45 +147,44 @@ onMounted(() => {
       </div>
     </template>
 
-    <div class="p-16px space-y-24px">
+    <div class="p-[16px] space-y-[24px]">
       <!-- 触发器列表 -->
-      <div v-if="triggers.length > 0" class="space-y-24px">
+      <div v-if="triggers.length > 0" class="space-y-[24px]">
         <div
           v-for="(triggerItem, index) in triggers"
           :key="`trigger-${index}`"
-          class="rounded-8px border-2 border-green-200 bg-green-50 shadow-sm transition-shadow hover:shadow-md"
+          class="rounded-[8px] border border-green-200 bg-green-50/40 shadow-sm transition-shadow hover:shadow-md dark:border-green-900/40 dark:bg-green-950/20"
         >
-          <!-- 触发器头部 - 绿色主题 -->
+          <!-- 触发器头部（绿色主题） -->
           <div
-            class="p-16px rounded-t-6px flex items-center justify-between border-b border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
+            class="px-[16px] py-[10px] rounded-t-[8px] flex items-center justify-between border-b border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 dark:border-green-900/40 dark:from-green-950/30 dark:to-emerald-950/30"
           >
-            <div class="gap-12px flex items-center">
+            <div class="gap-[12px] flex items-center">
               <div
-                class="gap-8px text-16px font-600 flex items-center text-green-700"
+                class="gap-[8px] text-[14px] font-semibold flex items-center text-green-700 dark:text-green-300"
               >
                 <div
-                  class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
+                  class="w-[22px] h-[22px] text-[12px] flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
                 >
                   {{ index + 1 }}
                 </div>
                 <span>触发器 {{ index + 1 }}</span>
               </div>
               <Tag
-                size="small"
-                :type="getTriggerTagType(triggerItem.type as any)"
-                class="font-500"
+                :color="getTriggerTagColor(triggerItem.type as number)"
+                class="font-medium"
               >
-                {{ getTriggerTypeLabel(triggerItem.type as any) }}
+                {{ getTriggerTypeLabel(triggerItem.type as number) }}
               </Tag>
             </div>
-            <div class="gap-8px flex items-center">
+            <div class="gap-[8px] flex items-center">
               <Button
                 v-if="triggers.length > 1"
                 danger
                 size="small"
-                text
-                @click="removeTrigger(index)"
+                type="link"
                 class="hover:bg-red-50"
+                @click="removeTrigger(index)"
               >
                 <IconifyIcon icon="lucide:trash-2" />
                 删除
@@ -180,10 +193,10 @@ onMounted(() => {
           </div>
 
           <!-- 触发器内容区域 -->
-          <div class="p-16px space-y-16px">
+          <div class="p-[16px] space-y-[16px]">
             <!-- 设备触发配置 -->
             <DeviceTriggerConfig
-              v-if="isDeviceTrigger(triggerItem.type as any)"
+              v-if="isDeviceTrigger(triggerItem.type as number)"
               :model-value="triggerItem"
               :index="index"
               @update:model-value="
@@ -196,27 +209,27 @@ onMounted(() => {
             <div
               v-else-if="
                 triggerItem.type ===
-                IotRuleSceneTriggerTypeEnum.TIMER.toString()
+                IotRuleSceneTriggerTypeEnum.TIMER
               "
-              class="gap-16px flex flex-col"
+              class="gap-[16px] flex flex-col"
             >
               <div
-                class="gap-8px p-12px px-16px rounded-6px flex items-center border border-primary bg-background"
+                class="gap-[8px] p-[12px] px-[16px] rounded-[6px] flex items-center border border-primary bg-background"
               >
                 <IconifyIcon
                   icon="lucide:timer"
-                  class="text-18px text-danger"
+                  class="text-[18px] text-danger"
                 />
-                <span class="text-14px font-500 text-primary">
+                <span class="text-[14px] font-medium text-primary">
                   定时触发配置
                 </span>
               </div>
 
               <!-- CRON 表达式配置 -->
               <div
-                class="p-16px rounded-6px border border-primary bg-background"
+                class="p-[16px] rounded-[6px] border border-primary bg-background"
               >
-                <Form.Item label="CRON表达式" required>
+                <Form.Item label="CRON 表达式" required>
                   <CronTab
                     :model-value="triggerItem.cronExpression || '0 0 12 * * ?'"
                     @update:model-value="
@@ -225,18 +238,26 @@ onMounted(() => {
                   />
                 </Form.Item>
               </div>
+
+              <!-- 附加条件组配置 -->
+              <TimerConditionGroupConfig
+                :model-value="triggerItem.conditionGroups"
+                @update:model-value="
+                  (value) => updateTriggerConditionGroups(index, value)
+                "
+              />
             </div>
           </div>
         </div>
       </div>
 
       <!-- 空状态 -->
-      <div v-else class="py-40px text-center">
+      <div v-else class="py-[40px] text-center">
         <Empty description="暂无触发器">
           <template #description>
-            <div class="space-y-8px">
+            <div class="space-y-[8px]">
               <p class="text-secondary">暂无触发器配置</p>
-              <p class="text-12px text-primary">
+              <p class="text-[12px] text-primary">
                 请使用上方的"添加触发器"按钮来设置触发规则
               </p>
             </div>

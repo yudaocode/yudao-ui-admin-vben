@@ -307,17 +307,17 @@ function getParamTypeName(dataType: string) {
  */
 function getParamTypeTag(dataType: string) {
   const tagMap: Record<string, string> = {
-    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
+    [IoTDataSpecsDataTypeEnum.INT]: 'processing',
     [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
-    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
+    [IoTDataSpecsDataTypeEnum.TEXT]: 'default',
     [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
-    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
-    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
-    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
+    [IoTDataSpecsDataTypeEnum.ENUM]: 'error',
+    [IoTDataSpecsDataTypeEnum.DATE]: 'processing',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: 'default',
     [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
   };
-  return tagMap[dataType] || 'info';
+  return tagMap[dataType] || 'default';
 }
 
 /**
@@ -419,12 +419,11 @@ watch(
     <!-- JSON 输入框 -->
     <div class="relative">
       <Input.TextArea
-        v-model="paramsJson"
-        type="text"
+        v-model:value="paramsJson"
         :rows="4"
         :placeholder="placeholder"
-        @input="handleParamsChange"
         :class="{ 'is-error': jsonError }"
+        @input="handleParamsChange"
       />
       <!-- 查看详细示例弹出层 -->
       <div class="absolute right-2 top-2">
@@ -438,9 +437,8 @@ watch(
         >
           <template #reference>
             <Button
-              text
-              type="primary"
-              circle
+              type="link"
+              shape="circle"
               size="small"
               :title="JSON_PARAMS_INPUT_CONSTANTS.VIEW_EXAMPLE_TITLE"
             >
@@ -480,8 +478,7 @@ watch(
                         {{ param.name }}
                         <Tag
                           v-if="param.required"
-                          size="small"
-                          type="danger"
+                          color="error"
                           class="ml-1"
                         >
                           {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
@@ -492,7 +489,7 @@ watch(
                       </div>
                     </div>
                     <div class="flex items-center gap-2">
-                      <Tag :type="getParamTypeTag(param.dataType)" size="small">
+                      <Tag :color="getParamTypeTag(param.dataType)">
                         {{ getParamTypeName(param.dataType) }}
                       </Tag>
                       <span class="text-xs text-secondary">
@@ -507,7 +504,7 @@ watch(
                     {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                   </div>
                   <pre
-                    class="border-l-3px overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-primary"
+                    class="border-l-[3px] overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-primary"
                   >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>

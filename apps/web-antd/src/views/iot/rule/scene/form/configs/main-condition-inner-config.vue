@@ -176,18 +176,20 @@ function handlePropertyChange(propertyInfo: any) {
   <div class="space-y-4">
     <!-- 触发事件类型选择 -->
     <Form.Item label="触发事件类型" required>
+      <!-- TODO @AI：change linter 报错 -->
       <Select
-        :model-value="triggerType"
-        @update:model-value="handleTriggerTypeChange"
+        :value="triggerType"
+        @change="handleTriggerTypeChange"
         placeholder="请选择触发事件类型"
         class="w-full"
       >
         <Select.Option
           v-for="option in triggerTypeOptions"
           :key="option.value"
-          :label="option.label"
           :value="option.value"
-        />
+        >
+          {{ option.label }}
+        </Select.Option>
       </Select>
     </Form.Item>
 
@@ -260,17 +262,18 @@ function handlePropertyChange(propertyInfo: any) {
                 triggerType ===
                 IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE
               "
-              v-model="condition.value"
+              v-model:value="condition.value"
               type="service"
               :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
             <!-- 事件上报参数配置 -->
+            <!-- TODO @AI：JsonParamsInput linter 报错 -->
             <JsonParamsInput
               v-else-if="
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
-              v-model="condition.value"
+              v-model:value="condition.value"
               type="event"
               :config="eventConfig as any"
               placeholder="请输入 JSON 格式的事件参数"
@@ -323,29 +326,30 @@ function handlePropertyChange(propertyInfo: any) {
         <Col :span="6">
           <Form.Item label="操作符" required>
             <Select
-              :model-value="condition.operator"
-              @update:model-value="
+              :value="condition.operator"
+              @change="
                 (value: any) => updateConditionField('operator', value)
               "
               placeholder="请选择操作符"
               class="w-full"
             >
               <Select.Option
-                :label="
-                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
-                "
                 :value="
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
                 "
-              />
+              >
+                {{
+                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
+                }}
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>
         <Col :span="6">
           <Form.Item label="参数" required>
             <Select
-              :model-value="condition.value"
-              @update:model-value="
+              :value="condition.value"
+              @change="
                 (value: any) => updateConditionField('value', value)
               "
               placeholder="请选择操作符"
@@ -354,9 +358,10 @@ function handlePropertyChange(propertyInfo: any) {
               <Select.Option
                 v-for="option in deviceStatusChangeOptions"
                 :key="option.value"
-                :label="option.label"
                 :value="option.value"
-              />
+              >
+                {{ option.label }}
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>

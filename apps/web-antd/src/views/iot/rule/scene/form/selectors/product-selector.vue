@@ -47,6 +47,7 @@ async function getProductList() {
   }
 }
 
+// TODO @AI：这种，应该注释 /** */ 把。
 // 组件挂载时获取产品列表
 onMounted(() => {
   getProductList();
@@ -55,8 +56,8 @@ onMounted(() => {
 
 <template>
   <Select
-    :model-value="modelValue"
-    @update:model-value="handleChange"
+    :value="modelValue"
+    @change="handleChange"
     placeholder="请选择产品"
     filterable
     clearable
@@ -69,12 +70,12 @@ onMounted(() => {
       :label="product.name"
       :value="product.id"
     >
-      <div class="py-4px flex w-full items-center justify-between">
+      <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
-          <div class="text-14px font-500 mb-2px text-primary">
+          <div class="text-[14px] font-medium mb-[2px] text-primary">
             {{ product.name }}
           </div>
-          <div class="text-12px text-secondary">
+          <div class="text-[12px] text-secondary">
             {{ product.productKey }}
           </div>
         </div>

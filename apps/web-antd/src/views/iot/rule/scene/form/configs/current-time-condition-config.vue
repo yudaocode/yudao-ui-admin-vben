@@ -39,7 +39,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.BEFORE_TIME.name,
     icon: 'ep:arrow-left',
     iconClass: 'text-blue-500',
-    tag: 'primary',
+    tag: 'processing',
     category: '时间点',
   },
   {
@@ -63,7 +63,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.AT_TIME.name,
     icon: 'ep:position',
     iconClass: 'text-purple-500',
-    tag: 'info',
+    tag: 'default',
     category: '时间点',
   },
   {
@@ -71,7 +71,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.TODAY.name,
     icon: 'ep:calendar',
     iconClass: 'text-red-500',
-    tag: 'danger',
+    tag: 'error',
     category: '日期',
   },
 ];
@@ -194,7 +194,7 @@ watch(
                   <IconifyIcon :icon="option.icon" :class="option.iconClass" />
                   <span>{{ option.label }}</span>
                 </div>
-                <Tag :type="option.tag as any" size="small">
+                <Tag :color="option.tag">
                   {{ option.category }}
                 </Tag>
               </div>

@@ -45,7 +45,7 @@ async function addCondition() {
   }
 
   const newCondition: TriggerCondition = {
-    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY.toString(), // 默认为设备属性
+    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY, // 默认为设备属性
     productId: undefined,
     deviceId: undefined,
     identifier: '',
@@ -108,7 +108,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
       >
         <!-- 条件配置 -->
         <div
-          class="rounded-3px bg-fill-color-blank border border-border shadow-sm"
+          class="rounded-[3px] bg-fill-color-blank border border-border shadow-sm"
         >
           <div
             class="rounded-t-1 bg-fill-color-blank flex items-center justify-between border-b border-border p-3"
@@ -124,12 +124,12 @@ function updateCondition(index: number, condition: TriggerCondition) {
               </span>
             </div>
             <Button
+              v-if="subGroup!.length > 1"
               danger
               size="small"
-              text
-              @click="removeCondition(conditionIndex)"
-              v-if="subGroup!.length > 1"
+              type="link"
               class="hover:bg-red-50"
+              @click="removeCondition(conditionIndex)"
             >
               <IconifyIcon icon="lucide:trash-2" />
             </Button>

@@ -90,48 +90,41 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
-      field: 'id',
-      title: '规则编号',
-      minWidth: 80,
-    },
-    {
       field: 'name',
       title: '规则名称',
-      minWidth: 150,
+      minWidth: 180,
+      slots: { default: 'name' },
     },
     {
-      field: 'description',
-      title: '规则描述',
-      minWidth: 200,
+      field: 'triggers',
+      title: '触发条件',
+      minWidth: 260,
+      slots: { default: 'triggers' },
+    },
+    {
+      field: 'actions',
+      title: '执行动作',
+      minWidth: 220,
+      slots: { default: 'actionsCol' },
     },
     {
       field: 'status',
       title: '规则状态',
-      minWidth: 100,
+      width: 90,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.COMMON_STATUS },
       },
     },
     {
-      field: 'actionCount',
-      title: '执行动作数',
-      minWidth: 100,
-    },
-    {
-      field: 'executeCount',
-      title: '执行次数',
-      minWidth: 100,
-    },
-    {
       field: 'createTime',
       title: '创建时间',
-      minWidth: 180,
+      width: 160,
       formatter: 'formatDateTime',
     },
     {
       title: '操作',
-      width: 240,
+      width: 200,
       fixed: 'right',
       slots: { default: 'actions' },
     },
