@@ -102,7 +102,6 @@ export function getProductByKey(productKey: string) {
   });
 }
 
-// TODO @AI：这个是不是 vue3 + ep 也没做？感觉对齐就好，不用额外做。
 /** 同步产品物模型 TDengine 超级表结构 */
 export function syncProductPropertyTable(productId: number) {
   return requestClient.post(

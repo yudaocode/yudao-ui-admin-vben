@@ -15,10 +15,10 @@ import { loadBaiduMapSdk } from '#/components/map';
 defineOptions({ name: 'DeviceMapCard' });
 
 const router = useRouter();
-const mapContainerRef = ref<HTMLElement>();
-let mapInstance: any = null;
-const loading = ref(true);
-const deviceList = ref<IotDeviceApi.Device[]>([]);
+const mapContainerRef = ref<HTMLElement>(); // 地图容器节点
+let mapInstance: any = null; // 百度地图实例
+const loading = ref(true); // 加载状态
+const deviceList = ref<IotDeviceApi.Device[]>([]); // 设备分布列表
 
 /** 是否有数据 */
 const hasData = computed(() => deviceList.value.length > 0);

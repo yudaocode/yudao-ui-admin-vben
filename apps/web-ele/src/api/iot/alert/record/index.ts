@@ -10,13 +10,10 @@ export namespace AlertRecordApi {
     configName?: string;
     configLevel?: number;
     deviceId?: number;
-    deviceName?: string;
     productId?: number;
-    productName?: string;
     deviceMessage?: any;
     processStatus?: boolean;
     processRemark?: string;
-    processTime?: Date;
     createTime?: Date;
   }
 }

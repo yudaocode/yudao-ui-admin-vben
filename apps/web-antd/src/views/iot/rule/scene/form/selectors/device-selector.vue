@@ -26,7 +26,6 @@ const deviceLoading = ref(false); // 设备加载状态
 const deviceList = ref<any[]>([]); // 设备列表
 
 /** 处理选择变化事件 */
-// TODO @AI：是不是应该 value 加个设备编号？方法名是不是也要优化下？方法名是不是要优化？
 function handleChange(value: any) {
   emit('update:modelValue', value as number | undefined);
   emit('change', value as number | undefined);

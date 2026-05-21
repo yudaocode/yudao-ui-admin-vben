@@ -16,6 +16,7 @@ import { ElButton, ElCard, ElEmpty, ElFormItem, ElTag } from 'element-plus';
 import { CronTab } from '#/components/cron-tab';
 
 import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
+import TimerConditionGroupConfig from '../configs/timer-condition-group-config.vue';
 
 /** 触发器配置组件 */
 defineOptions({ name: 'TriggerSection' });
@@ -97,6 +98,18 @@ function updateTriggerCronConfig(index: number, cronExpression?: string) {
 }
 
 /**
+ * 更新触发器条件组配置
+ * @param index 触发器索引
+ * @param conditionGroups 条件组
+ */
+function updateTriggerConditionGroups(
+  index: number,
+  conditionGroups: RuleSceneApi.TriggerCondition[][],
+) {
+  triggers.value[index]!.conditionGroups = conditionGroups;
+}
+
+/**
  * 处理触发器类型变化事件
  * @param index 触发器索引
  * @param _ 触发器类型（未使用）
@@ -163,10 +176,10 @@ onMounted(() => {
               </div>
               <ElTag
                 size="small"
-                :type="getTriggerTagType(triggerItem.type as any)"
+                :type="getTriggerTagType(triggerItem.type as number)"
                 class="font-500"
               >
-                {{ getTriggerTypeLabel(triggerItem.type as any) }}
+                {{ getTriggerTypeLabel(triggerItem.type as number) }}
               </ElTag>
             </div>
             <div class="gap-8px flex items-center">
@@ -188,7 +201,7 @@ onMounted(() => {
           <div class="p-16px space-y-16px">
             <!-- 设备触发配置 -->
             <DeviceTriggerConfig
-              v-if="isDeviceTrigger(triggerItem.type as any)"
+              v-if="isDeviceTrigger(triggerItem.type as number)"
               :model-value="triggerItem"
               :index="index"
               @update:model-value="
@@ -218,7 +231,7 @@ onMounted(() => {
               <div
                 class="p-16px rounded-6px border border-primary bg-background"
               >
-                <ElFormItem label="CRON表达式" required>
+                <ElFormItem label="CRON 表达式" required>
                   <CronTab
                     :model-value="triggerItem.cronExpression || '0 0 12 * * ?'"
                     @update:model-value="
@@ -227,6 +240,14 @@ onMounted(() => {
                   />
                 </ElFormItem>
               </div>
+
+              <!-- 附加条件组配置 -->
+              <TimerConditionGroupConfig
+                :model-value="triggerItem.conditionGroups"
+                @update:model-value="
+                  (value) => updateTriggerConditionGroups(index, value)
+                "
+              />
             </div>
           </div>
         </div>

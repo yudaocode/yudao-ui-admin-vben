@@ -35,7 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'configLevel',
+      fieldName: 'level',
       label: '告警级别',
       component: 'Select',
       componentProps: {
@@ -95,7 +95,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<AlertRecordApi.AlertRecord>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '记录编号',

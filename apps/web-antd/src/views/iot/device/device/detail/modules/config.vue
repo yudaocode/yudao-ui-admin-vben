@@ -135,8 +135,15 @@ async function updateDeviceConfig() {
     />
 
     <!-- 代码视图 - 只读展示 -->
-    <div v-if="!isEditing" class="json-viewer-container">
-      <pre class="json-code"><code>{{ formattedConfig }}</code></pre>
+    <div
+      v-if="!isEditing"
+      class="max-h-[600px] overflow-y-auto rounded border border-[#d9d9d9] bg-[#f5f5f5] p-3 dark:border-[#3a3a3a] dark:bg-[#1a1a1a]"
+    >
+      <pre
+        class="m-0 whitespace-pre-wrap break-words font-mono text-[13px] leading-normal text-[#333] dark:text-gray-300"
+      >
+        <code>{{ formattedConfig }}</code>
+      </pre>
     </div>
 
     <!-- 编辑器视图 - 可编辑 -->
@@ -144,7 +151,7 @@ async function updateDeviceConfig() {
       v-else
       v-model:value="configString"
       :rows="20"
-      class="json-editor"
+      class="font-mono text-[13px]"
       placeholder="请输入 JSON 格式的配置信息"
     />
 
@@ -170,29 +177,3 @@ async function updateDeviceConfig() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.json-viewer-container {
-  max-height: 600px;
-  padding: 12px;
-  overflow-y: auto;
-  background-color: #f5f5f5;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.json-code {
-  margin: 0;
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #333;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
-.json-editor {
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
-  font-size: 13px;
-}
-</style>

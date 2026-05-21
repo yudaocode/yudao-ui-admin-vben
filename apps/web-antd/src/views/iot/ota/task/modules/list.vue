@@ -42,7 +42,7 @@ async function handleRefresh() {
   emit('success');
 }
 
-/** 按任务名搜索（嵌入页面里，单字段搜索做成 toolbar 内联输入框，回车 / 清空触发查询） */
+/** 按任务名称搜索 */
 async function handleSearch() {
   await gridApi.query();
 }

@@ -75,7 +75,6 @@ function handleProductChange(productId?: number) {
   if (action.value.productId !== productId) {
     action.value.deviceId = undefined;
     action.value.identifier = undefined; // 清空服务标识符
-    // TODO DONE @AI：这里有 linter 报错
     action.value.params = '' as any; // 清空参数，保存为空字符串
     selectedService.value = null; // 清空选中的服务
     serviceList.value = []; // 清空服务列表
@@ -98,7 +97,6 @@ function handleProductChange(productId?: number) {
 function handleDeviceChange(deviceId?: number) {
   // 当设备变化时，清空参数配置
   if (action.value.deviceId !== deviceId) {
-    // TODO DONE @AI：这里有 linter 报错
     action.value.params = '' as any; // 清空参数，保存为空字符串
   }
 }
@@ -152,7 +150,6 @@ async function loadThingModelProperties(productId: number) {
     loadingThingModel.value = true;
     const tslData = await fetchThingModelTSL(productId);
 
-    // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.properties) {
       thingModelProperties.value = [];
       return;
@@ -187,13 +184,11 @@ async function loadServiceList(productId: number) {
     loadingServices.value = true;
     const tslData = await fetchThingModelTSL(productId);
 
-    // TODO DONE @AI：这里有 linter 报错
     if (!tslData?.services) {
       serviceList.value = [];
       return;
     }
 
-    // TODO DONE @AI：这里有 linter 报错
     serviceList.value = tslData.services;
   } catch (error) {
     console.error('加载服务列表失败:', error);

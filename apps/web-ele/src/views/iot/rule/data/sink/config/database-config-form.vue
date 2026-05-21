@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-// TODO DONE @AI：参考别的模块，是不是要写下 function 注释？参考 system user index；rule/data 其它的模块，也是处理下；
-
 import { onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';

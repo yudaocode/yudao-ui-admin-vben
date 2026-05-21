@@ -128,7 +128,6 @@ export function useBasicFormSchema(
       // 网关子设备走网关联网，不需要联网方式
       dependencies: {
         triggerFields: ['deviceType'],
-        // TODO DONE @AI：枚举值。或者这里不要枚举值？（也看看 vben 里，其它是不是也漏了枚举值。）
         show: (values) => values.deviceType !== DeviceTypeEnum.GATEWAY,
       },
       rules: 'required',
@@ -167,8 +166,8 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       label: '动态注册',
       component: 'Switch',
       componentProps: {
-        checkedChildren: '开',
-        unCheckedChildren: '关',
+        activeText: '开',
+        inactiveText: '关',
       },
       defaultValue: false,
       help: '设备动态注册无需一一烧录设备证书（DeviceSecret），每台设备烧录相同的产品证书，即 ProductKey 和 ProductSecret ，云端鉴权通过后下发设备证书，您可以根据需要开启或关闭动态注册，保障安全性。',

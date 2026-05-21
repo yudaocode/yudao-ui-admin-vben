@@ -371,7 +371,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: row.status === CommonStatusEnum.ENABLE ? '停用' : '启用',
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon:
                 row.status === CommonStatusEnum.ENABLE
                   ? 'ant-design:stop-outlined'
@@ -383,14 +384,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),

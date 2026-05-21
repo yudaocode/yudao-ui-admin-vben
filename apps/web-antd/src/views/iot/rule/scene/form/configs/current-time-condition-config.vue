@@ -86,9 +86,9 @@ const needsTimeInput = computed(() => {
   return timeOnlyOperators.includes(condition.value.operator as any);
 });
 
-// 计算属性：是否需要日期输入
+/** 是否需要日期输入：当前只支持时间维度的判断 */
 const needsDateInput = computed(() => {
-  return false; // 暂时不支持日期输入，只支持时间
+  return false;
 });
 
 // 计算属性：是否需要第二个时间输入

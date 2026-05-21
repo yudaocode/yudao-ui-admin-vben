@@ -15,7 +15,6 @@ export namespace AlertConfigApi {
     receiveUserNames?: string[];
     receiveTypes?: number[];
     createTime?: Date;
-    updateTime?: Date;
   }
 }
 

@@ -22,10 +22,10 @@ defineOptions({ name: 'MessageTrendCard' });
 const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
-const loading = ref(false);
+const loading = ref(false); // 加载状态
 const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
   [],
-);
+); // 消息趋势数据
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([

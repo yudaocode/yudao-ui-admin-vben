@@ -189,7 +189,7 @@ function handleTypeChange(type: number) {
           <ElRadio
             v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
             :key="String(dict.value)"
-            :label="dict.value"
+            :value="dict.value"
           >
             {{ dict.label }}
           </ElRadio>

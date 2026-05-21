@@ -123,13 +123,10 @@ function updateAction(index: number, action: RuleSceneApi.Action) {
 /**
  * 更新告警配置
  * @param index 执行器索引
- * @param alertConfigId 告警配置ID
+ * @param alertConfigId 告警配置 ID
  */
 function updateActionAlertConfig(index: number, alertConfigId?: number) {
   actions.value[index]!.alertConfigId = alertConfigId;
-  if (actions.value[index]) {
-    actions.value[index].alertConfigId = alertConfigId;
-  }
 }
 
 /**
@@ -137,22 +134,21 @@ function updateActionAlertConfig(index: number, alertConfigId?: number) {
  * @param action 执行器对象
  * @param type 执行器类型
  */
-function onActionTypeChange(action: RuleSceneApi.Action, type: any) {
-  // 清理不相关的配置，确保数据结构干净
+function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
   if (isDeviceAction(type)) {
     // 设备控制类型：清理告警配置，确保设备参数存在
     action.alertConfigId = undefined;
-    if (!(action as any).params) {
-      (action as any).params = '';
+    if (!action.params) {
+      action.params = '';
     }
-    // 如果从其他类型切换到设备控制类型，清空identifier（让用户重新选择）
-    if (action.identifier && type !== (action as any).type) {
+    // 切换到设备控制类型时清空 identifier，让用户重新选择
+    if (action.identifier && type !== action.type) {
       action.identifier = undefined;
     }
   } else if (isAlertAction(type)) {
     action.productId = undefined;
     action.deviceId = undefined;
-    action.identifier = undefined; // 清理服务标识符
+    action.identifier = undefined;
     action.params = undefined;
     action.alertConfigId = undefined;
   }
@@ -213,11 +209,11 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: any) {
                 <span>执行器 {{ index + 1 }}</span>
               </div>
               <ElTag
-                :type="getActionTypeTag(action.type as any)"
+                :type="getActionTypeTag(action.type as number)"
                 size="small"
                 class="font-500"
               >
-                {{ getActionTypeLabel(action.type as any) }}
+                {{ getActionTypeLabel(action.type as number) }}
               </ElTag>
             </div>
             <div class="gap-8px flex items-center">
@@ -242,12 +238,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: any) {
               <ElFormItem label="执行类型" required>
                 <ElSelect
                   v-model="action.type"
-                  @change="
-                    (value: any) => {
-                      updateActionType(index, value);
-                      onActionTypeChange(action, value);
-                    }
-                  "
+                  @change="(value: any) => updateActionType(index, value)"
                   placeholder="请选择执行类型"
                   class="w-full"
                 >
@@ -263,7 +254,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: any) {
 
             <!-- 设备控制配置 -->
             <DeviceControlConfig
-              v-if="isDeviceAction(action.type as any)"
+              v-if="isDeviceAction(action.type as number)"
               :model-value="action"
               @update:model-value="(value) => updateAction(index, value)"
             />

@@ -131,7 +131,7 @@ onMounted(() => {
                   <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
                     产品分类
                   </span>
-                  <span class="truncate font-medium text-primary">
+                  <span class="truncate font-medium text-foreground">
                     {{ getCategoryName(item.categoryId) }}
                   </span>
                 </div>
@@ -210,7 +210,6 @@ onMounted(() => {
                 物模型
               </ElButton>
               <template v-if="hasAccessByCodes(['iot:product:delete'])">
-                <!-- TODO DONE @AI：使用枚举 -->
                 <ElTooltip
                   v-if="item.status === ProductStatusEnum.PUBLISHED"
                   content="已发布的产品不能删除"

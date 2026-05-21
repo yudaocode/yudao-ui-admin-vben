@@ -3,9 +3,9 @@
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { ElFormItem, ElOption, ElSelect, ElTag } from 'element-plus';
+import { ElFormItem, ElOption, ElSelect } from 'element-plus';
 
-import { getAlertConfigPage } from '#/api/iot/alert/config';
+import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 
 /** 告警配置组件 */
 defineOptions({ name: 'AlertConfig' });
@@ -31,18 +31,11 @@ function handleChange(value?: any) {
   emit('update:modelValue', value);
 }
 
-/**
- * 加载告警配置列表
- */
+/** 加载告警配置列表 */
 async function loadAlertConfigs() {
   loading.value = true;
   try {
-    const data = await getAlertConfigPage({
-      pageNo: 1,
-      pageSize: 100,
-      enabled: true, // 只加载启用的配置
-    });
-    alertConfigs.value = data.list || [];
+    alertConfigs.value = (await getSimpleAlertConfigList()) || [];
   } finally {
     loading.value = false;
   }
@@ -71,14 +64,7 @@ onMounted(() => {
           :key="config.id"
           :label="config.name"
           :value="config.id"
-        >
-          <div class="flex items-center justify-between">
-            <span>{{ config.name }}</span>
-            <ElTag :type="config.enabled ? 'success' : 'danger'" size="small">
-              {{ config.enabled ? '启用' : '禁用' }}
-            </ElTag>
-          </div>
-        </ElOption>
+        />
       </ElSelect>
     </ElFormItem>
   </div>
