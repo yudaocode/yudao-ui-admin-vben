@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
@@ -20,7 +20,7 @@ import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 import { MdWorkshopSelect } from './components';
 
 /** 新增/修改工作站的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -36,6 +36,12 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入工作站编码',
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        componentProps: (values) => ({
+          disabled: !!values.id,
+        }),
       },
       rules: 'required',
       suffix: () =>
@@ -205,6 +211,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '所在车间',
       component: markRaw(MdWorkshopSelect),
       componentProps: {
+        allowClear: true,
         placeholder: '请选择车间',
       },
     },
@@ -213,6 +220,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '所属工序',
       component: markRaw(ProProcessSelect),
       componentProps: {
+        allowClear: true,
         placeholder: '请选择工序',
       },
     },

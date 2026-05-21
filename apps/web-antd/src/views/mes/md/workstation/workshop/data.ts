@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkshopApi } from '#/api/mes/md/workstation/workshop';
 
@@ -15,7 +15,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 新增/修改车间的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -55,7 +55,7 @@ export function useFormSchema(formApi?: any): VbenFormSchema[] {
               }
             },
           },
-          { default: () => '自动生成' },
+          { default: () => '生成' },
         ),
     },
     {

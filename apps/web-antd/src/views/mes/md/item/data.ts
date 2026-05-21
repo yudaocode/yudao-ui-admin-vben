@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemApi } from '#/api/mes/md/item';
 import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
@@ -17,7 +17,7 @@ import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 新增/修改物料产品的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',

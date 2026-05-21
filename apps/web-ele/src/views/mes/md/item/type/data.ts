@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
@@ -19,7 +19,7 @@ import {
 } from '#/views/mes/utils/constants';
 
 /** 新增/修改物料分类的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',

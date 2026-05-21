@@ -24,12 +24,12 @@ const formData = ref<MesMdVendorApi.Vendor>();
 
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  const titles: Record<FormMode, string> = {
-    create: '新增供应商',
-    update: '修改供应商',
-    detail: '查看供应商',
-  };
-  return titles[formMode.value];
+  if (formMode.value === 'detail') {
+    return $t('ui.actionTitle.view', ['供应商']);
+  }
+  return formMode.value === 'update'
+    ? $t('ui.actionTitle.edit', ['供应商'])
+    : $t('ui.actionTitle.create', ['供应商']);
 });
 
 const [Form, formApi] = useVbenForm({

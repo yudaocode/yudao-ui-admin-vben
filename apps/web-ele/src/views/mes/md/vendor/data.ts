@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdVendorApi } from '#/api/mes/md/vendor';
 
@@ -14,7 +14,7 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 新增/修改供应商的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
