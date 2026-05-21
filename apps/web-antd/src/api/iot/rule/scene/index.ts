@@ -46,7 +46,7 @@ export namespace RuleSceneApi {
     identifier?: string;
     value?: any;
     alertConfigId?: number;
-    params?: Record<string, any>;
+    params?: string;
   }
 }
 

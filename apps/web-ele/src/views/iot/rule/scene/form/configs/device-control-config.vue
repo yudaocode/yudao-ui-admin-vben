@@ -1,10 +1,7 @@
 <!-- 设备控制配置组件 -->
 <script setup lang="ts">
 import type { Action } from '#/api/iot/rule/scene';
-import type {
-  ThingModelProperty,
-  ThingModelService,
-} from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
@@ -44,10 +41,10 @@ const emit = defineEmits<{
 
 const action = useVModel(props, 'modelValue', emit);
 
-const thingModelProperties = ref<ThingModelProperty[]>([]); // 物模型属性列表
+const thingModelProperties = ref<ThingModelApi.Property[]>([]); // 物模型属性列表
 const loadingThingModel = ref(false); // 物模型加载状态
-const selectedService = ref<null | ThingModelService>(null); // 选中的服务对象
-const serviceList = ref<ThingModelService[]>([]); // 服务列表
+const selectedService = ref<null | ThingModelApi.Service>(null); // 选中的服务对象
+const serviceList = ref<ThingModelApi.Service[]>([]); // 服务列表
 const loadingServices = ref(false); // 服务加载状态
 
 // 参数值的计算属性，用于双向绑定
@@ -178,7 +175,7 @@ async function loadThingModelProperties(productId: number) {
 
     // 过滤出可写的属性（accessMode 包含 'w'）
     thingModelProperties.value = tslData.properties.filter(
-      (property: ThingModelProperty) =>
+      (property: ThingModelApi.Property) =>
         property.accessMode &&
         (property.accessMode === IoTThingModelAccessModeEnum.READ_WRITE.value ||
           property.accessMode === IoTThingModelAccessModeEnum.WRITE_ONLY.value),

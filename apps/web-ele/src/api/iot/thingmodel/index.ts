@@ -68,6 +68,15 @@ export namespace ThingModelApi {
     dataSpecsList?: any[];
   }
 
+  /** IoT 物模型 TSL 响应 */
+  export interface ThingModelTSL {
+    productId?: number;
+    productKey?: string;
+    properties?: Property[];
+    events?: Event[];
+    services?: Service[];
+  }
+
   /** IoT 数据定义（数值型） */
   export interface DataSpecsNumberData {
     min?: number | string;
@@ -236,7 +245,10 @@ export function deleteThingModel(id: number) {
 
 /** 获取物模型 TSL */
 export function getThingModelTSLByProductId(productId: number) {
-  return requestClient.get<any>('/iot/thing-model/get-tsl', {
-    params: { productId },
-  });
+  return requestClient.get<ThingModelApi.ThingModelTSL>(
+    '/iot/thing-model/get-tsl',
+    {
+      params: { productId },
+    },
+  );
 }

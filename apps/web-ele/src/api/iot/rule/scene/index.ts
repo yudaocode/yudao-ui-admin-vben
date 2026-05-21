@@ -11,6 +11,7 @@ export namespace RuleSceneApi {
     status?: number;
     triggers?: Trigger[];
     actions?: Action[];
+    lastTriggeredTime?: Date;
     createTime?: Date;
   }
 
@@ -46,7 +47,7 @@ export namespace RuleSceneApi {
     identifier?: string;
     value?: any;
     alertConfigId?: number;
-    params?: Record<string, any>;
+    params?: string;
   }
 }
 

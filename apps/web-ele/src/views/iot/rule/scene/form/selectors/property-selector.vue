@@ -1,11 +1,6 @@
 <!-- 属性选择器组件 -->
 <script setup lang="ts">
-import type {
-  ThingModelApi,
-  ThingModelEvent,
-  ThingModelProperty,
-  ThingModelService,
-} from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, ref, watch } from 'vue';
 
@@ -61,18 +56,18 @@ interface PropertySelectorItem {
   range?: string;
   eventType?: string;
   callType?: string;
-  inputParams?: ThingModelParam[];
-  outputParams?: ThingModelParam[];
-  property?: ThingModelProperty;
-  event?: ThingModelEvent;
-  service?: ThingModelService;
+  inputParams?: ThingModelApi.Param[];
+  outputParams?: ThingModelApi.Param[];
+  property?: ThingModelApi.Property;
+  event?: ThingModelApi.Event;
+  service?: ThingModelApi.Service;
 }
 
 const localValue = useVModel(props, 'modelValue', emit);
 
 const loading = ref(false); // 加载状态
-const propertyList = ref<ThingModelApi.Property[]>([]); // 属性列表
-const thingModelTSL = ref<null | ThingModelApi.ThingModel>(null); // 物模型TSL数据
+const propertyList = ref<PropertySelectorItem[]>([]); // 属性列表
+const thingModelTSL = ref<null | ThingModelApi.ThingModelTSL>(null); // 物模型 TSL 数据
 
 // 计算属性：属性分组
 const propertyGroups = computed(() => {
@@ -169,10 +164,10 @@ function parseThingModelData() {
   if (tsl.properties && Array.isArray(tsl.properties)) {
     tsl.properties.forEach((prop) => {
       properties.push({
-        identifier: prop.identifier,
-        name: prop.name,
+        identifier: prop.identifier!,
+        name: prop.name!,
         description: prop.description,
-        dataType: prop.dataType,
+        dataType: prop.dataType!,
         type: IoTThingModelTypeEnum.PROPERTY,
         accessMode: prop.accessMode,
         required: prop.required,
@@ -187,8 +182,8 @@ function parseThingModelData() {
   if (tsl.events && Array.isArray(tsl.events)) {
     tsl.events.forEach((event) => {
       properties.push({
-        identifier: event.identifier,
-        name: event.name,
+        identifier: event.identifier!,
+        name: event.name!,
         description: event.description,
         dataType: 'struct',
         type: IoTThingModelTypeEnum.EVENT,
@@ -204,8 +199,8 @@ function parseThingModelData() {
   if (tsl.services && Array.isArray(tsl.services)) {
     tsl.services.forEach((service) => {
       properties.push({
-        identifier: service.identifier,
-        name: service.name,
+        identifier: service.identifier!,
+        name: service.name!,
         description: service.description,
         dataType: 'struct',
         type: IoTThingModelTypeEnum.SERVICE,

@@ -10,7 +10,7 @@ import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import dayjs from 'dayjs';
-import { ElCard, ElEmpty, ElSelect } from 'element-plus';
+import { ElCard, ElEmpty, ElOption, ElSelect } from 'element-plus';
 
 import { getDeviceMessageSummaryByDate } from '#/api/iot/statistics';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
@@ -145,11 +145,17 @@ onMounted(() => {
             <span class="text-sm text-gray-500">时间间隔</span>
             <ElSelect
               v-model="queryParams.interval"
-              :options="intervalOptions"
               placeholder="间隔类型"
               :style="{ width: '80px' }"
               @change="handleIntervalChange"
-            />
+            >
+              <ElOption
+                v-for="opt in intervalOptions"
+                :key="opt.value"
+                :label="opt.label"
+                :value="opt.value"
+              />
+            </ElSelect>
           </div>
         </div>
       </div>
