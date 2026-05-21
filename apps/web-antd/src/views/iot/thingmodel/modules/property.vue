@@ -102,7 +102,11 @@ if (!props.isStructDataSpecs && !props.isParams) {
 </script>
 
 <template>
-  <Form.Item label="数据类型">
+  <Form.Item
+    :name="['property', 'dataType']"
+    :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
+    label="数据类型"
+  >
     <Select
       v-model:value="property.dataType"
       placeholder="请选择数据类型"

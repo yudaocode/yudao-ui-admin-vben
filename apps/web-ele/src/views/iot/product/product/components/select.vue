@@ -50,6 +50,7 @@ onMounted(() => {
     :loading="loading"
     placeholder="请选择产品"
     clearable
+    filterable
     class="w-full"
     @change="handleChange"
   >

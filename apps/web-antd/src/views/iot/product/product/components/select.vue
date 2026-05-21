@@ -52,6 +52,8 @@ onMounted(() => {
     placeholder="请选择产品"
     allow-clear
     class="w-full"
+    option-filter-prop="label"
+    show-search
     @change="handleChange"
   />
 </template>

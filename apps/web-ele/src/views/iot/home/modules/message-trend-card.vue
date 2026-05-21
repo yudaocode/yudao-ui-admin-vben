@@ -3,7 +3,7 @@ import type { Dayjs } from 'dayjs';
 
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -123,10 +123,6 @@ async function renderChartWhenReady() {
   initChart();
 }
 
-/** 组件挂载时查询数据 */
-onMounted(() => {
-  fetchMessageData();
-});
 </script>
 
 <template>

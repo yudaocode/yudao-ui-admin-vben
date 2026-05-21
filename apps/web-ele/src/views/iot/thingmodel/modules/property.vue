@@ -109,7 +109,11 @@ if (!props.isStructDataSpecs && !props.isParams) {
 </script>
 
 <template>
-  <ElFormItem label="数据类型">
+  <ElFormItem
+    :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
+    label="数据类型"
+    prop="property.dataType"
+  >
     <ElSelect
       v-model="property.dataType"
       placeholder="请选择数据类型"

@@ -123,6 +123,28 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
+    // 高级表单：先单独校验，再做经纬度成对填写的跨字段检查
+    if (advancedFormApi.isMounted) {
+      const { valid: advancedValid } = await advancedFormApi.validate();
+      if (!advancedValid) {
+        return;
+      }
+      const advValues = await advancedFormApi.getValues();
+      const hasLongitude =
+        advValues.longitude !== undefined &&
+        advValues.longitude !== null &&
+        advValues.longitude !== '';
+      const hasLatitude =
+        advValues.latitude !== undefined &&
+        advValues.latitude !== null &&
+        advValues.latitude !== '';
+      if (hasLongitude !== hasLatitude) {
+        ElMessage.warning(
+          hasLongitude ? '请同时填写设备纬度' : '请同时填写设备经度',
+        );
+        return;
+      }
+    }
     modalApi.lock();
     // 合并两个表单的值（字段不冲突，可直接合并）
     const basicValues = await formApi.getValues();
