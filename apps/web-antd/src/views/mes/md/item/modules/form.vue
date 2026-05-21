@@ -25,7 +25,7 @@ defineOptions({ name: 'MesMdItemForm' });
 
 const emit = defineEmits(['success']);
 const formMode = ref<FormMode>('create');
-const activeTab = ref('bom');
+const subTabsName = ref('bom');
 const formData = ref<MesMdItemApi.Item>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>();
 
@@ -86,6 +86,7 @@ const [Modal, modalApi] = useVbenModal({
       if (formMode.value === 'create') {
         const id = await createItem(data);
         formData.value = { ...data, id };
+        await formApi.setFieldValue('id', id);
         formMode.value = 'update';
         message.success($t('ui.actionMessage.operationSuccess'));
       } else {
@@ -104,7 +105,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
-    activeTab.value = 'bom';
+    subTabsName.value = 'bom';
     // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
@@ -130,7 +131,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <Tabs
       v-if="formMode !== 'create' && formData?.id"
-      v-model:active-key="activeTab"
+      v-model:active-key="subTabsName"
       class="mx-4 mt-4"
     >
       <Tabs.TabPane key="bom" tab="BOM 组成">

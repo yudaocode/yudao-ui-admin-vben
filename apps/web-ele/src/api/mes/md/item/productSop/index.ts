@@ -5,26 +5,26 @@ import { requestClient } from '#/api/request';
 export namespace MesMdProductSopApi {
   /** MES 产品 SOP */
   export interface ProductSop {
-    id?: number;
-    itemId?: number;
-    sort?: number;
-    processId?: number;
-    title?: string;
-    description?: string;
-    url?: string;
-    remark?: string;
-    createTime?: Date;
-    processCode?: string;
-    processName?: string;
+    id?: number; // SOP 编号
+    itemId?: number; // 物料产品编号
+    sort?: number; // 排列顺序
+    processId?: number; // 工序编号
+    title?: string; // 标题
+    description?: string; // 详细描述
+    url?: string; // 图片地址
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
+    processCode?: string; // 工序编码
+    processName?: string; // 工序名称
   }
 }
 
-/** 创建产品 SOP */
+/** 新增产品 SOP */
 export function createProductSop(data: MesMdProductSopApi.ProductSop) {
   return requestClient.post('/mes/md/product-sop/create', data);
 }
 
-/** 更新产品 SOP */
+/** 修改产品 SOP */
 export function updateProductSop(data: MesMdProductSopApi.ProductSop) {
   return requestClient.put('/mes/md/product-sop/update', data);
 }
@@ -34,14 +34,14 @@ export function deleteProductSop(id: number) {
   return requestClient.delete(`/mes/md/product-sop/delete?id=${id}`);
 }
 
-/** 获得产品 SOP */
+/** 查询产品 SOP 详情 */
 export function getProductSop(id: number) {
   return requestClient.get<MesMdProductSopApi.ProductSop>(
     `/mes/md/product-sop/get?id=${id}`,
   );
 }
 
-/** 获得产品 SOP 分页 */
+/** 查询产品 SOP 分页 */
 export function getProductSopPage(params: PageParam) {
   return requestClient.get<PageResult<MesMdProductSopApi.ProductSop>>(
     '/mes/md/product-sop/page',
@@ -49,7 +49,7 @@ export function getProductSopPage(params: PageParam) {
   );
 }
 
-/** 根据物料产品编号获得产品 SOP 列表 */
+/** 根据物料产品编号查询产品 SOP 列表 */
 export function getProductSopListByItemId(itemId: number) {
   return requestClient.get<MesMdProductSopApi.ProductSop[]>(
     `/mes/md/product-sop/list-by-item-id?itemId=${itemId}`,

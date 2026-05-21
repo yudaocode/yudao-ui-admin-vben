@@ -5,30 +5,30 @@ import { requestClient } from '#/api/request';
 export namespace MesMdItemApi {
   /** MES 物料产品 */
   export interface Item {
-    id?: number;
-    code?: string;
-    name?: string;
-    specification?: string;
-    unitMeasureId?: number;
-    unitMeasureName?: string;
-    itemTypeId?: number;
-    itemTypeName?: string;
-    itemOrProduct?: string;
-    status?: number;
-    safeStockFlag?: boolean;
-    minStock?: number;
-    maxStock?: number;
-    highValue?: boolean;
-    batchFlag?: boolean;
-    remark?: string;
-    createTime?: Date;
+    id?: number; // 物料编号
+    code?: string; // 物料编码
+    name?: string; // 物料名称
+    specification?: string; // 规格型号
+    unitMeasureId?: number; // 计量单位编号
+    unitMeasureName?: string; // 计量单位名称
+    itemTypeId?: number; // 物料分类编号
+    itemTypeName?: string; // 物料分类名称
+    itemOrProduct?: string; // 物料/产品标识
+    status?: number; // 状态
+    safeStockFlag?: boolean; // 是否启用安全库存
+    minStock?: number; // 最低库存量
+    maxStock?: number; // 最高库存量
+    highValue?: boolean; // 是否高值物料
+    batchFlag?: boolean; // 是否启用批次管理
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
   }
 
   /** 物料导入结果 */
   export interface ItemImportRespVO {
-    createCodes?: string[];
-    updateCodes?: string[];
-    failureCodes?: Record<string, string>;
+    createCodes?: string[]; // 新增成功的物料编码
+    updateCodes?: string[]; // 更新成功的物料编码
+    failureCodes?: Record<string, string>; // 导入失败的物料编码及原因
   }
 }
 
