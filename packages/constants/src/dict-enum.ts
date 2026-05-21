@@ -178,8 +178,11 @@ const IOT_DICT = {
 /** ========== MES - 制造执行模块 ========== */
 const MES_DICT = {
   MES_MD_ITEM_OR_PRODUCT: 'mes_md_item_or_product', // MES 物料/产品标识
+  MES_CLIENT_TYPE: 'mes_client_type', // MES 客户类型
+  MES_VENDOR_LEVEL: 'mes_vendor_level', // MES 供应商级别
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
+  MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */
