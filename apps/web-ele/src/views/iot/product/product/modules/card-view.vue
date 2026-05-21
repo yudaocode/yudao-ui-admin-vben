@@ -218,7 +218,7 @@ onMounted(() => {
                     size="small"
                     type="danger"
                     disabled
-                    class="h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                    class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
                   >
                     <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                   </ElButton>
@@ -232,7 +232,7 @@ onMounted(() => {
                     <ElButton
                       size="small"
                       type="danger"
-                      class="h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                      class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
                     >
                       <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                     </ElButton>

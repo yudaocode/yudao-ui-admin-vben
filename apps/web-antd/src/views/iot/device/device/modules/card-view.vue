@@ -236,19 +236,23 @@ onMounted(() => {
                 <IconifyIcon icon="lucide:database" class="mr-1" />
                 数据
               </Button>
-              <Popconfirm
-                v-if="hasAccessByCodes(['iot:device:delete'])"
-                :title="`确认删除设备 ${item.deviceName} 吗?`"
-                @confirm="emit('delete', item)"
-              >
-                <Button
-                  size="small"
-                  danger
-                  class="h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+              <template v-if="hasAccessByCodes(['iot:device:delete'])">
+                <div
+                  class="h-5 w-px self-center bg-[#dcdfe6] dark:bg-[#3a3a3a]"
+                ></div>
+                <Popconfirm
+                  :title="`确认删除设备 ${item.deviceName} 吗?`"
+                  @confirm="emit('delete', item)"
                 >
-                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
-                </Button>
-              </Popconfirm>
+                  <Button
+                    size="small"
+                    danger
+                    class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                  >
+                    <IconifyIcon icon="lucide:trash-2" class="text-sm" />
+                  </Button>
+                </Popconfirm>
+              </template>
             </div>
           </Card>
         </Col>

@@ -213,6 +213,9 @@ onMounted(() => {
                 物模型
               </Button>
               <template v-if="hasAccessByCodes(['iot:product:delete'])">
+                <div
+                  class="h-5 w-px self-center bg-[#dcdfe6] dark:bg-[#3a3a3a]"
+                ></div>
                 <Tooltip
                   v-if="item.status === ProductStatusEnum.PUBLISHED"
                   title="已发布的产品不能删除"
@@ -221,7 +224,7 @@ onMounted(() => {
                     size="small"
                     danger
                     disabled
-                    class="h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                    class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
                   >
                     <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                   </Button>
@@ -234,7 +237,7 @@ onMounted(() => {
                   <Button
                     size="small"
                     danger
-                    class="h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                    class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
                   >
                     <IconifyIcon icon="lucide:trash-2" class="text-sm" />
                   </Button>

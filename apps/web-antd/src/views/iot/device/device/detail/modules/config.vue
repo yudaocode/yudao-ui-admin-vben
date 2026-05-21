@@ -127,7 +127,7 @@ async function updateDeviceConfig() {
   <div>
     <!-- 使用说明提示 -->
     <Alert
-      class="my-4"
+      class="!mb-4"
       description="如需编辑文件，请点击下方编辑按钮"
       message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「配置推送」按钮，设备即可进行远程配置。"
       show-icon
@@ -135,28 +135,22 @@ async function updateDeviceConfig() {
     />
 
     <!-- 代码视图 - 只读展示 -->
-    <div
+    <pre
       v-if="!isEditing"
-      class="max-h-[600px] overflow-y-auto rounded border border-[#d9d9d9] bg-[#f5f5f5] p-3 dark:border-[#3a3a3a] dark:bg-[#1a1a1a]"
-    >
-      <pre
-        class="m-0 whitespace-pre-wrap break-words font-mono text-[13px] leading-normal text-[#333] dark:text-gray-300"
-      >
-        <code>{{ formattedConfig }}</code>
-      </pre>
-    </div>
+      class="m-0 h-[460px] overflow-y-auto whitespace-pre-wrap break-words rounded border border-[#d9d9d9] bg-[#f5f5f5] p-3 font-mono text-[13px] leading-normal text-[#333] dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-gray-300"
+      v-text="formattedConfig"
+    ></pre>
 
     <!-- 编辑器视图 - 可编辑 -->
     <Textarea
       v-else
       v-model:value="configString"
-      :rows="20"
-      class="font-mono text-[13px]"
+      class="!h-[460px] font-mono text-[13px]"
       placeholder="请输入 JSON 格式的配置信息"
     />
 
     <!-- 操作按钮 -->
-    <div class="mt-5 text-center">
+    <div class="mt-4 flex justify-center gap-2">
       <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
       <Button
         v-if="isEditing"
