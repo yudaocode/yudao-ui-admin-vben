@@ -235,7 +235,7 @@ export function deleteThingModel(id: number) {
 }
 
 /** 获取物模型 TSL */
-export function getThingModelTSL(productId: number) {
+export function getThingModelTSLByProductId(productId: number) {
   return requestClient.get<any>('/iot/thing-model/get-tsl', {
     params: { productId },
   });

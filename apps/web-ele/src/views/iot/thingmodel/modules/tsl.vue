@@ -10,7 +10,7 @@ import { IOT_PROVIDE_KEY } from '@vben/constants';
 
 import { ElInput, ElRadioButton, ElRadioGroup } from 'element-plus';
 
-import { getThingModelTSL } from '#/api/iot/thingmodel';
+import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
 const product = inject<Ref<IotProductApi.Product>>(IOT_PROVIDE_KEY.PRODUCT);
 
@@ -26,7 +26,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 加载数据
-      thingModelTSL.value = await getThingModelTSL(product?.value?.id || 0);
+      thingModelTSL.value = await getThingModelTSLByProductId(product?.value?.id || 0);
       // 设置到 values
       tslString.value = JSON.stringify(thingModelTSL.value, null, 2);
     } finally {

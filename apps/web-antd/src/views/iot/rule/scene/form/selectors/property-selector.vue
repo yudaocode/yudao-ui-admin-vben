@@ -18,7 +18,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useVModel } from '@vueuse/core';
 import { Button, Popover, Select, Tag } from 'ant-design-vue';
 
-import { getThingModelTSL } from '#/api/iot/thingmodel';
+import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
 /** 属性选择器组件 */
 defineOptions({ name: 'PropertySelector' });
@@ -110,7 +110,7 @@ async function loadThingModelTSL() {
   }
   loading.value = true;
   try {
-    const tsl = await getThingModelTSL(props.productId);
+    const tsl = await getThingModelTSLByProductId(props.productId);
     propertyList.value = parseThingModelData(tsl);
   } catch (error) {
     console.error('获取物模型 TSL 失败：', error);
