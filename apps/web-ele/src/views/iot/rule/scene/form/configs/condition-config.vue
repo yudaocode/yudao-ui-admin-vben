@@ -1,6 +1,6 @@
 <!-- 单个条件配置组件 -->
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
@@ -12,13 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import {
-  ElCol,
-  ElFormItem,
-  ElOption,
-  ElRow,
-  ElSelect,
-} from 'element-plus';
+import { ElCol, ElFormItem, ElOption, ElRow, ElSelect } from 'element-plus';
 
 import ValueInput from '../inputs/value-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';
@@ -31,12 +25,12 @@ import CurrentTimeConditionConfig from './current-time-condition-config.vue';
 defineOptions({ name: 'ConditionConfig' });
 
 const props = defineProps<{
-  modelValue: TriggerCondition;
+  modelValue: RuleSceneApi.TriggerCondition;
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition): void;
 }>();
 
 /** 获取设备状态选项 */
@@ -90,7 +84,7 @@ function updateConditionField(field: any, value: any) {
  * 更新整个条件对象
  * @param newCondition 新的条件对象
  */
-function updateCondition(newCondition: TriggerCondition) {
+function updateCondition(newCondition: RuleSceneApi.TriggerCondition) {
   condition.value = newCondition;
   emit('update:modelValue', condition.value);
 }
@@ -217,8 +211,7 @@ function handleOperatorChange() {
     <!-- 设备状态条件配置 -->
     <div
       v-if="
-        condition.type ===
-        IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS
+        condition.type === IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS
       "
       class="gap-16px flex flex-col"
     >
@@ -271,8 +264,7 @@ function handleOperatorChange() {
     <!-- 设备属性条件配置 -->
     <div
       v-else-if="
-        condition.type ===
-        IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY
+        condition.type === IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY
       "
       class="space-y-16px"
     >
@@ -328,8 +320,7 @@ function handleOperatorChange() {
     <!-- 当前时间条件配置 -->
     <CurrentTimeConditionConfig
       v-else-if="
-        condition.type ===
-        IotRuleSceneTriggerConditionTypeEnum.CURRENT_TIME
+        condition.type === IotRuleSceneTriggerConditionTypeEnum.CURRENT_TIME
       "
       :model-value="condition"
       @update:model-value="updateCondition"

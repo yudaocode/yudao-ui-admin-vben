@@ -1,6 +1,6 @@
 <!-- 执行器配置组件 -->
 <script setup lang="ts">
-import type { Action } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import {
   getActionTypeLabel,
@@ -19,11 +19,11 @@ import DeviceControlConfig from '../configs/device-control-config.vue';
 defineOptions({ name: 'ActionSection' });
 
 const props = defineProps<{
-  actions: Action[];
+  actions: RuleSceneApi.Action[];
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:actions', value: Action[]): void;
+  (e: 'update:actions', value: RuleSceneApi.Action[]): void;
 }>();
 
 const actions = useVModel(props, 'actions', emit);
@@ -66,7 +66,7 @@ function isAlertAction(type: number): boolean {
  * 创建默认的执行器数据
  * @returns 默认执行器对象
  */
-function createDefaultActionData(): Action {
+function createDefaultActionData(): RuleSceneApi.Action {
   return {
     type: IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET, // 默认为设备属性设置
     productId: undefined,
@@ -100,7 +100,7 @@ function removeAction(index: number) {
  */
 function updateActionType(index: number, type: number) {
   actions.value[index]!.type = type;
-  onActionTypeChange(actions.value[index] as Action, type);
+  onActionTypeChange(actions.value[index] as RuleSceneApi.Action, type);
 }
 
 /**
@@ -108,7 +108,7 @@ function updateActionType(index: number, type: number) {
  * @param index 执行器索引
  * @param action 执行器对象
  */
-function updateAction(index: number, action: Action) {
+function updateAction(index: number, action: RuleSceneApi.Action) {
   actions.value[index] = action;
 }
 
@@ -126,12 +126,12 @@ function updateActionAlertConfig(index: number, alertConfigId?: number) {
  * @param action 执行器对象
  * @param type 执行器类型
  */
-function onActionTypeChange(action: Action, type: number) {
+function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
   if (isDeviceAction(type)) {
     // 设备控制类型：清理告警配置，确保设备参数存在
     action.alertConfigId = undefined;
     if (!action.params) {
-      action.params = {};
+      action.params = '';
     }
     // 切换到设备控制类型时清空 identifier，让用户重新选择
     if (action.identifier && type !== action.type) {
@@ -153,7 +153,9 @@ function onActionTypeChange(action: Action, type: number) {
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
           <IconifyIcon icon="ep:setting" class="text-[18px] text-primary" />
-          <span class="text-[16px] font-semibold text-foreground"> 执行器配置 </span>
+          <span class="text-[16px] font-semibold text-foreground">
+            执行器配置
+          </span>
           <Tag color="default"> {{ actions.length }} 个执行器 </Tag>
         </div>
         <div class="gap-[8px] flex items-center">
@@ -251,10 +253,7 @@ function onActionTypeChange(action: Action, type: number) {
 
             <!-- 告警配置 - 只有恢复告警时才显示 -->
             <AlertConfig
-              v-if="
-                action.type ===
-                IotRuleSceneActionTypeEnum.ALERT_RECOVER
-              "
+              v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_RECOVER"
               :model-value="action.alertConfigId"
               @update:model-value="
                 (value) => updateActionAlertConfig(index, value)
@@ -263,10 +262,7 @@ function onActionTypeChange(action: Action, type: number) {
 
             <!-- 触发告警提示 - 触发告警时显示 -->
             <div
-              v-if="
-                action.type ===
-                IotRuleSceneActionTypeEnum.ALERT_TRIGGER
-              "
+              v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER"
               class="bg-fill-color-blank rounded-lg border border-border p-4"
             >
               <div class="mb-2 flex items-center gap-2">

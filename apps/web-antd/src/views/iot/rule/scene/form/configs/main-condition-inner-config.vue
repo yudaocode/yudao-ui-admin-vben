@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
@@ -25,12 +25,12 @@ import PropertySelector from '../selectors/property-selector.vue';
 defineOptions({ name: 'MainConditionInnerConfig' });
 
 const props = defineProps<{
-  modelValue: Trigger;
+  modelValue: RuleSceneApi.Trigger;
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Trigger): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Trigger): void;
   (e: 'triggerTypeChange', value: number): void;
 }>();
 
@@ -325,9 +325,7 @@ function handlePropertyChange(propertyInfo: any) {
           <Form.Item label="操作符" required>
             <Select
               :value="condition.operator"
-              @change="
-                (value: any) => updateConditionField('operator', value)
-              "
+              @change="(value: any) => updateConditionField('operator', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
@@ -347,9 +345,7 @@ function handlePropertyChange(propertyInfo: any) {
           <Form.Item label="参数" required>
             <Select
               :value="condition.value"
-              @change="
-                (value: any) => updateConditionField('value', value)
-              "
+              @change="(value: any) => updateConditionField('value', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
@@ -371,7 +367,9 @@ function handlePropertyChange(propertyInfo: any) {
       <p class="mb-1 text-sm text-muted-foreground">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-muted-foreground">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-muted-foreground">
+        此触发类型暂不需要配置额外条件
+      </p>
     </div>
   </div>
 </template>

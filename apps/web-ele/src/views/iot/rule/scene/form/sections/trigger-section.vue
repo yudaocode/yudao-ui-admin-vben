@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { onMounted } from 'vue';
 
@@ -11,13 +11,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import {
-  ElButton,
-  ElCard,
-  ElEmpty,
-  ElFormItem,
-  ElTag,
-} from 'element-plus';
+import { ElButton, ElCard, ElEmpty, ElFormItem, ElTag } from 'element-plus';
 
 import { CronTab } from '#/components/cron-tab';
 
@@ -27,11 +21,11 @@ import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
 defineOptions({ name: 'TriggerSection' });
 
 const props = defineProps<{
-  triggers: Trigger[];
+  triggers: RuleSceneApi.Trigger[];
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:triggers', value: Trigger[]): void;
+  (e: 'update:triggers', value: RuleSceneApi.Trigger[]): void;
 }>();
 
 const triggers = useVModel(props, 'triggers', emit);
@@ -48,7 +42,7 @@ function getTriggerTagType(
 
 /** 添加触发器 */
 function addTrigger() {
-  const newTrigger: Trigger = {
+  const newTrigger: RuleSceneApi.Trigger = {
     type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE,
     productId: undefined,
     deviceId: undefined,
@@ -86,7 +80,10 @@ function updateTriggerType(index: number, type: number) {
  * @param index 触发器索引
  * @param newTrigger 新的触发器对象
  */
-function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
+function updateTriggerDeviceConfig(
+  index: number,
+  newTrigger: RuleSceneApi.Trigger,
+) {
   triggers.value[index] = newTrigger;
 }
 
@@ -130,7 +127,9 @@ onMounted(() => {
         <div class="gap-8px flex items-center">
           <IconifyIcon icon="ep:lightning" class="text-18px text-primary" />
           <span class="text-16px font-600 text-primary">触发器配置</span>
-          <ElTag size="small" type="info"> {{ triggers.length }} 个触发器 </ElTag>
+          <ElTag size="small" type="info">
+            {{ triggers.length }} 个触发器
+          </ElTag>
         </div>
         <ElButton type="primary" size="small" @click="addTrigger">
           <IconifyIcon icon="lucide:plus" />
@@ -200,10 +199,7 @@ onMounted(() => {
 
             <!-- 定时触发配置 -->
             <div
-              v-else-if="
-                triggerItem.type ===
-                IotRuleSceneTriggerTypeEnum.TIMER
-              "
+              v-else-if="triggerItem.type === IotRuleSceneTriggerTypeEnum.TIMER"
               class="gap-16px flex flex-col"
             >
               <div

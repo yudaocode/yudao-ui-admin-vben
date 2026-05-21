@@ -1,6 +1,6 @@
 <!-- 设备控制配置组件 -->
 <script setup lang="ts">
-import type { Action } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, ref, watch } from 'vue';
@@ -25,11 +25,11 @@ import ProductSelector from '../selectors/product-selector.vue';
 defineOptions({ name: 'DeviceControlConfig' });
 
 const props = defineProps<{
-  modelValue: Action;
+  modelValue: RuleSceneApi.Action;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Action): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Action): void;
 }>();
 
 const action = useVModel(props, 'modelValue', emit);
@@ -58,18 +58,12 @@ const paramsValue = computed({
 
 // 计算属性：是否为属性设置类型
 const isPropertySetAction = computed(() => {
-  return (
-    action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET
-  );
+  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET;
 });
 
 // 计算属性：是否为服务调用类型
 const isServiceInvokeAction = computed(() => {
-  return (
-    action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE
-  );
+  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE;
 });
 
 /**
@@ -358,7 +352,10 @@ watch(
     </Row>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
-    <div v-if="action.productId && isServiceInvokeAction" class="space-y-[16px]">
+    <div
+      v-if="action.productId && isServiceInvokeAction"
+      class="space-y-[16px]"
+    >
       <Form.Item label="服务" required>
         <Select
           v-model:value="action.identifier"

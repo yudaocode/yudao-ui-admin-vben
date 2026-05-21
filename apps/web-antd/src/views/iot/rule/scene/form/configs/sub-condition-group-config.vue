@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, nextTick } from 'vue';
 
@@ -19,12 +19,12 @@ defineOptions({ name: 'SubConditionGroupConfig' });
 
 const props = defineProps<{
   maxConditions?: number;
-  modelValue: TriggerCondition[];
+  modelValue: RuleSceneApi.TriggerCondition[];
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition[]): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition[]): void;
 }>();
 
 const subGroup = useVModel(props, 'modelValue', emit);
@@ -43,7 +43,7 @@ async function addCondition() {
     return;
   }
 
-  const newCondition: TriggerCondition = {
+  const newCondition: RuleSceneApi.TriggerCondition = {
     type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY, // 默认为设备属性
     productId: undefined,
     deviceId: undefined,
@@ -74,7 +74,10 @@ function removeCondition(index: number) {
  * @param index 条件索引
  * @param condition 条件对象
  */
-function updateCondition(index: number, condition: TriggerCondition) {
+function updateCondition(
+  index: number,
+  condition: RuleSceneApi.TriggerCondition,
+) {
   if (subGroup.value) {
     subGroup.value[index] = condition;
   }
@@ -138,7 +141,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
             <ConditionConfig
               :model-value="condition"
               @update:model-value="
-                (value: TriggerCondition) =>
+                (value: RuleSceneApi.TriggerCondition) =>
                   updateCondition(conditionIndex, value)
               "
               :trigger-type="triggerType"

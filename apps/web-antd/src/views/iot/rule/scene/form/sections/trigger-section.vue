@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger, TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { onMounted } from 'vue';
 
@@ -22,11 +22,11 @@ import TimerConditionGroupConfig from '../configs/timer-condition-group-config.v
 defineOptions({ name: 'TriggerSection' });
 
 const props = defineProps<{
-  triggers: Trigger[];
+  triggers: RuleSceneApi.Trigger[];
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:triggers', value: Trigger[]): void;
+  (e: 'update:triggers', value: RuleSceneApi.Trigger[]): void;
 }>();
 
 const triggers = useVModel(props, 'triggers', emit);
@@ -43,7 +43,7 @@ function getTriggerTagColor(
 
 /** 添加触发器 */
 function addTrigger() {
-  const newTrigger: Trigger = {
+  const newTrigger: RuleSceneApi.Trigger = {
     type: IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE,
     productId: undefined,
     deviceId: undefined,
@@ -70,7 +70,10 @@ function updateTriggerType(index: number, type: number) {
 }
 
 /** 更新触发器设备配置 */
-function updateTriggerDeviceConfig(index: number, newTrigger: Trigger) {
+function updateTriggerDeviceConfig(
+  index: number,
+  newTrigger: RuleSceneApi.Trigger,
+) {
   triggers.value[index] = newTrigger;
 }
 
@@ -82,7 +85,7 @@ function updateTriggerCronConfig(index: number, cronExpression?: string) {
 /** 更新触发器条件组配置 */
 function updateTriggerConditionGroups(
   index: number,
-  conditionGroups: TriggerCondition[][],
+  conditionGroups: RuleSceneApi.TriggerCondition[][],
 ) {
   triggers.value[index]!.conditionGroups = conditionGroups;
 }
@@ -183,10 +186,7 @@ onMounted(() => {
 
             <!-- 定时触发配置 -->
             <div
-              v-else-if="
-                triggerItem.type ===
-                IotRuleSceneTriggerTypeEnum.TIMER
-              "
+              v-else-if="triggerItem.type === IotRuleSceneTriggerTypeEnum.TIMER"
               class="gap-[16px] flex flex-col"
             >
               <div

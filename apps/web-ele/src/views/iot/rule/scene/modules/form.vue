@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IotSceneRule, RuleSceneApi } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, nextTick, reactive, ref } from 'vue';
 
@@ -29,7 +29,7 @@ defineOptions({ name: 'IoTRuleSceneForm' });
 const emit = defineEmits(['success']);
 
 const formRef = ref();
-const formData = ref<IotSceneRule>(buildEmptyFormData());
+const formData = ref<RuleSceneApi.SceneRule>(buildEmptyFormData());
 
 const getTitle = computed(() =>
   formData.value.id
@@ -46,7 +46,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     }
     drawerApi.lock();
     try {
-      const data = { ...formData.value } as IotSceneRule;
+      const data = { ...formData.value } as RuleSceneApi.SceneRule;
       await (data.id ? updateSceneRule(data) : createSceneRule(data));
       await drawerApi.close();
       emit('success');
@@ -78,7 +78,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 /** 构造空白表单数据 */
-function buildEmptyFormData(): IotSceneRule {
+function buildEmptyFormData(): RuleSceneApi.SceneRule {
   return {
     name: '',
     description: '',
@@ -100,7 +100,7 @@ function buildEmptyFormData(): IotSceneRule {
 }
 
 /** 回显时兜底，保证触发器/执行器数组不为空 */
-function normalizeFormData(result: any): IotSceneRule {
+function normalizeFormData(result: any): RuleSceneApi.SceneRule {
   return {
     ...result,
     triggers: result.triggers?.length

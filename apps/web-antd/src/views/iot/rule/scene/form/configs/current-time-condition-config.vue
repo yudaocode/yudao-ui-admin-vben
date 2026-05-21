@@ -1,6 +1,6 @@
 <!-- 当前时间条件配置组件 -->
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
 
@@ -22,11 +22,11 @@ import {
 defineOptions({ name: 'CurrentTimeConditionConfig' });
 
 const props = defineProps<{
-  modelValue: TriggerCondition;
+  modelValue: RuleSceneApi.TriggerCondition;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition): void;
 }>();
 
 const condition = useVModel(props, 'modelValue', emit);

@@ -1,6 +1,6 @@
 <!-- 基础信息配置组件 -->
 <script setup lang="ts">
-import type { IotSceneRule } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -15,11 +15,11 @@ import { DictTag } from '#/components/dict-tag';
 defineOptions({ name: 'BasicInfoSection' });
 
 const props = defineProps<{
-  modelValue: IotSceneRule;
+  modelValue: RuleSceneApi.SceneRule;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: IotSceneRule): void;
+  (e: 'update:modelValue', value: RuleSceneApi.SceneRule): void;
 }>();
 
 const formData = useVModel(props, 'modelValue', emit); // 表单数据

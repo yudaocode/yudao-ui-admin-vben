@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
@@ -12,13 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import {
-  ElCol,
-  ElFormItem,
-  ElOption,
-  ElRow,
-  ElSelect,
-} from 'element-plus';
+import { ElCol, ElFormItem, ElOption, ElRow, ElSelect } from 'element-plus';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -31,12 +25,12 @@ import PropertySelector from '../selectors/property-selector.vue';
 defineOptions({ name: 'MainConditionInnerConfig' });
 
 const props = defineProps<{
-  modelValue: Trigger;
+  modelValue: RuleSceneApi.Trigger;
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Trigger): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Trigger): void;
   (e: 'triggerTypeChange', value: number): void;
 }>();
 

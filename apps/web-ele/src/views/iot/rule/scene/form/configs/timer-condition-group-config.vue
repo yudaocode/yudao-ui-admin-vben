@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { nextTick } from 'vue';
 
@@ -12,11 +12,11 @@ import { ElButton, ElTag } from 'element-plus';
 import SubConditionGroupConfig from './sub-condition-group-config.vue';
 
 const props = defineProps<{
-  modelValue?: TriggerCondition[][];
+  modelValue?: RuleSceneApi.TriggerCondition[][];
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition[][]): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition[][]): void;
 }>();
 
 const conditionGroups = useVModel(props, 'modelValue', emit);
@@ -46,7 +46,10 @@ function removeConditionGroup(index: number) {
 }
 
 /** 更新条件组 */
-function updateConditionGroup(index: number, group: TriggerCondition[]) {
+function updateConditionGroup(
+  index: number,
+  group: RuleSceneApi.TriggerCondition[],
+) {
   if (conditionGroups.value) {
     conditionGroups.value[index] = group;
   }
@@ -117,9 +120,7 @@ function updateConditionGroup(index: number, group: TriggerCondition[]) {
               <ElTag type="warning" class="font-medium">
                 组内条件为「且」关系
               </ElTag>
-              <ElTag type="info">
-                {{ group?.length || 0 }} 个条件
-              </ElTag>
+              <ElTag type="info"> {{ group?.length || 0 }} 个条件 </ElTag>
             </div>
             <ElButton
               link
@@ -138,7 +139,7 @@ function updateConditionGroup(index: number, group: TriggerCondition[]) {
             :trigger-type="IotRuleSceneTriggerTypeEnum.TIMER"
             :max-conditions="maxConditionsPerGroup"
             @update:model-value="
-              (value: TriggerCondition[]) =>
+              (value: RuleSceneApi.TriggerCondition[]) =>
                 updateConditionGroup(groupIndex, value)
             "
           />
@@ -150,13 +151,19 @@ function updateConditionGroup(index: number, group: TriggerCondition[]) {
           class="py-[12px] flex items-center justify-center"
         >
           <div class="gap-[8px] flex items-center">
-            <div class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"></div>
+            <div
+              class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"
+            ></div>
             <div
               class="px-[14px] py-[3px] rounded-full border border-orange-300 bg-orange-100 dark:border-orange-800 dark:bg-orange-950/50"
             >
-              <span class="text-[13px] font-semibold text-orange-600 dark:text-orange-300">或</span>
+              <span
+                class="text-[13px] font-semibold text-orange-600 dark:text-orange-300"
+                >或</span>
             </div>
-            <div class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"></div>
+            <div
+              class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"
+            ></div>
           </div>
         </div>
       </div>
@@ -168,7 +175,10 @@ function updateConditionGroup(index: number, group: TriggerCondition[]) {
       class="p-[24px] rounded-[8px] border-2 border-dashed border-blue-200 bg-blue-50/40 text-center dark:border-blue-900/40 dark:bg-blue-950/10"
     >
       <div class="gap-[10px] flex flex-col items-center">
-        <IconifyIcon icon="lucide:plus" class="text-[28px] text-blue-400 dark:text-blue-300" />
+        <IconifyIcon
+          icon="lucide:plus"
+          class="text-[28px] text-blue-400 dark:text-blue-300"
+        />
         <div class="text-blue-600 dark:text-blue-300">
           <p class="text-[13px] font-medium mb-[2px]">暂无附加条件</p>
           <p class="text-[12px]">定时触发时将直接执行动作</p>

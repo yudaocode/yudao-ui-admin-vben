@@ -50,53 +50,6 @@ export namespace RuleSceneApi {
   }
 }
 
-// TODO @haohao：貌似下面的，和 RuleSceneApi 重复了。
-/** IoT 场景联动规则 */
-export interface IotSceneRule {
-  id?: number;
-  name?: string;
-  description?: string;
-  status?: number;
-  triggers?: Trigger[];
-  actions?: Action[];
-  createTime?: Date;
-}
-
-/** IoT 场景联动规则触发器 */
-export interface Trigger {
-  type?: number;
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  operator?: string;
-  value?: any;
-  cronExpression?: string;
-  // 后端结构：List<List<TriggerCondition>>；外层「或」、组内「且」
-  conditionGroups?: TriggerCondition[][];
-}
-
-/** IoT 场景联动规则触发条件 */
-export interface TriggerCondition {
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  operator?: string;
-  value?: any;
-  type?: number;
-  param?: string;
-}
-
-/** IoT 场景联动规则动作 */
-export interface Action {
-  type?: number;
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  value?: any;
-  alertConfigId?: number;
-  params?: Record<string, any>;
-}
-
 /** 查询场景联动规则分页 */
 export function getSceneRulePage(params: PageParam) {
   return requestClient.get<PageResult<RuleSceneApi.SceneRule>>(
@@ -113,12 +66,12 @@ export function getSceneRule(id: number) {
 }
 
 /** 新增场景联动规则 */
-export function createSceneRule(data: IotSceneRule) {
+export function createSceneRule(data: RuleSceneApi.SceneRule) {
   return requestClient.post('/iot/scene-rule/create', data);
 }
 
 /** 修改场景联动规则 */
-export function updateSceneRule(data: IotSceneRule) {
+export function updateSceneRule(data: RuleSceneApi.SceneRule) {
   return requestClient.put('/iot/scene-rule/update', data);
 }
 
@@ -128,7 +81,6 @@ export function deleteSceneRule(id: number) {
 }
 
 /** 批量删除场景联动规则 */
-// TODO @haohao：貌似用上。
 export function deleteSceneRuleList(ids: number[]) {
   return requestClient.delete('/iot/scene-rule/delete-list', {
     params: { ids: ids.join(',') },

@@ -1,6 +1,6 @@
 <!-- 设备控制配置组件 -->
 <script setup lang="ts">
-import type { Action } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, onMounted, ref, watch } from 'vue';
@@ -32,11 +32,11 @@ import ProductSelector from '../selectors/product-selector.vue';
 defineOptions({ name: 'DeviceControlConfig' });
 
 const props = defineProps<{
-  modelValue: Action;
+  modelValue: RuleSceneApi.Action;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Action): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Action): void;
 }>();
 
 const action = useVModel(props, 'modelValue', emit);
