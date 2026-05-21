@@ -22,8 +22,6 @@ import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-defineOptions({ name: 'MesMdWorkstation' });
-
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
 const [FormModal, formModalApi] = useVbenModal({

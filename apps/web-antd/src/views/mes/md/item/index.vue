@@ -27,8 +27,6 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
-defineOptions({ name: 'MesMdItem' });
-
 const selectedItemTypeId = ref<number>(); // 当前选中的物料分类编号
 
 const [FormModal, formModalApi] = useVbenModal({

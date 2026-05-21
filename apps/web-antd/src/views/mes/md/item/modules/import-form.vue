@@ -14,8 +14,6 @@ import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
 
-defineOptions({ name: 'MesMdItemImportForm' });
-
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({

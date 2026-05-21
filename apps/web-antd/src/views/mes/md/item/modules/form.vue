@@ -21,8 +21,6 @@ import ProductSopForm from './product-sop-form.vue';
 
 type FormMode = 'create' | 'detail' | 'update';
 
-defineOptions({ name: 'MesMdItemForm' });
-
 const emit = defineEmits(['success']);
 const formMode = ref<FormMode>('create'); // 表单模式
 const subTabsName = ref('bom'); // 当前子表页签

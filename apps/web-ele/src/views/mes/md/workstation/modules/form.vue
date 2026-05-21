@@ -24,8 +24,6 @@ import WorkerList from './worker-list.vue';
 
 type FormMode = 'create' | 'detail' | 'update';
 
-defineOptions({ name: 'MesMdWorkstationForm' });
-
 const emit = defineEmits(['success']);
 const formMode = ref<FormMode>('create'); // 表单模式
 const subTabsName = ref('machine'); // 当前资源页签

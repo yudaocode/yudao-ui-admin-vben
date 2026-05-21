@@ -178,6 +178,9 @@ const IOT_DICT = {
 /** ========== MES - 制造执行模块 ========== */
 const MES_DICT = {
   MES_MD_ITEM_OR_PRODUCT: 'mes_md_item_or_product', // MES 物料/产品标识
+  MES_MD_AUTO_CODE_CYCLE_METHOD: 'mes_md_auto_code_cycle_method', // MES 编码规则循环方式
+  MES_MD_AUTO_CODE_PADDED_METHOD: 'mes_md_auto_code_padded_method', // MES 编码规则补齐方式
+  MES_MD_AUTO_CODE_PART_TYPE: 'mes_md_auto_code_part_type', // MES 编码规则分段类型
   MES_CLIENT_TYPE: 'mes_client_type', // MES 客户类型
   MES_VENDOR_LEVEL: 'mes_vendor_level', // MES 供应商级别
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型

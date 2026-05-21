@@ -17,8 +17,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-defineOptions({ name: 'MesMdItemTypeForm' });
-
 const emit = defineEmits(['success']);
 const formData = ref<MesMdItemTypeApi.ItemType>();
 const getTitle = computed(() => {

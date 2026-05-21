@@ -20,6 +20,14 @@ export const MesAutoCodeRuleCode = {
   MD_WORKSHOP_CODE: 'MD_WORKSHOP_CODE',
 } as const;
 
+/** MES 编码规则分段类型枚举 */
+export const MesAutoCodePartTypeEnum = {
+  INPUT: 1,
+  DATE: 2,
+  FIX: 3,
+  SERIAL: 4,
+} as const;
+
 /** MES 条码格式枚举 */
 export enum BarcodeFormatEnum {
   QR_CODE = 1,
