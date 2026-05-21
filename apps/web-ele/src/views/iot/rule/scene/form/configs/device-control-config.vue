@@ -125,8 +125,9 @@ function handleServiceChange(serviceIdentifier?: any) {
 
   // 如果选择了服务且有输入参数，生成默认参数结构
   if (service && service.inputParams && service.inputParams.length > 0) {
-    const defaultParams = {};
+    const defaultParams: Record<string, any> = {};
     service.inputParams.forEach((param) => {
+      if (!param.identifier) return;
       defaultParams[param.identifier] = getDefaultValueForParam(param);
     });
     // 将默认参数转换为 JSON 字符串保存
@@ -376,7 +377,7 @@ watch(
             v-for="service in serviceList"
             :key="service.identifier"
             :label="service.name"
-            :value="service.identifier"
+            :value="service.identifier!"
           >
             <div class="flex items-center justify-between">
               <span>{{ service.name }}</span>

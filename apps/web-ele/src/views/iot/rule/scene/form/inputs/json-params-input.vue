@@ -305,7 +305,7 @@ function getParamTypeName(dataType: string) {
  * @returns 标签样式
  */
 function getParamTypeTag(dataType: string) {
-  const tagMap: Record<string, string> = {
+  const tagMap = {
     [IoTDataSpecsDataTypeEnum.INT]: 'primary',
     [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
     [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
@@ -315,8 +315,8 @@ function getParamTypeTag(dataType: string) {
     [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
     [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
     [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
-  };
-  return tagMap[dataType] || 'info';
+  } as const;
+  return tagMap[dataType as keyof typeof tagMap] || 'info';
 }
 
 /**

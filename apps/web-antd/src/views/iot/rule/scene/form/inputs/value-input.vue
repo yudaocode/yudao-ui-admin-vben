@@ -132,9 +132,9 @@ function handleDateChange(value: any) {
   localValue.value = value || '';
 }
 
-/** 处理数字变化事件 */
-function handleNumberChange(value: number | undefined) {
-  localValue.value = value?.toString() || '';
+/** 处理数字变化事件 ；InputNumber 回调值类型为 ValueType（string | number） */
+function handleNumberChange(value: any) {
+  localValue.value = value == null ? '' : String(value);
 }
 
 /** 监听操作符变化 */
