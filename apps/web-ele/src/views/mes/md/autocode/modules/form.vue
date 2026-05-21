@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IoTOtaFirmwareApi } from '#/api/iot/ota/firmware';
+import type { MesMdAutoCodeRuleApi } from '#/api/mes/md/autocode/rule';
 
 import { computed, ref } from 'vue';
 
@@ -9,22 +9,21 @@ import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createOtaFirmware,
-  getOtaFirmware,
-  updateOtaFirmware,
-} from '#/api/iot/ota/firmware';
+  createAutoCodeRule,
+  getAutoCodeRule,
+  updateAutoCodeRule,
+} from '#/api/mes/md/autocode/rule';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
+import PartList from './part-list.vue';
 
 const emit = defineEmits(['success']);
-
-const formData = ref<IoTOtaFirmwareApi.Firmware>();
-
+const formData = ref<MesMdAutoCodeRuleApi.AutoCodeRule>();
 const getTitle = computed(() => {
   return formData.value?.id
-    ? $t('ui.actionTitle.edit', ['固件'])
-    : $t('ui.actionTitle.create', ['固件']);
+    ? $t('ui.actionTitle.edit', ['编码规则'])
+    : $t('ui.actionTitle.create', ['编码规则']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -33,12 +32,21 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 120,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
+
+/** 清理未启用补齐时的补齐字段 */
+function normalizeRuleData(data: MesMdAutoCodeRuleApi.AutoCodeRule) {
+  if (!data.padded) {
+    data.paddedChar = undefined;
+    data.paddedMethod = undefined;
+  }
+  return data;
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -47,20 +55,13 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 提交表单：编辑态只提交 id / name / description，其它字段固定不变
-    const values = (await formApi.getValues()) as IoTOtaFirmwareApi.Firmware;
-    const data: IoTOtaFirmwareApi.Firmware = formData.value?.id
-      ? {
-          id: formData.value.id,
-          name: values.name,
-          description: values.description,
-        }
-      : values;
+    const data = normalizeRuleData(
+      (await formApi.getValues()) as MesMdAutoCodeRuleApi.AutoCodeRule,
+    );
     try {
       await (formData.value?.id
-        ? updateOtaFirmware(data)
-        : createOtaFirmware(data));
-      // 关闭并提示
+        ? updateAutoCodeRule(data)
+        : createAutoCodeRule(data));
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -73,15 +74,14 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    // 加载数据
-    const data = modalApi.getData<IoTOtaFirmwareApi.Firmware>();
-    if (!data || !data.id) {
+    await formApi.resetForm();
+    const data = modalApi.getData<MesMdAutoCodeRuleApi.AutoCodeRule>();
+    if (!data?.id) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getOtaFirmware(data.id);
-      // 设置到 values
+      formData.value = await getAutoCodeRule(data.id);
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -91,7 +91,12 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-1/3">
+  <Modal :title="getTitle" class="w-3/5">
     <Form class="mx-4" />
+    <template v-if="formData?.id">
+      <div class="mx-4 mt-4">
+        <PartList :rule-id="formData.id" />
+      </div>
+    </template>
   </Modal>
 </template>

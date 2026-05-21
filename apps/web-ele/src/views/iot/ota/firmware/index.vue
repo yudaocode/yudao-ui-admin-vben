@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { getProductName, useGridColumns, useGridFormSchema } from './data';
 import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
@@ -55,6 +55,11 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
 /** 查看固件详情 */
 function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
   push({ name: 'IoTOtaFirmwareDetail', params: { id: row.id } });
+}
+
+/** 跳转到产品详情 */
+function handleOpenProductDetail(productId: number) {
+  push({ name: 'IoTProductDetail', params: { id: productId } });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -104,6 +109,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+      <!-- 所属产品列：点击跳产品详情 -->
+      <template #productName="{ row }">
+        <a
+          v-if="row.productId"
+          class="cursor-pointer text-primary hover:underline"
+          @click="handleOpenProductDetail(row.productId)"
+        >
+          {{ getProductName(row.productId) }}
+        </a>
+        <span v-else class="text-gray-400">-</span>
       </template>
       <!-- 固件文件列 -->
       <template #fileUrl="{ row }">
