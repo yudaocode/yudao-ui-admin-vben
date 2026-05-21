@@ -17,8 +17,6 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-defineOptions({ name: 'MesMdUnitMeasureForm' });
-
 const emit = defineEmits(['success']);
 const formData = ref<MesMdUnitMeasureApi.UnitMeasure>();
 const getTitle = computed(() => {
