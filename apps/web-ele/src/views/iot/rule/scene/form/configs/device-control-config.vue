@@ -65,18 +65,12 @@ const paramsValue = computed({
 
 // 计算属性：是否为属性设置类型
 const isPropertySetAction = computed(() => {
-  return (
-    action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET
-  );
+  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_PROPERTY_SET;
 });
 
 // 计算属性：是否为服务调用类型
 const isServiceInvokeAction = computed(() => {
-  return (
-    action.value.type ===
-    IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE
-  );
+  return action.value.type === IotRuleSceneActionTypeEnum.DEVICE_SERVICE_INVOKE;
 });
 
 /**

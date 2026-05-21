@@ -426,7 +426,9 @@ watch(
                 调用类型：
               </span>
               <span class="text-12px flex-1 text-primary">
-                {{ getThingModelServiceCallTypeLabel(selectedProperty.callType) }}
+                {{
+                  getThingModelServiceCallTypeLabel(selectedProperty.callType)
+                }}
               </span>
             </div>
           </div>
