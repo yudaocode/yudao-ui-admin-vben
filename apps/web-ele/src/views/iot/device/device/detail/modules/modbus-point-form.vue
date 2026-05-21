@@ -77,9 +77,6 @@ function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择物模型属性',
         filterable: true,
-        filterMethod(input: string, option: any) {
-          return option.label.toLowerCase().includes(input.toLowerCase());
-        },
       },
       dependencies: {
         triggerFields: [''],

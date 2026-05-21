@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
         <Switch
           v-model:checked="autoRefresh"
           checked-children="定时刷新"
-          class="ml-20px"
+          class="ml-[20px]"
           un-checked-children="定时刷新"
         />
       </div>

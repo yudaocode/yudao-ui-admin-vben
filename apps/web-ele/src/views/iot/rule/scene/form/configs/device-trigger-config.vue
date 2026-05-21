@@ -93,23 +93,23 @@ function removeConditionGroup() {
 </script>
 
 <template>
-  <div class="gap-16px flex flex-col">
+  <div class="gap-[16px] flex flex-col">
     <!-- 主条件配置 - 默认直接展示 -->
-    <div class="space-y-16px">
+    <div class="space-y-[16px]">
       <!-- 主条件配置 -->
-      <div class="gap-16px flex flex-col">
+      <div class="gap-[16px] flex flex-col">
         <!-- 主条件配置 -->
-        <div class="space-y-16px">
+        <div class="space-y-[16px]">
           <!-- 主条件头部 - 与附加条件组保持一致的绿色风格 -->
           <div
-            class="p-16px rounded-8px flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
+            class="p-[16px] rounded-[8px] flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
           >
-            <div class="gap-12px flex items-center">
+            <div class="gap-[12px] flex items-center">
               <div
-                class="gap-8px text-16px font-600 flex items-center text-green-700"
+                class="gap-[8px] text-[16px] font-600 flex items-center text-green-700"
               >
                 <div
-                  class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
+                  class="w-[24px] h-[24px] text-[12px] flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
                 >
                   主
                 </div>
@@ -131,19 +131,19 @@ function removeConditionGroup() {
     </div>
 
     <!-- 条件组配置 -->
-    <div class="space-y-16px">
+    <div class="space-y-[16px]">
       <!-- 条件组配置 -->
-      <div class="gap-16px flex flex-col">
+      <div class="gap-[16px] flex flex-col">
         <!-- 条件组容器头部 -->
         <div
-          class="p-16px rounded-8px flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
+          class="p-[16px] rounded-[8px] flex items-center justify-between border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
         >
-          <div class="gap-12px flex items-center">
+          <div class="gap-[12px] flex items-center">
             <div
-              class="gap-8px text-16px font-600 flex items-center text-green-700"
+              class="gap-[8px] text-[16px] font-600 flex items-center text-green-700"
             >
               <div
-                class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
+                class="w-[24px] h-[24px] text-[12px] flex items-center justify-center rounded-full bg-green-500 font-bold text-white"
               >
                 组
               </div>
@@ -154,7 +154,7 @@ function removeConditionGroup() {
               {{ trigger.conditionGroups?.length || 0 }} 个子条件组
             </ElTag>
           </div>
-          <div class="gap-8px flex items-center">
+          <div class="gap-[8px] flex items-center">
             <ElButton
               type="primary"
               size="small"
@@ -174,7 +174,7 @@ function removeConditionGroup() {
         <!-- 子条件组列表 -->
         <div
           v-if="trigger.conditionGroups && trigger.conditionGroups.length > 0"
-          class="space-y-16px"
+          class="space-y-[16px]"
         >
           <!-- 逻辑关系说明 -->
           <div class="relative">
@@ -185,17 +185,17 @@ function removeConditionGroup() {
             >
               <!-- 子条件组容器 -->
               <div
-                class="rounded-8px border-2 border-orange-200 bg-orange-50 shadow-sm transition-shadow hover:shadow-md"
+                class="rounded-[8px] border-2 border-orange-200 bg-orange-50 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div
-                  class="p-16px rounded-t-6px flex items-center justify-between border-b border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50"
+                  class="p-[16px] rounded-t-6px flex items-center justify-between border-b border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50"
                 >
-                  <div class="gap-12px flex items-center">
+                  <div class="gap-[12px] flex items-center">
                     <div
-                      class="gap-8px text-16px font-600 flex items-center text-orange-700"
+                      class="gap-[8px] text-[16px] font-600 flex items-center text-orange-700"
                     >
                       <div
-                        class="w-24px h-24px text-12px flex items-center justify-center rounded-full bg-orange-500 font-bold text-white"
+                        class="w-[24px] h-[24px] text-[12px] flex items-center justify-center rounded-full bg-orange-500 font-bold text-white"
                       >
                         {{ subGroupIndex + 1 }}
                       </div>
@@ -233,19 +233,19 @@ function removeConditionGroup() {
               <!-- 子条件组间的'或'连接符 -->
               <div
                 v-if="subGroupIndex < trigger.conditionGroups!.length - 1"
-                class="py-12px flex items-center justify-center"
+                class="py-[12px] flex items-center justify-center"
               >
-                <div class="gap-8px flex items-center">
+                <div class="gap-[8px] flex items-center">
                   <!-- 连接线 -->
-                  <div class="w-32px h-1px bg-orange-300"></div>
+                  <div class="w-[32px] h-[1px] bg-orange-300"></div>
                   <!-- 或标签 -->
                   <div
-                    class="px-16px py-6px rounded-full border-2 border-orange-300 bg-orange-100"
+                    class="px-[16px] py-[6px] rounded-full border-2 border-orange-300 bg-orange-100"
                   >
-                    <span class="text-14px font-600 text-orange-600">或</span>
+                    <span class="text-[14px] font-600 text-orange-600">或</span>
                   </div>
                   <!-- 连接线 -->
-                  <div class="w-32px h-1px bg-orange-300"></div>
+                  <div class="w-[32px] h-[1px] bg-orange-300"></div>
                 </div>
               </div>
             </div>
@@ -255,13 +255,13 @@ function removeConditionGroup() {
         <!-- 空状态 -->
         <div
           v-else
-          class="p-24px rounded-8px border-2 border-dashed border-orange-200 bg-orange-50 text-center"
+          class="p-[24px] rounded-[8px] border-2 border-dashed border-orange-200 bg-orange-50 text-center"
         >
-          <div class="gap-12px flex flex-col items-center">
-            <IconifyIcon icon="lucide:plus" class="text-32px text-orange-400" />
+          <div class="gap-[12px] flex flex-col items-center">
+            <IconifyIcon icon="lucide:plus" class="text-[32px] text-orange-400" />
             <div class="text-orange-600">
-              <p class="text-14px font-500 mb-4px">暂无子条件组</p>
-              <p class="text-12px">点击上方"添加子条件组"按钮开始配置</p>
+              <p class="text-[14px] font-500 mb-[4px]">暂无子条件组</p>
+              <p class="text-[12px]">点击上方"添加子条件组"按钮开始配置</p>
             </div>
           </div>
         </div>

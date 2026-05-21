@@ -227,23 +227,25 @@ async function handlePropertyPost() {
 async function handleEventPost(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
-    let params: any = {};
+    let eventValue: any;
 
     if (valueStr) {
       try {
-        params = JSON.parse(valueStr);
+        eventValue = JSON.parse(valueStr);
       } catch {
         message.error('事件参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
 
+    // 与后端 IotDeviceEventPostReqDTO 对齐 ：{ identifier, value, time }
     await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.EVENT_POST.method,
       params: {
         identifier: row.identifier,
-        params,
+        value: eventValue,
+        time: Date.now(),
       },
     });
 
@@ -309,23 +311,24 @@ async function handlePropertySet() {
 async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
-    let params: any = {};
+    let inputParams: any = {};
 
     if (valueStr) {
       try {
-        params = JSON.parse(valueStr);
+        inputParams = JSON.parse(valueStr);
       } catch {
         message.error('服务参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
 
+    // 与后端 IotDeviceServiceInvokeReqDTO 对齐 ：{ identifier, inputParams }
     await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.SERVICE_INVOKE.method,
       params: {
         identifier: row.identifier,
-        params,
+        inputParams,
       },
     });
 

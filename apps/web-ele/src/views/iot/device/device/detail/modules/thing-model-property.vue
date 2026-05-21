@@ -287,7 +287,7 @@ onBeforeUnmount(() => {
         <ElSwitch
           v-model="autoRefresh"
           active-text="定时刷新"
-          class="ml-20px"
+          class="ml-[20px]"
           inactive-text="定时刷新"
         />
       </div>

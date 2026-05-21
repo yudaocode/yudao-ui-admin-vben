@@ -178,7 +178,7 @@ async function loadThingModelProperties(productId: number) {
           property.accessMode === IoTThingModelAccessModeEnum.WRITE_ONLY.value),
     );
   } catch (error) {
-    console.error('加载物模型属性失败:', error);
+    console.error('加载物模型属性失败 ：', error);
     thingModelProperties.value = [];
   } finally {
     loadingThingModel.value = false;
@@ -206,7 +206,7 @@ async function loadServiceList(productId: number) {
 
     serviceList.value = tslData.services;
   } catch (error) {
-    console.error('加载服务列表失败:', error);
+    console.error('加载服务列表失败 ：', error);
     serviceList.value = [];
   } finally {
     loadingServices.value = false;
@@ -339,7 +339,7 @@ watch(
 </script>
 
 <template>
-  <div class="gap-16px flex flex-col">
+  <div class="gap-[16px] flex flex-col">
     <!-- 产品和设备选择 - 与触发器保持一致的分离式选择器 -->
     <ElRow :gutter="16">
       <ElCol :span="12">
@@ -362,7 +362,7 @@ watch(
     </ElRow>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
-    <div v-if="action.productId && isServiceInvokeAction" class="space-y-16px">
+    <div v-if="action.productId && isServiceInvokeAction" class="space-y-[16px]">
       <ElFormItem label="服务" required>
         <ElSelect
           v-model="action.identifier"
@@ -393,7 +393,7 @@ watch(
       </ElFormItem>
 
       <!-- 服务参数配置 -->
-      <div v-if="action.identifier" class="space-y-16px">
+      <div v-if="action.identifier" class="space-y-[16px]">
         <ElFormItem label="服务参数" required>
           <JsonParamsInput
             v-model="paramsValue"
@@ -406,7 +406,7 @@ watch(
     </div>
 
     <!-- 控制参数配置 - 属性设置类型时显示 -->
-    <div v-if="action.productId && isPropertySetAction" class="space-y-16px">
+    <div v-if="action.productId && isPropertySetAction" class="space-y-[16px]">
       <!-- 参数配置 -->
       <ElFormItem label="参数" required>
         <JsonParamsInput

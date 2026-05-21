@@ -35,28 +35,28 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
 
 <template>
   <ElCard
-    class="rounded-8px mb-10px border border-[var(--el-border-color-light)]"
+    class="rounded-[8px] mb-[10px] border border-[var(--el-border-color-light)]"
     shadow="never"
   >
     <template #header>
       <div class="flex items-center justify-between">
-        <div class="gap-8px flex items-center">
+        <div class="gap-[8px] flex items-center">
           <IconifyIcon
             icon="ep:info-filled"
-            class="text-18px text-[var(--el-color-primary)]"
+            class="text-[18px] text-[var(--el-color-primary)]"
           />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+          <span class="text-[16px] font-600 text-[var(--el-text-color-primary)]">
             基础信息
           </span>
         </div>
-        <div class="gap-8px flex items-center">
+        <div class="gap-[8px] flex items-center">
           <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="formData.status" />
         </div>
       </div>
     </template>
 
     <div class="p-0">
-      <ElRow :gutter="24" class="mb-24px">
+      <ElRow :gutter="24" class="mb-[24px]">
         <ElCol :span="12">
           <ElFormItem label="场景名称" prop="name" required>
             <ElInput

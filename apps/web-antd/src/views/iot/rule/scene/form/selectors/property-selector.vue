@@ -117,7 +117,7 @@ async function loadThingModelTSL() {
     const tsl = await getThingModelTSLByProductId(props.productId);
     propertyList.value = parseThingModelData(tsl);
   } catch (error) {
-    console.error('获取物模型 TSL 失败：', error);
+    console.error('获取物模型 TSL 失败 ：', error);
     propertyList.value = [];
   } finally {
     loading.value = false;

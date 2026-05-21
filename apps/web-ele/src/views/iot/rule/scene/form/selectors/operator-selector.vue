@@ -250,18 +250,18 @@ watch(
         :label="operator.label"
         :value="operator.value"
       >
-        <div class="py-4px flex w-full items-center justify-between">
-          <div class="gap-8px flex items-center">
-            <div class="text-14px font-500 text-[var(--el-text-color-primary)]">
+        <div class="py-[4px] flex w-full items-center justify-between">
+          <div class="gap-[8px] flex items-center">
+            <div class="text-[14px] font-500 text-[var(--el-text-color-primary)]">
               {{ operator.label }}
             </div>
             <div
-              class="text-12px px-6px py-2px rounded-4px bg-[var(--el-color-primary-light-9)] font-mono text-[var(--el-color-primary)]"
+              class="text-[12px] px-[6px] py-[2px] rounded-[4px] bg-[var(--el-color-primary-light-9)] font-mono text-[var(--el-color-primary)]"
             >
               {{ operator.symbol }}
             </div>
           </div>
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
+          <div class="text-[12px] text-[var(--el-text-color-secondary)]">
             {{ operator.description }}
           </div>
         </div>

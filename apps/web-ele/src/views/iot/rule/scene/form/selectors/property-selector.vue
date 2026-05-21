@@ -144,11 +144,11 @@ async function fetchThingModelTSL() {
       thingModelTSL.value = tslData;
       parseThingModelData();
     } else {
-      console.error('获取物模型TSL失败: 返回数据为空');
+      console.error('获取物模型 TSL 失败 ：返回数据为空');
       propertyList.value = [];
     }
   } catch (error) {
-    console.error('获取物模型TSL失败:', error);
+    console.error('获取物模型 TSL 失败 ：', error);
     propertyList.value = [];
   } finally {
     loading.value = false;
@@ -280,14 +280,14 @@ watch(
 </script>
 
 <template>
-  <div class="gap-8px flex items-center">
+  <div class="gap-[8px] flex items-center">
     <ElSelect
       v-model="localValue"
       placeholder="请选择监控项"
       filterable
       clearable
       @change="handleChange"
-      class="!w-150px"
+      class="!w-[150px]"
       :loading="loading"
     >
       <ElOptionGroup
@@ -301,11 +301,11 @@ watch(
           :label="property.name"
           :value="property.identifier"
         >
-          <div class="py-2px flex w-full items-center justify-between">
-            <span class="text-14px font-500 flex-1 truncate text-[var(--el-text-color-primary)]">
+          <div class="py-[2px] flex w-full items-center justify-between">
+            <span class="text-[14px] font-500 flex-1 truncate text-[var(--el-text-color-primary)]">
               {{ property.name }}
             </span>
-            <ElTag size="small" class="ml-8px flex-shrink-0">
+            <ElTag size="small" class="ml-[8px] flex-shrink-0">
               {{ property.identifier }}
             </ElTag>
           </div>
@@ -338,9 +338,9 @@ watch(
       <template #default>
         <!-- 弹出层内容 -->
         <div class="property-detail-content">
-          <div class="gap-8px mb-12px flex items-center">
-            <IconifyIcon icon="ep:info-filled" class="text-16px text-[var(--el-color-info)]" />
-            <span class="text-14px font-500 text-[var(--el-text-color-primary)]">
+          <div class="gap-[8px] mb-[12px] flex items-center">
+            <IconifyIcon icon="ep:info-filled" class="text-[16px] text-[var(--el-color-info)]" />
+            <span class="text-[14px] font-500 text-[var(--el-text-color-primary)]">
               {{ selectedProperty.name }}
             </span>
             <ElTag size="small">
@@ -348,42 +348,42 @@ watch(
             </ElTag>
           </div>
 
-          <div class="space-y-8px ml-24px">
-            <div class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+          <div class="space-y-[8px] ml-[24px]">
+            <div class="gap-[8px] flex items-start">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 标识符：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.identifier }}
               </span>
             </div>
 
             <div
               v-if="selectedProperty.description"
-              class="gap-8px flex items-start"
+              class="gap-[8px] flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 描述：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.description }}
               </span>
             </div>
 
-            <div v-if="selectedProperty.unit" class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+            <div v-if="selectedProperty.unit" class="gap-[8px] flex items-start">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 单位：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.unit }}
               </span>
             </div>
 
-            <div v-if="selectedProperty.range" class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+            <div v-if="selectedProperty.range" class="gap-[8px] flex items-start">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 取值范围：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.range }}
               </span>
             </div>
@@ -394,12 +394,12 @@ watch(
                 selectedProperty.type === IoTThingModelTypeEnum.PROPERTY &&
                 selectedProperty.accessMode
               "
-              class="gap-8px flex items-start"
+              class="gap-[8px] flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 访问模式：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ getAccessModeLabel(selectedProperty.accessMode) }}
               </span>
             </div>
@@ -409,12 +409,12 @@ watch(
                 selectedProperty.type === IoTThingModelTypeEnum.EVENT &&
                 selectedProperty.eventType
               "
-              class="gap-8px flex items-start"
+              class="gap-[8px] flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 事件类型：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{ getEventTypeLabel(selectedProperty.eventType) }}
               </span>
             </div>
@@ -424,12 +424,12 @@ watch(
                 selectedProperty.type === IoTThingModelTypeEnum.SERVICE &&
                 selectedProperty.callType
               "
-              class="gap-8px flex items-start"
+              class="gap-[8px] flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
+              <span class="text-[12px] min-w-[60px] flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 调用类型：
               </span>
-              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
+              <span class="text-[12px] flex-1 text-[var(--el-text-color-primary)]">
                 {{
                   getThingModelServiceCallTypeLabel(selectedProperty.callType)
                 }}

@@ -156,7 +156,7 @@ function handleOperatorChange() {
 </script>
 
 <template>
-  <div class="gap-16px flex flex-col">
+  <div class="gap-[16px] flex flex-col">
     <!-- 条件类型选择 -->
     <ElRow :gutter="16">
       <ElCol :span="8">
@@ -213,7 +213,7 @@ function handleOperatorChange() {
       v-if="
         condition.type === IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS
       "
-      class="gap-16px flex flex-col"
+      class="gap-[16px] flex flex-col"
     >
       <!-- 状态和操作符选择 -->
       <ElRow :gutter="16">
@@ -266,7 +266,7 @@ function handleOperatorChange() {
       v-else-if="
         condition.type === IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY
       "
-      class="space-y-16px"
+      class="space-y-[16px]"
     >
       <!-- 属性配置 -->
       <ElRow :gutter="16">

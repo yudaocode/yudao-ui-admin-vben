@@ -49,7 +49,7 @@ async function getDeviceList() {
     const data = await getDeviceListByProductId(props.productId);
     deviceList.value = data || [];
   } catch (error) {
-    console.error('获取设备列表失败:', error);
+    console.error('获取设备列表失败 ：', error);
     deviceList.value = [];
   } finally {
     deviceList.value.unshift(DEVICE_SELECTOR_OPTIONS.ALL_DEVICES);
@@ -93,18 +93,18 @@ watch(
       :label="device.deviceName"
       :value="device.id"
     >
-      <div class="py-4px flex w-full items-center justify-between">
+      <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
           <div
-            class="text-14px font-500 mb-2px text-[var(--el-text-color-primary)]"
+            class="text-[14px] font-500 mb-[2px] text-[var(--el-text-color-primary)]"
           >
             {{ device.deviceName }}
           </div>
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
+          <div class="text-[12px] text-[var(--el-text-color-secondary)]">
             {{ device.deviceKey }}
           </div>
         </div>
-        <div class="gap-4px flex items-center" v-if="device.id > 0">
+        <div class="gap-[4px] flex items-center" v-if="device.id > 0">
           <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
         </div>
       </div>

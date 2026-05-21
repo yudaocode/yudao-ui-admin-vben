@@ -212,7 +212,7 @@ onMounted(() => {
               <Button
                 v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
-                class="!h-8 flex-1 rounded-md !border-[#1890ff] !text-[13px] !text-[#1890ff] transition-all duration-200 hover:!bg-[#1890ff] hover:!text-white"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#1890ff] !text-[13px] !text-[#1890ff] transition-all duration-200 hover:!bg-[#1890ff] hover:!text-white"
                 @click="emit('edit', item)"
               >
                 <IconifyIcon icon="lucide:edit" class="mr-1" />
@@ -221,7 +221,7 @@ onMounted(() => {
               <Button
                 v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
-                class="!h-8 flex-1 rounded-md !border-[#52c41a] !text-[13px] !text-[#52c41a] transition-all duration-200 hover:!bg-[#52c41a] hover:!text-white"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#52c41a] !text-[13px] !text-[#52c41a] transition-all duration-200 hover:!bg-[#52c41a] hover:!text-white"
                 @click="emit('detail', item.id!)"
               >
                 <IconifyIcon icon="lucide:eye" class="mr-1" />
@@ -230,7 +230,7 @@ onMounted(() => {
               <Button
                 v-if="hasAccessByCodes(['iot:device:message-query'])"
                 size="small"
-                class="!h-8 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
                 @click="emit('model', item.id!)"
               >
                 <IconifyIcon icon="lucide:database" class="mr-1" />

@@ -157,24 +157,24 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
 
 <template>
   <ElCard
-    class="rounded-8px border border-[var(--el-border-color-light)]"
+    class="rounded-[8px] border border-[var(--el-border-color-light)]"
     shadow="never"
   >
     <template #header>
       <div class="flex items-center justify-between">
-        <div class="gap-8px flex items-center">
+        <div class="gap-[8px] flex items-center">
           <IconifyIcon
             icon="ep:setting"
-            class="text-18px text-[var(--el-color-primary)]"
+            class="text-[18px] text-[var(--el-color-primary)]"
           />
-          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+          <span class="text-[16px] font-600 text-[var(--el-text-color-primary)]">
             执行器配置
           </span>
           <ElTag size="small" type="info">
             {{ actions.length }} 个执行器
           </ElTag>
         </div>
-        <div class="gap-8px flex items-center">
+        <div class="gap-[8px] flex items-center">
           <ElButton type="primary" size="small" @click="addAction">
             <IconifyIcon icon="ep:plus" />
             添加执行器
@@ -195,7 +195,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
       </div>
 
       <!-- 执行器列表 -->
-      <div v-else class="space-y-24px">
+      <div v-else class="space-y-[24px]">
         <div
           v-for="(action, index) in actions"
           :key="`action-${index}`"
@@ -205,7 +205,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
           <div
             class="flex items-center justify-between rounded-t-lg border-b border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50 p-4"
           >
-            <div class="gap-12px flex items-center">
+            <div class="gap-[12px] flex items-center">
               <div
                 class="font-600 flex items-center gap-2 text-base text-blue-700"
               >
@@ -224,7 +224,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
                 {{ getActionTypeLabel(action.type as number) }}
               </ElTag>
             </div>
-            <div class="gap-8px flex items-center">
+            <div class="gap-[8px] flex items-center">
               <ElButton
                 v-if="actions.length > 1"
                 type="danger"
@@ -240,12 +240,12 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
           </div>
 
           <!-- 执行器内容区域 -->
-          <div class="p-16px space-y-16px">
+          <div class="p-[16px] space-y-[16px]">
             <!-- 执行类型选择 -->
             <div class="w-full">
               <ElFormItem label="执行类型" required>
                 <ElSelect
-                  v-model="action.type"
+                  :model-value="action.type"
                   @change="(value: any) => updateActionType(index, value)"
                   placeholder="请选择执行类型"
                   class="w-full"
@@ -279,7 +279,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
             <!-- 触发告警提示 - 触发告警时显示 -->
             <div
               v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER"
-              class="rounded-6px border border-[var(--el-border-color-light)] bg-[var(--el-fill-color-blank)] p-4"
+              class="rounded-[6px] border border-[var(--el-border-color-light)] bg-[var(--el-fill-color-blank)] p-4"
             >
               <div class="mb-2 flex items-center gap-2">
                 <IconifyIcon
@@ -301,7 +301,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
       </div>
 
       <!-- 添加提示 -->
-      <div v-if="actions.length > 0" class="py-16px text-center">
+      <div v-if="actions.length > 0" class="py-[16px] text-center">
         <ElButton type="primary" plain @click="addAction">
           <IconifyIcon icon="ep:plus" />
           继续添加执行器

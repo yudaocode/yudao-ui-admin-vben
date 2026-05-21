@@ -45,7 +45,7 @@ async function getDeviceList() {
     const data = await getDeviceListByProductId(props.productId);
     deviceList.value = [DEVICE_SELECTOR_OPTIONS.ALL_DEVICES, ...(data || [])];
   } catch (error) {
-    console.error('获取设备列表失败:', error);
+    console.error('获取设备列表失败 ：', error);
     deviceList.value = [DEVICE_SELECTOR_OPTIONS.ALL_DEVICES];
   } finally {
     deviceLoading.value = false;

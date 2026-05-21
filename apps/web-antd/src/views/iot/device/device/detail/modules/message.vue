@@ -206,7 +206,7 @@ defineExpose({
       </Select>
       <Space>
         <Button type="primary" @click="handleQuery">
-          <IconifyIcon icon="ep:search" class="mr-5px" /> 搜索
+          <IconifyIcon icon="ep:search" class="mr-[5px]" /> 搜索
         </Button>
         <Switch
           v-model:checked="autoRefresh"

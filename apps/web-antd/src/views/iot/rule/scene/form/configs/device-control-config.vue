@@ -165,7 +165,7 @@ async function loadThingModelProperties(productId: number) {
           property.accessMode === IoTThingModelAccessModeEnum.WRITE_ONLY.value),
     );
   } catch (error) {
-    console.error('加载物模型属性失败:', error);
+    console.error('加载物模型属性失败 ：', error);
     thingModelProperties.value = [];
   } finally {
     loadingThingModel.value = false;
@@ -193,7 +193,7 @@ async function loadServiceList(productId: number) {
 
     serviceList.value = tslData.services;
   } catch (error) {
-    console.error('加载服务列表失败:', error);
+    console.error('加载服务列表失败 ：', error);
     serviceList.value = [];
   } finally {
     loadingServices.value = false;

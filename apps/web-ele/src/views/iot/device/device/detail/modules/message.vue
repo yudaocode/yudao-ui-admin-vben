@@ -210,7 +210,7 @@ defineExpose({
       </ElSelect>
       <div class="flex gap-1">
         <ElButton type="primary" @click="handleQuery">
-          <IconifyIcon icon="ep:search" class="mr-5px" /> 搜索
+          <IconifyIcon icon="ep:search" class="mr-[5px]" /> 搜索
         </ElButton>
         <ElSwitch
           v-model="autoRefresh"

@@ -110,7 +110,7 @@ function updateCondition(
       >
         <!-- 条件配置 -->
         <div
-          class="rounded-3px bg-fill-color-blank border border-border shadow-sm"
+          class="rounded-[3px] bg-fill-color-blank border border-border shadow-sm"
         >
           <div
             class="rounded-t-1 bg-fill-color-blank flex items-center justify-between border-b border-border p-3"
