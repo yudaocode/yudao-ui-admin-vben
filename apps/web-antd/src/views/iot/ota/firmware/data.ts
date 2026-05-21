@@ -12,6 +12,14 @@ import { getRangePickerDefaultProps } from '#/utils';
 let productList: IotProductApi.Product[] = [];
 getSimpleProductList().then((data) => (productList = data));
 
+/** 根据产品 ID 取产品名称 */
+export function getProductName(productId?: number): string {
+  if (!productId) {
+    return '-';
+  }
+  return productList.find((p) => p.id === productId)?.name || '-';
+}
+
 /** 固件详情的描述字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
@@ -58,6 +66,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
     {
       fieldName: 'version',
@@ -67,6 +79,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入版本号',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
     {
       fieldName: 'description',
@@ -88,6 +104,10 @@ export function useFormSchema(): VbenFormSchema[] {
         helpText: '支持上传 .bin、.hex、.zip 格式的固件文件，最大 50MB',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
   ];
 }
@@ -131,7 +151,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '固件编号',
@@ -156,8 +175,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'productId',
       title: '所属产品',
       minWidth: 150,
-      formatter: ({ cellValue }) =>
-        productList.find((p) => p.id === cellValue)?.name || '-',
+      slots: { default: 'productName' },
     },
     {
       field: 'fileUrl',

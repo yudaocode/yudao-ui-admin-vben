@@ -47,8 +47,15 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 提交表单
-    const data = (await formApi.getValues()) as IoTOtaFirmwareApi.Firmware;
+    // 提交表单：编辑态只提交 id / name / description，其它字段固定不变
+    const values = (await formApi.getValues()) as IoTOtaFirmwareApi.Firmware;
+    const data: IoTOtaFirmwareApi.Firmware = formData.value?.id
+      ? {
+          id: formData.value.id,
+          name: values.name,
+          description: values.description,
+        }
+      : values;
     try {
       await (formData.value?.id
         ? updateOtaFirmware(data)
