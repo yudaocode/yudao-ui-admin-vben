@@ -35,7 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'level',
+      fieldName: 'configLevel',
       label: '告警级别',
       component: 'Select',
       componentProps: {
