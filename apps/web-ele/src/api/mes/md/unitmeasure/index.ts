@@ -5,14 +5,15 @@ import { requestClient } from '#/api/request';
 export namespace MesMdUnitMeasureApi {
   /** MES 计量单位 */
   export interface UnitMeasure {
-    id: number;
-    code?: string;
-    name?: string;
-    primaryFlag?: boolean;
-    primaryId?: number;
-    changeRate?: number;
-    status?: number;
-    remark?: string;
+    id?: number; // 单位编号
+    code?: string; // 单位编码
+    name?: string; // 单位名称
+    primaryFlag?: boolean; // 是否主单位
+    primaryId?: number; // 主单位编号
+    changeRate?: number; // 与主单位换算比例
+    status?: number; // 状态
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
   }
 }
 
@@ -54,6 +55,6 @@ export function deleteUnitMeasure(id: number) {
 }
 
 /** 导出计量单位 */
-export function exportUnitMeasure(params: any) {
+export function exportUnitMeasure(params: PageParam) {
   return requestClient.download('/mes/md/unit-measure/export-excel', { params });
 }

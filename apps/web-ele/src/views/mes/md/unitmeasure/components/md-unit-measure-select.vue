@@ -29,17 +29,18 @@ const emit = defineEmits<{
   'update:modelValue': [value: number | undefined];
 }>();
 
-const allList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]);
-const filteredList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]);
-const selectedItem = ref<MesMdUnitMeasureApi.UnitMeasure>();
+const allList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]); // 计量单位列表
+const filteredList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]); // 过滤后的计量单位列表
+const selectedItem = ref<MesMdUnitMeasureApi.UnitMeasure>(); // 当前选中计量单位
 
-const selectValue = computed({
+const selectValue = computed({ // 选择器绑定值
   get: () => props.modelValue,
   set: (value: number | undefined) => {
     emit('update:modelValue', value);
   },
 });
 
+/** 前端按名称和编码过滤计量单位 */
 function handleFilter(query: string) {
   if (!query) {
     filteredList.value = allList.value;
@@ -107,7 +108,7 @@ onMounted(async () => {
         v-for="item in filteredList"
         :key="item.id"
         :label="item.name"
-        :value="item.id"
+        :value="item.id!"
       >
         <div class="flex items-center gap-2">
           <span>{{ item.name }}</span>
