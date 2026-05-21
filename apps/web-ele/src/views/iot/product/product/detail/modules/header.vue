@@ -13,7 +13,7 @@ import {
   ElDescriptions,
   ElDescriptionsItem,
   ElMessage,
-  ElMessageBox,
+  ElPopconfirm,
 } from 'element-plus';
 
 import {
@@ -69,7 +69,6 @@ function openEditForm(row: IotProductApi.Product) {
 
 /** 发布产品 */
 async function handlePublish(product: IotProductApi.Product) {
-  await ElMessageBox.confirm(`确认要发布产品「${product.name}」吗？`, '确认发布');
   await updateProductStatus(product.id!, ProductStatusEnum.PUBLISHED);
   ElMessage.success('发布成功');
   emit('refresh');
@@ -77,10 +76,6 @@ async function handlePublish(product: IotProductApi.Product) {
 
 /** 撤销发布 */
 async function handleUnpublish(product: IotProductApi.Product) {
-  await ElMessageBox.confirm(
-    `确认要撤销发布产品「${product.name}」吗？`,
-    '确认撤销发布',
-  );
   await updateProductStatus(product.id!, ProductStatusEnum.UNPUBLISHED);
   ElMessage.success('撤销发布成功');
   emit('refresh');
@@ -88,10 +83,6 @@ async function handleUnpublish(product: IotProductApi.Product) {
 
 /** 同步物模型超级表结构 */
 async function handleSyncPropertyTable(product: IotProductApi.Product) {
-  await ElMessageBox.confirm(
-    `确认要同步产品「${product.name}」的物模型超级表结构吗？`,
-    '确认同步',
-  );
   await syncProductPropertyTable(product.id!);
   ElMessage.success('同步成功');
 }
@@ -113,32 +104,39 @@ async function handleSyncPropertyTable(product: IotProductApi.Product) {
         >
           编辑
         </ElButton>
-        <ElButton
+        <ElPopconfirm
           v-if="
             product.status === ProductStatusEnum.UNPUBLISHED &&
             hasAccessByCodes(['iot:product:update'])
           "
-          type="primary"
-          @click="handlePublish(product)"
+          :title="`确认要发布产品「${product.name}」吗？`"
+          @confirm="handlePublish(product)"
         >
-          发布
-        </ElButton>
-        <ElButton
+          <template #reference>
+            <ElButton type="primary">发布</ElButton>
+          </template>
+        </ElPopconfirm>
+        <ElPopconfirm
           v-if="
             product.status === ProductStatusEnum.PUBLISHED &&
             hasAccessByCodes(['iot:product:update'])
           "
-          type="danger"
-          @click="handleUnpublish(product)"
+          :title="`确认要撤销发布产品「${product.name}」吗？`"
+          @confirm="handleUnpublish(product)"
         >
-          撤销发布
-        </ElButton>
-        <ElButton
+          <template #reference>
+            <ElButton type="danger">撤销发布</ElButton>
+          </template>
+        </ElPopconfirm>
+        <ElPopconfirm
           v-if="hasAccessByCodes(['iot:product:update'])"
-          @click="handleSyncPropertyTable(product)"
+          :title="`确认要同步产品「${product.name}」的物模型超级表结构吗？`"
+          @confirm="handleSyncPropertyTable(product)"
         >
-          同步物模型表结构
-        </ElButton>
+          <template #reference>
+            <ElButton>同步物模型表结构</ElButton>
+          </template>
+        </ElPopconfirm>
       </div>
     </div>
 

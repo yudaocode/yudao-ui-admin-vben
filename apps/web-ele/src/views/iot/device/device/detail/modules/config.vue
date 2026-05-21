@@ -6,7 +6,13 @@ import { computed, ref, watchEffect } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 
-import { ElAlert, ElButton, ElInput, ElMessage } from 'element-plus';
+import {
+  ElAlert,
+  ElButton,
+  ElInput,
+  ElMessage,
+  ElPopconfirm,
+} from 'element-plus';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
 
@@ -162,14 +168,17 @@ async function updateDeviceConfig() {
         保存
       </ElButton>
       <ElButton v-else @click="handleEdit">编辑</ElButton>
-      <ElButton
+      <ElPopconfirm
         v-if="!isEditing"
-        :loading="pushLoading"
-        type="primary"
-        @click="handleConfigPush"
+        title="确定要推送配置到设备吗？此操作将远程更新设备配置。"
+        @confirm="handleConfigPush"
       >
-        配置推送
-      </ElButton>
+        <template #reference>
+          <ElButton :loading="pushLoading" type="primary">
+            配置推送
+          </ElButton>
+        </template>
+      </ElPopconfirm>
     </div>
   </div>
 </template>

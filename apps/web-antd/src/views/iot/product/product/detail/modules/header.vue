@@ -7,7 +7,13 @@ import { useAccess } from '@vben/access';
 import { useVbenModal } from '@vben/common-ui';
 import { ProductStatusEnum } from '@vben/constants';
 
-import { Button, Card, Descriptions, message, Modal } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Descriptions,
+  message,
+  Popconfirm,
+} from 'ant-design-vue';
 
 import {
   syncProductPropertyTable,
@@ -61,41 +67,23 @@ function openEditForm(row: IotProductApi.Product) {
 }
 
 /** 发布产品 */
-function handlePublish(product: IotProductApi.Product) {
-  Modal.confirm({
-    title: '确认发布',
-    content: `确认要发布产品「${product.name}」吗？`,
-    async onOk() {
-      await updateProductStatus(product.id!, ProductStatusEnum.PUBLISHED);
-      message.success('发布成功');
-      emit('refresh');
-    },
-  });
+async function handlePublish(product: IotProductApi.Product) {
+  await updateProductStatus(product.id!, ProductStatusEnum.PUBLISHED);
+  message.success('发布成功');
+  emit('refresh');
 }
 
 /** 撤销发布 */
-function handleUnpublish(product: IotProductApi.Product) {
-  Modal.confirm({
-    title: '确认撤销发布',
-    content: `确认要撤销发布产品「${product.name}」吗？`,
-    async onOk() {
-      await updateProductStatus(product.id!, ProductStatusEnum.UNPUBLISHED);
-      message.success('撤销发布成功');
-      emit('refresh');
-    },
-  });
+async function handleUnpublish(product: IotProductApi.Product) {
+  await updateProductStatus(product.id!, ProductStatusEnum.UNPUBLISHED);
+  message.success('撤销发布成功');
+  emit('refresh');
 }
 
 /** 同步物模型超级表结构 */
-function handleSyncPropertyTable(product: IotProductApi.Product) {
-  Modal.confirm({
-    title: '确认同步',
-    content: `确认要同步产品「${product.name}」的物模型超级表结构吗？`,
-    async onOk() {
-      await syncProductPropertyTable(product.id!);
-      message.success('同步成功');
-    },
-  });
+async function handleSyncPropertyTable(product: IotProductApi.Product) {
+  await syncProductPropertyTable(product.id!);
+  message.success('同步成功');
 }
 </script>
 
@@ -115,32 +103,33 @@ function handleSyncPropertyTable(product: IotProductApi.Product) {
         >
           编辑
         </Button>
-        <Button
+        <Popconfirm
           v-if="
             product.status === ProductStatusEnum.UNPUBLISHED &&
             hasAccessByCodes(['iot:product:update'])
           "
-          type="primary"
-          @click="handlePublish(product)"
+          :title="`确认要发布产品「${product.name}」吗？`"
+          @confirm="handlePublish(product)"
         >
-          发布
-        </Button>
-        <Button
+          <Button type="primary">发布</Button>
+        </Popconfirm>
+        <Popconfirm
           v-if="
             product.status === ProductStatusEnum.PUBLISHED &&
             hasAccessByCodes(['iot:product:update'])
           "
-          danger
-          @click="handleUnpublish(product)"
+          :title="`确认要撤销发布产品「${product.name}」吗？`"
+          @confirm="handleUnpublish(product)"
         >
-          撤销发布
-        </Button>
-        <Button
+          <Button danger>撤销发布</Button>
+        </Popconfirm>
+        <Popconfirm
           v-if="hasAccessByCodes(['iot:product:update'])"
-          @click="handleSyncPropertyTable(product)"
+          :title="`确认要同步产品「${product.name}」的物模型超级表结构吗？`"
+          @confirm="handleSyncPropertyTable(product)"
         >
-          同步物模型表结构
-        </Button>
+          <Button>同步物模型表结构</Button>
+        </Popconfirm>
       </div>
     </div>
 

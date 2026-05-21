@@ -6,7 +6,7 @@ import { computed, ref, watchEffect } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 
-import { Alert, Button, message, Textarea } from 'ant-design-vue';
+import { Alert, Button, message, Popconfirm, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
 
@@ -160,14 +160,13 @@ async function updateDeviceConfig() {
         保存
       </Button>
       <Button v-else @click="handleEdit">编辑</Button>
-      <Button
+      <Popconfirm
         v-if="!isEditing"
-        :loading="pushLoading"
-        type="primary"
-        @click="handleConfigPush"
+        title="确定要推送配置到设备吗？此操作将远程更新设备配置。"
+        @confirm="handleConfigPush"
       >
-        配置推送
-      </Button>
+        <Button :loading="pushLoading" type="primary"> 配置推送 </Button>
+      </Popconfirm>
     </div>
   </div>
 </template>

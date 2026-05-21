@@ -372,7 +372,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 row.status === CommonStatusEnum.ENABLE
                   ? 'ant-design:stop-outlined'
                   : 'ant-design:check-circle-outlined',
-              onClick: handleToggleStatus.bind(null, row),
+              popConfirm: {
+                title: `确认${row.status === CommonStatusEnum.ENABLE ? '停用' : '启用'}场景规则「${row.name}」吗？`,
+                confirm: handleToggleStatus.bind(null, row),
+              },
             },
             {
               label: $t('common.edit'),

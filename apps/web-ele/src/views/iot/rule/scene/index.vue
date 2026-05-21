@@ -15,7 +15,15 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { CronUtils, formatDateTime } from '@vben/utils';
 
-import { ElCard, ElCol, ElLoading, ElMessage, ElRow, ElTag, ElTooltip } from 'element-plus';
+import {
+  ElCard,
+  ElCol,
+  ElLoading,
+  ElMessage,
+  ElRow,
+  ElTag,
+  ElTooltip,
+} from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -368,7 +376,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 row.status === CommonStatusEnum.ENABLE
                   ? 'ant-design:stop-outlined'
                   : 'ant-design:check-circle-outlined',
-              onClick: handleToggleStatus.bind(null, row),
+              popConfirm: {
+                title: `确认${row.status === CommonStatusEnum.ENABLE ? '停用' : '启用'}场景规则「${row.name}」吗？`,
+                confirm: handleToggleStatus.bind(null, row),
+              },
             },
             {
               label: $t('common.edit'),
