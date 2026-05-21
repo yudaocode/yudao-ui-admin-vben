@@ -156,12 +156,20 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
 </script>
 
 <template>
-  <ElCard class="rounded-lg border border-primary" shadow="never">
+  <ElCard
+    class="rounded-8px border border-[var(--el-border-color-light)]"
+    shadow="never"
+  >
     <template #header>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <IconifyIcon icon="ep:setting" class="text-18px text-primary" />
-          <span class="text-16px font-600 text-primary"> 执行器配置 </span>
+          <IconifyIcon
+            icon="ep:setting"
+            class="text-18px text-[var(--el-color-primary)]"
+          />
+          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+            执行器配置
+          </span>
           <ElTag size="small" type="info">
             {{ actions.length }} 个执行器
           </ElTag>
@@ -271,14 +279,19 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
             <!-- 触发告警提示 - 触发告警时显示 -->
             <div
               v-if="action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER"
-              class="bg-fill-color-blank rounded-lg border border-border p-4"
+              class="rounded-6px border border-[var(--el-border-color-light)] bg-[var(--el-fill-color-blank)] p-4"
             >
               <div class="mb-2 flex items-center gap-2">
-                <IconifyIcon icon="ep:warning" class="text-base text-warning" />
-                <span class="font-600 text-sm text-primary">触发告警</span>
+                <IconifyIcon
+                  icon="ep:warning"
+                  class="text-base text-[var(--el-color-warning)]"
+                />
+                <span class="font-600 text-sm text-[var(--el-text-color-primary)]">
+                  触发告警
+                </span>
                 <ElTag size="small" type="warning">自动执行</ElTag>
               </div>
-              <div class="text-xs leading-relaxed text-secondary">
+              <div class="text-xs leading-relaxed text-[var(--el-text-color-secondary)]">
                 当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
                 告警配置] 管理。
               </div>

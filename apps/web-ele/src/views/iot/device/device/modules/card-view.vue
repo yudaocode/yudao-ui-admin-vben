@@ -150,7 +150,7 @@ onMounted(() => {
                     所属产品
                   </span>
                   <a
-                    class="cursor-pointer truncate font-medium text-primary"
+                    class="cursor-pointer truncate font-medium text-[var(--el-color-primary)]"
                     @click="
                       (e) => {
                         e.stopPropagation();

@@ -365,10 +365,10 @@ function handlePropertyChange(propertyInfo: any) {
 
     <!-- 其他触发类型的提示 -->
     <div v-else class="py-5 text-center">
-      <p class="mb-1 text-sm text-secondary">
+      <p class="mb-1 text-sm text-[var(--el-text-color-secondary)]">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-secondary">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-[var(--el-text-color-secondary)]">此触发类型暂不需要配置额外条件</p>
     </div>
   </div>
 </template>

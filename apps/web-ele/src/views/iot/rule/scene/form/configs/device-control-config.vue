@@ -115,7 +115,9 @@ function handleDeviceChange(deviceId?: number) {
 function handleServiceChange(serviceIdentifier?: any) {
   // 根据服务标识符找到对应的服务对象
   const service =
-    serviceList.value.find((s) => s.identifier === serviceIdentifier) || null;
+    serviceList.value.find(
+      (item) => item.identifier === serviceIdentifier,
+    ) || null;
   selectedService.value = service;
 
   // 当服务变化时，清空参数配置

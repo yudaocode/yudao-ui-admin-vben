@@ -434,7 +434,10 @@ onMounted(async () => {
           class="cursor-pointer text-primary"
           @click="openProductDetail(row.productId)"
         >
-          {{ products.find((p) => p.id === row.productId)?.name || '-' }}
+          {{
+            products.find((product) => product.id === row.productId)?.name ||
+            '-'
+          }}
         </a>
       </template>
       <template #groups="{ row }">
@@ -445,7 +448,7 @@ onMounted(async () => {
             size="small"
             class="mr-1"
           >
-            {{ deviceGroups.find((g) => g.id === groupId)?.name }}
+            {{ deviceGroups.find((group) => group.id === groupId)?.name }}
           </Tag>
         </template>
         <span v-else>-</span>

@@ -47,7 +47,12 @@ onMounted(() => {
 <template>
   <Select
     :value="modelValue"
-    :options="productList.map((p) => ({ label: p.name, value: p.id }))"
+    :options="
+      productList.map((product) => ({
+        label: product.name,
+        value: product.id,
+      }))
+    "
     :loading="loading"
     placeholder="请选择产品"
     allow-clear

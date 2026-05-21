@@ -91,12 +91,16 @@ const propertyGroups = computed(() => {
 
 /** 当前选中的属性 */
 const selectedProperty = computed(() =>
-  propertyList.value.find((p) => p.identifier === localValue.value),
+  propertyList.value.find(
+    (property) => property.identifier === localValue.value,
+  ),
 );
 
 /** 处理选择变化事件 */
 function handleChange(value: any) {
-  const property = propertyList.value.find((p) => p.identifier === value);
+  const property = propertyList.value.find(
+    (item) => item.identifier === value,
+  );
   if (property) {
     emit('change', { type: property.dataType, config: property });
   }

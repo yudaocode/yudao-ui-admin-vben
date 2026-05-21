@@ -114,7 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #productName="{ row }">
         <a
           v-if="row.productId"
-          class="cursor-pointer text-primary hover:underline"
+          class="cursor-pointer text-[var(--el-color-primary)] hover:underline"
           @click="handleOpenProductDetail(row.productId)"
         >
           {{ getProductName(row.productId) }}
@@ -129,13 +129,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
         >
           <IconifyIcon
             icon="ant-design:download-outlined"
-            class="shrink-0 align-middle text-base text-primary"
+            class="shrink-0 align-middle text-base text-[var(--el-color-primary)]"
           />
           <a
             :href="row.fileUrl"
             target="_blank"
             download
-            class="cursor-pointer align-middle text-primary hover:underline"
+            class="cursor-pointer align-middle text-[var(--el-color-primary)] hover:underline"
           >
             下载固件
           </a>

@@ -450,8 +450,11 @@ watch(
             <!-- 弹出层内容 -->
             <div class="json-params-detail-content">
               <div class="mb-4 flex items-center gap-2">
-                <IconifyIcon :icon="titleIcon" class="text-lg text-primary" />
-                <span class="text-base font-bold text-primary">
+                <IconifyIcon
+                  :icon="titleIcon"
+                  class="text-lg text-[var(--el-color-primary)]"
+                />
+                <span class="text-base font-bold text-[var(--el-text-color-primary)]">
                   {{ title }}
                 </span>
               </div>
@@ -462,9 +465,9 @@ watch(
                   <div class="mb-2 flex items-center gap-2">
                     <IconifyIcon
                       :icon="paramsIcon"
-                      class="text-base text-primary"
+                      class="text-base text-[var(--el-color-primary)]"
                     />
-                    <span class="text-base font-bold text-primary">
+                    <span class="text-base font-bold text-[var(--el-text-color-primary)]">
                       {{ paramsLabel }}
                     </span>
                   </div>
@@ -475,7 +478,7 @@ watch(
                       class="flex items-center justify-between rounded-lg bg-card p-2"
                     >
                       <div class="flex-1">
-                        <div class="text-base font-bold text-primary">
+                        <div class="text-base font-bold text-[var(--el-text-color-primary)]">
                           {{ param.name }}
                           <ElTag
                             v-if="param.required"
@@ -486,7 +489,7 @@ watch(
                             {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
                           </ElTag>
                         </div>
-                        <div class="text-xs text-secondary">
+                        <div class="text-xs text-[var(--el-text-color-secondary)]">
                           {{ param.identifier }}
                         </div>
                       </div>
@@ -494,7 +497,7 @@ watch(
                         <ElTag :type="getParamTypeTag(param.dataType)" size="small">
                           {{ getParamTypeName(param.dataType) }}
                         </ElTag>
-                        <span class="text-xs text-secondary">
+                        <span class="text-xs text-[var(--el-text-color-secondary)]">
                           {{ getExampleValue(param) }}
                         </span>
                       </div>
@@ -502,11 +505,11 @@ watch(
                   </div>
 
                   <div class="ml-6 mt-3">
-                    <div class="mb-1 text-xs text-secondary">
+                    <div class="mb-1 text-xs text-[var(--el-text-color-secondary)]">
                       {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                     </div>
                     <pre
-                      class="border-l-3px overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-primary"
+                      class="border-l-3px overflow-x-auto rounded-lg border-[var(--el-color-primary)] bg-[var(--el-fill-color-light)] p-3 text-sm text-[var(--el-text-color-primary)]"
                     >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>
@@ -516,7 +519,7 @@ watch(
                 <!-- 无参数提示 -->
                 <div v-else>
                   <div class="py-4 text-center">
-                    <p class="text-sm text-secondary">
+                    <p class="text-sm text-[var(--el-text-color-secondary)]">
                       {{ emptyMessage }}
                     </p>
                   </div>
@@ -550,7 +553,7 @@ watch(
 
       <!-- 快速填充按钮 -->
       <div v-if="paramsList.length > 0" class="flex items-center gap-2">
-        <span class="text-xs text-secondary">
+        <span class="text-xs text-[var(--el-text-color-secondary)]">
           {{ JSON_PARAMS_INPUT_CONSTANTS.QUICK_FILL_LABEL }}
         </span>
         <ElButton size="small" type="primary" plain @click="fillExampleJson">

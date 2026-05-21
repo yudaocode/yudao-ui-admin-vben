@@ -87,9 +87,9 @@ const needsTimeInput = computed(() => {
   return timeOnlyOperators.includes(condition.value.operator as any);
 });
 
-// 计算属性：是否需要日期输入
+/** 是否需要日期输入 ；当前仅支持时间 */
 const needsDateInput = computed(() => {
-  return false; // 暂时不支持日期输入，只支持时间
+  return false;
 });
 
 // 计算属性：是否需要第二个时间输入
@@ -225,7 +225,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-sm text-secondary">无需设置时间值</div>
+          <div v-else class="text-sm text-[var(--el-text-color-secondary)]">无需设置时间值</div>
         </ElFormItem>
       </ElCol>
 

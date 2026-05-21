@@ -85,7 +85,7 @@ const maxValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   return values.length > 0 ? Math.max(...values).toFixed(2) : '-';
 });
 
@@ -94,7 +94,7 @@ const minValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   return values.length > 0 ? Math.min(...values).toFixed(2) : '-';
 });
 
@@ -103,9 +103,9 @@ const avgValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   if (values.length === 0) return '-';
-  const sum = values.reduce((acc, val) => acc + val, 0);
+  const sum = values.reduce((total, value) => total + value, 0);
   return (sum / values.length).toFixed(2);
 });
 

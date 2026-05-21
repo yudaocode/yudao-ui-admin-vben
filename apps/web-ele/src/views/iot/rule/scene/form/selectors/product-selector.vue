@@ -71,10 +71,12 @@ onMounted(() => {
     >
       <div class="py-4px flex w-full items-center justify-between">
         <div class="flex-1">
-          <div class="text-14px font-500 mb-2px text-primary">
+          <div
+            class="text-14px font-500 mb-2px text-[var(--el-text-color-primary)]"
+          >
             {{ product.name }}
           </div>
-          <div class="text-12px text-secondary">
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
             {{ product.productKey }}
           </div>
         </div>

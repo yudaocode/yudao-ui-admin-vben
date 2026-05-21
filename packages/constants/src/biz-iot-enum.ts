@@ -679,7 +679,7 @@ export const getByteOrderOptions = (rawDataType: string) => {
     return ModbusByteOrder32Options;
   }
   if (rawDataType === 'DOUBLE') {
-    // 64 位暂时复用 32 位字节序
+    // 64 位复用 32 位字节序
     return ModbusByteOrder32Options;
   }
   return ModbusByteOrder16Options;

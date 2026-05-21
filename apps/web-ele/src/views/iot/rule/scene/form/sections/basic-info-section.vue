@@ -24,7 +24,6 @@ defineOptions({ name: 'BasicInfoSection' });
 
 const props = defineProps<{
   modelValue: RuleSceneApi.SceneRule;
-  rules?: any;
 }>();
 
 const emit = defineEmits<{
@@ -35,12 +34,20 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
 </script>
 
 <template>
-  <ElCard class="rounded-8px mb-10px border border-primary" shadow="never">
+  <ElCard
+    class="rounded-8px mb-10px border border-[var(--el-border-color-light)]"
+    shadow="never"
+  >
     <template #header>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <IconifyIcon icon="ep:info-filled" class="text-18px text-primary" />
-          <span class="text-16px font-600 text-primary">基础信息</span>
+          <IconifyIcon
+            icon="ep:info-filled"
+            class="text-18px text-[var(--el-color-primary)]"
+          />
+          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+            基础信息
+          </span>
         </div>
         <div class="gap-8px flex items-center">
           <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="formData.status" />

@@ -78,9 +78,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         multiple: true,
         placeholder: '请选择设备',
-        showSearch: true,
-        filterOption: true,
-        optionFilterProp: 'label',
+        filterable: true,
       },
       defaultValue: [],
       dependencies: {

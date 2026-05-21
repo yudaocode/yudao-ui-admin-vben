@@ -105,7 +105,9 @@ const propertyGroups = computed(() => {
 
 // 计算属性：当前选中的属性
 const selectedProperty = computed(() => {
-  return propertyList.value.find((p) => p.identifier === localValue.value);
+  return propertyList.value.find(
+    (property) => property.identifier === localValue.value,
+  );
 });
 
 /**
@@ -113,7 +115,9 @@ const selectedProperty = computed(() => {
  * @param value 选中的属性标识符
  */
 function handleChange(value: any) {
-  const property = propertyList.value.find((p) => p.identifier === value);
+  const property = propertyList.value.find(
+    (item) => item.identifier === value,
+  );
   if (property) {
     emit('change', {
       type: property.dataType,
@@ -298,7 +302,7 @@ watch(
           :value="property.identifier"
         >
           <div class="py-2px flex w-full items-center justify-between">
-            <span class="text-14px font-500 flex-1 truncate text-primary">
+            <span class="text-14px font-500 flex-1 truncate text-[var(--el-text-color-primary)]">
               {{ property.name }}
             </span>
             <ElTag size="small" class="ml-8px flex-shrink-0">
@@ -335,8 +339,8 @@ watch(
         <!-- 弹出层内容 -->
         <div class="property-detail-content">
           <div class="gap-8px mb-12px flex items-center">
-            <IconifyIcon icon="ep:info-filled" class="text-16px text-info" />
-            <span class="text-14px font-500 text-primary">
+            <IconifyIcon icon="ep:info-filled" class="text-16px text-[var(--el-color-info)]" />
+            <span class="text-14px font-500 text-[var(--el-text-color-primary)]">
               {{ selectedProperty.name }}
             </span>
             <ElTag size="small">
@@ -346,10 +350,10 @@ watch(
 
           <div class="space-y-8px ml-24px">
             <div class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 标识符：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.identifier }}
               </span>
             </div>
@@ -358,28 +362,28 @@ watch(
               v-if="selectedProperty.description"
               class="gap-8px flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 描述：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.description }}
               </span>
             </div>
 
             <div v-if="selectedProperty.unit" class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 单位：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.unit }}
               </span>
             </div>
 
             <div v-if="selectedProperty.range" class="gap-8px flex items-start">
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 取值范围：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ selectedProperty.range }}
               </span>
             </div>
@@ -392,10 +396,10 @@ watch(
               "
               class="gap-8px flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 访问模式：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ getAccessModeLabel(selectedProperty.accessMode) }}
               </span>
             </div>
@@ -407,10 +411,10 @@ watch(
               "
               class="gap-8px flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 事件类型：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{ getEventTypeLabel(selectedProperty.eventType) }}
               </span>
             </div>
@@ -422,10 +426,10 @@ watch(
               "
               class="gap-8px flex items-start"
             >
-              <span class="text-12px min-w-60px flex-shrink-0 text-secondary">
+              <span class="text-12px min-w-60px flex-shrink-0 text-[var(--el-text-color-secondary)]">
                 调用类型：
               </span>
-              <span class="text-12px flex-1 text-primary">
+              <span class="text-12px flex-1 text-[var(--el-text-color-primary)]">
                 {{
                   getThingModelServiceCallTypeLabel(selectedProperty.callType)
                 }}

@@ -134,12 +134,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <ElCard class="rounded-8px mb-10px border border-primary" shadow="never">
+  <ElCard
+    class="rounded-8px mb-10px border border-[var(--el-border-color-light)]"
+    shadow="never"
+  >
     <template #header>
       <div class="flex items-center justify-between">
         <div class="gap-8px flex items-center">
-          <IconifyIcon icon="ep:lightning" class="text-18px text-primary" />
-          <span class="text-16px font-600 text-primary">触发器配置</span>
+          <IconifyIcon
+            icon="ep:lightning"
+            class="text-18px text-[var(--el-color-primary)]"
+          />
+          <span class="text-16px font-600 text-[var(--el-text-color-primary)]">
+            触发器配置
+          </span>
           <ElTag size="small" type="info">
             {{ triggers.length }} 个触发器
           </ElTag>
@@ -216,20 +224,22 @@ onMounted(() => {
               class="gap-16px flex flex-col"
             >
               <div
-                class="gap-8px p-12px px-16px rounded-6px flex items-center border border-primary bg-background"
+                class="gap-8px p-12px px-16px rounded-6px flex items-center border border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-light)]"
               >
                 <IconifyIcon
                   icon="lucide:timer"
-                  class="text-18px text-danger"
+                  class="text-18px text-[var(--el-color-danger)]"
                 />
-                <span class="text-14px font-500 text-primary">
+                <span
+                  class="text-14px font-500 text-[var(--el-text-color-primary)]"
+                >
                   定时触发配置
                 </span>
               </div>
 
               <!-- CRON 表达式配置 -->
               <div
-                class="p-16px rounded-6px border border-primary bg-background"
+                class="p-16px rounded-6px border border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-blank)]"
               >
                 <ElFormItem label="CRON 表达式" required>
                   <CronTab
@@ -258,9 +268,9 @@ onMounted(() => {
         <ElEmpty description="暂无触发器">
           <template #description>
             <div class="space-y-8px">
-              <p class="text-secondary">暂无触发器配置</p>
-              <p class="text-12px text-primary">
-                请使用上方的"添加触发器"按钮来设置触发规则
+              <p class="text-[var(--el-text-color-secondary)]">暂无触发器配置</p>
+              <p class="text-12px text-[var(--el-text-color-placeholder)]">
+                请使用上方的「添加触发器」按钮来设置触发规则
               </p>
             </div>
           </template>

@@ -53,7 +53,7 @@ const [Form, formApi] = useVbenForm({
         return;
       }
       // 从产品列表中查找产品
-      const product = products.value.find((p) => p.id === productId);
+      const product = products.value.find((item) => item.id === productId);
       if (product?.deviceType !== undefined) {
         await formApi.setFieldValue('deviceType', product.deviceType);
       }
