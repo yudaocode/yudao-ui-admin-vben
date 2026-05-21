@@ -1,0 +1,118 @@
+<script lang="ts" setup>
+import type { MesMdVendorApi } from '#/api/mes/md/vendor';
+
+import { computed, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
+
+import { useVbenForm } from '#/adapter/form';
+import { createVendor, getVendor, updateVendor } from '#/api/mes/md/vendor';
+import { $t } from '#/locales';
+
+import { useFormSchema } from '../data';
+import VendorItemReceiptLineList from './item-receipt-line-list.vue';
+import VendorItemReceiptList from './item-receipt-list.vue';
+
+type FormMode = 'create' | 'detail' | 'update';
+
+const emit = defineEmits(['success']);
+const formMode = ref<FormMode>('create'); // 表单模式
+const subTabsName = ref('itemReceiptLine'); // 当前子表页签
+const formData = ref<MesMdVendorApi.Vendor>();
+
+const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const getTitle = computed(() => {
+  const titles: Record<FormMode, string> = {
+    create: '新增供应商',
+    update: '修改供应商',
+    detail: '查看供应商',
+  };
+  return titles[formMode.value];
+});
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-1',
+    labelWidth: 120,
+  },
+  wrapperClass: 'grid-cols-3',
+  layout: 'horizontal',
+  schema: [],
+  showDefaultActions: false,
+});
+
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
+formApi.setState({ schema: useFormSchema(formApi) });
+
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    if (isDetail.value) {
+      await modalApi.close();
+      return;
+    }
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    // 提交表单
+    const data = (await formApi.getValues()) as MesMdVendorApi.Vendor;
+    try {
+      await (formData.value?.id ? updateVendor(data) : createVendor(data));
+      // 关闭并提示
+      await modalApi.close();
+      emit('success');
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      formData.value = undefined;
+      return;
+    }
+    await formApi.resetForm();
+    subTabsName.value = 'itemReceiptLine';
+    // 加载数据
+    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
+    formMode.value = data?.type || 'create';
+    formApi.setDisabled(formMode.value === 'detail');
+    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    if (!data?.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getVendor(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
+  },
+});
+</script>
+
+<template>
+  <Modal :title="getTitle" class="w-4/5">
+    <Form class="mx-4" />
+    <ElTabs
+      v-if="formMode !== 'create' && formData?.id"
+      v-model="subTabsName"
+      class="mx-4 mt-4"
+    >
+      <ElTabPane label="物料清单" name="itemReceiptLine">
+        <VendorItemReceiptLineList :vendor-id="formData.id" />
+      </ElTabPane>
+      <ElTabPane label="采购记录" name="itemReceipt">
+        <VendorItemReceiptList :vendor-id="formData.id" />
+      </ElTabPane>
+    </ElTabs>
+  </Modal>
+</template>

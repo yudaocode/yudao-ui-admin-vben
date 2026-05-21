@@ -12,8 +12,11 @@ export const MesItemOrProductEnum = {
 
 /** MES 自动编码规则 Code 枚举 */
 export const MesAutoCodeRuleCode = {
+  MD_CLIENT_CODE: 'MD_CLIENT_CODE',
   MD_ITEM_TYPE_CODE: 'MD_ITEM_TYPE_CODE',
   MD_ITEM_CODE: 'MD_ITEM_CODE',
+  MD_VENDOR_CODE: 'MD_VENDOR_CODE',
+  MD_WORKSHOP_CODE: 'MD_WORKSHOP_CODE',
 } as const;
 
 /** MES 条码格式枚举 */

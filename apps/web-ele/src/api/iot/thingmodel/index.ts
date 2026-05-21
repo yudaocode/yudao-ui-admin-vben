@@ -195,7 +195,9 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
       trigger: 'blur',
     },
   ],
-  accessMode: [{ required: true, message: '请选择读写类型', trigger: 'change' }],
+  accessMode: [
+    { required: true, message: '请选择读写类型', trigger: 'change' },
+  ],
   callType: [{ required: true, message: '请选择调用方式', trigger: 'change' }],
   eventType: [{ required: true, message: '请选择事件类型', trigger: 'change' }],
 };
