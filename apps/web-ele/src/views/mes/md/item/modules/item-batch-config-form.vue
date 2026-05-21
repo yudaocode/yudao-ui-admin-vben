@@ -11,8 +11,6 @@ import {
 } from '#/api/mes/md/item/batchConfig';
 import { MesItemOrProductEnum } from '#/views/mes/utils/constants';
 
-defineOptions({ name: 'MesMdItemBatchConfigForm' });
-
 const props = withDefaults(
   defineProps<{
     formType?: string;

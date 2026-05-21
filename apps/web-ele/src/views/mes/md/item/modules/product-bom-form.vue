@@ -20,8 +20,6 @@ import { $t } from '#/locales';
 import { MdItemSelectDialog } from '../components';
 import { useProductBomGridColumns } from '../data';
 
-defineOptions({ name: 'MesMdProductBomForm' });
-
 const props = withDefaults(
   defineProps<{
     formType?: string;

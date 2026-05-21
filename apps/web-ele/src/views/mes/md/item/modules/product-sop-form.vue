@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import ProductMediaList from './product-media-list.vue';
 
-defineOptions({ name: 'MesMdProductSopForm' });
-
 defineProps<{
   formType?: string;
   itemId: number;
