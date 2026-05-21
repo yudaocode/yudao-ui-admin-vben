@@ -24,12 +24,12 @@ type FormMode = 'create' | 'detail' | 'update';
 defineOptions({ name: 'MesMdItemForm' });
 
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
-const subTabsName = ref('bom');
+const formMode = ref<FormMode>('create'); // 表单模式
+const subTabsName = ref('bom'); // 当前子表页签
 const formData = ref<MesMdItemApi.Item>();
-const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>();
+const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isDetail = computed(() => formMode.value === 'detail');
+const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
   const titles: Record<FormMode, string> = {
     create: '新增物料/产品',
@@ -38,7 +38,7 @@ const getTitle = computed(() => {
   };
   return titles[formMode.value];
 });
-const currentItemOrProduct = computed(() => formData.value?.itemOrProduct || '');
+const currentItemOrProduct = computed(() => formData.value?.itemOrProduct || ''); // 当前物料/产品标识
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -57,6 +57,7 @@ const [Form, formApi] = useVbenForm({
 /** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
+/** 查看物料条码 */
 function handleBarcode() {
   if (!formData.value?.id) {
     return;

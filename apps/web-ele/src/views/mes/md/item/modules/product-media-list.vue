@@ -46,13 +46,13 @@ const props = withDefaults(
   },
 );
 
-const isReadOnly = computed(() => props.formType === 'detail');
-const title = computed(() => props.kind);
-const loading = ref(false);
-const formOpen = ref(false);
-const formLoading = ref(false);
+const isReadOnly = computed(() => props.formType === 'detail'); // 是否只读
+const title = computed(() => props.kind); // 当前媒体类型标题
+const loading = ref(false); // SIP/SOP 列表加载中
+const formOpen = ref(false); // SIP/SOP 表单是否打开
+const formLoading = ref(false); // SIP/SOP 表单提交中
 const formData = ref<MediaItem>();
-const list = ref<MediaItem[]>([]);
+const list = ref<MediaItem[]>([]); // SIP/SOP 列表
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -112,24 +112,29 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+/** 获取当前媒体类型的列表接口 */
 function getListApi() {
   return props.kind === 'SIP'
     ? getProductSipListByItemId
     : getProductSopListByItemId;
 }
 
+/** 获取当前媒体类型的新增接口 */
 function createApi() {
   return props.kind === 'SIP' ? createProductSip : createProductSop;
 }
 
+/** 获取当前媒体类型的修改接口 */
 function updateApi() {
   return props.kind === 'SIP' ? updateProductSip : updateProductSop;
 }
 
+/** 获取当前媒体类型的删除接口 */
 function deleteApi() {
   return props.kind === 'SIP' ? deleteProductSip : deleteProductSop;
 }
 
+/** 加载 SIP/SOP 列表 */
 async function getList() {
   loading.value = true;
   try {
@@ -139,6 +144,7 @@ async function getList() {
   }
 }
 
+/** 打开 SIP/SOP 表单 */
 async function openForm(row?: MediaItem) {
   formOpen.value = true;
   formData.value = row;
@@ -150,6 +156,7 @@ async function openForm(row?: MediaItem) {
   });
 }
 
+/** 提交 SIP/SOP 表单 */
 async function submitForm() {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -167,6 +174,7 @@ async function submitForm() {
   }
 }
 
+/** 删除 SIP/SOP */
 async function handleDelete(id: number) {
   await deleteApi()(id);
   ElMessage.success('删除成功');

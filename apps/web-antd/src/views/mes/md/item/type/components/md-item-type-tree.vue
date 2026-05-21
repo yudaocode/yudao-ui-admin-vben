@@ -25,12 +25,12 @@ const emit = defineEmits<{
   nodeClick: [itemType: MesMdItemTypeApi.ItemType | undefined];
 }>();
 
-const loading = ref(false);
-const filterText = ref('');
-const currentNodeId = ref<number>();
-const selectedKeys = ref<number[]>([]);
-const itemTypeList = ref<MesMdItemTypeApi.ItemType[]>([]);
-const itemTypeTree = ref<any[]>([]);
+const loading = ref(false); // 分类树加载中
+const filterText = ref(''); // 分类搜索关键字
+const currentNodeId = ref<number>(); // 当前选中分类编号
+const selectedKeys = ref<number[]>([]); // 当前选中节点 key 列表
+const itemTypeList = ref<MesMdItemTypeApi.ItemType[]>([]); // 物料分类列表
+const itemTypeTree = ref<any[]>([]); // 物料分类树
 
 /** 加载分类树 */
 async function loadTree() {

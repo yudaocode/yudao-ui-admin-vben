@@ -22,8 +22,9 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+const isExpanded = ref(true); // 树形表格是否展开
+
 /** 切换树形展开/收缩状态 */
-const isExpanded = ref(true);
 function handleExpand() {
   isExpanded.value = !isExpanded.value;
   gridApi.grid.setAllTreeExpand(isExpanded.value);

@@ -29,7 +29,7 @@ import ImportForm from './modules/import-form.vue';
 
 defineOptions({ name: 'MesMdItem' });
 
-const selectedItemTypeId = ref<number>();
+const selectedItemTypeId = ref<number>(); // 当前选中的物料分类编号
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,

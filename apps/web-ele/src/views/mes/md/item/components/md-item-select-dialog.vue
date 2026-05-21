@@ -21,13 +21,13 @@ const emit = defineEmits<{
   selected: [rows: MesMdItemApi.Item[]];
 }>();
 
-const open = ref(false);
-const multiple = ref(true);
-const syncingSingleSelection = ref(false);
-const selectedRows = ref<MesMdItemApi.Item[]>([]);
-const selectedItemTypeId = ref<number>();
-const preSelectedIds = ref<number[]>([]);
-const typeTreeRef = ref<InstanceType<typeof MdItemTypeTree>>();
+const open = ref(false); // 弹窗是否打开
+const multiple = ref(true); // 是否多选
+const syncingSingleSelection = ref(false); // 是否同步单选勾选状态
+const selectedRows = ref<MesMdItemApi.Item[]>([]); // 已选物料列表
+const selectedItemTypeId = ref<number>(); // 当前筛选分类编号
+const preSelectedIds = ref<number[]>([]); // 预选物料编号列表
+const typeTreeRef = ref<InstanceType<typeof MdItemTypeTree>>(); // 物料分类树
 
 /** 单选模式下同步 VXE 勾选状态，避免跨页残留多选 */
 async function syncSingleSelection(row?: MesMdItemApi.Item) {
@@ -63,6 +63,7 @@ async function handleCheckboxChange({
   selectedRows.value = records;
 }
 
+/** 处理全选变化 */
 function handleCheckboxAll({ records }: { records: MesMdItemApi.Item[] }) {
   if (syncingSingleSelection.value) {
     return;
@@ -70,11 +71,13 @@ function handleCheckboxAll({ records }: { records: MesMdItemApi.Item[] }) {
   selectedRows.value = records;
 }
 
+/** 按分类筛选物料 */
 function handleItemTypeNodeClick(row: MesMdItemTypeApi.ItemType | undefined) {
   selectedItemTypeId.value = row?.id;
   gridApi.query();
 }
 
+/** 回显预选物料 */
 function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
@@ -131,6 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
+/** 重置查询和选择状态 */
 async function resetQueryState() {
   selectedItemTypeId.value = undefined;
   selectedRows.value = [];
@@ -139,6 +143,7 @@ async function resetQueryState() {
   await gridApi.formApi.resetForm();
 }
 
+/** 打开物料选择弹窗 */
 async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
@@ -150,11 +155,13 @@ async function openModal(selectedIds?: number[], options?: { multiple?: boolean 
   applyPreSelection();
 }
 
+/** 关闭物料选择弹窗 */
 async function closeModal() {
   open.value = false;
   await resetQueryState();
 }
 
+/** 确认选择物料 */
 function handleConfirm() {
   if (selectedRows.value.length === 0) {
     ElMessage.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');

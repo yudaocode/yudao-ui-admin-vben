@@ -32,12 +32,12 @@ const props = withDefaults(
   },
 );
 
-const isReadOnly = computed(() => props.formType === 'detail');
-const formOpen = ref(false);
-const formLoading = ref(false);
+const isReadOnly = computed(() => props.formType === 'detail'); // 是否只读
+const formOpen = ref(false); // BOM 表单是否打开
+const formLoading = ref(false); // BOM 表单提交中
 const formData = ref<MesMdProductBomApi.ProductBom>();
-const list = ref<MesMdProductBomApi.ProductBom[]>([]);
-const itemSelectRef = ref<InstanceType<typeof MdItemSelectDialog>>();
+const list = ref<MesMdProductBomApi.ProductBom[]>([]); // 产品 BOM 列表
+const itemSelectRef = ref<InstanceType<typeof MdItemSelectDialog>>(); // 物料选择弹窗
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -114,6 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesMdProductBomApi.ProductBom>,
 });
 
+/** 加载产品 BOM 列表 */
 async function getList() {
   gridApi.setLoading(true);
   try {
@@ -124,10 +125,12 @@ async function getList() {
   }
 }
 
+/** 打开 BOM 物料选择弹窗 */
 function handleAdd() {
   itemSelectRef.value?.open(undefined, { multiple: true });
 }
 
+/** 添加选中的 BOM 物料 */
 async function handleItemSelected(rows: MesMdItemApi.Item[]) {
   if (rows.length === 0) {
     return;
@@ -143,6 +146,7 @@ async function handleItemSelected(rows: MesMdItemApi.Item[]) {
   await getList();
 }
 
+/** 打开 BOM 编辑弹窗 */
 async function openForm(row: MesMdProductBomApi.ProductBom) {
   formOpen.value = true;
   formData.value = row;
@@ -153,6 +157,7 @@ async function openForm(row: MesMdProductBomApi.ProductBom) {
   });
 }
 
+/** 提交 BOM 表单 */
 async function submitForm() {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -170,6 +175,7 @@ async function submitForm() {
   }
 }
 
+/** 删除 BOM 物料 */
 async function handleDelete(id: number) {
   await deleteProductBom(id);
   message.success($t('ui.actionMessage.deleteSuccess', ['BOM']));

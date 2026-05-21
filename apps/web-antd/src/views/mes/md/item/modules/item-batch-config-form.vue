@@ -25,10 +25,11 @@ const props = withDefaults(
   },
 );
 
-const isReadOnly = computed(() => props.formType === 'detail');
-const loading = ref(false);
+const isReadOnly = computed(() => props.formType === 'detail'); // 是否只读
+const loading = ref(false); // 批次属性加载/保存中
 const formData = ref<MesMdItemBatchConfigApi.BatchConfig>(buildDefaultData());
 
+/** 构建批次属性默认值 */
 function buildDefaultData(): MesMdItemBatchConfigApi.BatchConfig {
   return {
     itemId: props.itemId,
@@ -49,6 +50,7 @@ function buildDefaultData(): MesMdItemBatchConfigApi.BatchConfig {
   };
 }
 
+/** 加载批次属性配置 */
 async function loadData() {
   loading.value = true;
   try {
@@ -59,12 +61,14 @@ async function loadData() {
   }
 }
 
+/** 判断是否已选择批次属性 */
 function hasAnySelected() {
   return Object.entries(formData.value).some(
     ([key, value]) => key.endsWith('Flag') && value === true,
   );
 }
 
+/** 保存批次属性配置 */
 async function handleSave() {
   if (!hasAnySelected()) {
     message.warning('至少选择一个批次属性');

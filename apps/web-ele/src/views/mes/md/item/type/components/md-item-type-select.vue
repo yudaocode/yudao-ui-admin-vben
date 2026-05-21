@@ -36,11 +36,11 @@ type ItemTypeNode = MesMdItemTypeApi.ItemType & {
   disabled?: boolean;
 };
 
-const allList = ref<MesMdItemTypeApi.ItemType[]>([]);
-const itemTypeTree = ref<ItemTypeNode[]>([]);
-const selectedItem = ref<MesMdItemTypeApi.ItemType>();
+const allList = ref<MesMdItemTypeApi.ItemType[]>([]); // 物料分类列表
+const itemTypeTree = ref<ItemTypeNode[]>([]); // 物料分类树
+const selectedItem = ref<MesMdItemTypeApi.ItemType>(); // 当前选中分类
 
-const selectValue = computed({
+const selectValue = computed({ // 选择器绑定值
   get: () => props.modelValue,
   set: (value: number | undefined) => {
     emit('update:modelValue', value);
