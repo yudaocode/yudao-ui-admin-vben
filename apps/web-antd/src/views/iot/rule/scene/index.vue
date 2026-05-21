@@ -13,7 +13,7 @@ import {
   IotRuleSceneTriggerTypeEnum,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
-import { formatDateTime } from '@vben/utils';
+import { CronUtils, formatDateTime } from '@vben/utils';
 
 import { Card, Col, message, Row, Tag, Tooltip } from 'ant-design-vue';
 
@@ -25,7 +25,6 @@ import {
 } from '#/api/iot/rule/scene';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import { CronUtils } from '#/utils/cron';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
