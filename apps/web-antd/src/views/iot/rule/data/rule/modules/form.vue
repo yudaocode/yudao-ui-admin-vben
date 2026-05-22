@@ -47,7 +47,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 校验数据源配置
-    await sourceConfigRef.value?.validate();
+    try {
+      await sourceConfigRef.value?.validate();
+    } catch {
+      return;
+    }
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as DataRuleApi.DataRule;
@@ -65,6 +69,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
+      await formApi.resetForm();
       sourceConfigRef.value?.setData([]);
       return;
     }

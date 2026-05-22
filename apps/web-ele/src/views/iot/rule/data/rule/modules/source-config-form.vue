@@ -154,6 +154,10 @@ async function handleDelete(rowIndex: number) {
 
 /** 校验全部行；返回 Promise，失败时 reject 第一条错误信息 */
 function validate() {
+  if (formData.value.length === 0) {
+    ElMessage.error('请至少添加一条数据源配置');
+    return Promise.reject(new Error('数据源配置不能为空'));
+  }
   for (let i = 0; i < formData.value.length; i++) {
     const row = formData.value[i];
     if (!row.productId) {
