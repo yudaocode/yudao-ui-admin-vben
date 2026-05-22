@@ -422,9 +422,11 @@ export function useClientSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 客户选择弹窗的字段 */
-export function useClientSelectGridColumns(): VxeTableGridOptions<MesMdClientApi.Client>['columns'] {
+export function useClientSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesMdClientApi.Client>['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
     {
       field: 'code',
       title: '客户编码',
