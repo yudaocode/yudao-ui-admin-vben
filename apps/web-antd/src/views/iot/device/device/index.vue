@@ -9,7 +9,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -169,6 +169,7 @@ async function handleDeleteBatch() {
     message.warning('请选择要删除的设备');
     return;
   }
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,

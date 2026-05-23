@@ -3,7 +3,7 @@ import type { Dayjs } from 'dayjs';
 
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
-import { computed, nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -26,6 +26,7 @@ const loading = ref(false); // 加载状态
 const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
   [],
 ); // 消息趋势数据
+const isFirstMount = ref(true); // 首次挂载标记，用于跳过子组件 mount 时的默认 emit
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
@@ -74,6 +75,11 @@ function handleDateRangeChange(times?: [Dayjs, Dayjs]) {
   ];
   // 将选择的日期转换为带时分秒的格式（开始日期 00:00:00，结束日期 23:59:59）
   queryParams.times = formatDateRangeWithTime(dateRange.value);
+  if (isFirstMount.value) {
+    // 子组件 ShortcutDateRangePicker mount 时会 emit 一次默认日期范围，跳过 fetch；
+    // 首次请求统一由父组件 onMounted 发起，避免双请求
+    return;
+  }
   handleQuery();
 }
 
@@ -123,6 +129,13 @@ async function renderChartWhenReady() {
   initChart();
 }
 
+// 父组件挂载后统一发起首次请求；
+// 原因：子组件 ShortcutDateRangePicker 早期 emit 触发的请求落在 useEcharts isActiveRef = false 阶段，会被 renderEcharts 静默丢弃；
+// 通过 handleDateRangeChange 在 isFirstMount=true 时跳过 fetch，由这里统一发起一次，避免双请求
+onMounted(() => {
+  fetchMessageData();
+  isFirstMount.value = false;
+});
 </script>
 
 <template>

@@ -101,9 +101,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'FileUpload',
       componentProps: {
         maxNumber: 1,
-        accept: ['bin', 'hex', 'zip'],
+        accept: ['bin', 'zip', 'pdf'],
         maxSize: 50,
-        helpText: '支持上传 .bin、.hex、.zip 格式的固件文件，最大 50MB',
+        helpText: '支持上传 .bin、.zip、.pdf 格式的固件文件，最大 50MB',
       },
       rules: 'required',
       dependencies: {

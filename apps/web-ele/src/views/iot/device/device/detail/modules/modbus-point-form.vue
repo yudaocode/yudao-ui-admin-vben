@@ -241,10 +241,20 @@ const [Form, formApi] = useVbenForm({
         if (option && option.registerCount > 0) {
           await formApi.setFieldValue('registerCount', option.registerCount);
         }
-        // 重置字节序为第一个选项
+        // 字节序：仅在当前值为空或不属于新 rawDataType 时才重置为第一个选项；
+        // 编辑回填时 setValues 会触发本回调，无条件重置会覆盖已保存字节序
         const byteOrderOptions = getByteOrderOptions(rawDataType);
         if (byteOrderOptions.length > 0) {
-          await formApi.setFieldValue('byteOrder', byteOrderOptions[0]!.value);
+          const currentByteOrder = values.byteOrder;
+          const isCurrentValid =
+            !!currentByteOrder &&
+            byteOrderOptions.some((opt) => opt.value === currentByteOrder);
+          if (!isCurrentValid) {
+            await formApi.setFieldValue(
+              'byteOrder',
+              byteOrderOptions[0]!.value,
+            );
+          }
         }
       }
     }
