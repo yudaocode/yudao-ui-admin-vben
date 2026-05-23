@@ -47,9 +47,21 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'itemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'bomItemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'itemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'bomItemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'bomItemCode',
       label: 'BOM 物料编码',
@@ -170,7 +182,9 @@ async function submitForm() {
   formLoading.value = true;
   try {
     const data = (await formApi.getValues()) as MesMdProductBomApi.ProductBom;
-    await (formData.value?.id ? updateProductBom(data) : createProductBom(data));
+    await (formData.value?.id
+      ? updateProductBom(data)
+      : createProductBom(data));
     formOpen.value = false;
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getList();
@@ -234,11 +248,7 @@ watch(
       </template>
     </Grid>
 
-    <ElDialog
-      v-model="formOpen"
-      title="编辑 BOM"
-      width="600px"
-    >
+    <ElDialog v-model="formOpen" title="编辑 BOM" width="600px">
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

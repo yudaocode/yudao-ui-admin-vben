@@ -159,7 +159,9 @@ function updateConditionGroup(
             >
               <span
                 class="text-[13px] font-semibold text-orange-600 dark:text-orange-300"
-                >或</span>
+              >
+                或
+              </span>
             </div>
             <div
               class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"

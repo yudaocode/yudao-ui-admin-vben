@@ -56,7 +56,9 @@ function handleFilter(query: string) {
 /** 根据当前值同步 tooltip 展示的工序详情 */
 function syncSelectedItem(value: number | undefined) {
   selectedItem.value =
-    value === undefined ? undefined : allList.value.find((item) => item.id === value);
+    value === undefined
+      ? undefined
+      : allList.value.find((item) => item.id === value);
 }
 
 /** 除 v-model 外，额外抛出完整工序对象给业务表单使用 */
@@ -108,7 +110,9 @@ onMounted(async () => {
       >
         <div class="flex items-center gap-2">
           <span>{{ item.name }}</span>
-          <ElTag v-if="item.code" size="small" type="info">{{ item.code }}</ElTag>
+          <ElTag v-if="item.code" size="small" type="info">
+            {{ item.code }}
+          </ElTag>
         </div>
       </ElOption>
     </ElSelect>

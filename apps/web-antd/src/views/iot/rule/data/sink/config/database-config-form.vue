@@ -55,7 +55,9 @@ onMounted(() => {
 <template>
   <Form.Item
     :name="['config', 'jdbcUrl']"
-    :rules="[{ required: true, message: 'JDBC 连接地址不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'JDBC 连接地址不能为空', trigger: 'blur' },
+    ]"
     label="JDBC 地址"
   >
     <Input

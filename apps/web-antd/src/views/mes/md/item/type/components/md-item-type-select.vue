@@ -40,7 +40,8 @@ const allList = ref<MesMdItemTypeApi.ItemType[]>([]); // 物料分类列表
 const itemTypeTree = ref<ItemTypeNode[]>([]); // 物料分类树
 const selectedItem = ref<MesMdItemTypeApi.ItemType>(); // 当前选中分类
 
-const selectValue = computed({ // 选择器绑定值
+const selectValue = computed({
+  // 选择器绑定值
   get: () => props.modelValue,
   set: (value: number | undefined) => {
     emit('update:modelValue', value);
@@ -48,7 +49,9 @@ const selectValue = computed({ // 选择器绑定值
 });
 
 /** 递归将有子节点的分支节点标记为 disabled */
-function markParentsDisabled(nodes: MesMdItemTypeApi.ItemType[]): ItemTypeNode[] {
+function markParentsDisabled(
+  nodes: MesMdItemTypeApi.ItemType[],
+): ItemTypeNode[] {
   return nodes.map((node) => {
     const children = node.children?.length
       ? markParentsDisabled(node.children)
@@ -64,7 +67,9 @@ function markParentsDisabled(nodes: MesMdItemTypeApi.ItemType[]): ItemTypeNode[]
 /** 根据当前值同步 tooltip 展示的分类详情 */
 function syncSelectedItem(value: number | undefined) {
   selectedItem.value =
-    value === undefined ? undefined : allList.value.find((item) => item.id === value);
+    value === undefined
+      ? undefined
+      : allList.value.find((item) => item.id === value);
 }
 
 /** 除 v-model 外，额外抛出完整分类对象给业务表单使用 */

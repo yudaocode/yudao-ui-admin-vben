@@ -40,6 +40,7 @@ const processNodeTree = inject<Ref<SimpleFlowNode>>('processNodeTree');
 /** 当前节点 */
 const currentNode = useWatchNode(props);
 /** 节点名称 */
+// @ts-expect-error unused
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.ROUTER_BRANCH_NODE);
 const routerGroups = ref<RouterSetting[]>([]);

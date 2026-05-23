@@ -118,7 +118,9 @@ function buildEmptyFormData(): ThingModelApi.ThingModel {
 }
 
 /** 回显数据时，规整各分支字段确保子表单可绑定 */
-function normalizeFormData(result: ThingModelApi.ThingModel): ThingModelApi.ThingModel {
+function normalizeFormData(
+  result: ThingModelApi.ThingModel,
+): ThingModelApi.ThingModel {
   const next: any = { ...result, type: Number(result.type) };
   if (isEmpty(next.property)) {
     next.dataType = IoTDataSpecsDataTypeEnum.INT;
@@ -148,46 +150,46 @@ function normalizeFormData(result: ThingModelApi.ThingModel): ThingModelApi.Thin
 /** 按功能类型将子表单数据回写到顶层，并清理无关分支 */
 function fillExtraAttributes(data: any) {
   switch (data.type) {
-  case IoTThingModelTypeEnum.EVENT: {
-    removeDataSpecs(data.event);
-    data.dataType = data.event.dataType;
-    data.event.identifier = data.identifier;
-    data.event.name = data.name;
-    if (isEmpty(data.event.outputParams)) {
-      delete data.event.outputParams;
-    }
-    delete data.property;
-    delete data.service;
+    case IoTThingModelTypeEnum.EVENT: {
+      removeDataSpecs(data.event);
+      data.dataType = data.event.dataType;
+      data.event.identifier = data.identifier;
+      data.event.name = data.name;
+      if (isEmpty(data.event.outputParams)) {
+        delete data.event.outputParams;
+      }
+      delete data.property;
+      delete data.service;
 
-  break;
-  }
-  case IoTThingModelTypeEnum.PROPERTY: {
-    removeDataSpecs(data.property);
-    data.dataType = data.property.dataType;
-    data.property.identifier = data.identifier;
-    data.property.name = data.name;
-    delete data.service;
-    delete data.event;
-
-  break;
-  }
-  case IoTThingModelTypeEnum.SERVICE: {
-    removeDataSpecs(data.service);
-    data.dataType = data.service.dataType;
-    data.service.identifier = data.identifier;
-    data.service.name = data.name;
-    if (isEmpty(data.service.inputParams)) {
-      delete data.service.inputParams;
+      break;
     }
-    if (isEmpty(data.service.outputParams)) {
-      delete data.service.outputParams;
-    }
-    delete data.property;
-    delete data.event;
+    case IoTThingModelTypeEnum.PROPERTY: {
+      removeDataSpecs(data.property);
+      data.dataType = data.property.dataType;
+      data.property.identifier = data.identifier;
+      data.property.name = data.name;
+      delete data.service;
+      delete data.event;
 
-  break;
-  }
-  // No default
+      break;
+    }
+    case IoTThingModelTypeEnum.SERVICE: {
+      removeDataSpecs(data.service);
+      data.dataType = data.service.dataType;
+      data.service.identifier = data.identifier;
+      data.service.name = data.name;
+      if (isEmpty(data.service.inputParams)) {
+        delete data.service.inputParams;
+      }
+      if (isEmpty(data.service.outputParams)) {
+        delete data.service.outputParams;
+      }
+      delete data.property;
+      delete data.event;
+
+      break;
+    }
+    // No default
   }
 }
 
@@ -204,12 +206,7 @@ function removeDataSpecs(val: any) {
 
 <template>
   <Modal :title="getTitle" class="w-2/5">
-    <ElForm
-      ref="formRef"
-      :model="formData"
-      class="mx-4"
-      label-width="140px"
-    >
+    <ElForm ref="formRef" :model="formData" class="mx-4" label-width="140px">
       <ElFormItem
         :rules="ThingModelFormRules.type"
         label="功能类型"

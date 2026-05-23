@@ -83,7 +83,7 @@ function handleSelect(row: BpmProcessExpressionApi.ProcessExpression) {
               type: 'primary',
               link: true,
               icon: 'lucide:pointer',
-              onClick: handleSelect.bind(null, row),
+              onClick: handleSelect.bind(null, row as any),
             },
           ]"
         />

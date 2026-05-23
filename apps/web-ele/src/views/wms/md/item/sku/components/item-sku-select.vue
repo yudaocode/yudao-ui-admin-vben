@@ -14,7 +14,10 @@ import {
   formatWeight,
 } from '#/views/wms/utils/format';
 
-import { useSkuSelectGridColumns, useSkuSelectGridFormSchema } from '../../data';
+import {
+  useSkuSelectGridColumns,
+  useSkuSelectGridFormSchema,
+} from '../../data';
 
 defineOptions({ name: 'WmsItemSkuSelect' });
 
@@ -70,11 +73,7 @@ async function handleCheckboxChange({
 }
 
 /** 处理全选变化，过滤掉已禁选的 SKU */
-function handleCheckboxAll({
-  records,
-}: {
-  records: WmsItemSkuApi.ItemSku[];
-}) {
+function handleCheckboxAll({ records }: { records: WmsItemSkuApi.ItemSku[] }) {
   if (syncingSingleSelection.value) {
     return;
   }

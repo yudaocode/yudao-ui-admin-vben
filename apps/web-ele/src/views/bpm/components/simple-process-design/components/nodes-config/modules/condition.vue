@@ -188,7 +188,10 @@ defineExpose({ validate });
               icon="lucide:circle-x"
               class="size-4"
               @click="
-                deleteConditionGroup(condition.conditionGroups.conditions, cIdx)
+                deleteConditionGroup(
+                  condition.conditionGroups.conditions,
+                  cIdx as number,
+                )
               "
             />
           </div>
@@ -276,12 +279,12 @@ defineExpose({ validate });
               <div class="flex items-center">
                 <Plus
                   class="mr-2 size-4 cursor-pointer text-blue-500"
-                  @click="addConditionRule(equation, rIdx)"
+                  @click="addConditionRule(equation, rIdx as number)"
                 />
                 <Trash2
                   v-show="equation.rules.length > 1"
                   class="size-4 cursor-pointer text-red-500"
-                  @click="deleteConditionRule(equation, rIdx)"
+                  @click="deleteConditionRule(equation, rIdx as number)"
                 />
               </div>
             </ElCol>

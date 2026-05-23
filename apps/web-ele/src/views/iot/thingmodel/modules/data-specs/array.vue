@@ -2,10 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-} from '@vben/constants';
+import { getDataTypeOptions, IoTDataSpecsDataTypeEnum } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
 import { ElFormItem, ElInput, ElRadio, ElRadioGroup } from 'element-plus';
@@ -59,10 +56,7 @@ function handleChange(val: any) {
     label="元素个数"
     prop="property.dataSpecs.size"
   >
-    <ElInput
-      v-model="dataSpecs.size"
-      placeholder="请输入数组中的元素个数"
-    />
+    <ElInput v-model="dataSpecs.size" placeholder="请输入数组中的元素个数" />
   </ElFormItem>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs

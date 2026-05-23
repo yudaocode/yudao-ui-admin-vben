@@ -78,6 +78,7 @@ const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
 const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);
 
+// @ts-expect-error unused
 const timelineRef = ref<any>();
 const activeTab = ref('form');
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);

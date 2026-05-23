@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
+import type { InventoryChartItem } from './wms-home-inventory-chart-options';
+
 import { nextTick, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
@@ -14,7 +16,6 @@ import {
   formatQuantityText,
   getGoodsShareChartOptions,
   getWarehouseDistributionChartOptions,
-  type InventoryChartItem,
 } from './wms-home-inventory-chart-options';
 
 defineOptions({ name: 'WmsHomeInventoryCharts' });
@@ -28,7 +29,8 @@ const goodsShareList = ref<InventoryChartItem[]>([]);
 const warehouseDistributionList = ref<InventoryChartItem[]>([]);
 const goodsShareChartRef = ref<EchartsUIType>();
 const warehouseDistributionChartRef = ref<EchartsUIType>();
-const { renderEcharts: renderGoodsShareEcharts } = useEcharts(goodsShareChartRef);
+const { renderEcharts: renderGoodsShareEcharts } =
+  useEcharts(goodsShareChartRef);
 const { renderEcharts: renderWarehouseDistributionEcharts } = useEcharts(
   warehouseDistributionChartRef,
 );
@@ -54,7 +56,10 @@ async function load(warehouseId?: number) {
       warehouseLimit: WAREHOUSE_DISTRIBUTION_LIMIT,
     });
     totalQuantity.value = Number(data.totalQuantity || 0);
-    goodsShareList.value = buildInventoryChartItemList(data.goodsShareList, '未命名商品');
+    goodsShareList.value = buildInventoryChartItemList(
+      data.goodsShareList,
+      '未命名商品',
+    );
     warehouseDistributionList.value = buildInventoryChartItemList(
       data.warehouseDistributionList,
       '未指定仓库',
@@ -73,7 +78,9 @@ defineExpose({ load });
     <ElCard :body-style="{ padding: '12px 16px 16px' }">
       <div class="mb-3">
         <div class="font-semibold">货物占比</div>
-        <div class="text-sm text-muted-foreground">按商品库存数量汇总 Top 5</div>
+        <div class="text-sm text-muted-foreground">
+          按商品库存数量汇总 Top 5
+        </div>
       </div>
       <div class="relative min-h-[300px]">
         <EchartsUI ref="goodsShareChartRef" height="300px" />
@@ -91,7 +98,9 @@ defineExpose({ load });
           <div class="font-semibold">库存分布</div>
           <div class="text-sm text-muted-foreground">按仓库库存数量汇总</div>
         </div>
-        <span class="font-semibold">总库存 {{ formatQuantityText(totalQuantity) }}</span>
+        <span class="font-semibold">
+          总库存 {{ formatQuantityText(totalQuantity) }}
+        </span>
       </div>
       <div class="relative min-h-[300px]">
         <EchartsUI ref="warehouseDistributionChartRef" height="300px" />

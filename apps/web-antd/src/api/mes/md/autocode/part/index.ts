@@ -34,16 +34,12 @@ export function getAutoCodePartListByRuleId(ruleId: number) {
 }
 
 /** 新增编码规则分段 */
-export function createAutoCodePart(
-  data: MesMdAutoCodePartApi.AutoCodePart,
-) {
+export function createAutoCodePart(data: MesMdAutoCodePartApi.AutoCodePart) {
   return requestClient.post('/mes/md/auto-code-part/create', data);
 }
 
 /** 修改编码规则分段 */
-export function updateAutoCodePart(
-  data: MesMdAutoCodePartApi.AutoCodePart,
-) {
+export function updateAutoCodePart(data: MesMdAutoCodePartApi.AutoCodePart) {
   return requestClient.put('/mes/md/auto-code-part/update', data);
 }
 

@@ -19,12 +19,18 @@ export namespace MesCalHolidayApi {
 
 /** 查询假期设置列表 */
 export function getHolidayList(params?: MesCalHolidayApi.HolidayQuery) {
-  return requestClient.get<MesCalHolidayApi.Holiday[]>('/mes/cal/holiday/list', { params });
+  return requestClient.get<MesCalHolidayApi.Holiday[]>(
+    '/mes/cal/holiday/list',
+    { params },
+  );
 }
 
 /** 根据日期查询假期设置 */
 export function getHolidayByDay(day: string) {
-  return requestClient.get<MesCalHolidayApi.Holiday>('/mes/cal/holiday/get-by-day', { params: { day } });
+  return requestClient.get<MesCalHolidayApi.Holiday>(
+    '/mes/cal/holiday/get-by-day',
+    { params: { day } },
+  );
 }
 
 /** 保存假期设置 */

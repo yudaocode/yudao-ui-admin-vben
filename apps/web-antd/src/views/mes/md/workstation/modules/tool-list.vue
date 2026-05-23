@@ -45,8 +45,16 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'workstationId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'workstationId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'toolTypeId',
       label: '工具类型',
@@ -149,8 +157,11 @@ async function submitForm() {
   }
   formLoading.value = true;
   try {
-    const data = (await formApi.getValues()) as MesMdWorkstationToolApi.WorkstationTool;
-    await (formData.value?.id ? updateWorkstationTool(data) : createWorkstationTool(data));
+    const data =
+      (await formApi.getValues()) as MesMdWorkstationToolApi.WorkstationTool;
+    await (formData.value?.id
+      ? updateWorkstationTool(data)
+      : createWorkstationTool(data));
     formOpen.value = false;
     message.success($t('ui.actionMessage.operationSuccess'));
     await getList();

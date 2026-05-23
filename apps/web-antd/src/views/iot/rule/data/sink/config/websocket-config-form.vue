@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -41,7 +40,11 @@ onMounted(() => {
   <Form.Item
     :name="['config', 'serverUrl']"
     :rules="[
-      { required: true, message: 'WebSocket 服务器地址不能为空', trigger: 'blur' },
+      {
+        required: true,
+        message: 'WebSocket 服务器地址不能为空',
+        trigger: 'blur',
+      },
     ]"
     label="服务器地址"
   >
@@ -52,7 +55,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'connectTimeoutMs']"
-    :rules="[{ required: true, message: '连接超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '连接超时时间不能为空', trigger: 'blur' },
+    ]"
     label="连接超时(ms)"
   >
     <InputNumber
@@ -64,7 +69,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'sendTimeoutMs']"
-    :rules="[{ required: true, message: '发送超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '发送超时时间不能为空', trigger: 'blur' },
+    ]"
     label="发送超时(ms)"
   >
     <InputNumber
@@ -107,7 +114,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'dataFormat']"
-    :rules="[{ required: true, message: '数据格式不能为空', trigger: 'change' }]"
+    :rules="[
+      { required: true, message: '数据格式不能为空', trigger: 'change' },
+    ]"
     label="数据格式"
   >
     <Select v-model:value="config.dataFormat" placeholder="请选择数据格式">

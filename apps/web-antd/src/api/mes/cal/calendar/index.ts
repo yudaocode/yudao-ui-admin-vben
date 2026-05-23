@@ -20,5 +20,8 @@ export namespace MesCalCalendarApi {
 
 /** 查询排班日历列表 */
 export function getCalendarList(params: any) {
-  return requestClient.get<MesCalCalendarApi.CalendarDay[]>('/mes/cal/calendar/list', { params });
+  return requestClient.get<MesCalCalendarApi.CalendarDay[]>(
+    '/mes/cal/calendar/list',
+    { params },
+  );
 }

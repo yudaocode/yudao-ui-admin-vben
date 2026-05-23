@@ -179,14 +179,18 @@ onUnmounted(() => {
           <span class="flex items-center gap-1">
             <span
               class="inline-block h-3 w-3 rounded-full"
-              :style="{ backgroundColor: stateColorMap[DeviceStateEnum.ONLINE] }"
+              :style="{
+                backgroundColor: stateColorMap[DeviceStateEnum.ONLINE],
+              }"
             ></span>
             <span class="text-gray-500">在线</span>
           </span>
           <span class="flex items-center gap-1">
             <span
               class="inline-block h-3 w-3 rounded-full"
-              :style="{ backgroundColor: stateColorMap[DeviceStateEnum.OFFLINE] }"
+              :style="{
+                backgroundColor: stateColorMap[DeviceStateEnum.OFFLINE],
+              }"
             ></span>
             <span class="text-gray-500">离线</span>
           </span>

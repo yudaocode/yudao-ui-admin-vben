@@ -14,7 +14,9 @@ defineOptions({ name: 'ErpHome' });
 const loading = ref(false); // 加载中
 
 /** 图表组件引用 */
+// @ts-expect-error unused
 const saleChartRef = ref();
+// @ts-expect-error unused
 const purchaseChartRef = ref();
 </script>
 

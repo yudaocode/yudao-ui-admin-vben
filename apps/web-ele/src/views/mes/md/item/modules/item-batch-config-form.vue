@@ -98,29 +98,59 @@ watch(
       <ElButton type="primary" @click="handleSave">保存批次属性</ElButton>
     </div>
     <div class="grid grid-cols-5 gap-x-5 gap-y-3">
-      <ElCheckbox v-model="formData.produceDateFlag" :disabled="isReadOnly">生产日期</ElCheckbox>
-      <ElCheckbox v-model="formData.qualityStatusFlag" :disabled="isReadOnly">质量状态</ElCheckbox>
+      <ElCheckbox v-model="formData.produceDateFlag" :disabled="isReadOnly">
+        生产日期
+      </ElCheckbox>
+      <ElCheckbox v-model="formData.qualityStatusFlag" :disabled="isReadOnly">
+        质量状态
+      </ElCheckbox>
 
       <template v-if="itemOrProduct === MesItemOrProductEnum.ITEM.value">
-        <ElCheckbox v-model="formData.vendorFlag" :disabled="isReadOnly">供应商</ElCheckbox>
-        <ElCheckbox v-model="formData.purchaseOrderCodeFlag" :disabled="isReadOnly">
+        <ElCheckbox v-model="formData.vendorFlag" :disabled="isReadOnly">
+          供应商
+        </ElCheckbox>
+        <ElCheckbox
+          v-model="formData.purchaseOrderCodeFlag"
+          :disabled="isReadOnly"
+        >
           采购订单编号
         </ElCheckbox>
-        <ElCheckbox v-model="formData.lotNumberFlag" :disabled="isReadOnly">生产批号</ElCheckbox>
-        <ElCheckbox v-model="formData.expireDateFlag" :disabled="isReadOnly">有效期</ElCheckbox>
-        <ElCheckbox v-model="formData.receiptDateFlag" :disabled="isReadOnly">入库日期</ElCheckbox>
+        <ElCheckbox v-model="formData.lotNumberFlag" :disabled="isReadOnly">
+          生产批号
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.expireDateFlag" :disabled="isReadOnly">
+          有效期
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.receiptDateFlag" :disabled="isReadOnly">
+          入库日期
+        </ElCheckbox>
       </template>
 
       <template v-if="itemOrProduct === MesItemOrProductEnum.PRODUCT.value">
-        <ElCheckbox v-model="formData.clientFlag" :disabled="isReadOnly">客户</ElCheckbox>
-        <ElCheckbox v-model="formData.salesOrderCodeFlag" :disabled="isReadOnly">
+        <ElCheckbox v-model="formData.clientFlag" :disabled="isReadOnly">
+          客户
+        </ElCheckbox>
+        <ElCheckbox
+          v-model="formData.salesOrderCodeFlag"
+          :disabled="isReadOnly"
+        >
           销售订单编号
         </ElCheckbox>
-        <ElCheckbox v-model="formData.workorderFlag" :disabled="isReadOnly">生产工单</ElCheckbox>
-        <ElCheckbox v-model="formData.taskFlag" :disabled="isReadOnly">生产任务</ElCheckbox>
-        <ElCheckbox v-model="formData.workstationFlag" :disabled="isReadOnly">工作站</ElCheckbox>
-        <ElCheckbox v-model="formData.toolFlag" :disabled="isReadOnly">工具</ElCheckbox>
-        <ElCheckbox v-model="formData.moldFlag" :disabled="isReadOnly">模具</ElCheckbox>
+        <ElCheckbox v-model="formData.workorderFlag" :disabled="isReadOnly">
+          生产工单
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.taskFlag" :disabled="isReadOnly">
+          生产任务
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.workstationFlag" :disabled="isReadOnly">
+          工作站
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.toolFlag" :disabled="isReadOnly">
+          工具
+        </ElCheckbox>
+        <ElCheckbox v-model="formData.moldFlag" :disabled="isReadOnly">
+          模具
+        </ElCheckbox>
       </template>
     </div>
   </div>

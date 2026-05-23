@@ -31,17 +31,24 @@ export namespace MesDvMachineryApi {
 
 /** 查询设备分页 */
 export function getMachineryPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvMachineryApi.Machinery>>('/mes/dv/machinery/page', { params });
+  return requestClient.get<PageResult<MesDvMachineryApi.Machinery>>(
+    '/mes/dv/machinery/page',
+    { params },
+  );
 }
 
 /** 查询设备精简列表 */
 export function getMachinerySimpleList() {
-  return requestClient.get<MesDvMachineryApi.Machinery[]>('/mes/dv/machinery/simple-list');
+  return requestClient.get<MesDvMachineryApi.Machinery[]>(
+    '/mes/dv/machinery/simple-list',
+  );
 }
 
 /** 查询设备详情 */
 export function getMachinery(id: number) {
-  return requestClient.get<MesDvMachineryApi.Machinery>(`/mes/dv/machinery/get?id=${id}`);
+  return requestClient.get<MesDvMachineryApi.Machinery>(
+    `/mes/dv/machinery/get?id=${id}`,
+  );
 }
 
 /** 新增设备 */
@@ -72,7 +79,7 @@ export function importMachineryTemplate() {
 /** 导入设备 */
 export function importMachinery(file: File, updateSupport: boolean) {
   return requestClient.upload<MesDvMachineryApi.MachineryImportRespVO>(
-    '/mes/dv/machinery/import?updateSupport=' + updateSupport,
+    `/mes/dv/machinery/import?updateSupport=${updateSupport}`,
     { file },
   );
 }

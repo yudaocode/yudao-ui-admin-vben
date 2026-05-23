@@ -149,7 +149,10 @@ function handleAuthInfoDialogClose() {
         <ElFormItem label="clientId">
           <div class="flex w-full gap-1">
             <ElInput v-model="authInfo.clientId" readonly class="flex-1" />
-            <ElButton type="primary" @click="copyToClipboard(authInfo.clientId)">
+            <ElButton
+              type="primary"
+              @click="copyToClipboard(authInfo.clientId)"
+            >
               <IconifyIcon icon="lucide:copy" />
             </ElButton>
           </div>
@@ -157,7 +160,10 @@ function handleAuthInfoDialogClose() {
         <ElFormItem label="username">
           <div class="flex w-full gap-1">
             <ElInput v-model="authInfo.username" readonly class="flex-1" />
-            <ElButton type="primary" @click="copyToClipboard(authInfo.username)">
+            <ElButton
+              type="primary"
+              @click="copyToClipboard(authInfo.username)"
+            >
               <IconifyIcon icon="lucide:copy" />
             </ElButton>
           </div>
@@ -178,7 +184,10 @@ function handleAuthInfoDialogClose() {
                 :icon="authPasswordVisible ? 'lucide:eye-off' : 'lucide:eye'"
               />
             </ElButton>
-            <ElButton type="primary" @click="copyToClipboard(authInfo.password)">
+            <ElButton
+              type="primary"
+              @click="copyToClipboard(authInfo.password)"
+            >
               <IconifyIcon icon="lucide:copy" />
             </ElButton>
           </div>

@@ -45,8 +45,16 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'workstationId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'workstationId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'postId',
       label: '岗位',
@@ -146,8 +154,11 @@ async function submitForm() {
   }
   formLoading.value = true;
   try {
-    const data = (await formApi.getValues()) as MesMdWorkstationWorkerApi.WorkstationWorker;
-    await (formData.value?.id ? updateWorkstationWorker(data) : createWorkstationWorker(data));
+    const data =
+      (await formApi.getValues()) as MesMdWorkstationWorkerApi.WorkstationWorker;
+    await (formData.value?.id
+      ? updateWorkstationWorker(data)
+      : createWorkstationWorker(data));
     formOpen.value = false;
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getList();

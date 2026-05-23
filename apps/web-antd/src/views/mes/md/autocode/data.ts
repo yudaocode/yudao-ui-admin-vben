@@ -270,10 +270,7 @@ export function usePartFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(
-          DICT_TYPE.MES_MD_AUTO_CODE_PART_TYPE,
-          'number',
-        ),
+        options: getDictOptions(DICT_TYPE.MES_MD_AUTO_CODE_PART_TYPE, 'number'),
         placeholder: '请选择分段类型',
       },
       rules: 'selectRequired',

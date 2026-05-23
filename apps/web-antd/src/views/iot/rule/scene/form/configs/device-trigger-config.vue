@@ -240,15 +240,23 @@ function removeConditionGroup() {
               >
                 <div class="gap-[8px] flex items-center">
                   <!-- 连接线 -->
-                  <div class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"></div>
+                  <div
+                    class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"
+                  ></div>
                   <!-- 或标签 -->
                   <div
                     class="px-[14px] py-[3px] rounded-full border border-orange-300 bg-orange-100 dark:border-orange-800 dark:bg-orange-950/50"
                   >
-                    <span class="text-[13px] font-semibold text-orange-600 dark:text-orange-300">或</span>
+                    <span
+                      class="text-[13px] font-semibold text-orange-600 dark:text-orange-300"
+                    >
+                      或
+                    </span>
                   </div>
                   <!-- 连接线 -->
-                  <div class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"></div>
+                  <div
+                    class="w-[32px] h-[1px] bg-orange-300 dark:bg-orange-800"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -261,7 +269,10 @@ function removeConditionGroup() {
           class="p-[24px] rounded-[8px] border-2 border-dashed border-orange-200 bg-orange-50/40 text-center dark:border-orange-900/40 dark:bg-orange-950/10"
         >
           <div class="gap-[10px] flex flex-col items-center">
-            <IconifyIcon icon="lucide:plus" class="text-[28px] text-orange-400 dark:text-orange-300" />
+            <IconifyIcon
+              icon="lucide:plus"
+              class="text-[28px] text-orange-400 dark:text-orange-300"
+            />
             <div class="text-orange-600 dark:text-orange-300">
               <p class="text-[13px] font-medium mb-[2px]">暂无子条件组</p>
               <p class="text-[12px]">点击上方「添加子条件组」按钮开始配置</p>

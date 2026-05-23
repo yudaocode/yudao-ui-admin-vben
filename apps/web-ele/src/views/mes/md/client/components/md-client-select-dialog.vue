@@ -69,8 +69,8 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesMdClientApi.Client[];
   records.forEach((row) => {
-    if (row.id != null) {
-      selectedMap.set(row.id, row);
+    if (row.id !== null) {
+      selectedMap.set(row.id as number, row);
     }
   });
   return [...selectedMap.values()];
@@ -112,7 +112,7 @@ async function applyPreSelection() {
   // proxy 表格回显选中时要读取 fullData，否则首次打开可能读不到刚查询出的数据。
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
       continue;
     }
     if (multiple.value) {
@@ -189,14 +189,19 @@ async function resetQueryState() {
 }
 
 /** 打开客户选择弹窗 */
-async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
+async function openModal(
+  selectedIds?: number[],
+  options?: { multiple?: boolean },
+) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
   latestQueryRows.value = [];
   queryFinished.value = false;
   await nextTick();
-  gridApi.setGridOptions({ columns: useClientSelectGridColumns(multiple.value) });
+  gridApi.setGridOptions({
+    columns: useClientSelectGridColumns(multiple.value),
+  });
   await resetQueryState();
   await gridApi.query();
   await nextTick();

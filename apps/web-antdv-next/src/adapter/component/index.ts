@@ -132,8 +132,8 @@ const Upload = UploadComponent;
 const Image = ImageComponent;
 const PreviewGroup = ImagePreviewGroup;
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {

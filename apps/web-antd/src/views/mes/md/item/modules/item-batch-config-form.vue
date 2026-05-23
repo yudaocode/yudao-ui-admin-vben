@@ -98,29 +98,80 @@ watch(
       <Button type="primary" @click="handleSave">保存批次属性</Button>
     </div>
     <div class="grid grid-cols-5 gap-x-5 gap-y-3">
-      <Checkbox v-model:checked="formData.produceDateFlag" :disabled="isReadOnly">生产日期</Checkbox>
-      <Checkbox v-model:checked="formData.qualityStatusFlag" :disabled="isReadOnly">质量状态</Checkbox>
+      <Checkbox
+        v-model:checked="formData.produceDateFlag"
+        :disabled="isReadOnly"
+      >
+        生产日期
+      </Checkbox>
+      <Checkbox
+        v-model:checked="formData.qualityStatusFlag"
+        :disabled="isReadOnly"
+      >
+        质量状态
+      </Checkbox>
 
       <template v-if="itemOrProduct === MesItemOrProductEnum.ITEM.value">
-        <Checkbox v-model:checked="formData.vendorFlag" :disabled="isReadOnly">供应商</Checkbox>
-        <Checkbox v-model:checked="formData.purchaseOrderCodeFlag" :disabled="isReadOnly">
+        <Checkbox v-model:checked="formData.vendorFlag" :disabled="isReadOnly">
+          供应商
+        </Checkbox>
+        <Checkbox
+          v-model:checked="formData.purchaseOrderCodeFlag"
+          :disabled="isReadOnly"
+        >
           采购订单编号
         </Checkbox>
-        <Checkbox v-model:checked="formData.lotNumberFlag" :disabled="isReadOnly">生产批号</Checkbox>
-        <Checkbox v-model:checked="formData.expireDateFlag" :disabled="isReadOnly">有效期</Checkbox>
-        <Checkbox v-model:checked="formData.receiptDateFlag" :disabled="isReadOnly">入库日期</Checkbox>
+        <Checkbox
+          v-model:checked="formData.lotNumberFlag"
+          :disabled="isReadOnly"
+        >
+          生产批号
+        </Checkbox>
+        <Checkbox
+          v-model:checked="formData.expireDateFlag"
+          :disabled="isReadOnly"
+        >
+          有效期
+        </Checkbox>
+        <Checkbox
+          v-model:checked="formData.receiptDateFlag"
+          :disabled="isReadOnly"
+        >
+          入库日期
+        </Checkbox>
       </template>
 
       <template v-if="itemOrProduct === MesItemOrProductEnum.PRODUCT.value">
-        <Checkbox v-model:checked="formData.clientFlag" :disabled="isReadOnly">客户</Checkbox>
-        <Checkbox v-model:checked="formData.salesOrderCodeFlag" :disabled="isReadOnly">
+        <Checkbox v-model:checked="formData.clientFlag" :disabled="isReadOnly">
+          客户
+        </Checkbox>
+        <Checkbox
+          v-model:checked="formData.salesOrderCodeFlag"
+          :disabled="isReadOnly"
+        >
           销售订单编号
         </Checkbox>
-        <Checkbox v-model:checked="formData.workorderFlag" :disabled="isReadOnly">生产工单</Checkbox>
-        <Checkbox v-model:checked="formData.taskFlag" :disabled="isReadOnly">生产任务</Checkbox>
-        <Checkbox v-model:checked="formData.workstationFlag" :disabled="isReadOnly">工作站</Checkbox>
-        <Checkbox v-model:checked="formData.toolFlag" :disabled="isReadOnly">工具</Checkbox>
-        <Checkbox v-model:checked="formData.moldFlag" :disabled="isReadOnly">模具</Checkbox>
+        <Checkbox
+          v-model:checked="formData.workorderFlag"
+          :disabled="isReadOnly"
+        >
+          生产工单
+        </Checkbox>
+        <Checkbox v-model:checked="formData.taskFlag" :disabled="isReadOnly">
+          生产任务
+        </Checkbox>
+        <Checkbox
+          v-model:checked="formData.workstationFlag"
+          :disabled="isReadOnly"
+        >
+          工作站
+        </Checkbox>
+        <Checkbox v-model:checked="formData.toolFlag" :disabled="isReadOnly">
+          工具
+        </Checkbox>
+        <Checkbox v-model:checked="formData.moldFlag" :disabled="isReadOnly">
+          模具
+        </Checkbox>
       </template>
     </div>
   </Spin>

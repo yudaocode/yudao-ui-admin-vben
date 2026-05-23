@@ -33,7 +33,8 @@ const tableColumnCount = 5;
 const printRows = computed<PrintRow[]>(() =>
   (printData.value.details || []).map((detail) => ({
     ...detail,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   })),
 );
 
@@ -62,7 +63,8 @@ function getPrintDictLabel(dictType: string, value?: number) {
 /** 打印移库单：加载数据后只展示打印区域，再调用浏览器打印 */
 async function print(id: number) {
   const order = await getMovementOrder(id);
-  const details = order.details || (await getMovementOrderDetailListByOrderId(id));
+  const details =
+    order.details || (await getMovementOrderDetailListByOrderId(id));
   printData.value = { ...order, details };
   await nextTick();
   await waitForPaint();
@@ -99,9 +101,13 @@ defineExpose({ print });
         <div>来源仓库：{{ printData.sourceWarehouseName || '-' }}</div>
         <div>目标仓库：{{ printData.targetWarehouseName || '-' }}</div>
         <div>
-          移库状态：{{ getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status) }}
+          移库状态：{{
+            getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status)
+          }}
         </div>
-        <div>单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}</div>
+        <div>
+          单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}
+        </div>
         <div>总数量：{{ formatQuantity(printData.totalQuantity) || '-' }}</div>
         <div>总金额：{{ formatPrice(printData.totalPrice) || '-' }}</div>
         <div class="col-span-3 grid grid-cols-2 gap-x-6">
@@ -119,19 +125,29 @@ defineExpose({ print });
       <table class="w-full border-collapse text-[13px] leading-[1.5]">
         <thead>
           <tr>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               商品信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               规格信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               数量
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               单价(元)
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               金额(元)
             </th>
           </tr>
@@ -167,11 +183,17 @@ defineExpose({ print });
             >
               合计
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumQuantity(printRows, (detail) => detail.quantity) }}
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"></td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            ></td>
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumPrice(printRows, (detail) => detail.totalPrice) }}
             </td>
           </tr>
@@ -196,9 +218,9 @@ defineExpose({ print });
 
 @media print {
   :global(body.wms-movement-order-printing) {
-    -webkit-print-color-adjust: exact;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
@@ -212,15 +234,15 @@ defineExpose({ print });
   }
 
   :global(body.wms-movement-order-printing .wms-movement-order-print) {
-    pointer-events: auto;
     position: absolute;
     top: 0;
     left: 0;
     z-index: auto;
     box-sizing: border-box;
     width: 100%;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: auto;
     opacity: 1;
   }
 }

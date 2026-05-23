@@ -19,21 +19,29 @@ export namespace MesDvMaintenRecordLineApi {
 
 /** 查询设备保养记录明细分页 */
 export function getMaintenRecordLinePage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvMaintenRecordLineApi.MaintenRecordLine>>('/mes/dv/mainten-record-line/page', { params });
+  return requestClient.get<
+    PageResult<MesDvMaintenRecordLineApi.MaintenRecordLine>
+  >('/mes/dv/mainten-record-line/page', { params });
 }
 
 /** 查询设备保养记录明细详情 */
 export function getMaintenRecordLine(id: number) {
-  return requestClient.get<MesDvMaintenRecordLineApi.MaintenRecordLine>(`/mes/dv/mainten-record-line/get?id=${id}`);
+  return requestClient.get<MesDvMaintenRecordLineApi.MaintenRecordLine>(
+    `/mes/dv/mainten-record-line/get?id=${id}`,
+  );
 }
 
 /** 新增设备保养记录明细 */
-export function createMaintenRecordLine(data: MesDvMaintenRecordLineApi.MaintenRecordLine) {
+export function createMaintenRecordLine(
+  data: MesDvMaintenRecordLineApi.MaintenRecordLine,
+) {
   return requestClient.post('/mes/dv/mainten-record-line/create', data);
 }
 
 /** 修改设备保养记录明细 */
-export function updateMaintenRecordLine(data: MesDvMaintenRecordLineApi.MaintenRecordLine) {
+export function updateMaintenRecordLine(
+  data: MesDvMaintenRecordLineApi.MaintenRecordLine,
+) {
   return requestClient.put('/mes/dv/mainten-record-line/update', data);
 }
 

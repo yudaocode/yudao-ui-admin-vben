@@ -95,11 +95,13 @@ const _updateElementBusinessKey = () => {
   );
 };
 // 根据类型调整字段type
+// @ts-expect-error unused
 const _changeFieldTypeType = (type: any) => {
   formFieldForm.value.type = type === 'custom' ? '' : type;
 };
 
 // 打开字段详情侧边栏
+// @ts-expect-error unused
 const _openFieldForm = (field: any, index: any) => {
   formFieldIndex.value = index;
   if (index === -1) {
@@ -135,6 +137,7 @@ const _openFieldForm = (field: any, index: any) => {
   fieldModelVisible.value = true;
 };
 // 打开字段 某个 配置项 弹窗
+// @ts-expect-error unused
 const _openFieldOptionForm = (option: any, index: any, type: any) => {
   fieldOptionModelVisible.value = true;
   fieldOptionType.value = type;
@@ -152,6 +155,7 @@ const _openFieldOptionForm = (option: any, index: any, type: any) => {
 };
 
 // 保存字段 某个 配置项
+// @ts-expect-error unused
 const _saveFieldOption = () => {
   if (formFieldOptionIndex.value === -1) {
     if (fieldOptionType.value === 'property') {
@@ -187,6 +191,7 @@ const _saveFieldOption = () => {
   fieldOptionForm.value = {};
 };
 // 保存字段配置
+// @ts-expect-error unused
 const _saveField = () => {
   const { id, type, label, defaultValue, datePattern } = formFieldForm.value;
   const Field = bpmnInstances().moddle.create(`${prefix}:FormField`, {
@@ -242,6 +247,7 @@ const _saveField = () => {
 };
 
 // 移除某个 字段的 配置项
+// @ts-expect-error unused
 const _removeFieldOptionItem = (_option: any, index: any, type: any) => {
   // console.log(option, 'option')
   if (type === 'property') {
@@ -255,6 +261,7 @@ const _removeFieldOptionItem = (_option: any, index: any, type: any) => {
   fieldConstraintsList.value.splice(index, 1);
 };
 // 移除 字段
+// @ts-expect-error unused
 const _removeField = (field: any, index: any) => {
   console.warn(field, 'field');
   fieldList.value.splice(index, 1);

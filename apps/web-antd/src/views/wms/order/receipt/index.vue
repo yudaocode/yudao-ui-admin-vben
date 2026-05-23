@@ -29,7 +29,11 @@ import {
   OrderStatusEnum,
   OrderUpdateStatusList,
 } from '#/views/wms/utils/constants';
-import { formatPrice, formatQuantity, multiplyPrice } from '#/views/wms/utils/format';
+import {
+  formatPrice,
+  formatQuantity,
+  multiplyPrice,
+} from '#/views/wms/utils/format';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import ReceiptOrderDetail from './modules/detail.vue';
@@ -210,7 +214,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【单据】入库" url="https://doc.iocoder.cn/wms/order/receipt/" />
+      <DocAlert
+        title="【单据】入库"
+        url="https://doc.iocoder.cn/wms/order/receipt/"
+      />
     </template>
     <FormModal @success="handleRefresh" />
     <DetailModal />

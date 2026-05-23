@@ -168,7 +168,9 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
             icon="ep:setting"
             class="text-[18px] text-[var(--el-color-primary)]"
           />
-          <span class="text-[16px] font-600 text-[var(--el-text-color-primary)]">
+          <span
+            class="text-[16px] font-600 text-[var(--el-text-color-primary)]"
+          >
             执行器配置
           </span>
           <ElTag size="small" type="info">
@@ -287,12 +289,16 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
                   icon="ep:warning"
                   class="text-base text-[var(--el-color-warning)]"
                 />
-                <span class="font-600 text-sm text-[var(--el-text-color-primary)]">
+                <span
+                  class="font-600 text-sm text-[var(--el-text-color-primary)]"
+                >
                   触发告警
                 </span>
                 <ElTag size="small" type="warning">自动执行</ElTag>
               </div>
-              <div class="text-xs leading-relaxed text-[var(--el-text-color-secondary)]">
+              <div
+                class="text-xs leading-relaxed text-[var(--el-text-color-secondary)]"
+              >
                 当触发条件满足时，系统将自动发送告警通知，可在菜单 [告警中心 ->
                 告警配置] 管理。
               </div>

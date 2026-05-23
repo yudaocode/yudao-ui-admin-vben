@@ -19,17 +19,24 @@ export namespace MesDvSubjectApi {
 
 /** 查询点检保养项目分页 */
 export function getSubjectPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvSubjectApi.Subject>>('/mes/dv/subject/page', { params });
+  return requestClient.get<PageResult<MesDvSubjectApi.Subject>>(
+    '/mes/dv/subject/page',
+    { params },
+  );
 }
 
 /** 查询点检保养项目精简列表 */
 export function getSubjectSimpleList() {
-  return requestClient.get<MesDvSubjectApi.Subject[]>('/mes/dv/subject/simple-list');
+  return requestClient.get<MesDvSubjectApi.Subject[]>(
+    '/mes/dv/subject/simple-list',
+  );
 }
 
 /** 查询点检保养项目详情 */
 export function getSubject(id: number) {
-  return requestClient.get<MesDvSubjectApi.Subject>(`/mes/dv/subject/get?id=${id}`);
+  return requestClient.get<MesDvSubjectApi.Subject>(
+    `/mes/dv/subject/get?id=${id}`,
+  );
 }
 
 /** 新增点检保养项目 */

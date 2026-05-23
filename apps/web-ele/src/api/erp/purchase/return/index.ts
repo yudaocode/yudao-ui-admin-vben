@@ -11,6 +11,7 @@ export namespace ErpPurchaseReturnApi {
     returnTime?: Date; // 退货时间
     totalCount?: number; // 合计数量
     totalPrice: number; // 合计金额，单位：元
+    refundPrice: number;
     discountPercent?: number; // 折扣百分比
     discountPrice?: number; // 折扣金额
     status?: number; // 状态

@@ -6,12 +6,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElCollapse,
-  ElCollapseItem,
-  ElMessage,
-} from 'element-plus';
+import { ElButton, ElCollapse, ElCollapseItem, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createDevice, getDevice, updateDevice } from '#/api/iot/device/device';

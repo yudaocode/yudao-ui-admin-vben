@@ -20,21 +20,30 @@ export namespace MesDvCheckRecordLineApi {
 
 /** 查询设备点检记录明细分页 */
 export function getCheckRecordLinePage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvCheckRecordLineApi.CheckRecordLine>>('/mes/dv/check-record-line/page', { params });
+  return requestClient.get<PageResult<MesDvCheckRecordLineApi.CheckRecordLine>>(
+    '/mes/dv/check-record-line/page',
+    { params },
+  );
 }
 
 /** 查询设备点检记录明细详情 */
 export function getCheckRecordLine(id: number) {
-  return requestClient.get<MesDvCheckRecordLineApi.CheckRecordLine>(`/mes/dv/check-record-line/get?id=${id}`);
+  return requestClient.get<MesDvCheckRecordLineApi.CheckRecordLine>(
+    `/mes/dv/check-record-line/get?id=${id}`,
+  );
 }
 
 /** 新增设备点检记录明细 */
-export function createCheckRecordLine(data: MesDvCheckRecordLineApi.CheckRecordLine) {
+export function createCheckRecordLine(
+  data: MesDvCheckRecordLineApi.CheckRecordLine,
+) {
   return requestClient.post('/mes/dv/check-record-line/create', data);
 }
 
 /** 修改设备点检记录明细 */
-export function updateCheckRecordLine(data: MesDvCheckRecordLineApi.CheckRecordLine) {
+export function updateCheckRecordLine(
+  data: MesDvCheckRecordLineApi.CheckRecordLine,
+) {
   return requestClient.put('/mes/dv/check-record-line/update', data);
 }
 

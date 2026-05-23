@@ -112,7 +112,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               查看消息
             </ElButton>
           </template>
-          <pre class="text-xs">{{ stringifyDeviceMessage(row.deviceMessage) }}</pre>
+          <pre class="text-xs">{{
+            stringifyDeviceMessage(row.deviceMessage)
+          }}</pre>
         </ElPopover>
         <span v-else class="text-gray-400">-</span>
       </template>

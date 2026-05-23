@@ -143,10 +143,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
-    <template
-      v-for="(item, index) in property.dataSpecsList"
-      :key="item.value"
-    >
+    <template v-for="(item, index) in property.dataSpecsList" :key="item.value">
       <div class="mb-[5px] flex w-full items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>

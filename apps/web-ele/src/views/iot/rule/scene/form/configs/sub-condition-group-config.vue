@@ -89,7 +89,10 @@ function updateCondition(
     <!-- 空状态 -->
     <div v-if="!subGroup || subGroup.length === 0" class="py-6 text-center">
       <div class="flex flex-col items-center gap-3">
-        <IconifyIcon icon="lucide:plus" class="text-8 text-[var(--el-text-color-secondary)]" />
+        <IconifyIcon
+          icon="lucide:plus"
+          class="text-8 text-[var(--el-text-color-secondary)]"
+        />
         <div class="text-[var(--el-text-color-secondary)]">
           <p class="mb-1 text-base font-bold">暂无条件</p>
           <p class="text-xs">点击下方按钮添加第一个条件</p>
@@ -121,7 +124,9 @@ function updateCondition(
               >
                 {{ conditionIndex + 1 }}
               </div>
-              <span class="text-base font-bold text-[var(--el-text-color-primary)]">
+              <span
+                class="text-base font-bold text-[var(--el-text-color-primary)]"
+              >
                 条件 {{ conditionIndex + 1 }}
               </span>
             </div>

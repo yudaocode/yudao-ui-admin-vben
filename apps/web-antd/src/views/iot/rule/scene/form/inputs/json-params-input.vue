@@ -436,78 +436,74 @@ watch(
           <template #content>
             <!-- 弹出层内容 -->
             <div class="json-params-detail-content">
-            <div class="mb-4 flex items-center gap-2">
-              <IconifyIcon :icon="titleIcon" class="text-lg text-primary" />
-              <span class="text-base font-bold text-foreground">
-                {{ title }}
-              </span>
-            </div>
+              <div class="mb-4 flex items-center gap-2">
+                <IconifyIcon :icon="titleIcon" class="text-lg text-primary" />
+                <span class="text-base font-bold text-foreground">
+                  {{ title }}
+                </span>
+              </div>
 
-            <div class="space-y-4">
-              <!-- 参数列表 -->
-              <div v-if="paramsList.length > 0">
-                <div class="mb-2 flex items-center gap-2">
-                  <IconifyIcon
-                    :icon="paramsIcon"
-                    class="text-base text-primary"
-                  />
-                  <span class="text-base font-bold text-foreground">
-                    {{ paramsLabel }}
-                  </span>
-                </div>
-                <div class="ml-6 space-y-2">
-                  <div
-                    v-for="param in paramsList"
-                    :key="param.identifier"
-                    class="flex items-center justify-between rounded-lg bg-card p-2"
-                  >
-                    <div class="flex-1">
-                      <div class="text-base font-bold text-foreground">
-                        {{ param.name }}
-                        <Tag
-                          v-if="param.required"
-                          color="error"
-                          class="ml-1"
-                        >
-                          {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
+              <div class="space-y-4">
+                <!-- 参数列表 -->
+                <div v-if="paramsList.length > 0">
+                  <div class="mb-2 flex items-center gap-2">
+                    <IconifyIcon
+                      :icon="paramsIcon"
+                      class="text-base text-primary"
+                    />
+                    <span class="text-base font-bold text-foreground">
+                      {{ paramsLabel }}
+                    </span>
+                  </div>
+                  <div class="ml-6 space-y-2">
+                    <div
+                      v-for="param in paramsList"
+                      :key="param.identifier"
+                      class="flex items-center justify-between rounded-lg bg-card p-2"
+                    >
+                      <div class="flex-1">
+                        <div class="text-base font-bold text-foreground">
+                          {{ param.name }}
+                          <Tag v-if="param.required" color="error" class="ml-1">
+                            {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
+                          </Tag>
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ param.identifier }}
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <Tag :color="getParamTypeTag(param.dataType)">
+                          {{ getParamTypeName(param.dataType) }}
                         </Tag>
+                        <span class="text-xs text-muted-foreground">
+                          {{ getExampleValue(param) }}
+                        </span>
                       </div>
-                      <div class="text-xs text-muted-foreground">
-                        {{ param.identifier }}
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <Tag :color="getParamTypeTag(param.dataType)">
-                        {{ getParamTypeName(param.dataType) }}
-                      </Tag>
-                      <span class="text-xs text-muted-foreground">
-                        {{ getExampleValue(param) }}
-                      </span>
                     </div>
                   </div>
-                </div>
 
-                <div class="ml-6 mt-3">
-                  <div class="mb-1 text-xs text-muted-foreground">
-                    {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
-                  </div>
-                  <pre
-                    class="border-l-[3px] overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-foreground"
-                  >
+                  <div class="ml-6 mt-3">
+                    <div class="mb-1 text-xs text-muted-foreground">
+                      {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
+                    </div>
+                    <pre
+                      class="border-l-[3px] overflow-x-auto rounded-lg border-primary bg-card p-3 text-sm text-foreground"
+                    >
                       <code>{{ generateExampleJson() }}</code>
                     </pre>
+                  </div>
                 </div>
-              </div>
 
-              <!-- 无参数提示 -->
-              <div v-else>
-                <div class="py-4 text-center">
-                  <p class="text-sm text-muted-foreground">
-                    {{ emptyMessage }}
-                  </p>
+                <!-- 无参数提示 -->
+                <div v-else>
+                  <div class="py-4 text-center">
+                    <p class="text-sm text-muted-foreground">
+                      {{ emptyMessage }}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </template>
           <Button

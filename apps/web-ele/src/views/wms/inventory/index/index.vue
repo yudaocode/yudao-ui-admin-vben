@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { InventoryDimension } from './data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsInventoryApi } from '#/api/wms/inventory';
 
@@ -12,12 +14,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getInventoryPage } from '#/api/wms/inventory';
 import { formatQuantity } from '#/views/wms/utils/format';
 
-import {
-  INVENTORY_DIMENSION,
-  type InventoryDimension,
-  useGridColumns,
-  useGridFormSchema,
-} from './data';
+import { INVENTORY_DIMENSION, useGridColumns, useGridFormSchema } from './data';
 
 interface InventoryRow extends WmsInventoryApi.Inventory {
   skuWarehouseId?: string;

@@ -42,6 +42,7 @@ const props = defineProps({
 // 当前节点
 const currentNode = useWatchNode(props);
 // 节点名称
+// @ts-expect-error unused
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.DELAY_TIMER_NODE);
 // 抄送人表单配置

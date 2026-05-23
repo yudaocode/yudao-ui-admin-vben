@@ -98,9 +98,7 @@ const selectedProperty = computed(() =>
 
 /** 处理选择变化事件 */
 function handleChange(value: any) {
-  const property = propertyList.value.find(
-    (item) => item.identifier === value,
-  );
+  const property = propertyList.value.find((item) => item.identifier === value);
   if (property) {
     emit('change', { type: property.dataType, config: property });
   }
@@ -154,23 +152,27 @@ function parseThingModelData(
     outputParams: event.outputParams,
     event,
   }));
-  const services = (tsl.services ?? []).map<PropertySelectorItem>((service) => ({
-    identifier: service.identifier!,
-    name: service.name!,
-    description: service.description,
-    dataType: 'struct',
-    type: IoTThingModelTypeEnum.SERVICE,
-    callType: service.callType,
-    required: service.required,
-    inputParams: service.inputParams,
-    outputParams: service.outputParams,
-    service,
-  }));
+  const services = (tsl.services ?? []).map<PropertySelectorItem>(
+    (service) => ({
+      identifier: service.identifier!,
+      name: service.name!,
+      description: service.description,
+      dataType: 'struct',
+      type: IoTThingModelTypeEnum.SERVICE,
+      callType: service.callType,
+      required: service.required,
+      inputParams: service.inputParams,
+      outputParams: service.outputParams,
+      service,
+    }),
+  );
   return [...properties, ...events, ...services];
 }
 
 /** 获取属性取值范围：数值型给 min~max；枚举 / 布尔给选项列表 */
-function getPropertyRange(property: ThingModelApi.Property): string | undefined {
+function getPropertyRange(
+  property: ThingModelApi.Property,
+): string | undefined {
   const specs = property.dataSpecs;
   if (specs && specs.min !== undefined && specs.max !== undefined) {
     return `${specs.min}~${specs.max}`;
@@ -225,7 +227,9 @@ watch(
           :value="property.identifier"
         >
           <div class="py-[2px] flex w-full items-center justify-between">
-            <span class="text-[14px] font-medium flex-1 truncate text-foreground">
+            <span
+              class="text-[14px] font-medium flex-1 truncate text-foreground"
+            >
               {{ property.name }}
             </span>
             <Tag class="ml-[8px] flex-shrink-0">
@@ -248,102 +252,124 @@ watch(
       <template #content>
         <!-- 弹出层内容 -->
         <div class="property-detail-content">
-        <div class="gap-[8px] mb-[12px] flex items-center">
-          <IconifyIcon icon="ep:info-filled" class="text-[16px] text-info" />
-          <span class="text-[14px] font-medium text-foreground">
-            {{ selectedProperty.name }}
-          </span>
-          <Tag>
-            {{ getDataTypeName(selectedProperty.dataType) }}
-          </Tag>
-        </div>
-
-        <div class="space-y-[8px] ml-[24px]">
-          <div class="gap-[8px] flex items-start">
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              标识符：
+          <div class="gap-[8px] mb-[12px] flex items-center">
+            <IconifyIcon icon="ep:info-filled" class="text-[16px] text-info" />
+            <span class="text-[14px] font-medium text-foreground">
+              {{ selectedProperty.name }}
             </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ selectedProperty.identifier }}
-            </span>
+            <Tag>
+              {{ getDataTypeName(selectedProperty.dataType) }}
+            </Tag>
           </div>
 
-          <div
-            v-if="selectedProperty.description"
-            class="gap-[8px] flex items-start"
-          >
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              描述：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ selectedProperty.description }}
-            </span>
-          </div>
+          <div class="space-y-[8px] ml-[24px]">
+            <div class="gap-[8px] flex items-start">
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                标识符：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ selectedProperty.identifier }}
+              </span>
+            </div>
 
-          <div v-if="selectedProperty.unit" class="gap-[8px] flex items-start">
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              单位：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ selectedProperty.unit }}
-            </span>
-          </div>
+            <div
+              v-if="selectedProperty.description"
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                描述：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ selectedProperty.description }}
+              </span>
+            </div>
 
-          <div v-if="selectedProperty.range" class="gap-[8px] flex items-start">
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              取值范围：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ selectedProperty.range }}
-            </span>
-          </div>
+            <div
+              v-if="selectedProperty.unit"
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                单位：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ selectedProperty.unit }}
+              </span>
+            </div>
 
-          <!-- 根据属性类型显示额外信息 -->
-          <div
-            v-if="
-              selectedProperty.type === IoTThingModelTypeEnum.PROPERTY &&
-              selectedProperty.accessMode
-            "
-            class="gap-[8px] flex items-start"
-          >
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              访问模式：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ getAccessModeLabel(selectedProperty.accessMode) }}
-            </span>
-          </div>
+            <div
+              v-if="selectedProperty.range"
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                取值范围：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ selectedProperty.range }}
+              </span>
+            </div>
 
-          <div
-            v-if="
-              selectedProperty.type === IoTThingModelTypeEnum.EVENT &&
-              selectedProperty.eventType
-            "
-            class="gap-[8px] flex items-start"
-          >
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              事件类型：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ getEventTypeLabel(selectedProperty.eventType) }}
-            </span>
-          </div>
+            <!-- 根据属性类型显示额外信息 -->
+            <div
+              v-if="
+                selectedProperty.type === IoTThingModelTypeEnum.PROPERTY &&
+                selectedProperty.accessMode
+              "
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                访问模式：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ getAccessModeLabel(selectedProperty.accessMode) }}
+              </span>
+            </div>
 
-          <div
-            v-if="
-              selectedProperty.type === IoTThingModelTypeEnum.SERVICE &&
-              selectedProperty.callType
-            "
-            class="gap-[8px] flex items-start"
-          >
-            <span class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground">
-              调用类型：
-            </span>
-            <span class="text-[12px] flex-1 text-foreground">
-              {{ getThingModelServiceCallTypeLabel(selectedProperty.callType) }}
-            </span>
+            <div
+              v-if="
+                selectedProperty.type === IoTThingModelTypeEnum.EVENT &&
+                selectedProperty.eventType
+              "
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                事件类型：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{ getEventTypeLabel(selectedProperty.eventType) }}
+              </span>
+            </div>
+
+            <div
+              v-if="
+                selectedProperty.type === IoTThingModelTypeEnum.SERVICE &&
+                selectedProperty.callType
+              "
+              class="gap-[8px] flex items-start"
+            >
+              <span
+                class="text-[12px] min-w-[60px] flex-shrink-0 text-muted-foreground"
+              >
+                调用类型：
+              </span>
+              <span class="text-[12px] flex-1 text-foreground">
+                {{
+                  getThingModelServiceCallTypeLabel(selectedProperty.callType)
+                }}
+              </span>
+            </div>
           </div>
-        </div>
         </div>
       </template>
       <Button

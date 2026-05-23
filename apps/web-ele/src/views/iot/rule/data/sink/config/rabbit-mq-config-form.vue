@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -37,7 +36,10 @@ onMounted(() => {
     :rules="[{ required: true, message: '主机地址不能为空', trigger: 'blur' }]"
     label="主机地址"
   >
-    <ElInput v-model="config.host" placeholder="请输入主机地址，如：localhost" />
+    <ElInput
+      v-model="config.host"
+      placeholder="请输入主机地址，如：localhost"
+    />
   </ElFormItem>
   <ElFormItem
     prop="config.port"

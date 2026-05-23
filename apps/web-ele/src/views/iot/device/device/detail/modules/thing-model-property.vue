@@ -334,7 +334,10 @@ onBeforeUnmount(() => {
               <!-- 标题区域 -->
               <div class="mb-3 flex items-center">
                 <div class="mr-2.5 flex items-center">
-                  <IconifyIcon class="text-lg text-[var(--el-color-primary)]" icon="ep:cpu" />
+                  <IconifyIcon
+                    class="text-lg text-[var(--el-color-primary)]"
+                    icon="ep:cpu"
+                  />
                 </div>
                 <div class="flex-1 text-base font-bold">{{ item.name }}</div>
                 <!-- 标识符 -->

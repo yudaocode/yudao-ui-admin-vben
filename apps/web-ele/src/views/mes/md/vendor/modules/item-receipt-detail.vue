@@ -8,10 +8,7 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  ElDescriptions,
-  ElDescriptionsItem,
-} from 'element-plus';
+import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getItemReceipt } from '#/api/mes/wm/itemreceipt';

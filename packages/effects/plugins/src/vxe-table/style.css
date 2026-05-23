@@ -143,3 +143,12 @@
 .vxe-table .required-field-error .ant-select .ant-select-selector {
   border-color: #ff4d4f !important;
 }
+
+/* 已读行默认样式 */
+.vxe-row--viewed {
+  color: hsl(var(--foreground) / 50%);
+
+  .vxe-body--column {
+    opacity: 0.9;
+  }
+}

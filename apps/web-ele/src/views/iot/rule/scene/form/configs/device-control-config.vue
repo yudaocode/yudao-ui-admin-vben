@@ -115,9 +115,8 @@ function handleDeviceChange(deviceId?: number) {
 function handleServiceChange(serviceIdentifier?: any) {
   // 根据服务标识符找到对应的服务对象
   const service =
-    serviceList.value.find(
-      (item) => item.identifier === serviceIdentifier,
-    ) || null;
+    serviceList.value.find((item) => item.identifier === serviceIdentifier) ||
+    null;
   selectedService.value = service;
 
   // 当服务变化时，清空参数配置
@@ -362,7 +361,10 @@ watch(
     </ElRow>
 
     <!-- 服务选择 - 服务调用类型时显示 -->
-    <div v-if="action.productId && isServiceInvokeAction" class="space-y-[16px]">
+    <div
+      v-if="action.productId && isServiceInvokeAction"
+      class="space-y-[16px]"
+    >
       <ElFormItem label="服务" required>
         <ElSelect
           v-model="action.identifier"

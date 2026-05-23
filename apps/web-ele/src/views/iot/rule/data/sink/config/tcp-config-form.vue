@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -75,7 +74,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.connectTimeoutMs"
-    :rules="[{ required: true, message: '连接超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '连接超时时间不能为空', trigger: 'blur' },
+    ]"
     label="连接超时(ms)"
   >
     <ElInputNumber
@@ -87,7 +88,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.readTimeoutMs"
-    :rules="[{ required: true, message: '读取超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '读取超时时间不能为空', trigger: 'blur' },
+    ]"
     label="读取超时(ms)"
   >
     <ElInputNumber
@@ -100,16 +103,14 @@ onMounted(() => {
   <ElFormItem prop="config.ssl" label="启用 SSL">
     <ElSwitch v-model="config.ssl" />
   </ElFormItem>
-  <ElFormItem
-    v-if="config.ssl"
-    prop="config.sslCertPath"
-    label="SSL 证书路径"
-  >
+  <ElFormItem v-if="config.ssl" prop="config.sslCertPath" label="SSL 证书路径">
     <ElInput v-model="config.sslCertPath" placeholder="请输入 SSL 证书路径" />
   </ElFormItem>
   <ElFormItem
     prop="config.dataFormat"
-    :rules="[{ required: true, message: '数据格式不能为空', trigger: 'change' }]"
+    :rules="[
+      { required: true, message: '数据格式不能为空', trigger: 'change' },
+    ]"
     label="数据格式"
   >
     <ElSelect v-model="config.dataFormat" placeholder="请选择数据格式">

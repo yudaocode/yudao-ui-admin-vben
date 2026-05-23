@@ -1,6 +1,5 @@
 <!--suppress HttpUrlsUsage -->
 <script lang="ts" setup>
-
 import { computed, onMounted, ref, watch } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -67,7 +66,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.method"
-    :rules="[{ required: true, message: '请求方法不能为空', trigger: 'change' }]"
+    :rules="[
+      { required: true, message: '请求方法不能为空', trigger: 'change' },
+    ]"
     label="请求方法"
   >
     <ElSelect v-model="config.method" placeholder="请选择请求方法">

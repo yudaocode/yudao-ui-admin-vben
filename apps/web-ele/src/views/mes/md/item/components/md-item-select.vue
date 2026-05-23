@@ -37,13 +37,18 @@ const hovering = ref(false); // 是否悬停
 const selectedItem = ref<MesMdItemApi.Item>(); // 当前选中物料
 
 const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
-const showClear = computed( // 是否显示清空图标
-  () => props.clearable && !props.disabled && hovering.value && props.modelValue != null,
+const showClear = computed(
+  // 是否显示清空图标
+  () =>
+    props.clearable &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue !== null,
 );
 
 /** 根据物料编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (id === null) {
     selectedItem.value = undefined;
     return;
   }
@@ -51,7 +56,7 @@ async function resolveItemById(id: number | undefined) {
     return;
   }
   try {
-    selectedItem.value = await getItem(id);
+    selectedItem.value = await getItem(id as number);
   } catch (error) {
     console.error('[MdItemSelect] resolveItemById failed:', error);
   }
@@ -83,8 +88,8 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
-  dialogRef.value?.open(selectedIds, { multiple: false });
+  const selectedIds = props.modelValue === null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds as number[], { multiple: false });
 }
 
 /** 回填选中的物料 */

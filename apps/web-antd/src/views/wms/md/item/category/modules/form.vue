@@ -52,8 +52,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as WmsItemCategoryApi.ItemCategory;
+    const data = (await formApi.getValues()) as WmsItemCategoryApi.ItemCategory;
     try {
       await (formData.value?.id
         ? updateItemCategory(data)

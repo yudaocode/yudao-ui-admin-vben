@@ -2,10 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import {
-  getDataTypeOptions,
-  IoTDataSpecsDataTypeEnum,
-} from '@vben/constants';
+import { getDataTypeOptions, IoTDataSpecsDataTypeEnum } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
 import { Form, Input, Radio } from 'ant-design-vue';

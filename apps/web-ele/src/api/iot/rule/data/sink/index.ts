@@ -150,14 +150,14 @@ export function getDataSinkPage(params: PageParam) {
 
 /** 查询数据流转目的详情 */
 export function getDataSink(id: number) {
-  return requestClient.get<DataSinkApi.DataSink>(
-    `/iot/data-sink/get?id=${id}`,
-  );
+  return requestClient.get<DataSinkApi.DataSink>(`/iot/data-sink/get?id=${id}`);
 }
 
 /** 查询数据流转目的（精简）列表 */
 export function getDataSinkSimpleList() {
-  return requestClient.get<DataSinkApi.DataSink[]>('/iot/data-sink/simple-list');
+  return requestClient.get<DataSinkApi.DataSink[]>(
+    '/iot/data-sink/simple-list',
+  );
 }
 
 /** 新增数据流转目的 */

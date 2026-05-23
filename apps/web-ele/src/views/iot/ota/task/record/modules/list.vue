@@ -72,7 +72,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             taskId: props.taskId,
-            status: activeTab.value === '' ? undefined : Number(activeTab.value),
+            status:
+              activeTab.value === '' ? undefined : Number(activeTab.value),
           });
         },
       },

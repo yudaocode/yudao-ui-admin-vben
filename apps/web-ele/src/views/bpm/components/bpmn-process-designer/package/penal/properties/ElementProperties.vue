@@ -56,10 +56,7 @@ const resetAttributesList = () => {
   elementPropertyList.value = cloneDeep(bpmnElementPropertyList.value ?? []);
 };
 
-const removeAttributes = (
-  _attr: { name: string; value: string },
-  index: number,
-) => {
+const removeAttributes = (_attr: any, index: number) => {
   confirm({
     title: '提示',
     content: '确认移除该属性吗？',
@@ -159,10 +156,7 @@ const [FieldModal, fieldModalApi] = useVbenModal({
   onConfirm: saveAttribute,
 });
 
-const openAttributesForm = (
-  attr: null | { name: string; value: string },
-  index: number,
-) => {
+const openAttributesForm = (attr: any, index: number) => {
   editingPropertyIndex.value = index;
   propertyForm.value = index === -1 ? {} : cloneDeep(attr || {});
   fieldModalApi.open();

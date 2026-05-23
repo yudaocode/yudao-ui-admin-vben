@@ -454,7 +454,9 @@ watch(
                   :icon="titleIcon"
                   class="text-lg text-[var(--el-color-primary)]"
                 />
-                <span class="text-base font-bold text-[var(--el-text-color-primary)]">
+                <span
+                  class="text-base font-bold text-[var(--el-text-color-primary)]"
+                >
                   {{ title }}
                 </span>
               </div>
@@ -467,7 +469,9 @@ watch(
                       :icon="paramsIcon"
                       class="text-base text-[var(--el-color-primary)]"
                     />
-                    <span class="text-base font-bold text-[var(--el-text-color-primary)]">
+                    <span
+                      class="text-base font-bold text-[var(--el-text-color-primary)]"
+                    >
                       {{ paramsLabel }}
                     </span>
                   </div>
@@ -478,7 +482,9 @@ watch(
                       class="flex items-center justify-between rounded-lg bg-card p-2"
                     >
                       <div class="flex-1">
-                        <div class="text-base font-bold text-[var(--el-text-color-primary)]">
+                        <div
+                          class="text-base font-bold text-[var(--el-text-color-primary)]"
+                        >
                           {{ param.name }}
                           <ElTag
                             v-if="param.required"
@@ -489,15 +495,22 @@ watch(
                             {{ JSON_PARAMS_INPUT_CONSTANTS.REQUIRED_TAG }}
                           </ElTag>
                         </div>
-                        <div class="text-xs text-[var(--el-text-color-secondary)]">
+                        <div
+                          class="text-xs text-[var(--el-text-color-secondary)]"
+                        >
                           {{ param.identifier }}
                         </div>
                       </div>
                       <div class="flex items-center gap-2">
-                        <ElTag :type="getParamTypeTag(param.dataType)" size="small">
+                        <ElTag
+                          :type="getParamTypeTag(param.dataType)"
+                          size="small"
+                        >
                           {{ getParamTypeName(param.dataType) }}
                         </ElTag>
-                        <span class="text-xs text-[var(--el-text-color-secondary)]">
+                        <span
+                          class="text-xs text-[var(--el-text-color-secondary)]"
+                        >
                           {{ getExampleValue(param) }}
                         </span>
                       </div>
@@ -505,7 +518,9 @@ watch(
                   </div>
 
                   <div class="ml-6 mt-3">
-                    <div class="mb-1 text-xs text-[var(--el-text-color-secondary)]">
+                    <div
+                      class="mb-1 text-xs text-[var(--el-text-color-secondary)]"
+                    >
                       {{ JSON_PARAMS_INPUT_CONSTANTS.COMPLETE_JSON_FORMAT }}
                     </div>
                     <pre

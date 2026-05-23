@@ -103,7 +103,9 @@ function handleTypeChange(type: number) {
       class="mx-4"
     >
       <Form.Item
-        :rules="[{ required: true, message: '目的名称不能为空', trigger: 'blur' }]"
+        :rules="[
+          { required: true, message: '目的名称不能为空', trigger: 'blur' },
+        ]"
         label="目的名称"
         name="name"
       >
@@ -117,13 +119,17 @@ function handleTypeChange(type: number) {
         />
       </Form.Item>
       <Form.Item
-        :rules="[{ required: true, message: '目的类型不能为空', trigger: 'change' }]"
+        :rules="[
+          { required: true, message: '目的类型不能为空', trigger: 'change' },
+        ]"
         label="目的类型"
         name="type"
       >
         <Select
           :value="formData.type"
-          :options="getDictOptions(DICT_TYPE.IOT_DATA_SINK_TYPE_ENUM, 'number') as any"
+          :options="
+            getDictOptions(DICT_TYPE.IOT_DATA_SINK_TYPE_ENUM, 'number') as any
+          "
           placeholder="请选择目的类型"
           @change="(value: any) => handleTypeChange(value as number)"
         />
@@ -166,7 +172,9 @@ function handleTypeChange(type: number) {
         v-model="formData.config"
       />
       <Form.Item
-        :rules="[{ required: true, message: '目的状态不能为空', trigger: 'change' }]"
+        :rules="[
+          { required: true, message: '目的状态不能为空', trigger: 'change' },
+        ]"
         label="目的状态"
         name="status"
       >

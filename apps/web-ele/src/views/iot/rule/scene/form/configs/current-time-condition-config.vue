@@ -225,7 +225,9 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-sm text-[var(--el-text-color-secondary)]">无需设置时间值</div>
+          <div v-else class="text-sm text-[var(--el-text-color-secondary)]">
+            无需设置时间值
+          </div>
         </ElFormItem>
       </ElCol>
 

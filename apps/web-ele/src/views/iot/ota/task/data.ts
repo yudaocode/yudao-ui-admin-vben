@@ -6,7 +6,6 @@ import { DICT_TYPE, IoTOtaTaskDeviceScopeEnum } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-
 /** 任务详情的描述字段 */
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [

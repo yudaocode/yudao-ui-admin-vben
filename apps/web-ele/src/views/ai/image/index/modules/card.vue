@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 const emits = defineEmits(['onBtnClick', 'onMjBtnClick']);
-
+// @ts-expect-error unused
 const cardImageRef = ref<any>(); // 卡片 image ref
 
 /** 处理点击事件  */

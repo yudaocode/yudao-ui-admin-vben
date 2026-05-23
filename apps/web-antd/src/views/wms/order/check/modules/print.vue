@@ -121,9 +121,13 @@ defineExpose({ print });
         <div>盘库单号：{{ printData.no || '-' }}</div>
         <div>仓库：{{ printData.warehouseName || '-' }}</div>
         <div>
-          盘库状态：{{ getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status) }}
+          盘库状态：{{
+            getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status)
+          }}
         </div>
-        <div>单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}</div>
+        <div>
+          单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}
+        </div>
         <div>
           盈亏数量：
           <span :class="getLossClass(printData.totalQuantity)">
@@ -153,28 +157,44 @@ defineExpose({ print });
       <table class="w-full border-collapse text-[13px] leading-[1.5]">
         <thead>
           <tr>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               商品信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               规格信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               账面库存
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               单价(元)
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               实际库存
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               实际金额(元)
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               盈亏数
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               实际盈亏金额(元)
             </th>
           </tr>
@@ -223,22 +243,36 @@ defineExpose({ print });
             >
               合计
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumQuantity(printRows, (detail) => detail.quantity) }}
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"></td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
-              {{ formatSumQuantity(printRows, (detail) => detail.checkQuantity) }}
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            ></td>
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
+              {{
+                formatSumQuantity(printRows, (detail) => detail.checkQuantity)
+              }}
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumPrice(printRows, (detail) => detail.actualPrice) }}
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               <span :class="getLossClass(totalDifferenceQuantity)">
                 {{ formatQuantity(totalDifferenceQuantity) }}
               </span>
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               <span :class="getLossClass(totalDifferencePrice)">
                 {{ formatPrice(totalDifferencePrice) }}
               </span>
@@ -265,9 +299,9 @@ defineExpose({ print });
 
 @media print {
   :global(body.wms-check-order-printing) {
-    -webkit-print-color-adjust: exact;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
@@ -281,15 +315,15 @@ defineExpose({ print });
   }
 
   :global(body.wms-check-order-printing .wms-check-order-print) {
-    pointer-events: auto;
     position: absolute;
     top: 0;
     left: 0;
     z-index: auto;
     box-sizing: border-box;
     width: 100%;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: auto;
     opacity: 1;
   }
 }

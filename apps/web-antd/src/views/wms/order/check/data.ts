@@ -67,7 +67,9 @@ export function getOrderDifferencePrice(order: {
   actualPrice?: number;
   totalPrice?: number;
 }) {
-  return roundPrice(Number(order.actualPrice || 0) - Number(order.totalPrice || 0));
+  return roundPrice(
+    Number(order.actualPrice || 0) - Number(order.totalPrice || 0),
+  );
 }
 
 /** 计算明细盈亏数量 */

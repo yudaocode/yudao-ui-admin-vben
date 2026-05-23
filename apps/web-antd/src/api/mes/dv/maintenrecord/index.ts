@@ -24,12 +24,17 @@ export namespace MesDvMaintenRecordApi {
 
 /** 查询设备保养记录分页 */
 export function getMaintenRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvMaintenRecordApi.MaintenRecord>>('/mes/dv/mainten-record/page', { params });
+  return requestClient.get<PageResult<MesDvMaintenRecordApi.MaintenRecord>>(
+    '/mes/dv/mainten-record/page',
+    { params },
+  );
 }
 
 /** 查询设备保养记录详情 */
 export function getMaintenRecord(id: number) {
-  return requestClient.get<MesDvMaintenRecordApi.MaintenRecord>(`/mes/dv/mainten-record/get?id=${id}`);
+  return requestClient.get<MesDvMaintenRecordApi.MaintenRecord>(
+    `/mes/dv/mainten-record/get?id=${id}`,
+  );
 }
 
 /** 新增设备保养记录 */
@@ -54,5 +59,7 @@ export function deleteMaintenRecord(id: number) {
 
 /** 导出设备保养记录 */
 export function exportMaintenRecord(params: any) {
-  return requestClient.download('/mes/dv/mainten-record/export-excel', { params });
+  return requestClient.download('/mes/dv/mainten-record/export-excel', {
+    params,
+  });
 }

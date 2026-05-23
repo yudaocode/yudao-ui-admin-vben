@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 
 import { CommonStatusEnum } from '@vben/constants';
 
-import { message, Modal } from 'ant-design-vue';
+import { Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getClientPage } from '#/api/mes/md/client';
@@ -47,13 +47,33 @@ async function waitTableReady(): Promise<void> {
   if (preSelectedIds.value.length === 0) {
     return;
   }
-  if (!multiple.value) {
-    const selected = checked && row ? [row] : [];
-    selectedRows.value = selected;
-    await syncSingleSelection(selected[0]);
-    return;
+  for (let index = 0; index < MAX_TABLE_READY_FRAMES; index += 1) {
+    if (queryFinished.value) {
+      const rows = getTableRows();
+      if (latestQueryRows.value.length === 0 && rows.length === 0) {
+        return;
+      }
+      if (latestQueryRows.value.length > 0 && rows.length > 0) {
+        return;
+      }
+    }
+    await waitNextFrame();
   }
-  selectedRows.value = records;
+}
+
+/** 获取多选记录，包含 VXE reserve 跨页记录 */
+function getMultipleSelectedRows() {
+  const selectedMap = new Map<number, MesMdClientApi.Client>();
+  const records = [
+    ...(gridApi.grid.getCheckboxReserveRecords?.() ?? []),
+    ...(gridApi.grid.getCheckboxRecords?.() ?? []),
+  ] as MesMdClientApi.Client[];
+  records.forEach((row) => {
+    if (row.id !== null) {
+      selectedMap.set(row.id as number, row);
+    }
+  });
+  return [...selectedMap.values()];
 }
 
 /** 处理勾选变化 */
@@ -92,7 +112,7 @@ async function applyPreSelection() {
   // proxy 表格回显选中时要读取 fullData，否则首次打开可能读不到刚查询出的数据。
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
       continue;
     }
     if (multiple.value) {
@@ -169,14 +189,19 @@ async function resetQueryState() {
 }
 
 /** 打开客户选择弹窗 */
-async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
+async function openModal(
+  selectedIds?: number[],
+  options?: { multiple?: boolean },
+) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
   latestQueryRows.value = [];
   queryFinished.value = false;
   await nextTick();
-  gridApi.setGridOptions({ columns: useClientSelectGridColumns(multiple.value) });
+  gridApi.setGridOptions({
+    columns: useClientSelectGridColumns(multiple.value),
+  });
   await resetQueryState();
   await gridApi.query();
   await nextTick();
@@ -213,5 +238,9 @@ defineExpose({ open: openModal });
     @cancel="closeModal"
   >
     <Grid table-title="客户列表" />
+    <template #footer>
+      <Button @click="closeModal"> 取消 </Button>
+      <Button type="primary" @click="handleConfirm"> 确定 </Button>
+    </template>
   </Modal>
 </template>

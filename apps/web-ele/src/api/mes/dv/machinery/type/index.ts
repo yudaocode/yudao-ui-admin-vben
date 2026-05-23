@@ -17,17 +17,24 @@ export namespace MesDvMachineryTypeApi {
 
 /** 查询设备类型列表 */
 export function getMachineryTypeList(params?: any) {
-  return requestClient.get<MesDvMachineryTypeApi.MachineryType[]>('/mes/dv/machinery-type/list', { params });
+  return requestClient.get<MesDvMachineryTypeApi.MachineryType[]>(
+    '/mes/dv/machinery-type/list',
+    { params },
+  );
 }
 
 /** 查询设备类型精简列表 */
 export function getMachineryTypeSimpleList() {
-  return requestClient.get<MesDvMachineryTypeApi.MachineryType[]>('/mes/dv/machinery-type/simple-list');
+  return requestClient.get<MesDvMachineryTypeApi.MachineryType[]>(
+    '/mes/dv/machinery-type/simple-list',
+  );
 }
 
 /** 查询设备类型详情 */
 export function getMachineryType(id: number) {
-  return requestClient.get<MesDvMachineryTypeApi.MachineryType>(`/mes/dv/machinery-type/get?id=${id}`);
+  return requestClient.get<MesDvMachineryTypeApi.MachineryType>(
+    `/mes/dv/machinery-type/get?id=${id}`,
+  );
 }
 
 /** 新增设备类型 */

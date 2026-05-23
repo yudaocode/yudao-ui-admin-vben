@@ -33,7 +33,8 @@ const tableColumnCount = 5;
 const printRows = computed<PrintRow[]>(() =>
   (printData.value.details || []).map((detail) => ({
     ...detail,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   })),
 );
 
@@ -62,7 +63,8 @@ function getPrintDictLabel(dictType: string, value?: number) {
 /** 打印入库单：加载数据后只展示打印区域，再调用浏览器打印 */
 async function print(id: number) {
   const order = await getReceiptOrder(id);
-  const details = order.details || (await getReceiptOrderDetailListByOrderId(id));
+  const details =
+    order.details || (await getReceiptOrderDetailListByOrderId(id));
   printData.value = { ...order, details };
   await nextTick();
   await waitForPaint();
@@ -97,13 +99,19 @@ defineExpose({ print });
       <div class="mb-3 grid grid-cols-3 gap-x-6 gap-y-2 text-sm leading-[1.5]">
         <div>入库单号：{{ printData.no || '-' }}</div>
         <div>
-          入库类型：{{ getPrintDictLabel(DICT_TYPE.WMS_RECEIPT_ORDER_TYPE, printData.type) }}
+          入库类型：{{
+            getPrintDictLabel(DICT_TYPE.WMS_RECEIPT_ORDER_TYPE, printData.type)
+          }}
         </div>
         <div>仓库：{{ printData.warehouseName || '-' }}</div>
         <div>
-          入库状态：{{ getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status) }}
+          入库状态：{{
+            getPrintDictLabel(DICT_TYPE.WMS_ORDER_STATUS, printData.status)
+          }}
         </div>
-        <div>单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}</div>
+        <div>
+          单据日期：{{ formatDate(printData.orderTime, 'YYYY-MM-DD') || '-' }}
+        </div>
         <div>供应商：{{ printData.merchantName || '-' }}</div>
         <div>业务单号：{{ printData.bizOrderNo || '-' }}</div>
         <div>总数量：{{ formatQuantity(printData.totalQuantity) || '-' }}</div>
@@ -123,19 +131,29 @@ defineExpose({ print });
       <table class="w-full border-collapse text-[13px] leading-[1.5]">
         <thead>
           <tr>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               商品信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               规格信息
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               数量
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               单价(元)
             </th>
-            <th class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold">
+            <th
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-left font-bold"
+            >
               金额(元)
             </th>
           </tr>
@@ -171,11 +189,17 @@ defineExpose({ print });
             >
               合计
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumQuantity(printRows, (detail) => detail.quantity) }}
             </td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"></td>
-            <td class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right">
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            ></td>
+            <td
+              class="border border-solid border-[#dcdfe6] bg-[#f5f7fa] p-2 text-right"
+            >
               {{ formatSumPrice(printRows, (detail) => detail.totalPrice) }}
             </td>
           </tr>
@@ -200,9 +224,9 @@ defineExpose({ print });
 
 @media print {
   :global(body.wms-receipt-order-printing) {
-    -webkit-print-color-adjust: exact;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
@@ -216,15 +240,15 @@ defineExpose({ print });
   }
 
   :global(body.wms-receipt-order-printing .wms-receipt-order-print) {
-    pointer-events: auto;
     position: absolute;
     top: 0;
     left: 0;
     z-index: auto;
     box-sizing: border-box;
     width: 100%;
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: auto;
     opacity: 1;
   }
 }

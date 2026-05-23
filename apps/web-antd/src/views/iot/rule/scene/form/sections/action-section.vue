@@ -268,7 +268,9 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
             >
               <div class="mb-2 flex items-center gap-2">
                 <IconifyIcon icon="ep:warning" class="text-base text-warning" />
-                <span class="font-semibold text-sm text-foreground">触发告警</span>
+                <span class="font-semibold text-sm text-foreground">
+                  触发告警
+                </span>
                 <Tag color="warning">自动执行</Tag>
               </div>
               <div class="text-xs leading-relaxed text-muted-foreground">

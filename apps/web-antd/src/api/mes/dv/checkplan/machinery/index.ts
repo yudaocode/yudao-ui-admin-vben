@@ -16,11 +16,15 @@ export namespace MesDvCheckPlanMachineryApi {
 
 /** 查询指定方案的设备列表 */
 export function getCheckPlanMachineryListByPlan(planId: number) {
-  return requestClient.get<MesDvCheckPlanMachineryApi.CheckPlanMachinery[]>(`/mes/dv/check-plan-machinery/list-by-plan?planId=${planId}`);
+  return requestClient.get<MesDvCheckPlanMachineryApi.CheckPlanMachinery[]>(
+    `/mes/dv/check-plan-machinery/list-by-plan?planId=${planId}`,
+  );
 }
 
 /** 新增方案设备关联 */
-export function createCheckPlanMachinery(data: MesDvCheckPlanMachineryApi.CheckPlanMachinery) {
+export function createCheckPlanMachinery(
+  data: MesDvCheckPlanMachineryApi.CheckPlanMachinery,
+) {
   return requestClient.post('/mes/dv/check-plan-machinery/create', data);
 }
 

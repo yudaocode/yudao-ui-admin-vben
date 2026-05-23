@@ -30,8 +30,6 @@ export function getBatchConfigByItemId(itemId: number) {
 }
 
 /** 保存批次属性配置 */
-export function saveBatchConfig(
-  data: MesMdItemBatchConfigApi.BatchConfig,
-) {
+export function saveBatchConfig(data: MesMdItemBatchConfigApi.BatchConfig) {
   return requestClient.post('/mes/md/item-batch-config/save', data);
 }

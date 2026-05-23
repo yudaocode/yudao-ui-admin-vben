@@ -116,7 +116,9 @@ onMounted(() => {
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
           <IconifyIcon icon="ep:lightning" class="text-[18px] text-primary" />
-          <span class="text-[16px] font-semibold text-foreground">触发器配置</span>
+          <span class="text-[16px] font-semibold text-foreground">
+            触发器配置
+          </span>
           <Tag color="default"> {{ triggers.length }} 个触发器 </Tag>
         </div>
         <Button type="primary" size="small" @click="addTrigger">

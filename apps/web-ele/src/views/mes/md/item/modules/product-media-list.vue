@@ -31,9 +31,7 @@ import { ImageUpload } from '#/components/upload';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
 
 type MediaKind = 'SIP' | 'SOP';
-type MediaItem =
-  | MesMdProductSipApi.ProductSip
-  | MesMdProductSopApi.ProductSop;
+type MediaItem = MesMdProductSipApi.ProductSip | MesMdProductSopApi.ProductSop;
 
 const props = withDefaults(
   defineProps<{
@@ -64,8 +62,16 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'itemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'itemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'title',
       label: '标题',
@@ -165,7 +171,9 @@ async function submitForm() {
   formLoading.value = true;
   try {
     const data = (await formApi.getValues()) as MediaItem;
-    await (formData.value?.id ? updateApi()(data as any) : createApi()(data as any));
+    await (formData.value?.id
+      ? updateApi()(data as any)
+      : createApi()(data as any));
     formOpen.value = false;
     ElMessage.success('保存成功');
     await getList();
@@ -226,11 +234,21 @@ watch(
           <div class="p-3">
             <div class="mb-1 truncate text-sm font-bold">{{ item.title }}</div>
             <div v-if="item.description" class="truncate text-xs text-gray-500">
-            {{ item.description }}
+              {{ item.description }}
             </div>
             <div v-if="!isReadOnly" class="mt-2 flex justify-end">
-              <ElButton link type="primary" size="small" @click="openForm(item)">编辑</ElButton>
-              <ElPopconfirm title="确认删除该数据吗？" @confirm="handleDelete(item.id!)">
+              <ElButton
+                link
+                type="primary"
+                size="small"
+                @click="openForm(item)"
+              >
+                编辑
+              </ElButton>
+              <ElPopconfirm
+                title="确认删除该数据吗？"
+                @confirm="handleDelete(item.id!)"
+              >
                 <template #reference>
                   <ElButton link type="danger" size="small">删除</ElButton>
                 </template>

@@ -252,7 +252,9 @@ watch(
       >
         <div class="py-[4px] flex w-full items-center justify-between">
           <div class="gap-[8px] flex items-center">
-            <div class="text-[14px] font-500 text-[var(--el-text-color-primary)]">
+            <div
+              class="text-[14px] font-500 text-[var(--el-text-color-primary)]"
+            >
               {{ operator.label }}
             </div>
             <div

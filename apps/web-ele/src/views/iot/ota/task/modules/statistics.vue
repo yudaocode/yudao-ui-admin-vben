@@ -6,7 +6,6 @@ import { getDictLabel } from '@vben/hooks';
 
 import { ElCard, ElCol, ElRow } from 'element-plus';
 
-
 const props = defineProps<{
   loading?: boolean;
   statistics: Record<string, number>;

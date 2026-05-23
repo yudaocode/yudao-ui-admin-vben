@@ -53,12 +53,16 @@ export function formatQuantity(value?: null | number | string) {
 /** 格式化金额 */
 export function formatPrice(value?: null | number | string) {
   const decimalValue = toFiniteDecimal(value);
-  return decimalValue === undefined ? '' : decimalValue.toFixed(PRICE_PRECISION);
+  return decimalValue === undefined
+    ? ''
+    : decimalValue.toFixed(PRICE_PRECISION);
 }
 
 /** 金额四舍五入 */
 export function roundPrice(value: number) {
-  return Number.isFinite(value) ? Number(value.toFixed(PRICE_PRECISION)) : undefined;
+  return Number.isFinite(value)
+    ? Number(value.toFixed(PRICE_PRECISION))
+    : undefined;
 }
 
 /** 亏损数字样式 */
@@ -117,7 +121,9 @@ export function formatSumPrice<T>(
 /** 格式化重量 */
 export function formatWeight(value?: null | number | string) {
   const decimalValue = toFiniteDecimal(value);
-  return decimalValue === undefined ? '' : decimalValue.toFixed(WEIGHT_PRECISION);
+  return decimalValue === undefined
+    ? ''
+    : decimalValue.toFixed(WEIGHT_PRECISION);
 }
 
 /** 格式化长宽高 */
@@ -139,9 +145,11 @@ export function formatDimensionText(
     !isNullOrUndefined(width) &&
     !isNullOrUndefined(height)
   ) {
-    return [formatDimension(length), formatDimension(width), formatDimension(height)].join(
-      ' * ',
-    );
+    return [
+      formatDimension(length),
+      formatDimension(width),
+      formatDimension(height),
+    ].join(' * ');
   }
   return [
     isNullOrUndefined(length) ? undefined : `长：${formatDimension(length)}`,

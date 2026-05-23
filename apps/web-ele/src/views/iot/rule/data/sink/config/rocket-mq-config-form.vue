@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -32,7 +31,9 @@ onMounted(() => {
 <template>
   <ElFormItem
     prop="config.nameServer"
-    :rules="[{ required: true, message: 'NameServer 地址不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'NameServer 地址不能为空', trigger: 'blur' },
+    ]"
     label="NameServer"
   >
     <ElInput
@@ -42,14 +43,18 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.accessKey"
-    :rules="[{ required: true, message: 'AccessKey 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'AccessKey 不能为空', trigger: 'blur' },
+    ]"
     label="AccessKey"
   >
     <ElInput v-model="config.accessKey" placeholder="请输入 AccessKey" />
   </ElFormItem>
   <ElFormItem
     prop="config.secretKey"
-    :rules="[{ required: true, message: 'SecretKey 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'SecretKey 不能为空', trigger: 'blur' },
+    ]"
     label="SecretKey"
   >
     <ElInput

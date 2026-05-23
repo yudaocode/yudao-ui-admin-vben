@@ -122,7 +122,6 @@ async function renderChartWhenReady() {
   await nextTick();
   initChart();
 }
-
 </script>
 
 <template>

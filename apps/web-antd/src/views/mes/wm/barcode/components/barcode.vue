@@ -3,10 +3,7 @@ import type { BarcodeFormat } from '@vben/common-ui';
 
 import { computed, ref } from 'vue';
 
-import {
-  BarcodeFormatEnum,
-  Barcode as CommonBarcode,
-} from '@vben/common-ui';
+import { BarcodeFormatEnum, Barcode as CommonBarcode } from '@vben/common-ui';
 
 defineOptions({ name: 'MesWmBarcode' });
 

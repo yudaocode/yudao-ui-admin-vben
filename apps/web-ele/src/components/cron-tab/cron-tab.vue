@@ -11,7 +11,6 @@ import {
   ElForm,
   ElFormItem,
   ElInput,
-  ElInputNumber,
   ElMessage,
   ElOption,
   ElRadioButton,
@@ -462,14 +461,14 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.second.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.second.range.start"
                 :max="59"
                 :min="0"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.second.range.end"
                 :max="59"
                 :min="0"
@@ -477,14 +476,14 @@ function inputChange() {
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.second.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.second.loop.start"
                 :max="59"
                 :min="0"
                 controls-position="right"
               />
               秒开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.second.loop.end"
                 :max="59"
                 :min="0"
@@ -525,14 +524,14 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.minute.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.minute.range.start"
                 :max="59"
                 :min="0"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.minute.range.end"
                 :max="59"
                 :min="0"
@@ -540,14 +539,14 @@ function inputChange() {
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.minute.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.minute.loop.start"
                 :max="59"
                 :min="0"
                 controls-position="right"
               />
               分钟开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.minute.loop.end"
                 :max="59"
                 :min="0"
@@ -588,14 +587,14 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.hour.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.hour.range.start"
                 :max="23"
                 :min="0"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.hour.range.end"
                 :max="23"
                 :min="0"
@@ -603,14 +602,14 @@ function inputChange() {
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.hour.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.hour.loop.start"
                 :max="23"
                 :min="0"
                 controls-position="right"
               />
               小时开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.hour.loop.end"
                 :max="23"
                 :min="0"
@@ -653,14 +652,14 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.day.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.day.range.start"
                 :max="31"
                 :min="1"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.day.range.end"
                 :max="31"
                 :min="1"
@@ -668,14 +667,14 @@ function inputChange() {
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.day.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.day.loop.start"
                 :max="31"
                 :min="1"
                 controls-position="right"
               />
               号开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.day.loop.end"
                 :max="31"
                 :min="1"
@@ -716,14 +715,14 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.month.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.month.range.start"
                 :max="12"
                 :min="1"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.month.range.end"
                 :max="12"
                 :min="1"
@@ -731,14 +730,14 @@ function inputChange() {
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.month.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.month.loop.start"
                 :max="12"
                 :min="1"
                 controls-position="right"
               />
               月开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.month.loop.end"
                 :max="12"
                 :min="1"
@@ -802,7 +801,7 @@ function inputChange() {
               </ElFormItem>
               <ElFormItem v-if="cronValue.week.type === '2'" label="间隔">
                 第
-                <ElInputNumber
+                <ElInput
                   v-model="cronValue.week.loop.start"
                   :max="4"
                   :min="1"
@@ -864,23 +863,23 @@ function inputChange() {
               </ElRadioGroup>
             </ElFormItem>
             <ElFormItem v-if="cronValue.year.type === '1'" label="范围">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.year.range.start"
                 controls-position="right"
               />
               <span style="padding: 0 15px">-</span>
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.year.range.end"
                 controls-position="right"
               />
             </ElFormItem>
             <ElFormItem v-if="cronValue.year.type === '2'" label="间隔">
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.year.loop.start"
                 controls-position="right"
               />
               年开始，每
-              <ElInputNumber
+              <ElInput
                 v-model="cronValue.year.loop.end"
                 :min="1"
                 controls-position="right"

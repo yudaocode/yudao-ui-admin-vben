@@ -135,11 +135,7 @@ function deleteParamItem(index: number) {
       :wrapper-col="{ span: 18 }"
       class="mx-4"
     >
-      <Form.Item
-        :rules="ThingModelFormRules.name"
-        label="参数名称"
-        name="name"
-      >
+      <Form.Item :rules="ThingModelFormRules.name" label="参数名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入参数名称" />
       </Form.Item>
       <Form.Item

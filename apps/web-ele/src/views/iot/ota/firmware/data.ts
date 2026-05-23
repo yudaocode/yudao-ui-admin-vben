@@ -17,9 +17,7 @@ export function getProductName(productId?: number): string {
   if (!productId) {
     return '-';
   }
-  return (
-    productList.find((product) => product.id === productId)?.name || '-'
-  );
+  return productList.find((product) => product.id === productId)?.name || '-';
 }
 
 /** 固件详情的描述字段 */

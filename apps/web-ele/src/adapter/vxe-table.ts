@@ -5,6 +5,7 @@ import type { ComponentPropsMap, ComponentType } from './component';
 
 import { h } from 'vue';
 
+import { IconifyIcon } from '@vben/icons';
 import { $te } from '@vben/locales';
 import {
   AsyncVxeColumn,

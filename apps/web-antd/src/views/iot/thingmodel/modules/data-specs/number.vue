@@ -53,9 +53,7 @@ function unitChange(unitSpecs: any) {
   </Form.Item>
   <Form.Item label="单位">
     <Select
-      :value="
-        dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''
-      "
+      :value="dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''"
       show-search
       placeholder="请选择单位"
       class="w-full"

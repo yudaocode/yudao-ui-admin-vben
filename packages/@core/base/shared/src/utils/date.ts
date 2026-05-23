@@ -21,7 +21,7 @@ type Format =
 
 export function formatDate(time?: FormatDate, format: Format = 'YYYY-MM-DD') {
   // 日期不存在，则返回空
-  if (!time) {
+  if (time === undefined || time === null || time === '') {
     return '';
   }
   try {

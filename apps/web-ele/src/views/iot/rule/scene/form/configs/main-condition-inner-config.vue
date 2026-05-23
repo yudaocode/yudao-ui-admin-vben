@@ -368,7 +368,9 @@ function handlePropertyChange(propertyInfo: any) {
       <p class="mb-1 text-sm text-[var(--el-text-color-secondary)]">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-[var(--el-text-color-secondary)]">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-[var(--el-text-color-secondary)]">
+        此触发类型暂不需要配置额外条件
+      </p>
     </div>
   </div>
 </template>

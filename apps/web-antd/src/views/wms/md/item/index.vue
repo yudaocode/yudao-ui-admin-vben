@@ -108,10 +108,7 @@ function handleSpanMethod({
     return { colspan: 1, rowspan: 1 };
   }
   const row = currentRows.value[rowIndex];
-  if (
-    rowIndex > 0 &&
-    currentRows.value[rowIndex - 1]?.itemId === row?.itemId
-  ) {
+  if (rowIndex > 0 && currentRows.value[rowIndex - 1]?.itemId === row?.itemId) {
     return { colspan: 0, rowspan: 0 };
   }
   let rowspan = 1;
