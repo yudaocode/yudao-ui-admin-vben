@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, InputNumber } from 'ant-design-vue';
+import { Form, Input, InputNumber, Select } from 'ant-design-vue';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -13,8 +13,23 @@ const props = defineProps<{ modelValue: any }>();
 const emit = defineEmits(['update:modelValue']);
 const config = useVModel(props, 'modelValue', emit);
 
+const REDIS_DATA_STRUCTURE_OPTIONS = [
+  { label: 'Stream', value: 1 },
+  { label: 'Hash', value: 2 },
+  { label: 'List', value: 3 },
+  { label: 'Set', value: 4 },
+  { label: 'ZSet', value: 5 },
+  { label: 'String', value: 6 },
+]; // Redis 数据结构枚举（与后端 IotRedisDataStructureEnum 对应）
+
+const isHash = computed(() => Number(config.value?.dataStructure) === 2);
+const isZSet = computed(() => Number(config.value?.dataStructure) === 5);
+
 onMounted(() => {
   if (!isEmpty(config.value)) {
+    if (config.value.dataStructure == null) {
+      config.value.dataStructure = 1;
+    }
     return;
   }
   config.value = {
@@ -24,6 +39,7 @@ onMounted(() => {
     password: '',
     database: 0,
     topic: '',
+    dataStructure: 1,
   };
 });
 </script>
@@ -88,5 +104,38 @@ onMounted(() => {
     label="主题"
   >
     <Input v-model:value="config.topic" placeholder="请输入主题" />
+  </Form.Item>
+  <Form.Item
+    :name="['config', 'dataStructure']"
+    :rules="[
+      { required: true, message: 'Redis 数据结构不能为空', trigger: 'change' },
+    ]"
+    label="数据结构"
+  >
+    <Select
+      v-model:value="config.dataStructure"
+      :options="REDIS_DATA_STRUCTURE_OPTIONS"
+      placeholder="请选择 Redis 数据结构"
+    />
+  </Form.Item>
+  <Form.Item
+    v-if="isHash"
+    :name="['config', 'hashField']"
+    label="Hash 字段"
+  >
+    <Input
+      v-model:value="config.hashField"
+      placeholder="留空使用 deviceId 作为 Hash 字段"
+    />
+  </Form.Item>
+  <Form.Item
+    v-if="isZSet"
+    :name="['config', 'scoreField']"
+    label="Score 字段"
+  >
+    <Input
+      v-model:value="config.scoreField"
+      placeholder="留空使用当前时间戳作为 Score"
+    />
   </Form.Item>
 </template>

@@ -12,7 +12,14 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { ElCol, ElFormItem, ElOption, ElRow, ElSelect } from 'element-plus';
+import {
+  ElCol,
+  ElFormItem,
+  ElInput,
+  ElOption,
+  ElRow,
+  ElSelect,
+} from 'element-plus';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -99,22 +106,6 @@ const serviceConfig = computed(() => {
       service: {
         name: propertyConfig.value.name || '服务',
         inputParams: propertyConfig.value.inputParams || [],
-      },
-    };
-  }
-  return undefined;
-});
-
-// 计算属性：事件配置 - 用于 JsonParamsInput
-const eventConfig = computed(() => {
-  if (
-    propertyConfig.value &&
-    props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
-  ) {
-    return {
-      event: {
-        name: propertyConfig.value.name || '事件',
-        outputParams: propertyConfig.value.outputParams || [],
       },
     };
   }
@@ -265,15 +256,16 @@ function handlePropertyChange(propertyInfo: any) {
               :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
-            <!-- 事件上报参数配置 -->
-            <JsonParamsInput
+            <!-- 事件上报参数配置：源项目允许标量值或留空表示事件发生即匹配 -->
+            <ElInput
               v-else-if="
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
-              v-model="condition.value"
-              type="event"
-              :config="eventConfig as any"
-              placeholder="请输入 JSON 格式的事件参数"
+              :model-value="condition.value"
+              @update:model-value="
+                (value: any) => updateConditionField('value', value)
+              "
+              placeholder="留空则事件发生即匹配"
             />
             <!-- 普通值输入 -->
             <ValueInput

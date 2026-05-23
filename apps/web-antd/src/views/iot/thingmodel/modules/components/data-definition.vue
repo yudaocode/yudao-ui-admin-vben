@@ -33,7 +33,7 @@ const formattedDataSpecsList = computed(() => {
     return '';
   }
   return props.data.property.dataSpecsList
-    .map((item) => `${item.value}-${item.name}`)
+    .map((item) => `${item.name}-${item.value}`)
     .join('、');
 });
 
@@ -44,8 +44,8 @@ const shortText = computed(() => {
   }
   const first = list[0];
   return list.length > 1
-    ? `${first.value}-${first.name} 等 ${list.length} 项`
-    : `${first.value}-${first.name}`;
+    ? `${first.name}-${first.value} 等 ${list.length} 项`
+    : `${first.name}-${first.value}`;
 });
 </script>
 

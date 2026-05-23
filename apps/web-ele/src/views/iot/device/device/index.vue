@@ -424,6 +424,11 @@ onMounted(async () => {
 
     <!-- 列表视图 -->
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
+      <template #deviceName="{ row }">
+        <a class="cursor-pointer text-primary" @click="openDetail(row.id!)">
+          {{ row.deviceName }}
+        </a>
+      </template>
       <template #product="{ row }">
         <a
           class="cursor-pointer text-[var(--el-color-primary)]"

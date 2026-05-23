@@ -107,7 +107,6 @@ export function useBasicFormSchema(
       componentProps: {
         options: getDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, 'number'),
       },
-      defaultValue: DeviceTypeEnum.DEVICE,
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({

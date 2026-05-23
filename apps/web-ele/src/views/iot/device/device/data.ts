@@ -276,6 +276,7 @@ export function useGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['colu
       field: 'deviceName',
       title: 'DeviceName',
       minWidth: 150,
+      slots: { default: 'deviceName' },
     },
     {
       field: 'nickname',

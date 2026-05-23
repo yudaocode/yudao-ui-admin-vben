@@ -176,9 +176,11 @@ function validate() {
   return Promise.resolve();
 }
 
-/** 取当前所有行的值 */
+/** 取当前所有行的值（剔除 identifierLoading 等仅供 UI 使用的临时字段） */
 function getData() {
-  return formData.value;
+  return formData.value.map(
+    ({ identifierLoading: _identifierLoading, ...rest }) => rest,
+  );
 }
 
 /** 设置初始数据 */

@@ -68,5 +68,6 @@ function handleChange(val: any) {
   <ThingModelStructDataSpecs
     v-if="dataSpecs.childDataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="dataSpecs.dataSpecsList"
+    field-path="property.dataSpecs.dataSpecsList"
   />
 </template>

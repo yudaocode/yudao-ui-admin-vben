@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
-import { isEmpty } from '@vben/utils';
+import { cloneDeep, isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -78,15 +78,15 @@ const [Modal, modalApi] = useVbenModal({
     if (isEmpty(data)) {
       return;
     }
-    // 设置到 values
+    // 编辑回显时 cloneDeep，避免弹窗 v-model 改到原始对象（用户取消时不污染外层 thingModelParams）
     formData.value = {
       identifier: data.identifier ?? '',
       name: data.name ?? '',
       description: data.description ?? '',
       property: {
         dataType: data.dataType ?? IoTDataSpecsDataTypeEnum.INT,
-        dataSpecs: data.dataSpecs ?? {},
-        dataSpecsList: data.dataSpecsList ?? [],
+        dataSpecs: data.dataSpecs ? cloneDeep(data.dataSpecs) : {},
+        dataSpecsList: data.dataSpecsList ? cloneDeep(data.dataSpecsList) : [],
       },
     };
   },

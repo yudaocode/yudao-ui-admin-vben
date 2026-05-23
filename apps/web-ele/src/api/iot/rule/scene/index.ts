@@ -81,13 +81,6 @@ export function deleteSceneRule(id: number) {
   return requestClient.delete(`/iot/scene-rule/delete?id=${id}`);
 }
 
-/** 批量删除场景联动规则 */
-export function deleteSceneRuleList(ids: number[]) {
-  return requestClient.delete('/iot/scene-rule/delete-list', {
-    params: { ids: ids.join(',') },
-  });
-}
-
 /** 更新场景联动规则状态 */
 export function updateSceneRuleStatus(id: number, status: number) {
   return requestClient.put(`/iot/scene-rule/update-status`, {

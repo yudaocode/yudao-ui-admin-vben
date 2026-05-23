@@ -110,7 +110,6 @@ export function useBasicFormSchema(
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      defaultValue: DeviceTypeEnum.DEVICE,
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({

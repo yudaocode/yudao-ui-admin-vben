@@ -173,13 +173,16 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center text-[13px]">
                   <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
-                    Deviceid
+                    备注名称
                   </span>
-                  <ElTooltip :content="String(item.id)" placement="top">
+                  <ElTooltip
+                    :content="item.nickname || item.deviceName"
+                    placement="top"
+                  >
                     <span
-                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle font-mono text-xs opacity-85 dark:text-white/75"
+                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle text-xs opacity-85 dark:text-white/75"
                     >
-                      {{ item.id }}
+                      {{ item.nickname || item.deviceName }}
                     </span>
                   </ElTooltip>
                 </div>

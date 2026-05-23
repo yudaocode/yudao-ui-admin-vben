@@ -183,6 +183,23 @@ const MES_DICT = {
   MES_MD_AUTO_CODE_PART_TYPE: 'mes_md_auto_code_part_type', // MES 编码规则分段类型
   MES_CLIENT_TYPE: 'mes_client_type', // MES 客户类型
   MES_VENDOR_LEVEL: 'mes_vendor_level', // MES 供应商级别
+  MES_CAL_HOLIDAY_TYPE: 'mes_cal_holiday_type', // MES 假期类型
+  MES_CAL_SHIFT_TYPE: 'mes_cal_shift_type', // MES 轮班方式
+  MES_CAL_SHIFT_METHOD: 'mes_cal_shift_method', // MES 倒班方式
+  MES_CAL_CALENDAR_TYPE: 'mes_cal_calendar_type', // MES 班组类型
+  MES_CAL_PLAN_STATUS: 'mes_cal_plan_status', // MES 排班计划状态
+  MES_TM_TOOL_STATUS: 'mes_tm_tool_status', // MES 工具状态
+  MES_TM_MAINTEN_TYPE: 'mes_tm_mainten_type', // MES 保养维护类型
+  MES_DV_MACHINERY_STATUS: 'mes_dv_machinery_status', // MES 设备状态
+  MES_DV_SUBJECT_TYPE: 'mes_dv_subject_type', // MES 点检保养项目类型
+  MES_DV_CYCLE_TYPE: 'mes_dv_cycle_type', // MES 点检保养周期类型
+  MES_DV_CHECK_PLAN_STATUS: 'mes_dv_check_plan_status', // MES 点检保养方案状态
+  MES_MAINTEN_RECORD_STATUS: 'mes_mainten_record_status', // MES 保养记录状态
+  MES_MAINTEN_STATUS: 'mes_mainten_status', // MES 保养结果
+  MES_DV_REPAIR_STATUS: 'mes_dv_repair_status', // MES 维修工单状态
+  MES_DV_REPAIR_RESULT: 'mes_dv_repair_result', // MES 维修结果
+  MES_DV_CHECK_RECORD_STATUS: 'mes_dv_check_record_status', // MES 点检记录状态
+  MES_DV_CHECK_RESULT: 'mes_dv_check_result', // MES 点检结果
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态

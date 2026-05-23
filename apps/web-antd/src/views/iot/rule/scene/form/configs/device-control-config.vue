@@ -69,18 +69,16 @@ const isServiceInvokeAction = computed(() => {
 /**
  * 处理产品变化事件
  * @param productId 产品 ID
+ *
+ * ProductSelector 只在用户主动切换时 emit change，编辑回填阶段不会触发。
  */
 function handleProductChange(productId?: number) {
-  // 当产品变化时，清空设备选择和参数配置
-  if (action.value.productId !== productId) {
-    action.value.deviceId = undefined;
-    action.value.identifier = undefined; // 清空服务标识符
-    action.value.params = '' as any; // 清空参数，保存为空字符串
-    selectedService.value = null; // 清空选中的服务
-    serviceList.value = []; // 清空服务列表
-  }
+  action.value.deviceId = undefined;
+  action.value.identifier = undefined;
+  action.value.params = '' as any;
+  selectedService.value = null;
+  serviceList.value = [];
 
-  // 加载新产品的物模型属性或服务列表
   if (productId) {
     if (isPropertySetAction.value) {
       loadThingModelProperties(productId);
@@ -94,11 +92,8 @@ function handleProductChange(productId?: number) {
  * 处理设备变化事件
  * @param deviceId 设备 ID
  */
-function handleDeviceChange(deviceId?: number) {
-  // 当设备变化时，清空参数配置
-  if (action.value.deviceId !== deviceId) {
-    action.value.params = '' as any; // 清空参数，保存为空字符串
-  }
+function handleDeviceChange(_deviceId?: number) {
+  action.value.params = '' as any;
 }
 
 /**
@@ -257,14 +252,10 @@ function getDefaultValueForParam(param: any) {
   }
 }
 
-const isInitialized = ref(false); // 防止重复初始化的标志
-
 /**
  * 初始化组件数据
  */
 async function initializeComponent() {
-  if (isInitialized.value) return;
-
   const currentAction = action.value;
   if (!currentAction) return;
 
@@ -282,8 +273,6 @@ async function initializeComponent() {
     // 加载物模型TSL以获取服务信息
     await loadServiceFromTSL(currentAction.productId, currentAction.identifier);
   }
-
-  isInitialized.value = true;
 }
 
 /** 组件初始化 */
@@ -295,9 +284,6 @@ onMounted(() => {
 watch(
   () => [action.value.productId, action.value.type, action.value.identifier],
   async ([newProductId, , newIdentifier], [oldProductId, , oldIdentifier]) => {
-    // 避免初始化时的重复调用
-    if (!isInitialized.value) return;
-
     // 产品变化时重新加载数据
     if (newProductId !== oldProductId) {
       if (newProductId && isPropertySetAction.value) {

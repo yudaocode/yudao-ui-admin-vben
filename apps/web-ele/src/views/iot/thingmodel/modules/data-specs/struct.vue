@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
-import { isEmpty } from '@vben/utils';
+import { cloneDeep, isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -20,12 +20,32 @@ import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
 import ThingModelProperty from '../property.vue';
 
-const props = defineProps<{ modelValue: any }>();
+const props = withDefaults(
+  defineProps<{
+    /** 父表单中 dataSpecsList 的 prop 路径（点号分隔），默认 property.dataSpecsList；
+     * array 嵌套 struct 时父级需传 'property.dataSpecs.dataSpecsList'，
+     * 否则父表单 validate() 无法定位该字段，非空校验不会触发。 */
+    fieldPath?: string;
+    modelValue: any;
+  }>(),
+  {
+    fieldPath: 'property.dataSpecsList',
+  },
+);
 const emits = defineEmits(['update:modelValue']);
 const dataSpecsList = useVModel(props, 'modelValue', emits) as Ref<any[]>;
 
 const structFormRef = ref();
 const formData = ref<any>(buildEmptyFormData());
+
+/** 校验结构体属性对象非空 */
+function validateStructSpecsList(_rule: any, _value: any, callback: any) {
+  if (isEmpty(dataSpecsList.value)) {
+    callback(new Error('请至少添加一个结构体属性对象'));
+    return;
+  }
+  callback();
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -70,14 +90,15 @@ const [Modal, modalApi] = useVbenModal({
     if (isEmpty(data)) {
       return;
     }
+    // 编辑回显时 cloneDeep，避免弹窗 v-model 改到原始对象（用户取消时不污染外层 dataSpecsList）
     formData.value = {
       identifier: data.identifier ?? '',
       name: data.name ?? '',
       description: data.description ?? '',
       property: {
         dataType: data.childDataType ?? IoTDataSpecsDataTypeEnum.INT,
-        dataSpecs: data.dataSpecs ?? {},
-        dataSpecsList: data.dataSpecsList ?? [],
+        dataSpecs: data.dataSpecs ? cloneDeep(data.dataSpecs) : {},
+        dataSpecsList: data.dataSpecsList ? cloneDeep(data.dataSpecsList) : [],
       },
     };
   },
@@ -115,7 +136,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <ElFormItem label="属性对象">
+  <ElFormItem
+    :prop="fieldPath"
+    :rules="[{ validator: validateStructSpecsList, trigger: 'change' }]"
+    label="属性对象"
+  >
     <div
       v-for="(item, index) in dataSpecsList"
       :key="index"

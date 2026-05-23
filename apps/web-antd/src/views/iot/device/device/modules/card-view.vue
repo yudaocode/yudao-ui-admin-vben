@@ -177,13 +177,16 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center text-[13px]">
                   <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
-                    Deviceid
+                    备注名称
                   </span>
-                  <Tooltip :title="String(item.id)" placement="top">
+                  <Tooltip
+                    :title="item.nickname || item.deviceName"
+                    placement="top"
+                  >
                     <span
-                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle font-mono text-xs opacity-85 dark:text-white/75"
+                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle text-xs opacity-85 dark:text-white/75"
                     >
-                      {{ item.id }}
+                      {{ item.nickname || item.deviceName }}
                     </span>
                   </Tooltip>
                 </div>
