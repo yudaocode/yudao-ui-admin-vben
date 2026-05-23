@@ -19,7 +19,9 @@ const showProductSecret = ref(false); // 是否显示产品密钥
 
 /** 格式化日期 */
 function formatDate(date?: Date | string) {
-  if (!date) return '-';
+  if (!date) {
+    return '-';
+  }
   return new Date(date).toLocaleString('zh-CN');
 }
 
@@ -74,7 +76,7 @@ async function copyToClipboard(text: string) {
       </Descriptions.Item>
       <Descriptions.Item
         v-if="
-          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
+          ([DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]).includes(
             product.deviceType!,
           )
         "

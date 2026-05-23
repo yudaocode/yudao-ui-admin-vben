@@ -51,6 +51,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '仓储费(元)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入仓储费，单位：元/天/KG',
         min: 0,
         precision: 2,
@@ -61,6 +62,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '搬运费(元)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入搬运费，单位：元',
         min: 0,
         precision: 2,
@@ -79,6 +81,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入排序',
         precision: 0,
       },

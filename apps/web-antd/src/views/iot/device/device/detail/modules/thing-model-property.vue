@@ -45,7 +45,7 @@ let autoRefreshTimer: any = null; // 定时器
 const viewMode = ref<'card' | 'list'>('card'); // 视图模式状态
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<IotDeviceApi.DevicePropertyDetail>['columns'] {
   return [
     {
       field: 'identifier',
@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
         <Switch
           v-model:checked="autoRefresh"
           checked-children="定时刷新"
-          class="ml-20px"
+          class="ml-[20px]"
           un-checked-children="定时刷新"
         />
       </div>

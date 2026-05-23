@@ -92,6 +92,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '价格（元）',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.1,

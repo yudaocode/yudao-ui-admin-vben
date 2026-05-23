@@ -360,6 +360,9 @@ catalogs:
     is-ci:
       specifier: ^4.1.0
       version: 4.1.0
+    jsbarcode:
+      specifier: ^3.12.3
+      version: 3.12.3
     jsencrypt:
       specifier: ^3.5.4
       version: 3.5.4
@@ -1958,6 +1961,9 @@ importers:
       '@vueuse/integrations':
         specifier: 'catalog:'
         version: 14.2.1(async-validator@4.2.5)(axios@1.15.0)(change-case@5.4.4)(focus-trap@8.0.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.32(typescript@6.0.2))
+      jsbarcode:
+        specifier: 'catalog:'
+        version: 3.12.3
       json-bigint:
         specifier: 'catalog:'
         version: 1.0.0
@@ -9231,6 +9237,9 @@ packages:
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
+
+  jsbarcode@3.12.3:
+    resolution: {integrity: sha512-CuHU9hC6dPsHF5oVFMo8NW76uQVjH4L22CsP4hW+dNnGywJHC/B0ThA1CTDVLnxKLrrpYdicBLnd2xsgTfRnvg==}
 
   jsdoc-type-pratt-parser@7.1.1:
     resolution: {integrity: sha512-/2uqY7x6bsrpi3i9LVU6J89352C0rpMk0as8trXxCtvd4kPk1ke/Eyif6wqfSLvoNJqcDG9Vk4UsXgygzCt2xA==}
@@ -19881,6 +19890,8 @@ snapshots:
   js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
+
+  jsbarcode@3.12.3: {}
 
   jsdoc-type-pratt-parser@7.1.1: {}
 

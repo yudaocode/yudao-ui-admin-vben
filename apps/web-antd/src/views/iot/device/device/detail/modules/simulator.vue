@@ -4,12 +4,16 @@ import type { TableColumnType } from 'ant-design-vue';
 
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  DeviceStateEnum,
+  IotDeviceMessageMethodEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -25,10 +29,6 @@ import {
 } from 'ant-design-vue';
 
 import { sendDeviceMessage } from '#/api/iot/device/device';
-import {
-  DeviceStateEnum,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import DataDefinition from '../../../../thingmodel/modules/components/data-definition.vue';
 import DeviceDetailsMessage from './message.vue';
@@ -36,7 +36,7 @@ import DeviceDetailsMessage from './message.vue';
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 // 消息弹窗
@@ -204,7 +204,7 @@ async function handlePropertyPost() {
     });
 
     if (Object.keys(params).length === 0) {
-      message.warning({ content: '请至少输入一个属性值' });
+      message.warning('请至少输入一个属性值');
       return;
     }
 
@@ -214,44 +214,46 @@ async function handlePropertyPost() {
       params,
     });
 
-    message.success({ content: '属性上报成功' });
+    message.success('属性上报成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '属性上报失败' });
+    message.error('属性上报失败');
     console.error(error);
   }
 }
 
 // 事件上报
-async function handleEventPost(row: ThingModelData) {
+async function handleEventPost(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
-    let params: any = {};
+    let eventValue: any;
 
     if (valueStr) {
       try {
-        params = JSON.parse(valueStr);
+        eventValue = JSON.parse(valueStr);
       } catch {
-        message.error({ content: '事件参数格式错误，请输入有效的JSON格式' });
+        message.error('事件参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
 
+    // 与后端 IotDeviceEventPostReqDTO 对齐 ：{ identifier, value, time }
     await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.EVENT_POST.method,
       params: {
         identifier: row.identifier,
-        params,
+        value: eventValue,
+        time: Date.now(),
       },
     });
 
-    message.success({ content: '事件上报成功' });
+    message.success('事件上报成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '事件上报失败' });
+    message.error('事件上报失败');
     console.error(error);
   }
 }
@@ -265,11 +267,11 @@ async function handleDeviceState(state: number) {
       params: { state },
     });
 
-    message.success({ content: '状态变更成功' });
+    message.success('状态变更成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '状态变更失败' });
+    message.error('状态变更失败');
     console.error(error);
   }
 }
@@ -286,7 +288,7 @@ async function handlePropertySet() {
     });
 
     if (Object.keys(params).length === 0) {
-      message.warning({ content: '请至少输入一个属性值' });
+      message.warning('请至少输入一个属性值');
       return;
     }
 
@@ -296,44 +298,45 @@ async function handlePropertySet() {
       params,
     });
 
-    message.success({ content: '属性设置成功' });
+    message.success('属性设置成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '属性设置失败' });
+    message.error('属性设置失败');
     console.error(error);
   }
 }
 
 // 服务调用
-async function handleServiceInvoke(row: ThingModelData) {
+async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
   try {
     const valueStr = formData.value[row.identifier!];
-    let params: any = {};
+    let inputParams: any = {};
 
     if (valueStr) {
       try {
-        params = JSON.parse(valueStr);
+        inputParams = JSON.parse(valueStr);
       } catch {
-        message.error({ content: '服务参数格式错误，请输入有效的JSON格式' });
+        message.error('服务参数格式错误，请输入有效的JSON格式');
         return;
       }
     }
 
+    // 与后端 IotDeviceServiceInvokeReqDTO 对齐 ：{ identifier, inputParams }
     await sendDeviceMessage({
       deviceId: props.device.id!,
       method: IotDeviceMessageMethodEnum.SERVICE_INVOKE.method,
       params: {
         identifier: row.identifier,
-        params,
+        inputParams,
       },
     });
 
-    message.success({ content: '服务调用成功' });
+    message.success('服务调用成功');
     // 延迟刷新设备消息列表
     deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
   } catch (error) {
-    message.error({ content: '服务调用失败' });
+    message.error('服务调用失败');
     console.error(error);
   }
 }
@@ -595,7 +598,7 @@ async function handleServiceInvoke(row: ThingModelData) {
               >
                 <IconifyIcon
                   v-if="!messageCollapsed"
-                  icon="lucide:chevron-down"
+                  icon="lucide:chevron-up"
                 />
                 <IconifyIcon
                   v-if="messageCollapsed"

@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, nextTick } from 'vue';
-
-import { IconifyIcon } from '@vben/icons';
-
-import { useVModel } from '@vueuse/core';
-import { Button } from 'ant-design-vue';
 
 import {
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerConditionTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button } from 'ant-design-vue';
 
 import ConditionConfig from './condition-config.vue';
 
@@ -20,12 +19,12 @@ defineOptions({ name: 'SubConditionGroupConfig' });
 
 const props = defineProps<{
   maxConditions?: number;
-  modelValue: TriggerCondition[];
+  modelValue: RuleSceneApi.TriggerCondition[];
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition[]): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition[]): void;
 }>();
 
 const subGroup = useVModel(props, 'modelValue', emit);
@@ -44,8 +43,8 @@ async function addCondition() {
     return;
   }
 
-  const newCondition: TriggerCondition = {
-    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY.toString(), // 默认为设备属性
+  const newCondition: RuleSceneApi.TriggerCondition = {
+    type: IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY, // 默认为设备属性
     productId: undefined,
     deviceId: undefined,
     identifier: '',
@@ -75,7 +74,10 @@ function removeCondition(index: number) {
  * @param index 条件索引
  * @param condition 条件对象
  */
-function updateCondition(index: number, condition: TriggerCondition) {
+function updateCondition(
+  index: number,
+  condition: RuleSceneApi.TriggerCondition,
+) {
   if (subGroup.value) {
     subGroup.value[index] = condition;
   }
@@ -87,8 +89,8 @@ function updateCondition(index: number, condition: TriggerCondition) {
     <!-- 空状态 -->
     <div v-if="!subGroup || subGroup.length === 0" class="py-6 text-center">
       <div class="flex flex-col items-center gap-3">
-        <IconifyIcon icon="lucide:plus" class="text-8 text-secondary" />
-        <div class="text-secondary">
+        <IconifyIcon icon="lucide:plus" class="text-8 text-muted-foreground" />
+        <div class="text-muted-foreground">
           <p class="mb-1 text-base font-bold">暂无条件</p>
           <p class="text-xs">点击下方按钮添加第一个条件</p>
         </div>
@@ -108,7 +110,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
       >
         <!-- 条件配置 -->
         <div
-          class="rounded-3px bg-fill-color-blank border border-border shadow-sm"
+          class="rounded-[3px] bg-fill-color-blank border border-border shadow-sm"
         >
           <div
             class="rounded-t-1 bg-fill-color-blank flex items-center justify-between border-b border-border p-3"
@@ -119,17 +121,17 @@ function updateCondition(index: number, condition: TriggerCondition) {
               >
                 {{ conditionIndex + 1 }}
               </div>
-              <span class="text-base font-bold text-primary">
+              <span class="text-base font-bold text-foreground">
                 条件 {{ conditionIndex + 1 }}
               </span>
             </div>
             <Button
+              v-if="subGroup!.length > 1"
               danger
               size="small"
-              text
-              @click="removeCondition(conditionIndex)"
-              v-if="subGroup!.length > 1"
+              type="link"
               class="hover:bg-red-50"
+              @click="removeCondition(conditionIndex)"
             >
               <IconifyIcon icon="lucide:trash-2" />
             </Button>
@@ -139,7 +141,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
             <ConditionConfig
               :model-value="condition"
               @update:model-value="
-                (value: TriggerCondition) =>
+                (value: RuleSceneApi.TriggerCondition) =>
                   updateCondition(conditionIndex, value)
               "
               :trigger-type="triggerType"
@@ -159,7 +161,7 @@ function updateCondition(index: number, condition: TriggerCondition) {
           <IconifyIcon icon="lucide:plus" />
           继续添加条件
         </Button>
-        <span class="mt-2 block text-xs text-secondary">
+        <span class="mt-2 block text-xs text-muted-foreground">
           最多可添加 {{ maxConditions }} 个条件
         </span>
       </div>

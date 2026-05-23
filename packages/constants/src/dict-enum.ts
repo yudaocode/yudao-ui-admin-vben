@@ -175,6 +175,28 @@ const IOT_DICT = {
   IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
+/** ========== MES - 制造执行模块 ========== */
+const MES_DICT = {
+  MES_MD_ITEM_OR_PRODUCT: 'mes_md_item_or_product', // MES 物料/产品标识
+  MES_MD_AUTO_CODE_CYCLE_METHOD: 'mes_md_auto_code_cycle_method', // MES 编码规则循环方式
+  MES_MD_AUTO_CODE_PADDED_METHOD: 'mes_md_auto_code_padded_method', // MES 编码规则补齐方式
+  MES_MD_AUTO_CODE_PART_TYPE: 'mes_md_auto_code_part_type', // MES 编码规则分段类型
+  MES_CLIENT_TYPE: 'mes_client_type', // MES 客户类型
+  MES_VENDOR_LEVEL: 'mes_vendor_level', // MES 供应商级别
+  MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
+  MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
+  MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
+} as const;
+
+/** ========== WMS - 仓储管理模块 ========== */
+const WMS_DICT = {
+  WMS_MERCHANT_TYPE: 'merchant_type', // WMS 往来企业类型
+  WMS_ORDER_TYPE: 'wms_order_type', // WMS 单据类型
+  WMS_ORDER_STATUS: 'wms_order_status', // WMS 单据状态
+  WMS_RECEIPT_ORDER_TYPE: 'wms_receipt_order_type', // WMS 入库单类型
+  WMS_SHIPMENT_ORDER_TYPE: 'wms_shipment_order_type', // WMS 出库单类型
+} as const;
+
 /** 字典类型枚举 - 统一导出 */
 const DICT_TYPE = {
   ...AI_DICT,
@@ -183,6 +205,8 @@ const DICT_TYPE = {
   ...ERP_DICT,
   ...INFRA_DICT,
   ...IOT_DICT,
+  ...MES_DICT,
+  ...WMS_DICT,
   ...MEMBER_DICT,
   ...MP_DICT,
   ...PAY_DICT,

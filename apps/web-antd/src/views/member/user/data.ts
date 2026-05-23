@@ -396,6 +396,7 @@ export function useBalanceFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.1,
@@ -471,6 +472,7 @@ export function usePointFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 0,
         placeholder: '请输入变动积分',

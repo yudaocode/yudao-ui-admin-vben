@@ -64,14 +64,14 @@ watch(
 
 <template>
   <div v-for="(item, index) in items" :key="index" class="mb-2 flex w-full">
-    <Input v-model="item.key" class="mr-2" placeholder="键" />
-    <Input v-model="item.value" placeholder="值" />
-    <Button class="ml-2" text danger @click="removeItem(index)">
+    <Input v-model:value="item.key" class="mr-2" placeholder="键" />
+    <Input v-model:value="item.value" placeholder="值" />
+    <Button class="ml-2" type="link" danger @click="removeItem(index)">
       <IconifyIcon icon="ant-design:delete-outlined" />
       删除
     </Button>
   </div>
-  <Button text type="primary" @click="addItem">
+  <Button type="link" @click="addItem">
     <IconifyIcon icon="ant-design:plus-outlined" />
     {{ addButtonText }}
   </Button>

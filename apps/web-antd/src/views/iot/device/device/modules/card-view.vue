@@ -5,6 +5,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { onMounted, ref } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
@@ -46,6 +47,8 @@ const emit = defineEmits<{
   model: [id: number];
   productDetail: [productId: number];
 }>();
+
+const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
 const list = ref<IotDeviceApi.Device[]>([]);
@@ -102,7 +105,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="device-card-view">
+  <div>
     <!-- 设备卡片列表 -->
     <div v-loading="loading" class="min-h-96">
       <Row v-if="list.length > 0" :gutter="[16, 16]">
@@ -115,30 +118,43 @@ onMounted(() => {
           :lg="6"
         >
           <Card
-            :body-style="{ padding: '16px' }"
-            class="device-card h-full rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            :body-style="{
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+            }"
+            class="h-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
             <!-- 顶部标题区域 -->
             <div class="mb-3 flex items-center">
-              <div class="device-icon">
+              <div
+                class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff] to-[#1890ff] text-white"
+              >
                 <IconifyIcon icon="mdi:chip" class="text-xl" />
               </div>
               <div class="ml-3 min-w-0 flex-1">
-                <div class="device-title">{{ item.deviceName }}</div>
+                <div
+                  class="truncate text-[15px] font-semibold leading-9 dark:text-white/85"
+                >
+                  {{ item.deviceName }}
+                </div>
               </div>
               <DictTag
                 :type="DICT_TYPE.IOT_DEVICE_STATE"
                 :value="item.state"
-                class="status-tag"
+                class="text-xs"
               />
             </div>
             <!-- 内容区域 -->
             <div class="mb-3 flex items-start">
-              <div class="info-list flex-1">
-                <div class="info-item">
-                  <span class="info-label">所属产品</span>
+              <div class="flex-1">
+                <div class="mb-2 flex items-center text-[13px]">
+                  <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
+                    所属产品
+                  </span>
                   <a
-                    class="info-value cursor-pointer text-primary"
+                    class="cursor-pointer truncate font-medium text-primary"
                     @click="
                       (e) => {
                         e.stopPropagation();
@@ -149,25 +165,33 @@ onMounted(() => {
                     {{ getProductName(item.productId) }}
                   </a>
                 </div>
-                <div class="info-item">
-                  <span class="info-label">设备类型</span>
+                <div class="mb-2 flex items-center text-[13px]">
+                  <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
+                    设备类型
+                  </span>
                   <DictTag
                     :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
                     :value="item.deviceType"
-                    class="info-tag m-0"
+                    class="m-0 text-xs"
                   />
                 </div>
-                <div class="info-item">
-                  <span class="info-label">Deviceid</span>
+                <div class="flex items-center text-[13px]">
+                  <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
+                    Deviceid
+                  </span>
                   <Tooltip :title="String(item.id)" placement="top">
-                    <span class="info-value device-id cursor-pointer">
+                    <span
+                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle font-mono text-xs opacity-85 dark:text-white/75"
+                    >
                       {{ item.id }}
                     </span>
                   </Tooltip>
                 </div>
               </div>
               <!-- 设备图片 -->
-              <div class="device-image">
+              <div
+                class="flex size-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff15] to-[#1890ff15] text-[#1890ff] dark:from-[#40a9ff25] dark:to-[#1890ff25] dark:text-[#69c0ff]"
+              >
                 <Image
                   v-if="item.picUrl"
                   :src="item.picUrl"
@@ -182,43 +206,53 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div class="action-buttons">
+            <div
+              class="mt-auto flex gap-2 border-t border-border pt-3"
+            >
               <Button
+                v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
-                class="action-btn action-btn-edit"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#1890ff] !text-[13px] !text-[#1890ff] transition-all duration-200 hover:!bg-[#1890ff] hover:!text-white"
                 @click="emit('edit', item)"
               >
                 <IconifyIcon icon="lucide:edit" class="mr-1" />
                 编辑
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
-                class="action-btn action-btn-detail"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#52c41a] !text-[13px] !text-[#52c41a] transition-all duration-200 hover:!bg-[#52c41a] hover:!text-white"
                 @click="emit('detail', item.id!)"
               >
                 <IconifyIcon icon="lucide:eye" class="mr-1" />
                 详情
               </Button>
               <Button
+                v-if="hasAccessByCodes(['iot:device:message-query'])"
                 size="small"
-                class="action-btn action-btn-data"
+                class="!h-8 min-w-0 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
                 @click="emit('model', item.id!)"
               >
                 <IconifyIcon icon="lucide:database" class="mr-1" />
                 数据
               </Button>
-              <Popconfirm
-                :title="`确认删除设备 ${item.deviceName} 吗?`"
-                @confirm="emit('delete', item)"
-              >
-                <Button
-                  size="small"
-                  danger
-                  class="action-btn action-btn-delete !w-8"
+              <template v-if="hasAccessByCodes(['iot:device:delete'])">
+                <div
+                  class="h-5 w-px self-center bg-[#dcdfe6] dark:bg-[#3a3a3a]"
+                ></div>
+                <Popconfirm
+                  :title="`确认删除设备 ${item.deviceName} 吗?`"
+                  @confirm="emit('delete', item)"
                 >
-                  <IconifyIcon icon="lucide:trash-2" class="text-sm" />
-                </Button>
-              </Popconfirm>
+                  <Button
+                    size="small"
+                    danger
+                    class="!h-8 rounded-md p-0 text-[13px] transition-all duration-200 !w-8"
+                  >
+                    <IconifyIcon icon="lucide:trash-2" class="text-sm" />
+                  </Button>
+                </Popconfirm>
+              </template>
             </div>
           </Card>
         </Col>
@@ -242,187 +276,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.device-card-view {
-  .device-card {
-    overflow: hidden;
-
-    :deep(.ant-card-body) {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    // 设备图标
-    .device-icon {
-      display: flex;
-      flex-shrink: 0;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      color: white;
-      background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
-      border-radius: 8px;
-    }
-
-    // 设备标题
-    .device-title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 36px;
-      white-space: nowrap;
-    }
-
-    // 状态标签
-    .status-tag {
-      font-size: 12px;
-    }
-
-    // 设备图片
-    .device-image {
-      display: flex;
-      flex-shrink: 0;
-      align-items: center;
-      justify-content: center;
-      width: 80px;
-      height: 80px;
-      color: #1890ff;
-      background: linear-gradient(135deg, #40a9ff15 0%, #1890ff15 100%);
-      border-radius: 8px;
-    }
-
-    // 信息列表
-    .info-list {
-      .info-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-        font-size: 13px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        .info-label {
-          flex-shrink: 0;
-          margin-right: 8px;
-          opacity: 0.65;
-        }
-
-        .info-value {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-weight: 500;
-          white-space: nowrap;
-
-          &.text-primary {
-            color: #1890ff;
-          }
-        }
-
-        .device-id {
-          display: inline-block;
-          max-width: 150px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          font-family: 'Courier New', monospace;
-          font-size: 12px;
-          vertical-align: middle;
-          white-space: nowrap;
-          opacity: 0.85;
-        }
-
-        .info-tag {
-          font-size: 12px;
-        }
-      }
-    }
-
-    // 按钮组
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-      padding-top: 12px;
-      margin-top: auto;
-      border-top: 1px solid var(--ant-color-split);
-
-      .action-btn {
-        flex: 1;
-        height: 32px;
-        font-size: 13px;
-        border-radius: 6px;
-        transition: all 0.2s;
-
-        &.action-btn-edit {
-          color: #1890ff;
-          border-color: #1890ff;
-
-          &:hover {
-            color: white;
-            background: #1890ff;
-          }
-        }
-
-        &.action-btn-detail {
-          color: #52c41a;
-          border-color: #52c41a;
-
-          &:hover {
-            color: white;
-            background: #52c41a;
-          }
-        }
-
-        &.action-btn-data {
-          color: #fa8c16;
-          border-color: #fa8c16;
-
-          &:hover {
-            color: white;
-            background: #fa8c16;
-          }
-        }
-
-        &.action-btn-delete {
-          flex: 0 0 32px;
-          padding: 0;
-        }
-      }
-    }
-  }
-}
-
-// 夜间模式适配
-html.dark {
-  .device-card-view {
-    .device-card {
-      .device-title {
-        color: rgb(255 255 255 / 85%);
-      }
-
-      .info-list {
-        .info-label {
-          color: rgb(255 255 255 / 65%);
-        }
-
-        .info-value {
-          color: rgb(255 255 255 / 85%);
-        }
-
-        .device-id {
-          color: rgb(255 255 255 / 75%);
-        }
-      }
-
-      .device-image {
-        color: #69c0ff;
-        background: linear-gradient(135deg, #40a9ff25 0%, #1890ff25 100%);
-      }
-    }
-  }
-}
-</style>

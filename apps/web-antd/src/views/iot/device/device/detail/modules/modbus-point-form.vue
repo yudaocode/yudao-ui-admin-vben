@@ -2,12 +2,19 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '#/adapter/form';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, h, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getByteOrderOptions,
+  IoTThingModelTypeEnum,
+  ModbusFunctionCodeOptions,
+  ModbusRawDataTypeOptions,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
@@ -19,14 +26,6 @@ import {
   updateModbusPoint,
 } from '#/api/iot/device/modbus/point';
 import { $t } from '#/locales';
-import {
-  getByteOrderOptions,
-  IoTThingModelTypeEnum,
-  ModbusFunctionCodeOptions,
-  ModbusRawDataTypeOptions,
-} from '#/views/iot/utils/constants';
-
-defineOptions({ name: 'DeviceModbusPointForm' });
 
 const emit = defineEmits(['success']);
 
@@ -35,7 +34,7 @@ const getTitle = computed(() => {
   return formData.value?.id ? '编辑点位' : '新增点位';
 });
 const deviceId = ref<number>(0);
-const thingModelList = ref<ThingModelData[]>([]);
+const thingModelList = ref<ThingModelApi.ThingModel[]>([]);
 
 /** 筛选属性类型的物模型 */
 const propertyList = computed(() => {
@@ -111,6 +110,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '寄存器地址',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入寄存器地址',
         min: 0,
         max: 65_535,
@@ -133,6 +133,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '寄存器数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入寄存器数量',
         min: 1,
         max: 125,
@@ -177,6 +178,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '缩放因子',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入缩放因子',
         precision: 6,
         step: 0.1,
@@ -188,6 +190,7 @@ function useFormSchema(): VbenFormSchema[] {
       label: '轮询间隔(ms)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入轮询间隔',
         min: 100,
         step: 1000,
@@ -220,10 +223,10 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
-  handleValuesChange: async (_values, changedFields) => {
+  handleValuesChange: async (values, changedFields) => {
     // 物模型属性变化：自动填充 identifier 和 name
     if (changedFields.includes('thingModelId')) {
-      const thingModelId = await formApi.getFieldValue('thingModelId');
+      const thingModelId = values.thingModelId;
       const thingModel = thingModelList.value.find(
         (item) => item.id === thingModelId,
       );
@@ -234,7 +237,7 @@ const [Form, formApi] = useVbenForm({
     }
     // 数据类型变化：自动设置寄存器数量和字节序
     if (changedFields.includes('rawDataType')) {
-      const rawDataType = await formApi.getFieldValue('rawDataType');
+      const rawDataType = values.rawDataType;
       if (rawDataType) {
         // 根据数据类型自动设置寄存器数量
         const option = ModbusRawDataTypeOptions.find(
@@ -285,7 +288,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{
       deviceId: number;
       id?: number;
-      thingModelList: ThingModelData[];
+      thingModelList: ThingModelApi.ThingModel[];
     }>();
     if (!data) {
       return;

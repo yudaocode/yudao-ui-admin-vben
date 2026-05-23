@@ -13,8 +13,6 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-defineOptions({ name: 'IoTDeviceGroup' });
-
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
@@ -42,7 +40,7 @@ async function handleDelete(row: IotDeviceGroupApi.DeviceGroup) {
     duration: 0,
   });
   try {
-    await deleteDeviceGroup(row.id as number);
+    await deleteDeviceGroup(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {

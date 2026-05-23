@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, Select, Tag, Tooltip } from 'ant-design-vue';
-
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { DatePicker, Input, InputNumber, Select, Tag, Tooltip } from 'ant-design-vue';
 
 /** 值输入组件 */
 defineOptions({ name: 'ValueInput' });
@@ -132,9 +132,9 @@ function handleDateChange(value: any) {
   localValue.value = value || '';
 }
 
-/** 处理数字变化事件 */
-function handleNumberChange(value: number | undefined) {
-  localValue.value = value?.toString() || '';
+/** 处理数字变化事件 ；InputNumber 回调值类型为 ValueType（string | number） */
+function handleNumberChange(value: any) {
+  localValue.value = value == null ? '' : String(value);
 }
 
 /** 监听操作符变化 */
@@ -155,12 +155,12 @@ watch(
     <!-- 布尔值选择 -->
     <Select
       v-if="propertyType === IoTDataSpecsDataTypeEnum.BOOL"
-      v-model="localValue"
+      v-model:value="localValue"
       placeholder="请选择布尔值"
       class="w-full!"
     >
-      <Select.Option label="真 (true)" :value="true" />
-      <Select.Option label="假 (false)" :value="false" />
+      <Select.Option :value="true">真 (true)</Select.Option>
+      <Select.Option :value="false">假 (false)</Select.Option>
     </Select>
 
     <!-- 枚举值选择 -->
@@ -168,16 +168,17 @@ watch(
       v-else-if="
         propertyType === IoTDataSpecsDataTypeEnum.ENUM && enumOptions.length > 0
       "
-      v-model="localValue"
+      v-model:value="localValue"
       placeholder="请选择枚举值"
       class="w-full!"
     >
       <Select.Option
         v-for="option in enumOptions"
         :key="option.value"
-        :label="option.label"
         :value="option.value"
-      />
+      >
+        {{ option.label }}
+      </Select.Option>
     </Select>
 
     <!-- 范围输入 (between 操作符) -->
@@ -189,16 +190,16 @@ watch(
       class="w-full! flex items-center gap-2"
     >
       <Input
-        v-model="rangeStart"
+        v-model:value="rangeStart"
         :type="getInputType()"
         placeholder="最小值"
         @input="handleRangeChange"
         class="min-w-0 flex-1"
         style="width: auto !important"
       />
-      <span class="whitespace-nowrap text-xs text-secondary"> 至 </span>
+      <span class="whitespace-nowrap text-xs text-muted-foreground"> 至 </span>
       <Input
-        v-model="rangeEnd"
+        v-model:value="rangeEnd"
         :type="getInputType()"
         placeholder="最大值"
         @input="handleRangeChange"
@@ -214,7 +215,7 @@ watch(
       class="w-full!"
     >
       <Input
-        v-model="localValue"
+        v-model:value="localValue"
         placeholder="请输入值列表，用逗号分隔"
         class="w-full!"
       >
@@ -231,11 +232,10 @@ watch(
         v-if="listPreview.length > 0"
         class="mt-2 flex flex-wrap items-center gap-1"
       >
-        <span class="text-xs text-secondary"> 解析结果： </span>
+        <span class="text-xs text-muted-foreground"> 解析结果： </span>
         <Tag
           v-for="(item, index) in listPreview"
           :key="index"
-          size="small"
           class="m-0"
         >
           {{ item }}
@@ -246,7 +246,7 @@ watch(
     <!-- 日期时间输入 -->
     <DatePicker
       v-else-if="propertyType === IoTDataSpecsDataTypeEnum.DATE"
-      v-model="dateValue"
+      v-model:value="dateValue"
       type="datetime"
       placeholder="请选择日期时间"
       format="YYYY-MM-DD HH:mm:ss"
@@ -256,9 +256,9 @@ watch(
     />
 
     <!-- 数字输入 -->
-    <Input.Number
+    <InputNumber
       v-else-if="isNumericType()"
-      v-model="numberValue"
+      v-model:value="numberValue"
       :precision="getPrecision()"
       :step="getStep()"
       :min="getMin()"
@@ -271,7 +271,7 @@ watch(
     <!-- 文本输入 -->
     <Input
       v-else
-      v-model="localValue"
+      v-model:value="localValue"
       :type="getInputType()"
       :placeholder="getPlaceholder()"
       class="w-full!"
@@ -282,7 +282,7 @@ watch(
           :content="`单位：${propertyConfig.unit}`"
           placement="top"
         >
-          <span class="px-1 text-xs text-secondary">
+          <span class="px-1 text-xs text-muted-foreground">
             {{ propertyConfig.unit }}
           </span>
         </Tooltip>

@@ -1,22 +1,24 @@
 <script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { DeviceStateEnum, DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 
 import { Card, Empty, Spin } from 'ant-design-vue';
 
 import { getDeviceLocationList } from '#/api/iot/device/device';
 import { loadBaiduMapSdk } from '#/components/map';
-import { DeviceStateEnum } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceMapCard' });
 
 const router = useRouter();
-const mapContainerRef = ref<HTMLElement>();
-let mapInstance: any = null;
-const loading = ref(true);
-const deviceList = ref<IotDeviceApi.Device[]>([]);
+const mapContainerRef = ref<HTMLElement>(); // 地图容器节点
+let mapInstance: any = null; // 百度地图实例
+const loading = ref(true); // 加载状态
+const deviceList = ref<IotDeviceApi.Device[]>([]); // 设备分布列表
 
 /** 是否有数据 */
 const hasData = computed(() => deviceList.value.length > 0);
@@ -28,15 +30,10 @@ const stateColorMap: Record<number, string> = {
   [DeviceStateEnum.OFFLINE]: '#9CA3AF', // 离线 - 灰色
 };
 
-/** 获取设备状态配置 */
+/** 获取设备状态配置；名称走字典，颜色用本地映射 */
 function getStateConfig(state: number): { color: string; name: string } {
-  const stateNames: Record<number, string> = {
-    [DeviceStateEnum.INACTIVE]: '待激活',
-    [DeviceStateEnum.ONLINE]: '在线',
-    [DeviceStateEnum.OFFLINE]: '离线',
-  };
   return {
-    name: stateNames[state] || '未知',
+    name: getDictLabel(DICT_TYPE.IOT_DEVICE_STATE, state) || '未知',
     color: stateColorMap[state] || '#909399',
   };
 }
@@ -118,7 +115,7 @@ function initMap() {
           if (link) {
             link.addEventListener('click', (e) => {
               e.preventDefault();
-              const deviceId = e.target as HTMLElement.dataset.id;
+              const deviceId = (e.target as HTMLElement).dataset.id;
               if (deviceId) {
                 router.push({
                   name: 'IoTDeviceDetail',
@@ -154,6 +151,8 @@ async function init() {
     return;
   }
   await loadBaiduMapSdk();
+  // 等待 v-show 容器渲染完成；SDK 缓存命中时上一行会同步 resolve，DOM 来不及切换
+  await nextTick();
   initMap();
 }
 

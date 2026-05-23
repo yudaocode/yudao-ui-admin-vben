@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
-import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -22,10 +22,10 @@ defineOptions({ name: 'MessageTrendCard' });
 const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
-const loading = ref(false);
+const loading = ref(false); // 加载状态
 const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
   [],
-);
+); // 消息趋势数据
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
@@ -123,10 +123,6 @@ async function renderChartWhenReady() {
   initChart();
 }
 
-/** 组件挂载时查询数据 */
-onMounted(() => {
-  fetchMessageData();
-});
 </script>
 
 <template>

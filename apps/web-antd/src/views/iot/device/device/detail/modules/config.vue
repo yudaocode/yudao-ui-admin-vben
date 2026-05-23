@@ -6,11 +6,9 @@ import { computed, ref, watchEffect } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 
-import { Alert, Button, message, Textarea } from 'ant-design-vue';
+import { Alert, Button, message, Popconfirm, Textarea } from 'ant-design-vue';
 
 import { sendDeviceMessage, updateDevice } from '#/api/iot/device/device';
-
-defineOptions({ name: 'DeviceDetailConfig' });
 
 const props = defineProps<{
   device: IotDeviceApi.Device;
@@ -78,7 +76,7 @@ async function saveConfig() {
     config.value = JSON.parse(configString.value);
   } catch (error) {
     console.error('JSON格式错误:', error);
-    message.error({ content: 'JSON格式错误，请修正后再提交！' });
+    message.error('JSON格式错误，请修正后再提交！');
     return;
   }
   saveLoading.value = true;
@@ -101,7 +99,7 @@ async function handleConfigPush() {
       params: config.value,
     });
     // 提示成功
-    message.success({ content: '配置推送成功！' });
+    message.success('配置推送成功！');
   } finally {
     pushLoading.value = false;
   }
@@ -116,7 +114,7 @@ async function updateDeviceConfig() {
       id: props.device.id,
       config: JSON.stringify(config.value),
     } as IotDeviceApi.Device);
-    message.success({ content: '更新成功！' });
+    message.success('更新成功！');
     // 触发 success 事件
     emit('success');
   } finally {
@@ -129,7 +127,7 @@ async function updateDeviceConfig() {
   <div>
     <!-- 使用说明提示 -->
     <Alert
-      class="my-4"
+      class="!mb-4"
       description="如需编辑文件，请点击下方编辑按钮"
       message="支持远程更新设备的配置文件(JSON 格式)，可以在下方编辑配置模板，对设备的系统参数、网络参数等进行远程配置。配置完成后，需点击「配置推送」按钮，设备即可进行远程配置。"
       show-icon
@@ -137,21 +135,22 @@ async function updateDeviceConfig() {
     />
 
     <!-- 代码视图 - 只读展示 -->
-    <div v-if="!isEditing" class="json-viewer-container">
-      <pre class="json-code"><code>{{ formattedConfig }}</code></pre>
-    </div>
+    <pre
+      v-if="!isEditing"
+      class="m-0 h-[460px] overflow-y-auto whitespace-pre-wrap break-words rounded border border-[#d9d9d9] bg-[#f5f5f5] p-3 font-mono text-[13px] leading-normal text-[#333] dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-gray-300"
+      v-text="formattedConfig"
+    ></pre>
 
     <!-- 编辑器视图 - 可编辑 -->
     <Textarea
       v-else
       v-model:value="configString"
-      :rows="20"
-      class="json-editor"
+      class="!h-[460px] font-mono text-[13px]"
       placeholder="请输入 JSON 格式的配置信息"
     />
 
     <!-- 操作按钮 -->
-    <div class="mt-5 text-center">
+    <div class="mt-4 flex justify-center gap-2">
       <Button v-if="isEditing" @click="handleCancelEdit">取消</Button>
       <Button
         v-if="isEditing"
@@ -162,40 +161,13 @@ async function updateDeviceConfig() {
         保存
       </Button>
       <Button v-else @click="handleEdit">编辑</Button>
-      <Button
+      <Popconfirm
         v-if="!isEditing"
-        :loading="pushLoading"
-        type="primary"
-        @click="handleConfigPush"
+        title="确定要推送配置到设备吗？此操作将远程更新设备配置。"
+        @confirm="handleConfigPush"
       >
-        配置推送
-      </Button>
+        <Button :loading="pushLoading" type="primary"> 配置推送 </Button>
+      </Popconfirm>
     </div>
   </div>
 </template>
-
-<style scoped>
-.json-viewer-container {
-  max-height: 600px;
-  padding: 12px;
-  overflow-y: auto;
-  background-color: #f5f5f5;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.json-code {
-  margin: 0;
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #333;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
-.json-editor {
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, monospace;
-  font-size: 13px;
-}
-</style>

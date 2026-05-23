@@ -2,13 +2,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DEVICE_SELECTOR_OPTIONS, DICT_TYPE } from '@vben/constants';
 
 import { Select } from 'ant-design-vue';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
-import { DEVICE_SELECTOR_OPTIONS } from '#/views/iot/utils/constants';
 
 /** 设备选择器组件 */
 defineOptions({ name: 'DeviceSelector' });
@@ -26,13 +25,10 @@ const emit = defineEmits<{
 const deviceLoading = ref(false); // 设备加载状态
 const deviceList = ref<any[]>([]); // 设备列表
 
-/**
- * 处理选择变化事件
- * @param value 选中的设备ID
- */
-function handleChange(value?: number) {
-  emit('update:modelValue', value);
-  emit('change', value);
+/** 处理选择变化事件 */
+function handleChange(value: any) {
+  emit('update:modelValue', value as number | undefined);
+  emit('change', value as number | undefined);
 }
 
 /**
@@ -46,13 +42,12 @@ async function getDeviceList() {
 
   try {
     deviceLoading.value = true;
-    const res = await getDeviceListByProductId(props.productId);
-    deviceList.value = res || [];
+    const data = await getDeviceListByProductId(props.productId);
+    deviceList.value = [DEVICE_SELECTOR_OPTIONS.ALL_DEVICES, ...(data || [])];
   } catch (error) {
-    console.error('获取设备列表失败:', error);
-    deviceList.value = [];
+    console.error('获取设备列表失败 ：', error);
+    deviceList.value = [DEVICE_SELECTOR_OPTIONS.ALL_DEVICES];
   } finally {
-    deviceList.value.unshift(DEVICE_SELECTOR_OPTIONS.ALL_DEVICES);
     deviceLoading.value = false;
   }
 }
@@ -78,12 +73,13 @@ watch(
 
 <template>
   <Select
-    :model-value="modelValue"
-    @update:model-value="handleChange"
+    :value="modelValue"
+    @change="handleChange"
     placeholder="请选择设备"
-    filterable
-    clearable
+    show-search
+    allow-clear
     class="w-full"
+    option-label-prop="label"
     :loading="deviceLoading"
     :disabled="!productId"
   >
@@ -93,16 +89,16 @@ watch(
       :label="device.deviceName"
       :value="device.id"
     >
-      <div class="py-4px flex w-full items-center justify-between">
+      <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
-          <div class="text-14px font-500 mb-2px text-primary">
+          <div class="text-[14px] font-medium mb-[2px] text-foreground">
             {{ device.deviceName }}
           </div>
-          <div class="text-12px text-primary">
+          <div class="text-[12px] text-muted-foreground">
             {{ device.deviceKey }}
           </div>
         </div>
-        <div class="gap-4px flex items-center" v-if="device.id > 0">
+        <div class="gap-[4px] flex items-center" v-if="device.id > 0">
           <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
         </div>
       </div>

@@ -65,6 +65,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
           : '锁定客户数上限',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: `请输入${
           LimitConfType.CUSTOMER_QUANTITY_LIMIT === confType
             ? '拥有客户数上限'

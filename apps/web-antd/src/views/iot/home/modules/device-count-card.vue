@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotStatisticsApi } from '#/api/iot/statistics';
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
@@ -21,11 +21,13 @@ const { renderEcharts } = useEcharts(deviceCountChartRef);
 
 /** 是否有数据 */
 const hasData = computed(() => {
-  if (!props.statsData) return false;
+  if (!props.statsData) {
+    return false;
+  }
   const categories = Object.entries(
     props.statsData.productCategoryDeviceCounts || {},
   );
-  return categories.length > 0 && props.statsData.deviceCount !== 0;
+  return categories.length > 0 && props.statsData.deviceCount !== -1;
 });
 
 /** 初始化图表 */

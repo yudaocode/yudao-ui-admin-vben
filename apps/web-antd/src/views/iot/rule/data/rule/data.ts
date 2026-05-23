@@ -1,9 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataRuleApi } from '#/api/iot/rule/data/rule';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { getDataSinkSimpleList } from '#/api/iot/rule/data/sink';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
@@ -44,11 +46,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useRuleFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'id',
       component: 'Input',
+      fieldName: 'id',
       dependencies: {
-        show: false,
-        triggerFields: ['id'],
+        triggerFields: [''],
+        show: () => false,
       },
     },
     {
@@ -82,20 +84,58 @@ export function useRuleFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'sinkIds',
       label: '数据目的',
-      component: 'Select',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: '请选择数据目的',
+        api: getDataSinkSimpleList,
+        labelField: 'name',
+        valueField: 'id',
         mode: 'multiple',
         allowClear: true,
-        options: [],
+        placeholder: '请选择数据目的',
       },
       rules: 'required',
     },
   ];
 }
 
+/** 数据源配置（行编辑表）的字段 */
+export function useSourceConfigColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'productId',
+      title: '产品',
+      minWidth: 200,
+      slots: { default: 'productId' },
+    },
+    {
+      field: 'deviceId',
+      title: '设备',
+      minWidth: 200,
+      slots: { default: 'deviceId' },
+    },
+    {
+      field: 'method',
+      title: '消息',
+      minWidth: 200,
+      slots: { default: 'method' },
+    },
+    {
+      field: 'identifier',
+      title: '标识符',
+      minWidth: 250,
+      slots: { default: 'identifier' },
+    },
+    {
+      title: '操作',
+      width: 80,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<DataRuleApi.DataRule>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -126,13 +166,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'sourceConfigs',
       title: '数据源',
       minWidth: 100,
-      formatter: ({ cellValue }: any) => `${cellValue?.length || 0} 个`,
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 个`,
     },
     {
       field: 'sinkIds',
       title: '数据目的',
       minWidth: 100,
-      formatter: ({ cellValue }: any) => `${cellValue?.length || 0} 个`,
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 个`,
     },
     {
       field: 'createTime',

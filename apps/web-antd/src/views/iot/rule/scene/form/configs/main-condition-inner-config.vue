@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
-
-import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select } from 'ant-design-vue';
 
 import {
   getTriggerTypeLabel,
@@ -12,7 +9,10 @@ import {
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerTypeEnum,
   triggerTypeOptions,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Form, Row, Select } from 'ant-design-vue';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -25,12 +25,12 @@ import PropertySelector from '../selectors/property-selector.vue';
 defineOptions({ name: 'MainConditionInnerConfig' });
 
 const props = defineProps<{
-  modelValue: Trigger;
+  modelValue: RuleSceneApi.Trigger;
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Trigger): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Trigger): void;
   (e: 'triggerTypeChange', value: number): void;
 }>();
 
@@ -177,17 +177,18 @@ function handlePropertyChange(propertyInfo: any) {
     <!-- 触发事件类型选择 -->
     <Form.Item label="触发事件类型" required>
       <Select
-        :model-value="triggerType"
-        @update:model-value="handleTriggerTypeChange"
+        :value="triggerType"
+        @change="(value: any) => handleTriggerTypeChange(value)"
         placeholder="请选择触发事件类型"
         class="w-full"
       >
         <Select.Option
           v-for="option in triggerTypeOptions"
           :key="option.value"
-          :label="option.label"
           :value="option.value"
-        />
+        >
+          {{ option.label }}
+        </Select.Option>
       </Select>
     </Form.Item>
 
@@ -323,40 +324,38 @@ function handlePropertyChange(propertyInfo: any) {
         <Col :span="6">
           <Form.Item label="操作符" required>
             <Select
-              :model-value="condition.operator"
-              @update:model-value="
-                (value: any) => updateConditionField('operator', value)
-              "
+              :value="condition.operator"
+              @change="(value: any) => updateConditionField('operator', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
               <Select.Option
-                :label="
-                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
-                "
                 :value="
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
                 "
-              />
+              >
+                {{
+                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
+                }}
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>
         <Col :span="6">
           <Form.Item label="参数" required>
             <Select
-              :model-value="condition.value"
-              @update:model-value="
-                (value: any) => updateConditionField('value', value)
-              "
+              :value="condition.value"
+              @change="(value: any) => updateConditionField('value', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
               <Select.Option
                 v-for="option in deviceStatusChangeOptions"
                 :key="option.value"
-                :label="option.label"
                 :value="option.value"
-              />
+              >
+                {{ option.label }}
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -365,10 +364,12 @@ function handlePropertyChange(propertyInfo: any) {
 
     <!-- 其他触发类型的提示 -->
     <div v-else class="py-5 text-center">
-      <p class="mb-1 text-sm text-secondary">
+      <p class="mb-1 text-sm text-muted-foreground">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-secondary">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-muted-foreground">
+        此触发类型暂不需要配置额外条件
+      </p>
     </div>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataSinkApi } from '#/api/iot/rule/data/sink';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -10,15 +11,10 @@ import { deleteDataSink, getDataSinkPage } from '#/api/iot/rule/data/sink';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DataSinkForm from './data-sink-form.vue';
-
-// TODO @haohao：需要根据代码规范，在优化下这个模块。和别的模块的风格保持一致。
-
-/** IoT 数据流转目的列表 */
-defineOptions({ name: 'IotDataSink' });
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: DataSinkForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -29,22 +25,22 @@ function handleRefresh() {
 
 /** 创建数据目的 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑数据目的 */
-function handleEdit(row: any) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+function handleEdit(row: DataSinkApi.DataSink) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除数据目的 */
-async function handleDelete(row: any) {
+async function handleDelete(row: DataSinkApi.DataSink) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteDataSink(row.id);
+    await deleteDataSink(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -79,7 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<DataSinkApi.DataSink>,
 });
 </script>
 

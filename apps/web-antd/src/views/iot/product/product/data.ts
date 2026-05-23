@@ -1,20 +1,16 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { IotProductCategoryApi } from '#/api/iot/product/category';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';
-
-/** 产品分类列表缓存 */
-let categoryList: IotProductCategoryApi.ProductCategory[] = [];
-getSimpleProductCategoryList().then((data) => (categoryList = data));
 
 /** 基础表单字段（不含图标、图片、描述） */
 export function useBasicFormSchema(
@@ -114,6 +110,14 @@ export function useBasicFormSchema(
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      defaultValue: DeviceTypeEnum.DEVICE,
+      dependencies: {
+        triggerFields: ['id'],
+        componentProps: (values) => ({
+          // 编辑时设备类型不可改
+          disabled: !!values.id,
+        }),
+      },
       rules: 'required',
     },
     {
@@ -123,6 +127,11 @@ export function useBasicFormSchema(
       componentProps: {
         options: getDictOptions(DICT_TYPE.IOT_NET_TYPE, 'number'),
         placeholder: '请选择联网方式',
+      },
+      // 网关子设备走网关联网，不需要联网方式
+      dependencies: {
+        triggerFields: ['deviceType'],
+        show: (values) => values.deviceType !== DeviceTypeEnum.GATEWAY,
       },
       rules: 'required',
     },
@@ -134,6 +143,7 @@ export function useBasicFormSchema(
         options: getDictOptions(DICT_TYPE.IOT_PROTOCOL_TYPE, 'string'),
         placeholder: '请选择协议类型',
       },
+      defaultValue: 'mqtt',
       rules: 'required',
     },
     {
@@ -144,20 +154,8 @@ export function useBasicFormSchema(
         options: getDictOptions(DICT_TYPE.IOT_SERIALIZE_TYPE, 'string'),
         placeholder: '请选择序列化类型',
       },
+      defaultValue: 'json',
       help: 'iot-gateway-server 默认根据接入的协议类型确定数据格式，仅 MQTT、EMQX 协议支持自定义序列化类型',
-      rules: 'required',
-    },
-    // TODO @haohao：这个貌似不需要？！
-    {
-      fieldName: 'status',
-      label: '产品状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_PRODUCT_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      defaultValue: 0,
       rules: 'required',
     },
   ];
@@ -180,11 +178,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'icon',
       label: '产品图标',
-      component: 'IconPicker',
-      componentProps: {
-        placeholder: '请选择产品图标',
-        prefix: 'carbon',
-      },
+      component: 'ImageUpload',
     },
     {
       fieldName: 'picUrl',
@@ -204,7 +198,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<IotProductApi.Product>['columns'] {
   return [
     {
       field: 'id',
@@ -217,11 +211,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 150,
     },
     {
-      field: 'categoryId',
+      field: 'categoryName',
       title: '品类',
       minWidth: 120,
-      formatter: ({ cellValue }) =>
-        categoryList.find((c) => c.id === cellValue)?.name || '未分类',
+      formatter: ({ row }) => row.categoryName || '未分类',
     },
     {
       field: 'deviceType',
@@ -246,15 +239,6 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       width: 100,
       cellRender: {
         name: 'CellImage',
-      },
-    },
-    {
-      field: 'status',
-      title: '产品状态',
-      minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.IOT_PRODUCT_STATUS },
       },
     },
     {

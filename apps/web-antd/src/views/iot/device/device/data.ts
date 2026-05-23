@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -122,8 +123,8 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       label: '设备经度',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入设备经度',
-        class: 'w-full',
         min: -180,
         max: 180,
         precision: 6,
@@ -140,8 +141,8 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       label: '设备纬度',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入设备纬度',
-        class: 'w-full',
         min: -90,
         max: 90,
         precision: 6,
@@ -268,7 +269,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {

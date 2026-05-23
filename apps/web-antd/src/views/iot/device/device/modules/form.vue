@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 
@@ -15,8 +15,6 @@ import { MapDialog } from '#/components/map';
 import { $t } from '#/locales';
 
 import { useAdvancedFormSchema, useBasicFormSchema } from '../data';
-
-defineOptions({ name: 'IoTDeviceForm' });
 
 const emit = defineEmits(['success']);
 const formData = ref<IotDeviceApi.Device>();
@@ -35,8 +33,9 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
-  wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
   schema: useBasicFormSchema(),
   showDefaultActions: false,
@@ -49,7 +48,7 @@ const [Form, formApi] = useVbenForm({
         return;
       }
       // 从产品列表中查找产品
-      const product = products.value.find((p) => p.id === productId);
+      const product = products.value.find((item) => item.id === productId);
       if (product?.deviceType !== undefined) {
         await formApi.setFieldValue('deviceType', product.deviceType);
       }
@@ -62,8 +61,9 @@ const [AdvancedForm, advancedFormApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
-  wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
   schema: useAdvancedFormSchema(),
   showDefaultActions: false,
@@ -117,6 +117,26 @@ const [Modal, modalApi] = useVbenModal({
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
+    }
+    // 高级表单：先单独校验，再做经纬度成对填写的跨字段检查
+    if (advancedFormApi.isMounted) {
+      const { valid: advancedValid } = await advancedFormApi.validate();
+      if (!advancedValid) {
+        return;
+      }
+      const advValues = await advancedFormApi.getValues();
+      const hasLongitude =
+        advValues.longitude !== undefined &&
+        advValues.longitude !== null &&
+        advValues.longitude !== '';
+      const hasLatitude =
+        advValues.latitude !== undefined &&
+        advValues.latitude !== null &&
+        advValues.latitude !== '';
+      if (hasLongitude !== hasLatitude) {
+        message.warning(hasLongitude ? '请同时填写设备纬度' : '请同时填写设备经度');
+        return;
+      }
     }
     modalApi.lock();
     // 合并两个表单的值（字段不冲突，可直接合并）

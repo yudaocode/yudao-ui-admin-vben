@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataRuleApi } from '#/api/iot/rule/data/rule';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -10,15 +11,10 @@ import { deleteDataRule, getDataRulePage } from '#/api/iot/rule/data/rule';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import DataRuleForm from './data-rule-form.vue';
-
-// TODO @haohao：貌似和 apps/web-antd/src/views/iot/rule/data/index.vue 重复的。可能这个是对的。然后把 apps/web-antd/src/views/iot/rule/data/index.vue 搞成 tabs；
-
-/** IoT 数据流转规则列表 */
-defineOptions({ name: 'IotDataRule' });
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: DataRuleForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -29,22 +25,22 @@ function handleRefresh() {
 
 /** 创建规则 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑规则 */
-function handleEdit(row: any) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+function handleEdit(row: DataRuleApi.DataRule) {
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除规则 */
-async function handleDelete(row: any) {
+async function handleDelete(row: DataRuleApi.DataRule) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
   });
   try {
-    await deleteDataRule(row.id);
+    await deleteDataRule(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -79,7 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<DataRuleApi.DataRule>,
 });
 </script>
 

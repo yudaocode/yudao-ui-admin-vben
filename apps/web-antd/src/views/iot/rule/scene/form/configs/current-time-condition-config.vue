@@ -1,9 +1,10 @@
 <!-- 当前时间条件配置组件 -->
 <script setup lang="ts">
-import type { TriggerCondition } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
 
+import { IotRuleSceneTriggerTimeOperatorEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
@@ -17,17 +18,15 @@ import {
   TimePicker,
 } from 'ant-design-vue';
 
-import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
-
 /** 当前时间条件配置组件 */
 defineOptions({ name: 'CurrentTimeConditionConfig' });
 
 const props = defineProps<{
-  modelValue: TriggerCondition;
+  modelValue: RuleSceneApi.TriggerCondition;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: TriggerCondition): void;
+  (e: 'update:modelValue', value: RuleSceneApi.TriggerCondition): void;
 }>();
 
 const condition = useVModel(props, 'modelValue', emit);
@@ -39,7 +38,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.BEFORE_TIME.name,
     icon: 'ep:arrow-left',
     iconClass: 'text-blue-500',
-    tag: 'primary',
+    tag: 'processing',
     category: '时间点',
   },
   {
@@ -63,7 +62,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.AT_TIME.name,
     icon: 'ep:position',
     iconClass: 'text-purple-500',
-    tag: 'info',
+    tag: 'default',
     category: '时间点',
   },
   {
@@ -71,7 +70,7 @@ const timeOperatorOptions = [
     label: IotRuleSceneTriggerTimeOperatorEnum.TODAY.name,
     icon: 'ep:calendar',
     iconClass: 'text-red-500',
-    tag: 'danger',
+    tag: 'error',
     category: '日期',
   },
 ];
@@ -87,9 +86,9 @@ const needsTimeInput = computed(() => {
   return timeOnlyOperators.includes(condition.value.operator as any);
 });
 
-// 计算属性：是否需要日期输入
+/** 是否需要日期输入：当前只支持时间维度的判断 */
 const needsDateInput = computed(() => {
-  return false; // 暂时不支持日期输入，只支持时间
+  return false;
 });
 
 // 计算属性：是否需要第二个时间输入
@@ -194,7 +193,7 @@ watch(
                   <IconifyIcon :icon="option.icon" :class="option.iconClass" />
                   <span>{{ option.label }}</span>
                 </div>
-                <Tag :type="option.tag as any" size="small">
+                <Tag :color="option.tag">
                   {{ option.category }}
                 </Tag>
               </div>
@@ -225,7 +224,7 @@ watch(
             value-format="YYYY-MM-DD HH:mm:ss"
             class="w-full"
           />
-          <div v-else class="text-sm text-secondary">无需设置时间值</div>
+          <div v-else class="text-sm text-muted-foreground">无需设置时间值</div>
         </Form.Item>
       </Col>
 

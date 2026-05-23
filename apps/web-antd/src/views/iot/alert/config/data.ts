@@ -1,7 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AlertConfigApi } from '#/api/iot/alert/config';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleRuleSceneList } from '#/api/iot/rule/scene';
@@ -56,6 +57,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      defaultValue: CommonStatusEnum.ENABLE,
       rules: 'required',
     },
     {
@@ -69,6 +71,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择关联的场景联动规则',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -82,6 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收的用户',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -93,6 +97,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收类型',
       },
+      defaultValue: [],
       rules: 'required',
     },
   ];
@@ -133,9 +138,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<AlertConfigApi.AlertConfig>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '配置编号',
@@ -155,7 +159,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'level',
       title: '告警级别',
       minWidth: 100,
-      slots: { default: 'level' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
+      },
     },
     {
       field: 'status',
@@ -170,7 +177,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'sceneRuleIds',
       title: '关联场景联动规则',
       minWidth: 150,
-      slots: { default: 'sceneRules' },
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 条`,
     },
     {
       field: 'receiveUserNames',

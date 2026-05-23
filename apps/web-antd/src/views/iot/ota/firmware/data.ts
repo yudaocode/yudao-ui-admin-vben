@@ -1,8 +1,41 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotProductApi } from '#/api/iot/product/product';
+import type { DescriptionItemSchema } from '#/components/description';
+
+import { formatDateTime } from '@vben/utils';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 关联数据 */
+let productList: IotProductApi.Product[] = [];
+getSimpleProductList().then((data) => (productList = data));
+
+/** 根据产品 ID 取产品名称 */
+export function getProductName(productId?: number): string {
+  if (!productId) {
+    return '-';
+  }
+  return (
+    productList.find((product) => product.id === productId)?.name || '-'
+  );
+}
+
+/** 固件详情的描述字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    { field: 'name', label: '固件名称' },
+    { field: 'productName', label: '所属产品' },
+    { field: 'version', label: '固件版本' },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+    },
+    { field: 'description', label: '固件描述', span: 2 },
+  ];
+}
 
 /** 新增/修改固件的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -35,6 +68,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
     {
       fieldName: 'version',
@@ -44,6 +81,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入版本号',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
     {
       fieldName: 'description',
@@ -65,6 +106,10 @@ export function useFormSchema(): VbenFormSchema[] {
         helpText: '支持上传 .bin、.hex、.zip 格式的固件文件，最大 50MB',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !values.id,
+      },
     },
   ];
 }
@@ -108,7 +153,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '固件编号',
@@ -133,7 +177,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'productId',
       title: '所属产品',
       minWidth: 150,
-      slots: { default: 'product' },
+      slots: { default: 'productName' },
     },
     {
       field: 'fileUrl',

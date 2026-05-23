@@ -117,6 +117,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       label: '优惠率(%)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入优惠率',
         min: 0,
         max: 100,
@@ -129,6 +130,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       label: '付款优惠',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '付款优惠',
         precision: 2,
         formatter: erpPriceInputFormatter,
@@ -140,6 +142,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       label: '优惠后金额',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '优惠后金额',
         precision: 2,
         formatter: erpPriceInputFormatter,
@@ -160,6 +163,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       label: '其他费用',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         disabled: formType === 'detail',
         placeholder: '请输入其他费用',
         precision: 2,
@@ -184,6 +188,7 @@ export function useFormSchema(formType: string): VbenFormSchema[] {
       label: '应付金额',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         precision: 2,
         min: 0,
         disabled: true,

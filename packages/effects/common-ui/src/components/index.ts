@@ -1,4 +1,5 @@
 export * from './api-component';
+export * from './barcode';
 export * from './captcha';
 export * from './card/comparison-card';
 export * from './card/statistic-card';

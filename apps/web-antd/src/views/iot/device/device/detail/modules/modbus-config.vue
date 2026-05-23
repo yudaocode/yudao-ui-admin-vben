@@ -6,13 +6,13 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 import type { DescriptionItemSchema } from '#/components/description';
 
 import { computed, h, onMounted, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, ModbusFunctionCodeOptions } from '@vben/constants';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -25,17 +25,14 @@ import {
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { ModbusFunctionCodeOptions } from '#/views/iot/utils/constants';
 
 import DeviceModbusConfigForm from './modbus-config-form.vue';
 import DeviceModbusPointForm from './modbus-point-form.vue';
 
-defineOptions({ name: 'DeviceModbusConfig' });
-
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 // ======================= 连接配置 =======================
@@ -174,7 +171,7 @@ function usePointFormSchema(): VbenFormSchema[] {
 }
 
 /** 点位列表列配置 */
-function usePointColumns(): VxeTableGridOptions['columns'] {
+function usePointColumns(): VxeTableGridOptions<IotDeviceModbusPointApi.ModbusPoint>['columns'] {
   return [
     { field: 'name', title: '属性名称', minWidth: 100 },
     {

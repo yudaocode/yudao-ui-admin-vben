@@ -1,25 +1,24 @@
 <script lang="ts" setup>
+
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Switch } from 'ant-design-vue';
+import { Form, Input, Switch } from 'ant-design-vue';
 
-defineOptions({ name: 'KafkaMQConfigForm' });
+import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
-const props = defineProps<{
-  modelValue: any;
-}>();
+const props = defineProps<{ modelValue: any }>();
 const emit = defineEmits(['update:modelValue']);
-const config = useVModel(props, 'modelValue', emit) as any;
+const config = useVModel(props, 'modelValue', emit);
 
-/** 组件初始化 */
 onMounted(() => {
   if (!isEmpty(config.value)) {
     return;
   }
   config.value = {
+    type: `${IotDataSinkTypeEnum.KAFKA}`,
     bootstrapServers: '',
     username: '',
     password: '',
@@ -30,27 +29,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <FormItem label="服务地址" required>
-      <Input
-        v-model:value="config.bootstrapServers"
-        placeholder="请输入服务地址，如：localhost:9092"
-      />
-    </FormItem>
-    <FormItem label="用户名">
-      <Input v-model:value="config.username" placeholder="请输入用户名" />
-    </FormItem>
-    <FormItem label="密码">
-      <Input.Password
-        v-model:value="config.password"
-        placeholder="请输入密码"
-      />
-    </FormItem>
-    <FormItem label="启用 SSL" required>
-      <Switch v-model:checked="config.ssl" />
-    </FormItem>
-    <FormItem label="主题" required>
-      <Input v-model:value="config.topic" placeholder="请输入主题" />
-    </FormItem>
-  </div>
+  <Form.Item
+    :name="['config', 'bootstrapServers']"
+    :rules="[{ required: true, message: '服务地址不能为空', trigger: 'blur' }]"
+    label="服务地址"
+  >
+    <Input
+      v-model:value="config.bootstrapServers"
+      placeholder="请输入服务地址，如：localhost:9092"
+    />
+  </Form.Item>
+  <Form.Item
+    :name="['config', 'username']"
+    :rules="[{ required: true, message: '用户名不能为空', trigger: 'blur' }]"
+    label="用户名"
+  >
+    <Input v-model:value="config.username" placeholder="请输入用户名" />
+  </Form.Item>
+  <Form.Item
+    :name="['config', 'password']"
+    :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
+    label="密码"
+  >
+    <Input.Password v-model:value="config.password" placeholder="请输入密码" />
+  </Form.Item>
+  <Form.Item :name="['config', 'ssl']" label="启用 SSL">
+    <Switch v-model:checked="config.ssl" />
+  </Form.Item>
+  <Form.Item
+    :name="['config', 'topic']"
+    :rules="[{ required: true, message: '主题不能为空', trigger: 'blur' }]"
+    label="主题"
+  >
+    <Input v-model:value="config.topic" placeholder="请输入主题" />
+  </Form.Item>
 </template>
