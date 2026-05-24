@@ -9,6 +9,7 @@ import {
   isDeviceTrigger,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Card, Empty, Form, Tag } from 'ant-design-vue';
@@ -131,7 +132,7 @@ onMounted(() => {
       <div v-if="triggers.length > 0" class="space-y-[24px]">
         <div
           v-for="(triggerItem, index) in triggers"
-          :key="`trigger-${index}`"
+          :key="getStableObjectKey(triggerItem)"
           class="rounded-[8px] border border-green-200 bg-green-50/40 shadow-sm transition-shadow hover:shadow-md dark:border-green-900/40 dark:bg-green-950/20"
         >
           <!-- 触发器头部（绿色主题） -->

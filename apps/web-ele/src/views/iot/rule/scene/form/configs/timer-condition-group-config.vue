@@ -5,6 +5,7 @@ import { nextTick } from 'vue';
 
 import { IotRuleSceneTriggerTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { ElButton, ElTag } from 'element-plus';
@@ -96,7 +97,7 @@ function updateConditionGroup(
     >
       <div
         v-for="(group, groupIndex) in conditionGroups"
-        :key="`group-${groupIndex}`"
+        :key="getStableObjectKey(group)"
         class="relative"
       >
         <!-- 条件组容器（橙色主题） -->

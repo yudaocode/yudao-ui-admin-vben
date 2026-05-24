@@ -24,7 +24,7 @@ export namespace RuleSceneApi {
     operator?: string;
     value?: any;
     cronExpression?: string;
-    conditionGroups?: TriggerCondition[][];
+    conditionGroups?: TriggerCondition[][]; // 后端结构：List<List<TriggerCondition>>；外层「或」、组内「且」
   }
 
   /**  场景联动规则的触发条件 */

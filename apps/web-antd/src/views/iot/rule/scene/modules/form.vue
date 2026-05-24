@@ -103,12 +103,14 @@ function buildEmptyFormData(): RuleSceneApi.SceneRule {
 
 /** 回显时兜底，保证触发器/执行器数组不为空 */
 function normalizeFormData(result: any): RuleSceneApi.SceneRule {
+  const triggers: RuleSceneApi.Trigger[] = result.triggers?.length
+    ? result.triggers
+    : buildEmptyFormData().triggers!;
+  const actions: RuleSceneApi.Action[] = result.actions || [];
   return {
     ...result,
-    triggers: result.triggers?.length
-      ? result.triggers
-      : buildEmptyFormData().triggers,
-    actions: result.actions || [],
+    triggers,
+    actions,
   };
 }
 

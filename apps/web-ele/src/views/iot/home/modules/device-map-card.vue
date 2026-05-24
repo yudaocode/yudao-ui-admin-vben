@@ -117,13 +117,13 @@ function initMap() {
           }
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            const deviceId = (e.target as HTMLElement).dataset.id;
-            if (deviceId) {
-              router.push({
-                name: 'IoTDeviceDetail',
-                params: { id: deviceId },
-              });
+            if (device.id === undefined || device.id === null) {
+              return;
             }
+            router.push({
+              name: 'IoTDeviceDetail',
+              params: { id: device.id },
+            });
           });
         }, 100);
       });

@@ -9,6 +9,7 @@ import {
   isDeviceTrigger,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { ElButton, ElCard, ElEmpty, ElFormItem, ElTag } from 'element-plus';
@@ -164,7 +165,7 @@ onMounted(() => {
       <div v-if="triggers.length > 0" class="space-y-[24px]">
         <div
           v-for="(triggerItem, index) in triggers"
-          :key="`trigger-${index}`"
+          :key="getStableObjectKey(triggerItem)"
           class="rounded-[8px] border-2 border-green-200 bg-green-50 shadow-sm transition-shadow hover:shadow-md"
         >
           <!-- 触发器头部 - 绿色主题 -->

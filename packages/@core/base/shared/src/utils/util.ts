@@ -1,3 +1,5 @@
+import { buildShortUUID } from './uuid';
+
 export function bindMethods<T extends object>(instance: T): void {
   const prototype = Object.getPrototypeOf(instance);
   const propertyNames = Object.getOwnPropertyNames(prototype);
@@ -113,4 +115,23 @@ export function jsonParse(str: string) {
     console.warn(`str[${str}] 不是一个 JSON 字符串`);
     return str;
   }
+}
+
+const stableObjectKeyMap = new WeakMap<object, string>();
+
+/**
+ * 为对象引用生成稳定 key，不写入对象本身。
+ *
+ * 适用于 v-for 使用对象或数组项作为渲染单位，但不希望把 UI 字段混入业务数据的场景。
+ */
+export function getStableObjectKey(
+  item: object,
+  generator: () => string = buildShortUUID,
+): string {
+  let key = stableObjectKeyMap.get(item);
+  if (!key) {
+    key = generator();
+    stableObjectKeyMap.set(item, key);
+  }
+  return key;
 }
