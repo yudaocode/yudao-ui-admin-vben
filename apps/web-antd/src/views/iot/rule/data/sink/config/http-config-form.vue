@@ -21,21 +21,31 @@ const fullUrl = computed(() =>
   urlPath.value ? urlPrefix.value + urlPath.value : '',
 );
 
+function syncUrlFields(url?: string) {
+  if (url?.startsWith('https://')) {
+    urlPrefix.value = 'https://';
+    urlPath.value = url.slice(8);
+  } else if (url?.startsWith('http://')) {
+    urlPrefix.value = 'http://';
+    urlPath.value = url.slice(7);
+  } else {
+    urlPath.value = url ?? '';
+  }
+}
+
 watch([urlPrefix, urlPath], () => {
   config.value.url = fullUrl.value;
 });
 
+watch(
+  () => config.value?.url,
+  (url) => syncUrlFields(url),
+  { immediate: true },
+);
+
 onMounted(() => {
   if (!isEmpty(config.value)) {
-    if (config.value.url?.startsWith('https://')) {
-      urlPrefix.value = 'https://';
-      urlPath.value = config.value.url.slice(8);
-    } else if (config.value.url?.startsWith('http://')) {
-      urlPrefix.value = 'http://';
-      urlPath.value = config.value.url.slice(7);
-    } else {
-      urlPath.value = config.value.url ?? '';
-    }
+    syncUrlFields(config.value.url);
     return;
   }
   config.value = {

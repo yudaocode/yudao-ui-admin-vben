@@ -12,6 +12,7 @@ import {
   JsonParamsInputTypeEnum,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { isEmptyVal } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Input, Popover, Tag } from 'ant-design-vue';
@@ -242,10 +243,8 @@ function handleParamsChange() {
 
     // 必填参数校验
     for (const param of paramsList.value) {
-      if (
-        param.required &&
-        (!parsed[param.identifier] || parsed[param.identifier] === '')
-      ) {
+      const value = parsed[param.identifier];
+      if (param.required && isEmptyVal(value)) {
         jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(
           param.name,
         );

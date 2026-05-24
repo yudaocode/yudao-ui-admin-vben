@@ -282,6 +282,7 @@ onBeforeUnmount(() => {
           clearable
           placeholder="请输入属性名称、标识符"
           style="width: 240px"
+          @clear="handleQuery"
           @keyup.enter="handleQuery"
         />
         <ElSwitch

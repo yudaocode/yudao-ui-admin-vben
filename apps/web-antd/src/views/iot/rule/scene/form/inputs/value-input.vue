@@ -6,6 +6,7 @@ import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
 } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import {

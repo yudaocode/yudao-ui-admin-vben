@@ -76,7 +76,11 @@ onMounted(() => {
       class="w-full"
     />
   </Form.Item>
-  <Form.Item :name="['config', 'password']" label="密码">
+  <Form.Item
+    :name="['config', 'password']"
+    :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
+    label="密码"
+  >
     <Input.Password v-model:value="config.password" placeholder="请输入密码" />
   </Form.Item>
   <Form.Item

@@ -315,12 +315,14 @@ watch(
               label: '添加子设备',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:device:update'],
               onClick: openAddModal,
             },
             {
               label: '批量解绑',
               type: 'danger',
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:device:update'],
               disabled: isEmpty(checkedIds),
               onClick: handleUnbindBatch,
             },
@@ -340,6 +342,7 @@ watch(
               label: '解绑',
               type: 'danger',
               link: true,
+              auth: ['iot:device:update'],
               onClick: () => handleUnbind(row),
             },
           ]"

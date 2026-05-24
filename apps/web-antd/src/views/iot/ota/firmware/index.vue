@@ -13,7 +13,11 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import { getProductName, useGridColumns, useGridFormSchema } from './data';
+import {
+  getProductName,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
@@ -116,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <!-- 所属产品列：点击跳产品详情 -->
       <template #productName="{ row }">
         <a
-          v-if="row.productId"
+          v-if="row.productId && getProductName(row.productId) !== '-'"
           class="cursor-pointer text-primary hover:underline"
           @click="handleOpenProductDetail(row.productId)"
         >

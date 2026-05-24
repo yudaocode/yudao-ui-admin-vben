@@ -202,13 +202,15 @@ async function handleEventPost(row: ThingModelApi.ThingModel) {
     const valueStr = formData.value[row.identifier!];
     let eventValue: any;
 
-    if (valueStr) {
-      try {
-        eventValue = JSON.parse(valueStr);
-      } catch {
-        ElMessage.error('事件参数格式错误，请输入有效的JSON格式');
-        return;
-      }
+    if (valueStr === undefined || valueStr === null || valueStr === '') {
+      ElMessage.warning('请输入事件参数');
+      return;
+    }
+    try {
+      eventValue = JSON.parse(valueStr);
+    } catch {
+      ElMessage.error('事件参数格式错误，请输入有效的JSON格式');
+      return;
     }
 
     // 与后端 IotDeviceEventPostReqDTO 对齐 ：{ identifier, value, time }
@@ -286,21 +288,23 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
     const valueStr = formData.value[row.identifier!];
     let inputParams: any = {};
 
-    if (valueStr) {
-      try {
-        inputParams = JSON.parse(valueStr);
-      } catch {
-        ElMessage.error('服务参数格式错误，请输入有效的JSON格式');
-        return;
-      }
-      if (
-        typeof inputParams !== 'object' ||
-        inputParams === null ||
-        Array.isArray(inputParams)
-      ) {
-        ElMessage.error('服务参数必须是 JSON 对象');
-        return;
-      }
+    if (valueStr === undefined || valueStr === null || valueStr === '') {
+      ElMessage.warning('请输入服务参数');
+      return;
+    }
+    try {
+      inputParams = JSON.parse(valueStr);
+    } catch {
+      ElMessage.error('服务参数格式错误，请输入有效的JSON格式');
+      return;
+    }
+    if (
+      typeof inputParams !== 'object' ||
+      inputParams === null ||
+      Array.isArray(inputParams)
+    ) {
+      ElMessage.error('服务参数必须是 JSON 对象');
+      return;
     }
 
     // 与后端 IotDeviceServiceInvokeReqDTO 对齐 ：{ identifier, inputParams }

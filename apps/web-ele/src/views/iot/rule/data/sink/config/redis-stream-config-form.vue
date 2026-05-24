@@ -82,7 +82,11 @@ onMounted(() => {
       class="w-full"
     />
   </ElFormItem>
-  <ElFormItem prop="config.password" label="密码">
+  <ElFormItem
+    prop="config.password"
+    :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
+    label="密码"
+  >
     <ElInput
       v-model="config.password"
       type="password"

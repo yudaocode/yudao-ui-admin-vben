@@ -14,7 +14,7 @@ import { computed, h, onMounted, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE, ModbusFunctionCodeOptions } from '@vben/constants';
 
-import { ElButton, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getModbusConfig } from '#/api/iot/device/modbus/config';
@@ -307,7 +307,16 @@ onMounted(async () => {
     <!-- 连接配置区域 -->
     <ConfigDescriptions :data="modbusConfig" class="mb-4">
       <template #extra>
-        <ElButton type="primary" @click="handleEditConfig">编辑</ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              auth: ['iot:device:create'],
+              onClick: handleEditConfig,
+            },
+          ]"
+        />
       </template>
     </ConfigDescriptions>
 
@@ -320,6 +329,7 @@ onMounted(async () => {
               label: '新增点位',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:device:create'],
               onClick: handleAddPoint,
             },
           ]"
@@ -332,12 +342,14 @@ onMounted(async () => {
               label: '编辑',
               type: 'primary',
               link: true,
+              auth: ['iot:device:update'],
               onClick: () => handleEditPoint(row),
             },
             {
               label: '删除',
               type: 'danger',
               link: true,
+              auth: ['iot:device:delete'],
               popConfirm: {
                 title: `确定要删除点位【${row.name}】吗？`,
                 confirm: () => handleDeletePoint(row),
