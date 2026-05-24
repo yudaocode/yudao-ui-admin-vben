@@ -33,10 +33,7 @@ async function getList() {
 function handleChange(value: SelectValue) {
   const toolId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', toolId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === toolId),
-  );
+  emit('change', list.value.find((item) => item.id === toolId));
 }
 
 onMounted(getList);

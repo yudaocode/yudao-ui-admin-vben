@@ -62,12 +62,26 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeviceList,
+        api: (params?: { productId?: number }) =>
+          getSimpleDeviceList(undefined, params?.productId),
         labelField: 'deviceName',
         valueField: 'id',
         placeholder: '请选择设备',
         clearable: true,
         filterable: true,
+      },
+      dependencies: {
+        triggerFields: ['productId'],
+        componentProps: (values) => {
+          return {
+            params: { productId: values.productId },
+          };
+        },
+        trigger: (values, formApi) => {
+          if (values.deviceId !== undefined) {
+            void formApi.setFieldValue('deviceId', undefined);
+          }
+        },
       },
     },
     {

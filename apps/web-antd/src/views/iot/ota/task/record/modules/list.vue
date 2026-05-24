@@ -40,7 +40,7 @@ const statusTabs = computed(() => {
 /** 切换标签 */
 async function handleTabChange(tabKey: number | string) {
   activeTab.value = String(tabKey);
-  await gridApi.query();
+  await gridApi.reload();
 }
 
 /** 取消单条记录的升级 */
@@ -89,7 +89,7 @@ watch(
   async (val) => {
     if (val) {
       activeTab.value = '';
-      await gridApi.query();
+      await gridApi.reload();
     }
   },
 );

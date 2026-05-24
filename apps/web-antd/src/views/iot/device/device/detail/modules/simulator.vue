@@ -6,11 +6,12 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 import {
   DeviceStateEnum,
+  IoTDataSpecsDataTypeEnum,
   IotDeviceMessageMethodEnum,
   IoTThingModelTypeEnum,
 } from '@vben/constants';
@@ -21,8 +22,10 @@ import {
   Card,
   Col,
   Input,
+  InputNumber,
   message,
   Row,
+  Select,
   Table,
   Tabs,
   Textarea,
@@ -51,7 +54,7 @@ const debugCollapsed = ref(false); // 指令调试区域折叠状态
 const messageCollapsed = ref(false); // 设备消息区域折叠状态
 
 // 表单数据：存储用户输入的模拟值
-const formData = ref<Record<string, string>>({});
+const formData = ref<Record<string, any>>({});
 
 // 根据类型过滤物模型数据
 const getFilteredThingModelList = (type: number) => {
@@ -184,12 +187,63 @@ const serviceColumns = [
 
 // 获取表单值
 function getFormValue(identifier: string) {
-  return formData.value[identifier] || '';
+  return formData.value[identifier] ?? '';
 }
 
 // 设置表单值
-function setFormValue(identifier: string, value: string) {
+function setFormValue(identifier: string, value: any) {
   formData.value[identifier] = value;
+}
+
+/** 获取属性数据类型 */
+function getPropertyDataType(row: ThingModelApi.ThingModel) {
+  return row.property?.dataType;
+}
+
+/** 判断属性是否为数值类型 */
+function isNumberProperty(row: ThingModelApi.ThingModel) {
+  return [
+    IoTDataSpecsDataTypeEnum.DOUBLE,
+    IoTDataSpecsDataTypeEnum.FLOAT,
+    IoTDataSpecsDataTypeEnum.INT,
+  ].includes(getPropertyDataType(row) as any);
+}
+
+/** 判断属性是否使用下拉选项 */
+function isSelectProperty(row: ThingModelApi.ThingModel) {
+  return [
+    IoTDataSpecsDataTypeEnum.BOOL,
+    IoTDataSpecsDataTypeEnum.ENUM,
+  ].includes(getPropertyDataType(row) as any);
+}
+
+/** 获取属性选项 */
+function getPropertyOptions(row: ThingModelApi.ThingModel) {
+  const list = row.property?.dataSpecsList || [];
+  if (list.length > 0) {
+    return list.map((item: any) => ({
+      label: item.name || item.label || String(item.value),
+      value: String(item.value),
+    }));
+  }
+  if (getPropertyDataType(row) === IoTDataSpecsDataTypeEnum.BOOL) {
+    return [
+      { label: '真 (true)', value: 'true' },
+      { label: '假 (false)', value: 'false' },
+    ];
+  }
+  return [];
+}
+
+/** 按物模型数据类型转换属性值 */
+function normalizePropertyValue(row: ThingModelApi.ThingModel, value: any) {
+  if (value === undefined || value === null || value === '') {
+    return undefined;
+  }
+  if (isNumberProperty(row)) {
+    return Number(value);
+  }
+  return value;
 }
 
 // 属性上报
@@ -197,8 +251,11 @@ async function handlePropertyPost() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
-      const value = formData.value[item.identifier!];
-      if (value) {
+      const value = normalizePropertyValue(
+        item,
+        formData.value[item.identifier!],
+      );
+      if (value !== undefined) {
         params[item.identifier!] = value;
       }
     });
@@ -281,8 +338,11 @@ async function handlePropertySet() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
-      const value = formData.value[item.identifier!];
-      if (value) {
+      const value = normalizePropertyValue(
+        item,
+        formData.value[item.identifier!],
+      );
+      if (value !== undefined) {
         params[item.identifier!] = value;
       }
     });
@@ -320,6 +380,14 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
         message.error('服务参数格式错误，请输入有效的JSON格式');
         return;
       }
+      if (
+        typeof inputParams !== 'object' ||
+        inputParams === null ||
+        Array.isArray(inputParams)
+      ) {
+        message.error('服务参数必须是 JSON 对象');
+        return;
+      }
     }
 
     // 与后端 IotDeviceServiceInvokeReqDTO 对齐 ：{ identifier, inputParams }
@@ -340,6 +408,11 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
     console.error(error);
   }
 }
+
+/** 切换调试方法时清空输入，避免不同方法之间串台提交 */
+watch([activeTab, upstreamTab, downstreamTab], () => {
+  formData.value = {};
+});
 </script>
 
 <template>
@@ -392,7 +465,29 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
                             <DataDefinition :data="record" />
                           </template>
                           <template v-else-if="column.key === 'value'">
+                            <InputNumber
+                              v-if="isNumberProperty(record)"
+                              :value="getFormValue(record.identifier)"
+                              placeholder="输入值"
+                              size="small"
+                              class="w-full"
+                              @update:value="
+                                setFormValue(record.identifier, $event)
+                              "
+                            />
+                            <Select
+                              v-else-if="isSelectProperty(record)"
+                              :value="getFormValue(record.identifier)"
+                              :options="getPropertyOptions(record)"
+                              placeholder="请选择值"
+                              size="small"
+                              class="w-full"
+                              @update:value="
+                                setFormValue(record.identifier, $event)
+                              "
+                            />
                             <Input
+                              v-else
                               :value="getFormValue(record.identifier)"
                               placeholder="输入值"
                               size="small"
@@ -514,7 +609,29 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
                             <DataDefinition :data="record" />
                           </template>
                           <template v-else-if="column.key === 'value'">
+                            <InputNumber
+                              v-if="isNumberProperty(record)"
+                              :value="getFormValue(record.identifier)"
+                              placeholder="输入值"
+                              size="small"
+                              class="w-full"
+                              @update:value="
+                                setFormValue(record.identifier, $event)
+                              "
+                            />
+                            <Select
+                              v-else-if="isSelectProperty(record)"
+                              :value="getFormValue(record.identifier)"
+                              :options="getPropertyOptions(record)"
+                              placeholder="请选择值"
+                              size="small"
+                              class="w-full"
+                              @update:value="
+                                setFormValue(record.identifier, $event)
+                              "
+                            />
                             <Input
+                              v-else
                               :value="getFormValue(record.identifier)"
                               placeholder="输入值"
                               size="small"

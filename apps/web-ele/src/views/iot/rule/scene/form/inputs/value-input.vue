@@ -146,16 +146,58 @@ function handleNumberChange(value: number | undefined) {
   localValue.value = value?.toString() || '';
 }
 
+/** 根据外部值同步内部输入态 */
+function syncInternalValue(value = '') {
+  const normalized = value;
+  if (
+    props.operator ===
+    IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value
+  ) {
+    const [start = '', end = ''] = normalized.split(',');
+    rangeStart.value = start;
+    rangeEnd.value = end;
+    numberValue.value = undefined;
+    dateValue.value = '';
+    return;
+  }
+  rangeStart.value = '';
+  rangeEnd.value = '';
+  if (props.propertyType === IoTDataSpecsDataTypeEnum.DATE) {
+    dateValue.value = normalized;
+    numberValue.value = undefined;
+    return;
+  }
+  if (isNumericType()) {
+    const parsed = Number(normalized);
+    numberValue.value =
+      normalized === '' || Number.isNaN(parsed) ? undefined : parsed;
+    dateValue.value = '';
+    return;
+  }
+  numberValue.value = undefined;
+  dateValue.value = '';
+}
+
 /** 监听操作符变化 */
 watch(
   () => props.operator,
-  () => {
+  (_operator, oldOperator) => {
+    if (oldOperator === undefined) {
+      syncInternalValue(props.modelValue);
+      return;
+    }
     localValue.value = '';
     rangeStart.value = '';
     rangeEnd.value = '';
     dateValue.value = '';
     numberValue.value = undefined;
   },
+);
+
+watch(
+  () => [props.modelValue, props.propertyType] as const,
+  ([value]) => syncInternalValue(value),
+  { immediate: true },
 );
 </script>
 
@@ -168,8 +210,8 @@ watch(
       placeholder="请选择布尔值"
       class="w-full!"
     >
-      <ElOption label="真 (true)" :value="true" />
-      <ElOption label="假 (false)" :value="false" />
+      <ElOption label="真 (true)" value="true" />
+      <ElOption label="假 (false)" value="false" />
     </ElSelect>
 
     <!-- 枚举值选择 -->

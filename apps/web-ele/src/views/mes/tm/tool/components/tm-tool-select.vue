@@ -31,10 +31,7 @@ async function getList() {
 function handleChange(value: number | string | undefined) {
   const toolId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', toolId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === toolId),
-  );
+  emit('change', list.value.find((item) => item.id === toolId));
 }
 
 onMounted(getList);
