@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 import type { ActionItem } from '#/components/table-action/typing';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -156,6 +156,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设备】点检保养项目、点检保养方案"
+        url="https://doc.iocoder.cn/mes/dv/check-plan/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="点检保养方案列表">
       <template #toolbar-tools>

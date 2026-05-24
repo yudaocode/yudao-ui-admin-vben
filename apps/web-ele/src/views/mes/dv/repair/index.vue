@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -95,6 +95,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设备】点检记录、保养记录、维修单"
+        url="https://doc.iocoder.cn/mes/dv/check-record/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="维修工单列表">
       <template #toolbar-tools>

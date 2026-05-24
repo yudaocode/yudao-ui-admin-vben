@@ -4,7 +4,7 @@ import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -102,6 +102,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【基础】物料产品、分类、计量单位"
+        url="https://doc.iocoder.cn/mes/md/product/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="物料分类列表">
       <template #toolbar-tools>

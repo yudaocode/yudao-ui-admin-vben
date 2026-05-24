@@ -56,6 +56,8 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
+
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
 /** 提交维修工单 */

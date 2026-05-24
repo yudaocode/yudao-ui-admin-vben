@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -89,6 +89,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【排班】排班计划、排班日历"
+        url="https://doc.iocoder.cn/mes/cal/calendar/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="排班计划列表">
       <template #toolbar-tools>

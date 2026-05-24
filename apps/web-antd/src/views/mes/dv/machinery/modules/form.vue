@@ -26,9 +26,12 @@ const subTabsName = ref('check'); // 当前资源页签
 const formData = ref<MesDvMachineryApi.Machinery>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
-const getTitle = computed(
-  () => ({ create: '新增设备', update: '修改设备', detail: '查看设备' })[formMode.value],
-);
+const getTitle = computed(() => {
+  if (formMode.value === 'detail') {
+    return '查看设备';
+  }
+  return formMode.value === 'update' ? '修改设备' : '新增设备';
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -43,6 +46,8 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
+
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi, formMode) });
 
 /** 查看设备条码 */

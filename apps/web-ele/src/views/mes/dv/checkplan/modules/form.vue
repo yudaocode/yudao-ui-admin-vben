@@ -23,12 +23,12 @@ const formMode = ref<FormMode>('create');
 const subTabsName = ref('machinery');
 const formData = ref<MesDvCheckPlanApi.CheckPlan>();
 const isDetail = computed(() => formMode.value === 'detail');
-const getTitle = computed(
-  () =>
-    ({ create: '新增点检保养方案', update: '修改点检保养方案', detail: '查看点检保养方案' })[
-      formMode.value
-    ],
-);
+const getTitle = computed(() => {
+  if (formMode.value === 'detail') {
+    return '查看点检保养方案';
+  }
+  return formMode.value === 'update' ? '修改点检保养方案' : '新增点检保养方案';
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -43,6 +43,8 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
+
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
 const [Modal, modalApi] = useVbenModal({

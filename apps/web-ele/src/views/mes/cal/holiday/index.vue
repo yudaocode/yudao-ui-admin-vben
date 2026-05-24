@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
-import type { CalendarDateType } from 'element-plus';
-
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -25,6 +23,14 @@ const currentDate = ref<Dayjs>(dayjs()); // 当前日历选中日期
 const holidaySet = ref(new Set<string>()); // 节假日日期集合
 const lastFetchedMonth = ref(''); // 上次加载月份
 const { hasAccessByCodes } = useAccess();
+
+/** ElCalendar v-model 桥接：内部用 Dayjs，组件需要 Date */
+const calendarValue = computed({
+  get: () => currentDate.value.toDate(),
+  set: (val: Date) => {
+    currentDate.value = dayjs(val);
+  },
+});
 
 const [HolidayFormModal, holidayFormModalApi] = useVbenModal({
   connectedComponent: HolidayForm,
@@ -55,7 +61,7 @@ async function getList() {
 }
 
 /** 点击日期：打开假期设置弹窗 */
-function handleDayClick(data: { day: string; type: CalendarDateType }) {
+function handleDayClick(data: { date: Date; day: string; type: string }) {
   // 非当前月日期，不处理（避免切换月份）
   if (data.type !== 'current-month') {
     return;
@@ -130,7 +136,7 @@ onMounted(getList);
     </template>
     <HolidayFormModal @success="getList" />
     <div class="bg-card overflow-hidden rounded-md">
-      <ElCalendar v-model="currentDate" class="mes-holiday-calendar">
+      <ElCalendar v-model="calendarValue" class="mes-holiday-calendar">
         <template #date-cell="{ data }">
           <div
             class="hover:bg-muted/50 h-full cursor-pointer p-1 text-left transition"

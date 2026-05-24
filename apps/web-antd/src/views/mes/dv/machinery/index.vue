@@ -5,7 +5,7 @@ import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -115,6 +115,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设备】设备类型、设备台账"
+        url="https://doc.iocoder.cn/mes/dv/device/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
     <div class="flex h-full w-full">

@@ -4,7 +4,7 @@ import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 
 import { ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -35,13 +35,18 @@ function handleRefresh() {
 }
 
 /** 创建设备类型 */
-function handleCreate(parentId = 0) {
-  formModalApi.setData({ parentId, type: 'create' }).open();
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 添加下级设备类型 */
+function handleAppend(row: MesDvMachineryTypeApi.MachineryType) {
+  formModalApi.setData({ parentId: row.id }).open();
 }
 
 /** 编辑设备类型 */
 function handleEdit(row: MesDvMachineryTypeApi.MachineryType) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData(row).open();
 }
 
 /** 删除设备类型 */
@@ -93,6 +98,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设备】设备类型、设备台账"
+        url="https://doc.iocoder.cn/mes/dv/device/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="设备类型列表">
       <template #toolbar-tools>
@@ -103,7 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['mes:dv-machinery-type:create'],
-              onClick: handleCreate.bind(null, 0),
+              onClick: handleCreate,
             },
             {
               label: isExpanded ? '收缩' : '展开',
@@ -122,7 +133,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               icon: ACTION_ICON.ADD,
               auth: ['mes:dv-machinery-type:create'],
-              onClick: handleCreate.bind(null, row.id),
+              onClick: handleAppend.bind(null, row),
             },
             {
               label: $t('common.edit'),

@@ -32,10 +32,12 @@ const canSubmit = computed(
   () =>
     formMode.value === 'update' && formData.value?.status === MesDvMaintenRecordStatusEnum.PREPARE,
 );
-const getTitle = computed(
-  () =>
-    ({ create: '新增保养记录', update: '修改保养记录', detail: '查看保养记录' })[formMode.value],
-);
+const getTitle = computed(() => {
+  if (formMode.value === 'detail') {
+    return '查看保养记录';
+  }
+  return formMode.value === 'update' ? '修改保养记录' : '新增保养记录';
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {

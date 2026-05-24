@@ -18,12 +18,12 @@ type FormMode = 'create' | 'detail' | 'update';
 const emit = defineEmits(['success']);
 const formMode = ref<FormMode>('create'); // 表单模式
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
-const getTitle = computed(
-  () =>
-    ({ create: '新增点检保养项目', update: '修改点检保养项目', detail: '查看点检保养项目' })[
-      formMode.value
-    ],
-);
+const getTitle = computed(() => {
+  if (formMode.value === 'detail') {
+    return '查看点检保养项目';
+  }
+  return formMode.value === 'update' ? '修改点检保养项目' : '新增点检保养项目';
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -38,6 +38,8 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
+
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
 const [Modal, modalApi] = useVbenModal({

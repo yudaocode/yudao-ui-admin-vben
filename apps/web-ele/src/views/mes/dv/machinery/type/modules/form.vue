@@ -17,10 +17,13 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-
 const emit = defineEmits(['success']);
-const formMode = ref<'create' | 'update'>('create'); // 表单模式
-const getTitle = computed(() => (formMode.value === 'create' ? '新增设备类型' : '修改设备类型'));
+const formData = ref<MesDvMachineryTypeApi.MachineryType>();
+const getTitle = computed(() => {
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['设备类型'])
+    : $t('ui.actionTitle.create', ['设备类型']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -48,7 +51,10 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesDvMachineryTypeApi.MachineryType;
     try {
-      await (data.id ? updateMachineryType(data) : createMachineryType(data));
+      await (formData.value?.id
+        ? updateMachineryType(data)
+        : createMachineryType(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -58,18 +64,25 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      formData.value = undefined;
       return;
     }
     await formApi.resetForm();
-    const data = modalApi.getData<{ id?: number; parentId?: number; type?: 'create' | 'update' }>();
-    formMode.value = data?.type || 'create';
-    if (!data?.id) {
-      await formApi.setValues({ parentId: data?.parentId ?? 0 });
+    // 加载数据
+    const data = modalApi.getData<MesDvMachineryTypeApi.MachineryType>();
+    if (!data || !data.id) {
+      formData.value = data || undefined;
+      if (data) {
+        // 设置上级类型
+        await formApi.setValues(data);
+      }
       return;
     }
     modalApi.lock();
     try {
-      await formApi.setValues(await getMachineryType(data.id));
+      formData.value = await getMachineryType(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
     }

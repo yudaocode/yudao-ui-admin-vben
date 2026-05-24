@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalTeamApi } from '#/api/mes/cal/team';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -90,6 +90,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【排班】班组设置、节假日设置"
+        url="https://doc.iocoder.cn/mes/cal/team/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid table-title="班组列表">
       <template #toolbar-tools>
