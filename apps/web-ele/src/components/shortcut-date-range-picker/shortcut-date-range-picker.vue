@@ -31,14 +31,14 @@ const timeRangeOptions = [
     label: '最近 7 天',
     value: () => [
       dayjs().subtract(7, 'day').startOf('day'),
-      dayjs().endOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
     ],
   },
   {
     label: '最近 30 天',
     value: () => [
       dayjs().subtract(30, 'day').startOf('day'),
-      dayjs().endOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
     ],
   },
 ];

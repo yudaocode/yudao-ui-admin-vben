@@ -73,7 +73,10 @@ const thingModelTSL = ref<null | ThingModelApi.ThingModelTSL>(null); // 物模�
 const propertyGroups = computed(() => {
   const groups: { label: string; options: any[] }[] = [];
 
-  if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST) {
+  if (
+    props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST ||
+    props.triggerType === IotRuleSceneTriggerTypeEnum.TIMER
+  ) {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.PROPERTY,
       options: propertyList.value.filter(

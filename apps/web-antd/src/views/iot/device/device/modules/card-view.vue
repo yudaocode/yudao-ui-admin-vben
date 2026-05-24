@@ -229,7 +229,7 @@ onMounted(() => {
                 详情
               </Button>
               <Button
-                v-if="hasAccessByCodes(['iot:device:message-query'])"
+                v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
                 class="!h-8 min-w-0 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
                 @click="emit('model', item.id!)"

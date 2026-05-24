@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { useVbenModal } from '@vben/common-ui';
+import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElMessage, ElUpload } from 'element-plus';
@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
             text += `< ${deviceName}: ${importData.failureDeviceNames[deviceName]} >`;
           }
         }
-        ElMessage.info(text);
+        await alert(text, '导入结果');
       }
       // 关闭并提示
       await modalApi.close();

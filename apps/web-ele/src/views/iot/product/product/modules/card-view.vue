@@ -50,9 +50,9 @@ const queryParams = ref({
 });
 
 /** 获取分类名称 */
-function getCategoryName(categoryId: number) {
-  const category = props.categoryList.find((c: any) => c.id === categoryId);
-  return category?.name || '未分类';
+function getCategoryName(item: any) {
+  const category = props.categoryList.find((c: any) => c.id === item.categoryId);
+  return item.categoryName || category?.name || '未分类';
 }
 
 /** 获取产品列表 */
@@ -140,7 +140,7 @@ onMounted(() => {
                     产品分类
                   </span>
                   <span class="truncate font-medium text-foreground">
-                    {{ getCategoryName(item.categoryId) }}
+                    {{ getCategoryName(item) }}
                   </span>
                 </div>
                 <div class="mb-2 flex items-center text-[13px]">

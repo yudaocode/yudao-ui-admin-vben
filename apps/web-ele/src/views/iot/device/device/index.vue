@@ -214,6 +214,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
+    pagerConfig: {
+      pageSize: 12,
+    },
     proxyConfig: {
       ajax: {
         query: async ({
@@ -467,7 +470,7 @@ onMounted(async () => {
               label: '日志',
               type: 'primary',
               link: true,
-              auth: ['iot:device:message-query'],
+              auth: ['iot:device:query'],
               onClick: openModel.bind(null, row.id!),
             },
             {

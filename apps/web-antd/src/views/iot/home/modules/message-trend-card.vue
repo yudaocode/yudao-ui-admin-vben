@@ -30,9 +30,9 @@ const isFirstMount = ref(true); // 首次挂载标记，用于跳过子组件 mo
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
-  // 默认显示最近一周的数据（包含今天和前六天）
-  dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
-  dayjs().format('YYYY-MM-DD'),
+  // 默认显示最近一周的数据（截至昨天）
+  dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
+  dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
 ]);
 
 /** 将日期范围转换为带时分秒的格式 */
@@ -97,6 +97,8 @@ async function fetchMessageData() {
   loading.value = true;
   try {
     messageData.value = await getDeviceMessageSummaryByDate(queryParams);
+  } catch {
+    messageData.value = [];
   } finally {
     loading.value = false;
     await renderChartWhenReady();

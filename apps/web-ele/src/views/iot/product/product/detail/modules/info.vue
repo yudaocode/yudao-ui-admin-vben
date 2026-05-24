@@ -91,13 +91,14 @@ async function copyToClipboard(text: string) {
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />
       </ElDescriptionsItem>
-      <ElDescriptionsItem v-if="product.productSecret" label="ProductSecret">
+      <ElDescriptionsItem label="产品密钥">
         <span v-if="showProductSecret">{{ product.productSecret }}</span>
         <span v-else>********</span>
         <ElButton class="ml-2" size="small" @click="toggleProductSecretVisible">
           {{ showProductSecret ? '隐藏' : '显示' }}
         </ElButton>
         <ElButton
+          v-if="showProductSecret && product.productSecret"
           class="ml-2"
           size="small"
           @click="copyToClipboard(product.productSecret || '')"

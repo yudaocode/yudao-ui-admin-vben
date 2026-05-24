@@ -130,7 +130,10 @@ export function useBasicFormSchema(
       // 网关子设备走网关联网，不需要联网方式
       dependencies: {
         triggerFields: ['deviceType'],
-        show: (values) => values.deviceType !== DeviceTypeEnum.GATEWAY_SUB,
+        show: (values) =>
+          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
+            values.deviceType,
+          ),
       },
       rules: 'required',
     },
