@@ -1,35 +1,34 @@
 <script lang="ts" setup>
-import type { MesCalTeamApi } from '#/api/mes/cal/team';
+import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
+import { message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createTeam, getTeam, updateTeam } from '#/api/mes/cal/team';
+import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
+import { MesDvCheckPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
-import MemberList from './member-list.vue';
-
+import MachineryList from './machinery-list.vue';
+import SubjectList from './subject-list.vue';
 
 type FormMode = 'create' | 'detail' | 'update';
 
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
-const subTabsName = ref('member'); // 当前资源页签
-const formData = ref<MesCalTeamApi.Team>();
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
-const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
-    return $t('ui.actionTitle.view', ['班组']);
-  }
-  return formMode.value === 'update'
-    ? $t('ui.actionTitle.edit', ['班组'])
-    : $t('ui.actionTitle.create', ['班组']);
-});
+const formMode = ref<FormMode>('create');
+const subTabsName = ref('machinery');
+const formData = ref<MesDvCheckPlanApi.CheckPlan>();
+const isDetail = computed(() => formMode.value === 'detail');
+const getTitle = computed(
+  () =>
+    ({ create: '新增点检保养方案', update: '修改点检保养方案', detail: '查看点检保养方案' })[
+      formMode.value
+    ],
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -37,15 +36,13 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-1',
-    labelWidth: 100,
+    labelWidth: 110,
   },
   wrapperClass: 'grid-cols-3',
   layout: 'horizontal',
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
 const [Modal, modalApi] = useVbenModal({
@@ -59,20 +56,19 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    // 提交表单
-    const data = (await formApi.getValues()) as MesCalTeamApi.Team;
+    const data = (await formApi.getValues()) as MesDvCheckPlanApi.CheckPlan;
     try {
       if (formMode.value === 'create') {
-        const id = await createTeam(data);
-        formData.value = { ...data, id: id as number };
+        const id = await createCheckPlan(data);
+        formData.value = { ...data, id: id as number, status: MesDvCheckPlanStatusEnum.PREPARE };
         await formApi.setFieldValue('id', id);
         formMode.value = 'update';
       } else {
-        await updateTeam(data);
+        await updateCheckPlan(data);
         formData.value = { ...formData.value, ...data };
       }
       emit('success');
-      ElMessage.success($t('ui.actionMessage.operationSuccess'));
+      message.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -83,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
-    subTabsName.value = 'member';
+    subTabsName.value = 'machinery';
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');
@@ -93,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTeam(data.id);
+      formData.value = await getCheckPlan(data.id);
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -101,14 +97,20 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 </script>
-
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formMode !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
-      <ElTabPane label="班组成员" name="member">
-        <MemberList :form-type="formMode" :team-id="formData.id" />
-      </ElTabPane>
-    </ElTabs>
+    <Tabs
+      v-if="formMode !== 'create' && formData?.id"
+      v-model:active-key="subTabsName"
+      class="mx-4 mt-4"
+    >
+      <Tabs.TabPane key="machinery" tab="设备">
+        <MachineryList :form-type="formMode" :plan-id="formData.id" />
+      </Tabs.TabPane>
+      <Tabs.TabPane key="subject" tab="项目">
+        <SubjectList :form-type="formMode" :plan-id="formData.id" :plan-type="formData.type" />
+      </Tabs.TabPane>
+    </Tabs>
   </Modal>
 </template>

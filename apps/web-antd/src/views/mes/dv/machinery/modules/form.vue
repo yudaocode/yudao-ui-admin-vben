@@ -1,0 +1,135 @@
+<script lang="ts" setup>
+import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
+
+import { computed, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { Button, message, Tabs } from 'ant-design-vue';
+
+import { useVbenForm } from '#/adapter/form';
+import { createMachinery, getMachinery, updateMachinery } from '#/api/mes/dv/machinery';
+import { $t } from '#/locales';
+import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
+import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
+
+import { useFormSchema } from '../data';
+import CheckRecordList from './check-record-list.vue';
+import MaintenRecordList from './mainten-record-list.vue';
+import RepairList from './repair-list.vue';
+
+type FormMode = 'create' | 'detail' | 'update';
+
+const emit = defineEmits(['success']);
+const formMode = ref<FormMode>('create'); // 表单模式
+const subTabsName = ref('check'); // 当前资源页签
+const formData = ref<MesDvMachineryApi.Machinery>();
+const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
+const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const getTitle = computed(
+  () => ({ create: '新增设备', update: '修改设备', detail: '查看设备' })[formMode.value],
+);
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    formItemClass: 'col-span-1',
+    labelWidth: 110,
+  },
+  wrapperClass: 'grid-cols-3',
+  layout: 'horizontal',
+  schema: [],
+  showDefaultActions: false,
+});
+formApi.setState({ schema: useFormSchema(formApi, formMode) });
+
+/** 查看设备条码 */
+function handleBarcode() {
+  if (!formData.value?.id) {
+    return;
+  }
+  barcodeDetailRef.value?.openByBusiness(
+    formData.value.id,
+    BarcodeBizTypeEnum.MACHINERY,
+    formData.value.code,
+    formData.value.name,
+  );
+}
+
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    if (isDetail.value) {
+      await modalApi.close();
+      return;
+    }
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    // 提交表单
+    const data = (await formApi.getValues()) as MesDvMachineryApi.Machinery;
+    try {
+      await (data.id ? updateMachinery(data) : createMachinery(data));
+      await modalApi.close();
+      emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      formData.value = undefined;
+      return;
+    }
+    await formApi.resetForm();
+    subTabsName.value = 'check';
+    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
+    formMode.value = data?.type || 'create';
+    formApi.setDisabled(formMode.value === 'detail');
+    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    if (!data?.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getMachinery(data.id);
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
+  },
+});
+</script>
+
+<template>
+  <Modal :title="getTitle" class="w-4/5">
+    <Form class="mx-4" />
+    <Tabs
+      v-if="formMode !== 'create' && formData?.id"
+      v-model:active-key="subTabsName"
+      class="mx-4 mt-4"
+    >
+      <Tabs.TabPane key="check" tab="点检记录">
+        <CheckRecordList :machinery-id="formData.id" />
+      </Tabs.TabPane>
+      <Tabs.TabPane key="mainten" tab="保养记录">
+        <MaintenRecordList :machinery-id="formData.id" />
+      </Tabs.TabPane>
+      <Tabs.TabPane key="repair" tab="维修记录">
+        <RepairList :machinery-id="formData.id" />
+      </Tabs.TabPane>
+    </Tabs>
+    <template #prepend-footer>
+      <div class="flex flex-auto items-center">
+        <Button v-if="isDetail && formData?.id" type="primary" @click="handleBarcode">
+          查看条码
+        </Button>
+      </div>
+    </template>
+    <BarcodeDetail ref="barcodeDetailRef" />
+  </Modal>
+</template>

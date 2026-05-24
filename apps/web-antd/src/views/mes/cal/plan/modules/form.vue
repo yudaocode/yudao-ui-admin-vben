@@ -16,8 +16,10 @@ import { useFormSchema } from '../data';
 import ShiftList from './shift-list.vue';
 import PlanTeamList from './team-list.vue';
 
+type FormMode = 'create' | 'detail' | 'update';
+
 const emit = defineEmits(['success']);
-const formMode = ref<'create' | 'detail' | 'update'>('create'); // 表单模式
+const formMode = ref<FormMode>('create'); // 表单模式
 const subTabsName = ref('shift'); // 当前资源页签
 const formData = ref<MesCalPlanApi.Plan>();
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
@@ -106,7 +108,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     subTabsName.value = 'shift';
-    const data = modalApi.getData<{ id?: number; type?: 'create' | 'detail' | 'update' }>();
+    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');
     modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
