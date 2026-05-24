@@ -47,13 +47,33 @@ async function waitTableReady(): Promise<void> {
   if (preSelectedIds.value.length === 0) {
     return;
   }
-  if (!multiple.value) {
-    const selected = checked && row ? [row] : [];
-    selectedRows.value = selected;
-    await syncSingleSelection(selected[0]);
-    return;
+  for (let index = 0; index < MAX_TABLE_READY_FRAMES; index += 1) {
+    if (queryFinished.value) {
+      const rows = getTableRows();
+      if (latestQueryRows.value.length === 0 && rows.length === 0) {
+        return;
+      }
+      if (latestQueryRows.value.length > 0 && rows.length > 0) {
+        return;
+      }
+    }
+    await waitNextFrame();
   }
-  selectedRows.value = records;
+}
+
+/** 获取多选记录，包含 VXE reserve 跨页记录 */
+function getMultipleSelectedRows() {
+  const selectedMap = new Map<number, MesMdClientApi.Client>();
+  const records = [
+    ...(gridApi.grid.getCheckboxReserveRecords?.() ?? []),
+    ...(gridApi.grid.getCheckboxRecords?.() ?? []),
+  ] as MesMdClientApi.Client[];
+  records.forEach((row) => {
+    if (row.id != null) {
+      selectedMap.set(row.id, row);
+    }
+  });
+  return [...selectedMap.values()];
 }
 
 /** 处理勾选变化 */

@@ -97,3 +97,22 @@ export const setCurrentTimezone = (timezone?: string) => {
 export const getCurrentTimezone = () => {
   return currentTimezone;
 };
+
+/**
+ * 把 antd TimePicker / DatePicker `@update:value` 回传的值统一成字符串。
+ *
+ * antd 在设置了 `value-format` 后实际只会回传字符串，
+ * 但 `@update:value` 的类型仍包含 `Dayjs`，调用方需要做一次类型归一。
+ *
+ * - 空值（null / undefined / '' / 0）返回 ''
+ * - 已经是字符串：原样返回（保持 `value-format` 已格式化的结果）
+ * - 兜底的 Dayjs：调用 `.format()` 转默认 ISO 字符串
+ */
+export function formatDayjs(
+  value: dayjs.Dayjs | null | string | undefined,
+): string {
+  if (!value) {
+    return '';
+  }
+  return typeof value === 'string' ? value : value.format();
+}

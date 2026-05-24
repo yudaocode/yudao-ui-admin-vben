@@ -111,19 +111,20 @@ function initMap() {
       // 信息窗口打开后绑定链接点击事件
       infoWindow.addEventListener('open', () => {
         setTimeout(() => {
-          const link = document.querySelector('.device-link');
-          if (link) {
-            link.addEventListener('click', (e) => {
-              e.preventDefault();
-              const deviceId = (e.target as HTMLElement).dataset.id;
-              if (deviceId) {
-                router.push({
-                  name: 'IoTDeviceDetail',
-                  params: { id: deviceId },
-                });
-              }
-            });
+          const link = document.querySelector('.BMap_bubble_content .device-link');
+          if (!link) {
+            return;
           }
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const deviceId = (e.target as HTMLElement).dataset.id;
+            if (deviceId) {
+              router.push({
+                name: 'IoTDeviceDetail',
+                params: { id: deviceId },
+              });
+            }
+          });
         }, 100);
       });
 

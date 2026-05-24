@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useAccess } from '@vben/access';
 import { DICT_TYPE, ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { isHttpUrl } from '@vben/utils';
 
 import {
   Button,
@@ -117,7 +118,14 @@ onMounted(() => {
               <div
                 class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff] to-[#1890ff] text-white"
               >
+                <img
+                  v-if="isHttpUrl(item.icon)"
+                  :src="item.icon"
+                  alt=""
+                  class="size-6 object-contain"
+                />
                 <IconifyIcon
+                  v-else
                   :icon="item.icon || 'lucide:box'"
                   class="text-xl"
                 />

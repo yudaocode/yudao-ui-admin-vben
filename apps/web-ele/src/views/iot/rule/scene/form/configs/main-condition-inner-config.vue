@@ -131,15 +131,24 @@ function handleTriggerTypeChange(type: number) {
 
 /** 处理产品变化事件 */
 function handleProductChange() {
-  // 产品变化时清空设备和属性
-  condition.value.deviceId = undefined;
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.deviceId = undefined;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  // 主条件比较值字段是 Trigger.value（不是 TriggerCondition.param）
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /** 处理设备变化事件 */
 function handleDeviceChange() {
-  // 设备变化时清空属性
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /**

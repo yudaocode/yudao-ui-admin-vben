@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { isEmpty } from '@vben/utils';
@@ -30,13 +30,27 @@ const config = useVModel(props, 'modelValue', emit);
 const showSqlTip = ref(false);
 const copied = ref(false);
 const { copy } = useClipboard();
+let copyResetTimer: null | ReturnType<typeof setTimeout> = null;
 
 async function handleCopySql() {
   await copy(TABLE_SQL);
   copied.value = true;
   ElMessage.success('建表 SQL 已复制到剪贴板');
-  setTimeout(() => (copied.value = false), 2000);
+  if (copyResetTimer) {
+    clearTimeout(copyResetTimer);
+  }
+  copyResetTimer = setTimeout(() => {
+    copied.value = false;
+    copyResetTimer = null;
+  }, 2000);
 }
+
+onBeforeUnmount(() => {
+  if (copyResetTimer) {
+    clearTimeout(copyResetTimer);
+    copyResetTimer = null;
+  }
+});
 
 onMounted(() => {
   if (!isEmpty(config.value)) {

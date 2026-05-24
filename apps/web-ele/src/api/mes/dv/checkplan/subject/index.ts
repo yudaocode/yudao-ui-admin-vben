@@ -17,7 +17,9 @@ export namespace MesDvCheckPlanSubjectApi {
 
 /** 查询指定方案的项目列表 */
 export function getCheckPlanSubjectListByPlan(planId: number) {
-  return requestClient.get<MesDvCheckPlanSubjectApi.CheckPlanSubject[]>(`/mes/dv/check-plan-subject/list-by-plan?planId=${planId}`);
+  return requestClient.get<MesDvCheckPlanSubjectApi.CheckPlanSubject[]>(
+    `/mes/dv/check-plan-subject/list-by-plan?planId=${planId}`,
+  );
 }
 
 /** 新增方案项目关联 */

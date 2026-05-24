@@ -33,7 +33,7 @@ defineProps<{ deviceId: number }>();
 const dialogVisible = ref(false); // 弹窗的是否展示
 const loading = ref(false);
 const viewMode = ref<'chart' | 'list'>('chart'); // 视图模式状态
-const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 列表的数据
+const list = ref<Array<IotDeviceApi.DeviceProperty & { _rowKey: string }>>([]); // 列表的数据
 const total = ref(0); // 总数据量
 const thingModelDataType = ref<string>(''); // 物模型数据类型
 const propertyIdentifier = ref<string>(''); // 属性标识符
@@ -151,9 +151,11 @@ const paginationConfig = computed(() => ({
 async function getList() {
   loading.value = true;
   try {
-    // 后端直接返回数组
     const data = await getHistoryDevicePropertyList(queryParams);
-    list.value = (data || []) as IotDeviceApi.DevicePropertyDetail[];
+    list.value = (data || []).map((item, idx) => ({
+      ...item,
+      _rowKey: `${item.updateTime ?? ''}-${idx}`, // 后端直接返回数组，仅含 value/updateTime，给每行补 _rowKey 保证唯一
+    }));
     total.value = list.value.length;
 
     // 如果是图表模式且支持图表展示，等待渲染图表
@@ -438,7 +440,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             :data-source="list"
             :pagination="paginationConfig"
             :scroll="{ y: 500 }"
-            row-key="updateTime"
+            row-key="_rowKey"
             size="small"
           >
             <template #bodyCell="{ column, record }">

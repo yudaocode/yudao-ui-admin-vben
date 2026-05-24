@@ -186,10 +186,10 @@ function getNextExecutionTime(row: RuleSceneApi.SceneRule): Date | null {
     : null;
 }
 
-/** 基于当前页列表刷新统计数据 */
-function updateStatistics(rows: RuleSceneApi.SceneRule[]) {
+/** 刷新规则统计卡片数据 */
+function updateStatistics(rows: RuleSceneApi.SceneRule[], total?: number) {
   statistics.value = {
-    total: rows.length,
+    total: total ?? rows.length,
     enabled: rows.filter((item) => item.status === CommonStatusEnum.ENABLE)
       .length,
     disabled: rows.filter((item) => item.status === CommonStatusEnum.DISABLE)
@@ -214,7 +214,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageSize: page.pageSize,
             ...formValues,
           });
-          updateStatistics(result.list || []);
+          updateStatistics(result.list || [], result.total);
           return result;
         },
       },

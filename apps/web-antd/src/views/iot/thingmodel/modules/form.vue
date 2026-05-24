@@ -231,7 +231,11 @@ function removeDataSpecs(val: any) {
         label="标识符"
         name="identifier"
       >
-        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
+        <Input
+          v-model:value="formData.identifier"
+          :disabled="formData.id != null"
+          placeholder="请输入标识符"
+        />
       </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty

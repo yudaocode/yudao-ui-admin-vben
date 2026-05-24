@@ -73,6 +73,11 @@ const [Modal, modalApi] = useVbenModal({
 
 /** 上传前 */
 function beforeUpload(file: File) {
+  const fileName = file.name?.toLowerCase() ?? '';
+  if (!fileName.endsWith('.xls') && !fileName.endsWith('.xlsx')) {
+    ElMessage.error('只能上传 Excel 文件（.xls / .xlsx）');
+    return false;
+  }
   formApi.setFieldValue('file', file);
   return false;
 }

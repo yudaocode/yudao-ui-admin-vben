@@ -97,7 +97,7 @@ onMounted(async () => {
     <ElTabs v-model="activeTab" class="mt-4">
       <ElTabPane name="info" label="设备信息">
         <DeviceDetailsInfo
-          v-if="activeTab === 'info'"
+          v-if="activeTab === 'info' && device.id"
           :device="device"
           :product="product"
         />
@@ -127,7 +127,7 @@ onMounted(async () => {
       </ElTabPane>
       <ElTabPane name="simulator" label="模拟设备">
         <DeviceDetailsSimulator
-          v-if="activeTab === 'simulator'"
+          v-if="activeTab === 'simulator' && device.id"
           :device="device"
           :product="product"
           :thing-model-list="thingModelList"
@@ -135,7 +135,7 @@ onMounted(async () => {
       </ElTabPane>
       <ElTabPane name="config" label="设备配置">
         <DeviceDetailConfig
-          v-if="activeTab === 'config'"
+          v-if="activeTab === 'config' && device.id"
           :device="device"
           @success="() => getDeviceData(id)"
         />
@@ -151,7 +151,7 @@ onMounted(async () => {
         label="Modbus 配置"
       >
         <DeviceModbusConfig
-          v-if="activeTab === 'modbus'"
+          v-if="activeTab === 'modbus' && device.id"
           :device="device"
           :product="product"
           :thing-model-list="thingModelList"
