@@ -235,13 +235,39 @@ function getPropertyOptions(row: ThingModelApi.ThingModel) {
   return [];
 }
 
+/** 获取物模型选项原始值 */
+function getMatchedPropertyOption(row: ThingModelApi.ThingModel, value: any) {
+  return row.property?.dataSpecsList?.find(
+    (item: any) => String(item.value) === String(value),
+  );
+}
+
 /** 按物模型数据类型转换属性值 */
 function normalizePropertyValue(row: ThingModelApi.ThingModel, value: any) {
   if (value === undefined || value === null || value === '') {
     return undefined;
   }
+  const dataType = getPropertyDataType(row);
   if (isNumberProperty(row)) {
     return Number(value);
+  }
+  if (
+    [IoTDataSpecsDataTypeEnum.BOOL, IoTDataSpecsDataTypeEnum.ENUM].includes(
+      dataType as any,
+    )
+  ) {
+    const option = getMatchedPropertyOption(row, value);
+    if (option) {
+      return option.value;
+    }
+  }
+  if (dataType === IoTDataSpecsDataTypeEnum.BOOL) {
+    if (String(value) === 'true') {
+      return true;
+    }
+    if (String(value) === 'false') {
+      return false;
+    }
   }
   return value;
 }
