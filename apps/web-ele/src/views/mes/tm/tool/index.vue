@@ -13,7 +13,7 @@ import { ElButton, ElCard, ElLoading, ElMessage } from 'element-plus';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTool, exportTool, getToolPage } from '#/api/mes/tm/tool';
 import { $t } from '#/locales';
-import { TmToolTypeTree } from '#/views/mes/tm/tool/type/components';
+import { TmToolTypeList } from '#/views/mes/tm/tool/type/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -63,8 +63,8 @@ async function handleExport() {
   downloadFileFromBlobPart({ fileName: '工具.xls', source: data });
 }
 
-/** 工具类型树点击 */
-function handleToolTypeNodeClick(row: MesTmToolTypeApi.ToolType | undefined) {
+/** 工具类型选中变化 */
+function handleToolTypeSelect(row: MesTmToolTypeApi.ToolType | undefined) {
   selectedToolTypeId.value = row?.id;
   handleRefresh();
 }
@@ -113,7 +113,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <FormModal @success="handleRefresh" />
     <div class="flex h-full w-full">
       <ElCard class="mr-4 h-full w-1/6">
-        <TmToolTypeTree @node-click="handleToolTypeNodeClick" />
+        <TmToolTypeList @select="handleToolTypeSelect" />
       </ElCard>
       <div class="w-5/6">
         <Grid table-title="工具列表">

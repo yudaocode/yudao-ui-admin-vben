@@ -4,17 +4,17 @@ import type { MesTmToolTypeApi } from '#/api/mes/tm/tool/type';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { Search } from '@vben/icons';
+import { IconifyIcon } from '@vben/icons';
 
-import { ElInput } from 'element-plus';
+import { Input } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getToolTypeSimpleList } from '#/api/mes/tm/tool/type';
 
-defineOptions({ name: 'TmToolTypeTree' });
+defineOptions({ name: 'TmToolTypeList' });
 
 const emit = defineEmits<{
-  nodeClick: [row?: MesTmToolTypeApi.ToolType];
+  select: [row?: MesTmToolTypeApi.ToolType];
 }>();
 const selectedId = ref<number>(); // 当前选中工具类型编号
 const filterText = ref(''); // 工具类型搜索关键字
@@ -47,15 +47,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesTmToolTypeApi.ToolType>,
   gridEvents: {
     cellClick: ({ row }: { row: MesTmToolTypeApi.ToolType }) => {
-      // 再次点击同一节点：取消选中
+      // 再次点击同一项：取消选中
       if (selectedId.value === row.id) {
         selectedId.value = undefined;
         gridApi.grid.clearCurrentRow();
-        emit('nodeClick', undefined);
+        emit('select', undefined);
         return;
       }
       selectedId.value = row.id;
-      emit('nodeClick', row);
+      emit('select', row);
     },
   },
 });
@@ -71,12 +71,12 @@ async function loadList() {
   refreshGridData();
 }
 
-/** 重置工具类型树 */
+/** 重置工具类型列表 */
 function reset() {
   selectedId.value = undefined;
   filterText.value = '';
   gridApi.grid.clearCurrentRow();
-  emit('nodeClick', undefined);
+  emit('select', undefined);
   refreshGridData();
 }
 
@@ -91,16 +91,16 @@ defineExpose({ loadList, reset });
 
 <template>
   <div class="h-full">
-    <ElInput
-      v-model="filterText"
+    <Input
+      v-model:value="filterText"
+      allow-clear
       class="mb-3 w-full"
-      clearable
       placeholder="搜索工具类型"
     >
       <template #prefix>
-        <Search class="size-4" />
+        <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
-    </ElInput>
+    </Input>
     <Grid class="h-full" />
   </div>
 </template>
