@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import type { Dayjs } from 'dayjs';
+
+import type { CalendarDateType } from 'element-plus';
+
+import { onMounted, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import dayjs from 'dayjs';
-import { ElButton, ElMessage, ElTag } from 'element-plus';
+import { ElCalendar, ElMessage, ElTag } from 'element-plus';
 import { SolarDay } from 'tyme4ts';
 
 import { getHolidayList } from '#/api/mes/cal/holiday';
@@ -17,7 +21,7 @@ import 'dayjs/locale/zh-cn';
 
 dayjs.locale('zh-cn');
 
-const currentDate = ref(dayjs()); // 当前日历月份
+const currentDate = ref<Dayjs>(dayjs()); // 当前日历选中日期
 const holidaySet = ref(new Set<string>()); // 节假日日期集合
 const lastFetchedMonth = ref(''); // 上次加载月份
 const { hasAccessByCodes } = useAccess();
@@ -27,23 +31,17 @@ const [HolidayFormModal, holidayFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const weekLabels = ['日', '一', '二', '三', '四', '五', '六']; // 星期标题
-const calendarDays = computed(() => {
-  const monthStart = currentDate.value.startOf('month');
-  const start = monthStart.subtract(monthStart.day(), 'day');
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = start.add(index, 'day');
-    return { day: date.format('YYYY-MM-DD'), inMonth: date.month() === currentDate.value.month() };
-  });
-});
-const currentMonthTitle = computed(() => currentDate.value.format('YYYY 年 MM 月'));
-
-/** 加载假期列表 */
+/** 加载假期列表（按当前日历可见范围过滤） */
 async function getList() {
-  holidaySet.value = new Set<string>();
   const current = currentDate.value;
-  const startDay = current.subtract(1, 'month').startOf('month').format('YYYY-MM-DD 00:00:00');
-  const endDay = current.add(1, 'month').endOf('month').format('YYYY-MM-DD 23:59:59');
+  const startDay = current
+    .subtract(1, 'month')
+    .startOf('month')
+    .format('YYYY-MM-DD 00:00:00');
+  const endDay = current
+    .add(1, 'month')
+    .endOf('month')
+    .format('YYYY-MM-DD 23:59:59');
   const list = await getHolidayList({ startDay, endDay });
   const days = new Set<string>();
   for (const item of list || []) {
@@ -56,31 +54,17 @@ async function getList() {
   lastFetchedMonth.value = current.format('YYYY-MM');
 }
 
-/** 打开假期设置表单 */
-function handleDayClick(item: { day: string; inMonth: boolean }) {
-  if (!item.inMonth) {
+/** 点击日期：打开假期设置弹窗 */
+function handleDayClick(data: { day: string; type: CalendarDateType }) {
+  // 非当前月日期，不处理（避免切换月份）
+  if (data.type !== 'current-month') {
     return;
   }
   if (!hasAccessByCodes(['mes:cal-holiday:create'])) {
     ElMessage.warning('没有假期设置权限');
     return;
   }
-  holidayFormModalApi.setData({ day: item.day }).open();
-}
-
-/** 切换到上月 */
-function handlePrevMonth() {
-  currentDate.value = currentDate.value.subtract(1, 'month');
-}
-
-/** 切换到下月 */
-function handleNextMonth() {
-  currentDate.value = currentDate.value.add(1, 'month');
-}
-
-/** 切换到今天 */
-function handleToday() {
-  currentDate.value = dayjs();
+  holidayFormModalApi.setData({ day: data.day }).open();
 }
 
 /** 判断是否周末 */
@@ -98,22 +82,25 @@ function getLunarInfo(day: string) {
     const solarFestival = solarDay.getFestival();
     const lunarFestival = lunarDay.getFestival();
     const termDay = solarDay.getTermDay();
-    const termName = termDay.getDayIndex() === 0 ? termDay.getSolarTerm().getName() : '';
+    const termName =
+      termDay.getDayIndex() === 0 ? termDay.getSolarTerm().getName() : '';
     return {
-      solarFestival: solarFestival ? solarFestival.getName() : '',
       lunarFestival: lunarFestival ? lunarFestival.getName() : '',
-      termName,
       lunarText: lunarDay.getLunarMonth().getName() + lunarDay.getName(),
+      solarFestival: solarFestival ? solarFestival.getName() : '',
+      termName,
     };
   } catch {
-    return { solarFestival: '', lunarFestival: '', termName: '', lunarText: '' };
+    return { lunarFestival: '', lunarText: '', solarFestival: '', termName: '' };
   }
 }
 
 /** 获取农历显示文本 */
 function getLunarDisplay(day: string) {
   const info = getLunarInfo(day);
-  return info.solarFestival || info.lunarFestival || info.termName || info.lunarText;
+  return (
+    info.solarFestival || info.lunarFestival || info.termName || info.lunarText
+  );
 }
 
 /** 判断是否有节日 */
@@ -122,6 +109,7 @@ function hasFestival(day: string) {
   return !!(info.solarFestival || info.lunarFestival || info.termName);
 }
 
+/** 监听月份切换，重新加载可见范围内的数据 */
 watch(currentDate, (newDate) => {
   const newMonth = newDate.format('YYYY-MM');
   if (newMonth !== lastFetchedMonth.value) {
@@ -135,58 +123,62 @@ onMounted(getList);
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【排班】班组设置、节假日设置" url="https://doc.iocoder.cn/mes/cal/team/" />
+      <DocAlert
+        title="【排班】班组设置、节假日设置"
+        url="https://doc.iocoder.cn/mes/cal/team/"
+      />
     </template>
     <HolidayFormModal @success="getList" />
-    <div class="flex h-full flex-col overflow-hidden rounded border bg-background">
-      <div class="flex items-center justify-between border-b p-4">
-        <div class="text-lg font-semibold">{{ currentMonthTitle }}</div>
-        <div class="flex items-center gap-2">
-          <ElButton @click="handlePrevMonth">上月</ElButton>
-          <ElButton @click="handleToday">今天</ElButton>
-          <ElButton @click="handleNextMonth">下月</ElButton>
-        </div>
-      </div>
-      <div class="grid grid-cols-7 border-b text-center text-sm text-muted-foreground">
-        <div v-for="label in weekLabels" :key="label" class="py-2">{{ label }}</div>
-      </div>
-      <div class="grid flex-1 grid-cols-7 grid-rows-6">
-        <button
-          v-for="item in calendarDays"
-          :key="item.day"
-          class="min-h-[104px] border-b border-r p-2 text-left transition hover:bg-muted/50"
-          :class="{
-            'cursor-pointer': item.inMonth,
-            'bg-muted/30 text-muted-foreground': !item.inMonth,
-          }"
-          type="button"
-          @click="handleDayClick(item)"
-        >
-          <div class="flex items-center justify-between">
-            <span
-              class="text-base font-medium"
-              :class="{ 'text-red-500': isWeekend(item.day) && item.inMonth }"
-            >
-              {{ item.day.slice(8) }}
-            </span>
-            <template v-if="item.inMonth">
-              <span v-if="holidaySet.has(item.day)">
-                <ElTag effect="dark" type="success">休</ElTag>
-              </span>
-              <span v-else><ElTag effect="dark">班</ElTag></span>
-            </template>
-          </div>
+    <div class="bg-card overflow-hidden rounded-md">
+      <ElCalendar v-model="currentDate" class="mes-holiday-calendar">
+        <template #date-cell="{ data }">
           <div
-            class="mt-1 text-xs"
-            :class="{
-              'text-green-600': hasFestival(item.day),
-              'text-muted-foreground': !hasFestival(item.day),
-            }"
+            class="hover:bg-muted/50 h-full cursor-pointer p-1 text-left transition"
+            @click.stop="handleDayClick(data)"
           >
-            {{ getLunarDisplay(item.day) }}
+            <div class="flex items-center justify-between">
+              <span
+                class="text-base font-medium"
+                :class="{
+                  'text-red-500':
+                    isWeekend(data.day) && data.type === 'current-month',
+                }"
+              >
+                {{ data.day.split('-')[2] }}
+              </span>
+              <ElTag
+                v-if="holidaySet.has(data.day)"
+                effect="dark"
+                size="small"
+                type="success"
+              >
+                休
+              </ElTag>
+              <ElTag v-else effect="dark" size="small">班</ElTag>
+            </div>
+            <div
+              class="mt-1 text-xs"
+              :class="
+                hasFestival(data.day)
+                  ? 'text-green-600'
+                  : 'text-muted-foreground'
+              "
+            >
+              {{ getLunarDisplay(data.day) }}
+            </div>
           </div>
-        </button>
-      </div>
+        </template>
+      </ElCalendar>
     </div>
   </Page>
 </template>
+
+<style lang="scss" scoped>
+/* 收紧 ElCalendar 默认日期单元高度 */
+.mes-holiday-calendar {
+  :deep(.el-calendar-table .el-calendar-day) {
+    height: 90px;
+    padding: 4px;
+  }
+}
+</style>
