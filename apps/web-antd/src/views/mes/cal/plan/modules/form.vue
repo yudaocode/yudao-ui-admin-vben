@@ -108,6 +108,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     subTabsName.value = 'shift';
+    // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');
@@ -118,6 +119,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getPlan(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

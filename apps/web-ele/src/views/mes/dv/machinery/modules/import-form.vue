@@ -45,6 +45,7 @@ const [Modal, modalApi] = useVbenModal({
       text += `更新成功数量：${importData.updateCodes?.length || 0}；`;
       text += `更新失败数量：${Object.keys(importData.failureCodes || {}).length}；`;
       ElMessage.info(text);
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));

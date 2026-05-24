@@ -55,6 +55,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as MesDvSubjectApi.Subject;
     try {
       await (data.id ? updateSubject(data) : createSubject(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -67,6 +68,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
+    // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');

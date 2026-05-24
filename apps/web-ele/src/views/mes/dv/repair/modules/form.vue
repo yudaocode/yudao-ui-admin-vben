@@ -22,8 +22,10 @@ import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '#/views/mes/utils/
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
 
+type FormMode = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
+
 const emit = defineEmits(['success']);
-const formMode = ref<'confirm' | 'create' | 'detail' | 'finish' | 'update'>('create');
+const formMode = ref<FormMode>('create');
 const formData = ref<MesDvRepairApi.Repair>();
 const isDetail = computed(() => formMode.value === 'detail');
 const isReadonly = computed(() => ['confirm', 'detail', 'finish'].includes(formMode.value));
@@ -137,6 +139,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as MesDvRepairApi.Repair;
     try {
       if (formMode.value === 'create') {
@@ -160,7 +163,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
-    const data = modalApi.getData<{ id?: number; type?: 'confirm' | 'create' | 'detail' | 'finish' | 'update' }>();
+    // 加载数据
+    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(isReadonly.value);
     modalApi.setState({ showConfirmButton: ['create', 'update'].includes(formMode.value) });
@@ -170,6 +174,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getRepair(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

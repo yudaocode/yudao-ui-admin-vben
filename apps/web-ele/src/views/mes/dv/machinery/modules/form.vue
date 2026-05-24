@@ -73,6 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as MesDvMachineryApi.Machinery;
     try {
       await (data.id ? updateMachinery(data) : createMachinery(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -87,6 +88,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     subTabsName.value = 'check';
+    // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');
@@ -97,6 +99,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getMachinery(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

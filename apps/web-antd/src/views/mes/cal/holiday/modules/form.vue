@@ -38,6 +38,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = (await formApi.getValues()) as MesCalHolidayApi.Holiday & { dayDisplay?: string };
     try {
       await saveHoliday({ day: data.day, type: data.type, remark: data.remark });
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success('设置成功');

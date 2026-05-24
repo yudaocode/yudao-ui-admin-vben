@@ -81,6 +81,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord;
     try {
       if (formMode.value === 'create') {
@@ -108,6 +109,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
+    // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type || 'create';
     formApi.setDisabled(formMode.value === 'detail');
@@ -119,6 +121,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getMaintenRecord(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

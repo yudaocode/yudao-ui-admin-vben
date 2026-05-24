@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -19,8 +19,8 @@ import { useFormSchema } from '../data';
 
 
 const emit = defineEmits(['success']);
-let formMode: 'create' | 'update' = 'create';
-const getTitle = computed(() => (formMode === 'create' ? '新增设备类型' : '修改设备类型'));
+const formMode = ref<'create' | 'update'>('create'); // 表单模式
+const getTitle = computed(() => (formMode.value === 'create' ? '新增设备类型' : '修改设备类型'));
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     const data = modalApi.getData<{ id?: number; parentId?: number; type?: 'create' | 'update' }>();
-    formMode = data?.type || 'create';
+    formMode.value = data?.type || 'create';
     if (!data?.id) {
       await formApi.setValues({ parentId: data?.parentId ?? 0 });
       return;
