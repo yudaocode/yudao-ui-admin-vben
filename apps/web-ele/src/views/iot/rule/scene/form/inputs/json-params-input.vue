@@ -386,6 +386,9 @@ watch(
 
     // 使用 nextTick 确保在下一个 tick 中处理数据
     await nextTick();
+    if ((newValue || '') === paramsJson.value) {
+      return;
+    }
     handleDataDisplay(newValue || '');
   },
   { immediate: true },

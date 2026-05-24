@@ -29,6 +29,17 @@ watch(
     (service.value.callType = IoTThingModelServiceCallTypeEnum.ASYNC.value),
   { immediate: true },
 );
+
+/** 提取参数标识符列表，用于输入 / 输出参数跨表去重 */
+function getParamIdentifiers(params?: any[]) {
+  const identifiers: string[] = [];
+  for (const item of params || []) {
+    if (item.identifier) {
+      identifiers.push(item.identifier);
+    }
+  }
+  return identifiers;
+}
 </script>
 
 <template>
@@ -51,12 +62,14 @@ watch(
     <ThingModelInputOutputParam
       v-model="service.inputParams"
       :direction="IoTThingModelParamDirectionEnum.INPUT"
+      :existing-identifiers="getParamIdentifiers(service.outputParams)"
     />
   </ElFormItem>
   <ElFormItem label="输出参数">
     <ThingModelInputOutputParam
       v-model="service.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
+      :existing-identifiers="getParamIdentifiers(service.inputParams)"
     />
   </ElFormItem>
 </template>

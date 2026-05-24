@@ -8,13 +8,17 @@ import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Divider, Form, Input } from 'ant-design-vue';
+import { Button, Divider, Form, Input, message } from 'ant-design-vue';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
 import ThingModelProperty from './property.vue';
 
-const props = defineProps<{ direction: string; modelValue: any }>();
+const props = defineProps<{
+  direction: string;
+  existingIdentifiers?: string[];
+  modelValue: any;
+}>();
 const emits = defineEmits(['update:modelValue']);
 const thingModelParams = useVModel(props, 'modelValue', emits) as Ref<any[]>;
 
@@ -33,6 +37,13 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 组装表单
     const data = formData.value;
+    if (
+      data.identifier &&
+      props.existingIdentifiers?.includes(data.identifier)
+    ) {
+      message.warning('输入参数和输出参数标识符不能重复');
+      return;
+    }
     const item = {
       identifier: data.identifier,
       name: data.name,

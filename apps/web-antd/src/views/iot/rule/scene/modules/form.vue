@@ -12,6 +12,7 @@ import {
   IotRuleSceneTriggerTypeEnum,
   isDeviceTrigger,
 } from '@vben/constants';
+import { CronUtils } from '@vben/utils';
 
 import { Form, message } from 'ant-design-vue';
 
@@ -158,12 +159,15 @@ function validateTriggers(_rule: any, value: any, callback: any) {
         }
       }
     }
-    if (
-      trigger.type === IotRuleSceneTriggerTypeEnum.TIMER &&
-      !trigger.cronExpression
-    ) {
-      callback(new Error(`触发器 ${i + 1}：CRON 表达式不能为空`));
-      return;
+    if (trigger.type === IotRuleSceneTriggerTypeEnum.TIMER) {
+      if (!trigger.cronExpression) {
+        callback(new Error(`触发器 ${i + 1}：CRON 表达式不能为空`));
+        return;
+      }
+      if (!CronUtils.validate(trigger.cronExpression)) {
+        callback(new Error(`触发器 ${i + 1}：CRON 表达式格式不正确`));
+        return;
+      }
     }
     // 递归校验 conditionGroups（嵌套条件组）
     if (trigger.conditionGroups?.length) {

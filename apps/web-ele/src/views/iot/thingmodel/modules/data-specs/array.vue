@@ -28,12 +28,10 @@ const childDataTypeOptions = getDataTypeOptions().filter(
 
 const dataSpecs = useVModel(props, 'modelValue', emits) as Ref<any>;
 
-/** 元素类型切到 struct 时，初始化 dataSpecsList 占位 */
+/** 元素类型切换时，清理旧子类型的结构体属性配置 */
 function handleChange(val: any) {
-  if (val !== IoTDataSpecsDataTypeEnum.STRUCT) {
-    return;
-  }
   dataSpecs.value.dataSpecsList = [];
+  dataSpecs.value.childDataType = val;
 }
 </script>
 
