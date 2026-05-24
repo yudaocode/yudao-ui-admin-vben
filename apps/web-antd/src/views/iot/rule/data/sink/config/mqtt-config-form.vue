@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -55,7 +54,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'clientId']"
-    :rules="[{ required: true, message: '客户端 ID 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '客户端 ID 不能为空', trigger: 'blur' },
+    ]"
     label="客户端 ID"
   >
     <Input v-model:value="config.clientId" placeholder="请输入客户端 ID" />

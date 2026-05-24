@@ -4,7 +4,16 @@ import type { MesMdProductSopApi } from '#/api/mes/md/item/productSop';
 
 import { computed, markRaw, ref, watch } from 'vue';
 
-import { Button, Card, Empty, Image, message, Modal, Popconfirm, Spin } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  Empty,
+  Image,
+  message,
+  Modal,
+  Popconfirm,
+  Spin,
+} from 'ant-design-vue';
 
 import { useVbenForm, z } from '#/adapter/form';
 import {
@@ -23,9 +32,7 @@ import { ImageUpload } from '#/components/upload';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
 
 type MediaKind = 'SIP' | 'SOP';
-type MediaItem =
-  | MesMdProductSipApi.ProductSip
-  | MesMdProductSopApi.ProductSop;
+type MediaItem = MesMdProductSipApi.ProductSip | MesMdProductSopApi.ProductSop;
 
 const props = withDefaults(
   defineProps<{
@@ -56,8 +63,16 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'itemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'itemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'title',
       label: '标题',
@@ -152,7 +167,9 @@ async function submitForm() {
   formLoading.value = true;
   try {
     const data = (await formApi.getValues()) as MediaItem;
-    await (formData.value?.id ? updateApi()(data as any) : createApi()(data as any));
+    await (formData.value?.id
+      ? updateApi()(data as any)
+      : createApi()(data as any));
     formOpen.value = false;
     message.success('保存成功');
     await getList();
@@ -181,12 +198,7 @@ watch(
 
 <template>
   <div>
-    <Button
-      v-if="!isReadOnly"
-      class="mb-3"
-      type="primary"
-      @click="openForm()"
-    >
+    <Button v-if="!isReadOnly" class="mb-3" type="primary" @click="openForm()">
       添加 {{ title }}
     </Button>
     <Spin :spinning="loading">
@@ -215,8 +227,13 @@ watch(
               {{ item.description }}
             </div>
             <div v-if="!isReadOnly" class="mt-2 flex justify-end">
-              <Button type="link" size="small" @click="openForm(item)">编辑</Button>
-              <Popconfirm title="确认删除该数据吗？" @confirm="handleDelete(item.id!)">
+              <Button type="link" size="small" @click="openForm(item)">
+                编辑
+              </Button>
+              <Popconfirm
+                title="确认删除该数据吗？"
+                @confirm="handleDelete(item.id!)"
+              >
                 <Button danger type="link" size="small">删除</Button>
               </Popconfirm>
             </div>

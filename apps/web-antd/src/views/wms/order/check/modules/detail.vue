@@ -120,12 +120,22 @@ const [Modal, modalApi] = useVbenModal({
             {{ formatPrice(row.price) || '-' }}
           </template>
         </VxeColumn>
-        <VxeColumn field="checkQuantity" title="实盘数量" align="right" width="120">
+        <VxeColumn
+          field="checkQuantity"
+          title="实盘数量"
+          align="right"
+          width="120"
+        >
           <template #default="{ row }">
             {{ formatQuantity(row.checkQuantity) || '-' }}
           </template>
         </VxeColumn>
-        <VxeColumn field="actualPrice" title="实际金额(元)" align="right" width="140">
+        <VxeColumn
+          field="actualPrice"
+          title="实际金额(元)"
+          align="right"
+          width="140"
+        >
           <template #default="{ row }">
             {{ formatPrice(row.actualPrice) || '-' }}
           </template>

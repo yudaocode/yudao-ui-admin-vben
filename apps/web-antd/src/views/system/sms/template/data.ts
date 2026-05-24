@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { SystemSmsChannelApi } from '#/api/system/sms/channel';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -7,6 +8,10 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getSimpleSmsChannelList } from '#/api/system/sms/channel';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 关联数据 */
+let channelList: SystemSmsChannelApi.SmsChannel[] = [];
+getSimpleSmsChannelList().then((data) => (channelList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -245,13 +250,14 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
     },
     {
-      field: 'channelCode',
+      field: 'channelId',
       title: '短信渠道',
       minWidth: 100,
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
-      },
+      formatter: ({ cellValue, row }) =>
+        channelList.find((channel) => channel.id === cellValue)?.signature ??
+        channelList.find((channel) => channel.code === row.channelCode)
+          ?.signature ??
+        '-',
     },
     {
       field: 'createTime',

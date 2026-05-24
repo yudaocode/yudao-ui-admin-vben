@@ -6,7 +6,7 @@ import { computed, ref, unref, watch } from 'vue';
 import { NewsType, ReplyType } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
-import { Row, Tabs } from 'antdv-next';
+import { Row, TabPane, Tabs } from 'antdv-next';
 
 import TabImage from './tab-image.vue';
 import TabMusic from './tab-music.vue';

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { computed, onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -50,7 +49,10 @@ onMounted(() => {
     :rules="[{ required: true, message: '主机地址不能为空', trigger: 'blur' }]"
     label="主机地址"
   >
-    <Input v-model:value="config.host" placeholder="请输入主机地址，如：localhost" />
+    <Input
+      v-model:value="config.host"
+      placeholder="请输入主机地址，如：localhost"
+    />
   </Form.Item>
   <Form.Item
     :name="['config', 'port']"

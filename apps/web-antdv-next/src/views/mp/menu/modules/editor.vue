@@ -196,7 +196,7 @@ function deleteMaterial() {
               title="选择图文"
               v-model:open="showNewsDialog"
               width="80%"
-              destroy-on-close
+              destroy-on-hidden
             >
               <WxMaterialSelect
                 type="news"

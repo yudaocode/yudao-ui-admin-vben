@@ -79,7 +79,7 @@ function onDelete() {
         title="选择图文"
         :width="1200"
         :footer="null"
-        destroy-on-close
+        destroy-on-hidden
       >
         <WxMaterialSelect
           type="news"

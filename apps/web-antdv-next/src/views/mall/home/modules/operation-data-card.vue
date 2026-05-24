@@ -102,7 +102,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false" title="运营数据">
+  <Card variant="borderless" title="运营数据">
     <div class="flex flex-row flex-wrap items-center gap-8 p-4">
       <div
         v-for="(item, key) in data"

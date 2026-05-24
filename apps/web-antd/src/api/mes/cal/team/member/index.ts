@@ -26,17 +26,26 @@ export function deleteTeamMember(id: number) {
 
 /** 查询班组成员分页 */
 export function getTeamMemberPage(params: PageParam) {
-  return requestClient.get<PageResult<MesCalTeamMemberApi.TeamMember>>('/mes/cal/team-member/page', { params });
+  return requestClient.get<PageResult<MesCalTeamMemberApi.TeamMember>>(
+    '/mes/cal/team-member/page',
+    { params },
+  );
 }
 
 /** 查询指定班组的成员列表 */
 export function getTeamMemberListByTeam(teamId: number) {
-  return requestClient.get<MesCalTeamMemberApi.TeamMember[]>('/mes/cal/team-member/list-by-team', { params: { teamId } });
+  return requestClient.get<MesCalTeamMemberApi.TeamMember[]>(
+    '/mes/cal/team-member/list-by-team',
+    { params: { teamId } },
+  );
 }
 
 /** 查询多个班组的成员列表 */
 export function getTeamMemberListByTeamIds(teamIds: number[]) {
-  return requestClient.get<MesCalTeamMemberApi.TeamMember[]>('/mes/cal/team-member/list-by-team', {
-    params: { teamIds: teamIds.join(',') },
-  });
+  return requestClient.get<MesCalTeamMemberApi.TeamMember[]>(
+    '/mes/cal/team-member/list-by-team',
+    {
+      params: { teamIds: teamIds.join(',') },
+    },
+  );
 }

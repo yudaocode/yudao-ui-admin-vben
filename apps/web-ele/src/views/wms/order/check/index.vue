@@ -50,9 +50,9 @@ import CheckOrderPrint from './modules/print.vue';
 defineOptions({ name: 'WmsCheckOrder' });
 
 const printRef = ref<InstanceType<typeof CheckOrderPrint>>();
-const detailMap = reactive<Record<number, WmsCheckOrderDetailApi.CheckOrderDetail[]>>(
-  {},
-);
+const detailMap = reactive<
+  Record<number, WmsCheckOrderDetailApi.CheckOrderDetail[]>
+>({});
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: CheckOrderForm,
@@ -213,7 +213,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【单据】盘库" url="https://doc.iocoder.cn/wms/order/check/" />
+      <DocAlert
+        title="【单据】盘库"
+        url="https://doc.iocoder.cn/wms/order/check/"
+      />
     </template>
     <FormModal @success="handleRefresh" />
     <DetailModal />

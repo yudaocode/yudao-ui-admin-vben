@@ -10,7 +10,7 @@ import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { beginOfDay, endOfDay, formatDateTime } from '@vben/utils';
 
-import { Tabs } from 'antdv-next';
+import { TabPane, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';

@@ -99,8 +99,7 @@ async function handleDelete(row: RuleSceneApi.SceneRule) {
 function hasTimerTrigger(row: RuleSceneApi.SceneRule): boolean {
   return (
     row.triggers?.some(
-      (trigger) =>
-        trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
+      (trigger) => trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
     ) || false
   );
 }
@@ -154,8 +153,7 @@ function getActionSummary(row: RuleSceneApi.SceneRule): string {
 /** 取定时触发器的 CRON 频率描述 */
 function getCronFrequency(row: RuleSceneApi.SceneRule): string {
   const timerTrigger = row.triggers?.find(
-    (trigger) =>
-      trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
+    (trigger) => trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
   );
   return timerTrigger?.cronExpression
     ? CronUtils.getFrequencyDescription(timerTrigger.cronExpression)
@@ -165,8 +163,7 @@ function getCronFrequency(row: RuleSceneApi.SceneRule): string {
 /** 取定时触发器原始 CRON 表达式 */
 function getCronExpression(row: RuleSceneApi.SceneRule): string {
   const timerTrigger = row.triggers?.find(
-    (trigger) =>
-      trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
+    (trigger) => trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
   );
   return timerTrigger?.cronExpression || '';
 }
@@ -174,8 +171,7 @@ function getCronExpression(row: RuleSceneApi.SceneRule): string {
 /** 取定时触发器下次执行时间 */
 function getNextExecutionTime(row: RuleSceneApi.SceneRule): Date | null {
   const timerTrigger = row.triggers?.find(
-    (trigger) =>
-      trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
+    (trigger) => trigger.type === IotRuleSceneTriggerTypeEnum.TIMER,
   );
   return timerTrigger?.cronExpression
     ? CronUtils.getNextExecutionTime(timerTrigger.cronExpression)
@@ -327,7 +323,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :title="row.description"
           placement="top"
         >
-          <div class="mt-1 max-w-[200px] truncate text-xs text-muted-foreground">
+          <div
+            class="mt-1 max-w-[200px] truncate text-xs text-muted-foreground"
+          >
             {{ row.description }}
           </div>
         </Tooltip>

@@ -643,7 +643,12 @@ export const ModbusRawDataTypeOptions = [
     description: '无符号32位整数',
     registerCount: 2,
   },
-  { value: 'FLOAT', label: 'FLOAT', description: '32位浮点数', registerCount: 2 },
+  {
+    value: 'FLOAT',
+    label: 'FLOAT',
+    description: '32位浮点数',
+    registerCount: 2,
+  },
   {
     value: 'DOUBLE',
     label: 'DOUBLE',

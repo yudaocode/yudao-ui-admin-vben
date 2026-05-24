@@ -31,7 +31,8 @@ const detailData = ref<WmsReceiptOrderApi.ReceiptOrder>({});
 const detailRows = computed<DetailRow[]>(() =>
   (detailData.value.details || []).map((detail) => ({
     ...detail,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   })),
 );
 

@@ -102,7 +102,8 @@ function normalizeDetail(
   return {
     ...detail,
     seq: detailSeq,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   };
 }
 
@@ -143,7 +144,8 @@ async function refreshDetailFooter() {
 
 /** 添加商品明细 */
 async function handleAddDetail() {
-  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
+  const values =
+    (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
   if (!values.sourceWarehouseId || !values.targetWarehouseId) {
     ElMessage.warning('请先选择来源仓库和目标仓库');
     return;
@@ -243,7 +245,8 @@ function handleDetailTotalPriceChange(detail: DetailRow) {
 
 /** 校验商品明细 */
 async function validateDetails(required = false) {
-  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
+  const values =
+    (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
   if (values.sourceWarehouseId === values.targetWarehouseId) {
     ElMessage.error('来源仓库和目标仓库不能相同');
     return false;
@@ -286,7 +289,8 @@ function buildSubmitDetails() {
 
 /** 构建提交用的单据数据 */
 async function buildSubmitData(): Promise<WmsMovementOrderApi.MovementOrder> {
-  const values = (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
+  const values =
+    (await formApi.getValues()) as WmsMovementOrderApi.MovementOrder;
   const {
     details: _details,
     totalPrice: _totalPrice,
@@ -406,11 +410,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal
-    :title="getTitle"
-    class="w-3/4"
-    :show-confirm-button="isPrepareOrder"
-  >
+  <Modal :title="getTitle" class="w-3/4" :show-confirm-button="isPrepareOrder">
     <div class="mx-4">
       <Form />
       <div class="mt-4">
@@ -452,7 +452,12 @@ const [Modal, modalApi] = useVbenModal({
               </div>
             </template>
           </VxeColumn>
-          <VxeColumn field="availableQuantity" title="可用库存" align="right" width="120">
+          <VxeColumn
+            field="availableQuantity"
+            title="可用库存"
+            align="right"
+            width="120"
+          >
             <template #default="{ row }">
               {{ formatQuantity(row.availableQuantity) || '-' }}
             </template>

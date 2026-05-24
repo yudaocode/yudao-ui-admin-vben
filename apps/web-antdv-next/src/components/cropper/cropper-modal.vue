@@ -97,7 +97,7 @@ async function handleOk() {
   const uploadApi = props.uploadApi;
   if (uploadApi && isFunction(uploadApi)) {
     if (!previewSource.value) {
-      message.warn('未选择图片');
+      message.warning('未选择图片');
       return;
     }
     const blob = dataURLtoBlob(previewSource.value);

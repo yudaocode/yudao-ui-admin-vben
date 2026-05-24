@@ -95,7 +95,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false">
+  <Card variant="borderless">
     <template #title>
       <div class="flex items-center justify-between">
         <span>用户统计</span>

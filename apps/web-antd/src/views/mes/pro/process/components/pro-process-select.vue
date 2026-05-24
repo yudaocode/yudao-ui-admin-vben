@@ -44,14 +44,16 @@ function handleFilter(input: string, option: any) {
   const item = option?.item as MesProProcessApi.Process | undefined;
   return Boolean(
     item?.name?.toLowerCase().includes(keyword) ||
-      item?.code?.toLowerCase().includes(keyword),
+    item?.code?.toLowerCase().includes(keyword),
   );
 }
 
 /** 根据当前值同步 tooltip 展示的工序详情 */
 function syncSelectedItem(value: number | undefined) {
   selectedItem.value =
-    value === undefined ? undefined : allList.value.find((item) => item.id === value);
+    value === undefined
+      ? undefined
+      : allList.value.find((item) => item.id === value);
 }
 
 /** 除 v-model 外，额外抛出完整工序对象给业务表单使用 */

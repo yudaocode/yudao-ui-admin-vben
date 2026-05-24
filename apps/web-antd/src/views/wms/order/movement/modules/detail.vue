@@ -31,7 +31,8 @@ const detailData = ref<WmsMovementOrderApi.MovementOrder>({});
 const detailRows = computed<DetailRow[]>(() =>
   (detailData.value.details || []).map((detail) => ({
     ...detail,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   })),
 );
 
@@ -109,7 +110,12 @@ const [Modal, modalApi] = useVbenModal({
             {{ formatPrice(row.price) || '-' }}
           </template>
         </VxeColumn>
-        <VxeColumn field="totalPrice" title="金额(元)" align="right" width="140">
+        <VxeColumn
+          field="totalPrice"
+          title="金额(元)"
+          align="right"
+          width="140"
+        >
           <template #default="{ row }">
             {{ formatPrice(row.totalPrice) || '-' }}
           </template>

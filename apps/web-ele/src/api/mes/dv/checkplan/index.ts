@@ -21,12 +21,17 @@ export namespace MesDvCheckPlanApi {
 
 /** 查询点检保养方案分页 */
 export function getCheckPlanPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvCheckPlanApi.CheckPlan>>('/mes/dv/check-plan/page', { params });
+  return requestClient.get<PageResult<MesDvCheckPlanApi.CheckPlan>>(
+    '/mes/dv/check-plan/page',
+    { params },
+  );
 }
 
 /** 查询点检保养方案详情 */
 export function getCheckPlan(id: number) {
-  return requestClient.get<MesDvCheckPlanApi.CheckPlan>(`/mes/dv/check-plan/get?id=${id}`);
+  return requestClient.get<MesDvCheckPlanApi.CheckPlan>(
+    `/mes/dv/check-plan/get?id=${id}`,
+  );
 }
 
 /** 新增点检保养方案 */

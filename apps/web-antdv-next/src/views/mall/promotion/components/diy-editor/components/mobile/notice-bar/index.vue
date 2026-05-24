@@ -20,7 +20,7 @@ defineProps<{ property: NoticeBarProperty }>();
     }"
   >
     <Image :src="property.iconUrl" class="h-[18px]" :preview="false" />
-    <Divider type="vertical" />
+    <Divider orientation="vertical" />
     <Carousel
       :autoplay="true"
       :dots="false"

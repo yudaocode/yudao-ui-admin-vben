@@ -85,7 +85,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card :bordered="false" title="会员地域分布" class="h-full">
+  <Card variant="borderless" title="会员地域分布" class="h-full">
     <Spin :spinning="loading">
       <div class="flex gap-4">
         <div class="w-2/5">

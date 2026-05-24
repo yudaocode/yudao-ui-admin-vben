@@ -16,10 +16,7 @@ import {
   Tooltip,
 } from 'ant-design-vue';
 
-import {
-  createBarcode,
-  getBarcodeByBusiness,
-} from '#/api/mes/wm/barcode';
+import { createBarcode, getBarcodeByBusiness } from '#/api/mes/wm/barcode';
 import { DictTag } from '#/components/dict-tag';
 
 import MesWmBarcode from './barcode.vue';
@@ -44,7 +41,13 @@ async function openByBusiness(
   open.value = true;
   try {
     const data = await getBarcodeByBusiness(bizType, bizId);
-    barcodeData.value = data || { bizCode, bizId, bizName, bizType, content: '' };
+    barcodeData.value = data || {
+      bizCode,
+      bizId,
+      bizName,
+      bizType,
+      content: '',
+    };
     if (!data) {
       message.warning('未找到对应条码数据');
     }
@@ -57,7 +60,10 @@ async function openByBusiness(
 defineExpose({ open: openModal, openByBusiness });
 
 function escapeHtml(value: string) {
-  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
 }
 
 function handlePrint() {
@@ -106,7 +112,12 @@ async function handleGenerate() {
     message.warning('缺少业务类型或业务编号，无法生成条码');
     return;
   }
-  await createBarcode({ bizCode: bizCode || '', bizId, bizName: bizName || '', bizType });
+  await createBarcode({
+    bizCode: bizCode || '',
+    bizId,
+    bizName: bizName || '',
+    bizType,
+  });
   message.success('条码生成成功');
   const data = await getBarcodeByBusiness(bizType, bizId);
   if (data) {
@@ -118,8 +129,13 @@ async function handleGenerate() {
 <template>
   <Modal v-model:open="open" title="查看条码" width="500px">
     <div>
-      <div class="mb-5 flex min-h-50 items-center justify-center rounded bg-gray-100 p-5">
-        <div v-if="barcodeData.content" class="flex items-center justify-center">
+      <div
+        class="mb-5 flex min-h-50 items-center justify-center rounded bg-gray-100 p-5"
+      >
+        <div
+          v-if="barcodeData.content"
+          class="flex items-center justify-center"
+        >
           <MesWmBarcode
             ref="barcodeRef"
             :content="barcodeData.content"
@@ -147,13 +163,19 @@ async function handleGenerate() {
         </Descriptions.Item>
         <Descriptions.Item label="条码内容">
           <Tooltip :title="barcodeData.content">
-            <span class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap">
+            <span
+              class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap"
+            >
               {{ barcodeData.content }}
             </span>
           </Tooltip>
         </Descriptions.Item>
-        <Descriptions.Item label="业务编码">{{ barcodeData.bizCode || '-' }}</Descriptions.Item>
-        <Descriptions.Item label="业务名称">{{ barcodeData.bizName || '-' }}</Descriptions.Item>
+        <Descriptions.Item label="业务编码">
+          {{ barcodeData.bizCode || '-' }}
+        </Descriptions.Item>
+        <Descriptions.Item label="业务名称">
+          {{ barcodeData.bizName || '-' }}
+        </Descriptions.Item>
         <Descriptions.Item label="状态">
           <DictTag
             v-if="barcodeData.status !== undefined"
@@ -161,11 +183,15 @@ async function handleGenerate() {
             :value="barcodeData.status"
           />
         </Descriptions.Item>
-        <Descriptions.Item label="创建时间">{{ barcodeData.createTime || '-' }}</Descriptions.Item>
+        <Descriptions.Item label="创建时间">
+          {{ barcodeData.createTime || '-' }}
+        </Descriptions.Item>
       </Descriptions>
     </div>
     <template #footer>
-      <Button v-if="!barcodeData.content" @click="handleGenerate">生成</Button>
+      <Button v-if="!barcodeData.content" @click="handleGenerate">
+        生成
+      </Button>
       <Button type="primary" @click="handlePrint">打印</Button>
       <Button @click="handleDownload">下载</Button>
       <Button @click="open = false">关闭</Button>

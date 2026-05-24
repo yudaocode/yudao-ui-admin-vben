@@ -43,7 +43,11 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'workstationId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'workstationId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'machineryId',
       label: '设备',
@@ -141,7 +145,8 @@ async function submitForm() {
   }
   formLoading.value = true;
   try {
-    const data = (await formApi.getValues()) as MesMdWorkstationMachineApi.WorkstationMachine;
+    const data =
+      (await formApi.getValues()) as MesMdWorkstationMachineApi.WorkstationMachine;
     await createWorkstationMachine(data);
     formOpen.value = false;
     ElMessage.success($t('ui.actionMessage.operationSuccess'));

@@ -150,7 +150,9 @@ function deleteHttpResponseSetting(
             <IconifyIcon
               class="size-4 cursor-pointer text-red-500"
               icon="lucide:trash-2"
-              @click="deleteHttpResponseSetting(setting.response!, index)"
+              @click="
+                deleteHttpResponseSetting(setting.response!, index as number)
+              "
             />
           </div>
         </ElFormItem>

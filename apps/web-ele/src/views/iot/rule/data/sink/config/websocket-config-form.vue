@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -48,7 +47,11 @@ onMounted(() => {
   <ElFormItem
     prop="config.serverUrl"
     :rules="[
-      { required: true, message: 'WebSocket 服务器地址不能为空', trigger: 'blur' },
+      {
+        required: true,
+        message: 'WebSocket 服务器地址不能为空',
+        trigger: 'blur',
+      },
     ]"
     label="服务器地址"
   >
@@ -59,7 +62,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.connectTimeoutMs"
-    :rules="[{ required: true, message: '连接超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '连接超时时间不能为空', trigger: 'blur' },
+    ]"
     label="连接超时(ms)"
   >
     <ElInputNumber
@@ -71,7 +76,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.sendTimeoutMs"
-    :rules="[{ required: true, message: '发送超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '发送超时时间不能为空', trigger: 'blur' },
+    ]"
     label="发送超时(ms)"
   >
     <ElInputNumber
@@ -115,7 +122,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.dataFormat"
-    :rules="[{ required: true, message: '数据格式不能为空', trigger: 'change' }]"
+    :rules="[
+      { required: true, message: '数据格式不能为空', trigger: 'change' },
+    ]"
     label="数据格式"
   >
     <ElSelect v-model="config.dataFormat" placeholder="请选择数据格式">
@@ -142,11 +151,7 @@ onMounted(() => {
     <ElSwitch v-model="config.enableCompression" />
   </ElFormItem>
   <ElFormItem prop="config.sendRetryCount" label="发送重试次数">
-    <ElInputNumber
-      v-model="config.sendRetryCount"
-      :min="0"
-      class="w-full"
-    />
+    <ElInputNumber v-model="config.sendRetryCount" :min="0" class="w-full" />
   </ElFormItem>
   <ElFormItem prop="config.sendRetryIntervalMs" label="重试间隔(ms)">
     <ElInputNumber

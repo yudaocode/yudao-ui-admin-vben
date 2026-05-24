@@ -206,16 +206,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
                 :actions="[
                   {
                     label: $t('common.edit'),
-                  type: 'primary',
-                  link: true,
+                    type: 'primary',
+                    link: true,
                     icon: ACTION_ICON.EDIT,
                     auth: ['mes:md-item:update'],
                     onClick: handleEdit.bind(null, row),
                   },
                   {
                     label: $t('common.delete'),
-                  type: 'danger',
-                  link: true,
+                    type: 'danger',
+                    link: true,
                     icon: ACTION_ICON.DELETE,
                     auth: ['mes:md-item:delete'],
                     popConfirm: {

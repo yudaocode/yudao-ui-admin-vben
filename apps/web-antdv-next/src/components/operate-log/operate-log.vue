@@ -38,7 +38,7 @@ function getUserTypeColor(userType: number) {
   <div class="pt-5">
     <Timeline>
       <TimelineItem v-for="log in logList" :key="log.id">
-        <template #dot>
+        <template #icon>
           <span
             :style="{ backgroundColor: getUserTypeColor(log.userType) }"
             class="flex h-5 w-5 items-center justify-center rounded-full text-[10px] text-white"

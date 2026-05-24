@@ -247,7 +247,11 @@ watch(
         class="min-w-0 flex-1"
         style="width: auto !important"
       />
-      <span class="whitespace-nowrap text-xs text-[var(--el-text-color-secondary)]"> 至 </span>
+      <span
+        class="whitespace-nowrap text-xs text-[var(--el-text-color-secondary)]"
+      >
+        至
+      </span>
       <ElInput
         v-model="rangeEnd"
         :type="getInputType()"
@@ -282,7 +286,9 @@ watch(
         v-if="listPreview.length > 0"
         class="mt-2 flex flex-wrap items-center gap-1"
       >
-        <span class="text-xs text-[var(--el-text-color-secondary)]"> 解析结果： </span>
+        <span class="text-xs text-[var(--el-text-color-secondary)]">
+          解析结果：
+        </span>
         <ElTag
           v-for="(item, index) in listPreview"
           :key="index"

@@ -447,11 +447,7 @@ watch([activeTab, upstreamTab, downstreamTab], () => {
                     label="事件上报"
                   >
                     <ContentWrap>
-                      <ElTable
-                        :data="eventList"
-                        :max-height="300"
-                        size="small"
-                      >
+                      <ElTable :data="eventList" :max-height="300" size="small">
                         <ElTableColumn
                           label="功能名称"
                           prop="name"

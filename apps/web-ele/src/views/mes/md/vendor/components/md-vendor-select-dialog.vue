@@ -132,7 +132,10 @@ async function resetQueryState() {
 }
 
 /** 打开供应商选择弹窗 */
-async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
+async function openModal(
+  selectedIds?: number[],
+  options?: { multiple?: boolean },
+) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
@@ -155,7 +158,10 @@ function handleConfirm() {
     ElMessage.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit('selected', multiple.value ? selectedRows.value : [selectedRows.value[0]!]);
+  emit(
+    'selected',
+    multiple.value ? selectedRows.value : [selectedRows.value[0]!],
+  );
   open.value = false;
 }
 

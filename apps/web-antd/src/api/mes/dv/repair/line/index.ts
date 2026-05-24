@@ -20,12 +20,17 @@ export namespace MesDvRepairLineApi {
 
 /** 查询维修工单行分页 */
 export function getRepairLinePage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvRepairLineApi.RepairLine>>('/mes/dv/repair-line/page', { params });
+  return requestClient.get<PageResult<MesDvRepairLineApi.RepairLine>>(
+    '/mes/dv/repair-line/page',
+    { params },
+  );
 }
 
 /** 查询维修工单行详情 */
 export function getRepairLine(id: number) {
-  return requestClient.get<MesDvRepairLineApi.RepairLine>(`/mes/dv/repair-line/get?id=${id}`);
+  return requestClient.get<MesDvRepairLineApi.RepairLine>(
+    `/mes/dv/repair-line/get?id=${id}`,
+  );
 }
 
 /** 新增维修工单行 */

@@ -44,8 +44,9 @@ function validateEnumValue(_rule: any, value: any, callback: any) {
     callback(new Error('枚举值必须是数字'));
     return;
   }
-  const sameCount = dataSpecsList.value.filter((it) => it.value === value)
-    .length;
+  const sameCount = dataSpecsList.value.filter(
+    (it) => it.value === value,
+  ).length;
   if (sameCount > 1) {
     callback(new Error('枚举值不能重复'));
     return;

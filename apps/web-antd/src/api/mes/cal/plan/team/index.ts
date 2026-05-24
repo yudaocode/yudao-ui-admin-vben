@@ -14,7 +14,9 @@ export namespace MesCalPlanTeamApi {
 
 /** 查询指定排班计划的班组列表 */
 export function getPlanTeamListByPlan(planId: number) {
-  return requestClient.get<MesCalPlanTeamApi.PlanTeam[]>(`/mes/cal/plan-team/list-by-plan?planId=${planId}`);
+  return requestClient.get<MesCalPlanTeamApi.PlanTeam[]>(
+    `/mes/cal/plan-team/list-by-plan?planId=${planId}`,
+  );
 }
 
 /** 新增计划班组关联 */

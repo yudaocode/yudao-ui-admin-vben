@@ -23,7 +23,7 @@ import {
   TenantDropdown,
   UserDropdown,
 } from '@vben/layouts';
-import { preferences } from '@vben/preferences';
+import { preferences, usePreferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { formatDateTime, openWindow } from '@vben/utils';
 
@@ -54,6 +54,7 @@ const showDot = computed(() => unreadCount.value > 0);
 const [HelpModal, helpModalApi] = useVbenModal({
   connectedComponent: Help,
 });
+const { isDark } = usePreferences();
 
 const menus = computed(() => [
   {
@@ -204,10 +205,28 @@ watch(
   () => ({
     enable: preferences.app.watermark,
     content: preferences.app.watermarkContent,
+    isDark: isDark.value,
   }),
-  async ({ enable, content }) => {
+  async ({ enable, content, isDark: isDarkValue }) => {
     if (enable) {
+      const watermarkColor = isDarkValue
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'rgba(0, 0, 0, 0.12)';
+
       await updateWatermark({
+        advancedStyle: {
+          colorStops: [
+            {
+              color: watermarkColor,
+              offset: 0,
+            },
+            {
+              color: watermarkColor,
+              offset: 1,
+            },
+          ],
+          type: 'linear',
+        },
         content:
           content ||
           `${userStore.userInfo?.id} - ${userStore.userInfo?.nickname}`,
@@ -232,6 +251,7 @@ watch(
         :description="userStore.userInfo?.email"
         :tag-text="userStore.userInfo?.username"
         @logout="handleLogout"
+        @clear-preferences-and-logout="handleLogout"
       />
     </template>
     <template #notification>

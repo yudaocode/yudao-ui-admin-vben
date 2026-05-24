@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 
-import { Tabs } from 'antdv-next';
+import { TabPane, Tabs } from 'antdv-next';
 
 import DeviceDetailsThingModelEvent from './thing-model-event.vue';
 import DeviceDetailsThingModelProperty from './thing-model-property.vue';

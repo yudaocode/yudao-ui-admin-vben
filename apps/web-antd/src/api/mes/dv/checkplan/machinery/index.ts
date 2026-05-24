@@ -22,7 +22,9 @@ export function getCheckPlanMachineryListByPlan(planId: number) {
 }
 
 /** 新增方案设备关联 */
-export function createCheckPlanMachinery(data: MesDvCheckPlanMachineryApi.CheckPlanMachinery) {
+export function createCheckPlanMachinery(
+  data: MesDvCheckPlanMachineryApi.CheckPlanMachinery,
+) {
   return requestClient.post('/mes/dv/check-plan-machinery/create', data);
 }
 

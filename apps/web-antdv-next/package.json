@@ -20,14 +20,14 @@
     "build:analyze": "pnpm vite build --mode analyze",
     "dev": "pnpm vite --mode development",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit --skipLibCheck"
+    "#typecheck": "vue-tsc --noEmit --skipLibCheck"
   },
   "imports": {
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
+    "@form-create/antdv-next": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",

@@ -24,12 +24,17 @@ export namespace MesDvCheckRecordApi {
 
 /** 查询设备点检记录分页 */
 export function getCheckRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvCheckRecordApi.CheckRecord>>('/mes/dv/check-record/page', { params });
+  return requestClient.get<PageResult<MesDvCheckRecordApi.CheckRecord>>(
+    '/mes/dv/check-record/page',
+    { params },
+  );
 }
 
 /** 查询设备点检记录详情 */
 export function getCheckRecord(id: number) {
-  return requestClient.get<MesDvCheckRecordApi.CheckRecord>(`/mes/dv/check-record/get?id=${id}`);
+  return requestClient.get<MesDvCheckRecordApi.CheckRecord>(
+    `/mes/dv/check-record/get?id=${id}`,
+  );
 }
 
 /** 新增设备点检记录 */
@@ -54,5 +59,7 @@ export function deleteCheckRecord(id: number) {
 
 /** 导出设备点检记录 */
 export function exportCheckRecord(params: any) {
-  return requestClient.download('/mes/dv/check-record/export-excel', { params });
+  return requestClient.download('/mes/dv/check-record/export-excel', {
+    params,
+  });
 }

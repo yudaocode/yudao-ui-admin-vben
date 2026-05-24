@@ -39,13 +39,18 @@ const hovering = ref(false); // 是否悬停
 const selectedItem = ref<MesMdWorkstationApi.Workstation>(); // 选中的工作站
 
 const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
-const showClear = computed( // 是否显示清空图标
-  () => props.allowClear && !props.disabled && hovering.value && props.modelValue != null,
+const showClear = computed(
+  // 是否显示清空图标
+  () =>
+    props.allowClear &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue !== null,
 );
 
 /** 根据工作站编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (id === null) {
     selectedItem.value = undefined;
     return;
   }
@@ -53,7 +58,7 @@ async function resolveItemById(id: number | undefined) {
     return;
   }
   try {
-    selectedItem.value = await getWorkstation(id);
+    selectedItem.value = await getWorkstation(id as number);
   } catch (error) {
     console.error('[MdWorkstationSelect] resolveItemById failed:', error);
   }
@@ -85,8 +90,8 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
-  dialogRef.value?.open(selectedIds, { multiple: false });
+  const selectedIds = props.modelValue === null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds as number[], { multiple: false });
 }
 
 /** 回填选中的工作站 */

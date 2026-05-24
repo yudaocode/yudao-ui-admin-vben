@@ -35,25 +35,37 @@ const orderDefinitions: OrderSummaryItem[] = [
   {
     color: '#2f7df6',
     routeName: 'WmsReceiptOrder',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.RECEIPT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.RECEIPT,
+    ).replace(/单$/, ''),
     type: OrderTypeEnum.RECEIPT,
   },
   {
     color: '#18a058',
     routeName: 'WmsShipmentOrder',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.SHIPMENT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.SHIPMENT,
+    ).replace(/单$/, ''),
     type: OrderTypeEnum.SHIPMENT,
   },
   {
     color: '#f59e0b',
     routeName: 'WmsMovementOrder',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.MOVEMENT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.MOVEMENT,
+    ).replace(/单$/, ''),
     type: OrderTypeEnum.MOVEMENT,
   },
   {
     color: '#7c3aed',
     routeName: 'WmsCheckOrder',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(/单$/, ''),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(
+      /单$/,
+      '',
+    ),
     type: OrderTypeEnum.CHECK,
   },
 ];
@@ -61,17 +73,23 @@ const orderDefinitions: OrderSummaryItem[] = [
 const statusList: StatusItem[] = [
   {
     color: '#409eff',
-    label: getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.PREPARE) || '草稿',
+    label:
+      getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.PREPARE) ||
+      '草稿',
     value: OrderStatusEnum.PREPARE,
   },
   {
     color: '#67c23a',
-    label: getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.FINISHED) || '已完成',
+    label:
+      getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.FINISHED) ||
+      '已完成',
     value: OrderStatusEnum.FINISHED,
   },
   {
     color: '#909399',
-    label: getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.CANCELED) || '已作废',
+    label:
+      getDictLabel(DICT_TYPE.WMS_ORDER_STATUS, OrderStatusEnum.CANCELED) ||
+      '已作废',
     value: OrderStatusEnum.CANCELED,
   },
 ];
@@ -131,10 +149,17 @@ defineExpose({ load });
     >
       <div class="mb-3 flex items-center justify-between">
         <div class="flex items-center gap-2 font-semibold">
-          <span class="h-2 w-2 rounded-full" :style="{ backgroundColor: item.color }"></span>
+          <span
+            class="h-2 w-2 rounded-full"
+            :style="{ backgroundColor: item.color }"
+          ></span>
           {{ item.title }}
         </div>
-        <Button size="small" type="link" @click="handleNavigate(item.routeName)">
+        <Button
+          size="small"
+          type="link"
+          @click="handleNavigate(item.routeName)"
+        >
           查看
         </Button>
       </div>

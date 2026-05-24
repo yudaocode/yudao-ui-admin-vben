@@ -26,7 +26,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 加载数据
-      thingModelTSL.value = await getThingModelTSLByProductId(product?.value?.id || 0);
+      thingModelTSL.value = await getThingModelTSLByProductId(
+        product?.value?.id || 0,
+      );
       // 设置到 values
       tslString.value = JSON.stringify(thingModelTSL.value, null, 2);
     } finally {
@@ -64,7 +66,9 @@ watch(tslString, (newValue) => {
         v-if="viewMode === 'view'"
         class="max-h-[600px] overflow-y-auto rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800"
       >
-        <pre class="m-0 whitespace-pre-wrap break-words font-mono text-[13px] leading-normal"><code>{{ formattedTSL }}</code></pre>
+        <pre
+          class="m-0 whitespace-pre-wrap break-words font-mono text-[13px] leading-normal"
+        ><code>{{ formattedTSL }}</code></pre>
       </div>
       <!-- 编辑器视图：可编辑 -->
       <Textarea

@@ -29,7 +29,11 @@ import {
   OrderStatusEnum,
   OrderUpdateStatusList,
 } from '#/views/wms/utils/constants';
-import { formatPrice, formatQuantity, multiplyPrice } from '#/views/wms/utils/format';
+import {
+  formatPrice,
+  formatQuantity,
+  multiplyPrice,
+} from '#/views/wms/utils/format';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import MovementOrderDetail from './modules/detail.vue';
@@ -209,7 +213,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【单据】移库" url="https://doc.iocoder.cn/wms/order/movement/" />
+      <DocAlert
+        title="【单据】移库"
+        url="https://doc.iocoder.cn/wms/order/movement/"
+      />
     </template>
     <FormModal @success="handleRefresh" />
     <DetailModal />

@@ -25,25 +25,37 @@ interface OrderDefinition {
 const orderDefinitions: OrderDefinition[] = [
   {
     color: '#2f7df6',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.RECEIPT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.RECEIPT,
+    ).replace(/单$/, ''),
     trendField: 'receiptCount',
     type: OrderTypeEnum.RECEIPT,
   },
   {
     color: '#18a058',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.SHIPMENT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.SHIPMENT,
+    ).replace(/单$/, ''),
     trendField: 'shipmentCount',
     type: OrderTypeEnum.SHIPMENT,
   },
   {
     color: '#f59e0b',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.MOVEMENT).replace(/单$/, ''),
+    title: getDictLabel(
+      DICT_TYPE.WMS_ORDER_TYPE,
+      OrderTypeEnum.MOVEMENT,
+    ).replace(/单$/, ''),
     trendField: 'movementCount',
     type: OrderTypeEnum.MOVEMENT,
   },
   {
     color: '#7c3aed',
-    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(/单$/, ''),
+    title: getDictLabel(DICT_TYPE.WMS_ORDER_TYPE, OrderTypeEnum.CHECK).replace(
+      /单$/,
+      '',
+    ),
     trendField: 'checkCount',
     type: OrderTypeEnum.CHECK,
   },
@@ -52,7 +64,9 @@ const orderDefinitions: OrderDefinition[] = [
 /** 格式化趋势接口返回的时间戳为图表横轴日期 */
 function formatTrendTime(time: number | string) {
   const date = new Date(time);
-  return Number.isNaN(date.getTime()) ? `${time}` : (formatDate(date, 'MM-DD') as string);
+  return Number.isNaN(date.getTime())
+    ? `${time}`
+    : (formatDate(date, 'MM-DD') as string);
 }
 
 /** 单据趋势图表配置 */

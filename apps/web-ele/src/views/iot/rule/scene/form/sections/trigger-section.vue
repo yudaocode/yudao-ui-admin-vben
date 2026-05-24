@@ -146,7 +146,9 @@ onMounted(() => {
             icon="ep:lightning"
             class="text-[18px] text-[var(--el-color-primary)]"
           />
-          <span class="text-[16px] font-600 text-[var(--el-text-color-primary)]">
+          <span
+            class="text-[16px] font-600 text-[var(--el-text-color-primary)]"
+          >
             触发器配置
           </span>
           <ElTag size="small" type="info">
@@ -269,7 +271,9 @@ onMounted(() => {
         <ElEmpty description="暂无触发器">
           <template #description>
             <div class="space-y-[8px]">
-              <p class="text-[var(--el-text-color-secondary)]">暂无触发器配置</p>
+              <p class="text-[var(--el-text-color-secondary)]">
+                暂无触发器配置
+              </p>
               <p class="text-[12px] text-[var(--el-text-color-placeholder)]">
                 请使用上方的「添加触发器」按钮来设置触发规则
               </p>

@@ -294,7 +294,7 @@ onMounted(async () => {
     v-model:open="visible"
     title="商品选择"
     width="70%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

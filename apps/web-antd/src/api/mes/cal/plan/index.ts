@@ -22,7 +22,10 @@ export namespace MesCalPlanApi {
 
 /** 查询排班计划分页 */
 export function getPlanPage(params: PageParam) {
-  return requestClient.get<PageResult<MesCalPlanApi.Plan>>('/mes/cal/plan/page', { params });
+  return requestClient.get<PageResult<MesCalPlanApi.Plan>>(
+    '/mes/cal/plan/page',
+    { params },
+  );
 }
 
 /** 查询排班计划详情 */

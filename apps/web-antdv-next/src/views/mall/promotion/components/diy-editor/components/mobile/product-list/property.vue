@@ -39,10 +39,10 @@ const formData = useVModel(props, 'modelValue', emit);
       :wrapper-col="{ span: 18 }"
       :model="formData"
     >
-      <Card title="商品列表" class="property-group" :bordered="false">
+      <Card title="商品列表" class="property-group" variant="borderless">
         <SpuShowcase v-model="formData.spuIds" />
       </Card>
-      <Card title="商品样式" class="property-group" :bordered="false">
+      <Card title="商品样式" class="property-group" variant="borderless">
         <FormItem label="布局" name="type">
           <RadioGroup v-model:value="formData.layoutType">
             <Tooltip title="双列" placement="bottom">
@@ -81,7 +81,7 @@ const formData = useVModel(props, 'modelValue', emit);
           </div>
         </FormItem>
       </Card>
-      <Card title="角标" class="property-group" :bordered="false">
+      <Card title="角标" class="property-group" variant="borderless">
         <FormItem label="角标" name="badge.show">
           <Switch v-model:checked="formData.badge.show" />
         </FormItem>
@@ -97,7 +97,7 @@ const formData = useVModel(props, 'modelValue', emit);
           </UploadImg>
         </FormItem>
       </Card>
-      <Card title="商品样式" class="property-group" :bordered="false">
+      <Card title="商品样式" class="property-group" variant="borderless">
         <FormItem label="上圆角" name="borderRadiusTop">
           <Slider
             v-model:value="formData.borderRadiusTop"

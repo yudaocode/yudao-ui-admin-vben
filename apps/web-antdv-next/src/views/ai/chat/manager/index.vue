@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import { Tabs } from 'antdv-next';
+import { TabPane, Tabs } from 'antdv-next';
 
 import ChatConversationList from './modules/conversation-list.vue';
 import ChatMessageList from './modules/message-list.vue';

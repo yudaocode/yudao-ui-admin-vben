@@ -21,9 +21,10 @@ export namespace MesMdAutoCodeRuleApi {
 
 /** 查询编码规则分页 */
 export function getAutoCodeRulePage(params: PageParam) {
-  return requestClient.get<
-    PageResult<MesMdAutoCodeRuleApi.AutoCodeRule>
-  >('/mes/md/auto-code-rule/page', { params });
+  return requestClient.get<PageResult<MesMdAutoCodeRuleApi.AutoCodeRule>>(
+    '/mes/md/auto-code-rule/page',
+    { params },
+  );
 }
 
 /** 查询编码规则详情 */
@@ -34,16 +35,12 @@ export function getAutoCodeRule(id: number) {
 }
 
 /** 新增编码规则 */
-export function createAutoCodeRule(
-  data: MesMdAutoCodeRuleApi.AutoCodeRule,
-) {
+export function createAutoCodeRule(data: MesMdAutoCodeRuleApi.AutoCodeRule) {
   return requestClient.post('/mes/md/auto-code-rule/create', data);
 }
 
 /** 修改编码规则 */
-export function updateAutoCodeRule(
-  data: MesMdAutoCodeRuleApi.AutoCodeRule,
-) {
+export function updateAutoCodeRule(data: MesMdAutoCodeRuleApi.AutoCodeRule) {
   return requestClient.put('/mes/md/auto-code-rule/update', data);
 }
 

@@ -176,9 +176,7 @@ async function updateDeviceConfig() {
         @confirm="handleConfigPush"
       >
         <template #reference>
-          <ElButton :loading="pushLoading" type="primary">
-            配置推送
-          </ElButton>
+          <ElButton :loading="pushLoading" type="primary"> 配置推送 </ElButton>
         </template>
       </ElPopconfirm>
     </div>

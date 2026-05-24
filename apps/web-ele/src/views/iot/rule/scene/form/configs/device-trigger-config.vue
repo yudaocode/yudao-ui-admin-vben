@@ -165,7 +165,12 @@ function removeConditionGroup() {
               <IconifyIcon icon="lucide:plus" />
               添加子条件组
             </ElButton>
-            <ElButton type="danger" size="small" link @click="removeConditionGroup">
+            <ElButton
+              type="danger"
+              size="small"
+              link
+              @click="removeConditionGroup"
+            >
               <IconifyIcon icon="lucide:trash-2" />
               删除条件组
             </ElButton>
@@ -259,7 +264,10 @@ function removeConditionGroup() {
           class="p-[24px] rounded-[8px] border-2 border-dashed border-orange-200 bg-orange-50 text-center"
         >
           <div class="gap-[12px] flex flex-col items-center">
-            <IconifyIcon icon="lucide:plus" class="text-[32px] text-orange-400" />
+            <IconifyIcon
+              icon="lucide:plus"
+              class="text-[32px] text-orange-400"
+            />
             <div class="text-orange-600">
               <p class="text-[14px] font-500 mb-[4px]">暂无子条件组</p>
               <p class="text-[12px]">点击上方"添加子条件组"按钮开始配置</p>

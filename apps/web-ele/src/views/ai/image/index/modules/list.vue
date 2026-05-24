@@ -33,6 +33,7 @@ const queryParams = reactive({
 }); // 图片分页相关的参数
 const pageTotal = ref<number>(0); // page size
 const imageList = ref<AiImageApi.Image[]>([]); // image 列表
+// @ts-expect-error unused
 const imageListRef = ref<any>(); // ref
 
 const inProgressImageMap = ref<{}>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image

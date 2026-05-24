@@ -139,10 +139,14 @@ function deleteParamItem(index: number) {
     <div>
       <ElButton link type="primary" @click="openParamForm(item)">编辑</ElButton>
       <ElDivider direction="vertical" />
-      <ElButton link type="danger" @click="deleteParamItem(index)">删除</ElButton>
+      <ElButton link type="danger" @click="deleteParamItem(index)">
+        删除
+      </ElButton>
     </div>
   </div>
-  <ElButton link type="primary" @click="openParamForm(null)">+ 新增参数</ElButton>
+  <ElButton link type="primary" @click="openParamForm(null)">
+    + 新增参数
+  </ElButton>
 
   <!-- 参数表单 -->
   <Modal class="w-2/5" title="参数配置">

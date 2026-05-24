@@ -72,7 +72,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             taskId: props.taskId,
-            status: activeTab.value === '' ? undefined : Number(activeTab.value),
+            status:
+              activeTab.value === '' ? undefined : Number(activeTab.value),
           });
         },
       },
@@ -97,16 +98,8 @@ watch(
 
 <template>
   <Card title="升级设备记录">
-    <Tabs
-      v-model:active-key="activeTab"
-      @change="handleTabChange"
-      class="mb-4"
-    >
-      <Tabs.TabPane
-        v-for="tab in statusTabs"
-        :key="tab.key"
-        :tab="tab.label"
-      />
+    <Tabs v-model:active-key="activeTab" @change="handleTabChange" class="mb-4">
+      <Tabs.TabPane v-for="tab in statusTabs" :key="tab.key" :tab="tab.label" />
     </Tabs>
     <Grid>
       <template #actions="{ row }">

@@ -142,7 +142,7 @@ function selectMaterial(item: any) {
           title="选择图片"
           :width="1200"
           :footer="null"
-          destroy-on-close
+          destroy-on-hidden
         >
           <WxMaterialSelect
             type="image"

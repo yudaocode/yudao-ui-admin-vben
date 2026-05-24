@@ -45,7 +45,9 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
             icon="ep:info-filled"
             class="text-[18px] text-[var(--el-color-primary)]"
           />
-          <span class="text-[16px] font-600 text-[var(--el-text-color-primary)]">
+          <span
+            class="text-[16px] font-600 text-[var(--el-text-color-primary)]"
+          >
             基础信息
           </span>
         </div>

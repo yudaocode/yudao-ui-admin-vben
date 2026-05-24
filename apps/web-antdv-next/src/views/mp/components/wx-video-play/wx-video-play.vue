@@ -36,7 +36,7 @@ function playVideo() {
       title="视频播放"
       :footer="null"
       :width="850"
-      destroy-on-close
+      destroy-on-hidden
     >
       <VideoPlayer
         v-if="dialogVideo"

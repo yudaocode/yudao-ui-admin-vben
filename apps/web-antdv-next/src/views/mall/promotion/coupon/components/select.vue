@@ -86,7 +86,7 @@ defineExpose({
     v-model:open="visible"
     title="选择优惠券"
     width="65%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

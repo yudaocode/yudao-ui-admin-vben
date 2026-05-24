@@ -97,7 +97,8 @@ function normalizeDetail(
   return {
     ...detail,
     seq: detailSeq,
-    totalPrice: detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
+    totalPrice:
+      detail.totalPrice ?? multiplyPrice(detail.quantity, detail.price),
   };
 }
 
@@ -353,11 +354,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal
-    :title="getTitle"
-    class="w-3/4"
-    :show-confirm-button="isPrepareOrder"
-  >
+  <Modal :title="getTitle" class="w-3/4" :show-confirm-button="isPrepareOrder">
     <div class="mx-4">
       <Form />
       <div class="mt-4">

@@ -88,8 +88,8 @@ const NUpload = defineAsyncComponent(() =>
   import('naive-ui/es/upload').then((res) => res.NUpload),
 );
 
-const withDefaultPlaceholder = <T extends Component>(
-  component: T,
+const withDefaultPlaceholder = (
+  component: Component,
   type: 'input' | 'select',
   componentProps: Recordable<any> = {},
 ) => {
@@ -233,7 +233,9 @@ async function initComponentAdapter() {
       inputComponent: NInput,
     }),
     Input: withDefaultPlaceholder(NInput, 'input'),
-    InputNumber: withDefaultPlaceholder(NInputNumber, 'input'),
+    InputNumber: withDefaultPlaceholder(NInputNumber, 'input', {
+      style: { width: '100%' },
+    }),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {

@@ -36,7 +36,9 @@ const getTitle = computed(() => {
   };
   return titles[formMode.value];
 });
-const currentItemOrProduct = computed(() => formData.value?.itemOrProduct || ''); // 当前物料/产品标识
+const currentItemOrProduct = computed(
+  () => formData.value?.itemOrProduct || '',
+); // 当前物料/产品标识
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {

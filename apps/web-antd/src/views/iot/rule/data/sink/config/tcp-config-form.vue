@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -68,7 +67,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'connectTimeoutMs']"
-    :rules="[{ required: true, message: '连接超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '连接超时时间不能为空', trigger: 'blur' },
+    ]"
     label="连接超时(ms)"
   >
     <InputNumber
@@ -80,7 +81,9 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'readTimeoutMs']"
-    :rules="[{ required: true, message: '读取超时时间不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '读取超时时间不能为空', trigger: 'blur' },
+    ]"
     label="读取超时(ms)"
   >
     <InputNumber
@@ -98,11 +101,16 @@ onMounted(() => {
     :name="['config', 'sslCertPath']"
     label="SSL 证书路径"
   >
-    <Input v-model:value="config.sslCertPath" placeholder="请输入 SSL 证书路径" />
+    <Input
+      v-model:value="config.sslCertPath"
+      placeholder="请输入 SSL 证书路径"
+    />
   </Form.Item>
   <Form.Item
     :name="['config', 'dataFormat']"
-    :rules="[{ required: true, message: '数据格式不能为空', trigger: 'change' }]"
+    :rules="[
+      { required: true, message: '数据格式不能为空', trigger: 'change' },
+    ]"
     label="数据格式"
   >
     <Select v-model:value="config.dataFormat" placeholder="请选择数据格式">

@@ -130,12 +130,12 @@ const handleAddPurchaseIn = (rows: ErpPurchaseInApi.PurchaseIn[]) => {
   rows.forEach((row) => {
     // TODO @芋艿
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      bizId: row.id,
+      bizId: row.id as any,
       bizType: ErpBizType.PURCHASE_IN,
-      bizNo: row.no,
-      totalPrice: row.totalPrice,
-      paidPrice: row.paymentPrice,
-      paymentPrice: row.totalPrice - row.paymentPrice,
+      bizNo: row.no as any,
+      totalPrice: row.totalPrice as any,
+      paidPrice: row.paymentPrice as any,
+      paymentPrice: (row.totalPrice as any) - (row.paymentPrice as any),
       remark: undefined,
     };
     tableData.value.push(newItem);
@@ -156,9 +156,9 @@ const handleOpenSaleReturn = () => {
 const handleAddSaleReturn = (rows: ErpPurchaseReturnApi.PurchaseReturn[]) => {
   rows.forEach((row) => {
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      bizId: row.id,
+      bizId: row.id as any,
       bizType: ErpBizType.PURCHASE_RETURN,
-      bizNo: row.no,
+      bizNo: row.no as any,
       totalPrice: -row.totalPrice,
       paidPrice: -row.refundPrice,
       paymentPrice: -row.totalPrice + row.refundPrice,
@@ -203,7 +203,7 @@ const validate = () => {
   // 检查每行的付款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item.paymentPrice || item.paymentPrice <= 0) {
+    if (item!.paymentPrice || item!.paymentPrice <= 0) {
       throw new Error(`第 ${i + 1} 行：本次付款必须大于0`);
     }
   }

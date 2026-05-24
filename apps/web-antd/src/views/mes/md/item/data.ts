@@ -89,7 +89,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: markRaw(MdItemTypeSelect),
       componentProps: {
         onChange: async (itemType: any) => {
-          await formApi?.setFieldValue('itemOrProduct', itemType?.itemOrProduct);
+          await formApi?.setFieldValue(
+            'itemOrProduct',
+            itemType?.itemOrProduct,
+          );
         },
       },
       rules: 'selectRequired',
@@ -410,54 +413,55 @@ export function useItemSelectGridColumns(): VxeTableGridOptions<MesMdItemApi.Ite
 export function useProductBomGridColumns(
   isReadOnly = false,
 ): VxeTableGridOptions<MesMdProductBomApi.ProductBom>['columns'] {
-  const columns: VxeTableGridOptions<MesMdProductBomApi.ProductBom>['columns'] = [
-    {
-      field: 'bomItemCode',
-      title: '物料编码',
-      minWidth: 160,
-      align: 'center',
-    },
-    {
-      field: 'bomItemName',
-      title: '物料名称',
-      minWidth: 160,
-      align: 'center',
-    },
-    {
-      field: 'bomItemSpecification',
-      title: '规格型号',
-      minWidth: 140,
-      align: 'center',
-    },
-    {
-      field: 'unitMeasureName',
-      title: '单位',
-      width: 80,
-      align: 'center',
-    },
-    {
-      field: 'itemOrProduct',
-      title: '物料/产品',
-      width: 110,
-      align: 'center',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.MES_MD_ITEM_OR_PRODUCT },
+  const columns: VxeTableGridOptions<MesMdProductBomApi.ProductBom>['columns'] =
+    [
+      {
+        field: 'bomItemCode',
+        title: '物料编码',
+        minWidth: 160,
+        align: 'center',
       },
-    },
-    {
-      field: 'quantity',
-      title: '用量比例',
-      width: 100,
-      align: 'center',
-    },
-    {
-      field: 'remark',
-      title: '备注',
-      minWidth: 140,
-      align: 'center',
-    },
-  ];
+      {
+        field: 'bomItemName',
+        title: '物料名称',
+        minWidth: 160,
+        align: 'center',
+      },
+      {
+        field: 'bomItemSpecification',
+        title: '规格型号',
+        minWidth: 140,
+        align: 'center',
+      },
+      {
+        field: 'unitMeasureName',
+        title: '单位',
+        width: 80,
+        align: 'center',
+      },
+      {
+        field: 'itemOrProduct',
+        title: '物料/产品',
+        width: 110,
+        align: 'center',
+        cellRender: {
+          name: 'CellDict',
+          props: { type: DICT_TYPE.MES_MD_ITEM_OR_PRODUCT },
+        },
+      },
+      {
+        field: 'quantity',
+        title: '用量比例',
+        width: 100,
+        align: 'center',
+      },
+      {
+        field: 'remark',
+        title: '备注',
+        minWidth: 140,
+        align: 'center',
+      },
+    ];
 
   if (!isReadOnly) {
     columns.push({

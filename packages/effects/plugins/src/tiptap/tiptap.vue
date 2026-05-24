@@ -2,10 +2,11 @@
 import type {
   TipTapProps,
   ToolbarAction,
+  ToolbarMenuItem,
   VbenTiptapChangeEvent,
 } from './types';
 
-import { computed, onBeforeUnmount, watch } from 'vue';
+import { computed, onBeforeUnmount, reactive, watch } from 'vue';
 
 import { Check, ChevronDown, Eye } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -25,7 +26,9 @@ import './style.css';
 const props = withDefaults(defineProps<TipTapProps>(), {
   editable: true,
   extensions: undefined,
+  imageUpload: undefined,
   minHeight: 240,
+  maxHeight: 400,
   placeholder: $t('ui.tiptap.placeholder'),
   previewable: true,
   toolbar: true,
@@ -39,10 +42,16 @@ const contentMinHeight = computed(() =>
     ? `${props.minHeight}px`
     : props.minHeight,
 );
+const contentMaxHeight = computed(() =>
+  typeof props.maxHeight === 'number'
+    ? `${props.maxHeight}px`
+    : props.maxHeight,
+);
 const tiptapContentClass = cn(
   'vben-tiptap-content vben-tiptap__content',
-  'text-foreground min-h-(--vben-tiptap-min-height) leading-7 outline-none',
+  'text-foreground max-h-(--vben-tiptap-max-height) min-h-(--vben-tiptap-min-height) overflow-auto leading-7 outline-none',
 );
+const blobUrlTracker = new Set<string>();
 const editor = useEditor({
   content: modelValue.value,
   editable: props.editable,
@@ -54,6 +63,8 @@ const editor = useEditor({
   extensions:
     props.extensions ??
     createDefaultTiptapExtensions({
+      _blobUrlTracker: blobUrlTracker,
+      imageUpload: props.imageUpload,
       placeholder: props.placeholder,
     }),
   onUpdate: ({ editor }) => {
@@ -69,7 +80,10 @@ const editor = useEditor({
   },
 });
 const toolbarGroups = computed<ToolbarAction[][]>(() => {
-  return createToolbarGroups();
+  // Only show upload toolbar option when using default extensions
+  // (custom extensions may not include the uploadImage command)
+  const effectiveImageUpload = props.extensions ? undefined : props.imageUpload;
+  return createToolbarGroups(effectiveImageUpload);
 });
 const previewContent = computed(
   () => editor.value?.getHTML() ?? modelValue.value,
@@ -95,6 +109,22 @@ const {
   editable: () => props.editable,
   editor,
 });
+
+const menuOpenState = reactive<Record<string, boolean>>({});
+
+function getMenuOpen(action: ToolbarAction): boolean {
+  return menuOpenState[action.label] ?? false;
+}
+
+function setMenuOpen(action: ToolbarAction, open: boolean) {
+  menuOpenState[action.label] = open;
+}
+
+function handleMenuItemClick(action: ToolbarAction, item: ToolbarMenuItem) {
+  runMenuItem(item);
+  setMenuOpen(action, false);
+}
+
 function openPreviewModal() {
   previewModalApi.open();
 }
@@ -120,13 +150,20 @@ watch(
   },
 );
 onBeforeUnmount(() => {
+  for (const url of blobUrlTracker) {
+    URL.revokeObjectURL(url);
+  }
+  blobUrlTracker.clear();
   editor.value?.destroy();
 });
 </script>
 
 <template>
   <div
-    :style="{ '--vben-tiptap-min-height': contentMinHeight }"
+    :style="{
+      '--vben-tiptap-min-height': contentMinHeight,
+      '--vben-tiptap-max-height': contentMaxHeight,
+    }"
     class="vben-tiptap overflow-hidden rounded-xl border border-border bg-card"
   >
     <div
@@ -141,8 +178,10 @@ onBeforeUnmount(() => {
         <template v-for="action in group" :key="action.label">
           <VbenPopover
             v-if="action.menu || action.palette"
+            :open="action.menu ? getMenuOpen(action) : undefined"
             :content-props="{ align: 'start', side: 'bottom', sideOffset: 8 }"
             content-class="w-auto p-2"
+            @update:open="action.menu ? setMenuOpen(action, $event) : undefined"
           >
             <template #trigger>
               <VbenIconButton
@@ -209,7 +248,7 @@ onBeforeUnmount(() => {
                 :class="getMenuItemClass(item)"
                 :disabled="!canRunMenuItem(item)"
                 type="button"
-                @click="runMenuItem(item)"
+                @click="handleMenuItemClick(action, item)"
               >
                 <span class="w-7 text-xs font-semibold tracking-wide">
                   {{ item.shortLabel }}

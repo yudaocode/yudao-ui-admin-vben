@@ -144,7 +144,10 @@ async function resetQueryState() {
 }
 
 /** 打开物料选择弹窗 */
-async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
+async function openModal(
+  selectedIds?: number[],
+  options?: { multiple?: boolean },
+) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
@@ -167,7 +170,10 @@ function handleConfirm() {
     message.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit('selected', multiple.value ? selectedRows.value : [selectedRows.value[0]!]);
+  emit(
+    'selected',
+    multiple.value ? selectedRows.value : [selectedRows.value[0]!],
+  );
   open.value = false;
 }
 
@@ -185,7 +191,10 @@ defineExpose({ open: openModal });
   >
     <div class="flex h-full w-full">
       <Card class="mr-4 h-full w-1/5">
-        <MdItemTypeTree ref="typeTreeRef" @node-click="handleItemTypeNodeClick" />
+        <MdItemTypeTree
+          ref="typeTreeRef"
+          @node-click="handleItemTypeNodeClick"
+        />
       </Card>
       <div class="w-4/5">
         <Grid table-title="物料产品列表" />

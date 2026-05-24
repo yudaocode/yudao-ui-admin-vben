@@ -128,7 +128,6 @@ async function renderChartWhenReady() {
   await nextTick();
   initChart();
 }
-
 // 父组件挂载后统一发起首次请求；
 // 原因：子组件 ShortcutDateRangePicker 早期 emit 触发的请求落在 useEcharts isActiveRef = false 阶段，会被 renderEcharts 静默丢弃；
 // 通过 handleDateRangeChange 在 isFirstMount=true 时跳过 fetch，由这里统一发起一次，避免双请求

@@ -141,7 +141,7 @@ function selectMaterial(item: any) {
               title="选择视频"
               :width="1200"
               :footer="null"
-              destroy-on-close
+              destroy-on-hidden
             >
               <WxMaterialSelect
                 type="video"

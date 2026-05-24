@@ -140,8 +140,7 @@ export function useGridColumns(): VxeTableGridOptions<AlertRecordApi.AlertRecord
       title: '设备名称',
       minWidth: 120,
       formatter: ({ cellValue }) =>
-        deviceList.find((device) => device.id === cellValue)?.deviceName ||
-        '-',
+        deviceList.find((device) => device.id === cellValue)?.deviceName || '-',
     },
     {
       field: 'deviceMessage',

@@ -39,17 +39,18 @@ const hovering = ref(false); // 是否悬停
 const selectedBom = ref<MesMdProductBomApi.ProductBom>(); // 当前选中的 BOM 物料
 
 const displayLabel = computed(() => selectedBom.value?.bomItemName ?? ''); // 选择器展示名称
-const showClear = computed( // 是否显示清空图标
+const showClear = computed(
+  // 是否显示清空图标
   () =>
     props.clearable &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue != null,
+    props.modelValue !== null,
 );
 
 /** 根据 BOM 子物料编号回显选择器 */
 async function resolveBomById(bomItemId: number | undefined) {
-  if (bomItemId == null || props.itemId == null) {
+  if (bomItemId === null || props.itemId === null) {
     selectedBom.value = undefined;
     return;
   }
@@ -57,7 +58,7 @@ async function resolveBomById(bomItemId: number | undefined) {
     return;
   }
   try {
-    const list = await getProductBomListByItemId(props.itemId);
+    const list = await getProductBomListByItemId(props.itemId as number);
     selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
   } catch (error) {
     console.error('[MdProductBomSelect] resolveBomById failed:', error);
@@ -90,7 +91,7 @@ function clearSelected() {
 
 /** 打开 BOM 物料选择弹窗 */
 function handleClick(event: MouseEvent) {
-  if (props.disabled || props.itemId == null) {
+  if (props.disabled || props.itemId === null) {
     return;
   }
   const target = event.target as HTMLElement;
@@ -99,7 +100,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.itemId, props.modelValue);
+  dialogRef.value?.open(props.itemId as number, props.modelValue);
 }
 
 /** 回填选中的 BOM 物料 */

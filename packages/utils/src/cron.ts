@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /**
  * CRON 表达式工具类；提供 CRON 表达式的解析、格式化、验证等功能
  */
@@ -132,7 +133,7 @@ export const CronUtils = {
     if (parts.length < 5 || parts.length > 7) {
       return false;
     }
-    const cronRegex = /^[\d#*,/?LW\-]+$/;
+    const cronRegex = /^[\d#*,/?LW-]+$/;
     return parts.every((part) => cronRegex.test(part));
   },
 
@@ -283,7 +284,15 @@ export const CronUtils = {
     if (parsed.day.type === 'specific') {
       parts.push(`每月 ${parsed.day.values[0]} 日`);
     } else if (parsed.week.type === 'specific') {
-      const weekNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      const weekNames = [
+        '周日',
+        '周一',
+        '周二',
+        '周三',
+        '周四',
+        '周五',
+        '周六',
+      ];
       const weekDay = parsed.week.values[0]!;
       if (weekDay >= 0 && weekDay <= 6) {
         parts.push(`每${weekNames[weekDay]}`);
@@ -305,10 +314,7 @@ export const CronUtils = {
   },
 
   /** 计算 CRON 表达式的下次执行时间（简化版，仅覆盖常见模式） */
-  getNextExecutionTime(
-    cronExpression: string,
-    fromDate?: Date,
-  ): Date | null {
+  getNextExecutionTime(cronExpression: string, fromDate?: Date): Date | null {
     const parsed = this.parse(cronExpression);
     if (!parsed.isValid) {
       return null;

@@ -15,7 +15,9 @@ export namespace MesCalPlanShiftApi {
 
 /** 查询指定排班计划的班次列表 */
 export function getPlanShiftListByPlan(planId: number) {
-  return requestClient.get<MesCalPlanShiftApi.PlanShift[]>(`/mes/cal/plan-shift/list-by-plan?planId=${planId}`);
+  return requestClient.get<MesCalPlanShiftApi.PlanShift[]>(
+    `/mes/cal/plan-shift/list-by-plan?planId=${planId}`,
+  );
 }
 
 /** 新增计划班次 */

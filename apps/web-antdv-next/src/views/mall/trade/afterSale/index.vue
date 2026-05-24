@@ -9,7 +9,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Button, Image, Tabs, Tag } from 'antdv-next';
+import { Button, Image, TabPane, Tabs, Tag } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAfterSalePage } from '#/api/mall/trade/afterSale';

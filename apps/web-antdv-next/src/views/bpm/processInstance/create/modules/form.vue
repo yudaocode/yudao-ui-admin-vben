@@ -14,8 +14,17 @@ import {
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
-import formCreate from '@form-create/ant-design-vue';
-import { Button, Card, Col, message, Row, Space, Tabs } from 'antdv-next';
+import formCreate from '@form-create/antdv-next';
+import {
+  Button,
+  Card,
+  Col,
+  message,
+  Row,
+  Space,
+  TabPane,
+  Tabs,
+} from 'antdv-next';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
 import {
@@ -265,10 +274,12 @@ defineExpose({ initProcessInfo });
   <Card
     :title="getTitle"
     class="h-full overflow-hidden"
-    :body-style="{
-      height: 'calc(100% - 112px)',
-      paddingTop: '12px',
-      overflowY: 'auto',
+    :styles="{
+      body: {
+        height: 'calc(100% - 112px)',
+        paddingTop: '12px',
+        overflowY: 'auto',
+      },
     }"
   >
     <template #extra>

@@ -50,6 +50,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 // 当前节点
 const currentNode = useWatchNode(props);
 /** 节点名称配置 */
+// @ts-expect-error unused
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.CHILD_PROCESS_NODE);
 // 激活的 Tab 标签页

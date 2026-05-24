@@ -17,10 +17,7 @@ import {
   ElTooltip,
 } from 'element-plus';
 
-import {
-  createBarcode,
-  getBarcodeByBusiness,
-} from '#/api/mes/wm/barcode';
+import { createBarcode, getBarcodeByBusiness } from '#/api/mes/wm/barcode';
 import { DictTag } from '#/components/dict-tag';
 
 import MesWmBarcode from './barcode.vue';
@@ -45,7 +42,13 @@ async function openByBusiness(
   open.value = true;
   try {
     const data = await getBarcodeByBusiness(bizType, bizId);
-    barcodeData.value = data || { bizCode, bizId, bizName, bizType, content: '' };
+    barcodeData.value = data || {
+      bizCode,
+      bizId,
+      bizName,
+      bizType,
+      content: '',
+    };
     if (!data) {
       ElMessage.warning('未找到对应条码数据');
     }
@@ -58,7 +61,10 @@ async function openByBusiness(
 defineExpose({ open: openModal, openByBusiness });
 
 function escapeHtml(value: string) {
-  return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
 }
 
 function handlePrint() {
@@ -107,7 +113,12 @@ async function handleGenerate() {
     ElMessage.warning('缺少业务类型或业务编号，无法生成条码');
     return;
   }
-  await createBarcode({ bizCode: bizCode || '', bizId, bizName: bizName || '', bizType });
+  await createBarcode({
+    bizCode: bizCode || '',
+    bizId,
+    bizName: bizName || '',
+    bizType,
+  });
   ElMessage.success('条码生成成功');
   const data = await getBarcodeByBusiness(bizType, bizId);
   if (data) {
@@ -119,8 +130,13 @@ async function handleGenerate() {
 <template>
   <ElDialog v-model="open" title="查看条码" width="500px">
     <div>
-      <div class="mb-5 flex min-h-50 items-center justify-center rounded bg-gray-100 p-5">
-        <div v-if="barcodeData.content" class="flex items-center justify-center">
+      <div
+        class="mb-5 flex min-h-50 items-center justify-center rounded bg-gray-100 p-5"
+      >
+        <div
+          v-if="barcodeData.content"
+          class="flex items-center justify-center"
+        >
           <MesWmBarcode
             ref="barcodeRef"
             :content="barcodeData.content"
@@ -148,13 +164,19 @@ async function handleGenerate() {
         </ElDescriptionsItem>
         <ElDescriptionsItem label="条码内容">
           <ElTooltip :content="barcodeData.content" placement="top">
-            <span class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap">
+            <span
+              class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap"
+            >
               {{ barcodeData.content }}
             </span>
           </ElTooltip>
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="业务编码">{{ barcodeData.bizCode || '-' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="业务名称">{{ barcodeData.bizName || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem label="业务编码">
+          {{ barcodeData.bizCode || '-' }}
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="业务名称">
+          {{ barcodeData.bizName || '-' }}
+        </ElDescriptionsItem>
         <ElDescriptionsItem label="状态">
           <DictTag
             v-if="barcodeData.status !== undefined"
@@ -162,11 +184,15 @@ async function handleGenerate() {
             :value="barcodeData.status"
           />
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="创建时间">{{ barcodeData.createTime || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem label="创建时间">
+          {{ barcodeData.createTime || '-' }}
+        </ElDescriptionsItem>
       </ElDescriptions>
     </div>
     <template #footer>
-      <ElButton v-if="!barcodeData.content" @click="handleGenerate">生成</ElButton>
+      <ElButton v-if="!barcodeData.content" @click="handleGenerate">
+        生成
+      </ElButton>
       <ElButton type="primary" @click="handlePrint">打印</ElButton>
       <ElButton @click="handleDownload">下载</ElButton>
       <ElButton @click="open = false">关闭</ElButton>

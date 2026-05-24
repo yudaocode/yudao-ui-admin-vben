@@ -138,8 +138,9 @@ const [WarehouseForm, warehouseFormApi] = useVbenForm({
 
 /** 记录新增盘库单前置选择的仓库名称 */
 function handleWarehouseSelect(warehouse: unknown) {
-  warehouseName.value = (warehouse as undefined | WmsWarehouseApi.Warehouse)
-    ?.name;
+  warehouseName.value = (
+    warehouse as undefined | WmsWarehouseApi.Warehouse
+  )?.name;
 }
 
 /** 初始化新增盘库单草稿 */
@@ -191,7 +192,9 @@ watch(actualPrice, syncActualPriceField);
 
 /** 计算明细实际金额 */
 function getDetailActualPrice(detail: DetailRow) {
-  return detail.actualPrice ?? multiplyPrice(detail.checkQuantity, detail.price);
+  return (
+    detail.actualPrice ?? multiplyPrice(detail.checkQuantity, detail.price)
+  );
 }
 
 /** 刷新明细行的盈亏数据 */
@@ -350,7 +353,9 @@ async function loadWarehouseInventoryList(): Promise<CheckInventoryRow[]> {
 }
 
 /** 获得当前仓库 SKU 对应库存余额，用于添加单个 SKU 时带入账面库存 */
-async function getWarehouseInventoryMap(): Promise<Map<number, CheckInventoryRow>> {
+async function getWarehouseInventoryMap(): Promise<
+  Map<number, CheckInventoryRow>
+> {
   const inventories = await loadWarehouseInventoryList();
   return new Map(
     inventories
@@ -619,7 +624,12 @@ const [Modal, modalApi] = useVbenModal({
               </div>
             </template>
           </VxeColumn>
-          <VxeColumn field="quantity" title="账面库存" align="right" width="120">
+          <VxeColumn
+            field="quantity"
+            title="账面库存"
+            align="right"
+            width="120"
+          >
             <template #default="{ row }">
               {{ formatQuantity(row.quantity) || '-' }}
             </template>

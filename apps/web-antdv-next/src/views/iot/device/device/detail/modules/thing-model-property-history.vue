@@ -124,7 +124,7 @@ const tableColumns = computed(() => [
     key: 'index',
     width: 80,
     align: 'center' as const,
-    customRender: ({ index }: { index: number }) => index + 1,
+    render: ({ index }: { index: number }) => index + 1,
   },
   {
     title: '时间',

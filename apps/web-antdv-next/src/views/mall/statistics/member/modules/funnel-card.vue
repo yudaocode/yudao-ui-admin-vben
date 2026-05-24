@@ -46,7 +46,7 @@ const calculateRelativeRate = (value?: number, reference?: number) => {
 </script>
 
 <template>
-  <Card :bordered="false" :loading="loading">
+  <Card variant="borderless" :loading="loading">
     <template #title>
       <div class="flex items-center justify-between">
         <span>会员概览</span>

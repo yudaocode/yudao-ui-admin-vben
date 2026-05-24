@@ -184,7 +184,7 @@ onMounted(async () => {
 
     <div class="mt-4 flex flex-col gap-4 md:flex-row">
       <!-- 左侧：建立连接、发送消息 -->
-      <Card :bordered="false" class="w-full md:w-1/2">
+      <Card variant="borderless" class="w-full md:w-1/2">
         <template #title>
           <div class="flex items-center">
             <Badge :status="getIsOpen ? 'success' : 'error'" />
@@ -274,7 +274,7 @@ onMounted(async () => {
       </Card>
 
       <!-- 右侧：消息记录 -->
-      <Card :bordered="false" class="w-full md:w-1/2">
+      <Card variant="borderless" class="w-full md:w-1/2">
         <template #title>
           <div class="flex items-center">
             <IconifyIcon

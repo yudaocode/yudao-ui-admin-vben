@@ -23,6 +23,7 @@ const document = ref<null | {
   title: string;
 }>(null); // 知识库文档列表
 const dialogVisible = ref(false); // 知识引用详情弹窗
+// @ts-expect-error unused
 const documentRef = ref<HTMLElement>(); // 知识引用详情弹窗 Ref
 
 /** 按照 document 聚合 segments */

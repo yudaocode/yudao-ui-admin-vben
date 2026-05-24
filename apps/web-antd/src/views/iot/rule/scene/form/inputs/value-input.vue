@@ -8,7 +8,14 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, InputNumber, Select, Tag, Tooltip } from 'ant-design-vue';
+import {
+  DatePicker,
+  Input,
+  InputNumber,
+  Select,
+  Tag,
+  Tooltip,
+} from 'ant-design-vue';
 
 /** 值输入组件 */
 defineOptions({ name: 'ValueInput' });
@@ -134,7 +141,7 @@ function handleDateChange(value: any) {
 
 /** 处理数字变化事件 ；InputNumber 回调值类型为 ValueType（string | number） */
 function handleNumberChange(value: any) {
-  localValue.value = value == null ? '' : String(value);
+  localValue.value = value === null ? '' : String(value);
 }
 
 /** 根据外部值同步内部输入态 */
@@ -275,11 +282,7 @@ watch(
         class="mt-2 flex flex-wrap items-center gap-1"
       >
         <span class="text-xs text-muted-foreground"> 解析结果： </span>
-        <Tag
-          v-for="(item, index) in listPreview"
-          :key="index"
-          class="m-0"
-        >
+        <Tag v-for="(item, index) in listPreview" :key="index" class="m-0">
           {{ item }}
         </Tag>
       </div>

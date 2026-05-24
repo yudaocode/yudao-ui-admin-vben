@@ -87,16 +87,19 @@ export type FormSchemaRuleType =
 type FormItemDependenciesCondition<T = boolean | PromiseLike<boolean>> = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => T;
 
 type FormItemDependenciesConditionWithRules = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => FormSchemaRuleType | PromiseLike<FormSchemaRuleType>;
 
 type FormItemDependenciesConditionWithProps = (
   value: Partial<Record<string, any>>,
   actions: FormActions,
+  controller: ExtendedFormApi, // 在 dependencies 里提供访问extendApi的能力
 ) => MaybeComponentProps | PromiseLike<MaybeComponentProps>;
 
 export interface FormItemDependencies {
@@ -148,6 +151,11 @@ type ComponentProps =
 
 export interface FormCommonConfig {
   /**
+   * 是否可折叠的
+   * @default false
+   */
+  collapsible?: boolean;
+  /**
    * 在Label后显示一个冒号
    */
   colon?: boolean;
@@ -159,6 +167,11 @@ export interface FormCommonConfig {
    * 所有表单项的控件样式
    */
   controlClass?: string;
+  /**
+   * 默认折叠
+   * @default false
+   */
+  defaultCollapsed?: boolean;
   /**
    * 所有表单项的禁用状态
    * @default false

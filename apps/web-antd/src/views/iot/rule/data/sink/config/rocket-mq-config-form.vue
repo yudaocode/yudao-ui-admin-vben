@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -32,7 +31,9 @@ onMounted(() => {
 <template>
   <Form.Item
     :name="['config', 'nameServer']"
-    :rules="[{ required: true, message: 'NameServer 地址不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'NameServer 地址不能为空', trigger: 'blur' },
+    ]"
     label="NameServer"
   >
     <Input
@@ -42,14 +43,18 @@ onMounted(() => {
   </Form.Item>
   <Form.Item
     :name="['config', 'accessKey']"
-    :rules="[{ required: true, message: 'AccessKey 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'AccessKey 不能为空', trigger: 'blur' },
+    ]"
     label="AccessKey"
   >
     <Input v-model:value="config.accessKey" placeholder="请输入 AccessKey" />
   </Form.Item>
   <Form.Item
     :name="['config', 'secretKey']"
-    :rules="[{ required: true, message: 'SecretKey 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: 'SecretKey 不能为空', trigger: 'blur' },
+    ]"
     label="SecretKey"
   >
     <Input.Password

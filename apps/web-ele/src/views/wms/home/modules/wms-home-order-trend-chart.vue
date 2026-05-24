@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
+import type { WmsHomeStatisticsApi } from '#/api/wms/home';
+
 import { nextTick, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { ElCard, ElSegmented } from 'element-plus';
 
-import { getOrderTrend, type WmsHomeStatisticsApi } from '#/api/wms/home';
+import { getOrderTrend } from '#/api/wms/home';
 
 import { getOrderTrendChartOptions } from './wms-home-order-trend-chart-options';
 
@@ -59,7 +61,9 @@ defineExpose({ load });
     <div class="mb-3 flex items-center justify-between">
       <div>
         <div class="font-semibold">单据趋势</div>
-        <div class="text-sm text-muted-foreground">入库、出库、移库、盘库单据数量</div>
+        <div class="text-sm text-muted-foreground">
+          入库、出库、移库、盘库单据数量
+        </div>
       </div>
       <ElSegmented
         :model-value="trendDays"

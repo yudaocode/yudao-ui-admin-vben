@@ -203,7 +203,7 @@ function validate() {
   // 检查每行的收款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item.receiptPrice || item.receiptPrice <= 0) {
+    if (item!.receiptPrice || item!.receiptPrice <= 0) {
       throw new Error(`第 ${i + 1} 行：本次收款必须大于0`);
     }
   }

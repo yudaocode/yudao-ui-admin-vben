@@ -25,7 +25,9 @@ export namespace MesTmToolApi {
 
 /** 查询工具台账分页 */
 export function getToolPage(params: PageParam) {
-  return requestClient.get<PageResult<MesTmToolApi.Tool>>('/mes/tm/tool/page', { params });
+  return requestClient.get<PageResult<MesTmToolApi.Tool>>('/mes/tm/tool/page', {
+    params,
+  });
 }
 
 /** 查询工具精简列表 */

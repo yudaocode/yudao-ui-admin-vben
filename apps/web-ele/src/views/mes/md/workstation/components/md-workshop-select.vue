@@ -57,7 +57,9 @@ function handleFilter(query: string) {
 /** 根据当前值同步 tooltip 展示的车间详情 */
 function syncSelectedItem(value: number | undefined) {
   selectedItem.value =
-    value === undefined ? undefined : allList.value.find((item) => item.id === value);
+    value === undefined
+      ? undefined
+      : allList.value.find((item) => item.id === value);
 }
 
 /** 除 v-model 外，额外抛出完整车间对象给业务表单使用 */
@@ -86,7 +88,11 @@ onMounted(async () => {
       <div v-if="selectedItem" class="leading-6">
         <div>编码：{{ selectedItem.code || '-' }}</div>
         <div>名称：{{ selectedItem.name || '-' }}</div>
-        <div>面积：{{ selectedItem.area != null ? `${selectedItem.area} ㎡` : '-' }}</div>
+        <div>
+          面积：{{
+            selectedItem.area != null ? `${selectedItem.area} ㎡` : '-'
+          }}
+        </div>
         <div>负责人：{{ selectedItem.chargeUserName || '-' }}</div>
       </div>
     </template>

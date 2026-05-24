@@ -170,7 +170,7 @@ async function handleSendMessage(event: any) {
   }
   // 1. 校验消息是否为空
   if (isEmpty(unref(message.value)?.trim())) {
-    notification.warning({ message: '请输入消息后再发送哦！' });
+    notification.warning({ title: '请输入消息后再发送哦！' });
     message.value = '';
     return;
   }

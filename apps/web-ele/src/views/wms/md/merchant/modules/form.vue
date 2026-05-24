@@ -53,9 +53,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as WmsMerchantApi.Merchant;
     try {
-      await (formData.value?.id
-        ? updateMerchant(data)
-        : createMerchant(data));
+      await (formData.value?.id ? updateMerchant(data) : createMerchant(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

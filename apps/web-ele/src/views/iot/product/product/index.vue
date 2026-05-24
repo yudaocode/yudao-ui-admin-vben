@@ -11,13 +11,7 @@ import { ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  ElButton,
-  ElCard,
-  ElInput,
-  ElLoading,
-  ElMessage,
-} from 'element-plus';
+import { ElButton, ElCard, ElInput, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleProductCategoryList } from '#/api/iot/product/category';

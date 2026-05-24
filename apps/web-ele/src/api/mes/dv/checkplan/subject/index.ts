@@ -23,7 +23,9 @@ export function getCheckPlanSubjectListByPlan(planId: number) {
 }
 
 /** 新增方案项目关联 */
-export function createCheckPlanSubject(data: MesDvCheckPlanSubjectApi.CheckPlanSubject) {
+export function createCheckPlanSubject(
+  data: MesDvCheckPlanSubjectApi.CheckPlanSubject,
+) {
   return requestClient.post('/mes/dv/check-plan-subject/create', data);
 }
 

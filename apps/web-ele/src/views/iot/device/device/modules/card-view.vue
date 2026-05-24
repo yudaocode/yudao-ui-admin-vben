@@ -205,9 +205,7 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div
-              class="mt-auto flex gap-2 border-t border-border pt-3"
-            >
+            <div class="mt-auto flex gap-2 border-t border-border pt-3">
               <ElButton
                 v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
@@ -266,8 +264,12 @@ onMounted(() => {
         :total="total"
         :page-sizes="[12, 24, 36, 48]"
         layout="total, sizes, prev, pager, next, jumper"
-        @current-change="(page: number) => handlePageChange(page, queryParams.pageSize!)"
-        @size-change="(size: number) => handlePageChange(queryParams.pageNo!, size)"
+        @current-change="
+          (page: number) => handlePageChange(page, queryParams.pageSize!)
+        "
+        @size-change="
+          (size: number) => handlePageChange(queryParams.pageNo!, size)
+        "
       />
     </div>
   </div>

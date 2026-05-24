@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import { onMounted } from 'vue';
 
 import { isEmpty } from '@vben/utils';
@@ -60,7 +59,9 @@ onMounted(() => {
   </ElFormItem>
   <ElFormItem
     prop="config.clientId"
-    :rules="[{ required: true, message: '客户端 ID 不能为空', trigger: 'blur' }]"
+    :rules="[
+      { required: true, message: '客户端 ID 不能为空', trigger: 'blur' },
+    ]"
     label="客户端 ID"
   >
     <ElInput v-model="config.clientId" placeholder="请输入客户端 ID" />

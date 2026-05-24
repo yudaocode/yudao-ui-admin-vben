@@ -16,7 +16,10 @@ export namespace MesCalTeamApi {
 
 /** 查询班组分页 */
 export function getTeamPage(params: PageParam) {
-  return requestClient.get<PageResult<MesCalTeamApi.Team>>('/mes/cal/team/page', { params });
+  return requestClient.get<PageResult<MesCalTeamApi.Team>>(
+    '/mes/cal/team/page',
+    { params },
+  );
 }
 
 /** 查询班组列表 */

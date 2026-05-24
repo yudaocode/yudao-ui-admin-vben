@@ -190,9 +190,7 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div
-              class="mt-auto flex gap-2 border-t border-border pt-3"
-            >
+            <div class="mt-auto flex gap-2 border-t border-border pt-3">
               <Button
                 v-if="hasAccessByCodes(['iot:product:update'])"
                 size="small"

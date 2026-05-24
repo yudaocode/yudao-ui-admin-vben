@@ -104,6 +104,8 @@
       "link": "Link",
       "unlink": "Unlink",
       "image": "Image",
+      "imageUrl": "Image URL",
+      "imageUpload": "Upload Image",
       "textColor": "Text Color",
       "highlightColor": "Highlight Color",
       "alignLeft": "Left",
@@ -113,6 +115,12 @@
       "undo": "Undo",
       "redo": "Redo",
       "clear": "Clear"
+    },
+    "upload": {
+      "fileTooLarge": "File size exceeds the limit",
+      "fileTypeNotAllowed": "File type is not allowed",
+      "onlySingleImage": "Only single image upload is supported, the first one is selected",
+      "uploadFailed": "Upload Failed"
     }
   },
   "fallback": {
@@ -160,7 +168,7 @@
     },
     "lockScreen": {
       "title": "Lock Screen",
-      "screenButton": "Locking",
+      "screenButton": "Unlock",
       "password": "Password",
       "placeholder": "Please enter password",
       "unlock": "Click to unlock",

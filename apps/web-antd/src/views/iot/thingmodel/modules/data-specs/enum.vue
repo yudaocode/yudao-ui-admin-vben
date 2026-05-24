@@ -44,8 +44,9 @@ function validateEnumValue(_rule: any, value: any, callback: any) {
     callback(new Error('枚举值必须是数字'));
     return;
   }
-  const sameCount = dataSpecsList.value.filter((it) => it.value === value)
-    .length;
+  const sameCount = dataSpecsList.value.filter(
+    (it) => it.value === value,
+  ).length;
   if (sameCount > 1) {
     callback(new Error('枚举值不能重复'));
     return;
@@ -105,7 +106,10 @@ function validateEnumList(_rule: any, _value: any, callback: any) {
           ]"
           class="mb-0 flex-1"
         >
-          <Input v-model:value="item.value" placeholder="请输入枚举值，如「0」" />
+          <Input
+            v-model:value="item.value"
+            placeholder="请输入枚举值，如「0」"
+          />
         </Form.Item>
         <span class="mx-2">~</span>
         <Form.Item

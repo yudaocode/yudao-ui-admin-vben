@@ -5,7 +5,6 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { DICT_TYPE, getDataTypeOptionsLabel } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [

@@ -104,14 +104,11 @@ function handleTypeChange(type: number) {
 
 <template>
   <Modal :title="getTitle" class="w-3/5">
-    <ElForm
-      ref="formRef"
-      :model="formData"
-      class="mx-4"
-      label-width="100px"
-    >
+    <ElForm ref="formRef" :model="formData" class="mx-4" label-width="100px">
       <ElFormItem
-        :rules="[{ required: true, message: '目的名称不能为空', trigger: 'blur' }]"
+        :rules="[
+          { required: true, message: '目的名称不能为空', trigger: 'blur' },
+        ]"
         label="目的名称"
         prop="name"
       >
@@ -126,7 +123,9 @@ function handleTypeChange(type: number) {
         />
       </ElFormItem>
       <ElFormItem
-        :rules="[{ required: true, message: '目的类型不能为空', trigger: 'change' }]"
+        :rules="[
+          { required: true, message: '目的类型不能为空', trigger: 'change' },
+        ]"
         label="目的类型"
         prop="type"
       >
@@ -136,7 +135,10 @@ function handleTypeChange(type: number) {
           @change="(value: any) => handleTypeChange(value as number)"
         >
           <ElOption
-            v-for="dict in getDictOptions(DICT_TYPE.IOT_DATA_SINK_TYPE_ENUM, 'number')"
+            v-for="dict in getDictOptions(
+              DICT_TYPE.IOT_DATA_SINK_TYPE_ENUM,
+              'number',
+            )"
             :key="String(dict.value)"
             :label="dict.label"
             :value="dict.value"
@@ -181,7 +183,9 @@ function handleTypeChange(type: number) {
         v-model="formData.config"
       />
       <ElFormItem
-        :rules="[{ required: true, message: '目的状态不能为空', trigger: 'change' }]"
+        :rules="[
+          { required: true, message: '目的状态不能为空', trigger: 'change' },
+        ]"
         label="目的状态"
         prop="status"
       >

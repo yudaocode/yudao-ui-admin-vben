@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { DeviceTypeEnum } from '@vben/constants';
 
-import { message, Tabs } from 'antdv-next';
+import { message, TabPane, Tabs } from 'antdv-next';
 
 import { getDevice } from '#/api/iot/device/device';
 import { getProduct, ProtocolTypeEnum } from '#/api/iot/product/product';

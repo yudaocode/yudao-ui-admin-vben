@@ -8,13 +8,7 @@ import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import {
-  ElButton,
-  ElDivider,
-  ElForm,
-  ElFormItem,
-  ElInput,
-} from 'element-plus';
+import { ElButton, ElDivider, ElForm, ElFormItem, ElInput } from 'element-plus';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -148,14 +142,18 @@ onMounted(() => {
     >
       <span>参数：{{ item.name }}</span>
       <div>
-        <ElButton link type="primary" @click="openStructForm(item)">编辑</ElButton>
+        <ElButton link type="primary" @click="openStructForm(item)">
+          编辑
+        </ElButton>
         <ElDivider direction="vertical" />
         <ElButton link type="danger" @click="deleteStructItem(index)">
           删除
         </ElButton>
       </div>
     </div>
-    <ElButton link type="primary" @click="openStructForm(null)">+ 新增参数</ElButton>
+    <ElButton link type="primary" @click="openStructForm(null)">
+      + 新增参数
+    </ElButton>
   </ElFormItem>
 
   <!-- 结构体参数表单 -->

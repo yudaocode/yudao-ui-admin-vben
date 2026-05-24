@@ -83,9 +83,9 @@ async function copyToClipboard(text: string) {
       </ElDescriptionsItem>
       <ElDescriptionsItem
         v-if="
-          ([DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]).includes(
-            product.deviceType!,
-          )
+          (
+            [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]
+          ).includes(product.deviceType!)
         "
         label="联网方式"
       >

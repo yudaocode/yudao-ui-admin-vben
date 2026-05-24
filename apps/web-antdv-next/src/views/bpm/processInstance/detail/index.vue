@@ -227,10 +227,8 @@ onMounted(async () => {
   <Page auto-content-height v-loading="loading">
     <Card
       class="flex h-full flex-col"
-      :body-style="{
-        flex: 1,
-        overflowY: 'hidden',
-        paddingTop: '12px',
+      :styles="{
+        body: { flex: 1, overflowY: 'hidden', paddingTop: '12px' },
       }"
     >
       <template #title>

@@ -1,8 +1,8 @@
 import type { App } from 'vue';
 
-import formCreate from '@form-create/ant-design-vue';
-import install from '@form-create/ant-design-vue/auto-import';
 import FcDesigner from '@form-create/antd-designer';
+import formCreate from '@form-create/antdv-next';
+import install from '@form-create/antdv-next/auto-import';
 // 👇使用 form-create 需额外全局引入 ant-design-vue 组件
 import {
   Alert,

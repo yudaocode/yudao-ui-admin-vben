@@ -32,12 +32,17 @@ export namespace MesDvRepairApi {
 
 /** 查询维修工单分页 */
 export function getRepairPage(params: PageParam) {
-  return requestClient.get<PageResult<MesDvRepairApi.Repair>>('/mes/dv/repair/page', { params });
+  return requestClient.get<PageResult<MesDvRepairApi.Repair>>(
+    '/mes/dv/repair/page',
+    { params },
+  );
 }
 
 /** 查询维修工单详情 */
 export function getRepair(id: number) {
-  return requestClient.get<MesDvRepairApi.Repair>(`/mes/dv/repair/get?id=${id}`);
+  return requestClient.get<MesDvRepairApi.Repair>(
+    `/mes/dv/repair/get?id=${id}`,
+  );
 }
 
 /** 新增维修工单 */

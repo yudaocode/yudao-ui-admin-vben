@@ -48,7 +48,7 @@ const formattedReference = computed(() => {
 </script>
 
 <template>
-  <Card :bordered="false" class="h-full">
+  <Card variant="borderless" class="h-full">
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between text-gray-500">
         <span>{{ title }}</span>

@@ -43,7 +43,9 @@ function getRowKey(row: InventorySelectRow) {
 }
 
 /** 获得业务库存标识 */
-function getInventoryKey(row: Pick<InventorySelectRow, 'skuId' | 'warehouseId'>) {
+function getInventoryKey(
+  row: Pick<InventorySelectRow, 'skuId' | 'warehouseId'>,
+) {
   return row.skuId && row.warehouseId
     ? `${row.skuId}-${row.warehouseId}`
     : undefined;

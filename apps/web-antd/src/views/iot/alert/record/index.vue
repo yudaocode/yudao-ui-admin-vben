@@ -38,10 +38,10 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
       h('div', { class: 'space-y-2' }, [
         h('p', '请输入处理原因：'),
         h(Input.TextArea, {
-          'value': processRemark.value,
+          value: processRemark.value,
           'onUpdate:value': (val: string) => (processRemark.value = val),
-          'rows': 3,
-          'placeholder': '请输入处理原因',
+          rows: 3,
+          placeholder: '请输入处理原因',
         }),
       ]),
     async onOk() {
@@ -106,7 +106,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :overlay-style="{ maxWidth: '600px' }"
         >
           <template #content>
-            <pre class="text-xs">{{ stringifyDeviceMessage(row.deviceMessage) }}</pre>
+            <pre class="text-xs">{{
+              stringifyDeviceMessage(row.deviceMessage)
+            }}</pre>
           </template>
           <Button size="small" type="link">
             <IconifyIcon icon="ant-design:eye-outlined" class="mr-1" />

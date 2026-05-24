@@ -56,5 +56,7 @@ export function deleteUnitMeasure(id: number) {
 
 /** 导出计量单位 */
 export function exportUnitMeasure(params: PageParam) {
-  return requestClient.download('/mes/md/unit-measure/export-excel', { params });
+  return requestClient.download('/mes/md/unit-measure/export-excel', {
+    params,
+  });
 }

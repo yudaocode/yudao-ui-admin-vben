@@ -47,9 +47,21 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: [
-    { fieldName: 'id', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'itemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
-    { fieldName: 'bomItemId', component: 'Input', dependencies: { triggerFields: [''], show: () => false } },
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'itemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'bomItemId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
     {
       fieldName: 'bomItemCode',
       label: 'BOM 物料编码',
@@ -164,7 +176,9 @@ async function submitForm() {
   formLoading.value = true;
   try {
     const data = (await formApi.getValues()) as MesMdProductBomApi.ProductBom;
-    await (formData.value?.id ? updateProductBom(data) : createProductBom(data));
+    await (formData.value?.id
+      ? updateProductBom(data)
+      : createProductBom(data));
     formOpen.value = false;
     message.success($t('ui.actionMessage.operationSuccess'));
     await getList();

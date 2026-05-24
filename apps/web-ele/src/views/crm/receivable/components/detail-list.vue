@@ -69,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          const queryParams: CrmReceivableApi.ReceivablePageParam = {
+          const queryParams: any = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
           };

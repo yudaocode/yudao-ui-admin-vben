@@ -134,7 +134,9 @@ const [Modal, modalApi] = useVbenModal({
         advValues.latitude !== null &&
         advValues.latitude !== '';
       if (hasLongitude !== hasLatitude) {
-        message.warning(hasLongitude ? '请同时填写设备纬度' : '请同时填写设备经度');
+        message.warning(
+          hasLongitude ? '请同时填写设备纬度' : '请同时填写设备经度',
+        );
         return;
       }
     }

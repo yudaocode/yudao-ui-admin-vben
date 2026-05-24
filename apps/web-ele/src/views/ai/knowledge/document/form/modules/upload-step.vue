@@ -28,7 +28,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
+// @ts-expect-error unused
 const formRef = ref(); // 表单引用
+// @ts-expect-error unused
 const uploadRef = ref(); // 上传组件引用
 const parent = inject('parent', null); // 获取父组件实例
 const { uploadUrl, httpRequest } = useUpload(); // 使用上传组件的钩子
@@ -124,7 +126,7 @@ async function customRequest(info: UploadRequestOptions) {
     // 上传文件
     const progressEvent: AxiosProgressEvent = (e) => {
       const percent = Math.trunc((e.loaded / e.total!) * 100);
-      info.onProgress!({ percent });
+      info.onProgress!({ percent } as any);
     };
     const res = await httpRequest(info.file as File, progressEvent);
     info.onSuccess!(res);
@@ -246,7 +248,7 @@ onMounted(() => {
               type="danger"
               text
               link
-              @click="removeFile(index)"
+              @click="removeFile(index as number)"
               class="ml-2"
             >
               <IconifyIcon icon="lucide:trash-2" />

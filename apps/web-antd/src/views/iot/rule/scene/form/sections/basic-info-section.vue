@@ -31,7 +31,9 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
       <div class="flex items-center justify-between">
         <div class="gap-[8px] flex items-center">
           <IconifyIcon icon="ep:info-filled" class="text-[18px] text-primary" />
-          <span class="text-[16px] font-semibold text-foreground">基础信息</span>
+          <span class="text-[16px] font-semibold text-foreground">
+            基础信息
+          </span>
         </div>
         <div class="gap-[8px] flex items-center">
           <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="formData.status" />

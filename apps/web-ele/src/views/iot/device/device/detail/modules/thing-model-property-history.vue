@@ -402,7 +402,12 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             row-key="_rowKey"
             size="small"
           >
-            <ElTableColumn label="序号" width="80" align="center" type="index" />
+            <ElTableColumn
+              label="序号"
+              width="80"
+              align="center"
+              type="index"
+            />
             <ElTableColumn
               label="时间"
               prop="updateTime"

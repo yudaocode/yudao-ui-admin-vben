@@ -15,13 +15,7 @@ import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  ElButton,
-  ElOption,
-  ElSelect,
-  ElSwitch,
-  ElTag,
-} from 'element-plus';
+import { ElButton, ElOption, ElSelect, ElSwitch, ElTag } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';

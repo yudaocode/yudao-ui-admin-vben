@@ -230,7 +230,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       title="粉丝消息列表"
       :width="800"
       :footer="null"
-      destroy-on-close
+      destroy-on-hidden
     >
       <WxMsg :user-id="messageBoxUserId" />
     </Modal>

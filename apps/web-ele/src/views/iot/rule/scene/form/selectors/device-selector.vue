@@ -1,9 +1,7 @@
-<!-- 设备选择器组件 -->
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
-import { DEVICE_SELECTOR_OPTIONS } from '@vben/constants';
+import { DEVICE_SELECTOR_OPTIONS, DICT_TYPE } from '@vben/constants';
 
 import { ElOption, ElSelect } from 'element-plus';
 
