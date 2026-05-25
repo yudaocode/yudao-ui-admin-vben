@@ -2,11 +2,13 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProRouteApi } from '#/api/mes/pro/route';
 
+import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Modal, Switch, Tooltip } from 'ant-design-vue';
+import { Button, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -19,6 +21,9 @@ import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+
+const { hasAccessByCodes } = useAccess();
+const statusEditable = hasAccessByCodes(['mes:pro-route:update']); // 是否可切换状态
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -46,20 +51,22 @@ function handleDetail(row: MesProRouteApi.Route) {
 }
 
 /** 切换状态 */
-async function handleStatusChange(row: MesProRouteApi.Route, value: number) {
-  const text = value === CommonStatusEnum.ENABLE ? '启用' : '停用';
-  const previousStatus = row.status;
-  Modal.confirm({
-    title: `确认要"${text}""${row.name}"工艺路线吗？`,
-    onOk: async () => {
-      await updateRouteStatus(row.id!, value);
-      message.success($t('ui.actionMessage.operationSuccess'));
-      handleRefresh();
-    },
-    onCancel: () => {
-      // 用户取消时回滚开关状态
-      row.status = previousStatus;
-    },
+async function handleStatusChange(
+  newStatus: number,
+  row: MesProRouteApi.Route,
+): Promise<boolean | undefined> {
+  return new Promise((resolve, reject) => {
+    Modal.confirm({
+      content: `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
+      async onOk() {
+        await updateRouteStatus(row.id!, newStatus);
+        message.success($t('ui.actionMessage.operationSuccess'));
+        resolve(true);
+      },
+      onCancel() {
+        reject(new Error('取消操作'));
+      },
+    });
   });
 }
 
@@ -89,7 +96,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleStatusChange, statusEditable),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -145,20 +152,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #code="{ row }">
         <Button type="link" @click="handleDetail(row)">{{ row.code }}</Button>
-      </template>
-      <template #status="{ row }">
-        <Switch
-          :checked="row.status === CommonStatusEnum.ENABLE"
-          checked-children="启用"
-          un-checked-children="停用"
-          @change="
-            (checked: boolean | number | string) =>
-              handleStatusChange(
-                row,
-                checked ? CommonStatusEnum.ENABLE : CommonStatusEnum.DISABLE,
-              )
-          "
-        />
       </template>
       <template #actions="{ row }">
         <Tooltip

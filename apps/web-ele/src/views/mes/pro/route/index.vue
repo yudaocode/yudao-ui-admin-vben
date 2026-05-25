@@ -2,8 +2,10 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProRouteApi } from '#/api/mes/pro/route';
 
+import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
@@ -11,7 +13,6 @@ import {
   ElLoading,
   ElMessage,
   ElMessageBox,
-  ElSwitch,
   ElTooltip,
 } from 'element-plus';
 
@@ -27,44 +28,54 @@ import { $t } from '#/locales';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
+const { hasAccessByCodes } = useAccess();
+const statusEditable = hasAccessByCodes(['mes:pro-route:update']); // 是否可切换状态
+
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
+/** 创建工艺路线 */
 function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
+/** 编辑工艺路线（仅停用状态可编辑） */
 function handleEdit(row: MesProRouteApi.Route) {
   formModalApi.setData({ id: row.id, type: 'update' }).open();
 }
 
+/** 详情查看 */
 function handleDetail(row: MesProRouteApi.Route) {
   formModalApi.setData({ id: row.id, type: 'detail' }).open();
 }
 
-async function handleStatusChange(row: MesProRouteApi.Route, value: number) {
-  const text = value === CommonStatusEnum.ENABLE ? '启用' : '停用';
-  const previousStatus = row.status;
+/** 切换状态 */
+async function handleStatusChange(
+  newStatus: number,
+  row: MesProRouteApi.Route,
+): Promise<boolean | undefined> {
   try {
     await ElMessageBox.confirm(
-      `确认要"${text}""${row.name}"工艺路线吗？`,
+      `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
       '提示',
       { type: 'warning' },
     );
-    await updateRouteStatus(row.id!, value);
+    await updateRouteStatus(row.id!, newStatus);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    handleRefresh();
+    return true;
   } catch {
-    row.status = previousStatus;
+    return false;
   }
 }
 
+/** 删除（仅停用状态可删除） */
 async function handleDelete(row: MesProRouteApi.Route) {
   const hideLoading = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
@@ -78,6 +89,7 @@ async function handleDelete(row: MesProRouteApi.Route) {
   }
 }
 
+/** 导出 */
 async function handleExport() {
   const data = await exportRoute(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '工艺路线.xls', source: data });
@@ -86,7 +98,7 @@ async function handleExport() {
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: { schema: useGridFormSchema() },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleStatusChange, statusEditable),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -140,20 +152,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <ElButton link type="primary" @click="handleDetail(row)">
           {{ row.code }}
         </ElButton>
-      </template>
-      <template #status="{ row }">
-        <ElSwitch
-          :model-value="row.status === CommonStatusEnum.ENABLE"
-          active-text="启用"
-          inactive-text="停用"
-          @update:model-value="
-            (value: boolean | number | string) =>
-              handleStatusChange(
-                row,
-                value ? CommonStatusEnum.ENABLE : CommonStatusEnum.DISABLE,
-              )
-          "
-        />
       </template>
       <template #actions="{ row }">
         <ElTooltip

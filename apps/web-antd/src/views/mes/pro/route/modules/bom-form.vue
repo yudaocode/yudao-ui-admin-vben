@@ -10,6 +10,7 @@ import { message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import {
   createRouteProductBom,
+  getRouteProductBom,
   updateRouteProductBom,
 } from '#/api/mes/pro/route/productbom';
 import { $t } from '#/locales';
@@ -80,27 +81,33 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     // 加载数据
     const data = modalApi.getData<{
+      id?: number;
       processId: number;
       productId: number;
       routeId: number;
-      row?: MesProRouteProductBomApi.RouteProductBom;
     }>();
     if (!data) {
       return;
     }
     productId.value = data.productId;
-    if (data.row) {
-      formData.value = data.row;
-      // 设置到 values
-      await formApi.setValues(data.row);
+    if (!data.id) {
+      // 新增时，给 routeId/processId/productId 兜底默认值
+      await formApi.setValues({
+        processId: data.processId,
+        productId: data.productId,
+        quantity: 1,
+        routeId: data.routeId,
+      });
       return;
     }
-    await formApi.setValues({
-      processId: data.processId,
-      productId: data.productId,
-      quantity: 1,
-      routeId: data.routeId,
-    });
+    modalApi.lock();
+    try {
+      formData.value = await getRouteProductBom(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>

@@ -7,7 +7,7 @@ import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -19,6 +19,8 @@ import {
   MdProductBomSelect,
 } from '#/views/mes/md/item/components';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
+
+import { RouteColorPicker } from './components';
 
 /** 工艺路线表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
@@ -120,7 +122,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<MesProRouteApi.Route>['columns'] {
+export function useGridColumns(
+  onStatusChange?: (
+    newStatus: number,
+    row: MesProRouteApi.Route,
+  ) => PromiseLike<boolean | undefined>,
+  statusEditable = true,
+): VxeTableGridOptions<MesProRouteApi.Route>['columns'] {
   return [
     {
       field: 'code',
@@ -134,7 +142,16 @@ export function useGridColumns(): VxeTableGridOptions<MesProRouteApi.Route>['col
       field: 'status',
       title: '状态',
       width: 110,
-      slots: { default: 'status' },
+      align: 'center',
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: 'CellSwitch',
+        props: {
+          activeValue: CommonStatusEnum.ENABLE,
+          disabled: !statusEditable,
+          inactiveValue: CommonStatusEnum.DISABLE,
+        },
+      },
     },
     { field: 'remark', title: '备注', minWidth: 160 },
     {
@@ -205,11 +222,7 @@ export function useRouteProcessFormSchema(
     {
       fieldName: 'colorCode',
       label: '甘特图颜色',
-      component: 'Input',
-      componentProps: {
-        maxLength: 16,
-        placeholder: '请输入颜色 hex，例如 #00AEF3',
-      },
+      component: RouteColorPicker,
     },
     {
       fieldName: 'keyFlag',

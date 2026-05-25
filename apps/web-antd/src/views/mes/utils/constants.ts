@@ -181,20 +181,17 @@ export const MesProCardStatusEnum = {
   CANCELLED: MesOrderStatusConstants.CANCELLED,
 } as const;
 
-/** MES 安灯类型枚举 */
-export const MesProAndonTypeEnum = {
-  QUALITY: 1,
-  EQUIPMENT: 2,
-  MATERIAL: 3,
-  PROCESS: 4,
-  OTHER: 9,
+/** MES 安灯处置状态枚举 */
+export const MesProAndonStatusEnum = {
+  ACTIVE: 0, // 未处置
+  HANDLED: 1, // 已处置
 } as const;
 
-/** MES 安灯状态枚举 */
-export const MesProAndonStatusEnum = {
-  TRIGGERED: 1,
-  HANDLING: 2,
-  CLOSED: 3,
+/** MES 安灯级别枚举 */
+export const MesProAndonLevelEnum = {
+  LEVEL1: 1,
+  LEVEL2: 2,
+  LEVEL3: 3,
 } as const;
 
 /** MES 编码规则分段类型枚举 */
