@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
 import type { MesProAndonRecordApi } from '#/api/mes/pro/andon/record';
 
 import { computed, ref } from 'vue';
@@ -7,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, message, Popconfirm } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -20,69 +19,40 @@ import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 
+type FormMode = 'create' | 'detail' | 'update';
+
 const emit = defineEmits(['success']);
-const formType = ref<'create' | 'detail' | 'update'>('create'); // 表单当前模式：新增 / 处置 / 详情
+const formMode = ref<FormMode>('create'); // 表单模式：新增 / 处置 / 详情
 const formData = ref<MesProAndonRecordApi.AndonRecord>();
 const userStore = useUserStore();
 
-const dialogTitle = computed(() => {
-  switch (formType.value) {
-    case 'create': {
-      return '新增安灯呼叫';
-    }
-    case 'detail': {
-      return '安灯呼叫详情';
-    }
-    case 'update': {
-      return '处置安灯呼叫';
-    }
-    default: {
-      return '安灯呼叫';
-    }
+const isUpdate = computed(() => formMode.value === 'update'); // 是否处置模式
+const getTitle = computed(() => {
+  if (formMode.value === 'detail') {
+    return $t('ui.actionTitle.view', ['安灯呼叫']);
   }
+  return formMode.value === 'update'
+    ? $t('ui.actionTitle.edit', ['安灯呼叫'])
+    : $t('ui.actionTitle.create', ['安灯呼叫']);
 });
-
-/** 选择呼叫原因后自动填充级别 */
-function handleConfigChange(config: MesProAndonConfigApi.AndonConfig | undefined) {
-  if (!config) {
-    formApi.setValues({ level: undefined, reason: undefined });
-    return;
-  }
-  formApi.setValues({ level: config.level, reason: config.reason });
-}
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    componentProps: { class: 'w-full' },
+    componentProps: {
+      class: 'w-full',
+    },
     formItemClass: 'col-span-2',
     labelWidth: 100,
   },
   layout: 'horizontal',
-  schema: useFormSchema('create', handleConfigChange),
+  schema: [],
   showDefaultActions: false,
 });
 
-/** 提交：新增 */
-async function handleCreate() {
-  const { valid } = await formApi.validate();
-  if (!valid) {
-    return;
-  }
-  modalApi.lock();
-  try {
-    const data =
-      (await formApi.getValues()) as MesProAndonRecordApi.AndonRecord;
-    await createAndonRecord(data);
-    await modalApi.close();
-    emit('success');
-    message.success($t('ui.actionMessage.operationSuccess'));
-  } finally {
-    modalApi.unlock();
-  }
-}
+/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
+formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
 
-/** 处置：保存（保持 ACTIVE） */
-// TODO @AI：这里写下注释；
+/** 处置：保存（保持 ACTIVE 状态） */
 async function handleSave() {
   modalApi.lock();
   try {
@@ -103,8 +73,7 @@ async function handleSave() {
   }
 }
 
-/** 处置：标记已处置 */
-// TODO @AI：这里写下注释；
+/** 处置：标记已处置（状态变为 HANDLED） */
 async function handleFinish() {
   const values =
     (await formApi.getValues()) as MesProAndonRecordApi.AndonRecord;
@@ -133,34 +102,47 @@ async function handleFinish() {
   }
 }
 
-// TODO @AI：这里的代码风格？！！
 const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    if (formMode.value === 'detail') {
+      await modalApi.close();
+      return;
+    }
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    modalApi.lock();
+    // 提交表单
+    const data =
+      (await formApi.getValues()) as MesProAndonRecordApi.AndonRecord;
+    try {
+      await createAndonRecord(data);
+      // 关闭并提示
+      await modalApi.close();
+      emit('success');
+      message.success($t('ui.actionMessage.operationSuccess'));
+    } finally {
+      modalApi.unlock();
+    }
+  },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<{
-      id?: number;
-      type: 'create' | 'detail' | 'update';
-    }>();
-    if (!data) {
-      return;
-    }
-    formType.value = data.type;
-    // 重新挂载 schema，以便按 type 切换字段表现
-    formApi.setState({ schema: useFormSchema(data.type, handleConfigChange) });
+    // 加载数据
+    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
+    formMode.value = data?.type || 'create';
+    formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
+    modalApi.setState({ showConfirmButton: formMode.value === 'create' });
     await formApi.resetForm();
-
-    if (data.type === 'create') {
-      // 新增时默认填发起人为当前用户
-      const currentUserId = userStore.userInfo?.id;
-      formData.value = { userId: currentUserId };
-      await formApi.setValues({ userId: currentUserId });
+    if (formMode.value === 'create') {
+      // 新增时，发起人默认为当前用户
+      await formApi.setValues({ userId: userStore.userInfo?.id });
       return;
     }
-    // 处置 / 详情：加载详情
-    if (!data.id) {
+    if (!data?.id) {
       return;
     }
     modalApi.lock();
@@ -168,7 +150,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = await getAndonRecord(data.id);
       const initial: MesProAndonRecordApi.AndonRecord = { ...formData.value };
       // 处置模式下，默认填充处置时间和处置人，方便快速保存
-      if (data.type === 'update') {
+      if (isUpdate.value) {
         if (!initial.handleTime) {
           initial.handleTime = Date.now();
         }
@@ -176,6 +158,7 @@ const [Modal, modalApi] = useVbenModal({
           initial.handlerUserId = userStore.userInfo?.id;
         }
       }
+      // 设置到 values
       await formApi.setValues(initial);
     } finally {
       modalApi.unlock();
@@ -185,21 +168,17 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="dialogTitle" class="w-1/2">
-    <Form />
-    <template #footer>
-      <template v-if="formType === 'create'">
-        <Button @click="modalApi.close()">取消</Button>
-        <Button type="primary" @click="handleCreate">确定</Button>
-      </template>
-      <template v-else-if="formType === 'update'">
-        <Button @click="modalApi.close()">关闭</Button>
-        <Button type="primary" @click="handleSave">保存</Button>
-        <Button type="primary" danger @click="handleFinish">已处置</Button>
-      </template>
-      <template v-else>
-        <Button @click="modalApi.close()">关闭</Button>
-      </template>
+  <Modal :title="getTitle" class="w-1/2">
+    <Form class="mx-4" />
+    <template #prepend-footer>
+      <div v-if="isUpdate" class="flex flex-auto items-center justify-end gap-2">
+        <Popconfirm title="确认保存当前处置进度？" @confirm="handleSave">
+          <Button type="primary">保存</Button>
+        </Popconfirm>
+        <Popconfirm title="确认标记为已处置？" @confirm="handleFinish">
+          <Button danger type="primary">已处置</Button>
+        </Popconfirm>
+      </div>
     </template>
   </Modal>
 </template>

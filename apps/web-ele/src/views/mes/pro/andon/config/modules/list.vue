@@ -2,81 +2,70 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElMessage } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteAndonConfig,
   getAndonConfigList,
 } from '#/api/mes/pro/andon/config';
-import { getSimpleRoleList } from '#/api/system/role';
 import { $t } from '#/locales';
 
-import { useConfigGridColumns } from '../../record/data';
-import ConfigForm from './config-form.vue';
+import { useGridColumns } from '../data';
+import Form from './form.vue';
 
-const list = ref<MesProAndonConfigApi.AndonConfig[]>([]); // 安灯配置列表（已回填处置角色名称）
-
-const [ConfigFormModal, configFormModalApi] = useVbenModal({
-  connectedComponent: ConfigForm,
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
-// TODO @AI：这个格式，是不是有问题？应该要换行？看看别的模块也是；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     autoResize: true,
     border: true,
-    columns: useConfigGridColumns(),
-    data: list.value,
+    columns: useGridColumns(),
     minHeight: 320,
-    pagerConfig: { enabled: false },
-    rowConfig: { isHover: true, keyField: 'id' },
+    pagerConfig: {
+      enabled: false,
+    },
+    rowConfig: {
+      isHover: true,
+      keyField: 'id',
+    },
     showOverflow: true,
-    toolbarConfig: { enabled: false },
+    toolbarConfig: {
+      enabled: false,
+    },
   } as VxeTableGridOptions<MesProAndonConfigApi.AndonConfig>,
 });
 
-/** 加载安灯配置列表，并通过角色精简列表回填处置角色名称 */
-// TODO @AI：这里需要 getAndonConfigList、getSimpleRoleList 么？通过 data.ts 里处理，是不是更主流？？？
+/** 加载安灯配置列表 */
 async function getList() {
   gridApi.setLoading(true);
   try {
-    const [configList, roleList] = await Promise.all([
-      getAndonConfigList(),
-      getSimpleRoleList(),
-    ]);
-    const roleMap = new Map(roleList.map((role) => [role.id!, role.name!]));
-    list.value = (configList || []).map((item) => ({
-      ...item,
-      handlerRoleName: item.handlerRoleId
-        ? roleMap.get(item.handlerRoleId)
-        : undefined,
-    }));
-    gridApi.setGridOptions({ data: list.value });
+    const data = (await getAndonConfigList()) || [];
+    gridApi.setGridOptions({ data });
   } finally {
     gridApi.setLoading(false);
   }
 }
 
-/** 新增配置 */
+/** 创建安灯配置 */
 function handleCreate() {
-  configFormModalApi.setData({}).open();
+  formModalApi.setData({}).open();
 }
 
-/** 编辑配置 */
+/** 编辑安灯配置 */
 function handleEdit(row: MesProAndonConfigApi.AndonConfig) {
-  configFormModalApi.setData({ id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
-/** 删除配置 */
+/** 删除安灯配置 */
 async function handleDelete(row: MesProAndonConfigApi.AndonConfig) {
   await deleteAndonConfig(row.id!);
-  message.success($t('ui.actionMessage.deleteSuccess', ['安灯配置']));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess', ['安灯配置']));
   await getList();
 }
 
@@ -93,8 +82,13 @@ defineExpose({ open: () => modalApi.open() });
 </script>
 
 <template>
-  <Modal :show-cancel-button="false" :show-confirm-button="false" class="w-3/5" title="安灯设置">
-    <ConfigFormModal @success="getList" />
+  <Modal
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+    class="w-3/5"
+    title="安灯设置"
+  >
+    <FormModal @success="getList" />
     <div class="mb-3 flex items-center justify-start">
       <TableAction
         :actions="[
@@ -113,14 +107,15 @@ defineExpose({ open: () => modalApi.open() });
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               auth: ['mes:pro-andon-config:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               auth: ['mes:pro-andon-config:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', ['安灯配置']),

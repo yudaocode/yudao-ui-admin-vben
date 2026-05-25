@@ -1,21 +1,26 @@
+import type { PageParam, PageResult } from '@vben/request';
+
 import { requestClient } from '#/api/request';
 
 export namespace MesProAndonConfigApi {
   /** MES 安灯配置 */
   export interface AndonConfig {
-    id?: number;
+    id?: number; // 编号
     reason?: string; // 呼叫原因
     level?: number; // 级别
     handlerRoleId?: number; // 处置角色编号
     handlerUserId?: number; // 处置人编号
-    handlerUserNickname?: string; // 处置人姓名（详情回显）
-    remark?: string;
+    handlerUserNickname?: string; // 处置人昵称
+    remark?: string; // 备注
   }
 }
 
 /** 查询安灯配置分页 */
-export function getAndonConfigPage(params: any) {
-  return requestClient.get('/mes/pro/andon-config/page', { params });
+export function getAndonConfigPage(params: PageParam) {
+  return requestClient.get<PageResult<MesProAndonConfigApi.AndonConfig>>(
+    '/mes/pro/andon-config/page',
+    { params },
+  );
 }
 
 /** 查询安灯配置列表 */

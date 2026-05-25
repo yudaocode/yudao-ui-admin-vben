@@ -2,11 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+import { message } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -15,13 +13,11 @@ import {
 } from '#/api/mes/pro/andon/config';
 import { $t } from '#/locales';
 
-import { useConfigGridColumns } from '../../record/data';
-import ConfigForm from './config-form.vue';
+import { useGridColumns } from '../data';
+import Form from './form.vue';
 
-const list = ref<MesProAndonConfigApi.AndonConfig[]>([]);
-
-const [ConfigFormModal, configFormModalApi] = useVbenModal({
-  connectedComponent: ConfigForm,
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
@@ -29,13 +25,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     autoResize: true,
     border: true,
-    columns: useConfigGridColumns(),
-    data: list.value,
+    columns: useGridColumns(),
     minHeight: 320,
-    pagerConfig: { enabled: false },
-    rowConfig: { isHover: true, keyField: 'id' },
+    pagerConfig: {
+      enabled: false,
+    },
+    rowConfig: {
+      isHover: true,
+      keyField: 'id',
+    },
     showOverflow: true,
-    toolbarConfig: { enabled: false },
+    toolbarConfig: {
+      enabled: false,
+    },
   } as VxeTableGridOptions<MesProAndonConfigApi.AndonConfig>,
 });
 
@@ -43,27 +45,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function getList() {
   gridApi.setLoading(true);
   try {
-    list.value = (await getAndonConfigList()) || [];
-    gridApi.setGridOptions({ data: list.value });
+    const data = (await getAndonConfigList()) || [];
+    gridApi.setGridOptions({ data });
   } finally {
     gridApi.setLoading(false);
   }
 }
 
-/** 新增配置 */
+/** 创建安灯配置 */
 function handleCreate() {
-  configFormModalApi.setData({}).open();
+  formModalApi.setData({}).open();
 }
 
-/** 编辑配置 */
+/** 编辑安灯配置 */
 function handleEdit(row: MesProAndonConfigApi.AndonConfig) {
-  configFormModalApi.setData({ id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
-/** 删除配置 */
+/** 删除安灯配置 */
 async function handleDelete(row: MesProAndonConfigApi.AndonConfig) {
   await deleteAndonConfig(row.id!);
-  ElMessage.success($t('ui.actionMessage.deleteSuccess', ['安灯配置']));
+  message.success($t('ui.actionMessage.deleteSuccess', ['安灯配置']));
   await getList();
 }
 
@@ -86,7 +88,7 @@ defineExpose({ open: () => modalApi.open() });
     class="w-3/5"
     title="安灯设置"
   >
-    <ConfigFormModal @success="getList" />
+    <FormModal @success="getList" />
     <div class="mb-3 flex items-center justify-start">
       <TableAction
         :actions="[
@@ -105,15 +107,14 @@ defineExpose({ open: () => modalApi.open() });
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'primary',
-              link: true,
+              type: 'link',
               auth: ['mes:pro-andon-config:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
-              type: 'danger',
-              link: true,
+              type: 'link',
+              danger: true,
               auth: ['mes:pro-andon-config:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', ['安灯配置']),

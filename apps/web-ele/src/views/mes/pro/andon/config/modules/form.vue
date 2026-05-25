@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -15,25 +15,26 @@ import {
 } from '#/api/mes/pro/andon/config';
 import { $t } from '#/locales';
 
-import { useConfigFormSchema } from '../../record/data';
+import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MesProAndonConfigApi.AndonConfig>();
-
-const getTitle = computed(() =>
-  formData.value?.id
+const getTitle = computed(() => {
+  return formData.value?.id
     ? $t('ui.actionTitle.edit', ['安灯配置'])
-    : $t('ui.actionTitle.create', ['安灯配置']),
-);
+    : $t('ui.actionTitle.create', ['安灯配置']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    componentProps: { class: 'w-full' },
+    componentProps: {
+      class: 'w-full',
+    },
     formItemClass: 'col-span-2',
     labelWidth: 100,
   },
   layout: 'horizontal',
-  schema: useConfigFormSchema(),
+  schema: useFormSchema(),
   showDefaultActions: false,
 });
 
@@ -44,10 +45,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data =
       (await formApi.getValues()) as MesProAndonConfigApi.AndonConfig;
     if (!data.handlerRoleId && !data.handlerUserId) {
-      message.warning('处置角色和处置人至少填一个');
+      ElMessage.warning('处置角色和处置人至少填一个');
       modalApi.unlock();
       return;
     }
@@ -55,9 +57,10 @@ const [Modal, modalApi] = useVbenModal({
       await (formData.value?.id
         ? updateAndonConfig(data)
         : createAndonConfig(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
@@ -67,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    // 加载数据
     const data = modalApi.getData<MesProAndonConfigApi.AndonConfig>();
     if (!data || !data.id) {
       return;
@@ -75,6 +78,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getAndonConfig(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

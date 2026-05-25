@@ -18,7 +18,7 @@ import {
 import { $t } from '#/locales';
 import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 
-import ConfigModal from '../config/modules/config-modal.vue';
+import ConfigList from '../config/modules/list.vue';
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
@@ -27,7 +27,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const configModalRef = ref<InstanceType<typeof ConfigModal>>();
+const configModalRef = ref<InstanceType<typeof ConfigList>>();
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -109,7 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       />
     </template>
     <FormModal @success="handleRefresh" />
-    <ConfigModal ref="configModalRef" />
+    <ConfigList ref="configModalRef" />
     <Grid table-title="安灯呼叫记录">
       <template #toolbar-tools>
         <TableAction
