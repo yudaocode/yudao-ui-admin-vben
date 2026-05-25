@@ -33,6 +33,7 @@ const [ProductFormModal, productFormModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+// TODO @AI：代码的排版风格？ps：和别的模块，看看是不是一致；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     autoResize: true,
@@ -47,6 +48,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProRouteProductApi.RouteProduct>,
 });
 
+// TODO @AI：注释风格，是不是和别的没对齐
 async function getList() {
   gridApi.setLoading(true);
   try {
@@ -57,14 +59,17 @@ async function getList() {
   }
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 function handleCreate() {
   productFormModalApi.setData({ routeId: props.routeId }).open();
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 function handleEdit(row: MesProRouteProductApi.RouteProduct) {
   productFormModalApi.setData({ id: row.id, routeId: props.routeId, row }).open();
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 async function handleDelete(row: MesProRouteProductApi.RouteProduct) {
   await deleteRouteProduct(row.id!);
   message.success($t('ui.actionMessage.deleteSuccess', ['工艺路线产品']));

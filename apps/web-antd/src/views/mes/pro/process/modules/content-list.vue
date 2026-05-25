@@ -60,6 +60,7 @@ async function getList() {
 
 /** 新增工序步骤 */
 function handleCreate() {
+  // TODO @AI：是不是可以直接 max 然后 || 0；
   const maxSort =
     list.value.length > 0
       ? Math.max(...list.value.map((item) => item.sort || 0))

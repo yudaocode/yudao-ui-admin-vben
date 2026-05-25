@@ -45,6 +45,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProRouteProcessApi.RouteProcess>,
 });
 
+// TODO @AI：注释风格，是不是和别的没对齐
 async function getList() {
   gridApi.setLoading(true);
   try {
@@ -55,6 +56,7 @@ async function getList() {
   }
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 function handleCreate() {
   const maxSort =
     list.value.length > 0
@@ -63,10 +65,12 @@ function handleCreate() {
   processFormModalApi.setData({ maxSort, routeId: props.routeId }).open();
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 function handleEdit(row: MesProRouteProcessApi.RouteProcess) {
   processFormModalApi.setData({ id: row.id, routeId: props.routeId, row }).open();
 }
 
+// TODO @AI：注释风格，是不是和别的没对齐
 async function handleDelete(row: MesProRouteProcessApi.RouteProcess) {
   await deleteRouteProcess(row.id!);
   message.success($t('ui.actionMessage.deleteSuccess', ['工艺路线工序']));

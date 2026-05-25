@@ -1,34 +1,23 @@
 <script lang="ts" setup>
-import type { FormInstance } from 'ant-design-vue';
-
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { computed, reactive, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-import {
-  Form as AForm,
-  FormItem,
-  InputNumber,
-  message,
-  Modal,
-  TabPane,
-  Tabs,
-  Textarea,
-} from 'ant-design-vue';
+import { useVbenModal } from '@vben/common-ui';
+
+import { message, TabPane, Tabs } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRouteProcessListByRoute } from '#/api/mes/pro/route/process';
 import {
-  createRouteProductBom,
   deleteRouteProductBom,
   getRouteProductBomList,
-  updateRouteProductBom,
 } from '#/api/mes/pro/route/productbom';
 import { $t } from '#/locales';
-import { MdProductBomSelect } from '#/views/mes/md/item/components';
 
 import { useRouteProductBomGridColumns } from '../data';
+import BomForm from './bom-form.vue';
 
 const props = defineProps<{
   productId: number;
@@ -36,27 +25,17 @@ const props = defineProps<{
   routeId: number;
 }>();
 
+// TODO @AI：const 的尾注释？别的 vue 文件也看看，遵守 agents md 里说的。
 const processOptions = ref<
   Array<{ processId: number; processName?: string }>
->([]);
-const activeProcessId = ref<string>('');
+>([]); // TODO @AI：是不是不用转换，vue 那直接处理就好了；
+const activeProcessId = ref<string>(''); // TODO @AI：这个好像是 number？看看 vue3 + ep 里的代码。
 const list = ref<MesProRouteProductBomApi.RouteProductBom[]>([]);
 
-const formVisible = ref(false);
-const formRef = ref<FormInstance>();
-const isUpdate = ref(false);
-const formData = reactive<MesProRouteProductBomApi.RouteProductBom>({
-  quantity: 1,
+const [BomFormModal, bomFormModalApi] = useVbenModal({
+  connectedComponent: BomForm,
+  destroyOnClose: true,
 });
-const formRules = {
-  itemId: [{ message: 'BOM 物料不能为空', required: true }],
-  quantity: [{ message: '用料比例不能为空', required: true }],
-};
-const formTitle = computed(() =>
-  isUpdate.value
-    ? $t('ui.actionTitle.edit', ['BOM 物料'])
-    : $t('ui.actionTitle.create', ['BOM 物料']),
-);
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -72,6 +51,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProRouteProductBomApi.RouteProductBom>,
 });
 
+/** 加载路线下的工序列表，用于工序 Tab */
 async function loadProcessList() {
   const data = await getRouteProcessListByRoute(props.routeId);
   processOptions.value = (data || []).map((item) => ({
@@ -88,6 +68,7 @@ async function loadProcessList() {
   }
 }
 
+/** 加载当前工序下的 BOM 列表 */
 async function getList() {
   if (!activeProcessId.value) {
     return;
@@ -105,68 +86,38 @@ async function getList() {
   }
 }
 
-function resetForm() {
-  Object.assign(formData, {
-    id: undefined,
-    itemCode: undefined,
-    itemId: undefined,
-    itemName: undefined,
-    processId: Number(activeProcessId.value),
-    productId: props.productId,
-    quantity: 1,
-    remark: undefined,
-    routeId: props.routeId,
-    specification: undefined,
-    unitName: undefined,
-  });
-  formRef.value?.clearValidate();
-}
-
+/** 新增 BOM */
 function handleCreate() {
   if (!activeProcessId.value) {
     message.warning('请先选择工序');
     return;
   }
-  resetForm();
-  isUpdate.value = false;
-  formVisible.value = true;
+  bomFormModalApi
+    .setData({
+      processId: Number(activeProcessId.value),
+      productId: props.productId,
+      routeId: props.routeId,
+    })
+    .open();
 }
 
+/** 编辑 BOM */
 function handleEdit(row: MesProRouteProductBomApi.RouteProductBom) {
-  Object.assign(formData, row);
-  isUpdate.value = true;
-  formVisible.value = true;
+  bomFormModalApi
+    .setData({
+      processId: Number(activeProcessId.value),
+      productId: props.productId,
+      routeId: props.routeId,
+      row,
+    })
+    .open();
 }
 
+/** 删除 BOM */
 async function handleDelete(row: MesProRouteProductBomApi.RouteProductBom) {
   await deleteRouteProductBom(row.id!);
   message.success($t('ui.actionMessage.deleteSuccess', ['BOM 物料']));
   await getList();
-}
-
-async function submitForm() {
-  try {
-    await formRef.value?.validate();
-  } catch {
-    return;
-  }
-  await (isUpdate.value
-    ? updateRouteProductBom(formData)
-    : createRouteProductBom(formData));
-  message.success($t('ui.actionMessage.operationSuccess'));
-  formVisible.value = false;
-  await getList();
-}
-
-/** BOM 选中后回填用量比例 */
-function handleBomChange(bom?: any) {
-  if (bom) {
-    formData.quantity = bom.quantity ?? 1;
-    formData.itemCode = bom.bomItemCode;
-    formData.itemName = bom.bomItemName;
-    formData.specification = bom.specification;
-    formData.unitName = bom.unitName;
-  }
 }
 
 watch(
@@ -181,6 +132,7 @@ watch(
 </script>
 
 <template>
+  <BomFormModal @success="getList" />
   <Tabs v-model:active-key="activeProcessId" @change="getList">
     <TabPane
       v-for="item in processOptions"
@@ -222,44 +174,4 @@ watch(
       />
     </template>
   </Grid>
-
-  <Modal
-    v-model:open="formVisible"
-    :title="formTitle"
-    width="500px"
-    @ok="submitForm"
-  >
-    <AForm
-      ref="formRef"
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 16 }"
-      :model="formData"
-      :rules="formRules"
-    >
-      <FormItem label="BOM 物料" name="itemId">
-        <MdProductBomSelect
-          v-model="formData.itemId"
-          :item-id="productId"
-          placeholder="请选择 BOM 物料"
-          @change="handleBomChange"
-        />
-      </FormItem>
-      <FormItem label="用料比例" name="quantity">
-        <InputNumber
-          v-model:value="formData.quantity"
-          class="!w-full"
-          :min="0"
-          :precision="2"
-        />
-      </FormItem>
-      <FormItem label="备注" name="remark">
-        <Textarea
-          v-model:value="formData.remark"
-          :max-length="250"
-          placeholder="请输入备注"
-          :rows="2"
-        />
-      </FormItem>
-    </AForm>
-  </Modal>
 </template>

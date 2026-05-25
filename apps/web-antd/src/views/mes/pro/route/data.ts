@@ -14,6 +14,10 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
+import {
+  MdItemSelect,
+  MdProductBomSelect,
+} from '#/views/mes/md/item/components';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 工艺路线表单 */
@@ -330,6 +334,122 @@ export function useRouteProductBomGridColumns(): VxeTableGridOptions<MesProRoute
       width: 130,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+
+/** 工艺路线产品表单 */
+export function useRouteProductFormSchema(
+  onItemChange?: (item: any) => void,
+): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'routeId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    // 产品物料：使用业务自定义选择器，change 回填编码/名称/规格/单位
+    {
+      fieldName: 'itemId',
+      label: '产品',
+      component: MdItemSelect as any,
+      componentProps: {
+        onChange: onItemChange,
+      },
+      formItemClass: 'col-span-2',
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'quantity',
+      label: '生产数量',
+      component: 'InputNumber',
+      componentProps: { class: '!w-full', min: 1, precision: 0 },
+      rules: z.number().default(1),
+    },
+    {
+      fieldName: 'productionTime',
+      label: '生产用时',
+      component: 'InputNumber',
+      componentProps: { class: '!w-full', min: 0, precision: 2 },
+      rules: z.number().default(1),
+    },
+    {
+      fieldName: 'timeUnitType',
+      label: '时间单位',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_TIME_UNIT_TYPE),
+        placeholder: '请选择',
+      },
+      rules: z.string().default('MINUTE'),
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      formItemClass: 'col-span-2',
+      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+    },
+  ];
+}
+
+/** 工艺路线产品 BOM 表单 */
+export function useRouteProductBomFormSchema(
+  itemId: () => number,
+  onBomChange?: (bom: any) => void,
+): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'routeId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'processId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'productId',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    // BOM 物料：依赖产品物料，使用业务自定义选择器
+    {
+      fieldName: 'itemId',
+      label: 'BOM 物料',
+      component: MdProductBomSelect as any,
+      componentProps: () => ({
+        itemId: itemId(),
+        onChange: onBomChange,
+        placeholder: '请选择 BOM 物料',
+      }),
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'quantity',
+      label: '用料比例',
+      component: 'InputNumber',
+      componentProps: { class: '!w-full', min: 0, precision: 2 },
+      rules: z.number().default(1),
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
     },
   ];
 }
