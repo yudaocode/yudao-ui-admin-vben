@@ -24,7 +24,11 @@ export function getProductName(productId?: number): string {
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     { field: 'name', label: '固件名称' },
-    { field: 'productName', label: '所属产品' },
+    {
+      field: 'productName',
+      label: '所属产品',
+      render: (val) => val || '-',
+    },
     { field: 'version', label: '固件版本' },
     {
       field: 'createTime',

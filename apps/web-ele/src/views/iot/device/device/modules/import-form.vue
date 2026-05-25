@@ -71,15 +71,11 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-/** 上传前 */
-function beforeUpload(file: File) {
-  const fileName = file.name?.toLowerCase() ?? '';
-  if (!fileName.endsWith('.xls') && !fileName.endsWith('.xlsx')) {
-    ElMessage.error('只能上传 Excel 文件（.xls / .xlsx）');
-    return false;
+/** 文件改变时 */
+function handleChange(file: any) {
+  if (file.raw) {
+    formApi.setFieldValue('file', file.raw);
   }
-  formApi.setFieldValue('file', file);
-  return false;
 }
 
 /** 下载模版 */
@@ -95,19 +91,19 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <ElUpload
-            :before-upload="beforeUpload"
             :limit="1"
             accept=".xls,.xlsx"
-            :show-file-list="false"
+            :on-change="handleChange"
+            :auto-upload="false"
           >
-            <ElButton type="primary">选择 Excel 文件</ElButton>
+            <ElButton type="primary"> 选择 Excel 文件 </ElButton>
           </ElUpload>
         </div>
       </template>
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <ElButton @click="handleDownload">下载导入模板</ElButton>
+        <ElButton @click="handleDownload"> 下载导入模板 </ElButton>
       </div>
     </template>
   </Modal>

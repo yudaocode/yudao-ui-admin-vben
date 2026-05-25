@@ -200,6 +200,19 @@ const MES_DICT = {
   MES_DV_REPAIR_RESULT: 'mes_dv_repair_result', // MES 维修结果
   MES_DV_CHECK_RECORD_STATUS: 'mes_dv_check_record_status', // MES 点检记录状态
   MES_DV_CHECK_RESULT: 'mes_dv_check_result', // MES 点检结果
+  MES_PRO_LINK_TYPE: 'mes_pro_link_type', // MES 工序关系类型
+  MES_PRO_WORK_ORDER_STATUS: 'mes_pro_work_order_status', // MES 生产工单状态
+  MES_PRO_WORK_ORDER_TYPE: 'mes_pro_work_order_type', // MES 工单类型
+  MES_PRO_WORK_ORDER_SOURCE_TYPE: 'mes_pro_work_order_source_type', // MES 工单来源类型
+  MES_PRO_TASK_STATUS: 'mes_pro_task_status', // MES 生产任务状态
+  MES_PRO_FEEDBACK_STATUS: 'mes_pro_feedback_status', // MES 生产报工状态
+  MES_PRO_FEEDBACK_TYPE: 'mes_pro_feedback_type', // MES 生产报工类型
+  MES_PRO_FEEDBACK_CHANNEL: 'mes_pro_feedback_channel', // MES 生产报工途径
+  MES_PRO_ANDON_STATUS: 'mes_pro_andon_status', // MES 安灯处置状态
+  MES_PRO_ANDON_LEVEL: 'mes_pro_andon_level', // MES 安灯级别
+  MES_PRO_WORK_RECORD_TYPE: 'mes_pro_work_record_type', // MES 上下工状态类型
+  MES_TIME_UNIT_TYPE: 'mes_time_unit_type', // MES 时间单位
+  MES_ORDER_STATUS: 'mes_order_status', // MES 单据状态
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态

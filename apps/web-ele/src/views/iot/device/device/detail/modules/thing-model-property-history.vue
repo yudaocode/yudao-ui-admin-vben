@@ -438,7 +438,6 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 </template>
 
 <style lang="scss" scoped>
-/** 同别的地方，将 style 改成 unocss 的诉求。如果不好改，就注释说明； */
 .property-history-container {
   max-height: 70vh;
   overflow: auto;

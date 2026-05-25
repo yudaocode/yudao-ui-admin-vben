@@ -216,6 +216,7 @@ defineExpose({ validate, getData, setData });
           v-model:value="formData[rowIndex].productId"
           placeholder="请选择产品"
           show-search
+          allow-clear
           :filter-option="
             (input: string, option: any) =>
               option.label.toLowerCase().includes(input.toLowerCase())
@@ -232,6 +233,7 @@ defineExpose({ validate, getData, setData });
           v-model:value="formData[rowIndex].deviceId"
           placeholder="请选择设备"
           show-search
+          allow-clear
           :filter-option="
             (input: string, option: any) =>
               option.label.toLowerCase().includes(input.toLowerCase())
@@ -253,6 +255,7 @@ defineExpose({ validate, getData, setData });
           v-model:value="formData[rowIndex].method"
           placeholder="请选择消息"
           show-search
+          allow-clear
           :filter-option="
             (input: string, option: any) =>
               option.label.toLowerCase().includes(input.toLowerCase())
@@ -273,6 +276,7 @@ defineExpose({ validate, getData, setData });
           v-model:value="formData[rowIndex].identifier"
           placeholder="请选择标识符"
           show-search
+          allow-clear
           :loading="formData[rowIndex].identifierLoading"
           :filter-option="
             (input: string, option: any) =>

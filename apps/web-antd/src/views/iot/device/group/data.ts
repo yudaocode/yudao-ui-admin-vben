@@ -26,10 +26,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入分组名称',
       },
-      rules: z
-        .string()
-        .min(1, '分组名称不能为空')
-        .max(64, '分组名称长度不能超过 64 个字符'),
+      rules: z.string().min(1, '分组名称不能为空'),
     },
     {
       fieldName: 'status',

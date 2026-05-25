@@ -137,16 +137,6 @@ const tableColumns = computed(() => [
   },
 ]); // 表格列配置
 
-const paginationConfig = computed(() => ({
-  current: 1,
-  pageSize: 10,
-  total: total.value,
-  showSizeChanger: true,
-  showQuickJumper: true,
-  pageSizeOptions: ['10', '20', '50', '100'],
-  showTotal: (total: number) => `共 ${total} 条数据`,
-})); // 分页配置
-
 /** 获得设备历史数据 */
 async function getList() {
   loading.value = true;
@@ -438,7 +428,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           <Table
             :columns="tableColumns"
             :data-source="list"
-            :pagination="paginationConfig"
+            :pagination="false"
             :scroll="{ y: 500 }"
             row-key="_rowKey"
             size="small"

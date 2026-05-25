@@ -133,8 +133,68 @@ export const MesAutoCodeRuleCode = {
   MD_VENDOR_CODE: 'MD_VENDOR_CODE',
   MD_WORKSTATION_CODE: 'MD_WORKSTATION_CODE',
   MD_WORKSHOP_CODE: 'MD_WORKSHOP_CODE',
+  PRO_CARD_CODE: 'PRO_CARD_CODE',
+  PRO_FEEDBACK_CODE: 'PRO_FEEDBACK_CODE',
+  PRO_PROCESS_CODE: 'PRO_PROCESS_CODE',
+  PRO_ROUTE_CODE: 'PRO_ROUTE_CODE',
+  PRO_TASK_CODE: 'PRO_TASK_CODE',
+  PRO_WORK_ORDER_CODE: 'PRO_WORK_ORDER_CODE',
   TM_TOOL_TYPE_CODE: 'TM_TOOL_TYPE_CODE',
   TM_TOOL_CODE: 'TM_TOOL_CODE',
+} as const;
+
+/** MES 生产工单状态枚举 */
+export const MesProWorkOrderStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  PRODUCING: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 生产任务状态枚举 */
+export const MesProTaskStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  PRODUCING: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 生产报工状态枚举 */
+export const MesProFeedbackStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 流转卡状态枚举 */
+export const MesProCardStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  ISSUED: MesOrderStatusConstants.CONFIRMED,
+  PRODUCING: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 安灯类型枚举 */
+export const MesProAndonTypeEnum = {
+  QUALITY: 1,
+  EQUIPMENT: 2,
+  MATERIAL: 3,
+  PROCESS: 4,
+  OTHER: 9,
+} as const;
+
+/** MES 安灯状态枚举 */
+export const MesProAndonStatusEnum = {
+  TRIGGERED: 1,
+  HANDLING: 2,
+  CLOSED: 3,
 } as const;
 
 /** MES 编码规则分段类型枚举 */

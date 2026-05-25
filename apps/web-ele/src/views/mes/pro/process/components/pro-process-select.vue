@@ -106,7 +106,7 @@ onMounted(async () => {
         v-for="item in filteredList"
         :key="item.id"
         :label="item.name"
-        :value="item.id"
+        :value="item.id!"
       >
         <div class="flex items-center gap-2">
           <span>{{ item.name }}</span>

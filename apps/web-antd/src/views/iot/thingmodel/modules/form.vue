@@ -218,7 +218,6 @@ function removeDataSpecs(val: any) {
       >
         <Input
           v-model:value="formData.identifier"
-          :disabled="formData.id != null"
           placeholder="请输入标识符"
         />
       </Form.Item>

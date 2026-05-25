@@ -79,7 +79,7 @@ async function handleViewModeChange(mode: 'card' | 'list') {
 /** 导出表格 */
 async function handleExport() {
   const data = await exportProduct(queryParams.value);
-  downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
+  downloadFileFromBlobPart({ fileName: '物联网产品.xls', source: data });
 }
 
 /** 打开产品详情 */

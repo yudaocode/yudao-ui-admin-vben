@@ -54,6 +54,21 @@ function isEmpty<T = unknown>(value?: T): boolean {
 }
 
 /**
+ * 检查传入的值是否为空值。
+ *
+ * 仅以下情况将被认为是空值：
+ * - 值为 null。
+ * - 值为 undefined。
+ * - 值为空字符串。
+ *
+ * @param value 要检查的值。
+ * @returns 如果值为空值，返回 true，否则返回 false。
+ */
+function isEmptyVal(value?: unknown): value is '' | null | undefined {
+  return value === '' || value === null || value === undefined;
+}
+
+/**
  * 检查传入的字符串是否为有效的HTTP或HTTPS URL。
  *
  * @param {string} url 要检查的字符串。
@@ -152,6 +167,7 @@ export {
   getFirstNonNullOrUndefined,
   isBoolean,
   isEmpty,
+  isEmptyVal,
   isFunction,
   isHttpUrl,
   isMacOs,

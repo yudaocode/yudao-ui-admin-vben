@@ -216,6 +216,7 @@ defineExpose({ validate, getData, setData });
           v-model="formData[rowIndex].productId"
           placeholder="请选择产品"
           filterable
+          clearable
           class="w-full"
           @change="() => handleProductChange(rowIndex)"
         >
@@ -232,6 +233,7 @@ defineExpose({ validate, getData, setData });
           v-model="formData[rowIndex].deviceId"
           placeholder="请选择设备"
           filterable
+          clearable
           class="w-full"
         >
           <ElOption label="全部设备" :value="0" />
@@ -248,6 +250,7 @@ defineExpose({ validate, getData, setData });
           v-model="formData[rowIndex].method"
           placeholder="请选择消息"
           filterable
+          clearable
           class="w-full"
           @change="() => handleMethodChange(rowIndex)"
         >
@@ -265,6 +268,7 @@ defineExpose({ validate, getData, setData });
           v-model="formData[rowIndex].identifier"
           placeholder="请选择标识符"
           filterable
+          clearable
           :loading="formData[rowIndex].identifierLoading"
           class="w-full"
         >

@@ -19,6 +19,8 @@ import {
 } from 'ant-design-vue';
 
 import { getProductPage } from '#/api/iot/product/product';
+import defaultPicUrl from '#/assets/imgs/iot/device.png';
+import defaultIconUrl from '#/assets/svgs/iot/cube.svg';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {
@@ -53,6 +55,24 @@ const queryParams = ref({
 function getCategoryName(item: any) {
   const category = props.categoryList.find((c: any) => c.id === item.categoryId);
   return item.categoryName || category?.name || '未分类';
+}
+
+/** 是否按图片 URL 渲染产品图标 */
+function isImageIcon(icon?: string) {
+  if (!icon) {
+    return true;
+  }
+  return isHttpUrl(icon);
+}
+
+/** 产品图标 fallback */
+function getProductIcon(icon?: string) {
+  return icon || defaultIconUrl;
+}
+
+/** 产品图片 fallback */
+function getProductPic(picUrl?: string) {
+  return picUrl || defaultPicUrl;
 }
 
 /** 获取产品列表 */
@@ -119,14 +139,14 @@ onMounted(() => {
                 class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff] to-[#1890ff] text-white"
               >
                 <img
-                  v-if="isHttpUrl(item.icon)"
-                  :src="item.icon"
+                  v-if="isImageIcon(item.icon)"
+                  :src="getProductIcon(item.icon)"
                   alt=""
                   class="size-6 object-contain"
                 />
                 <IconifyIcon
                   v-else
-                  :icon="item.icon || 'lucide:box'"
+                  :icon="item.icon"
                   class="text-xl"
                 />
               </div>
@@ -177,15 +197,9 @@ onMounted(() => {
                 class="flex size-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff15] to-[#1890ff15] text-[#1890ff] dark:from-[#40a9ff25] dark:to-[#1890ff25] dark:text-[#69c0ff]"
               >
                 <Image
-                  v-if="item.picUrl"
-                  :src="item.picUrl"
+                  :src="getProductPic(item.picUrl)"
                   :preview="true"
                   class="size-full rounded object-cover"
-                />
-                <IconifyIcon
-                  v-else
-                  icon="lucide:image"
-                  class="text-2xl opacity-50"
                 />
               </div>
             </div>

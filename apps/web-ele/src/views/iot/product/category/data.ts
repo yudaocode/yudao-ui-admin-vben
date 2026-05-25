@@ -37,6 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       componentProps: {
         class: '!w-full',
+        controlsPosition: 'right',
         placeholder: '请输入分类排序',
         min: 0,
         precision: 0,

@@ -227,7 +227,6 @@ function removeDataSpecs(val: any) {
       >
         <ElInput
           v-model="formData.identifier"
-          :disabled="formData.id != null"
           placeholder="请输入标识符"
         />
       </ElFormItem>
