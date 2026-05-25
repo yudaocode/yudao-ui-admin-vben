@@ -7,6 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
+import { getSimpleRoleList } from '#/api/system/role';
 import { getSimpleUserList } from '#/api/system/user';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
@@ -64,6 +65,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         allowClear: true,
+        defaultTime: [
+          new Date(2000, 0, 1, 0, 0, 0),
+          new Date(2000, 0, 1, 23, 59, 59),
+        ],
         format: 'YYYY-MM-DD HH:mm:ss',
         showTime: true,
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -293,6 +298,7 @@ export function useConfigGridColumns(): VxeTableGridOptions<MesProAndonConfigApi
         props: { type: DICT_TYPE.MES_PRO_ANDON_LEVEL },
       },
     },
+    { field: 'handlerRoleName', title: '处置角色', width: 140 },
     { field: 'handlerUserNickname', title: '处置人', width: 140 },
     { field: 'remark', title: '备注', minWidth: 160 },
     {
@@ -339,8 +345,7 @@ export function useConfigFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         allowClear: true,
-        api: () =>
-          import('#/api/system/role').then((m) => m.getSimpleRoleList()),
+        api: getSimpleRoleList,
         labelField: 'name',
         placeholder: '请选择角色（与处置人至少填一个）',
         valueField: 'id',

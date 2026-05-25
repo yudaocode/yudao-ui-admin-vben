@@ -13,18 +13,20 @@ import {
   deleteAndonConfig,
   getAndonConfigList,
 } from '#/api/mes/pro/andon/config';
+import { getSimpleRoleList } from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useConfigGridColumns } from '../../record/data';
 import ConfigForm from './config-form.vue';
 
-const list = ref<MesProAndonConfigApi.AndonConfig[]>([]);
+const list = ref<MesProAndonConfigApi.AndonConfig[]>([]); // 安灯配置列表（已回填处置角色名称）
 
 const [ConfigFormModal, configFormModalApi] = useVbenModal({
   connectedComponent: ConfigForm,
   destroyOnClose: true,
 });
 
+// TODO @AI：这个格式，是不是有问题？应该要换行？看看别的模块也是；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     autoResize: true,
@@ -39,11 +41,22 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProAndonConfigApi.AndonConfig>,
 });
 
-/** 加载安灯配置列表 */
+/** 加载安灯配置列表，并通过角色精简列表回填处置角色名称 */
+// TODO @AI：这里需要 getAndonConfigList、getSimpleRoleList 么？通过 data.ts 里处理，是不是更主流？？？
 async function getList() {
   gridApi.setLoading(true);
   try {
-    list.value = (await getAndonConfigList()) || [];
+    const [configList, roleList] = await Promise.all([
+      getAndonConfigList(),
+      getSimpleRoleList(),
+    ]);
+    const roleMap = new Map(roleList.map((role) => [role.id!, role.name!]));
+    list.value = (configList || []).map((item) => ({
+      ...item,
+      handlerRoleName: item.handlerRoleId
+        ? roleMap.get(item.handlerRoleId)
+        : undefined,
+    }));
     gridApi.setGridOptions({ data: list.value });
   } finally {
     gridApi.setLoading(false);

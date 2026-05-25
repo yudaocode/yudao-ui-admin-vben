@@ -6,7 +6,6 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
-import { formatDate } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
 
@@ -22,8 +21,8 @@ import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formType = ref<'create' | 'detail' | 'update'>('create'); // 表单类型
-const formData = ref<MesProAndonRecordApi.AndonRecord>({}); // 表单数据
+const formType = ref<'create' | 'detail' | 'update'>('create'); // 表单当前模式：新增 / 处置 / 详情
+const formData = ref<MesProAndonRecordApi.AndonRecord>();
 const userStore = useUserStore();
 
 const dialogTitle = computed(() => {
@@ -83,6 +82,7 @@ async function handleCreate() {
 }
 
 /** 处置：保存（保持 ACTIVE） */
+// TODO @AI：这里写下注释；
 async function handleSave() {
   modalApi.lock();
   try {
@@ -91,7 +91,7 @@ async function handleSave() {
     await updateAndonRecord({
       handlerUserId: values.handlerUserId,
       handleTime: values.handleTime,
-      id: formData.value.id,
+      id: formData.value?.id,
       remark: values.remark,
       status: MesProAndonStatusEnum.ACTIVE,
     });
@@ -104,6 +104,7 @@ async function handleSave() {
 }
 
 /** 处置：标记已处置 */
+// TODO @AI：这里写下注释；
 async function handleFinish() {
   const values =
     (await formApi.getValues()) as MesProAndonRecordApi.AndonRecord;
@@ -120,7 +121,7 @@ async function handleFinish() {
     await updateAndonRecord({
       handlerUserId: values.handlerUserId,
       handleTime: values.handleTime,
-      id: formData.value.id,
+      id: formData.value?.id,
       remark: values.remark,
       status: MesProAndonStatusEnum.HANDLED,
     });
@@ -132,12 +133,11 @@ async function handleFinish() {
   }
 }
 
-// TODO @AI：注释缺少
-// TODO @AI：代码风格，貌似和别的模块不同；
+// TODO @AI：这里的代码风格？！！
 const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = {};
+      formData.value = undefined;
       return;
     }
     const data = modalApi.getData<{
@@ -167,10 +167,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       formData.value = await getAndonRecord(data.id);
       const initial: MesProAndonRecordApi.AndonRecord = { ...formData.value };
-      // 处置模式下，默认填充处置时间和处置人
+      // 处置模式下，默认填充处置时间和处置人，方便快速保存
       if (data.type === 'update') {
         if (!initial.handleTime) {
-          initial.handleTime = formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss');
+          initial.handleTime = Date.now();
         }
         if (!initial.handlerUserId) {
           initial.handlerUserId = userStore.userInfo?.id;
