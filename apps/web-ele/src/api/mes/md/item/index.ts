@@ -34,9 +34,7 @@ export namespace MesMdItemApi {
 
 /** 查询物料产品分页 */
 export function getItemPage(params: PageParam) {
-  return requestClient.get<PageResult<MesMdItemApi.Item>>('/mes/md/item/page', {
-    params,
-  });
+  return requestClient.get<PageResult<MesMdItemApi.Item>>('/mes/md/item/page', { params });
 }
 
 /** 查询物料产品详情 */

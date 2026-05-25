@@ -8,6 +8,7 @@ import {
   IotRuleSceneTriggerConditionTypeEnum,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button } from 'ant-design-vue';
@@ -105,7 +106,7 @@ function updateCondition(
     <div v-else class="space-y-4">
       <div
         v-for="(condition, conditionIndex) in subGroup"
-        :key="`condition-${conditionIndex}`"
+        :key="getStableObjectKey(condition)"
         class="relative"
       >
         <!-- 条件配置 -->

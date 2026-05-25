@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useAccess } from '@vben/access';
 import { DICT_TYPE, ProductStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { isHttpUrl } from '@vben/utils';
 
 import {
   ElButton,
@@ -18,6 +19,8 @@ import {
 } from 'element-plus';
 
 import { getProductPage } from '#/api/iot/product/product';
+import defaultPicUrl from '#/assets/imgs/iot/device.png';
+import defaultIconUrl from '#/assets/svgs/iot/cube.svg';
 import { DictTag } from '#/components/dict-tag';
 
 interface Props {
@@ -49,9 +52,27 @@ const queryParams = ref({
 });
 
 /** 获取分类名称 */
-function getCategoryName(categoryId: number) {
-  const category = props.categoryList.find((c: any) => c.id === categoryId);
-  return category?.name || '未分类';
+function getCategoryName(item: any) {
+  const category = props.categoryList.find((c: any) => c.id === item.categoryId);
+  return item.categoryName || category?.name || '未分类';
+}
+
+/** 是否按图片 URL 渲染产品图标 */
+function isImageIcon(icon?: string) {
+  if (!icon) {
+    return true;
+  }
+  return isHttpUrl(icon);
+}
+
+/** 产品图标 fallback */
+function getProductIcon(icon?: string) {
+  return icon || defaultIconUrl;
+}
+
+/** 产品图片 fallback */
+function getProductPic(picUrl?: string) {
+  return picUrl || defaultPicUrl;
 }
 
 /** 获取产品列表 */
@@ -111,8 +132,15 @@ onMounted(() => {
               <div
                 class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff] to-[#1890ff] text-white"
               >
+                <img
+                  v-if="isImageIcon(item.icon)"
+                  :src="getProductIcon(item.icon)"
+                  alt=""
+                  class="size-6 object-contain"
+                />
                 <IconifyIcon
-                  :icon="item.icon || 'lucide:box'"
+                  v-else
+                  :icon="item.icon"
                   class="text-xl"
                 />
               </div>
@@ -132,7 +160,7 @@ onMounted(() => {
                     产品分类
                   </span>
                   <span class="truncate font-medium text-foreground">
-                    {{ getCategoryName(item.categoryId) }}
+                    {{ getCategoryName(item) }}
                   </span>
                 </div>
                 <div class="mb-2 flex items-center text-[13px]">
@@ -166,15 +194,9 @@ onMounted(() => {
                 class="flex size-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#40a9ff15] to-[#1890ff15] text-[#1890ff] dark:from-[#40a9ff25] dark:to-[#1890ff25] dark:text-[#69c0ff]"
               >
                 <ElImage
-                  v-if="item.picUrl"
-                  :src="item.picUrl"
-                  :preview-src-list="[item.picUrl]"
+                  :src="getProductPic(item.picUrl)"
+                  :preview-src-list="[getProductPic(item.picUrl)]"
                   class="size-full rounded object-cover"
-                />
-                <IconifyIcon
-                  v-else
-                  icon="lucide:image"
-                  class="text-2xl opacity-50"
                 />
               </div>
             </div>
@@ -208,6 +230,9 @@ onMounted(() => {
                 物模型
               </ElButton>
               <template v-if="hasAccessByCodes(['iot:product:delete'])">
+                <div
+                  class="h-5 w-px self-center bg-[#dcdfe6] dark:bg-[#3a3a3a]"
+                ></div>
                 <ElTooltip
                   v-if="item.status === ProductStatusEnum.PUBLISHED"
                   content="已发布的产品不能删除"

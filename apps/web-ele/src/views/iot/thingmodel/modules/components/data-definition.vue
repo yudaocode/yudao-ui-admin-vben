@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { computed } from 'vue';
-
 import {
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
@@ -10,9 +8,7 @@ import {
   IoTThingModelTypeEnum,
 } from '@vben/constants';
 
-import { ElTooltip } from 'element-plus';
-
-const props = defineProps<{ data: ThingModelApi.ThingModel }>();
+defineProps<{ data: ThingModelApi.ThingModel }>();
 const NUMBER_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.DOUBLE,
   IoTDataSpecsDataTypeEnum.FLOAT,
@@ -27,26 +23,6 @@ const LIST_TYPES = new Set<string>([
   IoTDataSpecsDataTypeEnum.BOOL,
   IoTDataSpecsDataTypeEnum.ENUM,
 ]);
-
-const formattedDataSpecsList = computed(() => {
-  if (!props.data.property?.dataSpecsList?.length) {
-    return '';
-  }
-  return props.data.property.dataSpecsList
-    .map((item) => `${item.value}-${item.name}`)
-    .join('、');
-});
-
-const shortText = computed(() => {
-  const list = props.data.property?.dataSpecsList;
-  if (!list?.length) {
-    return '-';
-  }
-  const first = list[0];
-  return list.length > 1
-    ? `${first.value}-${first.name} 等 ${list.length} 项`
-    : `${first.value}-${first.name}`;
-});
 </script>
 
 <template>
@@ -62,17 +38,19 @@ const shortText = computed(() => {
     </div>
     <div v-if="PLACEHOLDER_TYPES.has(data.property?.dataType as any)">-</div>
     <div v-if="LIST_TYPES.has(data.property?.dataType as any)">
-      <ElTooltip :content="formattedDataSpecsList" placement="top-start">
-        <span
-          class="cursor-help border-b border-dashed border-gray-300 hover:border-blue-500 hover:text-blue-500"
-        >
-          {{
-            data.property?.dataType === IoTDataSpecsDataTypeEnum.BOOL
-              ? '布尔值'
-              : '枚举值'
-          }}：{{ shortText }}
-        </span>
-      </ElTooltip>
+      <div>
+        {{
+          data.property?.dataType === IoTDataSpecsDataTypeEnum.BOOL
+            ? '布尔值'
+            : '枚举值'
+        }}：
+      </div>
+      <div
+        v-for="item in data.property?.dataSpecsList || []"
+        :key="String(item.value)"
+      >
+        {{ item.name }}-{{ item.value }}
+      </div>
     </div>
   </template>
   <!-- 服务 -->

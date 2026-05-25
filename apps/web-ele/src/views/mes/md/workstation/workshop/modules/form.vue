@@ -28,12 +28,10 @@ const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详
 
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  const titles: Record<FormMode, string> = {
-    create: '新增车间',
-    update: '修改车间',
-    detail: '查看车间',
-  };
-  return titles[formMode.value];
+  if (formMode.value === 'detail') {
+    return '查看车间';
+  }
+  return formMode.value === 'update' ? '修改车间' : '新增车间';
 });
 
 const [Form, formApi] = useVbenForm({

@@ -177,13 +177,16 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center text-[13px]">
                   <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
-                    Deviceid
+                    备注名称
                   </span>
-                  <Tooltip :title="String(item.id)" placement="top">
+                  <Tooltip
+                    :title="item.nickname || item.deviceName"
+                    placement="top"
+                  >
                     <span
-                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle font-mono text-xs opacity-85 dark:text-white/75"
+                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle text-xs opacity-85 dark:text-white/75"
                     >
-                      {{ item.id }}
+                      {{ item.nickname || item.deviceName }}
                     </span>
                   </Tooltip>
                 </div>
@@ -226,7 +229,7 @@ onMounted(() => {
                 详情
               </Button>
               <Button
-                v-if="hasAccessByCodes(['iot:device:message-query'])"
+                v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
                 class="!h-8 min-w-0 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
                 @click="emit('model', item.id!)"

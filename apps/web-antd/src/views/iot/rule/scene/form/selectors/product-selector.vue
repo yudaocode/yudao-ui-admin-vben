@@ -79,7 +79,7 @@ onMounted(() => {
             {{ product.productKey }}
           </div>
         </div>
-        <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="product.status" />
+        <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
       </div>
     </Select.Option>
   </Select>

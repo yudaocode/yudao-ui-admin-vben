@@ -7,9 +7,12 @@ import { useVbenDrawer } from '@vben/common-ui';
 import {
   CommonStatusEnum,
   IotRuleSceneActionTypeEnum,
+  IotRuleSceneTriggerConditionTypeEnum,
+  IotRuleSceneTriggerTimeOperatorEnum,
   IotRuleSceneTriggerTypeEnum,
   isDeviceTrigger,
 } from '@vben/constants';
+import { CronUtils } from '@vben/utils';
 
 import { ElForm, ElMessage } from 'element-plus';
 
@@ -101,12 +104,14 @@ function buildEmptyFormData(): RuleSceneApi.SceneRule {
 
 /** 回显时兜底，保证触发器/执行器数组不为空 */
 function normalizeFormData(result: any): RuleSceneApi.SceneRule {
+  const triggers: RuleSceneApi.Trigger[] = result.triggers?.length
+    ? result.triggers
+    : buildEmptyFormData().triggers!;
+  const actions: RuleSceneApi.Action[] = result.actions || [];
   return {
     ...result,
-    triggers: result.triggers?.length
-      ? result.triggers
-      : buildEmptyFormData().triggers,
-    actions: result.actions || [],
+    triggers,
+    actions,
   };
 }
 
@@ -126,11 +131,14 @@ function validateTriggers(_rule: any, value: any, callback: any) {
         callback(new Error(`触发器 ${i + 1}：产品不能为空`));
         return;
       }
-      if (!trigger.deviceId) {
+      // deviceId = 0 表示「全部设备」（DEVICE_SELECTOR_OPTIONS.ALL_DEVICES），是合法值；仅 undefined / null 视为未选
+      if (trigger.deviceId === undefined || trigger.deviceId === null) {
         callback(new Error(`触发器 ${i + 1}：设备不能为空`));
         return;
       }
-      if (!trigger.identifier) {
+      const isStateUpdate =
+        trigger.type === IotRuleSceneTriggerTypeEnum.DEVICE_STATE_UPDATE;
+      if (!isStateUpdate && !trigger.identifier) {
         callback(new Error(`触发器 ${i + 1}：物模型标识符不能为空`));
         return;
       }
@@ -153,12 +161,98 @@ function validateTriggers(_rule: any, value: any, callback: any) {
         }
       }
     }
-    if (
-      trigger.type === IotRuleSceneTriggerTypeEnum.TIMER &&
-      !trigger.cronExpression
-    ) {
-      callback(new Error(`触发器 ${i + 1}：CRON 表达式不能为空`));
-      return;
+    if (trigger.type === IotRuleSceneTriggerTypeEnum.TIMER) {
+      if (!trigger.cronExpression) {
+        callback(new Error(`触发器 ${i + 1}：CRON 表达式不能为空`));
+        return;
+      }
+      if (!CronUtils.validate(trigger.cronExpression)) {
+        callback(new Error(`触发器 ${i + 1}：CRON 表达式格式不正确`));
+        return;
+      }
+    }
+    // 递归校验 conditionGroups（嵌套条件组）
+    if (trigger.conditionGroups?.length) {
+      for (const [gi, group] of trigger.conditionGroups.entries()) {
+        if (!Array.isArray(group) || group.length === 0) {
+          callback(
+            new Error(`触发器 ${i + 1}：条件组 ${gi + 1} 不能为空`),
+          );
+          return;
+        }
+        for (const [ci, condition] of group.entries()) {
+          const prefix = `触发器 ${i + 1} 条件组 ${gi + 1} 条件 ${ci + 1}`;
+          if (!condition.type) {
+            callback(new Error(`${prefix}：条件类型不能为空`));
+            return;
+          }
+          const isDeviceStatus =
+            condition.type ===
+            IotRuleSceneTriggerConditionTypeEnum.DEVICE_STATUS;
+          const isDeviceProperty =
+            condition.type ===
+            IotRuleSceneTriggerConditionTypeEnum.DEVICE_PROPERTY;
+          const isCurrentTime =
+            condition.type ===
+            IotRuleSceneTriggerConditionTypeEnum.CURRENT_TIME;
+          if (isDeviceStatus || isDeviceProperty) {
+            if (!condition.productId) {
+              callback(new Error(`${prefix}：产品不能为空`));
+              return;
+            }
+            // deviceId = 0 表示「全部设备」（DEVICE_SELECTOR_OPTIONS.ALL_DEVICES），是合法值
+            if (
+              condition.deviceId === undefined ||
+              condition.deviceId === null
+            ) {
+              callback(new Error(`${prefix}：设备不能为空`));
+              return;
+            }
+            if (isDeviceProperty && !condition.identifier) {
+              callback(new Error(`${prefix}：物模型标识符不能为空`));
+              return;
+            }
+          }
+          if (!condition.operator) {
+            callback(new Error(`${prefix}：操作符不能为空`));
+            return;
+          }
+          // 设备状态：param 是状态值（必填）；设备属性：param 是比较值（必填）
+          if (
+            (isDeviceStatus || isDeviceProperty) &&
+            (condition.param === undefined ||
+              condition.param === null ||
+              condition.param === '')
+          ) {
+            callback(
+              new Error(
+                `${prefix}：${isDeviceStatus ? '设备状态' : '比较值'}不能为空`,
+              ),
+            );
+            return;
+          }
+          // 当前时间：TODAY 不需要 param；BETWEEN_TIME 需要双段「v1,v2」；其它需要单段
+          if (isCurrentTime) {
+            const op = condition.operator;
+            if (op === IotRuleSceneTriggerTimeOperatorEnum.TODAY.value) {
+              // TODAY 无需 param
+            } else if (
+              op === IotRuleSceneTriggerTimeOperatorEnum.BETWEEN_TIME.value
+            ) {
+              const parts = condition.param
+                ? String(condition.param).split(',')
+                : [];
+              if (parts.length < 2 || !parts[0] || !parts[1]) {
+                callback(new Error(`${prefix}：起止时间不能为空`));
+                return;
+              }
+            } else if (!condition.param) {
+              callback(new Error(`${prefix}：时间值不能为空`));
+              return;
+            }
+          }
+        }
+      }
     }
   }
   callback();
@@ -183,7 +277,10 @@ function validateActions(_rule: any, value: any, callback: any) {
         callback(new Error(`执行器 ${i + 1}：产品不能为空`));
         return;
       }
-      if (!action.deviceId) {
+      // deviceId = 0 表示「全部设备」（DEVICE_SELECTOR_OPTIONS.ALL_DEVICES）；
+      // 后端 IotDevicePropertySetSceneRuleAction / IotDeviceServiceInvokeSceneRuleAction
+      // 均支持广播执行，因此 0 是合法值，仅 undefined / null 视为未选
+      if (action.deviceId === undefined || action.deviceId === null) {
         callback(new Error(`执行器 ${i + 1}：设备不能为空`));
         return;
       }
@@ -199,9 +296,9 @@ function validateActions(_rule: any, value: any, callback: any) {
         return;
       }
     }
+    // 仅恢复告警动作需要选择已有告警配置；触发告警动作不需要预选 alertConfigId
     if (
-      (action.type === IotRuleSceneActionTypeEnum.ALERT_TRIGGER ||
-        action.type === IotRuleSceneActionTypeEnum.ALERT_RECOVER) &&
+      action.type === IotRuleSceneActionTypeEnum.ALERT_RECOVER &&
       !action.alertConfigId
     ) {
       callback(new Error(`执行器 ${i + 1}：告警配置不能为空`));

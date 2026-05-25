@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Col, Form, Row, Select } from 'ant-design-vue';
+import { Col, Form, Input, Row, Select } from 'ant-design-vue';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -105,22 +105,6 @@ const serviceConfig = computed(() => {
   return undefined;
 });
 
-// 计算属性：事件配置 - 用于 JsonParamsInput
-const eventConfig = computed(() => {
-  if (
-    propertyConfig.value &&
-    props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
-  ) {
-    return {
-      event: {
-        name: propertyConfig.value.name || '事件',
-        outputParams: propertyConfig.value.outputParams || [],
-      },
-    };
-  }
-  return undefined;
-});
-
 /**
  * 更新条件字段
  * @param field 字段名
@@ -140,15 +124,24 @@ function handleTriggerTypeChange(type: number) {
 
 /** 处理产品变化事件 */
 function handleProductChange() {
-  // 产品变化时清空设备和属性
-  condition.value.deviceId = undefined;
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.deviceId = undefined;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  // 主条件比较值字段是 Trigger.value（不是 TriggerCondition.param）
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /** 处理设备变化事件 */
 function handleDeviceChange() {
-  // 设备变化时清空属性
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /**
@@ -266,15 +259,16 @@ function handlePropertyChange(propertyInfo: any) {
               :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
-            <!-- 事件上报参数配置 -->
-            <JsonParamsInput
+            <!-- 事件上报参数配置：源项目允许标量值或留空表示事件发生即匹配 -->
+            <Input
               v-else-if="
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
-              v-model="condition.value"
-              type="event"
-              :config="eventConfig as any"
-              placeholder="请输入 JSON 格式的事件参数"
+              :value="condition.value"
+              @update:value="
+                (value) => updateConditionField('value', value)
+              "
+              placeholder="留空则事件发生即匹配"
             />
             <!-- 普通值输入 -->
             <ValueInput

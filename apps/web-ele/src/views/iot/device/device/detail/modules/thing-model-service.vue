@@ -3,7 +3,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import {
@@ -35,6 +35,7 @@ const queryParams = reactive({
   identifier: '',
   times: undefined as [string, string] | undefined,
 });
+let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
 /** 服务类型的物模型数据 */
 const serviceThingModels = computed(() => {
@@ -173,8 +174,15 @@ function parseParams(params: string) {
 
 /** 刷新列表 */
 function refresh(delay = 0) {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
   if (delay > 0) {
-    setTimeout(() => gridApi.query(), delay);
+    refreshTimer = setTimeout(() => {
+      gridApi.query();
+      refreshTimer = undefined;
+    }, delay);
   } else {
     gridApi.query();
   }
@@ -194,6 +202,14 @@ watch(
 onMounted(() => {
   if (props.deviceId) {
     handleQuery();
+  }
+});
+
+/** 组件卸载时清除延迟刷新定时器 */
+onBeforeUnmount(() => {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
   }
 });
 

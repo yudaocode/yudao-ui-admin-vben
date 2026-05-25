@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   multiple: false,
   api: undefined,
   resultField: '',
+  returnText: false,
   showDescription: false,
 });
 const emit = defineEmits([
@@ -163,9 +164,6 @@ function handleUploadError(error: any) {
  */
 /* eslint-disable unicorn/no-nested-ternary */
 async function beforeUpload(file: File) {
-  const fileContent = await file.text();
-  emit('returnText', fileContent);
-
   // 检查文件数量限制（使用 getValue 获取实际已上传的文件数量）
   const currentFiles = getValue();
   const currentCount = Array.isArray(currentFiles)
@@ -198,6 +196,10 @@ async function beforeUpload(file: File) {
 
   // 只有在验证通过后才增加计数器
   uploadNumber.value++;
+  if (props.returnText) {
+    const fileContent = await file.text();
+    emit('returnText', fileContent);
+  }
   return true;
 }
 

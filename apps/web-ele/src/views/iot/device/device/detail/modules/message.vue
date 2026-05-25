@@ -31,6 +31,7 @@ const queryParams = reactive({
 
 const autoRefresh = ref(false); // 自动刷新开关
 let autoRefreshTimer: any = null; // 自动刷新定时器
+let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
 /** 消息方法选项 */
 const methodOptions = computed(() => {
@@ -150,6 +151,10 @@ onBeforeUnmount(() => {
     clearInterval(autoRefreshTimer);
     autoRefreshTimer = null;
   }
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
 });
 
 /** 初始化 */
@@ -161,9 +166,14 @@ onMounted(() => {
 
 /** 刷新消息列表 */
 function refresh(delay = 0) {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
   if (delay > 0) {
-    setTimeout(() => {
+    refreshTimer = setTimeout(() => {
       gridApi.query();
+      refreshTimer = undefined;
     }, delay);
   } else {
     gridApi.query();

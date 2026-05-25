@@ -45,10 +45,6 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
         }),
       ]),
     async onOk() {
-      if (!processRemark.value) {
-        message.warning('请输入处理原因');
-        throw new Error('请输入处理原因');
-      }
       const hideLoading = message.loading({
         content: '正在处理...',
         duration: 0,

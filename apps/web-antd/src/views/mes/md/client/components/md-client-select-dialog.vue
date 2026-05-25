@@ -69,8 +69,9 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesMdClientApi.Client[];
   records.forEach((row) => {
-    if (row.id !== null) {
-      selectedMap.set(row.id as number, row);
+    const rowId = row.id;
+    if (rowId !== null && rowId !== undefined) {
+      selectedMap.set(rowId, row);
     }
   });
   return [...selectedMap.values()];

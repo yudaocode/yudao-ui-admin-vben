@@ -29,12 +29,10 @@ const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详
 
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  const titles: Record<FormMode, string> = {
-    create: '新增物料/产品',
-    update: '修改物料/产品',
-    detail: '查看物料/产品',
-  };
-  return titles[formMode.value];
+  if (formMode.value === 'detail') {
+    return '查看物料/产品';
+  }
+  return formMode.value === 'update' ? '修改物料/产品' : '新增物料/产品';
 });
 const currentItemOrProduct = computed(
   () => formData.value?.itemOrProduct || '',

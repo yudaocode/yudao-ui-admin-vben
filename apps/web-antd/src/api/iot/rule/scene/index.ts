@@ -24,7 +24,7 @@ export namespace RuleSceneApi {
     operator?: string;
     value?: any;
     cronExpression?: string;
-    conditionGroups?: TriggerCondition[][];
+    conditionGroups?: TriggerCondition[][]; // 后端结构：List<List<TriggerCondition>>；外层「或」、组内「且」
   }
 
   /**  场景联动规则的触发条件 */
@@ -78,13 +78,6 @@ export function updateSceneRule(data: RuleSceneApi.SceneRule) {
 /** 删除场景联动规则 */
 export function deleteSceneRule(id: number) {
   return requestClient.delete(`/iot/scene-rule/delete?id=${id}`);
-}
-
-/** 批量删除场景联动规则 */
-export function deleteSceneRuleList(ids: number[]) {
-  return requestClient.delete('/iot/scene-rule/delete-list', {
-    params: { ids: ids.join(',') },
-  });
 }
 
 /** 更新场景联动规则状态 */

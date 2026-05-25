@@ -5,7 +5,7 @@ import { requestClient } from '#/api/request';
 export namespace MesProProcessApi {
   /** MES 生产工序 */
   export interface Process {
-    id: number;
+    id?: number;
     code?: string;
     name?: string;
     attention?: string;
@@ -35,4 +35,24 @@ export function getProcess(id: number) {
   return requestClient.get<MesProProcessApi.Process>(
     `/mes/pro/process/get?id=${id}`,
   );
+}
+
+/** 新增生产工序 */
+export function createProcess(data: MesProProcessApi.Process) {
+  return requestClient.post('/mes/pro/process/create', data);
+}
+
+/** 修改生产工序 */
+export function updateProcess(data: MesProProcessApi.Process) {
+  return requestClient.put('/mes/pro/process/update', data);
+}
+
+/** 删除生产工序 */
+export function deleteProcess(id: number) {
+  return requestClient.delete(`/mes/pro/process/delete?id=${id}`);
+}
+
+/** 导出生产工序 Excel */
+export function exportProcess(params: any) {
+  return requestClient.download('/mes/pro/process/export-excel', { params });
 }

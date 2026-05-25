@@ -34,24 +34,99 @@ function unitChange(unitSpecs: any) {
   dataSpecs.value.unitName = unitName;
   dataSpecs.value.unit = unit;
 }
+
+/** 校验最小值 */
+function validateMin(_rule: any, _value: any, callback: any) {
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (Number.isNaN(min)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (!Number.isNaN(max) && min >= max) {
+    callback(new Error('最小值必须小于最大值'));
+    return;
+  }
+  callback();
+}
+
+/** 校验最大值 */
+function validateMax(_rule: any, _value: any, callback: any) {
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (Number.isNaN(max)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (!Number.isNaN(min) && max <= min) {
+    callback(new Error('最大值必须大于最小值'));
+    return;
+  }
+  callback();
+}
+
+/** 校验步长 */
+function validateStep(_rule: any, _value: any, callback: any) {
+  const step = Number(dataSpecs.value.step);
+  if (Number.isNaN(step)) {
+    callback(new Error('请输入有效的数值'));
+    return;
+  }
+  if (step <= 0) {
+    callback(new Error('步长必须大于 0'));
+    return;
+  }
+  const min = Number(dataSpecs.value.min);
+  const max = Number(dataSpecs.value.max);
+  if (!Number.isNaN(min) && !Number.isNaN(max) && step > max - min) {
+    callback(new Error('步长不能大于最大值与最小值的差值'));
+    return;
+  }
+  callback();
+}
 </script>
 
 <template>
   <Form.Item label="取值范围">
     <div class="flex items-center justify-between">
-      <div class="flex-1">
+      <Form.Item
+        :name="['property', 'dataSpecs', 'min']"
+        :rules="[
+          { required: true, message: '最小值不能为空', trigger: 'blur' },
+          { validator: validateMin, trigger: 'blur' },
+        ]"
+        class="mb-0 flex-1"
+      >
         <Input v-model:value="dataSpecs.min" placeholder="请输入最小值" />
-      </div>
+      </Form.Item>
       <span class="mx-2">~</span>
-      <div class="flex-1">
+      <Form.Item
+        :name="['property', 'dataSpecs', 'max']"
+        :rules="[
+          { required: true, message: '最大值不能为空', trigger: 'blur' },
+          { validator: validateMax, trigger: 'blur' },
+        ]"
+        class="mb-0 flex-1"
+      >
         <Input v-model:value="dataSpecs.max" placeholder="请输入最大值" />
-      </div>
+      </Form.Item>
     </div>
   </Form.Item>
-  <Form.Item label="步长">
+  <Form.Item
+    :name="['property', 'dataSpecs', 'step']"
+    :rules="[
+      { required: true, message: '步长不能为空', trigger: 'blur' },
+      { validator: validateStep, trigger: 'blur' },
+    ]"
+    label="步长"
+  >
     <Input v-model:value="dataSpecs.step" placeholder="请输入步长" />
   </Form.Item>
-  <Form.Item label="单位">
+  <Form.Item
+    :name="['property', 'dataSpecs', 'unit']"
+    :rules="[{ required: true, message: '请选择单位', trigger: 'change' }]"
+    label="单位"
+  >
     <Select
       :value="dataSpecs.unit ? `${dataSpecs.unitName}-${dataSpecs.unit}` : ''"
       show-search

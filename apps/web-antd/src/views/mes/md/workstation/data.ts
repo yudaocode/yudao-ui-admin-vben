@@ -130,10 +130,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             onChange: async () => {
               await formApi?.setFieldValue('areaId', undefined);
             },
-            options: list.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })),
+            fieldNames: { label: 'name', value: 'id' },
+            options: list,
             placeholder: '请选择库区',
           };
         },
@@ -152,10 +150,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             : [];
           return {
             allowClear: true,
-            options: list.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })),
+            fieldNames: { label: 'name', value: 'id' },
+            options: list,
             placeholder: '请选择库位',
           };
         },

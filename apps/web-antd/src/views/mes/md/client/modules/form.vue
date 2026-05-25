@@ -24,12 +24,10 @@ const formData = ref<MesMdClientApi.Client>();
 
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  const titles: Record<FormMode, string> = {
-    create: '新增客户',
-    update: '修改客户',
-    detail: '查看客户',
-  };
-  return titles[formMode.value];
+  if (formMode.value === 'detail') {
+    return '查看客户';
+  }
+  return formMode.value === 'update' ? '修改客户' : '新增客户';
 });
 
 const [Form, formApi] = useVbenForm({

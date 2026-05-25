@@ -1,11 +1,14 @@
 <!-- 当前时间条件配置组件 -->
 <script setup lang="ts">
+import type { Dayjs } from 'dayjs';
+
 import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
 
 import { IotRuleSceneTriggerTimeOperatorEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { formatDayjs } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -126,11 +129,12 @@ function updateConditionField(field: any, value: any) {
  * 处理第一个时间值变化
  * @param value 时间值
  */
-function handleTimeValueChange(value: string) {
+function handleTimeValueChange(value: Dayjs | null | string) {
+  const normalized = formatDayjs(value);
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
     : [];
-  currentParams[0] = value || '';
+  currentParams[0] = normalized;
 
   // 如果是范围条件，保留第二个值；否则只保留第一个值
   condition.value.param = needsSecondTimeInput.value
@@ -142,11 +146,12 @@ function handleTimeValueChange(value: string) {
  * 处理第二个时间值变化
  * @param value 时间值
  */
-function handleTimeValue2Change(value: string) {
+function handleTimeValue2Change(value: Dayjs | null | string) {
+  const normalized = formatDayjs(value);
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
     : [''];
-  currentParams[1] = value || '';
+  currentParams[1] = normalized;
   condition.value.param = currentParams.slice(0, 2).join(',');
 }
 
@@ -175,8 +180,8 @@ watch(
       <Col :span="8">
         <Form.Item label="时间条件" required>
           <Select
-            :model-value="condition.operator"
-            @update:model-value="
+            :value="condition.operator"
+            @update:value="
               (value: any) => updateConditionField('operator', value)
             "
             placeholder="请选择时间条件"
@@ -207,8 +212,8 @@ watch(
         <Form.Item label="时间值" required>
           <TimePicker
             v-if="needsTimeInput"
-            :model-value="timeValue"
-            @update:model-value="handleTimeValueChange"
+            :value="timeValue"
+            @update:value="handleTimeValueChange"
             placeholder="请选择时间"
             format="HH:mm:ss"
             value-format="HH:mm:ss"
@@ -216,8 +221,8 @@ watch(
           />
           <DatePicker
             v-else-if="needsDateInput"
-            :model-value="timeValue"
-            @update:model-value="handleTimeValueChange"
+            :value="timeValue"
+            @update:value="handleTimeValueChange"
             type="datetime"
             placeholder="请选择日期时间"
             format="YYYY-MM-DD HH:mm:ss"
@@ -233,8 +238,8 @@ watch(
         <Form.Item label="结束时间" required>
           <TimePicker
             v-if="needsTimeInput"
-            :model-value="timeValue2"
-            @update:model-value="handleTimeValue2Change"
+            :value="timeValue2"
+            @update:value="handleTimeValue2Change"
             placeholder="请选择结束时间"
             format="HH:mm:ss"
             value-format="HH:mm:ss"
@@ -242,8 +247,8 @@ watch(
           />
           <DatePicker
             v-else
-            :model-value="timeValue2"
-            @update:model-value="handleTimeValue2Change"
+            :value="timeValue2"
+            @update:value="handleTimeValue2Change"
             type="datetime"
             placeholder="请选择结束日期时间"
             format="YYYY-MM-DD HH:mm:ss"

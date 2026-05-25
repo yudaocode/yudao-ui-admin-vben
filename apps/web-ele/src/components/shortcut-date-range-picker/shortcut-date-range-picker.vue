@@ -18,27 +18,23 @@ const emits = defineEmits<{
 const times = ref<[Dayjs, Dayjs]>(); // 日期范围
 
 const rangePickerProps = getRangePickerDefaultProps();
-
 const timeRangeOptions = [
   {
-    label: '昨天',
+    label: rangePickerProps.shortcuts[1]!.text,
+    value: () => rangePickerProps.shortcuts[1]!.value() as [Dayjs, Dayjs],
+  },
+  {
+    label: rangePickerProps.shortcuts[2]!.text,
     value: () => [
-      dayjs().subtract(1, 'day').startOf('day'),
+      dayjs().subtract(7, 'day').startOf('day'),
       dayjs().subtract(1, 'day').endOf('day'),
     ],
   },
   {
-    label: '最近 7 天',
-    value: () => [
-      dayjs().subtract(7, 'day').startOf('day'),
-      dayjs().endOf('day'),
-    ],
-  },
-  {
-    label: '最近 30 天',
+    label: rangePickerProps.shortcuts[3]!.text,
     value: () => [
       dayjs().subtract(30, 'day').startOf('day'),
-      dayjs().endOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
     ],
   },
 ];

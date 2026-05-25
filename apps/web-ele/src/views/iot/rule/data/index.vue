@@ -17,7 +17,7 @@ const activeTabName = ref('rule');
       <ElTabPane name="rule" label="规则">
         <DataRuleList />
       </ElTabPane>
-      <ElTabPane name="sink" label="目的">
+      <ElTabPane name="sink" label="目的" lazy>
         <DataSinkList />
       </ElTabPane>
     </ElTabs>

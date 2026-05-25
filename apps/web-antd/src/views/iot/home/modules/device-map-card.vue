@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { NumberDictDataType } from '@vben/hooks';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DeviceStateEnum, DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
+import { getDictLabel, getDictOptions } from '@vben/hooks';
 
 import { Card, Empty, Spin } from 'ant-design-vue';
 
@@ -20,15 +22,20 @@ let mapInstance: any = null; // 百度地图实例
 const loading = ref(true); // 加载状态
 const deviceList = ref<IotDeviceApi.Device[]>([]); // 设备分布列表
 
-/** 是否有数据 */
-const hasData = computed(() => deviceList.value.length > 0);
+const hasData = computed(() => deviceList.value.length > 0); // 是否有数据
 
-/** 设备状态颜色映射 */
+const stateOptions = computed(() =>
+  getDictOptions(
+    DICT_TYPE.IOT_DEVICE_STATE,
+    'number',
+  ) as NumberDictDataType[],
+); // 状态图例列表（从字典获取）
+
 const stateColorMap: Record<number, string> = {
   [DeviceStateEnum.INACTIVE]: '#EAB308', // 待激活 - 黄色
   [DeviceStateEnum.ONLINE]: '#22C55E', // 在线 - 绿色
   [DeviceStateEnum.OFFLINE]: '#9CA3AF', // 离线 - 灰色
-};
+}; // 设备状态颜色映射
 
 /** 获取设备状态配置；名称走字典，颜色用本地映射 */
 function getStateConfig(state: number): { color: string; name: string } {
@@ -111,19 +118,22 @@ function initMap() {
       // 信息窗口打开后绑定链接点击事件
       infoWindow.addEventListener('open', () => {
         setTimeout(() => {
-          const link = document.querySelector('.device-link');
-          if (link) {
-            link.addEventListener('click', (e) => {
-              e.preventDefault();
-              const deviceId = (e.target as HTMLElement).dataset.id;
-              if (deviceId) {
-                router.push({
-                  name: 'IoTDeviceDetail',
-                  params: { id: deviceId },
-                });
-              }
-            });
+          const link = document.querySelector(
+            '.BMap_bubble_content .device-link',
+          );
+          if (!link) {
+            return;
           }
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (device.id === undefined || device.id === null) {
+              return;
+            }
+            router.push({
+              name: 'IoTDeviceDetail',
+              params: { id: device.id },
+            });
+          });
         }, 100);
       });
 
@@ -174,28 +184,18 @@ onUnmounted(() => {
   <Card class="h-full" title="设备分布地图">
     <template #extra>
       <div class="flex items-center gap-4 text-sm">
-        <span class="flex items-center gap-1">
-          <span
-            class="inline-block h-3 w-3 rounded-full"
-            :style="{ backgroundColor: stateColorMap[DeviceStateEnum.ONLINE] }"
-          ></span>
-          <span class="text-gray-500">在线</span>
-        </span>
-        <span class="flex items-center gap-1">
-          <span
-            class="inline-block h-3 w-3 rounded-full"
-            :style="{ backgroundColor: stateColorMap[DeviceStateEnum.OFFLINE] }"
-          ></span>
-          <span class="text-gray-500">离线</span>
-        </span>
-        <span class="flex items-center gap-1">
+        <span
+          v-for="item in stateOptions"
+          :key="item.value"
+          class="flex items-center gap-1"
+        >
           <span
             class="inline-block h-3 w-3 rounded-full"
             :style="{
-              backgroundColor: stateColorMap[DeviceStateEnum.INACTIVE],
+              backgroundColor: stateColorMap[item.value],
             }"
           ></span>
-          <span class="text-gray-500">待激活</span>
+          <span class="text-gray-500">{{ item.label }}</span>
         </span>
       </div>
     </template>

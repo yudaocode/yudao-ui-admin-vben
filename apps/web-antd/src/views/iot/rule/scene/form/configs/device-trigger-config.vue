@@ -5,6 +5,7 @@ import type { RuleSceneApi } from '#/api/iot/rule/scene';
 import { nextTick } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Tag } from 'ant-design-vue';
@@ -183,7 +184,7 @@ function removeConditionGroup() {
           <div class="relative">
             <div
               v-for="(subGroup, subGroupIndex) in trigger.conditionGroups"
-              :key="`sub-group-${subGroupIndex}`"
+              :key="getStableObjectKey(subGroup)"
               class="relative"
             >
               <!-- 子条件组容器（橙色主题） -->
