@@ -1,7 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
-import type { SystemRoleApi } from '#/api/system/role';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -9,10 +8,6 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getSimpleRoleList } from '#/api/system/role';
 import { getSimpleUserList } from '#/api/system/user';
-
-/** 关联数据 */
-let roleList: SystemRoleApi.Role[] = [];
-getSimpleRoleList().then((data) => (roleList = data));
 
 /** 安灯配置列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<MesProAndonConfigApi.AndonConfig>['columns'] {
@@ -27,13 +22,7 @@ export function useGridColumns(): VxeTableGridOptions<MesProAndonConfigApi.Andon
         props: { type: DICT_TYPE.MES_PRO_ANDON_LEVEL },
       },
     },
-    {
-      field: 'handlerRoleId',
-      title: '处置角色',
-      width: 140,
-      formatter: ({ cellValue }) =>
-        roleList.find((role) => role.id === cellValue)?.name ?? '',
-    },
+    { field: 'handlerRoleName', title: '处置角色', width: 140 },
     { field: 'handlerUserNickname', title: '处置人', width: 140 },
     { field: 'remark', title: '备注', minWidth: 160 },
     {

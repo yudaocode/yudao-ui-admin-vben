@@ -128,7 +128,7 @@ export function useGridColumns(): VxeTableGridOptions<MesProAndonRecordApi.Andon
  * 新增/处置/详情安灯呼叫记录的表单
  *
  * - create：录入呼叫主体信息（工作站/发起人/工单/工序/呼叫原因/备注）
- * - update：呼叫主体信息只读，编辑处置时间/处置人/备注
+ * - update：呼叫主体只读展示创建时的快照字段（workstationName/workOrderCode/processName/reason），编辑处置时间/处置人/备注
  * - detail：所有字段只读
  */
 export function useFormSchema(
@@ -143,64 +143,104 @@ export function useFormSchema(
       component: 'Input',
       dependencies: { triggerFields: [''], show: () => false },
     },
-    {
-      fieldName: 'workstationId',
-      label: '工作站',
-      component: markRaw(MdWorkstationSelect),
-      componentProps: {
-        disabled: !isCreate,
-        placeholder: '请选择工作站',
-      },
-      rules: 'selectRequired',
-    },
-    {
-      fieldName: 'userId',
-      label: '发起人',
-      component: 'ApiSelect',
-      componentProps: {
-        allowClear: true,
-        api: getSimpleUserList,
-        disabled: !isCreate,
-        labelField: 'nickname',
-        placeholder: '请选择发起人',
-        valueField: 'id',
-      },
-    },
-    {
-      fieldName: 'workOrderId',
-      label: '生产工单',
-      component: markRaw(ProWorkOrderSelect),
-      componentProps: {
-        disabled: !isCreate,
-        placeholder: '请选择工单（可选）',
-        status: MesProWorkOrderStatusEnum.CONFIRMED,
-      },
-    },
-    {
-      fieldName: 'processId',
-      label: '工序',
-      component: markRaw(ProProcessSelect),
-      componentProps: {
-        disabled: !isCreate,
-        placeholder: '请选择工序（可选）',
-      },
-    },
-    {
-      fieldName: 'configId',
-      label: '呼叫原因',
-      component: markRaw(AndonConfigSelect),
-      componentProps: {
-        disabled: !isCreate,
-        // 选择呼叫原因后，自动填充对应的级别
-        onChange: async (config?: MesProAndonConfigApi.AndonConfig) => {
-          await formApi?.setValues({
-            level: config?.level,
-            reason: config?.reason,
-          });
+    isCreate
+      ? {
+          fieldName: 'workstationId',
+          label: '工作站',
+          component: markRaw(MdWorkstationSelect),
+          componentProps: {
+            placeholder: '请选择工作站',
+          },
+          rules: 'selectRequired',
+        }
+      : {
+          fieldName: 'workstationName',
+          label: '工作站',
+          component: 'Input',
+          componentProps: {
+            disabled: true,
+          },
         },
-      },
-      rules: 'selectRequired',
-    },
+    isCreate
+      ? {
+          fieldName: 'userId',
+          label: '发起人',
+          component: 'ApiSelect',
+          componentProps: {
+            allowClear: true,
+            api: getSimpleUserList,
+            labelField: 'nickname',
+            placeholder: '请选择发起人',
+            valueField: 'id',
+          },
+        }
+      : {
+          fieldName: 'userNickname',
+          label: '发起人',
+          component: 'Input',
+          componentProps: {
+            disabled: true,
+          },
+        },
+    isCreate
+      ? {
+          fieldName: 'workOrderId',
+          label: '生产工单',
+          component: markRaw(ProWorkOrderSelect),
+          componentProps: {
+            placeholder: '请选择工单（可选）',
+            status: MesProWorkOrderStatusEnum.CONFIRMED,
+          },
+        }
+      : {
+          fieldName: 'workOrderCode',
+          label: '生产工单',
+          component: 'Input',
+          componentProps: {
+            disabled: true,
+          },
+        },
+    isCreate
+      ? {
+          fieldName: 'processId',
+          label: '工序',
+          component: markRaw(ProProcessSelect),
+          componentProps: {
+            placeholder: '请选择工序（可选）',
+          },
+        }
+      : {
+          fieldName: 'processName',
+          label: '工序',
+          component: 'Input',
+          componentProps: {
+            disabled: true,
+          },
+        },
+    isCreate
+      ? {
+          fieldName: 'configId',
+          label: '呼叫原因',
+          component: markRaw(AndonConfigSelect),
+          componentProps: {
+            // 选择呼叫原因后，自动填充对应的级别
+            onChange: async (config?: MesProAndonConfigApi.AndonConfig) => {
+              await formApi?.setValues({
+                level: config?.level,
+                reason: config?.reason,
+              });
+            },
+          },
+          rules: 'selectRequired',
+        }
+      : {
+          fieldName: 'reason',
+          label: '呼叫原因',
+          component: 'Input',
+          componentProps: {
+            disabled: true,
+          },
+        },
     {
       fieldName: 'level',
       label: '级别',
@@ -239,19 +279,27 @@ export function useFormSchema(
               valueFormat: 'x',
             },
           },
-          {
-            fieldName: 'handlerUserId',
-            label: '处置人',
-            component: 'ApiSelect',
-            componentProps: {
-              allowClear: true,
-              api: getSimpleUserList,
-              disabled: !isUpdate,
-              labelField: 'nickname',
-              placeholder: '请选择处置人',
-              valueField: 'id',
-            },
-          },
+          isUpdate
+            ? {
+                fieldName: 'handlerUserId',
+                label: '处置人',
+                component: 'ApiSelect',
+                componentProps: {
+                  allowClear: true,
+                  api: getSimpleUserList,
+                  labelField: 'nickname',
+                  placeholder: '请选择处置人',
+                  valueField: 'id',
+                },
+              }
+            : {
+                fieldName: 'handlerUserNickname',
+                label: '处置人',
+                component: 'Input',
+                componentProps: {
+                  disabled: true,
+                },
+              },
         ] as VbenFormSchema[])),
     {
       fieldName: 'remark',
