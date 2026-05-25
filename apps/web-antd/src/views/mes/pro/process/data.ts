@@ -40,7 +40,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              // TODO @AI：需要 try catch 么？感觉直接去掉也可以？
               try {
                 const code = await generateAutoCode(
                   MesAutoCodeRuleCode.PRO_PROCESS_CODE,

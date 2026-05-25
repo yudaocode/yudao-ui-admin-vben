@@ -10,6 +10,7 @@ import { Divider, message } from 'ant-design-vue';
 import { useVbenForm } from '#/adapter/form';
 import {
   createRouteProduct,
+  getRouteProduct,
   updateRouteProduct,
 } from '#/api/mes/pro/route/product';
 import { $t } from '#/locales';
@@ -18,7 +19,7 @@ import { useRouteProductFormSchema } from '../data';
 import ProductBomList from './product-bom-list.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<MesProRouteProductApi.RouteProduct>(); // 当前编辑/查看的产品数据
+const formData = ref<MesProRouteProductApi.RouteProduct>();
 const getTitle = computed(() =>
   formData.value?.id
     ? $t('ui.actionTitle.edit', ['工艺路线产品'])
@@ -51,7 +52,6 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [Modal, modalApi] = useVbenModal({
-  // TODO @AI：注释风格，是不是和别的没对齐
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
@@ -64,7 +64,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formData.value?.id) {
         await updateRouteProduct(data);
+        // 用最新表单值同步 formData，确保产品 BOM 子表绑定的 itemId 与表单一致
+        formData.value = { ...formData.value, ...data };
       } else {
+        // 新增成功后切换到编辑模式，方便继续维护产品 BOM
         const id = await createRouteProduct(data);
         formData.value = { ...data, id };
         await formApi.setFieldValue('id', id);
@@ -85,18 +88,22 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{
       id?: number;
       routeId: number;
-      row?: MesProRouteProductApi.RouteProduct;
     }>();
     if (!data) {
       return;
     }
-    if (data.row) {
-      formData.value = data.row;
-      // 设置到 values
-      await formApi.setValues(data.row);
+    if (!data.id) {
+      await formApi.setValues({ routeId: data.routeId });
       return;
     }
-    await formApi.setValues({ routeId: data.routeId });
+    modalApi.lock();
+    try {
+      formData.value = await getRouteProduct(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
+    }
   },
 });
 </script>
@@ -104,7 +111,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-3/5">
     <Form class="mx-4" />
-    <!-- 编辑/详情模式下展示产品 BOM 子表，新增模式下隐藏 -->
+    <!-- 编辑模式下展示产品 BOM 子表，新增模式下隐藏 -->
     <template v-if="formData?.id && formData?.itemId">
       <Divider class="!my-3" orientation="left">产品 BOM 配置</Divider>
       <div class="mx-4">

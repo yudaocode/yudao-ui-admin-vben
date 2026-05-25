@@ -19,10 +19,11 @@ import { useContentGridColumns } from '../data';
 import ContentForm from './content-form.vue';
 
 const props = defineProps<{
+  formMode: 'create' | 'detail' | 'update';
   processId: number;
-  readonly?: boolean;
 }>();
 
+const isEditable = ref(props.formMode !== 'detail'); // 是否可编辑
 const list = ref<MesProProcessContentApi.ProcessContent[]>([]);
 
 const [ContentFormModal, contentFormModalApi] = useVbenModal({
@@ -60,11 +61,7 @@ async function getList() {
 
 /** 新增工序步骤 */
 function handleCreate() {
-  // TODO @AI：是不是可以直接 max 然后 || 0；
-  const maxSort =
-    list.value.length > 0
-      ? Math.max(...list.value.map((item) => item.sort || 0))
-      : 0;
+  const maxSort = Math.max(0, ...list.value.map((item) => item.sort || 0));
   contentFormModalApi
     .setData({ maxSort, processId: props.processId })
     .open();
@@ -95,7 +92,7 @@ watch(
 
 <template>
   <ContentFormModal @success="getList" />
-  <div v-if="!readonly" class="mb-3 flex items-center justify-start">
+  <div v-if="isEditable" class="mb-3 flex items-center justify-start">
     <TableAction
       :actions="[
         {
@@ -113,14 +110,14 @@ watch(
           {
             label: $t('common.edit'),
             type: 'link',
-            ifShow: () => !readonly,
+            ifShow: () => isEditable,
             onClick: handleEdit.bind(null, row),
           },
           {
             label: $t('common.delete'),
             type: 'link',
             danger: true,
-            ifShow: () => !readonly,
+            ifShow: () => isEditable,
             popConfirm: {
               title: $t('ui.actionMessage.deleteConfirm', ['工序步骤']),
               confirm: handleDelete.bind(null, row),

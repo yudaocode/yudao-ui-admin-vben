@@ -25,15 +25,14 @@ const props = defineProps<{
   routeId: number;
 }>();
 
-const isEditable = ref(props.formMode !== 'detail');
-const list = ref<MesProRouteProductApi.RouteProduct[]>([]);
+const isEditable = ref(props.formMode !== 'detail'); // 是否可编辑
+const list = ref<MesProRouteProductApi.RouteProduct[]>([]); // 工艺路线产品列表
 
 const [ProductFormModal, productFormModalApi] = useVbenModal({
   connectedComponent: ProductForm,
   destroyOnClose: true,
 });
 
-// TODO @AI：代码的排版风格？ps：和别的模块，看看是不是一致；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     autoResize: true,
@@ -48,7 +47,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProRouteProductApi.RouteProduct>,
 });
 
-// TODO @AI：注释风格，是不是和别的没对齐
+/** 加载工艺路线产品列表 */
 async function getList() {
   gridApi.setLoading(true);
   try {
@@ -59,17 +58,17 @@ async function getList() {
   }
 }
 
-// TODO @AI：注释风格，是不是和别的没对齐
+/** 新增工艺路线产品 */
 function handleCreate() {
   productFormModalApi.setData({ routeId: props.routeId }).open();
 }
 
-// TODO @AI：注释风格，是不是和别的没对齐
+/** 编辑工艺路线产品 */
 function handleEdit(row: MesProRouteProductApi.RouteProduct) {
-  productFormModalApi.setData({ id: row.id, routeId: props.routeId, row }).open();
+  productFormModalApi.setData({ id: row.id, routeId: props.routeId }).open();
 }
 
-// TODO @AI：注释风格，是不是和别的没对齐
+/** 删除工艺路线产品 */
 async function handleDelete(row: MesProRouteProductApi.RouteProduct) {
   await deleteRouteProduct(row.id!);
   message.success($t('ui.actionMessage.deleteSuccess', ['工艺路线产品']));

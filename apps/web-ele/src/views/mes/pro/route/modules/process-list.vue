@@ -23,8 +23,8 @@ const props = defineProps<{
   routeId: number;
 }>();
 
-const isEditable = ref(props.formMode !== 'detail');
-const list = ref<MesProRouteProcessApi.RouteProcess[]>([]);
+const isEditable = ref(props.formMode !== 'detail'); // 是否可编辑
+const list = ref<MesProRouteProcessApi.RouteProcess[]>([]); // 工艺路线工序列表
 
 const [ProcessFormModal, processFormModalApi] = useVbenModal({
   connectedComponent: ProcessForm,
@@ -45,6 +45,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesProRouteProcessApi.RouteProcess>,
 });
 
+/** 加载工艺路线工序列表 */
 async function getList() {
   gridApi.setLoading(true);
   try {
@@ -55,20 +56,18 @@ async function getList() {
   }
 }
 
+/** 新增工艺路线工序 */
 function handleCreate() {
-  const maxSort =
-    list.value.length > 0
-      ? Math.max(...list.value.map((item) => item.sort || 0))
-      : 0;
+  const maxSort = Math.max(0, ...list.value.map((item) => item.sort || 0));
   processFormModalApi.setData({ maxSort, routeId: props.routeId }).open();
 }
 
+/** 编辑工艺路线工序 */
 function handleEdit(row: MesProRouteProcessApi.RouteProcess) {
-  processFormModalApi
-    .setData({ id: row.id, routeId: props.routeId, row })
-    .open();
+  processFormModalApi.setData({ id: row.id, routeId: props.routeId }).open();
 }
 
+/** 删除工艺路线工序 */
 async function handleDelete(row: MesProRouteProcessApi.RouteProcess) {
   await deleteRouteProcess(row.id!);
   ElMessage.success($t('ui.actionMessage.deleteSuccess', ['工艺路线工序']));

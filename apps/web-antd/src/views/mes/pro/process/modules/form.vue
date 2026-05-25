@@ -22,7 +22,7 @@ type FormMode = 'create' | 'detail' | 'update';
 
 const emit = defineEmits(['success']);
 const formMode = ref<FormMode>('create'); // 表单模式
-const formData = ref<MesProProcessApi.Process>(); // 当前编辑/查看的工序数据
+const formData = ref<MesProProcessApi.Process>();
 
 const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
@@ -110,7 +110,7 @@ const processId = computed(() => formData.value?.id);
     <template v-if="processId">
       <Divider class="!my-3" orientation="left">操作步骤</Divider>
       <div class="mx-4">
-        <ContentList :process-id="processId" :readonly="isDetail" />
+        <ContentList :form-mode="formMode" :process-id="processId" />
       </div>
     </template>
   </Modal>

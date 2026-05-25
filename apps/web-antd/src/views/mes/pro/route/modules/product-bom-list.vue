@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
 import { ref, watch } from 'vue';
@@ -25,12 +26,9 @@ const props = defineProps<{
   routeId: number;
 }>();
 
-// TODO @AI：const 的尾注释？别的 vue 文件也看看，遵守 agents md 里说的。
-const processOptions = ref<
-  Array<{ processId: number; processName?: string }>
->([]); // TODO @AI：是不是不用转换，vue 那直接处理就好了；
-const activeProcessId = ref<string>(''); // TODO @AI：这个好像是 number？看看 vue3 + ep 里的代码。
-const list = ref<MesProRouteProductBomApi.RouteProductBom[]>([]);
+const processList = ref<MesProRouteProcessApi.RouteProcess[]>([]); // 工序列表（用于 Tab）
+const activeProcessId = ref<number>(); // 当前选中的工序 Tab
+const list = ref<MesProRouteProductBomApi.RouteProductBom[]>([]); // 当前工序下的 BOM 列表
 
 const [BomFormModal, bomFormModalApi] = useVbenModal({
   connectedComponent: BomForm,
@@ -53,16 +51,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 加载路线下的工序列表，用于工序 Tab */
 async function loadProcessList() {
-  const data = await getRouteProcessListByRoute(props.routeId);
-  processOptions.value = (data || []).map((item) => ({
-    processId: item.processId!,
-    processName: item.processName,
-  }));
-  if (processOptions.value.length > 0) {
-    activeProcessId.value = String(processOptions.value[0]!.processId);
+  processList.value = (await getRouteProcessListByRoute(props.routeId)) || [];
+  if (processList.value.length > 0) {
+    activeProcessId.value = processList.value[0]!.processId;
     await getList();
   } else {
-    activeProcessId.value = '';
+    activeProcessId.value = undefined;
     list.value = [];
     gridApi.setGridOptions({ data: list.value });
   }
@@ -76,7 +70,7 @@ async function getList() {
   gridApi.setLoading(true);
   try {
     list.value = await getRouteProductBomList({
-      processId: Number(activeProcessId.value),
+      processId: activeProcessId.value,
       productId: props.productId,
       routeId: props.routeId,
     });
@@ -94,7 +88,7 @@ function handleCreate() {
   }
   bomFormModalApi
     .setData({
-      processId: Number(activeProcessId.value),
+      processId: activeProcessId.value,
       productId: props.productId,
       routeId: props.routeId,
     })
@@ -105,10 +99,10 @@ function handleCreate() {
 function handleEdit(row: MesProRouteProductBomApi.RouteProductBom) {
   bomFormModalApi
     .setData({
-      processId: Number(activeProcessId.value),
+      id: row.id,
+      processId: activeProcessId.value!,
       productId: props.productId,
       routeId: props.routeId,
-      row,
     })
     .open();
 }
@@ -135,8 +129,8 @@ watch(
   <BomFormModal @success="getList" />
   <Tabs v-model:active-key="activeProcessId" @change="getList">
     <TabPane
-      v-for="item in processOptions"
-      :key="String(item.processId)"
+      v-for="item in processList"
+      :key="item.processId"
       :tab="item.processName"
     />
   </Tabs>

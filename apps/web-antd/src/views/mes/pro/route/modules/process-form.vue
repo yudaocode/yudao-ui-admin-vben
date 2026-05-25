@@ -12,6 +12,7 @@ import { useVbenForm } from '#/adapter/form';
 import { getProcessSimpleList } from '#/api/mes/pro/process';
 import {
   createRouteProcess,
+  getRouteProcess,
   updateRouteProcess,
 } from '#/api/mes/pro/route/process';
 import { $t } from '#/locales';
@@ -48,7 +49,6 @@ async function loadSchema(): Promise<VbenFormSchema[]> {
   return useRouteProcessFormSchema(options);
 }
 
-// TODO @AI：注释风格，是不是和别的没对齐
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -56,12 +56,14 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data =
       (await formApi.getValues()) as MesProRouteProcessApi.RouteProcess;
     try {
       await (formData.value?.id
         ? updateRouteProcess(data)
         : createRouteProcess(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -76,22 +78,24 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      // 工序下拉依赖远程数据，schema 在弹窗打开时再生成
       const schema = await loadSchema();
       formApi.setState({ schema });
       await formApi.resetForm();
     } finally {
       modalApi.unlock();
     }
+    // 加载数据
     const data = modalApi.getData<{
       id?: number;
       maxSort?: number;
       routeId: number;
-      row?: MesProRouteProcessApi.RouteProcess;
     }>();
     if (!data) {
       return;
     }
     if (!data.id) {
+      // 新增时，默认序号 = maxSort + 1，并给一个默认甘特图颜色
       await formApi.setValues({
         colorCode: '#00AEF3',
         routeId: data.routeId,
@@ -99,9 +103,13 @@ const [Modal, modalApi] = useVbenModal({
       });
       return;
     }
-    if (data.row) {
-      formData.value = data.row;
-      await formApi.setValues(data.row);
+    modalApi.lock();
+    try {
+      formData.value = await getRouteProcess(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
   },
 });

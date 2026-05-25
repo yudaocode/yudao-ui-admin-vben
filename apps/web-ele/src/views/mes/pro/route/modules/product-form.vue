@@ -1,87 +1,76 @@
 <script lang="ts" setup>
-import type { FormInstance, FormRules } from 'element-plus';
-
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
 
-import {
-  ElDivider,
-  ElForm,
-  ElFormItem,
-  ElInput,
-  ElInputNumber,
-  ElMessage,
-  ElOption,
-  ElSelect,
-} from 'element-plus';
+import { ElDivider, ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createRouteProduct,
+  getRouteProduct,
   updateRouteProduct,
 } from '#/api/mes/pro/route/product';
 import { $t } from '#/locales';
-import { MdItemSelect } from '#/views/mes/md/item/components';
 
+import { useRouteProductFormSchema } from '../data';
 import ProductBomList from './product-bom-list.vue';
 
 const emit = defineEmits(['success']);
-const isUpdate = ref(false);
-const formRef = ref<FormInstance>();
-const formData = reactive<MesProRouteProductApi.RouteProduct>({
-  productionTime: 1,
-  quantity: 1,
-  timeUnitType: 'MINUTE',
-});
-const formRules: FormRules = {
-  itemId: [{ message: '产品不能为空', required: true }],
-  quantity: [{ message: '生产数量不能为空', required: true }],
-};
-const timeUnitOptions = computed(() =>
-  getDictOptions(DICT_TYPE.MES_TIME_UNIT_TYPE),
-);
+const formData = ref<MesProRouteProductApi.RouteProduct>();
 const getTitle = computed(() =>
-  isUpdate.value
+  formData.value?.id
     ? $t('ui.actionTitle.edit', ['工艺路线产品'])
     : $t('ui.actionTitle.create', ['工艺路线产品']),
 );
 
-function resetForm(routeId?: number) {
-  Object.assign(formData, {
-    id: undefined,
-    itemCode: undefined,
-    itemId: undefined,
-    itemName: undefined,
-    productionTime: 1,
-    quantity: 1,
-    remark: undefined,
-    routeId: routeId ?? formData.routeId,
-    specification: undefined,
-    timeUnitType: 'MINUTE',
-    unitName: undefined,
+/** MdItemSelect change 回调：把物料编码/名称/规格/单位回填到 form */
+async function handleItemChange(item?: any) {
+  if (!item) {
+    return;
+  }
+  await formApi.setValues({
+    itemCode: item.code,
+    itemName: item.name,
+    specification: item.specification,
+    unitName: item.unitMeasureName,
   });
-  formRef.value?.clearValidate();
 }
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    formItemClass: 'col-span-1',
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
+  schema: useRouteProductFormSchema(handleItemChange),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    try {
-      await formRef.value?.validate();
-    } catch {
+    const { valid } = await formApi.validate();
+    if (!valid) {
       return;
     }
     modalApi.lock();
+    // 提交表单
+    const data =
+      (await formApi.getValues()) as MesProRouteProductApi.RouteProduct;
     try {
-      if (isUpdate.value) {
-        await updateRouteProduct(formData);
+      if (formData.value?.id) {
+        await updateRouteProduct(data);
+        // 用最新表单值同步 formData，确保产品 BOM 子表绑定的 itemId 与表单一致
+        formData.value = { ...formData.value, ...data };
       } else {
-        const id = await createRouteProduct(formData);
-        formData.id = id;
-        isUpdate.value = true;
+        // 新增成功后切换到编辑模式，方便继续维护产品 BOM
+        const id = await createRouteProduct(data);
+        formData.value = { ...data, id };
+        await formApi.setFieldValue('id', id);
       }
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -89,102 +78,41 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      resetForm();
-      isUpdate.value = false;
+      formData.value = undefined;
       return;
     }
+    await formApi.resetForm();
+    // 加载数据
     const data = modalApi.getData<{
       id?: number;
       routeId: number;
-      row?: MesProRouteProductApi.RouteProduct;
     }>();
     if (!data) {
       return;
     }
-    if (data.row) {
-      Object.assign(formData, data.row);
-      isUpdate.value = true;
-    } else {
-      resetForm(data.routeId);
-      isUpdate.value = false;
+    if (!data.id) {
+      await formApi.setValues({ routeId: data.routeId });
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getRouteProduct(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
   },
 });
-
-function handleItemChange(item?: any) {
-  if (!item) {
-    return;
-  }
-  formData.itemCode = item.code;
-  formData.itemName = item.name;
-  formData.specification = item.specification;
-  formData.unitName = item.unitName;
-}
 </script>
 
 <template>
   <Modal :title="getTitle" class="w-3/5">
-    <ElForm
-      ref="formRef"
-      class="mx-4"
-      label-width="120px"
-      :model="formData"
-      :rules="formRules"
-    >
-      <div class="grid grid-cols-2 gap-x-4">
-        <ElFormItem class="col-span-2" label="产品" prop="itemId">
-          <MdItemSelect
-            v-model="formData.itemId"
-            @change="handleItemChange"
-          />
-        </ElFormItem>
-        <ElFormItem label="生产数量" prop="quantity">
-          <ElInputNumber
-            v-model="formData.quantity"
-            class="!w-full"
-            controls-position="right"
-            :min="1"
-            :precision="0"
-          />
-        </ElFormItem>
-        <ElFormItem label="生产用时" prop="productionTime">
-          <ElInputNumber
-            v-model="formData.productionTime"
-            class="!w-full"
-            controls-position="right"
-            :min="0"
-            :precision="2"
-          />
-        </ElFormItem>
-        <ElFormItem label="时间单位" prop="timeUnitType">
-          <ElSelect
-            v-model="formData.timeUnitType"
-            class="!w-full"
-            clearable
-            placeholder="请选择"
-          >
-            <ElOption
-              v-for="dict in timeUnitOptions"
-              :key="dict.value as string"
-              :label="dict.label"
-              :value="dict.value as string"
-            />
-          </ElSelect>
-        </ElFormItem>
-        <ElFormItem class="col-span-2" label="备注" prop="remark">
-          <ElInput
-            v-model="formData.remark"
-            :maxlength="250"
-            placeholder="请输入备注"
-            :rows="2"
-            type="textarea"
-          />
-        </ElFormItem>
-      </div>
-    </ElForm>
-    <template v-if="isUpdate && formData.id && formData.itemId">
+    <Form class="mx-4" />
+    <!-- 编辑模式下展示产品 BOM 子表，新增模式下隐藏 -->
+    <template v-if="formData?.id && formData?.itemId">
       <ElDivider class="!my-3" content-position="left">产品 BOM 配置</ElDivider>
       <div class="mx-4">
         <ProductBomList

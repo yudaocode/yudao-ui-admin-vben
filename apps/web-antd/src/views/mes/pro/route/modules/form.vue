@@ -8,11 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message, TabPane, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createRoute,
-  getRoute,
-  updateRoute,
-} from '#/api/mes/pro/route';
+import { createRoute, getRoute, updateRoute } from '#/api/mes/pro/route';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -22,11 +18,11 @@ import ProductList from './product-list.vue';
 type FormMode = 'create' | 'detail' | 'update';
 
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
-const subTab = ref('process');
+const formMode = ref<FormMode>('create'); // 表单模式
+const subTab = ref('process'); // 当前激活的子表 Tab
 const formData = ref<MesProRouteApi.Route>();
 
-const isDetail = computed(() => formMode.value === 'detail');
+const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
   if (formMode.value === 'detail') {
     return $t('ui.actionTitle.detail', ['工艺路线']);
@@ -48,10 +44,9 @@ const [Form, formApi] = useVbenForm({
   wrapperClass: 'grid-cols-2',
 });
 
-// TODO @AI：注释风格，是不是和别的没对齐
+/** 表单 schema 需要 formApi 引用（生成编码按钮），所以通过 setState 设置 schema */
 formApi.setState({ schema: useFormSchema(formApi) });
 
-// TODO @AI：注释风格，是不是和别的没对齐
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (isDetail.value) {
@@ -63,9 +58,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = (await formApi.getValues()) as MesProRouteApi.Route;
     try {
       if (formMode.value === 'create') {
+        // 新增成功后切到编辑模式，方便继续维护组成工序、关联产品
         const id = await createRoute(data);
         formData.value = { ...data, id };
         await formApi.setFieldValue('id', id);
@@ -87,6 +84,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     subTab.value = 'process';
+    // 加载数据
     const data = modalApi.getData<{ id?: number; type?: FormMode }>();
     formMode.value = data?.type ?? 'create';
     formApi.setDisabled(formMode.value === 'detail');
@@ -97,6 +95,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getRoute(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
@@ -108,6 +107,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
+    <!-- 编辑/详情模式下展示子表 Tab，新增模式下隐藏 -->
     <Tabs
       v-if="formMode !== 'create' && formData?.id"
       v-model:active-key="subTab"

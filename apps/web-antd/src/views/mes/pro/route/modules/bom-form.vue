@@ -17,7 +17,7 @@ import { $t } from '#/locales';
 import { useRouteProductBomFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<MesProRouteProductBomApi.RouteProductBom>(); // 当前编辑的 BOM 数据
+const formData = ref<MesProRouteProductBomApi.RouteProductBom>();
 const productId = ref<number>(0); // 当前产品物料编号，供 BOM 选择器筛选可用 BOM
 const getTitle = computed(() =>
   formData.value?.id
