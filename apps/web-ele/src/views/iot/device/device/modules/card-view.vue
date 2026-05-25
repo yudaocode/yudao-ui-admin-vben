@@ -205,7 +205,7 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div class="mt-auto flex gap-2 border-t border-border pt-3">
+            <div class="card-action-group mt-auto flex gap-2 border-t border-border pt-3">
               <ElButton
                 v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
@@ -274,3 +274,10 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Element Plus 默认会在相邻按钮之间加 margin-left:12px，与父容器的 gap-2 叠加导致按钮间距过大，这里清掉 */
+.card-action-group :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+</style>
