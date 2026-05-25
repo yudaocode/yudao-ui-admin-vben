@@ -1,0 +1,133 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
+
+import { ref, watch } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteRouteProcess,
+  getRouteProcessListByRoute,
+} from '#/api/mes/pro/route/process';
+import { $t } from '#/locales';
+
+import { useRouteProcessGridColumns } from '../data';
+import ProcessForm from './process-form.vue';
+
+const props = defineProps<{
+  formMode: 'create' | 'detail' | 'update';
+  routeId: number;
+}>();
+
+const isEditable = ref(props.formMode !== 'detail');
+const list = ref<MesProRouteProcessApi.RouteProcess[]>([]);
+
+const [ProcessFormModal, processFormModalApi] = useVbenModal({
+  connectedComponent: ProcessForm,
+  destroyOnClose: true,
+});
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    autoResize: true,
+    border: true,
+    columns: useRouteProcessGridColumns(),
+    data: list.value,
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { isHover: true, keyField: 'id' },
+    showOverflow: true,
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<MesProRouteProcessApi.RouteProcess>,
+});
+
+async function getList() {
+  gridApi.setLoading(true);
+  try {
+    list.value = await getRouteProcessListByRoute(props.routeId);
+    gridApi.setGridOptions({ data: list.value });
+  } finally {
+    gridApi.setLoading(false);
+  }
+}
+
+function handleCreate() {
+  const maxSort =
+    list.value.length > 0
+      ? Math.max(...list.value.map((item) => item.sort || 0))
+      : 0;
+  processFormModalApi.setData({ maxSort, routeId: props.routeId }).open();
+}
+
+function handleEdit(row: MesProRouteProcessApi.RouteProcess) {
+  processFormModalApi.setData({ id: row.id, routeId: props.routeId, row }).open();
+}
+
+async function handleDelete(row: MesProRouteProcessApi.RouteProcess) {
+  await deleteRouteProcess(row.id!);
+  message.success($t('ui.actionMessage.deleteSuccess', ['工艺路线工序']));
+  await getList();
+}
+
+watch(
+  () => props.routeId,
+  (value) => {
+    if (value) {
+      getList();
+    }
+  },
+  { immediate: true },
+);
+</script>
+
+<template>
+  <ProcessFormModal @success="getList" />
+  <div v-if="isEditable" class="mb-3 flex items-center justify-start">
+    <TableAction
+      :actions="[
+        {
+          label: $t('ui.actionTitle.create', ['工序']),
+          type: 'primary',
+          onClick: handleCreate,
+        },
+      ]"
+    />
+  </div>
+  <Grid class="w-full" table-title="组成工序">
+    <template #colorCode="{ row }">
+      <div v-if="row.colorCode" class="flex items-center justify-center gap-1">
+        <div
+          class="h-4 w-4 rounded"
+          :style="{ backgroundColor: row.colorCode }"
+        ></div>
+        <span>{{ row.colorCode }}</span>
+      </div>
+    </template>
+    <template #actions="{ row }">
+      <TableAction
+        :actions="[
+          {
+            label: $t('common.edit'),
+            type: 'link',
+            ifShow: () => isEditable,
+            onClick: handleEdit.bind(null, row),
+          },
+          {
+            label: $t('common.delete'),
+            type: 'link',
+            danger: true,
+            ifShow: () => isEditable,
+            popConfirm: {
+              title: $t('ui.actionMessage.deleteConfirm', ['工艺路线工序']),
+              confirm: handleDelete.bind(null, row),
+            },
+          },
+        ]"
+      />
+    </template>
+  </Grid>
+</template>
