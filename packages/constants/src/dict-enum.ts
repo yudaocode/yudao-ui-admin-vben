@@ -216,6 +216,7 @@ const MES_DICT = {
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
+  MES_WM_QUALITY_STATUS: 'mes_wm_quality_status', // MES 质量状态
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

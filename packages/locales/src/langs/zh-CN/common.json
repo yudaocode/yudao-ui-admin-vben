@@ -21,6 +21,8 @@
   "detail": "详情",
   "yes": "是",
   "no": "否",
+  "submit": "提交",
+  "approve": "审批",
   "showSearchPanel": "显示搜索面板",
   "hideSearchPanel": "隐藏搜索面板"
 }
