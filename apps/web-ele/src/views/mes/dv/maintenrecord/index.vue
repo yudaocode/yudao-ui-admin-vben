@@ -31,17 +31,17 @@ function handleRefresh() {
 
 /** 创建保养记录 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看保养记录 */
 function handleDetail(row: MesDvMaintenRecordApi.MaintenRecord) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑保养记录 */
 function handleEdit(row: MesDvMaintenRecordApi.MaintenRecord) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除保养记录 */

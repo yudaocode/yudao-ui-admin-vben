@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
 import { computed, ref } from 'vue';
@@ -17,21 +19,19 @@ import ShiftList from './shift-list.vue';
 import PlanTeamList from './team-list.vue';
 
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('shift'); // 当前资源页签
 const formData = ref<MesCalPlanApi.Plan>();
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const canConfirm = computed(
-  () => formMode.value === 'update' && formData.value?.status === MesCalPlanStatusEnum.PREPARE,
+  () => formType.value === 'update' && formData.value?.status === MesCalPlanStatusEnum.PREPARE,
 ); // 是否可确认计划
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['排班计划']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['排班计划'])
     : $t('ui.actionTitle.create', ['排班计划']);
 });
@@ -87,11 +87,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesCalPlanApi.Plan;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createPlan(data);
         formData.value = { ...data, id: id as number, status: MesCalPlanStatusEnum.PREPARE };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updatePlan(data);
         formData.value = { ...formData.value, ...data };
@@ -110,10 +110,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'shift';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -132,12 +132,12 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formMode !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
       <ElTabPane label="班次" name="shift">
-        <ShiftList :form-type="formMode" :plan-id="formData.id" />
+        <ShiftList :form-type="formType" :plan-id="formData.id" />
       </ElTabPane>
       <ElTabPane label="班组" name="team">
-        <PlanTeamList :form-type="formMode" :plan-id="formData.id" />
+        <PlanTeamList :form-type="formType" :plan-id="formData.id" />
       </ElTabPane>
     </ElTabs>
     <template #prepend-footer>

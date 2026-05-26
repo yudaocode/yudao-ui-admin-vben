@@ -14,6 +14,9 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
 import { MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
+/** 表单类型 */
+export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
+
 /** 新增/修改维修工单的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

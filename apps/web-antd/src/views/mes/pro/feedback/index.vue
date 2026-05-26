@@ -35,27 +35,27 @@ function handleRefresh() {
 
 /** 创建生产报工 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑生产报工 */
 function handleEdit(row: MesProFeedbackApi.Feedback) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ formType: 'update', id: row.id }).open();
 }
 
 /** 提交生产报工 */
 function handleSubmit(row: MesProFeedbackApi.Feedback) {
-  formModalApi.setData({ id: row.id, type: 'submit' }).open();
+  formModalApi.setData({ formType: 'submit', id: row.id }).open();
 }
 
 /** 审批生产报工 */
 function handleApprove(row: MesProFeedbackApi.Feedback) {
-  formModalApi.setData({ id: row.id, type: 'approve' }).open();
+  formModalApi.setData({ formType: 'approve', id: row.id }).open();
 }
 
 /** 详情生产报工 */
 function handleDetail(row: MesProFeedbackApi.Feedback) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ formType: 'detail', id: row.id }).open();
 }
 
 /** 删除生产报工 */

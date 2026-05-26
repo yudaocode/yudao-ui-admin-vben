@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesProAndonRecordApi } from '#/api/mes/pro/andon/record';
 
 import { computed, ref } from 'vue';
@@ -19,19 +21,17 @@ import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式：新增 / 处置 / 详情
+const formType = ref<FormType>('create'); // 表单模式：新增 / 处置 / 详情
 const formData = ref<MesProAndonRecordApi.AndonRecord>();
 const userStore = useUserStore();
 
-const isUpdate = computed(() => formMode.value === 'update'); // 是否处置模式
+const isUpdate = computed(() => formType.value === 'update'); // 是否处置模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['安灯呼叫']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['安灯呼叫'])
     : $t('ui.actionTitle.create', ['安灯呼叫']);
 });
@@ -50,7 +50,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 /** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
+formApi.setState({ schema: useFormSchema(formType.value, formApi) });
 
 /** 处置：保存（保持 ACTIVE 状态） */
 async function handleSave() {
@@ -104,7 +104,7 @@ async function handleFinish() {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    if (formMode.value === 'detail') {
+    if (formType.value === 'detail') {
       await modalApi.close();
       return;
     }
@@ -132,12 +132,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
-    modalApi.setState({ showConfirmButton: formMode.value === 'create' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(formType.value, formApi) });
+    modalApi.setState({ showConfirmButton: formType.value === 'create' });
     await formApi.resetForm();
-    if (formMode.value === 'create') {
+    if (formType.value === 'create') {
       // 新增时，发起人默认为当前用户
       await formApi.setValues({ userId: userStore.userInfo?.id });
       return;

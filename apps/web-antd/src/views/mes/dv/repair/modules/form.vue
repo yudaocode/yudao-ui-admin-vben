@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
 import { computed, ref } from 'vue';
@@ -22,15 +24,13 @@ import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '#/views/mes/utils/
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
 
-type FormMode = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
+const formType = ref<FormType>('create');
 const formData = ref<MesDvRepairApi.Repair>();
-const isDetail = computed(() => formMode.value === 'detail');
-const isReadonly = computed(() => ['confirm', 'detail', 'finish'].includes(formMode.value));
+const isDetail = computed(() => formType.value === 'detail');
+const isReadonly = computed(() => ['confirm', 'detail', 'finish'].includes(formType.value));
 const canSubmit = computed(
-  () => formMode.value === 'update' && formData.value?.status === MesDvRepairStatusEnum.PREPARE,
+  () => formType.value === 'update' && formData.value?.status === MesDvRepairStatusEnum.PREPARE,
 );
 const getTitle = computed(
   () =>
@@ -40,7 +40,7 @@ const getTitle = computed(
       confirm: '完成维修',
       finish: '验收维修',
       detail: '查看维修工单',
-    })[formMode.value],
+    })[formType.value],
 );
 
 const [Form, formApi] = useVbenForm({
@@ -132,7 +132,7 @@ async function doFinish(result: number) {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    if (isDetail.value || formMode.value === 'confirm' || formMode.value === 'finish') {
+    if (isDetail.value || formType.value === 'confirm' || formType.value === 'finish') {
       await modalApi.close();
       return;
     }
@@ -144,11 +144,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesDvRepairApi.Repair;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createRepair(data);
         formData.value = { ...data, id: id as number, status: MesDvRepairStatusEnum.PREPARE };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateRepair(data);
         formData.value = { ...formData.value, ...data };
@@ -166,10 +166,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
     formApi.setDisabled(isReadonly.value);
-    modalApi.setState({ showConfirmButton: ['create', 'update'].includes(formMode.value) });
+    modalApi.setState({ showConfirmButton: ['create', 'update'].includes(formType.value) });
     if (!data?.id) {
       return;
     }
@@ -198,21 +198,21 @@ const [Modal, modalApi] = useVbenModal({
           <Button type="primary">提交</Button>
         </Popconfirm>
         <Popconfirm
-          v-if="formMode === 'confirm'"
+          v-if="formType === 'confirm'"
           title="确认完成维修？完成后进入待验收。"
           @confirm="handleConfirm"
         >
           <Button type="primary">完成维修</Button>
         </Popconfirm>
         <Popconfirm
-          v-if="formMode === 'finish'"
+          v-if="formType === 'finish'"
           title="确认完成验收？"
           @confirm="handleFinish(MesDvRepairResultEnum.PASS)"
         >
           <Button type="primary">验收通过</Button>
         </Popconfirm>
         <Popconfirm
-          v-if="formMode === 'finish'"
+          v-if="formType === 'finish'"
           title="确认完成验收？"
           @confirm="handleFinish(MesDvRepairResultEnum.FAIL)"
         >

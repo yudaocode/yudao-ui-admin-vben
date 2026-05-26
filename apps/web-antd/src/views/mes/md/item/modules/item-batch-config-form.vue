@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesMdItemBatchConfigApi } from '#/api/mes/md/item/batchConfig';
 
 import { computed, ref, watch } from 'vue';
@@ -13,7 +15,7 @@ import { MesItemOrProductEnum } from '#/views/mes/utils/constants';
 
 const props = withDefaults(
   defineProps<{
-    formType?: string;
+    formType?: FormType;
     itemId: number;
     itemOrProduct?: string;
   }>(),

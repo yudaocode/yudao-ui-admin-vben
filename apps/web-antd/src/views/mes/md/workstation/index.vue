@@ -36,17 +36,17 @@ function handleRefresh() {
 
 /** 创建工作站 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看工作站 */
 function handleDetail(row: MesMdWorkstationApi.Workstation) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑工作站 */
 function handleEdit(row: MesMdWorkstationApi.Workstation) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除工作站 */

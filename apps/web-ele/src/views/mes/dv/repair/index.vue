@@ -27,27 +27,27 @@ function handleRefresh() {
 
 /** 创建维修工单 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看维修工单 */
 function handleDetail(row: MesDvRepairApi.Repair) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑维修工单 */
 function handleEdit(row: MesDvRepairApi.Repair) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 完成维修 */
 function handleConfirm(row: MesDvRepairApi.Repair) {
-  formModalApi.setData({ id: row.id, type: 'confirm' }).open();
+  formModalApi.setData({ id: row.id, formType: 'confirm' }).open();
 }
 
 /** 验收维修 */
 function handleFinish(row: MesDvRepairApi.Repair) {
-  formModalApi.setData({ id: row.id, type: 'finish' }).open();
+  formModalApi.setData({ id: row.id, formType: 'finish' }).open();
 }
 
 /** 删除维修工单 */

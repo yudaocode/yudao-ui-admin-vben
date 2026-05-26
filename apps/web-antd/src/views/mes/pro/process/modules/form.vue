@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesProProcessApi } from '#/api/mes/pro/process';
 
 import { computed, ref } from 'vue';
@@ -18,18 +20,16 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 import ContentList from './content-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const formData = ref<MesProProcessApi.Process>();
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.detail', ['生产工序']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['生产工序'])
     : $t('ui.actionTitle.create', ['生产工序']);
 });
@@ -81,10 +81,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type ?? 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -110,7 +110,7 @@ const processId = computed(() => formData.value?.id);
     <template v-if="processId">
       <Divider class="!my-3" orientation="left">操作步骤</Divider>
       <div class="mx-4">
-        <ContentList :form-mode="formMode" :process-id="processId" />
+        <ContentList :form-type="formType" :process-id="processId" />
       </div>
     </template>
   </Modal>

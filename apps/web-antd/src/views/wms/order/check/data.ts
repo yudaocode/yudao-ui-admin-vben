@@ -31,6 +31,9 @@ import {
   sumQuantity,
 } from '#/views/wms/utils/format';
 
+/** 表单类型 */
+export type FormType = 'create' | 'update';
+
 /** 拆分数量/金额区间字段，适配后端 Min/Max 查询参数 */
 function splitNumberRange(minFieldName: string, maxFieldName: string) {
   return (

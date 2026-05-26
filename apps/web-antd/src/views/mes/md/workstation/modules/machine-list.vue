@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkstationMachineApi } from '#/api/mes/md/workstation/machine';
 
@@ -20,7 +22,7 @@ defineOptions({ name: 'MesMdWorkstationMachineList' });
 
 const props = withDefaults(
   defineProps<{
-    formType?: string;
+    formType?: FormType;
     workstationId: number;
   }>(),
   {

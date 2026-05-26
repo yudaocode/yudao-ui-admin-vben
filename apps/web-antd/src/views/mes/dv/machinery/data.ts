@@ -1,5 +1,3 @@
-import type { Ref } from 'vue';
-
 import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
@@ -18,8 +16,11 @@ import { MesAutoCodeRuleCode, MesDvMachineryStatusEnum } from '#/views/mes/utils
 
 import { DvMachineryTypeSelect } from './type/components';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改设备的表单 */
-export function useFormSchema(formApi?: VbenFormApi, formMode?: Ref<string>): VbenFormSchema[] {
+export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -125,7 +126,7 @@ export function useFormSchema(formApi?: VbenFormApi, formMode?: Ref<string>): Vb
       },
       dependencies: {
         triggerFields: ['id'],
-        show: () => formMode?.value === 'detail',
+        show: () => formType === 'detail',
       },
     },
     {
@@ -141,7 +142,7 @@ export function useFormSchema(formApi?: VbenFormApi, formMode?: Ref<string>): Vb
       },
       dependencies: {
         triggerFields: ['id'],
-        show: () => formMode?.value === 'detail',
+        show: () => formType === 'detail',
       },
     },
     {

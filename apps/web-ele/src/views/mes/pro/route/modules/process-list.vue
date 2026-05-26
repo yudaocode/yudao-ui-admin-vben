@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 
@@ -19,11 +21,11 @@ import { useRouteProcessGridColumns } from '../data';
 import ProcessForm from './process-form.vue';
 
 const props = defineProps<{
-  formMode: 'create' | 'detail' | 'update';
+  formType: FormType;
   routeId: number;
 }>();
 
-const isEditable = ref(props.formMode !== 'detail'); // 是否可编辑
+const isEditable = ref(props.formType !== 'detail'); // 是否可编辑
 const list = ref<MesProRouteProcessApi.RouteProcess[]>([]); // 工艺路线工序列表
 
 const [ProcessFormModal, processFormModalApi] = useVbenModal({

@@ -19,6 +19,9 @@ import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { MdWorkshopSelect } from './components';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改工作站的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

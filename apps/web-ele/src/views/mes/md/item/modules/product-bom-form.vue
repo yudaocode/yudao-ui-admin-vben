@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemApi } from '#/api/mes/md/item';
 import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
@@ -22,7 +24,7 @@ import { useProductBomGridColumns } from '../data';
 
 const props = withDefaults(
   defineProps<{
-    formType?: string;
+    formType?: FormType;
     itemId: number;
   }>(),
   {

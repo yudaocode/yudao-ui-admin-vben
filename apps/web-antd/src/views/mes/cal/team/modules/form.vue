@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesCalTeamApi } from '#/api/mes/cal/team';
 
 import { computed, ref } from 'vue';
@@ -15,18 +17,16 @@ import { useFormSchema } from '../data';
 import MemberList from './member-list.vue';
 
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('member'); // 当前资源页签
 const formData = ref<MesCalTeamApi.Team>();
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['班组']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['班组'])
     : $t('ui.actionTitle.create', ['班组']);
 });
@@ -62,11 +62,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesCalTeamApi.Team;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createTeam(data);
         formData.value = { ...data, id: id as number };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateTeam(data);
         formData.value = { ...formData.value, ...data };
@@ -85,10 +85,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'member';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -108,12 +108,12 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
     <Tabs
-      v-if="formMode !== 'create' && formData?.id"
+      v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
       class="mx-4 mt-4"
     >
       <Tabs.TabPane key="member" tab="班组成员">
-        <MemberList :form-type="formMode" :team-id="formData.id" />
+        <MemberList :form-type="formType" :team-id="formData.id" />
       </Tabs.TabPane>
     </Tabs>
   </Modal>

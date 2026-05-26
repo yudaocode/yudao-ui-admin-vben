@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 
 import { computed, ref } from 'vue';
@@ -29,25 +31,21 @@ import { useFormSchema } from '../data';
 import ItemConsumeList from './item-consume-list.vue';
 import ProductProduceList from './product-produce-list.vue';
 
-// TODO @AI：formType？
-type FormMode = 'approve' | 'create' | 'detail' | 'submit' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
+const formType = ref<FormType>('create');
 const formData = ref<MesProFeedbackApi.Feedback>();
 const userStore = useUserStore();
 const subTabsName = ref('itemConsume');
 
 const isEditable = computed(() =>
-  ['create', 'submit', 'update'].includes(formMode.value),
+  ['create', 'submit', 'update'].includes(formType.value),
 );
-// TODO @AI：是不是都是 isXXXX 风格？
-const canSubmitDirectly = computed(
+const canSubmit = computed(
   () =>
     isEditable.value &&
     formData.value?.status === MesProFeedbackStatusEnum.PREPARE,
 );
-const canApprove = computed(() => formMode.value === 'approve');
+const canApprove = computed(() => formType.value === 'approve');
 const showSubTabs = computed(
   () =>
     !!formData.value?.id &&
@@ -55,16 +53,16 @@ const showSubTabs = computed(
     formData.value?.status !== MesProFeedbackStatusEnum.APPROVING,
 );
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['生产报工']);
   }
-  if (formMode.value === 'approve') {
+  if (formType.value === 'approve') {
     return '审批生产报工';
   }
-  if (formMode.value === 'submit') {
+  if (formType.value === 'submit') {
     return '提交生产报工';
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['生产报工'])
     : $t('ui.actionTitle.create', ['生产报工']);
 });
@@ -84,7 +82,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 /** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
+formApi.setState({ schema: useFormSchema(formType.value, formApi) });
 
 /** 提交前对齐数量：根据 checkFlag 决定 uncheck/合格/不良归零策略 */
 function alignQuantity(data: MesProFeedbackApi.Feedback) {
@@ -112,15 +110,15 @@ async function handleSave() {
   try {
     const data = (await formApi.getValues()) as MesProFeedbackApi.Feedback;
     alignQuantity(data);
-    if (formMode.value === 'create') {
+    if (formType.value === 'create') {
       const id = await createFeedback(data);
       formData.value = {
         ...data,
         id,
         status: MesProFeedbackStatusEnum.PREPARE,
       };
-      formMode.value = 'update';
-      formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
+      formType.value = 'update';
+      formApi.setState({ schema: useFormSchema(formType.value, formApi) });
       await formApi.setFieldValue('id', id);
       message.success($t('common.createSuccess'));
     } else {
@@ -145,7 +143,7 @@ async function handleSubmit() {
     const data = (await formApi.getValues()) as MesProFeedbackApi.Feedback;
     alignQuantity(data);
     let id = formData.value?.id;
-    if (formMode.value === 'create' || !id) {
+    if (formType.value === 'create' || !id) {
       id = await createFeedback(data);
     } else {
       await updateFeedback(data);
@@ -209,7 +207,7 @@ async function resolveCheckFlag(routeId?: number, processId?: number) {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    if (formMode.value === 'detail' || formMode.value === 'approve') {
+    if (formType.value === 'detail' || formType.value === 'approve') {
       await modalApi.close();
       return;
     }
@@ -222,16 +220,16 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setState({ schema: useFormSchema(formMode.value, formApi) });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     // 审批/详情整表禁用，避免审核人误改未提交的字段
     formApi.setDisabled(
-      formMode.value === 'approve' || formMode.value === 'detail',
+      formType.value === 'approve' || formType.value === 'detail',
     );
     modalApi.setState({
       showConfirmButton:
-        formMode.value !== 'detail' && formMode.value !== 'approve',
+        formType.value !== 'detail' && formType.value !== 'approve',
     });
     await formApi.resetForm();
     if (!data?.id) {
@@ -281,7 +279,7 @@ const [Modal, modalApi] = useVbenModal({
     <template #prepend-footer>
       <div class="flex flex-auto items-center justify-end gap-2">
         <Popconfirm
-          v-if="canSubmitDirectly"
+          v-if="canSubmit"
           title="确认提交该报工单？提交后将不能修改。"
           @confirm="handleSubmit"
         >

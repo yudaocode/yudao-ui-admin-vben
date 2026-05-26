@@ -30,17 +30,17 @@ function handleRefresh() {
 
 /** 创建生产工序 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑生产工序 */
 function handleEdit(row: MesProProcessApi.Process) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 查看生产工序详情 */
 function handleDetail(row: MesProProcessApi.Process) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 删除生产工序 */

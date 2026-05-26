@@ -32,17 +32,17 @@ function handleRefresh() {
 
 /** 创建工具 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看工具 */
 function handleDetail(row: MesTmToolApi.Tool) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑工具 */
 function handleEdit(row: MesTmToolApi.Tool) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除工具 */

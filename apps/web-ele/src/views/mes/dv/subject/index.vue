@@ -26,17 +26,17 @@ function handleRefresh() {
 
 /** 创建点检保养项目 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看点检保养项目 */
 function handleDetail(row: MesDvSubjectApi.Subject) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑点检保养项目 */
 function handleEdit(row: MesDvSubjectApi.Subject) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除点检保养项目 */

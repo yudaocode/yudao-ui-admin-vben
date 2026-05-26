@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { WmsWarehouseApi } from '#/api/wms/md/warehouse';
 import type { WmsShipmentOrderApi } from '#/api/wms/order/shipment';
@@ -50,7 +52,7 @@ const emit = defineEmits<{
 }>();
 
 const formData = ref<WmsShipmentOrderApi.ShipmentOrder>({});
-const formMode = ref('create');
+const formType = ref<FormType>('create');
 const originalSubmitData = ref<WmsShipmentOrderApi.ShipmentOrder>();
 const details = ref<DetailRow[]>([]);
 const detailTableRef = ref<VxeTableInstance>();
@@ -60,7 +62,7 @@ const initializing = ref(false);
 let detailSeq = 0; // 明细行可能还没有后端 id，使用本地序号作为 VXE 行操作的稳定标识
 
 const getTitle = computed(() => {
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['出库单'])
     : $t('ui.actionTitle.create', ['出库单']);
 });
@@ -338,7 +340,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = await buildSubmitData();
     try {
-      await (formMode.value === 'update'
+      await (formType.value === 'update'
         ? updateShipmentOrder(data)
         : createShipmentOrder(data));
       // 关闭并提示
@@ -359,11 +361,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     initializing.value = true;
     await formApi.resetForm();
-    const data = modalApi.getData<{
-      id?: number;
-      type?: string;
-    }>();
-    formMode.value = data?.type || (data?.id ? 'update' : 'create');
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
     if (data?.id) {
       modalApi.lock();
       try {

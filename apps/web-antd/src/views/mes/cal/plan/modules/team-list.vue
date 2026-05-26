@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalPlanTeamApi } from '#/api/mes/cal/plan/team';
 import type { MesCalTeamApi } from '#/api/mes/cal/team';
@@ -14,7 +16,7 @@ import { getTeamMemberListByTeam } from '#/api/mes/cal/team/member';
 import { $t } from '#/locales';
 import { CalTeamSelectDialog } from '#/views/mes/cal/team/components';
 
-const props = withDefaults(defineProps<{ formType?: string; planId: number }>(), {
+const props = withDefaults(defineProps<{ formType?: FormType; planId: number }>(), {
   formType: 'update',
 });
 const isEditable = computed(() => props.formType !== 'detail'); // 是否可编辑

@@ -17,6 +17,9 @@ import { MesProWorkOrderStatusEnum } from '#/views/mes/utils/constants';
 
 import { AndonConfigSelect } from '../config/components';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -132,7 +135,7 @@ export function useGridColumns(): VxeTableGridOptions<MesProAndonRecordApi.Andon
  * - detail：所有字段只读
  */
 export function useFormSchema(
-  formType: string,
+  formType: FormType,
   formApi?: VbenFormApi,
 ): VbenFormSchema[] {
   const isCreate = formType === 'create';

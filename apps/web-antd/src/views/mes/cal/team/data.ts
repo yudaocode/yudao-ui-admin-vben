@@ -13,6 +13,9 @@ import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改班组的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

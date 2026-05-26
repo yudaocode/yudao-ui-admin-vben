@@ -22,6 +22,9 @@ import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { RouteColorPicker } from './components';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 工艺路线表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

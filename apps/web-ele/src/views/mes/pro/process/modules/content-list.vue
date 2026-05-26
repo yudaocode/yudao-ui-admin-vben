@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProProcessContentApi } from '#/api/mes/pro/process/content';
 
@@ -19,11 +21,11 @@ import { useContentGridColumns } from '../data';
 import ContentForm from './content-form.vue';
 
 const props = defineProps<{
-  formMode: 'create' | 'detail' | 'update';
+  formType: FormType;
   processId: number;
 }>();
 
-const isEditable = ref(props.formMode !== 'detail'); // 是否可编辑
+const isEditable = ref(props.formType !== 'detail'); // 是否可编辑
 const list = ref<MesProProcessContentApi.ProcessContent[]>([]);
 
 const [ContentFormModal, contentFormModalApi] = useVbenModal({

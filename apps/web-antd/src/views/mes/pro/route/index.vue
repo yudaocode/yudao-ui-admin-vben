@@ -37,17 +37,17 @@ function handleRefresh() {
 
 /** 创建工艺路线 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑工艺路线（仅停用状态可编辑） */
 function handleEdit(row: MesProRouteApi.Route) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 详情查看 */
 function handleDetail(row: MesProRouteApi.Route) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 切换状态 */

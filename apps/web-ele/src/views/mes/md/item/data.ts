@@ -16,6 +16,9 @@ import { MdItemTypeSelect } from '#/views/mes/md/item/type/components';
 import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
 import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改物料产品的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

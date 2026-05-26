@@ -45,17 +45,17 @@ function handleRowCheckboxChange({
 
 /** 新增采购退货 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑采购退货 */
 function handleEdit(row: ErpPurchaseReturnApi.PurchaseReturn) {
-  formModalApi.setData({ type: 'edit', id: row.id }).open();
+  formModalApi.setData({ formType: 'edit', id: row.id }).open();
 }
 
 /** 查看详情 */
 function handleDetail(row: ErpPurchaseReturnApi.PurchaseReturn) {
-  formModalApi.setData({ type: 'detail', id: row.id }).open();
+  formModalApi.setData({ formType: 'detail', id: row.id }).open();
 }
 
 /** 删除采购退货 */

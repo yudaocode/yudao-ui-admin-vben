@@ -24,6 +24,9 @@ import {
   MesProWorkOrderStatusEnum,
 } from '#/views/mes/utils/constants';
 
+/** 生产报工表单类型 */
+export type FormType = 'approve' | 'create' | 'detail' | 'submit' | 'update';
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -173,7 +176,7 @@ export function useGridColumns(): VxeTableGridOptions<MesProFeedbackApi.Feedback
  * - 质检工序：只填报工数量（视为待检数量）
  */
 export function useFormSchema(
-  formType: string,
+  formType: FormType,
   formApi?: VbenFormApi,
 ): VbenFormSchema[] {
   const isHeaderReadonly = ['approve', 'detail', 'submit'].includes(formType);

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesTmToolTypeApi } from '#/api/mes/tm/tool/type';
 
 import { computed, ref } from 'vue';
@@ -13,18 +15,16 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const formData = ref<MesTmToolTypeApi.ToolType>();
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['工具类型']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['工具类型'])
     : $t('ui.actionTitle.create', ['工具类型']);
 });
@@ -76,10 +76,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }

@@ -26,17 +26,17 @@ function handleRefresh() {
 
 /** 创建工具类型 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看工具类型 */
 function handleDetail(row: MesTmToolTypeApi.ToolType) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑工具类型 */
 function handleEdit(row: MesTmToolTypeApi.ToolType) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除工具类型 */

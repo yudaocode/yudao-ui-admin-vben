@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
 
 import { computed, ref } from 'vue';
@@ -18,19 +20,17 @@ import CheckRecordList from './check-record-list.vue';
 import MaintenRecordList from './mainten-record-list.vue';
 import RepairList from './repair-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('check'); // 当前资源页签
 const formData = ref<MesDvMachineryApi.Machinery>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看设备';
   }
-  return formMode.value === 'update' ? '修改设备' : '新增设备';
+  return formType.value === 'update' ? '修改设备' : '新增设备';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -48,7 +48,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 /** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi, formMode) });
+formApi.setState({ schema: useFormSchema(formType.value, formApi) });
 
 /** 查看设备条码 */
 function handleBarcode() {
@@ -94,10 +94,11 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'check';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(formType.value, formApi) });
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -116,7 +117,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formMode !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
       <ElTabPane label="点检记录" name="check">
         <CheckRecordList :machinery-id="formData.id" />
       </ElTabPane>

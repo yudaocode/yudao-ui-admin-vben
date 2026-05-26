@@ -36,17 +36,17 @@ function handleRefresh() {
 
 /** 新增记录 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 处置记录 */
 function handleHandle(row: MesProAndonRecordApi.AndonRecord) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 详情 */
 function handleDetail(row: MesProAndonRecordApi.AndonRecord) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 删除 */

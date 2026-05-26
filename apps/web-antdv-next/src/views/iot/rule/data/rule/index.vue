@@ -29,12 +29,12 @@ function handleRefresh() {
 
 /** 创建规则 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑规则 */
 function handleEdit(row: any) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除规则 */

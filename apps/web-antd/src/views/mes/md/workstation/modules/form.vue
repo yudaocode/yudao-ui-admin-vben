@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
 import { computed, ref } from 'vue';
@@ -22,20 +24,18 @@ import MachineList from './machine-list.vue';
 import ToolList from './tool-list.vue';
 import WorkerList from './worker-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('machine'); // 当前资源页签
 const formData = ref<MesMdWorkstationApi.Workstation>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看工作站';
   }
-  return formMode.value === 'update' ? '修改工作站' : '新增工作站';
+  return formType.value === 'update' ? '修改工作站' : '新增工作站';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -82,11 +82,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesMdWorkstationApi.Workstation;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createWorkstation(data);
         formData.value = { ...data, id };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateWorkstation(data);
         formData.value = { ...formData.value, ...data };
@@ -105,10 +105,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'machine';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -128,18 +128,18 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
     <Tabs
-      v-if="formMode !== 'create' && formData?.id"
+      v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
       class="mx-4 mt-4"
     >
       <Tabs.TabPane key="machine" tab="设备资源">
-        <MachineList :form-type="formMode" :workstation-id="formData.id" />
+        <MachineList :form-type="formType" :workstation-id="formData.id" />
       </Tabs.TabPane>
       <Tabs.TabPane key="tool" tab="工装夹具">
-        <ToolList :form-type="formMode" :workstation-id="formData.id" />
+        <ToolList :form-type="formType" :workstation-id="formData.id" />
       </Tabs.TabPane>
       <Tabs.TabPane key="worker" tab="人力资源">
-        <WorkerList :form-type="formMode" :workstation-id="formData.id" />
+        <WorkerList :form-type="formType" :workstation-id="formData.id" />
       </Tabs.TabPane>
     </Tabs>
     <template #prepend-footer>

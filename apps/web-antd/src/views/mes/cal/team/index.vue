@@ -26,17 +26,17 @@ function handleRefresh() {
 
 /** 创建班组 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看班组 */
 function handleDetail(row: MesCalTeamApi.Team) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑班组 */
 function handleEdit(row: MesCalTeamApi.Team) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除班组 */

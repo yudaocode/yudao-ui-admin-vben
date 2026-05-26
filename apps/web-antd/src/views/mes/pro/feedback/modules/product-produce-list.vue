@@ -37,7 +37,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          // TODO @AI：换行风格？？？
           if (!props.feedbackId) {
             return { list: [], total: 0 };
           }
@@ -49,9 +48,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
         },
       },
     },
-    // TODO @AI：换行风格；
-    rowConfig: { isHover: true, keyField: 'id' },
-    toolbarConfig: { refresh: false, search: false },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: false,
+      search: false,
+    },
   } as VxeTableGridOptions<MesWmProductProduceLineApi.ProductProduceLine>,
 });
 

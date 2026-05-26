@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesProRouteApi } from '#/api/mes/pro/route';
 
 import { computed, ref } from 'vue';
@@ -15,19 +17,17 @@ import { useFormSchema } from '../data';
 import ProcessList from './process-list.vue';
 import ProductList from './product-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTab = ref('process'); // 当前激活的子表 Tab
 const formData = ref<MesProRouteApi.Route>();
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return $t('ui.actionTitle.detail', ['工艺路线']);
   }
-  return formMode.value === 'update'
+  return formType.value === 'update'
     ? $t('ui.actionTitle.edit', ['工艺路线'])
     : $t('ui.actionTitle.create', ['工艺路线']);
 });
@@ -61,12 +61,12 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesProRouteApi.Route;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         // 新增成功后切到编辑模式，方便继续维护组成工序、关联产品
         const id = await createRoute(data);
         formData.value = { ...data, id };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateRoute(data);
         formData.value = { ...formData.value, ...data };
@@ -85,10 +85,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTab.value = 'process';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type ?? 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -109,15 +109,15 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <!-- 编辑/详情模式下展示子表 Tab，新增模式下隐藏 -->
     <Tabs
-      v-if="formMode !== 'create' && formData?.id"
+      v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTab"
       class="mx-4 mt-4"
     >
       <TabPane key="process" tab="组成工序">
-        <ProcessList :form-mode="formMode" :route-id="formData.id" />
+        <ProcessList :form-type="formType" :route-id="formData.id" />
       </TabPane>
       <TabPane key="product" tab="关联产品">
-        <ProductList :form-mode="formMode" :route-id="formData.id" />
+        <ProductList :form-type="formType" :route-id="formData.id" />
       </TabPane>
     </Tabs>
   </Modal>

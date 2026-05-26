@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvCheckPlanMachineryApi } from '#/api/mes/dv/checkplan/machinery';
 
@@ -17,7 +19,7 @@ import { $t } from '#/locales';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
 
 const props = withDefaults(
-  defineProps<{ formType?: string; planId: number; planType?: number }>(),
+  defineProps<{ formType?: FormType; planId: number; planType?: number }>(),
   { formType: 'update', planType: undefined },
 );
 const isEditable = computed(() => props.formType !== 'detail');
