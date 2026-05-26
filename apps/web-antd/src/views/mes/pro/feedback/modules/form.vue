@@ -36,6 +36,7 @@ const formType = ref<FormType>('create');
 const formData = ref<MesProFeedbackApi.Feedback>();
 const userStore = useUserStore();
 const subTabsName = ref('itemConsume');
+const originalSnapshot = ref(''); // 表单原始数据快照，用于 submit 时跳过未变更的保存请求
 
 const isEditable = computed(() =>
   ['create', 'submit', 'update'].includes(formType.value),
@@ -100,6 +101,13 @@ function alignQuantity(data: MesProFeedbackApi.Feedback) {
   }
 }
 
+/** 读取并按提交规则对齐后的表单数据，用于快照和保存 */
+async function getAlignedData(): Promise<MesProFeedbackApi.Feedback> {
+  const data = (await formApi.getValues()) as MesProFeedbackApi.Feedback;
+  alignQuantity(data);
+  return data;
+}
+
 /** 保存：create 后切换为 update 模式 */
 async function handleSave() {
   const { valid } = await formApi.validate();
@@ -108,13 +116,12 @@ async function handleSave() {
   }
   modalApi.lock();
   try {
-    const data = (await formApi.getValues()) as MesProFeedbackApi.Feedback;
-    alignQuantity(data);
+    const data = await getAlignedData();
     if (formType.value === 'create') {
       const id = await createFeedback(data);
+      data.id = id;
       formData.value = {
         ...data,
-        id,
         status: MesProFeedbackStatusEnum.PREPARE,
       };
       formType.value = 'update';
@@ -126,13 +133,15 @@ async function handleSave() {
       formData.value = { ...formData.value, ...data };
       message.success($t('common.updateSuccess'));
     }
+    // 刷新快照（已对齐数量并补 id），后续 submit 用于判断是否需要再保存
+    originalSnapshot.value = JSON.stringify(data);
     emit('success');
   } finally {
     modalApi.unlock();
   }
 }
 
-/** 提交：保存最新内容后调用提交接口 */
+/** 提交：仅当表单较快照有变更时才先保存，再调用提交接口 */
 async function handleSubmit() {
   const { valid } = await formApi.validate();
   if (!valid) {
@@ -140,15 +149,13 @@ async function handleSubmit() {
   }
   modalApi.lock();
   try {
-    const data = (await formApi.getValues()) as MesProFeedbackApi.Feedback;
-    alignQuantity(data);
-    let id = formData.value?.id;
-    if (formType.value === 'create' || !id) {
-      id = await createFeedback(data);
-    } else {
+    const data = await getAlignedData();
+    // 表单有修改时，先保存
+    if (JSON.stringify(data) !== originalSnapshot.value) {
       await updateFeedback(data);
+      originalSnapshot.value = JSON.stringify(data);
     }
-    await submitFeedback(id!);
+    await submitFeedback(formData.value!.id!);
     await modalApi.close();
     emit('success');
     message.success('报工单已提交');
@@ -217,6 +224,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       formData.value = undefined;
       subTabsName.value = 'itemConsume';
+      originalSnapshot.value = '';
       return;
     }
     // 加载数据
@@ -242,6 +250,8 @@ const [Modal, modalApi] = useVbenModal({
         feedbackTime: Date.now(),
         feedbackUserId: userStore.userInfo?.id,
       });
+      // 记录初始快照（含数量对齐结果），submit 时用于跳过无变更的保存请求
+      originalSnapshot.value = JSON.stringify(await getAlignedData());
       return;
     }
     modalApi.lock();
@@ -253,6 +263,8 @@ const [Modal, modalApi] = useVbenModal({
       );
       // 设置到 values
       await formApi.setValues({ ...formData.value, checkFlag });
+      // 记录初始快照（含数量对齐结果），submit 时用于跳过无变更的保存请求
+      originalSnapshot.value = JSON.stringify(await getAlignedData());
     } finally {
       modalApi.unlock();
     }

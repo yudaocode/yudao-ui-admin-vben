@@ -43,12 +43,11 @@ const hovering = ref(false); // 是否悬停
 const selectedItem = ref<MesProTaskApi.Task>(); // 选中的任务
 
 const displayLabel = computed(() => selectedItem.value?.code ?? ''); // 选择器展示编号
-const showClear = computed( // 是否显示清空图标
-  () =>
-    props.clearable &&
-    !props.disabled &&
-    hovering.value &&
-    props.modelValue !== undefined,
+const showClear = computed(() => // 是否显示清空图标
+  props.clearable &&
+  !props.disabled &&
+  hovering.value &&
+  props.modelValue !== undefined,
 );
 
 /** 根据任务编号回显选择器 */
