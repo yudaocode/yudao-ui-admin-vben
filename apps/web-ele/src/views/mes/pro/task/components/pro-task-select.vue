@@ -3,9 +3,9 @@ import type { MesProTaskApi } from '#/api/mes/pro/task';
 
 import { computed, ref, useAttrs, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
+import { CircleX, Search } from '@vben/icons';
 
-import { Input, Tooltip } from 'ant-design-vue';
+import { ElInput, ElTooltip } from 'element-plus';
 
 import { getTask } from '#/api/mes/pro/task';
 
@@ -15,7 +15,7 @@ defineOptions({ name: 'ProTaskSelect', inheritAttrs: false });
 
 const props = withDefaults(
   defineProps<{
-    allowClear?: boolean;
+    clearable?: boolean;
     disabled?: boolean;
     modelValue?: number;
     placeholder?: string;
@@ -24,7 +24,7 @@ const props = withDefaults(
     workstationId?: number;
   }>(),
   {
-    allowClear: true,
+    clearable: true,
     disabled: false,
     modelValue: undefined,
     placeholder: '请选择任务',
@@ -45,7 +45,7 @@ const selectedItem = ref<MesProTaskApi.Task>(); // 选中的任务
 const displayLabel = computed(() => selectedItem.value?.code ?? ''); // 选择器展示编号
 const showClear = computed( // 是否显示清空图标
   () =>
-    props.allowClear &&
+    props.clearable &&
     !props.disabled &&
     hovering.value &&
     props.modelValue !== undefined,
@@ -88,7 +88,7 @@ function handleClick(event: MouseEvent) {
     return;
   }
   const target = event.target as HTMLElement;
-  if (showClear.value && target.closest('.ant-input-suffix')) {
+  if (showClear.value && target.closest('.el-input__suffix')) {
     event.stopPropagation();
     clearSelected();
     return;
@@ -123,8 +123,8 @@ function handleSelected(rows: MesProTaskApi.Task[]) {
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
-    <Tooltip :mouse-enter-delay="0.5" :open="selectedItem ? undefined : false">
-      <template #title>
+    <ElTooltip :disabled="!selectedItem" placement="top" :show-after="500">
+      <template #content>
         <div v-if="selectedItem" class="leading-6">
           <div>任务编号：{{ selectedItem.code || '-' }}</div>
           <div>任务名称：{{ selectedItem.name || '-' }}</div>
@@ -134,20 +134,18 @@ function handleSelected(rows: MesProTaskApi.Task[]) {
           <div>规格：{{ selectedItem.itemSpecification || '-' }}</div>
         </div>
       </template>
-      <Input
+      <ElInput
         :disabled="disabled"
+        :model-value="displayLabel"
         :placeholder="placeholder"
-        :value="displayLabel"
         readonly
       >
         <template #suffix>
-          <IconifyIcon
-            class="size-4"
-            :icon="showClear ? 'lucide:circle-x' : 'lucide:search'"
-          />
+          <CircleX v-if="showClear" class="size-4" />
+          <Search v-else class="size-4" />
         </template>
-      </Input>
-    </Tooltip>
+      </ElInput>
+    </ElTooltip>
   </div>
   <ProTaskSelectDialog
     ref="dialogRef"

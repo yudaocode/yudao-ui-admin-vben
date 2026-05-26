@@ -166,10 +166,10 @@ export const MesProTaskStatusEnum = {
 /** MES 生产报工状态枚举 */
 export const MesProFeedbackStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,
-  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
   APPROVING: MesOrderStatusConstants.APPROVING,
+  UNCHECK: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
-  CANCELLED: MesOrderStatusConstants.CANCELLED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
 } as const;
 
 /** MES 流转卡状态枚举 */
