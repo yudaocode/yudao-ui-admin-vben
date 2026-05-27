@@ -139,8 +139,14 @@ export const MesAutoCodeRuleCode = {
   PRO_ROUTE_CODE: 'PRO_ROUTE_CODE',
   PRO_TASK_CODE: 'PRO_TASK_CODE',
   PRO_WORK_ORDER_CODE: 'PRO_WORK_ORDER_CODE',
+  QC_DEFECT_CODE: 'QC_DEFECT_CODE',
+  QC_INDICATOR_CODE: 'QC_INDICATOR_CODE',
+  QC_TEMPLATE_CODE: 'QC_TEMPLATE_CODE',
   TM_TOOL_TYPE_CODE: 'TM_TOOL_TYPE_CODE',
   TM_TOOL_CODE: 'TM_TOOL_CODE',
+  WM_AREA_CODE: 'WM_AREA_CODE',
+  WM_LOCATION_CODE: 'WM_LOCATION_CODE',
+  WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
 } as const;
 
 /** MES 生产工单状态枚举 */
@@ -192,6 +198,21 @@ export const MesProAndonLevelEnum = {
   LEVEL1: 1,
   LEVEL2: 2,
   LEVEL3: 3,
+} as const;
+
+/** MES 上下工状态类型枚举 */
+export const MesProWorkRecordTypeEnum = {
+  CLOCK_IN: 1,
+  CLOCK_OUT: 2,
+} as const;
+
+/** MES 质检结果值类型枚举 */
+export const MesQcResultValueType = {
+  FLOAT: 1,
+  INTEGER: 2,
+  TEXT: 3,
+  DICT: 4,
+  FILE: 5,
 } as const;
 
 /** MES 编码规则分段类型枚举 */

@@ -48,3 +48,18 @@ export function getWarehouseArea(id: number) {
     `/mes/wm/warehouse-area/get?id=${id}`,
   );
 }
+
+/** 新增库位 */
+export function createWarehouseArea(data: MesWmWarehouseAreaApi.WarehouseArea) {
+  return requestClient.post('/mes/wm/warehouse-area/create', data);
+}
+
+/** 修改库位 */
+export function updateWarehouseArea(data: MesWmWarehouseAreaApi.WarehouseArea) {
+  return requestClient.put('/mes/wm/warehouse-area/update', data);
+}
+
+/** 删除库位 */
+export function deleteWarehouseArea(id: number) {
+  return requestClient.delete(`/mes/wm/warehouse-area/delete?id=${id}`);
+}

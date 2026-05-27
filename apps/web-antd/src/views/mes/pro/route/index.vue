@@ -3,12 +3,12 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProRouteApi } from '#/api/mes/pro/route';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Modal, Tooltip } from 'ant-design-vue';
+import { Button, message, Tooltip } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -55,19 +55,12 @@ async function handleStatusChange(
   newStatus: number,
   row: MesProRouteApi.Route,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    Modal.confirm({
-      content: `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-      async onOk() {
-        await updateRouteStatus(row.id!, newStatus);
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      },
-      onCancel() {
-        reject(new Error('取消操作'));
-      },
-    });
-  });
+  await confirm(
+    `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
+  );
+  await updateRouteStatus(row.id!, newStatus);
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 /** 删除（仅停用状态可删除） */

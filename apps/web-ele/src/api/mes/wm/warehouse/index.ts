@@ -38,3 +38,18 @@ export function getWarehouse(id: number) {
     `/mes/wm/warehouse/get?id=${id}`,
   );
 }
+
+/** 新增仓库 */
+export function createWarehouse(data: MesWmWarehouseApi.Warehouse) {
+  return requestClient.post('/mes/wm/warehouse/create', data);
+}
+
+/** 修改仓库 */
+export function updateWarehouse(data: MesWmWarehouseApi.Warehouse) {
+  return requestClient.put('/mes/wm/warehouse/update', data);
+}
+
+/** 删除仓库 */
+export function deleteWarehouse(id: number) {
+  return requestClient.delete(`/mes/wm/warehouse/delete?id=${id}`);
+}

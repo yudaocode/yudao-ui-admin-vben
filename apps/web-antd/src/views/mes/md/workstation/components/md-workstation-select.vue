@@ -50,7 +50,7 @@ const showClear = computed(
 
 /** 根据工作站编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id === null) {
+  if (id == null) {
     selectedItem.value = undefined;
     return;
   }
@@ -58,7 +58,7 @@ async function resolveItemById(id: number | undefined) {
     return;
   }
   try {
-    selectedItem.value = await getWorkstation(id as number);
+    selectedItem.value = await getWorkstation(id);
   } catch (error) {
     console.error('[MdWorkstationSelect] resolveItemById failed:', error);
   }
@@ -90,8 +90,8 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue === null ? [] : [props.modelValue];
-  dialogRef.value?.open(selectedIds as number[], { multiple: false });
+  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds, { multiple: false });
 }
 
 /** 回填选中的工作站 */
