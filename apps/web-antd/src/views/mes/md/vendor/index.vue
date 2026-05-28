@@ -32,17 +32,17 @@ function handleRefresh() {
 
 /** 创建供应商 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看供应商 */
 function handleDetail(row: MesMdVendorApi.Vendor) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑供应商 */
 function handleEdit(row: MesMdVendorApi.Vendor) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除供应商 */

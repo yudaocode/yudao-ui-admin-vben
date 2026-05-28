@@ -38,3 +38,35 @@ export function getWarehouseLocation(id: number) {
     `/mes/wm/warehouse-location/get?id=${id}`,
   );
 }
+
+/** 新增库区 */
+export function createWarehouseLocation(
+  data: MesWmWarehouseLocationApi.WarehouseLocation,
+) {
+  return requestClient.post('/mes/wm/warehouse-location/create', data);
+}
+
+/** 修改库区 */
+export function updateWarehouseLocation(
+  data: MesWmWarehouseLocationApi.WarehouseLocation,
+) {
+  return requestClient.put('/mes/wm/warehouse-location/update', data);
+}
+
+/** 删除库区 */
+export function deleteWarehouseLocation(id: number) {
+  return requestClient.delete(`/mes/wm/warehouse-location/delete?id=${id}`);
+}
+
+/** 批量设置库区下所有库位的混放规则 */
+export function updateAreaByLocationId(
+  locationId: number,
+  allowItemMixing?: boolean,
+  allowBatchMixing?: boolean,
+) {
+  return requestClient.put(
+    '/mes/wm/warehouse-location/update-by-location-id',
+    null,
+    { params: { allowBatchMixing, allowItemMixing, locationId } },
+  );
+}

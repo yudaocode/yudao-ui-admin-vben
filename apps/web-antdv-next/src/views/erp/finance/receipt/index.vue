@@ -42,12 +42,12 @@ async function handleExport() {
 
 /** 新增收款单 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑收款单 */
 function handleEdit(row: ErpFinanceReceiptApi.FinanceReceipt) {
-  formModalApi.setData({ type: 'edit', id: row.id }).open();
+  formModalApi.setData({ formType: 'edit', id: row.id }).open();
 }
 
 /** 删除收款单 */
@@ -94,7 +94,7 @@ function handleRowCheckboxChange({
 
 /** 查看详情 */
 function handleDetail(row: ErpFinanceReceiptApi.FinanceReceipt) {
-  formModalApi.setData({ type: 'detail', id: row.id }).open();
+  formModalApi.setData({ formType: 'detail', id: row.id }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

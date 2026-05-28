@@ -64,25 +64,22 @@ async function handleStatusChange(
   newStatus: number,
   row: PayAppApi.App,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    const text = newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用';
-    confirm({
+  const text = newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用';
+  try {
+    await confirm({
       content: `确认要${text + row.name}应用吗?`,
-    })
-      .then(async () => {
-        // 更新状态
-        await updateAppStatus({
-          id: row.id!,
-          status: newStatus,
-        });
-        // 提示并返回成功
-        ElMessage.success(`${text}成功`);
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新状态
+  await updateAppStatus({
+    id: row.id!,
+    status: newStatus,
   });
+  // 提示并返回成功
+  ElMessage.success(`${text}成功`);
+  return true;
 }
 
 /** 生成渠道配置按钮 */

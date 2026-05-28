@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalPlanShiftApi } from '#/api/mes/cal/plan/shift';
 
@@ -16,7 +18,7 @@ import {
 } from '#/api/mes/cal/plan/shift';
 import { $t } from '#/locales';
 
-const props = withDefaults(defineProps<{ formType?: string; planId: number }>(), {
+const props = withDefaults(defineProps<{ formType?: FormType; planId: number }>(), {
   formType: 'update',
 });
 const isEditable = computed(() => props.formType !== 'detail'); // 是否可编辑

@@ -38,7 +38,7 @@ export function getBarcode(id: number) {
 export function getBarcodeByBusiness(bizType: number, bizId: number) {
   return requestClient.get<MesWmBarcodeApi.Barcode>(
     '/mes/wm/barcode/get-by-business',
-    { params: { bizType, bizId } },
+    { params: { bizId, bizType } },
   );
 }
 
@@ -57,9 +57,14 @@ export function deleteBarcode(id: number) {
   return requestClient.delete(`/mes/wm/barcode/delete?id=${id}`);
 }
 
+/** 导出条码 */
+export function exportBarcode(params: any) {
+  return requestClient.download('/mes/wm/barcode/export-excel', { params });
+}
+
 /** 生成条码内容 */
 export function generateBarcodeContent(bizType: number, bizCode: string) {
   return requestClient.get<string>('/mes/wm/barcode/generate-content', {
-    params: { bizType, bizCode },
+    params: { bizCode, bizType },
   });
 }

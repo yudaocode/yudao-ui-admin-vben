@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesDvMaintenRecordApi } from '#/api/mes/dv/maintenrecord';
 
 import { computed, ref } from 'vue';
@@ -21,22 +23,20 @@ import { MesDvMaintenRecordStatusEnum } from '#/views/mes/utils/constants';
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
 const userStore = useUserStore();
-const formMode = ref<FormMode>('create');
+const formType = ref<FormType>('create');
 const formData = ref<MesDvMaintenRecordApi.MaintenRecord>();
-const isDetail = computed(() => formMode.value === 'detail');
+const isDetail = computed(() => formType.value === 'detail');
 const canSubmit = computed(
   () =>
-    formMode.value === 'update' && formData.value?.status === MesDvMaintenRecordStatusEnum.PREPARE,
+    formType.value === 'update' && formData.value?.status === MesDvMaintenRecordStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看保养记录';
   }
-  return formMode.value === 'update' ? '修改保养记录' : '新增保养记录';
+  return formType.value === 'update' ? '修改保养记录' : '新增保养记录';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createMaintenRecord(data);
         formData.value = {
           ...data,
@@ -94,7 +94,7 @@ const [Modal, modalApi] = useVbenModal({
           status: MesDvMaintenRecordStatusEnum.PREPARE,
         };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateMaintenRecord(data);
         formData.value = { ...formData.value, ...data };
@@ -112,10 +112,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       await formApi.setFieldValue('userId', userStore.userInfo?.id);
       return;

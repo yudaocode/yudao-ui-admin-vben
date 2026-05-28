@@ -18,6 +18,9 @@ import {
   MesDvSubjectTypeEnum,
 } from '#/views/mes/utils/constants';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改点检保养方案的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [

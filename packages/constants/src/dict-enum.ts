@@ -213,9 +213,14 @@ const MES_DICT = {
   MES_PRO_WORK_RECORD_TYPE: 'mes_pro_work_record_type', // MES 上下工状态类型
   MES_TIME_UNIT_TYPE: 'mes_time_unit_type', // MES 时间单位
   MES_ORDER_STATUS: 'mes_order_status', // MES 单据状态
+  MES_INDICATOR_TYPE: 'mes_indicator_type', // MES 检测项类型
+  MES_QC_RESULT_TYPE: 'mes_qc_result_type', // MES 质检结果值类型
+  MES_QC_TYPE: 'mes_qc_type', // MES 质检方案类型
+  MES_DEFECT_LEVEL: 'mes_defect_level', // MES 缺陷等级
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
+  MES_WM_QUALITY_STATUS: 'mes_wm_quality_status', // MES 质量状态
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

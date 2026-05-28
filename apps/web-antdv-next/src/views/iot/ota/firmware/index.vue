@@ -32,12 +32,12 @@ function handleRefresh() {
 
 /** 创建固件 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑固件 */
 function handleEdit(row: IoTOtaFirmwareApi.Firmware) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除固件 */

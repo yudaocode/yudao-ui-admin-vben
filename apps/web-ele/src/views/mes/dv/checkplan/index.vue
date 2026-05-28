@@ -34,17 +34,17 @@ function handleRefresh() {
 
 /** 创建点检计划 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看点检计划 */
 function handleDetail(row: MesDvCheckPlanApi.CheckPlan) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑点检计划 */
 function handleEdit(row: MesDvCheckPlanApi.CheckPlan) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除点检计划 */
@@ -112,14 +112,20 @@ function getTableActions(row: MesDvCheckPlanApi.CheckPlan): ActionItem[] {
           type: 'warning',
           link: true,
           auth: ['mes:dv-check-plan:update'],
-          onClick: handleEnable.bind(null, row),
+          popConfirm: {
+            title: `确认启用"${row.name}"点检保养方案？启用后将不可修改或删除。`,
+            confirm: handleEnable.bind(null, row),
+          },
         }
       : {
           label: '停用',
           type: 'warning',
           link: true,
           auth: ['mes:dv-check-plan:update'],
-          onClick: handleDisable.bind(null, row),
+          popConfirm: {
+            title: `确认停用"${row.name}"点检保养方案？`,
+            confirm: handleDisable.bind(null, row),
+          },
         },
   );
   return actions;

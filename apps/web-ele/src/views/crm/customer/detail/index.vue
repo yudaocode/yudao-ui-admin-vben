@@ -101,41 +101,35 @@ function handleTransfer() {
 }
 
 /** 锁定客户 */
-function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
+  try {
+    await confirm({
       content: `确定锁定客户【${customer.value.name}】吗？`,
-    })
-      .then(async () => {
-        // 锁定客户
-        await lockCustomer(customerId.value, lockStatus);
-        // 提示并返回成功
-        ElMessage.success(lockStatus ? '锁定客户成功' : '解锁客户成功');
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 锁定客户
+  await lockCustomer(customerId.value, lockStatus);
+  // 提示并返回成功
+  ElMessage.success(lockStatus ? '锁定客户成功' : '解锁客户成功');
+  return true;
 }
 
 /** 领取客户 */
-function handleReceive(): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+async function handleReceive(): Promise<boolean | undefined> {
+  try {
+    await confirm({
       content: `确定领取客户【${customer.value.name}】吗？`,
-    })
-      .then(async () => {
-        // 领取客户
-        await receiveCustomer([customerId.value]);
-        // 提示并返回成功
-        ElMessage.success('领取客户成功');
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 领取客户
+  await receiveCustomer([customerId.value]);
+  // 提示并返回成功
+  ElMessage.success('领取客户成功');
+  return true;
 }
 
 /** 分配客户 */
@@ -144,42 +138,36 @@ function handleDistributeForm() {
 }
 
 /** 客户放入公海 */
-function handlePutPool(): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+async function handlePutPool(): Promise<boolean | undefined> {
+  try {
+    await confirm({
       content: `确定将客户【${customer.value.name}】放入公海吗？`,
-    })
-      .then(async () => {
-        // 放入公海
-        await putCustomerPool(customerId.value);
-        // 提示并返回成功
-        ElMessage.success('放入公海成功');
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 放入公海
+  await putCustomerPool(customerId.value);
+  // 提示并返回成功
+  ElMessage.success('放入公海成功');
+  return true;
 }
 
 /** 更新成交状态操作 */
 async function handleUpdateDealStatus(): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    const dealStatus = !customer.value.dealStatus;
-    confirm({
+  const dealStatus = !customer.value.dealStatus;
+  try {
+    await confirm({
       content: `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
-    })
-      .then(async () => {
-        // 更新成交状态
-        await updateCustomerDealStatus(customerId.value, dealStatus);
-        // 提示并返回成功
-        ElMessage.success('更新成交状态成功');
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 更新成交状态
+  await updateCustomerDealStatus(customerId.value, dealStatus);
+  // 提示并返回成功
+  ElMessage.success('更新成交状态成功');
+  return true;
 }
 
 /** 加载数据 */

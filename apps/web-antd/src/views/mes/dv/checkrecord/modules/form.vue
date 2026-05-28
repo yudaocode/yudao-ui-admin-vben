@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesDvCheckRecordApi } from '#/api/mes/dv/checkrecord';
 
 import { computed, ref } from 'vue';
@@ -20,20 +22,18 @@ import { MesDvCheckRecordStatusEnum } from '#/views/mes/utils/constants';
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
+const formType = ref<FormType>('create');
 const formData = ref<MesDvCheckRecordApi.CheckRecord>();
-const isDetail = computed(() => formMode.value === 'detail');
+const isDetail = computed(() => formType.value === 'detail');
 const canSubmit = computed(
-  () => formMode.value === 'update' && formData.value?.status === MesDvCheckRecordStatusEnum.DRAFT,
+  () => formType.value === 'update' && formData.value?.status === MesDvCheckRecordStatusEnum.DRAFT,
 );
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看点检记录';
   }
-  return formMode.value === 'update' ? '修改点检记录' : '新增点检记录';
+  return formType.value === 'update' ? '修改点检记录' : '新增点检记录';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -83,11 +83,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesDvCheckRecordApi.CheckRecord;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createCheckRecord(data);
         formData.value = { ...data, id: id as number, status: MesDvCheckRecordStatusEnum.DRAFT };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateCheckRecord(data);
         formData.value = { ...formData.value, ...data };
@@ -105,10 +105,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }

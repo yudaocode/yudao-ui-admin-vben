@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 
 import { computed, ref } from 'vue';
@@ -16,18 +18,16 @@ import { useFormSchema } from '../data';
 import MachineryList from './machinery-list.vue';
 import SubjectList from './subject-list.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create');
+const formType = ref<FormType>('create');
 const subTabsName = ref('machinery');
 const formData = ref<MesDvCheckPlanApi.CheckPlan>();
-const isDetail = computed(() => formMode.value === 'detail');
+const isDetail = computed(() => formType.value === 'detail');
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看点检保养方案';
   }
-  return formMode.value === 'update' ? '修改点检保养方案' : '新增点检保养方案';
+  return formType.value === 'update' ? '修改点检保养方案' : '新增点检保养方案';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -61,11 +61,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesDvCheckPlanApi.CheckPlan;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createCheckPlan(data);
         formData.value = { ...data, id: id as number, status: MesDvCheckPlanStatusEnum.PREPARE };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
       } else {
         await updateCheckPlan(data);
         formData.value = { ...formData.value, ...data };
@@ -84,10 +84,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'machinery';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -105,12 +105,12 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formMode !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
       <ElTabPane label="设备" name="machinery">
-        <MachineryList :form-type="formMode" :plan-id="formData.id" />
+        <MachineryList :form-type="formType" :plan-id="formData.id" />
       </ElTabPane>
       <ElTabPane label="项目" name="subject">
-        <SubjectList :form-type="formMode" :plan-id="formData.id" :plan-type="formData.type" />
+        <SubjectList :form-type="formType" :plan-id="formData.id" :plan-type="formData.type" />
       </ElTabPane>
     </ElTabs>
   </Modal>

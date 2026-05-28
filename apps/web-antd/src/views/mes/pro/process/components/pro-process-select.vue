@@ -39,12 +39,13 @@ const selectValue = computed({
   },
 });
 
+/** 前端过滤：按工序名称或编码模糊匹配 */
 function handleFilter(input: string, option: any) {
   const keyword = input.toLowerCase();
   const item = option?.item as MesProProcessApi.Process | undefined;
   return Boolean(
     item?.name?.toLowerCase().includes(keyword) ||
-    item?.code?.toLowerCase().includes(keyword),
+      item?.code?.toLowerCase().includes(keyword),
   );
 }
 

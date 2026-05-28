@@ -56,23 +56,20 @@ async function handleStatusChange(
   newStatus: number,
   row: MallSeckillConfigApi.SeckillConfig,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    // 二次确认
-    const text = row.status === 0 ? '启用' : '停用';
-    confirm({
+  // 二次确认
+  const text = row.status === 0 ? '启用' : '停用';
+  try {
+    await confirm({
       content: `确认要${text + row.name}吗?`,
-    })
-      .then(async () => {
-        // 更新状态
-        await updateSeckillConfigStatus(row.id, newStatus);
-        // 提示并返回成功
-        ElMessage.success(`${text}成功`);
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 更新状态
+  await updateSeckillConfigStatus(row.id, newStatus);
+  // 提示并返回成功
+  ElMessage.success(`${text}成功`);
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

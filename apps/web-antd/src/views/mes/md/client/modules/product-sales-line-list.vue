@@ -21,7 +21,7 @@ const [ItemFormModal, itemFormModalApi] = useVbenModal({
 
 /** 查看物料详情 */
 function handleViewItem(row: MesWmProductSalesLineApi.ProductSalesLine) {
-  itemFormModalApi.setData({ id: row.itemId, type: 'detail' }).open();
+  itemFormModalApi.setData({ id: row.itemId, formType: 'detail' }).open();
 }
 
 const [Grid] = useVbenVxeGrid({

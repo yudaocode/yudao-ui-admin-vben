@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalTeamMemberApi } from '#/api/mes/cal/team/member';
 
@@ -16,7 +18,7 @@ import {
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
-const props = withDefaults(defineProps<{ formType?: string; teamId: number }>(), {
+const props = withDefaults(defineProps<{ formType?: FormType; teamId: number }>(), {
   formType: 'update',
 });
 const isEditable = computed(() => ['create', 'update'].includes(props.formType)); // 是否可编辑

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { ErpFinanceReceiptApi } from '#/api/erp/finance/receipt';
 
 import { computed, ref } from 'vue';
@@ -40,7 +42,7 @@ const formData = ref<
   status: 0,
 });
 
-const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
+const formType = ref<FormType>('create'); // 表单类型：'create' | 'edit' | 'detail'
 const itemFormRef = ref<InstanceType<typeof ItemForm>>();
 
 const getTitle = computed(() => {
@@ -159,8 +161,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type: string }>();
-    formType.value = data.type;
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
     formApi.setDisabled(formType.value === 'detail');
     formApi.updateSchema(useFormSchema(formType.value));
     if (!data || !data.id) {

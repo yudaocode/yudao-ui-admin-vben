@@ -32,17 +32,17 @@ function handleRefresh() {
 
 /** 创建客户 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看客户 */
 function handleDetail(row: MesMdClientApi.Client) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑客户 */
 function handleEdit(row: MesMdClientApi.Client) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除客户 */

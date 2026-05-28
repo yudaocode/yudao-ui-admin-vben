@@ -38,24 +38,21 @@ async function handleUpdatePublicStatusChange(
   row: AiImageApi.Image,
 ): Promise<boolean | undefined> {
   const text = newStatus ? '公开' : '私有';
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `确认要将该图片切换为【${text}】吗？`,
-    })
-      .then(async () => {
-        // 更新图片状态
-        await updateImage({
-          id: row.id,
-          publicStatus: newStatus,
-        });
-        // 提示并返回成功
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新图片状态
+  await updateImage({
+    id: row.id,
+    publicStatus: newStatus,
   });
+  // 提示并返回成功
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

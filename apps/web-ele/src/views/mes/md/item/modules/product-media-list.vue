@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesMdProductSipApi } from '#/api/mes/md/item/productSip';
 import type { MesMdProductSopApi } from '#/api/mes/md/item/productSop';
 
@@ -35,7 +37,7 @@ type MediaItem = MesMdProductSipApi.ProductSip | MesMdProductSopApi.ProductSop;
 
 const props = withDefaults(
   defineProps<{
-    formType?: string;
+    formType?: FormType;
     itemId: number;
     kind: MediaKind;
   }>(),

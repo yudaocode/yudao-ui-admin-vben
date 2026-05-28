@@ -21,6 +21,8 @@
   "detail": "Detail",
   "yes": "Yes",
   "no": "No",
+  "submit": "Submit",
+  "approve": "Approve",
   "showSearchPanel": "Show search panel",
   "hideSearchPanel": "Hide search panel"
 }

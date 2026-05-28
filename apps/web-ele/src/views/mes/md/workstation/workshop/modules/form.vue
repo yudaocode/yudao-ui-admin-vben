@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesMdWorkshopApi } from '#/api/mes/md/workstation/workshop';
 
 import { computed, ref } from 'vue';
@@ -19,19 +21,17 @@ import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const formData = ref<MesMdWorkshopApi.Workshop>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  if (formMode.value === 'detail') {
+  if (formType.value === 'detail') {
     return '查看车间';
   }
-  return formMode.value === 'update' ? '修改车间' : '新增车间';
+  return formType.value === 'update' ? '修改车间' : '新增车间';
 });
 
 const [Form, formApi] = useVbenForm({
@@ -94,10 +94,10 @@ const [Modal, modalApi] = useVbenModal({
     }
     await formApi.resetForm();
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
