@@ -59,6 +59,13 @@ const deptLevelLabel = computed(() => {
   return label;
 });
 
+// 定义 TreeSelect 的默认属性映射
+const defaultProps = {
+  children: 'children',
+  label: 'name',
+  value: 'id',
+};
+
 // 抽屉配置
 const [Drawer, drawerApi] = useVbenDrawer({
   header: true,
@@ -282,12 +289,8 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
               <ElTreeSelect
                 v-model="configForm.deptIds"
                 :data="deptTreeOptions"
-                :props="{
-                  label: 'name',
-                  // @ts-expect-error: dynamic node config access is narrower than runtime shape
-                  value: 'id',
-                  children: 'children',
-                }"
+                node-key="id"
+                :props="defaultProps"
                 empty-text="加载中，请稍候"
                 multiple
                 :check-strictly="true"
