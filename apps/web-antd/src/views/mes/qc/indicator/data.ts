@@ -1,0 +1,315 @@
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesQcIndicatorApi } from '#/api/mes/qc/indicator';
+
+import { h } from 'vue';
+
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { Button } from 'ant-design-vue';
+
+import { generateAutoCode } from '#/api/mes/md/autocode/record';
+import { getSimpleDictTypeList } from '#/api/system/dict/type';
+import {
+  MesAutoCodeRuleCode,
+  MesQcResultValueType,
+} from '#/views/mes/utils/constants';
+
+/** 新增/修改的表单 */
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'code',
+      label: '检测项编码',
+      component: 'Input',
+      componentProps: {
+        maxlength: 64,
+        placeholder: '请输入检测项编码',
+      },
+      rules: 'required',
+      suffix: () =>
+        h(
+          Button,
+          {
+            type: 'default',
+            onClick: async () => {
+              try {
+                const code = await generateAutoCode(
+                  MesAutoCodeRuleCode.QC_INDICATOR_CODE,
+                );
+                await formApi?.setFieldValue('code', code);
+              } catch (error) {
+                console.error(error);
+              }
+            },
+          },
+          { default: () => '自动生成' },
+        ),
+    },
+    {
+      fieldName: 'name',
+      label: '检测项名称',
+      component: 'Input',
+      componentProps: {
+        maxlength: 100,
+        placeholder: '请输入检测项名称',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'type',
+      label: '检测项类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_INDICATOR_TYPE, 'number'),
+        placeholder: '请选择检测项类型',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'tool',
+      label: '检测工具',
+      component: 'Input',
+      componentProps: {
+        maxlength: 100,
+        placeholder: '请输入检测工具',
+      },
+    },
+    {
+      fieldName: 'resultType',
+      label: '结果值类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        // 结果值类型变化时清空结果值属性
+        onChange: () =>
+          formApi?.setFieldValue('resultSpecification', undefined),
+        options: getDictOptions(DICT_TYPE.MES_QC_RESULT_TYPE, 'number'),
+        placeholder: '请选择结果值类型',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'resultSpecification',
+      label: '文件类型',
+      component: 'RadioGroup',
+      componentProps: {
+        options: [
+          { label: '图片/照片', value: 'IMG' },
+          { label: '文件', value: 'FILE' },
+        ],
+      },
+      dependencies: {
+        triggerFields: ['resultType'],
+        show: (values) => values.resultType === MesQcResultValueType.FILE,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'resultSpecification',
+      label: '字典类型',
+      component: 'ApiSelect',
+      componentProps: {
+        allowClear: true,
+        api: getSimpleDictTypeList,
+        filterOption: (input: string, option: any) =>
+          (option.label as string).toLowerCase().includes(input.toLowerCase()),
+        labelField: 'name',
+        placeholder: '请选择字典类型',
+        showSearch: true,
+        valueField: 'type',
+      },
+      dependencies: {
+        triggerFields: ['resultType'],
+        show: (values) => values.resultType === MesQcResultValueType.DICT,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        maxlength: 250,
+        placeholder: '请输入备注',
+        rows: 3,
+      },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '检测项编码',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入检测项编码',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '检测项名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入检测项名称',
+      },
+    },
+    {
+      fieldName: 'type',
+      label: '检测项类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_INDICATOR_TYPE, 'number'),
+        placeholder: '请选择检测项类型',
+      },
+    },
+    {
+      fieldName: 'resultType',
+      label: '结果值类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_QC_RESULT_TYPE, 'number'),
+        placeholder: '请选择结果值类型',
+      },
+    },
+  ];
+}
+
+/** 列表的字段 */
+export function useGridColumns(): VxeTableGridOptions<MesQcIndicatorApi.Indicator>['columns'] {
+  return [
+    {
+      field: 'code',
+      title: '检测项编码',
+      width: 140,
+    },
+    {
+      field: 'name',
+      title: '检测项名称',
+      minWidth: 160,
+    },
+    {
+      field: 'type',
+      title: '检测项类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_INDICATOR_TYPE },
+      },
+    },
+    {
+      field: 'tool',
+      title: '检测工具',
+      width: 140,
+    },
+    {
+      field: 'resultType',
+      title: '结果值类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_QC_RESULT_TYPE },
+      },
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 160,
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 160,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 选择弹窗的搜索表单 */
+export function useSelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '检测项名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入检测项名称',
+      },
+    },
+    {
+      fieldName: 'type',
+      label: '检测项类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_INDICATOR_TYPE, 'number'),
+        placeholder: '请选择检测项类型',
+      },
+    },
+  ];
+}
+
+/** 选择弹窗的字段 */
+export function useSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesQcIndicatorApi.Indicator>['columns'] {
+  return [
+    {
+      type: multiple ? 'checkbox' : 'radio',
+      width: 50,
+    },
+    {
+      field: 'code',
+      title: '检测项编码',
+      width: 140,
+    },
+    {
+      field: 'name',
+      title: '检测项名称',
+      minWidth: 160,
+    },
+    {
+      field: 'type',
+      title: '检测项类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_INDICATOR_TYPE },
+      },
+    },
+    {
+      field: 'tool',
+      title: '检测工具',
+      width: 120,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 140,
+    },
+  ];
+}
