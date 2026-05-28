@@ -55,7 +55,11 @@ async function handleClockIn() {
 
 /** 下工 */
 async function handleClockOut() {
-  await confirm('确认下工当前工作站？');
+  try {
+    await confirm('确认下工当前工作站？');
+  } catch {
+    return;
+  }
   await clockOutWorkRecord();
   ElMessage.success('下工成功');
   await loadMyWorkstation();

@@ -86,26 +86,23 @@ async function handleBrokerageEnabledChange(
   newEnabled: boolean,
   row: MallBrokerageUserApi.BrokerageUser,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    const text = newEnabled ? '开通' : '关闭';
-    confirm({
+  const text = newEnabled ? '开通' : '关闭';
+  try {
+    await confirm({
       content: `你要将${row.nickname}的推广资格切换为【${text}】吗？`,
-    })
-      .then(async () => {
-        // 更新推广资格
-        await updateBrokerageEnabled({
-          id: row.id!,
-          enabled: newEnabled,
-        });
-        // 提示并返回成功
-        ElMessage.success($t('ui.actionMessage.operationSuccess'));
-        handleRefresh();
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新推广资格
+  await updateBrokerageEnabled({
+    id: row.id!,
+    enabled: newEnabled,
   });
+  // 提示并返回成功
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  handleRefresh();
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

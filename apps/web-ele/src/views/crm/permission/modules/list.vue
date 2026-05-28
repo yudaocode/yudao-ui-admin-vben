@@ -94,32 +94,28 @@ function handleEdit() {
 }
 
 /** 删除团队成员 */
-function handleDelete() {
+async function handleDelete() {
   if (checkedRows.value.length === 0) {
     ElMessage.error('请先选择团队成员后操作！');
     return;
   }
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `你要将${checkedRows.value.map((item) => item.nickname).join(',')}移出团队吗？`,
-    })
-      .then(async () => {
-        const res = await deletePermissionBatch(
-          checkedRows.value.map((item) => item.id!),
-        );
-        if (res) {
-          // 提示并返回成功
-          ElMessage.success($t('ui.actionMessage.operationSuccess'));
-          handleRefresh();
-          resolve(true);
-        } else {
-          reject(new Error('移出失败'));
-        }
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  const res = await deletePermissionBatch(
+    checkedRows.value.map((item) => item.id!),
+  );
+  if (!res) {
+    throw new Error('移出失败');
+  }
+  // 提示并返回成功
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  handleRefresh();
+  return true;
 }
 
 /** 退出团队 */

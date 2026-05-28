@@ -83,21 +83,18 @@ function handleTransfer() {
 
 /** 转化为客户 */
 async function handleTransform(): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: '确定将该线索转化为客户吗？',
-    })
-      .then(async () => {
-        // 转化为客户
-        await transformClue(clueId.value);
-        // 提示并返回成功
-        message.success('转化客户成功');
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 转化为客户
+  await transformClue(clueId.value);
+  // 提示并返回成功
+  message.success('转化客户成功');
+  return true;
 }
 
 /** 加载数据 */

@@ -112,14 +112,20 @@ function getTableActions(row: MesDvCheckPlanApi.CheckPlan): ActionItem[] {
           type: 'warning',
           link: true,
           auth: ['mes:dv-check-plan:update'],
-          onClick: handleEnable.bind(null, row),
+          popConfirm: {
+            title: `确认启用"${row.name}"点检保养方案？启用后将不可修改或删除。`,
+            confirm: handleEnable.bind(null, row),
+          },
         }
       : {
           label: '停用',
           type: 'warning',
           link: true,
           auth: ['mes:dv-check-plan:update'],
-          onClick: handleDisable.bind(null, row),
+          popConfirm: {
+            title: `确认停用"${row.name}"点检保养方案？`,
+            confirm: handleDisable.bind(null, row),
+          },
         },
   );
   return actions;

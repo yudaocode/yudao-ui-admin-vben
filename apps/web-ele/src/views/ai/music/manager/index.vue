@@ -37,24 +37,21 @@ async function handleUpdatePublicStatusChange(
   row: AiMusicApi.Music,
 ): Promise<boolean | undefined> {
   const text = newStatus ? '公开' : '私有';
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `确认要将该音乐切换为【${text}】吗？`,
-    })
-      .then(async () => {
-        // 更新音乐状态
-        await updateMusic({
-          id: row.id,
-          publicStatus: newStatus,
-        });
-        // 提示并返回成功
-        ElMessage.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新音乐状态
+  await updateMusic({
+    id: row.id,
+    publicStatus: newStatus,
   });
+  // 提示并返回成功
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

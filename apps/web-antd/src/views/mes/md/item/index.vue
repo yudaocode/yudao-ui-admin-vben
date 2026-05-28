@@ -96,19 +96,16 @@ async function handleStatusChange(
   newStatus: number,
   row: MesMdItemApi.Item,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    Modal.confirm({
-      content: `确认要将“${row.name}”物料切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-      async onOk() {
-        await updateItemStatus(row.id!, newStatus);
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      },
-      onCancel() {
-        reject(new Error('取消操作'));
-      },
-    });
-  });
+  try {
+    await confirm(
+      `确认要将"${row.name}"物料切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
+    );
+  } catch {
+    return false;
+  }
+  await updateItemStatus(row.id!, newStatus);
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

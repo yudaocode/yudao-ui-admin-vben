@@ -62,25 +62,22 @@ async function handleStatusChange(
   newStatus: boolean,
   row: MallCommentApi.Comment,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    const text = newStatus ? '展示' : '隐藏';
-    confirm({
+  const text = newStatus ? '展示' : '隐藏';
+  try {
+    await confirm({
       content: `确认要${text}该评论吗？`,
-    })
-      .then(async () => {
-        // 更新状态
-        await updateCommentVisible({
-          id: row.id!,
-          visible: newStatus,
-        });
-        // 提示并返回成功
-        ElMessage.success(`${text}成功`);
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新状态
+  await updateCommentVisible({
+    id: row.id!,
+    visible: newStatus,
   });
+  // 提示并返回成功
+  ElMessage.success(`${text}成功`);
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

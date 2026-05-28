@@ -55,9 +55,13 @@ async function handleStatusChange(
   newStatus: number,
   row: MesProRouteApi.Route,
 ): Promise<boolean | undefined> {
-  await confirm(
-    `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-  );
+  try {
+    await confirm(
+      `确认要将"${row.name}"工艺路线切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
+    );
+  } catch {
+    return false;
+  }
   await updateRouteStatus(row.id!, newStatus);
   message.success($t('ui.actionMessage.operationSuccess'));
   return true;

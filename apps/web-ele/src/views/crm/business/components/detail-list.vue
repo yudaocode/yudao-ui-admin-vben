@@ -74,28 +74,24 @@ async function handleDeleteContactBusinessList() {
     ElMessage.error('请先选择商机后操作！');
     return;
   }
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `确定要将${checkedRows.value.map((item) => item.name).join(',')}解除关联吗？`,
-    })
-      .then(async () => {
-        const res = await deleteContactBusinessList({
-          contactId: props.bizId,
-          businessIds: checkedRows.value.map((item) => item.id),
-        });
-        if (res) {
-          // 提示并返回成功
-          ElMessage.success($t('ui.actionMessage.operationSuccess'));
-          handleRefresh();
-          resolve(true);
-        } else {
-          reject(new Error($t('ui.actionMessage.operationFailed')));
-        }
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  const res = await deleteContactBusinessList({
+    contactId: props.bizId,
+    businessIds: checkedRows.value.map((item) => item.id),
   });
+  if (!res) {
+    throw new Error($t('ui.actionMessage.operationFailed'));
+  }
+  // 提示并返回成功
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  handleRefresh();
+  return true;
 }
 
 /** 查看商机详情 */
