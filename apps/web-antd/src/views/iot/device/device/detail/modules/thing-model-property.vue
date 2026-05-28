@@ -207,6 +207,13 @@ function handleQuery() {
   }
 }
 
+/** 搜索关键词变化 */
+function handleKeywordChange(event: Event) {
+  if (!(event.target as HTMLInputElement).value) {
+    handleQuery();
+  }
+}
+
 /** 视图切换 */
 async function handleViewModeChange(mode: 'card' | 'list') {
   if (viewMode.value === mode) {
@@ -281,6 +288,7 @@ onBeforeUnmount(() => {
           allow-clear
           placeholder="请输入属性名称、标识符"
           style="width: 240px"
+          @change="handleKeywordChange"
           @press-enter="handleQuery"
         />
         <Switch

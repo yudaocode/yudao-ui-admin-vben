@@ -35,6 +35,10 @@ function handleEdit(row: IotDeviceGroupApi.DeviceGroup) {
 
 /** 删除设备分组 */
 async function handleDelete(row: IotDeviceGroupApi.DeviceGroup) {
+  if (row.deviceCount && row.deviceCount > 0) {
+    ElMessage.warning(`分组「${row.name}」下存在 ${row.deviceCount} 台设备，无法删除`);
+    return;
+  }
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.name]),
   });

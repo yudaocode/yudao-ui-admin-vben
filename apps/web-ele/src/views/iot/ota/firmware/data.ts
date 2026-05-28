@@ -24,7 +24,11 @@ export function getProductName(productId?: number): string {
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     { field: 'name', label: '固件名称' },
-    { field: 'productName', label: '所属产品' },
+    {
+      field: 'productName',
+      label: '所属产品',
+      render: (val) => val || '-',
+    },
     { field: 'version', label: '固件版本' },
     {
       field: 'createTime',
@@ -65,10 +69,12 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         placeholder: '请选择产品',
       },
-      rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (values) => !values.id,
+        componentProps: (values) => ({
+          disabled: !!values.id,
+        }),
+        rules: (values) => (values.id ? null : 'required'),
       },
     },
     {
@@ -78,10 +84,12 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入版本号',
       },
-      rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (values) => !values.id,
+        componentProps: (values) => ({
+          disabled: !!values.id,
+        }),
+        rules: (values) => (values.id ? null : 'required'),
       },
     },
     {
@@ -99,14 +107,16 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'FileUpload',
       componentProps: {
         maxNumber: 1,
-        accept: ['bin', 'hex', 'zip'],
+        accept: ['bin', 'zip', 'pdf'],
         maxSize: 50,
-        helpText: '支持上传 .bin、.hex、.zip 格式的固件文件，最大 50MB',
+        helpText: '支持上传 .bin、.zip、.pdf 格式的固件文件，最大 50MB',
       },
-      rules: 'required',
       dependencies: {
         triggerFields: ['id'],
-        show: (values) => !values.id,
+        componentProps: (values) => ({
+          disabled: !!values.id,
+        }),
+        rules: (values) => (values.id ? null : 'required'),
       },
     },
   ];

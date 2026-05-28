@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'product/detail/:id',
+        path: 'product/product/detail/:id',
         name: 'IoTProductDetail',
         meta: {
           title: '产品详情',
@@ -30,11 +30,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/iot/device/device/detail/index.vue'),
       },
       {
-        path: 'ota/firmware/detail/:id',
+        path: 'ota/operation/firmware/detail/:id',
         name: 'IoTOtaFirmwareDetail',
         meta: {
           title: '固件详情',
-          activePath: '/iot/ota',
+          activePath: '/iot/operation/ota/firmware',
         },
         component: () => import('#/views/iot/ota/firmware/detail/index.vue'),
       },

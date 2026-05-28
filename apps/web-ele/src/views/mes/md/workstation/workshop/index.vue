@@ -28,17 +28,17 @@ function handleRefresh() {
 
 /** 创建车间 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看车间 */
 function handleDetail(row: MesMdWorkshopApi.Workshop) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑车间 */
 function handleEdit(row: MesMdWorkshopApi.Workshop) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除车间 */

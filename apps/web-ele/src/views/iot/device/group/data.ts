@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
@@ -26,10 +26,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入分组名称',
       },
-      rules: z
-        .string()
-        .min(1, '分组名称不能为空')
-        .max(64, '分组名称长度不能超过 64 个字符'),
+      rules: z.string().min(1, '分组名称不能为空'),
     },
     {
       fieldName: 'status',
@@ -38,7 +35,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
+      rules: 'required',
     },
     {
       fieldName: 'description',

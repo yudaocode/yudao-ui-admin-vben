@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { MesMdItemApi } from '#/api/mes/md/item';
 
 import { computed, ref } from 'vue';
@@ -19,22 +21,18 @@ import ProductBomForm from './product-bom-form.vue';
 import ProductSipForm from './product-sip-form.vue';
 import ProductSopForm from './product-sop-form.vue';
 
-type FormMode = 'create' | 'detail' | 'update';
-
 const emit = defineEmits(['success']);
-const formMode = ref<FormMode>('create'); // 表单模式
+const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('bom'); // 当前子表页签
 const formData = ref<MesMdItemApi.Item>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isDetail = computed(() => formMode.value === 'detail'); // 是否查看模式
+const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
-  const titles: Record<FormMode, string> = {
-    create: '新增物料/产品',
-    update: '修改物料/产品',
-    detail: '查看物料/产品',
-  };
-  return titles[formMode.value];
+  if (formType.value === 'detail') {
+    return '查看物料/产品';
+  }
+  return formType.value === 'update' ? '修改物料/产品' : '新增物料/产品';
 });
 const currentItemOrProduct = computed(
   () => formData.value?.itemOrProduct || '',
@@ -84,11 +82,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesMdItemApi.Item;
     try {
-      if (formMode.value === 'create') {
+      if (formType.value === 'create') {
         const id = await createItem(data);
         formData.value = { ...data, id };
         await formApi.setFieldValue('id', id);
-        formMode.value = 'update';
+        formType.value = 'update';
         ElMessage.success($t('ui.actionMessage.operationSuccess'));
       } else {
         await updateItem(data);
@@ -108,10 +106,10 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.resetForm();
     subTabsName.value = 'bom';
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type?: FormMode }>();
-    formMode.value = data?.type || 'create';
-    formApi.setDisabled(formMode.value === 'detail');
-    modalApi.setState({ showConfirmButton: formMode.value !== 'detail' });
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
+    formApi.setDisabled(formType.value === 'detail');
+    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {
       return;
     }
@@ -131,16 +129,16 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
     <ElTabs
-      v-if="formMode !== 'create' && formData?.id"
+      v-if="formType !== 'create' && formData?.id"
       v-model="subTabsName"
       class="mx-4 mt-4"
     >
       <ElTabPane name="bom" label="BOM 组成">
-        <ProductBomForm :form-type="formMode" :item-id="formData.id" />
+        <ProductBomForm :form-type="formType" :item-id="formData.id" />
       </ElTabPane>
       <ElTabPane v-if="formData.batchFlag" name="batch" label="批次属性">
         <ItemBatchConfigForm
-          :form-type="formMode"
+          :form-type="formType"
           :item-id="formData.id"
           :item-or-product="currentItemOrProduct"
         />
@@ -149,10 +147,10 @@ const [Modal, modalApi] = useVbenModal({
         <ElEmpty description="替代品（待实现）" />
       </ElTabPane>
       <ElTabPane name="sip" label="SIP">
-        <ProductSipForm :form-type="formMode" :item-id="formData.id" />
+        <ProductSipForm :form-type="formType" :item-id="formData.id" />
       </ElTabPane>
       <ElTabPane name="sop" label="SOP">
-        <ProductSopForm :form-type="formMode" :item-id="formData.id" />
+        <ProductSopForm :form-type="formType" :item-id="formData.id" />
       </ElTabPane>
     </ElTabs>
     <template #prepend-footer>

@@ -58,16 +58,26 @@ async function getDeviceList() {
 // 监听产品变化
 watch(
   () => props.productId,
-  (newProductId) => {
-    if (newProductId) {
-      getDeviceList();
-    } else {
+  async (newProductId, oldProductId) => {
+    if (!newProductId) {
       deviceList.value = [];
-      // 清空当前选择的设备
-      if (props.modelValue) {
+      if (props.modelValue !== undefined && props.modelValue !== null) {
         emit('update:modelValue', undefined);
         emit('change', undefined);
       }
+      return;
+    }
+    await getDeviceList();
+    // 切换到新 productId 时，旧 deviceId 不在新列表里则清空
+    if (
+      oldProductId !== undefined &&
+      oldProductId !== newProductId &&
+      props.modelValue !== undefined &&
+      props.modelValue !== null &&
+      !deviceList.value.some((d: any) => d.id === props.modelValue)
+    ) {
+      emit('update:modelValue', undefined);
+      emit('change', undefined);
     }
   },
   { immediate: true },

@@ -3,7 +3,7 @@ import type { FileType } from 'ant-design-vue/es/upload/interface';
 
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { useVbenModal } from '@vben/common-ui';
+import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
             text += `< ${deviceName}: ${importData.failureDeviceNames[deviceName]} >`;
           }
         }
-        message.info(text);
+        await alert(text, '导入结果');
       }
       // 关闭并提示
       await modalApi.close();
@@ -92,18 +92,18 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <Upload
-            :before-upload="beforeUpload"
             :max-count="1"
             accept=".xls,.xlsx"
+            :before-upload="beforeUpload"
           >
-            <Button type="primary"> 选择 Excel 文件</Button>
+            <Button type="primary"> 选择 Excel 文件 </Button>
           </Upload>
         </div>
       </template>
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Button @click="handleDownload"> 下载导入模板</Button>
+        <Button @click="handleDownload"> 下载导入模板 </Button>
       </div>
     </template>
   </Modal>

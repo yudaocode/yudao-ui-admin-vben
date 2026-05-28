@@ -55,6 +55,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
     const data = normalizeRuleData(
       (await formApi.getValues()) as MesMdAutoCodeRuleApi.AutoCodeRule,
     );
@@ -62,6 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       await (formData.value?.id
         ? updateAutoCodeRule(data)
         : createAutoCodeRule(data));
+      // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -75,6 +77,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await formApi.resetForm();
+    // 加载数据
     const data = modalApi.getData<MesMdAutoCodeRuleApi.AutoCodeRule>();
     if (!data?.id) {
       return;
@@ -82,6 +85,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getAutoCodeRule(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

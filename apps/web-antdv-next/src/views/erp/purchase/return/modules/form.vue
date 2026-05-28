@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { ErpPurchaseOrderApi } from '#/api/erp/purchase/order';
 import type { ErpPurchaseReturnApi } from '#/api/erp/purchase/return';
 
@@ -46,7 +48,7 @@ const formData = ref<
   otherPrice: 0,
   items: [],
 });
-const formType = ref(''); // 表单类型：'create' | 'edit' | 'detail'
+const formType = ref<FormType>('create'); // 表单类型：'create' | 'edit' | 'detail'
 const itemFormRef = ref<InstanceType<typeof ItemForm>>();
 
 /* eslint-disable unicorn/no-nested-ternary */
@@ -175,8 +177,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ id?: number; type: string }>();
-    formType.value = data.type;
+    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    formType.value = data.formType;
     formApi.setDisabled(formType.value === 'detail');
     formApi.updateSchema(useFormSchema(formType.value));
     if (!data || !data.id) {

@@ -79,10 +79,18 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
       },
       rules: z
         .string()
-        .min(4, '备注名称长度限制为 4~64 个字符')
-        .max(64, '备注名称长度限制为 4~64 个字符')
-        .regex(
-          /^[\u4E00-\u9FA5\u3040-\u30FF\w]+$/,
+        .refine(
+          (value) => {
+            const length = value.replaceAll(
+              /[\u4E00-\u9FA5\u3040-\u30FF]/g,
+              'aa',
+            ).length;
+            return length >= 4 && length <= 64;
+          },
+          '备注名称长度限制为 4~64 个字符，中文及日文算 2 个字符',
+        )
+        .refine(
+          (value) => /^[\u4E00-\u9FA5\u3040-\u30FF\w]+$/.test(value),
           '备注名称只能包含中文、英文字母、日文、数字和下划线（_）',
         )
         .optional()
@@ -276,6 +284,7 @@ export function useGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['colu
       field: 'deviceName',
       title: 'DeviceName',
       minWidth: 150,
+      slots: { default: 'deviceName' },
     },
     {
       field: 'nickname',

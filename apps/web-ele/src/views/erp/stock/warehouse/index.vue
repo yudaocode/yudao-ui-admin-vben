@@ -62,23 +62,20 @@ async function handleDefaultStatusChange(
   newStatus: boolean,
   row: ErpWarehouseApi.Warehouse,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    const text = newStatus ? '设置' : '取消';
-    confirm({
+  const text = newStatus ? '设置' : '取消';
+  try {
+    await confirm({
       content: `确认要${text}"${row.name}"默认吗?`,
-    })
-      .then(async () => {
-        // 更新默认状态
-        await updateWarehouseDefaultStatus(row.id!, newStatus);
-        // 提示并返回成功
-        ElMessage.success(`${text}默认成功`);
-        handleRefresh();
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 更新默认状态
+  await updateWarehouseDefaultStatus(row.id!, newStatus);
+  // 提示并返回成功
+  ElMessage.success(`${text}默认成功`);
+  handleRefresh();
+  return true;
 }
 
 const [FormModal, formModalApi] = useVbenModal({

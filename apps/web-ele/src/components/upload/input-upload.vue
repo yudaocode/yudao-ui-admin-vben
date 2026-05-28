@@ -58,6 +58,7 @@ const textareaProps = computed(() => {
 const fileUploadProps = computed(() => {
   return {
     ...props.fileUploadProps,
+    returnText: true,
   };
 });
 </script>

@@ -4,6 +4,7 @@ import {
   getFirstNonNullOrUndefined,
   isBoolean,
   isEmpty,
+  isEmptyVal,
   isHttpUrl,
   isObject,
   isUndefined,
@@ -82,6 +83,21 @@ describe('isEmpty', () => {
   it('should return false for number or boolean', () => {
     expect(isEmpty(0)).toBe(false);
     expect(isEmpty(true)).toBe(false);
+  });
+});
+
+describe('isEmptyVal', () => {
+  it('should return true for empty value', () => {
+    expect(isEmptyVal('')).toBe(true);
+    expect(isEmptyVal(null)).toBe(true);
+    expect(isEmptyVal()).toBe(true);
+  });
+
+  it('should return false for valid falsy and collection values', () => {
+    expect(isEmptyVal(0)).toBe(false);
+    expect(isEmptyVal(false)).toBe(false);
+    expect(isEmptyVal([])).toBe(false);
+    expect(isEmptyVal({})).toBe(false);
   });
 });
 

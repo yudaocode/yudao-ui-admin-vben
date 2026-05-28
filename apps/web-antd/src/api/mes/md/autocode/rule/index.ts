@@ -51,7 +51,5 @@ export function deleteAutoCodeRule(id: number) {
 
 /** 导出编码规则 */
 export function exportAutoCodeRule(params: PageParam) {
-  return requestClient.download('/mes/md/auto-code-rule/export-excel', {
-    params,
-  });
+  return requestClient.download('/mes/md/auto-code-rule/export-excel', { params });
 }

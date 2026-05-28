@@ -148,9 +148,6 @@ function fillExtraAttributes(data: any) {
       data.dataType = data.event.dataType;
       data.event.identifier = data.identifier;
       data.event.name = data.name;
-      if (isEmpty(data.event.outputParams)) {
-        delete data.event.outputParams;
-      }
       delete data.property;
       delete data.service;
 
@@ -171,12 +168,6 @@ function fillExtraAttributes(data: any) {
       data.dataType = data.service.dataType;
       data.service.identifier = data.identifier;
       data.service.name = data.name;
-      if (isEmpty(data.service.inputParams)) {
-        delete data.service.inputParams;
-      }
-      if (isEmpty(data.service.outputParams)) {
-        delete data.service.outputParams;
-      }
       delete data.property;
       delete data.event;
 
@@ -225,7 +216,10 @@ function removeDataSpecs(val: any) {
         label="标识符"
         name="identifier"
       >
-        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
+        <Input
+          v-model:value="formData.identifier"
+          placeholder="请输入标识符"
+        />
       </Form.Item>
       <!-- 属性配置 -->
       <ThingModelProperty

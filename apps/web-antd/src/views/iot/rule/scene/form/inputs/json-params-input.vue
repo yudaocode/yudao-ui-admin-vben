@@ -12,6 +12,7 @@ import {
   JsonParamsInputTypeEnum,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { isEmptyVal } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Input, Popover, Tag } from 'ant-design-vue';
@@ -219,39 +220,40 @@ const emptyMessage = computed(() => {
 
 /**
  * 处理参数变化事件
+ *
+ * 注意：必须在所有校验（合法 JSON / 必须是对象 / 必填参数）通过后再回写
+ * localValue，否则父表单仅校验非空时会先写入非法值再提示错误。
  */
 function handleParamsChange() {
   try {
-    jsonError.value = ''; // 清除之前的错误
+    jsonError.value = '';
 
-    if (paramsJson.value.trim()) {
-      const parsed = JSON.parse(paramsJson.value);
-      localValue.value = paramsJson.value;
-
-      // 额外的参数验证
-      if (typeof parsed !== 'object' || parsed === null) {
-        jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAMS_MUST_BE_OBJECT;
-        return;
-      }
-
-      // 验证必填参数
-      for (const param of paramsList.value) {
-        if (
-          param.required &&
-          (!parsed[param.identifier] || parsed[param.identifier] === '')
-        ) {
-          jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(
-            param.name,
-          );
-          return;
-        }
-      }
-    } else {
+    if (!paramsJson.value.trim()) {
       localValue.value = '';
+      return;
     }
 
-    // 验证通过
-    jsonError.value = '';
+    const parsed = JSON.parse(paramsJson.value);
+
+    // 必须是对象
+    if (typeof parsed !== 'object' || parsed === null) {
+      jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAMS_MUST_BE_OBJECT;
+      return;
+    }
+
+    // 必填参数校验
+    for (const param of paramsList.value) {
+      const value = parsed[param.identifier];
+      if (param.required && isEmptyVal(value)) {
+        jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(
+          param.name,
+        );
+        return;
+      }
+    }
+
+    // 所有校验通过后才回写到父表单
+    localValue.value = paramsJson.value;
   } catch (error) {
     jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.JSON_FORMAT_ERROR(
       error instanceof Error
@@ -383,6 +385,9 @@ watch(
 
     // 使用 nextTick 确保在下一个 tick 中处理数据
     await nextTick();
+    if ((newValue || '') === paramsJson.value) {
+      return;
+    }
     handleDataDisplay(newValue || '');
   },
   { immediate: true },

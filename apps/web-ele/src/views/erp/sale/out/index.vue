@@ -42,12 +42,12 @@ async function handleExport() {
 
 /** 新增销售出库 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑销售出库 */
 function handleEdit(row: ErpSaleOutApi.SaleOut) {
-  formModalApi.setData({ type: 'edit', id: row.id }).open();
+  formModalApi.setData({ formType: 'edit', id: row.id }).open();
 }
 
 /** 删除销售出库 */
@@ -89,7 +89,7 @@ function handleRowCheckboxChange({
 
 /** 查看详情 */
 function handleDetail(row: ErpSaleOutApi.SaleOut) {
-  formModalApi.setData({ type: 'detail', id: row.id }).open();
+  formModalApi.setData({ formType: 'detail', id: row.id }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

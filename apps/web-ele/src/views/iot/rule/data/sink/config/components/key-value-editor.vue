@@ -16,15 +16,18 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue']);
 
 interface KeyValueItem {
+  _uid: number;
   key: string;
   value: string;
 }
 
+let uidCounter = 0;
 const items = ref<KeyValueItem[]>([]); // 内部 key-value 项列表
 
 /** 添加项目 */
 function addItem() {
-  items.value.push({ key: '', value: '' });
+  uidCounter += 1;
+  items.value.push({ _uid: uidCounter, key: '', value: '' });
   updateModelValue();
 }
 
@@ -54,16 +57,16 @@ watch(
     if (isEmpty(val) || !isEmpty(items.value)) {
       return;
     }
-    items.value = Object.entries(props.modelValue).map(([key, value]) => ({
-      key,
-      value,
-    }));
+    items.value = Object.entries(props.modelValue).map(([key, value]) => {
+      uidCounter += 1;
+      return { _uid: uidCounter, key, value };
+    });
   },
 );
 </script>
 
 <template>
-  <div v-for="(item, index) in items" :key="index" class="mb-2 flex w-full">
+  <div v-for="(item, index) in items" :key="item._uid" class="mb-2 flex w-full">
     <ElInput v-model="item.key" class="mr-2" placeholder="键" />
     <ElInput v-model="item.value" placeholder="值" />
     <ElButton class="ml-2" type="danger" link @click="removeItem(index)">

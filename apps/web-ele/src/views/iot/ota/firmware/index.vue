@@ -13,7 +13,11 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import { getProductName, useGridColumns, useGridFormSchema } from './data';
+import {
+  getProductName,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
@@ -30,12 +34,12 @@ function handleRefresh() {
 
 /** 创建固件 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData(null).open();
 }
 
 /** 编辑固件 */
 function handleEdit(row: IoTOtaFirmwareApi.Firmware) {
-  formModalApi.setData({ type: 'update', id: row.id }).open();
+  formModalApi.setData({ id: row.id }).open();
 }
 
 /** 删除固件 */
@@ -113,7 +117,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <!-- 所属产品列：点击跳产品详情 -->
       <template #productName="{ row }">
         <a
-          v-if="row.productId"
+          v-if="row.productId && getProductName(row.productId) !== '-'"
           class="cursor-pointer text-[var(--el-color-primary)] hover:underline"
           @click="handleOpenProductDetail(row.productId)"
         >

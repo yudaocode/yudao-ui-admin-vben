@@ -72,12 +72,12 @@ function handleRefresh() {
 
 /** 创建入库单 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑入库单 */
 function handleEdit(row: WmsReceiptOrderApi.ReceiptOrder) {
-  formModalApi.setData({ id: row.id!, type: 'update' }).open();
+  formModalApi.setData({ id: row.id!, formType: 'update' }).open();
 }
 
 /** 查看入库单详情 */

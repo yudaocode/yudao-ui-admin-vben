@@ -173,13 +173,16 @@ onMounted(() => {
                 </div>
                 <div class="flex items-center text-[13px]">
                   <span class="mr-2 shrink-0 opacity-65 dark:text-white/65">
-                    Deviceid
+                    备注名称
                   </span>
-                  <ElTooltip :content="String(item.id)" placement="top">
+                  <ElTooltip
+                    :content="item.nickname || item.deviceName"
+                    placement="top"
+                  >
                     <span
-                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle font-mono text-xs opacity-85 dark:text-white/75"
+                      class="inline-block max-w-[150px] cursor-pointer truncate align-middle text-xs opacity-85 dark:text-white/75"
                     >
-                      {{ item.id }}
+                      {{ item.nickname || item.deviceName }}
                     </span>
                   </ElTooltip>
                 </div>
@@ -202,7 +205,7 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div class="mt-auto flex gap-2 border-t border-border pt-3">
+            <div class="mt-auto flex gap-2 border-t border-border pt-3 [&_.el-button+.el-button]:!ml-0">
               <ElButton
                 v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"
@@ -222,7 +225,7 @@ onMounted(() => {
                 详情
               </ElButton>
               <ElButton
-                v-if="hasAccessByCodes(['iot:device:message-query'])"
+                v-if="hasAccessByCodes(['iot:device:query'])"
                 size="small"
                 class="!h-8 min-w-0 flex-1 rounded-md !border-[#fa8c16] !text-[13px] !text-[#fa8c16] transition-all duration-200 hover:!bg-[#fa8c16] hover:!text-white"
                 @click="emit('model', item.id!)"
@@ -271,3 +274,17 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Element Plus 默认会在相邻按钮之间加 margin-left:12px，与父容器的 gap-2 叠加导致按钮间距过大，这里清掉 */
+.card-action-group :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+</style>
+
+<style scoped>
+/* Element Plus 默认会在相邻按钮之间加 margin-left:12px，与父容器的 gap-2 叠加导致按钮间距过大，这里清掉 */
+.card-action-group :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+</style>

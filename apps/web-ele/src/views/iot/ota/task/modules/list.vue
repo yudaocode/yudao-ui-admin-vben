@@ -44,7 +44,7 @@ async function handleRefresh() {
 
 /** 按任务名称搜索 */
 async function handleSearch() {
-  await gridApi.query();
+  await gridApi.reload();
 }
 
 /** 新增任务 */

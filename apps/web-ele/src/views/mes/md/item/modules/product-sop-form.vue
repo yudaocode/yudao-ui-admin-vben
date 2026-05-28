@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import ProductMediaList from './product-media-list.vue';
 
 defineProps<{
-  formType?: string;
+  formType?: FormType;
   itemId: number;
 }>();
 </script>

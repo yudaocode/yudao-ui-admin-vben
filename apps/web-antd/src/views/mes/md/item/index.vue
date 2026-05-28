@@ -5,12 +5,12 @@ import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, Card, message, Modal } from 'ant-design-vue';
+import { Button, Card, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -46,17 +46,17 @@ function handleRefresh() {
 
 /** 创建物料 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 查看物料 */
 function handleDetail(row: MesMdItemApi.Item) {
-  formModalApi.setData({ id: row.id, type: 'detail' }).open();
+  formModalApi.setData({ id: row.id, formType: 'detail' }).open();
 }
 
 /** 编辑物料 */
 function handleEdit(row: MesMdItemApi.Item) {
-  formModalApi.setData({ id: row.id, type: 'update' }).open();
+  formModalApi.setData({ id: row.id, formType: 'update' }).open();
 }
 
 /** 删除物料 */
@@ -96,19 +96,16 @@ async function handleStatusChange(
   newStatus: number,
   row: MesMdItemApi.Item,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    Modal.confirm({
-      content: `确认要将“${row.name}”物料切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-      async onOk() {
-        await updateItemStatus(row.id!, newStatus);
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      },
-      onCancel() {
-        reject(new Error('取消操作'));
-      },
-    });
-  });
+  try {
+    await confirm(
+      `确认要将"${row.name}"物料切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
+    );
+  } catch {
+    return false;
+  }
+  await updateItemStatus(row.id!, newStatus);
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -69,6 +69,10 @@ const TRIGGER_TYPE_TO_GROUP: Record<
     label: THING_MODEL_GROUP_LABELS.PROPERTY,
     modelType: IoTThingModelTypeEnum.PROPERTY,
   },
+  [IotRuleSceneTriggerTypeEnum.TIMER]: {
+    label: THING_MODEL_GROUP_LABELS.PROPERTY,
+    modelType: IoTThingModelTypeEnum.PROPERTY,
+  },
   [IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST]: {
     label: THING_MODEL_GROUP_LABELS.EVENT,
     modelType: IoTThingModelTypeEnum.EVENT,

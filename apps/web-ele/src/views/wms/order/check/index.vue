@@ -79,12 +79,12 @@ function handleRefresh() {
 
 /** 创建盘库单 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create' }).open();
+  formModalApi.setData({ formType: 'create' }).open();
 }
 
 /** 编辑盘库单 */
 function handleEdit(row: WmsCheckOrderApi.CheckOrder) {
-  formModalApi.setData({ id: row.id!, type: 'update' }).open();
+  formModalApi.setData({ id: row.id!, formType: 'update' }).open();
 }
 
 /** 查看盘库单详情 */

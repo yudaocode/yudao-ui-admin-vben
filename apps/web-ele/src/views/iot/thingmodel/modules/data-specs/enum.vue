@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
@@ -17,7 +18,11 @@ const validateEnumName = buildIdentifierLikeNameValidator('枚举描述');
 
 /** 添加枚举项 */
 function addEnum() {
-  dataSpecsList.value.push({ name: '', value: '' } as any);
+  dataSpecsList.value.push({
+    dataType: IoTDataSpecsDataTypeEnum.ENUM,
+    name: '',
+    value: '',
+  } as any);
 }
 
 /** 删除枚举项 */

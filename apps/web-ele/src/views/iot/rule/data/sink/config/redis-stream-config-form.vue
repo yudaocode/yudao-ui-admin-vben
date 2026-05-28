@@ -12,8 +12,16 @@ const props = defineProps<{ modelValue: any }>();
 const emit = defineEmits(['update:modelValue']);
 const config = useVModel(props, 'modelValue', emit);
 
+/** 移除当前 Redis Stream API 类型未声明的旧扩展字段 */
+function removeUnsupportedFields() {
+  delete config.value.dataStructure;
+  delete config.value.hashField;
+  delete config.value.scoreField;
+}
+
 onMounted(() => {
   if (!isEmpty(config.value)) {
+    removeUnsupportedFields();
     return;
   }
   config.value = {
@@ -60,7 +68,11 @@ onMounted(() => {
       class="w-full"
     />
   </ElFormItem>
-  <ElFormItem prop="config.password" label="密码">
+  <ElFormItem
+    prop="config.password"
+    :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
+    label="密码"
+  >
     <ElInput
       v-model="config.password"
       type="password"

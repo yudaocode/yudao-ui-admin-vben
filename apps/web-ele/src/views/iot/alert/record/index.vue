@@ -44,12 +44,6 @@ async function handleProcess(row: AlertRecordApi.AlertRecord) {
         cancelButtonText: '取消',
         inputType: 'textarea',
         inputPlaceholder: '请输入处理原因',
-        inputValidator: (value: string) => {
-          if (!value) {
-            return '请输入处理原因';
-          }
-          return true;
-        },
       },
     );
     const loadingInstance = ElLoading.service({ text: '正在处理...' });

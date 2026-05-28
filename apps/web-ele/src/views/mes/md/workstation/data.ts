@@ -19,6 +19,9 @@ import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { MdWorkshopSelect } from './components';
 
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
+
 /** 新增/修改工作站的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
@@ -129,11 +132,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             onChange: async () => {
               await formApi?.setFieldValue('areaId', undefined);
             },
-            options: list.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })),
+            options: list,
             placeholder: '请选择库区',
+            props: { label: 'name', value: 'id' },
           };
         },
       },
@@ -151,11 +152,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             : [];
           return {
             clearable: true,
-            options: list.map((item) => ({
-              label: item.name,
-              value: item.id,
-            })),
+            options: list,
             placeholder: '请选择库位',
+            props: { label: 'name', value: 'id' },
           };
         },
       },

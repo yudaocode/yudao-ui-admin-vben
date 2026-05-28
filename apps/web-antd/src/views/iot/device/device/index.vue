@@ -9,7 +9,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -169,6 +169,7 @@ async function handleDeleteBatch() {
     message.warning('请选择要删除的设备');
     return;
   }
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,
@@ -214,6 +215,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
+    pagerConfig: {
+      pageSize: 12,
+    },
     proxyConfig: {
       ajax: {
         query: async ({
@@ -429,6 +433,11 @@ onMounted(async () => {
 
     <!-- 列表视图 -->
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
+      <template #deviceName="{ row }">
+        <a class="cursor-pointer text-primary" @click="openDetail(row.id!)">
+          {{ row.deviceName }}
+        </a>
+      </template>
       <template #product="{ row }">
         <a
           class="cursor-pointer text-primary"
@@ -465,7 +474,7 @@ onMounted(async () => {
             {
               label: '日志',
               type: 'link',
-              auth: ['iot:device:message-query'],
+              auth: ['iot:device:query'],
               onClick: openModel.bind(null, row.id!),
             },
             {

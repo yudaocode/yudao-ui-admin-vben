@@ -25,6 +25,9 @@ import {
   QUANTITY_PRECISION,
 } from '#/views/wms/utils/format';
 
+/** 表单类型 */
+export type FormType = 'create' | 'update';
+
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [

@@ -107,7 +107,6 @@ export function useBasicFormSchema(
       componentProps: {
         options: getDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, 'number'),
       },
-      defaultValue: DeviceTypeEnum.DEVICE,
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({
@@ -128,7 +127,10 @@ export function useBasicFormSchema(
       // 网关子设备走网关联网，不需要联网方式
       dependencies: {
         triggerFields: ['deviceType'],
-        show: (values) => values.deviceType !== DeviceTypeEnum.GATEWAY,
+        show: (values) =>
+          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
+            values.deviceType,
+          ),
       },
       rules: 'required',
     },

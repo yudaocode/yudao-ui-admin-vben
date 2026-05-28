@@ -8,6 +8,7 @@ import {
   IotRuleSceneActionTypeEnum,
 } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
+import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
@@ -201,7 +202,7 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
       <div v-else class="space-y-[24px]">
         <div
           v-for="(action, index) in actions"
-          :key="`action-${index}`"
+          :key="getStableObjectKey(action)"
           class="rounded-lg border-2 border-blue-200 bg-blue-50 shadow-sm transition-shadow hover:shadow-md"
         >
           <!-- 执行器头部 - 蓝色主题 -->
