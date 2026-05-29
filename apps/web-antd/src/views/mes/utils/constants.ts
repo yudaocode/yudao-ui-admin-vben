@@ -151,11 +151,22 @@ export const MesAutoCodeRuleCode = {
   TM_TOOL_CODE: 'TM_TOOL_CODE',
   WM_AREA_CODE: 'WM_AREA_CODE',
   WM_LOCATION_CODE: 'WM_LOCATION_CODE',
+  WM_ARRIVAL_NOTICE_CODE: 'WM_ARRIVAL_NOTICE_CODE',
+  WM_ITEM_RECEIPT_CODE: 'WM_ITEM_RECEIPT_CODE',
+  WM_RETURN_VENDOR_CODE: 'WM_RETURN_VENDOR_CODE',
+  WM_SALES_NOTICE_CODE: 'WM_SALES_NOTICE_CODE',
+  WM_RETURN_SALES_CODE: 'WM_RETURN_SALES_CODE',
+  WM_RETURN_ISSUE_CODE: 'WM_RETURN_ISSUE_CODE',
+  WM_PRODUCT_ISSUE_CODE: 'WM_PRODUCT_ISSUE_CODE',
+  WM_PRODUCT_SALES_CODE: 'WM_PRODUCT_SALES_CODE',
+  PRODUCTRECPT_CODE: 'PRODUCTRECPT_CODE',
   WM_MISC_ISSUE_CODE: 'WM_MISC_ISSUE_CODE',
   WM_MISC_RECEIPT_CODE: 'WM_MISC_RECEIPT_CODE',
   WM_OUTSOURCE_ISSUE_CODE: 'WM_OUTSOURCE_ISSUE_CODE',
   WM_OUTSOURCE_RECEIPT_CODE: 'WM_OUTSOURCE_RECEIPT_CODE',
   WM_PACKAGE_CODE: 'WM_PACKAGE_CODE',
+  WM_STOCK_TAKING_CODE: 'WM_STOCK_TAKING_CODE',
+  WM_STOCK_TAKING_PLAN_CODE: 'WM_STOCK_TAKING_PLAN_CODE',
   WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
 } as const;
 
@@ -163,6 +174,38 @@ export const MesAutoCodeRuleCode = {
 export const MesWmPackageStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,
   FINISHED: MesOrderStatusConstants.FINISHED,
+} as const;
+
+/** MES 盘点类型枚举 */
+export const MesWmStockTakingTypeEnum = {
+  STATIC: 1,
+  DYNAMIC: 2,
+} as const;
+
+/** MES 盘点任务状态枚举 */
+export const MesWmStockTakingTaskStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 盘点任务行状态枚举 */
+export const MesWmStockTakingTaskLineStatusEnum = {
+  UNCOUNTED: 0,
+  NORMAL: 1,
+  GAIN: 2,
+  LOSS: 3,
+} as const;
+
+/** MES 盘点方案参数类型枚举 */
+export const MesWmStockTakingParamTypeEnum = {
+  WAREHOUSE: 102,
+  LOCATION: 103,
+  AREA: 104,
+  BATCH: 107,
+  ITEM: 600,
+  QUALITY_STATUS: 900,
 } as const;
 
 /** MES 生产工单状态枚举 */
@@ -258,6 +301,87 @@ export const MesWmOutsourceIssueStatusEnum = {
 export const MesWmOutsourceReceiptStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,
   APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 到货通知单状态枚举 */
+export const MesWmArrivalNoticeStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  PENDING_QC: MesOrderStatusConstants.APPROVING,
+  PENDING_RECEIPT: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+} as const;
+
+/** MES 采购入库单状态枚举 */
+export const MesWmItemReceiptStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 供应商退货单状态枚举 */
+export const MesWmReturnVendorStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 发货通知单状态枚举 */
+export const MesWmSalesNoticeStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+} as const;
+
+/** MES 销售退货单状态枚举 */
+export const MesWmReturnSalesStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 生产退料单状态枚举 */
+export const MesWmReturnIssueStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 领料出库单状态枚举 */
+export const MesWmProductIssueStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 产品入库单状态枚举 */
+export const MesWmProductReceiptStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 销售出库单状态枚举 */
+export const MesWmProductSalesStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  SHIPPING: 10, // 待填写运单
   APPROVED: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
   CANCELED: MesOrderStatusConstants.CANCELLED,

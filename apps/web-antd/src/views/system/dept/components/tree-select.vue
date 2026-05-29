@@ -10,10 +10,16 @@ import { Input, Spin, Tree } from 'ant-design-vue';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 
-const emit = defineEmits(['select']);
+defineOptions({ name: 'DeptTreeSelect' });
+
+const emit = defineEmits<{
+  select: [dept?: SystemDeptApi.Dept];
+}>();
+
 const deptList = ref<SystemDeptApi.Dept[]>([]); // 部门列表
 const deptTree = ref<any[]>([]); // 部门树
 const expandedKeys = ref<number[]>([]); // 展开的节点
+const selectedKeys = ref<number[]>([]); // 选中的节点
 const loading = ref(false); // 加载状态
 const searchValue = ref(''); // 搜索值
 
@@ -31,10 +37,20 @@ function handleSearch(e: any) {
   expandedKeys.value = deptTree.value.map((node) => node.id!);
 }
 
-/** 选中部门 */
+/** 选中部门：点击已选中的节点时取消选中 */
 function handleSelect(_selectedKeys: any[], info: any) {
-  emit('select', info.node.dataRef);
+  emit('select', info.selected ? info.node.dataRef : undefined);
 }
+
+/** 重置选中状态（供外部重置按钮调用） */
+function reset() {
+  searchValue.value = '';
+  selectedKeys.value = [];
+  deptTree.value = handleTree(deptList.value);
+  emit('select', undefined);
+}
+
+defineExpose({ reset });
 
 /** 初始化 */
 onMounted(async () => {
@@ -43,8 +59,6 @@ onMounted(async () => {
     const data = await getSimpleDeptList();
     deptList.value = data;
     deptTree.value = handleTree(data);
-  } catch (error) {
-    console.error('获取部门数据失败', error);
   } finally {
     loading.value = false;
   }
@@ -54,24 +68,25 @@ onMounted(async () => {
 <template>
   <div>
     <Input
-      placeholder="搜索部门"
-      allow-clear
       v-model:value="searchValue"
-      @change="handleSearch"
+      allow-clear
       class="w-full"
+      placeholder="搜索部门"
+      @change="handleSearch"
     >
       <template #prefix>
-        <IconifyIcon icon="lucide:search" class="size-4" />
+        <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
     </Input>
     <Spin :spinning="loading" wrapper-class-name="w-full">
       <Tree
-        @select="handleSelect"
         v-if="deptTree.length > 0"
+        v-model:selected-keys="selectedKeys"
         class="pt-2"
-        :tree-data="deptTree"
         :default-expand-all="true"
         :field-names="{ title: 'name', key: 'id', children: 'children' }"
+        :tree-data="deptTree"
+        @select="handleSelect"
       />
       <div v-else-if="!loading" class="py-4 text-center text-gray-500">
         暂无数据

@@ -21,6 +21,8 @@ export namespace MesProWorkOrderApi {
     routeName?: string;
     clientId?: number;
     clientName?: string;
+    vendorId?: number; // 供应商编号
+    vendorName?: string; // 供应商名称
     planStartTime?: number | string;
     planEndTime?: number | string;
     actualStartTime?: number | string;

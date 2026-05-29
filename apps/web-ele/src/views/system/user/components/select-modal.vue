@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @jason：看看这个有没办法，整体代码的文件顺序，注释风格等，和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/user/components/select-modal.vue 一致。原因是：好维护~
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
@@ -22,7 +21,7 @@ import {
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getUserPage } from '#/api/system/user';
 
-// 部门树节点接口
+/** 部门树节点接口 */
 interface DeptTreeNode {
   id: string;
   label: string;
@@ -67,7 +66,6 @@ const deptSearchKeys = ref('');
 const userList = ref<SystemUserApi.User[]>([]); // 存储所有已知用户
 const selectedUserIds = ref<number[]>([]);
 
-// 弹窗配置
 const [Modal, modalApi] = useVbenModal({
   onCancel: handleCancel,
   onClosed: handleClosed,
@@ -143,7 +141,7 @@ const rightListState = ref({
   },
 });
 
-// 计算属性：Transfer 数据源
+/** 计算属性：Transfer 数据源 */
 const transferDataSource = computed(() => {
   // 使用 Map 来去重，确保每个用户只出现一次
   const userMap = new Map<number, any>();
@@ -170,7 +168,7 @@ const transferDataSource = computed(() => {
   }));
 });
 
-// 过滤部门树数据
+/** 过滤部门树数据 */
 const filteredDeptTree = computed(() => {
   if (!deptSearchKeys.value) return deptTree.value;
 
@@ -210,7 +208,7 @@ const filteredDeptTree = computed(() => {
   return deptTree.value.map((node: any) => filterNode(node)).filter(Boolean);
 });
 
-// 加载用户数据
+/** 加载用户数据 */
 async function loadUserData(pageNo: number, pageSize: number) {
   try {
     const { list, total } = await getUserPage({
@@ -237,7 +235,7 @@ async function loadUserData(pageNo: number, pageSize: number) {
   }
 }
 
-// 更新右侧列表数据
+/** 更新右侧列表数据 */
 function updateRightListData() {
   // 使用 Set 来去重选中的用户ID
   const uniqueSelectedIds = new Set(selectedUserIds.value);
@@ -269,18 +267,18 @@ function updateRightListData() {
   rightListState.value.dataSource = filteredUsers.slice(startIndex, endIndex);
 }
 
-// 处理左侧分页变化
+/** 处理左侧分页变化 */
 async function handleLeftPaginationChange(page: number) {
   await loadUserData(page, leftListState.value.pagination.pageSize);
 }
 
-// 处理右侧分页变化
+/** 处理右侧分页变化 */
 function handleRightPaginationChange(page: number) {
   rightListState.value.pagination.current = page;
   updateRightListData();
 }
 
-// 处理用户选择变化
+/** 处理用户选择变化 */
 function handleUserChange(
   value: (number | string)[],
   _direction: string,
@@ -292,7 +290,7 @@ function handleUserChange(
   updateRightListData();
 }
 
-// 重置数据
+/** 重置数据 */
 function resetData() {
   userList.value = [];
   selectedUserIds.value = [];
@@ -324,7 +322,7 @@ function resetData() {
   };
 }
 
-// 处理部门搜索
+/** 处理部门搜索 */
 function handleDeptSearch(value: string) {
   deptSearchKeys.value = value;
 
@@ -347,7 +345,7 @@ function handleDeptSearch(value: string) {
   }
 }
 
-// 处理部门选择
+/** 处理部门选择 */
 async function handleDeptSelect(node: any) {
   // 更新选中的部门ID
   const newDeptId = node.id ? Number(node.id) : undefined;

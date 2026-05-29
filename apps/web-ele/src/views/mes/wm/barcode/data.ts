@@ -19,9 +19,12 @@ import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
 import MdWorkshopSelect from '#/views/mes/md/workstation/components/md-workshop-select.vue';
 import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
+import { ProCardSelect } from '#/views/mes/pro/card/components';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
 import TmToolSelect from '#/views/mes/tm/tool/components/tm-tool-select.vue';
 import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
+import { WmBatchSelect } from '#/views/mes/wm/batch/components';
+import { UserSelect } from '#/views/system/user/components';
 
 import WmMaterialStockSelect from './../materialstock/components/wm-material-stock-select.vue';
 import { WmPackageSelect } from './../packages/components';
@@ -51,15 +54,31 @@ async function syncBizDetail(
   }
   let bizCode: string | undefined;
   let bizName: string | undefined;
-  if (bizType === BarcodeBizTypeEnum.STOCK) {
-    bizCode = item.itemCode;
-    bizName = item.itemName;
-  } else if (bizType === BarcodeBizTypeEnum.PACKAGE) {
-    bizCode = item.code;
-    bizName = item.clientName || item.code;
-  } else {
-    bizCode = item.code || item.username;
-    bizName = item.name || item.nickname;
+  switch (bizType) {
+    case BarcodeBizTypeEnum.BATCH: {
+      bizCode = item.code;
+      bizName = item.itemName || item.code;
+      break;
+    }
+    case BarcodeBizTypeEnum.PACKAGE: {
+      bizCode = item.code;
+      bizName = item.clientName || item.code;
+      break;
+    }
+    case BarcodeBizTypeEnum.PROCARD: {
+      bizCode = item.code;
+      bizName = item.workOrderName || item.code;
+      break;
+    }
+    case BarcodeBizTypeEnum.STOCK: {
+      bizCode = item.itemCode;
+      bizName = item.itemName;
+      break;
+    }
+    default: {
+      bizCode = item.code || item.username;
+      bizName = item.name || item.nickname;
+    }
   }
   // 先回填业务编码、名称并清空旧条码内容
   await formApi.setValues({ bizCode, bizName, content: undefined });
@@ -330,6 +349,45 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     },
     {
       fieldName: 'bizId',
+      label: '批次',
+      component: markRaw(WmBatchSelect),
+      componentProps: {
+        onChange: (item: any) => syncBizDetail(formApi, item),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.BATCH,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '流转卡',
+      component: markRaw(ProCardSelect),
+      componentProps: {
+        onChange: (item: any) => syncBizDetail(formApi, item),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.PROCARD,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '人员',
+      component: markRaw(UserSelect),
+      componentProps: {
+        onChange: (item: any) => syncBizDetail(formApi, item),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.USER,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
       label: '业务编号',
       component: 'InputNumber',
       componentProps: {
@@ -344,13 +402,16 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           values.bizType !== undefined &&
           ![
             BarcodeBizTypeEnum.AREA,
+            BarcodeBizTypeEnum.BATCH,
             BarcodeBizTypeEnum.CLIENT,
             BarcodeBizTypeEnum.ITEM,
             BarcodeBizTypeEnum.LOCATION,
             BarcodeBizTypeEnum.MACHINERY,
             BarcodeBizTypeEnum.PACKAGE,
+            BarcodeBizTypeEnum.PROCARD,
             BarcodeBizTypeEnum.STOCK,
             BarcodeBizTypeEnum.TOOL,
+            BarcodeBizTypeEnum.USER,
             BarcodeBizTypeEnum.VENDOR,
             BarcodeBizTypeEnum.WAREHOUSE,
             BarcodeBizTypeEnum.WORKORDER,
