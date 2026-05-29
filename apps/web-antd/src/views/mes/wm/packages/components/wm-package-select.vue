@@ -61,11 +61,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getPackage(id);
-  } catch (error) {
-    console.error('[WmPackageSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getPackage(id);
 }
 
 watch(() => props.modelValue, resolveItemById, { immediate: true });

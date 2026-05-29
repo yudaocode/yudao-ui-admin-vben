@@ -358,7 +358,7 @@ async function handleDeptSelect(node: any) {
   await loadUserData(1, pageSize);
 }
 
-// 确认选择
+/** 确认选择 */
 function handleConfirm() {
   if (selectedUserIds.value.length === 0) {
     ElMessage.warning('请选择用户');
@@ -371,7 +371,7 @@ function handleConfirm() {
   modalApi.close();
 }
 
-// 取消选择
+/** 取消选择 */
 function handleCancel() {
   emit('cancel');
   modalApi.close();
@@ -381,13 +381,13 @@ function handleCancel() {
   }, 300);
 }
 
-// 关闭弹窗
+/** 关闭弹窗 */
 function handleClosed() {
   emit('closed');
   resetData();
 }
 
-// 递归处理部门树节点
+/** 递归处理部门树节点 */
 function processDeptNode(node: any): DeptTreeNode {
   return {
     id: String(node.id),
