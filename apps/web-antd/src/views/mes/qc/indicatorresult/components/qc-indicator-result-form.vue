@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+import type { FormType } from './data';
+
 import type { MesQcIndicatorResultApi } from '#/api/mes/qc/indicatorresult';
 
-import { computed, h, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import {
   Form as AForm,
-  Button,
   Divider,
   Input,
   InputNumber,
@@ -17,29 +18,29 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import {
   createIndicatorResult,
   getIndicatorResultDetail,
   updateIndicatorResult,
 } from '#/api/mes/qc/indicatorresult';
 import { $t } from '#/locales';
-import {
-  MesAutoCodeRuleCode,
-  MesQcResultValueType,
-} from '#/views/mes/utils/constants';
+import { MesQcResultValueType } from '#/views/mes/utils/constants';
 
-interface OpenData {
-  formType: 'create' | 'update';
+import { useQcIndicatorResultFormSchema } from './data';
+
+interface CtxData {
+  formType: FormType;
   id?: number;
   qcId: number;
   qcType: number;
 }
 
+defineOptions({ name: 'QcIndicatorResultForm' });
+
 const emit = defineEmits(['success']);
-const formType = ref<'create' | 'update'>('create');
+const formType = ref<FormType>('create');
 const items = ref<MesQcIndicatorResultApi.IndicatorResultDetail[]>([]);
-const ctxData = ref<OpenData>();
+const ctxData = ref<CtxData>();
 
 const getTitle = computed(() =>
   formType.value === 'update'
@@ -55,66 +56,10 @@ const [Form, formApi] = useVbenForm({
     formItemClass: 'col-span-1',
     labelWidth: 100,
   },
-  wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
-  // TODO @AI：搞个 data.ts？
-// TODO @AI：代码风格，貌似不够一致；
-  schema: [
-    {
-      fieldName: 'id',
-      component: 'Input',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      fieldName: 'code',
-      label: '样品编号',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入样品编号',
-      },
-      rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.QC_INDICATOR_RESULT_CODE,
-                );
-                await formApi.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
-            },
-          },
-          { default: () => '生成' },
-        ),
-    },
-    {
-      fieldName: 'sn',
-      label: '物资 SN',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入物资 SN',
-      },
-    },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      formItemClass: 'col-span-2',
-      componentProps: {
-        placeholder: '请输入备注',
-        rows: 2,
-      },
-    },
-  ],
+  schema: [],
   showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
 });
 
 /** 解析字典选项字符串：value=label;value=label */
@@ -132,7 +77,6 @@ function parseValueOptions(spec?: string) {
     });
 }
 
-// TODO @AI：注释风格的统一；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (!ctxData.value) {
@@ -143,31 +87,33 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    try {
-      const head = (await formApi.getValues()) as MesQcIndicatorResultApi.IndicatorResult;
-      const submitItems = items.value.map((item) => {
-        const submit: MesQcIndicatorResultApi.IndicatorResultDetail = {
-          id: item.id,
-          indicatorId: item.indicatorId,
-          remark: item.remark,
-        };
-        if (
-          item.valueType === MesQcResultValueType.FLOAT ||
-          item.valueType === MesQcResultValueType.INTEGER
-        ) {
-          submit.value =
-            item.valueNumber == null ? undefined : String(item.valueNumber);
-        } else {
-          submit.value = item.value;
-        }
-        return submit;
-      });
-      const payload: MesQcIndicatorResultApi.IndicatorResult = {
-        ...head,
-        qcId: ctxData.value.qcId,
-        qcType: ctxData.value.qcType,
-        items: submitItems,
+    // 提交表单
+    const head =
+      (await formApi.getValues()) as MesQcIndicatorResultApi.IndicatorResult;
+    const submitItems = items.value.map((item) => {
+      const submit: MesQcIndicatorResultApi.IndicatorResultDetail = {
+        id: item.id,
+        indicatorId: item.indicatorId,
+        remark: item.remark,
       };
+      if (
+        item.valueType === MesQcResultValueType.FLOAT ||
+        item.valueType === MesQcResultValueType.INTEGER
+      ) {
+        submit.value =
+          item.valueNumber == null ? undefined : String(item.valueNumber);
+      } else {
+        submit.value = item.value;
+      }
+      return submit;
+    });
+    const payload: MesQcIndicatorResultApi.IndicatorResult = {
+      ...head,
+      items: submitItems,
+      qcId: ctxData.value.qcId,
+      qcType: ctxData.value.qcType,
+    };
+    try {
       if (formType.value === 'update') {
         await updateIndicatorResult(payload);
         message.success($t('common.updateSuccess'));
@@ -175,6 +121,7 @@ const [Modal, modalApi] = useVbenModal({
         await createIndicatorResult(payload);
         message.success($t('common.createSuccess'));
       }
+      // 关闭并提示
       await modalApi.close();
       emit('success');
     } finally {
@@ -187,7 +134,9 @@ const [Modal, modalApi] = useVbenModal({
       items.value = [];
       return;
     }
-    const data = modalApi.getData<OpenData>();
+    formApi.setState({ schema: useQcIndicatorResultFormSchema(formApi) });
+    // 加载数据
+    const data = modalApi.getData<CtxData>();
     ctxData.value = data;
     formType.value = data.formType;
     modalApi.lock();
@@ -207,11 +156,12 @@ const [Modal, modalApi] = useVbenModal({
             ? Number(item.value)
             : undefined,
       }));
+      // 设置到 values
       await formApi.setValues({
         id: detail.id,
         code: detail.code,
-        sn: detail.sn,
         remark: detail.remark,
+        sn: detail.sn,
       });
     } finally {
       modalApi.unlock();
@@ -225,14 +175,16 @@ const [Modal, modalApi] = useVbenModal({
     <div class="px-4">
       <Form />
       <Divider>检测值</Divider>
-      <!-- TODO @AI：这里，可以改成更大化使用 schema 方式么？ -->
+      <!-- 检测值控件由每行 valueType 驱动，逐行渲染：FLOAT/INTEGER 走 InputNumber，DICT 走 Select 并按 valueSpecification 解析选项 -->
       <AForm :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
         <div
           v-for="(item, index) in items"
           :key="item.indicatorId ?? index"
           class="mb-2"
         >
-          <AForm.Item :label="`检测项${index + 1}：${item.indicatorName ?? ''}`">
+          <AForm.Item
+            :label="`检测项${index + 1}：${item.indicatorName ?? ''}`"
+          >
             <InputNumber
               v-if="
                 item.valueType === MesQcResultValueType.FLOAT ||

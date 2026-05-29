@@ -5,7 +5,6 @@ import type { MesQcDefectRecordApi } from '#/api/mes/qc/defectrecord';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
@@ -16,22 +15,22 @@ import {
 } from '#/api/mes/qc/defectrecord';
 import { $t } from '#/locales';
 
+import { useDefectRecordInlineGridColumns } from './data';
 import DefectRecordInlineForm from './defect-record-inline-form.vue';
 
 defineOptions({ name: 'DefectRecordInlineList' });
 
 const emit = defineEmits(['success']);
 
-// TODO @AI：改成 QcData？？？
-interface OpenData {
+interface CtxData {
   formType?: string;
   lineId: number;
   qcId: number;
   qcType: number;
 }
 
-const qcData = ref<OpenData>();
-const isReadonly = computed(() => qcData.value?.formType === 'detail');
+const ctxData = ref<CtxData>();
+const isReadonly = computed(() => ctxData.value?.formType === 'detail');
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -46,31 +45,31 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 新增缺陷 */
 function handleCreate() {
-  if (!qcData.value) {
+  if (!ctxData.value) {
     return;
   }
   formModalApi
     .setData({
       formType: 'create',
-      lineId: qcData.value.lineId,
-      qcId: qcData.value.qcId,
-      qcType: qcData.value.qcType,
+      lineId: ctxData.value.lineId,
+      qcId: ctxData.value.qcId,
+      qcType: ctxData.value.qcType,
     })
     .open();
 }
 
 /** 编辑缺陷 */
 function handleEdit(row: MesQcDefectRecordApi.DefectRecord) {
-  if (!qcData.value) {
+  if (!ctxData.value) {
     return;
   }
   formModalApi
     .setData({
       formType: 'update',
       id: row.id,
-      lineId: qcData.value.lineId,
-      qcId: qcData.value.qcId,
-      qcType: qcData.value.qcType,
+      lineId: ctxData.value.lineId,
+      qcId: ctxData.value.qcId,
+      qcType: ctxData.value.qcType,
     })
     .open();
 }
@@ -90,55 +89,22 @@ async function handleDelete(row: MesQcDefectRecordApi.DefectRecord) {
   }
 }
 
-// TODO @AI：搞个 data.ts？
-// TODO @AI：代码风格，貌似不够一致；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: [
-      {
-        field: 'name',
-        title: '缺陷描述',
-        minWidth: 200,
-      },
-      {
-        field: 'level',
-        title: '缺陷等级',
-        width: 120,
-        cellRender: {
-          name: 'CellDict',
-          props: { type: DICT_TYPE.MES_DEFECT_LEVEL },
-        },
-      },
-      {
-        field: 'quantity',
-        title: '缺陷数量',
-        width: 100,
-      },
-      {
-        field: 'remark',
-        title: '备注',
-        minWidth: 150,
-      },
-      {
-        title: '操作',
-        width: 130,
-        fixed: 'right',
-        slots: { default: 'actions' },
-      },
-    ],
+    columns: useDefectRecordInlineGridColumns(),
     height: 320,
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          if (!qcData.value) {
+          if (!ctxData.value) {
             return { list: [], total: 0 };
           }
           return await getDefectRecordPage({
-            lineId: qcData.value.lineId,
+            lineId: ctxData.value.lineId,
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            qcId: qcData.value.qcId,
-            qcType: qcData.value.qcType,
+            qcId: ctxData.value.qcId,
+            qcType: ctxData.value.qcType,
           });
         },
       },
@@ -158,10 +124,10 @@ const [Modal, modalApi] = useVbenModal({
   showConfirmButton: false,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      qcData.value = undefined;
+      ctxData.value = undefined;
       return;
     }
-    qcData.value = modalApi.getData<OpenData>();
+    ctxData.value = modalApi.getData<CtxData>();
     await gridApi.query();
   },
 });

@@ -13,6 +13,7 @@ import {
 } from '#/api/mes/qc/indicatorresult';
 import { $t } from '#/locales';
 
+import { useQcIndicatorResultGridColumns } from './data';
 import QcIndicatorResultForm from './qc-indicator-result-form.vue';
 
 const props = defineProps<{
@@ -69,21 +70,9 @@ async function handleDelete(row: MesQcIndicatorResultApi.IndicatorResult) {
   }
 }
 
-// TODO @AI：搞个 data.ts？
-// TODO @AI：代码风格，貌似不够一致；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: [
-      { field: 'code', title: '样品编号', width: 200 },
-      { field: 'sn', title: '物资SN', minWidth: 200 },
-      { field: 'remark', title: '备注', minWidth: 200 },
-      {
-        title: '操作',
-        width: 150,
-        fixed: 'right',
-        slots: { default: 'actions' },
-      },
-    ],
+    columns: useQcIndicatorResultGridColumns(),
     height: 360,
     proxyConfig: {
       ajax: {
@@ -101,8 +90,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
     rowConfig: {
-      keyField: 'id',
       isHover: true,
+      keyField: 'id',
     },
     toolbarConfig: {
       refresh: true,

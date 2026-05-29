@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import type { FormType } from './data';
+
 import type { MesQcDefectRecordApi } from '#/api/mes/qc/defectrecord';
 
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'ant-design-vue';
 
@@ -17,8 +17,10 @@ import {
 } from '#/api/mes/qc/defectrecord';
 import { $t } from '#/locales';
 
-interface OpenData {
-  formType: 'create' | 'update';
+import { useDefectRecordInlineFormSchema } from './data';
+
+interface CtxData {
+  formType: FormType;
   id?: number;
   lineId: number;
   qcId: number;
@@ -28,8 +30,7 @@ interface OpenData {
 defineOptions({ name: 'DefectRecordInlineForm' });
 
 const emit = defineEmits(['success']);
-// TODO @AI：这里，别的模块，一般是要枚举 create、update 么？
-const formType = ref<'create' | 'update'>('create');
+const formType = ref<FormType>('create');
 const formData = ref<MesQcDefectRecordApi.DefectRecord>();
 
 const getTitle = computed(() =>
@@ -38,8 +39,6 @@ const getTitle = computed(() =>
     : $t('ui.actionTitle.create', ['缺陷记录']),
 );
 
-// TODO @AI：搞个 data.ts？
-// TODO @AI：代码风格，貌似不够一致；
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -49,50 +48,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 90,
   },
   layout: 'horizontal',
-  schema: [
-    {
-      fieldName: 'name',
-      label: '缺陷描述',
-      component: 'Textarea',
-      formItemClass: 'col-span-2',
-      componentProps: {
-        placeholder: '请输入缺陷描述',
-        rows: 2,
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'level',
-      label: '缺陷等级',
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        options: getDictOptions(DICT_TYPE.MES_DEFECT_LEVEL, 'number'),
-        placeholder: '请选择缺陷等级',
-      },
-      rules: 'selectRequired',
-    },
-    {
-      fieldName: 'quantity',
-      label: '缺陷数量',
-      component: 'InputNumber',
-      componentProps: {
-        class: '!w-full',
-        min: 1,
-        placeholder: '请输入缺陷数量',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Input',
-      formItemClass: 'col-span-2',
-      componentProps: {
-        placeholder: '请输入备注',
-      },
-    },
-  ],
+  schema: useDefectRecordInlineFormSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-2',
 });
@@ -107,15 +63,16 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
+    // 提交表单
+    const values =
+      (await formApi.getValues()) as MesQcDefectRecordApi.DefectRecord;
+    const payload: MesQcDefectRecordApi.DefectRecord = {
+      ...values,
+      lineId: formData.value.lineId,
+      qcId: formData.value.qcId,
+      qcType: formData.value.qcType,
+    };
     try {
-      const values =
-        (await formApi.getValues()) as MesQcDefectRecordApi.DefectRecord;
-      const payload: MesQcDefectRecordApi.DefectRecord = {
-        ...values,
-        lineId: formData.value.lineId,
-        qcId: formData.value.qcId,
-        qcType: formData.value.qcType,
-      };
       if (formType.value === 'update') {
         await updateDefectRecord({ ...payload, id: formData.value.id });
         message.success($t('common.updateSuccess'));
@@ -123,6 +80,7 @@ const [Modal, modalApi] = useVbenModal({
         await createDefectRecord(payload);
         message.success($t('common.createSuccess'));
       }
+      // 关闭并提示
       await modalApi.close();
       emit('success');
     } finally {
@@ -134,18 +92,10 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<OpenData>();
+    // 加载数据
+    const data = modalApi.getData<CtxData>();
     formType.value = data.formType;
-    if (data.id) {
-      // 编辑：根据 id 加载明细
-      modalApi.lock();
-      try {
-        formData.value = await getDefectRecord(data.id);
-        await formApi.setValues(formData.value);
-      } finally {
-        modalApi.unlock();
-      }
-    } else {
+    if (!data.id) {
       // 新增：保留来自父级的上下文，并默认数量为 1
       formData.value = {
         lineId: data.lineId,
@@ -153,6 +103,15 @@ const [Modal, modalApi] = useVbenModal({
         qcType: data.qcType,
       };
       await formApi.setValues({ quantity: 1 });
+      return;
+    }
+    modalApi.lock();
+    try {
+      formData.value = await getDefectRecord(data.id);
+      // 设置到 values
+      await formApi.setValues(formData.value);
+    } finally {
+      modalApi.unlock();
     }
   },
 });

@@ -62,17 +62,12 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-// TODO @AI：这个不应该是表头吧？不够通用；应该是 handleRefresh 更合理把。
-/** 重新加载主表头数据（用于子表变更后刷新缺陷统计） */
-async function reloadHead() {
+/** 子表变更后刷新主表头数据（缺陷统计等） */
+async function handleRefresh() {
   if (!formData.value?.id) {
     return;
   }
-  try {
-    formData.value = await getIqc(formData.value.id);
-  } catch (error) {
-    console.error('[IqcForm] reload head failed:', error);
-  }
+  formData.value = await getIqc(formData.value.id);
 }
 
 /** 提交表单 */
@@ -222,7 +217,7 @@ const [Modal, modalApi] = useVbenModal({
         <LineList
           :form-type="formType"
           :iqc-id="formData.id"
-          @refresh="reloadHead"
+          @refresh="handleRefresh"
         />
       </Tabs.TabPane>
       <Tabs.TabPane key="result" tab="检测结果">

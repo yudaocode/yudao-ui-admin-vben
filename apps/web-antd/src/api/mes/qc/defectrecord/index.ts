@@ -16,6 +16,13 @@ export namespace MesQcDefectRecordApi {
   }
 }
 
+/** 查询质检缺陷记录 */
+export function getDefectRecord(id: number) {
+  return requestClient.get<MesQcDefectRecordApi.DefectRecord>(
+    `/mes/qc/defect-record/get?id=${id}`,
+  );
+}
+
 /** 查询质检缺陷记录分页 */
 export function getDefectRecordPage(
   params: PageParam & { lineId?: number; qcId?: number; qcType?: number; },
