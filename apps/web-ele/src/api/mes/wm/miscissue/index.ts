@@ -8,7 +8,7 @@ export namespace MesWmMiscIssueApi {
     id?: number; // 编号
     code?: string; // 出库单编号
     name?: string; // 出库单名称
-    type?: string; // 业务类型
+    type?: number; // 业务类型
     sourceDocType?: string; // 来源单据类型
     sourceDocId?: number; // 来源单据编号
     sourceDocCode?: string; // 来源单据编码
