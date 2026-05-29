@@ -48,12 +48,8 @@ export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFo
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

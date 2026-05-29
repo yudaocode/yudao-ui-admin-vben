@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmBatchApi } from '#/api/mes/wm/batch';
 
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,13 +17,9 @@ const props = defineProps<{
   direction: 'backward' | 'forward'; // 追溯方向：forward=向前，backward=向后
 }>();
 
-const list = ref<MesWmBatchApi.Batch[]>([]); // 追溯结果列表
-
-// TODO @AI：代码风格；
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useTraceGridColumns(),
-    data: list.value,
     minHeight: 240,
     pagerConfig: { enabled: false },
     rowConfig: { isHover: true, keyField: 'id' },
@@ -33,20 +29,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 加载追溯列表 */
-// TODO @AI：是不是可以在 useVbenVxeGrid 里面实现加载？
 async function getList() {
   if (!props.batchCode) {
-    list.value = [];
-    gridApi.setGridOptions({ data: list.value });
+    await gridApi.grid?.loadData([]);
     return;
   }
   gridApi.setLoading(true);
   try {
-    list.value =
+    const list =
       props.direction === 'forward'
         ? await getForwardBatchList(props.batchCode)
         : await getBackwardBatchList(props.batchCode);
-    gridApi.setGridOptions({ data: list.value });
+    await gridApi.grid?.loadData(list);
   } finally {
     gridApi.setLoading(false);
   }

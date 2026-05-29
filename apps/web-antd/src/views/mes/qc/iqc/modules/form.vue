@@ -156,7 +156,6 @@ const [Modal, modalApi] = useVbenModal({
       originalSnapshot.value = '';
       return;
     }
-    formApi.setState({ schema: useFormSchema(formApi) });
     subTabsName.value = 'line';
     // 加载数据
     const data = modalApi.getData<{
@@ -165,6 +164,7 @@ const [Modal, modalApi] = useVbenModal({
       prefill?: MesQcIqcApi.Iqc;
     }>();
     formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     formApi.setDisabled(formType.value === 'detail');
     modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (data?.id) {

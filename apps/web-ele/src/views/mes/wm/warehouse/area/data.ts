@@ -82,14 +82,10 @@ export function useFormSchema(
                 ElButton,
                 {
                   onClick: async () => {
-                    try {
-                      const code = await generateAutoCode(
-                        MesAutoCodeRuleCode.WM_AREA_CODE,
-                      );
-                      await formApi?.setFieldValue('code', code);
-                    } catch (error) {
-                      console.error(error);
-                    }
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.WM_AREA_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
                   },
                 },
                 { default: () => '自动生成' },

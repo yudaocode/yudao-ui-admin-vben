@@ -41,7 +41,10 @@ function syncUnqualified(formApi?: VbenFormApi) {
 }
 
 /** 新增/修改的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -87,15 +90,12 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         h(
           ElButton,
           {
+            disabled: formType === 'detail',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.QC_IPQC_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(
+                MesAutoCodeRuleCode.QC_IPQC_CODE,
+              );
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

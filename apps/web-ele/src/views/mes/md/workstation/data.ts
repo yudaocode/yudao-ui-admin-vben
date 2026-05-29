@@ -52,14 +52,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           ElButton,
           {
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(
+                MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
+              );
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

@@ -52,14 +52,10 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    try {
-                      const code = await generateAutoCode(
-                        MesAutoCodeRuleCode.WM_WAREHOUSE_CODE,
-                      );
-                      await formApi?.setFieldValue('code', code);
-                    } catch (error) {
-                      console.error(error);
-                    }
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.WM_WAREHOUSE_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
                   },
                 },
                 { default: () => '自动生成' },
