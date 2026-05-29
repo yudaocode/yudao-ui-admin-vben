@@ -360,7 +360,6 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     initializing.value = true;
-    await formApi.resetForm();
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     if (data?.id) {

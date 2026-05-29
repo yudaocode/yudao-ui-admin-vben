@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotProductApi } from '#/api/iot/product/product';
 
@@ -14,7 +14,7 @@ import { getSimpleProductCategoryList } from '#/api/iot/product/category';
 
 /** 基础表单字段（不含图标、图片、描述） */
 export function useBasicFormSchema(
-  formApi?: any,
+  formApi?: VbenFormApi,
   generateProductKey?: () => string,
 ): VbenFormSchema[] {
   return [

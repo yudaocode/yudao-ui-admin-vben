@@ -50,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await formApi.resetForm();
     const data = modalApi.getData<{ day: string }>();
     if (!data?.day) {
       return;

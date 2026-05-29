@@ -141,6 +141,8 @@ export const MesAutoCodeRuleCode = {
   PRO_WORK_ORDER_CODE: 'PRO_WORK_ORDER_CODE',
   QC_DEFECT_CODE: 'QC_DEFECT_CODE',
   QC_INDICATOR_CODE: 'QC_INDICATOR_CODE',
+  QC_INDICATOR_RESULT_CODE: 'QC_INDICATOR_RESULT_CODE',
+  QC_IQC_CODE: 'QC_IQC_CODE',
   QC_TEMPLATE_CODE: 'QC_TEMPLATE_CODE',
   TM_TOOL_TYPE_CODE: 'TM_TOOL_TYPE_CODE',
   TM_TOOL_CODE: 'TM_TOOL_CODE',
@@ -213,6 +215,47 @@ export const MesQcResultValueType = {
   TEXT: 3,
   DICT: 4,
   FILE: 5,
+} as const;
+
+/** MES 业务类型常量 */
+export const MesBizTypeEnum = {
+  // WM 仓库模块 [100, 200)
+  WM_ARRIVAL_NOTICE: 100, // 到货通知单
+  WM_RETURN_ISSUE: 116, // 生产退料
+  WM_PRODUCT_SALES: 118, // 销售出库
+  WM_RETURN_SALES: 119, // 销售退货入库
+  WM_OUTSOURCE_RECPT: 121, // 外协入库
+
+  // PRO 生产模块 [300, 400)
+  PRO_FEEDBACK: 304, // 生产报工
+} as const;
+
+/** MES 质检来源单据类型枚举 */
+export const MesQcSourceDocTypeEnum = {
+  // IQC
+  ARRIVAL_NOTICE: MesBizTypeEnum.WM_ARRIVAL_NOTICE,
+  OUTSOURCE_RECPT: MesBizTypeEnum.WM_OUTSOURCE_RECPT,
+  // IPQC
+  PRO_FEEDBACK: MesBizTypeEnum.PRO_FEEDBACK,
+  // OQC
+  PRODUCT_SALES: MesBizTypeEnum.WM_PRODUCT_SALES,
+  // RQC
+  RETURN_ISSUE: MesBizTypeEnum.WM_RETURN_ISSUE,
+  RETURN_SALES: MesBizTypeEnum.WM_RETURN_SALES,
+} as const;
+
+/** MES 质检类型枚举 */
+export const MesQcTypeEnum = {
+  IQC: 1, // 来料检验
+  IPQC: 2, // 过程检验
+  OQC: 3, // 出货检验
+  RQC: 4, // 退货检验
+} as const;
+
+/** MES 质检单状态枚举 */
+export const MesQcStatusEnum = {
+  DRAFT: MesOrderStatusConstants.DRAFT,
+  FINISHED: MesOrderStatusConstants.FINISHED,
 } as const;
 
 /** MES 编码规则分段类型枚举 */

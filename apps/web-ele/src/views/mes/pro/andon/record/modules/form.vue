@@ -49,9 +49,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formType.value, formApi) });
-
 /** 处置：保存（保持 ACTIVE 状态） */
 async function handleSave() {
   modalApi.lock();
@@ -136,7 +133,6 @@ const [Modal, modalApi] = useVbenModal({
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     modalApi.setState({ showConfirmButton: formType.value === 'create' });
-    await formApi.resetForm();
     if (formType.value === 'create') {
       // 新增时，发起人默认为当前用户
       await formApi.setValues({ userId: userStore.userInfo?.id });

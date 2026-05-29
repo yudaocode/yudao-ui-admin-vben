@@ -68,7 +68,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
     // 加载数据
     const data = modalApi.getData<
       MesQcTemplateItemApi.TemplateItem & { templateId: number }

@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsItemCategoryApi } from '#/api/wms/md/item/category';
 
@@ -15,7 +15,7 @@ import { getItemCategorySimpleList } from '#/api/wms/md/item/category';
 import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改商品分类的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',

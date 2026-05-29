@@ -216,6 +216,8 @@ const MES_DICT = {
   MES_INDICATOR_TYPE: 'mes_indicator_type', // MES 检测项类型
   MES_QC_RESULT_TYPE: 'mes_qc_result_type', // MES 质检结果值类型
   MES_QC_TYPE: 'mes_qc_type', // MES 质检方案类型
+  MES_QC_CHECK_RESULT: 'mes_qc_check_result', // MES 检测结果
+  MES_QC_SOURCE_DOC_TYPE: 'mes_qc_source_doc_type', // MES 来源单据类型
   MES_DEFECT_LEVEL: 'mes_defect_level', // MES 缺陷等级
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式

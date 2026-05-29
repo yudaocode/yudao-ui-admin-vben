@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h, markRaw } from 'vue';
@@ -13,7 +13,7 @@ import { WmsItemBrandSelect } from './brand/components';
 import { WmsItemCategorySelect } from './category/components';
 
 /** 新增/修改商品的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       component: 'Input',

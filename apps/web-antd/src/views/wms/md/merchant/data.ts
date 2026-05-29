@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
@@ -12,7 +12,7 @@ import { z } from '#/adapter/form';
 import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改往来企业的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       component: 'Input',
