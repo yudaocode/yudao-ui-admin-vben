@@ -66,7 +66,12 @@ const [Form, formApi] = useVbenForm({
 
 /** 获取字典选项（valueSpecification 为系统字典类型名） */
 function getValueOptions(dictType?: string) {
-  return dictType ? getDictOptions(dictType, 'string') : [];
+  return dictType
+    ? getDictOptions(dictType, 'string').map(({ label, value }) => ({
+        label,
+        value: String(value),
+      }))
+    : [];
 }
 
 const [Modal, modalApi] = useVbenModal({
