@@ -2,14 +2,17 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 import type { MesWmBarcodeConfigApi } from '#/api/mes/wm/barcode/config';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDateTime } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { generateBarcodeContent } from '#/api/mes/wm/barcode';
+import { DictTag } from '#/components/dict-tag';
 import DvMachinerySelect from '#/views/mes/dv/machinery/components/dv-machinery-select.vue';
 import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
@@ -21,6 +24,7 @@ import TmToolSelect from '#/views/mes/tm/tool/components/tm-tool-select.vue';
 import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 
 import WmMaterialStockSelect from './../materialstock/components/wm-material-stock-select.vue';
+import { WmPackageSelect } from './../packages/components';
 import {
   WmWarehouseAreaSelect,
   WmWarehouseLocationSelect,
@@ -50,19 +54,20 @@ async function syncBizDetail(
   if (bizType === BarcodeBizTypeEnum.STOCK) {
     bizCode = item.itemCode;
     bizName = item.itemName;
+  } else if (bizType === BarcodeBizTypeEnum.PACKAGE) {
+    bizCode = item.code;
+    bizName = item.clientName || item.code;
   } else {
     bizCode = item.code || item.username;
     bizName = item.name || item.nickname;
   }
-  let content: string | undefined;
+  // 先回填业务编码、名称并清空旧条码内容
+  await formApi.setValues({ bizCode, bizName, content: undefined });
+  // 再根据业务类型 + 业务编码生成条码内容
   if (bizType && bizCode) {
-    try {
-      content = await generateBarcodeContent(bizType, bizCode);
-    } catch (error) {
-      console.error('生成条码内容失败:', error);
-    }
+    const content = await generateBarcodeContent(bizType, bizCode);
+    await formApi.setFieldValue('content', content);
   }
-  await formApi.setValues({ bizCode, bizName, content });
 }
 
 /** 新增/修改条码的表单 */
@@ -311,6 +316,20 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     },
     {
       fieldName: 'bizId',
+      label: '装箱单',
+      component: markRaw(WmPackageSelect),
+      componentProps: {
+        childableOnly: true,
+        onChange: (item: any) => syncBizDetail(formApi, item),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.PACKAGE,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
       label: '业务编号',
       component: 'InputNumber',
       componentProps: {
@@ -329,6 +348,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             BarcodeBizTypeEnum.ITEM,
             BarcodeBizTypeEnum.LOCATION,
             BarcodeBizTypeEnum.MACHINERY,
+            BarcodeBizTypeEnum.PACKAGE,
             BarcodeBizTypeEnum.STOCK,
             BarcodeBizTypeEnum.TOOL,
             BarcodeBizTypeEnum.VENDOR,
@@ -347,6 +367,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         disabled: true,
         placeholder: '自动填充',
       },
+      rules: 'required',
     },
     {
       fieldName: 'bizName',
@@ -356,6 +377,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         disabled: true,
         placeholder: '自动填充',
       },
+      rules: 'required',
     },
     {
       fieldName: 'content',
@@ -594,6 +616,56 @@ export function useConfigGridColumns(
       width: 160,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 条码详情的描述字段 */
+export function useBarcodeDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'format',
+      label: '条码格式',
+      render: (value) =>
+        value == null
+          ? '-'
+          : h(DictTag, { type: DICT_TYPE.MES_WM_BARCODE_FORMAT, value }),
+    },
+    {
+      field: 'bizType',
+      label: '业务类型',
+      render: (value) =>
+        value == null
+          ? '-'
+          : h(DictTag, { type: DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, value }),
+    },
+    {
+      field: 'content',
+      label: '条码内容',
+      slot: 'content',
+    },
+    {
+      field: 'bizCode',
+      label: '业务编码',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'bizName',
+      label: '业务名称',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'status',
+      label: '状态',
+      render: (value) =>
+        value == null
+          ? '-'
+          : h(DictTag, { type: DICT_TYPE.COMMON_STATUS, value }),
+    },
+    {
+      field: 'createTime',
+      label: '创建时间',
+      render: (value) => formatDateTime(value) || '-',
     },
   ];
 }

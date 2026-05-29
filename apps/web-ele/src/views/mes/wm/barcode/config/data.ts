@@ -1,7 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { h } from 'vue';
+
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+
+import { ElButton, ElMessage } from 'element-plus';
 
 import { z } from '#/adapter/form';
 
@@ -75,8 +79,19 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '默认打印模板',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入打印模板',
+        placeholder: '请选择打印模板',
+        readonly: true,
       },
+      // TODO @芋艿：后续对接 UReport 报表选择器，实现打印模板选择功能
+      suffix: () =>
+        h(
+          ElButton,
+          {
+            onClick: () =>
+              ElMessage.warning('打印模板选择功能暂未实现，敬请期待'),
+          },
+          { default: () => '设置' },
+        ),
     },
     {
       fieldName: 'status',

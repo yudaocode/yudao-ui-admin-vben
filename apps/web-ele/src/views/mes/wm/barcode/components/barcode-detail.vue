@@ -5,12 +5,8 @@ import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 
 import { ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
-
 import {
   ElButton,
-  ElDescriptions,
-  ElDescriptionsItem,
   ElDialog,
   ElEmpty,
   ElMessage,
@@ -18,8 +14,9 @@ import {
 } from 'element-plus';
 
 import { createBarcode, getBarcodeByBusiness } from '#/api/mes/wm/barcode';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
 
+import { useBarcodeDetailSchema } from '../data';
 import MesWmBarcode from './barcode.vue';
 
 defineOptions({ name: 'MesWmBarcodeDetail' });
@@ -27,6 +24,12 @@ defineOptions({ name: 'MesWmBarcodeDetail' });
 const open = ref(false);
 const barcodeRef = ref<InstanceType<typeof Barcode>>();
 const barcodeData = ref<Partial<MesWmBarcodeApi.Barcode>>({});
+
+const [Descriptions] = useDescription({
+  border: true,
+  column: 1,
+  schema: useBarcodeDetailSchema(),
+});
 
 function openModal(row: Partial<MesWmBarcodeApi.Barcode>) {
   open.value = true;
@@ -147,22 +150,8 @@ async function handleGenerate() {
         </div>
         <ElEmpty v-else description="暂无条码数据" />
       </div>
-      <ElDescriptions :column="1" border>
-        <ElDescriptionsItem label="条码格式">
-          <DictTag
-            v-if="barcodeData.format"
-            :type="DICT_TYPE.MES_WM_BARCODE_FORMAT"
-            :value="barcodeData.format"
-          />
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="业务类型">
-          <DictTag
-            v-if="barcodeData.bizType"
-            :type="DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE"
-            :value="barcodeData.bizType"
-          />
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="条码内容">
+      <Descriptions :data="barcodeData">
+        <template #content>
           <ElTooltip :content="barcodeData.content" placement="top">
             <span
               class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -170,24 +159,8 @@ async function handleGenerate() {
               {{ barcodeData.content }}
             </span>
           </ElTooltip>
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="业务编码">
-          {{ barcodeData.bizCode || '-' }}
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="业务名称">
-          {{ barcodeData.bizName || '-' }}
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="状态">
-          <DictTag
-            v-if="barcodeData.status !== undefined"
-            :type="DICT_TYPE.COMMON_STATUS"
-            :value="barcodeData.status"
-          />
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="创建时间">
-          {{ barcodeData.createTime || '-' }}
-        </ElDescriptionsItem>
-      </ElDescriptions>
+        </template>
+      </Descriptions>
     </div>
     <template #footer>
       <ElButton v-if="!barcodeData.content" @click="handleGenerate">

@@ -49,24 +49,17 @@ async function loadCascadeData(data: MesWmBarcodeApi.Barcode) {
   if (!data.bizType || !data.bizId) {
     return;
   }
-  try {
-    if (data.bizType === BarcodeBizTypeEnum.LOCATION) {
-      const location = await getWarehouseLocation(data.bizId);
-      if (location?.warehouseId) {
-        await formApi.setFieldValue(
-          'locationWarehouseId',
-          location.warehouseId,
-        );
-      }
-    } else if (data.bizType === BarcodeBizTypeEnum.AREA) {
-      const area = await getWarehouseArea(data.bizId);
-      await formApi.setValues({
-        areaWarehouseId: area?.warehouseId,
-        areaLocationId: area?.locationId,
-      });
+  if (data.bizType === BarcodeBizTypeEnum.LOCATION) {
+    const location = await getWarehouseLocation(data.bizId);
+    if (location?.warehouseId) {
+      await formApi.setFieldValue('locationWarehouseId', location.warehouseId);
     }
-  } catch (error) {
-    console.error('加载级联数据失败:', error);
+  } else if (data.bizType === BarcodeBizTypeEnum.AREA) {
+    const area = await getWarehouseArea(data.bizId);
+    await formApi.setValues({
+      areaWarehouseId: area?.warehouseId,
+      areaLocationId: area?.locationId,
+    });
   }
 }
 
