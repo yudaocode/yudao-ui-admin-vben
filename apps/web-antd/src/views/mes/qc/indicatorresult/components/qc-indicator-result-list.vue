@@ -1,0 +1,156 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesQcIndicatorResultApi } from '#/api/mes/qc/indicatorresult';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteIndicatorResult,
+  getIndicatorResultPage,
+} from '#/api/mes/qc/indicatorresult';
+import { $t } from '#/locales';
+
+import QcIndicatorResultForm from './qc-indicator-result-form.vue';
+
+const props = defineProps<{
+  qcId: number;
+  qcType: number;
+  readonly?: boolean;
+}>();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: QcIndicatorResultForm,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 新增检测结果 */
+function handleCreate() {
+  formModalApi
+    .setData({
+      formType: 'create',
+      qcId: props.qcId,
+      qcType: props.qcType,
+    })
+    .open();
+}
+
+/** 编辑检测结果 */
+function handleEdit(row: MesQcIndicatorResultApi.IndicatorResult) {
+  formModalApi
+    .setData({
+      formType: 'update',
+      id: row.id,
+      qcId: props.qcId,
+      qcType: props.qcType,
+    })
+    .open();
+}
+
+/** 删除检测结果 */
+async function handleDelete(row: MesQcIndicatorResultApi.IndicatorResult) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.code]),
+    duration: 0,
+  });
+  try {
+    await deleteIndicatorResult(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.code]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+// TODO @AI：搞个 data.ts？
+// TODO @AI：代码风格，貌似不够一致；
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: [
+      { field: 'code', title: '样品编号', width: 200 },
+      { field: 'sn', title: '物资SN', minWidth: 200 },
+      { field: 'remark', title: '备注', minWidth: 200 },
+      {
+        title: '操作',
+        width: 150,
+        fixed: 'right',
+        slots: { default: 'actions' },
+      },
+    ],
+    height: 360,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }) => {
+          if (!props.qcId) {
+            return { list: [], total: 0 };
+          }
+          return await getIndicatorResultPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            qcId: props.qcId,
+            qcType: props.qcType,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<MesQcIndicatorResultApi.IndicatorResult>,
+});
+</script>
+
+<template>
+  <div>
+    <FormModal @success="handleRefresh" />
+    <Grid table-title="检测结果">
+      <template v-if="!readonly" #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '新增',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              ifShow: !readonly,
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: !readonly,
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.code]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </div>
+</template>
