@@ -24,7 +24,7 @@ catalog:
   '@changesets/git': ^3.0.4
   '@clack/prompts': ^1.2.0
   '@commitlint/cli': ^20.5.0
-  '@commitlint/config-conventional': ^20.5.0
+  '@commitlint/config-conventional': ^21.0.2
   '@ctrl/tinycolor': ^4.2.0
   '@eslint-community/eslint-plugin-eslint-comments': ^4.7.1
   '@eslint/js': ^10.0.1
