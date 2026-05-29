@@ -73,8 +73,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '业务类型',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, 'number'),
-        placeholder: '请选择业务类型',
         // 业务类型变更时清空业务字段
         onChange: () =>
           formApi?.setValues({
@@ -86,6 +84,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             areaWarehouseId: undefined,
             areaLocationId: undefined,
           }),
+        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, 'number'),
+        placeholder: '请选择业务类型',
       },
       rules: 'required',
     },
@@ -108,7 +108,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '库区·仓库',
       component: markRaw(WmWarehouseSelect),
       componentProps: {
-        placeholder: '请选择仓库',
         onChange: () =>
           formApi?.setValues({
             bizId: undefined,
@@ -116,6 +115,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             bizName: undefined,
             content: undefined,
           }),
+        placeholder: '请选择仓库',
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -130,9 +130,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         triggerFields: ['bizType', 'locationWarehouseId'],
         show: (values) => values.bizType === BarcodeBizTypeEnum.LOCATION,
         componentProps: (values) => ({
+          onChange: (item: any) => syncBizDetail(formApi, item),
           placeholder: '请选择库区',
           warehouseId: values.locationWarehouseId,
-          onChange: (item: any) => syncBizDetail(formApi, item),
         }),
       },
       rules: 'required',
@@ -142,7 +142,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '库位·仓库',
       component: markRaw(WmWarehouseSelect),
       componentProps: {
-        placeholder: '请选择仓库',
         onChange: () =>
           formApi?.setValues({
             areaLocationId: undefined,
@@ -151,6 +150,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             bizName: undefined,
             content: undefined,
           }),
+        placeholder: '请选择仓库',
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -165,8 +165,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         triggerFields: ['bizType', 'areaWarehouseId'],
         show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
         componentProps: (values) => ({
-          placeholder: '请选择库区',
-          warehouseId: values.areaWarehouseId,
           onChange: () =>
             formApi?.setValues({
               bizId: undefined,
@@ -174,6 +172,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
               bizName: undefined,
               content: undefined,
             }),
+          placeholder: '请选择库区',
+          warehouseId: values.areaWarehouseId,
         }),
       },
     },
@@ -185,9 +185,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         triggerFields: ['bizType', 'areaLocationId'],
         show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
         componentProps: (values) => ({
-          placeholder: '请选择库位',
           locationId: values.areaLocationId,
           onChange: (item: any) => syncBizDetail(formApi, item),
+          placeholder: '请选择库位',
         }),
       },
       rules: 'required',

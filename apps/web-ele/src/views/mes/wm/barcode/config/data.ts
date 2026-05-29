@@ -37,8 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({
-          // 编辑时业务类型不允许变更
-          disabled: !!values.id,
+          disabled: !!values.id, // 编辑时业务类型不允许变更
         }),
       },
       rules: 'required',
