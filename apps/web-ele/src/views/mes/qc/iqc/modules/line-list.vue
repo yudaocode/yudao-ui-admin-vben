@@ -9,10 +9,10 @@ import { getIqcLinePage } from '#/api/mes/qc/iqc/line';
 import { MesQcTypeEnum } from '#/views/mes/utils/constants';
 
 import { DefectRecordInlineList } from '../../defectrecord/components';
-import { useLineGridColumns } from '../data';
+import { type FormType, useLineGridColumns } from '../data';
 
 const props = defineProps<{
-  formType?: string;
+  formType?: FormType;
   iqcId: number;
 }>();
 

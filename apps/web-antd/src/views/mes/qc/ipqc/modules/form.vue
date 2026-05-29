@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FormType } from '../data';
 
-import type { MesQcOqcApi } from '#/api/mes/qc/oqc';
+import type { MesQcIpqcApi } from '#/api/mes/qc/ipqc';
 
 import { computed, ref } from 'vue';
 
@@ -11,11 +11,11 @@ import { Button, Descriptions, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
-  createOqc,
-  finishOqc,
-  getOqc,
-  updateOqc,
-} from '#/api/mes/qc/oqc';
+  createIpqc,
+  finishIpqc,
+  getIpqc,
+  updateIpqc,
+} from '#/api/mes/qc/ipqc';
 import { $t } from '#/locales';
 import { MesQcStatusEnum, MesQcTypeEnum } from '#/views/mes/utils/constants';
 
@@ -25,7 +25,7 @@ import LineList from './line-list.vue';
 
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
-const formData = ref<MesQcOqcApi.Oqc>();
+const formData = ref<MesQcIpqcApi.Ipqc>();
 const subTabsName = ref('line');
 const originalSnapshot = ref(''); // 表单原始数据快照，用于 finish 时跳过未变更的保存请求
 const isDetail = computed(() => formType.value === 'detail');
@@ -36,11 +36,11 @@ const canFinish = computed(
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
-    return $t('ui.actionTitle.view', ['出货检验单']);
+    return $t('ui.actionTitle.view', ['过程检验单']);
   }
   return formType.value === 'update'
-    ? $t('ui.actionTitle.edit', ['出货检验单'])
-    : $t('ui.actionTitle.create', ['出货检验单']);
+    ? $t('ui.actionTitle.edit', ['过程检验单'])
+    : $t('ui.actionTitle.create', ['过程检验单']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -62,7 +62,7 @@ async function handleRefresh() {
   if (!formData.value?.id) {
     return;
   }
-  formData.value = await getOqc(formData.value.id);
+  formData.value = await getIpqc(formData.value.id);
 }
 
 /** 提交表单 */
@@ -71,12 +71,12 @@ async function handleSubmit(): Promise<boolean> {
   if (!valid) {
     return false;
   }
-  const data = (await formApi.getValues()) as MesQcOqcApi.Oqc;
+  const data = (await formApi.getValues()) as MesQcIpqcApi.Ipqc;
   if (formData.value?.id) {
-    await updateOqc({ ...data, id: formData.value.id });
+    await updateIpqc({ ...data, id: formData.value.id });
     formData.value = { ...formData.value, ...data };
   } else {
-    const id = await createOqc(data);
+    const id = await createIpqc(data);
     formData.value = {
       ...data,
       id: id as unknown as number,
@@ -86,6 +86,7 @@ async function handleSubmit(): Promise<boolean> {
     await formApi.setFieldValue('status', formData.value.status);
     formType.value = 'update';
   }
+  // 刷新快照（已带上 id / status），下次 finish 用于判断是否需要再保存
   originalSnapshot.value = JSON.stringify(await formApi.getValues());
   return true;
 }
@@ -101,7 +102,7 @@ async function handleFinish() {
     return;
   }
   try {
-    await confirm('是否完成出货检验单编制？【完成后将不能更改】');
+    await confirm('是否完成过程检验单编制？【完成后将不能更改】');
   } catch {
     return;
   }
@@ -109,12 +110,12 @@ async function handleFinish() {
   try {
     const current = JSON.stringify(await formApi.getValues());
     if (current !== originalSnapshot.value) {
-      const data = (await formApi.getValues()) as MesQcOqcApi.Oqc;
-      await updateOqc({ ...data, id });
+      const data = (await formApi.getValues()) as MesQcIpqcApi.Ipqc;
+      await updateIpqc({ ...data, id });
       formData.value = { ...formData.value, ...data };
       originalSnapshot.value = current;
     }
-    await finishOqc(id);
+    await finishIpqc(id);
     message.success('完成成功');
     await modalApi.close();
     emit('success');
@@ -156,7 +157,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{
       formType: FormType;
       id?: number;
-      prefill?: MesQcOqcApi.Oqc;
+      prefill?: MesQcIpqcApi.Ipqc;
     }>();
     formType.value = data.formType;
     formApi.setDisabled(formType.value === 'detail');
@@ -164,7 +165,7 @@ const [Modal, modalApi] = useVbenModal({
     if (data?.id) {
       modalApi.lock();
       try {
-        formData.value = await getOqc(data.id);
+        formData.value = await getIpqc(data.id);
         // 设置到 values
         await formApi.setValues(formData.value);
       } finally {
@@ -215,14 +216,14 @@ const [Modal, modalApi] = useVbenModal({
       <Tabs.TabPane key="line" tab="检验项">
         <LineList
           :form-type="formType"
-          :oqc-id="formData.id"
+          :ipqc-id="formData.id"
           @refresh="handleRefresh"
         />
       </Tabs.TabPane>
       <Tabs.TabPane key="result" tab="检测结果">
         <QcIndicatorResultList
           :qc-id="formData.id"
-          :qc-type="MesQcTypeEnum.OQC"
+          :qc-type="MesQcTypeEnum.IPQC"
           :readonly="isDetail"
         />
       </Tabs.TabPane>

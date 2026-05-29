@@ -34,7 +34,7 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesQcRqcApi.Rqc>();
 const subTabsName = ref('line');
-const originalSnapshot = ref('');
+const originalSnapshot = ref(''); // 表单原始数据快照，用于 finish 时跳过未变更的保存请求
 const isDetail = computed(() => formType.value === 'detail');
 const canFinish = computed(
   () =>

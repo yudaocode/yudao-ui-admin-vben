@@ -22,8 +22,11 @@ defineOptions({ name: 'DefectRecordInlineList' });
 
 const emit = defineEmits(['success']);
 
+/** 表单类型：父级检验单的模式（detail 时弹窗只读） */
+type FormType = 'create' | 'detail' | 'update';
+
 interface CtxData {
-  formType?: string;
+  formType?: FormType;
   lineId: number;
   qcId: number;
   qcType: number;
