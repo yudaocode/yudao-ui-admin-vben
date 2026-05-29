@@ -9,14 +9,15 @@ import { useVbenModal } from '@vben/common-ui';
 import { getDictOptions } from '@vben/hooks';
 
 import {
-  Form as AForm,
-  Divider,
-  Input,
-  InputNumber,
-  message,
-  Select,
-  Textarea,
-} from 'ant-design-vue';
+  ElDivider,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElMessage,
+  ElOption,
+  ElSelect,
+} from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -107,10 +108,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'update') {
         await updateIndicatorResult(payload);
-        message.success($t('common.updateSuccess'));
+        ElMessage.success($t('common.updateSuccess'));
       } else {
         await createIndicatorResult(payload);
-        message.success($t('common.createSuccess'));
+        ElMessage.success($t('common.createSuccess'));
       }
       // 关闭并提示
       await modalApi.close();
@@ -165,49 +166,60 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-3/5">
     <div class="px-4">
       <Form />
-      <Divider>检测值</Divider>
-      <!-- 检测值控件由每行 valueType 驱动，逐行渲染：FLOAT/INTEGER 走 InputNumber，DICT 走 Select 并按 valueSpecification 解析选项 -->
-      <AForm :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <ElDivider>检测值</ElDivider>
+      <!-- 检测值控件由每行 valueType 驱动，逐行渲染：FLOAT/INTEGER 走 ElInputNumber，DICT 走 ElSelect 并按 valueSpecification 解析选项 -->
+      <ElForm label-width="120px">
         <div
           v-for="(item, index) in items"
           :key="item.indicatorId ?? index"
           class="mb-2"
         >
-          <AForm.Item
+          <ElFormItem
             :label="`检测项${index + 1}：${item.indicatorName ?? ''}`"
           >
-            <InputNumber
+            <ElInputNumber
               v-if="
                 item.valueType === MesQcResultValueType.FLOAT ||
                 item.valueType === MesQcResultValueType.INTEGER
               "
-              v-model:value="item.valueNumber"
-              :precision="item.valueType === MesQcResultValueType.FLOAT ? 4 : 0"
+              v-model="item.valueNumber"
               class="!w-full"
+              controls-position="right"
+              :precision="
+                item.valueType === MesQcResultValueType.FLOAT ? 4 : 0
+              "
               placeholder="请输入"
             />
-            <Textarea
+            <ElInput
               v-else-if="item.valueType === MesQcResultValueType.TEXT"
-              v-model:value="item.value"
+              v-model="item.value"
               :rows="2"
+              type="textarea"
               placeholder="请输入检测值"
             />
-            <Select
+            <ElSelect
               v-else-if="item.valueType === MesQcResultValueType.DICT"
-              v-model:value="item.value"
-              allow-clear
-              :options="getValueOptions(item.valueSpecification)"
+              v-model="item.value"
+              clearable
+              class="!w-full"
               placeholder="请选择"
-            />
-            <Input
+            >
+              <ElOption
+                v-for="opt in getValueOptions(item.valueSpecification)"
+                :key="opt.value"
+                :label="opt.label"
+                :value="opt.value"
+              />
+            </ElSelect>
+            <ElInput
               v-else-if="item.valueType === MesQcResultValueType.FILE"
-              v-model:value="item.value"
+              v-model="item.value"
               placeholder="请输入文件地址"
             />
-            <Input v-else v-model:value="item.value" placeholder="请输入" />
-          </AForm.Item>
+            <ElInput v-else v-model="item.value" placeholder="请输入" />
+          </ElFormItem>
         </div>
-      </AForm>
+      </ElForm>
     </div>
   </Modal>
 </template>
