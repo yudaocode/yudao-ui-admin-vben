@@ -31,10 +31,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>();
 
-/** 已选条码 ID */
 const checkedIds = ref<number[]>([]);
-
-/** 处理勾选变化 */
 function handleRowCheckboxChange({
   records,
 }: {
