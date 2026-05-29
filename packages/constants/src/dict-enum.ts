@@ -223,8 +223,13 @@ const MES_DICT = {
   MES_DEFECT_LEVEL: 'mes_defect_level', // MES 缺陷等级
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
+  MES_WM_PACKAGE_STATUS: 'mes_wm_package_status', // MES 装箱单状态
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
   MES_WM_QUALITY_STATUS: 'mes_wm_quality_status', // MES 质量状态
+  MES_WM_MISC_ISSUE_TYPE: 'mes_wm_misc_issue_type', // MES 杂项出库类型
+  MES_WM_MISC_ISSUE_STATUS: 'mes_wm_misc_issue_status', // MES 杂项出库单状态
+  MES_WM_MISC_RECEIPT_TYPE: 'mes_wm_misc_receipt_type', // MES 杂项入库类型
+  MES_WM_MISC_RECEIPT_STATUS: 'mes_wm_misc_receipt_status', // MES 杂项入库单状态
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

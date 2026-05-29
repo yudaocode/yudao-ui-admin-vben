@@ -151,7 +151,16 @@ export const MesAutoCodeRuleCode = {
   TM_TOOL_CODE: 'TM_TOOL_CODE',
   WM_AREA_CODE: 'WM_AREA_CODE',
   WM_LOCATION_CODE: 'WM_LOCATION_CODE',
+  WM_MISC_ISSUE_CODE: 'WM_MISC_ISSUE_CODE',
+  WM_MISC_RECEIPT_CODE: 'WM_MISC_RECEIPT_CODE',
+  WM_PACKAGE_CODE: 'WM_PACKAGE_CODE',
   WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
+} as const;
+
+/** MES 装箱单状态枚举 */
+export const MesWmPackageStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  FINISHED: MesOrderStatusConstants.FINISHED,
 } as const;
 
 /** MES 生产工单状态枚举 */
@@ -209,6 +218,22 @@ export const MesProAndonLevelEnum = {
 export const MesProWorkRecordTypeEnum = {
   CLOCK_IN: 1,
   CLOCK_OUT: 2,
+} as const;
+
+/** MES 杂项出库单状态枚举 */
+export const MesWmMiscIssueStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 杂项入库单状态枚举 */
+export const MesWmMiscReceiptStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
 } as const;
 
 /** MES 质检结果值类型枚举 */
