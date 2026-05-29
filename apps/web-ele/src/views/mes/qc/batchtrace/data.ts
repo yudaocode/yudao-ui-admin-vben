@@ -17,7 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '批次号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入批次号',
       },
     },
@@ -50,7 +50,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '销售订单编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入销售订单编号',
       },
     },
@@ -59,7 +59,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '采购订单编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入采购订单编号',
       },
     },
