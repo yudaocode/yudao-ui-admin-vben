@@ -5,20 +5,12 @@ import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 
 import { ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
-
-import {
-  Button,
-  Descriptions,
-  Empty,
-  message,
-  Modal,
-  Tooltip,
-} from 'ant-design-vue';
+import { Button, Empty, message, Modal, Tooltip } from 'ant-design-vue';
 
 import { createBarcode, getBarcodeByBusiness } from '#/api/mes/wm/barcode';
-import { DictTag } from '#/components/dict-tag';
+import { useDescription } from '#/components/description';
 
+import { useBarcodeDetailSchema } from '../data';
 import MesWmBarcode from './barcode.vue';
 
 defineOptions({ name: 'MesWmBarcodeDetail' });
@@ -26,6 +18,13 @@ defineOptions({ name: 'MesWmBarcodeDetail' });
 const open = ref(false);
 const barcodeRef = ref<InstanceType<typeof Barcode>>();
 const barcodeData = ref<Partial<MesWmBarcodeApi.Barcode>>({});
+
+const [Descriptions] = useDescription({
+  bordered: true,
+  column: 1,
+  schema: useBarcodeDetailSchema(),
+  useCard: false,
+});
 
 function openModal(row: Partial<MesWmBarcodeApi.Barcode>) {
   open.value = true;
@@ -146,22 +145,8 @@ async function handleGenerate() {
         </div>
         <Empty v-else description="暂无条码数据" />
       </div>
-      <Descriptions :column="1" bordered>
-        <Descriptions.Item label="条码格式">
-          <DictTag
-            v-if="barcodeData.format"
-            :type="DICT_TYPE.MES_WM_BARCODE_FORMAT"
-            :value="barcodeData.format"
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="业务类型">
-          <DictTag
-            v-if="barcodeData.bizType"
-            :type="DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE"
-            :value="barcodeData.bizType"
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="条码内容">
+      <Descriptions :data="barcodeData">
+        <template #content>
           <Tooltip :title="barcodeData.content">
             <span
               class="inline-block max-w-75 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -169,23 +154,7 @@ async function handleGenerate() {
               {{ barcodeData.content }}
             </span>
           </Tooltip>
-        </Descriptions.Item>
-        <Descriptions.Item label="业务编码">
-          {{ barcodeData.bizCode || '-' }}
-        </Descriptions.Item>
-        <Descriptions.Item label="业务名称">
-          {{ barcodeData.bizName || '-' }}
-        </Descriptions.Item>
-        <Descriptions.Item label="状态">
-          <DictTag
-            v-if="barcodeData.status !== undefined"
-            :type="DICT_TYPE.COMMON_STATUS"
-            :value="barcodeData.status"
-          />
-        </Descriptions.Item>
-        <Descriptions.Item label="创建时间">
-          {{ barcodeData.createTime || '-' }}
-        </Descriptions.Item>
+        </template>
       </Descriptions>
     </div>
     <template #footer>
