@@ -31,18 +31,14 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>();
 
-// TODO @AI：这里的 checkedIds，是不是拿到 handleRowCheckboxChange 代码块里？更简洁一点？
-// TODO @AI：这里的代码风格，要和 system user index 保持一致，批量选择；
-/** 已选条码 ID */
-const checkedIds = ref<number[]>([]);
-
 /** 处理勾选变化 */
+const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
   records: MesWmBarcodeApi.Barcode[];
 }) {
-  checkedIds.value = records.map((row) => row.id!).filter(Boolean);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 刷新表格 */

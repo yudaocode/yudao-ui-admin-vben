@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI：注释风格；另外，也对齐下 system user index.vue；（整个文件）
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmMaterialStockApi } from '#/api/mes/wm/materialstock';
 
@@ -8,7 +7,7 @@ import { ref } from 'vue';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, Card, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -27,24 +26,54 @@ const [AreaModal, areaModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 导出表格 */
+async function handleExport() {
+  const data = await exportMaterialStock({
+    ...(await gridApi.formApi.getValues()),
+    itemTypeId: searchItemTypeId.value,
+  });
+  downloadFileFromBlobPart({ fileName: '库存台账.xls', source: data });
+}
+
+/** 选择物料分类 */
+const searchItemTypeId = ref<number | undefined>(undefined);
+function handleTypeNodeClick(row: undefined | { id?: number }) {
+  searchItemTypeId.value = row?.id;
+  handleRefresh();
+}
+
+/** 打开库位详情弹窗 */
+function handleOpenAreaDetail(row: MesWmMaterialStockApi.MaterialStock) {
+  if (!row.areaId) {
+    return;
+  }
+  areaModalApi.setData({ formType: 'detail', id: row.areaId }).open();
+}
+
 /** 处理冻结状态切换 */
-async function handleFrozenChange(row: MesWmMaterialStockApi.MaterialStock) {
+async function handleFrozenChange(
+  row: MesWmMaterialStockApi.MaterialStock,
+): Promise<boolean | undefined> {
   const text = row.frozen ? '冻结' : '解冻';
   try {
     await confirm(`确认要"${text}"该库存记录吗？`);
   } catch {
     return false;
   }
+  // 更新冻结状态
   await updateMaterialStockFrozen({
     id: row.id!,
     frozen: row.frozen!,
   });
+  // 提示并返回成功
   message.success(`${text}成功`);
   return true;
 }
-
-/** 已选物料分类 */
-const searchItemTypeId = ref<number>();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -60,8 +89,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getMaterialStockPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            itemTypeId: searchItemTypeId.value,
             ...formValues,
+            itemTypeId: searchItemTypeId.value,
           });
         },
       },
@@ -76,29 +105,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>,
 });
-
-/** 物料分类树节点点击 */
-function handleTypeNodeClick(row: undefined | { id?: number }) {
-  searchItemTypeId.value = row?.id;
-  gridApi.query();
-}
-
-/** 打开库位详情弹窗 */
-function handleOpenAreaDetail(row: MesWmMaterialStockApi.MaterialStock) {
-  if (!row.areaId) {
-    return;
-  }
-  areaModalApi.setData({ formType: 'detail', id: row.areaId }).open();
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportMaterialStock({
-    ...(await gridApi.formApi.getValues()),
-    itemTypeId: searchItemTypeId.value,
-  });
-  downloadFileFromBlobPart({ fileName: '库存台账.xls', source: data });
-}
 </script>
 
 <template>
@@ -112,10 +118,12 @@ async function handleExport() {
 
     <AreaModal />
 
-    <div class="flex h-full gap-3">
-      <div class="bg-card w-1/6 rounded p-3">
+    <div class="flex h-full w-full">
+      <!-- 左侧物料分类树 -->
+      <Card class="mr-4 h-full w-1/6">
         <MdItemTypeTree @node-click="handleTypeNodeClick" />
-      </div>
+      </Card>
+      <!-- 右侧库存台账列表 -->
       <div class="w-5/6">
         <Grid table-title="库存台账列表">
           <template #toolbar-tools>

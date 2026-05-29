@@ -40,7 +40,7 @@ function handleRowCheckboxChange({
 }: {
   records: MesWmBarcodeApi.Barcode[];
 }) {
-  checkedIds.value = records.map((row) => row.id!).filter(Boolean);
+  checkedIds.value = records.map((item) => item.id!);
 }
 
 /** 刷新表格 */

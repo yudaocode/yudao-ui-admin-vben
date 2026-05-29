@@ -28,7 +28,13 @@ import {
 } from './../warehouse/components';
 
 /** 业务对象选中后回填业务编码、业务名称、条码内容 */
-async function applyBizSelected(formApi: VbenFormApi, item: any) {
+async function syncBizDetail(
+  formApi: undefined | VbenFormApi,
+  item: any,
+) {
+  if (!formApi) {
+    return;
+  }
   const values = await formApi.getValues();
   const bizType = values.bizType as number | undefined;
   if (!item) {
@@ -61,12 +67,6 @@ async function applyBizSelected(formApi: VbenFormApi, item: any) {
 
 /** 新增/修改条码的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
-  const onBizChange = (item: any) => {
-    if (formApi) {
-      void applyBizSelected(formApi, item);
-    }
-  };
-
   return [
     {
       fieldName: 'bizType',
@@ -95,7 +95,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '仓库',
       component: markRaw(WmWarehouseSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -130,7 +130,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         triggerFields: ['bizType', 'locationWarehouseId'],
         show: (values) => values.bizType === BarcodeBizTypeEnum.LOCATION,
         componentProps: (values) => ({
-          onChange: onBizChange,
+          onChange: (item: any) => syncBizDetail(formApi, item),
           placeholder: '请选择库区',
           warehouseId: values.locationWarehouseId,
         }),
@@ -186,7 +186,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
         componentProps: (values) => ({
           locationId: values.areaLocationId,
-          onChange: onBizChange,
+          onChange: (item: any) => syncBizDetail(formApi, item),
           placeholder: '请选择库位',
         }),
       },
@@ -197,7 +197,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '工单',
       component: markRaw(ProWorkOrderSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -210,7 +210,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '设备',
       component: markRaw(DvMachinerySelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -223,7 +223,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '产品物料',
       component: markRaw(MdItemSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -236,7 +236,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '供应商',
       component: markRaw(MdVendorSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -249,7 +249,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '工作站',
       component: markRaw(MdWorkstationSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -262,7 +262,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '车间',
       component: markRaw(MdWorkshopSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -275,7 +275,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '客户',
       component: markRaw(MdClientSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -288,7 +288,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '工具',
       component: markRaw(TmToolSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],
@@ -301,7 +301,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '库存',
       component: markRaw(WmMaterialStockSelect),
       componentProps: {
-        onChange: onBizChange,
+        onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {
         triggerFields: ['bizType'],

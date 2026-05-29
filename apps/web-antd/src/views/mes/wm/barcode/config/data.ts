@@ -5,14 +5,16 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
-// TODO @AI：这里的代码风格不对；
 /** 表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
       component: 'Input',
-      dependencies: { triggerFields: [''], show: () => false },
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
     },
     {
       fieldName: 'format',
@@ -35,8 +37,7 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['id'],
         componentProps: (values) => ({
-          // 编辑时业务类型不允许变更 TODO @AI：这种简单的注释，可以考虑放到 disabled 后面；写到 style 里；
-          disabled: !!values.id,
+          disabled: !!values.id, // 编辑时业务类型不允许变更
         }),
       },
       rules: 'required',
