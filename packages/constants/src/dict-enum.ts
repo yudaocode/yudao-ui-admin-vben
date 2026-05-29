@@ -230,6 +230,8 @@ const MES_DICT = {
   MES_WM_MISC_ISSUE_STATUS: 'mes_wm_misc_issue_status', // MES 杂项出库单状态
   MES_WM_MISC_RECEIPT_TYPE: 'mes_wm_misc_receipt_type', // MES 杂项入库类型
   MES_WM_MISC_RECEIPT_STATUS: 'mes_wm_misc_receipt_status', // MES 杂项入库单状态
+  MES_WM_OUTSOURCE_ISSUE_STATUS: 'mes_wm_outsource_issue_status', // MES 外协发料单状态
+  MES_WM_OUTSOURCE_RECEIPT_STATUS: 'mes_wm_outsource_receipt_status', // MES 外协入库单状态
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

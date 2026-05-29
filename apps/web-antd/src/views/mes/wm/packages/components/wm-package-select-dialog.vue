@@ -4,7 +4,7 @@ import type { MesWmPackageApi } from '#/api/mes/wm/packages';
 
 import { nextTick, ref } from 'vue';
 
-import { Alert, message, Modal } from 'ant-design-vue';
+import { Alert, Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPackagePage } from '#/api/mes/wm/packages';
@@ -29,87 +29,72 @@ const emit = defineEmits<{
 
 const open = ref(false); // 弹窗是否打开
 const multiple = ref(true); // 是否多选
-const syncingSingleSelection = ref(false); // 单选模式同步勾选标记
 const selectedRows = ref<MesWmPackageApi.Package[]>([]); // 已选装箱单
 const preSelectedIds = ref<number[]>([]); // 预选装箱单编号
 
-/** 单选模式同步 VXE 勾选状态 */
-async function syncSingleSelection(row?: MesWmPackageApi.Package) {
-  syncingSingleSelection.value = true;
-  await nextTick();
-  await gridApi.grid.clearCheckboxRow();
-  if (row) {
-    await gridApi.grid.setCheckboxRow(row, true);
-  }
-  await nextTick();
-  syncingSingleSelection.value = false;
+/** 获取多选记录，包含 VXE reserve 跨页记录 */
+function getMultipleSelectedRows() {
+  const selectedMap = new Map<number, MesWmPackageApi.Package>();
+  const records = [
+    ...(gridApi.grid.getCheckboxReserveRecords?.() ?? []),
+    ...(gridApi.grid.getCheckboxRecords?.() ?? []),
+  ] as MesWmPackageApi.Package[];
+  records.forEach((row) => {
+    if (row.id != null) {
+      selectedMap.set(row.id, row);
+    }
+  });
+  return [...selectedMap.values()];
 }
 
 /** 处理勾选变化 */
-async function handleCheckboxChange({
-  checked,
-  records,
-  row,
-}: {
-  checked: boolean;
-  records: MesWmPackageApi.Package[];
-  row?: MesWmPackageApi.Package;
-}) {
-  if (syncingSingleSelection.value) {
-    return;
-  }
-  if (!multiple.value) {
-    const selected = checked && row ? [row] : [];
-    selectedRows.value = selected;
-    await syncSingleSelection(selected[0]);
-    return;
-  }
-  selectedRows.value = records;
+function handleCheckboxSelectChange() {
+  selectedRows.value = getMultipleSelectedRows();
 }
 
-/** 处理全选变化 */
-function handleCheckboxAll({
-  records,
-}: {
-  records: MesWmPackageApi.Package[];
-}) {
-  if (syncingSingleSelection.value) {
-    return;
-  }
-  selectedRows.value = records;
+/** 处理单选变化 */
+function handleRadioChange(row: MesWmPackageApi.Package) {
+  selectedRows.value = [row];
 }
 
-/** 双击行：单选直接确认；多选切换勾选 */
-async function handleRowDblclick({ row }: { row: MesWmPackageApi.Package }) {
+/** 多选模式下切换行勾选 */
+async function toggleMultipleRow(row: MesWmPackageApi.Package) {
+  const selected = gridApi.grid.isCheckedByCheckboxRow(row);
+  await gridApi.grid.setCheckboxRow(row, !selected);
+  selectedRows.value = getMultipleSelectedRows();
+}
+
+/** 处理行双击：单选直接确认；多选切换勾选 */
+async function handleCellDblclick({ row }: { row: MesWmPackageApi.Package }) {
   if (multiple.value) {
-    const checked = !gridApi.grid.isCheckedByCheckboxRow(row);
-    await gridApi.grid.setCheckboxRow(row, checked);
-    handleCheckboxChange({
-      checked,
-      records:
-        gridApi.grid.getCheckboxRecords() as MesWmPackageApi.Package[],
-      row,
-    });
+    await toggleMultipleRow(row);
     return;
   }
   selectedRows.value = [row];
-  await syncSingleSelection(row);
+  await gridApi.grid.setRadioRow(row);
   handleConfirm();
 }
 
-/** 回显预选 */
-function applyPreSelection() {
+/** 回显预选装箱单 */
+async function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
   }
   const rows = gridApi.grid.getData() as MesWmPackageApi.Package[];
   for (const row of rows) {
-    if (row.id && preSelectedIds.value.includes(row.id)) {
-      gridApi.grid.setCheckboxRow(row, true);
-      if (!multiple.value) {
-        selectedRows.value = [row];
-      }
+    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+      continue;
     }
+    if (multiple.value) {
+      await gridApi.grid.setCheckboxRow(row, true);
+    } else {
+      await gridApi.grid.setRadioRow(row);
+      selectedRows.value = [row];
+      return;
+    }
+  }
+  if (multiple.value) {
+    selectedRows.value = getMultipleSelectedRows();
   }
 }
 
@@ -118,13 +103,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useSelectGridFormSchema(),
   },
   gridOptions: {
-    columns: useSelectGridColumns(),
+    columns: useSelectGridColumns(true),
     height: 480,
     keepSource: true,
     checkboxConfig: {
       highlight: true,
       range: true,
       reserve: true,
+    },
+    radioConfig: {
+      highlight: true,
+      trigger: 'row',
     },
     proxyConfig: {
       ajax: {
@@ -157,9 +146,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MesWmPackageApi.Package>,
   gridEvents: {
-    cellDblclick: handleRowDblclick,
-    checkboxAll: handleCheckboxAll,
-    checkboxChange: handleCheckboxChange,
+    cellDblclick: handleCellDblclick,
+    checkboxAll: handleCheckboxSelectChange,
+    checkboxChange: handleCheckboxSelectChange,
+    radioChange: ({ row }: { row: MesWmPackageApi.Package }) => {
+      handleRadioChange(row);
+    },
   },
 });
 
@@ -167,10 +159,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function resetQueryState() {
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
+  await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
 }
 
-/** 打开弹窗 */
+/** 打开装箱单选择弹窗 */
 async function openModal(
   selectedIds?: number[],
   options?: { multiple?: boolean },
@@ -179,28 +173,28 @@ async function openModal(
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
   await nextTick();
+  gridApi.setGridOptions({
+    columns: useSelectGridColumns(multiple.value),
+  });
   await resetQueryState();
   await gridApi.query();
   await nextTick();
-  applyPreSelection();
+  await applyPreSelection();
 }
 
 /** 关闭弹窗 */
-async function closeModal() {
+function closeModal() {
   open.value = false;
-  await resetQueryState();
 }
 
 /** 确认选择 */
 function handleConfirm() {
-  if (selectedRows.value.length === 0) {
+  const rows = multiple.value ? getMultipleSelectedRows() : selectedRows.value;
+  if (rows.length === 0) {
     message.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit(
-    'selected',
-    multiple.value ? selectedRows.value : [selectedRows.value[0]!],
-  );
+  emit('selected', multiple.value ? rows : [rows[0]!]);
   open.value = false;
 }
 
@@ -224,5 +218,9 @@ defineExpose({ open: openModal });
       type="info"
     />
     <Grid table-title="装箱单列表" />
+    <template #footer>
+      <Button @click="closeModal">取消</Button>
+      <Button type="primary" @click="handleConfirm">确定</Button>
+    </template>
   </Modal>
 </template>

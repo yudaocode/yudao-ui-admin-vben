@@ -153,6 +153,8 @@ export const MesAutoCodeRuleCode = {
   WM_LOCATION_CODE: 'WM_LOCATION_CODE',
   WM_MISC_ISSUE_CODE: 'WM_MISC_ISSUE_CODE',
   WM_MISC_RECEIPT_CODE: 'WM_MISC_RECEIPT_CODE',
+  WM_OUTSOURCE_ISSUE_CODE: 'WM_OUTSOURCE_ISSUE_CODE',
+  WM_OUTSOURCE_RECEIPT_CODE: 'WM_OUTSOURCE_RECEIPT_CODE',
   WM_PACKAGE_CODE: 'WM_PACKAGE_CODE',
   WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
 } as const;
@@ -171,6 +173,13 @@ export const MesProWorkOrderStatusEnum = {
   PRODUCING: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
   CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 工单类型枚举 */
+export const MesProWorkOrderTypeEnum = {
+  SELF: 1, // 自行生产
+  OUTSOURCE: 2, // 代工
+  PURCHASE: 3, // 采购
 } as const;
 
 /** MES 生产任务状态枚举 */
@@ -231,6 +240,24 @@ export const MesWmMiscIssueStatusEnum = {
 /** MES 杂项入库单状态枚举 */
 export const MesWmMiscReceiptStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 外协发料单状态枚举 */
+export const MesWmOutsourceIssueStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
+  APPROVED: MesOrderStatusConstants.APPROVED,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELLED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 外协入库单状态枚举 */
+export const MesWmOutsourceReceiptStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  APPROVING: MesOrderStatusConstants.APPROVING,
   APPROVED: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
   CANCELED: MesOrderStatusConstants.CANCELLED,

@@ -71,18 +71,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
-    pagerConfig: {
-      enabled: false,
-    },
     proxyConfig: {
       ajax: {
-        query: async (_, formValues) => {
-          const data = await getPackagePage({
-            pageNo: 1,
-            pageSize: 100,
+        query: async ({ page }, formValues) => {
+          return await getPackagePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
             ...formValues,
           });
-          return { list: data.list || [] };
         },
       },
     },

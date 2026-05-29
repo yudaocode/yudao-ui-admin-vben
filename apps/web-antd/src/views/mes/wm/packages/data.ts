@@ -569,10 +569,12 @@ export function useSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 选择弹窗的字段 */
-export function useSelectGridColumns(): VxeTableGridOptions<MesWmPackageApi.Package>['columns'] {
+export function useSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesWmPackageApi.Package>['columns'] {
   return [
     {
-      type: 'checkbox',
+      type: multiple ? 'checkbox' : 'radio',
       width: 50,
     },
     {

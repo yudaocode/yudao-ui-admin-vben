@@ -19,7 +19,7 @@ import { useLineFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MesWmPackageLineApi.PackageLine>();
-const packageId = ref<number>(); // TODO @AI：尾注释；
+const packageId = ref<number>(); // 所属装箱单编号
 const getTitle = computed(() =>
   formData.value?.id
     ? $t('ui.actionTitle.edit', ['装箱明细'])

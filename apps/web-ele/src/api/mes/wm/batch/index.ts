@@ -36,6 +36,26 @@ export namespace MesWmBatchApi {
     qualityStatus?: number; // 质量状态
     remark?: string; // 备注
   }
+
+  /** MES 批次分页查询参数 */
+  export interface PageParams extends PageParam {
+    code?: string;
+    itemId?: number;
+    vendorId?: number;
+    clientId?: number;
+    workOrderId?: number;
+    taskId?: number;
+    workstationId?: number;
+    toolId?: number;
+    moldId?: number;
+    salesOrderCode?: string;
+    purchaseOrderCode?: string;
+    lotNumber?: string;
+    qualityStatus?: number;
+    produceDate?: string[];
+    expireDate?: string[];
+    receiptDate?: string[];
+  }
 }
 
 /** 查询批次详情 */
@@ -44,7 +64,7 @@ export function getBatch(id: number) {
 }
 
 /** 查询批次分页 */
-export function getBatchPage(params: PageParam) {
+export function getBatchPage(params: MesWmBatchApi.PageParams) {
   return requestClient.get<PageResult<MesWmBatchApi.Batch>>(
     '/mes/wm/batch/page',
     { params },
