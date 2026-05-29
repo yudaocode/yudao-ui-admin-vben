@@ -125,9 +125,7 @@ async function updateConversationPinnedFn(pinned: boolean) {
 /** 删除会话 */
 async function deleteConversationFn() {
   // 1. 删除会话
-  confirm({
-    content: '您确定要删除该会话吗？',
-  }).then(async () => {
+  confirm('您确定要删除该会话吗？').then(async () => {
     await deleteConversation(rightClickConversation.value.id);
     // 2. 关闭右键菜单，更新会话列表
     closeRightMenu();

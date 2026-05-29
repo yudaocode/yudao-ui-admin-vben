@@ -105,9 +105,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 解绑账号 */
 function onUnbind(row: SystemSocialUserApi.SocialUser) {
-  confirm({
-    content: `确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`,
-  }).then(async () => {
+  confirm(`确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`).then(async () => {
     await socialUnbind({ type: row.type, openid: row.openid });
     // 提示成功
     ElMessage.success($t('ui.actionMessage.operationSuccess'));

@@ -100,10 +100,11 @@ async function handleFinish() {
   if (!valid) {
     return;
   }
-  // TODO @AI：这种类型，可以简化成 await confirm('')；如果可以，写到 style vue 里；然后把相关的类似情况，都一次性改掉；
-  await confirm({
-    content: '是否完成退货检验单编制？【完成后将不能更改】',
-  });
+  try {
+    await confirm('是否完成退货检验单编制？【完成后将不能更改】');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     const current = JSON.stringify(await formApi.getValues());
@@ -122,7 +123,6 @@ async function handleFinish() {
   }
 }
 
-// TODO @AI：方法内注释；
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (isDetail.value) {
@@ -131,10 +131,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      // 提交表单
       const ok = await handleSubmit();
       if (!ok) {
         return;
       }
+      // 关闭并提示
       message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -150,6 +152,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     formApi.setState({ schema: useFormSchema(formApi) });
     subTabsName.value = 'line';
+    // 加载数据
     const data = modalApi.getData<{
       formType: FormType;
       id?: number;
@@ -162,12 +165,15 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       try {
         formData.value = await getRqc(data.id);
+        // 设置到 values
         await formApi.setValues(formData.value);
       } finally {
         modalApi.unlock();
       }
     } else if (data?.prefill) {
+      // 预填模式：来自待检任务
       formData.value = { ...data.prefill };
+      // 设置到 values
       await formApi.setValues(data.prefill);
     }
     originalSnapshot.value = JSON.stringify(await formApi.getValues());

@@ -106,9 +106,11 @@ async function handleFinish() {
   if (!valid) {
     return;
   }
-  await confirm({
-    content: '是否完成来料检验单编制？【完成后将不能更改】',
-  });
+  try {
+    await confirm('是否完成来料检验单编制？【完成后将不能更改】');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     const current = JSON.stringify(await formApi.getValues());
@@ -135,10 +137,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      // 提交表单
       const ok = await handleSubmit();
       if (!ok) {
         return;
       }
+      // 关闭并提示
       message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -167,6 +171,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       try {
         formData.value = await getIqc(data.id);
+        // 设置到 values
         await formApi.setValues(formData.value);
       } finally {
         modalApi.unlock();
@@ -174,6 +179,7 @@ const [Modal, modalApi] = useVbenModal({
     } else if (data?.prefill) {
       // 预填模式：来自待检任务
       formData.value = { ...data.prefill };
+      // 设置到 values
       await formApi.setValues(data.prefill);
     }
     // 记录初始快照，后续 finish 用于判断是否需要再保存

@@ -107,9 +107,7 @@ async function loadTradeStatisticsList() {
 async function handleExport() {
   try {
     // 导出的二次确认
-    await confirm({
-      content: '确认导出交易状况数据吗？',
-    });
+    await confirm('确认导出交易状况数据吗？');
     // 发起导出
     exportLoading.value = true;
     const data = await exportTradeStatisticsExcel({

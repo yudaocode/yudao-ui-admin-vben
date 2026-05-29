@@ -137,9 +137,7 @@ async function handleStatusChange(
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `你要将${row.username}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-    });
+    await confirm(`你要将${row.username}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`);
   } catch {
     return false;
   }
