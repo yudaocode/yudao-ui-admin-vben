@@ -1,0 +1,599 @@
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
+import type { MesWmBarcodeConfigApi } from '#/api/mes/wm/barcode/config';
+
+import { markRaw } from 'vue';
+
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { z } from '#/adapter/form';
+import { generateBarcodeContent } from '#/api/mes/wm/barcode';
+import DvMachinerySelect from '#/views/mes/dv/machinery/components/dv-machinery-select.vue';
+import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
+import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import MdWorkshopSelect from '#/views/mes/md/workstation/components/md-workshop-select.vue';
+import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
+import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
+import TmToolSelect from '#/views/mes/tm/tool/components/tm-tool-select.vue';
+import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
+
+import WmMaterialStockSelect from './../materialstock/components/wm-material-stock-select.vue';
+import {
+  WmWarehouseAreaSelect,
+  WmWarehouseLocationSelect,
+  WmWarehouseSelect,
+} from './../warehouse/components';
+
+/** 业务对象选中后回填业务编码、业务名称、条码内容 */
+async function applyBizSelected(formApi: VbenFormApi, item: any) {
+  const values = await formApi.getValues();
+  const bizType = values.bizType as number | undefined;
+  if (!item) {
+    await formApi.setValues({
+      bizCode: undefined,
+      bizName: undefined,
+      content: undefined,
+    });
+    return;
+  }
+  let bizCode: string | undefined;
+  let bizName: string | undefined;
+  if (bizType === BarcodeBizTypeEnum.STOCK) {
+    bizCode = item.itemCode;
+    bizName = item.itemName;
+  } else {
+    bizCode = item.code || item.username;
+    bizName = item.name || item.nickname;
+  }
+  let content: string | undefined;
+  if (bizType && bizCode) {
+    try {
+      content = await generateBarcodeContent(bizType, bizCode);
+    } catch (error) {
+      console.error('生成条码内容失败:', error);
+    }
+  }
+  await formApi.setValues({ bizCode, bizName, content });
+}
+
+/** 新增/修改条码的表单 */
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+  // TODO @AI：是不是可以去掉 onBizChange，直接搞个 handleBizTypeChange 函数？
+  const onBizChange = (item: any) => {
+    if (formApi) {
+      void applyBizSelected(formApi, item);
+    }
+  };
+
+  return [
+    {
+      fieldName: 'bizType',
+      label: '业务类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, 'number'),
+        placeholder: '请选择业务类型',
+        // 业务类型变更时清空业务字段
+        onChange: () =>
+          formApi?.setValues({
+            bizId: undefined,
+            bizCode: undefined,
+            bizName: undefined,
+            content: undefined,
+            locationWarehouseId: undefined,
+            areaWarehouseId: undefined,
+            areaLocationId: undefined,
+          }),
+      },
+      rules: 'required',
+    },
+    // ==================== 业务对象选择器（按 bizType 切换） ====================
+    {
+      fieldName: 'bizId',
+      label: '仓库',
+      component: markRaw(WmWarehouseSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.WAREHOUSE,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'locationWarehouseId',
+      label: '库区·仓库',
+      component: markRaw(WmWarehouseSelect),
+      componentProps: {
+        placeholder: '请选择仓库',
+        onChange: () =>
+          formApi?.setValues({
+            bizId: undefined,
+            bizCode: undefined,
+            bizName: undefined,
+            content: undefined,
+          }),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.LOCATION,
+      },
+    },
+    {
+      fieldName: 'bizId',
+      label: '库区',
+      component: markRaw(WmWarehouseLocationSelect),
+      dependencies: {
+        triggerFields: ['bizType', 'locationWarehouseId'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.LOCATION,
+        componentProps: (values) => ({
+          placeholder: '请选择库区',
+          warehouseId: values.locationWarehouseId,
+          onChange: onBizChange,
+        }),
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'areaWarehouseId',
+      label: '库位·仓库',
+      component: markRaw(WmWarehouseSelect),
+      componentProps: {
+        placeholder: '请选择仓库',
+        onChange: () =>
+          formApi?.setValues({
+            areaLocationId: undefined,
+            bizId: undefined,
+            bizCode: undefined,
+            bizName: undefined,
+            content: undefined,
+          }),
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
+      },
+    },
+    {
+      fieldName: 'areaLocationId',
+      label: '库位·库区',
+      component: markRaw(WmWarehouseLocationSelect),
+      dependencies: {
+        triggerFields: ['bizType', 'areaWarehouseId'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
+        componentProps: (values) => ({
+          placeholder: '请选择库区',
+          warehouseId: values.areaWarehouseId,
+          onChange: () =>
+            formApi?.setValues({
+              bizId: undefined,
+              bizCode: undefined,
+              bizName: undefined,
+              content: undefined,
+            }),
+        }),
+      },
+    },
+    {
+      fieldName: 'bizId',
+      label: '库位',
+      component: markRaw(WmWarehouseAreaSelect),
+      dependencies: {
+        triggerFields: ['bizType', 'areaLocationId'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.AREA,
+        componentProps: (values) => ({
+          placeholder: '请选择库位',
+          locationId: values.areaLocationId,
+          onChange: onBizChange,
+        }),
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '工单',
+      component: markRaw(ProWorkOrderSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.WORKORDER,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '设备',
+      component: markRaw(DvMachinerySelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.MACHINERY,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '产品物料',
+      component: markRaw(MdItemSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.ITEM,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '供应商',
+      component: markRaw(MdVendorSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.VENDOR,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '工作站',
+      component: markRaw(MdWorkstationSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.WORKSTATION,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '车间',
+      component: markRaw(MdWorkshopSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.WORKSHOP,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '客户',
+      component: markRaw(MdClientSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.CLIENT,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '工具',
+      component: markRaw(TmToolSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.TOOL,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '库存',
+      component: markRaw(WmMaterialStockSelect),
+      componentProps: {
+        onChange: onBizChange,
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) => values.bizType === BarcodeBizTypeEnum.STOCK,
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizId',
+      label: '业务编号',
+      component: 'InputNumber',
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        placeholder: '请输入业务编号',
+      },
+      dependencies: {
+        triggerFields: ['bizType'],
+        show: (values) =>
+          values.bizType !== undefined &&
+          ![
+            BarcodeBizTypeEnum.AREA,
+            BarcodeBizTypeEnum.CLIENT,
+            BarcodeBizTypeEnum.ITEM,
+            BarcodeBizTypeEnum.LOCATION,
+            BarcodeBizTypeEnum.MACHINERY,
+            BarcodeBizTypeEnum.STOCK,
+            BarcodeBizTypeEnum.TOOL,
+            BarcodeBizTypeEnum.VENDOR,
+            BarcodeBizTypeEnum.WAREHOUSE,
+            BarcodeBizTypeEnum.WORKORDER,
+            BarcodeBizTypeEnum.WORKSHOP,
+            BarcodeBizTypeEnum.WORKSTATION,
+          ].includes(values.bizType),
+      },
+    },
+    {
+      fieldName: 'bizCode',
+      label: '业务编码',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+        placeholder: '自动填充',
+      },
+    },
+    {
+      fieldName: 'bizName',
+      label: '业务名称',
+      component: 'Input',
+      componentProps: {
+        disabled: true,
+        placeholder: '自动填充',
+      },
+    },
+    {
+      fieldName: 'content',
+      label: '条码内容',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入条码内容或自动生成',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'RadioGroup',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+      },
+      rules: z.number().default(CommonStatusEnum.ENABLE),
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 2,
+      },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'bizType',
+      label: '业务类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, 'number'),
+        placeholder: '请选择业务类型',
+      },
+    },
+    {
+      fieldName: 'bizCode',
+      label: '业务编码',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入业务编码',
+      },
+    },
+    {
+      fieldName: 'bizName',
+      label: '业务名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入业务名称',
+      },
+    },
+    {
+      fieldName: 'content',
+      label: '条码内容',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入条码内容',
+      },
+    },
+  ];
+}
+
+/** 列表的字段 */
+export function useGridColumns(): VxeTableGridOptions<MesWmBarcodeApi.Barcode>['columns'] {
+  return [
+    {
+      type: 'checkbox',
+      width: 50,
+    },
+    {
+      field: 'content',
+      title: '条码',
+      width: 180,
+      slots: { default: 'barcode' },
+    },
+    {
+      field: 'format',
+      title: '条码格式',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_WM_BARCODE_FORMAT },
+      },
+    },
+    {
+      field: 'bizType',
+      title: '业务类型',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE },
+      },
+    },
+    {
+      field: 'content',
+      title: '条码内容',
+      minWidth: 160,
+    },
+    {
+      field: 'bizCode',
+      title: '业务编码',
+      width: 130,
+    },
+    {
+      field: 'bizName',
+      title: '业务名称',
+      minWidth: 140,
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 90,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
+    },
+    {
+      title: '操作',
+      width: 200,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 配置列表的搜索表单 */
+export function useConfigGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'format',
+      label: '条码格式',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_FORMAT, 'number'),
+        placeholder: '请选择条码格式',
+      },
+    },
+    {
+      fieldName: 'bizType',
+      label: '业务类型',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, 'number'),
+        placeholder: '请选择业务类型',
+      },
+    },
+  ];
+}
+
+/** 配置列表的字段 */
+export function useConfigGridColumns(
+  onAutoGenerateChange: (
+    row: MesWmBarcodeConfigApi.BarcodeConfig,
+  ) => Promise<boolean>,
+): VxeTableGridOptions<MesWmBarcodeConfigApi.BarcodeConfig>['columns'] {
+  return [
+    {
+      field: 'id',
+      title: '编号',
+      width: 100,
+    },
+    {
+      field: 'format',
+      title: '条码格式',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_WM_BARCODE_FORMAT },
+      },
+    },
+    {
+      field: 'bizType',
+      title: '业务类型',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE },
+      },
+    },
+    {
+      field: 'contentFormat',
+      title: '内容格式',
+      minWidth: 160,
+    },
+    {
+      field: 'contentExample',
+      title: '内容样例',
+      minWidth: 160,
+    },
+    {
+      field: 'defaultTemplate',
+      title: '默认打印模板',
+      minWidth: 140,
+    },
+    {
+      field: 'autoGenerateFlag',
+      title: '自动生成',
+      width: 100,
+      cellRender: {
+        name: 'CellSwitch',
+        attrs: { beforeChange: onAutoGenerateChange },
+      },
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 90,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 160,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
