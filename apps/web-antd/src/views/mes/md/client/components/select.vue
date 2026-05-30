@@ -38,6 +38,7 @@ const selectedItem = ref<MesMdClientApi.Client>(); // 当前选中客户
 
 const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
 const showClear = computed(
+  // TODO @AI：这种，是不是应该放到 // computed( 后面？
   // 是否显示清空图标
   () =>
     props.allowClear &&

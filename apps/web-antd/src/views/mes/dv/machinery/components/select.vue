@@ -39,6 +39,7 @@ function handleChange(value: SelectValue) {
   );
 }
 
+// TODO @AI：按照目前项目的规则，会希望 /** 初始化么 */ ？如果喜欢，是不是加到 style.vue 里？
 onMounted(getList);
 </script>
 
