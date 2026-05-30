@@ -72,7 +72,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-// TODO @AI：看看别的模块，是不是会叫 onFrozenChange？还是一般叫什么梗合适？？？
 export function useGridColumns(
   onFrozenChange: (
     newFrozen: boolean,
