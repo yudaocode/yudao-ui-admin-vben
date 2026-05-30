@@ -2,9 +2,14 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvSubjectApi } from '#/api/mes/dv/subject';
 
-import { DICT_TYPE, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';

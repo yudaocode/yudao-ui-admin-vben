@@ -3,9 +3,9 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemApi } from '#/api/mes/md/item';
 import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
 
-import { DICT_TYPE, h, markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -360,9 +360,11 @@ export function useItemSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 物料选择弹窗列表字段 */
-export function useItemSelectGridColumns(): VxeTableGridOptions<MesMdItemApi.Item>['columns'] {
+export function useItemSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesMdItemApi.Item>['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
     {
       field: 'code',
       title: '物料编码',

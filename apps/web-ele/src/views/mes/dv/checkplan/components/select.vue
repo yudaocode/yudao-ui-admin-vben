@@ -7,6 +7,8 @@ import { ElOption, ElSelect } from 'element-plus';
 
 import { getCheckPlanPage } from '#/api/mes/dv/checkplan';
 
+defineOptions({ name: 'DvCheckPlanSelect' });
+
 const props = withDefaults(
   defineProps<{
     clearable?: boolean;
@@ -46,13 +48,11 @@ async function getList() {
 function handleChange(value: number | string | undefined) {
   const planId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', planId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === planId),
-  );
+  emit('change', list.value.find((item) => item.id === planId));
 }
 
 watch(() => [props.status, props.type], getList);
+
 onMounted(getList);
 </script>
 
@@ -66,6 +66,11 @@ onMounted(getList);
     filterable
     @change="handleChange"
   >
-    <ElOption v-for="item in list" :key="item.id" :label="item.name" :value="item.id!" />
+    <ElOption
+      v-for="item in list"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id!"
+    />
   </ElSelect>
 </template>

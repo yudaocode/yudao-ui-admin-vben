@@ -7,6 +7,8 @@ import { ElOption, ElSelect } from 'element-plus';
 
 import { getSubjectSimpleList } from '#/api/mes/dv/subject';
 
+defineOptions({ name: 'DvSubjectSelect' });
+
 const props = withDefaults(
   defineProps<{
     clearable?: boolean;
@@ -28,7 +30,7 @@ const emit = defineEmits<{
   'update:modelValue': [value?: number];
 }>();
 const list = ref<MesDvSubjectApi.Subject[]>([]); // 项目列表
-const filteredList = computed( // 筛选后的项目列表
+const filteredList = computed(
   () => list.value.filter((item) => !props.type || item.type === props.type),
 );
 
@@ -41,10 +43,7 @@ async function getList() {
 function handleChange(value: number | string | undefined) {
   const subjectId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', subjectId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === subjectId),
-  );
+  emit('change', list.value.find((item) => item.id === subjectId));
 }
 
 onMounted(getList);
@@ -60,6 +59,11 @@ onMounted(getList);
     filterable
     @change="handleChange"
   >
-    <ElOption v-for="item in filteredList" :key="item.id" :label="item.name" :value="item.id!" />
+    <ElOption
+      v-for="item in filteredList"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id!"
+    />
   </ElSelect>
 </template>

@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdVendorApi } from '#/api/mes/md/vendor';
 
-import { DICT_TYPE, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -416,9 +416,11 @@ export function useVendorSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 供应商选择弹窗的字段 */
-export function useVendorSelectGridColumns(): VxeTableGridOptions<MesMdVendorApi.Vendor>['columns'] {
+export function useVendorSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesMdVendorApi.Vendor>['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
     {
       field: 'code',
       title: '供应商编码',

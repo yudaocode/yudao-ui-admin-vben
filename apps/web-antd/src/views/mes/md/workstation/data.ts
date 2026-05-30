@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
-import { DICT_TYPE, h, markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';

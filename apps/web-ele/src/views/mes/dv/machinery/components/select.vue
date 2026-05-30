@@ -7,6 +7,8 @@ import { ElOption, ElSelect } from 'element-plus';
 
 import { getMachinerySimpleList } from '#/api/mes/dv/machinery';
 
+defineOptions({ name: 'DvMachinerySelect' });
+
 withDefaults(
   defineProps<{
     clearable?: boolean;
@@ -14,7 +16,12 @@ withDefaults(
     modelValue?: number;
     placeholder?: string;
   }>(),
-  { clearable: true, disabled: false, modelValue: undefined, placeholder: '请选择设备' },
+  {
+    clearable: true,
+    disabled: false,
+    modelValue: undefined,
+    placeholder: '请选择设备',
+  },
 );
 const emit = defineEmits<{
   change: [row?: MesDvMachineryApi.Machinery];
@@ -31,10 +38,7 @@ async function getList() {
 function handleChange(value: number | string | undefined) {
   const machineryId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', machineryId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === machineryId),
-  );
+  emit('change', list.value.find((item) => item.id === machineryId));
 }
 
 onMounted(getList);
@@ -50,6 +54,11 @@ onMounted(getList);
     filterable
     @change="handleChange"
   >
-    <ElOption v-for="item in list" :key="item.id" :label="item.name" :value="item.id!" />
+    <ElOption
+      v-for="item in list"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id!"
+    />
   </ElSelect>
 </template>

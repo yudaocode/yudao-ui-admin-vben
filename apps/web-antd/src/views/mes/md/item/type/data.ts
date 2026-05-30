@@ -2,9 +2,14 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
-import { DICT_TYPE, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode, MesItemOrProductEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesItemOrProductEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 

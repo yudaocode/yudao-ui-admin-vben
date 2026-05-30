@@ -9,6 +9,8 @@ import { Select } from 'ant-design-vue';
 
 import { getCheckPlanPage } from '#/api/mes/dv/checkplan';
 
+defineOptions({ name: 'DvCheckPlanSelect' });
+
 const props = withDefaults(
   defineProps<{
     allowClear?: boolean;
@@ -48,15 +50,11 @@ async function getList() {
 function handleChange(value: SelectValue) {
   const planId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', planId);
-  // TODO @AI：可以简化，不换行么？
-  emit(
-    'change',
-    list.value.find((item) => item.id === planId),
-  );
+  emit('change', list.value.find((item) => item.id === planId));
 }
 
-// TODO @AI：下面，2 个，需要有空行么？
 watch(() => [props.status, props.type], getList);
+
 onMounted(getList);
 </script>
 
