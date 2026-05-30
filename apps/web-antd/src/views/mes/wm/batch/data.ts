@@ -1,16 +1,21 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmBatchApi } from '#/api/mes/wm/batch';
+import type { DescriptionItemSchema } from '#/components/description';
 
-import { markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { formatDate } from '@vben/utils';
 
+import { DictTag } from '#/components/dict-tag';
+import { getRangePickerDefaultProps } from '#/utils';
 import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
+import { ProTaskSelect } from '#/views/mes/pro/task/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
 import { TmToolSelect } from '#/views/mes/tm/tool/components';
 
@@ -67,11 +72,28 @@ export function useBatchSelectGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'taskId',
+      label: '生产任务',
+      component: markRaw(ProTaskSelect),
+      componentProps: {
+        placeholder: '请选择生产任务',
+      },
+    },
+    {
       fieldName: 'toolId',
       label: '工具',
       component: markRaw(TmToolSelect),
       componentProps: {
         placeholder: '请选择工具',
+      },
+    },
+    {
+      fieldName: 'moldId',
+      label: '模具编号',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入模具编号',
       },
     },
     {
@@ -109,6 +131,33 @@ export function useBatchSelectGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.MES_WM_QUALITY_STATUS, 'number'),
         placeholder: '请选择质量状态',
+      },
+    },
+    {
+      fieldName: 'produceDate',
+      label: '生产日期',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'expireDate',
+      label: '有效期',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'receiptDate',
+      label: '入库日期',
+      component: 'RangePicker',
+      componentProps: {
+        ...getRangePickerDefaultProps(),
+        allowClear: true,
       },
     },
   ];
@@ -229,6 +278,95 @@ export function useBatchSelectGridColumns(
       title: '入库日期',
       width: 120,
       formatter: 'formatDate',
+    },
+  ];
+}
+
+/** 批次详情的描述字段 */
+export function useDetailSchema(): DescriptionItemSchema[] {
+  return [
+    {
+      field: 'code',
+      label: '批次编号',
+    },
+    {
+      field: 'itemCode',
+      label: '物料编码',
+    },
+    {
+      field: 'itemName',
+      label: '物料名称',
+    },
+    {
+      field: 'itemSpecification',
+      label: '规格型号',
+    },
+    {
+      field: 'unitName',
+      label: '单位',
+    },
+    {
+      field: 'lotNumber',
+      label: '生产批号',
+    },
+    {
+      field: 'produceDate',
+      label: '生产日期',
+      render: (value) => (value ? formatDate(value, 'YYYY-MM-DD') : '-'),
+    },
+    {
+      field: 'expireDate',
+      label: '有效期',
+      render: (value) => (value ? formatDate(value, 'YYYY-MM-DD') : '-'),
+    },
+    {
+      field: 'receiptDate',
+      label: '入库日期',
+      render: (value) => (value ? formatDate(value, 'YYYY-MM-DD') : '-'),
+    },
+    {
+      field: 'vendorName',
+      label: '供应商',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'clientName',
+      label: '客户',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'workstationCode',
+      label: '工作站',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'purchaseOrderCode',
+      label: '采购订单编号',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'salesOrderCode',
+      label: '销售订单编号',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'workOrderCode',
+      label: '生产工单',
+      render: (value) => value || '-',
+    },
+    {
+      field: 'qualityStatus',
+      label: '质量状态',
+      render: (value) =>
+        value == null
+          ? '-'
+          : h(DictTag, { type: DICT_TYPE.MES_WM_QUALITY_STATUS, value }),
+    },
+    {
+      field: 'remark',
+      label: '备注',
+      span: 3,
+      render: (value) => value || '-',
     },
   ];
 }

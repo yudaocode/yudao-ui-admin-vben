@@ -71,11 +71,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getMaterialStock(id);
-  } catch (error) {
-    console.error('[WmMaterialStockSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getMaterialStock(id);
 }
 
 watch(() => props.modelValue, resolveItemById, { immediate: true });

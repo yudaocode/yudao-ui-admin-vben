@@ -73,7 +73,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 /** 列表的字段 */
 export function useGridColumns(
-  onFrozenChange: (row: MesWmMaterialStockApi.MaterialStock) => void,
+  onFrozenChange: (
+    newFrozen: boolean,
+    row: MesWmMaterialStockApi.MaterialStock,
+  ) => Promise<boolean | undefined>,
 ): VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>['columns'] {
   return [
     {
@@ -206,10 +209,12 @@ export function useSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 选择弹窗的字段 */
-export function useSelectGridColumns(): VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>['columns'] {
+export function useSelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>['columns'] {
   return [
     {
-      type: 'checkbox',
+      type: multiple ? 'checkbox' : 'radio',
       width: 50,
     },
     {

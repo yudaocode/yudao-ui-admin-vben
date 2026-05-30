@@ -17,6 +17,7 @@ import {
 } from '#/api/mes/wm/materialstock';
 import { $t } from '#/locales';
 import MdItemTypeTree from '#/views/mes/md/item/type/components/md-item-type-tree.vue';
+import { WmBatchDetail } from '#/views/mes/wm/batch/components';
 import AreaForm from '#/views/mes/wm/warehouse/area/modules/form.vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -26,9 +27,14 @@ const [AreaModal, areaModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
+const batchDetailRef = ref<InstanceType<typeof WmBatchDetail>>();
+
 /** 处理冻结状态切换 */
-async function handleFrozenChange(row: MesWmMaterialStockApi.MaterialStock) {
-  const text = row.frozen ? '冻结' : '解冻';
+async function handleFrozenChange(
+  newFrozen: boolean,
+  row: MesWmMaterialStockApi.MaterialStock,
+): Promise<boolean | undefined> {
+  const text = newFrozen ? '冻结' : '解冻';
   try {
     await confirm(`确认要"${text}"该库存记录吗？`);
   } catch {
@@ -36,7 +42,7 @@ async function handleFrozenChange(row: MesWmMaterialStockApi.MaterialStock) {
   }
   await updateMaterialStockFrozen({
     id: row.id!,
-    frozen: row.frozen!,
+    frozen: newFrozen,
   });
   ElMessage.success(`${text}成功`);
   return true;
@@ -90,6 +96,14 @@ function handleOpenAreaDetail(row: MesWmMaterialStockApi.MaterialStock) {
   areaModalApi.setData({ formType: 'detail', id: row.areaId }).open();
 }
 
+/** 打开批次详情弹窗 */
+function handleOpenBatchDetail(row: MesWmMaterialStockApi.MaterialStock) {
+  if (!row.batchId) {
+    return;
+  }
+  batchDetailRef.value?.open(row.batchId);
+}
+
 /** 导出表格 */
 async function handleExport() {
   const data = await exportMaterialStock({
@@ -110,6 +124,7 @@ async function handleExport() {
     </template>
 
     <AreaModal />
+    <WmBatchDetail ref="batchDetailRef" />
 
     <div class="flex h-full gap-3">
       <div class="bg-card w-1/6 rounded p-3">
@@ -131,9 +146,16 @@ async function handleExport() {
             />
           </template>
           <template #batchCode="{ row }">
-            <span v-if="row.batchId" :title="row.batchCode">
+            <ElButton
+              v-if="row.batchId"
+              link
+              size="small"
+              :title="row.batchCode"
+              type="primary"
+              @click="handleOpenBatchDetail(row)"
+            >
               {{ row.batchCode }}
-            </span>
+            </ElButton>
             <span v-else>-</span>
           </template>
           <template #areaName="{ row }">

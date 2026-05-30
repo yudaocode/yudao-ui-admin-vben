@@ -35,8 +35,7 @@ const emit = defineEmits<{
 }>();
 
 const open = ref(false);
-const multiple = ref(true);
-const syncingSingleSelection = ref(false);
+const multiple = ref(false); // 是否多选；默认按单选选择器使用
 const selectedRows = ref<MesWmMaterialStockApi.MaterialStock[]>([]);
 const preSelectedIds = ref<number[]>([]);
 const searchItemTypeId = ref<number>();
@@ -64,50 +63,37 @@ const alertTitle = computed(() => {
   return `已按${parts.join('/')}预过滤`;
 });
 
-/** 单选模式同步 VXE 勾选状态 */
-async function syncSingleSelection(row?: MesWmMaterialStockApi.MaterialStock) {
-  syncingSingleSelection.value = true;
-  await nextTick();
-  await gridApi.grid.clearCheckboxRow();
-  if (row) {
-    await gridApi.grid.setCheckboxRow(row, true);
-  }
-  await nextTick();
-  syncingSingleSelection.value = false;
+/** 获取多选记录，包含 VXE reserve 跨页记录 */
+function getMultipleSelectedRows() {
+  const selectedMap = new Map<number, MesWmMaterialStockApi.MaterialStock>();
+  const records = [
+    ...(gridApi.grid.getCheckboxReserveRecords?.() ?? []),
+    ...(gridApi.grid.getCheckboxRecords?.() ?? []),
+  ] as MesWmMaterialStockApi.MaterialStock[];
+  records.forEach((row) => {
+    const rowId = row.id;
+    if (rowId !== undefined) {
+      selectedMap.set(rowId, row);
+    }
+  });
+  return [...selectedMap.values()];
 }
 
-/** 处理勾选变化 */
-async function handleCheckboxChange({
-  checked,
-  records,
-  row,
-}: {
-  checked: boolean;
-  records: MesWmMaterialStockApi.MaterialStock[];
-  row?: MesWmMaterialStockApi.MaterialStock;
-}) {
-  if (syncingSingleSelection.value) {
-    return;
-  }
-  if (!multiple.value) {
-    const selected = checked && row ? [row] : [];
-    selectedRows.value = selected;
-    await syncSingleSelection(selected[0]);
-    return;
-  }
-  selectedRows.value = records;
+/** 处理多选勾选变化 */
+function handleCheckboxSelectChange() {
+  selectedRows.value = getMultipleSelectedRows();
 }
 
-/** 处理全选变化 */
-function handleCheckboxAll({
-  records,
-}: {
-  records: MesWmMaterialStockApi.MaterialStock[];
-}) {
-  if (syncingSingleSelection.value) {
-    return;
-  }
-  selectedRows.value = records;
+/** 处理单选切换 */
+function handleRadioChange(row: MesWmMaterialStockApi.MaterialStock) {
+  selectedRows.value = [row];
+}
+
+/** 多选模式下切换行勾选 */
+async function toggleMultipleRow(row: MesWmMaterialStockApi.MaterialStock) {
+  const selected = gridApi.grid.isCheckedByCheckboxRow(row);
+  await gridApi.grid.setCheckboxRow(row, !selected);
+  selectedRows.value = getMultipleSelectedRows();
 }
 
 /** 双击行：单选直接确认；多选切换勾选 */
@@ -117,34 +103,34 @@ async function handleRowDblclick({
   row: MesWmMaterialStockApi.MaterialStock;
 }) {
   if (multiple.value) {
-    const checked = !gridApi.grid.isCheckedByCheckboxRow(row);
-    await gridApi.grid.setCheckboxRow(row, checked);
-    handleCheckboxChange({
-      checked,
-      records:
-        gridApi.grid.getCheckboxRecords() as MesWmMaterialStockApi.MaterialStock[],
-      row,
-    });
+    await toggleMultipleRow(row);
     return;
   }
   selectedRows.value = [row];
-  await syncSingleSelection(row);
+  await gridApi.grid.setRadioRow(row);
   handleConfirm();
 }
 
 /** 回显预选 */
-function applyPreSelection() {
+async function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
   }
   const rows = gridApi.grid.getData() as MesWmMaterialStockApi.MaterialStock[];
   for (const row of rows) {
-    if (row.id && preSelectedIds.value.includes(row.id)) {
-      gridApi.grid.setCheckboxRow(row, true);
-      if (!multiple.value) {
-        selectedRows.value = [row];
-      }
+    if (row.id === undefined || !preSelectedIds.value.includes(row.id)) {
+      continue;
     }
+    if (multiple.value) {
+      await gridApi.grid.setCheckboxRow(row, true);
+    } else {
+      await gridApi.grid.setRadioRow(row);
+      selectedRows.value = [row];
+      return;
+    }
+  }
+  if (multiple.value) {
+    selectedRows.value = getMultipleSelectedRows();
   }
 }
 
@@ -153,13 +139,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useSelectGridFormSchema(),
   },
   gridOptions: {
-    columns: useSelectGridColumns(),
+    columns: useSelectGridColumns(false),
     height: 480,
     keepSource: true,
     checkboxConfig: {
       highlight: true,
       range: true,
       reserve: true,
+    },
+    radioConfig: {
+      highlight: true,
+      trigger: 'row',
     },
     proxyConfig: {
       ajax: {
@@ -191,8 +181,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>,
   gridEvents: {
     cellDblclick: handleRowDblclick,
-    checkboxAll: handleCheckboxAll,
-    checkboxChange: handleCheckboxChange,
+    checkboxAll: handleCheckboxSelectChange,
+    checkboxChange: handleCheckboxSelectChange,
+    radioChange: ({ row }: { row: MesWmMaterialStockApi.MaterialStock }) => {
+      handleRadioChange(row);
+    },
   },
 });
 
@@ -207,6 +200,8 @@ async function resetQueryState() {
   selectedRows.value = [];
   searchItemTypeId.value = undefined;
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
+  await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
 }
 
@@ -216,13 +211,16 @@ async function openModal(
   options?: { multiple?: boolean },
 ) {
   open.value = true;
-  multiple.value = options?.multiple ?? true;
+  multiple.value = options?.multiple ?? false;
   preSelectedIds.value = selectedIds || [];
   await nextTick();
+  gridApi.setGridOptions({
+    columns: useSelectGridColumns(multiple.value),
+  });
   await resetQueryState();
   await gridApi.query();
   await nextTick();
-  applyPreSelection();
+  await applyPreSelection();
 }
 
 /** 关闭弹窗 */
@@ -233,14 +231,12 @@ async function closeModal() {
 
 /** 确认选择 */
 function handleConfirm() {
-  if (selectedRows.value.length === 0) {
+  const rows = multiple.value ? getMultipleSelectedRows() : selectedRows.value;
+  if (rows.length === 0) {
     ElMessage.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit(
-    'selected',
-    multiple.value ? selectedRows.value : [selectedRows.value[0]!],
-  );
+  emit('selected', multiple.value ? rows : [rows[0]!]);
   open.value = false;
 }
 
