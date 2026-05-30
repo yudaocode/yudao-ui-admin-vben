@@ -174,7 +174,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '完成',
               type: 'link',
               auth: ['mes:pro-card:finish'],
-              ifShow: row.status === MesProCardStatusEnum.ISSUED,
+              ifShow: row.status === MesProCardStatusEnum.CONFIRMED,
               onClick: handleFinish.bind(null, row),
             },
             {
@@ -182,7 +182,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               auth: ['mes:pro-card:update'],
-              ifShow: row.status === MesProCardStatusEnum.ISSUED,
+              ifShow: row.status === MesProCardStatusEnum.CONFIRMED,
               popConfirm: {
                 title: '确认取消该流转卡？取消后不可恢复。',
                 confirm: handleCancel.bind(null, row),

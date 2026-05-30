@@ -208,14 +208,12 @@ export const MesWmStockTakingParamTypeEnum = {
   QUALITY_STATUS: 900,
 } as const;
 
-/** MES 生产工单状态枚举 */
+/** MES 生产工单状态枚举（独立于通用单据状态，对齐后端 MesProWorkOrderStatusEnum） */
 export const MesProWorkOrderStatusEnum = {
-  PREPARE: MesOrderStatusConstants.DRAFT,
-  CONFIRMED: MesOrderStatusConstants.CONFIRMED,
-  APPROVING: MesOrderStatusConstants.APPROVING,
-  PRODUCING: MesOrderStatusConstants.APPROVED,
-  FINISHED: MesOrderStatusConstants.FINISHED,
-  CANCELLED: MesOrderStatusConstants.CANCELLED,
+  PREPARE: 0, // 草稿
+  CONFIRMED: 1, // 已确认
+  FINISHED: 2, // 已完成
+  CANCELED: 3, // 已取消
 } as const;
 
 /** MES 工单类型枚举 */
@@ -250,13 +248,12 @@ export const MesProFeedbackStatusEnum = {
   CANCELED: MesOrderStatusConstants.CANCELLED,
 } as const;
 
-/** MES 流转卡状态枚举 */
+/** MES 流转卡状态枚举（复用工单状态值，对齐后端 MesProWorkOrderStatusEnum） */
 export const MesProCardStatusEnum = {
-  PREPARE: MesOrderStatusConstants.DRAFT,
-  ISSUED: MesOrderStatusConstants.CONFIRMED,
-  PRODUCING: MesOrderStatusConstants.APPROVED,
-  FINISHED: MesOrderStatusConstants.FINISHED,
-  CANCELLED: MesOrderStatusConstants.CANCELLED,
+  PREPARE: 0, // 草稿
+  CONFIRMED: 1, // 已确认
+  FINISHED: 2, // 已完成
+  CANCELED: 3, // 已取消
 } as const;
 
 /** MES 安灯处置状态枚举 */
