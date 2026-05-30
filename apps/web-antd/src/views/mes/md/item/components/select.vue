@@ -54,11 +54,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getItem(id);
-  } catch (error) {
-    console.error('[MdItemSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getItem(id);
 }
 
 watch(

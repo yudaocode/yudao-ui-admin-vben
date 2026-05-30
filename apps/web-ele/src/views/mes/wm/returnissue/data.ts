@@ -464,6 +464,7 @@ export function useDetailFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         disabled: true,
       },
+      rules: 'selectRequired',
     },
     {
       fieldName: 'materialStockId',

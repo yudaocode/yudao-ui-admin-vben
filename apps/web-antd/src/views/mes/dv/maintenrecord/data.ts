@@ -53,7 +53,6 @@ export function useFormSchema(): VbenFormSchema[] {
         type: MesDvSubjectTypeEnum.MAINTENANCE,
         placeholder: '请选择计划',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'userId',
@@ -66,7 +65,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择保养人',
         valueField: 'id',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'maintenTime',

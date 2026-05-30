@@ -73,9 +73,21 @@ export function useQcIndicatorResultFormSchema(
 /** 检测结果列表的字段 */
 export function useQcIndicatorResultGridColumns(): VxeTableGridOptions<MesQcIndicatorResultApi.IndicatorResult>['columns'] {
   return [
-    { field: 'code', title: '样品编号', width: 200 },
-    { field: 'sn', title: '物资SN', minWidth: 200 },
-    { field: 'remark', title: '备注', minWidth: 200 },
+    {
+      field: 'code',
+      title: '样品编号',
+      width: 200,
+    },
+    {
+      field: 'sn',
+      title: '物资SN',
+      minWidth: 200,
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 200,
+    },
     {
       title: '操作',
       width: 150,

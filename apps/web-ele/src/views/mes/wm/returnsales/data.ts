@@ -373,7 +373,7 @@ export function useLineFormSchema(
       fieldName: 'rqcCheckFlag',
       label: '需要质检',
       component: 'Switch',
-      rules: z.boolean().default(true),
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'remark',

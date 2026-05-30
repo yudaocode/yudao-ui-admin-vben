@@ -33,12 +33,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入客户编码',
       },
-      dependencies: {
-        triggerFields: ['id'],
-        componentProps: (values) => ({
-          disabled: !!values.id,
-        }),
-      },
       rules: 'required',
       suffix: () =>
         h(

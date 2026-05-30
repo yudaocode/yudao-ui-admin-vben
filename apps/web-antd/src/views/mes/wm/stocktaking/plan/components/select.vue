@@ -57,11 +57,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getStockTakingPlan(id);
-  } catch (error) {
-    console.error('[StockTakingPlanSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getStockTakingPlan(id);
 }
 
 watch(() => props.modelValue, resolveItemById, { immediate: true });

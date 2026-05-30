@@ -55,7 +55,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         h(
           ElButton,
           {
-            type: 'default',
             onClick: async () => {
               const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_TYPE_CODE);
               await formApi?.setFieldValue('code', code);

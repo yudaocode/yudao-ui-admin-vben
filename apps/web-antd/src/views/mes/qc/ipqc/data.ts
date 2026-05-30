@@ -257,6 +257,7 @@ export function useFormSchema(
         precision: 2,
         onChange: () => syncUnqualified(formApi),
       },
+      defaultValue: 0,
       rules: 'required',
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
@@ -275,6 +276,7 @@ export function useFormSchema(
         precision: 2,
         onChange: () => syncUnqualified(formApi),
       },
+      defaultValue: 0,
       rules: 'required',
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
@@ -293,6 +295,7 @@ export function useFormSchema(
         precision: 2,
         onChange: () => syncUnqualified(formApi),
       },
+      defaultValue: 0,
       rules: 'required',
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],

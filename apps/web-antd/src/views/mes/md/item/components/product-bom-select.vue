@@ -56,12 +56,8 @@ async function resolveBomById(bomItemId: number | undefined) {
   if (selectedBom.value?.bomItemId === bomItemId) {
     return;
   }
-  try {
-    const list = await getProductBomListByItemId(props.itemId);
-    selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
-  } catch (error) {
-    console.error('[MdProductBomSelect] resolveBomById failed:', error);
-  }
+  const list = await getProductBomListByItemId(props.itemId);
+  selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
 }
 
 watch(

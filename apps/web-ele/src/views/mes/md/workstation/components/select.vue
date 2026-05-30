@@ -56,11 +56,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getWorkstation(id);
-  } catch (error) {
-    console.error('[MdWorkstationSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getWorkstation(id);
 }
 
 watch(

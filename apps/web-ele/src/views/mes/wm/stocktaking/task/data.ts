@@ -477,6 +477,7 @@ export function useResultFormSchema(
           await formApi?.setValues({
             areaId: line?.areaId,
             batchCode: line?.batchCode,
+            batchId: line?.batchId,
             itemId: line?.itemId,
             locationId: line?.locationId,
             materialStockId: line?.materialStockId,

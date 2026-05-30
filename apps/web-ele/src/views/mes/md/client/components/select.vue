@@ -54,11 +54,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getClient(id);
-  } catch (error) {
-    console.error('[MdClientSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getClient(id);
 }
 
 watch(

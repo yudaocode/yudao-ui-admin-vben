@@ -5,6 +5,8 @@ import type { MesDvSubjectApi } from '#/api/mes/dv/subject';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { CommonStatusEnum } from '@vben/constants';
+
 import { Select } from 'ant-design-vue';
 
 import { getSubjectSimpleList } from '#/api/mes/dv/subject';
@@ -32,9 +34,26 @@ const emit = defineEmits<{
   'update:modelValue': [value?: number];
 }>();
 const list = ref<MesDvSubjectApi.Subject[]>([]); // 项目列表
-const filteredList = computed(
-  () => list.value.filter((item) => !props.type || item.type === props.type),
-);
+const filteredList = computed(() => {
+  // 仅展示启用且类型匹配的项目，避免新建时带出禁用项目
+  const result: Array<MesDvSubjectApi.Subject & { disabled?: boolean }> =
+    list.value.filter(
+      (item) =>
+        item.status === CommonStatusEnum.ENABLE &&
+        (!props.type || item.type === props.type),
+    );
+  // 历史数据可能绑定已禁用或其它类型的项目，补充当前选中项用于回显，并禁止重新选择
+  if (
+    props.modelValue != null &&
+    !result.some((item) => item.id === props.modelValue)
+  ) {
+    const current = list.value.find((item) => item.id === props.modelValue);
+    if (current) {
+      result.push({ ...current, disabled: true });
+    }
+  }
+  return result;
+});
 
 /** 加载项目列表 */
 async function getList() {

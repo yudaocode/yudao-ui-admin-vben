@@ -39,7 +39,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         h(
           ElButton,
           {
-            type: 'default',
             onClick: async () => {
               const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
               await formApi?.setFieldValue('code', code);

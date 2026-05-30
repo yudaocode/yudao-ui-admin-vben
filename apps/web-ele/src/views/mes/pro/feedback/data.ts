@@ -216,7 +216,6 @@ export function useFormSchema(
           ElButton,
           {
             disabled: isHeaderReadonly,
-            type: 'default',
             onClick: async () => {
               const code = await generateAutoCode(
                 MesAutoCodeRuleCode.PRO_FEEDBACK_CODE,
