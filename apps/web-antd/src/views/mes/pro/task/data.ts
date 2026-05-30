@@ -280,6 +280,15 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'status',
+      label: '工单状态',
+      component: 'Select',
+      componentProps: {
+        disabled: true,
+        options: getDictOptions(DICT_TYPE.MES_PRO_WORK_ORDER_STATUS, 'number'),
+      },
+    },
+    {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
