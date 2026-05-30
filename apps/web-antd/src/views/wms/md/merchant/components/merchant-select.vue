@@ -5,13 +5,14 @@ import type { WmsMerchantApi } from '#/api/wms/md/merchant';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { Select } from 'ant-design-vue';
-
-import { getMerchantSimpleList } from '#/api/wms/md/merchant';
 import {
   CustomerMerchantTypeList,
   SupplierMerchantTypeList,
-} from '#/views/wms/utils/constants';
+} from '@vben/constants';
+
+import { Select } from 'ant-design-vue';
+
+import { getMerchantSimpleList } from '#/api/wms/md/merchant';
 
 defineOptions({ name: 'WmsMerchantSelect', inheritAttrs: false });
 

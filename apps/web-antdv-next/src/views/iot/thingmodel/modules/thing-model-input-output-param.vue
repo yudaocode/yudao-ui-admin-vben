@@ -4,12 +4,11 @@ import type { Ref } from 'vue';
 
 import { ref, unref } from 'vue';
 
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Divider, Form, Input, Modal } from 'antdv-next';
-
-import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 import ThingModelProperty from './thing-model-property.vue';
 

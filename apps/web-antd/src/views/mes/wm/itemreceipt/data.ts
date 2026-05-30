@@ -8,7 +8,7 @@ import type { MesWmItemReceiptLineApi } from '#/api/mes/wm/itemreceipt/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesWmArrivalNoticeStatusEnum } from '@vben/constants';
 
 import { Button } from 'ant-design-vue';
 
@@ -16,10 +16,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesWmArrivalNoticeStatusEnum,
-} from '#/views/mes/utils/constants';
 import {
   WmArrivalNoticeLineSelect,
   WmArrivalNoticeSelect,

@@ -9,7 +9,7 @@ import type { MesWmSalesNoticeLineApi } from '#/api/mes/wm/salesnotice/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesWmSalesNoticeStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -19,10 +19,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesWmSalesNoticeStatusEnum,
-} from '#/views/mes/utils/constants';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmSalesNoticeLineSelect,

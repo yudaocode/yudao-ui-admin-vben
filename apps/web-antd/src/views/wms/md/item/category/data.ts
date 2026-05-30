@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsItemCategoryApi } from '#/api/wms/md/item/category';
 
-import { h } from 'vue';
+import { DICT_TYPE, generateWmsCode, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
@@ -12,7 +12,6 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { getItemCategorySimpleList } from '#/api/wms/md/item/category';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改商品分类的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

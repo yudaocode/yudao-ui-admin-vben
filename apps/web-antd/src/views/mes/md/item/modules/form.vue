@@ -6,13 +6,13 @@ import type { MesMdItemApi } from '#/api/mes/md/item';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { Button, Empty, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createItem, getItem, updateItem } from '#/api/mes/md/item';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';

@@ -6,6 +6,7 @@ import type { MesWmOutsourceIssueApi } from '#/api/mes/wm/outsourceissue';
 import { computed, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { MesWmOutsourceIssueStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -20,7 +21,6 @@ import {
   updateOutsourceIssue,
 } from '#/api/mes/wm/outsourceissue';
 import { $t } from '#/locales';
-import { MesWmOutsourceIssueStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

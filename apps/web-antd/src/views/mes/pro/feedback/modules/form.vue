@@ -6,6 +6,10 @@ import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  MesAutoCodeRuleCode,
+  MesProFeedbackStatusEnum,
+} from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { Button, message, Popconfirm, Tabs } from 'ant-design-vue';
@@ -22,10 +26,6 @@ import {
 } from '#/api/mes/pro/feedback';
 import { getRouteProcessByRouteAndProcess } from '#/api/mes/pro/route/process';
 import { $t } from '#/locales';
-import {
-  MesAutoCodeRuleCode,
-  MesProFeedbackStatusEnum,
-} from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import ItemConsumeList from './item-consume-list.vue';

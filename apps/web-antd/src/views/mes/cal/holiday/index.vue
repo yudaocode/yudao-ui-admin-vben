@@ -5,13 +5,13 @@ import { onMounted, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { HolidayType } from '@vben/constants';
 
 import { Button, Calendar, message, Tag } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { SolarDay } from 'tyme4ts';
 
 import { getHolidayList } from '#/api/mes/cal/holiday';
-import { HolidayType } from '#/views/mes/utils/constants';
 
 import HolidayForm from './modules/form.vue';
 

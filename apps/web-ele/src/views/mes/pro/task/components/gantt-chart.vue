@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-import { gantt } from 'dhtmlx-gantt';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
+import { gantt } from 'dhtmlx-gantt';
 
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 

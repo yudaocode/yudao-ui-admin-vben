@@ -6,6 +6,7 @@ import type { MesWmReturnIssueApi } from '#/api/mes/wm/returnissue';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmReturnIssueStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
   updateReturnIssue,
 } from '#/api/mes/wm/returnissue';
 import { $t } from '#/locales';
-import { MesWmReturnIssueStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

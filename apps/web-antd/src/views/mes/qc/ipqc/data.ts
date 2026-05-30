@@ -5,7 +5,7 @@ import type { MesQcIpqcLineApi } from '#/api/mes/qc/ipqc/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -16,11 +16,6 @@ import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
 import ProTaskSelect from '#/views/mes/pro/task/components/pro-task-select.vue';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesProTaskStatusEnum,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

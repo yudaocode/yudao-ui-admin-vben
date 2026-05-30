@@ -5,7 +5,7 @@ import type { MesWmArrivalNoticeLineApi } from '#/api/mes/wm/arrivalnotice/line'
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 
 import { Button } from 'ant-design-vue';
 
@@ -14,7 +14,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

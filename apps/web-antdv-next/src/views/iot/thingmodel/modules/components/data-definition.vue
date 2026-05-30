@@ -4,14 +4,14 @@ import type { ThingModelData } from '#/api/iot/thingmodel';
 
 import { computed } from 'vue';
 
-import { Tooltip } from 'antdv-next';
-
 import {
   getEventTypeLabel,
   getThingModelServiceCallTypeLabel,
   IoTDataSpecsDataTypeEnum,
   IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { Tooltip } from 'antdv-next';
 
 /** 数据定义展示组件 */
 defineOptions({ name: 'DataDefinition' });

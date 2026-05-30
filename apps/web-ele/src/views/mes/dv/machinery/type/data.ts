@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
@@ -13,7 +13,6 @@ import { ElButton } from 'element-plus';
 import { z } from '#/adapter/form';
 import { getMachineryTypeList } from '#/api/mes/dv/machinery/type';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 新增/修改设备类型的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

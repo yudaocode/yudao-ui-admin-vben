@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceIssueApi } from '#/api/mes/wm/outsourceissue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmOutsourceIssueStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -15,7 +16,6 @@ import {
   getOutsourceIssuePage,
 } from '#/api/mes/wm/outsourceissue';
 import { $t } from '#/locales';
-import { MesWmOutsourceIssueStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

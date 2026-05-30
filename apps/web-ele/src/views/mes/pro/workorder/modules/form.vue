@@ -7,6 +7,10 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  BarcodeBizTypeEnum,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 
 import {
   ElButton,
@@ -25,10 +29,6 @@ import {
   updateWorkOrder,
 } from '#/api/mes/pro/workorder';
 import { $t } from '#/locales';
-import {
-  BarcodeBizTypeEnum,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';

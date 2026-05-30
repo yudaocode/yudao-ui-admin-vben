@@ -2,10 +2,10 @@
 <script lang="ts" setup>
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 
-import { computed, ref } from 'vue';
+import { computed, DICT_TYPE, ModbusFrameFormatEnum, ModbusModeEnum, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'antdv-next';
@@ -14,10 +14,6 @@ import { useVbenForm, z } from '#/adapter/form';
 import { saveModbusConfig } from '#/api/iot/device/modbus/config';
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
 import { $t } from '#/locales';
-import {
-  ModbusFrameFormatEnum,
-  ModbusModeEnum,
-} from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceModbusConfigForm' });
 

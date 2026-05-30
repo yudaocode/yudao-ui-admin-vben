@@ -5,12 +5,12 @@ import type { OtaTask } from '#/api/iot/ota/task';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { IoTOtaTaskDeviceScopeEnum } from '@vben/constants';
 
 import { Form, Input, message, Select, Spin } from 'antdv-next';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { createOtaTask } from '#/api/iot/ota/task';
-import { IoTOtaTaskDeviceScopeEnum } from '#/views/iot/utils/constants';
 
 /** IoT OTA 升级任务表单 */
 defineOptions({ name: 'OtaTaskForm' });

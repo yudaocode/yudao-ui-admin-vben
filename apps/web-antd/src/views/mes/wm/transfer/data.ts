@@ -7,7 +7,7 @@ import type { MesWmTransferLineApi } from '#/api/mes/wm/transfer/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesWmTransferTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -15,10 +15,6 @@ import { Button } from 'ant-design-vue';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MdItemSelect } from '#/views/mes/md/item/components';
-import {
-  MesAutoCodeRuleCode,
-  MesWmTransferTypeEnum,
-} from '/constants';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmWarehouseAreaSelect,

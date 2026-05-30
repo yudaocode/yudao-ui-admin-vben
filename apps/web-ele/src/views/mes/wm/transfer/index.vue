@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmTransferApi } from '#/api/mes/wm/transfer';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmTransferStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -15,7 +16,6 @@ import {
   getTransferPage,
 } from '#/api/mes/wm/transfer';
 import { $t } from '#/locales';
-import { MesWmTransferStatusEnum } from '/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

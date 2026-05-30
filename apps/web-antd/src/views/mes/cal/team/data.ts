@@ -4,14 +4,13 @@ import type { MesCalTeamApi } from '#/api/mes/cal/team';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

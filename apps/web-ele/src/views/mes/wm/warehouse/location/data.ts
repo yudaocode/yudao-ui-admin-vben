@@ -5,14 +5,13 @@ import type { MesWmWarehouseLocationApi } from '#/api/mes/wm/warehouse/location'
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getWarehouseSimpleList } from '#/api/mes/wm/warehouse';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

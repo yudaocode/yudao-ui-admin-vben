@@ -8,17 +8,17 @@ import type {
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import {
+  IoTDataSpecsDataTypeEnum,
+  IotRuleSceneActionTypeEnum,
+  IoTThingModelAccessModeEnum,
+} from '@vben/constants';
 import { isObject } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import { Col, Row, Select, Tag } from 'antdv-next';
 
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
-import {
-  IoTDataSpecsDataTypeEnum,
-  IotRuleSceneActionTypeEnum,
-  IoTThingModelAccessModeEnum,
-} from '#/views/iot/utils/constants';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';

@@ -3,10 +3,11 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
 
+import { generateWmsCode } from '@vben/constants';
+
 import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改商品品牌的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

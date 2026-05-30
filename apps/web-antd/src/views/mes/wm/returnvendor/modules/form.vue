@@ -6,6 +6,7 @@ import type { MesWmReturnVendorApi } from '#/api/mes/wm/returnvendor';
 import { computed, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { MesWmReturnVendorStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -20,7 +21,6 @@ import {
   updateReturnVendor,
 } from '#/api/mes/wm/returnvendor';
 import { $t } from '#/locales';
-import { MesWmReturnVendorStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

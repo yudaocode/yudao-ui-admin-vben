@@ -4,11 +4,12 @@ import type { MesWmPackageApi } from '#/api/mes/wm/packages';
 
 import { nextTick, ref } from 'vue';
 
+import { MesWmPackageStatusEnum } from '@vben/constants';
+
 import { Alert, Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPackagePage } from '#/api/mes/wm/packages';
-import { MesWmPackageStatusEnum } from '#/views/mes/utils/constants';
 
 import { useSelectGridColumns, useSelectGridFormSchema } from '../data';
 

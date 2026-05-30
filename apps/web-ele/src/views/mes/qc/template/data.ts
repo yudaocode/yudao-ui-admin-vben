@@ -4,9 +4,9 @@ import type { MesQcTemplateApi } from '#/api/mes/qc/template';
 import type { MesQcTemplateIndicatorApi } from '#/api/mes/qc/template/indicator';
 import type { MesQcTemplateItemApi } from '#/api/mes/qc/template/item';
 
-import { h, markRaw } from 'vue';
+import { DICT_TYPE, h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -16,7 +16,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdUnitMeasureSelect from '#/views/mes/md/unitmeasure/components/md-unit-measure-select.vue';
 import QcIndicatorSelect from '#/views/mes/qc/indicator/components/qc-indicator-select.vue';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

@@ -6,6 +6,7 @@ import type { MesWmStockTakingTaskApi } from '#/api/mes/wm/stocktaking/task';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmStockTakingTaskStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { ElButton, ElMessage, ElPopconfirm, ElTabPane, ElTabs } from 'element-plus';
@@ -19,7 +20,6 @@ import {
   updateStockTaking,
 } from '#/api/mes/wm/stocktaking/task';
 import { $t } from '#/locales';
-import { MesWmStockTakingTaskStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

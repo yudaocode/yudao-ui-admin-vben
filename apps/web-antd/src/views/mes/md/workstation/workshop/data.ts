@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkshopApi } from '#/api/mes/md/workstation/workshop';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -12,7 +12,6 @@ import { Button } from 'ant-design-vue';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

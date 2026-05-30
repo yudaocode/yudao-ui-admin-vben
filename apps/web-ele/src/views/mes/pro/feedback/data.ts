@@ -5,7 +5,7 @@ import type { MesProTaskApi } from '#/api/mes/pro/task';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -18,11 +18,6 @@ import { MdItemSelect } from '#/views/mes/md/item/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProTaskSelect } from '#/views/mes/pro/task/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
-import {
-  MesAutoCodeRuleCode,
-  MesProTaskStatusEnum,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 
 /** 生产报工表单类型 */
 export type FormType = 'approve' | 'create' | 'detail' | 'submit' | 'update';

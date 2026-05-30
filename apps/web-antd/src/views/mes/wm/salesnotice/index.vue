@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmSalesNoticeApi } from '#/api/mes/wm/salesnotice';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmSalesNoticeStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -14,7 +15,6 @@ import {
   getSalesNoticePage,
 } from '#/api/mes/wm/salesnotice';
 import { $t } from '#/locales';
-import { MesWmSalesNoticeStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

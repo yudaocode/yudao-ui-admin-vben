@@ -5,7 +5,7 @@ import type { MesWmMiscReceiptLineApi } from '#/api/mes/wm/miscreceipt/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -13,7 +13,6 @@ import { Button } from 'ant-design-vue';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import { MdItemSelect } from '#/views/mes/md/item/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 import {
   WmWarehouseAreaSelect,
   WmWarehouseLocationSelect,

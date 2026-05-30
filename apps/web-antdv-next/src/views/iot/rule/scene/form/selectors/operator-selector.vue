@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Select } from 'antdv-next';
-
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Select } from 'antdv-next';
 
 /** 操作符选择器组件 */
 defineOptions({ name: 'OperatorSelector' });

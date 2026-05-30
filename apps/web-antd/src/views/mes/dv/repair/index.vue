@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesDvRepairStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -10,7 +11,6 @@ import { Button, message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRepair, exportRepair, getRepairPage } from '#/api/mes/dv/repair';
 import { $t } from '#/locales';
-import { MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

@@ -3,11 +3,12 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h, markRaw } from 'vue';
 
+import { generateWmsCode } from '@vben/constants';
+
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { getItemBrandSimpleList } from '#/api/wms/md/item/brand';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 
 import { WmsItemBrandSelect } from './brand/components';
 import { WmsItemCategorySelect } from './category/components';

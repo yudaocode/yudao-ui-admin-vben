@@ -6,13 +6,13 @@ import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesCalPlanStatusEnum } from '@vben/constants';
 
 import { ElButton, ElMessage, ElPopconfirm, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { confirmPlan, createPlan, getPlan, updatePlan } from '#/api/mes/cal/plan';
 import { $t } from '#/locales';
-import { MesCalPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import ShiftList from './shift-list.vue';

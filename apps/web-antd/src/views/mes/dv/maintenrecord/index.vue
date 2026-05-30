@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvMaintenRecordApi } from '#/api/mes/dv/maintenrecord';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesDvMaintenRecordStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -14,7 +15,6 @@ import {
   getMaintenRecordPage,
 } from '#/api/mes/dv/maintenrecord';
 import { $t } from '#/locales';
-import { MesDvMaintenRecordStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

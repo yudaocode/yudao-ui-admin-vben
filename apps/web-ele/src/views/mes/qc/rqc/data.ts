@@ -5,7 +5,7 @@ import type { MesQcRqcLineApi } from '#/api/mes/qc/rqc/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesQcSourceDocTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -13,10 +13,6 @@ import { ElButton } from 'element-plus';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesQcSourceDocTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

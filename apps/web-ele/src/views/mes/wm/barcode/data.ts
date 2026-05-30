@@ -4,9 +4,9 @@ import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 import type { MesWmBarcodeConfigApi } from '#/api/mes/wm/barcode/config';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { h, markRaw } from 'vue';
+import { BarcodeBizTypeEnum, DICT_TYPE, h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -22,7 +22,6 @@ import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workst
 import { ProCardSelect } from '#/views/mes/pro/card/components';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
 import TmToolSelect from '#/views/mes/tm/tool/components/tm-tool-select.vue';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import { UserSelect } from '#/views/system/user/components';
 

@@ -4,7 +4,7 @@ import type { MesTmToolApi } from '#/api/mes/tm/tool';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesMaintenTypeEnum, MesToolStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -12,11 +12,6 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import {
-  MesAutoCodeRuleCode,
-  MesMaintenTypeEnum,
-  MesToolStatusEnum,
-} from '#/views/mes/utils/constants';
 
 import { TmToolTypeSelect } from './type/components';
 

@@ -4,10 +4,11 @@ import type { MesQcIndicatorResultApi } from '#/api/mes/qc/indicatorresult';
 
 import { h } from 'vue';
 
+import { MesAutoCodeRuleCode } from '@vben/constants';
+
 import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'update';

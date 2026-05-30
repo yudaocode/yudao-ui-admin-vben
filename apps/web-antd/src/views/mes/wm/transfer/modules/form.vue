@@ -6,6 +6,7 @@ import type { MesWmTransferApi } from '#/api/mes/wm/transfer';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmTransferStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -20,7 +21,6 @@ import {
   updateTransfer,
 } from '#/api/mes/wm/transfer';
 import { $t } from '#/locales';
-import { MesWmTransferStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

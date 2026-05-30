@@ -6,6 +6,7 @@ import type { MesProAndonRecordApi } from '#/api/mes/pro/andon/record';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesProAndonStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { ElButton, ElMessage, ElPopconfirm } from 'element-plus';
@@ -17,7 +18,6 @@ import {
   updateAndonRecord,
 } from '#/api/mes/pro/andon/record';
 import { $t } from '#/locales';
-import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 

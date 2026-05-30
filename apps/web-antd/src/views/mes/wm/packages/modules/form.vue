@@ -6,6 +6,7 @@ import type { MesWmPackageApi } from '#/api/mes/wm/packages';
 import { computed, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { MesWmPackageStatusEnum } from '@vben/constants';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
@@ -17,7 +18,6 @@ import {
   updatePackage,
 } from '#/api/mes/wm/packages';
 import { $t } from '#/locales';
-import { MesWmPackageStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import PackageLineList from './package-line-list.vue';

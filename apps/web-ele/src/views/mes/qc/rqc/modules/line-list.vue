@@ -3,10 +3,10 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesQcRqcLineApi } from '#/api/mes/qc/rqc/line';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesQcTypeEnum } from '@vben/constants';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getRqcLinePage } from '#/api/mes/qc/rqc/line';
-import { MesQcTypeEnum } from '#/views/mes/utils/constants';
 
 import { DefectRecordInlineList } from '../../defectrecord/components';
 import { type FormType, useLineGridColumns } from '../data';

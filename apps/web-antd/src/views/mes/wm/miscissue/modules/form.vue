@@ -6,6 +6,7 @@ import type { MesWmMiscIssueApi } from '#/api/mes/wm/miscissue';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmMiscIssueStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -18,7 +19,6 @@ import {
   updateMiscIssue,
 } from '#/api/mes/wm/miscissue';
 import { $t } from '#/locales';
-import { MesWmMiscIssueStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

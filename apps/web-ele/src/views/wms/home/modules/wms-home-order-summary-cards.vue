@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { WmsHomeStatisticsApi } from '#/api/wms/home';
 
-import { ref } from 'vue';
+import { OrderStatusEnum, OrderTypeEnum, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -10,7 +10,6 @@ import { getDictLabel } from '@vben/hooks';
 import { ElButton, ElCard, ElMessage, ElSkeleton } from 'element-plus';
 
 import { getOrderSummary } from '#/api/wms/home';
-import { OrderStatusEnum, OrderTypeEnum } from '#/views/wms/utils/constants';
 
 defineOptions({ name: 'WmsHomeOrderSummaryCards' });
 

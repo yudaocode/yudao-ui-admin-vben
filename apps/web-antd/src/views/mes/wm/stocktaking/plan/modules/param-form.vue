@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MesWmStockTakingPlanParamApi } from '#/api/mes/wm/stocktaking/plan/param';
 
-import { computed, ref } from 'vue';
+import { computed, MesWmStockTakingParamTypeEnum, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -18,7 +18,6 @@ import { getWarehouseArea } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocation } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import { MesWmStockTakingParamTypeEnum } from '#/views/mes/utils/constants';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import {
   WmWarehouseAreaSelect,

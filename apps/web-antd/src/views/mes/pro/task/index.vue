@@ -6,16 +6,16 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import {
+  MesProWorkOrderStatusEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 
 import { Button, Card } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getGanttTaskList } from '#/api/mes/pro/task';
 import { getWorkOrderPage } from '#/api/mes/pro/workorder';
-import {
-  MesProWorkOrderStatusEnum,
-  MesProWorkOrderTypeEnum,
-} from '#/views/mes/utils/constants';
 
 import GanttChart from './components/gantt-chart.vue';
 import { useGridColumns, useGridFormSchema } from './data';

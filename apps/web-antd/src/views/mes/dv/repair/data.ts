@@ -4,7 +4,7 @@ import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -13,7 +13,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
-import { MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
 /** 表单类型 */
 export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
 

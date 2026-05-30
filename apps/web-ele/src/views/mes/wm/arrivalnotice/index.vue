@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmArrivalNoticeApi } from '#/api/mes/wm/arrivalnotice';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmArrivalNoticeStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -14,7 +15,6 @@ import {
   getArrivalNoticePage,
 } from '#/api/mes/wm/arrivalnotice';
 import { $t } from '#/locales';
-import { MesWmArrivalNoticeStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

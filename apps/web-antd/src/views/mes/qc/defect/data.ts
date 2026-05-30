@@ -4,13 +4,12 @@ import type { MesQcDefectApi } from '#/api/mes/qc/defect';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 新增/修改的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

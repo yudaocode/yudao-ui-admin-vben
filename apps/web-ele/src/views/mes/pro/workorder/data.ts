@@ -6,7 +6,7 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderSourceTypeEnum, MesProWorkOrderTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -16,11 +16,6 @@ import { getRangePickerDefaultProps } from '#/utils';
 import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
 import { MdItemSelect, MdProductBomSelect } from '#/views/mes/md/item/components';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesProWorkOrderSourceTypeEnum,
-  MesProWorkOrderTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';

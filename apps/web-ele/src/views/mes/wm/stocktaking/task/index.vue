@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmStockTakingTaskApi } from '#/api/mes/wm/stocktaking/task';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmStockTakingTaskStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -15,7 +16,6 @@ import {
   getStockTakingPage,
 } from '#/api/mes/wm/stocktaking/task';
 import { $t } from '#/locales';
-import { MesWmStockTakingTaskStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

@@ -7,14 +7,13 @@ import type { MesWmReturnVendorLineApi } from '#/api/mes/wm/returnvendor/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {

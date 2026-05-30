@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmReturnIssueApi } from '#/api/mes/wm/returnissue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmReturnIssueStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -15,7 +16,6 @@ import {
   getReturnIssuePage,
 } from '#/api/mes/wm/returnissue';
 import { $t } from '#/locales';
-import { MesWmReturnIssueStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

@@ -2,11 +2,9 @@ import type { EChartsOption } from '@vben/plugins/echarts';
 
 import type { WmsHomeStatisticsApi } from '#/api/wms/home';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, OrderTypeEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
-
-import { OrderTypeEnum } from '/constants';
 
 interface OrderDefinition {
   color: string;

@@ -6,6 +6,7 @@ import type { MesQcOqcApi } from '#/api/mes/qc/oqc';
 import { computed, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 
 import { Button, Descriptions, message, Tabs } from 'ant-design-vue';
 
@@ -17,7 +18,6 @@ import {
   updateOqc,
 } from '#/api/mes/qc/oqc';
 import { $t } from '#/locales';
-import { MesQcStatusEnum, MesQcTypeEnum } from '#/views/mes/utils/constants';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';
 import { useFormSchema } from '../data';

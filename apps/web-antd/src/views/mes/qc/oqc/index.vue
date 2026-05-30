@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesQcOqcApi } from '#/api/mes/qc/oqc';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesQcStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -10,7 +11,6 @@ import { Button, message } from 'ant-design-vue';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOqc, exportOqc, getOqcPage } from '#/api/mes/qc/oqc';
 import { $t } from '#/locales';
-import { MesQcStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesProFeedbackStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -15,7 +16,6 @@ import {
   getFeedbackPage,
 } from '#/api/mes/pro/feedback';
 import { $t } from '#/locales';
-import { MesProFeedbackStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

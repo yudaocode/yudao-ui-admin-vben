@@ -6,13 +6,13 @@ import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 
 import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
-import { MesDvCheckPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import MachineryList from './machinery-list.vue';

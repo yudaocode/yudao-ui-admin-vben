@@ -6,6 +6,11 @@ import type { WmsShipmentOrderDetailApi } from '#/api/wms/order/shipment/detail'
 import { reactive, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import {
+  OrderDeleteStatusList,
+  OrderStatusEnum,
+  OrderUpdateStatusList,
+} from '@vben/constants';
 import { downloadFileFromBlobPart, formatDateTime } from '@vben/utils';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -24,11 +29,6 @@ import {
   getShipmentOrderPage,
 } from '#/api/wms/order/shipment';
 import { $t } from '#/locales';
-import {
-  OrderDeleteStatusList,
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '#/views/wms/utils/constants';
 import {
   formatPrice,
   formatQuantity,

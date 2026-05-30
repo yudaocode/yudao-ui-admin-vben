@@ -5,9 +5,9 @@ import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -18,7 +18,6 @@ import {
   MdItemSelect,
   MdProductBomSelect,
 } from '#/views/mes/md/item/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { RouteColorPicker } from './components';
 

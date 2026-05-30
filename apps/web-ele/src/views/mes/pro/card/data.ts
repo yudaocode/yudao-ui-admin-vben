@@ -5,7 +5,7 @@ import type { MesProCardProcessApi } from '#/api/mes/pro/card/process';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
 
 import { ElButton } from 'element-plus';
 
@@ -14,10 +14,6 @@ import { MdItemSelect } from '#/views/mes/md/item/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
-import {
-  MesAutoCodeRuleCode,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 import { UserSelect } from '#/views/system/user/components';
 
 /** 表单类型 */

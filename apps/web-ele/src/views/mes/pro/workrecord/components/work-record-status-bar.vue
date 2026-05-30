@@ -4,6 +4,7 @@ import type { MesProWorkRecordApi } from '#/api/mes/pro/workrecord';
 import { computed, onMounted, ref } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { MesProWorkRecordTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -15,7 +16,6 @@ import {
   getMyWorkRecord,
 } from '#/api/mes/pro/workrecord';
 import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
-import { MesProWorkRecordTypeEnum } from '#/views/mes/utils/constants';
 
 const emit = defineEmits<{
   (e: 'change'): void;

@@ -2,13 +2,13 @@
 import type { MesCalHolidayApi } from '#/api/mes/cal/holiday';
 
 import { useVbenModal } from '@vben/common-ui';
+import { HolidayType } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import { getHolidayByDay, saveHoliday } from '#/api/mes/cal/holiday';
-import { HolidayType } from '#/views/mes/utils/constants';
 
 import { useHolidayFormSchema } from '../data';
 

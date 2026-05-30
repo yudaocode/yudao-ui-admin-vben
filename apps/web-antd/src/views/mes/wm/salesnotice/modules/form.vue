@@ -6,6 +6,7 @@ import type { MesWmSalesNoticeApi } from '#/api/mes/wm/salesnotice';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmSalesNoticeStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -17,7 +18,6 @@ import {
   updateSalesNotice,
 } from '#/api/mes/wm/salesnotice';
 import { $t } from '#/locales';
-import { MesWmSalesNoticeStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

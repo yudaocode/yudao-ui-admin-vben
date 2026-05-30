@@ -6,7 +6,7 @@ import type { MesWmReturnSalesLineApi } from '#/api/mes/wm/returnsales/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -15,7 +15,6 @@ import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import {
   WmWarehouseAreaSelect,

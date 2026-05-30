@@ -6,6 +6,7 @@ import type { MesWmWarehouseAreaApi } from '#/api/mes/wm/warehouse/area';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { ElButton, ElMessage } from 'element-plus';
 
@@ -17,7 +18,6 @@ import {
 } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocation } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';

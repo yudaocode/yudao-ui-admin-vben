@@ -6,6 +6,7 @@ import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '@vben/constants';
 
 import { ElButton, ElMessage, ElPopconfirm } from 'element-plus';
 
@@ -19,7 +20,6 @@ import {
   updateRepair,
 } from '#/api/mes/dv/repair';
 import { $t } from '#/locales';
-import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

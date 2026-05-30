@@ -5,13 +5,13 @@ import type { MesWmPackageApi } from '#/api/mes/wm/packages';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmPackageStatusEnum } from '@vben/constants';
 
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deletePackage, getPackagePage } from '#/api/mes/wm/packages';
 import { $t } from '#/locales';
-import { MesWmPackageStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

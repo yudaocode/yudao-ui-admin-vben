@@ -5,7 +5,7 @@ import type { MesWmPackageLineApi } from '#/api/mes/wm/packages/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
 
 import { ElButton } from 'element-plus';
 
@@ -15,10 +15,6 @@ import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vu
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

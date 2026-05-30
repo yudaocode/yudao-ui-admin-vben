@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProCardApi } from '#/api/mes/pro/card';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesProCardStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -15,7 +16,6 @@ import {
   getCardPage,
 } from '#/api/mes/pro/card';
 import { $t } from '#/locales';
-import { MesProCardStatusEnum } from '#/views/mes/utils/constants';
 import { PrinterLabel } from '#/views/mes/wm/barcode/components';
 
 import { useGridColumns, useGridFormSchema } from './data';

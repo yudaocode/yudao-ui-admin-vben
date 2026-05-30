@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceReceiptApi } from '#/api/mes/wm/outsourcereceipt';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesWmOutsourceReceiptStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -15,7 +16,6 @@ import {
   getOutsourceReceiptPage,
 } from '#/api/mes/wm/outsourcereceipt';
 import { $t } from '#/locales';
-import { MesWmOutsourceReceiptStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

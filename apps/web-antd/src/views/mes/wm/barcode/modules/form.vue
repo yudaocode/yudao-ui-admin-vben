@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 
-import { computed, ref } from 'vue';
+import { BarcodeBizTypeEnum, computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
@@ -17,7 +17,6 @@ import {
 import { getWarehouseArea } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocation } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 

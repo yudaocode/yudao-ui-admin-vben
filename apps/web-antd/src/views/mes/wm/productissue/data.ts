@@ -7,7 +7,7 @@ import type { MesWmProductIssueLineApi } from '#/api/mes/wm/productissue/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -17,10 +17,6 @@ import { getRangePickerDefaultProps } from '#/utils';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmWarehouseAreaSelect,

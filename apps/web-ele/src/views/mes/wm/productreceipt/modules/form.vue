@@ -6,6 +6,7 @@ import type { MesWmProductReceiptApi } from '#/api/mes/wm/productreceipt';
 import { computed, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { MesWmProductReceiptStatusEnum } from '@vben/constants';
 
 import { ElButton, ElDivider, ElMessage, ElPopconfirm } from 'element-plus';
 
@@ -20,7 +21,6 @@ import {
   updateProductReceipt,
 } from '#/api/mes/wm/productreceipt';
 import { $t } from '#/locales';
-import { MesWmProductReceiptStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

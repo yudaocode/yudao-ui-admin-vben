@@ -6,13 +6,13 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteWarehouse, getWarehousePage } from '#/api/mes/wm/warehouse';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 
 import { BarcodeDetail } from '../barcode/components';
 import { useGridColumns, useGridFormSchema } from './data';

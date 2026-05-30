@@ -1,6 +1,6 @@
 import type { MesHomeApi } from '#/api/mes/home';
 
-import { MesProWorkOrderStatusEnum } from '#/views/mes/utils/constants';
+import { MesProWorkOrderStatusEnum } from '@vben/constants';
 
 /** 首页汇总统计默认值 */
 export const defaultSummary: MesHomeApi.Summary = {

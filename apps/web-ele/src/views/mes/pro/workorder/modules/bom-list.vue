@@ -8,6 +8,10 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 import { computed } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  MesProWorkOrderStatusEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -17,10 +21,6 @@ import {
   getWorkOrderBomPage,
 } from '#/api/mes/pro/workorder/bom';
 import { $t } from '#/locales';
-import {
-  MesProWorkOrderStatusEnum,
-  MesProWorkOrderTypeEnum,
-} from '#/views/mes/utils/constants';
 
 import { useBomGridColumns } from '../data';
 import BomForm from './bom-form.vue';

@@ -4,17 +4,13 @@ import type { MesQcIndicatorApi } from '#/api/mes/qc/indicator';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesQcResultValueType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
-import {
-  MesAutoCodeRuleCode,
-  MesQcResultValueType,
-} from '#/views/mes/utils/constants';
 
 /** 新增/修改的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

@@ -5,6 +5,11 @@ import type { MesProWorkOrderApi } from '#/api/mes/pro/workorder';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import {
+  BarcodeBizTypeEnum,
+  MesProWorkOrderStatusEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -17,11 +22,6 @@ import {
   getWorkOrderPage,
 } from '#/api/mes/pro/workorder';
 import { $t } from '#/locales';
-import {
-  BarcodeBizTypeEnum,
-  MesProWorkOrderStatusEnum,
-  MesProWorkOrderTypeEnum,
-} from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useGridColumns, useGridFormSchema } from './data';

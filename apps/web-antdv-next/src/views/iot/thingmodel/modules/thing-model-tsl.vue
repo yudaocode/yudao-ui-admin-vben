@@ -5,10 +5,11 @@ import type { IotProductApi } from '#/api/iot/product/product';
 
 import { computed, inject, ref, watch } from 'vue';
 
+import { IOT_PROVIDE_KEY } from '@vben/constants';
+
 import { Modal, TextArea } from 'antdv-next';
 
 import { getThingModelTSL } from '#/api/iot/thingmodel';
-import { IOT_PROVIDE_KEY } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'ThingModelTsl' });
 

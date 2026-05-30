@@ -7,10 +7,10 @@ import type { MesQcPendingInspectApi } from '#/api/mes/qc/pendinginspect';
 import type { MesQcRqcApi } from '#/api/mes/qc/rqc';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesQcTypeEnum } from '@vben/constants';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPendingInspectPage } from '#/api/mes/qc/pendinginspect';
-import { MesQcTypeEnum } from '#/views/mes/utils/constants';
 
 import IpqcForm from '../ipqc/modules/form.vue';
 import IqcForm from '../iqc/modules/form.vue';

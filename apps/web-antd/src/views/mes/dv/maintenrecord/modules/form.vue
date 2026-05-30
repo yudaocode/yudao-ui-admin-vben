@@ -6,6 +6,7 @@ import type { MesDvMaintenRecordApi } from '#/api/mes/dv/maintenrecord';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvMaintenRecordStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { Button, message, Popconfirm } from 'ant-design-vue';
@@ -18,7 +19,6 @@ import {
   updateMaintenRecord,
 } from '#/api/mes/dv/maintenrecord';
 import { $t } from '#/locales';
-import { MesDvMaintenRecordStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

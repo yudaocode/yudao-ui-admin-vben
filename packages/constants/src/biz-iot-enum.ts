@@ -202,6 +202,27 @@ export const getDataTypeName = (dataType: string): string => {
   return typeMap[dataType] || dataType;
 };
 
+/** 获取数据类型标签类型（用于 tag 的 type 属性） */
+export const getDataTypeTagType = (
+  dataType: string,
+): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
+  const tagMap: Record<
+    string,
+    'danger' | 'info' | 'primary' | 'success' | 'warning'
+  > = {
+    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
+    [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
+    [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
+    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
+    [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
+    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
+    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
+    [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
+  };
+  return tagMap[dataType] || 'info';
+};
+
 // ========== IOT - 设备消息 ==========
 /** IoT 设备消息的方法枚举 */
 export const IotDeviceMessageMethodEnum = {

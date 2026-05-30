@@ -4,19 +4,13 @@ import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesCalPlanStatusEnum, MesCalShiftMethodEnum, MesCalShiftTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
-import {
-  MesAutoCodeRuleCode,
-  MesCalPlanStatusEnum,
-  MesCalShiftMethodEnum,
-  MesCalShiftTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

@@ -5,7 +5,7 @@ import type { MesQcIqcLineApi } from '#/api/mes/qc/iqc/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -15,7 +15,6 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

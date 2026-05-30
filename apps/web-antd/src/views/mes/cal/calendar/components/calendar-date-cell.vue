@@ -3,11 +3,11 @@ import type { MesCalCalendarApi } from '#/api/mes/cal/calendar';
 
 import { computed } from 'vue';
 
+import { MesCalShiftTypeEnum } from '@vben/constants';
+
 import { Tag } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { SolarDay } from 'tyme4ts';
-
-import { MesCalShiftTypeEnum } from '#/views/mes/utils/constants';
 
 const props = defineProps<{
   calendarDayMap: Map<string, MesCalCalendarApi.CalendarDay>; // 排班数据

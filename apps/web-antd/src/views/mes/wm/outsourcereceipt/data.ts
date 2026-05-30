@@ -7,7 +7,7 @@ import type { MesWmOutsourceReceiptLineApi } from '#/api/mes/wm/outsourcereceipt
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum, MesProWorkOrderTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -18,11 +18,6 @@ import { getRangePickerDefaultProps } from '#/utils';
 import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
 import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
 import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
-import {
-  MesAutoCodeRuleCode,
-  MesProWorkOrderStatusEnum,
-  MesProWorkOrderTypeEnum,
-} from '#/views/mes/utils/constants';
 import {
   WmWarehouseAreaSelect,
   WmWarehouseLocationSelect,

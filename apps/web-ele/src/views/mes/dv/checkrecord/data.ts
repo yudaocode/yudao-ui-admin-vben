@@ -4,18 +4,13 @@ import type { MesDvCheckRecordApi } from '#/api/mes/dv/checkrecord';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesDvCheckPlanStatusEnum, MesDvCheckRecordStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { DvCheckPlanSelect } from '#/views/mes/dv/checkplan/components';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
-import {
-  MesDvCheckPlanStatusEnum,
-  MesDvCheckRecordStatusEnum,
-  MesDvSubjectTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

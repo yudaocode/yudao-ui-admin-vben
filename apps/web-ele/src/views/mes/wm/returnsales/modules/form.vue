@@ -6,6 +6,7 @@ import type { MesWmReturnSalesApi } from '#/api/mes/wm/returnsales';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmReturnSalesStatusEnum } from '@vben/constants';
 
 import { ElButton, ElDivider, ElMessage, ElPopconfirm } from 'element-plus';
 
@@ -19,7 +20,6 @@ import {
   updateReturnSales,
 } from '#/api/mes/wm/returnsales';
 import { $t } from '#/locales';
-import { MesWmReturnSalesStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

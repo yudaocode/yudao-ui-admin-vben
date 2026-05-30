@@ -6,6 +6,7 @@ import type { MesWmProductReceiptLineApi } from '#/api/mes/wm/productreceipt/lin
 import { computed, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -16,7 +17,6 @@ import {
   getProductReceiptLinePage,
 } from '#/api/mes/wm/productreceipt/line';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail, PrinterLabel } from '#/views/mes/wm/barcode/components';
 
 import { type FormType, useLineGridColumns } from '../data';

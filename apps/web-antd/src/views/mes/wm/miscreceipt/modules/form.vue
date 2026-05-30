@@ -6,6 +6,7 @@ import type { MesWmMiscReceiptApi } from '#/api/mes/wm/miscreceipt';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesWmMiscReceiptStatusEnum } from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -18,7 +19,6 @@ import {
   updateMiscReceipt,
 } from '#/api/mes/wm/miscreceipt';
 import { $t } from '#/locales';
-import { MesWmMiscReceiptStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';

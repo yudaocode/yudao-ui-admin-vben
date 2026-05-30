@@ -6,6 +6,7 @@ import type { MesQcIndicatorResultApi } from '#/api/mes/qc/indicatorresult';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesQcResultValueType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import {
@@ -26,7 +27,6 @@ import {
   updateIndicatorResult,
 } from '#/api/mes/qc/indicatorresult';
 import { $t } from '#/locales';
-import { MesQcResultValueType } from '#/views/mes/utils/constants';
 
 import { useQcIndicatorResultFormSchema } from './data';
 

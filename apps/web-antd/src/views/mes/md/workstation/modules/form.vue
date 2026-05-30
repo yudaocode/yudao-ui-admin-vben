@@ -6,6 +6,7 @@ import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
@@ -16,7 +17,6 @@ import {
   updateWorkstation,
 } from '#/api/mes/md/workstation';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';

@@ -3,9 +3,9 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemApi } from '#/api/mes/md/item';
 import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
 
-import { h, markRaw } from 'vue';
+import { DICT_TYPE, h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -14,7 +14,6 @@ import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MdItemTypeSelect } from '#/views/mes/md/item/type/components';
 import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

@@ -6,6 +6,10 @@ import type { MesProCardApi } from '#/api/mes/pro/card';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  BarcodeBizTypeEnum,
+  MesProCardStatusEnum,
+} from '@vben/constants';
 
 import { Button, Divider, message, Popconfirm } from 'ant-design-vue';
 
@@ -18,10 +22,6 @@ import {
   updateCard,
 } from '#/api/mes/pro/card';
 import { $t } from '#/locales';
-import {
-  BarcodeBizTypeEnum,
-  MesProCardStatusEnum,
-} from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';

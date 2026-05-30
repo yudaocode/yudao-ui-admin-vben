@@ -6,6 +6,7 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { Alert, Button, message } from 'ant-design-vue';
 
@@ -16,7 +17,6 @@ import {
   getWarehouseLocationPage,
 } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 
 import { BarcodeDetail } from '../../barcode/components';
 import { useGridColumns, useGridFormSchema } from './data';

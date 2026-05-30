@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode, MesItemOrProductEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
@@ -13,10 +13,6 @@ import { Button } from 'ant-design-vue';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getItemTypeList } from '#/api/mes/md/item/type';
-import {
-  MesAutoCodeRuleCode,
-  MesItemOrProductEnum,
-} from '#/views/mes/utils/constants';
 
 /** 新增/修改物料分类的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {

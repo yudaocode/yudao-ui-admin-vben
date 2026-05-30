@@ -3,10 +3,11 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { h } from 'vue';
 
+import { generateWmsCode } from '@vben/constants';
+
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改仓库的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
