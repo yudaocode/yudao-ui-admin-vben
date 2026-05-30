@@ -12,12 +12,13 @@ import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
+import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MdItemSelect } from '#/views/mes/md/item/components';
 import {
   MesAutoCodeRuleCode,
   MesWmTransferTypeEnum,
-} from '#/views/mes/utils/constants';
+} from '/constants';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmWarehouseAreaSelect,
@@ -130,6 +131,7 @@ export function useFormSchema(
       componentProps: {
         disabled: headerReadonly,
       },
+      rules: z.boolean().default(false),
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === MesWmTransferTypeEnum.OUTER,

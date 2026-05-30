@@ -1,10 +1,12 @@
+import type { EChartsOption } from '@vben/plugins/echarts';
+
 /** 生产趋势折线图配置 */
 export function getProductionTrendChartOptions(
   dates: string[],
   quantities: number[],
   qualified: number[],
   unqualified: number[],
-): any {
+): EChartsOption {
   return {
     grid: { bottom: 40, left: 50, right: 20, top: 20 },
     legend: { bottom: 0, data: ['产量', '合格品', '不良品'] },
@@ -41,7 +43,7 @@ export function getProductionTrendChartOptions(
 /** 工单状态分布饼图配置 */
 export function getWorkOrderStatusChartOptions(
   data: Array<{ itemStyle: { color: string }; name: string; value: number }>,
-): any {
+): EChartsOption {
   return {
     legend: { bottom: 0, type: 'scroll' },
     series: [

@@ -5,7 +5,7 @@ import type { MesWmTransferApi } from '#/api/mes/wm/transfer';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message } from 'ant-design-vue';
+import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -62,23 +62,22 @@ function handleFinish(row: MesWmTransferApi.Transfer) {
 
 /** 删除转移单 */
 async function handleDelete(row: MesWmTransferApi.Transfer) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.code]),
-    duration: 0,
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.code]),
   });
   try {
     await deleteTransfer(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.code]));
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.code]));
     handleRefresh();
   } finally {
-    hideLoading();
+    loadingInstance.close();
   }
 }
 
 /** 取消转移单 */
 async function handleCancel(row: MesWmTransferApi.Transfer) {
   await cancelTransfer(row.id!);
-  message.success('取消成功');
+  ElMessage.success('取消成功');
   handleRefresh();
 }
 
@@ -152,16 +151,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <Button type="link" @click="handleDetail(row)">
+        <ElButton link type="primary" @click="handleDetail(row)">
           {{ row.code }}
-        </Button>
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
             {
               label: $t('common.edit'),
-              type: 'link',
+              type: 'primary',
+              link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['mes:wm-transfer:update'],
               ifShow: row.status === MesWmTransferStatusEnum.PREPARE,
@@ -169,8 +169,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: $t('common.delete'),
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['mes:wm-transfer:delete'],
               ifShow: row.status === MesWmTransferStatusEnum.PREPARE,
@@ -181,29 +181,32 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '到货确认',
-              type: 'link',
+              type: 'primary',
+              link: true,
               auth: ['mes:wm-transfer:update'],
               ifShow: row.status === MesWmTransferStatusEnum.UNCONFIRMED,
               onClick: handleConfirm.bind(null, row),
             },
             {
               label: '执行上架',
-              type: 'link',
+              type: 'primary',
+              link: true,
               auth: ['mes:wm-transfer:update'],
               ifShow: row.status === MesWmTransferStatusEnum.APPROVING,
               onClick: handleStock.bind(null, row),
             },
             {
               label: '执行转移',
-              type: 'link',
+              type: 'primary',
+              link: true,
               auth: ['mes:wm-transfer:finish'],
               ifShow: row.status === MesWmTransferStatusEnum.APPROVED,
               onClick: handleFinish.bind(null, row),
             },
             {
               label: '取消',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               auth: ['mes:wm-transfer:update'],
               ifShow:
                 row.status === MesWmTransferStatusEnum.UNCONFIRMED ||
