@@ -9,7 +9,8 @@ import { Card } from 'ant-design-vue';
 
 import { getWorkOrderStatusDistribution } from '#/api/mes/home';
 
-import { getWorkOrderStatusChartOptions, WORK_ORDER_STATUS_COLOR_MAP } from '../data';
+import { getWorkOrderStatusChartOptions } from '../chart-options';
+import { WORK_ORDER_STATUS_COLOR_MAP } from '../data';
 
 defineOptions({ name: 'MesHomeWorkOrderChart' });
 

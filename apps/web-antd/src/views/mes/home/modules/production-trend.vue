@@ -9,7 +9,7 @@ import { Card, RadioButton, RadioGroup } from 'ant-design-vue';
 
 import { getProductionTrend } from '#/api/mes/home';
 
-import { getProductionTrendChartOptions } from '../data';
+import { getProductionTrendChartOptions } from '../chart-options';
 
 defineOptions({ name: 'MesHomeProductionTrend' });
 

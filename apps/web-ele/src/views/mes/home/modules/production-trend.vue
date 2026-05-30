@@ -9,7 +9,7 @@ import { ElCard, ElRadioButton, ElRadioGroup } from 'element-plus';
 
 import { getProductionTrend } from '#/api/mes/home';
 
-import { getProductionTrendChartOptions } from '../data';
+import { getProductionTrendChartOptions } from '../chart-options';
 
 defineOptions({ name: 'MesHomeProductionTrend' });
 
