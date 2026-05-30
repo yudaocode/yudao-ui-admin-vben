@@ -37,25 +37,19 @@ const canSubmit = computed(() => // 是否可提交
   formType.value === 'update' &&
   formData.value?.status === MesWmOutsourceReceiptStatusEnum.PREPARE,
 );
-// TODO @AI：方法的代码风格；
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['外协入库单']);
-    }
-    case 'finish': {
-      return '完成入库';
-    }
-    case 'stock': {
-      return '执行上架';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['外协入库单']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['外协入库单']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['外协入库单']);
   }
+  if (formType.value === 'stock') {
+    return '执行上架';
+  }
+  if (formType.value === 'finish') {
+    return '完成入库';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['外协入库单'])
+    : $t('ui.actionTitle.create', ['外协入库单']);
 });
 
 const [Form, formApi] = useVbenForm({

@@ -21,7 +21,6 @@ const emit = defineEmits(['success']);
 const formData = ref<MesWmOutsourceReceiptLineApi.OutsourceReceiptLine>();
 const receiptId = ref<number>(); // 所属入库单编号
 
-// TODO @AI：如果 getTitle 方法的前面，也是 const 变量，不用空行？是不是更符合项目规范？如果是，写到 style vue 文件里；
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['外协入库单行'])

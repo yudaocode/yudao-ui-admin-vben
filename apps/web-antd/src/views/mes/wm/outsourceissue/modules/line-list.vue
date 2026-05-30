@@ -27,10 +27,9 @@ const props = defineProps<{
   issueId: number;
 }>();
 
-// TODO @AI：// 是否可编辑明细行 拿到 “computed(() =>”；
-const isEditable = computed(() =>
+const isEditable = computed(() => // 是否可编辑明细行
   ['create', 'update'].includes(props.formType),
-); // 是否可编辑明细行
+);
 const isStock = computed(() => props.formType === 'stock'); // 是否为拣货模式
 const detailMap = reactive<
   Record<number, MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[]>

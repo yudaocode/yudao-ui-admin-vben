@@ -225,6 +225,12 @@ export const MesProWorkOrderTypeEnum = {
   PURCHASE: 3, // 采购
 } as const;
 
+/** MES 工单来源类型枚举 */
+export const MesProWorkOrderSourceTypeEnum = {
+  ORDER: 1, // 客户订单
+  STORE: 2, // 库存备货
+} as const;
+
 /** MES 生产任务状态枚举 */
 export const MesProTaskStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,

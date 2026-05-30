@@ -38,25 +38,19 @@ const canSubmit = computed(() => // 是否可提交
   formType.value === 'update' &&
   formData.value?.status === MesWmOutsourceIssueStatusEnum.PREPARE,
 );
-// TODO @AI：标题的代码风格；
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['外协发料单']);
-    }
-    case 'finish': {
-      return '执行领出';
-    }
-    case 'stock': {
-      return '执行拣货';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['外协发料单']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['外协发料单']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['外协发料单']);
   }
+  if (formType.value === 'stock') {
+    return '执行拣货';
+  }
+  if (formType.value === 'finish') {
+    return '执行领出';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['外协发料单'])
+    : $t('ui.actionTitle.create', ['外协发料单']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -138,7 +132,6 @@ async function handleFinish() {
 }
 
 const [Modal, modalApi] = useVbenModal({
-  // TODO @AI：方法注释，缺少“// 关闭并提示”；看看其他 form.vue 或者 xxx-form.vue 有没类似的情况；
   async onConfirm() {
     if (!isEditable.value) {
       await modalApi.close();

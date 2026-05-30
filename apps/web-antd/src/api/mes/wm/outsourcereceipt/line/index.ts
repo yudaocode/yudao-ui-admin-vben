@@ -19,6 +19,7 @@ export namespace MesWmOutsourceReceiptLineApi {
     expireDate?: number; // 有效期
     lotNumber?: string; // 生产批号
     iqcCheckFlag?: boolean; // 是否需要质检
+    qualityStatus?: number; // 质量状态
     remark?: string; // 备注
     createTime?: Date; // 创建时间
   }

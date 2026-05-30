@@ -39,23 +39,18 @@ const canSubmit = computed(() => // 是否可提交
   formData.value?.status === MesWmOutsourceIssueStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['外协发料单']);
-    }
-    case 'finish': {
-      return '执行领出';
-    }
-    case 'stock': {
-      return '执行拣货';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['外协发料单']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['外协发料单']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['外协发料单']);
   }
+  if (formType.value === 'stock') {
+    return '执行拣货';
+  }
+  if (formType.value === 'finish') {
+    return '执行领出';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['外协发料单'])
+    : $t('ui.actionTitle.create', ['外协发料单']);
 });
 
 const [Form, formApi] = useVbenForm({

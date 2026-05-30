@@ -39,6 +39,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/mes/wm/barcode/config/index.vue'),
       },
+      {
+        path: 'pro/task/edit',
+        name: 'MesProTaskGanttEdit',
+        meta: {
+          title: '甘特图编辑',
+          activePath: '/mes/pro/task',
+        },
+        component: () => import('#/views/mes/pro/task/edit/index.vue'),
+      },
     ],
   },
 ];

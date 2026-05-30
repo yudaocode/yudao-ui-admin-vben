@@ -1,20 +1,16 @@
 <script lang="ts" setup>
 import type { MesProWorkOrderApi } from '#/api/mes/pro/workorder';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, useAttrs, watch } from 'vue';
 
-import { ElOption, ElSelect, ElTag, ElTooltip } from 'element-plus';
+import { CircleX, Search } from '@vben/icons';
 
-import { getWorkOrder, getWorkOrderPage } from '#/api/mes/pro/workorder';
+import { ElInput, ElTooltip } from 'element-plus';
 
-/**
- * MES 生产工单选择器（轻量版）
- *
- * 当前用于安灯记录等只需要单选工单 ID 的业务页面：
- * - 默认按 `status` 过滤拉取首页 100 条工单作为下拉
- * - 编辑回显走 `getWorkOrder(id)`
- * - 后续 `mes/pro/workorder` 完整迁移后，可替换为带弹窗的复杂选择器
- */
+import { getWorkOrder } from '#/api/mes/pro/workorder';
+
+import ProWorkOrderSelectDialog from './pro-work-order-select-dialog.vue';
+
 defineOptions({ name: 'ProWorkOrderSelect', inheritAttrs: false });
 
 const props = withDefaults(
@@ -22,7 +18,6 @@ const props = withDefaults(
     clearable?: boolean;
     disabled?: boolean;
     modelValue?: number;
-    pageSize?: number;
     placeholder?: string;
     status?: number;
     type?: number;
@@ -31,7 +26,6 @@ const props = withDefaults(
     clearable: true,
     disabled: false,
     modelValue: undefined,
-    pageSize: 100,
     placeholder: '请选择工单',
     status: undefined,
     type: undefined,
@@ -43,108 +37,102 @@ const emit = defineEmits<{
   'update:modelValue': [value: number | undefined];
 }>();
 
-const allList = ref<MesProWorkOrderApi.WorkOrder[]>([]);
-const filteredList = ref<MesProWorkOrderApi.WorkOrder[]>([]);
-const selectedItem = ref<MesProWorkOrderApi.WorkOrder>();
+const attrs = useAttrs(); // 透传属性
+const dialogRef = ref<InstanceType<typeof ProWorkOrderSelectDialog>>(); // 工单选择弹窗
+const hovering = ref(false); // 是否悬停
+const selectedItem = ref<MesProWorkOrderApi.WorkOrder>(); // 当前选中工单
 
-const selectValue = computed({
-  get: () => props.modelValue,
-  set: (value: number | undefined) => {
-    emit('update:modelValue', value);
-  },
-});
+const displayLabel = computed(() => selectedItem.value?.code ?? ''); // 选择器展示编码
+const showClear = computed(() => // 是否显示清空图标
+  props.clearable &&
+  !props.disabled &&
+  hovering.value &&
+  props.modelValue != null,
+);
 
-function handleFilter(query: string) {
-  if (!query) {
-    filteredList.value = allList.value;
-    return;
-  }
-  const keyword = query.toLowerCase();
-  filteredList.value = allList.value.filter(
-    (item) =>
-      item.code?.toLowerCase().includes(keyword) ||
-      item.name?.toLowerCase().includes(keyword),
-  );
-}
-
-/** 同步选中工单详情，未在列表内时单独拉取 */
-async function syncSelectedItem(value: number | undefined) {
-  if (value === undefined) {
+/** 根据编号单条查询工单信息（用于编辑回显） */
+async function resolveItemById(id: number | undefined) {
+  if (id == null) {
     selectedItem.value = undefined;
     return;
   }
-  const found = allList.value.find((item) => item.id === value);
-  if (found) {
-    selectedItem.value = found;
+  if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getWorkOrder(value);
-  } catch (error) {
-    console.error('[ProWorkOrderSelect] resolveItemById failed:', error);
+  selectedItem.value = await getWorkOrder(id);
+}
+
+watch(() => props.modelValue, resolveItemById, { immediate: true });
+
+/** 清空已选工单 */
+function clearSelected() {
+  selectedItem.value = undefined;
+  emit('update:modelValue', undefined);
+  emit('change', undefined);
+}
+
+/** 打开工单选择弹窗 */
+function handleClick(event: MouseEvent) {
+  if (props.disabled) {
+    return;
   }
+  const target = event.target as HTMLElement;
+  if (showClear.value && target.closest('.el-input__suffix')) {
+    event.stopPropagation();
+    clearSelected();
+    return;
+  }
+  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds, { multiple: false });
 }
 
-/** 除 v-model 外，额外抛出完整工单对象给业务表单使用 */
-function handleChange(value: number | undefined) {
-  syncSelectedItem(value);
-  emit('change', selectedItem.value);
+/** 弹窗选中回调 */
+function handleSelected(rows: MesProWorkOrderApi.WorkOrder[]) {
+  const item = rows[0];
+  if (!item) {
+    return;
+  }
+  selectedItem.value = item;
+  emit('update:modelValue', item.id);
+  emit('change', item);
 }
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    syncSelectedItem(value);
-  },
-);
-
-onMounted(async () => {
-  const data = await getWorkOrderPage({
-    pageNo: 1,
-    pageSize: props.pageSize,
-    status: props.status,
-    type: props.type,
-  });
-  allList.value = data.list ?? [];
-  filteredList.value = allList.value;
-  syncSelectedItem(props.modelValue);
-});
 </script>
 
 <template>
-  <ElTooltip :disabled="!selectedItem" placement="top" :show-after="500">
-    <template #content>
-      <div v-if="selectedItem" class="leading-6">
-        <div>编码：{{ selectedItem.code || '-' }}</div>
-        <div>名称：{{ selectedItem.name || '-' }}</div>
-        <div>产品：{{ selectedItem.productName || '-' }}</div>
-        <div>数量：{{ selectedItem.quantity ?? '-' }}</div>
-      </div>
-    </template>
-    <ElSelect
-      v-bind="$attrs"
-      v-model="selectValue"
-      :clearable="clearable"
-      :disabled="disabled"
-      :filter-method="handleFilter"
-      :placeholder="placeholder"
-      class="w-full"
-      filterable
-      @change="handleChange"
-    >
-      <ElOption
-        v-for="item in filteredList"
-        :key="item.id"
-        :label="item.code"
-        :value="item.id!"
-      >
-        <div class="flex items-center gap-2">
-          <span>{{ item.code }}</span>
-          <ElTag v-if="item.name" size="small" type="info">
-            {{ item.name }}
-          </ElTag>
+  <div
+    v-bind="attrs"
+    class="w-full"
+    :class="disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+    @click="handleClick"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
+  >
+    <ElTooltip :disabled="!selectedItem" placement="top" :show-after="500">
+      <template #content>
+        <div v-if="selectedItem" class="leading-6">
+          <div>编码：{{ selectedItem.code || '-' }}</div>
+          <div>名称：{{ selectedItem.name || '-' }}</div>
+          <div>产品：{{ selectedItem.productName || '-' }}</div>
+          <div>数量：{{ selectedItem.quantity ?? '-' }}</div>
         </div>
-      </ElOption>
-    </ElSelect>
-  </ElTooltip>
+      </template>
+      <ElInput
+        :disabled="disabled"
+        :model-value="displayLabel"
+        :placeholder="placeholder"
+        readonly
+      >
+        <template #suffix>
+          <CircleX v-if="showClear" class="size-4" />
+          <Search v-else class="size-4" />
+        </template>
+      </ElInput>
+    </ElTooltip>
+  </div>
+  <ProWorkOrderSelectDialog
+    ref="dialogRef"
+    :status="status"
+    :type="type"
+    @selected="handleSelected"
+  />
 </template>

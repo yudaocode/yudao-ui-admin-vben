@@ -22,9 +22,9 @@ const emit = defineEmits<{
   refresh: [];
 }>();
 
-const isEditable = computed(
-  () => ['create', 'stock', 'update'].includes(props.formType),
-); // 是否可维护收货明细（编辑或上架态）
+const isEditable = computed(() => // 是否可维护收货明细（编辑或上架态）
+  ['create', 'stock', 'update'].includes(props.formType),
+);
 
 /** 添加收货明细 */
 function handleCreate() {

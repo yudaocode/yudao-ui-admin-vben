@@ -42,3 +42,38 @@ export function getCardPage(params: MesProCardApi.PageParams) {
 export function getCard(id: number) {
   return requestClient.get<MesProCardApi.Card>(`/mes/pro/card/get?id=${id}`);
 }
+
+/** 新增生产流转卡 */
+export function createCard(data: MesProCardApi.Card) {
+  return requestClient.post<number>('/mes/pro/card/create', data);
+}
+
+/** 修改生产流转卡 */
+export function updateCard(data: MesProCardApi.Card) {
+  return requestClient.put('/mes/pro/card/update', data);
+}
+
+/** 删除生产流转卡 */
+export function deleteCard(id: number) {
+  return requestClient.delete(`/mes/pro/card/delete?id=${id}`);
+}
+
+/** 导出生产流转卡 */
+export function exportCard(params: any) {
+  return requestClient.download('/mes/pro/card/export-excel', { params });
+}
+
+/** 提交生产流转卡 */
+export function submitCard(id: number) {
+  return requestClient.put(`/mes/pro/card/submit?id=${id}`);
+}
+
+/** 完成生产流转卡 */
+export function finishCard(id: number) {
+  return requestClient.put(`/mes/pro/card/finish?id=${id}`);
+}
+
+/** 取消生产流转卡 */
+export function cancelCard(id: number) {
+  return requestClient.put(`/mes/pro/card/cancel?id=${id}`);
+}
