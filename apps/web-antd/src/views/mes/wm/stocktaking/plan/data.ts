@@ -3,9 +3,14 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmStockTakingPlanApi } from '#/api/mes/wm/stocktaking/plan';
 import type { MesWmStockTakingPlanParamApi } from '#/api/mes/wm/stocktaking/plan/param';
 
-import { DICT_TYPE, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode, MesWmStockTakingTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmStockTakingTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';

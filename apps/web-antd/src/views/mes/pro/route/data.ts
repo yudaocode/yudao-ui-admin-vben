@@ -5,9 +5,9 @@ import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { DICT_TYPE, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';

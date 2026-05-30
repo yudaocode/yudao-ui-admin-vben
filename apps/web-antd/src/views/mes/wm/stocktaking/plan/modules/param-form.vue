@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { MesWmStockTakingPlanParamApi } from '#/api/mes/wm/stocktaking/plan/param';
 
-import { computed, MesWmStockTakingParamTypeEnum, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesWmStockTakingParamTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Form, message, Select, Textarea } from 'ant-design-vue';

@@ -500,7 +500,6 @@ export function useDetailFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入批次号',
       },
-      rules: 'required',
     },
     {
       fieldName: 'quantity',
