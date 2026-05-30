@@ -2,7 +2,7 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesQcIndicatorApi } from '#/api/mes/qc/indicator';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { DICT_TYPE, MesAutoCodeRuleCode, MesQcResultValueType } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -10,7 +10,8 @@ import { getDictOptions } from '@vben/hooks';
 import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { getSimpleDictTypeList } from '#/api/system/dict/type';
+
+import { QcIndicatorResultSpecificationInput } from './components';
 
 /** 新增/修改的表单 */
 export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
@@ -92,37 +93,17 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     },
     {
       fieldName: 'resultSpecification',
-      label: '文件类型',
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          { label: '图片/照片', value: 'IMG' },
-          { label: '文件', value: 'FILE' },
-        ],
-      },
+      label: '结果值属性',
+      component: markRaw(QcIndicatorResultSpecificationInput),
+      // 按结果值类型在组件内部切换文件类型 RadioGroup / 字典类型 Select
       dependencies: {
         triggerFields: ['resultType'],
-        show: (values) => values.resultType === MesQcResultValueType.FILE,
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'resultSpecification',
-      label: '字典类型',
-      component: 'ApiSelect',
-      componentProps: {
-        api: getSimpleDictTypeList,
-        clearable: true,
-        filterMethod: (input: string, option: any) =>
-          (option.label as string).toLowerCase().includes(input.toLowerCase()),
-        filterable: true,
-        labelField: 'name',
-        placeholder: '请选择字典类型',
-        valueField: 'type',
-      },
-      dependencies: {
-        triggerFields: ['resultType'],
-        show: (values) => values.resultType === MesQcResultValueType.DICT,
+        if: (values) =>
+          values.resultType === MesQcResultValueType.FILE ||
+          values.resultType === MesQcResultValueType.DICT,
+        componentProps: (values) => ({
+          resultType: values.resultType,
+        }),
       },
       rules: 'required',
     },

@@ -171,10 +171,15 @@ const [Modal, modalApi] = useVbenModal({
         modalApi.unlock();
       }
     } else if (data?.prefill) {
-      // 预填模式：来自待检任务
-      formData.value = { ...data.prefill };
+      // 预填模式：来自待检任务。源项目靠 watcher 自动把 outQuantity 同步到
+      // checkQuantity，这里显式补齐，避免必填的检测数量为空
+      const prefill = {
+        ...data.prefill,
+        checkQuantity: data.prefill.checkQuantity ?? data.prefill.outQuantity,
+      };
+      formData.value = { ...prefill };
       // 设置到 values
-      await formApi.setValues(data.prefill);
+      await formApi.setValues(prefill);
     }
     originalSnapshot.value = JSON.stringify(await formApi.getValues());
   },

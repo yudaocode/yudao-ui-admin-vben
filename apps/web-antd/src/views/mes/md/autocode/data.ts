@@ -448,10 +448,7 @@ export function usePartGridColumns(): VxeTableGridOptions<MesMdAutoCodePartApi.A
       title: '循环方式',
       width: 120,
       align: 'center',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.MES_MD_AUTO_CODE_CYCLE_METHOD },
-      },
+      slots: { default: 'cycleMethod' },
     },
     {
       field: 'remark',

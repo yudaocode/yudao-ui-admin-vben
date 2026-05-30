@@ -41,22 +41,16 @@ const canSubmit = computed(() => // 编辑态草稿可提交
   formType.value === 'update' &&
   formData.value?.status === MesProCardStatusEnum.PREPARE,
 );
-// TODO @AI：标题方法的代码风格；
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['流转卡']);
-    }
-    case 'finish': {
-      return '完成流转卡';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['流转卡']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['流转卡']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['流转卡']);
   }
+  if (formType.value === 'finish') {
+    return '完成流转卡';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['流转卡'])
+    : $t('ui.actionTitle.create', ['流转卡']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -125,7 +119,6 @@ async function handleFinish() {
 }
 
 const [Modal, modalApi] = useVbenModal({
-  // TODO @AI：检查下 onConfirm 方法的风格，是不是缺了一个 // 关闭并提示？？看看其他模块，是不是也有这个情况？
   async onConfirm() {
     if (!isEditable.value) {
       await modalApi.close();
