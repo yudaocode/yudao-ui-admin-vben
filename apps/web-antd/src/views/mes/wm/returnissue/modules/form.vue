@@ -37,25 +37,19 @@ const canSubmit = computed(() => // 是否可提交
   formType.value === 'update' &&
   formData.value?.status === MesWmReturnIssueStatusEnum.PREPARE,
 );
-// TODO @AI：这种标题风格，需要调整对齐
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['生产退料单']);
-    }
-    case 'finish': {
-      return '执行退料';
-    }
-    case 'stock': {
-      return '入库上架';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['生产退料单']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['生产退料单']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['生产退料单']);
   }
+  if (formType.value === 'stock') {
+    return '入库上架';
+  }
+  if (formType.value === 'finish') {
+    return '执行退料';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['生产退料单'])
+    : $t('ui.actionTitle.create', ['生产退料单']);
 });
 
 const [Form, formApi] = useVbenForm({

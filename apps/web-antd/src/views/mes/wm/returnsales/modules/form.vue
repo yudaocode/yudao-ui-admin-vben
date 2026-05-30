@@ -38,23 +38,18 @@ const canSubmit = computed(() => // 是否可提交
   formData.value?.status === MesWmReturnSalesStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['销售退货单']);
-    }
-    case 'finish': {
-      return '执行退货';
-    }
-    case 'stock': {
-      return '执行上架';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['销售退货单']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['销售退货单']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['销售退货单']);
   }
+  if (formType.value === 'stock') {
+    return '执行上架';
+  }
+  if (formType.value === 'finish') {
+    return '执行退货';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['销售退货单'])
+    : $t('ui.actionTitle.create', ['销售退货单']);
 });
 
 const [Form, formApi] = useVbenForm({
