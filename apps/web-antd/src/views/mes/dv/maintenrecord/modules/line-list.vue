@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvMaintenRecordLineApi } from '#/api/mes/dv/maintenrecord/line';
 
-import { computed, ref, watch } from 'vue';
+import { computed, MesDvMaintenStatusEnum, MesDvSubjectTypeEnum, ref, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -20,7 +20,6 @@ import {
 } from '#/api/mes/dv/maintenrecord/line';
 import { $t } from '#/locales';
 import { DvSubjectSelect } from '#/views/mes/dv/subject/components';
-import { MesDvMaintenStatusEnum, MesDvSubjectTypeEnum } from '#/views/mes/utils/constants';
 
 const props = defineProps<{ disabled?: boolean; recordId: number }>();
 const formOpen = ref(false);

@@ -6,13 +6,13 @@ import type { MesTmToolApi } from '#/api/mes/tm/tool';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { createTool, getTool, updateTool } from '#/api/mes/tm/tool';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';
@@ -45,9 +45,6 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
 
 /** 查看工具条码 */
 function handleBarcode() {
@@ -90,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;

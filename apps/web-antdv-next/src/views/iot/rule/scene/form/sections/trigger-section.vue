@@ -3,17 +3,17 @@ import type { Trigger } from '#/api/iot/rule/scene';
 
 import { onMounted } from 'vue';
 
+import {
+  getTriggerTypeLabel,
+  IotRuleSceneTriggerTypeEnum,
+  isDeviceTrigger,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Button, Card, Empty, Tag } from 'antdv-next';
 
 import { CronTab } from '#/components/cron-tab';
-import {
-  getTriggerTypeLabel,
-  IotRuleSceneTriggerTypeEnum,
-  isDeviceTrigger,
-} from '#/views/iot/utils/constants';
 
 import DeviceTriggerConfig from '../configs/device-trigger-config.vue';
 

@@ -1,1 +1,1 @@
-export { default as WmsWarehouseSelect } from './warehouse-select.vue';
+export { default as WmsWarehouseSelect } from './select.vue';

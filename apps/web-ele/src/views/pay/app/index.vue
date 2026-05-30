@@ -66,9 +66,7 @@ async function handleStatusChange(
 ): Promise<boolean | undefined> {
   const text = newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用';
   try {
-    await confirm({
-      content: `确认要${text + row.name}应用吗?`,
-    });
+    await confirm(`确认要${text + row.name}应用吗?`);
   } catch {
     return false;
   }

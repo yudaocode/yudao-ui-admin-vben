@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
-import { h, markRaw } from 'vue';
+import { DICT_TYPE, h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -15,7 +15,6 @@ import { getWarehouseSimpleList } from '#/api/mes/wm/warehouse';
 import { getWarehouseAreaSimpleList } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocationSimpleList } from '#/api/mes/wm/warehouse/location';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { MdWorkshopSelect } from './components';
 
@@ -52,14 +51,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           ElButton,
           {
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(
+                MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
+              );
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

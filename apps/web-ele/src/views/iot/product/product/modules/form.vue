@@ -60,9 +60,6 @@ const [AdvancedForm, advancedFormApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-/** 基础表单需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useBasicFormSchema(formApi, generateProductKey) });
-
 /** 获取高级表单的值（如果表单未挂载，则从 formData 中获取） */
 async function getAdvancedFormValues() {
   if (advancedFormApi.isMounted) {
@@ -106,6 +103,9 @@ const [Modal, modalApi] = useVbenModal({
       activeKey.value = [];
       return;
     }
+    formApi.setState({
+      schema: useBasicFormSchema(formApi, generateProductKey),
+    });
     // 加载数据
     const data = modalApi.getData<IotProductApi.Product>();
     if (!data || !data.id) {

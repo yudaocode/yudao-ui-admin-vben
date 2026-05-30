@@ -4,14 +4,13 @@ import type { MesCalTeamApi } from '#/api/mes/cal/team';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -42,12 +41,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

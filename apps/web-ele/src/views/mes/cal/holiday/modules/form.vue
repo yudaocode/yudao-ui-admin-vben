@@ -2,13 +2,13 @@
 import type { MesCalHolidayApi } from '#/api/mes/cal/holiday';
 
 import { useVbenModal } from '@vben/common-ui';
+import { HolidayType } from '@vben/constants';
 
 import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { getHolidayByDay, saveHoliday } from '#/api/mes/cal/holiday';
-import { HolidayType } from '#/views/mes/utils/constants';
 
 import { useHolidayFormSchema } from '../data';
 
@@ -50,7 +50,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await formApi.resetForm();
     const data = modalApi.getData<{ day: string }>();
     if (!data?.day) {
       return;

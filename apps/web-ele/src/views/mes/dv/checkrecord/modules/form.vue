@@ -6,6 +6,7 @@ import type { MesDvCheckRecordApi } from '#/api/mes/dv/checkrecord';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvCheckRecordStatusEnum } from '@vben/constants';
 
 import { ElButton, ElMessage, ElPopconfirm } from 'element-plus';
 
@@ -17,7 +18,6 @@ import {
   updateCheckRecord,
 } from '#/api/mes/dv/checkrecord';
 import { $t } from '#/locales';
-import { MesDvCheckRecordStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
@@ -103,7 +103,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;

@@ -81,7 +81,6 @@ const [Modal, modalApi] = useVbenModal({
       // 工序下拉依赖远程数据，schema 在弹窗打开时再生成
       const schema = await loadSchema();
       formApi.setState({ schema });
-      await formApi.resetForm();
     } finally {
       modalApi.unlock();
     }

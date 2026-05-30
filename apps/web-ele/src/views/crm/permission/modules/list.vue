@@ -100,9 +100,7 @@ async function handleDelete() {
     return;
   }
   try {
-    await confirm({
-      content: `你要将${checkedRows.value.map((item) => item.nickname).join(',')}移出团队吗？`,
-    });
+    await confirm(`你要将${checkedRows.value.map((item) => item.nickname).join(',')}移出团队吗？`);
   } catch {
     return false;
   }

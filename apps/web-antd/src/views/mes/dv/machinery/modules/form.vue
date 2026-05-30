@@ -6,13 +6,13 @@ import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createMachinery, getMachinery, updateMachinery } from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useFormSchema } from '../data';
@@ -46,9 +46,6 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formType.value, formApi) });
 
 /** 查看设备条码 */
 function handleBarcode() {
@@ -91,7 +88,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
     subTabsName.value = 'check';
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();

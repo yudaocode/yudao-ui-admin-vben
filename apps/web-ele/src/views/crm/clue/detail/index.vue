@@ -85,9 +85,7 @@ function handleTransfer() {
 /** 转化为客户 */
 async function handleTransform(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: '确定将该线索转化为客户吗？',
-    });
+    await confirm('确定将该线索转化为客户吗？');
   } catch {
     return false;
   }

@@ -285,7 +285,7 @@ function handleEditPoint(row: IotDeviceModbusPointApi.ModbusPoint) {
 
 /** 删除点位 */
 async function handleDeletePoint(row: IotDeviceModbusPointApi.ModbusPoint) {
-  await confirm({ content: `确定要删除点位【${row.name}】吗？` });
+  await confirm(`确定要删除点位【${row.name}】吗？`);
   await deleteModbusPoint(row.id!);
   message.success('删除成功');
   await gridApi.query();

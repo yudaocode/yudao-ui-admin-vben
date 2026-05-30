@@ -1,13 +1,8 @@
 <!-- JSON参数输入组件 - 通用版本 -->
 <script setup lang="ts">
-import type { JsonParamsInputType } from '#/views/iot/utils/constants';
+import type { JsonParamsInputType } from '@vben/constants';
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-
-import { IconifyIcon } from '@vben/icons';
-
-import { useVModel } from '@vueuse/core';
-import { Button, Input, Popover, Tag } from 'antdv-next';
 
 import {
   IoTDataSpecsDataTypeEnum,
@@ -15,7 +10,11 @@ import {
   JSON_PARAMS_INPUT_CONSTANTS,
   JSON_PARAMS_INPUT_ICONS,
   JsonParamsInputTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Input, Popover, Tag } from 'antdv-next';
 
 /** JSON参数输入组件 - 通用版本 */
 defineOptions({ name: 'JsonParamsInput' });

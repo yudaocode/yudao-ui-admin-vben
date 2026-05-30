@@ -2,16 +2,15 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvSubjectApi } from '#/api/mes/dv/subject';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode, MesDvSubjectTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode, MesDvSubjectTypeEnum } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -41,12 +40,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.DV_SUBJECT_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_SUBJECT_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

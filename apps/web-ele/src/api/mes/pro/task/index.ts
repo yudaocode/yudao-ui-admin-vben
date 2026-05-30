@@ -48,6 +48,8 @@ export namespace MesProTaskApi {
     name?: string;
     workOrderId?: number;
     workstationId?: number;
+    routeId?: number;
+    processId?: number;
     itemId?: number;
     statuses?: number[];
     status?: number;
@@ -65,4 +67,29 @@ export function getTaskPage(params: MesProTaskApi.PageParams) {
 /** 查询生产任务详情 */
 export function getTask(id: number) {
   return requestClient.get<MesProTaskApi.Task>(`/mes/pro/task/get?id=${id}`);
+}
+
+/** 新增生产任务 */
+export function createTask(data: MesProTaskApi.Task) {
+  return requestClient.post('/mes/pro/task/create', data);
+}
+
+/** 修改生产任务 */
+export function updateTask(data: MesProTaskApi.Task) {
+  return requestClient.put('/mes/pro/task/update', data);
+}
+
+/** 删除生产任务 */
+export function deleteTask(id: number) {
+  return requestClient.delete(`/mes/pro/task/delete?id=${id}`);
+}
+
+/** 导出生产任务 */
+export function exportTask(params: any) {
+  return requestClient.download('/mes/pro/task/export-excel', { params });
+}
+
+/** 查询甘特图任务列表（非分页） */
+export function getGanttTaskList(params: any) {
+  return requestClient.get<any[]>('/mes/pro/task/gantt-list', { params });
 }

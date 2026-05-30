@@ -12,7 +12,7 @@ import {
 } from '#/api/mes/pro/workrecord';
 import { $t } from '#/locales';
 
-import WorkRecordStatusBar from './components/work-record-status-bar.vue';
+import { WorkRecordStatusBar } from './components';
 import { useGridColumns, useGridFormSchema } from './data';
 
 /** 刷新表格 */

@@ -4,13 +4,13 @@ import type { IoTOtaFirmware } from '#/api/iot/ota/firmware';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { IoTOtaTaskRecordStatusEnum } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
 import { Card, Col, Descriptions, Row } from 'antdv-next';
 
 import { getOtaFirmware } from '#/api/iot/ota/firmware';
 import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
-import { IoTOtaTaskRecordStatusEnum } from '#/views/iot/utils/constants';
 
 import OtaTaskList from '../task/ota-task-list.vue';
 

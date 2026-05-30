@@ -5,9 +5,9 @@ import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { h } from 'vue';
+import { DICT_TYPE, h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -18,7 +18,6 @@ import {
   MdItemSelect,
   MdProductBomSelect,
 } from '#/views/mes/md/item/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { RouteColorPicker } from './components';
 
@@ -48,14 +47,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.PRO_ROUTE_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(
+                MesAutoCodeRuleCode.PRO_ROUTE_CODE,
+              );
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

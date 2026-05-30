@@ -38,9 +38,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
-
 async function resetSkuForm(item?: WmsItemApi.Item) {
   await nextTick();
   await skuFormRef.value?.setRows(item?.skus);
@@ -77,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     await resetSkuForm();
     // 加载数据
     const data = modalApi.getData<WmsItemApi.Item>();

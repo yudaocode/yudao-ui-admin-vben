@@ -43,9 +43,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (isDetail.value) {
@@ -74,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;

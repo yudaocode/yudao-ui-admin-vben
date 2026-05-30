@@ -59,9 +59,7 @@ async function handleStatusChange(
   // 二次确认
   const text = row.status === 0 ? '启用' : '停用';
   try {
-    await confirm({
-      content: `确认要${text + row.name}吗?`,
-    });
+    await confirm(`确认要${text + row.name}吗?`);
   } catch {
     return false;
   }

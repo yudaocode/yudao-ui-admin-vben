@@ -3,16 +3,16 @@ import type { Trigger } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Col, Row, Select } from 'antdv-next';
-
 import {
   getTriggerTypeLabel,
   IoTDeviceStatusEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerTypeEnum,
   triggerTypeOptions,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Row, Select } from 'antdv-next';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';

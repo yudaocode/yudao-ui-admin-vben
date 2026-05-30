@@ -6,6 +6,10 @@ import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import {
+  MesAutoCodeRuleCode,
+  MesProFeedbackStatusEnum,
+} from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { Button, message, Popconfirm, Tabs } from 'ant-design-vue';
@@ -22,10 +26,6 @@ import {
 } from '#/api/mes/pro/feedback';
 import { getRouteProcessByRouteAndProcess } from '#/api/mes/pro/route/process';
 import { $t } from '#/locales';
-import {
-  MesAutoCodeRuleCode,
-  MesProFeedbackStatusEnum,
-} from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import ItemConsumeList from './item-consume-list.vue';
@@ -81,9 +81,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   wrapperClass: 'grid-cols-3',
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formType.value, formApi) });
 
 /** 提交前对齐数量：根据 checkFlag 决定 uncheck/合格/不良归零策略 */
 function alignQuantity(data: MesProFeedbackApi.Feedback) {
@@ -239,7 +236,6 @@ const [Modal, modalApi] = useVbenModal({
       showConfirmButton:
         formType.value !== 'detail' && formType.value !== 'approve',
     });
-    await formApi.resetForm();
     if (!data?.id) {
       // 新增：默认报工人和报工时间，并自动生成报工单号
       const code = await generateAutoCode(

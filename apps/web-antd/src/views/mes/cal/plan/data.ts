@@ -4,19 +4,13 @@ import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesCalPlanStatusEnum, MesCalShiftMethodEnum, MesCalShiftTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
-import {
-  MesAutoCodeRuleCode,
-  MesCalPlanStatusEnum,
-  MesCalShiftMethodEnum,
-  MesCalShiftTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -55,12 +49,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_PLAN_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_PLAN_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

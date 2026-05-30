@@ -39,9 +39,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -66,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     const data = modalApi.getData<WmsItemBrandApi.ItemBrand>();
     if (!data || !data.id) {
       return;

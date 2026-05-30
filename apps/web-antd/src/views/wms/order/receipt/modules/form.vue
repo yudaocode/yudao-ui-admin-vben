@@ -9,6 +9,10 @@ import type { WmsReceiptOrderDetailApi } from '#/api/wms/order/receipt/detail';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import {
+  OrderStatusEnum,
+  OrderUpdateStatusList,
+} from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { InputNumber, message } from 'ant-design-vue';
@@ -25,10 +29,6 @@ import {
 } from '#/api/wms/order/receipt';
 import { $t } from '#/locales';
 import { WmsItemSkuSelect } from '#/views/wms/md/item/sku/components';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '#/views/wms/utils/constants';
 import {
   dividePrice,
   multiplyPrice,
@@ -317,7 +317,6 @@ const [Modal, modalApi] = useVbenModal({
       setDetails([]);
       return;
     }
-    await formApi.resetForm();
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     if (data?.id) {

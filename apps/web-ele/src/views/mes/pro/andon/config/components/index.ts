@@ -1,1 +1,1 @@
-export { default as AndonConfigSelect } from './andon-config-select.vue';
+export { default as AndonConfigSelect } from './select.vue';

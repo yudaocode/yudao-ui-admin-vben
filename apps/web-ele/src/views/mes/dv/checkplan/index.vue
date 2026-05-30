@@ -4,6 +4,7 @@ import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 import type { ActionItem } from '#/components/table-action/typing';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -17,7 +18,6 @@ import {
   getCheckPlanPage,
 } from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
-import { MesDvCheckPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

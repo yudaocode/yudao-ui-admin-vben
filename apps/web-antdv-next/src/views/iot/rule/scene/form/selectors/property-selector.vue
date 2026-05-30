@@ -9,12 +9,6 @@ import type {
 
 import { computed, ref, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
-
-import { useVModel } from '@vueuse/core';
-import { Button, Popover, Select, Tag } from 'antdv-next';
-
-import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 import {
   getAccessModeLabel,
   getDataTypeName,
@@ -24,7 +18,13 @@ import {
   IotRuleSceneTriggerTypeEnum,
   IoTThingModelTypeEnum,
   THING_MODEL_GROUP_LABELS,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Popover, Select, Tag } from 'antdv-next';
+
+import { getThingModelListByProductId } from '#/api/iot/thingmodel';
 
 /** 属性选择器组件 */
 defineOptions({ name: 'PropertySelector' });

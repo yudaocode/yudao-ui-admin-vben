@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { DatePicker, Input, Select, Tag, Tooltip } from 'antdv-next';
-
 import {
   IoTDataSpecsDataTypeEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { DatePicker, Input, Select, Tag, Tooltip } from 'antdv-next';
 
 /** 值输入组件 */
 defineOptions({ name: 'ValueInput' });

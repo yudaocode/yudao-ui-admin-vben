@@ -4,11 +4,12 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { DeviceStateEnum } from '@vben/constants';
+
 import { Card, Empty, Spin } from 'antdv-next';
 
 import { getDeviceLocationList } from '#/api/iot/device/device';
 import { loadBaiduMapSdk } from '#/components/map';
-import { DeviceStateEnum } from '#/views/iot/utils/constants';
 
 defineOptions({ name: 'DeviceMapCard' });
 

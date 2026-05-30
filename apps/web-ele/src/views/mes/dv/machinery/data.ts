@@ -4,7 +4,7 @@ import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesDvMachineryStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -12,7 +12,6 @@ import { ElButton } from 'element-plus';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { MdWorkshopSelect } from '#/views/mes/md/workstation/components';
-import { MesAutoCodeRuleCode, MesDvMachineryStatusEnum } from '#/views/mes/utils/constants';
 
 import { DvMachineryTypeSelect } from './type/components';
 
@@ -48,12 +47,8 @@ export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFo
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },

@@ -6,13 +6,13 @@ import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesCalPlanStatusEnum } from '@vben/constants';
 
 import { ElButton, ElMessage, ElPopconfirm, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { confirmPlan, createPlan, getPlan, updatePlan } from '#/api/mes/cal/plan';
 import { $t } from '#/locales';
-import { MesCalPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import ShiftList from './shift-list.vue';
@@ -49,9 +49,6 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
 
 /** 确认排班计划 */
 async function handleConfirmPlan() {
@@ -107,7 +104,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     subTabsName.value = 'shift';
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();

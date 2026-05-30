@@ -1,16 +1,10 @@
-import type { useEcharts } from '@vben/plugins/echarts';
+import type { EChartsOption } from '@vben/plugins/echarts';
 
 import type { WmsHomeStatisticsApi } from '#/api/wms/home';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, OrderTypeEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
-
-import { OrderTypeEnum } from '#/views/wms/utils/constants';
-
-type WmsHomeChartOption = Parameters<
-  ReturnType<typeof useEcharts>['renderEcharts']
->[0];
 
 interface OrderDefinition {
   color: string;
@@ -72,7 +66,7 @@ function formatTrendTime(time: number | string) {
 /** 单据趋势图表配置 */
 export function getOrderTrendChartOptions(
   list: WmsHomeStatisticsApi.OrderTrend[],
-): WmsHomeChartOption {
+): EChartsOption {
   const labels = list.map((item) => formatTrendTime(item.time));
   return {
     color: orderDefinitions.map((item) => item.color),

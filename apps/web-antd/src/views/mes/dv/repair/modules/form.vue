@@ -6,6 +6,7 @@ import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '@vben/constants';
 
 import { Button, message, Popconfirm } from 'ant-design-vue';
 
@@ -19,7 +20,6 @@ import {
   updateRepair,
 } from '#/api/mes/dv/repair';
 import { $t } from '#/locales';
-import { MesDvRepairResultEnum, MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import LineList from './line-list.vue';
@@ -56,9 +56,6 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
 
 /** 提交维修工单 */
 async function handleSubmit() {
@@ -164,7 +161,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
+    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;

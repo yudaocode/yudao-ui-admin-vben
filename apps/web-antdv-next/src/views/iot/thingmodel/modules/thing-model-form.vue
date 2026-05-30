@@ -6,7 +6,7 @@ import type { Ref } from 'vue';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { inject, ref } from 'vue';
+import { inject, IOT_PROVIDE_KEY, IoTDataSpecsDataTypeEnum, IoTThingModelTypeEnum, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -20,11 +20,6 @@ import {
   getThingModel,
   updateThingModel,
 } from '#/api/iot/thingmodel';
-import {
-  IOT_PROVIDE_KEY,
-  IoTDataSpecsDataTypeEnum,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ThingModelEvent from './thing-model-event.vue';
 import ThingModelProperty from './thing-model-property.vue';

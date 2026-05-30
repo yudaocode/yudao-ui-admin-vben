@@ -10,6 +10,10 @@ import type { InventorySelectRow } from '#/views/wms/inventory/components/invent
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import {
+  OrderStatusEnum,
+  OrderUpdateStatusList,
+} from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { ElInputNumber, ElMessage } from 'element-plus';
@@ -26,10 +30,6 @@ import {
 } from '#/api/wms/order/shipment';
 import { $t } from '#/locales';
 import { WmsInventorySelect } from '#/views/wms/inventory/components';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '#/views/wms/utils/constants';
 import {
   dividePrice,
   formatQuantity,
@@ -360,7 +360,6 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     initializing.value = true;
-    await formApi.resetForm();
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     if (data?.id) {

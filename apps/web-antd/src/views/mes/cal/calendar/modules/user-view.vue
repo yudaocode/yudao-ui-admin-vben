@@ -9,8 +9,7 @@ import { Button, Form, FormItem, Select } from 'ant-design-vue';
 
 import { getSimpleUserList } from '#/api/system/user';
 
-import CalendarPanel from '../components/calendar-panel.vue';
-import { useCalendar } from '../components/use-calendar';
+import { CalendarPanel, useCalendar } from '../components';
 
 const {
   calendarDayMap,

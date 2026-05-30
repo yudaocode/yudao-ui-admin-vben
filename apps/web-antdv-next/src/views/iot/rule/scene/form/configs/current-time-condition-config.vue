@@ -4,12 +4,11 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
 
+import { IotRuleSceneTriggerTimeOperatorEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Col, DatePicker, Row, Select, Tag, TimePicker } from 'antdv-next';
-
-import { IotRuleSceneTriggerTimeOperatorEnum } from '#/views/iot/utils/constants';
 
 /** 当前时间条件配置组件 */
 defineOptions({ name: 'CurrentTimeConditionConfig' });

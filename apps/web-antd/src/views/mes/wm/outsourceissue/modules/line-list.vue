@@ -1,0 +1,222 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MesWmOutsourceIssueDetailApi } from '#/api/mes/wm/outsourceissue/detail';
+import type { MesWmOutsourceIssueLineApi } from '#/api/mes/wm/outsourceissue/line';
+
+import { computed, reactive } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+
+import { message } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getOutsourceIssueDetailListByLineId } from '#/api/mes/wm/outsourceissue/detail';
+import {
+  deleteOutsourceIssueLine,
+  getOutsourceIssueLinePage,
+} from '#/api/mes/wm/outsourceissue/line';
+import { $t } from '#/locales';
+
+import { type FormType, useLineGridColumns } from '../data';
+import DetailForm from './detail-form.vue';
+import DetailList from './detail-list.vue';
+import LineForm from './line-form.vue';
+
+const props = defineProps<{
+  formType: FormType;
+  issueId: number;
+}>();
+
+const isEditable = computed(() => // 是否可编辑明细行
+  ['create', 'update'].includes(props.formType),
+);
+const isStock = computed(() => props.formType === 'stock'); // 是否为拣货模式
+const detailMap = reactive<
+  Record<number, MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[]>
+>({}); // 已展开行的发料明细缓存
+
+const [LineFormModal, lineFormModalApi] = useVbenModal({
+  connectedComponent: LineForm,
+  destroyOnClose: true,
+});
+
+const [DetailFormModal, detailFormModalApi] = useVbenModal({
+  connectedComponent: DetailForm,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function handleRefresh() {
+  for (const id of Object.keys(detailMap)) {
+    delete detailMap[Number(id)];
+  }
+  gridApi.query();
+}
+
+/** 添加物料 */
+function handleCreate() {
+  lineFormModalApi.setData({ issueId: props.issueId }).open();
+}
+
+/** 编辑物料 */
+function handleEdit(row: MesWmOutsourceIssueLineApi.OutsourceIssueLine) {
+  lineFormModalApi.setData({ id: row.id, issueId: props.issueId }).open();
+}
+
+/** 删除物料 */
+async function handleDelete(
+  row: MesWmOutsourceIssueLineApi.OutsourceIssueLine,
+) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.itemName]),
+    duration: 0,
+  });
+  try {
+    await deleteOutsourceIssueLine(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.itemName]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 拣货：直接打开明细创建表单 */
+function handlePicking(row: MesWmOutsourceIssueLineApi.OutsourceIssueLine) {
+  openDetailForm(row.id!, row.itemId);
+}
+
+/** 打开发料明细表单 */
+function openDetailForm(lineId: number, itemId?: number, detailId?: number) {
+  detailFormModalApi
+    .setData({ detailId, issueId: props.issueId, itemId, lineId })
+    .open();
+}
+
+/** 获取已展开行的发料明细 */
+function getExpandedDetails(row: MesWmOutsourceIssueLineApi.OutsourceIssueLine) {
+  return detailMap[row.id!] || [];
+}
+
+/** 加载指定行的发料明细 */
+async function loadLineDetails(lineId: number) {
+  detailMap[lineId] = await getOutsourceIssueDetailListByLineId(lineId);
+}
+
+/** 展开行时懒加载发料明细 */
+async function handleExpandChange(
+  row: MesWmOutsourceIssueLineApi.OutsourceIssueLine,
+  expanded: boolean,
+) {
+  if (!expanded) {
+    return;
+  }
+  await loadLineDetails(row.id!);
+}
+
+/** 明细表单提交成功后，刷新对应行已展开的明细 */
+async function handleDetailSuccess(lineId: number) {
+  await loadLineDetails(lineId);
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useLineGridColumns(isEditable.value, isStock.value),
+    expandConfig: {
+      padding: true,
+    },
+    height: 400,
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }) => {
+          if (!props.issueId) {
+            return { list: [], total: 0 };
+          }
+          return await getOutsourceIssueLinePage({
+            issueId: props.issueId,
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<MesWmOutsourceIssueLineApi.OutsourceIssueLine>,
+  gridEvents: {
+    toggleRowExpand: ({
+      expanded,
+      row,
+    }: {
+      expanded: boolean;
+      row: MesWmOutsourceIssueLineApi.OutsourceIssueLine;
+    }) => {
+      handleExpandChange(row, expanded);
+    },
+  },
+});
+</script>
+
+<template>
+  <div>
+    <LineFormModal @success="handleRefresh" />
+    <DetailFormModal @success="handleDetailSuccess" />
+    <Grid table-title="物料信息">
+      <template v-if="isEditable" #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '添加物料',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #detail="{ row }">
+        <DetailList
+          :details="getExpandedDetails(row)"
+          :form-type="formType"
+          @edit="(detailId) => openDetailForm(row.id!, row.itemId, detailId)"
+          @refresh="loadLineDetails(row.id!)"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              ifShow: isEditable,
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: isEditable,
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.itemName]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+            {
+              label: '拣货',
+              type: 'link',
+              ifShow: isStock,
+              onClick: handlePicking.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </div>
+</template>

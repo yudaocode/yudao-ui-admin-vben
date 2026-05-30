@@ -3,15 +3,14 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, nextTick } from 'vue';
 
+import {
+  IotRuleSceneTriggerConditionParameterOperatorEnum,
+  IotRuleSceneTriggerConditionTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
 import { Button } from 'antdv-next';
-
-import {
-  IotRuleSceneTriggerConditionParameterOperatorEnum,
-  IotRuleSceneTriggerConditionTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import ConditionConfig from './condition-config.vue';
 

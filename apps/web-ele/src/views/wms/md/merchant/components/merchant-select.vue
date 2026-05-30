@@ -3,13 +3,14 @@ import type { WmsMerchantApi } from '#/api/wms/md/merchant';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { ElOption, ElSelect } from 'element-plus';
-
-import { getMerchantSimpleList } from '#/api/wms/md/merchant';
 import {
   CustomerMerchantTypeList,
   SupplierMerchantTypeList,
-} from '#/views/wms/utils/constants';
+} from '@vben/constants';
+
+import { ElOption, ElSelect } from 'element-plus';
+
+import { getMerchantSimpleList } from '#/api/wms/md/merchant';
 
 defineOptions({ name: 'WmsMerchantSelect', inheritAttrs: false });
 

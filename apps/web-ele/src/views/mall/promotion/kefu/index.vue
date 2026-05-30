@@ -4,6 +4,7 @@ import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversa
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { WebSocketMessageTypeConstants } from '@vben/constants';
 import { useAccessStore } from '@vben/stores';
 
 import { useWebSocket } from '@vueuse/core';
@@ -14,7 +15,6 @@ import { useMallKefuStore } from '#/store/mall/kefu';
 import ConversationList from './modules/conversation-list.vue';
 import MemberInfo from './modules/member/member-info.vue';
 import MessageList from './modules/message-list.vue';
-import { WebSocketMessageTypeConstants } from './modules/tools/constants';
 
 const accessStore = useAccessStore();
 const kefuStore = useMallKefuStore(); // 客服缓存

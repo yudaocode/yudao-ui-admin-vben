@@ -4,7 +4,7 @@ import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -13,7 +13,6 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
-import { MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '#/views/mes/utils/constants';
 /** 表单类型 */
 export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
 
@@ -55,12 +54,8 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(MesAutoCodeRuleCode.DV_REPAIR_CODE);
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_REPAIR_CODE);
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },
