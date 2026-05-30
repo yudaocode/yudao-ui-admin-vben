@@ -87,6 +87,7 @@ export function useFormSchema(
       label: '出库单编号',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入出库单编号',
       },
       rules: 'required',
@@ -111,6 +112,7 @@ export function useFormSchema(
       label: '出库单名称',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入出库单名称',
       },
       rules: 'required',
@@ -120,6 +122,7 @@ export function useFormSchema(
       label: '发货通知单',
       component: markRaw(WmSalesNoticeSelect),
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         // 选择发货通知单后，自动回填销售订单号、客户、收货人信息
         onChange: async (notice?: MesWmSalesNoticeApi.SalesNotice) => {
           await formApi?.setValues({
@@ -138,6 +141,7 @@ export function useFormSchema(
       label: '销售订单编号',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入销售订单编号',
       },
     },
@@ -147,6 +151,7 @@ export function useFormSchema(
       component: 'DatePicker',
       componentProps: {
         class: '!w-full',
+        disabled: isHeaderReadonly(formType),
         format: 'YYYY-MM-DD',
         placeholder: '请选择出库日期',
         type: 'date',
@@ -159,6 +164,7 @@ export function useFormSchema(
       label: '客户',
       component: markRaw(MdClientSelect),
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请选择客户',
       },
       rules: 'selectRequired',
@@ -168,6 +174,7 @@ export function useFormSchema(
       label: '收货人',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入收货人',
       },
     },
@@ -176,6 +183,7 @@ export function useFormSchema(
       label: '联系方式',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入联系方式',
       },
     },
@@ -184,6 +192,7 @@ export function useFormSchema(
       label: '收货地址',
       component: 'Input',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入收货地址',
       },
     },
@@ -193,6 +202,7 @@ export function useFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-3',
       componentProps: {
+        disabled: isHeaderReadonly(formType),
         placeholder: '请输入备注',
         rows: 3,
       },

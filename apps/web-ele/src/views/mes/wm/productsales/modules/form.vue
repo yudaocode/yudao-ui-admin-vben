@@ -203,7 +203,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
-    formApi.setDisabled(!isEditable.value && !isShipping.value);
+    formApi.setDisabled(false);
     modalApi.setState({ showConfirmButton: isEditable.value });
     if (data?.id) {
       modalApi.lock();

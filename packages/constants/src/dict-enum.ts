@@ -245,6 +245,8 @@ const MES_DICT = {
   MES_WM_STOCK_TAKING_TASK_STATUS: 'mes_wm_stock_taking_task_status', // MES 盘点任务状态
   MES_WM_STOCK_TAKING_LINE_STATUS: 'mes_wm_stock_taking_task_line_status', // MES 盘点任务行状态
   MES_WM_STOCK_TAKING_PLAN_PARAM_TYPE: 'mes_wm_stock_taking_plan_param_type', // MES 盘点方案参数类型
+  MES_WM_TRANSFER_STATUS: 'mes_wm_transfer_status', // MES 转移单状态
+  MES_WM_TRANSFER_TYPE: 'mes_wm_transfer_type', // MES 转移单类型
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

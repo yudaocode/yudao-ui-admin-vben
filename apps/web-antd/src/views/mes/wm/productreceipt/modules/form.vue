@@ -91,9 +91,14 @@ async function handleSubmit() {
   }
 }
 
-/** 执行上架：明细数量与行收货数量不一致时二次确认 */
+/** 执行上架：先确认，再在明细数量与行收货数量不一致时二次确认 */
 async function handleStock() {
   if (!formData.value?.id) {
+    return;
+  }
+  try {
+    await confirm('确认执行上架？');
+  } catch {
     return;
   }
   const quantityMatch = await checkProductReceiptQuantity(formData.value.id);

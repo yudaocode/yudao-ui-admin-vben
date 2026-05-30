@@ -168,6 +168,7 @@ export const MesAutoCodeRuleCode = {
   WM_STOCK_TAKING_CODE: 'WM_STOCK_TAKING_CODE',
   WM_STOCK_TAKING_PLAN_CODE: 'WM_STOCK_TAKING_PLAN_CODE',
   WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
+  TRANSFER_CODE: 'TRANSFER_CODE',
 } as const;
 
 /** MES 装箱单状态枚举 */
@@ -307,6 +308,22 @@ export const MesWmOutsourceReceiptStatusEnum = {
   APPROVED: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
   CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 转移单类型枚举 */
+export const MesWmTransferTypeEnum = {
+  INNER: 1, // 内部调拨
+  OUTER: 2, // 外部调拨
+} as const;
+
+/** MES 转移单状态枚举 */
+export const MesWmTransferStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT, // 草稿
+  UNCONFIRMED: MesOrderStatusConstants.CONFIRMED, // 待确认
+  APPROVING: MesOrderStatusConstants.APPROVING, // 待上架
+  APPROVED: MesOrderStatusConstants.APPROVED, // 待执行
+  FINISHED: MesOrderStatusConstants.FINISHED, // 已完成
+  CANCELED: MesOrderStatusConstants.CANCELLED, // 已取消
 } as const;
 
 /** MES 到货通知单状态枚举 */
