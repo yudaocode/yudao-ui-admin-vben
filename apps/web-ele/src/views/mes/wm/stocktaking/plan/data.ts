@@ -1,9 +1,11 @@
+import type { NumberDictDataType } from '@vben/hooks';
+
 import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmStockTakingPlanApi } from '#/api/mes/wm/stocktaking/plan';
 import type { MesWmStockTakingPlanParamApi } from '#/api/mes/wm/stocktaking/plan/param';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
 import {
   CommonStatusEnum,
@@ -17,6 +19,8 @@ import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
+
+import { StockTakingPlanConditionValueInput } from './components';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -290,6 +294,87 @@ export function useParamGridColumns(
           } as const,
         ]
       : []),
+  ];
+}
+
+/** 盘点方案条件表单 schema */
+export function useParamFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'type',
+      label: '条件类型',
+      component: 'Select',
+      componentProps: {
+        clearable: true,
+        options: getDictOptions(
+          DICT_TYPE.MES_WM_STOCK_TAKING_PLAN_PARAM_TYPE,
+          'number',
+        ) as NumberDictDataType[],
+        placeholder: '请选择条件类型',
+        // 条件类型变化：清空已选条件值，避免残留旧类型的条件值
+        onChange: async () => {
+          await formApi?.setValues({
+            valueCode: '',
+            valueId: undefined,
+            valueName: '',
+          });
+        },
+      },
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'valueId',
+      label: '条件值',
+      component: markRaw(StockTakingPlanConditionValueInput),
+      // 条件值控件内部按条件类型切换选择器，仅选择类型后展示
+      dependencies: {
+        triggerFields: ['type'],
+        if: (values) => values.type != null,
+        componentProps: (values) => ({
+          type: values.type,
+          valueCode: values.valueCode,
+          // 条件值控件回填 valueId / valueCode / valueName
+          onValueChange: async (payload: {
+            valueCode?: string;
+            valueId?: number;
+            valueName?: string;
+          }) => {
+            await formApi?.setValues({
+              valueCode: payload.valueCode ?? '',
+              valueId: payload.valueId,
+              valueName: payload.valueName ?? '',
+            });
+          },
+        }),
+      },
+    },
+    {
+      // 条件值编码：由条件值控件回写，隐藏字段
+      fieldName: 'valueCode',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      // 条件值名称：由条件值控件回写，隐藏字段
+      fieldName: 'valueName',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 3,
+      },
+    },
   ];
 }
 
