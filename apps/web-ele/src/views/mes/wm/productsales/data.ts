@@ -17,8 +17,8 @@ import { ElButton } from 'element-plus';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmSalesNoticeLineSelect,

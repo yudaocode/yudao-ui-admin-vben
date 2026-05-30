@@ -10,7 +10,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
+import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];

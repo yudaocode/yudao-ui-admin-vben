@@ -13,9 +13,9 @@ import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdUnitMeasureSelect from '#/views/mes/md/unitmeasure/components/md-unit-measure-select.vue';
-import QcIndicatorSelect from '#/views/mes/qc/indicator/components/qc-indicator-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
+import { QcIndicatorSelect } from '#/views/mes/qc/indicator/components';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

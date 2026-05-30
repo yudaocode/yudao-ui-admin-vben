@@ -9,7 +9,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
 import { MdItemSelect } from '#/views/mes/md/item/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';

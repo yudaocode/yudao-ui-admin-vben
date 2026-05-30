@@ -1,2 +1,2 @@
-export { default as QcIndicatorSelectDialog } from './qc-indicator-select-dialog.vue';
-export { default as QcIndicatorSelect } from './qc-indicator-select.vue';
+export { default as QcIndicatorSelectDialog } from './select-dialog.vue';
+export { default as QcIndicatorSelect } from './select.vue';

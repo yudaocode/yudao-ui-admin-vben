@@ -7,7 +7,7 @@ import { Badge, Button, message } from 'ant-design-vue';
 
 import { getGanttTaskList, updateTask } from '#/api/mes/pro/task';
 
-import GanttChart from '../components/gantt-chart.vue';
+import { GanttChart } from '../components';
 
 const submitting = ref(false); // 批量保存按钮加载态
 const taskList = ref<any[]>([]); // 甘特图任务数据

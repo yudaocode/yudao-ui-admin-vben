@@ -13,9 +13,9 @@ import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
 import { MdItemSelect, MdProductBomSelect } from '#/views/mes/md/item/components';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 
 /** 表单类型 */
 export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';

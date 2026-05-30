@@ -1,2 +1,2 @@
-export { default as DefectRecordInlineForm } from './defect-record-inline-form.vue';
-export { default as DefectRecordInlineList } from './defect-record-inline-list.vue';
+export { default as DefectRecordInlineForm } from './inline-form.vue';
+export { default as DefectRecordInlineList } from './inline-list.vue';

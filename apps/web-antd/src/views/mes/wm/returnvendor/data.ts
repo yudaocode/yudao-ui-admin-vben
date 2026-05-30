@@ -12,8 +12,8 @@ import { DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {

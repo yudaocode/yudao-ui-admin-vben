@@ -11,9 +11,9 @@ import { formatDate } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProTaskSelect } from '#/views/mes/pro/task/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';

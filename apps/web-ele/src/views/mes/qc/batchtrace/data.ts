@@ -5,9 +5,9 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { markRaw } from 'vue';
 
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

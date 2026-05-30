@@ -7,7 +7,7 @@ import { markRaw } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

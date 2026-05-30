@@ -12,10 +12,10 @@ import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
-import ProTaskSelect from '#/views/mes/pro/task/components/pro-task-select.vue';
-import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
+import { ProTaskSelect } from '#/views/mes/pro/task/components';
+import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

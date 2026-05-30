@@ -14,7 +14,7 @@ import {
 } from '#/api/mes/wm/packages';
 import { $t } from '#/locales';
 
-import WmPackageSelectDialog from '../components/wm-package-select-dialog.vue';
+import { WmPackageSelectDialog } from '../components';
 import { useSubPackageGridColumns } from '../data';
 
 const props = defineProps<{

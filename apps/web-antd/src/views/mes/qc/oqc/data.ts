@@ -12,8 +12,8 @@ import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdClientSelect } from '#/views/mes/md/client/components';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

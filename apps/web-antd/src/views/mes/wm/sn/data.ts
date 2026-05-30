@@ -5,7 +5,7 @@ import type { MesWmSnApi } from '#/api/mes/wm/sn';
 import { markRaw } from 'vue';
 
 import { getRangePickerDefaultProps } from '#/utils';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 
 /** 生成 SN 码的表单 */
 export function useFormSchema(): VbenFormSchema[] {

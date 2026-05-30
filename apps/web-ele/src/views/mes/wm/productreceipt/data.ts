@@ -13,8 +13,8 @@ import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
 import {
   WmWarehouseAreaSelect,

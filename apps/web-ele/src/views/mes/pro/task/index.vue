@@ -17,7 +17,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getGanttTaskList } from '#/api/mes/pro/task';
 import { getWorkOrderPage } from '#/api/mes/pro/workorder';
 
-import GanttChart from './components/gantt-chart.vue';
+import { GanttChart } from './components';
 import { useGridColumns, useGridFormSchema } from './data';
 import ScheduleForm from './modules/schedule-form.vue';
 

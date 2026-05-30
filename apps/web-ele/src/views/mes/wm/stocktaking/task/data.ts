@@ -16,7 +16,7 @@ import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 import { StockTakingPlanSelect } from '#/views/mes/wm/stocktaking/plan/components';
 import {
   WmWarehouseAreaSelect,

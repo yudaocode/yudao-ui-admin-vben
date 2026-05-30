@@ -13,25 +13,27 @@ import { formatDateTime } from '@vben/utils';
 import { z } from '#/adapter/form';
 import { generateBarcodeContent } from '#/api/mes/wm/barcode';
 import { DictTag } from '#/components/dict-tag';
-import DvMachinerySelect from '#/views/mes/dv/machinery/components/dv-machinery-select.vue';
-import MdClientSelect from '#/views/mes/md/client/components/md-client-select.vue';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
-import MdWorkshopSelect from '#/views/mes/md/workstation/components/md-workshop-select.vue';
-import MdWorkstationSelect from '#/views/mes/md/workstation/components/md-workstation-select.vue';
+import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
+import { MdClientSelect } from '#/views/mes/md/client/components';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
+import {
+  MdWorkshopSelect,
+  MdWorkstationSelect,
+} from '#/views/mes/md/workstation/components';
 import { ProCardSelect } from '#/views/mes/pro/card/components';
-import ProWorkOrderSelect from '#/views/mes/pro/workorder/components/pro-work-order-select.vue';
-import TmToolSelect from '#/views/mes/tm/tool/components/tm-tool-select.vue';
+import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
+import { TmToolSelect } from '#/views/mes/tm/tool/components';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import { UserSelect } from '#/views/system/user/components';
 
-import WmMaterialStockSelect from './../materialstock/components/wm-material-stock-select.vue';
-import { WmPackageSelect } from './../packages/components';
+import { WmMaterialStockSelect } from '../materialstock/components';
+import { WmPackageSelect } from '../packages/components';
 import {
   WmWarehouseAreaSelect,
   WmWarehouseLocationSelect,
   WmWarehouseSelect,
-} from './../warehouse/components';
+} from '../warehouse/components';
 
 /** 业务对象选中后回填业务编码、业务名称、条码内容 */
 async function syncBizDetail(

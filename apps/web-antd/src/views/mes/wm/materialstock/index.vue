@@ -16,7 +16,7 @@ import {
   updateMaterialStockFrozen,
 } from '#/api/mes/wm/materialstock';
 import { $t } from '#/locales';
-import MdItemTypeTree from '#/views/mes/md/item/type/components/md-item-type-tree.vue';
+import { MdItemTypeTree } from '#/views/mes/md/item/type/components';
 import { WmBatchDetail } from '#/views/mes/wm/batch/components';
 import AreaForm from '#/views/mes/wm/warehouse/area/modules/form.vue';
 

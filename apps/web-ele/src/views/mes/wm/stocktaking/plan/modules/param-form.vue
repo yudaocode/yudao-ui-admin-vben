@@ -24,7 +24,7 @@ import {
 import { getWarehouseArea } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocation } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 import { WmBatchSelect } from '#/views/mes/wm/batch/components';
 import {
   WmWarehouseAreaSelect,

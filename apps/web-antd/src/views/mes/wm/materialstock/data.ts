@@ -6,8 +6,8 @@ import { markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
-import MdVendorSelect from '#/views/mes/md/vendor/components/md-vendor-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 
 import {
   WmWarehouseAreaSelect,

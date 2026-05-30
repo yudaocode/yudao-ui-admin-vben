@@ -12,7 +12,7 @@ import { ElButton } from 'element-plus';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getSimpleUserList } from '#/api/system/user';
-import MdItemSelect from '#/views/mes/md/item/components/md-item-select.vue';
+import { MdItemSelect } from '#/views/mes/md/item/components';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';

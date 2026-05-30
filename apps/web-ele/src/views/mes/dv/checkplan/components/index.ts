@@ -1,1 +1,1 @@
-export { default as DvCheckPlanSelect } from './dv-check-plan-select.vue';
+export { default as DvCheckPlanSelect } from './select.vue';
