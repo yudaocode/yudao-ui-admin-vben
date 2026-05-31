@@ -41,18 +41,21 @@ export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFo
         componentProps: (values) => ({ disabled: !!values.id }),
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

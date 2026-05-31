@@ -16,7 +16,10 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改客户的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -34,19 +37,22 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入客户编码',
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.MD_CLIENT_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '自动生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_CLIENT_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '自动生成' },
+              ),
     },
     {
       fieldName: 'name',

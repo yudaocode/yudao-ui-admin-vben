@@ -19,10 +19,22 @@ import { TmToolTypeSelect } from './type/components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改工具的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      // 选中工具类型是否「编码管理」，用于锁定库存数量为 1（隐藏字段）
+      fieldName: 'codeFlag',
       component: 'Input',
       dependencies: {
         triggerFields: [''],
@@ -41,17 +53,20 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         componentProps: (values) => ({ disabled: !!values.id }),
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -69,7 +84,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择工具类型',
         onChange: async (row: any) => {
-          if (row?.codeFlag) {
+          // 记录是否编码管理；编码管理类型库存数量锁定为 1
+          await formApi?.setFieldValue('codeFlag', row?.codeFlag === true);
+          if (row?.codeFlag === true) {
             await formApi?.setFieldValue('quantity', 1);
             await formApi?.setFieldValue('availableQuantity', 1);
           }
@@ -110,6 +127,13 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         precision: 0,
       },
       rules: 'required',
+      // 编码管理类型库存数量锁定为 1，禁止修改
+      dependencies: {
+        triggerFields: ['codeFlag'],
+        componentProps: (values) => ({
+          disabled: values.codeFlag === true,
+        }),
+      },
     },
     {
       fieldName: 'availableQuantity',

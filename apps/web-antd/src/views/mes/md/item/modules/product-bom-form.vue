@@ -68,38 +68,54 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'bomItemCode',
       label: 'BOM 物料编码',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
     },
     {
       fieldName: 'bomItemName',
       label: 'BOM 物料名称',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
     },
     {
       fieldName: 'bomItemSpecification',
       label: '规格型号',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
     },
     {
       fieldName: 'unitMeasureName',
       label: '单位',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
     },
     {
       fieldName: 'quantity',
       label: '用量比例',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 0, precision: 4, step: 0.1 },
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 4,
+        step: 0.1,
+      },
       rules: z.number().default(1),
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { placeholder: '请输入备注', rows: 3 },
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 3,
+      },
     },
   ],
   showDefaultActions: false,

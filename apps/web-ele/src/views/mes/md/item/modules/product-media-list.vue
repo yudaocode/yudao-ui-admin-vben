@@ -78,7 +78,9 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'title',
       label: '标题',
       component: 'Input',
-      componentProps: { placeholder: '请输入标题' },
+      componentProps: {
+        placeholder: '请输入标题',
+      },
       rules: 'required',
     },
     {
@@ -97,7 +99,10 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'description',
       label: '内容说明',
       component: 'Textarea',
-      componentProps: { placeholder: '请输入详细描述', rows: 3 },
+      componentProps: {
+        placeholder: '请输入详细描述',
+        rows: 3,
+      },
     },
     {
       fieldName: 'processId',
@@ -108,13 +113,19 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'url',
       label: '图片',
       component: markRaw(ImageUpload),
-      componentProps: { maxNumber: 1, showDescription: false },
+      componentProps: {
+        maxNumber: 1,
+        showDescription: false,
+      },
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { placeholder: '请输入备注', rows: 3 },
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 3,
+      },
     },
   ],
   showDefaultActions: false,

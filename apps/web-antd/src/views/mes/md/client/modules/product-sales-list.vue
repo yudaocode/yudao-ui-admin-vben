@@ -14,9 +14,21 @@ const props = defineProps<{
 const [Grid] = useVbenVxeGrid({
   gridOptions: {
     columns: [
-      { field: 'code', title: '出库单编号', minWidth: 160 },
-      { field: 'name', title: '出库单名称', minWidth: 150 },
-      { field: 'salesOrderCode', title: '销售订单编号', minWidth: 140 },
+      {
+        field: 'code',
+        title: '出库单编号',
+        minWidth: 160,
+      },
+      {
+        field: 'name',
+        title: '出库单名称',
+        minWidth: 150,
+      },
+      {
+        field: 'salesOrderCode',
+        title: '销售订单编号',
+        minWidth: 140,
+      },
       {
         field: 'salesDate',
         title: '出库日期',

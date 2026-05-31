@@ -39,22 +39,22 @@ export namespace MesWmBatchApi {
 
   /** MES 批次分页查询参数 */
   export interface PageParams extends PageParam {
-    code?: string;
-    itemId?: number;
-    vendorId?: number;
-    clientId?: number;
-    workOrderId?: number;
-    taskId?: number;
-    workstationId?: number;
-    toolId?: number;
-    moldId?: number;
-    salesOrderCode?: string;
-    purchaseOrderCode?: string;
-    lotNumber?: string;
-    qualityStatus?: number;
-    produceDate?: string[];
-    expireDate?: string[];
-    receiptDate?: string[];
+    code?: string; // 批次号
+    itemId?: number; // 物料编号
+    vendorId?: number; // 供应商编号
+    clientId?: number; // 客户编号
+    workOrderId?: number; // 工单编号
+    taskId?: number; // 生产任务编号
+    workstationId?: number; // 工作站编号
+    toolId?: number; // 工具编号
+    moldId?: number; // 模具编号
+    salesOrderCode?: string; // 销售订单号
+    purchaseOrderCode?: string; // 采购订单号
+    lotNumber?: string; // 批号
+    qualityStatus?: number; // 质量状态
+    produceDate?: string[]; // 生产日期
+    expireDate?: string[]; // 过期日期
+    receiptDate?: string[]; // 入库日期
   }
 }
 

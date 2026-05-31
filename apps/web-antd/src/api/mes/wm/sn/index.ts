@@ -27,11 +27,11 @@ export namespace MesWmSnApi {
 
   /** MES SN 码分组分页查询参数 */
   export interface PageParams extends PageParam {
-    uuid?: string;
-    code?: string;
-    itemId?: number;
-    batchCode?: string;
-    createTime?: string[];
+    uuid?: string; // 分组 UUID
+    code?: string; // SN 码
+    itemId?: number; // 物料编号
+    batchCode?: string; // 批次号
+    createTime?: string[]; // 创建时间
   }
 }
 

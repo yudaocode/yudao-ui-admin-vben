@@ -22,7 +22,10 @@ import { MdWorkshopSelect } from './components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改工作站的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -40,20 +43,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入工作站编码',
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

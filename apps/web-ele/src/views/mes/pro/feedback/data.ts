@@ -326,7 +326,9 @@ export function useFormSchema(
       fieldName: 'itemCode',
       label: '产品编码',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -336,7 +338,9 @@ export function useFormSchema(
       fieldName: 'itemName',
       label: '产品名称',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -346,7 +350,9 @@ export function useFormSchema(
       fieldName: 'unitMeasureName',
       label: '单位',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -356,7 +362,9 @@ export function useFormSchema(
       fieldName: 'itemSpecification',
       label: '规格',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,

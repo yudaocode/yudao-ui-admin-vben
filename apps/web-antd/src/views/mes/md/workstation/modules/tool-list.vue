@@ -89,7 +89,10 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { placeholder: '请输入备注', rows: 3 },
+      componentProps: {
+        placeholder: '请输入备注',
+        rows: 3,
+      },
     },
   ],
   showDefaultActions: false,
@@ -100,10 +103,26 @@ const [Grid, gridApi] = useVbenVxeGrid({
     autoResize: true,
     border: true,
     columns: [
-      { field: 'toolTypeId', title: '工具类型编号', width: 140 },
-      { field: 'toolTypeName', title: '工具类型名称', minWidth: 160 },
-      { field: 'quantity', title: '数量', width: 100 },
-      { field: 'remark', title: '备注', minWidth: 160 },
+      {
+        field: 'toolTypeId',
+        title: '工具类型编号',
+        width: 140,
+      },
+      {
+        field: 'toolTypeName',
+        title: '工具类型名称',
+        minWidth: 160,
+      },
+      {
+        field: 'quantity',
+        title: '数量',
+        width: 100,
+      },
+      {
+        field: 'remark',
+        title: '备注',
+        minWidth: 160,
+      },
       {
         title: '操作',
         width: 130,

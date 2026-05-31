@@ -16,7 +16,10 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改班组的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -35,17 +38,20 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入班组编码',
       },
       rules: z.string().min(1, '班组编码不能为空').max(64),
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

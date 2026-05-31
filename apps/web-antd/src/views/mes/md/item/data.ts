@@ -19,7 +19,10 @@ import { MdUnitMeasureSelect } from '#/views/mes/md/unitmeasure/components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改物料产品的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -38,20 +41,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入物料编码',
       },
       rules: z.string().min(1, '物料编码不能为空').max(64),
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.MD_ITEM_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_ITEM_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

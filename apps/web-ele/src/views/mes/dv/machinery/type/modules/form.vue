@@ -64,9 +64,11 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData<MesDvMachineryTypeApi.MachineryType>();
+    formApi.setState({
+      schema: useFormSchema(data?.id ? 'update' : 'create', formApi),
+    });
     if (!data || !data.id) {
       formData.value = data || undefined;
       if (data) {
