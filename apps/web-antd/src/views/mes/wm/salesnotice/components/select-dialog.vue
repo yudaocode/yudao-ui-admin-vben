@@ -3,14 +3,16 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmSalesNoticeApi } from '#/api/mes/wm/salesnotice';
 
-import { nextTick, ref } from 'vue';
+import { markRaw, nextTick, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalesNoticePage } from '#/api/mes/wm/salesnotice';
+import { MdClientSelect } from '#/views/mes/md/client/components';
 
 const emit = defineEmits<{
   selected: [rows: MesWmSalesNoticeApi.SalesNotice[]];
@@ -23,8 +25,8 @@ const syncingSingleSelection = ref(false); // 是否同步单选勾选状态
 const selectedRows = ref<MesWmSalesNoticeApi.SalesNotice[]>([]); // 已选通知单列表
 const preSelectedIds = ref<number[]>([]); // 预选通知单编号列表
 
-/** 搜索表单 */
-function useSearchSchema(): VbenFormSchema[] {
+/** 搜索表单：未固定状态时展示状态下拉，固定状态时隐藏 */
+function useSearchSchema(hasFixedStatus: boolean): VbenFormSchema[] {
   return [
     {
       fieldName: 'code',
@@ -53,6 +55,31 @@ function useSearchSchema(): VbenFormSchema[] {
         placeholder: '请输入销售订单编号',
       },
     },
+    {
+      fieldName: 'clientId',
+      label: '客户',
+      component: markRaw(MdClientSelect),
+      componentProps: {
+        placeholder: '请选择客户',
+      },
+    },
+    ...(hasFixedStatus
+      ? []
+      : [
+          {
+            fieldName: 'status',
+            label: '单据状态',
+            component: 'Select',
+            componentProps: {
+              allowClear: true,
+              options: getDictOptions(
+                DICT_TYPE.MES_WM_SALES_NOTICE_STATUS,
+                'number',
+              ),
+              placeholder: '请选择单据状态',
+            },
+          } as VbenFormSchema,
+        ]),
   ];
 }
 
@@ -165,7 +192,7 @@ function applyPreSelection() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchSchema(),
+    schema: useSearchSchema(false),
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -182,8 +209,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getSalesNoticePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            status: fixedStatus.value,
             ...formValues,
+            // 固定状态优先，未固定时用搜索表单里的状态
+            status: fixedStatus.value ?? formValues.status,
           });
         },
       },
@@ -219,6 +247,10 @@ async function openModal(
   multiple.value = options?.multiple ?? false;
   fixedStatus.value = options?.status;
   preSelectedIds.value = selectedIds || [];
+  // 固定状态时隐藏状态搜索项，未固定时展示
+  gridApi.formApi.setState({
+    schema: useSearchSchema(fixedStatus.value != null),
+  });
   await nextTick();
   await resetQueryState();
   await gridApi.query();

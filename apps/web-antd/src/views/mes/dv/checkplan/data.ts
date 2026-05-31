@@ -245,3 +245,68 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckPlanApi.CheckPla
     },
   ];
 }
+
+/** 点检方案选择弹窗的搜索表单 */
+export function useCheckPlanSelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '计划编号',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入计划编号',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '计划名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入计划名称',
+      },
+    },
+  ];
+}
+
+/** 点检方案选择弹窗的字段 */
+export function useCheckPlanSelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesDvCheckPlanApi.CheckPlan>['columns'] {
+  return [
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
+    { field: 'code', title: '计划编码', minWidth: 180 },
+    { field: 'name', title: '计划名称', minWidth: 150 },
+    {
+      field: 'type',
+      title: '计划类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_SUBJECT_TYPE },
+      },
+    },
+    { field: 'startDate', title: '开始日期', width: 120, formatter: 'formatDate' },
+    { field: 'endDate', title: '结束日期', width: 120, formatter: 'formatDate' },
+    { field: 'cycleCount', title: '频率', width: 100 },
+    {
+      field: 'cycleType',
+      title: '周期类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_CYCLE_TYPE },
+      },
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_CHECK_PLAN_STATUS },
+      },
+    },
+  ];
+}

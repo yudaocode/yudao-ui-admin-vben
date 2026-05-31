@@ -1,52 +1,139 @@
 <script lang="ts" setup>
 import type { MesTmToolApi } from '#/api/mes/tm/tool';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref, useAttrs, watch } from 'vue';
 
-import { ElOption, ElSelect } from 'element-plus';
+import { CircleX, Search } from '@vben/icons';
 
-import { getToolSimpleList } from '#/api/mes/tm/tool';
+import { ElInput, ElTooltip } from 'element-plus';
 
-withDefaults(
+import { getTool } from '#/api/mes/tm/tool';
+
+import TmToolSelectDialog from './select-dialog.vue';
+
+defineOptions({ name: 'TmToolSelect', inheritAttrs: false });
+
+const props = withDefaults(
   defineProps<{
     clearable?: boolean;
     disabled?: boolean;
     modelValue?: number;
     placeholder?: string;
   }>(),
-  { clearable: true, disabled: false, modelValue: undefined, placeholder: '请选择工具' },
+  {
+    clearable: true,
+    disabled: false,
+    modelValue: undefined,
+    placeholder: '请选择工具',
+  },
 );
 const emit = defineEmits<{
-  change: [row?: MesTmToolApi.Tool];
-  'update:modelValue': [value?: number];
+  change: [item: MesTmToolApi.Tool | undefined];
+  'update:modelValue': [value: number | undefined];
 }>();
-const list = ref<MesTmToolApi.Tool[]>([]); // 工具列表
+const attrs = useAttrs(); // 透传属性
+const dialogRef = ref<InstanceType<typeof TmToolSelectDialog>>(); // 工具选择弹窗
+const hovering = ref(false); // 是否悬停
+const selectedItem = ref<MesTmToolApi.Tool>(); // 当前选中工具
 
-/** 加载工具列表 */
-async function getList() {
-  list.value = await getToolSimpleList();
+const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
+const showClear = computed(
+  () =>
+    props.clearable &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue != null,
+);
+
+/** 根据工具编号回显选择器 */
+async function resolveItemById(id: number | undefined) {
+  if (id == null) {
+    selectedItem.value = undefined;
+    return;
+  }
+  if (selectedItem.value?.id === id) {
+    return;
+  }
+  selectedItem.value = await getTool(id);
 }
 
-/** 处理工具选择变化 */
-function handleChange(value: number | string | undefined) {
-  const toolId = typeof value === 'number' ? value : undefined;
-  emit('update:modelValue', toolId);
-  emit('change', list.value.find((item) => item.id === toolId));
+watch(
+  () => props.modelValue,
+  (value) => {
+    resolveItemById(value);
+  },
+  { immediate: true },
+);
+
+/** 清空已选工具 */
+function clearSelected() {
+  selectedItem.value = undefined;
+  emit('update:modelValue', undefined);
+  emit('change', undefined);
 }
 
-onMounted(getList);
+/** 打开工具选择弹窗 */
+function handleClick(event: MouseEvent) {
+  if (props.disabled) {
+    return;
+  }
+  const target = event.target as HTMLElement;
+  if (showClear.value && target.closest('.el-input__suffix')) {
+    event.stopPropagation();
+    clearSelected();
+    return;
+  }
+  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds, { multiple: false });
+}
+
+/** 回填选中的工具 */
+function handleSelected(rows: MesTmToolApi.Tool[]) {
+  const item = rows[0];
+  if (!item) {
+    return;
+  }
+  selectedItem.value = item;
+  emit('update:modelValue', item.id);
+  emit('change', item);
+}
 </script>
 
 <template>
-  <ElSelect
-    :clearable="clearable"
-    :disabled="disabled"
-    :model-value="modelValue"
-    :placeholder="placeholder"
+  <div
+    v-bind="attrs"
     class="w-full"
-    filterable
-    @change="handleChange"
+    :class="disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+    @click="handleClick"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
   >
-    <ElOption v-for="item in list" :key="item.id" :label="item.name" :value="item.id!" />
-  </ElSelect>
+    <ElTooltip :disabled="!selectedItem" placement="top" :show-after="500">
+      <template #content>
+        <div v-if="selectedItem" class="leading-6">
+          <div>工具编码：{{ selectedItem.code || '-' }}</div>
+          <div>工具名称：{{ selectedItem.name || '-' }}</div>
+          <div v-if="selectedItem.brand">品牌：{{ selectedItem.brand }}</div>
+          <div v-if="selectedItem.specification">
+            型号规格：{{ selectedItem.specification }}
+          </div>
+          <div v-if="selectedItem.toolTypeName">
+            工具类型：{{ selectedItem.toolTypeName }}
+          </div>
+        </div>
+      </template>
+      <ElInput
+        :disabled="disabled"
+        :model-value="displayLabel"
+        :placeholder="placeholder"
+        readonly
+      >
+        <template #suffix>
+          <CircleX v-if="showClear" class="size-4" />
+          <Search v-else class="size-4" />
+        </template>
+      </ElInput>
+    </ElTooltip>
+  </div>
+  <TmToolSelectDialog ref="dialogRef" @selected="handleSelected" />
 </template>

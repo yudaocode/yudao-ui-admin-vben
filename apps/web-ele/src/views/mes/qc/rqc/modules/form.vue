@@ -143,9 +143,7 @@ const [Modal, modalApi] = useVbenModal({
       if (!ok) {
         return;
       }
-      // 关闭并提示
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
-      await modalApi.close();
       emit('success');
     } finally {
       modalApi.unlock();
@@ -167,7 +165,10 @@ const [Modal, modalApi] = useVbenModal({
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     formApi.setDisabled(formType.value === 'detail');
-    modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
+    modalApi.setState({
+      confirmText: formType.value === 'detail' ? undefined : '保存',
+      showConfirmButton: formType.value !== 'detail',
+    });
     if (data?.id) {
       modalApi.lock();
       try {

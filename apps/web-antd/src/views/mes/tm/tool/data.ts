@@ -325,3 +325,85 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolApi.Tool>['column
     },
   ];
 }
+
+/** 工具选择弹窗的搜索表单 */
+export function useToolSelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '工具编码',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入工具编码',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '工具名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入工具名称',
+      },
+    },
+    {
+      fieldName: 'toolTypeId',
+      label: '工具类型',
+      component: markRaw(TmToolTypeSelect),
+      componentProps: {
+        placeholder: '请选择工具类型',
+      },
+    },
+    {
+      fieldName: 'brand',
+      label: '品牌',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入品牌',
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_TM_TOOL_STATUS, 'number'),
+        placeholder: '请选择状态',
+      },
+    },
+  ];
+}
+
+/** 工具选择弹窗的字段 */
+export function useToolSelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesTmToolApi.Tool>['columns'] {
+  return [
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
+    { field: 'code', title: '工具编码', width: 120 },
+    { field: 'name', title: '工具名称', minWidth: 120 },
+    { field: 'brand', title: '品牌', minWidth: 100 },
+    { field: 'specification', title: '型号规格', minWidth: 100 },
+    { field: 'toolTypeName', title: '工具类型', width: 120 },
+    { field: 'quantity', title: '库存数量', width: 100 },
+    { field: 'availableQuantity', title: '可用数量', width: 100 },
+    {
+      field: 'status',
+      title: '状态',
+      width: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_TM_TOOL_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+  ];
+}
