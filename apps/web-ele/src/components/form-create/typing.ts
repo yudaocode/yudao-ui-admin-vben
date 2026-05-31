@@ -3,6 +3,7 @@ export interface DictSelectProps {
   dictType: string; // 字典类型
   valueType?: 'bool' | 'int' | 'str'; // 字典值类型
   selectType?: 'checkbox' | 'radio' | 'select'; // 选择器类型，下拉框 select、多选框 checkbox、单选框 radio
+  modelValue?: any; // 选中值，由 form-create 通过 modelField 绑定
   formCreateInject?: any;
 }
 
