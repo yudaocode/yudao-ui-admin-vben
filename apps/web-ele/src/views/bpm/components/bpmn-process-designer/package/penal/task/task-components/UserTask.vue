@@ -399,6 +399,7 @@ onBeforeUnmount(() => {
         ref="treeRef"
         v-model="userTaskForm.candidateParam"
         :data="deptTreeOptions"
+        node-key="id"
         :props="defaultProps"
         placeholder="加载中，请稍后"
         multiple
