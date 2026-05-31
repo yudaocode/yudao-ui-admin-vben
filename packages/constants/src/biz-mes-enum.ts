@@ -165,6 +165,8 @@ export const MesAutoCodeRuleCode = {
   WM_OUTSOURCE_ISSUE_CODE: 'WM_OUTSOURCE_ISSUE_CODE',
   WM_OUTSOURCE_RECEIPT_CODE: 'WM_OUTSOURCE_RECEIPT_CODE',
   WM_PACKAGE_CODE: 'WM_PACKAGE_CODE',
+  WM_SN_CODE: 'WM_SN_CODE',
+  WM_BATCH_CODE: 'WM_BATCH_CODE',
   WM_STOCK_TAKING_CODE: 'WM_STOCK_TAKING_CODE',
   WM_STOCK_TAKING_PLAN_CODE: 'WM_STOCK_TAKING_PLAN_CODE',
   WM_WAREHOUSE_CODE: 'WM_WAREHOUSE_CODE',
@@ -274,6 +276,12 @@ export const MesProAndonLevelEnum = {
 export const MesProWorkRecordTypeEnum = {
   CLOCK_IN: 1,
   CLOCK_OUT: 2,
+} as const;
+
+/** MES 生产报工类型枚举 */
+export const MesProFeedbackTypeEnum = {
+  SELF: 1, // 自行报工
+  UNIFIED: 2, // 统一报工
 } as const;
 
 /** MES 杂项出库单状态枚举 */
@@ -396,6 +404,13 @@ export const MesWmProductReceiptStatusEnum = {
   CANCELED: MesOrderStatusConstants.CANCELLED,
 } as const;
 
+/** MES 生产入库单状态枚举 */
+export const MesWmProductProduceStatusEnum = {
+  PREPARE: MesOrderStatusConstants.DRAFT,
+  FINISHED: MesOrderStatusConstants.FINISHED,
+  CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
 /** MES 销售出库单状态枚举 */
 export const MesWmProductSalesStatusEnum = {
   PREPARE: MesOrderStatusConstants.DRAFT,
@@ -405,6 +420,12 @@ export const MesWmProductSalesStatusEnum = {
   APPROVED: MesOrderStatusConstants.APPROVED,
   FINISHED: MesOrderStatusConstants.FINISHED,
   CANCELED: MesOrderStatusConstants.CANCELLED,
+} as const;
+
+/** MES 仓库常量 */
+export const MesWmWarehouseConstants = {
+  /** 虚拟线边仓编码关键字（对应后端 MesWmWarehouseDO.WIP_VIRTUAL_WAREHOUSE） */
+  WIP_VIRTUAL: 'WIP_VIRTUAL',
 } as const;
 
 /** MES 质检结果值类型枚举 */
@@ -463,6 +484,12 @@ export const MesAutoCodePartTypeEnum = {
   DATE: 2,
   FIX: 3,
   SERIAL: 4,
+} as const;
+
+/** MES 编码规则补齐方式枚举 */
+export const MesAutoCodePaddedMethodEnum = {
+  LEFT: 1, // 左补齐
+  RIGHT: 2, // 右补齐
 } as const;
 
 /** MES 条码格式枚举 */
