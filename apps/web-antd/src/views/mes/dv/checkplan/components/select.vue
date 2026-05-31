@@ -1,13 +1,19 @@
 <script lang="ts" setup>
-import type { SelectValue } from 'ant-design-vue/es/select';
-
 import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, ref, useAttrs, watch } from 'vue';
 
-import { Select } from 'ant-design-vue';
+import { DICT_TYPE } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
 
-import { getCheckPlanPage } from '#/api/mes/dv/checkplan';
+import { Input, Tooltip } from 'ant-design-vue';
+
+import { getCheckPlan } from '#/api/mes/dv/checkplan';
+import { DictTag } from '#/components/dict-tag';
+
+import DvCheckPlanSelectDialog from './select-dialog.vue';
+
+defineOptions({ name: 'DvCheckPlanSelect', inheritAttrs: false });
 
 const props = withDefaults(
   defineProps<{
@@ -22,53 +28,125 @@ const props = withDefaults(
     allowClear: true,
     disabled: false,
     modelValue: undefined,
-    placeholder: '请选择计划',
+    placeholder: '请选择保养方案',
     status: undefined,
     type: undefined,
   },
 );
 const emit = defineEmits<{
-  change: [row?: MesDvCheckPlanApi.CheckPlan];
-  'update:modelValue': [value?: number];
+  change: [item: MesDvCheckPlanApi.CheckPlan | undefined];
+  'update:modelValue': [value: number | undefined];
 }>();
-const list = ref<MesDvCheckPlanApi.CheckPlan[]>([]); // 点检计划列表
+const attrs = useAttrs(); // 透传属性
+const dialogRef = ref<InstanceType<typeof DvCheckPlanSelectDialog>>(); // 方案选择弹窗
+const hovering = ref(false); // 是否悬停
+const selectedItem = ref<MesDvCheckPlanApi.CheckPlan>(); // 当前选中方案
 
-/** 加载点检计划列表 */
-async function getList() {
-  const data = await getCheckPlanPage({
-    pageNo: 1,
-    pageSize: 100,
+const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
+const showClear = computed(
+  () =>
+    props.allowClear &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue != null,
+);
+
+/** 根据方案编号回显选择器 */
+async function resolveItemById(id: number | undefined) {
+  if (id == null) {
+    selectedItem.value = undefined;
+    return;
+  }
+  if (selectedItem.value?.id === id) {
+    return;
+  }
+  selectedItem.value = await getCheckPlan(id);
+}
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    resolveItemById(value);
+  },
+  { immediate: true },
+);
+
+/** 清空已选方案 */
+function clearSelected() {
+  selectedItem.value = undefined;
+  emit('update:modelValue', undefined);
+  emit('change', undefined);
+}
+
+/** 打开方案选择弹窗 */
+function handleClick(event: MouseEvent) {
+  if (props.disabled) {
+    return;
+  }
+  const target = event.target as HTMLElement;
+  if (showClear.value && target.closest('.ant-input-suffix')) {
+    event.stopPropagation();
+    clearSelected();
+    return;
+  }
+  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds, {
+    multiple: false,
     status: props.status,
     type: props.type,
   });
-  list.value = data.list || [];
 }
 
-/** 处理点检计划选择变化 */
-function handleChange(value: SelectValue) {
-  const planId = typeof value === 'number' ? value : undefined;
-  emit('update:modelValue', planId);
-  emit(
-    'change',
-    list.value.find((item) => item.id === planId),
-  );
+/** 回填选中的方案 */
+function handleSelected(rows: MesDvCheckPlanApi.CheckPlan[]) {
+  const item = rows[0];
+  if (!item) {
+    return;
+  }
+  selectedItem.value = item;
+  emit('update:modelValue', item.id);
+  emit('change', item);
 }
-
-watch(() => [props.status, props.type], getList);
-onMounted(getList);
 </script>
 
 <template>
-  <Select
-    :allow-clear="allowClear"
-    :disabled="disabled"
-    :field-names="{ label: 'name', value: 'id' }"
-    :options="list"
-    :placeholder="placeholder"
-    :value="modelValue"
+  <div
+    v-bind="attrs"
     class="w-full"
-    option-filter-prop="name"
-    show-search
-    @change="handleChange"
-  />
+    :class="disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+    @click="handleClick"
+    @mouseenter="hovering = true"
+    @mouseleave="hovering = false"
+  >
+    <Tooltip :mouse-enter-delay="0.5" :open="selectedItem ? undefined : false">
+      <template #title>
+        <div v-if="selectedItem" class="leading-6">
+          <div>编码：{{ selectedItem.code || '-' }}</div>
+          <div>名称：{{ selectedItem.name || '-' }}</div>
+          <div class="flex items-center">
+            频度：{{ selectedItem.cycleCount ?? '-' }}
+            <DictTag
+              class="ml-1"
+              :type="DICT_TYPE.MES_DV_CYCLE_TYPE"
+              :value="selectedItem.cycleType"
+            />
+          </div>
+        </div>
+      </template>
+      <Input
+        :disabled="disabled"
+        :placeholder="placeholder"
+        :value="displayLabel"
+        readonly
+      >
+        <template #suffix>
+          <IconifyIcon
+            class="size-4"
+            :icon="showClear ? 'lucide:circle-x' : 'lucide:search'"
+          />
+        </template>
+      </Input>
+    </Tooltip>
+  </div>
+  <DvCheckPlanSelectDialog ref="dialogRef" @selected="handleSelected" />
 </template>

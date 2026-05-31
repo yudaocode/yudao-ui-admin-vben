@@ -4,9 +4,14 @@ import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 import type { MesWmBarcodeConfigApi } from '#/api/mes/wm/barcode/config';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { BarcodeBizTypeEnum, DICT_TYPE, h, markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  BarcodeBizTypeEnum,
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -222,6 +227,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '工单',
       component: markRaw(ProWorkOrderSelect),
       componentProps: {
+        status: MesProWorkOrderStatusEnum.CONFIRMED,
         onChange: (item: any) => syncBizDetail(formApi, item),
       },
       dependencies: {

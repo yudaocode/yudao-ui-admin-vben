@@ -13,6 +13,7 @@ export namespace MemberUserApi {
     loginIp: string;
     mark: string;
     mobile: string;
+    email?: string;
     name?: string;
     nickname?: string;
     registerIp: string;

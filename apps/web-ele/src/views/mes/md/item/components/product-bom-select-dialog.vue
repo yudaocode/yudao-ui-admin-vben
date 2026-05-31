@@ -68,7 +68,7 @@ async function openModal(itemId: number, selectedBomItemId?: number) {
     list.value = await getProductBomListByItemId(itemId);
     gridApi.setGridOptions({ data: list.value });
     await nextTick();
-    if (selectedBomItemId !== null) {
+    if (selectedBomItemId != null) {
       const match = list.value.find(
         (row) => row.bomItemId === selectedBomItemId,
       );

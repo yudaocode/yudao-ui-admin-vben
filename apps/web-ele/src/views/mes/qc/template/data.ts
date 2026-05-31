@@ -4,9 +4,9 @@ import type { MesQcTemplateApi } from '#/api/mes/qc/template';
 import type { MesQcTemplateIndicatorApi } from '#/api/mes/qc/template/indicator';
 import type { MesQcTemplateItemApi } from '#/api/mes/qc/template/item';
 
-import { DICT_TYPE, h, markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';

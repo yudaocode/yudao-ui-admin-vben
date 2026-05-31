@@ -2,12 +2,25 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertConfigApi } from '#/api/iot/alert/config';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { markRaw } from 'vue';
+
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  IotAlertReceiveTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleRuleSceneList } from '#/api/iot/rule/scene';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+import { MailTemplateSelect } from '#/views/system/mail/template/components';
+import { NotifyTemplateSelect } from '#/views/system/notify/template/components';
+import { SmsTemplateSelect } from '#/views/system/sms/template/components';
+
+function hasReceiveType(values: Partial<Record<string, any>>, type: number) {
+  return Array.isArray(values.receiveTypes) && values.receiveTypes.includes(type);
+}
 
 /** 新增/修改告警配置的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -99,6 +112,60 @@ export function useFormSchema(): VbenFormSchema[] {
       },
       defaultValue: [],
       rules: 'required',
+    },
+    {
+      fieldName: 'smsTemplateCode',
+      label: '短信模板',
+      component: markRaw(SmsTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.SMS),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.SMS) &&
+            values.smsTemplateCode
+          ) {
+            await formApi.setFieldValue('smsTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'mailTemplateCode',
+      label: '邮件模板',
+      component: markRaw(MailTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.MAIL),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.MAIL) &&
+            values.mailTemplateCode
+          ) {
+            await formApi.setFieldValue('mailTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'notifyTemplateCode',
+      label: '站内信模板',
+      component: markRaw(NotifyTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY) &&
+            values.notifyTemplateCode
+          ) {
+            await formApi.setFieldValue('notifyTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
     },
   ];
 }

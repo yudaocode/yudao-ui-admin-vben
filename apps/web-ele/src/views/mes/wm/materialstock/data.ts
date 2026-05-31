@@ -4,6 +4,7 @@ import type { MesWmMaterialStockApi } from '#/api/mes/wm/materialstock';
 
 import { markRaw } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 
 import { MdItemSelect } from '#/views/mes/md/item/components';
@@ -84,6 +85,7 @@ export function useGridColumns(
     row: MesWmMaterialStockApi.MaterialStock,
   ) => Promise<boolean | undefined>,
 ): VxeTableGridOptions<MesWmMaterialStockApi.MaterialStock>['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'itemCode',
@@ -145,7 +147,12 @@ export function useGridColumns(
       cellRender: {
         name: 'CellSwitch',
         attrs: { beforeChange: onFrozenChange },
-        props: { activeValue: true, inactiveValue: false },
+        props: {
+          activeValue: true,
+          // 冻结开关受更新权限控制，无权限时禁用，保持与源项目 v-hasPermi 一致
+          disabled: !hasAccessByCodes(['mes:wm-material-stock:update']),
+          inactiveValue: false,
+        },
       },
     },
   ];

@@ -2,9 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvMaintenRecordLineApi } from '#/api/mes/dv/maintenrecord/line';
 
-import { computed, MesDvMaintenStatusEnum, MesDvSubjectTypeEnum, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesDvMaintenStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message, Modal } from 'ant-design-vue';

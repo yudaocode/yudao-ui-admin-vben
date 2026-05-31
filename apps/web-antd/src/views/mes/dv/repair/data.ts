@@ -16,8 +16,17 @@ import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
 /** 表单类型 */
 export type FormType = 'confirm' | 'create' | 'detail' | 'finish' | 'update';
 
+/** 表头是否只读（完成维修、验收、详情态；finishDate 在 confirm 单独放开） */
+function isHeaderReadonly(formType: FormType): boolean {
+  return ['confirm', 'detail', 'finish'].includes(formType);
+}
+
 /** 新增/修改维修工单的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
+  const headerReadonly = isHeaderReadonly(formType);
   return [
     {
       fieldName: 'id',
@@ -45,27 +54,30 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['id'],
-        componentProps: (values) => ({ disabled: !!values.id }),
+        componentProps: (values) => ({ disabled: headerReadonly || !!values.id }),
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_REPAIR_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix: headerReadonly
+        ? undefined
+        : () =>
+            h(
+              Button,
+              {
+                type: 'default',
+                onClick: async () => {
+                  const code = await generateAutoCode(MesAutoCodeRuleCode.DV_REPAIR_CODE);
+                  await formApi?.setFieldValue('code', code);
+                },
+              },
+              { default: () => '生成' },
+            ),
     },
     {
       fieldName: 'name',
       label: '维修单名称',
       component: 'Input',
       componentProps: {
+        disabled: headerReadonly,
         placeholder: '请输入维修单名称',
       },
       rules: 'required',
@@ -75,6 +87,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '设备',
       component: markRaw(DvMachinerySelect),
       componentProps: {
+        disabled: headerReadonly,
         placeholder: '请选择设备',
       },
       rules: 'selectRequired',
@@ -84,6 +97,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '报修日期',
       component: 'DatePicker',
       componentProps: {
+        disabled: headerReadonly,
         format: 'YYYY-MM-DD HH:mm:ss',
         placeholder: '请选择报修日期',
         showTime: true,
@@ -98,9 +112,17 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         api: getSimpleUserList,
+        disabled: true,
         labelField: 'nickname',
         placeholder: '请选择维修人',
         valueField: 'id',
+      },
+      // 维修人为待验收(≥APPROVING)态自动产生的只读回显字段
+      dependencies: {
+        triggerFields: ['status'],
+        if: (values) =>
+          values.status != null &&
+          values.status >= MesDvRepairStatusEnum.APPROVING,
       },
     },
     {
@@ -113,6 +135,15 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         showTime: true,
         valueFormat: 'x',
       },
+      // 维修中(≥CONFIRMED)态展示；仅"完成维修"弹窗可编辑并必填，其余态只读回显
+      dependencies: {
+        triggerFields: ['status'],
+        if: (values) =>
+          values.status != null &&
+          values.status >= MesDvRepairStatusEnum.CONFIRMED,
+        disabled: formType !== 'confirm',
+        rules: () => (formType === 'confirm' ? 'required' : null),
+      },
     },
     {
       fieldName: 'confirmUserId',
@@ -121,9 +152,17 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         api: getSimpleUserList,
+        disabled: true,
         labelField: 'nickname',
         placeholder: '请选择验收人',
         valueField: 'id',
+      },
+      // 验收信息为已确认(≥FINISHED)态自动产生的只读回显字段
+      dependencies: {
+        triggerFields: ['status'],
+        if: (values) =>
+          values.status != null &&
+          values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },
     {
@@ -131,10 +170,18 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '验收日期',
       component: 'DatePicker',
       componentProps: {
+        disabled: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         placeholder: '请选择验收日期',
         showTime: true,
         valueFormat: 'x',
+      },
+      // 验收信息为已确认(≥FINISHED)态自动产生的只读回显字段
+      dependencies: {
+        triggerFields: ['status'],
+        if: (values) =>
+          values.status != null &&
+          values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },
     {
@@ -143,8 +190,16 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         buttonStyle: 'solid',
+        disabled: true,
         optionType: 'button',
         options: getDictOptions(DICT_TYPE.MES_DV_REPAIR_RESULT, 'number'),
+      },
+      // 验收信息为已确认(≥FINISHED)态自动产生的只读回显字段
+      dependencies: {
+        triggerFields: ['status'],
+        if: (values) =>
+          values.status != null &&
+          values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },
     {
@@ -153,6 +208,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'Textarea',
       formItemClass: 'col-span-3',
       componentProps: {
+        disabled: headerReadonly,
         placeholder: '请输入备注',
         rows: 3,
       },

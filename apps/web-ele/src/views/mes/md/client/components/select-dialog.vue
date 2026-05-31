@@ -16,6 +16,8 @@ import {
   useClientSelectGridFormSchema,
 } from '../data';
 
+defineOptions({ name: 'MdClientSelectDialog' });
+
 const emit = defineEmits<{
   selected: [rows: MesMdClientApi.Client[]];
 }>();
@@ -24,41 +26,10 @@ const open = ref(false); // 弹窗是否打开
 const multiple = ref(true); // 是否多选
 const selectedRows = ref<MesMdClientApi.Client[]>([]); // 已选客户列表
 const preSelectedIds = ref<number[]>([]); // 预选客户编号列表
-const latestQueryRows = ref<MesMdClientApi.Client[]>([]); // 最近一次查询返回的客户列表
-const queryFinished = ref(false); // 最近一次查询是否完成
-
-// TODO @芋艿：是否有必要搞的这么复杂？？？后续测试看看。
-const MAX_TABLE_READY_FRAMES = 60;
-
-/** 等待下一帧 */
-function waitNextFrame(): Promise<void> {
-  return new Promise((resolve) => {
-    requestAnimationFrame(() => resolve());
-  });
-}
 
 /** 获取当前表格数据 */
 function getTableRows() {
   return gridApi.grid.getTableData().fullData as MesMdClientApi.Client[];
-}
-
-/** 等待 VXE 将当前查询结果写入表格数据后再回显选中 */
-async function waitTableReady(): Promise<void> {
-  if (preSelectedIds.value.length === 0) {
-    return;
-  }
-  for (let index = 0; index < MAX_TABLE_READY_FRAMES; index += 1) {
-    if (queryFinished.value) {
-      const rows = getTableRows();
-      if (latestQueryRows.value.length === 0 && rows.length === 0) {
-        return;
-      }
-      if (latestQueryRows.value.length > 0 && rows.length > 0) {
-        return;
-      }
-    }
-    await waitNextFrame();
-  }
 }
 
 /** 获取多选记录，包含 VXE reserve 跨页记录 */
@@ -69,8 +40,9 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesMdClientApi.Client[];
   records.forEach((row) => {
-    if (row.id !== null) {
-      selectedMap.set(row.id as number, row);
+    const rowId = row.id;
+    if (rowId != null) {
+      selectedMap.set(rowId, row);
     }
   });
   return [...selectedMap.values()];
@@ -109,10 +81,9 @@ async function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
   }
-  // proxy 表格回显选中时要读取 fullData，否则首次打开可能读不到刚查询出的数据。
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
+    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
       continue;
     }
     if (multiple.value) {
@@ -148,15 +119,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const data = await getClientPage({
+          return await getClientPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
             status: CommonStatusEnum.ENABLE,
           });
-          latestQueryRows.value = data.list || [];
-          queryFinished.value = true;
-          return data;
         },
       },
     },
@@ -196,8 +164,6 @@ async function openModal(
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
-  latestQueryRows.value = [];
-  queryFinished.value = false;
   await nextTick();
   gridApi.setGridOptions({
     columns: useClientSelectGridColumns(multiple.value),
@@ -205,13 +171,13 @@ async function openModal(
   await resetQueryState();
   await gridApi.query();
   await nextTick();
-  await waitTableReady();
   await applyPreSelection();
 }
 
 /** 关闭客户选择弹窗 */
-function closeModal() {
+async function closeModal() {
   open.value = false;
+  await resetQueryState();
 }
 
 /** 确认选择客户 */

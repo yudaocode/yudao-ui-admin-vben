@@ -41,18 +41,21 @@ export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFo
         componentProps: (values) => ({ disabled: !!values.id }),
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -270,6 +273,68 @@ export function useImportFormSchema(): VbenFormSchema[] {
       },
       rules: z.boolean().default(false),
       help: '是否更新已经存在的设备数据',
+    },
+  ];
+}
+
+/** 设备选择弹窗的搜索表单 */
+export function useMachinerySelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '设备编码',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入设备编码',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '设备名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入设备名称',
+      },
+    },
+    {
+      fieldName: 'workshopId',
+      label: '所属车间',
+      component: markRaw(MdWorkshopSelect),
+      componentProps: {
+        allowClear: true,
+        placeholder: '请选择所属车间',
+      },
+    },
+  ];
+}
+
+/** 设备选择弹窗的字段 */
+export function useMachinerySelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesDvMachineryApi.Machinery>['columns'] {
+  return [
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
+    { field: 'code', title: '设备编码', width: 120 },
+    { field: 'name', title: '设备名称', minWidth: 120 },
+    { field: 'brand', title: '品牌', minWidth: 120 },
+    { field: 'specification', title: '规格型号', minWidth: 120 },
+    { field: 'workshopName', title: '所属车间', width: 120 },
+    {
+      field: 'status',
+      title: '设备状态',
+      width: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_MACHINERY_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 160,
+      formatter: 'formatDateTime',
     },
   ];
 }

@@ -42,20 +42,15 @@ const canSubmit = computed(() => // 编辑态草稿可提交
   formData.value?.status === MesProCardStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['流转卡']);
-    }
-    case 'finish': {
-      return '完成流转卡';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['流转卡']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['流转卡']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['流转卡']);
   }
+  if (formType.value === 'finish') {
+    return '完成流转卡';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['流转卡'])
+    : $t('ui.actionTitle.create', ['流转卡']);
 });
 
 const [Form, formApi] = useVbenForm({

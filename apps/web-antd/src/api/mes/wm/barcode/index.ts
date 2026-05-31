@@ -5,17 +5,17 @@ import { requestClient } from '#/api/request';
 export namespace MesWmBarcodeApi {
   /** MES 条码清单 */
   export interface Barcode {
-    id?: number;
-    configId?: number;
-    format?: number;
-    bizType?: number;
-    content?: string;
-    bizId?: number;
-    bizCode?: string;
-    bizName?: string;
-    status?: number;
-    remark?: string;
-    createTime?: Date;
+    id?: number; // 条码编号
+    configId?: number; // 条码配置编号
+    format?: number; // 条码格式
+    bizType?: number; // 业务类型
+    content?: string; // 条码内容
+    bizId?: number; // 业务对象编号
+    bizCode?: string; // 业务对象编码
+    bizName?: string; // 业务对象名称
+    status?: number; // 状态
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
   }
 }
 

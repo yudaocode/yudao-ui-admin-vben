@@ -5,9 +5,9 @@ import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { DICT_TYPE, h } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -45,7 +45,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         h(
           ElButton,
           {
-            type: 'default',
             onClick: async () => {
               const code = await generateAutoCode(
                 MesAutoCodeRuleCode.PRO_ROUTE_CODE,
@@ -98,13 +97,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'code',
       label: '路线编码',
       component: 'Input',
-      componentProps: { clearable: true, placeholder: '请输入路线编码' },
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入路线编码',
+      },
     },
     {
       fieldName: 'name',
       label: '路线名称',
       component: 'Input',
-      componentProps: { clearable: true, placeholder: '请输入路线名称' },
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入路线名称',
+      },
     },
     {
       fieldName: 'status',
@@ -226,14 +231,20 @@ export function useRouteProcessFormSchema(
       fieldName: 'keyFlag',
       label: '是否关键工序',
       component: 'Switch',
-      componentProps: { activeText: '是', inactiveText: '否' },
+      componentProps: {
+        activeText: '是',
+        inactiveText: '否',
+      },
       rules: z.boolean().default(false),
     },
     {
       fieldName: 'checkFlag',
       label: '是否质检确认',
       component: 'Switch',
-      componentProps: { activeText: '是', inactiveText: '否' },
+      componentProps: {
+        activeText: '是',
+        inactiveText: '否',
+      },
       rules: z.boolean().default(false),
     },
     {
@@ -265,7 +276,11 @@ export function useRouteProcessFormSchema(
       label: '备注',
       component: 'Textarea',
       formItemClass: 'col-span-2',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }
@@ -384,7 +399,7 @@ export function useRouteProductFormSchema(
     {
       fieldName: 'itemId',
       label: '产品',
-      component: MdItemSelect as any,
+      component: markRaw(MdItemSelect),
       componentProps: {
         onChange: onItemChange,
       },
@@ -431,7 +446,11 @@ export function useRouteProductFormSchema(
       label: '备注',
       component: 'Textarea',
       formItemClass: 'col-span-2',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }
@@ -466,7 +485,7 @@ export function useRouteProductBomFormSchema(
     {
       fieldName: 'itemId',
       label: 'BOM 物料',
-      component: MdProductBomSelect as any,
+      component: markRaw(MdProductBomSelect),
       componentProps: () => ({
         itemId: itemId(),
         onChange: onBomChange,
@@ -490,7 +509,11 @@ export function useRouteProductBomFormSchema(
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }

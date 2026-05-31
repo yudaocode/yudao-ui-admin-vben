@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { MesWmBarcodeApi } from '#/api/mes/wm/barcode';
 
-import { BarcodeBizTypeEnum, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import { BarcodeBizTypeEnum, CommonStatusEnum } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 

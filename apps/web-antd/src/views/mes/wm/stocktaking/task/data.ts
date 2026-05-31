@@ -476,6 +476,7 @@ export function useResultFormSchema(
           await formApi?.setValues({
             areaId: line?.areaId,
             batchCode: line?.batchCode,
+            batchId: line?.batchId,
             itemId: line?.itemId,
             locationId: line?.locationId,
             materialStockId: line?.materialStockId,
@@ -500,6 +501,11 @@ export function useResultFormSchema(
         placeholder: '请选择物料',
       },
       rules: 'selectRequired',
+      // 选中盘点清单后，物料由清单带出且禁止改动
+      dependencies: {
+        triggerFields: ['lineId'],
+        disabled: (values) => values.lineId != null,
+      },
     },
     {
       fieldName: 'batchCode',
@@ -507,6 +513,11 @@ export function useResultFormSchema(
       component: 'Input',
       componentProps: {
         placeholder: '请输入批次编码',
+      },
+      // 选中盘点清单后，批次由清单带出且禁止改动
+      dependencies: {
+        triggerFields: ['lineId'],
+        disabled: (values) => values.lineId != null,
       },
     },
     {
@@ -534,6 +545,11 @@ export function useResultFormSchema(
         placeholder: '请选择仓库',
       },
       rules: 'selectRequired',
+      // 选中盘点清单后，仓库由清单带出且禁止改动
+      dependencies: {
+        triggerFields: ['lineId'],
+        disabled: (values) => values.lineId != null,
+      },
     },
     {
       fieldName: 'locationId',
@@ -541,8 +557,10 @@ export function useResultFormSchema(
       component: markRaw(WmWarehouseLocationSelect),
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['warehouseId'],
+        triggerFields: ['warehouseId', 'lineId'],
         show: (values) => !!values.warehouseId,
+        // 选中盘点清单后，库区由清单带出且禁止改动
+        disabled: (values) => values.lineId != null,
         componentProps: (values) => ({
           onChange: () => formApi?.setFieldValue('areaId', undefined),
           placeholder: '请选择库区',
@@ -556,8 +574,10 @@ export function useResultFormSchema(
       component: markRaw(WmWarehouseAreaSelect),
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['locationId'],
+        triggerFields: ['locationId', 'lineId'],
         show: (values) => !!values.locationId,
+        // 选中盘点清单后，库位由清单带出且禁止改动
+        disabled: (values) => values.lineId != null,
         componentProps: (values) => ({
           locationId: values.locationId,
           placeholder: '请选择库位',

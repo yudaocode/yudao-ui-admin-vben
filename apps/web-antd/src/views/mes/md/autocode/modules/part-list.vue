@@ -5,6 +5,7 @@ import type { MesMdAutoCodePartApi } from '#/api/mes/md/autocode/part';
 import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
 
@@ -13,6 +14,7 @@ import {
   deleteAutoCodePart,
   getAutoCodePartListByRuleId,
 } from '#/api/mes/md/autocode/part';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
 import { usePartGridColumns } from '../data';
@@ -107,6 +109,13 @@ watch(
     />
   </div>
   <Grid class="w-full" table-title="规则组成">
+    <template #cycleMethod="{ row }">
+      <DictTag
+        v-if="row.cycleFlag"
+        :type="DICT_TYPE.MES_MD_AUTO_CODE_CYCLE_METHOD"
+        :value="row.cycleMethod"
+      />
+    </template>
     <template #actions="{ row }">
       <TableAction
         :actions="[

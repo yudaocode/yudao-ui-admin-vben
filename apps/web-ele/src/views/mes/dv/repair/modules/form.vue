@@ -28,20 +28,29 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesDvRepairApi.Repair>();
 const isDetail = computed(() => formType.value === 'detail');
-const isReadonly = computed(() => ['confirm', 'detail', 'finish'].includes(formType.value));
+const isLineReadonly = computed(() =>
+  // 明细只读：完成维修/验收/详情态明细均不可编辑
+  ['confirm', 'detail', 'finish'].includes(formType.value),
+);
+const isFormDisabled = computed(() =>
+  // 整表禁用：仅详情/验收态；完成维修态需放开 finishDate，故单头只读改由 schema 逐字段控制
+  ['detail', 'finish'].includes(formType.value),
+);
 const canSubmit = computed(
   () => formType.value === 'update' && formData.value?.status === MesDvRepairStatusEnum.PREPARE,
 );
-const getTitle = computed(
-  () =>
-    ({
-      create: '新增维修工单',
-      update: '修改维修工单',
-      confirm: '完成维修',
-      finish: '验收维修',
-      detail: '查看维修工单',
-    })[formType.value],
-);
+const getTitle = computed(() => {
+  if (formType.value === 'detail') {
+    return '查看维修工单';
+  }
+  if (formType.value === 'confirm') {
+    return '完成维修';
+  }
+  if (formType.value === 'finish') {
+    return '验收维修';
+  }
+  return formType.value === 'update' ? '修改维修工单' : '新增维修工单';
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -161,11 +170,11 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
-    formApi.setDisabled(isReadonly.value);
+    formApi.setState({ schema: useFormSchema(data.formType, formApi) });
+    formApi.setDisabled(isFormDisabled.value);
     modalApi.setState({ showConfirmButton: ['create', 'update'].includes(formType.value) });
     if (!data?.id) {
       return;
@@ -184,7 +193,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <LineList v-if="formData?.id" :disabled="isReadonly" :repair-id="formData.id" />
+    <LineList v-if="formData?.id" :disabled="isLineReadonly" :repair-id="formData.id" />
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">
         <ElPopconfirm

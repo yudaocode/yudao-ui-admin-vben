@@ -90,6 +90,7 @@ const [Modal, modalApi] = useVbenModal({
 /** 获取打印数据 */
 async function fetchPrintData(id: string) {
   printData.value = await getProcessInstancePrintData(id);
+  printTime.value = formatDate(new Date(), 'YYYY-MM-DD HH:mm');
   initPrintDataMap();
   await parseFormFields();
 }
@@ -154,7 +155,7 @@ function tryFormatDate(value: unknown) {
     return '';
   }
   const formatted = formatDate(value as Date | number | string);
-  return formatted === 'Invalid Date' ? String(value) : formatted;
+  return formatted === 'Invalid Date' ? escapeHtml(value) : formatted;
 }
 
 function formatDateValue(value: unknown) {
@@ -162,6 +163,15 @@ function formatDateValue(value: unknown) {
     return value.map((item) => tryFormatDate(item)).join(' ~ ');
   }
   return tryFormatDate(value);
+}
+
+function escapeHtml(value: unknown) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
 function formatPrimitiveValue(value: unknown): string {
@@ -185,9 +195,9 @@ function formatPrimitiveValue(value: unknown): string {
       getRecordValue(record, 'url') ??
       getRecordValue(record, 'value') ??
       JSON.stringify(value);
-    return String(displayValue);
+    return escapeHtml(displayValue);
   }
-  return String(value);
+  return escapeHtml(value);
 }
 
 function createImageHtml(url: string) {
@@ -248,7 +258,7 @@ function mapValuesWithOptions(
         (option) =>
           option?.value === item || String(option?.value ?? '') === String(item),
       );
-      return matched?.label ?? String(item);
+      return escapeHtml(matched?.label ?? String(item));
     })
     .filter((s) => isNotEmptyString(s));
   return labels.join(', ');
@@ -276,9 +286,11 @@ function mapValueWithLabelMap(
 ) {
   const values = toValueArray(value);
   const labels = values
-    .map((item) => labelMap.get(String(item)) ?? String(item))
+    .map((item) => escapeHtml(labelMap.get(String(item)) ?? String(item)))
     .filter((s) => isNotEmptyString(s));
-  return labels.length > 0 ? labels.join(separator) : formatPrimitiveValue(values);
+  return labels.length > 0
+    ? labels.join(escapeHtml(separator))
+    : formatPrimitiveValue(values);
 }
 
 /**
@@ -380,7 +392,12 @@ function formatPrintField(
       const options = getDictOptions(dictType, valueType);
       return mapValuesWithOptions(value, options);
     }
-    case 'FileUpload': {
+    case 'Editor':
+    case 'Tinymce': {
+      return isEmptyValue(value) ? '' : String(value);
+    }
+    case 'FileUpload':
+    case 'UploadFile': {
       return renderFileListHtml(value);
     }
     case 'IframeComponent': {
@@ -394,20 +411,19 @@ function formatPrintField(
     }
     case 'ImagesUpload':
     case 'ImageUpload':
-    case 'UploadImg': {
+    case 'UploadImg':
+    case 'UploadImgs': {
       return renderImageListHtml(value);
     }
     case 'switch': {
       if (isEmptyValue(value)) return '否';
-      const checkedVal = getRuleProp(rule, 'checkedValue');
+      const checkedVal =
+        getRuleProp(rule, 'checkedValue') ?? getRuleProp(rule, 'activeValue');
       const isChecked =
         checkedVal !== undefined && checkedVal !== null
           ? value === checkedVal
           : Boolean(value);
       return isChecked ? '是' : '否';
-    }
-    case 'Tinymce': {
-      return isEmptyValue(value) ? '' : String(value);
     }
     case 'UserSelect': {
       if (String(getRuleProp(rule, 'returnType')) === 'name') {
@@ -481,7 +497,7 @@ function getPrintTemplateHTML() {
     const headTd = document.createElement('td');
     headTd.setAttribute('colspan', '2');
     headTd.setAttribute('class', 'border border-black p-1.5 text-center');
-    headTd.innerHTML = '流程记录';
+    headTd.textContent = '流程记录';
     headTr.append(headTd);
     processRecordTable.append(headTr);
 
@@ -489,10 +505,10 @@ function getPrintTemplateHTML() {
       const tr = document.createElement('tr');
       const td1 = document.createElement('td');
       td1.setAttribute('class', 'border border-black p-1.5');
-      td1.innerHTML = item.name;
+      td1.textContent = item.name;
       const td2 = document.createElement('td');
       td2.setAttribute('class', 'border border-black p-1.5');
-      td2.innerHTML = item.description;
+      td2.textContent = item.description;
       tr.append(td1);
       tr.append(td2);
       processRecordTable.append(tr);

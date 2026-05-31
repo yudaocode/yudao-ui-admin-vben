@@ -55,11 +55,7 @@ async function resolveItemById(id: number | undefined) {
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getIndicator(id);
-  } catch (error) {
-    console.error('[QcIndicatorSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getIndicator(id);
 }
 
 watch(() => props.modelValue, resolveItemById, { immediate: true });

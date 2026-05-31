@@ -37,6 +37,17 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      fieldName: 'email',
+      label: '邮箱',
+      component: 'Input',
+      componentProps: {
+        clearable: true,
+        maxlength: 50,
+        placeholder: '请输入邮箱',
+      },
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'RadioGroup',
@@ -153,6 +164,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'email',
+      label: '邮箱',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'loginDate',
       label: '登录时间',
       component: 'RangePicker',
@@ -234,6 +254,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'mobile',
       title: '手机号',
       minWidth: 120,
+    },
+    {
+      field: 'email',
+      title: '邮箱',
+      minWidth: 180,
     },
     {
       field: 'nickname',

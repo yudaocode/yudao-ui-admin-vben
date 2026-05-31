@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
-import { DICT_TYPE, h, markRaw } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, MesAutoCodeRuleCode } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -22,7 +22,10 @@ import { MdWorkshopSelect } from './components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改工作站的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -39,26 +42,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入工作站编码',
       },
-      dependencies: {
-        triggerFields: ['id'],
-        componentProps: (values) => ({
-          disabled: !!values.id,
-        }),
-      },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

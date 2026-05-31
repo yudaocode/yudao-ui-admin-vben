@@ -49,25 +49,19 @@ const showResultTab = computed(
     (!!formData.value?.status &&
       formData.value.status !== MesWmStockTakingTaskStatusEnum.PREPARE),
 );
-// TODO @AI：这里的代码风格，标题的代码风格；
 const getTitle = computed(() => {
-  switch (formType.value) {
-    case 'detail': {
-      return $t('ui.actionTitle.view', ['盘点任务']);
-    }
-    case 'execute': {
-      return '执行盘点';
-    }
-    case 'submit': {
-      return '提交盘点任务';
-    }
-    case 'update': {
-      return $t('ui.actionTitle.edit', ['盘点任务']);
-    }
-    default: {
-      return $t('ui.actionTitle.create', ['盘点任务']);
-    }
+  if (formType.value === 'detail') {
+    return $t('ui.actionTitle.view', ['盘点任务']);
   }
+  if (formType.value === 'execute') {
+    return '执行盘点';
+  }
+  if (formType.value === 'submit') {
+    return '提交盘点任务';
+  }
+  return formType.value === 'update'
+    ? $t('ui.actionTitle.edit', ['盘点任务'])
+    : $t('ui.actionTitle.create', ['盘点任务']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -125,7 +119,6 @@ async function handleExecute() {
 }
 
 const [Modal, modalApi] = useVbenModal({
-  // TODO @AI：注释风格，代码的；
   async onConfirm() {
     if (!isEditable.value) {
       await modalApi.close();

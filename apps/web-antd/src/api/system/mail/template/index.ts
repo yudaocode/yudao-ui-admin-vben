@@ -17,6 +17,13 @@ export namespace SystemMailTemplateApi {
     createTime: Date;
   }
 
+  /** 邮件模版精简信息 */
+  export interface MailTemplateSimple {
+    id: number;
+    name: string;
+    code: string;
+  }
+
   /** 邮件发送信息 */
   export interface MailSendReqVO {
     toMails: string[];
@@ -32,6 +39,13 @@ export function getMailTemplatePage(params: PageParam) {
   return requestClient.get<PageResult<SystemMailTemplateApi.MailTemplate>>(
     '/system/mail-template/page',
     { params },
+  );
+}
+
+/** 查询邮件模版精简列表 */
+export function getSimpleMailTemplateList() {
+  return requestClient.get<SystemMailTemplateApi.MailTemplateSimple[]>(
+    '/system/mail-template/simple-list',
   );
 }
 

@@ -90,7 +90,6 @@ export function useFormSchema(
       componentProps: {
         placeholder: '请输入入库单名称',
       },
-      rules: 'required',
     },
     {
       fieldName: 'receiptDate',

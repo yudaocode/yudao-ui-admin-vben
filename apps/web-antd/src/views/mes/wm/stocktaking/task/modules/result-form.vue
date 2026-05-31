@@ -20,7 +20,7 @@ import { useResultFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<MesWmStockTakingResultApi.StockTakingResult>();
-const taskId = ref<number>(); // TODO @AI：尾注释；
+const taskId = ref<number>(); // 所属盘点任务编号
 const isExecute = ref(false); // 是否执行盘点模式（可选择盘点清单回填）
 const getTitle = computed(() =>
   formData.value?.id

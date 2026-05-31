@@ -17,7 +17,10 @@ import { getRangePickerDefaultProps } from '#/utils';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改点检保养方案的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -44,18 +47,20 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入方案编码',
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.DV_CHECK_PLAN_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_CHECK_PLAN_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -236,6 +241,71 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckPlanApi.CheckPla
       fixed: 'right',
       slots: {
         default: 'actions',
+      },
+    },
+  ];
+}
+
+/** 点检方案选择弹窗的搜索表单 */
+export function useCheckPlanSelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '计划编号',
+      component: 'Input',
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入计划编号',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '计划名称',
+      component: 'Input',
+      componentProps: {
+        clearable: true,
+        placeholder: '请输入计划名称',
+      },
+    },
+  ];
+}
+
+/** 点检方案选择弹窗的字段 */
+export function useCheckPlanSelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesDvCheckPlanApi.CheckPlan>['columns'] {
+  return [
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
+    { field: 'code', title: '计划编码', minWidth: 180 },
+    { field: 'name', title: '计划名称', minWidth: 150 },
+    {
+      field: 'type',
+      title: '计划类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_SUBJECT_TYPE },
+      },
+    },
+    { field: 'startDate', title: '开始日期', width: 120, formatter: 'formatDate' },
+    { field: 'endDate', title: '结束日期', width: 120, formatter: 'formatDate' },
+    { field: 'cycleCount', title: '频率', width: 100 },
+    {
+      field: 'cycleType',
+      title: '周期类型',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_CYCLE_TYPE },
+      },
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_DV_CHECK_PLAN_STATUS },
       },
     },
   ];

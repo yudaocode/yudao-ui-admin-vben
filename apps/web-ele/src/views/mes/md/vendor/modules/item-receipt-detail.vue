@@ -31,12 +31,36 @@ function formatDate(value: Date | number | string | undefined) {
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: [
-      { field: 'itemCode', title: '物料编码', width: 140 },
-      { field: 'itemName', title: '物料名称', minWidth: 150 },
-      { field: 'specification', title: '规格型号', minWidth: 140 },
-      { field: 'unitMeasureName', title: '单位', width: 100 },
-      { field: 'receivedQuantity', title: '入库数量', width: 120 },
-      { field: 'batchCode', title: '批次号', minWidth: 140 },
+      {
+        field: 'itemCode',
+        title: '物料编码',
+        width: 140,
+      },
+      {
+        field: 'itemName',
+        title: '物料名称',
+        minWidth: 150,
+      },
+      {
+        field: 'specification',
+        title: '规格型号',
+        minWidth: 140,
+      },
+      {
+        field: 'unitMeasureName',
+        title: '单位',
+        width: 100,
+      },
+      {
+        field: 'receivedQuantity',
+        title: '入库数量',
+        width: 120,
+      },
+      {
+        field: 'batchCode',
+        title: '批次号',
+        minWidth: 140,
+      },
     ],
     height: 280,
     keepSource: true,

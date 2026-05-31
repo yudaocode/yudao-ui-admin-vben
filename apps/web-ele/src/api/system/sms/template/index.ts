@@ -19,6 +19,13 @@ export namespace SystemSmsTemplateApi {
     createTime?: Date;
   }
 
+  /** 短信模板精简信息 */
+  export interface SmsTemplateSimple {
+    id: number;
+    name: string;
+    code: string;
+  }
+
   /** 发送短信请求 */
   export interface SmsSendReqVO {
     mobile: string;
@@ -32,6 +39,13 @@ export function getSmsTemplatePage(params: PageParam) {
   return requestClient.get<PageResult<SystemSmsTemplateApi.SmsTemplate>>(
     '/system/sms-template/page',
     { params },
+  );
+}
+
+/** 查询短信模板精简列表 */
+export function getSimpleSmsTemplateList() {
+  return requestClient.get<SystemSmsTemplateApi.SmsTemplateSimple[]>(
+    '/system/sms-template/simple-list',
   );
 }
 

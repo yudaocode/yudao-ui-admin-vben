@@ -85,6 +85,14 @@ export const CodecTypeEnum = {
   ALINK: 'Alink', // 阿里云 Alink 协议
 } as const;
 
+// ========== IOT - 告警模块 ==========
+/** IoT 告警接收方式枚举，与后端 IotAlertReceiveTypeEnum 保持一致 */
+export const IotAlertReceiveTypeEnum = {
+  SMS: 1, // 短信
+  MAIL: 2, // 邮箱
+  NOTIFY: 3, // 站内信
+} as const;
+
 // ========== IOT - 物模型 ==========
 /** IoT 产品物模型类型枚举类 */
 export const IoTThingModelTypeEnum = {

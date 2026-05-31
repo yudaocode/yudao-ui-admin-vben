@@ -38,28 +38,23 @@ const selectedItem = ref<MesMdClientApi.Client>(); // 当前选中客户
 
 const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
 const showClear = computed(
-  // 是否显示清空图标
   () =>
     props.allowClear &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue !== null,
+    props.modelValue != null,
 );
 
 /** 根据客户编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id === null) {
+  if (id == null) {
     selectedItem.value = undefined;
     return;
   }
   if (selectedItem.value?.id === id) {
     return;
   }
-  try {
-    selectedItem.value = await getClient(id as number);
-  } catch (error) {
-    console.error('[MdClientSelect] resolveItemById failed:', error);
-  }
+  selectedItem.value = await getClient(id);
 }
 
 watch(
@@ -88,8 +83,8 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue === null ? [] : [props.modelValue];
-  dialogRef.value?.open(selectedIds as number[], { multiple: false });
+  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  dialogRef.value?.open(selectedIds, { multiple: false });
 }
 
 /** 回填选中的客户 */
