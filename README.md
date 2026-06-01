@@ -272,3 +272,16 @@
 ![功能图](/.gitee/image/common/iot-feature.png)
 
 ![预览图](/.gitee/image/common/iot-preview.png)
+
+### IM 即时通讯
+
+演示地址（Vue3 + Vben5）：<http://dashboard-vben.yudao.iocoder.cn>
+
+使用文档：<https://doc.iocoder.cn/im-preview/>
+
+
+![功能图](/.gitee/image/common/im-feature.png)
+
+| 聊天界面 | 聊天管理 |
+| --- | --- |
+| ![聊天界面](/.gitee/image/common/im-preview-home.png) | ![聊天管理](/.gitee/image/common/im-preview-manager.png) |
