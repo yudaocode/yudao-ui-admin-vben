@@ -29,7 +29,7 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 /** 子设备列表表格列配置 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -126,7 +126,7 @@ function handleRowCheckboxChange({
 
 /** 解绑单个设备 */
 async function handleUnbind(row: IotDeviceApi.Device) {
-  await confirm({ content: `确定要解绑子设备【${row.deviceName}】吗？` });
+  await confirm(`确定要解绑子设备【${row.deviceName}】吗？`);
   const hideLoading = message.loading({
     content: `正在解绑【${row.deviceName}】...`,
     duration: 0,
@@ -142,9 +142,7 @@ async function handleUnbind(row: IotDeviceApi.Device) {
 
 /** 批量解绑 */
 async function handleUnbindBatch() {
-  await confirm({
-    content: `确定要解绑选中的 ${checkedIds.value.length} 个子设备吗？`,
-  });
+  await confirm(`确定要解绑选中的 ${checkedIds.value.length} 个子设备吗？`);
   const hideLoading = message.loading({
     content: '正在批量解绑...',
     duration: 0,
@@ -190,7 +188,7 @@ function useAddGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-function useAddGridColumns(): VxeTableGridOptions['columns'] {
+function useAddGridColumns(): VxeTableGridOptions<IotDeviceApi.Device>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -317,6 +315,7 @@ watch(
               label: '添加子设备',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:device:update'],
               onClick: openAddModal,
             },
             {
@@ -324,6 +323,7 @@ watch(
               type: 'primary',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:device:update'],
               disabled: isEmpty(checkedIds),
               onClick: handleUnbindBatch,
             },
@@ -342,6 +342,7 @@ watch(
               label: '解绑',
               type: 'link',
               danger: true,
+              auth: ['iot:device:update'],
               onClick: () => handleUnbind(row),
             },
           ]"

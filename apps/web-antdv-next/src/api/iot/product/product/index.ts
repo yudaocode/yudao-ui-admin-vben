@@ -20,8 +20,6 @@ export namespace IotProductApi {
     deviceType?: number; // 设备类型
     netType?: number; // 联网方式
     serializeType?: string; // 序列化类型
-    dataFormat?: number; // 数据格式
-    validateType?: number; // 认证方式
     registerEnabled?: boolean; // 是否开启动态注册
     deviceCount?: number; // 设备数量
     createTime?: Date; // 创建时间
@@ -102,4 +100,11 @@ export function getProductByKey(productKey: string) {
   return requestClient.get<IotProductApi.Product>('/iot/product/get-by-key', {
     params: { productKey },
   });
+}
+
+/** 同步产品物模型 TDengine 超级表结构 */
+export function syncProductPropertyTable(productId: number) {
+  return requestClient.post(
+    `/iot/product/sync-property-table?productId=${productId}`,
+  );
 }

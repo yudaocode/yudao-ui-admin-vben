@@ -26,8 +26,6 @@ import { useGridColumns } from './data';
 import ProductCardView from './modules/card-view.vue';
 import Form from './modules/form.vue';
 
-defineOptions({ name: 'IoTProduct' });
-
 const router = useRouter();
 const categoryList = ref<IotProductCategoryApi.ProductCategory[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
@@ -81,7 +79,7 @@ async function handleViewModeChange(mode: 'card' | 'list') {
 /** 导出表格 */
 async function handleExport() {
   const data = await exportProduct(queryParams.value);
-  downloadFileFromBlobPart({ fileName: '产品列表.xls', source: data });
+  downloadFileFromBlobPart({ fileName: '物联网产品.xls', source: data });
 }
 
 /** 打开产品详情 */
@@ -175,7 +173,7 @@ onMounted(() => {
     <FormModal @success="handleRefresh" />
 
     <!-- 统一搜索工具栏 -->
-    <Card :styles="{ body: { padding: '16px' } }" class="mb-4">
+    <Card :body-style="{ padding: '16px' }" class="!mb-2">
       <!-- 搜索表单 -->
       <div class="mb-3 flex items-center gap-3">
         <Input
@@ -217,12 +215,14 @@ onMounted(() => {
               label: $t('ui.actionTitle.create', ['产品']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:product:create'],
               onClick: handleCreate,
             },
             {
               label: $t('ui.actionTitle.export'),
               type: 'primary',
               icon: ACTION_ICON.DOWNLOAD,
+              auth: ['iot:product:export'],
               onClick: handleExport,
             },
           ]"
@@ -252,17 +252,20 @@ onMounted(() => {
             {
               label: $t('common.detail'),
               type: 'link',
+              auth: ['iot:product:query'],
               onClick: openProductDetail.bind(null, row.id!),
             },
             {
               label: '物模型',
               type: 'link',
+              auth: ['iot:thing-model:query'],
               onClick: openThingModel.bind(null, row.id!),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:product:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -270,6 +273,7 @@ onMounted(() => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:product:delete'],
               disabled: row.status === ProductStatusEnum.PUBLISHED,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),

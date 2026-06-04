@@ -36,9 +36,9 @@ const authInfo = ref<IotDeviceApi.DeviceAuthInfoRespVO>(
 );
 const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
-/** 是否有位置信息 */
+/** 是否有位置信息（合法经纬度 0 不应视为空） */
 const hasLocation = computed(() => {
-  return !!(props.device.longitude && props.device.latitude);
+  return props.device.longitude != null && props.device.latitude != null;
 });
 
 /** 打开地图弹窗 */
@@ -77,40 +77,40 @@ function handleAuthInfoDialogClose() {
   <div>
     <Card title="设备信息">
       <Descriptions :column="3" bordered size="small">
-        <DescriptionsItem label="产品名称">
+        <Descriptions.Item label="产品名称">
           {{ product.name }}
-        </DescriptionsItem>
-        <DescriptionsItem label="ProductKey">
+        </Descriptions.Item>
+        <Descriptions.Item label="ProductKey">
           {{ product.productKey }}
-        </DescriptionsItem>
-        <DescriptionsItem label="设备类型">
+        </Descriptions.Item>
+        <Descriptions.Item label="设备类型">
           <DictTag
             :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
             :value="product.deviceType"
           />
-        </DescriptionsItem>
-        <DescriptionsItem label="DeviceName">
+        </Descriptions.Item>
+        <Descriptions.Item label="DeviceName">
           {{ device.deviceName }}
-        </DescriptionsItem>
-        <DescriptionsItem label="备注名称">
+        </Descriptions.Item>
+        <Descriptions.Item label="备注名称">
           {{ device.nickname || '--' }}
-        </DescriptionsItem>
-        <DescriptionsItem label="当前状态">
+        </Descriptions.Item>
+        <Descriptions.Item label="当前状态">
           <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
-        </DescriptionsItem>
-        <DescriptionsItem label="创建时间">
+        </Descriptions.Item>
+        <Descriptions.Item label="创建时间">
           {{ formatDateTime(device.createTime) }}
-        </DescriptionsItem>
-        <DescriptionsItem label="激活时间">
+        </Descriptions.Item>
+        <Descriptions.Item label="激活时间">
           {{ formatDateTime(device.activeTime) }}
-        </DescriptionsItem>
-        <DescriptionsItem label="最后上线时间">
+        </Descriptions.Item>
+        <Descriptions.Item label="最后上线时间">
           {{ formatDateTime(device.onlineTime) }}
-        </DescriptionsItem>
-        <DescriptionsItem label="最后离线时间">
+        </Descriptions.Item>
+        <Descriptions.Item label="最后离线时间">
           {{ formatDateTime(device.offlineTime) }}
-        </DescriptionsItem>
-        <DescriptionsItem label="设备位置">
+        </Descriptions.Item>
+        <Descriptions.Item label="设备位置">
           <template v-if="hasLocation">
             <span class="mr-2">
               {{ device.longitude }}, {{ device.latitude }}
@@ -121,12 +121,12 @@ function handleAuthInfoDialogClose() {
             </Button>
           </template>
           <span v-else class="text-gray-400">暂无位置信息</span>
-        </DescriptionsItem>
-        <DescriptionsItem label="MQTT 连接参数">
+        </Descriptions.Item>
+        <Descriptions.Item label="MQTT 连接参数">
           <Button size="small" type="link" @click="handleAuthInfoDialogOpen">
             查看
           </Button>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     </Card>
 
@@ -138,7 +138,7 @@ function handleAuthInfoDialogClose() {
       width="640px"
     >
       <Form :label-col="{ span: 6 }">
-        <FormItem label="clientId">
+        <Form.Item label="clientId">
           <Input.Group compact>
             <Input
               v-model:value="authInfo.clientId"
@@ -149,8 +149,8 @@ function handleAuthInfoDialogClose() {
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
-        </FormItem>
-        <FormItem label="username">
+        </Form.Item>
+        <Form.Item label="username">
           <Input.Group compact>
             <Input
               v-model:value="authInfo.username"
@@ -161,8 +161,8 @@ function handleAuthInfoDialogClose() {
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
-        </FormItem>
-        <FormItem label="password">
+        </Form.Item>
+        <Form.Item label="password">
           <Input.Group compact>
             <Input
               v-model:value="authInfo.password"
@@ -182,7 +182,7 @@ function handleAuthInfoDialogClose() {
               <IconifyIcon icon="lucide:copy" />
             </Button>
           </Input.Group>
-        </FormItem>
+        </Form.Item>
       </Form>
       <div class="mt-4 text-right">
         <Button @click="handleAuthInfoDialogClose">关闭</Button>

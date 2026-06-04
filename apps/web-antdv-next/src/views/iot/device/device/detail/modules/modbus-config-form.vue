@@ -20,8 +20,6 @@ import { saveModbusConfig } from '#/api/iot/device/modbus/config';
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
 import { $t } from '#/locales';
 
-defineOptions({ name: 'DeviceModbusConfigForm' });
-
 const emit = defineEmits(['success']);
 
 const formData = ref<IotDeviceModbusConfigApi.ModbusConfig>();
@@ -60,26 +58,32 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         placeholder: '请输入 Modbus 服务器 IP 地址',
       },
+      // Client 模式专有字段：必填；Server 模式不显示也不校验
       dependencies: {
         triggerFields: [''],
-        show: () => isClient.value, // Client 模式专有字段：IP 地址
+        show: () => isClient.value,
+        rules: () =>
+          isClient.value ? z.string().min(1, '请输入 IP 地址') : null,
       },
-      rules: z.string().min(1, '请输入 IP 地址').optional(),
     },
     {
       fieldName: 'port',
       label: '端口',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入端口',
         min: 1,
         max: 65_535,
       },
       dependencies: {
         triggerFields: [''],
-        show: () => isClient.value, // Client 模式专有字段：端口
+        show: () => isClient.value,
+        rules: () =>
+          isClient.value
+            ? z.number({ message: '请输入端口' }).min(1).max(65_535)
+            : null,
       },
-      rules: z.number().min(1).max(65_535).optional(),
       defaultValue: 502,
     },
     {
@@ -87,6 +91,7 @@ const [Form, formApi] = useVbenForm({
       label: '从站地址',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入从站地址，范围 1-247',
         min: 1,
         max: 247,
@@ -99,15 +104,19 @@ const [Form, formApi] = useVbenForm({
       label: '连接超时(ms)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入连接超时时间',
         min: 1000,
         step: 1000,
       },
       dependencies: {
         triggerFields: [''],
-        show: () => isClient.value, // Client 模式专有字段：连接超时
+        show: () => isClient.value,
+        rules: () =>
+          isClient.value
+            ? z.number({ message: '请输入连接超时时间' }).min(1000)
+            : null,
       },
-      rules: z.number().min(1000).optional(),
       defaultValue: 3000,
     },
     {
@@ -115,15 +124,19 @@ const [Form, formApi] = useVbenForm({
       label: '重试间隔(ms)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入重试间隔',
         min: 1000,
         step: 1000,
       },
       dependencies: {
         triggerFields: [''],
-        show: () => isClient.value, // Client 模式专有字段：重试间隔
+        show: () => isClient.value,
+        rules: () =>
+          isClient.value
+            ? z.number({ message: '请输入重试间隔' }).min(1000)
+            : null,
       },
-      rules: z.number().min(1000).optional(),
       defaultValue: 10_000,
     },
     {

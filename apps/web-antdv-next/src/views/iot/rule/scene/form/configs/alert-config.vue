@@ -3,9 +3,9 @@
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { Select, Tag } from 'antdv-next';
+import { Form, Select } from 'antdv-next';
 
-import { getAlertConfigPage } from '#/api/iot/alert/config';
+import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 
 /** 告警配置组件 */
 defineOptions({ name: 'AlertConfig' });
@@ -23,32 +23,22 @@ const localValue = useVModel(props, 'modelValue', emit);
 const loading = ref(false); // 加载状态
 const alertConfigs = ref<any[]>([]); // 告警配置列表
 
-/**
- * 处理选择变化事件
- * @param value 选中的值
- */
+/** 处理选择变化事件 */
 function handleChange(value?: any) {
   emit('update:modelValue', value);
 }
 
-/**
- * 加载告警配置列表
- */
+/** 加载告警配置列表 */
 async function loadAlertConfigs() {
   loading.value = true;
   try {
-    const data = await getAlertConfigPage({
-      pageNo: 1,
-      pageSize: 100,
-      enabled: true, // 只加载启用的配置
-    });
-    alertConfigs.value = data.list || [];
+    alertConfigs.value = (await getSimpleAlertConfigList()) || [];
   } finally {
     loading.value = false;
   }
 }
 
-// 组件挂载时加载数据
+/** 初始化 **/
 onMounted(() => {
   loadAlertConfigs();
 });
@@ -56,30 +46,23 @@ onMounted(() => {
 
 <template>
   <div class="w-full">
-    <FormItem label="告警配置" required>
+    <Form.Item label="告警配置" required>
       <Select
-        v-model="localValue"
+        v-model:value="localValue"
         placeholder="请选择告警配置"
-        filterable
-        clearable
+        show-search
+        allow-clear
         @change="handleChange"
         class="w-full"
         :loading="loading"
       >
-        <SelectOption
+        <Select.Option
           v-for="config in alertConfigs"
           :key="config.id"
           :label="config.name"
           :value="config.id"
-        >
-          <div class="flex items-center justify-between">
-            <span>{{ config.name }}</span>
-            <Tag :type="config.enabled ? 'success' : 'danger'" size="small">
-              {{ config.enabled ? '启用' : '禁用' }}
-            </Tag>
-          </div>
-        </SelectOption>
+        />
       </Select>
-    </FormItem>
+    </Form.Item>
   </div>
 </template>

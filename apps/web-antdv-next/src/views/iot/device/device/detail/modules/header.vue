@@ -62,7 +62,7 @@ function openEditForm(row: IotDeviceApi.Device) {
       <div>
         <h2 class="text-xl font-bold">{{ device.deviceName }}</h2>
       </div>
-      <div class="space-x-2">
+      <div class="flex gap-2">
         <Button
           v-if="product.status === 0"
           v-access:code="['iot:device:update']"
@@ -75,15 +75,15 @@ function openEditForm(row: IotDeviceApi.Device) {
 
     <Card class="mt-4">
       <Descriptions :column="2">
-        <DescriptionsItem label="产品">
+        <Descriptions.Item label="产品">
           <a
             class="cursor-pointer text-blue-600"
             @click="goToProductDetail(product.id)"
           >
             {{ product.name }}
           </a>
-        </DescriptionsItem>
-        <DescriptionsItem label="ProductKey">
+        </Descriptions.Item>
+        <Descriptions.Item label="ProductKey">
           {{ product.productKey }}
           <Button
             class="ml-2"
@@ -92,7 +92,7 @@ function openEditForm(row: IotDeviceApi.Device) {
           >
             复制
           </Button>
-        </DescriptionsItem>
+        </Descriptions.Item>
       </Descriptions>
     </Card>
   </div>

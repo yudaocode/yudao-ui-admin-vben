@@ -7,11 +7,10 @@ export namespace IotProductCategoryApi {
   export interface ProductCategory {
     id?: number; // 分类 ID
     name: string; // 分类名称
-    parentId?: number; // 父级分类 ID
     sort?: number; // 分类排序
     status?: number; // 分类状态
     description?: string; // 分类描述
-    createTime?: string; // 创建时间
+    createTime?: Date; // 创建时间
   }
 }
 

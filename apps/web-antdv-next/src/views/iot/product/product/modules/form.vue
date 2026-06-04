@@ -41,25 +41,24 @@ const getTitle = computed(() => {
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: [],
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-1',
 });
 
 const [AdvancedForm, advancedFormApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useAdvancedFormSchema(),
   showDefaultActions: false,
-  wrapperClass: 'grid-cols-1',
 });
-
-/** 基础表单需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useBasicFormSchema(formApi, generateProductKey) });
 
 /** 获取高级表单的值（如果表单未挂载，则从 formData 中获取） */
 async function getAdvancedFormValues() {
@@ -104,6 +103,9 @@ const [Modal, modalApi] = useVbenModal({
       activeKey.value = [];
       return;
     }
+    formApi.setState({
+      schema: useBasicFormSchema(formApi, generateProductKey),
+    });
     // 加载数据
     const data = modalApi.getData<IotProductApi.Product>();
     if (!data || !data.id) {
@@ -146,9 +148,9 @@ const [Modal, modalApi] = useVbenModal({
     <div class="mx-4">
       <Form />
       <Collapse v-model:active-key="activeKey" class="mt-4">
-        <CollapsePanel key="advanced" header="更多设置">
+        <Collapse.Panel key="advanced" header="更多设置">
           <AdvancedForm />
-        </CollapsePanel>
+        </Collapse.Panel>
       </Collapse>
     </div>
   </Modal>
