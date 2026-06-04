@@ -64,7 +64,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
         autoSize: { minRows: 1, maxRows: 1 },

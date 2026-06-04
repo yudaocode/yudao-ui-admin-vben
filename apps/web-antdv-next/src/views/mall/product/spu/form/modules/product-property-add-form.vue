@@ -134,7 +134,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await formApi.resetForm();
   },
 });
 </script>

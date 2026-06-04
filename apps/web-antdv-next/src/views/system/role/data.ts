@@ -45,6 +45,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '请输入显示顺序',
       },
@@ -64,7 +65,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '角色备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入角色备注',
       },

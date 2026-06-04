@@ -9,7 +9,7 @@ import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { ProductSpuStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { message, TabPane, Tabs } from 'antdv-next';
+import { message, Tabs } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -110,9 +110,7 @@ async function handleStatusChange(
   // 二次确认
   const text = newStatus ? '上架' : '下架';
   try {
-    await confirm({
-      content: `确认要${text + row.name}吗?`,
-    });
+    await confirm(`确认要${text + row.name}吗?`);
   } catch {
     return false;
   }
@@ -132,9 +130,7 @@ async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
     newStatus === ProductSpuStatusEnum.RECYCLE.status
       ? '加入到回收站'
       : '恢复到仓库';
-  await confirm({
-    content: `确认要"${row.name}"${text}吗？`,
-  });
+  await confirm(`确认要"${row.name}"${text}吗？`);
   const hideLoading = message.loading({
     content: `正在${text}中...`,
     duration: 0,
@@ -213,7 +209,7 @@ onMounted(async () => {
     <Grid>
       <template #toolbar-actions>
         <Tabs @change="onChangeTab" class="w-full">
-          <TabPane
+          <Tabs.TabPane
             v-for="item in tabsData"
             :key="item.type"
             :tab="`${item.name} (${item.count})`"

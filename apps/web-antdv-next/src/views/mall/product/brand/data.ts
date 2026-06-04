@@ -41,6 +41,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '品牌排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '请输入品牌排序',
       },
@@ -60,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '品牌描述',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入品牌描述',
       },

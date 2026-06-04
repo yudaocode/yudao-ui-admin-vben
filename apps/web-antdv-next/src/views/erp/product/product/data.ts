@@ -92,6 +92,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '保质期天数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入保质期天数',
       },
     },
@@ -100,6 +101,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '重量（kg）',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入重量（kg）',
       },
     },
@@ -108,6 +110,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '采购价格',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入采购价格，单位：元',
         precision: 2,
         min: 0,
@@ -119,6 +122,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '销售价格',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入销售价格，单位：元',
         precision: 2,
         min: 0,
@@ -130,6 +134,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '最低价格',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入最低价格，单位：元',
         precision: 2,
         min: 0,
@@ -139,7 +144,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
       },

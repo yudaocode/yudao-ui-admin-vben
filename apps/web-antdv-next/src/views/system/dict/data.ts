@@ -58,7 +58,7 @@ export function useTypeFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
       },
@@ -222,6 +222,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
       label: '显示排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入显示排序',
       },
       rules: 'required',
@@ -259,7 +260,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
       },

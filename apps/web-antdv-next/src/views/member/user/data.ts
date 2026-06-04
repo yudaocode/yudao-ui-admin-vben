@@ -37,6 +37,17 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      fieldName: 'email',
+      label: '邮箱',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        maxlength: 50,
+        placeholder: '请输入邮箱',
+      },
+      rules: z.string().email('邮箱格式不正确').or(z.literal('')).optional(),
+    },
+    {
       fieldName: 'status',
       label: '状态',
       component: 'RadioGroup',
@@ -124,7 +135,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'mark',
       label: '会员备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入会员备注',
       },
@@ -150,6 +161,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'email',
+      label: '邮箱',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入邮箱',
         allowClear: true,
       },
     },
@@ -235,6 +255,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'mobile',
       title: '手机号',
       minWidth: 120,
+    },
+    {
+      field: 'email',
+      title: '邮箱',
+      minWidth: 180,
     },
     {
       field: 'nickname',
@@ -340,7 +365,7 @@ export function useLevelFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'reason',
       label: '修改原因',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入修改原因',
       },
@@ -396,6 +421,7 @@ export function useBalanceFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 2,
         step: 0.1,
@@ -471,6 +497,7 @@ export function usePointFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 0,
         placeholder: '请输入变动积分',

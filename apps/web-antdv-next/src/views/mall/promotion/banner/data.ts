@@ -62,6 +62,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '请输入排序',
       },
@@ -81,7 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'memo',
       label: '描述',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         rows: 4,
         placeholder: '请输入描述',

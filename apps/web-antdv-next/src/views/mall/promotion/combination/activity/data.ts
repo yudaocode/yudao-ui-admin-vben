@@ -55,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '拼团人数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '达到该人数即成团',
         min: 2,
       },
@@ -65,6 +66,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '限制时长',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '限制时长(小时)',
         min: 0,
       },
@@ -75,6 +77,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '总限购数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入总限购数量',
         min: 0,
       },
@@ -84,6 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '单次限购数量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入单次限购数量',
         min: 0,
       },

@@ -35,6 +35,10 @@ const [Descriptions] = useDescription({
       label: '手机号',
     },
     {
+      field: 'email',
+      label: '邮箱',
+    },
+    {
       field: 'sex',
       label: '性别',
       render: (val) =>

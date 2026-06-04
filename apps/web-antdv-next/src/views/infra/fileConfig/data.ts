@@ -43,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
       },
@@ -82,6 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '主机端口',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
         placeholder: '请输入主机端口',
       },

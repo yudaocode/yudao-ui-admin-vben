@@ -53,7 +53,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '应用描述',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入应用描述',
       },
@@ -74,6 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '访问令牌的有效期',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入访问令牌的有效期，单位：秒',
         min: 0,
       },
@@ -84,6 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '刷新令牌的有效期',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入刷新令牌的有效期，单位：秒',
         min: 0,
       },
@@ -161,7 +163,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'additionalInformation',
       label: '附加信息',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入附加信息，JSON 格式数据',
       },

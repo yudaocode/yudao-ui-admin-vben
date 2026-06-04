@@ -77,7 +77,7 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      component: 'TextArea',
+      component: 'Textarea',
       fieldName: 'description',
       label: '角色描述',
       componentProps: {
@@ -88,7 +88,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'systemMessage',
       label: '角色设定',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入角色设定',
       },
@@ -154,6 +154,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '角色排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入角色排序',
       },
       dependencies: {

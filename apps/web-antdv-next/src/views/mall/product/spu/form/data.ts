@@ -68,7 +68,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'introduction',
       label: '商品简介',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入商品简介',
         autoSize: { minRows: 2, maxRows: 2 },
@@ -281,6 +281,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       label: '商品排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
       },
       rules: 'required',
@@ -290,6 +291,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       label: '赠送积分',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
       },
       rules: 'required',
@@ -299,6 +301,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
       label: '虚拟销量',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         min: 0,
       },
       rules: 'required',

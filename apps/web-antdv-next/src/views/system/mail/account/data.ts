@@ -58,6 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: 'SMTP 服务器端口',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入 SMTP 服务器端口',
         min: 0,
         max: 65_535,
@@ -89,7 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
       },

@@ -82,6 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入排序',
       },
       rules: 'required',
@@ -99,6 +100,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '税率(%)',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入税率',
         min: 0,
         precision: 2,
@@ -131,7 +133,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'TextArea',
+      component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 3,
