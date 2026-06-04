@@ -19,6 +19,7 @@ publicHoistPattern:
   - oxfmt
   - oxlint
   - stylelint
+  - antdv-next
   - '*postcss*'
   - '@commitlint/*'
   - czg
