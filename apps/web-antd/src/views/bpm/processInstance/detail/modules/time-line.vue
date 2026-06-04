@@ -198,7 +198,7 @@ function shouldShowCustomUserSelect(
 function shouldShowApprovalReason(task: any, nodeType: BpmNodeTypeEnum) {
   return (
     task.reason &&
-    [BpmNodeTypeEnum.END_EVENT_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
+    [BpmNodeTypeEnum.START_USER_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
       nodeType,
     )
   );
