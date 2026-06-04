@@ -14,7 +14,7 @@ import { Button, Card, Col, message, Row, Space } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
-import { createLeave, getLeave, updateLeave } from '#/api/bpm/oa/leave';
+import { createLeave, getLeave } from '#/api/bpm/oa/leave';
 import { getApprovalDetail as getApprovalDetailApi } from '#/api/bpm/processInstance';
 import { $t } from '#/locales';
 import { router } from '#/router';
@@ -88,9 +88,7 @@ async function onSubmit() {
   };
   try {
     formLoading.value = true;
-    await (formData.value?.id
-      ? updateLeave(submitData)
-      : createLeave(submitData));
+    await createLeave(submitData);
     // 关闭并提示
     message.success($t('ui.actionMessage.operationSuccess'));
     await closeCurrentTab();
