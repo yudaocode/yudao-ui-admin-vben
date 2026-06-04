@@ -402,7 +402,7 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
   configForm.value.timeoutHandlerEnable = node.timeoutHandler?.enable;
   if (node.timeoutHandler?.enable && node.timeoutHandler?.timeDuration) {
     const strTimeDuration = node.timeoutHandler.timeDuration;
-    const parseTime = strTimeDuration.slice(2, -1);
+    const parseTime = strTimeDuration.match(/\d+/)?.[0] ?? '';
     const parseTimeUnit = strTimeDuration.slice(-1);
     configForm.value.timeDuration = Number.parseInt(parseTime);
     timeUnit.value = convertTimeUnit(parseTimeUnit);

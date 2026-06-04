@@ -417,7 +417,7 @@ function showUserTaskNodeConfig(node: SimpleFlowNode) {
   configForm.value.timeoutHandlerEnable = node.timeoutHandler?.enable;
   if (node.timeoutHandler?.enable && node.timeoutHandler?.timeDuration) {
     const strTimeDuration = node.timeoutHandler.timeDuration;
-    const parseTime = strTimeDuration.slice(2, -1);
+    const parseTime = strTimeDuration.match(/\d+/)?.[0] ?? '';
     const parseTimeUnit = strTimeDuration.slice(-1);
     configForm.value.timeDuration = Number.parseInt(parseTime);
     timeUnit.value = convertTimeUnit(parseTimeUnit);
@@ -563,12 +563,12 @@ function useTimeoutHandler() {
     if (!configForm.value.timeoutHandlerEnable) {
       return undefined;
     }
-    let strTimeDuration = 'PT';
+    let strTimeDuration = 'P';
     if (timeUnit.value === TimeUnitType.MINUTE) {
-      strTimeDuration += `${configForm.value.timeDuration}M`;
+      strTimeDuration += `T${configForm.value.timeDuration}M`;
     }
     if (timeUnit.value === TimeUnitType.HOUR) {
-      strTimeDuration += `${configForm.value.timeDuration}H`;
+      strTimeDuration += `T${configForm.value.timeDuration}H`;
     }
     if (timeUnit.value === TimeUnitType.DAY) {
       strTimeDuration += `${configForm.value.timeDuration}D`;
