@@ -249,7 +249,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

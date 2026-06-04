@@ -7,7 +7,11 @@ import type { MesWmProductIssueLineApi } from '#/api/mes/wm/productissue/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -29,9 +33,7 @@ export type FormType = 'create' | 'detail' | 'finish' | 'stock' | 'update';
 
 /** 表单头部是否只读（拣货、详情、完成态） */
 function isHeaderReadonly(formType: FormType): boolean {
-  return (
-    formType === 'detail' || formType === 'finish' || formType === 'stock'
-  );
+  return formType === 'detail' || formType === 'finish' || formType === 'stock';
 }
 
 /** 新增/修改的表单 */
@@ -123,7 +125,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -169,7 +171,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.MES_WM_PRODUCT_ISSUE_STATUS, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.MES_WM_PRODUCT_ISSUE_STATUS,
+          'number',
+        ),
         placeholder: '请选择单据状态',
       },
     },
@@ -300,7 +305,7 @@ export function useLineFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

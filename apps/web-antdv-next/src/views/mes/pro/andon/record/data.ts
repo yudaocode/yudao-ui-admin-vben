@@ -263,10 +263,7 @@ export function useFormSchema(
             component: 'Select',
             componentProps: {
               disabled: true,
-              options: getDictOptions(
-                DICT_TYPE.MES_PRO_ANDON_STATUS,
-                'number',
-              ),
+              options: getDictOptions(DICT_TYPE.MES_PRO_ANDON_STATUS, 'number'),
             },
           },
           {
@@ -306,7 +303,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         disabled: formType === 'detail',
         maxLength: 250,

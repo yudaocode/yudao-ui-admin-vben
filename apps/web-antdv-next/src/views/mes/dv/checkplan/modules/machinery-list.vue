@@ -57,7 +57,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 3,
@@ -159,7 +159,9 @@ watch(
 <template>
   <div>
     <div v-if="isEditable" class="mb-3 flex items-center justify-start">
-      <TableAction :actions="[{ label: '添加设备', type: 'primary', onClick: openForm }]" />
+      <TableAction
+        :actions="[{ label: '添加设备', type: 'primary', onClick: openForm }]"
+      />
     </div>
     <Grid class="w-full">
       <template #actions="{ row }">

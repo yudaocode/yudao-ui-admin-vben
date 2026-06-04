@@ -326,7 +326,7 @@ export function useFormSchema({
       rules: 'required',
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxLength: 255,
         placeholder: '请输入备注',

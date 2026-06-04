@@ -27,9 +27,7 @@ export type FormType = 'create' | 'detail' | 'finish' | 'stock' | 'update';
 
 /** 表单头部是否只读（拣货、详情、完成态） */
 function isHeaderReadonly(formType: FormType): boolean {
-  return (
-    formType === 'detail' || formType === 'finish' || formType === 'stock'
-  );
+  return formType === 'detail' || formType === 'finish' || formType === 'stock';
 }
 
 /** 新增/修改的表单 */
@@ -121,7 +119,7 @@ export function useFormSchema(
     {
       fieldName: 'returnReason',
       label: '退货原因',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入退货原因',
@@ -147,7 +145,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -362,7 +360,7 @@ export function useLineFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

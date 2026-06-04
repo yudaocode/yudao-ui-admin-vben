@@ -68,7 +68,7 @@ export function useInfoFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'introduction',
       label: '商品简介',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入商品简介',
         autoSize: { minRows: 2, maxRows: 2 },

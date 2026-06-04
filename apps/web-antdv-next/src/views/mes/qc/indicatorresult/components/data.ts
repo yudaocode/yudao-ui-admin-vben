@@ -60,7 +60,7 @@ export function useQcIndicatorResultFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',

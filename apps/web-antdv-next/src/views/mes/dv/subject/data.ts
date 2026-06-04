@@ -51,7 +51,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_SUBJECT_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_SUBJECT_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -81,7 +83,7 @@ export function useFormSchema(
     {
       fieldName: 'content',
       label: '项目内容',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入项目内容',
@@ -92,7 +94,7 @@ export function useFormSchema(
     {
       fieldName: 'standard',
       label: '标准',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入标准',
@@ -114,7 +116,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',

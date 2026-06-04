@@ -4,7 +4,13 @@ import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
 import { h } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesCalPlanStatusEnum, MesCalShiftMethodEnum, MesCalShiftTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesCalPlanStatusEnum,
+  MesCalShiftMethodEnum,
+  MesCalShiftTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -55,7 +61,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_PLAN_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.CAL_PLAN_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -126,7 +134,8 @@ export function useFormSchema(
       },
       dependencies: {
         triggerFields: ['shiftType'],
-        show: (values) => !!values.shiftType && values.shiftType !== MesCalShiftTypeEnum.SINGLE,
+        show: (values) =>
+          !!values.shiftType && values.shiftType !== MesCalShiftTypeEnum.SINGLE,
       },
     },
     {
@@ -146,7 +155,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -237,8 +246,18 @@ export function useGridColumns(): VxeTableGridOptions<MesCalPlanApi.Plan>['colum
         props: { type: DICT_TYPE.MES_CAL_CALENDAR_TYPE },
       },
     },
-    { field: 'startDate', title: '开始日期', width: 150, formatter: 'formatDate' },
-    { field: 'endDate', title: '结束日期', width: 150, formatter: 'formatDate' },
+    {
+      field: 'startDate',
+      title: '开始日期',
+      width: 150,
+      formatter: 'formatDate',
+    },
+    {
+      field: 'endDate',
+      title: '结束日期',
+      width: 150,
+      formatter: 'formatDate',
+    },
     {
       field: 'shiftType',
       title: '轮班方式',
@@ -266,7 +285,12 @@ export function useGridColumns(): VxeTableGridOptions<MesCalPlanApi.Plan>['colum
         props: { type: DICT_TYPE.MES_CAL_PLAN_STATUS },
       },
     },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 160,

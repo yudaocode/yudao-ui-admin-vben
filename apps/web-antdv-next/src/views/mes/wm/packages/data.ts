@@ -5,7 +5,11 @@ import type { MesWmPackageLineApi } from '#/api/mes/wm/packages/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 
 import { Button } from 'antdv-next';
 
@@ -188,7 +192,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -457,7 +461,7 @@ export function useLineFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',

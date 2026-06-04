@@ -4,7 +4,11 @@ import type { MesDvCheckRecordLineApi } from '#/api/mes/dv/checkrecord/line';
 
 import { computed, ref, watch } from 'vue';
 
-import { DICT_TYPE, MesDvCheckResultEnum, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesDvCheckResultEnum,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message, Modal } from 'antdv-next';
@@ -25,7 +29,9 @@ const props = defineProps<{ disabled?: boolean; recordId: number }>();
 const formOpen = ref(false);
 const formLoading = ref(false);
 const lineFormType = ref<'create' | 'update'>('create');
-const formTitle = computed(() => (lineFormType.value === 'create' ? '添加明细' : '修改明细'));
+const formTitle = computed(() =>
+  lineFormType.value === 'create' ? '添加明细' : '修改明细',
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -77,7 +83,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'checkResult',
       label: '异常描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入异常描述',
         rows: 3,
@@ -86,7 +92,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 2,
@@ -144,7 +150,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开点检明细表单 */
-async function openForm(type: 'create' | 'update', row?: MesDvCheckRecordLineApi.CheckRecordLine) {
+async function openForm(
+  type: 'create' | 'update',
+  row?: MesDvCheckRecordLineApi.CheckRecordLine,
+) {
   formOpen.value = true;
   lineFormType.value = type;
   await formApi.resetForm();
@@ -168,7 +177,8 @@ async function submitForm() {
   }
   formLoading.value = true;
   try {
-    const data = (await formApi.getValues()) as MesDvCheckRecordLineApi.CheckRecordLine;
+    const data =
+      (await formApi.getValues()) as MesDvCheckRecordLineApi.CheckRecordLine;
     await (data.id ? updateCheckRecordLine(data) : createCheckRecordLine(data));
     formOpen.value = false;
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -197,14 +207,24 @@ watch(
   <div class="mx-4 mt-4">
     <div v-if="!disabled" class="mb-3">
       <TableAction
-        :actions="[{ label: '添加明细', type: 'primary', onClick: openForm.bind(null, 'create') }]"
+        :actions="[
+          {
+            label: '添加明细',
+            type: 'primary',
+            onClick: openForm.bind(null, 'create'),
+          },
+        ]"
       />
     </div>
     <Grid table-title="明细列表">
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            { label: '编辑', type: 'link', onClick: openForm.bind(null, 'update', row) },
+            {
+              label: '编辑',
+              type: 'link',
+              onClick: openForm.bind(null, 'update', row),
+            },
             {
               label: '删除',
               type: 'link',

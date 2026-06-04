@@ -14,7 +14,7 @@ export function useDefectRecordInlineFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'name',
       label: '缺陷描述',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入缺陷描述',

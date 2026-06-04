@@ -4,7 +4,12 @@ import type { MesTmToolApi } from '#/api/mes/tm/tool';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesMaintenTypeEnum, MesToolStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesMaintenTypeEnum,
+  MesToolStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -62,7 +67,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.TM_TOOL_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -119,7 +126,9 @@ export function useFormSchema(
         class: '!w-full',
         min: 1,
         onChange: async (value?: number) => {
-          const values = (await formApi?.getValues()) as MesTmToolApi.Tool | undefined;
+          const values = (await formApi?.getValues()) as
+            | MesTmToolApi.Tool
+            | undefined;
           if (!values?.id) {
             await formApi?.setFieldValue('availableQuantity', value);
           }
@@ -198,7 +207,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -292,10 +301,14 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolApi.Tool>['column
       width: 180,
       formatter: ({ row }) => {
         if (row.maintenType === MesMaintenTypeEnum.REGULAR) {
-          return row.nextMaintenDate ? formatDateTime(row.nextMaintenDate) : '-';
+          return row.nextMaintenDate
+            ? formatDateTime(row.nextMaintenDate)
+            : '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.USAGE) {
-          return row.nextMaintenPeriod == null ? '-' : `${row.nextMaintenPeriod} 次`;
+          return row.nextMaintenPeriod == null
+            ? '-'
+            : `${row.nextMaintenPeriod} 次`;
         }
         return '-';
       },

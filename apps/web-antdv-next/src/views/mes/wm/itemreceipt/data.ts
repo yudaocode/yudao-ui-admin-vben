@@ -8,7 +8,11 @@ import type { MesWmItemReceiptLineApi } from '#/api/mes/wm/itemreceipt/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesWmArrivalNoticeStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmArrivalNoticeStatusEnum,
+} from '@vben/constants';
 
 import { Button } from 'antdv-next';
 
@@ -31,9 +35,7 @@ export type FormType = 'create' | 'detail' | 'finish' | 'stock' | 'update';
 
 /** 表单头部是否只读（上架、详情、入库态） */
 function isHeaderReadonly(formType: FormType): boolean {
-  return (
-    formType === 'detail' || formType === 'finish' || formType === 'stock'
-  );
+  return formType === 'detail' || formType === 'finish' || formType === 'stock';
 }
 
 /** 新增/修改的表单 */
@@ -138,7 +140,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -398,7 +400,7 @@ export function useLineFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

@@ -4,7 +4,11 @@ import type { MesDvRepairApi } from '#/api/mes/dv/repair';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesDvRepairStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesDvRepairStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -54,7 +58,9 @@ export function useFormSchema(
       },
       dependencies: {
         triggerFields: ['id'],
-        componentProps: (values) => ({ disabled: headerReadonly || !!values.id }),
+        componentProps: (values) => ({
+          disabled: headerReadonly || !!values.id,
+        }),
       },
       rules: 'required',
       suffix: headerReadonly
@@ -65,7 +71,9 @@ export function useFormSchema(
               {
                 type: 'default',
                 onClick: async () => {
-                  const code = await generateAutoCode(MesAutoCodeRuleCode.DV_REPAIR_CODE);
+                  const code = await generateAutoCode(
+                    MesAutoCodeRuleCode.DV_REPAIR_CODE,
+                  );
                   await formApi?.setFieldValue('code', code);
                 },
               },
@@ -205,7 +213,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         disabled: headerReadonly,
@@ -288,8 +296,18 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
     },
     { field: 'name', title: '维修单名称', minWidth: 150 },
     { field: 'machineryName', title: '设备名称', minWidth: 150 },
-    { field: 'requireDate', title: '报修日期', width: 180, formatter: 'formatDateTime' },
-    { field: 'finishDate', title: '完成日期', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'requireDate',
+      title: '报修日期',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'finishDate',
+      title: '完成日期',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       field: 'result',
       title: '维修结果',
@@ -308,7 +326,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
         props: { type: DICT_TYPE.MES_DV_REPAIR_STATUS },
       },
     },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 260,

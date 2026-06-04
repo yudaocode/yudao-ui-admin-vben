@@ -5,7 +5,12 @@ import type { MesProTaskApi } from '#/api/mes/pro/task';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProTaskStatusEnum,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -457,8 +462,7 @@ export function useFormSchema(
             (values?.materialScrapQuantity || 0) +
             (values?.otherScrapQuantity || 0);
           await formApi?.setValues({
-            feedbackQuantity:
-              (values?.qualifiedQuantity || 0) + unqualified,
+            feedbackQuantity: (values?.qualifiedQuantity || 0) + unqualified,
             unqualifiedQuantity: unqualified,
           });
         },
@@ -486,8 +490,7 @@ export function useFormSchema(
             (values?.materialScrapQuantity || 0) +
             (values?.otherScrapQuantity || 0);
           await formApi?.setValues({
-            feedbackQuantity:
-              (values?.qualifiedQuantity || 0) + unqualified,
+            feedbackQuantity: (values?.qualifiedQuantity || 0) + unqualified,
             unqualifiedQuantity: unqualified,
           });
         },
@@ -515,8 +518,7 @@ export function useFormSchema(
             (values?.materialScrapQuantity || 0) +
             (values?.otherScrapQuantity || 0);
           await formApi?.setValues({
-            feedbackQuantity:
-              (values?.qualifiedQuantity || 0) + unqualified,
+            feedbackQuantity: (values?.qualifiedQuantity || 0) + unqualified,
             unqualifiedQuantity: unqualified,
           });
         },
@@ -573,7 +575,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         disabled: formType === 'detail',

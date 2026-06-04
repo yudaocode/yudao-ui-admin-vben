@@ -5,7 +5,12 @@ import type { MesQcIpqcLineApi } from '#/api/mes/qc/ipqc/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProTaskStatusEnum,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -340,7 +345,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

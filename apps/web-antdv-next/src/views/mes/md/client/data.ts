@@ -4,7 +4,11 @@ import type { MesMdClientApi } from '#/api/mes/md/client';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -94,7 +98,7 @@ export function useFormSchema(
     {
       fieldName: 'description',
       label: '客户简介',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入客户简介',
@@ -104,7 +108,7 @@ export function useFormSchema(
     {
       fieldName: 'address',
       label: '客户地址',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入客户地址',
@@ -216,7 +220,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

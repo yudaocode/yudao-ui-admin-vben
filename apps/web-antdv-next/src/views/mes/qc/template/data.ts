@@ -6,7 +6,11 @@ import type { MesQcTemplateItemApi } from '#/api/mes/qc/template/item';
 
 import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -89,7 +93,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -315,7 +319,7 @@ export function useIndicatorFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'checkMethod',
       label: '检测方法',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入检测方法',
@@ -334,7 +338,7 @@ export function useIndicatorFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',
@@ -491,7 +495,7 @@ export function useItemFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

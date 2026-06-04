@@ -7,7 +7,11 @@ import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
 import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -69,7 +73,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '路线说明',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         maxLength: 500,
@@ -80,7 +84,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         maxLength: 250,
@@ -272,7 +276,7 @@ export function useRouteProcessFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         maxLength: 250,
@@ -377,7 +381,6 @@ export function useRouteProductBomGridColumns(): VxeTableGridOptions<MesProRoute
   ];
 }
 
-
 /** 工艺路线产品表单 */
 export function useRouteProductFormSchema(
   onItemChange?: (item: any) => void,
@@ -440,7 +443,7 @@ export function useRouteProductFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         maxLength: 250,
@@ -503,7 +506,7 @@ export function useRouteProductBomFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxLength: 250,
         placeholder: '请输入备注',

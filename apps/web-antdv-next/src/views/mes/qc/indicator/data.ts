@@ -4,7 +4,11 @@ import type { MesQcIndicatorApi } from '#/api/mes/qc/indicator';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesQcResultValueType } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesQcResultValueType,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -111,7 +115,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxlength: 250,
         placeholder: '请输入备注',

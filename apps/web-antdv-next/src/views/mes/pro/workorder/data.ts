@@ -6,7 +6,12 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderSourceTypeEnum, MesProWorkOrderTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderSourceTypeEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -14,7 +19,10 @@ import { Button } from 'antdv-next';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import { MdClientSelect } from '#/views/mes/md/client/components';
-import { MdItemSelect, MdProductBomSelect } from '#/views/mes/md/item/components';
+import {
+  MdItemSelect,
+  MdProductBomSelect,
+} from '#/views/mes/md/item/components';
 import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 
 /** 表单类型 */
@@ -232,7 +240,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         disabled: headerReadonly,
@@ -542,7 +550,7 @@ export function useBomFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 3,

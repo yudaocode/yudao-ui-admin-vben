@@ -4,7 +4,11 @@ import type { MesTmToolTypeApi } from '#/api/mes/tm/tool/type';
 
 import { h } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesMaintenTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesMaintenTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -46,7 +50,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_TYPE_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.TM_TOOL_TYPE_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -101,14 +107,16 @@ export function useFormSchema(
         triggerFields: ['codeFlag', 'maintenType'],
         show: (values) =>
           !!values.codeFlag &&
-          [MesMaintenTypeEnum.REGULAR, MesMaintenTypeEnum.USAGE].includes(values.maintenType),
+          [MesMaintenTypeEnum.REGULAR, MesMaintenTypeEnum.USAGE].includes(
+            values.maintenType,
+          ),
       },
       rules: 'required',
     },
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',

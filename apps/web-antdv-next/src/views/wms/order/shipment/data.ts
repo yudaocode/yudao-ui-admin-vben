@@ -394,7 +394,7 @@ export function useFormSchema({
       label: '业务单号',
     },
     {
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxLength: 255,
         placeholder: '请输入备注',

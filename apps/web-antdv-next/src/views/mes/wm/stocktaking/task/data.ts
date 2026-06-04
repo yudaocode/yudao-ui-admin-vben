@@ -7,7 +7,11 @@ import type { MesWmStockTakingResultApi } from '#/api/mes/wm/stocktaking/task/re
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesWmStockTakingTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmStockTakingTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -30,9 +34,7 @@ export type FormType = 'create' | 'detail' | 'execute' | 'submit' | 'update';
 /** 表单头部是否只读（提交、执行盘点、详情态） */
 function isHeaderReadonly(formType: FormType): boolean {
   return (
-    formType === 'detail' ||
-    formType === 'execute' ||
-    formType === 'submit'
+    formType === 'detail' || formType === 'execute' || formType === 'submit'
   );
 }
 
@@ -200,7 +202,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -587,7 +589,7 @@ export function useResultFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

@@ -45,7 +45,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'reason',
       label: '呼叫原因',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         autoSize: { maxRows: 3, minRows: 1 },
         maxLength: 200,

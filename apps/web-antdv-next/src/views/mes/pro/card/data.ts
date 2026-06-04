@@ -5,7 +5,11 @@ import type { MesProCardProcessApi } from '#/api/mes/pro/card/process';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 
 import { Button } from 'antdv-next';
 
@@ -120,7 +124,7 @@ export function useFormSchema(
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         disabled: headerReadonly,
@@ -409,7 +413,7 @@ export function useProcessFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
         placeholder: '请输入备注',

@@ -198,7 +198,10 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         disabled: true,
-        options: getDictOptions(DICT_TYPE.MES_PRO_WORK_ORDER_SOURCE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.MES_PRO_WORK_ORDER_SOURCE_TYPE,
+          'number',
+        ),
       },
     },
     {
@@ -291,7 +294,7 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         disabled: true,
@@ -443,7 +446,7 @@ export function useTaskFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',

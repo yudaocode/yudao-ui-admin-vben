@@ -18,10 +18,15 @@ import {
 import { getSimpleUserList } from '#/api/system/user';
 import { $t } from '#/locales';
 
-const props = withDefaults(defineProps<{ formType?: FormType; teamId: number }>(), {
-  formType: 'update',
-});
-const isEditable = computed(() => ['create', 'update'].includes(props.formType)); // 是否可编辑
+const props = withDefaults(
+  defineProps<{ formType?: FormType; teamId: number }>(),
+  {
+    formType: 'update',
+  },
+);
+const isEditable = computed(() =>
+  ['create', 'update'].includes(props.formType),
+); // 是否可编辑
 const formOpen = ref(false); // 成员表单是否打开
 const formLoading = ref(false); // 成员表单提交中
 const list = ref<MesCalTeamMemberApi.TeamMember[]>([]); // 成员列表
@@ -61,7 +66,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 3,
@@ -163,7 +168,9 @@ watch(
 <template>
   <div>
     <div v-if="isEditable" class="mb-3 flex items-center justify-start">
-      <TableAction :actions="[{ label: '添加成员', type: 'primary', onClick: openForm }]" />
+      <TableAction
+        :actions="[{ label: '添加成员', type: 'primary', onClick: openForm }]"
+      />
     </div>
     <Grid class="w-full">
       <template #actions="{ row }">

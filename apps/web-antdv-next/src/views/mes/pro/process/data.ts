@@ -5,7 +5,11 @@ import type { MesProProcessContentApi } from '#/api/mes/pro/process/content';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'antdv-next';
@@ -75,7 +79,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'attention',
       label: '工序说明',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         maxLength: 500,
@@ -86,7 +90,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         maxLength: 250,
@@ -204,7 +208,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'content',
       label: '步骤说明',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxLength: 500,
         placeholder: '请输入步骤说明',
@@ -241,7 +245,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         maxLength: 250,
         placeholder: '请输入备注',

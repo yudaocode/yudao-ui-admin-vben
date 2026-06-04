@@ -42,7 +42,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '分组描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入分组描述',
         rows: 3,

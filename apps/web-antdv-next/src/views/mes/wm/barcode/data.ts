@@ -41,10 +41,7 @@ import {
 } from '../warehouse/components';
 
 /** 业务对象选中后回填业务编码、业务名称、条码内容 */
-async function syncBizDetail(
-  formApi: undefined | VbenFormApi,
-  item: any,
-) {
+async function syncBizDetail(formApi: undefined | VbenFormApi, item: any) {
   if (!formApi) {
     return;
   }
@@ -467,7 +464,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 2,

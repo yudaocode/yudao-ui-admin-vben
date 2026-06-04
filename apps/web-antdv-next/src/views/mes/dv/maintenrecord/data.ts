@@ -4,7 +4,12 @@ import type { MesDvMaintenRecordApi } from '#/api/mes/dv/maintenrecord';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE, MesDvCheckPlanStatusEnum, MesDvMaintenRecordStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesDvCheckPlanStatusEnum,
+  MesDvMaintenRecordStatusEnum,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -81,7 +86,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入备注',
@@ -137,7 +142,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvMaintenRecordApi.Main
       },
     },
     { field: 'planName', title: '计划名称', minWidth: 150 },
-    { field: 'maintenTime', title: '保养时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'maintenTime',
+      title: '保养时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     { field: 'nickname', title: '保养人', minWidth: 120 },
     {
       field: 'status',
@@ -148,7 +158,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvMaintenRecordApi.Main
         props: { type: DICT_TYPE.MES_MAINTEN_RECORD_STATUS },
       },
     },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 200,

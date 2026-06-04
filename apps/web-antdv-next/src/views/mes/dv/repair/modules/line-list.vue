@@ -64,7 +64,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'malfunction',
       label: '故障描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入故障描述',
         rows: 3,
@@ -82,7 +82,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'description',
       label: '维修描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入维修描述',
         rows: 3,
@@ -91,7 +91,7 @@ const [Form, formApi] = useVbenForm({
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 2,
@@ -143,7 +143,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开维修明细表单 */
-async function openForm(type: 'create' | 'update', row?: MesDvRepairLineApi.RepairLine) {
+async function openForm(
+  type: 'create' | 'update',
+  row?: MesDvRepairLineApi.RepairLine,
+) {
   formOpen.value = true;
   lineFormType.value = type;
   await formApi.resetForm();
@@ -198,7 +201,11 @@ watch(
     <div v-if="!disabled" class="mb-3">
       <TableAction
         :actions="[
-          { label: '添加维修项目', type: 'primary', onClick: openForm.bind(null, 'create') },
+          {
+            label: '添加维修项目',
+            type: 'primary',
+            onClick: openForm.bind(null, 'create'),
+          },
         ]"
       />
     </div>
@@ -206,7 +213,11 @@ watch(
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            { label: '编辑', type: 'link', onClick: openForm.bind(null, 'update', row) },
+            {
+              label: '编辑',
+              type: 'link',
+              onClick: openForm.bind(null, 'update', row),
+            },
             {
               label: '删除',
               type: 'link',

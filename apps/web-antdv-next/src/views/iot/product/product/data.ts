@@ -190,7 +190,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'description',
       label: '产品描述',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入产品描述',
         rows: 3,

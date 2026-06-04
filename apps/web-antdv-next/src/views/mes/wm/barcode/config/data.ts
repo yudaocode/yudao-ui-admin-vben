@@ -86,7 +86,8 @@ export function useFormSchema(): VbenFormSchema[] {
         h(
           Button,
           {
-            onClick: () => message.warning('打印模板选择功能暂未实现，敬请期待'),
+            onClick: () =>
+              message.warning('打印模板选择功能暂未实现，敬请期待'),
           },
           { default: () => '设置' },
         ),
@@ -103,7 +104,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'remark',
       label: '备注',
-      component: 'Textarea',
+      component: 'TextArea',
       componentProps: {
         placeholder: '请输入备注',
         rows: 2,
