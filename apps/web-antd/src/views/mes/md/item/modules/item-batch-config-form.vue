@@ -5,13 +5,14 @@ import type { MesMdItemBatchConfigApi } from '#/api/mes/md/item/batchConfig';
 
 import { computed, ref, watch } from 'vue';
 
+import { MesItemOrProductEnum } from '@vben/constants';
+
 import { Button, Checkbox, message, Spin } from 'ant-design-vue';
 
 import {
   getBatchConfigByItemId,
   saveBatchConfig,
 } from '#/api/mes/md/item/batchConfig';
-import { MesItemOrProductEnum } from '#/views/mes/utils/constants';
 
 const props = withDefaults(
   defineProps<{

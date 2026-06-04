@@ -1,12 +1,8 @@
-import type { useEcharts } from '@vben/plugins/echarts';
+import type { EChartsOption } from '@vben/plugins/echarts';
 
 import type { WmsHomeStatisticsApi } from '#/api/wms/home';
 
 import { formatQuantity } from '#/views/wms/utils/format';
-
-type WmsHomeChartOption = Parameters<
-  ReturnType<typeof useEcharts>['renderEcharts']
->[0];
 
 export interface InventoryChartItem {
   name: string;
@@ -44,7 +40,7 @@ function formatGoodsLegend(name: string, goodsShareList: InventoryChartItem[]) {
 /** 货物占比图表配置 */
 export function getGoodsShareChartOptions(
   goodsShareList: InventoryChartItem[],
-): WmsHomeChartOption {
+): EChartsOption {
   return {
     color: ['#2f7df6', '#18a058', '#f59e0b', '#7c3aed', '#14b8a6'],
     legend: {
@@ -78,7 +74,7 @@ export function getGoodsShareChartOptions(
 /** 库存分布图表配置 */
 export function getWarehouseDistributionChartOptions(
   warehouseDistributionList: InventoryChartItem[],
-): WmsHomeChartOption {
+): EChartsOption {
   const sortedList = warehouseDistributionList.toReversed();
   return {
     color: ['#2f7df6'],

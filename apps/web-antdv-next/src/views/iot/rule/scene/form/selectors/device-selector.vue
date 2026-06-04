@@ -1,6 +1,6 @@
 <!-- 设备选择器组件 -->
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { DEVICE_SELECTOR_OPTIONS, ref, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
@@ -8,7 +8,6 @@ import { Select } from 'antdv-next';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
-import { DEVICE_SELECTOR_OPTIONS } from '#/views/iot/utils/constants';
 
 /** 设备选择器组件 */
 defineOptions({ name: 'DeviceSelector' });

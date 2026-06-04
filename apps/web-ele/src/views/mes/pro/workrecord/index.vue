@@ -12,8 +12,8 @@ import {
 } from '#/api/mes/pro/workrecord';
 import { $t } from '#/locales';
 
-import WorkRecordStatusBar from './components/work-record-status-bar.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import WorkRecordStatusBar from './modules/status-bar.vue';
 
 /** 刷新表格 */
 function handleRefresh() {

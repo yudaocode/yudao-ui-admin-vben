@@ -5,6 +5,7 @@ import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -16,7 +17,6 @@ import {
   getWorkstationPage,
 } from '#/api/mes/md/workstation';
 import { $t } from '#/locales';
-import { BarcodeBizTypeEnum } from '#/views/mes/utils/constants';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useGridColumns, useGridFormSchema } from './data';

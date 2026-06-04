@@ -1,1 +1,1 @@
-export { default as DvSubjectSelect } from './dv-subject-select.vue';
+export { default as DvSubjectSelect } from './select.vue';

@@ -9,7 +9,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, h, ModbusFunctionCodeOptions, onMounted, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -25,7 +25,6 @@ import {
 import { ProtocolTypeEnum } from '#/api/iot/product/product';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
-import { ModbusFunctionCodeOptions } from '#/views/iot/utils/constants';
 
 import DeviceModbusConfigForm from './modbus-config-form.vue';
 import DeviceModbusPointForm from './modbus-point-form.vue';

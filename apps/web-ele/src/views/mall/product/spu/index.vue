@@ -109,9 +109,7 @@ async function handleStatusChange(
   // 二次确认
   const text = newStatus ? '上架' : '下架';
   try {
-    await confirm({
-      content: `确认要${text + row.name}吗?`,
-    });
+    await confirm(`确认要${text + row.name}吗?`);
   } catch {
     return false;
   }
@@ -131,9 +129,7 @@ async function handleStatus02Change(row: MallSpuApi.Spu, newStatus: number) {
     newStatus === ProductSpuStatusEnum.RECYCLE.status
       ? '加入到回收站'
       : '恢复到仓库';
-  await confirm({
-    content: `确认要"${row.name}"${text}吗？`,
-  });
+  await confirm(`确认要"${row.name}"${text}吗？`);
   const loadingInstance = ElLoading.service({
     text: `正在${text}中...`,
   });

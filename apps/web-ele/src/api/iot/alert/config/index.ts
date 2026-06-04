@@ -14,6 +14,9 @@ export namespace AlertConfigApi {
     receiveUserIds?: number[];
     receiveUserNames?: string[];
     receiveTypes?: number[];
+    smsTemplateCode?: string;
+    mailTemplateCode?: string;
+    notifyTemplateCode?: string;
     createTime?: Date;
   }
 }

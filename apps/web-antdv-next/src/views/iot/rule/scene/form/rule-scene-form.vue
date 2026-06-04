@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { IotSceneRule } from '#/api/iot/rule/scene';
 
-import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { computed, IotRuleSceneActionTypeEnum, IotRuleSceneTriggerTypeEnum, isDeviceTrigger, nextTick, reactive, ref, watch } from 'vue';
 
 import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
@@ -10,11 +10,6 @@ import { useVModel } from '@vueuse/core';
 import { Button, Drawer, Form, message } from 'antdv-next';
 
 import { createSceneRule, updateSceneRule } from '#/api/iot/rule/scene';
-import {
-  IotRuleSceneActionTypeEnum,
-  IotRuleSceneTriggerTypeEnum,
-  isDeviceTrigger,
-} from '#/views/iot/utils/constants';
 
 import ActionSection from './sections/action-section.vue';
 import BasicInfoSection from './sections/basic-info-section.vue';

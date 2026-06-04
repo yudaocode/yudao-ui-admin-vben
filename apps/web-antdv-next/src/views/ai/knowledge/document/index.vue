@@ -76,24 +76,21 @@ async function handleStatusChange(
   newStatus: number,
   row: AiKnowledgeDocumentApi.KnowledgeDocument,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `你要将${row.name}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-    })
-      .then(async () => {
-        // 更新文档状态
-        await updateKnowledgeDocumentStatus({
-          id: row.id,
-          status: newStatus,
-        });
-        // 提示并返回成功
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
+    });
+  } catch {
+    return false;
+  }
+  // 更新文档状态
+  await updateKnowledgeDocumentStatus({
+    id: row.id,
+    status: newStatus,
   });
+  // 提示并返回成功
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

@@ -6,16 +6,15 @@ import type { ThingModelProperty } from '#/api/iot/thingmodel';
 
 import { computed, watch } from 'vue';
 
-import { isEmpty } from '@vben/utils';
-
-import { useVModel } from '@vueuse/core';
-import { Input, Radio, Select } from 'antdv-next';
-
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
   IoTThingModelAccessModeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { isEmpty } from '@vben/utils';
+
+import { useVModel } from '@vueuse/core';
+import { Input, Radio, Select } from 'antdv-next';
 
 import {
   ThingModelArrayDataSpecs,

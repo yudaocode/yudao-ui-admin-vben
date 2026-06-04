@@ -4,15 +4,15 @@ import type { TriggerCondition } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Col, Row, Select } from 'antdv-next';
-
 import {
   getConditionTypeOptions,
   IoTDeviceStatusEnum,
   IotRuleSceneTriggerConditionParameterOperatorEnum,
   IotRuleSceneTriggerConditionTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Col, Row, Select } from 'antdv-next';
 
 import ValueInput from '../inputs/value-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';

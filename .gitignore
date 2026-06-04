@@ -60,3 +60,6 @@ vite.config.ts.*
 skills-lock.json
 .atomcode
 datalog
+
+# Playwright CLI 录制产物（本地调试，不入库）
+.playwright-cli

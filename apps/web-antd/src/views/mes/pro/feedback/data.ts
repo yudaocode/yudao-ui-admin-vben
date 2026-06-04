@@ -5,7 +5,7 @@ import type { MesProTaskApi } from '#/api/mes/pro/task';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -18,11 +18,6 @@ import { MdItemSelect } from '#/views/mes/md/item/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProTaskSelect } from '#/views/mes/pro/task/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
-import {
-  MesAutoCodeRuleCode,
-  MesProTaskStatusEnum,
-  MesProWorkOrderStatusEnum,
-} from '#/views/mes/utils/constants';
 
 /** 生产报工表单类型 */
 export type FormType = 'approve' | 'create' | 'detail' | 'submit' | 'update';
@@ -332,7 +327,9 @@ export function useFormSchema(
       fieldName: 'itemCode',
       label: '产品编码',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -342,7 +339,9 @@ export function useFormSchema(
       fieldName: 'itemName',
       label: '产品名称',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -352,7 +351,9 @@ export function useFormSchema(
       fieldName: 'unitMeasureName',
       label: '单位',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -362,7 +363,9 @@ export function useFormSchema(
       fieldName: 'itemSpecification',
       label: '规格',
       component: 'Input',
-      componentProps: { disabled: true },
+      componentProps: {
+        disabled: true,
+      },
       dependencies: {
         triggerFields: ['itemCode'],
         show: (values) => !!values.itemCode,
@@ -372,7 +375,11 @@ export function useFormSchema(
       fieldName: 'feedbackQuantity',
       label: '报工数量',
       component: 'InputNumber',
-      componentProps: { class: 'w-full', min: 0, precision: 2 },
+      componentProps: {
+        class: 'w-full',
+        min: 0,
+        precision: 2,
+      },
       dependencies: {
         triggerFields: ['checkFlag'],
         // 非质检工序时，报工数量 = 合格 + 不良，禁用直接编辑

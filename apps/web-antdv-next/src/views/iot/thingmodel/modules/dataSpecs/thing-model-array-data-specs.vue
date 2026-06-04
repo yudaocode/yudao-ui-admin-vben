@@ -2,13 +2,13 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import { useVModel } from '@vueuse/core';
-import { Input, Radio } from 'antdv-next';
-
 import {
   getDataTypeOptions,
   IoTDataSpecsDataTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+
+import { useVModel } from '@vueuse/core';
+import { Input, Radio } from 'antdv-next';
 
 import ThingModelStructDataSpecs from './thing-model-struct-data-specs.vue';
 

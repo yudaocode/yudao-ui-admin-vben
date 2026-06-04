@@ -6,8 +6,7 @@ import { onMounted, ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import CalendarPanel from '../components/calendar-panel.vue';
-import { useCalendar } from '../components/use-calendar';
+import { CalendarPanel, useCalendar } from '../components';
 
 const {
   calendarDayMap,

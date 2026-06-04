@@ -2,16 +2,15 @@
 <script setup lang="ts">
 import type { Action } from '#/api/iot/rule/scene';
 
-import { IconifyIcon } from '@vben/icons';
-
-import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, Select, Tag } from 'antdv-next';
-
 import {
   getActionTypeLabel,
   getActionTypeOptions,
   IotRuleSceneActionTypeEnum,
-} from '#/views/iot/utils/constants';
+} from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { useVModel } from '@vueuse/core';
+import { Button, Card, Empty, Select, Tag } from 'antdv-next';
 
 import AlertConfig from '../configs/alert-config.vue';
 import DeviceControlConfig from '../configs/device-control-config.vue';

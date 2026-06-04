@@ -4,7 +4,12 @@ import type { MesMdItemTypeApi } from '#/api/mes/md/item/type';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesItemOrProductEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
@@ -13,13 +18,15 @@ import { ElButton } from 'element-plus';
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getItemTypeList } from '#/api/mes/md/item/type';
-import {
-  MesAutoCodeRuleCode,
-  MesItemOrProductEnum,
-} from '#/views/mes/utils/constants';
+
+/** 表单类型 */
+export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改物料分类的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -63,24 +70,22 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入分类编码',
       },
       rules: z.string().min(1, '分类编码不能为空').max(64),
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            type: 'default',
-            onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.MD_ITEM_TYPE_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
-            },
-          },
-          { default: () => '自动生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_ITEM_TYPE_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '自动生成' },
+              ),
     },
     {
       fieldName: 'name',

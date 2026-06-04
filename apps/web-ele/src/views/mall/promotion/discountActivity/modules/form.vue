@@ -7,7 +7,7 @@ import type {
   SpuProperty,
 } from '#/views/mall/product/spu/components';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 import { PromotionDiscountTypeEnum } from '@vben/constants';
@@ -213,13 +213,11 @@ function handleSkuDiscountPercentChange(row: SkuExtension) {
 }
 
 /** 重置表单 */
-async function resetForm() {
+function resetForm() {
   spuList.value = [];
   spuPropertyList.value = [];
   spuIdList.value = [];
   formData.value = {};
-  await nextTick();
-  await formApi.resetForm();
 }
 
 // ================= 弹窗相关 =================
@@ -264,7 +262,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      await resetForm();
+      resetForm();
       return;
     }
     // 加载数据

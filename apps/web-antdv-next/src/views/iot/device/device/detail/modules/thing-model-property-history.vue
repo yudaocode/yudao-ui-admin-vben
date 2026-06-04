@@ -8,6 +8,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 
+import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { formatDate, formatDateTime } from '@vben/utils';
@@ -26,7 +27,6 @@ import dayjs from 'dayjs';
 
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
-import { IoTDataSpecsDataTypeEnum } from '#/views/iot/utils/constants';
 
 /** IoT 设备属性历史数据详情 */
 defineOptions({ name: 'DeviceDetailsThingModelPropertyHistory' });

@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesCalPlanApi } from '#/api/mes/cal/plan';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesCalPlanStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -10,7 +11,6 @@ import { ElButton, ElLoading, ElMessage } from 'element-plus';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deletePlan, exportPlan, getPlanPage } from '#/api/mes/cal/plan';
 import { $t } from '#/locales';
-import { MesCalPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

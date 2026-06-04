@@ -4,7 +4,7 @@ import type { MesDvCheckRecordLineApi } from '#/api/mes/dv/checkrecord/line';
 
 import { computed, ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesDvCheckResultEnum, MesDvSubjectTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message, Modal } from 'ant-design-vue';
@@ -20,7 +20,6 @@ import {
 } from '#/api/mes/dv/checkrecord/line';
 import { $t } from '#/locales';
 import { DvSubjectSelect } from '#/views/mes/dv/subject/components';
-import { MesDvCheckResultEnum, MesDvSubjectTypeEnum } from '#/views/mes/utils/constants';
 
 const props = defineProps<{ disabled?: boolean; recordId: number }>();
 const formOpen = ref(false);

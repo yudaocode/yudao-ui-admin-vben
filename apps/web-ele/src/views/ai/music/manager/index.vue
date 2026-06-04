@@ -38,9 +38,7 @@ async function handleUpdatePublicStatusChange(
 ): Promise<boolean | undefined> {
   const text = newStatus ? '公开' : '私有';
   try {
-    await confirm({
-      content: `确认要将该音乐切换为【${text}】吗？`,
-    });
+    await confirm(`确认要将该音乐切换为【${text}】吗？`);
   } catch {
     return false;
   }

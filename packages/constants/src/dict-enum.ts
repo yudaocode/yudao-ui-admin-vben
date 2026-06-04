@@ -216,11 +216,37 @@ const MES_DICT = {
   MES_INDICATOR_TYPE: 'mes_indicator_type', // MES 检测项类型
   MES_QC_RESULT_TYPE: 'mes_qc_result_type', // MES 质检结果值类型
   MES_QC_TYPE: 'mes_qc_type', // MES 质检方案类型
+  MES_QC_CHECK_RESULT: 'mes_qc_check_result', // MES 检测结果
+  MES_QC_SOURCE_DOC_TYPE: 'mes_qc_source_doc_type', // MES 来源单据类型
+  MES_IPQC_TYPE: 'mes_ipqc_type', // MES IPQC 检验类型
+  MES_RQC_TYPE: 'mes_rqc_type', // MES 退货检验类型
   MES_DEFECT_LEVEL: 'mes_defect_level', // MES 缺陷等级
   MES_WM_BARCODE_BIZ_TYPE: 'mes_wm_barcode_biz_type', // MES 条码业务类型
   MES_WM_BARCODE_FORMAT: 'mes_wm_barcode_format', // MES 条码格式
+  MES_WM_PACKAGE_STATUS: 'mes_wm_package_status', // MES 装箱单状态
   MES_WM_PRODUCT_SALES_STATUS: 'mes_wm_product_sales_status', // MES 销售出库单状态
   MES_WM_QUALITY_STATUS: 'mes_wm_quality_status', // MES 质量状态
+  MES_WM_MISC_ISSUE_TYPE: 'mes_wm_misc_issue_type', // MES 杂项出库类型
+  MES_WM_MISC_ISSUE_STATUS: 'mes_wm_misc_issue_status', // MES 杂项出库单状态
+  MES_WM_MISC_RECEIPT_TYPE: 'mes_wm_misc_receipt_type', // MES 杂项入库类型
+  MES_WM_MISC_RECEIPT_STATUS: 'mes_wm_misc_receipt_status', // MES 杂项入库单状态
+  MES_WM_OUTSOURCE_ISSUE_STATUS: 'mes_wm_outsource_issue_status', // MES 外协发料单状态
+  MES_WM_OUTSOURCE_RECEIPT_STATUS: 'mes_wm_outsource_receipt_status', // MES 外协入库单状态
+  MES_WM_ARRIVAL_NOTICE_STATUS: 'mes_wm_arrival_notice_status', // MES 到货通知单状态
+  MES_WM_ITEM_RECEIPT_STATUS: 'mes_wm_item_receipt_status', // MES 采购入库单状态
+  MES_WM_RETURN_VENDOR_STATUS: 'mes_wm_return_vendor_status', // MES 供应商退货单状态
+  MES_WM_SALES_NOTICE_STATUS: 'mes_wm_sales_notice_status', // MES 发货通知单状态
+  MES_WM_RETURN_SALES_STATUS: 'mes_wm_return_sales_status', // MES 销售退货单状态
+  MES_WM_RETURN_ISSUE_STATUS: 'mes_wm_return_issue_status', // MES 生产退料单状态
+  MES_WM_RETURN_ISSUE_TYPE: 'mes_wm_return_issue_type', // MES 退料类型
+  MES_WM_PRODUCT_ISSUE_STATUS: 'mes_wm_product_issue_status', // MES 领料出库单状态
+  MES_WM_PRODUCT_RECEIPT_STATUS: 'mes_wm_product_receipt_status', // MES 产品入库单状态
+  MES_WM_STOCK_TAKING_TYPE: 'mes_wm_stock_taking_type', // MES 盘点类型
+  MES_WM_STOCK_TAKING_TASK_STATUS: 'mes_wm_stock_taking_task_status', // MES 盘点任务状态
+  MES_WM_STOCK_TAKING_LINE_STATUS: 'mes_wm_stock_taking_task_line_status', // MES 盘点任务行状态
+  MES_WM_STOCK_TAKING_PLAN_PARAM_TYPE: 'mes_wm_stock_taking_plan_param_type', // MES 盘点方案参数类型
+  MES_WM_TRANSFER_STATUS: 'mes_wm_transfer_status', // MES 转移单状态
+  MES_WM_TRANSFER_TYPE: 'mes_wm_transfer_type', // MES 转移单类型
 } as const;
 
 /** ========== WMS - 仓储管理模块 ========== */

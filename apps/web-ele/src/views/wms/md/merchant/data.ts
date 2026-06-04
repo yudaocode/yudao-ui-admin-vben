@@ -1,7 +1,7 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
+import { generateWmsCode, h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -9,10 +9,9 @@ import { getDictOptions } from '@vben/hooks';
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 
 /** 新增/修改往来企业的表单 */
-export function useFormSchema(formApi?: any): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   return [
     {
       component: 'Input',

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @jason：看看这个有没办法，整体代码的文件顺序，注释风格等，和 /Users/yunai/Java/yudao-ui-admin-vben-v5/apps/web-antd/src/views/system/dept/components/select-modal.vue 一致。原因是：好维护~
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { nextTick, ref } from 'vue';
@@ -15,16 +14,11 @@ defineOptions({ name: 'DeptSelectModal' });
 
 const props = withDefaults(
   defineProps<{
-    // 取消按钮文本
-    cancelText?: string;
-    // checkable 状态下节点选择完全受控
-    checkStrictly?: boolean;
-    // 确认按钮文本
-    confirmText?: string;
-    // 是否支持多选
-    multiple?: boolean;
-    // 标题
-    title?: string;
+    cancelText?: string; // 取消按钮文本
+    checkStrictly?: boolean; // checkable 状态下节点选择完全受控
+    confirmText?: string; // 确认按钮文本
+    multiple?: boolean; // 是否支持多选
+    title?: string; // 标题
   }>(),
   {
     cancelText: '取消',
@@ -39,16 +33,11 @@ const emit = defineEmits<{
   confirm: [deptList: SystemDeptApi.Dept[]];
 }>();
 
-// 部门树形结构
-const deptTree = ref<any[]>([]);
-// 选中的部门 ID 列表
-const selectedDeptIds = ref<number[]>([]);
-// 部门数据
-const deptData = ref<SystemDeptApi.Dept[]>([]);
-// Tree 组件引用
-const treeRef = ref();
+const deptTree = ref<any[]>([]); // 部门树形结构
+const selectedDeptIds = ref<number[]>([]); // 选中的部门 ID 列表
+const deptData = ref<SystemDeptApi.Dept[]>([]); // 部门数据
+const treeRef = ref(); // Tree 组件引用
 
-// 对话框配置
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 获取选中的部门ID

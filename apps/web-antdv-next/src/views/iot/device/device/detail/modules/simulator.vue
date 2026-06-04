@@ -6,7 +6,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { computed, ref } from 'vue';
+import { computed, DeviceStateEnum, IoTThingModelTypeEnum, ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
@@ -25,10 +25,6 @@ import {
 } from 'antdv-next';
 
 import { sendDeviceMessage } from '#/api/iot/device/device';
-import {
-  DeviceStateEnum,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 import DataDefinition from '../../../../thingmodel/modules/components/data-definition.vue';
 import DeviceDetailsMessage from './message.vue';

@@ -4,11 +4,12 @@ import type { MesCalCalendarApi } from '#/api/mes/cal/calendar';
 
 import { ref, watch } from 'vue';
 
+import { HolidayType } from '@vben/constants';
+
 import dayjs from 'dayjs';
 
 import { getCalendarList } from '#/api/mes/cal/calendar';
 import { getHolidayList } from '#/api/mes/cal/holiday';
-import { HolidayType } from '#/views/mes/utils/constants';
 
 /**
  * 排班日历通用 composable

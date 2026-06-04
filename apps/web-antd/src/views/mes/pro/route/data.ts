@@ -5,9 +5,9 @@ import type { MesProRouteProcessApi } from '#/api/mes/pro/route/process';
 import type { MesProRouteProductApi } from '#/api/mes/pro/route/product';
 import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -18,7 +18,6 @@ import {
   MdItemSelect,
   MdProductBomSelect,
 } from '#/views/mes/md/item/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { RouteColorPicker } from './components';
 
@@ -48,14 +47,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.PRO_ROUTE_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
+              const code = await generateAutoCode(
+                MesAutoCodeRuleCode.PRO_ROUTE_CODE,
+              );
+              await formApi?.setFieldValue('code', code);
             },
           },
           { default: () => '生成' },
@@ -103,13 +98,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'code',
       label: '路线编码',
       component: 'Input',
-      componentProps: { allowClear: true, placeholder: '请输入路线编码' },
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入路线编码',
+      },
     },
     {
       fieldName: 'name',
       label: '路线名称',
       component: 'Input',
-      componentProps: { allowClear: true, placeholder: '请输入路线名称' },
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入路线名称',
+      },
     },
     {
       fieldName: 'status',
@@ -191,7 +192,11 @@ export function useRouteProcessFormSchema(
       fieldName: 'sort',
       label: '序号',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 1, precision: 0 },
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        precision: 0,
+      },
       rules: z.number().default(1),
     },
     {
@@ -226,28 +231,42 @@ export function useRouteProcessFormSchema(
       fieldName: 'keyFlag',
       label: '是否关键工序',
       component: 'Switch',
-      componentProps: { checkedChildren: '是', unCheckedChildren: '否' },
+      componentProps: {
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+      },
       rules: z.boolean().default(false),
     },
     {
       fieldName: 'checkFlag',
       label: '是否质检确认',
       component: 'Switch',
-      componentProps: { checkedChildren: '是', unCheckedChildren: '否' },
+      componentProps: {
+        checkedChildren: '是',
+        unCheckedChildren: '否',
+      },
       rules: z.boolean().default(false),
     },
     {
       fieldName: 'prepareTime',
       label: '准备时间(分)',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 0, precision: 0 },
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 0,
+      },
       rules: z.number().default(0),
     },
     {
       fieldName: 'waitTime',
       label: '等待时间(分)',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 0, precision: 0 },
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 0,
+      },
       rules: z.number().default(0),
     },
     {
@@ -255,7 +274,11 @@ export function useRouteProcessFormSchema(
       label: '备注',
       component: 'Textarea',
       formItemClass: 'col-span-2',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }
@@ -374,7 +397,7 @@ export function useRouteProductFormSchema(
     {
       fieldName: 'itemId',
       label: '产品',
-      component: MdItemSelect as any,
+      component: markRaw(MdItemSelect),
       componentProps: {
         onChange: onItemChange,
       },
@@ -385,14 +408,22 @@ export function useRouteProductFormSchema(
       fieldName: 'quantity',
       label: '生产数量',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 1, precision: 0 },
+      componentProps: {
+        class: '!w-full',
+        min: 1,
+        precision: 0,
+      },
       rules: z.number().default(1),
     },
     {
       fieldName: 'productionTime',
       label: '生产用时',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 0, precision: 2 },
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 2,
+      },
       rules: z.number().default(1),
     },
     {
@@ -411,7 +442,11 @@ export function useRouteProductFormSchema(
       label: '备注',
       component: 'Textarea',
       formItemClass: 'col-span-2',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }
@@ -446,7 +481,7 @@ export function useRouteProductBomFormSchema(
     {
       fieldName: 'itemId',
       label: 'BOM 物料',
-      component: MdProductBomSelect as any,
+      component: markRaw(MdProductBomSelect),
       componentProps: () => ({
         itemId: itemId(),
         onChange: onBomChange,
@@ -458,14 +493,22 @@ export function useRouteProductBomFormSchema(
       fieldName: 'quantity',
       label: '用料比例',
       component: 'InputNumber',
-      componentProps: { class: '!w-full', min: 0, precision: 2 },
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 2,
+      },
       rules: z.number().default(1),
     },
     {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { maxLength: 250, placeholder: '请输入备注', rows: 2 },
+      componentProps: {
+        maxLength: 250,
+        placeholder: '请输入备注',
+        rows: 2,
+      },
     },
   ];
 }

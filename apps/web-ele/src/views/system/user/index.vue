@@ -21,10 +21,10 @@ import {
   updateUserStatus,
 } from '#/api/system/user';
 import { $t } from '#/locales';
+import { DeptTreeSelect } from '#/views/system/dept/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import AssignRoleForm from './modules/assign-role-form.vue';
-import DeptTree from './modules/dept-tree.vue';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 import ResetPasswordForm from './modules/reset-password-form.vue';
@@ -62,8 +62,8 @@ async function handleExport() {
 
 /** 选择部门 */
 const searchDeptId = ref<number | undefined>(undefined);
-async function handleDeptSelect(dept: SystemDeptApi.Dept) {
-  searchDeptId.value = dept.id;
+async function handleDeptSelect(dept?: SystemDeptApi.Dept) {
+  searchDeptId.value = dept?.id;
   handleRefresh();
 }
 
@@ -137,9 +137,7 @@ async function handleStatusChange(
   row: SystemUserApi.User,
 ): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `你要将${row.username}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-    });
+    await confirm(`你要将${row.username}的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`);
   } catch {
     return false;
   }
@@ -205,7 +203,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <div class="flex h-full w-full">
       <!-- 左侧部门树 -->
       <ElCard class="mr-4 h-full w-1/6">
-        <DeptTree @select="handleDeptSelect" />
+        <DeptTreeSelect @select="handleDeptSelect" />
       </ElCard>
       <!-- 右侧用户列表 -->
       <div class="w-5/6">

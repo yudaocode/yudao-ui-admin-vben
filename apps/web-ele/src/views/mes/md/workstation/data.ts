@@ -4,7 +4,7 @@ import type { MesMdWorkstationApi } from '#/api/mes/md/workstation';
 
 import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -15,7 +15,6 @@ import { getWarehouseSimpleList } from '#/api/mes/wm/warehouse';
 import { getWarehouseAreaSimpleList } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocationSimpleList } from '#/api/mes/wm/warehouse/location';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 import { MdWorkshopSelect } from './components';
 
@@ -23,7 +22,10 @@ import { MdWorkshopSelect } from './components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改工作站的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -40,30 +42,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入工作站编码',
       },
-      dependencies: {
-        triggerFields: ['id'],
-        componentProps: (values) => ({
-          disabled: !!values.id,
-        }),
-      },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_WORKSTATION_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',

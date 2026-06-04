@@ -88,9 +88,7 @@ async function handleBrokerageEnabledChange(
 ): Promise<boolean | undefined> {
   const text = newEnabled ? '开通' : '关闭';
   try {
-    await confirm({
-      content: `你要将${row.nickname}的推广资格切换为【${text}】吗？`,
-    });
+    await confirm(`你要将${row.nickname}的推广资格切换为【${text}】吗？`);
   } catch {
     return false;
   }

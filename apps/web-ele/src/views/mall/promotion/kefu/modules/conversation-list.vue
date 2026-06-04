@@ -4,6 +4,7 @@ import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversa
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
+import { KeFuMessageContentTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatPast, jsonParse } from '@vben/utils';
 
@@ -15,7 +16,6 @@ import {
 } from '#/api/mall/promotion/kefu/conversation';
 import { useMallKefuStore } from '#/store/mall/kefu';
 
-import { KeFuMessageContentTypeEnum } from './tools/constants';
 import { useEmoji } from './tools/emoji';
 
 /** 打开右侧的消息列表 */
@@ -125,9 +125,7 @@ async function updateConversationPinnedFn(pinned: boolean) {
 /** 删除会话 */
 async function deleteConversationFn() {
   // 1. 删除会话
-  confirm({
-    content: '您确定要删除该会话吗？',
-  }).then(async () => {
+  confirm('您确定要删除该会话吗？').then(async () => {
     await deleteConversation(rightClickConversation.value.id);
     // 2. 关闭右键菜单，更新会话列表
     closeRightMenu();

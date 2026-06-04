@@ -5,6 +5,7 @@ import type { MesProAndonRecordApi } from '#/api/mes/pro/andon/record';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesProAndonStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -16,7 +17,6 @@ import {
   getAndonRecordPage,
 } from '#/api/mes/pro/andon/record';
 import { $t } from '#/locales';
-import { MesProAndonStatusEnum } from '#/views/mes/utils/constants';
 
 import ConfigList from '../config/modules/list.vue';
 import { useGridColumns, useGridFormSchema } from './data';

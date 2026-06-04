@@ -193,6 +193,7 @@ function handleTabsEdit(
 
 /** 模态框实例 */
 const [Modal, modalApi] = useVbenModal({
+  contentClass: 'overflow-hidden',
   footer: false,
   fullscreen: true,
   async onOpenChange(isOpen: boolean) {
@@ -229,10 +230,10 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal title="代码预览">
-    <div class="flex h-full" v-loading="loading">
+    <div class="flex h-full min-h-0" v-loading="loading">
       <!-- 文件树 -->
       <div
-        class="h-full w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700"
+        class="h-full min-h-0 w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700"
       >
         <ElTree
           v-if="fileTree.length > 0"
@@ -248,8 +249,14 @@ const [Modal, modalApi] = useVbenModal({
         />
       </div>
       <!-- 代码预览 -->
-      <div class="h-full w-2/3 overflow-auto pl-4">
-        <ElTabs v-model="activeKey" type="card" editable @edit="handleTabsEdit">
+      <div class="flex h-full min-h-0 w-2/3 flex-col pl-4">
+        <ElTabs
+          v-model="activeKey"
+          class="codegen-preview-tabs min-h-0 flex-1"
+          type="card"
+          editable
+          @edit="handleTabsEdit"
+        >
           <ElTabPane
             v-for="key in codeMap.keys()"
             :key="key"
@@ -257,10 +264,10 @@ const [Modal, modalApi] = useVbenModal({
             :name="key"
           >
             <div
-              class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+              class="h-full min-h-0 rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             >
               <CodeEditor
-                class="max-h-200"
+                class="h-full"
                 :value="codeMap.get(activeKey)"
                 mode="application/json"
                 :readonly="true"
@@ -277,3 +284,21 @@ const [Modal, modalApi] = useVbenModal({
     </div>
   </Modal>
 </template>
+
+<style scoped>
+:deep(.codegen-preview-tabs) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+:deep(.codegen-preview-tabs > .el-tabs__content) {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+:deep(.codegen-preview-tabs .el-tab-pane) {
+  height: 100%;
+}
+</style>

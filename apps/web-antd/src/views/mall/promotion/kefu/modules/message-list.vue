@@ -4,7 +4,7 @@ import type { Emoji } from './tools/emoji';
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MallKefuMessageApi } from '#/api/mall/promotion/kefu/message';
 
-import { computed, reactive, ref, toRefs, unref, watch } from 'vue';
+import { computed, KeFuMessageContentTypeEnum, reactive, ref, toRefs, unref, watch } from 'vue';
 
 import { UserTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
@@ -25,7 +25,6 @@ import { useMallKefuStore } from '#/store/mall/kefu';
 import MessageItem from './message/message-item.vue';
 import OrderItem from './message/order-item.vue';
 import ProductItem from './message/product-item.vue';
-import { KeFuMessageContentTypeEnum } from './tools/constants';
 import { useEmoji } from './tools/emoji';
 import EmojiSelectPopover from './tools/emoji-select-popover.vue';
 import PictureSelectUpload from './tools/picture-select-upload.vue';

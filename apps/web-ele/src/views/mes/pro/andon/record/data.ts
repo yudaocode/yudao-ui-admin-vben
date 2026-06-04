@@ -5,7 +5,7 @@ import type { MesProAndonRecordApi } from '#/api/mes/pro/andon/record';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesProWorkOrderStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -13,7 +13,6 @@ import { getRangePickerDefaultProps } from '#/utils';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
-import { MesProWorkOrderStatusEnum } from '#/views/mes/utils/constants';
 
 import { AndonConfigSelect } from '../config/components';
 

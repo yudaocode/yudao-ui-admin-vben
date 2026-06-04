@@ -6,13 +6,13 @@ import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 
 import { message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
-import { MesDvCheckPlanStatusEnum } from '#/views/mes/utils/constants';
 
 import { useFormSchema } from '../data';
 import MachineryList from './machinery-list.vue';
@@ -43,9 +43,6 @@ const [Form, formApi] = useVbenForm({
   schema: [],
   showDefaultActions: false,
 });
-
-/** 表单 schema 需要 formApi 引用，所以通过 setState 设置 schema */
-formApi.setState({ schema: useFormSchema(formApi) });
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -81,11 +78,11 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
     subTabsName.value = 'machinery';
     // 加载数据
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(data.formType, formApi) });
     formApi.setDisabled(formType.value === 'detail');
     modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {

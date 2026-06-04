@@ -4,7 +4,7 @@ import type { MesTmToolApi } from '#/api/mes/tm/tool';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesAutoCodeRuleCode, MesMaintenTypeEnum, MesToolStatusEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -12,11 +12,6 @@ import { Button } from 'ant-design-vue';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import {
-  MesAutoCodeRuleCode,
-  MesMaintenTypeEnum,
-  MesToolStatusEnum,
-} from '#/views/mes/utils/constants';
 
 import { TmToolTypeSelect } from './type/components';
 
@@ -24,10 +19,22 @@ import { TmToolTypeSelect } from './type/components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改工具的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      // 选中工具类型是否「编码管理」，用于锁定库存数量为 1（隐藏字段）
+      fieldName: 'codeFlag',
       component: 'Input',
       dependencies: {
         triggerFields: [''],
@@ -46,18 +53,21 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         componentProps: (values) => ({ disabled: !!values.id }),
       },
       rules: 'required',
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_CODE);
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_CODE);
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -75,7 +85,9 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择工具类型',
         onChange: async (row: any) => {
-          if (row?.codeFlag) {
+          // 记录是否编码管理；编码管理类型库存数量锁定为 1
+          await formApi?.setFieldValue('codeFlag', row?.codeFlag === true);
+          if (row?.codeFlag === true) {
             await formApi?.setFieldValue('quantity', 1);
             await formApi?.setFieldValue('availableQuantity', 1);
           }
@@ -115,6 +127,13 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         precision: 0,
       },
       rules: 'required',
+      // 编码管理类型库存数量锁定为 1，禁止修改
+      dependencies: {
+        triggerFields: ['codeFlag'],
+        componentProps: (values) => ({
+          disabled: values.codeFlag === true,
+        }),
+      },
     },
     {
       fieldName: 'availableQuantity',
@@ -303,6 +322,88 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolApi.Tool>['column
       slots: {
         default: 'actions',
       },
+    },
+  ];
+}
+
+/** 工具选择弹窗的搜索表单 */
+export function useToolSelectGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'code',
+      label: '工具编码',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入工具编码',
+      },
+    },
+    {
+      fieldName: 'name',
+      label: '工具名称',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入工具名称',
+      },
+    },
+    {
+      fieldName: 'toolTypeId',
+      label: '工具类型',
+      component: markRaw(TmToolTypeSelect),
+      componentProps: {
+        placeholder: '请选择工具类型',
+      },
+    },
+    {
+      fieldName: 'brand',
+      label: '品牌',
+      component: 'Input',
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入品牌',
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.MES_TM_TOOL_STATUS, 'number'),
+        placeholder: '请选择状态',
+      },
+    },
+  ];
+}
+
+/** 工具选择弹窗的字段 */
+export function useToolSelectGridColumns(
+  multiple = false,
+): VxeTableGridOptions<MesTmToolApi.Tool>['columns'] {
+  return [
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
+    { field: 'code', title: '工具编码', width: 120 },
+    { field: 'name', title: '工具名称', minWidth: 120 },
+    { field: 'brand', title: '品牌', minWidth: 100 },
+    { field: 'specification', title: '型号规格', minWidth: 100 },
+    { field: 'toolTypeName', title: '工具类型', width: 120 },
+    { field: 'quantity', title: '库存数量', width: 100 },
+    { field: 'availableQuantity', title: '可用数量', width: 100 },
+    {
+      field: 'status',
+      title: '状态',
+      width: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.MES_TM_TOOL_STATUS },
+      },
+    },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
     },
   ];
 }

@@ -21,7 +21,6 @@ export function useAreaSelectRule() {
         title: label,
         info: '',
         $required: false,
-        modelField: 'model-value', // 特殊：ele 里是 model-value，antd 里是 value
       };
     },
     props(_: any, { t }: any) {

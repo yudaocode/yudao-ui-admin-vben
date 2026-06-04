@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesDvCheckRecordApi } from '#/api/mes/dv/checkrecord';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { MesDvCheckRecordStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -10,7 +11,6 @@ import { ElButton, ElLoading, ElMessage } from 'element-plus';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteCheckRecord, exportCheckRecord, getCheckRecordPage } from '#/api/mes/dv/checkrecord';
 import { $t } from '#/locales';
-import { MesDvCheckRecordStatusEnum } from '#/views/mes/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';

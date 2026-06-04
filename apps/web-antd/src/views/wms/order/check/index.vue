@@ -6,6 +6,11 @@ import type { WmsCheckOrderDetailApi } from '#/api/wms/order/check/detail';
 import { reactive, ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import {
+  OrderDeleteStatusList,
+  OrderStatusEnum,
+  OrderUpdateStatusList,
+} from '@vben/constants';
 import { downloadFileFromBlobPart, formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -24,11 +29,6 @@ import {
   getCheckOrderPage,
 } from '#/api/wms/order/check';
 import { $t } from '#/locales';
-import {
-  OrderDeleteStatusList,
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '#/views/wms/utils/constants';
 import {
   formatPrice,
   formatQuantity,

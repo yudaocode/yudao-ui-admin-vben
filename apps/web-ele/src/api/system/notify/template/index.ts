@@ -16,6 +16,13 @@ export namespace SystemNotifyTemplateApi {
     remark: string;
   }
 
+  /** 站内信模板精简信息 */
+  export interface NotifyTemplateSimple {
+    id: number;
+    name: string;
+    code: string;
+  }
+
   /** 发送站内信请求 */
   export interface NotifySendReqVO {
     userId: number;
@@ -30,6 +37,13 @@ export function getNotifyTemplatePage(params: PageParam) {
   return requestClient.get<PageResult<SystemNotifyTemplateApi.NotifyTemplate>>(
     '/system/notify-template/page',
     { params },
+  );
+}
+
+/** 查询站内信模板精简列表 */
+export function getSimpleNotifyTemplateList() {
+  return requestClient.get<SystemNotifyTemplateApi.NotifyTemplateSimple[]>(
+    '/system/notify-template/simple-list',
   );
 }
 

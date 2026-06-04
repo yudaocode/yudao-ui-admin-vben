@@ -3,7 +3,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, getThingModelServiceCallTypeLabel, IoTThingModelTypeEnum, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
@@ -14,10 +14,6 @@ import { Button, DateRangePicker, Select, Space, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
-import {
-  getThingModelServiceCallTypeLabel,
-  IoTThingModelTypeEnum,
-} from '#/views/iot/utils/constants';
 
 const props = defineProps<{
   deviceId: number;

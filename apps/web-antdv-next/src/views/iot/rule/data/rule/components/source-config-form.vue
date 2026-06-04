@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, IoTThingModelTypeEnum, onMounted, reactive, ref } from 'vue';
 
 import { IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
@@ -9,7 +9,6 @@ import { Button, Form, Select, Table } from 'antdv-next';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getThingModelListByProductId } from '#/api/iot/thingmodel';
-import { IoTThingModelTypeEnum } from '#/views/iot/utils/constants';
 
 const formData = ref<any[]>([]);
 const productList = ref<any[]>([]); // 产品列表

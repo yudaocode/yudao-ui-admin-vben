@@ -4,20 +4,22 @@ import type { MesMdVendorApi } from '#/api/mes/md/vendor';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { MesAutoCodeRuleCode } from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改供应商的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -34,30 +36,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入供应商编码',
       },
-      dependencies: {
-        triggerFields: ['id'],
-        componentProps: (values) => ({
-          disabled: !!values.id,
-        }),
-      },
       rules: 'required',
-      suffix: () =>
-        h(
-          ElButton,
-          {
-            onClick: async () => {
-              try {
-                const code = await generateAutoCode(
-                  MesAutoCodeRuleCode.MD_VENDOR_CODE,
-                );
-                await formApi?.setFieldValue('code', code);
-              } catch (error) {
-                console.error(error);
-              }
-            },
-          },
-          { default: () => '自动生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.MD_VENDOR_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '自动生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -420,9 +415,11 @@ export function useVendorSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 供应商选择弹窗的字段 */
-export function useVendorSelectGridColumns(): VxeTableGridOptions<MesMdVendorApi.Vendor>['columns'] {
+export function useVendorSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesMdVendorApi.Vendor>['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
     {
       field: 'code',
       title: '供应商编码',

@@ -60,21 +60,18 @@ async function handleStatusChange(
   newStatus: number,
   row: MallCouponTemplateApi.CouponTemplate,
 ): Promise<boolean | undefined> {
-  return new Promise((resolve, reject) => {
-    confirm({
+  try {
+    await confirm({
       content: `你要将${row.name}的状态切换为【${newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用'}】吗？`,
-    })
-      .then(async () => {
-        // 更新优惠券模板状态
-        await updateCouponTemplateStatus(row.id!, newStatus);
-        // 提示并返回成功
-        message.success($t('ui.actionMessage.operationSuccess'));
-        resolve(true);
-      })
-      .catch(() => {
-        reject(new Error('取消操作'));
-      });
-  });
+    });
+  } catch {
+    return false;
+  }
+  // 更新优惠券模板状态
+  await updateCouponTemplateStatus(row.id!, newStatus);
+  // 提示并返回成功
+  message.success($t('ui.actionMessage.operationSuccess'));
+  return true;
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

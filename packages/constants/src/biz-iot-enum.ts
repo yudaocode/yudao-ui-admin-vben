@@ -85,6 +85,14 @@ export const CodecTypeEnum = {
   ALINK: 'Alink', // 阿里云 Alink 协议
 } as const;
 
+// ========== IOT - 告警模块 ==========
+/** IoT 告警接收方式枚举，与后端 IotAlertReceiveTypeEnum 保持一致 */
+export const IotAlertReceiveTypeEnum = {
+  SMS: 1, // 短信
+  MAIL: 2, // 邮箱
+  NOTIFY: 3, // 站内信
+} as const;
+
 // ========== IOT - 物模型 ==========
 /** IoT 产品物模型类型枚举类 */
 export const IoTThingModelTypeEnum = {
@@ -200,6 +208,27 @@ export const getDataTypeName = (dataType: string): string => {
     [IoTDataSpecsDataTypeEnum.ARRAY]: '数组',
   };
   return typeMap[dataType] || dataType;
+};
+
+/** 获取数据类型标签类型（用于 tag 的 type 属性） */
+export const getDataTypeTagType = (
+  dataType: string,
+): 'danger' | 'info' | 'primary' | 'success' | 'warning' => {
+  const tagMap: Record<
+    string,
+    'danger' | 'info' | 'primary' | 'success' | 'warning'
+  > = {
+    [IoTDataSpecsDataTypeEnum.INT]: 'primary',
+    [IoTDataSpecsDataTypeEnum.FLOAT]: 'success',
+    [IoTDataSpecsDataTypeEnum.DOUBLE]: 'success',
+    [IoTDataSpecsDataTypeEnum.TEXT]: 'info',
+    [IoTDataSpecsDataTypeEnum.BOOL]: 'warning',
+    [IoTDataSpecsDataTypeEnum.ENUM]: 'danger',
+    [IoTDataSpecsDataTypeEnum.DATE]: 'primary',
+    [IoTDataSpecsDataTypeEnum.STRUCT]: 'info',
+    [IoTDataSpecsDataTypeEnum.ARRAY]: 'warning',
+  };
+  return tagMap[dataType] || 'info';
 };
 
 // ========== IOT - 设备消息 ==========

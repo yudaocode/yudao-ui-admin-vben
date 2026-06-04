@@ -1,1 +1,2 @@
-export { default as TmToolSelect } from './tm-tool-select.vue';
+export { default as TmToolSelectDialog } from './select-dialog.vue';
+export { default as TmToolSelect } from './select.vue';

@@ -4,6 +4,7 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import { onMounted, provide, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { getDataTypeOptionsLabel, IOT_PROVIDE_KEY } from '@vben/constants';
 
 import { message } from 'antdv-next';
 
@@ -11,7 +12,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProduct } from '#/api/iot/product/product';
 import { deleteThingModel, getThingModelPage } from '#/api/iot/thingmodel';
 
-import { getDataTypeOptionsLabel, IOT_PROVIDE_KEY } from '../utils/constants';
 import { useGridColumns, useGridFormSchema } from './data';
 import { DataDefinition } from './modules/components';
 import ThingModelForm from './modules/thing-model-form.vue';

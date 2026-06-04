@@ -5,11 +5,15 @@ import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { WmsWarehouseApi } from '#/api/wms/md/warehouse';
 import type { WmsMovementOrderApi } from '#/api/wms/order/movement';
 import type { WmsMovementOrderDetailApi } from '#/api/wms/order/movement/detail';
-import type { InventorySelectRow } from '#/views/wms/inventory/components/inventory-select.vue';
+import type { InventorySelectRow } from '#/views/wms/inventory/components';
 
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import {
+  OrderStatusEnum,
+  OrderUpdateStatusList,
+} from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { InputNumber, message } from 'ant-design-vue';
@@ -26,10 +30,6 @@ import {
 } from '#/api/wms/order/movement';
 import { $t } from '#/locales';
 import { WmsInventorySelect } from '#/views/wms/inventory/components';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '#/views/wms/utils/constants';
 import {
   dividePrice,
   formatQuantity,
@@ -373,7 +373,6 @@ const [Modal, modalApi] = useVbenModal({
       setDetails([]);
       return;
     }
-    await formApi.resetForm();
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     if (data?.id) {

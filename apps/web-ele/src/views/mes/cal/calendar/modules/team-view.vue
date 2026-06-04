@@ -5,8 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { getTeamList } from '#/api/mes/cal/team';
 
-import CalendarPanel from '../components/calendar-panel.vue';
-import { useCalendar } from '../components/use-calendar';
+import { CalendarPanel, useCalendar } from '../components';
 
 const {
   calendarDayMap,

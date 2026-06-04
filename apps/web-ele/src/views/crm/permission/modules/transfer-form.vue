@@ -100,7 +100,6 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      await formApi.resetForm();
       return;
     }
     // 加载数据

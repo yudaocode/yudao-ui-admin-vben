@@ -4,6 +4,7 @@ import type { MesMdAutoCodePartApi } from '#/api/mes/md/autocode/part';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { MesAutoCodePartTypeEnum } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 
@@ -14,7 +15,6 @@ import {
   updateAutoCodePart,
 } from '#/api/mes/md/autocode/part';
 import { $t } from '#/locales';
-import { MesAutoCodePartTypeEnum } from '#/views/mes/utils/constants';
 
 import { usePartFormSchema } from '../data';
 
@@ -86,7 +86,6 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    await formApi.resetForm();
     // 加载数据
     const data = modalApi.getData<{
       id?: number;

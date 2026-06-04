@@ -4,10 +4,11 @@ import type { WmsItemSkuApi } from '#/api/wms/md/item/sku';
 
 import { nextTick, ref } from 'vue';
 
+import { generateWmsCode } from '@vben/constants';
+
 import { ElButton, ElInput, ElInputNumber, ElMessage } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { generateWmsCode } from '#/views/wms/utils/constants';
 import {
   DIMENSION_PRECISION,
   PRICE_PRECISION,

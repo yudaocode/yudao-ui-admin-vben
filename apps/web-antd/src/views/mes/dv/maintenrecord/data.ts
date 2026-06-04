@@ -4,18 +4,13 @@ import type { MesDvMaintenRecordApi } from '#/api/mes/dv/maintenrecord';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesDvCheckPlanStatusEnum, MesDvMaintenRecordStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { DvCheckPlanSelect } from '#/views/mes/dv/checkplan/components';
 import { DvMachinerySelect } from '#/views/mes/dv/machinery/components';
-import {
-  MesDvCheckPlanStatusEnum,
-  MesDvMaintenRecordStatusEnum,
-  MesDvSubjectTypeEnum,
-} from '#/views/mes/utils/constants';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -58,7 +53,6 @@ export function useFormSchema(): VbenFormSchema[] {
         type: MesDvSubjectTypeEnum.MAINTENANCE,
         placeholder: '请选择计划',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'userId',
@@ -71,7 +65,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择保养人',
         valueField: 'id',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'maintenTime',

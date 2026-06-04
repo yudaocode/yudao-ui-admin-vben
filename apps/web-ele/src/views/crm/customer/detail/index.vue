@@ -103,9 +103,7 @@ function handleTransfer() {
 /** 锁定客户 */
 async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定锁定客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定锁定客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -119,9 +117,7 @@ async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
 /** 领取客户 */
 async function handleReceive(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定领取客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定领取客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -140,9 +136,7 @@ function handleDistributeForm() {
 /** 客户放入公海 */
 async function handlePutPool(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定将客户【${customer.value.name}】放入公海吗？`,
-    });
+    await confirm(`确定将客户【${customer.value.name}】放入公海吗？`);
   } catch {
     return false;
   }
@@ -157,9 +151,7 @@ async function handlePutPool(): Promise<boolean | undefined> {
 async function handleUpdateDealStatus(): Promise<boolean | undefined> {
   const dealStatus = !customer.value.dealStatus;
   try {
-    await confirm({
-      content: `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
-    });
+    await confirm(`确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`);
   } catch {
     return false;
   }

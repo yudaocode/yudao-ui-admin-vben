@@ -9,7 +9,7 @@
 
 ## 🐶 新手必读
 
-- nodejs >= v20.19.0（推荐 v22 / v24） && pnpm >= 10.32.1（强制使用 pnpm）
+- nodejs >= v22.18.0（推荐v24） && pnpm >= 11.0.0（强制使用 pnpm）
 - 演示地址【Vue3 + element-plus】：<http://dashboard-vue3.yudao.iocoder.cn>
 - 演示地址【Vue3 + vben5(ant-design-vue)】：<http://dashboard-vben.yudao.iocoder.cn>
 - 演示地址【Vue2 + element-ui】：<http://dashboard.yudao.iocoder.cn>
@@ -272,3 +272,16 @@
 ![功能图](/.gitee/image/common/iot-feature.png)
 
 ![预览图](/.gitee/image/common/iot-preview.png)
+
+### IM 即时通讯
+
+演示地址（Vue3 + Vben5）：<http://dashboard-vben.yudao.iocoder.cn>
+
+使用文档：<https://doc.iocoder.cn/im-preview/>
+
+
+![功能图](/.gitee/image/common/im-feature.png)
+
+| 聊天界面 | 聊天管理 |
+| --- | --- |
+| ![聊天界面](/.gitee/image/common/im-preview-home.png) | ![聊天管理](/.gitee/image/common/im-preview-manager.png) |

@@ -3,11 +3,10 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdAutoCodePartApi } from '#/api/mes/md/autocode/part';
 import type { MesMdAutoCodeRuleApi } from '#/api/mes/md/autocode/rule';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, MesAutoCodePartTypeEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { MesAutoCodePartTypeEnum } from '#/views/mes/utils/constants';
 
 /** 新增/修改编码规则的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -449,10 +448,7 @@ export function usePartGridColumns(): VxeTableGridOptions<MesMdAutoCodePartApi.A
       title: '循环方式',
       width: 120,
       align: 'center',
-      cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.MES_MD_AUTO_CODE_CYCLE_METHOD },
-      },
+      slots: { default: 'cycleMethod' },
     },
     {
       field: 'remark',
