@@ -65,5 +65,6 @@ const useVbenForm = useForm<ComponentType, ComponentPropsMap>;
 
 export { initSetupVbenForm, useVbenForm, z };
 
+export type VbenFormApi = ReturnType<typeof useVbenForm>[1]; // add by 芋艿：用于 data.ts 表单 schema 内调用 setFieldValue
 export type VbenFormSchema = FormSchema<ComponentType, ComponentPropsMap>;
 export type VbenFormProps = FormProps<ComponentType, ComponentPropsMap>;

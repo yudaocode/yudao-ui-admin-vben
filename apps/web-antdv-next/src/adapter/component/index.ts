@@ -72,6 +72,7 @@ import {
   Checkbox as CheckboxComponent,
   CheckboxGroup as CheckboxGroupComponent,
   DatePicker as DatePickerComponent,
+  DateRangePicker as RangePickerComponent,
   Divider as DividerComponent,
   Image as ImageComponent,
   ImagePreviewGroup,
@@ -84,7 +85,6 @@ import {
   notification,
   Radio as RadioComponent,
   RadioGroup as RadioGroupComponent,
-  DateRangePicker as RangePickerComponent,
   Rate as RateComponent,
   Select as SelectComponent,
   Space as SpaceComponent,
@@ -279,9 +279,9 @@ async function previewImage(
           {
             class: 'hidden',
             preview: {
-              open: visible.value,
+              visible: visible.value,
               current: currentIndex,
-              onOpenChange: (value: boolean) => {
+              onVisibleChange: (value: boolean) => {
                 visible.value = value;
                 if (!value) {
                   setTimeout(() => {
@@ -366,7 +366,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
               closable: false,
               cancelText: $t('common.cancel'),
               okText: $t('ui.crop.confirm'),
-              destroyOnHidden: true,
+              destroyOnClose: true,
               onOk: async () => {
                 const cropper = cropperRef.value;
                 if (!cropper) {
@@ -625,7 +625,6 @@ export type ComponentType =
   | 'Space'
   | 'Switch'
   | 'TextArea'
-  | 'TextArea'
   | 'TimePicker'
   | 'TimeRangePicker'
   | 'TreeSelect'
@@ -676,13 +675,13 @@ async function initComponentAdapter() {
       fieldNames: { label: 'label', value: 'value', children: 'children' },
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onOpenChange',
+      visibleEvent: 'onVisibleChange',
     }),
     ApiSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: Select,
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onOpenChange',
+      visibleEvent: 'onVisibleChange',
     }),
     ApiTreeSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: TreeSelect,
@@ -690,7 +689,7 @@ async function initComponentAdapter() {
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
       optionsPropName: 'treeData',
-      visibleEvent: 'onOpenChange',
+      visibleEvent: 'onVisibleChange',
     }),
     AutoComplete,
     Cascader,
@@ -744,7 +743,7 @@ async function initComponentAdapter() {
     copyPreferencesSuccess: (title, content) => {
       notification.success({
         description: content,
-        title,
+        message: title,
         placement: 'bottomRight',
       });
     },

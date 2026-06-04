@@ -27,6 +27,7 @@ export interface FileUploadProps {
   maxSize?: number; // 文件最大多少MB
   multiple?: boolean; // 是否支持多选
   resultField?: string; // support xxx.xxx.xx
+  returnText?: boolean; // 是否返回文件文本内容
   showDescription?: boolean; // 是否显示下面的描述
   value?: string | string[];
 }
