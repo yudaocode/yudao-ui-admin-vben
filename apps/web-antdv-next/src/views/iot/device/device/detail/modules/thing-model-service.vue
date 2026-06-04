@@ -3,10 +3,14 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { computed, getThingModelServiceCallTypeLabel, IoTThingModelTypeEnum, onMounted, reactive, watch } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  getThingModelServiceCallTypeLabel,
+  IoTThingModelTypeEnum,
+  IotDeviceMessageMethodEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 

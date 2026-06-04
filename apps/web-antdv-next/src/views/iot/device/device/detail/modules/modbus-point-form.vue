@@ -4,10 +4,17 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { computed, DICT_TYPE, getByteOrderOptions, h, IoTThingModelTypeEnum, ModbusFunctionCodeOptions, ModbusRawDataTypeOptions, ref } from 'vue';
+import { computed, h, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  getByteOrderOptions,
+  IoTThingModelTypeEnum,
+  ModbusFunctionCodeOptions,
+  ModbusRawDataTypeOptions,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'antdv-next';

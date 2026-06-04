@@ -1,8 +1,8 @@
 <!-- 设备选择器组件 -->
 <script setup lang="ts">
-import { DEVICE_SELECTOR_OPTIONS, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DEVICE_SELECTOR_OPTIONS, DICT_TYPE } from '@vben/constants';
 
 import { Select } from 'antdv-next';
 

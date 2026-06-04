@@ -6,9 +6,14 @@ import type { Ref } from 'vue';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { inject, IOT_PROVIDE_KEY, IoTDataSpecsDataTypeEnum, IoTThingModelTypeEnum, ref } from 'vue';
+import { inject, ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  IOT_PROVIDE_KEY,
+  IoTDataSpecsDataTypeEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';

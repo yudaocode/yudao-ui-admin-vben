@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { IotSceneRule } from '#/api/iot/rule/scene';
 
-import { computed, IotRuleSceneActionTypeEnum, IotRuleSceneTriggerTypeEnum, isDeviceTrigger, nextTick, reactive, ref, watch } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  IotRuleSceneActionTypeEnum,
+  IotRuleSceneTriggerTypeEnum,
+  isDeviceTrigger,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';

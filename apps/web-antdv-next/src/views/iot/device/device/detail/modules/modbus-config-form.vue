@@ -2,10 +2,15 @@
 <script lang="ts" setup>
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 
-import { computed, DICT_TYPE, ModbusFrameFormatEnum, ModbusModeEnum, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  ModbusFrameFormatEnum,
+  ModbusModeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { message } from 'antdv-next';

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, IoTThingModelTypeEnum, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  IoTThingModelTypeEnum,
+  IotDeviceMessageMethodEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Form, Select, Table } from 'antdv-next';

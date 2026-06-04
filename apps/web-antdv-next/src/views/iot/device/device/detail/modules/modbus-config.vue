@@ -9,10 +9,10 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { computed, h, ModbusFunctionCodeOptions, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, ModbusFunctionCodeOptions } from '@vben/constants';
 
 import { Button, message } from 'antdv-next';
 

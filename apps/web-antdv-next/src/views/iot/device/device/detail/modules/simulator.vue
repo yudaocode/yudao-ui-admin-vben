@@ -6,10 +6,14 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelData } from '#/api/iot/thingmodel';
 
-import { computed, DeviceStateEnum, IoTThingModelTypeEnum, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { ContentWrap } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  DeviceStateEnum,
+  IoTThingModelTypeEnum,
+  IotDeviceMessageMethodEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
