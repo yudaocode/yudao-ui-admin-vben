@@ -278,9 +278,8 @@ async function openPopover(type: string) {
     }
   }
   Object.keys(popOverVisible.value).forEach((item) => {
-    if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
+    popOverVisible.value[item] = item === type;
   });
-  popOverVisible.value[type] = true;
   if (type === 'approve') {
     // 当前任务有节点表单时，等 form-create 的 fApi 就绪后再计算下一个节点；
     // 没有节点表单时，approveFormFApi 永远不会被赋值，跳过等待
