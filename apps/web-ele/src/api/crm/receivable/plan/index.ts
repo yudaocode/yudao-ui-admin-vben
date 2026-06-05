@@ -29,6 +29,10 @@ export namespace CrmReceivablePlanApi {
       returnTime: Date;
     };
   }
+  export interface PlanPageParam extends PageParam {
+    customerId?: number;
+    contractId?: number;
+  }
 }
 
 /** 查询回款计划列表 */

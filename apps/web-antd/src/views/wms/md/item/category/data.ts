@@ -2,9 +2,9 @@ import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsItemCategoryApi } from '#/api/wms/md/item/category';
 
-import { DICT_TYPE, generateWmsCode, h } from 'vue';
+import { h } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE, generateWmsCode } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 

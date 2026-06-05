@@ -278,7 +278,7 @@ async function openPopover(type: string) {
     }
   }
   Object.keys(popOverVisible.value).forEach((item) => {
-    if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
+    popOverVisible.value[item] = item === type;
   });
   if (type === 'approve') {
     // 当前任务有节点表单时，等 form-create 的 fApi 就绪后再计算下一个节点；

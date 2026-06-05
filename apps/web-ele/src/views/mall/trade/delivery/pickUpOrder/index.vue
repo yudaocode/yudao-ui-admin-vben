@@ -21,7 +21,7 @@ import {
 import { useGridColumns, useGridFormSchema } from './data';
 
 // TODO @芋艿：风格和 antd 不一致；
-const summary = ref<MallOrderApi.OrderSummary>();
+const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 
 /** 刷新表格 */
 function handleRefresh() {
