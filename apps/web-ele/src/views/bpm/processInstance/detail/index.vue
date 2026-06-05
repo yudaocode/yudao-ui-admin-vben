@@ -42,7 +42,7 @@ import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
 import ProcessInstanceOperationButton from './modules/operation-button.vue';
-import ProcessssPrint from './modules/process-print.vue';
+import ProcessPrint from './modules/process-print.vue';
 import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
 import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';
@@ -200,7 +200,7 @@ const refresh = () => {
 };
 
 const [PrintModal, printModalApi] = useVbenModal({
-  connectedComponent: ProcessssPrint,
+  connectedComponent: ProcessPrint,
   destroyOnClose: true,
 });
 
@@ -343,7 +343,12 @@ onMounted(async () => {
                 </ElCol>
               </ElRow>
             </ElTabPane>
-            <ElTabPane label="流程图" name="diagram" class="pb-20 pr-3">
+            <ElTabPane
+              label="流程图"
+              name="diagram"
+              :lazy="false"
+              class="pb-20 pr-3"
+            >
               <ProcessInstanceSimpleViewer
                 v-show="
                   processDefinition.modelType &&
@@ -420,7 +425,21 @@ onMounted(async () => {
 }
 
 :deep(.el-tabs__content) {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+:deep(.el-tab-pane) {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 流程图 tab 特殊处理：需要内部 flex 布局 */
+:deep(#pane-diagram) {
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
 }
 </style>
