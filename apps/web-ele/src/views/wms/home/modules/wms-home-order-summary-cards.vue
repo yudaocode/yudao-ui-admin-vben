@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { WmsHomeStatisticsApi } from '#/api/wms/home';
 
-import { OrderStatusEnum, OrderTypeEnum, ref } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, OrderStatusEnum, OrderTypeEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
 import { ElButton, ElCard, ElMessage, ElSkeleton } from 'element-plus';
