@@ -51,12 +51,12 @@ function handleColorChange(event: Event) {
 
 <style scoped>
 .route-color-picker__swatch {
+  inline-size: 36px;
   block-size: 28px;
+  padding: 2px;
+  cursor: pointer;
   border: 1px solid var(--ant-color-border, #d9d9d9);
   border-radius: 4px;
-  cursor: pointer;
-  inline-size: 36px;
-  padding: 2px;
 }
 
 .route-color-picker__swatch:disabled {
