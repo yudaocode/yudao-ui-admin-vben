@@ -23,6 +23,11 @@ import RepairList from './repair-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('check'); // 当前资源页签
+const machineryTabItems = [
+  { key: 'check', label: '点检记录' },
+  { key: 'mainten', label: '保养记录' },
+  { key: 'repair', label: '维修记录' },
+];
 const formData = ref<MesDvMachineryApi.Machinery>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
@@ -116,17 +121,23 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="machineryTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="check" tab="点检记录">
-        <CheckRecordList :machinery-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="mainten" tab="保养记录">
-        <MaintenRecordList :machinery-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="repair" tab="维修记录">
-        <RepairList :machinery-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <CheckRecordList
+          v-if="item.key === 'check'"
+          :machinery-id="formData.id"
+        />
+        <MaintenRecordList
+          v-else-if="item.key === 'mainten'"
+          :machinery-id="formData.id"
+        />
+        <RepairList
+          v-else-if="item.key === 'repair'"
+          :machinery-id="formData.id"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">

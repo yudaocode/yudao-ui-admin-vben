@@ -37,6 +37,13 @@ const getTitle = computed(() => {
 const currentItemOrProduct = computed(
   () => formData.value?.itemOrProduct || '',
 ); // 当前物料/产品标识
+const itemTabItems = computed(() => [
+  { key: 'bom', label: 'BOM 组成' },
+  ...(formData.value?.batchFlag ? [{ key: 'batch', label: '批次属性' }] : []),
+  { key: 'substitute', label: '替代品' },
+  { key: 'sip', label: 'SIP' },
+  { key: 'sop', label: 'SOP' },
+]);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -128,27 +135,36 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="itemTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="bom" tab="BOM 组成">
-        <ProductBomForm :form-type="formType" :item-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane v-if="formData.batchFlag" key="batch" tab="批次属性">
+      <template #contentRender="{ item }">
+        <ProductBomForm
+          v-if="item.key === 'bom'"
+          :form-type="formType"
+          :item-id="formData.id"
+        />
         <ItemBatchConfigForm
+          v-else-if="item.key === 'batch'"
           :form-type="formType"
           :item-id="formData.id"
           :item-or-product="currentItemOrProduct"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="substitute" tab="替代品">
-        <Empty description="替代品（待实现）" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="sip" tab="SIP">
-        <ProductSipForm :form-type="formType" :item-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="sop" tab="SOP">
-        <ProductSopForm :form-type="formType" :item-id="formData.id" />
-      </Tabs.TabPane>
+        <Empty
+          v-else-if="item.key === 'substitute'"
+          description="替代品（待实现）"
+        />
+        <ProductSipForm
+          v-else-if="item.key === 'sip'"
+          :form-type="formType"
+          :item-id="formData.id"
+        />
+        <ProductSopForm
+          v-else-if="item.key === 'sop'"
+          :form-type="formType"
+          :item-id="formData.id"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">

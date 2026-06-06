@@ -49,6 +49,10 @@ const showResultTab = computed(
     (!!formData.value?.status &&
       formData.value.status !== MesWmStockTakingTaskStatusEnum.PREPARE),
 );
+const stockTakingTabItems = computed(() => [
+  ...(showLineTab.value ? [{ key: 'lines', label: '盘点清单' }] : []),
+  ...(showResultTab.value ? [{ key: 'results', label: '盘点结果' }] : []),
+]);
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['盘点任务']);
@@ -191,18 +195,22 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formData?.id"
       v-model:active-key="subTabsName"
+      :items="stockTakingTabItems"
       class="mx-4 mt-4"
       type="card"
     >
-      <Tabs.TabPane v-if="showLineTab" key="lines" tab="盘点清单">
-        <LineList :form-type="formType" :task-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane v-if="showResultTab" key="results" tab="盘点结果">
+      <template #contentRender="{ item }">
+        <LineList
+          v-if="item.key === 'lines'"
+          :form-type="formType"
+          :task-id="formData.id"
+        />
         <ResultList
+          v-else-if="item.key === 'results'"
           :form-type="isExecute ? 'execute' : 'detail'"
           :task-id="formData.id"
         />
-      </Tabs.TabPane>
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">

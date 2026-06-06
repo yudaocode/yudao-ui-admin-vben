@@ -34,6 +34,10 @@ const formType = ref<FormType>('create');
 const formData = ref<MesProWorkOrderApi.WorkOrder>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于确认时跳过未变更的保存请求
 const subTabsName = ref('bom'); // 当前选中的子表 Tab
+const workOrderTabItems = [
+  { key: 'bom', label: '工单 BOM' },
+  { key: 'item', label: '物料需求' },
+];
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
 const isEditable = computed(() => // 是否为编辑模式（可保存）
@@ -252,18 +256,24 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <!-- BOM / 物料需求 Tab：非新建态展示 -->
     <template v-if="formData?.id">
-      <Tabs v-model:active-key="subTabsName" class="mx-4">
-        <Tabs.TabPane key="bom" tab="工单 BOM">
+      <Tabs
+        v-model:active-key="subTabsName"
+        :items="workOrderTabItems"
+        class="mx-4"
+      >
+        <template #contentRender="{ item }">
           <BomList
+            v-if="item.key === 'bom'"
             :form-type="formType"
             :work-order="formData"
             :work-order-id="formData.id"
             @generate-work-order="handleGenerateWorkOrder"
           />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="item" tab="物料需求">
-          <ItemList :work-order-id="formData.id" />
-        </Tabs.TabPane>
+          <ItemList
+            v-else-if="item.key === 'item'"
+            :work-order-id="formData.id"
+          />
+        </template>
       </Tabs>
     </template>
     <template #prepend-footer>

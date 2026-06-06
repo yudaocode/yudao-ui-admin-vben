@@ -27,6 +27,11 @@ import WorkerList from './worker-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('machine'); // 当前资源页签
+const workstationTabItems = [
+  { key: 'machine', label: '设备资源' },
+  { key: 'tool', label: '工装夹具' },
+  { key: 'worker', label: '人力资源' },
+];
 const formData = ref<MesMdWorkstationApi.Workstation>();
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
@@ -127,17 +132,26 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="workstationTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="machine" tab="设备资源">
-        <MachineList :form-type="formType" :workstation-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="tool" tab="工装夹具">
-        <ToolList :form-type="formType" :workstation-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="worker" tab="人力资源">
-        <WorkerList :form-type="formType" :workstation-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <MachineList
+          v-if="item.key === 'machine'"
+          :form-type="formType"
+          :workstation-id="formData.id"
+        />
+        <ToolList
+          v-else-if="item.key === 'tool'"
+          :form-type="formType"
+          :workstation-id="formData.id"
+        />
+        <WorkerList
+          v-else-if="item.key === 'worker'"
+          :form-type="formType"
+          :workstation-id="formData.id"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">

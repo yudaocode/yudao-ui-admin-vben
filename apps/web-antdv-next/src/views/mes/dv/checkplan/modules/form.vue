@@ -21,6 +21,10 @@ import SubjectList from './subject-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const subTabsName = ref('machinery');
+const checkPlanTabItems = [
+  { key: 'machinery', label: '设备' },
+  { key: 'subject', label: '项目' },
+];
 const formData = ref<MesDvCheckPlanApi.CheckPlan>();
 const isDetail = computed(() => formType.value === 'detail');
 const getTitle = computed(() => {
@@ -105,14 +109,22 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="checkPlanTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="machinery" tab="设备">
-        <MachineryList :form-type="formType" :plan-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="subject" tab="项目">
-        <SubjectList :form-type="formType" :plan-id="formData.id" :plan-type="formData.type" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <MachineryList
+          v-if="item.key === 'machinery'"
+          :form-type="formType"
+          :plan-id="formData.id"
+        />
+        <SubjectList
+          v-else-if="item.key === 'subject'"
+          :form-type="formType"
+          :plan-id="formData.id"
+          :plan-type="formData.type"
+        />
+      </template>
     </Tabs>
   </Modal>
 </template>
