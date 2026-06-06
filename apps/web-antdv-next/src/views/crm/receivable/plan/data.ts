@@ -96,6 +96,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入计划回款金额',
         min: 0,
         precision: 2,
@@ -119,6 +120,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '提前几天提醒',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入提前几天提醒',
         min: 0,
       },

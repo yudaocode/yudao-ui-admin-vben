@@ -21,9 +21,9 @@ export const schema: VbenFormSchema[] = [
     label: '积分抵扣',
     help: '积分抵用比例(1 积分抵多少金额)，单位：元',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 2,
-      class: 'w-full',
       placeholder: '请输入积分抵扣单价',
     },
   },
@@ -33,8 +33,8 @@ export const schema: VbenFormSchema[] = [
     label: '积分抵扣最大值',
     help: '单次下单积分使用上限，0 不限制',
     componentProps: {
+      class: '!w-full',
       min: 0,
-      class: 'w-full',
       placeholder: '请输入积分抵扣最大值',
     },
   },
@@ -44,8 +44,8 @@ export const schema: VbenFormSchema[] = [
     label: '1 元赠送多少分',
     help: '下单支付金额按比例赠送积分（实际支付 1 元赠送多少积分）',
     componentProps: {
+      class: '!w-full',
       min: 0,
-      class: 'w-full',
       placeholder: '请输入赠送积分比例',
     },
   },

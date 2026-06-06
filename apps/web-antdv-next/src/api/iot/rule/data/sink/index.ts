@@ -2,101 +2,147 @@ import type { PageParam, PageResult } from '@vben/request';
 
 import { requestClient } from '#/api/request';
 
+interface BaseConfig {
+  type: string;
+}
+
 export namespace DataSinkApi {
   /** IoT 数据流转目的 VO */
-  export interface Sink {
+  export interface DataSink {
     id?: number;
-    name: string;
+    name?: string;
     description?: string;
     status?: number;
-    type: string;
-    config?: any;
+    direction?: number;
+    type?: number;
+    config?:
+      | DatabaseConfig
+      | HttpConfig
+      | KafkaMQConfig
+      | MqttConfig
+      | RabbitMQConfig
+      | RedisStreamMQConfig
+      | RocketMQConfig
+      | TcpConfig
+      | WebSocketConfig;
     createTime?: Date;
+  }
+
+  /** HTTP 配置 */
+  export interface HttpConfig extends BaseConfig {
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    query: Record<string, string>;
+    body: string;
+  }
+
+  /** TCP 配置 */
+  export interface TcpConfig extends BaseConfig {
+    host: string;
+    port: number;
+    connectTimeoutMs: number;
+    readTimeoutMs: number;
+    ssl: boolean;
+    sslCertPath: string;
+    dataFormat: string;
+    heartbeatIntervalMs: number;
+    reconnectIntervalMs: number;
+    maxReconnectAttempts: number;
+  }
+
+  /** WebSocket 配置 */
+  export interface WebSocketConfig extends BaseConfig {
+    serverUrl: string;
+    connectTimeoutMs: number;
+    sendTimeoutMs: number;
+    heartbeatIntervalMs: number;
+    heartbeatMessage: string;
+    subprotocols: string;
+    customHeaders: string;
+    verifySslCert: boolean;
+    dataFormat: string;
+    reconnectIntervalMs: number;
+    maxReconnectAttempts: number;
+    enableCompression: boolean;
+    sendRetryCount: number;
+    sendRetryIntervalMs: number;
+  }
+
+  /** MQTT 配置 */
+  export interface MqttConfig extends BaseConfig {
+    url: string;
+    username: string;
+    password: string;
+    clientId: string;
+    topic: string;
+  }
+
+  /** Database 配置 */
+  export interface DatabaseConfig extends BaseConfig {
+    jdbcUrl: string;
+    username: string;
+    password: string;
+    tableName: string;
+  }
+
+  /** RocketMQ 配置 */
+  export interface RocketMQConfig extends BaseConfig {
+    nameServer: string;
+    accessKey: string;
+    secretKey: string;
+    group: string;
+    topic: string;
+    tags: string;
+  }
+
+  /** Kafka 配置 */
+  export interface KafkaMQConfig extends BaseConfig {
+    bootstrapServers: string;
+    username: string;
+    password: string;
+    ssl: boolean;
+    topic: string;
+  }
+
+  /** RabbitMQ 配置 */
+  export interface RabbitMQConfig extends BaseConfig {
+    host: string;
+    port: number;
+    virtualHost: string;
+    username: string;
+    password: string;
+    exchange: string;
+    routingKey: string;
+    queue: string;
+  }
+
+  /** Redis Stream MQ 配置 */
+  export interface RedisStreamMQConfig extends BaseConfig {
+    host: string;
+    port: number;
+    password: string;
+    database: number;
+    topic: string;
   }
 }
 
-/** IoT 数据流转目的 */
-export interface DataSinkVO {
-  id?: number;
-  name?: string;
-  description?: string;
-  status?: number;
-  type?: string;
-  config?: any;
-  createTime?: Date;
-}
-
-/** IoT 数据目的类型枚举 */
-export enum IotDataSinkTypeEnum {
-  HTTP = 'HTTP',
-  KAFKA = 'KAFKA',
-  MQTT = 'MQTT',
-  RABBITMQ = 'RABBITMQ',
-  REDIS_STREAM = 'REDIS_STREAM',
-  ROCKETMQ = 'ROCKETMQ',
-}
-
-/** HTTP 配置 */
-export interface HttpConfig {
-  url?: string;
-  method?: string;
-  headers?: Record<string, string>;
-  timeout?: number;
-}
-
-/** MQTT 配置 */
-export interface MqttConfig {
-  broker?: string;
-  port?: number;
-  topic?: string;
-  username?: string;
-  password?: string;
-  clientId?: string;
-  qos?: number;
-}
-
-/** Kafka 配置 */
-export interface KafkaMQConfig {
-  bootstrapServers?: string;
-  topic?: string;
-  acks?: string;
-  retries?: number;
-  batchSize?: number;
-}
-
-/** RabbitMQ 配置 */
-export interface RabbitMQConfig {
-  host?: string;
-  port?: number;
-  virtualHost?: string;
-  username?: string;
-  password?: string;
-  exchange?: string;
-  routingKey?: string;
-  queue?: string;
-}
-
-/** RocketMQ 配置 */
-export interface RocketMQConfig {
-  nameServer?: string;
-  topic?: string;
-  tag?: string;
-  producerGroup?: string;
-}
-
-/** Redis Stream 配置 */
-export interface RedisStreamMQConfig {
-  host?: string;
-  port?: number;
-  password?: string;
-  database?: number;
-  streamKey?: string;
-  maxLen?: number;
-}
+/** 数据流转目的类型 */
+export const IotDataSinkTypeEnum = {
+  HTTP: 1,
+  TCP: 2,
+  WEBSOCKET: 3,
+  MQTT: 10,
+  DATABASE: 20,
+  REDIS_STREAM: 21,
+  ROCKETMQ: 30,
+  RABBITMQ: 31,
+  KAFKA: 32,
+} as const;
 
 /** 查询数据流转目的分页 */
 export function getDataSinkPage(params: PageParam) {
-  return requestClient.get<PageResult<DataSinkApi.Sink>>(
+  return requestClient.get<PageResult<DataSinkApi.DataSink>>(
     '/iot/data-sink/page',
     { params },
   );
@@ -104,45 +150,27 @@ export function getDataSinkPage(params: PageParam) {
 
 /** 查询数据流转目的详情 */
 export function getDataSink(id: number) {
-  return requestClient.get<DataSinkApi.Sink>(`/iot/data-sink/get?id=${id}`);
+  return requestClient.get<DataSinkApi.DataSink>(`/iot/data-sink/get?id=${id}`);
 }
 
-/** 查询所有数据流转目的列表 */
-export function getDataSinkList() {
-  return requestClient.get<DataSinkApi.Sink[]>('/iot/data-sink/list');
-}
-
-/** 查询数据流转目的简单列表 */
+/** 查询数据流转目的（精简）列表 */
 export function getDataSinkSimpleList() {
-  return requestClient.get<DataSinkApi.Sink[]>('/iot/data-sink/simple-list');
+  return requestClient.get<DataSinkApi.DataSink[]>(
+    '/iot/data-sink/simple-list',
+  );
 }
 
 /** 新增数据流转目的 */
-export function createDataSink(data: DataSinkVO) {
+export function createDataSink(data: DataSinkApi.DataSink) {
   return requestClient.post('/iot/data-sink/create', data);
 }
 
 /** 修改数据流转目的 */
-export function updateDataSink(data: DataSinkVO) {
+export function updateDataSink(data: DataSinkApi.DataSink) {
   return requestClient.put('/iot/data-sink/update', data);
 }
 
 /** 删除数据流转目的 */
 export function deleteDataSink(id: number) {
   return requestClient.delete(`/iot/data-sink/delete?id=${id}`);
-}
-
-/** 批量删除数据流转目的 */
-export function deleteDataSinkList(ids: number[]) {
-  return requestClient.delete('/iot/data-sink/delete-list', {
-    params: { ids: ids.join(',') },
-  });
-}
-
-/** 更新数据流转目的状态 */
-export function updateDataSinkStatus(id: number, status: number) {
-  return requestClient.put(`/iot/data-sink/update-status`, {
-    id,
-    status,
-  });
 }

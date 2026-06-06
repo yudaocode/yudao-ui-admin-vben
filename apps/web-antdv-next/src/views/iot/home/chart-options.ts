@@ -15,7 +15,7 @@ export function getMessageTrendChartOptions(
       },
     },
     legend: {
-      data: ['上行消息', '下行消息'],
+      data: ['上行消息量', '下行消息量'],
       top: '5%',
     },
     grid: {
@@ -40,11 +40,21 @@ export function getMessageTrendChartOptions(
     ],
     series: [
       {
-        name: '上行消息',
+        name: '上行消息量',
         type: 'line',
         smooth: true,
         areaStyle: {
-          opacity: 0.3,
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(24, 144, 255, 0.3)' },
+              { offset: 1, color: 'rgba(24, 144, 255, 0)' },
+            ],
+          },
         },
         emphasis: {
           focus: 'series',
@@ -55,11 +65,21 @@ export function getMessageTrendChartOptions(
         },
       },
       {
-        name: '下行消息',
+        name: '下行消息量',
         type: 'line',
         smooth: true,
         areaStyle: {
-          opacity: 0.3,
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: 'rgba(82, 196, 26, 0.3)' },
+              { offset: 1, color: 'rgba(82, 196, 26, 0)' },
+            ],
+          },
         },
         emphasis: {
           focus: 'series',
@@ -73,9 +93,7 @@ export function getMessageTrendChartOptions(
   };
 }
 
-/**
- * 设备状态仪表盘图表配置
- */
+/** 设备状态仪表盘图表配置 */
 export function getDeviceStateGaugeChartOptions(
   value: number,
   max: number,
@@ -86,8 +104,8 @@ export function getDeviceStateGaugeChartOptions(
     series: [
       {
         type: 'gauge',
-        startAngle: 225,
-        endAngle: -45,
+        startAngle: 360,
+        endAngle: 0,
         min: 0,
         max,
         center: ['50%', '50%'],
@@ -129,9 +147,7 @@ export function getDeviceStateGaugeChartOptions(
   };
 }
 
-/**
- * 设备数量饼图配置
- */
+/** 设备数量饼图配置 */
 export function getDeviceCountPieChartOptions(
   data: Array<{ name: string; value: number }>,
 ): any {

@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, TabPane, Tabs } from 'antdv-next';
+import { Card, message, Tabs } from 'antdv-next';
 
 import {
   getCustomer,
@@ -102,9 +102,7 @@ function handleTransfer() {
 /** 锁定客户 */
 async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定锁定客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定锁定客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -118,9 +116,7 @@ async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
 /** 领取客户 */
 async function handleReceive(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定领取客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定领取客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -139,9 +135,7 @@ function handleDistributeForm() {
 /** 客户放入公海 */
 async function handlePutPool(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定将客户【${customer.value.name}】放入公海吗？`,
-    });
+    await confirm(`确定将客户【${customer.value.name}】放入公海吗？`);
   } catch {
     return false;
   }
@@ -156,9 +150,7 @@ async function handlePutPool(): Promise<boolean | undefined> {
 async function handleUpdateDealStatus(): Promise<boolean | undefined> {
   const dealStatus = !customer.value.dealStatus;
   try {
-    await confirm({
-      content: `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
-    });
+    await confirm(`确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`);
   } catch {
     return false;
   }
@@ -250,20 +242,20 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs>
-        <TabPane tab="跟进记录" key="1" :force-render="true">
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
-        </TabPane>
-        <TabPane tab="基本信息" key="2" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
           <Info :customer="customer" />
-        </TabPane>
-        <TabPane tab="联系人" key="3" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="联系人" key="3" :force-render="true">
           <ContactDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </TabPane>
-        <TabPane tab="团队成员" key="4" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="customerId"
@@ -271,27 +263,27 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </TabPane>
-        <TabPane tab="商机" key="5" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="商机" key="5" :force-render="true">
           <BusinessDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </TabPane>
-        <TabPane tab="合同" key="6" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="合同" key="6" :force-render="true">
           <ContractDetailsList
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
           />
-        </TabPane>
-        <TabPane tab="回款" key="7" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="回款" key="7" :force-render="true">
           <ReceivablePlanDetailsList :customer-id="customerId" />
           <ReceivableDetailsList :customer-id="customerId" />
-        </TabPane>
-        <TabPane tab="操作日志" key="8" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="操作日志" key="8" :force-render="true">
           <OperateLog :log-list="logList" />
-        </TabPane>
+        </Tabs.TabPane>
       </Tabs>
     </Card>
   </Page>

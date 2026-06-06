@@ -562,12 +562,12 @@ function useTimeoutHandler() {
     if (!configForm.value.timeoutHandlerEnable) {
       return undefined;
     }
-    let strTimeDuration = 'PT';
+    let strTimeDuration = 'P';
     if (timeUnit.value === TimeUnitType.MINUTE) {
-      strTimeDuration += `${configForm.value.timeDuration}M`;
+      strTimeDuration += `T${configForm.value.timeDuration}M`;
     }
     if (timeUnit.value === TimeUnitType.HOUR) {
-      strTimeDuration += `${configForm.value.timeDuration}H`;
+      strTimeDuration += `T${configForm.value.timeDuration}H`;
     }
     if (timeUnit.value === TimeUnitType.DAY) {
       strTimeDuration += `${configForm.value.timeDuration}D`;

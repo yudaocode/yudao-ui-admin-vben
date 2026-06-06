@@ -67,9 +67,7 @@ async function handleDefaultStatusChange(
 ): Promise<boolean | undefined> {
   const text = newStatus ? '设置' : '取消';
   try {
-    await confirm({
-      content: `确认要${text}"${row.name}"默认吗?`,
-    });
+    await confirm(`确认要${text}"${row.name}"默认吗?`);
   } catch {
     return false;
   }

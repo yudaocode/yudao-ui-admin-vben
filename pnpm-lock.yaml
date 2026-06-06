@@ -957,6 +957,9 @@ importers:
       dayjs:
         specifier: 'catalog:'
         version: 1.11.21
+      dhtmlx-gantt:
+        specifier: 'catalog:'
+        version: 9.1.4
       diagram-js:
         specifier: 'catalog:'
         version: 12.8.1
@@ -975,6 +978,9 @@ importers:
       tinymce:
         specifier: 'catalog:'
         version: 7.9.3
+      tyme4ts:
+        specifier: 'catalog:'
+        version: 1.5.0
       video.js:
         specifier: 'catalog:'
         version: 7.21.7
@@ -1305,14 +1311,14 @@ importers:
         version: 2.9.8(vue@3.5.35(typescript@6.0.3))
       vitepress-plugin-group-icons:
         specifier: 'catalog:'
-        version: 1.7.5(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.7.5(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
     devDependencies:
       '@nolebase/vitepress-plugin-git-changelog':
         specifier: 'catalog:'
         version: 2.18.2(vitepress@2.0.0-alpha.17(@types/node@25.9.1)(async-validator@4.2.5)(axios@1.16.1)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.100.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
       '@tailwindcss/vite':
         specifier: 'catalog:'
-        version: 4.3.0(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))
       '@vben/tailwind-config':
         specifier: workspace:*
         version: link:../internal/tailwind-config
@@ -1321,7 +1327,7 @@ importers:
         version: link:../internal/vite-config
       '@vite-pwa/vitepress':
         specifier: 'catalog:'
-        version: 1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))
+        version: 1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))
       vitepress:
         specifier: 'catalog:'
         version: 2.0.0-alpha.17(@types/node@25.9.1)(async-validator@4.2.5)(axios@1.16.1)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.100.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0)
@@ -15719,6 +15725,13 @@ snapshots:
       tailwindcss: 4.3.0
       vite: 8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
 
+  '@tailwindcss/vite@4.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))':
+    dependencies:
+      '@tailwindcss/node': 4.3.0
+      '@tailwindcss/oxide': 4.3.0
+      tailwindcss: 4.3.0
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
+
   '@tanstack/store@0.11.0': {}
 
   '@tanstack/virtual-core@3.16.0': {}
@@ -16677,9 +16690,9 @@ snapshots:
       global: 4.4.0
       is-function: 1.0.2
 
-  '@vite-pwa/vitepress@1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))':
+  '@vite-pwa/vitepress@1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))':
     dependencies:
-      vite-plugin-pwa: 1.3.0(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1)
+      vite-plugin-pwa: 1.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1)
 
   '@vitejs/plugin-vue-jsx@5.1.5(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))':
     dependencies:
@@ -22605,6 +22618,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1):
+    dependencies:
+      debug: 4.4.3
+      pretty-bytes: 6.1.1
+      tinyglobby: 0.2.17
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
+      workbox-build: 7.4.1
+      workbox-window: 7.4.1
+    transitivePeerDependencies:
+      - supports-color
+
   vite-plugin-vue-devtools@8.1.2(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3)):
     dependencies:
       '@vue/devtools-core': 8.1.2(vue@3.5.35(typescript@6.0.3))
@@ -22689,13 +22713,13 @@ snapshots:
       terser: 5.48.0
       yaml: 2.9.0
 
-  vitepress-plugin-group-icons@1.7.5(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)):
+  vitepress-plugin-group-icons@1.7.5(vite@8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@iconify-json/logos': 1.2.11
       '@iconify-json/vscode-icons': 1.2.53
       '@iconify/utils': 3.1.3
     optionalDependencies:
-      vite: 8.0.10(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.0.16(@types/node@25.9.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
 
   vitepress@2.0.0-alpha.17(@types/node@25.9.1)(async-validator@4.2.5)(axios@1.16.1)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.100.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0):
     dependencies:

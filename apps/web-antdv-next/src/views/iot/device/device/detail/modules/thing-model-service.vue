@@ -1,41 +1,48 @@
 <!-- 设备服务调用 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { computed, getThingModelServiceCallTypeLabel, IoTThingModelTypeEnum, onMounted, reactive, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  getThingModelServiceCallTypeLabel,
+  IotDeviceMessageMethodEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, DateRangePicker, Select, Space, Tag } from 'antdv-next';
+import { Button, DatePicker, Select, Space, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
 
 const props = defineProps<{
   deviceId: number;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
+
+const RangePicker = DatePicker.RangePicker;
 
 /** 查询参数 */
 const queryParams = reactive({
   identifier: '',
   times: undefined as [string, string] | undefined,
 });
+let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
 /** 服务类型的物模型数据 */
 const serviceThingModels = computed(() => {
   return props.thingModelList.filter(
-    (item: ThingModelData) =>
+    (item: ThingModelApi.ThingModel) =>
       String(item.type) === String(IoTThingModelTypeEnum.SERVICE),
   );
 });
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
   return [
     {
       field: 'requestTime',
@@ -132,7 +139,7 @@ function resetQuery() {
 function getServiceName(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   return service?.name || identifier;
 }
@@ -141,7 +148,7 @@ function getServiceName(identifier: string | undefined) {
 function getCallType(identifier: string | undefined) {
   if (!identifier) return '-';
   const service = serviceThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   if (!service?.service?.callType) return '-';
   return getThingModelServiceCallTypeLabel(service.service.callType) || '-';
@@ -163,8 +170,15 @@ function parseParams(params: string) {
 
 /** 刷新列表 */
 function refresh(delay = 0) {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
   if (delay > 0) {
-    setTimeout(() => gridApi.query(), delay);
+    refreshTimer = setTimeout(() => {
+      gridApi.query();
+      refreshTimer = undefined;
+    }, delay);
   } else {
     gridApi.query();
   }
@@ -187,6 +201,14 @@ onMounted(() => {
   }
 });
 
+/** 组件卸载时清除延迟刷新定时器 */
+onBeforeUnmount(() => {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
+});
+
 /** 暴露方法给父组件 */
 defineExpose({
   refresh,
@@ -205,18 +227,18 @@ defineExpose({
           placeholder="请选择服务标识符"
           style="width: 240px"
         >
-          <SelectOption
+          <Select.Option
             v-for="service in serviceThingModels"
             :key="service.identifier"
             :value="service.identifier!"
           >
             {{ service.name }}({{ service.identifier }})
-          </SelectOption>
+          </Select.Option>
         </Select>
       </div>
       <div class="flex items-center gap-2">
         <span>时间范围：</span>
-        <DateRangePicker
+        <RangePicker
           v-model:value="queryParams.times"
           format="YYYY-MM-DD HH:mm:ss"
           show-time

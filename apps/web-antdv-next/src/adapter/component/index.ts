@@ -366,7 +366,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
               closable: false,
               cancelText: $t('common.cancel'),
               okText: $t('ui.crop.confirm'),
-              destroyOnHidden: true,
+              destroyOnClose: true,
               onOk: async () => {
                 const cropper = cropperRef.value;
                 if (!cropper) {
@@ -625,7 +625,6 @@ export type ComponentType =
   | 'Space'
   | 'Switch'
   | 'TextArea'
-  | 'TextArea'
   | 'TimePicker'
   | 'TimeRangePicker'
   | 'TreeSelect'
@@ -744,8 +743,8 @@ async function initComponentAdapter() {
     copyPreferencesSuccess: (title, content) => {
       notification.success({
         description: content,
-        title,
         placement: 'bottomRight',
+        title,
       });
     },
   });

@@ -6,15 +6,15 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceModbusConfigApi } from '#/api/iot/device/modbus/config';
 import type { IotDeviceModbusPointApi } from '#/api/iot/device/modbus/point';
 import type { IotProductApi } from '#/api/iot/product/product';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 import type { DescriptionItemSchema } from '#/components/description';
 
-import { computed, h, ModbusFunctionCodeOptions, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, ModbusFunctionCodeOptions } from '@vben/constants';
 
-import { Button, message } from 'antdv-next';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getModbusConfig } from '#/api/iot/device/modbus/config';
@@ -29,12 +29,10 @@ import { DictTag } from '#/components/dict-tag';
 import DeviceModbusConfigForm from './modbus-config-form.vue';
 import DeviceModbusPointForm from './modbus-point-form.vue';
 
-defineOptions({ name: 'DeviceModbusConfig' });
-
 const props = defineProps<{
   device: IotDeviceApi.Device;
   product: IotProductApi.Product;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 // ======================= 连接配置 =======================
@@ -173,7 +171,7 @@ function usePointFormSchema(): VbenFormSchema[] {
 }
 
 /** 点位列表列配置 */
-function usePointColumns(): VxeTableGridOptions['columns'] {
+function usePointColumns(): VxeTableGridOptions<IotDeviceModbusPointApi.ModbusPoint>['columns'] {
   return [
     { field: 'name', title: '属性名称', minWidth: 100 },
     {
@@ -287,7 +285,7 @@ function handleEditPoint(row: IotDeviceModbusPointApi.ModbusPoint) {
 
 /** 删除点位 */
 async function handleDeletePoint(row: IotDeviceModbusPointApi.ModbusPoint) {
-  await confirm({ content: `确定要删除点位【${row.name}】吗？` });
+  await confirm(`确定要删除点位【${row.name}】吗？`);
   await deleteModbusPoint(row.id!);
   message.success('删除成功');
   await gridApi.query();
@@ -309,7 +307,16 @@ onMounted(async () => {
     <!-- 连接配置区域 -->
     <ConfigDescriptions :data="modbusConfig" class="mb-4">
       <template #extra>
-        <Button type="primary" @click="handleEditConfig">编辑</Button>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              auth: ['iot:device:create'],
+              onClick: handleEditConfig,
+            },
+          ]"
+        />
       </template>
     </ConfigDescriptions>
 
@@ -322,6 +329,7 @@ onMounted(async () => {
               label: '新增点位',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:device:create'],
               onClick: handleAddPoint,
             },
           ]"
@@ -333,12 +341,14 @@ onMounted(async () => {
             {
               label: '编辑',
               type: 'link',
+              auth: ['iot:device:update'],
               onClick: () => handleEditPoint(row),
             },
             {
               label: '删除',
               type: 'link',
               danger: true,
+              auth: ['iot:device:delete'],
               popConfirm: {
                 title: `确定要删除点位【${row.name}】吗？`,
                 confirm: () => handleDeletePoint(row),

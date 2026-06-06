@@ -132,6 +132,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       label: '合计收款',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '合计收款',
         precision: 2,
         formatter: erpPriceInputFormatter,
@@ -143,6 +144,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       label: '优惠金额',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         disabled: formType === 'detail',
         placeholder: '请输入优惠金额',
         precision: 2,
@@ -154,6 +156,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       label: '实际收款',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '实际收款',
         precision: 2,
         formatter: erpPriceInputFormatter,

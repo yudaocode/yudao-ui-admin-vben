@@ -4,9 +4,9 @@ import type { Emoji } from './tools/emoji';
 import type { MallKefuConversationApi } from '#/api/mall/promotion/kefu/conversation';
 import type { MallKefuMessageApi } from '#/api/mall/promotion/kefu/message';
 
-import { computed, KeFuMessageContentTypeEnum, reactive, ref, toRefs, unref, watch } from 'vue';
+import { computed, reactive, ref, toRefs, unref, watch } from 'vue';
 
-import { UserTypeEnum } from '@vben/constants';
+import { KeFuMessageContentTypeEnum, UserTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDate, isEmpty, jsonParse } from '@vben/utils';
 

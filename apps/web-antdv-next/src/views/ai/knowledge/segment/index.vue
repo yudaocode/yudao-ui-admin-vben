@@ -65,9 +65,7 @@ async function handleStatusChange(
   row: AiKnowledgeSegmentApi.KnowledgeSegment,
 ): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `你要将片段 ${row.id} 的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`,
-    });
+    await confirm(`你要将片段 ${row.id} 的状态切换为【${getDictLabel(DICT_TYPE.COMMON_STATUS, newStatus)}】吗？`);
   } catch {
     return false;
   }

@@ -1,5 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AlertRecordApi } from '#/api/iot/alert/record';
+import type { IotDeviceApi } from '#/api/iot/device/device';
+import type { IotProductApi } from '#/api/iot/product/product';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -8,6 +11,12 @@ import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 import { getSimpleDeviceList } from '#/api/iot/device/device';
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { getRangePickerDefaultProps } from '#/utils';
+
+/** 关联数据 */
+let productList: IotProductApi.Product[] = [];
+let deviceList: IotDeviceApi.Device[] = [];
+getSimpleProductList().then((data) => (productList = data));
+getSimpleDeviceList().then((data) => (deviceList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -53,12 +62,26 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '设备',
       component: 'ApiSelect',
       componentProps: {
-        api: getSimpleDeviceList,
+        api: (params?: { productId?: number }) =>
+          getSimpleDeviceList(undefined, params?.productId),
         labelField: 'deviceName',
         valueField: 'id',
         placeholder: '请选择设备',
         allowClear: true,
         showSearch: true,
+      },
+      dependencies: {
+        triggerFields: ['productId'],
+        componentProps: (values) => {
+          return {
+            params: { productId: values.productId },
+          };
+        },
+        trigger: (values, formApi) => {
+          if (values.deviceId !== undefined) {
+            void formApi.setFieldValue('deviceId', undefined);
+          }
+        },
       },
     },
     {
@@ -66,7 +89,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '是否处理',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING),
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
         placeholder: '请选择是否处理',
         allowClear: true,
       },
@@ -84,9 +107,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<AlertRecordApi.AlertRecord>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '记录编号',
@@ -101,19 +123,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'configLevel',
       title: '告警级别',
       minWidth: 100,
-      slots: { default: 'configLevel' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
+      },
     },
     {
       field: 'productId',
       title: '产品名称',
       minWidth: 120,
-      slots: { default: 'product' },
+      formatter: ({ cellValue }) =>
+        productList.find((product) => product.id === cellValue)?.name || '-',
     },
     {
       field: 'deviceId',
       title: '设备名称',
       minWidth: 120,
-      slots: { default: 'device' },
+      formatter: ({ cellValue }) =>
+        deviceList.find((device) => device.id === cellValue)?.deviceName || '-',
     },
     {
       field: 'deviceMessage',

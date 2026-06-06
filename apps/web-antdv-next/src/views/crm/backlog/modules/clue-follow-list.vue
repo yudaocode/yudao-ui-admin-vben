@@ -45,6 +45,7 @@ const [Grid] = useVbenVxeGrid({
           return await getCluePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
+            sceneType: 1,
             transformStatus: false,
             ...formValues,
           });

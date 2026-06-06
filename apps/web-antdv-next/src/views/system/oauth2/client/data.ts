@@ -74,6 +74,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '访问令牌的有效期',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入访问令牌的有效期，单位：秒',
         min: 0,
       },
@@ -84,6 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '刷新令牌的有效期',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入刷新令牌的有效期，单位：秒',
         min: 0,
       },

@@ -17,6 +17,7 @@ export const schema: VbenFormSchema[] = [
     component: 'InputNumber',
     fieldName: 'notifyDays',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 0,
     },

@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { DataSinkApi } from '#/api/iot/rule/data/sink';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -50,60 +51,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-/** 目的表单 Schema */
-export function useSinkFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      fieldName: 'id',
-      component: 'Input',
-      dependencies: {
-        show: false,
-        triggerFields: ['id'],
-      },
-    },
-    {
-      fieldName: 'name',
-      label: '目的名称',
-      component: 'Input',
-      componentProps: {
-        placeholder: '请输入目的名称',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'description',
-      label: '目的描述',
-      component: 'TextArea',
-      componentProps: {
-        placeholder: '请输入目的描述',
-        rows: 3,
-      },
-    },
-    {
-      fieldName: 'type',
-      label: '目的类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.IOT_DATA_SINK_TYPE_ENUM, 'number'),
-        placeholder: '请选择目的类型',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'status',
-      label: '目的状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-      defaultValue: 0,
-      rules: 'required',
-    },
-  ];
-}
-
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<DataSinkApi.DataSink>['columns'] {
   return [
     { type: 'checkbox', width: 40 },
     {

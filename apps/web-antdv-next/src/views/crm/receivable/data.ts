@@ -141,6 +141,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入回款金额',
         min: 0,
         precision: 2,

@@ -19,7 +19,9 @@ const showProductSecret = ref(false); // 是否显示产品密钥
 
 /** 格式化日期 */
 function formatDate(date?: Date | string) {
-  if (!date) return '-';
+  if (!date) {
+    return '-';
+  }
   return new Date(date).toLocaleString('zh-CN');
 }
 
@@ -42,66 +44,67 @@ async function copyToClipboard(text: string) {
 <template>
   <Card title="产品信息">
     <Descriptions :column="3" bordered size="small">
-      <DescriptionsItem label="产品名称">
+      <Descriptions.Item label="产品名称">
         {{ product.name }}
-      </DescriptionsItem>
-      <DescriptionsItem label="所属分类">
+      </Descriptions.Item>
+      <Descriptions.Item label="所属分类">
         {{ product.categoryName || '-' }}
-      </DescriptionsItem>
-      <DescriptionsItem label="设备类型">
+      </Descriptions.Item>
+      <Descriptions.Item label="设备类型">
         <DictTag
           :type="DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE"
           :value="product.deviceType"
         />
-      </DescriptionsItem>
-      <DescriptionsItem label="创建时间">
+      </Descriptions.Item>
+      <Descriptions.Item label="创建时间">
         {{ formatDate(product.createTime) }}
-      </DescriptionsItem>
-      <DescriptionsItem label="协议类型">
+      </Descriptions.Item>
+      <Descriptions.Item label="协议类型">
         <DictTag
           :type="DICT_TYPE.IOT_PROTOCOL_TYPE"
           :value="product.protocolType"
         />
-      </DescriptionsItem>
-      <DescriptionsItem label="序列化类型">
+      </Descriptions.Item>
+      <Descriptions.Item label="序列化类型">
         <DictTag
           :type="DICT_TYPE.IOT_SERIALIZE_TYPE"
           :value="product.serializeType"
         />
-      </DescriptionsItem>
-      <DescriptionsItem label="产品状态">
+      </Descriptions.Item>
+      <Descriptions.Item label="产品状态">
         <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
-      </DescriptionsItem>
-      <DescriptionsItem
+      </Descriptions.Item>
+      <Descriptions.Item
         v-if="
-          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
-            product.deviceType!,
-          )
+          (
+            [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]
+          ).includes(product.deviceType!)
         "
         label="联网方式"
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />
-      </DescriptionsItem>
-      <DescriptionsItem v-if="product.productSecret" label="ProductSecret">
+      </Descriptions.Item>
+      <Descriptions.Item label="产品密钥">
         <span v-if="showProductSecret">{{ product.productSecret }}</span>
         <span v-else>********</span>
         <Button class="ml-2" size="small" @click="toggleProductSecretVisible">
           {{ showProductSecret ? '隐藏' : '显示' }}
         </Button>
         <Button
+          v-if="showProductSecret && product.productSecret"
           class="ml-2"
           size="small"
           @click="copyToClipboard(product.productSecret || '')"
         >
           复制
         </Button>
-      </DescriptionsItem>
-      <DescriptionsItem label="动态注册">
+      </Descriptions.Item>
+      <Descriptions.Item label="动态注册">
         {{ product.registerEnabled ? '已开启' : '未开启' }}
-      </DescriptionsItem>
-      <DescriptionsItem :span="3" label="产品描述">
+      </Descriptions.Item>
+      <Descriptions.Item :span="3" label="产品描述">
         {{ product.description || '-' }}
-      </DescriptionsItem>
+      </Descriptions.Item>
     </Descriptions>
   </Card>
 </template>

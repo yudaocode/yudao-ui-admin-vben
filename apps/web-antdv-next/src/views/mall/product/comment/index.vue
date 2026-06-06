@@ -65,9 +65,7 @@ async function handleStatusChange(
 ): Promise<boolean | undefined> {
   const text = newStatus ? '展示' : '隐藏';
   try {
-    await confirm({
-      content: `确认要${text}该评论吗？`,
-    });
+    await confirm(`确认要${text}该评论吗？`);
   } catch {
     return false;
   }

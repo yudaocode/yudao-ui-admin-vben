@@ -70,10 +70,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!data || !data.id) {
       return;
     }
-    // 编辑模式：加载数据
     modalApi.lock();
     try {
       formData.value = await getProductCategory(data.id);
+      // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();

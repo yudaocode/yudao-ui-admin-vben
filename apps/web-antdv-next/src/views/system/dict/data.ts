@@ -222,6 +222,7 @@ export function useDataFormSchema(): VbenFormSchema[] {
       label: '显示排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入显示排序',
       },
       rules: 'required',

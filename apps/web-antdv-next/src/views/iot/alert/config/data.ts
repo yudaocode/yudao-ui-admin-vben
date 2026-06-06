@@ -1,12 +1,28 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AlertConfigApi } from '#/api/iot/alert/config';
 
-import { DICT_TYPE } from '@vben/constants';
+import { markRaw } from 'vue';
+
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  IotAlertReceiveTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleRuleSceneList } from '#/api/iot/rule/scene';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+import { MailTemplateSelect } from '#/views/system/mail/template/components';
+import { NotifyTemplateSelect } from '#/views/system/notify/template/components';
+import { SmsTemplateSelect } from '#/views/system/sms/template/components';
+
+function hasReceiveType(values: Partial<Record<string, any>>, type: number) {
+  return (
+    Array.isArray(values.receiveTypes) && values.receiveTypes.includes(type)
+  );
+}
 
 /** 新增/修改告警配置的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -56,6 +72,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
+      defaultValue: CommonStatusEnum.ENABLE,
       rules: 'required',
     },
     {
@@ -69,6 +86,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择关联的场景联动规则',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -82,6 +100,7 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收的用户',
       },
+      defaultValue: [],
       rules: 'required',
     },
     {
@@ -93,7 +112,63 @@ export function useFormSchema(): VbenFormSchema[] {
         mode: 'multiple',
         placeholder: '请选择接收类型',
       },
+      defaultValue: [],
       rules: 'required',
+    },
+    {
+      fieldName: 'smsTemplateCode',
+      label: '短信模板',
+      component: markRaw(SmsTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.SMS),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.SMS) &&
+            values.smsTemplateCode
+          ) {
+            await formApi.setFieldValue('smsTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'mailTemplateCode',
+      label: '邮件模板',
+      component: markRaw(MailTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.MAIL),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.MAIL) &&
+            values.mailTemplateCode
+          ) {
+            await formApi.setFieldValue('mailTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
+    },
+    {
+      fieldName: 'notifyTemplateCode',
+      label: '站内信模板',
+      component: markRaw(NotifyTemplateSelect),
+      dependencies: {
+        triggerFields: ['receiveTypes'],
+        show: (values) =>
+          hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY),
+        trigger: async (values, formApi) => {
+          if (
+            !hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY) &&
+            values.notifyTemplateCode
+          ) {
+            await formApi.setFieldValue('notifyTemplateCode', undefined);
+          }
+        },
+      },
+      rules: 'selectRequired',
     },
   ];
 }
@@ -133,9 +208,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<AlertConfigApi.AlertConfig>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '配置编号',
@@ -155,7 +229,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'level',
       title: '告警级别',
       minWidth: 100,
-      slots: { default: 'level' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.IOT_ALERT_LEVEL },
+      },
     },
     {
       field: 'status',
@@ -170,7 +247,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'sceneRuleIds',
       title: '关联场景联动规则',
       minWidth: 150,
-      slots: { default: 'sceneRules' },
+      formatter: ({ cellValue }) => `${cellValue?.length || 0} 条`,
     },
     {
       field: 'receiveUserNames',

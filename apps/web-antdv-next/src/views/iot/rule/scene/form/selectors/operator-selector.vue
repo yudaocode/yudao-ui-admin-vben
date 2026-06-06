@@ -239,39 +239,40 @@ watch(
 <template>
   <div class="w-full">
     <Select
-      v-model="localValue"
+      v-model:value="localValue"
       placeholder="请选择操作符"
       @change="handleChange"
       class="w-full"
+      option-label-prop="label"
     >
-      <SelectOption
+      <Select.Option
         v-for="operator in availableOperators"
         :key="operator.value"
         :label="operator.label"
         :value="operator.value"
       >
-        <div class="py-4px flex w-full items-center justify-between">
-          <div class="gap-8px flex items-center">
-            <div class="text-14px font-500 text-primary">
+        <div class="py-[4px] flex w-full items-center justify-between">
+          <div class="gap-[8px] flex items-center">
+            <div class="text-[14px] font-medium text-foreground">
               {{ operator.label }}
             </div>
             <div
-              class="text-12px px-6px py-2px rounded-4px bg-primary-light-9 font-mono text-primary"
+              class="text-[12px] px-[6px] py-[2px] rounded-[4px] bg-primary-light-9 font-mono text-primary"
             >
               {{ operator.symbol }}
             </div>
           </div>
-          <div class="text-12px text-secondary">
+          <div class="text-[12px] text-muted-foreground">
             {{ operator.description }}
           </div>
         </div>
-      </SelectOption>
+      </Select.Option>
     </Select>
   </div>
 </template>
 
 <style scoped>
-:deep(.el-select-dropdown__item) {
+:deep(.ant-select-item-option-content) {
   height: auto;
   padding: 8px 20px;
 }

@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, TabPane, Tabs } from 'antdv-next';
+import { Card, message, Tabs } from 'antdv-next';
 
 import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -84,9 +84,7 @@ function handleTransfer() {
 /** 转化为客户 */
 async function handleTransform(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: '确定将该线索转化为客户吗？',
-    });
+    await confirm('确定将该线索转化为客户吗？');
   } catch {
     return false;
   }
@@ -146,13 +144,13 @@ onMounted(() => {
     </Card>
     <Card class="mt-4 min-h-[60%]">
       <Tabs :tab-bar-gutter="16">
-        <TabPane tab="跟进记录" key="1" :force-render="true">
+        <Tabs.TabPane tab="跟进记录" key="1" :force-render="true">
           <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
-        </TabPane>
-        <TabPane tab="基本信息" key="2" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="基本信息" key="2" :force-render="true">
           <Info :clue="clue" />
-        </TabPane>
-        <TabPane tab="团队成员" key="3" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="团队成员" key="3" :force-render="true">
           <PermissionList
             ref="permissionListRef"
             :biz-id="clueId"
@@ -160,10 +158,10 @@ onMounted(() => {
             :show-action="true"
             @quit-team="handleBack"
           />
-        </TabPane>
-        <TabPane tab="操作日志" key="4" :force-render="true">
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="操作日志" key="4" :force-render="true">
           <OperateLog :log-list="logList" />
-        </TabPane>
+        </Tabs.TabPane>
       </Tabs>
     </Card>
   </Page>

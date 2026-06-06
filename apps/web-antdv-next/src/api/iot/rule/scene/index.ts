@@ -11,25 +11,20 @@ export namespace RuleSceneApi {
     status?: number;
     triggers?: Trigger[];
     actions?: Action[];
+    lastTriggeredTime?: Date;
     createTime?: Date;
   }
 
   /** 场景联动规则的触发器 */
   export interface Trigger {
-    type?: string;
+    type?: number;
     productId?: number;
     deviceId?: number;
     identifier?: string;
     operator?: string;
     value?: any;
     cronExpression?: string;
-    conditionGroups?: TriggerConditionGroup[];
-  }
-
-  /** 场景联动规则的触发条件组 */
-  export interface TriggerConditionGroup {
-    conditions?: TriggerCondition[];
-    operator?: string;
+    conditionGroups?: TriggerCondition[][]; // 后端结构：List<List<TriggerCondition>>；外层「或」、组内「且」
   }
 
   /**  场景联动规则的触发条件 */
@@ -39,70 +34,20 @@ export namespace RuleSceneApi {
     identifier?: string;
     operator?: string;
     value?: any;
-    type?: string;
+    type?: number;
+    param?: string;
   }
 
   /** 场景联动规则的动作 */
   export interface Action {
-    type?: string;
+    type?: number;
     productId?: number;
     deviceId?: number;
     identifier?: string;
     value?: any;
     alertConfigId?: number;
+    params?: string;
   }
-}
-
-// TODO @haohao：貌似下面的，和 RuleSceneApi 重复了。
-/** IoT 场景联动规则 */
-export interface IotSceneRule {
-  id?: number;
-  name?: string;
-  description?: string;
-  status?: number;
-  triggers?: Trigger[];
-  actions?: Action[];
-  createTime?: Date;
-}
-
-/** IoT 场景联动规则触发器 */
-export interface Trigger {
-  type?: string;
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  operator?: string;
-  value?: any;
-  cronExpression?: string;
-  conditionGroups?: TriggerConditionGroup[];
-}
-
-/** IoT 场景联动规则触发条件组 */
-export interface TriggerConditionGroup {
-  conditions?: TriggerCondition[];
-  operator?: string;
-}
-
-/** IoT 场景联动规则触发条件 */
-export interface TriggerCondition {
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  operator?: string;
-  value?: any;
-  type?: string;
-  param?: string;
-}
-
-/** IoT 场景联动规则动作 */
-export interface Action {
-  type?: string;
-  productId?: number;
-  deviceId?: number;
-  identifier?: string;
-  value?: any;
-  alertConfigId?: number;
-  params?: string;
 }
 
 /** 查询场景联动规则分页 */
@@ -121,26 +66,18 @@ export function getSceneRule(id: number) {
 }
 
 /** 新增场景联动规则 */
-export function createSceneRule(data: IotSceneRule) {
+export function createSceneRule(data: RuleSceneApi.SceneRule) {
   return requestClient.post('/iot/scene-rule/create', data);
 }
 
 /** 修改场景联动规则 */
-export function updateSceneRule(data: IotSceneRule) {
+export function updateSceneRule(data: RuleSceneApi.SceneRule) {
   return requestClient.put('/iot/scene-rule/update', data);
 }
 
 /** 删除场景联动规则 */
 export function deleteSceneRule(id: number) {
   return requestClient.delete(`/iot/scene-rule/delete?id=${id}`);
-}
-
-/** 批量删除场景联动规则 */
-// TODO @haohao：貌似用上。
-export function deleteSceneRuleList(ids: number[]) {
-  return requestClient.delete('/iot/scene-rule/delete-list', {
-    params: { ids: ids.join(',') },
-  });
 }
 
 /** 更新场景联动规则状态 */

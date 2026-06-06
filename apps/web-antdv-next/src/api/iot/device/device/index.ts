@@ -150,11 +150,8 @@ export function importDeviceTemplate() {
 /** 导入设备 */
 export function importDevice(file: File, updateSupport: boolean) {
   return requestClient.upload<IotDeviceApi.DeviceImportRespVO>(
-    '/iot/device/import',
-    {
-      file,
-      updateSupport,
-    },
+    `/iot/device/import?updateSupport=${updateSupport}`,
+    { file },
   );
 }
 
@@ -168,7 +165,7 @@ export function getLatestDeviceProperties(params: any) {
 
 /** 获取设备属性历史数据 */
 export function getHistoryDevicePropertyList(params: any) {
-  return requestClient.get<PageResult<IotDeviceApi.DeviceProperty>>(
+  return requestClient.get<IotDeviceApi.DeviceProperty[]>(
     '/iot/device/property/history-list',
     { params },
   );
