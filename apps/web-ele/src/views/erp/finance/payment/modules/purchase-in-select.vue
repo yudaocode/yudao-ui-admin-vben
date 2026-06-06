@@ -26,7 +26,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: usePurchaseInGridColumns(),
-    height: 'auto',
+    height: 520,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -95,19 +95,17 @@ defineExpose({ open: openModal });
 
 <template>
   <ElDialog
-    class="!w-[50vw]"
     v-model="open"
     title="选择采购入库单"
+    width="80%"
+    @click.stop
     @confirm="handleOk"
     :append-to-body="true"
   >
-    <Grid
-      class="max-h-[600px]"
-      table-title="采购入库单列表(仅展示可付款的单据)"
-    />
+    <Grid table-title="采购入库单列表(仅展示可付款的单据)" />
     <template #footer>
-      <ElButton @click="open = false">取消</ElButton>
-      <ElButton type="primary" @click="handleOk">确定</ElButton>
+      <ElButton @click.stop="open = false">取消</ElButton>
+      <ElButton type="primary" @click.stop="handleOk">确定</ElButton>
     </template>
   </ElDialog>
 </template>

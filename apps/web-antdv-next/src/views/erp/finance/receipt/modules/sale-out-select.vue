@@ -26,7 +26,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useSaleOutGridColumns(),
-    height: 'auto',
+    height: 520,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -91,14 +91,12 @@ defineExpose({ open: openModal });
 
 <template>
   <Modal
-    class="!w-[50vw]"
     v-model:open="open"
     title="选择销售出库单"
-    @ok="handleOk"
+    width="80%"
+    @cancel.stop="open = false"
+    @ok.stop="handleOk"
   >
-    <Grid
-      class="max-h-[600px]"
-      table-title="销售出库单列表(仅展示可收款的单据)"
-    />
+    <Grid table-title="销售出库单列表(仅展示可收款的单据)" />
   </Modal>
 </template>

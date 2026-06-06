@@ -38,7 +38,7 @@ const [Grid] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useOrderGridColumns(),
-    height: 'auto',
+    height: 520,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -110,14 +110,15 @@ function handleOk() {
     <ElDialog
       v-model="open"
       title="选择关联订单"
-      width="50%"
+      width="80%"
+      @click.stop
       @close="open = false"
       :append-to-body="true"
     >
-      <Grid class="max-h-[600px]" table-title="采购订单列表(仅展示可退货)" />
+      <Grid table-title="采购订单列表(仅展示可退货)" />
       <template #footer>
-        <ElButton @click="open = false">取消</ElButton>
-        <ElButton type="primary" @click="handleOk">确定</ElButton>
+        <ElButton @click.stop="open = false">取消</ElButton>
+        <ElButton type="primary" @click.stop="handleOk">确定</ElButton>
       </template>
     </ElDialog>
   </div>

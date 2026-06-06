@@ -38,7 +38,7 @@ const [Grid] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useOrderGridColumns(),
-    height: 'auto',
+    height: 520,
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -108,12 +108,13 @@ function handleOk() {
       </template>
     </Input>
     <Modal
-      class="!w-[50vw]"
       v-model:open="open"
       title="选择关联订单"
-      @ok="handleOk"
+      width="80%"
+      @cancel.stop="open = false"
+      @ok.stop="handleOk"
     >
-      <Grid class="max-h-[600px]" table-title="销售订单列表(仅展示可退货)" />
+      <Grid table-title="销售订单列表(仅展示可退货)" />
     </Modal>
   </div>
 </template>

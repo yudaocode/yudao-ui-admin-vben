@@ -206,6 +206,7 @@ const [Modal, modalApi] = useVbenModal({
   <Modal
     :title="getTitle"
     class="w-3/4"
+    :close-on-click-modal="false"
     :show-confirm-button="formType !== 'detail'"
   >
     <Form class="mx-3">
