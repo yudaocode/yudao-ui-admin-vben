@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
@@ -53,6 +53,12 @@ const tabsData = ref([
     count: 0,
   },
 ]);
+const spuTabItems = computed(() =>
+  tabsData.value.map((item) => ({
+    key: String(item.type),
+    label: `${item.name} (${item.count})`,
+  })),
+);
 
 /** 刷新表格 */
 async function handleRefresh() {
@@ -208,13 +214,7 @@ onMounted(async () => {
 
     <Grid>
       <template #toolbar-actions>
-        <Tabs @change="onChangeTab" class="w-full">
-          <Tabs.TabPane
-            v-for="item in tabsData"
-            :key="item.type"
-            :tab="`${item.name} (${item.count})`"
-          />
-        </Tabs>
+        <Tabs :items="spuTabItems" @change="onChangeTab" class="w-full" />
       </template>
       <template #toolbar-tools>
         <TableAction
