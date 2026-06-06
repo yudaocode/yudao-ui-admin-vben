@@ -5,7 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select, SelectOption } from 'antdv-next';
+import { FormItem, Input, Select, SelectOption, TextArea } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -95,7 +95,7 @@ onMounted(() => {
     <KeyValueEditor v-model="config.query" add-button-text="添加参数" />
   </FormItem>
   <FormItem label="请求体">
-    <Input.TextArea
+    <TextArea
       v-model:value="config.body"
       placeholder="请输入内容"
       :rows="4"

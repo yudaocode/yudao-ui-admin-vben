@@ -17,7 +17,15 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
-import { Form, FormItem, Input, message, Radio, RadioButton, RadioGroup } from 'antdv-next';
+import {
+  Form,
+  FormItem,
+  Input,
+  message,
+  RadioButton,
+  RadioGroup,
+  TextArea,
+} from 'antdv-next';
 
 import {
   createThingModel,
@@ -234,7 +242,7 @@ function removeDataSpecs(val: any) {
         v-model="formData.event"
       />
       <FormItem label="描述" name="description">
-        <Input.TextArea
+        <TextArea
           v-model:value="formData.description"
           :maxlength="200"
           :rows="3"

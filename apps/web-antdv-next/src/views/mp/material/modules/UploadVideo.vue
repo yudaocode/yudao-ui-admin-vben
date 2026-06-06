@@ -14,6 +14,7 @@ import {
   Input,
   message,
   Modal,
+  TextArea,
   Upload,
 } from 'antdv-next';
 
@@ -149,7 +150,7 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
         />
       </FormItem>
       <FormItem label="描述" name="introduction">
-        <Input.TextArea
+        <TextArea
           v-model:value="uploadData.introduction"
           :rows="3"
           placeholder="介绍语将展示在相关播放页面，建议填写简洁明确、有信息量的内容"

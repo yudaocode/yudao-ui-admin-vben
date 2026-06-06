@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Switch } from 'antdv-next';
+import { FormItem, Input, InputPassword, Switch } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -50,7 +50,7 @@ onMounted(() => {
     :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
     label="密码"
   >
-    <Input.Password v-model:value="config.password" placeholder="请输入密码" />
+    <InputPassword v-model:value="config.password" placeholder="请输入密码" />
   </FormItem>
   <FormItem :name="['config', 'ssl']" label="启用 SSL">
     <Switch v-model:checked="config.ssl" />

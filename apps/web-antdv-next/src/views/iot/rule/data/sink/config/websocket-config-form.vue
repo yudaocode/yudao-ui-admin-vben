@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, InputNumber, Select, SelectOption, Switch } from 'antdv-next';
+import { FormItem, Input, InputNumber, Select, SelectOption, Switch, TextArea } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -103,7 +103,7 @@ onMounted(() => {
     />
   </FormItem>
   <FormItem :name="['config', 'customHeaders']" label="自定义请求头">
-    <Input.TextArea
+    <TextArea
       v-model:value="config.customHeaders"
       placeholder="请输入自定义请求头（JSON 格式）"
       :rows="3"

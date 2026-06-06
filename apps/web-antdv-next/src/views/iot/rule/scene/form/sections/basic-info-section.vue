@@ -7,7 +7,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Card, Col, FormItem, Input, Radio, RadioGroup, Row } from 'antdv-next';
+import { Card, Col, FormItem, Input, Radio, RadioGroup, Row, TextArea } from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -72,7 +72,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
         </Col>
       </Row>
       <FormItem label="场景描述" name="description">
-        <Input.TextArea
+        <TextArea
           v-model:value="formData.description"
           placeholder="请输入场景描述（可选）"
           :rows="3"

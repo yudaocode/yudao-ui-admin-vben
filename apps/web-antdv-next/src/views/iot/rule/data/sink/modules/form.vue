@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, FormItem, Input, message, Radio, RadioGroup, Select } from 'antdv-next';
+import { Form, FormItem, Input, message, Radio, RadioGroup, Select, TextArea } from 'antdv-next';
 
 import {
   createDataSink,
@@ -112,7 +112,7 @@ function handleTypeChange(type: number) {
         <Input v-model:value="formData.name" placeholder="请输入目的名称" />
       </FormItem>
       <FormItem label="目的描述" name="description">
-        <Input.TextArea
+        <TextArea
           v-model:value="formData.description"
           placeholder="请输入目的描述"
           :rows="3"

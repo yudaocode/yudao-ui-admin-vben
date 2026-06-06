@@ -5,7 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 import { isEmpty } from '@vben/utils';
 
 import { useClipboard, useVModel } from '@vueuse/core';
-import { Button, Form, FormItem, Input, message } from 'antdv-next';
+import { Button, FormItem, Input, InputPassword, message } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -91,7 +91,7 @@ onMounted(() => {
     :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
     label="密码"
   >
-    <Input.Password
+    <InputPassword
       v-model:value="config.password"
       placeholder="请输入数据库密码"
     />
