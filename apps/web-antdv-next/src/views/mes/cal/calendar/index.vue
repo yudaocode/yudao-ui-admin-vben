@@ -15,6 +15,11 @@ import 'dayjs/locale/zh-cn';
 dayjs.locale('zh-cn');
 
 const activeTab = ref<string>('type');
+const calendarTabItems = [
+  { key: 'type', label: '按分类', forceRender: true },
+  { key: 'team', label: '按班组', forceRender: true },
+  { key: 'user', label: '按个人', forceRender: true },
+];
 </script>
 
 <template>
@@ -26,16 +31,12 @@ const activeTab = ref<string>('type');
       />
     </template>
     <div class="bg-card rounded-md p-3">
-      <Tabs v-model:active-key="activeTab" type="card">
-        <Tabs.TabPane key="type" tab="按分类" force-render>
-          <TypeView />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="team" tab="按班组" force-render>
-          <TeamView />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="user" tab="按个人" force-render>
-          <UserView />
-        </Tabs.TabPane>
+      <Tabs v-model:active-key="activeTab" :items="calendarTabItems" type="card">
+        <template #contentRender="{ item }">
+          <TypeView v-if="item.key === 'type'" />
+          <TeamView v-else-if="item.key === 'team'" />
+          <UserView v-else-if="item.key === 'user'" />
+        </template>
       </Tabs>
     </div>
   </Page>

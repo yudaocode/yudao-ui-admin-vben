@@ -20,6 +20,10 @@ import VendorItemReceiptList from './item-receipt-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('itemReceiptLine'); // 当前子表页签
+const vendorTabItems = [
+  { key: 'itemReceiptLine', label: '物料清单' },
+  { key: 'itemReceipt', label: '采购记录' },
+];
 const formData = ref<MesMdVendorApi.Vendor>();
 
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
@@ -102,14 +106,19 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="vendorTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="itemReceiptLine" tab="物料清单">
-        <VendorItemReceiptLineList :vendor-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="itemReceipt" tab="采购记录">
-        <VendorItemReceiptList :vendor-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <VendorItemReceiptLineList
+          v-if="item.key === 'itemReceiptLine'"
+          :vendor-id="formData.id"
+        />
+        <VendorItemReceiptList
+          v-else-if="item.key === 'itemReceipt'"
+          :vendor-id="formData.id"
+        />
+      </template>
     </Tabs>
   </Modal>
 </template>

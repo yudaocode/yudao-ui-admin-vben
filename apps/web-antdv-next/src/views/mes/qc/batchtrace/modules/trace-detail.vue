@@ -14,6 +14,10 @@ import TraceList from './trace-list.vue';
 
 const detailData = ref<MesWmBatchApi.Batch>(); // 当前批次详情
 const subTabsName = ref<'backward' | 'forward'>('forward'); // 当前激活的追溯方向
+const traceTabItems = [
+  { key: 'forward', label: '向前追溯' },
+  { key: 'backward', label: '向后追溯' },
+];
 
 const [Descriptions] = useDescription({
   bordered: true,
@@ -44,15 +48,22 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="detailData?.code"
       v-model:active-key="subTabsName"
+      :items="traceTabItems"
       class="mx-4 mt-4"
       type="card"
     >
-      <Tabs.TabPane key="forward" tab="向前追溯">
-        <TraceList :batch-code="detailData.code" direction="forward" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="backward" tab="向后追溯">
-        <TraceList :batch-code="detailData.code" direction="backward" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <TraceList
+          v-if="item.key === 'forward'"
+          :batch-code="detailData.code"
+          direction="forward"
+        />
+        <TraceList
+          v-else-if="item.key === 'backward'"
+          :batch-code="detailData.code"
+          direction="backward"
+        />
+      </template>
     </Tabs>
   </Modal>
 </template>

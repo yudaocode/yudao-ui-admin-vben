@@ -24,6 +24,10 @@ import ItemList from './item-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 弹窗形态：新增/编辑/详情
 const subTabsName = ref('indicator'); // 当前激活的子表 tab
+const templateTabItems = [
+  { key: 'indicator', label: '检测指标项' },
+  { key: 'item', label: '产品关联' },
+];
 const formData = ref<MesQcTemplateApi.Template>();
 
 const getTitle = computed(() => {
@@ -105,20 +109,21 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="templateTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="indicator" tab="检测指标项">
+      <template #contentRender="{ item }">
         <IndicatorList
+          v-if="item.key === 'indicator'"
           :readonly="formType === 'detail'"
           :template-id="formData.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="item" tab="产品关联">
         <ItemList
+          v-else-if="item.key === 'item'"
           :readonly="formType === 'detail'"
           :template-id="formData.id"
         />
-      </Tabs.TabPane>
+      </template>
     </Tabs>
   </Modal>
 </template>

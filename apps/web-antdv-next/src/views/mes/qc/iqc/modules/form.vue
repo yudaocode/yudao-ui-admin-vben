@@ -28,6 +28,10 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesQcIqcApi.Iqc>();
 const subTabsName = ref('line');
+const qcTabItems = [
+  { key: 'line', label: '检验项' },
+  { key: 'result', label: '检测结果' },
+];
 const originalSnapshot = ref(''); // 表单原始数据快照，用于 finish 时跳过未变更的保存请求
 const isDetail = computed(() => formType.value === 'detail');
 const canFinish = computed(
@@ -213,22 +217,23 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formData?.id"
       v-model:active-key="subTabsName"
+      :items="qcTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="line" tab="检验项">
+      <template #contentRender="{ item }">
         <LineList
+          v-if="item.key === 'line'"
           :form-type="formType"
           :iqc-id="formData.id"
           @refresh="handleRefresh"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="result" tab="检测结果">
         <QcIndicatorResultList
+          v-else-if="item.key === 'result'"
           :qc-id="formData.id"
           :qc-type="MesQcTypeEnum.IQC"
           :readonly="isDetail"
         />
-      </Tabs.TabPane>
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">
