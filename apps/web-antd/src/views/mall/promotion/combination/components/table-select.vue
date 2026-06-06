@@ -234,12 +234,10 @@ const [Modal, modalApi] = useVbenModal({
     >();
     if (props.multiple && Array.isArray(data) && data.length > 0) {
       setTimeout(() => {
-        const tableData = gridApi.grid.getTableData().fullData;
+        const tableData = gridApi.grid.getTableData()
+          .fullData as MallCombinationActivityApi.CombinationActivity[];
         data.forEach((activity) => {
-          const row = tableData.find(
-            (item: MallCombinationActivityApi.CombinationActivity) =>
-              item.id === activity.id,
-          );
+          const row = tableData.find((item) => item.id === activity.id);
           if (row) {
             gridApi.grid.setCheckboxRow(row, true);
           }
@@ -247,11 +245,9 @@ const [Modal, modalApi] = useVbenModal({
       }, 300);
     } else if (!props.multiple && data && !Array.isArray(data)) {
       setTimeout(() => {
-        const tableData = gridApi.grid.getTableData().fullData;
-        const row = tableData.find(
-          (item: MallCombinationActivityApi.CombinationActivity) =>
-            item.id === data.id,
-        );
+        const tableData = gridApi.grid.getTableData()
+          .fullData as MallCombinationActivityApi.CombinationActivity[];
+        const row = tableData.find((item) => item.id === data.id);
         if (row) {
           gridApi.grid.setRadioRow(row);
         }

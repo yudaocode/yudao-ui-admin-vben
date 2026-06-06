@@ -44,7 +44,6 @@ const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏�
 //   margin: 4,
 // }); // 预览二维码
 
-const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
   cloneDeep(PAGE_CONFIG_COMPONENT),
 ); // 页面设置组件
@@ -336,7 +335,6 @@ onMounted(() => {
       <Col :span="6">
         <ComponentLibrary
           v-if="libs && libs.length > 0"
-          ref="componentLibrary"
           :list="libs"
         />
       </Col>

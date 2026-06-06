@@ -139,7 +139,6 @@ defineExpose({
         node-key="id"
         :props="{
           label: 'name',
-          value: 'id',
           children: 'children',
         }"
         placeholder="请选择地区"

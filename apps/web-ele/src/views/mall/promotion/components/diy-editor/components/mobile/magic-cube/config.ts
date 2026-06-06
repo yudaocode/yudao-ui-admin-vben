@@ -1,3 +1,4 @@
+import type { Rect } from '../../../../magic-cube-editor/util';
 import type { ComponentStyle, DiyComponent } from '../../../util';
 
 /** 广告魔方属性 */
@@ -10,13 +11,9 @@ export interface MagicCubeProperty {
 }
 
 /** 广告魔方项目属性 */
-export interface MagicCubeItemProperty {
+export interface MagicCubeItemProperty extends Rect {
   imgUrl: string; // 图标链接
   url: string; // 链接
-  width: number; // 宽
-  height: number; // 高
-  top: number; // 上
-  left: number; // 左
 }
 
 /** 定义组件 */

@@ -1,3 +1,4 @@
+import type { Rect } from '../../../../magic-cube-editor/util';
 import type { DiyComponent } from '../../../util';
 
 /** 顶部导航栏属性 */
@@ -16,12 +17,8 @@ export interface NavigationBarProperty {
 }
 
 /** 顶部导航栏 - 单元格 属性 */
-export interface NavigationBarCellProperty {
+export interface NavigationBarCellProperty extends Rect {
   type: 'image' | 'search' | 'text'; // 类型：文字 | 图片 | 搜索框
-  width: number; // 宽度
-  height: number; // 高度
-  top: number; // 顶部位置
-  left: number; // 左侧位置
   text: string; // 文字内容
   textColor: string; // 文字颜色
   imgUrl: string; // 图片地址
