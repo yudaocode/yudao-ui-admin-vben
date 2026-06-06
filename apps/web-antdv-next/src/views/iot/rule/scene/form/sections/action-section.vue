@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, FormItem, Select, Tag } from 'antdv-next';
+import { Button, Card, Empty, FormItem, Select, SelectOption, Tag } from 'antdv-next';
 
 import AlertConfig from '../configs/alert-config.vue';
 import DeviceControlConfig from '../configs/device-control-config.vue';
@@ -235,13 +235,13 @@ function onActionTypeChange(action: RuleSceneApi.Action, type: number) {
                   placeholder="请选择执行类型"
                   class="w-full"
                 >
-                  <Select.Option
+                  <SelectOption
                     v-for="option in getActionTypeOptions()"
                     :key="option.value"
                     :value="option.value"
                   >
                     {{ option.label }}
-                  </Select.Option>
+                  </SelectOption>
                 </Select>
               </FormItem>
             </div>

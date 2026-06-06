@@ -7,7 +7,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Card, Col, FormItem, Input, Radio, Row } from 'antdv-next';
+import { Card, Col, FormItem, Input, Radio, RadioGroup, Row } from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -56,7 +56,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
         </Col>
         <Col :span="12">
           <FormItem label="场景状态" name="status" required>
-            <Radio.Group v-model:value="formData.status">
+            <RadioGroup v-model:value="formData.status">
               <Radio
                 v-for="(dict, index) in getDictOptions(
                   DICT_TYPE.COMMON_STATUS,
@@ -67,7 +67,7 @@ const formData = useVModel(props, 'modelValue', emit); // 表单数据
               >
                 {{ dict.label }}
               </Radio>
-            </Radio.Group>
+            </RadioGroup>
           </FormItem>
         </Col>
       </Row>

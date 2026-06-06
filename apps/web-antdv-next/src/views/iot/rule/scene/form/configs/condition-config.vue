@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Col, FormItem, Row, Select } from 'antdv-next';
+import { Col, FormItem, Row, Select, SelectOption } from 'antdv-next';
 
 import ValueInput from '../inputs/value-input.vue';
 import DeviceSelector from '../selectors/device-selector.vue';
@@ -172,13 +172,13 @@ function handleOperatorChange() {
             placeholder="请选择条件类型"
             class="w-full"
           >
-            <Select.Option
+            <SelectOption
               v-for="option in getConditionTypeOptions()"
               :key="option.value"
               :value="option.value"
             >
               {{ option.label }}
-            </Select.Option>
+            </SelectOption>
           </Select>
         </FormItem>
       </Col>
@@ -229,13 +229,13 @@ function handleOperatorChange() {
               placeholder="请选择操作符"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 v-for="option in statusOperatorOptions"
                 :key="option.value"
                 :value="option.value"
               >
                 {{ option.label }}
-              </Select.Option>
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>
@@ -249,13 +249,13 @@ function handleOperatorChange() {
               placeholder="请选择设备状态"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 v-for="option in deviceStatusOptions"
                 :key="option.value"
                 :value="option.value"
               >
                 {{ option.label }}
-              </Select.Option>
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>

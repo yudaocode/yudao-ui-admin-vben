@@ -3,7 +3,7 @@ import type { MesMdWorkshopApi } from '#/api/mes/md/workstation/workshop';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { Select, Tag, Tooltip } from 'antdv-next';
+import { Select, SelectOption, Tag, Tooltip } from 'antdv-next';
 
 import { getWorkshopSimpleList } from '#/api/mes/md/workstation/workshop';
 
@@ -101,7 +101,7 @@ onMounted(async () => {
       show-search
       @change="handleChange"
     >
-      <Select.Option
+      <SelectOption
         v-for="item in allList"
         :key="item.id"
         :item="item"
@@ -111,7 +111,7 @@ onMounted(async () => {
           <span>{{ item.name }}</span>
           <Tag v-if="item.code" color="default">{{ item.code }}</Tag>
         </div>
-      </Select.Option>
+      </SelectOption>
     </Select>
   </Tooltip>
 </template>

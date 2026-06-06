@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Col, FormItem, Input, Row, Select } from 'antdv-next';
+import { Col, FormItem, Input, Row, Select, SelectOption } from 'antdv-next';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -175,13 +175,13 @@ function handlePropertyChange(propertyInfo: any) {
         placeholder="请选择触发事件类型"
         class="w-full"
       >
-        <Select.Option
+        <SelectOption
           v-for="option in triggerTypeOptions"
           :key="option.value"
           :value="option.value"
         >
           {{ option.label }}
-        </Select.Option>
+        </SelectOption>
       </Select>
     </FormItem>
 
@@ -321,7 +321,7 @@ function handlePropertyChange(propertyInfo: any) {
               placeholder="请选择操作符"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 :value="
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
                 "
@@ -329,7 +329,7 @@ function handlePropertyChange(propertyInfo: any) {
                 {{
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
                 }}
-              </Select.Option>
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>
@@ -341,13 +341,13 @@ function handlePropertyChange(propertyInfo: any) {
               placeholder="请选择操作符"
               class="w-full"
             >
-              <Select.Option
+              <SelectOption
                 v-for="option in deviceStatusChangeOptions"
                 :key="option.value"
                 :value="option.value"
               >
                 {{ option.label }}
-              </Select.Option>
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>

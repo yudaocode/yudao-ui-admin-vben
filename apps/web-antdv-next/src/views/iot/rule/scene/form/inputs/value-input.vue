@@ -14,6 +14,7 @@ import {
   Input,
   InputNumber,
   Select,
+  SelectOption,
   Tag,
   Tooltip,
 } from 'antdv-next';
@@ -209,8 +210,8 @@ watch(
       placeholder="请选择布尔值"
       class="w-full!"
     >
-      <Select.Option value="true">真 (true)</Select.Option>
-      <Select.Option value="false">假 (false)</Select.Option>
+      <SelectOption value="true">真 (true)</SelectOption>
+      <SelectOption value="false">假 (false)</SelectOption>
     </Select>
 
     <!-- 枚举值选择 -->
@@ -222,13 +223,13 @@ watch(
       placeholder="请选择枚举值"
       class="w-full!"
     >
-      <Select.Option
+      <SelectOption
         v-for="option in enumOptions"
         :key="option.value"
         :value="option.value"
       >
         {{ option.label }}
-      </Select.Option>
+      </SelectOption>
     </Select>
 
     <!-- 范围输入 (between 操作符) -->

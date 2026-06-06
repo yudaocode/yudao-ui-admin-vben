@@ -17,6 +17,7 @@ import {
   FormItem,
   Row,
   Select,
+  SelectOption,
   Tag,
   TimePicker,
 } from 'antdv-next';
@@ -187,7 +188,7 @@ watch(
             placeholder="请选择时间条件"
             class="w-full"
           >
-            <Select.Option
+            <SelectOption
               v-for="option in timeOperatorOptions"
               :key="option.value"
               :label="option.label"
@@ -202,7 +203,7 @@ watch(
                   {{ option.category }}
                 </Tag>
               </div>
-            </Select.Option>
+            </SelectOption>
           </Select>
         </FormItem>
       </Col>

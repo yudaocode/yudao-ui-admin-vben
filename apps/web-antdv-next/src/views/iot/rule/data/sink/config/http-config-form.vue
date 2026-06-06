@@ -5,7 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select } from 'antdv-next';
+import { FormItem, Input, Select, SelectOption } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -68,8 +68,8 @@ onMounted(() => {
     <Input v-model:value="urlPath" placeholder="请输入请求地址">
       <template #addonBefore>
         <Select v-model:value="urlPrefix" class="w-[100px]">
-          <Select.Option value="http://">http://</Select.Option>
-          <Select.Option value="https://">https://</Select.Option>
+          <SelectOption value="http://">http://</SelectOption>
+          <SelectOption value="https://">https://</SelectOption>
         </Select>
       </template>
     </Input>
@@ -82,10 +82,10 @@ onMounted(() => {
     label="请求方法"
   >
     <Select v-model:value="config.method" placeholder="请选择请求方法">
-      <Select.Option value="GET">GET</Select.Option>
-      <Select.Option value="POST">POST</Select.Option>
-      <Select.Option value="PUT">PUT</Select.Option>
-      <Select.Option value="DELETE">DELETE</Select.Option>
+      <SelectOption value="GET">GET</SelectOption>
+      <SelectOption value="POST">POST</SelectOption>
+      <SelectOption value="PUT">PUT</SelectOption>
+      <SelectOption value="DELETE">DELETE</SelectOption>
     </Select>
   </FormItem>
   <FormItem label="请求头">

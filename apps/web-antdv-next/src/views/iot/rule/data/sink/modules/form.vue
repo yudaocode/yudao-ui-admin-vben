@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, FormItem, Input, message, Radio, Select } from 'antdv-next';
+import { Form, FormItem, Input, message, Radio, RadioGroup, Select } from 'antdv-next';
 
 import {
   createDataSink,
@@ -178,7 +178,7 @@ function handleTypeChange(type: number) {
         label="目的状态"
         name="status"
       >
-        <Radio.Group v-model:value="formData.status">
+        <RadioGroup v-model:value="formData.status">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
             :key="String(dict.value)"
@@ -186,7 +186,7 @@ function handleTypeChange(type: number) {
           >
             {{ dict.label }}
           </Radio>
-        </Radio.Group>
+        </RadioGroup>
       </FormItem>
     </Form>
   </Modal>

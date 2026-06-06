@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { Select } from 'antdv-next';
+import { Select, SelectOption } from 'antdv-next';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { DictTag } from '#/components/dict-tag';
@@ -64,7 +64,7 @@ onMounted(() => {
     option-label-prop="label"
     :loading="productLoading"
   >
-    <Select.Option
+    <SelectOption
       v-for="product in productList"
       :key="product.id"
       :label="product.name"
@@ -81,6 +81,6 @@ onMounted(() => {
         </div>
         <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
       </div>
-    </Select.Option>
+    </SelectOption>
   </Select>
 </template>

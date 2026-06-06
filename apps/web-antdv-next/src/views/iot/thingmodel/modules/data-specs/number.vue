@@ -10,7 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select } from 'antdv-next';
+import { FormItem, Input, Select, SelectOption } from 'antdv-next';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -134,13 +134,13 @@ function validateStep(_rule: any, _value: any, callback: any) {
       class="w-full"
       @change="unitChange"
     >
-      <Select.Option
+      <SelectOption
         v-for="(item, index) in unitOptions"
         :key="index"
         :value="`${item.label}-${item.value}`"
       >
         {{ `${item.label}-${item.value}` }}
-      </Select.Option>
+      </SelectOption>
     </Select>
   </FormItem>
 </template>

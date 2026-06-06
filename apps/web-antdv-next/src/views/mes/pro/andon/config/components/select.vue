@@ -5,7 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { Select } from 'antdv-next';
+import { Select, SelectOption } from 'antdv-next';
 
 import { getAndonConfigList } from '#/api/mes/pro/andon/config';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
@@ -73,7 +73,7 @@ onMounted(async () => {
     show-search
     @change="handleChange"
   >
-    <Select.Option
+    <SelectOption
       v-for="item in allList"
       :key="item.id"
       :item="item"
@@ -83,6 +83,6 @@ onMounted(async () => {
         <span>{{ item.reason }}</span>
         <DictTag :type="DICT_TYPE.MES_PRO_ANDON_LEVEL" :value="item.level" />
       </div>
-    </Select.Option>
+    </SelectOption>
   </Select>
 </template>

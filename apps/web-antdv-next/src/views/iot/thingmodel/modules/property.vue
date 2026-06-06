@@ -14,7 +14,7 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Radio, Select } from 'antdv-next';
+import { FormItem, Input, Radio, RadioGroup, Select, SelectOption } from 'antdv-next';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
 
@@ -113,13 +113,13 @@ if (!props.isStructDataSpecs && !props.isParams) {
       @change="handleChange"
     >
       <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
-      <Select.Option
+      <SelectOption
         v-for="option in dataTypeOptions"
         :key="option.value"
         :value="option.value"
       >
         {{ `${option.value}(${option.label})` }}
-      </Select.Option>
+      </SelectOption>
     </Select>
   </FormItem>
   <!-- 数值型配置 -->
@@ -201,7 +201,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     :rules="ThingModelFormRules.accessMode"
     label="读写类型"
   >
-    <Radio.Group v-model:value="property.accessMode">
+    <RadioGroup v-model:value="property.accessMode">
       <Radio
         v-for="accessMode in Object.values(IoTThingModelAccessModeEnum)"
         :key="accessMode.value"
@@ -209,7 +209,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
       >
         {{ accessMode.label }}
       </Radio>
-    </Radio.Group>
+    </RadioGroup>
   </FormItem>
 </template>
 

@@ -5,7 +5,7 @@ import type { Ref } from 'vue';
 import { getDataTypeOptions, IoTDataSpecsDataTypeEnum } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Radio } from 'antdv-next';
+import { FormItem, Input, Radio, RadioGroup } from 'antdv-next';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -39,7 +39,7 @@ function handleChange(e: any) {
     :rules="ThingModelFormRules.childDataType"
     label="元素类型"
   >
-    <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
+    <RadioGroup v-model:value="dataSpecs.childDataType" @change="handleChange">
       <Radio
         v-for="item in childDataTypeOptions"
         :key="item.value"
@@ -48,7 +48,7 @@ function handleChange(e: any) {
       >
         {{ `${item.value}(${item.label})` }}
       </Radio>
-    </Radio.Group>
+    </RadioGroup>
   </FormItem>
   <FormItem
     :name="['property', 'dataSpecs', 'size']"

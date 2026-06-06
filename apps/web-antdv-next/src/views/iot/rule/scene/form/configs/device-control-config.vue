@@ -13,7 +13,7 @@ import {
 import { isObject } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Col, FormItem, Row, Select, Tag } from 'antdv-next';
+import { Col, FormItem, Row, Select, SelectOption, Tag } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
@@ -348,7 +348,7 @@ watch(
           :loading="loadingServices"
           @change="handleServiceChange"
         >
-          <Select.Option
+          <SelectOption
             v-for="service in serviceList"
             :key="service.identifier"
             :label="service.name"
@@ -362,7 +362,7 @@ watch(
                 {{ service.callType === 'sync' ? '同步' : '异步' }}
               </Tag>
             </div>
-          </Select.Option>
+          </SelectOption>
         </Select>
       </FormItem>
 

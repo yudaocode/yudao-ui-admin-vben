@@ -8,7 +8,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Select } from 'antdv-next';
+import { Select, SelectOption } from 'antdv-next';
 
 /** 操作符选择器组件 */
 defineOptions({ name: 'OperatorSelector' });
@@ -245,7 +245,7 @@ watch(
       class="w-full"
       option-label-prop="label"
     >
-      <Select.Option
+      <SelectOption
         v-for="operator in availableOperators"
         :key="operator.value"
         :label="operator.label"
@@ -266,7 +266,7 @@ watch(
             {{ operator.description }}
           </div>
         </div>
-      </Select.Option>
+      </SelectOption>
     </Select>
   </div>
 </template>

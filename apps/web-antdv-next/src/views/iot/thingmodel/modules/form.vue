@@ -17,7 +17,7 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
-import { Form, FormItem, Input, message, Radio } from 'antdv-next';
+import { Form, FormItem, Input, message, Radio, RadioButton, RadioGroup } from 'antdv-next';
 
 import {
   createThingModel,
@@ -198,15 +198,15 @@ function removeDataSpecs(val: any) {
       class="mx-4"
     >
       <FormItem :rules="ThingModelFormRules.type" label="功能类型" name="type">
-        <Radio.Group v-model:value="formData.type">
-          <Radio.Button
+        <RadioGroup v-model:value="formData.type">
+          <RadioButton
             v-for="dict in getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE)"
             :key="String(dict.value)"
             :value="Number(dict.value)"
           >
             {{ dict.label }}
-          </Radio.Button>
-        </Radio.Group>
+          </RadioButton>
+        </RadioGroup>
       </FormItem>
       <FormItem :rules="ThingModelFormRules.name" label="功能名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入功能名称" />

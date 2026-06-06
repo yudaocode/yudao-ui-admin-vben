@@ -14,7 +14,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, DatePicker, Select, Space, Tag } from 'antdv-next';
+import { Button, DatePicker, Select, SelectOption, Space, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
@@ -213,13 +213,13 @@ defineExpose({
           placeholder="请选择事件标识符"
           style="width: 240px"
         >
-          <Select.Option
+          <SelectOption
             v-for="event in eventThingModels"
             :key="event.identifier"
             :value="event.identifier!"
           >
             {{ event.name }}({{ event.identifier }})
-          </Select.Option>
+          </SelectOption>
         </Select>
       </div>
       <div class="flex items-center gap-2">

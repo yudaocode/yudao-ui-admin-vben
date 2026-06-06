@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Select } from 'antdv-next';
+import { FormItem, Select, SelectOption } from 'antdv-next';
 
 import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 
@@ -56,7 +56,7 @@ onMounted(() => {
         class="w-full"
         :loading="loading"
       >
-        <Select.Option
+        <SelectOption
           v-for="config in alertConfigs"
           :key="config.id"
           :label="config.name"

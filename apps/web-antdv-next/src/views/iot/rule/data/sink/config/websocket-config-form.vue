@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, InputNumber, Select, Switch } from 'antdv-next';
+import { FormItem, Input, InputNumber, Select, SelectOption, Switch } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -120,8 +120,8 @@ onMounted(() => {
     label="数据格式"
   >
     <Select v-model:value="config.dataFormat" placeholder="请选择数据格式">
-      <Select.Option value="JSON">JSON</Select.Option>
-      <Select.Option value="TEXT">TEXT</Select.Option>
+      <SelectOption value="JSON">JSON</SelectOption>
+      <SelectOption value="TEXT">TEXT</SelectOption>
     </Select>
   </FormItem>
   <FormItem :name="['config', 'reconnectIntervalMs']" label="重连间隔(ms)">
