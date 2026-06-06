@@ -3,7 +3,7 @@ import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotProductApi } from '#/api/iot/product/product';
 import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -33,6 +33,22 @@ const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);
 const activeTab = ref('info');
 const thingModelList = ref<ThingModelApi.ThingModel[]>([]);
+const deviceTabItems = computed(() => [
+  { key: 'info', label: '设备信息' },
+  { key: 'model', label: '物模型数据' },
+  ...(product.value.deviceType === DeviceTypeEnum.GATEWAY
+    ? [{ key: 'subDevice', label: '子设备管理' }]
+    : []),
+  { key: 'log', label: '设备消息' },
+  { key: 'simulator', label: '模拟设备' },
+  { key: 'config', label: '设备配置' },
+  ...([
+    ProtocolTypeEnum.MODBUS_TCP_CLIENT,
+    ProtocolTypeEnum.MODBUS_TCP_SERVER,
+  ].includes(product.value.protocolType as ProtocolTypeEnum)
+    ? [{ key: 'modbus', label: 'Modbus 配置' }]
+    : []),
+]);
 
 /** 获取设备详情 */
 async function getDeviceData(deviceId: number) {
@@ -94,69 +110,52 @@ onMounted(async () => {
       @refresh="() => getDeviceData(id)"
     />
 
-    <Tabs v-model:active-key="activeTab" class="mt-4">
-      <Tabs.TabPane key="info" tab="设备信息">
+    <Tabs v-model:active-key="activeTab" :items="deviceTabItems" class="mt-4">
+      <template #contentRender="{ item }">
         <DeviceDetailsInfo
-          v-if="activeTab === 'info' && device.id"
+          v-if="item.key === 'info' && activeTab === 'info' && device.id"
           :device="device"
           :product="product"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="model" tab="物模型数据">
         <DeviceDetailsThingModel
-          v-if="activeTab === 'model' && device.id"
+          v-else-if="item.key === 'model' && activeTab === 'model' && device.id"
           :device-id="device.id"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        v-if="product.deviceType === DeviceTypeEnum.GATEWAY"
-        key="subDevice"
-        tab="子设备管理"
-      >
         <DeviceDetailsSubDevice
-          v-if="activeTab === 'subDevice' && device.id"
+          v-else-if="
+            item.key === 'subDevice' && activeTab === 'subDevice' && device.id
+          "
           :device-id="device.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="log" tab="设备消息">
         <DeviceDetailsMessage
-          v-if="activeTab === 'log' && device.id"
+          v-else-if="item.key === 'log' && activeTab === 'log' && device.id"
           :device-id="device.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="simulator" tab="模拟设备">
         <DeviceDetailsSimulator
-          v-if="activeTab === 'simulator' && device.id"
+          v-else-if="
+            item.key === 'simulator' && activeTab === 'simulator' && device.id
+          "
           :device="device"
           :product="product"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="config" tab="设备配置">
         <DeviceDetailConfig
-          v-if="activeTab === 'config' && device.id"
+          v-else-if="
+            item.key === 'config' && activeTab === 'config' && device.id
+          "
           :device="device"
           @success="() => getDeviceData(id)"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        v-if="
-          [
-            ProtocolTypeEnum.MODBUS_TCP_CLIENT,
-            ProtocolTypeEnum.MODBUS_TCP_SERVER,
-          ].includes(product.protocolType as ProtocolTypeEnum)
-        "
-        key="modbus"
-        tab="Modbus 配置"
-      >
         <DeviceModbusConfig
-          v-if="activeTab === 'modbus' && device.id"
+          v-else-if="
+            item.key === 'modbus' && activeTab === 'modbus' && device.id
+          "
           :device="device"
           :product="product"
           :thing-model-list="thingModelList"
         />
-      </Tabs.TabPane>
+      </template>
     </Tabs>
   </Page>
 </template>

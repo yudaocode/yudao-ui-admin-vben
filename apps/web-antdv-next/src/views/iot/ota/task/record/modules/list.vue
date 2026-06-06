@@ -98,9 +98,12 @@ watch(
 
 <template>
   <Card title="升级设备记录">
-    <Tabs v-model:active-key="activeTab" @change="handleTabChange" class="mb-4">
-      <Tabs.TabPane v-for="tab in statusTabs" :key="tab.key" :tab="tab.label" />
-    </Tabs>
+    <Tabs
+      v-model:active-key="activeTab"
+      :items="statusTabs"
+      @change="handleTabChange"
+      class="mb-4"
+    />
     <Grid>
       <template #actions="{ row }">
         <TableAction
