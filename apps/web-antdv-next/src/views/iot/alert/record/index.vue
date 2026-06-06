@@ -98,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Popover
           v-if="row.deviceMessage"
           placement="topLeft"
-          trigger="hover"
+          :trigger="['hover']"
           :overlay-style="{ maxWidth: '600px' }"
         >
           <template #content>

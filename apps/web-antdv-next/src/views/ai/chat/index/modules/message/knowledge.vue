@@ -78,7 +78,7 @@ function handleClick(doc: any) {
       </div>
     </div>
   </div>
-  <Tooltip placement="topLeft" trigger="click">
+  <Tooltip placement="topLeft" :trigger="['click']">
     <div ref="documentRef"></div>
     <template #title>
       <div class="mb-3 text-base font-bold">{{ document?.title }}</div>

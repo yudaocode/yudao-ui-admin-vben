@@ -434,7 +434,7 @@ watch(
         <Popover
           placement="leftTop"
           :overlay-style="{ width: '450px' }"
-          trigger="click"
+          :trigger="['click']"
           :arrow="true"
           overlay-class-name="json-params-detail-popover"
         >

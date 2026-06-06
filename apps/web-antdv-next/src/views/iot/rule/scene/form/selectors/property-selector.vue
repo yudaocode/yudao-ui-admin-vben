@@ -249,7 +249,7 @@ watch(
       v-if="selectedProperty"
       placement="rightTop"
       :overlay-style="{ width: '350px' }"
-      trigger="click"
+      :trigger="['click']"
       :arrow="true"
       overlay-class-name="property-detail-popover"
     >
