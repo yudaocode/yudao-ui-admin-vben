@@ -3,6 +3,7 @@ import { onActivated, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { CountTo } from '@vben/common-ui';
+import { fenToYuan } from '@vben/utils';
 
 import { ElCard } from 'element-plus';
 
@@ -78,7 +79,7 @@ async function loadProductData() {
 /** 查询钱包充值数据 */
 async function loadWalletRechargeData() {
   const paySummary = await getWalletRechargePrice();
-  data.rechargePrice.value = paySummary.rechargePrice;
+  data.rechargePrice.value = Number(fenToYuan(paySummary.rechargePrice || 0));
 }
 
 /** 跳转到对应页面 */
