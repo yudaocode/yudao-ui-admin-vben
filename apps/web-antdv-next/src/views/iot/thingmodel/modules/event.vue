@@ -11,7 +11,7 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Radio } from 'antdv-next';
+import { FormItem, Radio } from 'antdv-next';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -32,7 +32,7 @@ watch(
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['event', 'type']"
     :rules="ThingModelFormRules.eventType"
     label="事件类型"
@@ -46,13 +46,13 @@ watch(
         {{ eventType.label }}
       </Radio>
     </Radio.Group>
-  </Form.Item>
-  <Form.Item label="输出参数">
+  </FormItem>
+  <FormItem label="输出参数">
     <ThingModelInputOutputParam
       v-model="thingModelEvent.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
     />
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

@@ -14,7 +14,7 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Radio, Select } from 'antdv-next';
+import { FormItem, Input, Radio, Select } from 'antdv-next';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
 
@@ -102,7 +102,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['property', 'dataType']"
     :rules="[{ required: true, message: '请选择数据类型', trigger: 'change' }]"
     label="数据类型"
@@ -121,7 +121,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
         {{ `${option.value}(${option.label})` }}
       </Select.Option>
     </Select>
-  </Form.Item>
+  </FormItem>
   <!-- 数值型配置 -->
   <ThingModelNumberDataSpecs
     v-if="NUMERIC_TYPES.has(property.dataType || '')"
@@ -133,7 +133,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     v-model="property.dataSpecsList"
   />
   <!-- 布尔型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.BOOL"
     label="布尔值"
   >
@@ -141,7 +141,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
       <div class="mb-[5px] flex w-full items-center justify-start">
         <span>{{ item.value }}</span>
         <span class="mx-2">-</span>
-        <Form.Item
+        <FormItem
           :name="['property', 'dataSpecsList', index, 'name']"
           :rules="[
             { required: true, message: '布尔描述不能为空', trigger: 'blur' },
@@ -154,12 +154,12 @@ if (!props.isStructDataSpecs && !props.isParams) {
             :placeholder="`如：${item.value === 0 ? '关' : '开'}`"
             class="!w-[255px]"
           />
-        </Form.Item>
+        </FormItem>
       </div>
     </template>
-  </Form.Item>
+  </FormItem>
   <!-- 文本型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.TEXT"
     :name="['property', 'dataSpecs', 'length']"
     :rules="ThingModelFormRules.length"
@@ -172,9 +172,9 @@ if (!props.isStructDataSpecs && !props.isParams) {
     >
       <template #addonAfter>字节</template>
     </Input>
-  </Form.Item>
+  </FormItem>
   <!-- 时间型配置 -->
-  <Form.Item
+  <FormItem
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.DATE"
     label="时间格式"
     name="date"
@@ -184,7 +184,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
       disabled
       placeholder="String 类型的 UTC 时间戳（毫秒）"
     />
-  </Form.Item>
+  </FormItem>
   <!-- 数组型配置-->
   <ThingModelArrayDataSpecs
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.ARRAY"
@@ -195,7 +195,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     v-if="property.dataType === IoTDataSpecsDataTypeEnum.STRUCT"
     v-model="property.dataSpecsList"
   />
-  <Form.Item
+  <FormItem
     v-if="!isStructDataSpecs && !isParams"
     :name="['property', 'accessMode']"
     :rules="ThingModelFormRules.accessMode"
@@ -210,7 +210,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
         {{ accessMode.label }}
       </Radio>
     </Radio.Group>
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

@@ -12,6 +12,7 @@ import { getDictOptions } from '@vben/hooks';
 import {
   Form as AForm,
   Divider,
+  FormItem,
   Input,
   InputNumber,
   message,
@@ -97,7 +98,7 @@ const [Modal, modalApi] = useVbenModal({
         item.valueType === MesQcResultValueType.INTEGER
       ) {
         submit.value =
-          item.valueNumber == null ? undefined : String(item.valueNumber);
+          item.valueNumber === null ? undefined : String(item.valueNumber);
       } else {
         submit.value = item.value;
       }
@@ -148,7 +149,7 @@ const [Modal, modalApi] = useVbenModal({
         valueNumber:
           (item.valueType === MesQcResultValueType.FLOAT ||
             item.valueType === MesQcResultValueType.INTEGER) &&
-          item.value != null
+          item.value !== null
             ? Number(item.value)
             : undefined,
       }));
@@ -178,9 +179,7 @@ const [Modal, modalApi] = useVbenModal({
           :key="item.indicatorId ?? index"
           class="mb-2"
         >
-          <AForm.Item
-            :label="`检测项${index + 1}：${item.indicatorName ?? ''}`"
-          >
+          <FormItem :label="`检测项${index + 1}：${item.indicatorName ?? ''}`">
             <InputNumber
               v-if="
                 item.valueType === MesQcResultValueType.FLOAT ||
@@ -210,7 +209,7 @@ const [Modal, modalApi] = useVbenModal({
               placeholder="请输入文件地址"
             />
             <Input v-else v-model:value="item.value" placeholder="请输入" />
-          </AForm.Item>
+          </FormItem>
         </div>
       </AForm>
     </div>

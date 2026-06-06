@@ -7,7 +7,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, Input, message, Radio, Select } from 'antdv-next';
+import { Form, FormItem, Input, message, Radio, Select } from 'antdv-next';
 
 import {
   createDataSink,
@@ -102,7 +102,7 @@ function handleTypeChange(type: number) {
       :wrapper-col="{ span: 18 }"
       class="mx-4"
     >
-      <Form.Item
+      <FormItem
         :rules="[
           { required: true, message: '目的名称不能为空', trigger: 'blur' },
         ]"
@@ -110,15 +110,15 @@ function handleTypeChange(type: number) {
         name="name"
       >
         <Input v-model:value="formData.name" placeholder="请输入目的名称" />
-      </Form.Item>
-      <Form.Item label="目的描述" name="description">
+      </FormItem>
+      <FormItem label="目的描述" name="description">
         <Input.TextArea
           v-model:value="formData.description"
           placeholder="请输入目的描述"
           :rows="3"
         />
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         :rules="[
           { required: true, message: '目的类型不能为空', trigger: 'change' },
         ]"
@@ -133,7 +133,7 @@ function handleTypeChange(type: number) {
           placeholder="请选择目的类型"
           @change="(value: any) => handleTypeChange(value as number)"
         />
-      </Form.Item>
+      </FormItem>
       <!-- 配置项：按目的类型分支 -->
       <HttpConfigForm
         v-if="formData.type === IotDataSinkTypeEnum.HTTP"
@@ -171,7 +171,7 @@ function handleTypeChange(type: number) {
         v-if="formData.type === IotDataSinkTypeEnum.REDIS_STREAM"
         v-model="formData.config"
       />
-      <Form.Item
+      <FormItem
         :rules="[
           { required: true, message: '目的状态不能为空', trigger: 'change' },
         ]"
@@ -187,7 +187,7 @@ function handleTypeChange(type: number) {
             {{ dict.label }}
           </Radio>
         </Radio.Group>
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

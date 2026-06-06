@@ -11,17 +11,13 @@ import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 import {
   Button,
   Descriptions,
+  DescriptionsItem,
   message,
   Tabs,
 } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createIqc,
-  finishIqc,
-  getIqc,
-  updateIqc,
-} from '#/api/mes/qc/iqc';
+import { createIqc, finishIqc, getIqc, updateIqc } from '#/api/mes/qc/iqc';
 import { $t } from '#/locales';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';
@@ -194,24 +190,24 @@ const [Modal, modalApi] = useVbenModal({
     <!-- 缺陷统计（只读） -->
     <div v-if="formData?.id" class="mx-4 mt-4">
       <Descriptions title="缺陷情况" :column="3" bordered size="small">
-        <Descriptions.Item label="致命缺陷数">
+        <DescriptionsItem label="致命缺陷数">
           {{ formData.criticalQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="严重缺陷数">
+        </DescriptionsItem>
+        <DescriptionsItem label="严重缺陷数">
           {{ formData.majorQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="轻微缺陷数">
+        </DescriptionsItem>
+        <DescriptionsItem label="轻微缺陷数">
           {{ formData.minorQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="致命缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="致命缺陷率">
           {{ formData.criticalRate ?? 0 }}%
-        </Descriptions.Item>
-        <Descriptions.Item label="严重缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="严重缺陷率">
           {{ formData.majorRate ?? 0 }}%
-        </Descriptions.Item>
-        <Descriptions.Item label="轻微缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="轻微缺陷率">
           {{ formData.minorRate ?? 0 }}%
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </div>
     <Tabs

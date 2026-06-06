@@ -5,7 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Select } from 'antdv-next';
+import { FormItem, Input, Select } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -60,7 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['config', 'url']"
     :rules="[{ required: true, message: '请求地址不能为空', trigger: 'blur' }]"
     label="请求地址"
@@ -73,8 +73,8 @@ onMounted(() => {
         </Select>
       </template>
     </Input>
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'method']"
     :rules="[
       { required: true, message: '请求方法不能为空', trigger: 'change' },
@@ -87,18 +87,18 @@ onMounted(() => {
       <Select.Option value="PUT">PUT</Select.Option>
       <Select.Option value="DELETE">DELETE</Select.Option>
     </Select>
-  </Form.Item>
-  <Form.Item label="请求头">
+  </FormItem>
+  <FormItem label="请求头">
     <KeyValueEditor v-model="config.headers" add-button-text="添加请求头" />
-  </Form.Item>
-  <Form.Item label="请求参数">
+  </FormItem>
+  <FormItem label="请求参数">
     <KeyValueEditor v-model="config.query" add-button-text="添加参数" />
-  </Form.Item>
-  <Form.Item label="请求体">
+  </FormItem>
+  <FormItem label="请求体">
     <Input.TextArea
       v-model:value="config.body"
       placeholder="请输入内容"
       :rows="4"
     />
-  </Form.Item>
+  </FormItem>
 </template>

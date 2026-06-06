@@ -10,7 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Select } from 'antdv-next';
+import { FormItem, Input, Select } from 'antdv-next';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -87,9 +87,9 @@ function validateStep(_rule: any, _value: any, callback: any) {
 </script>
 
 <template>
-  <Form.Item label="取值范围">
+  <FormItem label="取值范围">
     <div class="flex items-center justify-between">
-      <Form.Item
+      <FormItem
         :name="['property', 'dataSpecs', 'min']"
         :rules="[
           { required: true, message: '最小值不能为空', trigger: 'blur' },
@@ -98,9 +98,9 @@ function validateStep(_rule: any, _value: any, callback: any) {
         class="mb-0 flex-1"
       >
         <Input v-model:value="dataSpecs.min" placeholder="请输入最小值" />
-      </Form.Item>
+      </FormItem>
       <span class="mx-2">~</span>
-      <Form.Item
+      <FormItem
         :name="['property', 'dataSpecs', 'max']"
         :rules="[
           { required: true, message: '最大值不能为空', trigger: 'blur' },
@@ -109,10 +109,10 @@ function validateStep(_rule: any, _value: any, callback: any) {
         class="mb-0 flex-1"
       >
         <Input v-model:value="dataSpecs.max" placeholder="请输入最大值" />
-      </Form.Item>
+      </FormItem>
     </div>
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['property', 'dataSpecs', 'step']"
     :rules="[
       { required: true, message: '步长不能为空', trigger: 'blur' },
@@ -121,8 +121,8 @@ function validateStep(_rule: any, _value: any, callback: any) {
     label="步长"
   >
     <Input v-model:value="dataSpecs.step" placeholder="请输入步长" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['property', 'dataSpecs', 'unit']"
     :rules="[{ required: true, message: '请选择单位', trigger: 'change' }]"
     label="单位"
@@ -142,7 +142,7 @@ function validateStep(_rule: any, _value: any, callback: any) {
         {{ `${item.label}-${item.value}` }}
       </Select.Option>
     </Select>
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

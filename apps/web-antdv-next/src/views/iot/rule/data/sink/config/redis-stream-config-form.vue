@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, InputNumber } from 'antdv-next';
+import { FormItem, Input, InputNumber } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -36,7 +36,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['config', 'host']"
     :rules="[{ required: true, message: '主机地址不能为空', trigger: 'blur' }]"
     label="主机地址"
@@ -45,8 +45,8 @@ onMounted(() => {
       v-model:value="config.host"
       placeholder="请输入主机地址，如：localhost"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'port']"
     :rules="[
       { required: true, message: '端口不能为空', trigger: 'blur' },
@@ -67,15 +67,15 @@ onMounted(() => {
       placeholder="请输入端口"
       class="w-full"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'password']"
     :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
     label="密码"
   >
     <Input.Password v-model:value="config.password" placeholder="请输入密码" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'database']"
     :rules="[
       { required: true, message: '数据库索引不能为空', trigger: 'blur' },
@@ -95,12 +95,12 @@ onMounted(() => {
       placeholder="请输入数据库索引"
       class="w-full"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'topic']"
     :rules="[{ required: true, message: '主题不能为空', trigger: 'blur' }]"
     label="主题"
   >
     <Input v-model:value="config.topic" placeholder="请输入主题" />
-  </Form.Item>
+  </FormItem>
 </template>

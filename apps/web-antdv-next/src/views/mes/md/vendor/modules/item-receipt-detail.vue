@@ -8,7 +8,7 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
-import { Descriptions, Spin } from 'antdv-next';
+import { Descriptions, DescriptionsItem, Spin } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getItemReceipt } from '#/api/mes/wm/itemreceipt';
@@ -123,36 +123,36 @@ const [Modal, modalApi] = useVbenModal({
   >
     <Spin :spinning="loading">
       <Descriptions bordered size="small" :column="3">
-        <Descriptions.Item label="入库单编号">
+        <DescriptionsItem label="入库单编号">
           {{ formatEmpty(receipt?.code) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="入库单名称">
+        </DescriptionsItem>
+        <DescriptionsItem label="入库单名称">
           {{ formatEmpty(receipt?.name) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="入库日期">
+        </DescriptionsItem>
+        <DescriptionsItem label="入库日期">
           {{ formatDate(receipt?.receiptDate) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="到货通知单">
+        </DescriptionsItem>
+        <DescriptionsItem label="到货通知单">
           {{ formatEmpty(receipt?.noticeCode) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="供应商">
+        </DescriptionsItem>
+        <DescriptionsItem label="供应商">
           {{ formatEmpty(receipt?.vendorName) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="采购订单号">
+        </DescriptionsItem>
+        <DescriptionsItem label="采购订单号">
           {{ formatEmpty(receipt?.purchaseOrderCode) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="仓库">
+        </DescriptionsItem>
+        <DescriptionsItem label="仓库">
           {{ formatEmpty(receipt?.warehouseName) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="库区">
+        </DescriptionsItem>
+        <DescriptionsItem label="库区">
           {{ formatEmpty(receipt?.locationName) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="库位">
+        </DescriptionsItem>
+        <DescriptionsItem label="库位">
           {{ formatEmpty(receipt?.areaName) }}
-        </Descriptions.Item>
-        <Descriptions.Item label="备注" :span="3">
+        </DescriptionsItem>
+        <DescriptionsItem label="备注" :span="3">
           {{ formatEmpty(receipt?.remark) }}
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
       <div class="mt-4">
         <Grid table-title="入库物料" />

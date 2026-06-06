@@ -17,7 +17,7 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
-import { Form, Input, message, Radio } from 'antdv-next';
+import { Form, FormItem, Input, message, Radio } from 'antdv-next';
 
 import {
   createThingModel,
@@ -197,7 +197,7 @@ function removeDataSpecs(val: any) {
       :wrapper-col="{ span: 18 }"
       class="mx-4"
     >
-      <Form.Item :rules="ThingModelFormRules.type" label="功能类型" name="type">
+      <FormItem :rules="ThingModelFormRules.type" label="功能类型" name="type">
         <Radio.Group v-model:value="formData.type">
           <Radio.Button
             v-for="dict in getDictOptions(DICT_TYPE.IOT_THING_MODEL_TYPE)"
@@ -207,20 +207,17 @@ function removeDataSpecs(val: any) {
             {{ dict.label }}
           </Radio.Button>
         </Radio.Group>
-      </Form.Item>
-      <Form.Item :rules="ThingModelFormRules.name" label="功能名称" name="name">
+      </FormItem>
+      <FormItem :rules="ThingModelFormRules.name" label="功能名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入功能名称" />
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         :rules="ThingModelFormRules.identifier"
         label="标识符"
         name="identifier"
       >
-        <Input
-          v-model:value="formData.identifier"
-          placeholder="请输入标识符"
-        />
-      </Form.Item>
+        <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
+      </FormItem>
       <!-- 属性配置 -->
       <ThingModelProperty
         v-if="formData.type === IoTThingModelTypeEnum.PROPERTY"
@@ -236,14 +233,14 @@ function removeDataSpecs(val: any) {
         v-if="formData.type === IoTThingModelTypeEnum.EVENT"
         v-model="formData.event"
       />
-      <Form.Item label="描述" name="description">
+      <FormItem label="描述" name="description">
         <Input.TextArea
           v-model:value="formData.description"
           :maxlength="200"
           :rows="3"
           placeholder="请输入物模型描述"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>
