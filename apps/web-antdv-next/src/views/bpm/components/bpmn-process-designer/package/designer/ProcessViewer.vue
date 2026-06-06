@@ -5,15 +5,13 @@ import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
 import { formatDate, formatPast2 } from '@vben/utils';
 
-import { Button, Modal, Row, Table } from 'antdv-next';
+import { Button, Modal, Row, Space, Table } from 'antdv-next';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 
 import { DictTag } from '#/components/dict-tag';
 
 import '../theme/index.scss';
-
-const ButtonGroup = Button.Group;
 
 const props = defineProps({
   xml: {
@@ -439,7 +437,7 @@ onBeforeUnmount(() => {
     <!-- Zoom：放大、缩小 -->
     <div style="position: absolute; top: 0; left: 0; width: 100%">
       <Row justify="end">
-        <ButtonGroup key="scale-control">
+        <Space.Compact key="scale-control">
           <Button
             :disabled="defaultZoom <= 0.3"
             :icon="h(ZoomOutOutlined)"
@@ -454,7 +452,7 @@ onBeforeUnmount(() => {
             @click="processZoomIn()"
           />
           <Button :icon="h(UndoOutlined)" @click="processReZoom()" />
-        </ButtonGroup>
+        </Space.Compact>
       </Row>
     </div>
   </div>

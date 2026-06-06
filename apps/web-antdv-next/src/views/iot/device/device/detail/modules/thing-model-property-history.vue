@@ -373,7 +373,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           </Button>
 
           <!-- 视图切换 -->
-          <Button.Group class="ml-auto">
+          <Space.Compact class="ml-auto">
             <Button
               :disabled="!canShowChart"
               :type="viewMode === 'chart' ? 'primary' : 'default'"
@@ -393,7 +393,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
               </template>
               列表
             </Button>
-          </Button.Group>
+          </Space.Compact>
         </Space>
 
         <!-- 数据统计信息 -->
