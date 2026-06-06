@@ -23,7 +23,7 @@ import {
   Divider,
   Input,
   Row,
-  Space,
+  SpaceCompact,
   Switch,
   Tag,
 } from 'antdv-next';
@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
           un-checked-children="定时刷新"
         />
       </div>
-      <Space.Compact>
+      <SpaceCompact>
         <Button
           :type="viewMode === 'card' ? 'primary' : 'default'"
           @click="handleViewModeChange('card')"
@@ -312,7 +312,7 @@ onBeforeUnmount(() => {
         >
           <IconifyIcon icon="ep:list" />
         </Button>
-      </Space.Compact>
+      </SpaceCompact>
     </div>
 
     <!-- 分隔线 -->

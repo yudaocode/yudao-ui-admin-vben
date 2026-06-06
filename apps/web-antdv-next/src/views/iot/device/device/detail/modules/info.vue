@@ -18,7 +18,7 @@ import {
   Input,
   message,
   Modal,
-  Space,
+  SpaceCompact,
 } from 'antdv-next';
 
 import { getDeviceAuthInfo } from '#/api/iot/device/device';
@@ -142,7 +142,7 @@ function handleAuthInfoDialogClose() {
     >
       <Form :label-col="{ span: 6 }">
         <FormItem label="clientId">
-          <Space.Compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.clientId"
               readonly
@@ -151,10 +151,10 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.clientId)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Space.Compact>
+          </SpaceCompact>
         </FormItem>
         <FormItem label="username">
-          <Space.Compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.username"
               readonly
@@ -163,10 +163,10 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.username)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Space.Compact>
+          </SpaceCompact>
         </FormItem>
         <FormItem label="password">
-          <Space.Compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.password"
               :type="authPasswordVisible ? 'text' : 'password'"
@@ -184,7 +184,7 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.password)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Space.Compact>
+          </SpaceCompact>
         </FormItem>
       </Form>
       <div class="mt-4 text-right">

@@ -19,6 +19,7 @@ import {
   message,
   Modal,
   Space,
+  SpaceCompact,
   Spin,
   Table,
   Tag,
@@ -373,7 +374,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           </Button>
 
           <!-- 视图切换 -->
-          <Space.Compact class="ml-auto">
+          <SpaceCompact class="ml-auto">
             <Button
               :disabled="!canShowChart"
               :type="viewMode === 'chart' ? 'primary' : 'default'"
@@ -393,7 +394,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
               </template>
               列表
             </Button>
-          </Space.Compact>
+          </SpaceCompact>
         </Space>
 
         <!-- 数据统计信息 -->
