@@ -72,7 +72,6 @@ import {
   Checkbox as CheckboxComponent,
   CheckboxGroup as CheckboxGroupComponent,
   DatePicker as DatePickerComponent,
-  DateRangePicker as RangePickerComponent,
   Divider as DividerComponent,
   Image as ImageComponent,
   ImagePreviewGroup,
@@ -85,6 +84,7 @@ import {
   notification,
   Radio as RadioComponent,
   RadioGroup as RadioGroupComponent,
+  DateRangePicker as RangePickerComponent,
   Rate as RateComponent,
   Select as SelectComponent,
   Space as SpaceComponent,
@@ -279,9 +279,9 @@ async function previewImage(
           {
             class: 'hidden',
             preview: {
-              visible: visible.value,
+              open: visible.value,
               current: currentIndex,
-              onVisibleChange: (value: boolean) => {
+              onOpenChange: (value: boolean) => {
                 visible.value = value;
                 if (!value) {
                   setTimeout(() => {
@@ -675,13 +675,13 @@ async function initComponentAdapter() {
       fieldNames: { label: 'label', value: 'value', children: 'children' },
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     ApiSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: Select,
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     ApiTreeSelect: withDefaultPlaceholder(ApiComponent, 'select', {
       component: TreeSelect,
@@ -689,7 +689,7 @@ async function initComponentAdapter() {
       loadingSlot: 'suffixIcon',
       modelPropName: 'value',
       optionsPropName: 'treeData',
-      visibleEvent: 'onVisibleChange',
+      visibleEvent: 'onOpenChange',
     }),
     AutoComplete,
     Cascader,
@@ -743,8 +743,8 @@ async function initComponentAdapter() {
     copyPreferencesSuccess: (title, content) => {
       notification.success({
         description: content,
-        message: title,
         placement: 'bottomRight',
+        title,
       });
     },
   });
