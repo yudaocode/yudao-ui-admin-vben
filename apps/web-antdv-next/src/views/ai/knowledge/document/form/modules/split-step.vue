@@ -12,6 +12,7 @@ import {
   Form,
   InputNumber,
   Menu,
+  MenuItem,
   message,
   Tooltip,
 } from 'antdv-next';
@@ -207,7 +208,7 @@ onMounted(async () => {
       <div class="mb-2.5">
         <Dropdown
           v-if="modelData.list && modelData.list.length > 0"
-          trigger="click"
+          :trigger="['click']"
         >
           <div class="flex cursor-pointer items-center">
             <IconifyIcon icon="lucide:file-text" class="mr-1" />
@@ -222,7 +223,7 @@ onMounted(async () => {
           </div>
           <template #popupRender>
             <Menu>
-              <Menu.Item
+              <MenuItem
                 v-for="(file, index) in modelData.list"
                 :key="index"
                 @click="selectFile(index)"
@@ -231,7 +232,7 @@ onMounted(async () => {
                 <span v-if="file.segments" class="ml-1 text-sm text-gray-500">
                   ({{ file.segments.length }} 个分片)
                 </span>
-              </Menu.Item>
+              </MenuItem>
             </Menu>
           </template>
         </Dropdown>
