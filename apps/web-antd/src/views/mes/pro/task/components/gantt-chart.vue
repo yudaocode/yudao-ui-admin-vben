@@ -213,6 +213,9 @@ defineExpose({ loadData });
 </template>
 
 <style>
+/* dhtmlx-gantt 第三方类名使用下划线命名，无法重命名，故禁用 BEM 类名规则 */
+/* stylelint-disable selector-class-pattern */
+
 /* 今天标记线 */
 .gantt_marker.today {
   background-color: #f44;
