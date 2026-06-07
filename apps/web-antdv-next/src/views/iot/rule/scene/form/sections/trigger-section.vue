@@ -12,7 +12,7 @@ import { IconifyIcon } from '@vben/icons';
 import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, Form, Tag } from 'antdv-next';
+import { Button, Card, Empty, FormItem, Tag } from 'antdv-next';
 
 import { CronTab } from '#/components/cron-tab';
 
@@ -208,14 +208,14 @@ onMounted(() => {
               <div
                 class="p-[16px] rounded-[6px] border border-primary bg-background"
               >
-                <Form.Item label="CRON 表达式" required>
+                <FormItem label="CRON 表达式" required>
                   <CronTab
                     :model-value="triggerItem.cronExpression || '0 0 12 * * ?'"
                     @update:model-value="
                       (value) => updateTriggerCronConfig(index, value)
                     "
                   />
-                </Form.Item>
+                </FormItem>
               </div>
 
               <!-- 附加条件组配置 -->

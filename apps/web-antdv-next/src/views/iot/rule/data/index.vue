@@ -9,17 +9,19 @@ import DataRuleList from './rule/index.vue';
 import DataSinkList from './sink/index.vue';
 
 const activeTabName = ref('rule');
+const ruleDataTabItems = [
+  { key: 'rule', label: '规则' },
+  { key: 'sink', label: '目的' },
+];
 </script>
 
 <template>
   <Page auto-content-height>
-    <Tabs v-model:active-key="activeTabName">
-      <Tabs.TabPane key="rule" tab="规则">
-        <DataRuleList />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="sink" tab="目的">
-        <DataSinkList />
-      </Tabs.TabPane>
+    <Tabs v-model:active-key="activeTabName" :items="ruleDataTabItems">
+      <template #contentRender="{ item }">
+        <DataRuleList v-if="item.key === 'rule'" />
+        <DataSinkList v-else-if="item.key === 'sink'" />
+      </template>
     </Tabs>
   </Page>
 </template>

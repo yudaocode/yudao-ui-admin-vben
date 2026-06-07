@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 
-import { Button, Descriptions, message, Tabs } from 'antdv-next';
+import { Button, Descriptions, DescriptionsItem, message, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -27,6 +27,10 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesQcIpqcApi.Ipqc>();
 const subTabsName = ref('line');
+const qcTabItems = [
+  { key: 'line', label: '检验项' },
+  { key: 'result', label: '检测结果' },
+];
 const originalSnapshot = ref(''); // 表单原始数据快照，用于 finish 时跳过未变更的保存请求
 const isDetail = computed(() => formType.value === 'detail');
 const canFinish = computed(
@@ -188,45 +192,46 @@ const [Modal, modalApi] = useVbenModal({
     <!-- 缺陷统计（只读） -->
     <div v-if="formData?.id" class="mx-4 mt-4">
       <Descriptions title="缺陷情况" :column="3" bordered size="small">
-        <Descriptions.Item label="致命缺陷数">
+        <DescriptionsItem label="致命缺陷数">
           {{ formData.criticalQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="严重缺陷数">
+        </DescriptionsItem>
+        <DescriptionsItem label="严重缺陷数">
           {{ formData.majorQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="轻微缺陷数">
+        </DescriptionsItem>
+        <DescriptionsItem label="轻微缺陷数">
           {{ formData.minorQuantity ?? 0 }}
-        </Descriptions.Item>
-        <Descriptions.Item label="致命缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="致命缺陷率">
           {{ formData.criticalRate ?? 0 }}%
-        </Descriptions.Item>
-        <Descriptions.Item label="严重缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="严重缺陷率">
           {{ formData.majorRate ?? 0 }}%
-        </Descriptions.Item>
-        <Descriptions.Item label="轻微缺陷率">
+        </DescriptionsItem>
+        <DescriptionsItem label="轻微缺陷率">
           {{ formData.minorRate ?? 0 }}%
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </div>
     <Tabs
       v-if="formData?.id"
       v-model:active-key="subTabsName"
+      :items="qcTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="line" tab="检验项">
+      <template #contentRender="{ item }">
         <LineList
+          v-if="item.key === 'line'"
           :form-type="formType"
           :ipqc-id="formData.id"
           @refresh="handleRefresh"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="result" tab="检测结果">
         <QcIndicatorResultList
+          v-else-if="item.key === 'result'"
           :qc-id="formData.id"
           :qc-type="MesQcTypeEnum.IPQC"
           :readonly="isDetail"
         />
-      </Tabs.TabPane>
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">

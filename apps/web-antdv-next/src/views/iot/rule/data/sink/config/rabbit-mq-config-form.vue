@@ -4,7 +4,7 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, InputNumber } from 'antdv-next';
+import { FormItem, Input, InputNumber, InputPassword } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -31,7 +31,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['config', 'host']"
     :rules="[{ required: true, message: '主机地址不能为空', trigger: 'blur' }]"
     label="主机地址"
@@ -40,8 +40,8 @@ onMounted(() => {
       v-model:value="config.host"
       placeholder="请输入主机地址，如：localhost"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'port']"
     :rules="[
       { required: true, message: '端口不能为空', trigger: 'blur' },
@@ -62,47 +62,47 @@ onMounted(() => {
       placeholder="请输入端口"
       class="w-full"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'virtualHost']"
     :rules="[{ required: true, message: '虚拟主机不能为空', trigger: 'blur' }]"
     label="虚拟主机"
   >
     <Input v-model:value="config.virtualHost" placeholder="请输入虚拟主机" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'username']"
     :rules="[{ required: true, message: '用户名不能为空', trigger: 'blur' }]"
     label="用户名"
   >
     <Input v-model:value="config.username" placeholder="请输入用户名" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'password']"
     :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
     label="密码"
   >
-    <Input.Password v-model:value="config.password" placeholder="请输入密码" />
-  </Form.Item>
-  <Form.Item
+    <InputPassword v-model:value="config.password" placeholder="请输入密码" />
+  </FormItem>
+  <FormItem
     :name="['config', 'exchange']"
     :rules="[{ required: true, message: '交换机不能为空', trigger: 'blur' }]"
     label="交换机"
   >
     <Input v-model:value="config.exchange" placeholder="请输入交换机" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'routingKey']"
     :rules="[{ required: true, message: '路由键不能为空', trigger: 'blur' }]"
     label="路由键"
   >
     <Input v-model:value="config.routingKey" placeholder="请输入路由键" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'queue']"
     :rules="[{ required: true, message: '队列不能为空', trigger: 'blur' }]"
     label="队列"
   >
     <Input v-model:value="config.queue" placeholder="请输入队列" />
-  </Form.Item>
+  </FormItem>
 </template>

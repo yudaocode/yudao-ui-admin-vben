@@ -5,7 +5,7 @@ import type { Ref } from 'vue';
 import { getDataTypeOptions, IoTDataSpecsDataTypeEnum } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Radio } from 'antdv-next';
+import { FormItem, Input, Radio, RadioGroup } from 'antdv-next';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -34,12 +34,12 @@ function handleChange(e: any) {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['property', 'dataSpecs', 'childDataType']"
     :rules="ThingModelFormRules.childDataType"
     label="元素类型"
   >
-    <Radio.Group v-model:value="dataSpecs.childDataType" @change="handleChange">
+    <RadioGroup v-model:value="dataSpecs.childDataType" @change="handleChange">
       <Radio
         v-for="item in childDataTypeOptions"
         :key="item.value"
@@ -48,9 +48,9 @@ function handleChange(e: any) {
       >
         {{ `${item.value}(${item.label})` }}
       </Radio>
-    </Radio.Group>
-  </Form.Item>
-  <Form.Item
+    </RadioGroup>
+  </FormItem>
+  <FormItem
     :name="['property', 'dataSpecs', 'size']"
     :rules="ThingModelFormRules.size"
     label="元素个数"
@@ -59,7 +59,7 @@ function handleChange(e: any) {
       v-model:value="dataSpecs.size"
       placeholder="请输入数组中的元素个数"
     />
-  </Form.Item>
+  </FormItem>
   <!-- Struct 型配置-->
   <ThingModelStructDataSpecs
     v-if="dataSpecs.childDataType === IoTDataSpecsDataTypeEnum.STRUCT"

@@ -4,7 +4,7 @@ import { ref, watch } from 'vue';
 
 import { DEVICE_SELECTOR_OPTIONS, DICT_TYPE } from '@vben/constants';
 
-import { Select } from 'antdv-next';
+import { Select, SelectOption } from 'antdv-next';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
@@ -93,7 +93,7 @@ watch(
     :loading="deviceLoading"
     :disabled="!productId"
   >
-    <Select.Option
+    <SelectOption
       v-for="device in deviceList"
       :key="device.id"
       :label="device.deviceName"
@@ -112,6 +112,6 @@ watch(
           <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
         </div>
       </div>
-    </Select.Option>
+    </SelectOption>
   </Select>
 </template>

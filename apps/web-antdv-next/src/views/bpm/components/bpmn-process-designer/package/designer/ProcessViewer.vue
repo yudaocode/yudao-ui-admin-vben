@@ -1,19 +1,27 @@
 <script lang="ts" setup>
-import { h, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import type { TableColumnType } from 'antdv-next';
+
+import {
+  computed,
+  h,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { UndoOutlined, ZoomInOutlined, ZoomOutOutlined } from '@vben/icons';
 import { formatDate, formatPast2 } from '@vben/utils';
 
-import { Button, Modal, Row, Table } from 'antdv-next';
+import { Button, Modal, Row, SpaceCompact, Table } from 'antdv-next';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 
 import { DictTag } from '#/components/dict-tag';
 
 import '../theme/index.scss';
-
-const ButtonGroup = Button.Group;
 
 const props = defineProps({
   xml: {
@@ -40,6 +48,80 @@ const dialogVisible = ref(false); // 弹窗可见性
 const dialogTitle = ref<string | undefined>(undefined); // 弹窗标题
 const selectActivityType = ref<string | undefined>(undefined); // 选中 Task 的活动编号
 const selectTasks = ref<any[]>([]); // 选中的任务数组
+const approvalColumns = computed<TableColumnType[]>(() => {
+  const userColumn: TableColumnType =
+    selectActivityType.value === 'bpmn:UserTask'
+      ? {
+          align: 'center',
+          key: 'approver',
+          title: '审批人',
+          width: 100,
+        }
+      : {
+          align: 'center',
+          dataIndex: ['assigneeUser', 'nickname'],
+          key: 'starter',
+          title: '发起人',
+          width: 100,
+        };
+
+  return [
+    {
+      align: 'center',
+      key: 'index',
+      title: '序号',
+      width: 50,
+    },
+    userColumn,
+    {
+      align: 'center',
+      key: 'dept',
+      title: '部门',
+      width: 100,
+    },
+    {
+      align: 'center',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (val) => formatDate(val),
+      title: '开始时间',
+      width: 140,
+    },
+    {
+      align: 'center',
+      dataIndex: 'endTime',
+      key: 'endTime',
+      render: (val) => formatDate(val),
+      title: '结束时间',
+      width: 140,
+    },
+    {
+      align: 'center',
+      dataIndex: 'status',
+      key: 'status',
+      title: '审批状态',
+      width: 90,
+    },
+    ...(selectActivityType.value === 'bpmn:UserTask'
+      ? [
+          {
+            align: 'center',
+            dataIndex: 'reason',
+            key: 'reason',
+            title: '审批建议',
+            width: 120,
+          } as TableColumnType,
+        ]
+      : []),
+    {
+      align: 'center',
+      dataIndex: 'durationInMillis',
+      key: 'durationInMillis',
+      title: '耗时',
+      width: 100,
+    },
+  ];
+});
 
 /** Zoom：恢复 */
 const processReZoom = () => {
@@ -360,78 +442,32 @@ onBeforeUnmount(() => {
       :width="1000"
     >
       <Row>
-        <Table :data-source="selectTasks" size="small" :bordered="true">
-          <Table.Column title="序号" align="center" width="50">
-            <template #default="{ index }">
+        <Table
+          :columns="approvalColumns"
+          :data-source="selectTasks"
+          size="small"
+          :bordered="true"
+        >
+          <template #bodyCell="{ column, index, record }">
+            <template v-if="column.key === 'index'">
               {{ index + 1 }}
             </template>
-          </Table.Column>
-          <Table.Column
-            title="审批人"
-            width="100"
-            align="center"
-            v-if="selectActivityType === 'bpmn:UserTask'"
-          >
-            <template #default="{ record }">
+            <template v-else-if="column.key === 'approver'">
               {{ record.assigneeUser?.nickname || record.ownerUser?.nickname }}
             </template>
-          </Table.Column>
-          <Table.Column
-            title="发起人"
-            data-index="assigneeUser.nickname"
-            width="100"
-            align="center"
-            v-else
-          />
-          <Table.Column title="部门" width="100" align="center">
-            <template #default="{ record }">
+            <template v-else-if="column.key === 'dept'">
               {{ record.assigneeUser?.deptName || record.ownerUser?.deptName }}
             </template>
-          </Table.Column>
-          <Table.Column
-            :custom-render="({ text }) => formatDate(text)"
-            align="center"
-            title="开始时间"
-            data-index="createTime"
-            width="140"
-          />
-          <Table.Column
-            :custom-render="({ text }) => formatDate(text)"
-            align="center"
-            title="结束时间"
-            data-index="endTime"
-            width="140"
-          />
-          <Table.Column
-            align="center"
-            title="审批状态"
-            data-index="status"
-            width="90"
-          >
-            <template #default="{ record }">
+            <template v-else-if="column.key === 'status'">
               <DictTag
                 :type="DICT_TYPE.BPM_TASK_STATUS"
                 :value="record.status"
               />
             </template>
-          </Table.Column>
-          <Table.Column
-            align="center"
-            title="审批建议"
-            data-index="reason"
-            width="120"
-            v-if="selectActivityType === 'bpmn:UserTask'"
-          />
-          <Table.Column
-            align="center"
-            title="耗时"
-            data-index="durationInMillis"
-            width="100"
-          >
-            <template #default="{ record }">
+            <template v-else-if="column.key === 'durationInMillis'">
               {{ formatPast2(record.durationInMillis) }}
             </template>
-          </Table.Column>
+          </template>
         </Table>
       </Row>
     </Modal>
@@ -439,7 +475,7 @@ onBeforeUnmount(() => {
     <!-- Zoom：放大、缩小 -->
     <div style="position: absolute; top: 0; left: 0; width: 100%">
       <Row justify="end">
-        <ButtonGroup key="scale-control">
+        <SpaceCompact key="scale-control">
           <Button
             :disabled="defaultZoom <= 0.3"
             :icon="h(ZoomOutOutlined)"
@@ -454,7 +490,7 @@ onBeforeUnmount(() => {
             @click="processZoomIn()"
           />
           <Button :icon="h(UndoOutlined)" @click="processReZoom()" />
-        </ButtonGroup>
+        </SpaceCompact>
       </Row>
     </div>
   </div>

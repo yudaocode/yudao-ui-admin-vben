@@ -5,7 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, Select } from 'antdv-next';
+import { FormItem, Input, Select, SelectOption, TextArea } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -60,7 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['config', 'url']"
     :rules="[{ required: true, message: '请求地址不能为空', trigger: 'blur' }]"
     label="请求地址"
@@ -68,13 +68,13 @@ onMounted(() => {
     <Input v-model:value="urlPath" placeholder="请输入请求地址">
       <template #addonBefore>
         <Select v-model:value="urlPrefix" class="w-[100px]">
-          <Select.Option value="http://">http://</Select.Option>
-          <Select.Option value="https://">https://</Select.Option>
+          <SelectOption value="http://">http://</SelectOption>
+          <SelectOption value="https://">https://</SelectOption>
         </Select>
       </template>
     </Input>
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'method']"
     :rules="[
       { required: true, message: '请求方法不能为空', trigger: 'change' },
@@ -82,23 +82,23 @@ onMounted(() => {
     label="请求方法"
   >
     <Select v-model:value="config.method" placeholder="请选择请求方法">
-      <Select.Option value="GET">GET</Select.Option>
-      <Select.Option value="POST">POST</Select.Option>
-      <Select.Option value="PUT">PUT</Select.Option>
-      <Select.Option value="DELETE">DELETE</Select.Option>
+      <SelectOption value="GET">GET</SelectOption>
+      <SelectOption value="POST">POST</SelectOption>
+      <SelectOption value="PUT">PUT</SelectOption>
+      <SelectOption value="DELETE">DELETE</SelectOption>
     </Select>
-  </Form.Item>
-  <Form.Item label="请求头">
+  </FormItem>
+  <FormItem label="请求头">
     <KeyValueEditor v-model="config.headers" add-button-text="添加请求头" />
-  </Form.Item>
-  <Form.Item label="请求参数">
+  </FormItem>
+  <FormItem label="请求参数">
     <KeyValueEditor v-model="config.query" add-button-text="添加参数" />
-  </Form.Item>
-  <Form.Item label="请求体">
-    <Input.TextArea
+  </FormItem>
+  <FormItem label="请求体">
+    <TextArea
       v-model:value="config.body"
       placeholder="请输入内容"
       :rows="4"
     />
-  </Form.Item>
+  </FormItem>
 </template>

@@ -5,7 +5,7 @@ import { IconifyIcon } from '@vben/icons';
 import { isEmpty } from '@vben/utils';
 
 import { useClipboard, useVModel } from '@vueuse/core';
-import { Button, Form, Input, message } from 'antdv-next';
+import { Button, FormItem, Input, InputPassword, message } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -67,7 +67,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['config', 'jdbcUrl']"
     :rules="[
       { required: true, message: 'JDBC 连接地址不能为空', trigger: 'blur' },
@@ -78,25 +78,25 @@ onMounted(() => {
       v-model:value="config.jdbcUrl"
       placeholder="请输入 JDBC 连接地址，如：jdbc:mysql://localhost:3306/iot_data"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'username']"
     :rules="[{ required: true, message: '用户名不能为空', trigger: 'blur' }]"
     label="用户名"
   >
     <Input v-model:value="config.username" placeholder="请输入数据库用户名" />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'password']"
     :rules="[{ required: true, message: '密码不能为空', trigger: 'blur' }]"
     label="密码"
   >
-    <Input.Password
+    <InputPassword
       v-model:value="config.password"
       placeholder="请输入数据库密码"
     />
-  </Form.Item>
-  <Form.Item
+  </FormItem>
+  <FormItem
     :name="['config', 'tableName']"
     :rules="[{ required: true, message: '目标表名不能为空', trigger: 'blur' }]"
     label="目标表名"
@@ -115,7 +115,7 @@ onMounted(() => {
         {{ showSqlTip ? '收起表结构提示' : '查看表结构提示' }}
       </Button>
     </div>
-  </Form.Item>
+  </FormItem>
   <div
     v-if="showSqlTip"
     class="mt-2 overflow-hidden rounded border border-gray-200 dark:border-gray-700"

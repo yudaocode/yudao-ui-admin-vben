@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Space } from 'antdv-next';
+import { SpaceCompact } from 'antdv-next';
 
 /**
  * 垂直按钮组
@@ -10,8 +10,8 @@ defineOptions({ name: 'VerticalSpace' });
 
 <template>
   <Space v-bind="$attrs">
-    <Space.Compact orientation="vertical">
+    <SpaceCompact orientation="vertical">
       <slot></slot>
-    </Space.Compact>
+    </SpaceCompact>
   </Space>
 </template>

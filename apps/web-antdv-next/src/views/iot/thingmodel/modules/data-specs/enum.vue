@@ -6,7 +6,7 @@ import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Form, Input, message } from 'antdv-next';
+import { Button, FormItem, Input, message } from 'antdv-next';
 
 import { buildIdentifierLikeNameValidator } from '#/api/iot/thingmodel';
 
@@ -84,7 +84,7 @@ function validateEnumList(_rule: any, _value: any, callback: any) {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :rules="[{ validator: validateEnumList, trigger: 'change' }]"
     label="枚举项"
   >
@@ -98,7 +98,7 @@ function validateEnumList(_rule: any, _value: any, callback: any) {
         :key="index"
         class="mb-[5px] flex items-center justify-between"
       >
-        <Form.Item
+        <FormItem
           :name="['property', 'dataSpecsList', index, 'value']"
           :rules="[
             { required: true, message: '枚举值不能为空', trigger: 'blur' },
@@ -110,9 +110,9 @@ function validateEnumList(_rule: any, _value: any, callback: any) {
             v-model:value="item.value"
             placeholder="请输入枚举值，如「0」"
           />
-        </Form.Item>
+        </FormItem>
         <span class="mx-2">~</span>
-        <Form.Item
+        <FormItem
           :name="['property', 'dataSpecsList', index, 'name']"
           :rules="[
             { required: true, message: '枚举描述不能为空', trigger: 'blur' },
@@ -121,14 +121,14 @@ function validateEnumList(_rule: any, _value: any, callback: any) {
           class="mb-0 flex-1"
         >
           <Input v-model:value="item.name" placeholder="对该枚举项的描述" />
-        </Form.Item>
+        </FormItem>
         <Button class="ml-2.5" type="link" @click="deleteEnum(index)">
           删除
         </Button>
       </div>
       <Button type="link" @click="addEnum">+ 添加枚举项</Button>
     </div>
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

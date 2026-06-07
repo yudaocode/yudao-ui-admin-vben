@@ -21,6 +21,10 @@ import PlanTeamList from './team-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('shift'); // 当前资源页签
+const planTabItems = [
+  { key: 'shift', label: '班次' },
+  { key: 'team', label: '班组' },
+];
 const formData = ref<MesCalPlanApi.Plan>();
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const canConfirm = computed(
@@ -131,14 +135,21 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="planTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="shift" tab="班次">
-        <ShiftList :form-type="formType" :plan-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="team" tab="班组">
-        <PlanTeamList :form-type="formType" :plan-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <ShiftList
+          v-if="item.key === 'shift'"
+          :form-type="formType"
+          :plan-id="formData.id"
+        />
+        <PlanTeamList
+          v-else-if="item.key === 'team'"
+          :form-type="formType"
+          :plan-id="formData.id"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">

@@ -15,7 +15,7 @@ import { IconifyIcon } from '@vben/icons';
 import { isEmptyVal } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Input, Popover, Tag } from 'antdv-next';
+import { Button, Popover, Tag, TextArea } from 'antdv-next';
 
 /** JSON参数输入组件 - 通用版本 */
 defineOptions({ name: 'JsonParamsInput' });
@@ -422,7 +422,7 @@ watch(
   <div class="w-full space-y-3">
     <!-- JSON 输入框 -->
     <div class="relative">
-      <Input.TextArea
+      <TextArea
         v-model:value="paramsJson"
         :rows="4"
         :placeholder="placeholder"
@@ -434,7 +434,7 @@ watch(
         <Popover
           placement="leftTop"
           :overlay-style="{ width: '450px' }"
-          trigger="click"
+          :trigger="['click']"
           :arrow="true"
           overlay-class-name="json-params-detail-popover"
         >

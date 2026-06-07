@@ -27,6 +27,10 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesWmPackageApi.Package>();
 const subTabsName = ref('subPackage'); // 子表当前 tab
+const packageTabItems = [
+  { key: 'subPackage', label: '子箱' },
+  { key: 'packageLine', label: '装箱清单' },
+];
 const originalSnapshot = ref(''); // 表单原始数据快照，用于 finish 时跳过未变更的保存请求
 
 const isEditable = computed(() =>
@@ -173,14 +177,21 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formData?.id"
       v-model:active-key="subTabsName"
+      :items="packageTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="subPackage" tab="子箱">
-        <SubPackageList :editable="isEditable" :package-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="packageLine" tab="装箱清单">
-        <PackageLineList :editable="isEditable" :package-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <SubPackageList
+          v-if="item.key === 'subPackage'"
+          :editable="isEditable"
+          :package-id="formData.id"
+        />
+        <PackageLineList
+          v-else-if="item.key === 'packageLine'"
+          :editable="isEditable"
+          :package-id="formData.id"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">

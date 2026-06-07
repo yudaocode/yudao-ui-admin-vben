@@ -8,7 +8,7 @@ import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { cloneDeep, isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Divider, Form, Input, message } from 'antdv-next';
+import { Button, Divider, Form, FormItem, Input, message } from 'antdv-next';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -146,16 +146,16 @@ function deleteParamItem(index: number) {
       :wrapper-col="{ span: 18 }"
       class="mx-4"
     >
-      <Form.Item :rules="ThingModelFormRules.name" label="参数名称" name="name">
+      <FormItem :rules="ThingModelFormRules.name" label="参数名称" name="name">
         <Input v-model:value="formData.name" placeholder="请输入参数名称" />
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem
         :rules="ThingModelFormRules.identifier"
         label="标识符"
         name="identifier"
       >
         <Input v-model:value="formData.identifier" placeholder="请输入标识符" />
-      </Form.Item>
+      </FormItem>
       <!-- 属性配置 -->
       <ThingModelProperty v-model="formData.property" is-params />
     </Form>

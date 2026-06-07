@@ -11,6 +11,7 @@ import {
   Button,
   Card,
   Descriptions,
+  DescriptionsItem,
   message,
   Popconfirm,
 } from 'antdv-next';
@@ -135,7 +136,7 @@ async function handleSyncPropertyTable(product: IotProductApi.Product) {
 
     <Card class="mt-4">
       <Descriptions :column="1">
-        <Descriptions.Item label="ProductKey">
+        <DescriptionsItem label="ProductKey">
           {{ product.productKey }}
           <Button
             class="ml-2"
@@ -144,15 +145,15 @@ async function handleSyncPropertyTable(product: IotProductApi.Product) {
           >
             复制
           </Button>
-        </Descriptions.Item>
-        <Descriptions.Item label="设备总数">
+        </DescriptionsItem>
+        <DescriptionsItem label="设备总数">
           <span class="ml-5 mr-2">
             {{ product.deviceCount ?? '加载中...' }}
           </span>
           <Button size="small" @click="goToDeviceList(product.id!)">
             前往管理
           </Button>
-        </Descriptions.Item>
+        </DescriptionsItem>
       </Descriptions>
     </Card>
   </div>

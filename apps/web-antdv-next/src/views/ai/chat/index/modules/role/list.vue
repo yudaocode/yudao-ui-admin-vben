@@ -7,7 +7,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Avatar, Button, Card, Dropdown, Menu } from 'antdv-next';
+import { Avatar, Button, Card, Dropdown, Menu, MenuItem } from 'antdv-next';
 
 const props = defineProps({
   loading: {
@@ -103,18 +103,18 @@ async function handleTabsScroll() {
             </Button>
             <template #popupRender>
               <Menu>
-                <Menu.Item @click="handleMoreClick(['delete', role])">
+                <MenuItem @click="handleMoreClick(['delete', role])">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:trash" color="red" />
                     <span class="ml-2 text-red-500">删除</span>
                   </div>
-                </Menu.Item>
-                <Menu.Item @click="handleMoreClick(['edit', role])">
+                </MenuItem>
+                <MenuItem @click="handleMoreClick(['edit', role])">
                   <div class="flex items-center">
                     <IconifyIcon icon="lucide:edit" color="#787878" />
                     <span class="ml-2 text-primary">编辑</span>
                   </div>
-                </Menu.Item>
+                </MenuItem>
               </Menu>
             </template>
           </Dropdown>

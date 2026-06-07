@@ -23,6 +23,10 @@ const id = Number(route.params.id);
 const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const activeTab = ref('info');
+const productTabItems = [
+  { key: 'info', label: '产品信息' },
+  { key: 'thingModel', label: '物模型（功能定义）' },
+];
 
 /** 向子组件提供产品信息 */
 provide(IOT_PROVIDE_KEY.PRODUCT, product);
@@ -77,13 +81,16 @@ onMounted(async () => {
       :product="product"
       @refresh="() => getProductData(id)"
     />
-    <Tabs v-model:active-key="activeTab" class="mt-4">
-      <Tabs.TabPane key="info" tab="产品信息">
-        <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="thingModel" tab="物模型（功能定义）">
-        <IoTProductThingModel v-if="activeTab === 'thingModel'" />
-      </Tabs.TabPane>
+    <Tabs v-model:active-key="activeTab" :items="productTabItems" class="mt-4">
+      <template #contentRender="{ item }">
+        <ProductDetailsInfo
+          v-if="item.key === 'info' && activeTab === 'info'"
+          :product="product"
+        />
+        <IoTProductThingModel
+          v-else-if="item.key === 'thingModel' && activeTab === 'thingModel'"
+        />
+      </template>
     </Tabs>
   </Page>
 </template>

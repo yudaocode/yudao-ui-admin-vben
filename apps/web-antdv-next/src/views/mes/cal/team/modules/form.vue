@@ -20,6 +20,7 @@ import MemberList from './member-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('member'); // 当前资源页签
+const teamTabItems = [{ key: 'member', label: '班组成员' }];
 const formData = ref<MesCalTeamApi.Team>();
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const getTitle = computed(() => {
@@ -107,11 +108,16 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="teamTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="member" tab="班组成员">
-        <MemberList :form-type="formType" :team-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <MemberList
+          v-if="item.key === 'member'"
+          :form-type="formType"
+          :team-id="formData.id"
+        />
+      </template>
     </Tabs>
   </Modal>
 </template>

@@ -53,6 +53,10 @@ const showSubTabs = computed(
     formData.value?.status !== MesProFeedbackStatusEnum.PREPARE &&
     formData.value?.status !== MesProFeedbackStatusEnum.APPROVING,
 );
+const feedbackTabItems = [
+  { key: 'itemConsume', label: 'BOM 物资消耗' },
+  { key: 'productProduce', label: '产品产出' },
+];
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
     return $t('ui.actionTitle.view', ['生产报工']);
@@ -274,15 +278,20 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="showSubTabs"
       v-model:active-key="subTabsName"
+      :items="feedbackTabItems"
       type="card"
       class="mx-4 mt-2"
     >
-      <Tabs.TabPane key="itemConsume" tab="BOM 物资消耗">
-        <ItemConsumeList :feedback-id="formData!.id!" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="productProduce" tab="产品产出">
-        <ProductProduceList :feedback-id="formData!.id!" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <ItemConsumeList
+          v-if="item.key === 'itemConsume'"
+          :feedback-id="formData!.id!"
+        />
+        <ProductProduceList
+          v-else-if="item.key === 'productProduce'"
+          :feedback-id="formData!.id!"
+        />
+      </template>
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center justify-end gap-2">

@@ -8,7 +8,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-import { Timeline } from 'antdv-next';
+import { Timeline, TimelineItem } from 'antdv-next';
 
 import { CronTab } from '#/components/cron-tab';
 import { DictTag } from '#/components/dict-tag';
@@ -239,7 +239,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
         }
         return h(Timeline, {}, () =>
           val?.map((time: Date) =>
-            h(Timeline.Item, {}, () => formatDateTime(time)),
+            h(TimelineItem, {}, () => formatDateTime(time)),
           ),
         );
       },

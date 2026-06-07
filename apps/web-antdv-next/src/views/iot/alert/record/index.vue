@@ -7,7 +7,7 @@ import { h, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, message, Modal, Popover } from 'antdv-next';
+import { Button, message, Modal, Popover, TextArea } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
@@ -37,7 +37,7 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
     content: () =>
       h('div', { class: 'space-y-2' }, [
         h('p', '请输入处理原因：'),
-        h(Input.TextArea, {
+        h(TextArea, {
           value: processRemark.value,
           'onUpdate:value': (val: string) => (processRemark.value = val),
           rows: 3,
@@ -98,7 +98,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Popover
           v-if="row.deviceMessage"
           placement="topLeft"
-          trigger="hover"
+          :trigger="['hover']"
           :overlay-style="{ maxWidth: '600px' }"
         >
           <template #content>

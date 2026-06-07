@@ -8,7 +8,7 @@ import { computed, inject, ref, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IOT_PROVIDE_KEY } from '@vben/constants';
 
-import { Radio, TextArea } from 'antdv-next';
+import { Radio, RadioButton, RadioGroup, TextArea } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
@@ -56,10 +56,10 @@ watch(tslString, (newValue) => {
   <Modal :footer="false" class="w-3/5" title="物模型 TSL">
     <div class="mx-4">
       <div class="mb-4">
-        <Radio.Group v-model:value="viewMode" size="small">
-          <Radio.Button value="view">代码视图</Radio.Button>
-          <Radio.Button value="editor">编辑器视图</Radio.Button>
-        </Radio.Group>
+        <RadioGroup v-model:value="viewMode" size="small">
+          <RadioButton value="view">代码视图</RadioButton>
+          <RadioButton value="editor">编辑器视图</RadioButton>
+        </RadioGroup>
       </div>
       <!-- 代码视图：只读展示（pre / code 必须紧贴，避免显示出空白） -->
       <div

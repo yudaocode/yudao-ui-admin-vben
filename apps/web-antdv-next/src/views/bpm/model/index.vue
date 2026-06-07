@@ -8,7 +8,15 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useSortable } from '@vueuse/integrations/useSortable';
-import { Button, Card, Dropdown, Input, Menu, message } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Dropdown,
+  Input,
+  Menu,
+  MenuItem,
+  message,
+} from 'antdv-next';
 
 import {
   getCategorySimpleList,
@@ -171,18 +179,18 @@ async function handleCategorySortSubmit() {
             </Button>
             <template #popupRender>
               <Menu @click="(e) => handleCommand(e.key as string)">
-                <Menu.Item key="handleCategoryAdd">
+                <MenuItem key="handleCategoryAdd">
                   <div class="flex items-center gap-1">
                     <IconifyIcon icon="lucide:plus" />
                     新建分类
                   </div>
-                </Menu.Item>
-                <Menu.Item key="handleCategorySort">
+                </MenuItem>
+                <MenuItem key="handleCategorySort">
                   <div class="flex items-center gap-1">
                     <IconifyIcon icon="lucide:align-start-vertical" />
                     分类排序
                   </div>
-                </Menu.Item>
+                </MenuItem>
               </Menu>
             </template>
           </Dropdown>

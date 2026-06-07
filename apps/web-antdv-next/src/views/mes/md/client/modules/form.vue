@@ -20,6 +20,10 @@ import ClientProductSalesList from './product-sales-list.vue';
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('productSalesLine'); // 当前子表页签
+const clientTabItems = [
+  { key: 'productSalesLine', label: '产品清单' },
+  { key: 'productSales', label: '销售记录' },
+];
 const formData = ref<MesMdClientApi.Client>();
 
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
@@ -100,14 +104,19 @@ const [Modal, modalApi] = useVbenModal({
     <Tabs
       v-if="formType !== 'create' && formData?.id"
       v-model:active-key="subTabsName"
+      :items="clientTabItems"
       class="mx-4 mt-4"
     >
-      <Tabs.TabPane key="productSalesLine" tab="产品清单">
-        <ClientProductSalesLineList :client-id="formData.id" />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="productSales" tab="销售记录">
-        <ClientProductSalesList :client-id="formData.id" />
-      </Tabs.TabPane>
+      <template #contentRender="{ item }">
+        <ClientProductSalesLineList
+          v-if="item.key === 'productSalesLine'"
+          :client-id="formData.id"
+        />
+        <ClientProductSalesList
+          v-else-if="item.key === 'productSales'"
+          :client-id="formData.id"
+        />
+      </template>
     </Tabs>
   </Modal>
 </template>

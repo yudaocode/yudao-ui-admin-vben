@@ -11,7 +11,7 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Radio } from 'antdv-next';
+import { FormItem, Radio, RadioGroup } from 'antdv-next';
 
 import { ThingModelFormRules } from '#/api/iot/thingmodel';
 
@@ -43,12 +43,12 @@ function getParamIdentifiers(params?: any[]) {
 </script>
 
 <template>
-  <Form.Item
+  <FormItem
     :name="['service', 'callType']"
     :rules="ThingModelFormRules.callType"
     label="调用方式"
   >
-    <Radio.Group v-model:value="service.callType">
+    <RadioGroup v-model:value="service.callType">
       <Radio
         v-for="callType in Object.values(IoTThingModelServiceCallTypeEnum)"
         :key="callType.value"
@@ -56,22 +56,22 @@ function getParamIdentifiers(params?: any[]) {
       >
         {{ callType.label }}
       </Radio>
-    </Radio.Group>
-  </Form.Item>
-  <Form.Item label="输入参数">
+    </RadioGroup>
+  </FormItem>
+  <FormItem label="输入参数">
     <ThingModelInputOutputParam
       v-model="service.inputParams"
       :direction="IoTThingModelParamDirectionEnum.INPUT"
       :existing-identifiers="getParamIdentifiers(service.outputParams)"
     />
-  </Form.Item>
-  <Form.Item label="输出参数">
+  </FormItem>
+  <FormItem label="输出参数">
     <ThingModelInputOutputParam
       v-model="service.outputParams"
       :direction="IoTThingModelParamDirectionEnum.OUTPUT"
       :existing-identifiers="getParamIdentifiers(service.inputParams)"
     />
-  </Form.Item>
+  </FormItem>
 </template>
 
 <style lang="scss" scoped>

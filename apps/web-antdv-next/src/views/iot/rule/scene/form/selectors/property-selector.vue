@@ -16,7 +16,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Popover, Select, Tag } from 'antdv-next';
+import { Button, Popover, Select, SelectOptGroup, SelectOption, Tag } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
@@ -219,12 +219,12 @@ watch(
       option-label-prop="label"
       :loading="loading"
     >
-      <Select.OptGroup
+      <SelectOptGroup
         v-for="group in propertyGroups"
         :key="group.label"
         :label="group.label"
       >
-        <Select.Option
+        <SelectOption
           v-for="property in group.options"
           :key="property.identifier"
           :label="property.name"
@@ -240,8 +240,8 @@ watch(
               {{ property.identifier }}
             </Tag>
           </div>
-        </Select.Option>
-      </Select.OptGroup>
+        </SelectOption>
+      </SelectOptGroup>
     </Select>
 
     <!-- 属性详情弹出层 -->
@@ -249,7 +249,7 @@ watch(
       v-if="selectedProperty"
       placement="rightTop"
       :overlay-style="{ width: '350px' }"
-      trigger="click"
+      :trigger="['click']"
       :arrow="true"
       overlay-class-name="property-detail-popover"
     >

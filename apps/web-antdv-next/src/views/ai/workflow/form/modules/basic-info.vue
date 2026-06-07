@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, Input, Select } from 'antdv-next';
+import { Form, Input, Select, TextArea } from 'antdv-next';
 
 type Rule = any;
 const modelData = defineModel<any>(); // 创建本地数据副本
@@ -64,7 +64,7 @@ defineExpose({ validate });
       </Select>
     </FormItem>
     <FormItem label="流程描述" name="description" class="mb-5">
-      <Input.TextArea v-model:value="modelData.description" allow-clear />
+      <TextArea v-model:value="modelData.description" allow-clear />
     </FormItem>
   </Form>
 </template>
