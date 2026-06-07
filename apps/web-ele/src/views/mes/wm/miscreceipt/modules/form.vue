@@ -27,13 +27,16 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesWmMiscReceiptApi.MiscReceipt>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于提交时跳过未变更的保存请求
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isFinish = computed(() => formType.value === 'finish'); // 是否为执行入库模式
-const canSubmit = computed(() => // 是否可提交
-  formType.value === 'update' &&
-  formData.value?.status === MesWmMiscReceiptStatusEnum.PREPARE,
+const canSubmit = computed(
+  () =>
+    // 是否可提交
+    formType.value === 'update' &&
+    formData.value?.status === MesWmMiscReceiptStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -71,7 +74,8 @@ async function handleSubmit() {
   try {
     const current = JSON.stringify(await formApi.getValues());
     if (current !== originalSnapshot.value) {
-      const data = (await formApi.getValues()) as MesWmMiscReceiptApi.MiscReceipt;
+      const data =
+        (await formApi.getValues()) as MesWmMiscReceiptApi.MiscReceipt;
       await updateMiscReceipt({ ...formData.value, ...data });
       originalSnapshot.value = current;
     }
@@ -145,7 +149,9 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{ formType: FormType; id?: number }>();
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
-    formApi.setDisabled(formType.value === 'detail' || formType.value === 'finish');
+    formApi.setDisabled(
+      formType.value === 'detail' || formType.value === 'finish',
+    );
     modalApi.setState({ showConfirmButton: isEditable.value });
     if (data?.id) {
       modalApi.lock();

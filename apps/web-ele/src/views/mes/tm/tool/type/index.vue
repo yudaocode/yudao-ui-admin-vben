@@ -8,7 +8,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteToolType, exportToolType, getToolTypePage } from '#/api/mes/tm/tool/type';
+import {
+  deleteToolType,
+  exportToolType,
+  getToolTypePage,
+} from '#/api/mes/tm/tool/type';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -41,7 +45,9 @@ function handleEdit(row: MesTmToolTypeApi.ToolType) {
 
 /** 删除工具类型 */
 async function handleDelete(row: MesTmToolTypeApi.ToolType) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteToolType(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -119,7 +125,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.code }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction

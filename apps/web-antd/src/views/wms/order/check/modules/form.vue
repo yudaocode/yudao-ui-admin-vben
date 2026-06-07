@@ -11,10 +11,7 @@ import type { WmsCheckOrderDetailApi } from '#/api/wms/order/check/detail';
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '@vben/constants';
+import { OrderStatusEnum, OrderUpdateStatusList } from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { InputNumber, message } from 'ant-design-vue';

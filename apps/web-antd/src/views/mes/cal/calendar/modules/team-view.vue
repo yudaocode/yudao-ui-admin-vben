@@ -54,7 +54,9 @@ onMounted(async () => {
 <template>
   <div class="flex">
     <!-- 左侧：班组列表选择 -->
-    <div class="border-border mr-3 w-[150px] shrink-0 overflow-hidden rounded border">
+    <div
+      class="border-border mr-3 w-[150px] shrink-0 overflow-hidden rounded border"
+    >
       <div
         v-for="team in teamList"
         :key="team.id"

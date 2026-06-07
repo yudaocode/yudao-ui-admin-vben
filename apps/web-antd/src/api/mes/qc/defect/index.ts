@@ -25,12 +25,16 @@ export function getDefectPage(params: PageParam) {
 
 /** 查询缺陷类型精简列表 */
 export function getDefectSimpleList() {
-  return requestClient.get<MesQcDefectApi.Defect[]>('/mes/qc/defect/simple-list');
+  return requestClient.get<MesQcDefectApi.Defect[]>(
+    '/mes/qc/defect/simple-list',
+  );
 }
 
 /** 查询缺陷类型详情 */
 export function getDefect(id: number) {
-  return requestClient.get<MesQcDefectApi.Defect>(`/mes/qc/defect/get?id=${id}`);
+  return requestClient.get<MesQcDefectApi.Defect>(
+    `/mes/qc/defect/get?id=${id}`,
+  );
 }
 
 /** 新增缺陷类型 */

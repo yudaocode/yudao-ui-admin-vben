@@ -45,7 +45,7 @@ function handleFilter(input: string, option: any) {
   const item = option?.item as MesProProcessApi.Process | undefined;
   return Boolean(
     item?.name?.toLowerCase().includes(keyword) ||
-      item?.code?.toLowerCase().includes(keyword),
+    item?.code?.toLowerCase().includes(keyword),
   );
 }
 

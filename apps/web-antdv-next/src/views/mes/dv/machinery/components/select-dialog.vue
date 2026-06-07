@@ -43,7 +43,7 @@ function getMultipleSelectedRows() {
   ] as MesDvMachineryApi.Machinery[];
   records.forEach((row) => {
     const rowId = row.id;
-    if (rowId != null) {
+    if (rowId !== null) {
       selectedMap.set(rowId, row);
     }
   });
@@ -68,7 +68,11 @@ async function toggleMultipleRow(row: MesDvMachineryApi.Machinery) {
 }
 
 /** 处理行双击 */
-async function handleCellDblclick({ row }: { row: MesDvMachineryApi.Machinery }) {
+async function handleCellDblclick({
+  row,
+}: {
+  row: MesDvMachineryApi.Machinery;
+}) {
   if (multiple.value) {
     await toggleMultipleRow(row);
     return;
@@ -79,7 +83,9 @@ async function handleCellDblclick({ row }: { row: MesDvMachineryApi.Machinery })
 }
 
 /** 按设备类型筛选 */
-function handleTypeNodeClick(row: MesDvMachineryTypeApi.MachineryType | undefined) {
+function handleTypeNodeClick(
+  row: MesDvMachineryTypeApi.MachineryType | undefined,
+) {
   selectedMachineryTypeId.value = row?.id;
   gridApi.query();
 }
@@ -91,7 +97,7 @@ async function applyPreSelection() {
   }
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+    if (row.id === null || !preSelectedIds.value.includes(row.id)) {
       continue;
     }
     if (multiple.value) {
@@ -215,7 +221,10 @@ defineExpose({ open: openModal });
   >
     <div class="flex h-full w-full">
       <div class="mr-4 h-full w-1/5">
-        <MachineryTypeTree ref="typeTreeRef" @node-click="handleTypeNodeClick" />
+        <MachineryTypeTree
+          ref="typeTreeRef"
+          @node-click="handleTypeNodeClick"
+        />
       </div>
       <div class="w-4/5">
         <Grid table-title="设备列表" />

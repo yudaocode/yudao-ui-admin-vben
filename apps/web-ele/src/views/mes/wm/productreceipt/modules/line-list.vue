@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmProductReceiptDetailApi } from '#/api/mes/wm/productreceipt/detail';
 import type { MesWmProductReceiptLineApi } from '#/api/mes/wm/productreceipt/line';
@@ -19,7 +21,7 @@ import {
 import { $t } from '#/locales';
 import { BarcodeDetail, PrinterLabel } from '#/views/mes/wm/barcode/components';
 
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 import DetailForm from './detail-form.vue';
 import DetailList from './detail-list.vue';
 import LineForm from './line-form.vue';
@@ -29,7 +31,8 @@ const props = defineProps<{
   receiptId: number;
 }>();
 
-const isEditable = computed(() => // 是否可编辑明细行
+const isEditable = computed(() =>
+  // 是否可编辑明细行
   ['create', 'update'].includes(props.formType),
 );
 const isStock = computed(() => props.formType === 'stock'); // 是否为上架模式
@@ -105,7 +108,9 @@ function openDetailForm(lineId: number, itemId?: number, detailId?: number) {
 }
 
 /** 获取已展开行的上架明细 */
-function getExpandedDetails(row: MesWmProductReceiptLineApi.ProductReceiptLine) {
+function getExpandedDetails(
+  row: MesWmProductReceiptLineApi.ProductReceiptLine,
+) {
   return detailMap[row.id!] || [];
 }
 

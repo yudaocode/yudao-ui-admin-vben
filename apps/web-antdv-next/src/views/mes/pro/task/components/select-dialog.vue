@@ -167,7 +167,10 @@ async function resetQueryState() {
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
   if (externalWorkOrderId.value) {
-    await gridApi.formApi.setFieldValue('workOrderId', externalWorkOrderId.value);
+    await gridApi.formApi.setFieldValue(
+      'workOrderId',
+      externalWorkOrderId.value,
+    );
   }
   if (externalWorkstationId.value) {
     await gridApi.formApi.setFieldValue(

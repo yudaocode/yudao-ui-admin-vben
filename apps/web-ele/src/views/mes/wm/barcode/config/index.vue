@@ -55,16 +55,12 @@ function handleEdit(row: MesWmBarcodeConfigApi.BarcodeConfig) {
 /** 删除条码配置 */
 async function handleDelete(row: MesWmBarcodeConfigApi.BarcodeConfig) {
   const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting', [
-      row.contentFormat || `#${row.id}`,
-    ]),
+    text: $t('ui.actionMessage.deleting', [row.contentFormat || `#${row.id}`]),
   });
   try {
     await deleteBarcodeConfig(row.id!);
     ElMessage.success(
-      $t('ui.actionMessage.deleteSuccess', [
-        row.contentFormat || `#${row.id}`,
-      ]),
+      $t('ui.actionMessage.deleteSuccess', [row.contentFormat || `#${row.id}`]),
     );
     handleRefresh();
   } finally {

@@ -16,7 +16,14 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Popover, Select, SelectOptGroup, SelectOption, Tag } from 'antdv-next';
+import {
+  Button,
+  Popover,
+  Select,
+  SelectOptGroup,
+  SelectOption,
+  Tag,
+} from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 

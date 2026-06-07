@@ -6,7 +6,12 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderSourceTypeEnum, MesProWorkOrderTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderSourceTypeEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -14,7 +19,10 @@ import { ElButton } from 'element-plus';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
 import { getRangePickerDefaultProps } from '#/utils';
 import { MdClientSelect } from '#/views/mes/md/client/components';
-import { MdItemSelect, MdProductBomSelect } from '#/views/mes/md/item/components';
+import {
+  MdItemSelect,
+  MdProductBomSelect,
+} from '#/views/mes/md/item/components';
 import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 
 /** 表单类型 */

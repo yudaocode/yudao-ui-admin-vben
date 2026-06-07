@@ -8,7 +8,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteSubject, exportSubject, getSubjectPage } from '#/api/mes/dv/subject';
+import {
+  deleteSubject,
+  exportSubject,
+  getSubjectPage,
+} from '#/api/mes/dv/subject';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

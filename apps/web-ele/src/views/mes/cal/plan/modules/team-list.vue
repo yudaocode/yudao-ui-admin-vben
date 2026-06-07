@@ -11,14 +11,21 @@ import { computed, ref, watch } from 'vue';
 import { ElCard, ElEmpty, ElMessage } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { createPlanTeam, deletePlanTeam, getPlanTeamListByPlan } from '#/api/mes/cal/plan/team';
+import {
+  createPlanTeam,
+  deletePlanTeam,
+  getPlanTeamListByPlan,
+} from '#/api/mes/cal/plan/team';
 import { getTeamMemberListByTeam } from '#/api/mes/cal/team/member';
 import { $t } from '#/locales';
 import { CalTeamSelectDialog } from '#/views/mes/cal/team/components';
 
-const props = withDefaults(defineProps<{ formType?: FormType; planId: number }>(), {
-  formType: 'update',
-});
+const props = withDefaults(
+  defineProps<{ formType?: FormType; planId: number }>(),
+  {
+    formType: 'update',
+  },
+);
 const isEditable = computed(() => props.formType !== 'detail'); // 是否可编辑
 const list = ref<MesCalPlanTeamApi.PlanTeam[]>([]); // 计划班组列表
 const memberList = ref<MesCalTeamMemberApi.TeamMember[]>([]); // 班组成员列表
@@ -61,7 +68,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MesCalPlanTeamApi.PlanTeam>,
   gridEvents: {
-    cellClick: ({ row }: { row: MesCalPlanTeamApi.PlanTeam }) => handleTeamSelect(row),
+    cellClick: ({ row }: { row: MesCalPlanTeamApi.PlanTeam }) =>
+      handleTeamSelect(row),
   },
 });
 
@@ -123,13 +131,17 @@ async function handleTeamSelect(row?: MesCalPlanTeamApi.PlanTeam) {
 
 /** 打开班组选择弹窗 */
 function openTeamSelect() {
-  teamDialogRef.value?.open(list.value.map((item) => item.teamId!).filter(Boolean));
+  teamDialogRef.value?.open(
+    list.value.map((item) => item.teamId!).filter(Boolean),
+  );
 }
 
 /** 处理班组选择 */
 async function handleTeamsSelected(rows: MesCalTeamApi.Team[]) {
   const existingTeamIds = new Set(list.value.map((item) => item.teamId));
-  const newTeams = rows.filter((team) => team.id && !existingTeamIds.has(team.id));
+  const newTeams = rows.filter(
+    (team) => team.id && !existingTeamIds.has(team.id),
+  );
   if (newTeams.length === 0) {
     ElMessage.warning('所选班组已全部添加过');
     return;
@@ -139,7 +151,7 @@ async function handleTeamsSelected(rows: MesCalTeamApi.Team[]) {
     for (const team of newTeams) {
       await createPlanTeam({ planId: props.planId, teamId: team.id });
     }
-    ElMessage.success('成功添加 ' + newTeams.length + ' 个班组');
+    ElMessage.success(`成功添加 ${newTeams.length} 个班组`);
     await getList();
   } finally {
     gridApi.setLoading(false);
@@ -170,7 +182,11 @@ watch(
 <template>
   <div>
     <div v-if="isEditable" class="mb-3 flex items-center justify-start">
-      <TableAction :actions="[{ label: '添加班组', type: 'primary', onClick: openTeamSelect }]" />
+      <TableAction
+        :actions="[
+          { label: '添加班组', type: 'primary', onClick: openTeamSelect },
+        ]"
+      />
     </div>
     <div class="grid grid-cols-5 gap-4">
       <div class="col-span-3">
@@ -195,7 +211,9 @@ watch(
       <div class="col-span-2">
         <ElCard class="h-full" shadow="never">
           <template #header>
-            {{ selectedTeamName ? `「${selectedTeamName}」班组成员` : '班组成员' }}
+            {{
+              selectedTeamName ? `「${selectedTeamName}」班组成员` : '班组成员'
+            }}
           </template>
           <div v-if="!selectedTeamId">
             <ElEmpty description="请点击左侧班组查看成员" :image-size="60" />
@@ -204,6 +222,10 @@ watch(
         </ElCard>
       </div>
     </div>
-    <CalTeamSelectDialog ref="teamDialogRef" :multiple="true" @selected="handleTeamsSelected" />
+    <CalTeamSelectDialog
+      ref="teamDialogRef"
+      :multiple="true"
+      @selected="handleTeamsSelected"
+    />
   </div>
 </template>

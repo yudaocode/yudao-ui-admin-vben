@@ -267,7 +267,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {
@@ -286,7 +286,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {
@@ -305,7 +305,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {

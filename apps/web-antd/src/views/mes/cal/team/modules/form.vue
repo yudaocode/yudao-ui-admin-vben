@@ -16,7 +16,6 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 import MemberList from './member-list.vue';
 
-
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('member'); // 当前资源页签

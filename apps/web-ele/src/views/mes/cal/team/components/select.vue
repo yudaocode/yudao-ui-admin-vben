@@ -50,7 +50,9 @@ function openDialog() {
   if (props.disabled) {
     return;
   }
-  dialogRef.value?.open(props.modelValue ? [props.modelValue] : [], { multiple: false });
+  dialogRef.value?.open(props.modelValue ? [props.modelValue] : [], {
+    multiple: false,
+  });
 }
 
 /** 处理弹窗选择 */
@@ -73,9 +75,18 @@ onMounted(loadTeamList);
       class="flex-1"
       @change="handleChange"
     >
-      <ElOption v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id!" />
+      <ElOption
+        v-for="item in teamList"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id!"
+      />
     </ElSelect>
     <ElButton :disabled="disabled" @click="openDialog">选择</ElButton>
-    <CalTeamSelectDialog ref="dialogRef" :multiple="false" @selected="handleSelected" />
+    <CalTeamSelectDialog
+      ref="dialogRef"
+      :multiple="false"
+      @selected="handleSelected"
+    />
   </div>
 </template>

@@ -21,10 +21,9 @@ export namespace MesWmOutsourceReceiptApi {
 
 /** 查询外协入库单分页 */
 export function getOutsourceReceiptPage(params: PageParam) {
-  return requestClient.get<PageResult<MesWmOutsourceReceiptApi.OutsourceReceipt>>(
-    '/mes/wm/outsource-receipt/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MesWmOutsourceReceiptApi.OutsourceReceipt>
+  >('/mes/wm/outsource-receipt/page', { params });
 }
 
 /** 查询外协入库单详情 */

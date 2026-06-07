@@ -506,7 +506,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，物料由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -519,7 +519,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，批次由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -550,7 +550,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，仓库由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -562,7 +562,7 @@ export function useResultFormSchema(
         triggerFields: ['warehouseId', 'lineId'],
         show: (values) => !!values.warehouseId,
         // 选中盘点清单后，库区由清单带出且禁止改动
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
         componentProps: (values) => ({
           onChange: () => formApi?.setFieldValue('areaId', undefined),
           placeholder: '请选择库区',
@@ -579,7 +579,7 @@ export function useResultFormSchema(
         triggerFields: ['locationId', 'lineId'],
         show: (values) => !!values.locationId,
         // 选中盘点清单后，库位由清单带出且禁止改动
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
         componentProps: (values) => ({
           locationId: values.locationId,
           placeholder: '请选择库位',

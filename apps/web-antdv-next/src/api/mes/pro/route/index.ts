@@ -32,9 +32,7 @@ export function getRouteSimpleList() {
 
 /** 查询工艺路线详情 */
 export function getRoute(id: number) {
-  return requestClient.get<MesProRouteApi.Route>(
-    `/mes/pro/route/get?id=${id}`,
-  );
+  return requestClient.get<MesProRouteApi.Route>(`/mes/pro/route/get?id=${id}`);
 }
 
 /** 新增工艺路线 */

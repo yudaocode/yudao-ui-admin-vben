@@ -76,7 +76,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as MesWmWarehouseApi.Warehouse;
     try {
-      await (formData.value?.id ? updateWarehouse(data) : createWarehouse(data));
+      await (formData.value?.id
+        ? updateWarehouse(data)
+        : createWarehouse(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

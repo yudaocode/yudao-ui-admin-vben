@@ -25,7 +25,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
           props: { type: DICT_TYPE.MES_DV_REPAIR_RESULT },
         },
       },
-      { field: 'requireDate', title: '报修日期', width: 180, formatter: 'formatDateTime' },
+      {
+        field: 'requireDate',
+        title: '报修日期',
+        width: 180,
+        formatter: 'formatDateTime',
+      },
       { field: 'nickname', title: '操作人', minWidth: 120 },
       {
         field: 'status',

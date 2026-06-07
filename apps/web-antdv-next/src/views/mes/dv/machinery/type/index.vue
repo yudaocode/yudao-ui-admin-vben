@@ -10,7 +10,10 @@ import { handleTree } from '@vben/utils';
 import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMachineryType, getMachineryTypeList } from '#/api/mes/dv/machinery/type';
+import {
+  deleteMachineryType,
+  getMachineryTypeList,
+} from '#/api/mes/dv/machinery/type';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -76,7 +79,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       enabled: false,
     },
     proxyConfig: {
-      ajax: { query: async (_, formValues) => handleTree(await getMachineryTypeList(formValues)) },
+      ajax: {
+        query: async (_, formValues) =>
+          handleTree(await getMachineryTypeList(formValues)),
+      },
     },
     rowConfig: {
       keyField: 'id',

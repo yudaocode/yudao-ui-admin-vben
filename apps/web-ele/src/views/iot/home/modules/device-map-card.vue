@@ -24,11 +24,12 @@ const deviceList = ref<IotDeviceApi.Device[]>([]); // 设备分布列表
 
 const hasData = computed(() => deviceList.value.length > 0); // 是否有数据
 
-const stateOptions = computed(() =>
-  getDictOptions(
-    DICT_TYPE.IOT_DEVICE_STATE,
-    'number',
-  ) as NumberDictDataType[],
+const stateOptions = computed(
+  () =>
+    getDictOptions(
+      DICT_TYPE.IOT_DEVICE_STATE,
+      'number',
+    ) as NumberDictDataType[],
 ); // 状态图例列表（从字典获取）
 
 const stateColorMap: Record<number, string> = {
@@ -118,7 +119,9 @@ function initMap() {
       // 信息窗口打开后绑定链接点击事件
       infoWindow.addEventListener('open', () => {
         setTimeout(() => {
-          const link = document.querySelector('.BMap_bubble_content .device-link');
+          const link = document.querySelector(
+            '.BMap_bubble_content .device-link',
+          );
           if (!link) {
             return;
           }

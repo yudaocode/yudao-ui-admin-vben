@@ -329,10 +329,7 @@ onMounted(() => {
     <Row class="mt-4 h-[calc(80vh)]">
       <!-- 左侧：组件库（ComponentLibrary） -->
       <Col :span="6">
-        <ComponentLibrary
-          v-if="libs && libs.length > 0"
-          :list="libs"
-        />
+        <ComponentLibrary v-if="libs && libs.length > 0" :list="libs" />
       </Col>
       <!-- 中心：设计区域（ComponentContainer） -->
       <Col :span="12">

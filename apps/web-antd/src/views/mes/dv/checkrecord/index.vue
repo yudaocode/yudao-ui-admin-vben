@@ -9,7 +9,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteCheckRecord, exportCheckRecord, getCheckRecordPage } from '#/api/mes/dv/checkrecord';
+import {
+  deleteCheckRecord,
+  exportCheckRecord,
+  getCheckRecordPage,
+} from '#/api/mes/dv/checkrecord';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -121,7 +125,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #machineryName="{ row }">
-        <Button type="link" @click="handleDetail(row)">{{ row.machineryName }}</Button>
+        <Button type="link" @click="handleDetail(row)">
+          {{ row.machineryName }}
+        </Button>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -141,7 +147,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['mes:dv-check-record:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.machineryName]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.machineryName,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
               ifShow: row.status === MesDvCheckRecordStatusEnum.DRAFT,

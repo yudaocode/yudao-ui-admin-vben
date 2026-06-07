@@ -170,7 +170,10 @@ async function handlePropertyPost() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
-      const value = normalizePropertyValue(item, formData.value[item.identifier!]);
+      const value = normalizePropertyValue(
+        item,
+        formData.value[item.identifier!],
+      );
       if (value !== undefined) {
         params[item.identifier!] = value;
       }
@@ -256,7 +259,10 @@ async function handlePropertySet() {
   try {
     const params: Record<string, any> = {};
     propertyList.value.forEach((item) => {
-      const value = normalizePropertyValue(item, formData.value[item.identifier!]);
+      const value = normalizePropertyValue(
+        item,
+        formData.value[item.identifier!],
+      );
       if (value !== undefined) {
         params[item.identifier!] = value;
       }

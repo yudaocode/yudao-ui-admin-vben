@@ -18,17 +18,24 @@ export namespace MesTmToolTypeApi {
 
 /** 查询工具类型分页 */
 export function getToolTypePage(params: PageParam) {
-  return requestClient.get<PageResult<MesTmToolTypeApi.ToolType>>('/mes/tm/tool-type/page', { params });
+  return requestClient.get<PageResult<MesTmToolTypeApi.ToolType>>(
+    '/mes/tm/tool-type/page',
+    { params },
+  );
 }
 
 /** 查询工具类型精简列表 */
 export function getToolTypeSimpleList() {
-  return requestClient.get<MesTmToolTypeApi.ToolType[]>('/mes/tm/tool-type/simple-list');
+  return requestClient.get<MesTmToolTypeApi.ToolType[]>(
+    '/mes/tm/tool-type/simple-list',
+  );
 }
 
 /** 查询工具类型详情 */
 export function getToolType(id: number) {
-  return requestClient.get<MesTmToolTypeApi.ToolType>(`/mes/tm/tool-type/get?id=${id}`);
+  return requestClient.get<MesTmToolTypeApi.ToolType>(
+    `/mes/tm/tool-type/get?id=${id}`,
+  );
 }
 
 /** 新增工具类型 */

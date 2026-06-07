@@ -6,7 +6,13 @@ import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Card, Descriptions, DescriptionsItem, message } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Descriptions,
+  DescriptionsItem,
+  message,
+} from 'antdv-next';
 
 import DeviceForm from '../../modules/form.vue';
 

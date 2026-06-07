@@ -44,12 +44,12 @@ const showClear = computed(
     props.allowClear &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue != null,
+    props.modelValue !== null,
 );
 
 /** 根据 BOM 子物料编号回显选择器 */
 async function resolveBomById(bomItemId: number | undefined) {
-  if (bomItemId == null || props.itemId == null) {
+  if (bomItemId === null || props.itemId === null) {
     selectedBom.value = undefined;
     return;
   }
@@ -86,7 +86,7 @@ function clearSelected() {
 
 /** 打开 BOM 物料选择弹窗 */
 function handleClick(event: MouseEvent) {
-  if (props.disabled || props.itemId == null) {
+  if (props.disabled || props.itemId === null) {
     return;
   }
   const target = event.target as HTMLElement;

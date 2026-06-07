@@ -113,7 +113,11 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Button v-if="isDetail && formData?.id" type="primary" @click="handleBarcode">
+        <Button
+          v-if="isDetail && formData?.id"
+          type="primary"
+          @click="handleBarcode"
+        >
           查看条码
         </Button>
       </div>

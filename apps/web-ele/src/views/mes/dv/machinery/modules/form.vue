@@ -11,7 +11,11 @@ import { BarcodeBizTypeEnum } from '@vben/constants';
 import { ElButton, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { createMachinery, getMachinery, updateMachinery } from '#/api/mes/dv/machinery';
+import {
+  createMachinery,
+  getMachinery,
+  updateMachinery,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
@@ -113,7 +117,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs
+      v-if="formType !== 'create' && formData?.id"
+      v-model="subTabsName"
+      class="mx-4 mt-4"
+    >
       <ElTabPane label="点检记录" name="check">
         <CheckRecordList :machinery-id="formData.id" />
       </ElTabPane>
@@ -126,7 +134,11 @@ const [Modal, modalApi] = useVbenModal({
     </ElTabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <ElButton v-if="isDetail && formData?.id" type="primary" @click="handleBarcode">
+        <ElButton
+          v-if="isDetail && formData?.id"
+          type="primary"
+          @click="handleBarcode"
+        >
           查看条码
         </ElButton>
       </div>

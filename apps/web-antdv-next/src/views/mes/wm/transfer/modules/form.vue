@@ -29,15 +29,18 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesWmTransferApi.Transfer>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于提交时跳过未变更的保存请求
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isConfirm = computed(() => formType.value === 'confirm'); // 是否为到货确认模式
 const isStock = computed(() => formType.value === 'stock'); // 是否为上架模式
 const isFinish = computed(() => formType.value === 'finish'); // 是否为执行转移模式
-const canSubmit = computed(() => // 编辑态草稿可提交
-  formType.value === 'update' &&
-  formData.value?.status === MesWmTransferStatusEnum.PREPARE,
+const canSubmit = computed(
+  () =>
+    // 编辑态草稿可提交
+    formType.value === 'update' &&
+    formData.value?.status === MesWmTransferStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   switch (formType.value) {

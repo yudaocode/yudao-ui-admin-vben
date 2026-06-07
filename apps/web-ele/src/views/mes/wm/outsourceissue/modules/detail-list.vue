@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceIssueDetailApi } from '#/api/mes/wm/outsourceissue/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOutsourceIssueDetail } from '#/api/mes/wm/outsourceissue/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[];
@@ -38,7 +40,9 @@ async function handleDelete(
   });
   try {
     await deleteOutsourceIssueDetail(row.id!);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.warehouseName]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.warehouseName]),
+    );
     emit('refresh');
   } finally {
     loadingInstance.close();

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceReceiptDetailApi } from '#/api/mes/wm/outsourcereceipt/detail';
 import type { MesWmOutsourceReceiptLineApi } from '#/api/mes/wm/outsourcereceipt/line';
@@ -18,7 +20,7 @@ import {
 import { $t } from '#/locales';
 import { PrinterLabel } from '#/views/mes/wm/barcode/components';
 
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 import DetailForm from './detail-form.vue';
 import DetailList from './detail-list.vue';
 import LineForm from './line-form.vue';
@@ -28,7 +30,8 @@ const props = defineProps<{
   receiptId: number;
 }>();
 
-const isEditable = computed(() => // 是否可编辑明细行
+const isEditable = computed(() =>
+  // 是否可编辑明细行
   ['create', 'update'].includes(props.formType),
 );
 const isStock = computed(() => props.formType === 'stock'); // 是否为上架模式

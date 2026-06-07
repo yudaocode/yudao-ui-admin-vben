@@ -5,7 +5,13 @@ import { ref } from 'vue';
 
 import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 
-import { Button, Card, Descriptions, DescriptionsItem, message } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Descriptions,
+  DescriptionsItem,
+  message,
+} from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 

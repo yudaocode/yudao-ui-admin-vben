@@ -21,10 +21,9 @@ export namespace MesWmReturnVendorLineApi {
 
 /** 查询供应商退货单行分页 */
 export function getReturnVendorLinePage(params: PageParam) {
-  return requestClient.get<PageResult<MesWmReturnVendorLineApi.ReturnVendorLine>>(
-    '/mes/wm/return-vendor-line/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MesWmReturnVendorLineApi.ReturnVendorLine>
+  >('/mes/wm/return-vendor-line/page', { params });
 }
 
 /** 查询供应商退货单行详情 */

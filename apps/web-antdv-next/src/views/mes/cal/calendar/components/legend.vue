@@ -26,7 +26,9 @@ const legendItems: Array<{ color: string; label: string }> = [
       {{ item.label }}
     </span>
     <span class="flex items-center gap-1">
-      <span class="inline-block h-2.5 w-2.5 shrink-0 rounded-sm bg-[#f56c6c] opacity-60"></span>
+      <span
+        class="inline-block h-2.5 w-2.5 shrink-0 rounded-sm bg-[#f56c6c] opacity-60"
+      ></span>
       <span class="text-red-500">红色日期</span>
       = 周末
     </span>

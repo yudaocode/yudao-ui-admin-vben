@@ -73,9 +73,12 @@ export function getBatchPage(params: MesWmBatchApi.PageParams) {
 
 /** 批次向前追溯 */
 export function getForwardBatchList(code: string) {
-  return requestClient.get<MesWmBatchApi.Batch[]>('/mes/wm/batch/forward-list', {
-    params: { code },
-  });
+  return requestClient.get<MesWmBatchApi.Batch[]>(
+    '/mes/wm/batch/forward-list',
+    {
+      params: { code },
+    },
+  );
 }
 
 /** 批次向后追溯 */

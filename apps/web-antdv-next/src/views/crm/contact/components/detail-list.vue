@@ -72,7 +72,9 @@ async function handleDeleteContactBusinessList() {
     return;
   }
   try {
-    await confirm(`确定要将${checkedRows.value.map((item) => item.name).join(',')}解除关联吗？`);
+    await confirm(
+      `确定要将${checkedRows.value.map((item) => item.name).join(',')}解除关联吗？`,
+    );
   } catch {
     return false;
   }

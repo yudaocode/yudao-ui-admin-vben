@@ -42,8 +42,8 @@ function getMultipleSelectedRows() {
   ] as MesMdItemApi.Item[];
   records.forEach((row) => {
     const rowId = row.id;
-    if (rowId != null) {
-      selectedMap.set(rowId, row);
+    if (!rowId) {
+      selectedMap.set(rowId as number, row);
     }
   });
   return [...selectedMap.values()];
@@ -90,7 +90,7 @@ async function applyPreSelection() {
   }
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
       continue;
     }
     if (multiple.value) {

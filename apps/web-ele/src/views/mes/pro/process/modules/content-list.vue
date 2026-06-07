@@ -64,14 +64,14 @@ async function getList() {
 /** 新增工序步骤 */
 function handleCreate() {
   const maxSort = Math.max(0, ...list.value.map((item) => item.sort || 0));
-  contentFormModalApi
-    .setData({ maxSort, processId: props.processId })
-    .open();
+  contentFormModalApi.setData({ maxSort, processId: props.processId }).open();
 }
 
 /** 编辑工序步骤 */
 function handleEdit(row: MesProProcessContentApi.ProcessContent) {
-  contentFormModalApi.setData({ id: row.id, processId: props.processId }).open();
+  contentFormModalApi
+    .setData({ id: row.id, processId: props.processId })
+    .open();
 }
 
 /** 删除工序步骤 */

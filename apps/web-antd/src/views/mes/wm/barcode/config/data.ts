@@ -86,7 +86,8 @@ export function useFormSchema(): VbenFormSchema[] {
         h(
           Button,
           {
-            onClick: () => message.warning('打印模板选择功能暂未实现，敬请期待'),
+            onClick: () =>
+              message.warning('打印模板选择功能暂未实现，敬请期待'),
           },
           { default: () => '设置' },
         ),

@@ -160,7 +160,9 @@ async function handlePutPool(): Promise<boolean | undefined> {
 async function handleUpdateDealStatus(): Promise<boolean | undefined> {
   const dealStatus = !customer.value.dealStatus;
   try {
-    await confirm(`确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`);
+    await confirm(
+      `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
+    );
   } catch {
     return false;
   }

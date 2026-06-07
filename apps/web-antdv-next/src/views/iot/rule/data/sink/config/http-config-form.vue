@@ -95,10 +95,6 @@ onMounted(() => {
     <KeyValueEditor v-model="config.query" add-button-text="添加参数" />
   </FormItem>
   <FormItem label="请求体">
-    <TextArea
-      v-model:value="config.body"
-      placeholder="请输入内容"
-      :rows="4"
-    />
+    <TextArea v-model:value="config.body" placeholder="请输入内容" :rows="4" />
   </FormItem>
 </template>

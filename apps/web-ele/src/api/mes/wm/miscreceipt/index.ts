@@ -66,5 +66,7 @@ export function cancelMiscReceipt(id: number) {
 
 /** 导出杂项入库单 */
 export function exportMiscReceipt(params: any) {
-  return requestClient.download('/mes/wm/misc-receipt/export-excel', { params });
+  return requestClient.download('/mes/wm/misc-receipt/export-excel', {
+    params,
+  });
 }

@@ -11,7 +11,15 @@ import { IconifyIcon } from '@vben/icons';
 import { getStableObjectKey } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Card, Empty, FormItem, Select, SelectOption, Tag } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Empty,
+  FormItem,
+  Select,
+  SelectOption,
+  Tag,
+} from 'antdv-next';
 
 import AlertConfig from '../configs/alert-config.vue';
 import DeviceControlConfig from '../configs/device-control-config.vue';

@@ -49,7 +49,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MesQcTemplateItemApi.TemplateItem;
+    const data =
+      (await formApi.getValues()) as MesQcTemplateItemApi.TemplateItem;
     data.templateId = templateId.value;
     try {
       await (formData.value?.id

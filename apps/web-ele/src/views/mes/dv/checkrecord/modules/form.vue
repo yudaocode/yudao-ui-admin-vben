@@ -27,7 +27,9 @@ const formType = ref<FormType>('create');
 const formData = ref<MesDvCheckRecordApi.CheckRecord>();
 const isDetail = computed(() => formType.value === 'detail');
 const canSubmit = computed(
-  () => formType.value === 'update' && formData.value?.status === MesDvCheckRecordStatusEnum.DRAFT,
+  () =>
+    formType.value === 'update' &&
+    formData.value?.status === MesDvCheckRecordStatusEnum.DRAFT,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -59,7 +61,9 @@ async function handleSubmit() {
 
   modalApi.lock();
   try {
-    await updateCheckRecord((await formApi.getValues()) as MesDvCheckRecordApi.CheckRecord);
+    await updateCheckRecord(
+      (await formApi.getValues()) as MesDvCheckRecordApi.CheckRecord,
+    );
     await submitCheckRecord(formData.value.id);
     await modalApi.close();
     emit('success');
@@ -85,7 +89,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createCheckRecord(data);
-        formData.value = { ...data, id: id as number, status: MesDvCheckRecordStatusEnum.DRAFT };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesDvCheckRecordStatusEnum.DRAFT,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {
@@ -125,7 +133,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <LineList v-if="formData?.id" :disabled="isDetail" :record-id="formData.id" />
+    <LineList
+      v-if="formData?.id"
+      :disabled="isDetail"
+      :record-id="formData.id"
+    />
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
         <ElPopconfirm

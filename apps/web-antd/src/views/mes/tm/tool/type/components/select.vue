@@ -16,7 +16,12 @@ withDefaults(
     modelValue?: number;
     placeholder?: string;
   }>(),
-  { allowClear: true, disabled: false, modelValue: undefined, placeholder: '请选择工具类型' },
+  {
+    allowClear: true,
+    disabled: false,
+    modelValue: undefined,
+    placeholder: '请选择工具类型',
+  },
 );
 const emit = defineEmits<{
   change: [row?: MesTmToolTypeApi.ToolType];
@@ -33,7 +38,10 @@ async function getList() {
 function handleChange(value: SelectValue) {
   const toolTypeId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', toolTypeId);
-  emit('change', list.value.find((item) => item.id === toolTypeId));
+  emit(
+    'change',
+    list.value.find((item) => item.id === toolTypeId),
+  );
 }
 
 onMounted(getList);

@@ -33,7 +33,8 @@ function handleCellDblclick({ row }: { row: MesCalTeamApi.Team }) {
     const records = gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
     const checked = records.some((item) => item.id === row.id);
     gridApi.grid.setCheckboxRow(row, !checked);
-    selectedRows.value = gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
+    selectedRows.value =
+      gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
     return;
   }
   selectedRows.value = [row];
@@ -51,7 +52,8 @@ function applyPreSelection() {
       gridApi.grid.setCheckboxRow(row, true);
     }
   }
-  selectedRows.value = gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
+  selectedRows.value =
+    gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -70,7 +72,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) =>
-          await getTeamPage({ pageNo: page.currentPage, pageSize: page.pageSize, ...formValues }),
+          await getTeamPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          }),
       },
     },
     rowConfig: {
@@ -97,7 +103,10 @@ async function resetQueryState() {
 }
 
 /** 打开班组选择弹窗 */
-async function openModal(selectedIds?: number[], options?: { multiple?: boolean }) {
+async function openModal(
+  selectedIds?: number[],
+  options?: { multiple?: boolean },
+) {
   open.value = true;
   multiple.value = options?.multiple ?? true;
   preSelectedIds.value = selectedIds || [];
@@ -120,7 +129,10 @@ function handleConfirm() {
     message.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit('selected', multiple.value ? selectedRows.value : [selectedRows.value[0]!]);
+  emit(
+    'selected',
+    multiple.value ? selectedRows.value : [selectedRows.value[0]!],
+  );
   open.value = false;
 }
 

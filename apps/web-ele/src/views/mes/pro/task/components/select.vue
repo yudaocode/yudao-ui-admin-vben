@@ -43,16 +43,18 @@ const hovering = ref(false); // 是否悬停
 const selectedItem = ref<MesProTaskApi.Task>(); // 选中的任务
 
 const displayLabel = computed(() => selectedItem.value?.code ?? ''); // 选择器展示编号
-const showClear = computed(() => // 是否显示清空图标
-  props.clearable &&
-  !props.disabled &&
-  hovering.value &&
-  props.modelValue != null,
+const showClear = computed(
+  () =>
+    // 是否显示清空图标
+    props.clearable &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue !== null,
 );
 
 /** 根据任务编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (!id) {
     selectedItem.value = undefined;
     return;
   }
@@ -88,7 +90,9 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  const selectedIds = (
+    props.modelValue === null ? [] : [props.modelValue]
+  ) as number[];
   dialogRef.value?.open(selectedIds, {
     multiple: false,
     workOrderId: props.workOrderId,

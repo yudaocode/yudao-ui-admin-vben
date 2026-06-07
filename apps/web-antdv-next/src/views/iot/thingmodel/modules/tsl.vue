@@ -8,7 +8,7 @@ import { computed, inject, ref, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IOT_PROVIDE_KEY } from '@vben/constants';
 
-import { Radio, RadioButton, RadioGroup, TextArea } from 'antdv-next';
+import { RadioButton, RadioGroup, TextArea } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 

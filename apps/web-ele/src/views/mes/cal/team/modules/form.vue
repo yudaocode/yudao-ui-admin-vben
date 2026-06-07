@@ -16,7 +16,6 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 import MemberList from './member-list.vue';
 
-
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
 const subTabsName = ref('member'); // 当前资源页签
@@ -104,7 +103,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs
+      v-if="formType !== 'create' && formData?.id"
+      v-model="subTabsName"
+      class="mx-4 mt-4"
+    >
       <ElTabPane label="班组成员" name="member">
         <MemberList :form-type="formType" :team-id="formData.id" />
       </ElTabPane>

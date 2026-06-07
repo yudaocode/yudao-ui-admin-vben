@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmReturnSalesDetailApi } from '#/api/mes/wm/returnsales/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteReturnSalesDetail } from '#/api/mes/wm/returnsales/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmReturnSalesDetailApi.ReturnSalesDetail[];
@@ -30,15 +32,15 @@ function handleEdit(row: MesWmReturnSalesDetailApi.ReturnSalesDetail) {
 }
 
 /** 删除上架明细 */
-async function handleDelete(
-  row: MesWmReturnSalesDetailApi.ReturnSalesDetail,
-) {
+async function handleDelete(row: MesWmReturnSalesDetailApi.ReturnSalesDetail) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.warehouseName]),
   });
   try {
     await deleteReturnSalesDetail(row.id!);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.warehouseName]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.warehouseName]),
+    );
     emit('refresh');
   } finally {
     loadingInstance.close();

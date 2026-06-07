@@ -190,7 +190,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
-        <PrinterLabel :biz-code="row.code" :biz-id="row.id" biz-type="PROCARD" />
+        <PrinterLabel
+          :biz-code="row.code"
+          :biz-id="row.id"
+          biz-type="PROCARD"
+        />
       </template>
     </Grid>
   </Page>

@@ -63,7 +63,7 @@ function filterOption(input: string, option: any) {
 watch(
   () => props.modelValue,
   (val) => {
-    if (val == null) {
+    if (val === null) {
       selectedItem.value = undefined;
       return;
     }
@@ -76,7 +76,7 @@ watch(
 /** 库区变更或初始化时重新加载库位列表 */
 watchEffect(async () => {
   allList.value = await getWarehouseAreaSimpleList(props.locationId);
-  if (props.modelValue != null) {
+  if (props.modelValue !== null) {
     selectedItem.value = allList.value.find((o) => o.id === props.modelValue);
   }
 });

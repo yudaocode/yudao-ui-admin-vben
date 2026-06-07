@@ -55,7 +55,9 @@ function handleEdit(row: MesWmBarcodeConfigApi.BarcodeConfig) {
 /** 删除条码配置 */
 async function handleDelete(row: MesWmBarcodeConfigApi.BarcodeConfig) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.contentFormat || `#${row.id}`]),
+    content: $t('ui.actionMessage.deleting', [
+      row.contentFormat || `#${row.id}`,
+    ]),
     duration: 0,
   });
   try {

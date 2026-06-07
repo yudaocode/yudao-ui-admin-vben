@@ -42,7 +42,10 @@ export function getProductSalesDetail(id: number) {
 export function createProductSalesDetail(
   data: MesWmProductSalesDetailApi.ProductSalesDetail,
 ) {
-  return requestClient.post<number>('/mes/wm/product-sales-detail/create', data);
+  return requestClient.post<number>(
+    '/mes/wm/product-sales-detail/create',
+    data,
+  );
 }
 
 /** 修改销售出库明细 */

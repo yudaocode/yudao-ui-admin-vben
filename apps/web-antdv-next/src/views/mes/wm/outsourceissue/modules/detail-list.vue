@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceIssueDetailApi } from '#/api/mes/wm/outsourceissue/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOutsourceIssueDetail } from '#/api/mes/wm/outsourceissue/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[];
@@ -22,7 +24,7 @@ const emit = defineEmits<{
   refresh: [];
 }>();
 
-const isStock = computed(() => props.formType === 'stock'); // 是否为拣货模式
+const isStock = computed(() => props.formType === 'stock'); // 是 否为拣货模式
 
 /** 编辑发料明细 */
 function handleEdit(row: MesWmOutsourceIssueDetailApi.OutsourceIssueDetail) {

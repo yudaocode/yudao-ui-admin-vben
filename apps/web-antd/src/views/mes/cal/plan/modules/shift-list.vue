@@ -18,14 +18,19 @@ import {
 } from '#/api/mes/cal/plan/shift';
 import { $t } from '#/locales';
 
-const props = withDefaults(defineProps<{ formType?: FormType; planId: number }>(), {
-  formType: 'update',
-});
+const props = withDefaults(
+  defineProps<{ formType?: FormType; planId: number }>(),
+  {
+    formType: 'update',
+  },
+);
 const isEditable = computed(() => props.formType !== 'detail'); // 是否可编辑
 const formOpen = ref(false); // 班次表单是否打开
 const formLoading = ref(false); // 班次表单提交中
 const shiftFormType = ref<'create' | 'update'>('create'); // 班次表单模式
-const formTitle = computed(() => (shiftFormType.value === 'create' ? '添加班次' : '修改班次'));
+const formTitle = computed(() =>
+  shiftFormType.value === 'create' ? '添加班次' : '修改班次',
+);
 const list = ref<MesCalPlanShiftApi.PlanShift[]>([]); // 班次列表
 
 const [Form, formApi] = useVbenForm({
@@ -157,7 +162,10 @@ async function getList() {
 }
 
 /** 打开班次表单 */
-async function openForm(type: 'create' | 'update', row?: MesCalPlanShiftApi.PlanShift) {
+async function openForm(
+  type: 'create' | 'update',
+  row?: MesCalPlanShiftApi.PlanShift,
+) {
   formOpen.value = true;
   shiftFormType.value = type;
   await formApi.resetForm();
@@ -173,7 +181,9 @@ async function submitForm() {
   formLoading.value = true;
   try {
     const data = (await formApi.getValues()) as MesCalPlanShiftApi.PlanShift;
-    await (shiftFormType.value === 'create' ? createPlanShift(data) : updatePlanShift(data));
+    await (shiftFormType.value === 'create'
+      ? createPlanShift(data)
+      : updatePlanShift(data));
     formOpen.value = false;
     message.success($t('ui.actionMessage.operationSuccess'));
     await getList();
@@ -204,14 +214,24 @@ watch(
   <div>
     <div v-if="isEditable" class="mb-3 flex items-center justify-start">
       <TableAction
-        :actions="[{ label: '添加班次', type: 'primary', onClick: openForm.bind(null, 'create') }]"
+        :actions="[
+          {
+            label: '添加班次',
+            type: 'primary',
+            onClick: openForm.bind(null, 'create'),
+          },
+        ]"
       />
     </div>
     <Grid class="w-full">
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            { label: '编辑', type: 'link', onClick: openForm.bind(null, 'update', row) },
+            {
+              label: '编辑',
+              type: 'link',
+              onClick: openForm.bind(null, 'update', row),
+            },
             {
               label: '删除',
               type: 'link',

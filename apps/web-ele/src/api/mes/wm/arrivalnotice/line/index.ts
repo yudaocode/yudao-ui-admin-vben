@@ -39,10 +39,7 @@ export function getArrivalNoticeLine(id: number) {
 export function createArrivalNoticeLine(
   data: MesWmArrivalNoticeLineApi.ArrivalNoticeLine,
 ) {
-  return requestClient.post<number>(
-    '/mes/wm/arrival-notice-line/create',
-    data,
-  );
+  return requestClient.post<number>('/mes/wm/arrival-notice-line/create', data);
 }
 
 /** 修改到货通知单行 */

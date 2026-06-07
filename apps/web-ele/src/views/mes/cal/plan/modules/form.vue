@@ -8,16 +8,26 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { MesCalPlanStatusEnum } from '@vben/constants';
 
-import { ElButton, ElMessage, ElPopconfirm, ElTabPane, ElTabs } from 'element-plus';
+import {
+  ElButton,
+  ElMessage,
+  ElPopconfirm,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { confirmPlan, createPlan, getPlan, updatePlan } from '#/api/mes/cal/plan';
+import {
+  confirmPlan,
+  createPlan,
+  getPlan,
+  updatePlan,
+} from '#/api/mes/cal/plan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 import ShiftList from './shift-list.vue';
 import PlanTeamList from './team-list.vue';
-
 
 const emit = defineEmits(['success']);
 const formType = ref<FormType>('create'); // 表单模式
@@ -25,7 +35,9 @@ const subTabsName = ref('shift'); // 当前资源页签
 const formData = ref<MesCalPlanApi.Plan>();
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const canConfirm = computed(
-  () => formType.value === 'update' && formData.value?.status === MesCalPlanStatusEnum.PREPARE,
+  () =>
+    formType.value === 'update' &&
+    formData.value?.status === MesCalPlanStatusEnum.PREPARE,
 ); // 是否可确认计划
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -86,7 +98,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createPlan(data);
-        formData.value = { ...data, id: id as number, status: MesCalPlanStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesCalPlanStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {
@@ -129,7 +145,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs
+      v-if="formType !== 'create' && formData?.id"
+      v-model="subTabsName"
+      class="mx-4 mt-4"
+    >
       <ElTabPane label="班次" name="shift">
         <ShiftList :form-type="formType" :plan-id="formData.id" />
       </ElTabPane>

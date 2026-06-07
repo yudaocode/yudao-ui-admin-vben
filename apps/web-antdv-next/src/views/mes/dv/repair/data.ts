@@ -129,7 +129,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['status'],
         if: (values) =>
-          values.status != null &&
+          values.status !== null &&
           values.status >= MesDvRepairStatusEnum.APPROVING,
       },
     },
@@ -147,7 +147,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['status'],
         if: (values) =>
-          values.status != null &&
+          values.status !== null &&
           values.status >= MesDvRepairStatusEnum.CONFIRMED,
         disabled: formType !== 'confirm',
         rules: () => (formType === 'confirm' ? 'required' : null),
@@ -169,7 +169,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['status'],
         if: (values) =>
-          values.status != null &&
+          values.status !== null &&
           values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },
@@ -188,7 +188,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['status'],
         if: (values) =>
-          values.status != null &&
+          values.status !== null &&
           values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },
@@ -206,7 +206,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['status'],
         if: (values) =>
-          values.status != null &&
+          values.status !== null &&
           values.status >= MesDvRepairStatusEnum.FINISHED,
       },
     },

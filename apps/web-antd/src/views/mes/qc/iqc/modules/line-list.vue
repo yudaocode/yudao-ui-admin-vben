@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesQcIqcLineApi } from '#/api/mes/qc/iqc/line';
 
@@ -9,7 +11,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getIqcLinePage } from '#/api/mes/qc/iqc/line';
 
 import { DefectRecordInlineList } from '../../defectrecord/components';
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 
 const props = defineProps<{
   formType?: FormType;

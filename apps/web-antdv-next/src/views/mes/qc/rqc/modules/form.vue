@@ -8,15 +8,16 @@ import { computed, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 
-import { Button, Descriptions, DescriptionsItem, message, Tabs } from 'antdv-next';
+import {
+  Button,
+  Descriptions,
+  DescriptionsItem,
+  message,
+  Tabs,
+} from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createRqc,
-  finishRqc,
-  getRqc,
-  updateRqc,
-} from '#/api/mes/qc/rqc';
+import { createRqc, finishRqc, getRqc, updateRqc } from '#/api/mes/qc/rqc';
 import { $t } from '#/locales';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';

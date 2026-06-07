@@ -37,16 +37,12 @@ export function getArrivalNotice(id: number) {
 }
 
 /** 新增到货通知单 */
-export function createArrivalNotice(
-  data: MesWmArrivalNoticeApi.ArrivalNotice,
-) {
+export function createArrivalNotice(data: MesWmArrivalNoticeApi.ArrivalNotice) {
   return requestClient.post<number>('/mes/wm/arrival-notice/create', data);
 }
 
 /** 修改到货通知单 */
-export function updateArrivalNotice(
-  data: MesWmArrivalNoticeApi.ArrivalNotice,
-) {
+export function updateArrivalNotice(data: MesWmArrivalNoticeApi.ArrivalNotice) {
   return requestClient.put('/mes/wm/arrival-notice/update', data);
 }
 

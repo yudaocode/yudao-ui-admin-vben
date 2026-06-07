@@ -11,7 +11,12 @@ import { MesCalPlanStatusEnum } from '@vben/constants';
 import { Button, message, Popconfirm, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import { confirmPlan, createPlan, getPlan, updatePlan } from '#/api/mes/cal/plan';
+import {
+  confirmPlan,
+  createPlan,
+  getPlan,
+  updatePlan,
+} from '#/api/mes/cal/plan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -28,7 +33,9 @@ const planTabItems = [
 const formData = ref<MesCalPlanApi.Plan>();
 const isDetail = computed(() => formType.value === 'detail'); // 是否查看模式
 const canConfirm = computed(
-  () => formType.value === 'update' && formData.value?.status === MesCalPlanStatusEnum.PREPARE,
+  () =>
+    formType.value === 'update' &&
+    formData.value?.status === MesCalPlanStatusEnum.PREPARE,
 ); // 是否可确认计划
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -89,7 +96,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createPlan(data);
-        formData.value = { ...data, id: id as number, status: MesCalPlanStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesCalPlanStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {

@@ -4,7 +4,14 @@ import { onMounted } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, InputNumber, Select, SelectOption, Switch } from 'antdv-next';
+import {
+  FormItem,
+  Input,
+  InputNumber,
+  Select,
+  SelectOption,
+  Switch,
+} from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 

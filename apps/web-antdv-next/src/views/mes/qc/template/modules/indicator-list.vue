@@ -42,18 +42,14 @@ function handleEdit(row: MesQcTemplateIndicatorApi.TemplateIndicator) {
 }
 
 /** 删除指标项 */
-async function handleDelete(
-  row: MesQcTemplateIndicatorApi.TemplateIndicator,
-) {
+async function handleDelete(row: MesQcTemplateIndicatorApi.TemplateIndicator) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.indicatorName]),
     duration: 0,
   });
   try {
     await deleteTemplateIndicator(row.id!);
-    message.success(
-      $t('ui.actionMessage.deleteSuccess', [row.indicatorName]),
-    );
+    message.success($t('ui.actionMessage.deleteSuccess', [row.indicatorName]));
     handleRefresh();
   } finally {
     hideLoading();

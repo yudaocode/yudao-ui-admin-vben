@@ -82,7 +82,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) =>
-          await getRepairPage({ pageNo: page.currentPage, pageSize: page.pageSize, ...formValues }),
+          await getRepairPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          }),
       },
     },
     rowConfig: {

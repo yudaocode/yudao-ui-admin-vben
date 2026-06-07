@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmReturnIssueDetailApi } from '#/api/mes/wm/returnissue/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteReturnIssueDetail } from '#/api/mes/wm/returnissue/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmReturnIssueDetailApi.ReturnIssueDetail[];
@@ -30,9 +32,7 @@ function handleEdit(row: MesWmReturnIssueDetailApi.ReturnIssueDetail) {
 }
 
 /** 删除上架明细 */
-async function handleDelete(
-  row: MesWmReturnIssueDetailApi.ReturnIssueDetail,
-) {
+async function handleDelete(row: MesWmReturnIssueDetailApi.ReturnIssueDetail) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.warehouseName]),
     duration: 0,

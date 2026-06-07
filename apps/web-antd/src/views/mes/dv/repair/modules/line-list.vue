@@ -143,7 +143,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开维修明细表单 */
-async function openForm(type: 'create' | 'update', row?: MesDvRepairLineApi.RepairLine) {
+async function openForm(
+  type: 'create' | 'update',
+  row?: MesDvRepairLineApi.RepairLine,
+) {
   formOpen.value = true;
   lineFormType.value = type;
   await formApi.resetForm();
@@ -198,7 +201,11 @@ watch(
     <div v-if="!disabled" class="mb-3">
       <TableAction
         :actions="[
-          { label: '添加维修项目', type: 'primary', onClick: openForm.bind(null, 'create') },
+          {
+            label: '添加维修项目',
+            type: 'primary',
+            onClick: openForm.bind(null, 'create'),
+          },
         ]"
       />
     </div>
@@ -206,7 +213,11 @@ watch(
       <template #actions="{ row }">
         <TableAction
           :actions="[
-            { label: '编辑', type: 'link', onClick: openForm.bind(null, 'update', row) },
+            {
+              label: '编辑',
+              type: 'link',
+              onClick: openForm.bind(null, 'update', row),
+            },
             {
               label: '删除',
               type: 'link',

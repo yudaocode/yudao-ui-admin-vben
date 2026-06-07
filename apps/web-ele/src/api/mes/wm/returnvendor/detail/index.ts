@@ -40,7 +40,10 @@ export function getReturnVendorDetail(id: number) {
 export function createReturnVendorDetail(
   data: MesWmReturnVendorDetailApi.ReturnVendorDetail,
 ) {
-  return requestClient.post<number>('/mes/wm/return-vendor-detail/create', data);
+  return requestClient.post<number>(
+    '/mes/wm/return-vendor-detail/create',
+    data,
+  );
 }
 
 /** 修改供应商退货明细 */

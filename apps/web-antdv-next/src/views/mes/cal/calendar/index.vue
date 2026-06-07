@@ -31,7 +31,11 @@ const calendarTabItems = [
       />
     </template>
     <div class="bg-card rounded-md p-3">
-      <Tabs v-model:active-key="activeTab" :items="calendarTabItems" type="card">
+      <Tabs
+        v-model:active-key="activeTab"
+        :items="calendarTabItems"
+        type="card"
+      >
         <template #contentRender="{ item }">
           <TypeView v-if="item.key === 'type'" />
           <TeamView v-else-if="item.key === 'team'" />

@@ -40,7 +40,10 @@ export function getProductIssueDetail(id: number) {
 export function createProductIssueDetail(
   data: MesWmProductIssueDetailApi.ProductIssueDetail,
 ) {
-  return requestClient.post<number>('/mes/wm/product-issue-detail/create', data);
+  return requestClient.post<number>(
+    '/mes/wm/product-issue-detail/create',
+    data,
+  );
 }
 
 /** 修改领料出库明细 */

@@ -55,7 +55,9 @@ onMounted(() => {
 <template>
   <div class="flex">
     <!-- 左侧：班组类型选择 -->
-    <div class="border-border mr-3 w-[150px] shrink-0 overflow-hidden rounded border">
+    <div
+      class="border-border mr-3 w-[150px] shrink-0 overflow-hidden rounded border"
+    >
       <div
         v-for="item in typeOptions"
         :key="item.value as number"

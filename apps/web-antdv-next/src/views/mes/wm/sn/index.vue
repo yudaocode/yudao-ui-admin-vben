@@ -54,7 +54,9 @@ async function handleDelete(row: MesWmSnApi.SnGroup) {
   });
   try {
     await deleteSnBatch(row.uuid!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.batchCode || '']));
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [row.batchCode || '']),
+    );
     handleRefresh();
   } finally {
     hideLoading();

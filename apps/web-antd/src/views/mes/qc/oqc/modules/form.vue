@@ -11,12 +11,7 @@ import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 import { Button, Descriptions, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createOqc,
-  finishOqc,
-  getOqc,
-  updateOqc,
-} from '#/api/mes/qc/oqc';
+import { createOqc, finishOqc, getOqc, updateOqc } from '#/api/mes/qc/oqc';
 import { $t } from '#/locales';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';

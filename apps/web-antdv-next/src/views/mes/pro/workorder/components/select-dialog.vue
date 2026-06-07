@@ -37,7 +37,7 @@ const selectedRows = ref<MesProWorkOrderApi.WorkOrder[]>([]); // 已选工单列
 const preSelectedIds = ref<number[]>([]); // 预选工单编号列表
 
 const typeTip = computed(() => {
-  if (props.type == null) {
+  if (props.type === null) {
     return '';
   }
   return `仅展示【${getDictLabel(DICT_TYPE.MES_PRO_WORK_ORDER_TYPE, props.type)}】类型的工单`;
@@ -77,7 +77,11 @@ async function toggleMultipleRow(row: MesProWorkOrderApi.WorkOrder) {
 }
 
 /** 处理行双击：单选直接确认，多选切换勾选 */
-async function handleCellDblclick({ row }: { row: MesProWorkOrderApi.WorkOrder }) {
+async function handleCellDblclick({
+  row,
+}: {
+  row: MesProWorkOrderApi.WorkOrder;
+}) {
   if (multiple.value) {
     await toggleMultipleRow(row);
     return;
@@ -165,7 +169,7 @@ async function resetQueryState() {
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
-  if (props.status != null) {
+  if (props.status !== null) {
     await gridApi.formApi.setFieldValue('status', props.status);
   }
 }

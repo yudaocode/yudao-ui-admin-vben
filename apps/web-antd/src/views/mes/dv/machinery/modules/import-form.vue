@@ -9,7 +9,10 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message, Upload } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { importMachinery, importMachineryTemplate } from '#/api/mes/dv/machinery';
+import {
+  importMachinery,
+  importMachineryTemplate,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
@@ -73,7 +76,11 @@ async function handleDownload() {
     <Form class="mx-4">
       <template #file>
         <div class="w-full">
-          <Upload :before-upload="beforeUpload" :max-count="1" accept=".xls,.xlsx">
+          <Upload
+            :before-upload="beforeUpload"
+            :max-count="1"
+            accept=".xls,.xlsx"
+          >
             <Button type="primary">选择 Excel 文件</Button>
           </Upload>
         </div>

@@ -358,7 +358,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'qualityStatus',
       label: '质量状态',
       render: (value) =>
-        value == null
+        value === null
           ? '-'
           : h(DictTag, { type: DICT_TYPE.MES_WM_QUALITY_STATUS, value }),
     },

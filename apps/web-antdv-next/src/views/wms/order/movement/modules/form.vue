@@ -10,10 +10,7 @@ import type { InventorySelectRow } from '#/views/wms/inventory/components';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '@vben/constants';
+import { OrderStatusEnum, OrderUpdateStatusList } from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { InputNumber, message } from 'antdv-next';

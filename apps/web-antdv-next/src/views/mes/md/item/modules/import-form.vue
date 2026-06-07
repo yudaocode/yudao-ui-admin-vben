@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FileType } from 'antdv-next/es/upload/interface';
+import type { UploadFile } from 'antdv-next';
 
 import type { MesMdItemApi } from '#/api/mes/md/item';
 
@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 上传前 */
-function beforeUpload(file: FileType) {
+function beforeUpload(file: UploadFile) {
   formApi.setFieldValue('file', file);
   return false;
 }

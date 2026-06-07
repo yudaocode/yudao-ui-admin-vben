@@ -4,7 +4,11 @@ import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
@@ -38,7 +42,11 @@ export function useFormSchema(
       componentProps: {
         allowClear: true,
         api: async () => [
-          { id: 0, name: '顶级类型', children: handleTree(await getMachineryTypeList()) },
+          {
+            id: 0,
+            name: '顶级类型',
+            children: handleTree(await getMachineryTypeList()),
+          },
         ],
         childrenField: 'children',
         labelField: 'name',
@@ -147,7 +155,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<MesDvMachineryTypeApi.MachineryType>['columns'] {
   return [
-    { field: 'name', title: '类型名称', minWidth: 200, align: 'left', treeNode: true },
+    {
+      field: 'name',
+      title: '类型名称',
+      minWidth: 200,
+      align: 'left',
+      treeNode: true,
+    },
     { field: 'code', title: '类型编码', width: 160, align: 'center' },
     { field: 'sort', title: '排序', width: 100, align: 'center' },
     {

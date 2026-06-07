@@ -44,7 +44,7 @@ const filteredList = computed(() => {
     );
   // 历史数据可能绑定已禁用或其它类型的项目，补充当前选中项用于回显，并禁止重新选择
   if (
-    props.modelValue != null &&
+    props.modelValue !== null &&
     !result.some((item) => item.id === props.modelValue)
   ) {
     const current = list.value.find((item) => item.id === props.modelValue);
@@ -64,7 +64,10 @@ async function getList() {
 function handleChange(value: SelectValue) {
   const subjectId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', subjectId);
-  emit('change', list.value.find((item) => item.id === subjectId));
+  emit(
+    'change',
+    list.value.find((item) => item.id === subjectId),
+  );
 }
 
 onMounted(getList);

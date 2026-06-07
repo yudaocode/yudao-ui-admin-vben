@@ -159,7 +159,9 @@ watch(
 <template>
   <div>
     <div v-if="isEditable" class="mb-3 flex items-center justify-start">
-      <TableAction :actions="[{ label: '添加设备', type: 'primary', onClick: openForm }]" />
+      <TableAction
+        :actions="[{ label: '添加设备', type: 'primary', onClick: openForm }]"
+      />
     </div>
     <Grid class="w-full">
       <template #actions="{ row }">
@@ -182,7 +184,9 @@ watch(
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>
-        <ElButton type="primary" :loading="formLoading" @click="submitForm">确定</ElButton>
+        <ElButton type="primary" :loading="formLoading" @click="submitForm">
+          确定
+        </ElButton>
       </template>
     </ElDialog>
   </div>

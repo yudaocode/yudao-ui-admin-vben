@@ -104,7 +104,12 @@ function getLunarInfo(day: string) {
       termName,
     };
   } catch {
-    return { lunarFestival: '', lunarText: '', solarFestival: '', termName: '' };
+    return {
+      lunarFestival: '',
+      lunarText: '',
+      solarFestival: '',
+      termName: '',
+    };
   }
 }
 

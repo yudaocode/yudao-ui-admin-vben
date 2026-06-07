@@ -37,7 +37,9 @@ const isFormDisabled = computed(() =>
   ['detail', 'finish'].includes(formType.value),
 );
 const canSubmit = computed(
-  () => formType.value === 'update' && formData.value?.status === MesDvRepairStatusEnum.PREPARE,
+  () =>
+    formType.value === 'update' &&
+    formData.value?.status === MesDvRepairStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -138,7 +140,11 @@ async function doFinish(result: number) {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    if (isDetail.value || formType.value === 'confirm' || formType.value === 'finish') {
+    if (
+      isDetail.value ||
+      formType.value === 'confirm' ||
+      formType.value === 'finish'
+    ) {
       await modalApi.close();
       return;
     }
@@ -152,7 +158,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createRepair(data);
-        formData.value = { ...data, id: id as number, status: MesDvRepairStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesDvRepairStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {
@@ -175,7 +185,9 @@ const [Modal, modalApi] = useVbenModal({
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(data.formType, formApi) });
     formApi.setDisabled(isFormDisabled.value);
-    modalApi.setState({ showConfirmButton: ['create', 'update'].includes(formType.value) });
+    modalApi.setState({
+      showConfirmButton: ['create', 'update'].includes(formType.value),
+    });
     if (!data?.id) {
       return;
     }
@@ -193,7 +205,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <LineList v-if="formData?.id" :disabled="isLineReadonly" :repair-id="formData.id" />
+    <LineList
+      v-if="formData?.id"
+      :disabled="isLineReadonly"
+      :repair-id="formData.id"
+    />
     <template #prepend-footer>
       <div class="flex flex-auto items-center gap-2">
         <Popconfirm

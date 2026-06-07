@@ -151,7 +151,11 @@ const [Modal, modalApi] = useVbenModal({
       <div class="mb-2 font-medium">库位混放规则（批量设置）</div>
       <div class="flex flex-wrap items-center gap-3">
         <span class="w-20">产品混放</span>
-        <Button size="small" type="primary" @click="setMixingRule('item', true)">
+        <Button
+          size="small"
+          type="primary"
+          @click="setMixingRule('item', true)"
+        >
           允许
         </Button>
         <Button size="small" danger @click="setMixingRule('item', false)">

@@ -28,9 +28,10 @@ export namespace MesWmOutsourceIssueDetailApi {
 
 /** 查询外协发料单明细列表 */
 export function getOutsourceIssueDetailListByLineId(lineId: number) {
-  return requestClient.get<
-    MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[]
-  >('/mes/wm/outsource-issue-detail/list-by-line', { params: { lineId } });
+  return requestClient.get<MesWmOutsourceIssueDetailApi.OutsourceIssueDetail[]>(
+    '/mes/wm/outsource-issue-detail/list-by-line',
+    { params: { lineId } },
+  );
 }
 
 /** 查询外协发料单明细详情 */

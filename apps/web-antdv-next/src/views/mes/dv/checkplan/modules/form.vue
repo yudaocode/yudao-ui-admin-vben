@@ -11,7 +11,11 @@ import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 import { message, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
+import {
+  createCheckPlan,
+  getCheckPlan,
+  updateCheckPlan,
+} from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -64,7 +68,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createCheckPlan(data);
-        formData.value = { ...data, id: id as number, status: MesDvCheckPlanStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesDvCheckPlanStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {

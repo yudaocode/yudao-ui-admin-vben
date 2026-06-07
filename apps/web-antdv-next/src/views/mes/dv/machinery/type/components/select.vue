@@ -47,9 +47,13 @@ const selectValue = computed({
 });
 
 /** 递归将有子节点的分支节点标记为 disabled */
-function markParentsDisabled(nodes: MesDvMachineryTypeApi.MachineryType[]): MachineryTypeNode[] {
+function markParentsDisabled(
+  nodes: MesDvMachineryTypeApi.MachineryType[],
+): MachineryTypeNode[] {
   return nodes.map((node) => {
-    const children = node.children?.length ? markParentsDisabled(node.children) : undefined;
+    const children = node.children?.length
+      ? markParentsDisabled(node.children)
+      : undefined;
     return { ...node, children, disabled: Boolean(children?.length) };
   });
 }
@@ -57,7 +61,9 @@ function markParentsDisabled(nodes: MesDvMachineryTypeApi.MachineryType[]): Mach
 /** 根据当前值同步 tooltip 展示的设备类型详情 */
 function syncSelectedItem(value: number | undefined) {
   selectedItem.value =
-    value === undefined ? undefined : allList.value.find((item) => item.id === value);
+    value === undefined
+      ? undefined
+      : allList.value.find((item) => item.id === value);
 }
 
 /** 除 v-model 外，额外抛出完整设备类型对象给业务表单使用 */

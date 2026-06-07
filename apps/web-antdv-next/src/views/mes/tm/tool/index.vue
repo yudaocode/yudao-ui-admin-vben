@@ -141,7 +141,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
           </template>
           <template #code="{ row }">
-            <Button type="link" @click="handleDetail(row)">{{ row.code }}</Button>
+            <Button type="link" @click="handleDetail(row)">
+              {{ row.code }}
+            </Button>
           </template>
           <template #actions="{ row }">
             <TableAction

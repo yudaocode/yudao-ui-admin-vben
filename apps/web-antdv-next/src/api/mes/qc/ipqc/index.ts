@@ -50,10 +50,9 @@ export namespace MesQcIpqcApi {
 
 /** 查询过程检验单分页 */
 export function getIpqcPage(params: PageParam) {
-  return requestClient.get<PageResult<MesQcIpqcApi.Ipqc>>(
-    '/mes/qc/ipqc/page',
-    { params },
-  );
+  return requestClient.get<PageResult<MesQcIpqcApi.Ipqc>>('/mes/qc/ipqc/page', {
+    params,
+  });
 }
 
 /** 查询过程检验单详情 */

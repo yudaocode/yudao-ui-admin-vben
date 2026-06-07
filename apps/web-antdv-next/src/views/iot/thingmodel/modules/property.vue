@@ -14,7 +14,14 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Radio, RadioGroup, Select, SelectOption } from 'antdv-next';
+import {
+  FormItem,
+  Input,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectOption,
+} from 'antdv-next';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
 

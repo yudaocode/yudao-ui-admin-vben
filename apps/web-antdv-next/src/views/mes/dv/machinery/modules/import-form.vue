@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FileType } from 'antdv-next/es/upload/interface';
+import type { UploadFile } from 'antdv-next';
 
 import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
 
@@ -9,7 +9,10 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message, Upload } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import { importMachinery, importMachineryTemplate } from '#/api/mes/dv/machinery';
+import {
+  importMachinery,
+  importMachineryTemplate,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
@@ -56,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 上传前 */
-function beforeUpload(file: FileType) {
+function beforeUpload(file: UploadFile) {
   formApi.setFieldValue('file', file);
   return false;
 }
@@ -73,7 +76,11 @@ async function handleDownload() {
     <Form class="mx-4">
       <template #file>
         <div class="w-full">
-          <Upload :before-upload="beforeUpload" :max-count="1" accept=".xls,.xlsx">
+          <Upload
+            :before-upload="beforeUpload"
+            :max-count="1"
+            accept=".xls,.xlsx"
+          >
             <Button type="primary">选择 Excel 文件</Button>
           </Upload>
         </div>

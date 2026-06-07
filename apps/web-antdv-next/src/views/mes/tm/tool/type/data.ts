@@ -195,7 +195,7 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolTypeApi.ToolType>
       title: '保养周期',
       width: 100,
       formatter: ({ row }) => {
-        if (row.maintenPeriod == null) {
+        if (row.maintenPeriod === null) {
           return '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.REGULAR) {

@@ -49,7 +49,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MesWmMiscIssueLineApi.MiscIssueLine;
+    const data =
+      (await formApi.getValues()) as MesWmMiscIssueLineApi.MiscIssueLine;
     data.issueId = issueId.value;
     try {
       await (formData.value?.id

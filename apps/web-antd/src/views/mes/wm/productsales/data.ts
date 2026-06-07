@@ -9,7 +9,11 @@ import type { MesWmSalesNoticeLineApi } from '#/api/mes/wm/salesnotice/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesWmSalesNoticeStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmSalesNoticeStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -285,7 +289,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.MES_WM_PRODUCT_SALES_STATUS, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.MES_WM_PRODUCT_SALES_STATUS,
+          'number',
+        ),
         placeholder: '请选择单据状态',
       },
     },

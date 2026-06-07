@@ -342,10 +342,7 @@ onMounted(() => {
       <ElContainer class="editor-container h-[calc(100vh-135px)]">
         <!-- 左侧：组件库（ComponentLibrary） -->
         <ElAside width="261px" class="editor-left">
-        <ComponentLibrary
-          v-if="libs && libs.length > 0"
-          :list="libs"
-        />
+          <ComponentLibrary v-if="libs && libs.length > 0" :list="libs" />
         </ElAside>
         <!-- 中心：设计区域（ComponentContainer） -->
         <div

@@ -192,7 +192,7 @@ const resetTaskForm = () => {
 
   // 改用通过extensionElements来存储数据
 
-  // if (businessObject.candidateStrategy != undefined) {
+  // if (businessObject.candidateStrategy !== undefined) {
   //   userTaskForm.value.candidateStrategy = parseInt(
   //     businessObject.candidateStrategy,
   //   ) as any;

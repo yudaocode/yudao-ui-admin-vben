@@ -43,18 +43,18 @@ const searchItemTypeId = ref<number>();
 /** 当前 props 是否带预过滤 */
 const showAlert = computed(
   () =>
-    props.batchId != null ||
-    props.warehouseId != null ||
+    props.batchId !== null ||
+    props.warehouseId !== null ||
     props.virtualFilter === 'only',
 );
 
 /** 预过滤提示文字 */
 const alertTitle = computed(() => {
   const parts: string[] = [];
-  if (props.batchId != null) {
+  if (props.batchId !== null) {
     parts.push('批次');
   }
-  if (props.warehouseId != null) {
+  if (props.warehouseId !== null) {
     parts.push('仓库');
   }
   if (props.virtualFilter === 'only') {

@@ -24,7 +24,9 @@ export namespace MesQcTemplateIndicatorApi {
 }
 
 /** 查询检测指标项分页 */
-export function getTemplateIndicatorPage(params: PageParam & { templateId?: number }) {
+export function getTemplateIndicatorPage(
+  params: PageParam & { templateId?: number },
+) {
   return requestClient.get<
     PageResult<MesQcTemplateIndicatorApi.TemplateIndicator>
   >('/mes/qc/template/indicator/page', { params });

@@ -49,7 +49,9 @@ function handleEdit(row: MesDvCheckPlanApi.CheckPlan) {
 
 /** 删除点检计划 */
 async function handleDelete(row: MesDvCheckPlanApi.CheckPlan) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteCheckPlan(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -191,7 +193,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.code }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction :actions="getTableActions(row)" />

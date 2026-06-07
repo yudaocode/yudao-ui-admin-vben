@@ -22,7 +22,9 @@ export namespace MesQcTemplateItemApi {
 }
 
 /** 查询产品关联分页 */
-export function getTemplateItemPage(params: PageParam & { templateId?: number }) {
+export function getTemplateItemPage(
+  params: PageParam & { templateId?: number },
+) {
   return requestClient.get<PageResult<MesQcTemplateItemApi.TemplateItem>>(
     '/mes/qc/template/item/page',
     { params },

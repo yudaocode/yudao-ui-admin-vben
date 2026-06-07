@@ -39,16 +39,18 @@ const hovering = ref(false); // 是否悬停
 const selectedItem = ref<MesQcIndicatorApi.Indicator>(); // 当前选中指标
 
 const displayLabel = computed(() => selectedItem.value?.name ?? ''); // 选择器展示名称
-const showClear = computed(() => // 是否显示清空图标
-  props.allowClear &&
-  !props.disabled &&
-  hovering.value &&
-  props.modelValue != null,
+const showClear = computed(
+  () =>
+    // 是否显示清空图标
+    props.allowClear &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue !== null,
 );
 
 /** 根据 ID 单条查询指标信息（用于编辑回显） */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (!id) {
     selectedItem.value = undefined;
     return;
   }
@@ -78,7 +80,9 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  const selectedIds = (
+    props.modelValue === null ? [] : [props.modelValue]
+  ) as number[];
   dialogRef.value?.open(selectedIds, { multiple: false });
 }
 

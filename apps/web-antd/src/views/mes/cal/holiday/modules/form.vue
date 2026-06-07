@@ -35,9 +35,15 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MesCalHolidayApi.Holiday & { dayDisplay?: string };
+    const data = (await formApi.getValues()) as MesCalHolidayApi.Holiday & {
+      dayDisplay?: string;
+    };
     try {
-      await saveHoliday({ day: data.day, type: data.type, remark: data.remark });
+      await saveHoliday({
+        day: data.day,
+        type: data.type,
+        remark: data.remark,
+      });
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -54,7 +60,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!data?.day) {
       return;
     }
-    const timestamp = dayjs(data.day + ' 00:00:00').valueOf();
+    const timestamp = dayjs(`${data.day} 00:00:00`).valueOf();
     await formApi.setValues({
       day: timestamp,
       dayDisplay: data.day,
@@ -63,7 +69,9 @@ const [Modal, modalApi] = useVbenModal({
     });
     modalApi.lock();
     try {
-      const holiday = await getHolidayByDay(dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss'));
+      const holiday = await getHolidayByDay(
+        dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss'),
+      );
       if (holiday) {
         await formApi.setValues({
           type: holiday.type ?? HolidayType.WORKDAY,

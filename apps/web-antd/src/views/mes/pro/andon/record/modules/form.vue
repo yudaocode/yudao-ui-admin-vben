@@ -167,7 +167,10 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
     <template #prepend-footer>
-      <div v-if="isUpdate" class="flex flex-auto items-center justify-end gap-2">
+      <div
+        v-if="isUpdate"
+        class="flex flex-auto items-center justify-end gap-2"
+      >
         <Popconfirm title="确认保存当前处置进度？" @confirm="handleSave">
           <Button type="primary">保存</Button>
         </Popconfirm>

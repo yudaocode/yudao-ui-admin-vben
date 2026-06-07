@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmSalesNoticeLineApi } from '#/api/mes/wm/salesnotice/line';
 
@@ -15,7 +17,7 @@ import {
 } from '#/api/mes/wm/salesnotice/line';
 import { $t } from '#/locales';
 
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 import LineForm from './line-form.vue';
 
 const props = defineProps<{
@@ -23,7 +25,8 @@ const props = defineProps<{
   noticeId: number;
 }>();
 
-const isEditable = computed(() => // 是否可编辑明细行
+const isEditable = computed(() =>
+  // 是否可编辑明细行
   ['create', 'update'].includes(props.formType),
 );
 

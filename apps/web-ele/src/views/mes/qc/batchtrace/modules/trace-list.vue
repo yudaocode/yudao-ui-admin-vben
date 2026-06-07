@@ -5,10 +5,7 @@ import type { MesWmBatchApi } from '#/api/mes/wm/batch';
 import { watch } from 'vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getBackwardBatchList,
-  getForwardBatchList,
-} from '#/api/mes/wm/batch';
+import { getBackwardBatchList, getForwardBatchList } from '#/api/mes/wm/batch';
 
 import { useTraceGridColumns } from '../data';
 

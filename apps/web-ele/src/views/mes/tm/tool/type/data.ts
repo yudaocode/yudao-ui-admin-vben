@@ -4,7 +4,11 @@ import type { MesTmToolTypeApi } from '#/api/mes/tm/tool/type';
 
 import { h } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesMaintenTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesMaintenTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -45,7 +49,9 @@ export function useFormSchema(
                 ElButton,
                 {
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.TM_TOOL_TYPE_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.TM_TOOL_TYPE_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -99,7 +105,9 @@ export function useFormSchema(
         triggerFields: ['codeFlag', 'maintenType'],
         show: (values) =>
           !!values.codeFlag &&
-          [MesMaintenTypeEnum.REGULAR, MesMaintenTypeEnum.USAGE].includes(values.maintenType),
+          [MesMaintenTypeEnum.REGULAR, MesMaintenTypeEnum.USAGE].includes(
+            values.maintenType,
+          ),
       },
       rules: 'required',
     },
@@ -185,7 +193,7 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolTypeApi.ToolType>
       title: '保养周期',
       width: 100,
       formatter: ({ row }) => {
-        if (row.maintenPeriod == null) {
+        if (row.maintenPeriod === null) {
           return '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.REGULAR) {

@@ -11,7 +11,11 @@ import { BarcodeBizTypeEnum } from '@vben/constants';
 import { Button, message, Tabs } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
-import { createMachinery, getMachinery, updateMachinery } from '#/api/mes/dv/machinery';
+import {
+  createMachinery,
+  getMachinery,
+  updateMachinery,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
@@ -141,7 +145,11 @@ const [Modal, modalApi] = useVbenModal({
     </Tabs>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Button v-if="isDetail && formData?.id" type="primary" @click="handleBarcode">
+        <Button
+          v-if="isDetail && formData?.id"
+          type="primary"
+          @click="handleBarcode"
+        >
           查看条码
         </Button>
       </div>

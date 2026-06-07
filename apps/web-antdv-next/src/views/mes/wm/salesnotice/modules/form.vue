@@ -26,13 +26,16 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesWmSalesNoticeApi.SalesNotice>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于提交时跳过未变更的保存请求
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isFinish = computed(() => formType.value === 'finish'); // 是否为执行出库模式
-const canSubmit = computed(() => // 是否可提交
-  formType.value === 'update' &&
-  formData.value?.status === MesWmSalesNoticeStatusEnum.PREPARE,
+const canSubmit = computed(
+  () =>
+    // 是否可提交
+    formType.value === 'update' &&
+    formData.value?.status === MesWmSalesNoticeStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
