@@ -11,7 +11,7 @@ export namespace RuleSceneApi {
     status?: number;
     triggers?: Trigger[];
     actions?: Action[];
-    lastTriggeredTime?: Date;
+    lastTriggerTime?: Date;
     createTime?: Date;
   }
 
