@@ -36,13 +36,16 @@ import type { Component, Ref } from 'vue';
 import type {
   ApiComponentSharedProps,
   BaseFormComponentType,
+  CollapsibleParamsProps,
   IconPickerProps,
 } from '@vben/common-ui';
 import type { Sortable } from '@vben/hooks';
+import type { TipTapProps } from '@vben/plugins/tiptap';
 import type { Recordable } from '@vben/types';
 
 import {
   computed,
+  defineAsyncComponent,
   defineComponent,
   h,
   nextTick,
@@ -58,44 +61,18 @@ import {
   ApiComponent,
   globalShareState,
   IconPicker,
+  VbenCollapsibleParams,
   VCropper,
 } from '@vben/common-ui';
 import { useSortable } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
+import { VbenTiptap } from '@vben/plugins/tiptap';
 import { isEmpty } from '@vben/utils';
 
-import {
-  AutoComplete as AutoCompleteComponent,
-  Button,
-  Cascader as CascaderComponent,
-  Checkbox as CheckboxComponent,
-  CheckboxGroup as CheckboxGroupComponent,
-  DatePicker as DatePickerComponent,
-  Divider as DividerComponent,
-  Image as ImageComponent,
-  ImagePreviewGroup,
-  Input as InputComponent,
-  InputNumber as InputNumberComponent,
-  InputPassword,
-  Mentions as MentionsComponent,
-  message,
-  Modal,
-  notification,
-  Radio as RadioComponent,
-  RadioGroup as RadioGroupComponent,
-  DateRangePicker as RangePickerComponent,
-  Rate as RateComponent,
-  Select as SelectComponent,
-  Space as SpaceComponent,
-  Switch as SwitchComponent,
-  TextArea as TextareaComponent,
-  TimePicker as TimePickerComponent,
-  TimeRangePicker as TimeRangePickerComponent,
-  TreeSelect as TreeSelectComponent,
-  Upload as UploadComponent,
-} from 'antdv-next';
+import { message, Modal, notification } from 'antdv-next';
 
+import { uploadFile as uploadFileApi } from '#/api/infra/file';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 type AdapterUploadProps = UploadProps & {
@@ -108,29 +85,70 @@ type AdapterUploadProps = UploadProps & {
   onHandleChange?: (event: UploadChangeParam) => void;
 };
 
-const AutoComplete = AutoCompleteComponent;
-const Checkbox = CheckboxComponent;
-const CheckboxGroup = CheckboxGroupComponent;
-const DatePicker = DatePickerComponent;
-const Divider = DividerComponent;
-const Input = InputComponent;
-const InputNumber = InputNumberComponent;
-const Mentions = MentionsComponent;
-const Radio = RadioComponent;
-const RadioGroup = RadioGroupComponent;
-const RangePicker = RangePickerComponent;
-const Rate = RateComponent;
-const Select = SelectComponent;
-const Space = SpaceComponent;
-const Switch = SwitchComponent;
-const TextArea = TextareaComponent;
-const TimePicker = TimePickerComponent;
-const TimeRangePicker = TimeRangePickerComponent;
-const TreeSelect = TreeSelectComponent;
-const Cascader = CascaderComponent;
-const Upload = UploadComponent;
-const Image = ImageComponent;
-const PreviewGroup = ImagePreviewGroup;
+const AutoComplete = defineAsyncComponent(
+  () => import('antdv-next/dist/auto-complete/index'),
+);
+const Button = defineAsyncComponent(
+  () => import('antdv-next/dist/button/index'),
+);
+const Checkbox = defineAsyncComponent(
+  () => import('antdv-next/dist/checkbox/index'),
+);
+const CheckboxGroup = defineAsyncComponent(() =>
+  import('antdv-next/dist/checkbox/index').then((res) => res.CheckboxGroup),
+);
+const DatePicker = defineAsyncComponent(
+  () => import('antdv-next/dist/date-picker/index'),
+);
+const Divider = defineAsyncComponent(
+  () => import('antdv-next/dist/divider/index'),
+);
+const Input = defineAsyncComponent(() => import('antdv-next/dist/input/index'));
+const InputNumber = defineAsyncComponent(
+  () => import('antdv-next/dist/input-number/index'),
+);
+const InputPassword = defineAsyncComponent(() =>
+  import('antdv-next/dist/input/index').then((res) => res.InputPassword),
+);
+const Mentions = defineAsyncComponent(
+  () => import('antdv-next/dist/mentions/index'),
+);
+const Radio = defineAsyncComponent(() => import('antdv-next/dist/radio/index'));
+const RadioGroup = defineAsyncComponent(() =>
+  import('antdv-next/dist/radio/index').then((res) => res.RadioGroup),
+);
+const RangePicker = defineAsyncComponent(() =>
+  import('antdv-next/dist/date-picker/index').then(
+    (res) => res.DateRangePicker,
+  ),
+);
+const Rate = defineAsyncComponent(() => import('antdv-next/dist/rate/index'));
+const Select = defineAsyncComponent(
+  () => import('antdv-next/dist/select/index'),
+);
+const Space = defineAsyncComponent(() => import('antdv-next/dist/space/index'));
+const Switch = defineAsyncComponent(
+  () => import('antdv-next/dist/switch/index'),
+);
+const Textarea = defineAsyncComponent(
+  () => import('antdv-next/dist/input/TextArea'),
+);
+const TimePicker = defineAsyncComponent(
+  () => import('antdv-next/dist/time-picker/index'),
+);
+const TreeSelect = defineAsyncComponent(
+  () => import('antdv-next/dist/tree-select/index'),
+);
+const Cascader = defineAsyncComponent(
+  () => import('antdv-next/dist/cascader/index'),
+);
+const Upload = defineAsyncComponent(
+  () => import('antdv-next/dist/upload/index'),
+);
+const Image = defineAsyncComponent(() => import('antdv-next/dist/image/index'));
+const PreviewGroup = defineAsyncComponent(() =>
+  import('antdv-next/dist/image/index').then((res) => res.ImagePreviewGroup),
+);
 
 const withDefaultPlaceholder = (
   component: Component,
@@ -236,7 +254,7 @@ function getBase64(file: File): Promise<string> {
  */
 async function previewImage(
   file: UploadFile,
-  visible: Ref<boolean>,
+  open: Ref<boolean>,
   fileList: Ref<UploadProps['fileList']>,
 ) {
   // 非图片文件直接打开链接
@@ -244,6 +262,8 @@ async function previewImage(
     const url = file.url || file.preview;
     if (url) {
       window.open(url, '_blank');
+    } else if (file.preview) {
+      window.open(file.preview, '_blank');
     } else {
       message.error($t('ui.formRules.previewWarning'));
     }
@@ -279,10 +299,10 @@ async function previewImage(
           {
             class: 'hidden',
             preview: {
-              open: visible.value,
+              open: open.value,
               current: currentIndex,
               onOpenChange: (value: boolean) => {
-                visible.value = value;
+                open.value = value;
                 if (!value) {
                   setTimeout(() => {
                     if (!isUnmounted && container) {
@@ -324,7 +344,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
     const open = ref<boolean>(true);
     const cropperRef = ref<InstanceType<typeof VCropper> | null>(null);
 
-    const closeModal = () => {
+    function closeModal() {
       open.value = false;
       setTimeout(() => {
         if (!isUnmounted && container) {
@@ -336,7 +356,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
           container.remove();
         }
       }, 300);
-    };
+    }
 
     const CropperWrapper = {
       setup() {
@@ -366,7 +386,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
               closable: false,
               cancelText: $t('common.cancel'),
               okText: $t('ui.crop.confirm'),
-              destroyOnClose: true,
+              destroyOnHidden: true,
               onOk: async () => {
                 const cropper = cropperRef.value;
                 if (!cropper) {
@@ -410,7 +430,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
 /**
  * 带预览功能的上传组件
  */
-const withPreviewUpload = () => {
+function withPreviewUpload() {
   return defineComponent({
     name: Upload.name,
     emits: ['update:modelValue'],
@@ -430,10 +450,10 @@ const withPreviewUpload = () => {
         () => attrs?.aspectRatio ?? attrs?.['aspect-ratio'],
       );
 
-      const handleBeforeUpload = async (
+      async function handleBeforeUpload(
         file: UploadFile,
         originFileList: Array<File>,
-      ) => {
+      ) {
         // 文件大小限制
         if (maxSize.value && (file.size || 0) / 1024 / 1024 > maxSize.value) {
           message.error($t('ui.formRules.sizeLimit', [maxSize.value]));
@@ -457,9 +477,9 @@ const withPreviewUpload = () => {
         }
 
         return attrs.beforeUpload?.(file) ?? true;
-      };
+      }
 
-      const handleChange = (event: UploadChangeParam) => {
+      function handleChange(event: UploadChangeParam) {
         try {
           attrs.handleChange?.(event);
           attrs.onHandleChange?.(event);
@@ -473,19 +493,19 @@ const withPreviewUpload = () => {
           'update:modelValue',
           event.fileList?.length ? fileList.value : undefined,
         );
-      };
+      }
 
-      const handlePreview = async (file: UploadFile) => {
+      function handlePreview(file: UploadFile) {
         previewVisible.value = true;
-        await previewImage(file, previewVisible, fileList);
-      };
+        return previewImage(file, previewVisible, fileList);
+      }
 
-      const renderUploadButton = () => {
+      function renderUploadButton() {
         if (attrs.disabled) return null;
         return isEmpty(slots)
           ? createDefaultUploadSlots(listType, placeholder)
           : slots;
-      };
+      }
 
       // 拖拽排序
       const draggable = computed(
@@ -594,7 +614,7 @@ const withPreviewUpload = () => {
         );
     },
   });
-};
+}
 
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
@@ -605,6 +625,7 @@ export type ComponentType =
   | 'Cascader'
   | 'Checkbox'
   | 'CheckboxGroup'
+  | 'CollapsibleParams'
   | 'DatePicker'
   | 'DefaultButton'
   | 'Divider'
@@ -620,13 +641,13 @@ export type ComponentType =
   | 'RadioGroup'
   | 'RangePicker'
   | 'Rate'
+  | 'RichEditor'
   | 'RichTextarea'
   | 'Select'
   | 'Space'
   | 'Switch'
   | 'TextArea'
   | 'TimePicker'
-  | 'TimeRangePicker'
   | 'TreeSelect'
   | 'Upload'
   | BaseFormComponentType;
@@ -642,6 +663,7 @@ export interface ComponentPropsMap {
   Cascader: CascaderProps;
   Checkbox: CheckboxProps;
   CheckboxGroup: CheckboxGroupProps;
+  CollapsibleParams: CollapsibleParamsProps;
   DatePicker: DatePickerProps;
   DefaultButton: ButtonProps;
   Divider: DividerProps;
@@ -655,6 +677,7 @@ export interface ComponentPropsMap {
   RadioGroup: RadioGroupProps;
   RangePicker: RangePickerProps;
   Rate: RateProps;
+  RichEditor: TipTapProps;
   Select: SelectProps;
   Space: SpaceProps;
   Switch: SwitchProps;
@@ -720,18 +743,39 @@ async function initComponentAdapter() {
     RadioGroup,
     RangePicker,
     Rate,
+    RichEditor: withDefaultPlaceholder(VbenTiptap, 'input', {
+      imageUpload: {
+        upload: (file: any, onProgress: any) => {
+          return new Promise((resolve, reject) => {
+            uploadFileApi({
+              file,
+              onProgress({ percent }) {
+                onProgress?.(percent);
+              },
+              onSuccess(response) {
+                // 从响应中提取图片URL
+                resolve(response?.data?.url ?? response?.url ?? '');
+              },
+              onError() {
+                reject(new Error($t('ui.tiptap.upload.uploadFailed')));
+              },
+            });
+          });
+        },
+      },
+    }),
     Select: withDefaultPlaceholder(Select, 'select'),
     Space,
     Switch,
-    TextArea: withDefaultPlaceholder(TextArea, 'input'),
+    TextArea: withDefaultPlaceholder(Textarea, 'input'),
     RichTextarea,
     TimePicker,
-    TimeRangePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
-    Upload,
     PreviewUpload: withPreviewUpload(),
     FileUpload,
     ImageUpload,
+    Upload: withPreviewUpload(),
+    CollapsibleParams: VbenCollapsibleParams,
   };
 
   // 将组件注册到全局共享状态中
