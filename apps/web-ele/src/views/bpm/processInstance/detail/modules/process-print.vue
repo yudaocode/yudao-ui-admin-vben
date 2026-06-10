@@ -2,7 +2,7 @@
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import type { SystemAreaApi } from '#/api/system/area';
 
-import { computed, ref } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -19,6 +19,7 @@ import { getAreaTree } from '#/api/system/area';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 import { decodeFields } from '#/components/form-create';
+import { registerComponent } from '#/utils';
 
 const userStore = useUserStore();
 
@@ -54,6 +55,7 @@ const userName = computed(() => userStore.userInfo?.nickname ?? '');
 const printTime = ref(formatDate(new Date(), 'YYYY-MM-DD HH:mm'));
 const formFields = ref<FormFieldItem[]>([]);
 const printDataMap = ref<Record<string, string>>({});
+const BusinessFormComponent = shallowRef<any>();
 
 /** 打印配置 */
 const printObj = ref({
@@ -93,6 +95,17 @@ async function fetchPrintData(id: string) {
   printTime.value = formatDate(new Date(), 'YYYY-MM-DD HH:mm');
   initPrintDataMap();
   await parseFormFields();
+  initBusinessFormComponent();
+}
+
+/** 初始化业务表单组件 */
+function initBusinessFormComponent() {
+  const businessFormPath =
+    printData.value?.processInstance.processDefinition?.formCustomViewPath ||
+    '';
+  BusinessFormComponent.value = businessFormPath
+    ? registerComponent(businessFormPath)
+    : undefined;
 }
 
 /** 解析表单字段 */
@@ -595,6 +608,22 @@ function getPrintTemplateHTML() {
                 <div v-html="item.html"></div>
               </td>
             </tr>
+          </tbody>
+        </table>
+        <!-- 业务表单：独立成块渲染，不嵌入表格单元格，避免宽度与分页受限 -->
+        <div
+          v-if="BusinessFormComponent && formFields.length === 0"
+          class="mt-3"
+        >
+          <component
+            :is="BusinessFormComponent"
+            :id="printData.processInstance.businessKey"
+            :readonly="true"
+            :print-mode="true"
+          />
+        </div>
+        <table class="mt-3 w-full border-collapse">
+          <tbody>
             <tr>
               <td
                 class="w-full border border-black p-1.5 text-center"
