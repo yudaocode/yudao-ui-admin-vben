@@ -198,7 +198,10 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         disabled: true,
-        options: getDictOptions(DICT_TYPE.MES_PRO_WORK_ORDER_SOURCE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.MES_PRO_WORK_ORDER_SOURCE_TYPE,
+          'number',
+        ),
       },
     },
     {

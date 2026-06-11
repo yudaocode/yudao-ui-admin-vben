@@ -44,19 +44,19 @@ const showClear = computed(
     props.allowClear &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue != null,
+    props.modelValue !== null,
 );
 
 /** 根据 BOM 子物料编号回显选择器 */
 async function resolveBomById(bomItemId: number | undefined) {
-  if (bomItemId == null || props.itemId == null) {
+  if (bomItemId === null || props.itemId === null) {
     selectedBom.value = undefined;
     return;
   }
   if (selectedBom.value?.bomItemId === bomItemId) {
     return;
   }
-  const list = await getProductBomListByItemId(props.itemId);
+  const list = await getProductBomListByItemId(props.itemId as number);
   selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
 }
 
@@ -86,7 +86,7 @@ function clearSelected() {
 
 /** 打开 BOM 物料选择弹窗 */
 function handleClick(event: MouseEvent) {
-  if (props.disabled || props.itemId == null) {
+  if (props.disabled || props.itemId === null) {
     return;
   }
   const target = event.target as HTMLElement;
@@ -95,7 +95,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.itemId, props.modelValue);
+  dialogRef.value?.open(props.itemId as number, props.modelValue);
 }
 
 /** 回填选中的 BOM 物料 */

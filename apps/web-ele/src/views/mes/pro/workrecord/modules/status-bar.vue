@@ -25,8 +25,10 @@ const myWorkstation = ref<MesProWorkRecordApi.MyWorkRecord | null>(null); // 当
 const clockInDialogVisible = ref(false); // 上工弹窗是否可见
 const selectedWorkstationId = ref<number>(); // 当前选中的工作站编号
 
-const isClockIn = computed(() => // 是否处于上工状态
-  myWorkstation.value?.type === MesProWorkRecordTypeEnum.CLOCK_IN,
+const isClockIn = computed(
+  () =>
+    // 是否处于上工状态
+    myWorkstation.value?.type === MesProWorkRecordTypeEnum.CLOCK_IN,
 );
 
 /** 加载当前用户工作站 */
@@ -98,11 +100,7 @@ onMounted(loadMyWorkstation);
       </ElButton>
     </div>
 
-    <ElDialog
-      v-model="clockInDialogVisible"
-      title="选择工作站"
-      width="420px"
-    >
+    <ElDialog v-model="clockInDialogVisible" title="选择工作站" width="420px">
       <MdWorkstationSelect
         v-model="selectedWorkstationId"
         class="w-full"

@@ -5,7 +5,12 @@ import type { MesQcIpqcLineApi } from '#/api/mes/qc/ipqc/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProTaskStatusEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProTaskStatusEnum,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -262,7 +267,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {
@@ -281,7 +286,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {
@@ -300,7 +305,7 @@ export function useFormSchema(
       dependencies: {
         triggerFields: ['unqualifiedQuantity'],
         show: (values) =>
-          values.unqualifiedQuantity != null && values.unqualifiedQuantity > 0,
+          values.unqualifiedQuantity !== null && values.unqualifiedQuantity > 0,
       },
     },
     {

@@ -9,10 +9,7 @@ import type { WmsReceiptOrderDetailApi } from '#/api/wms/order/receipt/detail';
 import { computed, nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
-import {
-  OrderStatusEnum,
-  OrderUpdateStatusList,
-} from '@vben/constants';
+import { OrderStatusEnum, OrderUpdateStatusList } from '@vben/constants';
 import { isEqual } from '@vben/utils';
 
 import { InputNumber, message } from 'ant-design-vue';

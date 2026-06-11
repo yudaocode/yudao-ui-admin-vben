@@ -102,7 +102,10 @@ const hasFestivalDay = computed(() => {
   <div class="flex h-full flex-col overflow-hidden p-1">
     <!-- 顶部：日期数字 + 上班/休息标签 -->
     <div class="flex shrink-0 items-center justify-between">
-      <span class="text-base font-medium" :class="{ 'text-red-500': isWeekend }">
+      <span
+        class="text-base font-medium"
+        :class="{ 'text-red-500': isWeekend }"
+      >
         {{ dayNumber }}
       </span>
       <ElTag v-if="isHoliday" effect="dark" size="small" type="success">

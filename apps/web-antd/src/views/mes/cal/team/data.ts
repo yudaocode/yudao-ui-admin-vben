@@ -47,7 +47,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.CAL_TEAM_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.CAL_TEAM_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -145,7 +147,12 @@ export function useGridColumns(): VxeTableGridOptions<MesCalTeamApi.Team>['colum
       },
     },
     { field: 'remark', title: '备注', minWidth: 180 },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 180,

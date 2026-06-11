@@ -767,7 +767,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.approve"
         placement="top"
         :styles="{ root: { minWidth: '400px', zIndex: 300 } }"
-        trigger="click"
+        :trigger="['click']"
         @open-change="handlePopoverVisible"
         v-if="
           runningTask &&
@@ -871,7 +871,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.reject"
         placement="top"
         :styles="{ root: { minWidth: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -928,7 +928,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.copy"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1000,7 +1000,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.transfer"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1073,7 +1073,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.delegate"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1146,7 +1146,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.addSign"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1231,7 +1231,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.deleteSign"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="runningTask?.children.length > 0"
       >
         <Button type="dashed" @click="openPopover('deleteSign')">
@@ -1297,7 +1297,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.return"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1370,7 +1370,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.cancel"
         placement="top"
         :width="500"
-        trigger="click"
+        :trigger="['click']"
         v-if="
           userId === processInstance?.startUser?.id &&
           !isEndProcessStatus(processInstance?.status)

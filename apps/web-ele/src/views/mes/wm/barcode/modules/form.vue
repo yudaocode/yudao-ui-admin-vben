@@ -9,11 +9,7 @@ import { BarcodeBizTypeEnum, CommonStatusEnum } from '@vben/constants';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createBarcode,
-  getBarcode,
-  updateBarcode,
-} from '#/api/mes/wm/barcode';
+import { createBarcode, getBarcode, updateBarcode } from '#/api/mes/wm/barcode';
 import { getWarehouseArea } from '#/api/mes/wm/warehouse/area';
 import { getWarehouseLocation } from '#/api/mes/wm/warehouse/location';
 import { $t } from '#/locales';

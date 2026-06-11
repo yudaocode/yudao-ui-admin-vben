@@ -1,12 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { IotProductApi } from '#/api/iot/product/product';
 
 import { onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { IOT_PROVIDE_KEY } from '@vben/constants';
 
-import { message, TabPane, Tabs } from 'antdv-next';
+import { message, Tabs } from 'antdv-next';
 
 import { getDeviceCount } from '#/api/iot/device/device';
 import { getProduct } from '#/api/iot/product/product';
@@ -15,8 +16,6 @@ import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 import ProductDetailsHeader from './modules/header.vue';
 import ProductDetailsInfo from './modules/info.vue';
 
-defineOptions({ name: 'IoTProductDetail' });
-
 const route = useRoute();
 const router = useRouter();
 
@@ -24,8 +23,13 @@ const id = Number(route.params.id);
 const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const activeTab = ref('info');
+const productTabItems = [
+  { key: 'info', label: '产品信息' },
+  { key: 'thingModel', label: '物模型（功能定义）' },
+];
 
-provide('product', product); // 提供产品信息给子组件
+/** 向子组件提供产品信息 */
+provide(IOT_PROVIDE_KEY.PRODUCT, product);
 
 /** 获取产品详情 */
 async function getProductData(productId: number) {
@@ -77,16 +81,16 @@ onMounted(async () => {
       :product="product"
       @refresh="() => getProductData(id)"
     />
-    <Tabs v-model:active-key="activeTab" class="mt-4">
-      <TabPane key="info" tab="产品信息">
-        <ProductDetailsInfo v-if="activeTab === 'info'" :product="product" />
-      </TabPane>
-      <TabPane key="thingModel" tab="物模型（功能定义）">
-        <IoTProductThingModel
-          v-if="activeTab === 'thingModel'"
-          :product-id="id"
+    <Tabs v-model:active-key="activeTab" :items="productTabItems" class="mt-4">
+      <template #contentRender="{ item }">
+        <ProductDetailsInfo
+          v-if="item.key === 'info' && activeTab === 'info'"
+          :product="product"
         />
-      </TabPane>
+        <IoTProductThingModel
+          v-else-if="item.key === 'thingModel' && activeTab === 'thingModel'"
+        />
+      </template>
     </Tabs>
   </Page>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
+
 import type { ComponentStyle } from '../util';
 
 import { useVModel } from '@vueuse/core';
@@ -26,6 +28,7 @@ defineOptions({ name: 'ComponentContainer' });
 const props = defineProps<{ modelValue: ComponentStyle }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
+const formStyleValues = formData as unknown as Ref<Record<string, number>>;
 
 const treeData: any[] = [
   {
@@ -169,7 +172,7 @@ function handleSliderChange(prop: string) {
                 class="mb-0 w-full"
               >
                 <ElSlider
-                  v-model="formData[data.prop]"
+                  v-model="formStyleValues[data.prop]"
                   :max="100"
                   :min="0"
                   show-input

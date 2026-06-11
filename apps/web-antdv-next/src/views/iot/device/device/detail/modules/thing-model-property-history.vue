@@ -11,7 +11,7 @@ import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { IoTDataSpecsDataTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDate, formatDateTime } from '@vben/utils';
+import { formatDate } from '@vben/utils';
 
 import {
   Button,
@@ -19,6 +19,7 @@ import {
   message,
   Modal,
   Space,
+  SpaceCompact,
   Spin,
   Table,
   Tag,
@@ -28,16 +29,12 @@ import dayjs from 'dayjs';
 import { getHistoryDevicePropertyList } from '#/api/iot/device/device';
 import ShortcutDateRangePicker from '#/components/shortcut-date-range-picker/shortcut-date-range-picker.vue';
 
-/** IoT 设备属性历史数据详情 */
-defineOptions({ name: 'DeviceDetailsThingModelPropertyHistory' });
-
 defineProps<{ deviceId: number }>();
 
 const dialogVisible = ref(false); // 弹窗的是否展示
 const loading = ref(false);
-const exporting = ref(false);
 const viewMode = ref<'chart' | 'list'>('chart'); // 视图模式状态
-const list = ref<IotDeviceApi.DevicePropertyDetail[]>([]); // 列表的数据
+const list = ref<Array<IotDeviceApi.DeviceProperty & { _rowKey: string }>>([]); // 列表的数据
 const total = ref(0); // 总数据量
 const thingModelDataType = ref<string>(''); // 物模型数据类型
 const propertyIdentifier = ref<string>(''); // 属性标识符
@@ -89,7 +86,7 @@ const maxValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   return values.length > 0 ? Math.max(...values).toFixed(2) : '-';
 });
 
@@ -98,7 +95,7 @@ const minValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   return values.length > 0 ? Math.min(...values).toFixed(2) : '-';
 });
 
@@ -107,9 +104,9 @@ const avgValue = computed(() => {
   if (!canShowChart.value || list.value.length === 0) return '-';
   const values = list.value
     .map((item) => Number(item.value))
-    .filter((v) => !Number.isNaN(v));
+    .filter((value) => !Number.isNaN(value));
   if (values.length === 0) return '-';
-  const sum = values.reduce((acc, val) => acc + val, 0);
+  const sum = values.reduce((total, value) => total + value, 0);
   return (sum / values.length).toFixed(2);
 });
 
@@ -124,7 +121,7 @@ const tableColumns = computed(() => [
     key: 'index',
     width: 80,
     align: 'center' as const,
-    render: ({ index }: { index: number }) => index + 1,
+    render: (_value: unknown, _record: unknown, index: number) => index + 1,
   },
   {
     title: '时间',
@@ -141,25 +138,15 @@ const tableColumns = computed(() => [
   },
 ]); // 表格列配置
 
-const paginationConfig = computed(() => ({
-  current: 1,
-  pageSize: 10,
-  total: total.value,
-  showSizeChanger: true,
-  showQuickJumper: true,
-  pageSizeOptions: ['10', '20', '50', '100'],
-  showTotal: (total: number) => `共 ${total} 条数据`,
-})); // 分页配置
-
 /** 获得设备历史数据 */
 async function getList() {
   loading.value = true;
   try {
     const data = await getHistoryDevicePropertyList(queryParams);
-    // 后端直接返回数组，不是 { list: [] } 格式
-    list.value = (
-      Array.isArray(data) ? data : data?.list || []
-    ) as IotDeviceApi.DevicePropertyDetail[];
+    list.value = (data || []).map((item, idx) => ({
+      ...item,
+      _rowKey: `${item.updateTime ?? ''}-${idx}`, // 后端直接返回数组，仅含 value/updateTime，给每行补 _rowKey 保证唯一
+    }));
     total.value = list.value.length;
 
     // 如果是图表模式且支持图表展示，等待渲染图表
@@ -335,54 +322,6 @@ function handleRefresh() {
   getList();
 }
 
-/** 导出数据 */
-async function handleExport() {
-  if (list.value.length === 0) {
-    message.warning('暂无数据可导出');
-    return;
-  }
-
-  exporting.value = true;
-  try {
-    // 构建CSV内容
-    const headers = ['序号', '时间', '属性值'];
-    const csvContent = [
-      headers.join(','),
-      ...list.value.map((item, index) => {
-        return [
-          index + 1,
-          formatDateTime(new Date(item.updateTime)),
-          isComplexDataType.value
-            ? `"${JSON.stringify(item.value)}"`
-            : item.value,
-        ].join(',');
-      }),
-    ].join('\n');
-
-    // 创建 BOM 头,解决中文乱码
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], {
-      type: 'text/csv;charset=utf-8',
-    });
-
-    // 下载文件
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `设备属性历史_${propertyIdentifier.value}_${formatDate(new Date(), 'YYYYMMDDHHmmss')}.csv`;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-
-    message.success('导出成功');
-  } catch {
-    message.error('导出失败');
-  } finally {
-    exporting.value = false;
-  }
-}
-
 /** 关闭弹窗 */
 function handleClose() {
   dialogVisible.value = false;
@@ -434,20 +373,8 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
             刷新
           </Button>
 
-          <!-- 导出按钮 -->
-          <Button
-            :disabled="list.length === 0"
-            :loading="exporting"
-            @click="handleExport"
-          >
-            <template #icon>
-              <IconifyIcon icon="ant-design:export-outlined" />
-            </template>
-            导出
-          </Button>
-
           <!-- 视图切换 -->
-          <Space class="ml-auto">
+          <SpaceCompact class="ml-auto">
             <Button
               :disabled="!canShowChart"
               :type="viewMode === 'chart' ? 'primary' : 'default'"
@@ -467,7 +394,7 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
               </template>
               列表
             </Button>
-          </Space>
+          </SpaceCompact>
         </Space>
 
         <!-- 数据统计信息 -->
@@ -502,9 +429,9 @@ defineExpose({ open }); // 提供 open 方法，用于打开弹窗
           <Table
             :columns="tableColumns"
             :data-source="list"
-            :pagination="paginationConfig"
+            :pagination="false"
             :scroll="{ y: 500 }"
-            row-key="updateTime"
+            row-key="_rowKey"
             size="small"
           >
             <template #bodyCell="{ column, record }">

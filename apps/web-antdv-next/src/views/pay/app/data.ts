@@ -291,6 +291,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入渠道费率',
         addonAfter: '%',
       },

@@ -1,23 +1,34 @@
 <!-- 设备事件管理 -->
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ThingModelData } from '#/api/iot/thingmodel';
+import type { ThingModelApi } from '#/api/iot/thingmodel';
 
-import { computed, getEventTypeLabel, IoTThingModelTypeEnum, onMounted, reactive, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { IotDeviceMessageMethodEnum } from '@vben/constants';
+import {
+  getEventTypeLabel,
+  IotDeviceMessageMethodEnum,
+  IoTThingModelTypeEnum,
+} from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, DateRangePicker, Select, Space, Tag } from 'antdv-next';
+import {
+  Button,
+  DateRangePicker,
+  Select,
+  SelectOption,
+  Space,
+  Tag,
+} from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
 
 const props = defineProps<{
   deviceId: number;
-  thingModelList: ThingModelData[];
+  thingModelList: ThingModelApi.ThingModel[];
 }>();
 
 /** 查询参数 */
@@ -25,17 +36,18 @@ const queryParams = reactive({
   identifier: '',
   times: undefined as [string, string] | undefined,
 });
+let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
 /** 事件类型的物模型数据 */
 const eventThingModels = computed(() => {
   return props.thingModelList.filter(
-    (item: ThingModelData) =>
+    (item: ThingModelApi.ThingModel) =>
       String(item.type) === String(IoTThingModelTypeEnum.EVENT),
   );
 });
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
   return [
     {
       field: 'reportTime',
@@ -119,7 +131,7 @@ function resetQuery() {
 function getEventName(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   return event?.name || identifier;
 }
@@ -128,7 +140,7 @@ function getEventName(identifier: string | undefined) {
 function getEventType(identifier: string | undefined) {
   if (!identifier) return '-';
   const event = eventThingModels.value.find(
-    (item: ThingModelData) => item.identifier === identifier,
+    (item: ThingModelApi.ThingModel) => item.identifier === identifier,
   );
   if (!event?.event?.type) return '-';
   return getEventTypeLabel(event.event.type) || '-';
@@ -149,8 +161,15 @@ function parseParams(params: string) {
 
 /** 刷新列表 */
 function refresh(delay = 0) {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
   if (delay > 0) {
-    setTimeout(() => gridApi.query(), delay);
+    refreshTimer = setTimeout(() => {
+      gridApi.query();
+      refreshTimer = undefined;
+    }, delay);
   } else {
     gridApi.query();
   }
@@ -170,6 +189,14 @@ watch(
 onMounted(() => {
   if (props.deviceId) {
     handleQuery();
+  }
+});
+
+/** 组件卸载时清除延迟刷新定时器 */
+onBeforeUnmount(() => {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
   }
 });
 

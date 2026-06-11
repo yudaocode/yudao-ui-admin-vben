@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmProductReceiptDetailApi } from '#/api/mes/wm/productreceipt/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteProductReceiptDetail } from '#/api/mes/wm/productreceipt/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmProductReceiptDetailApi.ProductReceiptDetail[];

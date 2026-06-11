@@ -7,7 +7,11 @@ import type { MesWmTransferLineApi } from '#/api/mes/wm/transfer/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesWmTransferTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmTransferTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';

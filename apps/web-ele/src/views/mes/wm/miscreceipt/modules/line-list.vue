@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmMiscReceiptLineApi } from '#/api/mes/wm/miscreceipt/line';
 
@@ -15,7 +17,7 @@ import {
 } from '#/api/mes/wm/miscreceipt/line';
 import { $t } from '#/locales';
 
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 import LineForm from './line-form.vue';
 
 const props = defineProps<{
@@ -23,7 +25,8 @@ const props = defineProps<{
   receiptId: number;
 }>();
 
-const isEditable = computed(() => // 是否可编辑明细行
+const isEditable = computed(() =>
+  // 是否可编辑明细行
   ['create', 'update'].includes(props.formType),
 );
 

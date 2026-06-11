@@ -16,6 +16,7 @@ export const schema: VbenFormSchema[] = [
     component: 'InputNumber',
     fieldName: 'contactExpireDays',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 0,
     },
@@ -35,6 +36,7 @@ export const schema: VbenFormSchema[] = [
       addonAfter: () => '天未成交',
     }),
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 0,
     },
@@ -63,6 +65,7 @@ export const schema: VbenFormSchema[] = [
     component: 'InputNumber',
     fieldName: 'notifyDays',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 0,
     },

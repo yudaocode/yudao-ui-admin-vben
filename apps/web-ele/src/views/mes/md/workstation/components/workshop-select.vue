@@ -90,7 +90,7 @@ onMounted(async () => {
         <div>名称：{{ selectedItem.name || '-' }}</div>
         <div>
           面积：{{
-            selectedItem.area != null ? `${selectedItem.area} ㎡` : '-'
+            selectedItem.area !== null ? `${selectedItem.area} ㎡` : '-'
           }}
         </div>
         <div>负责人：{{ selectedItem.chargeUserName || '-' }}</div>

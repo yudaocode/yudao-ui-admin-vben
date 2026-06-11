@@ -6,7 +6,14 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElButton, ElCard, ElMessage, ElPopconfirm, ElStep, ElSteps } from 'element-plus';
+import {
+  ElButton,
+  ElCard,
+  ElMessage,
+  ElPopconfirm,
+  ElStep,
+  ElSteps,
+} from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { getRouteProcessListByProduct } from '#/api/mes/pro/route/process';
@@ -81,7 +88,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ formType: 'detail' | 'schedule'; id: number }>();
+    const data = modalApi.getData<{
+      formType: 'detail' | 'schedule';
+      id: number;
+    }>();
     formType.value = data.formType;
     activeProcessStep.value = 0;
     routeProcessList.value = [];

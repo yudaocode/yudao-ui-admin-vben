@@ -42,12 +42,12 @@ const showClear = computed(
     props.clearable &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue != null,
+    props.modelValue !== null,
 );
 
 /** 根据工具编号回显选择器 */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (!id) {
     selectedItem.value = undefined;
     return;
   }
@@ -83,7 +83,9 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  const selectedIds = (
+    props.modelValue === null ? [] : [props.modelValue]
+  ) as number[];
   dialogRef.value?.open(selectedIds, { multiple: false });
 }
 

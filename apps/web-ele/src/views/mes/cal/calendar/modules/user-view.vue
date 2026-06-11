@@ -5,13 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  ElButton,
-  ElForm,
-  ElFormItem,
-  ElOption,
-  ElSelect,
-} from 'element-plus';
+import { ElButton, ElForm, ElFormItem, ElOption, ElSelect } from 'element-plus';
 
 import { getSimpleUserList } from '#/api/system/user';
 

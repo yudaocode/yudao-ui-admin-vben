@@ -42,7 +42,9 @@ function handleEdit(row: MesCalPlanApi.Plan) {
 
 /** 删除排班计划 */
 async function handleDelete(row: MesCalPlanApi.Plan) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deletePlan(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -69,7 +71,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) =>
-          await getPlanPage({ pageNo: page.currentPage, pageSize: page.pageSize, ...formValues }),
+          await getPlanPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          }),
       },
     },
     rowConfig: {
@@ -115,7 +121,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.code }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction

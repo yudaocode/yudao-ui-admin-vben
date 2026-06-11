@@ -53,12 +53,12 @@ const showClear = computed(
     props.clearable &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue != null,
+    props.modelValue !== null,
 );
 
 /** 根据编号单条查询批次信息（用于编辑回显） */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (!id) {
     selectedItem.value = undefined;
     return;
   }
@@ -88,7 +88,9 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = props.modelValue == null ? [] : [props.modelValue];
+  const selectedIds = (
+    props.modelValue === null ? [] : [props.modelValue]
+  ) as number[];
   dialogRef.value?.open(selectedIds, {
     clientId: props.clientId,
     itemId: props.itemId,

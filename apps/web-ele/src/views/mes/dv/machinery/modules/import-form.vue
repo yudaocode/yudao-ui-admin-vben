@@ -9,7 +9,10 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { ElButton, ElMessage, ElUpload } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { importMachinery, importMachineryTemplate } from '#/api/mes/dv/machinery';
+import {
+  importMachinery,
+  importMachineryTemplate,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';

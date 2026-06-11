@@ -47,7 +47,7 @@ const allOperators = [
     label: IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_EQUALS.name,
     symbol: '≠',
     description: '值不相等时触发',
-    example: 'power != false',
+    example: 'power !== false',
     supportedTypes: [
       IoTDataSpecsDataTypeEnum.INT,
       IoTDataSpecsDataTypeEnum.FLOAT,

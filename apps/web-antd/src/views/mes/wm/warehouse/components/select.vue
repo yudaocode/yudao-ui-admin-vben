@@ -61,7 +61,7 @@ function filterOption(input: string, option: any) {
 watch(
   () => props.modelValue,
   (val) => {
-    if (val == null) {
+    if (val === null) {
       selectedItem.value = undefined;
       return;
     }
@@ -73,7 +73,7 @@ watch(
 
 onMounted(async () => {
   allList.value = await getWarehouseSimpleList();
-  if (props.modelValue != null) {
+  if (props.modelValue !== null) {
     selectedItem.value = allList.value.find((o) => o.id === props.modelValue);
   }
 });

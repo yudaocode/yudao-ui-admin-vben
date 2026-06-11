@@ -30,7 +30,8 @@ const formData = ref<MesDvMaintenRecordApi.MaintenRecord>();
 const isDetail = computed(() => formType.value === 'detail');
 const canSubmit = computed(
   () =>
-    formType.value === 'update' && formData.value?.status === MesDvMaintenRecordStatusEnum.PREPARE,
+    formType.value === 'update' &&
+    formData.value?.status === MesDvMaintenRecordStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -62,7 +63,9 @@ async function handleSubmit() {
 
   modalApi.lock();
   try {
-    await updateMaintenRecord((await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord);
+    await updateMaintenRecord(
+      (await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord,
+    );
     await submitMaintenRecord(formData.value.id);
     await modalApi.close();
     emit('success');
@@ -84,7 +87,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord;
+    const data =
+      (await formApi.getValues()) as MesDvMaintenRecordApi.MaintenRecord;
     try {
       if (formType.value === 'create') {
         const id = await createMaintenRecord(data);
@@ -133,7 +137,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <LineList v-if="formData?.id" :disabled="isDetail" :record-id="formData.id" />
+    <LineList
+      v-if="formData?.id"
+      :disabled="isDetail"
+      :record-id="formData.id"
+    />
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
         <Popconfirm

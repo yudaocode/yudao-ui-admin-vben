@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { MallBannerApi } from '#/api/mall/promotion/banner';
-import type { SystemUserApi } from '#/api/system/user';
 
 import { computed, ref } from 'vue';
 
@@ -19,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<SystemUserApi.User>();
+const formData = ref<MallBannerApi.Banner>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['Banner'])

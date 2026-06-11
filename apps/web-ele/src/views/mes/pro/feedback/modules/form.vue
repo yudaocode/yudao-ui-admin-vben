@@ -6,10 +6,7 @@ import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import {
-  MesAutoCodeRuleCode,
-  MesProFeedbackStatusEnum,
-} from '@vben/constants';
+import { MesAutoCodeRuleCode, MesProFeedbackStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import {

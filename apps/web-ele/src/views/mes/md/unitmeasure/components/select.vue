@@ -91,7 +91,7 @@ onMounted(async () => {
         <div>名称：{{ selectedItem.name || '-' }}</div>
         <div>是否主单位：{{ selectedItem.primaryFlag ? '是' : '否' }}</div>
         <div
-          v-if="!selectedItem.primaryFlag && selectedItem.changeRate != null"
+          v-if="!selectedItem.primaryFlag && selectedItem.changeRate !== null"
         >
           换算比例：{{ selectedItem.changeRate }}
         </div>

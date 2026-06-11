@@ -6,10 +6,7 @@ import type { MesProCardApi } from '#/api/mes/pro/card';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import {
-  BarcodeBizTypeEnum,
-  MesProCardStatusEnum,
-} from '@vben/constants';
+import { BarcodeBizTypeEnum, MesProCardStatusEnum } from '@vben/constants';
 
 import { ElButton, ElDivider, ElMessage, ElPopconfirm } from 'element-plus';
 
@@ -33,13 +30,16 @@ const formData = ref<MesProCardApi.Card>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于提交时跳过未变更的保存请求
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isFinish = computed(() => formType.value === 'finish'); // 是否为完成模式
-const canSubmit = computed(() => // 编辑态草稿可提交
-  formType.value === 'update' &&
-  formData.value?.status === MesProCardStatusEnum.PREPARE,
+const canSubmit = computed(
+  () =>
+    // 编辑态草稿可提交
+    formType.value === 'update' &&
+    formData.value?.status === MesProCardStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {

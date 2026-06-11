@@ -23,6 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '签到天数',
       help: '只允许设置 1-7，默认签到 7 天为一个周期',
       componentProps: {
+        class: '!w-full',
         min: 1,
         max: 7,
         precision: 0,
@@ -35,6 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'point',
       label: '获得积分',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 0,
         placeholder: '请输入获得积分',
@@ -46,6 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'experience',
       label: '奖励经验',
       componentProps: {
+        class: '!w-full',
         min: 0,
         precision: 0,
         placeholder: '请输入奖励经验',

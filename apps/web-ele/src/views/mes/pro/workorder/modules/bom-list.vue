@@ -35,12 +35,16 @@ const emit = defineEmits<{
   generateWorkOrder: [row: MesProWorkOrderBomApi.WorkOrderBom];
 }>();
 
-const isEditable = computed(() => // 编辑态草稿可增删改 BOM
-  ['create', 'update'].includes(props.formType) &&
-  props.workOrder.status === MesProWorkOrderStatusEnum.PREPARE,
+const isEditable = computed(
+  () =>
+    // 编辑态草稿可增删改 BOM
+    ['create', 'update'].includes(props.formType) &&
+    props.workOrder.status === MesProWorkOrderStatusEnum.PREPARE,
 );
-const isConfirmed = computed(() => // 已确认态可生成子工单
-  props.workOrder.status === MesProWorkOrderStatusEnum.CONFIRMED,
+const isConfirmed = computed(
+  () =>
+    // 已确认态可生成子工单
+    props.workOrder.status === MesProWorkOrderStatusEnum.CONFIRMED,
 );
 
 const [BomFormModal, bomFormModalApi] = useVbenModal({
@@ -56,7 +60,10 @@ function handleRefresh() {
 /** 添加 BOM 物料 */
 function handleCreate() {
   bomFormModalApi
-    .setData({ productId: props.workOrder.productId, workOrderId: props.workOrderId })
+    .setData({
+      productId: props.workOrder.productId,
+      workOrderId: props.workOrderId,
+    })
     .open();
 }
 

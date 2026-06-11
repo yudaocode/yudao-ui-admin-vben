@@ -234,7 +234,9 @@ function createFileLinkHtml(file: unknown) {
   linkEl.setAttribute('href', String(url));
   linkEl.setAttribute('target', '_blank');
   linkEl.setAttribute('rel', 'noopener noreferrer');
-  const fallbackName = String(url).slice(Math.max(0, String(url).lastIndexOf('/') + 1)) || String(url);
+  const fallbackName =
+    String(url).slice(Math.max(0, String(url).lastIndexOf('/') + 1)) ||
+    String(url);
   const recordName = record ? getRecordValue(record, 'name') : undefined;
   linkEl.textContent = recordName ? String(recordName) : fallbackName;
   return linkEl.outerHTML;
@@ -247,16 +249,14 @@ function renderFileListHtml(value: unknown) {
     .join('<br/>');
 }
 
-function mapValuesWithOptions(
-  value: unknown,
-  options: FormFieldOption[] = [],
-) {
+function mapValuesWithOptions(value: unknown, options: FormFieldOption[] = []) {
   const values = toValueArray(value);
   const labels = values
     .map((item) => {
       const matched = options.find(
         (option) =>
-          option?.value === item || String(option?.value ?? '') === String(item),
+          option?.value === item ||
+          String(option?.value ?? '') === String(item),
       );
       return escapeHtml(matched?.label ?? String(item));
     })
@@ -300,9 +300,15 @@ function mapValueWithLabelMap(
  * @returns 打印展示时使用的区域、部门、用户名称映射
  */
 async function loadPrintLookupMaps(formFieldsObj: FormFieldRule[]) {
-  const hasAreaSelect = formFieldsObj.some((item) => item.type === 'AreaSelect');
-  const hasUserSelect = formFieldsObj.some((item) => item.type === 'UserSelect');
-  const hasDeptSelect = formFieldsObj.some((item) => item.type === 'DeptSelect');
+  const hasAreaSelect = formFieldsObj.some(
+    (item) => item.type === 'AreaSelect',
+  );
+  const hasUserSelect = formFieldsObj.some(
+    (item) => item.type === 'UserSelect',
+  );
+  const hasDeptSelect = formFieldsObj.some(
+    (item) => item.type === 'DeptSelect',
+  );
 
   const [areaList, userList, deptList] = await Promise.all([
     hasAreaSelect ? getAreaTree() : Promise.resolve([]),
@@ -335,7 +341,7 @@ function formatPrintField(
   rule: FormFieldRule,
   value: unknown,
   lookupMaps: PrintLookupMaps,
-){
+) {
   const type = String(rule.type ?? '');
 
   switch (type) {
@@ -387,8 +393,9 @@ function formatPrintField(
       } as const;
       const rawValueType = String(getRuleProp(rule, 'valueType') ?? '');
       const valueType =
-        (valueTypeMap as Record<string, 'boolean' | 'number' | 'string'>)[rawValueType] ??
-        'string';
+        (valueTypeMap as Record<string, 'boolean' | 'number' | 'string'>)[
+          rawValueType
+        ] ?? 'string';
       const options = getDictOptions(dictType, valueType);
       return mapValuesWithOptions(value, options);
     }
@@ -402,10 +409,9 @@ function formatPrintField(
     }
     case 'IframeComponent': {
       const propsObj = rule.props;
-      const propsUrl =
-        isPrintableRecord(propsObj)
-          ? String(getRecordValue(propsObj, 'url') ?? '')
-          : '';
+      const propsUrl = isPrintableRecord(propsObj)
+        ? String(getRecordValue(propsObj, 'url') ?? '')
+        : '';
       const iframeUrl = isEmptyValue(value) ? propsUrl : String(value ?? '');
       return iframeUrl ? createFileLinkHtml(iframeUrl) : '';
     }
@@ -446,7 +452,9 @@ function initPrintDataMap() {
   printDataMap.value.startUserDept =
     printData.value.processInstance.startUser?.deptName || '';
   printDataMap.value.processName = printData.value.processInstance.name;
-  printDataMap.value.processNum = String(printData.value.processInstance.id ?? '');
+  printDataMap.value.processNum = String(
+    printData.value.processInstance.id ?? '',
+  );
   printDataMap.value.startTime = formatDate(
     printData.value.processInstance.startTime,
   );

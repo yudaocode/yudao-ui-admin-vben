@@ -4,7 +4,11 @@ import type { MesWmWarehouseAreaApi } from '#/api/mes/wm/warehouse/area';
 
 import { h } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';

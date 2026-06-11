@@ -60,5 +60,7 @@ export function updateStockTakingResult(
 
 /** 删除盘点结果 */
 export function deleteStockTakingResult(id: number) {
-  return requestClient.delete(`/mes/wm/stocktaking-task-result/delete?id=${id}`);
+  return requestClient.delete(
+    `/mes/wm/stocktaking-task-result/delete?id=${id}`,
+  );
 }

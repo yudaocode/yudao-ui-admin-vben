@@ -30,15 +30,18 @@ const emit = defineEmits(['success']);
 const formType = ref<FormType>('create');
 const formData = ref<MesWmProductSalesApi.ProductSales>();
 const originalSnapshot = ref(''); // 表单原始数据快照，用于提交时跳过未变更的保存请求
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isStock = computed(() => formType.value === 'stock'); // 是否为拣货模式
 const isShipping = computed(() => formType.value === 'shipping'); // 是否为填写运单模式
 const isFinish = computed(() => formType.value === 'finish'); // 是否为执行出库模式
-const canSubmit = computed(() => // 是否可提交
-  formType.value === 'update' &&
-  formData.value?.status === MesWmProductSalesStatusEnum.PREPARE,
+const canSubmit = computed(
+  () =>
+    // 是否可提交
+    formType.value === 'update' &&
+    formData.value?.status === MesWmProductSalesStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   if (formType.value === 'detail') {
@@ -125,7 +128,8 @@ async function handleShipping() {
   if (!formData.value?.id) {
     return;
   }
-  const values = (await formApi.getValues()) as MesWmProductSalesApi.ProductSales;
+  const values =
+    (await formApi.getValues()) as MesWmProductSalesApi.ProductSales;
   modalApi.lock();
   try {
     await shippingProductSales({

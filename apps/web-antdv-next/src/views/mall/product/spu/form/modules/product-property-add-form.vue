@@ -130,12 +130,6 @@ const [Modal, modalApi] = useVbenModal({
     await modalApi.close();
     emit('success');
   },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      return;
-    }
-    await formApi.resetForm();
-  },
 });
 </script>
 

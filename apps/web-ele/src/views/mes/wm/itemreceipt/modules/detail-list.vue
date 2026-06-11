@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmItemReceiptDetailApi } from '#/api/mes/wm/itemreceipt/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteItemReceiptDetail } from '#/api/mes/wm/itemreceipt/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmItemReceiptDetailApi.ItemReceiptDetail[];
@@ -30,15 +32,15 @@ function handleEdit(row: MesWmItemReceiptDetailApi.ItemReceiptDetail) {
 }
 
 /** 删除上架明细 */
-async function handleDelete(
-  row: MesWmItemReceiptDetailApi.ItemReceiptDetail,
-) {
+async function handleDelete(row: MesWmItemReceiptDetailApi.ItemReceiptDetail) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.warehouseName]),
   });
   try {
     await deleteItemReceiptDetail(row.id!);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.warehouseName]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.warehouseName]),
+    );
     emit('refresh');
   } finally {
     loadingInstance.close();

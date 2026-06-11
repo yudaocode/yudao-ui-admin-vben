@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmMaterialStockApi } from '#/api/mes/wm/materialstock';
 import type { MesWmStockTakingTaskLineApi } from '#/api/mes/wm/stocktaking/task/line';
@@ -16,7 +18,7 @@ import {
 import { $t } from '#/locales';
 import { WmMaterialStockSelectDialog } from '#/views/mes/wm/materialstock/components';
 
-import { type FormType, useLineGridColumns } from '../data';
+import { useLineGridColumns } from '../data';
 
 const props = defineProps<{
   formType: FormType;
@@ -38,7 +40,9 @@ function handleAdd() {
 }
 
 /** 库存选择确认回调：将选中的库存记录批量创建为盘点行 */
-async function handleStockSelected(rows: MesWmMaterialStockApi.MaterialStock[]) {
+async function handleStockSelected(
+  rows: MesWmMaterialStockApi.MaterialStock[],
+) {
   if (rows.length === 0) {
     return;
   }

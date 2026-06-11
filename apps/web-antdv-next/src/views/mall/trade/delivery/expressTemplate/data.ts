@@ -140,6 +140,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '显示顺序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入显示顺序',
         min: 0,
       },

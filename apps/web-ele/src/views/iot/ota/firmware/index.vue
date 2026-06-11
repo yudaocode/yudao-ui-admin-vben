@@ -13,11 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import {
-  getProductName,
-  useGridColumns,
-  useGridFormSchema,
-} from './data';
+import { getProductName, useGridColumns, useGridFormSchema } from './data';
 import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();

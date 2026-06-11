@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmTransferDetailApi } from '#/api/mes/wm/transfer/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteTransferDetail } from '#/api/mes/wm/transfer/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmTransferDetailApi.TransferDetail[];
@@ -37,7 +39,9 @@ async function handleDelete(row: MesWmTransferDetailApi.TransferDetail) {
   });
   try {
     await deleteTransferDetail(row.id!);
-    message.success($t('ui.actionMessage.deleteSuccess', [row.toWarehouseName]));
+    message.success(
+      $t('ui.actionMessage.deleteSuccess', [row.toWarehouseName]),
+    );
     emit('refresh');
   } finally {
     hideLoading();

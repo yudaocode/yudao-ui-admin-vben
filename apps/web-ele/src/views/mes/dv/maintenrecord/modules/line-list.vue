@@ -4,7 +4,11 @@ import type { MesDvMaintenRecordLineApi } from '#/api/mes/dv/maintenrecord/line'
 
 import { computed, ref, watch } from 'vue';
 
-import { DICT_TYPE, MesDvMaintenStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesDvMaintenStatusEnum,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton, ElDialog, ElMessage } from 'element-plus';
@@ -25,7 +29,9 @@ const props = defineProps<{ disabled?: boolean; recordId: number }>();
 const formOpen = ref(false);
 const formLoading = ref(false);
 const lineFormType = ref<'create' | 'update'>('create');
-const formTitle = computed(() => (lineFormType.value === 'create' ? '添加明细' : '修改明细'));
+const formTitle = computed(() =>
+  lineFormType.value === 'create' ? '添加明细' : '修改明细',
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -169,8 +175,11 @@ async function submitForm() {
   }
   formLoading.value = true;
   try {
-    const data = (await formApi.getValues()) as MesDvMaintenRecordLineApi.MaintenRecordLine;
-    await (data.id ? updateMaintenRecordLine(data) : createMaintenRecordLine(data));
+    const data =
+      (await formApi.getValues()) as MesDvMaintenRecordLineApi.MaintenRecordLine;
+    await (data.id
+      ? updateMaintenRecordLine(data)
+      : createMaintenRecordLine(data));
     formOpen.value = false;
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await gridApi.query();
@@ -198,7 +207,13 @@ watch(
   <div class="mx-4 mt-4">
     <div v-if="!disabled" class="mb-3">
       <TableAction
-        :actions="[{ label: '添加明细', type: 'primary', onClick: openForm.bind(null, 'create') }]"
+        :actions="[
+          {
+            label: '添加明细',
+            type: 'primary',
+            onClick: openForm.bind(null, 'create'),
+          },
+        ]"
       />
     </div>
     <Grid table-title="明细列表">
@@ -228,7 +243,9 @@ watch(
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>
-        <ElButton type="primary" :loading="formLoading" @click="submitForm">确定</ElButton>
+        <ElButton type="primary" :loading="formLoading" @click="submitForm">
+          确定
+        </ElButton>
       </template>
     </ElDialog>
   </div>

@@ -89,8 +89,20 @@ function initGantt() {
 
   gantt.config.columns = [
     { name: 'text', label: '任务名称', tree: true, width: 180, resize: true },
-    { name: 'workstation', label: '工作站', align: 'center', width: 100, resize: true },
-    { name: 'process', label: '工序', align: 'center', width: 100, resize: true },
+    {
+      name: 'workstation',
+      label: '工作站',
+      align: 'center',
+      width: 100,
+      resize: true,
+    },
+    {
+      name: 'process',
+      label: '工序',
+      align: 'center',
+      width: 100,
+      resize: true,
+    },
     { name: 'start_date', label: '开始时间', align: 'center', width: 130 },
     { name: 'end_date', label: '结束时间', align: 'center', width: 130 },
   ];
@@ -194,10 +206,16 @@ defineExpose({ loadData });
 </script>
 
 <template>
-  <div ref="ganttContainer" :style="{ width: '100%', height: `${height}px` }"></div>
+  <div
+    ref="ganttContainer"
+    :style="{ width: '100%', height: `${height}px` }"
+  ></div>
 </template>
 
 <style>
+/* dhtmlx-gantt 第三方类名使用下划线命名，无法重命名，故禁用 BEM 类名规则 */
+/* stylelint-disable selector-class-pattern */
+
 /* 今天标记线 */
 .gantt_marker.today {
   background-color: #f44;

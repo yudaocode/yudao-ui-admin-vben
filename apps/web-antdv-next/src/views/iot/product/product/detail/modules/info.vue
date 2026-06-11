@@ -5,7 +5,13 @@ import { ref } from 'vue';
 
 import { DeviceTypeEnum, DICT_TYPE } from '@vben/constants';
 
-import { Button, Card, Descriptions, message } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Descriptions,
+  DescriptionsItem,
+  message,
+} from 'antdv-next';
 
 import { DictTag } from '#/components/dict-tag';
 
@@ -19,7 +25,9 @@ const showProductSecret = ref(false); // 是否显示产品密钥
 
 /** 格式化日期 */
 function formatDate(date?: Date | string) {
-  if (!date) return '-';
+  if (!date) {
+    return '-';
+  }
   return new Date(date).toLocaleString('zh-CN');
 }
 
@@ -74,21 +82,22 @@ async function copyToClipboard(text: string) {
       </DescriptionsItem>
       <DescriptionsItem
         v-if="
-          [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY].includes(
-            product.deviceType!,
-          )
+          (
+            [DeviceTypeEnum.DEVICE, DeviceTypeEnum.GATEWAY] as number[]
+          ).includes(product.deviceType!)
         "
         label="联网方式"
       >
         <DictTag :type="DICT_TYPE.IOT_NET_TYPE" :value="product.netType" />
       </DescriptionsItem>
-      <DescriptionsItem v-if="product.productSecret" label="ProductSecret">
+      <DescriptionsItem label="产品密钥">
         <span v-if="showProductSecret">{{ product.productSecret }}</span>
         <span v-else>********</span>
         <Button class="ml-2" size="small" @click="toggleProductSecretVisible">
           {{ showProductSecret ? '隐藏' : '显示' }}
         </Button>
         <Button
+          v-if="showProductSecret && product.productSecret"
           class="ml-2"
           size="small"
           @click="copyToClipboard(product.productSecret || '')"

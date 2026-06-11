@@ -38,7 +38,7 @@ const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
 /** 是否有位置信息（合法经纬度 0 不应视为空） */
 const hasLocation = computed(() => {
-  return props.device.longitude != null && props.device.latitude != null;
+  return props.device.longitude !== null && props.device.latitude !== null;
 });
 
 /** 打开地图弹窗 */

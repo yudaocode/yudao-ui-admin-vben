@@ -357,9 +357,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <ElTag type="success" class="m-0">{{ getActionSummary(row) }}</ElTag>
       </template>
       <!-- 最近触发列 -->
-      <template #lastTriggeredTime="{ row }">
-        <span v-if="row.lastTriggeredTime">
-          {{ formatDateTime(row.lastTriggeredTime) }}
+      <template #lastTriggerTime="{ row }">
+        <span v-if="row.lastTriggerTime">
+          {{ formatDateTime(row.lastTriggerTime) }}
         </span>
         <span v-else class="text-muted-foreground">未触发</span>
       </template>

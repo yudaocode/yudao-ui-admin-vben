@@ -9,7 +9,10 @@ import { Alert, Button, message, Modal } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBatchPage } from '#/api/mes/wm/batch';
 
-import { useBatchSelectGridColumns, useBatchSelectGridFormSchema } from '../data';
+import {
+  useBatchSelectGridColumns,
+  useBatchSelectGridFormSchema,
+} from '../data';
 
 const emit = defineEmits<{
   selected: [rows: MesWmBatchApi.Batch[]];
@@ -26,13 +29,13 @@ const externalSalesOrderCode = ref<string>(); // 外部传入的默认销售订�
 
 const filterTip = computed(() => {
   const parts: string[] = [];
-  if (externalClientId.value != null) {
+  if (externalClientId.value !== null) {
     parts.push('客户');
   }
-  if (externalVendorId.value != null) {
+  if (externalVendorId.value !== null) {
     parts.push('供应商');
   }
-  if (externalSalesOrderCode.value != null) {
+  if (externalSalesOrderCode.value !== null) {
     parts.push('销售订单');
   }
   return parts.length > 0 ? `已按${parts.join('/')}预过滤` : '';

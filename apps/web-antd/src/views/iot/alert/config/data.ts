@@ -19,7 +19,9 @@ import { NotifyTemplateSelect } from '#/views/system/notify/template/components'
 import { SmsTemplateSelect } from '#/views/system/sms/template/components';
 
 function hasReceiveType(values: Partial<Record<string, any>>, type: number) {
-  return Array.isArray(values.receiveTypes) && values.receiveTypes.includes(type);
+  return (
+    Array.isArray(values.receiveTypes) && values.receiveTypes.includes(type)
+  );
 }
 
 /** 新增/修改告警配置的表单 */
@@ -155,7 +157,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: markRaw(NotifyTemplateSelect),
       dependencies: {
         triggerFields: ['receiveTypes'],
-        show: (values) => hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY),
+        show: (values) =>
+          hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY),
         trigger: async (values, formApi) => {
           if (
             !hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY) &&

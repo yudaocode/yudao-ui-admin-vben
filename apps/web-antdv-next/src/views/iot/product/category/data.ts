@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { IotProductCategoryApi } from '#/api/iot/product/category';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -35,8 +36,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '分类排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入分类排序',
-        class: 'w-full',
         min: 0,
         precision: 0,
       },
@@ -91,10 +92,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions['columns'] {
+export function useGridColumns(): VxeTableGridOptions<IotProductCategoryApi.ProductCategory>['columns'] {
   return [
     {
-      type: 'seq',
+      field: 'id',
       title: 'ID',
       width: 80,
     },

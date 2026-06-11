@@ -7,7 +7,11 @@ import type { MesWmStockTakingResultApi } from '#/api/mes/wm/stocktaking/task/re
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesWmStockTakingTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesWmStockTakingTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -30,9 +34,7 @@ export type FormType = 'create' | 'detail' | 'execute' | 'submit' | 'update';
 /** 表单头部是否只读（提交、执行盘点、详情态） */
 function isHeaderReadonly(formType: FormType): boolean {
   return (
-    formType === 'detail' ||
-    formType === 'execute' ||
-    formType === 'submit'
+    formType === 'detail' || formType === 'execute' || formType === 'submit'
   );
 }
 
@@ -505,7 +507,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，物料由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -518,7 +520,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，批次由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -550,7 +552,7 @@ export function useResultFormSchema(
       // 选中盘点清单后，仓库由清单带出且禁止改动
       dependencies: {
         triggerFields: ['lineId'],
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
       },
     },
     {
@@ -562,7 +564,7 @@ export function useResultFormSchema(
         triggerFields: ['warehouseId', 'lineId'],
         show: (values) => !!values.warehouseId,
         // 选中盘点清单后，库区由清单带出且禁止改动
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
         componentProps: (values) => ({
           onChange: () => formApi?.setFieldValue('areaId', undefined),
           placeholder: '请选择库区',
@@ -579,7 +581,7 @@ export function useResultFormSchema(
         triggerFields: ['locationId', 'lineId'],
         show: (values) => !!values.locationId,
         // 选中盘点清单后，库位由清单带出且禁止改动
-        disabled: (values) => values.lineId != null,
+        disabled: (values) => values.lineId !== null,
         componentProps: (values) => ({
           locationId: values.locationId,
           placeholder: '请选择库位',

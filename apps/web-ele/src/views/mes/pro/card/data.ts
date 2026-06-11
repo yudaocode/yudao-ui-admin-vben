@@ -5,7 +5,11 @@ import type { MesProCardProcessApi } from '#/api/mes/pro/card/process';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 
 import { ElButton } from 'element-plus';
 

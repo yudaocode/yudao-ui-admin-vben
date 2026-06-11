@@ -33,7 +33,7 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesWmStockTakingPlanApi.StockTakingPlan[];
   records.forEach((row) => {
-    if (row.id != null) {
+    if (!row.id) {
       selectedMap.set(row.id, row);
     }
   });
@@ -51,9 +51,7 @@ function handleRadioChange(row: MesWmStockTakingPlanApi.StockTakingPlan) {
 }
 
 /** 多选模式下切换行勾选 */
-async function toggleMultipleRow(
-  row: MesWmStockTakingPlanApi.StockTakingPlan,
-) {
+async function toggleMultipleRow(row: MesWmStockTakingPlanApi.StockTakingPlan) {
   const selected = gridApi.grid.isCheckedByCheckboxRow(row);
   await gridApi.grid.setCheckboxRow(row, !selected);
   selectedRows.value = getMultipleSelectedRows();
@@ -79,9 +77,10 @@ async function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
   }
-  const rows = gridApi.grid.getData() as MesWmStockTakingPlanApi.StockTakingPlan[];
+  const rows =
+    gridApi.grid.getData() as MesWmStockTakingPlanApi.StockTakingPlan[];
   for (const row of rows) {
-    if (row.id == null || !preSelectedIds.value.includes(row.id)) {
+    if (row.id === null || !preSelectedIds.value.includes(row.id)) {
       continue;
     }
     if (multiple.value) {

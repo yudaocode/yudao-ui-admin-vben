@@ -5,7 +5,11 @@ import type { MesWmPackageLineApi } from '#/api/mes/wm/packages/line';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesProWorkOrderStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesProWorkOrderStatusEnum,
+} from '@vben/constants';
 
 import { Button } from 'ant-design-vue';
 

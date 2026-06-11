@@ -4,7 +4,12 @@ import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 
 import { h } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesDvCheckPlanStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesDvCheckPlanStatusEnum,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';
@@ -56,7 +61,9 @@ export function useFormSchema(
                 {
                   type: 'default',
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_CHECK_PLAN_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_CHECK_PLAN_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },
@@ -213,8 +220,18 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckPlanApi.CheckPla
         props: { type: DICT_TYPE.MES_DV_SUBJECT_TYPE },
       },
     },
-    { field: 'startDate', title: '开始日期', width: 150, formatter: 'formatDate' },
-    { field: 'endDate', title: '结束日期', width: 150, formatter: 'formatDate' },
+    {
+      field: 'startDate',
+      title: '开始日期',
+      width: 150,
+      formatter: 'formatDate',
+    },
+    {
+      field: 'endDate',
+      title: '结束日期',
+      width: 150,
+      formatter: 'formatDate',
+    },
     {
       field: 'cycleType',
       title: '周期类型',
@@ -234,7 +251,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckPlanApi.CheckPla
         props: { type: DICT_TYPE.MES_DV_CHECK_PLAN_STATUS },
       },
     },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 240,
@@ -287,8 +309,18 @@ export function useCheckPlanSelectGridColumns(
         props: { type: DICT_TYPE.MES_DV_SUBJECT_TYPE },
       },
     },
-    { field: 'startDate', title: '开始日期', width: 120, formatter: 'formatDate' },
-    { field: 'endDate', title: '结束日期', width: 120, formatter: 'formatDate' },
+    {
+      field: 'startDate',
+      title: '开始日期',
+      width: 120,
+      formatter: 'formatDate',
+    },
+    {
+      field: 'endDate',
+      title: '结束日期',
+      width: 120,
+      formatter: 'formatDate',
+    },
     { field: 'cycleCount', title: '频率', width: 100 },
     {
       field: 'cycleType',

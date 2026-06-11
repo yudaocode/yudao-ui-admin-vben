@@ -6,7 +6,13 @@ import { useRouter } from 'vue-router';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Card, Descriptions, message } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Descriptions,
+  DescriptionsItem,
+  message,
+} from 'antdv-next';
 
 import DeviceForm from '../../modules/form.vue';
 
@@ -62,7 +68,7 @@ function openEditForm(row: IotDeviceApi.Device) {
       <div>
         <h2 class="text-xl font-bold">{{ device.deviceName }}</h2>
       </div>
-      <div class="space-x-2">
+      <div class="flex gap-2">
         <Button
           v-if="product.status === 0"
           v-access:code="['iot:device:update']"

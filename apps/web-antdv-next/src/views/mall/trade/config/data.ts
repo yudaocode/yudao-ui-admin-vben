@@ -63,10 +63,10 @@ export const schema: VbenFormSchema[] = [
     label: '满额包邮',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 2,
       placeholder: '请输入满额包邮金额',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {
@@ -145,10 +145,10 @@ export const schema: VbenFormSchema[] = [
     label: '一级返佣比例（%）',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       max: 100,
       placeholder: '请输入一级返佣比例',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {
@@ -162,10 +162,10 @@ export const schema: VbenFormSchema[] = [
     label: '二级返佣比例（%）',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       max: 100,
       placeholder: '请输入二级返佣比例',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {
@@ -179,9 +179,9 @@ export const schema: VbenFormSchema[] = [
     label: '佣金冻结天数',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       placeholder: '请输入佣金冻结天数',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {
@@ -195,10 +195,10 @@ export const schema: VbenFormSchema[] = [
     label: '提现最低金额（元）',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       precision: 2,
       placeholder: '请输入提现最低金额',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {
@@ -212,11 +212,11 @@ export const schema: VbenFormSchema[] = [
     label: '提现手续费（%）',
     component: 'InputNumber',
     componentProps: {
+      class: '!w-full',
       min: 0,
       max: 100,
       precision: 2,
       placeholder: '请输入提现手续费百分比',
-      class: 'w-full',
     },
     rules: 'required',
     dependencies: {

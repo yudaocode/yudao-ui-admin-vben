@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, TabPane, Tabs } from 'antdv-next';
+import { Card, message, Tabs } from 'antdv-next';
 
 import { getClue, transformClue } from '#/api/crm/clue';
 import { getOperateLogPage } from '#/api/crm/operateLog';
@@ -32,6 +32,12 @@ const clueId = ref(0); // 线索编号
 const clue = ref<CrmClueApi.Clue>({} as CrmClueApi.Clue); // 线索详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+const clueTabItems = [
+  { key: '1', label: '跟进记录', forceRender: true },
+  { key: '2', label: '基本信息', forceRender: true },
+  { key: '3', label: '团队成员', forceRender: true },
+  { key: '4', label: '操作日志', forceRender: true },
+];
 
 const [Descriptions] = useDescription({
   bordered: false,
@@ -84,9 +90,7 @@ function handleTransfer() {
 /** 转化为客户 */
 async function handleTransform(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: '确定将该线索转化为客户吗？',
-    });
+    await confirm('确定将该线索转化为客户吗？');
   } catch {
     return false;
   }
@@ -145,25 +149,24 @@ onMounted(() => {
       <Descriptions :data="clue" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
-      <Tabs :tab-bar-gutter="16">
-        <TabPane tab="跟进记录" key="1" :force-render="true">
-          <FollowUp :biz-id="clueId" :biz-type="BizTypeEnum.CRM_CLUE" />
-        </TabPane>
-        <TabPane tab="基本信息" key="2" :force-render="true">
-          <Info :clue="clue" />
-        </TabPane>
-        <TabPane tab="团队成员" key="3" :force-render="true">
+      <Tabs :items="clueTabItems" :tab-bar-gutter="16">
+        <template #contentRender="{ item }">
+          <FollowUp
+            v-if="item.key === '1'"
+            :biz-id="clueId"
+            :biz-type="BizTypeEnum.CRM_CLUE"
+          />
+          <Info v-else-if="item.key === '2'" :clue="clue" />
           <PermissionList
+            v-else-if="item.key === '3'"
             ref="permissionListRef"
             :biz-id="clueId"
             :biz-type="BizTypeEnum.CRM_CLUE"
             :show-action="true"
             @quit-team="handleBack"
           />
-        </TabPane>
-        <TabPane tab="操作日志" key="4" :force-render="true">
-          <OperateLog :log-list="logList" />
-        </TabPane>
+          <OperateLog v-else-if="item.key === '4'" :log-list="logList" />
+        </template>
       </Tabs>
     </Card>
   </Page>

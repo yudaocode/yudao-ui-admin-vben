@@ -125,7 +125,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #machineryName="{ row }">
-        <Button type="link" @click="handleDetail(row)">{{ row.machineryName }}</Button>
+        <Button type="link" @click="handleDetail(row)">
+          {{ row.machineryName }}
+        </Button>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -145,7 +147,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['mes:dv-mainten-record:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.machineryName]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.machineryName,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
               ifShow: row.status === MesDvMaintenRecordStatusEnum.PREPARE,

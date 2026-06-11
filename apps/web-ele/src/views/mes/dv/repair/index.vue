@@ -52,7 +52,9 @@ function handleFinish(row: MesDvRepairApi.Repair) {
 
 /** 删除维修工单 */
 async function handleDelete(row: MesDvRepairApi.Repair) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteRepair(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -79,7 +81,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) =>
-          await getRepairPage({ pageNo: page.currentPage, pageSize: page.pageSize, ...formValues }),
+          await getRepairPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          }),
       },
     },
     rowConfig: {
@@ -124,7 +130,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.code }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction

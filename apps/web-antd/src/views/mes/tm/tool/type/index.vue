@@ -8,7 +8,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteToolType, exportToolType, getToolTypePage } from '#/api/mes/tm/tool/type';
+import {
+  deleteToolType,
+  exportToolType,
+  getToolTypePage,
+} from '#/api/mes/tm/tool/type';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';

@@ -69,10 +69,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       slots: { default: 'actionsCol' },
     },
     {
-      field: 'lastTriggeredTime',
+      field: 'lastTriggerTime',
       title: '最近触发',
       width: 180,
-      slots: { default: 'lastTriggeredTime' },
+      slots: { default: 'lastTriggerTime' },
     },
     {
       field: 'createTime',

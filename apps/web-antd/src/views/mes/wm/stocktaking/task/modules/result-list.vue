@@ -37,9 +37,7 @@ function handleRefresh() {
 
 /** 新增盘点结果 */
 function handleCreate() {
-  resultFormModalApi
-    .setData({ execute: true, taskId: props.taskId })
-    .open();
+  resultFormModalApi.setData({ execute: true, taskId: props.taskId }).open();
 }
 
 /** 编辑盘点结果 */
@@ -48,9 +46,7 @@ function handleEdit(row: MesWmStockTakingResultApi.StockTakingResult) {
 }
 
 /** 删除盘点结果 */
-async function handleDelete(
-  row: MesWmStockTakingResultApi.StockTakingResult,
-) {
+async function handleDelete(row: MesWmStockTakingResultApi.StockTakingResult) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.itemName]),
     duration: 0,

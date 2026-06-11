@@ -61,9 +61,9 @@ async function handleStatusChange(
   row: MallCouponTemplateApi.CouponTemplate,
 ): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `你要将${row.name}的状态切换为【${newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用'}】吗？`,
-    });
+    await confirm(
+      `你要将${row.name}的状态切换为【${newStatus === CommonStatusEnum.ENABLE ? '启用' : '停用'}】吗？`,
+    );
   } catch {
     return false;
   }

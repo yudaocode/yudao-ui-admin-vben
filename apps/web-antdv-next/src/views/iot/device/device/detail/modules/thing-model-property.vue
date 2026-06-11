@@ -23,6 +23,7 @@ import {
   Divider,
   Input,
   Row,
+  SpaceCompact,
   Switch,
   Tag,
 } from 'antdv-next';
@@ -45,7 +46,7 @@ let autoRefreshTimer: any = null; // 定时器
 const viewMode = ref<'card' | 'list'>('card'); // 视图模式状态
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<IotDeviceApi.DevicePropertyDetail>['columns'] {
   return [
     {
       field: 'identifier',
@@ -207,6 +208,13 @@ function handleQuery() {
   }
 }
 
+/** 搜索关键词变化 */
+function handleKeywordChange(event: Event) {
+  if (!(event.target as HTMLInputElement).value) {
+    handleQuery();
+  }
+}
+
 /** 视图切换 */
 async function handleViewModeChange(mode: 'card' | 'list') {
   if (viewMode.value === mode) {
@@ -281,16 +289,17 @@ onBeforeUnmount(() => {
           allow-clear
           placeholder="请输入属性名称、标识符"
           style="width: 240px"
+          @change="handleKeywordChange"
           @press-enter="handleQuery"
         />
         <Switch
           v-model:checked="autoRefresh"
           checked-children="定时刷新"
-          class="ml-20px"
+          class="ml-[20px]"
           un-checked-children="定时刷新"
         />
       </div>
-      <Space>
+      <SpaceCompact>
         <Button
           :type="viewMode === 'card' ? 'primary' : 'default'"
           @click="handleViewModeChange('card')"
@@ -303,7 +312,7 @@ onBeforeUnmount(() => {
         >
           <IconifyIcon icon="ep:list" />
         </Button>
-      </Space>
+      </SpaceCompact>
     </div>
 
     <!-- 分隔线 -->
@@ -322,7 +331,7 @@ onBeforeUnmount(() => {
           class="mb-4"
         >
           <Card
-            :styles="{ body: { padding: '0' } }"
+            :body-style="{ padding: '0' }"
             class="relative h-full overflow-hidden transition-colors"
           >
             <!-- 添加渐变背景层 -->

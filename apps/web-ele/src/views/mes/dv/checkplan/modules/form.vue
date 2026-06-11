@@ -11,7 +11,11 @@ import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
+import {
+  createCheckPlan,
+  getCheckPlan,
+  updateCheckPlan,
+} from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -60,7 +64,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createCheckPlan(data);
-        formData.value = { ...data, id: id as number, status: MesDvCheckPlanStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesDvCheckPlanStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {
@@ -102,12 +110,20 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-4/5">
     <Form class="mx-4" />
-    <ElTabs v-if="formType !== 'create' && formData?.id" v-model="subTabsName" class="mx-4 mt-4">
+    <ElTabs
+      v-if="formType !== 'create' && formData?.id"
+      v-model="subTabsName"
+      class="mx-4 mt-4"
+    >
       <ElTabPane label="设备" name="machinery">
         <MachineryList :form-type="formType" :plan-id="formData.id" />
       </ElTabPane>
       <ElTabPane label="项目" name="subject">
-        <SubjectList :form-type="formType" :plan-id="formData.id" :plan-type="formData.type" />
+        <SubjectList
+          :form-type="formType"
+          :plan-id="formData.id"
+          :plan-type="formData.type"
+        />
       </ElTabPane>
     </ElTabs>
   </Modal>

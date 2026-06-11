@@ -13,10 +13,8 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import OtaFirmwareForm from '../modules/ota-firmware-form.vue';
-import { useGridColumns, useGridFormSchema } from './data';
-
-defineOptions({ name: 'IoTOtaFirmware' });
+import { getProductName, useGridColumns, useGridFormSchema } from './data';
+import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
 
@@ -47,7 +45,7 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
     duration: 0,
   });
   try {
-    await deleteOtaFirmware(row.id as number);
+    await deleteOtaFirmware(row.id!);
     message.success({
       content: $t('ui.actionMessage.deleteSuccess', [row.name]),
     });
@@ -60,6 +58,11 @@ async function handleDelete(row: IoTOtaFirmwareApi.Firmware) {
 /** 查看固件详情 */
 function handleDetail(row: IoTOtaFirmwareApi.Firmware) {
   push({ name: 'IoTOtaFirmwareDetail', params: { id: row.id } });
+}
+
+/** 跳转到产品详情 */
+function handleOpenProductDetail(productId: number) {
+  push({ name: 'IoTProductDetail', params: { id: productId } });
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -104,17 +107,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['固件']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:ota-firmware:create'],
               onClick: handleCreate,
             },
           ]"
         />
       </template>
-
-      <!-- 产品名称列 -->
-      <template #product="{ row }">
-        <span class="text-gray-700">{{ row.productName || '未知产品' }}</span>
+      <!-- 所属产品列：点击跳产品详情 -->
+      <template #productName="{ row }">
+        <a
+          v-if="row.productId && getProductName(row.productId) !== '-'"
+          class="cursor-pointer text-primary hover:underline"
+          @click="handleOpenProductDetail(row.productId)"
+        >
+          {{ getProductName(row.productId) }}
+        </a>
+        <span v-else class="text-gray-400">-</span>
       </template>
-
       <!-- 固件文件列 -->
       <template #fileUrl="{ row }">
         <div
@@ -136,8 +145,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
         </div>
         <span v-else class="text-gray-400">无文件</span>
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -145,12 +152,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.detail'),
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['iot:ota-firmware:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:ota-firmware:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -158,6 +167,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:ota-firmware:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

@@ -11,7 +11,11 @@ import { MesDvCheckPlanStatusEnum } from '@vben/constants';
 import { message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createCheckPlan, getCheckPlan, updateCheckPlan } from '#/api/mes/dv/checkplan';
+import {
+  createCheckPlan,
+  getCheckPlan,
+  updateCheckPlan,
+} from '#/api/mes/dv/checkplan';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -60,7 +64,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'create') {
         const id = await createCheckPlan(data);
-        formData.value = { ...data, id: id as number, status: MesDvCheckPlanStatusEnum.PREPARE };
+        formData.value = {
+          ...data,
+          id: id as number,
+          status: MesDvCheckPlanStatusEnum.PREPARE,
+        };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
       } else {
@@ -111,7 +119,11 @@ const [Modal, modalApi] = useVbenModal({
         <MachineryList :form-type="formType" :plan-id="formData.id" />
       </Tabs.TabPane>
       <Tabs.TabPane key="subject" tab="项目">
-        <SubjectList :form-type="formType" :plan-id="formData.id" :plan-type="formData.type" />
+        <SubjectList
+          :form-type="formType"
+          :plan-id="formData.id"
+          :plan-type="formData.type"
+        />
       </Tabs.TabPane>
     </Tabs>
   </Modal>

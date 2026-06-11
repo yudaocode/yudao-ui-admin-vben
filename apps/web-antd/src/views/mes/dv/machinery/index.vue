@@ -11,7 +11,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { Button, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMachinery, exportMachinery, getMachineryPage } from '#/api/mes/dv/machinery';
+import {
+  deleteMachinery,
+  exportMachinery,
+  getMachineryPage,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { MachineryTypeTree } from '#/views/mes/dv/machinery/type/components';
 
@@ -77,7 +81,9 @@ function handleImport() {
 }
 
 /** 按设备类型筛选 */
-function handleTypeNodeClick(row: MesDvMachineryTypeApi.MachineryType | undefined) {
+function handleTypeNodeClick(
+  row: MesDvMachineryTypeApi.MachineryType | undefined,
+) {
   selectedMachineryTypeId.value = row?.id;
   handleRefresh();
 }
@@ -157,7 +163,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
           </template>
           <template #code="{ row }">
-            <Button type="link" @click="handleDetail(row)">{{ row.code }}</Button>
+            <Button type="link" @click="handleDetail(row)">
+              {{ row.code }}
+            </Button>
           </template>
           <template #actions="{ row }">
             <TableAction

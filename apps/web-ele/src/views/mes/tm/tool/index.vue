@@ -47,7 +47,9 @@ function handleEdit(row: MesTmToolApi.Tool) {
 
 /** 删除工具 */
 async function handleDelete(row: MesTmToolApi.Tool) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteTool(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -138,7 +140,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
           </template>
           <template #code="{ row }">
-            <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+            <ElButton link type="primary" @click="handleDetail(row)">
+              {{ row.code }}
+            </ElButton>
           </template>
           <template #actions="{ row }">
             <TableAction

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Dayjs } from 'dayjs';
 
 import type { IotStatisticsApi } from '#/api/iot/statistics';
@@ -22,16 +22,17 @@ defineOptions({ name: 'MessageTrendCard' });
 const messageChartRef = ref();
 const { renderEcharts } = useEcharts(messageChartRef);
 
-const loading = ref(false);
+const loading = ref(false); // 加载状态
 const messageData = ref<IotStatisticsApi.DeviceMessageSummaryByDateRespVO[]>(
   [],
-);
+); // 消息趋势数据
+const isFirstMount = ref(true); // 首次挂载标记，用于跳过子组件 mount 时的默认 emit
 
 /** 时间范围（仅日期，不包含时分秒） */
 const dateRange = ref<[string, string]>([
-  // 默认显示最近一周的数据（包含今天和前六天）
-  dayjs().subtract(6, 'day').format('YYYY-MM-DD'),
-  dayjs().format('YYYY-MM-DD'),
+  // 默认显示最近一周的数据（截至昨天）
+  dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
+  dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
 ]);
 
 /** 将日期范围转换为带时分秒的格式 */
@@ -74,6 +75,11 @@ function handleDateRangeChange(times?: [Dayjs, Dayjs]) {
   ];
   // 将选择的日期转换为带时分秒的格式（开始日期 00:00:00，结束日期 23:59:59）
   queryParams.times = formatDateRangeWithTime(dateRange.value);
+  if (isFirstMount.value) {
+    // 子组件 ShortcutDateRangePicker mount 时会 emit 一次默认日期范围，跳过 fetch；
+    // 首次请求统一由父组件 onMounted 发起，避免双请求
+    return;
+  }
   handleQuery();
 }
 
@@ -91,6 +97,8 @@ async function fetchMessageData() {
   loading.value = true;
   try {
     messageData.value = await getDeviceMessageSummaryByDate(queryParams);
+  } catch {
+    messageData.value = [];
   } finally {
     loading.value = false;
     await renderChartWhenReady();
@@ -122,10 +130,12 @@ async function renderChartWhenReady() {
   await nextTick();
   initChart();
 }
-
-/** 组件挂载时查询数据 */
+// 父组件挂载后统一发起首次请求；
+// 原因：子组件 ShortcutDateRangePicker 早期 emit 触发的请求落在 useEcharts isActiveRef = false 阶段，会被 renderEcharts 静默丢弃；
+// 通过 handleDateRangeChange 在 isFirstMount=true 时跳过 fetch，由这里统一发起一次，避免双请求
 onMounted(() => {
   fetchMessageData();
+  isFirstMount.value = false;
 });
 </script>
 

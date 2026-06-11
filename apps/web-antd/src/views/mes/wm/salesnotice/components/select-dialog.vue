@@ -249,7 +249,7 @@ async function openModal(
   preSelectedIds.value = selectedIds || [];
   // 固定状态时隐藏状态搜索项，未固定时展示
   gridApi.formApi.setState({
-    schema: useSearchSchema(fixedStatus.value != null),
+    schema: useSearchSchema(fixedStatus.value !== null),
   });
   await nextTick();
   await resetQueryState();

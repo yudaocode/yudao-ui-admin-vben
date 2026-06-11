@@ -16,15 +16,18 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue']);
 
 interface KeyValueItem {
+  _uid: number;
   key: string;
   value: string;
 }
 
+let uidCounter = 0;
 const items = ref<KeyValueItem[]>([]); // 内部 key-value 项列表
 
 /** 添加项目 */
 function addItem() {
-  items.value.push({ key: '', value: '' });
+  uidCounter += 1;
+  items.value.push({ _uid: uidCounter, key: '', value: '' });
   updateModelValue();
 }
 
@@ -54,24 +57,24 @@ watch(
     if (isEmpty(val) || !isEmpty(items.value)) {
       return;
     }
-    items.value = Object.entries(props.modelValue).map(([key, value]) => ({
-      key,
-      value,
-    }));
+    items.value = Object.entries(props.modelValue).map(([key, value]) => {
+      uidCounter += 1;
+      return { _uid: uidCounter, key, value };
+    });
   },
 );
 </script>
 
 <template>
-  <div v-for="(item, index) in items" :key="index" class="mb-2 flex w-full">
-    <Input v-model="item.key" class="mr-2" placeholder="键" />
-    <Input v-model="item.value" placeholder="值" />
-    <Button class="ml-2" text danger @click="removeItem(index)">
+  <div v-for="(item, index) in items" :key="item._uid" class="mb-2 flex w-full">
+    <Input v-model:value="item.key" class="mr-2" placeholder="键" />
+    <Input v-model:value="item.value" placeholder="值" />
+    <Button class="ml-2" type="link" danger @click="removeItem(index)">
       <IconifyIcon icon="ant-design:delete-outlined" />
       删除
     </Button>
   </div>
-  <Button text type="primary" @click="addItem">
+  <Button type="link" @click="addItem">
     <IconifyIcon icon="ant-design:plus-outlined" />
     {{ addButtonText }}
   </Button>

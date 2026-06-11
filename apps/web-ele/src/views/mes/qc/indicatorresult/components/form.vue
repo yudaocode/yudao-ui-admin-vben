@@ -98,7 +98,7 @@ const [Modal, modalApi] = useVbenModal({
         item.valueType === MesQcResultValueType.INTEGER
       ) {
         submit.value =
-          item.valueNumber == null ? undefined : String(item.valueNumber);
+          item.valueNumber === null ? undefined : String(item.valueNumber);
       } else {
         submit.value = item.value;
       }
@@ -149,7 +149,7 @@ const [Modal, modalApi] = useVbenModal({
         valueNumber:
           (item.valueType === MesQcResultValueType.FLOAT ||
             item.valueType === MesQcResultValueType.INTEGER) &&
-          item.value != null
+          item.value !== null
             ? Number(item.value)
             : undefined,
       }));
@@ -190,9 +190,7 @@ const [Modal, modalApi] = useVbenModal({
               v-model="item.valueNumber"
               class="!w-full"
               controls-position="right"
-              :precision="
-                item.valueType === MesQcResultValueType.FLOAT ? 4 : 0
-              "
+              :precision="item.valueType === MesQcResultValueType.FLOAT ? 4 : 0"
               placeholder="请输入"
             />
             <ElInput

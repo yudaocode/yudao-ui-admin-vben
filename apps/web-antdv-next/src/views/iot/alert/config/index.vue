@@ -1,64 +1,28 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertConfigApi } from '#/api/iot/alert/config';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
-import { message, Tag } from 'antdv-next';
+import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAlertConfig, getAlertConfigPage } from '#/api/iot/alert/config';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
-import AlertConfigForm from '../modules/alert-config-form.vue';
 import { useGridColumns, useGridFormSchema } from './data';
-
-defineOptions({ name: 'IoTAlertConfig' });
+import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: AlertConfigForm,
+  connectedComponent: Form,
   destroyOnClose: true,
 });
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
-}
-
-// 获取告警级别文本
-function getLevelText(level?: number) {
-  const levelMap: Record<number, string> = {
-    1: '提示',
-    2: '一般',
-    3: '警告',
-    4: '严重',
-    5: '紧急',
-  };
-  return level ? levelMap[level] || `级别${level}` : '-';
-}
-
-// 获取告警级别颜色
-function getLevelColor(level?: number) {
-  const colorMap: Record<number, string> = {
-    1: 'blue',
-    2: 'green',
-    3: 'orange',
-    4: 'red',
-    5: 'purple',
-  };
-  return level ? colorMap[level] || 'default' : 'default';
-}
-
-// 获取接收类型文本
-function getReceiveTypeText(type?: number) {
-  const typeMap: Record<number, string> = {
-    1: '站内信',
-    2: '邮箱',
-    3: '短信',
-    4: '微信',
-    5: '钉钉',
-  };
-  return type ? typeMap[type] || `类型${type}` : '-';
 }
 
 /** 创建告警配置 */
@@ -78,10 +42,8 @@ async function handleDelete(row: AlertConfigApi.AlertConfig) {
     duration: 0,
   });
   try {
-    await deleteAlertConfig(row.id as number);
-    message.success({
-      content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-    });
+    await deleteAlertConfig(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
     hideLoading();
@@ -130,36 +92,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['告警配置']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['iot:alert-config:create'],
               onClick: handleCreate,
             },
           ]"
         />
       </template>
-
-      <!-- 告警级别列 -->
-      <template #level="{ row }">
-        <Tag :color="getLevelColor(row.level)">
-          {{ getLevelText(row.level) }}
-        </Tag>
-      </template>
-
-      <!-- 关联场景联动规则列 -->
-      <template #sceneRules="{ row }">
-        <span>{{ row.sceneRuleIds?.length || 0 }} 条</span>
-      </template>
-
-      <!-- 接收类型列 -->
       <template #receiveTypes="{ row }">
-        <Tag
+        <DictTag
           v-for="(type, index) in row.receiveTypes"
           :key="index"
+          :type="DICT_TYPE.IOT_ALERT_RECEIVE_TYPE"
+          :value="type"
           class="mr-1"
-        >
-          {{ getReceiveTypeText(type) }}
-        </Tag>
+        />
       </template>
-
-      <!-- 操作列 -->
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -167,6 +114,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:alert-config:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -174,6 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:alert-config:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

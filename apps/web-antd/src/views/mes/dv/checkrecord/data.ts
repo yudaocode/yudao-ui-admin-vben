@@ -4,7 +4,12 @@ import type { MesDvCheckRecordApi } from '#/api/mes/dv/checkrecord';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE, MesDvCheckPlanStatusEnum, MesDvCheckRecordStatusEnum, MesDvSubjectTypeEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesDvCheckPlanStatusEnum,
+  MesDvCheckRecordStatusEnum,
+  MesDvSubjectTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -137,7 +142,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckRecordApi.CheckR
       },
     },
     { field: 'planName', title: '计划名称', minWidth: 150 },
-    { field: 'checkTime', title: '点检时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'checkTime',
+      title: '点检时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     { field: 'nickname', title: '点检人', minWidth: 120 },
     {
       field: 'status',
@@ -148,7 +158,12 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckRecordApi.CheckR
         props: { type: DICT_TYPE.MES_DV_CHECK_RECORD_STATUS },
       },
     },
-    { field: 'createTime', title: '创建时间', width: 180, formatter: 'formatDateTime' },
+    {
+      field: 'createTime',
+      title: '创建时间',
+      width: 180,
+      formatter: 'formatDateTime',
+    },
     {
       title: '操作',
       width: 200,

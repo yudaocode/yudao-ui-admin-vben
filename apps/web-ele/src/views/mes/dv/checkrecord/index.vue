@@ -9,7 +9,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteCheckRecord, exportCheckRecord, getCheckRecordPage } from '#/api/mes/dv/checkrecord';
+import {
+  deleteCheckRecord,
+  exportCheckRecord,
+  getCheckRecordPage,
+} from '#/api/mes/dv/checkrecord';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -47,7 +51,9 @@ async function handleDelete(row: MesDvCheckRecordApi.CheckRecord) {
   });
   try {
     await deleteCheckRecord(row.id!);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.machineryName]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.machineryName]),
+    );
     handleRefresh();
   } finally {
     hideLoading.close();
@@ -120,7 +126,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #machineryName="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.machineryName }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.machineryName }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -141,7 +149,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['mes:dv-check-record:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.machineryName]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.machineryName,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
               ifShow: row.status === MesDvCheckRecordStatusEnum.DRAFT,

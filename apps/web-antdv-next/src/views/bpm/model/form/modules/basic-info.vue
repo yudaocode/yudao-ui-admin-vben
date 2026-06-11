@@ -21,6 +21,7 @@ import {
   Input,
   Radio,
   Select,
+  TextArea,
   Tooltip,
 } from 'antdv-next';
 
@@ -295,7 +296,7 @@ defineExpose({ validate });
         <ImageUpload v-model:value="modelData.icon" />
       </FormItem>
       <FormItem label="流程描述" name="description">
-        <Input.TextArea v-model:value="modelData.description" allow-clear />
+        <TextArea v-model:value="modelData.description" allow-clear />
       </FormItem>
       <FormItem label="流程类型" name="type">
         <RadioGroup v-model:value="modelData.type">

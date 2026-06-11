@@ -18,8 +18,7 @@ const routes: RouteRecordRaw[] = [
           title: '库区设置',
           activePath: '/mes/wm/warehouse',
         },
-        component: () =>
-          import('#/views/mes/wm/warehouse/location/index.vue'),
+        component: () => import('#/views/mes/wm/warehouse/location/index.vue'),
       },
       {
         path: 'wm/warehouse/area',

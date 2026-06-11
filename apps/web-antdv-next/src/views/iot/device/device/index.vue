@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { PageParam } from '@vben/request';
 
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { IotDeviceApi } from '#/api/iot/device/device';
 import type { IotDeviceGroupApi } from '#/api/iot/device/group';
 import type { IotProductApi } from '#/api/iot/product/product';
@@ -8,13 +9,22 @@ import type { IotProductApi } from '#/api/iot/product/product';
 import { nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { Button, Card, Input, message, Select, Space, Tag } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Input,
+  message,
+  Select,
+  SelectOption,
+  Space,
+  Tag,
+} from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -33,9 +43,6 @@ import DeviceForm from './modules/form.vue';
 import DeviceGroupForm from './modules/group-form.vue';
 import DeviceImportForm from './modules/import-form.vue';
 
-/** IoT 设备列表 */
-defineOptions({ name: 'IoTDevice' });
-
 const route = useRoute();
 const router = useRouter();
 const products = ref<IotProductApi.Product[]>([]);
@@ -43,9 +50,6 @@ const deviceGroups = ref<IotDeviceGroupApi.DeviceGroup[]>([]);
 const viewMode = ref<'card' | 'list'>('card');
 const cardViewRef = ref();
 const checkedIds = ref<number[]>([]);
-
-/** 判断是否为列表视图 */
-const isListView = () => viewMode.value === 'list';
 
 const [DeviceFormModal, deviceFormModalApi] = useVbenModal({
   connectedComponent: DeviceForm,
@@ -166,6 +170,7 @@ async function handleDeleteBatch() {
     message.warning('请选择要删除的设备');
     return;
   }
+  await confirm($t('ui.actionMessage.deleteBatchConfirm'));
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deletingBatch'),
     duration: 0,
@@ -211,6 +216,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(),
     height: 'auto',
     keepSource: true,
+    pagerConfig: {
+      pageSize: 12,
+    },
     proxyConfig: {
       ajax: {
         query: async ({
@@ -276,7 +284,7 @@ onMounted(async () => {
     <DeviceImportFormModal @success="handleRefresh" />
 
     <!-- 统一搜索工具栏 -->
-    <Card :styles="{ body: { padding: '16px' } }" class="mb-4">
+    <Card :body-style="{ padding: '16px' }" class="!mb-2">
       <!-- 搜索表单 -->
       <div class="mb-3 flex flex-wrap items-center gap-3">
         <Select
@@ -392,7 +400,6 @@ onMounted(async () => {
               type: 'primary',
               icon: 'ant-design:folder-add-outlined',
               auth: ['iot:device:update'],
-              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleAddToGroup,
             },
@@ -402,7 +409,6 @@ onMounted(async () => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['iot:device:delete'],
-              ifShow: isListView,
               disabled: isEmpty(checkedIds),
               onClick: handleDeleteBatch,
             },
@@ -428,12 +434,20 @@ onMounted(async () => {
 
     <!-- 列表视图 -->
     <Grid table-title="设备列表" v-show="viewMode === 'list'">
+      <template #deviceName="{ row }">
+        <a class="cursor-pointer text-primary" @click="openDetail(row.id!)">
+          {{ row.deviceName }}
+        </a>
+      </template>
       <template #product="{ row }">
         <a
           class="cursor-pointer text-primary"
           @click="openProductDetail(row.productId)"
         >
-          {{ products.find((p) => p.id === row.productId)?.name || '-' }}
+          {{
+            products.find((product) => product.id === row.productId)?.name ||
+            '-'
+          }}
         </a>
       </template>
       <template #groups="{ row }">
@@ -444,7 +458,7 @@ onMounted(async () => {
             size="small"
             class="mr-1"
           >
-            {{ deviceGroups.find((g) => g.id === groupId)?.name }}
+            {{ deviceGroups.find((group) => group.id === groupId)?.name }}
           </Tag>
         </template>
         <span v-else>-</span>
@@ -455,17 +469,20 @@ onMounted(async () => {
             {
               label: $t('common.detail'),
               type: 'link',
+              auth: ['iot:device:query'],
               onClick: openDetail.bind(null, row.id!),
             },
             {
               label: '日志',
               type: 'link',
+              auth: ['iot:device:query'],
               onClick: openModel.bind(null, row.id!),
             },
             {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
+              auth: ['iot:device:update'],
               onClick: handleEdit.bind(null, row),
             },
             {
@@ -473,6 +490,7 @@ onMounted(async () => {
               type: 'link',
               danger: true,
               icon: ACTION_ICON.DELETE,
+              auth: ['iot:device:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.deviceName]),
                 confirm: handleDelete.bind(null, row),

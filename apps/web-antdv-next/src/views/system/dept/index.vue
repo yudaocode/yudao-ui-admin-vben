@@ -182,6 +182,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['system:dept:delete'],
               disabled: row.children && row.children.length > 0,
               popConfirm: {
+                disabled: row.children && row.children.length > 0,
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
               },

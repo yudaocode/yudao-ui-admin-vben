@@ -51,7 +51,9 @@ async function handleDelete(row: MesDvMaintenRecordApi.MaintenRecord) {
   });
   try {
     await deleteMaintenRecord(row.id!);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.machineryName]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.machineryName]),
+    );
     handleRefresh();
   } finally {
     hideLoading.close();
@@ -124,7 +126,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #machineryName="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.machineryName }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.machineryName }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction
@@ -145,7 +149,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['mes:dv-mainten-record:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.machineryName]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.machineryName,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
               ifShow: row.status === MesDvMaintenRecordStatusEnum.PREPARE,

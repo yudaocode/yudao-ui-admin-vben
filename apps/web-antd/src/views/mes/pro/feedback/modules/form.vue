@@ -6,10 +6,7 @@ import type { MesProFeedbackApi } from '#/api/mes/pro/feedback';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import {
-  MesAutoCodeRuleCode,
-  MesProFeedbackStatusEnum,
-} from '@vben/constants';
+import { MesAutoCodeRuleCode, MesProFeedbackStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
 import { Button, message, Popconfirm, Tabs } from 'ant-design-vue';
@@ -171,7 +168,9 @@ async function handleApprove() {
     const finished = await approveFeedback(formData.value.id);
     await modalApi.close();
     emit('success');
-    message.success(finished ? '报工单已审批完成' : '报工成功，请等待质量检验完成！');
+    message.success(
+      finished ? '报工单已审批完成' : '报工成功，请等待质量检验完成！',
+    );
   } finally {
     modalApi.unlock();
   }

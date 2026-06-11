@@ -22,7 +22,9 @@ const emit = defineEmits(['update:modelValue']);
 
 const formData = useVModel(props, 'modelValue', emit);
 const rules = {
-  content: [{ required: true, message: '请输入公告', trigger: 'blur' }],
+  content: [
+    { required: true, message: '请输入公告', trigger: 'blur' as const },
+  ],
 }; // 表单校验
 </script>
 

@@ -77,7 +77,7 @@ function handleQualityStatusChange(value?: number) {
   emit('update:modelValue', undefined);
   emit('valueChange', {
     valueId: undefined,
-    valueCode: value == null ? '' : String(value),
+    valueCode: value === null ? '' : String(value),
     valueName: selected?.label || '',
   });
 }
@@ -109,14 +109,14 @@ async function loadCascadeData() {
       : undefined;
     return;
   }
-  if (props.modelValue == null) {
+  if (props.modelValue === null) {
     return;
   }
   if (props.type === MesWmStockTakingParamTypeEnum.LOCATION) {
-    const location = await getWarehouseLocation(props.modelValue);
+    const location = await getWarehouseLocation(props.modelValue as number);
     locationWarehouseId.value = location?.warehouseId;
   } else if (props.type === MesWmStockTakingParamTypeEnum.AREA) {
-    const area = await getWarehouseArea(props.modelValue);
+    const area = await getWarehouseArea(props.modelValue as number);
     areaWarehouseId.value = area?.warehouseId;
     areaLocationId.value = area?.locationId;
   }

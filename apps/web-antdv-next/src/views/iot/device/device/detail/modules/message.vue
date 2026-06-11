@@ -15,7 +15,7 @@ import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, Select, Space, Switch, Tag } from 'antdv-next';
+import { Button, Select, SelectOption, Space, Switch, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
@@ -24,16 +24,14 @@ const props = defineProps<{
   deviceId: number;
 }>();
 
-/** 查询参数 */
 const queryParams = reactive({
   method: undefined,
   upstream: undefined,
-});
+}); // 查询参数
 
-/** 自动刷新开关 */
-const autoRefresh = ref(false);
-/** 自动刷新定时器 */
-let autoRefreshTimer: any = null;
+const autoRefresh = ref(false); // 自动刷新开关
+let autoRefreshTimer: any = null; // 自动刷新定时器
+let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
 /** 消息方法选项 */
 const methodOptions = computed(() => {
@@ -44,7 +42,7 @@ const methodOptions = computed(() => {
 });
 
 /** Grid 列定义 */
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
   return [
     {
       field: 'ts',
@@ -153,6 +151,10 @@ onBeforeUnmount(() => {
     clearInterval(autoRefreshTimer);
     autoRefreshTimer = null;
   }
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
 });
 
 /** 初始化 */
@@ -164,9 +166,14 @@ onMounted(() => {
 
 /** 刷新消息列表 */
 function refresh(delay = 0) {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = undefined;
+  }
   if (delay > 0) {
-    setTimeout(() => {
+    refreshTimer = setTimeout(() => {
       gridApi.query();
+      refreshTimer = undefined;
     }, delay);
   } else {
     gridApi.query();
@@ -209,7 +216,7 @@ defineExpose({
       </Select>
       <Space>
         <Button type="primary" @click="handleQuery">
-          <IconifyIcon icon="ep:search" class="mr-5px" /> 搜索
+          <IconifyIcon icon="ep:search" class="mr-[5px]" /> 搜索
         </Button>
         <Switch
           v-model:checked="autoRefresh"

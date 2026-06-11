@@ -68,6 +68,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '重试次数',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入重试次数。设置为 0 时，不进行重试',
         min: 0,
       },
@@ -78,6 +79,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '重试间隔',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入重试间隔，单位：毫秒。设置为 0 时，无需间隔',
         min: 0,
       },
@@ -88,6 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '监控超时时间',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入监控超时时间，单位：毫秒',
         min: 0,
       },

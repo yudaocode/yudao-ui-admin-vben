@@ -8,20 +8,10 @@ import { computed, ref } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { MesQcStatusEnum, MesQcTypeEnum } from '@vben/constants';
 
-import {
-  Button,
-  Descriptions,
-  message,
-  Tabs,
-} from 'ant-design-vue';
+import { Button, Descriptions, message, Tabs } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createIqc,
-  finishIqc,
-  getIqc,
-  updateIqc,
-} from '#/api/mes/qc/iqc';
+import { createIqc, finishIqc, getIqc, updateIqc } from '#/api/mes/qc/iqc';
 import { $t } from '#/locales';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';

@@ -1,4 +1,4 @@
-import type { StyleValue } from 'vue';
+import type { CSSProperties } from 'vue';
 
 import type { HotZoneItemProperty } from '../../config';
 
@@ -16,7 +16,7 @@ export enum CONTROL_TYPE_ENUM {
 export interface ControlDot {
   position: string;
   types: CONTROL_TYPE_ENUM[];
-  style: StyleValue;
+  style: CSSProperties;
 }
 
 /** 热区的 8 个控制点 */

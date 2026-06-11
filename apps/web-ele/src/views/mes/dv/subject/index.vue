@@ -8,7 +8,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteSubject, exportSubject, getSubjectPage } from '#/api/mes/dv/subject';
+import {
+  deleteSubject,
+  exportSubject,
+  getSubjectPage,
+} from '#/api/mes/dv/subject';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -41,7 +45,9 @@ function handleEdit(row: MesDvSubjectApi.Subject) {
 
 /** 删除点检保养项目 */
 async function handleDelete(row: MesDvSubjectApi.Subject) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteSubject(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -118,7 +124,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #code="{ row }">
-        <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+        <ElButton link type="primary" @click="handleDetail(row)">
+          {{ row.code }}
+        </ElButton>
       </template>
       <template #actions="{ row }">
         <TableAction

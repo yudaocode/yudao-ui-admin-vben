@@ -7,7 +7,11 @@ import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 
 import { h, markRaw } from 'vue';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodeRuleCode } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -378,7 +382,6 @@ export function useRouteProductBomGridColumns(): VxeTableGridOptions<MesProRoute
     },
   ];
 }
-
 
 /** 工艺路线产品表单 */
 export function useRouteProductFormSchema(

@@ -42,9 +42,7 @@ function handleEdit(row: MesQcTemplateIndicatorApi.TemplateIndicator) {
 }
 
 /** 删除指标项 */
-async function handleDelete(
-  row: MesQcTemplateIndicatorApi.TemplateIndicator,
-) {
+async function handleDelete(row: MesQcTemplateIndicatorApi.TemplateIndicator) {
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.deleting', [row.indicatorName]),
   });

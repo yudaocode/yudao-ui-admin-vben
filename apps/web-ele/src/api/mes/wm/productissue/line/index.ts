@@ -20,10 +20,9 @@ export namespace MesWmProductIssueLineApi {
 
 /** 查询领料出库单行分页 */
 export function getProductIssueLinePage(params: PageParam) {
-  return requestClient.get<PageResult<MesWmProductIssueLineApi.ProductIssueLine>>(
-    '/mes/wm/product-issue-line/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<MesWmProductIssueLineApi.ProductIssueLine>
+  >('/mes/wm/product-issue-line/page', { params });
 }
 
 /** 查询领料出库单行详情 */

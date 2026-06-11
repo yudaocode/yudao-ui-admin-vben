@@ -3,7 +3,8 @@ import type { Dayjs } from 'dayjs';
 
 import { onMounted, ref } from 'vue';
 
-import { Radio, RadioGroup } from 'antdv-next';
+import { DateRangePicker, Radio, RadioGroup } from 'antdv-next';
+import dayjs from 'dayjs';
 
 import { getRangePickerDefaultProps } from '#/utils/rangePickerProps';
 
@@ -19,8 +20,20 @@ const times = ref<[Dayjs, Dayjs]>(); // 日期范围
 const rangePickerProps = getRangePickerDefaultProps();
 const timeRangeOptions = [
   rangePickerProps.presets[3]!, // 昨天
-  rangePickerProps.presets[1]!, // 最近 7 天
-  rangePickerProps.presets[2]!, // 最近 30 天
+  {
+    label: rangePickerProps.presets[1]!.label,
+    value: [
+      dayjs().subtract(7, 'day').startOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
+    ],
+  },
+  {
+    label: rangePickerProps.presets[2]!.label,
+    value: [
+      dayjs().subtract(30, 'day').startOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
+    ],
+  },
 ];
 const timeRangeType = ref(timeRangeOptions[1]!.label); // 默认选中第一个选项
 

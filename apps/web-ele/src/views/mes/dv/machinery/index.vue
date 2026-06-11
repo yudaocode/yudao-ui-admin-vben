@@ -11,7 +11,11 @@ import { downloadFileFromBlobPart } from '@vben/utils';
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMachinery, exportMachinery, getMachineryPage } from '#/api/mes/dv/machinery';
+import {
+  deleteMachinery,
+  exportMachinery,
+  getMachineryPage,
+} from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { MachineryTypeTree } from '#/views/mes/dv/machinery/type/components';
 
@@ -52,7 +56,9 @@ function handleEdit(row: MesDvMachineryApi.Machinery) {
 
 /** 删除设备 */
 async function handleDelete(row: MesDvMachineryApi.Machinery) {
-  const hideLoading = ElLoading.service({ text: $t('ui.actionMessage.deleting', [row.name]) });
+  const hideLoading = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name]),
+  });
   try {
     await deleteMachinery(row.id!);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
@@ -74,7 +80,9 @@ function handleImport() {
 }
 
 /** 按设备类型筛选 */
-function handleTypeNodeClick(row: MesDvMachineryTypeApi.MachineryType | undefined) {
+function handleTypeNodeClick(
+  row: MesDvMachineryTypeApi.MachineryType | undefined,
+) {
   selectedMachineryTypeId.value = row?.id;
   handleRefresh();
 }
@@ -154,7 +162,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
           </template>
           <template #code="{ row }">
-            <ElButton link type="primary" @click="handleDetail(row)">{{ row.code }}</ElButton>
+            <ElButton link type="primary" @click="handleDetail(row)">
+              {{ row.code }}
+            </ElButton>
           </template>
           <template #actions="{ row }">
             <TableAction

@@ -7,10 +7,7 @@ import type { MesProWorkOrderBomApi } from '#/api/mes/pro/workorder/bom';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import {
-  BarcodeBizTypeEnum,
-  MesProWorkOrderStatusEnum,
-} from '@vben/constants';
+import { BarcodeBizTypeEnum, MesProWorkOrderStatusEnum } from '@vben/constants';
 
 import { Button, message, Popconfirm, Tabs } from 'ant-design-vue';
 
@@ -36,14 +33,17 @@ const originalSnapshot = ref(''); // 表单原始数据快照，用于确认时�
 const subTabsName = ref('bom'); // 当前选中的子表 Tab
 const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
 
-const isEditable = computed(() => // 是否为编辑模式（可保存）
+const isEditable = computed(() =>
+  // 是否为编辑模式（可保存）
   ['create', 'update'].includes(formType.value),
 );
 const isConfirm = computed(() => formType.value === 'confirm'); // 是否为确认模式
 const isFinish = computed(() => formType.value === 'finish'); // 是否为完成模式
-const canConfirm = computed(() => // 编辑态草稿可确认
-  formType.value === 'update' &&
-  formData.value?.status === MesProWorkOrderStatusEnum.PREPARE,
+const canConfirm = computed(
+  () =>
+    // 编辑态草稿可确认
+    formType.value === 'update' &&
+    formData.value?.status === MesProWorkOrderStatusEnum.PREPARE,
 );
 const getTitle = computed(() => {
   const isChild = !!formData.value?.parentId;
@@ -110,7 +110,8 @@ async function handleConfirm() {
     if (isEditable.value) {
       const current = JSON.stringify(await formApi.getValues());
       if (current !== originalSnapshot.value) {
-        const data = (await formApi.getValues()) as MesProWorkOrderApi.WorkOrder;
+        const data =
+          (await formApi.getValues()) as MesProWorkOrderApi.WorkOrder;
         await updateWorkOrder({ ...formData.value, ...data });
         originalSnapshot.value = current;
       }

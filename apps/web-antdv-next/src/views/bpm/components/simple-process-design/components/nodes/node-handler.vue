@@ -248,7 +248,12 @@ function addNode(type: number) {
 <template>
   <div class="node-handler-wrapper">
     <div class="node-handler">
-      <Popover trigger="hover" placement="right" width="auto" v-if="!readonly">
+      <Popover
+        :trigger="['hover']"
+        placement="right"
+        width="auto"
+        v-if="!readonly"
+      >
         <template #content>
           <div class="handler-item-wrapper">
             <div

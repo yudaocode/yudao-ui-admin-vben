@@ -24,7 +24,7 @@ function handleSelect(item: Emoji) {
 </script>
 
 <template>
-  <Popover placement="top" trigger="click">
+  <Popover placement="top" :trigger="['click']">
     <template #content>
       <!-- TODO: antdv-next 暂不支持 List 组件，后续组件库会新增 Listy 组件替代 List -->
       <div class="h-[300px] w-[500px] overflow-auto">

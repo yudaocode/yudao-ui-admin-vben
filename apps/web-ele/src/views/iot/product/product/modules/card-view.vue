@@ -53,7 +53,9 @@ const queryParams = ref({
 
 /** 获取分类名称 */
 function getCategoryName(item: any) {
-  const category = props.categoryList.find((c: any) => c.id === item.categoryId);
+  const category = props.categoryList.find(
+    (c: any) => c.id === item.categoryId,
+  );
   return item.categoryName || category?.name || '未分类';
 }
 
@@ -138,11 +140,7 @@ onMounted(() => {
                   alt=""
                   class="size-6 object-contain"
                 />
-                <IconifyIcon
-                  v-else
-                  :icon="item.icon"
-                  class="text-xl"
-                />
+                <IconifyIcon v-else :icon="item.icon" class="text-xl" />
               </div>
               <div class="ml-3 min-w-0 flex-1">
                 <div
@@ -201,7 +199,9 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div class="mt-auto flex gap-2 border-t border-border pt-3 [&_.el-button+.el-button]:!ml-0">
+            <div
+              class="mt-auto flex gap-2 border-t border-border pt-3 [&_.el-button+.el-button]:!ml-0"
+            >
               <ElButton
                 v-if="hasAccessByCodes(['iot:product:update'])"
                 size="small"

@@ -205,7 +205,9 @@ onMounted(() => {
               </div>
             </div>
             <!-- 按钮组 -->
-            <div class="mt-auto flex gap-2 border-t border-border pt-3 [&_.el-button+.el-button]:!ml-0">
+            <div
+              class="mt-auto flex gap-2 border-t border-border pt-3 [&_.el-button+.el-button]:!ml-0"
+            >
               <ElButton
                 v-if="hasAccessByCodes(['iot:device:update'])"
                 size="small"

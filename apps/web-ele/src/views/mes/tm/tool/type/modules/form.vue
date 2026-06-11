@@ -10,7 +10,11 @@ import { useVbenModal } from '@vben/common-ui';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { createToolType, getToolType, updateToolType } from '#/api/mes/tm/tool/type';
+import {
+  createToolType,
+  getToolType,
+  updateToolType,
+} from '#/api/mes/tm/tool/type';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';

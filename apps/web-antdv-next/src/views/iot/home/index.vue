@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { StatsData } from './data';
 
 import { onMounted, ref } from 'vue';
@@ -15,27 +15,20 @@ import DeviceMapCard from './modules/device-map-card.vue';
 import DeviceStateCountCard from './modules/device-state-count-card.vue';
 import MessageTrendCard from './modules/message-trend-card.vue';
 
-defineOptions({ name: 'IoTHome' });
-
 const loading = ref(true);
 const statsData = ref<StatsData>(defaultStatsData);
-
-/** 加载统计数据 */
-async function loadStatisticsData(): Promise<StatsData> {
-  return await getStatisticsSummary();
-}
 
 /** 加载数据 */
 async function loadData() {
   loading.value = true;
   try {
-    statsData.value = await loadStatisticsData();
+    statsData.value = await getStatisticsSummary();
   } finally {
     loading.value = false;
   }
 }
 
-/** 组件挂载时加载数据 */
+/** 初始化 */
 onMounted(() => {
   loadData();
 });

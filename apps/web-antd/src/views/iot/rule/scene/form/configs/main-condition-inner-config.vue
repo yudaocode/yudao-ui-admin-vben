@@ -265,9 +265,7 @@ function handlePropertyChange(propertyInfo: any) {
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
               :value="condition.value"
-              @update:value="
-                (value) => updateConditionField('value', value)
-              "
+              @update:value="(value) => updateConditionField('value', value)"
               placeholder="留空则事件发生即匹配"
             />
             <!-- 普通值输入 -->

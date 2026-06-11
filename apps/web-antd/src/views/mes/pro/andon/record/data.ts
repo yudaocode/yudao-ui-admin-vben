@@ -263,10 +263,7 @@ export function useFormSchema(
             component: 'Select',
             componentProps: {
               disabled: true,
-              options: getDictOptions(
-                DICT_TYPE.MES_PRO_ANDON_STATUS,
-                'number',
-              ),
+              options: getDictOptions(DICT_TYPE.MES_PRO_ANDON_STATUS, 'number'),
             },
           },
           {

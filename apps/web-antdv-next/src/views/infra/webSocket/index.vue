@@ -20,6 +20,7 @@ import {
   message,
   Select,
   Tag,
+  TextArea,
 } from 'antdv-next';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -249,7 +250,7 @@ onMounted(async () => {
           </SelectOption>
         </Select>
 
-        <Input.TextArea
+        <TextArea
           v-model:value="sendText"
           :auto-size="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"

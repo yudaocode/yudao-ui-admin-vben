@@ -52,7 +52,9 @@ function openDialog() {
   if (props.disabled) {
     return;
   }
-  dialogRef.value?.open(props.modelValue ? [props.modelValue] : [], { multiple: false });
+  dialogRef.value?.open(props.modelValue ? [props.modelValue] : [], {
+    multiple: false,
+  });
 }
 
 /** 处理弹窗选择 */
@@ -79,6 +81,10 @@ onMounted(loadTeamList);
       @change="handleChange"
     />
     <Button :disabled="disabled" @click="openDialog">选择</Button>
-    <CalTeamSelectDialog ref="dialogRef" :multiple="false" @selected="handleSelected" />
+    <CalTeamSelectDialog
+      ref="dialogRef"
+      :multiple="false"
+      @selected="handleSelected"
+    />
   </div>
 </template>

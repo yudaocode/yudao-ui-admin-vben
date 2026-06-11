@@ -25,7 +25,7 @@ export function getDefectRecord(id: number) {
 
 /** 查询质检缺陷记录分页 */
 export function getDefectRecordPage(
-  params: PageParam & { lineId?: number; qcId?: number; qcType?: number; },
+  params: PageParam & { lineId?: number; qcId?: number; qcType?: number },
 ) {
   return requestClient.get<PageResult<MesQcDefectRecordApi.DefectRecord>>(
     '/mes/qc/defect-record/page',

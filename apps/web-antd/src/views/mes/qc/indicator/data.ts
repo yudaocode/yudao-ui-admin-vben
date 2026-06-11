@@ -4,7 +4,11 @@ import type { MesQcIndicatorApi } from '#/api/mes/qc/indicator';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesQcResultValueType } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesQcResultValueType,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { Button } from 'ant-design-vue';

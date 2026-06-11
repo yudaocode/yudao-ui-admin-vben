@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { UploadFile } from 'antdv-next';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
 
-import { useVbenModal } from '@vben/common-ui';
+import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message, Upload } from 'antdv-next';
@@ -11,13 +13,14 @@ import { importDevice, importDeviceTemplate } from '#/api/iot/device/device';
 import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
-type FileType = any;
-defineOptions({ name: 'IoTDeviceImportForm' });
 
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
     formItemClass: 'col-span-2',
     labelWidth: 120,
   },
@@ -58,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
             text += `< ${deviceName}: ${importData.failureDeviceNames[deviceName]} >`;
           }
         }
-        message.info(text);
+        await alert(text, '导入结果');
       }
       // 关闭并提示
       await modalApi.close();
@@ -71,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 上传前 */
-function beforeUpload(file: FileType) {
+function beforeUpload(file: UploadFile) {
   formApi.setFieldValue('file', file);
   return false;
 }
@@ -89,18 +92,18 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <Upload
-            :before-upload="beforeUpload"
             :max-count="1"
             accept=".xls,.xlsx"
+            :before-upload="beforeUpload"
           >
-            <Button type="primary"> 选择 Excel 文件</Button>
+            <Button type="primary"> 选择 Excel 文件 </Button>
           </Upload>
         </div>
       </template>
     </Form>
     <template #prepend-footer>
       <div class="flex flex-auto items-center">
-        <Button @click="handleDownload"> 下载导入模板</Button>
+        <Button @click="handleDownload"> 下载导入模板 </Button>
       </div>
     </template>
   </Modal>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Trigger } from '#/api/iot/rule/scene';
+import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, ref } from 'vue';
 
@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Col, Row, Select } from 'antdv-next';
+import { Col, FormItem, Input, Row, Select, SelectOption } from 'antdv-next';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -25,12 +25,12 @@ import PropertySelector from '../selectors/property-selector.vue';
 defineOptions({ name: 'MainConditionInnerConfig' });
 
 const props = defineProps<{
-  modelValue: Trigger;
+  modelValue: RuleSceneApi.Trigger;
   triggerType: number;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: Trigger): void;
+  (e: 'update:modelValue', value: RuleSceneApi.Trigger): void;
   (e: 'triggerTypeChange', value: number): void;
 }>();
 
@@ -105,22 +105,6 @@ const serviceConfig = computed(() => {
   return undefined;
 });
 
-// 计算属性：事件配置 - 用于 JsonParamsInput
-const eventConfig = computed(() => {
-  if (
-    propertyConfig.value &&
-    props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
-  ) {
-    return {
-      event: {
-        name: propertyConfig.value.name || '事件',
-        outputParams: propertyConfig.value.outputParams || [],
-      },
-    };
-  }
-  return undefined;
-});
-
 /**
  * 更新条件字段
  * @param field 字段名
@@ -140,15 +124,24 @@ function handleTriggerTypeChange(type: number) {
 
 /** 处理产品变化事件 */
 function handleProductChange() {
-  // 产品变化时清空设备和属性
-  condition.value.deviceId = undefined;
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.deviceId = undefined;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  // 主条件比较值字段是 Trigger.value（不是 TriggerCondition.param）
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /** 处理设备变化事件 */
 function handleDeviceChange() {
-  // 设备变化时清空属性
-  condition.value.identifier = '';
+  const trigger = condition.value;
+  trigger.identifier = '';
+  trigger.operator = undefined;
+  trigger.value = '';
+  propertyType.value = '';
+  propertyConfig.value = null;
 }
 
 /**
@@ -177,17 +170,18 @@ function handlePropertyChange(propertyInfo: any) {
     <!-- 触发事件类型选择 -->
     <FormItem label="触发事件类型" required>
       <Select
-        :model-value="triggerType"
-        @update:model-value="handleTriggerTypeChange"
+        :value="triggerType"
+        @change="(value: any) => handleTriggerTypeChange(value)"
         placeholder="请选择触发事件类型"
         class="w-full"
       >
         <SelectOption
           v-for="option in triggerTypeOptions"
           :key="option.value"
-          :label="option.label"
           :value="option.value"
-        />
+        >
+          {{ option.label }}
+        </SelectOption>
       </Select>
     </FormItem>
 
@@ -265,15 +259,14 @@ function handlePropertyChange(propertyInfo: any) {
               :config="serviceConfig as any"
               placeholder="请输入 JSON 格式的服务参数"
             />
-            <!-- 事件上报参数配置 -->
-            <JsonParamsInput
+            <!-- 事件上报参数配置：源项目允许标量值或留空表示事件发生即匹配 -->
+            <Input
               v-else-if="
                 triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST
               "
-              v-model="condition.value"
-              type="event"
-              :config="eventConfig as any"
-              placeholder="请输入 JSON 格式的事件参数"
+              :value="condition.value"
+              @update:value="(value) => updateConditionField('value', value)"
+              placeholder="留空则事件发生即匹配"
             />
             <!-- 普通值输入 -->
             <ValueInput
@@ -323,40 +316,38 @@ function handlePropertyChange(propertyInfo: any) {
         <Col :span="6">
           <FormItem label="操作符" required>
             <Select
-              :model-value="condition.operator"
-              @update:model-value="
-                (value: any) => updateConditionField('operator', value)
-              "
+              :value="condition.operator"
+              @change="(value: any) => updateConditionField('operator', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
               <SelectOption
-                :label="
-                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
-                "
                 :value="
                   IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
                 "
-              />
+              >
+                {{
+                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
+                }}
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>
         <Col :span="6">
           <FormItem label="参数" required>
             <Select
-              :model-value="condition.value"
-              @update:model-value="
-                (value: any) => updateConditionField('value', value)
-              "
+              :value="condition.value"
+              @change="(value: any) => updateConditionField('value', value)"
               placeholder="请选择操作符"
               class="w-full"
             >
               <SelectOption
                 v-for="option in deviceStatusChangeOptions"
                 :key="option.value"
-                :label="option.label"
                 :value="option.value"
-              />
+              >
+                {{ option.label }}
+              </SelectOption>
             </Select>
           </FormItem>
         </Col>
@@ -365,10 +356,12 @@ function handlePropertyChange(propertyInfo: any) {
 
     <!-- 其他触发类型的提示 -->
     <div v-else class="py-5 text-center">
-      <p class="mb-1 text-sm text-secondary">
+      <p class="mb-1 text-sm text-muted-foreground">
         当前触发事件类型：{{ getTriggerTypeLabel(triggerType) }}
       </p>
-      <p class="text-xs text-secondary">此触发类型暂不需要配置额外条件</p>
+      <p class="text-xs text-muted-foreground">
+        此触发类型暂不需要配置额外条件
+      </p>
     </div>
   </div>
 </template>

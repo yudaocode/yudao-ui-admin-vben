@@ -7,6 +7,7 @@ import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
+import { getContractSimpleList } from '#/api/crm/contract';
 import {
   createReceivable,
   getReceivable,
@@ -16,8 +17,20 @@ import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
+type ReceivablePrefillData = Partial<
+  Pick<
+    CrmReceivableApi.Receivable,
+    'contractId' | 'customerId' | 'price' | 'returnType'
+  >
+> & { id?: number };
+
+type ReceivableFormModalData = ReceivablePrefillData & {
+  plan?: ReceivablePrefillData;
+  receivable?: Pick<CrmReceivableApi.Receivable, 'id'>;
+};
+
 const emit = defineEmits(['success']);
-const formData = ref<CrmReceivableApi.Receivable>();
+const formData = ref<Partial<CrmReceivableApi.Receivable>>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['回款'])
@@ -35,6 +48,32 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
 });
+
+/** 构建新增回款的预填表单 */
+async function buildCreateFormData(
+  plan: ReceivablePrefillData,
+): Promise<Partial<CrmReceivableApi.Receivable>> {
+  const values: Partial<CrmReceivableApi.Receivable> = {
+    contractId: plan?.contractId,
+    customerId: plan?.customerId,
+  };
+  // 从回款计划创建时，直接继承计划的期数、金额和回款方式
+  if (plan?.id) {
+    values.planId = plan.id;
+    values.price = plan.price;
+    values.returnType = plan.returnType;
+    return values;
+  }
+  // 从客户/合同详情创建时，没有计划期数，按合同剩余应回款金额预填
+  if (values.customerId && values.contractId) {
+    const contracts = await getContractSimpleList(values.customerId);
+    const contract = contracts.find((item) => item.id === values.contractId);
+    if (contract) {
+      values.price = contract.totalPrice - contract.totalReceivablePrice;
+    }
+  }
+  return values;
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -63,31 +102,26 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData();
+    formData.value = undefined;
+    await formApi.resetForm();
+    const data = modalApi.getData() as null | ReceivableFormModalData;
     if (!data) {
       return;
     }
-    const { receivable, plan } = data;
+    const { receivable } = data;
+    const plan =
+      data.plan ?? (data.customerId || data.contractId ? data : undefined);
     modalApi.lock();
     try {
-      if (receivable) {
+      if (receivable?.id) {
         formData.value = await getReceivable(receivable.id!);
       } else if (plan) {
-        formData.value = plan.id
-          ? {
-              planId: plan.id,
-              price: plan.price,
-              returnType: plan.returnType,
-              customerId: plan.customerId,
-              contractId: plan.contractId,
-            }
-          : ({
-              customerId: plan.customerId,
-              contractId: plan.contractId,
-            } as any);
+        formData.value = await buildCreateFormData(plan);
       }
-      // 设置到 values
-      await formApi.setValues(formData.value as any);
+      if (formData.value) {
+        // 设置到 values
+        await formApi.setValues(formData.value as any);
+      }
     } finally {
       modalApi.unlock();
     }

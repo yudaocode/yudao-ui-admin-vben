@@ -12,10 +12,13 @@ import {
   Button,
   Card,
   Descriptions,
+  DescriptionsItem,
   Form,
+  FormItem,
   Input,
   message,
   Modal,
+  SpaceCompact,
 } from 'antdv-next';
 
 import { getDeviceAuthInfo } from '#/api/iot/device/device';
@@ -36,9 +39,9 @@ const authInfo = ref<IotDeviceApi.DeviceAuthInfoRespVO>(
 );
 const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
-/** 是否有位置信息 */
+/** 是否有位置信息（合法经纬度 0 不应视为空） */
 const hasLocation = computed(() => {
-  return !!(props.device.longitude && props.device.latitude);
+  return props.device.longitude !== null && props.device.latitude !== null;
 });
 
 /** 打开地图弹窗 */
@@ -139,7 +142,7 @@ function handleAuthInfoDialogClose() {
     >
       <Form :label-col="{ span: 6 }">
         <FormItem label="clientId">
-          <Input.Group compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.clientId"
               readonly
@@ -148,10 +151,10 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.clientId)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Input.Group>
+          </SpaceCompact>
         </FormItem>
         <FormItem label="username">
-          <Input.Group compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.username"
               readonly
@@ -160,10 +163,10 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.username)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Input.Group>
+          </SpaceCompact>
         </FormItem>
         <FormItem label="password">
-          <Input.Group compact>
+          <SpaceCompact>
             <Input
               v-model:value="authInfo.password"
               :type="authPasswordVisible ? 'text' : 'password'"
@@ -181,7 +184,7 @@ function handleAuthInfoDialogClose() {
             <Button type="primary" @click="copyToClipboard(authInfo.password)">
               <IconifyIcon icon="lucide:copy" />
             </Button>
-          </Input.Group>
+          </SpaceCompact>
         </FormItem>
       </Form>
       <div class="mt-4 text-right">

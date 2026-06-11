@@ -91,6 +91,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'accountCount',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入账号额度',
       },
       rules: 'required',

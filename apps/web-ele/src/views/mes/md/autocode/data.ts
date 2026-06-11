@@ -3,7 +3,11 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesMdAutoCodePartApi } from '#/api/mes/md/autocode/part';
 import type { MesMdAutoCodeRuleApi } from '#/api/mes/md/autocode/rule';
 
-import { CommonStatusEnum, DICT_TYPE, MesAutoCodePartTypeEnum } from '@vben/constants';
+import {
+  CommonStatusEnum,
+  DICT_TYPE,
+  MesAutoCodePartTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';

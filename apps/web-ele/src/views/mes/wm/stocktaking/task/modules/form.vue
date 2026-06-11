@@ -9,7 +9,13 @@ import { useVbenModal } from '@vben/common-ui';
 import { MesWmStockTakingTaskStatusEnum } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
 
-import { ElButton, ElMessage, ElPopconfirm, ElTabPane, ElTabs } from 'element-plus';
+import {
+  ElButton,
+  ElMessage,
+  ElPopconfirm,
+  ElTabPane,
+  ElTabs,
+} from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {

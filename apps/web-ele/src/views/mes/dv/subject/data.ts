@@ -50,7 +50,9 @@ export function useFormSchema(
                 ElButton,
                 {
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_SUBJECT_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_SUBJECT_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },

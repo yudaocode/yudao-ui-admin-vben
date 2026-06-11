@@ -27,9 +27,7 @@ export type FormType = 'create' | 'detail' | 'finish' | 'stock' | 'update';
 
 /** 表单头部是否只读（拣货、详情、完成态） */
 function isHeaderReadonly(formType: FormType): boolean {
-  return (
-    formType === 'detail' || formType === 'finish' || formType === 'stock'
-  );
+  return formType === 'detail' || formType === 'finish' || formType === 'stock';
 }
 
 /** 新增/修改的表单 */

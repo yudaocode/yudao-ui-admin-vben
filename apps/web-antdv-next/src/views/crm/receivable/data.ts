@@ -57,12 +57,19 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
-      componentProps: {
+      componentProps: (_values, form) => ({
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-      },
+        onChange: () => {
+          form.setFieldValue('contractId', undefined);
+          form.setFieldValue('planId', undefined);
+          form.setFieldValue('price', undefined);
+          form.setFieldValue('returnTime', undefined);
+          form.setFieldValue('returnType', undefined);
+        },
+      }),
       dependencies: {
         triggerFields: ['id'],
         disabled: (values) => values.id,
@@ -76,21 +83,33 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['customerId'],
         disabled: (values) => !values.customerId || values.id,
-        async componentProps(values) {
-          if (values.customerId) {
-            if (!values.id) {
-              // 特殊：只有在【新增】时，才清空合同编号
-              values.contractId = undefined;
-            }
-            const contracts = await getContractSimpleList(values.customerId);
+        async componentProps(values, form) {
+          if (!values.customerId) {
             return {
-              options: contracts.map((item) => ({
-                label: item.name,
-                value: item.id,
-              })),
-              placeholder: '请选择合同',
-            } as any;
+              options: [],
+              placeholder: '请选择客户',
+            };
           }
+          const contracts = await getContractSimpleList(values.customerId);
+          return {
+            options: contracts.map((item) => ({
+              label: item.name,
+              value: item.id,
+            })),
+            placeholder: '请选择合同',
+            onChange: (value: number) => {
+              form.setFieldValue('planId', undefined);
+              form.setFieldValue('returnTime', undefined);
+              form.setFieldValue('returnType', undefined);
+              const contract = contracts.find((item) => item.id === value);
+              form.setFieldValue(
+                'price',
+                contract
+                  ? contract.totalPrice - contract.totalReceivablePrice
+                  : undefined,
+              );
+            },
+          } as any;
         },
       },
     },
@@ -101,28 +120,38 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['contractId'],
-        disabled: (values) => !values.contractId,
-        async componentProps(values) {
-          if (values.contractId) {
-            values.planId = undefined;
-            const plans = await getReceivablePlanSimpleList(
-              values.customerId,
-              values.contractId,
-            );
+        disabled: (values) => !values.contractId || values.id,
+        async componentProps(values, form) {
+          if (!values.contractId) {
             return {
-              options: plans.map((item) => ({
-                label: item.period,
-                value: item.id,
-              })),
-              placeholder: '请选择回款期数',
-              onChange: async (value: any) => {
-                const plan = await getReceivablePlan(value);
-                values.returnTime = plan?.returnTime;
-                values.price = plan?.price;
-                values.returnType = plan?.returnType;
-              },
-            } as any;
+              options: [],
+              placeholder: '请选择合同',
+            };
           }
+          const plans = await getReceivablePlanSimpleList(
+            values.customerId,
+            values.contractId,
+          );
+          return {
+            options: plans.map((item) => ({
+              disabled: !!item.receivableId,
+              label: `第 ${item.period} 期`,
+              value: item.id,
+            })),
+            placeholder: '请选择回款期数',
+            onChange: async (value: any) => {
+              if (!value) {
+                form.setFieldValue('returnTime', undefined);
+                form.setFieldValue('price', undefined);
+                form.setFieldValue('returnType', undefined);
+                return;
+              }
+              const plan = await getReceivablePlan(value);
+              form.setFieldValue('returnTime', plan?.returnTime);
+              form.setFieldValue('price', plan?.price);
+              form.setFieldValue('returnType', plan?.returnType);
+            },
+          } as any;
         },
       },
     },
@@ -141,6 +170,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
+        class: '!w-full',
         placeholder: '请输入回款金额',
         min: 0,
         precision: 2,

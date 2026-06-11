@@ -20,6 +20,7 @@ import {
   Collapse,
   Dropdown,
   Menu,
+  MenuItem,
   message,
   Tag,
   Tooltip,
@@ -524,8 +525,8 @@ function handleRenameSuccess() {
                 </Button>
                 <template #popupRender>
                   <Menu @click="(e) => handleCommand(e.key as string)">
-                    <Menu.Item key="renameCategory"> 重命名 </Menu.Item>
-                    <Menu.Item key="deleteCategory"> 删除分类 </Menu.Item>
+                    <MenuItem key="renameCategory"> 重命名 </MenuItem>
+                    <MenuItem key="deleteCategory"> 删除分类 </MenuItem>
                   </Menu>
                 </template>
               </Dropdown>
@@ -687,16 +688,16 @@ function handleRenameSuccess() {
                     <Menu
                       @click="(e) => handleModelCommand(e.key as string, row)"
                     >
-                      <Menu.Item key="handleCopy"> 复制 </Menu.Item>
-                      <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+                      <MenuItem key="handleCopy"> 复制 </MenuItem>
+                      <MenuItem key="handleDefinitionList"> 历史 </MenuItem>
 
-                      <Menu.Item
+                      <MenuItem
                         key="handleReport"
                         :disabled="!isManagerUser(row)"
                       >
                         报表
-                      </Menu.Item>
-                      <Menu.Item
+                      </MenuItem>
+                      <MenuItem
                         key="handleChangeState"
                         v-if="row.processDefinition"
                         :disabled="!isManagerUser(row)"
@@ -706,21 +707,21 @@ function handleRenameSuccess() {
                             ? '停用'
                             : '启用'
                         }}
-                      </Menu.Item>
-                      <Menu.Item
+                      </MenuItem>
+                      <MenuItem
                         danger
                         key="handleClean"
                         :disabled="!isManagerUser(row)"
                       >
                         清理
-                      </Menu.Item>
-                      <Menu.Item
+                      </MenuItem>
+                      <MenuItem
                         danger
                         key="handleDelete"
                         :disabled="!isManagerUser(row) && !hasPermiDelete"
                       >
                         删除
-                      </Menu.Item>
+                      </MenuItem>
                     </Menu>
                   </template>
                 </Dropdown>

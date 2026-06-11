@@ -21,7 +21,6 @@ export async function createLeave(data: BpmOALeaveApi.Leave) {
   return requestClient.post('/bpm/oa/leave/create', data);
 }
 
-
 /** 获得请假申请 */
 export async function getLeave(id: number) {
   return requestClient.get<BpmOALeaveApi.Leave>(`/bpm/oa/leave/get?id=${id}`);

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Ref } from 'vue';
+
 import type { ComponentStyle } from '../util';
 
 import { useVModel } from '@vueuse/core';
@@ -28,6 +30,7 @@ defineOptions({ name: 'ComponentContainer' });
 const props = defineProps<{ modelValue: ComponentStyle }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
+const formStyleValues = formData as unknown as Ref<Record<string, number>>;
 
 const treeData: any[] = [
   {
@@ -182,9 +185,7 @@ function handleSliderChange(prop: string) {
                 <Row>
                   <Col :span="19">
                     <Slider
-                      v-model:value="
-                        formData[dataRef.prop as keyof ComponentStyle]
-                      "
+                      v-model:value="formStyleValues[dataRef.prop]"
                       :max="100"
                       :min="0"
                       @change="handleSliderChange(dataRef.prop)"
@@ -196,9 +197,7 @@ function handleSliderChange(prop: string) {
                       class="w-[50px]"
                       :max="100"
                       :min="0"
-                      v-model:value="
-                        formData[dataRef.prop as keyof ComponentStyle]
-                      "
+                      v-model:value="formStyleValues[dataRef.prop]"
                     />
                   </Col>
                 </Row>

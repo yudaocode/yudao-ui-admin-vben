@@ -54,7 +54,6 @@ const qrcode = useQRCode(props.previewUrl, {
   margin: 4,
 }); // 预览二维码
 
-const componentLibrary = ref(); // 左侧组件库
 const pageConfigComponent = ref<DiyComponent<any>>(
   cloneDeep(PAGE_CONFIG_COMPONENT),
 ); // 页面设置组件
@@ -343,11 +342,7 @@ onMounted(() => {
       <ElContainer class="editor-container h-[calc(100vh-135px)]">
         <!-- 左侧：组件库（ComponentLibrary） -->
         <ElAside width="261px" class="editor-left">
-          <ComponentLibrary
-            v-if="libs && libs.length > 0"
-            ref="componentLibrary"
-            :list="libs"
-          />
+          <ComponentLibrary v-if="libs && libs.length > 0" :list="libs" />
         </ElAside>
         <!-- 中心：设计区域（ComponentContainer） -->
         <div

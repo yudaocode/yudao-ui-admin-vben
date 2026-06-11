@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormType } from '../data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmOutsourceReceiptDetailApi } from '#/api/mes/wm/outsourcereceipt/detail';
 
@@ -10,7 +12,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOutsourceReceiptDetail } from '#/api/mes/wm/outsourcereceipt/detail';
 import { $t } from '#/locales';
 
-import { type FormType, useDetailGridColumns } from '../data';
+import { useDetailGridColumns } from '../data';
 
 const props = defineProps<{
   details: MesWmOutsourceReceiptDetailApi.OutsourceReceiptDetail[];
@@ -22,7 +24,8 @@ const emit = defineEmits<{
   refresh: [];
 }>();
 
-const isEditable = computed(() => // 是否可维护收货明细（编辑或上架态）
+const isEditable = computed(() =>
+  // 是否可维护收货明细（编辑或上架态）
   ['create', 'stock', 'update'].includes(props.formType),
 );
 
@@ -32,7 +35,9 @@ function handleCreate() {
 }
 
 /** 编辑收货明细 */
-function handleEdit(row: MesWmOutsourceReceiptDetailApi.OutsourceReceiptDetail) {
+function handleEdit(
+  row: MesWmOutsourceReceiptDetailApi.OutsourceReceiptDetail,
+) {
   emit('edit', row.id!);
 }
 

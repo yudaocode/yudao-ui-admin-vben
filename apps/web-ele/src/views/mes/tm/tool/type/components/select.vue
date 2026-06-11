@@ -14,7 +14,12 @@ withDefaults(
     modelValue?: number;
     placeholder?: string;
   }>(),
-  { clearable: true, disabled: false, modelValue: undefined, placeholder: '请选择工具类型' },
+  {
+    clearable: true,
+    disabled: false,
+    modelValue: undefined,
+    placeholder: '请选择工具类型',
+  },
 );
 const emit = defineEmits<{
   change: [row?: MesTmToolTypeApi.ToolType];
@@ -31,7 +36,10 @@ async function getList() {
 function handleChange(value: number | string | undefined) {
   const toolTypeId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', toolTypeId);
-  emit('change', list.value.find((item) => item.id === toolTypeId));
+  emit(
+    'change',
+    list.value.find((item) => item.id === toolTypeId),
+  );
 }
 
 onMounted(getList);
@@ -47,6 +55,11 @@ onMounted(getList);
     filterable
     @change="handleChange"
   >
-    <ElOption v-for="item in list" :key="item.id" :label="item.name" :value="item.id!" />
+    <ElOption
+      v-for="item in list"
+      :key="item.id"
+      :label="item.name"
+      :value="item.id!"
+    />
   </ElSelect>
 </template>

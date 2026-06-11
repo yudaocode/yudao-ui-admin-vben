@@ -225,10 +225,7 @@ function removeDataSpecs(val: any) {
         label="标识符"
         prop="identifier"
       >
-        <ElInput
-          v-model="formData.identifier"
-          placeholder="请输入标识符"
-        />
+        <ElInput v-model="formData.identifier" placeholder="请输入标识符" />
       </ElFormItem>
       <!-- 属性配置 -->
       <ThingModelProperty

@@ -4,7 +4,11 @@ import type { MesDvMachineryApi } from '#/api/mes/dv/machinery';
 
 import { h, markRaw } from 'vue';
 
-import { DICT_TYPE, MesAutoCodeRuleCode, MesDvMachineryStatusEnum } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesAutoCodeRuleCode,
+  MesDvMachineryStatusEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { ElButton } from 'element-plus';
@@ -19,7 +23,10 @@ import { DvMachineryTypeSelect } from './type/components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改设备的表单 */
-export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -49,7 +56,9 @@ export function useFormSchema(formType: FormType, formApi?: VbenFormApi): VbenFo
                 ElButton,
                 {
                   onClick: async () => {
-                    const code = await generateAutoCode(MesAutoCodeRuleCode.DV_MACHINERY_CODE);
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_MACHINERY_CODE,
+                    );
                     await formApi?.setFieldValue('code', code);
                   },
                 },

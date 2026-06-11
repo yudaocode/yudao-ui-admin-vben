@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, message, TabPane, Tabs } from 'antdv-next';
+import { Card, message, Tabs } from 'antdv-next';
 
 import {
   getCustomer,
@@ -45,6 +45,16 @@ const customerId = ref(0); // 客户编号
 const customer = ref<CrmCustomerApi.Customer>({} as CrmCustomerApi.Customer); // 客户详情
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]); // 操作日志
 const permissionListRef = ref<InstanceType<typeof PermissionList>>(); // 团队成员列表 Ref
+const customerTabItems = [
+  { key: '1', label: '跟进记录', forceRender: true },
+  { key: '2', label: '基本信息', forceRender: true },
+  { key: '3', label: '联系人', forceRender: true },
+  { key: '4', label: '团队成员', forceRender: true },
+  { key: '5', label: '商机', forceRender: true },
+  { key: '6', label: '合同', forceRender: true },
+  { key: '7', label: '回款', forceRender: true },
+  { key: '8', label: '操作日志', forceRender: true },
+];
 
 const [Descriptions] = useDescription({
   bordered: false,
@@ -102,9 +112,7 @@ function handleTransfer() {
 /** 锁定客户 */
 async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定锁定客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定锁定客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -118,9 +126,7 @@ async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
 /** 领取客户 */
 async function handleReceive(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定领取客户【${customer.value.name}】吗？`,
-    });
+    await confirm(`确定领取客户【${customer.value.name}】吗？`);
   } catch {
     return false;
   }
@@ -139,9 +145,7 @@ function handleDistributeForm() {
 /** 客户放入公海 */
 async function handlePutPool(): Promise<boolean | undefined> {
   try {
-    await confirm({
-      content: `确定将客户【${customer.value.name}】放入公海吗？`,
-    });
+    await confirm(`确定将客户【${customer.value.name}】放入公海吗？`);
   } catch {
     return false;
   }
@@ -156,9 +160,9 @@ async function handlePutPool(): Promise<boolean | undefined> {
 async function handleUpdateDealStatus(): Promise<boolean | undefined> {
   const dealStatus = !customer.value.dealStatus;
   try {
-    await confirm({
-      content: `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
-    });
+    await confirm(
+      `确定更新成交状态为【${dealStatus ? '已成交' : '未成交'}】吗？`,
+    );
   } catch {
     return false;
   }
@@ -249,49 +253,45 @@ onMounted(() => {
       <Descriptions :data="customer" />
     </Card>
     <Card class="mt-4 min-h-[60%]">
-      <Tabs>
-        <TabPane tab="跟进记录" key="1" :force-render="true">
-          <FollowUp :biz-id="customerId" :biz-type="BizTypeEnum.CRM_CUSTOMER" />
-        </TabPane>
-        <TabPane tab="基本信息" key="2" :force-render="true">
-          <Info :customer="customer" />
-        </TabPane>
-        <TabPane tab="联系人" key="3" :force-render="true">
+      <Tabs :items="customerTabItems">
+        <template #contentRender="{ item }">
+          <FollowUp
+            v-if="item.key === '1'"
+            :biz-id="customerId"
+            :biz-type="BizTypeEnum.CRM_CUSTOMER"
+          />
+          <Info v-else-if="item.key === '2'" :customer="customer" />
           <ContactDetailsList
+            v-else-if="item.key === '3'"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </TabPane>
-        <TabPane tab="团队成员" key="4" :force-render="true">
           <PermissionList
+            v-else-if="item.key === '4'"
             ref="permissionListRef"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :show-action="true"
             @quit-team="handleBack"
           />
-        </TabPane>
-        <TabPane tab="商机" key="5" :force-render="true">
           <BusinessDetailsList
+            v-else-if="item.key === '5'"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
             :customer-id="customerId"
           />
-        </TabPane>
-        <TabPane tab="合同" key="6" :force-render="true">
           <ContractDetailsList
+            v-else-if="item.key === '6'"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
           />
-        </TabPane>
-        <TabPane tab="回款" key="7" :force-render="true">
-          <ReceivablePlanDetailsList :customer-id="customerId" />
-          <ReceivableDetailsList :customer-id="customerId" />
-        </TabPane>
-        <TabPane tab="操作日志" key="8" :force-render="true">
-          <OperateLog :log-list="logList" />
-        </TabPane>
+          <template v-else-if="item.key === '7'">
+            <ReceivablePlanDetailsList :customer-id="customerId" />
+            <ReceivableDetailsList :customer-id="customerId" />
+          </template>
+          <OperateLog v-else-if="item.key === '8'" :log-list="logList" />
+        </template>
       </Tabs>
     </Card>
   </Page>

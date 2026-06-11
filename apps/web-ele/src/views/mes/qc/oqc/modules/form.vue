@@ -18,12 +18,7 @@ import {
 } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createOqc,
-  finishOqc,
-  getOqc,
-  updateOqc,
-} from '#/api/mes/qc/oqc';
+import { createOqc, finishOqc, getOqc, updateOqc } from '#/api/mes/qc/oqc';
 import { $t } from '#/locales';
 
 import { QcIndicatorResultList } from '../../indicatorresult/components';
