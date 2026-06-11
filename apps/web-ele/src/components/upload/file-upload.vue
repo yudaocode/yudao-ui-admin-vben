@@ -139,9 +139,6 @@ function handleRemove(file: UploadFile) {
 /** 处理文件预览 */
 function handlePreview(file: UploadFile) {
   emit('preview', file);
-  if (file.url) {
-    window.open(file.url);
-  }
 }
 
 /** 处理文件数量超限 */
@@ -307,7 +304,7 @@ function getValue() {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <ElUpload
       v-bind="$attrs"
       v-model:file-list="fileList"
