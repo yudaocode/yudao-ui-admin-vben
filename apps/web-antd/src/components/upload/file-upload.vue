@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   resultField: '',
   returnText: false,
   showDescription: false,
+  showDownloadIcon: true,
 });
 const emit = defineEmits([
   'change',
@@ -295,7 +296,7 @@ function getValue() {
       :show-upload-list="{
         showPreviewIcon: true,
         showRemoveIcon: true,
-        showDownloadIcon: true,
+        showDownloadIcon,
       }"
       @remove="handleRemove"
       @preview="handlePreview"
@@ -359,5 +360,12 @@ function getValue() {
 .ant-upload-hint {
   font-size: 14px;
   color: #999;
+}
+</style>
+
+<style>
+/* 文件上传列表显示手型光标样式失效。不知道为啥. 先这里加上 */
+.ant-upload-list-text .ant-upload-list-item {
+  cursor: pointer;
 }
 </style>

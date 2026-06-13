@@ -194,14 +194,23 @@ function shouldShowCustomUserSelect(
   );
 }
 
-/** 判断是否需要显示审批意见 */
-function shouldShowApprovalReason(task: any, nodeType: BpmNodeTypeEnum) {
+/** 判断是否需要显示审批意见和附件 */
+function shouldShowReasonAndAttachment(task: any, nodeType: BpmNodeTypeEnum) {
   return (
-    task.reason &&
+    (task.reason || task.attachments?.length > 0) &&
     [BpmNodeTypeEnum.START_USER_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
       nodeType,
     )
   );
+}
+
+function getAttachmentName(url: string) {
+  return decodeURIComponent(url.slice(url.lastIndexOf('/') + 1));
+}
+
+function isImageAttachment(url: string) {
+  const ext = url.split('.').pop()?.toLowerCase();
+  return ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'webp'].includes(ext || '');
 }
 
 /** 用户选择弹窗关闭 */
@@ -406,13 +415,60 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
                 </div>
               </div>
 
-              <!-- 审批意见和签名 -->
+              <!-- 审批意见,附件和签名 -->
               <teleport defer :to="`#activity-task-${activity.id}-${index}`">
                 <div
-                  v-if="shouldShowApprovalReason(task, activity.nodeType)"
+                  v-if="shouldShowReasonAndAttachment(task, activity.nodeType)"
                   class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
                 >
-                  审批意见：{{ task.reason }}
+                  <div v-if="task.reason">审批意见：{{ task.reason }}</div>
+                  <div
+                    v-if="(task.attachments?.length || 0) > 0"
+                    :class="{
+                      'mt-2 border-t border-dashed border-gray-300 pt-2':
+                        task.reason,
+                    }"
+                  >
+                    <div class="mb-1 text-xs font-semibold text-gray-400">
+                      附件列表：
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                      <template
+                        v-for="(
+                          attachment, attachmentIndex
+                        ) in task.attachments"
+                        :key="attachmentIndex"
+                      >
+                        <div class="flex items-center gap-2">
+                          <IconifyIcon
+                            :icon="
+                              isImageAttachment(attachment)
+                                ? 'lucide:image'
+                                : 'lucide:file-text'
+                            "
+                            class="text-gray-400"
+                          />
+                          <Image
+                            v-if="isImageAttachment(attachment)"
+                            :width="32"
+                            :height="32"
+                            class="rounded border border-solid border-gray-200 object-cover"
+                            :src="attachment"
+                            :preview="{ src: attachment }"
+                          />
+                          <a
+                            v-else
+                            :href="attachment"
+                            target="_blank"
+                            class="max-w-[240px] truncate text-blue-500 hover:text-blue-600 hover:underline"
+                            :title="getAttachmentName(attachment)"
+                          >
+                            {{ getAttachmentName(attachment) }}
+                          </a>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
                 </div>
                 <div
                   v-if="
