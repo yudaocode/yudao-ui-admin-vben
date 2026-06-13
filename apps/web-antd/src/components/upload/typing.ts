@@ -29,5 +29,6 @@ export interface FileUploadProps {
   resultField?: string; // support xxx.xxx.xx
   returnText?: boolean; // 是否返回文件文本内容
   showDescription?: boolean; // 是否显示下面的描述
+  showDownloadIcon?: boolean; // 是否显示下载按钮
   value?: string | string[];
 }
