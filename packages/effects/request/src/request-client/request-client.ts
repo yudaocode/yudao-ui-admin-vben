@@ -63,7 +63,7 @@ class RequestClient {
       },
       responseReturn: 'raw',
       // 默认超时时间
-      timeout: 10_000,
+      timeout: 30_000,
       paramsSerializer: 'repeat',
     };
     const { ...axiosConfig } = options;
