@@ -898,6 +898,7 @@ defineExpose({ loadTodoTask });
                   v-model:value="approveReasonForm.attachments"
                   :max-number="10"
                   :multiple="true"
+                  :show-download-icon="false"
                   help-text="支持多文件/图片上传"
                   @preview="handleFilePreview"
                 />
