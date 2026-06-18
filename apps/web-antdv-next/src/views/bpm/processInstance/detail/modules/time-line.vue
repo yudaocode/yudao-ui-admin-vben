@@ -271,10 +271,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
           </div>
         </template>
 
-        <div
-          class="ml-2 flex flex-col items-start gap-2"
-          :id="`activity-task-${activity.id}-${index}`"
-        >
+        <div class="ml-2 flex flex-col items-start gap-2">
           <!-- 第一行：节点名称、时间 -->
           <div class="flex w-full">
             <div class="font-bold">
@@ -348,12 +345,12 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
             </div>
           </div>
 
-          <div v-else class="mt-1 flex flex-wrap items-center gap-2">
+          <div v-else class="mt-1 flex w-full flex-wrap items-center gap-2">
             <!-- 情况一：遍历每个审批节点下的【进行中】task 任务 -->
             <div
               v-for="(task, idx) in activity.tasks"
               :key="idx"
-              class="flex flex-col gap-2 pr-2"
+              class="flex w-full flex-col gap-2 pr-2"
             >
               <div
                 class="relative flex flex-wrap gap-2"
@@ -414,11 +411,10 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
               </div>
 
               <!-- 审批意见和签名 -->
-              <teleport defer :to="`#activity-task-${activity.id}-${index}`">
-                <div
-                  v-if="shouldShowApprovalReason(task, activity.nodeType)"
-                  class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
-                >
+              <div
+                v-if="shouldShowApprovalReason(task, activity.nodeType)"
+                class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+              >
                   审批意见：{{ task.reason }}
                 </div>
                 <div
@@ -437,7 +433,6 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
                     :preview="{ src: task.signPicUrl }"
                   />
                 </div>
-              </teleport>
             </div>
 
             <!-- 情况二：遍历每个审批节点下的【候选的】task 任务 -->
