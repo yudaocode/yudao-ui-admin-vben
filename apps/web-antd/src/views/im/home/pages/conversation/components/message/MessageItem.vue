@@ -4,11 +4,12 @@ import type { Message } from '../../../../types'
 
 import { computed, inject } from 'vue'
 
+import { confirm } from '@vben/common-ui'
 import { IconifyIcon as Icon } from '@vben/icons'
 import { useUserStore } from '@vben/stores'
 
 import { useClipboard } from '@vueuse/core'
-import { Tag } from 'ant-design-vue'
+import { message as antdMessage, Tag } from 'ant-design-vue'
 
 import { pinGroupMessage as apiPinGroupMessage, cancelMuteMember } from '#/api/im/group'
 import { removeGroupMember } from '#/api/im/group/member'
@@ -50,7 +51,6 @@ import {
   resolveRtcCallPrivateBubbleText,
   resolveRtcCallTipSegments
 } from '#/views/im/utils/message'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { formatTimeTip } from '#/views/im/utils/time'
 import {
   getMemberDisplayName,
@@ -110,8 +110,6 @@ const uiStore = useImUiStore()
 const { recall, sendRaw } = useMessageSender()
 const { uploadAndSendMedia } = useMediaUploader()
 const muteOverlay = useMuteOverlay()
-// 仅用 confirm，避免 message 跟 props.message 同名冲突（vue/no-dupe-keys）
-const { confirm: confirmDialog, success: successMessage } = useMessage()
 // legacy:true 兼容 HTTP 环境，没有 navigator.clipboard 时降级到 execCommand
 const { copy: copyToClipboard } = useClipboard({ legacy: true })
 
@@ -219,8 +217,7 @@ const rtcCallTipSegments = computed(() => resolveRtcCallTipSegments(props.messag
 /** 引用对象：气泡内嵌入展示；非引用消息返回 null，模板 v-if 不渲染 */
 const quote = computed(() => getQuoteFromMessage(props.message.content))
 
-/** MessagePanel 注入的弹窗触发函数 */
-const openForwardDialog = inject(IM_FORWARD_DIALOG_KEY)
+const openForwardDialog = inject(IM_FORWARD_DIALOG_KEY) // MessagePanel 注入的弹窗触发函数
 const openMergeDetail = inject(IM_MERGE_DETAIL_DIALOG_KEY)
 const redialRtcCall = inject(IM_RTC_REDIAL_KEY)
 
@@ -233,8 +230,7 @@ function handleRtcCallBubbleClick() {
   redialRtcCall?.(mediaType)
 }
 
-/** 多选模式：模块级单例 composable */
-const multiSelect = useMessageMultiSelect()
+const multiSelect = useMessageMultiSelect() // 多选模式：模块级单例 composable
 
 /** 合并消息气泡点击：打开详情弹窗（嵌套合并由弹窗内部 push 栈） */
 function handleMergeOpen(content: string) {
@@ -399,7 +395,7 @@ const isAtMe = computed(() => {
 
 // ==================== 右键菜单 / 操作 ====================
 
-/** 右键菜单 key 常量；push 端和分发端从同一处取，typo 编译期就能抓 */
+// 右键菜单 key 常量；push 端和分发端从同一处取，typo 编译期就能抓
 const MENU_KEYS = {
   COPY: 'COPY',
   REPLY: 'REPLY',
@@ -605,7 +601,7 @@ async function handleAddToFace() {
   }
   const data = await faceStore.addFaceUserItem(payload)
   if (data) {
-    successMessage('已添加到表情')
+    antdMessage.success('已添加到表情')
   }
 }
 
@@ -688,9 +684,9 @@ async function handlePin() {
     return
   }
   try {
-    await confirmDialog('将在当前群成员的聊天中置顶', '置顶消息')
+    await confirm('将在当前群成员的聊天中置顶', '置顶消息')
     await apiPinGroupMessage({ id: group.id, messageId: props.message.id })
-    successMessage('已置顶')
+    antdMessage.success('已置顶')
   } catch {}
 }
 
@@ -701,7 +697,7 @@ async function handleCopy() {
     return
   }
   await copyToClipboard(text)
-  successMessage('内容已复制到剪贴板')
+  antdMessage.success('内容已复制到剪贴板')
 }
 
 /** 进入引用模式：把当前消息构造成 QuoteMessage 写入会话草稿 */
@@ -739,7 +735,7 @@ function handleEnterMultiSelect() {
  */
 async function handleRecall() {
   try {
-    await confirmDialog('确定要撤回这条消息吗？', '撤回消息')
+    await confirm('确定要撤回这条消息吗？', '撤回消息')
     await recall(props.message)
   } catch {}
 }
@@ -820,9 +816,9 @@ async function handleUnmute() {
     return
   }
   try {
-    await confirmDialog('确定解除该成员的禁言吗？', '解除禁言')
+    await confirm('确定解除该成员的禁言吗？', '解除禁言')
     await cancelMuteMember({ id: group.id, userId: props.message.senderId })
-    successMessage('已解除禁言')
+    antdMessage.success('已解除禁言')
     emit('reload')
   } catch {}
 }
@@ -835,9 +831,9 @@ async function handleKick() {
   }
   const name = senderDisplayName.value || '该成员'
   try {
-    await confirmDialog(`确定将「${name}」移出群聊吗？`, '移除成员')
+    await confirm(`确定将「${name}」移出群聊吗？`, '移除成员')
     await removeGroupMember({ groupId: group.id, memberUserIds: [props.message.senderId] })
-    successMessage('已移除')
+    antdMessage.success('已移除')
     emit('reload')
   } catch {}
 }

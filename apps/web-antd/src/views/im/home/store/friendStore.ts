@@ -1,29 +1,14 @@
-import type { Friend, FriendDO, FriendLite, FriendRequest, FriendRequestDO } from '../types'
+import type { Friend, FriendLite, FriendRequest } from '../types'
+
+import type { ImFriendApi } from '#/api/im/friend'
+import type { ImFriendRequestApi } from '#/api/im/friend/request'
 
 import { CommonStatusEnum } from '@vben/constants'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import {
-  blockFriend as apiBlockFriend,
-  deleteFriend as apiDeleteFriend,
-  getFriend as apiGetFriend,
-  getMyFriendList as apiGetMyFriendList,
-  pullMyFriendList as apiPullMyFriendList,
-  unblockFriend as apiUnblockFriend,
-  updateFriend as apiUpdateFriend,
-  type ImFriendRespVO
-} from '#/api/im/friend'
-import {
-  agreeFriendRequest as apiAgreeFriendRequest,
-  applyFriendRequest as apiApplyFriendRequest,
-  getMyFriendRequest as apiGetMyFriendRequest,
-  getMyFriendRequestList as apiGetMyFriendRequestList,
-  pullMyFriendRequestList as apiPullMyFriendRequestList,
-  refuseFriendRequest as apiRefuseFriendRequest,
-  type ImFriendRequestApplyReqVO,
-  type ImFriendRequestRespVO
-} from '#/api/im/friend/request'
+import { blockFriend as apiBlockFriend, deleteFriend as apiDeleteFriend, getFriend as apiGetFriend, getMyFriendList as apiGetMyFriendList, pullMyFriendList as apiPullMyFriendList, unblockFriend as apiUnblockFriend, updateFriend as apiUpdateFriend } from '#/api/im/friend'
+import { agreeFriendRequest as apiAgreeFriendRequest, applyFriendRequest as apiApplyFriendRequest, getMyFriendRequest as apiGetMyFriendRequest, getMyFriendRequestList as apiGetMyFriendRequestList, pullMyFriendRequestList as apiPullMyFriendRequestList, refuseFriendRequest as apiRefuseFriendRequest } from '#/api/im/friend/request'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 
 import { FRIEND_REQUEST_PAGE_SIZE } from '../../utils/config'
@@ -155,8 +140,8 @@ export const useFriendStore = defineStore('imFriendStore', {
     async loadFriendData(): Promise<boolean> {
       try {
         const [friends, friendRequests] = await Promise.all([
-          getDb().getAll<FriendDO>('friends'),
-          getDb().getAll<FriendRequestDO>('friendRequests')
+          getDb().getAll<Friend>('friends'),
+          getDb().getAll<FriendRequest>('friendRequests')
         ])
         if (friends.length > 0) {
           this.friends = friends
@@ -346,7 +331,7 @@ export const useFriendStore = defineStore('imFriendStore', {
     // ==================== 申请-审批 ====================
 
     /** 发起好友申请：成功后等待对方同意（不直接落地为好友） */
-    async applyFriendRequest(reqVO: ImFriendRequestApplyReqVO): Promise<null | number> {
+    async applyFriendRequest(reqVO: ImFriendRequestApi.FriendRequestApplyReqVO): Promise<null | number> {
       return await apiApplyFriendRequest(reqVO)
     },
 
@@ -816,7 +801,7 @@ export const useFriendStore = defineStore('imFriendStore', {
   }
 })
 
-function convertFriend(vo: ImFriendRespVO): Friend {
+function convertFriend(vo: ImFriendApi.FriendRespVO): Friend {
   return {
     id: vo.id,
     friendUserId: vo.friendUserId,
@@ -835,7 +820,7 @@ function convertFriend(vo: ImFriendRespVO): Friend {
   }
 }
 
-function convertFriendRequest(vo: ImFriendRequestRespVO): FriendRequest {
+function convertFriendRequest(vo: ImFriendRequestApi.FriendRequestRespVO): FriendRequest {
   return {
     id: vo.id,
     fromUserId: vo.fromUserId,

@@ -38,10 +38,9 @@ const filteredConversations = computed(() =>
 
 // ==================== 置顶相关 ====================
 
-/** 置顶超过该数量时显示折叠入口；以下数量直接铺开（避免单条置顶就出折叠头视觉太重） */
-const PINNED_FOLD_THRESHOLD = 3
+const PINNED_FOLD_THRESHOLD = 3 // 置顶超过该数量时显示折叠入口；以下数量直接铺开（避免单条置顶就出折叠头视觉太重）
 
-/** 置顶折叠展开态：localStorage 持久化，刷新后保留用户上次的选择，对齐微信 */
+// 置顶折叠展开态：localStorage 持久化，刷新后保留用户上次的选择，对齐微信
 const pinnedExpanded = ref(
   localStorage.getItem(StorageKeys.localStorage.conversationPinnedExpanded) === 'true'
 )
@@ -105,13 +104,11 @@ const showPinnedSection = computed(
 
 // ==================== 添加朋友 ====================
 
-/** 添加朋友弹窗 ref：右上角 +-下拉「添加朋友」入口调 open() 触发 */
-const friendAddDialogRef = ref<InstanceType<typeof FriendAddDialog>>()
+const friendAddDialogRef = ref<InstanceType<typeof FriendAddDialog>>() // 添加朋友弹窗 ref：右上角 +-下拉「添加朋友」入口调 open() 触发
 
 // ==================== 建群相关 ====================
 
-/** 发起群聊弹窗 ref：handleOpenCreateGroup 调 open() 打开 */
-const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>()
+const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>() // 发起群聊弹窗 ref：handleOpenCreateGroup 调 open() 打开
 
 /** 打开发起群聊弹窗：无锁定项的全局入口 */
 function handleOpenCreateGroup() {

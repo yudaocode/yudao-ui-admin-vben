@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerChannelVO } from '#/api/im/manager/channel';
+import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
 import { computed, onMounted, ref } from 'vue';
 
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const channelList = ref<ImManagerChannelVO[]>([]);
+const channelList = ref<ImManagerChannelApi.Channel[]>([]);
 
 const value = computed({
   get: () => props.modelValue,

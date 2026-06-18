@@ -178,7 +178,7 @@ export interface SettingDO<T = unknown> {
 
 // 群实体（前端内部结构）
 export interface Group {
-  // ========== 后端字段（对齐 ImGroupRespVO） ==========
+  // ========== 后端字段（对齐 ImGroupApi.GroupRespVO） ==========
   id: number // 群编号
   name: string // 群名称
   avatar?: string // 群头像
@@ -203,7 +203,7 @@ export type GroupDO = Omit<Group, 'members' | 'membersExpired' | 'membersLoaded'
 
 // 群成员实体（前端内部结构）
 export interface GroupMember {
-  // ========== 后端字段（对齐 ImGroupMemberRespVO） ==========
+  // ========== 后端字段（对齐 ImGroupMemberApi.GroupMemberRespVO） ==========
   id?: number // 群成员关系记录编号
   groupId: number // 群编号
   userId: number // 用户编号
@@ -218,13 +218,11 @@ export interface GroupMember {
   isOwner?: boolean // 是否群主（前端从 Group.ownerUserId 计算）
 }
 
-export type GroupMemberDO = GroupMember
-
 // ==================== 好友 ====================
 
 // 好友实体（前端内部结构）
 export interface Friend {
-  // ========== 后端字段（对齐 ImFriendRespVO） ==========
+  // ========== 后端字段（对齐 ImFriendApi.FriendRespVO） ==========
   id?: number // 好友关系记录编号（本地乐观新增时可能暂缺）
   friendUserId: number // 好友用户编号（与 Conversation.targetId 对齐）
   nickname: string // 好友昵称（对方真实昵称，永远不被备注覆盖；UI 显示走 displayName || nickname）
@@ -241,13 +239,11 @@ export interface Friend {
   deleteTime?: number // 删除好友时间（毫秒时间戳；后端为 LocalDateTime 字符串，在 convertFriend 转换）
 }
 
-export type FriendDO = Friend
-
 /**
- * 好友申请记录（前端内部结构，对齐后端 ImFriendRequestRespVO）
+ * 好友申请记录（前端内部结构，对齐后端 ImFriendRequestApi.FriendRequestRespVO）
  */
 export interface FriendRequest {
-  // ========== 后端字段（对齐 ImFriendRequestRespVO） ==========
+  // ========== 后端字段（对齐 ImFriendRequestApi.FriendRequestRespVO） ==========
   id: number // 申请编号
   fromUserId: number // 发起方用户编号
   toUserId: number // 接收方用户编号
@@ -264,12 +260,6 @@ export interface FriendRequest {
   toNickname?: string // 接收方昵称
   toAvatar?: string // 接收方头像
 }
-
-export type FriendRequestDO = FriendRequest
-
-export type GroupRequestDO = import('#/api/im/group/request').ImGroupRequestRespVO
-
-export type ChannelDO = import('#/api/im/manager/channel').ImManagerChannelVO
 
 // ==================== 用户名片 ====================
 

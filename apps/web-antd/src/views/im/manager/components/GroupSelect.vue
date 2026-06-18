@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { ImManagerGroupVO } from '#/api/im/manager/group';
+import type { ImManagerGroupApi } from '#/api/im/manager/group';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { Select } from 'ant-design-vue';
 
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const groupList = ref<ImManagerGroupVO[]>([]);
+const groupList = ref<ImManagerGroupApi.Group[]>([]);
 
 const value = computed({
   get: () => props.modelValue,
@@ -57,7 +57,7 @@ async function loadGroupList() {
   }
 }
 
-watch(() => props.modelValue, loadGroupList, { immediate: true });
+onMounted(loadGroupList);
 </script>
 
 <template>

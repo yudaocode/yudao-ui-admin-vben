@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFacePackItemVO } from '#/api/im/manager/face/item';
-import type { ImManagerFacePackVO } from '#/api/im/manager/face/pack';
+import type { ImManagerFacePackItemApi } from '#/api/im/manager/face/item';
+import type { ImManagerFacePackApi } from '#/api/im/manager/face/pack';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -22,7 +22,7 @@ import { useItemGridColumns, useItemGridFormSchema } from '../data';
 import ItemForm from './item-form.vue';
 
 const visible = ref(false);
-const currentPack = ref<ImManagerFacePackVO>();
+const currentPack = ref<ImManagerFacePackApi.FacePack>();
 const checkedIds = ref<number[]>([]);
 const title = computed(() =>
   currentPack.value ? `「${currentPack.value.name}」表情管理` : '表情管理',
@@ -34,7 +34,7 @@ const [ItemFormModal, itemFormModalApi] = useVbenModal({
 });
 
 /** 打开抽屉 */
-function open(pack: ImManagerFacePackVO) {
+function open(pack: ImManagerFacePackApi.FacePack) {
   currentPack.value = pack;
   visible.value = true;
   checkedIds.value = [];
@@ -62,14 +62,14 @@ function handleCreate() {
 }
 
 /** 编辑表情 */
-function handleEdit(row: ImManagerFacePackItemVO) {
+function handleEdit(row: ImManagerFacePackItemApi.FacePackItem) {
   itemFormModalApi
     .setData({ id: row.id, packId: currentPack.value?.id })
     .open();
 }
 
 /** 删除表情 */
-async function handleDelete(row: ImManagerFacePackItemVO) {
+async function handleDelete(row: ImManagerFacePackItemApi.FacePackItem) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name || row.id]),
     duration: 0,
@@ -103,7 +103,7 @@ async function handleDeleteBatch() {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: ImManagerFacePackItemVO[];
+  records: ImManagerFacePackItemApi.FacePackItem[];
 }) {
   checkedIds.value = records.map((item) => item.id);
 }
@@ -136,7 +136,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerFacePackItemVO>,
+  } as VxeTableGridOptions<ImManagerFacePackItemApi.FacePackItem>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

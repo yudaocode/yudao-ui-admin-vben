@@ -21,16 +21,11 @@ type PickerMode = 'add' | 'invite'
 
 const groupStore = useGroupStore()
 
-/** 弹窗显隐 */
-const visible = ref(false)
-/** 当前群编号；open 时由调用方传入 */
-const groupId = ref(0)
-/** 弹窗用途；invite=发起群通话选邀请人 / add=通话中追加成员 */
-const mode = ref<PickerMode>('invite')
-/** 置灰的 userId 列表；add 场景把已在通话内的人禁用 */
-const excludeUserIds = ref<number[]>([])
-/** 当前选中的 userId 列表；GroupMemberPickerPanel v-model 绑过来 */
-const selectedIds = ref<number[]>([])
+const visible = ref(false) // 弹窗显隐
+const groupId = ref(0) // 当前群编号；open 时由调用方传入
+const mode = ref<PickerMode>('invite') // 弹窗用途；invite=发起群通话选邀请人 / add=通话中追加成员
+const excludeUserIds = ref<number[]>([]) // 置灰的 userId 列表；add 场景把已在通话内的人禁用
+const selectedIds = ref<number[]>([]) // 当前选中的 userId 列表；GroupMemberPickerPanel v-model 绑过来
 
 /** 标题；按用途切换 */
 const title = computed(() => (mode.value === 'add' ? '添加成员' : '选择成员'))

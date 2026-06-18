@@ -31,7 +31,7 @@ const acceptDisabled = computed(() => !!props.accepting || !!props.rejecting)
 /** 拒绝按钮禁用态 */
 const rejectDisabled = computed(() => !!props.rejecting || !!props.accepting)
 
-/** 群通话成员；缓存为空时用 INVITE 载荷里的主叫兜底，避免空白 */
+// 群通话成员；缓存为空时用 INVITE 载荷里的主叫兜底，避免空白
 const callMembers = useGroupCallMembers(
   computed(() => (props.isGroup ? props.payload?.groupId : undefined)),
   computed(() => props.payload?.inviterUserId)

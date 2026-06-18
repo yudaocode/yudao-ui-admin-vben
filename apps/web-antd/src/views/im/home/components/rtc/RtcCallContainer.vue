@@ -4,6 +4,7 @@ import type { CallParticipantVM } from './RtcCallParticipantTile.vue'
 import { computed, ref, watch } from 'vue'
 
 import { useIntervalFn } from '@vueuse/core'
+import { message } from 'ant-design-vue'
 import { Track } from 'livekit-client'
 
 import {
@@ -21,7 +22,6 @@ import {
   ImRtcCallMediaType,
   ImRtcCallStage
 } from '#/views/im/utils/constants'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { getSenderAvatar, getSenderDisplayName } from '#/views/im/utils/user'
 
 import { useLiveKitRoom } from '../../composables/useLiveKitRoom'
@@ -34,7 +34,6 @@ import RtcCallRunning from './RtcCallRunning.vue'
 defineOptions({ name: 'ImRtcCallContainer' })
 
 const rtcStore = useRtcStore()
-const message = useMessage()
 const lk = useLiveKitRoom()
 
 const memberPickerRef = ref<InstanceType<typeof RtcCallMemberPickerDialog>>()
@@ -123,16 +122,13 @@ const participants = computed<CallParticipantVM[]>(() => {
   const conversationType = call.conversationType
   const targetId = call.groupId ?? 0
   const myId = getCurrentUserId()
-  const result: CallParticipantVM[] = []
-
-  // 自己
-  result.push({
+  const result: CallParticipantVM[] = [{
     userId: myId,
     nickname: getSenderDisplayName(myId, conversationType, targetId),
     avatar: getSenderAvatar(myId, conversationType, targetId) || undefined,
     isLocal: true,
     videoStream: localStream.value
-  })
+  }]
 
   // 已加入的远端：实际推流；屏幕共享在网格里独占该成员的格子，无则降级 Camera
   const joined = new Set<number>()

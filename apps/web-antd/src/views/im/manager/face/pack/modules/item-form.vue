@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerFacePackItemVO } from '#/api/im/manager/face/item';
+import type { ImManagerFacePackItemApi } from '#/api/im/manager/face/item';
 
 import { computed, ref, watch } from 'vue';
 
@@ -19,7 +19,7 @@ import { probeImageSize } from '#/views/im/manager/utils/format';
 import { useItemFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<ImManagerFacePackItemVO>();
+const formData = ref<ImManagerFacePackItemApi.FacePackItem>();
 const packId = ref(0);
 const lastUrl = ref('');
 const getTitle = computed(() => {
@@ -41,7 +41,13 @@ const [Form, formApi] = useVbenForm({
 
 /** 回填图片尺寸 */
 async function applyImageSize(url?: string) {
-  if (!url || url === lastUrl.value) {
+  if (!url) {
+    lastUrl.value = '';
+    await formApi.setFieldValue('width', undefined);
+    await formApi.setFieldValue('height', undefined);
+    return;
+  }
+  if (url === lastUrl.value) {
     return;
   }
   lastUrl.value = url;
@@ -68,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerFacePackItemVO;
+    const data = (await formApi.getValues()) as ImManagerFacePackItemApi.FacePackItem;
     try {
       data.packId = data.packId || packId.value;
       await (formData.value?.id

@@ -1,20 +1,14 @@
 import type { Message } from '../types'
 
+import type { ImChannelMessageApi } from '#/api/im/message/channel'
+import type { ImGroupMessageApi } from '#/api/im/message/group'
+import type { ImPrivateMessageApi } from '#/api/im/message/private'
+
 import { watch } from 'vue'
 
-import {
-  pullChannelMessages as apiPullChannelMessages,
-  type ImChannelMessageRespVO
-} from '#/api/im/message/channel'
-import {
-  pullGroupMessages as apiPullGroupMessages,
-  type ImGroupMessageRespVO
-} from '#/api/im/message/group'
-import {
-  getPrivateMaxReadMessageId as apiGetPrivateMaxReadMessageId,
-  pullPrivateMessages as apiPullPrivateMessages,
-  type ImPrivateMessageRespVO
-} from '#/api/im/message/private'
+import { pullChannelMessages as apiPullChannelMessages } from '#/api/im/message/channel'
+import { pullGroupMessages as apiPullGroupMessages } from '#/api/im/message/group'
+import { getPrivateMaxReadMessageId as apiGetPrivateMaxReadMessageId, pullPrivateMessages as apiPullPrivateMessages } from '#/api/im/message/private'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 
 import { buildChannelConversationStub } from '../../utils/channel'
@@ -41,7 +35,7 @@ import { type PulledMessage, useMessageStore } from '../store/messageStore'
 import { useImWebSocketStore } from '../store/websocketStore'
 
 /** 三类消息 pull 接口返回的原始 VO 联合类型；runMinIdPull 只需 id 推进游标，具体分发在 applyPage 内按类型 cast */
-type PulledRawMessage = ImChannelMessageRespVO | ImGroupMessageRespVO | ImPrivateMessageRespVO
+type PulledRawMessage = ImChannelMessageApi.ChannelMessageRespVO | ImGroupMessageApi.GroupMessageRespVO | ImPrivateMessageApi.PrivateMessageRespVO
 
 /**
  * 消息增量拉取：登录后分页拉取离线期间的新消息
@@ -74,11 +68,11 @@ export const useMessagePuller = () => {
   }
 
   /** 私聊会话归属：自己发的算"发给 receiverId 的会话"，否则算"发送方的会话"；curry currentUserId 进闭包减少 3 处调用方的样板 */
-  const getPrivatePeerId = (message: ImPrivateMessageRespVO) =>
+  const getPrivatePeerId = (message: ImPrivateMessageApi.PrivateMessageRespVO) =>
     getPrivateMessagePeerId(message, currentUserId)
 
   /** 服务端私聊消息 -> 本地 Message：targetId 是会话主键（对端 userId） */
-  const convertPrivateMessage = (message: ImPrivateMessageRespVO): Message => {
+  const convertPrivateMessage = (message: ImPrivateMessageApi.PrivateMessageRespVO): Message => {
     return {
       id: message.id,
       clientMessageId: message.clientMessageId || generateClientMessageId(),
@@ -94,7 +88,7 @@ export const useMessagePuller = () => {
   }
 
   /** 服务端群聊消息 -> 本地 Message */
-  const convertGroupMessage = (message: ImGroupMessageRespVO): Message => {
+  const convertGroupMessage = (message: ImGroupMessageApi.GroupMessageRespVO): Message => {
     return {
       id: message.id,
       clientMessageId: message.clientMessageId || generateClientMessageId(),
@@ -113,7 +107,7 @@ export const useMessagePuller = () => {
   }
 
   /** 服务端频道消息 -> 本地 Message */
-  const convertChannelMessage = (message: ImChannelMessageRespVO): Message => {
+  const convertChannelMessage = (message: ImChannelMessageApi.ChannelMessageRespVO): Message => {
     return {
       id: message.id,
       clientMessageId: message.clientMessageId || generateClientMessageId(),
@@ -130,11 +124,11 @@ export const useMessagePuller = () => {
   }
 
   /** 频道：会话归属到 channelId；name / avatar 暂用占位，将来接入 channelStore 后再填真值 */
-  const convertChannelConversation = (message: ImChannelMessageRespVO) =>
+  const convertChannelConversation = (message: ImChannelMessageApi.ChannelMessageRespVO) =>
     buildChannelConversationStub(message.channelId)
 
   /** 私聊：会话归属到对端 userId */
-  const convertPrivateConversation = (message: ImPrivateMessageRespVO) => {
+  const convertPrivateConversation = (message: ImPrivateMessageApi.PrivateMessageRespVO) => {
     const targetId = getPrivatePeerId(message)
     const friend = friendStore.getFriend(targetId)
     return {
@@ -147,7 +141,7 @@ export const useMessagePuller = () => {
   }
 
   /** 群聊：会话归属到 groupId */
-  const convertGroupConversation = (message: ImGroupMessageRespVO) => {
+  const convertGroupConversation = (message: ImGroupMessageApi.GroupMessageRespVO) => {
     const group = groupStore.getGroup(message.groupId)
     return {
       type: ImConversationType.GROUP,
@@ -198,7 +192,7 @@ export const useMessagePuller = () => {
         // 后端按 id 升序返回，且信号 id 一定 > 原消息 id（先更新 status 再插信号），所以原消息一定先到、recallMessage 找得到
         for (const raw of list) {
           if (isChannel) {
-            const message = raw as ImChannelMessageRespVO
+            const message = raw as ImChannelMessageApi.ChannelMessageRespVO
             pulledMessages.push({
               kind: 'insert',
               conversationInfo: convertChannelConversation(message),
@@ -207,7 +201,7 @@ export const useMessagePuller = () => {
             continue
           }
           if (isPrivate) {
-            const message = raw as ImPrivateMessageRespVO
+            const message = raw as ImPrivateMessageApi.PrivateMessageRespVO
             // 特殊：撤回消息的处理
             if (message.type === ImContentType.RECALL) {
               pulledMessages.push({
@@ -230,7 +224,7 @@ export const useMessagePuller = () => {
               message: convertPrivateMessage(message)
             })
           } else {
-            const message = raw as ImGroupMessageRespVO
+            const message = raw as ImGroupMessageApi.GroupMessageRespVO
             // 特殊：撤回消息的处理
             if (message.type === ImContentType.RECALL) {
               pulledMessages.push({

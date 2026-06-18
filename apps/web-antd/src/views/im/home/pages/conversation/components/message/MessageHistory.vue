@@ -302,11 +302,11 @@ function matchesActiveFilter(message: Message): boolean {
  */
 const currentList = computed<Message[]>(() => {
   const trimmedKeyword = keyword.value.trim()
-  let list = allMessages.value.filter(matchesActiveFilter)
+  let list = allMessages.value.filter((message) => matchesActiveFilter(message))
   if (trimmedKeyword) {
     list = list.filter((message) => textSnippetOf(message).includes(trimmedKeyword))
   }
-  return [...list].reverse()
+  return list.toReversed()
 })
 
 // ==================== 加载更早消息 ====================
@@ -343,9 +343,12 @@ async function loadEarlier() {
     // 算 maxId（不含，作为后端游标）：取当前会话本地缓存里最早一条服务端 id；
     // 本地乐观占位消息没有服务端 id，要剔除
     // 全是占位 / 列表为空时 reduce 不更新初值（POSITIVE_INFINITY），转成 undefined → 后端从最新拉
-    const earliestId = allMessages.value
-      .filter((message) => !!message.id && message.id > 0)
-      .reduce((min, message) => Math.min(min, message.id || min), Number.POSITIVE_INFINITY)
+    let earliestId = Number.POSITIVE_INFINITY
+    for (const message of allMessages.value) {
+      if (message.id && message.id > 0) {
+        earliestId = Math.min(earliestId, message.id)
+      }
+    }
     const maxId = Number.isFinite(earliestId) ? earliestId : undefined
 
     // 调后端 list 接口：私聊 / 群聊接口签名不同，分支调度；返回结果用 useMessagePuller
@@ -358,7 +361,7 @@ async function loadEarlier() {
         maxId,
         limit: HISTORY_PAGE_SIZE
       })
-      earlier = (list || []).map(convertGroupMessage)
+      earlier = (list || []).map((message) => convertGroupMessage(message))
       pageLength = list?.length ?? 0
     } else {
       const list = await apiGetPrivateMessageList({
@@ -366,7 +369,7 @@ async function loadEarlier() {
         maxId,
         limit: HISTORY_PAGE_SIZE
       })
-      earlier = (list || []).map(convertPrivateMessage)
+      earlier = (list || []).map((message) => convertPrivateMessage(message))
       pageLength = list?.length ?? 0
     }
 

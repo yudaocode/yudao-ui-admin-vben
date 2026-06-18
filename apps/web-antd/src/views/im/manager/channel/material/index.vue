@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerChannelMaterialVO } from '#/api/im/manager/channel/material';
+import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/material';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -34,12 +34,12 @@ function handleCreate() {
 }
 
 /** 编辑素材 */
-function handleEdit(row: ImManagerChannelMaterialVO) {
+function handleEdit(row: ImManagerChannelMaterialApi.Material) {
   formModalApi.setData(row).open();
 }
 
 /** 删除素材 */
-async function handleDelete(row: ImManagerChannelMaterialVO) {
+async function handleDelete(row: ImManagerChannelMaterialApi.Material) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.title]),
     duration: 0,
@@ -80,7 +80,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerChannelMaterialVO>,
+  } as VxeTableGridOptions<ImManagerChannelMaterialApi.Material>,
 });
 </script>
 

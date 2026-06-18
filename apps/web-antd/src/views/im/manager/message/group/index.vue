@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerGroupMessageVO } from '#/api/im/manager/message/group';
+import type { ImManagerGroupMessageApi } from '#/api/im/manager/message/group';
 
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -29,7 +29,7 @@ const route = useRoute();
 const detailRef = ref<InstanceType<typeof Detail>>();
 
 /** 打开详情 */
-function handleDetail(row: ImManagerGroupMessageVO) {
+function handleDetail(row: ImManagerGroupMessageApi.GroupMessage) {
   detailRef.value?.open(row);
 }
 
@@ -61,7 +61,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerGroupMessageVO>,
+  } as VxeTableGridOptions<ImManagerGroupMessageApi.GroupMessage>,
 });
 </script>
 

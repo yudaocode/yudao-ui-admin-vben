@@ -1,20 +1,14 @@
-import type { Group, GroupDO, GroupMember, GroupMemberDO, Message } from '../types'
+import type { Group, GroupDO, GroupMember, Message } from '../types'
+
+import type { ImGroupApi } from '#/api/im/group'
+import type { ImGroupMemberApi } from '#/api/im/group/member'
 
 import { CommonStatusEnum } from '@vben/constants'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import {
-  getGroup as apiGetGroup,
-  getMyGroupList as apiGetMyGroupList,
-  type ImGroupRespVO
-} from '#/api/im/group'
-import {
-  getGroupMember as apiGetGroupMember,
-  getGroupMemberList as apiGetGroupMemberList,
-  updateGroupMember as apiUpdateGroupMember,
-  type ImGroupMemberRespVO
-} from '#/api/im/group/member'
+import { getGroup as apiGetGroup, getMyGroupList as apiGetMyGroupList } from '#/api/im/group'
+import { getGroupMember as apiGetGroupMember, getGroupMemberList as apiGetGroupMemberList, updateGroupMember as apiUpdateGroupMember } from '#/api/im/group/member'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 
 import {
@@ -159,7 +153,7 @@ export const useGroupStore = defineStore('imGroupStore', {
         return cachedGroup.members
       }
       try {
-        const cached = await getDb().getAllByIndex<GroupMemberDO>(
+        const cached = await getDb().getAllByIndex<GroupMember>(
           'groupMembers',
           'groupId',
           groupId
@@ -229,7 +223,7 @@ export const useGroupStore = defineStore('imGroupStore', {
         return
       }
       const fresh = (list || []).map((group) => convertGroup(group))
-      // 合并而非全量替换：silent / groupRemark / 成员缓存这些字段不在 ImGroupRespVO 里，得从旧 group 保留
+      // 合并而非全量替换：silent / groupRemark / 成员缓存这些字段不在 ImGroupApi.GroupRespVO 里，得从旧 group 保留
       const groupMap = new Map(this.groups.map((group) => [group.id, group]))
       this.groups = fresh.map((group) => {
         const existing = groupMap.get(group.id)
@@ -314,7 +308,7 @@ export const useGroupStore = defineStore('imGroupStore', {
         if (requestEpoch !== storeEpoch || getCurrentUserId() !== requestUserId) {
           return []
         }
-        let meRaw: ImGroupMemberRespVO | undefined
+        let meRaw: ImGroupMemberApi.GroupMemberRespVO | undefined
         const members = (list || []).map((member) => {
           if (member.userId === requestUserId) {
             meRaw = member
@@ -903,7 +897,7 @@ export const useGroupStore = defineStore('imGroupStore', {
   }
 })
 
-function convertGroup(group: ImGroupRespVO): Group {
+function convertGroup(group: ImGroupApi.GroupRespVO): Group {
   return {
     id: group.id,
     name: group.name,
@@ -918,9 +912,9 @@ function convertGroup(group: ImGroupRespVO): Group {
   }
 }
 
-/** 后端 ImGroupMessageRespVO -> 前端 Message：补 targetId / selfSend / sendTime 等派生字段 */
+/** 后端 ImGroupMessageApi.GroupMessageRespVO -> 前端 Message：补 targetId / selfSend / sendTime 等派生字段 */
 function convertGroupMessageVO(
-  message: NonNullable<ImGroupRespVO['pinnedMessages']>[number]
+  message: NonNullable<ImGroupApi.GroupRespVO['pinnedMessages']>[number]
 ): Message {
   const currentUserId = getCurrentUserId()
   return {
@@ -940,7 +934,7 @@ function convertGroupMessageVO(
   }
 }
 
-function convertGroupMember(member: ImGroupMemberRespVO, groupId: number): GroupMember {
+function convertGroupMember(member: ImGroupMemberApi.GroupMemberRespVO, groupId: number): GroupMember {
   return {
     id: member.id,
     userId: member.userId,

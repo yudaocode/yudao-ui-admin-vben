@@ -4,10 +4,11 @@ import type { Conversation, GroupLite } from '../../../../types'
 
 import { computed, ref, watch } from 'vue'
 
+import { confirm } from '@vben/common-ui'
 import { CommonStatusEnum } from '@vben/constants'
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button, Drawer, Input, Popover, Switch } from 'ant-design-vue'
+import { Button, Drawer, Input, message, Popover, Switch } from 'ant-design-vue'
 
 import {
   dissolveGroup,
@@ -18,7 +19,6 @@ import { quitGroup, updateGroupMember } from '#/api/im/group/member'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 import { ImConversationType, ImGroupMemberRole } from '#/views/im/utils/constants'
 import { toGroupCardTarget } from '#/views/im/utils/message'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { isGroupQuit } from '#/views/im/utils/user'
 
 import GroupAdminSetDialog from '../../../../components/group/GroupAdminSetDialog.vue'
@@ -59,7 +59,6 @@ const emit = defineEmits<{
 const MEMBER_PREVIEW_COUNT = 14
 const conversationStore = useConversationStore()
 const groupStore = useGroupStore()
-const message = useMessage()
 
 const visible = computed({
   get: () => props.modelValue,
@@ -71,8 +70,7 @@ const visible = computed({
 const searchText = ref('')
 const showAllMembers = ref(false)
 
-/** 邀请好友入群弹窗 ref：handleOpenInvite 调 open({ groupId }) 打开 */
-const inviteDialogRef = ref<InstanceType<typeof GroupMemberAddDialog>>()
+const inviteDialogRef = ref<InstanceType<typeof GroupMemberAddDialog>>() // 邀请好友入群弹窗 ref：handleOpenInvite 调 open({ groupId }) 打开
 /** 打开邀请好友入群弹窗 */
 function handleOpenInvite() {
   if (!props.group?.id) {
@@ -99,7 +97,7 @@ const isOwnerOrAdmin = computed(
     (myRole.value === ImGroupMemberRole.OWNER || myRole.value === ImGroupMemberRole.ADMIN)
 )
 
-// 排除已退群成员 + 关键字过滤；按角色排序：群主→管理员→普通成员（同角色按 userId 稳定）
+/** 排除已退群成员 + 关键字过滤；按角色排序：群主→管理员→普通成员（同角色按 userId 稳定） */
 const visibleMembers = computed(() => {
   return props.members
     .filter(
@@ -114,7 +112,7 @@ const visibleMembers = computed(() => {
     })
 })
 
-// 折叠规则：搜索 / 已展开 时不折叠，其余只取前 N 个
+/** 折叠规则：搜索 / 已展开 时不折叠，其余只取前 N 个 */
 const moreMembersHidden = computed(
   () =>
     !searchText.value && !showAllMembers.value && visibleMembers.value.length > MEMBER_PREVIEW_COUNT
@@ -284,8 +282,7 @@ async function onMuteAllChange(value: boolean | number | string) {
 
 // ==================== 进群审批 ====================
 
-/** 进群申请列表弹窗 ref：handleOpenRequestList 调 open({ groupId }) 触发 */
-const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>()
+const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>() // 进群申请列表弹窗 ref：handleOpenRequestList 调 open({ groupId }) 触发
 
 /** 打开当前群的进群申请列表 */
 function handleOpenRequestList() {
@@ -297,8 +294,7 @@ function handleOpenRequestList() {
 
 // ==================== 分享群名片 ====================
 
-/** 分享群名片弹窗 ref：handleShareGroupCard 调用 open({ target }) 打开 */
-const recommendCardDialogRef = ref<InstanceType<typeof RecommendCardDialog>>()
+const recommendCardDialogRef = ref<InstanceType<typeof RecommendCardDialog>>() // 分享群名片弹窗 ref：handleShareGroupCard 调用 open({ target }) 打开
 
 /** 分享群名片：把当前群作为名片消息推荐给其他会话 */
 function handleShareGroupCard() {
@@ -316,9 +312,9 @@ async function handleQuit() {
   if (!props.group) {
     return
   }
-  // 二次确认（用户点取消时 message.confirm 抛 reject，吃掉直接 return）
+  // 二次确认
   try {
-    await message.confirm('退出群聊后将不再接收群里的消息，确认退出吗？', '确认退出')
+    await confirm('退出群聊后将不再接收群里的消息，确认退出吗？', '确认退出')
   } catch {
     return
   }
@@ -340,7 +336,7 @@ async function handleDissolve() {
     return
   }
   try {
-    await message.confirm('解散后所有成员将被移出，且无法恢复，确认解散吗？', '确认解散')
+    await confirm('解散后所有成员将被移出，且无法恢复，确认解散吗？', '确认解散')
   } catch {
     return
   }
@@ -355,12 +351,9 @@ async function handleDissolve() {
 // ==================== 群主操作 ====================
 // 移除群成员（群主 / 管理员可见）+ 设置群管理员（仅群主）+ 群主管理权转让（仅群主）
 
-/** 移除群成员弹窗 ref */
-const removeDialogRef = ref<InstanceType<typeof GroupMemberRemoveDialog>>()
-/** 设置群管理员弹窗 ref */
-const adminSetDialogRef = ref<InstanceType<typeof GroupAdminSetDialog>>()
-/** 转让群主弹窗 ref */
-const ownerTransferDialogRef = ref<InstanceType<typeof GroupOwnerTransferDialog>>()
+const removeDialogRef = ref<InstanceType<typeof GroupMemberRemoveDialog>>() // 移除群成员弹窗 ref
+const adminSetDialogRef = ref<InstanceType<typeof GroupAdminSetDialog>>() // 设置群管理员弹窗 ref
+const ownerTransferDialogRef = ref<InstanceType<typeof GroupOwnerTransferDialog>>() // 转让群主弹窗 ref
 
 // ---------- 移除群成员 ----------
 
@@ -434,7 +427,7 @@ function handleOpenTransferOwner() {
   >
     <div v-if="group" class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
       <!-- 上部：可滚动内容区 -->
-      <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
+      <div class="flex-1 overflow-y-auto bg-[var(--im-conversation-side-bg)]">
         <!-- ==================== 群成员区 ==================== -->
         <div class="px-4 pt-4 pb-[10px] bg-[var(--ant-color-bg-container)]">
           <Input v-model:value="searchText" placeholder="搜索群成员" allow-clear>
@@ -772,7 +765,7 @@ function handleOpenTransferOwner() {
       <!-- ==================== 底部：退出 / 解散群聊（历史退群群隐藏，已退群无需再退） ==================== -->
       <div
         v-if="!isQuitGroup"
-        class="flex-shrink-0 px-4 pt-[14px] pb-[18px] bg-[var(--ant-color-bg-container)] border-t border-t-solid border-[var(--ant-color-border-secondary)]"
+        class="flex-shrink-0 px-4 pt-[14px] pb-[18px] bg-[var(--ant-color-bg-container)] border-t border-t-solid border-[var(--im-border-color-lighter)]"
       >
         <!-- 群主：解散群聊 -->
         <Button
@@ -820,6 +813,10 @@ function handleOpenTransferOwner() {
   background-color: var(--ant-color-primary-bg);
 }
 
+.im-conversation-group-side__modal {
+  --im-conversation-side-bg: #f5f7fa;
+}
+
 /* :deep 穿透 Icon 内部 svg； el-icon 全局 color 在暗色模式下被主题盖过，锁 fill 到当前色 */
 .im-conversation-group-side__icon-tile :deep(svg) {
   fill: currentColor !important;
@@ -827,14 +824,17 @@ function handleOpenTransferOwner() {
 
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */
 .im-conversation-group-side__row + .im-conversation-group-side__row {
-  border-top: 1px solid var(--ant-color-border-secondary);
+  border-top: 1px solid var(--im-border-color-lighter);
+}
+
+:global(.dark) .im-conversation-group-side__modal {
+  --im-conversation-side-bg: rgb(255 255 255 / 5%);
 }
 </style>
 
-<!-- el-drawer 用 append-to-body 后被传送出当前 scoped 边界，scoped CSS 的 data-v 不会落到 body 上；
-     这里靠 modal-class（在 .el-overlay 上，是 .el-drawer__body 的祖先）写一段全局规则压掉默认 padding -->
+<!-- AntD Drawer 被传送出当前 scoped 边界，这里靠 root-class-name 压掉默认 padding -->
 <style>
-.im-conversation-group-side__modal .el-drawer__body {
+.im-conversation-group-side__modal .ant-drawer-body {
   padding: 0;
 }
 </style>

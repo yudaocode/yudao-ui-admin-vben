@@ -1,18 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { muteMember } from '#/api/im/group'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 defineOptions({ name: 'ImGroupMuteMemberDialog' })
 
 const emit = defineEmits<{
   success: []
 }>()
-
-const { success: successMessage } = useMessage()
 
 const visible = ref(false)
 const loading = ref(false)
@@ -49,7 +46,7 @@ async function handleConfirm() {
       userId: userId.value,
       mutedSeconds: selected.value
     })
-    successMessage('禁言成功')
+    message.success('禁言成功')
     visible.value = false
     emit('success')
   } finally {

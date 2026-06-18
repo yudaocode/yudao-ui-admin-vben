@@ -6,9 +6,11 @@ import type { Conversation } from '#/views/im/home/types'
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
+import { isOpenableUrl } from '@vben/utils'
 
-import { Button, Dropdown, Menu, Tooltip } from 'ant-design-vue'
+import { Button, Dropdown, Menu, message, Tooltip } from 'ant-design-vue'
 
+import { uploadFile } from '#/api/infra/file'
 import {
   ensureMediaSizeWithinLimit,
   useMediaUploader
@@ -28,9 +30,6 @@ import {
   serializeMessage,
   withQuotePayload
 } from '#/views/im/utils/message'
-import { useMessage } from '#/views/im/utils/message-feedback'
-import { updateFile } from '#/views/im/utils/upload'
-import { isOpenableUrl } from '#/views/im/utils/url'
 import { getMemberDisplayName } from '#/views/im/utils/user'
 
 import ReplyPreview from '../message/ReplyPreview.vue'
@@ -43,7 +42,6 @@ defineOptions({ name: 'ImMessageInput' })
 const conversationStore = useConversationStore()
 const groupStore = useGroupStore()
 const friendStore = useFriendStore()
-const message = useMessage()
 const { send, sendRaw } = useMessageSender()
 const {
   uploadAndSendMedia,
@@ -518,8 +516,7 @@ const mentionPosition = ref<{ bottom?: number; top?: number; x: number; }>({ x: 
 /** MentionPicker 的容器宽度（与组件里的 w-50 对齐），用于视口右沿回弹；
  *  高度不再用常量算位置——bottom 锚定后 picker 内容多寡都不影响下沿位置，自然贴 @ */
 const MENTION_WIDTH = 200
-/** 上方剩余空间至少这么多才放上方，否则翻到下方（避免 picker 被视口顶 / 顶部 chat header 切掉） */
-const MENTION_MIN_FIT_ABOVE = 120
+const MENTION_MIN_FIT_ABOVE = 120 // 上方剩余空间至少这么多才放上方，否则翻到下方（避免 picker 被视口顶 / 顶部 chat header 切掉）
 
 /** 当前 @ 关键词在 editor 里的范围；onMentionSelect 用它定位删除 + 插入 token */
 let mentionRange: null | Range = null
@@ -913,17 +910,15 @@ async function uploadAndSendVideo(file: File) {
   // 2. 三路并行起跑（probe 与两条上传无依赖，封面上传等 probe 出 cover 后立即接力）
   // 2.1 视频本体上传：async IIFE 包一层让 await 显式可见（lint 不再误判 floating promise），
   //     失败兜底为 url=undefined，由 step 3 拿不到 url 时收尾
-  const videoForm = new FormData()
-  videoForm.append('file', file)
-  const videoUploadPromise: Promise<{ data?: string }> = (async () => {
+  const videoUploadPromise: Promise<string | undefined> = (async () => {
     try {
-      return (await updateFile(
-        videoForm,
+      return await uploadFile(
+        { file },
         createUploadProgressHandler(conversation, clientMessageId)
-      )) as { data?: string }
+      )
     } catch (error) {
       console.warn('[IM] 视频本体上传失败', error)
-      return { data: undefined }
+      return undefined
     }
   })()
   // 2.2 probe 拿元信息 + 封面 blob：解码失败降级为空 probe，不阻断视频上传
@@ -937,12 +932,9 @@ async function uploadAndSendVideo(file: File) {
       return { probe, coverUrl: undefined as string | undefined }
     }
     try {
-      const coverForm = new FormData()
-      coverForm.append(
-        'file',
-        new File([probe.cover], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' })
-      )
-      const coverUrl = ((await updateFile(coverForm)) as { data?: string })?.data || undefined
+      const coverUrl = await uploadFile({
+        file: new File([probe.cover], `cover-${Date.now()}.jpg`, { type: 'image/jpeg' })
+      })
       return { probe, coverUrl }
     } catch (error) {
       console.warn('[IM] 视频封面上传失败', error)
@@ -957,7 +949,7 @@ async function uploadAndSendVideo(file: File) {
     coverUploadPromise
   ])
   // 3.2 视频本体没 url：占位置 FAILED，让用户决定重试 / 删除（_localFile 在内存里）
-  const url = videoRes?.data
+  const url = videoRes
   if (!url) {
     markMediaFailed(conversation.type, conversation.targetId, clientMessageId)
     return
@@ -1017,11 +1009,11 @@ async function onVideoPicked(e: Event) {
     <!-- 禁言 / 封禁覆盖层：优先级 封禁 > 全群禁言 > 成员禁言 -->
     <div
       v-if="muteOverlay"
-      class="absolute top-2 right-3 bottom-3 left-3 z-10 flex items-center justify-center gap-2 rounded-lg border border-solid text-sm"
+      class="message-input__mute-overlay absolute top-2 right-3 bottom-3 left-3 z-20 flex items-center justify-center gap-2 rounded-lg border border-solid text-sm"
       :class="
         muteOverlay.icon === 'ant-design:stop-outlined'
-          ? 'text-[var(--ant-color-error-active)] bg-[var(--ant-color-error-bg)] border-[var(--ant-color-error-hover)]'
-          : 'text-[var(--ant-color-warning-active)] bg-[var(--ant-color-warning-bg)] border-[var(--ant-color-warning-hover)]'
+          ? 'message-input__mute-overlay--error'
+          : 'message-input__mute-overlay--warning'
       "
     >
       <Icon :icon="muteOverlay.icon" :size="18" />
@@ -1180,6 +1172,30 @@ async function onVideoPicked(e: Event) {
 .message-input__tool:hover,
 .message-input__tool:hover:deep(svg) {
   color: var(--ant-color-primary) !important;
+}
+
+.message-input__mute-overlay--warning {
+  color: #d48806;
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+
+.message-input__mute-overlay--error {
+  color: #cf1322;
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+
+:global(.dark) .message-input__mute-overlay--warning {
+  color: #ffd666;
+  background: rgb(77 56 21 / 88%);
+  border-color: #ad6800;
+}
+
+:global(.dark) .message-input__mute-overlay--error {
+  color: #ff7875;
+  background: rgb(91 33 33 / 88%);
+  border-color: #a8071a;
 }
 
 /* 用 data-empty 而非 :empty：浏览器在删空后会留下 <br>，:empty 不命中；data-empty 由 syncEditorState 维护 */

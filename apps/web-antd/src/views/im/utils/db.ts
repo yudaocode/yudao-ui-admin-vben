@@ -80,7 +80,7 @@ function requestToPromise<T = unknown>(request: IDBRequest<T>): Promise<T> {
 }
 
 /** 等待事务完成 */
-function transactionDone(transaction: IDBTransaction): Promise<void> {
+function transactionDone(transaction: DbTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     transaction.addEventListener('complete', () => resolve())
     transaction.addEventListener('error', () => reject(transaction.error))

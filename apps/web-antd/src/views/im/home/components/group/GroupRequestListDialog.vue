@@ -1,25 +1,26 @@
 <script lang="ts" setup>
+import type { ImGroupRequestApi } from '#/api/im/group/request'
+
 import { computed, ref, watch } from 'vue'
 
-import { Empty, Modal, Spin } from 'ant-design-vue'
+import { prompt } from '@vben/common-ui'
 
-import { getGroupRequestListByGroupId, type ImGroupRequestRespVO } from '#/api/im/group/request'
+import { Empty, Input, message, Modal, Spin } from 'ant-design-vue'
+
+import { getGroupRequestListByGroupId } from '#/api/im/group/request'
 import { ImGroupRequestHandleResult } from '#/views/im/utils/constants'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { useGroupRequestStore } from '../../store/groupRequestStore'
 import UserAvatar from '../user/UserAvatar.vue'
 
 defineOptions({ name: 'ImGroupRequestListDialog' })
 
-const message = useMessage()
 const groupRequestStore = useGroupRequestStore()
 
 const visible = ref(false)
-/** 当前展示的群编号；undefined 时走全局未处理列表（store.unhandledList） */
-const groupId = ref<number | undefined>()
+const groupId = ref<number | undefined>() // 当前展示的群编号；undefined 时走全局未处理列表（store.unhandledList）
 const loading = ref(false)
-const groupList = ref<ImGroupRequestRespVO[]>([])
+const groupList = ref<ImGroupRequestApi.GroupRequestRespVO[]>([])
 const actingId = ref<null | number>(null)
 
 defineExpose({
@@ -32,7 +33,7 @@ defineExpose({
 })
 
 /** 数据源：单群模式用 fetch 回来的 groupList；全局模式直接读 store.unhandledList，处理后 store 自动 reactive 同步 */
-const list = computed<ImGroupRequestRespVO[]>(() =>
+const list = computed<ImGroupRequestApi.GroupRequestRespVO[]>(() =>
   groupId.value ? groupList.value : groupRequestStore.unhandledList
 )
 
@@ -104,7 +105,7 @@ async function fetchList(targetGroupId: number) {
 }
 
 /** 同意：走 store 同步全局未处理列表 + 本地更新 handleResult 让按钮变灰 */
-async function handleAgree(item: ImGroupRequestRespVO) {
+async function handleAgree(item: ImGroupRequestApi.GroupRequestRespVO) {
   if (actingId.value !== null) return
   actingId.value = item.id
   try {
@@ -117,14 +118,21 @@ async function handleAgree(item: ImGroupRequestRespVO) {
 }
 
 /** 拒绝：弹理由输入框；为空则不带 handleContent */
-async function handleRefuse(item: ImGroupRequestRespVO) {
+async function handleRefuse(item: ImGroupRequestApi.GroupRequestRespVO) {
   if (actingId.value !== null) return
-  let handleContent = ''
+  let handleContent: string
   try {
-    const result = await message.prompt('拒绝申请', {
-      placeholder: '请输入拒绝理由（可选）'
+    const result = await prompt<string>({
+      component: Input,
+      componentProps: {
+        allowClear: true,
+        placeholder: '请输入拒绝理由（可选）'
+      },
+      content: '',
+      modelPropName: 'value',
+      title: '拒绝申请'
     })
-    handleContent = result.value || ''
+    handleContent = result || ''
   } catch {
     return
   }

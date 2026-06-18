@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFriendRequestVO } from '#/api/im/manager/friend/request';
+import type { ImManagerFriendRequestApi } from '#/api/im/manager/friend/request';
 
 import { Page } from '@vben/common-ui';
 
@@ -42,7 +42,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerFriendRequestVO>,
+  } as VxeTableGridOptions<ImManagerFriendRequestApi.FriendRequest>,
 });
 </script>
 

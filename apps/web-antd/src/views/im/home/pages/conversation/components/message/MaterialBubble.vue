@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
+import { openSafeUrl } from '@vben/utils'
 
 import { Modal, Spin } from 'ant-design-vue'
 
@@ -10,7 +11,6 @@ import { useChannelStore } from '#/views/im/home/store/channelStore'
 import { useConversationStore } from '#/views/im/home/store/conversationStore'
 import { ImConversationType } from '#/views/im/utils/constants'
 import { type MaterialMessage, parseMessage } from '#/views/im/utils/message'
-import { openSafeUrl } from '#/views/im/utils/url'
 
 const props = defineProps<{
   content: string
@@ -38,7 +38,7 @@ const detailVisible = ref(false)
 const detailLoading = ref(false)
 const detailHtml = ref('')
 
-/** 点击行为：url 非空跳外链；为空则按 payload.materialId 拉富文本正文，全屏 dialog 渲染 */
+// 点击行为：url 非空跳外链；为空则按 payload.materialId 拉富文本正文，全屏 dialog 渲染
 const onClick = async () => {
   if (payload.value.url) {
     openSafeUrl(payload.value.url)

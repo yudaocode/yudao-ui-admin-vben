@@ -4,10 +4,13 @@ import type { GroupLite } from '../../types'
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { prompt } from '@vben/common-ui'
+
+import { Input, message } from 'ant-design-vue'
+
 import { applyJoinGroup } from '#/api/im/group/request'
 
 import { ImConversationType, ImGroupAddSource } from '../../../utils/constants'
-import { useMessage } from '../../../utils/message-feedback'
 import { getGroupDisplayName } from '../../../utils/user'
 import { useConversationStore } from '../../store/conversationStore'
 import { useGroupStore } from '../../store/groupStore'
@@ -20,7 +23,6 @@ const uiStore = useImUiStore()
 const conversationStore = useConversationStore()
 const groupStore = useGroupStore()
 const router = useRouter()
-const message = useMessage()
 
 const card = computed(() => uiStore.groupInfoCard)
 
@@ -65,15 +67,22 @@ function handleChat(group: GroupLite) {
 /** 加入群聊：先关浮层（避免与 prompt 的 mask 互相遮挡）→ 弹申请理由（可选）→ applyJoinGroup */
 async function handleApply(group: GroupLite) {
   handleClose()
-  let applyContent = ''
+  let applyContent: string
   try {
-    const result = await message.prompt(`申请加入「${group.name || ''}」`, {
+    const result = await prompt<string>({
       cancelText: '取消',
+      component: Input,
+      componentProps: {
+        allowClear: true,
+        placeholder: '请填写验证消息（可选）'
+      },
+      content: '',
       defaultValue: '',
-      okText: '发送申请',
-      placeholder: '请填写验证消息（可选）'
+      confirmText: '发送申请',
+      modelPropName: 'value',
+      title: `申请加入「${group.name || ''}」`
     })
-    applyContent = (result.value || '').trim()
+    applyContent = (result || '').trim()
   } catch {
     return
   }

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerPrivateMessageVO } from '#/api/im/manager/message/private';
+import type { ImManagerPrivateMessageApi } from '#/api/im/manager/message/private';
 
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -25,7 +25,7 @@ const route = useRoute();
 const detailRef = ref<InstanceType<typeof Detail>>();
 
 /** 打开详情 */
-function handleDetail(row: ImManagerPrivateMessageVO) {
+function handleDetail(row: ImManagerPrivateMessageApi.PrivateMessage) {
   detailRef.value?.open(row);
 }
 
@@ -62,7 +62,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerPrivateMessageVO>,
+  } as VxeTableGridOptions<ImManagerPrivateMessageApi.PrivateMessage>,
 });
 </script>
 

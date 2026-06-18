@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerGroupVO } from '#/api/im/manager/group';
+import type { ImManagerGroupApi } from '#/api/im/manager/group';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -39,12 +39,12 @@ function handleRefresh() {
 }
 
 /** 打开详情 */
-function handleDetail(row: ImManagerGroupVO) {
+function handleDetail(row: ImManagerGroupApi.Group) {
   detailRef.value?.open(row);
 }
 
 /** 查看群聊消息 */
-function handleConversation(row: ImManagerGroupVO) {
+function handleConversation(row: ImManagerGroupApi.Group) {
   router.push({
     name: 'ImGroupMessage',
     query: { groupId: row.id },
@@ -52,12 +52,12 @@ function handleConversation(row: ImManagerGroupVO) {
 }
 
 /** 打开封禁弹窗 */
-function handleBan(row: ImManagerGroupVO) {
+function handleBan(row: ImManagerGroupApi.Group) {
   banModalApi.setData(row).open();
 }
 
 /** 解封群 */
-async function handleUnban(row: ImManagerGroupVO) {
+async function handleUnban(row: ImManagerGroupApi.Group) {
   await confirm(`确认解封群「${row.name}」吗？`);
   await unbanManagerGroup(row.id);
   message.success('解封成功');
@@ -65,7 +65,7 @@ async function handleUnban(row: ImManagerGroupVO) {
 }
 
 /** 解散群 */
-async function handleDissolve(row: ImManagerGroupVO) {
+async function handleDissolve(row: ImManagerGroupApi.Group) {
   await confirm(`确认解散群「${row.name}」吗？`);
   await dissolveManagerGroup(row.id);
   message.success('解散成功');
@@ -99,7 +99,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerGroupVO>,
+  } as VxeTableGridOptions<ImManagerGroupApi.Group>,
 });
 </script>
 

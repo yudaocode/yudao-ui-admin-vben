@@ -27,11 +27,13 @@ const props = withDefaults(
     url?: string // 服务端已设置的群头像 URL；非空则直接用，不拼图
   }>(),
   {
-    size: 42,
-    radius: '15%',
     clickable: false,
+    name: '',
     previewable: false,
-    previewZIndex: 2000
+    previewZIndex: 2000,
+    radius: '15%',
+    size: 42,
+    url: ''
   }
 )
 

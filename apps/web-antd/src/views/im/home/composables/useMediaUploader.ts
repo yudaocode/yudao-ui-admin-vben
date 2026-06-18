@@ -2,10 +2,12 @@ import type { Conversation, Message } from '../types'
 
 import type { AxiosProgressEvent } from '#/api/infra/file'
 
+import { isOpenableUrl } from '@vben/utils'
+
+import { message } from 'ant-design-vue'
+
+import { uploadFile } from '#/api/infra/file'
 import { getCurrentUserId } from '#/views/im/utils/auth'
-import { useMessage } from '#/views/im/utils/message-feedback'
-import { updateFile } from '#/views/im/utils/upload'
-import { isOpenableUrl } from '#/views/im/utils/url'
 
 import {
   MESSAGE_FILE_MAX_MB,
@@ -123,7 +125,7 @@ export interface UploadAndSendMediaOptions {
  *
  * 与 useMessageSender.sendRaw 的「先发请求再 ack」不同，媒体链路必须「先占位再上传」：
  * 1. 立即 insertMessage 写入占位消息（status=SENDING、content 用 blob URL、_localFile 内存留 File）
- * 2. updateFile 上传，onUploadProgress 回调 patchMessage 更新 uploadProgress；UI 实时显示进度条
+ * 2. uploadFile 上传，onUploadProgress 回调 patchMessage 更新 uploadProgress；UI 实时显示进度条
  * 3. 上传成功后用真实 url 重生 content，patchMessage 替换；旧 blob URL 由 store 自动 revoke
  * 4. 走 sendRaw(existingClientMessageId) 复用占位发送请求，避免重复插入两条
  *
@@ -168,7 +170,6 @@ export const useMediaUploader = () => {
   const conversationStore = useConversationStore()
   const messageStore = useMessageStore()
   const muteOverlay = useMuteOverlay()
-  const message = useMessage()
   const { sendRaw } = useMessageSender()
 
   /**
@@ -361,13 +362,10 @@ export const useMediaUploader = () => {
     // 2. 上传：进度回调 patch uploadProgress；失败保留 _localFile 供重试
     let url: string | undefined
     try {
-      const form = new FormData()
-      form.append('file', opts.file)
-      const res = (await updateFile(
-        form,
+      url = await uploadFile(
+        { file: opts.file },
         createUploadProgressHandler(conversation, clientMessageId)
-      )) as { data?: string }
-      url = res?.data
+      )
     } catch (error) {
       console.error(`[IM] ${handler.kind}上传失败`, error)
     }

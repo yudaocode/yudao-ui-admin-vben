@@ -5,11 +5,10 @@ import { computed, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button, Input, Modal } from 'ant-design-vue'
+import { Button, Input, message, Modal } from 'ant-design-vue'
 
 import { createGroup } from '#/api/im/group'
 import CardBubble from '#/views/im/home/components/card/CardBubble.vue'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { ImContentType, ImConversationType, isGroupConversation } from '../../../utils/constants'
 import { getConversationKey } from '../../../utils/conversation'
@@ -26,7 +25,6 @@ import FriendPickerPanel from '../picker/FriendPickerPanel.vue'
 
 defineOptions({ name: 'ImRecommendCardDialog' })
 
-const message = useMessage()
 const conversationStore = useConversationStore()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
@@ -34,14 +32,12 @@ const { sendRaw, send } = useMessageSender()
 
 const visible = ref(false)
 const target = ref<CardTarget | null>(null)
-/** 当前视图：默认会话选择，「创建聊天」入口切到好友选择 */
-const view = ref<'contact' | 'conversation'>('conversation')
+const view = ref<'contact' | 'conversation'>('conversation') // 当前视图：默认会话选择，「创建聊天」入口切到好友选择
 const selectedKeys = ref<string[]>([])
 const selectedFriendIds = ref<number[]>([])
 const leaveMessage = ref('')
 const sending = ref(false)
-/** 表情面板显隐：右侧 smile icon 切换 */
-const emojiVisible = ref(false)
+const emojiVisible = ref(false) // 表情面板显隐：右侧 smile icon 切换
 
 defineExpose({
   /** 打开推荐弹窗：reset → 灌参 → visible=true */

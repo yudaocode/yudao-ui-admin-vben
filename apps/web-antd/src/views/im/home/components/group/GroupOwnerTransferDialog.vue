@@ -3,10 +3,11 @@ import type { GroupMemberLite } from './GroupMember.vue'
 
 import { computed, ref } from 'vue'
 
-import { Button, Modal } from 'ant-design-vue'
+import { confirm } from '@vben/common-ui'
+
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { transferGroupOwner } from '#/api/im/group'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import GroupMemberPickerPanel from '../picker/GroupMemberPickerPanel.vue'
 
@@ -16,8 +17,6 @@ const emit = defineEmits<{
   /** 转让成功；父侧通常用来 reload 群数据 */
   reload: []
 }>()
-
-const message = useMessage()
 
 const visible = ref(false)
 const submitting = ref(false)
@@ -57,7 +56,7 @@ async function handleOk() {
     return
   }
   try {
-    await message.confirm(
+    await confirm(
       `确定将群主转让给 ${newOwner.value.showName}？转让后你将变为普通成员，无法撤销。`,
       '确认转让群主'
     )

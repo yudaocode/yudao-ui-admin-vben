@@ -1,21 +1,20 @@
 <script lang="ts" setup>
 import type { User } from '../../types'
 
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, h, nextTick, ref, watch } from 'vue'
 
+import { confirm } from '@vben/common-ui'
 import { DICT_TYPE } from '@vben/constants'
 import { getDictLabel } from '@vben/hooks'
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button, Dropdown, Input, Menu } from 'ant-design-vue'
+import { Button, Checkbox, Dropdown, Input, Menu, message } from 'ant-design-vue'
 
-import { useMessage } from '#/views/im/utils/message-feedback'
-import { getSimpleUser, type UserVO } from '#/views/im/utils/system-user'
+import { getSimpleUser, type SystemUserApi } from '#/api/system/user'
 import { formatDate } from '#/views/im/utils/time'
 
 import { ImFriendAddSource } from '../../../utils/constants'
 import { toUserCardTarget } from '../../../utils/message'
-import { confirmDeleteFriend } from '../../../utils/message-feedback'
 import { getGenderColor, getGenderIcon } from '../../../utils/user'
 import { useFriendStore } from '../../store/friendStore'
 import FriendAddDialog from '../friend/FriendAddDialog.vue'
@@ -39,9 +38,11 @@ const props = withDefaults(
     user: null | User
   }>(),
   {
-    relation: 'readonly',
+    addSource: ImFriendAddSource.SEARCH,
+    addSourceExtra: '',
+    displayName: '',
     previewZIndex: 2000,
-    addSource: ImFriendAddSource.SEARCH
+    relation: 'readonly'
   }
 )
 
@@ -63,11 +64,9 @@ const emit = defineEmits<{
  */
 export type UserInfoRelation = 'friend' | 'readonly' | 'self' | 'stranger'
 
-const message = useMessage()
 const friendStore = useFriendStore()
 
-/** 起手 user + getSimpleUser 合并后的完整对象（性别 / 部门补齐用） */
-const full = ref<null | User>(props.user)
+const full = ref<null | User>(props.user) // 起手 user + getSimpleUser 合并后的完整对象（性别 / 部门补齐用）
 
 /** 主标题：备注优先（好友场景），其次原昵称 */
 const headerName = computed(() => props.displayName || full.value?.nickname || '')
@@ -85,8 +84,7 @@ const friendInfo = computed(() =>
 /** 是否已拉黑：菜单项「加入黑名单 / 移出黑名单」按这个切换 */
 const isBlocked = computed(() => !!friendInfo.value?.blocked)
 
-/** 备注内联编辑：editingRemark 控制输入态；user 切换时由下面的 watch 复位避免脏态泄漏 */
-const editingRemark = ref(false)
+const editingRemark = ref(false) // 备注内联编辑：editingRemark 控制输入态；user 切换时由下面的 watch 复位避免脏态泄漏
 const remarkInput = ref('')
 const remarkInputRef = ref<null | { focus: () => void; select?: () => void }>(null)
 
@@ -169,11 +167,9 @@ function handleComingSoon(featureName: string) {
 
 // ==================== 添加好友 / 删除好友 ====================
 
-/** 加好友弹窗 ref：handleAddFriend 调 open({ presetUser, addSource, addSourceExtra }) 触发 */
-const friendAddDialogRef = ref<InstanceType<typeof FriendAddDialog>>()
+const friendAddDialogRef = ref<InstanceType<typeof FriendAddDialog>>() // 加好友弹窗 ref：handleAddFriend 调 open({ presetUser, addSource, addSourceExtra }) 触发
 
-/** 推荐名片弹窗 ref：handleRecommend 调用 open({ target }) 打开 */
-const recommendDialogRef = ref<InstanceType<typeof RecommendCardDialog>>()
+const recommendDialogRef = ref<InstanceType<typeof RecommendCardDialog>>() // 推荐名片弹窗 ref：handleRecommend 调用 open({ target }) 打开
 /** 把他推荐给朋友：弹 RecommendCardDialog 选目标会话 */
 function handleRecommend() {
   if (!props.user?.id) {
@@ -191,14 +187,14 @@ function handleAddFriend() {
   if (!props.user?.id) {
     return
   }
-  const presetUser: UserVO = {
+  const presetUser: SystemUserApi.UserSimple = {
     id: props.user.id,
     nickname: props.user.nickname,
     avatar: props.user.avatar,
     sex: props.user.sex,
     deptId: props.user.deptId,
     deptName: props.user.deptName
-  } as UserVO
+  } as SystemUserApi.UserSimple
   friendAddDialogRef.value?.open({
     presetUser,
     addSource: props.addSource,
@@ -213,7 +209,7 @@ async function handleBlock() {
   }
   const target = props.user
   try {
-    await message.confirm(`确定将「${target.nickname || ''}」加入黑名单吗？`, '加入黑名单')
+    await confirm(`确定将「${target.nickname || ''}」加入黑名单吗？`, '加入黑名单')
   } catch {
     return
   }
@@ -238,7 +234,25 @@ async function handleDeleteFriend() {
   const target = props.user
   const clearConversation = ref(true)
   try {
-    await confirmDeleteFriend(target.nickname || '', clearConversation)
+    await confirm({
+      cancelText: '取消',
+      confirmText: '删除',
+      content: h('div', { class: 'flex flex-col gap-3 text-sm' }, [
+        h('div', `确定删除好友「${target.nickname || ''}」?`),
+        h(
+          Checkbox,
+          {
+            checked: clearConversation.value,
+            'onUpdate:checked': (value: boolean) => {
+              clearConversation.value = value
+            }
+          },
+          () => '同时清空聊天记录'
+        )
+      ]),
+      icon: 'warning',
+      title: '删除联系人'
+    })
   } catch {
     return
   }

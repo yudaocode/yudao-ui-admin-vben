@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ImFacePackUserItemVO } from '#/api/im/face/pack'
-import type { ImFaceUserItemVO } from '#/api/im/face/useritem'
+import type { ImFacePackApi } from '#/api/im/face/pack'
+import type { ImFaceUserItemApi } from '#/api/im/face/useritem'
 
 import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
@@ -8,10 +8,10 @@ import { IconifyIcon as Icon } from '@vben/icons'
 
 import { message, Tooltip } from 'ant-design-vue'
 
+import { uploadFile } from '#/api/infra/file'
 import { useFaceStore } from '#/views/im/home/store/faceStore'
 import { IM_EMOJI_LIST } from '#/views/im/utils/emoji'
 import { probeImageSize } from '#/views/im/utils/image'
-import { updateFile } from '#/views/im/utils/upload'
 
 defineOptions({ name: 'ImFacePicker' })
 
@@ -26,9 +26,9 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   /** 选中 Unicode emoji（如 😀），调用方应插入到输入框走 TEXT 通道 */
-  'select-emoji': [emoji: string]
+  selectEmoji: [emoji: string]
   /** 选中表情贴图，调用方应走 FACE 消息发送 */
-  'select-face': [face: { height: number; name?: string; url: string; width: number; }]
+  selectFace: [face: { height: number; name?: string; url: string; width: number; }]
   'update:visible': [value: boolean]
 }>()
 
@@ -40,41 +40,39 @@ const uploadInputRef = useTemplateRef<HTMLInputElement>('uploadInputRef')
 
 const faceStore = useFaceStore()
 
-/** tab 标识常量；pack:N 类用 packTabKey() 拼出，避免散落字符串字面量 */
+// tab 标识常量；pack:N 类用 packTabKey() 拼出，避免散落字符串字面量
 const FACE_TAB = {
   EMOJI: 'emoji',
   MINE: 'mine'
 } as const
 const packTabKey = (packId: number) => `pack:${packId}`
 
-/** 当前激活的 tab */
-const activeTab = ref<string>(FACE_TAB.EMOJI)
+const activeTab = ref<string>(FACE_TAB.EMOJI) // 当前激活的 tab
 
 /** 是否完整模式（含个人 / 系统包 tab） */
 const isFullMode = computed(() => props.mode === 'full')
 
-/** 上传中标记，避免连续点击触发并发上传 */
-const uploading = ref(false)
+const uploading = ref(false) // 上传中标记，避免连续点击触发并发上传
 
 /** 选 emoji 字符：插到输入框；选完不关面板，方便用户连发多个 */
 function handleSelectEmoji(emoji: string) {
-  emit('select-emoji', emoji)
+  emit('selectEmoji', emoji)
 }
 
 /** 选个人表情：直接发；点完关面板，对齐微信 */
-function handleSelectFaceUserItem(item: ImFaceUserItemVO) {
-  emit('select-face', { url: item.url, width: item.width, height: item.height, name: item.name })
+function handleSelectFaceUserItem(item: ImFaceUserItemApi.FaceUserItem) {
+  emit('selectFace', { url: item.url, width: item.width, height: item.height, name: item.name })
   emit('update:visible', false)
 }
 
 /** 选系统表情包内表情：直接发；点完关面板 */
-function handleSelectPackItem(item: ImFacePackUserItemVO) {
-  emit('select-face', { url: item.url, width: item.width, height: item.height, name: item.name })
+function handleSelectPackItem(item: ImFacePackApi.FacePackUserItem) {
+  emit('selectFace', { url: item.url, width: item.width, height: item.height, name: item.name })
   emit('update:visible', false)
 }
 
 /** 长按 / 右键删除个人表情 */
-async function handleDeleteUserItem(item: ImFaceUserItemVO) {
+async function handleDeleteUserItem(item: ImFaceUserItemApi.FaceUserItem) {
   if (!confirm('确认删除该表情？')) {
     return
   }
@@ -106,10 +104,7 @@ async function onUploadPicked(e: Event) {
   }
 
   try {
-    const form = new FormData()
-    form.append('file', file)
-    const uploadRes = (await updateFile(form)) as { data?: string }
-    const url = uploadRes?.data
+    const url = await uploadFile({ file })
     if (!url) {
       message.error('上传失败')
       return
@@ -158,7 +153,7 @@ onUnmounted(() => {
   <!--
     表情面板（多 tab）：emoji / 个人表情 / N 个系统表情包
     - 对齐微信 PC：底部 tab 栏切换面板内容；emoji 保持 Unicode（仍由 TEXT 通道发送）
-    - 个人表情 / 系统表情走 FACE 内容类型，通过 select-face 事件由调用方走 sendRaw 发送
+    - 个人表情 / 系统表情走 FACE 内容类型，通过 selectFace 事件由调用方走 sendRaw 发送
     - mode='emoji' 时只显示 emoji tab + 隐藏底部 tab 栏，给留言 / 评论这类只发文本的场景用
     - 定位由调用方决定（通常浮在表情按钮上方）
   -->

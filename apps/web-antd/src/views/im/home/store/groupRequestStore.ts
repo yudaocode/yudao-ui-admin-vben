@@ -1,15 +1,8 @@
-import type { GroupRequestDO } from '../types'
+import type { ImGroupRequestApi } from '#/api/im/group/request'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import {
-  agreeGroupRequest as apiAgreeGroupRequest,
-  getMyGroupRequest as apiGetMyGroupRequest,
-  getUnhandledRequestList as apiGetUnhandledRequestList,
-  pullMyGroupRequestList as apiPullMyGroupRequestList,
-  refuseGroupRequest as apiRefuseGroupRequest,
-  type ImGroupRequestRespVO
-} from '#/api/im/group/request'
+import { agreeGroupRequest as apiAgreeGroupRequest, getMyGroupRequest as apiGetMyGroupRequest, getUnhandledRequestList as apiGetUnhandledRequestList, pullMyGroupRequestList as apiPullMyGroupRequestList, refuseGroupRequest as apiRefuseGroupRequest } from '#/api/im/group/request'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 import { ImGroupRequestHandleResult } from '#/views/im/utils/constants'
 
@@ -26,7 +19,7 @@ let pendingUnhandledFetch: null | PendingRequest = null
  * IM 加群申请 Store
  *
  * 仅维护「我管理的所有群」下未处理的申请列表（unhandledList）；
- * 横幅 / Drawer 都从这里派生 count 和分组列表，避免给 ImGroupRespVO 挂 pendingRequestCount 字段
+ * 横幅 / Drawer 都从这里派生 count 和分组列表，避免给 ImGroupApi.GroupRespVO 挂 pendingRequestCount 字段
  *
  * 数据生命周期：
  * - 进 IM 后调一次 fetchUnhandledGroupRequestList 拉首页全量
@@ -38,7 +31,7 @@ let pendingUnhandledFetch: null | PendingRequest = null
 export const useGroupRequestStore = defineStore('imGroupRequestStore', {
   state: () => ({
     /** 我管理的所有群下未处理申请列表（按 id 倒序） */
-    unhandledList: [] as ImGroupRequestRespVO[],
+    unhandledList: [] as ImGroupRequestApi.GroupRequestRespVO[],
     /** fetchUnhandledGroupRequestList 是否成功执行过；避免横幅显示 0 然后跳数字的闪烁 */
     loaded: false
   }),
@@ -61,7 +54,7 @@ export const useGroupRequestStore = defineStore('imGroupRequestStore', {
     /** 指定群下的未处理申请列表 */
     getUnhandledGroupRequestListByGroupId:
       (state) =>
-      (groupId: number): ImGroupRequestRespVO[] =>
+      (groupId: number): ImGroupRequestApi.GroupRequestRespVO[] =>
         state.unhandledList.filter((r) => r.groupId === groupId)
   },
 
@@ -69,13 +62,13 @@ export const useGroupRequestStore = defineStore('imGroupRequestStore', {
     /** 从 IndexedDB 恢复加群申请 */
     async loadGroupRequestList(): Promise<boolean> {
       try {
-        const cached = await getDb().getAll<GroupRequestDO>('groupRequests')
+        const cached = await getDb().getAll<ImGroupRequestApi.GroupRequestRespVO>('groupRequests')
         if (!cached || cached.length === 0) {
           return false
         }
         this.unhandledList = cached
           .filter((request) => request.handleResult === ImGroupRequestHandleResult.UNHANDLED)
-          .sort((requestA, requestB) => requestB.id - requestA.id)
+          .toSorted((requestA, requestB) => requestB.id - requestA.id)
         return true
       } catch (error) {
         console.warn('[IM groupRequestStore] 本地加群申请缓存读取失败', error)
@@ -97,12 +90,12 @@ export const useGroupRequestStore = defineStore('imGroupRequestStore', {
     },
 
     /** 保存单条加群申请 */
-    async saveGroupRequestRecord(request: ImGroupRequestRespVO): Promise<void> {
+    async saveGroupRequestRecord(request: ImGroupRequestApi.GroupRequestRespVO): Promise<void> {
       await getDb().put('groupRequests', request)
     },
 
     /** 保存单条加群申请 */
-    saveGroupRequest(request: ImGroupRequestRespVO): void {
+    saveGroupRequest(request: ImGroupRequestApi.GroupRequestRespVO): void {
       void this.saveGroupRequestRecord(request).catch((error) =>
         console.warn('[IM groupRequestStore] 本地加群申请写入失败', error)
       )
@@ -161,14 +154,14 @@ export const useGroupRequestStore = defineStore('imGroupRequestStore', {
      *
      * 未处理的按 id 去重后置顶；已处理的从未处理列表移除，避免补偿时把已同意 / 拒绝的记录塞回红点
      */
-    upsertGroupRequest(request: ImGroupRequestRespVO) {
+    upsertGroupRequest(request: ImGroupRequestApi.GroupRequestRespVO) {
       void this.upsertGroupRequestForPull(request).catch((error) =>
         console.warn('[IM groupRequestStore] 本地加群申请写入失败', error)
       )
     },
 
     /** 本地合并 / 新增单条加群申请 */
-    async upsertGroupRequestForPull(request: ImGroupRequestRespVO): Promise<void> {
+    async upsertGroupRequestForPull(request: ImGroupRequestApi.GroupRequestRespVO): Promise<void> {
       if (request.handleResult !== ImGroupRequestHandleResult.UNHANDLED) {
         await this.removeGroupRequestByIdForPull(request.id)
         return

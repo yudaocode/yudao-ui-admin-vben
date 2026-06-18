@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerGroupVO } from '#/api/im/manager/group';
+import type { ImManagerGroupApi } from '#/api/im/manager/group';
 
 import { reactive } from 'vue';
 
@@ -37,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<ImManagerGroupVO>();
+    const data = modalApi.getData<ImManagerGroupApi.Group>();
     formData.id = data.id;
     formData.groupName = data.name;
     formData.reason = '';

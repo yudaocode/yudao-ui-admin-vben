@@ -17,8 +17,7 @@ defineOptions({ name: 'ImMessageMergeDetailDialog' })
 const voicePlayer = useVoicePlayer()
 const visible = ref(false)
 
-/** 嵌套层级栈，存 parsed payload 避免切层重 parse */
-const stack = ref<MergeMessage[]>([])
+const stack = ref<MergeMessage[]>([]) // 嵌套层级栈，存 parsed payload 避免切层重 parse
 
 defineExpose({
   /** 打开详情弹窗，传入顶层合并消息 content */

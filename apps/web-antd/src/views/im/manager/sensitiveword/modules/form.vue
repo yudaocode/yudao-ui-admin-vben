@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerSensitiveWordVO } from '#/api/im/manager/sensitiveword';
+import type { ImManagerSensitiveWordApi } from '#/api/im/manager/sensitiveword';
 
 import { computed, ref } from 'vue';
 
@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<ImManagerSensitiveWordVO>();
+const formData = ref<ImManagerSensitiveWordApi.SensitiveWord>();
 const getTitle = computed(() => {
   return formData.value?.id ? '修改敏感词' : '新增敏感词';
 });
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerSensitiveWordVO;
+    const data = (await formApi.getValues()) as ImManagerSensitiveWordApi.SensitiveWord;
     try {
       await (formData.value?.id
         ? updateManagerSensitiveWord(data)
@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.resetForm();
       return;
     }
-    const data = modalApi.getData<ImManagerSensitiveWordVO>();
+    const data = modalApi.getData<ImManagerSensitiveWordApi.SensitiveWord>();
     if (!data || !data.id) {
       return;
     }

@@ -1,8 +1,8 @@
-import type { ChannelDO } from '../types'
+import type { ImManagerChannelApi } from '#/api/im/manager/channel'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import { getSimpleChannelList, type ImManagerChannelVO } from '#/api/im/manager/channel'
+import { getSimpleChannelList } from '#/api/im/manager/channel'
 
 import { ImConversationType } from '../../utils/constants'
 import { getDb } from '../../utils/db'
@@ -16,12 +16,12 @@ import { useConversationStore } from './conversationStore'
  */
 export const useChannelStore = defineStore('imChannelStore', {
   state: () => ({
-    channels: [] as ImManagerChannelVO[],
+    channels: [] as ImManagerChannelApi.Channel[],
     loaded: false
   }),
 
   getters: {
-    getChannel(state): (id: number) => ImManagerChannelVO | undefined {
+    getChannel(state): (id: number) => ImManagerChannelApi.Channel | undefined {
       return (id: number) => state.channels.find((c) => c.id === id)
     }
   },
@@ -32,7 +32,7 @@ export const useChannelStore = defineStore('imChannelStore', {
     /** 从 IndexedDB 恢复频道列表 */
     async loadChannelList(): Promise<boolean> {
       try {
-        const cached = await getDb().getAll<ChannelDO>('channels')
+        const cached = await getDb().getAll<ImManagerChannelApi.Channel>('channels')
         if (!cached || cached.length === 0) {
           return false
         }

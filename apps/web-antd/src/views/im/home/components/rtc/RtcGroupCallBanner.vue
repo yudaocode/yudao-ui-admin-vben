@@ -5,11 +5,10 @@ import { DICT_TYPE } from '@vben/constants'
 import { getDictLabel } from '@vben/hooks'
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Popover } from 'ant-design-vue'
+import { message, Popover } from 'ant-design-vue'
 
 import { getActiveCall, joinCall } from '#/api/im/rtc'
 import { getCurrentUserId } from '#/views/im/utils/auth'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { useGroupCallMembers } from '../../composables/useGroupCallMembers'
 import { useRtcStore } from '../../store/rtcStore'
@@ -22,7 +21,6 @@ const props = defineProps<{
 }>()
 
 const rtcStore = useRtcStore()
-const message = useMessage()
 
 const popoverVisible = ref(false)
 

@@ -6,9 +6,7 @@ import { computed, ref } from 'vue'
 import { CommonStatusEnum } from '@vben/constants'
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Input } from 'ant-design-vue'
-
-import { useMessage } from '#/views/im/utils/message-feedback'
+import { Input, message } from 'ant-design-vue'
 
 import { useSelectedItems } from '../../composables/useSelectedItems'
 import GroupMemberGrid from '../group/GroupMemberGrid.vue'
@@ -47,8 +45,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'update:selectedIds': [value: number[]]
 }>()
-
-const message = useMessage()
 
 const keyword = ref('')
 

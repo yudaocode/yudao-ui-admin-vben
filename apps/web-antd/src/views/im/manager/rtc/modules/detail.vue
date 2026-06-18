@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerRtcCallVO, ImManagerRtcParticipantVO } from '#/api/im/manager/rtc';
+import type { ImManagerRtcApi } from '#/api/im/manager/rtc';
 
 import { computed, ref } from 'vue';
 
@@ -17,9 +17,9 @@ import {
 import { resolveCallDuration } from '#/views/im/utils/time';
 
 const visible = ref(false);
-const detail = ref<ImManagerRtcCallVO>({} as ImManagerRtcCallVO);
+const detail = ref<ImManagerRtcApi.RtcCall>({} as ImManagerRtcApi.RtcCall);
 const loading = ref(false);
-const participants = ref<ImManagerRtcParticipantVO[]>([]);
+const participants = ref<ImManagerRtcApi.RtcParticipant[]>([]);
 
 const duration = computed(() =>
   resolveCallDuration(detail.value.acceptTime, detail.value.endTime),
@@ -36,7 +36,7 @@ const columns = [
 ];
 
 /** 打开详情 */
-async function open(row: ImManagerRtcCallVO) {
+async function open(row: ImManagerRtcApi.RtcCall) {
   detail.value = row;
   visible.value = true;
   loading.value = true;

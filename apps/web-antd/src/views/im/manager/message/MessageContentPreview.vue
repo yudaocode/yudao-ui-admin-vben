@@ -3,10 +3,11 @@ import { computed } from 'vue';
 
 import { getDictObj } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { formatFileSize } from '@vben/utils';
+import { formatFileSize, openSafeUrl } from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 
+import CardLineLabel from '#/views/im/home/components/card/CardLineLabel.vue';
 import { MESSAGE_MERGE_PREVIEW_LINES } from '#/views/im/utils/config';
 import {
   ImContentType,
@@ -28,7 +29,6 @@ import {
   resolveGroupNotificationText,
 } from '#/views/im/utils/message';
 import { formatSeconds } from '#/views/im/utils/time';
-import { openSafeUrl } from '#/views/im/utils/url';
 
 defineOptions({ name: 'ImManagerMessageContentPreview' });
 
@@ -45,6 +45,16 @@ const payload = computed<Record<string, any> | undefined>(() =>
 const textContent = computed(() => payload.value?.content || '');
 
 const fileIconInfo = computed(() => getFileIconInfo(payload.value?.name));
+
+const cardPayload = computed(() => {
+  if (props.type !== ImContentType.CARD || !payload.value) {
+    return undefined;
+  }
+  return {
+    ...payload.value,
+    name: payload.value.name || payload.value.nickname || payload.value.userId || '',
+  };
+});
 
 const mergePreviewLines = computed(() => {
   const messages = payload.value?.messages;
@@ -184,9 +194,11 @@ function openVideo() {
     </span>
   </span>
 
-  <span v-else-if="type === ImContentType.CARD && payload">
-    [名片] {{ payload.nickname || payload.name || payload.userId || '' }}
-  </span>
+  <CardLineLabel
+    v-else-if="type === ImContentType.CARD && cardPayload"
+    :card="cardPayload"
+    :icon-size="16"
+  />
 
   <span
     v-else-if="type === ImContentType.FACE && payload"

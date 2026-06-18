@@ -5,9 +5,7 @@ import { computed, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Input } from 'ant-design-vue'
-
-import { useMessage } from '#/views/im/utils/message-feedback'
+import { Input, message } from 'ant-design-vue'
 
 import { ImConversationType } from '../../../utils/constants'
 import { filterConversationsByKeyword, getConversationKey } from '../../../utils/conversation'
@@ -40,17 +38,14 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'create-chat': []
+  createChat: []
   /** 用户在「最近转发」段进入移除模式后点 ×；业务壳收到后调 conversationStore.removeRecentForwardConversationKey 落盘 */
-  'remove-recent': [key: string]
+  removeRecent: [key: string]
   'update:selectedKeys': [value: string[]]
 }>()
 
-const message = useMessage()
-
 const keyword = ref('')
-/** 「最近转发」段是否处于移除模式：true 时头像右上角变 × 不再切勾选 */
-const recentRemoveMode = ref(false)
+const recentRemoveMode = ref(false) // 「最近转发」段是否处于移除模式：true 时头像右上角变 × 不再切勾选
 
 /** 全量会话的 key→Conversation 映射，已选 / 最近转发反查共用，避免每次 O(N) 扫 */
 const byKey = computed(() => {
@@ -200,7 +195,7 @@ function handleToggle(conversation: Conversation) {
                 <span
                   v-if="recentRemoveMode"
                   class="flex absolute -top-1 -right-1 justify-center items-center w-4 h-4 rounded-full cursor-pointer bg-[var(--ant-color-fill-dark)] text-[var(--ant-color-text)]"
-                  @click.stop="emit('remove-recent', getConversationKey(conversation))"
+                  @click.stop="emit('removeRecent', getConversationKey(conversation))"
                 >
                   <Icon icon="ant-design:close-outlined" :size="10" />
                 </span>
@@ -235,7 +230,7 @@ function handleToggle(conversation: Conversation) {
         <div
           v-if="showCreateChat && !keyword.trim()"
           class="flex gap-2.5 items-center px-3 py-1.5 cursor-pointer hover:bg-[var(--ant-color-fill)]"
-          @click="emit('create-chat')"
+          @click="emit('createChat')"
         >
           <span
             class="flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-full bg-[var(--ant-color-fill)] text-[var(--ant-color-text-secondary)]"

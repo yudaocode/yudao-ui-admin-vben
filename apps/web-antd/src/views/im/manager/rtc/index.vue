@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerRtcCallVO } from '#/api/im/manager/rtc';
+import type { ImManagerRtcApi } from '#/api/im/manager/rtc';
 
 import { ref } from 'vue';
 
@@ -24,7 +24,7 @@ defineOptions({ name: 'ImManagerRtcCall' });
 const detailRef = ref<InstanceType<typeof Detail>>();
 
 /** 打开详情 */
-function handleDetail(row: ImManagerRtcCallVO) {
+function handleDetail(row: ImManagerRtcApi.RtcCall) {
   detailRef.value?.open(row);
 }
 
@@ -55,7 +55,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerRtcCallVO>,
+  } as VxeTableGridOptions<ImManagerRtcApi.RtcCall>,
 });
 </script>
 

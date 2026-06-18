@@ -5,9 +5,7 @@ import { computed, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Input } from 'ant-design-vue'
-
-import { useMessage } from '#/views/im/utils/message-feedback'
+import { Input, message } from 'ant-design-vue'
 
 import { useFriendBuckets } from '../../composables/useFriendBuckets'
 import { useSelectedItems } from '../../composables/useSelectedItems'
@@ -42,8 +40,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'update:selectedIds': [value: number[]]
 }>()
-
-const message = useMessage()
 
 const keyword = ref('')
 

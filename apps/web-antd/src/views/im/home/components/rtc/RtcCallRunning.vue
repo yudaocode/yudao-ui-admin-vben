@@ -57,8 +57,7 @@ const remoteAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.remot
 /** 1v1 视频：是否有远端视频流 */
 const hasRemoteVideo = computed(() => !props.isGroup && !!props.remoteVideoStream)
 
-/** 通话时长；仅 1v1 语音视图需要展示，其它视图不启 tick */
-const now = ref(Date.now())
+const now = ref(Date.now()) // 通话时长；仅 1v1 语音视图需要展示，其它视图不启 tick
 let tick = 0
 watch(
   () => props.isGroup || props.isVideo,

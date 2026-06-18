@@ -6,13 +6,12 @@ import { computed, nextTick, provide, ref, watch } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Popover, Tooltip } from 'ant-design-vue'
+import { message, Popover, Tooltip } from 'ant-design-vue'
 
 import { createCall } from '#/api/im/rtc'
 import { ImConversationType, ImRtcCallMediaType, ImRtcCallStatus } from '#/views/im/utils/constants'
 import { getClientConversationId } from '#/views/im/utils/db'
 import { resolveCallEndReasonText } from '#/views/im/utils/message'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { getMemberDisplayName, isGroupQuit } from '#/views/im/utils/user'
 
 import GroupMuteMemberDialog from '../../../../components/group/GroupMuteMemberDialog.vue'
@@ -49,7 +48,6 @@ const messageStore = useMessageStore()
 const friendStore = useFriendStore()
 const uiStore = useImUiStore()
 const groupStore = useGroupStore()
-const message = useMessage()
 const rtcStore = useRtcStore()
 const listRef = ref<HTMLElement>()
 
@@ -196,7 +194,7 @@ const groupInfo = computed<
   }
 })
 
-// 群成员列表：直接取 groupStore 缓存，map 成 GroupMemberLite 给下游消费（@-mention / 邀请等）
+/** 群成员列表：直接取 groupStore 缓存，map 成 GroupMemberLite 给下游消费（@-mention / 邀请等） */
 const groupMembers = computed<GroupMemberLite[]>(() => {
   const conversation = conversationStore.activeConversation
   if (!conversation || conversation.type !== ImConversationType.GROUP) {
@@ -250,13 +248,11 @@ function reloadGroupData() {
   groupStore.fetchGroupMemberList(conversation.targetId, true)
 }
 
-/** 历史消息抽屉 ref：「聊天历史」icon / 抽屉「查找聊天内容」入口都调 open() 触发 */
-const historyDialogRef = ref<InstanceType<typeof MessageHistory>>()
+const historyDialogRef = ref<InstanceType<typeof MessageHistory>>() // 历史消息抽屉 ref：「聊天历史」icon / 抽屉「查找聊天内容」入口都调 open() 触发
 const sideVisible = ref(false) // 信息抽屉开关：群聊 / 私聊共用一个 ref
 const muteMemberDialogRef = ref<InstanceType<typeof GroupMuteMemberDialog>>()
 const callMemberPickerRef = ref<InstanceType<typeof RtcCallMemberPickerDialog>>()
-/** 群通话发起：成员选择弹窗打开期间临时持有的 mediaType */
-const pendingMediaType = ref<null | number>(null)
+const pendingMediaType = ref<null | number>(null) // 群通话发起：成员选择弹窗打开期间临时持有的 mediaType
 
 /** 消息右键菜单「禁言」→ 打开时长选择弹窗 */
 function handleMuteMember(groupId: number, userId: number, displayName: string) {
@@ -268,8 +264,7 @@ function toggleSide() {
   sideVisible.value = !sideVisible.value
 }
 
-/** 私聊通话入口：popover 触发；点 语音 / 视频 直接发起 */
-const callPopoverVisible = ref(false)
+const callPopoverVisible = ref(false) // 私聊通话入口：popover 触发；点 语音 / 视频 直接发起
 const callInviting = ref(false) // 通话发起中
 async function startPrivateCall(mediaType: number) {
   callPopoverVisible.value = false

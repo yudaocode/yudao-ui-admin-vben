@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerSensitiveWordVO } from '#/api/im/manager/sensitiveword';
+import type { ImManagerSensitiveWordApi } from '#/api/im/manager/sensitiveword';
 
 import { ref } from 'vue';
 
@@ -38,12 +38,12 @@ function handleCreate() {
 }
 
 /** 编辑敏感词 */
-function handleEdit(row: ImManagerSensitiveWordVO) {
+function handleEdit(row: ImManagerSensitiveWordApi.SensitiveWord) {
   formModalApi.setData(row).open();
 }
 
 /** 删除敏感词 */
-async function handleDelete(row: ImManagerSensitiveWordVO) {
+async function handleDelete(row: ImManagerSensitiveWordApi.SensitiveWord) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.word]),
     duration: 0,
@@ -63,7 +63,7 @@ const checkedIds = ref<number[]>([]);
 function handleRowCheckboxChange({
   records,
 }: {
-  records: ImManagerSensitiveWordVO[];
+  records: ImManagerSensitiveWordApi.SensitiveWord[];
 }) {
   checkedIds.value = records.map((item) => item.id);
 }
@@ -112,7 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerSensitiveWordVO>,
+  } as VxeTableGridOptions<ImManagerSensitiveWordApi.SensitiveWord>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

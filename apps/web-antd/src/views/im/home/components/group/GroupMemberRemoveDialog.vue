@@ -3,10 +3,9 @@ import type { GroupMemberLite } from './GroupMember.vue'
 
 import { ref } from 'vue'
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { removeGroupMember } from '#/api/im/group/member'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import GroupMemberPickerPanel from '../picker/GroupMemberPickerPanel.vue'
 
@@ -16,8 +15,6 @@ const emit = defineEmits<{
   /** 移出成功；父侧通常用来 reload 群数据 */
   reload: []
 }>()
-
-const message = useMessage()
 
 const visible = ref(false)
 const submitting = ref(false)

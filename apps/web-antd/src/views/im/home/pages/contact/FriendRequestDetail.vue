@@ -3,13 +3,13 @@ import type { FriendRequest, User } from '../../types'
 
 import { computed, ref } from 'vue'
 
+import { prompt } from '@vben/common-ui'
 import { DICT_TYPE } from '@vben/constants'
 import { getDictLabel } from '@vben/hooks'
 
-import { Button } from 'ant-design-vue'
+import { Button, Input, message } from 'ant-design-vue'
 
 import { getCurrentUserId } from '#/views/im/utils/auth'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { ImFriendRequestHandleResult } from '../../../utils/constants'
 import UserAvatar from '../../components/user/UserAvatar.vue'
@@ -27,7 +27,6 @@ const emit = defineEmits<{
 }>()
 
 const friendStore = useFriendStore()
-const message = useMessage()
 
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
 const currentUserId = computed(() => getCurrentUserId())
@@ -100,15 +99,31 @@ async function handleRefuse() {
   // 1. 弹 prompt 收集拒绝理由（最多 255 字）；用户点「取消」会 reject，中止后续流程
   let handleContent: string | undefined
   try {
-    const result = await message.prompt('拒绝好友申请', {
+    const result = await prompt<string>({
+      beforeClose(scope) {
+        if (!scope.isConfirm) {
+          return
+        }
+        if ((scope.value || '').length > 255) {
+          message.error('最多 255 个字符')
+          return false
+        }
+      },
       cancelText: '取消',
+      component: Input.TextArea,
+      componentProps: {
+        allowClear: true,
+        maxlength: 255,
+        placeholder: '不填则不告知对方原因',
+        rows: 3
+      },
+      content: '',
       defaultValue: '',
-      okText: '拒绝',
-      placeholder: '不填则不告知对方原因',
-      textarea: true,
-      validator: (value: string) => (value || '').length <= 255 || '最多 255 个字符'
+      confirmText: '拒绝',
+      modelPropName: 'value',
+      title: '拒绝好友申请'
     })
-    handleContent = result.value || undefined
+    handleContent = result || undefined
   } catch {
     return
   }

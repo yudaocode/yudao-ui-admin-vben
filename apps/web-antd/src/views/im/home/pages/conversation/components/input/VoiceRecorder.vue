@@ -9,9 +9,8 @@ import {
   watch
 } from 'vue'
 
-import { Button } from 'ant-design-vue'
+import { Button, message } from 'ant-design-vue'
 
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { formatSeconds } from '#/views/im/utils/time'
 
 defineOptions({ name: 'ImVoiceRecorder' })
@@ -30,8 +29,6 @@ const emit = defineEmits<{
   send: [payload: { blob: Blob; duration: number; extension: string; mimeType: string }] // 录制完成数据
   'update:modelValue': [value: boolean]
 }>()
-
-const message = useMessage()
 
 const VOICE_MIME_TYPE_OPTIONS = [
   { extension: 'webm', mimeType: 'audio/webm;codecs=opus' },

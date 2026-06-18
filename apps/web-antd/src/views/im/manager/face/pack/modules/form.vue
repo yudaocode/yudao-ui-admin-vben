@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerFacePackVO } from '#/api/im/manager/face/pack';
+import type { ImManagerFacePackApi } from '#/api/im/manager/face/pack';
 
 import { computed, ref } from 'vue';
 
@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { usePackFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<ImManagerFacePackVO>();
+const formData = ref<ImManagerFacePackApi.FacePack>();
 const getTitle = computed(() => {
   return formData.value?.id ? '修改表情包' : '新增表情包';
 });
@@ -43,7 +43,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerFacePackVO;
+    const data = (await formApi.getValues()) as ImManagerFacePackApi.FacePack;
     try {
       await (formData.value?.id
         ? updateManagerFacePack(data)
@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.resetForm();
       return;
     }
-    const data = modalApi.getData<ImManagerFacePackVO>();
+    const data = modalApi.getData<ImManagerFacePackApi.FacePack>();
     if (!data || !data.id) {
       return;
     }

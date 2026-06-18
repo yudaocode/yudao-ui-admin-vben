@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFaceUserItemVO } from '#/api/im/manager/face/useritem';
+import type { ImManagerFaceUserItemApi } from '#/api/im/manager/face/useritem';
 
 import { Page } from '@vben/common-ui';
 
@@ -24,7 +24,7 @@ function handleRefresh() {
 }
 
 /** 删除用户表情 */
-async function handleDelete(row: ImManagerFaceUserItemVO) {
+async function handleDelete(row: ImManagerFaceUserItemApi.FaceUserItem) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name || row.id]),
     duration: 0,
@@ -65,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerFaceUserItemVO>,
+  } as VxeTableGridOptions<ImManagerFaceUserItemApi.FaceUserItem>,
 });
 </script>
 

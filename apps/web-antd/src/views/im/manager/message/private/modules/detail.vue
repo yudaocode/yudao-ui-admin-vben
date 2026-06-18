@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerPrivateMessageVO } from '#/api/im/manager/message/private';
+import type { ImManagerPrivateMessageApi } from '#/api/im/manager/message/private';
 
 import { ref } from 'vue';
 
@@ -13,17 +13,16 @@ import {
   formatJsonText,
   formatUserLabel,
 } from '#/views/im/manager/utils/format';
-import { MESSAGE_PRIVATE_READ_ENABLED } from '#/views/im/utils/config';
 
 import MessageContentPreview from '../../MessageContentPreview.vue';
 
 const visible = ref(false);
-const detail = ref<ImManagerPrivateMessageVO>(
-  {} as ImManagerPrivateMessageVO,
+const detail = ref<ImManagerPrivateMessageApi.PrivateMessage>(
+  {} as ImManagerPrivateMessageApi.PrivateMessage,
 );
 
 /** 打开详情 */
-function open(row: ImManagerPrivateMessageVO) {
+function open(row: ImManagerPrivateMessageApi.PrivateMessage) {
   detail.value = row;
   visible.value = true;
 }
@@ -45,16 +44,10 @@ defineExpose({ open });
         {{ formatUserLabel(detail.receiverNickname, detail.receiverId) }}
       </DescriptionsItem>
       <DescriptionsItem label="类型">
-        <DictTag :type="DICT_TYPE.IM_CONTENT_TYPE" :value="detail.type" />
+        <DictTag :type="DICT_TYPE.IM_MESSAGE_TYPE" :value="detail.type" />
       </DescriptionsItem>
       <DescriptionsItem label="状态">
-        <DictTag :type="DICT_TYPE.IM_MESSAGE_STATUS" :value="detail.status" />
-      </DescriptionsItem>
-      <DescriptionsItem v-if="MESSAGE_PRIVATE_READ_ENABLED" label="回执" :span="2">
-        <DictTag
-          :type="DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS"
-          :value="detail.receiptStatus"
-        />
+        <DictTag :type="DICT_TYPE.IM_PRIVATE_MESSAGE_STATUS" :value="detail.status" />
       </DescriptionsItem>
       <DescriptionsItem label="发送时间" :span="2">
         {{ formatDateTimeText(detail.sendTime) }}

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerChannelMessageVO } from '#/api/im/manager/channel/message';
+import type { ImManagerChannelMessageApi } from '#/api/im/manager/channel/message';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
@@ -34,7 +34,7 @@ function handleSend() {
 }
 
 /** 删除频道消息 */
-async function handleDelete(row: ImManagerChannelMessageVO) {
+async function handleDelete(row: ImManagerChannelMessageApi.ChannelMessage) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.id]),
     duration: 0,
@@ -75,7 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerChannelMessageVO>,
+  } as VxeTableGridOptions<ImManagerChannelMessageApi.ChannelMessage>,
 });
 </script>
 

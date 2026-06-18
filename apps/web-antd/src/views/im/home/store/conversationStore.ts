@@ -6,7 +6,7 @@ import type {
   MessageDO
 } from '../types'
 
-import type { ImConversationReadRespVO } from '#/api/im/conversation/read'
+import type { ImConversationReadApi } from '#/api/im/conversation/read'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
@@ -113,7 +113,7 @@ function fromConversationReadDO(record: ConversationReadDO): ConversationRead {
 }
 
 /** 是否为有效会话读位置 */
-function isValidConversationReadRecord(record: ImConversationReadRespVO): boolean {
+function isValidConversationReadRecord(record: ImConversationReadApi.ConversationReadRespVO): boolean {
   return !!record.conversationType && !!record.targetId && !!record.messageId
 }
 
@@ -351,7 +351,7 @@ export const useConversationStore = defineStore('imConversationStore', {
 
     /** 应用会话读位置 */
     async applyConversationReadList(
-      records: ImConversationReadRespVO[],
+      records: ImConversationReadApi.ConversationReadRespVO[],
       isActive?: () => boolean
     ): Promise<void> {
       if (records.length === 0) {

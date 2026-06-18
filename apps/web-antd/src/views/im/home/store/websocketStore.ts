@@ -10,7 +10,7 @@ import type {
   WebSocketFrame
 } from '../types'
 
-import type { ImChannelMessageRespVO } from '#/api/im/message/channel'
+import type { ImChannelMessageApi } from '#/api/im/message/channel'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
@@ -215,7 +215,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
     reconnectAttempts: 0,
     heartbeatTimer: null as null | ReturnType<typeof setInterval>,
     messageBuffer: [] as Array<
-      | { conversationType: typeof ImConversationType.CHANNEL; payload: ImChannelMessageRespVO }
+      | { conversationType: typeof ImConversationType.CHANNEL; payload: ImChannelMessageApi.ChannelMessageRespVO }
       | {
           conversationType: typeof ImConversationType.GROUP
           payload: ImGroupMessageNotification
@@ -345,7 +345,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
       }
       switch (notification.conversationType) {
         case ImConversationType.CHANNEL: {
-          this.dispatchChannelFrame(payload as ImChannelMessageRespVO)
+          this.dispatchChannelFrame(payload as ImChannelMessageApi.ChannelMessageRespVO)
           break
         }
         case ImConversationType.GROUP: {
@@ -394,7 +394,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
     /**
      * 频道帧分发：按 payload.type 分到 READ（多端已读同步）或普通素材推送
      */
-    dispatchChannelFrame(websocketMessage: ImChannelMessageRespVO) {
+    dispatchChannelFrame(websocketMessage: ImChannelMessageApi.ChannelMessageRespVO) {
       if (websocketMessage.type === ImContentType.READ) {
         this.handleChannelRead(websocketMessage)
         return
@@ -403,7 +403,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
     },
 
     /** 频道 READ：自己其它终端在某频道里标为已读，本端同步清零该频道未读 */
-    handleChannelRead(websocketMessage: ImChannelMessageRespVO) {
+    handleChannelRead(websocketMessage: ImChannelMessageApi.ChannelMessageRespVO) {
       void useConversationStore()
         .applyConversationReadList([
           {
@@ -420,7 +420,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
      * 频道消息实时入会话；频道消息单向 + 无状态机，直接 insertMessage 即可
      * pull 与 WS 拿到同一条 id 时，messageStore.insertMessage 内部按 id 去重，不会重复
      */
-    handleChannelMessage(websocketMessage: ImChannelMessageRespVO): Promise<void> {
+    handleChannelMessage(websocketMessage: ImChannelMessageApi.ChannelMessageRespVO): Promise<void> {
       const conversationStore = useConversationStore()
       const messageStore = useMessageStore()
       // 离线加载期间先缓冲，等 pull 完成后再统一回放，避免重复或顺序错乱

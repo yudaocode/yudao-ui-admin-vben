@@ -1,18 +1,12 @@
+import type { ImFacePackApi } from '#/api/im/face/pack'
+import type { ImFaceUserItemApi } from '#/api/im/face/useritem'
+
 import { ref } from 'vue'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
-import {
-  getFacePackList as apiGetFacePackList,
-  type ImFacePackUserVO
-} from '#/api/im/face/pack'
-import {
-  createFaceUserItem as apiCreateFaceUserItem,
-  deleteFaceUserItem as apiDeleteFaceUserItem,
-  getFaceUserItemList as apiGetFaceUserItemList,
-  type ImFaceUserItemSaveReqVO,
-  type ImFaceUserItemVO
-} from '#/api/im/face/useritem'
+import { getFacePackList as apiGetFacePackList } from '#/api/im/face/pack'
+import { createFaceUserItem as apiCreateFaceUserItem, deleteFaceUserItem as apiDeleteFaceUserItem, getFaceUserItemList as apiGetFaceUserItemList } from '#/api/im/face/useritem'
 
 /**
  * IM 表情面板数据 store（系统表情包 + 个人表情）
@@ -24,9 +18,9 @@ import {
 export const useFaceStore = defineStore('imFace', () => {
 
   /** 系统表情包列表（含每个包的 items）；运营管理后台维护 */
-  const facePacks = ref<ImFacePackUserVO[]>([])
+  const facePacks = ref<ImFacePackApi.FacePackUser[]>([])
   /** 个人表情包列表（用户长按「添加到表情」/ 上传产生） */
-  const faceUserItems = ref<ImFaceUserItemVO[]>([])
+  const faceUserItems = ref<ImFaceUserItemApi.FaceUserItem[]>([])
 
   /** clear() 时递增；旧账号请求返回后不写入新账号内存 */
   let storeEpoch = 0
@@ -89,7 +83,7 @@ export const useFaceStore = defineStore('imFace', () => {
    *
    * 来源：1. 用户在表情面板「+」上传图片  2. 长按消息「添加到表情」
    */
-  async function addFaceUserItem(reqVO: ImFaceUserItemSaveReqVO): Promise<boolean> {
+  async function addFaceUserItem(reqVO: ImFaceUserItemApi.FaceUserItemSaveReqVO): Promise<boolean> {
     const requestEpoch = storeEpoch
     const id = await apiCreateFaceUserItem(reqVO)
     if (!id) {

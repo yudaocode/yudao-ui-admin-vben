@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerGroupMessageVO } from '#/api/im/manager/message/group';
+import type { ImManagerGroupMessageApi } from '#/api/im/manager/message/group';
 
 import { ref } from 'vue';
 
@@ -23,10 +23,10 @@ import {
 import MessageContentPreview from '../../MessageContentPreview.vue';
 
 const visible = ref(false);
-const detail = ref<ImManagerGroupMessageVO>({} as ImManagerGroupMessageVO);
+const detail = ref<ImManagerGroupMessageApi.GroupMessage>({} as ImManagerGroupMessageApi.GroupMessage);
 
 /** 打开详情 */
-function open(row: ImManagerGroupMessageVO) {
+function open(row: ImManagerGroupMessageApi.GroupMessage) {
   detail.value = row;
   visible.value = true;
 }
@@ -48,14 +48,14 @@ defineExpose({ open });
         {{ formatUserLabel(detail.senderNickname, detail.senderId) }}
       </DescriptionsItem>
       <DescriptionsItem label="类型">
-        <DictTag :type="DICT_TYPE.IM_CONTENT_TYPE" :value="detail.type" />
+        <DictTag :type="DICT_TYPE.IM_MESSAGE_TYPE" :value="detail.type" />
       </DescriptionsItem>
       <DescriptionsItem label="状态">
-        <DictTag :type="DICT_TYPE.IM_MESSAGE_STATUS" :value="detail.status" />
+        <DictTag :type="DICT_TYPE.IM_GROUP_MESSAGE_STATUS" :value="detail.status" />
       </DescriptionsItem>
       <DescriptionsItem v-if="MESSAGE_GROUP_READ_ENABLED" label="回执" :span="2">
         <DictTag
-          :type="DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS"
+          :type="DICT_TYPE.IM_GROUP_MESSAGE_RECEIPT_STATUS"
           :value="detail.receiptStatus"
         />
       </DescriptionsItem>

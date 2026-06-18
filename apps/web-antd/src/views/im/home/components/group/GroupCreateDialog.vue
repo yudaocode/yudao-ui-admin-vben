@@ -3,10 +3,9 @@ import type { FriendLite } from '../../types'
 
 import { computed, ref } from 'vue'
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { createGroup } from '#/api/im/group'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { buildDefaultGroupName } from '../../../utils/group'
 import { useFriendStore } from '../../store/friendStore'
@@ -20,7 +19,6 @@ const emit = defineEmits<{
   created: [groupId: number]
 }>()
 
-const message = useMessage()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
 

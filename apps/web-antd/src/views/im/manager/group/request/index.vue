@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerGroupRequestVO } from '#/api/im/manager/group/request';
+import type { ImManagerGroupRequestApi } from '#/api/im/manager/group/request';
 
 import { Page } from '@vben/common-ui';
 
@@ -45,7 +45,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerGroupRequestVO>,
+  } as VxeTableGridOptions<ImManagerGroupRequestApi.GroupRequest>,
 });
 </script>
 

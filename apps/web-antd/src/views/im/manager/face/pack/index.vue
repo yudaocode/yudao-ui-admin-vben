@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFacePackVO } from '#/api/im/manager/face/pack';
+import type { ImManagerFacePackApi } from '#/api/im/manager/face/pack';
 
 import { ref } from 'vue';
 
@@ -45,17 +45,17 @@ function handleCreate() {
 }
 
 /** 编辑表情包 */
-function handleEdit(row: ImManagerFacePackVO) {
+function handleEdit(row: ImManagerFacePackApi.FacePack) {
   formModalApi.setData(row).open();
 }
 
 /** 打开表情管理 */
-function handleItems(row: ImManagerFacePackVO) {
+function handleItems(row: ImManagerFacePackApi.FacePack) {
   itemDrawerRef.value?.open(row);
 }
 
 /** 删除表情包 */
-async function handleDelete(row: ImManagerFacePackVO) {
+async function handleDelete(row: ImManagerFacePackApi.FacePack) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -89,7 +89,7 @@ async function handleDeleteBatch() {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: ImManagerFacePackVO[];
+  records: ImManagerFacePackApi.FacePack[];
 }) {
   checkedIds.value = records.map((item) => item.id);
 }
@@ -121,7 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerFacePackVO>,
+  } as VxeTableGridOptions<ImManagerFacePackApi.FacePack>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

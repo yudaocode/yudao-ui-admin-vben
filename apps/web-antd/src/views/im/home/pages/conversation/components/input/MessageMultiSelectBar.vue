@@ -3,6 +3,7 @@ import type { Message } from '#/views/im/home/types'
 
 import { computed, inject } from 'vue'
 
+import { confirm } from '@vben/common-ui'
 import { IconifyIcon as Icon } from '@vben/icons'
 
 import { useMessageMultiSelect } from '#/views/im/home/composables/useMessageMultiSelect'
@@ -10,7 +11,6 @@ import { useConversationStore } from '#/views/im/home/store/conversationStore'
 import { useMessageStore } from '#/views/im/home/store/messageStore'
 import { ImForwardMode, isNormalMessage } from '#/views/im/utils/constants'
 import { getClientConversationId } from '#/views/im/utils/db'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { IM_FORWARD_DIALOG_KEY } from '../message/forward/keys'
 
@@ -18,7 +18,6 @@ defineOptions({ name: 'ImMessageMultiSelectBar' })
 
 const conversationStore = useConversationStore()
 const messageStore = useMessageStore()
-const message = useMessage()
 const openForwardDialog = inject(IM_FORWARD_DIALOG_KEY)
 const multiSelect = useMessageMultiSelect()
 
@@ -82,7 +81,12 @@ async function handleDelete() {
     return
   }
   try {
-    await message.delConfirm(`确认删除选中的 ${messages.length} 条消息？`)
+    await confirm(`确认删除选中的 ${messages.length} 条消息？`, {
+      cancelText: '取消',
+      confirmText: '确定',
+      icon: 'warning',
+      title: '删除确认'
+    })
   } catch {
     return
   }

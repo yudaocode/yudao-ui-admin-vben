@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImStatisticsOverviewVO } from '#/api/im/manager/statistics';
+import type { ImManagerStatisticsApi } from '#/api/im/manager/statistics';
 
 import { computed } from 'vue';
 
@@ -10,7 +10,7 @@ import { Card } from 'ant-design-vue';
 defineOptions({ name: 'ImManagerStatisticsOverviewCards' });
 
 const props = defineProps<{
-  overview: ImStatisticsOverviewVO;
+  overview: ImManagerStatisticsApi.Overview;
 }>();
 
 /** 计算环比 */

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerChannelMaterialVO } from '#/api/im/manager/channel/material';
+import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/material';
 
 import { computed, ref } from 'vue';
 
@@ -18,7 +18,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<ImManagerChannelMaterialVO>();
+const formData = ref<ImManagerChannelMaterialApi.Material>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['素材'])
@@ -46,7 +46,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     const data =
-      (await formApi.getValues()) as ImManagerChannelMaterialVO;
+      (await formApi.getValues()) as ImManagerChannelMaterialApi.Material;
     try {
       await (formData.value?.id
         ? updateManagerChannelMaterial(data)
@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.resetForm();
       return;
     }
-    const data = modalApi.getData<ImManagerChannelMaterialVO>();
+    const data = modalApi.getData<ImManagerChannelMaterialApi.Material>();
     await formApi.setValues({ type: 1 });
     if (!data || !data.id) {
       return;

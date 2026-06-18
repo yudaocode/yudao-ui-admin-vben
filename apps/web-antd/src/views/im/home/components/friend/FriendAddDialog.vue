@@ -1,14 +1,15 @@
 <script lang="ts" setup>
+import type { SystemUserApi } from '#/api/system/user'
+
 import { computed, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 import { useUserStore } from '@vben/stores'
 
-import { Button, Input, Modal, Spin } from 'ant-design-vue'
+import { Button, Input, message, Modal, Spin } from 'ant-design-vue'
 
+import { getSimpleUserListByNickname } from '#/api/system/user'
 import { getCurrentUserId } from '#/views/im/utils/auth'
-import { useMessage } from '#/views/im/utils/message-feedback'
-import { getSimpleUserListByNickname, type UserVO } from '#/views/im/utils/system-user'
 
 import { ImFriendAddSource } from '../../../utils/constants'
 import { getGenderColor, getGenderIcon } from '../../../utils/user'
@@ -17,18 +18,14 @@ import UserAvatar from '../user/UserAvatar.vue'
 
 defineOptions({ name: 'ImFriendAddDialog' })
 
-// TODO @AI：变量都走尾注释；
-const visible = ref(false)
-/** 预填目标用户：非 null 时跳过搜索步骤，直接进入申请表单（群成员加好友 / 名片加好友等场景） */
-const presetUser = ref<null | UserVO>(null)
-/** 添加来源；参见 ImFriendAddSourceEnum，默认 SEARCH */
-const addSource = ref<number>(ImFriendAddSource.SEARCH)
-/** 来源附带信息：addSource=ImFriendAddSource.GROUP 时传群名，话术拼为「我是 XX 群的 YY」 */
-const addSourceExtra = ref<string>('')
+const visible = ref(false) // 弹窗是否可见
+const presetUser = ref<null | SystemUserApi.UserSimple>(null) // 预填目标用户：非 null 时跳过搜索步骤，直接进入申请表单（群成员加好友 / 名片加好友等场景）
+const addSource = ref<number>(ImFriendAddSource.SEARCH) // 添加来源；参见 ImFriendAddSourceEnum，默认 SEARCH
+const addSourceExtra = ref<string>('') // 来源附带信息：addSource=ImFriendAddSource.GROUP 时传群名，话术拼为「我是 XX 群的 YY」
 
 defineExpose({
   /** 打开加好友弹窗：reset → 灌参 → visible=true；不传 opts 走搜索模式 */
-  open(opts?: { addSource?: number; addSourceExtra?: string; presetUser?: null | UserVO; }) {
+  open(opts?: { addSource?: number; addSourceExtra?: string; presetUser?: null | SystemUserApi.UserSimple; }) {
     presetUser.value = opts?.presetUser ?? null
     addSource.value = opts?.addSource ?? ImFriendAddSource.SEARCH
     addSourceExtra.value = opts?.addSourceExtra ?? ''
@@ -39,7 +36,6 @@ defineExpose({
 
 const friendStore = useFriendStore()
 const userStore = useUserStore()
-const message = useMessage()
 
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
 const currentUserId = computed(() => getCurrentUserId())
@@ -48,20 +44,15 @@ const currentUserId = computed(() => getCurrentUserId())
 const visibleUsers = computed(() =>
   users.value.filter((user) => user.id !== currentUserId.value)
 )
-const keyword = ref('')
-const users = ref<UserVO[]>([])
-const searched = ref(false)
-const loading = ref(false)
-
-/** 当前步骤：search=搜索列表；apply=申请表单 */
-const step = ref<'apply' | 'search'>('search')
-/** 申请目标用户 */
-const targetUser = ref<null | UserVO>(null)
-/** 申请理由（默认填「我是 ${当前昵称}」，对齐微信交互） */
-const applyContent = ref('')
-/** 对接收方的备注（仅自己可见） */
-const displayName = ref('')
-const submitting = ref(false)
+const keyword = ref('') // 搜索关键字
+const users = ref<SystemUserApi.UserSimple[]>([]) // 搜索结果
+const searched = ref(false) // 是否已搜索
+const loading = ref(false) // 搜索加载中
+const step = ref<'apply' | 'search'>('search') // 当前步骤：search=搜索列表；apply=申请表单
+const targetUser = ref<null | SystemUserApi.UserSimple>(null) // 申请目标用户
+const applyContent = ref('') // 申请理由（默认填「我是 ${当前昵称}」，对齐微信交互）
+const displayName = ref('') // 对接收方的备注（仅自己可见）
+const submitting = ref(false) // 提交中
 
 /** 弹窗标题随步骤切换 */
 const dialogTitle = computed(() => (step.value === 'apply' ? '申请添加朋友' : '添加好友'))
@@ -115,7 +106,7 @@ async function handleSearch() {
 }
 
 /** 进入申请步骤：预填申请理由「我是 ${当前用户昵称}」（对齐微信交互） */
-function enterApply(user: UserVO) {
+function enterApply(user: SystemUserApi.UserSimple) {
   targetUser.value = user
   const myNickname = userStore.userInfo?.nickname || ''
   applyContent.value = myNickname ? `我是${myNickname}` : ''
@@ -184,57 +175,57 @@ async function handleSubmitApply() {
 
       <Spin :spinning="loading" wrapper-class-name="w-full">
         <div class="h-[400px] mt-2.5">
-        <div
-          v-if="visibleUsers.length === 0"
-          class="py-10 text-13px text-center text-[var(--ant-color-text-disabled)]"
-        >
-          {{ searched ? '没有搜到用户' : '输入关键字后回车开始搜索' }}
-        </div>
-        <div
-          v-for="user in visibleUsers"
-          :key="user.id"
-          class="flex gap-3 items-center px-2 py-2.5 border-b border-b-solid border-[var(--ant-color-border-secondary)]"
-        >
-          <UserAvatar
-            :id="user.id"
-            :url="user.avatar"
-            :name="user.nickname"
-            :size="42"
-            :clickable="false"
-          />
-          <div class="flex-1 min-w-0 overflow-hidden">
-            <!-- 昵称 + 性别图标 -->
-            <div
-              class="flex items-center gap-1 text-sm font-semibold text-[var(--ant-color-text)]"
-            >
-              <span class="truncate">{{ user.nickname }}</span>
-              <Icon
-                v-if="getGenderIcon(user.sex)"
-                :icon="getGenderIcon(user.sex)"
-                :size="14"
-                :color="getGenderColor(user.sex)"
-                class="flex-shrink-0"
-              />
-            </div>
-            <!-- 部门 -->
-            <div
-              v-if="user.deptName"
-              class="mt-0.5 text-xs truncate text-[var(--ant-color-text-secondary)]"
-            >
-              {{ user.deptName }}
-            </div>
-          </div>
-          <!-- 已是好友显示「已添加」；否则显示「添加」（点击进入 apply 步骤） -->
-          <Button
-            v-if="!friendStore.isActiveFriend(user.id)"
-            type="primary"
-            size="small"
-            @click="enterApply(user)"
+          <div
+            v-if="visibleUsers.length === 0"
+            class="py-10 text-13px text-center text-[var(--ant-color-text-disabled)]"
           >
-            添加
-          </Button>
-          <Button v-else size="small" disabled>已添加</Button>
-        </div>
+            {{ searched ? '没有搜到用户' : '输入关键字后回车开始搜索' }}
+          </div>
+          <div
+            v-for="user in visibleUsers"
+            :key="user.id"
+            class="flex gap-3 items-center px-2 py-2.5 border-b border-b-solid border-[var(--ant-color-border-secondary)]"
+          >
+            <UserAvatar
+              :id="user.id"
+              :url="user.avatar"
+              :name="user.nickname"
+              :size="42"
+              :clickable="false"
+            />
+            <div class="flex-1 min-w-0 overflow-hidden">
+              <!-- 昵称 + 性别图标 -->
+              <div
+                class="flex items-center gap-1 text-sm font-semibold text-[var(--ant-color-text)]"
+              >
+                <span class="truncate">{{ user.nickname }}</span>
+                <Icon
+                  v-if="getGenderIcon(user.sex)"
+                  :icon="getGenderIcon(user.sex)"
+                  :size="14"
+                  :color="getGenderColor(user.sex)"
+                  class="flex-shrink-0"
+                />
+              </div>
+              <!-- 部门 -->
+              <div
+                v-if="user.deptName"
+                class="mt-0.5 text-xs truncate text-[var(--ant-color-text-secondary)]"
+              >
+                {{ user.deptName }}
+              </div>
+            </div>
+            <!-- 已是好友显示「已添加」；否则显示「添加」（点击进入 apply 步骤） -->
+            <Button
+              v-if="!friendStore.isActiveFriend(user.id)"
+              type="primary"
+              size="small"
+              @click="enterApply(user)"
+            >
+              添加
+            </Button>
+            <Button v-else size="small" disabled>已添加</Button>
+          </div>
         </div>
       </Spin>
     </template>
@@ -272,7 +263,7 @@ async function handleSubmitApply() {
         :maxlength="255"
         show-count
         placeholder="请填写申请理由"
-       />
+      />
 
       <div class="text-13px text-[var(--ant-color-text-secondary)] mt-3 mb-1.5">备注</div>
       <Input

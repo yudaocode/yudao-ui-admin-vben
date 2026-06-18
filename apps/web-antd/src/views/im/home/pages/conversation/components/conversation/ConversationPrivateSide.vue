@@ -5,13 +5,12 @@ import { computed, ref, watch } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button, Drawer, Input, Popover, Spin, Switch } from 'ant-design-vue'
+import { Button, Drawer, Input, message, Popover, Spin, Switch } from 'ant-design-vue'
 
 import { useConversationStore } from '#/views/im/home/store/conversationStore'
 import { useFriendStore } from '#/views/im/home/store/friendStore'
 import { useGroupStore } from '#/views/im/home/store/groupStore'
 import { ImConversationType } from '#/views/im/utils/constants'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { getFriendDisplayName } from '#/views/im/utils/user'
 
 import GroupCreateDialog from '../../../../components/group/GroupCreateDialog.vue'
@@ -26,12 +25,14 @@ const props = withDefaults(
     modelValue?: boolean // 抽屉开关（v-model）
   }>(),
   {
+    conversation: null,
+    friend: undefined,
     modelValue: false
   }
 )
 
 const emit = defineEmits<{
-  'open-history': [] // 点击 "查找聊天内容" 行 → 父组件打开 MessageHistory 弹窗
+  openHistory: [] // 点击 "查找聊天内容" 行 → 父组件打开 MessageHistory 弹窗
   'update:modelValue': [value: boolean]
 }>()
 
@@ -43,13 +44,11 @@ const visible = computed({
 const conversationStore = useConversationStore()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
-const message = useMessage()
 
 /** tile 标签 / 后续聊天界面用的展示名：备注优先 */
 const displayName = computed(() => (props.friend ? getFriendDisplayName(props.friend) : ''))
 
-/** 发起群聊弹窗 ref：handleOpenCreateGroup 调 open({ lockedIds }) 锁定对方 */
-const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>()
+const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>() // 发起群聊弹窗 ref：handleOpenCreateGroup 调 open({ lockedIds }) 锁定对方
 
 /** 打开发起群聊弹窗：把对方默认勾上且不可取消，对应微信"基于私聊发起群聊" */
 function handleOpenCreateGroup() {
@@ -227,7 +226,7 @@ function handleGroupCreated(groupId: number) {
         <div class="bg-[var(--ant-color-bg-container)]">
           <div
             class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
-            @click="emit('open-history')"
+            @click="emit('openHistory')"
           >
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">查找聊天内容</span>
             <Icon

@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
-import { formatFileSize } from '@vben/utils'
+import { formatFileSize, openSafeUrl } from '@vben/utils'
 
 import { Image } from 'ant-design-vue'
 
@@ -26,7 +26,6 @@ import {
   type VideoMessage
 } from '#/views/im/utils/message'
 import { formatSeconds } from '#/views/im/utils/time'
-import { openSafeUrl } from '#/views/im/utils/url'
 
 import MaterialBubble from './MaterialBubble.vue'
 import TipSegments from './TipSegments.vue'
@@ -48,9 +47,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   /** 名片点击：调用方决定弹卡片 / 跳群等行为 */
-  'click-card': [card: CardMessage, e: MouseEvent]
+  clickCard: [card: CardMessage, e: MouseEvent]
   /** 合并消息气泡点击：调用方决定开 dialog 或栈内 push */
-  'open-merge': [content: string]
+  openMerge: [content: string]
 }>()
 
 /** 各 type 判定 */
@@ -117,8 +116,7 @@ const mergePreviewLines = computed(() => {
     .map((item) => `${item.senderNickname}：${summarizeMessageContent(item)}`)
 })
 
-/** 表情 payload：非法宽高派生成 undefined，让 <img> 走 CSS max-w / max-h 兜底 */
-const FACE_DIMENSION_MAX = 2048
+const FACE_DIMENSION_MAX = 2048 // 表情 payload：非法宽高派生成 undefined，让 <img> 走 CSS max-w / max-h 兜底
 const facePayload = computed(() => {
   if (!isFace.value) {
     return null
@@ -143,6 +141,7 @@ function bubbleClass(variant: 'file' | 'text' | 'voice'): string[] {
     case 'file': {
       return [
         side,
+        'message-bubble--file',
         isSelf
           ? 'bg-[#95ec69] border-[var(--ant-color-border-secondary)]'
           : 'bg-[var(--ant-color-bg-container)] border-[var(--ant-color-border-secondary)] hover:border-[#409eff]'
@@ -151,13 +150,14 @@ function bubbleClass(variant: 'file' | 'text' | 'voice'): string[] {
     case 'text': {
       return [
         side,
+        'message-bubble--text',
         isSelf
           ? 'text-black bg-[#95ec69]'
-          : 'text-[var(--ant-color-text)] bg-[var(--ant-color-fill-secondary)]'
+          : 'text-[var(--ant-color-text)]'
       ]
     }
     case 'voice': {
-      return [side, isSelf ? 'bg-[#95ec69]' : 'bg-[var(--ant-color-fill-secondary)]']
+      return [side, 'message-bubble--voice', isSelf ? 'bg-[#95ec69]' : '']
     }
   }
 }
@@ -170,8 +170,7 @@ function handleFileClick() {
   openSafeUrl(filePayload.value.url)
 }
 
-/** 语音点击：托管给 useVoicePlayer 全局互斥播放，新点的语音会停掉旧的 */
-const voicePlayer = useVoicePlayer()
+const voicePlayer = useVoicePlayer() // 语音点击：托管给 useVoicePlayer 全局互斥播放，新点的语音会停掉旧的
 /**
  * 实例级唯一播放 key：每个 MessageBubble 实例独立一份
  *
@@ -308,14 +307,14 @@ onBeforeUnmount(() => {
     v-else-if="isCard && cardPayload"
     :card="cardPayload"
     clickable
-    @click="(e: MouseEvent) => emit('click-card', cardPayload!, e)"
+    @click="(e: MouseEvent) => emit('clickCard', cardPayload!, e)"
   />
 
   <!-- 合并转发气泡：title + 摘要预览 + 底部「聊天记录」标签 -->
   <div
     v-else-if="isMerge && mergePayload"
     class="flex flex-col w-[260px] rounded-md overflow-hidden cursor-pointer bg-[var(--ant-color-bg-container)] border border-solid border-[var(--ant-color-border)] hover:border-[#409eff]"
-    @click="emit('open-merge', content)"
+    @click="emit('openMerge', content)"
   >
     <div class="px-3 py-2 text-sm font-medium text-[var(--ant-color-text)] truncate">
       {{ mergePayload.title }}
@@ -367,15 +366,26 @@ onBeforeUnmount(() => {
   height: 0;
   border-style: solid;
 }
+.message-bubble--other {
+  --im-message-bubble-other-bg: #f5f5f5;
+}
+.message-bubble--other.message-bubble--text,
+.message-bubble--other.message-bubble--voice {
+  background-color: var(--im-message-bubble-other-bg);
+}
 .message-bubble--other::before {
   left: -5px;
   border-width: 5px 6px 5px 0;
-  border-color: transparent var(--ant-color-fill-secondary) transparent transparent;
+  border-color: transparent var(--im-message-bubble-other-bg) transparent transparent;
 }
 .message-bubble--self::before {
   right: -5px;
   border-width: 5px 0 5px 6px;
   border-color: transparent transparent transparent #95ec69;
+}
+
+:global(.dark) .message-bubble--other {
+  --im-message-bubble-other-bg: rgb(255 255 255 / 12%);
 }
 
 /* :deep 穿透 scoped 子组件 DOM；el-icon 在暗色模式下全局 color 被 .el-icon{color:var(--color)} 干扰，把 voice 图标 fill 锁死 */

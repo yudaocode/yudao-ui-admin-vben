@@ -19,8 +19,7 @@ const props = defineProps<{
 const groupStore = useGroupStore()
 const groupRequestStore = useGroupRequestStore()
 
-/** 申请列表弹窗 ref：handleOpen 调 open({ groupId }) 触发 */
-const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>()
+const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>() // 申请列表弹窗 ref：handleOpen 调 open({ groupId }) 触发
 
 /** 打开当前群的进群申请列表 */
 function handleOpen() {

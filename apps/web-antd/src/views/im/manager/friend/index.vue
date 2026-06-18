@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFriendVO } from '#/api/im/manager/friend';
+import type { ImManagerFriendApi } from '#/api/im/manager/friend';
 
 import { useRouter } from 'vue-router';
 
@@ -17,7 +17,7 @@ defineOptions({ name: 'ImManagerFriend' });
 const router = useRouter();
 
 /** 查看私聊消息 */
-function handleConversation(row: ImManagerFriendVO) {
+function handleConversation(row: ImManagerFriendApi.Friend) {
   router.push({
     name: 'ImPrivateMessage',
     query: {
@@ -54,7 +54,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<ImManagerFriendVO>,
+  } as VxeTableGridOptions<ImManagerFriendApi.Friend>,
 });
 </script>
 

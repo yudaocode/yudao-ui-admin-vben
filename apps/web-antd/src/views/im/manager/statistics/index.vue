@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImStatisticsOverviewVO } from '#/api/im/manager/statistics';
+import type { ImManagerStatisticsApi } from '#/api/im/manager/statistics';
 
 import { onMounted, ref } from 'vue';
 
@@ -13,7 +13,7 @@ import TrendChart from './components/TrendChart.vue';
 
 defineOptions({ name: 'ImManagerStatistics' });
 
-const overview = ref<ImStatisticsOverviewVO>();
+const overview = ref<ImManagerStatisticsApi.Overview>();
 
 /** 加载概览数据 */
 async function loadOverview() {

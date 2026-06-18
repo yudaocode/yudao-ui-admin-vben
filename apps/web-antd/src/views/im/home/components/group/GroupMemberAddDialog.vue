@@ -5,13 +5,12 @@ import { computed, ref } from 'vue'
 
 import { CommonStatusEnum } from '@vben/constants'
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { inviteGroupMember } from '#/api/im/group/member'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 import { GROUP_MAX_MEMBER } from '#/views/im/utils/config'
 import { ImGroupMemberRole } from '#/views/im/utils/constants'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import { useFriendStore } from '../../store/friendStore'
 import { useGroupStore } from '../../store/groupStore'
@@ -24,7 +23,6 @@ const emit = defineEmits<{
   reload: [friendIds: number[]]
 }>()
 
-const message = useMessage()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
 

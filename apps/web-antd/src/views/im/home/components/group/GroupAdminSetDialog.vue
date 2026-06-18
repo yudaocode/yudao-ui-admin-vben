@@ -3,11 +3,10 @@ import type { GroupMemberLite } from './GroupMember.vue'
 
 import { ref } from 'vue'
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue'
 
 import { addGroupAdmin, removeGroupAdmin } from '#/api/im/group'
 import { GROUP_ADMIN_MAX_COUNT } from '#/views/im/utils/config'
-import { useMessage } from '#/views/im/utils/message-feedback'
 
 import GroupMemberPickerPanel from '../picker/GroupMemberPickerPanel.vue'
 
@@ -18,14 +17,11 @@ const emit = defineEmits<{
   reload: []
 }>()
 
-const message = useMessage()
-
 const visible = ref(false)
 const submitting = ref(false)
 const groupId = ref(0)
 const members = ref<GroupMemberLite[]>([])
-/** 当前管理员 userId 列表：默认勾选 + 提交时 diff */
-const currentAdminIds = ref<number[]>([])
+const currentAdminIds = ref<number[]>([]) // 当前管理员 userId 列表：默认勾选 + 提交时 diff
 const hideIds = ref<number[]>([])
 const maxSize = ref(GROUP_ADMIN_MAX_COUNT)
 const selectedIds = ref<number[]>([])

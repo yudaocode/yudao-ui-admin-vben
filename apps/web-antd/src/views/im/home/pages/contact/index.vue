@@ -4,11 +4,10 @@ import type { FriendLite, FriendRequest, Group, GroupLite, User } from '../../ty
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { confirm } from '@vben/common-ui'
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Input } from 'ant-design-vue'
-
-import { useMessage } from '#/views/im/utils/message-feedback'
+import { Input, message } from 'ant-design-vue'
 
 import { ImConversationType } from '../../../utils/constants'
 import { StorageKeys } from '../../../utils/db'
@@ -30,7 +29,6 @@ const router = useRouter()
 const conversationStore = useConversationStore()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
-const message = useMessage()
 
 /** 用 type 判别选中是好友 / 群聊 / 好友申请 */
 type Selection =
@@ -204,7 +202,7 @@ function handleChatGroup(group: GroupLite) {
 /** 删除好友：二次确认 → store 落库 → 清空当前选中 */
 async function handleDeleteFriend(friend: FriendLite) {
   try {
-    await message.confirm(`确定删除好友「${friend.nickname}」吗？`, '删除联系人')
+    await confirm(`确定删除好友「${friend.nickname}」吗？`, '删除联系人')
     // friendStore.deleteFriend 内部已经级联清理对应私聊会话
     await friendStore.deleteFriend(friend.id)
     if (selection.value?.type === 'friend' && selection.value.friend.id === friend.id) {

@@ -50,8 +50,7 @@ const emit = defineEmits<{
   locate: [messageId: number]
 }>()
 
-/** 文本摘要在引用块里展示的最大字符数 */
-const MAX_TEXT_PREVIEW_LEN = 60
+const MAX_TEXT_PREVIEW_LEN = 60 // 文本摘要在引用块里展示的最大字符数
 
 const conversationStore = useConversationStore()
 const messageStore = useMessageStore()

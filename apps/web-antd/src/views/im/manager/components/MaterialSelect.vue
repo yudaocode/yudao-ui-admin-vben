@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerChannelMaterialVO } from '#/api/im/manager/channel/material';
+import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/material';
 
 import { computed, ref, watch } from 'vue';
 
@@ -29,7 +29,7 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const materialList = ref<ImManagerChannelMaterialVO[]>([]);
+const materialList = ref<ImManagerChannelMaterialApi.Material[]>([]);
 
 const value = computed({
   get: () => props.modelValue,

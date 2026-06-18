@@ -5,7 +5,7 @@ import { computed, reactive, ref } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button, Input, Modal } from 'ant-design-vue'
+import { Button, Input, message, Modal } from 'ant-design-vue'
 
 import { createGroup } from '#/api/im/group'
 import ConversationPickerPanel from '#/views/im/home/components/picker/ConversationPickerPanel.vue'
@@ -29,14 +29,12 @@ import {
   removeQuotePayload,
   serializeMessage
 } from '#/views/im/utils/message'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { isGroupQuit } from '#/views/im/utils/user'
 
 import FacePicker from '../../input/FacePicker.vue'
 
 defineOptions({ name: 'ImMessageForwardDialog' })
 
-const message = useMessage()
 const conversationStore = useConversationStore()
 const friendStore = useFriendStore()
 const groupStore = useGroupStore()
@@ -49,14 +47,12 @@ const state = reactive({
   sourceConversation: null as Conversation | null
 })
 const visible = ref(false)
-/** 当前视图：默认会话选择，「创建聊天」入口切到好友选择 */
-const view = ref<'contact' | 'conversation'>('conversation')
+const view = ref<'contact' | 'conversation'>('conversation') // 当前视图：默认会话选择，「创建聊天」入口切到好友选择
 const selectedKeys = ref<string[]>([])
 const selectedFriendIds = ref<number[]>([])
 const leaveMessage = ref('')
 const sending = ref(false)
-/** emoji picker 显隐：右侧笑脸按钮切换 */
-const emojiVisible = ref(false)
+const emojiVisible = ref(false) // emoji picker 显隐：右侧笑脸按钮切换
 
 defineExpose({
   /** 打开转发弹窗：reset → 灌参 → visible=true */

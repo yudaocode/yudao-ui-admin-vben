@@ -5,13 +5,12 @@ import { computed, ref, watch } from 'vue'
 
 import { IconifyIcon as Icon } from '@vben/icons'
 
-import { Button } from 'ant-design-vue'
+import { Button, message } from 'ant-design-vue'
 
 import { unpinGroupMessage as apiUnpinGroupMessage } from '#/api/im/group'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 import { ImConversationType, ImGroupMemberRole } from '#/views/im/utils/constants'
 import { resolveConversationLastContent } from '#/views/im/utils/conversation'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { getSenderDisplayName, isGroupQuit } from '#/views/im/utils/user'
 
 import { useGroupStore } from '../../../../store/groupStore'
@@ -29,7 +28,6 @@ const emit = defineEmits<{
 }>()
 
 const groupStore = useGroupStore()
-const message = useMessage()
 
 /** 当前群（含 pinnedMessages） */
 const group = computed(() => groupStore.getGroup(props.groupId))

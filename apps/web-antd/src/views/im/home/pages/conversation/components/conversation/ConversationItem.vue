@@ -3,12 +3,12 @@ import type { Conversation } from '../../../../types'
 
 import { computed } from 'vue'
 
+import { confirm } from '@vben/common-ui'
 import { IconifyIcon as Icon } from '@vben/icons'
 
 import { Tag } from 'ant-design-vue'
 
 import { buildRecallTip } from '#/views/im/utils/conversation'
-import { useMessage } from '#/views/im/utils/message-feedback'
 import { formatConversationTime } from '#/views/im/utils/time'
 import { getSenderDisplayName } from '#/views/im/utils/user'
 
@@ -23,8 +23,7 @@ import { useImUiStore } from '../../../../store/uiStore'
 
 defineOptions({ name: 'ImConversationItem' })
 
-/** 周中文名（dayjs 的 day() 返回 0-6，0=周日）；项目没全局装 dayjs/locale/zh-cn，本地映射避免引副作用 */
-
+// 周中文名（dayjs 的 day() 返回 0-6，0=周日）；项目没全局装 dayjs/locale/zh-cn，本地映射避免引副作用
 const props = defineProps<{
   conversation: Conversation
 }>()
@@ -34,7 +33,6 @@ const friendStore = useFriendStore()
 const groupStore = useGroupStore()
 const groupRequestStore = useGroupRequestStore()
 const uiStore = useImUiStore()
-const message = useMessage()
 
 const isActive = computed(
   () =>
@@ -159,7 +157,7 @@ function handleMuted() {
 /** 删除会话：二次确认后软删 */
 async function handleDelete() {
   try {
-    await message.confirm(`确定删除与「${props.conversation.name}」的会话吗？`, '删除会话')
+    await confirm(`确定删除与「${props.conversation.name}」的会话吗？`, '删除会话')
     conversationStore.removeConversation(props.conversation.type, props.conversation.targetId)
   } catch {}
 }

@@ -70,8 +70,5 @@
     "vue3-print-nb": "catalog:",
     "vue3-signature": "catalog:",
     "vuedraggable": "catalog:"
-  },
-  "devDependencies": {
-    "vite": "catalog:"
   }
 }

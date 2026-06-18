@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerGroupMemberVO, ImManagerGroupVO } from '#/api/im/manager/group';
+import type { ImManagerGroupApi } from '#/api/im/manager/group';
 
 import { computed, ref } from 'vue';
 
@@ -23,10 +23,10 @@ import {
 } from '#/views/im/manager/utils/format';
 
 const visible = ref(false);
-const detail = ref<ImManagerGroupVO>({} as ImManagerGroupVO);
+const detail = ref<ImManagerGroupApi.Group>({} as ImManagerGroupApi.Group);
 const loading = ref(false);
 const activeOnly = ref(true);
-const memberList = ref<ImManagerGroupMemberVO[]>([]);
+const memberList = ref<ImManagerGroupApi.GroupMember[]>([]);
 
 const filteredMembers = computed(() =>
   activeOnly.value
@@ -49,7 +49,7 @@ const columns = [
 ];
 
 /** 打开详情 */
-async function open(row: ImManagerGroupVO) {
+async function open(row: ImManagerGroupApi.Group) {
   detail.value = row;
   visible.value = true;
   activeOnly.value = true;

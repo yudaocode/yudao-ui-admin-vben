@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ImManagerChannelVO } from '#/api/im/manager/channel'
+import type { ImManagerChannelApi } from '#/api/im/manager/channel'
 
 import { computed, ref } from 'vue'
 
@@ -18,7 +18,7 @@ import { $t } from '#/locales'
 import { useFormSchema } from '../data'
 
 const emit = defineEmits(['success'])
-const formData = ref<ImManagerChannelVO>()
+const formData = ref<ImManagerChannelApi.Channel>()
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['频道'])
@@ -45,7 +45,7 @@ const [Modal, modalApi] = useVbenModal({
       return
     }
     modalApi.lock()
-    const data = (await formApi.getValues()) as ImManagerChannelVO
+    const data = (await formApi.getValues()) as ImManagerChannelApi.Channel
     try {
       await (formData.value?.id ? updateManagerChannel(data) : createManagerChannel(data))
       await modalApi.close()
@@ -60,7 +60,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined
       return
     }
-    const data = modalApi.getData<ImManagerChannelVO>()
+    const data = modalApi.getData<ImManagerChannelApi.Channel>()
     if (!data || !data.id) {
       return
     }

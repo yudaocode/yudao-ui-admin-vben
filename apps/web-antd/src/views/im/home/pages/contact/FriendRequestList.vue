@@ -47,8 +47,7 @@ const enrichedRequests = computed(() =>
   props.requests.map((request) => ({ request, peer: getPeer(request) }))
 )
 
-/** 点击「加载更多」拉下一页；store 内部按 maxId 游标分页 + pending 去重 */
-const loadingMore = ref(false)
+const loadingMore = ref(false) // 点击「加载更多」拉下一页；store 内部按 maxId 游标分页 + pending 去重
 async function handleLoadMore() {
   if (loadingMore.value) {
     return

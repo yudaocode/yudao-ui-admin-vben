@@ -1,24 +1,33 @@
-import type { PageParam } from '@vben/request'
+import type { PageParam, PageResult } from '@vben/request';
 
-import { requestClient } from '#/api/request'
+import { requestClient } from '#/api/request';
 
-export interface ImManagerFaceUserItemVO {
-  id: number
-  userId: number
-  userNickname?: string
-  url: string
-  name?: string
-  width?: number
-  height?: number
-  createTime?: Date
+export namespace ImManagerFaceUserItemApi {
+  /** 用户表情 */
+  export interface FaceUserItem {
+    id: number;
+    userId: number;
+    userNickname?: string;
+    url: string;
+    name?: string;
+    width?: number;
+    height?: number;
+    createTime?: Date;
+  }
 }
 
-// 获得用户表情分页
-export const getManagerFaceUserItemPage = (params: PageParam) => {
-  return requestClient.get('/im/manager/face-user-item/page', { params })
+
+/** 获得用户表情分页 */
+export function getManagerFaceUserItemPage(params: PageParam) {
+  return requestClient.get<PageResult<ImManagerFaceUserItemApi.FaceUserItem>>(
+    '/im/manager/face-user-item/page',
+    { params },
+  );
 }
 
-// 删除用户表情
-export const deleteManagerFaceUserItem = (id: number) => {
-  return requestClient.delete('/im/manager/face-user-item/delete', { params: { id } })
+/** 删除用户表情 */
+export function deleteManagerFaceUserItem(id: number) {
+  return requestClient.delete<boolean>('/im/manager/face-user-item/delete', {
+    params: { id },
+  });
 }

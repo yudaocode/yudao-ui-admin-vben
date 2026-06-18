@@ -3,6 +3,7 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import { nextTick, onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { getDictObj } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
@@ -20,7 +21,7 @@ const props = defineProps<{
 
 const titleMap = {
   groupSize: '群规模分布',
-  messageType: '内容类型分布',
+  messageType: '消息类型分布',
   topSenders: '消息发送 TOP 10',
 };
 
@@ -55,7 +56,7 @@ async function loadData() {
       const data = await getMessageTypeDistribution();
       const items = data.map((item) => ({
         name:
-          getDictObj('im_content_type', String(item.type))?.label ||
+          getDictObj(DICT_TYPE.IM_MESSAGE_TYPE, String(item.type))?.label ||
           `未知(${item.type})`,
         value: item.value,
       }));

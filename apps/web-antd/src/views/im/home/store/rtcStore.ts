@@ -1,4 +1,4 @@
-import type { ImRtcCallRespVO, ImRtcGroupCallRespVO } from '#/api/im/rtc'
+import type { ImRtcApi } from '#/api/im/rtc'
 
 import { computed, ref } from 'vue'
 
@@ -74,7 +74,7 @@ export const useRtcStore = defineStore('imRtc', () => {
   /** 当前阶段 */
   const stage = ref<ImRtcCallStageValue>(ImRtcCallStage.IDLE)
   /** 当前通话；invite / accept / refreshToken 拿到的完整信息 */
-  const call = ref<ImRtcCallRespVO | null>(null)
+  const call = ref<ImRtcApi.RtcCallRespVO | null>(null)
   /** 来电载荷；仅 INCOMING 阶段使用；status 固定 INVITING，其它字段 INVITE 专属 */
   const incomingPayload = ref<ImRtcCallNotification | null>(null)
   /** 进入 RUNNING 的时间戳；用于通话时长展示；reset 时清零 */
@@ -115,13 +115,13 @@ export const useRtcStore = defineStore('imRtc', () => {
   })
 
   /** 私聊场景对端 userId：自己是主叫则取首个 invitee，否则取 inviter */
-  function resolvePrivatePeerUserId(c: ImRtcCallRespVO): number | undefined {
+  function resolvePrivatePeerUserId(c: ImRtcApi.RtcCallRespVO): number | undefined {
     const myId = getCurrentUserId()
     return c.inviterId === myId ? c.inviteeIds?.[0] : c.inviterId
   }
 
   /** 群活跃通话索引；groupId -> 群通话摘要；用于群聊顶部胶囊条 */
-  const groupActiveCalls = ref<Map<number, ImRtcGroupCallRespVO>>(new Map())
+  const groupActiveCalls = ref<Map<number, ImRtcApi.RtcGroupCallRespVO>>(new Map())
 
   /**
    * 已退出 / 已拒绝的用户编号集合；群通话场景内 pending 占位渲染时排除；
@@ -147,7 +147,7 @@ export const useRtcStore = defineStore('imRtc', () => {
    * 群通话：发起人直接进 RUNNING 多人卡片视图，房内可能只有自己，等其他人陆续加入；
    * 私聊：按 status 走；RUNNING（已加入已有通话场景）→ RUNNING；CREATED → INVITING 等被叫接通
    */
-  function startInviting(data: ImRtcCallRespVO) {
+  function startInviting(data: ImRtcApi.RtcCallRespVO) {
     call.value = data
     // 群通话场景写入本地胶囊条缓存
     syncGroupActiveCall(data)
@@ -184,7 +184,7 @@ export const useRtcStore = defineStore('imRtc', () => {
   }
 
   /** 进入通话中阶段 */
-  function enterRunning(data: ImRtcCallRespVO) {
+  function enterRunning(data: ImRtcApi.RtcCallRespVO) {
     call.value = data
     // 离开 INCOMING 阶段；清空来电载荷
     incomingPayload.value = null
@@ -252,7 +252,7 @@ export const useRtcStore = defineStore('imRtc', () => {
    * 房内成员同步交给 LiveKit 客户端事件（ParticipantConnected / Disconnected）；
    * 胶囊条不实时刷新 joinedUserIds / inviteeIds，展开 / 加入时再走 getActiveCall 接口拉最新
    */
-  function setGroupCall(payload: ImRtcGroupCallRespVO) {
+  function setGroupCall(payload: ImRtcApi.RtcGroupCallRespVO) {
     if (!payload?.groupId) {
       return
     }
@@ -267,7 +267,7 @@ export const useRtcStore = defineStore('imRtc', () => {
   }
 
   /** 两条群通话摘要内容相等（room / mediaType / inviterId / 两个 userId 数组逐项相等） */
-  function isSameGroupCall(a: ImRtcGroupCallRespVO, b: ImRtcGroupCallRespVO): boolean {
+  function isSameGroupCall(a: ImRtcApi.RtcGroupCallRespVO, b: ImRtcApi.RtcGroupCallRespVO): boolean {
     if (a.room !== b.room || a.mediaType !== b.mediaType || a.inviterId !== b.inviterId) {
       return false
     }
@@ -294,7 +294,7 @@ export const useRtcStore = defineStore('imRtc', () => {
   }
 
   /** 获取群当前活跃通话；用于胶囊条按 groupId 查询 */
-  function getGroupCall(groupId: number): ImRtcGroupCallRespVO | undefined {
+  function getGroupCall(groupId: number): ImRtcApi.RtcGroupCallRespVO | undefined {
     return groupActiveCalls.value.get(groupId)
   }
 
