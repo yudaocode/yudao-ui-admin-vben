@@ -23,7 +23,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectOption,
   TextArea,
   Tooltip,
 } from 'antdv-next';
@@ -321,13 +320,14 @@ defineExpose({ validate });
       <FormItem label="谁可以发起" name="startUserType">
         <Select
           v-model:value="modelData.startUserType"
+          :options="[
+            { label: '全员', value: 0 },
+            { label: '指定人员', value: 1 },
+            { label: '指定部门', value: 2 },
+          ]"
           placeholder="请选择谁可以发起"
           @change="handleStartUserTypeChange"
-        >
-          <SelectOption :value="0">全员</SelectOption>
-          <SelectOption :value="1">指定人员</SelectOption>
-          <SelectOption :value="2">指定部门</SelectOption>
-        </Select>
+        />
         <div
           v-if="modelData.startUserType === 1"
           class="mt-2 flex flex-wrap gap-1"

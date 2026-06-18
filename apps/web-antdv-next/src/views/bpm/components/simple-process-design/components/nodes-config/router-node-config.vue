@@ -19,7 +19,6 @@ import {
   message,
   Row,
   Select,
-  SelectOption,
 } from 'antdv-next';
 
 import { ConditionType } from '../../consts';
@@ -249,15 +248,8 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
                   v-model:value="item.nodeId"
                   placeholder="请选择路由目标节点"
                   allow-clear
-                >
-                  <SelectOption
-                    v-for="node in nodeOptions"
-                    :key="node.value"
-                    :value="node.value"
-                  >
-                    {{ node.label }}
-                  </SelectOption>
-                </Select>
+                  :options="nodeOptions"
+                />
               </FormItem>
             </div>
             <Button

@@ -25,7 +25,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectOption,
   Switch,
 } from 'antdv-next';
 
@@ -488,15 +487,9 @@ onMounted(async () => {
         style="width: 100%"
         @change="updateReturnNodeId"
         placeholder="请选择驳回节点"
-      >
-        <SelectOption
-          v-for="item in returnTaskList"
-          :key="item.id"
-          :value="item.id"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="returnTaskList"
+        :field-names="{ label: 'name', value: 'id' }"
+      />
     </FormItem>
 
     <Divider orientation="left">审批人为空时</Divider>
@@ -525,15 +518,9 @@ onMounted(async () => {
         mode="multiple"
         style="width: 100%"
         @change="updateAssignEmptyUserIds"
-      >
-        <SelectOption
-          v-for="item in userOptions"
-          :key="item.id"
-          :value="item.id"
-        >
-          {{ item.nickname }}
-        </SelectOption>
-      </Select>
+        :options="userOptions"
+        :field-names="{ label: 'nickname', value: 'id' }"
+      />
     </FormItem>
 
     <Divider orientation="left">审批人与提交人为同一人时</Divider>

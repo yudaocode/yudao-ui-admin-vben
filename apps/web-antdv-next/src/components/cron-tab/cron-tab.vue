@@ -16,7 +16,6 @@ import {
   RadioButton,
   RadioGroup,
   Select,
-  SelectOption,
   TabPane,
   Tabs,
 } from 'antdv-next';
@@ -419,22 +418,21 @@ function inputChange() {
     @input="inputChange"
   >
     <template #addonAfter>
-      <Select v-model:value="select" placeholder="生成器" class="w-36">
-        <SelectOption value="0 * * * * ?">每分钟</SelectOption>
-        <SelectOption value="0 0 * * * ?">每小时</SelectOption>
-        <SelectOption value="0 0 0 * * ?">每天零点</SelectOption>
-        <SelectOption value="0 0 0 1 * ?">每月一号零点</SelectOption>
-        <SelectOption value="0 0 0 L * ?">每月最后一天零点</SelectOption>
-        <SelectOption value="0 0 0 ? * 1">每周星期日零点</SelectOption>
-        <SelectOption
-          v-for="(item, index) in shortcuts"
-          :key="index"
-          :value="item.value"
-        >
-          {{ item.text }}
-        </SelectOption>
-        <SelectOption value="custom">自定义</SelectOption>
-      </Select>
+      <Select
+        v-model:value="select"
+        placeholder="生成器"
+        class="w-36"
+        :options="[
+          { label: '每分钟', value: '0 * * * * ?' },
+          { label: '每小时', value: '0 0 * * * ?' },
+          { label: '每天零点', value: '0 0 0 * * ?' },
+          { label: '每月一号零点', value: '0 0 0 1 * ?' },
+          { label: '每月最后一天零点', value: '0 0 0 L * ?' },
+          { label: '每周星期日零点', value: '0 0 0 ? * 1' },
+          ...shortcuts.map((item) => ({ label: item.text, value: item.value })),
+          { label: '自定义', value: 'custom' },
+        ]"
+      />
     </template>
   </Input>
 
@@ -498,14 +496,10 @@ function inputChange() {
                 v-model:value="cronValue.second.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.second"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.second.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -562,14 +556,10 @@ function inputChange() {
                 v-model:value="cronValue.minute.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.minute"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.minute.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -626,14 +616,10 @@ function inputChange() {
                 v-model:value="cronValue.hour.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.hour"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.hour.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -692,14 +678,10 @@ function inputChange() {
                 v-model:value="cronValue.day.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.day"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.day.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -756,14 +738,10 @@ function inputChange() {
                 v-model:value="cronValue.month.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.month"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.month.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -787,23 +765,15 @@ function inputChange() {
               </RadioGroup>
             </FormItem>
             <FormItem v-if="cronValue.week.type === '1'" label="范围">
-              <Select v-model:value="cronValue.week.range.start">
-                <SelectOption
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </Select>
+              <Select
+                v-model:value="cronValue.week.range.start"
+                :options="data.week"
+              />
               <span style="padding: 0 15px">-</span>
-              <Select v-model:value="cronValue.week.range.end">
-                <SelectOption
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </Select>
+              <Select
+                v-model:value="cronValue.week.range.end"
+                :options="data.week"
+              />
             </FormItem>
             <FormItem v-if="cronValue.week.type === '2'" label="间隔">
               第
@@ -814,14 +784,10 @@ function inputChange() {
                 controls-position="right"
               />
               周的星期
-              <Select v-model:value="cronValue.week.loop.end">
-                <SelectOption
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </Select>
+              <Select
+                v-model:value="cronValue.week.loop.end"
+                :options="data.week"
+              />
               执行一次
             </FormItem>
             <FormItem v-if="cronValue.week.type === '3'" label="指定">
@@ -829,24 +795,14 @@ function inputChange() {
                 v-model:value="cronValue.week.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </Select>
+                :options="data.week"
+              />
             </FormItem>
             <FormItem v-if="cronValue.week.type === '4'" label="最后一周">
-              <Select v-model:value="cronValue.week.last">
-                <SelectOption
-                  v-for="(item, index) in data.week"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </Select>
+              <Select
+                v-model:value="cronValue.week.last"
+                :options="data.week"
+              />
             </FormItem>
           </Form>
         </TabPane>
@@ -897,14 +853,10 @@ function inputChange() {
                 v-model:value="cronValue.year.appoint"
                 mode="multiple"
                 style="width: 100%"
-              >
-                <SelectOption
-                  v-for="(item, index) in data.year"
-                  :key="index"
-                  :label="item"
-                  :value="item"
-                />
-              </Select>
+                :options="
+                  data.year.map((item) => ({ label: item, value: item }))
+                "
+              />
             </FormItem>
           </Form>
         </TabPane>

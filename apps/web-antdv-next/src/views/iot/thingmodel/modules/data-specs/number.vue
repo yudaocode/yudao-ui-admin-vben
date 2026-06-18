@@ -10,7 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select, SelectOption } from 'antdv-next';
+import { FormItem, Input, Select } from 'antdv-next';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -126,15 +126,13 @@ function validateStep(_rule: any, _value: any) {
       placeholder="请选择单位"
       class="w-full"
       @change="unitChange"
-    >
-      <SelectOption
-        v-for="(item, index) in unitOptions"
-        :key="index"
-        :value="`${item.label}-${item.value}`"
-      >
-        {{ `${item.label}-${item.value}` }}
-      </SelectOption>
-    </Select>
+      :options="[
+        ...unitOptions.map((item) => ({
+          label: `{{ \`${item.label}-${item.value}\` }}`,
+          value: `${item.label}-${item.value}`,
+        })),
+      ]"
+    />
   </FormItem>
 </template>
 

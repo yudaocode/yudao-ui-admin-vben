@@ -3,15 +3,7 @@ import type { HttpRequestParam } from '../../../consts';
 
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Col,
-  FormItem,
-  Input,
-  Row,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Button, Col, FormItem, Input, Row, Select } from 'antdv-next';
 
 import {
   BPM_HTTP_REQUEST_PARAM_TYPES,
@@ -77,16 +69,10 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         </FormItem>
       </Col>
       <Col :span="5">
-        <Select v-model:value="item.type">
-          <SelectOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </SelectOption>
-        </Select>
+        <Select
+          v-model:value="item.type"
+          :options="BPM_HTTP_REQUEST_PARAM_TYPES"
+        />
       </Col>
       <Col :span="10">
         <FormItem
@@ -113,17 +99,17 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <Select v-model:value="item.value" placeholder="请选择表单字段">
-            <SelectOption
-              v-for="(field, fIdx) in formFieldOptions"
-              :key="fIdx"
-              :label="field.title"
-              :value="field.field"
-              :disabled="!field.required"
-            >
-              {{ field.title }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="item.value"
+            :options="
+              formFieldOptions.map((field) => ({
+                label: field.title,
+                value: field.field,
+                disabled: !field.required,
+              }))
+            "
+            placeholder="请选择表单字段"
+          />
         </FormItem>
       </Col>
       <Col :span="2">
@@ -168,16 +154,10 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
         </FormItem>
       </Col>
       <Col :span="5">
-        <Select v-model:value="item.type">
-          <SelectOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </SelectOption>
-        </Select>
+        <Select
+          v-model:value="item.type"
+          :options="BPM_HTTP_REQUEST_PARAM_TYPES"
+        />
       </Col>
       <Col :span="10">
         <FormItem
@@ -204,17 +184,17 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
           ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <Select v-model:value="item.value" placeholder="请选择表单字段">
-            <SelectOption
-              v-for="(field, fIdx) in formFieldOptions"
-              :key="fIdx"
-              :label="field.title"
-              :value="field.field"
-              :disabled="!field.required"
-            >
-              {{ field.title }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="item.value"
+            :options="
+              formFieldOptions.map((field) => ({
+                label: field.title,
+                value: field.field,
+                disabled: !field.required,
+              }))
+            "
+            placeholder="请选择表单字段"
+          />
         </FormItem>
       </Col>
       <Col :span="2">

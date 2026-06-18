@@ -34,7 +34,6 @@ import {
   message,
   Popover,
   Select,
-  SelectOption,
   Space,
   TextArea,
 } from 'antdv-next';
@@ -1025,16 +1024,9 @@ defineExpose({ loadTodoTask });
                   mode="multiple"
                   placeholder="请选择抄送人"
                   class="w-full"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="抄送意见" name="copyReason">
                 <TextArea
@@ -1095,16 +1087,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="transferForm.assigneeUserId"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1168,16 +1153,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="delegateForm.delegateUserId"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1242,16 +1220,9 @@ defineExpose({ loadTodoTask });
                   :allow-clear="true"
                   mode="multiple"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1319,18 +1290,15 @@ defineExpose({ loadTodoTask });
               <FormItem label="减签人员" name="deleteSignTaskId">
                 <Select
                   v-model:value="deleteSignForm.deleteSignTaskId"
+                  :options="
+                    (runningTask.children as any[]).map((item) => ({
+                      label: getDeleteSignUserLabel(item),
+                      value: item.id,
+                    }))
+                  "
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in runningTask.children"
-                    :key="item.id"
-                    :label="getDeleteSignUserLabel(item)"
-                    :value="item.id"
-                  >
-                    {{ getDeleteSignUserLabel(item) }}
-                  </SelectOption>
-                </Select>
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1392,16 +1360,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="returnForm.targetTaskDefinitionKey"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in returnList"
-                    :key="item.taskDefinitionKey"
-                    :label="item.name"
-                    :value="item.taskDefinitionKey"
-                  >
-                    {{ item.name }}
-                  </SelectOption>
-                </Select>
+                  :options="returnList"
+                  :field-names="{ label: 'name', value: 'taskDefinitionKey' }"
+                />
               </FormItem>
               <FormItem label="退回理由" name="returnReason">
                 <TextArea

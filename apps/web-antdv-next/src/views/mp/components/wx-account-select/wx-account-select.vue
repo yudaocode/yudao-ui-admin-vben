@@ -6,7 +6,7 @@ import type { MpAccountApi } from '#/api/mp/account';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { message, Select, SelectOption } from 'antdv-next';
+import { message, Select } from 'antdv-next';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 
@@ -61,9 +61,7 @@ onMounted(handleQuery);
     placeholder="请选择公众号"
     class="!w-full"
     @change="onChanged"
-  >
-    <SelectOption v-for="item in accountList" :key="item.id" :value="item.id">
-      {{ item.name }}
-    </SelectOption>
-  </Select>
+    :options="accountList"
+    :field-names="{ label: 'name', value: 'id' }"
+  />
 </template>

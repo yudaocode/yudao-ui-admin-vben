@@ -4,7 +4,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { Checkbox, Input, Select, SelectOption } from 'antdv-next';
+import { Checkbox, Input, Select } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
@@ -90,15 +90,11 @@ function filterDictTypeOption(input: string, option: any) {
 
     <!-- Java 类型 -->
     <template #javaType="{ row, column }">
-      <Select v-model:value="row.javaType" style="width: 100%">
-        <SelectOption
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </SelectOption>
-      </Select>
+      <Select
+        v-model:value="row.javaType"
+        style="width: 100%"
+        :options="column.params.options"
+      />
     </template>
     <!-- Java 属性 -->
     <template #javaField="{ row }">
@@ -124,15 +120,11 @@ function filterDictTypeOption(input: string, option: any) {
 
     <!-- 查询方式 -->
     <template #listOperationCondition="{ row, column }">
-      <Select v-model:value="row.listOperationCondition" class="w-full">
-        <SelectOption
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </SelectOption>
-      </Select>
+      <Select
+        v-model:value="row.listOperationCondition"
+        class="w-full"
+        :options="column.params.options"
+      />
     </template>
 
     <!-- 允许空 -->
@@ -142,15 +134,11 @@ function filterDictTypeOption(input: string, option: any) {
 
     <!-- 显示类型 -->
     <template #htmlType="{ row, column }">
-      <Select v-model:value="row.htmlType" class="w-full">
-        <SelectOption
-          v-for="option in column.params.options"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </SelectOption>
-      </Select>
+      <Select
+        v-model:value="row.htmlType"
+        class="w-full"
+        :options="column.params.options"
+      />
     </template>
 
     <!-- 字典类型 -->
@@ -161,15 +149,9 @@ function filterDictTypeOption(input: string, option: any) {
         allow-clear
         show-search
         :filter-option="filterDictTypeOption"
-      >
-        <SelectOption
-          v-for="option in dictTypeOptions"
-          :key="option.type"
-          :value="option.type"
-        >
-          {{ option.name }}
-        </SelectOption>
-      </Select>
+        :options="dictTypeOptions"
+        :field-names="{ label: 'name', value: 'type' }"
+      />
     </template>
 
     <!-- 示例 -->

@@ -18,7 +18,6 @@ import {
   RadioGroup,
   Row,
   Select,
-  SelectOption,
 } from 'antdv-next';
 
 import {
@@ -207,15 +206,11 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
               </FormItem>
             </Col>
             <Col>
-              <Select v-model:value="configForm.timeUnit" class="w-28">
-                <SelectOption
-                  v-for="item in TIME_UNIT_TYPES"
-                  :key="item.value"
-                  :value="item.value"
-                >
-                  {{ item.label }}
-                </SelectOption>
-              </Select>
+              <Select
+                v-model:value="configForm.timeUnit"
+                class="w-28"
+                :options="TIME_UNIT_TYPES"
+              />
             </Col>
             <Col>
               <span class="inline-flex h-8 items-center">后进入下一节点</span>

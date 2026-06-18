@@ -12,7 +12,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Col, FormItem, Input, Row, Select, SelectOption } from 'antdv-next';
+import { Col, FormItem, Input, Row, Select } from 'antdv-next';
 
 import JsonParamsInput from '../inputs/json-params-input.vue';
 import ValueInput from '../inputs/value-input.vue';
@@ -171,18 +171,11 @@ function handlePropertyChange(propertyInfo: any) {
     <FormItem label="触发事件类型" required>
       <Select
         :value="triggerType"
+        :options="triggerTypeOptions"
         @change="(value: any) => handleTriggerTypeChange(value)"
         placeholder="请选择触发事件类型"
         class="w-full"
-      >
-        <SelectOption
-          v-for="option in triggerTypeOptions"
-          :key="option.value"
-          :value="option.value"
-        >
-          {{ option.label }}
-        </SelectOption>
-      </Select>
+      />
     </FormItem>
 
     <!-- 设备属性条件配置 -->
@@ -317,38 +310,31 @@ function handlePropertyChange(propertyInfo: any) {
           <FormItem label="操作符" required>
             <Select
               :value="condition.operator"
+              :options="[
+                {
+                  label:
+                    IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS
+                      .name,
+                  value:
+                    IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS
+                      .value,
+                },
+              ]"
               @change="(value: any) => updateConditionField('operator', value)"
               placeholder="请选择操作符"
               class="w-full"
-            >
-              <SelectOption
-                :value="
-                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.value
-                "
-              >
-                {{
-                  IotRuleSceneTriggerConditionParameterOperatorEnum.EQUALS.name
-                }}
-              </SelectOption>
-            </Select>
+            />
           </FormItem>
         </Col>
         <Col :span="6">
           <FormItem label="参数" required>
             <Select
               :value="condition.value"
+              :options="deviceStatusChangeOptions"
               @change="(value: any) => updateConditionField('value', value)"
               placeholder="请选择操作符"
               class="w-full"
-            >
-              <SelectOption
-                v-for="option in deviceStatusChangeOptions"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </SelectOption>
-            </Select>
+            />
           </FormItem>
         </Col>
       </Row>

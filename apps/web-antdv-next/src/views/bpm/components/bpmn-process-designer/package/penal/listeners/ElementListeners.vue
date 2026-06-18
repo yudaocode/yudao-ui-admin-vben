@@ -5,15 +5,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import {
-  Button,
-  Divider,
-  Form,
-  FormItem,
-  Input,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Button, Divider, Form, FormItem, Input, Select } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';
@@ -392,10 +384,13 @@ watch(
             },
           ]"
         >
-          <Select v-model:value="listenerForm.event">
-            <SelectOption value="start">start</SelectOption>
-            <SelectOption value="end">end</SelectOption>
-          </Select>
+          <Select
+            v-model:value="listenerForm.event"
+            :options="[
+              { label: 'start', value: 'start' },
+              { label: 'end', value: 'end' },
+            ]"
+          />
         </FormItem>
         <FormItem
           label="监听器类型"
@@ -408,15 +403,15 @@ watch(
             },
           ]"
         >
-          <Select v-model:value="listenerForm.listenerType">
-            <SelectOption
-              v-for="i in Object.keys(listenerTypeObject)"
-              :key="i"
-              :value="i"
-            >
-              {{ listenerTypeObject[i as keyof typeof listenerType] }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="listenerForm.listenerType"
+            :options="
+              Object.keys(listenerTypeObject).map((i) => ({
+                label: listenerTypeObject[i as keyof typeof listenerType],
+                value: i,
+              }))
+            "
+          />
         </FormItem>
         <FormItem
           v-if="listenerForm.listenerType === 'classListener'"
@@ -490,10 +485,13 @@ watch(
               },
             ]"
           >
-            <Select v-model:value="listenerForm.scriptType">
-              <SelectOption value="inlineScript">内联脚本</SelectOption>
-              <SelectOption value="externalScript">外部脚本</SelectOption>
-            </Select>
+            <Select
+              v-model:value="listenerForm.scriptType"
+              :options="[
+                { label: '内联脚本', value: 'inlineScript' },
+                { label: '外部脚本', value: 'externalScript' },
+              ]"
+            />
           </FormItem>
           <FormItem
             v-if="listenerForm.scriptType === 'inlineScript'"

@@ -3,16 +3,7 @@ import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Col,
-  Input,
-  message,
-  Modal,
-  Row,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Button, Col, Input, message, Modal, Row, Select } from 'antdv-next';
 
 import { WxMaterialSelect, WxNews, WxReply } from '#/views/mp/components';
 
@@ -108,16 +99,8 @@ function deleteMaterial() {
             placeholder="请选择"
             class="mr-[2%] w-[240px]"
             allow-clear
-          >
-            <SelectOption
-              v-for="item in menuOptions"
-              :label="item.label"
-              :value="item.value"
-              :key="item.value"
-            >
-              {{ item.label }}
-            </SelectOption>
-          </Select>
+            :options="menuOptions"
+          />
         </div>
         <div
           class="mt-5 rounded-[5px] bg-white p-[20px_10px]"

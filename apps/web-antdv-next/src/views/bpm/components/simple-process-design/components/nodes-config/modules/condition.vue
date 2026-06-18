@@ -257,16 +257,11 @@ defineExpose({ validate });
               </FormItem>
             </Col>
             <Col :span="6">
-              <Select v-model:value="rule.opCode" placeholder="请选择操作符">
-                <SelectOption
-                  v-for="operator in COMPARISON_OPERATORS"
-                  :key="operator.value"
-                  :label="operator.label"
-                  :value="operator.value"
-                >
-                  {{ operator.label }}
-                </SelectOption>
-              </Select>
+              <Select
+                v-model:value="rule.opCode"
+                placeholder="请选择操作符"
+                :options="COMPARISON_OPERATORS"
+              />
             </Col>
             <Col :span="7">
               <FormItem

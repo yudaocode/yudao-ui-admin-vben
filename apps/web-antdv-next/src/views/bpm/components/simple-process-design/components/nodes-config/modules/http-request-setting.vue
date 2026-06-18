@@ -3,16 +3,7 @@ import { toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Alert,
-  Button,
-  Col,
-  FormItem,
-  Input,
-  Row,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Alert, Button, Col, FormItem, Input, Row, Select } from 'antdv-next';
 
 import { useFormFields } from '../../../helpers';
 import HttpRequestParamSetting from './http-request-param-setting.vue';
@@ -131,17 +122,14 @@ function deleteHttpResponseSetting(
               v-model:value="item.key"
               placeholder="请选择表单字段"
               allow-clear
-            >
-              <SelectOption
-                v-for="(field, fIdx) in formFields"
-                :key="fIdx"
-                :label="field.title"
-                :value="field.field"
-                :disabled="!field.required"
-              >
-                {{ field.title }}
-              </SelectOption>
-            </Select>
+              :options="[
+                ...formFields.map((field) => ({
+                  label: field.title,
+                  value: field.field,
+                  disabled: !field.required,
+                })),
+              ]"
+            />
           </FormItem>
         </Col>
         <Col :span="12">
@@ -163,7 +151,9 @@ function deleteHttpResponseSetting(
             <IconifyIcon
               class="size-4 cursor-pointer text-red-500"
               icon="lucide:trash-2"
-              @click="deleteHttpResponseSetting(setting.response!, index)"
+              @click="
+                deleteHttpResponseSetting(setting.response!, Number(index))
+              "
             />
           </div>
         </Col>

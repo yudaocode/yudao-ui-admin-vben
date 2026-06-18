@@ -4,14 +4,7 @@ import { ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import {
-  Form,
-  FormItem,
-  Input,
-  Select,
-  SelectOption,
-  TextArea,
-} from 'antdv-next';
+import { Form, FormItem, Input, Select, TextArea } from 'antdv-next';
 
 type Rule = any;
 const modelData = defineModel<any>(); // 创建本地数据副本
@@ -60,15 +53,13 @@ defineExpose({ validate });
         v-model:value="modelData.status"
         allow-clear
         placeholder="请选择状态"
-      >
-        <SelectOption
-          v-for="dict in getDictOptions(DICT_TYPE.COMMON_STATUS, 'number')"
-          :key="dict.value"
-          :value="dict.value"
-        >
-          {{ dict.label }}
-        </SelectOption>
-      </Select>
+        :options="
+          getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map((dict) => ({
+            label: dict.label,
+            value: dict.value as any,
+          }))
+        "
+      />
     </FormItem>
     <FormItem label="流程描述" name="description" class="mb-5">
       <TextArea v-model:value="modelData.description" allow-clear />

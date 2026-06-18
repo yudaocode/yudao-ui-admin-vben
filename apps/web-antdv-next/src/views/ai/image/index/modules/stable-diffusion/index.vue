@@ -19,7 +19,6 @@ import {
   InputNumber,
   message,
   Select,
-  SelectOption,
   Space,
   TextArea,
 } from 'antdv-next';
@@ -169,15 +168,9 @@ defineExpose({ settingValues });
         placeholder="Select"
         size="large"
         class="!w-80"
-      >
-        <SelectOption
-          v-for="item in StableDiffusionSamplers"
-          :key="item.key"
-          :value="item.key"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="StableDiffusionSamplers"
+        :field-names="{ label: 'name', value: 'key' }"
+      />
     </Space>
   </div>
 
@@ -190,15 +183,9 @@ defineExpose({ settingValues });
         placeholder="Select"
         size="large"
         class="!w-80"
-      >
-        <SelectOption
-          v-for="item in StableDiffusionClipGuidancePresets"
-          :key="item.key"
-          :value="item.key"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="StableDiffusionClipGuidancePresets"
+        :field-names="{ label: 'name', value: 'key' }"
+      />
     </Space>
   </div>
 
@@ -211,16 +198,9 @@ defineExpose({ settingValues });
         placeholder="Select"
         size="large"
         class="!w-80"
-      >
-        <SelectOption
-          v-for="item in StableDiffusionStylePresets"
-          :key="item.key"
-          :label="item.name"
-          :value="item.key"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="StableDiffusionStylePresets"
+        :field-names="{ label: 'name', value: 'key' }"
+      />
     </Space>
   </div>
 

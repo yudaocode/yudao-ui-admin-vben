@@ -4,7 +4,7 @@ import { computed, inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
 import { cloneDeep } from '@vben/utils';
 
-import { Form, FormItem, Select, SelectOption } from 'antdv-next';
+import { Form, FormItem, Select } from 'antdv-next';
 
 import { getFormSimpleList } from '#/api/bpm/form';
 
@@ -319,14 +319,13 @@ watch(
       <FormItem label="业务标识">
         <Select
           v-model:value="businessKey"
+          :options="[
+            ...fieldList.map((i) => ({ label: i.label, value: i.id })),
+            { label: '无', value: '' },
+          ]"
           @change="_updateElementBusinessKey"
           allow-clear
-        >
-          <SelectOption v-for="i in fieldList" :key="i.id" :value="i.id">
-            {{ i.label }}
-          </SelectOption>
-          <SelectOption value="">无</SelectOption>
-        </Select>
+        />
       </FormItem>
     </Form>
 
@@ -388,7 +387,6 @@ watch(
     <!--            allowClear-->
     <!--            @change="changeFieldTypeType"-->
     <!--          >-->
-    <!--            <SelectOption v-for="(value, key) of fieldType" :key="key" :value="key">{{ value }}</SelectOption>-->
     <!--          </Select>-->
     <!--        </FormItem>-->
     <!--        <FormItem label="类型名称" v-if="formFieldForm.typeType === 'custom'">-->
