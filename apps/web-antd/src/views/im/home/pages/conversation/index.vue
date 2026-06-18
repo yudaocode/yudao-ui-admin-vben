@@ -10,6 +10,7 @@ import { Button, Dropdown, Input, Menu } from 'ant-design-vue'
 import { ImConversationType } from '../../../utils/constants'
 import { filterConversationsByKeyword, getConversationKey } from '../../../utils/conversation'
 import { StorageKeys } from '../../../utils/db'
+import { getGroupDisplayName } from '../../../utils/user'
 import { ResizableAside } from '../../components'
 import { FriendAddDialog } from '../../components/friend'
 import { GroupCreateDialog } from '../../components/group'
@@ -124,7 +125,7 @@ function handleGroupCreated(groupId: number) {
   conversationStore.openConversation(
     groupId,
     ImConversationType.GROUP,
-    group.name,
+    getGroupDisplayName(group),
     group.avatar || '',
     { silent: !!group.silent }
   )

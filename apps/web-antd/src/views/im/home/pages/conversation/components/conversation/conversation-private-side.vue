@@ -11,7 +11,7 @@ import { useConversationStore } from '#/views/im/home/store/conversationStore'
 import { useFriendStore } from '#/views/im/home/store/friendStore'
 import { useGroupStore } from '#/views/im/home/store/groupStore'
 import { ImConversationType } from '#/views/im/utils/constants'
-import { getFriendDisplayName } from '#/views/im/utils/user'
+import { getFriendDisplayName, getGroupDisplayName } from '#/views/im/utils/user'
 
 import { GroupCreateDialog } from '../../../../components/group'
 import { UserAvatar } from '../../../../components/user'
@@ -119,7 +119,7 @@ function handleGroupCreated(groupId: number) {
   conversationStore.openConversation(
     groupId,
     ImConversationType.GROUP,
-    group.name,
+    getGroupDisplayName(group),
     group.avatar || '',
     { silent: !!group.silent }
   )

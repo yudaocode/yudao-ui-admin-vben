@@ -14,7 +14,7 @@ import { ImContentType, ImConversationType, isGroupConversation } from '../../..
 import { getConversationKey } from '../../../utils/conversation'
 import { buildDefaultGroupName } from '../../../utils/group'
 import { type CardTarget, serializeMessage } from '../../../utils/message'
-import { isGroupQuit } from '../../../utils/user'
+import { getGroupDisplayName, isGroupQuit } from '../../../utils/user'
 import { useMessageSender } from '../../composables/useMessageSender'
 import { FacePicker } from '../../pages/conversation/components/input'
 import { useConversationStore } from '../../store/conversationStore'
@@ -181,7 +181,7 @@ async function handleCreateGroupAndSend() {
     const newConversation: Conversation = {
       type: ImConversationType.GROUP,
       targetId: group.id,
-      name: group.name || name,
+      name: getGroupDisplayName(group) || name,
       avatar: group.avatar || '',
       unreadCount: 0,
       lastContent: '',

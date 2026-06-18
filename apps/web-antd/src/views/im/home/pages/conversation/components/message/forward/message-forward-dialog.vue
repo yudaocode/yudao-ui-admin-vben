@@ -29,7 +29,7 @@ import {
   removeQuotePayload,
   serializeMessage
 } from '#/views/im/utils/message'
-import { isGroupQuit } from '#/views/im/utils/user'
+import { getGroupDisplayName, isGroupQuit } from '#/views/im/utils/user'
 
 import { FacePicker } from '../../input'
 
@@ -263,7 +263,7 @@ async function handleCreateGroupAndSend() {
     const newConversation: Conversation = {
       type: ImConversationType.GROUP,
       targetId: group.id,
-      name: group.name || name,
+      name: getGroupDisplayName(group) || name,
       avatar: group.avatar || '',
       unreadCount: 0,
       lastContent: '',

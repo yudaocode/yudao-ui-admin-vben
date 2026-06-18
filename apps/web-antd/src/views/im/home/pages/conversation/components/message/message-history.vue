@@ -582,7 +582,11 @@ function locateMessage(messageId: number) {
               <div class="px-2 pt-1 pb-2 text-13px font-medium text-[var(--ant-color-text)]">
                 选择发送日期
               </div>
-              <Calendar v-model:value="datePickerValue" class="im-message-history__calendar" />
+              <Calendar
+                v-model:value="datePickerValue"
+                :fullscreen="false"
+                class="im-message-history__calendar"
+              />
               <div class="flex gap-2 justify-end px-2 pt-2">
                 <Button size="small" @click="datePopoverVisible = false">取消</Button>
                 <Button size="small" type="primary" @click="onDateConfirm">确定</Button>
@@ -785,18 +789,19 @@ function locateMessage(messageId: number) {
   border-radius: 1px;
 }
 
-/* :deep 穿透 el-calendar 子组件 DOM；默认偏大压一压让它能塞进 320 popover */
-.im-message-history__calendar :deep(.el-calendar) {
-  40px: 36px;
-}
-.im-message-history__calendar :deep(.el-calendar__header) {
+/* :deep 穿透 antd Calendar（fullscreen=false 卡片模式）子 DOM，压一压塞进 320 popover */
+.im-message-history__calendar :deep(.ant-picker-calendar-header) {
   padding: 4px 8px;
 }
-.im-message-history__calendar :deep(.el-calendar-table) {
+.im-message-history__calendar :deep(.ant-picker-content) {
   font-size: 12px;
 }
-.im-message-history__calendar :deep(.el-calendar-day) {
-  height: 36px;
-  padding: 4px;
+.im-message-history__calendar :deep(.ant-picker-cell) {
+  padding: 1px 0;
+}
+.im-message-history__calendar :deep(.ant-picker-cell .ant-picker-calendar-date) {
+  height: 28px;
+  margin: 0 2px;
+  padding: 2px 4px 0;
 }
 </style>

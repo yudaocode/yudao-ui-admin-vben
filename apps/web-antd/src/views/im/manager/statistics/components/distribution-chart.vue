@@ -56,7 +56,7 @@ async function loadData() {
       const data = await getMessageTypeDistribution();
       const items = data.map((item) => ({
         name:
-          getDictObj(DICT_TYPE.IM_MESSAGE_TYPE, String(item.type))?.label ||
+          getDictObj(DICT_TYPE.IM_CONTENT_TYPE, String(item.type))?.label ||
           `未知(${item.type})`,
         value: item.value,
       }));

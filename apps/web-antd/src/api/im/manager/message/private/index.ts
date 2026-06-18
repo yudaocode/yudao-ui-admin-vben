@@ -14,6 +14,7 @@ export namespace ImManagerPrivateMessageApi {
     type: number;
     content: string;
     status: number;
+    receiptStatus?: number;
     sendTime: Date;
     createTime: Date;
   }

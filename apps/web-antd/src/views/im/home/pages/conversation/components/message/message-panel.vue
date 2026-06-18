@@ -13,7 +13,7 @@ import { getCurrentUserId } from '#/views/im/utils/auth'
 import { ImConversationType, ImRtcCallMediaType, ImRtcCallStatus } from '#/views/im/utils/constants'
 import { getClientConversationId } from '#/views/im/utils/db'
 import { resolveCallEndReasonText } from '#/views/im/utils/message'
-import { getMemberDisplayName, isGroupQuit } from '#/views/im/utils/user'
+import { getGroupDisplayName, getMemberDisplayName, isGroupQuit } from '#/views/im/utils/user'
 
 import { GroupMuteMemberDialog } from '../../../../components/group'
 import {
@@ -185,10 +185,11 @@ const groupInfo = computed<
   }
   const group = groupStore.getGroup(conversation.targetId)
   const selfMember = group?.members?.find((member) => member.userId === getCurrentUserId())
+  const showGroupName = group ? getGroupDisplayName(group) : conversation.name
   return {
     id: conversation.targetId,
     name: group?.name || conversation.name,
-    showGroupName: group?.name || conversation.name,
+    showGroupName,
     showImage: group?.avatar || conversation.avatar,
     notice: group?.notice,
     remarkNickName: selfMember?.displayUserName,

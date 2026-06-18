@@ -84,7 +84,8 @@ function handleClose() {
       >
         以下是 {{ currentPayload.messages.length }} 条消息
       </div>
-      <div class="flex-1">
+      <!-- overflow-y-auto：合并消息多时在定高弹窗内可滚动，对齐 Vue3 的 el-scrollbar -->
+      <div class="flex-1 overflow-y-auto">
         <div
           v-for="(item, idx) in currentPayload.messages"
           :key="idx"

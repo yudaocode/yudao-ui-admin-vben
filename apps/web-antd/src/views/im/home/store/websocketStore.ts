@@ -45,7 +45,7 @@ import {
   playAudioTip,
   resolveCallEndReasonText
 } from '../../utils/message'
-import { getFriendDisplayName } from '../../utils/user'
+import { getFriendDisplayName, getGroupDisplayName } from '../../utils/user'
 import { useConversationStore } from './conversationStore'
 import { type FriendNotificationPayload, useFriendStore } from './friendStore'
 import { useGroupRequestStore } from './groupRequestStore'
@@ -781,7 +781,7 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
         {
           type: ImConversationType.GROUP,
           targetId: websocketMessage.groupId,
-          name: group?.name || String(websocketMessage.groupId),
+          name: group ? getGroupDisplayName(group) : String(websocketMessage.groupId),
           avatar: group?.avatar || '',
           silent: group?.silent
         },

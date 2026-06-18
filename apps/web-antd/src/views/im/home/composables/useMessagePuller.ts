@@ -26,7 +26,7 @@ import {
 } from '../../utils/constants'
 import { generateClientMessageId, getPrivateMessagePeerId } from '../../utils/message'
 import { runMinIdPull } from '../../utils/pull'
-import { getFriendDisplayName } from '../../utils/user'
+import { getFriendDisplayName, getGroupDisplayName } from '../../utils/user'
 import { useConversationStore } from '../store/conversationStore'
 import { useFriendStore } from '../store/friendStore'
 import { useGroupRequestStore } from '../store/groupRequestStore'
@@ -146,7 +146,7 @@ export const useMessagePuller = () => {
     return {
       type: ImConversationType.GROUP,
       targetId: message.groupId,
-      name: group?.name || String(message.groupId),
+      name: group ? getGroupDisplayName(group) : String(message.groupId),
       avatar: group?.avatar || '',
       silent: group?.silent
     }

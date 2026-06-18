@@ -35,7 +35,7 @@ export function usePrivateGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.IM_MESSAGE_TYPE, 'number'),
+        options: getDictOptions(DICT_TYPE.IM_CONTENT_TYPE, 'number'),
         placeholder: '请选择内容类型',
       },
     },
@@ -84,7 +84,7 @@ export function usePrivateGridColumns(showReadColumns: boolean): VxeTableGridOpt
       width: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.IM_MESSAGE_TYPE },
+        props: { type: DICT_TYPE.IM_CONTENT_TYPE },
       },
     },
     {
@@ -101,7 +101,17 @@ export function usePrivateGridColumns(showReadColumns: boolean): VxeTableGridOpt
             width: 100,
             cellRender: {
               name: 'CellDict',
-              props: { type: DICT_TYPE.IM_PRIVATE_MESSAGE_STATUS },
+              props: { type: DICT_TYPE.IM_MESSAGE_STATUS },
+            },
+          },
+          {
+            field: 'receiptStatus',
+            title: '回执',
+            width: 110,
+            cellRender: {
+              name: 'CellDict',
+              // 回执状态（私聊 / 群聊共用 im_message_receipt_status），与源端「回执」列对齐
+              props: { type: DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS },
             },
           },
         ]
@@ -143,7 +153,7 @@ export function useGroupGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.IM_MESSAGE_TYPE, 'number'),
+        options: getDictOptions(DICT_TYPE.IM_CONTENT_TYPE, 'number'),
         placeholder: '请选择内容类型',
       },
     },
@@ -192,7 +202,7 @@ export function useGroupGridColumns(showReadColumns: boolean): VxeTableGridOptio
       width: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.IM_MESSAGE_TYPE },
+        props: { type: DICT_TYPE.IM_CONTENT_TYPE },
       },
     },
     {
@@ -214,7 +224,7 @@ export function useGroupGridColumns(showReadColumns: boolean): VxeTableGridOptio
             width: 100,
             cellRender: {
               name: 'CellDict',
-              props: { type: DICT_TYPE.IM_GROUP_MESSAGE_STATUS },
+              props: { type: DICT_TYPE.IM_MESSAGE_STATUS },
             },
           },
           {
@@ -223,7 +233,7 @@ export function useGroupGridColumns(showReadColumns: boolean): VxeTableGridOptio
             width: 110,
             cellRender: {
               name: 'CellDict',
-              props: { type: DICT_TYPE.IM_GROUP_MESSAGE_RECEIPT_STATUS },
+              props: { type: DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS },
             },
           },
         ]

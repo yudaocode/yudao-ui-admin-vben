@@ -13,6 +13,7 @@ import {
   formatJsonText,
   formatUserLabel,
 } from '#/views/im/manager/utils/format';
+import { MESSAGE_PRIVATE_READ_ENABLED } from '#/views/im/utils/config';
 
 import { MessageContentPreview } from '../..';
 
@@ -44,10 +45,17 @@ defineExpose({ open });
         {{ formatUserLabel(detail.receiverNickname, detail.receiverId) }}
       </DescriptionsItem>
       <DescriptionsItem label="类型">
-        <DictTag :type="DICT_TYPE.IM_MESSAGE_TYPE" :value="detail.type" />
+        <DictTag :type="DICT_TYPE.IM_CONTENT_TYPE" :value="detail.type" />
       </DescriptionsItem>
       <DescriptionsItem label="状态">
-        <DictTag :type="DICT_TYPE.IM_PRIVATE_MESSAGE_STATUS" :value="detail.status" />
+        <DictTag :type="DICT_TYPE.IM_MESSAGE_STATUS" :value="detail.status" />
+      </DescriptionsItem>
+      <DescriptionsItem v-if="MESSAGE_PRIVATE_READ_ENABLED" label="回执">
+        <!-- 回执状态（私聊 / 群聊共用 im_message_receipt_status），与源端私聊详情「回执」对齐 -->
+        <DictTag
+          :type="DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS"
+          :value="detail.receiptStatus"
+        />
       </DescriptionsItem>
       <DescriptionsItem label="发送时间" :span="2">
         {{ formatDateTimeText(detail.sendTime) }}

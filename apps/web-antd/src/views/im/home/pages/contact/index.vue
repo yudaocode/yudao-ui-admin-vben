@@ -241,7 +241,8 @@ function onRemarkSaved(displayName: string) {
       </div>
 
       <!-- 列表主体：拆 FriendRequestList / GroupList / FriendList 三个子组件，各自管理折叠 + 过滤；本页只透传选中态 -->
-      <div class="flex-1">
+      <!-- overflow-y-auto：联系人多时本列表可滚动（父 ResizableAside 不提供滚动），对齐 Vue3 的 el-scrollbar -->
+      <div class="flex-1 overflow-y-auto">
         <FriendRequestList
           :requests="friendRequests"
           :active-id="selection?.type === 'request' ? selection.request.id : undefined"

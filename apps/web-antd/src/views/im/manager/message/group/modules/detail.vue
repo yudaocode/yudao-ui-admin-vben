@@ -48,14 +48,14 @@ defineExpose({ open });
         {{ formatUserLabel(detail.senderNickname, detail.senderId) }}
       </DescriptionsItem>
       <DescriptionsItem label="类型">
-        <DictTag :type="DICT_TYPE.IM_MESSAGE_TYPE" :value="detail.type" />
+        <DictTag :type="DICT_TYPE.IM_CONTENT_TYPE" :value="detail.type" />
       </DescriptionsItem>
       <DescriptionsItem label="状态">
-        <DictTag :type="DICT_TYPE.IM_GROUP_MESSAGE_STATUS" :value="detail.status" />
+        <DictTag :type="DICT_TYPE.IM_MESSAGE_STATUS" :value="detail.status" />
       </DescriptionsItem>
       <DescriptionsItem v-if="MESSAGE_GROUP_READ_ENABLED" label="回执" :span="2">
         <DictTag
-          :type="DICT_TYPE.IM_GROUP_MESSAGE_RECEIPT_STATUS"
+          :type="DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS"
           :value="detail.receiptStatus"
         />
       </DescriptionsItem>
