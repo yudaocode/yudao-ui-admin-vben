@@ -464,11 +464,13 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['inVariables', index, 'source']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
                 <Select class="!w-40" v-model:value="item.source">
                   <SelectOption
@@ -484,11 +486,13 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['inVariables', index, 'target']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
                 <Select class="!w-40" v-model:value="item.target">
                   <SelectOption
@@ -534,11 +538,13 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['outVariables', index, 'source']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
                 <Select class="!w-40" v-model:value="item.source">
                   <SelectOption
@@ -554,11 +560,13 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['outVariables', index, 'target']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
                 <Select class="!w-40" v-model:value="item.target">
                   <SelectOption
@@ -795,11 +803,13 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '固定数量不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '固定数量不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
             <InputNumber
               v-model:value="configForm.multiInstanceSource"
@@ -816,11 +826,13 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '数字表单字段不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '数字表单字段不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
             <Select v-model:value="configForm.multiInstanceSource">
               <SelectOption
@@ -843,11 +855,13 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '多选表单字段不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '多选表单字段不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
             <Select v-model:value="configForm.multiInstanceSource">
               <SelectOption

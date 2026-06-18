@@ -65,11 +65,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="7">
         <FormItem
           :name="[bind, 'header', index, 'key']"
-          :rules="{
-            required: true,
-            message: '参数名不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数名不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
         >
           <Input placeholder="参数名不能为空" v-model:value="item.key" />
         </FormItem>
@@ -89,22 +91,26 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="10">
         <FormItem
           :name="[bind, 'header', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="请求头" v-model:value="item.value" />
         </FormItem>
         <FormItem
           :name="[bind, 'header', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: 'change',
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: 'change',
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
           <Select v-model:value="item.value" placeholder="请选择表单字段">
@@ -150,11 +156,13 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="7">
         <FormItem
           :name="[bind, 'body', index, 'key']"
-          :rules="{
-            required: true,
-            message: '参数名不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数名不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
         >
           <Input placeholder="参数名" v-model:value="item.key" />
         </FormItem>
@@ -174,22 +182,26 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="10">
         <FormItem
           :name="[bind, 'body', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="参数值" v-model:value="item.value" />
         </FormItem>
         <FormItem
           :name="[bind, 'body', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: 'change',
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: 'change',
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
           <Select v-model:value="item.value" placeholder="请选择表单字段">

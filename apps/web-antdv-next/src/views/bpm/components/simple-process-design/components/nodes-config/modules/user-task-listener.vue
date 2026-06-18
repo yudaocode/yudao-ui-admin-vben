@@ -90,11 +90,13 @@ defineExpose({ validate });
         <FormItem
           label="请求地址"
           :name="`task${listener.type}ListenerPath`"
-          :rules="{
-            required: true,
-            message: '请求地址不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '请求地址不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
         >
           <Input
             v-model:value="configForm[`task${listener.type}ListenerPath`]"

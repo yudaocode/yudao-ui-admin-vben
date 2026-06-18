@@ -224,11 +224,13 @@ defineExpose({ validate });
                   rIdx,
                   'leftSide',
                 ]"
-                :rules="{
-                  required: true,
-                  message: '左值不能为空',
-                  trigger: 'change',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '左值不能为空',
+                    trigger: 'change',
+                  },
+                ]"
               >
                 <Select
                   v-model:value="rule.leftSide"
@@ -276,11 +278,13 @@ defineExpose({ validate });
                   rIdx,
                   'rightSide',
                 ]"
-                :rules="{
-                  required: true,
-                  message: '右值不能为空',
-                  trigger: ['blur', 'change'],
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '右值不能为空',
+                    trigger: ['blur', 'change'],
+                  },
+                ]"
               >
                 <Input
                   v-model:value="rule.rightSide"

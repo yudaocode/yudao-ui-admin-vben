@@ -237,11 +237,13 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
               <FormItem
                 class="mb-0 ml-4 inline-block w-48"
                 :name="['routerGroups', index, 'nodeId']"
-                :rules="{
-                  required: true,
-                  message: '路由目标节点不能为空',
-                  trigger: 'change',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '路由目标节点不能为空',
+                    trigger: 'change',
+                  },
+                ]"
               >
                 <Select
                   v-model:value="item.nodeId"

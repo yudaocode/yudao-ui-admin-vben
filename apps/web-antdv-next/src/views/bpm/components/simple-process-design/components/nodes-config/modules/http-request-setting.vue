@@ -79,11 +79,13 @@ function deleteHttpResponseSetting(
     :label-col="{ span: 24 }"
     :wrapper-col="{ span: 24 }"
     :name="[formItemPrefix, 'url']"
-    :rules="{
-      required: true,
-      message: '请求地址不能为空',
-      trigger: ['blur', 'change'],
-    }"
+    :rules="[
+      {
+        required: true,
+        message: '请求地址不能为空',
+        trigger: ['blur', 'change'],
+      },
+    ]"
   >
     <Input v-model:value="setting.url" placeholder="请输入请求地址" />
   </FormItem>
@@ -117,11 +119,13 @@ function deleteHttpResponseSetting(
         <Col :span="10">
           <FormItem
             :name="[formItemPrefix, 'response', index, 'key']"
-            :rules="{
-              required: true,
-              message: '表单字段不能为空',
-              trigger: ['blur', 'change'],
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '表单字段不能为空',
+                trigger: ['blur', 'change'],
+              },
+            ]"
           >
             <Select
               v-model:value="item.key"
@@ -143,11 +147,13 @@ function deleteHttpResponseSetting(
         <Col :span="12">
           <FormItem
             :name="[formItemPrefix, 'response', index, 'value']"
-            :rules="{
-              required: true,
-              message: '请求返回字段不能为空',
-              trigger: ['blur', 'change'],
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '请求返回字段不能为空',
+                trigger: ['blur', 'change'],
+              },
+            ]"
           >
             <Input v-model:value="item.value" placeholder="请求返回字段" />
           </FormItem>

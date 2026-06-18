@@ -528,11 +528,13 @@ onMounted(() => {
                 <Col :span="10">
                   <FormItem
                     :name="['formSettings', index, 'updateFormFields', key]"
-                    :rules="{
-                      required: true,
-                      message: '值不能为空',
-                      trigger: 'blur',
-                    }"
+                    :rules="[
+                      {
+                        required: true,
+                        message: '值不能为空',
+                        trigger: 'blur',
+                      },
+                    ]"
                   >
                     <Input
                       v-model:value="formSetting.updateFormFields![key]"
