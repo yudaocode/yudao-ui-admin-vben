@@ -32,8 +32,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'update:items',
-  'update:total-price',
-  'update:receipt-price',
+  'update:totalPrice',
+  'update:receiptPrice',
 ]);
 
 const tableData = ref<ErpFinanceReceiptApi.FinanceReceiptItem[]>([]); // 表格数据
@@ -110,8 +110,8 @@ watch(
     );
     const finalReceiptPrice = receiptPrice - (props.discountPrice || 0);
     // 通知父组件更新
-    emit('update:total-price', totalPrice);
-    emit('update:receipt-price', finalReceiptPrice);
+    emit('update:totalPrice', totalPrice);
+    emit('update:receiptPrice', finalReceiptPrice);
   },
   { deep: true },
 );
