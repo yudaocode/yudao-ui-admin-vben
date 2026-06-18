@@ -8,7 +8,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import {
-  DatePicker,
   Form,
   Input,
   message,
@@ -16,6 +15,7 @@ import {
   RadioGroup,
 } from 'antdv-next';
 
+import { DatePicker } from '#/adapter/component/date-picker';
 import {
   createDemo01Contact,
   getDemo01Contact,

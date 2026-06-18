@@ -91,7 +91,6 @@ onMounted(() => {
     <DateRangePicker
       v-model:value="times"
       :format="rangePickerProps.format"
-      :value-format="rangePickerProps.valueFormat"
       :placeholder="rangePickerProps.placeholder"
       :presets="rangePickerProps.presets"
       class="!w-full !max-w-96"

@@ -8,7 +8,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import {
-  DatePicker,
   Form,
   Input,
   message,
@@ -17,6 +16,7 @@ import {
   Tabs,
 } from 'antdv-next';
 
+import { DatePicker } from '#/adapter/component/date-picker';
 import {
   createDemo03Student,
   getDemo03Student,
