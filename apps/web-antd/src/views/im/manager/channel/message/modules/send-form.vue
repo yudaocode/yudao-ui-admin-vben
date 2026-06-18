@@ -6,9 +6,9 @@ import { useVbenModal } from '@vben/common-ui';
 import { Form, FormItem, message, Radio, RadioGroup } from 'ant-design-vue';
 
 import { sendManagerChannelMessage } from '#/api/im/manager/channel/message';
-import ChannelSelect from '#/views/im/manager/components/ChannelSelect.vue';
-import MaterialSelect from '#/views/im/manager/components/MaterialSelect.vue';
-import UserMultiSelect from '#/views/im/manager/components/UserMultiSelect.vue';
+import { ChannelSelect } from '#/views/im/manager/channel/list/components';
+import { MaterialSelect } from '#/views/im/manager/channel/material/components';
+import { UserSelect } from '#/views/system/user/components';
 
 const emit = defineEmits(['success']);
 
@@ -89,8 +89,9 @@ const [Modal, modalApi] = useVbenModal({
         </RadioGroup>
       </FormItem>
       <FormItem v-if="formData.receiverUserType === 'users'" label="接收用户" required>
-        <UserMultiSelect
+        <UserSelect
           v-model="formData.receiverUserIds"
+          multiple
           placeholder="请选择接收用户"
         />
       </FormItem>

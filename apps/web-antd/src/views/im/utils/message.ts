@@ -57,7 +57,7 @@ export function getPrivateMessagePeerId(
 // ==================== 文本片段（tip 文案 + TEXT 气泡共用） ====================
 // 既用于灰条 tip（"XX 邀请 YY 加入群聊"），也用于 TEXT 气泡正文（@xxx 高亮 + URL 自动识别）。
 // mention 段携带 userId 用于挂点击弹 UserInfoCard；link 段携带 href 用于 <a> 跳转；
-// text 段是纯文本兜底。渲染层（TipSegments.vue）按 type 分发统一处理。
+// text 段是纯文本兜底。渲染层（tip-segments.vue）按 type 分发统一处理。
 
 export type TipSegment =
   | { href: string; text: string; type: 'link'; }
@@ -136,7 +136,7 @@ export function parseTextSegments(text: string, mentions: MentionCandidate[] = [
   }
   // 「@张三丰」不能被「@张三」截胡，候选按 name 长度倒序
   const sortedMentions =
-    mentions.length > 1 ? [...mentions].sort((a, b) => b.name.length - a.name.length) : mentions
+    mentions.length > 1 ? mentions.toSorted((a, b) => b.name.length - a.name.length) : mentions
   const out: TipSegment[] = []
   let buffer = ''
 
@@ -627,7 +627,7 @@ export const playAudioTip = () => {
 /**
  * 按文件扩展名挑文件图标 + 颜色，对齐微信观感
  *
- * MessageItem.vue（主气泡）和 ReplyPreview.vue（引用预览）共用同一份映射，避免视觉两处不一致
+ * message-item.vue（主气泡）和 reply-preview.vue（引用预览）共用同一份映射，避免视觉两处不一致
  */
 export function getFileIconInfo(filename: string | undefined): { color: string; icon: string; } {
   const ext = (filename || '').split('.').pop()?.toLowerCase() || ''
@@ -720,7 +720,7 @@ export function resolveGroupNotificationSegments(
   resolveName: (userId: number) => string,
   operatorNameOverride?: string
 ): TipSegment[] {
-  let payload: GroupNotificationPayload = {}
+  let payload: GroupNotificationPayload
   try {
     payload = JSON.parse(message.content || '{}')
   } catch {

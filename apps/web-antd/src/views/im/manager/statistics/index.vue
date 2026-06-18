@@ -7,9 +7,11 @@ import { Page } from '@vben/common-ui';
 
 import { getStatisticsOverview } from '#/api/im/manager/statistics';
 
-import DistributionChart from './components/DistributionChart.vue';
-import OverviewCards from './components/OverviewCards.vue';
-import TrendChart from './components/TrendChart.vue';
+import {
+  DistributionChart,
+  OverviewCards,
+  TrendChart,
+} from './components';
 
 defineOptions({ name: 'ImManagerStatistics' });
 

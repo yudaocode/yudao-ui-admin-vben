@@ -113,7 +113,7 @@ export async function runIncrementalPull<T extends PullRecord>(
  * @param maxPages     单轮翻页上限
  */
 export async function runMinIdPull<T extends { id?: number }>(options: {
-  applyPage: (records: T[], nextMinId?: number) => Promise<boolean | void>
+  applyPage: (records: T[], nextMinId?: number) => Promise<boolean> | Promise<void>
   fetchPage: (params: { minId: number; size: number }) => Promise<T[]>
   initialMinId: number
   isActive?: () => boolean

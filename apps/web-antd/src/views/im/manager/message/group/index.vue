@@ -19,8 +19,8 @@ import {
   IM_AT_ALL_USER_ID,
 } from '#/views/im/utils/constants';
 
+import { MessageContentPreview } from '..';
 import { useGroupGridColumns, useGroupGridFormSchema } from '../data';
-import MessageContentPreview from '../MessageContentPreview.vue';
 import Detail from './modules/detail.vue';
 
 defineOptions({ name: 'ImGroupMessage' });

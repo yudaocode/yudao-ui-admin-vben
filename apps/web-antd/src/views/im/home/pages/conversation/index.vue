@@ -10,14 +10,13 @@ import { Button, Dropdown, Input, Menu } from 'ant-design-vue'
 import { ImConversationType } from '../../../utils/constants'
 import { filterConversationsByKeyword, getConversationKey } from '../../../utils/conversation'
 import { StorageKeys } from '../../../utils/db'
-import FriendAddDialog from '../../components/friend/FriendAddDialog.vue'
-import GroupCreateDialog from '../../components/group/GroupCreateDialog.vue'
-import ResizableAside from '../../components/ResizableAside.vue'
+import { ResizableAside } from '../../components'
+import { FriendAddDialog } from '../../components/friend'
+import { GroupCreateDialog } from '../../components/group'
 import { useConversationStore } from '../../store/conversationStore'
 import { useGroupStore } from '../../store/groupStore'
 import { useImUiStore } from '../../store/uiStore'
-import ConversationItem from './components/conversation/ConversationItem.vue'
-import MessagePanel from './components/message/MessagePanel.vue'
+import { ConversationItem, MessagePanel } from './components'
 
 defineOptions({ name: 'ImMessagePage' })
 
@@ -200,12 +199,16 @@ watch(() => uiStore.nextUnreadJumpNonce, jumpToNextUnread)
           <template #overlay>
             <Menu>
               <Menu.Item @click="handleOpenCreateGroup">
-                <Icon icon="ant-design:message-outlined" :size="16" />
-                <span>发起群聊</span>
+                <span class="inline-flex items-center gap-2">
+                  <Icon icon="ant-design:message-outlined" :size="16" />
+                  <span>发起群聊</span>
+                </span>
               </Menu.Item>
               <Menu.Item @click="friendAddDialogRef?.open()">
-                <Icon icon="ant-design:user-add-outlined" :size="16" />
-                <span>添加朋友</span>
+                <span class="inline-flex items-center gap-2">
+                  <Icon icon="ant-design:user-add-outlined" :size="16" />
+                  <span>添加朋友</span>
+                </span>
               </Menu.Item>
             </Menu>
           </template>

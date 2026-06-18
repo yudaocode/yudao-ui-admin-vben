@@ -248,7 +248,7 @@ export const useMessagePuller = () => {
     })
   }
 
-  /** 同一时刻只允许一次 pull：Index.vue 的手动调用与重连 watch 触发可能并发，共用同一个 promise 即可去重 */
+  /** 同一时刻只允许一次 pull：index.vue 的手动调用与重连 watch 触发可能并发，共用同一个 promise 即可去重 */
   let pullPromise: null | Promise<void> = null
   let pullAbortController: AbortController | null = null
 
@@ -267,7 +267,7 @@ export const useMessagePuller = () => {
    */
   let pullEpoch = 0
 
-  /** 显式取消：仅由 Index.vue onUnmounted（离开 IM / 切账号 / 路由跳出）调用 */
+  /** 显式取消：仅由 index.vue onUnmounted（离开 IM / 切账号 / 路由跳出）调用 */
   const cancelPull = () => {
     pullEpoch++
     pullAbortController?.abort()
@@ -391,7 +391,7 @@ export const useMessagePuller = () => {
         conversationStore.sortConversationList()
 
         // 重连 / 冷启动后补齐当前激活私聊会话的「对方已读位置」
-        // 离线期间错过的 RECEIPT 推送会被这里补回；其他私聊会话等用户点开时由 Index.vue 的 watch 触发
+        // 离线期间错过的 RECEIPT 推送会被这里补回；其他私聊会话等用户点开时由 index.vue 的 watch 触发
         // 私聊已读关闭时跳过，避免打到已禁用接口触发错误日志
         const active = conversationStore.activeConversation
         if (MESSAGE_PRIVATE_READ_ENABLED && active && active.type === ImConversationType.PRIVATE) {
@@ -438,7 +438,7 @@ export const useMessagePuller = () => {
 
   /**
    * 断网期间 WS 收不到推送：重连后既要按 minId 补齐消息，也要按 update_time + id 补齐好友 / 群 / 群申请状态。
-   * 首次连接由 Index.vue 显式驱动（pullOnce 拉消息 + 各 store 首拉），这里仅覆盖之后的重连。
+   * 首次连接由 index.vue 显式驱动（pullOnce 拉消息 + 各 store 首拉），这里仅覆盖之后的重连。
    * 重连时 store 已就位，pullStateEvents 与 pullOnce 并发即可，无需「先就位再拉消息」的首登顺序约束。
    */
   watch(

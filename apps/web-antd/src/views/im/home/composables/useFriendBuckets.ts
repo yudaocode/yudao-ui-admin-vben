@@ -73,12 +73,11 @@ export function useFriendBuckets(
     const map = new Map<string, FriendLite[]>()
     for (const friend of filtered.value) {
       const letter = getBucketLetter(friend)
-      if (!map.has(letter)) {
-        map.set(letter, [])
-      }
-      map.get(letter)!.push(friend)
+      const bucket = map.get(letter) ?? []
+      bucket.push(friend)
+      map.set(letter, bucket)
     }
-    const letters = [...map.keys()].sort((a, b) => {
+    const letters = [...map.keys()].toSorted((a, b) => {
       // '#' 永远排末尾，A-Z 走 localeCompare
       if (a === '#') {
         return 1
@@ -90,7 +89,9 @@ export function useFriendBuckets(
     })
     return letters.map((letter) => ({
       letter,
-      list: map.get(letter)!.sort((a, b) => getSortKey(a).localeCompare(getSortKey(b)))
+      list: (map.get(letter) ?? []).toSorted((a, b) =>
+        getSortKey(a).localeCompare(getSortKey(b))
+      )
     }))
   })
 

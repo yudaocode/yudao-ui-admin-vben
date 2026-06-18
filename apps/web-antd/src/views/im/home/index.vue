@@ -8,11 +8,10 @@ import { preferences } from '@vben/preferences'
 
 import { ImConversationType } from '../utils/constants'
 import { initDb, stopRequests, StorageKeys } from '../utils/db'
-import ContextMenu from './components/ContextMenu.vue'
-import GroupInfoCard from './components/group/GroupInfoCard.vue'
-import RtcCallContainer from './components/rtc/RtcCallContainer.vue'
-import ToolBar from './components/ToolBar.vue'
-import UserInfoCard from './components/user/UserInfoCard.vue'
+import { ContextMenu, ToolBar } from './components'
+import { GroupInfoCard } from './components/group'
+import { RtcCallContainer } from './components/rtc'
+import { UserInfoCard } from './components/user'
 import { useMessagePuller } from './composables/useMessagePuller'
 import { useMessageSender } from './composables/useMessageSender'
 import { useVoicePlayer } from './composables/useVoicePlayer'
@@ -209,7 +208,9 @@ watch(
     - 右侧 <router-view>：按路由渲染 MessagePage / FriendPage / GroupPage
     - 挂载全局弹层：UserInfoCard / GroupInfoCard / ContextMenu
   -->
-  <div class="im-home flex w-full h-full overflow-hidden">
+  <div
+    class="im-home flex w-full h-full overflow-hidden bg-[var(--ant-color-bg-layout)] text-[var(--ant-color-text)]"
+  >
     <ToolBar />
     <!--
       keep-alive 缓存子页面：
@@ -237,10 +238,54 @@ watch(
 :global(:root) {
   --im-border-color-lighter: #e8eaed;
   --im-resize-line-color: #d8dde5;
+
+  /*
+   * antd 4.x 不输出 --ant-color-* 全局 CSS 变量（仅 React antd 的 theme.cssVar 支持），
+   * 而 IM 聊天端大量直接使用 var(--ant-color-*)。此处用 Vben design token 兜底定义，
+   * 映射规则与 useAntdDesignTokens 喂给 antd 的 token 完全一致，随主题（亮/暗）自动切换。
+   * 缺失时这些变量为空 → 背景透明、边框/填充失效（典型：表情面板透出输入框占位文字）。
+   */
+  --ant-color-bg-container: hsl(var(--card));
+  --ant-color-bg-elevated: hsl(var(--popover));
+  --ant-color-bg-layout: hsl(var(--background-deep));
+  --ant-color-border: hsl(var(--border));
+  --ant-color-border-secondary: hsl(var(--border));
+  --ant-color-text: hsl(var(--foreground));
+  --ant-color-text-secondary: hsl(var(--foreground) / 65%);
+  --ant-color-text-placeholder: hsl(var(--foreground) / 45%);
+  --ant-color-text-disabled: hsl(var(--foreground) / 30%);
+  /*
+   * fill 系列：浅色下用 Element Plus 风格的「冷调浅灰实色」而非半透明深色，
+   * 否则面板（会话列表 / 消息面板等）叠在灰底上会显脏发暗，和 Vue3+EP 的干净白差距明显。
+   * 取值依组件实际用法：secondary 多用于面板底（取最浅，对齐 EP --el-bg-color-page #f5f7fa），
+   * tertiary 多用于 hover / 图标块（比面板略深，保证 hover 可见）。深色在 .dark 里另行覆盖。
+   */
+  --ant-color-fill: #e2e6ec;
+  --ant-color-fill-secondary: #f4f6f9;
+  --ant-color-fill-tertiary: #eaedf2;
+  --ant-color-fill-dark: #d5dae2;
+  --ant-color-primary: hsl(var(--primary));
+  --ant-color-primary-hover: hsl(var(--primary) / 80%);
+  --ant-color-primary-bg: hsl(var(--primary) / 12%);
+  --ant-color-primary-bg-hover: hsl(var(--primary) / 18%);
+  --ant-color-info: hsl(var(--primary));
+  --ant-color-success: hsl(var(--success));
+  --ant-color-success-bg: hsl(var(--success) / 12%);
+  --ant-color-success-bg-hover: hsl(var(--success) / 18%);
+  --ant-color-warning: hsl(var(--warning));
+  --ant-color-warning-bg: hsl(var(--warning) / 12%);
+  --ant-color-warning-bg-hover: hsl(var(--warning) / 18%);
+  --ant-color-error: hsl(var(--destructive));
 }
 
 :global(.dark) {
   --im-border-color-lighter: rgb(255 255 255 / 12%);
   --im-resize-line-color: rgb(255 255 255 / 18%);
+
+  /* 深色下 fill 回到「基于前景色的半透明亮色」，叠在深底上得到自然的微亮表面 */
+  --ant-color-fill: hsl(var(--foreground) / 12%);
+  --ant-color-fill-secondary: hsl(var(--foreground) / 8%);
+  --ant-color-fill-tertiary: hsl(var(--foreground) / 4%);
+  --ant-color-fill-dark: hsl(var(--foreground) / 18%);
 }
 </style>

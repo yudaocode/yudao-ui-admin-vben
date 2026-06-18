@@ -7,8 +7,8 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
-import GroupSelect from '#/views/im/manager/components/GroupSelect.vue';
-import UserSelect from '#/views/system/user/components/select.vue';
+import { GroupSelect } from '#/views/im/manager/group/components';
+import { UserSelect } from '#/views/system/user/components';
 
 /** 群搜索表单 */
 export function useGroupGridFormSchema(): VbenFormSchema[] {

@@ -11,7 +11,7 @@ import { ImFriendAddSource } from '../../utils/constants'
  *
  * 收纳标准：触发点 N 个、挂载点想保持 1 个的浮层状态。
  * 任意位置都可能 open，但 DOM 上只想留一份实例 → 走 store 派发，
- * 由 `Index.vue` 挂一个订阅组件统一渲染。
+ * 由 `index.vue` 挂一个订阅组件统一渲染。
  */
 export const useImUiStore = defineStore('imUiStore', () => {
   // ==================== 用户名片 UserInfoCard ====================

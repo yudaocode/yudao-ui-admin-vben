@@ -41,6 +41,13 @@ export function getUser(id: number) {
   return requestClient.get<SystemUserApi.User>(`/system/user/get?id=${id}`);
 }
 
+/** 查询用户列表 */
+export function getUserList(ids: number[]) {
+  return requestClient.get<SystemUserApi.User[]>('/system/user/list', {
+    params: { ids: ids.join(',') },
+  });
+}
+
 /** 新增用户 */
 export function createUser(data: SystemUserApi.User) {
   return requestClient.post('/system/user/create', data);

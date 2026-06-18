@@ -101,38 +101,38 @@ export function isRtcCallTip(type: number): boolean {
  * 1. 后端发送入口校验（Im{Private,Group}MessageSendReqVO.isNormalType）—— 用户发送的内容类型必须 normal=true
  * 2. 前端接收侧未读 / 提示音（websocketStore）—— normal 消息计入会话未读数 + 触发声音
  * 3. 前端会话列表 lastType / @ 标签（ConversationItem）—— 只有 normal 才算「最后一条聊天消息」
- * 4. 前端群消息置顶菜单（MessageItem.vue 的 canPin）—— normal 才允许群主 / 管理员置顶
+ * 4. 前端群消息置顶菜单（message-item.vue 的 canPin）—— normal 才允许群主 / 管理员置顶
  *
  * 名片（CARD）/ 表情（FACE）都是「用户主动发的聊天消息」，1/2/3 都符合预期；4 同时放开 = 群主可置顶，语义合理
  */
-const ImContentTypeNormals: number[] = [
-  ImContentType.TEXT,
-  ImContentType.IMAGE,
-  ImContentType.FILE,
-  ImContentType.VOICE,
-  ImContentType.VIDEO,
+const ImContentTypeNormals = new Set<number>([
   ImContentType.CARD,
   ImContentType.FACE,
+  ImContentType.FILE,
+  ImContentType.IMAGE,
+  ImContentType.MATERIAL, // 频道素材计入未读数 + 进会话列表
   ImContentType.MERGE,
-  ImContentType.MATERIAL // 频道素材计入未读数 + 进会话列表
-]
+  ImContentType.TEXT,
+  ImContentType.VIDEO,
+  ImContentType.VOICE
+])
 
 /** 判断是否"普通消息" */
 export function isNormalMessage(type: number): boolean {
-  return ImContentTypeNormals.includes(type)
+  return ImContentTypeNormals.has(type)
 }
 
 /** IM 媒体内容类型集合：发送依赖本地 File 上传，刷新后 _localFile 丢失即不可恢复 */
-const ImContentTypeMedia: number[] = [
-  ImContentType.IMAGE,
+const ImContentTypeMedia = new Set<number>([
   ImContentType.FILE,
-  ImContentType.VOICE,
-  ImContentType.VIDEO
-]
+  ImContentType.IMAGE,
+  ImContentType.VIDEO,
+  ImContentType.VOICE
+])
 
 /** 判断是否「媒体消息」：图片 / 文件 / 语音 / 视频 */
 export function isMediaMessageType(type: number): boolean {
-  return ImContentTypeMedia.includes(type)
+  return ImContentTypeMedia.has(type)
 }
 
 /**

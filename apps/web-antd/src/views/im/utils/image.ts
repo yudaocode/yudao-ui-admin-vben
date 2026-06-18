@@ -20,7 +20,7 @@ export function loadImage(
       img.crossOrigin = crossOrigin
     }
     img.addEventListener('load', () => resolve(img))
-    img.onerror = () => resolve(null)
+    img.addEventListener('error', () => resolve(null))
     img.src = src
   })
 }
@@ -46,12 +46,12 @@ export function probeImageSize(source: File | string): Promise<{ height: number;
         height: img.naturalHeight || DEFAULT_FALLBACK_SIZE.height
       })
     })
-    img.onerror = () => {
+    img.addEventListener('error', () => {
       if (isFile) {
         URL.revokeObjectURL(src)
       }
       resolve({ ...DEFAULT_FALLBACK_SIZE })
-    }
+    })
     img.src = src
   })
 }

@@ -7,7 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
-import UserSelect from '#/views/system/user/components/select.vue';
+import { UserSelect } from '#/views/system/user/components';
 
 /** 好友关系搜索表单 */
 export function useFriendGridFormSchema(): VbenFormSchema[] {

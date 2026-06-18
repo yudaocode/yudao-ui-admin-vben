@@ -20,7 +20,7 @@ import {
   IM_AT_ALL_USER_ID,
 } from '#/views/im/utils/constants';
 
-import MessageContentPreview from '../../MessageContentPreview.vue';
+import { MessageContentPreview } from '../..';
 
 const visible = ref(false);
 const detail = ref<ImManagerGroupMessageApi.GroupMessage>({} as ImManagerGroupMessageApi.GroupMessage);

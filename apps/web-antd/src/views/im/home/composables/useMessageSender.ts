@@ -187,7 +187,7 @@ export const useMessageSender = () => {
   }
 
   /**
-   * 发送文本消息（最常用的快捷入口）：MessageInput.vue 文本回车走这里
+   * 发送文本消息（最常用的快捷入口）：message-input.vue 文本回车走这里
    * 返回值：成功 true / 失败 false / 空文本 false（与 sendRaw 对齐，转发场景按返回值判断）
    */
   const send = async (text: string, options?: SendExtOptions): Promise<boolean> => {

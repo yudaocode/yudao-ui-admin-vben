@@ -8,7 +8,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 import { getRangePickerDefaultProps } from '#/utils';
-import ChannelSelect from '#/views/im/manager/components/ChannelSelect.vue';
+import { ChannelSelect } from '#/views/im/manager/channel/list/components';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

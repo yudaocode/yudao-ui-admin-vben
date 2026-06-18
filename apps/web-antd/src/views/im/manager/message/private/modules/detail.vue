@@ -14,7 +14,7 @@ import {
   formatUserLabel,
 } from '#/views/im/manager/utils/format';
 
-import MessageContentPreview from '../../MessageContentPreview.vue';
+import { MessageContentPreview } from '../..';
 
 const visible = ref(false);
 const detail = ref<ImManagerPrivateMessageApi.PrivateMessage>(
