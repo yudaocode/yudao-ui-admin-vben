@@ -12,6 +12,7 @@ export namespace ErpSaleOutApi {
     outTime?: Date; // 出库时间
     totalCount?: number; // 合计数量
     totalPrice?: number; // 合计金额，单位：元
+    receiptPrice?: number; // 已收款金额，单位：元
     status?: number; // 状态
     remark?: string; // 备注
     discountPercent?: number; // 折扣百分比
@@ -28,6 +29,7 @@ export namespace ErpSaleOutApi {
   export interface SaleOutItem {
     count?: number;
     id?: number;
+    seq?: number; // 前端行号
     orderItemId?: number;
     productBarCode?: string;
     productId?: number;
