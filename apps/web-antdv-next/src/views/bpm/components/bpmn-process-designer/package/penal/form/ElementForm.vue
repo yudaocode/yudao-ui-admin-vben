@@ -4,7 +4,7 @@ import { computed, inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
 import { cloneDeep } from '@vben/utils';
 
-import { Form, FormItem, Select } from 'antdv-next';
+import { Form, FormItem, Select, SelectOption } from 'antdv-next';
 
 import { getFormSimpleList } from '#/api/bpm/form';
 

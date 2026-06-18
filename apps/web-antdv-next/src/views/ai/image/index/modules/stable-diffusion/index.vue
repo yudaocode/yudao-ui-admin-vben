@@ -19,6 +19,7 @@ import {
   InputNumber,
   message,
   Select,
+  SelectOption,
   Space,
   TextArea,
 } from 'antdv-next';

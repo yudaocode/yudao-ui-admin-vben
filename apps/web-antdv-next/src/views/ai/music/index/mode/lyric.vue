@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 
-import { Button, Input, Select, Space, Tag, TextArea } from 'antdv-next';
+import {
+  Button,
+  Input,
+  Select,
+  SelectOption,
+  Space,
+  Tag,
+  TextArea,
+} from 'antdv-next';
 
 import Title from '../title/index.vue';
 

@@ -12,7 +12,14 @@ import {
   OtherPlatformEnum,
 } from '@vben/constants';
 
-import { Button, InputNumber, Select, Space, TextArea } from 'antdv-next';
+import {
+  Button,
+  InputNumber,
+  Select,
+  SelectOption,
+  Space,
+  TextArea,
+} from 'antdv-next';
 
 import { drawImage } from '#/api/ai/image';
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive } from 'vue';
 
-import { Select, Switch, TextArea } from 'antdv-next';
+import { Select, SelectOption, Switch, TextArea } from 'antdv-next';
 
 import Title from '../title/index.vue';
 

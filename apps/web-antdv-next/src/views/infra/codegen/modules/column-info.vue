@@ -4,7 +4,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { Checkbox, Input, Select } from 'antdv-next';
+import { Checkbox, Input, Select, SelectOption } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';

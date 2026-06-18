@@ -17,7 +17,15 @@ import {
   NijiVersionList,
 } from '@vben/constants';
 
-import { Button, Image, message, Select, Space, TextArea } from 'antdv-next';
+import {
+  Button,
+  Image,
+  message,
+  Select,
+  SelectOption,
+  Space,
+  TextArea,
+} from 'antdv-next';
 
 import { midjourneyImagine } from '#/api/ai/image';
 import { ImageUpload } from '#/components/upload';

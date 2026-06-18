@@ -6,7 +6,7 @@ import type { MpAccountApi } from '#/api/mp/account';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { message, Select } from 'antdv-next';
+import { message, Select, SelectOption } from 'antdv-next';
 
 import { getSimpleAccountList } from '#/api/mp/account';
 

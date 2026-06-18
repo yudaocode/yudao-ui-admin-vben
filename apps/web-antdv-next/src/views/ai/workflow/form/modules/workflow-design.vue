@@ -8,7 +8,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Tinyflow } from '@vben/plugins/tinyflow';
 import { isNumber } from '@vben/utils';
 
-import { Button, Input, Select } from 'antdv-next';
+import { Button, Input, Select, SelectOption } from 'antdv-next';
 
 import { testWorkflow } from '#/api/ai/workflow';
 

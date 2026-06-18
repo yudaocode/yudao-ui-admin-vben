@@ -18,9 +18,12 @@ import {
   Avatar,
   Button,
   Form,
+  FormItem,
   Input,
   Radio,
+  RadioGroup,
   Select,
+  SelectOption,
   TextArea,
   Tooltip,
 } from 'antdv-next';
@@ -281,16 +284,10 @@ defineExpose({ validate });
           class="w-full"
           v-model:value="modelData.category"
           allow-clear
+          :field-names="{ label: 'name', value: 'code' }"
+          :options="categoryList"
           placeholder="请选择流程分类"
-        >
-          <SelectOption
-            v-for="category in categoryList"
-            :key="category.code"
-            :value="category.code"
-          >
-            {{ category.name }}
-          </SelectOption>
-        </Select>
+        />
       </FormItem>
       <FormItem label="流程图标">
         <ImageUpload v-model:value="modelData.icon" />

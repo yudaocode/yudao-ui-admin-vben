@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import { Form, FormItem, Input, Select, TextArea } from 'antdv-next';
+import {
+  Form,
+  FormItem,
+  Input,
+  Select,
+  SelectOption,
+  TextArea,
+} from 'antdv-next';
 
 defineOptions({ name: 'FlowCondition' });
 

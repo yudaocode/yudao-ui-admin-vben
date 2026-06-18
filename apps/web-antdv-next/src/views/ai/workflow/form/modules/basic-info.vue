@@ -4,7 +4,14 @@ import { ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { Form, Input, Select, TextArea } from 'antdv-next';
+import {
+  Form,
+  FormItem,
+  Input,
+  Select,
+  SelectOption,
+  TextArea,
+} from 'antdv-next';
 
 type Rule = any;
 const modelData = defineModel<any>(); // 创建本地数据副本

@@ -7,7 +7,7 @@ import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Col, Divider, message, Select, Tag } from 'antdv-next';
+import { Col, Divider, message, Select, SelectOption, Tag } from 'antdv-next';
 
 import {
   createPropertyValue,
