@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EchartsUIType } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import { nextTick, onMounted, ref } from 'vue';
 
@@ -27,7 +27,10 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 获取图表配置 */
-function buildOptions(dates: string[], series: Record<string, number[]>) {
+function buildOptions(
+  dates: string[],
+  series: Record<string, number[]>,
+): EChartsOption {
   if (props.type === 'message') {
     return {
       tooltip: { trigger: 'axis' },

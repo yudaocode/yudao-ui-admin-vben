@@ -38,8 +38,8 @@ const props = defineProps<{
   type?: number;
 }>();
 
-const payload = computed<Record<string, any> | undefined>(() =>
-  parseMessage<Record<string, any>>(props.content || ''),
+const payload = computed<null | Record<string, any>>(() =>
+  parseMessage<Record<string, any>>(props.content ?? ''),
 );
 
 const textContent = computed(() => payload.value?.content || '');
