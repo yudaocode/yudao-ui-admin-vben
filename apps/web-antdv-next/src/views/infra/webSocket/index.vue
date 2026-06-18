@@ -19,7 +19,6 @@ import {
   Input,
   message,
   Select,
-  SelectOption,
   Tag,
   TextArea,
 } from 'antdv-next';
@@ -101,7 +100,15 @@ watchEffect(() => {
 
 /** 发送消息 */
 const sendText = ref(''); // 发送内容
-const sendUserId = ref('all'); // 发送人
+const sendUserId = ref<'all' | number>('all'); // 发送人
+const sendUserOptions = computed(() => [
+  { label: '所有人', value: 'all', raw: null },
+  ...userList.value.map((user) => ({
+    label: user.nickname,
+    value: user.id,
+    raw: user,
+  })),
+]);
 function handlerSend() {
   if (!sendText.value.trim()) {
     message.warning('消息内容不能为空');
@@ -229,26 +236,20 @@ onMounted(async () => {
           size="large"
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
+          :options="sendUserOptions"
         >
-          <SelectOption key="" value="" label="所有人">
-            <div class="flex items-center">
+          <template #optionRender="{ option }">
+            <div class="flex items-center" v-if="!option.data.raw">
               <Avatar size="small" class="mr-2">全</Avatar>
               <span>所有人</span>
             </div>
-          </SelectOption>
-          <SelectOption
-            v-for="user in userList"
-            :key="user.id"
-            :value="user.id"
-            :label="user.nickname"
-          >
-            <div class="flex items-center">
+            <div class="flex items-center" v-else>
               <Avatar size="small" class="mr-2">
-                {{ user.nickname.slice(0, 1) }}
+                {{ option.data.raw.nickname?.slice(0, 1) }}
               </Avatar>
-              <span>{{ user.nickname }}</span>
+              <span>{{ option.data.raw.nickname }}</span>
             </div>
-          </SelectOption>
+          </template>
         </Select>
 
         <TextArea

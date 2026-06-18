@@ -13,7 +13,7 @@ import {
 import { isObject } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Col, FormItem, Row, Select, SelectOption, Tag } from 'antdv-next';
+import { Col, FormItem, Row, Select, Tag } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
@@ -39,6 +39,13 @@ const loadingThingModel = ref(false); // 物模型加载状态
 const selectedService = ref<null | ThingModelApi.Service>(null); // 选中的服务对象
 const serviceList = ref<ThingModelApi.Service[]>([]); // 服务列表
 const loadingServices = ref(false); // 服务加载状态
+const serviceOptions = computed(() =>
+  serviceList.value.map((service) => ({
+    label: service.name,
+    value: service.identifier,
+    raw: service,
+  })),
+);
 
 // 参数值的计算属性，用于双向绑定
 const paramsValue = computed({
@@ -346,23 +353,22 @@ watch(
           allow-clear
           class="w-full"
           :loading="loadingServices"
+          :options="serviceOptions"
+          option-filter-prop="label"
           @change="handleServiceChange"
         >
-          <SelectOption
-            v-for="service in serviceList"
-            :key="service.identifier"
-            :label="service.name"
-            :value="service.identifier"
-          >
+          <template #optionRender="{ option }">
             <div class="flex items-center justify-between">
-              <span>{{ service.name }}</span>
+              <span>{{ option.data.raw.name }}</span>
               <Tag
-                :color="service.callType === 'sync' ? 'processing' : 'success'"
+                :color="
+                  option.data.raw.callType === 'sync' ? 'processing' : 'success'
+                "
               >
-                {{ service.callType === 'sync' ? '同步' : '异步' }}
+                {{ option.data.raw.callType === 'sync' ? '同步' : '异步' }}
               </Tag>
             </div>
-          </SelectOption>
+          </template>
         </Select>
       </FormItem>
 

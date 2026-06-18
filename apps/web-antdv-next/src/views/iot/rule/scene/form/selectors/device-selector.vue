@@ -1,10 +1,10 @@
 <!-- 设备选择器组件 -->
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { DEVICE_SELECTOR_OPTIONS, DICT_TYPE } from '@vben/constants';
 
-import { Select, SelectOption } from 'antdv-next';
+import { Select } from 'antdv-next';
 
 import { getDeviceListByProductId } from '#/api/iot/device/device';
 import { DictTag } from '#/components/dict-tag';
@@ -24,6 +24,13 @@ const emit = defineEmits<{
 
 const deviceLoading = ref(false); // 设备加载状态
 const deviceList = ref<any[]>([]); // 设备列表
+const deviceOptions = computed(() =>
+  deviceList.value.map((device) => ({
+    label: device.deviceName,
+    value: device.id,
+    raw: device,
+  })),
+);
 
 /** 处理选择变化事件 */
 function handleChange(value: any) {
@@ -90,28 +97,28 @@ watch(
     allow-clear
     class="w-full"
     option-label-prop="label"
+    option-filter-prop="label"
     :loading="deviceLoading"
     :disabled="!productId"
+    :options="deviceOptions"
   >
-    <SelectOption
-      v-for="device in deviceList"
-      :key="device.id"
-      :label="device.deviceName"
-      :value="device.id"
-    >
+    <template #optionRender="{ option }">
       <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
           <div class="text-[14px] font-medium mb-[2px] text-foreground">
-            {{ device.deviceName }}
+            {{ option.data.raw.deviceName }}
           </div>
           <div class="text-[12px] text-muted-foreground">
-            {{ device.deviceKey }}
+            {{ option.data.raw.deviceKey }}
           </div>
         </div>
-        <div class="gap-[4px] flex items-center" v-if="device.id > 0">
-          <DictTag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="device.state" />
+        <div class="gap-[4px] flex items-center" v-if="option.data.raw.id > 0">
+          <DictTag
+            :type="DICT_TYPE.IOT_DEVICE_STATE"
+            :value="option.data.raw.state"
+          />
         </div>
       </div>
-    </SelectOption>
+    </template>
   </Select>
 </template>

@@ -16,14 +16,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import { useVModel } from '@vueuse/core';
-import {
-  Button,
-  Popover,
-  Select,
-  SelectOptGroup,
-  SelectOption,
-  Tag,
-} from 'antdv-next';
+import { Button, Popover, Select, Tag } from 'antdv-next';
 
 import { getThingModelTSLByProductId } from '#/api/iot/thingmodel';
 
@@ -99,6 +92,16 @@ const propertyGroups = computed(() => {
   );
   return options.length > 0 ? [{ label: config.label, options }] : [];
 });
+const propertySelectOptions = computed(() =>
+  propertyGroups.value.map((group) => ({
+    label: group.label,
+    options: group.options.map((property) => ({
+      label: property.name,
+      value: property.identifier,
+      raw: property,
+    })),
+  })),
+);
 
 /** 当前选中的属性 */
 const selectedProperty = computed(() =>
@@ -224,31 +227,20 @@ watch(
       @change="handleChange"
       class="!w-[150px]"
       option-label-prop="label"
+      option-filter-prop="label"
       :loading="loading"
+      :options="propertySelectOptions"
     >
-      <SelectOptGroup
-        v-for="group in propertyGroups"
-        :key="group.label"
-        :label="group.label"
-      >
-        <SelectOption
-          v-for="property in group.options"
-          :key="property.identifier"
-          :label="property.name"
-          :value="property.identifier"
-        >
-          <div class="py-[2px] flex w-full items-center justify-between">
-            <span
-              class="text-[14px] font-medium flex-1 truncate text-foreground"
-            >
-              {{ property.name }}
-            </span>
-            <Tag class="ml-[8px] flex-shrink-0">
-              {{ property.identifier }}
-            </Tag>
-          </div>
-        </SelectOption>
-      </SelectOptGroup>
+      <template #optionRender="{ option }">
+        <div class="py-[2px] flex w-full items-center justify-between">
+          <span class="text-[14px] font-medium flex-1 truncate text-foreground">
+            {{ option.data.raw.name }}
+          </span>
+          <Tag class="ml-[8px] flex-shrink-0">
+            {{ option.data.raw.identifier }}
+          </Tag>
+        </div>
+      </template>
     </Select>
 
     <!-- 属性详情弹出层 -->
