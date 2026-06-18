@@ -25,7 +25,6 @@ import {
   message,
   Row,
   Select,
-  SelectOption,
   Tag,
 } from 'antdv-next';
 
@@ -412,16 +411,11 @@ onMounted(() => {
         :rules="formRules"
       >
         <FormItem label="触发器类型" name="type">
-          <Select v-model:value="configForm.type" @change="changeTriggerType">
-            <SelectOption
-              v-for="(item, index) in TRIGGER_TYPES"
-              :key="index"
-              :value="item.value"
-              :label="item.label"
-            >
-              {{ item.label }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="configForm.type"
+            @change="changeTriggerType"
+            :options="TRIGGER_TYPES"
+          />
         </FormItem>
         <!-- HTTP 请求触发器 -->
         <div
@@ -509,17 +503,9 @@ onMounted(() => {
                       placeholder="请选择表单字段"
                       :disabled="key !== ''"
                       allow-clear
-                    >
-                      <SelectOption
-                        v-for="(field, fIdx) in optionalUpdateFormFields"
-                        :key="fIdx"
-                        :label="field.title"
-                        :value="field.field"
-                        :disabled="field.disabled"
-                      >
-                        {{ field.title }}
-                      </SelectOption>
-                    </Select>
+                      :options="optionalUpdateFormFields"
+                      :field-names="{ label: 'title', value: 'field' }"
+                    />
                   </FormItem>
                 </Col>
                 <Col :span="4">
@@ -528,11 +514,13 @@ onMounted(() => {
                 <Col :span="10">
                   <FormItem
                     :name="['formSettings', index, 'updateFormFields', key]"
-                    :rules="{
-                      required: true,
-                      message: '值不能为空',
-                      trigger: 'blur',
-                    }"
+                    :rules="[
+                      {
+                        required: true,
+                        message: '值不能为空',
+                        trigger: 'blur',
+                      },
+                    ]"
                   >
                     <Input
                       v-model:value="formSetting.updateFormFields![key]"
@@ -651,16 +639,9 @@ onMounted(() => {
                   mode="multiple"
                   placeholder="请选择要删除的字段"
                   class="w-full"
-                >
-                  <SelectOption
-                    v-for="field in formFields"
-                    :key="field.field"
-                    :label="field.title"
-                    :value="field.field"
-                  >
-                    {{ field.title }}
-                  </SelectOption>
-                </Select>
+                  :options="formFields"
+                  :field-names="{ label: 'title', value: 'field' }"
+                />
               </div>
             </Card>
           </div>

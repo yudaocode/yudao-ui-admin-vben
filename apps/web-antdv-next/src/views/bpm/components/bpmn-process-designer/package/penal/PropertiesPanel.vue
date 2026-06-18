@@ -4,7 +4,7 @@ import { nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Collapse } from 'antdv-next';
+import { Collapse, CollapsePanel } from 'antdv-next';
 
 import ElementCustomConfig from '#/views/bpm/components/bpmn-process-designer/package/penal/custom-config/ElementCustomConfig.vue';
 import ElementForm from '#/views/bpm/components/bpmn-process-designer/package/penal/form/ElementForm.vue';
@@ -56,8 +56,6 @@ const props = defineProps({
     default: () => ({}),
   }, // 流程模型的数据
 });
-
-const CollapsePanel = CollapsePanel;
 
 const activeTab = ref('base');
 const elementId = ref('');

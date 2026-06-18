@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Select, SelectOption } from 'antdv-next';
+import { FormItem, Select } from 'antdv-next';
 
 import { getSimpleAlertConfigList } from '#/api/iot/alert/config';
 
@@ -49,20 +49,15 @@ onMounted(() => {
     <FormItem label="告警配置" required>
       <Select
         v-model:value="localValue"
+        :options="alertConfigs"
+        :field-names="{ label: 'name', value: 'id' }"
         placeholder="请选择告警配置"
         show-search
         allow-clear
         @change="handleChange"
         class="w-full"
         :loading="loading"
-      >
-        <SelectOption
-          v-for="config in alertConfigs"
-          :key="config.id"
-          :label="config.name"
-          :value="config.id"
-        />
-      </Select>
+      />
     </FormItem>
   </div>
 </template>

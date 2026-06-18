@@ -47,9 +47,8 @@ defineExpose({
         v-model:value="formData.version"
         class="w-full"
         placeholder="请选择"
-      >
-        <SelectOption
-          v-for="item in [
+        :options="[
+          ...[
             {
               value: '3',
               label: 'V3',
@@ -58,13 +57,9 @@ defineExpose({
               value: '2',
               label: 'V2',
             },
-          ]"
-          :key="item.value"
-          :value="item.value"
-        >
-          {{ item.label }}
-        </SelectOption>
-      </Select>
+          ].map((item) => ({ label: item.label, value: item.value })),
+        ]"
+      />
     </Title>
   </div>
 </template>

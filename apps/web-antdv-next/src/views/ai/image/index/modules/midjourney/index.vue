@@ -214,15 +214,8 @@ defineExpose({ settingValues });
         class="!w-80"
         allow-clear
         placeholder="请选择版本"
-      >
-        <SelectOption
-          v-for="item in versionList"
-          :key="item.value"
-          :value="item.value"
-        >
-          {{ item.label }}
-        </SelectOption>
-      </Select>
+        :options="versionList"
+      />
     </Space>
   </div>
 

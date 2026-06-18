@@ -204,15 +204,9 @@ async function getAttributeOptions(propertyId: number) {
         @blur="handleInputConfirm(index, attribute.id)"
         @change="handleInputConfirm(index, attribute.id)"
         @keyup.enter="handleInputConfirm(index, attribute.id)"
-      >
-        <SelectOption
-          v-for="item2 in attributeOptions"
-          :key="item2.id"
-          :value="item2.name"
-        >
-          {{ item2.name }}
-        </SelectOption>
-      </Select>
+        :options="attributeOptions"
+        :field-names="{ label: 'name', value: 'name' }"
+      />
       <Tag
         v-show="!inputVisible(index)"
         @click="showInput(index)"
