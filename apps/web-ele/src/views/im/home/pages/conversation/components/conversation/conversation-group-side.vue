@@ -421,9 +421,9 @@ function handleOpenTransferOwner() {
   <ElDrawer
     v-model="visible"
     body-class="!p-0"
-    :closable="false"
     modal-class="im-conversation-group-side__modal"
     placement="right"
+    :with-header="false"
     width="380px"
   >
     <div v-if="group" class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
@@ -816,7 +816,9 @@ function handleOpenTransferOwner() {
   background-color: var(--ant-color-primary-bg);
 }
 
-.im-conversation-group-side__modal {
+/* 必须 :global —— el-drawer append-to-body 后 modal-class 落在 .el-overlay 上、不带 scoped data-v，
+   普通作用域选择器匹配不到，会导致灰色分隔底色（--im-conversation-side-bg）失效、区块间隔显白 */
+:global(.im-conversation-group-side__modal) {
   --im-conversation-side-bg: #f5f7fa;
 }
 

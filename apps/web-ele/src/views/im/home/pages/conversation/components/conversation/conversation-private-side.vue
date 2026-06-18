@@ -137,9 +137,9 @@ function handleGroupCreated(groupId: number) {
   <ElDrawer
     v-model="visible"
     body-class="!p-0"
-    :closable="false"
     modal-class="im-conversation-private-side__modal"
     placement="right"
+    :with-header="false"
     width="340px"
   >
     <!-- friend 缺失场景：陌生人会话刚打开 / 好友数据还没补拉到；空白会让用户以为抽屉坏了，给个加载占位 -->

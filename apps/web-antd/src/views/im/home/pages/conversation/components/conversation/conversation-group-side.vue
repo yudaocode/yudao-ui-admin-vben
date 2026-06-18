@@ -813,7 +813,9 @@ function handleOpenTransferOwner() {
   background-color: var(--ant-color-primary-bg);
 }
 
-.im-conversation-group-side__modal {
+/* 必须 :global —— antd Drawer 传送到 body 后只带 root-class-name、不带 scoped data-v，
+   普通作用域选择器匹配不到，会导致灰色分隔底色（--im-conversation-side-bg）失效、区块间隔显白 */
+:global(.im-conversation-group-side__modal) {
   --im-conversation-side-bg: #f5f7fa;
 }
 

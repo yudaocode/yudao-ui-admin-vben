@@ -149,7 +149,7 @@ function handleGroupCreated(groupId: number) {
       <Spin tip="加载中..." />
     </div>
     <div v-else class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
-      <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
+      <div class="flex-1 overflow-y-auto bg-[var(--im-conversation-side-bg)]">
         <!-- 好友宫格：原 tile + "+" tile，对齐 GroupSide 视觉，让两种抽屉看起来是一家的 -->
         <div class="flex flex-wrap gap-1 px-4 pt-4 pb-[14px] bg-[var(--ant-color-bg-container)]">
           <div class="flex flex-col items-center w-[66px]">
@@ -271,15 +271,27 @@ function handleGroupCreated(groupId: number) {
   fill: currentColor !important;
 }
 
+/* 抽屉内「卡片之间」的浅底色，与群聊抽屉保持一致。
+   必须 :global —— antd Drawer 传送到 body 后只带 root-class-name、不带 scoped data-v，
+   普通作用域选择器匹配不到，会导致灰色分隔底色失效、区块间隔显白 */
+:global(.im-conversation-private-side__modal) {
+  --im-conversation-side-bg: #f5f7fa;
+}
+
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */
 .im-conversation-private-side__row + .im-conversation-private-side__row {
-  border-top: 1px solid var(--ant-color-border-secondary);
+  border-top: 1px solid var(--im-border-color-lighter);
+}
+
+/* 整体放进 :global()，避免 Vue scoped 把 `:global(.dark) .xxx` 塌缩成裸 `.dark` 而把变量刷到 <html> */
+:global(.dark .im-conversation-private-side__modal) {
+  --im-conversation-side-bg: rgb(255 255 255 / 5%);
 }
 </style>
 
-<!-- 同 GroupSide：el-drawer append-to-body 后 scoped CSS 的 data-v 不会落到 body 上，靠 modal-class 作祖先选择器写一段全局规则 -->
+<!-- 同 GroupSide：antd Drawer 传送到 body 后 scoped data-v 落不到 body 上，靠 root-class-name 作祖先选择器写全局规则压掉默认 padding -->
 <style>
-.im-conversation-private-side__modal .el-drawer__body {
+.im-conversation-private-side__modal .ant-drawer-body {
   padding: 0;
 }
 </style>
