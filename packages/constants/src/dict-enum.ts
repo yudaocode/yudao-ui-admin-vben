@@ -175,6 +175,27 @@ const IOT_DICT = {
   IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
+/** ========== IM - 即时通讯模块 ========== */
+const IM_DICT = {
+  IM_CHANNEL_MATERIAL_TYPE: 'im_channel_material_type', // IM 频道素材类型
+  IM_CONTENT_TYPE: 'im_content_type', // IM 内容类型
+  IM_FRIEND_ADD_SOURCE: 'im_friend_add_source', // IM 好友添加来源
+  IM_FRIEND_REQUEST_HANDLE_RESULT: 'im_friend_request_handle_result', // IM 好友申请处理结果
+  IM_FRIEND_STATUS: 'im_friend_status', // IM 好友状态
+  IM_GROUP_ADD_SOURCE: 'im_group_add_source', // IM 加群来源
+  IM_GROUP_MEMBER_ROLE: 'im_group_member_role', // IM 群成员角色
+  IM_GROUP_REQUEST_HANDLE_RESULT: 'im_group_request_handle_result', // IM 加群申请处理结果
+  IM_GROUP_STATUS: 'im_group_status', // IM 群状态
+  IM_MESSAGE_RECEIPT_STATUS: 'im_message_receipt_status', // IM 消息回执状态
+  IM_MESSAGE_STATUS: 'im_message_status', // IM 消息状态
+  IM_RTC_CALL_CONVERSATION_TYPE: 'im_rtc_call_conversation_type', // IM 通话会话类型
+  IM_RTC_CALL_END_REASON: 'im_rtc_call_end_reason', // IM 通话结束原因
+  IM_RTC_CALL_MEDIA_TYPE: 'im_rtc_call_media_type', // IM 通话媒体类型
+  IM_RTC_CALL_STATUS: 'im_rtc_call_status', // IM 通话状态
+  IM_RTC_PARTICIPANT_ROLE: 'im_rtc_participant_role', // IM 通话参与者角色
+  IM_RTC_PARTICIPANT_STATUS: 'im_rtc_participant_status', // IM 通话参与者状态
+} as const;
+
 /** ========== MES - 制造执行模块 ========== */
 const MES_DICT = {
   MES_MD_ITEM_OR_PRODUCT: 'mes_md_item_or_product', // MES 物料/产品标识
@@ -265,6 +286,7 @@ const DICT_TYPE = {
   ...CRM_DICT,
   ...ERP_DICT,
   ...INFRA_DICT,
+  ...IM_DICT,
   ...IOT_DICT,
   ...MES_DICT,
   ...WMS_DICT,
