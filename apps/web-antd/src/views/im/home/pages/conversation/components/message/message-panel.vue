@@ -9,6 +9,7 @@ import { IconifyIcon as Icon } from '@vben/icons'
 import { message, Popover, Tooltip } from 'ant-design-vue'
 
 import { createCall } from '#/api/im/rtc'
+import { getCurrentUserId } from '#/views/im/utils/auth'
 import { ImConversationType, ImRtcCallMediaType, ImRtcCallStatus } from '#/views/im/utils/constants'
 import { getClientConversationId } from '#/views/im/utils/db'
 import { resolveCallEndReasonText } from '#/views/im/utils/message'
@@ -183,12 +184,14 @@ const groupInfo = computed<
     return undefined
   }
   const group = groupStore.getGroup(conversation.targetId)
+  const selfMember = group?.members?.find((member) => member.userId === getCurrentUserId())
   return {
     id: conversation.targetId,
     name: group?.name || conversation.name,
     showGroupName: group?.name || conversation.name,
     showImage: group?.avatar || conversation.avatar,
     notice: group?.notice,
+    remarkNickName: selfMember?.displayUserName,
     groupRemark: group?.groupRemark,
     ownerId: group?.ownerUserId,
     memberCount: group?.memberCount,

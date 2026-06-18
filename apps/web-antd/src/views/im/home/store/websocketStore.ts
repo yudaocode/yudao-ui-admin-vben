@@ -204,6 +204,7 @@ const convertGroupMessage = (
  *    - 已读 / 回执（READ / RECEIPT）：多端已读同步、对方读后回执
  *    - 好友变更（FRIEND_*）：同步 friendStore + 级联刷新私聊会话；FRIEND_ADD / FRIEND_DELETE 额外插入会话气泡
  *    - 群个人信号（GROUP_MEMBER_SETTING_UPDATE）：同步 groupStore + 级联刷新群聊会话
+ *    - 群成员昵称变更（GROUP_MEMBER_NICKNAME_UPDATE）：同步 groupStore，不插入消息列表
  *    - 群广播事件（GROUP_*）：走 handleGroupMessage + applyGroupNotification 旁路（含 DISSOLVE / QUIT / KICK 自判清群）
  */
 export const useImWebSocketStore = defineStore('imWebSocketStore', {
@@ -538,11 +539,15 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
     /**
      * 群聊统一帧分发：按 payload.type（ImContentType）分到已读 / 回执 / 群个人信号 / 普通消息
      *
-     * 1530 GROUP_MEMBER_SETTING_UPDATE 是个人信号；其它（普通消息 + 1501-1520 段位群广播事件）走 handleGroupMessage 入库 + 触发 applyGroupNotification 旁路
+     * GROUP_MEMBER_SETTING_UPDATE / GROUP_MEMBER_NICKNAME_UPDATE 是成员资料同步信号；其它群广播事件走 handleGroupMessage 入库 + 触发 applyGroupNotification 旁路
      */
     dispatchGroupFrame(websocketMessage: ImGroupMessageNotification) {
       try {
         switch (websocketMessage.type) {
+          case ImContentType.GROUP_MEMBER_NICKNAME_UPDATE: {
+            this.handleGroupMemberNicknameUpdate(websocketMessage)
+            break
+          }
           case ImContentType.GROUP_MEMBER_SETTING_UPDATE: {
             this.handleGroupMemberSettingUpdate(websocketMessage)
             break
@@ -982,6 +987,15 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
       if (Object.keys(fields).length > 0) {
         groupStore.updateGroupFields(websocketMessage.groupId, fields)
       }
+    },
+
+    /** GROUP_MEMBER_NICKNAME_UPDATE：同步成员在群里的昵称 */
+    handleGroupMemberNicknameUpdate(websocketMessage: ImGroupMessageNotification) {
+      useGroupStore().applyGroupNotification(
+        websocketMessage.groupId,
+        websocketMessage.type,
+        websocketMessage.content
+      )
     },
 
     // ==================== 心跳 / 重连 ====================
