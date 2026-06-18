@@ -509,6 +509,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         if (
           !message.selfSend &&
           !isActive &&
+          !conversationStore.isMessageCoveredByReadPosition(conversation, message) &&
           isNormalMessage(message.type) &&
           message.status !== ImMessageStatus.RECALL
         ) {
@@ -613,6 +614,7 @@ export const useMessageStore = defineStore('imMessageStore', {
       if (
         !message.selfSend &&
         !isActive &&
+        !conversationStore.isMessageCoveredByReadPosition(conversation, message) &&
         isNormalMessage(message.type) &&
         message.status !== ImMessageStatus.RECALL
       ) {
