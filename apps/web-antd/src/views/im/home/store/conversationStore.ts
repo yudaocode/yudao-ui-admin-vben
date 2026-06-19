@@ -335,6 +335,15 @@ export const useConversationStore = defineStore('imConversationStore', {
       return !!record && message.id <= record.messageId
     },
 
+    /** 判断会话读位置是否覆盖消息编号 */
+    isReadPositionCovered(type: number, targetId: number, messageId?: number): boolean {
+      if (!messageId) {
+        return false
+      }
+      const record = this.getConversationRead(type, targetId)
+      return !!record && record.messageId >= messageId
+    },
+
     /** 应用读位置到会话 */
     applyReadToConversation(conversation: Conversation, messageId: number): boolean {
       if (!conversation.lastMessageId || conversation.lastMessageId > messageId) {
@@ -604,11 +613,7 @@ export const useConversationStore = defineStore('imConversationStore', {
       if (!conversation) {
         return
       }
-      // 1. 清理会话级未读状态
-      conversation.unreadCount = 0
-      conversation.atMe = false
-      conversation.atAll = false
-      // 2. 懒加载消息并保存会话摘要
+      // 懒加载消息并保存会话摘要
       void useMessageStore().ensureConversationMessageListLoaded(conversation)
       this.saveConversation(conversation)
     },
@@ -705,12 +710,7 @@ export const useConversationStore = defineStore('imConversationStore', {
       conversation.atMe = false
       conversation.atAll = false
       if (readMessageIdAdvanced) {
-        const record = {
-          conversationType: type,
-          targetId,
-          messageId,
-          updateTime: Date.now()
-        }
+        const record = createConversationRead(type, targetId, messageId)
         this.conversationReads[key] = record
         void getDb()
           .transaction(['conversations', 'conversationReads'], 'readwrite', async (tx) => {

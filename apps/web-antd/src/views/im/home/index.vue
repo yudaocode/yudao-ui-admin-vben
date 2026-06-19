@@ -146,7 +146,7 @@ function onBeforeUnload() {
 }
 window.addEventListener('beforeunload', onBeforeUnload)
 
-/** 离开 IM 主壳：取消在飞的 pull + 主动断 WebSocket + flush 草稿 + 清空表情缓存 + 解绑 unload + 停语音 */
+/** 离开 IM 主壳：取消 pull、断开 WebSocket、保存草稿、停止语音、解绑 unload，并结束当前 IM session */
 onUnmounted(() => {
   cancelPull()
   webSocketStore.disconnect()

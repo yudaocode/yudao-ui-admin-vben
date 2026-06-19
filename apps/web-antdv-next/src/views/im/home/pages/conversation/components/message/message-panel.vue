@@ -250,7 +250,7 @@ function reloadGroupData() {
   if (!conversation || conversation.type !== ImConversationType.GROUP) {
     return
   }
-  groupStore.fetchGroupInfo(conversation.targetId)
+  groupStore.fetchGroupInfo(conversation.targetId, true)
   groupStore.fetchGroupMemberList(conversation.targetId, true)
 }
 

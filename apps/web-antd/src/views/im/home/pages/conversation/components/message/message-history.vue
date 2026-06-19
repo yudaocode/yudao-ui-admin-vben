@@ -510,7 +510,7 @@ function locateMessage(messageId: number) {
     width="640px"
     :footer="null"
     class="im-message-history__dialog"
-    @after-open-change="(open) => open && onDialogOpen()"
+    @after-open-change="(open: boolean) => open && onDialogOpen()"
   >
     <div class="flex flex-col gap-3 h-[520px]">
       <!-- 搜索区：activeFilter 存在时左侧出 chip × 可清，否则纯搜索框 -->

@@ -50,9 +50,9 @@ const gridColsClass = computed(() => {
   return 'grid-cols-3'
 })
 
-const localVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
-const remoteVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.remoteVideoStream)
-const remoteAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.remoteAudioStream)
+const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
+const setRemoteVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.remoteVideoStream)
+const setRemoteAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.remoteAudioStream)
 
 /** 1v1 视频：是否有远端视频流 */
 const hasRemoteVideo = computed(() => !props.isGroup && !!props.remoteVideoStream)
@@ -121,7 +121,7 @@ const formattedDuration = computed(() =>
       <template v-else-if="isVideo">
         <div v-show="hasRemoteVideo" class="absolute inset-0">
           <video
-            ref="remoteVideoRef"
+            :ref="setRemoteVideoRef"
             class="object-cover w-full h-full"
             autoplay
             playsinline
@@ -143,7 +143,7 @@ const formattedDuration = computed(() =>
           class="absolute top-4 right-4 z-[2] overflow-hidden w-30 rounded-lg aspect-[9/16] bg-[#333]"
         >
           <video
-            ref="localVideoRef"
+            :ref="setLocalVideoRef"
             class="object-cover w-full h-full scale-x-[-1]"
             autoplay
             muted
@@ -168,7 +168,7 @@ const formattedDuration = computed(() =>
       </template>
       <audio
         v-if="!isGroup && remoteAudioStream"
-        ref="remoteAudioRef"
+        :ref="setRemoteAudioRef"
         autoplay
         :muted="!speakerEnabled"
       ></audio>

@@ -29,6 +29,20 @@ const pendingDraftConversations = new Set<Conversation>()
 
 type LegacyConversationDO = ConversationDO & { readMessageId?: number }
 
+/** 创建会话读位置记录 */
+function createConversationRead(
+  type: number,
+  targetId: number,
+  messageId: number
+): ConversationRead {
+  return {
+    conversationType: type,
+    targetId,
+    messageId,
+    updateTime: Date.now()
+  }
+}
+
 /** 创建草稿保存防抖函数 */
 function createDraftDebounce(fn: () => void, wait: number) {
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -335,6 +349,15 @@ export const useConversationStore = defineStore('imConversationStore', {
       return !!record && message.id <= record.messageId
     },
 
+    /** 判断会话读位置是否覆盖消息编号 */
+    isReadPositionCovered(type: number, targetId: number, messageId?: number): boolean {
+      if (!messageId) {
+        return false
+      }
+      const record = this.getConversationRead(type, targetId)
+      return !!record && record.messageId >= messageId
+    },
+
     /** 应用读位置到会话 */
     applyReadToConversation(conversation: Conversation, messageId: number): boolean {
       if (!conversation.lastMessageId || conversation.lastMessageId > messageId) {
@@ -604,11 +627,7 @@ export const useConversationStore = defineStore('imConversationStore', {
       if (!conversation) {
         return
       }
-      // 1. 清理会话级未读状态
-      conversation.unreadCount = 0
-      conversation.atMe = false
-      conversation.atAll = false
-      // 2. 懒加载消息并保存会话摘要
+      // 懒加载消息并保存会话摘要
       void useMessageStore().ensureConversationMessageListLoaded(conversation)
       this.saveConversation(conversation)
     },
@@ -685,7 +704,7 @@ export const useConversationStore = defineStore('imConversationStore', {
     },
 
     /** 标记会话已读 */
-    markConversationRead(type: number, targetId: number, messageId?: number) {
+    markConversationRead(type: number, targetId: number, messageId?: number): void {
       const conversation = this.getConversation(type, targetId)
       if (!conversation) {
         return
@@ -705,19 +724,25 @@ export const useConversationStore = defineStore('imConversationStore', {
       conversation.atMe = false
       conversation.atAll = false
       if (readMessageIdAdvanced) {
-        const record = {
-          conversationType: type,
-          targetId,
-          messageId,
-          updateTime: Date.now()
-        }
+        const record = createConversationRead(type, targetId, messageId)
         this.conversationReads[key] = record
         void getDb()
           .transaction(['conversations', 'conversationReads'], 'readwrite', async (tx) => {
             await this.saveConversationRecord(conversation, tx)
             await this.saveConversationReadRecord(record, tx)
           })
-          .catch((error) => console.warn('[IM conversationStore] 会话已读写入失败', error))
+          .catch((error) =>
+            console.warn(
+              '[IM conversationStore] 会话已读写入失败',
+              {
+                conversationType: type,
+                targetId,
+                messageId,
+                conversationKey: key
+              },
+              error
+            )
+          )
         return
       }
       this.saveConversation(conversation)
