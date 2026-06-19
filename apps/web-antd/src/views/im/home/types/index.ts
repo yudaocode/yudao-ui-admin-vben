@@ -110,6 +110,7 @@ export interface Conversation {
   silent?: boolean // 是否免打扰（不展示未读徽标 + 不响提示音）
   atMe?: boolean // 群聊：是否有人 @我
   atAll?: boolean // 群聊：是否有人 @全体成员
+  readMessageId?: number // 已上报到服务端的最大已读消息编号
   draft?: {
     html: string // 输入框 HTML
     plain: string // 输入框纯文本
@@ -147,6 +148,7 @@ export interface Message {
 
 // ==================== IndexedDB 本地存储结构 ====================
 
+/** 会话 IndexedDB 存储结构 */
 export interface ConversationDO extends Conversation {
   clientConversationId: string // `${type}:${targetId}`
 }
@@ -158,16 +160,19 @@ export interface ConversationRead {
   updateTime?: number // 更新时间
 }
 
+/** 会话读位置 IndexedDB 存储结构 */
 export interface ConversationReadDO extends ConversationRead {
   clientConversationId: string // `${conversationType}:${targetId}`
 }
 
+/** 消息 IndexedDB 存储结构 */
 export interface MessageDO extends Omit<Message, '_ackMerging' | '_localFile' | 'uploadProgress'> {
   messageKey: string // `${conversationType}:${id}` 或 `client:${clientMessageId}`
   conversationType: number // 会话类型，对齐 ImConversationType
   clientConversationId: string // ConversationDO.clientConversationId
 }
 
+/** 设置 IndexedDB 存储结构 */
 export interface SettingDO<T = unknown> {
   key: string
   value: T
@@ -195,12 +200,18 @@ export interface Group {
   groupRemark?: string // 群备注。从当前用户的 GroupMember 回填（当前用户对该群的自定义名）
   members?: GroupMember[] // 群成员缓存（按需懒加载）
   infoLoaded?: boolean // 群详情是否已加载，本轮会话内存标记，不持久化
+  activeCallLoaded?: boolean // 群活跃通话是否已探测，本轮会话内存标记，不持久化
+  activeCallExpired?: boolean // 群活跃通话探测是否已过期
   membersLoaded?: boolean // members 是否"完整加载"——只有整群 loadGroupMemberList / fetchGroupMemberList 命中时为 true；fetchGroupMember 单成员补齐不置位，避免 fetchGroupMemberList(force=false) 命中缓存时误判整群已加载
   membersExpired?: boolean // 群成员缓存是否已过期；重连 / 重新进入 IM 后只标记不删除，下次进入群会话再刷新
   memberCount?: number // 成员总数
 }
 
-export type GroupDO = Omit<Group, 'infoLoaded' | 'members' | 'membersExpired' | 'membersLoaded'>
+/** 群 IndexedDB 存储结构 */
+export type GroupDO = Omit<
+  Group,
+  'activeCallExpired' | 'activeCallLoaded' | 'infoLoaded' | 'members' | 'membersExpired' | 'membersLoaded'
+>
 
 // 群成员实体（前端内部结构）
 export interface GroupMember {

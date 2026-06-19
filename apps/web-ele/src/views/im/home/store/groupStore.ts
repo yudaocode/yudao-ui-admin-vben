@@ -47,6 +47,8 @@ const pendingSingleMemberKey = (userId: number, groupId: number, memberUserId: n
 /** 构建群 IndexedDB 记录 */
 function buildGroupDO(group: Group): GroupDO {
   const {
+    activeCallExpired: _activeCallExpired,
+    activeCallLoaded: _activeCallLoaded,
     infoLoaded: _infoLoaded,
     members: _members,
     membersLoaded: _membersLoaded,
@@ -229,11 +231,13 @@ export const useGroupStore = defineStore('imGroupStore', {
       this.groups = fresh.map((group) => {
         const existing = groupMap.get(group.id)
         if (!existing) {
-          return { ...group, infoLoaded: true }
+          return { ...group, activeCallExpired: true, infoLoaded: true }
         }
         return {
           ...group,
           infoLoaded: true,
+          activeCallExpired: existing.activeCallExpired,
+          activeCallLoaded: existing.activeCallLoaded,
           members: existing.members,
           memberCount: existing.memberCount ?? group.memberCount,
           membersLoaded: existing.membersLoaded,
@@ -285,6 +289,29 @@ export const useGroupStore = defineStore('imGroupStore', {
           group.membersExpired = true
         }
       }
+    },
+
+    /** 失效全部群通话探测缓存 */
+    markAllGroupActiveCallsExpired() {
+      for (const group of this.groups) {
+        group.activeCallExpired = true
+      }
+    },
+
+    /** 标记群通话探测已加载 */
+    markGroupActiveCallLoaded(groupId: number) {
+      const group = this.getGroup(groupId)
+      if (!group) {
+        return
+      }
+      group.activeCallLoaded = true
+      group.activeCallExpired = false
+    },
+
+    /** 判断群通话是否需要重新探测 */
+    isGroupActiveCallExpired(groupId: number): boolean {
+      const group = this.getGroup(groupId)
+      return !group?.activeCallLoaded || !!group.activeCallExpired
     },
 
     /** 失效指定群成员缓存 */

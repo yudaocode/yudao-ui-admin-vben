@@ -260,6 +260,7 @@ export const useRtcStore = defineStore('imRtc', () => {
     if (!payload?.groupId) {
       return
     }
+    useGroupStore().markGroupActiveCallLoaded(payload.groupId)
     // 浅比较：room / mediaType / joinedUserIds / inviteeIds 都没变就跳过，避免下游 watcher 无意义重算
     const existing = groupActiveCalls.value.get(payload.groupId)
     const nextParticipantsLoaded = participantsLoaded ?? !!existing?.participantsLoaded
@@ -320,7 +321,11 @@ export const useRtcStore = defineStore('imRtc', () => {
 
   /** 群通话结束：从 groupActiveCalls 移除；胶囊条消失 */
   function removeGroupCall(groupId: number) {
+    if (!groupId) {
+      return
+    }
     clearGroupCallCache(groupId)
+    useGroupStore().markGroupActiveCallLoaded(groupId)
   }
 
   /** 获取群当前活跃通话；用于胶囊条按 groupId 查询 */
