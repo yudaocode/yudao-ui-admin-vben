@@ -240,12 +240,12 @@ export const useMessageSender = () => {
       }
     }
     const maxMessageId = Math.max(loadedMaxMessageId, conversation.lastMessageId || 0)
-    const readCovered = conversationStore.isReadPositionCovered(
+    const readReported = conversationStore.isReportedReadPositionCovered(
       conversation.type,
       conversation.targetId,
       maxMessageId
     )
-    if (readCovered) {
+    if (readReported) {
       conversationStore.markConversationRead(conversation.type, conversation.targetId)
       return
     }
@@ -275,6 +275,11 @@ export const useMessageSender = () => {
       } else {
         await apiReadChannelMessages(conversation.targetId, maxMessageId)
       }
+      conversationStore.markConversationReadReported(
+        conversation.type,
+        conversation.targetId,
+        maxMessageId
+      )
     } catch (error) {
       console.error(
         '[IM] 标记已读失败',

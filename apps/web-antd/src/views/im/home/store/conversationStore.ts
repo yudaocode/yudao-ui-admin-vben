@@ -27,7 +27,19 @@ import { useMessageStore } from './messageStore'
 const PERSIST_DRAFT_DEBOUNCE_MS = 500
 const pendingDraftConversations = new Set<Conversation>()
 
-type LegacyConversationDO = ConversationDO & { readMessageId?: number }
+/** 创建会话读位置记录 */
+function createConversationRead(
+  type: number,
+  targetId: number,
+  messageId: number
+): ConversationRead {
+  return {
+    conversationType: type,
+    targetId,
+    messageId,
+    updateTime: Date.now()
+  }
+}
 
 /** 创建草稿保存防抖函数 */
 function createDraftDebounce(fn: () => void, wait: number) {
@@ -75,6 +87,7 @@ function toConversationDO(conversation: Conversation): ConversationDO {
     lastReceiptStatus: conversation.lastReceiptStatus,
     lastSelfSend: conversation.lastSelfSend,
     lastSenderDisplayName: conversation.lastSenderDisplayName,
+    readMessageId: conversation.readMessageId,
     deleted: conversation.deleted,
     top: conversation.top,
     silent: conversation.silent,
@@ -86,10 +99,9 @@ function toConversationDO(conversation: Conversation): ConversationDO {
 }
 
 /** IndexedDB 记录转会话 */
-function fromConversationDO(conversation: LegacyConversationDO): Conversation {
+function fromConversationDO(conversation: ConversationDO): Conversation {
   const {
     clientConversationId: _clientConversationId,
-    readMessageId: _readMessageId,
     ...rest
   } = conversation
   return rest
@@ -207,34 +219,10 @@ export const useConversationStore = defineStore('imConversationStore', {
         const item = fromConversationReadDO(record)
         nextConversationReads[getClientConversationId(item.conversationType, item.targetId)] = item
       }
-      const migratedReads: ConversationRead[] = []
-      for (const conversation of conversations as LegacyConversationDO[]) {
-        if (!conversation.readMessageId) {
-          continue
-        }
-        const key = getClientConversationId(conversation.type, conversation.targetId)
-        if (nextConversationReads[key]) {
-          continue
-        }
-        const record = {
-          conversationType: conversation.type,
-          targetId: conversation.targetId,
-          messageId: conversation.readMessageId
-        }
-        nextConversationReads[key] = record
-        migratedReads.push(record)
-      }
-      const nextConversations = (conversations as LegacyConversationDO[]).map((conversation) =>
-        fromConversationDO(conversation)
-      )
+      const nextConversations = conversations.map((conversation) => fromConversationDO(conversation))
       this.conversationReads = nextConversationReads
       await this.applyLocalConversationReads(nextConversations)
       this.conversations = nextConversations
-      if (migratedReads.length > 0) {
-        void this.saveConversationReadRecord(migratedReads).catch((error) =>
-          console.warn('[IM conversationStore] 会话读位置迁移失败', error)
-        )
-      }
       if (Array.isArray(recent)) {
         this.recentForwardConversationKeys = recent.slice(0, CONVERSATION_RECENT_FORWARD_MAX)
       }
@@ -344,6 +332,15 @@ export const useConversationStore = defineStore('imConversationStore', {
       return !!record && record.messageId >= messageId
     },
 
+    /** 判断服务端已读位置是否覆盖消息编号 */
+    isReportedReadPositionCovered(type: number, targetId: number, messageId?: number): boolean {
+      if (!messageId) {
+        return false
+      }
+      const conversation = this.getConversation(type, targetId)
+      return (conversation?.readMessageId || 0) >= messageId
+    },
+
     /** 应用读位置到会话 */
     applyReadToConversation(conversation: Conversation, messageId: number): boolean {
       if (!conversation.lastMessageId || conversation.lastMessageId > messageId) {
@@ -397,6 +394,11 @@ export const useConversationStore = defineStore('imConversationStore', {
         }
         const current = this.conversationReads[clientConversationId]
         const messageId = Math.max(record.messageId, current?.messageId || 0)
+        const conversation = this.getConversation(record.conversationType, record.targetId)
+        if (conversation && record.messageId > (conversation.readMessageId || 0)) {
+          conversation.readMessageId = record.messageId
+          changedConversations.set(clientConversationId, conversation)
+        }
         if (!current || messageId > current.messageId) {
           const next = {
             conversationType: record.conversationType,
@@ -408,7 +410,6 @@ export const useConversationStore = defineStore('imConversationStore', {
           changedReads.set(clientConversationId, next)
         }
 
-        const conversation = this.getConversation(record.conversationType, record.targetId)
         if (conversation && this.applyReadToConversation(conversation, messageId)) {
           changedConversations.set(clientConversationId, conversation)
         } else if (conversation) {
@@ -690,7 +691,7 @@ export const useConversationStore = defineStore('imConversationStore', {
     },
 
     /** 标记会话已读 */
-    markConversationRead(type: number, targetId: number, messageId?: number) {
+    markConversationRead(type: number, targetId: number, messageId?: number): void {
       const conversation = this.getConversation(type, targetId)
       if (!conversation) {
         return
@@ -717,9 +718,33 @@ export const useConversationStore = defineStore('imConversationStore', {
             await this.saveConversationRecord(conversation, tx)
             await this.saveConversationReadRecord(record, tx)
           })
-          .catch((error) => console.warn('[IM conversationStore] 会话已读写入失败', error))
+          .catch((error) =>
+            console.warn(
+              '[IM conversationStore] 会话已读写入失败',
+              {
+                conversationType: type,
+                targetId,
+                messageId,
+                conversationKey: key
+              },
+              error
+            )
+          )
         return
       }
+      this.saveConversation(conversation)
+    },
+
+    /** 标记会话已上报服务端读位置 */
+    markConversationReadReported(type: number, targetId: number, messageId?: number): void {
+      if (!messageId) {
+        return
+      }
+      const conversation = this.getConversation(type, targetId)
+      if (!conversation || messageId <= (conversation.readMessageId || 0)) {
+        return
+      }
+      conversation.readMessageId = messageId
       this.saveConversation(conversation)
     },
 

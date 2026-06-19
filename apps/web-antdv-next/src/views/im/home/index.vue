@@ -61,6 +61,7 @@ onMounted(async () => {
     const hasFriendRows = cacheResults[2]
     const hasGroupRows = cacheResults[3]
     const hasChannelRows = cacheResults[4]
+    groupStore.markAllGroupActiveCallsExpired()
     groupStore.markAllGroupMembersExpired()
     childRouteReady.value = true
     // 1.4 我管理的群下未处理加群申请红点：首登用 unhandled-list（服务端直接过滤未处理，语义精准、启动轻）；
