@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { CascaderProps } from 'ant-design-vue';
+import type { CascaderProps } from 'antdv-next';
 
 import type { SystemAreaApi } from '#/api/system/area';
 
 import { onMounted, ref, watch } from 'vue';
 
-import { Cascader } from 'ant-design-vue';
+import { Cascader } from 'antdv-next';
 
 import { getAreaTree } from '#/api/system/area';
 
