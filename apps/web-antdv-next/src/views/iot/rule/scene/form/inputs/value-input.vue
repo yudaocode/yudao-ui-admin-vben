@@ -14,7 +14,6 @@ import {
   Input,
   InputNumber,
   Select,
-  SelectOption,
   Tag,
   Tooltip,
 } from 'antdv-next';
@@ -209,10 +208,11 @@ watch(
       v-model:value="localValue"
       placeholder="请选择布尔值"
       class="w-full!"
-    >
-      <SelectOption value="true">真 (true)</SelectOption>
-      <SelectOption value="false">假 (false)</SelectOption>
-    </Select>
+      :options="[
+        { label: '真 (true)', value: 'true' },
+        { label: '假 (false)', value: 'false' },
+      ]"
+    />
 
     <!-- 枚举值选择 -->
     <Select
@@ -220,17 +220,10 @@ watch(
         propertyType === IoTDataSpecsDataTypeEnum.ENUM && enumOptions.length > 0
       "
       v-model:value="localValue"
+      :options="enumOptions"
       placeholder="请选择枚举值"
       class="w-full!"
-    >
-      <SelectOption
-        v-for="option in enumOptions"
-        :key="option.value"
-        :value="option.value"
-      >
-        {{ option.label }}
-      </SelectOption>
-    </Select>
+    />
 
     <!-- 范围输入 (between 操作符) -->
     <div

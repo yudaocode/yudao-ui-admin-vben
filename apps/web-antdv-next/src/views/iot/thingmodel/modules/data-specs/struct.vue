@@ -33,12 +33,11 @@ const structFormRef = ref();
 const formData = ref<any>(buildEmptyFormData());
 
 /** 校验结构体属性对象非空 */
-function validateStructSpecsList(_rule: any, _value: any, callback: any) {
+function validateStructSpecsList(_rule: any, _value: any) {
   if (isEmpty(dataSpecsList.value)) {
-    callback(new Error('请至少添加一个结构体属性对象'));
-    return;
+    return Promise.reject(new Error('请至少添加一个结构体属性对象'));
   }
-  callback();
+  return Promise.resolve();
 }
 
 const [Modal, modalApi] = useVbenModal({

@@ -5,7 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select, SelectOption, TextArea } from 'antdv-next';
+import { FormItem, Input, Select, TextArea } from 'antdv-next';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -67,10 +67,14 @@ onMounted(() => {
   >
     <Input v-model:value="urlPath" placeholder="请输入请求地址">
       <template #addonBefore>
-        <Select v-model:value="urlPrefix" class="w-[100px]">
-          <SelectOption value="http://">http://</SelectOption>
-          <SelectOption value="https://">https://</SelectOption>
-        </Select>
+        <Select
+          v-model:value="urlPrefix"
+          class="w-[100px]"
+          :options="[
+            { label: 'http://', value: 'http://' },
+            { label: 'https://', value: 'https://' },
+          ]"
+        />
       </template>
     </Input>
   </FormItem>
@@ -81,12 +85,16 @@ onMounted(() => {
     ]"
     label="请求方法"
   >
-    <Select v-model:value="config.method" placeholder="请选择请求方法">
-      <SelectOption value="GET">GET</SelectOption>
-      <SelectOption value="POST">POST</SelectOption>
-      <SelectOption value="PUT">PUT</SelectOption>
-      <SelectOption value="DELETE">DELETE</SelectOption>
-    </Select>
+    <Select
+      v-model:value="config.method"
+      placeholder="请选择请求方法"
+      :options="[
+        { label: 'GET', value: 'GET' },
+        { label: 'POST', value: 'POST' },
+        { label: 'PUT', value: 'PUT' },
+        { label: 'DELETE', value: 'DELETE' },
+      ]"
+    />
   </FormItem>
   <FormItem label="请求头">
     <KeyValueEditor v-model="config.headers" add-button-text="添加请求头" />

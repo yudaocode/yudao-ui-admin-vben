@@ -19,7 +19,6 @@ import {
   message,
   Row,
   Select,
-  SelectOption,
 } from 'antdv-next';
 
 import { ConditionType } from '../../consts';
@@ -237,25 +236,20 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
               <FormItem
                 class="mb-0 ml-4 inline-block w-48"
                 :name="['routerGroups', index, 'nodeId']"
-                :rules="{
-                  required: true,
-                  message: '路由目标节点不能为空',
-                  trigger: 'change',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '路由目标节点不能为空',
+                    trigger: 'change',
+                  },
+                ]"
               >
                 <Select
                   v-model:value="item.nodeId"
                   placeholder="请选择路由目标节点"
                   allow-clear
-                >
-                  <SelectOption
-                    v-for="node in nodeOptions"
-                    :key="node.value"
-                    :value="node.value"
-                  >
-                    {{ node.label }}
-                  </SelectOption>
-                </Select>
+                  :options="nodeOptions"
+                />
               </FormItem>
             </div>
             <Button

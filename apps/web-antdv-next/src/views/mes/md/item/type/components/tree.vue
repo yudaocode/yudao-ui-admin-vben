@@ -54,8 +54,17 @@ function handleSearch(value: string) {
 }
 
 /** 处理节点点击：支持点击同一节点取消选中 */
-function handleSelect(_selectedKeys: any[], info: any) {
-  const row = info.node.dataRef as MesMdItemTypeApi.ItemType;
+function handleSelect(selectedNodeKeys: any[], info: any) {
+  const selectedKey = selectedNodeKeys[0] ?? info.node?.id ?? info.node?.key;
+  const row = itemTypeList.value.find(
+    (item) => String(item.id) === String(selectedKey),
+  );
+  if (!row) {
+    currentNodeId.value = undefined;
+    selectedKeys.value = [];
+    emit('nodeClick', undefined);
+    return;
+  }
   if (currentNodeId.value === row.id) {
     currentNodeId.value = undefined;
     selectedKeys.value = [];

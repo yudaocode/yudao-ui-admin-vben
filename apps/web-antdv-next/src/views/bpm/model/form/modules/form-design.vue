@@ -15,7 +15,6 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectOption,
   Tooltip,
 } from 'antdv-next';
 
@@ -107,16 +106,12 @@ defineExpose({ validate });
       name="formId"
       class="mb-5"
     >
-      <Select v-model:value="modelData.formId" allow-clear>
-        <SelectOption
-          v-for="form in props.formList"
-          :key="form.id"
-          :value="form.id"
-        >
-          {{ form.name }}
-        </SelectOption>
-        >
-      </Select>
+      <Select
+        v-model:value="modelData.formId"
+        allow-clear
+        :options="props.formList"
+        :field-names="{ label: 'name', value: 'id' }"
+      />
     </FormItem>
     <FormItem
       v-if="modelData.formType === BpmModelFormType.CUSTOM"

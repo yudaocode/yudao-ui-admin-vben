@@ -15,7 +15,7 @@ import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { Button, Select, SelectOption, Space, Switch, Tag } from 'antdv-next';
+import { Button, Select, Space, Switch, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
@@ -195,25 +195,18 @@ defineExpose({
         allow-clear
         placeholder="所有方法"
         style="width: 160px"
-      >
-        <SelectOption
-          v-for="item in methodOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-          {{ item.label }}
-        </SelectOption>
-      </Select>
+        :options="methodOptions"
+      />
       <Select
         v-model:value="queryParams.upstream"
         allow-clear
         placeholder="上行/下行"
         style="width: 160px"
-      >
-        <SelectOption label="上行" value="true">上行</SelectOption>
-        <SelectOption label="下行" value="false">下行</SelectOption>
-      </Select>
+        :options="[
+          { label: '上行', value: 'true' },
+          { label: '下行', value: 'false' },
+        ]"
+      />
       <Space>
         <Button type="primary" @click="handleQuery">
           <IconifyIcon icon="ep:search" class="mr-[5px]" /> 搜索

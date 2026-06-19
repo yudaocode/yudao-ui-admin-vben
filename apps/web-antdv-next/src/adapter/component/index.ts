@@ -75,6 +75,9 @@ import { message, Modal, notification } from 'antdv-next';
 import { uploadFile as uploadFileApi } from '#/api/infra/file';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
+
+import { DatePicker, RangePicker } from './date-picker';
+
 type AdapterUploadProps = UploadProps & {
   aspectRatio?: string;
   crop?: boolean;
@@ -97,9 +100,6 @@ const Checkbox = defineAsyncComponent(
 const CheckboxGroup = defineAsyncComponent(() =>
   import('antdv-next/dist/checkbox/index').then((res) => res.CheckboxGroup),
 );
-const DatePicker = defineAsyncComponent(
-  () => import('antdv-next/dist/date-picker/index'),
-);
 const Divider = defineAsyncComponent(
   () => import('antdv-next/dist/divider/index'),
 );
@@ -116,11 +116,6 @@ const Mentions = defineAsyncComponent(
 const Radio = defineAsyncComponent(() => import('antdv-next/dist/radio/index'));
 const RadioGroup = defineAsyncComponent(() =>
   import('antdv-next/dist/radio/index').then((res) => res.RadioGroup),
-);
-const RangePicker = defineAsyncComponent(() =>
-  import('antdv-next/dist/date-picker/index').then(
-    (res) => res.DateRangePicker,
-  ),
 );
 const Rate = defineAsyncComponent(() => import('antdv-next/dist/rate/index'));
 const Select = defineAsyncComponent(
@@ -794,4 +789,4 @@ async function initComponentAdapter() {
   });
 }
 
-export { initComponentAdapter };
+export { DatePicker, initComponentAdapter, RangePicker };

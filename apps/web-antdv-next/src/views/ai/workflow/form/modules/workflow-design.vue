@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Ref } from 'vue';
 
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -20,6 +20,15 @@ const tinyflowRef = ref<InstanceType<typeof Tinyflow> | null>(null);
 const workflowData = inject('workflowData') as Ref;
 const params4Test = ref<any[]>([]);
 const paramsOfStartNode = ref<any>({});
+const startNodeParamOptions = computed(() =>
+  Object.entries(paramsOfStartNode.value).map(
+    ([key, value]: [string, any]) => ({
+      label: value?.description || key,
+      value: key,
+      disabled: !!value?.disabled,
+    }),
+  ),
+);
 const testResult = ref(null);
 const loading = ref(false);
 const error = ref(null);
@@ -231,16 +240,12 @@ defineExpose({ validate });
             v-for="(param, index) in params4Test"
             :key="index"
           >
-            <Select class="w-48" v-model="param.key" placeholder="参数名">
-              <SelectOption
-                v-for="(value, key) in paramsOfStartNode"
-                :key="key"
-                :value="key"
-                :disabled="!!value?.disabled"
-              >
-                {{ value?.description || key }}
-              </SelectOption>
-            </Select>
+            <Select
+              v-model="param.key"
+              :options="startNodeParamOptions"
+              class="w-48"
+              placeholder="参数名"
+            />
             <Input
               class="mx-2 w-48"
               v-model:value="param.value"

@@ -10,7 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { useVModel } from '@vueuse/core';
-import { FormItem, Input, Select, SelectOption } from 'antdv-next';
+import { FormItem, Input, Select } from 'antdv-next';
 
 const props = defineProps<{ modelValue: any }>();
 const emits = defineEmits(['update:modelValue']);
@@ -36,53 +36,46 @@ function unitChange(unitSpecs: any) {
 }
 
 /** 校验最小值 */
-function validateMin(_rule: any, _value: any, callback: any) {
+function validateMin(_rule: any, _value: any) {
   const min = Number(dataSpecs.value.min);
   const max = Number(dataSpecs.value.max);
   if (Number.isNaN(min)) {
-    callback(new Error('请输入有效的数值'));
-    return;
+    return Promise.reject(new Error('请输入有效的数值'));
   }
   if (!Number.isNaN(max) && min >= max) {
-    callback(new Error('最小值必须小于最大值'));
-    return;
+    return Promise.reject(new Error('最小值必须小于最大值'));
   }
-  callback();
+  return Promise.resolve();
 }
 
 /** 校验最大值 */
-function validateMax(_rule: any, _value: any, callback: any) {
+function validateMax(_rule: any, _value: any) {
   const min = Number(dataSpecs.value.min);
   const max = Number(dataSpecs.value.max);
   if (Number.isNaN(max)) {
-    callback(new Error('请输入有效的数值'));
-    return;
+    return Promise.reject(new Error('请输入有效的数值'));
   }
   if (!Number.isNaN(min) && max <= min) {
-    callback(new Error('最大值必须大于最小值'));
-    return;
+    return Promise.reject(new Error('最大值必须大于最小值'));
   }
-  callback();
+  return Promise.resolve();
 }
 
 /** 校验步长 */
-function validateStep(_rule: any, _value: any, callback: any) {
+function validateStep(_rule: any, _value: any) {
   const step = Number(dataSpecs.value.step);
   if (Number.isNaN(step)) {
-    callback(new Error('请输入有效的数值'));
-    return;
+    return Promise.reject(new Error('请输入有效的数值'));
   }
   if (step <= 0) {
-    callback(new Error('步长必须大于 0'));
-    return;
+    return Promise.reject(new Error('步长必须大于 0'));
   }
   const min = Number(dataSpecs.value.min);
   const max = Number(dataSpecs.value.max);
   if (!Number.isNaN(min) && !Number.isNaN(max) && step > max - min) {
-    callback(new Error('步长不能大于最大值与最小值的差值'));
-    return;
+    return Promise.reject(new Error('步长不能大于最大值与最小值的差值'));
   }
-  callback();
+  return Promise.resolve();
 }
 </script>
 
@@ -133,15 +126,13 @@ function validateStep(_rule: any, _value: any, callback: any) {
       placeholder="请选择单位"
       class="w-full"
       @change="unitChange"
-    >
-      <SelectOption
-        v-for="(item, index) in unitOptions"
-        :key="index"
-        :value="`${item.label}-${item.value}`"
-      >
-        {{ `${item.label}-${item.value}` }}
-      </SelectOption>
-    </Select>
+      :options="[
+        ...unitOptions.map((item) => ({
+          label: `{{ \`${item.label}-${item.value}\` }}`,
+          value: `${item.label}-${item.value}`,
+        })),
+      ]"
+    />
   </FormItem>
 </template>
 

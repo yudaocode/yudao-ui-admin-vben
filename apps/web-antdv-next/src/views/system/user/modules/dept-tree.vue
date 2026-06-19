@@ -32,8 +32,12 @@ function handleSearch(e: any) {
 }
 
 /** 选中部门 */
-function handleSelect(_selectedKeys: any[], info: any) {
-  emit('select', info.node.dataRef);
+function handleSelect(selectedNodeKeys: any[], info: any) {
+  const selectedKey = selectedNodeKeys[0] ?? info.node?.id ?? info.node?.key;
+  const dept = info.selected
+    ? deptList.value.find((item) => String(item.id) === String(selectedKey))
+    : undefined;
+  emit('select', dept);
 }
 
 /** 初始化 */

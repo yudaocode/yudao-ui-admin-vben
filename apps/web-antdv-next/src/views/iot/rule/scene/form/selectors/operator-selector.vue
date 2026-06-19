@@ -8,7 +8,7 @@ import {
 } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Select, SelectOption } from 'antdv-next';
+import { Select } from 'antdv-next';
 
 /** 操作符选择器组件 */
 defineOptions({ name: 'OperatorSelector' });
@@ -204,6 +204,13 @@ const availableOperators = computed(() => {
     (op.supportedTypes as any[]).includes(props.propertyType || ''),
   );
 });
+const availableOperatorOptions = computed(() =>
+  availableOperators.value.map((operator) => ({
+    label: operator.label,
+    value: operator.value,
+    raw: operator,
+  })),
+);
 
 // 计算属性：当前选中的操作符
 const selectedOperator = computed(() => {
@@ -244,29 +251,25 @@ watch(
       @change="handleChange"
       class="w-full"
       option-label-prop="label"
+      :options="availableOperatorOptions"
     >
-      <SelectOption
-        v-for="operator in availableOperators"
-        :key="operator.value"
-        :label="operator.label"
-        :value="operator.value"
-      >
+      <template #optionRender="{ option }">
         <div class="py-[4px] flex w-full items-center justify-between">
           <div class="gap-[8px] flex items-center">
             <div class="text-[14px] font-medium text-foreground">
-              {{ operator.label }}
+              {{ option.data.raw.label }}
             </div>
             <div
               class="text-[12px] px-[6px] py-[2px] rounded-[4px] bg-primary-light-9 font-mono text-primary"
             >
-              {{ operator.symbol }}
+              {{ option.data.raw.symbol }}
             </div>
           </div>
           <div class="text-[12px] text-muted-foreground">
-            {{ operator.description }}
+            {{ option.data.raw.description }}
           </div>
         </div>
-      </SelectOption>
+      </template>
     </Select>
   </div>
 </template>

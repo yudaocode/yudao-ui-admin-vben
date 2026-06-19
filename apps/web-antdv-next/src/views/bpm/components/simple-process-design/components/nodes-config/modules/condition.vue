@@ -17,7 +17,6 @@ import {
   RadioGroup,
   Row,
   Select,
-  SelectOption,
   Space,
   Switch,
   TextArea,
@@ -69,6 +68,14 @@ const conditionConfigTypes = computed(() => {
 
 /** 条件规则可选择的表单字段 */
 const fieldOptions = useFormFieldsAndStartUser();
+const fieldSelectOptions = computed(() =>
+  fieldOptions.map((field) => ({
+    label: field.title,
+    value: field.field,
+    disabled: !field.required,
+    raw: field,
+  })),
+);
 
 // 表单校验规则
 const formRules: Record<string, Rule[]> = reactive({
@@ -172,10 +179,12 @@ defineExpose({ validate });
           />
         </div>
       </div>
-      <Space orientation="vertical" size="small" class="w-11/12 pl-1">
-        <template #split>
-          {{ condition.conditionGroups.and ? '且' : '或' }}
-        </template>
+      <Space
+        orientation="vertical"
+        size="small"
+        class="w-11/12 pl-1"
+        :separator="condition.conditionGroups.and ? '且' : '或'"
+      >
         <Card
           class="group relative w-full hover:border-blue-500"
           v-for="(equation, cIdx) in condition.conditionGroups.conditions"
@@ -190,7 +199,10 @@ defineExpose({ validate });
               icon="lucide:circle-x"
               class="size-4"
               @click="
-                deleteConditionGroup(condition.conditionGroups.conditions, cIdx)
+                deleteConditionGroup(
+                  condition.conditionGroups.conditions,
+                  Number(cIdx),
+                )
               "
             />
           </div>
@@ -224,47 +236,39 @@ defineExpose({ validate });
                   rIdx,
                   'leftSide',
                 ]"
-                :rules="{
-                  required: true,
-                  message: '左值不能为空',
-                  trigger: 'change',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '左值不能为空',
+                    trigger: 'change',
+                  },
+                ]"
               >
                 <Select
                   v-model:value="rule.leftSide"
                   allow-clear
                   placeholder="请选择表单字段"
+                  :options="fieldSelectOptions"
                 >
-                  <SelectOption
-                    v-for="(field, fIdx) in fieldOptions"
-                    :key="fIdx"
-                    :label="field.title"
-                    :value="field.field"
-                    :disabled="!field.required"
-                  >
+                  <template #optionRender="{ option }">
                     <Tooltip
                       title="表单字段非必填时不能作为流程分支条件"
                       placement="right"
-                      v-if="!field.required"
+                      v-if="!option.data.raw.required"
                     >
-                      <span>{{ field.title }}</span>
+                      <span>{{ option.data.raw.title }}</span>
                     </Tooltip>
-                    <template v-else>{{ field.title }}</template>
-                  </SelectOption>
+                    <template v-else>{{ option.data.raw.title }}</template>
+                  </template>
                 </Select>
               </FormItem>
             </Col>
             <Col :span="6">
-              <Select v-model:value="rule.opCode" placeholder="请选择操作符">
-                <SelectOption
-                  v-for="operator in COMPARISON_OPERATORS"
-                  :key="operator.value"
-                  :label="operator.label"
-                  :value="operator.value"
-                >
-                  {{ operator.label }}
-                </SelectOption>
-              </Select>
+              <Select
+                v-model:value="rule.opCode"
+                placeholder="请选择操作符"
+                :options="COMPARISON_OPERATORS"
+              />
             </Col>
             <Col :span="7">
               <FormItem
@@ -276,11 +280,13 @@ defineExpose({ validate });
                   rIdx,
                   'rightSide',
                 ]"
-                :rules="{
-                  required: true,
-                  message: '右值不能为空',
-                  trigger: ['blur', 'change'],
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '右值不能为空',
+                    trigger: ['blur', 'change'],
+                  },
+                ]"
               >
                 <Input
                   v-model:value="rule.rightSide"
@@ -293,11 +299,11 @@ defineExpose({ validate });
                 <Trash2
                   v-if="equation.rules.length > 1"
                   class="mr-2 size-4 cursor-pointer text-red-500"
-                  @click="deleteConditionRule(equation, rIdx)"
+                  @click="deleteConditionRule(equation, Number(rIdx))"
                 />
                 <Plus
                   class="size-4 cursor-pointer text-blue-500"
-                  @click="addConditionRule(equation, rIdx)"
+                  @click="addConditionRule(equation, Number(rIdx))"
                 />
               </div>
             </Col>

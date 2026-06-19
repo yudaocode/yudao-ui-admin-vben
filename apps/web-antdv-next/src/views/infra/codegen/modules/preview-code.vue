@@ -26,6 +26,7 @@ const loading = ref(false);
 const fileTree = ref<FileNode[]>([]);
 const previewFiles = ref<InfraCodegenApi.CodegenPreview[]>([]);
 const activeKey = ref<string>('');
+const selectedKeys = ref<string[]>([]);
 
 /** 代码地图 */
 const codeMap = ref<Map<string, string>>(new Map<string, string>());
@@ -53,31 +54,35 @@ function removeCodeMapKey(targetKey: any) {
 /** 复制代码 */
 async function copyCode() {
   const { copy } = useClipboard();
-  const file = previewFiles.value.find(
-    (item) => item.filePath === activeKey.value,
-  );
+  const file = findPreviewFile(activeKey.value);
   if (file) {
     await copy(file.code);
     message.success('复制成功');
   }
 }
 
-/** 文件节点点击事件 */
-function handleNodeClick(_: any[], e: any) {
-  if (!e.node.isLeaf) {
-    return;
-  }
-
-  activeKey.value = e.node.key;
-  const file = previewFiles.value.find((item) => {
-    const list = activeKey.value.split('.');
+function findPreviewFile(fileKey: string) {
+  return previewFiles.value.find((item) => {
+    const list = fileKey.split('.');
     // 特殊处理 - 包合并
     if (list.length > 2) {
       const lang = list.pop();
       return item.filePath === `${list.join('/')}.${lang}`;
     }
-    return item.filePath === activeKey.value;
+    return item.filePath === fileKey;
   });
+}
+
+/** 文件节点点击事件 */
+function handleNodeClick(_: any[], e: any) {
+  if (!e.node.isLeaf) {
+    selectedKeys.value = activeKey.value ? [activeKey.value] : [];
+    return;
+  }
+
+  activeKey.value = String(e.node.key);
+  selectedKeys.value = [activeKey.value];
+  const file = findPreviewFile(activeKey.value);
   if (!file) {
     return;
   }
@@ -179,6 +184,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       // 关闭时清除代码视图缓存
       codeMap.value.clear();
+      selectedKeys.value = [];
       return;
     }
 
@@ -197,6 +203,7 @@ const [Modal, modalApi] = useVbenModal({
       fileTree.value = handleFiles(data);
       if (data.length > 0) {
         activeKey.value = data[0]?.filePath || '';
+        selectedKeys.value = activeKey.value ? [activeKey.value] : [];
         const code = data[0]?.code || '';
         setCodeMap(activeKey.value, code);
       }
@@ -217,7 +224,7 @@ const [Modal, modalApi] = useVbenModal({
         <DirectoryTree
           v-if="fileTree.length > 0"
           default-expand-all
-          v-model:active-key="activeKey"
+          v-model:selected-keys="selectedKeys"
           @select="handleNodeClick"
           :tree-data="fileTree"
         />
@@ -240,7 +247,7 @@ const [Modal, modalApi] = useVbenModal({
             >
               <CodeEditor
                 class="max-h-200"
-                :value="codeMap.get(activeKey)"
+                :value="codeMap.get(key)"
                 mode="application/json"
                 :readonly="true"
                 :bordered="true"

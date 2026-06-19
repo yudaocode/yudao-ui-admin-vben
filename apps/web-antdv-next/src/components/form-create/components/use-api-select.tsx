@@ -5,14 +5,7 @@ import { defineComponent, onMounted, ref, useAttrs } from 'vue';
 import { useUserStore } from '@vben/stores';
 import { isEmpty } from '@vben/utils';
 
-import {
-  Checkbox,
-  CheckboxGroup,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, Select } from 'antdv-next';
 
 import { requestClient } from '#/api/request';
 
@@ -256,18 +249,11 @@ export function useApiSelect(option: ApiSelectProps) {
               onUpdate:value={onUpdateModelValue as any}
               value={modelValue as any}
               {...restAttrs}
+              options={options.value}
               // TODO @xingyu remote 对等实现, 还是说没作用
               // remote={props.remote}
               {...(props.remote && { remoteMethod })}
-            >
-              {options.value.map(
-                (item: { label: any; value: any }, index: any) => (
-                  <SelectOption key={index} value={item.value}>
-                    {item.label}
-                  </SelectOption>
-                ),
-              )}
-            </Select>
+            />
           );
         }
         return (
@@ -277,18 +263,11 @@ export function useApiSelect(option: ApiSelectProps) {
             onUpdate:value={onUpdateModelValue as any}
             value={modelValue as any}
             {...restAttrs}
+            options={options.value}
             // TODO: @xingyu remote 对等实现, 还是说没作用
             // remote={props.remote}
             {...(props.remote && { remoteMethod })}
-          >
-            {options.value.map(
-              (item: { label: any; value: any }, index: any) => (
-                <SelectOption key={index} value={item.value}>
-                  {item.label}
-                </SelectOption>
-              ),
-            )}
-          </Select>
+          />
         );
       };
       const buildCheckbox = () => {

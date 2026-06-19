@@ -21,7 +21,6 @@ import {
   RadioGroup,
   Row,
   Select,
-  SelectOption,
   Switch,
 } from 'antdv-next';
 
@@ -432,15 +431,9 @@ onMounted(async () => {
             v-model:value="configForm.calledProcessDefinitionKey"
             allow-clear
             @change="handleCalledElementChange"
-          >
-            <SelectOption
-              v-for="(item, index) in childProcessOptions"
-              :key="index"
-              :value="item.key"
-            >
-              {{ item.name }}
-            </SelectOption>
-          </Select>
+            :options="childProcessOptions"
+            :field-names="{ label: 'name', value: 'key' }"
+          />
         </FormItem>
         <FormItem
           label="是否自动跳过子流程发起节点"
@@ -464,41 +457,39 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['inVariables', index, 'source']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
-                <Select class="!w-40" v-model:value="item.source">
-                  <SelectOption
-                    v-for="(field, fIdx) in formFieldOptions"
-                    :key="fIdx"
-                    :value="field.field"
-                  >
-                    {{ field.title }}
-                  </SelectOption>
-                </Select>
+                <Select
+                  class="!w-40"
+                  v-model:value="item.source"
+                  :options="formFieldOptions"
+                  :field-names="{ label: 'title', value: 'field' }"
+                />
               </FormItem>
             </div>
             <div class="mr-2">
               <FormItem
                 :name="['inVariables', index, 'target']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
-                <Select class="!w-40" v-model:value="item.target">
-                  <SelectOption
-                    v-for="(field, fIdx) in childFormFieldOptions"
-                    :key="fIdx"
-                    :value="field.field"
-                  >
-                    {{ field.title }}
-                  </SelectOption>
-                </Select>
+                <Select
+                  class="!w-40"
+                  v-model:value="item.target"
+                  :options="childFormFieldOptions"
+                  :field-names="{ label: 'title', value: 'field' }"
+                />
               </FormItem>
             </div>
             <div class="mr-1 flex h-8 items-center">
@@ -534,41 +525,39 @@ onMounted(async () => {
             <div class="mr-2">
               <FormItem
                 :name="['outVariables', index, 'source']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
-                <Select class="!w-40" v-model:value="item.source">
-                  <SelectOption
-                    v-for="(field, fIdx) in childFormFieldOptions"
-                    :key="fIdx"
-                    :value="field.field"
-                  >
-                    {{ field.title }}
-                  </SelectOption>
-                </Select>
+                <Select
+                  class="!w-40"
+                  v-model:value="item.source"
+                  :options="childFormFieldOptions"
+                  :field-names="{ label: 'title', value: 'field' }"
+                />
               </FormItem>
             </div>
             <div class="mr-2">
               <FormItem
                 :name="['outVariables', index, 'target']"
-                :rules="{
-                  required: true,
-                  message: '变量不能为空',
-                  trigger: 'blur',
-                }"
+                :rules="[
+                  {
+                    required: true,
+                    message: '变量不能为空',
+                    trigger: 'blur',
+                  },
+                ]"
               >
-                <Select class="!w-40" v-model:value="item.target">
-                  <SelectOption
-                    v-for="(field, fIdx) in formFieldOptions"
-                    :key="fIdx"
-                    :value="field.field"
-                  >
-                    {{ field.title }}
-                  </SelectOption>
-                </Select>
+                <Select
+                  class="!w-40"
+                  v-model:value="item.target"
+                  :options="formFieldOptions"
+                  :field-names="{ label: 'title', value: 'field' }"
+                />
               </FormItem>
             </div>
             <div class="mr-1 flex h-8 items-center">
@@ -609,16 +598,12 @@ onMounted(async () => {
           label="子流程发起人字段"
           name="startUserFormField"
         >
-          <Select v-model:value="configForm.startUserFormField" allow-clear>
-            <SelectOption
-              v-for="(field, fIdx) in startUserFormFieldOptions"
-              :key="fIdx"
-              :label="field.title"
-              :value="field.field"
-            >
-              {{ field.title }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="configForm.startUserFormField"
+            allow-clear
+            :options="startUserFormFieldOptions"
+            :field-names="{ label: 'title', value: 'field' }"
+          />
         </FormItem>
         <FormItem
           v-if="
@@ -682,16 +667,11 @@ onMounted(async () => {
                 </FormItem>
               </Col>
               <Col>
-                <Select v-model:value="configForm.timeUnit" class="w-24">
-                  <SelectOption
-                    v-for="item in TIME_UNIT_TYPES"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                    {{ item.label }}
-                  </SelectOption>
-                </Select>
+                <Select
+                  v-model:value="configForm.timeUnit"
+                  class="w-24"
+                  :options="TIME_UNIT_TYPES"
+                />
               </Col>
               <Col>
                 <span class="inline-flex h-8 items-center">后进入下一节点</span>
@@ -774,16 +754,8 @@ onMounted(async () => {
             <Select
               v-model:value="configForm.multiInstanceSourceType"
               @change="handleMultiInstanceSourceTypeChange"
-            >
-              <SelectOption
-                v-for="item in CHILD_PROCESS_MULTI_INSTANCE_SOURCE_TYPE"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-                {{ item.label }}
-              </SelectOption>
-            </Select>
+              :options="CHILD_PROCESS_MULTI_INSTANCE_SOURCE_TYPE"
+            />
           </FormItem>
           <FormItem
             v-if="
@@ -795,11 +767,13 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '固定数量不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '固定数量不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
             <InputNumber
               v-model:value="configForm.multiInstanceSource"
@@ -816,22 +790,19 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '数字表单字段不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '数字表单字段不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
-            <Select v-model:value="configForm.multiInstanceSource">
-              <SelectOption
-                v-for="(field, fIdx) in digitalFormFieldOptions"
-                :key="fIdx"
-                :label="field.title"
-                :value="field.field"
-              >
-                {{ field.title }}
-              </SelectOption>
-            </Select>
+            <Select
+              v-model:value="configForm.multiInstanceSource"
+              :options="digitalFormFieldOptions"
+              :field-names="{ label: 'title', value: 'field' }"
+            />
           </FormItem>
           <FormItem
             v-if="
@@ -843,22 +814,19 @@ onMounted(async () => {
             label-align="left"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="{
-              required: true,
-              message: '多选表单字段不能为空',
-              trigger: 'change',
-            }"
+            :rules="[
+              {
+                required: true,
+                message: '多选表单字段不能为空',
+                trigger: 'change',
+              },
+            ]"
           >
-            <Select v-model:value="configForm.multiInstanceSource">
-              <SelectOption
-                v-for="(field, fIdx) in multiFormFieldOptions"
-                :key="fIdx"
-                :label="field.title"
-                :value="field.field"
-              >
-                {{ field.title }}
-              </SelectOption>
-            </Select>
+            <Select
+              v-model:value="configForm.multiInstanceSource"
+              :options="multiFormFieldOptions"
+              :field-names="{ label: 'title', value: 'field' }"
+            />
           </FormItem>
         </div>
       </Form>

@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import { Collapse } from 'antdv-next';
+import { Collapse, CollapsePanel } from 'antdv-next';
 import draggable from 'vuedraggable';
 
 import { componentConfigs } from './mobile/index';

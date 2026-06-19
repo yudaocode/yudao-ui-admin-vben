@@ -3,7 +3,7 @@ import type { MesProProcessApi } from '#/api/mes/pro/process';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { Select, SelectOption, Tag, Tooltip } from 'antdv-next';
+import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getProcessSimpleList } from '#/api/mes/pro/process';
 
@@ -31,6 +31,13 @@ const emit = defineEmits<{
 
 const allList = ref<MesProProcessApi.Process[]>([]);
 const selectedItem = ref<MesProProcessApi.Process>();
+const selectOptions = computed(() =>
+  allList.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+    raw: item,
+  })),
+);
 
 const selectValue = computed({
   get: () => props.modelValue,
@@ -42,7 +49,7 @@ const selectValue = computed({
 /** 前端过滤：按工序名称或编码模糊匹配 */
 function handleFilter(input: string, option: any) {
   const keyword = input.toLowerCase();
-  const item = option?.item as MesProProcessApi.Process | undefined;
+  const item = option?.raw as MesProProcessApi.Process | undefined;
   return Boolean(
     item?.name?.toLowerCase().includes(keyword) ||
     item?.code?.toLowerCase().includes(keyword),
@@ -96,19 +103,17 @@ onMounted(async () => {
       :placeholder="placeholder"
       class="w-full"
       show-search
+      :options="selectOptions"
       @change="handleChange"
     >
-      <SelectOption
-        v-for="item in allList"
-        :key="item.id"
-        :item="item"
-        :value="item.id"
-      >
+      <template #optionRender="{ option }">
         <div class="flex items-center gap-2">
-          <span>{{ item.name }}</span>
-          <Tag v-if="item.code" color="default">{{ item.code }}</Tag>
+          <span>{{ option.data.raw.name }}</span>
+          <Tag v-if="option.data.raw.code" color="default">
+            {{ option.data.raw.code }}
+          </Tag>
         </div>
-      </SelectOption>
+      </template>
     </Select>
   </Tooltip>
 </template>

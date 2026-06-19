@@ -10,7 +10,6 @@ import {
   RadioGroup,
   Row,
   Select,
-  SelectOption,
   Switch,
   TypographyText,
 } from 'antdv-next';
@@ -277,18 +276,10 @@ watch(
         <Col>
           <Select
             v-model:value="timeUnit"
+            :options="TIME_UNIT_TYPES"
             class="mr-2 !w-24"
             @change="onTimeUnitChange"
-          >
-            <SelectOption
-              v-for="item in TIME_UNIT_TYPES"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-              {{ item.label }}
-            </SelectOption>
-          </Select>
+          />
           <TypographyText class="mr-2 mt-2 inline-flex text-sm">
             未处理
           </TypographyText>

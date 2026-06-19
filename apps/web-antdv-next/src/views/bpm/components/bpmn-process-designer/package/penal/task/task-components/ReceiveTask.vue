@@ -4,7 +4,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, message, Select, SelectOption } from 'antdv-next';
+import { Button, message, Select } from 'antdv-next';
 
 import SignalMessageModal from '../../signal-message/SignalMessageModal.vue';
 
@@ -118,17 +118,15 @@ watch(
       <span class="w-20 text-foreground">消息实例:</span>
       <Select
         v-model:value="bindMessageId"
+        :options="
+          Object.keys(messageMap).map((key) => ({
+            label: messageMap[key],
+            value: key,
+          }))
+        "
         class="w-full"
         @change="(value: any) => updateTaskMessage(value)"
-      >
-        <SelectOption
-          v-for="key in Object.keys(messageMap)"
-          :key="key"
-          :value="key"
-        >
-          {{ messageMap[key] }}
-        </SelectOption>
-      </Select>
+      />
     </div>
     <Modal @confirm="handleConfirm" />
   </div>

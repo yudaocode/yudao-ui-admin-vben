@@ -6,14 +6,7 @@ import { computed, useAttrs } from 'vue';
 
 import { getDictOptions } from '@vben/hooks';
 
-import {
-  Checkbox,
-  CheckboxGroup,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Checkbox, CheckboxGroup, Radio, RadioGroup, Select } from 'antdv-next';
 
 defineOptions({ name: 'DictSelect' });
 
@@ -41,18 +34,22 @@ const getDictOption = computed(() => {
     }
   }
 });
+
+const selectOptions = computed(() =>
+  getDictOption.value.map((dict) => ({
+    label: dict.label,
+    value: dict.value as any,
+  })),
+);
 </script>
 
 <template>
-  <Select v-if="selectType === 'select'" class="w-full" v-bind="attrs">
-    <SelectOption
-      v-for="(dict, index) in getDictOption"
-      :key="index"
-      :value="dict.value"
-    >
-      {{ dict.label }}
-    </SelectOption>
-  </Select>
+  <Select
+    v-if="selectType === 'select'"
+    class="w-full"
+    v-bind="attrs"
+    :options="selectOptions"
+  />
   <RadioGroup v-if="selectType === 'radio'" class="w-full" v-bind="attrs">
     <Radio
       v-for="(dict, index) in getDictOption"

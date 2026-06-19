@@ -11,7 +11,6 @@ import {
   RadioButton,
   RadioGroup,
   Select,
-  SelectOption,
 } from 'antdv-next';
 
 import UploadImg from '#/components/upload/image-upload.vue';
@@ -29,6 +28,11 @@ defineOptions({ name: 'TabBarProperty' });
 const props = defineProps<{ modelValue: TabBarProperty }>();
 const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
+const themeOptions = THEME_LIST.map((theme) => ({
+  label: theme.name,
+  value: theme.id,
+  raw: theme,
+}));
 
 // 将数据库的值更新到右侧属性栏
 component.property.items = formData.value.items;
@@ -51,18 +55,20 @@ const handleThemeChange = () => {
       :wrapper-col="{ span: 18 }"
     >
       <FormItem label="主题" name="theme">
-        <Select v-model:value="formData!.theme" @change="handleThemeChange">
-          <SelectOption
-            v-for="(theme, index) in THEME_LIST"
-            :key="index"
-            :label="theme.name"
-            :value="theme.id"
-          >
+        <Select
+          v-model:value="formData!.theme"
+          :options="themeOptions"
+          @change="handleThemeChange"
+        >
+          <template #optionRender="{ option }">
             <div class="flex items-center justify-between">
-              <IconifyIcon :icon="theme.icon" :color="theme.color" />
-              <span>{{ theme.name }}</span>
+              <IconifyIcon
+                :icon="option.data.raw.icon"
+                :color="option.data.raw.color"
+              />
+              <span>{{ option.data.raw.name }}</span>
             </div>
-          </SelectOption>
+          </template>
         </Select>
       </FormItem>
       <FormItem label="默认颜色">

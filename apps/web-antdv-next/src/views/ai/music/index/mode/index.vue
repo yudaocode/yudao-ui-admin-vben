@@ -3,7 +3,7 @@ import type { Nullable, Recordable } from '@vben/types';
 
 import { ref, unref } from 'vue';
 
-import { Button, Card } from 'antdv-next';
+import { Button, Card, RadioButton, RadioGroup } from 'antdv-next';
 
 import desc from './desc.vue';
 import lyric from './lyric.vue';

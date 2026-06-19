@@ -447,15 +447,12 @@ watch(
         <Select
           v-model:value="loopCharacteristics"
           @change="changeLoopCharacteristicsType"
-        >
-          <SelectOption value="ParallelMultiInstance">
-            并行多重事件
-          </SelectOption>
-          <SelectOption value="SequentialMultiInstance">
-            时序多重事件
-          </SelectOption>
-          <SelectOption value="Null">无</SelectOption>
-        </Select>
+          :options="[
+            { label: '并行多重事件', value: 'ParallelMultiInstance' },
+            { label: '时序多重事件', value: 'SequentialMultiInstance' },
+            { label: '无', value: 'Null' },
+          ]"
+        />
       </FormItem>
       <template
         v-if="

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, FormItem, Input, Select, SelectOption } from 'antdv-next';
+import { Form, FormItem, Input, Select } from 'antdv-next';
 
 import { fieldType } from './utilSelf';
 
@@ -72,15 +72,15 @@ const [Modal, modalApi] = useVbenModal({
           },
         ]"
       >
-        <Select v-model:value="form.fieldType">
-          <SelectOption
-            v-for="i in Object.keys(fieldTypeObject)"
-            :key="i"
-            :value="i"
-          >
-            {{ fieldTypeObject[i as keyof typeof fieldType] }}
-          </SelectOption>
-        </Select>
+        <Select
+          v-model:value="form.fieldType"
+          :options="[
+            ...Object.keys(fieldTypeObject).map((i) => ({
+              label: fieldTypeObject[i as keyof typeof fieldType],
+              value: i,
+            })),
+          ]"
+        />
       </FormItem>
       <FormItem
         v-if="form.fieldType === 'string'"

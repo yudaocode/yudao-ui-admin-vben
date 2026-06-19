@@ -1,14 +1,7 @@
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, toRaw, watch } from 'vue';
 
-import {
-  Form,
-  FormItem,
-  Input,
-  Select,
-  SelectOption,
-  TextArea,
-} from 'antdv-next';
+import { Form, FormItem, Input, Select, TextArea } from 'antdv-next';
 
 defineOptions({ name: 'ScriptTask' });
 const props = defineProps({
@@ -86,10 +79,13 @@ watch(
       </FormItem>
       <!-- TODO scriptType  外部资源 和 内联脚本，  flowable 文档 https://www.flowable.com/open-source/docs/bpmn/ch07b-BPMN-Constructs#script-task  没看到到有相应的属性 -->
       <FormItem label="脚本类型">
-        <Select v-model:value="scriptTaskForm.scriptType">
-          <SelectOption value="inline">内联脚本</SelectOption>
-          <SelectOption value="external">外部资源</SelectOption>
-        </Select>
+        <Select
+          v-model:value="scriptTaskForm.scriptType"
+          :options="[
+            { label: '内联脚本', value: 'inline' },
+            { label: '外部资源', value: 'external' },
+          ]"
+        />
       </FormItem>
       <FormItem label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
         <TextArea

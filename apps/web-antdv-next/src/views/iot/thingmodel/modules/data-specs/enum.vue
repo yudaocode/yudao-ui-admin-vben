@@ -35,51 +35,44 @@ function deleteEnum(index: number) {
 }
 
 /** 校验单项枚举值：必填、数字、不重复 */
-function validateEnumValue(_rule: any, value: any, callback: any) {
+function validateEnumValue(_rule: any, value: any) {
   if (isEmpty(value)) {
-    callback(new Error('枚举值不能为空'));
-    return;
+    return Promise.reject(new Error('枚举值不能为空'));
   }
   if (Number.isNaN(Number(value))) {
-    callback(new Error('枚举值必须是数字'));
-    return;
+    return Promise.reject(new Error('枚举值必须是数字'));
   }
   const sameCount = dataSpecsList.value.filter(
     (it) => it.value === value,
   ).length;
   if (sameCount > 1) {
-    callback(new Error('枚举值不能重复'));
-    return;
+    return Promise.reject(new Error('枚举值不能重复'));
   }
-  callback();
+  return Promise.resolve();
 }
 
 /** 校验整个枚举列表：非空、无空项、无非法数字、无重复 */
-function validateEnumList(_rule: any, _value: any, callback: any) {
+function validateEnumList(_rule: any, _value: any) {
   if (isEmpty(dataSpecsList.value)) {
-    callback(new Error('请至少添加一个枚举项'));
-    return;
+    return Promise.reject(new Error('请至少添加一个枚举项'));
   }
   const hasEmpty = dataSpecsList.value.some(
     (item) => isEmpty(item.value) || isEmpty(item.name),
   );
   if (hasEmpty) {
-    callback(new Error('存在未填写的枚举值或描述'));
-    return;
+    return Promise.reject(new Error('存在未填写的枚举值或描述'));
   }
   const hasInvalidNumber = dataSpecsList.value.some((item) =>
     Number.isNaN(Number(item.value)),
   );
   if (hasInvalidNumber) {
-    callback(new Error('存在非数字的枚举值'));
-    return;
+    return Promise.reject(new Error('存在非数字的枚举值'));
   }
   const values = dataSpecsList.value.map((item) => item.value);
   if (new Set(values).size !== values.length) {
-    callback(new Error('存在重复的枚举值'));
-    return;
+    return Promise.reject(new Error('存在重复的枚举值'));
   }
-  callback();
+  return Promise.resolve();
 }
 </script>
 

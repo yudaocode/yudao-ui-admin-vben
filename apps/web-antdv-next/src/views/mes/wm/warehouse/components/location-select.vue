@@ -3,7 +3,7 @@ import type { MesWmWarehouseLocationApi } from '#/api/mes/wm/warehouse/location'
 
 import { computed, ref, useAttrs, watch, watchEffect } from 'vue';
 
-import { Select, SelectOption, Tag, Tooltip } from 'antdv-next';
+import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getWarehouseLocationSimpleList } from '#/api/mes/wm/warehouse/location';
 
@@ -34,6 +34,13 @@ const emit = defineEmits<{
 const attrs = useAttrs();
 const allList = ref<MesWmWarehouseLocationApi.WarehouseLocation[]>([]);
 const selectedItem = ref<MesWmWarehouseLocationApi.WarehouseLocation>();
+const selectOptions = computed(() =>
+  allList.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+    raw: item,
+  })),
+);
 
 const selectValue = computed({
   get: () => props.modelValue,
@@ -49,7 +56,9 @@ function handleChange(val: any) {
 
 /** 前端过滤（name + code） */
 function filterOption(input: string, option: any) {
-  const item = allList.value.find((o) => o.id === option.value);
+  const item = option?.raw as
+    | MesWmWarehouseLocationApi.WarehouseLocation
+    | undefined;
   if (!item) {
     return false;
   }
@@ -100,14 +109,17 @@ watchEffect(async () => {
       :filter-option="filterOption"
       :placeholder="placeholder"
       show-search
+      :options="selectOptions"
       @change="handleChange"
     >
-      <SelectOption v-for="item in allList" :key="item.id" :value="item.id">
+      <template #optionRender="{ option }">
         <div class="flex items-center gap-2">
-          <span>{{ item.name }}</span>
-          <Tag v-if="item.code" color="blue">编号: {{ item.code }}</Tag>
+          <span>{{ option.data.raw.name }}</span>
+          <Tag v-if="option.data.raw.code" color="blue">
+            编号: {{ option.data.raw.code }}
+          </Tag>
         </div>
-      </SelectOption>
+      </template>
     </Select>
   </Tooltip>
 </template>

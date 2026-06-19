@@ -18,6 +18,7 @@ import {
   Button,
   Card,
   Collapse,
+  CollapsePanel,
   Dropdown,
   Menu,
   MenuItem,

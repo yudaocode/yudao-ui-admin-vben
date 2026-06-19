@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Form, Input, message, TreeSelect } from 'antdv-next';
+import { Form, FormItem, Input, message, TreeSelect } from 'antdv-next';
 
 import {
   createDemo02Category,

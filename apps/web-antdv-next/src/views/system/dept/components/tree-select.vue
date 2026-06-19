@@ -38,8 +38,12 @@ function handleSearch(e: any) {
 }
 
 /** 选中部门：点击已选中的节点时取消选中 */
-function handleSelect(_selectedKeys: any[], info: any) {
-  emit('select', info.selected ? info.node.dataRef : undefined);
+function handleSelect(selectedNodeKeys: any[], info: any) {
+  const selectedKey = selectedNodeKeys[0];
+  const dept = info.selected
+    ? deptList.value.find((item) => String(item.id) === String(selectedKey))
+    : undefined;
+  emit('select', dept);
 }
 
 /** 重置选中状态（供外部重置按钮调用） */

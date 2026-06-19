@@ -9,7 +9,7 @@ import { computed, defineComponent, ref, unref, useAttrs } from 'vue';
 
 import { get, getNestedValue, isFunction } from '@vben/utils';
 
-import { Card, Descriptions } from 'antdv-next';
+import { Card, Descriptions, DescriptionsItem } from 'antdv-next';
 
 const props = {
   bordered: { default: true, type: Boolean },

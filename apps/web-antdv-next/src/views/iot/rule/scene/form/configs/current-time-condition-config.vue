@@ -1,7 +1,5 @@
 <!-- 当前时间条件配置组件 -->
 <script setup lang="ts">
-import type { Dayjs } from 'dayjs';
-
 import type { RuleSceneApi } from '#/api/iot/rule/scene';
 
 import { computed, watch } from 'vue';
@@ -17,7 +15,6 @@ import {
   FormItem,
   Row,
   Select,
-  SelectOption,
   Tag,
   TimePicker,
 } from 'antdv-next';
@@ -130,7 +127,7 @@ function updateConditionField(field: any, value: any) {
  * 处理第一个时间值变化
  * @param value 时间值
  */
-function handleTimeValueChange(value: Dayjs | null | string) {
+function handleTimeValueChange(value: any) {
   const normalized = formatDayjs(value);
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
@@ -147,7 +144,7 @@ function handleTimeValueChange(value: Dayjs | null | string) {
  * 处理第二个时间值变化
  * @param value 时间值
  */
-function handleTimeValue2Change(value: Dayjs | null | string) {
+function handleTimeValue2Change(value: any) {
   const normalized = formatDayjs(value);
   const currentParams = condition.value.param
     ? condition.value.param.split(',')
@@ -187,23 +184,22 @@ watch(
             "
             placeholder="请选择时间条件"
             class="w-full"
+            :options="timeOperatorOptions"
           >
-            <SelectOption
-              v-for="option in timeOperatorOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            >
+            <template #optionRender="{ option }">
               <div class="flex w-full items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <IconifyIcon :icon="option.icon" :class="option.iconClass" />
-                  <span>{{ option.label }}</span>
+                  <IconifyIcon
+                    :icon="option.data.icon"
+                    :class="option.data.iconClass"
+                  />
+                  <span>{{ option.data.label }}</span>
                 </div>
-                <Tag :color="option.tag">
-                  {{ option.category }}
+                <Tag :color="option.data.tag">
+                  {{ option.data.category }}
                 </Tag>
               </div>
-            </SelectOption>
+            </template>
           </Select>
         </FormItem>
       </Col>

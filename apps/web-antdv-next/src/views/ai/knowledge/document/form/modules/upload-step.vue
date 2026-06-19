@@ -10,7 +10,7 @@ import { computed, getCurrentInstance, inject, onMounted, ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 import { generateAcceptedFileTypes } from '@vben/utils';
 
-import { Button, Form, message, UploadDragger } from 'antdv-next';
+import { Button, Form, FormItem, message, UploadDragger } from 'antdv-next';
 
 import { useUpload } from '#/components/upload/use-upload';
 type UploadRequestOption = any;

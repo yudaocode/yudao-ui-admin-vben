@@ -9,7 +9,6 @@ import {
   Input,
   InputNumber,
   Select,
-  SelectOption,
   Switch,
   TextArea,
 } from 'antdv-next';
@@ -127,10 +126,14 @@ onMounted(() => {
     ]"
     label="数据格式"
   >
-    <Select v-model:value="config.dataFormat" placeholder="请选择数据格式">
-      <SelectOption value="JSON">JSON</SelectOption>
-      <SelectOption value="TEXT">TEXT</SelectOption>
-    </Select>
+    <Select
+      v-model:value="config.dataFormat"
+      placeholder="请选择数据格式"
+      :options="[
+        { label: 'JSON', value: 'JSON' },
+        { label: 'TEXT', value: 'TEXT' },
+      ]"
+    />
   </FormItem>
   <FormItem :name="['config', 'reconnectIntervalMs']" label="重连间隔(ms)">
     <InputNumber
