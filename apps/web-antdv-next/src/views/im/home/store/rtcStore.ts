@@ -263,7 +263,8 @@ export const useRtcStore = defineStore('imRtc', () => {
     useGroupStore().markGroupActiveCallLoaded(payload.groupId)
     // 浅比较：room / mediaType / joinedUserIds / inviteeIds 都没变就跳过，避免下游 watcher 无意义重算
     const existing = groupActiveCalls.value.get(payload.groupId)
-    const nextParticipantsLoaded = participantsLoaded ?? !!existing?.participantsLoaded
+    const nextParticipantsLoaded =
+      participantsLoaded ?? (existing?.room === payload.room && !!existing.participantsLoaded)
     if (
       existing &&
       isSameGroupCall(existing, payload) &&
@@ -320,8 +321,12 @@ export const useRtcStore = defineStore('imRtc', () => {
   }
 
   /** 群通话结束：从 groupActiveCalls 移除；胶囊条消失 */
-  function removeGroupCall(groupId: number) {
+  function removeGroupCall(groupId: number, room?: string) {
     if (!groupId) {
+      return
+    }
+    const existing = groupActiveCalls.value.get(groupId)
+    if (room && existing?.room !== room) {
       return
     }
     clearGroupCallCache(groupId)
@@ -407,7 +412,7 @@ export const useRtcStore = defineStore('imRtc', () => {
       return
     }
     if (nextJoined.length === 0 && nextInvitee.length === 0) {
-      removeGroupCall(groupId)
+      removeGroupCall(groupId, room)
       return
     }
     setGroupCall({
