@@ -15,16 +15,7 @@ import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import {
-  Button,
-  Card,
-  Input,
-  message,
-  Select,
-  SelectOption,
-  Space,
-  Tag,
-} from 'antdv-next';
+import { Button, Card, Input, message, Select, Space, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -292,15 +283,9 @@ onMounted(async () => {
           placeholder="请选择产品"
           allow-clear
           style="width: 200px"
-        >
-          <SelectOption
-            v-for="product in products"
-            :key="product.id"
-            :value="product.id"
-          >
-            {{ product.name }}
-          </SelectOption>
-        </Select>
+          :options="products"
+          :field-names="{ label: 'name', value: 'id' }"
+        />
         <Input
           v-model:value="queryParams.deviceName"
           placeholder="请输入 DeviceName"
@@ -317,49 +302,34 @@ onMounted(async () => {
         />
         <Select
           v-model:value="queryParams.deviceType"
+          :options="
+            getDictOptions(DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE, 'number').map(
+              (dict) => ({ label: dict.label, value: dict.value as any }),
+            )
+          "
           placeholder="请选择设备类型"
           allow-clear
           style="width: 200px"
-        >
-          <SelectOption
-            v-for="dict in getDictOptions(
-              DICT_TYPE.IOT_PRODUCT_DEVICE_TYPE,
-              'number',
-            )"
-            :key="dict.value"
-            :value="dict.value"
-          >
-            {{ dict.label }}
-          </SelectOption>
-        </Select>
+        />
         <Select
           v-model:value="queryParams.status"
           placeholder="请选择设备状态"
           allow-clear
           style="width: 200px"
-        >
-          <SelectOption
-            v-for="dict in getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number')"
-            :key="dict.value"
-            :value="dict.value"
-          >
-            {{ dict.label }}
-          </SelectOption>
-        </Select>
+          :options="
+            getDictOptions(DICT_TYPE.IOT_DEVICE_STATE, 'number').map(
+              (dict) => ({ label: dict.label, value: dict.value as any }),
+            )
+          "
+        />
         <Select
           v-model:value="queryParams.groupId"
           placeholder="请选择设备分组"
           allow-clear
           style="width: 200px"
-        >
-          <SelectOption
-            v-for="group in deviceGroups"
-            :key="group.id"
-            :value="group.id"
-          >
-            {{ group.name }}
-          </SelectOption>
-        </Select>
+          :options="deviceGroups"
+          :field-names="{ label: 'name', value: 'id' }"
+        />
         <Button type="primary" @click="handleSearch">
           <IconifyIcon icon="ant-design:search-outlined" class="mr-1" />
           {{ $t('common.search') }}

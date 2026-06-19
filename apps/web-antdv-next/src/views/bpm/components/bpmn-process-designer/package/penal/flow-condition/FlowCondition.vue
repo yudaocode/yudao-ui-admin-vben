@@ -157,21 +157,28 @@ watch(
       :wrapper-col="{ span: 18 }"
     >
       <FormItem label="流转类型">
-        <Select v-model:value="flowConditionForm.type" @change="updateFlowType">
-          <SelectOption value="normal">普通流转路径</SelectOption>
-          <SelectOption value="default">默认流转路径</SelectOption>
-          <SelectOption value="condition">条件流转路径</SelectOption>
-        </Select>
+        <Select
+          v-model:value="flowConditionForm.type"
+          @change="updateFlowType"
+          :options="[
+            { label: '普通流转路径', value: 'normal' },
+            { label: '默认流转路径', value: 'default' },
+            { label: '条件流转路径', value: 'condition' },
+          ]"
+        />
       </FormItem>
       <FormItem
         label="条件格式"
         v-if="flowConditionForm.type === 'condition'"
         key="condition"
       >
-        <Select v-model:value="flowConditionForm.conditionType">
-          <SelectOption value="expression">表达式</SelectOption>
-          <SelectOption value="script">脚本</SelectOption>
-        </Select>
+        <Select
+          v-model:value="flowConditionForm.conditionType"
+          :options="[
+            { label: '表达式', value: 'expression' },
+            { label: '脚本', value: 'script' },
+          ]"
+        />
       </FormItem>
       <FormItem
         label="表达式"
@@ -202,10 +209,13 @@ watch(
           />
         </FormItem>
         <FormItem label="脚本类型" key="scriptType">
-          <Select v-model:value="flowConditionForm.scriptType">
-            <SelectOption value="inlineScript">内联脚本</SelectOption>
-            <SelectOption value="externalScript">外部脚本</SelectOption>
-          </Select>
+          <Select
+            v-model:value="flowConditionForm.scriptType"
+            :options="[
+              { label: '内联脚本', value: 'inlineScript' },
+              { label: '外部脚本', value: 'externalScript' },
+            ]"
+          />
         </FormItem>
         <FormItem
           label="脚本"

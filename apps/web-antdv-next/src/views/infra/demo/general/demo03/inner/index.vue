@@ -18,6 +18,7 @@ import {
 import {
   Button,
   Form,
+  FormItem,
   Input,
   message,
   Pagination,
@@ -184,18 +185,12 @@ onMounted(() => {
             placeholder="请选择性别"
             allow-clear
             class="w-full"
-          >
-            <SelectOption
-              v-for="dict in getDictOptions(
-                DICT_TYPE.SYSTEM_USER_SEX,
-                'number',
-              )"
-              :key="dict.value"
-              :value="dict.value"
-            >
-              {{ dict.label }}
-            </SelectOption>
-          </Select>
+            :options="[
+              ...getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number').map(
+                (dict) => ({ label: dict.label, value: dict.value as any }),
+              ),
+            ]"
+          />
         </FormItem>
         <FormItem label="创建时间" name="createTime">
           <RangePicker

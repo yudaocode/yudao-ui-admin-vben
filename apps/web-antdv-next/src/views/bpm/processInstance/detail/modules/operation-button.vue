@@ -34,7 +34,6 @@ import {
   message,
   Popover,
   Select,
-  SelectOption,
   Space,
   TextArea,
 } from 'antdv-next';
@@ -55,6 +54,7 @@ import {
   transferTask,
 } from '#/api/bpm/task';
 import { setConfAndFields2 } from '#/components/form-create';
+import { FileUpload } from '#/components/upload';
 import { $t } from '#/locales';
 
 import Signature from './signature.vue';
@@ -120,6 +120,7 @@ const approveReasonForm: any = reactive({
   reason: '',
   signPicUrl: '',
   nextAssignees: {},
+  attachments: [],
 });
 const approveReasonRule: Record<string, any> = computed(() => {
   return {
@@ -140,7 +141,8 @@ const approveReasonRule: Record<string, any> = computed(() => {
 });
 
 const rejectFormRef = ref<FormInstance>();
-const rejectReasonForm = reactive({
+const rejectReasonForm = reactive<{ attachments: string[]; reason: string }>({
+  attachments: [],
   reason: '',
 }); // 拒绝表单
 const rejectReasonRule: any = computed(() => {
@@ -290,6 +292,14 @@ function closePopover(type: string, formRef: any | FormInstance) {
   if (formRef) {
     formRef.resetFields();
   }
+  if (type === 'approve') {
+    approveReasonForm.reason = '';
+    approveReasonForm.attachments = [];
+    approveReasonForm.signPicUrl = '';
+  } else if (type === 'reject') {
+    rejectReasonForm.reason = '';
+    rejectReasonForm.attachments = [];
+  }
   if (popOverVisible.value[type]) popOverVisible.value[type] = false;
   nextAssigneesActivityNode.value = [];
   // 清理 Timeline 组件中的自定义审批人数据
@@ -401,6 +411,7 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
       const data = {
         id: runningTask.value.id,
         reason: approveReasonForm.reason,
+        attachments: approveReasonForm.attachments,
         variables, // 审批通过, 把修改的字段值赋于流程实例变量
         nextAssignees: approveReasonForm.nextAssignees, // 下个自选节点选择的审批人信息
       } as any;
@@ -414,6 +425,9 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
         await formCreateApi.validate();
       }
       await approveTask(data);
+      approveReasonForm.reason = '';
+      approveReasonForm.attachments = [];
+      approveReasonForm.signPicUrl = '';
       popOverVisible.value.approve = false;
       nextAssigneesActivityNode.value = [];
       // 清理 Timeline 组件中的自定义审批人数据
@@ -425,9 +439,12 @@ async function handleAudit(pass: boolean, formRef: FormInstance | undefined) {
       // 审批不通过数据
       const data = {
         id: runningTask.value.id,
+        attachments: rejectReasonForm.attachments,
         reason: rejectReasonForm.reason,
       };
       await rejectTask(data);
+      rejectReasonForm.reason = '';
+      rejectReasonForm.attachments = [];
       popOverVisible.value.reject = false;
       message.success('审批不通过成功');
     }
@@ -748,6 +765,38 @@ function handleSignFinish(url: string) {
   approveFormRef.value?.validateFields(['signPicUrl']);
 }
 
+/** 附件图片预览 */
+const imagePreviewOpen = ref(false);
+const imagePreviewUrl = ref('');
+
+/** 判断文件是否为图片类型 */
+function isImageUrl(url: string) {
+  return /\.(bmp|gif|jpe?g|png|svg|webp)$/i.test(url);
+}
+
+/** 处理文件预览 */
+function handleFilePreview(file: any) {
+  if (!file?.url && !file?.response) {
+    message.warning('文件地址不存在，无法预览');
+    return;
+  }
+  const url = file.url || file?.response?.url || file?.response;
+  if (!url) {
+    message.warning('文件地址不存在，无法预览');
+    return;
+  }
+  if (isImageUrl(url)) {
+    imagePreviewUrl.value = url;
+    imagePreviewOpen.value = true;
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+function handleImagePreviewOpenChange(open: boolean) {
+  imagePreviewOpen.value = open;
+}
+
 /** 处理弹窗可见性 */
 function handlePopoverVisible(visible: boolean) {
   if (!visible) {
@@ -843,6 +892,16 @@ defineExpose({ loadTodoTask });
                   :rows="4"
                 />
               </FormItem>
+              <FormItem label="上传附件/图片" name="attachments">
+                <FileUpload
+                  v-model:value="approveReasonForm.attachments"
+                  :max-number="10"
+                  :multiple="true"
+                  :show-download-icon="false"
+                  help-text="支持多文件/图片上传"
+                  @preview="handleFilePreview"
+                />
+              </FormItem>
               <FormItem>
                 <Space>
                   <Button
@@ -898,6 +957,15 @@ defineExpose({ loadTodoTask });
                   v-model:value="rejectReasonForm.reason"
                   placeholder="请输入审批意见"
                   :rows="4"
+                />
+              </FormItem>
+              <FormItem label="上传附件/图片" name="attachments">
+                <FileUpload
+                  v-model:value="rejectReasonForm.attachments"
+                  :max-number="10"
+                  :multiple="true"
+                  help-text="支持多文件/图片上传"
+                  @preview="handleFilePreview"
                 />
               </FormItem>
               <FormItem>
@@ -956,16 +1024,9 @@ defineExpose({ loadTodoTask });
                   mode="multiple"
                   placeholder="请选择抄送人"
                   class="w-full"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="抄送意见" name="copyReason">
                 <TextArea
@@ -1026,16 +1087,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="transferForm.assigneeUserId"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1099,16 +1153,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="delegateForm.delegateUserId"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1173,16 +1220,9 @@ defineExpose({ loadTodoTask });
                   :allow-clear="true"
                   mode="multiple"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in userOptions"
-                    :key="item.id"
-                    :label="item.nickname"
-                    :value="item.id"
-                  >
-                    {{ item.nickname }}
-                  </SelectOption>
-                </Select>
+                  :options="userOptions"
+                  :field-names="{ label: 'nickname', value: 'id' }"
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1250,18 +1290,15 @@ defineExpose({ loadTodoTask });
               <FormItem label="减签人员" name="deleteSignTaskId">
                 <Select
                   v-model:value="deleteSignForm.deleteSignTaskId"
+                  :options="
+                    (runningTask.children as any[]).map((item) => ({
+                      label: getDeleteSignUserLabel(item),
+                      value: item.id,
+                    }))
+                  "
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in runningTask.children"
-                    :key="item.id"
-                    :label="getDeleteSignUserLabel(item)"
-                    :value="item.id"
-                  >
-                    {{ getDeleteSignUserLabel(item) }}
-                  </SelectOption>
-                </Select>
+                />
               </FormItem>
               <FormItem label="审批意见" name="reason">
                 <TextArea
@@ -1323,16 +1360,9 @@ defineExpose({ loadTodoTask });
                   v-model:value="returnForm.targetTaskDefinitionKey"
                   :allow-clear="true"
                   style="width: 100%"
-                >
-                  <SelectOption
-                    v-for="item in returnList"
-                    :key="item.taskDefinitionKey"
-                    :label="item.name"
-                    :value="item.taskDefinitionKey"
-                  >
-                    {{ item.name }}
-                  </SelectOption>
-                </Select>
+                  :options="returnList"
+                  :field-names="{ label: 'name', value: 'taskDefinitionKey' }"
+                />
               </FormItem>
               <FormItem label="退回理由" name="returnReason">
                 <TextArea
@@ -1444,4 +1474,14 @@ defineExpose({ loadTodoTask });
 
   <!-- 签名弹窗 -->
   <SignatureModal @success="handleSignFinish" />
+
+  <!-- 图片预览（隐藏的 Image 组件，仅用于附件预览弹窗） -->
+  <Image
+    :preview="{
+      open: imagePreviewOpen,
+      onOpenChange: handleImagePreviewOpenChange,
+    }"
+    :src="imagePreviewUrl"
+    style="display: none"
+  />
 </template>

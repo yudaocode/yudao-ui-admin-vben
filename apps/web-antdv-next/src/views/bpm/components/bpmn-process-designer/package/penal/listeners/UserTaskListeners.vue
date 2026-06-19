@@ -5,15 +5,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
-import {
-  Button,
-  Divider,
-  Form,
-  FormItem,
-  Input,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Button, Divider, Form, FormItem, Input, Select } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { ProcessListenerSelectModal } from '#/views/bpm/processListener/components';
@@ -379,15 +371,15 @@ watch(
             name="event"
             :rules="[{ required: true, message: '请选择事件类型' }]"
           >
-            <Select v-model:value="listenerForm.event">
-              <SelectOption
-                v-for="i in Object.keys(listenerEventTypeObject)"
-                :key="i"
-                :value="i"
-              >
-                {{ listenerEventTypeObject[i as keyof typeof eventType] }}
-              </SelectOption>
-            </Select>
+            <Select
+              v-model:value="listenerForm.event"
+              :options="[
+                ...Object.keys(listenerEventTypeObject).map((i) => ({
+                  label: listenerEventTypeObject[i as keyof typeof eventType],
+                  value: i,
+                })),
+              ]"
+            />
           </FormItem>
           <FormItem
             label="监听器ID"
@@ -401,15 +393,15 @@ watch(
             name="listenerType"
             :rules="[{ required: true, message: '请选择监听器类型' }]"
           >
-            <Select v-model:value="listenerForm.listenerType">
-              <SelectOption
-                v-for="i in Object.keys(listenerTypeObject)"
-                :key="i"
-                :value="i"
-              >
-                {{ listenerTypeObject[i as keyof typeof listenerType] }}
-              </SelectOption>
-            </Select>
+            <Select
+              v-model:value="listenerForm.listenerType"
+              :options="[
+                ...Object.keys(listenerTypeObject).map((i) => ({
+                  label: listenerTypeObject[i as keyof typeof listenerType],
+                  value: i,
+                })),
+              ]"
+            />
           </FormItem>
           <FormItem
             v-if="listenerForm.listenerType === 'classListener'"
@@ -456,10 +448,13 @@ watch(
               key="listener-script-type"
               :rules="[{ required: true, message: '请选择脚本类型' }]"
             >
-              <Select v-model:value="listenerForm.scriptType">
-                <SelectOption value="inlineScript">内联脚本</SelectOption>
-                <SelectOption value="externalScript">外部脚本</SelectOption>
-              </Select>
+              <Select
+                v-model:value="listenerForm.scriptType"
+                :options="[
+                  { label: '内联脚本', value: 'inlineScript' },
+                  { label: '外部脚本', value: 'externalScript' },
+                ]"
+              />
             </FormItem>
             <FormItem
               v-if="listenerForm.scriptType === 'inlineScript'"
@@ -487,12 +482,15 @@ watch(
               name="eventDefinitionType"
               key="eventDefinitionType"
             >
-              <Select v-model:value="listenerForm.eventDefinitionType">
-                <SelectOption value="date">日期</SelectOption>
-                <SelectOption value="duration">持续时长</SelectOption>
-                <SelectOption value="cycle">循环</SelectOption>
-                <SelectOption value="null">无</SelectOption>
-              </Select>
+              <Select
+                v-model:value="listenerForm.eventDefinitionType"
+                :options="[
+                  { label: '日期', value: 'date' },
+                  { label: '持续时长', value: 'duration' },
+                  { label: '循环', value: 'cycle' },
+                  { label: '无', value: 'null' },
+                ]"
+              />
             </FormItem>
             <FormItem
               v-if="

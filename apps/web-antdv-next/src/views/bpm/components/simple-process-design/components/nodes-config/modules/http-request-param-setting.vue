@@ -3,15 +3,7 @@ import type { HttpRequestParam } from '../../../consts';
 
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Col,
-  FormItem,
-  Input,
-  Row,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { Button, Col, FormItem, Input, Row, Select } from 'antdv-next';
 
 import {
   BPM_HTTP_REQUEST_PARAM_TYPES,
@@ -65,59 +57,59 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="7">
         <FormItem
           :name="[bind, 'header', index, 'key']"
-          :rules="{
-            required: true,
-            message: '参数名不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数名不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
         >
           <Input placeholder="参数名不能为空" v-model:value="item.key" />
         </FormItem>
       </Col>
       <Col :span="5">
-        <Select v-model:value="item.type">
-          <SelectOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </SelectOption>
-        </Select>
+        <Select
+          v-model:value="item.type"
+          :options="BPM_HTTP_REQUEST_PARAM_TYPES"
+        />
       </Col>
       <Col :span="10">
         <FormItem
           :name="[bind, 'header', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="请求头" v-model:value="item.value" />
         </FormItem>
         <FormItem
           :name="[bind, 'header', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: 'change',
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: 'change',
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <Select v-model:value="item.value" placeholder="请选择表单字段">
-            <SelectOption
-              v-for="(field, fIdx) in formFieldOptions"
-              :key="fIdx"
-              :label="field.title"
-              :value="field.field"
-              :disabled="!field.required"
-            >
-              {{ field.title }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="item.value"
+            :options="
+              formFieldOptions.map((field) => ({
+                label: field.title,
+                value: field.field,
+                disabled: !field.required,
+              }))
+            "
+            placeholder="请选择表单字段"
+          />
         </FormItem>
       </Col>
       <Col :span="2">
@@ -150,59 +142,59 @@ function deleteHttpRequestParam(arr: HttpRequestParam[], index: number) {
       <Col :span="7">
         <FormItem
           :name="[bind, 'body', index, 'key']"
-          :rules="{
-            required: true,
-            message: '参数名不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数名不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
         >
           <Input placeholder="参数名" v-model:value="item.key" />
         </FormItem>
       </Col>
       <Col :span="5">
-        <Select v-model:value="item.type">
-          <SelectOption
-            v-for="types in BPM_HTTP_REQUEST_PARAM_TYPES"
-            :key="types.value"
-            :label="types.label"
-            :value="types.value"
-          >
-            {{ types.label }}
-          </SelectOption>
-        </Select>
+        <Select
+          v-model:value="item.type"
+          :options="BPM_HTTP_REQUEST_PARAM_TYPES"
+        />
       </Col>
       <Col :span="10">
         <FormItem
           :name="[bind, 'body', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: ['blur', 'change'],
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: ['blur', 'change'],
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FIXED_VALUE"
         >
           <Input placeholder="参数值" v-model:value="item.value" />
         </FormItem>
         <FormItem
           :name="[bind, 'body', index, 'value']"
-          :rules="{
-            required: true,
-            message: '参数值不能为空',
-            trigger: 'change',
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '参数值不能为空',
+              trigger: 'change',
+            },
+          ]"
           v-if="item.type === BpmHttpRequestParamTypeEnum.FROM_FORM"
         >
-          <Select v-model:value="item.value" placeholder="请选择表单字段">
-            <SelectOption
-              v-for="(field, fIdx) in formFieldOptions"
-              :key="fIdx"
-              :label="field.title"
-              :value="field.field"
-              :disabled="!field.required"
-            >
-              {{ field.title }}
-            </SelectOption>
-          </Select>
+          <Select
+            v-model:value="item.value"
+            :options="
+              formFieldOptions.map((field) => ({
+                label: field.title,
+                value: field.field,
+                disabled: !field.required,
+              }))
+            "
+            placeholder="请选择表单字段"
+          />
         </FormItem>
       </Col>
       <Col :span="2">

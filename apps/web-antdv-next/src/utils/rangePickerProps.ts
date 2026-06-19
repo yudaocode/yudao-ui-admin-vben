@@ -1,6 +1,15 @@
+import type { Dayjs } from 'dayjs';
+
 import dayjs from 'dayjs';
 
 import { $t } from '#/locales';
+
+type DateRangeTuple = [Dayjs, Dayjs];
+type StringRangeTuple = [string, string];
+
+function dateRange(start: Dayjs, end: Dayjs): DateRangeTuple {
+  return [start, end];
+}
 
 /** 时间段选择器拓展 */
 export function getRangePickerDefaultProps() {
@@ -13,55 +22,55 @@ export function getRangePickerDefaultProps() {
     placeholder: [
       $t('utils.rangePicker.beginTime'),
       $t('utils.rangePicker.endTime'),
-    ],
+    ] as StringRangeTuple,
     // 快捷时间范围
     presets: [
       {
         label: $t('utils.rangePicker.today'),
-        value: [dayjs().startOf('day'), dayjs().endOf('day')],
+        value: dateRange(dayjs().startOf('day'), dayjs().endOf('day')),
       },
       {
         label: $t('utils.rangePicker.last7Days'),
-        value: [
+        value: dateRange(
           dayjs().subtract(7, 'day').startOf('day'),
           dayjs().endOf('day'),
-        ],
+        ),
       },
       {
         label: $t('utils.rangePicker.last30Days'),
-        value: [
+        value: dateRange(
           dayjs().subtract(30, 'day').startOf('day'),
           dayjs().endOf('day'),
-        ],
+        ),
       },
       {
         label: $t('utils.rangePicker.yesterday'),
-        value: [
+        value: dateRange(
           dayjs().subtract(1, 'day').startOf('day'),
           dayjs().subtract(1, 'day').endOf('day'),
-        ],
+        ),
       },
       {
         label: $t('utils.rangePicker.thisWeek'),
-        value: [dayjs().startOf('week'), dayjs().endOf('day')],
+        value: dateRange(dayjs().startOf('week'), dayjs().endOf('day')),
       },
       {
         label: $t('utils.rangePicker.thisMonth'),
-        value: [dayjs().startOf('month'), dayjs().endOf('day')],
+        value: dateRange(dayjs().startOf('month'), dayjs().endOf('day')),
       },
       {
         label: $t('utils.rangePicker.lastWeek'),
-        value: [
+        value: dateRange(
           dayjs().subtract(1, 'week').startOf('day'),
           dayjs().endOf('day'),
-        ],
+        ),
       },
     ],
     showTime: {
-      defaultValue: [
+      defaultValue: dateRange(
         dayjs('00:00:00', 'HH:mm:ss'),
         dayjs('23:59:59', 'HH:mm:ss'),
-      ],
+      ),
       format: 'HH:mm:ss',
     },
   };

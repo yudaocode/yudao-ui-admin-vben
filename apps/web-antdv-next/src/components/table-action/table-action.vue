@@ -188,8 +188,8 @@ watch(
     <Dropdown v-if="getDropdownList.length > 0" :trigger="['hover']">
       <slot name="more">
         <Button type="link">
+          {{ $t('page.action.more') }}
           <template #icon>
-            {{ $t('page.action.more') }}
             <IconifyIcon icon="lucide:ellipsis-vertical" />
           </template>
         </Button>

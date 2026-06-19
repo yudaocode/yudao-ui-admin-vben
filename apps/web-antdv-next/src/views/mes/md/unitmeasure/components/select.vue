@@ -3,7 +3,7 @@ import type { MesMdUnitMeasureApi } from '#/api/mes/md/unitmeasure';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { Select, SelectOption, Tag, Tooltip } from 'antdv-next';
+import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getUnitMeasureSimpleList } from '#/api/mes/md/unitmeasure';
 
@@ -32,6 +32,13 @@ const emit = defineEmits<{
 const allList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]); // 计量单位列表
 const filteredList = ref<MesMdUnitMeasureApi.UnitMeasure[]>([]); // 过滤后的计量单位列表
 const selectedItem = ref<MesMdUnitMeasureApi.UnitMeasure>(); // 当前选中计量单位
+const selectOptions = computed(() =>
+  filteredList.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+    raw: item,
+  })),
+);
 
 const selectValue = computed({
   // 选择器绑定值
@@ -44,7 +51,7 @@ const selectValue = computed({
 /** 前端按名称和编码过滤计量单位 */
 function handleFilter(input: string, option: any) {
   const keyword = input.toLowerCase();
-  const item = option?.item as MesMdUnitMeasureApi.UnitMeasure | undefined;
+  const item = option?.raw as MesMdUnitMeasureApi.UnitMeasure | undefined;
   return Boolean(
     item?.name?.toLowerCase().includes(keyword) ||
     item?.code?.toLowerCase().includes(keyword),
@@ -104,19 +111,17 @@ onMounted(async () => {
       :placeholder="placeholder"
       class="w-full"
       show-search
+      :options="selectOptions"
       @change="handleChange"
     >
-      <SelectOption
-        v-for="item in filteredList"
-        :key="item.id"
-        :item="item"
-        :value="item.id"
-      >
+      <template #optionRender="{ option }">
         <div class="flex items-center gap-2">
-          <span>{{ item.name }}</span>
-          <Tag v-if="item.code" color="default">编号: {{ item.code }}</Tag>
+          <span>{{ option.data.raw.name }}</span>
+          <Tag v-if="option.data.raw.code" color="default">
+            编号: {{ option.data.raw.code }}
+          </Tag>
         </div>
-      </SelectOption>
+      </template>
     </Select>
   </Tooltip>
 </template>
