@@ -41,7 +41,7 @@ export function sendPrivateMessage(data: ImPrivateMessageApi.PrivateMessageSendR
 }
 
 /** 拉取私聊消息（增量） */
-export function pullPrivateMessages(
+export function pullPrivateMessageList(
   params: { minId: number | string; size: number },
   signal?: AbortSignal,
 ) {

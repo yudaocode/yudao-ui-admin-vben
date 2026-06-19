@@ -8,7 +8,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from
 import { IconifyIcon as Icon } from '@vben/icons'
 import { isOpenableUrl } from '@vben/utils'
 
-import { Button, Dropdown, Menu, message, Tooltip } from 'antdv-next'
+import { Button, Dropdown, Menu, message, SpaceCompact, Tooltip } from 'antdv-next'
 
 import { uploadFile } from '#/api/infra/file'
 import {
@@ -1110,10 +1110,9 @@ async function onVideoPicked(e: Event) {
         </div>
 
         <!-- 群聊 + 群已读开启：发送按钮 + ▼ 下拉菜单（点主按钮普通发送 / 点 ▼ 选「发送回执消息」），对齐微信 PC -->
-        <div
-          v-if="isGroup && MESSAGE_GROUP_READ_ENABLED"
-          class="inline-flex"
-        >
+        <!-- antdv-next 无 Dropdown.Button（antd v5+ 已移除），官方做法是 Space.Compact 包裹「主按钮 + Dropdown 触发按钮」拼成分裂按钮，
+             这样两个按钮无缝相连（左圆角 / 右圆角、共享边框），不再是两颗独立的圆角按钮 -->
+        <SpaceCompact v-if="isGroup && MESSAGE_GROUP_READ_ENABLED">
           <Button type="primary" :disabled="!canSend" @click="handleSend()">发 送</Button>
           <Dropdown :disabled="!canSend" :trigger="['click']">
             <Button type="primary" :disabled="!canSend" class="!px-2">
@@ -1125,7 +1124,7 @@ async function onVideoPicked(e: Event) {
               </Menu>
             </template>
           </Dropdown>
-        </div>
+        </SpaceCompact>
         <!-- 私聊或群已读关闭：普通发送按钮（无群回执入口） -->
         <Button v-else type="primary" :disabled="!canSend" @click="handleSend()">
           发 送
