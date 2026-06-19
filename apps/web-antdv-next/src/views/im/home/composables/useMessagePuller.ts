@@ -6,9 +6,9 @@ import type { ImPrivateMessageApi } from '#/api/im/message/private'
 
 import { watch } from 'vue'
 
-import { pullChannelMessages as apiPullChannelMessages } from '#/api/im/message/channel'
-import { pullGroupMessages as apiPullGroupMessages } from '#/api/im/message/group'
-import { getPrivateMaxReadMessageId as apiGetPrivateMaxReadMessageId, pullPrivateMessages as apiPullPrivateMessages } from '#/api/im/message/private'
+import { pullChannelMessageList as apiPullChannelMessageList } from '#/api/im/message/channel'
+import { pullGroupMessageList as apiPullGroupMessageList } from '#/api/im/message/group'
+import { getPrivateMaxReadMessageId as apiGetPrivateMaxReadMessageId, pullPrivateMessageList as apiPullPrivateMessageList } from '#/api/im/message/private'
 import { getCurrentUserId } from '#/views/im/utils/auth'
 
 import { buildChannelConversationStub } from '../../utils/channel'
@@ -179,12 +179,12 @@ export const useMessagePuller = () => {
       isActive: isStillValid,
       fetchPage: ({ minId, size }) => {
         if (isPrivate) {
-          return apiPullPrivateMessages({ minId, size }, signal)
+          return apiPullPrivateMessageList({ minId, size }, signal)
         }
         if (isChannel) {
-          return apiPullChannelMessages({ minId, size }, signal)
+          return apiPullChannelMessageList({ minId, size }, signal)
         }
-        return apiPullGroupMessages({ minId, size }, signal)
+        return apiPullGroupMessageList({ minId, size }, signal)
       },
       applyPage: async (list, nextMinId) => {
         const pulledMessages: PulledMessage[] = []

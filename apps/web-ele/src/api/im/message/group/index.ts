@@ -45,7 +45,7 @@ export function sendGroupMessage(data: ImGroupMessageApi.GroupMessageSendReqVO) 
 }
 
 /** 拉取群聊消息（增量） */
-export function pullGroupMessages(
+export function pullGroupMessageList(
   params: { minId: number | string; size: number },
   signal?: AbortSignal,
 ) {

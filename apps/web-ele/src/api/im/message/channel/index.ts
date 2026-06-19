@@ -16,7 +16,7 @@ export namespace ImChannelMessageApi {
 
 
 /** 拉取当前用户应收的频道消息（离线增量）；按 minId 游标分页 */
-export function pullChannelMessages(
+export function pullChannelMessageList(
   params: { minId: number; size?: number },
   signal?: AbortSignal,
 ) {
