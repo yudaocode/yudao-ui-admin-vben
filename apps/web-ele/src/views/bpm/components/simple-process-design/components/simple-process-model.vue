@@ -179,14 +179,24 @@ function exportJson() {
 
 /** 导入 JSON */
 const refFile = ref();
+/** 导入后自增，作为 ProcessNodeTree 的 key，强制重新挂载以保证画布刷新 */
+const importKey = ref(0);
 function importJson() {
   refFile.value.click();
 }
 function importLocalFile() {
   const file = refFile.value.files[0];
+  // 清空 input 的 value，否则再次选择同一个文件时 change 事件不会触发
+  refFile.value.value = '';
+  if (!file) {
+    return;
+  }
   file.text().then((result: any) => {
     if (isString(result)) {
       processNodeTree.value = JSON.parse(result);
+      // 改变 key，强制 ProcessNodeTree 重新挂载，
+      // 规避 watch(() => props.flowNode) 在组件复用场景下同步失效导致画布不刷新的问题
+      importKey.value++;
       emits('save', processNodeTree.value);
     }
   });
@@ -244,6 +254,7 @@ onMounted(() => {
     >
       <ProcessNodeTree
         v-if="processNodeTree"
+        :key="importKey"
         v-model:flow-node="processNodeTree"
       />
     </div>
