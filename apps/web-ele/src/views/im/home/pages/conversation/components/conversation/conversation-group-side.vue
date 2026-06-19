@@ -428,7 +428,7 @@ function handleOpenTransferOwner() {
   >
     <div v-if="group" class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
       <!-- 上部：可滚动内容区 -->
-      <div class="flex-1 overflow-y-auto bg-[var(--im-conversation-side-bg)]">
+      <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
         <!-- ==================== 群成员区 ==================== -->
         <div class="px-4 pt-4 pb-[10px] bg-[var(--ant-color-bg-container)]">
           <ElInput v-model="searchText" placeholder="搜索群成员" clearable>
