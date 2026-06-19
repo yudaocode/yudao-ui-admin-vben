@@ -75,7 +75,7 @@ defineExpose({ open });
 </script>
 
 <template>
-  <Drawer v-model:open="visible" destroy-on-close title="通话记录详情" width="900">
+  <Drawer v-model:open="visible" destroy-on-close title="通话记录详情" :styles="{ wrapper: { width: '900px' } }">
     <Descriptions bordered :column="2">
       <DescriptionsItem label="编号">{{ detail.id }}</DescriptionsItem>
       <DescriptionsItem label="业务通话编号">{{ detail.room }}</DescriptionsItem>

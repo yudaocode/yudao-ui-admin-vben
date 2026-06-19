@@ -149,7 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     v-model:open="visible"
     :title="title"
     destroy-on-close
-    width="65%"
+    :styles="{ wrapper: { width: '65%' } }"
     @after-open-change="handleOpenChange"
   >
     <ItemFormModal @success="handleRefresh" />

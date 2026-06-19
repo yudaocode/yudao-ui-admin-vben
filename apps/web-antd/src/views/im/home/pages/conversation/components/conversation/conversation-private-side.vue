@@ -136,7 +136,6 @@ function handleGroupCreated(groupId: number) {
   -->
   <Drawer
     v-model:open="visible"
-    :body-style="{ padding: 0 }"
     :closable="false"
     placement="right"
     width="340px"
@@ -272,21 +271,9 @@ function handleGroupCreated(groupId: number) {
   fill: currentColor !important;
 }
 
-/* 抽屉内「卡片之间」的浅底色，与群聊抽屉保持一致。
-   必须 :global —— antd Drawer 传送到 body 后只带 root-class-name、不带 scoped data-v，
-   普通作用域选择器匹配不到，会导致灰色分隔底色失效、区块间隔显白 */
-:global(.im-conversation-private-side__modal) {
-  --im-conversation-side-bg: #f5f7fa;
-}
-
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */
 .im-conversation-private-side__row + .im-conversation-private-side__row {
   border-top: 1px solid var(--im-border-color-lighter);
-}
-
-/* 整体放进 :global()，避免 Vue scoped 把 `:global(.dark) .xxx` 塌缩成裸 `.dark` 而把变量刷到 <html> */
-:global(.dark .im-conversation-private-side__modal) {
-  --im-conversation-side-bg: rgb(255 255 255 / 5%);
 }
 </style>
 

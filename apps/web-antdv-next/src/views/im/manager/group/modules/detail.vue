@@ -74,7 +74,7 @@ defineExpose({ open });
 </script>
 
 <template>
-  <Drawer v-model:open="visible" destroy-on-close title="群详情" width="900">
+  <Drawer v-model:open="visible" destroy-on-close title="群详情" :styles="{ wrapper: { width: '900px' } }">
     <Descriptions bordered :column="2">
       <DescriptionsItem label="群编号">{{ detail.id }}</DescriptionsItem>
       <DescriptionsItem label="群名称">{{ detail.name }}</DescriptionsItem>
