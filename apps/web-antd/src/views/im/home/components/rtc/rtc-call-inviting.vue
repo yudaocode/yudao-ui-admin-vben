@@ -22,7 +22,7 @@ defineEmits<{
   toggleSpeaker: []
 }>()
 
-const localVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
+const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const localVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localS
       <!-- 视频呼叫：自己摄像头预览铺底，对方头像悬浮顶部 -->
       <video
         v-if="isVideo && localStream"
-        ref="localVideoRef"
+        :ref="setLocalVideoRef"
         class="absolute inset-0 object-cover w-full h-full scale-x-[-1]"
         autoplay
         muted
@@ -63,7 +63,7 @@ const localVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localS
         class="flex flex-col gap-2 items-center cursor-pointer select-none"
         @click="$emit('toggleMic')"
       >
-        <!-- ant-design 系列里 mic 有 audio-muted-outlined 变体；speaker / camera 没有 muted 变体，off 态借 tabler:*-off 表达斜线 -->
+        <!-- Iconify 里 mic 有静音变体；speaker / camera 没有同源静音变体，off 态借 tabler:*-off 表达斜线 -->
         <span
           class="flex justify-center items-center w-12 h-12 rounded-full"
           :class="micEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"

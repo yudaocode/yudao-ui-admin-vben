@@ -32,6 +32,7 @@ import { useFriendStore } from '../store/friendStore'
 import { useGroupRequestStore } from '../store/groupRequestStore'
 import { useGroupStore } from '../store/groupStore'
 import { type PulledMessage, useMessageStore } from '../store/messageStore'
+import { useRtcStore } from '../store/rtcStore'
 import { useImWebSocketStore } from '../store/websocketStore'
 
 /** 三类消息 pull 接口返回的原始 VO 联合类型；runMinIdPull 只需 id 推进游标，具体分发在 applyPage 内按类型 cast */
@@ -55,6 +56,7 @@ export const useMessagePuller = () => {
   const friendStore = useFriendStore()
   const groupStore = useGroupStore()
   const groupRequestStore = useGroupRequestStore()
+  const rtcStore = useRtcStore()
   const currentUserId = getCurrentUserId()
 
   /** 判断请求是否被主动取消 */
@@ -285,7 +287,12 @@ export const useMessagePuller = () => {
    * 群成员不做全局增量同步，重连只标记本地群成员 cache 过期，进入群会话或成员列表时再按 groupId 刷新。
    */
   const pullStateEvents = async (): Promise<void> => {
+    // 1. 清理连接级缓存
+    messageStore.clearPrivateReadMaxIdCache()
+    rtcStore.clearGroupCallCache()
+    groupStore.markAllGroupInfoExpired()
     groupStore.markAllGroupMembersExpired()
+    // 2. 并发补偿远端状态
     const results = await Promise.allSettled([
       friendStore.pullFriends(),
       friendStore.pullFriendRequests(),
@@ -403,6 +410,7 @@ export const useMessagePuller = () => {
             if (!isCurrentPull()) {
               return
             }
+            messageStore.updatePrivateReadMaxId(active.targetId, maxReadId)
             if (maxReadId) {
               messageStore.applyMessageReadReceipt({
                 conversationType: ImConversationType.PRIVATE,

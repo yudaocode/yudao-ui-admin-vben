@@ -700,10 +700,12 @@ export type GroupNotificationPayload = {
   mutedUserId?: number
   muteEndTime?: string
   newAvatar?: string
+  newJoinApproval?: boolean
   newName?: string
   newNotice?: string
   newOwnerUserId?: number
   oldAvatar?: string
+  oldJoinApproval?: boolean
   oldName?: string
   oldNotice?: string
   operatorUserId?: number

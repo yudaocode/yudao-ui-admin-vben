@@ -516,7 +516,8 @@ export async function stopRequests(): Promise<void> {
     { useGroupStoreWithOut },
     { useChannelStoreWithOut },
     { useGroupRequestStoreWithOut },
-    { useFaceStoreWithOut }
+    { useFaceStoreWithOut },
+    { useRtcStore }
   ] = await Promise.all([
     import('../home/store/messageStore'),
     import('../home/store/conversationStore'),
@@ -524,7 +525,8 @@ export async function stopRequests(): Promise<void> {
     import('../home/store/groupStore'),
     import('../home/store/channelStore'),
     import('../home/store/groupRequestStore'),
-    import('../home/store/faceStore')
+    import('../home/store/faceStore'),
+    import('../home/store/rtcStore')
   ])
   useMessageStoreWithOut().clear()
   useConversationStoreWithOut().clear()
@@ -533,5 +535,7 @@ export async function stopRequests(): Promise<void> {
   useChannelStoreWithOut().clear()
   useGroupRequestStoreWithOut().clear()
   useFaceStoreWithOut().clear()
+  useRtcStore().reset()
+  useRtcStore().clearGroupCallCache()
   closeDbConnection()
 }

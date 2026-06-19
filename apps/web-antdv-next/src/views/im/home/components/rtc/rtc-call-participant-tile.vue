@@ -19,10 +19,8 @@ const props = defineProps<{
   speakerEnabled: boolean
 }>()
 
-const videoRef = useMediaStreamElement<HTMLVideoElement>(() => props.participant.videoStream)
-const audioRef = useMediaStreamElement<HTMLAudioElement>(() => props.participant.audioStream)
-void audioRef
-void videoRef
+const setVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.participant.videoStream)
+const setAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.participant.audioStream)
 </script>
 
 <template>
@@ -38,7 +36,7 @@ void videoRef
     <!-- 视频可用：渲染 video；否则渲染头像或默认占位 -->
     <video
       v-if="participant.videoStream"
-      ref="videoRef"
+      :ref="setVideoRef"
       class="object-cover w-full h-full"
       autoplay
       playsinline
@@ -57,7 +55,7 @@ void videoRef
     <!-- 远端音频；通过 audio 元素播放，本端静音避免回声；扬声器关闭时整体静音 -->
     <audio
       v-if="participant.audioStream && !participant.isLocal"
-      ref="audioRef"
+      :ref="setAudioRef"
       autoplay
       :muted="!speakerEnabled"
     ></audio>
