@@ -98,7 +98,11 @@ async function applyPreSelection() {
   }
   const rows = gridApi.grid.getData() as MesProWorkOrderApi.WorkOrder[];
   for (const row of rows) {
-    if (row.id === undefined || !preSelectedIds.value.includes(row.id)) {
+    if (
+      row.id === undefined ||
+      row.id === null ||
+      !preSelectedIds.value.includes(row.id)
+    ) {
       continue;
     }
     if (multiple.value) {
