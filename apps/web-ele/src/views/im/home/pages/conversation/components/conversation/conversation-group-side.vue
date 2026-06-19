@@ -816,12 +816,6 @@ function handleOpenTransferOwner() {
   background-color: var(--ant-color-primary-bg);
 }
 
-/* 必须 :global —— el-drawer append-to-body 后 modal-class 落在 .el-overlay 上、不带 scoped data-v，
-   普通作用域选择器匹配不到，会导致灰色分隔底色（--im-conversation-side-bg）失效、区块间隔显白 */
-:global(.im-conversation-group-side__modal) {
-  --im-conversation-side-bg: #f5f7fa;
-}
-
 /* :deep 穿透 Icon 内部 svg； el-icon 全局 color 在暗色模式下被主题盖过，锁 fill 到当前色 */
 .im-conversation-group-side__icon-tile :deep(svg) {
   fill: currentColor !important;
@@ -830,10 +824,5 @@ function handleOpenTransferOwner() {
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */
 .im-conversation-group-side__row + .im-conversation-group-side__row {
   border-top: 1px solid var(--im-border-color-lighter);
-}
-
-/* 整体放进 :global()，避免 Vue scoped 把 `:global(.dark) .xxx` 塌缩成裸 `.dark` 而把变量刷到 <html> */
-:global(.dark .im-conversation-group-side__modal) {
-  --im-conversation-side-bg: rgb(255 255 255 / 5%);
 }
 </style>
