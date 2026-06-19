@@ -147,15 +147,9 @@ defineExpose({ settingValues });
         size="large"
         class="!w-80"
         @change="handlerPlatformChange"
-      >
-        <SelectOption
-          v-for="item in OtherPlatformEnum"
-          :key="item.key"
-          :value="item.key"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="OtherPlatformEnum"
+        :field-names="{ label: 'name', value: 'key' }"
+      />
     </Space>
   </div>
 
@@ -169,15 +163,9 @@ defineExpose({ settingValues });
         placeholder="Select"
         size="large"
         class="!w-80"
-      >
-        <SelectOption
-          v-for="item in platformModels"
-          :key="item.id"
-          :value="item.id"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+        :options="platformModels"
+        :field-names="{ label: 'name', value: 'id' }"
+      />
     </Space>
   </div>
 

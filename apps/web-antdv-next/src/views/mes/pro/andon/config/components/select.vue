@@ -5,7 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { Select, SelectOption } from 'antdv-next';
+import { Select } from 'antdv-next';
 
 import { getAndonConfigList } from '#/api/mes/pro/andon/config';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
@@ -34,6 +34,13 @@ const emit = defineEmits<{
 }>();
 
 const allList = ref<MesProAndonConfigApi.AndonConfig[]>([]);
+const selectOptions = computed(() =>
+  allList.value.map((item) => ({
+    label: item.reason,
+    value: item.id,
+    raw: item,
+  })),
+);
 
 const selectValue = computed({
   get: () => props.modelValue,
@@ -45,7 +52,7 @@ const selectValue = computed({
 /** 前端过滤：按 reason 模糊匹配 */
 function handleFilter(input: string, option: any) {
   const keyword = input.toLowerCase();
-  const item = option?.item as MesProAndonConfigApi.AndonConfig | undefined;
+  const item = option?.raw as MesProAndonConfigApi.AndonConfig | undefined;
   return Boolean(item?.reason?.toLowerCase().includes(keyword));
 }
 
@@ -71,18 +78,17 @@ onMounted(async () => {
     :placeholder="placeholder"
     class="w-full"
     show-search
+    :options="selectOptions"
     @change="handleChange"
   >
-    <SelectOption
-      v-for="item in allList"
-      :key="item.id"
-      :item="item"
-      :value="item.id"
-    >
+    <template #optionRender="{ option }">
       <div class="flex items-center gap-2">
-        <span>{{ item.reason }}</span>
-        <DictTag :type="DICT_TYPE.MES_PRO_ANDON_LEVEL" :value="item.level" />
+        <span>{{ option.data.raw.reason }}</span>
+        <DictTag
+          :type="DICT_TYPE.MES_PRO_ANDON_LEVEL"
+          :value="option.data.raw.level"
+        />
       </div>
-    </SelectOption>
+    </template>
   </Select>
 </template>

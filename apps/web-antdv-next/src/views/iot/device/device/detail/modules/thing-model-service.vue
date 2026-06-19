@@ -14,14 +14,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import {
-  Button,
-  DateRangePicker,
-  Select,
-  SelectOption,
-  Space,
-  Tag,
-} from 'antdv-next';
+import { Button, DateRangePicker, Select, Space, Tag } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePairPage } from '#/api/iot/device/device';
@@ -231,15 +224,13 @@ defineExpose({
           allow-clear
           placeholder="请选择服务标识符"
           style="width: 240px"
-        >
-          <SelectOption
-            v-for="service in serviceThingModels"
-            :key="service.identifier"
-            :value="service.identifier!"
-          >
-            {{ service.name }}({{ service.identifier }})
-          </SelectOption>
-        </Select>
+          :options="[
+            ...serviceThingModels.map((service) => ({
+              label: `${service.name}(${service.identifier})`,
+              value: service.identifier!,
+            })),
+          ]"
+        />
       </div>
       <div class="flex items-center gap-2">
         <span>时间范围：</span>

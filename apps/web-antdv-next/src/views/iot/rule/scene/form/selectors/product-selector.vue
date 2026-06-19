@@ -1,10 +1,10 @@
 <!-- 产品选择器组件 -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { Select, SelectOption } from 'antdv-next';
+import { Select } from 'antdv-next';
 
 import { getSimpleProductList } from '#/api/iot/product/product';
 import { DictTag } from '#/components/dict-tag';
@@ -23,6 +23,13 @@ const emit = defineEmits<{
 
 const productLoading = ref(false); // 产品加载状态
 const productList = ref<any[]>([]); // 产品列表
+const productOptions = computed(() =>
+  productList.value.map((product) => ({
+    label: product.name,
+    value: product.id,
+    raw: product,
+  })),
+);
 
 /**
  * 处理选择变化事件
@@ -62,25 +69,25 @@ onMounted(() => {
     allow-clear
     class="w-full"
     option-label-prop="label"
+    option-filter-prop="label"
     :loading="productLoading"
+    :options="productOptions"
   >
-    <SelectOption
-      v-for="product in productList"
-      :key="product.id"
-      :label="product.name"
-      :value="product.id"
-    >
+    <template #optionRender="{ option }">
       <div class="py-[4px] flex w-full items-center justify-between">
         <div class="flex-1">
           <div class="text-[14px] font-medium mb-[2px] text-foreground">
-            {{ product.name }}
+            {{ option.data.raw.name }}
           </div>
           <div class="text-[12px] text-muted-foreground">
-            {{ product.productKey }}
+            {{ option.data.raw.productKey }}
           </div>
         </div>
-        <DictTag :type="DICT_TYPE.IOT_PRODUCT_STATUS" :value="product.status" />
+        <DictTag
+          :type="DICT_TYPE.IOT_PRODUCT_STATUS"
+          :value="option.data.raw.status"
+        />
       </div>
-    </SelectOption>
+    </template>
   </Select>
 </template>

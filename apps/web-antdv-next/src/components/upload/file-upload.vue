@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { UploadFile, UploadProps } from 'antdv-next';
-import type { UploadRequestOption } from 'antdv-next/lib/vc-upload/interface';
 
 import type { FileUploadProps } from './typing';
 
@@ -16,6 +15,8 @@ import { Button, message, Upload } from 'antdv-next';
 
 import { UploadResultStatus } from './typing';
 import { useUpload, useUploadType } from './use-upload';
+
+type UploadRequestOption = any;
 
 defineOptions({ name: 'FileUpload', inheritAttrs: false });
 
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   resultField: '',
   returnText: false,
   showDescription: false,
+  showDownloadIcon: true,
 });
 const emit = defineEmits([
   'change',
@@ -295,7 +297,7 @@ function getValue() {
       :show-upload-list="{
         showPreviewIcon: true,
         showRemoveIcon: true,
-        showDownloadIcon: true,
+        showDownloadIcon,
       }"
       @remove="handleRemove"
       @preview="handlePreview"

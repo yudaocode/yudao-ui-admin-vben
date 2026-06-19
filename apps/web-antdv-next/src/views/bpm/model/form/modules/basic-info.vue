@@ -18,8 +18,10 @@ import {
   Avatar,
   Button,
   Form,
+  FormItem,
   Input,
   Radio,
+  RadioGroup,
   Select,
   TextArea,
   Tooltip,
@@ -68,20 +70,18 @@ const rules: Record<string, Rule[]> = {
   key: [
     { required: true, message: '流程标识不能为空', trigger: 'blur' },
     {
-      validator: (_rule: any, value: string, callback: any) => {
+      validator: (_rule: any, value: string) => {
         if (!value) {
-          callback();
-          return;
+          return Promise.resolve();
         }
         if (!/^[a-z_][-\w.$]*$/i.test(value)) {
-          callback(
+          return Promise.reject(
             new Error(
               '只能包含字母、数字、下划线、连字符和点号，且必须以字母或下划线开头',
             ),
           );
-          return;
         }
-        callback();
+        return Promise.resolve();
       },
       trigger: 'blur',
     },
@@ -281,16 +281,10 @@ defineExpose({ validate });
           class="w-full"
           v-model:value="modelData.category"
           allow-clear
+          :field-names="{ label: 'name', value: 'code' }"
+          :options="categoryList"
           placeholder="请选择流程分类"
-        >
-          <SelectOption
-            v-for="category in categoryList"
-            :key="category.code"
-            :value="category.code"
-          >
-            {{ category.name }}
-          </SelectOption>
-        </Select>
+        />
       </FormItem>
       <FormItem label="流程图标">
         <ImageUpload v-model:value="modelData.icon" />
@@ -326,13 +320,14 @@ defineExpose({ validate });
       <FormItem label="谁可以发起" name="startUserType">
         <Select
           v-model:value="modelData.startUserType"
+          :options="[
+            { label: '全员', value: 0 },
+            { label: '指定人员', value: 1 },
+            { label: '指定部门', value: 2 },
+          ]"
           placeholder="请选择谁可以发起"
           @change="handleStartUserTypeChange"
-        >
-          <SelectOption :value="0">全员</SelectOption>
-          <SelectOption :value="1">指定人员</SelectOption>
-          <SelectOption :value="2">指定部门</SelectOption>
-        </Select>
+        />
         <div
           v-if="modelData.startUserType === 1"
           class="mt-2 flex flex-wrap gap-1"

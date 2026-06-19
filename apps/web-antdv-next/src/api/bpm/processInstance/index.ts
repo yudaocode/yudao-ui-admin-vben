@@ -84,6 +84,7 @@ export namespace BpmProcessInstanceApi {
     reason: string;
     signPicUrl: string;
     status: number;
+    attachments?: string[];
   }
 
   /** 抄送流程实例 */

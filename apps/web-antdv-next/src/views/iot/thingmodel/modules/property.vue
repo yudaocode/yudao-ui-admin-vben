@@ -14,14 +14,7 @@ import {
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import {
-  FormItem,
-  Input,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectOption,
-} from 'antdv-next';
+import { FormItem, Input, Radio, RadioGroup, Select } from 'antdv-next';
 
 import { ThingModelFormRules, validateBoolName } from '#/api/iot/thingmodel';
 
@@ -118,16 +111,13 @@ if (!props.isStructDataSpecs && !props.isParams) {
       v-model:value="property.dataType"
       placeholder="请选择数据类型"
       @change="handleChange"
-    >
-      <!-- ARRAY 和 STRUCT 类型数据相互嵌套时，最多支持递归嵌套 2 层（父和子） -->
-      <SelectOption
-        v-for="option in dataTypeOptions"
-        :key="option.value"
-        :value="option.value"
-      >
-        {{ `${option.value}(${option.label})` }}
-      </SelectOption>
-    </Select>
+      :options="[
+        ...dataTypeOptions.map((option) => ({
+          label: `{{ \`${option.value}(${option.label})\` }}`,
+          value: option.value,
+        })),
+      ]"
+    />
   </FormItem>
   <!-- 数值型配置 -->
   <ThingModelNumberDataSpecs

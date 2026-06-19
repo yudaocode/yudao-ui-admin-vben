@@ -1,0 +1,28 @@
+{
+  "className": " ",
+  "rootVar": "#e8eaed",
+  "aside": {
+    "borderTopColor": "rgb(232, 234, 237)",
+    "borderRightColor": "rgb(232, 234, 237)",
+    "borderBottomColor": "rgb(232, 234, 237)",
+    "borderLeftColor": "rgb(232, 234, 237)"
+  },
+  "leftHeader": {
+    "borderTopColor": "rgb(232, 234, 237)",
+    "borderRightColor": "rgb(232, 234, 237)",
+    "borderBottomColor": "rgb(232, 234, 237)",
+    "borderLeftColor": "rgb(232, 234, 237)"
+  },
+  "inputCard": {
+    "borderTopColor": "rgb(232, 234, 237)",
+    "borderRightColor": "rgb(232, 234, 237)",
+    "borderBottomColor": "rgb(232, 234, 237)",
+    "borderLeftColor": "rgb(232, 234, 237)"
+  },
+  "toolbar": {
+    "borderTopColor": "rgb(232, 234, 237)",
+    "borderRightColor": "rgb(232, 234, 237)",
+    "borderBottomColor": "rgb(232, 234, 237)",
+    "borderLeftColor": "rgb(232, 234, 237)"
+  }
+}

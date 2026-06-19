@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "outDir": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-header-entry-2026-06-17T17-12-10-321Z",
+  "checks": [
+    {
+      "name": "右上角 IM 聊天入口可见",
+      "status": "passed",
+      "buttonCount": 13
+    },
+    {
+      "name": "点击 IM 入口新开聊天页",
+      "status": "passed",
+      "newPageUrl": "http://127.0.0.1:5666/im/home"
+    }
+  ],
+  "events": [],
+  "badResponses": [],
+  "screenshots": {
+    "header-with-im-entry": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-header-entry-2026-06-17T17-12-10-321Z/header-with-im-entry.png",
+    "im-home-opened": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-header-entry-2026-06-17T17-12-10-321Z/im-home-opened.png"
+  }
+}

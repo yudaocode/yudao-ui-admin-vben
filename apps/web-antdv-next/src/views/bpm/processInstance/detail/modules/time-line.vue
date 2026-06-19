@@ -204,7 +204,7 @@ function shouldShowCustomUserSelect(
 /** 判断是否需要显示审批意见和附件 */
 function shouldShowReasonAndAttachment(task: any, nodeType: BpmNodeTypeEnum) {
   return (
-    Boolean(task.reason || task.attachments?.length > 0) &&
+    (task.reason || task.attachments?.length > 0) &&
     [BpmNodeTypeEnum.START_USER_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
       nodeType,
     )
@@ -212,17 +212,11 @@ function shouldShowReasonAndAttachment(task: any, nodeType: BpmNodeTypeEnum) {
 }
 
 function getAttachmentName(url: string) {
-  const cleanUrl = url.split(/[?#]/)[0] || '';
-  const fileName = cleanUrl.slice(cleanUrl.lastIndexOf('/') + 1);
-  try {
-    return decodeURIComponent(fileName);
-  } catch {
-    return fileName;
-  }
+  return decodeURIComponent(url.slice(url.lastIndexOf('/') + 1));
 }
 
 function isImageAttachment(url: string) {
-  const ext = url.split(/[?#]/)[0]?.split('.').pop()?.toLowerCase();
+  const ext = url.split('.').pop()?.toLowerCase();
   return ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'webp'].includes(ext || '');
 }
 
@@ -286,10 +280,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
           </div>
         </template>
 
-        <div
-          class="ml-2 flex flex-col items-start gap-2"
-          :id="`activity-task-${activity.id}-${index}`"
-        >
+        <div class="ml-2 flex flex-col items-start gap-2">
           <!-- 第一行：节点名称、时间 -->
           <div class="flex w-full">
             <div class="font-bold">
@@ -363,12 +354,12 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
             </div>
           </div>
 
-          <div v-else class="mt-1 flex flex-wrap items-center gap-2">
+          <div v-else class="mt-1 flex w-full flex-wrap items-center gap-2">
             <!-- 情况一：遍历每个审批节点下的【进行中】task 任务 -->
             <div
               v-for="(task, idx) in activity.tasks"
               :key="idx"
-              class="flex flex-col gap-2 pr-2"
+              class="flex w-full flex-col gap-2 pr-2"
             >
               <div
                 class="relative flex flex-wrap gap-2"
@@ -428,78 +419,74 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
                 </div>
               </div>
 
-              <!-- 审批意见,附件和签名 -->
-              <teleport defer :to="`#activity-task-${activity.id}-${index}`">
+              <!-- 审批意见、附件和签名 -->
+              <div
+                v-if="shouldShowReasonAndAttachment(task, activity.nodeType)"
+                class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+              >
+                <div v-if="task.reason">审批意见：{{ task.reason }}</div>
                 <div
-                  v-if="shouldShowReasonAndAttachment(task, activity.nodeType)"
-                  class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+                  v-if="(task.attachments?.length || 0) > 0"
+                  :class="{
+                    'mt-2 border-t border-dashed border-gray-300 pt-2':
+                      task.reason,
+                  }"
                 >
-                  <div v-if="task.reason">审批意见：{{ task.reason }}</div>
-                  <div
-                    v-if="(task.attachments?.length || 0) > 0"
-                    :class="{
-                      'mt-2 border-t border-dashed border-gray-300 pt-2':
-                        task.reason,
-                    }"
-                  >
-                    <div class="mb-1 text-xs font-semibold text-gray-400">
-                      附件列表：
-                    </div>
-                    <div class="flex flex-col gap-1.5">
-                      <template
-                        v-for="(
-                          attachment, attachmentIndex
-                        ) in task.attachments"
-                        :key="attachmentIndex"
-                      >
-                        <div class="flex items-center gap-2">
-                          <IconifyIcon
-                            :icon="
-                              isImageAttachment(attachment)
-                                ? 'lucide:image'
-                                : 'lucide:file-text'
-                            "
-                            class="text-gray-400"
-                          />
-                          <Image
-                            v-if="isImageAttachment(attachment)"
-                            :width="32"
-                            :height="32"
-                            class="rounded border border-solid border-gray-200 object-cover"
-                            :src="attachment"
-                            :preview="{ src: attachment }"
-                          />
-                          <a
-                            v-else
-                            :href="attachment"
-                            target="_blank"
-                            class="max-w-[240px] truncate text-blue-500 hover:text-blue-600 hover:underline"
-                            :title="getAttachmentName(attachment)"
-                          >
-                            {{ getAttachmentName(attachment) }}
-                          </a>
-                        </div>
-                      </template>
-                    </div>
+                  <div class="mb-1 text-xs font-semibold text-gray-400">
+                    附件列表：
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <template
+                      v-for="(attachment, attachmentIndex) in task.attachments"
+                      :key="attachmentIndex"
+                    >
+                      <div class="flex items-center gap-2">
+                        <IconifyIcon
+                          :icon="
+                            isImageAttachment(attachment)
+                              ? 'lucide:image'
+                              : 'lucide:file-text'
+                          "
+                          class="text-gray-400"
+                        />
+                        <Image
+                          v-if="isImageAttachment(attachment)"
+                          :width="32"
+                          :height="32"
+                          class="rounded border border-solid border-gray-200 object-cover"
+                          :src="attachment"
+                          :preview="{ src: attachment }"
+                        />
+                        <a
+                          v-else
+                          :href="attachment"
+                          target="_blank"
+                          class="max-w-[240px] truncate text-blue-500 hover:text-blue-600 hover:underline"
+                          :title="getAttachmentName(attachment)"
+                        >
+                          {{ getAttachmentName(attachment) }}
+                        </a>
+                      </div>
+                    </template>
                   </div>
                 </div>
-                <div
-                  v-if="
-                    task.signPicUrl &&
-                    activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
-                  "
-                  class="mt-1 flex w-full items-center rounded-md bg-gray-100 p-2 text-sm text-gray-500"
-                >
-                  签名：
-                  <Image
-                    class="ml-2"
-                    :width="180"
-                    :height="60"
-                    :src="task.signPicUrl"
-                    :preview="{ src: task.signPicUrl }"
-                  />
-                </div>
-              </teleport>
+              </div>
+              <div
+                v-if="
+                  task.signPicUrl &&
+                  activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
+                "
+                class="mt-1 flex w-full items-center rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+              >
+                签名：
+                <Image
+                  class="ml-2"
+                  :width="180"
+                  :height="60"
+                  :src="task.signPicUrl"
+                  :preview="{ src: task.signPicUrl }"
+                />
+              </div>
             </div>
 
             <!-- 情况二：遍历每个审批节点下的【候选的】task 任务 -->

@@ -11,7 +11,6 @@ import {
   FormItem,
   Input,
   Select,
-  SelectOption,
   Switch,
 } from 'antdv-next';
 
@@ -269,16 +268,9 @@ onMounted(async () => {
           placeholder="请选择子流程"
           allow-clear
           @change="handleChildProcessChange"
-        >
-          <SelectOption
-            v-for="item in childProcessOptions"
-            :key="item.key"
-            :value="item.key"
-            :label="item.name"
-          >
-            {{ item.name }}
-          </SelectOption>
-        </Select>
+          :options="childProcessOptions"
+          :field-names="{ label: 'name', value: 'key' }"
+        />
       </FormItem>
 
       <FormItem label="继承变量">

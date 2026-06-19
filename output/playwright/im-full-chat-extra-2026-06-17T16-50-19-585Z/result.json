@@ -1,0 +1,75 @@
+{
+  "outDir": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z",
+  "checks": [
+    {
+      "name": "C-203 表情面板",
+      "status": "passed",
+      "faceCount": 17
+    },
+    {
+      "name": "C-208 语音面板",
+      "status": "passed"
+    },
+    {
+      "name": "C-202 Shift+Enter 换行",
+      "status": "passed",
+      "editorText": "line1\nline2"
+    },
+    {
+      "name": "C-302 引用消息",
+      "status": "weak",
+      "replyCount": 0
+    },
+    {
+      "name": "C-303 转发消息",
+      "status": "passed"
+    },
+    {
+      "name": "C-304 多选消息",
+      "status": "passed"
+    },
+    {
+      "name": "C-404 添加好友弹窗",
+      "status": "passed"
+    },
+    {
+      "name": "C-411 建群弹窗",
+      "status": "weak"
+    },
+    {
+      "name": "C-403 好友详情/聊天信息",
+      "status": "passed"
+    },
+    {
+      "name": "C-410 群详情侧栏",
+      "status": "passed"
+    },
+    {
+      "name": "C-108 消息历史抽屉",
+      "status": "weak"
+    },
+    {
+      "name": "C-501/C-502 私聊通话入口",
+      "status": "passed"
+    }
+  ],
+  "events": [],
+  "ignoredEvents": 24,
+  "badResponses": [],
+  "screenshots": {
+    "conversation-open": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/conversation-open.png",
+    "emoji-panel": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/emoji-panel.png",
+    "voice-panel": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/voice-panel.png",
+    "shift-enter-newline": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/shift-enter-newline.png",
+    "message-context-menu-extra": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/message-context-menu-extra.png",
+    "quote-preview": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/quote-preview.png",
+    "forward-dialog": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/forward-dialog.png",
+    "multi-select-bar": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/multi-select-bar.png",
+    "friend-add-dialog": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/friend-add-dialog.png",
+    "group-create-dialog": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/group-create-dialog.png",
+    "private-side-info": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/private-side-info.png",
+    "group-side-info": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/group-side-info.png",
+    "message-history-drawer": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/message-history-drawer.png",
+    "rtc-call-popover": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-extra-2026-06-17T16-50-19-585Z/rtc-call-popover.png"
+  }
+}

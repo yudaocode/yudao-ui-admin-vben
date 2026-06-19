@@ -1,0 +1,56 @@
+{
+  "ok": false,
+  "outDir": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-toolbar-2026-06-17T17-03-09-169Z",
+  "checks": [
+    {
+      "name": "C-203 表情面板 DOM 顺序定位",
+      "status": "passed",
+      "emojiButtonCount": 136
+    },
+    {
+      "name": "C-204 Unicode 表情插入/发送",
+      "status": "passed",
+      "editorText": "😀"
+    },
+    {
+      "name": "C-205 图片上传入口",
+      "status": "passed"
+    },
+    {
+      "name": "C-206 文件上传入口",
+      "status": "passed"
+    },
+    {
+      "name": "C-207 视频上传入口",
+      "status": "passed"
+    },
+    {
+      "name": "C-208 语音面板 DOM 顺序定位",
+      "status": "passed"
+    },
+    {
+      "name": "C-302 引用入口菜单",
+      "status": "failed"
+    },
+    {
+      "name": "C-306 撤回入口菜单",
+      "status": "passed"
+    },
+    {
+      "name": "C-307 删除入口菜单",
+      "status": "passed"
+    },
+    {
+      "name": "C-310 复制入口菜单",
+      "status": "passed"
+    }
+  ],
+  "events": [],
+  "badResponses": [],
+  "screenshots": {
+    "toolbar-ready": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-toolbar-2026-06-17T17-03-09-169Z/toolbar-ready.png",
+    "emoji-dom-send": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-toolbar-2026-06-17T17-03-09-169Z/emoji-dom-send.png",
+    "voice-dom-panel": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-toolbar-2026-06-17T17-03-09-169Z/voice-dom-panel.png",
+    "menu-dom-entries": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/im-full-chat-toolbar-2026-06-17T17-03-09-169Z/menu-dom-entries.png"
+  }
+}
