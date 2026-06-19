@@ -113,7 +113,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             v-for="(item, index) in row.content.newsItem"
             :key="index"
             :src="item.picUrl || item.thumbUrl"
-            :preview-src-list="[item.picUrl || item.thumbUrl]"
+            :preview-src-list="[item.picUrl || item.thumbUrl || '']"
             class="h-36 !w-[300px] rounded object-cover"
             :alt="`文章 ${index + 1} 封面图`"
           />

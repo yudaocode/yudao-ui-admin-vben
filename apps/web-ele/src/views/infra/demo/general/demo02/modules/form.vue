@@ -125,10 +125,10 @@ const [Modal, modalApi] = useVbenModal({
           :data="demo02CategoryTree"
           :props="{
             label: 'name',
-            value: 'id',
             children: 'children',
           }"
           check-strictly
+          node-key="id"
           default-expand-all
           placeholder="请选择父级编号"
         />

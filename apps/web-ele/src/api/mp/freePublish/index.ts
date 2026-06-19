@@ -3,6 +3,19 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace MpFreePublishApi {
+  /** 图文文章内容 */
+  export interface FreePublishArticle {
+    title?: string;
+    thumbUrl?: string;
+    picUrl?: string;
+    url?: string;
+  }
+
+  /** 图文内容 */
+  export interface FreePublishContent {
+    newsItem?: FreePublishArticle[];
+  }
+
   /** 自由发布文章信息 */
   export interface FreePublish {
     id?: number;
@@ -12,7 +25,7 @@ export namespace MpFreePublishApi {
     title: string;
     author: string;
     digest: string;
-    content: string;
+    content?: FreePublishContent;
     thumbUrl: string;
     status: number;
     publishTime?: Date;
