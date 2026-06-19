@@ -420,6 +420,7 @@ function handleOpenTransferOwner() {
   <!-- 聊天面板右侧群信息抽屉：成员宫格 + 群信息 + 开关 + 退出群聊，整体对齐微信 PC -->
   <Drawer
     v-model:open="visible"
+    :body-style="{ padding: 0 }"
     :closable="false"
     placement="right"
     width="380px"
@@ -427,7 +428,7 @@ function handleOpenTransferOwner() {
   >
     <div v-if="group" class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
       <!-- 上部：可滚动内容区 -->
-      <div class="flex-1 overflow-y-auto bg-[var(--im-conversation-side-bg)]">
+      <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
         <!-- ==================== 群成员区 ==================== -->
         <div class="px-4 pt-4 pb-[10px] bg-[var(--ant-color-bg-container)]">
           <Input v-model:value="searchText" placeholder="搜索群成员" allow-clear>

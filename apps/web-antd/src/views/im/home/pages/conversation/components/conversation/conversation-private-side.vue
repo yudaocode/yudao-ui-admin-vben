@@ -136,6 +136,7 @@ function handleGroupCreated(groupId: number) {
   -->
   <Drawer
     v-model:open="visible"
+    :body-style="{ padding: 0 }"
     :closable="false"
     placement="right"
     width="340px"
@@ -149,7 +150,7 @@ function handleGroupCreated(groupId: number) {
       <Spin tip="加载中..." />
     </div>
     <div v-else class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
-      <div class="flex-1 overflow-y-auto bg-[var(--im-conversation-side-bg)]">
+      <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
         <!-- 好友宫格：原 tile + "+" tile，对齐 GroupSide 视觉，让两种抽屉看起来是一家的 -->
         <div class="flex flex-wrap gap-1 px-4 pt-4 pb-[14px] bg-[var(--ant-color-bg-container)]">
           <div class="flex flex-col items-center w-[66px]">

@@ -288,4 +288,31 @@ watch(
   --ant-color-fill-tertiary: hsl(var(--foreground) / 4%);
   --ant-color-fill-dark: hsl(var(--foreground) / 18%);
 }
+
+/*
+ * antd-next（对齐 antd v6）默认走 cssVar / zero-runtime 模式：把 --ant-color-* 输出在
+ * ConfigProvider 注入的 .css-var-* 作用域 div 上。该 div 比 :root 离组件更近，会盖掉上面
+ * :root 的兜底映射 —— 典型表现是 fill 系列回退成 antd 算法色（浅色下是半透明黑、而非
+ * EP 风格的冷调浅灰实色），导致聊天面板 / 抽屉灰底与 web-antd 对不上（web-antd 的 antd 4.x
+ * 不输出 cssVar，故那边 :root 兜底就够了，无需本段）。
+ *
+ * 这里把同一套 fill 映射重新声明到 cssVar 作用域上：用「双属性选择器」把权重叠到 (0,2,0)，
+ * 稳定压过 antd 自身的 .css-var-*(0,1,0)（不依赖样式注入顺序，也对自动生成的 key 名 css-var-v-0 无感）。
+ * 抽屉 / 弹窗传送到 body 后其根节点同样带 css-var-* 类，故这一条即可同时覆盖主界面与所有弹层。
+ * 只重映 fill 系列：bg / text / primary 等由 antd 算法从同源 token 推导、已与 web-antd 接近，
+ * 全量覆盖反而会把组件自身的算法派生色（如 primary-hover）拍平，故按最小集处理。
+ */
+:global([class*='css-var-'][class*='css-var-']) {
+  --ant-color-fill: #e2e6ec;
+  --ant-color-fill-secondary: #f4f6f9;
+  --ant-color-fill-tertiary: #eaedf2;
+  --ant-color-fill-dark: #d5dae2;
+}
+
+:global(.dark [class*='css-var-'][class*='css-var-']) {
+  --ant-color-fill: hsl(var(--foreground) / 12%);
+  --ant-color-fill-secondary: hsl(var(--foreground) / 8%);
+  --ant-color-fill-tertiary: hsl(var(--foreground) / 4%);
+  --ant-color-fill-dark: hsl(var(--foreground) / 18%);
+}
 </style>
