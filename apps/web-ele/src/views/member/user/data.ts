@@ -1,7 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
+import { h, markRaw } from 'vue';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -13,7 +13,7 @@ import { z } from '#/adapter/form';
 import { getSimpleGroupList } from '#/api/member/group';
 import { getSimpleLevelList } from '#/api/member/level';
 import { getSimpleTagList } from '#/api/member/tag';
-import { getAreaTree } from '#/api/system/area';
+import { AreaCascader } from '#/components/area';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -99,12 +99,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'areaId',
       label: '所在地',
-      component: 'ApiTreeSelect',
+      component: markRaw(AreaCascader),
       componentProps: {
-        api: getAreaTree,
-        labelField: 'name',
-        valueField: 'id',
-        childrenField: 'children',
+        checkStrictly: true,
+        class: '!w-full',
+        clearable: true,
+        filterable: true,
         placeholder: '请选择所在地',
       },
     },

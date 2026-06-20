@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-06-13T02:57:53.579Z",
+  "results": [
+    {
+      "app": "web-ele",
+      "baseUrl": "http://127.0.0.1:5778",
+      "id": "product-issue-work-order",
+      "pageName": "生产领料",
+      "ok": true,
+      "blocked": false,
+      "expectedParams": {
+        "status": "1"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true
+      },
+      "rowCount": 5,
+      "radioCount": 10,
+      "checkboxCount": 0,
+      "firstRowText": "MO_ACCEPT_FB_20260526 验收生产报工工单-螺丝刀 客户订单 ACCEPT-FEEDBACK IF2022082439 螺丝刀【蓝色，一字型】 蓝色，一字型，3.2x75mm 个 200 C00197 博世 已确认 2026-06-02",
+      "afterSelectionValue": "MO_ACCEPT_FB_20260526",
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-57-10-398Z-web-ele-product-issue-work-order.png",
+      "errors": [],
+      "consoleErrorCount": 57
+    },
+    {
+      "app": "web-ele",
+      "baseUrl": "http://127.0.0.1:5778",
+      "id": "outsource-issue-work-order",
+      "pageName": "外协发料",
+      "ok": true,
+      "blocked": false,
+      "expectedParams": {
+        "status": "1",
+        "type": "2"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1&type=2",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1",
+            "type": "2"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true,
+        "type": true
+      },
+      "rowCount": 0,
+      "radioCount": 0,
+      "checkboxCount": 0,
+      "firstRowText": "",
+      "afterSelectionValue": "",
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-57-10-398Z-web-ele-outsource-issue-work-order.png",
+      "errors": [],
+      "consoleErrorCount": 38
+    },
+    {
+      "app": "web-antdv-next",
+      "baseUrl": "http://127.0.0.1:5999",
+      "id": "product-issue-work-order",
+      "pageName": "生产领料",
+      "ok": true,
+      "blocked": false,
+      "expectedParams": {
+        "status": "1"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true
+      },
+      "rowCount": 5,
+      "radioCount": 10,
+      "checkboxCount": 0,
+      "firstRowText": "MO_ACCEPT_FB_20260526 验收生产报工工单-螺丝刀 客户订单 ACCEPT-FEEDBACK IF2022082439 螺丝刀【蓝色，一字型】 蓝色，一字型，3.2x75mm 个 200 C00197 博世 已确认 2026-06-02",
+      "afterSelectionValue": "MO_ACCEPT_FB_20260526",
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-57-10-398Z-web-antdv-next-product-issue-work-order.png",
+      "errors": [],
+      "consoleErrorCount": 52
+    },
+    {
+      "app": "web-antdv-next",
+      "baseUrl": "http://127.0.0.1:5999",
+      "id": "outsource-issue-work-order",
+      "pageName": "外协发料",
+      "ok": true,
+      "blocked": false,
+      "expectedParams": {
+        "status": "1",
+        "type": "2"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1&type=2",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1",
+            "type": "2"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true,
+        "type": true
+      },
+      "rowCount": 0,
+      "radioCount": 0,
+      "checkboxCount": 0,
+      "firstRowText": "",
+      "afterSelectionValue": "",
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-57-10-398Z-web-antdv-next-outsource-issue-work-order.png",
+      "errors": [],
+      "consoleErrorCount": 37
+    }
+  ],
+  "passed": 4,
+  "failed": 0,
+  "blocked": 0
+}

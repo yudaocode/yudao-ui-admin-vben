@@ -1,0 +1,174 @@
+{
+  "baseUrl": "http://127.0.0.1:5666",
+  "generatedAt": "2026-06-13T02:54:01.674Z",
+  "results": [
+    {
+      "id": "item-receipt-arrival-notice",
+      "pageName": "采购入库",
+      "route": "/mes/wm/item-receipt",
+      "operation": "新增 -> 打开「到货通知单选择」",
+      "ok": true,
+      "expectedParams": {
+        "status": "3"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/wm/arrival-notice/page",
+          "search": "?pageNo=1&pageSize=20&status=3",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "3"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true
+      },
+      "rowCount": 7,
+      "radioCount": 14,
+      "checkboxCount": 0,
+      "firstRowText": "AN20260329000001 ABC 深圳市海力德电子有限公司 2026-03-04 待入库",
+      "afterSelectionValue": "AN20260329000001",
+      "dialogClosedAfterSelection": true,
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-53-02-246Z-item-receipt-arrival-notice.png",
+      "errors": [],
+      "consoleErrorCount": 32
+    },
+    {
+      "id": "product-sales-sales-notice",
+      "pageName": "销售出库",
+      "route": "/mes/wm/product-sales",
+      "operation": "新增 -> 打开「发货通知单选择」",
+      "ok": true,
+      "expectedParams": {
+        "status": "3"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/wm/sales-notice/page",
+          "search": "?pageNo=1&pageSize=20&status=3",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "3"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true
+      },
+      "rowCount": 2,
+      "radioCount": 4,
+      "checkboxCount": 0,
+      "firstRowText": "SN20260330000004 AABBEEE 比亚迪股份有限公司 2026-03-18 待出库",
+      "afterSelectionValue": "AABBEEE",
+      "dialogClosedAfterSelection": true,
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-53-02-246Z-product-sales-sales-notice.png",
+      "errors": [],
+      "consoleErrorCount": 32
+    },
+    {
+      "id": "product-issue-work-order",
+      "pageName": "生产领料",
+      "route": "/mes/wm/product-issue",
+      "operation": "新增 -> 打开「生产工单选择」",
+      "ok": true,
+      "expectedParams": {
+        "status": "1"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true
+      },
+      "rowCount": 5,
+      "radioCount": 10,
+      "checkboxCount": 0,
+      "firstRowText": "MO_ACCEPT_FB_20260526 验收生产报工工单-螺丝刀 客户订单 ACCEPT-FEEDBACK IF2022082439 螺丝刀【蓝色，一字型】 蓝色，一字型，3.2x75mm 个 200 C00197 博世 已确认 2026-06-02",
+      "afterSelectionValue": "MO_ACCEPT_FB_20260526",
+      "dialogClosedAfterSelection": true,
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-53-02-246Z-product-issue-work-order.png",
+      "errors": [],
+      "consoleErrorCount": 32
+    },
+    {
+      "id": "product-issue-workstation",
+      "pageName": "生产领料",
+      "route": "/mes/wm/product-issue",
+      "operation": "新增 -> 打开「工作站选择」",
+      "ok": true,
+      "expectedParams": {},
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/md-workstation/page",
+          "search": "?pageNo=1&pageSize=20&status=0",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "0"
+          }
+        }
+      ],
+      "paramChecks": {},
+      "rowCount": 8,
+      "radioCount": 16,
+      "checkboxCount": 0,
+      "firstRowText": "ST_ACCEPT_FB_P4 验收报工-质检工位 验收造数 组装车间 打磨工序 验收造数：生产报工质检工序",
+      "afterSelectionValue": "验收报工-质检工位",
+      "dialogClosedAfterSelection": true,
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-53-02-246Z-product-issue-workstation.png",
+      "errors": [],
+      "consoleErrorCount": 32
+    },
+    {
+      "id": "outsource-issue-work-order",
+      "pageName": "外协发料",
+      "route": "/mes/wm/outsource-issue",
+      "operation": "新增 -> 打开「生产工单选择」",
+      "ok": false,
+      "expectedParams": {
+        "status": "1",
+        "type": "2"
+      },
+      "actualRequests": [
+        {
+          "path": "/admin-api/mes/pro/work-order/page",
+          "search": "?pageNo=1&pageSize=20&status=1&type=2",
+          "params": {
+            "pageNo": "1",
+            "pageSize": "20",
+            "status": "1",
+            "type": "2"
+          }
+        }
+      ],
+      "paramChecks": {
+        "status": true,
+        "type": true
+      },
+      "rowCount": 0,
+      "radioCount": 0,
+      "checkboxCount": 0,
+      "firstRowText": "",
+      "afterSelectionValue": "",
+      "dialogClosedAfterSelection": null,
+      "screenshot": "/Users/yunai/Java/yudao-all-in-vben/yudao-ui-admin-vben/output/playwright/2026-06-13T02-53-02-246Z-outsource-issue-work-order.png",
+      "errors": [
+        "单选列形态异常: radio=0, checkbox=0"
+      ],
+      "consoleErrorCount": 32
+    }
+  ],
+  "passed": 4,
+  "failed": 1
+}

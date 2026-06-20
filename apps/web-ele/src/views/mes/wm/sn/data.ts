@@ -118,6 +118,7 @@ export function useGridColumns(): VxeTableGridOptions<MesWmSnApi.SnGroup>['colum
       field: 'count',
       title: 'SN 码数量',
       width: 100,
+      slots: { default: 'count' },
     },
     {
       field: 'createTime',
@@ -127,7 +128,55 @@ export function useGridColumns(): VxeTableGridOptions<MesWmSnApi.SnGroup>['colum
     },
     {
       title: '操作',
+      width: 240,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** SN 码明细弹窗的字段 */
+export function useDetailGridColumns(): VxeTableGridOptions<MesWmSnApi.Sn>['columns'] {
+  return [
+    {
+      field: 'code',
+      title: 'SN 码',
+      minWidth: 180,
+    },
+    {
+      field: 'itemCode',
+      title: '物料编码',
+      minWidth: 120,
+    },
+    {
+      field: 'itemName',
+      title: '物料名称',
+      minWidth: 150,
+    },
+    {
+      field: 'specification',
+      title: '规格型号',
+      minWidth: 120,
+    },
+    {
+      field: 'unitName',
+      title: '单位',
+      width: 80,
+    },
+    {
+      field: 'batchCode',
+      title: '批次号',
+      minWidth: 120,
+    },
+    {
+      field: 'createTime',
+      title: '生成时间',
       width: 180,
+      formatter: 'formatDateTime',
+    },
+    {
+      title: '操作',
+      width: 100,
       fixed: 'right',
       slots: { default: 'actions' },
     },
