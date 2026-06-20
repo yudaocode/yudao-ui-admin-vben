@@ -44,8 +44,8 @@ const currentFile = ref<any>(null); // 当前选中的文件
 const submitLoading = ref(false); // 提交按钮加载状态
 
 /** 选择文件 */
-async function selectFile(index: number) {
-  currentFile.value = modelData.value.list[index];
+async function selectFile(index: number | string) {
+  currentFile.value = modelData.value.list[Number(index)];
   await splitContentFile(currentFile.value);
 }
 
@@ -258,7 +258,8 @@ onMounted(async () => {
             class="mb-2.5"
           >
             <div class="mb-1 text-sm text-gray-500">
-              分片-{{ index + 1 }} · {{ segment.contentLength || 0 }} 字符数 ·
+              分片-{{ Number(index) + 1 }} ·
+              {{ segment.contentLength || 0 }} 字符数 ·
               {{ segment.tokens || 0 }} Token
             </div>
             <div class="rounded-md bg-card p-2">
