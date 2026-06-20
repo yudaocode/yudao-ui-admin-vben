@@ -78,8 +78,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
-      rules: 'required',
-      defaultValue: true,
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'recommendBanner',
@@ -88,8 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
-      rules: 'required',
-      defaultValue: true,
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'spuId',
@@ -102,12 +100,12 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '排序',
       component: 'InputNumber',
       componentProps: {
+        class: '!w-full',
+        controlsPosition: 'right',
         min: 0,
         placeholder: '请输入排序',
-        controlsPosition: 'right',
-        class: '!w-full',
       },
-      rules: 'required',
+      rules: z.number().default(0),
     },
     {
       fieldName: 'status',
@@ -137,10 +135,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleArticleCategoryList,
+        clearable: true,
         labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择文章分类',
-        allowClear: true,
+        valueField: 'id',
       },
     },
     {
@@ -148,8 +146,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '文章标题',
       component: 'Input',
       componentProps: {
+        clearable: true,
         placeholder: '请输入文章标题',
-        allowClear: true,
       },
     },
     {
@@ -157,9 +155,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
       },
     },
     {
@@ -168,7 +166,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

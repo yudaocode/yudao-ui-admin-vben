@@ -26,6 +26,11 @@ const isReadonly = computed(() => formType.value === 'detail'); // 详情态只�
 const getTitle = computed(() =>
   formType.value === 'detail' ? '工单详情' : '生产排产',
 );
+const routeProcessStepItems = computed(() =>
+  routeProcessList.value.map((item) => ({
+    title: item.processName,
+  })),
+);
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -111,15 +116,10 @@ const [Modal, modalApi] = useVbenModal({
       <Steps
         v-model:current="activeProcessStep"
         class="my-4 px-4"
+        :items="routeProcessStepItems"
         size="small"
         type="navigation"
-      >
-        <Steps.Step
-          v-for="rp in routeProcessList"
-          :key="rp.processId"
-          :title="rp.processName"
-        />
-      </Steps>
+      />
       <Card
         v-for="(rp, index) in routeProcessList"
         v-show="activeProcessStep === index"

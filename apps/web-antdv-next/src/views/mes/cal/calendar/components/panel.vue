@@ -51,7 +51,7 @@ function handleToday() {
               </div>
             </div>
           </template>
-          <template #dateFullCellRender="{ current: date }">
+          <template #fullCellRender="{ date }">
             <div class="h-[110px] text-left">
               <CalendarDateCell
                 v-if="date.isSame(currentDate, 'month')"

@@ -33,7 +33,7 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesWmStockTakingPlanApi.StockTakingPlan[];
   records.forEach((row) => {
-    if (!row.id) {
+    if (row.id !== undefined && row.id !== null) {
       selectedMap.set(row.id, row);
     }
   });
@@ -80,7 +80,11 @@ async function applyPreSelection() {
   const rows =
     gridApi.grid.getData() as MesWmStockTakingPlanApi.StockTakingPlan[];
   for (const row of rows) {
-    if (row.id === null || !preSelectedIds.value.includes(row.id)) {
+    if (
+      row.id === undefined ||
+      row.id === null ||
+      !preSelectedIds.value.includes(row.id)
+    ) {
       continue;
     }
     if (multiple.value) {

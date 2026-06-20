@@ -73,7 +73,7 @@ watch(
           size="small"
           type="danger"
           link
-          @click="onDelete(row as any)"
+          @click="onDelete(row)"
           v-access:code="['infra:demo03-student:delete']"
         >
           {{ $t('ui.actionTitle.delete') }}

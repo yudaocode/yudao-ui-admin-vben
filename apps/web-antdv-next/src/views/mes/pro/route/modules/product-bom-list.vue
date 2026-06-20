@@ -27,7 +27,7 @@ const props = defineProps<{
 }>();
 
 const processList = ref<MesProRouteProcessApi.RouteProcess[]>([]); // 工序列表（用于 Tab）
-const activeProcessId = ref<number>(); // 当前选中的工序 Tab
+const activeProcessId = ref<string>(); // 当前选中的工序 Tab
 const list = ref<MesProRouteProductBomApi.RouteProductBom[]>([]); // 当前工序下的 BOM 列表
 
 const [BomFormModal, bomFormModalApi] = useVbenModal({
@@ -53,7 +53,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function loadProcessList() {
   processList.value = (await getRouteProcessListByRoute(props.routeId)) || [];
   if (processList.value.length > 0) {
-    activeProcessId.value = processList.value[0]!.processId;
+    activeProcessId.value = String(processList.value[0]!.processId);
     await getList();
   } else {
     activeProcessId.value = undefined;
@@ -64,13 +64,14 @@ async function loadProcessList() {
 
 /** 加载当前工序下的 BOM 列表 */
 async function getList() {
-  if (!activeProcessId.value) {
+  const processId = Number(activeProcessId.value);
+  if (!processId) {
     return;
   }
   gridApi.setLoading(true);
   try {
     list.value = await getRouteProductBomList({
-      processId: activeProcessId.value,
+      processId,
       productId: props.productId,
       routeId: props.routeId,
     });
@@ -86,9 +87,10 @@ function handleCreate() {
     message.warning('请先选择工序');
     return;
   }
+  const processId = Number(activeProcessId.value);
   bomFormModalApi
     .setData({
-      processId: activeProcessId.value,
+      processId,
       productId: props.productId,
       routeId: props.routeId,
     })
@@ -100,7 +102,7 @@ function handleEdit(row: MesProRouteProductBomApi.RouteProductBom) {
   bomFormModalApi
     .setData({
       id: row.id,
-      processId: activeProcessId.value!,
+      processId: Number(activeProcessId.value),
       productId: props.productId,
       routeId: props.routeId,
     })
@@ -130,7 +132,7 @@ watch(
   <Tabs v-model:active-key="activeProcessId" @change="getList">
     <TabPane
       v-for="item in processList"
-      :key="item.processId"
+      :key="String(item.processId)"
       :tab="item.processName"
     />
   </Tabs>

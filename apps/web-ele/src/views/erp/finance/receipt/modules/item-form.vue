@@ -32,8 +32,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'update:items',
-  'update:total-price',
-  'update:receipt-price',
+  'update:totalPrice',
+  'update:receiptPrice',
 ]);
 
 const tableData = ref<ErpFinanceReceiptApi.FinanceReceiptItem[]>([]); // 表格数据
@@ -110,8 +110,8 @@ watch(
     );
     const finalReceiptPrice = receiptPrice - (props.discountPrice || 0);
     // 通知父组件更新
-    emit('update:total-price', totalPrice);
-    emit('update:receipt-price', finalReceiptPrice);
+    emit('update:totalPrice', totalPrice);
+    emit('update:receiptPrice', finalReceiptPrice);
   },
   { deep: true },
 );
@@ -127,15 +127,16 @@ function handleOpenSaleOut() {
 }
 
 function handleAddSaleOut(rows: ErpSaleOutApi.SaleOut[]) {
-  // TODO @芋艿
   rows.forEach((row) => {
+    const totalPrice = row.totalPrice ?? 0;
+    const receiptedPrice = row.receiptPrice ?? 0;
     const newItem: ErpFinanceReceiptApi.FinanceReceiptItem = {
-      bizId: row.id,
+      bizId: row.id ?? 0,
       bizType: ErpBizType.SALE_OUT,
-      bizNo: row.no,
-      totalPrice: row.totalPrice,
-      receiptedPrice: row.receiptPrice,
-      receiptPrice: row.totalPrice - row.receiptPrice,
+      bizNo: row.no ?? '',
+      totalPrice,
+      receiptedPrice,
+      receiptPrice: totalPrice - receiptedPrice,
       remark: undefined,
     };
     tableData.value.push(newItem);
@@ -155,13 +156,15 @@ function handleOpenSaleReturn() {
 
 function handleAddSaleReturn(rows: ErpSaleReturnApi.SaleReturn[]) {
   rows.forEach((row) => {
+    const totalPrice = row.totalPrice ?? 0;
+    const refundPrice = row.refundPrice ?? 0;
     const newItem: ErpFinanceReceiptApi.FinanceReceiptItem = {
-      bizId: row.id,
+      bizId: row.id ?? 0,
       bizType: ErpBizType.SALE_RETURN,
-      bizNo: row.no,
-      totalPrice: -row.totalPrice,
-      receiptedPrice: -row.refundPrice,
-      receiptPrice: -row.totalPrice + row.refundPrice,
+      bizNo: row.no ?? '',
+      totalPrice: -totalPrice,
+      receiptedPrice: -refundPrice,
+      receiptPrice: -totalPrice + refundPrice,
       remark: undefined,
     };
     tableData.value.push(newItem);
@@ -203,7 +206,7 @@ function validate() {
   // 检查每行的收款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (item!.receiptPrice || item!.receiptPrice <= 0) {
+    if (!item?.receiptPrice || item.receiptPrice <= 0) {
       throw new Error(`第 ${i + 1} 行：本次收款必须大于0`);
     }
   }

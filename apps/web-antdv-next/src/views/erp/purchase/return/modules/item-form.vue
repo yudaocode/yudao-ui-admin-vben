@@ -34,9 +34,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'update:items',
-  'update:discount-price',
-  'update:other-price',
-  'update:total-price',
+  'update:discountPrice',
+  'update:otherPrice',
+  'update:totalPrice',
 ]);
 
 const tableData = ref<ErpPurchaseReturnApi.PurchaseReturnItem[]>([]); // 表格数据
@@ -122,9 +122,9 @@ watch(
     const finalTotalPrice = discountedPrice + (props.otherPrice || 0);
 
     // 通知父组件更新
-    emit('update:discount-price', discountPrice);
-    emit('update:other-price', props.otherPrice || 0);
-    emit('update:total-price', finalTotalPrice);
+    emit('update:discountPrice', discountPrice);
+    emit('update:otherPrice', props.otherPrice || 0);
+    emit('update:totalPrice', finalTotalPrice);
   },
   { deep: true },
 );

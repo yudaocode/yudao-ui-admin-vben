@@ -92,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<FreePublish.FreePublish>,
+  } as VxeTableGridOptions<MpFreePublishApi.FreePublish>,
 });
 </script>
 

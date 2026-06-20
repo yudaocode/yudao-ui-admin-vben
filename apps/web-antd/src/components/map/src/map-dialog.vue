@@ -136,9 +136,13 @@ function autoSearch(queryValue: string) {
 }
 
 /** 处理地址选择 */
-function handleAddressSelect(value: string) {
-  if (value) {
-    regeoCode(value);
+function handleAddressSelect(value: unknown) {
+  const selectedValue =
+    typeof value === 'object' && value !== null && 'value' in value
+      ? (value as { value?: number | string }).value
+      : value;
+  if (selectedValue !== undefined && selectedValue !== null) {
+    regeoCode(String(selectedValue));
   }
 }
 

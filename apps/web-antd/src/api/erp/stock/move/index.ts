@@ -26,6 +26,7 @@ export namespace ErpStockMoveApi {
     count: number; // 数量
     fromWarehouseId?: number; // 来源仓库ID
     id?: number; // ID
+    seq?: number; // 前端行号
     productBarCode: string; // 产品条形码
     productId?: number; // 产品ID
     productName?: string; // 产品名称

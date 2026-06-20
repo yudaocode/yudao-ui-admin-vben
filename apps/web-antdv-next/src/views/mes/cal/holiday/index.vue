@@ -53,16 +53,17 @@ async function getList() {
 }
 
 /** 点击日期：打开假期设置弹窗 */
-function handleDayClick(date: Dayjs) {
+function handleDayClick(date: unknown) {
+  const current = dayjs(date as Dayjs);
   // 非当前月日期，不处理（避免切换月份）
-  if (!date.isSame(currentDate.value, 'month')) {
+  if (!current.isSame(currentDate.value, 'month')) {
     return;
   }
   if (!hasAccessByCodes(['mes:cal-holiday:create'])) {
     message.warning('没有假期设置权限');
     return;
   }
-  holidayFormModalApi.setData({ day: date.format('YYYY-MM-DD') }).open();
+  holidayFormModalApi.setData({ day: current.format('YYYY-MM-DD') }).open();
 }
 
 /** 切换到上月 */
@@ -161,7 +162,7 @@ onMounted(getList);
             </div>
           </div>
         </template>
-        <template #dateFullCellRender="{ current: date }">
+        <template #fullCellRender="{ date }">
           <div
             class="hover:bg-muted/50 h-[84px] cursor-pointer p-2 text-left transition"
             @click.stop="handleDayClick(date)"

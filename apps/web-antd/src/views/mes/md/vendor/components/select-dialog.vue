@@ -83,7 +83,11 @@ async function applyPreSelection() {
   }
   const rows = getTableRows();
   for (const row of rows) {
-    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
+    if (
+      row.id === undefined ||
+      row.id === null ||
+      !preSelectedIds.value.includes(row.id)
+    ) {
       continue;
     }
     if (multiple.value) {

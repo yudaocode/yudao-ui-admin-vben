@@ -53,7 +53,8 @@ watch(
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
-  getData: (): InfraCodegenApi.CodegenColumn[] => gridApi.grid.getData(),
+  getData: (): InfraCodegenApi.CodegenColumn[] =>
+    gridApi.grid.getData() as InfraCodegenApi.CodegenColumn[],
 });
 
 /** 初始化 */

@@ -18,6 +18,7 @@ import {
   exportJob,
   getJobPage,
   runJob,
+  syncJob,
   updateJobStatus,
 } from '#/api/infra/job';
 import { $t } from '#/locales';
@@ -96,6 +97,22 @@ async function handleTrigger(row: InfraJobApi.Job) {
   try {
     await runJob(row.id!);
     message.success($t('ui.actionMessage.operationSuccess'));
+  } finally {
+    hideLoading();
+  }
+}
+
+/** 同步任务到 Quartz */
+async function handleSyncJob() {
+  await confirm('确认要同步所有任务到调度器？');
+  const hideLoading = message.loading({
+    content: '正在同步任务...',
+    duration: 0,
+  });
+  try {
+    await syncJob();
+    message.success('同步成功');
+    handleRefresh();
   } finally {
     hideLoading();
   }
@@ -215,6 +232,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: 'lucide:history',
               auth: ['infra:job:query'],
               onClick: () => handleLog(undefined),
+            },
+            {
+              label: '同步任务',
+              type: 'primary',
+              icon: 'lucide:refresh-cw',
+              auth: ['infra:job:create'],
+              onClick: handleSyncJob,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),

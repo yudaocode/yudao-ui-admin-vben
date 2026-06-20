@@ -41,8 +41,8 @@ function getMultipleSelectedRows() {
     ...(gridApi.grid.getCheckboxRecords?.() ?? []),
   ] as MesWmPackageApi.Package[];
   records.forEach((row) => {
-    if (!row.id) {
-      selectedMap.set(row.id as number, row);
+    if (row.id !== undefined && row.id !== null) {
+      selectedMap.set(row.id, row);
     }
   });
   return [...selectedMap.values()];
@@ -83,7 +83,11 @@ async function applyPreSelection() {
   }
   const rows = gridApi.grid.getData() as MesWmPackageApi.Package[];
   for (const row of rows) {
-    if (row.id === null || !preSelectedIds.value.includes(row.id as number)) {
+    if (
+      row.id === undefined ||
+      row.id === null ||
+      !preSelectedIds.value.includes(row.id)
+    ) {
       continue;
     }
     if (multiple.value) {

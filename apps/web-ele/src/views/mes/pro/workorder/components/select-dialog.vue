@@ -37,7 +37,7 @@ const selectedRows = ref<MesProWorkOrderApi.WorkOrder[]>([]); // 已选工单列
 const preSelectedIds = ref<number[]>([]); // 预选工单编号列表
 
 const typeTip = computed(() => {
-  if (props.type === null) {
+  if (props.type === undefined) {
     return '';
   }
   return `仅展示【${getDictLabel(DICT_TYPE.MES_PRO_WORK_ORDER_TYPE, props.type)}】类型的工单`;
@@ -61,6 +61,9 @@ function getMultipleSelectedRows() {
 
 /** 处理多选勾选变化 */
 function handleCheckboxSelectChange() {
+  if (!multiple.value) {
+    return;
+  }
   selectedRows.value = getMultipleSelectedRows();
 }
 
@@ -98,7 +101,11 @@ async function applyPreSelection() {
   }
   const rows = gridApi.grid.getData() as MesProWorkOrderApi.WorkOrder[];
   for (const row of rows) {
-    if (row.id === undefined || !preSelectedIds.value.includes(row.id)) {
+    if (
+      row.id === undefined ||
+      row.id === null ||
+      !preSelectedIds.value.includes(row.id)
+    ) {
       continue;
     }
     if (multiple.value) {
@@ -137,8 +144,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getWorkOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: props.type,
             ...formValues,
+            ...(props.status === undefined ? {} : { status: props.status }),
+            ...(props.type === undefined ? {} : { type: props.type }),
           });
         },
       },
@@ -169,7 +177,7 @@ async function resetQueryState() {
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
-  if (props.status !== null) {
+  if (props.status !== undefined) {
     await gridApi.formApi.setFieldValue('status', props.status);
   }
 }

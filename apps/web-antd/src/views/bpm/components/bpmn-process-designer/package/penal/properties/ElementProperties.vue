@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+
 import { inject, nextTick, ref, watch } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
@@ -151,7 +153,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     pagerConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<{ name: string; value: string }>,
 });
 
 const [FieldModal, fieldModalApi] = useVbenModal({

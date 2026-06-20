@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { nextTick, watch } from 'vue';
@@ -33,7 +34,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<Demo03StudentApi.Demo03Course>,
 });
 
 /** 添加学生课程 */

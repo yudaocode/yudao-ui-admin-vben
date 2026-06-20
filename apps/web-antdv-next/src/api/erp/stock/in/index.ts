@@ -23,15 +23,16 @@ export namespace ErpStockInApi {
   /** 其它入库单产品信息 */
   export interface StockInItem {
     id?: number; // 编号
-    warehouseId: number; // 仓库编号
-    productId: number; // 产品编号
+    seq?: number; // 前端行号
+    warehouseId?: number; // 仓库编号
+    productId?: number; // 产品编号
     productName?: string; // 产品名称
     productUnitId?: number; // 产品单位编号
     productUnitName?: string; // 产品单位名称
     productBarCode?: string; // 产品条码
-    count: number; // 数量
-    productPrice: number; // 产品单价
-    totalPrice: number; // 总价
+    count?: number; // 数量
+    productPrice?: number; // 产品单价
+    totalPrice?: number; // 总价
     stockCount?: number; // 库存数量
     remark?: string; // 备注
   }

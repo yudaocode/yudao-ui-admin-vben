@@ -59,9 +59,9 @@ function addHttpResponseSetting(responseSetting: Record<string, string>[]) {
 /** 删除 HTTP 请求返回值设置项 */
 function deleteHttpResponseSetting(
   responseSetting: Record<string, string>[],
-  index: number,
+  index: number | string,
 ) {
-  responseSetting.splice(index, 1);
+  responseSetting.splice(Number(index), 1);
 }
 </script>
 <template>

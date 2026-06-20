@@ -47,7 +47,7 @@ const [Grid] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>,
 });
 
 // 配置 Modal
@@ -88,7 +88,7 @@ function useGridFormSchema(): VbenFormSchema[] {
     },
   ];
 }
-function useGridColumns(): VxeTableGridOptions['columns'] {
+function useGridColumns(): VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>['columns'] {
   return [
     { field: 'name', title: '名字', minWidth: 160 },
     { field: 'expression', title: '表达式', minWidth: 260 },

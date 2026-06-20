@@ -21,7 +21,6 @@ const emit = defineEmits<{
 const open = ref(false); // 弹窗是否打开
 const multiple = ref(false); // 是否多选
 const fixedStatus = ref<number>(); // 固定状态筛选
-const syncingSingleSelection = ref(false); // 是否同步单选勾选状态
 const selectedRows = ref<MesWmSalesNoticeApi.SalesNotice[]>([]); // 已选通知单列表
 const preSelectedIds = ref<number[]>([]); // 预选通知单编号列表
 
@@ -84,10 +83,12 @@ function useSearchSchema(hasFixedStatus: boolean): VbenFormSchema[] {
 }
 
 /** 表格字段 */
-function useGridColumns(): VxeTableGridOptions<MesWmSalesNoticeApi.SalesNotice>['columns'] {
+function useGridColumns(
+  multipleSelect = false,
+): VxeTableGridOptions<MesWmSalesNoticeApi.SalesNotice>['columns'] {
   return [
     {
-      type: 'checkbox',
+      type: multipleSelect ? 'checkbox' : 'radio',
       width: 50,
     },
     {
@@ -128,65 +129,77 @@ function useGridColumns(): VxeTableGridOptions<MesWmSalesNoticeApi.SalesNotice>[
   ];
 }
 
-/** 单选模式下同步 VXE 勾选状态，避免跨页残留多选 */
-async function syncSingleSelection(row?: MesWmSalesNoticeApi.SalesNotice) {
-  syncingSingleSelection.value = true;
-  await nextTick();
-  await gridApi.grid.clearCheckboxRow();
-  if (row) {
-    await gridApi.grid.setCheckboxRow(row, true);
-  }
-  await nextTick();
-  syncingSingleSelection.value = false;
+/** 获取多选记录，包含 VXE reserve 跨页记录 */
+function getMultipleSelectedRows() {
+  const selectedMap = new Map<number, MesWmSalesNoticeApi.SalesNotice>();
+  const records = [
+    ...(gridApi.grid.getCheckboxReserveRecords?.() ?? []),
+    ...(gridApi.grid.getCheckboxRecords?.() ?? []),
+  ] as MesWmSalesNoticeApi.SalesNotice[];
+  records.forEach((row) => {
+    const rowId = row.id;
+    if (rowId !== undefined) {
+      selectedMap.set(rowId, row);
+    }
+  });
+  return [...selectedMap.values()];
 }
 
-/** 处理勾选变化，单选模式只保留最后一条 */
-async function handleCheckboxChange({
-  checked,
-  records,
+/** 处理多选勾选变化 */
+function handleCheckboxSelectChange() {
+  if (!multiple.value) {
+    return;
+  }
+  selectedRows.value = getMultipleSelectedRows();
+}
+
+/** 处理单选切换 */
+function handleRadioChange(row: MesWmSalesNoticeApi.SalesNotice) {
+  selectedRows.value = [row];
+}
+
+/** 多选模式下切换行勾选 */
+async function toggleMultipleRow(row: MesWmSalesNoticeApi.SalesNotice) {
+  const selected = gridApi.grid.isCheckedByCheckboxRow(row);
+  await gridApi.grid.setCheckboxRow(row, !selected);
+  selectedRows.value = getMultipleSelectedRows();
+}
+
+/** 处理行双击：单选直接确认，多选切换勾选 */
+async function handleCellDblclick({
   row,
 }: {
-  checked: boolean;
-  records: MesWmSalesNoticeApi.SalesNotice[];
-  row?: MesWmSalesNoticeApi.SalesNotice;
+  row: MesWmSalesNoticeApi.SalesNotice;
 }) {
-  if (syncingSingleSelection.value) {
+  if (multiple.value) {
+    await toggleMultipleRow(row);
     return;
   }
-  if (!multiple.value) {
-    const selected = checked && row ? [row] : [];
-    selectedRows.value = selected;
-    await syncSingleSelection(selected[0]);
-    return;
-  }
-  selectedRows.value = records;
-}
-
-/** 处理全选变化 */
-function handleCheckboxAll({
-  records,
-}: {
-  records: MesWmSalesNoticeApi.SalesNotice[];
-}) {
-  if (syncingSingleSelection.value) {
-    return;
-  }
-  selectedRows.value = records;
+  selectedRows.value = [row];
+  await gridApi.grid.setRadioRow(row);
+  handleConfirm();
 }
 
 /** 回显预选通知单 */
-function applyPreSelection() {
+async function applyPreSelection() {
   if (preSelectedIds.value.length === 0) {
     return;
   }
   const rows = gridApi.grid.getData() as MesWmSalesNoticeApi.SalesNotice[];
   for (const row of rows) {
-    if (row.id && preSelectedIds.value.includes(row.id)) {
-      gridApi.grid.setCheckboxRow(row, true);
-      if (!multiple.value) {
-        selectedRows.value = [row];
-      }
+    if (row.id === undefined || !preSelectedIds.value.includes(row.id)) {
+      continue;
     }
+    if (multiple.value) {
+      await gridApi.grid.setCheckboxRow(row, true);
+    } else {
+      await gridApi.grid.setRadioRow(row);
+      selectedRows.value = [row];
+      return;
+    }
+  }
+  if (multiple.value) {
+    selectedRows.value = getMultipleSelectedRows();
   }
 }
 
@@ -195,13 +208,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useSearchSchema(false),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(false),
     height: 520,
     keepSource: true,
     checkboxConfig: {
       highlight: true,
       range: true,
       reserve: true,
+    },
+    radioConfig: {
+      highlight: true,
+      trigger: 'row',
     },
     proxyConfig: {
       ajax: {
@@ -226,8 +243,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<MesWmSalesNoticeApi.SalesNotice>,
   gridEvents: {
-    checkboxAll: handleCheckboxAll,
-    checkboxChange: handleCheckboxChange,
+    cellDblclick: handleCellDblclick,
+    checkboxAll: handleCheckboxSelectChange,
+    checkboxChange: handleCheckboxSelectChange,
+    radioChange: ({ row }: { row: MesWmSalesNoticeApi.SalesNotice }) => {
+      handleRadioChange(row);
+    },
   },
 });
 
@@ -235,6 +256,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function resetQueryState() {
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
+  await gridApi.grid.clearRadioRow();
   await gridApi.formApi.resetForm();
 }
 
@@ -249,13 +272,16 @@ async function openModal(
   preSelectedIds.value = selectedIds || [];
   // 固定状态时隐藏状态搜索项，未固定时展示
   gridApi.formApi.setState({
-    schema: useSearchSchema(fixedStatus.value !== null),
+    schema: useSearchSchema(fixedStatus.value !== undefined),
   });
   await nextTick();
+  gridApi.setGridOptions({
+    columns: useGridColumns(multiple.value),
+  });
   await resetQueryState();
   await gridApi.query();
   await nextTick();
-  applyPreSelection();
+  await applyPreSelection();
 }
 
 /** 关闭通知单选择弹窗 */

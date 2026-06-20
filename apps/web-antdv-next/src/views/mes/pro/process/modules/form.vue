@@ -105,7 +105,7 @@ const processId = computed(() => formData.value?.id);
     <Form class="mx-4" />
     <!-- 编辑/详情模式下展示工序操作步骤子表，新增模式下隐藏 -->
     <template v-if="processId">
-      <Divider class="!my-3" orientation="left">操作步骤</Divider>
+      <Divider class="!my-3" title-placement="start">操作步骤</Divider>
       <div class="mx-4">
         <ContentList :form-type="formType" :process-id="processId" />
       </div>

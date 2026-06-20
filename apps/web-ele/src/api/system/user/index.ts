@@ -9,15 +9,22 @@ export namespace SystemUserApi {
     username: string;
     nickname: string;
     deptId: number;
+    deptName?: string;
     postIds: string[];
     email: string;
     mobile: string;
     sex: number;
     avatar: string;
     loginIp: string;
+    loginDate?: Date;
     status: number;
     remark: string;
     createTime?: Date;
+  }
+
+  /** 用户精简信息 */
+  export interface UserSimple extends User {
+    id: number;
   }
 }
 
@@ -32,6 +39,13 @@ export function getUserPage(params: PageParam) {
 /** 查询用户详情 */
 export function getUser(id: number) {
   return requestClient.get<SystemUserApi.User>(`/system/user/get?id=${id}`);
+}
+
+/** 查询用户列表 */
+export function getUserList(ids: number[]) {
+  return requestClient.get<SystemUserApi.User[]>('/system/user/list', {
+    params: { ids: ids.join(',') },
+  });
 }
 
 /** 新增用户 */
@@ -85,4 +99,21 @@ export function updateUserStatus(id: number, status: number) {
 /** 获取用户精简信息列表 */
 export function getSimpleUserList() {
   return requestClient.get<SystemUserApi.User[]>('/system/user/simple-list');
+}
+
+/** 按用户编号查询用户精简信息 */
+export function getSimpleUser(id: number | string) {
+  return requestClient.get<SystemUserApi.UserSimple>('/system/user/get-simple', {
+    params: { id },
+  });
+}
+
+/** 按昵称模糊搜索用户 */
+export function getSimpleUserListByNickname(nickname: string) {
+  return requestClient.get<SystemUserApi.UserSimple[]>(
+    '/system/user/list-by-nickname',
+    {
+      params: { nickname },
+    },
+  );
 }

@@ -160,6 +160,12 @@ async function handleExport() {
 
 /** 初始化 */
 const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+function setTableToolbarRef(el: any) {
+  tableToolbarRef.value = el;
+}
+function setTableRef(el: any) {
+  tableRef.value = el;
+}
 onMounted(() => {
   getList();
 });
@@ -223,7 +229,7 @@ onMounted(() => {
     <ContentWrap title="学生">
       <template #extra>
         <VbenVxeTableToolbar
-          ref="tableToolbarRef"
+          :ref="setTableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
           <ElButton
@@ -258,7 +264,7 @@ onMounted(() => {
         </VbenVxeTableToolbar>
       </template>
       <VxeTable
-        ref="tableRef"
+        :ref="setTableRef"
         :data="list"
         @cell-click="onCellClick"
         :row-config="{
@@ -296,7 +302,7 @@ onMounted(() => {
               size="small"
               type="primary"
               link
-              @click="handleEdit(row as any)"
+              @click="handleEdit(row)"
               v-access:code="['infra:demo03-student:update']"
             >
               {{ $t('ui.actionTitle.edit') }}
@@ -306,7 +312,7 @@ onMounted(() => {
               type="danger"
               link
               class="ml-2"
-              @click="handleDelete(row as any)"
+              @click="handleDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
             >
               {{ $t('ui.actionTitle.delete') }}
