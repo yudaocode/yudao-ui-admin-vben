@@ -23,12 +23,14 @@ defineOptions({ name: 'BpmProcessInstanceTimeline' });
 const props = withDefaults(
   defineProps<{
     activityNodes: BpmProcessInstanceApi.ApprovalNodeInfo[]; // 审批节点信息
+    embedded?: boolean; // 是否嵌入表单使用（缩小顶部内边距，避免与表单项 label 间距过大）
     enableApproveUserSelect?: boolean; // 是否开启审批人自选功能
     showStatusIcon?: boolean; // 是否显示头像右下角状态图标
   }>(),
   {
     showStatusIcon: true, // 默认值为 true
     enableApproveUserSelect: false, // 默认值为 false
+    embedded: false, // 默认值为 false
   },
 );
 
@@ -246,7 +248,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
 
 <template>
   <div>
-    <Timeline class="pt-5">
+    <Timeline :class="embedded ? 'pt-2' : 'pt-5'">
       <!-- 遍历每个审批节点 -->
       <Timeline.Item
         v-for="(activity, index) in activityNodes"

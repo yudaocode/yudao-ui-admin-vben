@@ -335,7 +335,8 @@ async function initNextAssigneesFormField() {
           BpmCandidateStrategyEnum.START_USER_SELECT ===
             node.candidateStrategy) ||
         // 情况二：当前节点是审批人自选
-        BpmCandidateStrategyEnum.APPROVE_USER_SELECT === node.candidateStrategy
+        (isEmpty(node.candidateUsers) &&
+        BpmCandidateStrategyEnum.APPROVE_USER_SELECT === node.candidateStrategy)
       ) {
         nextAssigneesActivityNode.value.push(node);
       }
@@ -377,7 +378,7 @@ function validateNextAssignees() {
   }
   // 如果需要自选审批人，则校验每个节点是否都已配置审批人
   for (const item of nextAssigneesActivityNode.value) {
-    if (isEmpty(approveReasonForm.nextAssignees[item.id])) {
+    if (isEmpty(item.candidateUsers) && isEmpty(approveReasonForm.nextAssignees[item.id])) {
       message.warning('下一个节点的审批人不能为空!');
       return false;
     }
@@ -858,9 +859,10 @@ defineExpose({ loadTodoTask });
                 name="nextAssignees"
                 v-if="nextAssigneesActivityNode.length > 0"
               >
-                <div class="-mb-8 -mt-3.5 ml-2.5">
+                <div class="ml-2.5">
                   <ProcessInstanceTimeline
                     ref="nextAssigneesTimelineRef"
+                    embedded
                     :activity-nodes="nextAssigneesActivityNode"
                     :show-status-icon="false"
                     :enable-approve-user-select="true"
