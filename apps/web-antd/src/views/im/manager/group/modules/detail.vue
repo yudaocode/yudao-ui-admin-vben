@@ -112,7 +112,7 @@ defineExpose({ open });
       row-key="userId"
       size="small"
     >
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record, text }">
         <template v-if="column.dataIndex === 'avatar'">
           <Avatar :src="record.avatar" :size="40">
             {{ record.nickname?.charAt(0) || '?' }}
@@ -143,7 +143,7 @@ defineExpose({ open });
           <span v-else>-</span>
         </template>
         <template v-else>
-          {{ record[column.dataIndex] || '-' }}
+          {{ text || '-' }}
         </template>
       </template>
     </Table>
