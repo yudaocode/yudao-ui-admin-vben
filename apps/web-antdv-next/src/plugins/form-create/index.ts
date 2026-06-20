@@ -3,7 +3,7 @@ import type { App } from 'vue';
 import FcDesigner from '@form-create/antd-designer';
 import formCreate from '@form-create/antdv-next';
 import install from '@form-create/antdv-next/auto-import';
-// 👇使用 form-create 需额外全局引入 ant-design-vue 组件
+// 使用 form-create 需额外全局引入 antdv-next 组件
 import {
   Alert,
   Badge,
@@ -90,7 +90,7 @@ const components = [
   AreaSelect,
 ];
 
-// 参考 https://www.form-create.com/v3/ant-design-vue/auto-import 文档
+// 参考 form-create antdv-next auto-import 文档
 export function setupFormCreate(app: App) {
   components.forEach((component) => {
     app.component(component.name as string, component);

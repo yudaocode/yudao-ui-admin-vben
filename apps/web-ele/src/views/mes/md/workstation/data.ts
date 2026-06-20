@@ -317,9 +317,11 @@ export function useWorkstationSelectGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 工作站选择弹窗的字段 */
-export function useWorkstationSelectGridColumns(): VxeTableGridOptions<MesMdWorkstationApi.Workstation>['columns'] {
+export function useWorkstationSelectGridColumns(
+  multiple = true,
+): VxeTableGridOptions<MesMdWorkstationApi.Workstation>['columns'] {
   return [
-    { type: 'checkbox', width: 50 },
+    { type: multiple ? 'checkbox' : 'radio', width: 50 },
     {
       field: 'code',
       title: '工作站编码',

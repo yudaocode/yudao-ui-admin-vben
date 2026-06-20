@@ -76,24 +76,22 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '是否热门',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
         buttonStyle: 'solid',
         optionType: 'button',
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
-      rules: 'required',
-      defaultValue: true,
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'recommendBanner',
       label: '是否轮播图',
       component: 'RadioGroup',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
         buttonStyle: 'solid',
         optionType: 'button',
+        options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
-      rules: 'required',
-      defaultValue: true,
+      rules: z.boolean().default(false),
     },
     {
       fieldName: 'spuId',
@@ -110,7 +108,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
         placeholder: '请输入排序',
       },
-      rules: 'required',
+      rules: z.number().default(0),
     },
     {
       fieldName: 'status',

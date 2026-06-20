@@ -7,7 +7,7 @@ import { CircleX, Search } from '@vben/icons';
 
 import { ElInput, ElTooltip } from 'element-plus';
 
-import { getUser } from '#/api/system/user';
+import { getUserList } from '#/api/system/user';
 
 import UserSelectDialog from './select-dialog.vue';
 
@@ -17,56 +17,84 @@ const props = withDefaults(
   defineProps<{
     clearable?: boolean;
     disabled?: boolean;
-    modelValue?: number;
+    modelValue?: null | number | number[];
+    multiple?: boolean;
     placeholder?: string;
   }>(),
   {
     clearable: true,
     disabled: false,
     modelValue: undefined,
+    multiple: false,
     placeholder: '请选择用户',
   },
 );
 
 const emit = defineEmits<{
-  change: [item: SystemUserApi.User | undefined];
-  'update:modelValue': [value: number | undefined];
+  change: [item: SystemUserApi.User | SystemUserApi.User[] | undefined];
+  'update:modelValue': [value: number | number[] | undefined];
 }>();
 
 const attrs = useAttrs();
 const dialogRef = ref<InstanceType<typeof UserSelectDialog>>();
 const hovering = ref(false);
-const selectedItem = ref<SystemUserApi.User>();
+const selectedItems = ref<SystemUserApi.User[]>([]);
 
-const displayLabel = computed(
-  () => selectedItem.value?.nickname ?? selectedItem.value?.username ?? '',
+const displayLabel = computed(() =>
+  selectedItems.value
+    .map((item) => item.nickname || item.username || item.id)
+    .join('、'),
 );
 
 const showClear = computed(
-  () =>
-    props.clearable &&
-    !props.disabled &&
-    hovering.value &&
-    props.modelValue !== null,
+  () => props.clearable && !props.disabled && hovering.value && hasValue(),
 );
 
-/** 根据编号单条查询用户信息（用于编辑回显） */
-async function resolveItemById(id: number | undefined) {
-  if (!id) {
-    selectedItem.value = undefined;
-    return;
+/** 获取已选用户编号 */
+function getSelectedIds(value: null | number | number[] | undefined) {
+  if (Array.isArray(value)) {
+    return props.multiple ? value : value.slice(0, 1);
   }
-  if (selectedItem.value?.id === id) {
-    return;
-  }
-  selectedItem.value = await getUser(id);
+  return value === null || value === undefined ? [] : [value];
 }
 
-watch(() => props.modelValue, resolveItemById, { immediate: true });
+/** 是否已有选中值 */
+function hasValue() {
+  return getSelectedIds(props.modelValue).length > 0;
+}
+
+/** 根据编号查询用户信息（用于编辑回显） */
+async function resolveItemsById(value: null | number | number[] | undefined) {
+  const ids = getSelectedIds(value);
+  if (ids.length === 0) {
+    selectedItems.value = [];
+    return;
+  }
+  if (
+    selectedItems.value.length === ids.length &&
+    selectedItems.value.every(
+      (item) => item.id !== undefined && ids.includes(item.id),
+    )
+  ) {
+    return;
+  }
+  const userList = await getUserList(ids);
+  const userMap = new Map(userList.map((item) => [item.id, item]));
+  selectedItems.value = ids
+    .map((id) => userMap.get(id))
+    .filter((item): item is SystemUserApi.User => !!item);
+}
+
+watch(() => props.modelValue, resolveItemsById, { deep: true, immediate: true });
 
 /** 清空已选用户 */
 function clearSelected() {
-  selectedItem.value = undefined;
+  selectedItems.value = [];
+  if (props.multiple) {
+    emit('update:modelValue', []);
+    emit('change', []);
+    return;
+  }
   emit('update:modelValue', undefined);
   emit('change', undefined);
 }
@@ -82,19 +110,29 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  const selectedIds = (
-    props.modelValue === null ? [] : [props.modelValue]
-  ) as number[];
-  dialogRef.value?.open(selectedIds, { multiple: false });
+  dialogRef.value?.open(getSelectedIds(props.modelValue), {
+    multiple: props.multiple,
+  });
 }
 
 /** 弹窗选中回调 */
 function handleSelected(rows: SystemUserApi.User[]) {
-  const item = rows[0];
-  if (!item) {
+  if (rows.length === 0) {
     return;
   }
-  selectedItem.value = item;
+  if (props.multiple) {
+    selectedItems.value = rows;
+    emit(
+      'update:modelValue',
+      rows
+        .map((item) => item.id)
+        .filter((id): id is number => id !== undefined),
+    );
+    emit('change', rows);
+    return;
+  }
+  const item = rows[0]!;
+  selectedItems.value = [item];
   emit('update:modelValue', item.id);
   emit('change', item);
 }
@@ -109,12 +147,19 @@ function handleSelected(rows: SystemUserApi.User[]) {
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
-    <ElTooltip :disabled="!selectedItem" placement="top" :show-after="500">
+    <ElTooltip :disabled="selectedItems.length === 0" placement="top" :show-after="500">
       <template #content>
-        <div v-if="selectedItem" class="leading-6">
-          <div>用户名称：{{ selectedItem.username || '-' }}</div>
-          <div>用户昵称：{{ selectedItem.nickname || '-' }}</div>
-          <div>手机号码：{{ selectedItem.mobile || '-' }}</div>
+        <div v-if="selectedItems.length > 0" class="flex gap-3">
+          <div
+            v-for="selectedItem in selectedItems"
+            :key="selectedItem.id"
+            class="leading-6"
+          >
+            <div>用户名称：{{ selectedItem.username || '-' }}</div>
+            <div>用户昵称：{{ selectedItem.nickname || '-' }}</div>
+            <div>部门：{{ selectedItem.deptName || '-' }}</div>
+            <div>手机号码：{{ selectedItem.mobile || '-' }}</div>
+          </div>
         </div>
       </template>
       <ElInput

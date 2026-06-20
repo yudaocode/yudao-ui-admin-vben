@@ -1,13 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { markRaw } from 'vue';
+
 import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 
-import { getAreaTree } from '#/api/system/area';
 import { getSimpleUserList } from '#/api/system/user';
+import { AreaCascader } from '#/components/area';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
@@ -128,14 +130,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'areaId',
       label: '地址',
-      component: 'ApiTreeSelect',
+      component: markRaw(AreaCascader),
       componentProps: {
-        api: getAreaTree,
-        labelField: 'name',
-        valueField: 'id',
-        childrenField: 'children',
+        class: '!w-full',
+        clearable: true,
+        filterable: true,
         placeholder: '请选择地址',
-        allowClear: true,
       },
     },
     {

@@ -17,6 +17,21 @@ export namespace MesWmSnApi {
     createTime?: Date; // 生成时间
   }
 
+  /** MES SN 码明细 */
+  export interface Sn {
+    id?: number; // 编号
+    uuid?: string; // 批次 UUID
+    code?: string; // SN 码
+    itemId?: number; // 物料编号
+    itemCode?: string; // 物料编码
+    itemName?: string; // 物料名称
+    specification?: string; // 规格型号
+    unitName?: string; // 单位名称
+    batchCode?: string; // 批次号
+    workOrderId?: number; // 生产工单编号
+    createTime?: Date; // 生成时间
+  }
+
   /** MES SN 码生成参数 */
   export interface SnGenerate {
     itemId?: number; // 物料编号
@@ -46,6 +61,13 @@ export function getSnGroupPage(params: MesWmSnApi.PageParams) {
     '/mes/wm/sn/group-page',
     { params },
   );
+}
+
+/** 查询批次 SN 码明细列表 */
+export function getSnListByUuid(uuid: string) {
+  return requestClient.get<MesWmSnApi.Sn[]>('/mes/wm/sn/list-by-uuid', {
+    params: { uuid },
+  });
 }
 
 /** 批量删除 SN 码（按批次 UUID） */

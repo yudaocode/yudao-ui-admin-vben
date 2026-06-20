@@ -12,13 +12,43 @@ interface DictTagProps {
   icon?: string; // 图标
 }
 
+type TagType = '' | 'danger' | 'info' | 'primary' | 'success' | 'warning';
+type TagProps = { type?: Exclude<TagType, ''> };
+
 const props = defineProps<DictTagProps>();
+
+/** 获取标签类型 */
+function getTagType(colorType?: string): TagType {
+  switch (colorType) {
+    case 'danger': {
+      return 'danger';
+    }
+    case 'default': {
+      return '';
+    }
+    case 'info': {
+      return 'info';
+    }
+    case 'primary': {
+      return 'primary';
+    }
+    case 'success': {
+      return 'success';
+    }
+    case 'warning': {
+      return 'warning';
+    }
+    default: {
+      return '';
+    }
+  }
+}
 
 /** 获取字典标签 */
 const dictTag = computed(() => {
-  const defaultDict = {
+  const defaultDict: { colorType: TagType; label: string } = {
     label: '',
-    colorType: 'primary',
+    colorType: '',
   };
   // 校验参数有效性
   if (!props.type || props.value === undefined || props.value === null) {
@@ -31,45 +61,20 @@ const dictTag = computed(() => {
     return defaultDict;
   }
 
-  // 处理颜色类型
-  let colorType = dict.colorType;
-  switch (colorType) {
-    case 'danger': {
-      colorType = 'danger';
-      break;
-    }
-    case 'info': {
-      colorType = 'info';
-      break;
-    }
-    case 'primary': {
-      colorType = 'primary';
-      break;
-    }
-    case 'success': {
-      colorType = 'success';
-      break;
-    }
-    case 'warning': {
-      colorType = 'warning';
-      break;
-    }
-    default: {
-      if (!colorType) {
-        colorType = 'primary';
-      }
-    }
-  }
-
   return {
     label: dict.label || '',
-    colorType,
+    colorType: getTagType(dict.colorType),
   };
 });
+
+/** 获取标签属性 */
+const tagProps = computed<TagProps>(() =>
+  dictTag.value.colorType ? { type: dictTag.value.colorType } : {},
+);
 </script>
 
 <template>
-  <ElTag v-if="dictTag.label" :type="dictTag.colorType as any">
+  <ElTag v-if="dictTag.label" v-bind="tagProps">
     {{ dictTag.label }}
   </ElTag>
 </template>

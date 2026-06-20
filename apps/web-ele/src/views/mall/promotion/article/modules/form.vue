@@ -20,7 +20,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 
-const formData = ref<MallArticleApi.Article>();
+const formData = ref<Partial<MallArticleApi.Article>>({});
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['文章'])
@@ -43,7 +43,7 @@ const [Form, formApi] = useVbenForm({
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 同步商品选择到表单，确保验证时能获取到值
-    if (formData.value?.spuId) {
+    if (formData.value.spuId) {
       await formApi.setFieldValue('spuId', formData.value.spuId);
     }
     const { valid } = await formApi.validate();
@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined;
+      formData.value = {};
       return;
     }
     // 加载数据
@@ -86,11 +86,11 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal :title="getTitle" class="w-2/5">
+  <Modal :title="getTitle" class="w-2/5" :close-on-click-modal="false">
     <Form class="mx-4">
       <!-- 自定义插槽：商品选择 -->
       <template #spuId>
-        <SpuShowcase v-model="formData!.spuId" :limit="1" />
+        <SpuShowcase v-model="formData.spuId" :limit="1" />
       </template>
     </Form>
   </Modal>

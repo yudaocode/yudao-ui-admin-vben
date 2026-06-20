@@ -1,0 +1,214 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { ImManagerFacePackItemApi } from '#/api/im/manager/face/item';
+import type { ImManagerFacePackApi } from '#/api/im/manager/face/pack';
+
+import { computed, nextTick, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { isEmpty } from '@vben/utils';
+
+import { ElDrawer, ElImage, ElLoading, ElMessage } from 'element-plus'
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteManagerFacePackItem,
+  deleteManagerFacePackItemList,
+  getManagerFacePackItemPage,
+} from '#/api/im/manager/face/item';
+import { $t } from '#/locales';
+
+import { useItemGridColumns, useItemGridFormSchema } from '../data';
+import ItemForm from './item-form.vue';
+
+const visible = ref(false);
+const currentPack = ref<ImManagerFacePackApi.FacePack>();
+const checkedIds = ref<number[]>([]);
+const title = computed(() =>
+  currentPack.value ? `「${currentPack.value.name}」表情管理` : '表情管理',
+);
+
+const [ItemFormModal, itemFormModalApi] = useVbenModal({
+  connectedComponent: ItemForm,
+  destroyOnClose: true,
+});
+
+/** 打开抽屉 */
+function open(pack: ImManagerFacePackApi.FacePack) {
+  currentPack.value = pack;
+  visible.value = true;
+  checkedIds.value = [];
+}
+
+defineExpose({ open });
+
+/** 抽屉打开后查询表情列表 */
+async function handleOpenChange(open: boolean) {
+  if (!open) {
+    return;
+  }
+  await nextTick();
+  gridApi.query();
+}
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 创建表情 */
+function handleCreate() {
+  itemFormModalApi.setData({ packId: currentPack.value?.id }).open();
+}
+
+/** 编辑表情 */
+function handleEdit(row: ImManagerFacePackItemApi.FacePackItem) {
+  itemFormModalApi
+    .setData({ id: row.id, packId: currentPack.value?.id })
+    .open();
+}
+
+/** 删除表情 */
+async function handleDelete(row: ImManagerFacePackItemApi.FacePackItem) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.name || row.id]),
+  });
+  try {
+    await deleteManagerFacePackItem(row.id);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name || row.id]));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+/** 批量删除表情 */
+async function handleDeleteBatch() {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deletingBatch'),
+  });
+  try {
+    await deleteManagerFacePackItemList(checkedIds.value);
+    checkedIds.value = [];
+    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+/** 表格选中变化 */
+function handleRowCheckboxChange({
+  records,
+}: {
+  records: ImManagerFacePackItemApi.FacePackItem[];
+}) {
+  checkedIds.value = records.map((item) => item.id);
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useItemGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useItemGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getManagerFacePackItemPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            packId: currentPack.value?.id,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<ImManagerFacePackItemApi.FacePackItem>,
+  gridEvents: {
+    checkboxAll: handleRowCheckboxChange,
+    checkboxChange: handleRowCheckboxChange,
+  },
+});
+</script>
+
+<template>
+  <ElDrawer
+    v-model="visible"
+    :title="title"
+    destroy-on-close
+    width="65%"
+    @after-open-change="handleOpenChange"
+  >
+    <ItemFormModal @success="handleRefresh" />
+    <Grid table-title="表情列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['表情']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['im:manager:face-pack-item:create'],
+              onClick: handleCreate,
+            },
+            {
+              label: $t('ui.actionTitle.deleteBatch'),
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              auth: ['im:manager:face-pack-item:delete'],
+              disabled: isEmpty(checkedIds),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteBatchConfirm'),
+                confirm: handleDeleteBatch,
+              },
+            },
+          ]"
+        />
+      </template>
+      <template #image="{ row }">
+        <ElImage v-if="row.url" :height="40" :src="row.url" :width="40" />
+      </template>
+      <template #size="{ row }">
+        <span v-if="row.width || row.height">
+          {{ row.width || '?' }} × {{ row.height || '?' }}
+        </span>
+        <span v-else>-</span>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['im:manager:face-pack-item:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              link: true,
+              type: 'danger',
+              icon: ACTION_ICON.DELETE,
+              auth: ['im:manager:face-pack-item:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.name || row.id]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </ElDrawer>
+</template>
