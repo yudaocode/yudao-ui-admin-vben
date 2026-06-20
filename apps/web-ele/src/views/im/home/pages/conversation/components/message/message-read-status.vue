@@ -123,7 +123,7 @@ async function loadReadUsers() {
     - 未读名单 = 当前群成员 − 自己 − 已退群 − 已读集合（前端聚合，后端只回已读 userId）
   -->
   <ElPopover
-    v-model="popVisible"
+    v-model:visible="popVisible"
     placement="left"
     trigger="click"
     :width="320"
@@ -138,7 +138,7 @@ async function loadReadUsers() {
     </template>
 
     <ElTabs v-model="activeTab">
-      <ElTabPane :tab="`已读(${readMembers.length})`" key="read">
+      <ElTabPane :label="`已读(${readMembers.length})`" name="read">
         <PagedScroller :items="readMembers" :page-size="20" item-key="userId" class="h-75">
           <template #default="{ item }">
             <GroupMember :member="item as GroupMemberLite" :height="40" :clickable="false" />
@@ -151,7 +151,7 @@ async function loadReadUsers() {
           {{ groupMembers.length === 0 ? '群成员未加载' : '暂无已读' }}
         </div>
       </ElTabPane>
-      <ElTabPane :tab="`未读(${unreadMembers.length})`" key="unread">
+      <ElTabPane :label="`未读(${unreadMembers.length})`" name="unread">
         <PagedScroller :items="unreadMembers" :page-size="20" item-key="userId" class="h-75">
           <template #default="{ item }">
             <GroupMember :member="item as GroupMemberLite" :height="40" :clickable="false" />

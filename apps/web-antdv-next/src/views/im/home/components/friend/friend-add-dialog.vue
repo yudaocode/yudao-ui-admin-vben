@@ -163,7 +163,7 @@ async function handleSubmitApply() {
     v-model:open="visible"
     :title="dialogTitle"
     width="480px"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     :footer="step === 'apply' ? undefined : null"
   >
     <!-- 第一层：搜索 + 用户列表 -->

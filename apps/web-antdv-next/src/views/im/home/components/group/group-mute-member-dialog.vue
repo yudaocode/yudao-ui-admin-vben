@@ -59,7 +59,7 @@ defineExpose({ open })
 
 <template>
   <!-- 禁言时长选择弹窗 -->
-  <Modal v-model:open="visible" title="设置禁言" width="560px" :mask-closable="false">
+  <Modal v-model:open="visible" title="设置禁言" width="560px" :mask="{ closable: false }">
     <div class="flex flex-col gap-4">
       <!-- 成员信息卡：和 FriendAddDialog 的 user 卡保持一致的浅色背景 -->
       <div

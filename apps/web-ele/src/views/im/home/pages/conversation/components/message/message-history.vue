@@ -565,7 +565,7 @@ function locateMessage(messageId: number) {
         </span>
         <!-- 日期：el-popover 包 el-calendar，确认后才落筛选 -->
         <ElPopover
-          v-model="datePopoverVisible"
+          v-model:visible="datePopoverVisible"
           trigger="click"
           placement="bottom"
           :width="320"
@@ -596,7 +596,7 @@ function locateMessage(messageId: number) {
         <!-- 群成员：仅群聊；popover 内自带搜索 + GroupMember 列表 -->
         <ElPopover
           v-if="isGroup"
-          v-model="memberPopoverVisible"
+          v-model:visible="memberPopoverVisible"
           trigger="click"
           placement="bottom"
           :width="320"

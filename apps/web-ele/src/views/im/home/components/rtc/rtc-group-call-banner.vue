@@ -145,7 +145,7 @@ async function handleJoin() {
   <!-- 仅当该群有活跃通话时显示；点击胶囊条展开 popover 看在通话成员 + 加入 -->
   <div v-if="activeCall" class="flex-shrink-0 px-4 pb-2 bg-[var(--ant-color-fill-secondary)]">
     <ElPopover
-      v-model="popoverVisible"
+      v-model:visible="popoverVisible"
       placement="bottom-start"
       :width="280"
       trigger="click"

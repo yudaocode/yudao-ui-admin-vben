@@ -3,7 +3,7 @@ import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/mater
 
 import { computed, ref, watch } from 'vue';
 
-import { ElSelect } from 'element-plus'
+import { ElOption, ElSelect } from 'element-plus'
 
 import { getSimpleManagerChannelMaterialList } from '#/api/im/manager/channel/material';
 
@@ -64,8 +64,14 @@ watch(() => props.channelId, loadMaterialList, { immediate: true });
     :clearable="clearable"
     :disabled="!channelId"
     :loading="loading"
-    :options="options"
     :placeholder="placeholder"
     class="w-full"
-  />
+  >
+    <ElOption
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    />
+  </ElSelect>
 </template>

@@ -115,7 +115,7 @@ onMounted(loadData);
 </script>
 
 <template>
-  <Card :body-style="{ padding: '12px 16px 16px' }">
+  <Card :styles="{ body: { padding: '12px 16px 16px' } }">
     <template #title>
       <div class="flex items-center justify-between">
         <span>{{ title }}</span>

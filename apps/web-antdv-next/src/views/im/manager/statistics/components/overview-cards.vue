@@ -78,7 +78,7 @@ const cards = computed(() => {
 
 <template>
   <div class="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
-    <Card v-for="card in cards" :key="card.title" :body-style="{ padding: '16px' }">
+    <Card v-for="card in cards" :key="card.title" :styles="{ body: { padding: '16px' } }">
       <div class="flex items-center">
         <div
           class="mr-3 flex size-12 shrink-0 items-center justify-center rounded"

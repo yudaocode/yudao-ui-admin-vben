@@ -221,7 +221,7 @@ async function handleCreateGroupAndSend() {
   <Modal
     v-model:open="visible"
     width="720px"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     :footer="view === 'conversation' ? null : undefined"
     class="im-picker-dialog im-recommend-dialog"
   >

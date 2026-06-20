@@ -58,7 +58,7 @@ type="textarea"
           :maxlength="200"
           :rows="3"
           placeholder="请输入封禁原因"
-          show-count
+          show-word-limit
         />
       </ElFormItem>
     </ElForm>

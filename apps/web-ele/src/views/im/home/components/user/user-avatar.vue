@@ -110,7 +110,9 @@ function handleClick(e: MouseEvent) {
       v-if="url && previewable"
       class="block overflow-hidden"
       :src="url"
-      :preview="{ src: url, zIndex: previewZIndex }"
+      :preview-src-list="[url]"
+      :preview-teleported="true"
+      :z-index="previewZIndex"
       :style="imgStyle"
     />
     <img

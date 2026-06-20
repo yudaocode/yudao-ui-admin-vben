@@ -104,7 +104,7 @@ onMounted(loadData);
 </script>
 
 <template>
-  <Card :body-style="{ padding: '12px 16px 16px' }" :title="titleMap[type]">
+  <Card :styles="{ body: { padding: '12px 16px 16px' } }" :title="titleMap[type]">
     <div class="relative min-h-[320px]">
       <EchartsUI ref="chartRef" height="320px" />
       <div

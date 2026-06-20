@@ -81,7 +81,7 @@ function handleOk() {
     v-model:open="visible"
     :title="title"
     width="720px"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     class="im-picker-dialog"
   >
     <div class="h-[480px]">

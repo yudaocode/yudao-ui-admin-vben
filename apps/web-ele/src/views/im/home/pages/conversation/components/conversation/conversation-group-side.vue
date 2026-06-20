@@ -496,7 +496,7 @@ function handleOpenTransferOwner() {
           <!-- 群聊名称（群主可改） -->
           <ElPopover
             v-if="isOwner"
-            v-model="namePopoverVisible"
+            v-model:visible="namePopoverVisible"
             trigger="click"
             placement="left-start"
             :width="280"
@@ -528,7 +528,7 @@ function handleOpenTransferOwner() {
           <!-- 群公告（群主可改）：内容可能很长，加 > chevron 表示可展开编辑 -->
           <ElPopover
             v-if="isOwner"
-            v-model="noticePopoverVisible"
+            v-model:visible="noticePopoverVisible"
             trigger="click"
             placement="left-start"
             :width="320"
@@ -560,7 +560,7 @@ function handleOpenTransferOwner() {
                 type="textarea"
                 :rows="4"
                 :maxlength="1024"
-                show-count
+                show-word-limit
                 placeholder="请输入群公告"
               />
               <div class="flex justify-end gap-2">
@@ -586,7 +586,7 @@ function handleOpenTransferOwner() {
           <!-- 备注（仅自己可见；保存后会替换会话列表 / 顶部群名展示）；历史退群群隐藏：改备注走 updateGroupMember，已退群会被后端拒 -->
           <ElPopover
             v-if="!isQuitGroup"
-            v-model="groupRemarkPopoverVisible"
+            v-model:visible="groupRemarkPopoverVisible"
             trigger="click"
             placement="left-start"
             :width="280"
@@ -613,7 +613,7 @@ function handleOpenTransferOwner() {
                 type="textarea"
                 :rows="3"
                 :maxlength="64"
-                show-count
+                show-word-limit
                 placeholder="仅自己可见"
               />
               <div class="flex justify-end gap-2">
@@ -626,7 +626,7 @@ function handleOpenTransferOwner() {
           <!-- 我在本群的昵称（任何成员都能改自己的）；历史退群群隐藏：走 updateGroupMember，已退群会被后端拒 -->
           <ElPopover
             v-if="!isQuitGroup"
-            v-model="remarkPopoverVisible"
+            v-model:visible="remarkPopoverVisible"
             trigger="click"
             placement="left-start"
             :width="280"
@@ -695,16 +695,16 @@ function handleOpenTransferOwner() {
         <div class="bg-[var(--ant-color-bg-container)]">
           <div class="im-conversation-group-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">消息免打扰</span>
-            <ElSwitch :checked="!!conversation?.silent" @change="onMutedChange" />
+            <ElSwitch :model-value="!!conversation?.silent" @change="onMutedChange" />
           </div>
           <div class="im-conversation-group-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">置顶聊天</span>
-            <ElSwitch :checked="!!conversation?.top" @change="onTopChange" />
+            <ElSwitch :model-value="!!conversation?.top" @change="onTopChange" />
           </div>
           <!-- 全群禁言：仅群主或管理员可操作 -->
           <div v-if="isOwnerOrAdmin" class="im-conversation-group-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">全群禁言</span>
-            <ElSwitch :checked="!!currentMutedAll" @change="onMuteAllChange" />
+            <ElSwitch :model-value="!!currentMutedAll" @change="onMuteAllChange" />
           </div>
         </div>
 
@@ -716,7 +716,7 @@ function handleOpenTransferOwner() {
             <!-- 进群审批：仅群主可操作；开启后普通成员的「申请」「邀请」路径都需群主 / 管理员同意；群主 / 管理员邀请直进 -->
             <div v-if="isOwner" class="im-conversation-group-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
               <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">进群需要群主 / 群管理确认</span>
-              <ElSwitch :checked="!!group.joinApproval" @change="handleJoinApprovalChange" />
+              <ElSwitch :model-value="!!group.joinApproval" @change="handleJoinApprovalChange" />
             </div>
             <!-- 进群申请子项：仅当开启审批 + 当前用户是 owner / admin 时出现；点击进列表 dialog -->
             <div

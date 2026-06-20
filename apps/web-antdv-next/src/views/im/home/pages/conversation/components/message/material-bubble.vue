@@ -116,7 +116,7 @@ const onClick = async () => {
     :footer="null"
     width="100vw"
     wrap-class-name="im-material-detail-modal"
-    destroy-on-close
+    destroy-on-hidden
   >
     <Spin :spinning="detailLoading" wrapper-class-name="w-full">
       <div class="material-detail-body max-w-[720px] mx-auto px-5 pt-6 pb-20 min-h-[60vh]">

@@ -44,7 +44,7 @@ defineExpose({ open });
 
 <template>
   <ElDrawer v-model="visible" destroy-on-close title="群详情" width="900">
-    <ElDescriptions bordered :column="2">
+    <ElDescriptions border :column="2">
       <ElDescriptionsItem label="群编号">{{ detail.id }}</ElDescriptionsItem>
       <ElDescriptionsItem label="群名称">{{ detail.name }}</ElDescriptionsItem>
       <ElDescriptionsItem label="头像">
@@ -84,7 +84,7 @@ defineExpose({ open });
     <ElTable
       v-loading="loading"
       :data="filteredMembers"
-      bordered
+      border
       row-key="userId"
       size="small"
     >

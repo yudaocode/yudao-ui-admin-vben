@@ -148,7 +148,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   <Drawer
     v-model:open="visible"
     :title="title"
-    destroy-on-close
+    destroy-on-hidden
     :styles="{ wrapper: { width: '65%' } }"
     @after-open-change="handleOpenChange"
   >
