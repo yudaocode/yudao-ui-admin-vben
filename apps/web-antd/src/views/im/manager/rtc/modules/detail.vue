@@ -100,7 +100,7 @@ defineExpose({ open });
       row-key="id"
       size="small"
     >
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record, text }">
         <template v-if="column.dataIndex === 'role'">
           <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_ROLE" :value="record.role" />
         </template>
@@ -108,10 +108,10 @@ defineExpose({ open });
           <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_STATUS" :value="record.status" />
         </template>
         <template v-else-if="['inviteTime', 'acceptTime', 'leaveTime'].includes(column.dataIndex as string)">
-          {{ formatDateTimeText(record[column.dataIndex]) }}
+          {{ formatDateTimeText(text) }}
         </template>
         <template v-else>
-          {{ record[column.dataIndex] || '-' }}
+          {{ text || '-' }}
         </template>
       </template>
     </Table>
