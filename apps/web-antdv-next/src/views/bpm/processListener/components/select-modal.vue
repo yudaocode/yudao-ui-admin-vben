@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
+import type {
+  VxeGridPropTypes,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 
 import { ref } from 'vue';
@@ -47,7 +50,7 @@ const [Grid] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<BpmProcessListenerApi.ProcessListener>,
 });
 
 // 配置 Modal

@@ -53,6 +53,11 @@ const currentNode = useWatchNode(props);
 // 节点名称
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.START_USER_NODE);
+
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
+
 // 激活的 Tab 标签页
 const activeTabName = ref('user');
 
@@ -144,7 +149,7 @@ defineExpose({ showStartUserNodeConfig });
     <template #title>
       <div class="config-header">
         <Input
-          ref="inputRef"
+          :ref="setInputRef"
           v-if="showInput"
           type="text"
           class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
