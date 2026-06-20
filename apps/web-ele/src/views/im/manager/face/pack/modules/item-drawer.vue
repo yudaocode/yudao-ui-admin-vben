@@ -145,7 +145,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <ElDrawer
     v-model="visible"
-    :content="title"
+    :title="title"
     destroy-on-close
     width="65%"
     @after-open-change="handleOpenChange"

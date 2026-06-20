@@ -112,7 +112,7 @@ const onClick = async () => {
   <!-- 富文本详情：全屏弹窗按需挂载，关闭后释放富文本 DOM -->
   <ElDialog
     v-model="detailVisible"
-    :content="payload.title || '详情'"
+    :title="payload.title || '详情'"
     
     width="100vw"
     class="im-material-detail-modal"

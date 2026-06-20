@@ -79,7 +79,7 @@ function handleOk() {
   -->
   <ElDialog
     v-model="visible"
-    :content="title"
+    :title="title"
     width="720px"
     :close-on-click-modal="false"
     class="im-picker-dialog"

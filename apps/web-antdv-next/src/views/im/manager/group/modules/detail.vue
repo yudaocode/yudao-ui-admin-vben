@@ -9,6 +9,7 @@ import {
   Avatar,
   Checkbox,
   Descriptions,
+  DescriptionsItem,
   Drawer,
   Table,
   Tag,
@@ -46,16 +47,6 @@ const columns = [
   { title: '退群时间', dataIndex: 'quitTime', width: 180 },
   { title: '禁言状态', dataIndex: 'muteEndTime', width: 180 },
 ];
-
-/** 获取列字段 */
-function getColumnDataIndex(column: any) {
-  return String(column.dataIndex || '');
-}
-
-/** 获取成员字段值 */
-function getMemberValue(record: ImManagerGroupApi.GroupMember, key: string) {
-  return (record as unknown as Record<string, unknown>)[key] || '-';
-}
 
 /** 打开详情 */
 async function open(row: ImManagerGroupApi.Group) {
@@ -122,27 +113,27 @@ defineExpose({ open });
       size="small"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="getColumnDataIndex(column) === 'avatar'">
+        <template v-if="column.dataIndex === 'avatar'">
           <Avatar :src="record.avatar" :size="40">
             {{ record.nickname?.charAt(0) || '?' }}
           </Avatar>
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'role'">
+        <template v-else-if="column.dataIndex === 'role'">
           <DictTag :type="DICT_TYPE.IM_GROUP_MEMBER_ROLE" :value="record.role" />
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'silent'">
+        <template v-else-if="column.dataIndex === 'silent'">
           <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="record.silent" />
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'status'">
+        <template v-else-if="column.dataIndex === 'status'">
           <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="record.status" />
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'joinTime'">
+        <template v-else-if="column.dataIndex === 'joinTime'">
           {{ formatDateTimeText(record.joinTime) }}
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'quitTime'">
+        <template v-else-if="column.dataIndex === 'quitTime'">
           {{ formatDateTimeText(record.quitTime) }}
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'muteEndTime'">
+        <template v-else-if="column.dataIndex === 'muteEndTime'">
           <template v-if="record.muteEndTime && new Date(record.muteEndTime) > new Date()">
             <Tag color="error">禁言中</Tag>
             <div class="mt-1 text-xs text-gray-400">
@@ -152,7 +143,7 @@ defineExpose({ open });
           <span v-else>-</span>
         </template>
         <template v-else>
-          {{ getMemberValue(record, getColumnDataIndex(column)) }}
+          {{ record[column.dataIndex] || '-' }}
         </template>
       </template>
     </Table>

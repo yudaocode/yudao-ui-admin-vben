@@ -286,7 +286,7 @@ function handleContextMenu(e: MouseEvent) {
           icon="mdi:bell-off-outline"
           :size="14"
           class="conversation-item__silent flex-shrink-0 ml-1 text-[var(--ant-color-text-disabled)]"
-          content="消息免打扰"
+          title="消息免打扰"
         />
       </div>
     </div>

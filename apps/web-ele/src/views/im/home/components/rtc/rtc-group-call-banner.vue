@@ -181,7 +181,7 @@ async function handleJoin() {
             radius="6px"
             :clickable="false"
             :class="{ 'opacity-50': member.pending }"
-            :content="member.pending ? `${member.nickname}（接入中）` : member.nickname"
+            :title="member.pending ? `${member.nickname}（接入中）` : member.nickname"
           />
           <!-- 首次填充时房内可能暂时 0 人；加入后由 ParticipantConnected 事件追加 -->
           <div

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ImFacePackApi } from '#/api/im/face/pack'
-import type { ImFaceUserItemApi } from '#/api/im/face/useritem'
+import type { ImFaceUserItemApi } from '#/api/im/face/userItem'
 
 import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
@@ -188,7 +188,7 @@ onUnmounted(() => {
             class="aspect-square flex items-center justify-center rounded-md cursor-pointer transition-colors border border-dashed border-[var(--ant-color-border)] bg-transparent text-[var(--ant-color-text-placeholder)] hover:border-[var(--ant-color-primary)] hover:text-[var(--ant-color-primary)] disabled:cursor-not-allowed disabled:text-[var(--ant-color-text-disabled)]"
             type="button"
             :disabled="uploading"
-            :content="uploading ? '上传中…' : '上传图片到个人表情'"
+            :title="uploading ? '上传中…' : '上传图片到个人表情'"
             @click="onUploadClick"
           >
             <Icon
@@ -200,7 +200,7 @@ onUnmounted(() => {
             v-for="item in faceStore.faceUserItems"
             :key="item.id"
             class="im-face-grid-cell group relative aspect-square flex items-center justify-center rounded-md bg-[var(--ant-color-fill-tertiary)] cursor-pointer transition-colors hover:bg-[var(--ant-color-fill)]"
-            :content="item.name || '点击发送 / 右键删除'"
+            :title="item.name || '点击发送 / 右键删除'"
             @click="handleSelectFaceUserItem(item)"
             @contextmenu.prevent="handleDeleteUserItem(item)"
           >
@@ -233,7 +233,7 @@ onUnmounted(() => {
               v-for="item in pack.items"
               :key="item.id"
               class="im-face-grid-cell flex flex-col items-center gap-1 cursor-pointer rounded-md p-1 transition-colors hover:bg-[var(--ant-color-fill)]"
-              :content="item.name || ''"
+              :title="item.name || ''"
               @click="handleSelectPackItem(item)"
             >
               <div

@@ -161,7 +161,7 @@ async function handleSubmitApply() {
   -->
   <ElDialog
     v-model="visible"
-    :content="dialogTitle"
+    :title="dialogTitle"
     width="480px"
     :close-on-click-modal="false"
 >
