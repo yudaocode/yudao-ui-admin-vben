@@ -32,8 +32,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'update:items',
-  'update:discount-price',
-  'update:total-price',
+  'update:discountPrice',
+  'update:totalPrice',
 ]);
 
 const tableData = ref<ErpSaleOrderApi.SaleOrderItem[]>([]); // 表格数据
@@ -113,8 +113,8 @@ watch(
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
     const finalTotalPrice = totalPrice - discountPrice!;
     // 通知父组件更新
-    emit('update:discount-price', discountPrice);
-    emit('update:total-price', finalTotalPrice);
+    emit('update:discountPrice', discountPrice);
+    emit('update:totalPrice', finalTotalPrice);
   },
   { deep: true },
 );

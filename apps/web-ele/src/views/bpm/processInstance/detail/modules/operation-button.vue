@@ -95,6 +95,24 @@ const popOverVisible: any = ref({
   deleteSign: false,
 }); // 气泡卡是否展示
 const returnList = ref([] as any); // 退回节点
+const APPROVAL_ATTACHMENT_FILE_TYPES = [
+  'doc',
+  'docx',
+  'xls',
+  'xlsx',
+  'ppt',
+  'pptx',
+  'txt',
+  'pdf',
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'bmp',
+  'webp',
+];
+const APPROVAL_ATTACHMENT_FILE_SIZE = 5;
+const APPROVAL_ATTACHMENT_DIRECTORY = 'bpm/task-attachment';
 
 /** 创建流程表达式 */
 function openSignatureModal() {
@@ -778,7 +796,9 @@ function handleSignFinish(url: string) {
 
 /** 判断文件是否为图片类型 */
 function isImageUrl(url: string) {
-  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
+  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(
+    url.split(/[?#]/)[0] || '',
+  );
 }
 
 /** 附件图片预览 */
@@ -900,8 +920,12 @@ defineExpose({ loadTodoTask });
             <ElFormItem label="上传附件/图片" prop="attachments">
               <FileUpload
                 v-model:value="approveReasonForm.attachments"
+                :accept="APPROVAL_ATTACHMENT_FILE_TYPES"
+                :directory="APPROVAL_ATTACHMENT_DIRECTORY"
                 :max-number="10"
+                :max-size="APPROVAL_ATTACHMENT_FILE_SIZE"
                 :multiple="true"
+                :show-description="true"
                 help-text="支持多文件/图片上传"
                 @preview="handleFilePreview"
               />
@@ -967,8 +991,12 @@ defineExpose({ loadTodoTask });
             <ElFormItem label="上传附件/图片" prop="attachments">
               <FileUpload
                 v-model:value="rejectReasonForm.attachments"
+                :accept="APPROVAL_ATTACHMENT_FILE_TYPES"
+                :directory="APPROVAL_ATTACHMENT_DIRECTORY"
                 :max-number="10"
+                :max-size="APPROVAL_ATTACHMENT_FILE_SIZE"
                 :multiple="true"
+                :show-description="true"
                 help-text="支持多文件/图片上传"
                 @preview="handleFilePreview"
               />

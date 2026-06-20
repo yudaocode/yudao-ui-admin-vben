@@ -164,6 +164,7 @@ catalog:
   json-bigint: ^1.0.0
   knip: ^6.15.0
   lefthook: ^2.1.9
+  livekit-client: ^2.18.9
   lodash.clonedeep: ^4.5.0
   markdown-it: ^14.2.0
   markmap-common: ^0.18.9

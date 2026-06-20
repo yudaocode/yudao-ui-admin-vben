@@ -89,7 +89,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
-      height: type.value === UploadType.Image ? 220 : 'auto',
+    },
+    cellConfig: {
+      height: type.value === UploadType.Image ? 220 : undefined,
     },
     toolbarConfig: {
       refresh: true,
@@ -106,7 +108,9 @@ async function onTabChange() {
     rowConfig: {
       keyField: 'id',
       isHover: true,
-      height: type.value === UploadType.Image ? 220 : 'auto',
+    },
+    cellConfig: {
+      height: type.value === UploadType.Image ? 220 : undefined,
     },
   });
   await gridApi.reload();

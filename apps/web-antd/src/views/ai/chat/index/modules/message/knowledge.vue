@@ -22,8 +22,6 @@ const document = ref<null | {
   }[];
   title: string;
 }>(null); // 知识库文档列表
-const dialogVisible = ref(false); // 知识引用详情弹窗
-const documentRef = ref<HTMLElement>(); // 知识引用详情弹窗 Ref
 
 /** 按照 document 聚合 segments */
 const documentList = computed(() => {
@@ -49,7 +47,6 @@ const documentList = computed(() => {
 /** 点击 document 处理 */
 function handleClick(doc: any) {
   document.value = doc;
-  dialogVisible.value = true;
 }
 </script>
 
@@ -79,7 +76,7 @@ function handleClick(doc: any) {
     </div>
   </div>
   <Tooltip placement="topLeft" trigger="click">
-    <div ref="documentRef"></div>
+    <div></div>
     <template #title>
       <div class="mb-3 text-base font-bold">{{ document?.title }}</div>
       <div class="max-h-[60vh] overflow-y-auto">

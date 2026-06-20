@@ -17,10 +17,16 @@ import {
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
   destroyOnClose: true,
 });
 
@@ -44,6 +50,11 @@ async function handleExport() {
 async function handleExportDetail(row: MesWmSnApi.SnGroup) {
   const data = await exportSnDetailExcel(row.uuid!);
   downloadFileFromBlobPart({ fileName: 'SN码明细.xls', source: data });
+}
+
+/** 查看 SN 码明细 */
+function handleDetail(row: MesWmSnApi.SnGroup) {
+  detailModalApi.setData(row).open();
 }
 
 /** 删除 SN 码批次 */
@@ -104,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
 
     <FormModal @success="handleRefresh" />
+    <DetailModal />
 
     <Grid table-title="SN 码列表">
       <template #toolbar-tools>
@@ -126,9 +138,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
+      <template #count="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: `${row.count ?? 0}`,
+              type: 'link',
+              auth: ['mes:wm-sn:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+          ]"
+        />
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
+            {
+              label: '查看明细',
+              type: 'link',
+              auth: ['mes:wm-sn:query'],
+              onClick: handleDetail.bind(null, row),
+            },
             {
               label: '导出明细',
               type: 'link',

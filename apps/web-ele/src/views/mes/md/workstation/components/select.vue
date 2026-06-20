@@ -44,6 +44,7 @@ const showClear = computed(
     props.clearable &&
     !props.disabled &&
     hovering.value &&
+    props.modelValue !== undefined &&
     props.modelValue !== null,
 );
 

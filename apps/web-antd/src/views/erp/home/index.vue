@@ -12,10 +12,6 @@ import TimeSummaryChart from './modules/time-summary-chart.vue';
 defineOptions({ name: 'ErpHome' });
 
 const loading = ref(false); // 加载中
-
-/** 图表组件引用 */
-const saleChartRef = ref();
-const purchaseChartRef = ref();
 </script>
 
 <template>
@@ -36,15 +32,11 @@ const purchaseChartRef = ref();
         <Row :gutter="16">
           <!-- 销售统计 -->
           <Col :md="12" :sm="12" :xs="24">
-            <TimeSummaryChart ref="saleChartRef" title="销售统计" type="sale" />
+            <TimeSummaryChart title="销售统计" type="sale" />
           </Col>
           <!-- 采购统计 -->
           <Col :md="12" :sm="12" :xs="24">
-            <TimeSummaryChart
-              ref="purchaseChartRef"
-              title="采购统计"
-              type="purchase"
-            />
+            <TimeSummaryChart title="采购统计" type="purchase" />
           </Col>
         </Row>
       </div>

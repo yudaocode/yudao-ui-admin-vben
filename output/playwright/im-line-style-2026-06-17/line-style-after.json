@@ -1,0 +1,59 @@
+{
+  "values": {
+    "url": "http://127.0.0.1:5666/im/home/conversation",
+    "className": "dark",
+    "rootVar": "rgb(255 255 255 / 12%)",
+    "imHomeVar": "#e8eaed",
+    "aside": {
+      "borderTopColor": "rgb(232, 234, 237)",
+      "borderRightColor": "rgb(232, 234, 237)",
+      "borderBottomColor": "rgb(232, 234, 237)",
+      "borderLeftColor": "rgb(232, 234, 237)"
+    },
+    "leftHeader": {
+      "borderTopColor": "rgb(232, 234, 237)",
+      "borderRightColor": "rgb(232, 234, 237)",
+      "borderBottomColor": "rgb(232, 234, 237)",
+      "borderLeftColor": "rgb(232, 234, 237)"
+    },
+    "inputCard": {
+      "borderTopColor": "rgb(232, 234, 237)",
+      "borderRightColor": "rgb(232, 234, 237)",
+      "borderBottomColor": "rgb(232, 234, 237)",
+      "borderLeftColor": "rgb(232, 234, 237)"
+    },
+    "toolbar": {
+      "borderTopColor": "rgb(232, 234, 237)",
+      "borderRightColor": "rgb(232, 234, 237)",
+      "borderBottomColor": "rgb(232, 234, 237)",
+      "borderLeftColor": "rgb(232, 234, 237)"
+    },
+    "antSecondary": ""
+  },
+  "events": [
+    {
+      "type": "warning",
+      "text": "[StorageManager] empty prefix combined with LocalStorageDriver — clear()/keys() will affect every localStorage entry."
+    },
+    {
+      "type": "error",
+      "text": "menu name duplicate: 库存管理, id: 6440 Proxy(Object)"
+    },
+    {
+      "type": "error",
+      "text": "menu name duplicate: 基础数据, id: 5101 Proxy(Object)"
+    },
+    {
+      "type": "warning",
+      "text": "[StorageManager] empty prefix combined with LocalStorageDriver — clear()/keys() will affect every localStorage entry."
+    },
+    {
+      "type": "error",
+      "text": "menu name duplicate: 库存管理, id: 6440 Proxy(Object)"
+    },
+    {
+      "type": "error",
+      "text": "menu name duplicate: 基础数据, id: 5101 Proxy(Object)"
+    }
+  ]
+}

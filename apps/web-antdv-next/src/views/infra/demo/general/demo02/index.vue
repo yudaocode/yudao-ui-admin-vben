@@ -126,6 +126,12 @@ function toggleExpand() {
 
 /** 初始化 */
 const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+function setTableToolbarRef(el: any) {
+  tableToolbarRef.value = el;
+}
+function setTableRef(el: any) {
+  tableRef.value = el;
+}
 onMounted(() => {
   getList();
 });
@@ -176,7 +182,7 @@ onMounted(() => {
     <ContentWrap title="示例分类">
       <template #extra>
         <VbenVxeTableToolbar
-          ref="tableToolbarRef"
+          :ref="setTableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
           <Button @click="toggleExpand" class="mr-2">
@@ -204,7 +210,7 @@ onMounted(() => {
         </VbenVxeTableToolbar>
       </template>
       <VxeTable
-        ref="tableRef"
+        :ref="setTableRef"
         :data="list"
         :tree-config="{
           parentField: 'parentId',

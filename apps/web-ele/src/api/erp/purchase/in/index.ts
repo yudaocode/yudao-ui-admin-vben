@@ -28,6 +28,7 @@ export namespace ErpPurchaseInApi {
   export interface PurchaseInItem {
     count?: number;
     id?: number;
+    seq?: number; // 前端行号
     orderItemId?: number;
     productBarCode?: string;
     productId?: number;

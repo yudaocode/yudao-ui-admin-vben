@@ -75,3 +75,8 @@ export function runJob(id: number) {
 export function getJobNextTimes(id: number) {
   return requestClient.get(`/infra/job/get_next_times?id=${id}`);
 }
+
+/** 同步定时任务到 Quartz */
+export function syncJob() {
+  return requestClient.post('/infra/job/sync');
+}
