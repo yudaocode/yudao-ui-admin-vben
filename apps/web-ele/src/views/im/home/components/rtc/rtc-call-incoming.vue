@@ -83,7 +83,7 @@ const callMembers = useGroupCallMembers(
             radius="4px"
             :clickable="false"
             :class="{ 'opacity-50': member.pending }"
-            :content="member.pending ? `${member.nickname}（接入中）` : member.nickname"
+            :title="member.pending ? `${member.nickname}（接入中）` : member.nickname"
           />
         </div>
       </template>

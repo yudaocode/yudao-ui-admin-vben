@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
     <img
       :src="facePayload.url"
       :alt="facePayload.name || '表情'"
-      :content="facePayload.name || ''"
+      :title="facePayload.name || ''"
       :width="facePayload.width"
       :height="facePayload.height"
       class="block max-w-[160px] max-h-[160px] object-contain"

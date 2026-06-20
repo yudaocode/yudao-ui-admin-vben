@@ -1,12 +1,12 @@
 import type { ImFacePackApi } from '#/api/im/face/pack'
-import type { ImFaceUserItemApi } from '#/api/im/face/useritem'
+import type { ImFaceUserItemApi } from '#/api/im/face/userItem'
 
 import { ref } from 'vue'
 
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 import { getFacePackList as apiGetFacePackList } from '#/api/im/face/pack'
-import { createFaceUserItem as apiCreateFaceUserItem, deleteFaceUserItem as apiDeleteFaceUserItem, getFaceUserItemList as apiGetFaceUserItemList } from '#/api/im/face/useritem'
+import { createFaceUserItem as apiCreateFaceUserItem, deleteFaceUserItem as apiDeleteFaceUserItem, getFaceUserItemList as apiGetFaceUserItemList } from '#/api/im/face/userItem'
 
 /**
  * IM 表情面板数据 store（系统表情包 + 个人表情）

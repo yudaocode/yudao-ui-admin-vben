@@ -168,7 +168,7 @@ function handleGroupCreated(groupId: number) {
           <!-- + tile：点击调起 GroupCreateDialog，把对方 id 作为 lockedIds 传入 -->
           <div
             class="im-conversation-private-side__tile-wrap-clickable flex flex-col items-center w-[66px] cursor-pointer"
-            content="发起群聊"
+            title="发起群聊"
             @click="handleOpenCreateGroup"
           >
             <div class="im-conversation-private-side__icon-tile flex items-center justify-center w-[50px] h-[50px] text-20px text-[var(--ant-color-text)] bg-[var(--ant-color-fill-tertiary)] border border-dashed border-[var(--ant-color-border)] rounded-md transition-colors duration-200">

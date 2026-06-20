@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { ImManagerFaceUserItemApi } from '#/api/im/manager/face/useritem';
+import type { ImManagerFaceUserItemApi } from '#/api/im/manager/face/userItem';
 
 import { Page } from '@vben/common-ui';
 
@@ -10,7 +10,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteManagerFaceUserItem,
   getManagerFaceUserItemPage,
-} from '#/api/im/manager/face/useritem';
+} from '#/api/im/manager/face/userItem';
 import { $t } from '#/locales';
 import { formatUserLabel } from '#/views/im/manager/utils/format';
 

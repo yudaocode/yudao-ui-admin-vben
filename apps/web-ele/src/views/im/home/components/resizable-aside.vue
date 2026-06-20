@@ -93,7 +93,7 @@ function stopResize() {
     <div
       class="im-resizable-aside__handle absolute top-0 right--0.75 z-10 flex items-center justify-center w-1.5 h-full cursor-col-resize transition-colors"
       :class="{ 'is-resizing': isResizing }"
-      content="拖拽调整宽度"
+      title="拖拽调整宽度"
       @mousedown="startResize"
     >
       <div class="im-resizable-aside__line w-0.5 h-full rounded-0.5 bg-transparent transition-all"></div>

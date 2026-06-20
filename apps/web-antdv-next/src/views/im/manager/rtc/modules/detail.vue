@@ -35,30 +35,6 @@ const columns = [
   { title: '离开时间', dataIndex: 'leaveTime', width: 180 },
 ];
 
-/** 获取列字段 */
-function getColumnDataIndex(column: any) {
-  return String(column.dataIndex || '');
-}
-
-/** 获取参与者字段值 */
-function getParticipantValue(
-  record: ImManagerRtcApi.RtcParticipant,
-  key: string,
-) {
-  return (record as unknown as Record<string, unknown>)[key] || '-';
-}
-
-/** 获取参与时间字段 */
-function getParticipantTime(
-  record: ImManagerRtcApi.RtcParticipant,
-  key: string,
-) {
-  const value = getParticipantValue(record, key);
-  return value instanceof Date || typeof value === 'number' || typeof value === 'string'
-    ? value
-    : undefined;
-}
-
 /** 打开详情 */
 async function open(row: ImManagerRtcApi.RtcCall) {
   detail.value = row;
@@ -125,17 +101,17 @@ defineExpose({ open });
       size="small"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="getColumnDataIndex(column) === 'role'">
+        <template v-if="column.dataIndex === 'role'">
           <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_ROLE" :value="record.role" />
         </template>
-        <template v-else-if="getColumnDataIndex(column) === 'status'">
+        <template v-else-if="column.dataIndex === 'status'">
           <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_STATUS" :value="record.status" />
         </template>
-        <template v-else-if="['inviteTime', 'acceptTime', 'leaveTime'].includes(getColumnDataIndex(column))">
-          {{ formatDateTimeText(getParticipantTime(record, getColumnDataIndex(column))) }}
+        <template v-else-if="['inviteTime', 'acceptTime', 'leaveTime'].includes(column.dataIndex as string)">
+          {{ formatDateTimeText(record[column.dataIndex]) }}
         </template>
         <template v-else>
-          {{ getParticipantValue(record, getColumnDataIndex(column)) }}
+          {{ record[column.dataIndex] || '-' }}
         </template>
       </template>
     </Table>

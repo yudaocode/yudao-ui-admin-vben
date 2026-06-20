@@ -993,7 +993,7 @@ function handleDelete() {
                 icon="ant-design:warning-filled"
                 color="#f56c6c"
                 class="cursor-pointer"
-                content="发送失败，点击重试"
+                title="发送失败，点击重试"
                 @click="handleResend"
               />
               <!-- 已读态（私聊） -->

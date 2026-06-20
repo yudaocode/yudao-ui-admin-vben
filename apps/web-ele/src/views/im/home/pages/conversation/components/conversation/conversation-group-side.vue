@@ -454,7 +454,7 @@ function handleOpenTransferOwner() {
             <div
               v-if="!isQuitGroup"
               class="im-conversation-group-side__tile-wrap flex flex-col items-center w-[66px] cursor-pointer"
-              content="邀请好友入群"
+              title="邀请好友入群"
               @click="handleOpenInvite"
             >
               <div class="im-conversation-group-side__icon-tile flex items-center justify-center w-[50px] h-[50px] text-20px text-[var(--ant-color-text)] bg-[var(--ant-color-fill-tertiary)] border border-dashed border-[var(--ant-color-border)] rounded-md transition-colors duration-200">
@@ -467,7 +467,7 @@ function handleOpenTransferOwner() {
             <div
               v-if="isOwnerOrAdmin"
               class="im-conversation-group-side__tile-wrap flex flex-col items-center w-[66px] cursor-pointer"
-              content="移出群成员"
+              title="移出群成员"
               @click="handleOpenRemove"
             >
               <div class="im-conversation-group-side__icon-tile flex items-center justify-center w-[50px] h-[50px] text-20px text-[var(--ant-color-text)] bg-[var(--ant-color-fill-tertiary)] border border-dashed border-[var(--ant-color-border)] rounded-md transition-colors duration-200">

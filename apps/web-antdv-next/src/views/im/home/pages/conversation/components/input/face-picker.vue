@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ImFacePackApi } from '#/api/im/face/pack'
-import type { ImFaceUserItemApi } from '#/api/im/face/useritem'
+import type { ImFaceUserItemApi } from '#/api/im/face/userItem'
 
 import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 
