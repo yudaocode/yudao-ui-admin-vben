@@ -103,21 +103,21 @@ function changeConditionType() {
   }
 }
 
-function deleteConditionGroup(conditions: any, index: number) {
-  conditions.splice(index, 1);
+function deleteConditionGroup(conditions: any, index: number | string) {
+  conditions.splice(Number(index), 1);
 }
 
-function deleteConditionRule(condition: any, index: number) {
-  condition.rules.splice(index, 1);
+function deleteConditionRule(condition: any, index: number | string) {
+  condition.rules.splice(Number(index), 1);
 }
 
-function addConditionRule(condition: any, index: number) {
+function addConditionRule(condition: any, index: number | string) {
   const rule = {
     opCode: '==',
     leftSide: undefined,
     rightSide: '',
   };
-  condition.rules.splice(index + 1, 0, rule);
+  condition.rules.splice(Number(index) + 1, 0, rule);
 }
 
 function addConditionGroup(conditions: any) {

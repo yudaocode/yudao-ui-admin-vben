@@ -197,7 +197,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="工具选择"
     width="75%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

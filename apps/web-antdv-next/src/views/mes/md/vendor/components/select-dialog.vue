@@ -203,7 +203,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="供应商选择"
     width="70%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

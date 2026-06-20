@@ -311,7 +311,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="发货通知单选择"
     width="70%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @cancel="closeModal"
     @ok="handleConfirm"
   >
