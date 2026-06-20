@@ -107,7 +107,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="产品 BOM 物料选择"
     width="800px"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

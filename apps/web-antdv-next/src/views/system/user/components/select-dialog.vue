@@ -285,7 +285,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="人员选择"
     width="80%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >
