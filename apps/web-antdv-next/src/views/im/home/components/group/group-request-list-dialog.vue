@@ -167,7 +167,7 @@ function updateLocalResult(id: number, handleResult: number) {
     title="进群申请"
     width="560px"
     :footer="null"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     class="im-group-request-list__dialog"
   >
     <Spin :spinning="loading" wrapper-class-name="w-full">

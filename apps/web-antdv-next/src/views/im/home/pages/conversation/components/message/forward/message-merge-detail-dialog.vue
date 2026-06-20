@@ -61,7 +61,7 @@ function handleClose() {
     v-model:open="visible"
     width="560px"
     :footer="null"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     class="im-merge-detail-dialog"
     :closable="true"
     @close="handleClose"

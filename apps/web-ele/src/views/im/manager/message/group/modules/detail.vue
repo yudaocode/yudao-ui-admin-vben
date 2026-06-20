@@ -36,7 +36,7 @@ defineExpose({ open });
 
 <template>
   <ElDialog v-model="visible" title="群聊消息详情" width="700px">
-    <ElDescriptions bordered :column="2">
+    <ElDescriptions border :column="2">
       <ElDescriptionsItem label="编号">{{ detail.id }}</ElDescriptionsItem>
       <ElDescriptionsItem label="客户端编号">
         {{ detail.clientMessageId || '-' }}

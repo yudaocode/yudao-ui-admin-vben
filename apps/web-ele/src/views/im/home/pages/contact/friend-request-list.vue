@@ -79,7 +79,7 @@ async function handleLoadMore() {
       <!-- 红点：未处理且别人加我的（统一走 store getter，避免本地 computed 跟 store 双口径） -->
       <ElBadge
         v-if="friendStore.getUnhandledRequestCount > 0"
-        :count="friendStore.getUnhandledRequestCount"
+        :value="friendStore.getUnhandledRequestCount"
         :max="99"
         class="mr-2"
       />

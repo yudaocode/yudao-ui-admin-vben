@@ -90,7 +90,7 @@ async function handleOk() {
     v-model:open="visible"
     title="选择新群主"
     width="700px"
-    :mask-closable="false"
+    :mask="{ closable: false }"
     class="im-picker-dialog"
   >
     <div class="h-[480px]">

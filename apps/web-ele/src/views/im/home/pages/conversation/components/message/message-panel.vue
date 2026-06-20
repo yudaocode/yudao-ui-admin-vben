@@ -567,7 +567,7 @@ watch(
             <!-- 通话入口：私聊弹「语音 / 视频」popover；群聊直接进选人弹窗 -->
             <ElPopover
               v-if="isPrivate"
-              v-model="callPopoverVisible"
+              v-model:visible="callPopoverVisible"
               placement="bottom-end"
               :width="140"
               trigger="click"

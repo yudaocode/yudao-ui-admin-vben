@@ -267,7 +267,7 @@ type="textarea"
         v-model="applyContent"
         :rows="3"
         :maxlength="255"
-        show-count
+        show-word-limit
         placeholder="请填写申请理由"
       />
 

@@ -42,7 +42,7 @@ defineExpose({ open });
 
 <template>
   <ElDrawer v-model="visible" destroy-on-close title="通话记录详情" width="900">
-    <ElDescriptions bordered :column="2">
+    <ElDescriptions border :column="2">
       <ElDescriptionsItem label="编号">{{ detail.id }}</ElDescriptionsItem>
       <ElDescriptionsItem label="业务通话编号">{{ detail.room }}</ElDescriptionsItem>
       <ElDescriptionsItem label="发起人">
@@ -84,7 +84,7 @@ defineExpose({ open });
     <ElTable
       v-loading="loading"
       :data="participants"
-      bordered
+      border
       row-key="id"
       size="small"
     >

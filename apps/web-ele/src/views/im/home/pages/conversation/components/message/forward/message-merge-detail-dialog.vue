@@ -60,10 +60,8 @@ function handleClose() {
   <ElDialog
     v-model="visible"
     width="560px"
-    
     :close-on-click-modal="false"
     class="im-merge-detail-dialog"
-    :closable="true"
     @close="handleClose"
   >
     <template #header>

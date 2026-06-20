@@ -183,7 +183,7 @@ function handleGroupCreated(groupId: number) {
         <!-- 备注（仅自己可见）：点击弹 popover 编辑，保存后立即刷新本抽屉 + 会话列表展示名 -->
         <div class="bg-[var(--ant-color-bg-container)]">
           <ElPopover
-            v-model="displayNamePopoverVisible"
+            v-model:visible="displayNamePopoverVisible"
             trigger="click"
             placement="left-start"
             :width="280"
@@ -208,7 +208,7 @@ function handleGroupCreated(groupId: number) {
               <ElInput
                 v-model="editDisplayName"
                 :maxlength="16"
-                show-count
+                show-word-limit
                 placeholder="请输入备注名"
               />
               <div class="flex justify-end gap-2">
@@ -244,11 +244,11 @@ function handleGroupCreated(groupId: number) {
         <div class="bg-[var(--ant-color-bg-container)]">
           <div class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">消息免打扰</span>
-            <ElSwitch :checked="!!conversation?.silent" @change="handleMutedChange" />
+            <ElSwitch :model-value="!!conversation?.silent" @change="handleMutedChange" />
           </div>
           <div class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
             <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">置顶聊天</span>
-            <ElSwitch :checked="!!conversation?.top" @change="handleTopChange" />
+            <ElSwitch :model-value="!!conversation?.top" @change="handleTopChange" />
           </div>
         </div>
       </div>

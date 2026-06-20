@@ -208,7 +208,8 @@ onBeforeUnmount(() => {
     <ElImage
       class="max-w-[220px] rounded cursor-zoom-in"
       :src="imagePayload.thumbnailUrl || imagePayload.url"
-      :preview="isUploading ? false : { src: imagePayload.url }"
+      :preview-src-list="isUploading ? [] : [imagePayload.url]"
+      :preview-teleported="true"
     />
     <div
       v-if="isUploading"

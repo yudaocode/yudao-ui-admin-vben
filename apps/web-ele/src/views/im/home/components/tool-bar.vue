@@ -78,7 +78,7 @@ const goProfile = () => router.push({ name: 'Profile' })
       >
         <ElBadge
           v-if="item.name === 'ImHomeConversation' && totalUnread > 0"
-          :count="totalUnread"
+          :value="totalUnread"
           :max="99"
           class="tool-bar__badge"
         >
@@ -86,7 +86,7 @@ const goProfile = () => router.push({ name: 'Profile' })
         </ElBadge>
         <ElBadge
           v-else-if="item.name === 'ImHomeContact' && unhandledRequestCount > 0"
-          :count="unhandledRequestCount"
+          :value="unhandledRequestCount"
           :max="99"
           class="tool-bar__badge"
         >

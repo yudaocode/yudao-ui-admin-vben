@@ -3,7 +3,7 @@ import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { ElSelect } from 'element-plus'
+import { ElOption, ElSelect } from 'element-plus'
 
 import { getSimpleChannelList } from '#/api/im/manager/channel';
 
@@ -59,8 +59,14 @@ onMounted(loadChannelList);
     :clearable="clearable"
     :disabled="disabled"
     :loading="loading"
-    :options="options"
     :placeholder="placeholder"
     class="w-full"
-  />
+  >
+    <ElOption
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    />
+  </ElSelect>
 </template>
