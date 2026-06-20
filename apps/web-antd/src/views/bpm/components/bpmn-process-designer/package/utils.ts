@@ -1,7 +1,35 @@
 const bpmnInstances = () => (window as any)?.bpmnInstances;
+
+interface ListenerFieldOptions {
+  expression?: string;
+  fieldType: string;
+  name: string;
+  string?: string;
+}
+
+interface ListenerOptions {
+  class?: string;
+  delegateExpression?: string;
+  event?: string;
+  eventDefinitionType?: string;
+  eventTimeDefinitions?: string;
+  expression?: string;
+  fields?: ListenerFieldOptions[];
+  id?: string;
+  listenerType?: string;
+  resource?: string;
+  scriptFormat?: string;
+  scriptType?: string;
+  value?: string;
+}
+
 // 创建监听器实例
-export function createListenerObject(options, isTask, prefix) {
-  const listenerObj = Object.create(null);
+export function createListenerObject(
+  options: ListenerOptions,
+  isTask: boolean,
+  prefix: string,
+) {
+  const listenerObj: Record<string, any> = Object.create(null);
   listenerObj.event = options.event;
   isTask && (listenerObj.id = options.id); // 任务监听器特有的 id 字段
   switch (options.listenerType) {
@@ -52,7 +80,10 @@ export function createListenerObject(options, isTask, prefix) {
 }
 
 // 创建 监听器的注入字段 实例
-export function createFieldObject(option, prefix) {
+export function createFieldObject(
+  option: ListenerFieldOptions,
+  prefix: string,
+) {
   const { name, fieldType, string, expression } = option;
   const fieldConfig =
     fieldType === 'string' ? { name, string } : { name, expression };
@@ -60,7 +91,7 @@ export function createFieldObject(option, prefix) {
 }
 
 // 创建脚本实例
-export function createScriptObject(options, prefix) {
+export function createScriptObject(options: ListenerOptions, prefix: string) {
   const { scriptType, scriptFormat, value, resource } = options;
   const scriptConfig =
     scriptType === 'inlineScript'
@@ -70,7 +101,7 @@ export function createScriptObject(options, prefix) {
 }
 
 // 更新元素扩展属性
-export function updateElementExtensions(element, extensionList) {
+export function updateElementExtensions(element: any, extensionList: any[]) {
   const extensions = bpmnInstances().moddle.create('bpmn:ExtensionElements', {
     values: extensionList,
   });

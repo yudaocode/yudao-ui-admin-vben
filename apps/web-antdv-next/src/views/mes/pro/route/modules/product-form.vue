@@ -112,7 +112,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4" />
     <!-- 编辑模式下展示产品 BOM 子表，新增模式下隐藏 -->
     <template v-if="formData?.id && formData?.itemId">
-      <Divider class="!my-3" orientation="left">产品 BOM 配置</Divider>
+      <Divider class="!my-3" title-placement="start">产品 BOM 配置</Divider>
       <div class="mx-4">
         <ProductBomList
           :route-id="formData.routeId!"

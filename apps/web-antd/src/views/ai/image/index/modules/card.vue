@@ -19,8 +19,6 @@ const props = defineProps({
 });
 const emits = defineEmits(['onBtnClick', 'onMjBtnClick']);
 
-const cardImageRef = ref<any>(); // 卡片 image ref
-
 /** 处理点击事件  */
 async function handleButtonClick(type: string, detail: AiImageApi.Image) {
   emits('onBtnClick', type, detail);
@@ -110,7 +108,7 @@ onMounted(async () => {
     </div>
 
     <!-- 图片展示区域 -->
-    <div class="mt-5 h-72 flex-1 overflow-hidden" ref="cardImageRef">
+    <div class="mt-5 h-72 flex-1 overflow-hidden">
       <Image class="w-full rounded-lg" :src="detail?.picUrl" />
       <div v-if="detail?.status === AiImageStatusEnum.FAIL">
         {{ detail?.errorMessage }}

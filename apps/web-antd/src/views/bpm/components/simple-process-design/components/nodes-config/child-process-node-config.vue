@@ -66,6 +66,9 @@ const currentNode = useWatchNode(props);
 /** 节点名称配置 */
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.CHILD_PROCESS_NODE);
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
 // 激活的 Tab 标签页
 const activeTabName = ref('child');
 // 子流程表单配置
@@ -391,7 +394,7 @@ onMounted(async () => {
       <div class="config-header">
         <Input
           v-if="showInput"
-          ref="inputRef"
+          :ref="setInputRef"
           type="text"
           class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           @blur="changeNodeName()"

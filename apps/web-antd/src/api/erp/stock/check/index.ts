@@ -21,6 +21,7 @@ export namespace ErpStockCheckApi {
   /** 库存盘点项 */
   export interface StockCheckItem {
     id?: number; // 编号
+    seq?: number; // 前端行号
     warehouseId?: number; // 仓库编号
     productId?: number; // 产品编号
     productName?: string; // 产品名称

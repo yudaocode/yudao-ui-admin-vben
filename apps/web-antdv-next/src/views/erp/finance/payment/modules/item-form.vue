@@ -32,8 +32,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'update:items',
-  'update:total-price',
-  'update:payment-price',
+  'update:totalPrice',
+  'update:paymentPrice',
 ]);
 
 const tableData = ref<ErpFinancePaymentApi.FinancePaymentItem[]>([]); // 表格数据
@@ -110,8 +110,8 @@ watch(
     );
     const finalPaymentPrice = paymentPrice - (props.discountPrice || 0);
     // 通知父组件更新
-    emit('update:total-price', totalPrice);
-    emit('update:payment-price', finalPaymentPrice);
+    emit('update:totalPrice', totalPrice);
+    emit('update:paymentPrice', finalPaymentPrice);
   },
   { deep: true },
 );
@@ -128,13 +128,15 @@ const handleOpenPurchaseIn = () => {
 
 const handleAddPurchaseIn = (rows: ErpPurchaseInApi.PurchaseIn[]) => {
   rows.forEach((row) => {
+    const totalPrice = row.totalPrice ?? 0;
+    const paidPrice = row.paymentPrice ?? 0;
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      bizId: row.id,
+      bizId: row.id ?? 0,
       bizType: ErpBizType.PURCHASE_IN,
-      bizNo: row.no,
-      totalPrice: row.totalPrice,
-      paidPrice: row.paymentPrice,
-      paymentPrice: row.totalPrice - row.paymentPrice,
+      bizNo: row.no ?? '',
+      totalPrice,
+      paidPrice,
+      paymentPrice: totalPrice - paidPrice,
       remark: undefined,
     };
     tableData.value.push(newItem);
@@ -154,13 +156,15 @@ const handleOpenSaleReturn = () => {
 
 const handleAddSaleReturn = (rows: ErpPurchaseReturnApi.PurchaseReturn[]) => {
   rows.forEach((row) => {
+    const totalPrice = row.totalPrice ?? 0;
+    const refundPrice = row.refundPrice ?? 0;
     const newItem: ErpFinancePaymentApi.FinancePaymentItem = {
-      bizId: row.id,
+      bizId: row.id ?? 0,
       bizType: ErpBizType.PURCHASE_RETURN,
-      bizNo: row.no,
-      totalPrice: -row.totalPrice,
-      paidPrice: -row.refundPrice,
-      paymentPrice: -row.totalPrice + row.refundPrice,
+      bizNo: row.no ?? '',
+      totalPrice: -totalPrice,
+      paidPrice: -refundPrice,
+      paymentPrice: -totalPrice + refundPrice,
       remark: undefined,
     };
     tableData.value.push(newItem);
@@ -202,7 +206,7 @@ const validate = () => {
   // 检查每行的付款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item.paymentPrice || item.paymentPrice <= 0) {
+    if (!item?.paymentPrice || item.paymentPrice <= 0) {
       throw new Error(`第 ${i + 1} 行：本次付款必须大于0`);
     }
   }

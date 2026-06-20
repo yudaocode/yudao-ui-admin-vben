@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EchartsUIType } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { ErpPurchaseStatisticsApi } from '#/api/erp/statistics/purchase';
 import type { ErpSaleStatisticsApi } from '#/api/erp/statistics/sale';
@@ -49,7 +49,7 @@ const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 
 /** 折线图配置 */
-const lineChartOptions: echarts.EChartsOption = {
+const lineChartOptions: EChartsOption = {
   grid: {
     left: 20,
     right: 20,
