@@ -232,7 +232,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="生产任务选择"
     width="80%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >
