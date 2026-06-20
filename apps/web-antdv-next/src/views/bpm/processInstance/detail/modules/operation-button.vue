@@ -858,9 +858,10 @@ defineExpose({ loadTodoTask });
                 name="nextAssignees"
                 v-if="nextAssigneesActivityNode.length > 0"
               >
-                <div class="-mb-8 -mt-3.5 ml-2.5">
+                <div class="ml-2.5">
                   <ProcessInstanceTimeline
                     ref="nextAssigneesTimelineRef"
+                    embedded
                     :activity-nodes="nextAssigneesActivityNode"
                     :show-status-icon="false"
                     :enable-approve-user-select="true"
