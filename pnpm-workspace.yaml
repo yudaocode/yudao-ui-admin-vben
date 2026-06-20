@@ -133,7 +133,7 @@ catalog:
   czg: ^1.13.1
   dayjs: ^1.11.21
   defu: ^6.1.7
-  dhtmlx-gantt: ^9.1.4
+  dhtmlx-gantt: ^10.0.0
   diagram-js: ^12.8.1
   dotenv: ^17.4.2
   echarts: ^6.1.0
