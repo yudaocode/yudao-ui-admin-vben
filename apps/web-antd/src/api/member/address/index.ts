@@ -7,6 +7,7 @@ export namespace MemberAddressApi {
     name: string;
     mobile: string;
     areaId: number;
+    areaName?: string;
     detailAddress: string;
     defaultStatus: boolean;
   }

@@ -28,8 +28,8 @@ const columns = [
     minWidth: 130,
   },
   {
-    field: 'areaId',
-    title: '地区编码',
+    field: 'areaName',
+    title: '所在地区',
     minWidth: 120,
   },
   {
