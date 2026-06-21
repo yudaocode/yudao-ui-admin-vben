@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { inject } from 'vue';
+import type { MusicSong } from '../types';
+
+import { inject, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
 import { Image } from 'ant-design-vue';
 
+import { currentSongKey } from '../types';
+
 defineOptions({ name: 'AiMusicSongCardIndex' });
 
-defineProps({
-  songInfo: {
-    type: Object,
-    default: () => ({}),
-  },
+withDefaults(defineProps<{ songInfo?: MusicSong }>(), {
+  songInfo: () => ({}),
 });
 
 const emits = defineEmits(['play']);
 
-const currentSong = inject<any>('currentSong', {});
+const currentSong = inject(currentSongKey, ref<MusicSong>({}));
 
 function playSong() {
   emits('play');
