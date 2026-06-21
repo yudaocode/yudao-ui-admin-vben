@@ -252,6 +252,9 @@ const moddleExtensions = computed(() => {
 const initBpmnModeler = () => {
   if (bpmnModeler) return;
   const data: any = document.querySelector('#bpmnCanvas');
+  if (!data) {
+    return;
+  }
   // console.log(data, 'data');
   // console.log(props.keyboard, 'props.keyboard');
   // console.log(additionalModules, 'additionalModules()');
@@ -268,7 +271,7 @@ const initBpmnModeler = () => {
     // propertiesPanel: {
     // parent: '#js-properties-panel'
     // },
-    keyboard: props.keyboard ? { bindTo: document } : null,
+    keyboard: props.keyboard ? { bind: true } : null,
     // additionalModules: additionalModules.value,
     additionalModules: additionalModules.value as any[],
     moddleExtensions: moddleExtensions.value,

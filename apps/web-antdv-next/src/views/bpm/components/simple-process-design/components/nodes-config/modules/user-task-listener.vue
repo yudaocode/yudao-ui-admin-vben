@@ -66,7 +66,7 @@ defineExpose({ validate });
       :key="listenerIdx"
       class="pl-2"
     >
-      <Divider orientation="left">
+      <Divider title-placement="left">
         <TypographyText tag="b" size="large">
           {{ listener.name }}
         </TypographyText>
