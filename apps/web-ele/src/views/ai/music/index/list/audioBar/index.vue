@@ -11,6 +11,7 @@ defineOptions({ name: 'AiMusicAudioBarIndex' });
 const currentSong = inject<any>('currentSong', {});
 
 const audioRef = ref<HTMLAudioElement | null>(null);
+const audioProgress = ref(0);
 const audioProps = reactive<any>({
   autoplay: true,
   paused: false,
@@ -73,7 +74,7 @@ function audioTimeUpdate(args: any) {
       />
       <div class="flex items-center gap-4">
         <span>{{ audioProps.currentTime }}</span>
-        <ElSlider v-model="audioProps.duration" color="#409eff" class="!w-40" />
+        <ElSlider v-model="audioProgress" color="#409eff" class="!w-40" />
         <span>{{ audioProps.duration }}</span>
       </div>
       <!-- 音频 -->
