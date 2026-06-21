@@ -35,10 +35,14 @@ const { query } = useRoute();
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const processTimeLineLoading = ref(false); // 审批流的加载中
 
+type LeaveCreateData = BpmOALeaveApi.Leave & {
+  startUserSelectAssignees?: Record<string, number[]>;
+};
+
 const processDefineKey = 'oa_leave'; // 流程定义 Key
-const startUserSelectTasks = ref<any>([]); // 发起人需要选择审批人的用户任务列表
-const startUserSelectAssignees = ref<any>({}); // 发起人选择审批人的数据
-const tempStartUserSelectAssignees = ref<any>({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
+const startUserSelectTasks = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 发起人需要选择审批人的用户任务列表
+const startUserSelectAssignees = ref<Record<string, number[]>>({}); // 发起人选择审批人的数据
+const tempStartUserSelectAssignees = ref<Record<string, number[]>>({}); // 历史发起人选择审批人的数据，用于每次表单变更时，临时保存
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const processDefinitionId = ref('');
 
@@ -72,23 +76,21 @@ async function onSubmit() {
   // 1.2 审批相关：校验指定审批人
   if (startUserSelectTasks.value?.length > 0) {
     for (const userTask of startUserSelectTasks.value) {
-      if (
-        Array.isArray(startUserSelectAssignees.value[userTask.id]) &&
-        startUserSelectAssignees.value[userTask.id].length === 0
-      ) {
+      const assignees = startUserSelectAssignees.value[userTask.id];
+      if (Array.isArray(assignees) && assignees.length === 0) {
         return ElMessage.warning(`请选择${userTask.name}的审批人`);
       }
     }
   }
 
   // 提交表单
-  const data = (await formApi.getValues()) as BpmOALeaveApi.Leave;
+  const data = (await formApi.getValues()) as LeaveCreateData;
   // 审批相关：设置指定审批人
   if (startUserSelectTasks.value?.length > 0) {
     data.startUserSelectAssignees = startUserSelectAssignees.value;
   }
   // 格式化开始时间和结束时间的值
-  const submitData: BpmOALeaveApi.Leave = {
+  const submitData: LeaveCreateData = {
     ...data,
     startTime: Number(data.startTime),
     endTime: Number(data.endTime),
@@ -151,11 +153,10 @@ async function getApprovalDetail() {
     // 恢复之前的选择审批人
     if (startUserSelectTasks.value?.length > 0) {
       for (const node of startUserSelectTasks.value) {
-        startUserSelectAssignees.value[node.id] =
-          tempStartUserSelectAssignees.value[node.id] &&
-          tempStartUserSelectAssignees.value[node.id].length > 0
-            ? tempStartUserSelectAssignees.value[node.id]
-            : [];
+        const tempAssignees = tempStartUserSelectAssignees.value[node.id];
+        startUserSelectAssignees.value[node.id] = tempAssignees?.length
+          ? tempAssignees
+          : [];
       }
     }
   } finally {
@@ -164,8 +165,8 @@ async function getApprovalDetail() {
 }
 
 /** 审批相关：选择发起人 */
-function selectUserConfirm(id: string, userList: any[]) {
-  startUserSelectAssignees.value[id] = userList?.map((item: any) => item.id);
+function selectUserConfirm(id: string, userList: Array<{ id: number }>) {
+  startUserSelectAssignees.value[id] = userList.map((item) => item.id);
 }
 
 /** 获取请假数据，用于重新发起时自动填充 */

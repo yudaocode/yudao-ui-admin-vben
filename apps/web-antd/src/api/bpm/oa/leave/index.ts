@@ -12,7 +12,6 @@ export namespace BpmOALeaveApi {
     startTime: number;
     endTime: number;
     createTime: Date;
-    startUserSelectAssignees?: Record<string, string[]>;
   }
 }
 
