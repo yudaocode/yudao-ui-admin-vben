@@ -62,7 +62,7 @@ defineExpose({ open });
       <ElDescriptionsItem label="@用户" :span="2">
         <template v-if="detail.atUserIds?.length">
           <span v-for="(userId, index) in detail.atUserIds" :key="userId">
-            <span v-if="index > 0">、</span>
+            <span v-if="Number(index) > 0">、</span>
             <template v-if="userId === IM_AT_ALL_USER_ID">
               @{{ IM_AT_ALL_NICKNAME }}
             </template>
