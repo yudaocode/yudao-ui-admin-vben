@@ -139,7 +139,7 @@ function recursiveFindParentNode(
       <Button
         v-else
         class="branch-node-add"
-        color="#626aef"
+        :style="{ borderColor: '#626aef', color: '#626aef' }"
         @click="addCondition"
         plain
       >

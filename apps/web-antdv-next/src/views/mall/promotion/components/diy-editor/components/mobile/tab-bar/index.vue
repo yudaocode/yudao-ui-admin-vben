@@ -33,7 +33,7 @@ defineProps<{ property: TabBarProperty }>();
           class="!h-[26px] w-[26px] rounded"
           :preview="false"
         >
-          <template #error>
+          <template #fallback>
             <div class="flex h-full w-full items-center justify-center">
               <IconifyIcon
                 icon="lucide:image"

@@ -4,20 +4,21 @@ export namespace MallTradeConfigApi {
   /** 交易中心配置 */
   export interface Config {
     id?: number;
-    afterSaleRefundReasons?: string[];
-    afterSaleReturnReasons?: string[];
-    deliveryExpressFreeEnabled?: boolean;
-    deliveryExpressFreePrice?: number;
-    deliveryPickUpEnabled?: boolean;
+    afterSaleRefundReasons: string[];
+    afterSaleReturnReasons: string[];
+    deliveryExpressFreeEnabled: boolean;
+    deliveryExpressFreePrice: number;
+    deliveryPickUpEnabled: boolean;
     brokerageEnabled?: boolean;
     brokerageEnabledCondition?: number;
     brokerageBindMode?: number;
-    brokeragePosterUrls?: string;
+    brokeragePosterUrls: string[];
     brokerageFirstPercent?: number;
     brokerageSecondPercent?: number;
-    brokerageWithdrawMinPrice?: number;
-    brokerageFrozenDays?: number;
-    brokerageWithdrawTypes?: string;
+    brokerageWithdrawMinPrice: number;
+    brokerageFrozenDays: number;
+    brokerageWithdrawFeePercent: number;
+    brokerageWithdrawTypes: number[];
     tencentLbsKey?: string;
   }
 }

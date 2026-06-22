@@ -11,6 +11,12 @@ export namespace MpTagApi {
     count?: number;
     createTime?: Date;
   }
+
+  /** 标签精简信息 */
+  export interface SimpleTag {
+    tagId: number;
+    name: string;
+  }
 }
 
 /** 创建公众号标签 */
@@ -46,7 +52,7 @@ export function getTagPage(params: PageParam) {
 
 /** 获取公众号标签精简信息列表 */
 export function getSimpleTagList() {
-  return requestClient.get<MpTagApi.Tag[]>('/mp/tag/list-all-simple');
+  return requestClient.get<MpTagApi.SimpleTag[]>('/mp/tag/list-all-simple');
 }
 
 /** 同步公众号标签 */

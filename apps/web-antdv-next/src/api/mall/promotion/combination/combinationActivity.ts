@@ -8,6 +8,7 @@ export namespace MallCombinationActivityApi {
     id?: number; // 活动编号
     name?: string; // 活动名称
     spuId?: number; // 商品 SPU 编号
+    spuName?: string; // 商品 SPU 名称
     totalLimitCount?: number; // 总限购数量
     singleLimitCount?: number; // 单次限购数量
     startTime?: Date; // 开始时间
@@ -21,7 +22,7 @@ export namespace MallCombinationActivityApi {
     limitDuration?: number; // 限制时长
     combinationPrice?: number; // 拼团价格
     products: CombinationProduct[]; // 商品列表
-    picUrl?: any;
+    picUrl?: string; // 商品图片
   }
 
   /** 拼团活动所需属性 */

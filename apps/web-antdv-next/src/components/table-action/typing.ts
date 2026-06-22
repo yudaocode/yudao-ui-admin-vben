@@ -10,7 +10,7 @@ export interface PopConfirm {
   disabled?: boolean;
 }
 
-export interface ActionItem extends ButtonProps {
+export interface ActionItem extends Omit<ButtonProps, 'color'> {
   onClick?: () => void;
   type?: ButtonType;
   label?: string;

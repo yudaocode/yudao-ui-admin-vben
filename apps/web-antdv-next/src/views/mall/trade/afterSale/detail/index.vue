@@ -52,7 +52,7 @@ const [OrderDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
   column: 3,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useOrderInfoSchema(),
 });
 
@@ -60,7 +60,7 @@ const [AfterSaleDescriptions] = useDescription({
   title: '售后信息',
   bordered: false,
   column: 3,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useAfterSaleInfoSchema(),
 });
 
@@ -68,7 +68,7 @@ const [RefundStatusDescriptions] = useDescription({
   title: '退款状态',
   bordered: false,
   column: 1,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useRefundStatusSchema(),
 });
 

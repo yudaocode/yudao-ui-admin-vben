@@ -39,10 +39,29 @@ const dialogTitle = ref<string | undefined>(undefined); // 弹窗标题
 const selectActivityType = ref<string | undefined>(undefined); // 选中 Task 的活动编号
 const selectTasks = ref<any[]>([]); // 选中的任务数组
 
+type BpmnCanvas = {
+  _svg?: SVGSVGElement;
+  addMarker: (element: any, marker: string) => void;
+  removeMarker: (element: any, marker: string) => void;
+  zoom: (
+    newScale?: 'fit-viewport' | number,
+    center?: 'auto' | { x: number; y: number },
+  ) => number;
+};
+type ElementRegistry = {
+  filter: (callback: (element: any) => boolean) => any[];
+  get: (id: string) => any;
+};
+
+const getCanvas = () =>
+  bpmnViewer.value?.get('canvas') as BpmnCanvas | undefined;
+const getElementRegistry = () =>
+  bpmnViewer.value?.get('elementRegistry') as ElementRegistry | undefined;
+
 /** Zoom：恢复 */
 const processReZoom = () => {
   defaultZoom.value = 1;
-  bpmnViewer.value?.get('canvas').zoom('fit-viewport', 'auto');
+  getCanvas()?.zoom('fit-viewport', 'auto');
 };
 
 let resizeObserver: null | ResizeObserver = null;
@@ -89,7 +108,7 @@ const processZoomIn = (zoomStep = 0.1) => {
     );
   }
   defaultZoom.value = newZoom;
-  bpmnViewer.value?.get('canvas').zoom(defaultZoom.value);
+  getCanvas()?.zoom(defaultZoom.value);
 };
 
 /** Zoom：缩小 */
@@ -101,7 +120,7 @@ const processZoomOut = (zoomStep = 0.1) => {
     );
   }
   defaultZoom.value = newZoom;
-  bpmnViewer.value?.get('canvas').zoom(defaultZoom.value);
+  getCanvas()?.zoom(defaultZoom.value);
 };
 
 /** 流程图预览清空 */
@@ -122,9 +141,9 @@ const addCustomDefs = () => {
   if (!bpmnViewer.value) {
     return;
   }
-  const canvas = bpmnViewer.value?.get('canvas');
+  const canvas = getCanvas();
   const svg = canvas?._svg;
-  svg.append(customDefs.value);
+  svg?.append(customDefs.value);
 };
 
 /** 节点选中 */
@@ -220,8 +239,11 @@ const setProcessStatus = (view: any) => {
     finishedSequenceFlowActivityIds,
     rejectedTaskActivityIds,
   } = view;
-  const canvas: any = bpmnViewer.value.get('canvas');
-  const elementRegistry: any = bpmnViewer.value.get('elementRegistry');
+  const canvas = getCanvas();
+  const elementRegistry = getElementRegistry();
+  if (!canvas || !elementRegistry) {
+    return;
+  }
 
   // 已完成节点
   if (Array.isArray(finishedSequenceFlowActivityIds)) {
@@ -229,7 +251,7 @@ const setProcessStatus = (view: any) => {
       if (item !== null) {
         canvas.addMarker(item, 'success');
         const element = elementRegistry.get(item);
-        const conditionExpression = element.businessObject.conditionExpression;
+        const conditionExpression = element?.businessObject.conditionExpression;
         if (conditionExpression) {
           canvas.addMarker(item, 'condition-expression');
         }

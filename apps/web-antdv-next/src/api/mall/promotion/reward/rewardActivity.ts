@@ -26,9 +26,9 @@ export namespace MallRewardActivityApi {
     conditionType?: number; // 条件类型
     productScope?: number; // 商品范围
     rules: RewardRule[]; // 优惠规则列表
-    productScopeValues?: number[]; // 商品范围值（仅表单使用）：值为品类编号列表、商品编号列表
-    productCategoryIds?: number[]; // 商品分类编号列表（仅表单使用）
-    productSpuIds?: number[]; // 商品 SPU 编号列表（仅表单使用）
+    productScopeValues: number[]; // 商品范围值（仅表单使用）：值为品类编号列表、商品编号列表
+    productCategoryIds: number[]; // 商品分类编号列表（仅表单使用）
+    productSpuIds: number[]; // 商品 SPU 编号列表（仅表单使用）
   }
 }
 

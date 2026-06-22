@@ -47,7 +47,7 @@ export function totalCountFormat(row: MallCouponTemplateApi.CouponTemplate) {
   if (row.totalCount === -1) {
     return '不限制';
   }
-  return row.totalCount;
+  return `${row.totalCount}`;
 }
 
 /** 格式化【剩余数量】 */
@@ -55,7 +55,7 @@ export function remainedCountFormat(row: MallCouponTemplateApi.CouponTemplate) {
   if (row.totalCount === -1) {
     return '不限制';
   }
-  return row.totalCount - row.takeCount;
+  return `${row.totalCount - row.takeCount}`;
 }
 
 /** 格式化【最低消费】 */

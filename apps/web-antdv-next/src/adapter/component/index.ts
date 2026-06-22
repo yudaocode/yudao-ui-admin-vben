@@ -740,22 +740,18 @@ async function initComponentAdapter() {
     Rate,
     RichEditor: withDefaultPlaceholder(VbenTiptap, 'input', {
       imageUpload: {
-        upload: (file: any, onProgress: any) => {
-          return new Promise((resolve, reject) => {
-            uploadFileApi({
-              file,
-              onProgress({ percent }) {
-                onProgress?.(percent);
-              },
-              onSuccess(response) {
-                // 从响应中提取图片URL
-                resolve(response?.data?.url ?? response?.url ?? '');
-              },
-              onError() {
-                reject(new Error($t('ui.tiptap.upload.uploadFailed')));
-              },
+        upload: async (file: File, onProgress?: (percent: number) => void) => {
+          try {
+            const response = await uploadFileApi({ file }, (progressEvent) => {
+              const percent = progressEvent.total
+                ? Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                : 0;
+              onProgress?.(percent);
             });
-          });
+            return response?.data?.url ?? response?.url ?? '';
+          } catch {
+            throw new Error($t('ui.tiptap.upload.uploadFailed'));
+          }
         },
       },
     }),

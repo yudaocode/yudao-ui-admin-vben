@@ -19,6 +19,10 @@ const expanded = ref(false); // 是否展开
 function handleToggleFab() {
   expanded.value = !expanded.value;
 }
+
+function handleActive() {
+  expanded.value = false;
+}
 </script>
 <template>
   <div
@@ -35,6 +39,7 @@ function handleToggleFab() {
         v-for="(item, index) in property.list"
         :key="index"
         class="flex flex-col items-center"
+        @click="handleActive"
       >
         <ElImage :src="item.imgUrl" fit="contain" class="h-7 w-7">
           <template #error>

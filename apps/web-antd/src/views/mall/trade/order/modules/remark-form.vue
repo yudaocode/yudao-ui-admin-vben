@@ -63,7 +63,10 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 设置到 values
-      await formApi.setValues(data);
+      await formApi.setValues({
+        id: data.id,
+        remark: data.remark || '',
+      });
     } finally {
       modalApi.unlock();
     }

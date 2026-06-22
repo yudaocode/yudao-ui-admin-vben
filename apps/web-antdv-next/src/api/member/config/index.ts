@@ -4,7 +4,7 @@ export namespace MemberConfigApi {
   /** 积分设置信息 */
   export interface Config {
     id?: number;
-    pointTradeDeductEnable: number;
+    pointTradeDeductEnable: boolean;
     pointTradeDeductUnitPrice: number;
     pointTradeDeductMaxPrice: number;
     pointTradeGivePoint: number;

@@ -33,7 +33,7 @@ const getButtonProps = computed(() => {
   };
 });
 
-async function customRequest(info: UploadRequestOption<any>) {
+async function customRequest(info: UploadRequestOption) {
   // 1. emit 上传中
   const file = info.file as File;
   const name = file?.name;

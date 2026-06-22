@@ -170,6 +170,12 @@ const multiFormFieldOptions = computed(() => {
     (item) => item.type === 'select' || item.type === 'checkbox',
   );
 });
+const multiInstanceSourceNumber = computed({
+  get: () => Number(configForm.value.multiInstanceSource || 1),
+  set: (value?: number) => {
+    configForm.value.multiInstanceSource = String(value || '');
+  },
+});
 const childFormFieldOptions = ref<any[]>([]);
 
 /** 保存配置 */
@@ -721,7 +727,7 @@ onMounted(async () => {
               trigger: 'change',
             }"
           >
-            <ElInputNumber v-model="configForm.multiInstanceSource" :min="1" />
+            <ElInputNumber v-model="multiInstanceSourceNumber" :min="1" />
           </ElFormItem>
           <ElFormItem
             v-if="
