@@ -65,7 +65,7 @@ const rowCount = computed(() => {
           borderBottomRightRadius: `${property.borderRadiusBottom}px`,
         }"
       >
-        <template #error>
+        <template #fallback>
           <div class="image-slot">
             <div
               class="flex items-center justify-center"

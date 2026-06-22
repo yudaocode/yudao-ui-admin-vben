@@ -16,7 +16,7 @@ const [BaseDescription] = useDescription({
   title: '基本信息',
   bordered: false,
   column: 4,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useDetailBaseSchema(),
 });
 
@@ -24,7 +24,7 @@ const [SystemDescription] = useDescription({
   title: '系统信息',
   bordered: false,
   column: 3,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useFollowUpDetailSchema(),
 });
 </script>
