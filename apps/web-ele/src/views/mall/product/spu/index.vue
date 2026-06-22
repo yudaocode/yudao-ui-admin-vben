@@ -68,7 +68,7 @@ async function handleExport() {
 
 /** 获得每个 Tab 的数量 */
 async function getTabCount() {
-  const res = await getTabsCount();
+  const res = await getTabsCount(await gridApi.formApi.getValues());
   for (const objName in res) {
     const index = Number(objName);
     if (tabsData.value[index]) {
