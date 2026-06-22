@@ -20,8 +20,8 @@ const props = defineProps({
 const emits = defineEmits(['onBtnClick', 'onMjBtnClick']);
 
 /** 处理点击事件  */
-async function handleButtonClick(type: string, detail: AiImageApi.Image) {
-  emits('onBtnClick', type, detail);
+async function handleButtonClick(type: string) {
+  emits('onBtnClick', type, props.detail);
 }
 
 /** 处理 Midjourney 按钮点击事件  */
@@ -79,28 +79,28 @@ onMounted(async () => {
         <Button
           class="m-0 p-2"
           type="text"
-          @click="handleButtonClick('download', detail)"
+          @click="handleButtonClick('download')"
         >
           <IconifyIcon icon="lucide:download" />
         </Button>
         <Button
           class="m-0 p-2"
           type="text"
-          @click="handleButtonClick('regeneration', detail)"
+          @click="handleButtonClick('regeneration')"
         >
           <IconifyIcon icon="lucide:refresh-cw" />
         </Button>
         <Button
           class="m-0 p-2"
           type="text"
-          @click="handleButtonClick('delete', detail)"
+          @click="handleButtonClick('delete')"
         >
           <IconifyIcon icon="lucide:trash" />
         </Button>
         <Button
           class="m-0 p-2"
           type="text"
-          @click="handleButtonClick('more', detail)"
+          @click="handleButtonClick('more')"
         >
           <IconifyIcon icon="lucide:ellipsis-vertical" />
         </Button>
@@ -119,8 +119,8 @@ onMounted(async () => {
     <div class="mt-2 flex w-full flex-wrap justify-start">
       <Button
         size="small"
-        v-for="(button, index) in detail?.buttons"
-        :key="index"
+        v-for="button in detail?.buttons"
+        :key="button.customId"
         class="m-2 ml-0 min-w-10"
         @click="handleMidjourneyBtnClick(button)"
       >

@@ -11,15 +11,16 @@ export namespace CrmBusinessStatusApi {
     deptNames?: string[];
     creator?: string;
     createTime?: Date;
-    statuses?: BusinessStatusType[];
+    statuses: BusinessStatusType[];
   }
 
   /** 商机状态信息 */
   export interface BusinessStatusType {
     id?: number;
     name: string;
-    percent: number;
-    [x: string]: any;
+    percent?: number;
+    endStatus?: number;
+    key?: string;
   }
 }
 
@@ -43,7 +44,7 @@ export const DEFAULT_STATUSES = [
     name: '无效',
     percent: 0,
   },
-];
+] satisfies CrmBusinessStatusApi.BusinessStatusType[];
 
 /** 查询商机状态组列表 */
 export function getBusinessStatusPage(params: PageParam) {

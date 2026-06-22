@@ -172,7 +172,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     prop="property.dataSpecs.length"
   >
     <ElInput
-      v-model="property.dataSpecs.length"
+      v-model="property.dataSpecs!.length"
       class="!w-[255px]"
       placeholder="请输入文本字节长度"
     >

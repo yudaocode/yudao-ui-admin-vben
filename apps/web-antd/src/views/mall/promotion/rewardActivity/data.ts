@@ -205,14 +205,7 @@ export function useFormSchema(): VbenFormSchema[] {
             values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
             values.productScopeValues
           ) {
-            const categoryIds = values.productScopeValues;
-            // 单选时使用数组不能反显，取第一个元素
-            form.setFieldValue(
-              'productCategoryIds',
-              Array.isArray(categoryIds) && categoryIds.length > 0
-                ? categoryIds[0]
-                : categoryIds,
-            );
+            form.setFieldValue('productCategoryIds', values.productScopeValues);
           }
         },
       },
@@ -237,9 +230,12 @@ export function useFormSchema(): VbenFormSchema[] {
         trigger(values, form) {
           switch (values.productScope) {
             case PromotionProductScopeEnum.CATEGORY.scope: {
-              const categoryIds = Array.isArray(values.productCategoryIds)
-                ? values.productCategoryIds
-                : [values.productCategoryIds];
+              let categoryIds: number[] = [];
+              if (Array.isArray(values.productCategoryIds)) {
+                categoryIds = values.productCategoryIds;
+              } else if (values.productCategoryIds) {
+                categoryIds = [values.productCategoryIds];
+              }
               form.setFieldValue('productScopeValues', categoryIds);
               break;
             }
