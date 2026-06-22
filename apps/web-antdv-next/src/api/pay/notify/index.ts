@@ -3,6 +3,16 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace PayNotifyApi {
+  /** 支付通知日志 */
+  export interface NotifyLog {
+    id?: number;
+    status?: number;
+    notifyTimes?: number;
+    lastExecuteTime?: Date;
+    createTime?: Date;
+    response?: string;
+  }
+
   /** 支付通知任务 */
   export interface NotifyTask {
     id: number;
@@ -20,13 +30,13 @@ export namespace PayNotifyApi {
     maxNotifyTimes: number;
     createTime: Date;
     updateTime: Date;
-    logs?: any[];
+    logs?: NotifyLog[];
   }
 }
 
 /** 获得支付通知明细 */
 export function getNotifyTaskDetail(id: number) {
-  return requestClient.get(`/pay/notify/get-detail?id=${id}`);
+  return requestClient.get<PayNotifyApi.NotifyTask>(`/pay/notify/get-detail?id=${id}`);
 }
 
 /** 获得支付通知分页 */

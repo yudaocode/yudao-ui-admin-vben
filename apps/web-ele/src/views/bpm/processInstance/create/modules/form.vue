@@ -72,8 +72,8 @@ const detailForm = ref<ProcessFormData>({
 const fApi = ref<any>();
 
 const startUserSelectTasks = ref<UserTask[]>([]);
-const startUserSelectAssignees = ref<Record<string, string[]>>({});
-const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
+const startUserSelectAssignees = ref<Record<string, number[]>>({});
+const tempStartUserSelectAssignees = ref<Record<string, number[]>>({});
 
 const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);

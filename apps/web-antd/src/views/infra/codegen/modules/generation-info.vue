@@ -17,7 +17,7 @@ import {
 
 const props = defineProps<{
   columns?: InfraCodegenApi.CodegenColumn[];
-  table?: InfraCodegenApi.CodegenTable;
+  table?: InfraCodegenApi.CodegenTableSaveReqVO;
 }>();
 
 const tables = ref<InfraCodegenApi.CodegenTable[]>([]);
@@ -70,7 +70,7 @@ function updateTreeSchema(): void {
     schema: useGenerationInfoTreeFormSchema(props.columns),
   });
   // 树表信息回显
-  treeFormApi.setValues(props.table as any);
+  treeFormApi.setValues(props.table || {});
 }
 
 /** 更新主子表信息表单 schema */
@@ -79,7 +79,7 @@ function updateSubSchema(): void {
     schema: useGenerationInfoSubTableFormSchema(props.columns, tables.value),
   });
   // 主子表信息回显
-  subFormApi.setValues(props.table as any);
+  subFormApi.setValues(props.table || {});
 }
 
 /** 获取合并的表单值 */
@@ -140,7 +140,7 @@ watch(
       return;
     }
 
-    const table = val as InfraCodegenApi.CodegenTable;
+    const table = val;
     // 初始化树表的 schema
     updateTreeSchema();
     // 设置表单值

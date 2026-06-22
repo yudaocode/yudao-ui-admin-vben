@@ -24,6 +24,18 @@ export namespace InfraCodegenApi {
     parentMenuId: number;
   }
 
+  /** 代码生成表保存请求 */
+  export interface CodegenTableSaveReqVO extends CodegenTable {
+    frontType?: null | number;
+    genPath?: string;
+    genType?: string;
+    masterTableId?: number;
+    subJoinColumnId?: number;
+    subJoinMany?: boolean;
+    treeParentColumnId?: number;
+    treeNameColumnId?: number;
+  }
+
   /** 代码生成字段定义 */
   export interface CodegenColumn {
     id: number;
@@ -54,7 +66,7 @@ export namespace InfraCodegenApi {
 
   /** 代码生成详情 */
   export interface CodegenDetail {
-    table: CodegenTable;
+    table: CodegenTableSaveReqVO;
     columns: CodegenColumn[];
   }
 
@@ -66,7 +78,7 @@ export namespace InfraCodegenApi {
 
   /** 更新代码生成请求 */
   export interface CodegenUpdateReqVO {
-    table: any | CodegenTable;
+    table: CodegenTableSaveReqVO;
     columns: CodegenColumn[];
   }
 

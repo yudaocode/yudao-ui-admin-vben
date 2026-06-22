@@ -10,27 +10,31 @@ export namespace MemberUserApi {
     birthday?: number;
     createTime?: number;
     loginDate?: number;
-    loginIp: string;
-    mark: string;
-    mobile: string;
+    loginIp?: string;
+    mark?: string;
+    mobile?: string;
     email?: string;
     name?: string;
     nickname?: string;
-    registerIp: string;
-    sex: number;
-    status: number;
+    registerIp?: string;
+    sex?: number;
+    status?: number;
     areaId?: number;
     areaName?: string;
-    levelName: string;
-    point?: number;
-    totalPoint?: number;
-    experience?: number;
+    tagIds?: number[];
+    groupId?: number;
+    levelId?: number;
+    levelName?: null | string;
+    point?: null | number;
+    totalPoint?: null | number;
+    experience?: null | number;
   }
 
   /** 会员用户等级更新信息 */
   export interface UserUpdateLevelReqVO {
     id: number;
     levelId: number;
+    reason: string;
   }
 
   /** 会员用户积分更新信息 */

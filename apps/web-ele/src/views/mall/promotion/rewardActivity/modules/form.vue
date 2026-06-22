@@ -27,11 +27,18 @@ import RewardRule from './reward-rule.vue';
 
 const emit = defineEmits(['success']);
 
-const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>({
+const createDefaultFormData = (): Partial<MallRewardActivityApi.RewardActivity> => ({
   conditionType: PromotionConditionTypeEnum.PRICE.type,
   productScope: PromotionProductScopeEnum.ALL.scope,
+  productScopeValues: [],
+  productCategoryIds: [],
+  productSpuIds: [],
   rules: [],
 });
+
+const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>(
+  createDefaultFormData(),
+);
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['满减送'])
@@ -106,17 +113,22 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = {};
+      formData.value = createDefaultFormData();
       return;
     }
     // 加载数据
     const data = modalApi.getData<MallRewardActivityApi.RewardActivity>();
     if (!data || !data.id) {
+      formData.value = createDefaultFormData();
+      await formApi.setValues(formData.value);
       return;
     }
     modalApi.lock();
     try {
-      const result = await getReward(data.id);
+      const result = {
+        ...createDefaultFormData(),
+        ...(await getReward(data.id)),
+      };
       result.startAndEndTime = [
         result.startTime ? String(result.startTime) : undefined,
         result.endTime ? String(result.endTime) : undefined,
