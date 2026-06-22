@@ -292,8 +292,8 @@ catalogs:
       specifier: ^9.1.4
       version: 9.1.4
     diagram-js:
-      specifier: ^12.8.1
-      version: 12.8.1
+      specifier: ^15.17.0
+      version: 15.17.0
     dotenv:
       specifier: ^17.4.2
       version: 17.4.2
@@ -815,7 +815,7 @@ importers:
         version: 17.11.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@12.8.1)
+        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.36.3
@@ -833,7 +833,7 @@ importers:
         version: 9.1.4
       diagram-js:
         specifier: 'catalog:'
-        version: 12.8.1
+        version: 15.17.0
       fast-xml-parser:
         specifier: 'catalog:'
         version: 4.5.6
@@ -950,7 +950,7 @@ importers:
         version: 17.11.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@12.8.1)
+        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.36.3
@@ -968,7 +968,7 @@ importers:
         version: 9.1.4
       diagram-js:
         specifier: 'catalog:'
-        version: 12.8.1
+        version: 15.17.0
       fast-xml-parser:
         specifier: 'catalog:'
         version: 4.5.6
@@ -1082,7 +1082,7 @@ importers:
         version: 17.11.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@12.8.1)
+        version: 5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.36.3
@@ -1100,7 +1100,7 @@ importers:
         version: 9.1.4
       diagram-js:
         specifier: 'catalog:'
-        version: 12.8.1
+        version: 15.17.0
       element-plus:
         specifier: 'catalog:'
         version: 2.14.2(vue@3.5.38(typescript@6.0.3))
@@ -1323,14 +1323,14 @@ importers:
         version: 2.9.10(vue@3.5.38(typescript@6.0.3))
       vitepress-plugin-group-icons:
         specifier: 'catalog:'
-        version: 1.7.5(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 1.7.5(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))
     devDependencies:
       '@nolebase/vitepress-plugin-git-changelog':
         specifier: 'catalog:'
         version: 2.18.2(vitepress@2.0.0-alpha.17(@types/node@25.9.3)(async-validator@4.2.5)(axios@1.18.0)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.101.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0))(vue@3.5.38(typescript@6.0.3))
       '@tailwindcss/vite':
         specifier: 'catalog:'
-        version: 4.3.1(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.3.1(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))
       '@vben/tailwind-config':
         specifier: workspace:*
         version: link:../internal/tailwind-config
@@ -1339,7 +1339,7 @@ importers:
         version: link:../internal/vite-config
       '@vite-pwa/vitepress':
         specifier: 'catalog:'
-        version: 1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))
+        version: 1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))
       vitepress:
         specifier: 'catalog:'
         version: 2.0.0-alpha.17(@types/node@25.9.3)(async-validator@4.2.5)(axios@1.18.0)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.101.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0)
@@ -8028,18 +8028,19 @@ packages:
     peerDependencies:
       diagram-js: '*'
 
-  diagram-js@12.8.1:
-    resolution: {integrity: sha512-LF9BiwjbOPpZd0ez5VSlYRbdbEA59YQX43bWvNDp1rLMv0xwZ5yIg4oaYDK82nIQ0kH1tjvoQRpNevMTCgQVyw==}
-
   diagram-js@14.11.3:
     resolution: {integrity: sha512-Seq9BHAXfzKS60L4v4Gvgvv72wOtvrfJQAyyPm9pntSZDMzjoodPSXnEUPud1G2zVCMGEUUW++s0reEdaWgkXA==}
+
+  diagram-js@15.17.0:
+    resolution: {integrity: sha512-wOlnfzd7MmcUMwIpJiCiFScQ04hQMx4Ribir0ky4cfNgzwr7V1dhi7MdFuLyaMdseglMkBU7YYoqmzCDR8+JCw==}
 
   didi@10.2.2:
     resolution: {integrity: sha512-l8NYkYFXV1izHI65EyT8EXOjUZtKmQkHLTT89cSP7HU5J/G7AOj0dXKtLc04EXYlga99PBY18IPjOeZ+c3DI4w==}
     engines: {node: '>= 16'}
 
-  didi@9.0.2:
-    resolution: {integrity: sha512-q2+aj+lnJcUweV7A9pdUrwFr4LHVmRPwTmQLtHPFz4aT7IBoryN6Iy+jmFku+oIzr5ebBkvtBCOb87+dJhb7bg==}
+  didi@11.0.0:
+    resolution: {integrity: sha512-PzCfRzQttvFpVcYMbSF7h8EsWjeJpVjWH4qDhB5LkMi1ILvHq4Ob0vhM2wLFziPkbUBi+PAo7ODbe2sacR7nJQ==}
+    engines: {node: '>= 20.12'}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -8857,10 +8858,6 @@ packages:
 
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
-
-  hammerjs@2.0.8:
-    resolution: {integrity: sha512-tSQXBXS/MWQOn/RKckawJ61vvsDpCom87JgxiYdGwHdOa0ht0vzUWDlfioofFCRU0L+6NGDt6XzbgoJvZkMeRQ==}
-    engines: {node: '>=0.8.0'}
 
   happy-dom@20.10.6:
     resolution: {integrity: sha512-6QD0ilzDDt93tX44y8tbmZdAcdTRYDhUP+Asgi6pC8Pp5IA3cvaZGyoVN/EGtlq9ziT65iPuBBn3ASLr6hCgVw==}
@@ -10079,9 +10076,6 @@ packages:
     resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
     engines: {node: '>= 0.4'}
 
-  object-refs@0.3.0:
-    resolution: {integrity: sha512-eP0ywuoWOaDoiake/6kTJlPJhs+k0qNm4nYRzXLNHj6vh+5M3i9R1epJTdxIPGlhWc4fNRQ7a6XJNCX+/L4FOQ==}
-
   object-refs@0.4.0:
     resolution: {integrity: sha512-6kJqKWryKZmtte6QYvouas0/EIJKPI1/MMIuRsiBlNuhIMfqYTggzX2F1AJ2+cDs288xyi9GL7FyasHINR98BQ==}
 
@@ -10266,11 +10260,12 @@ packages:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
 
-  path-intersection@2.2.1:
-    resolution: {integrity: sha512-9u8xvMcSfuOiStv9bPdnRJQhGQXLKurew94n4GPQCdH1nj9QKC9ObbNoIpiRq8skiOBxKkt277PgOoFgAt3/rA==}
-
   path-intersection@3.1.0:
     resolution: {integrity: sha512-3xS3lvv/vuwm5aH2BVvNRvnvwR2Drde7jQClKpCXTYXIMMjcw/EnMhzCgeHwqbCpzi760PEfAkU53vSIlrNr9A==}
+    engines: {node: '>= 14.20'}
+
+  path-intersection@4.1.0:
+    resolution: {integrity: sha512-urUP6WvhnxbHPdHYl6L7Yrc6+1ny6uOFKPCzPxTSUSYGHG0o94RmI7SvMMaScNAM5RtTf08bg4skc6/kjfne3A==}
     engines: {node: '>= 14.20'}
 
   path-key@3.1.1:
@@ -11525,6 +11520,10 @@ packages:
 
   tiny-svg@3.1.3:
     resolution: {integrity: sha512-9mwnPqXInRsBmH/DO6NMxBE++9LsqpVXQSSTZGc5bomoKKvL5OX/Hlotw7XVXP6XLRcHWIzZpxfovGqWKgCypQ==}
+
+  tiny-svg@4.1.4:
+    resolution: {integrity: sha512-cBaEACCbouYrQc9RG+eTXnPYosX1Ijqty/I6DdXovwDd89Pwu4jcmpOR7BuFEF9YCcd7/AWwasE0207WMK7hdw==}
+    engines: {node: '>= 20'}
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -15963,6 +15962,13 @@ snapshots:
       tailwindcss: 4.3.1
       vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)
 
+  '@tailwindcss/vite@4.3.1(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))':
+    dependencies:
+      '@tailwindcss/node': 4.3.1
+      '@tailwindcss/oxide': 4.3.1
+      tailwindcss: 4.3.1
+      vite: 8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)
+
   '@tanstack/store@0.11.0': {}
 
   '@tanstack/virtual-core@3.17.1': {}
@@ -16768,9 +16774,9 @@ snapshots:
       global: 4.4.0
       is-function: 1.0.2
 
-  '@vite-pwa/vitepress@1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))':
+  '@vite-pwa/vitepress@1.1.0(vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1))':
     dependencies:
-      vite-plugin-pwa: 1.3.0(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1)
+      vite-plugin-pwa: 1.3.0(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1)
 
   '@vitejs/plugin-vue-jsx@5.1.5(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.38(typescript@6.0.3))':
     dependencies:
@@ -17504,14 +17510,14 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  bpmn-js-properties-panel@5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@12.8.1):
+  bpmn-js-properties-panel@5.23.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@17.11.1)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0):
     dependencies:
       '@bpmn-io/extract-process-variables': 0.8.0
       '@bpmn-io/properties-panel': 3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2)
       array-move: 4.0.0
       bpmn-js: 17.11.1
       camunda-bpmn-js-behaviors: 1.16.1(bpmn-js@17.11.1)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0)
-      diagram-js: 12.8.1
+      diagram-js: 15.17.0
       ids: 1.0.5
       min-dash: 4.2.3
       min-dom: 4.2.1
@@ -18335,19 +18341,6 @@ snapshots:
       min-dash: 5.0.0
       min-dom: 5.3.0
 
-  diagram-js@12.8.1:
-    dependencies:
-      '@bpmn-io/diagram-js-ui': 0.2.4
-      clsx: 2.1.1
-      didi: 9.0.2
-      hammerjs: 2.0.8
-      inherits-browser: 0.1.0
-      min-dash: 4.2.3
-      min-dom: 4.2.1
-      object-refs: 0.3.0
-      path-intersection: 2.2.1
-      tiny-svg: 3.1.3
-
   diagram-js@14.11.3:
     dependencies:
       '@bpmn-io/diagram-js-ui': 0.2.4
@@ -18360,9 +18353,21 @@ snapshots:
       path-intersection: 3.1.0
       tiny-svg: 3.1.3
 
+  diagram-js@15.17.0:
+    dependencies:
+      '@bpmn-io/diagram-js-ui': 0.2.4
+      clsx: 2.1.1
+      didi: 11.0.0
+      inherits-browser: 0.1.0
+      min-dash: 5.0.0
+      min-dom: 5.3.0
+      object-refs: 0.4.0
+      path-intersection: 4.1.0
+      tiny-svg: 4.1.4
+
   didi@10.2.2: {}
 
-  didi@9.0.2: {}
+  didi@11.0.0: {}
 
   diff-sequences@29.6.3: {}
 
@@ -19399,8 +19404,6 @@ snapshots:
       radix3: 1.1.2
       ufo: 1.6.4
       uncrypto: 0.1.3
-
-  hammerjs@2.0.8: {}
 
   happy-dom@20.10.6:
     dependencies:
@@ -20651,8 +20654,6 @@ snapshots:
 
   object-keys@1.1.1: {}
 
-  object-refs@0.3.0: {}
-
   object-refs@0.4.0: {}
 
   object.assign@4.1.7:
@@ -20926,9 +20927,9 @@ snapshots:
 
   path-exists@4.0.0: {}
 
-  path-intersection@2.2.1: {}
-
   path-intersection@3.1.0: {}
+
+  path-intersection@4.1.0: {}
 
   path-key@3.1.1: {}
 
@@ -22334,6 +22335,8 @@ snapshots:
 
   tiny-svg@3.1.3: {}
 
+  tiny-svg@4.1.4: {}
+
   tinybench@2.9.0: {}
 
   tinyclip@0.1.14: {}
@@ -22837,6 +22840,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  vite-plugin-pwa@1.3.0(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(workbox-build@7.4.1)(workbox-window@7.4.1):
+    dependencies:
+      debug: 4.4.3
+      pretty-bytes: 6.1.1
+      tinyglobby: 0.2.17
+      vite: 8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)
+      workbox-build: 7.4.1
+      workbox-window: 7.4.1
+    transitivePeerDependencies:
+      - supports-color
+
   vite-plugin-vue-devtools@8.1.3(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.38(typescript@6.0.3)):
     dependencies:
       '@vue/devtools-core': 8.1.3(vue@3.5.38(typescript@6.0.3))
@@ -22921,13 +22935,13 @@ snapshots:
       terser: 5.48.0
       yaml: 2.9.0
 
-  vitepress-plugin-group-icons@1.7.5(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)):
+  vitepress-plugin-group-icons@1.7.5(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@iconify-json/logos': 1.2.11
       '@iconify-json/vscode-icons': 1.2.58
       '@iconify/utils': 3.1.3
     optionalDependencies:
-      vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)
+      vite: 8.0.16(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(terser@5.48.0)(yaml@2.9.0)
 
   vitepress@2.0.0-alpha.17(@types/node@25.9.3)(async-validator@4.2.5)(axios@1.18.0)(change-case@5.4.4)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(nprogress@0.2.0)(postcss@8.5.15)(qrcode@1.5.4)(sass-embedded@1.100.0)(sass@1.101.0)(sortablejs@1.15.7)(terser@5.48.0)(typescript@6.0.3)(yaml@2.9.0):
     dependencies:
