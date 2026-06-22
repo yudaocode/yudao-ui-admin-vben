@@ -39,7 +39,8 @@ function handleProcess(row: AlertRecordApi.AlertRecord) {
         h('p', '请输入处理原因：'),
         h(TextArea, {
           value: processRemark.value,
-          'onUpdate:value': (val: string) => (processRemark.value = val),
+          'onUpdate:value': (val?: number | string) =>
+            (processRemark.value = String(val ?? '')),
           rows: 3,
           placeholder: '请输入处理原因',
         }),

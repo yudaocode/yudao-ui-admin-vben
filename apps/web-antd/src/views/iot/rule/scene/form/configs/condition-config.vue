@@ -76,7 +76,7 @@ const isDeviceCondition = computed(() => {
  * @param value 字段值
  */
 function updateConditionField(field: any, value: any) {
-  (condition.value as any)[field] = value;
+  Object.assign(condition.value, { [field]: value });
   emit('update:modelValue', condition.value);
 }
 

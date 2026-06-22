@@ -78,7 +78,7 @@ const [Grid] = useVbenVxeGrid({
       <template #atUsers="{ row }">
         <template v-if="row.atUserIds?.length">
           <span v-for="(userId, index) in row.atUserIds" :key="userId">
-            <span v-if="index > 0">、</span>
+            <span v-if="Number(index) > 0">、</span>
             <template v-if="userId === IM_AT_ALL_USER_ID">@{{ IM_AT_ALL_NICKNAME }}</template>
             <template v-else>@{{ row.atUserNicknames?.[index] || userId }}</template>
           </span>

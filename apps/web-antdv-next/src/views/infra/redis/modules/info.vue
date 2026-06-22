@@ -10,7 +10,7 @@ defineProps<{
 const [Descriptions] = useDescription({
   bordered: false,
   column: 6,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: [
     {
       field: 'info.redis_version',

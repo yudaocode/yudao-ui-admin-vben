@@ -85,10 +85,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 export function useFormColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      field: 'defaultStatus',
+      field: 'endStatus',
       title: '阶段',
       minWidth: 100,
-      slots: { default: 'defaultStatus' },
+      slots: { default: 'endStatus' },
     },
     {
       field: 'name',

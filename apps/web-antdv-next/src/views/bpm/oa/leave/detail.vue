@@ -26,7 +26,7 @@ const queryId = computed(() => query.id as string);
 const [Descriptions] = useDescription({
   bordered: true,
   column: 1,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useDetailFormSchema(),
 });
 

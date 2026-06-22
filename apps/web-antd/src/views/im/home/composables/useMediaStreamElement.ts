@@ -1,4 +1,4 @@
-import { ref, type VNodeRef, watch } from 'vue'
+import { type VNodeRef, watch } from 'vue'
 
 /**
  * 把响应式 MediaStream 挂到 `<video>` / `<audio>` 元素的 srcObject 上；
@@ -7,21 +7,34 @@ import { ref, type VNodeRef, watch } from 'vue'
 export function useMediaStreamElement<T extends HTMLMediaElement>(
   streamSource: () => MediaStream | null | undefined
 ): VNodeRef {
-  const elRef = ref<T>()
-  const syncStream = (stream = streamSource()) => {
-    if (elRef.value) {
-      elRef.value.srcObject = stream || null
+  let el: T | null = null
+  let currentStream: MediaStream | null | undefined
+
+  const syncStream = () => {
+    if (el) {
+      el.srcObject = currentStream || null
     }
   }
+
   watch(
     streamSource,
     (stream) => {
-      syncStream(stream)
+      currentStream = stream
+      syncStream()
     },
     { flush: 'post', immediate: true }
   )
-  return (el) => {
-    elRef.value = el instanceof HTMLMediaElement ? (el as T) : undefined
-    syncStream()
+
+  return (value) => {
+    if (value instanceof HTMLMediaElement) {
+      el = value as T
+      syncStream()
+      return
+    }
+
+    if (el) {
+      el.srcObject = null
+    }
+    el = null
   }
 }

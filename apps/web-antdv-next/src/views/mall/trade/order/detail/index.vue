@@ -64,7 +64,7 @@ const [OrderInfoDescriptions] = useDescription({
   title: '订单信息',
   bordered: false,
   column: 3,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useOrderInfoSchema(),
 });
 
@@ -72,7 +72,7 @@ const [OrderStatusDescriptions] = useDescription({
   title: '订单状态',
   bordered: false,
   column: 1,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useOrderStatusSchema(),
 });
 
@@ -80,7 +80,7 @@ const [OrderPriceDescriptions] = useDescription({
   title: '费用信息',
   bordered: false,
   column: 4,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useOrderPriceSchema(),
 });
 
@@ -88,7 +88,7 @@ const [DeliveryInfoDescriptions] = useDescription({
   title: '收货信息',
   bordered: false,
   column: 3,
-  class: 'mx-4',
+  classes: { root: 'mx-4' },
   schema: useDeliveryInfoSchema(),
 });
 
