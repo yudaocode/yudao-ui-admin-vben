@@ -125,7 +125,7 @@ export function useFormSchema(): VbenFormSchema[] {
             !hasReceiveType(values, IotAlertReceiveTypeEnum.SMS) &&
             values.smsTemplateCode
           ) {
-            formApi.setFieldValue('smsTemplateCode', undefined);
+            await formApi.setFieldValue('smsTemplateCode', undefined);
           }
         },
       },
@@ -143,7 +143,7 @@ export function useFormSchema(): VbenFormSchema[] {
             !hasReceiveType(values, IotAlertReceiveTypeEnum.MAIL) &&
             values.mailTemplateCode
           ) {
-            formApi.setFieldValue('mailTemplateCode', undefined);
+            await formApi.setFieldValue('mailTemplateCode', undefined);
           }
         },
       },
@@ -162,7 +162,7 @@ export function useFormSchema(): VbenFormSchema[] {
             !hasReceiveType(values, IotAlertReceiveTypeEnum.NOTIFY) &&
             values.notifyTemplateCode
           ) {
-            formApi.setFieldValue('notifyTemplateCode', undefined);
+            await formApi.setFieldValue('notifyTemplateCode', undefined);
           }
         },
       },

@@ -9,7 +9,7 @@ import {
   BpmFieldPermissionType,
   BpmModelFormType,
   BpmModelType,
-  BpmProcessInstanceStatus,
+  BpmTaskStatusEnum,
   DICT_TYPE,
 } from '@vben/constants';
 import {
@@ -34,7 +34,7 @@ import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
 import ProcessInstanceOperationButton from './modules/operation-button.vue';
-import ProcessssPrint from './modules/process-print.vue';
+import ProcessPrint from './modules/process-print.vue';
 import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
 import BpmProcessInstanceTaskList from './modules/task-list.vue';
 import ProcessInstanceTimeline from './modules/time-line.vue';
@@ -61,10 +61,13 @@ const auditIconsMap: {
     | typeof SvgBpmRejectIcon
     | typeof SvgBpmRunningIcon;
 } = {
-  [BpmProcessInstanceStatus.RUNNING]: SvgBpmRunningIcon,
-  [BpmProcessInstanceStatus.APPROVE]: SvgBpmApproveIcon,
-  [BpmProcessInstanceStatus.REJECT]: SvgBpmRejectIcon,
-  [BpmProcessInstanceStatus.CANCEL]: SvgBpmCancelIcon,
+  [BpmTaskStatusEnum.RUNNING]: SvgBpmRunningIcon,
+  [BpmTaskStatusEnum.APPROVE]: SvgBpmApproveIcon,
+  [BpmTaskStatusEnum.REJECT]: SvgBpmRejectIcon,
+  [BpmTaskStatusEnum.CANCEL]: SvgBpmCancelIcon,
+  [BpmTaskStatusEnum.APPROVING]: SvgBpmApproveIcon,
+  [BpmTaskStatusEnum.RETURN]: SvgBpmRejectIcon,
+  [BpmTaskStatusEnum.WAIT]: SvgBpmRunningIcon,
 };
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]); // 审批节点信息
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
@@ -189,7 +192,7 @@ const refresh = () => {
 };
 
 const [PrintModal, printModalApi] = useVbenModal({
-  connectedComponent: ProcessssPrint,
+  connectedComponent: ProcessPrint,
   destroyOnClose: true,
 });
 
