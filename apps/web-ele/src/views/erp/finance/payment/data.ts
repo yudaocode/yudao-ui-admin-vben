@@ -40,6 +40,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '选择付款时间',
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: '!w-full',

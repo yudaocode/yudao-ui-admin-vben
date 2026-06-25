@@ -1,1 +1,1 @@
-export { default as WmsMerchantSelect } from './merchant-select.vue';
+export { default as WmsMerchantSelect } from './select.vue';

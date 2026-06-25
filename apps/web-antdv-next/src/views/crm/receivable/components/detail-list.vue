@@ -70,17 +70,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          const queryParams: CrmReceivableApi.ReceivablePageParam = {
+          const queryParams = {
+            ...(props.customerId ? { customerId: props.customerId } : {}),
+            ...(props.customerId && props.contractId
+              ? { contractId: props.contractId }
+              : {}),
             pageNo: page.currentPage,
             pageSize: page.pageSize,
           };
-          if (props.customerId && !props.contractId) {
-            queryParams.customerId = props.customerId;
-          } else if (props.customerId && props.contractId) {
-            // 如果是合同的话客户编号也需要带上因为权限基于客户
-            queryParams.customerId = props.customerId;
-            queryParams.contractId = props.contractId;
-          }
           return await getReceivablePageByCustomer(queryParams);
         },
       },

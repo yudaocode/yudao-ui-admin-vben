@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { onMounted, reactive, ref } from 'vue';
 
@@ -32,7 +32,7 @@ import {
   deleteDemo03StudentList,
   exportDemo03Student,
   getDemo03StudentPage,
-} from '#/api/infra/demo/demo03/normal';
+} from '#/api/infra/demo/demo03/inner';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils';

@@ -24,8 +24,8 @@ export namespace MesDvMachineryApi {
   /** 设备导入结果 */
   export interface MachineryImportRespVO {
     createCodes?: string[]; // 新增成功的设备编码
-    failureCodes?: Record<string, string>; // 导入失败的设备编码及原因
     updateCodes?: string[]; // 更新成功的设备编码
+    failureCodes?: Record<string, string>; // 导入失败的设备编码及原因
   }
 }
 

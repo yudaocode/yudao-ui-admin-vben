@@ -73,8 +73,8 @@ async function handleExport() {
 }
 
 /** 获得每个 Tab 的数量 */
-async function getTabCount() {
-  const res = await getTabsCount(await gridApi.formApi.getValues());
+async function getTabCount(params?: Record<string, any>) {
+  const res = await getTabsCount(params ?? (await gridApi.formApi.getValues()));
   for (const objName in res) {
     const index = Number(objName);
     if (tabsData.value[index]) {
@@ -166,12 +166,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getSpuPage({
+          const result = await getSpuPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             tabType: tabType.value,
             ...formValues,
           });
+          void getTabCount(formValues); // 跟随筛选刷新 tab 数量
+          return result;
         },
       },
     },
