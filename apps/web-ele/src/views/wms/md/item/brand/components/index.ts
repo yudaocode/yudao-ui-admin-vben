@@ -1,1 +1,1 @@
-export { default as WmsItemBrandSelect } from './item-brand-select.vue';
+export { default as WmsItemBrandSelect } from './select.vue';

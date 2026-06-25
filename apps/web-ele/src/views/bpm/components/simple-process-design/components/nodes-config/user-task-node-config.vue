@@ -8,7 +8,7 @@ import type { UserTaskFormType } from '../../helpers';
 
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
-import { useVbenDrawer } from '@vben/common-ui';
+import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import {
   BpmModelFormType,
   BpmNodeTypeEnum,
@@ -23,6 +23,8 @@ import {
   ElDivider,
   ElForm,
   ElFormItem,
+  ElInput,
+  ElInputNumber,
   ElOption,
   ElRadio,
   ElRadioButton,
@@ -34,6 +36,8 @@ import {
   ElTabs,
   ElTreeSelect,
 } from 'element-plus';
+
+import { ProcessExpressionSelectModal } from '#/views/bpm/processExpression/components';
 
 import {
   APPROVE_METHODS,
@@ -115,7 +119,11 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 });
 
-// TODO @jason：和 antd 对应的文件，逻辑有点不一样；
+const [ExpressionSelectModal, expressionSelectModalApi] = useVbenModal({
+  connectedComponent: ProcessExpressionSelectModal,
+  destroyOnClose: true,
+  showConfirmButton: false,
+});
 
 // 节点名称配置
 // @ts-expect-error unused
@@ -224,7 +232,16 @@ function changeCandidateStrategy() {
   configForm.value.deptLevel = 1;
   configForm.value.formUser = '';
   configForm.value.formDept = '';
+  configForm.value.expression = '';
   configForm.value.approveMethod = ApproveMethodType.SEQUENTIAL_APPROVE;
+}
+
+function openExpressionSelect() {
+  expressionSelectModalApi.open();
+}
+
+function handleExpressionSelected(row: any) {
+  configForm.value.expression = row?.expression ?? '';
 }
 
 /** 审批方式改变 */
@@ -813,7 +830,6 @@ onMounted(() => {
                 />
               </ElSelect>
             </ElFormItem>
-            <!-- TODO @jason：后续要支持选择已经存好的表达式 -->
             <ElFormItem
               v-if="
                 configForm.candidateStrategy === CandidateStrategy.EXPRESSION
@@ -821,11 +837,21 @@ onMounted(() => {
               label="流程表达式"
               name="expression"
             >
-              <ElInput
-                v-model="configForm.expression"
-                type="textarea"
-                :rows="4"
-              />
+              <div class="flex gap-2">
+                <ElInput
+                  v-model="configForm.expression"
+                  type="textarea"
+                  :rows="2"
+                />
+                <div class="flex flex-col gap-2">
+                  <ElButton type="primary" @click="openExpressionSelect">
+                    选择
+                  </ElButton>
+                  <ElButton @click="configForm.expression = ''">
+                    清空
+                  </ElButton>
+                </div>
+              </div>
             </ElFormItem>
             <!-- 多人审批/办理 方式 -->
             <ElFormItem :label="`多人${nodeTypeName}方式`" name="approveMethod">
@@ -1182,4 +1208,6 @@ onMounted(() => {
       </ElTabPane>
     </ElTabs>
   </Drawer>
+
+  <ExpressionSelectModal @select="handleExpressionSelected" />
 </template>

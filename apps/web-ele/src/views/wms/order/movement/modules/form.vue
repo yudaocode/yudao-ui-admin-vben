@@ -5,7 +5,7 @@ import type { VxeTableInstance } from '#/adapter/vxe-table';
 import type { WmsWarehouseApi } from '#/api/wms/md/warehouse';
 import type { WmsMovementOrderApi } from '#/api/wms/order/movement';
 import type { WmsMovementOrderDetailApi } from '#/api/wms/order/movement/detail';
-import type { InventorySelectRow } from '#/views/wms/inventory/components/inventory-select.vue';
+import type { InventorySelectRow } from '#/views/wms/inventory/components';
 
 import { computed, nextTick, ref } from 'vue';
 
