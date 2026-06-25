@@ -40,7 +40,7 @@ const props = defineProps({
     default: '',
   },
 });
-const prefix = inject<string>('prefix', 'flowable'); // 增加默认值flowable
+const prefix = inject<string>('prefix', 'flowable');
 const elementListenersList = ref<any[]>([]); // 监听器列表
 const listenerForm = ref<any>({}); // 监听器详情表单
 const fieldsListOfListener = ref<any[]>([]);

@@ -26,6 +26,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
+          if (!props.feedbackId) {
+            return { list: [], total: 0 };
+          }
           return await getItemConsumeLinePage({
             feedbackId: props.feedbackId,
             pageNo: page.currentPage,
@@ -39,7 +42,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     toolbarConfig: {
-      refresh: true,
+      refresh: false,
+      search: false,
     },
   } as VxeTableGridOptions<MesWmItemConsumeLineApi.ItemConsumeLine>,
 });

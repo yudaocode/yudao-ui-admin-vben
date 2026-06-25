@@ -40,7 +40,7 @@ const props = defineProps({
     default: '',
   },
 });
-const prefix = inject('prefix');
+const prefix = inject<string>('prefix', 'flowable');
 const elementListenersList = ref<any[]>([]); // 监听器列表
 const listenerForm = ref<any>({}); // 监听器详情表单
 const fieldsListOfListener = ref<any[]>([]);
@@ -328,7 +328,7 @@ watch(
 );
 </script>
 <template>
-  <div class="-mx-2 mb-2">
+  <div class="-mx-2">
     <ListenerGrid :data="elementListenersList">
       <template #action="{ row, rowIndex }">
         <ElButton

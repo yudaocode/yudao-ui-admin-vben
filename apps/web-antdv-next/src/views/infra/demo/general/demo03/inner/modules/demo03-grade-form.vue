@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { nextTick, ref, watch } from 'vue';
 
 import { Form, FormItem, Input } from 'antdv-next';
 
-import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
+import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/inner';
 
 type Rule = any;
 const props = defineProps<{

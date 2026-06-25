@@ -33,6 +33,7 @@ watch(
       view.value = newModelView;
     }
   },
+  { immediate: true },
 );
 
 /** 监听 bpmnXml */
