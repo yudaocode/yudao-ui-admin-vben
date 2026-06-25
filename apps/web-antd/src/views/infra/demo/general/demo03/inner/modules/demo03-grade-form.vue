@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
 
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { nextTick, ref, watch } from 'vue';
 
 import { Form, Input } from 'ant-design-vue';
 
-import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
+import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/inner';
 
 const props = defineProps<{
   studentId?: number; // 学生编号（主表的关联字段）

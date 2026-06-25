@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import type { VxeGridPropTypes } from '#/adapter/vxe-table';
+import type { VbenFormSchema } from '#/adapter/form';
+import type {
+  VxeGridPropTypes,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 import type { BpmProcessExpressionApi } from '#/api/bpm/processExpression';
 
-import { ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
+import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessExpressionPage } from '#/api/bpm/processExpression';
@@ -16,35 +19,23 @@ const emit = defineEmits<{
   select: [expression: BpmProcessExpressionApi.ProcessExpression];
 }>();
 
-// 查询参数
-// TODO @jason：这里的风格，和 antd 对应的不一致；
-const queryParams = ref({
-  status: CommonStatusEnum.ENABLE,
-});
-
 // 配置 VxeGrid
 const [Grid] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
-    columns: [
-      { field: 'name', title: '名字', minWidth: 160 },
-      { field: 'expression', title: '表达式', minWidth: 260 },
-      {
-        field: 'action',
-        title: '操作',
-        width: 120,
-        slots: { default: 'action' },
-      },
-    ],
+    columns: useGridColumns(),
     showOverflow: true,
     minHeight: 300,
     proxyConfig: {
       ajax: {
         // 查询表达式列表
-        query: async ({ page }) => {
+        query: async ({ page }, formValues) => {
           return await getProcessExpressionPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            status: queryParams.value.status,
+            ...formValues,
           });
         },
       },
@@ -56,7 +47,7 @@ const [Grid] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>,
 });
 
 // 配置 Modal
@@ -69,6 +60,53 @@ const [Modal, modalApi] = useVbenModal({
 function handleSelect(row: BpmProcessExpressionApi.ProcessExpression) {
   emit('select', row);
   modalApi.close();
+}
+
+/** 列表的搜索表单 */
+function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '名字',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入名字',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      defaultValue: CommonStatusEnum.ENABLE,
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择状态',
+        disabled: true,
+      },
+    },
+  ];
+}
+function useGridColumns(): VxeTableGridOptions<BpmProcessExpressionApi.ProcessExpression>['columns'] {
+  return [
+    { field: 'name', title: '名字', minWidth: 160 },
+    { field: 'expression', title: '表达式', minWidth: 260 },
+    {
+      field: 'status',
+      title: '状态',
+      minWidth: 100,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
+    },
+    {
+      field: 'action',
+      title: '操作',
+      width: 120,
+      slots: { default: 'action' },
+    },
+  ];
 }
 </script>
 

@@ -43,7 +43,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '选择退货时间',
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: '!w-full',
