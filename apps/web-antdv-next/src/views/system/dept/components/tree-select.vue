@@ -82,7 +82,7 @@ onMounted(async () => {
         <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
     </Input>
-    <Spin :spinning="loading" wrapper-class-name="w-full">
+    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
       <Tree
         v-if="deptTree.length > 0"
         v-model:selected-keys="selectedKeys"

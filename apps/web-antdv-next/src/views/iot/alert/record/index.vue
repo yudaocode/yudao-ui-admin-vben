@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           v-if="row.deviceMessage"
           placement="topLeft"
           :trigger="['hover']"
-          :overlay-style="{ maxWidth: '600px' }"
+          :styles="{ root: { maxWidth: '600px' } }"
         >
           <template #content>
             <pre class="text-xs">{{

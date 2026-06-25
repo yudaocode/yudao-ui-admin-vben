@@ -224,7 +224,7 @@ watch(
           v-for="item in list"
           :key="item.id"
           hoverable
-          :body-style="{ padding: '0px' }"
+          :styles="{ body: { padding: '0px' } }"
         >
           <Image
             v-if="item.url"

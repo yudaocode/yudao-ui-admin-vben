@@ -567,9 +567,9 @@ watch(
               v-if="isPrivate"
               v-model:open="callPopoverVisible"
               placement="bottomRight"
-              :overlay-style="{ width: '140px' }"
+              :styles="{ root: { width: '140px' } }"
               trigger="click"
-              overlay-class-name="message-panel__call-popover"
+              :classes="{ root: 'message-panel__call-popover' }"
             >
               <Icon
                 icon="ant-design:phone-outlined"
