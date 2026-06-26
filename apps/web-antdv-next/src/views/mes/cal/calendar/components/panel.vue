@@ -36,7 +36,7 @@ function handleToday() {
 <template>
   <div>
     <CalendarLegend />
-    <Spin :spinning="loading" wrapper-class-name="block">
+    <Spin :spinning="loading" :classes="{ root: 'block' }">
       <div class="bg-card overflow-hidden rounded-md">
         <Calendar v-model:value="currentDate" class="mes-calendar-panel">
           <template #headerRender>

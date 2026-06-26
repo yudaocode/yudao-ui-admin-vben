@@ -497,7 +497,7 @@ function handleOpenTransferOwner() {
             v-model:open="namePopoverVisible"
             trigger="click"
             placement="leftTop"
-            :overlay-style="{ width: '280px' }"
+            :styles="{ root: { width: '280px' } }"
           >
             <div
               class="im-conversation-group-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
@@ -529,7 +529,7 @@ function handleOpenTransferOwner() {
             v-model:open="noticePopoverVisible"
             trigger="click"
             placement="leftTop"
-            :overlay-style="{ width: '320px' }"
+            :styles="{ root: { width: '320px' } }"
           >
             <div
               class="im-conversation-group-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
@@ -586,7 +586,7 @@ function handleOpenTransferOwner() {
             v-model:open="groupRemarkPopoverVisible"
             trigger="click"
             placement="leftTop"
-            :overlay-style="{ width: '280px' }"
+            :styles="{ root: { width: '280px' } }"
           >
             <div
               class="im-conversation-group-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
@@ -625,7 +625,7 @@ function handleOpenTransferOwner() {
             v-model:open="remarkPopoverVisible"
             trigger="click"
             placement="leftTop"
-            :overlay-style="{ width: '280px' }"
+            :styles="{ root: { width: '280px' } }"
           >
             <div
               class="im-conversation-group-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"

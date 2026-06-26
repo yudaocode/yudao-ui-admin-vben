@@ -68,7 +68,7 @@ onMounted(async () => {
         <IconifyIcon icon="lucide:search" class="size-4" />
       </template>
     </Input>
-    <Spin :spinning="loading" wrapper-class-name="w-full">
+    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
       <Tree
         @select="handleSelect"
         v-if="deptTree.length > 0"

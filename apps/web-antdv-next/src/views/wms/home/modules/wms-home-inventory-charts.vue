@@ -75,7 +75,7 @@ defineExpose({ load });
 
 <template>
   <div class="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-    <Card :body-style="{ padding: '12px 16px 16px' }">
+    <Card :styles="{ body: { padding: '12px 16px 16px' } }">
       <div class="mb-3">
         <div class="font-semibold">货物占比</div>
         <div class="text-sm text-muted-foreground">
@@ -92,7 +92,7 @@ defineExpose({ load });
         </div>
       </div>
     </Card>
-    <Card :body-style="{ padding: '12px 16px 16px' }">
+    <Card :styles="{ body: { padding: '12px 16px 16px' } }">
       <div class="mb-3 flex justify-between">
         <div>
           <div class="font-semibold">库存分布</div>

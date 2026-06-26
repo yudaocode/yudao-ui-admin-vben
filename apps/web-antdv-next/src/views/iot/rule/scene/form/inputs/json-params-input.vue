@@ -433,10 +433,10 @@ watch(
       <div class="absolute right-2 top-2">
         <Popover
           placement="leftTop"
-          :overlay-style="{ width: '450px' }"
+          :styles="{ root: { width: '450px' } }"
           :trigger="['click']"
           :arrow="true"
-          overlay-class-name="json-params-detail-popover"
+          :classes="{ root: 'json-params-detail-popover' }"
         >
           <template #content>
             <!-- 弹出层内容 -->
