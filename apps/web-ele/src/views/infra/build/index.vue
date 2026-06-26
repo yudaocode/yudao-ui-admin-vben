@@ -104,7 +104,7 @@ function makeTemplate() {
     const rule = ref('')
     const option = ref('')
     const init = () => {
-      rule.value = formCreate.parseJson('${formCreate.toJson(rule).replaceAll('\\', '\\\\')}')
+      rule.value = formCreate.parseJson('${formCreate.toJson(rule).replaceAll('\\', String.raw`\\`)}')
       option.value = formCreate.parseJson('${JSON.stringify(opt, null, 2)}')
     }
     const onSubmit = (formData) => {

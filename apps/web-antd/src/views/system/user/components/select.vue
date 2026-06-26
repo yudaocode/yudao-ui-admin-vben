@@ -66,9 +66,7 @@ function hasValue() {
 }
 
 /** 根据编号查询用户信息（用于编辑回显） */
-async function resolveItemsById(
-  value: null | number | number[] | undefined,
-) {
+async function resolveItemsById(value: null | number | number[] | undefined) {
   const ids = getSelectedIds(value);
   if (ids.length === 0) {
     selectedItems.value = [];
@@ -89,7 +87,10 @@ async function resolveItemsById(
     .filter((item): item is SystemUserApi.User => !!item);
 }
 
-watch(() => props.modelValue, resolveItemsById, { deep: true, immediate: true });
+watch(() => props.modelValue, resolveItemsById, {
+  deep: true,
+  immediate: true,
+});
 
 /** 清空已选用户 */
 function clearSelected() {
