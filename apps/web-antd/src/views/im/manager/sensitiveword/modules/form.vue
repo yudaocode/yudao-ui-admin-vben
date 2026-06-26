@@ -43,7 +43,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerSensitiveWordApi.SensitiveWord;
+    const data =
+      (await formApi.getValues()) as ImManagerSensitiveWordApi.SensitiveWord;
     try {
       await (formData.value?.id
         ? updateManagerSensitiveWord(data)

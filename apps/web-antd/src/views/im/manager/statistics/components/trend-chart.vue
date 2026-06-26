@@ -7,10 +7,7 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import { Card, Select } from 'ant-design-vue';
 
-import {
-  getMessageTrend,
-  getUserTrend,
-} from '#/api/im/manager/statistics';
+import { getMessageTrend, getUserTrend } from '#/api/im/manager/statistics';
 
 const props = defineProps<{
   type: 'message' | 'user';

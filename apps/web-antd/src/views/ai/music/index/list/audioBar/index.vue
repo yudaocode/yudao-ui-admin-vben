@@ -65,7 +65,7 @@ function audioLoadedMetadata() {
   audioProps.duration = formatAudioTime(audioRef.value.duration);
 }
 
-function handleProgressChange(value: number | [number, number]) {
+function handleProgressChange(value: number | number[]) {
   if (!audioRef.value || Array.isArray(value)) {
     return;
   }

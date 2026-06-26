@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-dynamic-delete */
 /**
  * 百度地图 SDK 加载工具
  */
@@ -41,7 +40,7 @@ export const loadBaiduMapSdk = (timeout = 10_000): Promise<void> => {
     // 全局回调
     (window as any)[CALLBACK_NAME] = () => {
       clearTimeout(timeoutId);
-      delete (window as any)[CALLBACK_NAME];
+      delete (window as any).CALLBACK_NAME;
       resolve();
     };
 
@@ -53,7 +52,7 @@ export const loadBaiduMapSdk = (timeout = 10_000): Promise<void> => {
     script.addEventListener('onerror', () => {
       clearTimeout(timeoutId);
       loadPromise = null;
-      delete (window as any)[CALLBACK_NAME];
+      delete (window as any).CALLBACK_NAME;
       reject(new Error('百度地图 SDK 加载失败'));
     });
     document.body.append(script);

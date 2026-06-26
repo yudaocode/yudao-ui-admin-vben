@@ -13,7 +13,10 @@ import {
 } from '#/api/im/manager/channel/message';
 import { $t } from '#/locales';
 
-import { useMessageGridColumns, useMessageGridFormSchema } from '../material/data';
+import {
+  useMessageGridColumns,
+  useMessageGridFormSchema,
+} from '../material/data';
 import SendForm from './modules/send-form.vue';
 
 defineOptions({ name: 'ImManagerChannelMessage' });
@@ -105,7 +108,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #receivers="{ row }">
-        <Tag v-if="!row.receiverUserIds || row.receiverUserIds.length === 0" color="warning">
+        <Tag
+          v-if="!row.receiverUserIds || row.receiverUserIds.length === 0"
+          color="warning"
+        >
           全员
         </Tag>
         <span v-else>{{ row.receiverUserIds.length }} 人</span>

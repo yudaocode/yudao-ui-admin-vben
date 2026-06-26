@@ -1,6 +1,5 @@
-<!-- eslint-disable unicorn/no-nested-ternary -->
-<!-- eslint-disable prettier/prettier -->
 <script lang="ts" setup>
+// oxlint-disable unicorn/no-nested-ternary
 import { inject, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';

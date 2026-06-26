@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { inject } from 'vue';
-
 import { useScrollLock } from '@vben-core/composables';
 import { cn } from '@vben-core/shared/utils';
 
@@ -16,13 +14,12 @@ const props = withDefaults(
   },
 );
 
+// 通过 v-if 控制挂载/卸载，组件卸载时 useScrollLock 自动解锁滚动
 useScrollLock();
-const dismissableModalId = inject('DISMISSABLE_MODAL_ID', undefined);
 </script>
 
 <template>
   <div
-    :data-dismissable-modal="dismissableModalId"
     :style="{
       ...(zIndex ? { zIndex } : {}),
       position,

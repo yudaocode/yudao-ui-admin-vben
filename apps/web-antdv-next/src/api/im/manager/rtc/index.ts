@@ -35,7 +35,6 @@ export namespace ImManagerRtcApi {
   }
 }
 
-
 /** 获得通话记录分页 */
 export function getManagerRtcCallPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerRtcApi.RtcCall>>(

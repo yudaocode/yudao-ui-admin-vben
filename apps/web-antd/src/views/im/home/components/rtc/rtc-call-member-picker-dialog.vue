@@ -1,74 +1,78 @@
 <script lang="ts" setup>
-import type { GroupMemberLite } from '../group'
+import type { GroupMemberLite } from '../group';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { Button, Modal } from 'ant-design-vue'
+import { Button, Modal } from 'ant-design-vue';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { useGroupStore } from '../../store/groupStore'
-import { GroupMemberPickerPanel } from '../picker'
+import { useGroupStore } from '../../store/groupStore';
+import { GroupMemberPickerPanel } from '../picker';
 
-defineOptions({ name: 'ImRtcCallMemberPickerDialog' })
+defineOptions({ name: 'ImRtcCallMemberPickerDialog' });
 
 const emit = defineEmits<{
   /** 选完点完成；携带选中的 userId 列表 */
-  success: [selectedIds: number[]]
-}>()
+  success: [selectedIds: number[]];
+}>();
 
-type PickerMode = 'add' | 'invite'
+type PickerMode = 'add' | 'invite';
 
-const groupStore = useGroupStore()
+const groupStore = useGroupStore();
 
-const visible = ref(false) // 弹窗显隐
-const groupId = ref(0) // 当前群编号；open 时由调用方传入
-const mode = ref<PickerMode>('invite') // 弹窗用途；invite=发起群通话选邀请人 / add=通话中追加成员
-const excludeUserIds = ref<number[]>([]) // 置灰的 userId 列表；add 场景把已在通话内的人禁用
-const selectedIds = ref<number[]>([]) // 当前选中的 userId 列表；GroupMemberPickerPanel v-model 绑过来
+const visible = ref(false); // 弹窗显隐
+const groupId = ref(0); // 当前群编号；open 时由调用方传入
+const mode = ref<PickerMode>('invite'); // 弹窗用途；invite=发起群通话选邀请人 / add=通话中追加成员
+const excludeUserIds = ref<number[]>([]); // 置灰的 userId 列表；add 场景把已在通话内的人禁用
+const selectedIds = ref<number[]>([]); // 当前选中的 userId 列表；GroupMemberPickerPanel v-model 绑过来
 
 /** 标题；按用途切换 */
-const title = computed(() => (mode.value === 'add' ? '添加成员' : '选择成员'))
+const title = computed(() => (mode.value === 'add' ? '添加成员' : '选择成员'));
 
 /** 群成员列表；从 groupStore 现取，map 成 GroupMemberLite */
 const members = computed<GroupMemberLite[]>(() => {
-  const group = groupStore.getGroup(groupId.value)
+  const group = groupStore.getGroup(groupId.value);
   return (group?.members || []).map((member) => ({
     userId: member.userId,
     nickname: member.nickname,
     showName: member.displayUserName || member.nickname,
     avatar: member.avatar,
     status: member.status,
-    role: member.role
-  }))
-})
+    role: member.role,
+  }));
+});
 
 /** 自己不出现在选项里 */
 const hideIds = computed<number[]>(() => {
-  const myId = getCurrentUserId()
-  return myId ? [myId] : []
-})
+  const myId = getCurrentUserId();
+  return myId ? [myId] : [];
+});
 
 /** 已在通话内的成员置灰 */
-const disabledIds = computed<number[]>(() => excludeUserIds.value)
+const disabledIds = computed<number[]>(() => excludeUserIds.value);
 
 /** 是否可提交：至少选 1 个 */
-const canSubmit = computed(() => selectedIds.value.length > 0)
+const canSubmit = computed(() => selectedIds.value.length > 0);
 
 /** 打开弹窗；excludeUserIds 用于「添加成员」时把已在通话内的人置灰 */
-function open(opts: { excludeUserIds?: number[]; groupId: number; mode?: PickerMode; }) {
-  groupId.value = opts.groupId
-  mode.value = opts.mode || 'invite'
-  excludeUserIds.value = opts.excludeUserIds || []
-  selectedIds.value = []
-  visible.value = true
+function open(opts: {
+  excludeUserIds?: number[];
+  groupId: number;
+  mode?: PickerMode;
+}) {
+  groupId.value = opts.groupId;
+  mode.value = opts.mode || 'invite';
+  excludeUserIds.value = opts.excludeUserIds || [];
+  selectedIds.value = [];
+  visible.value = true;
 }
-defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+defineExpose({ open }); // 提供 open 方法，用于打开弹窗
 
 /** 点完成：emit 选中 ID 列表给父级 + 关闭弹窗；提交按钮 disabled 已保证 selectedIds 非空 */
 function handleOk() {
-  emit('success', [...selectedIds.value])
-  visible.value = false
+  emit('success', [...selectedIds.value]);
+  visible.value = false;
 }
 </script>
 
@@ -94,7 +98,9 @@ function handleOk() {
     </div>
     <template #footer>
       <Button @click="visible = false">取消</Button>
-      <Button type="primary" :disabled="!canSubmit" @click="handleOk">完成</Button>
+      <Button type="primary" :disabled="!canSubmit" @click="handleOk">
+        完成
+      </Button>
     </template>
   </Modal>
 </template>

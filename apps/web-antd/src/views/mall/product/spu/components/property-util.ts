@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { MallSpuApi } from '#/api/mall/product/spu';
 import type { PropertyAndValues } from '#/views/mall/product/spu/components/type';
 

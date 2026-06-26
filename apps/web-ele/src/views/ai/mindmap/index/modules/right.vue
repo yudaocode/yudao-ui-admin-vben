@@ -100,8 +100,7 @@ function processContent(text: string) {
     if (line.includes('```')) {
       continue;
     }
-    // eslint-disable-next-line unicorn/prefer-string-replace-all
-    line = line.replace(/([*_~`>])|(\d+\.)\s/g, '');
+    line = line.replaceAll(/([*_~`>])|(\d+\.)\s/g, '');
     arr.push(line);
   }
   return arr.join('\n');
@@ -160,7 +159,6 @@ defineExpose({
           class="flex flex-col items-center justify-center"
           v-html="html"
         ></div>
-        <!-- eslint-enable vue/no-v-html -->
       </div>
       <div ref="mindMapRef" class="wh-full">
         <svg

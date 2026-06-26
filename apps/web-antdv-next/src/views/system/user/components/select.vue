@@ -63,9 +63,7 @@ function getSelectedIds(value: null | number | number[] | undefined) {
 }
 
 /** 根据编号查询用户信息（用于编辑回显） */
-async function resolveItemsById(
-  value: null | number | number[] | undefined,
-) {
+async function resolveItemsById(value: null | number | number[] | undefined) {
   const ids = getSelectedIds(value);
   if (ids.length === 0) {
     selectedItems.value = [];

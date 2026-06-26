@@ -1,3 +1,4 @@
+// oxlint-disable typescript/require-array-sort-compare
 /** 坐标点 */
 export interface Point {
   x: number;

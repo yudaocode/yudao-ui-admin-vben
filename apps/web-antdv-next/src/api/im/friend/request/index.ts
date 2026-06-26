@@ -28,9 +28,10 @@ export namespace ImFriendRequestApi {
   }
 }
 
-
 /** 发起好友申请 */
-export function applyFriendRequest(data: ImFriendRequestApi.FriendRequestApplyReqVO) {
+export function applyFriendRequest(
+  data: ImFriendRequestApi.FriendRequestApplyReqVO,
+) {
   return requestClient.post<null | number>('/im/friend-request/apply', data);
 }
 
@@ -54,7 +55,7 @@ export function refuseFriendRequest(
 /** 查询「我相关」的好友申请列表（游标分页：传 maxId 加载更多） */
 export function getMyFriendRequestList(limit: number, maxId?: number) {
   const params: Record<string, number> = { limit };
-  if (maxId != null) {
+  if (maxId !== null) {
     params.maxId = maxId;
   }
   return requestClient.get<ImFriendRequestApi.FriendRequestRespVO[]>(

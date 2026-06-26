@@ -94,8 +94,10 @@ const [Modal, modalApi] = useVbenModal({
       // 设置到 values
       await formApi.setValues(formData.value as any);
       await gridApi.grid.reloadData(
-        (formData.value!.statuses =
-          formData.value?.statuses?.concat(DEFAULT_STATUSES)) as any,
+        (formData.value!.statuses = [
+          ...formData.value.statuses,
+          ...DEFAULT_STATUSES,
+        ]) as any,
       );
     } finally {
       modalApi.unlock();
@@ -128,7 +130,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       mode: 'cell',
     },
     columns: useFormColumns(),
-    data: formData.value?.statuses?.concat(DEFAULT_STATUSES),
+    data: formData.value?.statuses
+      ? [...formData.value.statuses, ...DEFAULT_STATUSES]
+      : undefined,
     border: true,
     showOverflow: true,
     autoResize: true,

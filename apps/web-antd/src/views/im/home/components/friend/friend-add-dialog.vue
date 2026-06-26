@@ -1,154 +1,164 @@
 <script lang="ts" setup>
-import type { SystemUserApi } from '#/api/system/user'
+import type { SystemUserApi } from '#/api/system/user';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { useUserStore } from '@vben/stores'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
-import { Button, Input, message, Modal, Spin } from 'ant-design-vue'
+import { Button, Input, message, Modal, Spin } from 'ant-design-vue';
 
-import { getSimpleUserListByNickname } from '#/api/system/user'
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getSimpleUserListByNickname } from '#/api/system/user';
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { ImFriendAddSource } from '../../../utils/constants'
-import { getGenderColor, getGenderIcon } from '../../../utils/user'
-import { useFriendStore } from '../../store/friendStore'
-import { UserAvatar } from '../user'
+import { ImFriendAddSource } from '../../../utils/constants';
+import { getGenderColor, getGenderIcon } from '../../../utils/user';
+import { useFriendStore } from '../../store/friendStore';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImFriendAddDialog' })
+defineOptions({ name: 'ImFriendAddDialog' });
 
-const visible = ref(false) // 弹窗是否可见
-const presetUser = ref<null | SystemUserApi.UserSimple>(null) // 预填目标用户：非 null 时跳过搜索步骤，直接进入申请表单（群成员加好友 / 名片加好友等场景）
-const addSource = ref<number>(ImFriendAddSource.SEARCH) // 添加来源；参见 ImFriendAddSourceEnum，默认 SEARCH
-const addSourceExtra = ref<string>('') // 来源附带信息：addSource=ImFriendAddSource.GROUP 时传群名，话术拼为「我是 XX 群的 YY」
+const visible = ref(false); // 弹窗是否可见
+const presetUser = ref<null | SystemUserApi.UserSimple>(null); // 预填目标用户：非 null 时跳过搜索步骤，直接进入申请表单（群成员加好友 / 名片加好友等场景）
+const addSource = ref<number>(ImFriendAddSource.SEARCH); // 添加来源；参见 ImFriendAddSourceEnum，默认 SEARCH
+const addSourceExtra = ref<string>(''); // 来源附带信息：addSource=ImFriendAddSource.GROUP 时传群名，话术拼为「我是 XX 群的 YY」
 
 defineExpose({
   /** 打开加好友弹窗：reset → 灌参 → visible=true；不传 opts 走搜索模式 */
-  open(opts?: { addSource?: number; addSourceExtra?: string; presetUser?: null | SystemUserApi.UserSimple; }) {
-    presetUser.value = opts?.presetUser ?? null
-    addSource.value = opts?.addSource ?? ImFriendAddSource.SEARCH
-    addSourceExtra.value = opts?.addSourceExtra ?? ''
-    resetAll()
-    visible.value = true
-  }
-})
+  open(opts?: {
+    addSource?: number;
+    addSourceExtra?: string;
+    presetUser?: null | SystemUserApi.UserSimple;
+  }) {
+    presetUser.value = opts?.presetUser ?? null;
+    addSource.value = opts?.addSource ?? ImFriendAddSource.SEARCH;
+    addSourceExtra.value = opts?.addSourceExtra ?? '';
+    resetAll();
+    visible.value = true;
+  },
+});
 
-const friendStore = useFriendStore()
-const userStore = useUserStore()
+const friendStore = useFriendStore();
+const userStore = useUserStore();
 
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
-const currentUserId = computed(() => getCurrentUserId())
+const currentUserId = computed(() => getCurrentUserId());
 
 /** 搜索结果过滤掉自己；用 v-if 而非 v-show，避免 DOM 占位 + 头像无效请求 */
 const visibleUsers = computed(() =>
-  users.value.filter((user) => user.id !== currentUserId.value)
-)
-const keyword = ref('') // 搜索关键字
-const users = ref<SystemUserApi.UserSimple[]>([]) // 搜索结果
-const searched = ref(false) // 是否已搜索
-const loading = ref(false) // 搜索加载中
-const step = ref<'apply' | 'search'>('search') // 当前步骤：search=搜索列表；apply=申请表单
-const targetUser = ref<null | SystemUserApi.UserSimple>(null) // 申请目标用户
-const applyContent = ref('') // 申请理由（默认填「我是 ${当前昵称}」，对齐微信交互）
-const displayName = ref('') // 对接收方的备注（仅自己可见）
-const submitting = ref(false) // 提交中
+  users.value.filter((user) => user.id !== currentUserId.value),
+);
+const keyword = ref(''); // 搜索关键字
+const users = ref<SystemUserApi.UserSimple[]>([]); // 搜索结果
+const searched = ref(false); // 是否已搜索
+const loading = ref(false); // 搜索加载中
+const step = ref<'apply' | 'search'>('search'); // 当前步骤：search=搜索列表；apply=申请表单
+const targetUser = ref<null | SystemUserApi.UserSimple>(null); // 申请目标用户
+const applyContent = ref(''); // 申请理由（默认填「我是 ${当前昵称}」，对齐微信交互）
+const displayName = ref(''); // 对接收方的备注（仅自己可见）
+const submitting = ref(false); // 提交中
 
 /** 弹窗标题随步骤切换 */
-const dialogTitle = computed(() => (step.value === 'apply' ? '申请添加朋友' : '添加好友'))
+const dialogTitle = computed(() =>
+  step.value === 'apply' ? '申请添加朋友' : '添加好友',
+);
 
 /** 是否预填模式（presetUser 不为空 → 跳过搜索，关闭即销毁，无「取消返回搜索」按钮） */
-const presetMode = computed(() => !!presetUser.value)
+const presetMode = computed(() => !!presetUser.value);
 
 function resetAll() {
-  keyword.value = ''
-  users.value = []
-  searched.value = false
+  keyword.value = '';
+  users.value = [];
+  searched.value = false;
   // 预填模式：直接进申请表单，targetUser 取自 presetUser；申请理由按 addSource 区分话术
   if (presetUser.value) {
-    targetUser.value = presetUser.value
-    applyContent.value = buildPresetApplyContent()
-    displayName.value = ''
-    step.value = 'apply'
-    return
+    targetUser.value = presetUser.value;
+    applyContent.value = buildPresetApplyContent();
+    displayName.value = '';
+    step.value = 'apply';
+    return;
   }
   // 非预填模式：默认进搜索步骤
-  step.value = 'search'
-  targetUser.value = null
-  applyContent.value = ''
-  displayName.value = ''
+  step.value = 'search';
+  targetUser.value = null;
+  applyContent.value = '';
+  displayName.value = '';
 }
 
 /** 预填模式下的申请理由话术：群聊「我是"XX 群"的 YY」；其它「我是 YY」 */
 function buildPresetApplyContent(): string {
-  const myNickname = userStore.userInfo?.nickname || ''
+  const myNickname = userStore.userInfo?.nickname || '';
   if (!myNickname) {
-    return ''
+    return '';
   }
   // 群聊场景拼带群名的话术；其它场景默认「我是 YY」
-  const groupExtra = addSource.value === ImFriendAddSource.GROUP ? addSourceExtra.value : ''
-  return groupExtra ? `我是"${groupExtra}"的${myNickname}` : `我是${myNickname}`
+  const groupExtra =
+    addSource.value === ImFriendAddSource.GROUP ? addSourceExtra.value : '';
+  return groupExtra
+    ? `我是"${groupExtra}"的${myNickname}`
+    : `我是${myNickname}`;
 }
 
 /** 按昵称搜索用户：空关键字直接清空结果 */
 async function handleSearch() {
-  searched.value = true
+  searched.value = true;
   if (!keyword.value.trim()) {
-    users.value = []
-    return
+    users.value = [];
+    return;
   }
-  loading.value = true
+  loading.value = true;
   try {
-    users.value = (await getSimpleUserListByNickname(keyword.value.trim())) || []
+    users.value =
+      (await getSimpleUserListByNickname(keyword.value.trim())) || [];
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 /** 进入申请步骤：预填申请理由「我是 ${当前用户昵称}」（对齐微信交互） */
 function enterApply(user: SystemUserApi.UserSimple) {
-  targetUser.value = user
-  const myNickname = userStore.userInfo?.nickname || ''
-  applyContent.value = myNickname ? `我是${myNickname}` : ''
-  displayName.value = ''
-  step.value = 'apply'
+  targetUser.value = user;
+  const myNickname = userStore.userInfo?.nickname || '';
+  applyContent.value = myNickname ? `我是${myNickname}` : '';
+  displayName.value = '';
+  step.value = 'apply';
 }
 
 /** 取消申请，回到搜索步骤 */
 function backToSearch() {
-  step.value = 'search'
-  targetUser.value = null
+  step.value = 'search';
+  targetUser.value = null;
 }
 
 /** 提交好友申请：返回 requestId 走「等待验证」；返回 null 表示后端命中「单向好友静默重启」分支，已直接成为好友 */
 async function handleSubmitApply() {
   if (!targetUser.value) {
-    return
+    return;
   }
   // 预校验：不能加自己（搜索列表已过滤，这里兜底 presetUser / 名片入口等场景）
   if (targetUser.value.id === currentUserId.value) {
-    message.warning('不能添加自己为好友')
-    return
+    message.warning('不能添加自己为好友');
+    return;
   }
-  submitting.value = true
+  submitting.value = true;
   try {
     const requestId = await friendStore.applyFriendRequest({
       toUserId: targetUser.value.id,
       applyContent: applyContent.value.trim() || undefined,
       displayName: displayName.value.trim() || undefined,
-      addSource: addSource.value
-    })
+      addSource: addSource.value,
+    });
     // silent 分支（已是单向好友被静默重启）：主动 fetchFriendInfo 入库，不依赖 WS FRIEND_ADD 推送，避免丢推时列表看不到
     if (requestId === null) {
-      await friendStore.fetchFriendInfo(targetUser.value.id)
+      await friendStore.fetchFriendInfo(targetUser.value.id);
     }
-    message.success(requestId ? '申请已发送，等待对方验证' : '已添加为好友')
-    visible.value = false
+    message.success(requestId ? '申请已发送，等待对方验证' : '已添加为好友');
+    visible.value = false;
   } catch {
     // 业务错误（已是好友 / 被对方拉黑 / 用户被禁用 等）：全局拦截器已弹错误提示，本地关弹窗避免脏状态停留
-    visible.value = false
+    visible.value = false;
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
 }
 </script>
@@ -175,7 +185,11 @@ async function handleSubmitApply() {
         @keyup.enter="handleSearch"
       >
         <template #suffix>
-          <Icon icon="ant-design:search-outlined" class="cursor-pointer" @click="handleSearch" />
+          <Icon
+            icon="ant-design:search-outlined"
+            class="cursor-pointer"
+            @click="handleSearch"
+          />
         </template>
       </Input>
 
@@ -250,7 +264,9 @@ async function handleSubmitApply() {
           :clickable="false"
         />
         <div class="flex-1 min-w-0 overflow-hidden">
-          <div class="text-sm font-semibold text-[var(--ant-color-text)] truncate">
+          <div
+            class="text-sm font-semibold text-[var(--ant-color-text)] truncate"
+          >
             {{ targetUser.nickname }}
           </div>
           <div
@@ -262,7 +278,9 @@ async function handleSubmitApply() {
         </div>
       </div>
 
-      <div class="text-13px text-[var(--ant-color-text-secondary)] mb-1.5">发送添加朋友申请</div>
+      <div class="text-13px text-[var(--ant-color-text-secondary)] mb-1.5">
+        发送添加朋友申请
+      </div>
       <Input.TextArea
         v-model:value="applyContent"
         :rows="3"
@@ -271,7 +289,9 @@ async function handleSubmitApply() {
         placeholder="请填写申请理由"
       />
 
-      <div class="text-13px text-[var(--ant-color-text-secondary)] mt-3 mb-1.5">备注</div>
+      <div class="text-13px text-[var(--ant-color-text-secondary)] mt-3 mb-1.5">
+        备注
+      </div>
       <Input
         v-model:value="displayName"
         :maxlength="16"
@@ -282,8 +302,12 @@ async function handleSubmitApply() {
     <!-- 仅在 apply 步骤显示 footer 操作按钮（slot 必须是 el-dialog 直接子节点） -->
     <template v-if="step === 'apply'" #footer>
       <!-- 预填模式无搜索步骤，「取消」直接关闭弹窗 -->
-      <Button @click="presetMode ? (visible = false) : backToSearch()">取消</Button>
-      <Button type="primary" :loading="submitting" @click="handleSubmitApply"> 确定 </Button>
+      <Button @click="presetMode ? (visible = false) : backToSearch()">
+        取消
+      </Button>
+      <Button type="primary" :loading="submitting" @click="handleSubmitApply">
+        确定
+      </Button>
     </template>
   </Modal>
 </template>

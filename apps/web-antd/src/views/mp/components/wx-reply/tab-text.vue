@@ -8,8 +8,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'input', v: null | string): void;
-  (e: 'update:modelValue', v: null | string): void;
+  (e: 'input' | 'update:modelValue', v: null | string): void;
 }>();
 
 const content = computed({

@@ -52,7 +52,11 @@ const cardPayload = computed(() => {
   }
   return {
     ...payload.value,
-    name: payload.value.name || payload.value.nickname || payload.value.userId || '',
+    name:
+      payload.value.name ||
+      payload.value.nickname ||
+      payload.value.userId ||
+      '',
   };
 });
 
@@ -132,7 +136,10 @@ function openVideo() {
 </script>
 
 <template>
-  <span v-if="type === ImContentType.TEXT" class="whitespace-pre-wrap break-all">
+  <span
+    v-if="type === ImContentType.TEXT"
+    class="whitespace-pre-wrap break-all"
+  >
     {{ textContent }}
   </span>
 
@@ -234,10 +241,16 @@ function openVideo() {
   <span v-else-if="type === ImContentType.READ" class="text-xs text-gray-400">
     [已读回执]
   </span>
-  <span v-else-if="type === ImContentType.RECEIPT" class="text-xs text-gray-400">
+  <span
+    v-else-if="type === ImContentType.RECEIPT"
+    class="text-xs text-gray-400"
+  >
     [回执]
   </span>
-  <span v-else-if="isGroupNotification(type ?? -1)" class="text-xs text-gray-400">
+  <span
+    v-else-if="isGroupNotification(type ?? -1)"
+    class="text-xs text-gray-400"
+  >
     {{ groupTipText }}
   </span>
   <span v-else-if="isFriendChatTip(type ?? -1)" class="text-xs text-gray-400">
@@ -247,7 +260,10 @@ function openVideo() {
     v-else-if="isRtcCallTip(type ?? -1)"
     class="inline-flex items-center gap-1.5 text-xs text-gray-400"
   >
-    <IconifyIcon class="size-4 rotate-[135deg]" icon="ant-design:phone-outlined" />
+    <IconifyIcon
+      class="size-4 rotate-[135deg]"
+      icon="ant-design:phone-outlined"
+    />
     <span>{{ rtcCallTipText }}</span>
   </span>
   <span v-else class="whitespace-pre-wrap break-all">{{ fallbackText }}</span>

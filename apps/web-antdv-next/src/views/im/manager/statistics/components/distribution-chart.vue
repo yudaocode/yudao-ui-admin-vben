@@ -83,7 +83,9 @@ async function loadData() {
       xAxis: { type: 'value', name: '消息数' },
       yAxis: {
         type: 'category',
-        data: sorted.map((item) => `${item.nickname || item.userId}(${item.userId})`),
+        data: sorted.map(
+          (item) => `${item.nickname || item.userId}(${item.userId})`,
+        ),
         axisLabel: { overflow: 'truncate', width: 110 },
       },
       series: [
@@ -104,7 +106,10 @@ onMounted(loadData);
 </script>
 
 <template>
-  <Card :styles="{ body: { padding: '12px 16px 16px' } }" :title="titleMap[type]">
+  <Card
+    :styles="{ body: { padding: '12px 16px 16px' } }"
+    :title="titleMap[type]"
+  >
     <div class="relative min-h-[320px]">
       <EchartsUI ref="chartRef" height="320px" />
       <div

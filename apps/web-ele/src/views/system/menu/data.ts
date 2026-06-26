@@ -174,7 +174,7 @@ export function useFormSchema(): VbenFormSchema[] {
             };
           };
           const results = queryString
-            ? options.filter(createFilter(queryString))
+            ? options.filter(() => createFilter(queryString))
             : options;
           cb(results);
         },

@@ -18,7 +18,6 @@ export namespace ImManagerChannelMaterialApi {
   }
 }
 
-
 /** 获得素材分页 */
 export function getManagerChannelMaterialPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerChannelMaterialApi.Material>>(
@@ -47,7 +46,10 @@ export function getManagerChannelMaterial(id: number) {
 export function createManagerChannelMaterial(
   data: ImManagerChannelMaterialApi.Material,
 ) {
-  return requestClient.post<number>('/im/manager/channel-material/create', data);
+  return requestClient.post<number>(
+    '/im/manager/channel-material/create',
+    data,
+  );
 }
 
 /** 修改素材 */

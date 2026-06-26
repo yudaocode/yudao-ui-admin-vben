@@ -42,8 +42,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'move', direction: number): void;
-  (e: 'copy'): void;
-  (e: 'delete'): void;
+  (e: 'copy' | 'delete'): void;
 }>();
 
 type DiyComponentWithStyle = DiyComponent<any> & {

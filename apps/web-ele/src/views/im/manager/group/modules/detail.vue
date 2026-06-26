@@ -5,7 +5,16 @@ import { computed, ref } from 'vue';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 
-import { ElAvatar, ElCheckbox, ElDescriptions, ElDescriptionsItem, ElDrawer, ElTable, ElTableColumn, ElTag } from 'element-plus'
+import {
+  ElAvatar,
+  ElCheckbox,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElDrawer,
+  ElTable,
+  ElTableColumn,
+  ElTag,
+} from 'element-plus';
 
 import { getManagerGroupMemberList } from '#/api/im/manager/group';
 import { DictTag } from '#/components/dict-tag';
@@ -55,12 +64,17 @@ defineExpose({ open });
       <ElDescriptionsItem label="群主">
         {{ formatUserLabel(detail.ownerNickname, detail.ownerUserId) }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="成员数">{{ detail.memberCount || 0 }}</ElDescriptionsItem>
+      <ElDescriptionsItem label="成员数">
+        {{ detail.memberCount || 0 }}
+      </ElDescriptionsItem>
       <ElDescriptionsItem label="群状态">
         <DictTag :type="DICT_TYPE.IM_GROUP_STATUS" :value="detail.status" />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="封禁状态">
-        <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="detail.banned" />
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="detail.banned"
+        />
         <span v-if="detail.banned" class="ml-2 text-gray-400">
           {{ detail.bannedReason }}
         </span>
@@ -115,14 +129,20 @@ defineExpose({ open });
         </template>
       </ElTableColumn>
       <ElTableColumn label="入群时间" width="180">
-        <template #default="{ row }">{{ formatDateTimeText(row.joinTime) }}</template>
+        <template #default="{ row }">
+          {{ formatDateTimeText(row.joinTime) }}
+        </template>
       </ElTableColumn>
       <ElTableColumn label="退群时间" width="180">
-        <template #default="{ row }">{{ formatDateTimeText(row.quitTime) }}</template>
+        <template #default="{ row }">
+          {{ formatDateTimeText(row.quitTime) }}
+        </template>
       </ElTableColumn>
       <ElTableColumn label="禁言状态" width="180">
         <template #default="{ row }">
-          <template v-if="row.muteEndTime && new Date(row.muteEndTime) > new Date()">
+          <template
+            v-if="row.muteEndTime && new Date(row.muteEndTime) > new Date()"
+          >
             <ElTag type="danger">禁言中</ElTag>
             <div class="mt-1 text-xs text-gray-400">
               {{ formatDateTimeText(row.muteEndTime) }}

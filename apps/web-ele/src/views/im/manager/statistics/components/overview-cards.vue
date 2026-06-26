@@ -5,7 +5,7 @@ import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { ElCard } from 'element-plus'
+import { ElCard } from 'element-plus';
 
 defineOptions({ name: 'ImManagerStatisticsOverviewCards' });
 
@@ -78,7 +78,11 @@ const cards = computed(() => {
 
 <template>
   <div class="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
-    <ElCard v-for="card in cards" :key="card.title" :body-style="{ padding: '16px' }">
+    <ElCard
+      v-for="card in cards"
+      :key="card.title"
+      :body-style="{ padding: '16px' }"
+    >
       <div class="flex items-center">
         <div
           class="mr-3 flex size-12 shrink-0 items-center justify-center rounded"
@@ -90,7 +94,10 @@ const cards = computed(() => {
           <div class="mb-1 text-sm text-muted-foreground">{{ card.title }}</div>
           <div class="truncate text-2xl font-semibold leading-none">
             {{ card.value }}
-            <span v-if="card.suffix" class="ml-1 text-xs font-normal text-gray-400">
+            <span
+              v-if="card.suffix"
+              class="ml-1 text-xs font-normal text-gray-400"
+            >
               {{ card.suffix }}
             </span>
           </div>

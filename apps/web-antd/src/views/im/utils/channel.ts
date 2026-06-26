@@ -1,5 +1,5 @@
-import { useChannelStore } from '../home/store/channelStore'
-import { ImConversationType } from './constants'
+import { useChannelStore } from '../home/store/channelStore';
+import { ImConversationType } from './constants';
 
 /**
  * 构建频道会话描述（type / targetId / name / avatar）
@@ -8,11 +8,11 @@ import { ImConversationType } from './constants'
  * 抽到 utils/channel.ts 后，useMessagePuller / websocketStore 共用同一份占位逻辑，避免多处复制；类似 utils/user.ts 取昵称的工具集。
  */
 export const buildChannelConversationStub = (channelId: number) => {
-  const channel = useChannelStore().getChannel(channelId)
+  const channel = useChannelStore().getChannel(channelId);
   return {
     type: ImConversationType.CHANNEL,
     targetId: channelId,
     name: channel?.name || `频道 ${channelId}`,
-    avatar: channel?.avatar || ''
-  }
-}
+    avatar: channel?.avatar || '',
+  };
+};

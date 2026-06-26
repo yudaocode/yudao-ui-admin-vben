@@ -11,6 +11,7 @@ const ignores: OxlintConfig = {
     '**/*.svg',
     '**/*.yaml',
     '**/*.yml',
+    '**/public/**',
   ],
 };
 

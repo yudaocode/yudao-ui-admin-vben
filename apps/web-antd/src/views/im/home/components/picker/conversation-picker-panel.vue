@@ -1,88 +1,94 @@
 <script lang="ts" setup>
-import type { Conversation } from '../../types'
+import type { Conversation } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { Input, message } from 'ant-design-vue'
+import { Input, message } from 'ant-design-vue';
 
-import { ImConversationType } from '../../../utils/constants'
-import { filterConversationsByKeyword, getConversationKey } from '../../../utils/conversation'
-import { GroupAvatar } from '../group'
-import { UserAvatar } from '../user'
+import { ImConversationType } from '../../../utils/constants';
+import {
+  filterConversationsByKeyword,
+  getConversationKey,
+} from '../../../utils/conversation';
+import { GroupAvatar } from '../group';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImConversationPickerPanel' })
+defineOptions({ name: 'ImConversationPickerPanel' });
 
 const props = withDefaults(
   defineProps<{
     /** 全量会话列表 */
-    conversations: Conversation[]
+    conversations: Conversation[];
     /** 隐藏 key：从候选 / 已选 / 最近转发里都剔除（不能转发回自己、推荐名片自身的会话等） */
-    hideKeys?: string[]
+    hideKeys?: string[];
     /** 已选数上限；不传或 <=0 时不限 */
-    maxSize?: number
+    maxSize?: number;
     /** 最近转发会话 key 列表；展示在左栏顶部横向头像区 */
-    recentForwardConversationKeys?: string[]
+    recentForwardConversationKeys?: string[];
     /** 已选会话 key（v-model）；key 由 getConversationKey 生成 */
-    selectedKeys: string[]
+    selectedKeys: string[];
     /** 是否展示「创建聊天」入口 */
-    showCreateChat?: boolean
+    showCreateChat?: boolean;
   }>(),
   {
     recentForwardConversationKeys: () => [],
     hideKeys: () => [],
     maxSize: 0,
-    showCreateChat: false
-  }
-)
+    showCreateChat: false,
+  },
+);
 
 const emit = defineEmits<{
-  createChat: []
+  createChat: [];
   /** 用户在「最近转发」段进入移除模式后点 ×；业务壳收到后调 conversationStore.removeRecentForwardConversationKey 落盘 */
-  removeRecent: [key: string]
-  'update:selectedKeys': [value: string[]]
-}>()
+  removeRecent: [key: string];
+  'update:selectedKeys': [value: string[]];
+}>();
 
-const keyword = ref('')
-const recentRemoveMode = ref(false) // 「最近转发」段是否处于移除模式：true 时头像右上角变 × 不再切勾选
+const keyword = ref('');
+const recentRemoveMode = ref(false); // 「最近转发」段是否处于移除模式：true 时头像右上角变 × 不再切勾选
 
 /** 全量会话的 key→Conversation 映射，已选 / 最近转发反查共用，避免每次 O(N) 扫 */
 const byKey = computed(() => {
-  const map = new Map<string, Conversation>()
+  const map = new Map<string, Conversation>();
   for (const conversation of props.conversations) {
-    map.set(getConversationKey(conversation), conversation)
+    map.set(getConversationKey(conversation), conversation);
   }
-  return map
-})
+  return map;
+});
 
 /** 隐藏集合：每次过滤复用 */
-const hideSet = computed(() => new Set(props.hideKeys))
+const hideSet = computed(() => new Set(props.hideKeys));
 
 /** 已选集合：圆形指示器 isSelected 走 set 快查 */
-const selectedSet = computed(() => new Set(props.selectedKeys))
+const selectedSet = computed(() => new Set(props.selectedKeys));
 
 /** 候选会话：剔除 hideKeys */
 const candidateConversations = computed(() =>
-  props.conversations.filter((c) => !hideSet.value.has(getConversationKey(c)))
-)
+  props.conversations.filter((c) => !hideSet.value.has(getConversationKey(c))),
+);
 
 /** 左栏展示列表：在候选基础上按 keyword 过滤 */
 const shownConversations = computed(() =>
-  filterConversationsByKeyword(candidateConversations.value, keyword.value)
-)
+  filterConversationsByKeyword(candidateConversations.value, keyword.value),
+);
 
 /** 最近转发的会话对象列表：从 recentForwardConversationKeys 反查；剔除 hide / 不存在的 key */
 const recentForwardConversations = computed(() =>
   props.recentForwardConversationKeys
     .map((key) => byKey.value.get(key))
-    .filter((c): c is Conversation => c != null && !hideSet.value.has(getConversationKey(c)))
-)
+    .filter(
+      (c): c is Conversation =>
+        c !== null && !hideSet.value.has(getConversationKey(c)),
+    ),
+);
 
 /** 是否展示「最近转发」段：keyword 为空 + 有数据时才展示，搜索时让位 */
 const showRecentSection = computed(
-  () => !keyword.value.trim() && recentForwardConversations.value.length > 0
-)
+  () => !keyword.value.trim() && recentForwardConversations.value.length > 0,
+);
 
 /** 已选会话列表：按 selectedKeys 数组顺序（即点击顺序）反查；过滤 hideSet 避免父组件动态隐藏的会话仍在右侧渲染 / 提交 */
 const selectedConversations = computed(() =>
@@ -90,45 +96,48 @@ const selectedConversations = computed(() =>
     .map((key) => byKey.value.get(key))
     .filter(
       (conversation): conversation is Conversation =>
-        conversation != null && !hideSet.value.has(getConversationKey(conversation))
-    )
-)
+        conversation !== null &&
+        !hideSet.value.has(getConversationKey(conversation)),
+    ),
+);
 
 /** 右栏标题文案：单选「发送给」、多选「分别发送给」 */
-const sendTitle = computed(() => (props.selectedKeys.length > 1 ? '分别发送给' : '发送给'))
+const sendTitle = computed(() =>
+  props.selectedKeys.length > 1 ? '分别发送给' : '发送给',
+);
 
 /** 是否已选中：左栏圆形指示器 / 最近转发头像角标共用 */
 function isSelected(conversation: Conversation): boolean {
-  return selectedSet.value.has(getConversationKey(conversation))
+  return selectedSet.value.has(getConversationKey(conversation));
 }
 
 /** 「最近转发」头像点击：移除模式下不切勾选（移除由 × 角标处理） */
 function handleRecentTileClick(conversation: Conversation) {
   if (recentRemoveMode.value) {
-    return
+    return;
   }
-  handleToggle(conversation)
+  handleToggle(conversation);
 }
 
 /** 切换选中态：左栏 row / 最近转发头像 / 右栏 × 移除都走这里 */
 function handleToggle(conversation: Conversation) {
-  const key = getConversationKey(conversation)
-  const next = [...props.selectedKeys]
-  const index = next.indexOf(key)
+  const key = getConversationKey(conversation);
+  const next = [...props.selectedKeys];
+  const index = next.indexOf(key);
   if (index === -1) {
     // 父组件标记隐藏的会话即便有路径触达也不应入选
     if (hideSet.value.has(key)) {
-      return
+      return;
     }
     if (props.maxSize > 0 && next.length >= props.maxSize) {
-      message.error(`最多选择 ${props.maxSize} 个会话`)
-      return
+      message.error(`最多选择 ${props.maxSize} 个会话`);
+      return;
     }
-    next.push(key)
+    next.push(key);
   } else {
-    next.splice(index, 1)
+    next.splice(index, 1);
   }
-  emit('update:selectedKeys', next)
+  emit('update:selectedKeys', next);
 }
 </script>
 
@@ -158,7 +167,9 @@ function handleToggle(conversation: Conversation) {
         <!-- 最近转发横向头像区：keyword 为空 + 有最近转发数据时展示 -->
         <template v-if="showRecentSection">
           <div class="flex justify-between items-center pl-3 pr-2 pb-1.5">
-            <span class="text-13px text-[var(--ant-color-text-secondary)]">最近转发</span>
+            <span class="text-13px text-[var(--ant-color-text-secondary)]">
+              最近转发
+            </span>
             <span
               class="px-1 cursor-pointer text-13px text-[var(--ant-color-primary)] hover:opacity-80"
               @click="recentRemoveMode = !recentRemoveMode"
@@ -195,7 +206,9 @@ function handleToggle(conversation: Conversation) {
                 <span
                   v-if="recentRemoveMode"
                   class="flex absolute -top-1 -right-1 justify-center items-center w-4 h-4 rounded-full cursor-pointer bg-[var(--ant-color-fill-dark)] text-[var(--ant-color-text)]"
-                  @click.stop="emit('removeRecent', getConversationKey(conversation))"
+                  @click.stop="
+                    emit('removeRecent', getConversationKey(conversation))
+                  "
                 >
                   <Icon icon="ant-design:close-outlined" :size="10" />
                 </span>
@@ -241,7 +254,11 @@ function handleToggle(conversation: Conversation) {
         </div>
 
         <!-- 最近聊天分组标题 -->
-        <div class="px-3 pb-1.5 text-13px text-[var(--ant-color-text-secondary)]">最近聊天</div>
+        <div
+          class="px-3 pb-1.5 text-13px text-[var(--ant-color-text-secondary)]"
+        >
+          最近聊天
+        </div>
 
         <!-- 会话列表 -->
         <div
@@ -363,6 +380,7 @@ function handleToggle(conversation: Conversation) {
 .im-conversation-picker__recent::-webkit-scrollbar {
   height: 4px;
 }
+
 .im-conversation-picker__recent::-webkit-scrollbar-thumb {
   background-color: var(--ant-color-border);
   border-radius: 2px;

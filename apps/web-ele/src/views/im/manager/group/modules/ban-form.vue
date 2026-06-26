@@ -5,7 +5,7 @@ import { reactive } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElForm, ElFormItem, ElInput, ElMessage } from 'element-plus'
+import { ElForm, ElFormItem, ElInput, ElMessage } from 'element-plus';
 
 import { banManagerGroup } from '#/api/im/manager/group';
 
@@ -53,7 +53,7 @@ const [Modal, modalApi] = useVbenModal({
       </ElFormItem>
       <ElFormItem label="封禁原因" required>
         <ElInput
-type="textarea"
+          type="textarea"
           v-model="formData.reason"
           :maxlength="200"
           :rows="3"
