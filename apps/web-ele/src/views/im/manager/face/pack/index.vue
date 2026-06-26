@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElImage, ElLoading, ElMessage } from 'element-plus'
+import { ElImage, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -17,10 +17,7 @@ import {
 } from '#/api/im/manager/face/pack';
 import { $t } from '#/locales';
 
-import {
-  usePackGridColumns,
-  usePackGridFormSchema,
-} from './data';
+import { usePackGridColumns, usePackGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ItemDrawer from './modules/item-drawer.vue';
 

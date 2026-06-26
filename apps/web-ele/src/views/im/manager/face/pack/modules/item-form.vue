@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -74,7 +74,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerFacePackItemApi.FacePackItem;
+    const data =
+      (await formApi.getValues()) as ImManagerFacePackItemApi.FacePackItem;
     try {
       data.packId = data.packId || packId.value;
       await (formData.value?.id

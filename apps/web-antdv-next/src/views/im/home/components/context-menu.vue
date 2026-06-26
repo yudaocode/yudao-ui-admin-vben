@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { useImUiStore } from '../store/uiStore'
+import { useImUiStore } from '../store/uiStore';
 
-defineOptions({ name: 'ImContextMenu' })
+defineOptions({ name: 'ImContextMenu' });
 
-const uiStore = useImUiStore()
-const contextMenu = computed(() => uiStore.contextMenu)
+const uiStore = useImUiStore();
+const contextMenu = computed(() => uiStore.contextMenu);
 
 /**
  * 计算菜单实际渲染坐标：靠近视口右 / 下边缘时回弹，避免菜单被裁剪
@@ -18,40 +18,40 @@ const contextMenu = computed(() => uiStore.contextMenu)
  * menuHeight 额外加 8 是外层 py-1 的上下 padding 之和（4px × 2）
  */
 const adjustedPosition = computed(() => {
-  const items = contextMenu.value.items
-  const itemHeight = 34
-  const dividerCount = items.filter((it, i) => it.divided && i > 0).length
-  const menuHeight = items.length * itemHeight + dividerCount * 9 + 8
-  const menuWidth = 120
-  let x = contextMenu.value.position.x
-  let y = contextMenu.value.position.y
+  const items = contextMenu.value.items;
+  const itemHeight = 34;
+  const dividerCount = items.filter((it, i) => it.divided && i > 0).length;
+  const menuHeight = items.length * itemHeight + dividerCount * 9 + 8;
+  const menuWidth = 120;
+  let x = contextMenu.value.position.x;
+  let y = contextMenu.value.position.y;
   // SSR 兜底：window 不可用时直接返回原始坐标
   if (typeof window !== 'undefined') {
     if (y + menuHeight > window.innerHeight) {
-      y = window.innerHeight - menuHeight
+      y = window.innerHeight - menuHeight;
     }
     if (x + menuWidth > window.innerWidth) {
-      x = window.innerWidth - menuWidth
+      x = window.innerWidth - menuWidth;
     }
   }
   // 视口很小 / 菜单项很多时上面减法会算出负值，把菜单顶 / 左边推到 0 兜底
-  return { x: Math.max(0, x), y: Math.max(0, y) }
-})
+  return { x: Math.max(0, x), y: Math.max(0, y) };
+});
 
-type MenuItem = (typeof contextMenu.value.items)[number]
+type MenuItem = (typeof contextMenu.value.items)[number];
 
 /** 选中菜单项：disabled 项忽略；正常项调 onSelect 回调后关闭菜单 */
 function handleSelect(item: MenuItem) {
   if (item.disabled) {
-    return
+    return;
   }
-  uiStore.contextMenu.onSelect?.(item)
-  uiStore.closeContextMenu()
+  uiStore.contextMenu.onSelect?.(item);
+  uiStore.closeContextMenu();
 }
 
 /** 关闭菜单：点遮罩 / 在遮罩上再次右键都会触发 */
 function handleClose() {
-  uiStore.closeContextMenu()
+  uiStore.closeContextMenu();
 }
 </script>
 
@@ -70,7 +70,10 @@ function handleClose() {
     >
       <div
         class="fixed min-w-30 py-1 bg-[var(--ant-color-bg-elevated)] rounded-md shadow-lg"
-        :style="{ left: `${adjustedPosition.x }px`, top: `${adjustedPosition.y }px` }"
+        :style="{
+          left: `${adjustedPosition.x}px`,
+          top: `${adjustedPosition.y}px`,
+        }"
       >
         <template v-for="(item, index) in contextMenu.items" :key="item.key">
           <!-- divided 项上方插一条分割线（首项跳过，避免空白） -->
@@ -85,7 +88,7 @@ function handleClose() {
                 ? '!text-[var(--ant-color-text-disabled)] cursor-not-allowed hover:!bg-transparent'
                 : item.danger
                   ? 'text-[#f56c6c]'
-                  : 'text-[var(--ant-color-text)]'
+                  : 'text-[var(--ant-color-text)]',
             ]"
             @click.stop="handleSelect(item)"
           >

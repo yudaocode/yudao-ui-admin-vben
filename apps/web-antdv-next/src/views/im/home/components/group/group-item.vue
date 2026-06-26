@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import type { GroupLite } from '../../types'
+import type { GroupLite } from '../../types';
 
-import GroupAvatar from './group-avatar.vue'
+import GroupAvatar from './group-avatar.vue';
 
-defineOptions({ name: 'ImGroupItem' })
+defineOptions({ name: 'ImGroupItem' });
 
 defineProps<{
-  active?: boolean
-  group: GroupLite
-}>()
+  active?: boolean;
+  group: GroupLite;
+}>();
 
 defineEmits<{
-  click: [group: GroupLite]
-}>()
+  click: [group: GroupLite];
+}>();
 </script>
 
 <template>
@@ -23,7 +23,9 @@ defineEmits<{
   -->
   <div
     class="relative flex items-center gap-2.5 px-4 py-3 cursor-pointer transition-colors hover:bg-[var(--ant-color-fill)]"
-    :class="{ '!bg-[#d9ecff] dark:!bg-[var(--ant-color-primary-bg-hover)]': active }"
+    :class="{
+      '!bg-[#d9ecff] dark:!bg-[var(--ant-color-primary-bg-hover)]': active,
+    }"
     @click="$emit('click', group)"
   >
     <GroupAvatar
@@ -34,7 +36,9 @@ defineEmits<{
     />
     <div class="flex flex-1 min-w-0">
       <!-- 单行展示群名；成员数仅在群详情面板展示，列表里不重复 -->
-      <div class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]">
+      <div
+        class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]"
+      >
         {{ group.showGroupName || group.name }}
       </div>
     </div>

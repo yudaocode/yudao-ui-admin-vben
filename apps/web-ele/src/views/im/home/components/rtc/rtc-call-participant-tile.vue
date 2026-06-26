@@ -1,26 +1,30 @@
 <script lang="ts" setup>
-import { useMediaStreamElement } from '../../composables/useMediaStreamElement'
-import { UserAvatar } from '../user'
+import { useMediaStreamElement } from '../../composables/useMediaStreamElement';
+import { UserAvatar } from '../user';
 
 export interface CallParticipantVM {
-  userId: number
-  nickname: string
-  avatar?: string
-  isLocal: boolean
-  videoStream?: MediaStream | null
-  audioStream?: MediaStream | null
+  userId: number;
+  nickname: string;
+  avatar?: string;
+  isLocal: boolean;
+  videoStream?: MediaStream | null;
+  audioStream?: MediaStream | null;
   /** 等待加入；UI 显示三点动画 */
-  pending?: boolean
+  pending?: boolean;
 }
 
 const props = defineProps<{
-  participant: CallParticipantVM
+  participant: CallParticipantVM;
   /** 扬声器开关；为 false 时静音该格子的远端音频 */
-  speakerEnabled: boolean
-}>()
+  speakerEnabled: boolean;
+}>();
 
-const setVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.participant.videoStream)
-const setAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.participant.audioStream)
+const setVideoRef = useMediaStreamElement<HTMLVideoElement>(
+  () => props.participant.videoStream,
+);
+const setAudioRef = useMediaStreamElement<HTMLAudioElement>(
+  () => props.participant.audioStream,
+);
 </script>
 
 <template>

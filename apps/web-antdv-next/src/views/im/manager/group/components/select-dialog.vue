@@ -11,10 +11,7 @@ import { getDictOptions } from '@vben/hooks';
 import { Button, message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getManagerGroup,
-  getManagerGroupPage,
-} from '#/api/im/manager/group';
+import { getManagerGroup, getManagerGroupPage } from '#/api/im/manager/group';
 
 const emit = defineEmits<{
   selected: [rows: ImManagerGroupApi.Group[]];
@@ -246,7 +243,7 @@ function handleConfirm() {
     message.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit('selected', multiple.value ? rows : [rows[0]!]);
+  emit('selected', multiple.value ? rows : [rows[0]]);
   open.value = false;
 }
 

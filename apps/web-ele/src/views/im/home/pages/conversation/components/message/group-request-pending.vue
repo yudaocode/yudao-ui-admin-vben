@@ -1,50 +1,54 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
-import { ImGroupMemberRole } from '#/views/im/utils/constants'
+import { getCurrentUserId } from '#/views/im/utils/auth';
+import { ImGroupMemberRole } from '#/views/im/utils/constants';
 
-import { GroupRequestListDialog } from '../../../../components/group'
-import { useGroupRequestStore } from '../../../../store/groupRequestStore'
-import { useGroupStore } from '../../../../store/groupStore'
+import { GroupRequestListDialog } from '../../../../components/group';
+import { useGroupRequestStore } from '../../../../store/groupRequestStore';
+import { useGroupStore } from '../../../../store/groupStore';
 
-defineOptions({ name: 'ImGroupRequestPending' })
+defineOptions({ name: 'ImGroupRequestPending' });
 
 const props = defineProps<{
-  groupId: number
-}>()
+  groupId: number;
+}>();
 
-const groupStore = useGroupStore()
-const groupRequestStore = useGroupRequestStore()
+const groupStore = useGroupStore();
+const groupRequestStore = useGroupRequestStore();
 
-const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>() // 申请列表弹窗 ref：handleOpen 调 open({ groupId }) 触发
+const requestListDialogRef = ref<InstanceType<typeof GroupRequestListDialog>>(); // 申请列表弹窗 ref：handleOpen 调 open({ groupId }) 触发
 
 /** 打开当前群的进群申请列表 */
 function handleOpen() {
-  requestListDialogRef.value?.open({ groupId: props.groupId })
+  requestListDialogRef.value?.open({ groupId: props.groupId });
 }
 
 /** 当前群（含 ownerUserId / members） */
-const group = computed(() => groupStore.getGroup(props.groupId))
+const group = computed(() => groupStore.getGroup(props.groupId));
 
 /** 当前用户在群里的角色；优先用 group.members，懒加载未到时回退到 ownerUserId 直判 */
 const myRole = computed(() => {
-  const myId = getCurrentUserId()
+  const myId = getCurrentUserId();
   if (group.value?.ownerUserId === myId) {
-    return ImGroupMemberRole.OWNER
+    return ImGroupMemberRole.OWNER;
   }
-  return group.value?.members?.find((m) => m.userId === myId)?.role
-})
+  return group.value?.members?.find((m) => m.userId === myId)?.role;
+});
 
 /** 仅群主 / 管理员可见 */
 const canManage = computed(
-  () => myRole.value === ImGroupMemberRole.OWNER || myRole.value === ImGroupMemberRole.ADMIN
-)
+  () =>
+    myRole.value === ImGroupMemberRole.OWNER ||
+    myRole.value === ImGroupMemberRole.ADMIN,
+);
 
 /** 当前群未处理申请数；从 store 派生 */
-const pendingCount = computed(() => groupRequestStore.getUnhandledGroupRequestCount(props.groupId))
+const pendingCount = computed(() =>
+  groupRequestStore.getUnhandledGroupRequestCount(props.groupId),
+);
 </script>
 
 <template>
@@ -67,7 +71,9 @@ const pendingCount = computed(() => groupRequestStore.getUnhandledGroupRequestCo
         :size="14"
         class="im-group-request-pending__icon flex-shrink-0 text-[var(--ant-color-success)]"
       />
-      <span class="flex-1 min-w-0 truncate"> 新进群申请（{{ pendingCount }}） </span>
+      <span class="flex-1 min-w-0 truncate">
+        新进群申请（{{ pendingCount }}）
+      </span>
       <Icon
         icon="ant-design:right-outlined"
         :size="11"

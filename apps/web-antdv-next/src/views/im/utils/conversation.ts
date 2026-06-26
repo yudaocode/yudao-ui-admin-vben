@@ -6,48 +6,63 @@
 // 2. fallbackName 由调用方传入（典型来源：Conversation.lastSenderDisplayName 快照），透传到 getSenderDisplayName 内部，算不出真名时兜底
 // ====================================================================
 
-import type { Message } from '../home/types'
+import type { Message } from '../home/types';
+import type {
+  CardMessage,
+  FaceMessage,
+  FileMessage,
+  MaterialMessage,
+  TextMessage,
+  TipSegment,
+} from './message';
 
-import { ImContentType, ImConversationType, isFriendChatTip, isGroupNotification, isRtcCallTip } from './constants'
 import {
-  type CardMessage,
-  type FaceMessage,
-  type FileMessage,
+  ImContentType,
+  ImConversationType,
+  isFriendChatTip,
+  isGroupNotification,
+  isRtcCallTip,
+} from './constants';
+import {
   getCardLabelInfo,
-  type MaterialMessage,
   parseMessage,
+  resolveFriendNotificationText,
+  resolveGroupNotificationText,
+  resolveRtcCallLastContent,
   segmentsToText,
-  type TextMessage,
   tipMention,
-  type TipSegment,
-  tipText
-} from './message'
-import { resolveFriendNotificationText, resolveGroupNotificationText, resolveRtcCallLastContent } from './message'
-import { getSenderDisplayName } from './user'
+  tipText,
+} from './message';
+import { getSenderDisplayName } from './user';
 
 /** 会话主键：`type-targetId` 拼成稳定字符串，给 v-for :key、active 比对、map key 等场景共用 */
-export function getConversationKey(conversation: { targetId: number; type: number; }): string {
-  return `${conversation.type}-${conversation.targetId}`
+export function getConversationKey(conversation: {
+  targetId: number;
+  type: number;
+}): string {
+  return `${conversation.type}-${conversation.targetId}`;
 }
 
 /** 按昵称模糊过滤会话列表：空 keyword 原样返回，命中走 toLowerCase 不区分大小写 */
 export function filterConversationsByKeyword<T extends { name?: string }>(
   list: T[],
-  keyword: string
+  keyword: string,
 ): T[] {
-  const trimmed = keyword.trim().toLowerCase()
+  const trimmed = keyword.trim().toLowerCase();
   if (!trimmed) {
-    return list
+    return list;
   }
-  return list.filter((c) => (c.name || '').toLowerCase().includes(trimmed))
+  return list.filter((c) => (c.name || '').toLowerCase().includes(trimmed));
 }
 
 /**
  * 表情消息的统一文本预览：摘要 / 历史搜索 / 引用块 / 管理后台预览共用一份
  * 有 name 时走 `[表情] name`（系统包），无 name 时走 `[表情]`（个人表情通常无 name）
  */
-export function buildFacePreviewText(facePayload: null | undefined | { name?: string }): string {
-  return facePayload?.name ? `[表情] ${facePayload.name}` : '[表情]'
+export function buildFacePreviewText(
+  facePayload: null | undefined | { name?: string },
+): string {
+  return facePayload?.name ? `[表情] ${facePayload.name}` : '[表情]';
 }
 
 /**
@@ -60,24 +75,24 @@ export function buildRecallTipSegments(
   selfSend: boolean,
   conversationType: number,
   conversationTargetId: number,
-  fallbackName?: string
+  fallbackName?: string,
 ): TipSegment[] {
   if (selfSend) {
-    return [tipText('你撤回了一条消息')]
+    return [tipText('你撤回了一条消息')];
   }
   const senderDisplayName = getSenderDisplayName(
     senderId,
     conversationType,
     conversationTargetId,
-    fallbackName
-  )
+    fallbackName,
+  );
   if (!senderId) {
-    return [tipText(`${senderDisplayName || '对方'} 撤回了一条消息`)]
+    return [tipText(`${senderDisplayName || '对方'} 撤回了一条消息`)];
   }
   return [
     tipMention(senderId, senderDisplayName || '对方'),
-    tipText(' 撤回了一条消息')
-  ]
+    tipText(' 撤回了一条消息'),
+  ];
 }
 
 /** 撤回提示文案：自己撤回固定文案，对方撤回带 sender 名（实时算 + fallbackName 兜底） */
@@ -86,11 +101,17 @@ export function buildRecallTip(
   selfSend: boolean,
   conversationType: number,
   conversationTargetId: number,
-  fallbackName?: string
+  fallbackName?: string,
 ): string {
   return segmentsToText(
-    buildRecallTipSegments(senderId, selfSend, conversationType, conversationTargetId, fallbackName)
-  )
+    buildRecallTipSegments(
+      senderId,
+      selfSend,
+      conversationType,
+      conversationTargetId,
+      fallbackName,
+    ),
+  );
 }
 
 /**
@@ -101,47 +122,47 @@ export function buildRecallTip(
  */
 export function summarizeMessageContent(
   message: Pick<Message, 'content' | 'type'>,
-  opts?: { withFileName?: boolean }
+  opts?: { withFileName?: boolean },
 ): string {
   switch (message.type) {
     case ImContentType.CARD: {
-      return `[${getCardLabelInfo(parseMessage<CardMessage>(message.content)).label}]`
+      return `[${getCardLabelInfo(parseMessage<CardMessage>(message.content)).label}]`;
     }
     case ImContentType.FACE: {
-      return buildFacePreviewText(parseMessage<FaceMessage>(message.content))
+      return buildFacePreviewText(parseMessage<FaceMessage>(message.content));
     }
     case ImContentType.FILE: {
       if (opts?.withFileName) {
-        const file = parseMessage<FileMessage>(message.content)
-        return file?.name ? `[文件] ${file.name}` : '[文件]'
+        const file = parseMessage<FileMessage>(message.content);
+        return file?.name ? `[文件] ${file.name}` : '[文件]';
       }
-      return '[文件]'
+      return '[文件]';
     }
     case ImContentType.IMAGE: {
-      return '[图片]'
+      return '[图片]';
     }
     case ImContentType.MATERIAL: {
-      const material = parseMessage<MaterialMessage>(message.content)
-      return material?.title ? `[频道] ${material.title}` : '[频道]'
+      const material = parseMessage<MaterialMessage>(message.content);
+      return material?.title ? `[频道] ${material.title}` : '[频道]';
     }
     case ImContentType.MERGE: {
-      return '[聊天记录]'
+      return '[聊天记录]';
     }
     case ImContentType.RTC_CALL_END:
     case ImContentType.RTC_CALL_START: {
-      return '[语音通话]'
+      return '[语音通话]';
     }
     case ImContentType.TEXT: {
-      return parseMessage<TextMessage>(message.content)?.content ?? ''
+      return parseMessage<TextMessage>(message.content)?.content ?? '';
     }
     case ImContentType.VIDEO: {
-      return '[视频]'
+      return '[视频]';
     }
     case ImContentType.VOICE: {
-      return '[语音]'
+      return '[语音]';
     }
     default: {
-      return ''
+      return '';
     }
   }
 }
@@ -151,7 +172,7 @@ export function resolveConversationLastContent(
   message: Message,
   conversationType: number,
   conversationTargetId: number,
-  fallbackName?: string
+  fallbackName?: string,
 ): string {
   if (message.type === ImContentType.RECALL) {
     return buildRecallTip(
@@ -159,19 +180,19 @@ export function resolveConversationLastContent(
       message.selfSend,
       conversationType,
       conversationTargetId,
-      fallbackName
-    )
+      fallbackName,
+    );
   }
   if (isFriendChatTip(message.type)) {
-    return resolveFriendNotificationText(message)
+    return resolveFriendNotificationText(message);
   }
   if (isGroupNotification(message.type)) {
     return resolveGroupNotificationText(message, (id) =>
-      getSenderDisplayName(id, ImConversationType.GROUP, message.targetId ?? 0)
-    )
+      getSenderDisplayName(id, ImConversationType.GROUP, message.targetId ?? 0),
+    );
   }
   if (isRtcCallTip(message.type)) {
-    return resolveRtcCallLastContent(message, conversationType)
+    return resolveRtcCallLastContent(message, conversationType);
   }
-  return summarizeMessageContent(message)
+  return summarizeMessageContent(message);
 }

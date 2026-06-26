@@ -297,9 +297,9 @@ onUnmounted(() => {
       <!-- 状态文案 -->
       <div class="text-13px text-[var(--ant-color-text-secondary)]">
         <span v-if="status === 'idle'">点击下方按钮开始录制</span>
-        <span v-else-if="status === 'recording'"
-          >录制中，最长 {{ maxDuration }} 秒</span
-        >
+        <span v-else-if="status === 'recording'">
+          录制中，最长 {{ maxDuration }} 秒
+        </span>
         <span v-else>录制完成，可试听后发送</span>
       </div>
 

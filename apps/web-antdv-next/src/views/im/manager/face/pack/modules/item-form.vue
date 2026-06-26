@@ -74,7 +74,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data = (await formApi.getValues()) as ImManagerFacePackItemApi.FacePackItem;
+    const data =
+      (await formApi.getValues()) as ImManagerFacePackItemApi.FacePackItem;
     try {
       data.packId = data.packId || packId.value;
       await (formData.value?.id

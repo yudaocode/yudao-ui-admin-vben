@@ -5,7 +5,7 @@ import { computed, ref, useAttrs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { ElInput, ElTooltip } from 'element-plus'
+import { ElInput, ElTooltip } from 'element-plus';
 
 import { getManagerGroup } from '#/api/im/manager/group';
 
@@ -43,12 +43,17 @@ const displayLabel = computed(() => selectedItem.value?.name ?? '');
 
 /** 是否显示清除图标 */
 const showClear = computed(() => {
-  return props.clearable && !props.disabled && hovering.value && props.modelValue != null;
+  return (
+    props.clearable &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue !== null
+  );
 });
 
 /** 根据编号查询群信息（用于编辑回显） */
 async function resolveItemById(id: number | undefined) {
-  if (id == null) {
+  if (id === null) {
     selectedItem.value = undefined;
     return;
   }
@@ -78,7 +83,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.modelValue == null ? [] : [props.modelValue]);
+  dialogRef.value?.open(props.modelValue === null ? [] : [props.modelValue]);
 }
 
 /** 弹窗选中回调 */

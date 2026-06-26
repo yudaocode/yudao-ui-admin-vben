@@ -167,8 +167,8 @@ defineExpose({
     class="message-input__mention-picker !fixed z-100 w-50 rounded-md bg-[var(--ant-color-bg-container)] shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
     :style="{
       left: `${position.x}px`,
-      top: position.top != null ? `${position.top}px` : 'auto',
-      bottom: position.bottom != null ? `${position.bottom}px` : 'auto',
+      top: position.top !== null ? `${position.top}px` : 'auto',
+      bottom: position.bottom !== null ? `${position.bottom}px` : 'auto',
     }"
   >
     <div ref="scrollRef" style="max-height: 300px; overflow-y: auto">
@@ -216,7 +216,7 @@ defineExpose({
     <!-- 三角指针：picker 在 @ 下方（position.top 锚定）→ 箭头朝上贴顶；picker 在 @ 上方（position.bottom 锚定）→ 箭头朝下贴底 -->
     <div
       class="absolute left-4 w-3 h-3 rotate-45 bg-[var(--ant-color-bg-container)]"
-      :class="position.top != null ? '-top-1.5' : '-bottom-1.5'"
+      :class="position.top !== null ? '-top-1.5' : '-bottom-1.5'"
     ></div>
   </div>
 </template>

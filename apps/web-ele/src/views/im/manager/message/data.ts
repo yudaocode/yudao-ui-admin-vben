@@ -61,7 +61,9 @@ export function usePrivateGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 私聊消息字段 */
-export function usePrivateGridColumns(showReadColumns: boolean): VxeTableGridOptions['columns'] {
+export function usePrivateGridColumns(
+  showReadColumns: boolean,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',
@@ -179,7 +181,9 @@ export function useGroupGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 群聊消息字段 */
-export function useGroupGridColumns(showReadColumns: boolean): VxeTableGridOptions['columns'] {
+export function useGroupGridColumns(
+  showReadColumns: boolean,
+): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'id',

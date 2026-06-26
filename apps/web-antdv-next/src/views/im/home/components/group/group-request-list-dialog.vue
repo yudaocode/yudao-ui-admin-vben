@@ -1,59 +1,59 @@
 <script lang="ts" setup>
-import type { ImGroupRequestApi } from '#/api/im/group/request'
+import type { ImGroupRequestApi } from '#/api/im/group/request';
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-import { prompt } from '@vben/common-ui'
+import { prompt } from '@vben/common-ui';
 
-import { Empty, Input, message, Modal, Spin } from 'antdv-next'
+import { Empty, Input, message, Modal, Spin } from 'antdv-next';
 
-import { getGroupRequestListByGroupId } from '#/api/im/group/request'
-import { ImGroupRequestHandleResult } from '#/views/im/utils/constants'
+import { getGroupRequestListByGroupId } from '#/api/im/group/request';
+import { ImGroupRequestHandleResult } from '#/views/im/utils/constants';
 
-import { useGroupRequestStore } from '../../store/groupRequestStore'
-import { UserAvatar } from '../user'
+import { useGroupRequestStore } from '../../store/groupRequestStore';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImGroupRequestListDialog' })
+defineOptions({ name: 'ImGroupRequestListDialog' });
 
-const groupRequestStore = useGroupRequestStore()
+const groupRequestStore = useGroupRequestStore();
 
-const visible = ref(false)
-const groupId = ref<number | undefined>() // 当前展示的群编号；undefined 时走全局未处理列表（store.unhandledList）
-const loading = ref(false)
-const groupList = ref<ImGroupRequestApi.GroupRequestRespVO[]>([])
-const actingId = ref<null | number>(null)
+const visible = ref(false);
+const groupId = ref<number | undefined>(); // 当前展示的群编号；undefined 时走全局未处理列表（store.unhandledList）
+const loading = ref(false);
+const groupList = ref<ImGroupRequestApi.GroupRequestRespVO[]>([]);
+const actingId = ref<null | number>(null);
 
 defineExpose({
   /** 打开进群申请弹窗：reset → 灌参 → visible=true；不传 groupId 走全局未处理列表 */
   open(opts?: { groupId?: number }) {
-    groupId.value = opts?.groupId
-    actingId.value = null
-    visible.value = true
-  }
-})
+    groupId.value = opts?.groupId;
+    actingId.value = null;
+    visible.value = true;
+  },
+});
 
 /** 数据源：单群模式用 fetch 回来的 groupList；全局模式直接读 store.unhandledList，处理后 store 自动 reactive 同步 */
 const list = computed<ImGroupRequestApi.GroupRequestRespVO[]>(() =>
-  groupId.value ? groupList.value : groupRequestStore.unhandledList
-)
+  groupId.value ? groupList.value : groupRequestStore.unhandledList,
+);
 
 /** 顶部卡片：最新一条；空数组时为 null */
-const latest = computed(() => list.value[0] || null)
+const latest = computed(() => list.value[0] || null);
 /** 历史列表：除最新一条外的其余 */
-const histories = computed(() => list.value.slice(1))
+const histories = computed(() => list.value.slice(1));
 
 /** 打开 dialog 时拉数据：单群拉 API；全局直接读 store；关闭时清掉单群缓存 */
 watch(
   [visible, groupId],
   ([isVisible, currentGroupId]) => {
     if (isVisible && currentGroupId) {
-      void fetchList(currentGroupId)
+      void fetchList(currentGroupId);
     } else if (!isVisible) {
-      groupList.value = []
+      groupList.value = [];
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 /**
  * 单群模式下订阅 store 中归属本群的未处理列表变化：远端事件（WS 1503 新申请 / 其他管理员处理）触发时 refetch
@@ -68,89 +68,92 @@ watch(
           .filter((request) => request.groupId === groupId.value)
           .map(
             (request) =>
-              `${request.id}:${request.inviterUserId ?? ''}:${request.applyContent ?? ''}`
+              `${request.id}:${request.inviterUserId ?? ''}:${request.applyContent ?? ''}`,
           )
           .join(',')
       : null,
   (current, previous) => {
     if (current === null || previous === undefined || current === previous) {
-      return
+      return;
     }
     if (actingId.value !== null) {
-      return
+      return;
     }
     if (groupId.value) {
-      void fetchList(groupId.value)
+      void fetchList(groupId.value);
     }
-  }
-)
+  },
+);
 
-let fetchSeq = 0 // 单调递增请求序号；同群也会因为 WS 1503 推送触发额外 fetch，乱序返回时旧响应不能覆盖新数据
+let fetchSeq = 0; // 单调递增请求序号；同群也会因为 WS 1503 推送触发额外 fetch，乱序返回时旧响应不能覆盖新数据
 async function fetchList(targetGroupId: number) {
-  const seq = ++fetchSeq
-  loading.value = true
+  const seq = ++fetchSeq;
+  loading.value = true;
   try {
-    const data = (await getGroupRequestListByGroupId(targetGroupId)) || []
+    const data = (await getGroupRequestListByGroupId(targetGroupId)) || [];
     // 期间切群 / 关弹窗 / 又触发更新 fetch：丢响应
     if (seq !== fetchSeq || !visible.value || groupId.value !== targetGroupId) {
-      return
+      return;
     }
-    groupList.value = data
+    groupList.value = data;
   } finally {
     // 旧请求 finally 命中时新请求仍在跑，跳过避免提前关 loading
     if (seq === fetchSeq) {
-      loading.value = false
+      loading.value = false;
     }
   }
 }
 
 /** 同意：走 store 同步全局未处理列表 + 本地更新 handleResult 让按钮变灰 */
 async function handleAgree(item: ImGroupRequestApi.GroupRequestRespVO) {
-  if (actingId.value !== null) return
-  actingId.value = item.id
+  if (actingId.value !== null) return;
+  actingId.value = item.id;
   try {
-    await groupRequestStore.agreeGroupRequest(item.id)
-    updateLocalResult(item.id, ImGroupRequestHandleResult.AGREED)
-    message.success('已同意')
+    await groupRequestStore.agreeGroupRequest(item.id);
+    updateLocalResult(item.id, ImGroupRequestHandleResult.AGREED);
+    message.success('已同意');
   } finally {
-    actingId.value = null
+    actingId.value = null;
   }
 }
 
 /** 拒绝：弹理由输入框；为空则不带 handleContent */
 async function handleRefuse(item: ImGroupRequestApi.GroupRequestRespVO) {
-  if (actingId.value !== null) return
-  let handleContent: string
+  if (actingId.value !== null) return;
+  let handleContent: string;
   try {
     const result = await prompt<string>({
       component: Input,
       componentProps: {
         allowClear: true,
-        placeholder: '请输入拒绝理由（可选）'
+        placeholder: '请输入拒绝理由（可选）',
       },
       content: '',
       modelPropName: 'value',
-      title: '拒绝申请'
-    })
-    handleContent = result || ''
+      title: '拒绝申请',
+    });
+    handleContent = result || '';
   } catch {
-    return
+    return;
   }
-  actingId.value = item.id
+  actingId.value = item.id;
   try {
-    await groupRequestStore.refuseGroupRequest(item.id, handleContent || undefined)
-    updateLocalResult(item.id, ImGroupRequestHandleResult.REFUSED)
-    message.success('已拒绝')
+    await groupRequestStore.refuseGroupRequest(
+      item.id,
+      handleContent || undefined,
+    );
+    updateLocalResult(item.id, ImGroupRequestHandleResult.REFUSED);
+    message.success('已拒绝');
   } finally {
-    actingId.value = null
+    actingId.value = null;
   }
 }
 
 /** 单群模式下处理后更新 groupList 里的 handleResult，按钮转「已同意 / 已拒绝」灰态；全局模式 store 直接移除该项无需更新 */
 function updateLocalResult(id: number, handleResult: number) {
-  const target = groupList.value.find((r) => r.id === id)
+  const target = groupList.value.find((r) => r.id === id);
   if (target) {
-    target.handleResult = handleResult
+    target.handleResult = handleResult;
   }
 }
 </script>
@@ -173,85 +176,92 @@ function updateLocalResult(id: number, handleResult: number) {
     <Spin :spinning="loading" :classes="{ root: 'w-full' }">
       <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
         <!-- 空态 -->
-        <Empty v-if="!loading && list.length === 0" description="暂无进群申请" />
+        <Empty
+          v-if="!loading && list.length === 0"
+          description="暂无进群申请"
+        />
 
-      <!-- 顶部卡片：最新一条 -->
+        <!-- 顶部卡片：最新一条 -->
         <div
           v-if="latest"
           class="flex flex-col gap-2.5 p-3.5 rounded-[10px] border border-solid border-[var(--ant-color-border-secondary)] bg-[var(--ant-color-bg-container)] shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
         >
-        <div class="flex items-center gap-3">
-          <UserAvatar
-            :url="latest.userAvatar"
-            :name="latest.userNickname"
-            :size="44"
-            :clickable="false"
-          />
-          <div class="flex-1 min-w-0">
-            <div
-              class="truncate text-sm font-medium leading-[1.4] text-[var(--ant-color-text)]"
-            >
-              {{ latest.userNickname || `用户 ${latest.userId}` }}
+          <div class="flex items-center gap-3">
+            <UserAvatar
+              :url="latest.userAvatar"
+              :name="latest.userNickname"
+              :size="44"
+              :clickable="false"
+            />
+            <div class="flex-1 min-w-0">
+              <div
+                class="truncate text-sm font-medium leading-[1.4] text-[var(--ant-color-text)]"
+              >
+                {{ latest.userNickname || `用户 ${latest.userId}` }}
+              </div>
+              <div
+                class="truncate mt-[2px] text-12px leading-[1.5] text-[var(--ant-color-text-secondary)]"
+              >
+                <template v-if="latest.inviterUserId">
+                  通过
+                  <span class="text-[var(--ant-color-primary)]">
+                    {{
+                      latest.inviterNickname || `用户 ${latest.inviterUserId}`
+                    }}
+                  </span>
+                  的邀请进群
+                </template>
+                <template v-else>申请加入</template>
+              </div>
             </div>
-            <div
-              class="truncate mt-[2px] text-12px leading-[1.5] text-[var(--ant-color-text-secondary)]"
+            <span
+              v-if="latest.handleResult === ImGroupRequestHandleResult.AGREED"
+              class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
             >
-              <template v-if="latest.inviterUserId">
-                通过
-                <span class="text-[var(--ant-color-primary)]">
-                  {{ latest.inviterNickname || `用户 ${latest.inviterUserId}` }}
-                </span>
-                的邀请进群
-              </template>
-              <template v-else>申请加入</template>
+              已同意
+            </span>
+            <span
+              v-else-if="
+                latest.handleResult === ImGroupRequestHandleResult.REFUSED
+              "
+              class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
+            >
+              已拒绝
+            </span>
+            <div v-else class="flex gap-1.5 flex-shrink-0">
+              <button
+                class="im-group-request-list__btn im-group-request-list__btn--primary"
+                :disabled="actingId === latest.id"
+                @click="handleAgree(latest)"
+              >
+                确认
+              </button>
+              <button
+                class="im-group-request-list__btn im-group-request-list__btn--ghost"
+                :disabled="actingId === latest.id"
+                @click="handleRefuse(latest)"
+              >
+                拒绝
+              </button>
             </div>
           </div>
-          <span
-            v-if="latest.handleResult === ImGroupRequestHandleResult.AGREED"
-            class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
+          <!-- 申请理由：邀请场景显示邀请人 + 留言；主动申请显示申请人 + 留言 -->
+          <div
+            v-if="latest.applyContent"
+            class="px-3 py-2 rounded-md text-[13px] leading-[1.5] break-all bg-[var(--ant-color-fill-secondary)] text-[var(--ant-color-text)]"
           >
-            已同意
-          </span>
-          <span
-            v-else-if="latest.handleResult === ImGroupRequestHandleResult.REFUSED"
-            class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
-          >
-            已拒绝
-          </span>
-          <div v-else class="flex gap-1.5 flex-shrink-0">
-            <button
-              class="im-group-request-list__btn im-group-request-list__btn--primary"
-              :disabled="actingId === latest.id"
-              @click="handleAgree(latest)"
-            >
-              确认
-            </button>
-            <button
-              class="im-group-request-list__btn im-group-request-list__btn--ghost"
-              :disabled="actingId === latest.id"
-              @click="handleRefuse(latest)"
-            >
-              拒绝
-            </button>
+            <span class="text-[var(--ant-color-primary)]">
+              {{
+                latest.inviterUserId
+                  ? latest.inviterNickname || `用户 ${latest.inviterUserId}`
+                  : latest.userNickname || `用户 ${latest.userId}`
+              }}：
+            </span>
+            {{ latest.applyContent }}
           </div>
         </div>
-        <!-- 申请理由：邀请场景显示邀请人 + 留言；主动申请显示申请人 + 留言 -->
-        <div
-          v-if="latest.applyContent"
-          class="px-3 py-2 rounded-md text-[13px] leading-[1.5] break-all bg-[var(--ant-color-fill-secondary)] text-[var(--ant-color-text)]"
-        >
-          <span class="text-[var(--ant-color-primary)]">
-            {{
-              latest.inviterUserId
-                ? latest.inviterNickname || `用户 ${latest.inviterUserId}`
-                : latest.userNickname || `用户 ${latest.userId}`
-            }}：
-          </span>
-          {{ latest.applyContent }}
-        </div>
-      </div>
 
-      <!-- 分割线：仅在有更早申请时出现 -->
+        <!-- 分割线：仅在有更早申请时出现 -->
         <div
           v-if="histories.length > 0"
           class="flex items-center justify-center mt-1.5 -mb-0.5 text-12px text-[var(--ant-color-text-placeholder)]"
@@ -265,61 +275,63 @@ function updateLocalResult(id: number, handleResult: number) {
           :key="item.id"
           class="flex flex-col gap-2.5 px-3.5 py-2.5 rounded-[10px] border border-solid border-[var(--ant-color-border-secondary)] bg-[var(--ant-color-bg-container)] shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
         >
-        <div class="flex items-center gap-3">
-          <UserAvatar
-            :url="item.userAvatar"
-            :name="item.userNickname"
-            :size="40"
-            :clickable="false"
-          />
-          <div class="flex-1 min-w-0">
-            <div
-              class="truncate text-sm font-medium leading-[1.4] text-[var(--ant-color-text)]"
-            >
-              {{ item.userNickname || `用户 ${item.userId}` }}
+          <div class="flex items-center gap-3">
+            <UserAvatar
+              :url="item.userAvatar"
+              :name="item.userNickname"
+              :size="40"
+              :clickable="false"
+            />
+            <div class="flex-1 min-w-0">
+              <div
+                class="truncate text-sm font-medium leading-[1.4] text-[var(--ant-color-text)]"
+              >
+                {{ item.userNickname || `用户 ${item.userId}` }}
+              </div>
+              <div
+                class="truncate mt-[2px] text-12px leading-[1.5] text-[var(--ant-color-text-secondary)]"
+              >
+                <template v-if="item.inviterUserId">
+                  通过
+                  <span class="text-[var(--ant-color-primary)]">
+                    {{ item.inviterNickname || `用户 ${item.inviterUserId}` }}
+                  </span>
+                  的邀请进群
+                </template>
+                <template v-else>申请加入</template>
+              </div>
             </div>
-            <div
-              class="truncate mt-[2px] text-12px leading-[1.5] text-[var(--ant-color-text-secondary)]"
+            <span
+              v-if="item.handleResult === ImGroupRequestHandleResult.AGREED"
+              class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
             >
-              <template v-if="item.inviterUserId">
-                通过
-                <span class="text-[var(--ant-color-primary)]">
-                  {{ item.inviterNickname || `用户 ${item.inviterUserId}` }}
-                </span>
-                的邀请进群
-              </template>
-              <template v-else>申请加入</template>
+              已同意
+            </span>
+            <span
+              v-else-if="
+                item.handleResult === ImGroupRequestHandleResult.REFUSED
+              "
+              class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
+            >
+              已拒绝
+            </span>
+            <div v-else class="flex gap-1.5 flex-shrink-0">
+              <button
+                class="im-group-request-list__btn im-group-request-list__btn--primary"
+                :disabled="actingId === item.id"
+                @click="handleAgree(item)"
+              >
+                确认
+              </button>
+              <button
+                class="im-group-request-list__btn im-group-request-list__btn--ghost"
+                :disabled="actingId === item.id"
+                @click="handleRefuse(item)"
+              >
+                拒绝
+              </button>
             </div>
           </div>
-          <span
-            v-if="item.handleResult === ImGroupRequestHandleResult.AGREED"
-            class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
-          >
-            已同意
-          </span>
-          <span
-            v-else-if="item.handleResult === ImGroupRequestHandleResult.REFUSED"
-            class="flex-shrink-0 text-[13px] text-[var(--ant-color-text-placeholder)]"
-          >
-            已拒绝
-          </span>
-          <div v-else class="flex gap-1.5 flex-shrink-0">
-            <button
-              class="im-group-request-list__btn im-group-request-list__btn--primary"
-              :disabled="actingId === item.id"
-              @click="handleAgree(item)"
-            >
-              确认
-            </button>
-            <button
-              class="im-group-request-list__btn im-group-request-list__btn--ghost"
-              :disabled="actingId === item.id"
-              @click="handleRefuse(item)"
-            >
-              拒绝
-            </button>
-          </div>
-        </div>
         </div>
       </div>
     </Spin>

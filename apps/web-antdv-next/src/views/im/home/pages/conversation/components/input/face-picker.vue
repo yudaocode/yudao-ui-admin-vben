@@ -1,118 +1,131 @@
 <script lang="ts" setup>
-import type { ImFacePackApi } from '#/api/im/face/pack'
-import type { ImFaceUserItemApi } from '#/api/im/face/userItem'
+import type { ImFacePackApi } from '#/api/im/face/pack';
+import type { ImFaceUserItemApi } from '#/api/im/face/userItem';
 
-import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { confirm } from '@vben/common-ui';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { message, Tooltip } from 'antdv-next'
+import { message, Tooltip } from 'antdv-next';
 
-import { uploadFile } from '#/api/infra/file'
-import { useFaceStore } from '#/views/im/home/store/faceStore'
-import { IM_EMOJI_LIST } from '#/views/im/utils/emoji'
-import { probeImageSize } from '#/views/im/utils/image'
+import { uploadFile } from '#/api/infra/file';
+import { useFaceStore } from '#/views/im/home/store/faceStore';
+import { IM_EMOJI_LIST } from '#/views/im/utils/emoji';
+import { probeImageSize } from '#/views/im/utils/image';
 
-defineOptions({ name: 'ImFacePicker' })
+defineOptions({ name: 'ImFacePicker' });
 
 const props = withDefaults(
   defineProps<{
     /** full：emoji + 个人表情 + 系统包（聊天主输入用）；emoji：仅 emoji（留言 / 评论场景） */
-    mode?: FacePickerMode
-    visible: boolean
+    mode?: FacePickerMode;
+    visible: boolean;
   }>(),
-  { mode: 'full' }
-)
+  { mode: 'full' },
+);
 
 const emit = defineEmits<{
   /** 选中 Unicode emoji（如 😀），调用方应插入到输入框走 TEXT 通道 */
-  selectEmoji: [emoji: string]
+  selectEmoji: [emoji: string];
   /** 选中表情贴图，调用方应走 FACE 消息发送 */
-  selectFace: [face: { height: number; name?: string; url: string; width: number; }]
-  'update:visible': [value: boolean]
-}>()
+  selectFace: [
+    face: { height: number; name?: string; url: string; width: number },
+  ];
+  'update:visible': [value: boolean];
+}>();
 
 /** 面板模式 */
-type FacePickerMode = 'emoji' | 'full'
+type FacePickerMode = 'emoji' | 'full';
 
-const rootRef = useTemplateRef<HTMLDivElement>('rootRef')
-const uploadInputRef = useTemplateRef<HTMLInputElement>('uploadInputRef')
+const rootRef = useTemplateRef<HTMLDivElement>('rootRef');
+const uploadInputRef = useTemplateRef<HTMLInputElement>('uploadInputRef');
 
-const faceStore = useFaceStore()
+const faceStore = useFaceStore();
 
 // tab 标识常量；pack:N 类用 packTabKey() 拼出，避免散落字符串字面量
 const FACE_TAB = {
   EMOJI: 'emoji',
-  MINE: 'mine'
-} as const
-const packTabKey = (packId: number) => `pack:${packId}`
+  MINE: 'mine',
+} as const;
+const packTabKey = (packId: number) => `pack:${packId}`;
 
-const activeTab = ref<string>(FACE_TAB.EMOJI) // 当前激活的 tab
+const activeTab = ref<string>(FACE_TAB.EMOJI); // 当前激活的 tab
 
 /** 是否完整模式（含个人 / 系统包 tab） */
-const isFullMode = computed(() => props.mode === 'full')
+const isFullMode = computed(() => props.mode === 'full');
 
-const uploading = ref(false) // 上传中标记，避免连续点击触发并发上传
+const uploading = ref(false); // 上传中标记，避免连续点击触发并发上传
 
 /** 选 emoji 字符：插到输入框；选完不关面板，方便用户连发多个 */
 function handleSelectEmoji(emoji: string) {
-  emit('selectEmoji', emoji)
+  emit('selectEmoji', emoji);
 }
 
 /** 选个人表情：直接发；点完关面板，对齐微信 */
 function handleSelectFaceUserItem(item: ImFaceUserItemApi.FaceUserItem) {
-  emit('selectFace', { url: item.url, width: item.width, height: item.height, name: item.name })
-  emit('update:visible', false)
+  emit('selectFace', {
+    url: item.url,
+    width: item.width,
+    height: item.height,
+    name: item.name,
+  });
+  emit('update:visible', false);
 }
 
 /** 选系统表情包内表情：直接发；点完关面板 */
 function handleSelectPackItem(item: ImFacePackApi.FacePackUserItem) {
-  emit('selectFace', { url: item.url, width: item.width, height: item.height, name: item.name })
-  emit('update:visible', false)
+  emit('selectFace', {
+    url: item.url,
+    width: item.width,
+    height: item.height,
+    name: item.name,
+  });
+  emit('update:visible', false);
 }
 
 /** 长按 / 右键删除个人表情 */
 async function handleDeleteUserItem(item: ImFaceUserItemApi.FaceUserItem) {
   if (!confirm('确认删除该表情？')) {
-    return
+    return;
   }
-  await faceStore.removeFaceUserItem(item.id)
+  await faceStore.removeFaceUserItem(item.id);
 }
 
 /** 点 + 触发文件选择 */
 function onUploadClick() {
-  uploadInputRef.value?.click()
+  uploadInputRef.value?.click();
 }
 
 /** 文件选完即上传，成功后写入 faceStore 个人表情列表 */
 async function onUploadPicked(e: Event) {
-  const input = e.target as HTMLInputElement
-  const file = input.files?.[0]
-  input.value = ''
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = '';
   if (!file) {
-    return
+    return;
   }
-  uploading.value = true
-  let size: { height: number; width: number; }
+  uploading.value = true;
+  let size: { height: number; width: number };
   try {
-    size = await probeImageSize(file)
+    size = await probeImageSize(file);
   } catch (error) {
-    console.warn('[IM] 解析个人表情失败', error)
-    message.error('图片解析失败')
-    uploading.value = false
-    return
+    console.warn('[IM] 解析个人表情失败', error);
+    message.error('图片解析失败');
+    uploading.value = false;
+    return;
   }
 
   try {
-    const url = await uploadFile({ file })
+    const url = await uploadFile({ file });
     if (!url) {
-      message.error('上传失败')
-      return
+      message.error('上传失败');
+      return;
     }
-    const payload = { url, width: size.width, height: size.height }
-    await faceStore.addFaceUserItem(payload)
+    const payload = { url, width: size.width, height: size.height };
+    await faceStore.addFaceUserItem(payload);
   } finally {
-    uploading.value = false
+    uploading.value = false;
   }
 }
 
@@ -121,32 +134,32 @@ watch(
   () => props.visible,
   (visible) => {
     if (visible) {
-      document.addEventListener('click', handleDocumentClick)
+      document.addEventListener('click', handleDocumentClick);
       if (isFullMode.value) {
         // 系统包通常已被 home onMounted 预拉过；ensureXxx 内部 promise 缓存避免重复请求
-        void faceStore.ensureFacePackList()
-        void faceStore.ensureFaceUserItemList()
+        void faceStore.ensureFacePackList();
+        void faceStore.ensureFaceUserItemList();
       }
     } else {
-      document.removeEventListener('click', handleDocumentClick)
+      document.removeEventListener('click', handleDocumentClick);
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 /** 点击面板外部关闭 */
 function handleDocumentClick(e: MouseEvent) {
   if (!props.visible || !rootRef.value) {
-    return
+    return;
   }
   if (!rootRef.value.contains(e.target as Node)) {
-    emit('update:visible', false)
+    emit('update:visible', false);
   }
 }
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleDocumentClick)
-})
+  document.removeEventListener('click', handleDocumentClick);
+});
 </script>
 
 <template>
@@ -166,7 +179,10 @@ onUnmounted(() => {
     <!-- 主内容区：高度固定 + 各 tab 用 v-show 切换，避免每次切 tab 重建 scrollbar 造成滚动位置丢失 -->
     <div class="relative h-[300px] overflow-hidden">
       <!-- emoji 网格 -->
-      <div v-show="activeTab === FACE_TAB.EMOJI" style="height: 300px; overflow-y: auto">
+      <div
+        v-show="activeTab === FACE_TAB.EMOJI"
+        style="height: 300px; overflow-y: auto"
+      >
         <div class="grid grid-cols-10 gap-0.5 p-2">
           <button
             v-for="emoji in IM_EMOJI_LIST"
@@ -181,7 +197,11 @@ onUnmounted(() => {
       </div>
 
       <!-- 个人表情：5 列方格，无名字标签；末尾「+」上传 -->
-      <div v-if="isFullMode" v-show="activeTab === FACE_TAB.MINE" style="height: 300px; overflow-y: auto">
+      <div
+        v-if="isFullMode"
+        v-show="activeTab === FACE_TAB.MINE"
+        style="height: 300px; overflow-y: auto"
+      >
         <div class="grid grid-cols-5 gap-2 p-3">
           <!-- 上传入口固定放第一格；dashed border 与表情格子区分视觉语义，对齐 el-upload 观感 -->
           <button
@@ -192,7 +212,11 @@ onUnmounted(() => {
             @click="onUploadClick"
           >
             <Icon
-              :icon="uploading ? 'eos-icons:bubble-loading' : 'ant-design:plus-outlined'"
+              :icon="
+                uploading
+                  ? 'eos-icons:bubble-loading'
+                  : 'ant-design:plus-outlined'
+              "
               :size="22"
             />
           </button>
@@ -344,10 +368,10 @@ onUnmounted(() => {
   top: calc(100% - 1px);
   left: 10px;
   content: '';
-  border-color: var(--ant-color-bg-container) transparent transparent transparent;
+  border-color: var(--ant-color-bg-container) transparent transparent
+    transparent;
   border-style: solid;
   border-width: 6px 6px 0;
   filter: drop-shadow(0 2px 2px rgb(0 0 0 / 8%));
 }
-
 </style>

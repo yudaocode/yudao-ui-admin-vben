@@ -1,123 +1,124 @@
 <script lang="ts" setup>
-import type { FriendLite } from '../../types'
+import type { FriendLite } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { ElInput, ElMessage } from 'element-plus'
+import { ElInput, ElMessage } from 'element-plus';
 
-import { PagedScroller } from '..'
-import { useFriendBuckets } from '../../composables/useFriendBuckets'
-import { useSelectedItems } from '../../composables/useSelectedItems'
-import { UserAvatar } from '../user'
+import { PagedScroller } from '..';
+import { useFriendBuckets } from '../../composables/useFriendBuckets';
+import { useSelectedItems } from '../../composables/useSelectedItems';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImFriendPickerPanel' })
+defineOptions({ name: 'ImFriendPickerPanel' });
 
 const props = withDefaults(
   defineProps<{
     /** 禁用 id：列表里展示置灰、不可勾选、不计入已选数（典型：邀请入群时已在群成员） */
-    disabledIds?: number[]
+    disabledIds?: number[];
     /** 全量好友列表 */
-    friends: FriendLite[]
+    friends: FriendLite[];
     /** 隐藏 id：不展示（hide > locked > disabled） */
-    hideIds?: number[]
+    hideIds?: number[];
     /** 锁定 id：默认勾选、不可取消、计入已选数（典型：私聊侧 +建群锁定对方） */
-    lockedIds?: number[]
+    lockedIds?: number[];
     /** 已选数上限；不传或 <=0 时不限 */
-    maxSize?: number
+    maxSize?: number;
     /** 已选好友 id（v-model）；按数组顺序即为点击顺序 */
-    selectedIds: number[]
+    selectedIds: number[];
   }>(),
   {
     lockedIds: () => [],
     disabledIds: () => [],
     hideIds: () => [],
-    maxSize: 0
-  }
-)
+    maxSize: 0,
+  },
+);
 
 const emit = defineEmits<{
-  'update:selectedIds': [value: number[]]
-}>()
+  'update:selectedIds': [value: number[]];
+}>();
 
-const keyword = ref('')
+const keyword = ref('');
 
 /** id → friend 映射，已选反查 / 三态判定共用，避免每次 O(N) 扫 */
 const byId = computed(() => {
-  const map = new Map<number, FriendLite>()
+  const map = new Map<number, FriendLite>();
   for (const friend of props.friends) {
-    map.set(friend.id, friend)
+    map.set(friend.id, friend);
   }
-  return map
-})
+  return map;
+});
 
 /** 三态 id 集合：每次过滤复用 */
-const hideSet = computed(() => new Set(props.hideIds))
-const lockedSet = computed(() => new Set(props.lockedIds))
-const disabledSet = computed(() => new Set(props.disabledIds))
-const selectedSet = computed(() => new Set(props.selectedIds))
+const hideSet = computed(() => new Set(props.hideIds));
+const lockedSet = computed(() => new Set(props.lockedIds));
+const disabledSet = computed(() => new Set(props.disabledIds));
+const selectedSet = computed(() => new Set(props.selectedIds));
 
 /** 候选好友：剔除 hideIds（hide 优先级最高） */
 const candidates = computed(() =>
-  props.friends.filter((friend) => !hideSet.value.has(friend.id))
-)
+  props.friends.filter((friend) => !hideSet.value.has(friend.id)),
+);
 
 /** 委托 useFriendBuckets：搜索规则复用，左侧列表按滚动分页渲染 */
-const { filtered } = useFriendBuckets(candidates, keyword)
+const { filtered } = useFriendBuckets(candidates, keyword);
 
 /** 已选数 + 已选好友列表：三态优先级 + 顺序拼接由 useSelectedItems 统一承担 */
-const { selectedCount, selectedItems: selectedFriends } = useSelectedItems<FriendLite>(
-  () => props.selectedIds,
-  () => props.lockedIds,
-  () => props.disabledIds,
-  () => props.hideIds,
-  byId
-)
+const { selectedCount, selectedItems: selectedFriends } =
+  useSelectedItems<FriendLite>(
+    () => props.selectedIds,
+    () => props.lockedIds,
+    () => props.disabledIds,
+    () => props.hideIds,
+    byId,
+  );
 
 /** 是否被锁定 */
 function isLocked(friend: FriendLite): boolean {
-  return lockedSet.value.has(friend.id)
+  return lockedSet.value.has(friend.id);
 }
 
 /** 是否被禁用：locked / hide 已被前置过滤，剩下的才算 disabled */
 function isDisabled(friend: FriendLite): boolean {
-  return !lockedSet.value.has(friend.id) && disabledSet.value.has(friend.id)
+  return !lockedSet.value.has(friend.id) && disabledSet.value.has(friend.id);
 }
 
 /** 是否选中：locked 视为永远选中 */
 function isSelected(friend: FriendLite): boolean {
-  return selectedSet.value.has(friend.id)
+  return selectedSet.value.has(friend.id);
 }
 
 /** 圆形勾选指示器的 class：选中 / 锁定走绿底，禁用灰底，未选空心圆 */
 function getCheckClass(friend: FriendLite): string {
   if (isLocked(friend) || isSelected(friend)) {
-    return 'bg-[#07c160] border border-solid border-[#07c160]'
+    return 'bg-[#07c160] border border-solid border-[#07c160]';
   }
   if (isDisabled(friend)) {
-    return 'bg-[var(--ant-color-fill)] border border-solid border-[var(--ant-color-border)]'
+    return 'bg-[var(--ant-color-fill)] border border-solid border-[var(--ant-color-border)]';
   }
-  return 'border border-solid border-[var(--ant-color-border)] bg-[var(--ant-color-bg-container)]'
+  return 'border border-solid border-[var(--ant-color-border)] bg-[var(--ant-color-bg-container)]';
 }
 
 /** 切换选中态：locked / disabled 不响应；右栏 × 移除 / 行 click 都走这里 */
 function handleToggle(friend: FriendLite) {
   if (isLocked(friend) || isDisabled(friend)) {
-    return
+    return;
   }
-  const next = [...props.selectedIds]
-  const index = next.indexOf(friend.id)
+  const next = [...props.selectedIds];
+  const index = next.indexOf(friend.id);
   if (index === -1) {
     if (props.maxSize > 0 && selectedCount.value >= props.maxSize) {
-      ElMessage.error(`最多选择 ${props.maxSize} 位好友`)
-      return
+      ElMessage.error(`最多选择 ${props.maxSize} 位好友`);
+      return;
     }
-    next.push(friend.id)
+    next.push(friend.id);
   } else {
-    next.splice(index, 1)
+    next.splice(index, 1);
   }
-  emit('update:selectedIds', next)
+  emit('update:selectedIds', next);
 }
 </script>
 
@@ -144,13 +145,19 @@ function handleToggle(friend: FriendLite) {
       </div>
 
       <div class="flex-1 min-h-0">
-        <PagedScroller v-if="filtered.length > 0" :items="filtered" :page-size="30" item-key="id">
+        <PagedScroller
+          v-if="filtered.length > 0"
+          :items="filtered"
+          :page-size="30"
+          item-key="id"
+        >
           <template #default="{ item }">
             <div
               :key="(item as FriendLite).id"
               class="flex gap-2.5 items-center px-3 py-2 cursor-pointer hover:bg-[var(--ant-color-fill)]"
               :class="{
-                'opacity-60 cursor-not-allowed hover:bg-transparent': isDisabled(item as FriendLite)
+                'opacity-60 cursor-not-allowed hover:bg-transparent':
+                  isDisabled(item as FriendLite),
               }"
               @click="handleToggle(item as FriendLite)"
             >
@@ -160,7 +167,10 @@ function handleToggle(friend: FriendLite) {
                 :class="getCheckClass(item as FriendLite)"
               >
                 <Icon
-                  v-if="isSelected(item as FriendLite) || isLocked(item as FriendLite)"
+                  v-if="
+                    isSelected(item as FriendLite) ||
+                    isLocked(item as FriendLite)
+                  "
                   icon="ant-design:check-outlined"
                   :size="12"
                   color="#fff"
@@ -177,12 +187,18 @@ function handleToggle(friend: FriendLite) {
               <span
                 class="flex-1 min-w-0 overflow-hidden text-sm truncate text-[var(--ant-color-text)]"
               >
-                {{ (item as FriendLite).displayName || (item as FriendLite).nickname }}
+                {{
+                  (item as FriendLite).displayName ||
+                  (item as FriendLite).nickname
+                }}
               </span>
             </div>
           </template>
         </PagedScroller>
-        <div v-else class="py-10 text-13px text-center text-[var(--ant-color-text-disabled)]">
+        <div
+          v-else
+          class="py-10 text-13px text-center text-[var(--ant-color-text-disabled)]"
+        >
           {{ keyword ? '没有匹配的好友' : '暂无好友' }}
         </div>
       </div>
