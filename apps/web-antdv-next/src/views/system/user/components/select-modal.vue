@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TransferDirection, TransferKey } from 'antdv-next';
+
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
@@ -258,7 +260,7 @@ function handleRightPaginationChange(page: number, pageSize: number) {
 }
 
 /** 处理用户搜索 */
-async function handleUserSearch(direction: string, value: string) {
+async function handleUserSearch(direction: TransferDirection, value: string) {
   if (direction === 'left') {
     leftListState.value.searchValue = value;
     leftListState.value.pagination.current = 1;
@@ -271,9 +273,9 @@ async function handleUserSearch(direction: string, value: string) {
 }
 
 /** 处理用户选择变化 */
-function handleUserChange(targetKeys: string[]) {
+function handleUserChange(targetKeys: TransferKey[]) {
   // 使用 Set 来去重选中的用户ID
-  selectedUserIds.value = [...new Set(targetKeys)];
+  selectedUserIds.value = [...new Set(targetKeys.map(String))];
   emit('update:value', selectedUserIds.value.map(Number));
   updateRightListData();
 }
@@ -408,7 +410,10 @@ function processDeptNode(node: any): DeptTreeNode {
               v-model:value="deptSearchKeys"
               placeholder="搜索部门"
               allow-clear
-              @input="(e) => handleDeptSearch(e.target?.value ?? '')"
+              @input="
+                (e: Event) =>
+                  handleDeptSearch((e.target as HTMLInputElement)?.value ?? '')
+              "
             />
           </div>
           <Tree
@@ -436,8 +441,8 @@ function processDeptNode(node: any): DeptTreeNode {
             <span>{{ item?.nickname }} ({{ item?.username }})</span>
           </template>
 
-          <template #footer="{ direction }">
-            <div v-if="direction === 'left'">
+          <template #footer="{ info }">
+            <div v-if="info?.direction === 'left'">
               <Pagination
                 v-model:current="leftListState.pagination.current"
                 v-model:page-size="leftListState.pagination.pageSize"
@@ -449,7 +454,7 @@ function processDeptNode(node: any): DeptTreeNode {
               />
             </div>
 
-            <div v-if="direction === 'right'">
+            <div v-if="info?.direction === 'right'">
               <Pagination
                 v-model:current="rightListState.pagination.current"
                 v-model:page-size="rightListState.pagination.pageSize"

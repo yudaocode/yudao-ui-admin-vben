@@ -141,7 +141,7 @@ defineExpose({ load });
     <Card
       v-for="item in summaryList"
       :key="item.type"
-      :body-style="{ padding: '12px 16px 16px' }"
+      :styles="{ body: { padding: '12px 16px 16px' } }"
       class="h-full shadow-sm"
       :loading="loading"
       :style="{ borderTop: `3px solid ${item.color}` }"

@@ -166,7 +166,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
     label="数据长度"
   >
     <Input
-      v-model:value="property.dataSpecs.length"
+      v-model:value="property.dataSpecs!.length"
       class="!w-[255px]"
       placeholder="请输入文本字节长度"
     >

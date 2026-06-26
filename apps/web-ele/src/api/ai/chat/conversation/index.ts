@@ -14,7 +14,7 @@ export namespace AiChatConversationApi {
     temperature: number; // 温度参数
     maxTokens: number; // 单条回复的最大 Token 数量
     maxContexts: number; // 上下文的最大 Message 数量
-    createTime?: Date; // 创建时间
+    createTime: Date; // 创建时间
     systemMessage?: string; // 角色设定
     modelName?: string; // 模型名字
     roleAvatar?: string; // 角色头像

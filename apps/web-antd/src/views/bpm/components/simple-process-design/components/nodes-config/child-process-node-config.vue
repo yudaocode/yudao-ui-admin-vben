@@ -186,6 +186,12 @@ const multiFormFieldOptions = computed(() => {
     (item) => item.type === 'select' || item.type === 'checkbox',
   );
 });
+const multiInstanceSourceNumber = computed({
+  get: () => Number(configForm.value.multiInstanceSource || 1),
+  set: (value?: number) => {
+    configForm.value.multiInstanceSource = String(value || '');
+  },
+});
 const childFormFieldOptions = ref<any[]>([]);
 
 /** 保存配置 */
@@ -806,7 +812,7 @@ onMounted(async () => {
             }"
           >
             <InputNumber
-              v-model:value="configForm.multiInstanceSource"
+              v-model:value="multiInstanceSourceNumber"
               :min="1"
             />
           </FormItem>

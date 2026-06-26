@@ -110,7 +110,10 @@ export function getSimpleUser(id: number | string) {
 
 /** 按昵称模糊搜索用户 */
 export function getSimpleUserListByNickname(nickname: string) {
-  return requestClient.get<SystemUserApi.UserSimple[]>('/system/user/list-by-nickname', {
-    params: { nickname },
-  });
+  return requestClient.get<SystemUserApi.UserSimple[]>(
+    '/system/user/list-by-nickname',
+    {
+      params: { nickname },
+    },
+  );
 }

@@ -12,6 +12,7 @@ export namespace CrmReceivableApi {
     customerId?: number;
     customerName?: string;
     contractId?: number;
+    contractNo?: string;
     contract?: Contract;
     auditStatus: number;
     processInstanceId: number;

@@ -56,6 +56,7 @@ watch(
       simpleModel.value = newModelView.simpleModel || {};
     }
   },
+  { immediate: true },
 );
 
 /** 监控模型结构数据 */

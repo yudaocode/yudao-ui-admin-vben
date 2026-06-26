@@ -44,6 +44,11 @@ const currentNode = useWatchNode(props);
 // 节点名称
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.DELAY_TIMER_NODE);
+
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
+
 // 抄送人表单配置
 const formRef = ref(); // 表单 Ref
 
@@ -154,7 +159,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
       <div class="flex items-center">
         <Input
           v-if="showInput"
-          ref="inputRef"
+          :ref="setInputRef"
           type="text"
           class="mr-2 w-48"
           @blur="changeNodeName()"

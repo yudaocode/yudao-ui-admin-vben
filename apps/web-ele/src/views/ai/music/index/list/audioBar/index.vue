@@ -1,16 +1,22 @@
 <script lang="ts" setup>
-import { inject, reactive, ref } from 'vue';
+import type { MusicSong } from '../types';
+
+import { computed, inject, nextTick, reactive, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
-import { formatPast } from '@vben/utils';
 
 import { ElImage, ElSlider } from 'element-plus';
 
+import { currentSongKey } from '../types';
+
 defineOptions({ name: 'AiMusicAudioBarIndex' });
 
-const currentSong = inject<any>('currentSong', {});
+const currentSong = inject(currentSongKey, ref<MusicSong>({}));
+const currentAudioUrl = computed(() => currentSong.value.audioUrl || undefined);
 
 const audioRef = ref<HTMLAudioElement | null>(null);
+const audioProgress = ref(0);
+const audioDuration = ref(0);
 const audioProps = reactive<any>({
   autoplay: true,
   paused: false,
@@ -19,6 +25,17 @@ const audioProps = reactive<any>({
   muted: false,
   volume: 50,
 }); // 音频相关属性https://www.runoob.com/tags/ref-av-dom.html
+
+function formatAudioTime(seconds: number) {
+  if (!Number.isFinite(seconds)) {
+    return '00:00';
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds
+    .toString()
+    .padStart(2, '0')}`;
+}
 
 function toggleStatus(type: string) {
   audioProps[type] = !audioProps[type];
@@ -32,9 +49,40 @@ function toggleStatus(type: string) {
 }
 
 /** 更新播放位置 */
-function audioTimeUpdate(args: any) {
-  audioProps.currentTime = formatPast(new Date(args.timeStamp), 'mm:ss');
+function audioTimeUpdate() {
+  if (!audioRef.value) {
+    return;
+  }
+  audioProgress.value = audioRef.value.currentTime;
+  audioProps.currentTime = formatAudioTime(audioRef.value.currentTime);
 }
+
+function audioLoadedMetadata() {
+  if (!audioRef.value) {
+    return;
+  }
+  audioDuration.value = audioRef.value.duration;
+  audioProps.duration = formatAudioTime(audioRef.value.duration);
+}
+
+function handleProgressChange(value: number | number[]) {
+  if (!audioRef.value || Array.isArray(value)) {
+    return;
+  }
+  audioRef.value.currentTime = value;
+  audioProgress.value = value;
+  audioProps.currentTime = formatAudioTime(value);
+}
+
+watch(currentAudioUrl, () => {
+  audioProgress.value = 0;
+  audioDuration.value = 0;
+  audioProps.currentTime = '00:00';
+  audioProps.duration = '00:00';
+  nextTick(() => {
+    audioRef.value?.load();
+  });
+});
 </script>
 
 <template>
@@ -48,8 +96,10 @@ function audioTimeUpdate(args: any) {
         class="!w-[45px]"
       />
       <div>
-        <div>{{ currentSong.name }}</div>
-        <div class="text-xs text-gray-400">{{ currentSong.singer }}</div>
+        <div>{{ currentSong.title || '暂无音乐' }}</div>
+        <div class="text-xs text-gray-400">
+          {{ currentSong.singer || currentSong.desc }}
+        </div>
       </div>
     </div>
     <!-- 音频controls -->
@@ -73,19 +123,26 @@ function audioTimeUpdate(args: any) {
       />
       <div class="flex items-center gap-4">
         <span>{{ audioProps.currentTime }}</span>
-        <ElSlider v-model="audioProps.duration" color="#409eff" class="!w-40" />
+        <ElSlider
+          v-model="audioProgress"
+          :max="audioDuration"
+          color="#409eff"
+          class="!w-40"
+          @change="handleProgressChange"
+        />
         <span>{{ audioProps.duration }}</span>
       </div>
       <!-- 音频 -->
       <audio
-        v-bind="audioProps"
+        :src="currentAudioUrl"
+        :autoplay="audioProps.autoplay"
+        :muted="audioProps.muted"
         ref="audioRef"
         controls
         v-show="!audioProps"
         @timeupdate="audioTimeUpdate"
-      >
-        <!-- <source :src="audioUrl" /> -->
-      </audio>
+        @loadedmetadata="audioLoadedMetadata"
+      ></audio>
     </div>
     <div class="flex items-center gap-4">
       <IconifyIcon

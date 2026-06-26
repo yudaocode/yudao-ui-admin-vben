@@ -30,7 +30,7 @@ interface Props {
   type?: string;
 }
 
-const prefix = inject<string>('prefix');
+const prefix = inject<string>('prefix', 'flowable');
 
 const elementListenersList = ref<any[]>([]);
 const listenerEventTypeObject = ref(eventType);

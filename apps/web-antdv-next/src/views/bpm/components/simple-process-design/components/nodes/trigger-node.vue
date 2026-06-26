@@ -39,6 +39,10 @@ const { showInput, changeNodeName, clickTitle, inputRef } = useNodeName2(
   BpmNodeTypeEnum.TRIGGER_NODE,
 );
 
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
+
 const nodeSetting = ref();
 // 打开节点配置
 function openNodeConfig() {
@@ -68,7 +72,7 @@ function deleteNode() {
             <span class="iconfont icon-trigger"></span>
           </div>
           <Input
-            ref="inputRef"
+            :ref="setInputRef"
             v-if="!readonly && showInput"
             type="text"
             class="editable-title-input"

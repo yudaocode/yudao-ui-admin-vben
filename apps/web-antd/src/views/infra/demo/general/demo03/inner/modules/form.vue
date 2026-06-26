@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
+import type { Dayjs } from 'dayjs';
 
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { computed, ref } from 'vue';
 
@@ -23,7 +24,7 @@ import {
   createDemo03Student,
   getDemo03Student,
   updateDemo03Student,
-} from '#/api/infra/demo/demo03/normal';
+} from '#/api/infra/demo/demo03/inner';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
 
@@ -32,8 +33,15 @@ import Demo03GradeForm from './demo03-grade-form.vue';
 
 const emit = defineEmits(['success']);
 
+type Demo03StudentFormData = Omit<
+  Demo03StudentApi.Demo03Student,
+  'birthday'
+> & {
+  birthday?: Dayjs | string;
+};
+
 const formRef = ref();
-const formData = ref<Partial<Demo03StudentApi.Demo03Student>>({
+const formData = ref<Partial<Demo03StudentFormData>>({
   id: undefined,
   name: undefined,
   sex: undefined,
@@ -116,7 +124,10 @@ const [Modal, modalApi] = useVbenModal({
         modalApi.unlock();
       }
     }
-    formData.value = data;
+    formData.value = {
+      ...data,
+      birthday: data.birthday === undefined ? undefined : String(data.birthday),
+    };
   },
 });
 </script>

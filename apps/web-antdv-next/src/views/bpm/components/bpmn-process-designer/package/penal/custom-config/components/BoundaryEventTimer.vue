@@ -218,7 +218,7 @@ watch(
 
 <template>
   <div>
-    <Divider orientation="left">审批人超时未处理时</Divider>
+    <Divider title-placement="left">审批人超时未处理时</Divider>
     <FormItem label="启用开关" name="timeoutHandlerEnable">
       <Switch
         v-model:checked="timeoutHandlerEnable"

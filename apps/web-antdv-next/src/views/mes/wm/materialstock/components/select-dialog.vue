@@ -243,7 +243,7 @@ defineExpose({ open: openModal });
 <template>
   <Modal
     v-model:open="open"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     title="库存物资选择"
     width="80%"
     @cancel="closeModal"
