@@ -19,14 +19,17 @@ export namespace ImFaceUserItemApi {
   }
 }
 
-
 /** 获取我的个人表情列表 */
 export function getFaceUserItemList() {
-  return requestClient.get<ImFaceUserItemApi.FaceUserItem[]>('/im/face-user-item/list');
+  return requestClient.get<ImFaceUserItemApi.FaceUserItem[]>(
+    '/im/face-user-item/list',
+  );
 }
 
 /** 添加个人表情 */
-export function createFaceUserItem(data: ImFaceUserItemApi.FaceUserItemSaveReqVO) {
+export function createFaceUserItem(
+  data: ImFaceUserItemApi.FaceUserItemSaveReqVO,
+) {
   return requestClient.post<number>('/im/face-user-item/create', data);
 }
 

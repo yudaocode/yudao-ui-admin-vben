@@ -31,9 +31,10 @@ export namespace ImPrivateMessageApi {
   }
 }
 
-
 /** 发送私聊消息 */
-export function sendPrivateMessage(data: ImPrivateMessageApi.PrivateMessageSendReqVO) {
+export function sendPrivateMessage(
+  data: ImPrivateMessageApi.PrivateMessageSendReqVO,
+) {
   return requestClient.post<ImPrivateMessageApi.PrivateMessageRespVO>(
     '/im/message/private/send',
     data,
@@ -52,7 +53,9 @@ export function pullPrivateMessageList(
 }
 
 /** 查询私聊历史消息 */
-export function getPrivateMessageList(params: ImPrivateMessageApi.PrivateMessageListReqVO) {
+export function getPrivateMessageList(
+  params: ImPrivateMessageApi.PrivateMessageListReqVO,
+) {
   return requestClient.get<ImPrivateMessageApi.PrivateMessageRespVO[]>(
     '/im/message/private/list',
     { params },
