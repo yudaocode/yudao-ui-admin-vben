@@ -371,7 +371,7 @@ catalogs:
       version: 1.0.0
     knip:
       specifier: ^6.17.0
-      version: 6.20.0
+      version: 6.21.0
     lefthook:
       specifier: ^2.1.9
       version: 2.1.9
@@ -809,7 +809,7 @@ importers:
         version: 18.19.0
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
+        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
@@ -944,7 +944,7 @@ importers:
         version: 18.19.0
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
+        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
@@ -1076,7 +1076,7 @@ importers:
         version: 18.19.0
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
+        version: 5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
@@ -2371,7 +2371,7 @@ importers:
         version: 3.0.1
       knip:
         specifier: 'catalog:'
-        version: 6.20.0
+        version: 6.21.0
       publint:
         specifier: 'catalog:'
         version: 0.3.21
@@ -2395,8 +2395,8 @@ packages:
     resolution: {integrity: sha512-esKJegpW4nckh0o6kV3Tkb7NPIZYbPnnFxmQDUmL08ukXZAvV85TZBr70eGuke/CIArLaP6aw8lt9KILjnWuOw==}
     engines: {node: '>=8.x'}
 
-  '@ant-design/icons-svg@4.4.2':
-    resolution: {integrity: sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA==}
+  '@ant-design/icons-svg@4.5.0':
+    resolution: {integrity: sha512-1BTUFyKPTBZ53MuTP8s0k5SFEXL7o3VHEOwLgzaoWKwnBeqIcqUtVshc4SKzhI6uACfqhJqBwBUE9FsWR3uULA==}
 
   '@ant-design/icons-vue@7.0.1':
     resolution: {integrity: sha512-eCqY2unfZK6Fe02AwFlDHLfoyEFreP6rBwAZMIJ1LugmfMiVgwWDYlp1YsRugaPtICYOabV1iWxXdP12u9U43Q==}
@@ -7065,8 +7065,8 @@ packages:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
     engines: {node: '>=16'}
 
-  camunda-bpmn-js-behaviors@1.16.1:
-    resolution: {integrity: sha512-0RL1Wei37Rl4wTQqrxtsSipBRubbthx2wIsJRKVEtxXEYIQoTfZREVcQrG3LJywMpjElVIBgG1qQjrqEMfYC9A==}
+  camunda-bpmn-js-behaviors@1.17.0:
+    resolution: {integrity: sha512-YUicJZkmmkmPqJ4LqBbBSyFnveFqv5m8Qkc1oi6/NBe4ep3zOPhRPRvok355Ckpxo6c0nJJt7pmzjvC7mDJgBQ==}
     peerDependencies:
       bpmn-js: '>= 9'
       camunda-bpmn-moddle: '>= 7'
@@ -9133,8 +9133,8 @@ packages:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
 
-  knip@6.20.0:
-    resolution: {integrity: sha512-q+HYrS7FOERk32GM7g43IdTG7TurN7+YMLZrNpCxubZPYZyQwliBgd18yH4oYQL7YgGtOxP2fCqess3K2XaK2Q==}
+  knip@6.21.0:
+    resolution: {integrity: sha512-q7K9VGSFfdVaCjhj9u+5aI2t5CZt3edZeLi+1wjnGAvYB2WfW6+T9UWAREsTR88aB8YeDqkKVZiVMV7va3oTmg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -12346,12 +12346,12 @@ snapshots:
 
   '@ant-design/fast-color@3.0.1': {}
 
-  '@ant-design/icons-svg@4.4.2': {}
+  '@ant-design/icons-svg@4.5.0': {}
 
   '@ant-design/icons-vue@7.0.1(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       '@ant-design/colors': 6.0.0
-      '@ant-design/icons-svg': 4.4.2
+      '@ant-design/icons-svg': 4.5.0
       vue: 3.5.39(typescript@6.0.3)
 
   '@antdv-next/cssinjs@1.0.6(vue@3.5.39(typescript@6.0.3))':
@@ -12366,7 +12366,7 @@ snapshots:
   '@antdv-next/icons@1.0.8(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       '@ant-design/colors': 7.2.1
-      '@ant-design/icons-svg': 4.4.2
+      '@ant-design/icons-svg': 4.5.0
       '@v-c/util': 1.0.19(vue@3.5.39(typescript@6.0.3))
       vue: 3.5.39(typescript@6.0.3)
 
@@ -17106,13 +17106,13 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  bpmn-js-properties-panel@5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0):
+  bpmn-js-properties-panel@5.54.0(@bpmn-io/properties-panel@3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3)))(bpmn-js@18.19.0)(camunda-bpmn-js-behaviors@1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0))(diagram-js@15.18.0):
     dependencies:
       '@bpmn-io/extract-process-variables': 2.2.1
       '@bpmn-io/properties-panel': 3.46.0(@bpmn-io/cm-theme@0.2.0(@codemirror/state@6.7.0)(@codemirror/view@6.43.3))
       array-move: 4.0.0
       bpmn-js: 18.19.0
-      camunda-bpmn-js-behaviors: 1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0)
+      camunda-bpmn-js-behaviors: 1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0)
       diagram-js: 15.18.0
       ids: 3.0.2
       min-dash: 5.0.0
@@ -17235,7 +17235,7 @@ snapshots:
 
   camelcase@8.0.0: {}
 
-  camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0):
+  camunda-bpmn-js-behaviors@1.17.0(bpmn-js@18.19.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.15.0):
     dependencies:
       bpmn-js: 18.19.0
       camunda-bpmn-moddle: 7.0.1
@@ -19444,7 +19444,7 @@ snapshots:
 
   klona@2.0.6: {}
 
-  knip@6.20.0:
+  knip@6.21.0:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       formatly: 0.3.0
