@@ -13,10 +13,7 @@ import { formatUserLabel } from '#/views/im/manager/utils/format';
 import { MESSAGE_PRIVATE_READ_ENABLED } from '#/views/im/utils/config';
 
 import { MessageContentPreview } from '..';
-import {
-  usePrivateGridColumns,
-  usePrivateGridFormSchema,
-} from '../data';
+import { usePrivateGridColumns, usePrivateGridFormSchema } from '../data';
 import Detail from './modules/detail.vue';
 
 defineOptions({ name: 'ImPrivateMessage' });

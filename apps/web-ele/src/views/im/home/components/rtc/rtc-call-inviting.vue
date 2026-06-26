@@ -1,28 +1,30 @@
 <script lang="ts" setup>
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { useMediaStreamElement } from '../../composables/useMediaStreamElement'
-import { UserAvatar } from '../user'
+import { useMediaStreamElement } from '../../composables/useMediaStreamElement';
+import { UserAvatar } from '../user';
 
 const props = defineProps<{
-  cameraEnabled: boolean
-  isGroup?: boolean
-  isVideo: boolean
-  localStream?: MediaStream | null // 本地视频流；视频呼叫预览铺底
-  micEnabled: boolean
-  peerAvatar?: string
-  peerNickname?: string
-  speakerEnabled: boolean
-}>()
+  cameraEnabled: boolean;
+  isGroup?: boolean;
+  isVideo: boolean;
+  localStream?: MediaStream | null; // 本地视频流；视频呼叫预览铺底
+  micEnabled: boolean;
+  peerAvatar?: string;
+  peerNickname?: string;
+  speakerEnabled: boolean;
+}>();
 
 defineEmits<{
-  cancel: []
-  toggleCamera: []
-  toggleMic: []
-  toggleSpeaker: []
-}>()
+  cancel: [];
+  toggleCamera: [];
+  toggleMic: [];
+  toggleSpeaker: [];
+}>();
 
-const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
+const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(
+  () => props.localStream,
+);
 </script>
 
 <template>
@@ -58,7 +60,9 @@ const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.loc
     </div>
 
     <!-- 底部操作区：麦克风 / 取消 / (摄像头 | 扬声器) -->
-    <div class="flex flex-shrink-0 gap-4 justify-around items-center pt-4 px-5 pb-5">
+    <div
+      class="flex flex-shrink-0 gap-4 justify-around items-center pt-4 px-5 pb-5"
+    >
       <div
         class="flex flex-col gap-2 items-center cursor-pointer select-none"
         @click="$emit('toggleMic')"
@@ -66,10 +70,16 @@ const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.loc
         <!-- Iconify 里 mic 有静音变体；speaker / camera 没有同源静音变体，off 态借 tabler:*-off 表达斜线 -->
         <span
           class="flex justify-center items-center w-12 h-12 rounded-full"
-          :class="micEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            micEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="micEnabled ? 'ant-design:audio-outlined' : 'ant-design:audio-muted-outlined'"
+            :icon="
+              micEnabled
+                ? 'ant-design:audio-outlined'
+                : 'ant-design:audio-muted-outlined'
+            "
             :size="22"
           />
         </span>
@@ -84,7 +94,11 @@ const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.loc
         <span
           class="flex justify-center items-center w-12 h-12 text-white rounded-full bg-[#f04a4a]"
         >
-          <Icon icon="ant-design:phone-outlined" :size="22" class="rotate-[135deg]" />
+          <Icon
+            icon="ant-design:phone-outlined"
+            :size="22"
+            class="rotate-[135deg]"
+          />
         </span>
         <span class="text-xs text-white/70 whitespace-nowrap">取消</span>
       </div>
@@ -95,10 +109,16 @@ const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.loc
       >
         <span
           class="flex justify-center items-center w-12 h-12 rounded-full"
-          :class="cameraEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            cameraEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="cameraEnabled ? 'ant-design:video-camera-outlined' : 'tabler:video-off'"
+            :icon="
+              cameraEnabled
+                ? 'ant-design:video-camera-outlined'
+                : 'tabler:video-off'
+            "
             :size="22"
           />
         </span>
@@ -113,10 +133,16 @@ const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.loc
       >
         <span
           class="flex justify-center items-center w-12 h-12 rounded-full"
-          :class="speakerEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            speakerEnabled
+              ? 'bg-white text-[#1a1a1c]'
+              : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="speakerEnabled ? 'ant-design:sound-outlined' : 'tabler:volume-off'"
+            :icon="
+              speakerEnabled ? 'ant-design:sound-outlined' : 'tabler:volume-off'
+            "
             :size="22"
           />
         </span>

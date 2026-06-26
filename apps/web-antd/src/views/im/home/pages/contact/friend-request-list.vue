@@ -30,7 +30,7 @@ const expanded = ref(true);
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
 const currentUserId = computed(() => getCurrentUserId());
 
-/** 列表项展示对端：fromUserId == 我 → 对端 = toUser；否则对端 = fromUser */
+/** 列表项展示对端：fromUserId === 我 → 对端 = toUser；否则对端 = fromUser */
 function getPeer(request: FriendRequest) {
   const sentByMe = request.fromUserId === currentUserId.value;
   return {

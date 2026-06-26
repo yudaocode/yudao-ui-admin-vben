@@ -1,4 +1,6 @@
-import { computed, type ComputedRef, type Ref } from 'vue'
+import type { ComputedRef, Ref } from 'vue';
+
+import { computed } from 'vue';
 
 /**
  * 三态选择面板的「已选数 + 已选项列表」派生
@@ -17,59 +19,59 @@ export function useSelectedItems<T>(
   lockedIds: () => readonly number[],
   disabledIds: () => readonly number[],
   hideIds: () => readonly number[],
-  byId: ComputedRef<Map<number, T>> | Ref<Map<number, T>>
+  byId: ComputedRef<Map<number, T>> | Ref<Map<number, T>>,
 ): {
-  selectedCount: ComputedRef<number>
-  selectedItems: ComputedRef<T[]>
+  selectedCount: ComputedRef<number>;
+  selectedItems: ComputedRef<T[]>;
 } {
-  const hideSet = computed(() => new Set(hideIds()))
-  const disabledSet = computed(() => new Set(disabledIds()))
+  const hideSet = computed(() => new Set(hideIds()));
+  const disabledSet = computed(() => new Set(disabledIds()));
 
   const selectedCount = computed(() => {
-    const merged = new Set<number>()
+    const merged = new Set<number>();
     for (const id of selectedIds()) {
       if (hideSet.value.has(id) || disabledSet.value.has(id)) {
-        continue
+        continue;
       }
-      merged.add(id)
+      merged.add(id);
     }
     // locked 仅被 hide 过滤；契约里 locked 胜过 disabled，确保锁定项始终计入
     for (const id of lockedIds()) {
       if (hideSet.value.has(id)) {
-        continue
+        continue;
       }
-      merged.add(id)
+      merged.add(id);
     }
-    return merged.size
-  })
+    return merged.size;
+  });
 
   const selectedItems = computed(() => {
-    const seen = new Set<number>()
-    const result: T[] = []
+    const seen = new Set<number>();
+    const result: T[] = [];
     // locked 在前；仅被 hide 过滤
     for (const id of lockedIds()) {
       if (seen.has(id) || hideSet.value.has(id)) {
-        continue
+        continue;
       }
-      const item = byId.value.get(id)
+      const item = byId.value.get(id);
       if (item) {
-        seen.add(id)
-        result.push(item)
+        seen.add(id);
+        result.push(item);
       }
     }
     // selectedIds 紧随；额外过滤 disabled
     for (const id of selectedIds()) {
       if (seen.has(id) || disabledSet.value.has(id) || hideSet.value.has(id)) {
-        continue
+        continue;
       }
-      const item = byId.value.get(id)
+      const item = byId.value.get(id);
       if (item) {
-        seen.add(id)
-        result.push(item)
+        seen.add(id);
+        result.push(item);
       }
     }
-    return result
-  })
+    return result;
+  });
 
-  return { selectedCount, selectedItems }
+  return { selectedCount, selectedItems };
 }

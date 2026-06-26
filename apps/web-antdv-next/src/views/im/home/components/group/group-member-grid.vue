@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import type { GroupMemberLite } from './group-member.vue'
+import type { GroupMemberLite } from './group-member.vue';
 
-import { ImFriendAddSource } from '../../../utils/constants'
-import { UserAvatar } from '../user'
+import { ImFriendAddSource } from '../../../utils/constants';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImGroupMemberGrid' })
+defineOptions({ name: 'ImGroupMemberGrid' });
 
 withDefaults(
   defineProps<{
-    clickable?: boolean // 头像点击是否弹 UserInfoCard；选择器宫格里需要保持关闭，避免和勾选交互冲突
-    groupName?: string // 群名：加好友时拼「我是 'XX 群' 的 YY」话术，落库 add_source=GROUP
-    member: GroupMemberLite
-    size?: number // 头像像素大小；默认 38（兼容选择器右侧已选区），群信息抽屉传 50 对齐微信 PC
+    clickable?: boolean; // 头像点击是否弹 UserInfoCard；选择器宫格里需要保持关闭，避免和勾选交互冲突
+    groupName?: string; // 群名：加好友时拼「我是 'XX 群' 的 YY」话术，落库 add_source=GROUP
+    member: GroupMemberLite;
+    size?: number; // 头像像素大小；默认 38（兼容选择器右侧已选区），群信息抽屉传 50 对齐微信 PC
   }>(),
   {
     clickable: false,
     size: 38,
-    groupName: ''
-  }
-)
+    groupName: '',
+  },
+);
 </script>
 
 <template>

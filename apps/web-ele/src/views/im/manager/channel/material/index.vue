@@ -4,7 +4,7 @@ import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/mater
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElImage, ElLoading, ElMessage } from 'element-plus'
+import { ElImage, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
