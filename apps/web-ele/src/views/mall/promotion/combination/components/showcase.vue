@@ -46,7 +46,7 @@ const canAdd = computed(() => {
 watch(
   () => props.modelValue,
   async (newValue) => {
-    // eslint-disable-next-line unicorn/no-nested-ternary
+    // oxlint-disable-next-line unicorn/no-nested-ternary
     const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
     if (ids.length === 0) {
       activityList.value = [];

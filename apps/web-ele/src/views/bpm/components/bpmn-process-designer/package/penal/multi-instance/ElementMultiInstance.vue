@@ -74,7 +74,6 @@ declare global {
 const bpmnInstances = () => (window as any)?.bpmnInstances;
 
 // @ts-expect-error: retained for legacy multi-instance mode compatibility
-// eslint-disable-next-line unused-imports/no-unused-vars
 const getElementLoop = (businessObject: any): void => {
   if (!businessObject.loopCharacteristics) {
     loopCharacteristics.value = 'Null';

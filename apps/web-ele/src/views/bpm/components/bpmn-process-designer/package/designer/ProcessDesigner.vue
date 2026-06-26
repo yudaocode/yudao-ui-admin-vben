@@ -405,8 +405,7 @@ const setEncoded = (type: string, data: string) => {
 const importLocalFile = () => {
   const file = refFile.value.files[0];
   const reader = new FileReader();
-  // eslint-disable-next-line unicorn/prefer-blob-reading-methods
-  reader.readAsText(file);
+  reader.text(file);
   reader.addEventListener('load', function () {
     const xmlStr = this.result;
     createNewDiagram(xmlStr);
