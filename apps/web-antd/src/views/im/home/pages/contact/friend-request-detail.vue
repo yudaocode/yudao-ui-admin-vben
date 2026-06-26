@@ -12,7 +12,7 @@ import { Button, Input, message } from 'ant-design-vue';
 import { getCurrentUserId } from '#/views/im/utils/auth';
 
 import { ImFriendRequestHandleResult } from '../../../utils/constants';
-import { UserAvatar } from '../../components/user';
+import { UserAvatar, UserInfo } from '../../components/user';
 import { useFriendStore } from '../../store/friendStore';
 
 defineOptions({ name: 'ImContactFriendRequestDetail' });
