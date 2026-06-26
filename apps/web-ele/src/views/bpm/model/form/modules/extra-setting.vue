@@ -159,18 +159,20 @@ const formFieldOptions4Title = computed(() => {
     };
   });
   // 固定添加发起人 ID 字段
-  cloneFormField.unshift({
-    label: '流程名称',
-    value: ProcessVariableEnum.PROCESS_DEFINITION_NAME,
-  });
-  cloneFormField.unshift({
-    label: '发起时间',
-    value: ProcessVariableEnum.START_TIME,
-  });
-  cloneFormField.unshift({
-    label: '发起人',
-    value: ProcessVariableEnum.START_USER_ID,
-  });
+  cloneFormField.unshift(
+    {
+      label: '发起人',
+      value: ProcessVariableEnum.START_USER_ID,
+    },
+    {
+      label: '发起时间',
+      value: ProcessVariableEnum.START_TIME,
+    },
+    {
+      label: '流程名称',
+      value: ProcessVariableEnum.PROCESS_DEFINITION_NAME,
+    },
+  );
   return cloneFormField;
 });
 const formFieldOptions4Summary = computed(() => {

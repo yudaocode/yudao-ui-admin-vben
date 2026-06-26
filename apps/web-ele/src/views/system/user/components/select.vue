@@ -85,7 +85,10 @@ async function resolveItemsById(value: null | number | number[] | undefined) {
     .filter((item): item is SystemUserApi.User => !!item);
 }
 
-watch(() => props.modelValue, resolveItemsById, { deep: true, immediate: true });
+watch(() => props.modelValue, resolveItemsById, {
+  deep: true,
+  immediate: true,
+});
 
 /** 清空已选用户 */
 function clearSelected() {
@@ -147,7 +150,11 @@ function handleSelected(rows: SystemUserApi.User[]) {
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
   >
-    <ElTooltip :disabled="selectedItems.length === 0" placement="top" :show-after="500">
+    <ElTooltip
+      :disabled="selectedItems.length === 0"
+      placement="top"
+      :show-after="500"
+    >
       <template #content>
         <div v-if="selectedItems.length > 0" class="flex gap-3">
           <div

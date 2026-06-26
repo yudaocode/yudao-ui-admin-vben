@@ -25,7 +25,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'delete', v: void): void;
+  (e: 'delete', v: Promise<void>): void;
   (e: 'update:modelValue', v: any): void;
 }>();
 
