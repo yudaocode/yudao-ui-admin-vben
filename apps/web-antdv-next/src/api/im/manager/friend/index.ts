@@ -22,7 +22,6 @@ export namespace ImManagerFriendApi {
   }
 }
 
-
 /** 获得好友关系分页 */
 export function getManagerFriendPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerFriendApi.Friend>>(

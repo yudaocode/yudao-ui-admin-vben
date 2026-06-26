@@ -11,7 +11,6 @@ export namespace ImConversationReadApi {
   }
 }
 
-
 /** 增量拉取当前用户的会话读位置（重连 / 离线补偿） */
 export function pullMyConversationReadList(params: {
   lastId?: number;
