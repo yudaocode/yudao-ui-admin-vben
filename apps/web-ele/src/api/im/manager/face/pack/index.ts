@@ -14,7 +14,6 @@ export namespace ImManagerFacePackApi {
   }
 }
 
-
 /** 获得表情包分页 */
 export function getManagerFacePackPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerFacePackApi.FacePack>>(
@@ -25,9 +24,12 @@ export function getManagerFacePackPage(params: PageParam) {
 
 /** 获得表情包详情 */
 export function getManagerFacePack(id: number) {
-  return requestClient.get<ImManagerFacePackApi.FacePack>('/im/manager/face-pack/get', {
-    params: { id },
-  });
+  return requestClient.get<ImManagerFacePackApi.FacePack>(
+    '/im/manager/face-pack/get',
+    {
+      params: { id },
+    },
+  );
 }
 
 /** 新增表情包 */

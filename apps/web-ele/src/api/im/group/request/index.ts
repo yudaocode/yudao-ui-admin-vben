@@ -31,7 +31,6 @@ export namespace ImGroupRequestApi {
   }
 }
 
-
 /** 申请加群 */
 export function applyJoinGroup(data: ImGroupRequestApi.GroupRequestApplyReqVO) {
   return requestClient.post<null | number>('/im/group-request/apply', data);

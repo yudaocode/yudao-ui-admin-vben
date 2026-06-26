@@ -41,7 +41,6 @@ export namespace ImRtcApi {
   }
 }
 
-
 /** 创建新通话；私聊或群聊根据 conversationType 区分 */
 export function createCall(data: ImRtcApi.RtcCallCreateReqVO) {
   return requestClient.post<ImRtcApi.RtcCallRespVO>('/im/rtc/create', data);
@@ -61,9 +60,13 @@ export function joinCall(room: string) {
 
 /** 接听通话 */
 export function acceptCall(room: string) {
-  return requestClient.post<ImRtcApi.RtcCallRespVO>('/im/rtc/accept', undefined, {
-    params: { room },
-  });
+  return requestClient.post<ImRtcApi.RtcCallRespVO>(
+    '/im/rtc/accept',
+    undefined,
+    {
+      params: { room },
+    },
+  );
 }
 
 /** 拒绝通话 */
