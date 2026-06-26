@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
+import type { Demo03StudentApi } from '#/api/infra/demo/demo03/inner';
 
 import { computed, ref } from 'vue';
 
@@ -22,7 +22,7 @@ import {
   createDemo03Student,
   getDemo03Student,
   updateDemo03Student,
-} from '#/api/infra/demo/demo03/normal';
+} from '#/api/infra/demo/demo03/inner';
 import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { $t } from '#/locales';
 

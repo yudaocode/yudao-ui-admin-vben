@@ -32,7 +32,13 @@ const emit = defineEmits(['update:modelValue']);
 const formData = useVModel(props, 'modelValue', emit);
 const formStyleValues = formData as unknown as Ref<Record<string, number>>;
 
-const treeData: any[] = [
+interface StyleTreeNode {
+  children?: StyleTreeNode[];
+  label: string;
+  prop: string;
+}
+
+const treeData: StyleTreeNode[] = [
   {
     label: '外部边距',
     prop: 'margin',
@@ -126,6 +132,10 @@ function handleSliderChange(prop: string) {
     }
   }
 }
+
+function getTreeNode(slotProps: unknown) {
+  return slotProps as StyleTreeNode;
+}
 </script>
 
 <template>
@@ -143,7 +153,7 @@ function handleSliderChange(prop: string) {
           <FormItem
             label="组件背景"
             name="bgType"
-            :label-col="{ style: { width: '109px' } }"
+            :label-col="{ flex: '109px' }"
           >
             <RadioGroup v-model:value="formData.bgType">
               <Radio value="color">纯色</Radio>
@@ -153,7 +163,7 @@ function handleSliderChange(prop: string) {
           <FormItem
             label="选择颜色"
             name="bgColor"
-            :label-col="{ style: { width: '109px' } }"
+            :label-col="{ flex: '109px' }"
             v-if="formData.bgType === 'color'"
           >
             <ColorInput v-model="formData.bgColor" />
@@ -161,7 +171,7 @@ function handleSliderChange(prop: string) {
           <FormItem
             label="上传图片"
             name="bgImg"
-            :label-col="{ style: { width: '109px' } }"
+            :label-col="{ flex: '109px' }"
             v-else
           >
             <UploadImg
@@ -173,22 +183,20 @@ function handleSliderChange(prop: string) {
             </UploadImg>
           </FormItem>
           <Tree :tree-data="treeData" default-expand-all :block-node="true">
-            <template #title="{ dataRef }">
+            <template #titleRender="node">
               <FormItem
-                :label="dataRef.label"
-                :name="dataRef.prop"
-                :label-col="{
-                  style: { width: dataRef.children ? '80px' : '58px' },
-                }"
+                :label="getTreeNode(node).label"
+                :name="getTreeNode(node).prop"
+                :label-col="{ flex: getTreeNode(node).children ? '80px' : '58px' }"
                 class="mb-0 w-full"
               >
                 <Row>
                   <Col :span="19">
                     <Slider
-                      v-model:value="formStyleValues[dataRef.prop]"
+                      v-model:value="formStyleValues[getTreeNode(node).prop]"
                       :max="100"
                       :min="0"
-                      @change="handleSliderChange(dataRef.prop)"
+                      @change="handleSliderChange(getTreeNode(node).prop)"
                       class="mr-4"
                     />
                   </Col>
@@ -197,7 +205,7 @@ function handleSliderChange(prop: string) {
                       class="w-[50px]"
                       :max="100"
                       :min="0"
-                      v-model:value="formStyleValues[dataRef.prop]"
+                      v-model:value="formStyleValues[getTreeNode(node).prop]"
                     />
                   </Col>
                 </Row>

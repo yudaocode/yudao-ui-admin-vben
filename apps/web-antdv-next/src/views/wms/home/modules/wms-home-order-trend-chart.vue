@@ -57,7 +57,7 @@ defineExpose({ load });
 </script>
 
 <template>
-  <Card :body-style="{ padding: '12px 16px 16px' }">
+  <Card :styles="{ body: { padding: '12px 16px 16px' } }">
     <div class="mb-3 flex items-center justify-between">
       <div>
         <div class="font-semibold">单据趋势</div>

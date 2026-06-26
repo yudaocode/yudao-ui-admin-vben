@@ -3,18 +3,6 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace ErpFinancePaymentApi {
-  /** 付款单项 */
-  export interface FinancePaymentItem {
-    id?: number;
-    row_id?: number; // 前端使用的临时 ID
-    bizId: number; // 业务ID
-    bizType: number; // 业务类型
-    bizNo: string; // 业务编号
-    totalPrice: number; // 应付金额
-    paidPrice: number; // 已付金额
-    paymentPrice: number; // 本次付款
-    remark?: string; // 备注
-  }
   /** 付款单信息 */
   export interface FinancePayment {
     id?: number; // 付款单编号
@@ -36,6 +24,19 @@ export namespace ErpFinancePaymentApi {
     creatorName?: string; // 创建人姓名
     items?: FinancePaymentItem[]; // 付款明细
     bizNo?: string; // 业务单号
+  }
+
+  /** 付款单项 */
+  export interface FinancePaymentItem {
+    id?: number;
+    row_id?: number; // 前端使用的临时 ID
+    bizId: number; // 业务ID
+    bizType: number; // 业务类型
+    bizNo: string; // 业务编号
+    totalPrice: number; // 应付金额
+    paidPrice: number; // 已付金额
+    paymentPrice: number; // 本次付款
+    remark?: string; // 备注
   }
 }
 

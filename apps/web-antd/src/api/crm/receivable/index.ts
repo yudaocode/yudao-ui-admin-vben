@@ -35,11 +35,6 @@ export namespace CrmReceivableApi {
     no: string;
     totalPrice: number;
   }
-
-  export interface ReceivablePageParam extends PageParam {
-    contractId?: number;
-    customerId?: number;
-  }
 }
 
 /** 查询回款列表 */
@@ -51,9 +46,7 @@ export function getReceivablePage(params: PageParam) {
 }
 
 /** 查询回款列表，基于指定客户 */
-export function getReceivablePageByCustomer(
-  params: CrmReceivableApi.ReceivablePageParam,
-) {
+export function getReceivablePageByCustomer(params: PageParam) {
   return requestClient.get<PageResult<CrmReceivableApi.Receivable>>(
     '/crm/receivable/page-by-customer',
     { params },

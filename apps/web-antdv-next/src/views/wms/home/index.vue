@@ -50,7 +50,7 @@ onMounted(() => {
       />
     </template>
     <div class="flex flex-col gap-2">
-      <Card :body-style="{ padding: '16px' }">
+      <Card :styles="{ body: { padding: '16px' } }">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="text-xl font-semibold">WMS 首页</div>

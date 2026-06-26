@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Recordable } from '@vben/types';
+import type { MusicSong } from './types';
 
 import { provide, ref } from 'vue';
 
@@ -8,14 +9,15 @@ import { Col, Empty, Row, TabPane, Tabs } from 'antdv-next';
 import audioBar from './audioBar/index.vue';
 import songCard from './songCard/index.vue';
 import songInfo from './songInfo/index.vue';
+import { currentSongKey } from './types';
 
 defineOptions({ name: 'AiMusicListIndex' });
 
 const currentType = ref('mine');
 const loading = ref(false); // loading 状态
-const currentSong = ref({}); // 当前音乐
-const mySongList = ref<Recordable<any>[]>([]);
-const squareSongList = ref<Recordable<any>[]>([]);
+const currentSong = ref<MusicSong>({}); // 当前音乐
+const mySongList = ref<MusicSong[]>([]);
+const squareSongList = ref<MusicSong[]>([]);
 
 function generateMusic(_formData: Recordable<any>) {
   loading.value = true;
@@ -45,7 +47,7 @@ function generateMusic(_formData: Recordable<any>) {
   }, 3000);
 }
 
-function setCurrentSong(music: Recordable<any>) {
+function setCurrentSong(music: MusicSong) {
   currentSong.value = music;
 }
 
@@ -53,7 +55,7 @@ defineExpose({
   generateMusic,
 });
 
-provide('currentSong', currentSong);
+provide(currentSongKey, currentSong);
 </script>
 
 <template>

@@ -305,7 +305,7 @@ async function handleDeleteFriend() {
       </div>
       <!-- 右上 "..." 菜单：仅 friend 态展示；含「加入/移出黑名单」 + 「删除联系人」 -->
       <div v-if="relation === 'friend'" class="flex-shrink-0">
-        <Dropdown :trigger="['click']" placement="bottomRight" overlay-class-name="im-user-info__more-menu">
+        <Dropdown :trigger="['click']" placement="bottomRight" :classes="{ root: 'im-user-info__more-menu' }">
           <div
             class="flex items-center justify-center w-7 h-7 rounded cursor-pointer hover:bg-[var(--ant-color-fill-secondary)]"
           >

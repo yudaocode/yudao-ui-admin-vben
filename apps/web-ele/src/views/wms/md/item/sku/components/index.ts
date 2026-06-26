@@ -1,1 +1,1 @@
-export { default as WmsItemSkuSelect } from './item-sku-select.vue';
+export { default as WmsItemSkuSelect } from './select.vue';

@@ -33,7 +33,6 @@ const queryParams = reactive({
 }); // 图片分页相关的参数
 const pageTotal = ref<number>(0); // page size
 const imageList = ref<AiImageApi.Image[]>([]); // image 列表
-const imageListRef = ref<any>(); // ref
 
 const inProgressImageMap = ref<{}>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image
 const inProgressTimer = ref<any>(); // 生成中的 image 定时器，轮询生成进展
@@ -192,7 +191,6 @@ onUnmounted(async () => {
 
     <div
       class="flex flex-1 flex-wrap content-start overflow-y-auto p-3 pb-28 pt-5"
-      ref="imageListRef"
     >
       <ImageCard
         v-for="image in imageList"

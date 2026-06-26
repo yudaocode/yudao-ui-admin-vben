@@ -6,11 +6,11 @@ export namespace IoTOtaTaskApi {
   /** IoT OTA 升级任务 */
   export interface Task {
     id?: number;
-    name?: string;
+    name: string;
     description?: string;
     firmwareId?: number;
     status?: number;
-    deviceScope?: number;
+    deviceScope: number;
     deviceIds?: number[];
     deviceTotalCount?: number;
     deviceSuccessCount?: number;

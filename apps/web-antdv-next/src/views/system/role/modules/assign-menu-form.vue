@@ -142,7 +142,7 @@ function getNodeClass(node: Recordable<any>) {
   <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <Spin :spinning="menuLoading" wrapper-class-name="w-full">
+        <Spin :spinning="menuLoading" :classes="{ root: 'w-full' }">
           <Tree
             :tree-data="menuTree"
             multiple

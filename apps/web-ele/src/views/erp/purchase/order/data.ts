@@ -41,7 +41,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         placeholder: '选择订单时间',
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: '!w-full',

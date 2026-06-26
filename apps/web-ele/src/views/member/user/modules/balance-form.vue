@@ -17,7 +17,7 @@ import { useBalanceFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref({
-  id: 0,
+  id: undefined as number | undefined,
   nickname: '',
   balance: '0',
   changeBalance: 0,
@@ -48,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = await formApi.getValues();
     try {
       await updateWalletBalance({
-        userId: data.id,
+        userId: data.id!,
         balance: yuanToFen(data.changeBalance) * data.changeType,
       });
       // 关闭并提示

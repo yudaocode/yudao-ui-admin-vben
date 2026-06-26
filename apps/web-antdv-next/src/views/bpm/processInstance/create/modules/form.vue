@@ -73,13 +73,12 @@ const detailForm = ref<ProcessFormData>({
 const fApi = ref<any>();
 
 const startUserSelectTasks = ref<UserTask[]>([]);
-const startUserSelectAssignees = ref<Record<string, string[]>>({});
-const tempStartUserSelectAssignees = ref<Record<string, string[]>>({});
+const startUserSelectAssignees = ref<Record<string, number[]>>({});
+const tempStartUserSelectAssignees = ref<Record<string, number[]>>({});
 
 const bpmnXML = ref<string | undefined>(undefined);
 const simpleJson = ref<string | undefined>(undefined);
 
-const timelineRef = ref<any>();
 const activeTab = ref('form');
 const activityNodes = ref<BpmProcessInstanceApi.ApprovalNodeInfo[]>([]);
 const processInstanceStartLoading = ref(false);
@@ -315,7 +314,6 @@ defineExpose({ initProcessInfo });
           </Col>
           <Col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
             <ProcessInstanceTimeline
-              ref="timelineRef"
               :activity-nodes="activityNodes"
               :show-status-icon="false"
               @select-user-confirm="selectUserConfirm"

@@ -210,7 +210,7 @@ defineExpose({ open: openModal });
     v-model:open="open"
     title="点检方案选择"
     width="70%"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

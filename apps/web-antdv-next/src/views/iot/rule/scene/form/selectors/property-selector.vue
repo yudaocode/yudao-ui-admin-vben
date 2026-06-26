@@ -247,10 +247,10 @@ watch(
     <Popover
       v-if="selectedProperty"
       placement="rightTop"
-      :overlay-style="{ width: '350px' }"
+      :styles="{ root: { width: '350px' } }"
       :trigger="['click']"
       :arrow="true"
-      overlay-class-name="property-detail-popover"
+      :classes="{ root: 'property-detail-popover' }"
     >
       <template #content>
         <!-- 弹出层内容 -->

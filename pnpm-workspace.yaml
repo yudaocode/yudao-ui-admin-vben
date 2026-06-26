@@ -112,9 +112,9 @@ catalog:
   axios: ^1.17.0
   axios-mock-adapter: ^2.1.0
   benz-amr-recorder: ^1.1.5
-  bpmn-js: ^17.11.1
-  bpmn-js-properties-panel: 5.23.0
-  bpmn-js-token-simulation: ^0.36.3
+  bpmn-js: ^18.16.1
+  bpmn-js-properties-panel: 5.54.0
+  bpmn-js-token-simulation: ^0.39.3
   cac: ^7.0.0
   camunda-bpmn-moddle: ^7.0.1
   chalk: ^5.6.2
@@ -134,7 +134,7 @@ catalog:
   dayjs: ^1.11.21
   defu: ^6.1.7
   dhtmlx-gantt: ^9.1.4
-  diagram-js: ^12.8.1
+  diagram-js: ^15.14.0
   dotenv: ^17.4.2
   echarts: ^6.1.0
   element-plus: ^2.14.1

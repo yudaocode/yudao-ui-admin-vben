@@ -41,6 +41,11 @@ const currentNode = useWatchNode(props);
 /** 节点名称 */
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.ROUTER_BRANCH_NODE);
+
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
+
 const routerGroups = ref<RouterSetting[]>([]);
 const nodeOptions = ref<any[]>([]);
 const conditionRef = ref<any[]>([]);
@@ -202,7 +207,7 @@ defineExpose({ openDrawer }); // 暴露方法给父组件
     <template #title>
       <div class="flex items-center">
         <Input
-          ref="inputRef"
+          :ref="setInputRef"
           v-if="showInput"
           type="text"
           class="mr-2 w-48"

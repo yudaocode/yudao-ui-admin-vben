@@ -3,14 +3,6 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace CrmReceivableApi {
-  /** 合同信息 */
-  export interface Contract {
-    id?: number;
-    name?: string;
-    no: string;
-    totalPrice: number;
-  }
-
   /** 回款信息 */
   export interface Receivable {
     id: number;
@@ -34,6 +26,14 @@ export namespace CrmReceivableApi {
     creatorName?: string; // 创建人名称
     createTime: Date; // 创建时间
     updateTime: Date; // 更新时间
+  }
+
+  /** 合同信息 */
+  export interface Contract {
+    id?: number;
+    name?: string;
+    no: string;
+    totalPrice: number;
   }
 }
 

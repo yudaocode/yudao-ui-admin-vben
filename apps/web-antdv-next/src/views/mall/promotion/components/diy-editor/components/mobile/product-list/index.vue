@@ -21,7 +21,9 @@ const spuList = ref<MallSpuApi.Spu[]>([]);
 watch(
   () => props.property.spuIds,
   async () => {
-    spuList.value = await getSpuDetailList(props.property.spuIds);
+    spuList.value = props.property.spuIds.length > 0
+      ? await getSpuDetailList(props.property.spuIds)
+      : [];
   },
   {
     immediate: true,

@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { inject } from 'vue';
+import type { MusicSong } from '../types';
+
+import { inject, ref } from 'vue';
 
 import { Button, Card, Image } from 'ant-design-vue';
 
+import { currentSongKey } from '../types';
+
 defineOptions({ name: 'AiMusicSongInfoIndex' });
 
-const currentSong = inject<any>('currentSong', {});
+const currentSong = inject(currentSongKey, ref<MusicSong>({}));
 </script>
 
 <template>

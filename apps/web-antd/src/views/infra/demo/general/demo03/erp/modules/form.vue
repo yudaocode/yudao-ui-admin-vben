@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Rule } from 'ant-design-vue/es/form';
+import type { Dayjs } from 'dayjs';
 
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/erp';
 
@@ -28,8 +29,15 @@ import { $t } from '#/locales';
 
 const emit = defineEmits(['success']);
 
+type Demo03StudentFormData = Omit<
+  Demo03StudentApi.Demo03Student,
+  'birthday'
+> & {
+  birthday?: Dayjs | string;
+};
+
 const formRef = ref();
-const formData = ref<Partial<Demo03StudentApi.Demo03Student>>({
+const formData = ref<Partial<Demo03StudentFormData>>({
   id: undefined,
   name: undefined,
   sex: undefined,
@@ -96,7 +104,10 @@ const [Modal, modalApi] = useVbenModal({
         modalApi.unlock();
       }
     }
-    formData.value = data;
+    formData.value = {
+      ...data,
+      birthday: data.birthday === undefined ? undefined : String(data.birthday),
+    };
   },
 });
 </script>

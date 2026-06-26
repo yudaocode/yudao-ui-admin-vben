@@ -8,12 +8,11 @@ import type { BpmProcessListenerApi } from '#/api/bpm/processListener';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum } from '@vben/constants';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProcessListenerPage } from '#/api/bpm/processListener';
 
-import { useGridColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'ProcessListenerSelectModal' });
 
@@ -21,27 +20,25 @@ const emit = defineEmits<{
   select: [listener: BpmProcessListenerApi.ProcessListener];
 }>();
 
-// 查询参数
-// TODO @jason：这里的风格，和 antd 对应的不一致；
-const queryParams = ref({
-  type: '',
-  status: CommonStatusEnum.ENABLE,
-});
+const listenerType = ref('');
 
 // 配置 VxeGrid
 const [Grid] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
     columns: useGridColumns(),
     showOverflow: true,
     minHeight: 300,
     proxyConfig: {
       ajax: {
-        query: async ({ page }) => {
+        query: async ({ page }, formValues) => {
           return await getProcessListenerPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            type: queryParams.value.type,
-            status: queryParams.value.status,
+            type: listenerType.value,
+            ...formValues,
           });
         },
       },
@@ -61,12 +58,12 @@ const [Modal, modalApi] = useVbenModal({
   showConfirmButton: false,
   onOpenChange: async (isOpen: boolean) => {
     if (!isOpen) {
-      queryParams.value.type = '';
+      listenerType.value = '';
       return;
     }
     const data = modalApi.getData<{ type: string }>();
     if (data?.type) {
-      queryParams.value.type = data.type;
+      listenerType.value = data.type;
     }
   },
   destroyOnClose: true,

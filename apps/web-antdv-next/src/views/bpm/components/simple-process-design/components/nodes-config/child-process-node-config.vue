@@ -64,6 +64,11 @@ const currentNode = useWatchNode(props);
 /** 节点名称配置 */
 const { nodeName, showInput, clickIcon, changeNodeName, inputRef } =
   useNodeName(BpmNodeTypeEnum.CHILD_PROCESS_NODE);
+
+function setInputRef(el: unknown) {
+  inputRef.value = el as HTMLInputElement | null;
+}
+
 // 激活的 Tab 标签页
 const activeTabName = ref('child');
 // 子流程表单配置
@@ -180,6 +185,12 @@ const multiFormFieldOptions = computed(() => {
   return formFieldOptions.filter(
     (item) => item.type === 'select' || item.type === 'checkbox',
   );
+});
+const multiInstanceSourceNumber = computed({
+  get: () => Number(configForm.value.multiInstanceSource || 1),
+  set: (value?: number) => {
+    configForm.value.multiInstanceSource = String(value || '');
+  },
 });
 const childFormFieldOptions = ref<any[]>([]);
 
@@ -389,7 +400,7 @@ onMounted(async () => {
       <div class="config-header">
         <Input
           v-if="showInput"
-          ref="inputRef"
+          :ref="setInputRef"
           type="text"
           class="focus:border-blue-500 focus:shadow-[0_0_0_2px_rgba(24,144,255,0.2)] focus:outline-none"
           @blur="changeNodeName()"
@@ -776,7 +787,7 @@ onMounted(async () => {
             ]"
           >
             <InputNumber
-              v-model:value="configForm.multiInstanceSource"
+              v-model:value="multiInstanceSourceNumber"
               :min="1"
             />
           </FormItem>

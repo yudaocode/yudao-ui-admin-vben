@@ -118,7 +118,7 @@ const onClick = async () => {
     wrap-class-name="im-material-detail-modal"
     destroy-on-hidden
   >
-    <Spin :spinning="detailLoading" wrapper-class-name="w-full">
+    <Spin :spinning="detailLoading" :classes="{ root: 'w-full' }">
       <div class="material-detail-body max-w-[720px] mx-auto px-5 pt-6 pb-20 min-h-[60vh]">
         <div class="text-[22px] font-600 leading-[1.4] text-[var(--ant-color-text)] mb-5">
           {{ payload.title || '' }}

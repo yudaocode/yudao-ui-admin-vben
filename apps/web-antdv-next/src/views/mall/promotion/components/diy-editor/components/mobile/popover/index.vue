@@ -36,7 +36,7 @@ function handleActive(index: number) {
       :preview="false"
       class="h-full w-full object-contain"
     >
-      <template #error>
+      <template #fallback>
         <div class="flex h-full w-full items-center justify-center">
           <IconifyIcon icon="lucide:image" />
         </div>

@@ -1,7 +1,35 @@
 const bpmnInstances = () => (window as any)?.bpmnInstances;
+
+interface ListenerFieldOptions {
+  expression?: string;
+  fieldType: string;
+  name: string;
+  string?: string;
+}
+
+interface ListenerOptions {
+  class?: string;
+  delegateExpression?: string;
+  event?: string;
+  eventDefinitionType?: string;
+  eventTimeDefinitions?: string;
+  expression?: string;
+  fields?: ListenerFieldOptions[];
+  id?: string;
+  listenerType?: string;
+  resource?: string;
+  scriptFormat?: string;
+  scriptType?: string;
+  value?: string;
+}
+
 // 创建监听器实例
-export function createListenerObject(options: any, isTask: any, prefix: any) {
-  const listenerObj = Object.create(null);
+export function createListenerObject(
+  options: ListenerOptions,
+  isTask: boolean,
+  prefix: string,
+) {
+  const listenerObj: Record<string, any> = Object.create(null);
   listenerObj.event = options.event;
   isTask && (listenerObj.id = options.id); // 任务监听器特有的 id 字段
   switch (options.listenerType) {
@@ -23,7 +51,7 @@ export function createListenerObject(options: any, isTask: any, prefix: any) {
   }
   // 注入字段
   if (options.fields) {
-    listenerObj.fields = options.fields.map((field: any) => {
+    listenerObj.fields = options.fields.map((field) => {
       return createFieldObject(field, prefix);
     });
   }
@@ -39,7 +67,7 @@ export function createListenerObject(options: any, isTask: any, prefix: any) {
       'bpmn:TimerEventDefinition',
       {
         id: `TimerEventDefinition_${uuid(8)}`,
-        [`time${options.eventDefinitionType.replace(/^\S/, (s: any) => s.toUpperCase())}`]:
+        [`time${options.eventDefinitionType.replace(/^\S/, (s) => s.toUpperCase())}`]:
           timeDefinition,
       },
     );
@@ -52,7 +80,10 @@ export function createListenerObject(options: any, isTask: any, prefix: any) {
 }
 
 // 创建 监听器的注入字段 实例
-export function createFieldObject(option: any, prefix: any) {
+export function createFieldObject(
+  option: ListenerFieldOptions,
+  prefix: string,
+) {
   const { name, fieldType, string, expression } = option;
   const fieldConfig =
     fieldType === 'string' ? { name, string } : { name, expression };
@@ -60,7 +91,7 @@ export function createFieldObject(option: any, prefix: any) {
 }
 
 // 创建脚本实例
-export function createScriptObject(options: any, prefix: any) {
+export function createScriptObject(options: ListenerOptions, prefix: string) {
   const { scriptType, scriptFormat, value, resource } = options;
   const scriptConfig =
     scriptType === 'inlineScript'
@@ -70,7 +101,7 @@ export function createScriptObject(options: any, prefix: any) {
 }
 
 // 更新元素扩展属性
-export function updateElementExtensions(element: any, extensionList: any) {
+export function updateElementExtensions(element: any, extensionList: any[]) {
   const extensions = bpmnInstances().moddle.create('bpmn:ExtensionElements', {
     values: extensionList,
   });
