@@ -22,8 +22,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: number[] | string[] | undefined): void;
-  (e: 'update:value', value: number[] | string[] | undefined): void;
+  (
+    e: 'update:modelValue' | 'update:value',
+    value: number[] | string[] | undefined,
+  ): void;
 }>();
 
 // 地区数据接口

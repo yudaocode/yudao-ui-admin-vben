@@ -45,7 +45,7 @@ const canAdd = computed(() => {
 watch(
   () => props.modelValue,
   async (newValue) => {
-    // eslint-disable-next-line unicorn/no-nested-ternary
+    // oxlint-disable-next-line unicorn/no-nested-ternary
     const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
     if (ids.length === 0) {
       activityList.value = [];
@@ -54,7 +54,7 @@ watch(
     // 只有活动发生变化时才重新查询
     if (
       activityList.value.length === 0 ||
-      activityList.value.some((activity) => !ids.includes(activity.id!))
+      activityList.value.some((activity) => !ids.includes(activity.id))
     ) {
       activityList.value = await getSeckillActivityListByIds(ids as number[]);
     }
@@ -93,7 +93,7 @@ function emitActivityChange() {
   } else {
     emit(
       'update:modelValue',
-      activityList.value.map((activity) => activity.id!),
+      activityList.value.map((activity) => activity.id),
     );
     emit('change', activityList.value);
   }

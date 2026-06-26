@@ -77,12 +77,17 @@ defineExpose({ open });
       <DescriptionsItem label="群主">
         {{ formatUserLabel(detail.ownerNickname, detail.ownerUserId) }}
       </DescriptionsItem>
-      <DescriptionsItem label="成员数">{{ detail.memberCount || 0 }}</DescriptionsItem>
+      <DescriptionsItem label="成员数">
+        {{ detail.memberCount || 0 }}
+      </DescriptionsItem>
       <DescriptionsItem label="群状态">
         <DictTag :type="DICT_TYPE.IM_GROUP_STATUS" :value="detail.status" />
       </DescriptionsItem>
       <DescriptionsItem label="封禁状态">
-        <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="detail.banned" />
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="detail.banned"
+        />
         <span v-if="detail.banned" class="ml-2 text-gray-400">
           {{ detail.bannedReason }}
         </span>
@@ -119,10 +124,16 @@ defineExpose({ open });
           </Avatar>
         </template>
         <template v-else-if="column.dataIndex === 'role'">
-          <DictTag :type="DICT_TYPE.IM_GROUP_MEMBER_ROLE" :value="record.role" />
+          <DictTag
+            :type="DICT_TYPE.IM_GROUP_MEMBER_ROLE"
+            :value="record.role"
+          />
         </template>
         <template v-else-if="column.dataIndex === 'silent'">
-          <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="record.silent" />
+          <DictTag
+            :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+            :value="record.silent"
+          />
         </template>
         <template v-else-if="column.dataIndex === 'status'">
           <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="record.status" />
@@ -134,7 +145,11 @@ defineExpose({ open });
           {{ formatDateTimeText(record.quitTime) }}
         </template>
         <template v-else-if="column.dataIndex === 'muteEndTime'">
-          <template v-if="record.muteEndTime && new Date(record.muteEndTime) > new Date()">
+          <template
+            v-if="
+              record.muteEndTime && new Date(record.muteEndTime) > new Date()
+            "
+          >
             <Tag color="error">禁言中</Tag>
             <div class="mt-1 text-xs text-gray-400">
               {{ formatDateTimeText(record.muteEndTime) }}

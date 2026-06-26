@@ -45,7 +45,7 @@ const canAdd = computed(() => {
 watch(
   () => props.modelValue,
   async (newValue) => {
-    // eslint-disable-next-line unicorn/no-nested-ternary
+    // oxlint-disable-next-line unicorn/no-nested-ternary
     const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
     if (ids.length === 0) {
       productSpus.value = [];
@@ -54,7 +54,7 @@ watch(
     // 只有商品发生变化时才重新查询
     if (
       productSpus.value.length === 0 ||
-      productSpus.value.some((spu) => !ids.includes(spu.id!))
+      productSpus.value.some((spu) => !ids.includes(spu.id))
     ) {
       productSpus.value = await getSpuDetailList(ids);
     }
@@ -88,7 +88,7 @@ function emitSpuChange() {
   } else {
     emit(
       'update:modelValue',
-      productSpus.value.map((spu) => spu.id!),
+      productSpus.value.map((spu) => spu.id),
     );
     emit('change', productSpus.value);
   }

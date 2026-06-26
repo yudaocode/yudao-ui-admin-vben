@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 
-import { ElAvatar, ElMessage, ElTag, ElTooltip } from 'element-plus'
+import { ElAvatar, ElMessage, ElTag, ElTooltip } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -119,10 +119,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #banned="{ row }">
         <ElTooltip v-if="row.banned" :content="row.bannedReason">
           <span class="inline-flex">
-            <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="row.banned" />
+            <DictTag
+              :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+              :value="row.banned"
+            />
           </span>
         </ElTooltip>
-        <DictTag v-else :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="row.banned" />
+        <DictTag
+          v-else
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="row.banned"
+        />
       </template>
       <template #mutedAll="{ row }">
         <ElTag v-if="row.mutedAll" type="danger">已禁言</ElTag>
@@ -150,7 +157,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: row.banned ? 'primary' : 'danger',
               icon: ACTION_ICON.CLOSE,
               auth: ['im:manager:group:ban'],
-              onClick: row.banned ? handleUnban.bind(null, row) : handleBan.bind(null, row),
+              onClick: row.banned
+                ? handleUnban.bind(null, row)
+                : handleBan.bind(null, row),
             },
             {
               label: '解散',

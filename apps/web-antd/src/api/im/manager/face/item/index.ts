@@ -17,7 +17,6 @@ export namespace ImManagerFacePackItemApi {
   }
 }
 
-
 /** 获得表情分页 */
 export function getManagerFacePackItemPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerFacePackItemApi.FacePackItem>>(
@@ -35,16 +34,17 @@ export function getManagerFacePackItem(id: number) {
 }
 
 /** 新增表情 */
-export function createManagerFacePackItem(data: ImManagerFacePackItemApi.FacePackItem) {
+export function createManagerFacePackItem(
+  data: ImManagerFacePackItemApi.FacePackItem,
+) {
   return requestClient.post<number>('/im/manager/face-pack-item/create', data);
 }
 
 /** 修改表情 */
-export function updateManagerFacePackItem(data: ImManagerFacePackItemApi.FacePackItem) {
-  return requestClient.put<boolean>(
-    '/im/manager/face-pack-item/update',
-    data,
-  );
+export function updateManagerFacePackItem(
+  data: ImManagerFacePackItemApi.FacePackItem,
+) {
+  return requestClient.put<boolean>('/im/manager/face-pack-item/update', data);
 }
 
 /** 删除表情 */

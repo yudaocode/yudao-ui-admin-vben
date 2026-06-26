@@ -205,7 +205,9 @@ const saveConfig = async () => {
     (option) => option.key === configForm.value.calledProcessDefinitionKey,
   );
 
-  currentNode.value.name = nodeName.value!;
+  if (nodeName.value) {
+    currentNode.value.name = nodeName.value;
+  }
   if (currentNode.value.childProcessSetting) {
     // 1. 是否异步
     currentNode.value.childProcessSetting.async = configForm.value.async;
@@ -810,10 +812,7 @@ onMounted(async () => {
               trigger: 'change',
             }"
           >
-            <InputNumber
-              v-model:value="multiInstanceSourceNumber"
-              :min="1"
-            />
+            <InputNumber v-model:value="multiInstanceSourceNumber" :min="1" />
           </FormItem>
           <FormItem
             v-if="

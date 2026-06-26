@@ -32,7 +32,12 @@ defineExpose({ open });
 </script>
 
 <template>
-  <Modal v-model:open="visible" :footer="null" title="私聊消息详情" width="700px">
+  <Modal
+    v-model:open="visible"
+    :footer="null"
+    title="私聊消息详情"
+    width="700px"
+  >
     <Descriptions bordered :column="2">
       <DescriptionsItem label="编号">{{ detail.id }}</DescriptionsItem>
       <DescriptionsItem label="客户端编号">
@@ -68,7 +73,11 @@ defineExpose({ open });
         />
       </DescriptionsItem>
       <DescriptionsItem label="原始 JSON" :span="2">
-        <pre class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs">{{ formatJsonText(detail.content) }}</pre>
+        <pre
+          class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs"
+        >
+          {{ formatJsonText(detail.content) }}
+        </pre>
       </DescriptionsItem>
     </Descriptions>
   </Modal>

@@ -1,112 +1,113 @@
 <script lang="ts" setup>
-import type { FriendRequest, User } from '../../types'
+import type { FriendRequest, User } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { prompt } from '@vben/common-ui'
-import { DICT_TYPE } from '@vben/constants'
-import { getDictLabel } from '@vben/hooks'
+import { prompt } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 
-import { ElButton, ElInput, ElMessage } from 'element-plus'
+import { ElButton, ElInput, ElMessage } from 'element-plus';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { ImFriendRequestHandleResult } from '../../../utils/constants'
-import { UserAvatar } from '../../components/user'
-import { UserInfo } from '../../components/user'
-import { useFriendStore } from '../../store/friendStore'
+import { ImFriendRequestHandleResult } from '../../../utils/constants';
+import { UserAvatar, UserInfo } from '../../components/user';
+import { useFriendStore } from '../../store/friendStore';
 
-defineOptions({ name: 'ImContactFriendRequestDetail' })
+defineOptions({ name: 'ImContactFriendRequestDetail' });
 
 const props = defineProps<{
-  request: FriendRequest
-}>()
+  request: FriendRequest;
+}>();
 
 const emit = defineEmits<{
-  chat: [peerUserId: number]
-}>()
+  chat: [peerUserId: number];
+}>();
 
-const friendStore = useFriendStore()
+const friendStore = useFriendStore();
 
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
-const currentUserId = computed(() => getCurrentUserId())
+const currentUserId = computed(() => getCurrentUserId());
 
 /** 是不是我发起的（fromUserId === currentUserId） */
-const iSentIt = computed(() => props.request.fromUserId === currentUserId.value)
+const iSentIt = computed(
+  () => props.request.fromUserId === currentUserId.value,
+);
 
 /** 是否「已拒绝」态：模板里多处用到，computed 一次省得到处写枚举比对 */
 const refused = computed(
-  () => props.request.handleResult === ImFriendRequestHandleResult.REFUSED
-)
+  () => props.request.handleResult === ImFriendRequestHandleResult.REFUSED,
+);
 
 /** 是否「已通过」态：转走 UserInfo 好友详情入口 */
 const agreed = computed(
-  () => props.request.handleResult === ImFriendRequestHandleResult.AGREED
-)
+  () => props.request.handleResult === ImFriendRequestHandleResult.AGREED,
+);
 
 /** 对端的用户编号 / 昵称 / 头像 */
 const peerUserId = computed(() =>
-  iSentIt.value ? props.request.toUserId : props.request.fromUserId
-)
+  iSentIt.value ? props.request.toUserId : props.request.fromUserId,
+);
 const peerNickname = computed(() =>
   iSentIt.value
     ? props.request.toNickname || String(props.request.toUserId)
-    : props.request.fromNickname || String(props.request.fromUserId)
-)
+    : props.request.fromNickname || String(props.request.fromUserId),
+);
 const peerAvatar = computed(() =>
-  iSentIt.value ? props.request.toAvatar : props.request.fromAvatar
-)
+  iSentIt.value ? props.request.toAvatar : props.request.fromAvatar,
+);
 
 /** 透给 UserInfo 的最小用户信息；UserInfo 内部会按 id 调 getSimpleUser 补齐性别 / 部门 */
 const peerUser = computed<User>(() => ({
   id: peerUserId.value,
   nickname: peerNickname.value,
-  avatar: peerAvatar.value
-}))
+  avatar: peerAvatar.value,
+}));
 
 // 各自的 loading 用于按钮 spinner 显示；processing 是跨按钮互斥锁，避免同意 / 拒绝并发提交同一申请
-const agreeing = ref(false)
-const refusing = ref(false)
-const processing = ref(false)
+const agreeing = ref(false);
+const refusing = ref(false);
+const processing = ref(false);
 
 /** 同意申请：互斥锁 + 状态二次校验，避免并发 / 服务端已处理后再次提交 */
 async function handleAgree() {
   if (processing.value) {
-    return
+    return;
   }
   if (props.request.handleResult !== ImFriendRequestHandleResult.UNHANDLED) {
-    return
+    return;
   }
-  processing.value = true
-  agreeing.value = true
+  processing.value = true;
+  agreeing.value = true;
   try {
-    await friendStore.agreeFriendRequest(props.request.id)
-    ElMessage.success('已同意好友申请')
+    await friendStore.agreeFriendRequest(props.request.id);
+    ElMessage.success('已同意好友申请');
   } finally {
-    agreeing.value = false
-    processing.value = false
+    agreeing.value = false;
+    processing.value = false;
   }
 }
 
 /** 拒绝申请：弹 prompt 收集可选拒绝理由（点取消则中止），随后调 store 落库 + 提示 */
 async function handleRefuse() {
   if (processing.value) {
-    return
+    return;
   }
   if (props.request.handleResult !== ImFriendRequestHandleResult.UNHANDLED) {
-    return
+    return;
   }
   // 1. 弹 prompt 收集拒绝理由（最多 255 字）；用户点「取消」会 reject，中止后续流程
-  let handleContent: string | undefined
+  let handleContent: string | undefined;
   try {
     const result = await prompt<string>({
       beforeClose(scope) {
         if (!scope.isConfirm) {
-          return
+          return;
         }
         if ((scope.value || '').length > 255) {
-          ElMessage.error('最多 255 个字符')
-          return false
+          ElMessage.error('最多 255 个字符');
+          return false;
         }
       },
       cancelText: '取消',
@@ -116,33 +117,33 @@ async function handleRefuse() {
         maxlength: 255,
         placeholder: '不填则不告知对方原因',
         rows: 3,
-        type: 'textarea'
+        type: 'textarea',
       },
       content: '',
       defaultValue: '',
       confirmText: '拒绝',
       modelPropName: 'value',
-      title: '拒绝好友申请'
-    })
-    handleContent = result || undefined
+      title: '拒绝好友申请',
+    });
+    handleContent = result || undefined;
   } catch {
-    return
+    return;
   }
   // 2. prompt 期间状态可能被跨端改成 AGREED / REFUSED，再校验一次避免重复提交
   if (processing.value) {
-    return
+    return;
   }
   if (props.request.handleResult !== ImFriendRequestHandleResult.UNHANDLED) {
-    return
+    return;
   }
-  processing.value = true
-  refusing.value = true
+  processing.value = true;
+  refusing.value = true;
   try {
-    await friendStore.refuseFriendRequest(props.request.id, handleContent)
-    ElMessage.success('已拒绝好友申请')
+    await friendStore.refuseFriendRequest(props.request.id, handleContent);
+    ElMessage.success('已拒绝好友申请');
   } finally {
-    refusing.value = false
-    processing.value = false
+    refusing.value = false;
+    processing.value = false;
   }
 }
 </script>
@@ -211,15 +212,34 @@ async function handleRefuse() {
     <div class="w-full max-w-[420px] mt-8 flex justify-center">
       <!-- 我发起 + 等待中：禁用「等待对方验证」 -->
       <ElButton
-        v-if="iSentIt && request.handleResult === ImFriendRequestHandleResult.UNHANDLED"
+        v-if="
+          iSentIt &&
+          request.handleResult === ImFriendRequestHandleResult.UNHANDLED
+        "
         disabled
       >
         等待对方验证
       </ElButton>
       <!-- 别人加我 + 等待中：同意 / 拒绝 -->
-      <template v-if="!iSentIt && request.handleResult === ImFriendRequestHandleResult.UNHANDLED">
-        <ElButton @click="handleRefuse" :loading="refusing" :disabled="processing">拒绝</ElButton>
-        <ElButton type="primary" @click="handleAgree" :loading="agreeing" :disabled="processing">
+      <template
+        v-if="
+          !iSentIt &&
+          request.handleResult === ImFriendRequestHandleResult.UNHANDLED
+        "
+      >
+        <ElButton
+          @click="handleRefuse"
+          :loading="refusing"
+          :disabled="processing"
+        >
+          拒绝
+        </ElButton>
+        <ElButton
+          type="primary"
+          @click="handleAgree"
+          :loading="agreeing"
+          :disabled="processing"
+        >
           同意
         </ElButton>
       </template>

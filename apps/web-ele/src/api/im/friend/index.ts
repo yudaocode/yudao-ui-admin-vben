@@ -29,7 +29,6 @@ export namespace ImFriendApi {
   }
 }
 
-
 /** 获得当前登录用户的好友列表 */
 export function getMyFriendList() {
   return requestClient.get<ImFriendApi.FriendRespVO[]>('/im/friend/list');
@@ -41,7 +40,9 @@ export function pullMyFriendList(params: {
   lastUpdateTime?: number;
   limit: number;
 }) {
-  return requestClient.get<ImFriendApi.FriendRespVO[]>('/im/friend/pull', { params });
+  return requestClient.get<ImFriendApi.FriendRespVO[]>('/im/friend/pull', {
+    params,
+  });
 }
 
 /** 获得好友详情 */

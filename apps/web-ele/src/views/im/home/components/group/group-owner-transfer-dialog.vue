@@ -1,79 +1,79 @@
 <script lang="ts" setup>
-import type { GroupMemberLite } from './group-member.vue'
+import type { GroupMemberLite } from './group-member.vue';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { confirm } from '@vben/common-ui'
+import { confirm } from '@vben/common-ui';
 
-import { ElButton, ElDialog, ElMessage } from 'element-plus'
+import { ElButton, ElDialog, ElMessage } from 'element-plus';
 
-import { transferGroupOwner } from '#/api/im/group'
+import { transferGroupOwner } from '#/api/im/group';
 
-import { GroupMemberPickerPanel } from '../picker'
+import { GroupMemberPickerPanel } from '../picker';
 
-defineOptions({ name: 'ImGroupOwnerTransferDialog' })
+defineOptions({ name: 'ImGroupOwnerTransferDialog' });
 
 const emit = defineEmits<{
   /** 转让成功；父侧通常用来 reload 群数据 */
-  reload: []
-}>()
+  reload: [];
+}>();
 
-const visible = ref(false)
-const submitting = ref(false)
-const groupId = ref(0)
-const members = ref<GroupMemberLite[]>([])
-const hideIds = ref<number[]>([])
-const selectedIds = ref<number[]>([])
+const visible = ref(false);
+const submitting = ref(false);
+const groupId = ref(0);
+const members = ref<GroupMemberLite[]>([]);
+const hideIds = ref<number[]>([]);
+const selectedIds = ref<number[]>([]);
 
 defineExpose({
   /** 打开转让群主弹窗：reset → 灌参 → visible=true */
   open(opts: {
-    groupId: number
+    groupId: number;
     /** 隐藏 userId：当前用户（不能转给自己） */
-    hideIds?: number[]
-    members: GroupMemberLite[]
+    hideIds?: number[];
+    members: GroupMemberLite[];
   }) {
-    groupId.value = opts.groupId
-    members.value = opts.members
-    hideIds.value = opts.hideIds ? [...opts.hideIds] : []
-    selectedIds.value = []
-    submitting.value = false
-    visible.value = true
-  }
-})
+    groupId.value = opts.groupId;
+    members.value = opts.members;
+    hideIds.value = opts.hideIds ? [...opts.hideIds] : [];
+    selectedIds.value = [];
+    submitting.value = false;
+    visible.value = true;
+  },
+});
 
 /** 选中的新群主对象（取数组首项） */
 const newOwner = computed<GroupMemberLite | undefined>(() => {
   if (selectedIds.value.length === 0) {
-    return undefined
+    return undefined;
   }
-  return members.value.find((member) => member.userId === selectedIds.value[0])
-})
+  return members.value.find((member) => member.userId === selectedIds.value[0]);
+});
 
 /** 二次确认转让：转让后旧群主降为普通成员，无法撤销 */
 async function handleOk() {
   if (!groupId.value || !newOwner.value) {
-    return
+    return;
   }
   try {
     await confirm(
       `确定将群主转让给 ${newOwner.value.showName}？转让后你将变为普通成员，无法撤销。`,
-      '确认转让群主'
-    )
+      '确认转让群主',
+    );
   } catch {
-    return
+    return;
   }
-  submitting.value = true
+  submitting.value = true;
   try {
     await transferGroupOwner({
       id: groupId.value,
-      newOwnerUserId: newOwner.value.userId
-    })
-    ElMessage.success('群主转让成功')
-    emit('reload')
-    visible.value = false
+      newOwnerUserId: newOwner.value.userId,
+    });
+    ElMessage.success('群主转让成功');
+    emit('reload');
+    visible.value = false;
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
 }
 </script>

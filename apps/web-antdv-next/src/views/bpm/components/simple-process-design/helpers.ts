@@ -413,9 +413,10 @@ export function useNodeForm(nodeType: BpmNodeTypeEnum) {
       case CandidateStrategy.FORM_DEPT_LEADER: {
         // 候选人参数格式: | 分隔 。左边为表单内部门字段。 右边为部门层级
         const deptFieldOnForm = configForm.value.formDept;
-        candidateParam = deptFieldOnForm?.concat(
-          `|${configForm.value.deptLevel}`,
-        );
+        candidateParam =
+          deptFieldOnForm === undefined
+            ? undefined
+            : `${deptFieldOnForm}|${configForm.value.deptLevel}`;
         break;
       }
       case CandidateStrategy.FORM_USER: {
@@ -426,7 +427,10 @@ export function useNodeForm(nodeType: BpmNodeTypeEnum) {
       case CandidateStrategy.MULTI_LEVEL_DEPT_LEADER: {
         // 候选人参数格式: | 分隔 。左边为部门（多个部门用 , 分隔）。 右边为部门层级
         const deptIds = configForm.value.deptIds?.join(',');
-        candidateParam = deptIds?.concat(`|${configForm.value.deptLevel}`);
+        candidateParam =
+          deptIds === undefined
+            ? undefined
+            : `${deptIds}|${configForm.value.deptLevel}`;
         break;
       }
       case CandidateStrategy.POST: {

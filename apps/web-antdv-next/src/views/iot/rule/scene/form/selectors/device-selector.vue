@@ -18,8 +18,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value?: number): void;
-  (e: 'change', value?: number): void;
+  (e: 'change' | 'update:modelValue', value?: number): void;
 }>();
 
 const deviceLoading = ref(false); // 设备加载状态

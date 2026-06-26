@@ -5,31 +5,31 @@
   - text 段原样输出
 -->
 <script lang="ts" setup>
-import type { TipSegment } from '#/views/im/utils/message'
+import type { TipSegment } from '#/views/im/utils/message';
 
-import { IM_AT_ALL_USER_ID } from '#/views/im/utils/constants'
-import { openMentionUserInfoCardAtEvent } from '#/views/im/utils/user'
+import { IM_AT_ALL_USER_ID } from '#/views/im/utils/constants';
+import { openMentionUserInfoCardAtEvent } from '#/views/im/utils/user';
 
-defineOptions({ name: 'ImTipSegments' })
+defineOptions({ name: 'ImTipSegments' });
 
 defineProps<{
-  segments: TipSegment[]
-}>()
+  segments: TipSegment[];
+}>();
 
 /** @全体成员是广播 mention，仅高亮配色，不挂可点击交互 */
 function isClickableMention(segment: { userId: number }): boolean {
-  return segment.userId !== IM_AT_ALL_USER_ID
+  return segment.userId !== IM_AT_ALL_USER_ID;
 }
 
 /** mention 段点击：fallbackName 取 segment 文本，避免 friend / member 都查不到时弹空 */
 function handleMentionClick(
-  segment: { text: string; type: 'mention'; userId: number; },
-  event: MouseEvent
+  segment: { text: string; type: 'mention'; userId: number },
+  event: MouseEvent,
 ) {
   if (!isClickableMention(segment)) {
-    return
+    return;
   }
-  openMentionUserInfoCardAtEvent(segment.userId, event, segment.text)
+  openMentionUserInfoCardAtEvent(segment.userId, event, segment.text);
 }
 </script>
 
@@ -40,7 +40,9 @@ function handleMentionClick(
       class="text-[#576b95]"
       :class="{ 'cursor-pointer hover:underline': isClickableMention(segment) }"
       @click.stop="handleMentionClick(segment, $event)"
-      >{{ segment.text }}</span>
+    >
+      {{ segment.text }}
+    </span>
     <a
       v-else-if="segment.type === 'link'"
       :href="segment.href"
@@ -48,7 +50,9 @@ function handleMentionClick(
       rel="noopener noreferrer"
       class="text-[#576b95] hover:underline break-all"
       @click.stop
-      >{{ segment.text }}</a>
+    >
+      {{ segment.text }}
+    </a>
     <span v-else>{{ segment.text }}</span>
   </template>
 </template>

@@ -1,36 +1,40 @@
 <script lang="ts" setup>
-import type { Message } from '../../../../types'
+import type { GroupMemberLite } from '../../../../components/group';
+import type { Message } from '../../../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants'
+import { CommonStatusEnum } from '@vben/constants';
 
-import { Popover, TabPane, Tabs } from 'antdv-next'
+import { Popover, TabPane, Tabs } from 'antdv-next';
 
-import { getGroupReadUsers as apiGetGroupReadUsers } from '#/api/im/message/group'
+import { getGroupReadUsers as apiGetGroupReadUsers } from '#/api/im/message/group';
 
-import { ImConversationType, ImMessageReceiptStatus } from '../../../../../utils/constants'
-import { PagedScroller } from '../../../../components'
-import { GroupMember, type GroupMemberLite } from '../../../../components/group'
-import { useMessageStore } from '../../../../store/messageStore'
+import {
+  ImConversationType,
+  ImMessageReceiptStatus,
+} from '../../../../../utils/constants';
+import { PagedScroller } from '../../../../components';
+import { GroupMember } from '../../../../components/group';
+import { useMessageStore } from '../../../../store/messageStore';
 
-defineOptions({ name: 'ImMessageReadStatus' })
+defineOptions({ name: 'ImMessageReadStatus' });
 
 const props = defineProps<{
   // 当前群编号；供 loadReadUsers 作为 /im/message/group/get-read-users 的入参
-  groupId: number
+  groupId: number;
   // 当前群所有成员（外部 MessagePanel.groupMembers 传入；没有就传空数组，未读列表会变空但不报错）
-  groupMembers: GroupMemberLite[]
-  message: Message
-}>()
+  groupMembers: GroupMemberLite[];
+  message: Message;
+}>();
 
-const messageStore = useMessageStore()
+const messageStore = useMessageStore();
 
 // popover 开关：show 时拉已读名单，关闭后保留 readUserIds 缓存（重开同一条消息不再请求）
-const popVisible = ref(false)
-const activeTab = ref<'read' | 'unread'>('read')
+const popVisible = ref(false);
+const activeTab = ref<'read' | 'unread'>('read');
 // 服务端返回的"已读这条消息的 userId 列表"，未读靠 visibleMembers 减去这份得到
-const readUserIds = ref<number[]>([])
+const readUserIds = ref<number[]>([]);
 
 /**
  * 标签文案：
@@ -40,11 +44,11 @@ const readUserIds = ref<number[]>([])
  */
 const label = computed(() => {
   if (props.message.receiptStatus === ImMessageReceiptStatus.DONE) {
-    return '全部已读'
+    return '全部已读';
   }
-  const readCount = props.message.readCount || 0
-  return readCount > 0 ? `${readCount} 人已读` : '未读'
-})
+  const readCount = props.message.readCount || 0;
+  return readCount > 0 ? `${readCount} 人已读` : '未读';
+});
 
 /**
  * 这条消息"应该被谁看到"的可见成员集合（已读 / 未读两个 tab 共用基底）
@@ -56,25 +60,29 @@ const label = computed(() => {
  * 3. 已退群（status === DISABLE）：他读没读已经不关心，UI 不展示
  */
 const visibleMembers = computed<GroupMemberLite[]>(() => {
-  const receiverUserIds = props.message.receiverUserIds
-  const isDirected = !!receiverUserIds && receiverUserIds.length > 0
+  const receiverUserIds = props.message.receiverUserIds;
+  const isDirected = !!receiverUserIds && receiverUserIds.length > 0;
   return props.groupMembers.filter(
     (member) =>
       member.status !== CommonStatusEnum.DISABLE &&
       member.userId !== props.message.senderId &&
-      (!isDirected || receiverUserIds.includes(member.userId))
-  )
-})
+      (!isDirected || receiverUserIds.includes(member.userId)),
+  );
+});
 
 /** 已读 = 可见成员 ∩ readUserIds */
 const readMembers = computed(() =>
-  visibleMembers.value.filter((member) => readUserIds.value.includes(member.userId))
-)
+  visibleMembers.value.filter((member) =>
+    readUserIds.value.includes(member.userId),
+  ),
+);
 
 /** 未读 = 可见成员 − readUserIds */
 const unreadMembers = computed(() =>
-  visibleMembers.value.filter((member) => !readUserIds.value.includes(member.userId))
-)
+  visibleMembers.value.filter(
+    (member) => !readUserIds.value.includes(member.userId),
+  ),
+);
 
 /**
  * 拉取已读用户 id 列表
@@ -89,27 +97,27 @@ const unreadMembers = computed(() =>
  */
 async function loadReadUsers() {
   if (!props.message.id) {
-    return
+    return;
   }
   try {
     const userIds = await apiGetGroupReadUsers({
       groupId: props.groupId,
-      messageId: props.message.id
-    })
-    readUserIds.value = userIds || []
-    const readCount = readUserIds.value.length
+      messageId: props.message.id,
+    });
+    readUserIds.value = userIds || [];
+    const readCount = readUserIds.value.length;
     // 全可见成员都已读 → 更新为 DONE，让外面 label 直接命中「全部已读」分支；
     // 否则只更新 readCount，receiptStatus 维持不变（PENDING）
-    const allRead = readCount > 0 && readCount >= visibleMembers.value.length
+    const allRead = readCount > 0 && readCount >= visibleMembers.value.length;
     messageStore.applyMessageReadReceipt({
       conversationType: ImConversationType.GROUP,
       targetId: props.groupId,
       groupMessageId: props.message.id,
       readCount,
-      receiptStatus: allRead ? ImMessageReceiptStatus.DONE : undefined
-    })
+      receiptStatus: allRead ? ImMessageReceiptStatus.DONE : undefined,
+    });
   } catch (error) {
-    console.error('[IM] 拉取群已读列表失败:', error)
+    console.error('[IM] 拉取群已读列表失败:', error);
   }
 }
 </script>
@@ -138,9 +146,18 @@ async function loadReadUsers() {
     <template #content>
       <Tabs v-model:active-key="activeTab" centered>
         <TabPane :tab="`已读(${readMembers.length})`" key="read">
-          <PagedScroller :items="readMembers" :page-size="20" item-key="userId" class="h-75">
+          <PagedScroller
+            :items="readMembers"
+            :page-size="20"
+            item-key="userId"
+            class="h-75"
+          >
             <template #default="{ item }">
-              <GroupMember :member="item as GroupMemberLite" :height="40" :clickable="false" />
+              <GroupMember
+                :member="item as GroupMemberLite"
+                :height="40"
+                :clickable="false"
+              />
             </template>
           </PagedScroller>
           <div
@@ -151,9 +168,18 @@ async function loadReadUsers() {
           </div>
         </TabPane>
         <TabPane :tab="`未读(${unreadMembers.length})`" key="unread">
-          <PagedScroller :items="unreadMembers" :page-size="20" item-key="userId" class="h-75">
+          <PagedScroller
+            :items="unreadMembers"
+            :page-size="20"
+            item-key="userId"
+            class="h-75"
+          >
             <template #default="{ item }">
-              <GroupMember :member="item as GroupMemberLite" :height="40" :clickable="false" />
+              <GroupMember
+                :member="item as GroupMemberLite"
+                :height="40"
+                :clickable="false"
+              />
             </template>
           </PagedScroller>
           <div

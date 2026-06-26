@@ -20,7 +20,6 @@ export namespace ImManagerFriendRequestApi {
   }
 }
 
-
 /** 获得好友申请分页 */
 export function getManagerFriendRequestPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerFriendRequestApi.FriendRequest>>(

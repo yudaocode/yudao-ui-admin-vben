@@ -97,11 +97,7 @@ onMounted(async () => {
         >
           <IconifyIcon icon="lucide:trash" />
         </Button>
-        <Button
-          class="m-0 p-2"
-          type="text"
-          @click="handleButtonClick('more')"
-        >
+        <Button class="m-0 p-2" type="text" @click="handleButtonClick('more')">
           <IconifyIcon icon="lucide:ellipsis-vertical" />
         </Button>
       </div>

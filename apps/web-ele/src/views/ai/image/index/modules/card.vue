@@ -81,11 +81,7 @@ onMounted(async () => {
         </ElButton>
       </div>
       <div class="flex">
-        <ElButton
-          class="m-0 p-2"
-          text
-          @click="handleButtonClick('download')"
-        >
+        <ElButton class="m-0 p-2" text @click="handleButtonClick('download')">
           <IconifyIcon icon="lucide:download" />
         </ElButton>
         <ElButton
@@ -95,18 +91,10 @@ onMounted(async () => {
         >
           <IconifyIcon icon="lucide:refresh-cw" />
         </ElButton>
-        <ElButton
-          class="m-0 p-2"
-          text
-          @click="handleButtonClick('delete')"
-        >
+        <ElButton class="m-0 p-2" text @click="handleButtonClick('delete')">
           <IconifyIcon icon="lucide:trash" />
         </ElButton>
-        <ElButton
-          class="m-0 p-2"
-          text
-          @click="handleButtonClick('more')"
-        >
+        <ElButton class="m-0 p-2" text @click="handleButtonClick('more')">
           <IconifyIcon icon="lucide:ellipsis-vertical" />
         </ElButton>
       </div>

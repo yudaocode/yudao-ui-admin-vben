@@ -34,7 +34,6 @@ export default {
   },
   unbind(el) {
     document.removeEventListener('touchstart', el[ctx].documentHandler); // 解绑
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete el[ctx];
+    delete el.ctx;
   },
 };

@@ -3,7 +3,7 @@ import type { ImManagerChannelMaterialApi } from '#/api/im/manager/channel/mater
 
 import { computed, ref, watch } from 'vue';
 
-import { ElOption, ElSelect } from 'element-plus'
+import { ElOption, ElSelect } from 'element-plus';
 
 import { getSimpleManagerChannelMaterialList } from '#/api/im/manager/channel/material';
 
@@ -11,10 +11,10 @@ defineOptions({ name: 'ImManagerMaterialSelect' });
 
 const props = withDefaults(
   defineProps<{
-    channelId?: number
-    clearable?: boolean
-    modelValue?: number
-    placeholder?: string
+    channelId?: number;
+    clearable?: boolean;
+    modelValue?: number;
+    placeholder?: string;
   }>(),
   {
     clearable: true,

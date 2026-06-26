@@ -1,89 +1,95 @@
 <script lang="ts" setup>
-import type { FriendLite } from '../../types'
+import type { FriendLite } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { Button, message, Modal } from 'ant-design-vue'
+import { Button, message, Modal } from 'ant-design-vue';
 
-import { createGroup } from '#/api/im/group'
+import { createGroup } from '#/api/im/group';
 
-import { buildDefaultGroupName } from '../../../utils/group'
-import { useFriendStore } from '../../store/friendStore'
-import { useGroupStore } from '../../store/groupStore'
-import { FriendPickerPanel } from '../picker'
+import { buildDefaultGroupName } from '../../../utils/group';
+import { useFriendStore } from '../../store/friendStore';
+import { useGroupStore } from '../../store/groupStore';
+import { FriendPickerPanel } from '../picker';
 
-defineOptions({ name: 'ImGroupCreateDialog' })
+defineOptions({ name: 'ImGroupCreateDialog' });
 
 const emit = defineEmits<{
   /** 创建成功，携带新群编号；父侧通常用来跳转到新群会话 */
-  created: [groupId: number]
-}>()
+  created: [groupId: number];
+}>();
 
-const friendStore = useFriendStore()
-const groupStore = useGroupStore()
+const friendStore = useFriendStore();
+const groupStore = useGroupStore();
 
-const visible = ref(false)
-const submitting = ref(false)
-const lockedIds = ref<number[]>([])
-const selectedIds = ref<number[]>([])
+const visible = ref(false);
+const submitting = ref(false);
+const lockedIds = ref<number[]>([]);
+const selectedIds = ref<number[]>([]);
 
 defineExpose({
   /** 打开发起群聊弹窗：reset → 灌参 → visible=true */
   open(opts?: { lockedIds?: number[] }) {
-    lockedIds.value = opts?.lockedIds ? [...opts.lockedIds] : []
-    selectedIds.value = []
-    submitting.value = false
-    visible.value = true
-  }
-})
+    lockedIds.value = opts?.lockedIds ? [...opts.lockedIds] : [];
+    selectedIds.value = [];
+    submitting.value = false;
+    visible.value = true;
+  },
+});
 
 /** 全量好友：直接复用 friendStore Lite 视图（带拼音字段供分桶用） */
-const friends = computed<FriendLite[]>(() => friendStore.getActiveFriendLiteList)
+const friends = computed<FriendLite[]>(
+  () => friendStore.getActiveFriendLiteList,
+);
 
 /** 完成按钮可点：至少有 1 个非 locked 勾选（locked 是入口锁定项，不算"用户主动选择"） */
-const canSubmit = computed(() => selectedIds.value.length > 0)
+const canSubmit = computed(() => selectedIds.value.length > 0);
 
 /** 拿到所有要进群的好友（locked + selected）；建群默认群名按这批人生成 */
 function resolveMembersToInvite(): FriendLite[] {
-  const seen = new Set<number>()
-  const result: FriendLite[] = []
-  const byId = new Map(friends.value.map((f) => [f.id, f]))
+  const seen = new Set<number>();
+  const result: FriendLite[] = [];
+  const byId = new Map(friends.value.map((f) => [f.id, f]));
   for (const id of lockedIds.value) {
     if (seen.has(id)) {
-      continue
+      continue;
     }
-    const friend = byId.get(id)
+    const friend = byId.get(id);
     if (friend) {
-      seen.add(id)
-      result.push(friend)
+      seen.add(id);
+      result.push(friend);
     }
   }
   for (const id of selectedIds.value) {
     if (seen.has(id)) {
-      continue
+      continue;
     }
-    const friend = byId.get(id)
+    const friend = byId.get(id);
     if (friend) {
-      seen.add(id)
-      result.push(friend)
+      seen.add(id);
+      result.push(friend);
     }
   }
-  return result
+  return result;
 }
 
 /** 创建群聊：建群（同时邀请初始成员）→ upsert groupStore → emit created 让父页跳转新会话 */
 async function handleOk() {
-  const members = resolveMembersToInvite()
+  const members = resolveMembersToInvite();
   if (members.length === 0) {
-    return
+    return;
   }
-  submitting.value = true
+  submitting.value = true;
   try {
-    const memberUserIds = members.map((m) => m.id)
-    const name = buildDefaultGroupName(members)
-    const group = await createGroup({ name, memberUserIds, joinApproval: false })
+    const memberUserIds = members.map((m) => m.id);
+    const name = buildDefaultGroupName(members);
+    const group = await createGroup({
+      name,
+      memberUserIds,
+      joinApproval: false,
+    });
     if (!group?.id) {
-      throw new Error('创建群失败：未返回群编号')
+      throw new Error('创建群失败：未返回群编号');
     }
     // 直接 upsert 进 groupStore，省一次 fetchGroupList —— 服务端返回 VO 已经够建会话了
     groupStore.upsertGroup({
@@ -91,13 +97,13 @@ async function handleOk() {
       name: group.name,
       avatar: group.avatar,
       notice: group.notice,
-      ownerUserId: group.ownerUserId
-    })
-    message.success('群聊创建成功')
-    emit('created', group.id)
-    visible.value = false
+      ownerUserId: group.ownerUserId,
+    });
+    message.success('群聊创建成功');
+    emit('created', group.id);
+    visible.value = false;
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
 }
 </script>
@@ -127,7 +133,12 @@ async function handleOk() {
 
     <template #footer>
       <Button @click="visible = false">取消</Button>
-      <Button type="primary" :loading="submitting" :disabled="!canSubmit" @click="handleOk">
+      <Button
+        type="primary"
+        :loading="submitting"
+        :disabled="!canSubmit"
+        @click="handleOk"
+      >
         完成
       </Button>
     </template>

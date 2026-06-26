@@ -88,7 +88,11 @@ const [Modal, modalApi] = useVbenModal({
           <Radio value="users">指定用户</Radio>
         </RadioGroup>
       </FormItem>
-      <FormItem v-if="formData.receiverUserType === 'users'" label="接收用户" required>
+      <FormItem
+        v-if="formData.receiverUserType === 'users'"
+        label="接收用户"
+        required
+      >
         <UserSelect
           v-model="formData.receiverUserIds"
           multiple

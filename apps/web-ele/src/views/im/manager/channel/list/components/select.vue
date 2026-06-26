@@ -3,7 +3,7 @@ import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { ElOption, ElSelect } from 'element-plus'
+import { ElOption, ElSelect } from 'element-plus';
 
 import { getSimpleChannelList } from '#/api/im/manager/channel';
 
@@ -11,10 +11,10 @@ defineOptions({ name: 'ImManagerChannelSelect' });
 
 const props = withDefaults(
   defineProps<{
-    clearable?: boolean
-    disabled?: boolean
-    modelValue?: number
-    placeholder?: string
+    clearable?: boolean;
+    disabled?: boolean;
+    modelValue?: number;
+    placeholder?: string;
   }>(),
   {
     clearable: true,

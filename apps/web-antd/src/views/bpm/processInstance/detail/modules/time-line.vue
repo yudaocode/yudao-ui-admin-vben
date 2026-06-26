@@ -425,71 +425,69 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
                 v-if="shouldShowReasonAndAttachment(task, activity.nodeType)"
                 class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
               >
-                  <div v-if="task.reason">审批意见：{{ task.reason }}</div>
-                  <div
-                    v-if="(task.attachments?.length || 0) > 0"
-                    :class="{
-                      'mt-2 border-t border-dashed border-gray-300 pt-2':
-                        task.reason,
-                    }"
-                  >
-                    <div class="mb-1 text-xs font-semibold text-gray-400">
-                      附件列表：
-                    </div>
-                    <div class="flex flex-col gap-1.5">
-                      <template
-                        v-for="(
-                          attachment, attachmentIndex
-                        ) in task.attachments"
-                        :key="attachmentIndex"
-                      >
-                        <div class="flex items-center gap-2">
-                          <IconifyIcon
-                            :icon="
-                              isImageAttachment(attachment)
-                                ? 'lucide:image'
-                                : 'lucide:file-text'
-                            "
-                            class="text-gray-400"
-                          />
-                          <Image
-                            v-if="isImageAttachment(attachment)"
-                            :width="32"
-                            :height="32"
-                            class="rounded border border-solid border-gray-200 object-cover"
-                            :src="attachment"
-                            :preview="{ src: attachment }"
-                          />
-                          <a
-                            v-else
-                            :href="attachment"
-                            target="_blank"
-                            class="max-w-[240px] truncate text-blue-500 hover:text-blue-600 hover:underline"
-                            :title="getAttachmentName(attachment)"
-                          >
-                            {{ getAttachmentName(attachment) }}
-                          </a>
-                        </div>
-                      </template>
-                    </div>
+                <div v-if="task.reason">审批意见：{{ task.reason }}</div>
+                <div
+                  v-if="(task.attachments?.length || 0) > 0"
+                  :class="{
+                    'mt-2 border-t border-dashed border-gray-300 pt-2':
+                      task.reason,
+                  }"
+                >
+                  <div class="mb-1 text-xs font-semibold text-gray-400">
+                    附件列表：
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <template
+                      v-for="(attachment, attachmentIndex) in task.attachments"
+                      :key="attachmentIndex"
+                    >
+                      <div class="flex items-center gap-2">
+                        <IconifyIcon
+                          :icon="
+                            isImageAttachment(attachment)
+                              ? 'lucide:image'
+                              : 'lucide:file-text'
+                          "
+                          class="text-gray-400"
+                        />
+                        <Image
+                          v-if="isImageAttachment(attachment)"
+                          :width="32"
+                          :height="32"
+                          class="rounded border border-solid border-gray-200 object-cover"
+                          :src="attachment"
+                          :preview="{ src: attachment }"
+                        />
+                        <a
+                          v-else
+                          :href="attachment"
+                          target="_blank"
+                          class="max-w-[240px] truncate text-blue-500 hover:text-blue-600 hover:underline"
+                          :title="getAttachmentName(attachment)"
+                        >
+                          {{ getAttachmentName(attachment) }}
+                        </a>
+                      </div>
+                    </template>
                   </div>
                 </div>
-                <div
-                  v-if="
-                    task.signPicUrl &&
-                    activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
-                  "
-                  class="mt-1 flex w-full items-center rounded-md bg-gray-100 p-2 text-sm text-gray-500"
-                >
-                  签名：
-                  <Image
-                    class="ml-2"
-                    :width="180"
-                    :height="60"
-                    :src="task.signPicUrl"
-                    :preview="{ src: task.signPicUrl }"
-                  />
-                </div>
+              </div>
+              <div
+                v-if="
+                  task.signPicUrl &&
+                  activity.nodeType === BpmNodeTypeEnum.USER_TASK_NODE
+                "
+                class="mt-1 flex w-full items-center rounded-md bg-gray-100 p-2 text-sm text-gray-500"
+              >
+                签名：
+                <Image
+                  class="ml-2"
+                  :width="180"
+                  :height="60"
+                  :src="task.signPicUrl"
+                  :preview="{ src: task.signPicUrl }"
+                />
+              </div>
             </div>
 
             <!-- 情况二：遍历每个审批节点下的【候选的】task 任务 -->

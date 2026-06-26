@@ -1,86 +1,101 @@
 <script lang="ts" setup>
-import type { Conversation, Friend } from '../../../../types'
+import type { Conversation, Friend } from '../../../../types';
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { ElButton, ElDrawer, ElInput, ElMessage, ElPopover, ElSwitch } from 'element-plus'
+import {
+  ElButton,
+  ElDrawer,
+  ElInput,
+  ElMessage,
+  ElPopover,
+  ElSwitch,
+} from 'element-plus';
 
-import { useConversationStore } from '#/views/im/home/store/conversationStore'
-import { useFriendStore } from '#/views/im/home/store/friendStore'
-import { useGroupStore } from '#/views/im/home/store/groupStore'
-import { ImConversationType } from '#/views/im/utils/constants'
-import { getFriendDisplayName, getGroupDisplayName } from '#/views/im/utils/user'
+import { useConversationStore } from '#/views/im/home/store/conversationStore';
+import { useFriendStore } from '#/views/im/home/store/friendStore';
+import { useGroupStore } from '#/views/im/home/store/groupStore';
+import { ImConversationType } from '#/views/im/utils/constants';
+import {
+  getFriendDisplayName,
+  getGroupDisplayName,
+} from '#/views/im/utils/user';
 
-import { GroupCreateDialog } from '../../../../components/group'
-import { UserAvatar } from '../../../../components/user'
+import { GroupCreateDialog } from '../../../../components/group';
+import { UserAvatar } from '../../../../components/user';
 
-defineOptions({ name: 'ImConversationPrivateSide' })
+defineOptions({ name: 'ImConversationPrivateSide' });
 
 const props = withDefaults(
   defineProps<{
-    conversation?: Conversation | null // 当前会话（取置顶 / 免打扰态）
-    friend?: Friend // 对方好友信息（取头像 / 昵称）
-    modelValue?: boolean // 抽屉开关（v-model）
+    conversation?: Conversation | null; // 当前会话（取置顶 / 免打扰态）
+    friend?: Friend; // 对方好友信息（取头像 / 昵称）
+    modelValue?: boolean; // 抽屉开关（v-model）
   }>(),
   {
     conversation: null,
     friend: undefined,
-    modelValue: false
-  }
-)
+    modelValue: false,
+  },
+);
 
 const emit = defineEmits<{
-  openHistory: [] // 点击 "查找聊天内容" 行 → 父组件打开 MessageHistory 弹窗
-  'update:modelValue': [value: boolean]
-}>()
+  openHistory: []; // 点击 "查找聊天内容" 行 → 父组件打开 MessageHistory 弹窗
+  'update:modelValue': [value: boolean];
+}>();
 
 const visible = computed({
   get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
-})
+  set: (value) => emit('update:modelValue', value),
+});
 
-const conversationStore = useConversationStore()
-const friendStore = useFriendStore()
-const groupStore = useGroupStore()
+const conversationStore = useConversationStore();
+const friendStore = useFriendStore();
+const groupStore = useGroupStore();
 
 /** tile 标签 / 后续聊天界面用的展示名：备注优先 */
-const displayName = computed(() => (props.friend ? getFriendDisplayName(props.friend) : ''))
+const displayName = computed(() =>
+  props.friend ? getFriendDisplayName(props.friend) : '',
+);
 
-const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>() // 发起群聊弹窗 ref：handleOpenCreateGroup 调 open({ lockedIds }) 锁定对方
+const createGroupDialogRef = ref<InstanceType<typeof GroupCreateDialog>>(); // 发起群聊弹窗 ref：handleOpenCreateGroup 调 open({ lockedIds }) 锁定对方
 
 /** 打开发起群聊弹窗：把对方默认勾上且不可取消，对应微信"基于私聊发起群聊" */
 function handleOpenCreateGroup() {
-  const lockedIds = props.friend ? [props.friend.friendUserId] : []
-  createGroupDialogRef.value?.open({ lockedIds })
+  const lockedIds = props.friend ? [props.friend.friendUserId] : [];
+  createGroupDialogRef.value?.open({ lockedIds });
 }
 
-const displayNamePopoverVisible = ref(false)
-const editDisplayName = ref('')
+const displayNamePopoverVisible = ref(false);
+const editDisplayName = ref('');
 
 // popover 弹出时把当前备注灌进编辑态，避免上次未保存的脏值
 watch(displayNamePopoverVisible, (open) => {
   if (open) {
-    editDisplayName.value = props.friend?.displayName || ''
+    editDisplayName.value = props.friend?.displayName || '';
   }
-})
+});
 
 // 抽屉关闭时把还没收掉的 popover 一并清掉，避免下次打开闪一下
 watch(visible, (open) => {
   if (!open) {
-    displayNamePopoverVisible.value = false
+    displayNamePopoverVisible.value = false;
   }
-})
+});
 
 /** 备注 popover 点击保存 */
 async function handleSaveDisplayName() {
   if (!props.friend) {
-    return
+    return;
   }
-  await friendStore.setFriendDisplayName(props.friend.friendUserId, editDisplayName.value)
-  displayNamePopoverVisible.value = false
-  ElMessage.success('保存成功')
+  await friendStore.setFriendDisplayName(
+    props.friend.friendUserId,
+    editDisplayName.value,
+  );
+  displayNamePopoverVisible.value = false;
+  ElMessage.success('保存成功');
 }
 
 /**
@@ -88,42 +103,50 @@ async function handleSaveDisplayName() {
  */
 function handleMutedChange(value: boolean | number | string) {
   if (!props.conversation) {
-    return
+    return;
   }
-  const next = !!value
-  const { type, targetId } = props.conversation
-  conversationStore.setConversationSilent(type, targetId, next)
+  const next = !!value;
+  const { type, targetId } = props.conversation;
+  conversationStore.setConversationSilent(type, targetId, next);
   if (type !== ImConversationType.PRIVATE) {
-    return
+    return;
   }
   friendStore.setFriendSilent(targetId, next).catch((error) => {
-    console.error('[IM ConversationPrivateSide] 切换免打扰失败', { targetId }, error)
-    conversationStore.setConversationSilent(type, targetId, !next)
-  })
+    console.error(
+      '[IM ConversationPrivateSide] 切换免打扰失败',
+      { targetId },
+      error,
+    );
+    conversationStore.setConversationSilent(type, targetId, !next);
+  });
 }
 
 /** 切置顶：纯本地 conversationStore 排序态（无后端字段） */
 function handleTopChange(value: boolean | number | string) {
   if (!props.conversation) {
-    return
+    return;
   }
-  conversationStore.setConversationTop(props.conversation.type, props.conversation.targetId, !!value)
+  conversationStore.setConversationTop(
+    props.conversation.type,
+    props.conversation.targetId,
+    !!value,
+  );
 }
 
 /** 群创建成功：跳到新群会话 + 关掉本侧抽屉，让用户专注新群 */
 function handleGroupCreated(groupId: number) {
-  const group = groupStore.getGroup(groupId)
+  const group = groupStore.getGroup(groupId);
   if (!group) {
-    return
+    return;
   }
   conversationStore.openConversation(
     groupId,
     ImConversationType.GROUP,
     getGroupDisplayName(group),
     group.avatar || '',
-    { silent: !!group.silent }
-  )
-  visible.value = false
+    { silent: !!group.silent },
+  );
+  visible.value = false;
 }
 </script>
 
@@ -152,7 +175,9 @@ function handleGroupCreated(groupId: number) {
     <div v-else class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
       <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
         <!-- 好友宫格：原 tile + "+" tile，对齐 GroupSide 视觉，让两种抽屉看起来是一家的 -->
-        <div class="flex flex-wrap gap-1 px-4 pt-4 pb-[14px] bg-[var(--ant-color-bg-container)]">
+        <div
+          class="flex flex-wrap gap-1 px-4 pt-4 pb-[14px] bg-[var(--ant-color-bg-container)]"
+        >
           <div class="flex flex-col items-center w-[66px]">
             <UserAvatar
               :id="friend.friendUserId"
@@ -160,7 +185,9 @@ function handleGroupCreated(groupId: number) {
               :name="friend.nickname"
               :size="50"
             />
-            <div class="w-full mt-1.5 overflow-hidden text-12px leading-[1.5] text-[var(--ant-color-text)] text-center truncate">
+            <div
+              class="w-full mt-1.5 overflow-hidden text-12px leading-[1.5] text-[var(--ant-color-text)] text-center truncate"
+            >
               {{ displayName }}
             </div>
           </div>
@@ -171,10 +198,16 @@ function handleGroupCreated(groupId: number) {
             title="发起群聊"
             @click="handleOpenCreateGroup"
           >
-            <div class="im-conversation-private-side__icon-tile flex items-center justify-center w-[50px] h-[50px] text-20px text-[var(--ant-color-text)] bg-[var(--ant-color-fill-tertiary)] border border-dashed border-[var(--ant-color-border)] rounded-md transition-colors duration-200">
+            <div
+              class="im-conversation-private-side__icon-tile flex items-center justify-center w-[50px] h-[50px] text-20px text-[var(--ant-color-text)] bg-[var(--ant-color-fill-tertiary)] border border-dashed border-[var(--ant-color-border)] rounded-md transition-colors duration-200"
+            >
               <Icon icon="ant-design:plus-outlined" />
             </div>
-            <div class="w-full mt-1.5 overflow-hidden text-12px leading-[1.5] text-[var(--ant-color-text)] text-center truncate">添加</div>
+            <div
+              class="w-full mt-1.5 overflow-hidden text-12px leading-[1.5] text-[var(--ant-color-text)] text-center truncate"
+            >
+              添加
+            </div>
           </div>
         </div>
 
@@ -192,14 +225,21 @@ function handleGroupCreated(groupId: number) {
               <div
                 class="im-conversation-private-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
               >
-                <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">备注</span>
+                <span
+                  class="flex-shrink-0 text-14px text-[var(--ant-color-text)]"
+                >
+                  备注
+                </span>
                 <span
                   v-if="friend.displayName"
                   class="text-13px leading-[1.6] text-[var(--ant-color-text)] break-all line-clamp-2"
                 >
                   {{ friend.displayName }}
                 </span>
-                <span v-else class="text-13px leading-[1.6] text-[var(--ant-color-text-placeholder)]">
+                <span
+                  v-else
+                  class="text-13px leading-[1.6] text-[var(--ant-color-text-placeholder)]"
+                >
                   好友备注仅自己可见
                 </span>
               </div>
@@ -212,8 +252,17 @@ function handleGroupCreated(groupId: number) {
                 placeholder="请输入备注名"
               />
               <div class="flex justify-end gap-2">
-                <ElButton size="small" @click="displayNamePopoverVisible = false">取消</ElButton>
-                <ElButton size="small" type="primary" @click="handleSaveDisplayName">
+                <ElButton
+                  size="small"
+                  @click="displayNamePopoverVisible = false"
+                >
+                  取消
+                </ElButton>
+                <ElButton
+                  size="small"
+                  type="primary"
+                  @click="handleSaveDisplayName"
+                >
                   保存
                 </ElButton>
               </div>
@@ -229,7 +278,9 @@ function handleGroupCreated(groupId: number) {
             class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"
             @click="emit('openHistory')"
           >
-            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">查找聊天内容</span>
+            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">
+              查找聊天内容
+            </span>
             <Icon
               icon="ant-design:right-outlined"
               :size="11"
@@ -242,34 +293,52 @@ function handleGroupCreated(groupId: number) {
 
         <!-- 开关项 -->
         <div class="bg-[var(--ant-color-bg-container)]">
-          <div class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
-            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">消息免打扰</span>
-            <ElSwitch :model-value="!!conversation?.silent" @change="handleMutedChange" />
+          <div
+            class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150"
+          >
+            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">
+              消息免打扰
+            </span>
+            <ElSwitch
+              :model-value="!!conversation?.silent"
+              @change="handleMutedChange"
+            />
           </div>
-          <div class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150">
-            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">置顶聊天</span>
-            <ElSwitch :model-value="!!conversation?.top" @change="handleTopChange" />
+          <div
+            class="im-conversation-private-side__row flex items-center justify-between gap-3 px-4 py-[13px] text-14px min-h-6 transition-colors duration-150"
+          >
+            <span class="flex-shrink-0 text-14px text-[var(--ant-color-text)]">
+              置顶聊天
+            </span>
+            <ElSwitch
+              :model-value="!!conversation?.top"
+              @change="handleTopChange"
+            />
           </div>
         </div>
       </div>
     </div>
 
     <!-- 子对话框：发起群聊（锁定对方为已选） -->
-    <GroupCreateDialog ref="createGroupDialogRef" @created="handleGroupCreated" />
+    <GroupCreateDialog
+      ref="createGroupDialogRef"
+      @created="handleGroupCreated"
+    />
   </ElDrawer>
 </template>
 
 <style scoped>
 /* 「+」 tile： hover 时联动内部 icon-tile 走主色； 跨子元素的 hover 联动无法用单元素工具类表达 */
-.im-conversation-private-side__tile-wrap-clickable:hover .im-conversation-private-side__icon-tile {
+.im-conversation-private-side__tile-wrap-clickable:hover
+  .im-conversation-private-side__icon-tile {
   color: var(--ant-color-primary);
-  border-color: var(--ant-color-primary);
   background-color: var(--ant-color-primary-bg);
+  border-color: var(--ant-color-primary);
 }
 
 /* :deep 穿透 Icon 内部 svg； el-icon 全局 color 在暗色模式下被主题盖过，锁 fill 到当前色 */
 .im-conversation-private-side__icon-tile :deep(svg) {
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */

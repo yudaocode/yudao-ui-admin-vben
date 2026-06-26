@@ -2,11 +2,11 @@
 import { cloneDeep } from '@vben/utils';
 
 export function initListenerForm(listener: any) {
-  let self = {
+  let localSelf = {
     ...listener,
   };
   if (listener.script) {
-    self = {
+    localSelf = {
       ...listener,
       ...listener.script,
       scriptType: listener.script.resource ? 'externalScript' : 'inlineScript',
@@ -22,13 +22,13 @@ export function initListenerForm(listener: any) {
       // console.log(listener.eventDefinitions, key);
       if (key.includes('time')) {
         k = key;
-        self.eventDefinitionType = key.replace('time', '').toLowerCase();
+        localSelf.eventDefinitionType = key.replace('time', '').toLowerCase();
       }
     }
     // console.log(k);
-    self.eventTimeDefinitions = listener.eventDefinitions[0][k].body;
+    localSelf.eventTimeDefinitions = listener.eventDefinitions[0][k].body;
   }
-  return self;
+  return localSelf;
 }
 
 export function initListenerType(listener: any) {
