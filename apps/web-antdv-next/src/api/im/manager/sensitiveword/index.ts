@@ -14,7 +14,6 @@ export namespace ImManagerSensitiveWordApi {
   }
 }
 
-
 /** 获得敏感词分页 */
 export function getManagerSensitiveWordPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerSensitiveWordApi.SensitiveWord>>(
@@ -32,16 +31,17 @@ export function getManagerSensitiveWord(id: number) {
 }
 
 /** 新增敏感词 */
-export function createManagerSensitiveWord(data: ImManagerSensitiveWordApi.SensitiveWord) {
+export function createManagerSensitiveWord(
+  data: ImManagerSensitiveWordApi.SensitiveWord,
+) {
   return requestClient.post<number>('/im/manager/sensitive-word/create', data);
 }
 
 /** 修改敏感词 */
-export function updateManagerSensitiveWord(data: ImManagerSensitiveWordApi.SensitiveWord) {
-  return requestClient.put<boolean>(
-    '/im/manager/sensitive-word/update',
-    data,
-  );
+export function updateManagerSensitiveWord(
+  data: ImManagerSensitiveWordApi.SensitiveWord,
+) {
+  return requestClient.put<boolean>('/im/manager/sensitive-word/update', data);
 }
 
 /** 删除敏感词 */
