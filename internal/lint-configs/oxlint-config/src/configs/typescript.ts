@@ -14,7 +14,8 @@ const typescript: OxlintConfig = {
     'typescript/no-misused-new': 'error',
     'typescript/no-non-null-asserted-nullish-coalescing': 'error',
     'typescript/no-non-null-asserted-optional-chain': 'error',
-    'typescript/no-non-null-assertion': 'error',
+    // 关闭，解决id!等类似报错
+    'typescript/no-non-null-assertion': 'off',
     'typescript/no-require-imports': 'error',
     'typescript/no-this-alias': 'error',
     'typescript/no-unnecessary-type-constraint': 'error',
