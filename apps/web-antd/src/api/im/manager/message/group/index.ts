@@ -22,7 +22,6 @@ export namespace ImManagerGroupMessageApi {
   }
 }
 
-
 /** 获得群聊消息分页 */
 export function getManagerGroupMessagePage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerGroupMessageApi.GroupMessage>>(

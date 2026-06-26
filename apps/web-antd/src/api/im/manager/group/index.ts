@@ -43,7 +43,6 @@ export namespace ImManagerGroupApi {
   }
 }
 
-
 /** 获得群分页 */
 export function getManagerGroupPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerGroupApi.Group>>(

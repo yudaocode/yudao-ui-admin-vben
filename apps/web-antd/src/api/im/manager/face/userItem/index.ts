@@ -16,7 +16,6 @@ export namespace ImManagerFaceUserItemApi {
   }
 }
 
-
 /** 获得用户表情分页 */
 export function getManagerFaceUserItemPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerFaceUserItemApi.FaceUserItem>>(

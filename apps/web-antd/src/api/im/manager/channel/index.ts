@@ -15,7 +15,6 @@ export namespace ImManagerChannelApi {
   }
 }
 
-
 /** 获得频道分页 */
 export function getManagerChannelPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerChannelApi.Channel>>(
@@ -26,9 +25,12 @@ export function getManagerChannelPage(params: PageParam) {
 
 /** 获得频道详情 */
 export function getManagerChannel(id: number) {
-  return requestClient.get<ImManagerChannelApi.Channel>('/im/manager/channel/get', {
-    params: { id },
-  });
+  return requestClient.get<ImManagerChannelApi.Channel>(
+    '/im/manager/channel/get',
+    {
+      params: { id },
+    },
+  );
 }
 
 /** 新增频道 */
