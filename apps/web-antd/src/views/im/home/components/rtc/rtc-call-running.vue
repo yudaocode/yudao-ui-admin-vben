@@ -1,91 +1,101 @@
 <script lang="ts" setup>
-import { computed, onUnmounted, ref, watch } from 'vue'
+import type { CallParticipantVM } from './rtc-call-participant-tile.vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { computed, onUnmounted, ref, watch } from 'vue';
 
-import { formatCallDuration } from '#/views/im/utils/time'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { useMediaStreamElement } from '../../composables/useMediaStreamElement'
-import { UserAvatar } from '../user'
-import RtcCallParticipantTile, { type CallParticipantVM } from './rtc-call-participant-tile.vue'
+import { formatCallDuration } from '#/views/im/utils/time';
+
+import { useMediaStreamElement } from '../../composables/useMediaStreamElement';
+import { UserAvatar } from '../user';
+import RtcCallParticipantTile from './rtc-call-participant-tile.vue';
 
 const props = defineProps<{
-  cameraEnabled: boolean
-  hangingUp?: boolean
+  cameraEnabled: boolean;
+  hangingUp?: boolean;
   /** 是否群通话；决定网格 / 单点布局 + 浮窗大小 */
-  isGroup: boolean
-  isVideo: boolean
-  localStream?: MediaStream | null
-  micEnabled: boolean
+  isGroup: boolean;
+  isVideo: boolean;
+  localStream?: MediaStream | null;
+  micEnabled: boolean;
   /** 网格视图用：所有参与者（含自己） */
-  participants: CallParticipantVM[]
-  peerAvatar?: string
+  participants: CallParticipantVM[];
+  peerAvatar?: string;
   /** 1v1 视图用 */
-  peerNickname?: string
+  peerNickname?: string;
   /** 是否处于网络重连中；显示顶部黄色提示条 */
-  reconnecting?: boolean
-  remoteAudioStream?: MediaStream | null
-  remoteVideoStream?: MediaStream | null
+  reconnecting?: boolean;
+  remoteAudioStream?: MediaStream | null;
+  remoteVideoStream?: MediaStream | null;
   /** 是否正在屏幕共享；按钮高亮 + 文案切换 */
-  screenShareEnabled?: boolean
+  screenShareEnabled?: boolean;
   /** 扬声器开关；true 时正常播放远端音频，false 时所有远端 audio 元素静音 */
-  speakerEnabled: boolean
-  startedAt: number
-}>()
+  speakerEnabled: boolean;
+  startedAt: number;
+}>();
 
 defineEmits<{
-  addMember: []
-  hangup: []
-  toggleCamera: []
-  toggleMic: []
-  toggleScreenShare: []
-  toggleSpeaker: []
-}>()
+  addMember: [];
+  hangup: [];
+  toggleCamera: [];
+  toggleMic: [];
+  toggleScreenShare: [];
+  toggleSpeaker: [];
+}>();
 
 /** 网格列数；按人数自适应；返回 UnoCSS class 字面量让 JIT 扫描器静态识别 */
 const gridColsClass = computed(() => {
-  const n = props.participants.length
-  if (n <= 1) return 'grid-cols-1'
-  if (n <= 4) return 'grid-cols-2'
-  return 'grid-cols-3'
-})
+  const n = props.participants.length;
+  if (n <= 1) return 'grid-cols-1';
+  if (n <= 4) return 'grid-cols-2';
+  return 'grid-cols-3';
+});
 
-const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.localStream)
-const setRemoteVideoRef = useMediaStreamElement<HTMLVideoElement>(() => props.remoteVideoStream)
-const setRemoteAudioRef = useMediaStreamElement<HTMLAudioElement>(() => props.remoteAudioStream)
+const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(
+  () => props.localStream,
+);
+const setRemoteVideoRef = useMediaStreamElement<HTMLVideoElement>(
+  () => props.remoteVideoStream,
+);
+const setRemoteAudioRef = useMediaStreamElement<HTMLAudioElement>(
+  () => props.remoteAudioStream,
+);
 
 /** 1v1 视频：是否有远端视频流 */
-const hasRemoteVideo = computed(() => !props.isGroup && !!props.remoteVideoStream)
+const hasRemoteVideo = computed(
+  () => !props.isGroup && !!props.remoteVideoStream,
+);
 
-const now = ref(Date.now()) // 通话时长；仅 1v1 语音视图需要展示，其它视图不启 tick
-let tick = 0
+const now = ref(Date.now()); // 通话时长；仅 1v1 语音视图需要展示，其它视图不启 tick
+let tick = 0;
 watch(
   () => props.isGroup || props.isVideo,
   (suppressTick) => {
     if (suppressTick) {
       if (tick) {
-        clearInterval(tick)
-        tick = 0
+        clearInterval(tick);
+        tick = 0;
       }
-      return
+      return;
     }
-    now.value = Date.now()
+    now.value = Date.now();
     tick = window.setInterval(() => {
-      now.value = Date.now()
-    }, 1000)
+      now.value = Date.now();
+    }, 1000);
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 onUnmounted(() => {
   if (tick) {
-    clearInterval(tick)
+    clearInterval(tick);
   }
-})
+});
 
 /** 通话时长 MM:SS / HH:MM:SS */
 const formattedDuration = computed(() =>
-  formatCallDuration(Math.floor((now.value - props.startedAt) / 1000))
-)
+  formatCallDuration(Math.floor((now.value - props.startedAt) / 1000)),
+);
 </script>
 
 <template>
@@ -127,7 +137,10 @@ const formattedDuration = computed(() =>
             playsinline
           ></video>
         </div>
-        <div v-if="!hasRemoteVideo" class="flex z-[1] flex-col gap-4 items-center">
+        <div
+          v-if="!hasRemoteVideo"
+          class="flex z-[1] flex-col gap-4 items-center"
+        >
           <UserAvatar
             :url="peerAvatar"
             :name="peerNickname"
@@ -184,10 +197,16 @@ const formattedDuration = computed(() =>
       >
         <span
           class="flex justify-center items-center w-[52px] h-[52px] rounded-full"
-          :class="micEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            micEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="micEnabled ? 'ant-design:audio-outlined' : 'ant-design:audio-muted-outlined'"
+            :icon="
+              micEnabled
+                ? 'ant-design:audio-outlined'
+                : 'ant-design:audio-muted-outlined'
+            "
             :size="22"
           />
         </span>
@@ -201,10 +220,16 @@ const formattedDuration = computed(() =>
       >
         <span
           class="flex justify-center items-center w-[52px] h-[52px] rounded-full"
-          :class="speakerEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            speakerEnabled
+              ? 'bg-white text-[#1a1a1c]'
+              : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="speakerEnabled ? 'ant-design:sound-outlined' : 'tabler:volume-off'"
+            :icon="
+              speakerEnabled ? 'ant-design:sound-outlined' : 'tabler:volume-off'
+            "
             :size="22"
           />
         </span>
@@ -220,10 +245,16 @@ const formattedDuration = computed(() =>
       >
         <span
           class="flex justify-center items-center w-[52px] h-[52px] rounded-full"
-          :class="cameraEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'"
+          :class="
+            cameraEnabled ? 'bg-white text-[#1a1a1c]' : 'bg-white/15 text-white'
+          "
         >
           <Icon
-            :icon="cameraEnabled ? 'ant-design:video-camera-outlined' : 'tabler:video-off'"
+            :icon="
+              cameraEnabled
+                ? 'ant-design:video-camera-outlined'
+                : 'tabler:video-off'
+            "
             :size="22"
           />
         </span>
@@ -239,10 +270,18 @@ const formattedDuration = computed(() =>
         >
           <span
             class="flex justify-center items-center w-[52px] h-[52px] rounded-full"
-            :class="screenShareEnabled ? 'bg-[#07c160] text-white' : 'bg-white/15 text-white'"
+            :class="
+              screenShareEnabled
+                ? 'bg-[#07c160] text-white'
+                : 'bg-white/15 text-white'
+            "
           >
             <Icon
-              :icon="screenShareEnabled ? 'ant-design:laptop-outlined' : 'tabler:device-laptop-off'"
+              :icon="
+                screenShareEnabled
+                  ? 'ant-design:laptop-outlined'
+                  : 'tabler:device-laptop-off'
+              "
               :size="22"
             />
           </span>
@@ -254,7 +293,9 @@ const formattedDuration = computed(() =>
           class="flex flex-col gap-2 items-center cursor-pointer select-none min-w-[64px]"
           @click="$emit('addMember')"
         >
-          <span class="flex justify-center items-center w-[52px] h-[52px] text-white rounded-full bg-white/15">
+          <span
+            class="flex justify-center items-center w-[52px] h-[52px] text-white rounded-full bg-white/15"
+          >
             <Icon icon="ant-design:plus-outlined" :size="22" />
           </span>
           <span class="text-xs text-white/70 whitespace-nowrap">添加成员</span>
@@ -265,8 +306,14 @@ const formattedDuration = computed(() =>
         :class="{ 'opacity-60 pointer-events-none': hangingUp }"
         @click="$emit('hangup')"
       >
-        <span class="flex justify-center items-center w-[52px] h-[52px] text-white rounded-full bg-[#f04a4a]">
-          <Icon icon="ant-design:phone-outlined" :size="22" class="rotate-[135deg]" />
+        <span
+          class="flex justify-center items-center w-[52px] h-[52px] text-white rounded-full bg-[#f04a4a]"
+        >
+          <Icon
+            icon="ant-design:phone-outlined"
+            :size="22"
+            class="rotate-[135deg]"
+          />
         </span>
         <span class="text-xs text-white/70 whitespace-nowrap">挂断</span>
       </div>
@@ -279,11 +326,13 @@ const formattedDuration = computed(() =>
 .reconnect-dot {
   animation: reconnect-pulse 1s ease-in-out infinite;
 }
+
 @keyframes reconnect-pulse {
   0%,
   100% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 1;
   }

@@ -1,44 +1,49 @@
 <script lang="ts" setup>
-import type { Conversation } from '../../../../types'
+import type { Conversation } from '../../../../types';
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import { confirm } from '@vben/common-ui'
-import { IconifyIcon as Icon } from '@vben/icons'
+import { confirm } from '@vben/common-ui';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { ElTag } from 'element-plus'
+import { ElTag } from 'element-plus';
 
-import { buildRecallTip } from '#/views/im/utils/conversation'
-import { formatConversationTime } from '#/views/im/utils/time'
-import { getSenderDisplayName } from '#/views/im/utils/user'
+import { buildRecallTip } from '#/views/im/utils/conversation';
+import { formatConversationTime } from '#/views/im/utils/time';
+import { getSenderDisplayName } from '#/views/im/utils/user';
 
-import { ImContentType, ImConversationType, isNormalMessage } from '../../../../../utils/constants'
-import { GroupAvatar } from '../../../../components/group'
-import { UserAvatar } from '../../../../components/user'
-import { useConversationStore } from '../../../../store/conversationStore'
-import { useFriendStore } from '../../../../store/friendStore'
-import { useGroupRequestStore } from '../../../../store/groupRequestStore'
-import { useGroupStore } from '../../../../store/groupStore'
-import { useImUiStore } from '../../../../store/uiStore'
+import {
+  ImContentType,
+  ImConversationType,
+  isNormalMessage,
+} from '../../../../../utils/constants';
+import { GroupAvatar } from '../../../../components/group';
+import { UserAvatar } from '../../../../components/user';
+import { useConversationStore } from '../../../../store/conversationStore';
+import { useFriendStore } from '../../../../store/friendStore';
+import { useGroupRequestStore } from '../../../../store/groupRequestStore';
+import { useGroupStore } from '../../../../store/groupStore';
+import { useImUiStore } from '../../../../store/uiStore';
 
-defineOptions({ name: 'ImConversationItem' })
+defineOptions({ name: 'ImConversationItem' });
 
 // 周中文名（dayjs 的 day() 返回 0-6，0=周日）；项目没全局装 dayjs/locale/zh-cn，本地映射避免引副作用
 const props = defineProps<{
-  conversation: Conversation
-}>()
+  conversation: Conversation;
+}>();
 
-const conversationStore = useConversationStore()
-const friendStore = useFriendStore()
-const groupStore = useGroupStore()
-const groupRequestStore = useGroupRequestStore()
-const uiStore = useImUiStore()
+const conversationStore = useConversationStore();
+const friendStore = useFriendStore();
+const groupStore = useGroupStore();
+const groupRequestStore = useGroupRequestStore();
+const uiStore = useImUiStore();
 
 const isActive = computed(
   () =>
-    conversationStore.activeConversation?.targetId === props.conversation.targetId &&
-    conversationStore.activeConversation?.type === props.conversation.type
-)
+    conversationStore.activeConversation?.targetId ===
+      props.conversation.targetId &&
+    conversationStore.activeConversation?.type === props.conversation.type,
+);
 
 /**
  * 当前会话的草稿快照：存在时列表显示 [草稿] 前缀 + 文本，盖掉 sender 前缀和 @我 红字
@@ -46,97 +51,105 @@ const isActive = computed(
  */
 const draft = computed(() => {
   if (isActive.value) {
-    return undefined
+    return undefined;
   }
-  return conversationStore.getConversationDraft(props.conversation)
-})
+  return conversationStore.getConversationDraft(props.conversation);
+});
 
-const isGroup = computed(() => props.conversation.type === ImConversationType.GROUP)
+const isGroup = computed(
+  () => props.conversation.type === ImConversationType.GROUP,
+);
 
 /** 最后一条消息发送者的展示名：实时算 + 快照 fallback（getSenderDisplayName 算不出时兜底） */
 const lastSenderDisplayName = computed(() => {
-  const senderId = props.conversation.lastSenderId
+  const senderId = props.conversation.lastSenderId;
   if (!senderId) {
-    return ''
+    return '';
   }
   return getSenderDisplayName(
     senderId,
     props.conversation.type,
     props.conversation.targetId,
-    props.conversation.lastSenderDisplayName
-  )
-})
+    props.conversation.lastSenderDisplayName,
+  );
+});
 
 /** 群聊 + 有最后发送者 + 最后一条是普通消息时，显示发送者前缀（FRIEND_* / GROUP_* / RECALL / 草稿态不带前缀） */
 const showSendName = computed(() => {
   if (draft.value) {
-    return false
+    return false;
   }
   if (!isGroup.value) {
-    return false
+    return false;
   }
   if (!props.conversation.lastSenderId) {
-    return false
+    return false;
   }
-  const lastType = props.conversation.lastMessageType
-  return lastType != null && isNormalMessage(lastType)
-})
+  const lastType = props.conversation.lastMessageType;
+  return lastType != null && isNormalMessage(lastType);
+});
 
 /** 列表展示文案：草稿优先（对齐微信 PC：有草稿时盖掉最后一条预览）→ 撤回实时算 → lastContent 兜底 */
 const lastContentDisplay = computed(() => {
   if (draft.value) {
-    return draft.value.plain
+    return draft.value.plain;
   }
   if (
     props.conversation.lastMessageType === ImContentType.RECALL &&
-    props.conversation.lastSenderId != null
+    props.conversation.lastSenderId !== null
   ) {
     return buildRecallTip(
       props.conversation.lastSenderId,
       !!props.conversation.lastSelfSend,
       props.conversation.type,
       props.conversation.targetId,
-      props.conversation.lastSenderDisplayName
-    )
+      props.conversation.lastSenderDisplayName,
+    );
   }
-  return props.conversation.lastContent
-})
+  return props.conversation.lastContent;
+});
 
 /** 会话列表 "[草稿]" / "@ 我" / "@ 全体成员" 红字提示；草稿优先（对齐微信 PC） */
 const atText = computed(() => {
   if (draft.value) {
-    return '[草稿]'
+    return '[草稿]';
   }
   if (props.conversation.atMe) {
-    return '[有人@我]'
+    return '[有人@我]';
   }
   if (props.conversation.atAll) {
-    return '[@全体成员]'
+    return '[@全体成员]';
   }
-  return ''
-})
+  return '';
+});
 
 /** 免打扰会话未读条数文案 */
 const mutedUnreadText = computed(() => {
   if (!props.conversation.silent || props.conversation.unreadCount <= 0) {
-    return ''
+    return '';
   }
-  const count = props.conversation.unreadCount > 99 ? '99+' : props.conversation.unreadCount
-  return `[${count}条]`
-})
+  const count =
+    props.conversation.unreadCount > 99
+      ? '99+'
+      : props.conversation.unreadCount;
+  return `[${count}条]`;
+});
 
 /** 群聊未处理加群申请红字前缀；store 已经按「我管理的群」过滤过，count > 0 即可显示 */
 const requestText = computed(() => {
   if (!isGroup.value) {
-    return ''
+    return '';
   }
-  const count = groupRequestStore.getUnhandledGroupRequestCountMap.get(props.conversation.targetId) ?? 0
-  return count > 0 ? `[${count}条进群申请]` : ''
-})
+  const count =
+    groupRequestStore.getUnhandledGroupRequestCountMap.get(
+      props.conversation.targetId,
+    ) ?? 0;
+  return count > 0 ? `[${count}条进群申请]` : '';
+});
 
 /** 点击切会话 */
 function handleClick() {
-  conversationStore.setActiveConversation(props.conversation)
+  conversationStore.setActiveConversation(props.conversation);
 }
 
 /** 切换置顶 */
@@ -144,30 +157,36 @@ function handleTop() {
   conversationStore.setConversationTop(
     props.conversation.type,
     props.conversation.targetId,
-    !props.conversation.top
-  )
+    !props.conversation.top,
+  );
 }
 
 /** 切换免打扰：乐观 UI（先本地切换，菜单立即关；后端失败回滚 conversation 状态） */
 function handleMuted() {
-  const next = !props.conversation.silent
-  const { type, targetId } = props.conversation
-  conversationStore.setConversationSilent(type, targetId, next)
+  const next = !props.conversation.silent;
+  const { type, targetId } = props.conversation;
+  conversationStore.setConversationSilent(type, targetId, next);
   const sync =
     type === ImConversationType.PRIVATE
       ? friendStore.setFriendSilent(targetId, next)
-      : groupStore.setGroupSilent(targetId, next)
+      : groupStore.setGroupSilent(targetId, next);
   sync.catch((error) => {
-    console.error('[IM] 切换免打扰失败', error)
-    conversationStore.setConversationSilent(type, targetId, !next)
-  })
+    console.error('[IM] 切换免打扰失败', error);
+    conversationStore.setConversationSilent(type, targetId, !next);
+  });
 }
 
 /** 删除会话：二次确认后软删 */
 async function handleDelete() {
   try {
-    await confirm(`确定删除与「${props.conversation.name}」的会话吗？`, '删除会话')
-    conversationStore.removeConversation(props.conversation.type, props.conversation.targetId)
+    await confirm(
+      `确定删除与「${props.conversation.name}」的会话吗？`,
+      '删除会话',
+    );
+    conversationStore.removeConversation(
+      props.conversation.type,
+      props.conversation.targetId,
+    );
   } catch {}
 }
 
@@ -177,38 +196,42 @@ function handleContextMenu(e: MouseEvent) {
     { x: e.clientX, y: e.clientY },
     [
       { key: 'TOP', name: props.conversation.top ? '取消置顶' : '置顶' },
-      { key: 'MUTED', name: props.conversation.silent ? '允许消息通知' : '消息免打扰' },
-      { key: 'DELETE', name: '删除', divided: true, danger: true }
+      {
+        key: 'MUTED',
+        name: props.conversation.silent ? '允许消息通知' : '消息免打扰',
+      },
+      { key: 'DELETE', name: '删除', divided: true, danger: true },
     ],
     (item) => {
       switch (item.key) {
-      case 'DELETE': {
-        void handleDelete()
+        case 'DELETE': {
+          void handleDelete();
 
-      break;
-      }
-      case 'MUTED': {
-        handleMuted()
+          break;
+        }
+        case 'MUTED': {
+          handleMuted();
 
-      break;
-      }
-      case 'TOP': {
-        handleTop()
+          break;
+        }
+        case 'TOP': {
+          handleTop();
 
-      break;
+          break;
+        }
+        // No default
       }
-      // No default
-      }
-    }
-  )
+    },
+  );
 }
-
 </script>
 
 <template>
   <div
     class="relative flex items-center gap-2.5 px-4 py-3 cursor-pointer transition-colors hover:bg-[var(--ant-color-fill)]"
-    :class="{ '!bg-[#d9ecff] dark:!bg-[var(--ant-color-primary-bg-hover)]': isActive }"
+    :class="{
+      '!bg-[#d9ecff] dark:!bg-[var(--ant-color-primary-bg-hover)]': isActive,
+    }"
     :data-conversation-key="`${conversation.type}-${conversation.targetId}`"
     @click="handleClick"
     @contextmenu.prevent="handleContextMenu"
@@ -246,7 +269,9 @@ function handleContextMenu(e: MouseEvent) {
     <div class="flex-1 min-w-0">
       <div class="flex items-center justify-between">
         <span class="flex flex-1 items-center gap-1 min-w-0">
-          <span class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]">
+          <span
+            class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]"
+          >
             {{ conversation.name }}
           </span>
           <ElTag
@@ -258,7 +283,9 @@ function handleContextMenu(e: MouseEvent) {
             群
           </ElTag>
         </span>
-        <span class="flex-shrink-0 ml-1 text-12px text-[var(--ant-color-text-secondary)]">
+        <span
+          class="flex-shrink-0 ml-1 text-12px text-[var(--ant-color-text-secondary)]"
+        >
           {{ formatConversationTime(conversation.lastSendTime) }}
         </span>
       </div>
@@ -317,7 +344,7 @@ function handleContextMenu(e: MouseEvent) {
 
 /* el-icon 的全局 color:var(--color) 在暗色模式下会渲染成白色，这里用 :deep + !important 锁定 */
 .conversation-item__silent :deep(svg) {
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 .conversation-item__prefix {
