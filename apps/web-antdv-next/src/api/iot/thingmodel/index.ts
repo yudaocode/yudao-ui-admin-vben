@@ -54,6 +54,7 @@ export namespace ThingModelApi {
     name?: string;
     required?: boolean;
     type?: string;
+    dataType?: string;
     description?: string;
     outputParams?: Param[];
     method?: string;
@@ -113,37 +114,41 @@ export namespace ThingModelApi {
 
 /** 生成「必填 + 数字」类校验器：拼到 size / length / 枚举值上 */
 function buildRequiredNumberValidator(label: string) {
-  return (_rule: any, value: any) => {
+  return (_rule: any, value: any, callback: any) => {
     if (isEmpty(value)) {
-      return Promise.reject(new Error(`${label}不能为空`));
+      callback(new Error(`${label}不能为空`));
+      return;
     }
     if (Number.isNaN(Number(value))) {
-      return Promise.reject(new Error(`${label}必须是数字`));
+      callback(new Error(`${label}必须是数字`));
+      return;
     }
-    return Promise.resolve();
+    callback();
   };
 }
 
 /** 生成「标识符样式」名称校验器：开头需为中文 / 英文 / 数字，整体仅允许中文、英文、数字、下划线、短划线，长度 ≤ 20 */
 export function buildIdentifierLikeNameValidator(label: string) {
-  return (_rule: any, value: string) => {
+  return (_rule: any, value: string, callback: any) => {
     if (isEmpty(value)) {
-      return Promise.reject(new Error(`${label}不能为空`));
+      callback(new Error(`${label}不能为空`));
+      return;
     }
     if (!/^[一-龥A-Za-z0-9]/.test(value)) {
-      return Promise.reject(
-        new Error(`${label}必须以中文、英文字母或数字开头`),
-      );
+      callback(new Error(`${label}必须以中文、英文字母或数字开头`));
+      return;
     }
     if (!/^[一-龥A-Za-z0-9][\w一-龥-]*$/.test(value)) {
-      return Promise.reject(
+      callback(
         new Error(`${label}只能包含中文、英文字母、数字、下划线和短划线`),
       );
+      return;
     }
     if (value.length > 20) {
-      return Promise.reject(new Error(`${label}长度不能超过 20 个字符`));
+      callback(new Error(`${label}长度不能超过 20 个字符`));
+      return;
     }
-    return Promise.resolve();
+    callback();
   };
 }
 
@@ -167,7 +172,7 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
       trigger: 'blur',
     },
     {
-      validator: (_rule: any, value: string) => {
+      validator: (_rule: any, value: string, callback: any) => {
         const reservedKeywords = [
           'set',
           'get',
@@ -178,16 +183,18 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
           'value',
         ];
         if (reservedKeywords.includes(value)) {
-          return Promise.reject(
+          callback(
             new Error(
               'set, get, post, property, event, time, value 是系统保留字段，不能用于标识符定义',
             ),
           );
+          return;
         }
         if (/^\d+$/.test(value)) {
-          return Promise.reject(new Error('标识符不能是纯数字'));
+          callback(new Error('标识符不能是纯数字'));
+          return;
         }
-        return Promise.resolve();
+        callback();
       },
       trigger: 'blur',
     },

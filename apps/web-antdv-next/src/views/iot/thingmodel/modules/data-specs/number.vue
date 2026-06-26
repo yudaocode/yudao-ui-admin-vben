@@ -128,7 +128,7 @@ function validateStep(_rule: any, _value: any) {
       @change="unitChange"
       :options="[
         ...unitOptions.map((item) => ({
-          label: `{{ \`${item.label}-${item.value}\` }}`,
+          label: `${item.label}-${item.value}`,
           value: `${item.label}-${item.value}`,
         })),
       ]"

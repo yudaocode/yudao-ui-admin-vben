@@ -402,7 +402,7 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
               label="流程表达式"
               name="expression"
             >
-              <TextArea v-model:value="configForm.expression" clearable />
+              <TextArea v-model:value="configForm.expression" allow-clear />
             </FormItem>
           </Form>
         </div>

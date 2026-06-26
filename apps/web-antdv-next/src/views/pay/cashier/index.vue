@@ -13,7 +13,15 @@ import {
 import { useTabs } from '@vben/hooks';
 import { fenToYuan, formatDate } from '@vben/utils';
 
-import { Button, Card, Descriptions, Input, message, QRCode } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Descriptions,
+  DescriptionsItem,
+  Input,
+  message,
+  QRCode,
+} from 'antdv-next';
 
 import { getOrder, submitOrder } from '#/api/pay/order';
 
