@@ -32,6 +32,7 @@ export const overridesPreferences = defineOverridesPreferences({
     companyName: import.meta.env.VITE_APP_TITLE,
     companySiteLink: 'https://gitee.com/yudaocode/yudao-ui-admin-vben',
   },
+  // copyright: appCopyrightPreferences,
 });
 
 export const preferencesExtension =
