@@ -112,11 +112,7 @@ defineExpose({ validate });
       class="mb-5"
     >
       <Select v-model:value="modelData.formId" allow-clear>
-        <SelectOption
-          v-for="form in formList"
-          :key="form.id"
-          :value="form.id"
-        >
+        <SelectOption v-for="form in formList" :key="form.id" :value="form.id">
           {{ form.name }}
         </SelectOption>
       </Select>

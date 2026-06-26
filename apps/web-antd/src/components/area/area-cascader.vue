@@ -91,8 +91,7 @@ const handleChange: NonNullable<CascaderProps['onChange']> = (value) => {
 
   const path = Array.isArray(value[0]) ? value[0] : value;
   const leafValue = path.at(-1);
-  const areaId =
-    typeof leafValue === 'number' ? leafValue : Number(leafValue);
+  const areaId = typeof leafValue === 'number' ? leafValue : Number(leafValue);
   emit('update:modelValue', Number.isNaN(areaId) ? undefined : areaId);
 };
 

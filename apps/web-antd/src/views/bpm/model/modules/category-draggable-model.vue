@@ -142,7 +142,7 @@ function handleModelSort() {
             modelList.value.splice(
               newDraggableIndex ?? 0,
               0,
-              modelList.value.splice(oldDraggableIndex ?? 0, 1)[0]!,
+              modelList.value.splice(oldDraggableIndex ?? 0, 1)[0],
             );
           }
         },

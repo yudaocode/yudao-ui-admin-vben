@@ -187,7 +187,9 @@ function getTreeNode(slotProps: unknown) {
               <FormItem
                 :label="getTreeNode(node).label"
                 :name="getTreeNode(node).prop"
-                :label-col="{ flex: getTreeNode(node).children ? '80px' : '58px' }"
+                :label-col="{
+                  flex: getTreeNode(node).children ? '80px' : '58px',
+                }"
                 class="mb-0 w-full"
               >
                 <Row>

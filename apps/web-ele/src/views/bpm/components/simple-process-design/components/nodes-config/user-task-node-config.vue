@@ -700,7 +700,7 @@ onMounted(() => {
                   v-for="item in roleOptions"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id!"
+                  :value="item.id"
                 />
               </ElSelect>
             </ElFormItem>
@@ -738,7 +738,7 @@ onMounted(() => {
                   v-for="item in postOptions"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id!"
+                  :value="item.id"
                 />
               </ElSelect>
             </ElFormItem>
@@ -752,7 +752,7 @@ onMounted(() => {
                   v-for="item in userOptions"
                   :key="item.id"
                   :label="item.nickname"
-                  :value="item.id!"
+                  :value="item.id"
                 />
               </ElSelect>
             </ElFormItem>
@@ -1035,7 +1035,7 @@ onMounted(() => {
                   v-for="item in userOptions"
                   :key="item.id"
                   :label="item.nickname"
-                  :value="item.id!"
+                  :value="item.id"
                 />
               </ElSelect>
             </ElFormItem>
