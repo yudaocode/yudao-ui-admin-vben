@@ -145,7 +145,7 @@ function handleGroupCreated(groupId: number) {
       v-if="!friend"
       class="flex flex-col items-center justify-center h-full text-13px text-[var(--ant-color-text-placeholder)] bg-[var(--ant-color-bg-container)]"
     >
-      <Spin tip="加载中..." />
+      <Spin description="加载中..." />
     </div>
     <div v-else class="flex flex-col h-full bg-[var(--ant-color-bg-container)]">
       <div class="flex-1 overflow-y-auto bg-[var(--ant-color-fill-secondary)]">
@@ -184,7 +184,7 @@ function handleGroupCreated(groupId: number) {
             v-model:open="displayNamePopoverVisible"
             trigger="click"
             placement="leftTop"
-            :overlay-style="{ width: '280px' }"
+            :styles="{ root: { width: '280px' } }"
           >
             <div
               class="im-conversation-private-side__row flex flex-col items-stretch gap-1.5 px-4 py-[14px] text-14px min-h-6 cursor-pointer transition-colors duration-150 hover:bg-[var(--ant-color-fill-tertiary)]"

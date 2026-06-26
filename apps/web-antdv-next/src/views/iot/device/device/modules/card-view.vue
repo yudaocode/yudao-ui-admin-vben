@@ -118,11 +118,13 @@ onMounted(() => {
           :lg="6"
         >
           <Card
-            :body-style="{
-              padding: '16px',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
+            :styles="{
+              body: {
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              },
             }"
             class="h-full overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
           >
