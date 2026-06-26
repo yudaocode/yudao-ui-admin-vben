@@ -133,9 +133,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     // 加载
-    // eslint-disable-next-line no-useless-assignment
-    let authPermissionInfo: AuthPermissionInfo | null = null;
-    authPermissionInfo = await getAuthPermissionInfoApi();
+    const authPermissionInfo: AuthPermissionInfo | null =
+      await getAuthPermissionInfoApi();
     // userStore
     userStore.setUserInfo(authPermissionInfo.user);
     userStore.setUserRoles(authPermissionInfo.roles);

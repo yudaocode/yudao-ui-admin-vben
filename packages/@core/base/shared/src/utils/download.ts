@@ -142,15 +142,12 @@ export function dataURLtoBlob(base64Buf: string): Blob {
   const arr = base64Buf.split(',');
   const typeItem = arr[0];
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const mime = typeItem!.match(/:(.*?);/)![1];
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const bstr = window.atob(arr[1]!);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
   while (n--) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     u8arr[n] = bstr.codePointAt(n)!;
   }
   return new Blob([u8arr], { type: mime });
@@ -225,8 +222,7 @@ export function base64ToFile(base64: string, fileName: string): File {
     // 优化的 Uint8Array 填充逻辑
     for (let i = 0; i < n; i++) {
       // 使用 charCodeAt() 获取字符对应的字节值（Base64 解码后的字符串是字节级别的）
-      // eslint-disable-next-line unicorn/prefer-code-point
-      u8arr[i] = bstr.charCodeAt(i);
+      u8arr[i] = bstr.codePointAt(i);
     }
 
     // 返回 File 文件对象

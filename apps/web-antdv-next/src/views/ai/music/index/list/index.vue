@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Recordable } from '@vben/types';
+
 import type { MusicSong } from './types';
 
 import { provide, ref } from 'vue';
