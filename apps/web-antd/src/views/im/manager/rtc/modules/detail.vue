@@ -51,21 +51,34 @@ defineExpose({ open });
 </script>
 
 <template>
-  <Drawer v-model:open="visible" destroy-on-close title="通话记录详情" width="900">
+  <Drawer
+    v-model:open="visible"
+    destroy-on-close
+    title="通话记录详情"
+    width="900"
+  >
     <Descriptions bordered :column="2">
       <DescriptionsItem label="编号">{{ detail.id }}</DescriptionsItem>
-      <DescriptionsItem label="业务通话编号">{{ detail.room }}</DescriptionsItem>
+      <DescriptionsItem label="业务通话编号">
+        {{ detail.room }}
+      </DescriptionsItem>
       <DescriptionsItem label="发起人">
         {{ formatUserLabel(detail.inviterNickname, detail.inviterUserId) }}
       </DescriptionsItem>
       <DescriptionsItem label="会话类型">
-        <DictTag :type="DICT_TYPE.IM_RTC_CALL_CONVERSATION_TYPE" :value="detail.conversationType" />
+        <DictTag
+          :type="DICT_TYPE.IM_RTC_CALL_CONVERSATION_TYPE"
+          :value="detail.conversationType"
+        />
       </DescriptionsItem>
       <DescriptionsItem label="群">
         {{ formatGroupLabel(detail.groupName, detail.groupId) }}
       </DescriptionsItem>
       <DescriptionsItem label="媒体类型">
-        <DictTag :type="DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE" :value="detail.mediaType" />
+        <DictTag
+          :type="DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE"
+          :value="detail.mediaType"
+        />
       </DescriptionsItem>
       <DescriptionsItem label="通话状态">
         <DictTag :type="DICT_TYPE.IM_RTC_CALL_STATUS" :value="detail.status" />
@@ -102,12 +115,24 @@ defineExpose({ open });
     >
       <template #bodyCell="{ column, record, text }">
         <template v-if="column.dataIndex === 'role'">
-          <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_ROLE" :value="record.role" />
+          <DictTag
+            :type="DICT_TYPE.IM_RTC_PARTICIPANT_ROLE"
+            :value="record.role"
+          />
         </template>
         <template v-else-if="column.dataIndex === 'status'">
-          <DictTag :type="DICT_TYPE.IM_RTC_PARTICIPANT_STATUS" :value="record.status" />
+          <DictTag
+            :type="DICT_TYPE.IM_RTC_PARTICIPANT_STATUS"
+            :value="record.status"
+          />
         </template>
-        <template v-else-if="['inviteTime', 'acceptTime', 'leaveTime'].includes(column.dataIndex as string)">
+        <template
+          v-else-if="
+            ['inviteTime', 'acceptTime', 'leaveTime'].includes(
+              column.dataIndex as string,
+            )
+          "
+        >
           {{ formatDateTimeText(text) }}
         </template>
         <template v-else>

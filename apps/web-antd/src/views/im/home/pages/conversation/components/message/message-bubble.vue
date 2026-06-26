@@ -1,142 +1,145 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount } from 'vue'
+import type {
+  AudioMessage,
+  CardMessage,
+  FaceMessage,
+  FileMessage,
+  ImageMessage,
+  MentionCandidate,
+  MergeMessage,
+  TextMessage,
+  VideoMessage,
+} from '#/views/im/utils/message';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { formatFileSize, openSafeUrl } from '@vben/utils'
+import { computed, onBeforeUnmount } from 'vue';
 
-import { Image } from 'ant-design-vue'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { formatFileSize, openSafeUrl } from '@vben/utils';
 
-import { CardBubble } from '#/views/im/home/components/card'
-import { useVoicePlayer } from '#/views/im/home/composables/useVoicePlayer'
-import { MESSAGE_MERGE_PREVIEW_LINES } from '#/views/im/utils/config'
-import { ImContentType } from '#/views/im/utils/constants'
-import { summarizeMessageContent } from '#/views/im/utils/conversation'
+import { Image } from 'ant-design-vue';
+
+import { CardBubble } from '#/views/im/home/components/card';
+import { useVoicePlayer } from '#/views/im/home/composables/useVoicePlayer';
+import { MESSAGE_MERGE_PREVIEW_LINES } from '#/views/im/utils/config';
+import { ImContentType } from '#/views/im/utils/constants';
+import { summarizeMessageContent } from '#/views/im/utils/conversation';
 import {
-  type AudioMessage,
-  type CardMessage,
-  type FaceMessage,
-  type FileMessage,
   getFileIconInfo,
-  type ImageMessage,
-  type MentionCandidate,
-  type MergeMessage,
   parseMessage,
   parseTextSegments,
-  type TextMessage,
-  type VideoMessage
-} from '#/views/im/utils/message'
-import { formatSeconds } from '#/views/im/utils/time'
+} from '#/views/im/utils/message';
+import { formatSeconds } from '#/views/im/utils/time';
 
-import MaterialBubble from './material-bubble.vue'
-import TipSegments from './tip-segments.vue'
+import MaterialBubble from './material-bubble.vue';
+import TipSegments from './tip-segments.vue';
 
-defineOptions({ name: 'ImMessageBubble' })
+defineOptions({ name: 'ImMessageBubble' });
 
 const props = defineProps<{
   /** 消息 content（JSON 字符串） */
-  content: string
+  content: string;
   /** TEXT 气泡的 @ mention 候选名字；不传则文本里的 @xxx 退化为普通文本 */
-  mentions?: MentionCandidate[]
+  mentions?: MentionCandidate[];
   /** 是否自己发送，影响气泡配色（绿底 vs 灰底） */
-  selfSend?: boolean
+  selfSend?: boolean;
   /** 内容类型，对齐 ImContentType */
-  type: number
+  type: number;
   /** 媒体上传进度（0-100）；非 null 即视为上传中，渲染遮罩 / 进度条 */
-  uploadProgress?: null | number
-}>()
+  uploadProgress?: null | number;
+}>();
 
 const emit = defineEmits<{
   /** 名片点击：调用方决定弹卡片 / 跳群等行为 */
-  clickCard: [card: CardMessage, e: MouseEvent]
+  clickCard: [card: CardMessage, e: MouseEvent];
   /** 合并消息气泡点击：调用方决定开 dialog 或栈内 push */
-  openMerge: [content: string]
-}>()
+  openMerge: [content: string];
+}>();
 
 /** 各 type 判定 */
-const isText = computed(() => props.type === ImContentType.TEXT)
-const isImage = computed(() => props.type === ImContentType.IMAGE)
-const isFile = computed(() => props.type === ImContentType.FILE)
-const isVoice = computed(() => props.type === ImContentType.VOICE)
-const isVideo = computed(() => props.type === ImContentType.VIDEO)
-const isFace = computed(() => props.type === ImContentType.FACE)
-const isCard = computed(() => props.type === ImContentType.CARD)
-const isMerge = computed(() => props.type === ImContentType.MERGE)
-const isMaterial = computed(() => props.type === ImContentType.MATERIAL)
+const isText = computed(() => props.type === ImContentType.TEXT);
+const isImage = computed(() => props.type === ImContentType.IMAGE);
+const isFile = computed(() => props.type === ImContentType.FILE);
+const isVoice = computed(() => props.type === ImContentType.VOICE);
+const isVideo = computed(() => props.type === ImContentType.VIDEO);
+const isFace = computed(() => props.type === ImContentType.FACE);
+const isCard = computed(() => props.type === ImContentType.CARD);
+const isMerge = computed(() => props.type === ImContentType.MERGE);
+const isMaterial = computed(() => props.type === ImContentType.MATERIAL);
 
 /** 媒体上传中：uploadProgress 非 null 即视为上传中 */
-const isUploading = computed(() => props.uploadProgress != null)
-const uploadProgress = computed(() => props.uploadProgress ?? 0)
-const uploadProgressText = computed(() => `${uploadProgress.value}%`)
+const isUploading = computed(() => props.uploadProgress !== null);
+const uploadProgress = computed(() => props.uploadProgress ?? 0);
+const uploadProgressText = computed(() => `${uploadProgress.value}%`);
 
 /**
  * 单一 parse 入口：content 一变只 parse 一次，按 type 分发到下面 7 个 payload
  *
  * 各类型 payload 共用同一棵 JSON 树，避免 7 个 computed 各自重 parse 同一份 content
  */
-const parsedContent = computed<unknown>(() => parseMessage(props.content))
+const parsedContent = computed<unknown>(() => parseMessage(props.content));
 
 const textPayload = computed(() =>
-  isText.value ? (parsedContent.value as null | TextMessage) : null
-)
+  isText.value ? (parsedContent.value as null | TextMessage) : null,
+);
 
 /** 文本气泡 segment 数组：mention 高亮 + URL 自动识别 + 普通文本三段拼接 */
 const textSegments = computed(() => {
-  const content = textPayload.value?.content
+  const content = textPayload.value?.content;
   if (!content) {
-    return []
+    return [];
   }
-  return parseTextSegments(content, props.mentions || [])
-})
+  return parseTextSegments(content, props.mentions || []);
+});
 const imagePayload = computed(() =>
-  isImage.value ? (parsedContent.value as ImageMessage | null) : null
-)
+  isImage.value ? (parsedContent.value as ImageMessage | null) : null,
+);
 const filePayload = computed(() =>
-  isFile.value ? (parsedContent.value as FileMessage | null) : null
-)
+  isFile.value ? (parsedContent.value as FileMessage | null) : null,
+);
 const voicePayload = computed(() =>
-  isVoice.value ? (parsedContent.value as AudioMessage | null) : null
-)
+  isVoice.value ? (parsedContent.value as AudioMessage | null) : null,
+);
 const videoPayload = computed(() =>
-  isVideo.value ? (parsedContent.value as null | VideoMessage) : null
-)
+  isVideo.value ? (parsedContent.value as null | VideoMessage) : null,
+);
 const cardPayload = computed(() =>
-  isCard.value ? (parsedContent.value as CardMessage | null) : null
-)
+  isCard.value ? (parsedContent.value as CardMessage | null) : null,
+);
 const mergePayload = computed(() =>
-  isMerge.value ? (parsedContent.value as MergeMessage | null) : null
-)
+  isMerge.value ? (parsedContent.value as MergeMessage | null) : null,
+);
 
 /** 合并消息内嵌前 N 条派生「{昵称}：{摘要}」 */
 const mergePreviewLines = computed(() => {
   if (!mergePayload.value) {
-    return []
+    return [];
   }
   return mergePayload.value.messages
     .slice(0, MESSAGE_MERGE_PREVIEW_LINES)
-    .map((item) => `${item.senderNickname}：${summarizeMessageContent(item)}`)
-})
+    .map((item) => `${item.senderNickname}：${summarizeMessageContent(item)}`);
+});
 
-const FACE_DIMENSION_MAX = 2048 // 表情 payload：非法宽高派生成 undefined，让 <img> 走 CSS max-w / max-h 兜底
+const FACE_DIMENSION_MAX = 2048; // 表情 payload：非法宽高派生成 undefined，让 <img> 走 CSS max-w / max-h 兜底
 const facePayload = computed(() => {
   if (!isFace.value) {
-    return null
+    return null;
   }
-  const raw = parsedContent.value as FaceMessage | null
+  const raw = parsedContent.value as FaceMessage | null;
   if (!raw) {
-    return null
+    return null;
   }
   const sanitize = (v: number | undefined) =>
-    v && v > 0 && v <= FACE_DIMENSION_MAX ? v : undefined
-  return { ...raw, width: sanitize(raw.width), height: sanitize(raw.height) }
-})
+    v && v > 0 && v <= FACE_DIMENSION_MAX ? v : undefined;
+  return { ...raw, width: sanitize(raw.width), height: sanitize(raw.height) };
+});
 
 /** 文件图标 + 配色：按扩展名分发 */
-const fileIconInfo = computed(() => getFileIconInfo(filePayload.value?.name))
+const fileIconInfo = computed(() => getFileIconInfo(filePayload.value?.name));
 
 /** 文本 / 文件 / 语音气泡的整体 class（含 selfSend 配色 + ::before 三角的 side class） */
 function bubbleClass(variant: 'file' | 'text' | 'voice'): string[] {
-  const isSelf = props.selfSend
-  const side = isSelf ? 'message-bubble--self' : 'message-bubble--other'
+  const isSelf = props.selfSend;
+  const side = isSelf ? 'message-bubble--self' : 'message-bubble--other';
   switch (variant) {
     case 'file': {
       return [
@@ -144,20 +147,18 @@ function bubbleClass(variant: 'file' | 'text' | 'voice'): string[] {
         'message-bubble--file',
         isSelf
           ? 'bg-[#95ec69] border-[var(--ant-color-border-secondary)]'
-          : 'bg-[var(--ant-color-bg-container)] border-[var(--ant-color-border-secondary)] hover:border-[#409eff]'
-      ]
+          : 'bg-[var(--ant-color-bg-container)] border-[var(--ant-color-border-secondary)] hover:border-[#409eff]',
+      ];
     }
     case 'text': {
       return [
         side,
         'message-bubble--text',
-        isSelf
-          ? 'text-black bg-[#95ec69]'
-          : 'text-[var(--ant-color-text)]'
-      ]
+        isSelf ? 'text-black bg-[#95ec69]' : 'text-[var(--ant-color-text)]',
+      ];
     }
     case 'voice': {
-      return [side, 'message-bubble--voice', isSelf ? 'bg-[#95ec69]' : '']
+      return [side, 'message-bubble--voice', isSelf ? 'bg-[#95ec69]' : ''];
     }
   }
 }
@@ -165,32 +166,32 @@ function bubbleClass(variant: 'file' | 'text' | 'voice'): string[] {
 /** 文件点击 → 新窗口下载；上传中跳过 */
 function handleFileClick() {
   if (isUploading.value || !filePayload.value?.url) {
-    return
+    return;
   }
-  openSafeUrl(filePayload.value.url)
+  openSafeUrl(filePayload.value.url);
 }
 
-const voicePlayer = useVoicePlayer() // 语音点击：托管给 useVoicePlayer 全局互斥播放，新点的语音会停掉旧的
+const voicePlayer = useVoicePlayer(); // 语音点击：托管给 useVoicePlayer 全局互斥播放，新点的语音会停掉旧的
 /**
  * 实例级唯一播放 key：每个 MessageBubble 实例独立一份
  *
  * 不用 url 当 key 是为了避免「主面板 / 历史抽屉 / 合并详情同一条语音」共享身份：那样三处气泡会
  * 同时显示播放态，且任何一处卸载都会 stop 掉别处仍可见的播放
  */
-const voiceKey = Symbol('im-message-bubble-voice')
-const voicePlaying = computed(() => voicePlayer.isPlaying(voiceKey))
+const voiceKey = Symbol('im-message-bubble-voice');
+const voicePlaying = computed(() => voicePlayer.isPlaying(voiceKey));
 function handleVoiceClick() {
-  const url = voicePayload.value?.url
+  const url = voicePayload.value?.url;
   if (!url) {
-    return
+    return;
   }
-  voicePlayer.play(voiceKey, url)
+  voicePlayer.play(voiceKey, url);
 }
 
 /** 气泡卸载兜底：传 key 让 stop 自己判别「是不是我」，不会误伤别人的播放 */
 onBeforeUnmount(() => {
-  voicePlayer.stop(voiceKey)
-})
+  voicePlayer.stop(voiceKey);
+});
 </script>
 
 <template>
@@ -222,29 +223,43 @@ onBeforeUnmount(() => {
   <div
     v-else-if="isFile && filePayload"
     class="relative flex gap-3 items-center min-w-[260px] max-w-[340px] px-3.5 py-3 border border-solid rounded transition-colors"
-    :class="[bubbleClass('file'), isUploading ? 'cursor-default' : 'cursor-pointer']"
+    :class="[
+      bubbleClass('file'),
+      isUploading ? 'cursor-default' : 'cursor-pointer',
+    ]"
     @click="handleFileClick"
   >
     <div class="flex-1 min-w-0">
-      <div class="overflow-hidden text-sm font-medium truncate text-[var(--ant-color-text)]">
+      <div
+        class="overflow-hidden text-sm font-medium truncate text-[var(--ant-color-text)]"
+      >
         {{ filePayload.name }}
       </div>
       <div class="mt-1 text-12px text-[var(--ant-color-text-secondary)]">
         {{ formatFileSize(filePayload.size) }}
       </div>
       <div v-if="isUploading" class="flex gap-2 items-center mt-1.5">
-        <div class="overflow-hidden flex-1 h-1 rounded bg-[var(--ant-color-fill-dark)]">
+        <div
+          class="overflow-hidden flex-1 h-1 rounded bg-[var(--ant-color-fill-dark)]"
+        >
           <div
             class="h-full bg-[var(--ant-color-primary)] transition-[width] duration-150"
-            :style="{ width: `${uploadProgress }%` }"
+            :style="{ width: `${uploadProgress}%` }"
           ></div>
         </div>
-        <span class="text-11px text-[var(--ant-color-text-secondary)] tabular-nums">
+        <span
+          class="text-11px text-[var(--ant-color-text-secondary)] tabular-nums"
+        >
           {{ uploadProgressText }}
         </span>
       </div>
     </div>
-    <Icon :icon="fileIconInfo.icon" :color="fileIconInfo.color" :size="40" class="flex-shrink-0" />
+    <Icon
+      :icon="fileIconInfo.icon"
+      :color="fileIconInfo.color"
+      :size="40"
+      class="flex-shrink-0"
+    />
   </div>
 
   <!-- 语音 -->
@@ -316,7 +331,9 @@ onBeforeUnmount(() => {
     class="flex flex-col w-[260px] rounded-md overflow-hidden cursor-pointer bg-[var(--ant-color-bg-container)] border border-solid border-[var(--ant-color-border)] hover:border-[#409eff]"
     @click="emit('openMerge', content)"
   >
-    <div class="px-3 py-2 text-sm font-medium text-[var(--ant-color-text)] truncate">
+    <div
+      class="px-3 py-2 text-sm font-medium text-[var(--ant-color-text)] truncate"
+    >
       {{ mergePayload.title }}
     </div>
     <div class="flex flex-col gap-0.5 px-3 pb-2">
@@ -378,7 +395,8 @@ onBeforeUnmount(() => {
 
 .message-bubble--other::before {
   left: -5px;
-  border-color: transparent var(--im-message-bubble-other-bg) transparent transparent;
+  border-color: transparent var(--im-message-bubble-other-bg) transparent
+    transparent;
   border-width: 5px 6px 5px 0;
 }
 

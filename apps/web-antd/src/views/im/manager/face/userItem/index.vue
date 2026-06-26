@@ -14,7 +14,10 @@ import {
 import { $t } from '#/locales';
 import { formatUserLabel } from '#/views/im/manager/utils/format';
 
-import { useUserItemGridColumns, useUserItemGridFormSchema } from '../pack/data';
+import {
+  useUserItemGridColumns,
+  useUserItemGridFormSchema,
+} from '../pack/data';
 
 defineOptions({ name: 'ImManagerFaceUserItem' });
 
@@ -94,7 +97,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['im:manager:face-user-item:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name || row.id]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.name || row.id,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
             },
