@@ -170,7 +170,7 @@ function updateLocalResult(id: number, handleResult: number) {
     :mask="{ closable: false }"
     class="im-group-request-list__dialog"
   >
-    <Spin :spinning="loading" wrapper-class-name="w-full">
+    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
       <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
         <!-- 空态 -->
         <Empty v-if="!loading && list.length === 0" description="暂无进群申请" />

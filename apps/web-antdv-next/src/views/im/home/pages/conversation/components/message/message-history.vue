@@ -569,7 +569,7 @@ function locateMessage(messageId: number) {
           v-model:open="datePopoverVisible"
           trigger="click"
           placement="bottom"
-          :overlay-style="{ width: '320px' }"
+          :styles="{ root: { width: '320px' } }"
         >
           <span
             class="im-message-history__tab cursor-pointer"
@@ -600,7 +600,7 @@ function locateMessage(messageId: number) {
           v-model:open="memberPopoverVisible"
           trigger="click"
           placement="bottom"
-          :overlay-style="{ width: '320px' }"
+          :styles="{ root: { width: '320px' } }"
         >
           <span
             class="im-message-history__tab cursor-pointer"
