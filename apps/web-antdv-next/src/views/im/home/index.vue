@@ -255,6 +255,7 @@ watch(
   --ant-color-text-secondary: hsl(var(--foreground) / 65%);
   --ant-color-text-placeholder: hsl(var(--foreground) / 45%);
   --ant-color-text-disabled: hsl(var(--foreground) / 30%);
+
   /*
    * fill 系列：浅色下用 Element Plus 风格的「冷调浅灰实色」而非半透明深色，
    * 否则面板（会话列表 / 消息面板等）叠在灰底上会显脏发暗，和 Vue3+EP 的干净白差距明显。

@@ -334,17 +334,18 @@ function updateLocalResult(id: number, handleResult: number) {
   height: 28px;
   padding: 0 12px;
   font-size: 13px;
-  border-radius: 4px;
   cursor: pointer;
   border: 1px solid transparent;
+  border-radius: 4px;
   transition:
     background-color 0.15s,
     border-color 0.15s,
     color 0.15s;
 }
+
 .im-group-request-list__btn:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .im-group-request-list__btn--primary {
@@ -352,6 +353,7 @@ function updateLocalResult(id: number, handleResult: number) {
   background-color: var(--ant-color-primary);
   border-color: var(--ant-color-primary);
 }
+
 .im-group-request-list__btn--primary:hover:not(:disabled) {
   background-color: var(--ant-color-primary-hover);
   border-color: var(--ant-color-primary-hover);
@@ -362,6 +364,7 @@ function updateLocalResult(id: number, handleResult: number) {
   background-color: var(--ant-color-bg-container);
   border-color: var(--ant-color-border);
 }
+
 .im-group-request-list__btn--ghost:hover:not(:disabled) {
   color: var(--ant-color-primary);
   border-color: var(--ant-color-primary);

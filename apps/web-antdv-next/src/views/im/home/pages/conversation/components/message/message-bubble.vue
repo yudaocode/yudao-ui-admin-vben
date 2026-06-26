@@ -359,29 +359,33 @@ onBeforeUnmount(() => {
    颜色与气泡背景对应，留 1px 视觉吃进去，省一张图片 */
 .message-bubble--other::before,
 .message-bubble--self::before {
-  content: '';
   position: absolute;
   top: 12px;
   width: 0;
   height: 0;
+  content: '';
   border-style: solid;
 }
+
 .message-bubble--other {
   --im-message-bubble-other-bg: #f5f5f5;
 }
+
 .message-bubble--other.message-bubble--text,
 .message-bubble--other.message-bubble--voice {
   background-color: var(--im-message-bubble-other-bg);
 }
+
 .message-bubble--other::before {
   left: -5px;
-  border-width: 5px 6px 5px 0;
   border-color: transparent var(--im-message-bubble-other-bg) transparent transparent;
+  border-width: 5px 6px 5px 0;
 }
+
 .message-bubble--self::before {
   right: -5px;
-  border-width: 5px 0 5px 6px;
   border-color: transparent transparent transparent #95ec69;
+  border-width: 5px 0 5px 6px;
 }
 
 /* 整体放进 :global()，避免 Vue scoped 把 `:global(.dark) .xxx` 塌缩成裸 `.dark` 而把变量刷到 <html> */
@@ -393,6 +397,7 @@ onBeforeUnmount(() => {
 .message-bubble__voice-icon :deep(svg) {
   fill: #606266 !important;
 }
+
 .message-bubble__voice-icon.im-voice-playing :deep(svg) {
   fill: #409eff !important;
 }
@@ -407,6 +412,7 @@ onBeforeUnmount(() => {
   100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.15);
   }

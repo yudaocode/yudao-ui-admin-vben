@@ -1167,8 +1167,9 @@ async function onVideoPicked(e: Event) {
 .message-input__tool:deep(svg) {
   font-size: 18px !important;
   color: var(--ant-color-text) !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
+
 .message-input__tool:hover,
 .message-input__tool:hover:deep(svg) {
   color: var(--ant-color-primary) !important;
@@ -1203,10 +1204,10 @@ async function onVideoPicked(e: Event) {
 
 /* 用 data-empty 而非 :empty：浏览器在删空后会留下 <br>，:empty 不命中；data-empty 由 syncEditorState 维护 */
 .message-input__editor[data-empty]::before {
-  content: attr(data-placeholder);
+  position: absolute;
   color: var(--ant-color-text-placeholder);
   pointer-events: none;
-  position: absolute;
+  content: attr(data-placeholder);
 }
 
 /* @ token 走主色高亮；contenteditable=false 让 backspace 整段删而不是逐字符 */
