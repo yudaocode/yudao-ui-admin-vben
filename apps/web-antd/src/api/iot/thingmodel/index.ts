@@ -52,6 +52,7 @@ export namespace ThingModelApi {
     name?: string;
     required?: boolean;
     type?: string;
+    dataType?: string;
     description?: string;
     outputParams?: Param[];
     method?: string;
