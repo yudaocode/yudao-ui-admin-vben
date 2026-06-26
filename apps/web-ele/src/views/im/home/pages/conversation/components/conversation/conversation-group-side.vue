@@ -812,13 +812,13 @@ function handleOpenTransferOwner() {
 /* 「添加 / 移出」瓦片：hover 时联动内部 icon-tile 走主色，跨子元素的 hover 联动无法用单元素工具类表达 */
 .im-conversation-group-side__tile-wrap:hover .im-conversation-group-side__icon-tile {
   color: var(--ant-color-primary);
-  border-color: var(--ant-color-primary);
   background-color: var(--ant-color-primary-bg);
+  border-color: var(--ant-color-primary);
 }
 
 /* :deep 穿透 Icon 内部 svg； el-icon 全局 color 在暗色模式下被主题盖过，锁 fill 到当前色 */
 .im-conversation-group-side__icon-tile :deep(svg) {
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 /* 相邻信息行加分隔线； 相邻兄弟选择器无法用工具类表达 */

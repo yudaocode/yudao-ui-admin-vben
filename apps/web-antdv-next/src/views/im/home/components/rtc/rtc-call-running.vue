@@ -279,11 +279,13 @@ const formattedDuration = computed(() =>
 .reconnect-dot {
   animation: reconnect-pulse 1s ease-in-out infinite;
 }
+
 @keyframes reconnect-pulse {
   0%,
   100% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 1;
   }

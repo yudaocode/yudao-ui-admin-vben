@@ -752,7 +752,7 @@ watch(
   width: 20px;
   height: 20px;
   color: var(--ant-color-text) !important;
-  fill: currentColor !important;
+  fill: currentcolor !important;
   transition: color 0.15s;
 }
 
@@ -760,6 +760,7 @@ watch(
   box-sizing: content-box;
   padding: 4px;
 }
+
 .message-panel__header-icon:hover,
 .message-panel__header-icon:hover :deep(svg) {
   color: var(--ant-color-primary) !important;
@@ -777,6 +778,7 @@ watch(
 .message-panel__message-anchor {
   transition: background-color 0.6s ease;
 }
+
 .message-panel__message-anchor--highlight {
   background-color: var(--ant-color-warning-bg);
 }

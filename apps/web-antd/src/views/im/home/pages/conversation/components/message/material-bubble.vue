@@ -145,7 +145,7 @@ const onClick = async () => {
   transition: box-shadow 0.15s ease;
 
   &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
   }
 }
 

@@ -753,16 +753,18 @@ function locateMessage(messageId: number) {
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 4px;
   display: none;
-  white-space: nowrap;
+  margin-top: 4px;
   color: #1989fa;
+  white-space: nowrap;
   cursor: pointer;
   transition: color 0.15s;
 }
+
 .im-message-history__row:hover .im-message-history__locate {
   display: block;
 }
+
 .im-message-history__locate:hover {
   color: #146fc7;
 }
@@ -774,16 +776,18 @@ function locateMessage(messageId: number) {
   color: #1989fa;
   transition: color 0.15s;
 }
+
 .im-message-history__tab:hover {
   color: #2f81d4;
 }
+
 .im-message-history__tab--active::after {
-  content: '';
   position: absolute;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   height: 2px;
+  content: '';
   background: #1989fa;
   border-radius: 1px;
 }
@@ -792,15 +796,18 @@ function locateMessage(messageId: number) {
 .im-message-history__calendar :deep(.el-calendar__header) {
   padding: 4px 8px;
 }
+
 .im-message-history__calendar :deep(.el-calendar-table) {
   font-size: 12px;
 }
+
 .im-message-history__calendar :deep(.el-calendar-table td) {
   padding: 1px 0;
 }
+
 .im-message-history__calendar :deep(.el-calendar-day) {
   height: 28px;
-  margin: 0 2px;
   padding: 2px 4px 0;
+  margin: 0 2px;
 }
 </style>
