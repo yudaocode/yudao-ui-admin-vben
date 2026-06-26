@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { CardTarget } from '../../../utils/message';
 import type { Conversation, FriendLite } from '../../types';
 
 import { computed, ref } from 'vue';
@@ -17,15 +18,14 @@ import {
 } from '../../../utils/constants';
 import { getConversationKey } from '../../../utils/conversation';
 import { buildDefaultGroupName } from '../../../utils/group';
-import { type CardTarget, serializeMessage } from '../../../utils/message';
+import { serializeMessage } from '../../../utils/message';
 import { getGroupDisplayName, isGroupQuit } from '../../../utils/user';
 import { useMessageSender } from '../../composables/useMessageSender';
 import { FacePicker } from '../../pages/conversation/components/input';
 import { useConversationStore } from '../../store/conversationStore';
 import { useFriendStore } from '../../store/friendStore';
 import { useGroupStore } from '../../store/groupStore';
-import { ConversationPickerPanel } from '../picker';
-import { FriendPickerPanel } from '../picker';
+import { ConversationPickerPanel, FriendPickerPanel } from '../picker';
 
 defineOptions({ name: 'ImRecommendCardDialog' });
 

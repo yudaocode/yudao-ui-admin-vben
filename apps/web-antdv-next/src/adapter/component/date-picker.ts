@@ -26,7 +26,9 @@ function normalizeTimestampPickerValue(value: any, valueFormat: unknown): any {
     return value;
   }
   if (Array.isArray(value)) {
-    return value.map((item) => normalizeTimestampPickerValue(item, valueFormat));
+    return value.map((item) =>
+      normalizeTimestampPickerValue(item, valueFormat),
+    );
   }
   return typeof value === 'number' ? String(value) : value;
 }
