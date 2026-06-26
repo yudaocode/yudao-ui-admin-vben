@@ -179,7 +179,7 @@ async function handleSubmitApply() {
         </template>
       </Input>
 
-      <Spin :spinning="loading" wrapper-class-name="w-full">
+      <Spin :spinning="loading" :classes="{ root: 'w-full' }">
         <div class="h-[400px] mt-2.5">
           <div
             v-if="visibleUsers.length === 0"

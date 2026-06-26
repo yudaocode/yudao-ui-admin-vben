@@ -126,7 +126,7 @@ async function loadReadUsers() {
     v-model:open="popVisible"
     placement="left"
     trigger="click"
-    :overlay-style="{ width: '320px' }"
+    :styles="{ root: { width: '320px' } }"
     @open-change="(open) => open && loadReadUsers()"
   >
     <span

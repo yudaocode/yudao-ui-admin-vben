@@ -114,7 +114,7 @@ onMounted(() => {
         <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
     </Input>
-    <Spin :spinning="loading" wrapper-class-name="w-full">
+    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
       <Tree
         v-if="categoryTree.length > 0"
         :default-expand-all="true"

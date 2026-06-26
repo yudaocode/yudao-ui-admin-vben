@@ -122,7 +122,7 @@ async function handleExport() {
 </script>
 
 <template>
-  <Card :bordered="false" title="交易状况" class="h-full">
+  <Card variant="borderless" title="交易状况" class="h-full">
     <template #extra>
       <!-- 查询条件 -->
       <div class="flex items-center gap-2">

@@ -147,7 +147,7 @@ async function handleJoin() {
     <Popover
       v-model:open="popoverVisible"
       placement="bottomLeft"
-      :overlay-style="{ width: '280px' }"
+      :styles="{ root: { width: '280px' } }"
       trigger="click"
     >
       <!-- 胶囊条本体：电话图标 + 文案（含人数）+ 右箭头 -->
