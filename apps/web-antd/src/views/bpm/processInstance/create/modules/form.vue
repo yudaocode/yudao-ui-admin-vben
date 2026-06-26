@@ -293,6 +293,7 @@ defineExpose({ initProcessInfo });
             class="flex-1 overflow-auto"
           >
             <form-create
+              v-if="detailForm.rule.length > 0"
               :rule="detailForm.rule"
               v-model:api="fApi"
               v-model="detailForm.value"
