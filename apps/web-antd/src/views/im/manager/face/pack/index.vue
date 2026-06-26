@@ -17,10 +17,7 @@ import {
 } from '#/api/im/manager/face/pack';
 import { $t } from '#/locales';
 
-import {
-  usePackGridColumns,
-  usePackGridFormSchema,
-} from './data';
+import { usePackGridColumns, usePackGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ItemDrawer from './modules/item-drawer.vue';
 

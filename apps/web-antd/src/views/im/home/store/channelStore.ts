@@ -1,12 +1,12 @@
-import type { ImManagerChannelApi } from '#/api/im/manager/channel'
+import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import { getSimpleChannelList } from '#/api/im/manager/channel'
+import { getSimpleChannelList } from '#/api/im/manager/channel';
 
-import { ImConversationType } from '../../utils/constants'
-import { getDb } from '../../utils/db'
-import { useConversationStore } from './conversationStore'
+import { ImConversationType } from '../../utils/constants';
+import { getDb } from '../../utils/db';
+import { useConversationStore } from './conversationStore';
 
 /**
  * IM 频道 Store
@@ -17,13 +17,13 @@ import { useConversationStore } from './conversationStore'
 export const useChannelStore = defineStore('imChannelStore', {
   state: () => ({
     channels: [] as ImManagerChannelApi.Channel[],
-    loaded: false
+    loaded: false,
   }),
 
   getters: {
     getChannel(state): (id: number) => ImManagerChannelApi.Channel | undefined {
-      return (id: number) => state.channels.find((c) => c.id === id)
-    }
+      return (id: number) => state.channels.find((c) => c.id === id);
+    },
   },
 
   actions: {
@@ -32,15 +32,16 @@ export const useChannelStore = defineStore('imChannelStore', {
     /** 从 IndexedDB 恢复频道列表 */
     async loadChannelList(): Promise<boolean> {
       try {
-        const cached = await getDb().getAll<ImManagerChannelApi.Channel>('channels')
+        const cached =
+          await getDb().getAll<ImManagerChannelApi.Channel>('channels');
         if (!cached || cached.length === 0) {
-          return false
+          return false;
         }
-        this.channels = cached
-        return true
+        this.channels = cached;
+        return true;
       } catch (error) {
-        console.warn('[IM channelStore] 本地频道缓存读取失败', error)
-        return false
+        console.warn('[IM channelStore] 本地频道缓存读取失败', error);
+        return false;
       }
     },
 
@@ -48,13 +49,15 @@ export const useChannelStore = defineStore('imChannelStore', {
     saveChannelList(): void {
       void getDb()
         .transaction(['channels'], 'readwrite', async (tx) => {
-          const db = getDb()
-          await db.clearStore('channels', tx)
+          const db = getDb();
+          await db.clearStore('channels', tx);
           for (const channel of this.channels) {
-            await db.put('channels', channel, tx)
+            await db.put('channels', channel, tx);
           }
         })
-        .catch((error) => console.warn('[IM channelStore] 本地频道缓存写入失败', error))
+        .catch((error) =>
+          console.warn('[IM channelStore] 本地频道缓存写入失败', error),
+        );
     },
 
     // ==================== 远端拉取 ====================
@@ -62,47 +65,51 @@ export const useChannelStore = defineStore('imChannelStore', {
     /** 拉取启用的频道精简列表；成功后回填会话列表已有的频道 name / avatar，覆盖 IDB 旧占位 */
     async fetchChannelList(force = false) {
       if (this.loaded && !force) {
-        return
+        return;
       }
       try {
-        this.channels = (await getSimpleChannelList()) || []
-        this.loaded = true
-        this.syncChannelConversationMetadata()
-        this.saveChannelList()
+        this.channels = (await getSimpleChannelList()) || [];
+        this.loaded = true;
+        this.syncChannelConversationMetadata();
+        this.saveChannelList();
       } catch (error) {
-        console.warn('[IM channelStore] fetchChannelList 失败', error)
+        console.warn('[IM channelStore] fetchChannelList 失败', error);
       }
     },
 
     /** 用最新的频道信息覆盖已有 CHANNEL 会话的 name / avatar */
     syncChannelConversationMetadata() {
-      const conversationStore = useConversationStore()
-      const indexed = new Map(this.channels.map((c) => [c.id, c]))
+      const conversationStore = useConversationStore();
+      const indexed = new Map(this.channels.map((c) => [c.id, c]));
       conversationStore.conversations.forEach((conversation) => {
         if (conversation.type !== ImConversationType.CHANNEL) {
-          return
+          return;
         }
-        const channel = indexed.get(conversation.targetId)
+        const channel = indexed.get(conversation.targetId);
         if (!channel) {
-          return
+          return;
         }
-        conversationStore.updateConversation(ImConversationType.CHANNEL, conversation.targetId, {
-          name: channel.name,
-          avatar: channel.avatar
-        })
-      })
+        conversationStore.updateConversation(
+          ImConversationType.CHANNEL,
+          conversation.targetId,
+          {
+            name: channel.name,
+            avatar: channel.avatar,
+          },
+        );
+      });
     },
 
     /** 清空频道内存 */
     clear() {
-      this.channels = []
-      this.loaded = false
-    }
-  }
-})
+      this.channels = [];
+      this.loaded = false;
+    },
+  },
+});
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useChannelStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useChannelStore, import.meta.hot));
 }
 
-export const useChannelStoreWithOut = () => useChannelStore()
+export const useChannelStoreWithOut = () => useChannelStore();
