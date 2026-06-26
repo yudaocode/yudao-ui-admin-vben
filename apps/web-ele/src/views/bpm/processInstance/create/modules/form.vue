@@ -290,6 +290,7 @@ defineExpose({ initProcessInfo });
             <ElRow :gutter="48">
               <ElCol :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
                 <FormCreate
+                  v-if="detailForm.rule.length > 0"
                   :rule="detailForm.rule"
                   v-model:api="fApi"
                   v-model="detailForm.value"
