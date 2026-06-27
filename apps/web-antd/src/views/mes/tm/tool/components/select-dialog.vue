@@ -36,8 +36,8 @@ function getMultipleSelectedRows() {
   ] as MesTmToolApi.Tool[];
   records.forEach((row) => {
     const rowId = row.id;
-    if (!rowId) {
-      selectedMap.set(rowId as number, row);
+    if (rowId !== undefined && rowId !== null) {
+      selectedMap.set(rowId, row);
     }
   });
   return [...selectedMap.values()];

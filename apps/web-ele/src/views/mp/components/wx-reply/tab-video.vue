@@ -91,11 +91,17 @@ function selectMaterial(item: any) {
 <template>
   <div>
     <ElRow>
-      <ElInput v-model="reply.title" class="mb-[2%]" placeholder="请输入标题" />
+      <ElInput
+        :model-value="reply.title || undefined"
+        class="mb-[2%]"
+        placeholder="请输入标题"
+        @update:model-value="(val) => (reply.title = val || null)"
+      />
       <ElInput
         class="mb-[2%]"
-        v-model="reply.description"
+        :model-value="reply.description || undefined"
         placeholder="请输入描述"
+        @update:model-value="(val) => (reply.description = val || null)"
       />
       <ElRow class="w-full pt-[10px] text-center" justify="center">
         <VideoPlayer v-if="reply.url" :url="reply.url" />

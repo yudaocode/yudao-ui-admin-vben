@@ -99,7 +99,7 @@ function calculateWidth() {
         :class="[
           {
             'w-full': property.layoutType !== 'oneColSmallImg',
-            'w-[calc(100vh-140px-16px)]':
+            'w-[calc(100%-140px-16px)]':
               property.layoutType === 'oneColSmallImg',
           },
         ]"

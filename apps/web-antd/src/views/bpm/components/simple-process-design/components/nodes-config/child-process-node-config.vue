@@ -689,7 +689,6 @@ onMounted(async () => {
                     class="w-24"
                     v-model:value="configForm.timeDuration"
                     :min="1"
-                    controls-position="right"
                   />
                 </FormItem>
               </Col>

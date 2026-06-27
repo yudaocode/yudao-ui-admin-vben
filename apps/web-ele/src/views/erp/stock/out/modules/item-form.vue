@@ -10,7 +10,7 @@ import {
   erpPriceMultiply,
 } from '@vben/utils';
 
-import { ElInput, ElInputNumber, ElSelect } from 'element-plus';
+import { ElInput, ElInputNumber, ElOption, ElSelect } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
@@ -206,26 +206,36 @@ onMounted(async () => {
     <template #warehouseId="{ row }">
       <ElSelect
         v-model="row.warehouseId"
-        :options="warehouseOptions"
-        :props="{ label: 'name', value: 'id' }"
         class="w-full"
         placeholder="请选择仓库"
         filterable
         :disabled="disabled"
         @change="handleWarehouseChange($event, row)"
-      />
+      >
+        <ElOption
+          v-for="warehouse in warehouseOptions"
+          :key="warehouse.id"
+          :label="warehouse.name"
+          :value="warehouse.id!"
+        />
+      </ElSelect>
     </template>
     <template #productId="{ row }">
       <ElSelect
         v-model="row.productId"
-        :options="productOptions"
-        :props="{ label: 'name', value: 'id' }"
         class="w-full"
         placeholder="请选择产品"
         filterable
         :disabled="disabled"
         @change="handleProductChange($event, row)"
-      />
+      >
+        <ElOption
+          v-for="product in productOptions"
+          :key="product.id"
+          :label="product.name"
+          :value="product.id!"
+        />
+      </ElSelect>
     </template>
     <template #count="{ row }">
       <ElInputNumber

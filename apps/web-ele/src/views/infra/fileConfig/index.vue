@@ -49,9 +49,9 @@ async function handleMaster(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     await updateFileConfigMaster(row.id!);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    ElMessage.success($t('ui.actionMessage.updateSuccess'));
     handleRefresh();
-  } catch {
+  } finally {
     loadingInstance.close();
   }
 }
@@ -63,7 +63,6 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
   });
   try {
     const response = await testFileConfig(row.id!);
-    loadingInstance.close();
     // 确认是否访问该文件
     confirm({
       title: '测试上传成功',
@@ -73,7 +72,7 @@ async function handleTest(row: InfraFileConfigApi.FileConfig) {
     }).then(() => {
       openWindow(response);
     });
-  } catch {
+  } finally {
     loadingInstance.close();
   }
 }

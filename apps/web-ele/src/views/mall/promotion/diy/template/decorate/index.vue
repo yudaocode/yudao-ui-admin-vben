@@ -67,7 +67,7 @@ async function getPageDetail(id: any) {
     // 拼接手机预览链接
     const domain = import.meta.env.VITE_MALL_H5_DOMAIN;
     const accessStore = useAccessStore();
-    previewUrl.value = `${domain}?templateId=${formData.value.id}&${accessStore.tenantId}`;
+    previewUrl.value = `${domain}?templateId=${formData.value.id}&tenantId=${accessStore.tenantId}`;
   } finally {
     loadingInstance.close();
   }

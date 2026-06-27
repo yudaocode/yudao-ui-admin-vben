@@ -10,6 +10,7 @@ import { cloneDeep, isEmpty, isString } from '@vben/utils';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import {
   ElAside,
+  ElButton,
   ElCard,
   ElContainer,
   ElHeader,

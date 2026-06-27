@@ -1,5 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { z } from '#/adapter/form';
+
 export const schema: VbenFormSchema[] = [
   {
     component: 'RadioGroup',
@@ -13,33 +15,33 @@ export const schema: VbenFormSchema[] = [
     },
   },
   {
-    component: 'InputNumber',
+    component: 'Input',
     fieldName: 'contactExpireDays',
     componentProps: {
+      placeholder: '请输入天数',
       class: '!w-full',
-      min: 0,
-      precision: 0,
     },
     renderComponentContent: () => ({
       addonAfter: () => '天不跟进或',
     }),
+    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
     dependencies: {
       triggerFields: ['enabled'],
       show: (value) => value.enabled,
     },
   },
   {
-    component: 'InputNumber',
+    component: 'Input',
     fieldName: 'dealExpireDays',
     renderComponentContent: () => ({
       addonBefore: () => '或',
       addonAfter: () => '天未成交',
     }),
     componentProps: {
+      placeholder: '请输入天数',
       class: '!w-full',
-      min: 0,
-      precision: 0,
     },
+    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
     dependencies: {
       triggerFields: ['enabled'],
       show: (value) => value.enabled,
@@ -62,17 +64,17 @@ export const schema: VbenFormSchema[] = [
     defaultValue: false,
   },
   {
-    component: 'InputNumber',
+    component: 'Input',
     fieldName: 'notifyDays',
     componentProps: {
+      placeholder: '请输入天数',
       class: '!w-full',
-      min: 0,
-      precision: 0,
     },
     renderComponentContent: () => ({
       addonBefore: () => '提前',
       addonAfter: () => '天提醒',
     }),
+    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
     dependencies: {
       triggerFields: ['notifyEnabled'],
       show: (value) => value.enabled && value.notifyEnabled,

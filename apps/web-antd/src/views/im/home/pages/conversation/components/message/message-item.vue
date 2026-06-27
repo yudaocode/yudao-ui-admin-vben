@@ -251,7 +251,7 @@ const redialRtcCall = inject(IM_RTC_REDIAL_KEY);
 /** 私聊 RTC_CALL_END 气泡点击：用同款 mediaType 重拨 */
 function handleRtcCallBubbleClick() {
   const mediaType = rtcCallEndPrivatePayload.value?.mediaType;
-  if (mediaType === null) {
+  if (mediaType == null) {
     return;
   }
   redialRtcCall?.(mediaType);

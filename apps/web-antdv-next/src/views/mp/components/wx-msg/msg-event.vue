@@ -44,6 +44,9 @@ defineProps<{
     <div v-else-if="item.event === 'location_select'">
       <Tag>选择地理位置</Tag>
     </div>
+    <div v-else-if="item.event === 'SCAN'">
+      <Tag>扫码</Tag>
+    </div>
     <div v-else>
       <Tag color="error">未知事件类型</Tag>
     </div>
