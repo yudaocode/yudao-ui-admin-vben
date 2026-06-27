@@ -243,7 +243,7 @@ function handleConfirm() {
     ElMessage.warning(multiple.value ? '请至少选择一条数据' : '请选择一条数据');
     return;
   }
-  emit('selected', multiple.value ? rows : [rows[0]]);
+  emit('selected', multiple.value ? rows : [rows[0]!]);
   open.value = false;
 }
 
