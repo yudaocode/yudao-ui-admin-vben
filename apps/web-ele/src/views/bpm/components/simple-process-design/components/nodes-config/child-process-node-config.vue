@@ -9,6 +9,22 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
+import {
+  ElButton,
+  ElDatePicker,
+  ElDivider,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElOption,
+  ElRadio,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSelect,
+  ElSwitch,
+} from 'element-plus';
+
 import { getForm } from '#/api/bpm/form';
 import { getModelList } from '#/api/bpm/model';
 
@@ -442,7 +458,7 @@ onMounted(async () => {
           >
             <div class="mr-2 mt-1">
               <ElFormItem
-                :prop="['inVariables', index, 'source']"
+                :prop="`inVariables.${index}.source`"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -461,7 +477,7 @@ onMounted(async () => {
             </div>
             <div class="mr-2 mt-1">
               <ElFormItem
-                :prop="['inVariables', index, 'target']"
+                :prop="`inVariables.${index}.target`"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -510,7 +526,7 @@ onMounted(async () => {
           >
             <div class="mr-2 mt-1">
               <ElFormItem
-                :prop="['outVariables', index, 'source']"
+                :prop="`outVariables.${index}.source`"
                 :rules="{
                   required: true,
                   message: '变量不能为空',
@@ -529,7 +545,7 @@ onMounted(async () => {
             </div>
             <div class="mr-2 mt-1">
               <ElFormItem
-                :prop="['outVariables', index, 'target']"
+                :prop="`outVariables.${index}.target`"
                 :rules="{
                   required: true,
                   message: '变量不能为空',

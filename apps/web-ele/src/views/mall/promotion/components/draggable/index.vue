@@ -81,7 +81,10 @@ const handleDelete = function (index: number) {
       </div>
     </template>
   </VueDraggable>
-  <ElTooltip :disabled="limit < 1" :content="`最多添加${limit}个`">
+  <ElTooltip
+    :disabled="limit >= Number.MAX_VALUE"
+    :content="`最多添加${limit}个`"
+  >
     <ElButton
       type="primary"
       plain

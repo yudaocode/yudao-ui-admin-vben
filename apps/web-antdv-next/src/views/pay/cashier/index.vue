@@ -213,6 +213,7 @@ function displayQrCode(channelCode: string, data: any) {
     url: data.displayContent,
     visible: true,
   };
+  modalApi.open();
 }
 
 /** 提交支付后（App） */

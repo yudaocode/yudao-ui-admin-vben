@@ -7,7 +7,7 @@ import { ref, watch } from 'vue';
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -171,6 +171,12 @@ watch(
             },
           ]"
         />
+      </template>
+      <template #colorType="{ row }">
+        <ElTag :color="row.colorType">{{ row.colorType }}</ElTag>
+      </template>
+      <template #cssClass="{ row }">
+        <ElTag :color="row.cssClass">{{ row.cssClass }}</ElTag>
       </template>
       <template #actions="{ row }">
         <TableAction
