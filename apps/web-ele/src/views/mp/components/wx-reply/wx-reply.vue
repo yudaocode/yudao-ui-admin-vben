@@ -113,7 +113,7 @@ defineExpose({
 </script>
 
 <template>
-  <ElTabs type="border-card" v-model="reply.type" @tab-change="clear">
+  <ElTabs type="border-card" v-model="currentTab">
     <!-- 类型 1：文本 -->
     <ElTabPane :name="ReplyType.Text">
       <template #label>

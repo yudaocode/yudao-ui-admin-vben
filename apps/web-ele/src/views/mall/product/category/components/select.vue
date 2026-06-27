@@ -59,7 +59,7 @@ onMounted(async () => {
     }"
     :multiple="multiple"
     :show-checkbox="multiple"
-    check-strictly
+    clearable
     default-expand-all
     class="w-full"
     placeholder="请选择商品分类"

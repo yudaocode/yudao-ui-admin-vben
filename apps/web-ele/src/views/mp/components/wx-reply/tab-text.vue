@@ -12,10 +12,10 @@ const emit = defineEmits<{
 }>();
 
 const content = computed({
-  get: () => props.modelValue,
-  set: (val: null | string) => {
-    emit('update:modelValue', val);
-    emit('input', val);
+  get: () => props.modelValue ?? '',
+  set: (val: string) => {
+    emit('update:modelValue', val || null);
+    emit('input', val || null);
   },
 });
 </script>

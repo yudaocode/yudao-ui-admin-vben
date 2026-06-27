@@ -6,6 +6,7 @@ import { IconifyIcon } from '@vben/icons';
 import { useVModel } from '@vueuse/core';
 import {
   ElCard,
+  ElCheckbox,
   ElForm,
   ElFormItem,
   ElInput,
