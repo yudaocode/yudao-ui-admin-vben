@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { NavigationBarProperty } from './config';
 
+import { watch } from 'vue';
+
 import { useVModel } from '@vueuse/core';
 import {
   ElCard,
@@ -16,6 +18,7 @@ import UploadImg from '#/components/upload/image-upload.vue';
 import { ColorInput } from '#/views/mall/promotion/components';
 
 import NavigationBarCellProperty from './components/cell-property.vue';
+import { isNavigationBarAlwaysShow, isNavigationBarShowType } from './config';
 
 /** 导航栏属性面板 */
 defineOptions({ name: 'NavigationBarProperty' });
@@ -29,9 +32,23 @@ const rules = {
 }; // 表单校验
 
 const formData = useVModel(props, 'modelValue', emit);
+if (!isNavigationBarShowType(formData.value.showType)) {
+  formData.value.showType = isNavigationBarAlwaysShow(formData.value)
+    ? 'always'
+    : 'scroll';
+}
+formData.value.alwaysShow = formData.value.showType === 'always';
 if (!formData.value._local) {
   formData.value._local = { previewMp: true, previewOther: false };
 }
+
+watch(
+  () => formData.value.showType,
+  (showType) => {
+    formData.value.alwaysShow = showType === 'always';
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -48,17 +65,16 @@ if (!formData.value._local) {
       </ElRadioGroup>
     </ElFormItem>
     <ElFormItem
-      label="常驻显示"
-      prop="alwaysShow"
+      label="显示方式"
+      prop="showType"
       v-if="formData.styleType === 'inner'"
     >
-      <ElRadioGroup v-model="formData!.alwaysShow">
-        <ElRadio :value="false">关闭</ElRadio>
-        <ElTooltip
-          content="常驻显示关闭后,头部小组件将在页面滑动时淡入"
-          placement="top"
-        >
-          <ElRadio :value="true">开启</ElRadio>
+      <ElRadioGroup v-model="formData!.showType">
+        <ElTooltip content="头部导航栏固定显示" placement="top">
+          <ElRadio value="always">常驻显示</ElRadio>
+        </ElTooltip>
+        <ElTooltip content="头部导航栏将在页面滑动时淡入" placement="top">
+          <ElRadio value="scroll">滚动显示</ElRadio>
         </ElTooltip>
       </ElRadioGroup>
     </ElFormItem>
