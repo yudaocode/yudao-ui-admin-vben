@@ -47,13 +47,13 @@ const showClear = computed(() => {
     props.clearable &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue !== null
+    props.modelValue != null
   );
 });
 
 /** 根据编号查询群信息（用于编辑回显） */
 async function resolveItemById(id: number | undefined) {
-  if (id === null) {
+  if (id == null) {
     selectedItem.value = undefined;
     return;
   }
@@ -83,7 +83,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.modelValue === null ? [] : [props.modelValue]);
+  dialogRef.value?.open(props.modelValue == null ? [] : [props.modelValue]);
 }
 
 /** 弹窗选中回调 */

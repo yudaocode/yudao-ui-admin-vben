@@ -177,8 +177,6 @@ async function initProcessInfo(row: any, formVariables?: any) {
     await router.push({
       path: row.formCustomCreatePath,
     });
-    // 返回选择流程
-    emit('cancel');
   }
 }
 

@@ -239,9 +239,7 @@ const selectProcessListener = (listener: any) => {
     ) ?? [];
   updateElementExtensions(
     bpmnElement,
-    otherExtensionList.value
-      ? [...otherExtensionList.value, ...bpmnElementListeners.value]
-      : undefined,
+    [...otherExtensionList.value, ...bpmnElementListeners.value],
   );
 };
 

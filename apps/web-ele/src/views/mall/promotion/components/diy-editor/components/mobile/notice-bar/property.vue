@@ -41,7 +41,7 @@ const rules = {
       <ElFormItem label="背景颜色" prop="backgroundColor">
         <ColorInput v-model="formData.backgroundColor" />
       </ElFormItem>
-      <ElFormItem label="文字颜色" prop="文字颜色">
+      <ElFormItem label="文字颜色" prop="textColor">
         <ColorInput v-model="formData.textColor" />
       </ElFormItem>
       <ElCard header="公告内容" class="property-group" shadow="never">

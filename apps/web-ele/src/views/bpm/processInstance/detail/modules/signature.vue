@@ -5,6 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { base64ToFile } from '@vben/utils';
 
+import { ElButton, ElTooltip } from 'element-plus';
 import Vue3Signature from 'vue3-signature';
 
 import { uploadFile } from '#/api/infra/file';

@@ -150,7 +150,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     :title="title"
     destroy-on-close
     width="65%"
-    @after-open-change="handleOpenChange"
+    @opened="handleOpenChange(true)"
   >
     <ItemFormModal @success="handleRefresh" />
     <Grid table-title="表情列表">

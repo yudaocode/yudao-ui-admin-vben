@@ -30,7 +30,7 @@ withDefaults(
     <div v-else-if="item.type === MpMsgType.Text">{{ item.content }}</div>
 
     <div v-else-if="item.type === MpMsgType.Voice">
-      <WxVideoPlayer :url="item.mediaUrl" :content="item.recognition" />
+      <WxVoicePlayer :url="item.mediaUrl" :content="item.recognition" />
     </div>
 
     <div v-else-if="item.type === MpMsgType.Image">
@@ -43,7 +43,7 @@ withDefaults(
       v-else-if="item.type === MpMsgType.Video || item.type === 'shortvideo'"
       class="text-center"
     >
-      <WxVoicePlayer :url="item.mediaUrl" />
+      <WxVideoPlayer :url="item.mediaUrl" />
     </div>
 
     <div v-else-if="item.type === MpMsgType.Link" class="flex-1">

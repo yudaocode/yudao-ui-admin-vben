@@ -81,7 +81,7 @@ const recentForwardConversations = computed(() =>
     .map((key) => byKey.value.get(key))
     .filter(
       (c): c is Conversation =>
-        c !== null && !hideSet.value.has(getConversationKey(c)),
+        c != null && !hideSet.value.has(getConversationKey(c)),
     ),
 );
 
@@ -96,7 +96,7 @@ const selectedConversations = computed(() =>
     .map((key) => byKey.value.get(key))
     .filter(
       (conversation): conversation is Conversation =>
-        conversation !== null &&
+        conversation != null &&
         !hideSet.value.has(getConversationKey(conversation)),
     ),
 );

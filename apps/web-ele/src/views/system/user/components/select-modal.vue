@@ -2,7 +2,7 @@
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
@@ -65,6 +65,7 @@ const deptSearchKeys = ref('');
 // 用户数据管理
 const userList = ref<SystemUserApi.User[]>([]); // 存储所有已知用户
 const selectedUserIds = ref<number[]>([]);
+const transferRef = ref<any>();
 
 const [Modal, modalApi] = useVbenModal({
   onCancel: handleCancel,
@@ -272,9 +273,21 @@ async function handleLeftPaginationChange(page: number) {
   await loadUserData(page, leftListState.value.pagination.pageSize);
 }
 
+/** 处理左侧每页条数变化 */
+async function handleLeftPageSizeChange(pageSize: number) {
+  await loadUserData(1, pageSize);
+}
+
 /** 处理右侧分页变化 */
 function handleRightPaginationChange(page: number) {
   rightListState.value.pagination.current = page;
+  updateRightListData();
+}
+
+/** 处理右侧每页条数变化 */
+function handleRightPageSizeChange(pageSize: number) {
+  rightListState.value.pagination.current = 1;
+  rightListState.value.pagination.pageSize = pageSize;
   updateRightListData();
 }
 
@@ -289,6 +302,41 @@ function handleUserChange(
   emit('update:value', selectedUserIds.value);
   updateRightListData();
 }
+
+async function handleLeftUserSearch(query: string) {
+  leftListState.value.searchValue = query;
+  leftListState.value.pagination.current = 1;
+  await loadUserData(1, leftListState.value.pagination.pageSize);
+}
+
+function handleRightUserSearch(query: string) {
+  rightListState.value.searchValue = query;
+  rightListState.value.pagination.current = 1;
+  updateRightListData();
+}
+
+function getTransferPanelQuery(panel: any) {
+  const panelInstance = panel?.value ?? panel;
+  return panelInstance?.query?.value ?? panelInstance?.query ?? '';
+}
+
+watch(
+  () => getTransferPanelQuery(transferRef.value?.leftPanel),
+  (query) => {
+    if (query !== leftListState.value.searchValue) {
+      void handleLeftUserSearch(query);
+    }
+  },
+);
+
+watch(
+  () => getTransferPanelQuery(transferRef.value?.rightPanel),
+  (query) => {
+    if (query !== rightListState.value.searchValue) {
+      handleRightUserSearch(query);
+    }
+  },
+);
 
 /** 重置数据 */
 function resetData() {
@@ -430,6 +478,7 @@ function processDeptNode(node: any): DeptTreeNode {
       </ElCol>
       <ElCol :span="18">
         <ElTransfer
+          ref="transferRef"
           v-model="selectedUserIds"
           :data="transferDataSource"
           :titles="['未选', '已选']"
@@ -450,6 +499,7 @@ function processDeptNode(node: any): DeptTreeNode {
             layout="total, sizes, prev, pager, next"
             small
             @current-change="handleLeftPaginationChange"
+            @size-change="handleLeftPageSizeChange"
           />
           <ElPagination
             v-model:current-page="rightListState.pagination.current"
@@ -459,6 +509,7 @@ function processDeptNode(node: any): DeptTreeNode {
             layout="total, sizes, prev, pager, next"
             small
             @current-change="handleRightPaginationChange"
+            @size-change="handleRightPageSizeChange"
           />
         </div>
       </ElCol>

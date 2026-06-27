@@ -139,11 +139,14 @@ function handleModelSort() {
         disabled: false,
         onEnd: ({ newDraggableIndex, oldDraggableIndex }) => {
           if (oldDraggableIndex !== newDraggableIndex) {
-            modelList.value.splice(
-              newDraggableIndex ?? 0,
-              0,
-              modelList.value.splice(oldDraggableIndex ?? 0, 1)[0],
+            const [movedModel] = modelList.value.splice(
+              oldDraggableIndex ?? 0,
+              1,
             );
+            if (!movedModel) {
+              return;
+            }
+            modelList.value.splice(newDraggableIndex ?? 0, 0, movedModel);
           }
         },
       },

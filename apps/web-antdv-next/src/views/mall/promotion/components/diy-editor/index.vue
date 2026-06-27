@@ -7,7 +7,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
-import { Button, Card, Col, QRCode, Row, Tag, Tooltip } from 'antdv-next';
+import { Button, Card, Col, QRCode, Row, Space, Tag, Tooltip } from 'antdv-next';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';

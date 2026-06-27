@@ -113,7 +113,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
       @change="handleChange"
       :options="[
         ...dataTypeOptions.map((option) => ({
-          label: `{{ \`${option.value}(${option.label})\` }}`,
+          label: `${option.value}(${option.label})`,
           value: option.value,
         })),
       ]"

@@ -117,6 +117,7 @@ async function handleRefuse() {
         maxlength: 255,
         placeholder: '不填则不告知对方原因',
         rows: 3,
+        type: 'textarea',
       },
       content: '',
       defaultValue: '',

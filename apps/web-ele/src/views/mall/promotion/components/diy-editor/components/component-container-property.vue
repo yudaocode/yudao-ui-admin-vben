@@ -134,7 +134,7 @@ function handleSliderChange(prop: string) {
     </ElTabPane>
 
     <!-- 每个组件的通用内容 -->
-    <ElTabPane label="样式" lazy>
+    <ElTabPane label="样式">
       <ElCard header="组件样式" class="property-group">
         <ElForm :model="formData" label-width="80px">
           <ElFormItem label="组件背景" prop="bgType">

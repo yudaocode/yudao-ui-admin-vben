@@ -13,11 +13,12 @@ import {
 import { useTabs } from '@vben/hooks';
 import { fenToYuan, formatDate } from '@vben/utils';
 
+import { useQRCode } from '@vueuse/integrations/useQRCode';
 import {
   ElButton,
   ElCard,
   ElDescriptions,
-  ElImage,
+  ElDescriptionsItem,
   ElInput,
   ElMessage,
 } from 'element-plus';
@@ -47,6 +48,10 @@ const [Modal, modalApi] = useVbenModal({
 const qrCode = ref({
   url: '',
   visible: false,
+});
+const qrCodeImage = useQRCode(() => qrCode.value.url, {
+  errorCorrectionLevel: 'H',
+  margin: 4,
 });
 
 /** 展示形式：条形码 */
@@ -212,6 +217,7 @@ function displayQrCode(channelCode: string, data: any) {
     url: data.displayContent,
     visible: true,
   };
+  modalApi.open();
 }
 
 /** 提交支付后（App） */
@@ -307,24 +313,24 @@ onBeforeUnmount(() => {
   <Page auto-content-height>
     <ElCard class="mt-4">
       <ElDescriptions :column="3" :title="payOrder?.subject ?? '商品详情'">
-        <ElDescriptions.Item label="支付单号">
+        <ElDescriptionsItem label="支付单号">
           {{ payOrder?.id }}
-        </ElDescriptions.Item>
-        <ElDescriptions.Item label="商品标题">
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="商品标题">
           {{ payOrder?.subject }}
-        </ElDescriptions.Item>
-        <ElDescriptions.Item label="商品内容">
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="商品内容">
           {{ payOrder?.body }}
-        </ElDescriptions.Item>
-        <ElDescriptions.Item label="支付金额">
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="支付金额">
           {{ `￥${fenToYuan(payOrder?.price || 0)}` }}
-        </ElDescriptions.Item>
-        <ElDescriptions.Item label="创建时间">
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="创建时间">
           {{ formatDate(payOrder?.createTime) }}
-        </ElDescriptions.Item>
-        <ElDescriptions.Item label="过期时间">
+        </ElDescriptionsItem>
+        <ElDescriptionsItem label="过期时间">
           {{ formatDate(payOrder?.expireTime) }}
-        </ElDescriptions.Item>
+        </ElDescriptionsItem>
       </ElDescriptions>
     </ElCard>
     <ElCard title="选择支付宝支付" class="mt-4">
@@ -373,10 +379,15 @@ onBeforeUnmount(() => {
       </div>
     </ElCard>
     <Modal class="w-2/5" :title="title">
-      <ElImage v-if="qrCode.visible" :src="qrCode.url" />
+      <img
+        v-if="qrCode.visible"
+        :src="qrCodeImage"
+        alt="支付二维码"
+        class="max-w-full"
+      />
       <ElInput
         v-if="barCode.visible"
-        v-model:value="barCode.value"
+        v-model="barCode.value"
         placeholder="请输入条形码"
         required
       />

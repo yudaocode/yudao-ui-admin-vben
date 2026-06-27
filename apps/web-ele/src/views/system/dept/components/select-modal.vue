@@ -40,10 +40,9 @@ const treeRef = ref(); // Tree 组件引用
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // 获取选中的部门ID
-    const selectedIds: number[] = props.checkStrictly
-      ? treeRef.value?.getCheckedKeys() || []
-      : selectedDeptIds.value;
+    // 获取选中的部门ID（selectedDeptIds 由 handleCheck 实时维护，
+    // 严格/非严格模式下均与树勾选状态一致，无需依赖 treeRef 是否已挂载）
+    const selectedIds: number[] = selectedDeptIds.value;
 
     const deptArray = deptData.value.filter((dept) =>
       selectedIds.includes(dept.id!),
@@ -102,6 +101,9 @@ function handleCheck(
     if (lastSelectedId) {
       selectedDeptIds.value = [lastSelectedId];
       treeRef.value?.setCheckedKeys([lastSelectedId]);
+    } else {
+      selectedDeptIds.value = [];
+      treeRef.value?.setCheckedKeys([]);
     }
   }
 }

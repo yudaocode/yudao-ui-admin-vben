@@ -262,9 +262,12 @@ async function handleSend(options?: { receipt?: boolean }) {
 }
 
 /** 发送按钮下拉菜单操作 */
-function handleSendMenuClick({ key }: { key: number | string }) {
+function handleSendMenuClick(
+  command: number | string | { key: number | string },
+) {
+  const key = typeof command === 'object' ? command.key : command;
   if (key === 'receipt') {
-    handleSend({ receipt: true });
+    void handleSend({ receipt: true });
   }
 }
 

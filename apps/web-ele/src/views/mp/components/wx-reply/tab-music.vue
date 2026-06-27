@@ -133,14 +133,30 @@ function selectMaterial(item: any) {
         </ElDialog>
       </ElCol>
       <ElCol :span="18">
-        <ElInput v-model="reply.title" placeholder="请输入标题" />
+        <ElInput
+          :model-value="reply.title || undefined"
+          placeholder="请输入标题"
+          @update:model-value="(val) => (reply.title = val || null)"
+        />
         <div class="my-5"></div>
-        <ElInput v-model="reply.description" placeholder="请输入描述" />
+        <ElInput
+          :model-value="reply.description || undefined"
+          placeholder="请输入描述"
+          @update:model-value="(val) => (reply.description = val || null)"
+        />
       </ElCol>
     </ElRow>
     <div class="my-5"></div>
-    <ElInput v-model="reply.musicUrl" placeholder="请输入音乐链接" />
+    <ElInput
+      :model-value="reply.musicUrl || undefined"
+      placeholder="请输入音乐链接"
+      @update:model-value="(val) => (reply.musicUrl = val || null)"
+    />
     <div class="my-5"></div>
-    <ElInput v-model="reply.hqMusicUrl" placeholder="请输入高质量音乐链接" />
+    <ElInput
+      :model-value="reply.hqMusicUrl || undefined"
+      placeholder="请输入高质量音乐链接"
+      @update:model-value="(val) => (reply.hqMusicUrl = val || null)"
+    />
   </div>
 </template>
