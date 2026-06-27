@@ -45,8 +45,12 @@ const canAdd = computed(() => {
 watch(
   () => props.modelValue,
   async (newValue) => {
-    // oxlint-disable-next-line unicorn/no-nested-ternary
-    const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
+    let ids: number[] = [];
+    if (Array.isArray(newValue)) {
+      ids = newValue;
+    } else if (newValue) {
+      ids = [newValue];
+    }
     if (ids.length === 0) {
       productSpus.value = [];
       return;
@@ -54,7 +58,7 @@ watch(
     // 只有商品发生变化时才重新查询
     if (
       productSpus.value.length === 0 ||
-      productSpus.value.some((spu) => !ids.includes(spu.id))
+      productSpus.value.some((spu) => spu.id == null || !ids.includes(spu.id))
     ) {
       productSpus.value = await getSpuDetailList(ids);
     }

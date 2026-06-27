@@ -395,15 +395,14 @@ const setEncoded = (type: string, data: string) => {
 };
 
 // 加载本地文件
-const importLocalFile = () => {
+const importLocalFile = async () => {
   const file = refFile.value.files[0];
-  const reader = new FileReader();
-  reader.text(file);
-  reader.addEventListener('load', function () {
-    const xmlStr = this.result;
-    createNewDiagram(xmlStr);
-    emit('save', xmlStr);
-  });
+  if (!file) {
+    return;
+  }
+  const xmlStr = await file.text();
+  createNewDiagram(xmlStr);
+  emit('save', xmlStr);
 };
 /* ------------------------------------------------ refs methods ------------------------------------------------------ */
 const downloadProcessAsXml = () => {
