@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { NavigationBarProperty } from './components/mobile/navigation-bar/config';
 import type { DiyComponent, DiyComponentLibrary, PageConfig } from './util';
 
 import { onMounted, ref, unref, watch } from 'vue';
@@ -7,7 +8,16 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep, isEmpty, isString } from '@vben/utils';
 
-import { Button, Card, Col, QRCode, Row, Space, Tag, Tooltip } from 'antdv-next';
+import {
+  Button,
+  Card,
+  Col,
+  QRCode,
+  Row,
+  Space,
+  Tag,
+  Tooltip,
+} from 'antdv-next';
 import draggable from 'vuedraggable';
 
 import statusBarImg from '#/assets/imgs/diy/statusBar.png';
@@ -15,7 +25,11 @@ import statusBarImg from '#/assets/imgs/diy/statusBar.png';
 import ComponentContainer from './components/component-container.vue';
 import ComponentLibrary from './components/component-library.vue';
 import { componentConfigs, components } from './components/mobile';
-import { component as NAVIGATION_BAR_COMPONENT } from './components/mobile/navigation-bar/config';
+import {
+  isNavigationBarAlwaysShow,
+  isNavigationBarShowType,
+  component as NAVIGATION_BAR_COMPONENT,
+} from './components/mobile/navigation-bar/config';
 import { component as PAGE_CONFIG_COMPONENT } from './components/mobile/page-config/config';
 import { component as TAB_BAR_COMPONENT } from './components/mobile/tab-bar/config';
 
@@ -56,6 +70,21 @@ const selectedComponent = ref<DiyComponent<any>>(); // 选中的组件，默认�
 const selectedComponentIndex = ref<number>(-1); // 选中的组件索引
 const pageComponents = ref<DiyComponent<any>[]>([]); // 组件列表
 
+// 兼容历史装修数据：旧版只有 alwaysShow，新增 showType 后统一转成枚举并继续输出 alwaysShow。
+function normalizeNavigationBarProperty(property: NavigationBarProperty) {
+  const navigationBarProperty = cloneDeep(property);
+  if (!isNavigationBarShowType(navigationBarProperty.showType)) {
+    navigationBarProperty.showType = isNavigationBarAlwaysShow(
+      navigationBarProperty,
+    )
+      ? 'always'
+      : 'scroll';
+  }
+  navigationBarProperty.alwaysShow =
+    navigationBarProperty.showType === 'always';
+  return navigationBarProperty;
+}
+
 /**
  * 监听传入的页面配置
  * 解析出 pageConfigComponent 页面整体的配置，navigationBarComponent、pageComponents、tabBarComponent 页面上、中、下的配置
@@ -72,9 +101,10 @@ watch(
       (typeof modelValue !== 'string' && modelValue?.page) ||
       PAGE_CONFIG_COMPONENT.property;
     // noinspection SuspiciousTypeOfGuard
-    navigationBarComponent.value.property =
+    navigationBarComponent.value.property = normalizeNavigationBarProperty(
       (typeof modelValue !== 'string' && modelValue?.navigationBar) ||
-      NAVIGATION_BAR_COMPONENT.property;
+        NAVIGATION_BAR_COMPONENT.property,
+    );
     // noinspection SuspiciousTypeOfGuard
     tabBarComponent.value.property =
       (typeof modelValue !== 'string' && modelValue?.tabBar) ||
