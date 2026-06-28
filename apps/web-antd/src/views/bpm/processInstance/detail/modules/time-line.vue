@@ -197,7 +197,15 @@ function shouldShowCustomUserSelect(
 }
 
 /** 判断是否需要显示审批意见和附件 */
-function shouldShowReasonAndAttachment(task: any, nodeType: BpmNodeTypeEnum) {
+function shouldShowReasonAndAttachment(
+  task: any,
+  nodeType: BpmNodeTypeEnum,
+  nodeIndex: number,
+) {
+  // 第一个发起人节点是系统自动通过的，不展示审批意见；
+  if (nodeType === BpmNodeTypeEnum.START_USER_NODE && nodeIndex === 0) {
+    return false;
+  }
   return (
     Boolean(task.reason || task.attachments?.length > 0) &&
     [BpmNodeTypeEnum.START_USER_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
@@ -422,7 +430,7 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
 
               <!-- 审批意见,附件和签名 -->
               <div
-                v-if="shouldShowReasonAndAttachment(task, activity.nodeType)"
+                v-if="shouldShowReasonAndAttachment(task, activity.nodeType, index)"
                 class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
               >
                 <div v-if="task.reason">审批意见：{{ task.reason }}</div>
