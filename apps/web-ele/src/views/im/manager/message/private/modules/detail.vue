@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { ElDescriptions, ElDescriptionsItem, ElDialog } from 'element-plus'
+import { ElDescriptions, ElDescriptionsItem, ElDialog } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
 import {
@@ -68,7 +68,11 @@ defineExpose({ open });
         />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="原始 JSON" :span="2">
-        <pre class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs">{{ formatJsonText(detail.content) }}</pre>
+        <pre
+          class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs"
+        >
+          {{ formatJsonText(detail.content) }}
+        </pre>
       </ElDescriptionsItem>
     </ElDescriptions>
   </ElDialog>

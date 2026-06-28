@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// oxlint-disable unicorn/no-nested-ternary
 import type {
   UploadFile,
   UploadProgressEvent,
@@ -159,7 +160,6 @@ function handleUploadError(error: any) {
  * @param file 待上传的文件
  * @returns 是否允许上传
  */
-/* eslint-disable unicorn/no-nested-ternary */
 async function beforeUpload(file: File) {
   // 检查文件数量限制（使用 getValue 获取实际已上传的文件数量）
   const currentFiles = getValue();

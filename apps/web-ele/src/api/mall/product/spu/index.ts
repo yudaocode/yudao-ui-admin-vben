@@ -78,7 +78,9 @@ export function getSpuPage(params: PageParam) {
 
 /** 获得商品 SPU 列表 tabsCount（支持按 name/categoryId/createTime 筛选） */
 export function getTabsCount(params?: Record<string, any>) {
-  return requestClient.get<Record<string, number>>('/product/spu/get-count', { params });
+  return requestClient.get<Record<string, number>>('/product/spu/get-count', {
+    params,
+  });
 }
 
 /** 创建商品 SPU */

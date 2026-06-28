@@ -45,7 +45,7 @@ const canAdd = computed(() => {
 watch(
   () => props.modelValue,
   async (newValue) => {
-    // eslint-disable-next-line unicorn/no-nested-ternary
+    // oxlint-disable-next-line unicorn/no-nested-ternary
     const ids = Array.isArray(newValue) ? newValue : newValue ? [newValue] : [];
     if (ids.length === 0) {
       pointActivityList.value = [];
@@ -54,7 +54,7 @@ watch(
     // 只有活动发生变化时才重新查询
     if (
       pointActivityList.value.length === 0 ||
-      pointActivityList.value.some((activity) => !ids.includes(activity.id!))
+      pointActivityList.value.some((activity) => !ids.includes(activity.id))
     ) {
       pointActivityList.value = await getPointActivityListByIds(ids);
     }
@@ -95,7 +95,7 @@ function emitActivityChange() {
   } else {
     emit(
       'update:modelValue',
-      pointActivityList.value.map((activity) => activity.id!),
+      pointActivityList.value.map((activity) => activity.id),
     );
     emit('change', pointActivityList.value);
   }

@@ -26,7 +26,10 @@ export function useRtcGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.IM_RTC_CALL_CONVERSATION_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.IM_RTC_CALL_CONVERSATION_TYPE,
+          'number',
+        ),
         placeholder: '请选择会话类型',
       },
     },

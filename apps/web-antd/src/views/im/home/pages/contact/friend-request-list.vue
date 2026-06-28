@@ -1,62 +1,62 @@
 <script lang="ts" setup>
-import type { FriendRequest } from '../../types'
+import type { FriendRequest } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants'
-import { getDictLabel } from '@vben/hooks'
-import { IconifyIcon as Icon } from '@vben/icons'
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { Badge } from 'ant-design-vue'
+import { Badge } from 'ant-design-vue';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { UserAvatar } from '../../components/user'
-import { useFriendStore } from '../../store/friendStore'
+import { UserAvatar } from '../../components/user';
+import { useFriendStore } from '../../store/friendStore';
 
-defineOptions({ name: 'ImContactFriendRequestList' })
+defineOptions({ name: 'ImContactFriendRequestList' });
 
 const props = defineProps<{
-  activeId?: number
-  requests: FriendRequest[]
-}>()
+  activeId?: number;
+  requests: FriendRequest[];
+}>();
 
 const emit = defineEmits<{
-  select: [request: FriendRequest]
-}>()
+  select: [request: FriendRequest];
+}>();
 
-const friendStore = useFriendStore()
-const expanded = ref(true)
+const friendStore = useFriendStore();
+const expanded = ref(true);
 /** 当前登录用户编号；用 computed 包一层，切账号后随 wsCache 重取，避免顶层求值在 keep-alive 实例里持有旧 id */
-const currentUserId = computed(() => getCurrentUserId())
+const currentUserId = computed(() => getCurrentUserId());
 
-/** 列表项展示对端：fromUserId == 我 → 对端 = toUser；否则对端 = fromUser */
+/** 列表项展示对端：fromUserId === 我 → 对端 = toUser；否则对端 = fromUser */
 function getPeer(request: FriendRequest) {
-  const sentByMe = request.fromUserId === currentUserId.value
+  const sentByMe = request.fromUserId === currentUserId.value;
   return {
     id: sentByMe ? request.toUserId : request.fromUserId,
     nickname: sentByMe
       ? request.toNickname || String(request.toUserId)
       : request.fromNickname || String(request.fromUserId),
-    avatar: sentByMe ? request.toAvatar : request.fromAvatar
-  }
+    avatar: sentByMe ? request.toAvatar : request.fromAvatar,
+  };
 }
 
 /** 列表项预先附 peer 字段，模板里直接 {{ peer.xxx }} 一次成型，省 3 次 helper 调用 */
 const enrichedRequests = computed(() =>
-  props.requests.map((request) => ({ request, peer: getPeer(request) }))
-)
+  props.requests.map((request) => ({ request, peer: getPeer(request) })),
+);
 
-const loadingMore = ref(false) // 点击「加载更多」拉下一页；store 内部按 maxId 游标分页 + pending 去重
+const loadingMore = ref(false); // 点击「加载更多」拉下一页；store 内部按 maxId 游标分页 + pending 去重
 async function handleLoadMore() {
   if (loadingMore.value) {
-    return
+    return;
   }
-  loadingMore.value = true
+  loadingMore.value = true;
   try {
-    await friendStore.loadMoreFriendRequestList()
+    await friendStore.loadMoreFriendRequestList();
   } finally {
-    loadingMore.value = false
+    loadingMore.value = false;
   }
 }
 </script>
@@ -74,7 +74,10 @@ async function handleLoadMore() {
       class="flex gap-2 items-center px-3.5 py-2.5 text-15px text-[var(--ant-color-text)] cursor-pointer select-none hover:bg-[var(--ant-color-fill-secondary)]"
       @click="expanded = !expanded"
     >
-      <Icon :icon="expanded ? 'ep:caret-bottom' : 'ep:caret-right'" :size="14" />
+      <Icon
+        :icon="expanded ? 'ep:caret-bottom' : 'ep:caret-right'"
+        :size="14"
+      />
       <span class="flex-1">新的朋友</span>
       <!-- 红点：未处理且别人加我的（统一走 store getter，避免本地 computed 跟 store 双口径） -->
       <Badge
@@ -83,7 +86,9 @@ async function handleLoadMore() {
         :max="99"
         class="mr-2"
       />
-      <span class="text-sm text-[var(--ant-color-text-secondary)]">{{ requests.length }}</span>
+      <span class="text-sm text-[var(--ant-color-text-secondary)]">{{
+        requests.length
+      }}</span>
     </div>
     <div v-show="expanded">
       <div
@@ -91,7 +96,7 @@ async function handleLoadMore() {
         :key="request.id"
         class="flex gap-3 items-start px-3.5 py-2.5 cursor-pointer transition-colors hover:bg-[var(--ant-color-fill-secondary)]"
         :class="{
-          'bg-[var(--ant-color-fill)]': activeId === request.id
+          'bg-[var(--ant-color-fill)]': activeId === request.id,
         }"
         @click="emit('select', request)"
       >
@@ -104,11 +109,20 @@ async function handleLoadMore() {
         />
         <div class="flex-1 min-w-0 overflow-hidden">
           <div class="flex justify-between gap-2 items-center">
-            <span class="flex-1 text-sm font-medium truncate text-[var(--ant-color-text)]">
+            <span
+              class="flex-1 text-sm font-medium truncate text-[var(--ant-color-text)]"
+            >
               {{ peer.nickname }}
             </span>
-            <span class="flex-shrink-0 text-12px text-[var(--ant-color-text-secondary)]">
-              {{ getDictLabel(DICT_TYPE.IM_FRIEND_REQUEST_HANDLE_RESULT, request.handleResult) }}
+            <span
+              class="flex-shrink-0 text-12px text-[var(--ant-color-text-secondary)]"
+            >
+              {{
+                getDictLabel(
+                  DICT_TYPE.IM_FRIEND_REQUEST_HANDLE_RESULT,
+                  request.handleResult,
+                )
+              }}
             </span>
           </div>
           <div

@@ -7,7 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictObj } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { ElCard } from 'element-plus'
+import { ElCard } from 'element-plus';
 
 import {
   getGroupSizeDistribution,
@@ -83,7 +83,9 @@ async function loadData() {
       xAxis: { type: 'value', name: '消息数' },
       yAxis: {
         type: 'category',
-        data: sorted.map((item) => `${item.nickname || item.userId}(${item.userId})`),
+        data: sorted.map(
+          (item) => `${item.nickname || item.userId}(${item.userId})`,
+        ),
         axisLabel: { overflow: 'truncate', width: 110 },
       },
       series: [

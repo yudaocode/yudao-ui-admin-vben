@@ -1,59 +1,59 @@
 <script lang="ts" setup>
-import type { GroupMemberLite } from './group-member.vue'
+import type { GroupMemberLite } from './group-member.vue';
 
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-import { Button, message, Modal } from 'antdv-next'
+import { Button, message, Modal } from 'antdv-next';
 
-import { removeGroupMember } from '#/api/im/group/member'
+import { removeGroupMember } from '#/api/im/group/member';
 
-import { GroupMemberPickerPanel } from '../picker'
+import { GroupMemberPickerPanel } from '../picker';
 
-defineOptions({ name: 'ImGroupMemberRemoveDialog' })
+defineOptions({ name: 'ImGroupMemberRemoveDialog' });
 
 const emit = defineEmits<{
   /** 移出成功；父侧通常用来 reload 群数据 */
-  reload: []
-}>()
+  reload: [];
+}>();
 
-const visible = ref(false)
-const submitting = ref(false)
-const groupId = ref(0)
-const members = ref<GroupMemberLite[]>([])
-const hideIds = ref<number[]>([])
-const selectedIds = ref<number[]>([])
+const visible = ref(false);
+const submitting = ref(false);
+const groupId = ref(0);
+const members = ref<GroupMemberLite[]>([]);
+const hideIds = ref<number[]>([]);
+const selectedIds = ref<number[]>([]);
 
 defineExpose({
   /** 打开移除群成员弹窗：reset → 灌参 → visible=true */
   open(opts: {
-    groupId: number
+    groupId: number;
     /** 隐藏 userId：群主始终隐藏；管理员视角额外隐藏其它管理员 */
-    hideIds?: number[]
-    members: GroupMemberLite[]
+    hideIds?: number[];
+    members: GroupMemberLite[];
   }) {
-    groupId.value = opts.groupId
-    members.value = opts.members
-    hideIds.value = opts.hideIds ? [...opts.hideIds] : []
-    selectedIds.value = []
-    submitting.value = false
-    visible.value = true
-  }
-})
+    groupId.value = opts.groupId;
+    members.value = opts.members;
+    hideIds.value = opts.hideIds ? [...opts.hideIds] : [];
+    selectedIds.value = [];
+    submitting.value = false;
+    visible.value = true;
+  },
+});
 
 /** 一次性批量踢人：选中成员 userId 数组传给后端，比循环调 N 次接口省往返 */
 async function handleOk() {
   if (!groupId.value || selectedIds.value.length === 0) {
-    return
+    return;
   }
-  submitting.value = true
+  submitting.value = true;
   try {
-    const memberUserIds = [...selectedIds.value]
-    await removeGroupMember({ groupId: groupId.value, memberUserIds })
-    message.success(`已移除 ${memberUserIds.length} 位成员`)
-    emit('reload')
-    visible.value = false
+    const memberUserIds = [...selectedIds.value];
+    await removeGroupMember({ groupId: groupId.value, memberUserIds });
+    message.success(`已移除 ${memberUserIds.length} 位成员`);
+    emit('reload');
+    visible.value = false;
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
 }
 </script>

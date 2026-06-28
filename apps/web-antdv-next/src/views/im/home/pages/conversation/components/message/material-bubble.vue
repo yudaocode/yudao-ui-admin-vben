@@ -1,64 +1,69 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import type { MaterialMessage } from '#/views/im/utils/message';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { openSafeUrl } from '@vben/utils'
+import { computed, ref } from 'vue';
 
-import { Modal, Spin } from 'antdv-next'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { openSafeUrl } from '@vben/utils';
 
-import { getChannelMaterial } from '#/api/im/channel/material'
-import { useChannelStore } from '#/views/im/home/store/channelStore'
-import { useConversationStore } from '#/views/im/home/store/conversationStore'
-import { ImConversationType } from '#/views/im/utils/constants'
-import { type MaterialMessage, parseMessage } from '#/views/im/utils/message'
+import { Modal, Spin } from 'antdv-next';
+
+import { getChannelMaterial } from '#/api/im/channel/material';
+import { useChannelStore } from '#/views/im/home/store/channelStore';
+import { useConversationStore } from '#/views/im/home/store/conversationStore';
+import { ImConversationType } from '#/views/im/utils/constants';
+import { parseMessage } from '#/views/im/utils/message';
 
 const props = defineProps<{
-  content: string
-}>()
+  content: string;
+}>();
 
-const conversationStore = useConversationStore()
-const channelStore = useChannelStore()
+const conversationStore = useConversationStore();
+const channelStore = useChannelStore();
 
 /** 当前是否在公众号 / 频道会话里：决定走大卡片还是紧凑转发卡片 */
 const isChannelView = computed(
-  () => conversationStore.activeConversation?.type === ImConversationType.CHANNEL
-)
+  () =>
+    conversationStore.activeConversation?.type === ImConversationType.CHANNEL,
+);
 
 /** 反序列化 content JSON 为 payload 对象 */
 const payload = computed<MaterialMessage>(
-  () => parseMessage<MaterialMessage>(props.content) ?? {}
-)
+  () => parseMessage<MaterialMessage>(props.content) ?? {},
+);
 
 /** 来源频道；紧凑卡底部渲染头像 + 名称 */
 const sourceChannel = computed(() =>
-  payload.value.channelId ? channelStore.getChannel(payload.value.channelId) : undefined
-)
+  payload.value.channelId
+    ? channelStore.getChannel(payload.value.channelId)
+    : undefined,
+);
 
-const detailVisible = ref(false)
-const detailLoading = ref(false)
-const detailHtml = ref('')
+const detailVisible = ref(false);
+const detailLoading = ref(false);
+const detailHtml = ref('');
 
 // 点击行为：url 非空跳外链；为空则按 payload.materialId 拉富文本正文，全屏 dialog 渲染
 const onClick = async () => {
   if (payload.value.url) {
-    openSafeUrl(payload.value.url)
-    return
+    openSafeUrl(payload.value.url);
+    return;
   }
   if (!payload.value.materialId) {
-    return
+    return;
   }
-  detailVisible.value = true
-  detailLoading.value = true
-  detailHtml.value = ''
+  detailVisible.value = true;
+  detailLoading.value = true;
+  detailHtml.value = '';
   try {
-    const material = await getChannelMaterial(payload.value.materialId)
-    detailHtml.value = material?.content ?? ''
+    const material = await getChannelMaterial(payload.value.materialId);
+    detailHtml.value = material?.content ?? '';
   } catch (error) {
-    console.error('[Material] 拉取正文失败', error)
+    console.error('[Material] 拉取正文失败', error);
   } finally {
-    detailLoading.value = false
+    detailLoading.value = false;
   }
-}
+};
 </script>
 
 <template>
@@ -68,8 +73,14 @@ const onClick = async () => {
     class="material-card cursor-pointer w-full overflow-hidden rounded-lg bg-[var(--ant-color-bg-container)] border border-solid border-[var(--im-border-color-lighter)]"
     @click="onClick"
   >
-    <img v-if="payload.coverUrl" class="block w-full h-[200px] object-cover" :src="payload.coverUrl" />
-    <div class="px-3.5 py-3 text-15px font-600 leading-[1.4] text-[var(--ant-color-text)] line-clamp-2">
+    <img
+      v-if="payload.coverUrl"
+      class="block w-full h-[200px] object-cover"
+      :src="payload.coverUrl"
+    />
+    <div
+      class="px-3.5 py-3 text-15px font-600 leading-[1.4] text-[var(--ant-color-text)] line-clamp-2"
+    >
       {{ payload.title || '(无标题)' }}
     </div>
   </div>
@@ -82,7 +93,9 @@ const onClick = async () => {
   >
     <div class="flex gap-2.5 items-start">
       <div class="flex flex-1 flex-col gap-1.5 min-w-0">
-        <div class="text-15px font-600 leading-[1.4] text-[var(--ant-color-text)] line-clamp-2 break-all">
+        <div
+          class="text-15px font-600 leading-[1.4] text-[var(--ant-color-text)] line-clamp-2 break-all"
+        >
           {{ payload.title || '(无标题)' }}
         </div>
         <div
@@ -98,7 +111,9 @@ const onClick = async () => {
         :src="payload.coverUrl"
       />
     </div>
-    <div class="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-t-solid border-[var(--im-border-color-lighter)] text-12px text-[var(--ant-color-text-secondary)]">
+    <div
+      class="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-t-solid border-[var(--im-border-color-lighter)] text-12px text-[var(--ant-color-text-secondary)]"
+    >
       <img
         v-if="sourceChannel?.avatar"
         class="w-4 h-4 rounded-full object-cover flex-shrink-0"
@@ -119,8 +134,12 @@ const onClick = async () => {
     destroy-on-hidden
   >
     <Spin :spinning="detailLoading" :classes="{ root: 'w-full' }">
-      <div class="material-detail-body max-w-[720px] mx-auto px-5 pt-6 pb-20 min-h-[60vh]">
-        <div class="text-[22px] font-600 leading-[1.4] text-[var(--ant-color-text)] mb-5">
+      <div
+        class="material-detail-body max-w-[720px] mx-auto px-5 pt-6 pb-20 min-h-[60vh]"
+      >
+        <div
+          class="text-[22px] font-600 leading-[1.4] text-[var(--ant-color-text)] mb-5"
+        >
           {{ payload.title || '' }}
         </div>
         <div
@@ -145,7 +164,7 @@ const onClick = async () => {
   transition: box-shadow 0.15s ease;
 
   &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
   }
 }
 

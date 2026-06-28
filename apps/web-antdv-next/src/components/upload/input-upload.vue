@@ -20,9 +20,10 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: 'change', payload: number | string): void;
-  (e: 'update:value', payload: number | string): void;
-  (e: 'update:modelValue', payload: number | string): void;
+  (
+    e: 'change' | 'update:modelValue' | 'update:value',
+    payload: number | string,
+  ): void;
 }>();
 
 const modelValue = useVModel(props, 'modelValue', emits, {

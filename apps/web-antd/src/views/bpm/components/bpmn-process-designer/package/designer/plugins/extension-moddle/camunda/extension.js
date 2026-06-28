@@ -3,14 +3,11 @@ import { isFunction, isObject } from '@vben/utils';
 const WILDCARD = '*';
 
 function CamundaModdleExtension(eventBus) {
-  // eslint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
-  const self = this;
-
   eventBus.on('moddleCopy.canCopyProperty', (context) => {
     const parent = context.parent;
     const property = context.property;
 
-    return self.canCopyProperty(property, parent);
+    return this.canCopyProperty(property, parent);
   });
 }
 

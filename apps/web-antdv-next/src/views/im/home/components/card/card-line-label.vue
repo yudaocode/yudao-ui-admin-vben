@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { getCardLabelInfo } from '#/views/im/utils/message'
+import { getCardLabelInfo } from '#/views/im/utils/message';
 
-defineOptions({ name: 'ImCardLineLabel' })
+defineOptions({ name: 'ImCardLineLabel' });
 
 const props = withDefaults(
   defineProps<{
     /** 名片数据；只读 targetType / name 派生标签 + 显示，结构性类型兼容 CardMessage / 引用预览的 partial */
-    card: null | undefined | { name?: string; targetType?: number; }
-    iconSize?: number
+    card: null | undefined | { name?: string; targetType?: number };
+    iconSize?: number;
   }>(),
-  { iconSize: 14 }
-)
+  { iconSize: 14 },
+);
 
 /** 标签 + 图标按 targetType 二分；兜底「个人名片」避免 null 时 UI 空白 */
-const labelInfo = computed(() => getCardLabelInfo(props.card))
+const labelInfo = computed(() => getCardLabelInfo(props.card));
 </script>
 
 <template>

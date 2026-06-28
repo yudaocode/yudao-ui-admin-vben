@@ -103,9 +103,12 @@ export function getSimpleUserList() {
 
 /** 按用户编号查询用户精简信息 */
 export function getSimpleUser(id: number | string) {
-  return requestClient.get<SystemUserApi.UserSimple>('/system/user/get-simple', {
-    params: { id },
-  });
+  return requestClient.get<SystemUserApi.UserSimple>(
+    '/system/user/get-simple',
+    {
+      params: { id },
+    },
+  );
 }
 
 /** 按昵称模糊搜索用户 */

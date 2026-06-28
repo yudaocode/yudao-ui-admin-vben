@@ -344,7 +344,7 @@ export type HandleResetFn = (
   values: Record<string, any>,
 ) => Promise<void> | void;
 
-export type FieldMappingTime = [
+export type FieldMappingTimeItem = [
   string,
   [string, string],
   (
@@ -353,7 +353,9 @@ export type FieldMappingTime = [
     | null
     | string
   )?,
-][];
+];
+
+export type FieldMappingTime = FieldMappingTimeItem[];
 
 export type ArrayToStringFields = Array<
   | [string[], string?] // 嵌套数组格式，可选分隔符
@@ -477,6 +479,10 @@ export interface VbenFormProps<
   arrayToStringFields?: ArrayToStringFields;
 
   /**
+   * submitOnChange改变时防抖时间 | 默认300ms
+   */
+  changeDebouncedTime?: number;
+  /**
    * 表单字段映射
    */
   fieldMappingTime?: FieldMappingTime;
@@ -499,6 +505,7 @@ export interface VbenFormProps<
     values: Record<string, any>,
     fieldsChanged: string[],
   ) => void;
+
   /**
    * 重置按钮参数
    */

@@ -3,7 +3,13 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElForm, ElFormItem, ElMessage, ElRadio, ElRadioGroup } from 'element-plus'
+import {
+  ElForm,
+  ElFormItem,
+  ElMessage,
+  ElRadio,
+  ElRadioGroup,
+} from 'element-plus';
 
 import { sendManagerChannelMessage } from '#/api/im/manager/channel/message';
 import { ChannelSelect } from '#/views/im/manager/channel/list/components';
@@ -88,7 +94,11 @@ const [Modal, modalApi] = useVbenModal({
           <ElRadio value="users">指定用户</ElRadio>
         </ElRadioGroup>
       </ElFormItem>
-      <ElFormItem v-if="formData.receiverUserType === 'users'" label="接收用户" required>
+      <ElFormItem
+        v-if="formData.receiverUserType === 'users'"
+        label="接收用户"
+        required
+      >
         <UserSelect
           v-model="formData.receiverUserIds"
           multiple

@@ -9,34 +9,34 @@
 // 命名约定：显示名相关函数一律使用 displayName，与 friend.displayName / member.displayUserName 字段对齐
 // ====================================================================
 
-import type { Conversation, Friend, Group, User } from '../home/types'
+import type { Conversation, Friend, Group, User } from '../home/types';
+import type { MentionCandidate } from './message';
 
-import { CommonStatusEnum } from '@vben/constants'
-import { useUserStore } from '@vben/stores'
+import { CommonStatusEnum } from '@vben/constants';
+import { useUserStore } from '@vben/stores';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { useConversationStore } from '../home/store/conversationStore'
-import { useFriendStore } from '../home/store/friendStore'
-import { useGroupStore } from '../home/store/groupStore'
-import { useImUiStore } from '../home/store/uiStore'
+import { useConversationStore } from '../home/store/conversationStore';
+import { useFriendStore } from '../home/store/friendStore';
+import { useGroupStore } from '../home/store/groupStore';
+import { useImUiStore } from '../home/store/uiStore';
 import {
   IM_AT_ALL_NICKNAME,
   IM_AT_ALL_USER_ID,
   ImConversationType,
-  ImFriendAddSource
-} from './constants'
-import { type MentionCandidate } from './message'
+  ImFriendAddSource,
+} from './constants';
 
 const SystemUserSexEnum = {
   FEMALE: 2,
   MALE: 1,
-  UNKNOWN: 0
-} as const
+  UNKNOWN: 0,
+} as const;
 
 // 候选缺失场景的稳定空数组；让 textMentions computed 在非 TEXT / 非群聊 / 无 @ 时返回同一引用，
 // MessageBubble 的 textSegments 才不会跟着无谓重算
-const EMPTY_MENTIONS: MentionCandidate[] = []
+const EMPTY_MENTIONS: MentionCandidate[] = [];
 
 /**
  * 是否历史退群群：joinStatus 为 DISABLE（已退群 / 被移除）
@@ -44,7 +44,7 @@ const EMPTY_MENTIONS: MentionCandidate[] = []
  * /im/group/list 会带回历史退群群（供展示历史消息的群名 / 头像）；这类群应禁止发送、隐藏群操作入口、不可被转发 / 推荐选中
  */
 export function isGroupQuit(group?: Group | null): boolean {
-  return group?.joinStatus === CommonStatusEnum.DISABLE
+  return group?.joinStatus === CommonStatusEnum.DISABLE;
 }
 
 /**
@@ -52,8 +52,10 @@ export function isGroupQuit(group?: Group | null): boolean {
  *
  * displayName 是「我对这个人的私人称呼」属于我的数据，删好友（DISABLE）也保留；删了再加回来时备注自然延续，历史消息里仍以备注辨识
  */
-export function getFriendDisplayName(friend: Pick<Friend, 'displayName' | 'nickname'>): string {
-  return friend.displayName || friend.nickname
+export function getFriendDisplayName(
+  friend: Pick<Friend, 'displayName' | 'nickname'>,
+): string {
+  return friend.displayName || friend.nickname;
 }
 
 /**
@@ -63,14 +65,16 @@ export function getFriendDisplayName(friend: Pick<Friend, 'displayName' | 'nickn
  */
 export function getMemberDisplayName(
   member: { displayUserName?: string; nickname: string },
-  friend?: null | Pick<Friend, 'displayName'>
+  friend?: null | Pick<Friend, 'displayName'>,
 ): string {
-  return friend?.displayName || member.displayUserName || member.nickname
+  return friend?.displayName || member.displayUserName || member.nickname;
 }
 
 /** 群显示名：当前用户对该群的备注（groupRemark） > 群名（name） */
-export function getGroupDisplayName(group: Pick<Group, 'groupRemark' | 'name'>): string {
-  return group.groupRemark || group.name
+export function getGroupDisplayName(
+  group: Pick<Group, 'groupRemark' | 'name'>,
+): string {
+  return group.groupRemark || group.name;
 }
 
 /**
@@ -85,30 +89,30 @@ export function getGroupDisplayName(group: Pick<Group, 'groupRemark' | 'name'>):
 export function tryGetSenderDisplayName(
   senderId: number,
   conversationType: number,
-  conversationTargetId: number
+  conversationTargetId: number,
 ): string | undefined {
   if (conversationType === ImConversationType.GROUP) {
-    const group = useGroupStore().getGroup(conversationTargetId)
-    const member = group?.members?.find((m) => m.userId === senderId)
+    const group = useGroupStore().getGroup(conversationTargetId);
+    const member = group?.members?.find((m) => m.userId === senderId);
     if (member) {
-      const friend = useFriendStore().getFriend(senderId)
-      return getMemberDisplayName(member, friend)
+      const friend = useFriendStore().getFriend(senderId);
+      return getMemberDisplayName(member, friend);
     }
     if (senderId === getCurrentUserId()) {
-      return useUserStore().userInfo?.nickname || undefined
+      return useUserStore().userInfo?.nickname || undefined;
     }
-    return undefined
+    return undefined;
   }
 
   // PRIVATE / 未知会话类型：self 走 userStore，对方走 friend
   if (senderId === getCurrentUserId()) {
-    return useUserStore().userInfo?.nickname || undefined
+    return useUserStore().userInfo?.nickname || undefined;
   }
   if (conversationType === ImConversationType.PRIVATE) {
-    const friend = useFriendStore().getFriend(senderId)
-    return friend ? getFriendDisplayName(friend) : undefined
+    const friend = useFriendStore().getFriend(senderId);
+    return friend ? getFriendDisplayName(friend) : undefined;
   }
-  return undefined
+  return undefined;
 }
 
 /**
@@ -123,21 +127,25 @@ export function getSenderDisplayName(
   senderId: number,
   conversationType: number,
   conversationTargetId: number,
-  fallbackName?: string
+  fallbackName?: string,
 ): string {
-  const real = tryGetSenderDisplayName(senderId, conversationType, conversationTargetId)
+  const real = tryGetSenderDisplayName(
+    senderId,
+    conversationType,
+    conversationTargetId,
+  );
   if (real) {
-    return real
+    return real;
   }
   if (fallbackName) {
-    return fallbackName
+    return fallbackName;
   }
   // self 在 GROUP members 没加载时，至少用真实昵称兜底渲染（比 String(senderId) 友好）；兜底拉成员由 conversationStore 触发，回来后 try 版本能命中真名自然刷新
-  const userStore = useUserStore()
+  const userStore = useUserStore();
   if (senderId === getCurrentUserId()) {
-    return userStore.userInfo?.nickname || String(senderId)
+    return userStore.userInfo?.nickname || String(senderId);
   }
-  return String(senderId)
+  return String(senderId);
 }
 
 /**
@@ -152,36 +160,36 @@ export function getSenderDisplayName(
 export function getSenderRealNickname(
   senderId: number,
   conversationType: number,
-  conversationTargetId: number
+  conversationTargetId: number,
 ): string {
-  const userStore = useUserStore()
-  const selfUserId = getCurrentUserId()
+  const userStore = useUserStore();
+  const selfUserId = getCurrentUserId();
 
   // 群聊先走 member.nickname（self 也是 member），异常时再走 self / senderId 兜底
   if (conversationType === ImConversationType.GROUP) {
-    const group = useGroupStore().getGroup(conversationTargetId)
-    const member = group?.members?.find((m) => m.userId === senderId)
+    const group = useGroupStore().getGroup(conversationTargetId);
+    const member = group?.members?.find((m) => m.userId === senderId);
     if (member?.nickname) {
-      return member.nickname
+      return member.nickname;
     }
     if (senderId === selfUserId) {
-      return userStore.userInfo?.nickname || String(senderId)
+      return userStore.userInfo?.nickname || String(senderId);
     }
-    return String(senderId)
+    return String(senderId);
   }
 
   if (conversationType === ImConversationType.PRIVATE) {
     if (senderId === selfUserId) {
-      return userStore.userInfo?.nickname || String(senderId)
+      return userStore.userInfo?.nickname || String(senderId);
     }
-    const friend = useFriendStore().getFriend(senderId)
-    return friend?.nickname || String(senderId)
+    const friend = useFriendStore().getFriend(senderId);
+    return friend?.nickname || String(senderId);
   }
 
   if (senderId === selfUserId) {
-    return userStore.userInfo?.nickname || String(senderId)
+    return userStore.userInfo?.nickname || String(senderId);
   }
-  return String(senderId)
+  return String(senderId);
 }
 
 /**
@@ -195,20 +203,20 @@ export function getSenderRealNickname(
 export function getSenderAvatar(
   senderId: number,
   conversationType: number,
-  conversationTargetId: number
+  conversationTargetId: number,
 ): string {
-  const userStore = useUserStore()
+  const userStore = useUserStore();
   if (senderId === getCurrentUserId()) {
-    return userStore.userInfo?.avatar || ''
+    return userStore.userInfo?.avatar || '';
   }
   if (conversationType === ImConversationType.GROUP) {
-    const group = useGroupStore().getGroup(conversationTargetId)
-    const member = group?.members?.find((m) => m.userId === senderId)
+    const group = useGroupStore().getGroup(conversationTargetId);
+    const member = group?.members?.find((m) => m.userId === senderId);
     if (member?.avatar) {
-      return member.avatar
+      return member.avatar;
     }
   }
-  return useFriendStore().getFriend(senderId)?.avatar || ''
+  return useFriendStore().getFriend(senderId)?.avatar || '';
 }
 
 /**
@@ -219,63 +227,68 @@ export function getSenderAvatar(
  */
 export function getMentionCandidates(
   atUserIds: number[] | undefined,
-  conversation: null | Pick<Conversation, 'targetId' | 'type'> | undefined
+  conversation: null | Pick<Conversation, 'targetId' | 'type'> | undefined,
 ): MentionCandidate[] {
   if (!atUserIds || atUserIds.length === 0) {
-    return EMPTY_MENTIONS
+    return EMPTY_MENTIONS;
   }
   if (!conversation || conversation.type !== ImConversationType.GROUP) {
-    return EMPTY_MENTIONS
+    return EMPTY_MENTIONS;
   }
   // 群成员预建 Map，避免每个 atUserId 走一次 array find（@全体成员场景下成员数 × atUserIds 是 N²）
-  const members = useGroupStore().getGroup(conversation.targetId)?.members || []
-  const memberById = new Map(members.map((m) => [m.userId, m]))
-  const friendStore = useFriendStore()
-  const candidates: MentionCandidate[] = []
-  const seen = new Set<string>()
+  const members =
+    useGroupStore().getGroup(conversation.targetId)?.members || [];
+  const memberById = new Map(members.map((m) => [m.userId, m]));
+  const friendStore = useFriendStore();
+  const candidates: MentionCandidate[] = [];
+  const seen = new Set<string>();
   for (const userId of atUserIds) {
     // @全体成员是虚拟伪成员，userId = -1 在 group.members 里查不到，注入字面量「所有人」候选
     if (userId === IM_AT_ALL_USER_ID) {
-      const key = `${IM_AT_ALL_USER_ID}#${IM_AT_ALL_NICKNAME}`
+      const key = `${IM_AT_ALL_USER_ID}#${IM_AT_ALL_NICKNAME}`;
       if (!seen.has(key)) {
-        seen.add(key)
+        seen.add(key);
         candidates.push({
           userId: IM_AT_ALL_USER_ID,
           name: IM_AT_ALL_NICKNAME,
-          displayName: IM_AT_ALL_NICKNAME
-        })
+          displayName: IM_AT_ALL_NICKNAME,
+        });
       }
-      continue
+      continue;
     }
-    const member = memberById.get(userId)
-    const friend = friendStore.getFriend(userId)
-    const nickname = (member?.nickname || friend?.nickname || '').trim()
+    const member = memberById.get(userId);
+    const friend = friendStore.getFriend(userId);
+    const nickname = (member?.nickname || friend?.nickname || '').trim();
     if (!nickname) {
-      continue
+      continue;
     }
-    for (const literal of [nickname, friend?.displayName, member?.displayUserName]) {
-      const trimmed = (literal || '').trim()
+    for (const literal of [
+      nickname,
+      friend?.displayName,
+      member?.displayUserName,
+    ]) {
+      const trimmed = (literal || '').trim();
       if (!trimmed) {
-        continue
+        continue;
       }
-      const key = `${userId}#${trimmed}`
+      const key = `${userId}#${trimmed}`;
       if (seen.has(key)) {
-        continue
+        continue;
       }
-      seen.add(key)
-      candidates.push({ userId, name: trimmed, displayName: nickname })
+      seen.add(key);
+      candidates.push({ userId, name: trimmed, displayName: nickname });
     }
   }
-  const nameCount = new Map<string, number>()
+  const nameCount = new Map<string, number>();
   for (const candidate of candidates) {
-    nameCount.set(candidate.name, (nameCount.get(candidate.name) ?? 0) + 1)
+    nameCount.set(candidate.name, (nameCount.get(candidate.name) ?? 0) + 1);
   }
   for (const candidate of candidates) {
     if ((nameCount.get(candidate.name) ?? 0) > 1) {
-      candidate.ambiguous = true
+      candidate.ambiguous = true;
     }
   }
-  return candidates
+  return candidates;
 }
 
 /**
@@ -288,80 +301,96 @@ export function getMentionCandidates(
 export function openMentionUserInfoCardAtEvent(
   userId: number,
   event: MouseEvent,
-  fallbackName?: string
+  fallbackName?: string,
 ): void {
   if (userId === IM_AT_ALL_USER_ID) {
-    return
+    return;
   }
-  const conversation = useConversationStore().activeConversation
-  const isGroup = conversation?.type === ImConversationType.GROUP
-  const group = isGroup && conversation ? useGroupStore().getGroup(conversation.targetId) : undefined
-  const member = group?.members?.find((m) => m.userId === userId)
-  const friend = useFriendStore().getFriend(userId)
+  const conversation = useConversationStore().activeConversation;
+  const isGroup = conversation?.type === ImConversationType.GROUP;
+  const group =
+    isGroup && conversation
+      ? useGroupStore().getGroup(conversation.targetId)
+      : undefined;
+  const member = group?.members?.find((m) => m.userId === userId);
+  const friend = useFriendStore().getFriend(userId);
   const user: User = {
     id: userId,
-    nickname: friend?.nickname || member?.nickname || fallbackName || String(userId),
-    avatar: getSenderAvatar(userId, conversation?.type ?? 0, conversation?.targetId ?? 0)
-  }
+    nickname:
+      friend?.nickname || member?.nickname || fallbackName || String(userId),
+    avatar: getSenderAvatar(
+      userId,
+      conversation?.type ?? 0,
+      conversation?.targetId ?? 0,
+    ),
+  };
   useImUiStore().openUserInfoCardAtEvent(
     user,
     event,
     isGroup ? ImFriendAddSource.GROUP : ImFriendAddSource.SEARCH,
-    isGroup ? group?.name || '' : ''
-  )
+    isGroup ? group?.name || '' : '',
+  );
 }
 
 /** 性别图标；UNKNOWN / null / undefined 一律不展示，对齐微信留白 */
 export function getGenderIcon(sex?: number): string {
   if (sex === SystemUserSexEnum.MALE) {
-    return 'mdi:human-male'
+    return 'mdi:human-male';
   }
   if (sex === SystemUserSexEnum.FEMALE) {
-    return 'mdi:human-female'
+    return 'mdi:human-female';
   }
-  return ''
+  return '';
 }
 
 /** 性别图标主题色：男蓝、女粉 */
 export function getGenderColor(sex?: number): string {
   if (sex === SystemUserSexEnum.MALE) {
-    return '#5b97f5'
+    return '#5b97f5';
   }
   if (sex === SystemUserSexEnum.FEMALE) {
-    return '#f56c92'
+    return '#f56c92';
   }
-  return ''
+  return '';
 }
 
 /** 头像色卡底色调色板（参考微信） */
-const AVATAR_BG_COLORS = ['#07C160', '#1A95FF', '#FA9D3B', '#9163E0', '#F76760', '#1ABC9C']
+const AVATAR_BG_COLORS = [
+  '#07C160',
+  '#1A95FF',
+  '#FA9D3B',
+  '#9163E0',
+  '#F76760',
+  '#1ABC9C',
+];
 
 /** 头像色卡文字：中文取首字、英文取前 2 字母大写、其他取首字大写、空名返回空串 */
 export function getAvatarText(name?: string): string {
-  const trimmed = name?.trim()
+  const trimmed = name?.trim();
   if (!trimmed) {
-    return ''
+    return '';
   }
-  const first = trimmed.charAt(0)
-  const code = first.codePointAt(0) ?? 0
-  if (code >= 0x4E_00 && code <= 0x9F_A5) {
-    return first
+  const first = trimmed.charAt(0);
+  const code = first.codePointAt(0) ?? 0;
+  // oxlint-disable-next-line unicorn/number-literal-case
+  if (code >= 0x4e_00 && code <= 0x9f_a5) {
+    return first;
   }
-  const letters = trimmed.match(/[A-Za-z]/g)
+  const letters = trimmed.match(/[A-Za-z]/g);
   if (!letters || letters.length === 0) {
-    return first.toUpperCase()
+    return first.toUpperCase();
   }
-  return letters.slice(0, 2).join('').toUpperCase()
+  return letters.slice(0, 2).join('').toUpperCase();
 }
 
 /** 头像色卡底色：按 name charCode 之和取调色板色，空名走默认灰 */
 export function getAvatarBgColor(name?: string): string {
   if (!name) {
-    return '#909399'
+    return '#909399';
   }
-  let hash = 0
+  let hash = 0;
   for (let i = 0; i < name.length; i++) {
-    hash += name.codePointAt(i) ?? 0
+    hash += name.codePointAt(i) ?? 0;
   }
-  return AVATAR_BG_COLORS[hash % AVATAR_BG_COLORS.length] || '#909399'
+  return AVATAR_BG_COLORS[hash % AVATAR_BG_COLORS.length] || '#909399';
 }

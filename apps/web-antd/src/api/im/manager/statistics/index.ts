@@ -42,7 +42,6 @@ export namespace ImManagerStatisticsApi {
   }
 }
 
-
 /** 获得 KPI 概览 */
 export function getStatisticsOverview() {
   return requestClient.get<ImManagerStatisticsApi.Overview>(

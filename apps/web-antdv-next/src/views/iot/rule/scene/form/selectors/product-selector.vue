@@ -17,8 +17,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value?: number): void;
-  (e: 'change', value?: number): void;
+  (e: 'change' | 'update:modelValue', value?: number): void;
 }>();
 
 const productLoading = ref(false); // 产品加载状态

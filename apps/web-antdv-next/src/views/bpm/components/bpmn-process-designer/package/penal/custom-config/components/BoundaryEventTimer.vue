@@ -263,7 +263,6 @@ watch(
               class="mr-2 mt-0.5"
               v-model:value="timeDuration"
               :min="1"
-              controls-position="right"
               @change="
                 () => {
                   updateTimeModdle();

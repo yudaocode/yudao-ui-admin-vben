@@ -129,13 +129,13 @@ const [Modal, modalApi] = useVbenModal({
       v-model="subTabsName"
       class="mx-4 mt-4"
     >
-      <ElTabPane name="machine" label="设备资源">
+      <ElTabPane name="machine" label="设备资源" lazy>
         <MachineList :form-type="formType" :workstation-id="formData.id" />
       </ElTabPane>
-      <ElTabPane name="tool" label="工装夹具">
+      <ElTabPane name="tool" label="工装夹具" lazy>
         <ToolList :form-type="formType" :workstation-id="formData.id" />
       </ElTabPane>
-      <ElTabPane name="worker" label="人力资源">
+      <ElTabPane name="worker" label="人力资源" lazy>
         <WorkerList :form-type="formType" :workstation-id="formData.id" />
       </ElTabPane>
     </ElTabs>

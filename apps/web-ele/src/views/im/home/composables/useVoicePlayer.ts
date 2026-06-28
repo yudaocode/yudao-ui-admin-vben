@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 /**
  * 语音播放全局互斥
@@ -12,15 +12,15 @@ import { ref } from 'vue'
  * key 由 MessageBubble 在 setup 里 Symbol() 生成实例级唯一身份；不同来源（主面板 / 历史抽屉 /
  * 合并详情）的同一条语音 url 在不同气泡里也是不同 key，避免一处卸载误停另一处仍可见的播放。
  */
-export type VoiceKey = symbol
+export type VoiceKey = symbol;
 
 interface VoiceTask {
-  key: VoiceKey
-  url: string
-  audio: HTMLAudioElement
+  key: VoiceKey;
+  url: string;
+  audio: HTMLAudioElement;
 }
 
-const currentTask = ref<null | VoiceTask>(null)
+const currentTask = ref<null | VoiceTask>(null);
 
 /**
  * 显式停止
@@ -29,19 +29,19 @@ const currentTask = ref<null | VoiceTask>(null)
  * - 传 key：仅当当前 task 是该 key 时才停（气泡卸载兜底用，避免误停别人）
  */
 function stop(key?: VoiceKey) {
-  const task = currentTask.value
+  const task = currentTask.value;
   if (!task) {
-    return
+    return;
   }
   if (key !== undefined && task.key !== key) {
-    return
+    return;
   }
-  task.audio.pause()
+  task.audio.pause();
   // removeAttribute('src') + load() 是 W3C 推荐的释放姿势：不会触发空 src 加载导致的 error 事件，
   // 也能让浏览器立即释放底层 decoder buffer，比 audio.src = '' 更干净
-  task.audio.removeAttribute('src')
-  task.audio.load()
-  currentTask.value = null
+  task.audio.removeAttribute('src');
+  task.audio.load();
+  currentTask.value = null;
 }
 
 /**
@@ -52,31 +52,31 @@ function stop(key?: VoiceKey) {
  */
 function play(key: VoiceKey, url: string) {
   if (!url) {
-    return
+    return;
   }
   if (currentTask.value?.key === key) {
-    stop(key)
-    return
+    stop(key);
+    return;
   }
-  stop()
-  const audio = new Audio(url)
-  const task: VoiceTask = { key, url, audio }
+  stop();
+  const audio = new Audio(url);
+  const task: VoiceTask = { key, url, audio };
   /** 播放结束 / 异常清栈；只清当前任务，避免被后续新任务的回调误清 */
   const finalize = () => {
     if (currentTask.value === task) {
-      currentTask.value = null
+      currentTask.value = null;
     }
-  }
-  audio.addEventListener('ended', finalize, { once: true })
-  audio.addEventListener('error', finalize, { once: true })
-  currentTask.value = task
-  audio.play().catch(finalize)
+  };
+  audio.addEventListener('ended', finalize, { once: true });
+  audio.addEventListener('error', finalize, { once: true });
+  currentTask.value = task;
+  audio.play().catch(finalize);
 }
 
 export function useVoicePlayer() {
   /** 指定 key 是否正在播放 */
   function isPlaying(key: VoiceKey): boolean {
-    return currentTask.value?.key === key
+    return currentTask.value?.key === key;
   }
-  return { isPlaying, play, stop }
+  return { isPlaying, play, stop };
 }

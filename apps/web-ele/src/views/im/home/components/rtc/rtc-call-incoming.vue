@@ -1,41 +1,41 @@
 <script lang="ts" setup>
-import type { ImRtcCallNotification } from '../../store/rtcStore'
+import type { ImRtcCallNotification } from '../../store/rtcStore';
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants'
-import { getDictLabel } from '@vben/hooks'
-import { IconifyIcon as Icon } from '@vben/icons'
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { useGroupCallMembers } from '../../composables/useGroupCallMembers'
-import { UserAvatar } from '../user'
+import { useGroupCallMembers } from '../../composables/useGroupCallMembers';
+import { UserAvatar } from '../user';
 
 const props = defineProps<{
-  accepting?: boolean
-  isGroup?: boolean
-  payload: ImRtcCallNotification | null
-  rejecting?: boolean
-}>()
+  accepting?: boolean;
+  isGroup?: boolean;
+  payload: ImRtcCallNotification | null;
+  rejecting?: boolean;
+}>();
 
-defineEmits<{ accept: []; reject: [] }>()
+defineEmits<{ accept: []; reject: [] }>();
 
 /** 来电提示文案；区分语音 / 视频 */
 const tipText = computed(() => {
-  if (!props.payload) return ''
-  return `邀请你${getDictLabel(DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE, props.payload.mediaType)}通话`
-})
+  if (!props.payload) return '';
+  return `邀请你${getDictLabel(DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE, props.payload.mediaType)}通话`;
+});
 
 /** 接听按钮禁用态 */
-const acceptDisabled = computed(() => !!props.accepting || !!props.rejecting)
+const acceptDisabled = computed(() => !!props.accepting || !!props.rejecting);
 
 /** 拒绝按钮禁用态 */
-const rejectDisabled = computed(() => !!props.rejecting || !!props.accepting)
+const rejectDisabled = computed(() => !!props.rejecting || !!props.accepting);
 
 // 群通话成员；缓存为空时用 INVITE 载荷里的主叫兜底，避免空白
 const callMembers = useGroupCallMembers(
   computed(() => (props.isGroup ? props.payload?.groupId : undefined)),
-  computed(() => props.payload?.inviterUserId)
-)
+  computed(() => props.payload?.inviterUserId),
+);
 </script>
 
 <template>
@@ -62,11 +62,15 @@ const callMembers = useGroupCallMembers(
     <div class="flex flex-col flex-1 gap-1 self-start min-w-0">
       <!-- 名 + 文案：群单行内联，私聊上下两行 -->
       <div v-if="isGroup" class="text-sm truncate">
-        <span class="font-medium">{{ payload?.inviterNickname || '对方' }}</span>
+        <span class="font-medium">{{
+          payload?.inviterNickname || '对方'
+        }}</span>
         <span class="ml-1 text-white/60">{{ tipText }}</span>
       </div>
       <template v-else>
-        <div class="text-sm font-medium truncate">{{ payload?.inviterNickname || '对方' }}</div>
+        <div class="text-sm font-medium truncate">
+          {{ payload?.inviterNickname || '对方' }}
+        </div>
         <div class="text-13px text-white/60 truncate">{{ tipText }}</div>
       </template>
 
@@ -83,7 +87,9 @@ const callMembers = useGroupCallMembers(
             radius="4px"
             :clickable="false"
             :class="{ 'opacity-50': member.pending }"
-            :title="member.pending ? `${member.nickname}（接入中）` : member.nickname"
+            :title="
+              member.pending ? `${member.nickname}（接入中）` : member.nickname
+            "
           />
         </div>
       </template>
@@ -97,7 +103,11 @@ const callMembers = useGroupCallMembers(
         :disabled="rejectDisabled"
         @click="$emit('reject')"
       >
-        <Icon icon="ant-design:phone-outlined" :size="18" class="rotate-[135deg]" />
+        <Icon
+          icon="ant-design:phone-outlined"
+          :size="18"
+          class="rotate-[135deg]"
+        />
       </button>
       <button
         class="flex flex-shrink-0 justify-center items-center w-10 h-10 text-white rounded-full transition-opacity bg-[#2ec27e] hover:opacity-90"

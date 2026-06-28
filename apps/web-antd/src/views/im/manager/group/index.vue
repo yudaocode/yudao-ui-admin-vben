@@ -120,7 +120,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Tooltip v-if="row.banned" :title="row.bannedReason">
           <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="row.banned" />
         </Tooltip>
-        <DictTag v-else :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="row.banned" />
+        <DictTag
+          v-else
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="row.banned"
+        />
       </template>
       <template #mutedAll="{ row }">
         <Tag v-if="row.mutedAll" color="error">已禁言</Tag>
@@ -148,7 +152,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: !row.banned,
               icon: ACTION_ICON.CLOSE,
               auth: ['im:manager:group:ban'],
-              onClick: row.banned ? handleUnban.bind(null, row) : handleBan.bind(null, row),
+              onClick: row.banned
+                ? handleUnban.bind(null, row)
+                : handleBan.bind(null, row),
             },
             {
               label: '解散',

@@ -1,38 +1,38 @@
 <script lang="ts" setup>
-import type { Friend, GroupLite, GroupMember } from '../../types'
-import type { GroupMemberLite } from './group-member.vue'
+import type { Friend, GroupLite, GroupMember } from '../../types';
+import type { GroupMemberLite } from './group-member.vue';
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-import { CommonStatusEnum } from '@vben/constants'
+import { CommonStatusEnum } from '@vben/constants';
 
-import { Button } from 'antdv-next'
+import { Button } from 'antdv-next';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { getMemberDisplayName, isGroupQuit } from '../../../utils/user'
-import { useFriendStore } from '../../store/friendStore'
-import { useGroupStore } from '../../store/groupStore'
-import GroupAvatar from './group-avatar.vue'
-import GroupMemberGrid from './group-member-grid.vue'
+import { getMemberDisplayName, isGroupQuit } from '../../../utils/user';
+import { useFriendStore } from '../../store/friendStore';
+import { useGroupStore } from '../../store/groupStore';
+import GroupAvatar from './group-avatar.vue';
+import GroupMemberGrid from './group-member-grid.vue';
 
-defineOptions({ name: 'ImGroupInfo' })
+defineOptions({ name: 'ImGroupInfo' });
 
 const props = defineProps<{
-  group: GroupLite
-}>()
+  group: GroupLite;
+}>();
 
 const emit = defineEmits<{
   /** stranger 点「加入群聊」；父级负责弹申请理由 + 调 applyJoinGroup */
-  apply: [group: GroupLite]
+  apply: [group: GroupLite];
   /** member 点「进入群聊」；父级负责切会话 + 关浮层 */
-  chat: [group: GroupLite]
-}>()
+  chat: [group: GroupLite];
+}>();
 
-const groupStore = useGroupStore()
-const friendStore = useFriendStore()
+const groupStore = useGroupStore();
+const friendStore = useFriendStore();
 
-const members = ref<GroupMemberLite[]>([])
+const members = ref<GroupMemberLite[]>([]);
 
 /**
  * 是否已加群：基于"自己确实在成员列表里"判断
@@ -42,65 +42,74 @@ const members = ref<GroupMemberLite[]>([])
  */
 const isMember = computed(() => {
   if (!props.group?.id) {
-    return false
+    return false;
   }
-  const cached = groupStore.getGroup(props.group.id)
+  const cached = groupStore.getGroup(props.group.id);
   if (!cached) {
-    return false
+    return false;
   }
   // 历史退群群：直接判 false，避免成员未加载时误显示「进入群聊」
   if (isGroupQuit(cached)) {
-    return false
+    return false;
   }
   if (cached.membersLoaded && cached.members) {
-    const myId = getCurrentUserId()
-    return cached.members.some((m) => m.userId === myId && m.status === CommonStatusEnum.ENABLE)
+    const myId = getCurrentUserId();
+    return cached.members.some(
+      (m) => m.userId === myId && m.status === CommonStatusEnum.ENABLE,
+    );
   }
-  return true
-})
+  return true;
+});
 /** 历史退群群：只读，动作区两个按钮都不渲染（既不「进入群聊」也不「加入群聊」） */
 const isQuitGroup = computed(() => {
-  const id = props.group?.id
-  return id != null && isGroupQuit(groupStore.getGroup(id))
-})
+  const id = props.group?.id;
+  return id !== null && isGroupQuit(groupStore.getGroup(id));
+});
 /** 是否未加群：有 id、非成员、且非历史退群群；只有真·陌生人才给「加入群聊」 */
-const isStranger = computed(() => !!props.group?.id && !isMember.value && !isQuitGroup.value)
+const isStranger = computed(
+  () => !!props.group?.id && !isMember.value && !isQuitGroup.value,
+);
 
 /** 成员数文案：member 优先用本地拉到的列表长度，stranger 用 props.group.memberCount 卡片快照 */
 const memberCountText = computed(() => {
   const count = isMember.value
-    ? props.group.memberCount || members.value.length
-    : props.group.memberCount
-  return count ? `${count} 位成员` : ''
-})
+    ? props.group.memberCount || members.value.length > 0
+    : props.group.memberCount;
+  return count ? `${count} 位成员` : '';
+});
 
 /** member 切群 / 首挂：拉成员；竞态用 group.id 比对丢弃陈旧响应避免上一条群成员错位 */
 watch(
   () => [props.group?.id, isMember.value] as const,
   async ([id, member]) => {
-    members.value = []
+    members.value = [];
     if (!id || !member) {
-      return
+      return;
     }
-    const list = await groupStore.fetchGroupMemberList(id, true)
+    const list = await groupStore.fetchGroupMemberList(id, true);
     if (props.group?.id !== id) {
-      return
+      return;
     }
-    members.value = list.map((m) => convertGroupMemberLite(m, friendStore.getFriend(m.userId)))
+    members.value = list.map((m) =>
+      convertGroupMemberLite(m, friendStore.getFriend(m.userId)),
+    );
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 /** 群成员 → 列表项 */
-function convertGroupMemberLite(member: GroupMember, friend: Friend | undefined): GroupMemberLite {
+function convertGroupMemberLite(
+  member: GroupMember,
+  friend: Friend | undefined,
+): GroupMemberLite {
   return {
     userId: member.userId,
     showName: getMemberDisplayName(member, friend),
     nickname: member.nickname,
     avatar: member.avatar,
     status: member.status,
-    role: member.role
-  }
+    role: member.role,
+  };
 }
 </script>
 
@@ -125,7 +134,10 @@ function convertGroupMemberLite(member: GroupMember, friend: Friend | undefined)
       >
         {{ group.showGroupName || group.name }}
       </div>
-      <div v-if="memberCountText" class="text-13px text-[var(--ant-color-text-secondary)]">
+      <div
+        v-if="memberCountText"
+        class="text-13px text-[var(--ant-color-text-secondary)]"
+      >
         {{ memberCountText }}
       </div>
 

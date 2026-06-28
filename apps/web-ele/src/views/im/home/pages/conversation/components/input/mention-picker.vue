@@ -1,41 +1,46 @@
 <script lang="ts" setup>
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import type { GroupMemberLite } from '../../../../components/group';
 
-import { CommonStatusEnum } from '@vben/constants'
-import { IconifyIcon as Icon } from '@vben/icons'
+import { computed, ref, useTemplateRef, watch } from 'vue';
 
-import { getCurrentUserId } from '#/views/im/utils/auth'
-import { IM_AT_ALL_NICKNAME, IM_AT_ALL_USER_ID } from '#/views/im/utils/constants'
+import { CommonStatusEnum } from '@vben/constants';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { GroupMember, type GroupMemberLite } from '../../../../components/group'
+import { getCurrentUserId } from '#/views/im/utils/auth';
+import {
+  IM_AT_ALL_NICKNAME,
+  IM_AT_ALL_USER_ID,
+} from '#/views/im/utils/constants';
 
-defineOptions({ name: 'ImMentionPicker' })
+import { GroupMember } from '../../../../components/group';
+
+defineOptions({ name: 'ImMentionPicker' });
 
 const props = withDefaults(
   defineProps<{
-    canAtAll?: boolean // 当前用户是否能 @ 全员（群主 / 管理员），父组件按角色算好传入
-    members: GroupMemberLite[] // 当前群的成员列表
+    canAtAll?: boolean; // 当前用户是否能 @ 全员（群主 / 管理员），父组件按角色算好传入
+    members: GroupMemberLite[]; // 当前群的成员列表
     // 浮层位置：x 横坐标 + top / bottom 二选一（bottom 锚定时 picker 下沿贴 @ 上方）
-    position?: { bottom?: number; top?: number; x: number; }
-    searchText?: string // @ 后输入的过滤文本
-    visible: boolean // 是否显示
+    position?: { bottom?: number; top?: number; x: number };
+    searchText?: string; // @ 后输入的过滤文本
+    visible: boolean; // 是否显示
   }>(),
   {
     searchText: '',
-    position: () => ({ x: 0, bottom: 0 })
-  }
-)
+    position: () => ({ x: 0, bottom: 0 }),
+  },
+);
 
 const emit = defineEmits<{
-  select: [member: GroupMemberLite]
-  'update:visible': [value: boolean]
-}>()
+  select: [member: GroupMemberLite];
+  'update:visible': [value: boolean];
+}>();
 
-const scrollRef = useTemplateRef<HTMLDivElement>('scrollRef')
-const activeIdx = ref(0)
+const scrollRef = useTemplateRef<HTMLDivElement>('scrollRef');
+const activeIdx = ref(0);
 
 /** 当前登录用户 id（成员列表过滤掉自己） */
-const selfUserId = computed(() => getCurrentUserId())
+const selfUserId = computed(() => getCurrentUserId());
 
 /**
  * 虚拟"所有人"项：群主 / 管理员（canAtAll=true）+ 关键字命中"所有人"前缀时存在
@@ -45,18 +50,18 @@ const selfUserId = computed(() => getCurrentUserId())
  */
 const allItem = computed<GroupMemberLite | null>(() => {
   if (!props.canAtAll) {
-    return null
+    return null;
   }
   if (!IM_AT_ALL_NICKNAME.startsWith(props.searchText)) {
-    return null
+    return null;
   }
   // @所有人 是个伪成员，nickname 给 IM_AT_ALL_NICKNAME 让头像 :name 行为对齐普通成员
   return {
     userId: IM_AT_ALL_USER_ID,
     showName: IM_AT_ALL_NICKNAME,
-    nickname: IM_AT_ALL_NICKNAME
-  }
-})
+    nickname: IM_AT_ALL_NICKNAME,
+  };
+});
 
 /** 真成员：过滤自己 / 退群 / 不匹配关键字；不截断数量，浮层 max-height + el-scrollbar 撑滚动 */
 const memberItems = computed<GroupMemberLite[]>(() =>
@@ -65,83 +70,89 @@ const memberItems = computed<GroupMemberLite[]>(() =>
       member.userId !== selfUserId.value &&
       member.status !== CommonStatusEnum.DISABLE &&
       !!member.showName &&
-      member.showName.startsWith(props.searchText)
-  )
-)
+      member.showName.startsWith(props.searchText),
+  ),
+);
 
 /** 键盘导航与 pickActive 走的扁平列表，allItem 在前、memberItems 在后 */
 const showMembers = computed<GroupMemberLite[]>(() => {
-  return allItem.value ? [allItem.value, ...memberItems.value] : memberItems.value
-})
+  return allItem.value
+    ? [allItem.value, ...memberItems.value]
+    : memberItems.value;
+});
 
 /** 候选列表变化（用户输入关键词在过滤）→ 重置高亮到首项 + 滚回顶 */
 watch(showMembers, (list) => {
-  activeIdx.value = list.length > 0 ? 0 : -1
-  scrollToTop()
-})
+  activeIdx.value = list.length > 0 ? 0 : -1;
+  scrollToTop();
+});
 
 /** 浮层重新打开 → 重置高亮 + 滚回顶（避免上次的中间状态残留） */
 watch(
   () => props.visible,
   (v) => {
     if (v) {
-      activeIdx.value = showMembers.value.length > 0 ? 0 : -1
-      scrollToTop()
+      activeIdx.value = showMembers.value.length > 0 ? 0 : -1;
+      scrollToTop();
     }
-  }
-)
+  },
+);
 
 /** el-scrollbar 没暴露 scrollTo，直接拿内部 wrap 调 scrollTop */
 function scrollToTop() {
-  const scrollWrap = scrollRef.value
+  const scrollWrap = scrollRef.value;
   if (scrollWrap) {
-    scrollWrap.scrollTop = 0
+    scrollWrap.scrollTop = 0;
   }
 }
 
 /** 键盘上下导航时把高亮项滚到可视区：超出底边下推、超出顶边上拉，否则不动 */
 function scrollToActive() {
-  const scrollWrap = scrollRef.value
+  const scrollWrap = scrollRef.value;
   if (!scrollWrap) {
-    return
+    return;
   }
-  const itemHeight = 40
-  const activeOffsetTop = activeIdx.value * itemHeight
-  if (activeOffsetTop + itemHeight > scrollWrap.scrollTop + scrollWrap.clientHeight) {
-    scrollWrap.scrollTop = activeOffsetTop + itemHeight - scrollWrap.clientHeight
+  const itemHeight = 40;
+  const activeOffsetTop = activeIdx.value * itemHeight;
+  if (
+    activeOffsetTop + itemHeight >
+    scrollWrap.scrollTop + scrollWrap.clientHeight
+  ) {
+    scrollWrap.scrollTop =
+      activeOffsetTop + itemHeight - scrollWrap.clientHeight;
   } else if (activeOffsetTop < scrollWrap.scrollTop) {
-    scrollWrap.scrollTop = activeOffsetTop
+    scrollWrap.scrollTop = activeOffsetTop;
   }
 }
 
 /** 选中一项：emit 给 MessageInput 落 token，同时关掉浮层 */
 function handleSelect(member: GroupMemberLite) {
-  emit('select', member)
-  emit('update:visible', false)
+  emit('select', member);
+  emit('update:visible', false);
 }
 
 // 暴露给父组件的键盘导航方法
 defineExpose({
   moveUp() {
     if (activeIdx.value > 0) {
-      activeIdx.value--
-      scrollToActive()
+      activeIdx.value--;
+      scrollToActive();
     }
   },
   moveDown() {
     if (activeIdx.value < showMembers.value.length - 1) {
-      activeIdx.value++
-      scrollToActive()
+      activeIdx.value++;
+      scrollToActive();
     }
   },
   pickActive() {
-    const member = showMembers.value[activeIdx.value]
+    const member = showMembers.value[activeIdx.value];
     if (activeIdx.value >= 0 && member) {
-      handleSelect(member)
+      handleSelect(member);
     }
   },
-  hasCandidates: () => showMembers.value.length > 0
-})
+  hasCandidates: () => showMembers.value.length > 0,
+});
 </script>
 
 <template>
@@ -155,9 +166,9 @@ defineExpose({
     v-show="visible && showMembers.length > 0"
     class="message-input__mention-picker !fixed z-100 w-50 rounded-md bg-[var(--ant-color-bg-container)] shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
     :style="{
-      left: `${position.x }px`,
-      top: position.top != null ? `${position.top }px` : 'auto',
-      bottom: position.bottom != null ? `${position.bottom }px` : 'auto'
+      left: `${position.x}px`,
+      top: position.top !== null ? `${position.top}px` : 'auto',
+      bottom: position.bottom !== null ? `${position.bottom}px` : 'auto',
     }"
   >
     <div ref="scrollRef" style="max-height: 300px; overflow-y: auto">
@@ -165,7 +176,9 @@ defineExpose({
       <div
         v-if="allItem"
         class="flex items-center gap-2.5 px-[5px] h-10 cursor-pointer transition-colors hover:bg-[var(--ant-color-fill)]"
-        :class="{ 'bg-[#e1eaf7] dark:bg-[var(--ant-color-primary-bg)]': activeIdx === 0 }"
+        :class="{
+          'bg-[#e1eaf7] dark:bg-[var(--ant-color-primary-bg)]': activeIdx === 0,
+        }"
         @click.stop="handleSelect(allItem)"
       >
         <div
@@ -173,7 +186,9 @@ defineExpose({
         >
           <Icon icon="ep:user-filled" :size="18" />
         </div>
-        <span class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]">
+        <span
+          class="overflow-hidden text-sm truncate text-[var(--ant-color-text)]"
+        >
           {{ allItem.showName }}
         </span>
       </div>
@@ -201,7 +216,7 @@ defineExpose({
     <!-- 三角指针：picker 在 @ 下方（position.top 锚定）→ 箭头朝上贴顶；picker 在 @ 上方（position.bottom 锚定）→ 箭头朝下贴底 -->
     <div
       class="absolute left-4 w-3 h-3 rotate-45 bg-[var(--ant-color-bg-container)]"
-      :class="position.top != null ? '-top-1.5' : '-bottom-1.5'"
+      :class="position.top !== null ? '-top-1.5' : '-bottom-1.5'"
     ></div>
   </div>
 </template>

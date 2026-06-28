@@ -1,78 +1,80 @@
 <script lang="ts" setup>
-import type { ImManagerChannelApi } from '#/api/im/manager/channel'
+import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui'
+import { useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
 
-import { useVbenForm } from '#/adapter/form'
+import { useVbenForm } from '#/adapter/form';
 import {
   createManagerChannel,
   getManagerChannel,
-  updateManagerChannel
-} from '#/api/im/manager/channel'
-import { $t } from '#/locales'
+  updateManagerChannel,
+} from '#/api/im/manager/channel';
+import { $t } from '#/locales';
 
-import { useFormSchema } from '../data'
+import { useFormSchema } from '../data';
 
-const emit = defineEmits(['success'])
-const formData = ref<ImManagerChannelApi.Channel>()
+const emit = defineEmits(['success']);
+const formData = ref<ImManagerChannelApi.Channel>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['频道'])
-    : $t('ui.actionTitle.create', ['频道'])
-})
+    : $t('ui.actionTitle.create', ['频道']);
+});
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
-      class: 'w-full'
+      class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 100
+    labelWidth: 100,
   },
   layout: 'horizontal',
   schema: useFormSchema(),
-  showDefaultActions: false
-})
+  showDefaultActions: false,
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    const { valid } = await formApi.validate()
+    const { valid } = await formApi.validate();
     if (!valid) {
-      return
+      return;
     }
-    modalApi.lock()
-    const data = (await formApi.getValues()) as ImManagerChannelApi.Channel
+    modalApi.lock();
+    const data = (await formApi.getValues()) as ImManagerChannelApi.Channel;
     try {
-      await (formData.value?.id ? updateManagerChannel(data) : createManagerChannel(data))
-      await modalApi.close()
-      emit('success')
-      ElMessage.success($t('ui.actionMessage.operationSuccess'))
+      await (formData.value?.id
+        ? updateManagerChannel(data)
+        : createManagerChannel(data));
+      await modalApi.close();
+      emit('success');
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
-      modalApi.unlock()
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      formData.value = undefined
-      return
+      formData.value = undefined;
+      return;
     }
-    const data = modalApi.getData<ImManagerChannelApi.Channel>()
+    const data = modalApi.getData<ImManagerChannelApi.Channel>();
     if (!data || !data.id) {
-      return
+      return;
     }
-    modalApi.lock()
+    modalApi.lock();
     try {
-      formData.value = await getManagerChannel(data.id)
-      await formApi.setValues(formData.value)
+      formData.value = await getManagerChannel(data.id);
+      await formApi.setValues(formData.value);
     } finally {
-      modalApi.unlock()
+      modalApi.unlock();
     }
-  }
-})
+  },
+});
 </script>
 
 <template>

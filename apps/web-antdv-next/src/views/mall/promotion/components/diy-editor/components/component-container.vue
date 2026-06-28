@@ -7,7 +7,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button } from 'antdv-next';
 
-import { VerticalSpace } from '#/views/mall/promotion/components';
+import { VerticalButtonGroup } from '#/views/mall/promotion/components';
 
 import { components } from './mobile';
 
@@ -42,8 +42,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: 'move', direction: number): void;
-  (e: 'copy'): void;
-  (e: 'delete'): void;
+  (e: 'copy' | 'delete'): void;
 }>();
 
 type DiyComponentWithStyle = DiyComponent<any> & {
@@ -109,7 +108,7 @@ const handleDeleteComponent = () => {
         class="component-toolbar"
         v-if="showToolbar && component.name && active"
       >
-        <VerticalSpace size="small">
+        <VerticalButtonGroup size="small">
           <Button
             :disabled="!canMoveUp"
             type="primary"
@@ -164,7 +163,7 @@ const handleDeleteComponent = () => {
           >
             <IconifyIcon icon="lucide:trash-2" />
           </Button>
-        </VerticalSpace>
+        </VerticalButtonGroup>
       </div>
     </div>
   </div>

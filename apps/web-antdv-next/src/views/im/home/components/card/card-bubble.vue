@@ -1,31 +1,29 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import type { CardMessage, CardTarget } from '#/views/im/utils/message';
 
-import { isPrivateConversation } from '#/views/im/utils/constants'
-import {
-  type CardMessage,
-  type CardTarget,
-  getCardLabelInfo
-} from '#/views/im/utils/message'
+import { computed } from 'vue';
 
-import { UserAvatar } from '../user'
+import { isPrivateConversation } from '#/views/im/utils/constants';
+import { getCardLabelInfo } from '#/views/im/utils/message';
 
-defineOptions({ name: 'ImCardBubble' })
+import { UserAvatar } from '../user';
+
+defineOptions({ name: 'ImCardBubble' });
 
 const props = withDefaults(
   defineProps<{
     /** 名片数据；CardMessage（接收侧消息体）或 CardTarget（发送侧预览）共用结构 */
-    card: CardMessage | CardTarget
+    card: CardMessage | CardTarget;
     /** 是否显示 cursor: pointer；调用方负责绑 @click 监听 */
-    clickable?: boolean
+    clickable?: boolean;
   }>(),
-  { clickable: false }
-)
+  { clickable: false },
+);
 
 /** 是否用户名片：决定 UserAvatar 是否带 id 触发 UserInfoCard */
-const isUser = computed(() => isPrivateConversation(props.card.targetType))
+const isUser = computed(() => isPrivateConversation(props.card.targetType));
 /** 名片标签信息 */
-const labelInfo = computed(() => getCardLabelInfo(props.card))
+const labelInfo = computed(() => getCardLabelInfo(props.card));
 </script>
 
 <template>

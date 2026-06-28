@@ -8,7 +8,7 @@ import { computed, nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { isEmpty } from '@vben/utils';
 
-import { ElDrawer, ElImage, ElLoading, ElMessage } from 'element-plus'
+import { ElDrawer, ElImage, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -75,7 +75,9 @@ async function handleDelete(row: ImManagerFacePackItemApi.FacePackItem) {
   });
   try {
     await deleteManagerFacePackItem(row.id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name || row.id]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.name || row.id]),
+    );
     handleRefresh();
   } finally {
     loadingInstance.close();
@@ -148,7 +150,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     :title="title"
     destroy-on-close
     width="65%"
-    @after-open-change="handleOpenChange"
+    @opened="handleOpenChange(true)"
   >
     <ItemFormModal @success="handleRefresh" />
     <Grid table-title="表情列表">
@@ -202,7 +204,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['im:manager:face-pack-item:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name || row.id]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.name || row.id,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
             },

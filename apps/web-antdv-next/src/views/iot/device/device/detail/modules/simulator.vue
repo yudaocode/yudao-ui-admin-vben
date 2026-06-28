@@ -587,7 +587,7 @@ watch([activeTab, upstreamTab, downstreamTab], () => {
                       >
                         <template #bodyCell="{ column, record }">
                           <template v-if="column.key === 'dataType'">
-                            {{ record.dataType ?? '-' }}
+                            {{ record.event?.dataType ?? '-' }}
                           </template>
                           <template v-else-if="column.key === 'dataDefinition'">
                             <DataDefinition :data="record" />

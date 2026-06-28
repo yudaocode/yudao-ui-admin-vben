@@ -165,7 +165,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
-                row.status === TradeOrderStatusEnum.UNDELIVERED.status,
+                (row.status === TradeOrderStatusEnum.UNDELIVERED.status ||
+                  row.status === TradeOrderStatusEnum.DELIVERED.status),
               onClick: handleDelivery.bind(null, row),
             },
             {

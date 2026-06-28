@@ -157,7 +157,10 @@ export function useGroupRequestGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.IM_GROUP_REQUEST_HANDLE_RESULT, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.IM_GROUP_REQUEST_HANDLE_RESULT,
+          'number',
+        ),
         placeholder: '请选择处理结果',
       },
     },

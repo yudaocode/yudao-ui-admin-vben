@@ -1,40 +1,43 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants'
-import { getDictLabel } from '@vben/hooks'
-import { IconifyIcon as Icon } from '@vben/icons'
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { message, Popover } from 'antdv-next'
+import { message, Popover } from 'antdv-next';
 
-import { getActiveCall, joinCall } from '#/api/im/rtc'
-import { getCurrentUserId } from '#/views/im/utils/auth'
+import { getActiveCall, joinCall } from '#/api/im/rtc';
+import { getCurrentUserId } from '#/views/im/utils/auth';
 
-import { useGroupCallMembers } from '../../composables/useGroupCallMembers'
-import { useGroupStore } from '../../store/groupStore'
-import { useRtcStore } from '../../store/rtcStore'
-import { UserAvatar } from '../user'
+import { useGroupCallMembers } from '../../composables/useGroupCallMembers';
+import { useGroupStore } from '../../store/groupStore';
+import { useRtcStore } from '../../store/rtcStore';
+import { UserAvatar } from '../user';
 
-defineOptions({ name: 'ImRtcGroupCallBanner' })
+defineOptions({ name: 'ImRtcGroupCallBanner' });
 
 const props = defineProps<{
-  groupId: number
-}>()
+  groupId: number;
+}>();
 
-const rtcStore = useRtcStore()
-const groupStore = useGroupStore()
+const rtcStore = useRtcStore();
+const groupStore = useGroupStore();
 
-const popoverVisible = ref(false)
+const popoverVisible = ref(false);
 
 /** 当前群的活跃通话；rtcStore 维护，参与者加入 / 离开通知增删 joinedUserIds，通话结束移除 */
-const activeCall = computed(() => rtcStore.getGroupCall(props.groupId))
+const activeCall = computed(() => rtcStore.getGroupCall(props.groupId));
 
 /** 胶囊条文案；有成员（已加入 + 接入中）则带人数，初始 0 人时只显示媒体类型 */
 const pillText = computed(() => {
-  const media = getDictLabel(DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE, activeCall.value?.mediaType)
-  const count = memberList.value.length
-  return count > 0 ? `正在${media}通话（${count} 人）` : `正在${media}通话`
-})
+  const media = getDictLabel(
+    DICT_TYPE.IM_RTC_CALL_MEDIA_TYPE,
+    activeCall.value?.mediaType,
+  );
+  const count = memberList.value.length;
+  return count > 0 ? `正在${media}通话（${count} 人）` : `正在${media}通话`;
+});
 
 /**
  * 切到群 / 通话 room 变化时拉一次最新参与者列表；
@@ -46,104 +49,112 @@ watch(
     [
       props.groupId,
       activeCall.value?.room,
-      groupStore.isGroupActiveCallExpired(props.groupId)
+      groupStore.isGroupActiveCallExpired(props.groupId),
     ] as const,
   async ([groupId, room], oldValues) => {
     if (!groupId) {
-      return
+      return;
     }
 
     if (!activeCall.value) {
       if (!groupStore.isGroupActiveCallExpired(groupId)) {
-        return
+        return;
       }
       try {
-        const data = await getActiveCall(groupId)
+        const data = await getActiveCall(groupId);
         if (data) {
-          rtcStore.setGroupCall(data, true)
+          rtcStore.setGroupCall(data, true);
         } else {
-          rtcStore.removeGroupCall(groupId)
+          rtcStore.removeGroupCall(groupId);
         }
       } catch (error) {
-        console.warn('[GroupCallBanner] getActiveCall 失败', { groupId }, error)
+        console.warn(
+          '[GroupCallBanner] getActiveCall 失败',
+          { groupId },
+          error,
+        );
       }
-      return
+      return;
     }
 
     // 决策是否需要拉取：补齐本地已有通话；没有本地通话时按群缓存过期状态懒探测一次
-    const groupChanged = !oldValues || oldValues[0] !== groupId
-    const roomChanged = oldValues && oldValues[1] !== room
-    const participantsLoaded = (activeCall.value?.joinedUserIds?.length ?? 0) > 1
-    const activeCallExpired = groupStore.isGroupActiveCallExpired(groupId)
+    const groupChanged = !oldValues || oldValues[0] !== groupId;
+    const roomChanged = oldValues && oldValues[1] !== room;
+    const participantsLoaded =
+      (activeCall.value?.joinedUserIds?.length ?? 0) > 1;
+    const activeCallExpired = groupStore.isGroupActiveCallExpired(groupId);
     if (
       !activeCallExpired &&
       (rtcStore.isGroupCallParticipantsLoaded(groupId, room) ||
         (!groupChanged && !roomChanged && participantsLoaded))
     ) {
-      return
+      return;
     }
 
     // 拉最新参与者写回 store；接口返回空 → 该群已无活跃通话，移除本地缓存
     try {
-      const data = await getActiveCall(groupId)
+      const data = await getActiveCall(groupId);
       if (data) {
-        rtcStore.setGroupCall(data, true)
+        rtcStore.setGroupCall(data, true);
       } else {
-        rtcStore.removeGroupCall(groupId)
+        rtcStore.removeGroupCall(groupId);
       }
     } catch (error) {
-      console.warn('[GroupCallBanner] getActiveCall 失败', { groupId }, error)
+      console.warn('[GroupCallBanner] getActiveCall 失败', { groupId }, error);
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 /** 在通话中的成员（已加入）+ 接入中的成员（已邀请未接通） */
-const memberList = useGroupCallMembers(computed(() => props.groupId))
+const memberList = useGroupCallMembers(computed(() => props.groupId));
 
 /** 本端是否正在该房间通话（处于 INVITING / RUNNING） */
 const isInThisCall = computed(
-  () => rtcStore.isActive && rtcStore.call?.room === activeCall.value?.room
-)
+  () => rtcStore.isActive && rtcStore.call?.room === activeCall.value?.room,
+);
 
 /**
  * 服务端是否记录我已加入；刷新后 LiveKit 连接已断但 webhook 还没把 status 标为 LEFT 时仍为 true；
  * 用于把按钮文案切到「重新加入」，但不 disable 按钮
  */
 const serverSaysJoined = computed(() => {
-  const myId = getCurrentUserId()
-  return activeCall.value?.joinedUserIds?.includes(myId) ?? false
-})
+  const myId = getCurrentUserId();
+  return activeCall.value?.joinedUserIds?.includes(myId) ?? false;
+});
 
 /** 加入按钮禁用：仅在本端实际持有 LiveKit 连接时禁用 */
-const joinDisabled = computed(() => isInThisCall.value)
+const joinDisabled = computed(() => isInThisCall.value);
 
 /** 加入按钮文案；本端连着 → 已在通话中；服务端还残留我但本端断了 → 重新加入；其它 → 加入 */
 const joinLabel = computed(() => {
-  if (isInThisCall.value) return '已在通话中'
-  if (serverSaysJoined.value) return '重新加入'
-  return '加入'
-})
+  if (isInThisCall.value) return '已在通话中';
+  if (serverSaysJoined.value) return '重新加入';
+  return '加入';
+});
 
 /** 主动加入：调 invite 命中已有 call 拿 token；rtcStore 按 status 自动进 RUNNING */
 async function handleJoin() {
-  const call = activeCall.value
+  const call = activeCall.value;
   if (!call || joinDisabled.value) {
-    return
+    return;
   }
   if (rtcStore.isActive) {
-    message.warning('您正在通话中')
-    return
+    message.warning('您正在通话中');
+    return;
   }
-  popoverVisible.value = false
-  const data = await joinCall(call.room)
-  rtcStore.startInviting(data)
+  popoverVisible.value = false;
+  const data = await joinCall(call.room);
+  rtcStore.startInviting(data);
 }
 </script>
 
 <template>
   <!-- 仅当该群有活跃通话时显示；点击胶囊条展开 popover 看在通话成员 + 加入 -->
-  <div v-if="activeCall" class="flex-shrink-0 px-4 pb-2 bg-[var(--ant-color-fill-secondary)]">
+  <div
+    v-if="activeCall"
+    class="flex-shrink-0 px-4 pb-2 bg-[var(--ant-color-fill-secondary)]"
+  >
     <Popover
       v-model:open="popoverVisible"
       placement="bottomLeft"
@@ -180,7 +191,11 @@ async function handleJoin() {
               radius="6px"
               :clickable="false"
               :class="{ 'opacity-50': member.pending }"
-              :title="member.pending ? `${member.nickname}（接入中）` : member.nickname"
+              :title="
+                member.pending
+                  ? `${member.nickname}（接入中）`
+                  : member.nickname
+              "
             />
             <!-- 首次填充时房内可能暂时 0 人；加入后由 ParticipantConnected 事件追加 -->
             <div

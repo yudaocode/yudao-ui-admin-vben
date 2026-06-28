@@ -415,7 +415,7 @@ function showTime(item: MallKefuMessageApi.Message, index: number) {
             :rows="4"
             class="border-none p-2"
             placeholder="输入消息，Enter发送，Shift+Enter换行"
-            @keyup.enter="handleSendMessage"
+            @keydown.enter.exact.prevent="handleSendMessage"
             :input-style="{ boxShadow: 'none' }"
           />
         </div>

@@ -8,15 +8,14 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: null | string): void;
-  (e: 'input', v: null | string): void;
+  (e: 'input' | 'update:modelValue', v: null | string): void;
 }>();
 
 const content = computed({
-  get: () => props.modelValue,
-  set: (val: null | string) => {
-    emit('update:modelValue', val);
-    emit('input', val);
+  get: () => props.modelValue ?? '',
+  set: (val: string) => {
+    emit('update:modelValue', val || null);
+    emit('input', val || null);
   },
 });
 </script>
