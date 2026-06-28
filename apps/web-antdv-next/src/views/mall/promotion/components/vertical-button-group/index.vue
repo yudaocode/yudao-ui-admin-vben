@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { SpaceCompact } from 'antdv-next';
+import { Space, SpaceCompact } from 'antdv-next';
 
 /**
  * 垂直按钮组
  * Ant Design Vue 的按钮组，通过 Space 实现垂直布局
  */
-defineOptions({ name: 'VerticalSpace' });
+defineOptions({ name: 'VerticalButtonGroup' });
 </script>
 
 <template>

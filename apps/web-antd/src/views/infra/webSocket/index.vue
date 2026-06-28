@@ -228,7 +228,7 @@ onMounted(async () => {
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
         >
-          <Select.Option key="" value="" label="所有人">
+          <Select.Option key="all" value="all" label="所有人">
             <div class="flex items-center">
               <Avatar size="small" class="mr-2">全</Avatar>
               <span>所有人</span>

@@ -11,10 +11,10 @@ defineOptions({ name: 'ImManagerMaterialSelect' });
 
 const props = withDefaults(
   defineProps<{
-    allowClear?: boolean
-    channelId?: number
-    modelValue?: number
-    placeholder?: string
+    allowClear?: boolean;
+    channelId?: number;
+    modelValue?: number;
+    placeholder?: string;
   }>(),
   {
     allowClear: true,

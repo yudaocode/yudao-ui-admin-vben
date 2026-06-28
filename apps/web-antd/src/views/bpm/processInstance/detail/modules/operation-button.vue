@@ -355,7 +355,8 @@ async function initNextAssigneesFormField() {
             node.candidateStrategy) ||
         // 情况二：当前节点是审批人自选
         (isEmpty(node.candidateUsers) &&
-        BpmCandidateStrategyEnum.APPROVE_USER_SELECT === node.candidateStrategy)
+          BpmCandidateStrategyEnum.APPROVE_USER_SELECT ===
+            node.candidateStrategy)
       ) {
         nextAssigneesActivityNode.value.push(node);
       }
@@ -397,7 +398,10 @@ function validateNextAssignees() {
   }
   // 如果需要自选审批人，则校验每个节点是否都已配置审批人
   for (const item of nextAssigneesActivityNode.value) {
-    if (isEmpty(item.candidateUsers) && isEmpty(approveReasonForm.nextAssignees[item.id])) {
+    if (
+      isEmpty(item.candidateUsers) &&
+      isEmpty(approveReasonForm.nextAssignees[item.id])
+    ) {
       message.warning('下一个节点的审批人不能为空!');
       return false;
     }
@@ -791,9 +795,7 @@ const imagePreviewUrl = ref('');
 
 /** 判断文件是否为图片类型 */
 function isImageUrl(url: string) {
-  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(
-    url.split(/[?#]/)[0] || '',
-  );
+  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url.split(/[?#]/)[0] || '');
 }
 
 /** 处理文件预览 */

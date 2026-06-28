@@ -16,8 +16,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value?: number): void;
-  (e: 'change', value?: number): void;
+  (e: 'change' | 'update:modelValue', value?: number): void;
 }>();
 
 const loading = ref(false);

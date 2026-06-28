@@ -19,7 +19,6 @@ export namespace ImFacePackApi {
   }
 }
 
-
 /** 拉取所有启用的系统表情包（含表情列表） */
 export function getFacePackList() {
   return requestClient.get<ImFacePackApi.FacePackUser[]>('/im/face-pack/list');

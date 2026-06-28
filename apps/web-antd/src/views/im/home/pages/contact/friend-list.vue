@@ -1,30 +1,33 @@
 <script lang="ts" setup>
-import type { FriendLite } from '../../types'
+import type { FriendLite } from '../../types';
 
-import { ref, toRef } from 'vue'
+import { ref, toRef } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { FriendItem } from '../../components/friend'
-import { useFriendBuckets } from '../../composables/useFriendBuckets'
+import { FriendItem } from '../../components/friend';
+import { useFriendBuckets } from '../../composables/useFriendBuckets';
 
-defineOptions({ name: 'ImContactFriendList' })
+defineOptions({ name: 'ImContactFriendList' });
 
 const props = defineProps<{
-  activeId?: number
-  friends: FriendLite[]
-  keyword: string
-}>()
+  activeId?: number;
+  friends: FriendLite[];
+  keyword: string;
+}>();
 
 const emit = defineEmits<{
-  chat: [friend: FriendLite]
-  delete: [friend: FriendLite]
-  select: [friend: FriendLite]
-}>()
+  chat: [friend: FriendLite];
+  delete: [friend: FriendLite];
+  select: [friend: FriendLite];
+}>();
 
-const expanded = ref(true)
+const expanded = ref(true);
 
-const { filtered, buckets } = useFriendBuckets(toRef(props, 'friends'), toRef(props, 'keyword'))
+const { filtered, buckets } = useFriendBuckets(
+  toRef(props, 'friends'),
+  toRef(props, 'keyword'),
+);
 </script>
 
 <template>
@@ -40,9 +43,14 @@ const { filtered, buckets } = useFriendBuckets(toRef(props, 'friends'), toRef(pr
       class="flex gap-2 items-center px-3.5 py-2.5 cursor-pointer select-none text-15px text-[var(--ant-color-text)] hover:bg-[var(--ant-color-fill-secondary)]"
       @click="expanded = !expanded"
     >
-      <Icon :icon="expanded ? 'ep:caret-bottom' : 'ep:caret-right'" :size="14" />
+      <Icon
+        :icon="expanded ? 'ep:caret-bottom' : 'ep:caret-right'"
+        :size="14"
+      />
       <span class="flex-1">好友</span>
-      <span class="text-sm text-[var(--ant-color-text-secondary)]">{{ filtered.length }}</span>
+      <span class="text-sm text-[var(--ant-color-text-secondary)]">{{
+        filtered.length
+      }}</span>
     </div>
     <div v-show="expanded">
       <template v-for="bucket in buckets" :key="bucket.letter">

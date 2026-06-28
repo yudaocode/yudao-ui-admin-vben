@@ -67,7 +67,8 @@ const [DetailModal, detailModalApi] = useVbenModal({
 /** 清空展开明细缓存 */
 function clearDetailMap() {
   for (const id of Object.keys(detailMap)) {
-    delete detailMap[Number(id)];
+    const key = Number(id);
+    delete detailMap[key];
   }
 }
 
@@ -105,8 +106,12 @@ async function handleExpandChange(
   if (!expanded) {
     return;
   }
-  delete detailMap[row.id!];
-  detailMap[row.id!] = await getCheckOrderDetailListByOrderId(row.id!);
+  const key = row.id;
+  if (key == null) {
+    return;
+  }
+  delete detailMap[key];
+  detailMap[key] = await getCheckOrderDetailListByOrderId(key);
 }
 
 /** 判断盘库单是否可修改 */

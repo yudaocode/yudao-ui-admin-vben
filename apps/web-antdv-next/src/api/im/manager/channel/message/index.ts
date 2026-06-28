@@ -24,7 +24,6 @@ export namespace ImManagerChannelMessageApi {
   }
 }
 
-
 /** 立即推送频道消息 */
 export function sendManagerChannelMessage(
   data: ImManagerChannelMessageApi.ChannelMessageSendReqVO,
@@ -41,8 +40,7 @@ export function deleteManagerChannelMessage(id: number) {
 
 /** 获得频道消息分页 */
 export function getManagerChannelMessagePage(params: PageParam) {
-  return requestClient.get<PageResult<ImManagerChannelMessageApi.ChannelMessage>>(
-    '/im/manager/channel-message/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<ImManagerChannelMessageApi.ChannelMessage>
+  >('/im/manager/channel-message/page', { params });
 }

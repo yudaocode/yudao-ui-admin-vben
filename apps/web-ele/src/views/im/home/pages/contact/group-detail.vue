@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import type { GroupLite } from '../../types'
+import type { GroupLite } from '../../types';
 
-import { GroupInfo } from '../../components/group'
+import { GroupInfo } from '../../components/group';
 
-defineOptions({ name: 'ImContactGroupDetail' })
+defineOptions({ name: 'ImContactGroupDetail' });
 
 defineProps<{
-  group: GroupLite
-}>()
+  group: GroupLite;
+}>();
 
 const emit = defineEmits<{
-  chat: [group: GroupLite]
-}>()
+  chat: [group: GroupLite];
+}>();
 </script>
 
 <template>

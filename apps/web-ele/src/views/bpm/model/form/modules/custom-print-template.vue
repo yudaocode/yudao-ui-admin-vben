@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
     <div class="mb-3">
       <ElAlert
         title="输入 @ 可选择插入流程选项和表单选项"
-        type="primary"
+        type="info"
         show-icon
       />
     </div>

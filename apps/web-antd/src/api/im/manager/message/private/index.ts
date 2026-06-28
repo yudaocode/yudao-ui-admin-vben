@@ -20,13 +20,11 @@ export namespace ImManagerPrivateMessageApi {
   }
 }
 
-
 /** 获得私聊消息分页 */
 export function getManagerPrivateMessagePage(params: PageParam) {
-  return requestClient.get<PageResult<ImManagerPrivateMessageApi.PrivateMessage>>(
-    '/im/manager/message/private/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<ImManagerPrivateMessageApi.PrivateMessage>
+  >('/im/manager/message/private/page', { params });
 }
 
 /** 获得私聊消息详情 */

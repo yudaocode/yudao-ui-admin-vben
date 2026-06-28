@@ -126,52 +126,56 @@ const resetTaskForm = () => {
     (ex: any) => ex.$type === `${prefix}:CandidateParam`,
   )?.value;
   if (candidateParamStr && candidateParamStr.length > 0) {
-    // eslint-disable-next-line unicorn/prefer-switch
-    if (userTaskForm.value.candidateStrategy === CandidateStrategy.EXPRESSION) {
-      // 特殊：流程表达式，只有一个 input 输入框
-      // @ts-expect-error: expression strategy stores a scalar in an array-shaped field
-      userTaskForm.value.candidateParam = [candidateParamStr];
-    } else if (
-      userTaskForm.value.candidateStrategy ===
-      CandidateStrategy.MULTI_LEVEL_DEPT_LEADER
-    ) {
-      // 特殊：多级不部门负责人，需要通过'|'分割
-      userTaskForm.value.candidateParam = candidateParamStr
-        .split('|')[0]
-        .split(',')
-        .map((item: any) => {
-          // 如果数字超出了最大安全整数范围，则将其作为字符串处理
-          const num = Number(item);
-          return num > Number.MAX_SAFE_INTEGER || num < -Number.MAX_SAFE_INTEGER
-            ? item
-            : num;
-        });
-      deptLevel.value = +candidateParamStr.split('|')[1];
-    } else if (
-      userTaskForm.value.candidateStrategy ===
-        CandidateStrategy.START_USER_DEPT_LEADER ||
-      userTaskForm.value.candidateStrategy ===
-        CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER
-    ) {
-      // @ts-expect-error: dynamic candidate param shape varies by strategy
-      userTaskForm.value.candidateParam = +candidateParamStr;
-      deptLevel.value = +candidateParamStr;
-    } else if (
-      userTaskForm.value.candidateStrategy ===
-      CandidateStrategy.FORM_DEPT_LEADER
-    ) {
-      userTaskForm.value.candidateParam = candidateParamStr.split('|')[0];
-      deptLevel.value = +candidateParamStr.split('|')[1];
-    } else {
-      userTaskForm.value.candidateParam = candidateParamStr
-        .split(',')
-        .map((item: any) => {
-          // 如果数字超出了最大安全整数范围，则将其作为字符串处理
-          const num = Number(item);
-          return num > Number.MAX_SAFE_INTEGER || num < -Number.MAX_SAFE_INTEGER
-            ? item
-            : num;
-        });
+    const candidateStrategy = userTaskForm.value.candidateStrategy as
+      | CandidateStrategy
+      | undefined;
+    switch (candidateStrategy) {
+      case CandidateStrategy.EXPRESSION: {
+        // 特殊：流程表达式，只有一个 input 输入框
+        // @ts-expect-error: expression strategy stores a scalar in an array-shaped field
+        userTaskForm.value.candidateParam = [candidateParamStr];
+        break;
+      }
+      case CandidateStrategy.FORM_DEPT_LEADER: {
+        userTaskForm.value.candidateParam = candidateParamStr.split('|')[0];
+        deptLevel.value = +candidateParamStr.split('|')[1];
+        break;
+      }
+      case CandidateStrategy.MULTI_LEVEL_DEPT_LEADER: {
+        // 特殊：多级不部门负责人，需要通过'|'分割
+        userTaskForm.value.candidateParam = candidateParamStr
+          .split('|')[0]
+          .split(',')
+          .map((item: any) => {
+            // 如果数字超出了最大安全整数范围，则将其作为字符串处理
+            const num = Number(item);
+            return num > Number.MAX_SAFE_INTEGER ||
+              num < -Number.MAX_SAFE_INTEGER
+              ? item
+              : num;
+          });
+        deptLevel.value = +candidateParamStr.split('|')[1];
+        break;
+      }
+      case CandidateStrategy.START_USER_DEPT_LEADER:
+      case CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER: {
+        // @ts-expect-error: dynamic candidate param shape varies by strategy
+        userTaskForm.value.candidateParam = +candidateParamStr;
+        deptLevel.value = +candidateParamStr;
+        break;
+      }
+      default: {
+        userTaskForm.value.candidateParam = candidateParamStr
+          .split(',')
+          .map((item: any) => {
+            // 如果数字超出了最大安全整数范围，则将其作为字符串处理
+            const num = Number(item);
+            return num > Number.MAX_SAFE_INTEGER ||
+              num < -Number.MAX_SAFE_INTEGER
+              ? item
+              : num;
+          });
+      }
     }
   } else {
     userTaskForm.value.candidateParam = [];
@@ -403,7 +407,6 @@ onBeforeUnmount(() => {
         :props="defaultProps"
         placeholder="加载中，请稍后"
         multiple
-        check-strictly
         show-checkbox
         @change="updateElementTask"
       />

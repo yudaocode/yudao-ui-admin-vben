@@ -1,109 +1,117 @@
 <script lang="ts" setup>
-import type { Message } from '#/views/im/home/types'
+import type { GroupMemberLite } from '../../../../components/group';
 
-import { computed, inject, ref, watch } from 'vue'
+import type { Message } from '#/views/im/home/types';
+import type {
+  CardMessage,
+  FaceMessage,
+  FileMessage,
+  MergeMessage,
+  TextMessage,
+} from '#/views/im/utils/message';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { useUserStore } from '@vben/stores'
+import { computed, inject, ref, watch } from 'vue';
 
-import { Button, Calendar, Input, Modal, Popover, Tag } from 'antdv-next'
-import dayjs from 'dayjs'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
-import { getGroupMessageList as apiGetGroupMessageList } from '#/api/im/message/group'
-import { getPrivateMessageList as apiGetPrivateMessageList } from '#/api/im/message/private'
-import { useMessagePuller } from '#/views/im/home/composables/useMessagePuller'
-import { useVoicePlayer } from '#/views/im/home/composables/useVoicePlayer'
+import { Button, Calendar, Input, Modal, Popover, Tag } from 'antdv-next';
+import dayjs from 'dayjs';
+
+import { getGroupMessageList as apiGetGroupMessageList } from '#/api/im/message/group';
+import { getPrivateMessageList as apiGetPrivateMessageList } from '#/api/im/message/private';
+import { useMessagePuller } from '#/views/im/home/composables/useMessagePuller';
+import { useVoicePlayer } from '#/views/im/home/composables/useVoicePlayer';
 import {
   ImContentType,
   ImConversationType,
   isFriendChatTip,
-  isGroupNotification
-} from '#/views/im/utils/constants'
+  isGroupNotification,
+} from '#/views/im/utils/constants';
 import {
   buildFacePreviewText,
   buildRecallTip,
   buildRecallTipSegments,
-  getConversationKey
-} from '#/views/im/utils/conversation'
-import { getClientConversationId } from '#/views/im/utils/db'
+  getConversationKey,
+} from '#/views/im/utils/conversation';
+import { getClientConversationId } from '#/views/im/utils/db';
 import {
+  getCardLabelInfo,
+  parseMessage,
   resolveFriendNotificationSegments,
   resolveFriendNotificationText,
-  resolveGroupNotificationSegments
-} from '#/views/im/utils/message'
-import {
-  type CardMessage,
-  type FaceMessage,
-  type FileMessage,
-  getCardLabelInfo,
-  type MergeMessage,
-  parseMessage,
-  type TextMessage
-} from '#/views/im/utils/message'
-import { formatHistoryTime } from '#/views/im/utils/time'
+  resolveGroupNotificationSegments,
+} from '#/views/im/utils/message';
+import { formatHistoryTime } from '#/views/im/utils/time';
 import {
   getMemberDisplayName,
   getSenderDisplayName,
-  getSenderRealNickname
-} from '#/views/im/utils/user'
+  getSenderRealNickname,
+} from '#/views/im/utils/user';
 
-import { GroupMember, type GroupMemberLite } from '../../../../components/group'
-import { UserAvatar } from '../../../../components/user'
-import { useConversationStore } from '../../../../store/conversationStore'
-import { useFriendStore } from '../../../../store/friendStore'
-import { useGroupStore } from '../../../../store/groupStore'
-import { useMessageStore } from '../../../../store/messageStore'
-import { IM_MERGE_DETAIL_DIALOG_KEY } from './forward/keys'
-import MessageBubble from './message-bubble.vue'
-import TipSegments from './tip-segments.vue'
+import { GroupMember } from '../../../../components/group';
+import { UserAvatar } from '../../../../components/user';
+import { useConversationStore } from '../../../../store/conversationStore';
+import { useFriendStore } from '../../../../store/friendStore';
+import { useGroupStore } from '../../../../store/groupStore';
+import { useMessageStore } from '../../../../store/messageStore';
+import { IM_MERGE_DETAIL_DIALOG_KEY } from './forward/keys';
+import MessageBubble from './message-bubble.vue';
+import TipSegments from './tip-segments.vue';
 
-defineOptions({ name: 'ImMessageHistory' })
+defineOptions({ name: 'ImMessageHistory' });
 
 const emit = defineEmits<{
   // 历史消息行上的"定位"按钮：通知父组件 MessagePanel 滚到对应消息位置 + 关掉自己
-  locate: [messageId: number]
-}>()
+  locate: [messageId: number];
+}>();
 
-const userStore = useUserStore()
-const conversationStore = useConversationStore()
-const messageStore = useMessageStore()
-const groupStore = useGroupStore()
-const friendStore = useFriendStore()
-const openMergeDetail = inject(IM_MERGE_DETAIL_DIALOG_KEY)
-const voicePlayer = useVoicePlayer()
-const { convertPrivateMessage, convertGroupMessage } = useMessagePuller()
+const userStore = useUserStore();
+const conversationStore = useConversationStore();
+const messageStore = useMessageStore();
+const groupStore = useGroupStore();
+const friendStore = useFriendStore();
+const openMergeDetail = inject(IM_MERGE_DETAIL_DIALOG_KEY);
+const voicePlayer = useVoicePlayer();
+const { convertPrivateMessage, convertGroupMessage } = useMessagePuller();
 
-const visible = ref(false)
+const visible = ref(false);
 
 defineExpose({
   /** 打开历史消息抽屉 */
   open() {
-    visible.value = true
-  }
-})
+    visible.value = true;
+  },
+});
 
-const conversation = computed(() => conversationStore.activeConversation)
-const isGroup = computed(() => conversation.value?.type === ImConversationType.GROUP)
+const conversation = computed(() => conversationStore.activeConversation);
+const isGroup = computed(
+  () => conversation.value?.type === ImConversationType.GROUP,
+);
 const allMessages = computed<Message[]>(() =>
   conversation.value
     ? messageStore.getMessages(
-        getClientConversationId(conversation.value.type, conversation.value.targetId)
+        getClientConversationId(
+          conversation.value.type,
+          conversation.value.targetId,
+        ),
       )
-    : []
-)
+    : [],
+);
 
 /** 单条消息的发送人显示名：渲染时按 conversation 上下文走 WeChat 优先级实时算 */
 function senderDisplayNameOf(message: Message): string {
   return getSenderDisplayName(
     message.senderId,
     conversation.value?.type ?? 0,
-    conversation.value?.targetId ?? 0
-  )
+    conversation.value?.targetId ?? 0,
+  );
 }
 
 /** 群广播事件 segments 的成员名解析器；按当前会话 targetId 走 getSenderDisplayName */
 function resolveGroupMemberName(message: Message): (userId: number) => string {
-  return (id: number) => getSenderDisplayName(id, ImConversationType.GROUP, message.targetId ?? 0)
+  return (id: number) =>
+    getSenderDisplayName(id, ImConversationType.GROUP, message.targetId ?? 0);
 }
 
 /** 单条消息的发送人真实昵称：给 UserAvatar 色卡 / alt 用，永远是 nickname 不掺备注 */
@@ -111,8 +119,8 @@ function senderRealNicknameOf(message: Message): string {
   return getSenderRealNickname(
     message.senderId,
     conversation.value?.type ?? 0,
-    conversation.value?.targetId ?? 0
-  )
+    conversation.value?.targetId ?? 0,
+  );
 }
 
 /** 单条撤回消息的 tip 文案：buildRecallTip 内部按 conversation 上下文实时算 sender 名 */
@@ -121,8 +129,8 @@ function recallTipOf(message: Message): string {
     message.senderId,
     message.selfSend,
     conversation.value?.type ?? 0,
-    conversation.value?.targetId ?? 0
-  )
+    conversation.value?.targetId ?? 0,
+  );
 }
 
 /** 单条撤回消息的 tip segments：sender 名段挂可点击 mention */
@@ -131,8 +139,8 @@ function recallTipSegmentsOf(message: Message) {
     message.senderId,
     message.selfSend,
     conversation.value?.type ?? 0,
-    conversation.value?.targetId ?? 0
-  )
+    conversation.value?.targetId ?? 0,
+  );
 }
 
 // ==================== 标题 ====================
@@ -144,54 +152,54 @@ function recallTipSegmentsOf(message: Message) {
  */
 const title = computed(() => {
   if (!conversation.value) {
-    return '聊天记录'
+    return '聊天记录';
   }
-  const name = conversation.value.name
+  const name = conversation.value.name;
   if (isGroup.value) {
-    return `"${name}"的聊天记录(${allMessages.value.length})`
+    return `"${name}"的聊天记录(${allMessages.value.length})`;
   }
-  return `与"${name}"的聊天记录`
-})
+  return `与"${name}"的聊天记录`;
+});
 
 // ==================== 搜索 + 筛选 chip ====================
 
 /** 当前激活的筛选条件 —— 单 chip 模式（同时只 1 个），点击 tab 落新值，× 清空 */
 type ActiveFilter =
-  | { day: string; kind: 'date'; } // YYYY-MM-DD
+  | { day: string; kind: 'date' } // YYYY-MM-DD
   | { kind: 'file' }
   | { kind: 'image' }
-  | { kind: 'member'; nickname: string; userId: number; }
-  | { kind: 'voice' }
+  | { kind: 'member'; nickname: string; userId: number }
+  | { kind: 'voice' };
 
-const keyword = ref('')
-const activeFilter = ref<ActiveFilter | null>(null)
+const keyword = ref('');
+const activeFilter = ref<ActiveFilter | null>(null);
 
 /** chip 文案：日期 / 群成员 多带值，其他直接 tab 名 */
 const filterChipLabel = computed(() => {
   if (!activeFilter.value) {
-    return ''
+    return '';
   }
   switch (activeFilter.value.kind) {
     case 'date': {
-      return `日期：${activeFilter.value.day}`
+      return `日期：${activeFilter.value.day}`;
     }
     case 'file': {
-      return '文件'
+      return '文件';
     }
     case 'image': {
-      return '图片'
+      return '图片';
     }
     case 'member': {
-      return `@${activeFilter.value.nickname}`
+      return `@${activeFilter.value.nickname}`;
     }
     case 'voice': {
-      return '语音'
+      return '语音';
     }
     default: {
-      return ''
+      return '';
     }
   }
-})
+});
 
 /** 点 tab 落筛选；同 kind 重复点击 → 当 toggle 关掉（避免迷惑） */
 function setFilter(filter: ActiveFilter) {
@@ -200,70 +208,70 @@ function setFilter(filter: ActiveFilter) {
     filter.kind !== 'date' &&
     filter.kind !== 'member'
   ) {
-    activeFilter.value = null
-    return
+    activeFilter.value = null;
+    return;
   }
-  activeFilter.value = filter
+  activeFilter.value = filter;
 }
 
 /** chip × 关闭 / 重置 */
 function clearFilter() {
-  activeFilter.value = null
+  activeFilter.value = null;
 }
 
 // ==================== 日期 popover ====================
 
-const datePopoverVisible = ref(false)
-const datePickerValue = ref(dayjs())
+const datePopoverVisible = ref(false);
+const datePickerValue = ref(dayjs());
 
 /** 日期 popover 确定：把 Date → YYYY-MM-DD 落到 activeFilter，关 popover */
 function onDateConfirm() {
   if (!datePickerValue.value) {
-    datePopoverVisible.value = false
-    return
+    datePopoverVisible.value = false;
+    return;
   }
-  const day = datePickerValue.value.format('YYYY-MM-DD')
-  activeFilter.value = { kind: 'date', day }
-  datePopoverVisible.value = false
+  const day = datePickerValue.value.format('YYYY-MM-DD');
+  activeFilter.value = { kind: 'date', day };
+  datePopoverVisible.value = false;
 }
 
 // ==================== 群成员 popover ====================
 
-const memberPopoverVisible = ref(false)
-const memberSearchKeyword = ref('')
+const memberPopoverVisible = ref(false);
+const memberSearchKeyword = ref('');
 
 /** 群成员 picker 列表：从 groupStore 拉 + 适配 GroupMemberLite + 关键字过滤 */
 const filteredMembersForPicker = computed<GroupMemberLite[]>(() => {
   if (!isGroup.value || !conversation.value) {
-    return []
+    return [];
   }
-  const group = groupStore.getGroup(conversation.value.targetId)
+  const group = groupStore.getGroup(conversation.value.targetId);
   const all = (group?.members || []).map((member) => {
-    const friend = friendStore.getFriend(member.userId)
+    const friend = friendStore.getFriend(member.userId);
     return {
       userId: member.userId,
       showName: getMemberDisplayName(member, friend),
       nickname: member.nickname,
       avatar: member.avatar,
-      status: member.status
-    }
-  })
-  const trimmedKeyword = memberSearchKeyword.value.trim()
+      status: member.status,
+    };
+  });
+  const trimmedKeyword = memberSearchKeyword.value.trim();
   if (!trimmedKeyword) {
-    return all
+    return all;
   }
-  return all.filter((member) => member.showName.includes(trimmedKeyword))
-})
+  return all.filter((member) => member.showName.includes(trimmedKeyword));
+});
 
 /** 群成员 picker 选择：落 activeFilter + 关 popover + 清搜索词 */
 function onMemberSelect(member: GroupMemberLite) {
   activeFilter.value = {
     kind: 'member',
     userId: member.userId,
-    nickname: member.showName
-  }
-  memberPopoverVisible.value = false
-  memberSearchKeyword.value = ''
+    nickname: member.showName,
+  };
+  memberPopoverVisible.value = false;
+  memberSearchKeyword.value = '';
 }
 
 // ==================== 列表过滤 ====================
@@ -271,26 +279,28 @@ function onMemberSelect(member: GroupMemberLite) {
 /** activeFilter 命中：默认无筛选时全部命中 */
 function matchesActiveFilter(message: Message): boolean {
   if (!activeFilter.value) {
-    return true
+    return true;
   }
   switch (activeFilter.value.kind) {
     case 'date': {
-      return dayjs(message.sendTime).format('YYYY-MM-DD') === activeFilter.value.day
+      return (
+        dayjs(message.sendTime).format('YYYY-MM-DD') === activeFilter.value.day
+      );
     }
     case 'file': {
-      return message.type === ImContentType.FILE
+      return message.type === ImContentType.FILE;
     }
     case 'image': {
-      return message.type === ImContentType.IMAGE
+      return message.type === ImContentType.IMAGE;
     }
     case 'member': {
-      return message.senderId === activeFilter.value.userId
+      return message.senderId === activeFilter.value.userId;
     }
     case 'voice': {
-      return message.type === ImContentType.VOICE
+      return message.type === ImContentType.VOICE;
     }
     default: {
-      return true
+      return true;
     }
   }
 }
@@ -301,19 +311,23 @@ function matchesActiveFilter(message: Message): boolean {
  * 关键字命中走 textSnippetOf —— 文本拿原文、媒体拿"[图片]"等占位词、文件拿文件名
  */
 const currentList = computed<Message[]>(() => {
-  const trimmedKeyword = keyword.value.trim()
-  let list = allMessages.value.filter((message) => matchesActiveFilter(message))
+  const trimmedKeyword = keyword.value.trim();
+  let list = allMessages.value.filter((message) =>
+    matchesActiveFilter(message),
+  );
   if (trimmedKeyword) {
-    list = list.filter((message) => textSnippetOf(message).includes(trimmedKeyword))
+    list = list.filter((message) =>
+      textSnippetOf(message).includes(trimmedKeyword),
+    );
   }
-  return list.toReversed()
-})
+  return list.toReversed();
+});
 
 // ==================== 加载更早消息 ====================
 
-const HISTORY_PAGE_SIZE = 50
-const loadingMore = ref(false)
-const hasMore = ref(true)
+const HISTORY_PAGE_SIZE = 50;
+const loadingMore = ref(false);
+const hasMore = ref(true);
 
 /**
  * 加载更早消息：拿当前最早一条 id 作 maxId（不含），调 list 接口拉一页 + convert + prepend
@@ -326,67 +340,73 @@ const hasMore = ref(true)
 async function loadEarlier() {
   // 重入 / 到顶 / 无会话 早退：避免重复请求或在 conversation 切换间隙触发
   if (loadingMore.value || !hasMore.value || !conversation.value) {
-    return
+    return;
   }
   // 仅 PRIVATE / GROUP 走分页接口；CHANNEL 单向广播、没有 list 接口，落到 else 会误调私聊接口（receiverId 传 channelId）
-  const requestedType = conversation.value.type
-  if (requestedType !== ImConversationType.PRIVATE && requestedType !== ImConversationType.GROUP) {
-    return
+  const requestedType = conversation.value.type;
+  if (
+    requestedType !== ImConversationType.PRIVATE &&
+    requestedType !== ImConversationType.GROUP
+  ) {
+    return;
   }
   // 快照当前会话主键：await 期间用户切走 / 关闭面板时丢弃响应，避免旧会话历史被 prepend 到新会话造成串号
-  const requestedKey = getConversationKey(conversation.value)
-  const requestedTargetId = conversation.value.targetId
-  const requestedIsGroup = requestedType === ImConversationType.GROUP
+  const requestedKey = getConversationKey(conversation.value);
+  const requestedTargetId = conversation.value.targetId;
+  const requestedIsGroup = requestedType === ImConversationType.GROUP;
 
-  loadingMore.value = true
+  loadingMore.value = true;
   try {
     // 算 maxId（不含，作为后端游标）：取当前会话本地缓存里最早一条服务端 id；
     // 本地乐观占位消息没有服务端 id，要剔除
     // 全是占位 / 列表为空时 reduce 不更新初值（POSITIVE_INFINITY），转成 undefined → 后端从最新拉
-    let earliestId = Number.POSITIVE_INFINITY
+    let earliestId = Number.POSITIVE_INFINITY;
     for (const message of allMessages.value) {
       if (message.id && message.id > 0) {
-        earliestId = Math.min(earliestId, message.id)
+        earliestId = Math.min(earliestId, message.id);
       }
     }
-    const maxId = Number.isFinite(earliestId) ? earliestId : undefined
+    const maxId = Number.isFinite(earliestId) ? earliestId : undefined;
 
     // 调后端 list 接口：私聊 / 群聊接口签名不同，分支调度；返回结果用 useMessagePuller
     // 暴露的 convert 函数转成本地 Message（与 puller 同一份字段映射，避免分歧）
-    let earlier: Message[] = []
-    let pageLength = 0
+    let earlier: Message[] = [];
+    let pageLength = 0;
     if (requestedIsGroup) {
       const list = await apiGetGroupMessageList({
         groupId: requestedTargetId,
         maxId,
-        limit: HISTORY_PAGE_SIZE
-      })
-      earlier = (list || []).map((message) => convertGroupMessage(message))
-      pageLength = list?.length ?? 0
+        limit: HISTORY_PAGE_SIZE,
+      });
+      earlier = (list || []).map((message) => convertGroupMessage(message));
+      pageLength = list?.length ?? 0;
     } else {
       const list = await apiGetPrivateMessageList({
         receiverId: requestedTargetId,
         maxId,
-        limit: HISTORY_PAGE_SIZE
-      })
-      earlier = (list || []).map((message) => convertPrivateMessage(message))
-      pageLength = list?.length ?? 0
+        limit: HISTORY_PAGE_SIZE,
+      });
+      earlier = (list || []).map((message) => convertPrivateMessage(message));
+      pageLength = list?.length ?? 0;
     }
 
     // await 期间 active 可能被外部置 null / 换主键：直接丢弃响应；不更新 hasMore（旧会话到顶不代表新会话到顶）也不 prepend
-    if (!conversation.value || getConversationKey(conversation.value) !== requestedKey) {
-      return
+    if (
+      !conversation.value ||
+      getConversationKey(conversation.value) !== requestedKey
+    ) {
+      return;
     }
 
     // 返回数量 < limit 视为到顶 —— 关闭"加载更早"按钮，避免后续点击空跑接口
     if (pageLength < HISTORY_PAGE_SIZE) {
-      hasMore.value = false
+      hasMore.value = false;
     }
     // 合并到 messageStore：prependMessageList 内部去重 + 升序合并 + 落 IndexedDB；
     // 主聊天面板的 messages 是同一份引用，老消息也会一起出现在主面板里（符合预期）
-    messageStore.prependMessageList(requestedType, requestedTargetId, earlier)
+    messageStore.prependMessageList(requestedType, requestedTargetId, earlier);
   } finally {
-    loadingMore.value = false
+    loadingMore.value = false;
   }
 }
 
@@ -394,91 +414,94 @@ async function loadEarlier() {
 
 /** 弹窗打开时把上次的 chip / 搜索 / 加载状态都清干净，避免上次的状态残留迷惑 */
 function onDialogOpen() {
-  activeFilter.value = null
-  keyword.value = ''
-  hasMore.value = true
-  datePopoverVisible.value = false
-  memberPopoverVisible.value = false
-  memberSearchKeyword.value = ''
-  datePickerValue.value = dayjs()
+  activeFilter.value = null;
+  keyword.value = '';
+  hasMore.value = true;
+  datePopoverVisible.value = false;
+  memberPopoverVisible.value = false;
+  memberSearchKeyword.value = '';
+  datePickerValue.value = dayjs();
   // 本地无消息时立即拉一次（maxId=undefined 从最新开始），避免新设备 / 缓存清后弹窗只显示"暂无消息"
   if (allMessages.value.length === 0 && hasMore.value && conversation.value) {
-    void loadEarlier()
+    void loadEarlier();
   }
 }
 
 /** 抽屉关闭时复位 + 停语音 */
 watch(visible, (value) => {
   if (!value) {
-    activeFilter.value = null
-    keyword.value = ''
-    voicePlayer.stop()
+    activeFilter.value = null;
+    keyword.value = '';
+    voicePlayer.stop();
   }
-})
+});
 
 /**
  * 抽屉开着时外部切了 active conversation：dialog 的 title / 列表 / isGroup 全部跟着新 conversation 走，
  * 这里把分页态一并重置；否则旧会话残留的 loadingMore=true / hasMore=false 会让新会话"加载更早"按钮失效
  */
 watch(conversation, () => {
-  loadingMore.value = false
-  hasMore.value = true
-})
+  loadingMore.value = false;
+  hasMore.value = true;
+});
 
 // ==================== helper ====================
 
 /** 取头像 url：自己用 userStore，群里查 groupStore 成员，私聊用 conversation.avatar */
 function getAvatar(message: Message): string {
   if (message.selfSend) {
-    return userStore.userInfo?.avatar || ''
+    return userStore.userInfo?.avatar || '';
   }
   if (!conversation.value) {
-    return ''
+    return '';
   }
   if (isGroup.value) {
-    const group = groupStore.getGroup(conversation.value.targetId)
-    return group?.members?.find((member) => member.userId === message.senderId)?.avatar || ''
+    const group = groupStore.getGroup(conversation.value.targetId);
+    return (
+      group?.members?.find((member) => member.userId === message.senderId)
+        ?.avatar || ''
+    );
   }
-  return conversation.value.avatar || ''
+  return conversation.value.avatar || '';
 }
 
 /** 关键字命中文本：文本类返回原文、文件返回文件名（利于按文件名搜）、其他返回占位词 */
 function textSnippetOf(message: Message): string {
   if (isFriendChatTip(message.type)) {
-    return resolveFriendNotificationText(message)
+    return resolveFriendNotificationText(message);
   }
   switch (message.type) {
     case ImContentType.CARD: {
-      const card = parseMessage<CardMessage>(message.content)
-      return `[${getCardLabelInfo(card).label}] ${card?.name ?? ''}`
+      const card = parseMessage<CardMessage>(message.content);
+      return `[${getCardLabelInfo(card).label}] ${card?.name ?? ''}`;
     }
     case ImContentType.FACE: {
-      return buildFacePreviewText(parseMessage<FaceMessage>(message.content))
+      return buildFacePreviewText(parseMessage<FaceMessage>(message.content));
     }
     case ImContentType.FILE: {
-      return parseMessage<FileMessage>(message.content)?.name ?? '[文件]'
+      return parseMessage<FileMessage>(message.content)?.name ?? '[文件]';
     }
     case ImContentType.IMAGE: {
-      return '[图片]'
+      return '[图片]';
     }
     case ImContentType.MERGE: {
-      const merge = parseMessage<MergeMessage>(message.content)
-      return merge?.title ?? '[聊天记录]'
+      const merge = parseMessage<MergeMessage>(message.content);
+      return merge?.title ?? '[聊天记录]';
     }
     case ImContentType.RECALL: {
-      return recallTipOf(message)
+      return recallTipOf(message);
     }
     case ImContentType.TEXT: {
-      return parseMessage<TextMessage>(message.content)?.content ?? ''
+      return parseMessage<TextMessage>(message.content)?.content ?? '';
     }
     case ImContentType.VIDEO: {
-      return '[视频]'
+      return '[视频]';
     }
     case ImContentType.VOICE: {
-      return '[语音]'
+      return '[语音]';
     }
     default: {
-      return ''
+      return '';
     }
   }
 }
@@ -489,10 +512,10 @@ function textSnippetOf(message: Message): string {
  */
 function locateMessage(messageId: number) {
   if (!messageId) {
-    return
+    return;
   }
-  emit('locate', messageId)
-  visible.value = false
+  emit('locate', messageId);
+  visible.value = false;
 }
 </script>
 
@@ -545,21 +568,27 @@ function locateMessage(messageId: number) {
       >
         <span
           class="im-message-history__tab cursor-pointer"
-          :class="{ 'im-message-history__tab--active': activeFilter?.kind === 'file' }"
+          :class="{
+            'im-message-history__tab--active': activeFilter?.kind === 'file',
+          }"
           @click="setFilter({ kind: 'file' })"
         >
           文件
         </span>
         <span
           class="im-message-history__tab cursor-pointer"
-          :class="{ 'im-message-history__tab--active': activeFilter?.kind === 'image' }"
+          :class="{
+            'im-message-history__tab--active': activeFilter?.kind === 'image',
+          }"
           @click="setFilter({ kind: 'image' })"
         >
           图片
         </span>
         <span
           class="im-message-history__tab cursor-pointer"
-          :class="{ 'im-message-history__tab--active': activeFilter?.kind === 'voice' }"
+          :class="{
+            'im-message-history__tab--active': activeFilter?.kind === 'voice',
+          }"
           @click="setFilter({ kind: 'voice' })"
         >
           语音
@@ -573,13 +602,17 @@ function locateMessage(messageId: number) {
         >
           <span
             class="im-message-history__tab cursor-pointer"
-            :class="{ 'im-message-history__tab--active': activeFilter?.kind === 'date' }"
+            :class="{
+              'im-message-history__tab--active': activeFilter?.kind === 'date',
+            }"
           >
             日期
           </span>
           <template #content>
             <div class="im-message-history__date-panel">
-              <div class="px-2 pt-1 pb-2 text-13px font-medium text-[var(--ant-color-text)]">
+              <div
+                class="px-2 pt-1 pb-2 text-13px font-medium text-[var(--ant-color-text)]"
+              >
                 选择发送日期
               </div>
               <Calendar
@@ -588,8 +621,12 @@ function locateMessage(messageId: number) {
                 class="im-message-history__calendar"
               />
               <div class="flex gap-2 justify-end px-2 pt-2">
-                <Button size="small" @click="datePopoverVisible = false">取消</Button>
-                <Button size="small" type="primary" @click="onDateConfirm">确定</Button>
+                <Button size="small" @click="datePopoverVisible = false">
+                  取消
+                </Button>
+                <Button size="small" type="primary" @click="onDateConfirm">
+                  确定
+                </Button>
               </div>
             </div>
           </template>
@@ -604,13 +641,20 @@ function locateMessage(messageId: number) {
         >
           <span
             class="im-message-history__tab cursor-pointer"
-            :class="{ 'im-message-history__tab--active': activeFilter?.kind === 'member' }"
+            :class="{
+              'im-message-history__tab--active':
+                activeFilter?.kind === 'member',
+            }"
           >
             群成员
           </span>
           <template #content>
             <div>
-              <Input v-model:value="memberSearchKeyword" placeholder="搜索群成员" size="small">
+              <Input
+                v-model:value="memberSearchKeyword"
+                placeholder="搜索群成员"
+                size="small"
+              >
                 <template #prefix>
                   <Icon icon="ant-design:search-outlined" />
                 </template>
@@ -639,14 +683,19 @@ function locateMessage(messageId: number) {
 
       <!-- 消息列表 -->
       <div class="flex-1 overflow-y-auto">
-        <template v-for="message in currentList" :key="message.id || message.clientMessageId">
+        <template
+          v-for="message in currentList"
+          :key="message.id || message.clientMessageId"
+        >
           <!-- 好友会话事件（FRIEND_ADD / FRIEND_DELETE）：居中灰色，不挂头像 / sender，
                跟主聊天面板里 MessageItem 的渲染语义对齐 -->
           <div
             v-if="isFriendChatTip(message.type)"
             class="px-4 py-3 text-12px text-center italic text-[var(--ant-color-text-secondary)] border-b border-b-solid border-[var(--ant-color-border-secondary)]"
           >
-            <TipSegments :segments="resolveFriendNotificationSegments(message)" />
+            <TipSegments
+              :segments="resolveFriendNotificationSegments(message)"
+            />
           </div>
 
           <!-- 群广播事件：跟好友事件同灰色样式，mention 段挂点击弹 UserInfoCard -->
@@ -655,7 +704,12 @@ function locateMessage(messageId: number) {
             class="px-4 py-3 text-12px text-center italic text-[var(--ant-color-text-secondary)] border-b border-b-solid border-[var(--ant-color-border-secondary)]"
           >
             <TipSegments
-              :segments="resolveGroupNotificationSegments(message, resolveGroupMemberName(message))"
+              :segments="
+                resolveGroupNotificationSegments(
+                  message,
+                  resolveGroupMemberName(message),
+                )
+              "
             />
           </div>
 
@@ -678,7 +732,9 @@ function locateMessage(messageId: number) {
                   {{ senderDisplayNameOf(message) }}
                 </span>
                 <span class="im-message-history__meta relative flex-shrink-0">
-                  <span class="block text-right">{{ formatHistoryTime(message.sendTime) }}</span>
+                  <span class="block text-right">{{
+                    formatHistoryTime(message.sendTime)
+                  }}</span>
                   <!-- 定位到聊天位置：absolute 浮在时间下方，行 hover 才显示，
                        不参与右侧栏 flex 排版（避免隐藏时占位让"我"和内容之间留空）；
                        仅有真实 id 的消息才支持（本地占位消息不行） -->
@@ -754,16 +810,18 @@ function locateMessage(messageId: number) {
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 4px;
   display: none;
-  white-space: nowrap;
+  margin-top: 4px;
   color: #1989fa;
+  white-space: nowrap;
   cursor: pointer;
   transition: color 0.15s;
 }
+
 .im-message-history__row:hover .im-message-history__locate {
   display: block;
 }
+
 .im-message-history__locate:hover {
   color: #146fc7;
 }
@@ -775,16 +833,18 @@ function locateMessage(messageId: number) {
   color: #1989fa;
   transition: color 0.15s;
 }
+
 .im-message-history__tab:hover {
   color: #2f81d4;
 }
+
 .im-message-history__tab--active::after {
-  content: '';
   position: absolute;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   height: 2px;
+  content: '';
   background: #1989fa;
   border-radius: 1px;
 }
@@ -793,15 +853,19 @@ function locateMessage(messageId: number) {
 .im-message-history__calendar :deep(.ant-picker-calendar-header) {
   padding: 4px 8px;
 }
+
 .im-message-history__calendar :deep(.ant-picker-content) {
   font-size: 12px;
 }
+
 .im-message-history__calendar :deep(.ant-picker-cell) {
   padding: 1px 0;
 }
-.im-message-history__calendar :deep(.ant-picker-cell .ant-picker-calendar-date) {
+
+.im-message-history__calendar
+  :deep(.ant-picker-cell .ant-picker-calendar-date) {
   height: 28px;
-  margin: 0 2px;
   padding: 2px 4px 0;
+  margin: 0 2px;
 }
 </style>

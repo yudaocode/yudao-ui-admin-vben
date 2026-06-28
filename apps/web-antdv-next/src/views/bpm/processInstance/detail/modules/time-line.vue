@@ -214,7 +214,7 @@ function shouldShowReasonAndAttachment(
     return false;
   }
   return (
-    (task.reason || task.attachments?.length > 0) &&
+    Boolean(task.reason || task.attachments?.length > 0) &&
     [BpmNodeTypeEnum.START_USER_NODE, BpmNodeTypeEnum.USER_TASK_NODE].includes(
       nodeType,
     )
@@ -222,11 +222,17 @@ function shouldShowReasonAndAttachment(
 }
 
 function getAttachmentName(url: string) {
-  return decodeURIComponent(url.slice(url.lastIndexOf('/') + 1));
+  const cleanUrl = url.split(/[?#]/)[0] || '';
+  const fileName = cleanUrl.slice(cleanUrl.lastIndexOf('/') + 1);
+  try {
+    return decodeURIComponent(fileName);
+  } catch {
+    return fileName;
+  }
 }
 
 function isImageAttachment(url: string) {
-  const ext = url.split('.').pop()?.toLowerCase();
+  const ext = url.split(/[?#]/)[0]?.split('.').pop()?.toLowerCase();
   return ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'webp'].includes(ext || '');
 }
 

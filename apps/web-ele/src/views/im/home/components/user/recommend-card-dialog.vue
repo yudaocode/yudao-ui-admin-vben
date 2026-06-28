@@ -1,65 +1,71 @@
 <script lang="ts" setup>
-import type { Conversation, FriendLite } from '../../types'
+import type { CardTarget } from '../../../utils/message';
+import type { Conversation, FriendLite } from '../../types';
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-import { IconifyIcon as Icon } from '@vben/icons'
+import { IconifyIcon as Icon } from '@vben/icons';
 
-import { ElButton, ElDialog, ElInput, ElMessage } from 'element-plus'
+import { ElButton, ElDialog, ElInput, ElMessage } from 'element-plus';
 
-import { createGroup } from '#/api/im/group'
-import { CardBubble } from '#/views/im/home/components/card'
+import { createGroup } from '#/api/im/group';
+import { CardBubble } from '#/views/im/home/components/card';
 
-import { ImContentType, ImConversationType, isGroupConversation } from '../../../utils/constants'
-import { getConversationKey } from '../../../utils/conversation'
-import { buildDefaultGroupName } from '../../../utils/group'
-import { type CardTarget, serializeMessage } from '../../../utils/message'
-import { getGroupDisplayName, isGroupQuit } from '../../../utils/user'
-import { useMessageSender } from '../../composables/useMessageSender'
-import { FacePicker } from '../../pages/conversation/components/input'
-import { useConversationStore } from '../../store/conversationStore'
-import { useFriendStore } from '../../store/friendStore'
-import { useGroupStore } from '../../store/groupStore'
-import { ConversationPickerPanel } from '../picker'
-import { FriendPickerPanel } from '../picker'
+import {
+  ImContentType,
+  ImConversationType,
+  isGroupConversation,
+} from '../../../utils/constants';
+import { getConversationKey } from '../../../utils/conversation';
+import { buildDefaultGroupName } from '../../../utils/group';
+import { serializeMessage } from '../../../utils/message';
+import { getGroupDisplayName, isGroupQuit } from '../../../utils/user';
+import { useMessageSender } from '../../composables/useMessageSender';
+import { FacePicker } from '../../pages/conversation/components/input';
+import { useConversationStore } from '../../store/conversationStore';
+import { useFriendStore } from '../../store/friendStore';
+import { useGroupStore } from '../../store/groupStore';
+import { ConversationPickerPanel, FriendPickerPanel } from '../picker';
 
-defineOptions({ name: 'ImRecommendCardDialog' })
+defineOptions({ name: 'ImRecommendCardDialog' });
 
-const conversationStore = useConversationStore()
-const friendStore = useFriendStore()
-const groupStore = useGroupStore()
-const { sendRaw, send } = useMessageSender()
+const conversationStore = useConversationStore();
+const friendStore = useFriendStore();
+const groupStore = useGroupStore();
+const { sendRaw, send } = useMessageSender();
 
-const visible = ref(false)
-const target = ref<CardTarget | null>(null)
-const view = ref<'contact' | 'conversation'>('conversation') // 当前视图：默认会话选择，「创建聊天」入口切到好友选择
-const selectedKeys = ref<string[]>([])
-const selectedFriendIds = ref<number[]>([])
-const leaveMessage = ref('')
-const sending = ref(false)
-const emojiVisible = ref(false) // 表情面板显隐：右侧 smile icon 切换
+const visible = ref(false);
+const target = ref<CardTarget | null>(null);
+const view = ref<'contact' | 'conversation'>('conversation'); // 当前视图：默认会话选择，「创建聊天」入口切到好友选择
+const selectedKeys = ref<string[]>([]);
+const selectedFriendIds = ref<number[]>([]);
+const leaveMessage = ref('');
+const sending = ref(false);
+const emojiVisible = ref(false); // 表情面板显隐：右侧 smile icon 切换
 
 defineExpose({
   /** 打开推荐弹窗：reset → 灌参 → visible=true */
   open(opts: { target: CardTarget }) {
-    target.value = opts.target
-    view.value = 'conversation'
-    selectedKeys.value = []
-    selectedFriendIds.value = []
-    leaveMessage.value = ''
-    emojiVisible.value = false
-    sending.value = false
-    visible.value = true
-  }
-})
+    target.value = opts.target;
+    view.value = 'conversation';
+    selectedKeys.value = [];
+    selectedFriendIds.value = [];
+    leaveMessage.value = '';
+    emojiVisible.value = false;
+    sending.value = false;
+    visible.value = true;
+  },
+});
 
 /** 弹窗标题：会话视图按 target 类型分文案；好友视图固定为「选择好友」 */
 const headerTitle = computed(() => {
   if (view.value === 'contact') {
-    return '选择好友'
+    return '选择好友';
   }
-  return isGroupConversation(target.value?.targetType) ? '把这个群推荐给朋友' : '把他推荐给朋友'
-})
+  return isGroupConversation(target.value?.targetType)
+    ? '把这个群推荐给朋友'
+    : '把他推荐给朋友';
+});
 
 /** 候选会话：从 store 拿排序后的列表（hide 由 Panel 接 hideKeys 过滤）；历史退群群不可被推荐选中（选了后端也会拒） */
 const candidateConversations = computed<Conversation[]>(() =>
@@ -68,32 +74,34 @@ const candidateConversations = computed<Conversation[]>(() =>
       !(
         conversation.type === ImConversationType.GROUP &&
         isGroupQuit(groupStore.getGroup(conversation.targetId))
-      )
-  )
-)
+      ),
+  ),
+);
 
 /** 隐藏 key：不能把名片推回名片本身的会话（用户名片避免自推、群名片避免推回该群） */
 const hideKeys = computed<string[]>(() => {
-  const t = target.value
+  const t = target.value;
   if (!t) {
-    return []
+    return [];
   }
-  return [getConversationKey({ type: t.targetType, targetId: t.targetId })]
-})
+  return [getConversationKey({ type: t.targetType, targetId: t.targetId })];
+});
 
 /** 好友视图候选列表：直接复用 friendStore Lite 视图 */
-const friends = computed<FriendLite[]>(() => friendStore.getActiveFriendLiteList)
+const friends = computed<FriendLite[]>(
+  () => friendStore.getActiveFriendLiteList,
+);
 
 /** 把选中的 emoji 拼到留言末尾；FacePicker 自身负责关闭面板 */
 function handleEmojiSelect(emoji: string) {
-  leaveMessage.value = `${leaveMessage.value}${emoji}`
+  leaveMessage.value = `${leaveMessage.value}${emoji}`;
 }
 
 /** 切到好友视图：清掉之前在会话视图输入的留言，避免在不可见输入框里把留言静默发到新群 */
 function handleSwitchToContact() {
-  view.value = 'contact'
-  leaveMessage.value = ''
-  emojiVisible.value = false
+  view.value = 'contact';
+  leaveMessage.value = '';
+  emojiVisible.value = false;
 }
 
 /**
@@ -103,43 +111,51 @@ function handleSwitchToContact() {
  * 失败的消息以 FAILED 状态留在对应会话气泡里，可右键重试
  */
 async function handleSend() {
-  const card = target.value
+  const card = target.value;
   if (!card?.targetId || selectedKeys.value.length === 0) {
-    return
+    return;
   }
-  const byKey = new Map(candidateConversations.value.map((c) => [getConversationKey(c), c]))
+  const byKey = new Map(
+    candidateConversations.value.map((c) => [getConversationKey(c), c]),
+  );
   const targets = selectedKeys.value
     .map((key) => byKey.get(key))
-    .filter((c): c is Conversation => c != null)
+    .filter((c): c is Conversation => c !== null);
   if (targets.length === 0) {
-    return
+    return;
   }
-  const cardContent = serializeMessage({ ...card })
-  const leaveText = leaveMessage.value.trim()
-  sending.value = true
+  const cardContent = serializeMessage({ ...card });
+  const leaveText = leaveMessage.value.trim();
+  sending.value = true;
   try {
     const tasks = targets.map(async (conversation) => {
-      const cardOk = await sendRaw(ImContentType.CARD, cardContent, { conversation })
+      const cardOk = await sendRaw(ImContentType.CARD, cardContent, {
+        conversation,
+      });
       if (!cardOk) {
-        return { conversation, ok: false }
+        return { conversation, ok: false };
       }
-      const ok = leaveText ? await send(leaveText, { conversation }) : true
-      return { conversation, ok }
-    })
-    const results = await Promise.all(tasks)
-    const failedNames = results.filter((r) => !r.ok).map((r) => r.conversation.name || '未命名会话')
+      const ok = leaveText ? await send(leaveText, { conversation }) : true;
+      return { conversation, ok };
+    });
+    const results = await Promise.all(tasks);
+    const failedNames = results
+      .filter((r) => !r.ok)
+      .map((r) => r.conversation.name || '未命名会话');
     // 把命中的目标推到最近转发列表（部分失败也推：用户的"意图"已表达）
-    conversationStore.pushRecentForwardConversationKeyList(targets.map((c) => getConversationKey(c)))
+    conversationStore.pushRecentForwardConversationKeyList(
+      targets.map((c) => getConversationKey(c)),
+    );
     if (failedNames.length === 0) {
-      ElMessage.success('已转发')
+      ElMessage.success('已转发');
     } else if (failedNames.length === targets.length) {
-      ElMessage.error(`转发失败：${failedNames.join('、')}`)
+      ElMessage.error(`转发失败：${failedNames.join('、')}`);
     } else {
-      ElMessage.warning(`已转发，但 ${failedNames.join('、')} 失败`)
+      ElMessage.warning(`已转发，但 ${failedNames.join('、')} 失败`);
     }
-    visible.value = false
+    visible.value = false;
   } finally {
-    sending.value = false
+    sending.value = false;
   }
 }
 
@@ -150,24 +166,28 @@ async function handleSend() {
  * （sendRaw 内部会自动 insertMessage 把新群登记进 store，最近转发列表也能正常推）
  */
 async function handleCreateGroupAndSend() {
-  const card = target.value
+  const card = target.value;
   if (!card?.targetId || selectedFriendIds.value.length === 0) {
-    return
+    return;
   }
-  const byId = new Map(friends.value.map((f) => [f.id, f]))
+  const byId = new Map(friends.value.map((f) => [f.id, f]));
   const members = selectedFriendIds.value
     .map((id) => byId.get(id))
-    .filter((f): f is FriendLite => f != null)
+    .filter((f): f is FriendLite => f !== null);
   if (members.length === 0) {
-    return
+    return;
   }
-  sending.value = true
+  sending.value = true;
   try {
-    const memberUserIds = members.map((m) => m.id)
-    const name = buildDefaultGroupName(members)
-    const group = await createGroup({ name, memberUserIds, joinApproval: false })
+    const memberUserIds = members.map((m) => m.id);
+    const name = buildDefaultGroupName(members);
+    const group = await createGroup({
+      name,
+      memberUserIds,
+      joinApproval: false,
+    });
     if (!group?.id) {
-      throw new Error('创建群失败：未返回群编号')
+      throw new Error('创建群失败：未返回群编号');
     }
     // upsert 进 groupStore，省一次 fetchGroupList
     groupStore.upsertGroup({
@@ -175,8 +195,8 @@ async function handleCreateGroupAndSend() {
       name: group.name,
       avatar: group.avatar,
       notice: group.notice,
-      ownerUserId: group.ownerUserId
-    })
+      ownerUserId: group.ownerUserId,
+    });
     // 给新群构造一个临时 conversation 对象给 sendRaw 用；sendRaw 内部会自动 insertMessage 登记
     const newConversation: Conversation = {
       type: ImConversationType.GROUP,
@@ -185,25 +205,31 @@ async function handleCreateGroupAndSend() {
       avatar: group.avatar || '',
       unreadCount: 0,
       lastContent: '',
-      lastSendTime: 0
-    }
-    const cardOk = await sendRaw(ImContentType.CARD, serializeMessage({ ...card }), {
-      conversation: newConversation
-    })
+      lastSendTime: 0,
+    };
+    const cardOk = await sendRaw(
+      ImContentType.CARD,
+      serializeMessage({ ...card }),
+      {
+        conversation: newConversation,
+      },
+    );
     if (!cardOk) {
-      ElMessage.warning('群已创建，但名片发送失败，请稍后在群里重试')
-      visible.value = false
-      return
+      ElMessage.warning('群已创建，但名片发送失败，请稍后在群里重试');
+      visible.value = false;
+      return;
     }
-    const leaveText = leaveMessage.value.trim()
+    const leaveText = leaveMessage.value.trim();
     if (leaveText) {
-      await send(leaveText, { conversation: newConversation })
+      await send(leaveText, { conversation: newConversation });
     }
-    conversationStore.pushRecentForwardConversationKeyList([getConversationKey(newConversation)])
-    ElMessage.success('已创建群聊并发送')
-    visible.value = false
+    conversationStore.pushRecentForwardConversationKeyList([
+      getConversationKey(newConversation),
+    ]);
+    ElMessage.success('已创建群聊并发送');
+    visible.value = false;
   } finally {
-    sending.value = false
+    sending.value = false;
   }
 }
 </script>
@@ -222,7 +248,6 @@ async function handleCreateGroupAndSend() {
     v-model="visible"
     width="720px"
     :close-on-click-modal="false"
-    
     class="im-picker-dialog im-recommend-dialog"
   >
     <template #header>
@@ -246,7 +271,9 @@ async function handleCreateGroupAndSend() {
         v-if="view === 'conversation'"
         v-model:selected-keys="selectedKeys"
         :conversations="candidateConversations"
-        :recent-forward-conversation-keys="conversationStore.recentForwardConversationKeys"
+        :recent-forward-conversation-keys="
+          conversationStore.recentForwardConversationKeys
+        "
         :hide-keys="hideKeys"
         :show-create-chat="true"
         @create-chat="handleSwitchToContact"
@@ -259,7 +286,11 @@ async function handleCreateGroupAndSend() {
 
             <!-- 留言（单行）：右侧表情按钮触发 FacePicker；选中 emoji 拼到末尾 -->
             <div class="relative">
-              <ElInput v-model="leaveMessage" :maxlength="100" placeholder="给朋友留言">
+              <ElInput
+                v-model="leaveMessage"
+                :maxlength="100"
+                placeholder="给朋友留言"
+              >
                 <template #suffix>
                   <Icon
                     icon="ant-design:smile-outlined"
@@ -286,7 +317,11 @@ async function handleCreateGroupAndSend() {
                 :disabled="selectedKeys.length === 0"
                 @click="handleSend"
               >
-                {{ selectedKeys.length > 1 ? `分别发送（${selectedKeys.length}）` : '发送' }}
+                {{
+                  selectedKeys.length > 1
+                    ? `分别发送（${selectedKeys.length}）`
+                    : '发送'
+                }}
               </ElButton>
             </div>
           </div>
@@ -294,7 +329,11 @@ async function handleCreateGroupAndSend() {
       </ConversationPickerPanel>
 
       <!-- 好友视图：选好友建群后发送 -->
-      <FriendPickerPanel v-else v-model:selected-ids="selectedFriendIds" :friends="friends" />
+      <FriendPickerPanel
+        v-else
+        v-model:selected-ids="selectedFriendIds"
+        :friends="friends"
+      />
     </div>
 
     <!-- 好友视图的 dialog footer：建群并发送 -->

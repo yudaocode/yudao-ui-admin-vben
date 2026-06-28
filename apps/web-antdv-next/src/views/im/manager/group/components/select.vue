@@ -43,7 +43,12 @@ const displayLabel = computed(() => selectedItem.value?.name ?? '');
 
 /** 是否显示清除图标 */
 const showClear = computed(() => {
-  return props.allowClear && !props.disabled && hovering.value && props.modelValue != null;
+  return (
+    props.allowClear &&
+    !props.disabled &&
+    hovering.value &&
+    props.modelValue != null
+  );
 });
 
 /** 根据编号查询群信息（用于编辑回显） */

@@ -1,52 +1,54 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { useUserStore } from '@vben/stores'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
-import { ElBadge } from 'element-plus'
+import { ElBadge } from 'element-plus';
 
-import { useConversationStore } from '../store/conversationStore'
-import { useFriendStore } from '../store/friendStore'
-import { useImUiStore } from '../store/uiStore'
-import { UserAvatar } from './user'
+import { useConversationStore } from '../store/conversationStore';
+import { useFriendStore } from '../store/friendStore';
+import { useImUiStore } from '../store/uiStore';
+import { UserAvatar } from './user';
 
-defineOptions({ name: 'ImToolBar' })
+defineOptions({ name: 'ImToolBar' });
 
-const route = useRoute()
-const router = useRouter()
-const userStore = useUserStore()
-const conversationStore = useConversationStore()
-const friendStore = useFriendStore()
-const uiStore = useImUiStore()
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
+const conversationStore = useConversationStore();
+const friendStore = useFriendStore();
+const uiStore = useImUiStore();
 
 /** 消息 Tab 的红点：所有非免打扰会话的未读总和 */
-const totalUnread = computed(() => conversationStore.getTotalUnreadCount)
+const totalUnread = computed(() => conversationStore.getTotalUnreadCount);
 /** 通讯录 Tab 的红点：未处理好友申请数（接收方=我） */
-const unhandledRequestCount = computed(() => friendStore.getUnhandledRequestCount)
+const unhandledRequestCount = computed(
+  () => friendStore.getUnhandledRequestCount,
+);
 
 const tabs = [
   { name: 'ImHomeConversation', icon: 'ep:chat-round' },
-  { name: 'ImHomeContact', icon: 'mingcute:contacts-line' }
-] // 两个主 Tab；用路由 name 而非 path，避免前缀 / 嵌套调整后失效
+  { name: 'ImHomeContact', icon: 'mingcute:contacts-line' },
+]; // 两个主 Tab；用路由 name 而非 path，避免前缀 / 嵌套调整后失效
 
 // 当前路由是否命中 Tab：直接比对 route.name
-const isActive = (name: string) => route.name === name
+const isActive = (name: string) => route.name === name;
 
 // 切换 Tab：当前已选中时，消息 Tab 触发"滚动到下一个未读"（对齐微信 PC），其它 Tab 无动作
 const goTab = (name: string) => {
   if (route.name === name) {
     if (name === 'ImHomeConversation') {
-      uiStore.requestNextUnreadJump()
+      uiStore.requestNextUnreadJump();
     }
-    return
+    return;
   }
-  router.push({ name })
-}
+  router.push({ name });
+};
 
 // 跳转个人中心（路由 name=Profile）
-const goProfile = () => router.push({ name: 'Profile' })
+const goProfile = () => router.push({ name: 'Profile' });
 </script>
 
 <template>

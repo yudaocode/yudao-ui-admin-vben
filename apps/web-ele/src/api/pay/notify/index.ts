@@ -36,7 +36,9 @@ export namespace PayNotifyApi {
 
 /** 获得支付通知明细 */
 export function getNotifyTaskDetail(id: number) {
-  return requestClient.get<PayNotifyApi.NotifyTask>(`/pay/notify/get-detail?id=${id}`);
+  return requestClient.get<PayNotifyApi.NotifyTask>(
+    `/pay/notify/get-detail?id=${id}`,
+  );
 }
 
 /** 获得支付通知分页 */

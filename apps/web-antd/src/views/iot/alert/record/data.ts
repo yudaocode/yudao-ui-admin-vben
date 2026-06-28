@@ -79,7 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         },
         trigger: (values, formApi) => {
           if (values.deviceId !== undefined) {
-            void formApi.setFieldValue('deviceId', undefined);
+            formApi.setFieldValue('deviceId', undefined);
           }
         },
       },

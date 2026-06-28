@@ -8,13 +8,10 @@ import { nextTick, ref } from 'vue';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { ElButton, ElDialog, ElMessage } from 'element-plus'
+import { ElButton, ElDialog, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getManagerGroup,
-  getManagerGroupPage,
-} from '#/api/im/manager/group';
+import { getManagerGroup, getManagerGroupPage } from '#/api/im/manager/group';
 
 const emit = defineEmits<{
   selected: [rows: ImManagerGroupApi.Group[]];

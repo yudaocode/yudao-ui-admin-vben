@@ -1,38 +1,41 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table'
-import type { ImManagerChannelApi } from '#/api/im/manager/channel'
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { ImManagerChannelApi } from '#/api/im/manager/channel';
 
-import { Page, useVbenModal } from '@vben/common-ui'
+import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElImage, ElLoading, ElMessage } from 'element-plus'
+import { ElImage, ElLoading, ElMessage } from 'element-plus';
 
-import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table'
-import { deleteManagerChannel, getManagerChannelPage } from '#/api/im/manager/channel'
-import { $t } from '#/locales'
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteManagerChannel,
+  getManagerChannelPage,
+} from '#/api/im/manager/channel';
+import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data'
-import Form from './modules/form.vue'
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
 
-defineOptions({ name: 'ImManagerChannel' })
+defineOptions({ name: 'ImManagerChannel' });
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
-  destroyOnClose: true
-})
+  destroyOnClose: true,
+});
 
 /** 刷新表格 */
 function handleRefresh() {
-  gridApi.query()
+  gridApi.query();
 }
 
 /** 创建频道 */
 function handleCreate() {
-  formModalApi.setData(null).open()
+  formModalApi.setData(null).open();
 }
 
 /** 编辑频道 */
 function handleEdit(row: ImManagerChannelApi.Channel) {
-  formModalApi.setData(row).open()
+  formModalApi.setData(row).open();
 }
 
 /** 删除频道 */
@@ -41,17 +44,17 @@ async function handleDelete(row: ImManagerChannelApi.Channel) {
     text: $t('ui.actionMessage.deleting', [row.name]),
   });
   try {
-    await deleteManagerChannel(row.id)
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]))
-    handleRefresh()
+    await deleteManagerChannel(row.id);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
+    handleRefresh();
   } finally {
-    loadingInstance.close()
+    loadingInstance.close();
   }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema()
+    schema: useGridFormSchema(),
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -63,21 +66,21 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getManagerChannelPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues
-          })
-        }
-      }
+            ...formValues,
+          });
+        },
+      },
     },
     rowConfig: {
       keyField: 'id',
-      isHover: true
+      isHover: true,
     },
     toolbarConfig: {
       refresh: true,
-      search: true
-    }
-  } as VxeTableGridOptions<ImManagerChannelApi.Channel>
-})
+      search: true,
+    },
+  } as VxeTableGridOptions<ImManagerChannelApi.Channel>,
+});
 </script>
 
 <template>
@@ -92,8 +95,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['im:manager:channel:create'],
-              onClick: handleCreate
-            }
+              onClick: handleCreate,
+            },
           ]"
         />
       </template>
@@ -108,7 +111,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               icon: ACTION_ICON.EDIT,
               auth: ['im:manager:channel:update'],
-              onClick: handleEdit.bind(null, row)
+              onClick: handleEdit.bind(null, row),
             },
             {
               label: $t('common.delete'),
@@ -118,9 +121,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['im:manager:channel:delete'],
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
-                confirm: handleDelete.bind(null, row)
-              }
-            }
+                confirm: handleDelete.bind(null, row),
+              },
+            },
           ]"
         />
       </template>

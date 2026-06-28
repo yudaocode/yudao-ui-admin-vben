@@ -15,12 +15,14 @@ import { floatToFixed2 } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
 import {
+  ElButton,
   ElCard,
   ElForm,
   ElFormItem,
   ElRadioButton,
   ElRadioGroup,
   ElSlider,
+  ElText,
   ElTooltip,
 } from 'element-plus';
 

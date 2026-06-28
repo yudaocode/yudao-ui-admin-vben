@@ -1,82 +1,90 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import type {
+  AudioMessage,
+  CardMessage,
+  FaceMessage,
+  FileMessage,
+  ImageMessage,
+  MaterialMessage,
+  QuoteMessage,
+  TextMessage,
+  VideoMessage,
+} from '#/views/im/utils/message';
 
-import { IconifyIcon as Icon } from '@vben/icons'
-import { formatFileSize } from '@vben/utils'
+import { computed } from 'vue';
 
-import { CardLineLabel } from '#/views/im/home/components/card'
-import { ImContentType } from '#/views/im/utils/constants'
-import { getClientConversationId } from '#/views/im/utils/db'
-import {
-  type AudioMessage,
-  type CardMessage,
-  type FaceMessage,
-  type FileMessage,
-  getFileIconInfo,
-  type ImageMessage,
-  type MaterialMessage,
-  parseMessage,
-  type QuoteMessage,
-  type TextMessage,
-  type VideoMessage
-} from '#/views/im/utils/message'
-import { formatSeconds } from '#/views/im/utils/time'
-import { getSenderDisplayName } from '#/views/im/utils/user'
+import { IconifyIcon as Icon } from '@vben/icons';
+import { formatFileSize } from '@vben/utils';
 
-import { useConversationStore } from '../../../../store/conversationStore'
-import { useMessageStore } from '../../../../store/messageStore'
+import { CardLineLabel } from '#/views/im/home/components/card';
+import { ImContentType } from '#/views/im/utils/constants';
+import { getClientConversationId } from '#/views/im/utils/db';
+import { getFileIconInfo, parseMessage } from '#/views/im/utils/message';
+import { formatSeconds } from '#/views/im/utils/time';
+import { getSenderDisplayName } from '#/views/im/utils/user';
 
-defineOptions({ name: 'ImReplyPreview' })
+import { useConversationStore } from '../../../../store/conversationStore';
+import { useMessageStore } from '../../../../store/messageStore';
+
+defineOptions({ name: 'ImReplyPreview' });
 
 const props = withDefaults(
   defineProps<{
     /** 气泡内为 true 支持点击跳转,输入条为 false */
-    clickable?: boolean
+    clickable?: boolean;
     /** 输入条为 true 显示 × 关闭按钮 */
-    closable?: boolean
+    closable?: boolean;
     /** 自己发送的气泡为 true，把竖线镜像到右侧，与气泡同侧 */
-    mirrored?: boolean
-    quote: QuoteMessage
+    mirrored?: boolean;
+    quote: QuoteMessage;
   }>(),
   {
     clickable: false,
     closable: false,
-    mirrored: false
-  }
-)
+    mirrored: false,
+  },
+);
 
 const emit = defineEmits<{
-  close: []
-  locate: [messageId: number]
-}>()
+  close: [];
+  locate: [messageId: number];
+}>();
 
-const MAX_TEXT_PREVIEW_LEN = 60 // 文本摘要在引用块里展示的最大字符数
+const MAX_TEXT_PREVIEW_LEN = 60; // 文本摘要在引用块里展示的最大字符数
 
-const conversationStore = useConversationStore()
-const messageStore = useMessageStore()
+const conversationStore = useConversationStore();
+const messageStore = useMessageStore();
 
 /** 在当前会话消息列表里查找原消息,仅用于实时判断是否已撤回;摘要 / 缩略图都从 quote.content 直接派生 */
 const liveMessage = computed(() => {
-  const conversation = conversationStore.activeConversation
+  const conversation = conversationStore.activeConversation;
   if (!conversation || !props.quote.messageId) {
-    return undefined
+    return undefined;
   }
   return messageStore
-    .getMessages(getClientConversationId(conversation.type, conversation.targetId))
-    .find((message) => message.id === props.quote.messageId)
-})
+    .getMessages(
+      getClientConversationId(conversation.type, conversation.targetId),
+    )
+    .find((message) => message.id === props.quote.messageId);
+});
 
 /** 命中本地缓存且 type === RECALL 才判定为已撤回;不在缓存的当快照仍有效 */
-const isRecalled = computed(() => liveMessage.value?.type === ImContentType.RECALL)
+const isRecalled = computed(
+  () => liveMessage.value?.type === ImContentType.RECALL,
+);
 
 /** 渲染时实时算,与气泡上方显示名走同一套规则,避免备注变更后引用块陈旧 */
 const senderName = computed(() => {
-  const conversation = conversationStore.activeConversation
+  const conversation = conversationStore.activeConversation;
   if (!conversation) {
-    return ''
+    return '';
   }
-  return getSenderDisplayName(props.quote.senderId, conversation.type, conversation.targetId)
-})
+  return getSenderDisplayName(
+    props.quote.senderId,
+    conversation.type,
+    conversation.targetId,
+  );
+});
 
 /** quote.content 解析一次缓存，让多个 computed 复用，长会话每条引用气泡少一次 JSON.parse */
 type AnyQuotePayload = Partial<
@@ -88,49 +96,53 @@ type AnyQuotePayload = Partial<
     MaterialMessage &
     TextMessage &
     VideoMessage
->
-const parsedPayload = computed(() => parseMessage<AnyQuotePayload>(props.quote.content))
+>;
+const parsedPayload = computed(() =>
+  parseMessage<AnyQuotePayload>(props.quote.content),
+);
 
-const isText = computed(() => props.quote.type === ImContentType.TEXT)
-const isFile = computed(() => props.quote.type === ImContentType.FILE)
-const isVoice = computed(() => props.quote.type === ImContentType.VOICE)
-const isCard = computed(() => props.quote.type === ImContentType.CARD)
-const isFace = computed(() => props.quote.type === ImContentType.FACE)
-const isMaterial = computed(() => props.quote.type === ImContentType.MATERIAL)
+const isText = computed(() => props.quote.type === ImContentType.TEXT);
+const isFile = computed(() => props.quote.type === ImContentType.FILE);
+const isVoice = computed(() => props.quote.type === ImContentType.VOICE);
+const isCard = computed(() => props.quote.type === ImContentType.CARD);
+const isFace = computed(() => props.quote.type === ImContentType.FACE);
+const isMaterial = computed(() => props.quote.type === ImContentType.MATERIAL);
 
 /** 文本超过 MAX_TEXT_PREVIEW_LEN 截断，长内容不撑爆引用块 */
 const textPreview = computed(() => {
-  const text = parsedPayload.value?.content ?? ''
-  return text.length <= MAX_TEXT_PREVIEW_LEN ? text : `${text.slice(0, Math.max(0, MAX_TEXT_PREVIEW_LEN))}…`
-})
+  const text = parsedPayload.value?.content ?? '';
+  return text.length <= MAX_TEXT_PREVIEW_LEN
+    ? text
+    : `${text.slice(0, Math.max(0, MAX_TEXT_PREVIEW_LEN))}…`;
+});
 
 /** 文件 icon：按扩展名挑色，跟主气泡渲染同源 */
-const fileIcon = computed(() => getFileIconInfo(parsedPayload.value?.name))
+const fileIcon = computed(() => getFileIconInfo(parsedPayload.value?.name));
 
 /** 缩略图 URL：图片 / 视频 / 表情贴图 / 频道素材封面从 quote.content 直接取，不依赖本地缓存 */
 const thumbnailUrl = computed<string | undefined>(() => {
   if (isRecalled.value) {
-    return undefined
+    return undefined;
   }
-  const { type } = props.quote
+  const { type } = props.quote;
   if (type === ImContentType.IMAGE) {
-    return parsedPayload.value?.thumbnailUrl || parsedPayload.value?.url
+    return parsedPayload.value?.thumbnailUrl || parsedPayload.value?.url;
   }
   if (type === ImContentType.VIDEO || type === ImContentType.MATERIAL) {
-    return parsedPayload.value?.coverUrl
+    return parsedPayload.value?.coverUrl;
   }
   if (type === ImContentType.FACE) {
-    return parsedPayload.value?.url
+    return parsedPayload.value?.url;
   }
-  return undefined
-})
+  return undefined;
+});
 
 /** 仅 clickable 且未撤回时触发跳转 */
 function onClick() {
   if (!props.clickable || isRecalled.value) {
-    return
+    return;
   }
-  emit('locate', props.quote.messageId)
+  emit('locate', props.quote.messageId);
 }
 </script>
 
@@ -154,9 +166,11 @@ function onClick() {
         ? 'pl-1 pr-2 border-r-2 border-r-solid border-r-[var(--ant-color-border)]'
         : 'pl-2 pr-1 border-l-2 border-l-solid border-l-[var(--ant-color-border)]',
       {
-        'cursor-pointer hover:text-[var(--ant-color-text)]': clickable && !isRecalled,
-        'hover:bg-[var(--ant-color-fill-secondary)]': (clickable && !isRecalled) || closable
-      }
+        'cursor-pointer hover:text-[var(--ant-color-text)]':
+          clickable && !isRecalled,
+        'hover:bg-[var(--ant-color-fill-secondary)]':
+          (clickable && !isRecalled) || closable,
+      },
     ]"
     @click="onClick"
   >
@@ -166,11 +180,18 @@ function onClick() {
     <span v-if="isRecalled" class="italic">原消息已撤回</span>
 
     <!-- 文本 -->
-    <span v-else-if="isText" class="min-w-0 line-clamp-2 break-words">{{ textPreview }}</span>
+    <span v-else-if="isText" class="min-w-0 line-clamp-2 break-words">{{
+      textPreview
+    }}</span>
 
     <!-- 文件：icon + 文件名 + 大小 -->
     <template v-else-if="isFile">
-      <Icon :icon="fileIcon.icon" :color="fileIcon.color" :size="14" class="flex-shrink-0" />
+      <Icon
+        :icon="fileIcon.icon"
+        :color="fileIcon.color"
+        :size="14"
+        class="flex-shrink-0"
+      />
       <span v-if="parsedPayload?.name" class="min-w-0 line-clamp-2 break-words">
         {{ parsedPayload.name }}
       </span>
@@ -208,7 +229,10 @@ function onClick() {
     <!-- 频道素材：[频道] + 标题 + 封面缩略图 -->
     <template v-else-if="isMaterial">
       <span class="flex-shrink-0">[频道]</span>
-      <span v-if="parsedPayload?.title" class="min-w-0 line-clamp-2 break-words">
+      <span
+        v-if="parsedPayload?.title"
+        class="min-w-0 line-clamp-2 break-words"
+      >
         {{ parsedPayload.title }}
       </span>
     </template>

@@ -20,7 +20,7 @@ import {
 const props = defineProps<{ type: UploadType }>();
 
 const emit = defineEmits<{
-  uploaded: [v: void];
+  uploaded: [];
 }>();
 
 const accountId = inject<number>('accountId');

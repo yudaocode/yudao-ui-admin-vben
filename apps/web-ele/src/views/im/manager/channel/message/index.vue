@@ -4,7 +4,7 @@ import type { ImManagerChannelMessageApi } from '#/api/im/manager/channel/messag
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { ElImage, ElLoading, ElMessage, ElTag } from 'element-plus'
+import { ElImage, ElLoading, ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -13,7 +13,10 @@ import {
 } from '#/api/im/manager/channel/message';
 import { $t } from '#/locales';
 
-import { useMessageGridColumns, useMessageGridFormSchema } from '../material/data';
+import {
+  useMessageGridColumns,
+  useMessageGridFormSchema,
+} from '../material/data';
 import SendForm from './modules/send-form.vue';
 
 defineOptions({ name: 'ImManagerChannelMessage' });
@@ -104,7 +107,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #receivers="{ row }">
-        <ElTag v-if="!row.receiverUserIds || row.receiverUserIds.length === 0" type="warning">
+        <ElTag
+          v-if="!row.receiverUserIds || row.receiverUserIds.length === 0"
+          type="warning"
+        >
           全员
         </ElTag>
         <span v-else>{{ row.receiverUserIds.length }} 人</span>

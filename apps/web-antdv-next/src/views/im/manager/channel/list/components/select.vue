@@ -11,10 +11,10 @@ defineOptions({ name: 'ImManagerChannelSelect' });
 
 const props = withDefaults(
   defineProps<{
-    allowClear?: boolean
-    disabled?: boolean
-    modelValue?: number
-    placeholder?: string
+    allowClear?: boolean;
+    disabled?: boolean;
+    modelValue?: number;
+    placeholder?: string;
   }>(),
   {
     allowClear: true,

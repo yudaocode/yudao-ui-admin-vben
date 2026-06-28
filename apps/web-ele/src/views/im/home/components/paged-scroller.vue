@@ -1,89 +1,100 @@
 <script lang="ts" setup generic="T">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
-defineOptions({ name: 'ImPagedScroller' })
+defineOptions({ name: 'ImPagedScroller' });
 
 const props = withDefaults(
   defineProps<{
-    itemKey?: string // 业务 id 字段名（如 'userId' / 'id'）；不传 / 字段值非 string|number 时回退 idx
-    items: T[] // 全量数据
-    pageSize?: number // 每页渲染条数
-    threshold?: number // 距底多少 px 触发下一页
+    itemKey?: string; // 业务 id 字段名（如 'userId' / 'id'）；不传 / 字段值非 string|number 时回退 idx
+    items: T[]; // 全量数据
+    pageSize?: number; // 每页渲染条数
+    threshold?: number; // 距底多少 px 触发下一页
   }>(),
   {
     itemKey: undefined,
     pageSize: 30,
-    threshold: 30
-  }
-)
+    threshold: 30,
+  },
+);
 
 /** 解析每条 item 的 :key：caller 传 itemKey 则按字段取，无效 / 缺失回退索引，避免传错字段时全表 undefined key */
 function resolveItemKey(item: T, idx: number): number | string {
-  if (!props.itemKey || item == null || typeof item !== 'object') {
-    return idx
+  if (!props.itemKey || item === null || typeof item !== 'object') {
+    return idx;
   }
-  const value = (item as Record<string, unknown>)[props.itemKey]
-  return typeof value === 'string' || typeof value === 'number' ? value : idx
+  const value = (item as Record<string, unknown>)[props.itemKey];
+  return typeof value === 'string' || typeof value === 'number' ? value : idx;
 }
 
-const scrollbarRef = useTemplateRef<HTMLDivElement>('scrollbarRef')
-const page = ref(1)
+const scrollbarRef = useTemplateRef<HTMLDivElement>('scrollbarRef');
+const page = ref(1);
 
 const displayItems = computed(() => {
-  const limit = Math.min(page.value * props.pageSize, props.items.length)
-  return props.items.slice(0, limit)
-})
+  const limit = Math.min(page.value * props.pageSize, props.items.length);
+  return props.items.slice(0, limit);
+});
 
-const allLoaded = computed(() => displayItems.value.length >= props.items.length)
+const allLoaded = computed(
+  () => displayItems.value.length >= props.items.length,
+);
 
 /** 仅当超过一页时才显示「已到底部」，避免短列表也出现这条提示 */
-const showFooter = computed(() => allLoaded.value && props.items.length > props.pageSize)
+const showFooter = computed(
+  () => allLoaded.value && props.items.length > props.pageSize,
+);
 
-let wrapEl: HTMLElement | null = null
+let wrapEl: HTMLElement | null = null;
 
 onMounted(() => {
-  wrapEl = scrollbarRef.value
-  wrapEl?.addEventListener('scroll', onScroll)
-})
+  wrapEl = scrollbarRef.value;
+  wrapEl?.addEventListener('scroll', onScroll);
+});
 
 onBeforeUnmount(() => {
-  wrapEl?.removeEventListener('scroll', onScroll)
-})
+  wrapEl?.removeEventListener('scroll', onScroll);
+});
 
 /** 切换数据源（如切会话）时重置分页：避免新列表沿用旧 page，首屏出现空段 */
 watch(
   () => props.items,
   () => {
-    page.value = 1
-  }
-)
+    page.value = 1;
+  },
+);
 
 /** 滚到距底 threshold 内时自增 page，扩出下一段切片 */
 function onScroll(e: Event) {
-  const el = e.target as HTMLElement
+  const el = e.target as HTMLElement;
   if (el.scrollTop + el.clientHeight < el.scrollHeight - props.threshold) {
-    return
+    return;
   }
   if (allLoaded.value) {
-    return
+    return;
   }
-  page.value++
+  page.value++;
 }
 
 defineExpose({
   /** 手动滚到顶部 */
   scrollTop: () => {
     if (wrapEl) {
-      wrapEl.scrollTop = 0
+      wrapEl.scrollTop = 0;
     }
   },
   /** 手动滚到底部 */
   scrollBottom: () => {
     if (wrapEl) {
-      wrapEl.scrollTop = wrapEl.scrollHeight
+      wrapEl.scrollTop = wrapEl.scrollHeight;
     }
-  }
-})
+  },
+});
 </script>
 
 <template>

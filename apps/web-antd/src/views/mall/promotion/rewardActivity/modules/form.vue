@@ -27,14 +27,15 @@ import RewardRule from './reward-rule.vue';
 
 const emit = defineEmits(['success']);
 
-const createDefaultFormData = (): Partial<MallRewardActivityApi.RewardActivity> => ({
-  conditionType: PromotionConditionTypeEnum.PRICE.type,
-  productScope: PromotionProductScopeEnum.ALL.scope,
-  productScopeValues: [],
-  productCategoryIds: [],
-  productSpuIds: [],
-  rules: [],
-});
+const createDefaultFormData =
+  (): Partial<MallRewardActivityApi.RewardActivity> => ({
+    conditionType: PromotionConditionTypeEnum.PRICE.type,
+    productScope: PromotionProductScopeEnum.ALL.scope,
+    productScopeValues: [],
+    productCategoryIds: [],
+    productSpuIds: [],
+    rules: [],
+  });
 
 const formData = ref<Partial<MallRewardActivityApi.RewardActivity>>(
   createDefaultFormData(),

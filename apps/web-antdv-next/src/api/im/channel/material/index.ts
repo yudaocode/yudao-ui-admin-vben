@@ -14,7 +14,6 @@ export namespace ImChannelMaterialApi {
   }
 }
 
-
 /** 获取频道素材详情；用于客户端点击图文卡片渲染详情页 */
 export function getChannelMaterial(id: number) {
   return requestClient.get<ImChannelMaterialApi.Material>(

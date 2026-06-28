@@ -5,12 +5,9 @@ import { nextTick, onMounted, ref } from 'vue';
 
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import { ElCard, ElOption, ElSelect } from 'element-plus'
+import { ElCard, ElOption, ElSelect } from 'element-plus';
 
-import {
-  getMessageTrend,
-  getUserTrend,
-} from '#/api/im/manager/statistics';
+import { getMessageTrend, getUserTrend } from '#/api/im/manager/statistics';
 
 const props = defineProps<{
   type: 'message' | 'user';
@@ -119,12 +116,7 @@ onMounted(loadData);
     <template #header>
       <div class="flex items-center justify-between">
         <span>{{ title }}</span>
-        <ElSelect
-          v-model="days"
-          class="w-28"
-          size="small"
-          @change="loadData"
-        >
+        <ElSelect v-model="days" class="w-28" size="small" @change="loadData">
           <ElOption label="近 7 天" :value="7" />
           <ElOption label="近 15 天" :value="15" />
           <ElOption label="近 30 天" :value="30" />

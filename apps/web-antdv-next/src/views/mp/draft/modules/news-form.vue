@@ -6,7 +6,16 @@ import { computed, ref } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Col, Input, Layout, Row, TextArea } from 'antdv-next';
+import {
+  Button,
+  Col,
+  Input,
+  Layout,
+  LayoutContent,
+  LayoutSider,
+  Row,
+  TextArea,
+} from 'antdv-next';
 
 import { createEmptyNewsItem } from '#/api/mp/draft';
 import { Tinymce as RichTextArea } from '#/components/tinymce';

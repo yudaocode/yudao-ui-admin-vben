@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
-import { ElDescriptions, ElDescriptionsItem, ElDialog } from 'element-plus'
+import { ElDescriptions, ElDescriptionsItem, ElDialog } from 'element-plus';
 
 import { DictTag } from '#/components/dict-tag';
 import {
@@ -23,7 +23,9 @@ import {
 import { MessageContentPreview } from '../..';
 
 const visible = ref(false);
-const detail = ref<ImManagerGroupMessageApi.GroupMessage>({} as ImManagerGroupMessageApi.GroupMessage);
+const detail = ref<ImManagerGroupMessageApi.GroupMessage>(
+  {} as ImManagerGroupMessageApi.GroupMessage,
+);
 
 /** 打开详情 */
 function open(row: ImManagerGroupMessageApi.GroupMessage) {
@@ -53,7 +55,11 @@ defineExpose({ open });
       <ElDescriptionsItem label="状态">
         <DictTag :type="DICT_TYPE.IM_MESSAGE_STATUS" :value="detail.status" />
       </ElDescriptionsItem>
-      <ElDescriptionsItem v-if="MESSAGE_GROUP_READ_ENABLED" label="回执" :span="2">
+      <ElDescriptionsItem
+        v-if="MESSAGE_GROUP_READ_ENABLED"
+        label="回执"
+        :span="2"
+      >
         <DictTag
           :type="DICT_TYPE.IM_MESSAGE_RECEIPT_STATUS"
           :value="detail.receiptStatus"
@@ -85,7 +91,11 @@ defineExpose({ open });
         />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="原始 JSON" :span="2">
-        <pre class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs">{{ formatJsonText(detail.content) }}</pre>
+        <pre
+          class="m-0 whitespace-pre-wrap break-all rounded bg-gray-100 p-2 font-mono text-xs"
+        >
+          {{ formatJsonText(detail.content) }}
+        </pre>
       </ElDescriptionsItem>
     </ElDescriptions>
   </ElDialog>

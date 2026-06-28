@@ -4,7 +4,7 @@ import type { ImManagerFaceUserItemApi } from '#/api/im/manager/face/userItem';
 
 import { Page } from '@vben/common-ui';
 
-import { ElImage, ElLoading, ElMessage } from 'element-plus'
+import { ElImage, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -14,7 +14,10 @@ import {
 import { $t } from '#/locales';
 import { formatUserLabel } from '#/views/im/manager/utils/format';
 
-import { useUserItemGridColumns, useUserItemGridFormSchema } from '../pack/data';
+import {
+  useUserItemGridColumns,
+  useUserItemGridFormSchema,
+} from '../pack/data';
 
 defineOptions({ name: 'ImManagerFaceUserItem' });
 
@@ -30,7 +33,9 @@ async function handleDelete(row: ImManagerFaceUserItemApi.FaceUserItem) {
   });
   try {
     await deleteManagerFaceUserItem(row.id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name || row.id]));
+    ElMessage.success(
+      $t('ui.actionMessage.deleteSuccess', [row.name || row.id]),
+    );
     handleRefresh();
   } finally {
     loadingInstance.close();
@@ -93,7 +98,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['im:manager:face-user-item:delete'],
               popConfirm: {
-                title: $t('ui.actionMessage.deleteConfirm', [row.name || row.id]),
+                title: $t('ui.actionMessage.deleteConfirm', [
+                  row.name || row.id,
+                ]),
                 confirm: handleDelete.bind(null, row),
               },
             },

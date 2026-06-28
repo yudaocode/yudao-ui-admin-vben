@@ -77,7 +77,6 @@ export namespace ImGroupApi {
   }
 }
 
-
 /** 获得当前登录用户的群列表 */
 export function getMyGroupList() {
   return requestClient.get<ImGroupApi.GroupRespVO[]>('/im/group/list');
@@ -85,7 +84,9 @@ export function getMyGroupList() {
 
 /** 获得群详情 */
 export function getGroup(id: number | string) {
-  return requestClient.get<ImGroupApi.GroupRespVO>('/im/group/get', { params: { id } });
+  return requestClient.get<ImGroupApi.GroupRespVO>('/im/group/get', {
+    params: { id },
+  });
 }
 
 /** 创建群 */

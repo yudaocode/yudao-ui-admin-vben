@@ -23,7 +23,6 @@ export namespace ImManagerGroupRequestApi {
   }
 }
 
-
 /** 获得加群申请分页 */
 export function getManagerGroupRequestPage(params: PageParam) {
   return requestClient.get<PageResult<ImManagerGroupRequestApi.GroupRequest>>(

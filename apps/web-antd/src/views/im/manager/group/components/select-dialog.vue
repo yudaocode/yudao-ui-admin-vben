@@ -11,10 +11,7 @@ import { getDictOptions } from '@vben/hooks';
 import { Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getManagerGroup,
-  getManagerGroupPage,
-} from '#/api/im/manager/group';
+import { getManagerGroup, getManagerGroupPage } from '#/api/im/manager/group';
 
 const emit = defineEmits<{
   selected: [rows: ImManagerGroupApi.Group[]];

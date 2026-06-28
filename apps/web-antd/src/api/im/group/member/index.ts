@@ -40,9 +40,10 @@ export namespace ImGroupMemberApi {
   }
 }
 
-
 /** 邀请用户加入群 */
-export function inviteGroupMember(data: ImGroupMemberApi.GroupMemberInviteReqVO) {
+export function inviteGroupMember(
+  data: ImGroupMemberApi.GroupMemberInviteReqVO,
+) {
   return requestClient.post<boolean>('/im/group/invite', data);
 }
 
@@ -54,25 +55,35 @@ export function quitGroup(groupId: number | string) {
 }
 
 /** 移除群成员 */
-export function removeGroupMember(data: ImGroupMemberApi.GroupMemberRemoveReqVO) {
+export function removeGroupMember(
+  data: ImGroupMemberApi.GroupMemberRemoveReqVO,
+) {
   return requestClient.delete<boolean>('/im/group/kicking', { data });
 }
 
 /** 获得群成员详情 */
 export function getGroupMember(groupId: number, userId: number) {
-  return requestClient.get<ImGroupMemberApi.GroupMemberRespVO>('/im/group-member/get', {
-    params: { groupId, userId },
-  });
+  return requestClient.get<ImGroupMemberApi.GroupMemberRespVO>(
+    '/im/group-member/get',
+    {
+      params: { groupId, userId },
+    },
+  );
 }
 
 /** 获得指定群的成员列表（聚合 AdminUser 昵称 / 头像） */
 export function getGroupMemberList(groupId: number | string) {
-  return requestClient.get<ImGroupMemberApi.GroupMemberRespVO[]>('/im/group-member/list', {
-    params: { groupId },
-  });
+  return requestClient.get<ImGroupMemberApi.GroupMemberRespVO[]>(
+    '/im/group-member/list',
+    {
+      params: { groupId },
+    },
+  );
 }
 
 /** 更新群成员 */
-export function updateGroupMember(data: ImGroupMemberApi.GroupMemberUpdateReqVO) {
+export function updateGroupMember(
+  data: ImGroupMemberApi.GroupMemberUpdateReqVO,
+) {
   return requestClient.put<boolean>('/im/group-member/update', data);
 }

@@ -1,54 +1,56 @@
 <script lang="ts" setup>
-import type { Conversation } from './types'
+import type { Conversation } from './types';
 
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
-import { preferences } from '@vben/preferences'
+import { preferences } from '@vben/preferences';
 
-import { ImConversationType } from '../utils/constants'
-import { initDb, stopRequests, StorageKeys } from '../utils/db'
-import { ContextMenu, ToolBar } from './components'
-import { GroupInfoCard } from './components/group'
-import { RtcCallContainer } from './components/rtc'
-import { UserInfoCard } from './components/user'
-import { useMessagePuller } from './composables/useMessagePuller'
-import { useMessageSender } from './composables/useMessageSender'
-import { useVoicePlayer } from './composables/useVoicePlayer'
-import { useChannelStore } from './store/channelStore'
-import { useConversationStore } from './store/conversationStore'
-import { useFaceStore } from './store/faceStore'
-import { useFriendStore } from './store/friendStore'
-import { useGroupRequestStore } from './store/groupRequestStore'
-import { useGroupStore } from './store/groupStore'
-import { useMessageStore } from './store/messageStore'
-import { useImWebSocketStore } from './store/websocketStore'
+import { ImConversationType } from '../utils/constants';
+import { initDb, stopRequests, StorageKeys } from '../utils/db';
+import { ContextMenu, ToolBar } from './components';
+import { GroupInfoCard } from './components/group';
+import { RtcCallContainer } from './components/rtc';
+import { UserInfoCard } from './components/user';
+import { useMessagePuller } from './composables/useMessagePuller';
+import { useMessageSender } from './composables/useMessageSender';
+import { useVoicePlayer } from './composables/useVoicePlayer';
+import { useChannelStore } from './store/channelStore';
+import { useConversationStore } from './store/conversationStore';
+import { useFaceStore } from './store/faceStore';
+import { useFriendStore } from './store/friendStore';
+import { useGroupRequestStore } from './store/groupRequestStore';
+import { useGroupStore } from './store/groupStore';
+import { useMessageStore } from './store/messageStore';
+import { useImWebSocketStore } from './store/websocketStore';
 
-defineOptions({ name: 'ImIndex' })
+defineOptions({ name: 'ImIndex' });
 
-const route = useRoute()
-const conversationStore = useConversationStore()
-const messageStore = useMessageStore()
-const webSocketStore = useImWebSocketStore()
-const friendStore = useFriendStore()
-const groupStore = useGroupStore()
-const groupRequestStore = useGroupRequestStore()
-const faceStore = useFaceStore()
-const channelStore = useChannelStore()
-const { pullOnce, cancelPull } = useMessagePuller()
-const { readActive, syncPrivateReadStatus } = useMessageSender()
-const voicePlayer = useVoicePlayer()
-const childRouteReady = ref(false) // 子路由是否可挂载
+const route = useRoute();
+const conversationStore = useConversationStore();
+const messageStore = useMessageStore();
+const webSocketStore = useImWebSocketStore();
+const friendStore = useFriendStore();
+const groupStore = useGroupStore();
+const groupRequestStore = useGroupRequestStore();
+const faceStore = useFaceStore();
+const channelStore = useChannelStore();
+const { pullOnce, cancelPull } = useMessagePuller();
+const { readActive, syncPrivateReadStatus } = useMessageSender();
+const voicePlayer = useVoicePlayer();
+const childRouteReady = ref(false); // 子路由是否可挂载
 
 /** 初始化：先吃本地缓存让首屏立即渲染，再远端刷新最新数据，最后建实时通信拉离线消息 */
 onMounted(async () => {
   // 0.1 系统表情包后台预拉：独立链路与首屏 IDB / 远端拉取并发，消除表情面板首次展开白屏；失败仅记日志，不阻塞主流程
-  void faceStore.ensureFacePackList().catch((error) => console.warn('[IM] 后台预拉表情包失败', error))
+  void faceStore
+    .ensureFacePackList()
+    .catch((error) => console.warn('[IM] 后台预拉表情包失败', error));
   // 1.1 整段 loading=true 阻断会话列表抖动写盘 + WebSocket 普通消息进缓冲，避免 connect 到 pullOnce 之间收到的实时消息推进 maxId 导致 pull 跳过断线积压消息
-  conversationStore.loading = true
+  conversationStore.loading = true;
   try {
     // 1.2 打开当前用户 IM DB
-    await initDb()
+    await initDb();
     // 1.3 多个 store 并发从 IDB 读取本地缓存
     const cacheResults = await Promise.all([
       conversationStore.loadConversationList(),
@@ -56,109 +58,122 @@ onMounted(async () => {
       friendStore.loadFriendData(),
       groupStore.loadGroupList(),
       channelStore.loadChannelList(),
-      groupRequestStore.loadGroupRequestList()
-    ])
-    const hasFriendRows = cacheResults[2]
-    const hasGroupRows = cacheResults[3]
-    const hasChannelRows = cacheResults[4]
-    groupStore.markAllGroupActiveCallsExpired()
-    groupStore.markAllGroupMembersExpired()
-    childRouteReady.value = true
+      groupRequestStore.loadGroupRequestList(),
+    ]);
+    const hasFriendRows = cacheResults[2];
+    const hasGroupRows = cacheResults[3];
+    const hasChannelRows = cacheResults[4];
+    groupStore.markAllGroupActiveCallsExpired();
+    groupStore.markAllGroupMembersExpired();
+    childRouteReady.value = true;
     // 1.4 我管理的群下未处理加群申请红点：首登用 unhandled-list（服务端直接过滤未处理，语义精准、启动轻）；
     //     pullGroupRequests 只在重连 / 后续补偿时跑（见 useMessagePuller.pullStateEvents），不进首登主链路
     void groupRequestStore
       .fetchUnhandledGroupRequestList()
-      .catch((error) => console.warn('[IM] 拉取未处理加群申请失败', error))
+      .catch((error) => console.warn('[IM] 拉取未处理加群申请失败', error));
 
     // 2. 好友主数据恢复走 pull；群列表用快照刷新，覆盖离线期间自己的入群 / 退群状态变化
     // 2.1 有缓存：异步背景增量刷新，失败仅记日志（IDB 数据已经够撑首屏，pullOnce 也能正常入库）
     // 2.2 无缓存（首登 / 切账号回切）：必须 await + 失败抛出中断本轮 onMounted，
     //     否则 pullOnce 会用 senderId 数字给会话起名落到 IDB 后续基本无法自愈；无缓存分支并发 Promise.all 省一个 RTT
-    const requiredFetches: Promise<unknown>[] = []
+    const requiredFetches: Promise<unknown>[] = [];
     if (hasFriendRows) {
-      void friendStore.pullFriends().catch((error) => console.warn('[IM] 后台增量拉好友失败', error))
+      void friendStore
+        .pullFriends()
+        .catch((error) => console.warn('[IM] 后台增量拉好友失败', error));
     } else {
-      requiredFetches.push(friendStore.pullFriends())
+      requiredFetches.push(friendStore.pullFriends());
     }
     if (hasGroupRows) {
-      void groupStore.fetchGroupList(true).catch((error) => console.warn('[IM] 后台刷新群列表失败', error))
+      void groupStore
+        .fetchGroupList(true)
+        .catch((error) => console.warn('[IM] 后台刷新群列表失败', error));
     } else {
-      requiredFetches.push(groupStore.fetchGroupList(true))
+      requiredFetches.push(groupStore.fetchGroupList(true));
     }
     // 2.3 频道无增量 pull 接口，继续走 list
     if (hasChannelRows) {
-      void channelStore.fetchChannelList().catch((error) => console.warn('[IM] 后台刷频道列表失败', error))
+      void channelStore
+        .fetchChannelList()
+        .catch((error) => console.warn('[IM] 后台刷频道列表失败', error));
     } else {
-      requiredFetches.push(channelStore.fetchChannelList())
+      requiredFetches.push(channelStore.fetchChannelList());
     }
     // 2.4 执行加载
     if (requiredFetches.length > 0) {
-      await Promise.all(requiredFetches)
+      await Promise.all(requiredFetches);
     }
 
     // 2.5 好友申请增量补偿：首登也要跑，离线期间好友申请变更不会影响好友主表
     void friendStore
       .pullFriendRequests()
-      .catch((error) => console.warn('[IM] 后台增量拉好友申请失败', error))
+      .catch((error) => console.warn('[IM] 后台增量拉好友申请失败', error));
 
     // 3. 会话读位置先补偿，消息入库时可直接过滤已读历史消息
     await conversationStore
       .pullConversationReads()
-      .catch((error) => console.warn('[IM] 拉取会话读位置失败', error))
+      .catch((error) => console.warn('[IM] 拉取会话读位置失败', error));
 
     // 4. 实时通信：建 WebSocket 长连接 + 拉离线消息（pullOnce finally 把 loading 归位）
-    webSocketStore.connect()
-    await pullOnce()
+    webSocketStore.connect();
+    await pullOnce();
 
     // 5. 默认选中第一个会话；若置顶分组处于折叠态，需跳过被折叠隐藏的置顶项，避免自动展开折叠
-    const sorted = conversationStore.getSortedConversationList
-    const firstVisible = pickFirstVisibleConversation(sorted)
+    const sorted = conversationStore.getSortedConversationList;
+    const firstVisible = pickFirstVisibleConversation(sorted);
     if (firstVisible && !conversationStore.activeConversation) {
-      conversationStore.setActiveConversation(firstVisible)
+      conversationStore.setActiveConversation(firstVisible);
     }
   } catch (error) {
     // 1. 首拉失败：手动复位 loading（pullOnce 没跑到，它的 finally 兜不到这里），否则后续会话列表写入全被早 return 阻断
     // 2. WebSocket 不在这里 disconnect——路由离开会走 onUnmounted 自然清理，用户也可以刷新重试
-    conversationStore.loading = false
-    console.error('[IM] 初始化失败', error)
+    conversationStore.loading = false;
+    console.error('[IM] 初始化失败', error);
   }
-})
+});
 
 /**
  * 选首屏自动激活的会话；置顶分组折叠时跳过被折叠隐藏的置顶项，避免激活后被自动顶上来
  *
  * 折叠态判定只看用户开关；非置顶 / 有未读的置顶项始终可见，全是可折叠置顶时回退到 sorted[0] 兜底
  */
-function pickFirstVisibleConversation(sorted: Conversation[]): Conversation | undefined {
+function pickFirstVisibleConversation(
+  sorted: Conversation[],
+): Conversation | undefined {
   if (sorted.length === 0) {
-    return undefined
+    return undefined;
   }
   const pinnedExpanded =
-    localStorage.getItem(StorageKeys.localStorage.conversationPinnedExpanded) === 'true'
+    localStorage.getItem(
+      StorageKeys.localStorage.conversationPinnedExpanded,
+    ) === 'true';
   if (pinnedExpanded) {
-    return sorted[0]
+    return sorted[0];
   }
-  return sorted.find((c) => !c.top || (!c.silent && (c.unreadCount || 0) > 0)) ?? sorted[0]
+  return (
+    sorted.find((c) => !c.top || (!c.silent && (c.unreadCount || 0) > 0)) ??
+    sorted[0]
+  );
 }
 
 /** 标签关闭前 flush 草稿队列；debounce 默认 trail-edge 触发，最后一次输入可能还压在队列里 */
 function onBeforeUnload() {
-  conversationStore.flushConversationDraftSave()
+  conversationStore.flushConversationDraftSave();
 }
-window.addEventListener('beforeunload', onBeforeUnload)
+window.addEventListener('beforeunload', onBeforeUnload);
 
 /** 离开 IM 主壳：取消 pull、断开 WebSocket、保存草稿、停止语音、解绑 unload，并结束当前 IM session */
 onUnmounted(() => {
-  cancelPull()
-  webSocketStore.disconnect()
-  conversationStore.flushConversationDraftSave()
-  faceStore.clear()
+  cancelPull();
+  webSocketStore.disconnect();
+  conversationStore.flushConversationDraftSave();
+  faceStore.clear();
   // 模块级单例 audio 不会随视图卸载自动停，主动停掉避免切路由后语音继续响
-  voicePlayer.stop()
-  window.removeEventListener('beforeunload', onBeforeUnload)
+  voicePlayer.stop();
+  window.removeEventListener('beforeunload', onBeforeUnload);
   // 停止当前 IM session 并清理各 store 内存
-  void stopRequests()
-})
+  void stopRequests();
+});
 
 /**
  * 当前会话切换：本地清零未读 + 上报后端已读 + 私聊补"对方已读到哪条"
@@ -169,20 +184,20 @@ onUnmounted(() => {
 watch(
   () => [
     conversationStore.activeConversation?.type,
-    conversationStore.activeConversation?.targetId
+    conversationStore.activeConversation?.targetId,
   ],
   async ([type, targetId]) => {
     if (!targetId) {
-      return
+      return;
     }
     // 本地清零未读 + 上报后端已读，让其它端 / 对方 UI 同步
-    await readActive()
+    await readActive();
     // 私聊补一次"对方已读到哪条"，弥补离线 / 多端漏掉的 RECEIPT 推送
     if (type === ImConversationType.PRIVATE) {
-      void syncPrivateReadStatus(targetId)
+      void syncPrivateReadStatus(targetId);
     }
-  }
-)
+  },
+);
 
 /**
  * 浏览器标签 title 拼上未读数前缀；例：(63条未读)芋道源码
@@ -194,12 +209,13 @@ watch(
   [() => conversationStore.getTotalUnreadCount, () => route.fullPath],
   ([count]) => {
     nextTick(() => {
-      const base = preferences.app.name
-      document.title = count > 0 ? `(${count > 99 ? '99+' : count}条未读)${base}` : base
-    })
+      const base = preferences.app.name;
+      document.title =
+        count > 0 ? `(${count > 99 ? '99+' : count}条未读)${base}` : base;
+    });
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -255,6 +271,7 @@ watch(
   --ant-color-text-secondary: hsl(var(--foreground) / 65%);
   --ant-color-text-placeholder: hsl(var(--foreground) / 45%);
   --ant-color-text-disabled: hsl(var(--foreground) / 30%);
+
   /*
    * fill 系列：浅色下用 Element Plus 风格的「冷调浅灰实色」而非半透明深色，
    * 否则面板（会话列表 / 消息面板等）叠在灰底上会显脏发暗，和 Vue3+EP 的干净白差距明显。

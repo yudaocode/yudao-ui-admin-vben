@@ -31,7 +31,7 @@ withDefaults(
 
 const emit = defineEmits<{
   'update:open': [v: boolean];
-  uploaded: [v: void];
+  uploaded: [];
 }>();
 
 const accountId = inject<number>('accountId');

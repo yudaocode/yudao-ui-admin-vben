@@ -35,9 +35,10 @@ export namespace ImGroupMessageApi {
   }
 }
 
-
 /** 发送群聊消息 */
-export function sendGroupMessage(data: ImGroupMessageApi.GroupMessageSendReqVO) {
+export function sendGroupMessage(
+  data: ImGroupMessageApi.GroupMessageSendReqVO,
+) {
   return requestClient.post<ImGroupMessageApi.GroupMessageRespVO>(
     '/im/message/group/send',
     data,
@@ -56,7 +57,9 @@ export function pullGroupMessageList(
 }
 
 /** 查询群聊历史消息 */
-export function getGroupMessageList(params: ImGroupMessageApi.GroupMessageListReqVO) {
+export function getGroupMessageList(
+  params: ImGroupMessageApi.GroupMessageListReqVO,
+) {
   return requestClient.get<ImGroupMessageApi.GroupMessageRespVO[]>(
     '/im/message/group/list',
     { params },

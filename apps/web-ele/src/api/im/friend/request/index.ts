@@ -28,9 +28,10 @@ export namespace ImFriendRequestApi {
   }
 }
 
-
 /** 发起好友申请 */
-export function applyFriendRequest(data: ImFriendRequestApi.FriendRequestApplyReqVO) {
+export function applyFriendRequest(
+  data: ImFriendRequestApi.FriendRequestApplyReqVO,
+) {
   return requestClient.post<null | number>('/im/friend-request/apply', data);
 }
 

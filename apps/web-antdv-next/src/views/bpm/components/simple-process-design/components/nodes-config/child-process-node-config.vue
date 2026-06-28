@@ -673,7 +673,6 @@ onMounted(async () => {
                     class="w-24"
                     v-model:value="configForm.timeDuration"
                     :min="1"
-                    controls-position="right"
                   />
                 </FormItem>
               </Col>
@@ -786,10 +785,7 @@ onMounted(async () => {
               },
             ]"
           >
-            <InputNumber
-              v-model:value="multiInstanceSourceNumber"
-              :min="1"
-            />
+            <InputNumber v-model:value="multiInstanceSourceNumber" :min="1" />
           </FormItem>
           <FormItem
             v-if="

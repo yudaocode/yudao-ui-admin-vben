@@ -122,7 +122,7 @@ async function handleExport() {
 </script>
 
 <template>
-  <ElCard :bordered="false" shadow="never" class="h-full">
+  <ElCard :border="false" shadow="never" class="h-full">
     <template #header>
       <div class="flex items-center justify-between">
         <span class="text-base font-medium">交易状况</span>

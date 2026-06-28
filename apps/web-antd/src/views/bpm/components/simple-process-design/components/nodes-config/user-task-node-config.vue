@@ -698,7 +698,7 @@ onMounted(() => {
             >
               <Select
                 v-model:value="configForm.roleIds"
-                clearable
+                allow-clear
                 mode="multiple"
               >
                 <SelectOption
@@ -745,7 +745,7 @@ onMounted(() => {
             >
               <Select
                 v-model:value="configForm.postIds"
-                clearable
+                allow-clear
                 mode="multiple"
               >
                 <SelectOption
@@ -765,7 +765,7 @@ onMounted(() => {
             >
               <Select
                 v-model:value="configForm.userIds"
-                clearable
+                allow-clear
                 mode="multiple"
               >
                 <SelectOption
@@ -787,7 +787,7 @@ onMounted(() => {
             >
               <Select
                 v-model:value="configForm.userGroups"
-                clearable
+                allow-clear
                 mode="multiple"
               >
                 <SelectOption
@@ -807,7 +807,7 @@ onMounted(() => {
               label="表单内用户字段"
               name="formUser"
             >
-              <Select v-model:value="configForm.formUser" clearable>
+              <Select v-model:value="configForm.formUser" allow-clear>
                 <SelectOption
                   v-for="(item, idx) in userFieldOnFormOptions"
                   :key="idx"
@@ -827,7 +827,7 @@ onMounted(() => {
               label="表单内部门字段"
               name="formDept"
             >
-              <Select v-model:value="configForm.formDept" clearable>
+              <Select v-model:value="configForm.formDept" allow-clear>
                 <SelectOption
                   v-for="(item, idx) in deptFieldOnFormOptions"
                   :key="idx"
@@ -853,7 +853,7 @@ onMounted(() => {
               :label="deptLevelLabel!"
               name="deptLevel"
             >
-              <Select v-model:value="configForm.deptLevel" clearable>
+              <Select v-model:value="configForm.deptLevel" allow-clear>
                 <SelectOption
                   v-for="(item, index) in MULTI_LEVEL_DEPT"
                   :key="index"
@@ -944,7 +944,7 @@ onMounted(() => {
                 label="驳回节点"
                 name="returnNodeId"
               >
-                <Select v-model:value="configForm.returnNodeId" clearable>
+                <Select v-model:value="configForm.returnNodeId" allow-clear>
                   <SelectOption
                     v-for="item in returnTaskList"
                     :key="item.id"
@@ -1015,7 +1015,6 @@ onMounted(() => {
                         class="mr-2 mt-0.5"
                         v-model:value="configForm.timeDuration"
                         :min="1"
-                        controls-position="right"
                       />
                     </FormItem>
                   </Col>
@@ -1088,7 +1087,7 @@ onMounted(() => {
             >
               <Select
                 v-model:value="configForm.assignEmptyHandlerUserIds"
-                clearable
+                allow-clear
                 mode="multiple"
               >
                 <SelectOption
