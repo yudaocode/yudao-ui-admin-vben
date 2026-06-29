@@ -4,6 +4,7 @@ import type { Conversation } from '../../types';
 import { computed, ref } from 'vue';
 
 import { IconifyIcon as Icon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { Input, message } from 'ant-design-vue';
 
@@ -81,7 +82,7 @@ const recentForwardConversations = computed(() =>
     .map((key) => byKey.value.get(key))
     .filter(
       (c): c is Conversation =>
-        c != null && !hideSet.value.has(getConversationKey(c)),
+        !isUndefined(c) && !hideSet.value.has(getConversationKey(c)),
     ),
 );
 
@@ -96,7 +97,7 @@ const selectedConversations = computed(() =>
     .map((key) => byKey.value.get(key))
     .filter(
       (conversation): conversation is Conversation =>
-        conversation != null &&
+        !isUndefined(conversation) &&
         !hideSet.value.has(getConversationKey(conversation)),
     ),
 );

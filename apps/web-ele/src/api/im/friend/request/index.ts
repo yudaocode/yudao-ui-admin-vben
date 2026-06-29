@@ -1,3 +1,5 @@
+import { isUndefined } from '@vben/utils';
+
 import { requestClient } from '#/api/request';
 
 export namespace ImFriendRequestApi {
@@ -55,7 +57,7 @@ export function refuseFriendRequest(
 /** 查询「我相关」的好友申请列表（游标分页：传 maxId 加载更多） */
 export function getMyFriendRequestList(limit: number, maxId?: number) {
   const params: Record<string, number> = { limit };
-  if (maxId != null) {
+  if (!isUndefined(maxId)) {
     params.maxId = maxId;
   }
   return requestClient.get<ImFriendRequestApi.FriendRequestRespVO[]>(

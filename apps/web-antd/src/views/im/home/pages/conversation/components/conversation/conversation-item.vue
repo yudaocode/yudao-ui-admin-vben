@@ -5,6 +5,7 @@ import { computed } from 'vue';
 
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon as Icon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
@@ -86,7 +87,7 @@ const showSendName = computed(() => {
     return false;
   }
   const lastType = props.conversation.lastMessageType;
-  return lastType != null && isNormalMessage(lastType);
+  return !isUndefined(lastType) && isNormalMessage(lastType);
 });
 
 /** 列表展示文案：草稿优先（对齐微信 PC：有草稿时盖掉最后一条预览）→ 撤回实时算 → lastContent 兜底 */
@@ -96,7 +97,7 @@ const lastContentDisplay = computed(() => {
   }
   if (
     props.conversation.lastMessageType === ImContentType.RECALL &&
-    props.conversation.lastSenderId != null
+    !isUndefined(props.conversation.lastSenderId)
   ) {
     return buildRecallTip(
       props.conversation.lastSenderId,

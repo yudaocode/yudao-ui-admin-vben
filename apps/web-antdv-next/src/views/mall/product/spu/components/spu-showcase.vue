@@ -58,7 +58,7 @@ watch(
     // 只有商品发生变化时才重新查询
     if (
       productSpus.value.length === 0 ||
-      productSpus.value.some((spu) => spu.id == null || !ids.includes(spu.id))
+      productSpus.value.some((spu) => spu.id === null || !ids.includes(spu.id))
     ) {
       productSpus.value = await getSpuDetailList(ids);
     }

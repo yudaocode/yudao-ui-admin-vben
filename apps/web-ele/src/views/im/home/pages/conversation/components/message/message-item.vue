@@ -13,6 +13,7 @@ import { computed, inject } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon as Icon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import { isUndefined } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
 import { ElMessage, ElTag } from 'element-plus';
@@ -251,7 +252,7 @@ const redialRtcCall = inject(IM_RTC_REDIAL_KEY);
 /** 私聊 RTC_CALL_END 气泡点击：用同款 mediaType 重拨 */
 function handleRtcCallBubbleClick() {
   const mediaType = rtcCallEndPrivatePayload.value?.mediaType;
-  if (mediaType == null) {
+  if (isUndefined(mediaType)) {
     return;
   }
   redialRtcCall?.(mediaType);
