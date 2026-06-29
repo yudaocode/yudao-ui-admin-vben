@@ -77,7 +77,7 @@ ContextPadProvider.$inject = [
 
 ContextPadProvider.prototype.getContextPadEntries = function (element) {
   const autoPlace = this._autoPlace;
-  const canvas = this._canvas;
+  // const canvas = this._canvas;
   const connect = this._connect;
   const contextPad = this._contextPad;
   const create = this._create;
@@ -103,25 +103,25 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
     modeling.removeElements([element]);
   }
 
-  function getReplaceMenuPosition(element) {
-    const Y_OFFSET = 5;
+  // function getReplaceMenuPosition(element) {
+  //   const Y_OFFSET = 5;
 
-    const diagramContainer = canvas.getContainer();
-    const pad = contextPad.getPad(element).html;
+  //   const diagramContainer = canvas.getContainer();
+  //   const pad = contextPad.getPad(element).html;
 
-    const diagramRect = diagramContainer.getBoundingClientRect();
-    const padRect = pad.getBoundingClientRect();
+  //   const diagramRect = diagramContainer.getBoundingClientRect();
+  //   const padRect = pad.getBoundingClientRect();
 
-    const top = padRect.top - diagramRect.top;
-    const left = padRect.left - diagramRect.left;
+  //   const top = padRect.top - diagramRect.top;
+  //   const left = padRect.left - diagramRect.left;
 
-    const pos = {
-      x: left,
-      y: top + padRect.height + Y_OFFSET,
-    };
+  //   const pos = {
+  //     x: left,
+  //     y: top + padRect.height + Y_OFFSET,
+  //   };
 
-    return pos;
-  }
+  //   return pos;
+  // }
 
   /**
    * Create an append action
@@ -335,11 +335,7 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
         title: '修改类型',
         action: {
           click(event, element) {
-            const position = Object.assign(getReplaceMenuPosition(element), {
-              cursor: { x: event.x, y: event.y },
-            });
-
-            popupMenu.open(element, 'bpmn-replace', position);
+            popupMenu.open(element, 'bpmn-replace', { x: event.x, y: event.y });
           },
         },
       },
