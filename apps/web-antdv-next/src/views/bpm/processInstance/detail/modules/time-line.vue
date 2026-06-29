@@ -437,7 +437,9 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
 
               <!-- 审批意见、附件和签名 -->
               <div
-                v-if="shouldShowReasonAndAttachment(task, activity.nodeType, index)"
+                v-if="
+                  shouldShowReasonAndAttachment(task, activity.nodeType, index)
+                "
                 class="mt-1 w-full rounded-md bg-gray-100 p-2 text-sm text-gray-500"
               >
                 <div v-if="task.reason">审批意见：{{ task.reason }}</div>

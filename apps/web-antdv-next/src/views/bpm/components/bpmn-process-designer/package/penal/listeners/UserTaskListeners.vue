@@ -229,10 +229,10 @@ const selectProcessListener = (listener: any) => {
     bpmnElement.businessObject?.extensionElements?.values?.filter(
       (ex: any) => ex.$type !== `${prefix}:TaskListener`,
     ) ?? [];
-  updateElementExtensions(
-    bpmnElement,
-    [...otherExtensionList.value, ...bpmnElementListeners.value],
-  );
+  updateElementExtensions(bpmnElement, [
+    ...otherExtensionList.value,
+    ...bpmnElementListeners.value,
+  ]);
 };
 
 const [ListenerDrawer, listenerDrawerApi] = useVbenDrawer({
