@@ -1,3 +1,5 @@
+import { isUndefined } from '@vben/utils';
+
 import { getDb } from './db';
 
 /**
@@ -54,16 +56,15 @@ export async function runIncrementalPull<T extends PullRecord>(
 ): Promise<void> {
   const storedCursor = await getPullCursor(cursorKey);
   const highWater = { ...storedCursor };
-  let cursor =
-    storedCursor.lastUpdateTime == null
-      ? {}
-      : {
-          lastUpdateTime: Math.max(
-            0,
-            storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
-          ),
-          lastId: 0,
-        };
+  let cursor = isUndefined(storedCursor.lastUpdateTime)
+    ? {}
+    : {
+        lastUpdateTime: Math.max(
+          0,
+          storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
+        ),
+        lastId: 0,
+      };
   for (let page = 0; page < PULL_MAX_PAGES; page++) {
     if (isActive && !isActive()) {
       return;
@@ -89,12 +90,12 @@ export async function runIncrementalPull<T extends PullRecord>(
       if (!last) {
         return;
       }
-      if (last.updateTime == null) {
+      if (isUndefined(last.updateTime)) {
         return;
       }
       cursor = { lastUpdateTime: last.updateTime, lastId: last.id };
       if (
-        highWater.lastUpdateTime == null ||
+        isUndefined(highWater.lastUpdateTime) ||
         cursor.lastUpdateTime > highWater.lastUpdateTime ||
         (cursor.lastUpdateTime === highWater.lastUpdateTime &&
           cursor.lastId > (highWater.lastId ?? 0))
@@ -154,14 +155,14 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
     // 本批最大消息 id 作为下次游标；无有效 id 则本批 apply 后停（无法继续翻页）
     const validIds = list
       .map((record) => record.id)
-      .filter((id): id is number => id != null);
+      .filter((id): id is number => id !== null);
     const nextMinId = validIds.length > 0 ? Math.max(...validIds) : undefined;
     // applyPage 返回 false：本页未落地（如入库失败），不推进游标并终止，避免漏消息
     if ((await applyPage(list, nextMinId)) === false) {
       return;
     }
     // 无有效 id，或游标没前进（后端契约是 id > minId，理论不会出现）：停，防御死翻
-    if (nextMinId == null || nextMinId <= minId) {
+    if (isUndefined(nextMinId) || nextMinId <= minId) {
       return;
     }
     minId = nextMinId;

@@ -11,7 +11,11 @@ import {
   OrderStatusEnum,
   OrderUpdateStatusList,
 } from '@vben/constants';
-import { downloadFileFromBlobPart, formatDateTime } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  formatDateTime,
+  isUndefined,
+} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -107,7 +111,7 @@ async function handleExpandChange(
     return;
   }
   const key = row.id;
-  if (key == null) {
+  if (isUndefined(key)) {
     return;
   }
   Reflect.deleteProperty(detailMap, key);

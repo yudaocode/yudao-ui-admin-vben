@@ -12,7 +12,7 @@ const { $t } = useSimpleLocale();
 
 const [rootProps, form] = injectFormProps();
 
-const collapsed = defineModel({ default: false });
+const collapsed = defineModel<boolean>({ default: false });
 
 const resetButtonOptions = computed(() => {
   return {

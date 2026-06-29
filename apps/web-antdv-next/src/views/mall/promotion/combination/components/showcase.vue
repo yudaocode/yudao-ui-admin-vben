@@ -60,7 +60,7 @@ watch(
     if (
       activityList.value.length === 0 ||
       activityList.value.some(
-        (activity) => activity.id == null || !ids.includes(activity.id),
+        (activity) => activity.id === null || !ids.includes(activity.id),
       )
     ) {
       activityList.value = await getCombinationActivityListByIds(ids);
