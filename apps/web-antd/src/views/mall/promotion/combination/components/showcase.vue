@@ -5,6 +5,7 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 import { computed, ref, watch } from 'vue';
 
 import { CloseCircleFilled, PlusOutlined } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { Image, Tooltip } from 'ant-design-vue';
 
@@ -60,7 +61,7 @@ watch(
     if (
       activityList.value.length === 0 ||
       activityList.value.some(
-        (activity) => activity.id === null || !ids.includes(activity.id),
+        (activity) => isUndefined(activity.id) || !ids.includes(activity.id),
       )
     ) {
       activityList.value = await getCombinationActivityListByIds(ids);

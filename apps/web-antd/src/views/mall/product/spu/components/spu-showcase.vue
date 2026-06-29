@@ -5,6 +5,7 @@ import type { MallSpuApi } from '#/api/mall/product/spu';
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { Image, Tooltip } from 'ant-design-vue';
 
@@ -58,7 +59,9 @@ watch(
     // 只有商品发生变化时才重新查询
     if (
       productSpus.value.length === 0 ||
-      productSpus.value.some((spu) => spu.id === null || !ids.includes(spu.id))
+      productSpus.value.some(
+        (spu) => isUndefined(spu.id) || !ids.includes(spu.id),
+      )
     ) {
       productSpus.value = await getSpuDetailList(ids);
     }
