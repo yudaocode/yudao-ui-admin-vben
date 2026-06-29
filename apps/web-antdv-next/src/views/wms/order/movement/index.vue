@@ -61,7 +61,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 function clearDetailMap() {
   for (const id of Object.keys(detailMap)) {
     const key = Number(id);
-    delete detailMap[key];
+    Reflect.deleteProperty(detailMap, key);
   }
 }
 
@@ -110,7 +110,7 @@ async function handleExpandChange(
   if (key == null) {
     return;
   }
-  delete detailMap[key];
+  Reflect.deleteProperty(detailMap, key);
   detailMap[key] = await getMovementOrderDetailListByOrderId(key);
 }
 

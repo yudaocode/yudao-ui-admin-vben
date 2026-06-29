@@ -158,9 +158,7 @@ onMounted(getList);
                 {{ data.day.split('-')[2] }}
               </span>
               <ElTag
-                v-if="
-                  data.type === 'current-month' && holidaySet.has(data.day)
-                "
+                v-if="data.type === 'current-month' && holidaySet.has(data.day)"
                 effect="dark"
                 size="small"
                 type="success"

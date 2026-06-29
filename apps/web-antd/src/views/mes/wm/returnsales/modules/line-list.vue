@@ -55,7 +55,7 @@ const [DetailFormModal, detailFormModalApi] = useVbenModal({
 function handleRefresh() {
   for (const id of Object.keys(detailMap)) {
     const key = Number(id);
-    delete detailMap[key];
+    Reflect.deleteProperty(detailMap, key);
   }
   gridApi.query();
 }

@@ -173,8 +173,9 @@ export function useFormSchema(): VbenFormSchema[] {
               return restaurant.value.toLowerCase().includes(qs.toLowerCase());
             };
           };
+          const filter = createFilter(queryString);
           const results = queryString
-            ? options.filter(createFilter(queryString))
+            ? options.filter((option) => filter(option))
             : options;
           cb(results);
         },
