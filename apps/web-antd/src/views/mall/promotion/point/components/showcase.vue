@@ -5,6 +5,7 @@ import type { MallPointActivityApi } from '#/api/mall/promotion/point';
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { Image, Tooltip } from 'ant-design-vue';
 
@@ -54,7 +55,9 @@ watch(
     // 只有活动发生变化时才重新查询
     if (
       pointActivityList.value.length === 0 ||
-      pointActivityList.value.some((activity) => !ids.includes(activity.id))
+      pointActivityList.value.some(
+        (activity) => isUndefined(activity.id) || !ids.includes(activity.id),
+      )
     ) {
       pointActivityList.value = await getPointActivityListByIds(ids);
     }
