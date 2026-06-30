@@ -28,7 +28,10 @@ const handleDateRangeChange = (times?: [Dayjs, Dayjs]) => {
     formatDateTime(times[0]) as string,
     formatDateTime(times[1]) as string,
   ];
-  gridApi.query();
+  // ShortcutDateRangePicker 初始化会先触发 change，此时 Grid 可能还没 mount：https://gitee.com/yudaocode/yudao-ui-admin-vben/issues/IJXOKO
+  if (typeof gridApi.grid?.commitProxy === 'function') {
+    gridApi.query();
+  }
 };
 
 const columns: VxeTableGridOptions['columns'] = [
