@@ -5,6 +5,7 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import { ElImage, ElTooltip } from 'element-plus';
 
@@ -55,7 +56,9 @@ watch(
     // 只有活动发生变化时才重新查询
     if (
       activityList.value.length === 0 ||
-      activityList.value.some((activity) => !ids.includes(activity.id!))
+      activityList.value.some(
+        (activity) => isUndefined(activity.id) || !ids.includes(activity.id),
+      )
     ) {
       activityList.value = await getCombinationActivityListByIds(ids);
     }

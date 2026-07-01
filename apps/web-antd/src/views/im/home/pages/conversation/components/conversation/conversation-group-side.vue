@@ -7,6 +7,7 @@ import { computed, ref, watch } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon as Icon } from '@vben/icons';
+import { isUndefined } from '@vben/utils';
 
 import {
   Button,
@@ -95,13 +96,10 @@ const myId = computed(() => getCurrentUserId());
 /** 历史退群群：禁所有群操作入口（邀请 / 移出 / 改资料 / 禁言 / 审批 / 退出等），只保留展示；props.group 是 GroupLite 无 joinStatus，回 store 取全量 */
 const isQuitGroup = computed(() => {
   const id = props.group?.id;
-  return id != null && isGroupQuit(groupStore.getGroup(id));
+  return !isUndefined(id) && isGroupQuit(groupStore.getGroup(id));
 });
 const isOwner = computed(
-  () =>
-    !isQuitGroup.value &&
-    props.group != null &&
-    props.group.ownerId === myId.value,
+  () => !isQuitGroup.value && props.group?.ownerId === myId.value,
 );
 /** 当前用户在群里的角色（来自 props.members 的 me 行）；用于判定是否可移出他人 */
 const myRole = computed(
