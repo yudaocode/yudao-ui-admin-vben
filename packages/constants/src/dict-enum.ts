@@ -47,6 +47,7 @@ const BPM_DICT = {
   BPM_PROCESS_INSTANCE_STATUS: 'bpm_process_instance_status', // BPM 流程实例状态
   BPM_PROCESS_LISTENER_TYPE: 'bpm_process_listener_type', // BPM 流程监听器类型
   BPM_PROCESS_LISTENER_VALUE_TYPE: 'bpm_process_listener_value_type', // BPM 流程监听器值类型
+  BPM_COMMENT_TYPE: 'bpm_comment_type', // BPM 评论类型
   BPM_TASK_CANDIDATE_STRATEGY: 'bpm_task_candidate_strategy', // BPM 任务候选人策略
   BPM_TASK_STATUS: 'bpm_task_status', // BPM 任务状态
 } as const;

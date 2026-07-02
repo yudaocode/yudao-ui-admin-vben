@@ -44,6 +44,7 @@ import {
   cancelProcessInstanceByStartUser,
   getNextApprovalNodes,
 } from '#/api/bpm/processInstance';
+import { createComment } from '#/api/bpm/comment';
 import {
   approveTask,
   copyTask,
@@ -91,6 +92,7 @@ const popOverVisible: any = ref({
   addSign: false,
   return: false,
   copy: false,
+  comment: false,
   cancel: false,
   deleteSign: false,
 }); // 气泡卡是否展示
@@ -185,6 +187,14 @@ const copyFormRule: Record<string, Rule[]> = reactive({
   copyUserIds: [
     { required: true, message: '抄送人不能为空', trigger: 'change' },
   ],
+});
+
+const commentFormRef = ref<FormInstance>(); // 评论表单
+const commentForm = reactive({
+  message: '',
+});
+const commentFormRule: Record<string, Rule[]> = reactive({
+  message: [{ required: true, message: '评论内容不能为空', trigger: 'blur' }],
 });
 
 const transferFormRef = ref<FormInstance>(); // 转办表单
@@ -498,6 +508,30 @@ async function handleCopy() {
     copyFormRef.value.resetFields();
     popOverVisible.value.copy = false;
     message.success($t('ui.actionMessage.operationSuccess'));
+  } finally {
+    formLoading.value = false;
+  }
+}
+
+/** 处理评论 */
+async function handleComment() {
+  formLoading.value = true;
+  try {
+    // 1. 校验表单
+    if (!commentFormRef.value) return;
+    await commentFormRef.value.validate();
+    const content = commentForm.message.trim();
+    if (!content) {
+      message.warning('评论内容不能为空');
+      return;
+    }
+    // 2. 提交评论
+    await createComment(runningTask.value.id, content);
+    commentFormRef.value.resetFields();
+    popOverVisible.value.comment = false;
+    message.success('评论成功');
+    // 3. 加载最新数据
+    reload();
   } finally {
     formLoading.value = false;
   }
@@ -1014,6 +1048,56 @@ defineExpose({ loadTodoTask });
                 >
                   取消
                 </Button>
+              </FormItem>
+            </Form>
+          </div>
+        </template>
+      </Popover>
+
+      <!-- 【评论】按钮 -->
+      <Popover
+        v-model:open="popOverVisible.comment"
+        placement="top"
+        :overlay-style="{ width: '400px' }"
+        trigger="click"
+        v-if="runningTask && isHandleTaskStatus()"
+      >
+        <Button ghost type="primary" @click="openPopover('comment')">
+          <IconifyIcon icon="lucide:message-circle" />
+          评论
+        </Button>
+        <template #content>
+          <div class="flex flex-1 flex-col px-5 pt-5" v-loading="formLoading">
+            <Form
+              layout="vertical"
+              class="mb-auto"
+              ref="commentFormRef"
+              :model="commentForm"
+              :rules="commentFormRule"
+              label-width="100px"
+            >
+              <FormItem label="评论内容" name="message">
+                <Textarea
+                  v-model:value="commentForm.message"
+                  placeholder="请输入评论内容"
+                  :rows="4"
+                  :maxlength="500"
+                  show-count
+                />
+              </FormItem>
+              <FormItem>
+                <Space>
+                  <Button
+                    :disabled="formLoading"
+                    type="primary"
+                    @click="handleComment"
+                  >
+                    提交
+                  </Button>
+                  <Button @click="closePopover('comment', commentFormRef)">
+                    取消
+                  </Button>
+                </Space>
               </FormItem>
             </Form>
           </div>

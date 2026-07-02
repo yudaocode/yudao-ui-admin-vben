@@ -33,6 +33,7 @@ import { setConfAndFields2 } from '#/components/form-create';
 import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
+import BpmProcessInstanceCommentList from './modules/comment-list.vue';
 import ProcessInstanceOperationButton from './modules/operation-button.vue';
 import ProcessPrint from './modules/process-print.vue';
 import ProcessInstanceSimpleViewer from './modules/simple-bpm-viewer.vue';
@@ -53,6 +54,7 @@ const processDefinition = ref<any>({}); // 流程定义
 const processModelView = ref<any>({}); // 流程模型视图
 const operationButtonRef = ref(); // 操作按钮组件 ref
 const activeTab = ref('form');
+const commentListRef = ref(); // 评论列表组件 ref
 const taskListRef = ref();
 const auditIconsMap: {
   [key: string]:
@@ -189,6 +191,8 @@ function setFieldPermission(field: string, permission: string) {
 const refresh = () => {
   // 重新获取详情
   getDetail();
+  // 重新获取评论
+  commentListRef.value?.getList();
 };
 
 const [PrintModal, printModalApi] = useVbenModal({
@@ -209,6 +213,10 @@ watch(
       // 如果切换到流转记录标签，刷新任务列表
       await nextTick();
       taskListRef.value?.refresh();
+    } else if (newVal === 'comment') {
+      // 如果切换到流程评论标签，刷新评论列表
+      await nextTick();
+      commentListRef.value?.getList();
     }
   },
 );
@@ -354,9 +362,12 @@ onMounted(async () => {
                 :id="id"
               />
             </TabPane>
-            <!-- TODO 待开发 -->
-            <TabPane tab="流转评论" key="comment" v-if="false" class="pr-3">
-              <div class="h-full">待开发</div>
+            <TabPane tab="流程评论" key="comment" class="pr-3">
+              <BpmProcessInstanceCommentList
+                ref="commentListRef"
+                :loading="processInstanceLoading"
+                :id="id"
+              />
             </TabPane>
           </Tabs>
         </div>
