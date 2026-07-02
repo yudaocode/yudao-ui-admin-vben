@@ -16,6 +16,8 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
 import { setConfAndFields2 } from '#/components/form-create';
 
+import TaskEvidence from './task-evidence.vue';
+
 defineOptions({
   name: 'BpmProcessInstanceTaskList',
 });
@@ -78,6 +80,14 @@ function useGridColumns(): VxeTableGridOptions['columns'] {
         default: 'slot-reason',
       },
       minWidth: 200,
+    },
+    {
+      field: 'evidence',
+      title: '附件/签名',
+      slots: {
+        default: 'slot-evidence',
+      },
+      minWidth: 220,
     },
     {
       field: 'durationInMillis',
@@ -185,6 +195,13 @@ defineExpose({
             <span class="!ml-0.5 text-xs">查看表单</span>
           </Button>
         </div>
+      </template>
+      <template #slot-evidence="{ row }">
+        <TaskEvidence
+          compact
+          :attachments="row.attachments"
+          :sign-pic-url="row.signPicUrl"
+        />
       </template>
     </Grid>
   </div>

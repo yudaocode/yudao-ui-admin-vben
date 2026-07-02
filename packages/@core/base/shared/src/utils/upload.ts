@@ -85,7 +85,8 @@ export function getFileNameFromUrl(url: null | string | undefined): string {
     return decodeURIComponent(fileName);
   } catch {
     // 如果 URL 解析失败，尝试从字符串中提取
-    const parts = url.split('/');
+    const cleanUrl = url.split(/[?#]/)[0] || '';
+    const parts = cleanUrl.split('/');
     return parts[parts.length - 1] || 'unknown';
   }
 }

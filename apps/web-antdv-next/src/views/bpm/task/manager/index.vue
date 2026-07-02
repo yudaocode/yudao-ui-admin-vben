@@ -7,6 +7,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskManagerPage } from '#/api/bpm/task';
 import { router } from '#/router';
+import TaskEvidence from '#/views/bpm/processInstance/detail/modules/task-evidence.vue';
 
 import { useGridColumns, useGridFormSchema } from './data';
 
@@ -60,6 +61,13 @@ const [Grid] = useVbenVxeGrid({
     </template>
 
     <Grid table-title="流程任务">
+      <template #evidence="{ row }">
+        <TaskEvidence
+          compact
+          :attachments="row.attachments"
+          :sign-pic-url="row.signPicUrl"
+        />
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

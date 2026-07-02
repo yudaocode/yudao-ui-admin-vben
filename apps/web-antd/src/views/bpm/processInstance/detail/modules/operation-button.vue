@@ -40,11 +40,11 @@ import {
   Textarea,
 } from 'ant-design-vue';
 
+import { createComment } from '#/api/bpm/comment';
 import {
   cancelProcessInstanceByStartUser,
   getNextApprovalNodes,
 } from '#/api/bpm/processInstance';
-import { createComment } from '#/api/bpm/comment';
 import {
   approveTask,
   copyTask,
@@ -114,7 +114,6 @@ const APPROVAL_ATTACHMENT_FILE_TYPES = [
   'webp',
 ];
 const APPROVAL_ATTACHMENT_FILE_SIZE = 5;
-const APPROVAL_ATTACHMENT_DIRECTORY = 'bpm/task-attachment';
 
 /** 创建流程表达式 */
 function openSignatureModal() {
@@ -951,7 +950,6 @@ defineExpose({ loadTodoTask });
                 <FileUpload
                   v-model:value="approveReasonForm.attachments"
                   :accept="APPROVAL_ATTACHMENT_FILE_TYPES"
-                  :directory="APPROVAL_ATTACHMENT_DIRECTORY"
                   :max-number="10"
                   :max-size="APPROVAL_ATTACHMENT_FILE_SIZE"
                   :multiple="true"
@@ -1022,7 +1020,6 @@ defineExpose({ loadTodoTask });
                 <FileUpload
                   v-model:value="rejectReasonForm.attachments"
                   :accept="APPROVAL_ATTACHMENT_FILE_TYPES"
-                  :directory="APPROVAL_ATTACHMENT_DIRECTORY"
                   :max-number="10"
                   :max-size="APPROVAL_ATTACHMENT_FILE_SIZE"
                   :multiple="true"

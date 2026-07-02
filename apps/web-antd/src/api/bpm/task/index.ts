@@ -14,6 +14,8 @@ export namespace BpmTaskApi {
     endTime: number; // 结束时间
     durationInMillis: number; // 持续时间
     reason: string; // 审批理由
+    attachments?: string[]; // 审批附件
+    signPicUrl?: string; // 签名图片
     ownerUser: any; // 负责人
     assigneeUser: any; // 处理人
     taskDefinitionKey: string; // 任务定义的标识

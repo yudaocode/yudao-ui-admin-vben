@@ -79,6 +79,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 180,
     },
     {
+      field: 'evidence',
+      title: '附件/签名',
+      minWidth: 220,
+      slots: { default: 'evidence' },
+    },
+    {
       field: 'durationInMillis',
       title: '耗时',
       minWidth: 180,
