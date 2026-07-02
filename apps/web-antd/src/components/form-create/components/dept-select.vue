@@ -1,6 +1,6 @@
 <!-- 部门选择器 - 树形结构显示 -->
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { inject, onMounted, ref, watch } from 'vue';
 
 import { useUserStore } from '@vben/stores';
 import { handleTree } from '@vben/utils';
@@ -156,13 +156,24 @@ function hasValidPresetValue(): boolean {
   return true;
 }
 
+// 是否处于表单设计器中：FcDesigner 会向其内部组件 provide('designer')，运行时表单无此注入
+const designerCtx = inject('designer', null);
+
 /** 设置默认值（当前用户部门） */
 function setDefaultValue(): void {
   // 仅当 defaultCurrentDept 为 true 时处理
   if (!props.defaultCurrentDept) {
     return;
   }
-  // 检查是否已有预设值（预设值优先级高于默认当前部门）
+
+  // 表单设计器中不设置动态默认值：否则 emit 出去的值会被设计器双向绑定回写到 rule.value，
+  // 随表单设计持久化后，运行时其他用户会拿到这个被污染的固定值，导致默认部门不再跟随当前登录用户。
+  // 仅在「运行时」才设置. 不过会导致表单设计器预览时，无法看到默认值
+  if (designerCtx !== null) {
+    return;
+  }
+
+  // 已有预设值则保留（优先级高于默认当前部门）：用于审批回显时保留发起人填写的真实值
   if (hasValidPresetValue()) {
     return;
   }
