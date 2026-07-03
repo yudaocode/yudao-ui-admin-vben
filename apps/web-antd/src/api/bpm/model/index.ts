@@ -96,6 +96,17 @@ export async function createModel(data: BpmModelApi.Model) {
   return requestClient.post('/bpm/model/create', data);
 }
 
+/** 导入流程模型 */
+export async function importModel(file: File, key?: string, name?: string) {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (key) formData.append('key', key);
+  if (name) formData.append('name', name);
+  return requestClient.post<string>('/bpm/model/import', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+}
+
 /** 删除流程模型 */
 export async function deleteModel(id: number) {
   return requestClient.delete(`/bpm/model/delete?id=${id}`);

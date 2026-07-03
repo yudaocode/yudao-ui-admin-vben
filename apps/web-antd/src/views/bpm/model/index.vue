@@ -8,13 +8,23 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useSortable } from '@vueuse/integrations/useSortable';
-import { Button, Card, Dropdown, Input, Menu, message } from 'ant-design-vue';
+import {
+  Alert,
+  Button,
+  Card,
+  Dropdown,
+  Form,
+  Input,
+  Menu,
+  message,
+  Upload,
+} from 'ant-design-vue';
 
 import {
   getCategorySimpleList,
   updateCategorySortBatch,
 } from '#/api/bpm/category';
-import { getModelList } from '#/api/bpm/model';
+import { getModelList, importModel as importModelApi } from '#/api/bpm/model';
 import { router } from '#/router';
 
 import CategoryForm from '../category/modules/form.vue';
@@ -34,6 +44,70 @@ const originalData = ref<ModelCategoryInfo[]>([]); // 未排序前的原始数�
 const sortable = useTemplateRef<HTMLElement>('categoryGroupRef'); // 可以排序元素的容器
 const sortableInstance = ref<any>(null); // 排序引用，以便后续启用或禁用排序
 const isCategorySorting = ref(false); // 分类排序状态
+
+// ========== 导入弹窗相关 ==========
+const importFile = ref<File | null>(null); // 导入文件（用于最终提交）
+const importFileList = ref<any[]>([]); // 上传组件的文件列表
+const importFormRef = ref();
+const importForm = reactive({
+  key: '',
+  name: '',
+});
+
+const [ImportModal, importModalApi] = useVbenModal({
+  async onConfirm() {
+    if (!importFile.value) {
+      message.warning('请上传流程模型文件');
+      return;
+    }
+    await importFormRef.value?.validate();
+    importModalApi.lock();
+    try {
+      await importModelApi(importFile.value, importForm.key, importForm.name);
+      message.success('导入成功');
+      await importModalApi.close();
+      await getList();
+    } catch {
+      // 全局 request 拦截器已处理错误提示
+    } finally {
+      importModalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      importFile.value = null;
+      importFileList.value = [];
+      importForm.key = '';
+      importForm.name = '';
+    }
+  },
+});
+
+/** 上传前校验 + 读取文件自动填充字段 */
+function beforeUpload(file: File) {
+  const isJson =
+    file.type === 'application/json' || file.name.endsWith('.json');
+  if (!isJson) {
+    message.error('仅支持上传 JSON 格式的流程模型文件');
+    return Upload.LIST_IGNORE;
+  }
+  importFile.value = file;
+  file.text().then((text) => {
+    try {
+      const json = JSON.parse(text);
+      importForm.key = json.key || '';
+      importForm.name = json.name || '';
+    } catch {
+      message.error('JSON 文件格式不正确');
+    }
+  });
+  return false; // 阻止默认上传，不显示上传动画
+}
+
+/** 点击导入按钮 */
+function handleImportClick() {
+  importModalApi.open();
+}
 
 const queryParams = reactive({
   name: '',
@@ -161,6 +235,9 @@ async function handleCategorySortSubmit() {
           <Button class="ml-2" type="primary" @click="createModel">
             <IconifyIcon icon="lucide:plus" /> 新建模型
           </Button>
+          <Button class="ml-2" @click="handleImportClick">
+            <IconifyIcon icon="lucide:upload" /> 导入模型
+          </Button>
           <Dropdown class="ml-2" placement="bottomRight" arrow>
             <Button>
               <template #icon>
@@ -214,5 +291,66 @@ async function handleCategorySortSubmit() {
         />
       </div>
     </Card>
+
+    <!-- 导入流程模型弹窗 -->
+    <ImportModal title="导入流程模型" class="w-[640px]">
+      <div class="mx-4 my-2">
+        <Alert
+          message="跨租户导入说明"
+          description="导入文件由【导出】功能生成。导入后将在当前租户下新建流程模型，审批人、可发起人、流程管理员等数据无法跨租户复用，仅保留审批节点结构，请在导入后重新配置审批人再发布。"
+          type="info"
+          show-icon
+          class="!mb-4"
+        />
+        <Form ref="importFormRef" :model="importForm">
+          <!-- 1. 流程模型文件 -->
+          <Form.Item label="流程模型文件" name="file">
+            <Upload.Dragger
+              v-model:file-list="importFileList"
+              :before-upload="beforeUpload"
+              :max-count="1"
+              accept=".json"
+              :show-upload-list="{ showRemoveIcon: true }"
+            >
+              <p class="ant-upload-drag-icon flex justify-center">
+                <IconifyIcon icon="lucide:cloud-upload" class="text-3xl" />
+              </p>
+              <p class="ant-upload-text">点击或拖拽文件到此处上传</p>
+              <p class="ant-upload-hint">
+                仅支持上传单个 JSON 格式的流程模型文件
+              </p>
+            </Upload.Dragger>
+          </Form.Item>
+
+          <!-- 2. 流程标识 -->
+          <Form.Item
+            label="流程标识"
+            name="key"
+            :rules="[{ required: true, message: '请输入流程标识' }]"
+          >
+            <Input
+              v-model:value="importForm.key"
+              placeholder="请输入流程标识"
+            />
+            <div class="text-xs text-gray-400">
+              同租户导入时，若标识已存在请修改后再导入
+            </div>
+          </Form.Item>
+
+          <!-- 3. 流程名称 -->
+          <Form.Item
+            label="流程名称"
+            name="name"
+            :rules="[{ required: true, message: '请输入流程名称' }]"
+          >
+            <Input
+              v-model:value="importForm.name"
+              placeholder="请输入流程名称"
+            />
+            <div class="text-xs text-gray-400">必填，请填写流程名称</div>
+          </Form.Item>
+        </Form>
+      </div>
+    </ImportModal>
   </Page>
 </template>
