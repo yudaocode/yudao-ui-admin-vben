@@ -107,6 +107,11 @@ export async function importModel(file: File, key?: string, name?: string) {
   });
 }
 
+/** 导出流程模型 */
+export async function exportModel(id: number) {
+  return requestClient.get<BpmModelApi.Model>(`/bpm/model/export?id=${id}`);
+}
+
 /** 删除流程模型 */
 export async function deleteModel(id: number) {
   return requestClient.delete(`/bpm/model/delete?id=${id}`);
