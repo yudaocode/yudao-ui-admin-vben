@@ -221,11 +221,11 @@ async function initComponentAdapter() {
     DatePicker: NDatePicker,
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
-      return h(NButton, { ...props, attrs, type: 'default' }, slots);
+      return h(NButton, { ...props, ...attrs, type: 'default' }, slots);
     },
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
-      return h(NButton, { ...props, attrs, type: 'primary' }, slots);
+      return h(NButton, { ...props, ...attrs, type: 'primary' }, slots);
     },
     Divider: NDivider,
     IconPicker: withDefaultPlaceholder(IconPicker, 'select', {

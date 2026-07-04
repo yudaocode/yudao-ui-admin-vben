@@ -319,11 +319,11 @@ async function initComponentAdapter() {
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
       // 调整 type 为 default ，info 有点丑
-      return h(ElButton, { ...props, attrs, type: 'default' }, slots);
+      return h(ElButton, { ...props, ...attrs, type: 'default' }, slots);
     },
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
-      return h(ElButton, { ...props, attrs, type: 'primary' }, slots);
+      return h(ElButton, { ...props, ...attrs, type: 'primary' }, slots);
     },
     Divider: ElDivider,
     IconPicker: withDefaultPlaceholder(IconPicker, 'select', {
@@ -356,7 +356,7 @@ async function initComponentAdapter() {
       );
     },
     Select: (props, { attrs, slots }) => {
-      return h(ElSelectV2, { ...props, attrs }, slots);
+      return h(ElSelectV2, { ...props, ...attrs }, slots);
     },
     Space: ElSpace,
     Switch: ElSwitch,

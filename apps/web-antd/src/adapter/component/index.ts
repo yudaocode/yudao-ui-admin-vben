@@ -702,7 +702,7 @@ async function initComponentAdapter() {
     DatePicker,
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
-      return h(Button, { ...props, attrs, type: 'default' }, slots);
+      return h(Button, { ...props, ...attrs, type: 'default' }, slots);
     },
     Divider,
     IconPicker: withDefaultPlaceholder(IconPicker, 'select', {
@@ -718,7 +718,7 @@ async function initComponentAdapter() {
     Mentions: withDefaultPlaceholder(Mentions, 'input'),
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
-      return h(Button, { ...props, attrs, type: 'primary' }, slots);
+      return h(Button, { ...props, ...attrs, type: 'primary' }, slots);
     },
     Radio,
     RadioGroup,

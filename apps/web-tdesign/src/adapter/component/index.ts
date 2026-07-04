@@ -228,7 +228,7 @@ async function initComponentAdapter() {
       }
       return h(
         Button,
-        { ...props, ghost, variant, attrs, theme: 'default' },
+        { ...props, ...attrs, ghost, variant, theme: 'default' },
         slots,
       );
     },
@@ -254,7 +254,7 @@ async function initComponentAdapter() {
       }
       return h(
         Button,
-        { ...props, ghost, variant, attrs, theme: 'primary' },
+        { ...props, ...attrs, ghost, variant, theme: 'primary' },
         slots,
       );
     },
@@ -263,7 +263,7 @@ async function initComponentAdapter() {
     RangePicker: (props, { attrs, slots }) => {
       return h(
         RangePicker,
-        { ...props, modelValue: props.modelValue ?? [], attrs },
+        { ...props, ...attrs, modelValue: props.modelValue ?? [] },
         slots,
       );
     },
