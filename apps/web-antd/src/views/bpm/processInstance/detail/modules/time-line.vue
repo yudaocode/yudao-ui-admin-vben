@@ -482,7 +482,6 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
       class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
-      title="选择用户"
       @confirm="handleUserSelectConfirm"
       @closed="handleUserSelectClosed"
       @cancel="handleUserSelectCancel"

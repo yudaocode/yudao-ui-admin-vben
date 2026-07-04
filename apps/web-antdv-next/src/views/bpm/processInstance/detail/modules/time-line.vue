@@ -14,13 +14,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime, isEmpty } from '@vben/utils';
 
-import {
-  Avatar,
-  Button,
-  Timeline,
-  TimelineItem,
-  Tooltip,
-} from 'antdv-next';
+import { Avatar, Button, Timeline, TimelineItem, Tooltip } from 'antdv-next';
 
 import { UserSelectModal } from '#/views/system/user/components';
 
@@ -488,7 +482,6 @@ defineExpose({ setCustomApproveUsers, batchSetCustomApproveUsers });
       class="w-3/5"
       v-model:value="selectedUsers"
       :multiple="true"
-      title="选择用户"
       @confirm="handleUserSelectConfirm"
       @closed="handleUserSelectClosed"
       @cancel="handleUserSelectCancel"

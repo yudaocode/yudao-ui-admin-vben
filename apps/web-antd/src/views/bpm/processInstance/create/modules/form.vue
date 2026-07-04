@@ -67,7 +67,7 @@ const startUserSelectTasks = ref<UserTask[]>([]);
 const startUserSelectAssignees = ref<Record<string, number[]>>({});
 const tempStartUserSelectAssignees = ref<Record<string, number[]>>({});
 
-const bpmnXML = ref<string | undefined>(undefined);
+const bpmnXML = ref('');
 const simpleJson = ref<string | undefined>(undefined);
 
 const activeTab = ref('form');
@@ -158,7 +158,7 @@ async function initProcessInfo(row: any, formVariables?: any) {
     const processDefinitionDetail: BpmProcessDefinitionApi.ProcessDefinition =
       await getProcessDefinition(row.id);
     if (processDefinitionDetail) {
-      bpmnXML.value = processDefinitionDetail.bpmnXml;
+      bpmnXML.value = processDefinitionDetail.bpmnXml || '';
       simpleJson.value = processDefinitionDetail.simpleModel;
     }
     // 情况二：业务表单

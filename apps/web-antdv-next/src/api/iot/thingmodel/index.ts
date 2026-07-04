@@ -114,41 +114,37 @@ export namespace ThingModelApi {
 
 /** 生成「必填 + 数字」类校验器：拼到 size / length / 枚举值上 */
 function buildRequiredNumberValidator(label: string) {
-  return (_rule: any, value: any, callback: any) => {
+  return (_rule: any, value: any) => {
     if (isEmpty(value)) {
-      callback(new Error(`${label}不能为空`));
-      return;
+      return Promise.reject(new Error(`${label}不能为空`));
     }
     if (Number.isNaN(Number(value))) {
-      callback(new Error(`${label}必须是数字`));
-      return;
+      return Promise.reject(new Error(`${label}必须是数字`));
     }
-    callback();
+    return Promise.resolve();
   };
 }
 
 /** 生成「标识符样式」名称校验器：开头需为中文 / 英文 / 数字，整体仅允许中文、英文、数字、下划线、短划线，长度 ≤ 20 */
 export function buildIdentifierLikeNameValidator(label: string) {
-  return (_rule: any, value: string, callback: any) => {
+  return (_rule: any, value: string) => {
     if (isEmpty(value)) {
-      callback(new Error(`${label}不能为空`));
-      return;
+      return Promise.reject(new Error(`${label}不能为空`));
     }
     if (!/^[一-龥A-Za-z0-9]/.test(value)) {
-      callback(new Error(`${label}必须以中文、英文字母或数字开头`));
-      return;
+      return Promise.reject(
+        new Error(`${label}必须以中文、英文字母或数字开头`),
+      );
     }
     if (!/^[一-龥A-Za-z0-9][\w一-龥-]*$/.test(value)) {
-      callback(
+      return Promise.reject(
         new Error(`${label}只能包含中文、英文字母、数字、下划线和短划线`),
       );
-      return;
     }
     if (value.length > 20) {
-      callback(new Error(`${label}长度不能超过 20 个字符`));
-      return;
+      return Promise.reject(new Error(`${label}长度不能超过 20 个字符`));
     }
-    callback();
+    return Promise.resolve();
   };
 }
 
@@ -172,7 +168,7 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
       trigger: 'blur',
     },
     {
-      validator: (_rule: any, value: string, callback: any) => {
+      validator: (_rule: any, value: string) => {
         const reservedKeywords = [
           'set',
           'get',
@@ -183,18 +179,16 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
           'value',
         ];
         if (reservedKeywords.includes(value)) {
-          callback(
+          return Promise.reject(
             new Error(
               'set, get, post, property, event, time, value 是系统保留字段，不能用于标识符定义',
             ),
           );
-          return;
         }
         if (/^\d+$/.test(value)) {
-          callback(new Error('标识符不能是纯数字'));
-          return;
+          return Promise.reject(new Error('标识符不能是纯数字'));
         }
-        callback();
+        return Promise.resolve();
       },
       trigger: 'blur',
     },

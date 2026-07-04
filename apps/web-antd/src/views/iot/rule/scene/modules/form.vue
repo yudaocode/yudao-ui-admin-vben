@@ -122,23 +122,21 @@ function normalizeFormData(result: any): RuleSceneApi.SceneRule {
 }
 
 /** 触发器校验 */
-function validateTriggers(_rule: any, value: any, callback: any) {
+function validateTriggers(_rule: any, value: any) {
   const error = validateSceneRuleTriggers(value);
   if (error) {
-    callback(new Error(error));
-    return;
+    return Promise.reject(new Error(error));
   }
-  callback();
+  return Promise.resolve();
 }
 
 /** 执行器校验 */
-function validateActions(_rule: any, value: any, callback: any) {
+function validateActions(_rule: any, value: any) {
   const error = validateSceneRuleActions(value);
   if (error) {
-    callback(new Error(error));
-    return;
+    return Promise.reject(new Error(error));
   }
-  callback();
+  return Promise.resolve();
 }
 
 const formRules = reactive({

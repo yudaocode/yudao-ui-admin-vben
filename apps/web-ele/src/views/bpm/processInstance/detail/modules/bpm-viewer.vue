@@ -9,7 +9,7 @@ const props = withDefaults(
   defineProps<{
     bpmnXml?: string;
     loading?: boolean; // 是否加载中
-    modelView?: object;
+    modelView?: Record<string, any>;
   }>(),
   {
     loading: false,
@@ -29,8 +29,10 @@ watch(
   async (newModelView) => {
     // 加载最新
     if (newModelView) {
-      // @ts-expect-error: viewer instance type is broader than local ref typing
-      view.value = newModelView;
+      view.value = {
+        ...newModelView,
+        bpmnXml: newModelView.bpmnXml || '',
+      };
     }
   },
   { immediate: true },
@@ -40,7 +42,7 @@ watch(
 watch(
   () => props.bpmnXml,
   (value) => {
-    view.value.bpmnXml = value;
+    view.value.bpmnXml = value || '';
   },
 );
 </script>
@@ -52,7 +54,7 @@ watch(
   >
     <MyProcessViewer
       key="processViewer"
-      :xml="view.bpmnXml"
+      :xml="view.bpmnXml || ''"
       :view="view"
       class="h-full min-h-[500px] w-full"
     />
