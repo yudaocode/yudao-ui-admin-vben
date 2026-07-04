@@ -76,6 +76,11 @@ function createEmptySku(): MallSpuApi.Sku {
   };
 }
 
+function formatDetailMoney(value: null | number | string | undefined) {
+  const amount = Number(value ?? 0);
+  return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
+}
+
 const skuList = ref<MallSpuApi.Sku[]>([createEmptySku()]);
 
 /** 批量添加 */
@@ -536,17 +541,17 @@ defineExpose({
       </VxeColumn>
       <VxeColumn align="center" title="销售价(元)" width="80">
         <template #default="{ row }">
-          {{ row.price }}
+          {{ formatDetailMoney(row.price) }}
         </template>
       </VxeColumn>
       <VxeColumn align="center" title="市场价(元)" width="80">
         <template #default="{ row }">
-          {{ row.marketPrice }}
+          {{ formatDetailMoney(row.marketPrice) }}
         </template>
       </VxeColumn>
       <VxeColumn align="center" title="成本价(元)" width="80">
         <template #default="{ row }">
-          {{ row.costPrice }}
+          {{ formatDetailMoney(row.costPrice) }}
         </template>
       </VxeColumn>
       <VxeColumn align="center" title="库存" width="80">
@@ -567,12 +572,12 @@ defineExpose({
       <template v-if="formData?.subCommissionType">
         <VxeColumn align="center" title="一级返佣(元)" width="80">
           <template #default="{ row }">
-            {{ row.firstBrokeragePrice }}
+            {{ formatDetailMoney(row.firstBrokeragePrice) }}
           </template>
         </VxeColumn>
         <VxeColumn align="center" title="二级返佣(元)" width="80">
           <template #default="{ row }">
-            {{ row.secondBrokeragePrice }}
+            {{ formatDetailMoney(row.secondBrokeragePrice) }}
           </template>
         </VxeColumn>
       </template>

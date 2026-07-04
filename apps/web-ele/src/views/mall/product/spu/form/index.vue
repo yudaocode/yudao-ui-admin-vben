@@ -5,7 +5,7 @@ import type {
   RuleConfig,
 } from '#/views/mall/product/spu/components';
 
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -34,6 +34,7 @@ const { closeCurrentTab } = useTabs();
 const activeTabName = ref('info');
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const isDetail = ref(name === 'ProductSpuDetail'); // 是否查看详情
+const initializingForm = ref(false); // 详情回填时不触发 SKU 重置逻辑
 const skuListRef = ref(); // 商品属性列表 Ref
 
 const formData = ref<MallSpuApi.Spu>({
@@ -113,11 +114,20 @@ const [SkuForm, skuFormApi] = useVbenForm({
   schema: useSkuFormSchema(propertyList.value, isDetail.value),
   showDefaultActions: false,
   handleValuesChange: (values, fieldsChanged) => {
-    if (fieldsChanged.includes('subCommissionType')) {
+    if (initializingForm.value) {
+      return;
+    }
+    if (
+      fieldsChanged.includes('subCommissionType') &&
+      values.subCommissionType !== formData.value.subCommissionType
+    ) {
       formData.value.subCommissionType = values.subCommissionType;
       handleChangeSubCommissionType();
     }
-    if (fieldsChanged.includes('specType')) {
+    if (
+      fieldsChanged.includes('specType') &&
+      values.specType !== formData.value.specType
+    ) {
       formData.value.specType = values.specType;
       handleChangeSpec();
     }
@@ -235,22 +245,28 @@ async function getDetail() {
     // 金额转换：分转元
     res.skus = res.skus?.map((item) => ({
       ...item,
-      price: formatToFraction(item.price),
-      marketPrice: formatToFraction(item.marketPrice),
-      costPrice: formatToFraction(item.costPrice),
-      firstBrokeragePrice: formatToFraction(item.firstBrokeragePrice),
-      secondBrokeragePrice: formatToFraction(item.secondBrokeragePrice),
+      price: Number(formatToFraction(item.price)),
+      marketPrice: Number(formatToFraction(item.marketPrice)),
+      costPrice: Number(formatToFraction(item.costPrice)),
+      firstBrokeragePrice: Number(formatToFraction(item.firstBrokeragePrice)),
+      secondBrokeragePrice: Number(
+        formatToFraction(item.secondBrokeragePrice),
+      ),
     }));
+    initializingForm.value = true;
     formData.value = res;
-    // 初始化各表单值
-    infoFormApi.setValues(res).then();
-    skuFormApi.setValues(res).then();
-    deliveryFormApi.setValues(res).then();
-    descriptionFormApi.setValues(res).then();
-    otherFormApi.setValues(res).then();
     // 将 SKU 的属性，整理成 PropertyAndValues 数组
     propertyList.value = getPropertyList(formData.value);
+    // 初始化各表单值
+    void infoFormApi.setValues(res);
+    void skuFormApi.setValues(res);
+    void deliveryFormApi.setValues(res);
+    void descriptionFormApi.setValues(res);
+    void otherFormApi.setValues(res);
+    await nextTick();
+    await nextTick();
   } finally {
+    initializingForm.value = false;
     formLoading.value = false;
   }
 }
