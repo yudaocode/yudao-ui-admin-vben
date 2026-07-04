@@ -40,6 +40,7 @@ defineOptions({ name: 'WmsCheckOrderPrint' });
 
 const printData = ref<WmsCheckOrderApi.CheckOrder>({});
 const tableColumnCount = 8;
+const printing = ref(false);
 
 /** 打印明细补齐实际金额和盈亏字段，避免模板重复计算 */
 const printRows = computed<PrintRow[]>(() =>
@@ -60,9 +61,10 @@ const totalDifferencePrice = computed(() =>
   sumPrice(printRows.value, (detail) => detail.differencePrice),
 );
 
-/** 等待条码和打印 DOM 完成绘制，避免浏览器打印到旧内容 */
-function waitForPaint() {
-  return new Promise<void>((resolve) => {
+async function waitForPrintReady() {
+  await nextTick();
+  await nextTick();
+  await new Promise<void>((resolve) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => resolve());
     });
@@ -84,14 +86,26 @@ function getPrintDictLabel(dictType: string, value?: number) {
 
 /** 打印盘库单：加载数据后只展示打印区域，再调用浏览器打印 */
 async function print(id: number) {
-  const order = await getCheckOrder(id);
-  const details = order.details || (await getCheckOrderDetailListByOrderId(id));
-  printData.value = { ...order, details };
-  await nextTick();
-  await waitForPaint();
-  document.body.classList.add('wms-check-order-printing');
-  window.addEventListener('afterprint', removePrintMode, { once: true });
-  window.print();
+  if (printing.value) {
+    return;
+  }
+  printing.value = true;
+  try {
+    printData.value = {};
+    await nextTick();
+    const order = await getCheckOrder(id);
+    const details =
+      order.details || (await getCheckOrderDetailListByOrderId(id));
+    printData.value = { ...order, details };
+
+    // 等待新条码 DOM 重建并完成绘制，避免打印到上一张条码
+    await waitForPrintReady();
+    document.body.classList.add('wms-check-order-printing');
+    window.addEventListener('afterprint', removePrintMode, { once: true });
+    window.print();
+  } finally {
+    printing.value = false;
+  }
 }
 
 defineExpose({ print });
