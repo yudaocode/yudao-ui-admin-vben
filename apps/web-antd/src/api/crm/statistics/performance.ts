@@ -5,7 +5,7 @@ export namespace CrmStatisticsPerformanceApi {
   export interface PerformanceReqVO {
     times: string[];
     deptId: number;
-    userId: number;
+    userId?: number;
   }
 
   /** 员工业绩统计响应 */
@@ -14,6 +14,15 @@ export namespace CrmStatisticsPerformanceApi {
     currentMonthCount: number;
     lastMonthCount: number;
     lastYearCount: number;
+  }
+
+  /** 员工业绩合同汇总响应 */
+  export interface PerformanceSummaryRespVO {
+    time: string;
+    contractCount: number;
+    contractPrice: number;
+    receivablePrice: number;
+    unreceivedPrice: number;
   }
 }
 
@@ -45,4 +54,13 @@ export function getContractCountPerformance(
     '/crm/statistics-performance/get-contract-count-performance',
     { params },
   );
+}
+
+/** 获得合同汇总表 */
+export function getContractSummary(
+  params: CrmStatisticsPerformanceApi.PerformanceReqVO,
+) {
+  return requestClient.get<
+    CrmStatisticsPerformanceApi.PerformanceSummaryRespVO[]
+  >('/crm/statistics-performance/get-contract-summary', { params });
 }

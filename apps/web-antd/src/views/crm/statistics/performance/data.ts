@@ -21,6 +21,10 @@ export const customerSummaryTabs = [
     tab: '员工回款金额统计',
     key: 'ReceivablePricePerformance',
   },
+  {
+    tab: '合同汇总表',
+    key: 'ContractSummary',
+  },
 ];
 
 /** 列表的搜索表单 */

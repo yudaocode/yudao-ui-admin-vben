@@ -5,9 +5,8 @@ import type {
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { CrmStatisticsFunnelApi } from '#/api/crm/statistics/funnel';
 
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
@@ -72,7 +71,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<CrmStatisticsFunnelApi.BusinessSummaryByDateRespVO>,
+  } as VxeTableGridOptions<any>,
 });
 
 /** tab 切换 */
@@ -89,7 +88,10 @@ async function handleTabChange(key: any) {
   const queryParams = await formApi.getValues();
   const res = await getChartDatas(activeTabName.value, queryParams);
   await renderEcharts(getChartOptions(activeTabName.value, active.value, res));
-  const data: any = await getDatas(activeTabName.value, queryParams);
+  const data: any =
+    activeTabName.value === 'funnel'
+      ? res
+      : await getDatas(activeTabName.value, queryParams);
   await gridApi.grid.reloadData(
     activeTabName.value === 'funnel' ? data : data.list,
   );
@@ -99,10 +101,14 @@ async function handleTabChange(key: any) {
 async function handleActive(value: boolean) {
   active.value = value;
   const queryParams = await formApi.getValues();
-  renderEcharts(
-    getChartOptions(activeTabName.value, active.value, queryParams),
-  );
+  const res = await getChartDatas(activeTabName.value, queryParams);
+  renderEcharts(getChartOptions(activeTabName.value, active.value, res));
 }
+
+/** 初始化加载 */
+onMounted(() => {
+  handleTabChange(activeTabName.value);
+});
 </script>
 
 <template>
@@ -127,14 +133,14 @@ async function handleActive(value: boolean) {
           v-if="activeTabName === 'funnel'"
           @click="handleActive(true)"
         >
-          客户视角
+          阶段视角
         </ElButton>
         <ElButton
           :type="active ? 'default' : 'primary'"
           v-if="activeTabName === 'funnel'"
           @click="handleActive(false)"
         >
-          动态视角
+          金额视角
         </ElButton>
       </ElButtonGroup>
       <EchartsUI class="mb-20 h-2/5 w-full" ref="chartRef" />

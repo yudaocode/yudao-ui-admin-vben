@@ -1,4 +1,4 @@
-import { erpCalculatePercentage } from '@vben/utils';
+import { erpCalculatePercentage, erpPriceInputFormatter } from '@vben/utils';
 
 const getLegend = (extra: Record<string, any> = {}) => ({
   top: 10,
@@ -190,30 +190,20 @@ export function getChartOptions(
       };
     }
     case 'funnel': {
-      // tips：写死 value 值是为了保持漏斗顺序不变
-      const list: { name: string; value: number }[] = [];
-      if (active) {
-        list.push(
-          { value: 60, name: `客户-${res.customerCount || 0}个` },
-          { value: 40, name: `商机-${res.businessCount || 0}个` },
-          { value: 20, name: `赢单-${res.businessWinCount || 0}个` },
-        );
-      } else {
-        list.push(
-          {
-            value: res.customerCount || 0,
-            name: `客户-${res.customerCount || 0}个`,
-          },
-          {
-            value: res.businessCount || 0,
-            name: `商机-${res.businessCount || 0}个`,
-          },
-          {
-            value: res.businessWinCount || 0,
-            name: `赢单-${res.businessWinCount || 0}个`,
-          },
-        );
-      }
+      const list = res.map((item: any) => ({
+        value: active
+          ? Number(item.businessCount || 0)
+          : Number(item.totalPrice || 0),
+        name: `${item.statusName}-${item.businessCount || 0}个`,
+        statusName: item.statusName,
+        statusPercent: item.statusPercent,
+        businessCount: item.businessCount,
+        totalPrice: item.totalPrice,
+      }));
+      const maxValue = Math.max(
+        ...list.map((item: any) => Number(item.value || 0)),
+        1,
+      );
       return {
         title: {
           text: '销售漏斗',
@@ -221,7 +211,15 @@ export function getChartOptions(
         tooltip: getTooltip({
           trigger: 'item',
           axisPointer: undefined,
-          formatter: '{a} <br/>{b}',
+          formatter: (params: any) => {
+            const data = params.data || {};
+            return [
+              data.statusName || params.name,
+              `商机数：${data.businessCount || 0} 个`,
+              `商机金额：${erpPriceInputFormatter(data.totalPrice || 0)} 元`,
+              `赢单率：${data.statusPercent || 0}%`,
+            ].join('<br/>');
+          },
         }),
         toolbox: {
           feature: {
@@ -231,7 +229,7 @@ export function getChartOptions(
           },
         },
         legend: getLegend({
-          data: ['客户', '商机', '赢单'],
+          data: list.map((item: any) => item.name),
         }),
         series: [
           {
@@ -242,10 +240,10 @@ export function getChartOptions(
             bottom: 60,
             width: '80%',
             min: 0,
-            max: 100,
+            max: maxValue,
             minSize: '0%',
             maxSize: '100%',
-            sort: 'descending',
+            sort: 'none',
             gap: 2,
             label: {
               show: true,

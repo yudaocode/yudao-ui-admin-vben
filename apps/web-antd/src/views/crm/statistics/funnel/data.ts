@@ -6,6 +6,7 @@ import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 import { beginOfDay, endOfDay, formatDateTime, handleTree } from '@vben/utils';
 
+import { getBusinessStatusTypeSimpleList } from '#/api/crm/business/status';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -52,6 +53,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.DATE_INTERVAL, 'number'),
       },
       defaultValue: 2,
+    },
+    {
+      fieldName: 'statusTypeId',
+      label: '商机组',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getBusinessStatusTypeSimpleList,
+        allowClear: true,
+        labelField: 'name',
+        valueField: 'id',
+        placeholder: '请选择商机组',
+      },
     },
     {
       fieldName: 'deptId',
@@ -243,13 +256,15 @@ export function useGridColumns(
           title: '序号',
         },
         {
-          field: 'endStatus',
+          field: 'statusName',
           title: '阶段',
-          minWidth: 100,
-          cellRender: {
-            name: 'CellDict',
-            props: { type: DICT_TYPE.CRM_BUSINESS_END_STATUS_TYPE },
-          },
+          minWidth: 160,
+        },
+        {
+          field: 'statusPercent',
+          title: '赢单率',
+          minWidth: 120,
+          formatter: ({ row }) => `${row.statusPercent || 0}%`,
         },
         {
           field: 'businessCount',

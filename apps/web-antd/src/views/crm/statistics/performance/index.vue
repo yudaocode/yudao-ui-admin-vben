@@ -2,13 +2,12 @@
 import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { CrmStatisticsCustomerApi } from '#/api/crm/statistics/customer';
 
 import { onMounted, ref } from 'vue';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { beginOfDay, endOfDay, formatDateTime } from '@vben/utils';
+import { beginOfDay, endOfDay, formatDate } from '@vben/utils';
 
 import { Tabs } from 'ant-design-vue';
 
@@ -17,6 +16,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getContractCountPerformance,
   getContractPricePerformance,
+  getContractSummary,
   getReceivablePricePerformance,
 } from '#/api/crm/statistics/performance';
 import { $t } from '#/locales';
@@ -62,7 +62,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<CrmStatisticsCustomerApi.CustomerSummaryByUserRespVO>,
+  } as VxeTableGridOptions<any>,
 });
 
 /** tab 切换 */
@@ -72,8 +72,14 @@ async function handleTabChange(key: any) {
   // 将年份转换为年初和年末的日期时间
   const selectYear = Number.parseInt(queryParams.time);
   queryParams.times = [];
-  queryParams.times[0] = formatDateTime(beginOfDay(new Date(selectYear, 0, 1)));
-  queryParams.times[1] = formatDateTime(endOfDay(new Date(selectYear, 11, 31)));
+  queryParams.times[0] = formatDate(
+    beginOfDay(new Date(selectYear, 0, 1)),
+    'YYYY-MM-DD HH:mm:ss',
+  );
+  queryParams.times[1] = formatDate(
+    endOfDay(new Date(selectYear, 11, 31)),
+    'YYYY-MM-DD HH:mm:ss',
+  );
   let data: any[] = [];
   const columnsData: any[] = [];
   let tableData: any[] = [];
@@ -110,6 +116,35 @@ async function handleTabChange(key: any) {
       ];
       data = await getReceivablePricePerformance(queryParams);
       break;
+    }
+    case 'ContractSummary': {
+      data = await getContractSummary(queryParams);
+      columnsData.push(
+        { title: '月份', field: 'time', minWidth: 120 },
+        { title: '合同数量', field: 'contractCount', minWidth: 120 },
+        {
+          title: '合同金额（元）',
+          field: 'contractPrice',
+          formatter: 'formatAmount2',
+          minWidth: 160,
+        },
+        {
+          title: '回款金额（元）',
+          field: 'receivablePrice',
+          formatter: 'formatAmount2',
+          minWidth: 160,
+        },
+        {
+          title: '未回款金额（元）',
+          field: 'unreceivedPrice',
+          formatter: 'formatAmount2',
+          minWidth: 160,
+        },
+      );
+      await renderEcharts(getChartOptions(key, data), true);
+      await gridApi.grid.reloadColumn(columnsData);
+      await gridApi.grid.reloadData(data);
+      return;
     }
     default: {
       break;

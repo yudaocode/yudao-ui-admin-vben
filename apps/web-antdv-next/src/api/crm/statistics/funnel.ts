@@ -17,6 +17,16 @@ export namespace CrmStatisticsFunnelApi {
     totalPrice: number | string; // 商机金额
   }
 
+  /** 商机阶段统计响应 */
+  export interface BusinessSummaryByStatusRespVO {
+    statusId: number; // 商机阶段编号
+    statusName: string; // 商机阶段名称
+    statusPercent: number; // 赢单率
+    sort: number; // 排序
+    businessCount: number; // 商机数
+    totalPrice: number | string; // 商机金额
+  }
+
   /** 商机转化率分析(按日期)响应 */
   export interface BusinessInversionRateSummaryByDateRespVO {
     time: string; // 时间
@@ -34,7 +44,7 @@ export function getDatas(activeTabName: any, params: any) {
       return getBusinessPageByDate(params);
     }
     case 'funnel': {
-      return getBusinessSummaryByEndStatus(params);
+      return getBusinessSummaryByStatus(params);
     }
     default: {
       return [];
@@ -51,7 +61,7 @@ export function getChartDatas(activeTabName: any, params: any) {
       return getBusinessSummaryByDate(params);
     }
     case 'funnel': {
-      return getFunnelSummary(params);
+      return getBusinessSummaryByStatus(params);
     }
     default: {
       return [];
@@ -73,6 +83,13 @@ export function getBusinessSummaryByEndStatus(params: any) {
     '/crm/statistics-funnel/get-business-summary-by-end-status',
     { params },
   );
+}
+
+/** 获取商机阶段统计 */
+export function getBusinessSummaryByStatus(params: any) {
+  return requestClient.get<
+    CrmStatisticsFunnelApi.BusinessSummaryByStatusRespVO[]
+  >('/crm/statistics-funnel/get-business-summary-by-status', { params });
 }
 
 /** 获取新增商机分析(按日期) */
