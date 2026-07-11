@@ -27,7 +27,9 @@ export function getTenantPackagePage(params: PageParam) {
 
 /** 查询租户套餐详情 */
 export function getTenantPackage(id: number) {
-  return requestClient.get(`/system/tenant-package/get?id=${id}`);
+  return requestClient.get<SystemTenantPackageApi.TenantPackage>(
+    `/system/tenant-package/get?id=${id}`,
+  );
 }
 
 /** 新增租户套餐 */

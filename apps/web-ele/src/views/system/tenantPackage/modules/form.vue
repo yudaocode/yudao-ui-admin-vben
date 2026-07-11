@@ -5,12 +5,16 @@ import type { SystemTenantPackageApi } from '#/api/system/tenant-package';
 import { computed, ref } from 'vue';
 
 import { Tree, useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import {
+  getTreeCheckedValues,
+  getTreeValuesWithAncestors,
+  handleTree,
+} from '@vben/utils';
 
 import { ElCheckbox, ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
+import { getSimpleMenusList } from '#/api/system/menu';
 import {
   createTenantPackage,
   getTenantPackage,
@@ -56,6 +60,11 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data =
       (await formApi.getValues()) as SystemTenantPackageApi.TenantPackage;
+    data.menuIds = getTreeValuesWithAncestors(
+      menuTree.value,
+      data.menuIds ?? [],
+      (menu) => menu.id,
+    );
     try {
       await (formData.value
         ? updateTenantPackage(data)
@@ -82,8 +91,16 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getTenantPackage(data.id);
-      await formApi.setValues(data);
+      const detail = await getTenantPackage(data.id);
+      formData.value = detail;
+      await formApi.setValues({
+        ...detail,
+        menuIds: getTreeCheckedValues(
+          menuTree.value,
+          detail.menuIds ?? [],
+          (menu) => menu.id,
+        ),
+      });
     } finally {
       modalApi.unlock();
     }
@@ -94,7 +111,7 @@ const [Modal, modalApi] = useVbenModal({
 async function loadMenuTree() {
   menuLoading.value = true;
   try {
-    const data = await getMenuList();
+    const data = await getSimpleMenusList();
     menuTree.value = handleTree(data) as SystemMenuApi.Menu[];
   } finally {
     menuLoading.value = false;

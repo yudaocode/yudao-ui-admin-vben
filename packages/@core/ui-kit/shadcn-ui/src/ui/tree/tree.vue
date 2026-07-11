@@ -126,7 +126,9 @@ function updateTreeValue() {
 function updateModelValue(val: Arrayable<Recordable<any>>) {
   if (Array.isArray(val)) {
     const filteredVal = val.filter((v) => !get(v, props.disabledField));
-    modelValue.value = filteredVal.map((v) => get(v, props.valueField));
+    modelValue.value = [
+      ...new Set(filteredVal.map((v) => get(v, props.valueField))),
+    ];
   } else {
     if (val && !get(val, props.disabledField)) {
       modelValue.value = get(val, props.valueField);

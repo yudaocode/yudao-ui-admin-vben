@@ -8,7 +8,11 @@ import { nextTick, ref } from 'vue';
 
 import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
-import { handleTree } from '@vben/utils';
+import {
+  getTreeCheckedValues,
+  getTreeValuesWithAncestors,
+  handleTree,
+} from '@vben/utils';
 
 import { NCheckbox, NSpin } from 'naive-ui';
 
@@ -53,7 +57,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await assignRoleMenu({
         roleId: data.id,
-        menuIds: data.menuIds,
+        menuIds: getTreeValuesWithAncestors(
+          menuTree.value,
+          data.menuIds ?? [],
+          (menu) => menu.id,
+        ),
       });
       // 关闭并提示
       await modalApi.close();
@@ -77,7 +85,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       // 加载角色菜单
       const menuIds = await getRoleMenuList(data.id);
-      await formApi.setFieldValue('menuIds', menuIds);
+      await formApi.setFieldValue(
+        'menuIds',
+        getTreeCheckedValues(menuTree.value, menuIds, (menu) => menu.id),
+      );
 
       await formApi.setValues(data);
     } finally {

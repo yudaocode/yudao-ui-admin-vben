@@ -46,6 +46,114 @@ function traverseTreeValues<T, V>(
 }
 
 /**
+ * @zh_CN 从包含半选祖先的值中还原完整选中的树节点值。
+ * @param tree 树形结构数组
+ * @param values 已选节点与半选祖先的值
+ * @param getValue 获取节点值的函数
+ * @param options 作为子节点数组的可选属性名称
+ * @returns 完整选中的节点值数组
+ */
+function getTreeCheckedValues<T, V>(
+  tree: T[],
+  values: readonly V[],
+  getValue: (node: T) => V,
+  options?: TreeConfigOptions,
+): V[] {
+  const selectedValues = new Set(values);
+  const checkedValues = new Set<V>();
+  const { childProps } = options || {
+    childProps: 'children',
+  };
+
+  const dfs = (
+    treeNode: T,
+  ): { hasSelectedValue: boolean; isChecked: boolean } => {
+    const value = getValue(treeNode);
+    const children = (treeNode as Record<string, any>)?.[childProps];
+    const childStates = Array.isArray(children)
+      ? children.map((child) => dfs(child))
+      : [];
+    const hasSelectedDescendant = childStates.some(
+      (state) => state.hasSelectedValue,
+    );
+    const areChildrenChecked = childStates.every((state) => state.isChecked);
+    const isSelected = selectedValues.has(value);
+    const isChecked =
+      (childStates.length > 0 && areChildrenChecked) ||
+      (isSelected && !hasSelectedDescendant);
+    if (isChecked) {
+      checkedValues.add(value);
+    }
+    return {
+      hasSelectedValue: isSelected || hasSelectedDescendant,
+      isChecked,
+    };
+  };
+
+  for (const treeNode of tree) {
+    dfs(treeNode);
+  }
+  // 先保留输入值中已知（在树内）的选中项，再追加由子节点全选推导出的父节点。
+  const result = [...new Set(values)].filter((value) =>
+    checkedValues.has(value),
+  );
+  const resultSet = new Set(result);
+  for (const value of checkedValues) {
+    if (!resultSet.has(value)) {
+      resultSet.add(value);
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+/**
+ * @zh_CN 为已选树节点补齐所有祖先节点的值。
+ * @param tree 树形结构数组
+ * @param values 已选节点的值
+ * @param getValue 获取节点值的函数
+ * @param options 作为子节点数组的可选属性名称
+ * @returns 已选节点与其祖先节点的去重值数组
+ */
+function getTreeValuesWithAncestors<T, V>(
+  tree: T[],
+  values: readonly V[],
+  getValue: (node: T) => V,
+  options?: TreeConfigOptions,
+): V[] {
+  const result = [...new Set(values)];
+  const resultSet = new Set(result);
+  const { childProps } = options || {
+    childProps: 'children',
+  };
+
+  const dfs = (treeNode: T, ancestors: V[]) => {
+    const value = getValue(treeNode);
+    if (resultSet.has(value)) {
+      for (const ancestor of ancestors) {
+        if (!resultSet.has(ancestor)) {
+          resultSet.add(ancestor);
+          result.push(ancestor);
+        }
+      }
+    }
+
+    const children = (treeNode as Record<string, any>)?.[childProps];
+    if (!Array.isArray(children)) {
+      return;
+    }
+    for (const child of children) {
+      dfs(child, [...ancestors, value]);
+    }
+  };
+
+  for (const treeNode of tree) {
+    dfs(treeNode, []);
+  }
+  return result;
+}
+
+/**
  * 根据条件过滤给定树结构的节点，并以原有顺序返回所有匹配节点的数组。
  * @param tree 要过滤的树结构的根节点数组。
  * @param filter 用于匹配每个节点的条件。
@@ -238,6 +346,8 @@ function sortTree<T extends Record<string, any>>(
 
 export {
   filterTree,
+  getTreeCheckedValues,
+  getTreeValuesWithAncestors,
   handleTree,
   mapTree,
   sortTree,
