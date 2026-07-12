@@ -22,6 +22,14 @@ export namespace BpmModelApi {
     startUsers?: UserInfo[];
   }
 
+  /** 流程模型导出数据 */
+  export interface ModelExport extends Partial<Model> {
+    key: string;
+    name: string;
+    simpleModel?: Record<string, unknown>;
+    type: number;
+  }
+
   /** 流程定义 */
   export interface ProcessDefinition {
     id: string;
@@ -109,7 +117,9 @@ export async function importModel(file: File, key?: string, name?: string) {
 
 /** 导出流程模型 */
 export async function exportModel(id: number) {
-  return requestClient.get<BpmModelApi.Model>(`/bpm/model/export?id=${id}`);
+  return requestClient.get<BpmModelApi.ModelExport>(
+    `/bpm/model/export?id=${id}`,
+  );
 }
 
 /** 删除流程模型 */

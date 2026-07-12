@@ -3,6 +3,7 @@ import type { ModelCategoryInfo } from '#/api/bpm/model';
 
 import { onActivated, reactive, ref, useTemplateRef, watch } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
@@ -19,11 +20,20 @@ import { router } from '#/router';
 
 import CategoryForm from '../category/modules/form.vue';
 import CategoryDraggableModel from './modules/category-draggable-model.vue';
+import ModelImportForm from './modules/import-form.vue';
 
 const [CategoryFormModal, categoryFormModalApi] = useVbenModal({
   connectedComponent: CategoryForm,
   destroyOnClose: true,
 });
+
+const [ImportModal, importModalApi] = useVbenModal({
+  connectedComponent: ModelImportForm,
+  destroyOnClose: true,
+});
+
+const { hasAccessByCodes } = useAccess();
+const hasImportPermission = hasAccessByCodes(['bpm:model:import']);
 
 const modelListSpinning = ref(false); // 模型列表加载状态
 
@@ -87,6 +97,10 @@ function createModel() {
   });
 }
 
+function handleImportClick() {
+  importModalApi.open();
+}
+
 /** 处理下拉菜单命令 */
 function handleCommand(command: string) {
   if (command === 'handleCategoryAdd') {
@@ -143,6 +157,7 @@ async function handleCategorySortSubmit() {
   <Page auto-content-height>
     <!-- 流程分类表单弹窗 -->
     <CategoryFormModal @success="getList" />
+    <ImportModal @success="getList" />
     <ElCard
       body-style="padding: 10px"
       class="mb-4"
@@ -161,6 +176,13 @@ async function handleCategorySortSubmit() {
             />
             <ElButton class="ml-2" type="primary" @click="createModel">
               <IconifyIcon icon="lucide:plus" /> 新建模型
+            </ElButton>
+            <ElButton
+              v-if="hasImportPermission"
+              class="ml-2"
+              @click="handleImportClick"
+            >
+              <IconifyIcon icon="lucide:upload" /> 导入模型
             </ElButton>
             <ElDropdown class="ml-2" placement="bottom-end" trigger="click">
               <ElButton>
