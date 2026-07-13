@@ -242,7 +242,7 @@ catalog:
   vxe-pc-ui: ^4.14.39
   vxe-table: ^4.19.14
   watermark-js-plus: ^1.6.3
-  yaml-eslint-parser: ^2.0.0
+  yaml-eslint-parser: ^2.1.0
   zod: ^3.25.76
   zod-defaults: 0.1.3
 
