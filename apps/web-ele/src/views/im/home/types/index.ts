@@ -110,6 +110,8 @@ export interface Conversation {
   silent?: boolean; // 是否免打扰（不展示未读徽标 + 不响提示音）
   atMe?: boolean; // 群聊：是否有人 @我
   atAll?: boolean; // 群聊：是否有人 @全体成员
+  atMessageId?: number; // 最近一次未读 @我的消息编号，用于点击提醒后定位
+  atAllMessageId?: number; // 最近一次未读 @全体成员的消息编号，用于点击提醒后定位
   reportedReadMessageId?: number; // 已上报到服务端的最大已读消息编号
   draft?: {
     html: string; // 输入框 HTML

@@ -1,4 +1,7 @@
-import type { DbTransaction } from '../../utils/db';
+import type {
+  DbTransaction,
+  MessageDOPageCursor,
+} from '../../utils/db';
 import type { Conversation, Message, MessageDO } from '../types';
 
 import { acceptHMRUpdate, defineStore } from 'pinia';
@@ -50,6 +53,11 @@ interface PersistMessageRecordOptions {
   mergeClientRecord?: boolean;
 }
 
+interface MessagePageResult {
+  messages: Message[];
+  hasMore: boolean;
+}
+
 /** 拉取消息批量处理项 */
 export type PulledMessage =
   | {
@@ -77,6 +85,27 @@ function getMessageKey(
   return message.id
     ? getServerMessageKey(conversationType, message.id)
     : getClientMessageKey(message.clientMessageId);
+}
+
+/** 获取数据库分页结果的最早游标 */
+function getMessageDOPageCursor(message?: MessageDO): MessageDOPageCursor | undefined {
+  return message
+    ? {
+        messageKey: message.messageKey,
+        sendTime: message.sendTime,
+      }
+    : undefined;
+}
+
+/** 判断两个消息分页游标是否一致 */
+function isSameMessageDOPageCursor(
+  left?: MessageDOPageCursor,
+  right?: MessageDOPageCursor,
+): boolean {
+  if (!left || !right) {
+    return left === right;
+  }
+  return left.sendTime === right.sendTime && left.messageKey === right.messageKey;
 }
 
 /** 补齐客户端消息编号 */
@@ -237,9 +266,15 @@ function syncConversationAtFlags(
   const currentUserId = getCurrentUserId();
   if (currentUserId && message.atUserIds.includes(currentUserId)) {
     conversation.atMe = true;
+    if (message.id && message.id > (conversation.atMessageId || 0)) {
+      conversation.atMessageId = message.id;
+    }
   }
   if (message.atUserIds.includes(IM_AT_ALL_USER_ID)) {
     conversation.atAll = true;
+    if (message.id && message.id > (conversation.atAllMessageId || 0)) {
+      conversation.atAllMessageId = message.id;
+    }
   }
 }
 
@@ -279,6 +314,10 @@ function isSameMessage(left: Message, right: Message): boolean {
 export const useMessageStore = defineStore('imMessageStore', {
   state: () => ({
     messagesByConversation: {} as Record<string, Message[]>,
+    messageDOPageCursors: {} as Record<
+      string,
+      MessageDOPageCursor | undefined
+    >,
     loadedConversationKeys: [] as string[],
     privateReadMaxIds: {} as Partial<Record<number, number>>,
     privateMessageMaxId: 0,
@@ -304,6 +343,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         });
       });
       this.messagesByConversation = {};
+      this.messageDOPageCursors = {};
       this.loadedConversationKeys = [];
       this.privateReadMaxIds = {};
       this.privateMessageMaxId = 0;
@@ -397,29 +437,43 @@ export const useMessageStore = defineStore('imMessageStore', {
       this.loadedConversationKeys = retained;
       removed.forEach((key) => {
         Reflect.deleteProperty(this.messagesByConversation, key);
+        Reflect.deleteProperty(this.messageDOPageCursors, key);
       });
     },
 
     /** 加载当前会话最近消息 */
     async loadMoreMessageList(
       clientConversationId: string,
-      beforeSendTime?: number,
       limit = 50,
-    ): Promise<Message[]> {
+    ): Promise<MessagePageResult> {
+      const parsed = parseClientConversationId(clientConversationId);
+      if (!parsed) {
+        return { messages: [], hasMore: false };
+      }
+      const before = this.messageDOPageCursors[clientConversationId];
       // 1. 从 IndexedDB 倒序读取一页，返回前已按时间升序排列
-      const list = await getDb().getMessageListByConversation(
+      const page = await getDb().getMessageListByConversation(
         clientConversationId,
         {
-          beforeSendTime,
+          before,
           limit,
         },
       );
-      // 2. 合并到内存缓存，过滤已存在的消息
-      const parsed = parseClientConversationId(clientConversationId);
-      if (!parsed) {
-        return [];
+      if (
+        isSameMessageDOPageCursor(
+          this.messageDOPageCursors[clientConversationId],
+          before,
+        )
+      ) {
+        const nextCursor = getMessageDOPageCursor(page.list[0]);
+        if (nextCursor) {
+          this.messageDOPageCursors[clientConversationId] = nextCursor;
+        }
       }
-      const messages = list.map((message) => buildMessageFromDO(message));
+      // 2. 合并到内存缓存，过滤已存在的消息
+      const messages = page.list.map((message) =>
+        buildMessageFromDO(message),
+      );
       const existing = this.messagesByConversation[clientConversationId] || [];
       const existingKeys = new Set(
         existing.map((message) => getMessageKey(message, parsed.type)),
@@ -435,7 +489,7 @@ export const useMessageStore = defineStore('imMessageStore', {
           (messageA.sendTime || 0) - (messageB.sendTime || 0),
       );
       this.touchConversationMessageCache(clientConversationId);
-      return fresh;
+      return { messages: fresh, hasMore: page.hasMore };
     },
 
     /** 确保会话消息已加载 */
@@ -492,13 +546,14 @@ export const useMessageStore = defineStore('imMessageStore', {
       this.updateMessageCursor(conversationType, messageId);
     },
 
-    /** 应用撤回到内存 */
-    applyRecallMessageInMemory(
+    /** 应用撤回到本地消息与会话状态 */
+    async applyRecallMessageRecord(
       conversationType: number,
       targetId: number,
       recallSignalContent: string,
+      tx: DbTransaction,
     ) {
-      // 1. 定位被撤回的原消息
+      // 1. 定位被撤回的原消息和会话
       const messageId = parseRecallMessageId(recallSignalContent);
       if (!messageId) {
         return null;
@@ -511,19 +566,48 @@ export const useMessageStore = defineStore('imMessageStore', {
       if (!conversation) {
         return null;
       }
-      const messages = this.getMessageList(conversationType, targetId);
-      const message = messages.find((item) => item.id === messageId);
-      if (!message) {
+      const clientConversationId = getClientConversationId(
+        conversationType,
+        targetId,
+      );
+      const cachedMessage = this.messagesByConversation[
+        clientConversationId
+      ]?.find((item) => item.id === messageId);
+      const storedMessage = await getDb().get<MessageDO>(
+        'messages',
+        getServerMessageKey(conversationType, messageId),
+        tx,
+      );
+      const originalMessage = cachedMessage
+        ? buildMessageDO(cachedMessage, conversationType)
+        : storedMessage;
+      if (!originalMessage) {
         return null;
       }
-      // 2. 更新消息和会话摘要
-      message.type = ImContentType.RECALL;
-      message.status = ImMessageStatus.RECALL;
-      message.content = '';
-      if (messages[messages.length - 1]?.id === messageId) {
-        recomputeConversationLast(conversation, messages);
+      // 2. 更新内存消息与数据库记录
+      const recalledMessage =
+        cachedMessage || buildMessageFromDO(originalMessage);
+      revokeBlobUrlsInContent(recalledMessage.content);
+      recalledMessage.type = ImContentType.RECALL;
+      recalledMessage.status = ImMessageStatus.RECALL;
+      recalledMessage.content = '';
+      await this.saveMessageRecord(recalledMessage, conversationType, tx);
+      // 3. 按本地完整消息和读位置重算未读与 @ 状态
+      const storedMessages = await getDb().getAllByIndex<MessageDO>(
+        'messages',
+        'clientConversationId',
+        clientConversationId,
+        tx,
+      );
+      conversationStore.applyRecallToConversation(
+        conversation,
+        storedMessages,
+        originalMessage,
+      );
+      if (conversation.lastMessageId === messageId) {
+        applyConversationSummary(conversation, recalledMessage);
       }
-      return { conversation, message };
+      return { conversation, message: recalledMessage };
     },
 
     /** 批量写入拉取消息 */
@@ -547,6 +631,10 @@ export const useMessageStore = defineStore('imMessageStore', {
         }
       >();
       const changedConversations = new Map<string, Conversation>();
+      const recallMessages: Extract<
+        PulledMessage,
+        { kind: 'recall' }
+      >[] = [];
 
       const addChanged = (
         conversation: Conversation,
@@ -568,15 +656,8 @@ export const useMessageStore = defineStore('imMessageStore', {
       // 1. 先更新内存，收集需要持久化的消息和会话
       for (const pulledMessage of pulledMessages) {
         if (pulledMessage.kind === 'recall') {
-          // 1.1 撤回信号更新原消息
-          const changed = this.applyRecallMessageInMemory(
-            pulledMessage.conversationType,
-            pulledMessage.targetId,
-            pulledMessage.recallSignalContent,
-          );
-          if (changed) {
-            addChanged(changed.conversation, changed.message);
-          }
+          // 1.1 撤回信号在事务内读取原消息后统一处理
+          recallMessages.push(pulledMessage);
           continue;
         }
 
@@ -591,6 +672,20 @@ export const useMessageStore = defineStore('imMessageStore', {
           conversationInfo.type,
           conversationInfo.targetId,
         );
+        const isActive =
+          conversationStore.activeConversation?.type ===
+            conversationInfo.type &&
+          conversationStore.activeConversation?.targetId ===
+            conversationInfo.targetId;
+        const isUnread =
+          !message.selfSend &&
+          !isActive &&
+          !conversationStore.isMessageCoveredByReadPosition(
+            conversation,
+            message,
+          ) &&
+          isNormalMessage(message.type) &&
+          message.status !== ImMessageStatus.RECALL;
         const existingIndex = messages.findIndex((existing) =>
           isSameMessage(existing, message),
         );
@@ -603,6 +698,8 @@ export const useMessageStore = defineStore('imMessageStore', {
           applyServerMessageUpdate(existing, message);
           if (existingIndex === messages.length - 1) {
             recomputeConversationLast(conversation, messages);
+          }
+          if (isUnread) {
             syncConversationAtFlags(conversation, message);
           }
           addChanged(conversation, existing, {
@@ -613,22 +710,8 @@ export const useMessageStore = defineStore('imMessageStore', {
 
         // 1.4 新消息更新会话摘要和未读状态
         applyConversationSummary(conversation, message);
-        syncConversationAtFlags(conversation, message);
-        const isActive =
-          conversationStore.activeConversation?.type ===
-            conversationInfo.type &&
-          conversationStore.activeConversation?.targetId ===
-            conversationInfo.targetId;
-        if (
-          !message.selfSend &&
-          !isActive &&
-          !conversationStore.isMessageCoveredByReadPosition(
-            conversation,
-            message,
-          ) &&
-          isNormalMessage(message.type) &&
-          message.status !== ImMessageStatus.RECALL
-        ) {
+        if (isUnread) {
+          syncConversationAtFlags(conversation, message);
           conversation.unreadCount++;
         }
 
@@ -664,12 +747,30 @@ export const useMessageStore = defineStore('imMessageStore', {
               },
             );
           }
-          // 2.2 写入本批变更会话
+          // 2.2 应用本批撤回信号
+          for (const recallMessage of recallMessages) {
+            const changed = await this.applyRecallMessageRecord(
+              recallMessage.conversationType,
+              recallMessage.targetId,
+              recallMessage.recallSignalContent,
+              tx,
+            );
+            if (changed) {
+              changedConversations.set(
+                getClientConversationId(
+                  changed.conversation.type,
+                  changed.conversation.targetId,
+                ),
+                changed.conversation,
+              );
+            }
+          }
+          // 2.3 写入本批变更会话
           await conversationStore.saveConversationRecord(
             [...changedConversations.values()],
             tx,
           );
-          // 2.3 写入本批游标
+          // 2.4 写入本批游标
           await setMessageMaxId(conversationType, maxMessageId, tx);
         },
       );
@@ -708,6 +809,19 @@ export const useMessageStore = defineStore('imMessageStore', {
         conversationInfo.type,
         conversationInfo.targetId,
       );
+      const isActive =
+        conversationStore.activeConversation?.type === conversationInfo.type &&
+        conversationStore.activeConversation?.targetId ===
+          conversationInfo.targetId;
+      const isUnread =
+        !message.selfSend &&
+        !isActive &&
+        !conversationStore.isMessageCoveredByReadPosition(
+          conversation,
+          message,
+        ) &&
+        isNormalMessage(message.type) &&
+        message.status !== ImMessageStatus.RECALL;
       const existingIndex = messages.findIndex((item) =>
         isSameMessage(item, message),
       );
@@ -720,6 +834,8 @@ export const useMessageStore = defineStore('imMessageStore', {
         applyServerMessageUpdate(existing, message);
         if (existingIndex === messages.length - 1) {
           recomputeConversationLast(conversation, messages);
+        }
+        if (isUnread) {
           syncConversationAtFlags(conversation, message);
         }
         return getDb()
@@ -752,22 +868,8 @@ export const useMessageStore = defineStore('imMessageStore', {
 
       // 4. 新消息更新会话摘要和未读状态
       applyConversationSummary(conversation, message);
-      syncConversationAtFlags(conversation, message);
-
-      const isActive =
-        conversationStore.activeConversation?.type === conversationInfo.type &&
-        conversationStore.activeConversation?.targetId ===
-          conversationInfo.targetId;
-      if (
-        !message.selfSend &&
-        !isActive &&
-        !conversationStore.isMessageCoveredByReadPosition(
-          conversation,
-          message,
-        ) &&
-        isNormalMessage(message.type) &&
-        message.status !== ImMessageStatus.RECALL
-      ) {
+      if (isUnread) {
+        syncConversationAtFlags(conversation, message);
         conversation.unreadCount++;
       }
 
@@ -920,17 +1022,17 @@ export const useMessageStore = defineStore('imMessageStore', {
       recallSignalContent: string,
     ): Promise<void> {
       const conversationStore = useConversationStore();
-      const changed = this.applyRecallMessageInMemory(
-        conversationType,
-        targetId,
-        recallSignalContent,
-      );
-      if (!changed) {
-        return;
-      }
       await getDb()
         .transaction(['messages', 'conversations'], 'readwrite', async (tx) => {
-          await this.saveMessageRecord(changed.message, conversationType, tx);
+          const changed = await this.applyRecallMessageRecord(
+            conversationType,
+            targetId,
+            recallSignalContent,
+            tx,
+          );
+          if (!changed) {
+            return;
+          }
           await conversationStore.saveConversationRecord(
             changed.conversation,
             tx,
@@ -1101,6 +1203,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         message._localFile = undefined;
       });
       Reflect.deleteProperty(this.messagesByConversation, clientConversationId);
+      Reflect.deleteProperty(this.messageDOPageCursors, clientConversationId);
       this.loadedConversationKeys = this.loadedConversationKeys.filter(
         (key) => key !== clientConversationId,
       );

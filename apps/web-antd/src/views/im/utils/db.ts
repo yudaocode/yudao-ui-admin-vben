@@ -22,6 +22,18 @@ export type DbStoreName =
 
 export type DbTransaction = IDBTransaction;
 
+/** 数据库消息分页游标 */
+export interface MessageDOPageCursor {
+  messageKey: string;
+  sendTime: number;
+}
+
+/** 数据库消息分页结果 */
+export interface MessageDOPageResult {
+  hasMore: boolean;
+  list: MessageDO[];
+}
+
 /** IM 本地存储 key */
 export const StorageKeys = {
   localStorage: {
@@ -363,18 +375,19 @@ class DbClient {
   /** 按会话分页获取消息 */
   async getMessageListByConversation(
     clientConversationId: string,
-    options?: { beforeSendTime?: number; limit?: number },
+    options?: { before?: MessageDOPageCursor; limit?: number },
     tx?: DbTransaction,
-  ): Promise<MessageDO[]> {
+  ): Promise<MessageDOPageResult> {
     const limit = options?.limit ?? 50;
-    const upper = options?.beforeSendTime ?? Number.MAX_SAFE_INTEGER;
+    const before = options?.before;
+    const upper = before?.sendTime ?? Number.MAX_SAFE_INTEGER;
     const range = IDBKeyRange.bound(
       [clientConversationId, 0],
       [clientConversationId, upper],
       false,
-      true,
+      !before,
     );
-    const read = async (tx: DbTransaction): Promise<MessageDO[]> => {
+    const read = async (tx: DbTransaction): Promise<MessageDOPageResult> => {
       const index = tx
         .objectStore('messages')
         .index('clientConversationId+sendTime');
@@ -385,21 +398,41 @@ class DbClient {
         request.addEventListener('error', () => reject(request.error));
         request.addEventListener('success', () => {
           const cursor = request.result;
-          if (!cursor || out.length >= limit) {
+          if (!cursor) {
             resolve();
             return;
           }
-          out.push(cursor.value as MessageDO);
+          const message = cursor.value as MessageDO;
+          if (
+            before &&
+            message.sendTime === before.sendTime &&
+            message.messageKey >= before.messageKey
+          ) {
+            cursor.continue();
+            return;
+          }
+          out.push(message);
+          if (out.length > limit) {
+            resolve();
+            return;
+          }
           cursor.continue();
         });
       });
       // 气泡渲染需要按时间升序
-      return out.toReversed();
+      return {
+        hasMore: out.length > limit,
+        list: out.slice(0, limit).toReversed(),
+      };
     };
     if (tx) {
       return read(tx);
     }
-    return this.transaction<MessageDO[]>(['messages'], 'readonly', read);
+    return this.transaction<MessageDOPageResult>(
+      ['messages'],
+      'readonly',
+      read,
+    );
   }
 
   /** 读取设置 */
@@ -504,29 +537,6 @@ export function getServerMessageKey(
 /** 客户端临时消息主键 */
 export function getClientMessageKey(clientMessageId: string): string {
   return `client:${clientMessageId}`;
-}
-
-/** 解析本地消息主键 */
-export function parseMessageKey(
-  messageKey: string,
-):
-  | null
-  | { clientMessageId: string; kind: 'client' }
-  | { conversationType: number; id: number; kind: 'server' } {
-  if (!messageKey) {
-    return null;
-  }
-  if (messageKey.startsWith('client:')) {
-    const clientMessageId = messageKey.slice('client:'.length);
-    return clientMessageId ? { kind: 'client', clientMessageId } : null;
-  }
-  const [conversationTypeText, idText] = messageKey.split(':');
-  const conversationType = Number(conversationTypeText);
-  const id = Number(idText);
-  if (!Number.isFinite(conversationType) || !Number.isFinite(id) || id <= 0) {
-    return null;
-  }
-  return { kind: 'server', conversationType, id };
 }
 
 /** 更新消息拉取游标 */
