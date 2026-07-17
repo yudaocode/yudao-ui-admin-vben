@@ -11,12 +11,7 @@ import { useRouter } from 'vue-router';
 import { ContentWrap, Page } from '@vben/common-ui';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { useUserStore } from '@vben/stores';
-import {
-  beginOfDay,
-  endOfDay,
-  formatDateTime,
-  handleTree,
-} from '@vben/utils';
+import { beginOfDay, endOfDay, formatDateTime, handleTree } from '@vben/utils';
 
 import { Button, TabPane, Tabs } from 'antdv-next';
 
@@ -30,8 +25,8 @@ import {
 } from '#/api/crm/statistics/product';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
-import { getRangePickerDefaultProps } from '#/utils';
 import { $t } from '#/locales';
+import { getRangePickerDefaultProps } from '#/utils';
 
 const userStore = useUserStore();
 const { push } = useRouter();
@@ -45,15 +40,14 @@ enum ProductSalesRowTypeEnum {
   PRODUCT_SUMMARY = 'productSummary',
 }
 
-type ProductSalesRow =
-  Partial<CrmStatisticsProductApi.ProductSalesRespVO> & {
-    categoryRowspan?: number;
-    index?: number;
-    productRowspan?: number;
-    rowKey?: string;
-    rowType: ProductSalesRowTypeEnum;
-    summaryLabel?: string;
-  };
+type ProductSalesRow = Partial<CrmStatisticsProductApi.ProductSalesRespVO> & {
+  categoryRowspan?: number;
+  index?: number;
+  productRowspan?: number;
+  rowKey?: string;
+  rowType: ProductSalesRowTypeEnum;
+  summaryLabel?: string;
+};
 
 const SUMMARY_LABEL_COLUMN_INDEX = 0;
 const CATEGORY_COLUMN_INDEX = 1;
@@ -61,11 +55,11 @@ const PRODUCT_COLUMN_INDEX = 2;
 const CONTRACT_NO_COLUMN_INDEX = 3;
 const CUSTOMER_COLUMN_INDEX = 6;
 const SUMMARY_VALUE_COLUMN_INDEX = 8;
-const LINK_COLUMN_INDEXES = [
-  PRODUCT_COLUMN_INDEX,
+const LINK_COLUMN_INDEXES = new Set([
   CONTRACT_NO_COLUMN_INDEX,
   CUSTOMER_COLUMN_INDEX,
-];
+  PRODUCT_COLUMN_INDEX,
+]);
 
 /** 搜索表单 */
 function useGridFormSchema(): VbenFormSchema[] {
@@ -79,7 +73,9 @@ function useGridFormSchema(): VbenFormSchema[] {
         allowClear: false,
       },
       defaultValue: [
-        formatDateTime(beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 30))),
+        formatDateTime(
+          beginOfDay(new Date(Date.now() - 3600 * 1000 * 24 * 30)),
+        ),
         formatDateTime(endOfDay(new Date(Date.now() - 3600 * 1000 * 24))),
       ],
     },
@@ -197,7 +193,7 @@ const [ProductSalesGrid, productSalesGridApi] = useVbenVxeGrid({
     ],
     cellClassName: ({ columnIndex, row }: any) =>
       row.rowType === ProductSalesRowTypeEnum.DETAIL &&
-      LINK_COLUMN_INDEXES.includes(columnIndex)
+      LINK_COLUMN_INDEXES.has(columnIndex)
         ? 'is-link-cell'
         : '',
     height: 'auto',
@@ -283,7 +279,10 @@ function buildProductSummaryRow(
     rowType: ProductSalesRowTypeEnum.PRODUCT_SUMMARY,
     rowKey: `product-summary-${rows[0]?.productId || rows[0]?.productName}`,
     summaryLabel: `${rows[0]?.productName || '产品'} 小计`,
-    productCount: rows.reduce((sum, item) => sum + getNumber(item.productCount), 0),
+    productCount: rows.reduce(
+      (sum, item) => sum + getNumber(item.productCount),
+      0,
+    ),
     productTotalPrice: rows.reduce(
       (sum, item) => sum + getNumber(item.productTotalPrice),
       0,
@@ -299,7 +298,10 @@ function buildCategorySummaryRow(
     rowType: ProductSalesRowTypeEnum.CATEGORY_SUMMARY,
     rowKey: `category-summary-${rows[0]?.categoryId || rows[0]?.categoryName}`,
     summaryLabel: `${rows[0]?.categoryName || '未分类'} 小计`,
-    productCount: rows.reduce((sum, item) => sum + getNumber(item.productCount), 0),
+    productCount: rows.reduce(
+      (sum, item) => sum + getNumber(item.productCount),
+      0,
+    ),
     productTotalPrice: rows.reduce(
       (sum, item) => sum + getNumber(item.productTotalPrice),
       0,
@@ -308,7 +310,9 @@ function buildCategorySummaryRow(
 }
 
 /** 按产品分组 */
-function buildProductGroups(rows: CrmStatisticsProductApi.ProductSalesRespVO[]) {
+function buildProductGroups(
+  rows: CrmStatisticsProductApi.ProductSalesRespVO[],
+) {
   const result: CrmStatisticsProductApi.ProductSalesRespVO[][] = [];
   let index = 0;
   while (index < rows.length) {
@@ -335,7 +339,10 @@ function buildList(
     const categoryKey = getCategoryKey(data[index]!);
     const categoryRows: CrmStatisticsProductApi.ProductSalesRespVO[] = [];
 
-    while (index < data.length && getCategoryKey(data[index]!) === categoryKey) {
+    while (
+      index < data.length &&
+      getCategoryKey(data[index]!) === categoryKey
+    ) {
       categoryRows.push(data[index]!);
       index++;
     }
@@ -362,8 +369,7 @@ function buildList(
     if (result.length > categoryStartIndex) {
       result[categoryStartIndex]!.categoryRowspan = categoryRows.length;
     }
-    result.push(...productSummaryRows);
-    result.push(buildCategorySummaryRow(categoryRows));
+    result.push(...productSummaryRows, buildCategorySummaryRow(categoryRows));
   }
   return result;
 }
@@ -569,13 +575,13 @@ onMounted(() => {
 
 <style scoped>
 :deep(.product-summary-row > td) {
-  background-color: #fff9f2 !important;
   font-weight: 600;
+  background-color: #fff9f2 !important;
 }
 
 :deep(.category-summary-row > td) {
-  background-color: #fff3e8 !important;
   font-weight: 600;
+  background-color: #fff3e8 !important;
 }
 
 :deep(.is-link-cell) {

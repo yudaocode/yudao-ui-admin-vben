@@ -135,9 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  } as VxeTableGridOptions<
-    CrmStatisticsPerformanceTargetApi.PerformanceTargetRespVO
-  >,
+  } as VxeTableGridOptions<CrmStatisticsPerformanceTargetApi.PerformanceTargetRespVO>,
 });
 
 /** 获取接口参数 */
