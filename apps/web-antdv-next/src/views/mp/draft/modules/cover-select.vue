@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { UploadFile } from 'antdv-next';
+import type { UploadFile, UploadProps } from 'antdv-next';
 
 import type { MpDraftApi } from '#/api/mp/draft';
 
-import { computed, inject, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
@@ -13,7 +13,10 @@ import { Button, Image, message, Modal, Upload } from 'antdv-next';
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/components/';
 
+import { parseCoverUploadChange } from './cover-upload';
+
 const props = defineProps<{
+  accountId: number;
   isFirst: boolean;
   modelValue: MpDraftApi.NewsItem;
 }>();
@@ -33,18 +36,13 @@ const newsItem = computed<MpDraftApi.NewsItem>({
   },
 });
 
-const accountId = inject<number>('accountId');
 const dialogVisible = ref(false);
 
 const fileList = ref<UploadFile[]>([]);
-interface UploadData {
-  type: UploadType;
-  accountId: number;
-}
-const uploadData: UploadData = reactive({
+const uploadData = computed(() => ({
+  accountId: props.accountId,
   type: UploadType.Image,
-  accountId: accountId!,
-});
+}));
 
 function handleOpenDialog() {
   dialogVisible.value = true;
@@ -61,12 +59,23 @@ function onMaterialSelected(item: any) {
 const onBeforeUpload = (file: UploadFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 
-/** 上传错误处理 */
-function onUploadChange(info: any) {
-  if (info.file.status === 'error') {
-    onUploadError(info.file.error || new Error('上传失败'));
+/** 上传状态处理 */
+const onUploadChange: UploadProps['onChange'] = (info) => {
+  fileList.value = info.fileList;
+  const result = parseCoverUploadChange<{
+    code: number;
+    data: {
+      mediaId: string;
+      url: string;
+    };
+    msg?: string;
+  }>(info);
+  if (result.error) {
+    onUploadError(result.error);
+  } else if (result.response) {
+    onUploadSuccess(result.response);
   }
-}
+};
 
 /** 上传成功处理 */
 function onUploadSuccess(res: any) {
@@ -110,9 +119,8 @@ function onUploadError(err: Error) {
             :action="UPLOAD_URL"
             :headers="HEADERS"
             :file-list="fileList"
-            :data="{ ...uploadData }"
+            :data="uploadData"
             :before-upload="onBeforeUpload"
-            @success="onUploadSuccess"
             @change="onUploadChange"
           >
             <template #default>
@@ -141,7 +149,7 @@ function onUploadError(err: Error) {
       >
         <WxMaterialSelect
           type="image"
-          :account-id="accountId!"
+          :account-id="accountId"
           @select-material="onMaterialSelected"
         />
       </Modal>

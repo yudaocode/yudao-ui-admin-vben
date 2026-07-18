@@ -3,7 +3,7 @@ import type { FormInstance, UploadProps } from 'antdv-next';
 
 import type { UploadData } from './upload';
 
-import { inject, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -21,8 +21,9 @@ import {
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    accountId: number;
     open?: boolean;
   }>(),
   {
@@ -34,8 +35,6 @@ const emit = defineEmits<{
   'update:open': [v: boolean];
   uploaded: [];
 }>();
-
-const accountId = inject<number>('accountId');
 
 const uploadRules = {
   introduction: [
@@ -51,7 +50,6 @@ function handleCancel() {
 const fileList = ref<any[]>([]);
 
 const uploadData: UploadData = reactive({
-  accountId: accountId!,
   introduction: '',
   title: '',
   type: UploadType.Video,
@@ -74,7 +72,7 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
   formData.append('type', uploadData.type);
   formData.append('title', uploadData.title);
   formData.append('introduction', uploadData.introduction);
-  formData.append('accountId', String(uploadData.accountId));
+  formData.append('accountId', String(props.accountId));
 
   try {
     const response = await fetch(UPLOAD_URL, {
