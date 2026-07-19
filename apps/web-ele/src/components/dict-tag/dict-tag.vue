@@ -20,7 +20,8 @@ const props = defineProps<DictTagProps>();
 /** 获取标签类型 */
 function getTagType(colorType?: string): TagType {
   switch (colorType) {
-    case 'danger': {
+    case 'danger':
+    case 'error': {
       return 'danger';
     }
     case 'default': {
@@ -29,7 +30,8 @@ function getTagType(colorType?: string): TagType {
     case 'info': {
       return 'info';
     }
-    case 'primary': {
+    case 'primary':
+    case 'processing': {
       return 'primary';
     }
     case 'success': {

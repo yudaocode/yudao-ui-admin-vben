@@ -148,22 +148,15 @@ export function useTypeGridColumns(): VxeTableGridOptions['columns'] {
 
 // ============================== 字典数据 ==============================
 
-// TODO @芋艿：后续针对 antd，增加
 /** 颜色选项 */
 const colorOptions = [
   { value: '', label: '无' },
-  { value: 'processing', label: '主要' },
-  { value: 'success', label: '成功' },
   { value: 'default', label: '默认' },
+  { value: 'primary', label: '主要' },
+  { value: 'success', label: '成功' },
+  { value: 'info', label: '信息' },
   { value: 'warning', label: '警告' },
-  { value: 'error', label: '危险' },
-  { value: 'pink', label: 'pink' },
-  { value: 'red', label: 'red' },
-  { value: 'orange', label: 'orange' },
-  { value: 'green', label: 'green' },
-  { value: 'cyan', label: 'cyan' },
-  { value: 'blue', label: 'blue' },
-  { value: 'purple', label: 'purple' },
+  { value: 'danger', label: '危险' },
 ];
 
 /** 数据新增/修改的表单 */
