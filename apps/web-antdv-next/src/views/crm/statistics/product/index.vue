@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EchartsUIType } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
@@ -411,7 +411,7 @@ function spanMethod({ columnIndex, row }: any) {
 /** 获得产品分类销售分析图表 */
 function getProductCategoryChartOptions(
   data: CrmStatisticsProductApi.ProductCategoryRespVO[],
-) {
+): EChartsOption {
   return {
     title: {
       text: '产品分类销量占比',

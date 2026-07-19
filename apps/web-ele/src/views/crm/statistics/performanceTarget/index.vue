@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EchartsUIType } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
@@ -140,7 +140,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 获取接口参数 */
 async function getApiParams() {
-  const values = await formApi.getValues();
+  const values =
+    await formApi.getValues<CrmStatisticsPerformanceTargetApi.PerformanceTargetReqVO>();
   return {
     ...values,
     year: Number(values.year),
@@ -156,7 +157,7 @@ function formatMonth(year: number, month: number) {
 function getChartOptions(
   year: number,
   data: CrmStatisticsPerformanceTargetApi.PerformanceTargetRespVO[],
-) {
+): EChartsOption {
   return {
     grid: {
       left: 20,
