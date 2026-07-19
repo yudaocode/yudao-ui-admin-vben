@@ -106,6 +106,14 @@ export function getSimpleContactList() {
   );
 }
 
+/** 获得联系人列表，基于指定客户 */
+export function getContactListByCustomer(customerId: number) {
+  return requestClient.get<CrmContactApi.Contact[]>(
+    '/crm/contact/list-by-customer',
+    { params: { customerId } },
+  );
+}
+
 /** 批量新增联系人商机关联 */
 export function createContactBusinessList(
   data: CrmContactApi.ContactBusinessReqVO,

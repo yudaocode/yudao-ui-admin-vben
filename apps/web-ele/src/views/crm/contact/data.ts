@@ -7,7 +7,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 
-import { getSimpleContactList } from '#/api/crm/contact';
+import { getContactListByCustomer } from '#/api/crm/contact';
 import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 import { AreaCascader } from '#/components/area';
@@ -55,12 +55,13 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
-      componentProps: {
+      componentProps: (_values, form) => ({
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-      },
+        onChange: () => form.setFieldValue('parentId', undefined),
+      }),
     },
     {
       fieldName: 'mobile',
@@ -132,12 +133,28 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'parentId',
       label: '直属上级',
-      component: 'ApiSelect',
+      component: 'Select',
       componentProps: {
-        api: getSimpleContactList,
-        labelField: 'name',
-        valueField: 'id',
+        options: [],
         placeholder: '请选择直属上级',
+      },
+      dependencies: {
+        triggerFields: ['customerId', 'id'],
+        disabled: (values) => !values.customerId,
+        async componentProps(values) {
+          if (!values.customerId) {
+            return { options: [], placeholder: '请先选择客户' };
+          }
+          const contacts = await getContactListByCustomer(values.customerId);
+          return {
+            options: contacts.map((item) => ({
+              disabled: item.id === values.id,
+              label: item.name,
+              value: item.id,
+            })),
+            placeholder: '请选择直属上级',
+          };
+        },
       },
     },
     {
