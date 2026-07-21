@@ -134,5 +134,5 @@ export const IM_EMOJI_LIST: string[] = [
   '✅',
   '❌',
   '⚠️',
-  '❓',
-];
+  '❓'
+]

@@ -15,11 +15,17 @@ import { computed, inject, ref, watch } from 'vue';
 import { IconifyIcon as Icon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
-import { Button, Calendar, Input, Modal, Popover, Tag } from 'antdv-next';
+import {
+  Button,
+  Calendar,
+  Input,
+  message as messageApi,
+  Modal,
+  Popover,
+  Tag,
+} from 'antdv-next';
 import dayjs from 'dayjs';
 
-import { getGroupMessageList as apiGetGroupMessageList } from '#/api/im/message/group';
-import { getPrivateMessageList as apiGetPrivateMessageList } from '#/api/im/message/private';
 import { useMessagePuller } from '#/views/im/home/composables/useMessagePuller';
 import { useVoicePlayer } from '#/views/im/home/composables/useVoicePlayer';
 import {
@@ -32,7 +38,6 @@ import {
   buildFacePreviewText,
   buildRecallTip,
   buildRecallTipSegments,
-  getConversationKey,
 } from '#/views/im/utils/conversation';
 import { getClientConversationId } from '#/views/im/utils/db';
 import {
@@ -73,7 +78,7 @@ const groupStore = useGroupStore();
 const friendStore = useFriendStore();
 const openMergeDetail = inject(IM_MERGE_DETAIL_DIALOG_KEY);
 const voicePlayer = useVoicePlayer();
-const { convertPrivateMessage, convertGroupMessage } = useMessagePuller();
+const { loadEarlierMessages } = useMessagePuller();
 
 const visible = ref(false);
 
@@ -350,10 +355,7 @@ async function loadEarlier() {
   ) {
     return;
   }
-  // 快照当前会话主键：await 期间用户切走 / 关闭面板时丢弃响应，避免旧会话历史被 prepend 到新会话造成串号
-  const requestedKey = getConversationKey(conversation.value);
   const requestedTargetId = conversation.value.targetId;
-  const requestedIsGroup = requestedType === ImConversationType.GROUP;
 
   loadingMore.value = true;
   try {
@@ -368,43 +370,21 @@ async function loadEarlier() {
     }
     const maxId = Number.isFinite(earliestId) ? earliestId : undefined;
 
-    // 调后端 list 接口：私聊 / 群聊接口签名不同，分支调度；返回结果用 useMessagePuller
-    // 暴露的 convert 函数转成本地 Message（与 puller 同一份字段映射，避免分歧）
-    let earlier: Message[] = [];
-    let pageLength = 0;
-    if (requestedIsGroup) {
-      const list = await apiGetGroupMessageList({
-        groupId: requestedTargetId,
-        maxId,
-        limit: HISTORY_PAGE_SIZE,
-      });
-      earlier = (list || []).map((message) => convertGroupMessage(message));
-      pageLength = list?.length ?? 0;
-    } else {
-      const list = await apiGetPrivateMessageList({
-        receiverId: requestedTargetId,
-        maxId,
-        limit: HISTORY_PAGE_SIZE,
-      });
-      earlier = (list || []).map((message) => convertPrivateMessage(message));
-      pageLength = list?.length ?? 0;
-    }
-
-    // await 期间 active 可能被外部置 null / 换主键：直接丢弃响应；不更新 hasMore（旧会话到顶不代表新会话到顶）也不 prepend
-    if (
-      !conversation.value ||
-      getConversationKey(conversation.value) !== requestedKey
-    ) {
-      return;
-    }
+    // 私聊 / 群聊的接口分支、字段转换、消息去重与 IndexedDB 落库统一由 puller 处理。
+    const pageLength = await loadEarlierMessages(
+      requestedType,
+      requestedTargetId,
+      maxId,
+      HISTORY_PAGE_SIZE,
+    );
 
     // 返回数量 < limit 视为到顶 —— 关闭"加载更早"按钮，避免后续点击空跑接口
     if (pageLength < HISTORY_PAGE_SIZE) {
       hasMore.value = false;
     }
-    // 合并到 messageStore：prependMessageList 内部去重 + 升序合并 + 落 IndexedDB；
-    // 主聊天面板的 messages 是同一份引用，老消息也会一起出现在主面板里（符合预期）
-    messageStore.prependMessageList(requestedType, requestedTargetId, earlier);
+  } catch (error) {
+    console.warn('[IM MessageHistory] 历史消息加载失败', error);
+    messageApi.warning('历史消息加载失败，请重试');
   } finally {
     loadingMore.value = false;
   }

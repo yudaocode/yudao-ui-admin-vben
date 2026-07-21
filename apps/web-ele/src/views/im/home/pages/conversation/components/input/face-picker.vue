@@ -124,6 +124,9 @@ async function onUploadPicked(e: Event) {
     }
     const payload = { url, width: size.width, height: size.height };
     await faceStore.addFaceUserItem(payload);
+  } catch (error) {
+    console.warn('[IM FacePicker] 上传个人表情失败', error);
+    ElMessage.error('上传失败');
   } finally {
     uploading.value = false;
   }

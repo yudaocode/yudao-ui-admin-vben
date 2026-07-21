@@ -171,24 +171,28 @@ function handleMuted() {
     type === ImConversationType.PRIVATE
       ? friendStore.setFriendSilent(targetId, next)
       : groupStore.setGroupSilent(targetId, next);
-  sync.catch((error) => {
+  void sync.catch((error) => {
     console.error('[IM] 切换免打扰失败', error);
-    conversationStore.setConversationSilent(type, targetId, !next);
+    const conversation = conversationStore.getConversation(type, targetId);
+    if (conversation?.silent === next) {
+      conversationStore.setConversationSilent(type, targetId, !next);
+    }
   });
 }
 
 /** 删除会话：二次确认后软删 */
 async function handleDelete() {
+  const { type, targetId, name } = props.conversation;
   try {
-    await confirm(
-      `确定删除与「${props.conversation.name}」的会话吗？`,
-      '删除会话',
-    );
-    conversationStore.removeConversation(
-      props.conversation.type,
-      props.conversation.targetId,
-    );
-  } catch {}
+    await confirm(`确定删除与「${name}」的会话吗？`, '删除会话');
+  } catch {
+    return;
+  }
+  try {
+    await conversationStore.removeConversation(type, targetId);
+  } catch (error) {
+    console.warn('[IM ConversationItem] 删除会话失败', error);
+  }
 }
 
 /** 右键菜单：置顶 / 免打扰 / 删除 */

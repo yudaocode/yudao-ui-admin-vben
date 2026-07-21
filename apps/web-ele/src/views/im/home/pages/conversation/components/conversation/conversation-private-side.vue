@@ -117,7 +117,10 @@ function handleMutedChange(value: boolean | number | string) {
       { targetId },
       error,
     );
-    conversationStore.setConversationSilent(type, targetId, !next);
+    const conversation = conversationStore.getConversation(type, targetId);
+    if (conversation?.silent === next) {
+      conversationStore.setConversationSilent(type, targetId, !next);
+    }
   });
 }
 

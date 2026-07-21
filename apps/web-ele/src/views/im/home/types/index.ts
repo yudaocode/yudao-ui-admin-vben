@@ -1,3 +1,6 @@
+import type { ImGroupRequestApi } from '#/api/im/group/request';
+import type { ImManagerChannelApi } from '#/api/im/manager/channel';
+
 // ==================== WebSocket 帧 / 事件 ====================
 
 // 后端 WebSocket 统一帧结构：{ type, content }
@@ -240,6 +243,9 @@ export interface GroupMember {
   isOwner?: boolean; // 是否群主（前端从 Group.ownerUserId 计算）
 }
 
+/** 群成员 IndexedDB 存储结构 */
+export type GroupMemberDO = GroupMember;
+
 // ==================== 好友 ====================
 
 // 好友实体（前端内部结构）
@@ -260,6 +266,9 @@ export interface Friend {
   addTime?: number; // 添加好友时间（毫秒时间戳；后端为 LocalDateTime 字符串，在 convertFriend 转换）
   deleteTime?: number; // 删除好友时间（毫秒时间戳；后端为 LocalDateTime 字符串，在 convertFriend 转换）
 }
+
+/** 好友 IndexedDB 存储结构 */
+export type FriendDO = Friend;
 
 /**
  * 好友申请记录（前端内部结构，对齐后端 ImFriendRequestApi.FriendRequestRespVO）
@@ -282,6 +291,15 @@ export interface FriendRequest {
   toNickname?: string; // 接收方昵称
   toAvatar?: string; // 接收方头像
 }
+
+/** 好友申请 IndexedDB 存储结构 */
+export type FriendRequestDO = FriendRequest;
+
+/** 加群申请 IndexedDB 存储结构 */
+export type GroupRequestDO = ImGroupRequestApi.GroupRequestRespVO;
+
+/** 频道 IndexedDB 存储结构 */
+export type ChannelDO = ImManagerChannelApi.Channel;
 
 // ==================== 用户名片 ====================
 

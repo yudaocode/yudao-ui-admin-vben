@@ -59,11 +59,11 @@ const duration = ref(0);
 const previewUrl = ref('');
 
 let mediaRecorder: MediaRecorder | null = null;
-let audioChunks: Blob[] = [];
 let mediaStream: MediaStream | null = null;
 let timer: null | ReturnType<typeof setInterval> = null;
 let recordedBlob: Blob | null = null;
-let discarding = false;
+let recordOwner: null | object = null;
+let disposed = false;
 let recordingMimeType = '';
 let recordingExtension = '';
 let recordedMimeType = '';
@@ -140,42 +140,57 @@ async function startRecord() {
     message.error('当前浏览器不支持录音（需要 HTTPS 或 localhost）');
     return;
   }
+  const owner = {};
+  recordOwner = owner;
   try {
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (disposed || !visible.value || recordOwner !== owner) {
+      stream.getTracks().forEach((track) => track.stop());
+      return;
+    }
+    mediaStream = stream;
   } catch {
+    if (recordOwner !== owner) {
+      return;
+    }
+    recordOwner = null;
     message.error('无法获取麦克风权限');
     return;
   }
-  audioChunks = [];
-  discarding = false;
+  const chunks: Blob[] = [];
+  let recorder: MediaRecorder;
   try {
-    mediaRecorder = createVoiceRecorder(mediaStream);
+    recorder = createVoiceRecorder(mediaStream);
+    mediaRecorder = recorder;
   } catch {
+    recordOwner = null;
     cleanupStream();
     message.error('当前浏览器不支持录音格式');
     return;
   }
-  mediaRecorder.addEventListener('dataavailable', (event: BlobEvent) => {
+  recorder.addEventListener('dataavailable', (event: BlobEvent) => {
     if (event.data.size > 0) {
-      audioChunks.push(event.data);
+      chunks.push(event.data);
     }
   });
-  mediaRecorder.addEventListener('stop', () => {
-    if (discarding) {
+  recorder.addEventListener('stop', () => {
+    if (recordOwner !== owner || mediaRecorder !== recorder) {
       return;
     }
+    recordOwner = null;
+    mediaRecorder = null;
     recordedMimeType =
       recordingMimeType ||
-      mediaRecorder?.mimeType ||
-      audioChunks[0]?.type ||
+      recorder.mimeType ||
+      chunks[0]?.type ||
       'audio/webm';
     recordedExtension =
       recordingExtension || getVoiceExtension(recordedMimeType);
-    recordedBlob = new Blob(audioChunks, { type: recordedMimeType });
+    recordedBlob = new Blob(chunks, { type: recordedMimeType });
     previewUrl.value = URL.createObjectURL(recordedBlob);
     status.value = 'preview';
   });
-  mediaRecorder.start();
+  recorder.start();
   status.value = 'recording';
   duration.value = 0;
   timer = setInterval(() => {
@@ -231,16 +246,17 @@ function handleCancel() {
 
 /** 重置录制资源 */
 function resetAll() {
-  discarding = true;
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
+  recordOwner = null;
+  const recorder = mediaRecorder;
+  mediaRecorder = null;
+  if (recorder && recorder.state !== 'inactive') {
+    recorder.stop();
   }
   cleanupStream();
   if (timer) {
     clearInterval(timer);
     timer = null;
   }
-  audioChunks = [];
   duration.value = 0;
   status.value = 'idle';
   recordingMimeType = '';
@@ -271,7 +287,10 @@ onMounted(() => {
   }
 });
 
-onBeforeUnmount(resetAll);
+onBeforeUnmount(() => {
+  disposed = true;
+  resetAll();
+});
 
 onUnmounted(() => {
   document.removeEventListener('click', handleDocumentClick);

@@ -67,6 +67,8 @@ const dialogTitle = computed(() =>
 const presetMode = computed(() => !!presetUser.value);
 
 function resetAll() {
+  loading.value = false;
+  submitting.value = false;
   keyword.value = '';
   users.value = [];
   searched.value = false;
@@ -102,14 +104,17 @@ function buildPresetApplyContent(): string {
 /** 按昵称搜索用户：空关键字直接清空结果 */
 async function handleSearch() {
   searched.value = true;
-  if (!keyword.value.trim()) {
+  const query = keyword.value.trim();
+  if (!query) {
     users.value = [];
+    loading.value = false;
     return;
   }
   loading.value = true;
   try {
-    users.value =
-      (await getSimpleUserListByNickname(keyword.value.trim())) || [];
+    users.value = (await getSimpleUserListByNickname(query)) || [];
+  } catch (error) {
+    console.warn('[IM FriendAddDialog] 搜索用户失败', error);
   } finally {
     loading.value = false;
   }
@@ -132,25 +137,27 @@ function backToSearch() {
 
 /** 提交好友申请：返回 requestId 走「等待验证」；返回 null 表示后端命中「单向好友静默重启」分支，已直接成为好友 */
 async function handleSubmitApply() {
-  if (!targetUser.value) {
+  const target = targetUser.value;
+  if (!target) {
     return;
   }
   // 预校验：不能加自己（搜索列表已过滤，这里兜底 presetUser / 名片入口等场景）
-  if (targetUser.value.id === currentUserId.value) {
+  if (target.id === currentUserId.value) {
     message.warning('不能添加自己为好友');
     return;
   }
+  const payload = {
+    toUserId: target.id,
+    applyContent: applyContent.value.trim() || undefined,
+    displayName: displayName.value.trim() || undefined,
+    addSource: addSource.value,
+  };
   submitting.value = true;
   try {
-    const requestId = await friendStore.applyFriendRequest({
-      toUserId: targetUser.value.id,
-      applyContent: applyContent.value.trim() || undefined,
-      displayName: displayName.value.trim() || undefined,
-      addSource: addSource.value,
-    });
+    const requestId = await friendStore.applyFriendRequest(payload);
     // silent 分支（已是单向好友被静默重启）：主动 fetchFriendInfo 入库，不依赖 WS FRIEND_ADD 推送，避免丢推时列表看不到
     if (requestId === null) {
-      await friendStore.fetchFriendInfo(targetUser.value.id);
+      await friendStore.fetchFriendInfo(target.id);
     }
     message.success(requestId ? '申请已发送，等待对方验证' : '已添加为好友');
     visible.value = false;

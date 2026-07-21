@@ -57,9 +57,7 @@ const {
   uploadAndSendMedia,
   insertMediaPlaceholder,
   markMediaFailed,
-  commitMediaPlaceholder,
   createUploadProgressHandler,
-  verifyMediaUploadStillAllowed,
   requireMediaHandler,
 } = useMediaUploader();
 const muteOverlay = useMuteOverlay(); // 禁言 / 封禁覆盖层
@@ -957,8 +955,6 @@ async function uploadAndSendVideo(file: File) {
   }
   const { conversation } = context;
   const replyQuote = context.quote;
-  const startKey = getConversationKey(conversation);
-
   // 1. 立即占位：url 走 blob 让 <video src> 拉首字节渲染；coverUrl 不设 blob
   //    （<video poster> 期待图片资源，传 video blob 在部分浏览器会退化成黑底，不是稳定行为）
   //    cover 等 probe 异步出真实 URL 后由 commit 阶段一起 patch；_localFile 留 file 供失败重试
@@ -968,12 +964,25 @@ async function uploadAndSendVideo(file: File) {
     serializeMessage(
       withQuotePayload(videoHandler.build(file, blobUrl, {}), replyQuote),
     );
-  const { clientMessageId } = insertMediaPlaceholder({
-    file,
-    type: ImContentType.VIDEO,
-    conversation,
-    buildContent: buildPlaceholderContent,
-  });
+  let clientMessageId: string;
+  let commitPlaceholder: ((realContent: string) => Promise<void>) | undefined;
+  try {
+    const placeholder = await insertMediaPlaceholder({
+      file,
+      type: ImContentType.VIDEO,
+      conversation,
+      buildContent: buildPlaceholderContent,
+    });
+    if (!placeholder) {
+      return;
+    }
+    clientMessageId = placeholder.clientMessageId;
+    commitPlaceholder = placeholder.commit;
+  } catch (error) {
+    console.error('[IM] 视频消息占位写入失败', error);
+    message.warning('消息保存失败，请重试');
+    return;
+  }
 
   // 2. 三路并行起跑（probe 与两条上传无依赖，封面上传等 probe 出 cover 后立即接力）
   // 2.1 视频本体上传：async IIFE 包一层让 await 显式可见（lint 不再误判 floating promise），
@@ -1035,19 +1044,7 @@ async function uploadAndSendVideo(file: File) {
   if (coverUrl && !safeCoverUrl) {
     console.warn('[IM] 视频封面上传返回了不支持打开的 URL', { coverUrl });
   }
-  // 3.3 上传后会话校验 + muteOverlay 复查（与 useMediaUploader.uploadAndSendMedia 同一道）
-  if (
-    !verifyMediaUploadStillAllowed(
-      conversation,
-      startKey,
-      ImContentType.VIDEO,
-      clientMessageId,
-    )
-  ) {
-    return;
-  }
-
-  // 4. 拼真实 VideoMessage payload，patch 进占位 + 走 sendRaw 复用占位发送
+  // 4. 拼真实 VideoMessage payload，由占位句柄继续写回原会话并完成发送
   const realContent = serializeMessage(
     withQuotePayload(
       videoHandler.build(file, url, {
@@ -1061,12 +1058,7 @@ async function uploadAndSendVideo(file: File) {
       replyQuote,
     ),
   );
-  await commitMediaPlaceholder({
-    type: ImContentType.VIDEO,
-    conversation,
-    clientMessageId,
-    realContent,
-  });
+  await commitPlaceholder(realContent);
 }
 
 /** 视频选完即上传 + 发送 VIDEO 消息（不放入 editor，独立链路：probe + 双上传，最终走 commitMediaPlaceholder 收尾） */

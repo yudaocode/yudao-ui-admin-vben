@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { ShallowRef } from 'vue';
+
 import type { CallParticipantVM } from './rtc-call-participant-tile.vue';
 
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 
 import { useIntervalFn } from '@vueuse/core';
 import { message } from 'antdv-next';
-import { Track } from 'livekit-client';
+import { type Room, Track } from 'livekit-client';
 
 import {
   acceptCall,
@@ -37,11 +39,157 @@ const rtcStore = useRtcStore();
 const lk = useLiveKitRoom();
 
 const memberPickerRef = ref<InstanceType<typeof RtcCallMemberPickerDialog>>();
-const connecting = ref(false);
-const accepting = ref(false);
-const rejecting = ref(false);
-const cancelling = ref(false);
-const hangingUp = ref(false);
+let connectingRoom = ''; // 正在连接的业务 room
+let liveKitRoom = ''; // 当前 LiveKit Room 对应的业务 room
+
+interface RtcActionOwner {
+  liveKitRoom: null | Room;
+  room: string;
+  userId: number;
+}
+
+interface RtcActionTicket {
+  owner: RtcActionOwner;
+  task: Promise<void>;
+}
+
+const acceptingAction = shallowRef<RtcActionTicket>();
+const rejectingAction = shallowRef<RtcActionTicket>();
+const cancellingAction = shallowRef<RtcActionTicket>();
+const hangingUpAction = shallowRef<RtcActionTicket>();
+let rtcListenerOwner: RtcActionOwner | undefined;
+let rtcListenerCleanups: Array<() => void> = [];
+
+/** 当前 Store 中的业务 room */
+function getCurrentRtcRoom(): string {
+  return rtcStore.call?.room || rtcStore.incomingPayload?.room || '';
+}
+
+/** 捕获一次 RTC 异步操作的业务 room 和物理 Room */
+function captureRtcOwner(
+  room = getCurrentRtcRoom(),
+): RtcActionOwner | undefined {
+  if (!room) {
+    return;
+  }
+  return {
+    userId: getCurrentUserId(),
+    room,
+    liveKitRoom: lk.room.value,
+  };
+}
+
+/** 判断捕获的 RTC owner 是否仍拥有当前通话 */
+function isRtcOwnerActive(owner: RtcActionOwner): boolean {
+  return getCurrentUserId() === owner.userId && getCurrentRtcRoom() === owner.room;
+}
+
+/** 判断两个异步动作是否属于同一次通话 */
+function isSameRtcOwner(left: RtcActionOwner, right: RtcActionOwner): boolean {
+  return (
+    left.userId === right.userId &&
+    left.room === right.room &&
+    left.liveKitRoom === right.liveKitRoom
+  );
+}
+
+/** 只清理指定 owner 注册的 LiveKit 业务回调 */
+function clearRtcListeners(owner?: RtcActionOwner): void {
+  if (owner && rtcListenerOwner && !isSameRtcOwner(rtcListenerOwner, owner)) {
+    return;
+  }
+  rtcListenerCleanups.forEach((cleanup) => cleanup());
+  rtcListenerCleanups = [];
+  rtcListenerOwner = undefined;
+}
+
+/** 为当前 owner 注册独立回调；新通话会先淘汰旧 owner 回调 */
+function installRtcListeners(owner: RtcActionOwner): void {
+  clearRtcListeners();
+  rtcListenerOwner = owner;
+  rtcListenerCleanups = [
+    lk.onDisconnected(() => handlePeerDisconnected(owner)),
+    lk.onParticipantConnected(() => maybeEnterRunning(owner)),
+    lk.onParticipantDisconnected((userId) => {
+      if (isRtcOwnerActive(owner)) {
+        rtcStore.markUserLeft(userId);
+      }
+    }),
+  ];
+}
+
+/** 同一通话的动作复用任务；旧通话任务不得阻塞或清理新通话动作 */
+function runRtcAction(
+  action: ShallowRef<RtcActionTicket | undefined>,
+  owner: RtcActionOwner,
+  execute: () => Promise<void>,
+): Promise<void> {
+  const current = action.value;
+  if (current && isSameRtcOwner(current.owner, owner)) {
+    return current.task;
+  }
+  const task = execute().finally(() => {
+    if (action.value?.task === task) {
+      action.value = undefined;
+    }
+  });
+  action.value = { owner, task };
+  return task;
+}
+
+/** 仅当前通话显示动作加载状态 */
+function isCurrentRtcActionPending(action: RtcActionTicket | undefined): boolean {
+  return Boolean(action && isRtcOwnerActive(action.owner));
+}
+
+const accepting = computed(() =>
+  isCurrentRtcActionPending(acceptingAction.value),
+);
+const rejecting = computed(() =>
+  isCurrentRtcActionPending(rejectingAction.value),
+);
+const hangingUp = computed(() =>
+  isCurrentRtcActionPending(hangingUpAction.value),
+);
+
+/** 只释放 owner 捕获的 Room；捕获前尚未建 Room 时仅允许清理仍属于它的当前 Room */
+async function disconnectRtcOwner(owner: RtcActionOwner): Promise<void> {
+  clearRtcListeners(owner);
+  try {
+    if (owner.liveKitRoom) {
+      await lk.disconnectCaptured(owner.liveKitRoom);
+    } else if (isRtcOwnerActive(owner)) {
+      const currentRoom = lk.room.value;
+      if (currentRoom) {
+        await lk.disconnectCaptured(currentRoom);
+      } else {
+        await lk.disconnect();
+      }
+    }
+  } finally {
+    if (liveKitRoom === owner.room && !lk.room.value) {
+      liveKitRoom = '';
+    }
+  }
+}
+
+/** 仅当前 owner 仍匹配时重置业务 Store */
+function resetRtcOwner(owner: RtcActionOwner): void {
+  if (isRtcOwnerActive(owner)) {
+    rtcStore.reset();
+  }
+}
+
+/** 物理断开失败不阻塞业务状态复位 */
+async function cleanupRtcOwner(owner: RtcActionOwner): Promise<void> {
+  try {
+    await disconnectRtcOwner(owner);
+  } catch (error) {
+    console.warn('[Call] LiveKit 断开失败', { room: owner.room }, error);
+  } finally {
+    resetRtcOwner(owner);
+  }
+}
 
 // ==================== 视图模型 ====================
 
@@ -187,33 +335,58 @@ const participants = computed<CallParticipantVM[]>(() => {
 // ==================== LiveKit 连接 ====================
 
 /** 连入 LiveKit 房间并注册离开回调；INVITING 主叫预连和被叫 accept 后连入共用 */
-async function connectLiveKit(livekitUrl: string, token: string) {
-  // 幂等：lk.connect 内部进入后就把 room.value 赋值；非空表示已经在连接或已连接；stage 多次切换时重复触发也跳过
-  if (lk.room.value || connecting.value) {
+async function connectLiveKit(
+  room: string,
+  livekitUrl: string,
+  token: string,
+) {
+  const owner = captureRtcOwner(room);
+  if (
+    !owner ||
+    connectingRoom === room ||
+    (lk.room.value && liveKitRoom === room)
+  ) {
     return;
   }
-  connecting.value = true;
+  connectingRoom = room;
+  let connected = false;
   try {
     // 先注册回调，再 connect；信令握手过程会即时推送已在房参与者，业务 handler 必须先就绪
-    lk.onDisconnected(() => handlePeerDisconnected());
-    lk.onParticipantConnected(maybeEnterRunning);
-    lk.onParticipantDisconnected((userId) => rtcStore.markUserLeft(userId));
-    await lk.connect(livekitUrl, token, {
+    installRtcListeners(owner);
+    const connectedRoom = await lk.connect(livekitUrl, token, {
       audio: true,
       video: initialCamera.value,
     });
+    if (!connectedRoom) {
+      return;
+    }
+    if (!isRtcOwnerActive(owner)) {
+      await lk.disconnectCaptured(connectedRoom);
+      return;
+    }
+    liveKitRoom = room;
+    connected = true;
     // 兜底：connect 期间若已有远端在房，事件可能在 handler 注册前已触发，主动切到 RUNNING
     if (lk.remoteParticipants.value.length > 0) {
-      maybeEnterRunning();
+      maybeEnterRunning(owner);
     }
   } finally {
-    connecting.value = false;
+    if (!connected) {
+      clearRtcListeners(owner);
+    }
+    if (connectingRoom === room) {
+      connectingRoom = '';
+    }
   }
 }
 
 /** 主叫端：从 INVITING 切到 RUNNING；其它阶段不处理 */
-function maybeEnterRunning() {
-  if (rtcStore.stage === ImRtcCallStage.INVITING && rtcStore.call) {
+function maybeEnterRunning(owner: RtcActionOwner) {
+  if (
+    isRtcOwnerActive(owner) &&
+    rtcStore.stage === ImRtcCallStage.INVITING &&
+    rtcStore.call
+  ) {
     rtcStore.enterRunning(rtcStore.call);
   }
 }
@@ -221,25 +394,41 @@ function maybeEnterRunning() {
 watch(
   () => rtcStore.stage,
   async (stage) => {
-    if (
-      stage === ImRtcCallStage.INVITING &&
-      rtcStore.call?.token &&
-      rtcStore.call?.livekitUrl
-    ) {
+    const call = rtcStore.call;
+    if (stage === ImRtcCallStage.INVITING && call?.token && call.livekitUrl) {
+      const token = call.token;
+      const livekitUrl = call.livekitUrl;
+      const owner = captureRtcOwner(call.room);
+      if (!owner) {
+        return;
+      }
       try {
-        await connectLiveKit(rtcStore.call.livekitUrl, rtcStore.call.token);
+        await connectLiveKit(call.room, livekitUrl, token);
       } catch (error) {
-        console.error(
-          '[Call] connect 失败',
-          { room: rtcStore.call?.room },
-          error,
-        );
-        message.error('通话连接失败');
-        await handleCancel();
+        if (isRtcOwnerActive(owner)) {
+          console.error('[Call] connect 失败', { room: owner.room }, error);
+          message.error('通话连接失败');
+        }
+        await handleCancel(owner);
       }
     }
     if (stage === ImRtcCallStage.IDLE) {
-      await lk.disconnect();
+      const disconnectedRoom = lk.room.value;
+      const disconnectedRoomId = liveKitRoom;
+      clearRtcListeners();
+      try {
+        if (disconnectedRoom) {
+          await lk.disconnectCaptured(disconnectedRoom);
+        } else {
+          await lk.disconnect();
+        }
+      } catch (error) {
+        console.warn('[Call] LiveKit 空闲清理失败', error);
+      } finally {
+        if (liveKitRoom === disconnectedRoomId) {
+          liveKitRoom = '';
+        }
+      }
     }
   },
 );
@@ -255,20 +444,27 @@ watch(
       !lk.isConnected.value &&
       rtcStore.call?.livekitUrl
     ) {
+      const call = rtcStore.call;
+      const owner = captureRtcOwner(call.room);
+      if (!owner) {
+        return;
+      }
       try {
-        await connectLiveKit(rtcStore.call.livekitUrl, token as string);
+        await connectLiveKit(call.room, call.livekitUrl, token as string);
       } catch (error) {
-        console.error(
-          '[Call] accept connect 失败',
-          { room: rtcStore.call?.room },
-          error,
-        );
-        message.error('通话连接失败');
-        // 后端 accept 已写 JOINED；前端连接失败需调 leave 回滚，避免后端记录残留忙线
-        if (rtcStore.call?.room) {
-          leaveCall(rtcStore.call.room).catch(() => undefined);
+        if (isRtcOwnerActive(owner)) {
+          console.error(
+            '[Call] accept connect 失败',
+            { room: owner.room },
+            error,
+          );
+          message.error('通话连接失败');
         }
-        rtcStore.reset();
+        // 后端 accept 已写 JOINED；前端连接失败需调 leave 回滚，避免后端记录残留忙线
+        if (getCurrentUserId() === owner.userId) {
+          await leaveCall(owner.room).catch(() => undefined);
+        }
+        await cleanupRtcOwner(owner);
       }
     }
   },
@@ -277,107 +473,114 @@ watch(
 // ==================== 通话生命周期 ====================
 
 /** 主叫取消邀请 */
-async function handleCancel() {
-  if (cancelling.value) {
+async function handleCancel(capturedOwner?: RtcActionOwner) {
+  const owner = capturedOwner || captureRtcOwner();
+  if (!owner) {
     return;
   }
-  cancelling.value = true;
-  const room = rtcStore.call?.room;
-  try {
-    if (room) {
-      await cancelCall(room);
+  await runRtcAction(cancellingAction, owner, async () => {
+    try {
+      await cancelCall(owner.room);
+    } finally {
+      await cleanupRtcOwner(owner);
     }
-    await lk.disconnect();
-    rtcStore.reset();
-  } finally {
-    cancelling.value = false;
-  }
+  });
 }
 
 /** 被叫拒绝来电 */
 async function handleReject() {
-  if (rejecting.value) {
+  const owner = captureRtcOwner();
+  if (!owner) {
     return;
   }
-  rejecting.value = true;
   const payload = rtcStore.incomingPayload;
-  try {
-    if (payload?.room) {
-      await rejectCall(payload.room);
-      // 本端先行从胶囊条移除自己，免等后端 RTC_CALL(REJECTED) 推回；私聊场景 store 内部 no-op
-      rtcStore.applyParticipantRejected({
-        room: payload.room,
-        conversationType: payload.conversationType,
-        groupId: payload.groupId,
-        operatorUserId: getCurrentUserId(),
-      });
+  await runRtcAction(rejectingAction, owner, async () => {
+    try {
+      if (payload?.room === owner.room) {
+        await rejectCall(owner.room);
+        // 本端先行从胶囊条移除自己，免等后端 RTC_CALL(REJECTED) 推回；私聊场景 store 内部 no-op
+        if (isRtcOwnerActive(owner)) {
+          rtcStore.applyParticipantRejected({
+            room: owner.room,
+            conversationType: payload.conversationType,
+            groupId: payload.groupId,
+            operatorUserId: getCurrentUserId(),
+          });
+        }
+      }
+    } finally {
+      await cleanupRtcOwner(owner);
     }
-    rtcStore.reset();
-  } finally {
-    rejecting.value = false;
-  }
+  });
 }
 
 /** 被叫接听来电 */
 async function handleAccept() {
-  if (accepting.value) {
-    return;
-  }
   const payload = rtcStore.incomingPayload;
   if (!payload) return;
-  accepting.value = true;
-  try {
-    const data = await acceptCall(payload.room);
-    rtcStore.enterRunning(data);
-  } finally {
-    accepting.value = false;
+  const owner = captureRtcOwner(payload.room);
+  if (!owner) {
+    return;
   }
+  await runRtcAction(acceptingAction, owner, async () => {
+    const data = await acceptCall(payload.room);
+    if (
+      !isRtcOwnerActive(owner) ||
+      rtcStore.stage !== ImRtcCallStage.INCOMING ||
+      rtcStore.incomingPayload?.room !== payload.room
+    ) {
+      if (getCurrentUserId() === owner.userId) {
+        await leaveCall(data.room || payload.room).catch(() => undefined);
+      }
+      return;
+    }
+    rtcStore.enterRunning(data);
+  });
 }
 
 /** 通话中挂断 */
 async function handleHangup() {
-  if (hangingUp.value) {
+  const owner = captureRtcOwner();
+  if (!owner) {
     return;
   }
-  hangingUp.value = true;
   const call = rtcStore.call;
-  try {
-    if (call?.room) {
-      await leaveCall(call.room);
-      // 本端先行从胶囊条移除自己，免等后端 RTC_PARTICIPANT_DISCONNECTED 推回；私聊场景 store 内部 no-op，整通话由 END 关掉
-      rtcStore.applyParticipantDisconnected({
-        room: call.room,
-        userId: getCurrentUserId(),
-        conversationType: call.conversationType,
-        groupId: call.groupId,
-      });
+  await runRtcAction(hangingUpAction, owner, async () => {
+    try {
+      if (call?.room === owner.room) {
+        await leaveCall(owner.room);
+        // 本端先行从胶囊条移除自己，免等后端 RTC_PARTICIPANT_DISCONNECTED 推回；私聊场景 store 内部 no-op，整通话由 END 关掉
+        if (isRtcOwnerActive(owner)) {
+          rtcStore.applyParticipantDisconnected({
+            room: owner.room,
+            userId: getCurrentUserId(),
+            conversationType: call.conversationType,
+            groupId: call.groupId,
+          });
+        }
+      }
+    } finally {
+      await cleanupRtcOwner(owner);
     }
-    await lk.disconnect();
-    rtcStore.reset();
-  } finally {
-    hangingUp.value = false;
-  }
+  });
 }
 
 /** LiveKit Room 异常断开；多见于网络中断 */
-function handlePeerDisconnected() {
-  if (!rtcStore.isActive) {
+function handlePeerDisconnected(owner: RtcActionOwner) {
+  if (!isRtcOwnerActive(owner)) {
     return;
   }
-  const room = rtcStore.call?.room;
   // 给 RTC_CALL_END WebSocket 推送一个小窗口；私聊超时 / 主动挂断等场景下，后端 endSession 会先推 RTC_CALL_END，
   // 让前端按业务语义（"对方未接听" / "已取消" 等）reset，避免错把业务断开 toast 成「通话已断开」
   setTimeout(() => {
-    if (!rtcStore.isActive) {
+    if (!isRtcOwnerActive(owner)) {
       return;
     }
     // 上报离开房间
-    if (room) {
-      leaveCall(room).catch(() => undefined);
-    }
+    leaveCall(owner.room).catch(() => undefined);
     // 清理本地通话状态
     message.warning('通话已断开');
-    rtcStore.reset();
+    resetRtcOwner(owner);
   }, 100);
 }
 
@@ -395,6 +598,35 @@ watch(
   (active) => (active ? resumeNoAnswerTimer() : pauseNoAnswerTimer()),
   { immediate: true },
 );
+
+/** IM 主壳卸载时幂等释放 Room、媒体轨道、listener 与计时器 */
+onBeforeUnmount(() => {
+  pauseNoAnswerTimer();
+  const owner = captureRtcOwner();
+  if (owner) {
+    if (rtcStore.stage === ImRtcCallStage.INVITING) {
+      void cancelCall(owner.room).catch(() => undefined);
+    } else if (rtcStore.stage === ImRtcCallStage.INCOMING) {
+      void rejectCall(owner.room).catch(() => undefined);
+    } else if (rtcStore.stage === ImRtcCallStage.RUNNING) {
+      void leaveCall(owner.room).catch(() => undefined);
+    }
+  }
+  clearRtcListeners();
+  const capturedRoom = lk.room.value;
+  if (capturedRoom) {
+    void lk
+      .disconnectCaptured(capturedRoom)
+      .catch((error) =>
+        console.warn('[Call] 卸载时 LiveKit 断开失败', error),
+      );
+  } else {
+    void lk
+      .disconnect()
+      .catch((error) => console.warn('[Call] 卸载时 LiveKit 清理失败', error));
+  }
+  rtcStore.reset();
+});
 
 /** 本地仍有 pending 才调；INVITING / RUNNING 取 call、INCOMING 取 incomingPayload；接口静默错误 fire-and-forget */
 function triggerNoAnswerCallCheck() {
@@ -454,7 +686,14 @@ async function handleAddMemberSuccess(userIds: number[]) {
   if (!call?.room || userIds.length === 0) {
     return;
   }
+  const owner = captureRtcOwner(call.room);
+  if (!owner) {
+    return;
+  }
   await inviteCall({ room: call.room, inviteeIds: userIds });
+  if (!isRtcOwnerActive(owner)) {
+    return;
+  }
   // 同步本地 inviteeIds，让新成员立即作为 pending 占位出现在网格里
   rtcStore.appendInvitees(userIds);
   message.success('已发送邀请');

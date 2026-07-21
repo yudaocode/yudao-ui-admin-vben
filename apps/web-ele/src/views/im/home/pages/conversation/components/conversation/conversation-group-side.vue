@@ -18,13 +18,10 @@ import {
   ElSwitch,
 } from 'element-plus';
 
-import { dissolveGroup, muteAll, updateGroup } from '#/api/im/group';
-import { quitGroup, updateGroupMember } from '#/api/im/group/member';
+import { muteAll, updateGroup } from '#/api/im/group';
+import { updateGroupMember } from '#/api/im/group/member';
 import { getCurrentUserId } from '#/views/im/utils/auth';
-import {
-  ImConversationType,
-  ImGroupMemberRole,
-} from '#/views/im/utils/constants';
+import { ImGroupMemberRole } from '#/views/im/utils/constants';
 import { toGroupCardTarget } from '#/views/im/utils/message';
 import { isGroupQuit } from '#/views/im/utils/user';
 
@@ -345,19 +342,13 @@ async function handleQuit() {
     return;
   }
   const groupId = props.group.id;
-  await quitGroup(groupId);
-  // 本地立即响应：先把 self.member 置 DISABLE（让 GroupInfo 等 isMember 收敛），再清会话 + 群 store
-  if (myId.value) {
-    groupStore.updateGroupMemberStatus(
-      groupId,
-      myId.value,
-      CommonStatusEnum.DISABLE,
-    );
+  try {
+    await groupStore.quitGroup(groupId);
+    ElMessage.success('已退出群聊');
+    visible.value = false;
+  } catch (error) {
+    console.warn('[IM ConversationGroupSide] 退出群聊失败', error);
   }
-  conversationStore.removeConversation(ImConversationType.GROUP, groupId);
-  groupStore.removeGroup(groupId);
-  ElMessage.success('已退出群聊');
-  visible.value = false;
 }
 
 /** 解散群聊（仅群主入口） */
@@ -374,11 +365,13 @@ async function handleDissolve() {
     return;
   }
   const groupId = props.group.id;
-  await dissolveGroup(groupId);
-  conversationStore.removeConversation(ImConversationType.GROUP, groupId);
-  groupStore.removeGroup(groupId);
-  ElMessage.success('群聊已解散');
-  visible.value = false;
+  try {
+    await groupStore.dissolveGroup(groupId);
+    ElMessage.success('群聊已解散');
+    visible.value = false;
+  } catch (error) {
+    console.warn('[IM ConversationGroupSide] 解散群聊失败', error);
+  }
 }
 
 // ==================== 群主操作 ====================

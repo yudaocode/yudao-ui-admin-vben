@@ -78,7 +78,7 @@ const memberCountText = computed(() => {
   return count ? `${count} 位成员` : '';
 });
 
-/** member 切群 / 首挂：拉成员；竞态用 group.id 比对丢弃陈旧响应避免上一条群成员错位 */
+/** member 切群 / 首挂：拉取群成员 */
 watch(
   () => [props.group?.id, isMember.value] as const,
   async ([id, member]) => {
@@ -86,13 +86,14 @@ watch(
     if (!id || !member) {
       return;
     }
-    const list = await groupStore.fetchGroupMemberList(id, true);
-    if (props.group?.id !== id) {
-      return;
+    try {
+      const list = await groupStore.fetchGroupMemberList(id, true);
+      members.value = list.map((m) =>
+        convertGroupMemberLite(m, friendStore.getFriend(m.userId)),
+      );
+    } catch (error) {
+      console.warn('[IM GroupInfo] 群成员加载失败', { groupId: id }, error);
     }
-    members.value = list.map((m) =>
-      convertGroupMemberLite(m, friendStore.getFriend(m.userId)),
-    );
   },
   { immediate: true },
 );

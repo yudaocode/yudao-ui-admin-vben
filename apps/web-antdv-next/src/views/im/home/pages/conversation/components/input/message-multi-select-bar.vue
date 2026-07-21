@@ -6,6 +6,8 @@ import { computed, inject } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { IconifyIcon as Icon } from '@vben/icons';
 
+import { message } from 'antdv-next';
+
 import { useMessageMultiSelect } from '#/views/im/home/composables/useMessageMultiSelect';
 import { useConversationStore } from '#/views/im/home/store/conversationStore';
 import { useMessageStore } from '#/views/im/home/store/messageStore';
@@ -83,6 +85,7 @@ async function handleDelete() {
   if (!conversation) {
     return;
   }
+  const { type, targetId } = conversation;
   const messages = getSelectedMessages();
   if (messages.length === 0) {
     return;
@@ -97,13 +100,21 @@ async function handleDelete() {
   } catch {
     return;
   }
-  for (const m of messages) {
-    messageStore.removeMessage(conversation.type, conversation.targetId, {
-      id: m.id,
-      clientMessageId: m.clientMessageId,
-    });
+  try {
+    await Promise.all(
+      messages.map((item) =>
+        messageStore.removeMessage(type, targetId, {
+          id: item.id,
+          clientMessageId: item.clientMessageId,
+        }),
+      ),
+    );
+  } catch (error) {
+    console.warn('[IM MessageMultiSelectBar] 批量删除消息失败', error);
+    message.error('删除失败，请重试');
+  } finally {
+    multiSelect.exit();
   }
-  multiSelect.exit();
 }
 
 /** 取消多选 */

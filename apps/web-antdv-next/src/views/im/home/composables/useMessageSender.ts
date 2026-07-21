@@ -1,59 +1,53 @@
-import type { QuoteMessage, TextMessage } from '../../utils/message';
-import type { Conversation, Message } from '../types';
+import type { Conversation, Message, MessageDO } from '../types'
 
-import { readChannelMessages as apiReadChannelMessages } from '#/api/im/message/channel';
+import { readChannelMessages as apiReadChannelMessages } from '#/api/im/message/channel'
 import {
   readGroupMessages as apiReadGroupMessages,
   recallGroupMessage as apiRecallGroupMessage,
-  sendGroupMessage as apiSendGroupMessage,
-} from '#/api/im/message/group';
+  sendGroupMessage as apiSendGroupMessage
+} from '#/api/im/message/group'
 import {
   getPrivateMaxReadMessageId as apiGetPrivateMaxReadMessageId,
   readPrivateMessages as apiReadPrivateMessages,
   recallPrivateMessage as apiRecallPrivateMessage,
-  sendPrivateMessage as apiSendPrivateMessage,
-} from '#/api/im/message/private';
-import { getCurrentUserId } from '#/views/im/utils/auth';
+  sendPrivateMessage as apiSendPrivateMessage
+} from '#/api/im/message/private'
 
-import {
-  MESSAGE_GROUP_READ_ENABLED,
-  MESSAGE_PRIVATE_READ_ENABLED,
-} from '../../utils/config';
-import {
-  ImContentType,
-  ImConversationType,
-  ImMessageStatus,
-} from '../../utils/constants';
-import { getClientConversationId } from '../../utils/db';
+import { MESSAGE_GROUP_READ_ENABLED, MESSAGE_PRIVATE_READ_ENABLED } from '../../utils/config'
+import { ImContentType, ImConversationType, ImMessageStatus } from '../../utils/constants'
+import { type DbClient, getClientConversationId, getDb } from '../../utils/db'
 import {
   generateClientMessageId,
+  type QuoteMessage,
   serializeMessage,
-  withQuotePayload,
-} from '../../utils/message';
-import { useConversationStore } from '../store/conversationStore';
-import { useMessageStore } from '../store/messageStore';
+  type TextMessage,
+  withQuotePayload
+} from '../../utils/message'
+import { useConversationStore } from '../store/conversationStore'
+import { useMessageStore } from '../store/messageStore'
 
 /** 非文本消息的扩展选项（通用） */
 interface SendExtOptions {
-  atUserIds?: number[]; // 群聊 @ 的用户编号列表
-  receipt?: boolean; // 是否需要群回执（默认 false）
-  targetId?: number; // 覆盖默认的 targetId
+  atUserIds?: number[] // 群聊 @ 的用户编号列表
+  receipt?: boolean // 是否需要群回执（默认 false）
+  targetId?: number // 覆盖默认的 targetId
   /**
    * 显式指定目标会话（转发 / 名片推荐场景）
    *
    * 不传时默认取 conversationStore.activeConversation；传入时按本值发送 + 乐观更新到对应会话，
    * 不要求该会话当前是激活状态（适合发给「非当前会话」的多个目标）
    */
-  conversation?: Conversation;
+  conversation?: Conversation
   /** 被引用消息（可选）：写进 content.quote 用于乐观渲染，服务端按 quote.messageId 反查重算覆盖 */
-  quote?: QuoteMessage;
+  quote?: QuoteMessage
   /**
    * 复用已存在的本地占位消息 clientMessageId（媒体上传场景）
    *
    * 媒体上传链路在请求服务端前已经 insertMessage 了占位（带 blob URL + 进度条），
    * 这里跳过 buildLocalMessage / insertMessage，直接拿这个 id 走 ackMessage 收尾，避免重复插入两条
    */
-  existingClientMessageId?: string;
+  existingClientMessageId?: string
+  db?: DbClient // 发送任务开始时捕获的数据库；媒体上传完成后继续写回同一用户分区
 }
 
 /**
@@ -66,16 +60,17 @@ interface SendExtOptions {
  * 4. 已读上报：本端立刻清未读数并记录本地读位置；接口失败仅记录日志
  */
 export const useMessageSender = () => {
-  const conversationStore = useConversationStore();
-  const messageStore = useMessageStore();
+  const conversationStore = useConversationStore()
+  const messageStore = useMessageStore()
 
   /** 构造本地乐观消息对象 */
   const buildLocalMessage = (opts: {
-    atUserIds?: number[];
-    clientMessageId: string;
-    content: string;
-    targetId: number;
-    type: number;
+    atUserIds?: number[]
+    clientMessageId: string
+    content: string
+    senderId: number
+    targetId: number
+    type: number
   }): Message => {
     return {
       clientMessageId: opts.clientMessageId,
@@ -83,12 +78,12 @@ export const useMessageSender = () => {
       content: opts.content,
       status: ImMessageStatus.SENDING,
       sendTime: Date.now(),
-      senderId: getCurrentUserId(),
+      senderId: opts.senderId,
       targetId: opts.targetId,
       selfSend: true,
-      atUserIds: opts.atUserIds,
-    };
-  };
+      atUserIds: opts.atUserIds
+    }
+  }
 
   /**
    * 发送任意类型的消息（底层实现）
@@ -100,52 +95,53 @@ export const useMessageSender = () => {
   const sendRaw = async (
     type: number,
     content: string,
-    options?: SendExtOptions,
+    options?: SendExtOptions
   ): Promise<boolean> => {
     // 1. 参数校验：优先用显式传入的 conversation（转发场景），否则取激活会话
-    const conversation =
-      options?.conversation ?? conversationStore.activeConversation;
+    const conversation = options?.conversation ?? conversationStore.activeConversation
     if (!conversation) {
-      return false;
+      return false
     }
-    const realTarget = options?.targetId || conversation.targetId;
+    const realTarget = options?.targetId || conversation.targetId
     if (!realTarget) {
-      return false;
+      return false
     }
+    const db = options?.db ?? getDb()
 
     // 2. 准备 clientMessageId：媒体上传链路在 step 1 已经 insertMessage 占位，这里直接复用 id；其余场景走默认乐观插入
-    let clientMessageId: string;
+    let clientMessageId: string
     if (options?.existingClientMessageId) {
-      clientMessageId = options.existingClientMessageId;
+      clientMessageId = options.existingClientMessageId
       // 占位若已被删除（上传期间用户右键删除 / 撤回 / removeMessage 等）则放弃发送，
       // 否则 sendRaw 仍会把消息推到服务端，导致"本地无气泡 / 对方却收到一条"
-      const stillExists = messageStore
-        .getMessageList(conversation.type, realTarget)
-        .some(
-          (message) =>
-            message.clientMessageId === clientMessageId && !message._ackMerging,
-        );
-      if (!stillExists) {
-        return false;
+      const cachedMessage = messageStore
+        .getMessages(getClientConversationId(conversation.type, realTarget))
+        .find((message) => message.clientMessageId === clientMessageId)
+      const storedMessage = await db.getByIndex<{ clientMessageId: string }>(
+        'messages',
+        'clientMessageId',
+        clientMessageId
+      )
+      if (cachedMessage?._ackMerging || !storedMessage) {
+        return false
       }
     } else {
-      clientMessageId = generateClientMessageId();
+      clientMessageId = generateClientMessageId()
       const message = buildLocalMessage({
         clientMessageId,
         content,
+        senderId: db.userId,
         targetId: realTarget,
         type,
-        atUserIds: options?.atUserIds,
-      });
+        atUserIds: options?.atUserIds
+      })
       const conversationInfo = {
         type: conversation.type,
         targetId: realTarget,
         name: conversation.name || String(realTarget),
-        avatar: conversation.avatar || '',
-      };
-      void messageStore
-        .insertMessage(conversationInfo, message)
-        .catch(() => undefined);
+        avatar: conversation.avatar || ''
+      }
+      void messageStore.insertMessage(conversationInfo, message, db).catch(() => undefined)
     }
 
     // 3. 发送请求：按会话类型分发到不同接口；成功后 ackMessage 更新为 NORMAL，失败更新为 FAILED
@@ -155,17 +151,23 @@ export const useMessageSender = () => {
           clientMessageId,
           receiverId: realTarget,
           type,
-          content,
-        });
+          content
+        })
         void messageStore
-          .ackMessage(conversation.type, realTarget, clientMessageId, {
-            id: data.id,
-            sendTime: new Date(data.sendTime).getTime(),
-            status: data.status,
-            receiptStatus: data.receiptStatus,
-            content: data.content,
-          })
-          .catch(() => undefined);
+          .ackMessage(
+            conversation.type,
+            realTarget,
+            clientMessageId,
+            {
+              id: data.id,
+              sendTime: new Date(data.sendTime).getTime(),
+              status: data.status,
+              receiptStatus: data.receiptStatus,
+              content: data.content
+            },
+            db
+          )
+          .catch(() => undefined)
       } else if (conversation.type === ImConversationType.GROUP) {
         const data = await apiSendGroupMessage({
           clientMessageId,
@@ -173,52 +175,65 @@ export const useMessageSender = () => {
           type,
           content,
           atUserIds: options?.atUserIds,
-          receipt: options?.receipt,
-        });
-        void messageStore
-          .ackMessage(conversation.type, realTarget, clientMessageId, {
-            id: data.id,
-            sendTime: new Date(data.sendTime).getTime(),
-            status: data.status,
-            receiptStatus: data.receiptStatus,
-            readCount: data.readCount,
-            content: data.content,
-          })
-          .catch(() => undefined);
-      }
-      return true;
-    } catch (error) {
-      console.error(
-        '[IM] 消息发送失败',
-        { type, realTarget, clientMessageId },
-        error,
-      );
-      void messageStore
-        .ackMessage(conversation.type, realTarget, clientMessageId, {
-          status: ImMessageStatus.FAILED,
+          receipt: options?.receipt
         })
-        .catch(() => undefined);
-      return false;
+        void messageStore
+          .ackMessage(
+            conversation.type,
+            realTarget,
+            clientMessageId,
+            {
+              id: data.id,
+              sendTime: new Date(data.sendTime).getTime(),
+              status: data.status,
+              receiptStatus: data.receiptStatus,
+              readCount: data.readCount,
+              content: data.content
+            },
+            db
+          )
+          .catch(() => undefined)
+      }
+      return true
+    } catch (e) {
+      console.error('[IM] 消息发送失败', { type, realTarget, clientMessageId }, e)
+      await messageStore
+        .ackMessage(
+          conversation.type,
+          realTarget,
+          clientMessageId,
+          {
+            status: ImMessageStatus.FAILED
+          },
+          db
+        )
+        .catch(() => undefined)
+      const appliedMessage = messageStore
+        .getMessages(getClientConversationId(conversation.type, realTarget))
+        .find((message) => message.clientMessageId === clientMessageId)
+      if (appliedMessage) {
+        return appliedMessage.status === ImMessageStatus.NORMAL && !!appliedMessage.id
+      }
+      const storedMessage = await db.getByIndex<MessageDO>(
+        'messages',
+        'clientMessageId',
+        clientMessageId
+      )
+      return storedMessage?.status === ImMessageStatus.NORMAL && !!storedMessage.id
     }
-  };
+  }
 
   /**
-   * 发送文本消息（最常用的快捷入口）：message-input.vue 文本回车走这里
+   * 发送文本消息（最常用的快捷入口）：MessageInput.vue 文本回车走这里
    * 返回值：成功 true / 失败 false / 空文本 false（与 sendRaw 对齐，转发场景按返回值判断）
    */
-  const send = async (
-    text: string,
-    options?: SendExtOptions,
-  ): Promise<boolean> => {
+  const send = async (text: string, options?: SendExtOptions): Promise<boolean> => {
     if (!text.trim()) {
-      return false;
+      return false
     }
-    const payload = withQuotePayload<TextMessage>(
-      { content: text },
-      options?.quote,
-    );
-    return sendRaw(ImContentType.TEXT, serializeMessage(payload), options);
-  };
+    const payload = withQuotePayload<TextMessage>({ content: text }, options?.quote)
+    return sendRaw(ImContentType.TEXT, serializeMessage(payload), options)
+  }
 
   /**
    * 撤回某条消息
@@ -228,26 +243,20 @@ export const useMessageSender = () => {
   const recall = async (message: Message) => {
     // 参数校验：本地占位消息不能撤回
     if (!message.id) {
-      return;
+      return
     }
-    const conversation = conversationStore.activeConversation;
+    const conversation = conversationStore.activeConversation
     if (!conversation) {
-      return;
+      return
     }
     // 私聊 / 群聊接口签名一致，按会话类型分发
-    const isPrivate = conversation.type === ImConversationType.PRIVATE;
+    const isPrivate = conversation.type === ImConversationType.PRIVATE
     try {
-      await (isPrivate
-        ? apiRecallPrivateMessage(message.id)
-        : apiRecallGroupMessage(message.id));
-    } catch (error) {
-      console.error(
-        '[IM] 撤回失败',
-        { messageId: message.id, type: conversation.type },
-        error,
-      );
+      await (isPrivate ? apiRecallPrivateMessage(message.id) : apiRecallGroupMessage(message.id))
+    } catch (e) {
+      console.error('[IM] 撤回失败', { messageId: message.id, type: conversation.type }, e)
     }
-  };
+  }
 
   /**
    * 触发当前会话的已读上报（切会话 / 进入页面时调用）
@@ -255,81 +264,78 @@ export const useMessageSender = () => {
    * 2. 已读位置取已加载消息和会话末条消息的最大服务端 id
    */
   const readActive = async () => {
-    const conversation = conversationStore.activeConversation;
+    const conversation = conversationStore.activeConversation
     if (!conversation) {
-      return;
+      return
     }
-    let loadedMaxMessageId = 0;
-    for (const message of messageStore.getMessages(
-      getClientConversationId(conversation.type, conversation.targetId),
-    )) {
-      if (message.id && message.id > loadedMaxMessageId) {
-        loadedMaxMessageId = message.id;
-      }
-    }
-    const maxMessageId = Math.max(
-      loadedMaxMessageId,
-      conversation.lastMessageId || 0,
-    );
+    const db = getDb()
+    const loadedMaxMessageId = messageStore
+      .getMessages(getClientConversationId(conversation.type, conversation.targetId))
+      .reduce<number>(
+        (maxMessageId, message) =>
+          message.id && message.id > maxMessageId ? message.id : maxMessageId,
+        0
+      )
+    const maxMessageId = Math.max(loadedMaxMessageId, conversation.lastMessageId || 0)
     const readReported = conversationStore.isReportedReadPositionCovered(
       conversation.type,
       conversation.targetId,
-      maxMessageId,
-    );
+      maxMessageId
+    )
     if (readReported) {
       conversationStore.markConversationRead(
         conversation.type,
         conversation.targetId,
-      );
-      return;
+        undefined,
+        db
+      )
+      return
     }
-    const isPrivate = conversation.type === ImConversationType.PRIVATE;
-    const isGroup = conversation.type === ImConversationType.GROUP;
-    const isChannel = conversation.type === ImConversationType.CHANNEL;
+    const isPrivate = conversation.type === ImConversationType.PRIVATE
+    const isGroup = conversation.type === ImConversationType.GROUP
+    const isChannel = conversation.type === ImConversationType.CHANNEL
     // 本地标记已读：未读数清零（UI 立刻响应）
     conversationStore.markConversationRead(
       conversation.type,
       conversation.targetId,
       maxMessageId,
-    );
+      db
+    )
     if (!maxMessageId) {
-      return;
+      return
     }
     // 接口调用：按会话类型分发，并按对应已读开关控制
     if (!isPrivate && !isGroup && !isChannel) {
-      return;
+      return
     }
     if (isPrivate && !MESSAGE_PRIVATE_READ_ENABLED) {
-      return;
+      return
     }
     if (isGroup && !MESSAGE_GROUP_READ_ENABLED) {
-      return;
+      return
     }
     try {
       if (isPrivate) {
-        await apiReadPrivateMessages(conversation.targetId, maxMessageId);
+        await apiReadPrivateMessages(conversation.targetId, maxMessageId)
       } else if (isGroup) {
-        await apiReadGroupMessages(conversation.targetId, maxMessageId);
+        await apiReadGroupMessages(conversation.targetId, maxMessageId)
       } else {
-        await apiReadChannelMessages(conversation.targetId, maxMessageId);
+        await apiReadChannelMessages(conversation.targetId, maxMessageId)
       }
       conversationStore.markConversationReadReported(
         conversation.type,
         conversation.targetId,
         maxMessageId,
-      );
-    } catch (error) {
+        db
+      )
+    } catch (e) {
       console.error(
         '[IM] 标记已读失败',
-        {
-          type: conversation.type,
-          targetId: conversation.targetId,
-          maxMessageId,
-        },
-        error,
-      );
+        { type: conversation.type, targetId: conversation.targetId, maxMessageId },
+        e
+      )
     }
-  };
+  }
 
   /**
    * 拉取「对方已读到我哪条消息」并补齐本地状态
@@ -340,40 +346,47 @@ export const useMessageSender = () => {
    */
   const syncPrivateReadStatus = async (peerId: number) => {
     if (!peerId) {
-      return;
+      return
     }
     // 私聊已读关闭：跳过对方已读位置同步，避免无谓接口调用
     if (!MESSAGE_PRIVATE_READ_ENABLED) {
-      return;
+      return
     }
-    const cachedMaxReadId = messageStore.getPrivateReadMaxId(peerId);
-    if (cachedMaxReadId !== undefined) {
-      if (cachedMaxReadId > 0) {
-        messageStore.applyMessageReadReceipt({
-          conversationType: ImConversationType.PRIVATE,
-          targetId: peerId,
-          privateReadMaxId: cachedMaxReadId,
-        });
-      }
-      return;
-    }
+    const db = getDb()
     try {
+      const cachedMaxReadId = messageStore.getPrivateReadMaxId(peerId)
+      if (cachedMaxReadId !== undefined) {
+        if (cachedMaxReadId > 0) {
+          await messageStore.applyMessageReadReceipt(
+            {
+              conversationType: ImConversationType.PRIVATE,
+              targetId: peerId,
+              privateReadMaxId: cachedMaxReadId
+            },
+            db
+          )
+        }
+        return
+      }
       // 拉取对方已读到的最大消息 id
-      const maxReadId = await apiGetPrivateMaxReadMessageId(peerId);
-      messageStore.updatePrivateReadMaxId(peerId, maxReadId);
+      const maxReadId = await apiGetPrivateMaxReadMessageId(peerId)
       if (!maxReadId) {
-        return;
+        messageStore.updatePrivateReadMaxId(peerId, maxReadId)
+        return
       }
       // applyMessageReadReceipt 内部把 ≤ maxReadId 的本端消息回执更新为 DONE
-      messageStore.applyMessageReadReceipt({
-        conversationType: ImConversationType.PRIVATE,
-        targetId: peerId,
-        privateReadMaxId: maxReadId,
-      });
-    } catch (error) {
-      console.warn('[IM] 拉取对方已读位置失败', { peerId }, error);
+      await messageStore.applyMessageReadReceipt(
+        {
+          conversationType: ImConversationType.PRIVATE,
+          targetId: peerId,
+          privateReadMaxId: maxReadId
+        },
+        db
+      )
+    } catch (e) {
+      console.warn('[IM] 拉取对方已读位置失败', { peerId }, e)
     }
-  };
+  }
 
-  return { send, sendRaw, recall, readActive, syncPrivateReadStatus };
-};
+  return { send, sendRaw, recall, readActive, syncPrivateReadStatus }
+}
