@@ -109,7 +109,7 @@ async function loadReadUsers() {
     // 全可见成员都已读 → 更新为 DONE，让外面 label 直接命中「全部已读」分支；
     // 否则只更新 readCount，receiptStatus 维持不变（PENDING）
     const allRead = readCount > 0 && readCount >= visibleMembers.value.length;
-    messageStore.applyMessageReadReceipt({
+    await messageStore.applyMessageReadReceipt({
       conversationType: ImConversationType.GROUP,
       targetId: props.groupId,
       groupMessageId: props.message.id,

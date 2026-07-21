@@ -220,18 +220,26 @@ function handleChatGroup(group: GroupLite) {
 
 /** 删除好友：二次确认 → store 落库 → 清空当前选中 */
 async function handleDeleteFriend(friend: FriendLite) {
+  const friendId = friend.id;
   try {
     await confirm(`确定删除好友「${friend.nickname}」吗？`, '删除联系人');
+  } catch {
+    return;
+  }
+  try {
     // friendStore.deleteFriend 内部已经级联清理对应私聊会话
-    await friendStore.deleteFriend(friend.id);
-    if (
-      selection.value?.type === 'friend' &&
-      selection.value.friend.id === friend.id
-    ) {
-      selection.value = null;
-    }
-    message.success('已删除好友');
-  } catch {}
+    await friendStore.deleteFriend(friendId);
+  } catch (error) {
+    console.warn('[IM contact] 删除好友失败', error);
+    return;
+  }
+  if (
+    selection.value?.type === 'friend' &&
+    selection.value.friend.id === friendId
+  ) {
+    selection.value = null;
+  }
+  message.success('已删除好友');
 }
 
 /** 备注已保存：UserInfo 内部已经走完 friendStore 落库 + 提示，本侧只负责同步 selection 持的旧 FriendLite 副本 */

@@ -52,12 +52,15 @@ const newOwner = computed<GroupMemberLite | undefined>(() => {
 
 /** 二次确认转让：转让后旧群主降为普通成员，无法撤销 */
 async function handleOk() {
-  if (!groupId.value || !newOwner.value) {
+  const targetGroupId = groupId.value;
+  const newOwnerUserId = newOwner.value?.userId;
+  const newOwnerName = newOwner.value?.showName;
+  if (!targetGroupId || !newOwnerUserId) {
     return;
   }
   try {
     await confirm(
-      `确定将群主转让给 ${newOwner.value.showName}？转让后你将变为普通成员，无法撤销。`,
+      `确定将群主转让给 ${newOwnerName}？转让后你将变为普通成员，无法撤销。`,
       '确认转让群主',
     );
   } catch {
@@ -66,12 +69,14 @@ async function handleOk() {
   submitting.value = true;
   try {
     await transferGroupOwner({
-      id: groupId.value,
-      newOwnerUserId: newOwner.value.userId,
+      id: targetGroupId,
+      newOwnerUserId,
     });
     message.success('群主转让成功');
     emit('reload');
     visible.value = false;
+  } catch (error) {
+    console.warn('[IM GroupOwnerTransferDialog] 转让群主失败', error);
   } finally {
     submitting.value = false;
   }

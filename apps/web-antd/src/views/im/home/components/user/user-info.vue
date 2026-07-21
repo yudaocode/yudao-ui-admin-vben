@@ -105,7 +105,6 @@ const remarkInputRef = ref<null | { focus: () => void; select?: () => void }>(
  * user.id 变化的统一处理：
  * 1. 起手用 prop 兜底首屏（full = props.user），再 getSimpleUser 命中后合并替换
  * 2. 顺便复位备注编辑态，避免上一个用户的脏输入泄漏到下一个
- * 3. 竞态用 id 比对丢弃陈旧响应
  */
 watch(
   () => props.user?.id,
@@ -116,9 +115,6 @@ watch(
       return;
     }
     const data = (await getSimpleUser(id)) as User;
-    if (props.user?.id !== id) {
-      return;
-    }
     full.value = { ...props.user, ...data };
   },
   { immediate: true },
@@ -235,10 +231,11 @@ async function handleBlock() {
 
 /** 移出黑名单：操作温和不弹 confirm；后端 FRIEND_UNBLOCK 推到时由 dispatcher 同步多端 */
 async function handleUnblock() {
-  if (!props.user?.id) {
+  const targetId = props.user?.id;
+  if (!targetId) {
     return;
   }
-  await friendStore.unblockFriend(props.user.id);
+  await friendStore.unblockFriend(targetId);
   message.success('已移出黑名单');
 }
 
@@ -272,7 +269,12 @@ async function handleDeleteFriend() {
   } catch {
     return;
   }
-  await friendStore.deleteFriend(target.id, clearConversation.value);
+  try {
+    await friendStore.deleteFriend(target.id, clearConversation.value);
+  } catch (error) {
+    console.warn('[IM UserInfo] 删除好友失败', error);
+    return;
+  }
   message.success('已删除好友');
   emit('deleted', target);
 }

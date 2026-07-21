@@ -8,7 +8,7 @@ import { IconifyIcon as Icon } from '@vben/icons';
 
 import { message, Popover, Tooltip } from 'ant-design-vue';
 
-import { createCall } from '#/api/im/rtc';
+import { createCall, leaveCall } from '#/api/im/rtc';
 import { getCurrentUserId } from '#/views/im/utils/auth';
 import {
   ImConversationType,
@@ -275,8 +275,12 @@ function reloadGroupData() {
   if (!conversation || conversation.type !== ImConversationType.GROUP) {
     return;
   }
-  groupStore.fetchGroupInfo(conversation.targetId, true);
-  groupStore.fetchGroupMemberList(conversation.targetId, true);
+  void groupStore.fetchGroupInfo(conversation.targetId, true);
+  void groupStore
+    .fetchGroupMemberList(conversation.targetId, true)
+    .catch((error) => {
+      console.warn('[IM MessagePanel] 强制刷新群成员失败', error);
+    });
 }
 
 const historyDialogRef = ref<InstanceType<typeof MessageHistory>>(); // 历史消息抽屉 ref：「聊天历史」icon / 抽屉「查找聊天内容」入口都调 open() 触发
@@ -359,8 +363,18 @@ async function doInvite(reqVO: {
     return;
   }
   callInviting.value = true;
+  const userId = getCurrentUserId();
   try {
     const data = await createCall(reqVO);
+    if (
+      getCurrentUserId() !== userId ||
+      (rtcStore.isActive && rtcStore.call?.room !== data.room)
+    ) {
+      if (getCurrentUserId() === userId) {
+        await leaveCall(data.room).catch(() => undefined);
+      }
+      return;
+    }
     // 后端已 INSERT + 立即 end（如忙线）：toast 提示，不进 INVITING 阶段；chat tip 由 RTC_CALL_END 推送写入消息流
     if (data.status === ImRtcCallStatus.ENDED) {
       message.warning(resolveCallEndReasonText(data.endReason));
@@ -368,6 +382,8 @@ async function doInvite(reqVO: {
     }
     // 正常进入 INVITING 阶段：走 store 逻辑发起通话，后续状态更新 / 消息流更新由 RTC 模块监听推送处理
     rtcStore.startInviting(data);
+  } catch (error) {
+    console.warn('[IM MessagePanel] 发起通话失败', error);
   } finally {
     callInviting.value = false;
   }
@@ -497,16 +513,6 @@ async function handleLocateMention() {
     conversation.type,
     conversation.targetId,
   );
-  const isActive = () => {
-    const activeConversation = conversationStore.activeConversation;
-    return (
-      !!activeConversation &&
-      getClientConversationId(
-        activeConversation.type,
-        activeConversation.targetId,
-      ) === clientConversationId
-    );
-  };
   for (let guard = 0; guard < 50; guard++) {
     const loadedMessages = messageStore.getMessages(clientConversationId);
     if (loadedMessages.some((item) => item.id === messageId)) {
@@ -516,9 +522,6 @@ async function handleLocateMention() {
       clientConversationId,
       50,
     );
-    if (!isActive()) {
-      return;
-    }
     if (
       messageStore
         .getMessages(clientConversationId)
@@ -530,10 +533,7 @@ async function handleLocateMention() {
       break;
     }
   }
-  if (!isActive()) {
-    return;
-  }
-  await handleLocate(messageId, isActive);
+  await handleLocate(messageId);
 }
 
 /**
@@ -545,14 +545,11 @@ async function handleLocateMention() {
  * 4. 加 --highlight class 短暂高亮，提示用户"就是这条"
  * 5. 找不到 wrapper(原消息已分页出去)时弹 warning 提示,与微信"消息已不在窗口"观感一致
  */
-async function handleLocate(messageId: number, isActive?: () => boolean) {
+async function handleLocate(messageId: number) {
   if (!messageId) {
     return;
   }
   await nextTick();
-  if (isActive && !isActive()) {
-    return;
-  }
   if (!listRef.value) {
     return;
   }

@@ -7,7 +7,7 @@ import { IconifyIcon as Icon } from '@vben/icons';
 
 import { message, Popover } from 'ant-design-vue';
 
-import { getActiveCall, joinCall } from '#/api/im/rtc';
+import { getActiveCall, joinCall, leaveCall } from '#/api/im/rtc';
 import { getCurrentUserId } from '#/views/im/utils/auth';
 
 import { useGroupCallMembers } from '../../composables/useGroupCallMembers';
@@ -25,6 +25,7 @@ const rtcStore = useRtcStore();
 const groupStore = useGroupStore();
 
 const popoverVisible = ref(false);
+const joining = ref(false);
 
 /** 当前群的活跃通话；rtcStore 维护，参与者加入 / 离开通知增删 joinedUserIds，通话结束移除 */
 const activeCall = computed(() => rtcStore.getGroupCall(props.groupId));
@@ -51,10 +52,14 @@ watch(
       activeCall.value?.room,
       groupStore.isGroupActiveCallExpired(props.groupId),
     ] as const,
-  async ([groupId, room], oldValues) => {
+  async ([groupId, room], oldValues, onCleanup) => {
     if (!groupId) {
       return;
     }
+    let obsolete = false;
+    onCleanup(() => {
+      obsolete = true;
+    });
 
     if (!activeCall.value) {
       if (!groupStore.isGroupActiveCallExpired(groupId)) {
@@ -62,6 +67,9 @@ watch(
       }
       try {
         const data = await getActiveCall(groupId);
+        if (obsolete) {
+          return;
+        }
         if (data) {
           rtcStore.setGroupCall(data, true);
         } else {
@@ -94,6 +102,9 @@ watch(
     // 拉最新参与者写回 store；接口返回空 → 该群已无活跃通话，移除本地缓存
     try {
       const data = await getActiveCall(groupId);
+      if (obsolete) {
+        return;
+      }
       if (data) {
         rtcStore.setGroupCall(data, true);
       } else {
@@ -124,10 +135,11 @@ const serverSaysJoined = computed(() => {
 });
 
 /** 加入按钮禁用：仅在本端实际持有 LiveKit 连接时禁用 */
-const joinDisabled = computed(() => isInThisCall.value);
+const joinDisabled = computed(() => isInThisCall.value || joining.value);
 
 /** 加入按钮文案；本端连着 → 已在通话中；服务端还残留我但本端断了 → 重新加入；其它 → 加入 */
 const joinLabel = computed(() => {
+  if (joining.value) return '加入中...';
   if (isInThisCall.value) return '已在通话中';
   if (serverSaysJoined.value) return '重新加入';
   return '加入';
@@ -136,16 +148,35 @@ const joinLabel = computed(() => {
 /** 主动加入：调 invite 命中已有 call 拿 token；rtcStore 按 status 自动进 RUNNING */
 async function handleJoin() {
   const call = activeCall.value;
-  if (!call || joinDisabled.value) {
+  if (!call || joinDisabled.value || joining.value) {
     return;
   }
   if (rtcStore.isActive) {
     message.warning('您正在通话中');
     return;
   }
+  // 加入结果会获取物理房间凭证，必须阻断旧用户或旧群结果发布
   popoverVisible.value = false;
-  const data = await joinCall(call.room);
-  rtcStore.startInviting(data);
+  joining.value = true;
+  const userId = getCurrentUserId();
+  try {
+    const data = await joinCall(call.room);
+    if (
+      getCurrentUserId() !== userId ||
+      activeCall.value?.room !== call.room ||
+      (rtcStore.isActive && rtcStore.call?.room !== data.room)
+    ) {
+      if (getCurrentUserId() === userId) {
+        await leaveCall(data.room || call.room).catch(() => undefined);
+      }
+      return;
+    }
+    rtcStore.startInviting(data);
+  } catch (error) {
+    console.warn('[IM RtcGroupCallBanner] 加入群通话失败', error);
+  } finally {
+    joining.value = false;
+  }
 }
 </script>
 
