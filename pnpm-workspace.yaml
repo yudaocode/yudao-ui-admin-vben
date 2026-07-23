@@ -176,7 +176,7 @@ catalog:
   ora: ^9.4.0
   oxfmt: ^0.55.0
   oxlint: ^1.70.0
-  oxlint-tsgolint: ^0.23.0
+  oxlint-tsgolint: ^7.0.2001
   pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.1
