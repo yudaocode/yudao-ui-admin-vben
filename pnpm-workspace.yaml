@@ -177,7 +177,7 @@ catalog:
   oxfmt: ^0.55.0
   oxlint: ^1.70.0
   oxlint-tsgolint: ^0.23.0
-  pinia: ^3.0.4
+  pinia: ^4.0.2
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.1
   playwright: ^1.61.0
