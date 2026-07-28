@@ -15,17 +15,18 @@ describe('useUserStore', () => {
     expect(store.userInfo).toEqual(userInfo);
   });
 
-  // 测试重置用户信息时的行为
-  it('clears userInfo and userRoles when setting null userInfo', () => {
+  // 测试重置用户信息时的行为（userInfo 与 userRoles 已解耦，分别管理）
+  it('clears userInfo when setting null userInfo', () => {
     const store = useUserStore();
-    store.setUserInfo({
-      roles: [{ roleName: 'User', value: 'user' }],
-    } as any);
+    store.setUserInfo({ username: 'test' } as any);
+    store.setUserRoles(['user']);
     expect(store.userInfo).not.toBeNull();
     expect(store.userRoles.length).toBeGreaterThan(0);
 
     store.setUserInfo(null as any);
     expect(store.userInfo).toBeNull();
+    // userRoles 与 userInfo 解耦，需单独清空
+    store.setUserRoles([]);
     expect(store.userRoles).toEqual([]);
   });
 
