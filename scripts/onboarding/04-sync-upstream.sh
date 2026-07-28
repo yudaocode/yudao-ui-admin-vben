@@ -36,20 +36,20 @@ echo ""
 echo "[4] 推送 upstream-sync 到 origin"
 git push origin upstream-sync
 
-# 6. 将更新合入 main
+# 6. 将更新合入 master
 echo ""
-echo "[5] 将 upstream-sync 合入 main"
-git checkout main
+echo "[5] 将 upstream-sync 合入 master"
+git checkout master
 git merge upstream-sync
 
 if [ $? -ne 0 ]; then
-    echo "    [!] 合入 main 时存在冲突，请手动解决"
+    echo "    [!] 合入 master 时存在冲突，请手动解决"
     exit 1
 fi
 
 echo ""
-echo "[6] 推送 main 到 origin"
-git push origin main
+echo "[6] 推送 master 到 origin"
+git push origin master
 
 echo ""
 echo "========== 同步完成 =========="
