@@ -1,7 +1,7 @@
 # Fork 专属 CI（ADR 0003）。
 # 上游 .github/workflows/ci.yml 带 `if: github.repository == 'vbenjs/vue-vben-admin'`，
 # 在本 fork 上所有 job 永远跳过。本 workflow 用互补条件 !=，确保只在 fork 触发，
-# 与上游 ci.yml 互不干扰，实现零 upstream-sync 冲突。
+# 与上游 ci.yml 互不干扰。
 name: CI (Team Fork)
 
 on:
@@ -71,12 +71,19 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
-      # Task 5 远程缓存集成位：配置 TURBO_TEAM/TURBO_TOKEN secrets 后自动启用，
-      # 未配置时 turbo 自动降级为本地缓存，不影响门禁。
+      # Turbo 缓存持久化（ADR 0002 方案 B：GitHub Actions cache，无需 Vercel 账号）。
+      # 跨 run 复用 turbo 任务缓存，加速 typecheck/build。
+      - name: Cache turbo
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Typecheck
-        env:
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
         run: pnpm check:type
 
   build:
@@ -93,11 +100,18 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
+      - name: Cache turbo
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       # 主交付应用 web-antd；如需全量构建改用 pnpm run build。
       - name: Build web-antd
-        env:
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
         run: pnpm run build:antd
 
   ci-ok:
