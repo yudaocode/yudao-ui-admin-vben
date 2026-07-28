@@ -18,12 +18,12 @@ Vben v5 现有分层（`apps` / `effects` / `@core` / `packages`）并非标准 
 
 上游已实现的约束（均 `error`）：
 
-| 层                                       | 约束                                                                 |
-| ---------------------------------------- | -------------------------------------------------------------------- |
-| `apps/**`                                | 禁直引 `#/api`、`#/layouts`、`#/locales`、`#/stores`（须走 @core 包） |
-| `packages/@core/**`                      | 禁依赖 `@vben/*`（核心不依赖业务）                                   |
-| `packages/@core/base/**`                 | 禁依赖 `@vben/*` 与 `@vben-core/*`（最底层）                         |
-| `packages/{types,utils,...,locales}/**`  | 禁依赖 `@vben/*`（底层工具包 8 个全列）                              |
+| 层 | 约束 |
+| --- | --- |
+| `apps/**` | 禁直引 `#/api`、`#/layouts`、`#/locales`、`#/stores`（须走 @core 包） |
+| `packages/@core/**` | 禁依赖 `@vben/*`（核心不依赖业务） |
+| `packages/@core/base/**` | 禁依赖 `@vben/*` 与 `@vben-core/*`（最底层） |
+| `packages/{types,utils,...,locales}/**` | 禁依赖 `@vben/*`（底层工具包 8 个全列） |
 
 审计确认：约束组 files 列表与 `packages/*` 一级工具包（types/utils/icons/constants/styles/stores/preferences/locales，共 8 个）完全吻合；`@core/**` 与 `@core/base/**` 覆盖整个核心树；effects 业务层不约束（合理）。**无遗漏，无需补漏。**
 
