@@ -1,14 +1,17 @@
-# default onwer
-* anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
+# Fork 定制 owner（ADR 0004）。上游 vbenjs 维护者已替换为本团队。
+# TODO(team): 补充团队全部成员 GitHub 账号（@username），当前以仓库 owner 占位。
+* @pangyihua
 
-# vben core onwer
-/.github/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
-/.vscode/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
-/packages/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
-/packages/@core/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
-/internal/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
-/scripts/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com jinmao88@qq.com
+# 核心基建 owner
+/.github/ @pangyihua
+/.vscode/ @pangyihua
+/internal/ @pangyihua
+/scripts/ @pangyihua
 
-# vben team onwer
-apps/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com @vbenjs/team-v5 jinmao88@qq.com
-docs/ anncwb@126.com vince292007@gmail.com netfan@foxmail.com @vbenjs/team-v5 jinmao88@qq.com
+# 框架与共享包 owner
+/packages/ @pangyihua
+/packages/@core/ @pangyihua
+
+# 业务应用与文档 owner
+apps/ @pangyihua
+docs/ @pangyihua
