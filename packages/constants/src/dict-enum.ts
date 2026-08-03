@@ -176,6 +176,11 @@ const IOT_DICT = {
   IOT_MODBUS_FRAME_FORMAT: 'iot_modbus_frame_format', // IoT Modbus 帧格式
 } as const;
 
+/** ========== HRM - 人力资源模块 ========== */
+const HRM_DICT = {
+  HRM_EMPLOYEE_STATUS: 'hrm_employee_status', // HRM 员工状态
+} as const;
+
 /** ========== IM - 即时通讯模块 ========== */
 const IM_DICT = {
   IM_CHANNEL_MATERIAL_TYPE: 'im_channel_material_type', // IM 频道素材类型
@@ -289,6 +294,7 @@ const DICT_TYPE = {
   ...INFRA_DICT,
   ...IM_DICT,
   ...IOT_DICT,
+  ...HRM_DICT,
   ...MES_DICT,
   ...WMS_DICT,
   ...MEMBER_DICT,
