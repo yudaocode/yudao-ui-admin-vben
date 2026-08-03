@@ -98,7 +98,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Page auto-content-height :loading="loading">
+  <Page :loading="loading">
     <Header
       :dept="dept"
       :leader-user-name="leaderUserName"

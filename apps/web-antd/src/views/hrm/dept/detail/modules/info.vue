@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+import { Collapse } from 'ant-design-vue';
 
 import { useDescription } from '#/components/description';
 
@@ -25,8 +27,9 @@ const infoData = computed(() => ({
   leaderUserName: props.leaderUserName || '-',
 }));
 
+const activeKeys = ref(['basicInfo']);
+
 const [Descriptions] = useDescription({
-  title: '基本信息',
   bordered: false,
   column: 3,
   schema: useInfoSchema(),
@@ -34,5 +37,9 @@ const [Descriptions] = useDescription({
 </script>
 
 <template>
-  <Descriptions :data="infoData" />
+  <Collapse v-model:active-key="activeKeys">
+    <Collapse.Panel key="basicInfo" header="基本信息">
+      <Descriptions :data="infoData" />
+    </Collapse.Panel>
+  </Collapse>
 </template>

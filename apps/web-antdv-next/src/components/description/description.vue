@@ -1,11 +1,9 @@
 <script lang="tsx">
-import type { DescriptionsProps } from 'antdv-next';
-
 import type { CSSProperties, PropType, Slots } from 'vue';
 
 import type { DescriptionItemSchema, DescriptionProps } from './typing';
 
-import { computed, defineComponent, ref, unref, useAttrs } from 'vue';
+import { computed, defineComponent, ref, unref } from 'vue';
 
 import { get, getNestedValue, isFunction } from '@vben/utils';
 
@@ -23,6 +21,12 @@ const props = {
   schema: {
     default: () => [],
     type: Array as PropType<DescriptionItemSchema[]>,
+  },
+  layout: {
+    default: 'horizontal',
+    type: String,
+    validator: (v: string) =>
+      ['horizontal', undefined, 'vertical'].includes(v),
   },
   size: {
     default: 'small',
@@ -54,7 +58,6 @@ export default defineComponent({
     const propsRef = ref<null | Partial<DescriptionProps>>(null);
 
     const prefixCls = 'description';
-    const attrs = useAttrs();
 
     // Custom title component: get title
     const getMergeProps = computed(() => {
@@ -73,10 +76,6 @@ export default defineComponent({
     });
 
     const useWrapper = computed(() => !!unref(getMergeProps).title);
-
-    const getDescriptionsProps = computed(() => {
-      return { ...unref(attrs), ...unref(getProps) } as DescriptionsProps;
-    });
 
     // 防止换行
     function renderLabel({
@@ -150,10 +149,14 @@ export default defineComponent({
     }
 
     function renderDesc() {
+      const mergeProps = unref(getMergeProps);
       return (
         <Descriptions
+          bordered={mergeProps.bordered}
           class={`${prefixCls}`}
-          {...(unref(getDescriptionsProps) as any)}
+          column={mergeProps.column as any}
+          layout={(mergeProps as any).layout}
+          size={mergeProps.size as any}
         >
           {renderItem()}
         </Descriptions>

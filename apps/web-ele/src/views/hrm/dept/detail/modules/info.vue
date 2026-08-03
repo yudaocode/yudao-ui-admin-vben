@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+import { ElCollapse, ElCollapseItem } from 'element-plus';
 
 import { useDescription } from '#/components/description';
 
@@ -25,8 +27,9 @@ const infoData = computed(() => ({
   leaderUserName: props.leaderUserName || '-',
 }));
 
+const activeNames = ref(['basicInfo']);
+
 const [Descriptions] = useDescription({
-  title: '基本信息',
   border: false,
   column: 3,
   schema: useInfoSchema(),
@@ -34,5 +37,12 @@ const [Descriptions] = useDescription({
 </script>
 
 <template>
-  <Descriptions :data="infoData" />
+  <ElCollapse v-model="activeNames">
+    <ElCollapseItem name="basicInfo">
+      <template #title>
+        <span class="text-base font-bold">基本信息</span>
+      </template>
+      <Descriptions :data="infoData" />
+    </ElCollapseItem>
+  </ElCollapse>
 </template>

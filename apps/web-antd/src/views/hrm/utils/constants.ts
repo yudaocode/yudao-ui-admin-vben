@@ -1,3 +1,12 @@
+/** HRM 业务类型枚举 */
+export const HrmBizType = {
+  RECRUIT_POST: 1, // 招聘职位
+  RECRUIT_CANDIDATE: 2, // 招聘候选人
+  EMPLOYEE: 3, // 员工档案
+  PERFORMANCE_ASSESSMENT: 4, // 绩效考核
+  PERFORMANCE_PLAN: 5, // 绩效计划
+} as const;
+
 /** 招聘候选人状态枚举（对齐后端 HrmRecruitCandidateStatusEnum） */
 export const HrmRecruitCandidateStatus = {
   NEW: 1, // 新候选人
@@ -9,6 +18,93 @@ export const HrmRecruitCandidateStatus = {
   ELIMINATED: 7, // 已淘汰
   JOINED: 8, // 已入职
 } as const;
+
+/** 招聘候选人状态取值 */
+export type HrmRecruitCandidateStatusValue =
+  (typeof HrmRecruitCandidateStatus)[keyof typeof HrmRecruitCandidateStatus];
+
+/** 招聘候选人学历枚举（对齐 hrm_recruit_candidate_education 字典） */
+export const HrmRecruitCandidateEducation = {
+  PRIMARY_SCHOOL: 1, // 小学
+  JUNIOR_HIGH_SCHOOL: 2, // 初中
+  HIGH_SCHOOL: 3, // 高中
+  COLLEGE: 4, // 大专
+  BACHELOR: 5, // 本科
+  MASTER: 6, // 硕士
+  DOCTOR: 7, // 博士
+} as const;
+
+/** 招聘面试方式枚举（对齐后端字典 hrm_recruit_interview_type） */
+export const HrmRecruitInterviewType = {
+  ONSITE: 1, // 现场面试
+  PHONE: 2, // 电话面试
+  VIDEO: 3, // 视频面试
+} as const;
+
+/** 招聘面试结果枚举（对齐后端 HrmRecruitInterviewResultEnum） */
+export const HrmRecruitInterviewResult = {
+  UNFINISHED: 1, // 未完成
+  PASS: 2, // 通过
+  NOT_PASS: 3, // 未通过
+  CANCELED: 4, // 取消
+} as const;
+
+/** 员工入职状态枚举（对齐后端 HrmEmployeeEntryStatusEnum） */
+export const HrmEmployeeEntryStatus = {
+  ACTIVE: 1, // 在职
+  PENDING_ENTRY: 2, // 待入职
+  PENDING_LEAVE: 3, // 待离职
+  LEFT: 4, // 离职
+} as const;
+
+/** 员工状态枚举（对齐后端 HrmEmployeeStatusEnum） */
+export const HrmEmployeeStatus = {
+  REGULAR: 1, // 正式
+  PROBATION: 2, // 试用
+  INTERN: 3, // 实习
+  PART_TIME: 4, // 兼职
+  LABOR: 5, // 劳务
+  CONSULTANT: 6, // 顾问
+  REHIRE: 7, // 返聘
+  OUTSOURCE: 8, // 外包
+} as const;
+
+/** 员工聘用形式枚举（对齐后端 HrmEmployeeTypeEnum） */
+export const HrmEmployeeType = {
+  FORMAL: 1, // 正式
+  INFORMAL: 2, // 非正式
+} as const;
+
+/** 员工最高学历枚举（对齐 hrm_employee_education 字典） */
+export const HrmEmployeeEducation = {
+  PRIMARY_SCHOOL: 1, // 小学
+  JUNIOR_HIGH_SCHOOL: 2, // 初中
+  TECHNICAL_SECONDARY_SCHOOL: 3, // 中专
+  SECONDARY_VOCATIONAL_SCHOOL: 4, // 中职
+  TECHNICAL_SCHOOL: 5, // 技校
+  HIGH_SCHOOL: 6, // 高中
+  COLLEGE: 7, // 大专
+  BACHELOR: 8, // 本科
+  MASTER: 9, // 硕士
+  DOCTOR: 10, // 博士
+  POSTDOCTORAL: 11, // 博士后
+  OTHER: 12, // 其他
+} as const;
+
+/** 候选人学历转员工最高学历，避免两套字典同值不同义 */
+export const HRM_RECRUIT_CANDIDATE_EMPLOYEE_EDUCATION_MAP: Readonly<
+  Record<number, number>
+> = {
+  [HrmRecruitCandidateEducation.PRIMARY_SCHOOL]:
+    HrmEmployeeEducation.PRIMARY_SCHOOL,
+  [HrmRecruitCandidateEducation.JUNIOR_HIGH_SCHOOL]:
+    HrmEmployeeEducation.JUNIOR_HIGH_SCHOOL,
+  [HrmRecruitCandidateEducation.HIGH_SCHOOL]: HrmEmployeeEducation.HIGH_SCHOOL,
+  [HrmRecruitCandidateEducation.COLLEGE]: HrmEmployeeEducation.COLLEGE,
+  [HrmRecruitCandidateEducation.BACHELOR]: HrmEmployeeEducation.BACHELOR,
+  [HrmRecruitCandidateEducation.MASTER]: HrmEmployeeEducation.MASTER,
+  [HrmRecruitCandidateEducation.DOCTOR]: HrmEmployeeEducation.DOCTOR,
+};
 
 /** 首页日历事项类型（对齐 Wukong NotesType） */
 export const HrmHomeCalendarItemType = {

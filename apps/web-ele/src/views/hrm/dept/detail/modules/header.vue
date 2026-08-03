@@ -42,6 +42,7 @@ const headerData = computed(() => ({
 const [Descriptions] = useDescription({
   border: false,
   column: 5,
+  direction: 'vertical',
   schema: useHeaderSchema(),
 });
 </script>
