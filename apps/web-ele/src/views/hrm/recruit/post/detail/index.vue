@@ -29,7 +29,9 @@ const tabs = useTabs();
 const postId = Number(route.params.id);
 const loading = ref(true);
 const activeTab = ref('detail');
-const post = ref<HrmRecruitPostApi.Post>({} as HrmRecruitPostApi.Post);
+const post = ref<HrmRecruitPostApi.RecruitPost>(
+  {} as HrmRecruitPostApi.RecruitPost,
+);
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({

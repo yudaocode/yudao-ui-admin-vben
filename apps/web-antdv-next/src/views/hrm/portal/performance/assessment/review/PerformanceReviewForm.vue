@@ -40,7 +40,8 @@ const emit = defineEmits<{
 const drawerVisible = ref(false);
 const loading = ref(false);
 const submitting = ref(false);
-const detail = ref<HrmPortalPerformanceAssessmentApi.Assessment>({});
+const detail =
+  ref<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>({});
 const stageComment = ref('');
 const scorePreview = ref<HrmPortalPerformanceAssessmentApi.ScorePreview>();
 

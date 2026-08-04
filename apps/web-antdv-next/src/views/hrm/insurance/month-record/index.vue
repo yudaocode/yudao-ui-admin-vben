@@ -29,8 +29,8 @@ const router = useRouter();
 const loading = ref(true);
 const createLoading = ref(false);
 const queryYear = ref<Dayjs>(dayjs());
-const list = ref<HrmInsuranceMonthRecordApi.MonthRecord[]>([]);
-const latestRecord = ref<HrmInsuranceMonthRecordApi.MonthRecord>();
+const list = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord[]>([]);
+const latestRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>();
 const columns = useListColumns();
 
 const [FirstMonthModal, firstMonthModalApi] = useVbenModal({
@@ -89,7 +89,9 @@ async function handleCreateNext() {
   }
 }
 
-async function handleDelete(row: HrmInsuranceMonthRecordApi.MonthRecord) {
+async function handleDelete(
+  row: HrmInsuranceMonthRecordApi.InsuranceMonthRecord,
+) {
   if (!row.id) {
     return;
   }
@@ -104,7 +106,9 @@ async function handleDelete(row: HrmInsuranceMonthRecordApi.MonthRecord) {
   } catch {}
 }
 
-function isLatestEditableRecord(row: HrmInsuranceMonthRecordApi.MonthRecord) {
+function isLatestEditableRecord(
+  row: HrmInsuranceMonthRecordApi.InsuranceMonthRecord,
+) {
   return (
     row.id === latestRecord.value?.id &&
     row.status === HrmInsuranceMonthStatus.UNARCHIVED

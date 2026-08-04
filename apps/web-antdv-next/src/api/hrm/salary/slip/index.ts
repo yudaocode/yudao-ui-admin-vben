@@ -3,6 +3,7 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace HrmSalarySlipApi {
+  /** 工资条选项 */
   export interface SlipOption {
     name?: string;
     type?: number;
@@ -13,7 +14,8 @@ export namespace HrmSalarySlipApi {
     children?: SlipOption[];
   }
 
-  export interface Slip {
+  /** 工资条 */
+  export interface SalarySlip {
     id?: number;
     sendRecordId?: number;
     monthEmployeeRecordId?: number;
@@ -33,6 +35,7 @@ export namespace HrmSalarySlipApi {
     createTime?: Date;
   }
 
+  /** 备注请求 */
   export interface RemarkReq {
     id: number;
     remark?: string;
@@ -41,7 +44,7 @@ export namespace HrmSalarySlipApi {
 
 /** 获得工资条分页 */
 export function getSalarySlipPage(params: PageParam) {
-  return requestClient.get<PageResult<HrmSalarySlipApi.Slip>>(
+  return requestClient.get<PageResult<HrmSalarySlipApi.SalarySlip>>(
     '/hrm/salary/slip/page',
     { params },
   );
@@ -49,9 +52,12 @@ export function getSalarySlipPage(params: PageParam) {
 
 /** 获得工资条详情 */
 export function getSalarySlip(id: number) {
-  return requestClient.get<HrmSalarySlipApi.Slip>('/hrm/salary/slip/get', {
-    params: { id },
-  });
+  return requestClient.get<HrmSalarySlipApi.SalarySlip>(
+    '/hrm/salary/slip/get',
+    {
+      params: { id },
+    },
+  );
 }
 
 /** 修改工资条备注 */

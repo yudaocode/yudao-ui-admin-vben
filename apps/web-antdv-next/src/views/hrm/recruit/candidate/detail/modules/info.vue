@@ -10,7 +10,7 @@ import { useDescription } from '#/components/description';
 import { useCandidateInfoSchema, useRecruitInfoSchema } from '../data';
 
 const props = defineProps<{
-  candidate: HrmRecruitCandidateApi.Candidate;
+  candidate: HrmRecruitCandidateApi.RecruitCandidate;
 }>();
 
 const infoData = computed(() => props.candidate);

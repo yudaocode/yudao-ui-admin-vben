@@ -16,7 +16,7 @@ import { formatHrmMoney, formatHrmRate } from '#/views/hrm/utils/format';
 defineOptions({ name: 'HrmPortalInsuranceRecordDetail' });
 
 const loading = ref(false);
-const record = ref<HrmPortalInsuranceRecordApi.Record>();
+const record = ref<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>();
 
 const personalTotal = computed(
   () =>
@@ -102,7 +102,9 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 打开社保记录详情 */
-async function open(summary: HrmPortalInsuranceRecordApi.Record) {
+async function open(
+  summary: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+) {
   record.value = { ...summary, projects: [] };
   modalApi.setState({ title: `${summary.month || ''} 月社保表` });
   modalApi.open();

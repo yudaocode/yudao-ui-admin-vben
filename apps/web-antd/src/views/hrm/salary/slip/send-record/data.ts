@@ -35,7 +35,7 @@ export function buildSendRecordQueryParams(
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<HrmSalarySlipSendRecordApi.SendRecord>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmSalarySlipSendRecordApi.SalarySlipSendRecord>['columns'] {
   return [
     {
       field: 'month',

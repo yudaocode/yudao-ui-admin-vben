@@ -28,7 +28,7 @@ import {
 
 /** 格式化薪资组适用范围 */
 export function formatSalaryGroupScope(
-  salaryGroup: HrmSalaryGroupApi.Group,
+  salaryGroup: HrmSalaryGroupApi.SalaryGroup,
 ): string {
   return (
     [
@@ -309,7 +309,9 @@ export function getHrmLunarDateInfo(value: string): HrmLunarDateInfo {
 }
 
 /** 格式化招聘职位薪资范围 */
-export function formatRecruitPostSalary(post: HrmRecruitPostApi.Post): string {
+export function formatRecruitPostSalary(
+  post: HrmRecruitPostApi.RecruitPost,
+): string {
   if (
     post.minSalary === SALARY_NEGOTIABLE_VALUE &&
     post.maxSalary === SALARY_NEGOTIABLE_VALUE
@@ -330,7 +332,9 @@ export function formatRecruitPostSalary(post: HrmRecruitPostApi.Post): string {
 }
 
 /** 格式化招聘职位年龄要求 */
-export function formatRecruitPostAge(post: HrmRecruitPostApi.Post): string {
+export function formatRecruitPostAge(
+  post: HrmRecruitPostApi.RecruitPost,
+): string {
   if (
     post.minAge === AGE_UNLIMITED_VALUE &&
     post.maxAge === AGE_UNLIMITED_VALUE
@@ -353,7 +357,7 @@ export function formatRecruitPostAge(post: HrmRecruitPostApi.Post): string {
 
 /** 格式化招聘职位进度百分比 */
 export function formatRecruitPostSchedule(
-  post: HrmRecruitPostApi.Post,
+  post: HrmRecruitPostApi.RecruitPost,
 ): string {
   return post.recruitSchedule === undefined || post.recruitSchedule === null
     ? '-'
@@ -362,7 +366,7 @@ export function formatRecruitPostSchedule(
 
 /** 格式化招聘职位进度 */
 export function formatRecruitPostProgress(
-  post: HrmRecruitPostApi.Post,
+  post: HrmRecruitPostApi.RecruitPost,
 ): string {
   const joinedCount = post.hasEntryNum ?? 0;
   const recruitCount = post.recruitNum ?? 0;

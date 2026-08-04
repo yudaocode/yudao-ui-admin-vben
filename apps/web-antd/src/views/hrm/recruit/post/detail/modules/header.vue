@@ -15,7 +15,7 @@ import { useHeaderSchema } from '../../data';
 const props = withDefaults(
   defineProps<{
     loading?: boolean;
-    post: HrmRecruitPostApi.Post;
+    post: HrmRecruitPostApi.RecruitPost;
   }>(),
   {
     loading: false,

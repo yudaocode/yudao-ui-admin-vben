@@ -27,7 +27,7 @@ const props = defineProps<{ employeeId: number }>();
 const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
-const list = ref<HrmEmployeeContactApi.Contact[]>([]);
+const list = ref<HrmEmployeeContactApi.EmployeeContact[]>([]);
 const formRef = ref<InstanceType<typeof Form>>();
 
 async function getList() {
@@ -39,7 +39,7 @@ async function getList() {
   }
 }
 
-function openForm(row?: HrmEmployeeContactApi.Contact) {
+function openForm(row?: HrmEmployeeContactApi.EmployeeContact) {
   formRef.value?.open(props.employeeId, row);
 }
 

@@ -127,7 +127,7 @@ export function useRecordGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 打卡明细列表字段 */
-export function useRecordGridColumns(): VxeTableGridOptions<HrmAttendanceClockApi.Clock>['columns'] {
+export function useRecordGridColumns(): VxeTableGridOptions<HrmAttendanceClockApi.AttendanceClock>['columns'] {
   return [
     { type: 'checkbox', width: 48 },
     { field: 'employeeName', title: '员工', width: 100, showOverflow: true },

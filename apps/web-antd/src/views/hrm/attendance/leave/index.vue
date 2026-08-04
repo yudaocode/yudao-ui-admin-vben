@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmAttendanceLeaveApi.Leave>,
+  } as VxeTableGridOptions<HrmAttendanceLeaveApi.AttendanceLeave>,
 });
 </script>
 

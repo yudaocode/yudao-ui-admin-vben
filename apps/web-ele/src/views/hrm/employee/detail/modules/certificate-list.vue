@@ -27,7 +27,7 @@ const props = defineProps<{ employeeId: number }>();
 const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
-const list = ref<HrmEmployeeCertificateApi.Certificate[]>([]);
+const list = ref<HrmEmployeeCertificateApi.EmployeeCertificate[]>([]);
 const formRef = ref<InstanceType<typeof Form>>();
 
 async function getList() {
@@ -39,7 +39,7 @@ async function getList() {
   }
 }
 
-function openForm(row?: HrmEmployeeCertificateApi.Certificate) {
+function openForm(row?: HrmEmployeeCertificateApi.EmployeeCertificate) {
   formRef.value?.open(props.employeeId, row);
 }
 

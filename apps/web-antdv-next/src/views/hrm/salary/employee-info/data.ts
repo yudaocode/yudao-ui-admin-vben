@@ -127,7 +127,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 /** 获得员工当前工资合计 */
 export function getSalaryEmployeeTotal(
-  row: HrmSalaryEmployeeInfoApi.EmployeeInfo,
+  row: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo,
 ) {
   return row.status === HrmEmployeeStatus.PROBATION
     ? row.probationSalary
@@ -135,7 +135,7 @@ export function getSalaryEmployeeTotal(
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<HrmSalaryEmployeeInfoApi.EmployeeInfo>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>['columns'] {
   return [
     { type: 'checkbox' as const, width: 50, fixed: 'left' },
     {

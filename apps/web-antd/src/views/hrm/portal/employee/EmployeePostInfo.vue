@@ -20,11 +20,11 @@ import {
 defineOptions({ name: 'HrmPortalEmployeePostInfo' });
 
 defineProps<{
-  employee: HrmPortalEmployeeApi.Employee;
+  employee: HrmPortalEmployeeApi.PortalEmployee;
 }>();
 
 const loading = ref(false);
-const quitInfo = ref<HrmEmployeeQuitInfoApi.QuitInfo>();
+const quitInfo = ref<HrmEmployeeQuitInfoApi.EmployeeQuitInfo>();
 
 /** 获得当前员工离职信息 */
 async function getQuitInfo() {

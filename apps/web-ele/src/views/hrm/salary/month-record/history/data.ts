@@ -32,7 +32,7 @@ export function buildHistoryQueryParams(formValues: Record<string, unknown>) {
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<HrmSalaryMonthRecordApi.MonthRecord>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmSalaryMonthRecordApi.SalaryMonthRecord>['columns'] {
   return [
     {
       field: 'title',

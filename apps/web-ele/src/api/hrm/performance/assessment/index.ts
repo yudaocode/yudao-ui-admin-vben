@@ -3,11 +3,13 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace HrmPerformanceAssessmentApi {
+  /** PerformanceArchivePlan */
   export interface PerformanceArchivePlan {
     id: number;
     name: string;
   }
 
+  /** PerformanceAssessmentQuotaScore */
   export interface PerformanceAssessmentQuotaScore {
     id?: number;
     assessmentStageId?: number;
@@ -16,6 +18,7 @@ export namespace HrmPerformanceAssessmentApi {
     comment?: string;
   }
 
+  /** PerformanceAssessmentStage */
   export interface PerformanceAssessmentStage {
     id?: number;
     assessmentId?: number;
@@ -42,6 +45,7 @@ export namespace HrmPerformanceAssessmentApi {
     quotaScoreList?: PerformanceAssessmentQuotaScore[];
   }
 
+  /** PerformanceAssessmentQuota */
   export interface PerformanceAssessmentQuota {
     id?: number;
     assessmentId?: number;
@@ -64,6 +68,7 @@ export namespace HrmPerformanceAssessmentApi {
     sort?: number;
   }
 
+  /** PerformanceAssessmentDimension */
   export interface PerformanceAssessmentDimension {
     id?: number;
     assessmentId?: number;
@@ -75,6 +80,7 @@ export namespace HrmPerformanceAssessmentApi {
     sort?: number;
   }
 
+  /** 绩效考核 */
   export interface PerformanceAssessment {
     id?: number;
     planId?: number;
@@ -130,6 +136,7 @@ export namespace HrmPerformanceAssessmentApi {
     createTime?: Date;
   }
 
+  /** PerformanceArchiveEmployee */
   export interface PerformanceArchiveEmployee {
     employeeId: number;
     employeeName: string;
@@ -147,6 +154,7 @@ export namespace HrmPerformanceAssessmentApi {
     assessmentCount: number;
   }
 
+  /** PerformanceProcessRecord */
   export interface PerformanceProcessRecord {
     title?: string;
     content?: string;
@@ -161,6 +169,7 @@ export namespace HrmPerformanceAssessmentApi {
   export type AssessmentStage = PerformanceAssessmentStage;
 }
 
+/** addPerformancePlanEmployees */
 export function addPerformancePlanEmployees(data: {
   employeeIds?: number[];
   planId?: number;
@@ -171,6 +180,7 @@ export function addPerformancePlanEmployees(data: {
   );
 }
 
+/** removePerformancePlanEmployees */
 export function removePerformancePlanEmployees(data: {
   employeeIds?: number[];
   planId?: number;
@@ -181,12 +191,14 @@ export function removePerformancePlanEmployees(data: {
   );
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentPage(params: PageParam) {
   return requestClient.get<
     PageResult<HrmPerformanceAssessmentApi.PerformanceAssessment>
   >('/hrm/performance/assessment/page', { params });
 }
 
+/** 查询绩效计划列表 */
 export function getPerformancePlanUnassignedEmployeeIdList(planId: number) {
   return requestClient.get<number[]>(
     '/hrm/performance/assessment/unassigned-employee-id-list',
@@ -194,24 +206,28 @@ export function getPerformancePlanUnassignedEmployeeIdList(planId: number) {
   );
 }
 
+/** 查询绩效考核 */
 export function getPerformanceAssessment(id: number) {
   return requestClient.get<HrmPerformanceAssessmentApi.PerformanceAssessment>(
     `/hrm/performance/assessment/get?id=${id}`,
   );
 }
 
+/** 查询绩效考核列表 */
 export function getPerformanceAssessmentProcessRecordList(id: number) {
   return requestClient.get<
     HrmPerformanceAssessmentApi.PerformanceProcessRecord[]
   >('/hrm/performance/assessment/process-record-list', { params: { id } });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentArchivePage(params: PageParam) {
   return requestClient.get<
     PageResult<HrmPerformanceAssessmentApi.PerformanceAssessment>
   >('/hrm/performance/assessment/archive-page', { params });
 }
 
+/** 查询员工档案分页 */
 export function getPerformanceArchiveEmployeePage(
   params: PageParam & { search?: string },
 ) {
@@ -220,12 +236,14 @@ export function getPerformanceArchiveEmployeePage(
   >('/hrm/performance/assessment/archive-employee-page', { params });
 }
 
+/** 查询PerformanceAssessmentArchive */
 export function getPerformanceAssessmentArchive(id: number) {
   return requestClient.get<HrmPerformanceAssessmentApi.PerformanceAssessment>(
     `/hrm/performance/assessment/archive-get?id=${id}`,
   );
 }
 
+/** 查询绩效考核列表 */
 export function getPerformanceAssessmentArchiveProcessRecordList(id: number) {
   return requestClient.get<
     HrmPerformanceAssessmentApi.PerformanceProcessRecord[]
@@ -234,12 +252,14 @@ export function getPerformanceAssessmentArchiveProcessRecordList(id: number) {
   });
 }
 
+/** 查询PerformanceArchivePlanSimpleList */
 export function getPerformanceArchivePlanSimpleList() {
   return requestClient.get<
     HrmPerformanceAssessmentApi.PerformanceArchivePlan[]
   >('/hrm/performance/assessment/archive-plan-simple-list');
 }
 
+/** 删除PerformanceArchiveRecords */
 export function deletePerformanceArchiveRecords(ids: number[]) {
   return requestClient.delete<boolean>(
     '/hrm/performance/assessment/archive-delete',
@@ -247,6 +267,7 @@ export function deletePerformanceArchiveRecords(ids: number[]) {
   );
 }
 
+/** 删除员工档案 */
 export function deletePerformanceArchiveEmployeeRecords(employeeIds: number[]) {
   return requestClient.delete<boolean>(
     '/hrm/performance/assessment/archive-employee-delete',

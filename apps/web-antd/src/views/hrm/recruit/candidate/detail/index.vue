@@ -33,10 +33,10 @@ const tabs = useTabs();
 const candidateId = Number(route.params.id);
 const loading = ref(true);
 const activeTab = ref('detail');
-const candidate = ref<HrmRecruitCandidateApi.Candidate>(
-  {} as HrmRecruitCandidateApi.Candidate,
+const candidate = ref<HrmRecruitCandidateApi.RecruitCandidate>(
+  {} as HrmRecruitCandidateApi.RecruitCandidate,
 );
-const interviewList = ref<HrmRecruitInterviewApi.Interview[]>([]);
+const interviewList = ref<HrmRecruitInterviewApi.RecruitInterview[]>([]);
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({

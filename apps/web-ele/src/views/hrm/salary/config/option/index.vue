@@ -26,7 +26,7 @@ defineOptions({ name: 'HrmSalaryOption' });
 
 const loading = ref(false);
 const activeTab = ref('enterprise');
-const list = ref<HrmSalaryOptionApi.Option[]>([]);
+const list = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -54,23 +54,23 @@ const activeList = computed(() =>
     : systemOptionList.value,
 );
 
-function isCategory(option: HrmSalaryOptionApi.Option) {
+function isCategory(option: HrmSalaryOptionApi.SalaryOption) {
   return !option.parentCode;
 }
 
-function isOptionalCategory(option: HrmSalaryOptionApi.Option) {
+function isOptionalCategory(option: HrmSalaryOptionApi.SalaryOption) {
   return isCategory(option) && !!option.templateId && !option.systemFlag;
 }
 
-function isEnterpriseOption(option: HrmSalaryOptionApi.Option) {
+function isEnterpriseOption(option: HrmSalaryOptionApi.SalaryOption) {
   return !isCategory(option) && !option.systemFlag;
 }
 
-function isSystemStandardOption(option: HrmSalaryOptionApi.Option) {
+function isSystemStandardOption(option: HrmSalaryOptionApi.SalaryOption) {
   return !isCategory(option) && !!option.templateId && option.systemFlag;
 }
 
-function getInactiveStandardOptions(category: HrmSalaryOptionApi.Option) {
+function getInactiveStandardOptions(category: HrmSalaryOptionApi.SalaryOption) {
   const source = list.value.find((item) => item.id === category.id);
   return (source?.children || []).filter(
     (item) => item.templateId && !item.enabled,
@@ -85,13 +85,13 @@ async function getList() {
       data,
       'code',
       'parentCode',
-    ) as HrmSalaryOptionApi.Option[];
+    ) as HrmSalaryOptionApi.SalaryOption[];
   } finally {
     loading.value = false;
   }
 }
 
-async function handleUpdateEnabled(option: HrmSalaryOptionApi.Option) {
+async function handleUpdateEnabled(option: HrmSalaryOptionApi.SalaryOption) {
   try {
     await updateSalaryOptionEnabled(option.id, option.enabled);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -101,7 +101,7 @@ async function handleUpdateEnabled(option: HrmSalaryOptionApi.Option) {
   }
 }
 
-async function handleUpdateVisible(option: HrmSalaryOptionApi.Option) {
+async function handleUpdateVisible(option: HrmSalaryOptionApi.SalaryOption) {
   try {
     await updateSalaryOptionVisible(option.id, option.visible);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -119,7 +119,7 @@ async function handleSync() {
 
 async function handleAddOption(
   command: number | string,
-  category: HrmSalaryOptionApi.Option,
+  category: HrmSalaryOptionApi.SalaryOption,
 ) {
   if (command === 'custom') {
     formModalApi.setData({ parentCode: category.code }).open();
@@ -134,7 +134,7 @@ async function handleAddOption(
   await getList();
 }
 
-async function handleDelete(option: HrmSalaryOptionApi.Option) {
+async function handleDelete(option: HrmSalaryOptionApi.SalaryOption) {
   await confirm('确认删除该工资项吗？');
   await (option.templateId
     ? updateSalaryOptionEnabled(option.id, false)

@@ -216,7 +216,7 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: HrmRecruitCandidateApi.Candidate) {
+function handleEdit(row: HrmRecruitCandidateApi.RecruitCandidate) {
   formModalApi.setData(row).open();
 }
 
@@ -258,7 +258,7 @@ function openBatchInterview() {
 
 /** 登记面试结果 */
 async function openInterviewResult(
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ) {
   if (!candidate.interviewId) {
     message.warning('请先安排面试');
@@ -270,7 +270,7 @@ async function openInterviewResult(
 
 /** 更改面试安排 */
 async function openInterviewChange(
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ) {
   if (!candidate.id || !candidate.interviewId) {
     return;
@@ -287,7 +287,7 @@ async function openInterviewChange(
 
 /** 取消面试 */
 async function openInterviewCancel(
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ) {
   if (!candidate.interviewId) {
     return;
@@ -319,7 +319,7 @@ function openBatchChannelForm() {
 }
 
 /** 淘汰 */
-function openEliminateForm(candidate: HrmRecruitCandidateApi.Candidate) {
+function openEliminateForm(candidate: HrmRecruitCandidateApi.RecruitCandidate) {
   if (!candidate.id) {
     return;
   }
@@ -332,7 +332,7 @@ function openBatchEliminateForm() {
 }
 
 /** 转员工 */
-function openEntryForm(candidate: HrmRecruitCandidateApi.Candidate) {
+function openEntryForm(candidate: HrmRecruitCandidateApi.RecruitCandidate) {
   if (!candidate.id) {
     return;
   }
@@ -369,7 +369,9 @@ function openEntryForm(candidate: HrmRecruitCandidateApi.Candidate) {
 }
 
 /** 确认入职 */
-function handleConfirmEntry(candidate: HrmRecruitCandidateApi.Candidate) {
+function handleConfirmEntry(
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
+) {
   if (!candidate.employeeId) {
     return;
   }
@@ -385,7 +387,7 @@ function openCleanForm() {
 
 /** 获得候选人的主操作 */
 function getPrimaryAction(
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ): undefined | { command: string; label: string } {
   if (
     hasAccessByCodes(['hrm:recruit:interview:update']) &&
@@ -430,7 +432,7 @@ function getPrimaryAction(
 }
 
 /** 获得候选人的更多操作 */
-function getMoreActions(candidate: HrmRecruitCandidateApi.Candidate) {
+function getMoreActions(candidate: HrmRecruitCandidateApi.RecruitCandidate) {
   const actions: Array<{ command: string; label: string }> = [];
   if (
     hasAccessByCodes(['hrm:recruit:interview:update']) &&
@@ -481,7 +483,7 @@ function getMoreActions(candidate: HrmRecruitCandidateApi.Candidate) {
 /** 主操作 */
 async function handlePrimaryAction(
   command: string,
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ) {
   if (command === 'interview-result') {
     await openInterviewResult(candidate);
@@ -507,7 +509,7 @@ async function handlePrimaryAction(
 /** 更多操作 */
 async function handleMoreCommand(
   command: string,
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
 ) {
   if (command === 'primary-pass') {
     await handleStatus(candidate, HrmRecruitCandidateStatus.PRIMARY_PASS);
@@ -544,7 +546,7 @@ async function handleMoreCommand(
 
 /** 修改状态 */
 async function handleStatus(
-  candidate: HrmRecruitCandidateApi.Candidate,
+  candidate: HrmRecruitCandidateApi.RecruitCandidate,
   status: HrmRecruitCandidateStatusValue,
 ) {
   if (!candidate.id) {
@@ -556,7 +558,7 @@ async function handleStatus(
 }
 
 /** 删除 */
-async function handleDelete(row: HrmRecruitCandidateApi.Candidate) {
+async function handleDelete(row: HrmRecruitCandidateApi.RecruitCandidate) {
   if (!row.id) {
     return;
   }
@@ -599,7 +601,7 @@ async function handleBatchSuccess() {
 }
 
 /** 行操作 actions */
-function getRowActions(row: HrmRecruitCandidateApi.Candidate) {
+function getRowActions(row: HrmRecruitCandidateApi.RecruitCandidate) {
   const primary = getPrimaryAction(row);
   const actions = [
     {
@@ -623,7 +625,7 @@ function getRowActions(row: HrmRecruitCandidateApi.Candidate) {
 }
 
 /** 行更多操作 */
-function getRowDropDownActions(row: HrmRecruitCandidateApi.Candidate) {
+function getRowDropDownActions(row: HrmRecruitCandidateApi.RecruitCandidate) {
   return getMoreActions(row).map((action) => ({
     label: action.label,
     auth: [] as string[],
@@ -706,7 +708,7 @@ function getBatchDropDownActions() {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: HrmRecruitCandidateApi.Candidate[];
+  records: HrmRecruitCandidateApi.RecruitCandidate[];
 }) {
   checkedIds.value = records.map((item) => item.id!);
 }
@@ -743,7 +745,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmRecruitCandidateApi.Candidate>,
+  } as VxeTableGridOptions<HrmRecruitCandidateApi.RecruitCandidate>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

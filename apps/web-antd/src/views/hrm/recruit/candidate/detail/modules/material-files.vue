@@ -12,7 +12,7 @@ import {
 import { Button, Empty } from 'ant-design-vue';
 
 const props = defineProps<{
-  candidate: HrmRecruitCandidateApi.Candidate;
+  candidate: HrmRecruitCandidateApi.RecruitCandidate;
 }>();
 
 const resumeUrls = computed(() => props.candidate.resumeUrls || []);

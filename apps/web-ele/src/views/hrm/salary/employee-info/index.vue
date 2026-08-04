@@ -78,7 +78,7 @@ function openDetail(employeeId?: number) {
   });
 }
 
-function openSalaryForm(row: HrmSalaryEmployeeInfoApi.EmployeeInfo) {
+function openSalaryForm(row: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo) {
   employeeInfoFormRef.value?.open(row.employeeId);
 }
 
@@ -93,7 +93,7 @@ function openImportForm(type: 'change' | 'fix') {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: HrmSalaryEmployeeInfoApi.EmployeeInfo[];
+  records: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo[];
 }) {
   checkedEmployeeIds.value = records
     .map((item) => item.employeeId)
@@ -132,7 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxConfig: {
       highlight: true,
     },
-  } as VxeTableGridOptions<HrmSalaryEmployeeInfoApi.EmployeeInfo>,
+  } as VxeTableGridOptions<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

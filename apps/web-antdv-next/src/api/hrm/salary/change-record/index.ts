@@ -3,7 +3,8 @@ import type { HrmSalaryOptionApi } from '../config/option';
 import { requestClient } from '#/api/request';
 
 export namespace HrmSalaryChangeRecordApi {
-  export interface ChangeRecord {
+  /** 调薪记录 */
+  export interface SalaryChangeRecord {
     id?: number;
     employeeId?: number;
     recordType?: number;
@@ -23,7 +24,7 @@ export namespace HrmSalaryChangeRecordApi {
 
 /** 获得员工调薪记录 */
 export function getSalaryChangeRecord(id: number) {
-  return requestClient.get<HrmSalaryChangeRecordApi.ChangeRecord>(
+  return requestClient.get<HrmSalaryChangeRecordApi.SalaryChangeRecord>(
     '/hrm/salary/change-record/get',
     { params: { id } },
   );
@@ -31,7 +32,7 @@ export function getSalaryChangeRecord(id: number) {
 
 /** 获得员工调薪记录列表 */
 export function getSalaryChangeRecordList(employeeId: number) {
-  return requestClient.get<HrmSalaryChangeRecordApi.ChangeRecord[]>(
+  return requestClient.get<HrmSalaryChangeRecordApi.SalaryChangeRecord[]>(
     '/hrm/salary/change-record/list',
     { params: { employeeId } },
   );

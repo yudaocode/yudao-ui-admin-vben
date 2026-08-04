@@ -24,13 +24,13 @@ defineOptions({ name: 'HrmSalarySlipList' });
 
 const props = defineProps<{ sendRecordId: number }>();
 
-const checkedRows = ref<HrmSalarySlipApi.Slip[]>([]);
+const checkedRows = ref<HrmSalarySlipApi.SalarySlip[]>([]);
 const slipDetailRef = ref<InstanceType<typeof SlipDetail>>();
 
 function handleRowCheckboxChange({
   records,
 }: {
-  records: HrmSalarySlipApi.Slip[];
+  records: HrmSalarySlipApi.SalarySlip[];
 }) {
   checkedRows.value = records;
 }
@@ -54,7 +54,8 @@ async function handleBatchRemark(clear: boolean) {
     const success = await executeBatch(
       checkedRows.value
         .filter(
-          (item): item is HrmSalarySlipApi.Slip & { id: number } => !!item.id,
+          (item): item is HrmSalarySlipApi.SalarySlip & { id: number } =>
+            !!item.id,
         )
         .map((item) => updateSalarySlipRemark({ id: item.id, remark })),
     );
@@ -218,7 +219,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxConfig: {
       highlight: true,
     },
-  } as VxeTableGridOptions<HrmSalarySlipApi.Slip>,
+  } as VxeTableGridOptions<HrmSalarySlipApi.SalarySlip>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

@@ -35,7 +35,7 @@ const tabs = useTabs();
 
 const recordId = Number(route.params.id);
 const recordLoading = ref(true);
-const record = ref<HrmSalaryMonthRecordApi.MonthRecord>({});
+const record = ref<HrmSalaryMonthRecordApi.SalaryMonthRecord>({});
 const summaryList = ref<HrmSalaryOptionApi.OptionValue[]>([]);
 
 const summaryMap = computed<Record<number, number>>(() =>
@@ -120,7 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.MonthRecord>,
+  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>,
 });
 
 watch(summaryMap, () => {

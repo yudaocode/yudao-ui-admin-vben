@@ -25,12 +25,12 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  change: [rule: HrmSalaryTaxRuleApi.TaxRule | undefined];
+  change: [rule: HrmSalaryTaxRuleApi.SalaryTaxRule | undefined];
   'update:modelValue': [value?: number];
 }>();
 
 const loading = ref(false);
-const options = ref<(HrmSalaryTaxRuleApi.TaxRule & { id: number })[]>([]);
+const options = ref<(HrmSalaryTaxRuleApi.SalaryTaxRule & { id: number })[]>([]);
 
 const selectValue = computed({
   get: () => props.modelValue,
@@ -42,7 +42,7 @@ async function loadOptions() {
   try {
     const data = await getSalaryTaxRuleList();
     options.value = data.filter(
-      (item): item is HrmSalaryTaxRuleApi.TaxRule & { id: number } =>
+      (item): item is HrmSalaryTaxRuleApi.SalaryTaxRule & { id: number } =>
         item.id !== undefined,
     );
   } finally {

@@ -4,27 +4,27 @@ import { requestClient } from '#/api/request';
 
 export namespace HrmAttendanceClockApi {
   /** 考勤打卡 */
-  export interface Clock {
-    id?: number;
-    employeeId?: number;
-    clockTime?: Date | number;
-    type: number;
-    attendanceTime?: Date | number;
-    sourceType?: number;
-    status?: number;
-    stage?: number;
-    address?: string;
-    longitude?: number;
-    latitude?: number;
-    ssid?: string;
-    mac?: string;
-    remark?: string;
-    employeeName?: string;
-    jobNumber?: string;
-    deptId?: number;
-    deptName?: string;
-    postName?: string;
-    createTime?: Date;
+  export interface AttendanceClock {
+    id?: number; // 打卡记录编号
+    employeeId?: number; // 打卡员工编号
+    clockTime?: Date | number; // 打卡时间
+    type: number; // 打卡类型
+    attendanceTime?: Date | number; // 应打卡时间
+    sourceType?: number; // 打卡来源
+    status?: number; // 打卡状态
+    stage?: number; // 打卡阶段
+    address?: string; // 打卡地址
+    longitude?: number; // 经度
+    latitude?: number; // 纬度
+    ssid?: string; // WiFi 名称
+    mac?: string; // WiFi MAC 地址
+    remark?: string; // 备注
+    employeeName?: string; // 员工姓名
+    jobNumber?: string; // 工号
+    deptId?: number; // 部门编号
+    deptName?: string; // 部门名称
+    postName?: string; // 职位名称
+    createTime?: Date; // 创建时间
   }
 
   /** 员工实际班次 */
@@ -40,7 +40,7 @@ export namespace HrmAttendanceClockApi {
 
 /** 获得考勤打卡分页 */
 export function getAttendanceClockPage(params: PageParam) {
-  return requestClient.get<PageResult<HrmAttendanceClockApi.Clock>>(
+  return requestClient.get<PageResult<HrmAttendanceClockApi.AttendanceClock>>(
     '/hrm/attendance/clock/page',
     { params },
   );
@@ -48,7 +48,7 @@ export function getAttendanceClockPage(params: PageParam) {
 
 /** 获得考勤打卡详情 */
 export function getAttendanceClock(id: number) {
-  return requestClient.get<HrmAttendanceClockApi.Clock>(
+  return requestClient.get<HrmAttendanceClockApi.AttendanceClock>(
     `/hrm/attendance/clock/get?id=${id}`,
   );
 }
@@ -72,12 +72,16 @@ export function exportAttendanceClock(params: PageParam) {
 }
 
 /** 新增考勤打卡 */
-export function createAttendanceClock(data: HrmAttendanceClockApi.Clock) {
+export function createAttendanceClock(
+  data: HrmAttendanceClockApi.AttendanceClock,
+) {
   return requestClient.post<number>('/hrm/attendance/clock/create', data);
 }
 
 /** 修改考勤打卡 */
-export function updateAttendanceClock(data: HrmAttendanceClockApi.Clock) {
+export function updateAttendanceClock(
+  data: HrmAttendanceClockApi.AttendanceClock,
+) {
   return requestClient.put<boolean>('/hrm/attendance/clock/update', data);
 }
 

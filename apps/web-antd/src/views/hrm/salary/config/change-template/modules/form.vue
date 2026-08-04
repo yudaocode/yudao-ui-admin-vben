@@ -24,7 +24,7 @@ const formType = ref<'create' | 'update'>('create');
 const formRef = ref();
 const optionSelectRef = ref<InstanceType<typeof ChangeOptionSelect>>();
 const formData =
-  ref<HrmSalaryChangeTemplateApi.ChangeTemplate>(createDefault());
+  ref<HrmSalaryChangeTemplateApi.SalaryChangeTemplate>(createDefault());
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -36,7 +36,7 @@ const formRules = reactive({
   name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
 });
 
-function createDefault(): HrmSalaryChangeTemplateApi.ChangeTemplate {
+function createDefault(): HrmSalaryChangeTemplateApi.SalaryChangeTemplate {
   return { name: '', defaultStatus: false, options: [] };
 }
 

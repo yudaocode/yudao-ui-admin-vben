@@ -61,7 +61,7 @@ const specialDateFormRef = ref<InstanceType<typeof SpecialDateForm>>();
 const pointFormRef = ref<InstanceType<typeof PointForm>>();
 const wifiFormRef = ref<InstanceType<typeof WifiForm>>();
 const deptTree = ref<any[]>([]);
-const formData = ref<HrmAttendanceGroupApi.Group>(createDefault());
+const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -101,7 +101,7 @@ function createDefaultDeductRule(): HrmAttendanceGroupApi.DeductRule {
   };
 }
 
-function createDefault(): HrmAttendanceGroupApi.Group {
+function createDefault(): HrmAttendanceGroupApi.AttendanceGroup {
   return {
     name: '',
     deptIds: [],

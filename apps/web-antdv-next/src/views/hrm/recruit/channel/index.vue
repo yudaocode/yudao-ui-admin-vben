@@ -41,19 +41,19 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: HrmRecruitChannelApi.Channel) {
+function handleEdit(row: HrmRecruitChannelApi.RecruitChannel) {
   formModalApi.setData(row).open();
 }
 
 /** 删除 */
-function handleDelete(row: HrmRecruitChannelApi.Channel) {
+function handleDelete(row: HrmRecruitChannelApi.RecruitChannel) {
   deleteModalApi.setData(row).open();
 }
 
 /** 状态切换 */
 async function handleStatusChange(
   newStatus: number,
-  row: HrmRecruitChannelApi.Channel,
+  row: HrmRecruitChannelApi.RecruitChannel,
 ): Promise<boolean | undefined> {
   try {
     await confirm(
@@ -94,7 +94,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmRecruitChannelApi.Channel>,
+  } as VxeTableGridOptions<HrmRecruitChannelApi.RecruitChannel>,
 });
 </script>
 

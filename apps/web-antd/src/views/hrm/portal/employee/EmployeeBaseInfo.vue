@@ -37,7 +37,7 @@ import {
 defineOptions({ name: 'HrmPortalEmployeeBaseInfo' });
 
 const props = defineProps<{
-  employee: HrmPortalEmployeeApi.Employee;
+  employee: HrmPortalEmployeeApi.PortalEmployee;
   fieldConfigList: HrmEmployeeConfigApi.FieldConfig[];
 }>();
 
@@ -48,16 +48,18 @@ const emit = defineEmits<{
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
 const educationExperienceList = ref<
-  HrmEmployeeEducationExperienceApi.EducationExperience[]
+  HrmEmployeeEducationExperienceApi.EmployeeEducationExperience[]
 >([]);
-const workExperienceList = ref<HrmEmployeeWorkExperienceApi.WorkExperience[]>(
+const workExperienceList = ref<
+  HrmEmployeeWorkExperienceApi.EmployeeWorkExperience[]
+>([]);
+const certificateList = ref<HrmEmployeeCertificateApi.EmployeeCertificate[]>(
   [],
 );
-const certificateList = ref<HrmEmployeeCertificateApi.Certificate[]>([]);
 const trainingExperienceList = ref<
-  HrmEmployeeTrainingExperienceApi.TrainingExperience[]
+  HrmEmployeeTrainingExperienceApi.EmployeeTrainingExperience[]
 >([]);
-const contactList = ref<HrmEmployeeContactApi.Contact[]>([]);
+const contactList = ref<HrmEmployeeContactApi.EmployeeContact[]>([]);
 
 const hasEditableFields = computed(() =>
   props.fieldConfigList.some((field) => field.editable),

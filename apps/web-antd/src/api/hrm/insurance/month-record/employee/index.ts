@@ -5,6 +5,7 @@ import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import { requestClient } from '#/api/request';
 
 export namespace HrmInsuranceMonthEmployeeRecordApi {
+  /** 社保项目 */
   export interface Project {
     schemeProjectId?: number;
     type?: number;
@@ -16,7 +17,8 @@ export namespace HrmInsuranceMonthEmployeeRecordApi {
     personalAmount?: number;
   }
 
-  export interface EmployeeRecord {
+  /** 社保员工月度记录 */
+  export interface InsuranceMonthEmployeeRecord {
     id?: number;
     monthRecordId?: number;
     employeeId?: number;
@@ -52,6 +54,7 @@ export namespace HrmInsuranceMonthEmployeeRecordApi {
     createTime?: Date;
   }
 
+  /** ProjectUpdateReq */
   export interface ProjectUpdateReq {
     schemeProjectId: number;
     baseAmount?: number;
@@ -59,35 +62,43 @@ export namespace HrmInsuranceMonthEmployeeRecordApi {
     personalAmount?: number;
   }
 
+  /** 修改请求 */
   export interface UpdateReq {
     id: number;
     schemeId: number;
     projects: ProjectUpdateReq[];
   }
 
+  /** StopListReq */
   export interface StopListReq {
     ids: number[];
   }
 
+  /** CreateListReq */
   export interface CreateListReq {
     monthRecordId: number;
     employeeIds: number[];
   }
 }
 
+/** 查询社保员工月度记录分页 */
 export function getInsuranceMonthEmployeeRecordPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord[]>
+    PageResult<
+      HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord[]
+    >
   >('/hrm/insurance/month-employee-record/page', { params });
 }
 
+/** 查询社保员工月度记录 */
 export function getInsuranceMonthEmployeeRecord(id: number) {
-  return requestClient.get<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>(
+  return requestClient.get<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>(
     '/hrm/insurance/month-employee-record/get',
     { params: { id } },
   );
 }
 
+/** 修改社保员工月度记录 */
 export function updateInsuranceMonthEmployeeRecord(
   data: HrmInsuranceMonthEmployeeRecordApi.UpdateReq,
 ) {
@@ -97,6 +108,7 @@ export function updateInsuranceMonthEmployeeRecord(
   );
 }
 
+/** stopInsuranceMonthEmployeeRecordList */
 export function stopInsuranceMonthEmployeeRecordList(
   data: HrmInsuranceMonthEmployeeRecordApi.StopListReq,
 ) {
@@ -106,6 +118,7 @@ export function stopInsuranceMonthEmployeeRecordList(
   );
 }
 
+/** 新增社保员工月度记录 */
 export function createInsuranceMonthEmployeeRecordList(
   data: HrmInsuranceMonthEmployeeRecordApi.CreateListReq,
 ) {
@@ -115,6 +128,7 @@ export function createInsuranceMonthEmployeeRecordList(
   );
 }
 
+/** 查询员工档案列表 */
 export function getUninsuredEmployeeList(monthRecordId: number) {
   return requestClient.get<HrmEmployeeApi.Employee[]>(
     '/hrm/insurance/month-employee-record/uninsured-employee-list',

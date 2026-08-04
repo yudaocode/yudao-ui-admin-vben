@@ -1,6 +1,7 @@
 import { requestClient } from '#/api/request';
 
 export namespace HrmEmployeeConfigApi {
+  /** 字段配置 */
   export interface FieldConfig {
     name: string;
     title: string;
@@ -12,6 +13,7 @@ export namespace HrmEmployeeConfigApi {
   }
 }
 
+/** 查询员工档案列表 */
 export function getEmployeeCreateFieldConfigList(entryStatus: number) {
   return requestClient.get<HrmEmployeeConfigApi.FieldConfig[]>(
     '/hrm/employee/config/create-field/list',

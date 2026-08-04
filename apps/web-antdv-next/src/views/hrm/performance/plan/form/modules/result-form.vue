@@ -12,7 +12,7 @@ defineOptions({ name: 'HrmPerformancePlanResultForm' });
 
 const props = defineProps<{
   disabled: boolean;
-  resultTemplateList: HrmPerformanceResultTemplateApi.ResultTemplate[];
+  resultTemplateList: HrmPerformanceResultTemplateApi.PerformanceResultTemplate[];
 }>();
 
 const model = defineModel<HrmPerformancePlanApi.PerformancePlan>({

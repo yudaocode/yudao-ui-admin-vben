@@ -22,7 +22,7 @@ const tabs = useTabs();
 
 const recordId = Number(route.params.id);
 const loading = ref(false);
-const record = ref<HrmSalarySlipSendRecordApi.SendRecord>({});
+const record = ref<HrmSalarySlipSendRecordApi.SalarySlipSendRecord>({});
 
 function close() {
   tabs.closeCurrentTab();

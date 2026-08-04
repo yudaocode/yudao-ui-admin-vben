@@ -17,7 +17,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['success']);
 const loading = ref(false);
-const list = ref<HrmEmployeeChangeRecordApi.ChangeRecord[]>([]);
+const list = ref<HrmEmployeeChangeRecordApi.EmployeeChangeRecord[]>([]);
 async function getList() {
   loading.value = true;
   try {

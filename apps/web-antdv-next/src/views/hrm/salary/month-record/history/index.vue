@@ -22,7 +22,7 @@ defineOptions({ name: 'HrmSalaryHistory' });
 
 const router = useRouter();
 
-function openDetail(row: HrmSalaryMonthRecordApi.MonthRecord) {
+function openDetail(row: HrmSalaryMonthRecordApi.SalaryMonthRecord) {
   if (!row.id) {
     return;
   }
@@ -61,7 +61,7 @@ const [Grid] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmSalaryMonthRecordApi.MonthRecord>,
+  } as VxeTableGridOptions<HrmSalaryMonthRecordApi.SalaryMonthRecord>,
 });
 </script>
 

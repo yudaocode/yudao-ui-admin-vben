@@ -2,7 +2,7 @@ import { requestClient } from '#/api/request';
 
 export namespace HrmEmployeePersonalNoteApi {
   /** 员工个人备忘 */
-  export interface PersonalNote {
+  export interface EmployeePersonalNote {
     content: string; // 备忘内容
     reminderTime: number; // 提醒时间
   }
@@ -10,7 +10,7 @@ export namespace HrmEmployeePersonalNoteApi {
 
 /** 创建员工个人备忘 */
 export function createEmployeePersonalNote(
-  data: HrmEmployeePersonalNoteApi.PersonalNote,
+  data: HrmEmployeePersonalNoteApi.EmployeePersonalNote,
 ) {
   return requestClient.post<number>('/hrm/employee/personal-note/create', data);
 }

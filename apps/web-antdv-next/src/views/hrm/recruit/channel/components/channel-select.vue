@@ -32,17 +32,19 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  change: [channel: HrmRecruitChannelApi.Channel | undefined];
+  change: [channel: HrmRecruitChannelApi.RecruitChannel | undefined];
   'update:modelValue': [value: number | undefined];
 }>();
 
-const channelList = ref<HrmRecruitChannelApi.Channel[]>([]);
-const selectedChannel = ref<HrmRecruitChannelApi.Channel>();
+const channelList = ref<HrmRecruitChannelApi.RecruitChannel[]>([]);
+const selectedChannel = ref<HrmRecruitChannelApi.RecruitChannel>();
 const loading = ref(false);
 
 const channelOptions = computed(() => {
   const options = channelList.value.filter(
-    (channel): channel is HrmRecruitChannelApi.Channel & { id: number } =>
+    (
+      channel,
+    ): channel is HrmRecruitChannelApi.RecruitChannel & { id: number } =>
       channel.id !== undefined && !props.excludeIds.includes(channel.id),
   );
   const currentChannel = selectedChannel.value;
@@ -54,7 +56,7 @@ const channelOptions = computed(() => {
     return options;
   }
   return [
-    currentChannel as HrmRecruitChannelApi.Channel & { id: number },
+    currentChannel as HrmRecruitChannelApi.RecruitChannel & { id: number },
     ...options,
   ];
 });

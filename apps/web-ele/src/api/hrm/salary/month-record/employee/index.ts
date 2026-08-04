@@ -11,7 +11,7 @@ export namespace HrmSalaryMonthEmployeeRecordApi {
   }
 
   /** 员工月度工资记录 */
-  export interface MonthRecord {
+  export interface SalaryMonthEmployeeRecord {
     id?: number;
     monthRecordId?: number;
     employeeId?: number;
@@ -54,7 +54,7 @@ export namespace HrmSalaryMonthEmployeeRecordApi {
 
 /** 批量修改员工月度工资 */
 export function updateSalaryMonthEmployeeRecordList(
-  data: HrmSalaryMonthEmployeeRecordApi.MonthRecord[],
+  data: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[],
 ) {
   return requestClient.put<boolean>(
     '/hrm/salary/month-employee-record/update-list',
@@ -65,14 +65,14 @@ export function updateSalaryMonthEmployeeRecordList(
 /** 获得员工月度工资分页 */
 export function getSalaryMonthEmployeeRecordPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmSalaryMonthEmployeeRecordApi.MonthRecord>
+    PageResult<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>
   >('/hrm/salary/month-employee-record/page', { params });
 }
 
 /** 获得指定员工的月度工资分页 */
 export function getSalaryEmployeeMonthRecordPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmSalaryMonthEmployeeRecordApi.MonthRecord>
+    PageResult<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>
   >('/hrm/salary/month-employee-record/employee-page', { params });
 }
 
@@ -80,10 +80,9 @@ export function getSalaryEmployeeMonthRecordPage(params: PageParam) {
 export function getSalaryMonthEmployeeRecordList(
   params: HrmSalaryMonthEmployeeRecordApi.ListQuery,
 ) {
-  return requestClient.get<HrmSalaryMonthEmployeeRecordApi.MonthRecord[]>(
-    '/hrm/salary/month-employee-record/list',
-    { params },
-  );
+  return requestClient.get<
+    HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]
+  >('/hrm/salary/month-employee-record/list', { params });
 }
 
 /** 获得月度工资员工变动数量 */

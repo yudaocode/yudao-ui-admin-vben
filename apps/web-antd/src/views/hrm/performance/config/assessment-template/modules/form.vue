@@ -24,7 +24,9 @@ import { useFormSchema } from '../data';
 const emit = defineEmits(['success']);
 
 const configData =
-  ref<HrmPerformanceAssessmentTemplateApi.AssessmentTemplate>(createDefault());
+  ref<HrmPerformanceAssessmentTemplateApi.PerformanceAssessmentTemplate>(
+    createDefault(),
+  );
 const configEditorRef = ref<InstanceType<typeof ConfigEditor>>();
 const formType = ref<'create' | 'update'>('create');
 
@@ -42,10 +44,11 @@ const [Modal, modalApi] = useVbenModal({
     if (!configEditorRef.value?.validate()) return;
     modalApi.lock();
     const values = await formApi.getValues();
-    const data: HrmPerformanceAssessmentTemplateApi.AssessmentTemplate = {
-      ...configData.value,
-      ...values,
-    };
+    const data: HrmPerformanceAssessmentTemplateApi.PerformanceAssessmentTemplate =
+      {
+        ...configData.value,
+        ...values,
+      };
     try {
       await (formType.value === 'create'
         ? createPerformanceAssessmentTemplate(data)
@@ -79,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-function createDefault(): HrmPerformanceAssessmentTemplateApi.AssessmentTemplate {
+function createDefault(): HrmPerformanceAssessmentTemplateApi.PerformanceAssessmentTemplate {
   return {
     name: '',
     illustrate: '',

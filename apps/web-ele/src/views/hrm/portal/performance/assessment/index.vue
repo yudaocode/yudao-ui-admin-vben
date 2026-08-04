@@ -43,7 +43,9 @@ const loading = ref(false);
 const activeTab = ref<number>(HrmPerformanceStageType.FILL_QUOTA);
 const activeStatus = ref<number>(HrmPerformanceAssessmentStageStatus.PENDING);
 const keyword = ref('');
-const list = ref<HrmPortalPerformanceAssessmentApi.Assessment[]>([]);
+const list = ref<
+  HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment[]
+>([]);
 const total = ref(0);
 const queryParams = reactive({
   pageNo: 1,
@@ -165,7 +167,9 @@ const statusTabs = computed(() => {
 });
 
 /** 打开详情 */
-function openDetail(row: HrmPortalPerformanceAssessmentApi.Assessment) {
+function openDetail(
+  row: HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment,
+) {
   detailRef.value?.open(row, activeTab.value);
 }
 

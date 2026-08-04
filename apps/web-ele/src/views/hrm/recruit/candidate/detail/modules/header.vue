@@ -14,7 +14,7 @@ import { useHeaderSchema } from '../data';
 
 const props = withDefaults(
   defineProps<{
-    candidate: HrmRecruitCandidateApi.Candidate;
+    candidate: HrmRecruitCandidateApi.RecruitCandidate;
     loading?: boolean;
   }>(),
   {

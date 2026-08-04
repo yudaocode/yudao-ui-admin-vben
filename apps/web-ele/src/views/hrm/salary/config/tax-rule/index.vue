@@ -34,11 +34,11 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmSalaryTaxRuleApi.TaxRule) {
+function handleEdit(row: HrmSalaryTaxRuleApi.SalaryTaxRule) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmSalaryTaxRuleApi.TaxRule) {
+async function handleDelete(row: HrmSalaryTaxRuleApi.SalaryTaxRule) {
   await confirm(`确认删除计税规则"${row.name}"吗？`);
   await deleteSalaryTaxRule(row.id!);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -106,7 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true },
-  } as VxeTableGridOptions<HrmSalaryTaxRuleApi.TaxRule>,
+  } as VxeTableGridOptions<HrmSalaryTaxRuleApi.SalaryTaxRule>,
 });
 </script>
 

@@ -57,7 +57,10 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-function open(empId: number, row?: HrmEmployeeCertificateApi.Certificate) {
+function open(
+  empId: number,
+  row?: HrmEmployeeCertificateApi.EmployeeCertificate,
+) {
   employeeId.value = empId;
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });

@@ -13,7 +13,7 @@ import { formatHrmDate } from '#/views/hrm/utils/format';
 defineOptions({ name: 'HrmPortalEmployeeSurvey' });
 
 const props = defineProps<{
-  employee?: HrmPortalEmployeeApi.Employee;
+  employee?: HrmPortalEmployeeApi.PortalEmployee;
   salarySlipSummary?: HrmPortalSalarySlipApi.UnreadSummary;
 }>();
 

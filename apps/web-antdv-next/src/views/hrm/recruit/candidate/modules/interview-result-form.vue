@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData<{
-      interview: HrmRecruitInterviewApi.Interview;
+      interview: HrmRecruitInterviewApi.RecruitInterview;
       result?: number;
     }>();
     if (!data?.interview?.id) {

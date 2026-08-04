@@ -49,9 +49,9 @@ const employeeTotal = ref(0);
 const monthRecordId = ref<number>();
 const employeeList = ref<HrmSalarySlipSendRecordApi.SendEmployee[]>([]);
 const selectedEmployeeIdSet = ref<Set<number>>(new Set());
-const templateList = ref<HrmSalarySlipTemplateApi.Template[]>([]);
+const templateList = ref<HrmSalarySlipTemplateApi.SalarySlipTemplate[]>([]);
 const selectedTemplateId = ref<number>();
-const sendTemplate = ref<HrmSalarySlipTemplateApi.Template>();
+const sendTemplate = ref<HrmSalarySlipTemplateApi.SalarySlipTemplate>();
 const templateFormRef = ref<InstanceType<typeof TemplateForm>>();
 const templateEditorRef = ref<InstanceType<typeof TemplateOptionEditor>>();
 

@@ -28,7 +28,7 @@ const emit = defineEmits<{
 const router = useRouter();
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
-const list = ref<HrmAttendanceLeaveApi.Leave[]>([]);
+const list = ref<HrmAttendanceLeaveApi.AttendanceLeave[]>([]);
 const formRef = ref<InstanceType<typeof AttendanceLeaveForm>>();
 
 /** 获得我的请假申请列表 */

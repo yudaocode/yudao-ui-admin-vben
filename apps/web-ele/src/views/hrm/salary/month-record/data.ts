@@ -57,8 +57,8 @@ export function useSearchFormSchema(): VbenFormSchema[] {
 
 /** 构建动态表格列 */
 export function buildGridColumns(
-  optionHeaders?: HrmSalaryOptionApi.Option[],
-): VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.MonthRecord>['columns'] {
+  optionHeaders?: HrmSalaryOptionApi.SalaryOption[],
+): VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>['columns'] {
   const optionColumns = getSalaryLeafOptions(optionHeaders).map((option) => ({
     align: 'right' as const,
     field: `option-${option.code}`,
@@ -67,7 +67,7 @@ export function buildGridColumns(
     formatter: ({
       row,
     }: {
-      row: HrmSalaryMonthEmployeeRecordApi.MonthRecord;
+      row: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord;
     }) => formatHrmMoney(getSalaryOptionValue(row, option.code)),
   }));
   return [

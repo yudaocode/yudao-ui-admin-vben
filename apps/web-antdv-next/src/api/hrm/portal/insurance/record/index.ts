@@ -1,6 +1,7 @@
 import { requestClient } from '#/api/request';
 
 export namespace HrmPortalInsuranceRecordApi {
+  /** SchemeProject */
   export interface SchemeProject {
     schemeProjectId?: number;
     type?: number;
@@ -12,7 +13,8 @@ export namespace HrmPortalInsuranceRecordApi {
     personalAmount?: number;
   }
 
-  export interface Record {
+  /** 员工端社保记录 */
+  export interface PortalInsuranceRecord {
     id: number;
     monthRecordId?: number;
     employeeId: number;
@@ -34,7 +36,7 @@ export namespace HrmPortalInsuranceRecordApi {
 
 /** 获得我的社保记录列表 */
 export function getInsuranceRecordList(params?: { year?: number }) {
-  return requestClient.get<HrmPortalInsuranceRecordApi.Record[]>(
+  return requestClient.get<HrmPortalInsuranceRecordApi.PortalInsuranceRecord[]>(
     '/hrm/portal/insurance/record/list',
     { params },
   );
@@ -42,7 +44,7 @@ export function getInsuranceRecordList(params?: { year?: number }) {
 
 /** 获得我的社保记录详情 */
 export function getInsuranceRecord(id: number) {
-  return requestClient.get<HrmPortalInsuranceRecordApi.Record>(
+  return requestClient.get<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>(
     '/hrm/portal/insurance/record/get',
     { params: { id } },
   );

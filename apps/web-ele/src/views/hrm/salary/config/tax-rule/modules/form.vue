@@ -27,7 +27,7 @@ const emit = defineEmits(['success']);
 
 const formType = ref<'create' | 'update'>('create');
 const formRef = ref();
-const formData = ref<HrmSalaryTaxRuleApi.TaxRule>(createDefault());
+const formData = ref<HrmSalaryTaxRuleApi.SalaryTaxRule>(createDefault());
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -73,7 +73,7 @@ const formRules = reactive({
   ],
 });
 
-function createDefault(): HrmSalaryTaxRuleApi.TaxRule {
+function createDefault(): HrmSalaryTaxRuleApi.SalaryTaxRule {
   return {
     name: '',
     type: HrmSalaryTaxType.SALARY,

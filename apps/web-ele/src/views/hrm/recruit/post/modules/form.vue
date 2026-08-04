@@ -27,7 +27,7 @@ import {
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<HrmRecruitPostApi.Post>();
+const formData = ref<HrmRecruitPostApi.RecruitPost>();
 const getTitle = computed(() =>
   formData.value?.id ? '编辑招聘职位' : '新建招聘职位',
 );
@@ -75,8 +75,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     modalApi.lock();
-    const data: HrmRecruitPostApi.Post = {
-      ...(values as HrmRecruitPostApi.Post),
+    const data: HrmRecruitPostApi.RecruitPost = {
+      ...(values as HrmRecruitPostApi.RecruitPost),
       postName: values.postName,
       minSalary: values.salaryNegotiable
         ? SALARY_NEGOTIABLE_VALUE
@@ -107,7 +107,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<HrmRecruitPostApi.Post>();
+    const data = modalApi.getData<HrmRecruitPostApi.RecruitPost>();
     if (!data?.id) {
       await formApi.setValues({
         postName: '',

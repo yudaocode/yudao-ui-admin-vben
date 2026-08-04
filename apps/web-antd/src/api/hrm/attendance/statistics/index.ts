@@ -16,7 +16,7 @@ export namespace HrmAttendanceStatisticsApi {
 
   /** 每日打卡概况 */
   export interface DailyOverview {
-    clocks: HrmAttendanceClockApi.Clock[];
+    clocks: HrmAttendanceClockApi.AttendanceClock[];
     attendanceResult?: string;
     overviews: DailyOverviewItem[];
   }
@@ -59,7 +59,7 @@ export namespace HrmAttendanceStatisticsApi {
     lateMinutes?: number;
     earlyCount: number;
     earlyMinutes?: number;
-    clockList: HrmAttendanceClockApi.Clock[];
+    clockList: HrmAttendanceClockApi.AttendanceClock[];
   }
 
   /** 月度考勤汇总 */
@@ -99,7 +99,7 @@ export namespace HrmAttendanceStatisticsApi {
   export interface MonthDetail {
     summary: MonthRecord;
     dailyDetails: DailyDetail[];
-    leaves: HrmAttendanceLeaveApi.Leave[];
+    leaves: HrmAttendanceLeaveApi.AttendanceLeave[];
   }
 }
 

@@ -78,7 +78,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<HrmAttendanceLeaveApi.Leave>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmAttendanceLeaveApi.AttendanceLeave>['columns'] {
   return [
     { field: 'employeeName', title: '姓名', minWidth: 110, showOverflow: true },
     { field: 'jobNumber', title: '工号', minWidth: 110, showOverflow: true },

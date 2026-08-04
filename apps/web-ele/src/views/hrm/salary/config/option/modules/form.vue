@@ -19,7 +19,7 @@ defineOptions({ name: 'HrmSalaryOptionForm' });
 const emit = defineEmits(['success']);
 
 const formRef = ref();
-const optionList = ref<HrmSalaryOptionApi.Option[]>([]);
+const optionList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
 const formData = ref<HrmSalaryOptionApi.SaveReq>({
   parentCode: undefined,
   name: '',

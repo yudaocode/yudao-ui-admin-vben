@@ -5,6 +5,7 @@ import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessme
 import { requestClient } from '#/api/request';
 
 export namespace HrmPortalPerformanceAssessmentApi {
+  /** AssessmentSummary */
   export interface AssessmentSummary {
     id: number;
     planId: number;
@@ -26,6 +27,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
     archiveTime?: Date;
   }
 
+  /** TaskCount */
   export interface TaskCount {
     fillPendingCount: number;
     fillCompletedCount: number;
@@ -42,16 +44,19 @@ export namespace HrmPortalPerformanceAssessmentApi {
     appealCompletedCount: number;
   }
 
-  export type Assessment = HrmPerformanceAssessmentApi.PerformanceAssessment;
+  export type PortalPerformanceAssessment =
+    HrmPerformanceAssessmentApi.PerformanceAssessment;
   export type ProcessRecord =
     HrmPerformanceAssessmentApi.PerformanceProcessRecord;
 
+  /** ConfirmReq */
   export interface ConfirmReq {
     assessmentId: number;
     pass: number;
     comment?: string;
   }
 
+  /** AppealReq */
   export interface AppealReq {
     assessmentId: number;
     appealReason: string;
@@ -59,11 +64,13 @@ export namespace HrmPortalPerformanceAssessmentApi {
     reviewStageIds: number[];
   }
 
+  /** ProcessResp */
   export interface ProcessResp {
     id: number;
     nextStageId?: number;
   }
 
+  /** HandleStageReq */
   export interface HandleStageReq {
     assessmentId: number;
     stageId: number;
@@ -72,6 +79,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
     reviewStageIds?: number[];
   }
 
+  /** QuotaSave */
   export interface QuotaSave {
     id?: number;
     dimensionId?: number;
@@ -89,6 +97,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
     sort?: number;
   }
 
+  /** ReviewScoreReq */
   export interface ReviewScoreReq {
     assessmentId: number;
     reviewStageId: number;
@@ -98,11 +107,13 @@ export namespace HrmPortalPerformanceAssessmentApi {
     quotas: QuotaSave[];
   }
 
+  /** QuotaReq */
   export interface QuotaReq {
     assessmentId: number;
     quotas: QuotaSave[];
   }
 
+  /** ScorePreview */
   export interface ScorePreview {
     score?: number;
     resultLevel?: string;
@@ -113,6 +124,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
     cumulativeResultLevel?: string;
   }
 
+  /** ReviewRejectReq */
   export interface ReviewRejectReq {
     assessmentId: number;
     reviewStageId: number;
@@ -120,12 +132,14 @@ export namespace HrmPortalPerformanceAssessmentApi {
   }
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentPage(params: PageParam) {
   return requestClient.get<
     PageResult<HrmPortalPerformanceAssessmentApi.AssessmentSummary>
   >('/hrm/portal/performance/assessment/page', { params });
 }
 
+/** 查询PerformanceAssessmentTaskCount */
 export function getPerformanceAssessmentTaskCount(search?: string) {
   return requestClient.get<HrmPortalPerformanceAssessmentApi.TaskCount>(
     '/hrm/portal/performance/assessment/task-count',
@@ -133,13 +147,15 @@ export function getPerformanceAssessmentTaskCount(search?: string) {
   );
 }
 
+/** 查询绩效考核 */
 export function getPerformanceAssessment(id: number, stageId?: number) {
-  return requestClient.get<HrmPortalPerformanceAssessmentApi.Assessment>(
+  return requestClient.get<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>(
     '/hrm/portal/performance/assessment/get',
     { params: { id, stageId } },
   );
 }
 
+/** 查询绩效考核列表 */
 export function getPerformanceAssessmentProcessRecordList(
   id: number,
   stageId?: number,
@@ -150,50 +166,57 @@ export function getPerformanceAssessmentProcessRecordList(
   );
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentFillQuotaTaskPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/fill-quota-task-page', { params });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentTargetConfirmationTaskPage(
   params: PageParam,
 ) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/target-confirmation-task-page', {
     params,
   });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentReviewTaskPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/review-task-page', { params });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentResultAuditTaskPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/result-audit-task-page', { params });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentResultConfirmationTaskPage(
   params: PageParam,
 ) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/result-confirmation-task-page', {
     params,
   });
 }
 
+/** 查询绩效考核分页 */
 export function getPerformanceAssessmentAppealTaskPage(params: PageParam) {
   return requestClient.get<
-    PageResult<HrmPortalPerformanceAssessmentApi.Assessment>
+    PageResult<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>
   >('/hrm/portal/performance/assessment/appeal-task-page', { params });
 }
 
+/** fillPerformanceAssessmentQuota */
 export function fillPerformanceAssessmentQuota(
   data: HrmPortalPerformanceAssessmentApi.QuotaReq,
 ) {
@@ -203,6 +226,7 @@ export function fillPerformanceAssessmentQuota(
   );
 }
 
+/** 确认PerformanceAssessmentTarget */
 export function confirmPerformanceAssessmentTarget(
   data: HrmPortalPerformanceAssessmentApi.ConfirmReq,
 ) {
@@ -212,6 +236,7 @@ export function confirmPerformanceAssessmentTarget(
   );
 }
 
+/** previewPerformanceAssessmentScore */
 export function previewPerformanceAssessmentScore(
   data: HrmPortalPerformanceAssessmentApi.ReviewScoreReq,
 ) {
@@ -221,6 +246,7 @@ export function previewPerformanceAssessmentScore(
   );
 }
 
+/** scorePerformanceAssessment */
 export function scorePerformanceAssessment(
   data: HrmPortalPerformanceAssessmentApi.ReviewScoreReq,
 ) {
@@ -230,6 +256,7 @@ export function scorePerformanceAssessment(
   );
 }
 
+/** rejectPerformanceAssessmentReviewStage */
 export function rejectPerformanceAssessmentReviewStage(
   data: HrmPortalPerformanceAssessmentApi.ReviewRejectReq,
 ) {
@@ -239,6 +266,7 @@ export function rejectPerformanceAssessmentReviewStage(
   );
 }
 
+/** handlePerformanceAssessmentResultAudit */
 export function handlePerformanceAssessmentResultAudit(
   data: HrmPortalPerformanceAssessmentApi.HandleStageReq,
 ) {
@@ -248,6 +276,7 @@ export function handlePerformanceAssessmentResultAudit(
   );
 }
 
+/** 确认PerformanceAssessmentResult */
 export function confirmPerformanceAssessmentResult(
   data: HrmPortalPerformanceAssessmentApi.ConfirmReq,
 ) {
@@ -257,6 +286,7 @@ export function confirmPerformanceAssessmentResult(
   );
 }
 
+/** submitPerformanceAssessmentAppeal */
 export function submitPerformanceAssessmentAppeal(
   data: HrmPortalPerformanceAssessmentApi.AppealReq,
 ) {
@@ -266,6 +296,7 @@ export function submitPerformanceAssessmentAppeal(
   );
 }
 
+/** handlePerformanceAssessmentAppeal */
 export function handlePerformanceAssessmentAppeal(
   data: HrmPortalPerformanceAssessmentApi.HandleStageReq,
 ) {

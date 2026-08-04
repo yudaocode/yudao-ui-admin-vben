@@ -28,11 +28,11 @@ const props = defineProps<{ employeeId: number }>();
 
 const emit = defineEmits<{
   change: [];
-  edit: [record: HrmSalaryChangeRecordApi.ChangeRecord];
+  edit: [record: HrmSalaryChangeRecordApi.SalaryChangeRecord];
 }>();
 
 const loading = ref(false);
-const recordList = ref<HrmSalaryChangeRecordApi.ChangeRecord[]>([]);
+const recordList = ref<HrmSalaryChangeRecordApi.SalaryChangeRecord[]>([]);
 
 async function getList() {
   loading.value = true;
@@ -43,7 +43,7 @@ async function getList() {
   }
 }
 
-function canEditRecord(record: HrmSalaryChangeRecordApi.ChangeRecord) {
+function canEditRecord(record: HrmSalaryChangeRecordApi.SalaryChangeRecord) {
   if (record.recordType !== HrmSalaryRecordType.FIXED) {
     return record.status !== HrmSalaryChangeRecordStatus.EFFECTIVE;
   }

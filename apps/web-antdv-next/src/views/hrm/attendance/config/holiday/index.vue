@@ -41,11 +41,11 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmAttendanceHolidayApi.Holiday) {
+function handleEdit(row: HrmAttendanceHolidayApi.AttendanceHoliday) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmAttendanceHolidayApi.Holiday) {
+async function handleDelete(row: HrmAttendanceHolidayApi.AttendanceHoliday) {
   await confirm('确认删除该节假日吗？');
   await deleteAttendanceHoliday(row.id!);
   message.success($t('ui.actionMessage.operationSuccess'));
@@ -87,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true, search: true },
-  } as VxeTableGridOptions<HrmAttendanceHolidayApi.Holiday>,
+  } as VxeTableGridOptions<HrmAttendanceHolidayApi.AttendanceHoliday>,
 });
 </script>
 

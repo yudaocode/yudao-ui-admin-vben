@@ -12,8 +12,8 @@ export { buildFooterMethod, useSearchFormSchema } from '../data';
 
 /** 构建详情员工明细列 */
 export function buildDetailGridColumns(
-  optionHeaders?: HrmSalaryOptionApi.Option[],
-): VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.MonthRecord>['columns'] {
+  optionHeaders?: HrmSalaryOptionApi.SalaryOption[],
+): VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>['columns'] {
   const optionColumns = getSalaryLeafOptions(optionHeaders).map((option) => ({
     align: 'right' as const,
     field: `option-${option.code}`,
@@ -22,7 +22,7 @@ export function buildDetailGridColumns(
     formatter: ({
       row,
     }: {
-      row: HrmSalaryMonthEmployeeRecordApi.MonthRecord;
+      row: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord;
     }) => formatHrmMoney(getSalaryOptionValue(row, option.code)),
   }));
   return [

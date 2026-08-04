@@ -23,7 +23,7 @@ defineOptions({ name: 'HrmSalaryMonthComputeForm' });
 const emit = defineEmits(['success']);
 
 const formLoading = ref(false);
-const currentRecord = ref<HrmSalaryMonthRecordApi.MonthRecord>();
+const currentRecord = ref<HrmSalaryMonthRecordApi.SalaryMonthRecord>();
 const payrollEmployeeCount = ref(0);
 const syncInsuranceData = ref(true);
 const syncAttendanceData = ref(false);
@@ -116,7 +116,7 @@ async function downloadTemplate(
   });
 }
 
-function open(record: HrmSalaryMonthRecordApi.MonthRecord) {
+function open(record: HrmSalaryMonthRecordApi.SalaryMonthRecord) {
   currentRecord.value = record;
   payrollEmployeeCount.value = record.employeeCount || 0;
   attendanceFiles.value = [];

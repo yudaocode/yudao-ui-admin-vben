@@ -31,11 +31,11 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmInsuranceSchemeApi.Scheme) {
+function handleEdit(row: HrmInsuranceSchemeApi.InsuranceScheme) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmInsuranceSchemeApi.Scheme) {
+async function handleDelete(row: HrmInsuranceSchemeApi.InsuranceScheme) {
   await confirm(`确认删除参保方案"${row.name}"吗？`);
   await deleteInsuranceScheme(row.id!);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -57,7 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true },
-  } as VxeTableGridOptions<HrmInsuranceSchemeApi.Scheme>,
+  } as VxeTableGridOptions<HrmInsuranceSchemeApi.InsuranceScheme>,
 });
 </script>
 

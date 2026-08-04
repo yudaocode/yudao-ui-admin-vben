@@ -40,7 +40,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 export function useGridColumns(
   editable: boolean,
-): VxeTableGridOptions<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>['columns'] {
+): VxeTableGridOptions<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>['columns'] {
   return [
     { type: 'checkbox' as const, width: 45, visible: editable },
     {

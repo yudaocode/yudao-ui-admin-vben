@@ -8,7 +8,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { useInterviewColumns } from '../data';
 
 const props = defineProps<{
-  interviewList: HrmRecruitInterviewApi.Interview[];
+  interviewList: HrmRecruitInterviewApi.RecruitInterview[];
 }>();
 
 const [Grid, gridApi] = useVbenVxeGrid({

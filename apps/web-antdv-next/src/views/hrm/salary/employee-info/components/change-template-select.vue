@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const templateList = ref<HrmSalaryChangeTemplateApi.ChangeTemplate[]>([]);
+const templateList = ref<HrmSalaryChangeTemplateApi.SalaryChangeTemplate[]>([]);
 
 async function init() {
   loading.value = true;

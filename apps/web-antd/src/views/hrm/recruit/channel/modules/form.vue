@@ -17,7 +17,7 @@ import { $t } from '#/locales';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
-const formData = ref<HrmRecruitChannelApi.Channel>();
+const formData = ref<HrmRecruitChannelApi.RecruitChannel>();
 const getTitle = computed(() =>
   formData.value?.id
     ? $t('ui.actionTitle.edit', ['招聘渠道'])
@@ -44,7 +44,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     const values = await formApi.getValues();
-    const data: HrmRecruitChannelApi.Channel = {
+    const data: HrmRecruitChannelApi.RecruitChannel = {
       id: values.id,
       name: values.name,
       sort: values.sort,
@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<HrmRecruitChannelApi.Channel>();
+    const data = modalApi.getData<HrmRecruitChannelApi.RecruitChannel>();
     if (!data?.id) {
       await formApi.setValues({
         name: '',

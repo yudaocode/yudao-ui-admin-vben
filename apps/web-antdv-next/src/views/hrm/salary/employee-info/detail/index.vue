@@ -28,7 +28,7 @@ const employeeId = Number(route.params.id);
 const loading = ref(false);
 const activeTab = ref('salaryEmployee');
 const employee = ref<any>({});
-const salaryEmployee = ref<HrmSalaryEmployeeInfoApi.EmployeeInfo>({});
+const salaryEmployee = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>({});
 const changeRecordListRef = ref<InstanceType<typeof ChangeRecordList>>();
 const employeeInfoFormRef = ref<InstanceType<typeof Form>>();
 
@@ -56,7 +56,7 @@ async function getData() {
   }
 }
 
-function openSetSalary(record?: HrmSalaryChangeRecordApi.ChangeRecord) {
+function openSetSalary(record?: HrmSalaryChangeRecordApi.SalaryChangeRecord) {
   employeeInfoFormRef.value?.open(employeeId, record?.id);
 }
 

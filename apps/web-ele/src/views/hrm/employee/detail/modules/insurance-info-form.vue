@@ -38,7 +38,10 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-function open(empId: number, row?: HrmInsuranceEmployeeInfoApi.EmployeeInfo) {
+function open(
+  empId: number,
+  row?: HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo,
+) {
   employeeId.value = empId;
   formApi.resetForm();
   formApi.setValues({ ...row, employeeId: empId });

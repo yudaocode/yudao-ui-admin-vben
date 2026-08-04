@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 /** 获得当前员工的证书列表 */
 export function getEmployeeCertificateList() {
-  return requestClient.get<HrmEmployeeCertificateApi.Certificate[]>(
+  return requestClient.get<HrmEmployeeCertificateApi.EmployeeCertificate[]>(
     '/hrm/portal/employee/certificate/list',
   );
 }

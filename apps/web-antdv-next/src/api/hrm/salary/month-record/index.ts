@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
 
 export namespace HrmSalaryMonthRecordApi {
   /** 月度工资表 */
-  export interface MonthRecord {
+  export interface SalaryMonthRecord {
     id?: number;
     title?: string;
     year?: number;
@@ -22,7 +22,7 @@ export namespace HrmSalaryMonthRecordApi {
     corporateInsuranceAmount?: number;
     corporateProvidentFundAmount?: number;
     status?: number;
-    optionHeaders?: HrmSalaryOptionApi.Option[];
+    optionHeaders?: HrmSalaryOptionApi.SalaryOption[];
     createTime?: Date;
   }
 
@@ -82,7 +82,7 @@ export function deleteSalaryMonthRecord(id: number) {
 
 /** 获得月度工资表详情 */
 export function getSalaryMonthRecord(id: number) {
-  return requestClient.get<HrmSalaryMonthRecordApi.MonthRecord>(
+  return requestClient.get<HrmSalaryMonthRecordApi.SalaryMonthRecord>(
     '/hrm/salary/month-record/get',
     { params: { id } },
   );
@@ -90,7 +90,7 @@ export function getSalaryMonthRecord(id: number) {
 
 /** 获得最近月度工资表 */
 export function getLastSalaryMonthRecord() {
-  return requestClient.get<HrmSalaryMonthRecordApi.MonthRecord>(
+  return requestClient.get<HrmSalaryMonthRecordApi.SalaryMonthRecord>(
     '/hrm/salary/month-record/last',
   );
 }
@@ -131,10 +131,9 @@ export function getSalaryAdditionalDeductionImportTemplate(
 
 /** 获得月度工资表分页 */
 export function getSalaryMonthRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<HrmSalaryMonthRecordApi.MonthRecord>>(
-    '/hrm/salary/month-record/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<HrmSalaryMonthRecordApi.SalaryMonthRecord>
+  >('/hrm/salary/month-record/page', { params });
 }
 
 /** 获得月度工资薪资项汇总 */

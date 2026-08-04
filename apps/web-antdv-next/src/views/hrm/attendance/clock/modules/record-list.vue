@@ -39,7 +39,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-function isManualClock(row: HrmAttendanceClockApi.Clock) {
+function isManualClock(row: HrmAttendanceClockApi.AttendanceClock) {
   return row.sourceType === HrmAttendanceClockSource.MANUAL;
 }
 
@@ -52,7 +52,7 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmAttendanceClockApi.Clock) {
+function handleEdit(row: HrmAttendanceClockApi.AttendanceClock) {
   formModalApi.setData({ id: row.id, type: 'update' }).open();
 }
 
@@ -111,26 +111,34 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useRecordGridFormSchema(),
   },
   gridEvents: {
-    checkboxAll: ({ records }: { records: HrmAttendanceClockApi.Clock[] }) => {
+    checkboxAll: ({
+      records,
+    }: {
+      records: HrmAttendanceClockApi.AttendanceClock[];
+    }) => {
       checkedIds.value = records
-        .filter((row: HrmAttendanceClockApi.Clock) => isManualClock(row))
-        .map((row: HrmAttendanceClockApi.Clock) => row.id!)
+        .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
+          isManualClock(row),
+        )
+        .map((row: HrmAttendanceClockApi.AttendanceClock) => row.id!)
         .filter(Boolean);
     },
     checkboxChange: ({
       records,
     }: {
-      records: HrmAttendanceClockApi.Clock[];
+      records: HrmAttendanceClockApi.AttendanceClock[];
     }) => {
       checkedIds.value = records
-        .filter((row: HrmAttendanceClockApi.Clock) => isManualClock(row))
-        .map((row: HrmAttendanceClockApi.Clock) => row.id!)
+        .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
+          isManualClock(row),
+        )
+        .map((row: HrmAttendanceClockApi.AttendanceClock) => row.id!)
         .filter(Boolean);
     },
   },
   gridOptions: {
     checkboxConfig: {
-      checkMethod: ({ row }: { row: HrmAttendanceClockApi.Clock }) =>
+      checkMethod: ({ row }: { row: HrmAttendanceClockApi.AttendanceClock }) =>
         isManualClock(row),
       highlight: true,
       reserve: true,
@@ -157,7 +165,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmAttendanceClockApi.Clock>,
+  } as VxeTableGridOptions<HrmAttendanceClockApi.AttendanceClock>,
 });
 </script>
 

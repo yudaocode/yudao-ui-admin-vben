@@ -39,7 +39,7 @@ const accessible = ref(false);
 const loading = ref(false);
 const monthRange = ref<[Dayjs, Dayjs]>();
 const sort = ref(HrmSalarySlipSort.RECENT_SEND);
-const slips = ref<HrmPortalSalarySlipApi.Slip[]>([]);
+const slips = ref<HrmPortalSalarySlipApi.PortalSalarySlip[]>([]);
 
 const hasFilter = computed(
   () =>
@@ -96,7 +96,7 @@ function getLeafOptions(options: HrmPortalSalarySlipApi.SlipOption[]) {
 }
 
 /** 构建工资条展示行 */
-function buildSlipRow(slip: HrmPortalSalarySlipApi.Slip) {
+function buildSlipRow(slip: HrmPortalSalarySlipApi.PortalSalarySlip) {
   const row: Record<string, number | string> = {
     monthTitle: `${slip.year}-${String(slip.month).padStart(2, '0')}`,
   };
@@ -107,7 +107,7 @@ function buildSlipRow(slip: HrmPortalSalarySlipApi.Slip) {
 }
 
 /** 构建工资条表格列 */
-function buildSlipColumns(slip: HrmPortalSalarySlipApi.Slip) {
+function buildSlipColumns(slip: HrmPortalSalarySlipApi.PortalSalarySlip) {
   const columns: Record<string, unknown>[] = [
     {
       title: '所属月份',

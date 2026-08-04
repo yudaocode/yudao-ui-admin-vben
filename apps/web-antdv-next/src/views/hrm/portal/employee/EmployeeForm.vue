@@ -74,7 +74,7 @@ function isEditable(name: string) {
 
 /** 打开弹窗 */
 async function open(
-  employee: Partial<HrmPortalEmployeeApi.Employee>,
+  employee: Partial<HrmPortalEmployeeApi.PortalEmployee>,
   fields: HrmEmployeeConfigApi.FieldConfig[],
 ) {
   editableFields.value = new Set(

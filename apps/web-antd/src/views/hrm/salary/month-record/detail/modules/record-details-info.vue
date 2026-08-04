@@ -6,7 +6,7 @@ import { Card, Descriptions } from 'ant-design-vue';
 import { formatHrmMoney, formatHrmYearMonth } from '#/views/hrm/utils/format';
 
 defineProps<{
-  record: HrmSalaryMonthRecordApi.MonthRecord;
+  record: HrmSalaryMonthRecordApi.SalaryMonthRecord;
 }>();
 </script>
 

@@ -48,7 +48,7 @@ const formLoading = ref(false);
 const currentStep = ref(0);
 const customDateRange = ref<string[]>([]);
 const resultTemplateList = ref<
-  HrmPerformanceResultTemplateApi.ResultTemplate[]
+  HrmPerformanceResultTemplateApi.PerformanceResultTemplate[]
 >([]);
 const formData = ref<HrmPerformancePlanApi.PerformancePlan>(
   createDefaultFormData(),

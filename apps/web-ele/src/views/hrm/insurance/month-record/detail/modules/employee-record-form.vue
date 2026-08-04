@@ -23,10 +23,11 @@ defineOptions({ name: 'HrmInsuranceEmployeeRecordForm' });
 
 const emit = defineEmits(['success']);
 
-const formData = ref<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>({
-  socialSecurityProjectList: [],
-  providentFundProjectList: [],
-});
+const formData =
+  ref<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>({
+    socialSecurityProjectList: [],
+    providentFundProjectList: [],
+  });
 const projectList = ref<HrmInsuranceMonthEmployeeRecordApi.Project[]>([]);
 
 const isProportionScheme = computed(
@@ -73,7 +74,9 @@ function buildProjectUpdateList(): HrmInsuranceMonthEmployeeRecordApi.ProjectUpd
   }));
 }
 
-async function handleSchemeChange(scheme?: HrmInsuranceSchemeApi.Scheme) {
+async function handleSchemeChange(
+  scheme?: HrmInsuranceSchemeApi.InsuranceScheme,
+) {
   formData.value.schemeId = scheme?.id;
   if (!scheme?.id) {
     projectList.value = [];
@@ -113,7 +116,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     const row =
-      modalApi.getData<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>();
+      modalApi.getData<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>();
     if (!row?.id) {
       return;
     }
@@ -139,7 +142,9 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 defineExpose({
-  open: (row: HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord) => {
+  open: (
+    row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord,
+  ) => {
     modalApi.setData(row).open();
   },
 });

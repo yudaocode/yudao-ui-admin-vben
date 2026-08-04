@@ -16,13 +16,15 @@ const props = defineProps<{ employeeId: number }>();
 
 const loading = ref(false);
 const total = ref(0);
-const list = ref<HrmSalaryMonthEmployeeRecordApi.MonthRecord[]>([]);
+const list = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]>(
+  [],
+);
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
 });
 
-const detail = ref<HrmSalaryMonthEmployeeRecordApi.MonthRecord>();
+const detail = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>();
 
 const [DetailModal, detailModalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
@@ -49,7 +51,9 @@ async function getList() {
 }
 
 /** 打开工资明细 */
-function openDetail(row: HrmSalaryMonthEmployeeRecordApi.MonthRecord) {
+function openDetail(
+  row: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord,
+) {
   detail.value = row;
   detailModalApi.open();
 }

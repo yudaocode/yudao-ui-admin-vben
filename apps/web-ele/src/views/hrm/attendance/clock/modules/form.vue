@@ -109,7 +109,7 @@ const [Modal, modalApi] = useVbenModal({
         );
         return;
       }
-      const payload: HrmAttendanceClockApi.Clock = {
+      const payload: HrmAttendanceClockApi.AttendanceClock = {
         id: values.id,
         employeeId: values.employeeId,
         type: values.type,

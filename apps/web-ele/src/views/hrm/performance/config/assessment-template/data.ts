@@ -18,7 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表列 */
-export function useGridColumns(): VxeTableGridOptions<HrmPerformanceAssessmentTemplateApi.AssessmentTemplate>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmPerformanceAssessmentTemplateApi.PerformanceAssessmentTemplate>['columns'] {
   return [
     { type: 'checkbox', width: 50 },
     { field: 'name', title: '模板名称', minWidth: 180 },

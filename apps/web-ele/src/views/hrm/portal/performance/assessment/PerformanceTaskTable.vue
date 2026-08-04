@@ -19,14 +19,14 @@ defineOptions({ name: 'HrmPortalPerformanceTaskTable' });
 defineProps<{
   activeStatus: number;
   activeTab: number;
-  list: HrmPortalPerformanceAssessmentApi.Assessment[];
+  list: HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment[];
   loading: boolean;
 }>();
 
 const emit = defineEmits<{
   appeal: [id?: number];
   appealHandle: [assessmentId?: number, stageId?: number];
-  detail: [row: HrmPortalPerformanceAssessmentApi.Assessment];
+  detail: [row: HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment];
   quota: [id?: number];
   resultAudit: [assessmentId?: number, stageId?: number];
   resultConfirm: [id?: number];

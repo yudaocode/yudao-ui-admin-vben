@@ -31,7 +31,7 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const optionList = ref<HrmSalaryOptionApi.Option[]>([]);
+const optionList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
 const selectableOptionList = computed(() =>
   optionList.value.filter(
     (option) => option.parentCode !== HrmSalaryOptionCategoryCode.ROOT,

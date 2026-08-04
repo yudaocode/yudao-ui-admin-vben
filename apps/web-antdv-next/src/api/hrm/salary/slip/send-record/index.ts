@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
 
 export namespace HrmSalarySlipSendRecordApi {
   /** 工资条发放记录 */
-  export interface SendRecord {
+  export interface SalarySlipSendRecord {
     id?: number;
     monthRecordId?: number;
     employeeCount?: number;
@@ -65,15 +65,14 @@ export function getSalarySlipSendEmployeePage(params: PageParam) {
 
 /** 获得工资条发放记录分页 */
 export function getSalarySlipSendRecordPage(params: PageParam) {
-  return requestClient.get<PageResult<HrmSalarySlipSendRecordApi.SendRecord>>(
-    '/hrm/salary/slip-send-record/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<HrmSalarySlipSendRecordApi.SalarySlipSendRecord>
+  >('/hrm/salary/slip-send-record/page', { params });
 }
 
 /** 获得工资条发放记录详情 */
 export function getSalarySlipSendRecord(id: number) {
-  return requestClient.get<HrmSalarySlipSendRecordApi.SendRecord>(
+  return requestClient.get<HrmSalarySlipSendRecordApi.SalarySlipSendRecord>(
     '/hrm/salary/slip-send-record/get',
     { params: { id } },
   );

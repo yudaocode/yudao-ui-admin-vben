@@ -10,7 +10,7 @@ import { formatHrmDateTime } from '#/views/hrm/utils/format';
 
 const props = defineProps<{ employeeId: number }>();
 const loading = ref(false);
-const list = ref<HrmSalaryChangeRecordApi.ChangeRecord[]>([]);
+const list = ref<HrmSalaryChangeRecordApi.SalaryChangeRecord[]>([]);
 
 onMounted(async () => {
   loading.value = true;

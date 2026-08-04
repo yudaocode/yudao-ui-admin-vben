@@ -5,6 +5,6 @@ import { requestClient } from '#/api/request';
 /** 获得当前员工的教育经历列表 */
 export function getEmployeeEducationExperienceList() {
   return requestClient.get<
-    HrmEmployeeEducationExperienceApi.EducationExperience[]
+    HrmEmployeeEducationExperienceApi.EmployeeEducationExperience[]
   >('/hrm/portal/employee/education-experience/list');
 }

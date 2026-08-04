@@ -36,7 +36,9 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmPerformanceResultTemplateApi.ResultTemplate) {
+function handleEdit(
+  row: HrmPerformanceResultTemplateApi.PerformanceResultTemplate,
+) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
@@ -73,19 +75,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     checkboxConfig: { highlight: true },
-  } as VxeTableGridOptions<HrmPerformanceResultTemplateApi.ResultTemplate>,
+  } as VxeTableGridOptions<HrmPerformanceResultTemplateApi.PerformanceResultTemplate>,
   gridEvents: {
     checkboxAll: ({
       records,
     }: {
-      records: HrmPerformanceResultTemplateApi.ResultTemplate[];
+      records: HrmPerformanceResultTemplateApi.PerformanceResultTemplate[];
     }) => {
       checkedIds.value = records.map((r) => r.id!).filter(Boolean);
     },
     checkboxChange: ({
       records,
     }: {
-      records: HrmPerformanceResultTemplateApi.ResultTemplate[];
+      records: HrmPerformanceResultTemplateApi.PerformanceResultTemplate[];
     }) => {
       checkedIds.value = records.map((r) => r.id!).filter(Boolean);
     },

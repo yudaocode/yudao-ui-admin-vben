@@ -35,7 +35,7 @@ const formType = ref<'create' | 'update'>('create');
 const formLoading = ref(false);
 const formRef = ref();
 const deptTree = ref<any[]>([]);
-const formData = ref<HrmSalaryGroupApi.Group>(createDefault());
+const formData = ref<HrmSalaryGroupApi.SalaryGroup>(createDefault());
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -63,7 +63,7 @@ const formRules = reactive({
   ],
 });
 
-function createDefault(): HrmSalaryGroupApi.Group {
+function createDefault(): HrmSalaryGroupApi.SalaryGroup {
   return {
     name: '',
     taxRuleId: undefined,

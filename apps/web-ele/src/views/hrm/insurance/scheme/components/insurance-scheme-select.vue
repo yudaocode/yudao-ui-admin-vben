@@ -23,12 +23,12 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  change: [scheme: HrmInsuranceSchemeApi.Scheme | undefined];
+  change: [scheme: HrmInsuranceSchemeApi.InsuranceScheme | undefined];
   'update:modelValue': [value: number | undefined];
 }>();
 
 const loading = ref(false);
-const schemeList = ref<HrmInsuranceSchemeApi.Scheme[]>([]);
+const schemeList = ref<HrmInsuranceSchemeApi.InsuranceScheme[]>([]);
 
 const selectValue = computed({
   get: () => props.modelValue,

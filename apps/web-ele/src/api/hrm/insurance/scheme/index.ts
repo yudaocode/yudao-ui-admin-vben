@@ -1,6 +1,7 @@
 import { requestClient } from '#/api/request';
 
 export namespace HrmInsuranceSchemeApi {
+  /** 社保项目 */
   export interface Project {
     id?: number;
     schemeId?: number;
@@ -14,7 +15,8 @@ export namespace HrmInsuranceSchemeApi {
     createTime?: Date;
   }
 
-  export interface Scheme {
+  /** 社保方案 */
+  export interface InsuranceScheme {
     id?: number;
     name?: string;
     areaId?: number;
@@ -34,33 +36,43 @@ export namespace HrmInsuranceSchemeApi {
   }
 }
 
+/** 查询社保方案精简列表 */
 export function getInsuranceSchemeSimpleList() {
-  return requestClient.get<HrmInsuranceSchemeApi.Scheme[]>(
+  return requestClient.get<HrmInsuranceSchemeApi.InsuranceScheme[]>(
     '/hrm/insurance/scheme/simple-list',
   );
 }
 
+/** 查询社保方案 */
 export function getInsuranceScheme(id: number) {
-  return requestClient.get<HrmInsuranceSchemeApi.Scheme>(
+  return requestClient.get<HrmInsuranceSchemeApi.InsuranceScheme>(
     '/hrm/insurance/scheme/get',
     { params: { id } },
   );
 }
 
+/** 查询社保方案列表 */
 export function getInsuranceSchemeList() {
-  return requestClient.get<HrmInsuranceSchemeApi.Scheme[]>(
+  return requestClient.get<HrmInsuranceSchemeApi.InsuranceScheme[]>(
     '/hrm/insurance/scheme/list',
   );
 }
 
-export function createInsuranceScheme(data: HrmInsuranceSchemeApi.Scheme) {
+/** 新增社保方案 */
+export function createInsuranceScheme(
+  data: HrmInsuranceSchemeApi.InsuranceScheme,
+) {
   return requestClient.post<number>('/hrm/insurance/scheme/create', data);
 }
 
-export function updateInsuranceScheme(data: HrmInsuranceSchemeApi.Scheme) {
+/** 修改社保方案 */
+export function updateInsuranceScheme(
+  data: HrmInsuranceSchemeApi.InsuranceScheme,
+) {
   return requestClient.put<boolean>('/hrm/insurance/scheme/update', data);
 }
 
+/** 删除社保方案 */
 export function deleteInsuranceScheme(id: number) {
   return requestClient.delete<boolean>('/hrm/insurance/scheme/delete', {
     params: { id },

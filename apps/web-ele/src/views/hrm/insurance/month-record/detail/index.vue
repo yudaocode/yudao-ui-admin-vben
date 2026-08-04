@@ -44,7 +44,7 @@ const tabs = useTabs();
 
 const monthRecordId = Number(route.params.id);
 const recordLoading = ref(true);
-const monthRecord = ref<HrmInsuranceMonthRecordApi.MonthRecord>({});
+const monthRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>({});
 const checkedIds = ref<number[]>([]);
 const activeStatus = ref<number>(HrmInsuranceEmployeeStatus.NORMAL);
 
@@ -55,10 +55,13 @@ const editable = computed(
 const stoppableSelectedIds = computed(() =>
   (gridApi.grid?.getCheckboxRecords() || [])
     .filter(
-      (row: HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord) =>
+      (row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord) =>
         row.status === HrmInsuranceEmployeeStatus.NORMAL,
     )
-    .map((row: HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord) => row.id!)
+    .map(
+      (row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord) =>
+        row.id!,
+    )
     .filter(Boolean),
 );
 
@@ -116,7 +119,7 @@ function handleStatusChange(status: number) {
 function handleRowCheckboxChange({
   records,
 }: {
-  records: HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord[];
+  records: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord[];
 }) {
   checkedIds.value = records.map((row) => row.id!).filter(Boolean);
 }
@@ -150,7 +153,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>,
+  } as VxeTableGridOptions<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>,
   gridEvents: {
     checkboxAll: handleRowCheckboxChange,
     checkboxChange: handleRowCheckboxChange,

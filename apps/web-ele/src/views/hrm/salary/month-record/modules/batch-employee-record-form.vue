@@ -26,9 +26,11 @@ const emit = defineEmits(['success']);
 const loading = ref(false);
 const edited = ref(false);
 const editedEmployeeIdSet = ref<Set<number>>(new Set());
-const list = ref<HrmSalaryMonthEmployeeRecordApi.MonthRecord[]>([]);
+const list = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]>(
+  [],
+);
 const editableOptions = ref<
-  NonNullable<HrmSalaryMonthRecordApi.MonthRecord['optionHeaders']>
+  NonNullable<HrmSalaryMonthRecordApi.SalaryMonthRecord['optionHeaders']>
 >([]);
 
 const [Modal, modalApi] = useVbenModal({
@@ -84,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 async function open(
-  record: HrmSalaryMonthRecordApi.MonthRecord,
+  record: HrmSalaryMonthRecordApi.SalaryMonthRecord,
   queryParams: {
     deptId?: number;
     employeeChangeType?: number;
@@ -125,7 +127,7 @@ function handleOptionChange(employeeRecordId?: number) {
 }
 
 function handleOptionUpdate(
-  record: HrmSalaryMonthEmployeeRecordApi.MonthRecord,
+  record: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord,
   optionCode: number,
   value: null | number | undefined,
 ) {

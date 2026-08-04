@@ -16,7 +16,7 @@ defineOptions({ name: 'HrmAttendanceLeaveProcessDetail' });
 const props = defineProps<{ id: string }>();
 
 const loading = ref(false);
-const leave = ref<HrmAttendanceLeaveApi.Leave>();
+const leave = ref<HrmAttendanceLeaveApi.AttendanceLeave>();
 
 async function loadLeave() {
   const id = Number(props.id);

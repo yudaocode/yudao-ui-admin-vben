@@ -109,7 +109,7 @@ export function useRecruitInfoSchema(): DescriptionItemSchema[] {
 }
 
 /** 面试记录表格列 */
-export function useInterviewColumns(): VxeTableGridOptions<HrmRecruitInterviewApi.Interview>['columns'] {
+export function useInterviewColumns(): VxeTableGridOptions<HrmRecruitInterviewApi.RecruitInterview>['columns'] {
   return [
     { field: 'stageNumber', title: '面试轮次', width: 100 },
     {

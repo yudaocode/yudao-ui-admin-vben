@@ -13,7 +13,7 @@ import { formatHrmMoney } from '#/views/hrm/utils/format';
 defineOptions({ name: 'HrmSalarySlipDetail' });
 
 const loading = ref(false);
-const detail = ref<HrmSalarySlipApi.Slip>({});
+const detail = ref<HrmSalarySlipApi.SalarySlip>({});
 const expandedRowKeys = ref<string[]>([]);
 
 function getOptionRowKey(option: HrmSalarySlipApi.SlipOption) {

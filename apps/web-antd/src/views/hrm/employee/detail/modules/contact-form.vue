@@ -54,7 +54,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-function open(empId: number, row?: HrmEmployeeContactApi.Contact) {
+function open(empId: number, row?: HrmEmployeeContactApi.EmployeeContact) {
   employeeId.value = empId;
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });

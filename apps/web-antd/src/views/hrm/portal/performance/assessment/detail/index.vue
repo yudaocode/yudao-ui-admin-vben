@@ -35,7 +35,8 @@ defineOptions({ name: 'HrmPortalPerformanceAssessmentDetail' });
 const drawerVisible = ref(false);
 const loading = ref(false);
 const activeTab = ref('detail');
-const assessment = ref<HrmPortalPerformanceAssessmentApi.Assessment>();
+const assessment =
+  ref<HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment>();
 const recordList = ref<HrmPortalPerformanceAssessmentApi.ProcessRecord[]>([]);
 
 const quotaColumns = [
@@ -67,8 +68,8 @@ const reviewColumns = [
 /** 打开绩效考核详情 */
 async function open(
   row:
-    | HrmPortalPerformanceAssessmentApi.Assessment
-    | HrmPortalPerformanceAssessmentApi.AssessmentSummary,
+    | HrmPortalPerformanceAssessmentApi.AssessmentSummary
+    | HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment,
   taskType?: number,
 ) {
   if (!row.id) {
@@ -76,7 +77,8 @@ async function open(
   }
   let stageId: number | undefined;
   if (taskType !== undefined) {
-    const task = row as HrmPortalPerformanceAssessmentApi.Assessment;
+    const task =
+      row as HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment;
     stageId =
       taskType === HrmPerformanceStageType.OTHER_SCORE
         ? task.currentReviewStage?.id

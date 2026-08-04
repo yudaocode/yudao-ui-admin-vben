@@ -12,7 +12,7 @@ import {
 import { ElButton, ElEmpty } from 'element-plus';
 
 const props = defineProps<{
-  candidate: HrmRecruitCandidateApi.Candidate;
+  candidate: HrmRecruitCandidateApi.RecruitCandidate;
 }>();
 
 const resumeUrls = computed(() => props.candidate.resumeUrls || []);

@@ -57,7 +57,7 @@ const employeeChangeTabs = [
 
 const pageLoading = ref(false);
 const createLoading = ref(false);
-const record = ref<HrmSalaryMonthRecordApi.MonthRecord>({});
+const record = ref<HrmSalaryMonthRecordApi.SalaryMonthRecord>({});
 const employeeChangeCount = ref<Record<number, number>>({});
 const summaryList = ref<HrmSalaryOptionApi.OptionValue[]>([]);
 const employeeChangeType = ref<number>(HrmSalaryEmployeeChangeType.ALL);
@@ -122,7 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.MonthRecord>,
+  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>,
 });
 
 watch(summaryMap, () => {

@@ -39,9 +39,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useGridColumns(
   onStatusChange?: (
     newStatus: number,
-    row: HrmRecruitChannelApi.Channel,
+    row: HrmRecruitChannelApi.RecruitChannel,
   ) => PromiseLike<boolean | undefined>,
-): VxeTableGridOptions<HrmRecruitChannelApi.Channel>['columns'] {
+): VxeTableGridOptions<HrmRecruitChannelApi.RecruitChannel>['columns'] {
   return [
     { field: 'id', title: '渠道编号', width: 120 },
     { field: 'name', title: '渠道名称', minWidth: 160 },

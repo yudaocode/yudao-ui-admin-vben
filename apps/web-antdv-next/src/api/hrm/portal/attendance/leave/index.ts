@@ -5,6 +5,7 @@ import { requestClient } from '#/api/request';
 export type { HrmAttendanceLeaveApi };
 
 export namespace HrmPortalAttendanceLeaveApi {
+  /** LeaveCreate */
   export interface LeaveCreate {
     type?: string;
     startTime?: number;
@@ -17,7 +18,7 @@ export namespace HrmPortalAttendanceLeaveApi {
 
 /** 获得我的请假申请列表 */
 export function getMyAttendanceLeaveList() {
-  return requestClient.get<HrmAttendanceLeaveApi.Leave[]>(
+  return requestClient.get<HrmAttendanceLeaveApi.AttendanceLeave[]>(
     '/hrm/portal/attendance/leave/list',
   );
 }

@@ -54,8 +54,10 @@ const formRef = ref();
 const formLoading = ref(false);
 const dialogTitle = ref('定薪/调薪');
 const employeeDisabled = ref(false);
-const salaryOptionList = ref<HrmSalaryOptionApi.Option[]>([]);
-const salaryTemplateList = ref<HrmSalaryChangeTemplateApi.ChangeTemplate[]>([]);
+const salaryOptionList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
+const salaryTemplateList = ref<
+  HrmSalaryChangeTemplateApi.SalaryChangeTemplate[]
+>([]);
 const selectedTemplateId = ref<number>();
 const minEffectDate = ref<string>();
 const beforeTotal = ref(0);

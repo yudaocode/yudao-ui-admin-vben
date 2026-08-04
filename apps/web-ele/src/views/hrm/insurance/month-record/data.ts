@@ -4,7 +4,7 @@ import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-recor
 
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-type MonthRecord = HrmInsuranceMonthRecordApi.MonthRecord;
+type MonthRecord = HrmInsuranceMonthRecordApi.InsuranceMonthRecord;
 
 export type ListColumn = Partial<TableColumnCtx<MonthRecord>> & {
   prop?: 'action' | keyof MonthRecord;

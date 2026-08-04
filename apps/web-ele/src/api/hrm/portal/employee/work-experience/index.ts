@@ -4,7 +4,7 @@ import { requestClient } from '#/api/request';
 
 /** 获得当前员工的工作经历列表 */
 export function getEmployeeWorkExperienceList() {
-  return requestClient.get<HrmEmployeeWorkExperienceApi.WorkExperience[]>(
-    '/hrm/portal/employee/work-experience/list',
-  );
+  return requestClient.get<
+    HrmEmployeeWorkExperienceApi.EmployeeWorkExperience[]
+  >('/hrm/portal/employee/work-experience/list');
 }

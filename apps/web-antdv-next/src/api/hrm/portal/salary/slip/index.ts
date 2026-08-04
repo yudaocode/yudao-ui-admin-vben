@@ -1,6 +1,7 @@
 import { requestClient } from '#/api/request';
 
 export namespace HrmPortalSalarySlipApi {
+  /** 工资条选项 */
   export interface SlipOption {
     name: string;
     type?: number;
@@ -11,7 +12,8 @@ export namespace HrmPortalSalarySlipApi {
     children?: SlipOption[];
   }
 
-  export interface Slip {
+  /** 员工端工资条 */
+  export interface PortalSalarySlip {
     id: number;
     sendRecordId?: number;
     monthEmployeeRecordId?: number;
@@ -25,6 +27,7 @@ export namespace HrmPortalSalarySlipApi {
     options: SlipOption[];
   }
 
+  /** SlipListReq */
   export interface SlipListReq {
     startMonth?: string;
     endMonth?: string;
@@ -32,6 +35,7 @@ export namespace HrmPortalSalarySlipApi {
     order?: number;
   }
 
+  /** UnreadSummary */
   export interface UnreadSummary {
     unreadCount: number;
     reminder?: string;
@@ -40,7 +44,7 @@ export namespace HrmPortalSalarySlipApi {
 
 /** 获得我的工资条列表 */
 export function getSalarySlipList(params?: HrmPortalSalarySlipApi.SlipListReq) {
-  return requestClient.get<HrmPortalSalarySlipApi.Slip[]>(
+  return requestClient.get<HrmPortalSalarySlipApi.PortalSalarySlip[]>(
     '/hrm/portal/salary/slip/list',
     { params },
   );

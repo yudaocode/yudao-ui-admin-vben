@@ -4,7 +4,7 @@ import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-recor
 
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.MonthRecord> {
+export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.InsuranceMonthRecord> {
   return [
     {
       title: '社保表',

@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
 
 export namespace HrmSalaryEmployeeInfoApi {
   /** 员工薪资档案 */
-  export interface EmployeeInfo {
+  export interface SalaryEmployeeInfo {
     id?: number;
     employeeId?: number;
     employeeName?: string;
@@ -74,10 +74,9 @@ export namespace HrmSalaryEmployeeInfoApi {
 
 /** 获得员工薪资信息分页 */
 export function getSalaryEmployeeInfoPage(params: PageParam) {
-  return requestClient.get<PageResult<HrmSalaryEmployeeInfoApi.EmployeeInfo>>(
-    '/hrm/salary/employee-info/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>
+  >('/hrm/salary/employee-info/page', { params });
 }
 
 /** 获得员工薪资信息状态数量 */
@@ -90,7 +89,7 @@ export function getSalaryEmployeeInfoStatusCount(params: Partial<PageParam>) {
 
 /** 获得员工薪资信息 */
 export function getSalaryEmployeeInfo(employeeId: number) {
-  return requestClient.get<HrmSalaryEmployeeInfoApi.EmployeeInfo>(
+  return requestClient.get<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>(
     '/hrm/salary/employee-info/get',
     { params: { employeeId } },
   );

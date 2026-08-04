@@ -65,7 +65,9 @@ function buildProjectUpdateList(): HrmInsuranceMonthEmployeeRecordApi.ProjectUpd
   }));
 }
 
-async function handleSchemeChange(scheme?: HrmInsuranceSchemeApi.Scheme) {
+async function handleSchemeChange(
+  scheme?: HrmInsuranceSchemeApi.InsuranceScheme,
+) {
   schemeId.value = scheme?.id;
   if (!scheme?.id) {
     projectList.value = [];

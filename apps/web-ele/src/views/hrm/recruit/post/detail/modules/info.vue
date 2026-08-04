@@ -10,7 +10,7 @@ import { useDescription } from '#/components/description';
 import { useBasicInfoSchema } from '../../data';
 
 const props = defineProps<{
-  post: HrmRecruitPostApi.Post;
+  post: HrmRecruitPostApi.RecruitPost;
 }>();
 
 const infoData = computed(() => props.post);

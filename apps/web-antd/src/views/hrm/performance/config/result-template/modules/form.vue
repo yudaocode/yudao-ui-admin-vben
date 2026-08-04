@@ -37,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!levelFormRef.value?.validate()) return;
     modalApi.lock();
     const values = await formApi.getValues();
-    const data: HrmPerformanceResultTemplateApi.ResultTemplate = {
+    const data: HrmPerformanceResultTemplateApi.PerformanceResultTemplate = {
       ...values,
       name: values.name as string,
       levels: levels.value,

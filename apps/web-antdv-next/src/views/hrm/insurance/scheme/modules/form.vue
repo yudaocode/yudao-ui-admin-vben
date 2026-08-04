@@ -67,7 +67,9 @@ const standardLoading = ref(false);
 const insuranceTypeList = ref<{ code: string; label: string; value: string }[]>(
   [],
 );
-const formData = ref<HrmInsuranceSchemeApi.Scheme>(createDefaultFormData());
+const formData = ref<HrmInsuranceSchemeApi.InsuranceScheme>(
+  createDefaultFormData(),
+);
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -117,7 +119,7 @@ function createProject(type: number): HrmInsuranceSchemeApi.Project {
   };
 }
 
-function createDefaultFormData(): HrmInsuranceSchemeApi.Scheme {
+function createDefaultFormData(): HrmInsuranceSchemeApi.InsuranceScheme {
   return {
     name: '',
     householdType: '',

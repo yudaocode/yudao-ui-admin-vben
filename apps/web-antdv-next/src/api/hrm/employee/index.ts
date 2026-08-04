@@ -5,53 +5,53 @@ import { requestClient } from '#/api/request';
 export namespace HrmEmployeeApi {
   /** 员工档案 */
   export interface Employee {
-    id?: number;
-    name: string;
-    jobNumber?: string;
-    userId?: number;
-    userNickname?: string;
-    mobile?: string;
-    country?: string;
-    nation?: string;
-    idType?: number;
-    idNumber?: string;
-    sex?: number;
-    email?: string;
-    nativePlace?: string;
-    birthday?: number;
-    age?: number;
-    address?: string;
-    highestEducation?: number;
-    deptId?: number;
-    deptName?: string;
-    leaderEmployeeId?: number;
-    leaderEmployeeName?: string;
-    entryStatus?: number;
-    status?: number;
-    type?: number;
-    entryTime?: number;
-    probation?: number;
-    regularTime?: number;
-    leaveTime?: number;
-    postName?: string;
-    postLevel?: string;
-    workCity?: string;
-    workAddress?: string;
-    workDetailAddress?: string;
-    channelId?: number;
-    channelName?: string;
-    companyAgeStartTime?: number;
-    companyAge?: number;
-    candidateId?: number;
-    salaryCardNumber?: string;
-    salaryCardAreaId?: number;
-    salaryCardAreaName?: string;
-    salaryCardBankName?: string;
-    salaryCardBankBranchName?: string;
-    socialSecurityNumber?: string;
-    accumulationFundNumber?: string;
-    remark?: string;
-    createTime?: Date;
+    id?: number; // 员工编号
+    name: string; // 员工姓名
+    jobNumber?: string; // 工号
+    userId?: number; // 后台用户编号
+    userNickname?: string; // 后台用户昵称
+    mobile?: string; // 手机号
+    country?: string; // 国家或地区
+    nation?: string; // 民族
+    idType?: number; // 证件类型
+    idNumber?: string; // 证件号码
+    sex?: number; // 性别
+    email?: string; // 邮箱
+    nativePlace?: string; // 籍贯
+    birthday?: number; // 出生时间
+    age?: number; // 年龄
+    address?: string; // 户籍地址
+    highestEducation?: number; // 最高学历
+    deptId?: number; // 部门编号
+    deptName?: string; // 部门名称
+    leaderEmployeeId?: number; // 直属上级员工编号
+    leaderEmployeeName?: string; // 直属上级员工姓名
+    entryStatus?: number; // 入职状态
+    status?: number; // 员工状态
+    type?: number; // 聘用形式
+    entryTime?: number; // 入职时间
+    probation?: number; // 试用期，单位月
+    regularTime?: number; // 转正时间
+    leaveTime?: number; // 离职时间
+    postName?: string; // 职位名称
+    postLevel?: string; // 岗位职级
+    workCity?: string; // 工作城市
+    workAddress?: string; // 工作地点
+    workDetailAddress?: string; // 工作详细地址
+    channelId?: number; // 招聘渠道编号
+    channelName?: string; // 招聘渠道名称
+    companyAgeStartTime?: number; // 司龄开始时间
+    companyAge?: number; // 司龄，单位年
+    candidateId?: number; // 招聘候选人编号
+    salaryCardNumber?: string; // 银行卡号
+    salaryCardAreaId?: number; // 开户地区编号
+    salaryCardAreaName?: string; // 开户地区名称
+    salaryCardBankName?: string; // 银行名称
+    salaryCardBankBranchName?: string; // 开户支行名称
+    socialSecurityNumber?: string; // 个人社保账号
+    accumulationFundNumber?: string; // 个人公积金账号
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
   }
 
   /** 员工状态数量 */
@@ -181,7 +181,7 @@ export function getEmployeeSimplePage(params: PageParam) {
   );
 }
 
-/** 查询指定员工精简列表 */
+/** 查询指定员工精简精简列表 */
 export function getEmployeeSimpleList(ids: number[]) {
   return requestClient.get<HrmEmployeeApi.Employee[]>(
     '/hrm/employee/simple-list',

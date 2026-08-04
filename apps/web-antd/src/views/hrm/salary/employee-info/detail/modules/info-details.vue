@@ -11,7 +11,7 @@ import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 defineOptions({ name: 'HrmSalaryEmployeeInfoDetails' });
 
 defineProps<{
-  salaryEmployee: HrmSalaryEmployeeInfoApi.EmployeeInfo;
+  salaryEmployee: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo;
 }>();
 </script>
 

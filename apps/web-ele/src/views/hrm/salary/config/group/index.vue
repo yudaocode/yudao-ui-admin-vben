@@ -31,11 +31,11 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmSalaryGroupApi.Group) {
+function handleEdit(row: HrmSalaryGroupApi.SalaryGroup) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmSalaryGroupApi.Group) {
+async function handleDelete(row: HrmSalaryGroupApi.SalaryGroup) {
   await confirm(`确认删除薪资组"${row.name}"吗？`);
   await deleteSalaryGroup(row.id!);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -57,7 +57,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true },
-  } as VxeTableGridOptions<HrmSalaryGroupApi.Group>,
+  } as VxeTableGridOptions<HrmSalaryGroupApi.SalaryGroup>,
 });
 </script>
 

@@ -37,7 +37,10 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-function open(empId: number, row?: HrmEmployeeSalaryCardApi.SalaryCard) {
+function open(
+  empId: number,
+  row?: HrmEmployeeSalaryCardApi.EmployeeSalaryCard,
+) {
   employeeId.value = empId;
   formApi.resetForm();
   formApi.setValues({ ...row, employeeId: empId });

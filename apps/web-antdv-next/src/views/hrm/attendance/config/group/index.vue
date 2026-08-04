@@ -32,11 +32,11 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmAttendanceGroupApi.Group) {
+function handleEdit(row: HrmAttendanceGroupApi.AttendanceGroup) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmAttendanceGroupApi.Group) {
+async function handleDelete(row: HrmAttendanceGroupApi.AttendanceGroup) {
   await confirm(`确认删除考勤组"${row.name}"吗？`);
   await deleteAttendanceGroup(row.id!);
   message.success($t('ui.actionMessage.operationSuccess'));
@@ -60,7 +60,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true, search: true },
-  } as VxeTableGridOptions<HrmAttendanceGroupApi.Group>,
+  } as VxeTableGridOptions<HrmAttendanceGroupApi.AttendanceGroup>,
 });
 </script>
 

@@ -107,7 +107,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<HrmRecruitPostApi.Post>['columns'] {
+export function useGridColumns(): VxeTableGridOptions<HrmRecruitPostApi.RecruitPost>['columns'] {
   return [
     {
       field: 'postName',
@@ -549,7 +549,7 @@ export function useHeaderSchema(): DescriptionItemSchema[] {
       field: 'recruitSchedule',
       label: '招聘进度',
       render: (_val, data) =>
-        formatRecruitPostProgress(data as HrmRecruitPostApi.Post),
+        formatRecruitPostProgress(data as HrmRecruitPostApi.RecruitPost),
     },
   ];
 }
@@ -602,13 +602,13 @@ export function useBasicInfoSchema(): DescriptionItemSchema[] {
       field: 'minSalary',
       label: '薪资范围',
       render: (_val, data) =>
-        formatRecruitPostSalary(data as HrmRecruitPostApi.Post),
+        formatRecruitPostSalary(data as HrmRecruitPostApi.RecruitPost),
     },
     {
       field: 'minAge',
       label: '年龄要求',
       render: (_val, data) =>
-        formatRecruitPostAge(data as HrmRecruitPostApi.Post),
+        formatRecruitPostAge(data as HrmRecruitPostApi.RecruitPost),
     },
     {
       field: 'latestEntryTime',

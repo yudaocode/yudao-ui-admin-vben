@@ -27,7 +27,9 @@ const props = defineProps<{ employeeId: number }>();
 const { hasAccessByCodes } = useAccess();
 
 const loading = ref(false);
-const list = ref<HrmEmployeeEducationExperienceApi.EducationExperience[]>([]);
+const list = ref<
+  HrmEmployeeEducationExperienceApi.EmployeeEducationExperience[]
+>([]);
 const formRef = ref<InstanceType<typeof Form>>();
 
 async function getList() {
@@ -39,7 +41,9 @@ async function getList() {
   }
 }
 
-function openForm(row?: HrmEmployeeEducationExperienceApi.EducationExperience) {
+function openForm(
+  row?: HrmEmployeeEducationExperienceApi.EmployeeEducationExperience,
+) {
   formRef.value?.open(props.employeeId, row);
 }
 

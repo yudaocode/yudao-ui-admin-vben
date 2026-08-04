@@ -80,7 +80,7 @@ function handleCreate() {
 }
 
 /** 编辑 */
-function handleEdit(row: HrmRecruitPostApi.Post) {
+function handleEdit(row: HrmRecruitPostApi.RecruitPost) {
   formModalApi.setData(row).open();
 }
 
@@ -93,12 +93,12 @@ function handleDetail(id?: number) {
 }
 
 /** 是否正在招聘 */
-function isRecruiting(row: HrmRecruitPostApi.Post) {
+function isRecruiting(row: HrmRecruitPostApi.RecruitPost) {
   return row.status === HrmRecruitPostStatus.RECRUITING;
 }
 
 /** 修改招聘职位状态 */
-async function handleStatus(row: HrmRecruitPostApi.Post) {
+async function handleStatus(row: HrmRecruitPostApi.RecruitPost) {
   if (!row.id) {
     return;
   }
@@ -142,7 +142,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       refresh: true,
       search: true,
     },
-  } as VxeTableGridOptions<HrmRecruitPostApi.Post>,
+  } as VxeTableGridOptions<HrmRecruitPostApi.RecruitPost>,
 });
 
 /** 初始化 */

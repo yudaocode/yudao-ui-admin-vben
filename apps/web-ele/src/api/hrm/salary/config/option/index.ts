@@ -1,13 +1,15 @@
 import { requestClient } from '#/api/request';
 
 export namespace HrmSalaryOptionApi {
+  /** 选项值 */
   export interface OptionValue {
     code?: number;
     name?: string;
     value?: number;
   }
 
-  export interface Option {
+  /** 工资项 */
+  export interface SalaryOption {
     id: number;
     code: number;
     parentCode: number;
@@ -20,10 +22,11 @@ export namespace HrmSalaryOptionApi {
     calculateEnabled: boolean;
     enabled: boolean;
     templateId?: number;
-    children?: Option[];
+    children?: SalaryOption[];
     createTime: Date;
   }
 
+  /** 保存请求 */
   export interface SaveReq {
     parentCode?: number;
     name: string;
@@ -31,8 +34,9 @@ export namespace HrmSalaryOptionApi {
   }
 }
 
+/** 查询工资项精简列表 */
 export function getSalaryOptionSimpleList(adjustable?: boolean) {
-  return requestClient.get<HrmSalaryOptionApi.Option[]>(
+  return requestClient.get<HrmSalaryOptionApi.SalaryOption[]>(
     '/hrm/salary/option/simple-list',
     {
       params: { adjustable },
@@ -40,16 +44,19 @@ export function getSalaryOptionSimpleList(adjustable?: boolean) {
   );
 }
 
+/** 查询工资项列表 */
 export function getSalaryOptionList() {
-  return requestClient.get<HrmSalaryOptionApi.Option[]>(
+  return requestClient.get<HrmSalaryOptionApi.SalaryOption[]>(
     '/hrm/salary/option/list',
   );
 }
 
+/** 新增工资项 */
 export function createSalaryOption(data: HrmSalaryOptionApi.SaveReq) {
   return requestClient.post<number>('/hrm/salary/option/create', data);
 }
 
+/** 修改工资项启用状态 */
 export function updateSalaryOptionEnabled(id: number, enabled: boolean) {
   return requestClient.put<boolean>('/hrm/salary/option/update-enabled', {
     id,
@@ -57,6 +64,7 @@ export function updateSalaryOptionEnabled(id: number, enabled: boolean) {
   });
 }
 
+/** 修改工资项可见性 */
 export function updateSalaryOptionVisible(id: number, visible: boolean) {
   return requestClient.put<boolean>('/hrm/salary/option/update-visible', {
     id,
@@ -64,12 +72,14 @@ export function updateSalaryOptionVisible(id: number, visible: boolean) {
   });
 }
 
+/** 删除工资项 */
 export function deleteSalaryOption(id: number) {
   return requestClient.delete<boolean>('/hrm/salary/option/delete', {
     params: { id },
   });
 }
 
+/** syncSalaryOption */
 export function syncSalaryOption() {
   return requestClient.put<boolean>('/hrm/salary/option/sync');
 }

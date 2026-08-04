@@ -32,11 +32,13 @@ function handleCreate() {
   formModalApi.setData({ type: 'create' }).open();
 }
 
-function handleEdit(row: HrmSalaryChangeTemplateApi.ChangeTemplate) {
+function handleEdit(row: HrmSalaryChangeTemplateApi.SalaryChangeTemplate) {
   formModalApi.setData({ type: 'update', id: row.id }).open();
 }
 
-async function handleDelete(row: HrmSalaryChangeTemplateApi.ChangeTemplate) {
+async function handleDelete(
+  row: HrmSalaryChangeTemplateApi.SalaryChangeTemplate,
+) {
   await confirm(`确认删除调薪模板"${row.name}"吗？`);
   await deleteSalaryChangeTemplate(row.id!);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
@@ -58,7 +60,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     toolbarConfig: { refresh: true },
-  } as VxeTableGridOptions<HrmSalaryChangeTemplateApi.ChangeTemplate>,
+  } as VxeTableGridOptions<HrmSalaryChangeTemplateApi.SalaryChangeTemplate>,
 });
 </script>
 

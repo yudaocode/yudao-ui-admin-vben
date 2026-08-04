@@ -30,8 +30,8 @@ const accessible = ref(false);
 const loading = ref(false);
 const year = ref<Date>(dayjs().startOf('year').toDate());
 const firstYear = ref<number>();
-const allRecords = ref<HrmPortalInsuranceRecordApi.Record[]>([]);
-const records = ref<HrmPortalInsuranceRecordApi.Record[]>([]);
+const allRecords = ref<HrmPortalInsuranceRecordApi.PortalInsuranceRecord[]>([]);
+const records = ref<HrmPortalInsuranceRecordApi.PortalInsuranceRecord[]>([]);
 const detailRef = ref<InstanceType<typeof InsuranceRecordDetail>>();
 
 /** 加载参保记录 */
@@ -66,7 +66,9 @@ async function init() {
 }
 
 /** 计算参保记录合计 */
-function recordTotal(record?: HrmPortalInsuranceRecordApi.Record) {
+function recordTotal(
+  record?: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+) {
   return (
     (record?.personalInsuranceAmount || 0) +
     (record?.corporateInsuranceAmount || 0) +
@@ -76,7 +78,7 @@ function recordTotal(record?: HrmPortalInsuranceRecordApi.Record) {
 }
 
 /** 打开详情 */
-function openDetail(record: HrmPortalInsuranceRecordApi.Record) {
+function openDetail(record: HrmPortalInsuranceRecordApi.PortalInsuranceRecord) {
   detailRef.value?.open(record);
 }
 
@@ -186,7 +188,9 @@ onActivated(async () => {
                 ¥
                 {{
                   formatHrmMoney(
-                    recordTotal(row as HrmPortalInsuranceRecordApi.Record),
+                    recordTotal(
+                      row as HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+                    ),
                   )
                 }}
               </b>
@@ -197,7 +201,11 @@ onActivated(async () => {
               <ElButton
                 link
                 type="primary"
-                @click="openDetail(row as HrmPortalInsuranceRecordApi.Record)"
+                @click="
+                  openDetail(
+                    row as HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+                  )
+                "
               >
                 查看详情
               </ElButton>

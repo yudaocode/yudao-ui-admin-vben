@@ -13,7 +13,7 @@ export namespace HrmSalarySlipTemplateApi {
   }
 
   /** 工资条模板 */
-  export interface Template {
+  export interface SalarySlipTemplate {
     id?: number;
     name: string;
     hideEmpty?: boolean;
@@ -25,14 +25,14 @@ export namespace HrmSalarySlipTemplateApi {
 
 /** 创建工资条模板 */
 export function createSalarySlipTemplate(
-  data: HrmSalarySlipTemplateApi.Template,
+  data: HrmSalarySlipTemplateApi.SalarySlipTemplate,
 ) {
   return requestClient.post<number>('/hrm/salary/slip-template/create', data);
 }
 
 /** 更新工资条模板 */
 export function updateSalarySlipTemplate(
-  data: HrmSalarySlipTemplateApi.Template,
+  data: HrmSalarySlipTemplateApi.SalarySlipTemplate,
 ) {
   return requestClient.put<boolean>('/hrm/salary/slip-template/update', data);
 }
@@ -46,7 +46,7 @@ export function deleteSalarySlipTemplate(id: number) {
 
 /** 获得工资条模板详情 */
 export function getSalarySlipTemplate(id: number) {
-  return requestClient.get<HrmSalarySlipTemplateApi.Template>(
+  return requestClient.get<HrmSalarySlipTemplateApi.SalarySlipTemplate>(
     '/hrm/salary/slip-template/get',
     { params: { id } },
   );
@@ -54,7 +54,7 @@ export function getSalarySlipTemplate(id: number) {
 
 /** 获得工资条模板列表 */
 export function getSalarySlipTemplateList() {
-  return requestClient.get<HrmSalarySlipTemplateApi.Template[]>(
+  return requestClient.get<HrmSalarySlipTemplateApi.SalarySlipTemplate[]>(
     '/hrm/salary/slip-template/list',
   );
 }

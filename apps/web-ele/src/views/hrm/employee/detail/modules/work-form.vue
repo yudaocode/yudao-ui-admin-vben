@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
 
 function open(
   empId: number,
-  row?: HrmEmployeeWorkExperienceApi.WorkExperience,
+  row?: HrmEmployeeWorkExperienceApi.EmployeeWorkExperience,
 ) {
   employeeId.value = empId;
   editingId.value = row?.id;

@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const values =
-      (await formApi.getValues()) as HrmEmployeePersonalNoteApi.PersonalNote;
+      (await formApi.getValues()) as HrmEmployeePersonalNoteApi.EmployeePersonalNote;
     try {
       await createEmployeePersonalNote({
         content: values.content,

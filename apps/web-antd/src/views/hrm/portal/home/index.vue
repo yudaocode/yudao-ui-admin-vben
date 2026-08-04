@@ -24,7 +24,7 @@ defineOptions({ name: 'HrmPortalHome' });
 const router = useRouter();
 const accessible = ref(false);
 const loading = ref(false);
-const employee = ref<HrmPortalEmployeeApi.Employee>();
+const employee = ref<HrmPortalEmployeeApi.PortalEmployee>();
 const salarySlipSummary = ref<HrmPortalSalarySlipApi.UnreadSummary>();
 const calendarRef = ref<InstanceType<typeof HrmHomeCalendar>>();
 

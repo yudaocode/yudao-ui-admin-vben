@@ -30,8 +30,8 @@ const emit = defineEmits<{
 }>();
 
 const formType = ref<'create' | 'update'>('create');
-const salaryOptionList = ref<HrmSalaryOptionApi.Option[]>([]);
-const salaryOptionAllList = ref<HrmSalaryOptionApi.Option[]>([]);
+const salaryOptionList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
+const salaryOptionAllList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
 const selectedCodes = ref<number[]>([]);
 const templateOptions = ref<HrmSalarySlipTemplateApi.TemplateOption[]>([]);
 const optionSelectRef = ref<InstanceType<typeof SalaryOptionSelect>>();
@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const values = await formApi.getValues();
-      const payload: HrmSalarySlipTemplateApi.Template = {
+      const payload: HrmSalarySlipTemplateApi.SalarySlipTemplate = {
         hideEmpty: Boolean(values.hideEmpty),
         name: values.name,
         options: optionEditorRef.value?.getNormalizedOptions() || [],

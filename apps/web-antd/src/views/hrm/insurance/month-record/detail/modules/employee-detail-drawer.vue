@@ -25,14 +25,17 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  edit: [detail: HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord];
+  edit: [
+    detail: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord,
+  ];
 }>();
 
 type DetailProject = HrmInsuranceSchemeApi.Project & { totalAmount: number };
 
 const drawerVisible = ref(false);
 const loading = ref(false);
-const detail = ref<HrmInsuranceMonthEmployeeRecordApi.EmployeeRecord>();
+const detail =
+  ref<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>();
 
 const projects = computed<DetailProject[]>(() => {
   if (!detail.value) {

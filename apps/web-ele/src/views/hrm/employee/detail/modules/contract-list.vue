@@ -22,7 +22,7 @@ import ContractForm from './contract-form.vue';
 const props = defineProps<{ employeeId: number }>();
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
-const list = ref<HrmEmployeeContractApi.Contract[]>([]);
+const list = ref<HrmEmployeeContractApi.EmployeeContract[]>([]);
 const formRef = ref<InstanceType<typeof ContractForm>>();
 
 async function getList() {

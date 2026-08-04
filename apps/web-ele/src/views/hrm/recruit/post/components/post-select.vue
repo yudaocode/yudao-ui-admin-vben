@@ -30,17 +30,17 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  change: [post: HrmRecruitPostApi.Post | undefined];
+  change: [post: HrmRecruitPostApi.RecruitPost | undefined];
   'update:modelValue': [value: number | undefined];
 }>();
 
-const postList = ref<HrmRecruitPostApi.Post[]>([]);
-const selectedPost = ref<HrmRecruitPostApi.Post>();
+const postList = ref<HrmRecruitPostApi.RecruitPost[]>([]);
+const selectedPost = ref<HrmRecruitPostApi.RecruitPost>();
 const loading = ref(false);
 
 const postOptions = computed(() => {
   const options = postList.value.filter(
-    (post): post is HrmRecruitPostApi.Post & { id: number } =>
+    (post): post is HrmRecruitPostApi.RecruitPost & { id: number } =>
       post.id !== undefined,
   );
   const currentPost = selectedPost.value;
@@ -50,7 +50,10 @@ const postOptions = computed(() => {
   ) {
     return options;
   }
-  return [currentPost as HrmRecruitPostApi.Post & { id: number }, ...options];
+  return [
+    currentPost as HrmRecruitPostApi.RecruitPost & { id: number },
+    ...options,
+  ];
 });
 
 const selectValue = computed({
@@ -59,7 +62,7 @@ const selectValue = computed({
 });
 
 /** 格式化招聘职位选项 */
-function formatPostLabel(post: HrmRecruitPostApi.Post) {
+function formatPostLabel(post: HrmRecruitPostApi.RecruitPost) {
   return post.deptName ? `${post.postName}（${post.deptName}）` : post.postName;
 }
 

@@ -23,7 +23,7 @@ const emit = defineEmits(['success']);
 
 const formType = ref<'create' | 'update'>('create');
 const formRef = ref();
-const formData = ref<HrmAttendanceHolidayApi.Holiday>({
+const formData = ref<HrmAttendanceHolidayApi.AttendanceHoliday>({
   type: HrmAttendanceHolidayType.REST,
 });
 

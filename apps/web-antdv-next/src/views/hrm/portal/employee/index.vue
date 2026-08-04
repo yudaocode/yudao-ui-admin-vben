@@ -24,8 +24,8 @@ const router = useRouter();
 const accessible = ref(false);
 const loading = ref(false);
 const activeTab = ref('base');
-const employee = ref<HrmPortalEmployeeApi.Employee>(
-  {} as HrmPortalEmployeeApi.Employee,
+const employee = ref<HrmPortalEmployeeApi.PortalEmployee>(
+  {} as HrmPortalEmployeeApi.PortalEmployee,
 );
 const fieldConfigList = ref<HrmEmployeeConfigApi.FieldConfig[]>([]);
 const baseInfoRef = ref<InstanceType<typeof EmployeeBaseInfo>>();

@@ -50,7 +50,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const values = await formApi.getValues();
-    const payload: HrmRecruitInterviewApi.Interview = {
+    const payload: HrmRecruitInterviewApi.RecruitInterview = {
       id: interviewId.value,
       type: values.type,
       interviewTime: values.interviewTime
@@ -99,7 +99,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData<{
       candidateIdOrIds: number | number[];
       createTitle?: string;
-      interview?: HrmRecruitInterviewApi.Interview;
+      interview?: HrmRecruitInterviewApi.RecruitInterview;
       type: FormType;
     }>();
     if (!data) {
