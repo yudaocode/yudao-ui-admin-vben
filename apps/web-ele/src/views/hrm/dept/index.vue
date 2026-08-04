@@ -67,15 +67,15 @@ const [Grid] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page auto-content-height>
+  <Page auto-content-height content-class="flex flex-col overflow-hidden">
     <ElAlert
-      class="mb-4"
+      class="mb-4 shrink-0"
       :closable="false"
       show-icon
       title="人数格式为：直属人数（包含下级部门人数）"
       type="info"
     />
-    <Grid table-title="组织列表">
+    <Grid class="min-h-0 flex-1" table-title="组织列表">
       <template #toolbar-tools>
         <TableAction
           :actions="[

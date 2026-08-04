@@ -15,7 +15,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useInterviewColumns(),
     data: [],
-    height: 'auto',
+    keepSource: true,
     pagerConfig: {
       enabled: false,
     },

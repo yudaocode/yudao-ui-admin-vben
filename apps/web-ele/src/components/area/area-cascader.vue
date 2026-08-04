@@ -3,7 +3,7 @@ import type { CascaderValue } from 'element-plus';
 
 import type { SystemAreaApi } from '#/api/system/area';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { ElCascader } from 'element-plus';
 
@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   filterable: false,
   modelValue: undefined,
   placeholder: '请选择省市区',
+  selectableLevels: undefined,
 });
 
 const emit = defineEmits<{
@@ -29,15 +30,37 @@ interface Props {
   filterable?: boolean;
   modelValue?: number;
   placeholder?: string;
+  selectableLevels?: number[];
 }
 
 type AreaTreeNode = SystemAreaApi.Area & {
   children?: AreaTreeNode[];
+  disabled?: boolean;
 };
 
 const areaTree = ref<AreaTreeNode[]>([]); // 地区树
 const loading = ref(false); // 加载状态
 const selectedPath = ref<number[]>(); // 选中的地区路径
+const displayTree = computed(() =>
+  applySelectableLevels(areaTree.value, props.selectableLevels),
+);
+
+/** 按层级限制可选节点 */
+function applySelectableLevels(
+  tree: AreaTreeNode[],
+  selectableLevels?: number[],
+  depth = 1,
+): AreaTreeNode[] {
+  return tree.map((node) => ({
+    ...node,
+    disabled: selectableLevels?.length
+      ? !selectableLevels.includes(depth)
+      : node.disabled,
+    children: node.children?.length
+      ? applySelectableLevels(node.children, selectableLevels, depth + 1)
+      : undefined,
+  }));
+}
 
 /**
  * 查找地区编号对应的级联路径
@@ -109,7 +132,7 @@ onMounted(async () => {
     :clearable="clearable"
     :filterable="filterable"
     :loading="loading"
-    :options="areaTree"
+    :options="displayTree as any"
     :placeholder="placeholder"
     :props="{
       checkStrictly,

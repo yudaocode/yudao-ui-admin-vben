@@ -1,0 +1,95 @@
+<script lang="ts" setup>
+import type { HrmAttendanceHolidayApi } from '#/api/hrm/attendance/holiday';
+
+import { reactive, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import { DatePicker, Form, message, Select } from 'ant-design-vue';
+
+import {
+  createAttendanceHoliday,
+  getAttendanceHoliday,
+  updateAttendanceHoliday,
+} from '#/api/hrm/attendance/holiday';
+import { $t } from '#/locales';
+import { HrmAttendanceHolidayType } from '#/views/hrm/utils/constants';
+
+defineOptions({ name: 'HrmAttendanceHolidayForm' });
+
+const emit = defineEmits(['success']);
+
+const formType = ref<'create' | 'update'>('create');
+const formRef = ref();
+const formData = ref<HrmAttendanceHolidayApi.Holiday>({
+  type: HrmAttendanceHolidayType.REST,
+});
+
+const formRules = reactive({
+  date: [{ required: true, message: '日期不能为空', trigger: 'change' }],
+  type: [{ required: true, message: '日期类型不能为空', trigger: 'change' }],
+});
+
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    await formRef.value?.validate();
+    modalApi.lock();
+    try {
+      await (formType.value === 'create'
+        ? createAttendanceHoliday(formData.value)
+        : updateAttendanceHoliday(formData.value));
+      message.success($t('ui.actionMessage.operationSuccess'));
+      await modalApi.close();
+      emit('success');
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) return;
+    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
+    formType.value = data?.type || 'create';
+    formData.value = data?.id
+      ? await getAttendanceHoliday(data.id)
+      : { type: HrmAttendanceHolidayType.REST };
+  },
+});
+</script>
+
+<template>
+  <Modal
+    :title="formType === 'create' ? '新增节假日' : '编辑节假日'"
+    class="w-[520px]"
+  >
+    <Form
+      ref="formRef"
+      :model="formData"
+      :rules="formRules as any"
+      class="mx-4"
+      label-width="88px"
+    >
+      <Form.Item label="日期" name="date">
+        <DatePicker
+          v-model:value="formData.date as any"
+          class="w-full"
+          value-format="x"
+        />
+      </Form.Item>
+      <Form.Item label="日期类型" name="type">
+        <Select
+          v-model:value="formData.type"
+          :options="
+            getDictOptions(
+              DICT_TYPE.HRM_ATTENDANCE_HOLIDAY_TYPE,
+              'number',
+            ) as any
+          "
+          class="w-full"
+          placeholder="请选择日期类型"
+        />
+      </Form.Item>
+    </Form>
+  </Modal>
+</template>

@@ -204,7 +204,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 3,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
   ];
@@ -367,7 +367,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        showTime: true,
       },
     },
     {
@@ -389,7 +388,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        showTime: true,
       },
     },
   ];
@@ -526,7 +524,7 @@ export function useInterviewFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       rules: 'required',
       componentProps: {
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择面试时间',
@@ -581,7 +579,7 @@ export function useInterviewFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 3,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
   ];
@@ -629,7 +627,7 @@ export function useInterviewResultFormSchema(
         placeholder: '请输入取消原因',
         rows: 3,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
     {
@@ -645,7 +643,7 @@ export function useInterviewResultFormSchema(
         placeholder: '请输入面试评价',
         rows: 4,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
   ];
@@ -790,7 +788,7 @@ export function useEliminateFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 3,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
   ];
@@ -977,7 +975,7 @@ export function useEmployeeEntryFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       rules: 'required',
       componentProps: {
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择入职时间',
@@ -989,7 +987,7 @@ export function useEmployeeEntryFormSchema(): VbenFormSchema[] {
       label: '司龄开始',
       component: 'DatePicker',
       componentProps: {
-        showTime: true,
+        type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择司龄开始时间',
@@ -1040,7 +1038,7 @@ export function useEmployeeEntryFormSchema(): VbenFormSchema[] {
         placeholder: '请输入备注',
         rows: 3,
         maxlength: 255,
-        showCount: true,
+        showWordLimit: true,
       },
     },
   ];

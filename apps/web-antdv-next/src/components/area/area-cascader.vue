@@ -3,7 +3,7 @@ import type { CascaderProps } from 'antdv-next';
 
 import type { SystemAreaApi } from '#/api/system/area';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { Cascader } from 'antdv-next';
 
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   changeOnSelect: false,
   modelValue: undefined,
   placeholder: '请选择省市区',
+  selectableLevels: undefined,
   showSearch: false,
 });
 
@@ -28,16 +29,38 @@ interface Props {
   changeOnSelect?: boolean;
   modelValue?: number;
   placeholder?: string;
+  selectableLevels?: number[];
   showSearch?: boolean;
 }
 
 type AreaTreeNode = SystemAreaApi.Area & {
   children?: AreaTreeNode[];
+  disabled?: boolean;
 };
 
 const areaTree = ref<AreaTreeNode[]>([]); // 地区树
 const loading = ref(false); // 加载状态
 const selectedPath = ref<number[]>(); // 选中的地区路径
+const displayTree = computed(() =>
+  applySelectableLevels(areaTree.value, props.selectableLevels),
+);
+
+/** 按层级限制可选节点 */
+function applySelectableLevels(
+  tree: AreaTreeNode[],
+  selectableLevels?: number[],
+  depth = 1,
+): AreaTreeNode[] {
+  return tree.map((node) => ({
+    ...node,
+    disabled: selectableLevels?.length
+      ? !selectableLevels.includes(depth)
+      : node.disabled,
+    children: node.children?.length
+      ? applySelectableLevels(node.children, selectableLevels, depth + 1)
+      : undefined,
+  }));
+}
 
 const fieldNames = {
   children: 'children', // 子级字段
@@ -116,7 +139,7 @@ onMounted(async () => {
     :change-on-select="changeOnSelect"
     :field-names="fieldNames"
     :loading="loading"
-    :options="areaTree"
+    :options="displayTree"
     :placeholder="placeholder"
     :show-search="showSearch"
     @change="handleChange"

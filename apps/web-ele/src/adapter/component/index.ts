@@ -268,6 +268,8 @@ async function initComponentAdapter() {
         component: ElSelectV2,
         loadingSlot: 'loading',
         visibleEvent: 'onVisibleChange',
+        // 兼容 antd showSearch → Element Plus filterable
+        filterable: true,
       },
     ),
     ApiCascader: withDefaultPlaceholder(
@@ -356,7 +358,13 @@ async function initComponentAdapter() {
       );
     },
     Select: (props, { attrs, slots }) => {
-      return h(ElSelectV2, { ...props, ...attrs }, slots);
+      const merged = { ...props, ...attrs } as Recordable<any>;
+      // 兼容 antd showSearch → Element Plus filterable
+      if (merged.showSearch !== undefined && merged.filterable === undefined) {
+        merged.filterable = Boolean(merged.showSearch);
+      }
+      delete merged.showSearch;
+      return h(ElSelectV2, merged as any, slots);
     },
     Space: ElSpace,
     Switch: ElSwitch,
@@ -382,7 +390,18 @@ async function initComponentAdapter() {
       );
     },
     RangePicker: (props, { attrs, slots }) => {
-      const { name, id } = props;
+      const {
+        name,
+        id,
+        showTime: _showTime,
+        picker: _picker,
+        ...restProps
+      } = props as Recordable<any>;
+      const {
+        showTime: _attrsShowTime,
+        picker: _attrsPicker,
+        ...restAttrs
+      } = attrs as Recordable<any>;
       const extraProps: Recordable<any> = {};
       if (name && !Array.isArray(name)) {
         extraProps.name = [name, `${name}_end`];
@@ -393,9 +412,9 @@ async function initComponentAdapter() {
       return h(
         ElDatePicker,
         {
-          ...props,
+          ...restProps,
+          ...restAttrs,
           type: 'datetimerange',
-          ...attrs,
           ...extraProps,
         },
         slots,
@@ -403,9 +422,18 @@ async function initComponentAdapter() {
     },
     Rate: ElRate,
     DatePicker: (props, { attrs, slots }) => {
-      const { name, id, type } = props;
+      const merged = { ...props, ...attrs } as Recordable<any>;
+      const { name, id, showTime, picker, type, ...rest } = merged;
+      // 兼容 antd：picker / showTime → Element Plus type
+      let resolvedType = type as string | undefined;
+      if (!resolvedType && picker) {
+        resolvedType = String(picker);
+      }
+      if (showTime && (!resolvedType || resolvedType === 'date')) {
+        resolvedType = 'datetime';
+      }
       const extraProps: Recordable<any> = {};
-      if (type && type.includes('range')) {
+      if (resolvedType?.includes('range')) {
         if (name && !Array.isArray(name)) {
           extraProps.name = [name, `${name}_end`];
         }
@@ -416,8 +444,10 @@ async function initComponentAdapter() {
       return h(
         ElDatePicker,
         {
-          ...props,
-          ...attrs,
+          ...rest,
+          name,
+          id,
+          type: (resolvedType ?? 'date') as any,
           ...extraProps,
         },
         slots,
@@ -427,10 +457,29 @@ async function initComponentAdapter() {
     Upload: ElUpload,
     FileUpload,
     ImageUpload,
-    Textarea: withDefaultPlaceholder(ElInput, 'input', {
-      rows: 3,
-      type: 'textarea',
-    }),
+    Textarea: (props, { attrs, slots }) => {
+      const merged = { ...props, ...attrs } as Recordable<any>;
+      // 兼容 antd showCount → Element Plus showWordLimit
+      if (
+        merged.showCount !== undefined &&
+        merged.showWordLimit === undefined
+      ) {
+        merged.showWordLimit = Boolean(merged.showCount);
+      }
+      delete merged.showCount;
+      if (!merged.placeholder) {
+        merged.placeholder = $t('ui.placeholder.input');
+      }
+      return h(
+        ElInput,
+        {
+          rows: 3,
+          type: 'textarea',
+          ...merged,
+        },
+        slots,
+      );
+    },
     RichTextarea,
   };
 

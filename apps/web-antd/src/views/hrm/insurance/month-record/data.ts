@@ -1,0 +1,74 @@
+import type { TableColumnsType } from 'ant-design-vue';
+
+import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
+
+import { formatHrmMoney } from '#/views/hrm/utils/format';
+
+export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.MonthRecord> {
+  return [
+    {
+      title: '社保表',
+      dataIndex: 'title',
+      key: 'title',
+      fixed: 'left',
+      minWidth: 190,
+    },
+    {
+      title: '参保人数',
+      dataIndex: 'insuredEmployeeCount',
+      key: 'insuredEmployeeCount',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '停保人数',
+      dataIndex: 'stoppedEmployeeCount',
+      key: 'stoppedEmployeeCount',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '个人社保',
+      dataIndex: 'personalInsuranceAmount',
+      key: 'personalInsuranceAmount',
+      align: 'right',
+      width: 120,
+      customRender: ({ record }) =>
+        formatHrmMoney(record.personalInsuranceAmount),
+    },
+    {
+      title: '公司社保',
+      dataIndex: 'corporateInsuranceAmount',
+      key: 'corporateInsuranceAmount',
+      align: 'right',
+      width: 120,
+      customRender: ({ record }) =>
+        formatHrmMoney(record.corporateInsuranceAmount),
+    },
+    {
+      title: '个人公积金',
+      dataIndex: 'personalProvidentFundAmount',
+      key: 'personalProvidentFundAmount',
+      align: 'right',
+      width: 130,
+      customRender: ({ record }) =>
+        formatHrmMoney(record.personalProvidentFundAmount),
+    },
+    {
+      title: '公司公积金',
+      dataIndex: 'corporateProvidentFundAmount',
+      key: 'corporateProvidentFundAmount',
+      align: 'right',
+      width: 130,
+      customRender: ({ record }) =>
+        formatHrmMoney(record.corporateProvidentFundAmount),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      align: 'center',
+      fixed: 'right',
+      width: 80,
+    },
+  ];
+}

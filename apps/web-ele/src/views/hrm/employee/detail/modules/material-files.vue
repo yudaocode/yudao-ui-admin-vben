@@ -1,0 +1,108 @@
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+
+import { useAccess } from '@vben/access';
+
+import { ElButton, ElCard, ElDialog } from 'element-plus';
+
+import {
+  getEmployeeFileList,
+  saveEmployeeFiles,
+} from '#/api/hrm/employee/file';
+import { FileUpload } from '#/components/upload';
+import { HrmEmployeeFileGroups } from '#/views/hrm/utils/constants';
+
+const props = defineProps<{ employeeId: number }>();
+const emit = defineEmits(['success']);
+const { hasAccessByCodes } = useAccess();
+const loading = ref(false);
+const saving = ref(false);
+const fileList = ref<any[]>([]);
+const dialogVisible = ref(false);
+const dialogTitle = ref('');
+const selectedType = ref<number>();
+const dialogFileUrls = ref<string[]>([]);
+const canUpdate = hasAccessByCodes(['hrm:employee:update']);
+
+function getFileUrls(type: number) {
+  return fileList.value.filter((f) => f.type === type).map((f) => f.url);
+}
+
+async function getFileListData() {
+  loading.value = true;
+  try {
+    fileList.value = await getEmployeeFileList(props.employeeId);
+  } finally {
+    loading.value = false;
+  }
+}
+
+function openFileDialog(option: { label: string; value: number }) {
+  selectedType.value = option.value;
+  dialogTitle.value = option.label;
+  dialogFileUrls.value = [...getFileUrls(option.value)];
+  dialogVisible.value = true;
+}
+
+async function saveFiles() {
+  if (selectedType.value === undefined) return;
+  saving.value = true;
+  try {
+    await saveEmployeeFiles({
+      employeeId: props.employeeId,
+      type: selectedType.value,
+      fileUrls: dialogFileUrls.value,
+    });
+    dialogVisible.value = false;
+    await getFileListData();
+    emit('success');
+  } finally {
+    saving.value = false;
+  }
+}
+
+onMounted(getFileListData);
+</script>
+
+<template>
+  <div v-loading="loading">
+    <ElCard
+      v-for="group in HrmEmployeeFileGroups"
+      :key="group.label"
+      :style="{ marginBottom: '15px' }"
+      :header="group.label"
+    >
+      <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <button
+          v-for="option in group.options"
+          :key="option.value"
+          class="border-border hover:border-primary flex min-h-[72px] items-center rounded-md border px-4 py-3 text-left"
+          type="button"
+          @click="openFileDialog(option)"
+        >
+          <span class="flex-1">{{ option.label }}</span>
+          <span>{{ getFileUrls(option.value).length }}</span>
+        </button>
+      </div>
+    </ElCard>
+    <ElDialog v-model="dialogVisible" :title="dialogTitle" width="620px">
+      <FileUpload
+        v-model="dialogFileUrls"
+        :disabled="!canUpdate"
+        :max-number="20"
+        directory="hrm/employee/file"
+      />
+      <template #footer>
+        <ElButton @click="dialogVisible = false">取消</ElButton>
+        <ElButton
+          v-if="canUpdate"
+          :loading="saving"
+          type="primary"
+          @click="saveFiles"
+        >
+          保存
+        </ElButton>
+      </template>
+    </ElDialog>
+  </div>
+</template>

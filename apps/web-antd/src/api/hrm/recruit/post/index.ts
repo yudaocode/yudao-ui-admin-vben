@@ -74,7 +74,7 @@ export function getRecruitPostSimpleList() {
 }
 
 /** 获得招聘职位状态统计 */
-export function getRecruitPostStatusCount(params: PageParam) {
+export function getRecruitPostStatusCount(params: Record<string, any>) {
   return requestClient.get<HrmRecruitPostApi.StatusCount[]>(
     '/hrm/recruit/post/status-count',
     { params },

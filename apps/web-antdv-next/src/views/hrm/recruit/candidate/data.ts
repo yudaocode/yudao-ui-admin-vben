@@ -394,7 +394,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<HrmRecruitCandidateApi.Candidate>['columns'] {
   return [
-    { type: 'checkbox', width: 50, fixed: 'left' },
+    { type: 'checkbox' as const, width: 50, fixed: 'left' },
     {
       field: 'name',
       title: '姓名',

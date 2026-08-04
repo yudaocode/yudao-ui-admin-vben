@@ -1,0 +1,48 @@
+import { requestClient } from '#/api/request';
+
+export namespace HrmEmployeeConfigApi {
+  export interface FieldConfig {
+    name: string;
+    title: string;
+    groupName: string;
+    visible: boolean;
+    editable?: boolean;
+    visibleLocked: boolean;
+    editableLocked: boolean;
+  }
+}
+
+export function getEmployeeCreateFieldConfigList(entryStatus: number) {
+  return requestClient.get<HrmEmployeeConfigApi.FieldConfig[]>(
+    '/hrm/employee/config/create-field/list',
+    { params: { entryStatus } },
+  );
+}
+
+/** 保存新建员工字段配置 */
+export function saveEmployeeCreateFieldConfig(data: {
+  entryStatus: number;
+  fields: Array<{ name: string; visible: boolean }>;
+}) {
+  return requestClient.put<boolean>(
+    '/hrm/employee/config/create-field/save',
+    data,
+  );
+}
+
+/** 查询员工档案字段配置 */
+export function getEmployeeArchiveFieldConfigList() {
+  return requestClient.get<HrmEmployeeConfigApi.FieldConfig[]>(
+    '/hrm/employee/config/archive-field/list',
+  );
+}
+
+/** 保存员工档案字段配置 */
+export function saveEmployeeArchiveFieldConfig(data: {
+  fields: Array<{ editable?: boolean; name: string; visible: boolean }>;
+}) {
+  return requestClient.put<boolean>(
+    '/hrm/employee/config/archive-field/save',
+    data,
+  );
+}

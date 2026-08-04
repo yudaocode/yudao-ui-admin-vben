@@ -178,13 +178,50 @@ const IOT_DICT = {
 
 /** ========== HRM - 人力资源模块 ========== */
 const HRM_DICT = {
+  HRM_EMPLOYEE_ENTRY_STATUS: 'hrm_employee_entry_status', // HRM 员工入职状态
   HRM_EMPLOYEE_STATUS: 'hrm_employee_status', // HRM 员工状态
   HRM_EMPLOYEE_TYPE: 'hrm_employee_type', // HRM 聘用形式
   HRM_EMPLOYEE_EDUCATION: 'hrm_employee_education', // HRM 员工学历
+  HRM_SALARY_CHANGE_REASON: 'hrm_salary_change_reason', // HRM 薪资调整原因
+  HRM_SALARY_CHANGE_TYPE: 'hrm_salary_change_type', // HRM 薪资档案状态
+  HRM_SALARY_CHANGE_RECORD_STATUS: 'hrm_salary_change_record_status', // HRM 调薪记录状态
+  HRM_SALARY_SLIP_READ_STATUS: 'hrm_salary_slip_read_status', // HRM 工资条查看状态
+  HRM_SALARY_TAX_TYPE: 'hrm_salary_tax_type', // HRM 薪资计税类型
+  HRM_SALARY_YES_NO: 'hrm_salary_yes_no', // HRM 薪资是否
+  HRM_SALARY_OPTION_TYPE: 'hrm_salary_option_type', // HRM 薪资项加减类型
+  HRM_INSURANCE_PROJECT_TYPE: 'hrm_insurance_project_type', // HRM 社保项目类型
+  HRM_INSURANCE_SCHEME_TYPE: 'hrm_insurance_scheme_type', // HRM 社保方案类型
+  HRM_INSURANCE_EMP_STATUS: 'hrm_insurance_emp_status', // HRM 员工参保状态
+  HRM_ATTENDANCE_HOLIDAY_TYPE: 'hrm_attendance_holiday_type', // HRM 考勤节假日类型
   HRM_RECRUIT_CANDIDATE_STATUS: 'hrm_recruit_candidate_status', // HRM 招聘候选人状态
   HRM_RECRUIT_CANDIDATE_EDUCATION: 'hrm_recruit_candidate_education', // HRM 招聘候选人学历
   HRM_RECRUIT_INTERVIEW_TYPE: 'hrm_recruit_interview_type', // HRM 招聘面试方式
   HRM_RECRUIT_INTERVIEW_RESULT: 'hrm_recruit_interview_result', // HRM 招聘面试结果
+  HRM_RECRUIT_POST_STATUS: 'hrm_recruit_post_status', // HRM 招聘职位状态
+  HRM_RECRUIT_JOB_NATURE: 'hrm_recruit_job_nature', // HRM 招聘工作性质
+  HRM_RECRUIT_WORK_TIME: 'hrm_recruit_work_time', // HRM 招聘工作经验
+  HRM_RECRUIT_POST_EDUCATION: 'hrm_recruit_post_education', // HRM 招聘职位学历要求
+  HRM_RECRUIT_SALARY_UNIT: 'hrm_recruit_salary_unit', // HRM 招聘薪资单位
+  HRM_RECRUIT_EMERGENCY_LEVEL: 'hrm_recruit_emergency_level', // HRM 招聘紧急程度
+  HRM_ATTENDANCE_CLOCK_TYPE: 'hrm_attendance_clock_type', // HRM 打卡类型
+  HRM_ATTENDANCE_CLOCK_SOURCE: 'hrm_attendance_clock_source', // HRM 打卡来源
+  HRM_ATTENDANCE_CLOCK_STATUS: 'hrm_attendance_clock_status', // HRM 打卡状态
+  HRM_ATTENDANCE_LEAVE_TYPE: 'hrm_attendance_leave_type', // HRM 请假类型
+  HRM_ATTENDANCE_YES_NO: 'hrm_attendance_yes_no', // HRM 考勤是否
+  HRM_ATTENDANCE_LATE_EARLY_DEDUCT_METHOD:
+    'hrm_attendance_late_early_deduct_method', // HRM 迟到早退扣款方式
+  HRM_ATTENDANCE_ABSENTEEISM_DEDUCT_METHOD:
+    'hrm_attendance_absenteeism_deduct_method', // HRM 旷工扣款方式
+  HRM_ATTENDANCE_MISSCARD_DEDUCT_METHOD:
+    'hrm_attendance_misscard_deduct_method', // HRM 缺卡扣款方式
+  HRM_PERFORMANCE_PLAN_STATUS: 'hrm_performance_plan_status', // HRM 绩效计划状态
+  HRM_PERFORMANCE_STAGE_STATUS: 'hrm_performance_stage_status', // HRM 绩效阶段状态
+  HRM_PERFORMANCE_ASSESSMENT_STAGE_STATUS:
+    'hrm_performance_assessment_stage_status', // HRM 绩效考核阶段处理状态
+  HRM_PERFORMANCE_APPEAL_STATUS: 'hrm_performance_appeal_status', // HRM 绩效申诉状态
+  HRM_PERFORMANCE_SCORE_CALCULATION: 'hrm_performance_score_calculation', // HRM 绩效计分方式
+  HRM_PERFORMANCE_UPPER_LIMIT_TYPE: 'hrm_performance_upper_limit_type', // HRM 绩效上限类型
+  HRM_PERFORMANCE_YES_NO: 'hrm_performance_yes_no', // HRM 绩效是否
 } as const;
 
 /** ========== IM - 即时通讯模块 ========== */
