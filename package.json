@@ -2,6 +2,7 @@
   "name": "vben-admin-monorepo",
   "version": "5.7.0",
   "private": true,
+  "yudao-version": "2026.07.0-snapshot",
   "keywords": [
     "monorepo",
     "turbo",
