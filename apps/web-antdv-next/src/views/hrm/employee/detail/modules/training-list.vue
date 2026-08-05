@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeTrainingExperienceApi } from '#/api/hrm/employee/training-experience';
 
 import { onMounted, ref } from 'vue';
@@ -53,37 +55,36 @@ async function handleDelete(id?: number) {
   } catch {}
 }
 
-const columns: any[] = [
-  { title: '培训课程', dataIndex: 'course', key: 'course' },
-  {
-    title: '培训机构',
-    dataIndex: 'organizationName',
-    key: 'organizationName',
-  },
-  {
-    title: '开始日期',
-    dataIndex: 'startTime',
-    key: 'startTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  {
-    title: '结束日期',
-    dataIndex: 'endTime',
-    key: 'endTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  { title: '培训时长', dataIndex: 'duration', key: 'duration' },
-  { title: '培训成绩', dataIndex: 'result', key: 'result' },
-  {
-    title: '证书名称',
-    dataIndex: 'certificateName',
-    key: 'certificateName',
-  },
-  { title: '备注', dataIndex: 'remark', key: 'remark' },
-  { title: '操作', key: 'action', width: 140, fixed: 'right' },
-];
+const columns: TableColumnsType<HrmEmployeeTrainingExperienceApi.EmployeeTrainingExperience> =
+  [
+    { title: '培训课程', dataIndex: 'course', key: 'course' },
+    {
+      title: '培训机构',
+      dataIndex: 'organizationName',
+      key: 'organizationName',
+    },
+    {
+      title: '开始日期',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      width: 120,
+    },
+    {
+      title: '结束日期',
+      dataIndex: 'endTime',
+      key: 'endTime',
+      width: 120,
+    },
+    { title: '培训时长', dataIndex: 'duration', key: 'duration' },
+    { title: '培训成绩', dataIndex: 'result', key: 'result' },
+    {
+      title: '证书名称',
+      dataIndex: 'certificateName',
+      key: 'certificateName',
+    },
+    { title: '备注', dataIndex: 'remark', key: 'remark' },
+    { title: '操作', key: 'action', width: 140, fixed: 'right' },
+  ];
 
 onMounted(() => getList());
 defineExpose({ getList });
@@ -108,7 +109,13 @@ defineExpose({ getList });
       size="small"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
+        <template v-if="column.key === 'startTime'">
+          {{ formatHrmDateTime(record.startTime) }}
+        </template>
+        <template v-else-if="column.key === 'endTime'">
+          {{ formatHrmDateTime(record.endTime) }}
+        </template>
+        <template v-else-if="column.key === 'action'">
           <Button
             v-if="hasAccessByCodes(['hrm:employee:update'])"
             type="link"

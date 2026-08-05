@@ -35,6 +35,17 @@ const loading = ref(false);
 const selectedUserIds = ref<number[]>([]);
 const boundUserIds = ref<number[]>([]);
 const employees = ref<EmployeeRow[]>([]);
+const employeeTypeOptions = getDictOptions(
+  DICT_TYPE.HRM_EMPLOYEE_TYPE,
+  'number',
+).map(({ label, value }) => ({ label, value: Number(value) }));
+const nonFormalStatusSet = new Set<number>(HRM_EMPLOYEE_NON_FORMAL_STATUSES);
+const nonFormalStatusOptions = getDictOptions(
+  DICT_TYPE.HRM_EMPLOYEE_STATUS,
+  'number',
+)
+  .filter(({ value }) => nonFormalStatusSet.has(Number(value)))
+  .map(({ label, value }) => ({ label, value: Number(value) }));
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -159,7 +170,7 @@ defineExpose({ open });
       ]"
       :data-source="employees"
       :pagination="false"
-      :row-key="(row) => row.userId as any"
+      :row-key="(row) => row.userId"
       bordered
       :scroll="{ x: 1400, y: 420 }"
       size="small"
@@ -190,9 +201,7 @@ defineExpose({ open });
         <template v-else-if="column.key === 'type'">
           <Select
             v-model:value="record.type"
-            :options="
-              getDictOptions(DICT_TYPE.HRM_EMPLOYEE_TYPE, 'number') as any
-            "
+            :options="employeeTypeOptions"
             class="w-full"
             @change="() => handleTypeChange(record)"
           />
@@ -208,14 +217,7 @@ defineExpose({ open });
           <Select
             v-else
             v-model:value="record.status"
-            :options="
-              getDictOptions(DICT_TYPE.HRM_EMPLOYEE_STATUS, 'number').filter(
-                (item) =>
-                  (
-                    HRM_EMPLOYEE_NON_FORMAL_STATUSES as readonly number[]
-                  ).includes(Number(item.value)),
-              ) as any
-            "
+            :options="nonFormalStatusOptions"
             class="w-full"
           />
         </template>

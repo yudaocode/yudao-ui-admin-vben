@@ -77,7 +77,7 @@ defineProps<{
             ]"
             :data-source="salaryEmployee.salaryOptions || []"
             :pagination="false"
-            :row-key="(row) => row.code as any"
+            :row-key="(row) => row.code ?? 0"
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'value'">
@@ -105,7 +105,7 @@ defineProps<{
             ]"
             :data-source="salaryEmployee.probationSalaryOptions || []"
             :pagination="false"
-            :row-key="(row) => row.code as any"
+            :row-key="(row) => row.code ?? 0"
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'value'">

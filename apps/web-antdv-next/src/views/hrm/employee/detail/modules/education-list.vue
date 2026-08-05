@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeEducationExperienceApi } from '#/api/hrm/employee/education-experience';
 
 import { onMounted, ref } from 'vue';
@@ -58,40 +60,39 @@ async function handleDelete(id?: number) {
   } catch {}
 }
 
-const columns: any[] = [
-  { title: '学历', key: 'education', width: 100 },
-  {
-    title: '毕业院校',
-    dataIndex: 'graduateSchool',
-    key: 'graduateSchool',
-  },
-  { title: '专业', dataIndex: 'major', key: 'major' },
-  {
-    title: '入学日期',
-    dataIndex: 'admissionTime',
-    key: 'admissionTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  {
-    title: '毕业日期',
-    dataIndex: 'graduationTime',
-    key: 'graduationTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  {
-    title: '教学方式',
-    key: 'teachingMethods',
-    width: 110,
-  },
-  {
-    title: '第一学历',
-    key: 'firstDegree',
-    width: 100,
-  },
-  { title: '操作', key: 'action', width: 140, fixed: 'right' },
-];
+const columns: TableColumnsType<HrmEmployeeEducationExperienceApi.EmployeeEducationExperience> =
+  [
+    { title: '学历', key: 'education', width: 100 },
+    {
+      title: '毕业院校',
+      dataIndex: 'graduateSchool',
+      key: 'graduateSchool',
+    },
+    { title: '专业', dataIndex: 'major', key: 'major' },
+    {
+      title: '入学日期',
+      dataIndex: 'admissionTime',
+      key: 'admissionTime',
+      width: 120,
+    },
+    {
+      title: '毕业日期',
+      dataIndex: 'graduationTime',
+      key: 'graduationTime',
+      width: 120,
+    },
+    {
+      title: '教学方式',
+      key: 'teachingMethods',
+      width: 110,
+    },
+    {
+      title: '第一学历',
+      key: 'firstDegree',
+      width: 100,
+    },
+    { title: '操作', key: 'action', width: 140, fixed: 'right' },
+  ];
 
 onMounted(() => getList());
 defineExpose({ getList });
@@ -116,7 +117,13 @@ defineExpose({ getList });
       size="small"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'education'">
+        <template v-if="column.key === 'admissionTime'">
+          {{ formatHrmDateTime(record.admissionTime) }}
+        </template>
+        <template v-else-if="column.key === 'graduationTime'">
+          {{ formatHrmDateTime(record.graduationTime) }}
+        </template>
+        <template v-else-if="column.key === 'education'">
           <DictTag
             v-if="record.education != null"
             :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"

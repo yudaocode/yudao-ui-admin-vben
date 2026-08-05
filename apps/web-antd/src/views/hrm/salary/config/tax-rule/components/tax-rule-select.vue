@@ -50,7 +50,7 @@ async function loadOptions() {
   }
 }
 
-function handleChange(value: any) {
+function handleChange(value: unknown) {
   emit(
     'change',
     options.value.find((item) => item.id === value),

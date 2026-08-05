@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmSalaryGroupApi } from '#/api/hrm/salary/config/group';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, reactive, ref } from 'vue';
 
@@ -34,7 +37,7 @@ const emit = defineEmits(['success']);
 const formType = ref<'create' | 'update'>('create');
 const formLoading = ref(false);
 const formRef = ref();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmSalaryGroupApi.SalaryGroup>(createDefault());
 
 const dialogTitle = computed(() =>
@@ -43,7 +46,7 @@ const dialogTitle = computed(() =>
     : $t('ui.actionTitle.edit', ['薪资组']),
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '薪资组名称不能为空', trigger: 'blur' }],
   taxRuleId: [
     { required: true, message: '计税规则不能为空', trigger: 'change' },
@@ -118,7 +121,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="104px"
     >

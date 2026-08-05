@@ -40,6 +40,15 @@ const deptTree = ref<DataNode[]>([]); // 部门树形结构
 const selectedDeptIds = ref<checkedKeys>([]); // 选中的部门 ID 列表
 const deptData = ref<SystemDeptApi.Dept[]>([]); // 部门数据
 
+function buildDeptTreeNode(dept: SystemDeptApi.Dept): DataNode {
+  return {
+    ...dept,
+    key: dept.id ?? dept.name,
+    title: dept.name,
+    children: dept.children?.map(buildDeptTreeNode),
+  };
+}
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 获取选中的部门 ID
@@ -67,7 +76,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       deptData.value = await getSimpleDeptList();
-      deptTree.value = handleTree(deptData.value) as DataNode[];
+      deptTree.value = handleTree(deptData.value).map((node) =>
+        buildDeptTreeNode(node),
+      );
       // // 设置已选择的部门
       if (data.selectedList?.length) {
         const selectedIds = data.selectedList

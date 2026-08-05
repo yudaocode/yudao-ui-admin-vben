@@ -152,13 +152,14 @@ async function loadTemplates(preferredId?: number) {
         ?.id ||
       templateList.value.find((template) => template.defaultStatus)?.id ||
       templateList.value[0]?.id;
-    handleTemplateChange(selectedTemplateId.value);
+    handleTemplateChange();
   } finally {
     templateLoading.value = false;
   }
 }
 
-function handleTemplateChange(id?: any) {
+function handleTemplateChange() {
+  const id = selectedTemplateId.value;
   const template = templateList.value.find((item) => item.id === id);
   sendTemplate.value = template
     ? {

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule, TableColumnsType } from 'antdv-next';
+
 import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
 import { computed, reactive, ref } from 'vue';
@@ -35,7 +37,6 @@ import {
 } from '#/api/hrm/insurance/standard';
 import { AreaCascader } from '#/components/area';
 import { $t } from '#/locales';
-import { HrmTableColumn } from '#/views/hrm/components/table-column-any';
 import {
   HrmInsuranceProjectType,
   HrmInsuranceSchemeType,
@@ -77,7 +78,7 @@ const dialogTitle = computed(() =>
     : $t('ui.actionTitle.edit', ['参保方案']),
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '方案名称不能为空', trigger: 'blur' }],
   areaId: [{ required: true, message: '参保城市不能为空', trigger: 'change' }],
   type: [{ required: true, message: '方案类型不能为空', trigger: 'change' }],
@@ -106,6 +107,35 @@ const projectSections = computed(() => [
     customType: HrmInsuranceProjectType.CUSTOM_PROVIDENT_FUND,
   },
 ]);
+const projectColumns = computed<
+  TableColumnsType<HrmInsuranceSchemeApi.Project>
+>(() => {
+  const columns: TableColumnsType<HrmInsuranceSchemeApi.Project> = [
+    { title: '项目名称', key: 'name', minWidth: 150 },
+    { title: '默认基数', key: 'baseAmount', width: 140 },
+  ];
+  if (formData.value.type === HrmInsuranceSchemeType.PROPORTION) {
+    columns.push(
+      { title: '公司缴纳比例', key: 'corporateRate', width: 140 },
+      { title: '个人缴纳比例', key: 'personalRate', width: 140 },
+    );
+  }
+  columns.push(
+    { title: '公司金额', key: 'corporateAmount', width: 140 },
+    { title: '个人金额', key: 'personalAmount', width: 140 },
+    { title: '操作', key: 'actions', align: 'center', width: 80 },
+  );
+  return columns;
+});
+const corporateAmountColumnIndex = computed(() =>
+  formData.value.type === HrmInsuranceSchemeType.PROPORTION ? 4 : 2,
+);
+const personalAmountColumnIndex = computed(() =>
+  formData.value.type === HrmInsuranceSchemeType.PROPORTION ? 5 : 3,
+);
+const actionsColumnIndex = computed(() =>
+  formData.value.type === HrmInsuranceSchemeType.PROPORTION ? 6 : 4,
+);
 
 function createProject(type: number): HrmInsuranceSchemeApi.Project {
   return {
@@ -234,8 +264,9 @@ async function handleAreaChange(areaId?: number) {
   }
 }
 
-async function handleHouseTypeChange(typeCode?: string) {
+async function handleHouseTypeChange() {
   const areaId = formData.value.areaId;
+  const typeCode = formData.value.householdType;
   if (!areaId || !typeCode) {
     return;
   }
@@ -364,7 +395,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="118px"
     >
@@ -466,13 +497,14 @@ const [Modal, modalApi] = useVbenModal({
             </Dropdown>
           </div>
           <Table
+            :columns="projectColumns"
             :data-source="section.projects"
             :pagination="false"
             bordered
             size="small"
           >
-            <HrmTableColumn key="name" title="项目名称" :min-width="150">
-              <template #default="{ record }">
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.key === 'name'">
                 <Input
                   v-if="isCustomProject(record.type)"
                   v-model:value="record.name"
@@ -481,9 +513,7 @@ const [Modal, modalApi] = useVbenModal({
                 />
                 <span v-else>{{ formatHrmInsuranceProjectName(record) }}</span>
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn key="baseAmount" title="默认基数" width="140">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'baseAmount'">
                 <InputNumber
                   v-model:value="record.baseAmount"
                   :controls="false"
@@ -492,47 +522,29 @@ const [Modal, modalApi] = useVbenModal({
                   class="w-full"
                 />
               </template>
-            </HrmTableColumn>
-            <template
-              v-if="formData.type === HrmInsuranceSchemeType.PROPORTION"
-            >
-              <HrmTableColumn
-                key="corporateRate"
-                title="公司缴纳比例"
-                width="140"
-              >
-                <template #default="{ record }">
-                  <InputNumber
-                    v-model:value="record.corporateRate"
-                    :controls="false"
-                    :max="100"
-                    :min="0"
-                    :precision="2"
-                    addon-after="%"
-                    class="w-full"
-                  />
-                </template>
-              </HrmTableColumn>
-              <HrmTableColumn
-                key="personalRate"
-                title="个人缴纳比例"
-                width="140"
-              >
-                <template #default="{ record }">
-                  <InputNumber
-                    v-model:value="record.personalRate"
-                    :controls="false"
-                    :max="100"
-                    :min="0"
-                    :precision="2"
-                    addon-after="%"
-                    class="w-full"
-                  />
-                </template>
-              </HrmTableColumn>
-            </template>
-            <HrmTableColumn key="corporateAmount" title="公司金额" width="140">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'corporateRate'">
+                <InputNumber
+                  v-model:value="record.corporateRate"
+                  :controls="false"
+                  :max="100"
+                  :min="0"
+                  :precision="2"
+                  addon-after="%"
+                  class="w-full"
+                />
+              </template>
+              <template v-else-if="column.key === 'personalRate'">
+                <InputNumber
+                  v-model:value="record.personalRate"
+                  :controls="false"
+                  :max="100"
+                  :min="0"
+                  :precision="2"
+                  addon-after="%"
+                  class="w-full"
+                />
+              </template>
+              <template v-else-if="column.key === 'corporateAmount'">
                 <InputNumber
                   v-if="formData.type === HrmInsuranceSchemeType.AMOUNT"
                   v-model:value="record.corporateAmount"
@@ -545,9 +557,7 @@ const [Modal, modalApi] = useVbenModal({
                   formatHrmMoney(calculateAmount(record, 'corporate'))
                 }}</span>
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn key="personalAmount" title="个人金额" width="140">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'personalAmount'">
                 <InputNumber
                   v-if="formData.type === HrmInsuranceSchemeType.AMOUNT"
                   v-model:value="record.personalAmount"
@@ -560,19 +570,12 @@ const [Modal, modalApi] = useVbenModal({
                   formatHrmMoney(calculateAmount(record, 'personal'))
                 }}</span>
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn
-              key="actions"
-              align="center"
-              title="操作"
-              width="80"
-            >
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'actions'">
                 <Button danger type="link" @click="removeProject(record)">
                   删除
                 </Button>
               </template>
-            </HrmTableColumn>
+            </template>
             <template #summary>
               <Table.Summary fixed>
                 <Table.Summary.Row>
@@ -586,13 +589,13 @@ const [Modal, modalApi] = useVbenModal({
                     v-if="formData.type === HrmInsuranceSchemeType.PROPORTION"
                     index="3"
                   />
-                  <Table.Summary.Cell index="4">
+                  <Table.Summary.Cell :index="corporateAmountColumnIndex">
                     {{ getSectionSummary(section.projects, 'corporateAmount') }}
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell index="5">
+                  <Table.Summary.Cell :index="personalAmountColumnIndex">
                     {{ getSectionSummary(section.projects, 'personalAmount') }}
                   </Table.Summary.Cell>
-                  <Table.Summary.Cell index="6" />
+                  <Table.Summary.Cell :index="actionsColumnIndex" />
                 </Table.Summary.Row>
               </Table.Summary>
             </template>

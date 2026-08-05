@@ -143,7 +143,7 @@ defineExpose({ validate });
         <Select
           v-model:value="model.scoreCalculation"
           :disabled="props.disabled"
-          :options="scoreCalculationOptions as any"
+          :options="scoreCalculationOptions"
           class="w-full"
           placeholder="请选择"
         />

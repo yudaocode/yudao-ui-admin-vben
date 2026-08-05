@@ -13,12 +13,16 @@ defineOptions({ name: 'HrmRecruitPostSalaryRangeField' });
 const props = defineProps<{
   /** vee-validate FormActions，用于写入关联隐藏字段 */
   formApi?: {
-    setFieldValue: (field: string, value: any) => Promise<void> | void;
+    setFieldValue: (field: string, value: unknown) => Promise<void> | void;
   };
   /** 最低薪资（对应表单字段 minSalary） */
   modelValue?: null | number;
   /** 当前表单全部值，用于读取 maxSalary / salaryUnit / salaryNegotiable */
-  values?: Record<string, any>;
+  values?: {
+    maxSalary?: null | number;
+    salaryNegotiable?: boolean;
+    salaryUnit?: number;
+  };
 }>();
 
 const emit = defineEmits<{
@@ -39,7 +43,7 @@ function toOptionalNumber(
 const salaryUnitOptions = getDictOptions(
   DICT_TYPE.HRM_RECRUIT_SALARY_UNIT,
   'number',
-);
+).map(({ label, value }) => ({ label, value: Number(value) }));
 
 /** 是否面议：勾选后禁用范围输入，并清空已填薪资 */
 const salaryNegotiable = () => !!props.values?.salaryNegotiable;
@@ -84,7 +88,7 @@ async function handleNegotiableChange(checked: boolean) {
       <Select
         :value="values?.salaryUnit"
         :disabled="salaryNegotiable()"
-        :options="salaryUnitOptions as any"
+        :options="salaryUnitOptions"
         allow-clear
         class="!w-20 shrink-0"
         placeholder="单位"

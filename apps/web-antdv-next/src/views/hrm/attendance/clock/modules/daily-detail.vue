@@ -109,7 +109,7 @@ defineExpose({ open });
         ]"
         :data-source="detailData?.clockList || []"
         :pagination="false"
-        :row-key="(row) => row.id || (`${row.type}-${row.clockTime}` as any)"
+        :row-key="(row) => row.id || `${row.type}-${row.clockTime}`"
         class="mt-4"
         size="small"
       >

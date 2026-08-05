@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { reactive, ref } from 'vue';
 
@@ -48,12 +49,11 @@ const emit = defineEmits(['success']);
 const formRef = ref();
 const formLoading = ref(false);
 const minEffectDate = ref<string>();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const deptTreeProps = {
   children: 'children',
   label: 'name',
-  value: 'id',
-} as any;
+};
 const formData = ref<HrmSalaryEmployeeInfoApi.UpdateListReq>(
   createDefaultFormData(),
 );
@@ -188,6 +188,7 @@ defineExpose({ open });
               class="w-full"
               default-expand-all
               multiple
+              node-key="id"
               placeholder="请选择调薪部门"
               @change="formRef?.validateField('employeeIds')"
             />

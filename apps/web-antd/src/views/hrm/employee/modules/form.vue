@@ -2,7 +2,7 @@
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import type { HrmRecruitCandidateApi } from '#/api/hrm/recruit/candidate';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
@@ -70,7 +70,7 @@ const entrySchema = computed(() =>
 const [Form, formApi] = useVbenForm({
   commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
-  schema: personalSchema as any,
+  schema: [],
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
 });
@@ -78,9 +78,16 @@ const [Form, formApi] = useVbenForm({
 const [EntryForm, entryFormApi] = useVbenForm({
   commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
-  schema: entrySchema as any,
+  schema: [],
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
+});
+
+watch(personalSchema, (schema) => formApi.setState({ schema }), {
+  immediate: true,
+});
+watch(entrySchema, (schema) => entryFormApi.setState({ schema }), {
+  immediate: true,
 });
 
 async function loadCreateFieldConfig() {

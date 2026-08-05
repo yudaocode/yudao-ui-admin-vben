@@ -117,12 +117,17 @@ export function useGridColumns(): VxeTableGridOptions<HrmAttendanceStatisticsApi
 /** 构建列表查询参数 */
 export function buildMonthQueryParams(formValues: Record<string, unknown>) {
   const month = String(formValues.month || formatDate(new Date(), 'YYYY-MM'));
-  const [year, monthNum] = month.split('-').map(Number);
-  const { search, deptIds, fullAttendance } = formValues;
+  const [year = 0, monthNum = 0] = month.split('-').map(Number);
   return {
-    search,
-    deptIds,
-    fullAttendance,
+    search:
+      typeof formValues.search === 'string' ? formValues.search : undefined,
+    deptIds: Array.isArray(formValues.deptIds)
+      ? formValues.deptIds.filter((id): id is number => typeof id === 'number')
+      : undefined,
+    fullAttendance:
+      typeof formValues.fullAttendance === 'boolean'
+        ? formValues.fullAttendance
+        : undefined,
     year,
     month: monthNum,
   };

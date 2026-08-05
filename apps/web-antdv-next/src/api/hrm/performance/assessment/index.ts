@@ -228,9 +228,7 @@ export function getPerformanceAssessmentArchivePage(params: PageParam) {
 }
 
 /** 查询员工档案分页 */
-export function getPerformanceArchiveEmployeePage(
-  params: PageParam & { search?: string },
-) {
+export function getPerformanceArchiveEmployeePage(params: PageParam) {
   return requestClient.get<
     PageResult<HrmPerformanceAssessmentApi.PerformanceArchiveEmployee>
   >('/hrm/performance/assessment/archive-employee-page', { params });

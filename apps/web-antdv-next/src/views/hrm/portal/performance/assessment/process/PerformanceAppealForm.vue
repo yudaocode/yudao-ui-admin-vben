@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FormInstance } from 'antdv-next';
+import type { FormInstance, Rule } from 'antdv-next';
 
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
 
@@ -29,8 +29,6 @@ defineOptions({ name: 'HrmPortalPerformanceAppealForm' });
 const emit = defineEmits<{
   success: [];
 }>();
-
-type Rule = any;
 
 interface AppealFormData {
   appealFileUrls: string[];
@@ -145,7 +143,7 @@ async function resetForm() {
         ref="formRef"
         :label-col="{ style: { width: '110px' } }"
         :model="formData"
-        :rules="formRules as any"
+        :rules="formRules"
       >
         <FormItem label="退回评分节点" name="reviewStageIds">
           <CheckboxGroup v-model:value="formData.reviewStageIds">

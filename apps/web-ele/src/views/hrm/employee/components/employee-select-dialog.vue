@@ -102,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async (
           { page }: { page: { currentPage: number; pageSize: number } },
-          formValues: Record<string, any>,
+          formValues: Record<string, unknown>,
         ) => {
           return await getEmployeeSimplePage({
             pageNo: page.currentPage,

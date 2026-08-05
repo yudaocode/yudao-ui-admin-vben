@@ -10,6 +10,7 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { fromTimestampPickerValue, toTimestampPickerValue } from '@vben/utils';
 
 import {
   Col,
@@ -34,7 +35,6 @@ const emit = defineEmits<{
 const formRef = ref<FormInstance>();
 const editableFields = ref<Set<string>>(new Set());
 const formData = ref<HrmPortalEmployeeApi.EmployeeUpdateReq>({});
-
 const formRules: Record<string, Rule[]> = {
   name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
   mobile: [
@@ -133,7 +133,7 @@ async function submitForm() {
       ref="formRef"
       :label-col="{ style: { width: '104px' } }"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
     >
       <Row :gutter="20">
         <Col v-if="isEditable('name')" :span="12">
@@ -187,7 +187,7 @@ async function submitForm() {
               v-model:value="formData.idType"
               allow-clear
               class="w-full"
-              :options="HrmEmployeeIdTypeOptions as any"
+              :options="[...HrmEmployeeIdTypeOptions]"
               placeholder="请选择证件类型"
             />
           </FormItem>
@@ -207,7 +207,7 @@ async function submitForm() {
               v-model:value="formData.sex"
               allow-clear
               class="w-full"
-              :options="sexOptions as any"
+              :options="sexOptions"
               placeholder="请选择性别"
             />
           </FormItem>
@@ -224,12 +224,15 @@ async function submitForm() {
         <Col v-if="isEditable('birthday')" :span="12">
           <FormItem label="出生时间" name="birthday">
             <DatePicker
-              v-model:value="formData.birthday as any"
+              :value="toTimestampPickerValue(formData.birthday)"
               class="w-full"
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="请选择出生时间"
               show-time
               value-format="x"
+              @update:value="
+                formData.birthday = fromTimestampPickerValue($event)
+              "
             />
           </FormItem>
         </Col>
@@ -239,7 +242,7 @@ async function submitForm() {
               v-model:value="formData.highestEducation"
               allow-clear
               class="w-full"
-              :options="educationOptions as any"
+              :options="educationOptions"
               placeholder="请选择最高学历"
             />
           </FormItem>

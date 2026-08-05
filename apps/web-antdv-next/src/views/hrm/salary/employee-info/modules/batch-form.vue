@@ -1,14 +1,20 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
 import type { Dayjs } from 'dayjs';
 
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { handleTree } from '@vben/utils';
+import {
+  fromTimestampPickerValue,
+  handleTree,
+  toTimestampPickerValue,
+} from '@vben/utils';
 
 import {
   Alert,
@@ -48,12 +54,11 @@ const emit = defineEmits(['success']);
 const formRef = ref();
 const formLoading = ref(false);
 const minEffectDate = ref<string>();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmSalaryEmployeeInfoApi.UpdateListReq>(
   createDefaultFormData(),
 );
-
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   employeeIds: [
     {
       validator: async () => {
@@ -166,7 +171,7 @@ defineExpose({ open });
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="104px"
     >
@@ -206,10 +211,7 @@ defineExpose({ open });
             <Select
               v-model:value="formData.changeReason"
               :options="
-                getDictOptions(
-                  DICT_TYPE.HRM_SALARY_CHANGE_REASON,
-                  'number',
-                ) as any
+                getDictOptions(DICT_TYPE.HRM_SALARY_CHANGE_REASON, 'number')
               "
               class="w-full"
               placeholder="请选择调整原因"
@@ -219,10 +221,13 @@ defineExpose({ open });
         <Col :span="12">
           <FormItem label="生效日期" name="effectTime">
             <DatePicker
-              v-model:value="formData.effectTime as any"
+              :value="toTimestampPickerValue(formData.effectTime)"
               :disabled-date="disabledEffectDate"
               class="w-full"
               value-format="x"
+              @update:value="
+                formData.effectTime = fromTimestampPickerValue($event)
+              "
             />
           </FormItem>
         </Col>
@@ -249,7 +254,7 @@ defineExpose({ open });
         :data-source="formData.salaryOptions"
         :loading="formLoading"
         :pagination="false"
-        :row-key="(row) => row.code as any"
+        :row-key="(row) => row.code ?? 0"
         :scroll="{ y: 260 }"
         :columns="[
           { title: '调薪项', dataIndex: 'name', key: 'name' },

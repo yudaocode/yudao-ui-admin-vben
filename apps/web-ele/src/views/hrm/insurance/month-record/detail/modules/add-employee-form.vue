@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const recordId = modalApi.getData() as unknown as number | undefined;
+    const recordId = modalApi.getData<{ recordId?: number }>()?.recordId;
     if (!recordId) {
       return;
     }
@@ -99,7 +99,7 @@ const [Modal, modalApi] = useVbenModal({
 
 defineExpose({
   open: (recordId: number) => {
-    modalApi.setData(recordId).open();
+    modalApi.setData({ recordId }).open();
   },
 });
 </script>

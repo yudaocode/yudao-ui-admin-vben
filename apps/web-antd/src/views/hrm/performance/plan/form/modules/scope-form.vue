@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, onMounted, ref } from 'vue';
 
@@ -26,7 +27,7 @@ const model = defineModel<HrmPerformancePlanApi.PerformanceScope[]>({
   required: true,
 });
 
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 
 const hasEmployeeDeptScope = computed(() =>
   model.value.some(

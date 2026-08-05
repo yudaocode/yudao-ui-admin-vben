@@ -159,7 +159,7 @@ defineExpose({ getList });
       :data-source="recordList"
       :loading="loading"
       :pagination="false"
-      :row-key="(row) => row.id as any"
+      :row-key="(row) => row.id ?? 0"
       :scroll="{ x: 1200 }"
     >
       <template #bodyCell="{ column, record }">

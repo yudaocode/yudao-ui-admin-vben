@@ -228,6 +228,22 @@ function spanScoreCell(
   return { rowSpan: 1, colSpan: 1 };
 }
 
+function getScoreCellProps(
+  record: PerformanceScoreRow,
+  index: number,
+  column: unknown,
+) {
+  const columnKey =
+    typeof column === 'object' && column !== null && 'key' in column
+      ? (column as { key?: PropertyKey }).key
+      : undefined;
+  return spanScoreCell(
+    record,
+    index,
+    scoreColumns.findIndex((item) => item.key === columnKey),
+  );
+}
+
 function getRowSpan(
   rowIndex: number,
   matcher: (row: PerformanceScoreRow) => boolean,
@@ -358,18 +374,7 @@ onMounted(getDetail);
         </div>
         <Table
           :columns="scoreColumns"
-          :custom-cell="
-            (_record: PerformanceScoreRow, index: number, column: any) => {
-              const colIndex = scoreColumns.findIndex(
-                (c) => c.key === column.key,
-              );
-              return spanScoreCell(
-                _record as PerformanceScoreRow,
-                index!,
-                colIndex,
-              );
-            }
-          "
+          :custom-cell="getScoreCellProps"
           :data-source="scoreRows"
           :loading="loading"
           :pagination="false"

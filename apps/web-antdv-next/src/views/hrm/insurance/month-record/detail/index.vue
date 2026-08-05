@@ -210,7 +210,8 @@ watch(editable, (value) => {
               type: 'primary',
               icon: ACTION_ICON.ADD,
               auth: ['hrm:insurance:month-record:update'],
-              onClick: () => addEmployeeModalApi.setData(monthRecordId).open(),
+              onClick: () =>
+                addEmployeeModalApi.setData({ recordId: monthRecordId }).open(),
             },
           ]"
         />

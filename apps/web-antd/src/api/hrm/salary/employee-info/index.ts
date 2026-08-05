@@ -80,7 +80,7 @@ export function getSalaryEmployeeInfoPage(params: PageParam) {
 }
 
 /** 获得员工薪资信息状态数量 */
-export function getSalaryEmployeeInfoStatusCount(params: Partial<PageParam>) {
+export function getSalaryEmployeeInfoStatusCount(params: PageParam) {
   return requestClient.get<HrmSalaryEmployeeInfoApi.StatusCount[]>(
     '/hrm/salary/employee-info/status-count',
     { params },

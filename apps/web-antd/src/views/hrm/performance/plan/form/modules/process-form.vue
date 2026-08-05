@@ -104,9 +104,10 @@ function handleQuotaSettingChange() {
   clearTargetConfirmation();
 }
 
-function handleTargetConfirmationChange(checked: any) {
-  model.value.targetConfirmation = checked;
-  model.value.targetConfirmationStage = checked
+function handleTargetConfirmationChange(checked: boolean | number | string) {
+  const enabled = checked === true;
+  model.value.targetConfirmation = enabled;
+  model.value.targetConfirmationStage = enabled
     ? { type: HrmPerformanceRaterType.SUPERIOR, level: 1 }
     : undefined;
 }

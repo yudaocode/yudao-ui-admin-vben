@@ -19,6 +19,7 @@ import {
   getLastInsuranceMonthRecord,
 } from '#/api/hrm/insurance/month-record';
 import { HrmInsuranceMonthStatus } from '#/views/hrm/utils/constants';
+import { formatHrmMoney } from '#/views/hrm/utils/format';
 
 import { useListColumns } from './data';
 import FirstMonthForm from './modules/first-month-form.vue';
@@ -159,6 +160,18 @@ onMounted(() => {
               <Button type="link" @click="openDetail(record.id)">
                 {{ record.title }}
               </Button>
+            </template>
+            <template v-else-if="column.key === 'personalInsuranceAmount'">
+              {{ formatHrmMoney(record.personalInsuranceAmount) }}
+            </template>
+            <template v-else-if="column.key === 'corporateInsuranceAmount'">
+              {{ formatHrmMoney(record.corporateInsuranceAmount) }}
+            </template>
+            <template v-else-if="column.key === 'personalProvidentFundAmount'">
+              {{ formatHrmMoney(record.personalProvidentFundAmount) }}
+            </template>
+            <template v-else-if="column.key === 'corporateProvidentFundAmount'">
+              {{ formatHrmMoney(record.corporateProvidentFundAmount) }}
             </template>
             <template v-else-if="column.key === 'action'">
               <TableAction

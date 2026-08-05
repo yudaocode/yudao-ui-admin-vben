@@ -102,7 +102,7 @@ export function getRecruitCandidate(id: number) {
 }
 
 /** 获得招聘候选人状态统计 */
-export function getRecruitCandidateStatusCount(params: Record<string, any>) {
+export function getRecruitCandidateStatusCount(params: PageParam) {
   return requestClient.get<HrmRecruitCandidateApi.StatusCount[]>(
     '/hrm/recruit/candidate/status-count',
     { params },

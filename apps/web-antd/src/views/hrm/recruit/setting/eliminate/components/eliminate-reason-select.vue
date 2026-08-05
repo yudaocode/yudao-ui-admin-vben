@@ -52,8 +52,8 @@ const options = computed(() => {
 });
 
 /** 选中变化 */
-function handleChange(value: any) {
-  emit('change', value || undefined);
+function handleChange(value: unknown) {
+  emit('change', typeof value === 'string' ? value || undefined : undefined);
 }
 
 /** 获得淘汰原因列表 */

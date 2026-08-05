@@ -94,7 +94,10 @@ async function loadData() {
 }
 
 /** 月份切换操作 */
-function handleMonthChange(value: dayjs.Dayjs | string) {
+function handleMonthChange(value: dayjs.Dayjs | dayjs.Dayjs[] | null) {
+  if (!value || Array.isArray(value)) {
+    return;
+  }
   const month = dayjs(value).startOf('month');
   selectedMonth.value = month;
   calendarDate.value = month.toDate();
@@ -145,7 +148,7 @@ onActivated(async () => {
             :disabled-date="disabledFutureDate"
             format="YYYY年MM月"
             picker="month"
-            @change="handleMonthChange as any"
+            @change="handleMonthChange"
           />
           <span class="text-sm text-gray-500">
             考勤周期（{{ attendanceCycle }}）

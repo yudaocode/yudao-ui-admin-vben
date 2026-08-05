@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
 import type { Dayjs } from 'dayjs';
 
 import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
@@ -10,6 +11,7 @@ import { computed, reactive, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { fromTimestampPickerValue, toTimestampPickerValue } from '@vben/utils';
 
 import {
   Alert,
@@ -68,8 +70,7 @@ let probationDraftMap = new Map<number, HrmSalaryOptionApi.OptionValue>();
 const formData = ref<HrmSalaryEmployeeInfoApi.UpdateReq>(
   createDefaultFormData(),
 );
-
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   employeeId: [{ required: true, message: '员工不能为空', trigger: 'change' }],
   recordType: [
     { required: true, message: '记录类型不能为空', trigger: 'change' },
@@ -354,7 +355,7 @@ defineExpose({ open });
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="104px"
     >
@@ -389,10 +390,13 @@ defineExpose({ open });
         <Col v-if="showChangeFields" :span="6">
           <FormItem label="生效日期" name="effectTime">
             <DatePicker
-              v-model:value="formData.effectTime as any"
+              :value="toTimestampPickerValue(formData.effectTime)"
               :disabled-date="disabledEffectDate"
               class="w-full"
               value-format="x"
+              @update:value="
+                formData.effectTime = fromTimestampPickerValue($event)
+              "
             />
           </FormItem>
         </Col>
@@ -404,10 +408,7 @@ defineExpose({ open });
             <Select
               v-model:value="formData.changeReason"
               :options="
-                getDictOptions(
-                  DICT_TYPE.HRM_SALARY_CHANGE_REASON,
-                  'number',
-                ) as any
+                getDictOptions(DICT_TYPE.HRM_SALARY_CHANGE_REASON, 'number')
               "
               class="w-full"
               placeholder="请选择调整原因"
@@ -453,7 +454,7 @@ defineExpose({ open });
         :data-source="salaryOptionRows"
         :loading="formLoading"
         :pagination="false"
-        :row-key="(row) => row.code as any"
+        :row-key="(row) => row.code ?? 0"
         :columns="[
           { title: '薪资项', dataIndex: 'name', key: 'name' },
           {

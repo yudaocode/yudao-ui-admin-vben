@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
 import { computed, reactive, ref } from 'vue';
@@ -74,7 +76,7 @@ const dialogTitle = computed(() =>
     : $t('ui.actionTitle.edit', ['参保方案']),
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '方案名称不能为空', trigger: 'blur' }],
   areaId: [{ required: true, message: '参保城市不能为空', trigger: 'change' }],
   type: [{ required: true, message: '方案类型不能为空', trigger: 'change' }],
@@ -231,8 +233,9 @@ async function handleAreaChange(areaId?: number) {
   }
 }
 
-async function handleHouseTypeChange(typeCode?: any) {
+async function handleHouseTypeChange() {
   const areaId = formData.value.areaId;
+  const typeCode = formData.value.householdType;
   if (!areaId || !typeCode) {
     return;
   }
@@ -361,7 +364,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="118px"
     >

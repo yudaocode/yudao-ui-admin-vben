@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
 import { reactive, ref } from 'vue';
@@ -19,7 +21,7 @@ const editIndex = ref<number>();
 const formRef = ref();
 const formData = ref<HrmAttendanceGroupApi.Wifi>(createDefault());
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   ssid: [{ required: true, message: 'WiFi 名称不能为空', trigger: 'blur' }],
   mac: [
     { required: true, message: 'MAC 地址不能为空', trigger: 'blur' },
@@ -66,7 +68,7 @@ defineExpose({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="100px"
     >

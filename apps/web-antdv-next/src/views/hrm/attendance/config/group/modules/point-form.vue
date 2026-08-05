@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
 import { reactive, ref } from 'vue';
@@ -29,7 +31,7 @@ const formRef = ref();
 const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 const formData = ref<HrmAttendanceGroupApi.Point>(createDefault());
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '地点名称不能为空', trigger: 'blur' }],
   address: [{ required: true, message: '打卡地址不能为空', trigger: 'blur' }],
   longitude: [{ required: true, message: '经度不能为空', trigger: 'change' }],
@@ -101,7 +103,7 @@ defineExpose({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="100px"
     >

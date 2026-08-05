@@ -137,9 +137,7 @@ export function getSalaryMonthRecordPage(params: PageParam) {
 }
 
 /** 获得月度工资薪资项汇总 */
-export function getSalaryMonthOptionSummary(
-  params: Partial<PageParam> & { monthRecordId: number },
-) {
+export function getSalaryMonthOptionSummary(params: PageParam) {
   return requestClient.get<HrmSalaryOptionApi.OptionValue[]>(
     '/hrm/salary/month-record/option-summary',
     { params },

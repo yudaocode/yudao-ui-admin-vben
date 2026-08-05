@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { ActionItem, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
 import { onMounted, ref } from 'vue';
@@ -95,7 +95,7 @@ async function handleDelete(plan: HrmPerformancePlanApi.PerformancePlan) {
 }
 
 function buildActions(row: HrmPerformancePlanApi.PerformancePlan) {
-  const actions: Record<string, unknown>[] = [
+  const actions: ActionItem[] = [
     {
       label: '查看考核设置',
       type: 'link',
@@ -223,13 +223,13 @@ onMounted(() => loadStatusCount());
       <template #toolbar-actions>
         <div class="performance-plan-status-tabs">
           <Tabs
-            :active-key="activeStatus as any"
+            :active-key="String(activeStatus)"
             class="w-full"
             @change="handleStatusChange"
           >
             <TabPane
               v-for="tab in useStatusTabs(statusCount)"
-              :key="tab.value"
+              :key="String(tab.value)"
               :tab="`${tab.label}（${tab.count}）`"
             />
           </Tabs>
@@ -237,17 +237,15 @@ onMounted(() => loadStatusCount());
       </template>
       <template #toolbar-tools>
         <TableAction
-          :actions="
-            [
-              {
-                label: $t('ui.actionTitle.create', ['考核计划']),
-                type: 'primary',
-                icon: ACTION_ICON.ADD,
-                auth: ['hrm:performance:plan:create'],
-                onClick: () => openForm('create'),
-              },
-            ] as any
-          "
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['考核计划']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['hrm:performance:plan:create'],
+              onClick: () => openForm('create'),
+            },
+          ]"
         />
       </template>
       <template #planName="{ row }">
@@ -264,7 +262,7 @@ onMounted(() => loadStatusCount());
         <span v-else>-</span>
       </template>
       <template #actions="{ row }">
-        <TableAction :actions="buildActions(row) as any" />
+        <TableAction :actions="buildActions(row)" />
       </template>
     </Grid>
   </Page>

@@ -40,6 +40,28 @@ export function formatDateTime(time?: FormatDate) {
   return formatDate(time, 'YYYY-MM-DD HH:mm:ss');
 }
 
+/** 将毫秒时间戳转换为设置了 value-format="x" 的 DatePicker 接受的字符串值。 */
+export function toTimestampPickerValue(
+  value?: null | number | string,
+): string | undefined {
+  return value === null || value === undefined || value === ''
+    ? undefined
+    : String(value);
+}
+
+/** 将设置了 value-format="x" 的 DatePicker 回传值转换为毫秒时间戳。 */
+export function fromTimestampPickerValue(value: unknown): number | undefined {
+  if (value === null || value === undefined || value === '') {
+    return undefined;
+  }
+  const timestamp = dayjs.isDayjs(value)
+    ? value.valueOf()
+    : typeof value === 'number' || typeof value === 'string'
+      ? Number(value)
+      : Number.NaN;
+  return Number.isFinite(timestamp) ? timestamp : undefined;
+}
+
 export function formatDate2(date: Date, format?: string): string {
   // 日期不存在，则返回空
   if (!date) {

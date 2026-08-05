@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 
 import { computed, ref } from 'vue';
@@ -35,7 +37,7 @@ const categoryList = computed(() =>
   ),
 );
 
-const formRules = {
+const formRules: Record<string, Rule[]> = {
   parentCode: [
     { required: true, message: '工资项分类不能为空', trigger: 'change' },
   ],
@@ -69,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="96px"
     >

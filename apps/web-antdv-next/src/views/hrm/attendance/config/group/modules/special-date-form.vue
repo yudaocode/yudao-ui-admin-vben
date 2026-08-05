@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
 import { reactive, ref } from 'vue';
@@ -20,7 +22,7 @@ const editIndex = ref<number>();
 const formRef = ref();
 const formData = ref<HrmAttendanceGroupApi.SpecialDate>(createDefault());
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   type: [
     { required: true, message: '特殊日期类型不能为空', trigger: 'change' },
   ],
@@ -68,7 +70,7 @@ defineExpose({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="120px"
     >

@@ -144,7 +144,7 @@ async function resetForm() {
         ref="formRef"
         :label-col="{ style: { width: '110px' } }"
         :model="formData"
-        :rules="formRules as any"
+        :rules="formRules"
       >
         <FormItem label="退回评分节点" name="reviewStageIds">
           <CheckboxGroup v-model:value="formData.reviewStageIds">

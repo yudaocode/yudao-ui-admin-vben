@@ -221,6 +221,12 @@ function mapTree<T, V extends Record<string, any>>(
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
+function handleTree<T>(
+  data: T[],
+  id?: string,
+  parentId?: string,
+  children?: string,
+): T[];
 function handleTree(
   data: TreeNode[],
   id: string = 'id',

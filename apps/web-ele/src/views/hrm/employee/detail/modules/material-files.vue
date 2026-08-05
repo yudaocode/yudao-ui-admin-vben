@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { HrmEmployeeFileApi } from '#/api/hrm/employee/file';
+
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
@@ -17,7 +19,7 @@ const emit = defineEmits(['success']);
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
 const saving = ref(false);
-const fileList = ref<any[]>([]);
+const fileList = ref<HrmEmployeeFileApi.EmployeeFile[]>([]);
 const dialogVisible = ref(false);
 const dialogTitle = ref('');
 const selectedType = ref<number>();
@@ -25,7 +27,10 @@ const dialogFileUrls = ref<string[]>([]);
 const canUpdate = hasAccessByCodes(['hrm:employee:update']);
 
 function getFileUrls(type: number) {
-  return fileList.value.filter((f) => f.type === type).map((f) => f.url);
+  return fileList.value
+    .filter((file) => file.type === type)
+    .map((file) => file.url)
+    .filter((url): url is string => typeof url === 'string' && url.length > 0);
 }
 
 async function getFileListData() {

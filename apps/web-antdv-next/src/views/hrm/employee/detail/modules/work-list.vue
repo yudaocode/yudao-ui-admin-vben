@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeWorkExperienceApi } from '#/api/hrm/employee/work-experience';
 
 import { onMounted, ref } from 'vue';
@@ -49,33 +51,32 @@ async function handleDelete(id?: number) {
   } catch {}
 }
 
-const columns: any[] = [
-  { title: '工作单位', dataIndex: 'workUnit', key: 'workUnit' },
-  { title: '职务', dataIndex: 'postName', key: 'postName' },
-  {
-    title: '开始日期',
-    dataIndex: 'startTime',
-    key: 'startTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  {
-    title: '结束日期',
-    dataIndex: 'endTime',
-    key: 'endTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  { title: '离职原因', dataIndex: 'reason', key: 'reason' },
-  { title: '证明人', dataIndex: 'witnessName', key: 'witnessName' },
-  {
-    title: '证明人电话',
-    dataIndex: 'witnessPhone',
-    key: 'witnessPhone',
-  },
-  { title: '工作备注', dataIndex: 'remark', key: 'remark' },
-  { title: '操作', key: 'action', width: 140, fixed: 'right' },
-];
+const columns: TableColumnsType<HrmEmployeeWorkExperienceApi.EmployeeWorkExperience> =
+  [
+    { title: '工作单位', dataIndex: 'workUnit', key: 'workUnit' },
+    { title: '职务', dataIndex: 'postName', key: 'postName' },
+    {
+      title: '开始日期',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      width: 120,
+    },
+    {
+      title: '结束日期',
+      dataIndex: 'endTime',
+      key: 'endTime',
+      width: 120,
+    },
+    { title: '离职原因', dataIndex: 'reason', key: 'reason' },
+    { title: '证明人', dataIndex: 'witnessName', key: 'witnessName' },
+    {
+      title: '证明人电话',
+      dataIndex: 'witnessPhone',
+      key: 'witnessPhone',
+    },
+    { title: '工作备注', dataIndex: 'remark', key: 'remark' },
+    { title: '操作', key: 'action', width: 140, fixed: 'right' },
+  ];
 
 onMounted(() => getList());
 defineExpose({ getList });
@@ -100,7 +101,13 @@ defineExpose({ getList });
       size="small"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
+        <template v-if="column.key === 'startTime'">
+          {{ formatHrmDateTime(record.startTime) }}
+        </template>
+        <template v-else-if="column.key === 'endTime'">
+          {{ formatHrmDateTime(record.endTime) }}
+        </template>
+        <template v-else-if="column.key === 'action'">
           <Button
             v-if="hasAccessByCodes(['hrm:employee:update'])"
             type="link"

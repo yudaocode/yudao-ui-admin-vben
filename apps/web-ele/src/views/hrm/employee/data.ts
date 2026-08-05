@@ -37,7 +37,7 @@ import {
   HrmEmployeeType,
 } from '#/views/hrm/utils/constants';
 
-/** DatePicker valueFormat=x 的可选值（避免 z.any） */
+/** DatePicker valueFormat=x 的可选时间戳 */
 const optionalTimestampSchema = z.union([
   z.number(),
   z.string(),
@@ -326,8 +326,7 @@ export function useImportFormSchema(): VbenFormSchema[] {
       label: 'Excel 文件',
       component: 'Input',
       rules: 'required',
-      slots: { default: 'file' },
-    } as any,
+    },
   ];
 }
 
@@ -537,8 +536,7 @@ export function usePositionChangeFormSchema(
       fieldName: 'newLeaderEmployeeId',
       label: `${postLabel}直属上级`,
       component: 'Input',
-      slots: { default: 'newLeaderEmployeeId' },
-    } as any,
+    },
     {
       fieldName: 'newWorkAddress',
       label: `${postLabel}工作地点`,
@@ -612,8 +610,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
       fieldName: 'newLeaderEmployeeId',
       label: '转全职后上级',
       component: 'Input',
-      slots: { default: 'newLeaderEmployeeId' },
-    } as any,
+    },
     {
       fieldName: 'newWorkAddress',
       label: '转全职后工作地点',
@@ -700,10 +697,8 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type !== HrmEmployeeQuitType.RETIREMENT,
-        rules: ((values: Record<string, unknown>) =>
-          values.type === HrmEmployeeQuitType.RETIREMENT
-            ? undefined
-            : 'required') as any,
+        rules: (values) =>
+          values.type === HrmEmployeeQuitType.RETIREMENT ? null : 'required',
         componentProps: (values) => ({
           options: HrmEmployeeQuitReasonOptions.filter(
             (item) => item.quitType === values.type,
@@ -762,8 +757,7 @@ export function useEmployeePersonalFormSchema(
       fieldName: 'userId',
       label: '绑定用户',
       component: 'Input',
-      slots: { default: 'userId' },
-    } as any,
+    },
     {
       fieldName: 'mobile',
       label: '手机号',
@@ -938,8 +932,7 @@ export function useEmployeeEntryFormSchema(
       fieldName: 'leaderEmployeeId',
       label: '直属上级',
       component: 'Input',
-      slots: { default: 'leaderEmployeeId' },
-    } as any,
+    },
     {
       fieldName: 'type',
       label: '聘用形式',
@@ -959,10 +952,8 @@ export function useEmployeeEntryFormSchema(
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.INFORMAL,
-        rules: ((values: Record<string, unknown>) =>
-          values.type === HrmEmployeeType.INFORMAL
-            ? 'required'
-            : undefined) as any,
+        rules: (values) =>
+          values.type === HrmEmployeeType.INFORMAL ? 'required' : null,
       },
       componentProps: {
         options: nonFormalStatusOptions,
@@ -977,10 +968,8 @@ export function useEmployeeEntryFormSchema(
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.FORMAL,
-        rules: ((values: Record<string, unknown>) =>
-          values.type === HrmEmployeeType.FORMAL
-            ? 'required'
-            : undefined) as any,
+        rules: (values) =>
+          values.type === HrmEmployeeType.FORMAL ? 'required' : null,
       },
       componentProps: { min: 0, max: 24, class: 'w-full' },
     },

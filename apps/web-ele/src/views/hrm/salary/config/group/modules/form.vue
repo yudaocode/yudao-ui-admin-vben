@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmSalaryGroupApi } from '#/api/hrm/salary/config/group';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, reactive, ref } from 'vue';
 
@@ -26,7 +27,7 @@ const emit = defineEmits(['success']);
 const formType = ref<'create' | 'update'>('create');
 const formLoading = ref(false);
 const formRef = ref();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmSalaryGroupApi.SalaryGroup>(createDefault());
 
 const dialogTitle = computed(() =>
@@ -148,12 +149,13 @@ const [Modal, modalApi] = useVbenModal({
             <ElTreeSelect
               v-model="formData.deptIds"
               :data="deptTree"
-              :props="{ label: 'name', value: 'id', children: 'children' }"
+              :props="{ label: 'name', children: 'children' }"
               check-strictly
               clearable
               class="w-full"
               default-expand-all
               multiple
+              node-key="id"
               placeholder="请选择部门"
             />
           </ElFormItem>

@@ -83,7 +83,7 @@ async function ensureSelectedPost() {
 }
 
 /** 选中变化 */
-function handleChange(value: any) {
+function handleChange(value: unknown) {
   emit(
     'change',
     postOptions.value.find((post) => post.id === value),

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { HrmSalaryTaxRuleApi } from '#/api/hrm/salary/config/tax-rule';
 
 import { computed, reactive, ref } from 'vue';
@@ -46,7 +48,7 @@ const dialogTitle = computed(() =>
     : $t('ui.actionTitle.edit', ['计税规则']),
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '方案名称不能为空', trigger: 'blur' }],
   type: [{ required: true, message: '个税类型不能为空', trigger: 'change' }],
   taxEnabled: [
@@ -95,7 +97,8 @@ function createDefault(): HrmSalaryTaxRuleApi.SalaryTaxRule {
   };
 }
 
-function handleTypeChange(type?: any) {
+function handleTypeChange() {
+  const type = formData.value.type;
   if (type === HrmSalaryTaxType.SALARY) {
     formData.value.taxEnabled = true;
     formData.value.threshold = 5000;
@@ -149,7 +152,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="96px"
     >
@@ -165,9 +168,7 @@ const [Modal, modalApi] = useVbenModal({
           <Form.Item label="个税类型" name="type">
             <Select
               v-model:value="formData.type"
-              :options="
-                getDictOptions(DICT_TYPE.HRM_SALARY_TAX_TYPE, 'number') as any
-              "
+              :options="getDictOptions(DICT_TYPE.HRM_SALARY_TAX_TYPE, 'number')"
               class="w-full"
               placeholder="请选择个税类型"
               @change="handleTypeChange"

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, reactive, ref, watch } from 'vue';
 
@@ -40,7 +41,7 @@ import {
   HrmAttendanceMisscardDeductMethod,
 } from '#/views/hrm/utils/constants';
 import {
-  formatHrmAttendanceDeductUnit,
+  formatHrmAttendanceDeductUnit as formatDeductUnit,
   formatHrmAttendanceSpecialDate,
   formatHrmAttendanceWeeks,
 } from '#/views/hrm/utils/format';
@@ -62,7 +63,7 @@ const shiftFormRef = ref<InstanceType<typeof ShiftForm>>();
 const specialDateFormRef = ref<InstanceType<typeof SpecialDateForm>>();
 const pointFormRef = ref<InstanceType<typeof PointForm>>();
 const wifiFormRef = ref<InstanceType<typeof WifiForm>>();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
 
 const dialogTitle = computed(() =>
@@ -89,6 +90,10 @@ const formRules = reactive({
   deptIds: [{ validator: validateScope, trigger: 'change' }],
   employeeIds: [{ validator: validateScope, trigger: 'change' }],
 });
+
+function deductUnitText(method?: number) {
+  return method === undefined ? '' : `元/${formatDeductUnit(method)}`;
+}
 
 function createDefaultDeductRule(): HrmAttendanceGroupApi.DeductRule {
   return {
@@ -376,14 +381,13 @@ const [Modal, modalApi] = useVbenModal({
             <ElTreeSelect
               v-model="formData.deptIds"
               :data="deptTree"
-              :props="
-                { label: 'name', value: 'id', children: 'children' } as any
-              "
+              :props="{ label: 'name', children: 'children' }"
               check-strictly
               clearable
               class="w-full"
               default-expand-all
               multiple
+              node-key="id"
               placeholder="请选择部门"
               show-checkbox
             />
@@ -600,9 +604,7 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="!flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(formData.deductRule!.lateMethod)
-                }}</span>
+              <span>{{ deductUnitText(formData.deductRule!.lateMethod) }}</span>
             </div>
           </ElFormItem>
         </ElCol>
@@ -641,11 +643,9 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="!flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(
-                    formData.deductRule!.earlyMethod,
-                  )
-                }}</span>
+              <span>{{
+                deductUnitText(formData.deductRule!.earlyMethod)
+              }}</span>
             </div>
           </ElFormItem>
         </ElCol>

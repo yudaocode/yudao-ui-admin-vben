@@ -20,9 +20,9 @@ const headerData = computed(() => props.employee);
 const [Descriptions] = useDescription({
   border: false,
   column: 5,
-  layout: 'vertical',
+  direction: 'vertical',
   schema: useHeaderSchema(),
-} as any);
+});
 </script>
 <template>
   <div>

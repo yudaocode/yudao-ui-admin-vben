@@ -54,6 +54,22 @@ export function getDictObj(dictType: string, value: any) {
  */
 export function getDictOptions(
   dictType: string,
+  valueType: 'boolean',
+): Array<DictDataType & { value: boolean }>;
+export function getDictOptions(
+  dictType: string,
+  valueType: 'number',
+): NumberDictDataType[];
+export function getDictOptions(
+  dictType: string,
+  valueType?: 'string',
+): StringDictDataType[];
+export function getDictOptions(
+  dictType: string,
+  valueType: 'boolean' | 'number' | 'string',
+): DictDataType[];
+export function getDictOptions(
+  dictType: string,
   valueType: 'boolean' | 'number' | 'string' = 'string',
 ): DictDataType[] {
   const dictStore = useDictStore();

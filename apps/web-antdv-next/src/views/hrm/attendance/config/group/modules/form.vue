@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import type { Rule, TableColumnsType } from 'antdv-next';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, reactive, ref, watch } from 'vue';
 
@@ -31,7 +34,6 @@ import {
   updateAttendanceGroup,
 } from '#/api/hrm/attendance/group';
 import { $t } from '#/locales';
-import { HrmTableColumn } from '#/views/hrm/components/table-column-any';
 import HrmEmployeeMultiSelect from '#/views/hrm/employee/components/employee-multi-select.vue';
 import {
   HRM_ATTENDANCE_POINT_RADIUS_OPTIONS,
@@ -40,7 +42,7 @@ import {
   HrmAttendanceMisscardDeductMethod,
 } from '#/views/hrm/utils/constants';
 import {
-  formatHrmAttendanceDeductUnit,
+  formatHrmAttendanceDeductUnit as formatDeductUnit,
   formatHrmAttendanceSpecialDate,
   formatHrmAttendanceWeeks,
 } from '#/views/hrm/utils/format';
@@ -62,7 +64,7 @@ const shiftFormRef = ref<InstanceType<typeof ShiftForm>>();
 const specialDateFormRef = ref<InstanceType<typeof SpecialDateForm>>();
 const pointFormRef = ref<InstanceType<typeof PointForm>>();
 const wifiFormRef = ref<InstanceType<typeof WifiForm>>();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
 
 const dialogTitle = computed(() =>
@@ -83,12 +85,40 @@ const misscardDeductMethodOptions = getDictOptions(
   DICT_TYPE.HRM_ATTENDANCE_MISSCARD_DEDUCT_METHOD,
   'number',
 );
+const shiftColumns: TableColumnsType<HrmAttendanceGroupApi.Shift> = [
+  { title: '工作日', key: 'weeks', minWidth: 220 },
+  { title: '上下班时间', key: 'workTime', minWidth: 180 },
+  { title: '打卡时间段', key: 'clockTime', minWidth: 310 },
+  { title: '操作', key: 'actions', width: 120, align: 'center' },
+];
+const specialDateColumns: TableColumnsType<HrmAttendanceGroupApi.SpecialDate> =
+  [
+    { title: '日期', key: 'date', minWidth: 180 },
+    { title: '上下班时间', key: 'workTime', minWidth: 220 },
+    { title: '操作', key: 'actions', width: 120, align: 'center' },
+  ];
+const pointColumns: TableColumnsType<HrmAttendanceGroupApi.Point> = [
+  { title: '地点名称', dataIndex: 'name', key: 'name', minWidth: 150 },
+  { title: '打卡地址', dataIndex: 'address', key: 'address', minWidth: 260 },
+  { title: '经纬度', key: 'coordinate', minWidth: 220 },
+  { title: '范围(米)', dataIndex: 'radius', key: 'radius', width: 110 },
+  { title: '操作', key: 'actions', width: 120, align: 'center' },
+];
+const wifiColumns: TableColumnsType<HrmAttendanceGroupApi.Wifi> = [
+  { title: 'WiFi 名称', dataIndex: 'ssid', key: 'ssid', minWidth: 220 },
+  { title: 'MAC 地址', dataIndex: 'mac', key: 'mac', minWidth: 220 },
+  { title: '操作', key: 'actions', width: 120, align: 'center' },
+];
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '考勤组名称不能为空', trigger: 'blur' }],
   deptIds: [{ validator: validateScope, trigger: 'change' }],
   employeeIds: [{ validator: validateScope, trigger: 'change' }],
 });
+
+function deductUnitText(method?: number) {
+  return method === undefined ? '' : `元/${formatDeductUnit(method)}`;
+}
 
 function createDefaultDeductRule(): HrmAttendanceGroupApi.DeductRule {
   return {
@@ -358,7 +388,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="120px"
     >
@@ -410,35 +440,30 @@ const [Modal, modalApi] = useVbenModal({
             <Button @click="openShiftForm()">新增班次</Button>
           </div>
           <Table
+            :columns="shiftColumns"
             :data-source="formData.shifts"
             :pagination="false"
             bordered
             size="small"
           >
-            <HrmTableColumn title="工作日" :min-width="220">
-              <template #default="{ record }">
+            <template #bodyCell="{ column, record, index }">
+              <template v-if="column.key === 'weeks'">
                 {{ formatHrmAttendanceWeeks(record.weeks) }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="上下班时间" :min-width="180">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'workTime'">
                 {{ record.startTime }} - {{ record.endTime }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="打卡时间段" :min-width="310">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'clockTime'">
                 {{ record.clockInStartTime }} - {{ record.clockInEndTime }} /
                 {{ record.clockOutStartTime }} - {{ record.clockOutEndTime }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="操作" width="120" align="center">
-              <template #default="{ index }">
+              <template v-else-if="column.key === 'actions'">
                 <Button type="link" @click="openShiftForm(index)">编辑</Button>
                 <Button danger type="link" @click="removeShift(index)">
                   删除
                 </Button>
               </template>
-            </HrmTableColumn>
+            </template>
           </Table>
         </div>
       </FormItem>
@@ -451,23 +476,20 @@ const [Modal, modalApi] = useVbenModal({
             <Button @click="openSpecialDateForm()">添加日期</Button>
           </div>
           <Table
+            :columns="specialDateColumns"
             :data-source="formData.specialDates"
             :pagination="false"
             bordered
             size="small"
           >
-            <HrmTableColumn title="日期" :min-width="180">
-              <template #default="{ record }">
+            <template #bodyCell="{ column, record, index }">
+              <template v-if="column.key === 'date'">
                 {{ formatDate(record.date, 'YYYY-MM-DD') }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="上下班时间" :min-width="220">
-              <template #default="{ record }">
+              <template v-else-if="column.key === 'workTime'">
                 {{ formatHrmAttendanceSpecialDate(record, formData.shifts) }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="操作" width="120" align="center">
-              <template #default="{ index }">
+              <template v-else-if="column.key === 'actions'">
                 <Button type="link" @click="openSpecialDateForm(index)">
                   编辑
                 </Button>
@@ -475,7 +497,7 @@ const [Modal, modalApi] = useVbenModal({
                   删除
                 </Button>
               </template>
-            </HrmTableColumn>
+            </template>
           </Table>
         </div>
       </FormItem>
@@ -496,35 +518,23 @@ const [Modal, modalApi] = useVbenModal({
           </div>
           <Table
             v-if="formData.openPointCard"
+            :columns="pointColumns"
             :data-source="formData.points"
             :pagination="false"
             bordered
             size="small"
           >
-            <HrmTableColumn
-              title="地点名称"
-              data-index="name"
-              :min-width="150"
-            />
-            <HrmTableColumn
-              title="打卡地址"
-              data-index="address"
-              :min-width="260"
-            />
-            <HrmTableColumn title="经纬度" :min-width="220">
-              <template #default="{ record }">
+            <template #bodyCell="{ column, record, index }">
+              <template v-if="column.key === 'coordinate'">
                 {{ formatPointCoordinate(record) }}
               </template>
-            </HrmTableColumn>
-            <HrmTableColumn title="范围(米)" data-index="radius" width="110" />
-            <HrmTableColumn title="操作" width="120" align="center">
-              <template #default="{ index }">
+              <template v-else-if="column.key === 'actions'">
                 <Button type="link" @click="openPointForm(index)">编辑</Button>
                 <Button danger type="link" @click="removePoint(index)">
                   删除
                 </Button>
               </template>
-            </HrmTableColumn>
+            </template>
           </Table>
         </div>
       </FormItem>
@@ -540,29 +550,20 @@ const [Modal, modalApi] = useVbenModal({
           </div>
           <Table
             v-if="formData.openWifiCard"
+            :columns="wifiColumns"
             :data-source="formData.wifis"
             :pagination="false"
             bordered
             size="small"
           >
-            <HrmTableColumn
-              title="WiFi 名称"
-              data-index="ssid"
-              :min-width="220"
-            />
-            <HrmTableColumn
-              title="MAC 地址"
-              data-index="mac"
-              :min-width="220"
-            />
-            <HrmTableColumn title="操作" width="120" align="center">
-              <template #default="{ index }">
+            <template #bodyCell="{ column, index }">
+              <template v-if="column.key === 'actions'">
                 <Button type="link" @click="openWifiForm(index)">编辑</Button>
                 <Button danger type="link" @click="removeWifi(index)">
                   删除
                 </Button>
               </template>
-            </HrmTableColumn>
+            </template>
           </Table>
         </div>
       </FormItem>
@@ -585,7 +586,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.lateMethod"
-              :options="lateEarlyDeductMethodOptions as any"
+              :options="lateEarlyDeductMethodOptions"
               class="w-full"
             />
           </FormItem>
@@ -610,9 +611,7 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(formData.deductRule!.lateMethod)
-                }}</span>
+              <span>{{ deductUnitText(formData.deductRule!.lateMethod) }}</span>
             </div>
           </FormItem>
         </Col>
@@ -626,7 +625,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.earlyMethod"
-              :options="lateEarlyDeductMethodOptions as any"
+              :options="lateEarlyDeductMethodOptions"
               class="w-full"
             />
           </FormItem>
@@ -651,11 +650,9 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(
-                    formData.deductRule!.earlyMethod,
-                  )
-                }}</span>
+              <span>{{
+                deductUnitText(formData.deductRule!.earlyMethod)
+              }}</span>
             </div>
           </FormItem>
         </Col>
@@ -669,7 +666,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.absenteeismMethod"
-              :options="absenteeismDeductMethodOptions as any"
+              :options="absenteeismDeductMethodOptions"
               class="w-full"
             />
           </FormItem>
@@ -708,7 +705,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.misscardMethod"
-              :options="misscardDeductMethodOptions as any"
+              :options="misscardDeductMethodOptions"
               class="w-full"
             />
           </FormItem>

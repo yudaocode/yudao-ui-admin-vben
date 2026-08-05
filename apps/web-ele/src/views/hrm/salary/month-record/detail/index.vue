@@ -70,7 +70,7 @@ async function getRecord() {
   }
 }
 
-async function getSummary(formValues?: Record<string, any>) {
+async function getSummary(formValues?: Record<string, unknown>) {
   if (!record.value.id) {
     summaryList.value = [];
     return;

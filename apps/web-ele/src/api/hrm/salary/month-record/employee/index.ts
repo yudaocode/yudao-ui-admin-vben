@@ -86,9 +86,7 @@ export function getSalaryMonthEmployeeRecordList(
 }
 
 /** 获得月度工资员工变动数量 */
-export function getSalaryMonthEmployeeChangeCount(
-  params: HrmSalaryMonthEmployeeRecordApi.ListQuery & Partial<PageParam>,
-) {
+export function getSalaryMonthEmployeeChangeCount(params: PageParam) {
   return requestClient.get<Record<number, number>>(
     '/hrm/salary/month-employee-record/change-count',
     { params },

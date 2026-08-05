@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import { onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
@@ -43,7 +45,7 @@ const formData = ref<FormModel>({
   startYearMonth: undefined,
 });
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   cycleStartDay: [
     { required: true, message: '计薪周期开始日不能为空', trigger: 'blur' },
   ],
@@ -122,7 +124,7 @@ onMounted(loadConfig);
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="max-w-[900px]"
       label-width="132px"
     >

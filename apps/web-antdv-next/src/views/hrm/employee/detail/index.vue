@@ -311,7 +311,7 @@ onMounted(() => {
               <Menu.Item
                 v-for="action in changeActionOptions"
                 :key="action.changeType"
-                @click="openChangeAction(action.changeType as any)"
+                @click="openChangeAction(action.changeType)"
               >
                 {{ action.label }}
               </Menu.Item>

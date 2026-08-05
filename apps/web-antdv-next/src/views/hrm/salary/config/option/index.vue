@@ -203,7 +203,7 @@ getList();
         :default-expand-all-rows="true"
         :loading="loading"
         :pagination="false"
-        :row-key="(row) => row.id as any"
+        :row-key="(row) => row.id"
         children-column-name="children"
       >
         <template #bodyCell="{ column, record }">

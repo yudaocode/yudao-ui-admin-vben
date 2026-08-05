@@ -13,12 +13,16 @@ defineOptions({ name: 'HrmRecruitPostSalaryRangeField' });
 const props = defineProps<{
   /** vee-validate FormActions，用于写入关联隐藏字段 */
   formApi?: {
-    setFieldValue: (field: string, value: any) => Promise<void> | void;
+    setFieldValue: (field: string, value: unknown) => Promise<void> | void;
   };
   /** 最低薪资（对应表单字段 minSalary） */
   modelValue?: null | number;
   /** 当前表单全部值，用于读取 maxSalary / salaryUnit / salaryNegotiable */
-  values?: Record<string, any>;
+  values?: {
+    maxSalary?: null | number;
+    salaryNegotiable?: boolean;
+    salaryUnit?: number;
+  };
 }>();
 
 const emit = defineEmits<{

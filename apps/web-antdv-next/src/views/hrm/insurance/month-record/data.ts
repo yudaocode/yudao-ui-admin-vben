@@ -2,8 +2,6 @@ import type { TableColumnsType } from 'antdv-next';
 
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
 
-import { formatHrmMoney } from '#/views/hrm/utils/format';
-
 export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.InsuranceMonthRecord> {
   return [
     {
@@ -33,8 +31,6 @@ export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.In
       key: 'personalInsuranceAmount',
       align: 'right',
       width: 120,
-      customRender: ({ record }: any) =>
-        formatHrmMoney(record.personalInsuranceAmount),
     },
     {
       title: '公司社保',
@@ -42,8 +38,6 @@ export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.In
       key: 'corporateInsuranceAmount',
       align: 'right',
       width: 120,
-      customRender: ({ record }: any) =>
-        formatHrmMoney(record.corporateInsuranceAmount),
     },
     {
       title: '个人公积金',
@@ -51,8 +45,6 @@ export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.In
       key: 'personalProvidentFundAmount',
       align: 'right',
       width: 130,
-      customRender: ({ record }: any) =>
-        formatHrmMoney(record.personalProvidentFundAmount),
     },
     {
       title: '公司公积金',
@@ -60,8 +52,6 @@ export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.In
       key: 'corporateProvidentFundAmount',
       align: 'right',
       width: 130,
-      customRender: ({ record }: any) =>
-        formatHrmMoney(record.corporateProvidentFundAmount),
     },
     {
       title: '操作',
@@ -70,5 +60,5 @@ export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.In
       fixed: 'right',
       width: 80,
     },
-  ] as any;
+  ];
 }

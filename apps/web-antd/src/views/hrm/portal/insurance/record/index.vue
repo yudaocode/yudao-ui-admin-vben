@@ -127,7 +127,7 @@ async function init() {
 
 /** 计算个人缴纳合计 */
 function personalTotal(
-  record?: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+  record?: Partial<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>,
 ) {
   return (
     (record?.personalInsuranceAmount || 0) +
@@ -137,7 +137,7 @@ function personalTotal(
 
 /** 计算公司缴纳合计 */
 function corporateTotal(
-  record?: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+  record?: Partial<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>,
 ) {
   return (
     (record?.corporateInsuranceAmount || 0) +
@@ -147,14 +147,14 @@ function corporateTotal(
 
 /** 计算参保记录合计 */
 function recordTotal(
-  record?: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
+  record?: Partial<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>,
 ) {
   return personalTotal(record) + corporateTotal(record);
 }
 
 /** 打开详情 */
-function openDetail(record: HrmPortalInsuranceRecordApi.PortalInsuranceRecord) {
-  detailRef.value?.open(record);
+function openDetail(id: number, month?: number) {
+  detailRef.value?.open(id, month);
 }
 
 /** 页面激活时刷新参保记录 */
@@ -229,11 +229,11 @@ onActivated(async () => {
             </template>
             <template v-else-if="column.key === 'totalAmount'">
               <b class="text-primary">
-                ¥ {{ formatHrmMoney(recordTotal(record as any)) }}
+                ¥ {{ formatHrmMoney(recordTotal(record)) }}
               </b>
             </template>
             <template v-else-if="column.key === 'action'">
-              <Button type="link" @click="openDetail(record as any)">
+              <Button type="link" @click="openDetail(record.id, record.month)">
                 查看详情
               </Button>
             </template>

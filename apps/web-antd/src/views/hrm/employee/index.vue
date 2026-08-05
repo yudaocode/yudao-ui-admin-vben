@@ -467,12 +467,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
             todoType: (Object.values(HrmEmployeeTodoType) as number[]).includes(
               todoType,
             )
-              ? (todoType as any)
+              ? todoType
               : undefined,
             surveyType: (
               Object.values(HrmEmployeeSurveyType) as number[]
             ).includes(Number(route.query.surveyType))
-              ? (Number(route.query.surveyType) as any)
+              ? Number(route.query.surveyType)
               : undefined,
             ...formValues,
           });

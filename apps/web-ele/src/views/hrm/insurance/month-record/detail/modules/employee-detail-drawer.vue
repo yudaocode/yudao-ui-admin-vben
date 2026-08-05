@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnCtx } from 'element-plus';
+
 import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/month-record/employee';
 import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
@@ -60,7 +62,7 @@ function getSummary({
   columns,
   data,
 }: {
-  columns: any[];
+  columns: TableColumnCtx<DetailProject>[];
   data: DetailProject[];
 }) {
   return columns.map((column, index) => {
@@ -152,13 +154,16 @@ defineExpose({ open });
           <span v-else>--</span>
         </div>
         <div>
-          <span class="text-muted-foreground">年龄：</span>{{ detail?.age ?? '--' }}
+          <span class="text-muted-foreground">年龄：</span>
+          <span>{{ detail?.age ?? '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground">工号：</span>{{ detail?.jobNumber || '--' }}
+          <span class="text-muted-foreground">工号：</span>
+          {{ detail?.jobNumber || '--' }}
         </div>
         <div>
-          <span class="text-muted-foreground">部门：</span>{{ detail?.deptName || '--' }}
+          <span class="text-muted-foreground">部门：</span>
+          {{ detail?.deptName || '--' }}
         </div>
         <div>
           <span class="text-muted-foreground">员工状态：</span>
@@ -174,19 +179,24 @@ defineExpose({ open });
           {{ formatHrmDate(detail?.entryTime?.valueOf()) }}
         </div>
         <div>
-          <span class="text-muted-foreground">参保城市：</span>{{ detail?.areaName || '--' }}
+          <span class="text-muted-foreground">参保城市：</span>
+          {{ detail?.areaName || '--' }}
         </div>
         <div>
-          <span class="text-muted-foreground">身份证号：</span>{{ detail?.idNumber || '--' }}
+          <span class="text-muted-foreground">身份证号：</span>
+          {{ detail?.idNumber || '--' }}
         </div>
         <div>
-          <span class="text-muted-foreground">个人社保号：</span>{{ detail?.socialSecurityNumber || '--' }}
+          <span class="text-muted-foreground">个人社保号：</span>
+          {{ detail?.socialSecurityNumber || '--' }}
         </div>
         <div>
-          <span class="text-muted-foreground">个人公积金号：</span>{{ detail?.accumulationFundNumber || '--' }}
+          <span class="text-muted-foreground">个人公积金号：</span>
+          {{ detail?.accumulationFundNumber || '--' }}
         </div>
         <div>
-          <span class="text-muted-foreground">参保方案：</span>{{ detail?.schemeName || '--' }}
+          <span class="text-muted-foreground">参保方案：</span>
+          {{ detail?.schemeName || '--' }}
         </div>
       </div>
 

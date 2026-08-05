@@ -340,7 +340,7 @@ const [EmployeeGrid, employeeGridApi] = useVbenVxeGrid({
       ajax: {
         query: async (
           { page }: { page: { currentPage: number; pageSize: number } },
-          formValues: Record<string, any>,
+          formValues: Record<string, unknown>,
         ) => {
           const resultLevelFilterValue = formValues?.resultLevelFilter as
             | string

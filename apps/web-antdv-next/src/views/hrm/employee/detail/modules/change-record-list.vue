@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import type { HrmEmployeeChangeRecordApi } from '#/api/hrm/employee/change-record';
 
@@ -53,39 +55,40 @@ async function handleSuccess() {
   emit('success');
 }
 
-const columns: any[] = [
-  {
-    title: '异动类型',
-    dataIndex: 'type',
-    width: 120,
-    customRender: ({ record }: any) => formatHrmEmployeeChangeType(record.type),
-  },
-  { title: '原部门', dataIndex: 'oldDeptName', width: 120 },
-  { title: '新部门', dataIndex: 'newDeptName', width: 120 },
-  { title: '原岗位', dataIndex: 'oldPostName', width: 120 },
-  { title: '新岗位', dataIndex: 'newPostName', width: 120 },
-  { title: '原职级', dataIndex: 'oldPostLevel', width: 100 },
-  { title: '新职级', dataIndex: 'newPostLevel', width: 100 },
-  { title: '原工作地点', dataIndex: 'oldWorkAddress', width: 140 },
-  { title: '新工作地点', dataIndex: 'newWorkAddress', width: 140 },
-  {
-    title: '原直属上级',
-    dataIndex: 'oldLeaderEmployeeName',
-    width: 120,
-  },
-  {
-    title: '新直属上级',
-    dataIndex: 'newLeaderEmployeeName',
-    width: 120,
-  },
-  {
-    title: '生效日期',
-    dataIndex: 'effectTime',
-    width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
-  },
-  { title: '备注', dataIndex: 'remark', width: 160 },
-];
+const columns: TableColumnsType<HrmEmployeeChangeRecordApi.EmployeeChangeRecord> =
+  [
+    {
+      title: '异动类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 120,
+    },
+    { title: '原部门', dataIndex: 'oldDeptName', width: 120 },
+    { title: '新部门', dataIndex: 'newDeptName', width: 120 },
+    { title: '原岗位', dataIndex: 'oldPostName', width: 120 },
+    { title: '新岗位', dataIndex: 'newPostName', width: 120 },
+    { title: '原职级', dataIndex: 'oldPostLevel', width: 100 },
+    { title: '新职级', dataIndex: 'newPostLevel', width: 100 },
+    { title: '原工作地点', dataIndex: 'oldWorkAddress', width: 140 },
+    { title: '新工作地点', dataIndex: 'newWorkAddress', width: 140 },
+    {
+      title: '原直属上级',
+      dataIndex: 'oldLeaderEmployeeName',
+      width: 120,
+    },
+    {
+      title: '新直属上级',
+      dataIndex: 'newLeaderEmployeeName',
+      width: 120,
+    },
+    {
+      title: '生效日期',
+      dataIndex: 'effectTime',
+      key: 'effectTime',
+      width: 120,
+    },
+    { title: '备注', dataIndex: 'remark', width: 160 },
+  ];
 
 onMounted(getList);
 defineExpose({ getList });
@@ -107,7 +110,16 @@ defineExpose({ getList });
       bordered
       size="small"
       :columns="columns"
-    />
+    >
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'type'">
+          {{ formatHrmEmployeeChangeType(record.type) }}
+        </template>
+        <template v-else-if="column.key === 'effectTime'">
+          {{ formatHrmDateTime(record.effectTime) }}
+        </template>
+      </template>
+    </Table>
     <PositionChangeModal @success="handleSuccess" />
   </div>
 </template>

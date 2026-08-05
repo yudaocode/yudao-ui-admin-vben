@@ -27,6 +27,15 @@ const scopes = computed({
     model.value.scopes = value;
   },
 });
+const customDateRangeValue = computed({
+  get: (): [string, string] | undefined =>
+    customDateRange.value.length === 2
+      ? [customDateRange.value[0]!, customDateRange.value[1]!]
+      : undefined,
+  set: (value: [string, string] | undefined) => {
+    customDateRange.value = value ? [...value] : [];
+  },
+});
 
 function handleCycleTypeChange() {
   model.value.cycle = '';
@@ -100,7 +109,7 @@ function handleCycleTypeChange() {
       />
       <DatePicker.RangePicker
         v-else
-        v-model:value="customDateRange as any"
+        v-model:value="customDateRangeValue"
         class="w-full"
         value-format="YYYY-MM-DD"
       />

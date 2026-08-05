@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { UploadFile } from 'antdv-next';
+
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -8,8 +10,6 @@ import { useVbenForm } from '#/adapter/form';
 import { importEmployee, importEmployeeTemplate } from '#/api/hrm/employee';
 
 import { useImportFormSchema } from '../data';
-
-type FileType = any;
 
 defineOptions({ name: 'HrmEmployeeImportForm' });
 
@@ -45,7 +45,7 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-function beforeUpload(file: FileType) {
+function beforeUpload(file: UploadFile) {
   formApi.setFieldValue('file', file);
   return false;
 }

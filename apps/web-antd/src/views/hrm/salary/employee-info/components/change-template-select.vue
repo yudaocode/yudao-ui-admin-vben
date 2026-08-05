@@ -36,8 +36,8 @@ async function init() {
   return templateList.value;
 }
 
-function handleChange(value: any) {
-  emit('update:modelValue', value);
+function handleChange(value: unknown) {
+  emit('update:modelValue', typeof value === 'number' ? value : undefined);
   emit('change');
 }
 

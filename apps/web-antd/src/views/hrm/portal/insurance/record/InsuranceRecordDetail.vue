@@ -102,15 +102,12 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 打开社保记录详情 */
-async function open(
-  summary: HrmPortalInsuranceRecordApi.PortalInsuranceRecord,
-) {
-  record.value = { ...summary, projects: [] };
-  modalApi.setState({ title: `${summary.month || ''} 月社保表` });
+async function open(id: number, month?: number) {
+  modalApi.setState({ title: `${month || ''} 月社保表` });
   modalApi.open();
   loading.value = true;
   try {
-    record.value = await getInsuranceRecord(summary.id);
+    record.value = await getInsuranceRecord(id);
   } finally {
     loading.value = false;
   }

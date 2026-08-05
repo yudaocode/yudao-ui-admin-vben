@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeContractApi } from '#/api/hrm/employee/contract';
 
 import { onMounted, ref } from 'vue';
@@ -49,26 +51,25 @@ async function handleDelete(id?: number) {
   } catch {}
 }
 
-const columns: any[] = [
+const columns: TableColumnsType<HrmEmployeeContractApi.EmployeeContract> = [
   { title: '合同编号', dataIndex: 'no', width: 150 },
   {
     title: '合同类型',
     dataIndex: 'type',
+    key: 'type',
     width: 110,
-    customRender: ({ record }: any) =>
-      formatHrmEmployeeContractType(record.type),
   },
   {
     title: '开始日期',
     dataIndex: 'startTime',
+    key: 'startTime',
     width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
   },
   {
     title: '结束日期',
     dataIndex: 'endTime',
+    key: 'endTime',
     width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
   },
   {
     title: '期限',
@@ -84,8 +85,8 @@ const columns: any[] = [
   {
     title: '签订日期',
     dataIndex: 'signTime',
+    key: 'signTime',
     width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
   },
   {
     title: '到期提醒',
@@ -118,7 +119,19 @@ onMounted(getList);
       :columns="columns"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'term'">
+        <template v-if="column.key === 'type'">
+          {{ formatHrmEmployeeContractType(record.type) }}
+        </template>
+        <template v-else-if="column.key === 'startTime'">
+          {{ formatHrmDateTime(record.startTime) }}
+        </template>
+        <template v-else-if="column.key === 'endTime'">
+          {{ formatHrmDateTime(record.endTime) }}
+        </template>
+        <template v-else-if="column.key === 'signTime'">
+          {{ formatHrmDateTime(record.signTime) }}
+        </template>
+        <template v-else-if="column.key === 'term'">
           {{ record.term != null ? `${record.term} 年` : '-' }}
         </template>
         <template v-else-if="column.key === 'status'">

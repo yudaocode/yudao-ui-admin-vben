@@ -195,7 +195,7 @@ onMounted(() => {
         :data-source="list"
         :loading="loading"
         :pagination="false"
-        :row-key="(row) => row.employeeId as any"
+        :row-key="(row) => row.employeeId"
         :scroll="{ x: 'max-content' }"
         bordered
         size="small"

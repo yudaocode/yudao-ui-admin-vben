@@ -1,9 +1,11 @@
+import type { EChartsOption } from '@vben/plugins/echarts';
+
 import type { HrmHomeApi } from '#/api/hrm/home';
 
 /** 部门薪资占比饼图配置 */
 export function getSalaryDeptPieChartOptions(
   deptProportions: HrmHomeApi.HrHomeSalaryDept[],
-): any {
+): EChartsOption {
   return {
     title: {
       left: 'center',
@@ -40,7 +42,7 @@ export function getSalaryDeptPieChartOptions(
 /** 团队概况饼图配置 */
 export function getTeamSurveyPieChartOptions(
   data: Array<{ name: string; value: number }>,
-): any {
+): EChartsOption {
   return {
     color: [
       '#409eff',

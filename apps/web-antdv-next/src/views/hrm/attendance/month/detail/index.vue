@@ -263,7 +263,7 @@ watch([employeeId, year, month], getDetail);
             allow-clear
             class="w-60"
             placeholder="请选择请假类型"
-            :options="leaveTypeOptions as any"
+            :options="leaveTypeOptions"
           />
         </div>
         <Table

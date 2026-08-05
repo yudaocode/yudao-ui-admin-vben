@@ -192,6 +192,12 @@ async function confirmResult(id?: number) {
   }
 }
 
+function openAppeal(id?: number) {
+  if (id) {
+    appealFormRef.value?.open(id);
+  }
+}
+
 /** 获取任务分页 */
 async function getTaskPage(
   params: PageParam & { search?: string; stageStatus?: number },
@@ -290,14 +296,14 @@ onActivated(async () => {
         :active-tab="activeTab"
         :list="list"
         :loading="loading"
-        @appeal="appealFormRef?.open as any"
-        @appeal-handle="appealHandleFormRef?.open as any"
+        @appeal="openAppeal"
+        @appeal-handle="appealHandleFormRef?.open"
         @detail="openDetail"
-        @quota="quotaFormRef?.open as any"
-        @result-audit="resultAuditFormRef?.open as any"
+        @quota="quotaFormRef?.open"
+        @result-audit="resultAuditFormRef?.open"
         @result-confirm="confirmResult"
-        @review="reviewFormRef?.open as any"
-        @target-confirm="targetConfirmFormRef?.open as any"
+        @review="reviewFormRef?.open"
+        @target-confirm="targetConfirmFormRef?.open"
       />
       <div class="mt-4 flex justify-end">
         <Pagination

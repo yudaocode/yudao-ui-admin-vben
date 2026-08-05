@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, onMounted, ref } from 'vue';
 
@@ -24,7 +25,7 @@ const model = defineModel<HrmPerformancePlanApi.PerformanceScope[]>({
   required: true,
 });
 
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 
 const hasEmployeeDeptScope = computed(() =>
   model.value.some(
@@ -132,12 +133,13 @@ onMounted(async () => {
             v-model="scope.deptIds"
             :data="deptTree"
             :disabled="disabled"
-            :props="{ label: 'name', value: 'id', children: 'children' } as any"
+            :props="{ label: 'name', children: 'children' }"
             check-strictly
             class="!w-full"
             clearable
             default-expand-all
             multiple
+            node-key="id"
             placeholder="请选择部门"
             show-checkbox
           />

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 
 import { onMounted, ref } from 'vue';
@@ -48,7 +50,7 @@ async function handleDelete(id?: number) {
   } catch {}
 }
 
-const columns: any[] = [
+const columns: TableColumnsType<HrmEmployeeContactApi.EmployeeContact> = [
   { title: '联系人', dataIndex: 'name', key: 'name' },
   { title: '关系', dataIndex: 'relation', key: 'relation' },
   { title: '电话', dataIndex: 'phone', key: 'phone' },

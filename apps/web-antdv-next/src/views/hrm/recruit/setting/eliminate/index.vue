@@ -29,9 +29,9 @@ let rowKeySeed = 0;
 const columns: TableColumnsType<ReasonRow> = [
   {
     title: '序号',
+    key: 'index',
     width: 80,
     align: 'center',
-    customRender: ({ index }: any) => index + 1,
   },
   {
     title: '淘汰原因',
@@ -44,7 +44,7 @@ const columns: TableColumnsType<ReasonRow> = [
     width: 100,
     align: 'center',
   },
-] as any;
+];
 
 /** 查询列表 */
 async function getReasonList() {
@@ -136,7 +136,10 @@ onMounted(() => {
         size="middle"
       >
         <template #bodyCell="{ column, record, index }">
-          <template v-if="column.dataIndex === 'reason'">
+          <template v-if="column.key === 'index'">
+            {{ index + 1 }}
+          </template>
+          <template v-else-if="column.dataIndex === 'reason'">
             <Input
               v-model:value="record.reason"
               :maxlength="255"

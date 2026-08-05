@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
 import { computed, reactive, ref } from 'vue';
@@ -60,7 +62,7 @@ const restTimeRange = computed<[string, string] | undefined>({
   },
 });
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   weeks: [{ required: true, message: '工作日不能为空', trigger: 'change' }],
   startTime: [
     { required: true, message: '上班时间不能为空', trigger: 'change' },
@@ -158,7 +160,7 @@ defineExpose({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       layout="vertical"
     >

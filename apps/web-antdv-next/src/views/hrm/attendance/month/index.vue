@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { PageParam } from '@vben/request';
-
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
@@ -54,9 +52,9 @@ async function handleExport() {
       title: '导出确认',
     });
     const formValues = await gridApi.formApi.getValues();
-    const data = await exportAttendanceMonthRecord({
-      ...buildMonthQueryParams(formValues),
-    } as unknown as PageParam & { month: number; year: number });
+    const data = await exportAttendanceMonthRecord(
+      buildMonthQueryParams(formValues),
+    );
     downloadFileFromBlobPart({
       fileName: '员工月度考勤汇总.xls',
       source: data,
@@ -87,7 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...buildMonthQueryParams(formValues),
-          } as PageParam & { month: number; year: number });
+          });
         },
       },
     },

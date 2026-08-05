@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
 
 import { computed, nextTick, reactive, ref } from 'vue';
@@ -32,7 +34,7 @@ const dialogTitle = computed(() =>
     : $t('ui.actionTitle.edit', ['调薪模板']),
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
 });
 
@@ -76,7 +78,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="96px"
     >

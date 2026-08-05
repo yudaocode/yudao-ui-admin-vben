@@ -143,6 +143,17 @@ function buildSlipColumns(slip: HrmPortalSalarySlipApi.PortalSalarySlip) {
   return columns;
 }
 
+/** 获取工资项说明 */
+function getSlipColumnRemark(
+  slip: HrmPortalSalarySlipApi.PortalSalarySlip,
+  key: unknown,
+) {
+  const optionCode = String(key).replace(/^option/, '');
+  return getLeafOptions(slip.options).find(
+    (option) => String(option.code) === optionCode,
+  )?.remark;
+}
+
 /** 页面激活时刷新工资条 */
 onActivated(async () => {
   accessible.value = await checkHrmPortalAccess(router);
@@ -172,7 +183,7 @@ onActivated(async () => {
             <Select
               v-model:value="sort"
               class="w-[180px]"
-              :options="HRM_SALARY_SLIP_SORT_OPTIONS as any"
+              :options="[...HRM_SALARY_SLIP_SORT_OPTIONS]"
               @change="loadSlips"
             />
             <Button v-if="hasFilter" type="link" @click="resetFilter">
@@ -203,8 +214,8 @@ onActivated(async () => {
           >
             <template #headerCell="{ column }">
               <Tooltip
-                v-if="(column as any).remark"
-                :title="(column as any).remark as string"
+                v-if="getSlipColumnRemark(slip, column.key)"
+                :title="getSlipColumnRemark(slip, column.key)"
               >
                 <span>
                   {{ column.title }}

@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import type { Rule } from 'ant-design-vue/es/form';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
+import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, reactive, ref, watch } from 'vue';
 
@@ -38,7 +41,7 @@ import {
   HrmAttendanceMisscardDeductMethod,
 } from '#/views/hrm/utils/constants';
 import {
-  formatHrmAttendanceDeductUnit,
+  formatHrmAttendanceDeductUnit as formatDeductUnit,
   formatHrmAttendanceSpecialDate,
   formatHrmAttendanceWeeks,
 } from '#/views/hrm/utils/format';
@@ -60,7 +63,7 @@ const shiftFormRef = ref<InstanceType<typeof ShiftForm>>();
 const specialDateFormRef = ref<InstanceType<typeof SpecialDateForm>>();
 const pointFormRef = ref<InstanceType<typeof PointForm>>();
 const wifiFormRef = ref<InstanceType<typeof WifiForm>>();
-const deptTree = ref<any[]>([]);
+const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
 
 const dialogTitle = computed(() =>
@@ -82,11 +85,15 @@ const misscardDeductMethodOptions = getDictOptions(
   'number',
 );
 
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   name: [{ required: true, message: '考勤组名称不能为空', trigger: 'blur' }],
   deptIds: [{ validator: validateScope, trigger: 'change' }],
   employeeIds: [{ validator: validateScope, trigger: 'change' }],
 });
+
+function deductUnitText(method?: number) {
+  return method === undefined ? '' : `元/${formatDeductUnit(method)}`;
+}
 
 function createDefaultDeductRule(): HrmAttendanceGroupApi.DeductRule {
   return {
@@ -356,7 +363,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="120px"
     >
@@ -575,7 +582,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.lateMethod"
-              :options="lateEarlyDeductMethodOptions as any"
+              :options="lateEarlyDeductMethodOptions"
               class="w-full"
             />
           </Form.Item>
@@ -600,9 +607,7 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(formData.deductRule!.lateMethod)
-                }}</span>
+              <span>{{ deductUnitText(formData.deductRule!.lateMethod) }}</span>
             </div>
           </Form.Item>
         </Col>
@@ -616,7 +621,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.earlyMethod"
-              :options="lateEarlyDeductMethodOptions as any"
+              :options="lateEarlyDeductMethodOptions"
               class="w-full"
             />
           </Form.Item>
@@ -641,11 +646,9 @@ const [Modal, modalApi] = useVbenModal({
                 :precision="2"
                 class="flex-1"
               />
-              <span>元/{{
-                  formatHrmAttendanceDeductUnit(
-                    formData.deductRule!.earlyMethod,
-                  )
-                }}</span>
+              <span>{{
+                deductUnitText(formData.deductRule!.earlyMethod)
+              }}</span>
             </div>
           </Form.Item>
         </Col>
@@ -659,7 +662,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.absenteeismMethod"
-              :options="absenteeismDeductMethodOptions as any"
+              :options="absenteeismDeductMethodOptions"
               class="w-full"
             />
           </Form.Item>
@@ -698,7 +701,7 @@ const [Modal, modalApi] = useVbenModal({
           >
             <Select
               v-model:value="formData.deductRule!.misscardMethod"
-              :options="misscardDeductMethodOptions as any"
+              :options="misscardDeductMethodOptions"
               class="w-full"
             />
           </Form.Item>

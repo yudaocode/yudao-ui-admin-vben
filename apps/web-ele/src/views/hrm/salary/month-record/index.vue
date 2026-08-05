@@ -151,7 +151,7 @@ async function getRecord() {
   });
 }
 
-async function getEmployeeChangeCount(formValues?: Record<string, any>) {
+async function getEmployeeChangeCount(formValues?: Record<string, unknown>) {
   if (!record.value.id) {
     employeeChangeCount.value = {};
     return;
@@ -159,9 +159,11 @@ async function getEmployeeChangeCount(formValues?: Record<string, any>) {
   const values = formValues || (await gridApi.formApi.getValues()) || {};
   // 不传 employeeChangeType，保证各 Tab 数量基于同一筛选集合统计
   const raw = await getSalaryMonthEmployeeChangeCount({
-    deptId: values.deptId,
-    employeeName: values.employeeName,
-    jobNumber: values.jobNumber,
+    deptId: typeof values.deptId === 'number' ? values.deptId : undefined,
+    employeeName:
+      typeof values.employeeName === 'string' ? values.employeeName : undefined,
+    jobNumber:
+      typeof values.jobNumber === 'string' ? values.jobNumber : undefined,
     monthRecordId: record.value.id,
   });
   employeeChangeCount.value = Object.fromEntries(
@@ -172,7 +174,7 @@ async function getEmployeeChangeCount(formValues?: Record<string, any>) {
   );
 }
 
-async function getSummary(formValues?: Record<string, any>) {
+async function getSummary(formValues?: Record<string, unknown>) {
   if (!record.value.id) {
     summaryList.value = [];
     return;

@@ -79,8 +79,8 @@ interface HttpResponse<T = any> {
 
 interface PageParam {
   [key: string]: any;
-  pageNo: number;
-  pageSize: number;
+  pageNo?: number;
+  pageSize?: number;
 }
 
 interface PageResult<T> {

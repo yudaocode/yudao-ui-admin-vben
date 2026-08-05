@@ -46,7 +46,7 @@ const options = computed(() =>
     })),
 );
 
-function handleChange(value: any) {
+function handleChange(value: unknown) {
   emit(
     'change',
     schemeList.value.find((scheme) => scheme.id === value),

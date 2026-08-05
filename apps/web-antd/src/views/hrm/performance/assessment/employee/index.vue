@@ -41,6 +41,7 @@ async function loadPlanOptions() {
     label: item.name,
     value: item.id,
   }));
+  gridApi.formApi.updateSchema(useEmployeeArchiveFormSchema(planOptions.value));
 }
 
 function openDetail(id: number) {
@@ -60,15 +61,21 @@ async function handleDelete(ids: number[]) {
   await confirm($t('ui.actionMessage.deleteConfirm'));
   await deletePerformanceArchiveRecords(ids);
   message.success($t('ui.actionMessage.deleteSuccess'));
-  const result = await gridApi.query();
-  if (!(result as any)?.page?.total) handleBack();
+  const page = await getPerformanceAssessmentArchivePage({
+    pageNo: 1,
+    pageSize: 1,
+    employeeId: employeeId.value,
+  });
+  if (!page.total) {
+    handleBack();
+    return;
+  }
+  await gridApi.query();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: computed(() =>
-      useEmployeeArchiveFormSchema(planOptions.value),
-    ) as any,
+    schema: useEmployeeArchiveFormSchema([]),
   },
   gridOptions: {
     columns: useEmployeeArchiveGridColumns(),
@@ -77,7 +84,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async (
           { page }: { page: { currentPage: number; pageSize: number } },
-          formValues: Record<string, any>,
+          formValues: Record<string, unknown>,
         ) => {
           const data = await getPerformanceAssessmentArchivePage({
             pageNo: page.currentPage,

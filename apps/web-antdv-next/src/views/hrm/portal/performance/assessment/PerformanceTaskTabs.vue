@@ -25,6 +25,18 @@ const emit = defineEmits<{
 const activeTab = defineModel<number>('activeTab', { required: true });
 const activeStatus = defineModel<number>('activeStatus', { required: true });
 const keyword = defineModel<string>('keyword', { required: true });
+const activeTabKey = computed({
+  get: () => String(activeTab.value),
+  set: (value: string) => {
+    activeTab.value = Number(value);
+  },
+});
+const activeStatusKey = computed({
+  get: () => String(activeStatus.value),
+  set: (value: string) => {
+    activeStatus.value = Number(value);
+  },
+});
 
 const mainTabs = computed(() => [
   {
@@ -61,7 +73,7 @@ const mainTabs = computed(() => [
 </script>
 
 <template>
-  <Tabs v-model:active-key="activeTab as any" @change="emit('mainChange')">
+  <Tabs v-model:active-key="activeTabKey" @change="emit('mainChange')">
     <template #rightExtra>
       <Input
         v-model:value="keyword"
@@ -91,7 +103,7 @@ const mainTabs = computed(() => [
     </TabPane>
   </Tabs>
 
-  <Tabs v-model:active-key="activeStatus as any" @change="emit('statusChange')">
+  <Tabs v-model:active-key="activeStatusKey" @change="emit('statusChange')">
     <TabPane v-for="item in statusTabs" :key="String(item.name)">
       <template #tab>
         <span>

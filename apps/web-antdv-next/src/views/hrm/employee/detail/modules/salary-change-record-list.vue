@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmSalaryChangeRecordApi } from '#/api/hrm/salary/change-record';
 
 import { onMounted, ref } from 'vue';
@@ -16,12 +18,12 @@ const props = defineProps<{ employeeId: number }>();
 const loading = ref(false);
 const list = ref<HrmSalaryChangeRecordApi.SalaryChangeRecord[]>([]);
 
-const columns: any[] = [
+const columns: TableColumnsType<HrmSalaryChangeRecordApi.SalaryChangeRecord> = [
   {
     title: '生效日期',
     dataIndex: 'effectTime',
+    key: 'effectTime',
     width: 120,
-    customRender: ({ text }: any) => formatHrmDateTime(text),
   },
   {
     title: '类型',
@@ -87,7 +89,10 @@ onMounted(async () => {
       :columns="columns"
     >
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'recordType'">
+        <template v-if="column.key === 'effectTime'">
+          {{ formatHrmDateTime(record.effectTime) }}
+        </template>
+        <template v-else-if="column.key === 'recordType'">
           {{
             record.recordType === HrmSalaryRecordType.FIXED ? '定薪' : '调薪'
           }}

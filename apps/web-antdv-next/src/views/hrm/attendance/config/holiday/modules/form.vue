@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Rule } from 'antdv-next';
+
 import type { HrmAttendanceHolidayApi } from '#/api/hrm/attendance/holiday';
 
 import { reactive, ref } from 'vue';
@@ -6,6 +8,7 @@ import { reactive, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { fromTimestampPickerValue, toTimestampPickerValue } from '@vben/utils';
 
 import { DatePicker, Form, FormItem, message, Select } from 'antdv-next';
 
@@ -26,8 +29,7 @@ const formRef = ref();
 const formData = ref<HrmAttendanceHolidayApi.AttendanceHoliday>({
   type: HrmAttendanceHolidayType.REST,
 });
-
-const formRules = reactive({
+const formRules = reactive<Record<string, Rule[]>>({
   date: [{ required: true, message: '日期不能为空', trigger: 'change' }],
   type: [{ required: true, message: '日期类型不能为空', trigger: 'change' }],
 });
@@ -66,25 +68,23 @@ const [Modal, modalApi] = useVbenModal({
     <Form
       ref="formRef"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
       class="mx-4"
       label-width="88px"
     >
       <FormItem label="日期" name="date">
         <DatePicker
-          v-model:value="formData.date as any"
+          :value="toTimestampPickerValue(formData.date)"
           class="w-full"
           value-format="x"
+          @update:value="formData.date = fromTimestampPickerValue($event)"
         />
       </FormItem>
       <FormItem label="日期类型" name="type">
         <Select
           v-model:value="formData.type"
           :options="
-            getDictOptions(
-              DICT_TYPE.HRM_ATTENDANCE_HOLIDAY_TYPE,
-              'number',
-            ) as any
+            getDictOptions(DICT_TYPE.HRM_ATTENDANCE_HOLIDAY_TYPE, 'number')
           "
           class="w-full"
           placeholder="请选择日期类型"

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TableColumnsType } from 'antdv-next';
+
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
 import { onMounted, reactive, ref } from 'vue';
@@ -8,7 +10,6 @@ import { useVbenModal } from '@vben/common-ui';
 import { Card, Descriptions, DescriptionsItem, Table } from 'antdv-next';
 
 import { getSalaryEmployeeMonthRecordPage } from '#/api/hrm/salary/month-record/employee';
-import { HrmTableColumn } from '#/views/hrm/components/table-column-any';
 import { HrmSalaryMonthStatus } from '#/views/hrm/utils/constants';
 import { formatHrmMoney, formatHrmYearMonth } from '#/views/hrm/utils/format';
 
@@ -25,6 +26,35 @@ const queryParams = reactive({
 });
 
 const detail = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>();
+const historyColumns: TableColumnsType<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord> =
+  [
+    { title: '计薪月份', key: 'yearMonth', width: 110 },
+    { title: '计薪周期', key: 'workDays', minWidth: 150 },
+    {
+      title: '应发工资',
+      key: 'expectedPaySalary',
+      align: 'right',
+      width: 130,
+    },
+    {
+      title: '个人所得税',
+      key: 'personalTax',
+      align: 'right',
+      width: 130,
+    },
+    {
+      title: '实发工资',
+      key: 'realPaySalary',
+      align: 'right',
+      width: 130,
+    },
+    { title: '操作', key: 'actions', align: 'center', width: 80 },
+  ];
+const optionColumns: TableColumnsType<HrmSalaryMonthEmployeeRecordApi.OptionValue> =
+  [
+    { title: '工资项', dataIndex: 'name', key: 'name', minWidth: 180 },
+    { title: '金额', key: 'value', align: 'right', width: 140 },
+  ];
 
 const [DetailModal, detailModalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
@@ -86,58 +116,30 @@ onMounted(() => {
         total,
         showSizeChanger: true,
       }"
-      :row-key="(record) => record.id! as any"
+      :row-key="(record) => record.id ?? `${record.year}-${record.month}`"
+      :columns="historyColumns"
       @change="handleTableChange"
     >
-      <HrmTableColumn title="计薪月份" data-index="year" width="110">
-        <template #default="{ record }">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'yearMonth'">
           {{ formatHrmYearMonth(record.year, record.month) }}
         </template>
-      </HrmTableColumn>
-      <HrmTableColumn
-        title="计薪周期"
-        data-index="actualWorkDay"
-        :min-width="150"
-      >
-        <template #default="{ record }">
+        <template v-else-if="column.key === 'workDays'">
           {{ record.actualWorkDay ?? '-' }} / {{ record.needWorkDay ?? '-' }} 天
         </template>
-      </HrmTableColumn>
-      <HrmTableColumn
-        title="应发工资"
-        data-index="expectedPaySalary"
-        align="right"
-        width="130"
-      >
-        <template #default="{ record }">
+        <template v-else-if="column.key === 'expectedPaySalary'">
           {{ formatHrmMoney(record.expectedPaySalary) }}
         </template>
-      </HrmTableColumn>
-      <HrmTableColumn
-        title="个人所得税"
-        data-index="personalTax"
-        align="right"
-        width="130"
-      >
-        <template #default="{ record }">
+        <template v-else-if="column.key === 'personalTax'">
           {{ formatHrmMoney(record.personalTax) }}
         </template>
-      </HrmTableColumn>
-      <HrmTableColumn
-        title="实发工资"
-        data-index="realPaySalary"
-        align="right"
-        width="130"
-      >
-        <template #default="{ record }">
+        <template v-else-if="column.key === 'realPaySalary'">
           {{ formatHrmMoney(record.realPaySalary) }}
         </template>
-      </HrmTableColumn>
-      <HrmTableColumn title="操作" align="center" width="80">
-        <template #default="{ record }">
+        <template v-else-if="column.key === 'actions'">
           <a @click="openDetail(record)">详情</a>
         </template>
-      </HrmTableColumn>
+      </template>
     </Table>
 
     <DetailModal
@@ -167,21 +169,16 @@ onMounted(() => {
         bordered
         size="small"
         class="mt-4"
+        :columns="optionColumns"
         :data-source="detail.optionValues"
         :pagination="false"
-        :row-key="(row) => row.code ?? (row.name as any)"
+        :row-key="(row) => row.code ?? row.name ?? ''"
       >
-        <HrmTableColumn title="工资项" data-index="name" :min-width="180" />
-        <HrmTableColumn
-          title="金额"
-          data-index="value"
-          align="right"
-          width="140"
-        >
-          <template #default="{ record }">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'value'">
             {{ formatHrmMoney(record.value) }}
           </template>
-        </HrmTableColumn>
+        </template>
       </Table>
     </DetailModal>
   </Card>

@@ -84,7 +84,7 @@ async function ensureSelectedChannel() {
 }
 
 /** 选中变化 */
-function handleChange(value: any) {
+function handleChange(value: unknown) {
   emit(
     'change',
     channelOptions.value.find((channel) => channel.id === value),

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FormInstance } from 'antdv-next';
+import type { FormInstance, Rule } from 'antdv-next';
 
 import type { HrmPortalAttendanceLeaveApi } from '#/api/hrm/portal/attendance/leave';
 
@@ -8,6 +8,7 @@ import { nextTick, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { fromTimestampPickerValue, toTimestampPickerValue } from '@vben/utils';
 
 import {
   DatePicker,
@@ -27,8 +28,6 @@ const emit = defineEmits<{
   success: [];
 }>();
 
-type Rule = any;
-
 const formRef = ref<FormInstance>();
 const formData = ref<HrmPortalAttendanceLeaveApi.LeaveCreate>({
   type: undefined,
@@ -38,7 +37,6 @@ const formData = ref<HrmPortalAttendanceLeaveApi.LeaveCreate>({
   reason: '',
   remark: '',
 });
-
 const leaveTypeOptions = getDictOptions(
   DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE,
   'string',
@@ -50,7 +48,7 @@ const formRules: Record<string, Rule[]> = {
   endTime: [
     { required: true, message: '请选择结束时间', trigger: 'change' },
     {
-      validator: async (_rule: Rule, value: any) => {
+      validator: async (_rule: Rule, value: unknown) => {
         if (
           value &&
           formData.value.startTime &&
@@ -132,35 +130,37 @@ async function resetForm() {
       ref="formRef"
       :label-col="{ style: { width: '100px' } }"
       :model="formData"
-      :rules="formRules as any"
+      :rules="formRules"
     >
       <FormItem label="请假类型" name="type">
         <Select
           v-model:value="formData.type"
           allow-clear
           class="w-full"
-          :options="leaveTypeOptions as any"
+          :options="leaveTypeOptions"
           placeholder="请选择请假类型"
         />
       </FormItem>
       <FormItem label="开始时间" name="startTime">
         <DatePicker
-          v-model:value="formData.startTime as any"
+          :value="toTimestampPickerValue(formData.startTime)"
           class="w-full"
           format="YYYY-MM-DD HH:mm:ss"
           placeholder="请选择开始时间"
           show-time
           value-format="x"
+          @update:value="formData.startTime = fromTimestampPickerValue($event)"
         />
       </FormItem>
       <FormItem label="结束时间" name="endTime">
         <DatePicker
-          v-model:value="formData.endTime as any"
+          :value="toTimestampPickerValue(formData.endTime)"
           class="w-full"
           format="YYYY-MM-DD HH:mm:ss"
           placeholder="请选择结束时间"
           show-time
           value-format="x"
+          @update:value="formData.endTime = fromTimestampPickerValue($event)"
         />
       </FormItem>
       <FormItem label="请假天数" name="day">

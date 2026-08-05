@@ -104,9 +104,7 @@ export namespace HrmAttendanceStatisticsApi {
 }
 
 /** 获得月度考勤汇总分页 */
-export function getAttendanceMonthRecordPage(
-  params: PageParam & { month: number; year: number },
-) {
+export function getAttendanceMonthRecordPage(params: PageParam) {
   return requestClient.get<PageResult<HrmAttendanceStatisticsApi.MonthRecord>>(
     '/hrm/attendance/statistics/month-record-page',
     { params },
@@ -126,9 +124,7 @@ export function getAttendanceMonthDetail(params: {
 }
 
 /** 导出月度考勤汇总 */
-export function exportAttendanceMonthRecord(
-  params: PageParam & { month: number; year: number },
-) {
+export function exportAttendanceMonthRecord(params: PageParam) {
   return requestClient.download(
     '/hrm/attendance/statistics/month-record-export-excel',
     { params },
@@ -136,9 +132,7 @@ export function exportAttendanceMonthRecord(
 }
 
 /** 获得月度打卡概况分页 */
-export function getAttendanceMonthDailyOverviewPage(
-  params: PageParam & { month: number; year: number },
-) {
+export function getAttendanceMonthDailyOverviewPage(params: PageParam) {
   return requestClient.get<
     PageResult<HrmAttendanceStatisticsApi.MonthDailyOverview>
   >('/hrm/attendance/statistics/month-daily-page', { params });
@@ -156,9 +150,7 @@ export function getAttendanceDailyDetail(params: {
 }
 
 /** 导出月度打卡概况 */
-export function exportAttendanceMonthDailyOverview(
-  params: PageParam & { month: number; year: number },
-) {
+export function exportAttendanceMonthDailyOverview(params: PageParam) {
   return requestClient.download(
     '/hrm/attendance/statistics/month-daily-export-excel',
     { params },
