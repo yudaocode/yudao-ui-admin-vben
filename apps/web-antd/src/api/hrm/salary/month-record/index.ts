@@ -21,7 +21,7 @@ export namespace HrmSalaryMonthRecordApi {
     realPaySalary?: number; // 实发工资
     corporateInsuranceAmount?: number; // 公司社保金额
     corporateProvidentFundAmount?: number; // 公司公积金金额
-    status?: number; // 员工状态
+    status?: number; // 工资表状态
     optionHeaders?: HrmSalaryOptionApi.SalaryOption[]; // 薪资项表头
     createTime?: Date; // 创建时间
   }

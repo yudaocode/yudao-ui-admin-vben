@@ -4,20 +4,16 @@ import type { HrmEmployeeCertificateApi } from '#/api/hrm/employee/certificate';
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElLoading,
-  ElMessage,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
 
 import {
   deleteEmployeeCertificate,
   getEmployeeCertificateList,
 } from '#/api/hrm/employee/certificate';
 import { $t } from '#/locales';
+import { formatHrmDateTime } from '#/views/hrm/utils/format';
 
 import Form from './certificate-form.vue';
 
@@ -45,16 +41,12 @@ function openForm(row?: HrmEmployeeCertificateApi.EmployeeCertificate) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeCertificate(id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    loadingInstance.close();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());
@@ -72,9 +64,25 @@ defineExpose({ getList });
     <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
       <ElTableColumn label="证书名称" min-width="120" prop="name" />
       <ElTableColumn label="证书级别" min-width="100" prop="level" />
-      <ElTableColumn label="证书编码" min-width="120" prop="no" />
+      <ElTableColumn label="证书编号" min-width="120" prop="no" />
+      <ElTableColumn label="有效开始日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.startTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="有效结束日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.endTime) }}
+        </template>
+      </ElTableColumn>
       <ElTableColumn label="发证机构" min-width="140" prop="issuingAuthority" />
-      <ElTableColumn align="center" label="操作" width="140">
+      <ElTableColumn label="发证日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.issuingTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="备注" min-width="140" prop="remark" />
+      <ElTableColumn align="center" fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <ElButton
             v-if="hasAccessByCodes(['hrm:employee:update'])"

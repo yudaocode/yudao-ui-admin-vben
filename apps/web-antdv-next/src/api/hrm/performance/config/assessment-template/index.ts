@@ -5,8 +5,8 @@ import { requestClient } from '#/api/request';
 export namespace HrmPerformanceAssessmentTemplateApi {
   /** AssessmentQuota */
   export interface AssessmentQuota {
-    name?: string; // 模板名称
-    illustrate?: string; // 模板说明
+    name?: string; // 指标名称
+    illustrate?: string; // 指标说明
     standard?: string; // 标准值
     weight?: number; // 指标权重
     scoreType?: number; // 分数类型
@@ -14,7 +14,7 @@ export namespace HrmPerformanceAssessmentTemplateApi {
 
   /** AssessmentDimension */
   export interface AssessmentDimension {
-    name?: string; // 模板名称
+    name?: string; // 维度名称
     quotaType?: number; // 指标类型
     weight?: number; // 指标权重
     remark?: string; // 备注

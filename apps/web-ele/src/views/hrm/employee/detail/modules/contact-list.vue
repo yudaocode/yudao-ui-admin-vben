@@ -4,14 +4,9 @@ import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElLoading,
-  ElMessage,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
 
 import {
   deleteEmployeeContact,
@@ -45,16 +40,12 @@ function openForm(row?: HrmEmployeeContactApi.EmployeeContact) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeContact(id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    loadingInstance.close();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());

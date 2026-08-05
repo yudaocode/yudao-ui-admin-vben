@@ -12,7 +12,7 @@ export namespace HrmEmployeeFileApi {
   /** 保存请求 */
   export interface SaveReq {
     employeeId: number; // 员工编号
-    type: number; // 聘用形式
+    type: number; // 附件类型
     fileUrls: string[]; // 附件地址数组
   }
 }

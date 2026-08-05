@@ -4,20 +4,21 @@ import type { HrmEmployeeEducationExperienceApi } from '#/api/hrm/employee/educa
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
-import {
-  ElButton,
-  ElLoading,
-  ElMessage,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
 
 import {
   deleteEmployeeEducationExperience,
   getEmployeeEducationExperienceList,
 } from '#/api/hrm/employee/education-experience';
+import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
+import {
+  formatHrmDateTime,
+  formatHrmEmployeeTeachingMethod,
+} from '#/views/hrm/utils/format';
 
 import Form from './education-form.vue';
 
@@ -49,16 +50,12 @@ function openForm(
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeEducationExperience(id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    loadingInstance.close();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());
@@ -74,10 +71,42 @@ defineExpose({ getList });
       <ElButton type="primary" @click="openForm()">新增</ElButton>
     </div>
     <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
-      <ElTableColumn label="学历" min-width="100" prop="education" />
+      <ElTableColumn label="学历" min-width="100">
+        <template #default="{ row }">
+          <DictTag
+            v-if="row.education != null"
+            :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
+            :value="row.education"
+          />
+          <span v-else>-</span>
+        </template>
+      </ElTableColumn>
       <ElTableColumn label="毕业院校" min-width="150" prop="graduateSchool" />
       <ElTableColumn label="专业" min-width="120" prop="major" />
-      <ElTableColumn align="center" label="操作" width="140">
+      <ElTableColumn label="入学日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.admissionTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="毕业日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.graduationTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="教学方式" min-width="110">
+        <template #default="{ row }">
+          {{ formatHrmEmployeeTeachingMethod(row.teachingMethods) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="第一学历" min-width="100">
+        <template #default="{ row }">
+          <DictTag
+            :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+            :value="row.firstDegree"
+          />
+        </template>
+      </ElTableColumn>
+      <ElTableColumn align="center" fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <ElButton
             v-if="hasAccessByCodes(['hrm:employee:update'])"

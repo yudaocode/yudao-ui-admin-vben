@@ -4,12 +4,12 @@ export namespace HrmSalaryTaxRuleApi {
   /** 计税规则 */
   export interface SalaryTaxRule {
     id?: number; // 编号
-    name: string; // 模板名称
-    type?: number; // 聘用形式
+    name: string; // 计税规则名称
+    type?: number; // 计税类型
     taxEnabled?: boolean; // 是否计税
     threshold?: number; // 起征阈值
     decimalScale?: number; // 小数位数
-    cycleType?: number; // 考核周期类型
+    cycleType?: number; // 计税周期类型
     usedGroupCount?: number; // 使用该规则的薪资组数量
     createTime?: Date; // 创建时间
   }

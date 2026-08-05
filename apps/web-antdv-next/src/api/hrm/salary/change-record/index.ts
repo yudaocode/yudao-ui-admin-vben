@@ -14,7 +14,7 @@ export namespace HrmSalaryChangeRecordApi {
     afterTotal?: number; // 调整后正式工资
     probationBeforeTotal?: number; // 调整前试用期工资
     probationAfterTotal?: number; // 调整后试用期工资
-    status?: number; // 员工状态
+    status?: number; // 状态
     remark?: string; // 备注
     salaryOptions?: HrmSalaryOptionApi.OptionValue[]; // 薪资项列表
     probationSalaryOptions?: HrmSalaryOptionApi.OptionValue[]; // 试用期薪资项列表

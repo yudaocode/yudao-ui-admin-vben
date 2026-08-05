@@ -25,6 +25,7 @@ import {
   HrmEmployeeChangeType,
   HrmEmployeeContractStatusOptions,
   HrmEmployeeContractTermOptions,
+  HrmEmployeeContractType,
   HrmEmployeeContractTypeOptions,
   HrmEmployeeEntryStatus,
   HrmEmployeeIdType,
@@ -35,6 +36,50 @@ import {
   HrmEmployeeTeachingMethodOptions,
   HrmEmployeeType,
 } from '#/views/hrm/utils/constants';
+
+/** DatePicker valueFormat=x 的可选值（避免 z.any） */
+const optionalTimestampSchema = z.union([
+  z.number(),
+  z.string(),
+  z.null(),
+  z.undefined(),
+]);
+
+/**
+ * 结束时间不得早于开始时间。
+ * - 合同/证书：不传 unit，做完整时间戳比较
+ * - 教育/工作/培训/离职日期：传 'day'
+ */
+function refineNotBeforeStart(
+  startValue: unknown,
+  message: string,
+  unit?: 'day',
+) {
+  return optionalTimestampSchema.refine(
+    (value) => {
+      if (value === null || value === undefined || value === '') return true;
+      if (
+        startValue === null ||
+        startValue === undefined ||
+        startValue === ''
+      ) {
+        return true;
+      }
+      const end = dayjs(Number(value));
+      const start = dayjs(Number(startValue));
+      return unit ? !end.isBefore(start, unit) : !end.isBefore(start);
+    },
+    { message },
+  );
+}
+
+/** 必填时间戳（DatePicker valueFormat=x） */
+function refineRequiredTimestamp(message: string) {
+  return optionalTimestampSchema.refine(
+    (value) => value !== null && value !== undefined && value !== '',
+    { message },
+  );
+}
 
 /** 异动原因选项（调岗/晋升/转正） */
 function getNormalChangeReasonOptions() {
@@ -48,6 +93,26 @@ function getDemoteChangeReasonOptions() {
   return HrmEmployeeChangeReasonOptions.filter(
     (item) => item.value >= HrmEmployeeChangeReason.VIOLATION,
   );
+}
+
+/** 岗位异动表单岗位文案前缀 */
+function getPositionChangePostLabel(
+  changeType: 'demotion' | 'promotion' | 'regular' | 'transfer',
+): string {
+  switch (changeType) {
+    case 'demotion': {
+      return '降级后';
+    }
+    case 'promotion': {
+      return '晋升后';
+    }
+    case 'regular': {
+      return '转正后';
+    }
+    default: {
+      return '新';
+    }
+  }
 }
 
 /** 列表搜索表单 */
@@ -266,6 +331,96 @@ export function useImportFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 默认员工表单数据 */
+export function createDefaultEmployeeFormData(): HrmEmployeeApi.Employee {
+  return {
+    name: '',
+    jobNumber: '',
+    mobile: '',
+    country: '中国',
+    idType: HrmEmployeeIdType.ID_CARD,
+    entryStatus: HrmEmployeeEntryStatus.ACTIVE,
+    type: HrmEmployeeType.FORMAL,
+    probation: HRM_EMPLOYEE_NO_PROBATION_MONTHS,
+  };
+}
+
+/** 状态页签配置 */
+export function getEmployeeStatusTabItems() {
+  return [
+    { status: 11, label: '在职' },
+    { status: 12, label: '全职' },
+    {
+      status: HrmEmployeeStatus.INTERN,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.INTERN,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.LABOR,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.LABOR,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.CONSULTANT,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.CONSULTANT,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.REHIRE,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.REHIRE,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.OUTSOURCE,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.OUTSOURCE,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.PART_TIME,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.PART_TIME,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.PROBATION,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.PROBATION,
+      ),
+    },
+    {
+      status: HrmEmployeeStatus.REGULAR,
+      label: getDictLabel(
+        DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        HrmEmployeeStatus.REGULAR,
+      ),
+    },
+    { status: 13, label: '待入职' },
+    { status: 14, label: '待离职' },
+    { status: 15, label: '已离职' },
+  ];
+}
+
+/** 异动类型映射 */
+export const EMPLOYEE_CHANGE_TYPE_MAP = {
+  regular: HrmEmployeeChangeType.REGULAR,
+  transfer: HrmEmployeeChangeType.TRANSFER,
+  promotion: HrmEmployeeChangeType.PROMOTION,
+  demotion: HrmEmployeeChangeType.DEMOTION,
+  'full-time': HrmEmployeeChangeType.FULL_TIME,
+} as const;
+
 /** 设置参保方案表单 */
 export function useInsuranceSchemeFormSchema(): VbenFormSchema[] {
   return [
@@ -295,25 +450,6 @@ export function useInsuranceSchemeFormSchema(): VbenFormSchema[] {
 /** 员工转正表单 */
 export function useRegularFormSchema(): VbenFormSchema[] {
   return usePositionChangeFormSchema('regular');
-}
-
-function getPositionChangePostLabel(
-  changeType: 'demotion' | 'promotion' | 'regular' | 'transfer',
-): string {
-  switch (changeType) {
-    case 'demotion': {
-      return '降级后';
-    }
-    case 'promotion': {
-      return '晋升后';
-    }
-    case 'regular': {
-      return '转正后';
-    }
-    default: {
-      return '新';
-    }
-  }
 }
 
 /** 岗位异动共享表单 */
@@ -521,22 +657,13 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['applyQuitTime', 'planQuitTime'],
         rules(values) {
-          return z
-            .any()
-            .refine(
-              (value) => value !== null && value !== undefined && value !== '',
-              { message: '请选择计划离职时间' },
-            )
-            .refine(
-              (value) =>
-                !value ||
-                !values.applyQuitTime ||
-                !dayjs(Number(value)).isBefore(
-                  dayjs(Number(values.applyQuitTime)),
-                  'day',
-                ),
-              { message: '计划离职日期不能早于申请离职日期' },
-            );
+          return refineRequiredTimestamp('请选择计划离职时间').pipe(
+            refineNotBeforeStart(
+              values.applyQuitTime,
+              '计划离职日期不能早于申请离职日期',
+              'day',
+            ),
+          );
         },
       },
     },
@@ -599,22 +726,13 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['planQuitTime', 'salarySettlementTime'],
         rules(values) {
-          return z
-            .any()
-            .refine(
-              (value) => value !== null && value !== undefined && value !== '',
-              { message: '请选择薪资结算日期' },
-            )
-            .refine(
-              (value) =>
-                !value ||
-                !values.planQuitTime ||
-                !dayjs(Number(value)).isBefore(
-                  dayjs(Number(values.planQuitTime)),
-                  'day',
-                ),
-              { message: '薪资结算日期不能早于计划离职日期' },
-            );
+          return refineRequiredTimestamp('请选择薪资结算日期').pipe(
+            refineNotBeforeStart(
+              values.planQuitTime,
+              '薪资结算日期不能早于计划离职日期',
+              'day',
+            ),
+          );
         },
       },
     },
@@ -1062,6 +1180,15 @@ export function useCertificateFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         class: 'w-full',
       },
+      dependencies: {
+        triggerFields: ['startTime', 'endTime'],
+        rules(values) {
+          return refineNotBeforeStart(
+            values.startTime,
+            '有效结束日期不能早于有效开始日期',
+          );
+        },
+      },
     },
     {
       fieldName: 'issuingAuthority',
@@ -1141,6 +1268,16 @@ export function useEducationFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         class: 'w-full',
       },
+      dependencies: {
+        triggerFields: ['admissionTime', 'graduationTime'],
+        rules(values) {
+          return refineNotBeforeStart(
+            values.admissionTime,
+            '毕业日期不能早于入学日期',
+            'day',
+          );
+        },
+      },
     },
     {
       fieldName: 'teachingMethods',
@@ -1201,6 +1338,16 @@ export function useWorkFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
+      },
+      dependencies: {
+        triggerFields: ['startTime', 'endTime'],
+        rules(values) {
+          return refineNotBeforeStart(
+            values.startTime,
+            '结束日期不能早于开始日期',
+            'day',
+          );
+        },
       },
     },
     {
@@ -1271,6 +1418,16 @@ export function useTrainingFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         class: 'w-full',
       },
+      dependencies: {
+        triggerFields: ['startTime', 'endTime'],
+        rules(values) {
+          return refineNotBeforeStart(
+            values.startTime,
+            '结束日期不能早于开始日期',
+            'day',
+          );
+        },
+      },
     },
     {
       fieldName: 'duration',
@@ -1312,7 +1469,6 @@ export function useContractFormSchema(): VbenFormSchema[] {
       fieldName: 'no',
       label: '合同编码',
       component: 'Input',
-      rules: 'required',
       componentProps: { clearable: true },
     },
     {
@@ -1348,14 +1504,31 @@ export function useContractFormSchema(): VbenFormSchema[] {
         valueFormat: 'x',
         class: 'w-full',
       },
+      dependencies: {
+        triggerFields: ['startTime', 'endTime'],
+        rules(values) {
+          return refineRequiredTimestamp('结束日期不能为空').pipe(
+            refineNotBeforeStart(
+              values.startTime,
+              '合同结束日期不能早于开始日期',
+            ),
+          );
+        },
+      },
     },
     {
       fieldName: 'term',
       label: '合同期限',
       component: 'Select',
+      rules: 'required',
       componentProps: {
         options: HrmEmployeeContractTermOptions,
         clearable: true,
+      },
+      dependencies: {
+        triggerFields: ['type'],
+        show: (values) =>
+          values.type !== HrmEmployeeContractType.NON_FIXED_TERM_LABOR_CONTRACT,
       },
     },
     {
@@ -1508,93 +1681,3 @@ export function useInsuranceInfoFormSchema(): VbenFormSchema[] {
     },
   ];
 }
-
-/** 默认员工表单数据 */
-export function createDefaultEmployeeFormData(): HrmEmployeeApi.Employee {
-  return {
-    name: '',
-    jobNumber: '',
-    mobile: '',
-    country: '中国',
-    idType: HrmEmployeeIdType.ID_CARD,
-    entryStatus: HrmEmployeeEntryStatus.ACTIVE,
-    type: HrmEmployeeType.FORMAL,
-    probation: HRM_EMPLOYEE_NO_PROBATION_MONTHS,
-  };
-}
-
-/** 状态页签配置 */
-export function getEmployeeStatusTabItems() {
-  return [
-    { status: 11, label: '在职' },
-    { status: 12, label: '全职' },
-    {
-      status: HrmEmployeeStatus.INTERN,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.INTERN,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.LABOR,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.LABOR,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.CONSULTANT,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.CONSULTANT,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.REHIRE,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.REHIRE,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.OUTSOURCE,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.OUTSOURCE,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.PART_TIME,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.PART_TIME,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.PROBATION,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.PROBATION,
-      ),
-    },
-    {
-      status: HrmEmployeeStatus.REGULAR,
-      label: getDictLabel(
-        DICT_TYPE.HRM_EMPLOYEE_STATUS,
-        HrmEmployeeStatus.REGULAR,
-      ),
-    },
-    { status: 13, label: '待入职' },
-    { status: 14, label: '待离职' },
-    { status: 15, label: '已离职' },
-  ];
-}
-
-/** 异动类型映射 */
-export const EMPLOYEE_CHANGE_TYPE_MAP = {
-  regular: HrmEmployeeChangeType.REGULAR,
-  transfer: HrmEmployeeChangeType.TRANSFER,
-  promotion: HrmEmployeeChangeType.PROMOTION,
-  demotion: HrmEmployeeChangeType.DEMOTION,
-  'full-time': HrmEmployeeChangeType.FULL_TIME,
-} as const;

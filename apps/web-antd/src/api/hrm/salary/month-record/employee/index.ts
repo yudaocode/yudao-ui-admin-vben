@@ -6,7 +6,7 @@ export namespace HrmSalaryMonthEmployeeRecordApi {
   /** 工资项值 */
   export interface OptionValue {
     code?: number; // 编码
-    name?: string; // 模板名称
+    name?: string; // 薪资项名称
     value?: number; // 值
   }
 

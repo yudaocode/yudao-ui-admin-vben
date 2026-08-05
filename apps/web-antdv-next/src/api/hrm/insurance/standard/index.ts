@@ -4,13 +4,13 @@ export namespace HrmInsuranceStandardApi {
   /** Type */
   export interface Type {
     code: string; // 编码
-    name: string; // 类型名称
+    name: string; // 参保方案名称
   }
 
   /** 社保项目 */
   export interface Project {
-    type: number; // 聘用形式
-    name: string; // 模板名称
+    type: number; // 项目类型
+    name: string; // 项目名称
     baseAmount?: number; // 缴纳基数
     corporateRate?: number; // 公司缴纳比例
     personalRate?: number; // 个人缴纳比例

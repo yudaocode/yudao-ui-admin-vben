@@ -4,7 +4,7 @@ export namespace HrmSalaryOptionApi {
   /** 选项值 */
   export interface OptionValue {
     code?: number; // 编码
-    name?: string; // 模板名称
+    name?: string; // 薪资项名称
     value?: number; // 值
   }
 
@@ -13,10 +13,10 @@ export namespace HrmSalaryOptionApi {
     id: number; // 编号
     code: number; // 编码
     parentCode: number; // 父薪资项编码
-    name: string; // 模板名称
+    name: string; // 薪资项名称
     remark?: string; // 备注
     systemFlag: boolean; // 是否系统内置
-    type: number; // 聘用形式
+    type: number; // 薪资项类型
     taxEnabled: boolean; // 是否计税
     visible: boolean; // 是否显示
     calculateEnabled: boolean; // 是否参与计算
@@ -29,7 +29,7 @@ export namespace HrmSalaryOptionApi {
   /** 保存请求 */
   export interface SaveReq {
     parentCode?: number; // 父薪资项编码
-    name: string; // 模板名称
+    name: string; // 薪资项名称
     remark?: string; // 备注
   }
 }

@@ -3,8 +3,8 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalarySlipTemplateApi {
   /** 工资条模板薪资项 */
   export interface TemplateOption {
-    name?: string; // 模板名称
-    type?: number; // 聘用形式
+    name?: string; // 工资项名称
+    type?: number; // 工资项类型
     code?: number; // 编码
     remark?: string; // 备注
     parentCode?: number; // 父薪资项编码

@@ -5,8 +5,8 @@ export namespace HrmInsuranceSchemeApi {
   export interface Project {
     id?: number; // 编号
     schemeId?: number; // 社保方案编号
-    type?: number; // 聘用形式
-    name?: string; // 模板名称
+    type?: number; // 项目类型
+    name?: string; // 项目名称
     baseAmount?: number; // 缴纳基数
     corporateRate?: number; // 公司缴纳比例
     personalRate?: number; // 个人缴纳比例
@@ -18,11 +18,11 @@ export namespace HrmInsuranceSchemeApi {
   /** 社保方案 */
   export interface InsuranceScheme {
     id?: number; // 编号
-    name?: string; // 模板名称
+    name?: string; // 方案名称
     areaId?: number; // 参保地区编号
     areaName?: string; // 参保地区
     householdType?: string; // 户籍类型
-    type?: number; // 聘用形式
+    type?: number; // 方案类型
     projectList?: Project[]; // 全部社保项目
     socialSecurityProjectList?: Project[]; // 社保项目
     providentFundProjectList?: Project[]; // 公积金项目

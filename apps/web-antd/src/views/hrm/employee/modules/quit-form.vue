@@ -29,6 +29,10 @@ const [Form, formApi] = useVbenForm({
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
   handleValuesChange(values, fieldsChanged) {
     if (!fieldsChanged.includes('type')) return;
+    const reasonMatched = HrmEmployeeQuitReasonOptions.some(
+      (item) => item.quitType === values.type && item.value === values.reason,
+    );
+    if (reasonMatched) return;
     const nextReason = HrmEmployeeQuitReasonOptions.find(
       (item) => item.quitType === values.type,
     )?.value;

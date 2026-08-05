@@ -6,7 +6,7 @@ export namespace HrmPerformanceAssessmentApi {
   /** PerformanceArchivePlan */
   export interface PerformanceArchivePlan {
     id: number; // 编号
-    name: string; // 模板名称
+    name: string; // 绩效计划名称
   }
 
   /** PerformanceAssessmentQuotaScore */
@@ -22,10 +22,10 @@ export namespace HrmPerformanceAssessmentApi {
   export interface PerformanceAssessmentStage {
     id?: number; // 编号
     assessmentId?: number; // 员工绩效考核编号
-    type?: number; // 聘用形式
+    type?: number; // 业务阶段类型
     handlerEmployeeId?: number; // 处理员工编号
     handlerName?: string; // 处理人姓名
-    name?: string; // 模板名称
+    name?: string; // 阶段名称
     raterType?: number; // 评分人类型
     weight?: number; // 指标权重
     scoringType?: number; // 评分方式
@@ -33,7 +33,7 @@ export namespace HrmPerformanceAssessmentApi {
     requiredSetting?: boolean; // 评语是否必填
     rejectAuthority?: boolean; // 是否允许驳回
     sort?: number; // 排序
-    status?: number; // 员工状态
+    status?: number; // 阶段状态
     score?: number; // 得分
     resultLevel?: string; // 结果等级
     comment?: string; // 说明
@@ -53,8 +53,8 @@ export namespace HrmPerformanceAssessmentApi {
     allowEdit?: boolean; // 是否允许编辑
     preset?: boolean; // 预设值
     dimensionName?: string; // 维度名称
-    name?: string; // 模板名称
-    description?: string; // 职位描述
+    name?: string; // 指标名称
+    description?: string; // 指标说明
     standard?: string; // 标准值
     dimensionWeight?: number; // 维度权重
     weight?: number; // 指标权重
@@ -72,7 +72,7 @@ export namespace HrmPerformanceAssessmentApi {
   export interface PerformanceAssessmentDimension {
     id?: number; // 编号
     assessmentId?: number; // 员工绩效考核编号
-    name?: string; // 模板名称
+    name?: string; // 维度名称
     quotaType?: number; // 指标类型
     weight?: number; // 指标权重
     remark?: string; // 备注
@@ -84,7 +84,7 @@ export namespace HrmPerformanceAssessmentApi {
   export interface PerformanceAssessment {
     id?: number; // 编号
     planId?: number; // 绩效计划编号
-    name?: string; // 模板名称
+    name?: string; // 绩效计划名称
     cycleType?: number; // 考核周期类型
     cycle?: string; // 考核周期
     startTime?: Date; // 开始日期
@@ -100,7 +100,7 @@ export namespace HrmPerformanceAssessmentApi {
     employeeType?: number; // 聘用形式
     employeeStatus?: number; // 员工状态
     currentHandlerName?: string; // 当前处理人
-    status?: number; // 员工状态
+    status?: number; // 考核状态
     processStatus?: number; // 激活状态
     stageType?: number; // 阶段状态
     stageSort?: number; // 阶段排序
@@ -159,7 +159,7 @@ export namespace HrmPerformanceAssessmentApi {
     title?: string; // 标题
     content?: string; // 事项内容
     source?: 'ACTION' | 'BUSINESS' | 'STAGE'; // 来源
-    status?: number; // 员工状态
+    status?: number; // 流程状态
     operatorName?: string; // 操作人姓名
     operateTime?: Date; // 操作时间
     fileUrls?: string[]; // 附件地址数组

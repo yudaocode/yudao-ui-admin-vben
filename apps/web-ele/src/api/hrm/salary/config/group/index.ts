@@ -6,7 +6,7 @@ export namespace HrmSalaryGroupApi {
   /** 薪资组 */
   export interface SalaryGroup {
     id?: number; // 编号
-    name: string; // 模板名称
+    name: string; // 薪资组名称
     salaryStandard?: number; // 月计薪标准
     changeRule?: string; // 转正、调薪月规则
     taxRuleId?: number; // 计税规则编号

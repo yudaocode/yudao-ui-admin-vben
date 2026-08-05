@@ -8,14 +8,14 @@ import { requestClient } from '#/api/request';
 export namespace HrmPerformancePlanApi {
   /** PerformanceHandlerStage */
   export interface PerformanceHandlerStage {
-    type?: number; // 聘用形式
-    level?: number; // 证书级别
+    type?: number; // 处理人类型
+    level?: number; // 上级或部门层级
     employeeId?: number; // 员工编号
   }
 
   /** PerformanceReviewStage */
   export interface PerformanceReviewStage {
-    name?: string; // 模板名称
+    name?: string; // 阶段名称
     rater?: PerformanceHandlerStage; // 评分人
     weight?: number; // 指标权重
     scoringType?: number; // 评分方式
@@ -26,7 +26,7 @@ export namespace HrmPerformancePlanApi {
 
   /** PerformanceScope */
   export interface PerformanceScope {
-    type?: number; // 聘用形式
+    type?: number; // 范围类型
     employeeIds?: number[]; // 员工编号列表
     deptIds?: number[]; // 部门编号数组
     employeeType?: number; // 聘用形式
@@ -35,20 +35,20 @@ export namespace HrmPerformancePlanApi {
 
   /** PerformanceResultConfig */
   export interface PerformanceResultConfig {
-    name: string; // 模板名称
+    name: string; // 结果模板名称
     levels: HrmPerformanceResultTemplateApi.ResultLevel[]; // 结果等级列表
   }
 
   /** 绩效计划 */
   export interface PerformancePlan {
     id?: number; // 编号
-    name: string; // 模板名称
+    name: string; // 计划名称
     cycleType?: number; // 考核周期类型
     cycle?: string; // 考核周期
     quarter?: number; // 季度
     startTime?: number; // 开始日期
     endTime?: number; // 结束日期
-    description?: string; // 职位描述
+    description?: string; // 考核说明
     scopes?: PerformanceScope[]; // 考评范围列表
     assessmentTemplateId?: number; // 考核模板编号
     assessmentConfig?: HrmPerformanceAssessmentTemplateApi.AssessmentConfig; // 考核配置快照
@@ -69,7 +69,7 @@ export namespace HrmPerformancePlanApi {
     assessmentTemplateName?: string; // 考核模板名称
     resultTemplateName?: string; // 结果模板名称
     stageType?: number; // 阶段状态
-    status?: number; // 员工状态
+    status?: number; // 计划状态
     operationType?: number; // 当前操作阶段
     terminateTime?: Date; // 终止时间
     employeeCount?: number; // 员工数量

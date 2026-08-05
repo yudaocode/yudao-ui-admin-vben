@@ -9,8 +9,8 @@ export namespace HrmPortalPerformanceAssessmentApi {
   export interface AssessmentSummary {
     id: number; // 编号
     planId: number; // 绩效计划编号
-    name?: string; // 模板名称
-    status?: number; // 员工状态
+    name?: string; // 绩效计划名称
+    status?: number; // 考核状态
     stageType?: number; // 阶段状态
     score?: number; // 得分
     resultLevel?: string; // 结果等级
@@ -83,8 +83,8 @@ export namespace HrmPortalPerformanceAssessmentApi {
   export interface QuotaSave {
     id?: number; // 编号
     dimensionId?: number; // 员工绩效维度编号
-    name?: string; // 模板名称
-    description?: string; // 职位描述
+    name?: string; // 指标名称
+    description?: string; // 指标说明
     standard?: string; // 标准值
     weight?: number; // 指标权重
     scoreType?: number; // 分数类型
@@ -128,7 +128,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
   export interface ReviewRejectReq {
     assessmentId: number; // 员工绩效考核编号
     reviewStageId: number; // 评分阶段编号
-    reason: string; // 异动原因
+    reason: string; // 驳回原因
   }
 }
 

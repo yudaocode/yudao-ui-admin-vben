@@ -28,6 +28,14 @@ const [Form, formApi] = useVbenForm({
   schema: useContractFormSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
+  handleValuesChange(values, fieldsChanged) {
+    if (!fieldsChanged.includes('type')) {
+      return;
+    }
+    if (values.type === HrmEmployeeContractType.NON_FIXED_TERM_LABOR_CONTRACT) {
+      formApi.setFieldValue('term', undefined);
+    }
+  },
 });
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

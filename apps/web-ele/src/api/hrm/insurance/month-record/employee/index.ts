@@ -8,8 +8,8 @@ export namespace HrmInsuranceMonthEmployeeRecordApi {
   /** 社保项目 */
   export interface Project {
     schemeProjectId?: number; // 社保项目编号
-    type?: number; // 聘用形式
-    name?: string; // 模板名称
+    type?: number; // 项目类型
+    name?: string; // 项目名称
     baseAmount?: number; // 缴纳基数
     corporateRate?: number; // 公司缴纳比例
     personalRate?: number; // 个人缴纳比例
@@ -48,7 +48,7 @@ export namespace HrmInsuranceMonthEmployeeRecordApi {
     personalProvidentFundAmount?: number; // 个人公积金金额
     corporateInsuranceAmount?: number; // 公司社保金额
     corporateProvidentFundAmount?: number; // 公司公积金金额
-    status?: number; // 员工状态
+    status?: number; // 参保状态
     socialSecurityProjectList: Project[]; // 社保项目
     providentFundProjectList: Project[]; // 公积金项目
     createTime?: Date; // 创建时间

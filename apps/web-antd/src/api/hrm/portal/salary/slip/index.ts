@@ -3,8 +3,8 @@ import { requestClient } from '#/api/request';
 export namespace HrmPortalSalarySlipApi {
   /** 工资条选项 */
   export interface SlipOption {
-    name: string; // 模板名称
-    type?: number; // 聘用形式
+    name: string; // 薪资项名称
+    type?: number; // 薪资项类型
     code?: number; // 编码
     value?: number; // 值
     remark?: string; // 备注

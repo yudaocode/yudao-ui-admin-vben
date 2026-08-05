@@ -5,7 +5,7 @@ import { requestClient } from '#/api/request';
 export namespace HrmPerformanceResultTemplateApi {
   /** 结果等级 */
   export interface ResultLevel {
-    name: string; // 模板名称
+    name: string; // 等级名称
     minScore: number; // 最低分数
     maxScore: number; // 最高分数
     coefficient: number; // 绩效系数
@@ -14,9 +14,9 @@ export namespace HrmPerformanceResultTemplateApi {
   /** 考核结果模板 */
   export interface PerformanceResultTemplate {
     id?: number; // 编号
-    name: string; // 模板名称
+    name: string; // 结果模板名称
     levels: ResultLevel[]; // 结果等级列表
-    status?: number; // 员工状态
+    status?: number; // 状态
     creator?: string; // 创建人
     creatorName?: string; // 创建人名称
     createTime?: Date; // 创建时间

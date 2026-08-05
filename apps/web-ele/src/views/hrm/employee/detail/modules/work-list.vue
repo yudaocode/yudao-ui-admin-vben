@@ -4,20 +4,16 @@ import type { HrmEmployeeWorkExperienceApi } from '#/api/hrm/employee/work-exper
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElLoading,
-  ElMessage,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
 
 import {
   deleteEmployeeWorkExperience,
   getEmployeeWorkExperienceList,
 } from '#/api/hrm/employee/work-experience';
 import { $t } from '#/locales';
+import { formatHrmDateTime } from '#/views/hrm/utils/format';
 
 import Form from './work-form.vue';
 
@@ -45,16 +41,12 @@ function openForm(row?: HrmEmployeeWorkExperienceApi.EmployeeWorkExperience) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const loadingInstance = ElLoading.service({
-    text: $t('ui.actionMessage.deleting'),
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeWorkExperience(id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    loadingInstance.close();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());
@@ -72,7 +64,21 @@ defineExpose({ getList });
     <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
       <ElTableColumn label="工作单位" min-width="120" prop="workUnit" />
       <ElTableColumn label="职务" min-width="120" prop="postName" />
-      <ElTableColumn align="center" label="操作" width="140">
+      <ElTableColumn label="开始日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.startTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="结束日期" min-width="120">
+        <template #default="{ row }">
+          {{ formatHrmDateTime(row.endTime) }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="离职原因" min-width="120" prop="reason" />
+      <ElTableColumn label="证明人" min-width="100" prop="witnessName" />
+      <ElTableColumn label="证明人电话" min-width="120" prop="witnessPhone" />
+      <ElTableColumn label="工作备注" min-width="140" prop="remark" />
+      <ElTableColumn align="center" fixed="right" label="操作" width="140">
         <template #default="{ row }">
           <ElButton
             v-if="hasAccessByCodes(['hrm:employee:update'])"

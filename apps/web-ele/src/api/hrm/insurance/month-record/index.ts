@@ -9,7 +9,7 @@ export namespace HrmInsuranceMonthRecordApi {
     month?: number; // 月份
     insuredEmployeeCount?: number; // 参保人数
     stoppedEmployeeCount?: number; // 停保人数
-    status?: number; // 员工状态
+    status?: number; // 状态
     personalInsuranceAmount?: number; // 个人社保金额
     personalProvidentFundAmount?: number; // 个人公积金金额
     corporateInsuranceAmount?: number; // 公司社保金额
