@@ -5,14 +5,14 @@ import { requestClient } from '#/api/request';
 export type { HrmAttendanceLeaveApi };
 
 export namespace HrmPortalAttendanceLeaveApi {
-  /** LeaveCreate */
+  /** 请假创建 */
   export interface LeaveCreate {
-    type?: string;
-    startTime?: number;
-    endTime?: number;
-    day?: number;
-    reason?: string;
-    remark?: string;
+    type?: string; // 请假类型
+    startTime?: number; // 请假开始时间
+    endTime?: number; // 请假结束时间
+    day?: number; // 请假天数
+    reason?: string; // 请假事由
+    remark?: string; // 备注
   }
 }
 

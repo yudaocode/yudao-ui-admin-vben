@@ -47,15 +47,13 @@ import {
   useGridFormSchema,
 } from './data';
 import CreateFromUserForm from './modules/create-from-user-form.vue';
-import DemoteForm from './modules/demote-form.vue';
 import Form from './modules/form.vue';
 import FullTimeForm from './modules/full-time-form.vue';
 import ImportForm from './modules/import-form.vue';
 import InsuranceSchemeForm from './modules/insurance-scheme-form.vue';
-import PromoteForm from './modules/promote-form.vue';
+import PositionChangeForm from './modules/position-change-form.vue';
 import QuitForm from './modules/quit-form.vue';
 import RegularForm from './modules/regular-form.vue';
-import TransferForm from './modules/transfer-form.vue';
 
 defineOptions({ name: 'HrmEmployee' });
 
@@ -107,16 +105,9 @@ const [RegularModal, regularModalApi] = useVbenModal({
   connectedComponent: RegularForm,
   destroyOnClose: true,
 });
-const [TransferModal, transferModalApi] = useVbenModal({
-  connectedComponent: TransferForm,
-  destroyOnClose: true,
-});
-const [PromoteModal, promoteModalApi] = useVbenModal({
-  connectedComponent: PromoteForm,
-  destroyOnClose: true,
-});
-const [DemoteModal, demoteModalApi] = useVbenModal({
-  connectedComponent: DemoteForm,
+/** 调岗 / 晋升 / 降级共用一个弹窗，通过 mode 区分 */
+const [PositionChangeModal, positionChangeModalApi] = useVbenModal({
+  connectedComponent: PositionChangeForm,
   destroyOnClose: true,
 });
 const [FullTimeModal, fullTimeModalApi] = useVbenModal({
@@ -235,15 +226,15 @@ async function handleMoreCommand(
     return;
   }
   if (command === 'transfer') {
-    transferModalApi.setData(employee).open();
+    positionChangeModalApi.setData({ employee, mode: 'transfer' }).open();
     return;
   }
   if (command === 'promotion') {
-    promoteModalApi.setData(employee).open();
+    positionChangeModalApi.setData({ employee, mode: 'promote' }).open();
     return;
   }
   if (command === 'demotion') {
-    demoteModalApi.setData(employee).open();
+    positionChangeModalApi.setData({ employee, mode: 'demote' }).open();
     return;
   }
   if (command === 'full-time') {
@@ -296,6 +287,11 @@ async function handleDelete(id: number) {
 }
 
 async function handleExport() {
+  try {
+    await confirm('是否确认导出员工档案数据？');
+  } catch {
+    return;
+  }
   exportLoading.value = true;
   try {
     const formValues = await gridApi.formApi.getValues();
@@ -505,9 +501,7 @@ onMounted(async () => {
     <CreateFromUserModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
     <RegularModal @success="handleRefresh" />
-    <TransferModal @success="handleRefresh" />
-    <PromoteModal @success="handleRefresh" />
-    <DemoteModal @success="handleRefresh" />
+    <PositionChangeModal @success="handleRefresh" />
     <FullTimeModal @success="handleRefresh" />
     <QuitModal @success="handleRefresh" />
     <InsuranceSchemeModal @success="handleRefresh" />

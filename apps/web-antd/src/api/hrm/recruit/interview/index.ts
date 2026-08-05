@@ -22,10 +22,10 @@ export namespace HrmRecruitInterviewApi {
 
   /** 面试结果修改 */
   export interface ResultReq {
-    id: number;
-    result: number;
-    evaluate?: string;
-    cancelReason?: string;
+    id: number; // 面试编号
+    result: number; // 面试结果
+    evaluate?: string; // 面试评价
+    cancelReason?: string; // 取消原因
   }
 }
 

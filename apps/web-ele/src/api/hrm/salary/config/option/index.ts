@@ -3,34 +3,34 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryOptionApi {
   /** 选项值 */
   export interface OptionValue {
-    code?: number;
-    name?: string;
-    value?: number;
+    code?: number; // 编码
+    name?: string; // 模板名称
+    value?: number; // 值
   }
 
   /** 工资项 */
   export interface SalaryOption {
-    id: number;
-    code: number;
-    parentCode: number;
-    name: string;
-    remark?: string;
-    systemFlag: boolean;
-    type: number;
-    taxEnabled: boolean;
-    visible: boolean;
-    calculateEnabled: boolean;
-    enabled: boolean;
-    templateId?: number;
-    children?: SalaryOption[];
-    createTime: Date;
+    id: number; // 编号
+    code: number; // 编码
+    parentCode: number; // 父薪资项编码
+    name: string; // 模板名称
+    remark?: string; // 备注
+    systemFlag: boolean; // 是否系统内置
+    type: number; // 聘用形式
+    taxEnabled: boolean; // 是否计税
+    visible: boolean; // 是否显示
+    calculateEnabled: boolean; // 是否参与计算
+    enabled: boolean; // 是否启用
+    templateId?: number; // 标准薪资项目录编号
+    children?: SalaryOption[]; // 子工资条项
+    createTime: Date; // 创建时间
   }
 
   /** 保存请求 */
   export interface SaveReq {
-    parentCode?: number;
-    name: string;
-    remark?: string;
+    parentCode?: number; // 父薪资项编码
+    name: string; // 模板名称
+    remark?: string; // 备注
   }
 }
 

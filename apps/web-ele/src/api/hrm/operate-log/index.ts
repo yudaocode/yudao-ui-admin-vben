@@ -7,8 +7,8 @@ import { requestClient } from '#/api/request';
 export namespace HrmOperateLogApi {
   /** 操作日志查询 */
   export interface OperateLogQuery {
-    bizType: number;
-    bizId: number;
+    bizType: number; // 业务类型
+    bizId: number; // 业务编号
     pageNo?: number;
     pageSize?: number;
   }

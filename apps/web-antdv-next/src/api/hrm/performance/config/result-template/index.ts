@@ -5,22 +5,22 @@ import { requestClient } from '#/api/request';
 export namespace HrmPerformanceResultTemplateApi {
   /** 结果等级 */
   export interface ResultLevel {
-    name: string;
-    minScore: number;
-    maxScore: number;
-    coefficient: number;
+    name: string; // 模板名称
+    minScore: number; // 最低分数
+    maxScore: number; // 最高分数
+    coefficient: number; // 绩效系数
   }
 
   /** 考核结果模板 */
   export interface PerformanceResultTemplate {
-    id?: number;
-    name: string;
-    levels: ResultLevel[];
-    status?: number;
-    creator?: string;
-    creatorName?: string;
-    createTime?: Date;
-    updateTime?: Date;
+    id?: number; // 编号
+    name: string; // 模板名称
+    levels: ResultLevel[]; // 结果等级列表
+    status?: number; // 员工状态
+    creator?: string; // 创建人
+    creatorName?: string; // 创建人名称
+    createTime?: Date; // 创建时间
+    updateTime?: Date; // 更新时间
   }
 }
 

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { HrmEmployeeQuitInfoApi } from '#/api/hrm/employee/quit-info';
+
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
@@ -20,7 +22,7 @@ const props = defineProps<{ employeeId: number }>();
 const emit = defineEmits(['edit']);
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
-const quitInfo = ref<any>();
+const quitInfo = ref<HrmEmployeeQuitInfoApi.EmployeeQuitInfo>();
 async function getQuitInfo() {
   loading.value = true;
   try {
@@ -49,7 +51,7 @@ defineExpose({ getQuitInfo });
         编辑
       </ElButton>
     </template>
-    <ElDescriptions bordered :column="3" size="small">
+    <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="计划离职时间">
         {{ formatHrmDateTime(quitInfo.planQuitTime) }}
       </ElDescriptionsItem>

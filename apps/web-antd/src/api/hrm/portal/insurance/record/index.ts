@@ -3,34 +3,34 @@ import { requestClient } from '#/api/request';
 export namespace HrmPortalInsuranceRecordApi {
   /** SchemeProject */
   export interface SchemeProject {
-    schemeProjectId?: number;
-    type?: number;
-    name: string;
-    baseAmount?: number;
-    corporateRate?: number;
-    personalRate?: number;
-    corporateAmount?: number;
-    personalAmount?: number;
+    schemeProjectId?: number; // 社保项目编号
+    type?: number; // 聘用形式
+    name: string; // 模板名称
+    baseAmount?: number; // 缴纳基数
+    corporateRate?: number; // 公司缴纳比例
+    personalRate?: number; // 个人缴纳比例
+    corporateAmount?: number; // 公司缴纳金额
+    personalAmount?: number; // 个人缴纳金额
   }
 
   /** 员工端社保记录 */
   export interface PortalInsuranceRecord {
-    id: number;
-    monthRecordId?: number;
-    employeeId: number;
-    schemeId?: number;
-    schemeName?: string;
-    schemeType?: number;
-    schemeCity?: string;
-    year: number;
-    month: number;
-    personalInsuranceAmount?: number;
-    personalProvidentFundAmount?: number;
-    corporateInsuranceAmount?: number;
-    corporateProvidentFundAmount?: number;
-    status?: number;
-    createTime?: Date;
-    projects?: SchemeProject[];
+    id: number; // 编号
+    monthRecordId?: number; // 工资表编号
+    employeeId: number; // 员工编号
+    schemeId?: number; // 社保方案编号
+    schemeName?: string; // 社保方案名称
+    schemeType?: number; // 社保方案类型
+    schemeCity?: string; // 参保城市
+    year: number; // 年份
+    month: number; // 月份
+    personalInsuranceAmount?: number; // 个人社保金额
+    personalProvidentFundAmount?: number; // 个人公积金金额
+    corporateInsuranceAmount?: number; // 公司社保金额
+    corporateProvidentFundAmount?: number; // 公司公积金金额
+    status?: number; // 员工状态
+    createTime?: Date; // 创建时间
+    projects?: SchemeProject[]; // 社保项目列表
   }
 }
 

@@ -5,49 +5,49 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryMonthEmployeeRecordApi {
   /** 工资项值 */
   export interface OptionValue {
-    code?: number;
-    name?: string;
-    value?: number;
+    code?: number; // 编码
+    name?: string; // 模板名称
+    value?: number; // 值
   }
 
   /** 员工月度工资记录 */
   export interface SalaryMonthEmployeeRecord {
-    id?: number;
-    monthRecordId?: number;
-    employeeId?: number;
-    year?: number;
-    month?: number;
-    employeeName?: string;
-    jobNumber?: string;
-    deptId?: number;
-    deptName?: string;
-    postName?: string;
-    actualWorkDay?: number;
-    needWorkDay?: number;
-    expectedPaySalary?: number;
-    taxableSalary?: number;
-    personalTax?: number;
-    realPaySalary?: number;
-    performanceCoefficient?: number;
-    optionValues?: OptionValue[];
+    id?: number; // 编号
+    monthRecordId?: number; // 工资表编号
+    employeeId?: number; // 员工编号
+    year?: number; // 年份
+    month?: number; // 月份
+    employeeName?: string; // 员工姓名
+    jobNumber?: string; // 工号
+    deptId?: number; // 部门编号
+    deptName?: string; // 部门名称
+    postName?: string; // 职位名称
+    actualWorkDay?: number; // 计薪出勤天数
+    needWorkDay?: number; // 应出勤天数
+    expectedPaySalary?: number; // 应发工资
+    taxableSalary?: number; // 应税工资
+    personalTax?: number; // 个人所得税
+    realPaySalary?: number; // 实发工资
+    performanceCoefficient?: number; // 绩效系数
+    optionValues?: OptionValue[]; // 薪资项值列表
   }
 
   /** 绩效系数查询 */
   export interface PerformanceCoefficientReq {
-    year: number;
-    month: number;
-    employeeIds?: number[];
+    year: number; // 年份
+    month: number; // 月份
+    employeeIds?: number[]; // 员工编号列表
   }
 
   /** 员工月度工资列表查询 */
   export interface ListQuery {
-    monthRecordId: number;
-    employeeId?: number;
-    employeeIds?: number[];
-    employeeName?: string;
-    jobNumber?: string;
-    deptId?: number;
-    employeeChangeType?: number;
+    monthRecordId: number; // 工资表编号
+    employeeId?: number; // 员工编号
+    employeeIds?: number[]; // 员工编号列表
+    employeeName?: string; // 员工姓名
+    jobNumber?: string; // 工号
+    deptId?: number; // 部门编号
+    employeeChangeType?: number; // 员工异动类型
     salarySlipSent?: boolean;
   }
 }

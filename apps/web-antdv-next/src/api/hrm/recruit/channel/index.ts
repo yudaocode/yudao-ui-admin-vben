@@ -16,14 +16,14 @@ export namespace HrmRecruitChannelApi {
 
   /** 渠道状态修改 */
   export interface StatusReq {
-    id: number;
-    status: number;
+    id: number; // 候选人编号
+    status: number; // 候选人状态
   }
 
   /** 渠道删除 */
   export interface DeleteReq {
-    id: number;
-    transferChannelId: number;
+    id: number; // 待删除招聘渠道编号
+    transferChannelId: number; // 承接招聘渠道编号
   }
 }
 

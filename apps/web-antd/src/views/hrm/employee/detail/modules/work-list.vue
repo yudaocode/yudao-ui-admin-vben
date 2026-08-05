@@ -4,6 +4,7 @@ import type { HrmEmployeeWorkExperienceApi } from '#/api/hrm/employee/work-exper
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
 import { Button, message, Table } from 'ant-design-vue';
 
@@ -12,6 +13,7 @@ import {
   getEmployeeWorkExperienceList,
 } from '#/api/hrm/employee/work-experience';
 import { $t } from '#/locales';
+import { formatHrmDateTime } from '#/views/hrm/utils/format';
 
 import Form from './work-form.vue';
 
@@ -39,17 +41,12 @@ function openForm(row?: HrmEmployeeWorkExperienceApi.EmployeeWorkExperience) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const hide = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeWorkExperience(id);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    hide();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());
@@ -66,14 +63,37 @@ defineExpose({ getList });
     </div>
     <Table
       :columns="[
-        { title: '公司', dataIndex: 'company', key: 'company' },
-        { title: '职位', dataIndex: 'postName', key: 'postName' },
-        { title: '操作', key: 'action', width: 140 },
+        { title: '工作单位', dataIndex: 'workUnit', key: 'workUnit' },
+        { title: '职务', dataIndex: 'postName', key: 'postName' },
+        {
+          title: '开始日期',
+          dataIndex: 'startTime',
+          key: 'startTime',
+          width: 120,
+          customRender: ({ text }) => formatHrmDateTime(text),
+        },
+        {
+          title: '结束日期',
+          dataIndex: 'endTime',
+          key: 'endTime',
+          width: 120,
+          customRender: ({ text }) => formatHrmDateTime(text),
+        },
+        { title: '离职原因', dataIndex: 'reason', key: 'reason' },
+        { title: '证明人', dataIndex: 'witnessName', key: 'witnessName' },
+        {
+          title: '证明人电话',
+          dataIndex: 'witnessPhone',
+          key: 'witnessPhone',
+        },
+        { title: '工作备注', dataIndex: 'remark', key: 'remark' },
+        { title: '操作', key: 'action', width: 140, fixed: 'right' },
       ]"
       :data-source="list"
       :loading="loading"
       :pagination="false"
       :row-key="(row) => row.id"
+      :scroll="{ x: 1200 }"
       bordered
       size="small"
     >

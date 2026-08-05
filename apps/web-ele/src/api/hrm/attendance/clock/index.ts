@@ -29,12 +29,12 @@ export namespace HrmAttendanceClockApi {
 
   /** 员工实际班次 */
   export interface Shift {
-    startTime: Date;
-    endTime: Date;
-    clockInStartTime: Date;
-    clockInEndTime: Date;
-    clockOutStartTime: Date;
-    clockOutEndTime: Date;
+    startTime: Date; // 上班时间
+    endTime: Date; // 下班时间
+    clockInStartTime: Date; // 上班打卡开始时间
+    clockInEndTime: Date; // 上班打卡结束时间
+    clockOutStartTime: Date; // 下班打卡开始时间
+    clockOutEndTime: Date; // 下班打卡结束时间
   }
 }
 

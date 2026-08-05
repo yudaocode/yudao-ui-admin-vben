@@ -74,8 +74,8 @@ defineExpose({ getList });
       <ElButton type="primary" @click="openForm()">新增</ElButton>
     </div>
     <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
-      <ElTableColumn label="培训名称" min-width="140" prop="name" />
-      <ElTableColumn label="培训机构" min-width="140" prop="organization" />
+      <ElTableColumn label="培训课程" min-width="140" prop="course" />
+      <ElTableColumn label="培训机构" min-width="140" prop="organizationName" />
       <ElTableColumn align="center" label="操作" width="140">
         <template #default="{ row }">
           <ElButton

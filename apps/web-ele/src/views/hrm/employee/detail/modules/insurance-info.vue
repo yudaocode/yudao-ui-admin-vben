@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { HrmInsuranceEmployeeInfoApi } from '#/api/hrm/insurance/employee-info';
+
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
@@ -17,7 +19,7 @@ import InsuranceInfoForm from './insurance-info-form.vue';
 const props = defineProps<{ employeeId: number }>();
 const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
-const info = ref<any>();
+const info = ref<HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo>();
 const formRef = ref<InstanceType<typeof InsuranceInfoForm>>();
 async function load() {
   loading.value = true;
@@ -45,7 +47,7 @@ onMounted(load);
         编辑
       </ElButton>
     </template>
-    <ElDescriptions bordered :column="3" size="small">
+    <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="社保编号">
         {{ info?.socialSecurityNumber || '-' }}
       </ElDescriptionsItem>

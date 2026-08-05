@@ -17,7 +17,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
 <template>
   <!-- 对齐源 ContentWrap：首块无标题，块间距 15px -->
   <ElCard :style="{ marginBottom: '15px' }">
-    <ElDescriptions bordered :column="3" size="small">
+    <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="工号">
         {{ employee.jobNumber || '-' }}
       </ElDescriptionsItem>

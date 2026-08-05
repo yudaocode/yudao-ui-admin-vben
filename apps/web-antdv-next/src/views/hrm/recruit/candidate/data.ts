@@ -2,18 +2,20 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmRecruitCandidateApi } from '#/api/hrm/recruit/candidate';
 
+import { markRaw } from 'vue';
+
 import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
-import { getEmployeeSimplePage } from '#/api/hrm/employee';
 import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
 import { getRecruitEliminateReasonList } from '#/api/hrm/recruit/config';
 import { getRecruitPostSimpleList } from '#/api/hrm/recruit/post';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import {
   HrmEmployeeEntryStatus,
   HrmEmployeeStatus,
@@ -22,16 +24,6 @@ import {
   HrmRecruitInterviewResult,
   HrmRecruitInterviewType,
 } from '#/views/hrm/utils/constants';
-
-/** 加载在职员工精简列表 */
-async function loadActiveEmployeeOptions() {
-  const data = await getEmployeeSimplePage({
-    pageNo: 1,
-    pageSize: 200,
-    entryStatus: HrmEmployeeEntryStatus.ACTIVE,
-  });
-  return data.list;
-}
 
 /** 新增/修改候选人表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -238,14 +230,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerEmployeeId',
       label: '招聘负责人',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘负责人',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
         allowClear: true,
-        showSearch: true,
       },
     },
     {
@@ -347,14 +336,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'interviewEmployeeId',
       label: '面试官',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择面试官',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
         allowClear: true,
-        showSearch: true,
       },
     },
     {
@@ -532,29 +518,23 @@ export function useInterviewFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'interviewEmployeeId',
       label: '主面试官',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       rules: 'required',
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择主面试官',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
         allowClear: true,
-        showSearch: true,
       },
     },
     {
       fieldName: 'otherInterviewEmployeeIds',
       label: '其他面试官',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
-        mode: 'multiple',
         placeholder: '请选择其他面试官',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
+        multiple: true,
         allowClear: true,
-        showSearch: true,
       },
     },
     {

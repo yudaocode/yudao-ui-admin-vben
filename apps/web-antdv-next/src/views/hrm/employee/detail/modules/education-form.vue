@@ -67,7 +67,7 @@ function open(
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });
   formApi.resetForm();
-  formApi.setValues({ sort: 1, ...row, employeeId: empId });
+  formApi.setValues({ sort: 1, firstDegree: false, ...row, employeeId: empId });
   modalApi.open();
 }
 

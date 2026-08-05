@@ -283,7 +283,7 @@ onMounted(getDetail);
       </div>
     </div>
 
-    <Descriptions bordered :column="4" class="mb-6">
+    <Descriptions border :column="4" class="mb-6">
       <ElDescriptionsItem label="考核周期">
         {{ formatHrmPerformanceCycleType(detail.cycleType) }}
       </ElDescriptionsItem>
@@ -370,7 +370,7 @@ onMounted(getDetail);
           >
             考核评语
           </div>
-          <Descriptions bordered :column="3">
+          <Descriptions border :column="3">
             <ElDescriptionsItem label="自评说明">
               {{ detail.selfComment || '-' }}
             </ElDescriptionsItem>

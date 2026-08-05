@@ -39,15 +39,15 @@ export namespace HrmRecruitPostApi {
 
   /** 职位状态统计 */
   export interface StatusCount {
-    status: number;
-    count: number;
+    status: number; // 候选人状态
+    count: number; // 候选人数量
   }
 
   /** 职位状态修改 */
   export interface StatusReq {
-    id: number;
-    status: number;
-    stopReason?: string;
+    id: number; // 候选人编号
+    status: number; // 候选人状态
+    stopReason?: string; // 停止原因
   }
 }
 

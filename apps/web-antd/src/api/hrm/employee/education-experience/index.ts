@@ -5,13 +5,13 @@ export namespace HrmEmployeeEducationExperienceApi {
   export interface EmployeeEducationExperience {
     id?: number; // 教育经历编号
     employeeId?: number; // 员工编号
-    school?: string;
-    major?: string; // 专业
     education?: number; // 学历
-    teachingMethod?: number;
-    startTime?: number;
-    endTime?: number;
-    remark?: string;
+    graduateSchool?: string; // 毕业院校
+    major?: string; // 专业
+    admissionTime?: number; // 入学日期
+    graduationTime?: number; // 毕业日期
+    teachingMethods?: number; // 教学方式
+    firstDegree?: boolean; // 是否第一学历
     sort?: number; // 排序
     createTime?: Date; // 创建时间
   }

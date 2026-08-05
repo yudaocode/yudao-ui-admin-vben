@@ -3,36 +3,36 @@ import { requestClient } from '#/api/request';
 export namespace HrmInsuranceSchemeApi {
   /** 社保项目 */
   export interface Project {
-    id?: number;
-    schemeId?: number;
-    type?: number;
-    name?: string;
-    baseAmount?: number;
-    corporateRate?: number;
-    personalRate?: number;
-    corporateAmount?: number;
-    personalAmount?: number;
-    createTime?: Date;
+    id?: number; // 编号
+    schemeId?: number; // 社保方案编号
+    type?: number; // 聘用形式
+    name?: string; // 模板名称
+    baseAmount?: number; // 缴纳基数
+    corporateRate?: number; // 公司缴纳比例
+    personalRate?: number; // 个人缴纳比例
+    corporateAmount?: number; // 公司缴纳金额
+    personalAmount?: number; // 个人缴纳金额
+    createTime?: Date; // 创建时间
   }
 
   /** 社保方案 */
   export interface InsuranceScheme {
-    id?: number;
-    name?: string;
-    areaId?: number;
-    areaName?: string;
-    householdType?: string;
-    type?: number;
-    projectList?: Project[];
-    socialSecurityProjectList?: Project[];
-    providentFundProjectList?: Project[];
-    personalInsuranceAmount?: number;
-    corporateInsuranceAmount?: number;
-    personalProvidentFundAmount?: number;
-    corporateProvidentFundAmount?: number;
-    useCount?: number;
-    monthRecordCount?: number;
-    createTime?: Date;
+    id?: number; // 编号
+    name?: string; // 模板名称
+    areaId?: number; // 参保地区编号
+    areaName?: string; // 参保地区
+    householdType?: string; // 户籍类型
+    type?: number; // 聘用形式
+    projectList?: Project[]; // 全部社保项目
+    socialSecurityProjectList?: Project[]; // 社保项目
+    providentFundProjectList?: Project[]; // 公积金项目
+    personalInsuranceAmount?: number; // 个人社保金额
+    corporateInsuranceAmount?: number; // 公司社保金额
+    personalProvidentFundAmount?: number; // 个人公积金金额
+    corporateProvidentFundAmount?: number; // 公司公积金金额
+    useCount?: number; // 使用人数
+    monthRecordCount?: number; // 历史月记录数
+    createTime?: Date; // 创建时间
   }
 }
 

@@ -3,19 +3,19 @@ import { requestClient } from '#/api/request';
 export namespace HrmInsuranceStandardApi {
   /** Type */
   export interface Type {
-    code: string;
-    name: string;
+    code: string; // 编码
+    name: string; // 类型名称
   }
 
   /** 社保项目 */
   export interface Project {
-    type: number;
-    name: string;
-    baseAmount?: number;
-    corporateRate?: number;
-    personalRate?: number;
-    corporateAmount?: number;
-    personalAmount?: number;
+    type: number; // 聘用形式
+    name: string; // 模板名称
+    baseAmount?: number; // 缴纳基数
+    corporateRate?: number; // 公司缴纳比例
+    personalRate?: number; // 个人缴纳比例
+    corporateAmount?: number; // 公司缴纳金额
+    personalAmount?: number; // 个人缴纳金额
   }
 }
 

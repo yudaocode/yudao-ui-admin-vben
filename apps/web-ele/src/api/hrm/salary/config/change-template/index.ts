@@ -3,8 +3,8 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryChangeTemplateApi {
   /** 调薪选项 */
   export interface ChangeOption {
-    name: string;
-    code: number;
+    name: string; // 薪资项名称
+    code: number; // 薪资项编码
   }
 
   /** 调薪模板 */

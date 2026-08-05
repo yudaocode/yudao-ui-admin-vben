@@ -2,14 +2,19 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
+import { markRaw } from 'vue';
+
 import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
+import dayjs from 'dayjs';
+
 import { getInsuranceSchemeSimpleList } from '#/api/hrm/insurance/scheme';
 import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
 import { getSimpleDeptList } from '#/api/system/dept';
+import { AreaCascader } from '#/components/area';
 import { getRangePickerDefaultProps } from '#/utils';
 import {
   HRM_EMPLOYEE_CREATE_ENTRY_STATUSES,
@@ -18,6 +23,7 @@ import {
   HrmEmployeeChangeReason,
   HrmEmployeeChangeReasonOptions,
   HrmEmployeeChangeType,
+  HrmEmployeeContractStatusOptions,
   HrmEmployeeContractTermOptions,
   HrmEmployeeContractTypeOptions,
   HrmEmployeeEntryStatus,
@@ -291,21 +297,6 @@ export function useRegularFormSchema(): VbenFormSchema[] {
   return usePositionChangeFormSchema('regular');
 }
 
-/** 员工调岗表单 */
-export function useTransferFormSchema(): VbenFormSchema[] {
-  return usePositionChangeFormSchema('transfer');
-}
-
-/** 员工晋升表单 */
-export function usePromoteFormSchema(): VbenFormSchema[] {
-  return usePositionChangeFormSchema('promotion');
-}
-
-/** 员工降级表单 */
-export function useDemoteFormSchema(): VbenFormSchema[] {
-  return usePositionChangeFormSchema('demotion');
-}
-
 function getPositionChangePostLabel(
   changeType: 'demotion' | 'promotion' | 'regular' | 'transfer',
 ): string {
@@ -497,10 +488,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
 }
 
 /** 离职表单 */
-export function useQuitFormSchema(quitType?: number): VbenFormSchema[] {
-  const reasonOptions = HrmEmployeeQuitReasonOptions.filter(
-    (item) => item.quitType === quitType,
-  );
+export function useQuitFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'employeeId',
@@ -529,6 +517,27 @@ export function useQuitFormSchema(quitType?: number): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         class: 'w-full',
+      },
+      dependencies: {
+        triggerFields: ['applyQuitTime', 'planQuitTime'],
+        rules(values) {
+          return z
+            .any()
+            .refine(
+              (value) => value !== null && value !== undefined && value !== '',
+              { message: '请选择计划离职时间' },
+            )
+            .refine(
+              (value) =>
+                !value ||
+                !values.applyQuitTime ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.applyQuitTime)),
+                  'day',
+                ),
+              { message: '计划离职日期不能早于申请离职日期' },
+            );
+        },
       },
     },
     {
@@ -568,11 +577,13 @@ export function useQuitFormSchema(quitType?: number): VbenFormSchema[] {
           values.type === HrmEmployeeQuitType.RETIREMENT
             ? undefined
             : 'required') as any,
-      },
-      componentProps: {
-        options: reasonOptions,
-        placeholder: '请选择离职原因',
-        clearable: true,
+        componentProps: (values) => ({
+          options: HrmEmployeeQuitReasonOptions.filter(
+            (item) => item.quitType === values.type,
+          ),
+          placeholder: '请选择离职原因',
+          clearable: true,
+        }),
       },
     },
     {
@@ -584,6 +595,27 @@ export function useQuitFormSchema(quitType?: number): VbenFormSchema[] {
         format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
+      },
+      dependencies: {
+        triggerFields: ['planQuitTime', 'salarySettlementTime'],
+        rules(values) {
+          return z
+            .any()
+            .refine(
+              (value) => value !== null && value !== undefined && value !== '',
+              { message: '请选择薪资结算日期' },
+            )
+            .refine(
+              (value) =>
+                !value ||
+                !values.planQuitTime ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.planQuitTime)),
+                  'day',
+                ),
+              { message: '薪资结算日期不能早于计划离职日期' },
+            );
+        },
       },
     },
     {
@@ -1067,8 +1099,18 @@ export function useCertificateFormSchema(): VbenFormSchema[] {
 export function useEducationFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'school',
-      label: '学校',
+      fieldName: 'education',
+      label: '学历',
+      component: 'Select',
+      rules: 'required',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_EDUCATION, 'number'),
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'graduateSchool',
+      label: '毕业院校',
       component: 'Input',
       rules: 'required',
       componentProps: { clearable: true },
@@ -1077,19 +1119,31 @@ export function useEducationFormSchema(): VbenFormSchema[] {
       fieldName: 'major',
       label: '专业',
       component: 'Input',
+      rules: 'required',
       componentProps: { clearable: true },
     },
     {
-      fieldName: 'education',
-      label: '学历',
-      component: 'Select',
+      fieldName: 'admissionTime',
+      label: '入学日期',
+      component: 'DatePicker',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_EDUCATION, 'number'),
-        clearable: true,
+        format: 'YYYY-MM-DD',
+        valueFormat: 'x',
+        class: 'w-full',
       },
     },
     {
-      fieldName: 'teachingMethod',
+      fieldName: 'graduationTime',
+      label: '毕业日期',
+      component: 'DatePicker',
+      componentProps: {
+        format: 'YYYY-MM-DD',
+        valueFormat: 'x',
+        class: 'w-full',
+      },
+    },
+    {
+      fieldName: 'teachingMethods',
       label: '教学方式',
       component: 'Select',
       componentProps: {
@@ -1098,32 +1152,10 @@ export function useEducationFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'startTime',
-      label: '开始时间',
-      component: 'DatePicker',
-      componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-        class: 'w-full',
-      },
-    },
-    {
-      fieldName: 'endTime',
-      label: '结束时间',
-      component: 'DatePicker',
-      componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
-        class: 'w-full',
-      },
-    },
-    {
-      fieldName: 'remark',
-      label: '备注',
-      component: 'Textarea',
-      componentProps: { rows: 3, maxlength: 255, showWordLimit: true },
+      fieldName: 'firstDegree',
+      label: '第一学历',
+      component: 'Switch',
+      componentProps: { activeValue: true, inactiveValue: false },
     },
     {
       fieldName: 'sort',
@@ -1138,45 +1170,62 @@ export function useEducationFormSchema(): VbenFormSchema[] {
 export function useWorkFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'company',
-      label: '公司',
+      fieldName: 'workUnit',
+      label: '工作单位',
       component: 'Input',
       rules: 'required',
       componentProps: { clearable: true },
     },
     {
       fieldName: 'postName',
-      label: '职位',
+      label: '职务',
       component: 'Input',
+      rules: 'required',
       componentProps: { clearable: true },
     },
     {
       fieldName: 'startTime',
-      label: '开始时间',
+      label: '开始日期',
       component: 'DatePicker',
       componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
       },
     },
     {
       fieldName: 'endTime',
-      label: '结束时间',
+      label: '结束日期',
       component: 'DatePicker',
       componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
       },
     },
     {
+      fieldName: 'reason',
+      label: '离职原因',
+      component: 'Input',
+      componentProps: { clearable: true },
+    },
+    {
+      fieldName: 'witnessName',
+      label: '证明人',
+      component: 'Input',
+      componentProps: { clearable: true },
+    },
+    {
+      fieldName: 'witnessPhone',
+      label: '证明人电话',
+      component: 'Input',
+      componentProps: { clearable: true },
+    },
+    {
       fieldName: 'remark',
-      label: '备注',
+      label: '工作备注',
       component: 'Textarea',
-      componentProps: { rows: 3, maxlength: 255, showWordLimit: true },
+      componentProps: { rows: 3, maxlength: 500, showWordLimit: true },
     },
     {
       fieldName: 'sort',
@@ -1191,43 +1240,53 @@ export function useWorkFormSchema(): VbenFormSchema[] {
 export function useTrainingFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'name',
-      label: '培训名称',
+      fieldName: 'course',
+      label: '培训课程',
       component: 'Input',
       rules: 'required',
       componentProps: { clearable: true },
     },
     {
-      fieldName: 'organization',
+      fieldName: 'organizationName',
       label: '培训机构',
       component: 'Input',
       componentProps: { clearable: true },
     },
     {
       fieldName: 'startTime',
-      label: '开始时间',
+      label: '开始日期',
       component: 'DatePicker',
       componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
       },
     },
     {
       fieldName: 'endTime',
-      label: '结束时间',
+      label: '结束日期',
       component: 'DatePicker',
       componentProps: {
-        type: 'datetime',
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         class: 'w-full',
       },
     },
     {
-      fieldName: 'certificate',
-      label: '证书',
+      fieldName: 'duration',
+      label: '培训时长',
+      component: 'Input',
+      componentProps: { clearable: true },
+    },
+    {
+      fieldName: 'result',
+      label: '培训成绩',
+      component: 'Input',
+      componentProps: { clearable: true },
+    },
+    {
+      fieldName: 'certificateName',
+      label: '证书名称',
       component: 'Input',
       componentProps: { clearable: true },
     },
@@ -1235,7 +1294,7 @@ export function useTrainingFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: '备注',
       component: 'Textarea',
-      componentProps: { rows: 3, maxlength: 255, showWordLimit: true },
+      componentProps: { rows: 3, maxlength: 500, showWordLimit: true },
     },
     {
       fieldName: 'sort',
@@ -1282,6 +1341,7 @@ export function useContractFormSchema(): VbenFormSchema[] {
       fieldName: 'endTime',
       label: '结束日期',
       component: 'DatePicker',
+      rules: 'required',
       componentProps: {
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
@@ -1299,6 +1359,16 @@ export function useContractFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      rules: 'required',
+      componentProps: {
+        options: HrmEmployeeContractStatusOptions,
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'signCompany',
       label: '签约公司',
       component: 'Input',
@@ -1308,6 +1378,7 @@ export function useContractFormSchema(): VbenFormSchema[] {
       fieldName: 'signTime',
       label: '签订日期',
       component: 'DatePicker',
+      rules: 'required',
       componentProps: {
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
@@ -1319,6 +1390,7 @@ export function useContractFormSchema(): VbenFormSchema[] {
       fieldName: 'expireRemind',
       label: '到期提醒',
       component: 'Switch',
+      defaultValue: false,
       componentProps: { activeValue: true, inactiveValue: false },
     },
     {
@@ -1358,6 +1430,16 @@ export function useSalaryCardFormSchema(): VbenFormSchema[] {
       component: 'Input',
       rules: 'required',
       componentProps: { clearable: true },
+    },
+    {
+      fieldName: 'bankAreaId',
+      label: '开户地区',
+      component: markRaw(AreaCascader),
+      componentProps: {
+        placeholder: '请选择开户地区',
+        clearable: true,
+        filterable: true,
+      },
     },
     {
       fieldName: 'bankName',

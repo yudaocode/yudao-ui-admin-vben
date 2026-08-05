@@ -5,17 +5,17 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryGroupApi {
   /** 薪资组 */
   export interface SalaryGroup {
-    id?: number;
-    name: string;
-    salaryStandard?: number;
-    changeRule?: string;
-    taxRuleId?: number;
-    taxRuleName?: string;
-    deptIds?: number[];
-    deptNames?: string[];
-    employeeIds?: number[];
-    employeeNames?: string[];
-    createTime?: Date;
+    id?: number; // 编号
+    name: string; // 模板名称
+    salaryStandard?: number; // 月计薪标准
+    changeRule?: string; // 转正、调薪月规则
+    taxRuleId?: number; // 计税规则编号
+    taxRuleName?: string; // 计税规则名称
+    deptIds?: number[]; // 部门编号数组
+    deptNames?: string[]; // 适用部门名称
+    employeeIds?: number[]; // 员工编号列表
+    employeeNames?: string[]; // 适用员工名称
+    createTime?: Date; // 创建时间
   }
 }
 

@@ -132,7 +132,7 @@ async function rejectPreviousStage() {
     await rejectPerformanceAssessmentReviewStage({
       assessmentId: detail.value.id,
       reviewStageId: stage.id,
-      rejectReason: reason,
+      reason,
     });
     ElMessage.success('上一评分阶段已驳回');
     drawerVisible.value = false;

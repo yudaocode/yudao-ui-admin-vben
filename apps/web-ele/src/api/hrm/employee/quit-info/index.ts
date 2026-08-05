@@ -10,6 +10,7 @@ export namespace HrmEmployeeQuitInfoApi {
     salarySettlementTime?: number; // 薪资结算时间
     type?: number; // 离职类型
     reason?: number; // 离职原因
+    oldEmployeeStatus?: number; // 原员工状态
     remark?: string; // 备注
     createTime?: Date; // 创建时间
   }

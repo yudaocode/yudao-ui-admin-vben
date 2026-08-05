@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
-import { computed, ref } from 'vue';
-
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
 import dayjs from 'dayjs';
@@ -13,6 +11,7 @@ import { getEmployeeQuitInfo } from '#/api/hrm/employee/quit-info';
 import {
   HrmEmployeeEntryStatus,
   HrmEmployeeQuitReason,
+  HrmEmployeeQuitReasonOptions,
   HrmEmployeeQuitType,
 } from '#/views/hrm/utils/constants';
 
@@ -21,15 +20,20 @@ import { useQuitFormSchema } from '../data';
 defineOptions({ name: 'HrmEmployeeQuitForm' });
 
 const emit = defineEmits(['success']);
-const quitType = ref<number>(HrmEmployeeQuitType.VOLUNTARY);
-const schema = computed(() => useQuitFormSchema(quitType.value));
 
 const [Form, formApi] = useVbenForm({
   commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
-  schema: schema as any,
+  schema: useQuitFormSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
+  handleValuesChange(values, fieldsChanged) {
+    if (!fieldsChanged.includes('type')) return;
+    const nextReason = HrmEmployeeQuitReasonOptions.find(
+      (item) => item.quitType === values.type,
+    )?.value;
+    formApi.setFieldValue('reason', nextReason);
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -66,7 +70,6 @@ const [Modal, modalApi] = useVbenModal({
       try {
         const quitInfo = await getEmployeeQuitInfo(employee.id);
         if (quitInfo) {
-          quitType.value = quitInfo.type ?? HrmEmployeeQuitType.VOLUNTARY;
           await formApi.setValues({ ...quitInfo, employeeId: employee.id });
         }
       } finally {

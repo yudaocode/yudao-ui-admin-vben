@@ -5,43 +5,43 @@ import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessme
 import { requestClient } from '#/api/request';
 
 export namespace HrmPortalPerformanceAssessmentApi {
-  /** AssessmentSummary */
+  /** 考核摘要 */
   export interface AssessmentSummary {
-    id: number;
-    planId: number;
-    name?: string;
-    status?: number;
-    stageType?: number;
-    score?: number;
-    resultLevel?: string;
-    coefficient?: number;
-    resultAuditStatus?: number;
-    resultAuditTime?: Date;
-    resultAuditReason?: string;
-    appealReason?: string;
-    appealStatus?: number;
-    appealTime?: Date;
-    appealComment?: string;
-    startTime?: string;
-    endTime?: string;
-    archiveTime?: Date;
+    id: number; // 编号
+    planId: number; // 绩效计划编号
+    name?: string; // 模板名称
+    status?: number; // 员工状态
+    stageType?: number; // 阶段状态
+    score?: number; // 得分
+    resultLevel?: string; // 结果等级
+    coefficient?: number; // 绩效系数
+    resultAuditStatus?: number; // 结果审核状态
+    resultAuditTime?: Date; // 结果审核时间
+    resultAuditReason?: string; // 结果审核意见
+    appealReason?: string; // 申诉原因
+    appealStatus?: number; // 申诉状态
+    appealTime?: Date; // 申诉处理时间
+    appealComment?: string; // 申诉处理意见
+    startTime?: string; // 开始日期
+    endTime?: string; // 结束日期
+    archiveTime?: Date; // 归档时间
   }
 
-  /** TaskCount */
+  /** 任务数量 */
   export interface TaskCount {
-    fillPendingCount: number;
-    fillCompletedCount: number;
-    targetPendingCount: number;
-    targetCompletedCount: number;
-    reviewPendingCount: number;
-    reviewCompletedCount: number;
-    resultAuditPendingCount: number;
-    resultAuditCompletedCount: number;
-    resultConfirmationPendingCount: number;
-    resultConfirmationCompletedCount: number;
-    resultConfirmationAppealedCount: number;
-    appealPendingCount: number;
-    appealCompletedCount: number;
+    fillPendingCount: number; // 待填写指标数量
+    fillCompletedCount: number; // 已填写指标数量
+    targetPendingCount: number; // 待确认目标数量
+    targetCompletedCount: number; // 已确认目标数量
+    reviewPendingCount: number; // 待评分数量
+    reviewCompletedCount: number; // 已评分数量
+    resultAuditPendingCount: number; // 待审核结果数量
+    resultAuditCompletedCount: number; // 已审核结果数量
+    resultConfirmationPendingCount: number; // 待确认结果数量
+    resultConfirmationCompletedCount: number; // 已确认结果数量
+    resultConfirmationAppealedCount: number; // 已申诉结果数量
+    appealPendingCount: number; // 待处理申诉数量
+    appealCompletedCount: number; // 已处理申诉数量
   }
 
   export type PortalPerformanceAssessment =
@@ -49,86 +49,86 @@ export namespace HrmPortalPerformanceAssessmentApi {
   export type ProcessRecord =
     HrmPerformanceAssessmentApi.PerformanceProcessRecord;
 
-  /** ConfirmReq */
+  /** 确认请求 */
   export interface ConfirmReq {
-    assessmentId: number;
-    pass: number;
-    comment?: string;
+    assessmentId: number; // 员工绩效考核编号
+    pass: number; // 是否通过
+    comment?: string; // 说明
   }
 
-  /** AppealReq */
+  /** 申诉请求 */
   export interface AppealReq {
-    assessmentId: number;
-    appealReason: string;
-    appealFileUrls?: string[];
-    reviewStageIds: number[];
+    assessmentId: number; // 员工绩效考核编号
+    appealReason: string; // 申诉原因
+    appealFileUrls?: string[]; // 申诉附件地址列表
+    reviewStageIds: number[]; // 退回评分阶段编号列表
   }
 
-  /** ProcessResp */
+  /** 流程响应 */
   export interface ProcessResp {
-    id: number;
-    nextStageId?: number;
+    id: number; // 编号
+    nextStageId?: number; // 下一运行阶段编号
   }
 
-  /** HandleStageReq */
+  /** 阶段处理请求 */
   export interface HandleStageReq {
-    assessmentId: number;
-    stageId: number;
-    pass: number;
-    comment?: string;
-    reviewStageIds?: number[];
+    assessmentId: number; // 员工绩效考核编号
+    stageId: number; // 运行阶段编号
+    pass: number; // 是否通过
+    comment?: string; // 说明
+    reviewStageIds?: number[]; // 退回评分阶段编号列表
   }
 
-  /** QuotaSave */
+  /** 指标保存 */
   export interface QuotaSave {
-    id?: number;
-    dimensionId?: number;
-    name?: string;
-    description?: string;
-    standard?: string;
-    weight?: number;
-    scoreType?: number;
-    targetValue?: string;
-    actualValue?: string;
-    selfScore?: number;
-    reviewerScore?: number;
-    finalScore?: number;
-    comment?: string;
-    sort?: number;
+    id?: number; // 编号
+    dimensionId?: number; // 员工绩效维度编号
+    name?: string; // 模板名称
+    description?: string; // 职位描述
+    standard?: string; // 标准值
+    weight?: number; // 指标权重
+    scoreType?: number; // 分数类型
+    targetValue?: string; // 目标值
+    actualValue?: string; // 实际值
+    selfScore?: number; // 自评分数
+    reviewerScore?: number; // 评分人得分
+    finalScore?: number; // 最终得分
+    comment?: string; // 说明
+    sort?: number; // 排序
   }
 
-  /** ReviewScoreReq */
+  /** 评分请求 */
   export interface ReviewScoreReq {
-    assessmentId: number;
-    reviewStageId: number;
-    comment?: string;
-    selfComment?: string;
-    reviewerComment?: string;
-    quotas: QuotaSave[];
+    assessmentId: number; // 员工绩效考核编号
+    reviewStageId: number; // 评分阶段编号
+    comment?: string; // 说明
+    selfComment?: string; // 自评说明
+    reviewerComment?: string; // 评分人说明
+    quotas: QuotaSave[]; // 指标列表
   }
 
-  /** QuotaReq */
+  /** 指标请求 */
   export interface QuotaReq {
-    assessmentId: number;
-    quotas: QuotaSave[];
+    assessmentId: number; // 员工绩效考核编号
+    quotas: QuotaSave[]; // 指标列表
   }
 
-  /** ScorePreview */
+  /** 得分预览 */
   export interface ScorePreview {
-    score?: number;
-    resultLevel?: string;
-    coefficient?: number;
-    stageScore?: number;
-    stageResultLevel?: string;
-    cumulativeScore?: number;
-    cumulativeResultLevel?: string;
+    score?: number; // 得分
+    resultLevel?: string; // 结果等级
+    coefficient?: number; // 绩效系数
+    stageScore?: number; // 阶段得分
+    stageResultLevel?: string; // 阶段结果等级
+    cumulativeScore?: number; // 当前累计得分
+    cumulativeResultLevel?: string; // 当前累计结果等级；全部评分阶段完成时返回
   }
 
-  /** ReviewRejectReq */
+  /** 驳回请求 */
   export interface ReviewRejectReq {
-    assessmentId: number;
-    reviewStageId: number;
-    rejectReason: string;
+    assessmentId: number; // 员工绩效考核编号
+    reviewStageId: number; // 评分阶段编号
+    reason: string; // 异动原因
   }
 }
 

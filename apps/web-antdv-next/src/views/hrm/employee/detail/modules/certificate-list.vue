@@ -4,6 +4,7 @@ import type { HrmEmployeeCertificateApi } from '#/api/hrm/employee/certificate';
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
 import { Button, message, Table } from 'antdv-next';
 
@@ -12,6 +13,7 @@ import {
   getEmployeeCertificateList,
 } from '#/api/hrm/employee/certificate';
 import { $t } from '#/locales';
+import { formatHrmDateTime } from '#/views/hrm/utils/format';
 
 import Form from './certificate-form.vue';
 
@@ -39,18 +41,47 @@ function openForm(row?: HrmEmployeeCertificateApi.EmployeeCertificate) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const hide = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeCertificate(id);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    hide();
-  }
+  } catch {}
 }
+
+const columns: any[] = [
+  { title: '证书名称', dataIndex: 'name', key: 'name' },
+  { title: '证书级别', dataIndex: 'level', key: 'level' },
+  { title: '证书编号', dataIndex: 'no', key: 'no' },
+  {
+    title: '有效开始日期',
+    dataIndex: 'startTime',
+    key: 'startTime',
+    width: 120,
+    customRender: ({ text }: any) => formatHrmDateTime(text),
+  },
+  {
+    title: '有效结束日期',
+    dataIndex: 'endTime',
+    key: 'endTime',
+    width: 120,
+    customRender: ({ text }: any) => formatHrmDateTime(text),
+  },
+  {
+    title: '发证机构',
+    dataIndex: 'issuingAuthority',
+    key: 'issuingAuthority',
+  },
+  {
+    title: '发证日期',
+    dataIndex: 'issuingTime',
+    key: 'issuingTime',
+    width: 120,
+    customRender: ({ text }: any) => formatHrmDateTime(text),
+  },
+  { title: '备注', dataIndex: 'remark', key: 'remark' },
+  { title: '操作', key: 'action', width: 140, fixed: 'right' },
+];
 
 onMounted(() => getList());
 defineExpose({ getList });
@@ -65,21 +96,12 @@ defineExpose({ getList });
       <Button type="primary" @click="openForm()">新增</Button>
     </div>
     <Table
-      :columns="[
-        { title: '证书名称', dataIndex: 'name', key: 'name' },
-        { title: '证书级别', dataIndex: 'level', key: 'level' },
-        { title: '证书编码', dataIndex: 'no', key: 'no' },
-        {
-          title: '发证机构',
-          dataIndex: 'issuingAuthority',
-          key: 'issuingAuthority',
-        },
-        { title: '操作', key: 'action', width: 140 },
-      ]"
+      :columns="columns"
       :data-source="list"
       :loading="loading"
       :pagination="false"
-      :row-key="(row) => row.id as any"
+      row-key="id"
+      :scroll="{ x: 1200 }"
       bordered
       size="small"
     >

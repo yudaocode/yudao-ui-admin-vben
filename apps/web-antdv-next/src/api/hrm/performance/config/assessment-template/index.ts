@@ -5,30 +5,30 @@ import { requestClient } from '#/api/request';
 export namespace HrmPerformanceAssessmentTemplateApi {
   /** AssessmentQuota */
   export interface AssessmentQuota {
-    name?: string;
-    illustrate?: string;
-    standard?: string;
-    weight?: number;
-    scoreType?: number;
+    name?: string; // 模板名称
+    illustrate?: string; // 模板说明
+    standard?: string; // 标准值
+    weight?: number; // 指标权重
+    scoreType?: number; // 分数类型
   }
 
   /** AssessmentDimension */
   export interface AssessmentDimension {
-    name?: string;
-    quotaType?: number;
-    weight?: number;
-    remark?: string;
-    allowEdit?: boolean;
-    quotas?: AssessmentQuota[];
+    name?: string; // 模板名称
+    quotaType?: number; // 指标类型
+    weight?: number; // 指标权重
+    remark?: string; // 备注
+    allowEdit?: boolean; // 是否允许编辑
+    quotas?: AssessmentQuota[]; // 指标列表
   }
 
   /** AssessmentConfig */
   export interface AssessmentConfig {
-    name: string;
-    scoreCalculation: number;
-    upperLimitType: number;
-    upperLimitScore: number;
-    dimensions?: AssessmentDimension[];
+    name: string; // 模板名称
+    scoreCalculation: number; // 计分方式
+    upperLimitType: number; // 分数上限类型
+    upperLimitScore: number; // 分数上限
+    dimensions?: AssessmentDimension[]; // 考核维度列表
   }
 
   /** 考核指标模板 */

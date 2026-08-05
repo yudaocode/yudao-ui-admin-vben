@@ -40,20 +40,20 @@ export namespace HrmPortalEmployeeApi {
     companyAge?: number; // 司龄，单位年
   }
 
-  /** EmployeeUpdateReq */
+  /** 员工更新请求 */
   export interface EmployeeUpdateReq {
-    name?: string;
-    mobile?: string;
-    country?: string;
-    nation?: string;
-    idType?: number;
-    idNumber?: string;
-    sex?: number;
-    email?: string;
-    nativePlace?: string;
-    birthday?: number;
-    address?: string;
-    highestEducation?: number;
+    name?: string; // 员工姓名
+    mobile?: string; // 手机号
+    country?: string; // 国家或地区
+    nation?: string; // 民族
+    idType?: number; // 证件类型
+    idNumber?: string; // 证件号码
+    sex?: number; // 性别
+    email?: string; // 邮箱
+    nativePlace?: string; // 籍贯
+    birthday?: number; // 出生日期
+    address?: string; // 户籍地址
+    highestEducation?: number; // 最高学历
   }
 }
 

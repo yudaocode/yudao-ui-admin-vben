@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
+import type { HrmRecruitCandidateApi } from '#/api/hrm/recruit/candidate';
 
 import { computed, ref } from 'vue';
 
@@ -15,6 +16,7 @@ import {
   updateEmployee,
 } from '#/api/hrm/employee';
 import { getEmployeeCreateFieldConfigList } from '#/api/hrm/employee/config';
+import { convertRecruitCandidateToEmployee } from '#/api/hrm/recruit/candidate';
 import { $t } from '#/locales';
 import {
   HRM_EMPLOYEE_NO_PROBATION_MONTHS,
@@ -38,10 +40,12 @@ const activeTab = ref('personal');
 const createFieldVisibleMap = ref<Record<number, Set<string>>>({});
 const leaderEmployeeId = ref<number>();
 const userId = ref<number>();
+const candidateId = ref<number>();
 
 const modalTitle = computed(() => {
   if (formType.value === 'confirm') return '确认入职';
   if (formType.value === 'rehire') return '办理再入职';
+  if (formType.value === 'candidate') return '候选人转员工';
   if (formType.value === 'create') return '新增员工';
   return '编辑员工';
 });
@@ -111,6 +115,8 @@ function buildSubmitData(values: HrmEmployeeApi.Employee) {
   }
   if (formType.value === 'confirm' || formType.value === 'rehire') {
     submitData.id = values.id;
+  } else if (formType.value === 'candidate') {
+    submitData.candidateId = candidateId.value ?? values.candidateId;
   }
   return submitData as HrmEmployeeApi.Employee;
 }
@@ -131,10 +137,16 @@ const [Modal, modalApi] = useVbenModal({
         ...(await entryFormApi.getValues()),
         leaderEmployeeId: leaderEmployeeId.value,
         userId: userId.value,
+        candidateId: candidateId.value,
       } as HrmEmployeeApi.Employee;
       const submitData = buildSubmitData(values);
       if (formType.value === 'create') {
         await createEmployee(submitData);
+        ElMessage.success($t('ui.actionMessage.createSuccess'));
+      } else if (formType.value === 'candidate') {
+        await convertRecruitCandidateToEmployee(
+          submitData as HrmRecruitCandidateApi.EntryReq,
+        );
         ElMessage.success($t('ui.actionMessage.createSuccess'));
       } else if (formType.value === 'confirm') {
         await confirmEmployeeEntry(submitData);
@@ -156,7 +168,11 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ id?: number; type?: string }>();
+    const data = modalApi.getData<{
+      defaultData?: Partial<HrmEmployeeApi.Employee>;
+      id?: number;
+      type?: string;
+    }>();
     formType.value = data?.type || 'create';
     activeTab.value = 'personal';
     modalApi.setState({ title: modalTitle.value });
@@ -167,6 +183,7 @@ const [Modal, modalApi] = useVbenModal({
     await entryFormApi.setValues(defaults);
     leaderEmployeeId.value = undefined;
     userId.value = undefined;
+    candidateId.value = undefined;
     modalApi.lock();
     try {
       if (formType.value !== 'update') {
@@ -178,6 +195,7 @@ const [Modal, modalApi] = useVbenModal({
         await entryFormApi.setValues(employee);
         leaderEmployeeId.value = employee.leaderEmployeeId;
         userId.value = employee.userId;
+        candidateId.value = employee.candidateId;
         if (formType.value === 'confirm') {
           await entryFormApi.setFieldValue(
             'entryStatus',
@@ -200,6 +218,13 @@ const [Modal, modalApi] = useVbenModal({
             probation: HRM_EMPLOYEE_NO_PROBATION_MONTHS,
           });
         }
+      } else if (data?.defaultData) {
+        const merged = { ...defaults, ...data.defaultData };
+        await formApi.setValues(merged);
+        await entryFormApi.setValues(merged);
+        leaderEmployeeId.value = data.defaultData.leaderEmployeeId;
+        userId.value = data.defaultData.userId;
+        candidateId.value = data.defaultData.candidateId;
       }
     } finally {
       modalApi.unlock();

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import type { HrmSalaryChangeRecordApi } from '#/api/hrm/salary/change-record';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 
@@ -27,7 +28,7 @@ const tabs = useTabs();
 const employeeId = Number(route.params.id);
 const loading = ref(false);
 const activeTab = ref('salaryEmployee');
-const employee = ref<any>({});
+const employee = ref({} as HrmEmployeeApi.Employee);
 const salaryEmployee = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>({});
 const changeRecordListRef = ref<InstanceType<typeof ChangeRecordList>>();
 const employeeInfoFormRef = ref<InstanceType<typeof Form>>();

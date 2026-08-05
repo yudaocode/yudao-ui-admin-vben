@@ -4,6 +4,7 @@ import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
 import { Button, message, Table } from 'antdv-next';
 
@@ -39,18 +40,23 @@ function openForm(row?: HrmEmployeeContactApi.EmployeeContact) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const hide = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeContact(id);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    hide();
-  }
+  } catch {}
 }
+
+const columns: any[] = [
+  { title: '联系人', dataIndex: 'name', key: 'name' },
+  { title: '关系', dataIndex: 'relation', key: 'relation' },
+  { title: '电话', dataIndex: 'phone', key: 'phone' },
+  { title: '工作单位', dataIndex: 'workUnit', key: 'workUnit' },
+  { title: '职务', dataIndex: 'postName', key: 'postName' },
+  { title: '地址', dataIndex: 'address', key: 'address' },
+  { title: '操作', key: 'action', width: 140 },
+];
 
 onMounted(() => getList());
 defineExpose({ getList });
@@ -65,19 +71,11 @@ defineExpose({ getList });
       <Button type="primary" @click="openForm()">新增</Button>
     </div>
     <Table
-      :columns="[
-        { title: '联系人', dataIndex: 'name', key: 'name' },
-        { title: '关系', dataIndex: 'relation', key: 'relation' },
-        { title: '电话', dataIndex: 'phone', key: 'phone' },
-        { title: '工作单位', dataIndex: 'workUnit', key: 'workUnit' },
-        { title: '职务', dataIndex: 'postName', key: 'postName' },
-        { title: '地址', dataIndex: 'address', key: 'address' },
-        { title: '操作', key: 'action', width: 140 },
-      ]"
+      :columns="columns"
       :data-source="list"
       :loading="loading"
       :pagination="false"
-      :row-key="(row) => row.id as any"
+      row-key="id"
       bordered
       size="small"
     >

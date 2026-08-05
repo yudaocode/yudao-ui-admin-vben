@@ -3,13 +3,13 @@ import { requestClient } from '#/api/request';
 export namespace HrmEmployeeConfigApi {
   /** 字段配置 */
   export interface FieldConfig {
-    name: string;
-    title: string;
-    groupName: string;
-    visible: boolean;
-    editable?: boolean;
-    visibleLocked: boolean;
-    editableLocked: boolean;
+    name: string; // 字段名称
+    title: string; // 字段标题
+    groupName: string; // 字段分组名称
+    visible: boolean; // 是否显示
+    editable?: boolean; // 是否允许员工编辑
+    visibleLocked: boolean; // 是否锁定显示
+    editableLocked: boolean; // 是否锁定编辑
   }
 }
 

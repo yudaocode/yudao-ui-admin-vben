@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
+
 import { onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -15,7 +17,7 @@ import { DictTag } from '#/components/dict-tag';
 import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 const props = defineProps<{ employeeId: number }>();
 const loading = ref(false);
-const salaryInfo = ref<any>();
+const salaryInfo = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>();
 onMounted(async () => {
   loading.value = true;
   try {
@@ -31,7 +33,7 @@ onMounted(async () => {
     :style="{ marginBottom: '15px' }"
     :loading="loading"
   >
-    <ElDescriptions v-if="salaryInfo" bordered :column="3" size="small">
+    <ElDescriptions v-if="salaryInfo" border :column="3" size="small">
       <ElDescriptionsItem label="转正工资">
         {{ formatHrmMoney(salaryInfo.regularSalary) }}
       </ElDescriptionsItem>

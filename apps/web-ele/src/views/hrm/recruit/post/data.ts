@@ -9,11 +9,11 @@ import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDate, handleTree } from '@vben/utils';
 
-import { getEmployeeSimplePage } from '#/api/hrm/employee';
 import { getRecruitPostTypeList } from '#/api/hrm/recruit/post/type';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { AreaCascader } from '#/components/area';
 import { DictTag } from '#/components/dict-tag';
+import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import {
   AGE_UNLIMITED_VALUE,
   HrmEmployeeEntryStatus,
@@ -33,15 +33,8 @@ import {
   formatRecruitPostSchedule,
 } from '#/views/hrm/utils/format';
 
-/** 加载在职员工精简列表 */
-async function loadActiveEmployeeOptions() {
-  const data = await getEmployeeSimplePage({
-    pageNo: 1,
-    pageSize: 200,
-    entryStatus: HrmEmployeeEntryStatus.ACTIVE,
-  });
-  return data.list;
-}
+import AgeRangeField from './modules/age-range-field.vue';
+import SalaryRangeField from './modules/salary-range-field.vue';
 
 /** 列表搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -93,14 +86,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerEmployeeId',
       label: '招聘负责人',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘负责人',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
         clearable: true,
-        filterable: true,
       },
     },
   ];
@@ -322,65 +312,34 @@ export function useFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    {
-      fieldName: 'salaryNegotiable',
-      label: '薪资面议',
-      component: 'Switch',
-      defaultValue: false,
-      componentProps: {
-        activeText: '面议',
-        inactiveText: '填写',
-        inlinePrompt: true,
-      },
-    },
+    // 薪资范围：视觉上合并为一项；关联字段隐藏但保留 fieldName，供提交映射使用
     {
       fieldName: 'minSalary',
-      label: '最低薪资',
-      component: 'InputNumber',
-      dependencies: {
-        triggerFields: ['salaryNegotiable'],
-        disabled: (values) => !!values.salaryNegotiable,
-      },
-      componentProps: {
-        placeholder: '最低薪资',
-        min: 0,
-        max: 99_999_999.99,
-        precision: 2,
-        class: '!w-full',
-        controlsPosition: 'right',
-      },
+      label: '薪资范围',
+      component: markRaw(SalaryRangeField),
+      formItemClass: 'items-start',
+      description: '最低薪资不能大于最高薪资；勾选“面议”后无需填写范围。',
+      componentProps: (values, formApi) => ({
+        values,
+        formApi,
+      }),
     },
     {
       fieldName: 'maxSalary',
-      label: '最高薪资',
       component: 'InputNumber',
-      dependencies: {
-        triggerFields: ['salaryNegotiable'],
-        disabled: (values) => !!values.salaryNegotiable,
-      },
-      componentProps: {
-        placeholder: '最高薪资',
-        min: 0,
-        max: 99_999_999.99,
-        precision: 2,
-        class: '!w-full',
-        controlsPosition: 'right',
-      },
+      dependencies: { triggerFields: [''], show: () => false },
     },
     {
       fieldName: 'salaryUnit',
-      label: '薪资单位',
       component: 'Select',
       defaultValue: HrmRecruitSalaryUnit.MONTH,
-      dependencies: {
-        triggerFields: ['salaryNegotiable'],
-        disabled: (values) => !!values.salaryNegotiable,
-      },
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.HRM_RECRUIT_SALARY_UNIT, 'number'),
-        placeholder: '请选择单位',
-        clearable: true,
-      },
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'salaryNegotiable',
+      component: 'Checkbox',
+      defaultValue: false,
+      dependencies: { triggerFields: [''], show: () => false },
     },
     {
       fieldName: 'latestEntryTime',
@@ -395,48 +354,28 @@ export function useFormSchema(): VbenFormSchema[] {
         clearable: true,
       },
     },
-    {
-      fieldName: 'ageUnlimited',
-      label: '年龄不限',
-      component: 'Switch',
-      defaultValue: false,
-      componentProps: {
-        activeText: '不限',
-        inactiveText: '填写',
-        inlinePrompt: true,
-      },
-    },
+    // 年龄要求：视觉上合并为一项；关联字段隐藏但保留 fieldName
     {
       fieldName: 'minAge',
-      label: '最小年龄',
-      component: 'InputNumber',
-      dependencies: {
-        triggerFields: ['ageUnlimited'],
-        disabled: (values) => !!values.ageUnlimited,
-      },
-      componentProps: {
-        placeholder: '最小年龄',
-        min: 0,
-        max: 99,
-        class: '!w-full',
-        controlsPosition: 'right',
-      },
+      label: '年龄要求',
+      component: markRaw(AgeRangeField),
+      formItemClass: 'items-start',
+      description: '最小年龄不能大于最大年龄；勾选“不限”后无需填写范围。',
+      componentProps: (values, formApi) => ({
+        values,
+        formApi,
+      }),
     },
     {
       fieldName: 'maxAge',
-      label: '最大年龄',
       component: 'InputNumber',
-      dependencies: {
-        triggerFields: ['ageUnlimited'],
-        disabled: (values) => !!values.ageUnlimited,
-      },
-      componentProps: {
-        placeholder: '最大年龄',
-        min: 0,
-        max: 99,
-        class: '!w-full',
-        controlsPosition: 'right',
-      },
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
+      fieldName: 'ageUnlimited',
+      component: 'Checkbox',
+      defaultValue: false,
+      dependencies: { triggerFields: [''], show: () => false },
     },
     {
       fieldName: 'emergencyLevel',
@@ -453,14 +392,11 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'ownerEmployeeId',
       label: '招聘负责人',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘负责人',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
         clearable: true,
-        filterable: true,
       },
     },
     {
@@ -484,16 +420,13 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'interviewEmployeeIds',
       label: '面试官',
-      component: 'ApiSelect',
+      component: markRaw(EmployeeSelect),
       defaultValue: [],
       componentProps: {
-        api: loadActiveEmployeeOptions,
-        labelField: 'name',
-        valueField: 'id',
-        multiple: true,
         placeholder: '请选择面试官',
+        entryStatus: HrmEmployeeEntryStatus.ACTIVE,
+        multiple: true,
         clearable: true,
-        filterable: true,
       },
     },
     {

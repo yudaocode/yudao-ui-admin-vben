@@ -5,20 +5,20 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryChangeRecordApi {
   /** 调薪记录 */
   export interface SalaryChangeRecord {
-    id?: number;
-    employeeId?: number;
-    recordType?: number;
-    changeReason?: number;
-    effectTime?: number;
-    beforeTotal?: number;
-    afterTotal?: number;
-    probationBeforeTotal?: number;
-    probationAfterTotal?: number;
-    status?: number;
-    remark?: string;
-    salaryOptions?: HrmSalaryOptionApi.OptionValue[];
-    probationSalaryOptions?: HrmSalaryOptionApi.OptionValue[];
-    createTime?: Date;
+    id?: number; // 编号
+    employeeId?: number; // 员工编号
+    recordType?: number; // 记录类型
+    changeReason?: number; // 调整原因
+    effectTime?: number; // 生效日期
+    beforeTotal?: number; // 调整前正式工资
+    afterTotal?: number; // 调整后正式工资
+    probationBeforeTotal?: number; // 调整前试用期工资
+    probationAfterTotal?: number; // 调整后试用期工资
+    status?: number; // 员工状态
+    remark?: string; // 备注
+    salaryOptions?: HrmSalaryOptionApi.OptionValue[]; // 薪资项列表
+    probationSalaryOptions?: HrmSalaryOptionApi.OptionValue[]; // 试用期薪资项列表
+    createTime?: Date; // 创建时间
   }
 }
 

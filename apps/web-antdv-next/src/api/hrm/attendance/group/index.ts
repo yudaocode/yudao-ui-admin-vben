@@ -5,49 +5,49 @@ import { requestClient } from '#/api/request';
 export namespace HrmAttendanceGroupApi {
   /** 打卡地点 */
   export interface Point {
-    name: string;
-    address?: string;
-    latitude?: number;
-    longitude?: number;
-    radius?: number;
+    name: string; // 地点名称
+    address?: string; // 定位地址
+    latitude?: number; // 纬度
+    longitude?: number; // 经度
+    radius?: number; // 有效打卡半径（米）
   }
 
   /** 打卡 WiFi */
   export interface Wifi {
-    ssid: string;
-    mac?: string;
+    ssid: string; // WiFi 名称
+    mac?: string; // MAC 地址
   }
 
   /** 班次 */
   export interface Shift {
-    weeks: number[];
-    startTime: string;
-    endTime: string;
-    clockInStartTime: string;
-    clockInEndTime: string;
-    clockOutStartTime: string;
-    clockOutEndTime: string;
-    restStartTime: string;
-    restEndTime: string;
-    excludeRestTime: boolean;
+    weeks: number[]; // 工作日数组
+    startTime: string; // 上班时间
+    endTime: string; // 下班时间
+    clockInStartTime: string; // 上班打卡开始时间
+    clockInEndTime: string; // 上班打卡结束时间
+    clockOutStartTime: string; // 下班打卡开始时间
+    clockOutEndTime: string; // 下班打卡结束时间
+    restStartTime: string; // 休息开始时间
+    restEndTime: string; // 休息结束时间
+    excludeRestTime: boolean; // 休息时间是否不计入工作时长
   }
 
   /** 特殊日期 */
   export interface SpecialDate {
-    type?: number;
-    date?: Date | number | string;
+    type?: number; // 日期类型
+    date?: Date | number | string; // 特殊日期
   }
 
   /** 扣款规则 */
   export interface DeductRule {
-    lateMethod: number;
-    lateDeductMoney: number;
-    earlyMethod: number;
-    earlyDeductMoney: number;
-    absenteeismMethod: number;
-    absenteeismDeductMoney: number;
-    misscardMethod: number;
-    misscardDeductMoney: number;
+    lateMethod: number; // 迟到扣款方式
+    lateDeductMoney: number; // 迟到扣款金额
+    earlyMethod: number; // 早退扣款方式
+    earlyDeductMoney: number; // 早退扣款金额
+    absenteeismMethod: number; // 旷工扣款方式
+    absenteeismDeductMoney: number; // 旷工扣款金额
+    misscardMethod: number; // 缺卡扣款方式
+    misscardDeductMoney: number; // 缺卡扣款金额
   }
 
   /** 考勤组 */

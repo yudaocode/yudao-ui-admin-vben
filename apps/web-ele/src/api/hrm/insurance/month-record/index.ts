@@ -3,24 +3,24 @@ import { requestClient } from '#/api/request';
 export namespace HrmInsuranceMonthRecordApi {
   /** 社保月度记录 */
   export interface InsuranceMonthRecord {
-    id?: number;
-    title?: string;
-    year?: number;
-    month?: number;
-    insuredEmployeeCount?: number;
-    stoppedEmployeeCount?: number;
-    status?: number;
-    personalInsuranceAmount?: number;
-    personalProvidentFundAmount?: number;
-    corporateInsuranceAmount?: number;
-    corporateProvidentFundAmount?: number;
-    createTime?: Date;
+    id?: number; // 编号
+    title?: string; // 标题
+    year?: number; // 年份
+    month?: number; // 月份
+    insuredEmployeeCount?: number; // 参保人数
+    stoppedEmployeeCount?: number; // 停保人数
+    status?: number; // 员工状态
+    personalInsuranceAmount?: number; // 个人社保金额
+    personalProvidentFundAmount?: number; // 个人公积金金额
+    corporateInsuranceAmount?: number; // 公司社保金额
+    corporateProvidentFundAmount?: number; // 公司公积金金额
+    createTime?: Date; // 创建时间
   }
 
   /** 社保月度记录创建请求 */
   export interface MonthRecordCreateReq {
-    year: number;
-    month: number;
+    year: number; // 年份
+    month: number; // 月份
   }
 }
 

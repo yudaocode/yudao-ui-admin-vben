@@ -32,6 +32,7 @@ import {
 import { getRecruitInterview } from '#/api/hrm/recruit/interview';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
+import EmployeeForm from '#/views/hrm/employee/modules/form.vue';
 import { executeBatch } from '#/views/hrm/utils/batch';
 import {
   HRM_RECRUIT_CANDIDATE_EMPLOYEE_EDUCATION_MAP,
@@ -46,7 +47,6 @@ import { useGridColumns, useGridFormSchema } from './data';
 import ChannelBatchForm from './modules/channel-batch-form.vue';
 import CleanForm from './modules/clean-form.vue';
 import EliminateForm from './modules/eliminate-form.vue';
-import EmployeeEntryForm from './modules/employee-entry-form.vue';
 import Form from './modules/form.vue';
 import InterviewForm from './modules/interview-form.vue';
 import InterviewResultForm from './modules/interview-result-form.vue';
@@ -186,8 +186,8 @@ const [InterviewResultModal, interviewResultModalApi] = useVbenModal({
   connectedComponent: InterviewResultForm,
   destroyOnClose: true,
 });
-const [EmployeeEntryModal, employeeEntryModalApi] = useVbenModal({
-  connectedComponent: EmployeeEntryForm,
+const [EmployeeFormModal, employeeFormModalApi] = useVbenModal({
+  connectedComponent: EmployeeForm,
   destroyOnClose: true,
 });
 
@@ -340,9 +340,9 @@ function openEntryForm(candidate: HrmRecruitCandidateApi.RecruitCandidate) {
   const entryTime = candidate.entryTime
     ? Number(candidate.entryTime)
     : Date.now();
-  employeeEntryModalApi
+  employeeFormModalApi
     .setData({
-      mode: 'candidate',
+      type: 'candidate',
       defaultData: {
         candidateId: candidate.id,
         name: candidate.name,
@@ -376,8 +376,8 @@ function handleConfirmEntry(
   if (!candidate.employeeId) {
     return;
   }
-  employeeEntryModalApi
-    .setData({ mode: 'confirm', employeeId: candidate.employeeId })
+  employeeFormModalApi
+    .setData({ type: 'confirm', id: candidate.employeeId })
     .open();
 }
 
@@ -777,7 +777,7 @@ onMounted(async () => {
     <CleanModal @success="handleRefresh" />
     <InterviewModal @success="handleBatchSuccess" />
     <InterviewResultModal @success="handleRefresh" />
-    <EmployeeEntryModal @success="handleRefresh" />
+    <EmployeeFormModal @success="handleRefresh" />
 
     <Grid class="candidate-grid">
       <template #toolbar-actions>

@@ -51,33 +51,33 @@ export namespace HrmRecruitCandidateApi {
 
   /** 候选人状态统计 */
   export interface StatusCount {
-    status: number;
-    count: number;
+    status: number; // 候选人状态
+    count: number; // 候选人数量
   }
 
   /** 修改状态 */
   export interface UpdateStatusReq {
-    id: number;
-    status: number;
+    id: number; // 候选人编号
+    status: number; // 候选人状态
   }
 
   /** 修改职位 */
   export interface UpdatePostReq {
-    id: number;
-    postId: number;
+    id: number; // 候选人编号
+    postId: number; // 应聘职位编号
   }
 
   /** 修改渠道 */
   export interface UpdateChannelReq {
-    id: number;
-    channelId: number;
+    id: number; // 候选人编号
+    channelId: number; // 招聘渠道编号
   }
 
   /** 淘汰 */
   export interface UpdateEliminateReq {
-    id: number;
-    eliminate: string;
-    remark?: string;
+    id: number; // 候选人编号
+    eliminate: string; // 淘汰原因
+    remark?: string; // 备注
   }
 
   /** 转员工 */

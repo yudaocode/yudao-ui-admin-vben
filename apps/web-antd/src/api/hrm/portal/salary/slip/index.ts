@@ -3,42 +3,42 @@ import { requestClient } from '#/api/request';
 export namespace HrmPortalSalarySlipApi {
   /** 工资条选项 */
   export interface SlipOption {
-    name: string;
-    type?: number;
-    code?: number;
-    value?: number;
-    remark?: string;
-    sort?: number;
-    children?: SlipOption[];
+    name: string; // 模板名称
+    type?: number; // 聘用形式
+    code?: number; // 编码
+    value?: number; // 值
+    remark?: string; // 备注
+    sort?: number; // 排序
+    children?: SlipOption[]; // 子工资条项
   }
 
   /** 员工端工资条 */
   export interface PortalSalarySlip {
-    id: number;
-    sendRecordId?: number;
-    monthEmployeeRecordId?: number;
-    employeeId: number;
-    year: number;
-    month: number;
-    readStatus?: number;
-    realPaySalary?: number;
-    remark?: string;
-    createTime?: Date;
-    options: SlipOption[];
+    id: number; // 编号
+    sendRecordId?: number; // 工资条记录编号
+    monthEmployeeRecordId?: number; // 员工工资记录编号
+    employeeId: number; // 员工编号
+    year: number; // 年份
+    month: number; // 月份
+    readStatus?: number; // 已读状态
+    realPaySalary?: number; // 实发工资
+    remark?: string; // 备注
+    createTime?: Date; // 创建时间
+    options: SlipOption[]; // 选项列表
   }
 
-  /** SlipListReq */
+  /** 工资条列表查询 */
   export interface SlipListReq {
-    startMonth?: string;
-    endMonth?: string;
-    orderType?: number;
-    order?: number;
+    startMonth?: string; // 工资开始月份
+    endMonth?: string; // 结束月份
+    orderType?: number; // 排序类型
+    order?: number; // 排序方向
   }
 
-  /** UnreadSummary */
+  /** 未读汇总 */
   export interface UnreadSummary {
-    unreadCount: number;
-    reminder?: string;
+    unreadCount: number; // 未读工资条数量
+    reminder?: string; // 最新未读工资条提醒
   }
 }
 

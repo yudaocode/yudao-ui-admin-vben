@@ -12,6 +12,10 @@ import {
   updateEmployeeContract,
 } from '#/api/hrm/employee/contract';
 import { $t } from '#/locales';
+import {
+  HrmEmployeeContractStatus,
+  HrmEmployeeContractType,
+} from '#/views/hrm/utils/constants';
 
 import { useContractFormSchema } from '../../data';
 const emit = defineEmits(['success']);
@@ -52,7 +56,16 @@ function open(empId: number, row?: HrmEmployeeContractApi.EmployeeContract) {
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });
   formApi.resetForm();
-  formApi.setValues({ sort: 1, expireRemind: true, ...row, employeeId: empId });
+  formApi.setValues({
+    sort: 1,
+    type: HrmEmployeeContractType.FIXED_TERM_LABOR_CONTRACT,
+    term: 1,
+    status: HrmEmployeeContractStatus.NOT_PERFORMED,
+    expireRemind: false,
+    ...row,
+    employeeId: empId,
+    fileUrls: row?.fileUrls ?? [],
+  });
   modalApi.open();
 }
 defineExpose({ open });

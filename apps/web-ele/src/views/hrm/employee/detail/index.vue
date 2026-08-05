@@ -32,13 +32,11 @@ import {
   HrmEmployeeStatus,
 } from '#/views/hrm/utils/constants';
 
-import DemoteForm from '../modules/demote-form.vue';
 import Form from '../modules/form.vue';
 import FullTimeForm from '../modules/full-time-form.vue';
-import PromoteForm from '../modules/promote-form.vue';
+import PositionChangeForm from '../modules/position-change-form.vue';
 import QuitForm from '../modules/quit-form.vue';
 import RegularForm from '../modules/regular-form.vue';
-import TransferForm from '../modules/transfer-form.vue';
 import BasicInfo from './modules/basic-info.vue';
 import ContractList from './modules/contract-list.vue';
 import Header from './modules/header.vue';
@@ -114,16 +112,9 @@ const [RegularModal, regularModalApi] = useVbenModal({
   connectedComponent: RegularForm,
   destroyOnClose: true,
 });
-const [TransferModal, transferModalApi] = useVbenModal({
-  connectedComponent: TransferForm,
-  destroyOnClose: true,
-});
-const [PromoteModal, promoteModalApi] = useVbenModal({
-  connectedComponent: PromoteForm,
-  destroyOnClose: true,
-});
-const [DemoteModal, demoteModalApi] = useVbenModal({
-  connectedComponent: DemoteForm,
+/** 调岗 / 晋升 / 降级共用一个弹窗，通过 mode 区分 */
+const [PositionChangeModal, positionChangeModalApi] = useVbenModal({
+  connectedComponent: PositionChangeForm,
   destroyOnClose: true,
 });
 const [FullTimeModal, fullTimeModalApi] = useVbenModal({
@@ -182,15 +173,21 @@ function openChangeAction(changeType: number) {
     return;
   }
   if (changeType === HrmEmployeeChangeType.TRANSFER) {
-    transferModalApi.setData(employee.value).open();
+    positionChangeModalApi
+      .setData({ employee: employee.value, mode: 'transfer' })
+      .open();
     return;
   }
   if (changeType === HrmEmployeeChangeType.PROMOTION) {
-    promoteModalApi.setData(employee.value).open();
+    positionChangeModalApi
+      .setData({ employee: employee.value, mode: 'promote' })
+      .open();
     return;
   }
   if (changeType === HrmEmployeeChangeType.DEMOTION) {
-    demoteModalApi.setData(employee.value).open();
+    positionChangeModalApi
+      .setData({ employee: employee.value, mode: 'demote' })
+      .open();
     return;
   }
   if (changeType === HrmEmployeeChangeType.FULL_TIME) {
@@ -265,9 +262,7 @@ onMounted(() => {
   <Page auto-content-height :loading="loading">
     <FormModal @success="getEmployeeData" />
     <RegularModal @success="getEmployeeData" />
-    <TransferModal @success="getEmployeeData" />
-    <PromoteModal @success="getEmployeeData" />
-    <DemoteModal @success="getEmployeeData" />
+    <PositionChangeModal @success="getEmployeeData" />
     <FullTimeModal @success="getEmployeeData" />
     <QuitModal @success="getEmployeeData" />
 

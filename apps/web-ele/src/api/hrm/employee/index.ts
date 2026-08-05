@@ -51,21 +51,21 @@ export namespace HrmEmployeeApi {
     socialSecurityNumber?: string; // 个人社保账号
     accumulationFundNumber?: string; // 个人公积金账号
     remark?: string; // 备注
-    createTime?: Date; // 创建时间
+    createTime?: number; // 创建时间
   }
 
   /** 员工状态数量 */
   export interface StatusCount {
-    status: number;
-    count: number;
+    status: number; // 候选人状态
+    count: number; // 候选人数量
   }
 
   /** 员工部门统计 */
   export interface DeptStatistics {
-    deptId: number;
-    activeCount: number;
-    fullTimeCount: number;
-    nonFullTimeCount: number;
+    deptId: number; // 部门编号
+    activeCount: number; // 在职员工人数
+    fullTimeCount: number; // 全职员工人数
+    nonFullTimeCount: number; // 非全职员工人数
   }
 
   /** 员工再入职 */
@@ -75,15 +75,15 @@ export namespace HrmEmployeeApi {
 
   /** 员工转正 */
   export interface RegularReq {
-    employeeId?: number;
-    reason?: number;
-    newDeptId?: number;
-    newPostName?: string;
-    newPostLevel?: string;
-    newWorkAddress?: string;
-    newLeaderEmployeeId?: number;
-    effectTime?: number;
-    remark?: string;
+    employeeId?: number; // 员工编号
+    reason?: number; // 异动原因
+    newDeptId?: number; // 新部门编号；未填写表示不变
+    newPostName?: string; // 新岗位名称；未填写表示不变
+    newPostLevel?: string; // 新职级；未填写表示不变
+    newWorkAddress?: string; // 新工作地点；未填写表示不变
+    newLeaderEmployeeId?: number; // 新直属上级员工编号；未填写表示不变
+    effectTime?: number; // 生效时间
+    remark?: string; // 备注
   }
 
   /** 员工调岗 */
@@ -102,52 +102,52 @@ export namespace HrmEmployeeApi {
 
   /** 从后台用户批量创建员工 */
   export interface CreateFromUserReq {
-    userId: number;
-    jobNumber: string;
-    mobile: string;
-    deptId?: number;
-    leaderEmployeeId?: number;
-    type: number;
-    status?: number;
-    entryTime: number;
-    probation?: number;
-    postName?: string;
-    postLevel?: string;
-    workCity?: string;
-    workAddress?: string;
-    remark?: string;
+    userId: number; // 后台用户编号
+    jobNumber: string; // 工号
+    mobile: string; // 员工手机号
+    deptId?: number; // 部门编号
+    leaderEmployeeId?: number; // 直属上级员工编号
+    type: number; // 聘用形式
+    status?: number; // 非正式员工状态
+    entryTime: number; // 入职时间
+    probation?: number; // 试用期，单位月
+    postName?: string; // 职位名称
+    postLevel?: string; // 岗位职级
+    workCity?: string; // 工作城市
+    workAddress?: string; // 工作地点
+    remark?: string; // 备注
   }
 
   /** 员工通知发送结果 */
   export interface NotifyResp {
-    successCount: number;
-    skippedCount: number;
-    failureCount: number;
+    successCount: number; // 发送成功数量
+    skippedCount: number; // 无后台账号跳过数量
+    failureCount: number; // 发送失败数量
   }
 
   /** 员工导入结果 */
   export interface ImportResp {
-    createJobNumbers: string[];
-    updateJobNumbers: string[];
-    skipJobNumbers: string[];
-    failureJobNumbers: Record<string, string>;
+    createJobNumbers: string[]; // 新增成功的工号
+    updateJobNumbers: string[]; // 更新成功的工号
+    skipJobNumbers: string[]; // 跳过的工号
+    failureJobNumbers: Record<string, string>; // 导入失败的工号及原因
   }
 
   /** 员工离职 */
   export interface QuitReq {
-    employeeId?: number;
-    planQuitTime?: number;
-    applyQuitTime?: number;
-    salarySettlementTime?: number;
-    type?: number;
-    reason?: number;
-    remark?: string;
+    employeeId?: number; // 员工编号
+    planQuitTime?: number; // 计划离职时间
+    applyQuitTime?: number; // 申请离职时间
+    salarySettlementTime?: number; // 薪资结算时间
+    type?: number; // 离职类型
+    reason?: number; // 离职原因
+    remark?: string; // 备注
   }
 
   /** 取消员工离职 */
   export interface CancelQuitReq {
-    employeeId: number;
-    reason: string;
+    employeeId: number; // 员工编号
+    reason: string; // 取消原因
   }
 }
 

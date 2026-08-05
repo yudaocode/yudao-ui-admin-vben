@@ -3,15 +3,15 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryTaxRuleApi {
   /** 计税规则 */
   export interface SalaryTaxRule {
-    id?: number;
-    name: string;
-    type?: number;
-    taxEnabled?: boolean;
-    threshold?: number;
-    decimalScale?: number;
-    cycleType?: number;
-    usedGroupCount?: number;
-    createTime?: Date;
+    id?: number; // 编号
+    name: string; // 模板名称
+    type?: number; // 聘用形式
+    taxEnabled?: boolean; // 是否计税
+    threshold?: number; // 起征阈值
+    decimalScale?: number; // 小数位数
+    cycleType?: number; // 考核周期类型
+    usedGroupCount?: number; // 使用该规则的薪资组数量
+    createTime?: Date; // 创建时间
   }
 }
 

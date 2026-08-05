@@ -7,55 +7,55 @@ import { requestClient } from '#/api/request';
 export namespace HrmSalaryMonthRecordApi {
   /** 月度工资表 */
   export interface SalaryMonthRecord {
-    id?: number;
-    title?: string;
-    year?: number;
-    month?: number;
-    employeeCount?: number;
-    startTime?: string;
-    endTime?: string;
-    expectedPaySalary?: number;
-    personalInsuranceAmount?: number;
-    personalProvidentFundAmount?: number;
-    personalTax?: number;
-    realPaySalary?: number;
-    corporateInsuranceAmount?: number;
-    corporateProvidentFundAmount?: number;
-    status?: number;
-    optionHeaders?: HrmSalaryOptionApi.SalaryOption[];
-    createTime?: Date;
+    id?: number; // 编号
+    title?: string; // 标题
+    year?: number; // 年份
+    month?: number; // 月份
+    employeeCount?: number; // 员工数量
+    startTime?: string; // 开始日期
+    endTime?: string; // 结束日期
+    expectedPaySalary?: number; // 应发工资
+    personalInsuranceAmount?: number; // 个人社保金额
+    personalProvidentFundAmount?: number; // 个人公积金金额
+    personalTax?: number; // 个人所得税
+    realPaySalary?: number; // 实发工资
+    corporateInsuranceAmount?: number; // 公司社保金额
+    corporateProvidentFundAmount?: number; // 公司公积金金额
+    status?: number; // 员工状态
+    optionHeaders?: HrmSalaryOptionApi.SalaryOption[]; // 薪资项表头
+    createTime?: Date; // 创建时间
   }
 
   /** 薪资核算就绪员工 */
   export interface PayrollReadinessEmployee {
-    employeeId?: number;
-    employeeName?: string;
-    jobNumber?: string;
-    deptId?: number;
-    deptName?: string;
-    postName?: string;
-    entryStatus?: number;
-    status?: number;
-    entryTime?: Date;
+    employeeId?: number; // 员工编号
+    employeeName?: string; // 员工姓名
+    jobNumber?: string; // 工号
+    deptId?: number; // 部门编号
+    deptName?: string; // 部门名称
+    postName?: string; // 职位名称
+    entryStatus?: number; // 入职状态
+    status?: number; // 员工状态
+    entryTime?: Date; // 入职时间
   }
 
   /** 薪资核算就绪状态 */
   export interface PayrollReadiness {
-    monthRecordId?: number;
-    title?: string;
-    year?: number;
-    month?: number;
-    startTime?: string;
-    endTime?: string;
-    socialSecurityYearMonth?: string;
-    payrollEmployeeCount?: number;
-    salaryEmployeeCount?: number;
-    noSalaryEmployeeCount?: number;
-    noSalaryGroupEmployeeCount?: number;
-    changeEmployeeCount?: number;
-    changeTypeCountMap?: Record<number, number>;
-    noSalaryEmployees?: PayrollReadinessEmployee[];
-    noSalaryGroupEmployees?: PayrollReadinessEmployee[];
+    monthRecordId?: number; // 工资表编号
+    title?: string; // 标题
+    year?: number; // 年份
+    month?: number; // 月份
+    startTime?: string; // 开始日期
+    endTime?: string; // 结束日期
+    socialSecurityYearMonth?: string; // 社保年月
+    payrollEmployeeCount?: number; // 计薪员工人数
+    salaryEmployeeCount?: number; // 已定薪员工人数
+    noSalaryEmployeeCount?: number; // 未定薪员工人数
+    noSalaryGroupEmployeeCount?: number; // 未分配薪资组员工人数
+    changeEmployeeCount?: number; // 异动员工人数
+    changeTypeCountMap?: Record<number, number>; // 变更类型数量映射
+    noSalaryEmployees?: PayrollReadinessEmployee[]; // 未定薪员工列表
+    noSalaryGroupEmployees?: PayrollReadinessEmployee[]; // 未分配薪资组员工列表
   }
 }
 

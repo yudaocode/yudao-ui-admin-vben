@@ -4,6 +4,7 @@ import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 
 import { Button, message, Table } from 'ant-design-vue';
 
@@ -39,17 +40,12 @@ function openForm(row?: HrmEmployeeContactApi.EmployeeContact) {
 
 async function handleDelete(id?: number) {
   if (!id) return;
-  const hide = message.loading({
-    content: $t('ui.actionMessage.deleting'),
-    duration: 0,
-  });
   try {
+    await confirm($t('ui.actionMessage.deleteConfirm'));
     await deleteEmployeeContact(id);
     message.success($t('ui.actionMessage.deleteSuccess'));
     await getList();
-  } finally {
-    hide();
-  }
+  } catch {}
 }
 
 onMounted(() => getList());

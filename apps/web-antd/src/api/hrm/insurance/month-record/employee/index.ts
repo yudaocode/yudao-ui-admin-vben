@@ -7,77 +7,77 @@ import { requestClient } from '#/api/request';
 export namespace HrmInsuranceMonthEmployeeRecordApi {
   /** 社保项目 */
   export interface Project {
-    schemeProjectId?: number;
-    type?: number;
-    name?: string;
-    baseAmount?: number;
-    corporateRate?: number;
-    personalRate?: number;
-    corporateAmount?: number;
-    personalAmount?: number;
+    schemeProjectId?: number; // 社保项目编号
+    type?: number; // 聘用形式
+    name?: string; // 模板名称
+    baseAmount?: number; // 缴纳基数
+    corporateRate?: number; // 公司缴纳比例
+    personalRate?: number; // 个人缴纳比例
+    corporateAmount?: number; // 公司缴纳金额
+    personalAmount?: number; // 个人缴纳金额
   }
 
   /** 社保员工月度记录 */
   export interface InsuranceMonthEmployeeRecord {
-    id?: number;
-    monthRecordId?: number;
-    employeeId?: number;
-    employeeName?: string;
-    jobNumber?: string;
-    sex?: number;
-    age?: number;
-    mobile?: string;
-    idNumber?: string;
-    deptId?: number;
-    deptName?: string;
-    postName?: string;
-    entryStatus?: number;
-    employeeStatus?: number;
-    entryTime?: Date;
-    schemeId?: number;
-    schemeName?: string;
-    areaId?: number;
-    areaName?: string;
-    houseType?: string;
-    schemeType?: number;
-    socialSecurityNumber?: string;
-    accumulationFundNumber?: string;
-    year?: number;
-    month?: number;
-    personalInsuranceAmount?: number;
-    personalProvidentFundAmount?: number;
-    corporateInsuranceAmount?: number;
-    corporateProvidentFundAmount?: number;
-    status?: number;
-    socialSecurityProjectList: Project[];
-    providentFundProjectList: Project[];
-    createTime?: Date;
+    id?: number; // 编号
+    monthRecordId?: number; // 工资表编号
+    employeeId?: number; // 员工编号
+    employeeName?: string; // 员工姓名
+    jobNumber?: string; // 工号
+    sex?: number; // 性别
+    age?: number; // 年龄
+    mobile?: string; // 手机号
+    idNumber?: string; // 证件号码
+    deptId?: number; // 部门编号
+    deptName?: string; // 部门名称
+    postName?: string; // 职位名称
+    entryStatus?: number; // 入职状态
+    employeeStatus?: number; // 员工状态
+    entryTime?: Date; // 入职时间
+    schemeId?: number; // 社保方案编号
+    schemeName?: string; // 社保方案名称
+    areaId?: number; // 参保地区编号
+    areaName?: string; // 参保地区
+    houseType?: string; // 户籍类型
+    schemeType?: number; // 社保方案类型
+    socialSecurityNumber?: string; // 个人社保账号
+    accumulationFundNumber?: string; // 个人公积金账号
+    year?: number; // 年份
+    month?: number; // 月份
+    personalInsuranceAmount?: number; // 个人社保金额
+    personalProvidentFundAmount?: number; // 个人公积金金额
+    corporateInsuranceAmount?: number; // 公司社保金额
+    corporateProvidentFundAmount?: number; // 公司公积金金额
+    status?: number; // 员工状态
+    socialSecurityProjectList: Project[]; // 社保项目
+    providentFundProjectList: Project[]; // 公积金项目
+    createTime?: Date; // 创建时间
   }
 
   /** ProjectUpdateReq */
   export interface ProjectUpdateReq {
-    schemeProjectId: number;
-    baseAmount?: number;
-    corporateAmount?: number;
-    personalAmount?: number;
+    schemeProjectId: number; // 社保项目编号
+    baseAmount?: number; // 缴纳基数
+    corporateAmount?: number; // 公司缴纳金额
+    personalAmount?: number; // 个人缴纳金额
   }
 
   /** 修改请求 */
   export interface UpdateReq {
-    id: number;
-    schemeId: number;
-    projects: ProjectUpdateReq[];
+    id: number; // 编号
+    schemeId: number; // 社保方案编号
+    projects: ProjectUpdateReq[]; // 社保项目列表
   }
 
   /** StopListReq */
   export interface StopListReq {
-    ids: number[];
+    ids: number[]; // 员工编号列表
   }
 
   /** CreateListReq */
   export interface CreateListReq {
-    monthRecordId: number;
-    employeeIds: number[];
+    monthRecordId: number; // 工资表编号
+    employeeIds: number[]; // 员工编号列表
   }
 }
 

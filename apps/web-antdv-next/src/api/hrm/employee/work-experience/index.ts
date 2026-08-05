@@ -5,10 +5,13 @@ export namespace HrmEmployeeWorkExperienceApi {
   export interface EmployeeWorkExperience {
     id?: number; // 工作经历编号
     employeeId?: number; // 员工编号
-    company?: string;
+    workUnit?: string; // 工作单位
     postName?: string; // 职务
     startTime?: number; // 工作开始日期
     endTime?: number; // 工作结束日期
+    reason?: string; // 离职原因
+    witnessName?: string; // 证明人
+    witnessPhone?: string; // 证明人手机号
     remark?: string; // 工作备注
     sort?: number; // 排序
     createTime?: Date; // 创建时间
