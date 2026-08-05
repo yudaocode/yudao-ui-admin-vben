@@ -703,7 +703,7 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type !== HrmEmployeeQuitType.RETIREMENT,
-        rules: ((values: Partial<Record<string, any>>) =>
+        rules: ((values: Record<string, unknown>) =>
           values.type === HrmEmployeeQuitType.RETIREMENT
             ? undefined
             : 'required') as any,
@@ -962,7 +962,7 @@ export function useEmployeeEntryFormSchema(
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.INFORMAL,
-        rules: ((values: Partial<Record<string, any>>) =>
+        rules: ((values: Record<string, unknown>) =>
           values.type === HrmEmployeeType.INFORMAL
             ? 'required'
             : undefined) as any,
@@ -980,7 +980,7 @@ export function useEmployeeEntryFormSchema(
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.FORMAL,
-        rules: ((values: Partial<Record<string, any>>) =>
+        rules: ((values: Record<string, unknown>) =>
           values.type === HrmEmployeeType.FORMAL
             ? 'required'
             : undefined) as any,
