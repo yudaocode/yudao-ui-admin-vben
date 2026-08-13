@@ -111,6 +111,7 @@ defineExpose({ open });
         <SelectOption
           v-for="item in categories"
           :key="item.id"
+          :label="item.name"
           :value="item.id!"
         >
           {{ item.name }}

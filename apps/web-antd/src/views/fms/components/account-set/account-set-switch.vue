@@ -6,7 +6,7 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useTabbarStore } from '@vben/stores';
 
-import { message, Select, SelectOption, Tag } from 'ant-design-vue';
+import { message, Select, Tag } from 'ant-design-vue';
 
 import { updateAccountSetDefaultStatus } from '#/api/fms/config/account-user';
 import { useFmsStore } from '#/views/fms/store/fms';
@@ -39,6 +39,23 @@ const [GuideModal, guideModalApi] = useVbenModal({
 const isFmsRoute = computed(() => isFmsRoutePath(route.path));
 const accountSetId = computed(() => fmsStore.getAccountSetId);
 const accountSetList = computed(() => fmsStore.getAccountSetList);
+/** 当前选中账套的公司名称（选中值先于选项加载时回退 Store 中的账套名） */
+const selectedAccountSetName = computed(
+  () =>
+    accountSetList.value.find((item) => item.id === selectedAccountSetId.value)
+      ?.companyName ??
+    fmsStore.getAccountSet?.companyName ??
+    '',
+);
+/** 账套下拉选项（携带默认/初始化标记供选项渲染） */
+const accountSetOptions = computed(() =>
+  accountSetList.value.map((item) => ({
+    ...item,
+    disabled: !item.initialized,
+    label: item.companyName,
+    value: item.id!,
+  })),
+);
 const currentMonthText = computed(() =>
   formatCurrentMonth(fmsStore.getCurrentMonth),
 );
@@ -210,6 +227,7 @@ function formatCurrentMonth(currentMonth?: string) {
       v-model:value="selectedAccountSetId"
       :disabled="switching"
       :loading="loading"
+      :options="accountSetOptions"
       class="w-full"
       option-filter-prop="label"
       placeholder="请选择账套"
@@ -217,11 +235,11 @@ function formatCurrentMonth(currentMonth?: string) {
       @change="handleChange"
       @dropdown-visible-change="handleVisibleChange"
     >
-      <template #optionLabel="option">
+      <template #optionLabel>
         <div class="flex min-w-0 items-center gap-1.5">
           <IconifyIcon icon="ep:office-building" />
-          <span class="min-w-0 truncate" :title="option.label">
-            {{ option.label }}
+          <span class="min-w-0 truncate" :title="selectedAccountSetName">
+            {{ selectedAccountSetName }}
           </span>
           <span
             v-if="currentMonthText"
@@ -231,21 +249,15 @@ function formatCurrentMonth(currentMonth?: string) {
           </span>
         </div>
       </template>
-      <SelectOption
-        v-for="item in accountSetList"
-        :key="item.id"
-        :disabled="!item.initialized"
-        :label="item.companyName"
-        :value="item.id!"
-      >
+      <template #option="option">
         <div class="flex items-center justify-between gap-3">
-          <span>{{ item.companyName }}</span>
+          <span>{{ option.label }}</span>
           <div class="flex flex-shrink-0 gap-1">
-            <Tag v-if="item.defaultStatus">默认</Tag>
-            <Tag v-if="!item.initialized" color="default">未初始化</Tag>
+            <Tag v-if="option.defaultStatus">默认</Tag>
+            <Tag v-if="!option.initialized" color="default">未初始化</Tag>
           </div>
         </div>
-      </SelectOption>
+      </template>
     </Select>
   </div>
   <GuideModal />

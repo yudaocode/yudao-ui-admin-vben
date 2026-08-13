@@ -4,7 +4,7 @@ export namespace FmsSubjectApi {
   /** 科目 */
   export interface Subject {
     id?: number; // 科目编号
-    accountSetId?: number; // 账套编号
+    accountSetId: number; // 账套编号
     code: string; // 科目编码
     name: string; // 科目名称
     parentId?: number; // 上级科目编号

@@ -6,7 +6,7 @@ export namespace FmsAuxiliaryItemApi {
   /** 辅助核算项目 */
   export interface AuxiliaryItem {
     id?: number; // 项目编号
-    accountSetId?: number; // 账套编号
+    accountSetId: number; // 账套编号
     auxiliaryTypeId?: number; // 辅助核算类别编号
     code: string; // 项目编码
     name: string; // 项目名称

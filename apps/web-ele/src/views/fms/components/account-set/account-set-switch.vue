@@ -39,6 +39,14 @@ const [GuideModal, guideModalApi] = useVbenModal({
 const isFmsRoute = computed(() => isFmsRoutePath(route.path));
 const accountSetId = computed(() => fmsStore.getAccountSetId);
 const accountSetList = computed(() => fmsStore.getAccountSetList);
+/** 当前选中账套的公司名称（选中值先于选项加载时回退 Store 中的账套名） */
+const selectedAccountSetName = computed(
+  () =>
+    accountSetList.value.find((item) => item.id === selectedAccountSetId.value)
+      ?.companyName ??
+    fmsStore.getAccountSet?.companyName ??
+    '',
+);
 const currentMonthText = computed(() =>
   formatCurrentMonth(fmsStore.getCurrentMonth),
 );
@@ -216,11 +224,11 @@ function formatCurrentMonth(currentMonth?: string) {
       @change="handleChange"
       @visible-change="handleVisibleChange"
     >
-      <template #label="{ label }">
+      <template #label>
         <div class="flex min-w-0 items-center gap-1.5">
           <IconifyIcon icon="ep:office-building" />
-          <span class="min-w-0 truncate" :title="String(label)">
-            {{ label }}
+          <span class="min-w-0 truncate" :title="selectedAccountSetName">
+            {{ selectedAccountSetName }}
           </span>
           <span
             v-if="currentMonthText"

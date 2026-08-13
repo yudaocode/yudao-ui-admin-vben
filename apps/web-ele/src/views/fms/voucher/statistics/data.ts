@@ -26,7 +26,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'monthRange',
       label: '会计期间',
-      component: 'RangePicker',
+      component: 'DatePicker', // ele 的 RangePicker 适配层强制 datetimerange，月份区间走 DatePicker 透传 type
       componentProps: {
         clearable: false,
         type: 'monthrange',

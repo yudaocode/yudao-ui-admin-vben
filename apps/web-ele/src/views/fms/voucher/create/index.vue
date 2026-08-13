@@ -335,7 +335,7 @@ async function refreshVoucherNumber() {
   formData.voucherNumber = await getNextVoucherNumber(
     currentAccountSetId,
     voucherWordId,
-    formatDate(voucherTime),
+    formatDate(voucherTime, 'YYYY-MM-DD HH:mm:ss'),
   );
 }
 
@@ -1169,21 +1169,21 @@ onBeforeUnmount(removePageShortcutListener);
     <div class="rounded-md bg-card p-4">
       <div
         v-loading="loading"
-        class="voucher-sheet relative border border-[var(--el-border-color)] border-solid border-t-4 border-t-[var(--el-color-primary)] bg-[var(--el-fill-color-lighter)] pb-18px pl-0 pr-28px pt-26px shadow-[var(--el-box-shadow-light)]"
+        class="voucher-sheet relative border border-[var(--el-border-color)] border-solid border-t-4 border-t-[var(--el-color-primary)] bg-[var(--el-fill-color-lighter)] pb-[18px] pl-0 pr-[28px] pt-[26px] shadow-[var(--el-box-shadow-light)]"
       >
         <div
-          class="mb-4px ml-28px text-center text-24px font-600 tracking-6px [font-family:STKaiti,KaiTi,serif]"
+          class="mb-[4px] ml-[28px] text-center text-[24px] font-600 tracking-[6px] [font-family:STKaiti,KaiTi,serif]"
         >
           记账凭证
         </div>
         <div
-          class="absolute right-28px top-34px font-600 text-[var(--el-text-color-secondary)]"
+          class="absolute right-[28px] top-[34px] font-600 text-[var(--el-text-color-secondary)]"
         >
           {{ voucherPeriod }}
         </div>
-        <div class="box-border flex min-h-60px items-center justify-between pl-24px">
-          <div class="flex items-center gap-8px">
-            <div class="flex items-center gap-8px">
+        <div class="box-border flex min-h-[60px] items-center justify-between pl-[24px]">
+          <div class="flex items-center gap-[8px]">
+            <div class="flex items-center gap-[8px]">
               <span
                 class="whitespace-nowrap font-600 text-[var(--el-text-color-regular)]"
               >
@@ -1224,7 +1224,7 @@ onBeforeUnmount(removePageShortcutListener);
             />
           </div>
           <div
-            class="flex items-center gap-8px whitespace-nowrap [&_.el-input]:!w-[110px] [&_.el-input-group__append]:!px-8px"
+            class="flex items-center gap-[8px] whitespace-nowrap [&_.el-input]:!w-[110px] [&_.el-input-group__append]:!px-8px"
           >
             <span>附单据</span>
             <ElInput
@@ -1244,10 +1244,10 @@ onBeforeUnmount(removePageShortcutListener);
           @keydown="handleEntryTableKeydown"
         >
           <table
-            class="entry-table w-full min-w-960px table-fixed border-collapse border-spacing-0 bg-[var(--el-bg-color)] [&_td]:border [&_td]:border-[var(--el-border-color)] [&_td]:border-solid [&_td]:align-middle [&_th]:h-48px [&_th]:border [&_th]:border-[var(--el-border-color)] [&_th]:border-solid [&_th]:bg-[var(--el-bg-color)] [&_th]:px-8px [&_th]:text-[var(--el-text-color-primary)] [&_th]:align-middle [&_tbody_td]:h-60px [&_tbody_td]:overflow-hidden [&_tbody_td]:px-8px [&_tfoot_td]:h-60px [&_tfoot_td]:overflow-hidden [&_tfoot_td]:px-8px"
+            class="entry-table w-full min-w-[960px] table-fixed border-collapse border-spacing-0 bg-[var(--el-bg-color)] [&_td]:border [&_td]:border-[var(--el-border-color)] [&_td]:border-solid [&_td]:align-middle [&_th]:h-48px [&_th]:border [&_th]:border-[var(--el-border-color)] [&_th]:border-solid [&_th]:bg-[var(--el-bg-color)] [&_th]:px-8px [&_th]:text-[var(--el-text-color-primary)] [&_th]:align-middle [&_tbody_td]:h-60px [&_tbody_td]:overflow-hidden [&_tbody_td]:px-8px [&_tfoot_td]:h-60px [&_tfoot_td]:overflow-hidden [&_tfoot_td]:px-8px"
           >
             <colgroup>
-              <col class="w-26px" />
+              <col class="w-[26px]" />
               <col class="w-[18.5%]" />
               <col class="entry-subject-column" />
               <col v-if="showQuantityColumn" class="w-[13.9%]" />
@@ -1263,9 +1263,9 @@ onBeforeUnmount(removePageShortcutListener);
                 <th class="entry-subject relative !px-10px">会计科目</th>
                 <th v-if="showQuantityColumn" class="!px-4px text-center">数量</th>
                 <th class="entry-money entry-money-header relative !p-0">
-                  <strong class="block h-25px leading-25px">借方金额</strong>
+                  <strong class="block h-[25px] leading-[25px]">借方金额</strong>
                   <div
-                    class="flex h-22px border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-22px [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
+                    class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                   >
                     <span
                       v-for="(unit, index) in FMS_VOUCHER_MONEY_UNITS"
@@ -1276,9 +1276,9 @@ onBeforeUnmount(removePageShortcutListener);
                   </div>
                 </th>
                 <th class="entry-money entry-money-header relative !p-0">
-                  <strong class="block h-25px leading-25px">贷方金额</strong>
+                  <strong class="block h-[25px] leading-[25px]">贷方金额</strong>
                   <div
-                    class="flex h-22px border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-22px [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
+                    class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                   >
                     <span
                       v-for="(unit, index) in FMS_VOUCHER_MONEY_UNITS"
@@ -1337,7 +1337,7 @@ onBeforeUnmount(removePageShortcutListener);
                 <td class="entry-digest relative !px-10px">
                   <div
                     v-if="readOnly"
-                    class="flex min-h-60px items-center px-2px leading-20px"
+                    class="flex min-h-[60px] items-center px-[2px] leading-[20px]"
                   >
                     {{ entry.digest }}
                   </div>
@@ -1359,7 +1359,7 @@ onBeforeUnmount(removePageShortcutListener);
                 <td class="entry-subject relative !px-10px">
                   <div
                     v-if="readOnly"
-                    class="flex min-h-60px items-center px-2px leading-20px"
+                    class="flex min-h-[60px] items-center px-[2px] leading-[20px]"
                   >
                     {{ formatEntrySubject(entry) }}
                   </div>
@@ -1410,7 +1410,7 @@ onBeforeUnmount(removePageShortcutListener);
                     </ElSelect>
                     <div
                       v-if="getSubject(entry.subjectId)?.auxiliaryTypeIds?.length"
-                      class="mt-4px flex flex-wrap gap-4px"
+                      class="mt-[4px] flex flex-wrap gap-[4px]"
                     >
                       <ElSelect
                         v-for="auxiliaryTypeId in getSubject(entry.subjectId)
@@ -1449,7 +1449,7 @@ onBeforeUnmount(removePageShortcutListener);
                   </template>
                   <div
                     v-if="entry.subjectId"
-                    class="subject-balance pointer-events-none absolute bottom-1px left-10px hidden text-12px text-[var(--el-text-color-placeholder)]"
+                    class="subject-balance pointer-events-none absolute bottom-[1px] left-[10px] hidden text-[12px] text-[var(--el-text-color-placeholder)]"
                   >
                     余额：{{ formatEntryBalance(entry) }}
                   </div>
@@ -1457,7 +1457,7 @@ onBeforeUnmount(removePageShortcutListener);
                 <td v-if="showQuantityColumn" class="!px-4px text-center">
                   <template v-if="getSubject(entry.subjectId)?.quantityAccounting">
                     <div
-                      class="my-2px flex items-center justify-center gap-4px whitespace-nowrap text-12px [&_.el-input-number]:!w-[64px]"
+                      class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.el-input-number]:!w-[64px]"
                     >
                       <span>数量</span>
                       <ElInputNumber
@@ -1471,7 +1471,7 @@ onBeforeUnmount(removePageShortcutListener);
                       <span>{{ getSubject(entry.subjectId)?.quantityUnit }}</span>
                     </div>
                     <div
-                      class="my-2px flex items-center justify-center gap-4px whitespace-nowrap text-12px [&_.el-input-number]:!w-[64px]"
+                      class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.el-input-number]:!w-[64px]"
                     >
                       <span>单价</span>
                       <ElInputNumber
@@ -1496,7 +1496,7 @@ onBeforeUnmount(removePageShortcutListener);
                   data-entry-money
                   data-entry-direction="debit"
                 >
-                  <div class="money-editor relative h-60px">
+                  <div class="money-editor relative h-[60px]">
                     <ElInputNumber
                       v-model="entry.debitAmount"
                       :controls="false"
@@ -1527,7 +1527,7 @@ onBeforeUnmount(removePageShortcutListener);
                   data-entry-money
                   data-entry-direction="credit"
                 >
-                  <div class="money-editor relative h-60px">
+                  <div class="money-editor relative h-[60px]">
                     <ElInputNumber
                       v-model="entry.creditAmount"
                       :controls="false"
@@ -1562,7 +1562,7 @@ onBeforeUnmount(removePageShortcutListener);
                   合计：{{ amountInWords }}
                   <span
                     v-if="!balanced"
-                    class="ml-16px text-[var(--el-color-danger)]"
+                    class="ml-[16px] text-[var(--el-color-danger)]"
                   >
                     借贷不平衡
                   </span>
@@ -1570,7 +1570,7 @@ onBeforeUnmount(removePageShortcutListener);
                 <td class="entry-money relative !p-0">
                   <div
                     :class="{ 'text-[var(--el-color-danger)]': debitTotal < 0 }"
-                    class="money-cell-value pointer-events-none absolute inset-0 flex h-60px items-center justify-end"
+                    class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                   >
                     <span
                       v-for="(digit, index) in getMoneyDigits(debitTotal, true)"
@@ -1583,7 +1583,7 @@ onBeforeUnmount(removePageShortcutListener);
                 <td class="entry-money relative !p-0">
                   <div
                     :class="{ 'text-[var(--el-color-danger)]': creditTotal < 0 }"
-                    class="money-cell-value pointer-events-none absolute inset-0 flex h-60px items-center justify-end"
+                    class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                   >
                     <span
                       v-for="(digit, index) in getMoneyDigits(creditTotal, true)"
@@ -1599,7 +1599,7 @@ onBeforeUnmount(removePageShortcutListener);
         </div>
 
         <div
-          class="flex items-center justify-start gap-36px pb-0 pl-28px pr-0 pt-16px text-[var(--el-text-color-regular)]"
+          class="flex items-center justify-start gap-[36px] pb-0 pl-[28px] pr-0 pt-[16px] text-[var(--el-text-color-regular)]"
         >
           <span>制单人：{{ creatorUserName }}</span>
           <template v-if="formData.id">
@@ -1612,12 +1612,12 @@ onBeforeUnmount(removePageShortcutListener);
         </div>
         <div
           v-if="isApproved"
-          class="pointer-events-none absolute right-[25%] top-12px z-3 rotate-[-12deg] rounded-[50%] border-3 border-[var(--el-color-danger)] border-double px-14px py-10px text-20px font-700 tracking-4px text-[var(--el-color-danger)] opacity-72"
+          class="pointer-events-none absolute right-[25%] top-[12px] z-3 rotate-[-12deg] rounded-[50%] border-3 border-[var(--el-color-danger)] border-double px-[14px] py-[10px] text-[20px] font-700 tracking-[4px] text-[var(--el-color-danger)] opacity-72"
         >
           审核通过
         </div>
       </div>
-      <div v-if="canSave" class="mt-16px flex justify-end gap-8px">
+      <div v-if="canSave" class="mt-[16px] flex justify-end gap-[8px]">
         <ElButton v-if="canSaveAndCreate" type="primary" @click="submitForm(true)">
           保存并新增
         </ElButton>

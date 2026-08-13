@@ -101,6 +101,16 @@ const userStore = useUserStore();
 const loading = ref(false); // 页面的加载中
 const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套编号
 const voucherWords = ref<FmsVoucherWordApi.VoucherWord[]>([]); // 凭证字列表
+/** 当前凭证字名称（选中值先于选项解析时也能正确回显） */
+const voucherWordName = computed(
+  () =>
+    voucherWords.value.find((item) => item.id === formData.voucherWordId)
+      ?.name ?? '',
+);
+/** 凭证字下拉选项 */
+const voucherWordOptions = computed(() =>
+  voucherWords.value.map((item) => ({ label: item.name, value: item.id! })),
+);
 const subjects = ref<FmsSubjectApi.Subject[]>([]); // 会计科目树
 const auxiliaryTypes = ref<FmsAuxiliaryTypeApi.AuxiliaryTypeOption[]>([]); // 辅助核算类别列表
 const currentMonth = ref(''); // 当前会计期间
@@ -244,6 +254,8 @@ async function init() {
       (key) => delete auxiliaryOptions[Number(key)],
     );
     currentMonth.value = accountingMonth || dayjs().format('YYYY-MM');
+    // 等待选项渲染完成，避免选中值先于选项解析导致下拉回显为原始值
+    await nextTick();
 
     // 根据路由加载详情、复制来源或空白凭证
     const voucherId = Number(route.query.id || 0);
@@ -337,7 +349,7 @@ async function refreshVoucherNumber() {
   formData.voucherNumber = await getNextVoucherNumber(
     currentAccountSetId,
     voucherWordId,
-    formatDate(voucherTime),
+    formatDate(voucherTime, 'YYYY-MM-DD HH:mm:ss'),
   );
 }
 
@@ -574,6 +586,25 @@ function getEntrySubjectOptions(entry: VoucherEntryForm) {
     return leafSubjects.value;
   }
   return [...leafSubjects.value, currentSubject];
+}
+
+/** 构建分录科目下拉选项（options 形式，选中态才能稳定回显） */
+function getEntrySubjectSelectOptions(entry: VoucherEntryForm) {
+  return getEntrySubjectOptions(entry).map((subject) => ({
+    disabled:
+      subject.status !== FMS_SUBJECT_STATUS.ENABLED ||
+      Boolean(subject.children?.length),
+    label: `${subject.code} ${subject.name}`,
+    value: subject.id!,
+  }));
+}
+
+/** 构建辅助核算项目下拉选项 */
+function getAuxiliaryItemSelectOptions(auxiliaryTypeId: number) {
+  return (auxiliaryOptions[auxiliaryTypeId] || []).map((item) => ({
+    label: `${item.code} ${item.name}`,
+    value: item.id,
+  }));
 }
 
 /** 格式化分录余额 */
@@ -1174,21 +1205,21 @@ onBeforeUnmount(removePageShortcutListener);
     <div class="rounded-md bg-card p-4">
       <Spin :spinning="loading">
         <div
-          class="voucher-sheet relative border border-[var(--el-border-color)] border-solid border-t-4 border-t-[var(--el-color-primary)] bg-[var(--el-fill-color-lighter)] pb-18px pl-0 pr-28px pt-26px shadow-[var(--el-box-shadow-light)]"
+          class="voucher-sheet relative border border-[var(--el-border-color)] border-solid border-t-4 border-t-[var(--el-color-primary)] bg-[var(--el-fill-color-lighter)] pb-[18px] pl-0 pr-[28px] pt-[26px] shadow-[var(--el-box-shadow-light)]"
         >
           <div
-            class="mb-4px ml-28px text-center text-24px font-600 tracking-6px [font-family:STKaiti,KaiTi,serif]"
+            class="mb-[4px] ml-[28px] text-center text-[24px] font-600 tracking-[6px] [font-family:STKaiti,KaiTi,serif]"
           >
             记账凭证
           </div>
           <div
-            class="absolute right-28px top-34px font-600 text-[var(--el-text-color-secondary)]"
+            class="absolute right-[28px] top-[34px] font-600 text-[var(--el-text-color-secondary)]"
           >
             {{ voucherPeriod }}
           </div>
-          <div class="box-border flex min-h-60px items-center justify-between pl-24px">
-            <div class="flex items-center gap-8px">
-              <div class="flex items-center gap-8px">
+          <div class="box-border flex min-h-[60px] items-center justify-between pl-[24px]">
+            <div class="flex items-center gap-[8px]">
+              <div class="flex items-center gap-[8px]">
                 <span
                   class="whitespace-nowrap font-600 text-[var(--el-text-color-regular)]"
                 >
@@ -1197,16 +1228,11 @@ onBeforeUnmount(removePageShortcutListener);
                 <Select
                   v-model:value="formData.voucherWordId"
                   :disabled="readOnly"
+                  :options="voucherWordOptions"
                   class="!w-[90px]"
                   @change="refreshVoucherNumber"
                 >
-                  <Select.Option
-                    v-for="item in voucherWords"
-                    :key="item.id"
-                    :value="item.id!"
-                  >
-                    {{ item.name }}
-                  </Select.Option>
+                  <template #optionLabel>{{ voucherWordName }}</template>
                 </Select>
                 <div class="flex items-center">
                   <InputNumber
@@ -1215,7 +1241,7 @@ onBeforeUnmount(removePageShortcutListener);
                     :min="1"
                     class="!w-[110px]"
                   />
-                  <span class="ml-4px">号</span>
+                  <span class="ml-[4px]">号</span>
                 </div>
               </div>
               <DatePicker
@@ -1229,7 +1255,7 @@ onBeforeUnmount(removePageShortcutListener);
                 @change="handleVoucherTimeChange"
               />
             </div>
-            <div class="flex items-center gap-8px whitespace-nowrap">
+            <div class="flex items-center gap-[8px] whitespace-nowrap">
               <span>附单据</span>
               <InputNumber
                 v-model:value="formData.attachmentCount"
@@ -1247,10 +1273,10 @@ onBeforeUnmount(removePageShortcutListener);
             @keydown="handleEntryTableKeydown"
           >
             <table
-              class="entry-table w-full min-w-960px table-fixed border-collapse border-spacing-0 bg-[var(--el-bg-color)] [&_td]:border [&_td]:border-[var(--el-border-color)] [&_td]:border-solid [&_td]:align-middle [&_th]:h-48px [&_th]:border [&_th]:border-[var(--el-border-color)] [&_th]:border-solid [&_th]:bg-[var(--el-bg-color)] [&_th]:px-8px [&_th]:text-[var(--el-text-color-primary)] [&_th]:align-middle [&_tbody_td]:h-60px [&_tbody_td]:overflow-hidden [&_tbody_td]:px-8px [&_tfoot_td]:h-60px [&_tfoot_td]:overflow-hidden [&_tfoot_td]:px-8px"
+              class="entry-table w-full min-w-[960px] table-fixed border-collapse border-spacing-0 bg-[var(--el-bg-color)] [&_td]:border [&_td]:border-[var(--el-border-color)] [&_td]:border-solid [&_td]:align-middle [&_th]:h-48px [&_th]:border [&_th]:border-[var(--el-border-color)] [&_th]:border-solid [&_th]:bg-[var(--el-bg-color)] [&_th]:px-8px [&_th]:text-[var(--el-text-color-primary)] [&_th]:align-middle [&_tbody_td]:h-60px [&_tbody_td]:overflow-hidden [&_tbody_td]:px-8px [&_tfoot_td]:h-60px [&_tfoot_td]:overflow-hidden [&_tfoot_td]:px-8px"
             >
               <colgroup>
-                <col class="w-26px" />
+                <col class="w-[26px]" />
                 <col class="w-[18.5%]" />
                 <col class="entry-subject-column" />
                 <col v-if="showQuantityColumn" class="w-[13.9%]" />
@@ -1266,9 +1292,9 @@ onBeforeUnmount(removePageShortcutListener);
                   <th class="entry-subject relative !px-10px">会计科目</th>
                   <th v-if="showQuantityColumn" class="!px-4px text-center">数量</th>
                   <th class="entry-money entry-money-header relative !p-0">
-                    <strong class="block h-25px leading-25px">借方金额</strong>
+                    <strong class="block h-[25px] leading-[25px]">借方金额</strong>
                     <div
-                      class="flex h-22px border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-22px [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
+                      class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                     >
                       <span
                         v-for="(unit, index) in FMS_VOUCHER_MONEY_UNITS"
@@ -1279,9 +1305,9 @@ onBeforeUnmount(removePageShortcutListener);
                     </div>
                   </th>
                   <th class="entry-money entry-money-header relative !p-0">
-                    <strong class="block h-25px leading-25px">贷方金额</strong>
+                    <strong class="block h-[25px] leading-[25px]">贷方金额</strong>
                     <div
-                      class="flex h-22px border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-22px [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
+                      class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                     >
                       <span
                         v-for="(unit, index) in FMS_VOUCHER_MONEY_UNITS"
@@ -1341,7 +1367,7 @@ onBeforeUnmount(removePageShortcutListener);
                   <td class="entry-digest relative !px-10px">
                     <div
                       v-if="readOnly"
-                      class="flex min-h-60px items-center px-2px leading-20px"
+                      class="flex min-h-[60px] items-center px-[2px] leading-[20px]"
                     >
                       {{ entry.digest }}
                     </div>
@@ -1367,31 +1393,20 @@ onBeforeUnmount(removePageShortcutListener);
                   <td class="entry-subject relative !px-10px">
                     <div
                       v-if="readOnly"
-                      class="flex min-h-60px items-center px-2px leading-20px"
+                      class="flex min-h-[60px] items-center px-[2px] leading-[20px]"
                     >
                       {{ formatEntrySubject(entry) }}
                     </div>
                     <template v-else>
                       <Select
                         v-model:value="entry.subjectId"
+                        :options="getEntrySubjectSelectOptions(entry)"
                         placeholder=""
                         class="w-full"
                         option-filter-prop="label"
                         show-search
                         @change="handleSubjectChange(entry)"
                       >
-                        <Select.Option
-                          v-for="subject in getEntrySubjectOptions(entry)"
-                          :key="subject.id"
-                          :disabled="
-                            subject.status !== FMS_SUBJECT_STATUS.ENABLED ||
-                            Boolean(subject.children?.length)
-                          "
-                          :label="`${subject.code} ${subject.name}`"
-                          :value="subject.id!"
-                        >
-                          {{ subject.code }} {{ subject.name }}
-                        </Select.Option>
                         <template
                           v-if="
                             hasAccessByCodes(['fms:config:subject:create']) &&
@@ -1405,7 +1420,7 @@ onBeforeUnmount(removePageShortcutListener);
                             placement="bottomLeft"
                             :trigger="['click']"
                           >
-                            <Button class="m-4px" size="small" type="link">
+                            <Button class="m-[4px]" size="small" type="link">
                               <span class="icon-[ep--plus]"></span> 新增科目
                             </Button>
                             <template #overlay>
@@ -1427,7 +1442,7 @@ onBeforeUnmount(removePageShortcutListener);
                       </Select>
                       <div
                         v-if="getSubject(entry.subjectId)?.auxiliaryTypeIds?.length"
-                        class="mt-4px flex flex-wrap gap-4px"
+                        class="mt-[4px] flex flex-wrap gap-[4px]"
                       >
                         <Select
                           v-for="auxiliaryTypeId in getSubject(entry.subjectId)
@@ -1436,20 +1451,13 @@ onBeforeUnmount(removePageShortcutListener);
                           v-model:value="
                             getEntryAuxiliary(entry, auxiliaryTypeId).itemId
                           "
+                          :options="getAuxiliaryItemSelectOptions(auxiliaryTypeId)"
                           :placeholder="auxiliaryTypeMap.get(auxiliaryTypeId)?.name"
                           class="!w-[calc(50%-2px)]"
                           option-filter-prop="label"
                           show-search
                           @change="loadEntryAuxiliaryBalance(entry)"
                         >
-                          <Select.Option
-                            v-for="item in auxiliaryOptions[auxiliaryTypeId] || []"
-                            :key="item.id"
-                            :label="`${item.code} ${item.name}`"
-                            :value="item.id"
-                          >
-                            {{ item.code }} {{ item.name }}
-                          </Select.Option>
                           <template
                             v-if="
                               hasAccessByCodes(['fms:config:auxiliary:create']) &&
@@ -1459,7 +1467,7 @@ onBeforeUnmount(removePageShortcutListener);
                           >
                             <component :is="menuNode" />
                             <Button
-                              class="m-4px"
+                              class="m-[4px]"
                               size="small"
                               type="link"
                               @click.stop="openAuxiliaryItemForm(auxiliaryTypeId)"
@@ -1473,7 +1481,7 @@ onBeforeUnmount(removePageShortcutListener);
                     </template>
                     <div
                       v-if="entry.subjectId"
-                      class="subject-balance pointer-events-none absolute bottom-1px left-10px hidden text-12px text-[var(--el-text-color-placeholder)]"
+                      class="subject-balance pointer-events-none absolute bottom-[1px] left-[10px] hidden text-[12px] text-[var(--el-text-color-placeholder)]"
                     >
                       余额：{{ formatEntryBalance(entry) }}
                     </div>
@@ -1481,7 +1489,7 @@ onBeforeUnmount(removePageShortcutListener);
                   <td v-if="showQuantityColumn" class="!px-4px text-center">
                     <template v-if="getSubject(entry.subjectId)?.quantityAccounting">
                       <div
-                        class="my-2px flex items-center justify-center gap-4px whitespace-nowrap text-12px [&_.ant-input-number]:!w-64px"
+                        class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.ant-input-number]:!w-64px"
                       >
                         <span>数量</span>
                         <InputNumber
@@ -1495,7 +1503,7 @@ onBeforeUnmount(removePageShortcutListener);
                         <span>{{ getSubject(entry.subjectId)?.quantityUnit }}</span>
                       </div>
                       <div
-                        class="my-2px flex items-center justify-center gap-4px whitespace-nowrap text-12px [&_.ant-input-number]:!w-64px"
+                        class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.ant-input-number]:!w-64px"
                       >
                         <span>单价</span>
                         <InputNumber
@@ -1520,7 +1528,7 @@ onBeforeUnmount(removePageShortcutListener);
                     data-entry-money
                     data-entry-direction="debit"
                   >
-                    <div class="money-editor relative h-60px">
+                    <div class="money-editor relative h-[60px]">
                       <InputNumber
                         v-model:value="entry.debitAmount"
                         :disabled="readOnly"
@@ -1551,7 +1559,7 @@ onBeforeUnmount(removePageShortcutListener);
                     data-entry-money
                     data-entry-direction="credit"
                   >
-                    <div class="money-editor relative h-60px">
+                    <div class="money-editor relative h-[60px]">
                       <InputNumber
                         v-model:value="entry.creditAmount"
                         :disabled="readOnly"
@@ -1586,7 +1594,7 @@ onBeforeUnmount(removePageShortcutListener);
                     合计：{{ amountInWords }}
                     <span
                       v-if="!balanced"
-                      class="ml-16px text-[var(--el-color-danger)]"
+                      class="ml-[16px] text-[var(--el-color-danger)]"
                     >
                       借贷不平衡
                     </span>
@@ -1594,7 +1602,7 @@ onBeforeUnmount(removePageShortcutListener);
                   <td class="entry-money relative !p-0">
                     <div
                       :class="{ 'text-[var(--el-color-danger)]': debitTotal < 0 }"
-                      class="money-cell-value pointer-events-none absolute inset-0 flex h-60px items-center justify-end"
+                      class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                     >
                       <span
                         v-for="(digit, index) in getMoneyDigits(debitTotal, true)"
@@ -1607,7 +1615,7 @@ onBeforeUnmount(removePageShortcutListener);
                   <td class="entry-money relative !p-0">
                     <div
                       :class="{ 'text-[var(--el-color-danger)]': creditTotal < 0 }"
-                      class="money-cell-value pointer-events-none absolute inset-0 flex h-60px items-center justify-end"
+                      class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                     >
                       <span
                         v-for="(digit, index) in getMoneyDigits(creditTotal, true)"
@@ -1623,7 +1631,7 @@ onBeforeUnmount(removePageShortcutListener);
           </div>
 
           <div
-            class="flex items-center justify-start gap-36px pb-0 pl-28px pr-0 pt-16px text-[var(--el-text-color-regular)]"
+            class="flex items-center justify-start gap-[36px] pb-0 pl-[28px] pr-0 pt-[16px] text-[var(--el-text-color-regular)]"
           >
             <span>制单人：{{ creatorUserName }}</span>
             <template v-if="formData.id">
@@ -1636,13 +1644,13 @@ onBeforeUnmount(removePageShortcutListener);
           </div>
           <div
             v-if="isApproved"
-            class="pointer-events-none absolute right-[25%] top-12px z-3 rotate-[-12deg] rounded-[50%] border-3 border-[var(--el-color-danger)] border-double px-14px py-10px text-20px font-700 tracking-4px text-[var(--el-color-danger)] opacity-72"
+            class="pointer-events-none absolute right-[25%] top-[12px] z-3 rotate-[-12deg] rounded-[50%] border-3 border-[var(--el-color-danger)] border-double px-[14px] py-[10px] text-[20px] font-700 tracking-[4px] text-[var(--el-color-danger)] opacity-72"
           >
             审核通过
           </div>
         </div>
       </Spin>
-      <div v-if="canSave" class="mt-16px flex justify-end gap-8px">
+      <div v-if="canSave" class="mt-[16px] flex justify-end gap-[8px]">
         <Button v-if="canSaveAndCreate" type="primary" @click="submitForm(true)">
           保存并新增
         </Button>

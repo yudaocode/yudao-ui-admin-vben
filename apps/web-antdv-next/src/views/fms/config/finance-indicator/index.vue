@@ -51,7 +51,12 @@ function handleEdit(row: FmsFinanceIndicatorApi.FinanceIndicator) {
 /** 删除财务指标 */
 async function handleDelete(row: FmsFinanceIndicatorApi.FinanceIndicator) {
   if (!accountSetId.value) return;
-  await confirm(`是否确认删除财务指标“${row.name}”？`);
+  try {
+    // 删除的二次确认
+    await confirm(`是否确认删除财务指标“${row.name}”？`);
+  } catch {
+    return;
+  }
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -89,7 +94,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     showOverflow: true,
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<FmsFinanceIndicatorApi.FinanceIndicator>,
 });

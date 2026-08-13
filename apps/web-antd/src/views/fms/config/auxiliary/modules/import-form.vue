@@ -128,7 +128,7 @@ function resetImport() {
   <Modal title="导入辅助核算项目" class="w-[680px]">
     <div v-if="!importResult" class="px-4">
       <div class="mb-7">
-        <div class="text-15px mb-3 font-semibold">
+        <div class="text-[15px] mb-3 font-semibold">
           一、请按照数据模板的格式准备要导入的辅助核算项目
         </div>
         <Button
@@ -139,10 +139,10 @@ function resetImport() {
           <span class="icon-[ant-design--download-outlined]"></span>
           下载《{{ auxiliaryType?.name }}导入模板》
         </Button>
-        <div class="text-13px mt-1 text-gray-500">{{ templateTip }}</div>
+        <div class="text-[13px] mt-1 text-gray-500">{{ templateTip }}</div>
       </div>
       <div>
-        <div class="text-15px mb-3 font-semibold">
+        <div class="text-[15px] mb-3 font-semibold">
           二、请选择需要导入的文件
         </div>
         <Upload.Dragger

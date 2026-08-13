@@ -22,6 +22,7 @@ const subject = ref<FmsInitialBalanceApi.InitialBalance>(); // 当前科目
 const selectedItems = ref<
   Record<number, FmsAuxiliaryItemApi.AuxiliaryItemOption[]>
 >({}); // 各类别选中的项目
+const selectedIds = ref<Record<number, number[]>>({}); // 各类别选中的项目编号（选择器 v-model）
 
 /** 构建表单 schema：科目展示 + 按辅助核算配置动态生成项目多选 */
 function useFormSchema(
@@ -90,12 +91,14 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       subject.value = undefined;
       selectedItems.value = {};
+      selectedIds.value = {};
       return;
     }
     const data = modalApi.getData<FmsInitialBalanceApi.InitialBalance>();
     if (!data) return;
     subject.value = data;
     selectedItems.value = {};
+    selectedIds.value = {};
     await formApi.setState({ schema: useFormSchema(data) });
     await formApi.setValues({
       subject: `${data.subjectCode} ${data.subjectName}`,
@@ -148,6 +151,7 @@ function buildCombinations(
         #[`items_${config.auxiliaryTypeId}`]
       >
         <FmsAuxiliaryItemSelect
+          v-model="selectedIds[config.auxiliaryTypeId]"
           :auxiliary-type-id="config.auxiliaryTypeId"
           multiple
           :placeholder="`请选择${config.name}`"

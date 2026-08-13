@@ -161,7 +161,10 @@ async function init() {
   await gridApi.formApi.setValues({
     monthRange: [month, month],
   });
-  await gridApi.query();
+  // 与 handleReset 同路径提交最新表单值，避免首屏 grid 自动查询早于期间就绪导致空表
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(toRaw(formValues));
+  gridApi.reload(formValues);
 }
 
 /** 更新凭证字搜索项的选项 */

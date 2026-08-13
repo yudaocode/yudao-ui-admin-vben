@@ -4,7 +4,7 @@ export namespace FmsAuxiliaryTypeApi {
   /** 辅助核算类别 */
   export interface AuxiliaryType {
     id?: number; // 类别编号
-    accountSetId?: number; // 账套编号
+    accountSetId: number; // 账套编号
     name: string; // 类别名称
     type?: number; // 辅助核算类型
     systemPreset?: boolean; // 是否系统预置

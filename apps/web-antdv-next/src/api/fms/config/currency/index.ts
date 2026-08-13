@@ -4,7 +4,7 @@ export namespace FmsCurrencyApi {
   /** 币别 */
   export interface Currency {
     id?: number; // 币别编号
-    accountSetId?: number; // 账套编号
+    accountSetId: number; // 账套编号
     code: string; // 币别编码
     name: string; // 币别名称
     exchangeRate: number; // 汇率
