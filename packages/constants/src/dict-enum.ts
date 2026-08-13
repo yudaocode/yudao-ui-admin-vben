@@ -132,6 +132,14 @@ const ERP_DICT = {
   ERP_STOCK_RECORD_BIZ_TYPE: 'erp_stock_record_biz_type', // 库存明细的业务类型
 } as const;
 
+/** ========== FMS - 财务管理模块 ========== */
+const FMS_DICT = {
+  FMS_ACCOUNT_USER_LEVEL: 'fms_account_user_level', // FMS 账套用户权限级别
+  FMS_SUBJECT_CATEGORY: 'fms_subject_category', // FMS 科目类别
+  FMS_DEBIT_CREDIT_DIRECTION: 'fms_debit_credit_direction', // FMS 借贷方向
+  FMS_FINANCE_INDICATOR_TYPE: 'fms_finance_indicator_type', // FMS 财务指标取数报表类型
+} as const;
+
 /** ========== AI - 人工智能模块 ========== */
 const AI_DICT = {
   AI_GENERATE_MODE: 'ai_generate_mode', // AI 生成模式
@@ -334,6 +342,7 @@ const DICT_TYPE = {
   ...BPM_DICT,
   ...CRM_DICT,
   ...ERP_DICT,
+  ...FMS_DICT,
   ...INFRA_DICT,
   ...IM_DICT,
   ...IOT_DICT,
