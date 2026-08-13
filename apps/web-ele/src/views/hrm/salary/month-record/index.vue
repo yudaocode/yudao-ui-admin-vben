@@ -6,7 +6,7 @@ import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-rec
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 
 import {
   ElAlert,
@@ -294,6 +294,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【薪资】月度工资、工资条"
+        url="https://doc.iocoder.cn/hrm/salary/payroll/"
+      />
+    </template>
     <div class="shrink-0" v-loading="pageLoading">
       <ElCard v-if="record.id" class="mb-4" shadow="never">
         <div class="flex items-center">

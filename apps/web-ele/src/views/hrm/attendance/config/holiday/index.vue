@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceHolidayApi } from '#/api/hrm/attendance/holiday';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -93,6 +93,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【考勤】考勤管理"
+        url="https://doc.iocoder.cn/hrm/attendance/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>

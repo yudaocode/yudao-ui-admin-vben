@@ -3,7 +3,7 @@ import type { TableColumnsType } from 'antdv-next';
 
 import { onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button, Card, Input, message, Table } from 'antdv-next';
 
@@ -103,6 +103,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【招聘】招聘管理"
+        url="https://doc.iocoder.cn/hrm/recruit/"
+      />
+    </template>
     <Card title="原因列表">
       <div class="mb-4 flex justify-end">
         <TableAction

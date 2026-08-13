@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElButton, ElTabPane, ElTabs } from 'element-plus';
 
@@ -31,6 +31,12 @@ async function submitForm() {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【员工】员工管理"
+        url="https://doc.iocoder.cn/hrm/employee/"
+      />
+    </template>
     <div class="relative">
       <ElTabs v-model="activeTab">
         <ElTabPane label="新建员工字段设置" name="create">

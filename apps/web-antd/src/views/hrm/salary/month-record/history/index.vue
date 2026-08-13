@@ -4,7 +4,7 @@ import type { HrmSalaryMonthRecordApi } from '#/api/hrm/salary/month-record';
 
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
@@ -67,6 +67,12 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【薪资】月度工资、工资条"
+        url="https://doc.iocoder.cn/hrm/salary/payroll/"
+      />
+    </template>
     <Grid table-title="历史工资表">
       <template #title="{ row }">
         <Button type="link" @click="openDetail(row)">

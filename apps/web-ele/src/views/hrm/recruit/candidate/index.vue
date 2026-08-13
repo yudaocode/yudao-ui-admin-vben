@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 
@@ -769,6 +769,12 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【招聘】招聘管理"
+        url="https://doc.iocoder.cn/hrm/recruit/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <StatusBatchModal @success="handleBatchSuccess" />
     <PostBatchModal @success="handleBatchSuccess" />

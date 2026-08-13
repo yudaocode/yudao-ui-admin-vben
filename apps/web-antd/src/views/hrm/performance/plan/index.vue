@@ -5,7 +5,7 @@ import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 
 import { message, Tabs, Tag } from 'ant-design-vue';
 
@@ -219,6 +219,12 @@ onMounted(() => loadStatusCount());
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【绩效】绩效模板、绩效计划"
+        url="https://doc.iocoder.cn/hrm/performance/template-plan/"
+      />
+    </template>
     <Grid class="performance-plan-grid">
       <template #toolbar-actions>
         <div class="performance-plan-status-tabs">

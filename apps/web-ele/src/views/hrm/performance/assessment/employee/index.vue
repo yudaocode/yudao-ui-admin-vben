@@ -4,7 +4,7 @@ import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessme
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
@@ -130,6 +130,12 @@ onMounted(loadPlanOptions);
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【绩效】绩效考核、绩效档案"
+        url="https://doc.iocoder.cn/hrm/performance/assessment/"
+      />
+    </template>
     <Card class="mb-4 shrink-0">
       <div class="flex items-center gap-4">
         <Button @click="handleBack">返回</Button>

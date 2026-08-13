@@ -5,7 +5,7 @@ import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessme
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 
 import { ElMessage as message } from 'element-plus';
 
@@ -77,6 +77,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【绩效】绩效考核、绩效档案"
+        url="https://doc.iocoder.cn/hrm/performance/assessment/"
+      />
+    </template>
     <Grid table-title="绩效档案">
       <template #toolbar-tools>
         <TableAction

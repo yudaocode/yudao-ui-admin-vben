@@ -8,7 +8,7 @@ import { computed, h, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
@@ -497,6 +497,12 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【员工】员工管理"
+        url="https://doc.iocoder.cn/hrm/employee/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <CreateFromUserModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />

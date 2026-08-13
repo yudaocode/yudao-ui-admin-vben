@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElTabPane, ElTabs } from 'element-plus';
 
@@ -15,6 +15,12 @@ const activeTab = ref('overview');
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【考勤】考勤管理"
+        url="https://doc.iocoder.cn/hrm/attendance/"
+      />
+    </template>
     <ElTabs
       v-model="activeTab"
       class="flex min-h-0 flex-1 flex-col overflow-hidden [&_.el-tabs__content]:min-h-0 [&_.el-tabs__content]:flex-1 [&_.el-tabs__header]:shrink-0 [&_.el-tab-pane]:h-full"

@@ -5,7 +5,7 @@ import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElButton, ElTabPane, ElTabs } from 'element-plus';
 
@@ -146,6 +146,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【薪资】计薪设置、薪资档案"
+        url="https://doc.iocoder.cn/hrm/salary/config/"
+      />
+    </template>
     <Form ref="employeeInfoFormRef" @success="handleRefresh" />
     <BatchForm ref="batchFormRef" @success="handleRefresh" />
     <ImportForm ref="importFormRef" @success="handleRefresh" />

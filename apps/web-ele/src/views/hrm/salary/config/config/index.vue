@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
@@ -102,6 +102,12 @@ onMounted(loadConfig);
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【薪资】计薪设置、薪资档案"
+        url="https://doc.iocoder.cn/hrm/salary/config/"
+      />
+    </template>
     <ElAlert
       v-if="initialized"
       class="mb-4"

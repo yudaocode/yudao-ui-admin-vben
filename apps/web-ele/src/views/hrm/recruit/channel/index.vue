@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmRecruitChannelApi } from '#/api/hrm/recruit/channel';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
@@ -100,6 +100,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【招聘】招聘管理"
+        url="https://doc.iocoder.cn/hrm/recruit/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <DeleteModal @success="handleRefresh" />
 

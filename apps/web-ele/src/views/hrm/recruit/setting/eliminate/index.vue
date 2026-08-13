@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import {
   ElButton,
@@ -88,6 +88,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【招聘】招聘管理"
+        url="https://doc.iocoder.cn/hrm/recruit/"
+      />
+    </template>
     <ElCard header="原因列表">
       <div class="mb-4 flex justify-end">
         <TableAction

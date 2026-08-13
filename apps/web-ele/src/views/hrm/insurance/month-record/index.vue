@@ -4,7 +4,7 @@ import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-recor
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import dayjs from 'dayjs';
 import {
@@ -128,6 +128,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【社保】社保管理"
+        url="https://doc.iocoder.cn/hrm/insurance/"
+      />
+    </template>
     <ElCard>
       <div class="mb-4 flex items-center justify-between">
         <ElDatePicker

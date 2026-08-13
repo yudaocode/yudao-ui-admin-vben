@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button, Tabs } from 'ant-design-vue';
 
@@ -31,6 +31,12 @@ async function submitForm() {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【员工】员工管理"
+        url="https://doc.iocoder.cn/hrm/employee/"
+      />
+    </template>
     <Tabs v-model:active-key="activeTab" :destroy-inactive-tab-pane="false">
       <template #tabBarExtraContent>
         <Button

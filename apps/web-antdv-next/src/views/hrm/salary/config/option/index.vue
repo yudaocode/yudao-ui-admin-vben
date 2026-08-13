@@ -5,7 +5,7 @@ import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 
 import { computed, ref } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { handleTree } from '@vben/utils';
 
@@ -182,6 +182,12 @@ getList();
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【薪资】计薪设置、薪资档案"
+        url="https://doc.iocoder.cn/hrm/salary/config/"
+      />
+    </template>
     <FormModal @success="getList" />
     <Card>
       <div class="mb-4 flex items-start justify-between">

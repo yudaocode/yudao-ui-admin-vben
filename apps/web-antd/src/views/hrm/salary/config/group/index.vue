@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryGroupApi } from '#/api/hrm/salary/config/group';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -63,6 +63,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【薪资】计薪设置、薪资档案"
+        url="https://doc.iocoder.cn/hrm/salary/config/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>

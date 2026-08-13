@@ -5,7 +5,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Alert, Button } from 'ant-design-vue';
 
@@ -68,6 +68,12 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【组织】工作台、组织架构"
+        url="https://doc.iocoder.cn/hrm/organization/"
+      />
+    </template>
     <Alert
       class="mb-4 shrink-0"
       :closable="false"

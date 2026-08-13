@@ -6,7 +6,7 @@ import type { HrmRecruitPostStatusValue } from '#/views/hrm/utils/constants';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -153,6 +153,12 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【招聘】招聘管理"
+        url="https://doc.iocoder.cn/hrm/recruit/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <StopModal @success="handleRefresh" />
 
