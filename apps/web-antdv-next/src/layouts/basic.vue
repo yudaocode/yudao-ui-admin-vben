@@ -41,6 +41,7 @@ import { $t } from '#/locales';
 import { router } from '#/router';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
+import FmsAccountSetSwitch from '#/views/fms/components/account-set/account-set-switch.vue';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
@@ -300,6 +301,7 @@ watch(
       />
     </template>
     <template #header-right-1>
+      <FmsAccountSetSwitch />
       <div v-if="tenantEnable">
         <TenantDropdown
           class="mr-2"

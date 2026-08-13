@@ -1,0 +1,241 @@
+<script lang="ts" setup>
+import type { FmsClosingTemplateApi } from '#/api/fms/closing/template';
+import type { FmsSubjectApi } from '#/api/fms/config/subject';
+
+import { computed, ref } from 'vue';
+
+import { useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+
+import {
+  ElButton,
+  ElInput,
+  ElInputNumber,
+  ElMessage,
+  ElOption,
+  ElSelect,
+  ElTable,
+  ElTableColumn,
+} from 'element-plus';
+
+import { useVbenForm } from '#/adapter/form';
+import {
+  createClosingTemplate,
+  updateClosingTemplate,
+} from '#/api/fms/closing/template';
+import FmsSubjectSelect from '#/views/fms/config/subject/components/subject-select.vue';
+import {
+  FMS_CLOSING_TEMPLATE_CATEGORY,
+  FMS_DEBIT_CREDIT_DIRECTION,
+} from '#/views/fms/utils/constants';
+
+import { useTemplateFormSchema } from '../data';
+
+defineOptions({ name: 'FmsClosingTemplateForm' });
+
+const emit = defineEmits(['success']);
+
+/** 弹窗数据 */
+interface TemplateFormData {
+  accountSetId: number; // 账套编号
+  subjects: FmsSubjectApi.Subject[]; // 末级科目列表
+  category?: number; // 新增时的模板分类
+  template?: FmsClosingTemplateApi.ClosingTemplate; // 编辑的结账模板
+}
+
+const modalData = ref<TemplateFormData>(); // 弹窗数据
+const subjectRules = ref<FmsClosingTemplateApi.SubjectRule[]>([]); // 凭证分录规则
+
+const getTitle = computed(() =>
+  modalData.value?.template?.id ? '编辑结账模板' : '新增结账模板',
+);
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
+  schema: [],
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
+
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    const { valid } = await formApi.validate();
+    if (!valid || !modalData.value) return;
+    const ruleError = validateSubjectRules();
+    if (ruleError) {
+      ElMessage.warning(ruleError);
+      return;
+    }
+    const template = modalData.value.template;
+    const values = await formApi.getValues();
+    const data: FmsClosingTemplateApi.ClosingTemplate = {
+      id: template?.id,
+      accountSetId: modalData.value.accountSetId,
+      presetCode: template?.presetCode,
+      name: values.name,
+      category: values.category,
+      periodEnd: values.periodEnd ?? true,
+      subjectId: values.subjectId,
+      formulaRule: values.formulaRule,
+      timeType: values.timeType,
+      subjects: subjectRules.value.map(
+        ({ digest, direction, amountRatio, subjectId, subjectCode }) => ({
+          digest,
+          direction,
+          amountRatio,
+          subjectId,
+          subjectCode,
+        }),
+      ),
+      sort: values.sort,
+    };
+    modalApi.lock();
+    try {
+      if (data.id) {
+        await updateClosingTemplate(data);
+        ElMessage.success('修改成功');
+      } else {
+        await createClosingTemplate(data);
+        ElMessage.success('新增成功');
+      }
+      await modalApi.close();
+      emit('success');
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      modalData.value = undefined;
+      subjectRules.value = [];
+      return;
+    }
+    const data = modalApi.getData<TemplateFormData>();
+    if (!data) return;
+    modalData.value = data;
+    subjectRules.value = [];
+    await formApi.setState({ schema: useTemplateFormSchema(data.subjects) });
+
+    // 回显模板，否则使用默认值
+    const template = data.template;
+    if (template) {
+      subjectRules.value = template.subjects.map((item) => ({ ...item }));
+    } else {
+      await addSubjectRule(FMS_DEBIT_CREDIT_DIRECTION.DEBIT);
+      await addSubjectRule(FMS_DEBIT_CREDIT_DIRECTION.CREDIT);
+    }
+    await formApi.setValues({
+      name: template?.name ?? '',
+      category:
+        template?.category ??
+        data.category ??
+        FMS_CLOSING_TEMPLATE_CATEGORY.DAILY_EXPENSE,
+      sort: template?.sort ?? 0,
+      subjectId: template?.subjectId,
+      formulaRule: template?.formulaRule,
+      timeType: template?.timeType,
+      periodEnd: template?.periodEnd ?? true,
+    });
+  },
+});
+
+/** 添加凭证分录规则 */
+async function addSubjectRule(
+  direction: number = FMS_DEBIT_CREDIT_DIRECTION.DEBIT,
+) {
+  const values = await formApi.getValues();
+  subjectRules.value.push({
+    subjectId: undefined,
+    digest: values.name || '期末结转',
+    direction,
+    amountRatio: 100,
+  });
+}
+
+/** 校验凭证分录规则，返回错误提示 */
+function validateSubjectRules() {
+  if (
+    subjectRules.value.length < 2 ||
+    subjectRules.value.some((item) => !item.digest || !item.subjectId)
+  ) {
+    return '请完整填写至少两条凭证分录规则';
+  }
+  const debitRatio = subjectRules.value
+    .filter((item) => item.direction === FMS_DEBIT_CREDIT_DIRECTION.DEBIT)
+    .reduce((sum, item) => sum + Number(item.amountRatio), 0);
+  const creditRatio = subjectRules.value
+    .filter((item) => item.direction === FMS_DEBIT_CREDIT_DIRECTION.CREDIT)
+    .reduce((sum, item) => sum + Number(item.amountRatio), 0);
+  if (Math.abs(debitRatio - 100) > 0.001 || Math.abs(creditRatio - 100) > 0.001) {
+    return '借方和贷方的金额比例需要分别等于 100%';
+  }
+  return '';
+}
+</script>
+
+<template>
+  <Modal :title="getTitle" class="w-[920px]">
+    <Form class="mx-4" />
+
+    <!-- 凭证分录规则 -->
+    <div class="mb-2.5 flex items-center justify-between">
+      <span class="font-semibold">凭证分录规则</span>
+      <ElButton link type="primary" @click="addSubjectRule()">
+        <IconifyIcon class="mr-1" icon="lucide:plus" />添加分录
+      </ElButton>
+    </div>
+    <ElTable :data="subjectRules" border max-height="360">
+      <ElTableColumn label="摘要" min-width="180">
+        <template #default="{ row }">
+          <ElInput v-model="row.digest" placeholder="请输入摘要" />
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="借/贷" width="105">
+        <template #default="{ row }">
+          <ElSelect v-model="row.direction">
+            <ElOption label="借" :value="FMS_DEBIT_CREDIT_DIRECTION.DEBIT" />
+            <ElOption label="贷" :value="FMS_DEBIT_CREDIT_DIRECTION.CREDIT" />
+          </ElSelect>
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="科目" min-width="280">
+        <template #default="{ row }">
+          <FmsSubjectSelect
+            v-model="row.subjectId"
+            :options="modalData?.subjects || []"
+            class="!w-full"
+          />
+        </template>
+      </ElTableColumn>
+      <ElTableColumn label="金额比例%" width="130">
+        <template #default="{ row }">
+          <ElInputNumber
+            v-model="row.amountRatio"
+            :controls="false"
+            :max="100"
+            :min="0.01"
+            :precision="2"
+            class="!w-full"
+          />
+        </template>
+      </ElTableColumn>
+      <ElTableColumn align="center" label="操作" width="70">
+        <template #default="{ $index }">
+          <ElButton
+            link
+            type="danger"
+            @click="subjectRules.splice($index, 1)"
+          >
+            删除
+          </ElButton>
+        </template>
+      </ElTableColumn>
+    </ElTable>
+  </Modal>
+</template>
