@@ -4,10 +4,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type { FmsVoucherTemplateApi } from '#/api/fms/config/voucher-template';
 import type { FmsVoucherTemplateCategoryApi } from '#/api/fms/config/voucher-template-category';
 
-import { nextTick, reactive, ref } from 'vue';
-
-import { useAccess } from '@vben/access';
-import { confirm } from '@vben/common-ui';
+import { reactive, ref } from 'vue';
 
 import {
   ElButton,
@@ -19,30 +16,19 @@ import {
   ElMessage,
   ElOption,
   ElSelect,
-  ElTable,
-  ElTableColumn,
 } from 'element-plus';
 
 import { createVoucherTemplate } from '#/api/fms/config/voucher-template';
-import {
-  createVoucherTemplateCategory,
-  deleteVoucherTemplateCategory,
-  getVoucherTemplateCategorySimpleList,
-  updateVoucherTemplateCategory,
-} from '#/api/fms/config/voucher-template-category';
-import { useFmsStore } from '#/views/fms/store/fms';
+import { getVoucherTemplateCategorySimpleList } from '#/api/fms/config/voucher-template-category';
+
+import CategoryManage from './category-manage.vue';
 
 defineOptions({ name: 'FmsVoucherTemplateSaveForm' });
 
 const emit = defineEmits<{ success: [] }>();
 
-const { hasAccessByCodes } = useAccess();
-const fmsStore = useFmsStore(); // FMS Store
-
 const dialogVisible = ref(false); // 弹窗的是否展示
-const categoryDialogVisible = ref(false); // 模板分类弹窗的是否展示
 const submitting = ref(false); // 表单提交的加载中
-const categorySubmitting = ref(false); // 模板分类提交的加载中
 const accountSetId = ref<number>(); // 当前账套编号
 const sourceEntries = ref<FmsVoucherTemplateApi.VoucherTemplateEntry[]>([]); // 来源凭证分录数组
 const categories = ref<FmsVoucherTemplateCategoryApi.VoucherTemplateCategory[]>(
@@ -55,17 +41,12 @@ const formData = reactive({
   name: '',
 });
 const formRules: FormRules = {
-  categoryId: [{ required: true, message: '请选择模板分类', trigger: 'change' }],
+  categoryId: [
+    { required: true, message: '请选择模板分类', trigger: 'change' },
+  ],
   name: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
 };
-const categoryFormRef = ref<FormInstance>(); // 模板分类表单 Ref
-const categoryFormData = reactive({
-  id: undefined as number | undefined,
-  name: '',
-});
-const categoryFormRules: FormRules = {
-  name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }],
-};
+const categoryManageRef = ref<InstanceType<typeof CategoryManage>>();
 
 /** 打开弹窗 */
 async function open(
@@ -83,7 +64,6 @@ async function open(
   formData.categoryId = undefined;
   formData.name = '';
   saveMoney.value = false;
-  resetCategoryForm();
 
   // 3. 查询模板分类并默认选择首个分类
   await getCategoryList();
@@ -99,83 +79,22 @@ async function getCategoryList() {
   );
 }
 
-/** 编辑模板分类 */
-function editCategory(
-  row: FmsVoucherTemplateCategoryApi.VoucherTemplateCategory,
+/** 同步模板分类列表，并清理已删除的当前选项 */
+function handleCategoryChange(
+  nextCategories: FmsVoucherTemplateCategoryApi.VoucherTemplateCategory[],
 ) {
-  categoryFormData.id = row.id;
-  categoryFormData.name = row.name;
-  nextTick(() => categoryFormRef.value?.clearValidate());
-}
-
-/** 重置模板分类表单 */
-function resetCategoryForm() {
-  categoryFormData.id = undefined;
-  categoryFormData.name = '';
-  categoryFormRef.value?.clearValidate();
-}
-
-/** 保存模板分类 */
-async function saveCategory() {
-  // 1. 校验分类表单
-  if (!accountSetId.value || !categoryFormRef.value) return;
-  try {
-    await categoryFormRef.value.validate();
-  } catch {
-    return;
-  }
-
-  // 2. 新增或修改模板分类
-  categorySubmitting.value = true;
-  try {
-    if (categoryFormData.id) {
-      await updateVoucherTemplateCategory({
-        id: categoryFormData.id,
-        accountSetId: accountSetId.value,
-        name: categoryFormData.name,
-      });
-      ElMessage.success('修改成功');
-    } else {
-      formData.categoryId = await createVoucherTemplateCategory({
-        accountSetId: accountSetId.value,
-        name: categoryFormData.name,
-      });
-      ElMessage.success('新增成功');
-    }
-
-    // 3. 重置分类表单并刷新分类列表
-    resetCategoryForm();
-    await getCategoryList();
-  } finally {
-    categorySubmitting.value = false;
+  categories.value = nextCategories;
+  if (
+    formData.categoryId &&
+    !nextCategories.some((item) => item.id === formData.categoryId)
+  ) {
+    formData.categoryId = undefined;
   }
 }
 
-/** 删除模板分类 */
-async function deleteCategory(
-  row: FmsVoucherTemplateCategoryApi.VoucherTemplateCategory,
-) {
-  if (!accountSetId.value) return;
-  try {
-    // 1. 删除模板分类
-    await confirm('确认删除该模板分类吗？');
-    await deleteVoucherTemplateCategory(accountSetId.value, row.id!);
-    if (formData.categoryId === row.id) formData.categoryId = undefined;
-    ElMessage.success('删除成功');
-
-    // 2. 刷新模板分类列表
-    await getCategoryList();
-  } catch {
-    // 取消删除
-  }
-}
-
-/** 选择模板分类 */
-function selectCategory(
-  row: FmsVoucherTemplateCategoryApi.VoucherTemplateCategory,
-) {
-  formData.categoryId = row.id;
-  categoryDialogVisible.value = false;
+/** 打开模板分类管理弹窗 */
+function openCategoryDialog() {
+  categoryManageRef.value?.open();
 }
 
 /** 提交表单 */
@@ -234,10 +153,7 @@ defineExpose({ open });
     >
       <ElFormItem label="模板分类" prop="categoryId">
         <div class="flex w-full gap-2 [&_.el-select]:flex-1">
-          <ElSelect
-            v-model="formData.categoryId"
-            placeholder="请选择模板分类"
-          >
+          <ElSelect v-model="formData.categoryId" placeholder="请选择模板分类">
             <ElOption
               v-for="item in categories"
               :key="item.id"
@@ -245,7 +161,7 @@ defineExpose({ open });
               :value="item.id!"
             />
           </ElSelect>
-          <ElButton @click="categoryDialogVisible = true">管理分类</ElButton>
+          <ElButton @click="openCategoryDialog">管理分类</ElButton>
         </div>
       </ElFormItem>
       <ElFormItem label="模板名称" prop="name">
@@ -267,87 +183,10 @@ defineExpose({ open });
     </template>
   </ElDialog>
 
-  <ElDialog
-    v-model="categoryDialogVisible"
-    title="凭证模板分类"
-    width="560px"
-  >
-    <ElForm
-      ref="categoryFormRef"
-      class="mb-4 flex w-full gap-2 [&_.el-form-item]:!mb-0 [&_.el-form-item]:flex-1"
-      :model="categoryFormData"
-      :rules="categoryFormRules"
-    >
-      <ElFormItem prop="name">
-        <ElInput
-          v-model="categoryFormData.name"
-          :maxlength="255"
-          placeholder="请输入分类名称"
-        />
-      </ElFormItem>
-      <div class="flex">
-        <ElButton
-          v-if="
-            categoryFormData.id &&
-            fmsStore.isAccountSetWritable &&
-            hasAccessByCodes(['fms:config:voucher-template-category:update'])
-          "
-          :loading="categorySubmitting"
-          type="primary"
-          @click="saveCategory"
-        >
-          保存
-        </ElButton>
-        <ElButton
-          v-else-if="
-            fmsStore.isAccountSetWritable &&
-            hasAccessByCodes(['fms:config:voucher-template-category:create'])
-          "
-          :loading="categorySubmitting"
-          type="primary"
-          @click="saveCategory"
-        >
-          新增
-        </ElButton>
-        <ElButton v-if="categoryFormData.id" @click="resetCategoryForm">
-          取消
-        </ElButton>
-      </div>
-    </ElForm>
-    <ElTable
-      :data="categories"
-      border
-      stripe
-      @row-dblclick="(row) => selectCategory(row as FmsVoucherTemplateCategoryApi.VoucherTemplateCategory)"
-    >
-      <ElTableColumn label="分类名称" min-width="260" prop="name" />
-      <ElTableColumn align="center" label="操作" width="150">
-        <template #default="{ row }">
-          <ElButton
-            v-if="
-              fmsStore.isAccountSetWritable &&
-              hasAccessByCodes(['fms:config:voucher-template-category:update'])
-            "
-            link
-            type="primary"
-            @click="editCategory(row as FmsVoucherTemplateCategoryApi.VoucherTemplateCategory)"
-          >
-            编辑
-          </ElButton>
-          <ElButton
-            v-if="
-              fmsStore.isAccountSetWritable &&
-              hasAccessByCodes(['fms:config:voucher-template-category:delete'])
-            "
-            link
-            type="danger"
-            @click="deleteCategory(row as FmsVoucherTemplateCategoryApi.VoucherTemplateCategory)"
-          >
-            删除
-          </ElButton>
-        </template>
-      </ElTableColumn>
-    </ElTable>
-    <div class="mt-2.5 text-xs text-gray-400">双击分类可直接选中</div>
-  </ElDialog>
+  <CategoryManage
+    ref="categoryManageRef"
+    :account-set-id="accountSetId"
+    @change="handleCategoryChange"
+    @select="formData.categoryId = $event"
+  />
 </template>
