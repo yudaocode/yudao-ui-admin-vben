@@ -14,14 +14,12 @@ import {
   ElFormItem,
   ElInput,
   ElMessage,
-  ElOption,
-  ElSelect,
 } from 'element-plus';
 
 import { createVoucherTemplate } from '#/api/fms/config/voucher-template';
 import { getVoucherTemplateCategorySimpleList } from '#/api/fms/config/voucher-template-category';
 
-import CategoryManage from './category-manage.vue';
+import CategorySelect from './category-select.vue';
 
 defineOptions({ name: 'FmsVoucherTemplateSaveForm' });
 
@@ -46,7 +44,6 @@ const formRules: FormRules = {
   ],
   name: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
 };
-const categoryManageRef = ref<InstanceType<typeof CategoryManage>>();
 
 /** 打开弹窗 */
 async function open(
@@ -90,11 +87,6 @@ function handleCategoryChange(
   ) {
     formData.categoryId = undefined;
   }
-}
-
-/** 打开模板分类管理弹窗 */
-function openCategoryDialog() {
-  categoryManageRef.value?.open();
 }
 
 /** 提交表单 */
@@ -152,17 +144,12 @@ defineExpose({ open });
       :rules="formRules"
     >
       <ElFormItem label="模板分类" prop="categoryId">
-        <div class="flex w-full gap-2 [&_.el-select]:flex-1">
-          <ElSelect v-model="formData.categoryId" placeholder="请选择模板分类">
-            <ElOption
-              v-for="item in categories"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id!"
-            />
-          </ElSelect>
-          <ElButton @click="openCategoryDialog">管理分类</ElButton>
-        </div>
+        <CategorySelect
+          v-model="formData.categoryId"
+          :account-set-id="accountSetId"
+          :categories="categories"
+          @change="handleCategoryChange"
+        />
       </ElFormItem>
       <ElFormItem label="模板名称" prop="name">
         <ElInput
@@ -182,11 +169,4 @@ defineExpose({ open });
       <ElButton @click="dialogVisible = false">取 消</ElButton>
     </template>
   </ElDialog>
-
-  <CategoryManage
-    ref="categoryManageRef"
-    :account-set-id="accountSetId"
-    @change="handleCategoryChange"
-    @select="formData.categoryId = $event"
-  />
 </template>

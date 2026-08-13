@@ -4,7 +4,7 @@ import type { FormInstance, FormProps } from 'antdv-next';
 import type { FmsVoucherTemplateApi } from '#/api/fms/config/voucher-template';
 import type { FmsVoucherTemplateCategoryApi } from '#/api/fms/config/voucher-template-category';
 
-import { computed, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import {
   Button,
@@ -14,13 +14,12 @@ import {
   Input,
   message,
   Modal,
-  Select,
 } from 'antdv-next';
 
 import { createVoucherTemplate } from '#/api/fms/config/voucher-template';
 import { getVoucherTemplateCategorySimpleList } from '#/api/fms/config/voucher-template-category';
 
-import CategoryManage from './category-manage.vue';
+import CategorySelect from './category-select.vue';
 
 defineOptions({ name: 'FmsVoucherTemplateSaveForm' });
 
@@ -33,10 +32,6 @@ const sourceEntries = ref<FmsVoucherTemplateApi.VoucherTemplateEntry[]>([]); // 
 const categories = ref<FmsVoucherTemplateCategoryApi.VoucherTemplateCategory[]>(
   [],
 ); // 模板分类列表
-/** 模板分类下拉选项 */
-const categoryOptions = computed(() =>
-  categories.value.map((item) => ({ label: item.name, value: item.id! })),
-);
 const saveMoney = ref(false); // 是否保存数量、单价和借贷金额
 const formRef = ref<FormInstance>(); // 表单 Ref
 const formData = reactive({
@@ -49,7 +44,6 @@ const formRules: FormProps['rules'] = {
   ],
   name: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
 };
-const categoryManageRef = ref<InstanceType<typeof CategoryManage>>();
 
 /** 打开弹窗 */
 async function open(
@@ -93,11 +87,6 @@ function handleCategoryChange(
   ) {
     formData.categoryId = undefined;
   }
-}
-
-/** 打开模板分类管理弹窗 */
-function openCategoryDialog() {
-  categoryManageRef.value?.open();
 }
 
 /** 提交表单 */
@@ -155,15 +144,12 @@ defineExpose({ open });
       :rules="formRules"
     >
       <FormItem label="模板分类" name="categoryId">
-        <div class="flex w-full gap-2">
-          <Select
-            v-model:value="formData.categoryId"
-            class="flex-1"
-            :options="categoryOptions"
-            placeholder="请选择模板分类"
-          />
-          <Button @click="openCategoryDialog">管理分类</Button>
-        </div>
+        <CategorySelect
+          v-model="formData.categoryId"
+          :account-set-id="accountSetId"
+          :categories="categories"
+          @change="handleCategoryChange"
+        />
       </FormItem>
       <FormItem label="模板名称" name="name">
         <Input
@@ -185,11 +171,4 @@ defineExpose({ open });
       <Button @click="dialogVisible = false">取 消</Button>
     </template>
   </Modal>
-
-  <CategoryManage
-    ref="categoryManageRef"
-    :account-set-id="accountSetId"
-    @change="handleCategoryChange"
-    @select="formData.categoryId = $event"
-  />
 </template>
