@@ -6,17 +6,27 @@ import type { FmsVoucherWordApi } from '#/api/fms/config/voucher-word';
 
 import { markRaw } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import dayjs from 'dayjs';
 
 import { z } from '#/adapter/form';
 import FmsSubjectSelect from '#/views/fms/config/subject/components/subject-select.vue';
 import FmsVoucherWordSelect from '#/views/fms/config/voucher-word/components/voucher-word-select.vue';
-import {
-  FMS_BALANCE_FORMULA_RULE_OPTIONS,
-  FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS,
-  FMS_CLOSING_TIME_TYPE_OPTIONS,
-  FMS_CLOSING_VOUCHER_TYPE_OPTIONS,
-} from '#/views/fms/utils/constants';
+const formulaRuleOptions = getDictOptions(DICT_TYPE.FMS_FORMULA_RULE, 'number');
+const timeTypeOptions = getDictOptions(
+  DICT_TYPE.FMS_CLOSING_TIME_TYPE,
+  'number',
+);
+const categoryOptions = getDictOptions(
+  DICT_TYPE.FMS_CLOSING_TEMPLATE_CATEGORY,
+  'number',
+);
+const voucherTypeOptions = getDictOptions(
+  DICT_TYPE.FMS_CLOSING_VOUCHER_TYPE,
+  'number',
+);
 
 /** 期末结转方案表单 */
 export function useSchemeFormSchema(
@@ -58,7 +68,7 @@ export function useSchemeFormSchema(
       component: 'Select',
       rules: 'selectRequired',
       componentProps: {
-        options: [...FMS_BALANCE_FORMULA_RULE_OPTIONS.slice(0, 3)],
+        options: [...formulaRuleOptions.slice(0, 3)],
         placeholder: '请选择取数规则',
       },
     },
@@ -68,7 +78,7 @@ export function useSchemeFormSchema(
       component: 'Select',
       rules: 'selectRequired',
       componentProps: {
-        options: [...FMS_CLOSING_TIME_TYPE_OPTIONS],
+        options: [...timeTypeOptions],
         placeholder: '请选择时间类型',
       },
     },
@@ -105,7 +115,7 @@ export function useTemplateFormSchema(
       component: 'Select',
       rules: 'selectRequired',
       componentProps: {
-        options: [...FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS],
+        options: [...categoryOptions],
         placeholder: '请选择模板分类',
       },
     },
@@ -135,7 +145,7 @@ export function useTemplateFormSchema(
       component: 'Select',
       componentProps: {
         clearable: true,
-        options: [...FMS_BALANCE_FORMULA_RULE_OPTIONS.slice(0, 3)],
+        options: [...formulaRuleOptions.slice(0, 3)],
         placeholder: '请选择取数规则',
       },
     },
@@ -145,7 +155,7 @@ export function useTemplateFormSchema(
       component: 'Select',
       componentProps: {
         clearable: true,
-        options: [...FMS_CLOSING_TIME_TYPE_OPTIONS],
+        options: [...timeTypeOptions],
         placeholder: '请选择时间类型',
       },
     },
@@ -208,7 +218,7 @@ export function useProfitLossSettingsFormSchema(
       rules: 'selectRequired',
       componentProps: {
         class: 'flex flex-col items-start gap-2',
-        options: [...FMS_CLOSING_VOUCHER_TYPE_OPTIONS],
+        options: [...voucherTypeOptions],
       },
     },
     {

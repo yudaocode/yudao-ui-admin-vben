@@ -138,6 +138,19 @@ const FMS_DICT = {
   FMS_SUBJECT_CATEGORY: 'fms_subject_category', // FMS 科目类别
   FMS_DEBIT_CREDIT_DIRECTION: 'fms_debit_credit_direction', // FMS 借贷方向
   FMS_FINANCE_INDICATOR_TYPE: 'fms_finance_indicator_type', // FMS 财务指标取数报表类型
+  FMS_SUBJECT_TYPE: 'fms_subject_type', // FMS 科目类型
+  FMS_AUXILIARY_TYPE: 'fms_auxiliary_type', // FMS 辅助核算类别
+  FMS_VOUCHER_STATUS: 'fms_voucher_status', // FMS 凭证状态
+  FMS_VOUCHER_TIDY_TYPE: 'fms_voucher_tidy_type', // FMS 凭证整理方式
+  FMS_FORMULA_RULE: 'fms_formula_rule', // FMS 报表公式取数规则
+  FMS_REPORT_TYPE: 'fms_report_type', // FMS 财务报表类型
+  FMS_REPORT_PERIOD_TYPE: 'fms_report_period_type', // FMS 财务报表期间类型
+  FMS_LEDGER_BALANCE_MODE: 'fms_ledger_balance_mode', // FMS 账簿余额方向模式
+  FMS_ACCOUNTING_STANDARD: 'fms_accounting_standard', // FMS 会计制度
+  FMS_CLOSING_TYPE: 'fms_closing_type', // FMS 结账方案类型
+  FMS_CLOSING_TIME_TYPE: 'fms_closing_time_type', // FMS 结账取数期间
+  FMS_CLOSING_VOUCHER_TYPE: 'fms_closing_voucher_type', // FMS 结账凭证类型
+  FMS_CLOSING_TEMPLATE_CATEGORY: 'fms_closing_template_category', // FMS 结账模板分类
 } as const;
 
 /** ========== AI - 人工智能模块 ========== */

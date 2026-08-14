@@ -8,18 +8,14 @@ import type { FmsInitialBalanceApi } from '#/api/fms/config/initial-balance';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import dayjs from 'dayjs';
-import {
-  ElAlert,
-  ElButton,
-  ElMessage,
-  ElOption,
-  ElSelect,
-} from 'element-plus';
+import { ElAlert, ElButton, ElMessage, ElOption, ElSelect } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAccountSet } from '#/api/fms/config/account-set';
@@ -32,8 +28,8 @@ import { useFmsStore } from '#/views/fms/store/fms';
 import {
   FMS_DEBIT_CREDIT_DIRECTION,
   FMS_SUBJECT_TYPE,
-  FMS_SUBJECT_TYPE_OPTIONS,
 } from '#/views/fms/utils/constants';
+
 import { formatAmount, formatQuantity } from '#/views/fms/utils/format';
 
 import AmountInput from './components/amount-input.vue';
@@ -43,6 +39,7 @@ import ImportForm from './modules/import-form.vue';
 import TrialBalanceDialog from './modules/trial-balance-dialog.vue';
 
 defineOptions({ name: 'FmsInitialBalance' });
+const subjectTypeOptions = getDictOptions(DICT_TYPE.FMS_SUBJECT_TYPE, 'number');
 
 // ==================== 页面状态 ====================
 
@@ -297,7 +294,7 @@ function addAssist(combinations: FmsAuxiliaryItemApi.AuxiliaryItemOption[][]) {
         Date.now() + index,
       ),
     );
-  if (!newRows.length) {
+  if (newRows.length === 0) {
     ElMessage.warning('所选辅助核算明细均已存在');
     return;
   }
@@ -472,6 +469,12 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【设置】币别、科目、辅助核算、初始余额"
+        url="https://doc.iocoder.cn/fms/config/accounting/"
+      />
+    </template>
     <AssistFormModal @success="addAssist" />
     <ImportFormModal @success="loadPage" />
     <TrialBalanceModal />
@@ -485,7 +488,7 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
         @change="changeSubjectType"
       >
         <ElOption
-          v-for="item in FMS_SUBJECT_TYPE_OPTIONS"
+          v-for="item in subjectTypeOptions"
           :key="item.value"
           :label="item.label"
           :value="item.value"

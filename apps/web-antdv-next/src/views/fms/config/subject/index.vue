@@ -5,18 +5,12 @@ import type { FmsSubjectApi } from '#/api/fms/config/subject';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  Button,
-  Dropdown,
-  Menu,
-  message,
-  Select,
-  Switch,
-} from 'antdv-next';
+import { Button, Dropdown, Menu, message, Select, Switch } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -30,7 +24,6 @@ import { useFmsStore } from '#/views/fms/store/fms';
 import {
   FMS_SUBJECT_STATUS,
   FMS_SUBJECT_TYPE,
-  FMS_SUBJECT_TYPE_OPTIONS,
 } from '#/views/fms/utils/constants';
 
 import { useGridColumns } from './data';
@@ -38,6 +31,8 @@ import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
 defineOptions({ name: 'FmsSubject' });
+
+const subjectTypeOptions = getDictOptions(DICT_TYPE.FMS_SUBJECT_TYPE, 'number');
 
 const { hasAccessByCodes } = useAccess();
 const fmsStore = useFmsStore(); // FMS 状态
@@ -65,7 +60,9 @@ function handleRefresh() {
 
 /** 新增科目 */
 function handleCreate() {
-  formModalApi.setData({ type: 'create', subjectType: subjectType.value }).open();
+  formModalApi
+    .setData({ type: 'create', subjectType: subjectType.value })
+    .open();
 }
 
 /** 编辑科目 */
@@ -95,7 +92,10 @@ function handleImport() {
 }
 
 /** 修改科目状态 */
-async function handleStatusChange(checked: boolean, row: FmsSubjectApi.Subject) {
+async function handleStatusChange(
+  checked: boolean,
+  row: FmsSubjectApi.Subject,
+) {
   if (!accountSetId.value) return;
   const status = checked
     ? FMS_SUBJECT_STATUS.ENABLED
@@ -186,12 +186,22 @@ function getBatchDropDownActions() {
   }> = [];
   if (hasAccessByCodes(['fms:config:subject:update'])) {
     actions.push(
-      { label: '批量启用', onClick: () => handleBatchStatus(FMS_SUBJECT_STATUS.ENABLED) },
-      { label: '批量禁用', onClick: () => handleBatchStatus(FMS_SUBJECT_STATUS.DISABLED) },
+      {
+        label: '批量启用',
+        onClick: () => handleBatchStatus(FMS_SUBJECT_STATUS.ENABLED),
+      },
+      {
+        label: '批量禁用',
+        onClick: () => handleBatchStatus(FMS_SUBJECT_STATUS.DISABLED),
+      },
     );
   }
   if (hasAccessByCodes(['fms:config:subject:delete'])) {
-    actions.push({ label: '批量删除', danger: true, onClick: handleBatchDelete });
+    actions.push({
+      label: '批量删除',
+      danger: true,
+      onClick: handleBatchDelete,
+    });
   }
   return actions;
 }
@@ -282,6 +292,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设置】币别、科目、辅助核算、初始余额"
+        url="https://doc.iocoder.cn/fms/config/accounting/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
 
@@ -289,7 +305,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #toolbar-actions>
         <Select
           v-model:value="subjectType"
-          :options="[...FMS_SUBJECT_TYPE_OPTIONS]"
+          :options="subjectTypeOptions"
           class="w-[240px]"
         />
       </template>

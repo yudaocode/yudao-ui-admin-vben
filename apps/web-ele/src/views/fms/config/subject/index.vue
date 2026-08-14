@@ -5,8 +5,9 @@ import type { FmsSubjectApi } from '#/api/fms/config/subject';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
@@ -32,7 +33,6 @@ import { useFmsStore } from '#/views/fms/store/fms';
 import {
   FMS_SUBJECT_STATUS,
   FMS_SUBJECT_TYPE,
-  FMS_SUBJECT_TYPE_OPTIONS,
 } from '#/views/fms/utils/constants';
 
 import { useGridColumns } from './data';
@@ -40,6 +40,8 @@ import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
 defineOptions({ name: 'FmsSubject' });
+
+const subjectTypeOptions = getDictOptions(DICT_TYPE.FMS_SUBJECT_TYPE, 'number');
 
 const { hasAccessByCodes } = useAccess();
 const fmsStore = useFmsStore(); // FMS 状态
@@ -299,6 +301,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设置】币别、科目、辅助核算、初始余额"
+        url="https://doc.iocoder.cn/fms/config/accounting/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
 
@@ -306,7 +314,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #toolbar-actions>
         <ElSelect v-model="subjectType" class="w-[240px]">
           <ElOption
-            v-for="item in FMS_SUBJECT_TYPE_OPTIONS"
+            v-for="item in subjectTypeOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -348,7 +356,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
             :disabled="checkedIds.length === 0"
             trigger="click"
           >
-            <ElButton :disabled="checkedIds.length === 0" :loading="batchLoading">
+            <ElButton
+              :disabled="checkedIds.length === 0"
+              :loading="batchLoading"
+            >
               批量操作
               <span class="icon-[ep--arrow-down] ml-1"></span>
             </ElButton>

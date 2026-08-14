@@ -6,6 +6,8 @@ import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -25,10 +27,7 @@ import {
   getClosingTemplateList,
 } from '#/api/fms/closing/template';
 import { useFmsStore } from '#/views/fms/store/fms';
-import {
-  FMS_CLOSING_TEMPLATE_CATEGORY,
-  FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS,
-} from '#/views/fms/utils/constants';
+import { FMS_CLOSING_TEMPLATE_CATEGORY } from '#/views/fms/utils/constants';
 
 import TemplateForm from '../modules/template-form.vue';
 
@@ -37,6 +36,11 @@ defineOptions({ name: 'FmsClosingTemplateSelect' });
 const emit = defineEmits<{
   select: [template?: FmsClosingTemplateApi.ClosingTemplate];
 }>();
+
+const categoryOptions = getDictOptions(
+  DICT_TYPE.FMS_CLOSING_TEMPLATE_CATEGORY,
+  'number',
+);
 
 /** 弹窗数据 */
 interface TemplateSelectData {
@@ -52,7 +56,6 @@ const category = ref<number>(FMS_CLOSING_TEMPLATE_CATEGORY.DAILY_EXPENSE); // �
 const templates = ref<FmsClosingTemplateApi.ClosingTemplate[]>([]); // 结账模板列表
 
 // 模板分类选项
-const categoryOptions = FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS;
 
 // 当前分类的模板列表
 const filteredTemplates = computed(() =>
@@ -197,7 +200,9 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
           <ElButton
             link
             type="primary"
-            @click="selectTemplate(row as FmsClosingTemplateApi.ClosingTemplate)"
+            @click="
+              selectTemplate(row as FmsClosingTemplateApi.ClosingTemplate)
+            "
           >
             使用
           </ElButton>
@@ -214,7 +219,9 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
               v-if="hasAccessByCodes(['fms:closing:update'])"
               link
               type="danger"
-              @click="handleDelete(row as FmsClosingTemplateApi.ClosingTemplate)"
+              @click="
+                handleDelete(row as FmsClosingTemplateApi.ClosingTemplate)
+              "
             >
               删除
             </ElButton>

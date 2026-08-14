@@ -7,7 +7,19 @@ import type { FmsCashFlowStatementApi } from '#/api/fms/report/cash-flow-stateme
 
 import { computed, ref } from 'vue';
 
-import { Alert, Button, message, Modal, Radio, Select, Table, Tag } from 'ant-design-vue';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
+import {
+  Alert,
+  Button,
+  message,
+  Modal,
+  Radio,
+  Select,
+  Table,
+  Tag,
+} from 'ant-design-vue';
 
 import { getSubjectSimpleList } from '#/api/fms/config/subject';
 import { updateBalanceSheetFormula } from '#/api/fms/report/balance-sheet';
@@ -16,9 +28,7 @@ import { updateIncomeStatementFormula } from '#/api/fms/report/income-statement'
 import FmsSubjectSelect from '#/views/fms/config/subject/components/subject-select.vue';
 import { useFmsStore } from '#/views/fms/store/fms';
 import {
-  FMS_BALANCE_FORMULA_RULE_OPTIONS,
   FMS_FORMULA_RULE,
-  FMS_INCOME_FORMULA_RULE_OPTIONS,
   FMS_SUBJECT_STATUS,
 } from '#/views/fms/utils/constants';
 import { formatMoney } from '#/views/fms/utils/format';
@@ -43,6 +53,7 @@ const formulaList = ref<FmsReportApi.Formula[]>([]); // 编辑中的公式项列
 const subjectId = ref<number>(); // 待添加的科目编号
 const rules = ref<number>(FMS_FORMULA_RULE.BALANCE); // 待添加的取数规则
 const operator = ref<'+' | '-'>('+'); // 待添加的运算符
+const formulaRuleOptions = getDictOptions(DICT_TYPE.FMS_FORMULA_RULE, 'number');
 
 /** 启用状态的科目 */
 const enabledSubjects = computed(() =>
@@ -53,8 +64,24 @@ const enabledSubjects = computed(() =>
 /** 取数规则选项：资产负债表使用余额类规则，其他报表使用发生额类规则 */
 const ruleOptions = computed(() =>
   formulaType.value === 'balance'
-    ? FMS_BALANCE_FORMULA_RULE_OPTIONS
-    : FMS_INCOME_FORMULA_RULE_OPTIONS,
+    ? formulaRuleOptions.filter((item) =>
+        (
+          [
+            FMS_FORMULA_RULE.BALANCE,
+            FMS_FORMULA_RULE.DEBIT_BALANCE,
+            FMS_FORMULA_RULE.CREDIT_BALANCE,
+          ] as number[]
+        ).includes(item.value),
+      )
+    : formulaRuleOptions.filter((item) =>
+        (
+          [
+            FMS_FORMULA_RULE.DEBIT_AMOUNT,
+            FMS_FORMULA_RULE.CREDIT_AMOUNT,
+            FMS_FORMULA_RULE.PROFIT_LOSS_AMOUNT,
+          ] as number[]
+        ).includes(item.value),
+      ),
 );
 /** 金额字段：资产负债表为期末/年初数，其他报表为本期/本年累计金额 */
 const amountFields = computed<(keyof FmsReportApi.Formula)[]>(() =>

@@ -8,6 +8,8 @@ import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Dropdown, Menu, message, Table, Tabs } from 'antdv-next';
@@ -17,10 +19,7 @@ import {
   getClosingTemplateList,
 } from '#/api/fms/closing/template';
 import { useFmsStore } from '#/views/fms/store/fms';
-import {
-  FMS_CLOSING_TEMPLATE_CATEGORY,
-  FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS,
-} from '#/views/fms/utils/constants';
+import { FMS_CLOSING_TEMPLATE_CATEGORY } from '#/views/fms/utils/constants';
 
 import TemplateForm from '../modules/template-form.vue';
 
@@ -29,6 +28,11 @@ defineOptions({ name: 'FmsClosingTemplateSelect' });
 const emit = defineEmits<{
   select: [template?: FmsClosingTemplateApi.ClosingTemplate];
 }>();
+
+const categoryOptions = getDictOptions(
+  DICT_TYPE.FMS_CLOSING_TEMPLATE_CATEGORY,
+  'number',
+);
 
 /** 弹窗数据 */
 interface TemplateSelectData {
@@ -44,7 +48,7 @@ const category = ref<number>(FMS_CLOSING_TEMPLATE_CATEGORY.DAILY_EXPENSE); // �
 const templates = ref<FmsClosingTemplateApi.ClosingTemplate[]>([]); // 结账模板列表
 
 // 模板分类页签（antdv-next 页签 key 仅支持字符串）
-const categoryTabs = FMS_CLOSING_TEMPLATE_CATEGORY_OPTIONS.map((item) => ({
+const categoryTabs = categoryOptions.map((item) => ({
   key: String(item.value),
   label: item.label,
 }));
@@ -205,7 +209,9 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
         <template v-else-if="column.key === 'action'">
           <Button
             type="link"
-            @click="selectTemplate(record as FmsClosingTemplateApi.ClosingTemplate)"
+            @click="
+              selectTemplate(record as FmsClosingTemplateApi.ClosingTemplate)
+            "
           >
             使用
           </Button>
@@ -213,7 +219,9 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
             <Button
               v-if="hasAccessByCodes(['fms:closing:update'])"
               type="link"
-              @click="handleEdit(record as FmsClosingTemplateApi.ClosingTemplate)"
+              @click="
+                handleEdit(record as FmsClosingTemplateApi.ClosingTemplate)
+              "
             >
               编辑
             </Button>
@@ -221,7 +229,9 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
               v-if="hasAccessByCodes(['fms:closing:update'])"
               danger
               type="link"
-              @click="handleDelete(record as FmsClosingTemplateApi.ClosingTemplate)"
+              @click="
+                handleDelete(record as FmsClosingTemplateApi.ClosingTemplate)
+              "
             >
               删除
             </Button>

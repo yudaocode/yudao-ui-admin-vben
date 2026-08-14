@@ -4,16 +4,20 @@ import type { FmsVoucherApi } from '#/api/fms/voucher';
 
 import { markRaw } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
 
 import { NumberRangeInput } from '#/components/number-range-input';
 import FmsSubjectSelect from '#/views/fms/config/subject/components/subject-select.vue';
 import FmsVoucherWordSelect from '#/views/fms/config/voucher-word/components/voucher-word-select.vue';
-import {
-  FMS_VOUCHER_STATUS_OPTIONS,
-  FMS_VOUCHER_TIDY_TYPE,
-} from '#/views/fms/utils/constants';
+import { FMS_VOUCHER_TIDY_TYPE } from '#/views/fms/utils/constants';
 import { UserSelect } from '#/views/system/user/components';
+
+const voucherStatusOptions = getDictOptions(
+  DICT_TYPE.FMS_VOUCHER_STATUS,
+  'number',
+);
 
 /** 拆分数字区间到最小/最大查询字段 */
 function splitNumberRange(minFieldName: string, maxFieldName: string) {
@@ -108,7 +112,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: FMS_VOUCHER_STATUS_OPTIONS,
+        options: voucherStatusOptions,
         placeholder: '请选择状态',
       },
     },

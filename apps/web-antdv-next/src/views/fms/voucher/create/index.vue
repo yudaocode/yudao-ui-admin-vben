@@ -23,6 +23,8 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 import { formatDate, handleTree } from '@vben/utils';
 
@@ -35,7 +37,6 @@ import {
   Menu,
   message,
   Select,
-  SelectOption,
   Spin,
   Tag,
 } from 'antdv-next';
@@ -61,14 +62,15 @@ import FmsDigestLibrary from '#/views/fms/config/digest/components/digest-librar
 import SubjectForm from '#/views/fms/config/subject/modules/form.vue';
 import FmsVoucherTemplateSaveForm from '#/views/fms/config/voucher-template/components/template-save-form.vue';
 import FmsVoucherTemplateSelect from '#/views/fms/config/voucher-template/components/template-select.vue';
+import FmsVoucherWordSelect from '#/views/fms/config/voucher-word/components/voucher-word-select.vue';
 import { useFmsStore } from '#/views/fms/store/fms';
 import {
   FMS_DEBIT_CREDIT_DIRECTION,
   FMS_SUBJECT_STATUS,
-  FMS_SUBJECT_TYPE_OPTIONS,
   FMS_VOUCHER_MONEY_UNITS,
   FMS_VOUCHER_STATUS,
 } from '#/views/fms/utils/constants';
+
 import {
   formatPeriodLabel,
   formatSubjectBalance as formatSubjectBalanceText,
@@ -80,9 +82,12 @@ import FmsVoucherPrintForm from '../components/voucher-print-form.vue';
 import FmsVoucherShortcutHelp from './shortcut-help.vue';
 
 defineOptions({ name: 'FmsVoucherCreate' });
+const subjectTypeOptions = getDictOptions(DICT_TYPE.FMS_SUBJECT_TYPE, 'number');
 
-interface VoucherEntryForm
-  extends Omit<FmsVoucherApi.VoucherEntry, 'auxiliaries' | 'subjectId'> {
+interface VoucherEntryForm extends Omit<
+  FmsVoucherApi.VoucherEntry,
+  'auxiliaries' | 'subjectId'
+> {
   rowKey: symbol;
   subjectId?: number;
   auxiliaries: Array<
@@ -101,12 +106,6 @@ const userStore = useUserStore();
 const loading = ref(false); // 页面的加载中
 const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套编号
 const voucherWords = ref<FmsVoucherWordApi.VoucherWord[]>([]); // 凭证字列表
-/** 当前凭证字名称（选中值先于选项解析时也能正确回显） */
-const voucherWordName = computed(
-  () =>
-    voucherWords.value.find((item) => item.id === formData.voucherWordId)
-      ?.name ?? '',
-);
 const subjects = ref<FmsSubjectApi.Subject[]>([]); // 会计科目树
 const auxiliaryTypes = ref<FmsAuxiliaryTypeApi.AuxiliaryTypeOption[]>([]); // 辅助核算类别列表
 const currentMonth = ref(''); // 当前会计期间
@@ -128,8 +127,7 @@ const formData = reactive({
 const entries = ref<VoucherEntryForm[]>([]); // 凭证分录列表
 const templateSaveFormRef =
   ref<InstanceType<typeof FmsVoucherTemplateSaveForm>>(); // 凭证模板保存表单 Ref
-const templateSelectRef =
-  ref<InstanceType<typeof FmsVoucherTemplateSelect>>(); // 凭证模板选择器 Ref
+const templateSelectRef = ref<InstanceType<typeof FmsVoucherTemplateSelect>>(); // 凭证模板选择器 Ref
 const digestLibraryRef = ref<InstanceType<typeof FmsDigestLibrary>>(); // 常用摘要库 Ref
 const digestEntryIndex = ref<number>(); // 当前摘要分录索引
 const entryTableWrapRef = ref<HTMLElement>(); // 凭证分录表格 Ref
@@ -149,7 +147,8 @@ const flatSubjects = computed(() => flattenSubjects(subjects.value)); // 平铺�
 const leafSubjects = computed(() =>
   flatSubjects.value.filter(
     (subject) =>
-      !subject.children?.length && subject.status === FMS_SUBJECT_STATUS.ENABLED,
+      !subject.children?.length &&
+      subject.status === FMS_SUBJECT_STATUS.ENABLED,
   ),
 ); // 可选末级会计科目列表
 const auxiliaryTypeMap = computed(
@@ -304,7 +303,9 @@ async function initializeCopiedVoucher(id: number) {
   await resetForm(false);
   entries.value = copiedEntries;
   padEntries();
-  await Promise.all(entries.value.map((entry) => loadEntryAuxiliaryOptions(entry)));
+  await Promise.all(
+    entries.value.map((entry) => loadEntryAuxiliaryOptions(entry)),
+  );
   message.success('已复制凭证内容，请确认后保存');
 }
 
@@ -380,7 +381,10 @@ function getDefaultVoucherTime() {
   if (!currentMonth.value || dayjs().format('YYYY-MM') === currentMonth.value) {
     return dayjs().startOf('day').valueOf();
   }
-  return dayjs(`${currentMonth.value}-01`).endOf('month').startOf('day').valueOf();
+  return dayjs(`${currentMonth.value}-01`)
+    .endOf('month')
+    .startOf('day')
+    .valueOf();
 }
 
 /** 禁用当前会计期间前的日期 */
@@ -488,7 +492,8 @@ async function loadEntryAuxiliaryBalance(entry: VoucherEntryForm) {
   const subject = getSubject(entry.subjectId);
   const auxiliaryTypeIds = subject?.auxiliaryTypeIds || [];
   const auxiliaryItemIds = auxiliaryTypeIds.map(
-    (typeId) => entry.auxiliaries.find((item) => item.typeId === typeId)?.itemId,
+    (typeId) =>
+      entry.auxiliaries.find((item) => item.typeId === typeId)?.itemId,
   );
   if (
     !currentAccountSetId ||
@@ -514,8 +519,9 @@ async function loadEntryAuxiliaryBalance(entry: VoucherEntryForm) {
     subjectId === entry.subjectId &&
     itemIds.every(
       (itemId, index) =>
-        entry.auxiliaries.find((item) => item.typeId === auxiliaryTypeIds[index])
-          ?.itemId === itemId,
+        entry.auxiliaries.find(
+          (item) => item.typeId === auxiliaryTypeIds[index],
+        )?.itemId === itemId,
     )
   ) {
     auxiliaryBalances.set(entry.rowKey, balance);
@@ -556,7 +562,9 @@ async function refreshAuxiliaryItemOptions() {
 
 /** 获得分录的辅助核算项 */
 function getEntryAuxiliary(entry: VoucherEntryForm, auxiliaryTypeId: number) {
-  let auxiliary = entry.auxiliaries.find((item) => item.typeId === auxiliaryTypeId);
+  let auxiliary = entry.auxiliaries.find(
+    (item) => item.typeId === auxiliaryTypeId,
+  );
   if (!auxiliary) {
     auxiliary = {
       type: auxiliaryTypeMap.value.get(auxiliaryTypeId)?.type,
@@ -582,6 +590,25 @@ function getEntrySubjectOptions(entry: VoucherEntryForm) {
     return leafSubjects.value;
   }
   return [...leafSubjects.value, currentSubject];
+}
+
+/** 构建分录科目下拉选项（options 形式，选中态才能稳定回显） */
+function getEntrySubjectSelectOptions(entry: VoucherEntryForm) {
+  return getEntrySubjectOptions(entry).map((subject) => ({
+    disabled:
+      subject.status !== FMS_SUBJECT_STATUS.ENABLED ||
+      Boolean(subject.children?.length),
+    label: `${subject.code} ${subject.name}`,
+    value: subject.id!,
+  }));
+}
+
+/** 构建辅助核算项目下拉选项 */
+function getAuxiliaryItemSelectOptions(auxiliaryTypeId: number) {
+  return (auxiliaryOptions[auxiliaryTypeId] || []).map((item) => ({
+    label: `${item.code} ${item.name}`,
+    value: item.id,
+  }));
 }
 
 /** 格式化分录余额 */
@@ -649,7 +676,7 @@ function sumAmount(field: 'creditAmount' | 'debitAmount') {
 /** 将金额转换为金额位数格内容 */
 function getMoneyDigits(value?: number, showZero = false) {
   if (!showZero && !value) return [];
-  return String(Math.round(Math.abs(Number(value) || 0) * 100)).split('');
+  return [...String(Math.round(Math.abs(Number(value) || 0) * 100))];
 }
 
 /** 处理分录表格快捷键 */
@@ -675,7 +702,10 @@ function handleEntryTableKeydown(event: KeyboardEvent) {
     focusEntryInputByArrow(target, entryRow, event.key);
     return;
   }
-  if (event.key !== 'Enter' || target.getAttribute('aria-expanded') === 'true') {
+  if (
+    event.key !== 'Enter' ||
+    target.getAttribute('aria-expanded') === 'true'
+  ) {
     return;
   }
   event.preventDefault();
@@ -694,21 +724,23 @@ function focusEntryInputByArrow(
     entryInputs[currentIndex + (key === 'ArrowLeft' ? -1 : 1)]?.focus();
     return;
   }
-  const rows = Array.from(
-    entryTableWrapRef.value?.querySelectorAll<HTMLTableRowElement>(
+  const rows = [
+    ...(entryTableWrapRef.value?.querySelectorAll<HTMLTableRowElement>(
       'tbody tr[data-entry-index]',
-    ) || [],
-  );
+    ) || []),
+  ];
   const rowIndex = rows.indexOf(entryRow);
   const targetRow = rows[rowIndex + (key === 'ArrowUp' ? -1 : 1)];
   if (!targetRow) return;
-  const rowInputs = Array.from(
-    entryRow.querySelectorAll<HTMLInputElement>('input:not([disabled])'),
-  );
-  const targetInputs = Array.from(
-    targetRow.querySelectorAll<HTMLInputElement>('input:not([disabled])'),
-  );
-  targetInputs[Math.min(rowInputs.indexOf(target), targetInputs.length - 1)]?.focus();
+  const rowInputs = [
+    ...entryRow.querySelectorAll<HTMLInputElement>('input:not([disabled])'),
+  ];
+  const targetInputs = [
+    ...targetRow.querySelectorAll<HTMLInputElement>('input:not([disabled])'),
+  ];
+  targetInputs[
+    Math.min(rowInputs.indexOf(target), targetInputs.length - 1)
+  ]?.focus();
 }
 
 /** 自动补平当前分录金额 */
@@ -736,7 +768,7 @@ function balanceEntry(entry: VoucherEntryForm, direction: 'credit' | 'debit') {
 async function focusNextEntryInput(target: HTMLInputElement) {
   let entryInputs = getEntryInputs();
   const currentIndex = entryInputs.indexOf(target);
-  if (currentIndex < 0) return;
+  if (currentIndex === -1) return;
   if (currentIndex === entryInputs.length - 1) {
     addEntry(entries.value.length);
     await nextTick();
@@ -747,11 +779,11 @@ async function focusNextEntryInput(target: HTMLInputElement) {
 
 /** 获得分录输入框 */
 function getEntryInputs() {
-  return Array.from(
-    entryTableWrapRef.value?.querySelectorAll<HTMLInputElement>(
+  return [
+    ...(entryTableWrapRef.value?.querySelectorAll<HTMLInputElement>(
       'tbody input:not([disabled])',
-    ) || [],
-  );
+    ) || []),
+  ];
 }
 
 /** 构建凭证保存参数 */
@@ -772,7 +804,10 @@ function buildPayload(): FmsVoucherApi.SaveReq | undefined {
     message.warning('凭证号必须为正整数');
     return;
   }
-  if (!Number.isInteger(formData.attachmentCount) || formData.attachmentCount < 0) {
+  if (
+    !Number.isInteger(formData.attachmentCount) ||
+    formData.attachmentCount < 0
+  ) {
     message.warning('附单据张数必须为非负整数');
     return;
   }
@@ -817,7 +852,9 @@ function buildTemplateEntries(): FmsVoucherApi.VoucherEntry[] | undefined {
 }
 
 /** 构建凭证业务分录 */
-function buildVoucherEntry(entry: VoucherEntryForm): FmsVoucherApi.VoucherEntry {
+function buildVoucherEntry(
+  entry: VoucherEntryForm,
+): FmsVoucherApi.VoucherEntry {
   return {
     ...entry,
     subjectId: entry.subjectId!,
@@ -845,8 +882,13 @@ function validateEntry(entry: VoucherEntryForm, amountRequired: boolean) {
     message.warning('请选择每条分录的会计科目');
     return false;
   }
-  if (subject.status !== FMS_SUBJECT_STATUS.ENABLED || subject.children?.length) {
-    message.warning(`会计科目“${subject.name}”已停用或不是末级科目，请重新选择`);
+  if (
+    subject.status !== FMS_SUBJECT_STATUS.ENABLED ||
+    subject.children?.length
+  ) {
+    message.warning(
+      `会计科目“${subject.name}”已停用或不是末级科目，请重新选择`,
+    );
     return false;
   }
   if (!entry.digest) {
@@ -866,7 +908,8 @@ function validateEntry(entry: VoucherEntryForm, amountRequired: boolean) {
   const auxiliaryTypeIds = subject.auxiliaryTypeIds || [];
   if (
     auxiliaryTypeIds.some(
-      (typeId) => !entry.auxiliaries.find((item) => item.typeId === typeId)?.itemId,
+      (typeId) =>
+        !entry.auxiliaries.find((item) => item.typeId === typeId)?.itemId,
     )
   ) {
     message.warning(`请完整选择“${subject.name}”的辅助核算项目`);
@@ -877,10 +920,12 @@ function validateEntry(entry: VoucherEntryForm, amountRequired: boolean) {
 
 /** 构建当前科目要求的辅助核算项目 */
 function buildEntryAuxiliaries(entry: VoucherEntryForm) {
-  return (getSubject(entry.subjectId)?.auxiliaryTypeIds || []).map((typeId) => ({
-    typeId,
-    itemId: entry.auxiliaries.find((item) => item.typeId === typeId)!.itemId!,
-  }));
+  return (getSubject(entry.subjectId)?.auxiliaryTypeIds || []).map(
+    (typeId) => ({
+      typeId,
+      itemId: entry.auxiliaries.find((item) => item.typeId === typeId)!.itemId!,
+    }),
+  );
 }
 
 /** 处理更多操作 */
@@ -920,7 +965,9 @@ async function applyTemplate(template: FmsVoucherTemplateApi.VoucherTemplate) {
     auxiliaries: entry.auxiliaries.map((item) => ({ ...item })),
   }));
   padEntries();
-  await Promise.all(entries.value.map((entry) => loadEntryAuxiliaryOptions(entry)));
+  await Promise.all(
+    entries.value.map((entry) => loadEntryAuxiliaryOptions(entry)),
+  );
   message.success(`已套用凭证模板“${template.name}”`);
 }
 
@@ -1001,7 +1048,10 @@ function printVoucher() {
 /** 跳转到相邻凭证 */
 function navigateVoucher(voucherId?: number) {
   if (!voucherId) return;
-  router.push({ path: '/fms/voucher/create', query: { ...route.query, id: voucherId } });
+  router.push({
+    path: '/fms/voucher/create',
+    query: { ...route.query, id: voucherId },
+  });
 }
 
 /** 处理页面快捷键 */
@@ -1025,7 +1075,10 @@ function handlePageShortcut(event: KeyboardEvent) {
     submitForm(true);
   } else if (event.altKey && key === 'n') {
     event.preventDefault();
-    if (!currentAccountWritable.value || !hasAccessByCodes(['fms:voucher:create'])) {
+    if (
+      !currentAccountWritable.value ||
+      !hasAccessByCodes(['fms:voucher:create'])
+    ) {
       return;
     }
     resetForm();
@@ -1043,7 +1096,9 @@ function removePageShortcutListener() {
 }
 
 /** 平铺会计科目树 */
-function flattenSubjects(tree: FmsSubjectApi.Subject[]): FmsSubjectApi.Subject[] {
+function flattenSubjects(
+  tree: FmsSubjectApi.Subject[],
+): FmsSubjectApi.Subject[] {
   const result: FmsSubjectApi.Subject[] = [];
   const walk = (nodes: FmsSubjectApi.Subject[]) => {
     for (const node of nodes) {
@@ -1080,7 +1135,11 @@ onBeforeUnmount(removePageShortcutListener);
         >
           新增
         </Button>
-        <Button v-if="canSaveAndCreate" type="primary" @click="submitForm(true)">
+        <Button
+          v-if="canSaveAndCreate"
+          type="primary"
+          @click="submitForm(true)"
+        >
           保存并新增
         </Button>
         <Button v-if="canSave" @click="submitForm(false)">保存</Button>
@@ -1137,10 +1196,7 @@ onBeforeUnmount(removePageShortcutListener);
         >
           打印
         </Button>
-        <Dropdown
-          v-if="!formData.id && !readOnly"
-          :trigger="['click']"
-        >
+        <Dropdown v-if="!formData.id && !readOnly" :trigger="['click']">
           <Button>
             更多<span class="icon-[ep--arrow-down] ml-1"></span>
           </Button>
@@ -1153,7 +1209,10 @@ onBeforeUnmount(removePageShortcutListener);
               >
                 保存为模板
               </Menu.Item>
-              <Menu.Item key="applyTemplate" @click="handleMoreCommand('applyTemplate')">
+              <Menu.Item
+                key="applyTemplate"
+                @click="handleMoreCommand('applyTemplate')"
+              >
                 使用模板
               </Menu.Item>
             </Menu>
@@ -1176,7 +1235,9 @@ onBeforeUnmount(removePageShortcutListener);
           title="下一张"
           @click="navigateVoucher(nextVoucherId)"
         >
-          <template #icon><span class="icon-[ep--arrow-right]"></span></template>
+          <template #icon>
+            <span class="icon-[ep--arrow-right]"></span>
+          </template>
         </Button>
       </div>
     </div>
@@ -1197,7 +1258,9 @@ onBeforeUnmount(removePageShortcutListener);
           >
             {{ voucherPeriod }}
           </div>
-          <div class="box-border flex min-h-[60px] items-center justify-between pl-[24px]">
+          <div
+            class="box-border flex min-h-[60px] items-center justify-between pl-[24px]"
+          >
             <div class="flex items-center gap-[8px]">
               <div class="flex items-center gap-[8px]">
                 <span
@@ -1205,22 +1268,14 @@ onBeforeUnmount(removePageShortcutListener);
                 >
                   凭证字
                 </span>
-                <Select
-                  v-model:value="formData.voucherWordId"
+                <FmsVoucherWordSelect
+                  v-model="formData.voucherWordId"
+                  :options="voucherWords"
                   :disabled="readOnly"
                   class="!w-[90px]"
-                  @change="refreshVoucherNumber"
-                >
-                  <template #labelRender>{{ voucherWordName }}</template>
-                  <SelectOption
-                    v-for="item in voucherWords"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id!"
-                  >
-                    {{ item.name }}
-                  </SelectOption>
-                </Select>
+                  placeholder="请选择凭证字"
+                  @update:model-value="refreshVoucherNumber"
+                />
                 <div class="flex items-center">
                   <InputNumber
                     v-model:value="formData.voucherNumber"
@@ -1277,7 +1332,9 @@ onBeforeUnmount(removePageShortcutListener);
                   ></th>
                   <th class="entry-digest relative !px-10px">摘要</th>
                   <th class="entry-subject relative !px-10px">会计科目</th>
-                  <th v-if="showQuantityColumn" class="!px-4px text-center">数量</th>
+                  <th v-if="showQuantityColumn" class="!px-4px text-center">
+                    数量
+                  </th>
                   <th class="entry-money entry-money-header relative !p-0">
                     <strong class="block h-[25px] leading-[25px]">借方金额</strong>
                     <div
@@ -1320,10 +1377,7 @@ onBeforeUnmount(removePageShortcutListener);
                       v-if="!readOnly"
                       class="flex h-full flex-col items-center justify-center opacity-0 transition-opacity duration-150 group-focus-within:opacity-100 group-hover:opacity-100"
                     >
-                      <Dropdown
-                        placement="bottomLeft"
-                        :trigger="['hover']"
-                      >
+                      <Dropdown placement="bottomLeft" :trigger="['hover']">
                         <Button size="small" title="插入分录" type="text">
                           <template #icon>
                             <span class="icon-[ep--circle-plus]"></span>
@@ -1395,24 +1449,13 @@ onBeforeUnmount(removePageShortcutListener);
                     <template v-else>
                       <Select
                         v-model:value="entry.subjectId"
+                        :options="getEntrySubjectSelectOptions(entry)"
                         placeholder=""
                         class="w-full"
                         option-filter-prop="label"
                         show-search
                         @change="handleSubjectChange(entry)"
                       >
-                        <SelectOption
-                          v-for="subject in getEntrySubjectOptions(entry)"
-                          :key="subject.id"
-                          :disabled="
-                            subject.status !== FMS_SUBJECT_STATUS.ENABLED ||
-                            Boolean(subject.children?.length)
-                          "
-                          :label="`${subject.code} ${subject.name}`"
-                          :value="subject.id!"
-                        >
-                          {{ subject.code }} {{ subject.name }}
-                        </SelectOption>
                         <template
                           v-if="
                             hasAccessByCodes(['fms:config:subject:create']) &&
@@ -1432,7 +1475,7 @@ onBeforeUnmount(removePageShortcutListener);
                             <template #popupRender>
                               <Menu>
                                 <Menu.Item
-                                  v-for="subjectType in FMS_SUBJECT_TYPE_OPTIONS"
+                                  v-for="subjectType in subjectTypeOptions"
                                   :key="subjectType.value"
                                   @click="openSubjectForm(subjectType.value)"
                                 >
@@ -1444,7 +1487,9 @@ onBeforeUnmount(removePageShortcutListener);
                         </template>
                       </Select>
                       <div
-                        v-if="getSubject(entry.subjectId)?.auxiliaryTypeIds?.length"
+                        v-if="
+                          getSubject(entry.subjectId)?.auxiliaryTypeIds?.length
+                        "
                         class="mt-[4px] flex flex-wrap gap-[4px]"
                       >
                         <Select
@@ -1454,24 +1499,22 @@ onBeforeUnmount(removePageShortcutListener);
                           v-model:value="
                             getEntryAuxiliary(entry, auxiliaryTypeId).itemId
                           "
-                          :placeholder="auxiliaryTypeMap.get(auxiliaryTypeId)?.name"
+                          :options="
+                            getAuxiliaryItemSelectOptions(auxiliaryTypeId)
+                          "
+                          :placeholder="
+                            auxiliaryTypeMap.get(auxiliaryTypeId)?.name
+                          "
                           class="!w-[calc(50%-2px)]"
                           option-filter-prop="label"
                           show-search
                           @change="loadEntryAuxiliaryBalance(entry)"
                         >
-                          <SelectOption
-                            v-for="item in auxiliaryOptions[auxiliaryTypeId] || []"
-                            :key="item.id"
-                            :label="`${item.code} ${item.name}`"
-                            :value="item.id"
-                          >
-                            {{ item.code }} {{ item.name }}
-                          </SelectOption>
                           <template
                             v-if="
-                              hasAccessByCodes(['fms:config:auxiliary:create']) &&
-                              fmsStore.isAccountSetWritable
+                              hasAccessByCodes([
+                                'fms:config:auxiliary:create',
+                              ]) && fmsStore.isAccountSetWritable
                             "
                             #popupRender="menuNode"
                           >
@@ -1480,10 +1523,14 @@ onBeforeUnmount(removePageShortcutListener);
                               class="m-[4px]"
                               size="small"
                               type="link"
-                              @click.stop="openAuxiliaryItemForm(auxiliaryTypeId)"
+                              @click.stop="
+                                openAuxiliaryItemForm(auxiliaryTypeId)
+                              "
                             >
                               <span class="icon-[ep--plus]"></span>
-                              新增{{ auxiliaryTypeMap.get(auxiliaryTypeId)?.name }}
+                              新增{{
+                                auxiliaryTypeMap.get(auxiliaryTypeId)?.name
+                              }}
                             </Button>
                           </template>
                         </Select>
@@ -1497,7 +1544,9 @@ onBeforeUnmount(removePageShortcutListener);
                     </div>
                   </td>
                   <td v-if="showQuantityColumn" class="!px-4px text-center">
-                    <template v-if="getSubject(entry.subjectId)?.quantityAccounting">
+                    <template
+                      v-if="getSubject(entry.subjectId)?.quantityAccounting"
+                    >
                       <div
                         class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.ant-input-number]:!w-64px"
                       >
@@ -1510,7 +1559,9 @@ onBeforeUnmount(removePageShortcutListener);
                           :precision="4"
                           @change="calculateEntryAmount(entry)"
                         />
-                        <span>{{ getSubject(entry.subjectId)?.quantityUnit }}</span>
+                        <span>{{
+                          getSubject(entry.subjectId)?.quantityUnit
+                        }}</span>
                       </div>
                       <div
                         class="my-[2px] flex items-center justify-center gap-[4px] whitespace-nowrap text-[12px] [&_.ant-input-number]:!w-64px"
@@ -1611,11 +1662,16 @@ onBeforeUnmount(removePageShortcutListener);
                   </td>
                   <td class="entry-money relative !p-0">
                     <div
-                      :class="{ 'text-[var(--el-color-danger)]': debitTotal < 0 }"
+                      :class="{
+                        'text-[var(--el-color-danger)]': debitTotal < 0,
+                      }"
                       class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                     >
                       <span
-                        v-for="(digit, index) in getMoneyDigits(debitTotal, true)"
+                        v-for="(digit, index) in getMoneyDigits(
+                          debitTotal,
+                          true,
+                        )"
                         :key="index"
                       >
                         {{ digit }}
@@ -1624,11 +1680,16 @@ onBeforeUnmount(removePageShortcutListener);
                   </td>
                   <td class="entry-money relative !p-0">
                     <div
-                      :class="{ 'text-[var(--el-color-danger)]': creditTotal < 0 }"
+                      :class="{
+                        'text-[var(--el-color-danger)]': creditTotal < 0,
+                      }"
                       class="money-cell-value pointer-events-none absolute inset-0 flex h-[60px] items-center justify-end"
                     >
                       <span
-                        v-for="(digit, index) in getMoneyDigits(creditTotal, true)"
+                        v-for="(digit, index) in getMoneyDigits(
+                          creditTotal,
+                          true,
+                        )"
                         :key="index"
                       >
                         {{ digit }}
@@ -1661,7 +1722,11 @@ onBeforeUnmount(removePageShortcutListener);
         </div>
       </Spin>
       <div v-if="canSave" class="mt-[16px] flex justify-end gap-[8px]">
-        <Button v-if="canSaveAndCreate" type="primary" @click="submitForm(true)">
+        <Button
+          v-if="canSaveAndCreate"
+          type="primary"
+          @click="submitForm(true)"
+        >
           保存并新增
         </Button>
         <Button @click="submitForm(false)">保存</Button>
@@ -1767,8 +1832,8 @@ onBeforeUnmount(removePageShortcutListener);
 
 .money-editor :deep(.ant-input-number) {
   position: absolute;
-  z-index: 2;
   inset: 0;
+  z-index: 2;
   width: 100%;
   height: 100%;
   opacity: 0;

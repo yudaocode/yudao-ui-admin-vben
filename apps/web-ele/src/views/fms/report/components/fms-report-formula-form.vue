@@ -7,6 +7,9 @@ import type { FmsCashFlowStatementApi } from '#/api/fms/report/cash-flow-stateme
 
 import { computed, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import {
   ElAlert,
   ElButton,
@@ -28,9 +31,7 @@ import { updateIncomeStatementFormula } from '#/api/fms/report/income-statement'
 import FmsSubjectSelect from '#/views/fms/config/subject/components/subject-select.vue';
 import { useFmsStore } from '#/views/fms/store/fms';
 import {
-  FMS_BALANCE_FORMULA_RULE_OPTIONS,
   FMS_FORMULA_RULE,
-  FMS_INCOME_FORMULA_RULE_OPTIONS,
   FMS_SUBJECT_STATUS,
 } from '#/views/fms/utils/constants';
 import { formatMoney } from '#/views/fms/utils/format';
@@ -60,6 +61,7 @@ const formulaList = ref<FmsReportApi.Formula[]>([]); // 编辑中的公式项列
 const subjectId = ref<number>(); // 待添加的科目编号
 const rules = ref<number>(FMS_FORMULA_RULE.BALANCE); // 待添加的取数规则
 const operator = ref<'+' | '-'>('+'); // 待添加的运算符
+const formulaRuleOptions = getDictOptions(DICT_TYPE.FMS_FORMULA_RULE, 'number');
 
 /** 启用状态的科目 */
 const enabledSubjects = computed(() =>
@@ -70,8 +72,24 @@ const enabledSubjects = computed(() =>
 /** 取数规则选项：资产负债表使用余额类规则，其他报表使用发生额类规则 */
 const ruleOptions = computed(() =>
   formulaType.value === 'balance'
-    ? FMS_BALANCE_FORMULA_RULE_OPTIONS
-    : FMS_INCOME_FORMULA_RULE_OPTIONS,
+    ? formulaRuleOptions.filter((item) =>
+        (
+          [
+            FMS_FORMULA_RULE.BALANCE,
+            FMS_FORMULA_RULE.DEBIT_BALANCE,
+            FMS_FORMULA_RULE.CREDIT_BALANCE,
+          ] as number[]
+        ).includes(item.value),
+      )
+    : formulaRuleOptions.filter((item) =>
+        (
+          [
+            FMS_FORMULA_RULE.DEBIT_AMOUNT,
+            FMS_FORMULA_RULE.CREDIT_AMOUNT,
+            FMS_FORMULA_RULE.PROFIT_LOSS_AMOUNT,
+          ] as number[]
+        ).includes(item.value),
+      ),
 );
 
 /** 打开弹窗 */
@@ -267,7 +285,12 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
         <ElTableColumn label="科目" min-width="240">
           <template #default="{ row }">
             {{ row.subjectNumber }} {{ row.subjectName }}
-            <ElTag v-if="!row.subjectId" class="ml-1.5" size="small" type="danger">
+            <ElTag
+              v-if="!row.subjectId"
+              class="ml-1.5"
+              size="small"
+              type="danger"
+            >
               科目已失效
             </ElTag>
           </template>
@@ -281,21 +304,49 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
         <ElTableColumn label="取数规则" width="150">
           <template #default="{ row }">{{ getRuleName(row.rules) }}</template>
         </ElTableColumn>
-        <ElTableColumn v-if="formulaType === 'balance'" align="right" label="期末数">
-          <template #default="{ row }">{{ formatMoney(row.closingAmount) }}</template>
+        <ElTableColumn
+          v-if="formulaType === 'balance'"
+          align="right"
+          label="期末数"
+        >
+          <template #default="{ row }">
+{{
+            formatMoney(row.closingAmount)
+          }}
+</template>
         </ElTableColumn>
-        <ElTableColumn v-if="formulaType === 'balance'" align="right" label="年初数">
-          <template #default="{ row }">{{ formatMoney(row.openingAmount) }}</template>
+        <ElTableColumn
+          v-if="formulaType === 'balance'"
+          align="right"
+          label="年初数"
+        >
+          <template #default="{ row }">
+{{
+            formatMoney(row.openingAmount)
+          }}
+</template>
         </ElTableColumn>
-        <ElTableColumn v-if="formulaType !== 'balance'" align="right" label="本期金额">
-          <template #default="{ row }">{{ formatMoney(row.currentAmount) }}</template>
+        <ElTableColumn
+          v-if="formulaType !== 'balance'"
+          align="right"
+          label="本期金额"
+        >
+          <template #default="{ row }">
+{{
+            formatMoney(row.currentAmount)
+          }}
+</template>
         </ElTableColumn>
         <ElTableColumn
           v-if="formulaType !== 'balance'"
           align="right"
           label="本年累计金额"
         >
-          <template #default="{ row }">{{ formatMoney(row.yearAmount) }}</template>
+          <template #default="{ row }">
+{{
+            formatMoney(row.yearAmount)
+          }}
+</template>
         </ElTableColumn>
         <ElTableColumn align="center" label="操作" width="80">
           <template #default="{ $index }">
