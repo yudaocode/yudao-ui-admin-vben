@@ -6,7 +6,7 @@ import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -217,6 +217,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【凭证】凭证管理"
+        url="https://doc.iocoder.cn/fms/voucher/"
+      />
+    </template>
     <PrintModal />
 
     <Grid>

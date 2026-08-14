@@ -3,7 +3,7 @@ import type { FmsClosingPeriodApi } from '#/api/fms/closing/period';
 
 import { computed, reactive, ref, watch } from 'vue';
 
-import { confirm, Page } from '@vben/common-ui';
+import { DocAlert, confirm, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import dayjs from 'dayjs';
@@ -175,6 +175,12 @@ function disabledMonth(date: Date) {
 
 <template>
   <Page>
+    <template #doc>
+      <DocAlert
+        title="【结账】期末结账"
+        url="https://doc.iocoder.cn/fms/closing/"
+      />
+    </template>
     <!-- 会计期间 -->
     <ElCard class="mb-4">
       <div class="flex items-center gap-4">

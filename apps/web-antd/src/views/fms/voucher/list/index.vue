@@ -7,7 +7,7 @@ import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
@@ -439,6 +439,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【凭证】凭证管理"
+        url="https://doc.iocoder.cn/fms/voucher/"
+      />
+    </template>
     <div
       v-if="selectedRows.length && fmsStore.isAccountSetWritable"
       class="border-primary/30 bg-primary/5 text-primary mb-3 flex min-h-[44px] items-center gap-2.5 rounded-md border border-solid px-3.5"
@@ -472,7 +478,7 @@ onMounted(() => {
       />
     </div>
 
-    <Grid>
+    <Grid class="fms-voucher-list-grid">
       <template #toolbar-tools>
         <TableAction
           :actions="[
@@ -705,3 +711,12 @@ onMounted(() => {
     <FmsVoucherAttachmentForm ref="attachmentFormRef" @success="gridApi.query()" />
   </Page>
 </template>
+
+<style scoped>
+/* 多分录凭证按分录折行展示，行高跟随内容，覆盖 VXE size--small 的固定行高裁剪 */
+.fms-voucher-list-grid :deep(.vxe-table--body .vxe-cell) {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+</style>

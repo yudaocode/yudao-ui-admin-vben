@@ -4,7 +4,7 @@ import type { FmsCurrencyApi } from '#/api/fms/config/currency';
 
 import { computed, watch } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -87,6 +87,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设置】币别、科目、辅助核算、初始余额"
+        url="https://doc.iocoder.cn/fms/config/accounting/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
 
     <Grid>

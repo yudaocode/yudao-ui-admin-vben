@@ -4,7 +4,7 @@ import type { FmsVoucherWordApi } from '#/api/fms/config/voucher-word';
 
 import { computed, watch } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
@@ -95,6 +95,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【设置】凭证字、常用摘要、凭证模板"
+        url="https://doc.iocoder.cn/fms/config/voucher/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
 
     <Grid>

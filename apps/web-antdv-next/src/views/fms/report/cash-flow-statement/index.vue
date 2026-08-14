@@ -7,7 +7,7 @@ import type { FmsCashFlowStatementApi } from '#/api/fms/report/cash-flow-stateme
 
 import { computed, reactive, ref, watch } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -299,6 +299,12 @@ function itemClass(item: FmsCashFlowStatementRow) {
 
 <template>
   <Page auto-content-height content-class="flex flex-col overflow-hidden">
+    <template #doc>
+      <DocAlert
+        title="【报表】财务报表"
+        url="https://doc.iocoder.cn/fms/report/"
+      />
+    </template>
     <!-- 工具栏 -->
     <div class="mb-4 shrink-0">
       <div

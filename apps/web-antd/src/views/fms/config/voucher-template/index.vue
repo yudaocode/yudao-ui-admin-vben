@@ -5,7 +5,7 @@ import type { FmsVoucherTemplateCategoryApi } from '#/api/fms/config/voucher-tem
 import { computed, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, message, Spin, Table, Tag, Tooltip } from 'ant-design-vue';
@@ -141,6 +141,12 @@ watch(accountSetId, getList, { immediate: true });
 
 <template>
   <Page>
+    <template #doc>
+      <DocAlert
+        title="【设置】凭证字、常用摘要、凭证模板"
+        url="https://doc.iocoder.cn/fms/config/voucher/"
+      />
+    </template>
     <CategoryFormModal @success="getList" />
 
     <div class="grid grid-cols-[320px_minmax(0,1fr)] gap-4">

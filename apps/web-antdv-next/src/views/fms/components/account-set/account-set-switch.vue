@@ -251,10 +251,10 @@ function formatCurrentMonth(currentMonth?: string) {
       </template>
       <template #optionRender="{ option }">
         <div class="flex items-center justify-between gap-3">
-          <span>{{ option.label }}</span>
+          <span>{{ option.data.label }}</span>
           <div class="flex flex-shrink-0 gap-1">
-            <Tag v-if="option.defaultStatus">默认</Tag>
-            <Tag v-if="!option.initialized" color="default">未初始化</Tag>
+            <Tag v-if="option.data.defaultStatus">默认</Tag>
+            <Tag v-if="!option.data.initialized" color="default">未初始化</Tag>
           </div>
         </div>
       </template>

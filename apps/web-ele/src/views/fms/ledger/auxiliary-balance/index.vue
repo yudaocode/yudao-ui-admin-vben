@@ -6,7 +6,7 @@ import type { FmsLedgerApi } from '#/api/fms/ledger';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
@@ -161,6 +161,12 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【账簿】账簿管理"
+        url="https://doc.iocoder.cn/fms/ledger/"
+      />
+    </template>
     <div class="flex h-full flex-col">
       <!-- 搜索工作栏 -->
       <ElCard class="mb-4 shrink-0">

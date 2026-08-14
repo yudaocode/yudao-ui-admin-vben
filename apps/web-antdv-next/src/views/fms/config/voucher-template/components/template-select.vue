@@ -7,7 +7,7 @@ import { computed, ref } from 'vue';
 import { useAccess } from '@vben/access';
 import { confirm } from '@vben/common-ui';
 
-import { Button, message, Modal, Select, SelectOption, Table } from 'antdv-next';
+import { Button, message, Modal, Select, Table } from 'antdv-next';
 
 import {
   deleteVoucherTemplate,
@@ -33,6 +33,10 @@ const categoryId = ref<number>(); // 模板分类编号
 const categories = ref<FmsVoucherTemplateCategoryApi.VoucherTemplateCategory[]>(
   [],
 ); // 模板分类列表
+/** 模板分类下拉选项 */
+const categoryOptions = computed(() =>
+  categories.value.map((item) => ({ label: item.name, value: item.id! })),
+);
 const list = ref<FmsVoucherTemplateApi.VoucherTemplate[]>([]); // 凭证模板列表
 const filteredList = computed(() =>
   categoryId.value
@@ -106,17 +110,9 @@ defineExpose({ open });
         v-model:value="categoryId"
         allow-clear
         class="!w-[200px]"
+        :options="categoryOptions"
         placeholder="全部分类"
-      >
-        <SelectOption
-          v-for="item in categories"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id!"
-        >
-          {{ item.name }}
-        </SelectOption>
-      </Select>
+      />
     </div>
     <Table
       bordered
