@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
             v-model:value="needProps.id"
             placeholder="请输入流标标识"
             :disabled="needProps.id !== undefined && needProps.id.length > 0"
-            @change="handleKeyUpdate"
+            @change="handleKeyUpdate(needProps.id)"
           />
         </FormItem>
         <FormItem label="流程名称" name="name">
@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
             v-model:value="needProps.name"
             placeholder="请输入流程名称"
             allow-clear
-            @change="handleNameUpdate"
+            @change="handleNameUpdate(needProps.name)"
           />
         </FormItem>
       </div>
