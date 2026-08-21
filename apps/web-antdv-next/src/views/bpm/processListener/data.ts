@@ -28,6 +28,8 @@ export const EVENT_OPTIONS = [
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  let prevValueType: string | undefined;
+
   return [
     {
       fieldName: 'id',
@@ -81,7 +83,18 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['type'],
-        trigger: (values) => (values.event = undefined),
+        trigger: (values) => {
+          const options =
+            values.type === 'execution'
+              ? EVENT_EXECUTION_OPTIONS
+              : EVENT_OPTIONS;
+          if (
+            values.event &&
+            !options.some((opt) => opt.value === values.event)
+          ) {
+            values.event = undefined;
+          }
+        },
         componentProps: (values) => ({
           options:
             values.type === 'execution'
@@ -111,7 +124,16 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['valueType'],
-        trigger: (values) => (values.value = undefined),
+        trigger: (values) => {
+          if (
+            prevValueType &&
+            values.valueType &&
+            prevValueType !== values.valueType
+          ) {
+            values.value = undefined;
+          }
+          prevValueType = values.valueType;
+        },
         componentProps: (values) => ({
           placeholder:
             values.valueType === 'class' ? '请输入类路径' : '请输入表达式',
