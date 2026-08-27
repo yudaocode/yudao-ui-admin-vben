@@ -141,7 +141,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
             multiple
             bordered
             :default-expanded-keys="expandedKeys"
-            v-bind="slotProps.componentProps"
+            v-bind="slotProps"
             :check-strictly="!isCheckStrictly"
             value-field="id"
             label-field="name"

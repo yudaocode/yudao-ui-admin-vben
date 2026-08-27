@@ -1,6 +1,8 @@
-export type Locale = 'en-US' | 'zh-CN';
+import type { SupportedLanguagesType } from '@vben-core/typings';
 
-export const messages: Record<Locale, Record<string, string>> = {
+export type Locale = SupportedLanguagesType;
+
+export const messages: Partial<Record<Locale, Record<string, string>>> = {
   'en-US': {
     cancel: 'Cancel',
     collapse: 'Collapse',
@@ -25,4 +27,5 @@ export const messages: Record<Locale, Record<string, string>> = {
   },
 };
 
-export const getMessages = (locale: Locale) => messages[locale];
+export const getMessages = (locale: Locale) =>
+  messages[locale] ?? messages['en-US'] ?? {};

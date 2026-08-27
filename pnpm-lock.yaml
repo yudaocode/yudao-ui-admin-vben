@@ -274,7 +274,7 @@ catalogs:
       specifier: ^4.2.0
       version: 4.2.0
     cspell:
-      specifier: ^10.0.1
+      specifier: ^10.1.0
       version: 10.1.1
     cz-git:
       specifier: ^1.13.1
@@ -307,7 +307,7 @@ catalogs:
       specifier: ^1.49.0
       version: 1.51.0
     eslint:
-      specifier: ^10.8.1
+      specifier: ^10.9.0
       version: 10.9.1
     eslint-plugin-better-tailwindcss:
       specifier: ^4.7.0
@@ -352,7 +352,7 @@ catalogs:
       specifier: ^17.7.0
       version: 17.11.0
     happy-dom:
-      specifier: ^20.11.2
+      specifier: ^20.11.6
       version: 20.11.8
     highlight.js:
       specifier: ^11.11.1
@@ -418,7 +418,7 @@ catalogs:
       specifier: ^0.60.0
       version: 0.60.0
     oxlint:
-      specifier: ^1.78.0
+      specifier: ^1.79.0
       version: 1.80.0
     oxlint-tsgolint:
       specifier: ^0.25.0
@@ -523,7 +523,7 @@ catalogs:
       specifier: ^0.22.14
       version: 0.22.14
     turbo:
-      specifier: ^2.10.10
+      specifier: ^2.10.11
       version: 2.10.12
     tw-animate-css:
       specifier: ^1.4.0
@@ -547,7 +547,7 @@ catalogs:
       specifier: ^7.21.7
       version: 7.21.7
     vite:
-      specifier: ^8.2.1
+      specifier: ^8.2.2
       version: 8.2.2
     vite-plugin-compression:
       specifier: ^0.5.1
@@ -568,7 +568,7 @@ catalogs:
       specifier: ^1.7.5
       version: 1.7.6
     vitest:
-      specifier: ^4.1.10
+      specifier: ^4.1.11
       version: 4.1.11
     vue-dompurify-html:
       specifier: ^5.3.0
@@ -589,7 +589,7 @@ catalogs:
       specifier: ^6.7.1
       version: 6.7.1
     vue-tsc:
-      specifier: ^3.3.9
+      specifier: ^3.3.11
       version: 3.3.11
     vue3-print-nb:
       specifier: ^0.1.4
@@ -1695,6 +1695,9 @@ importers:
       '@vben-core/shared':
         specifier: workspace:*
         version: link:../base/shared
+      '@vben-core/typings':
+        specifier: workspace:*
+        version: link:../base/typings
       '@vueuse/core':
         specifier: 'catalog:'
         version: 14.4.0(vue@3.5.42(typescript@6.0.3))
@@ -1932,6 +1935,9 @@ importers:
       '@vben-core/shared':
         specifier: workspace:*
         version: link:../@core/base/shared
+      '@vben-core/typings':
+        specifier: workspace:*
+        version: link:../@core/base/typings
 
   packages/effects/access:
     dependencies:
@@ -2182,6 +2188,9 @@ importers:
       '@vben-core/shared':
         specifier: workspace:*
         version: link:../../@core/base/shared
+      '@vben-core/typings':
+        specifier: workspace:*
+        version: link:../../@core/base/typings
       '@vben/hooks':
         specifier: workspace:*
         version: link:../hooks
@@ -2283,6 +2292,9 @@ importers:
       '@vben-core/composables':
         specifier: workspace:*
         version: link:../@core/composables
+      '@vben-core/typings':
+        specifier: workspace:*
+        version: link:../@core/base/typings
       vue:
         specifier: ^3.5.40
         version: 3.5.42(typescript@6.0.3)

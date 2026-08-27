@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 
+import type { LanguageOption } from '@vben/constants';
+import type { SupportedLanguagesType } from '@vben/locales';
 import type { AnyFunction } from '@vben/types';
 
-import { computed, ref, useTemplateRef, watch } from 'vue';
+import { computed, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 
-import { SUPPORT_LANGUAGES } from '@vben/constants';
+import { onSupportLanguagesChange } from '@vben/constants';
 import { useHoverToggle, useRefresh } from '@vben/hooks';
 import {
   createIconifyIcon,
@@ -278,15 +280,22 @@ function handleNotificationSelect(event?: Event) {
 
 // 语言切换 - 阻止 Radix 默认关闭外层 dropdown，就地展开/收起 locale 列表
 const showLanguageList = ref(false);
+const languageList = ref<LanguageOption[]>([]);
+const unsubLang = onSupportLanguagesChange((langs) => {
+  languageList.value = [...langs];
+});
+onUnmounted(unsubLang);
 function handleLanguageToggleSelect(event?: Event) {
   event?.preventDefault();
   showLanguageList.value = !showLanguageList.value;
 }
-async function handleLocaleChange(event: Event, value: 'en-US' | 'zh-CN') {
+async function handleLocaleChange(event: Event, value: string) {
   // 阻止默认关闭，让用户能继续看到选择结果；选完手动收起
   event.preventDefault();
-  updatePreferences({ app: { locale: value } });
-  await loadLocaleMessages(value);
+  // 菜单项来自运行时语言列表（可为自定义语言），此处为运行时边界断言
+  const locale = value as SupportedLanguagesType;
+  updatePreferences({ app: { locale } });
+  await loadLocaleMessages(locale);
   showLanguageList.value = false;
   openPopover.value = false;
 }
@@ -480,7 +489,7 @@ if (preferences.shortcutKeys.enable) {
           </DropdownMenuItem>
           <template v-if="showLanguageList">
             <DropdownMenuItem
-              v-for="lang in SUPPORT_LANGUAGES"
+              v-for="lang in languageList"
               :key="lang.value"
               class="mx-1 flex cursor-pointer items-center rounded-sm py-1 pl-8 leading-8"
               @select="(e: Event) => handleLocaleChange(e, lang.value)"

@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<TreeProps>(), treePropsDefaults());
 <template>
   <VbenTree v-if="props.treeData?.length > 0" v-bind="props">
     <template v-for="(_, key) in $slots" :key="key" #[key]="slotProps">
-      <slot :name="key" v-bind="slotProps.componentProps"> </slot>
+      <slot :name="key" v-bind="slotProps"> </slot>
     </template>
   </VbenTree>
   <div

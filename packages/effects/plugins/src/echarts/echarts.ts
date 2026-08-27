@@ -13,6 +13,7 @@ import {
   DataZoomInsideComponent,
   DataZoomSliderComponent,
   GeoComponent,
+  GraphicComponent,
   GridComponent,
   LegendComponent,
   TitleComponent,
@@ -54,6 +55,7 @@ echarts.use([
   VisualMapComponent,
   MapChart,
   GeoComponent,
+  GraphicComponent,
 ]);
 
 export default echarts;

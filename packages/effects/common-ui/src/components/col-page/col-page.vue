@@ -63,7 +63,7 @@ defineExpose({
       :key="slotName"
       #[slotName]="slotProps"
     >
-      <slot :name="slotName" v-bind="slotProps.componentProps"></slot>
+      <slot :name="slotName" v-bind="slotProps"></slot>
     </template>
 
     <ResizablePanelGroup class="w-full" direction="horizontal">

@@ -304,7 +304,7 @@ onMounted(() => {
       @start="handleStart"
     >
       <template v-for="(_, key) in $slots" :key="key" #[key]="slotProps">
-        <slot :name="key" v-bind="slotProps.componentProps"></slot>
+        <slot :name="key" v-bind="slotProps"></slot>
       </template>
     </SliderCaptcha>
   </div>
