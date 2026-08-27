@@ -62,10 +62,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       accountSetId: number;
       auxiliaryType: FmsAuxiliaryTypeApi.AuxiliaryType;
-    }>();
+    };
     accountSetId.value = data.accountSetId;
     auxiliaryType.value = data.auxiliaryType;
     resetImport();
@@ -160,8 +160,12 @@ function handleExceed() {
           action="none"
           drag
         >
-          <span class="icon-[ep--upload-filled] text-[56px] text-gray-400"></span>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击选择文件</em></div>
+          <span
+            class="icon-[ep--upload-filled] text-[56px] text-gray-400"
+          ></span>
+          <div class="el-upload__text">
+            将文件拖到此处，或<em>点击选择文件</em>
+          </div>
           <template #tip>
             <div class="el-upload__tip">
               仅支持 xls、xlsx 格式，文件不能超过 2MB
@@ -175,9 +179,16 @@ function handleExceed() {
       <ElResult
         :icon="failureCount ? 'warning' : 'success'"
         :sub-title="`共 ${importResult.totalCount} 个项目，成功 ${importResult.successItemCodes.length} 个，失败 ${failureCount} 个`"
-        :title="failureCount ? '导入完成，部分数据未导入' : '辅助核算项目导入成功'"
+        :title="
+          failureCount ? '导入完成，部分数据未导入' : '辅助核算项目导入成功'
+        "
       />
-      <ElTable v-if="failureCount" :data="failureRows" border max-height="260px">
+      <ElTable
+        v-if="failureCount"
+        :data="failureRows"
+        border
+        max-height="260px"
+      >
         <ElTableColumn
           label="导入行"
           min-width="220"

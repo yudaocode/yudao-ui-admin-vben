@@ -76,7 +76,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载菜单列表
     await loadMenuTree();
-    const data = modalApi.getData<SystemRoleApi.Role>();
+    const data = modalApi.getData() as SystemRoleApi.Role;
     if (!data || !data.id) {
       return;
     }
@@ -160,7 +160,7 @@ function getNodeClass(node: Recordable<any>) {
             bordered
             :default-expanded-keys="expandedKeys"
             :get-node-class="getNodeClass"
-            v-bind="slotProps"
+            v-bind="slotProps.componentProps"
             value-field="id"
             label-field="name"
           />

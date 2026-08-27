@@ -17,10 +17,7 @@ import {
   Upload,
 } from 'antdv-next';
 
-import {
-  getVoucherImportTemplate,
-  importVoucher,
-} from '#/api/fms/voucher';
+import { getVoucherImportTemplate, importVoucher } from '#/api/fms/voucher';
 
 defineOptions({ name: 'FmsVoucherImportForm' });
 
@@ -125,7 +122,11 @@ function resetImport() {
   >
     <Steps
       :current="step"
-      :items="[{ title: '上传文件' }, { title: '导入数据' }, { title: '导入完成' }]"
+      :items="[
+        { title: '上传文件' },
+        { title: '导入数据' },
+        { title: '导入完成' },
+      ]"
       class="mb-7 px-9"
     />
 
@@ -186,7 +187,9 @@ function resetImport() {
       <Result
         :status="result?.failureVoucherCount ? 'warning' : 'success'"
         :title="
-          result?.failureVoucherCount ? '凭证导入完成，部分数据未导入' : '凭证导入成功'
+          result?.failureVoucherCount
+            ? '凭证导入完成，部分数据未导入'
+            : '凭证导入成功'
         "
       >
         <template #subTitle>
@@ -208,7 +211,11 @@ function resetImport() {
     <template #footer>
       <template v-if="step === 0">
         <Button @click="dialogVisible = false">取 消</Button>
-        <Button type="primary" :disabled="!fileList.length" @click="submitImport">
+        <Button
+          type="primary"
+          :disabled="!fileList.length"
+          @click="submitImport"
+        >
           开始导入
         </Button>
       </template>

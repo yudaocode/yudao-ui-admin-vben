@@ -99,7 +99,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function resetQueryState() {
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
-  await gridApi.formApi.resetForm();
+  await gridApi.formApi.reset();
 }
 
 /** 打开班组选择弹窗 */

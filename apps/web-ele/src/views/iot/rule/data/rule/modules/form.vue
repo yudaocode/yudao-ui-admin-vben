@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<DataRuleApi.DataRule>();
+    const data = modalApi.getData() as DataRuleApi.DataRule;
     if (!data || !data.id) {
       return;
     }

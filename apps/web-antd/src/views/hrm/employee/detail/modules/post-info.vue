@@ -35,21 +35,21 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
       </Descriptions.Item>
       <Descriptions.Item label="入职状态">
         <DictTag
-          v-if="employee.entryStatus != null"
+          v-if="employee.entryStatus !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_ENTRY_STATUS"
           :value="employee.entryStatus"
         />
       </Descriptions.Item>
       <Descriptions.Item label="员工状态">
         <DictTag
-          v-if="employee.status != null"
+          v-if="employee.status !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="employee.status"
         />
       </Descriptions.Item>
       <Descriptions.Item label="聘用形式">
         <DictTag
-          v-if="employee.type != null"
+          v-if="employee.type !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_TYPE"
           :value="employee.type"
         />
@@ -58,7 +58,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
         {{ formatHrmDateTime(employee.entryTime) }}
       </Descriptions.Item>
       <Descriptions.Item label="试用期">
-        {{ employee.probation != null ? `${employee.probation} 个月` : '-' }}
+        {{ employee.probation !== null ? `${employee.probation} 个月` : '-' }}
       </Descriptions.Item>
       <Descriptions.Item label="转正时间">
         {{ formatHrmDateTime(employee.regularTime) }}
@@ -82,7 +82,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
         {{ formatHrmDateTime(employee.companyAgeStartTime) }}
       </Descriptions.Item>
       <Descriptions.Item label="司龄">
-        {{ employee.companyAge != null ? `${employee.companyAge} 年` : '-' }}
+        {{ employee.companyAge !== null ? `${employee.companyAge} 年` : '-' }}
       </Descriptions.Item>
     </Descriptions>
   </Card>

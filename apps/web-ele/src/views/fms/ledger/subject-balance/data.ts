@@ -4,7 +4,10 @@ import type { FmsLedgerApi } from '#/api/fms/ledger';
 import { formatMoney } from '#/views/fms/utils/format';
 
 /** 科目余额表行（平铺树节点，携带父节点键供 VXE transform 树表使用） */
-export type SubjectBalanceRow = Omit<FmsLedgerApi.SubjectBalance, 'children'> & {
+export type SubjectBalanceRow = Omit<
+  FmsLedgerApi.SubjectBalance,
+  'children'
+> & {
   parentNodeKey?: string;
 };
 

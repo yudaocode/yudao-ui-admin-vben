@@ -67,10 +67,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       interview: HrmRecruitInterviewApi.RecruitInterview;
       result?: number;
-    }>();
+    };
     if (!data?.interview?.id) {
       return;
     }

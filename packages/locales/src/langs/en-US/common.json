@@ -24,5 +24,6 @@
   "submit": "Submit",
   "approve": "Approve",
   "showSearchPanel": "Show search panel",
-  "hideSearchPanel": "Hide search panel"
+  "hideSearchPanel": "Hide search panel",
+  "notShow": "Don't Show"
 }

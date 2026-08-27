@@ -5,12 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElResult,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElButton, ElResult, ElTable, ElTableColumn } from 'element-plus';
 
 import { getTrialBalance } from '#/api/fms/config/initial-balance';
 import { formatAmount } from '#/views/fms/utils/format';
@@ -47,7 +42,7 @@ const [Modal, modalApi] = useVbenModal({
       result.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ accountSetId: number }>();
+    const data = modalApi.getData() as { accountSetId: number };
     if (!data?.accountSetId) {
       return;
     }
@@ -67,7 +62,9 @@ const [Modal, modalApi] = useVbenModal({
       :icon="result?.balanced ? 'success' : 'warning'"
       :title="result?.balanced ? '期初余额试算平衡' : '期初余额试算不平衡'"
       :sub-title="
-        result?.balanced ? '借贷金额相等，可以开始记账' : '请检查期初余额和累计发生额'
+        result?.balanced
+          ? '借贷金额相等，可以开始记账'
+          : '请检查期初余额和累计发生额'
       "
     />
     <ElTable border :data="rows">

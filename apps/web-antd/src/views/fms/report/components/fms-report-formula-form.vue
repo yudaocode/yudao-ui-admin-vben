@@ -239,10 +239,11 @@ function getRuleName(value: number) {
 
 /** 计算金额列合计：运算符为减号时按负数累计 */
 function summaryAmount(field: keyof FmsReportApi.Formula) {
-  const total = formulaList.value.reduce((result, item) => {
+  let total = 0;
+  for (const item of formulaList.value) {
     const amount = Number(item[field] || 0);
-    return result + (item.operator === '-' ? -amount : amount);
-  }, 0);
+    total += item.operator === '-' ? -amount : amount;
+  }
   return formatMoney(total);
 }
 </script>

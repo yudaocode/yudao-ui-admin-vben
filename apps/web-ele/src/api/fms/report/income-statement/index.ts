@@ -30,7 +30,10 @@ export function exportIncomeStatement(params: FmsReportApi.ListReq) {
 export function updateIncomeStatementFormula(
   data: FmsReportApi.FormulaUpdateReq,
 ) {
-  return requestClient.put<boolean>('/fms/report/income-statement/update', data);
+  return requestClient.put<boolean>(
+    '/fms/report/income-statement/update',
+    data,
+  );
 }
 
 /** 检查利润表 */

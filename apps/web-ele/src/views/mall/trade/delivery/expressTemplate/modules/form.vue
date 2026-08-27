@@ -136,7 +136,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data =
-      modalApi.getData<MallDeliveryExpressTemplateApi.DeliveryExpressTemplate>();
+      modalApi.getData() as MallDeliveryExpressTemplateApi.DeliveryExpressTemplate;
     if (!data || !data.id) {
       return;
     }

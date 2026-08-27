@@ -91,10 +91,10 @@ const [Modal, modalApi] = useVbenModal({
       auxiliaryType.value = undefined;
       return;
     }
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       auxiliaryType: FmsAuxiliaryTypeApi.AuxiliaryType;
       row?: FmsAuxiliaryItemApi.AuxiliaryItem;
-    }>();
+    };
     auxiliaryType.value = data.auxiliaryType;
     formData.value = data.row;
     // 存货类别展示规格、单位；schema 之外的字段不会随表单提交，等价于源项目提交前清空

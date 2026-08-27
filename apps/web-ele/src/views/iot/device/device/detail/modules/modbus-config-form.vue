@@ -207,11 +207,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       config?: IotDeviceModbusConfigApi.ModbusConfig;
       deviceId: number;
       protocolType: string;
-    }>();
+    };
     if (!data) {
       return;
     }

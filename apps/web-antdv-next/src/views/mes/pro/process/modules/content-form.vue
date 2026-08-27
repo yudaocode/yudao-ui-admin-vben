@@ -66,11 +66,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       id?: number;
       maxSort?: number;
       processId: number;
-    }>();
+    };
     if (!data?.id) {
       // 新增时，默认序号 = maxSort + 1
       await formApi.setValues({

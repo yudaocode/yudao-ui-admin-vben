@@ -42,7 +42,7 @@ onMounted(async () => {
       <ElTableColumn label="原因" min-width="90">
         <template #default="{ row }">
           <DictTag
-            v-if="row.changeReason != null"
+            v-if="row.changeReason !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
             :value="row.changeReason"
           />
@@ -72,7 +72,7 @@ onMounted(async () => {
       <ElTableColumn label="状态" min-width="110">
         <template #default="{ row }">
           <DictTag
-            v-if="row.status != null"
+            v-if="row.status !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_RECORD_STATUS"
             :value="row.status"
           />

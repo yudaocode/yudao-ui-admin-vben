@@ -87,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
     formApi.setState({ schema: useFormSchema(formApi) });
     await formApi.setValues({ status: CommonStatusEnum.ENABLE });
     // 加载数据
-    const data = modalApi.getData<MesWmBarcodeApi.Barcode>();
+    const data = modalApi.getData() as MesWmBarcodeApi.Barcode;
     if (!data || !data.id) {
       return;
     }

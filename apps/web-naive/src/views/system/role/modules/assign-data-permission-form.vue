@@ -69,7 +69,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<SystemRoleApi.Role>();
+    const data = modalApi.getData() as SystemRoleApi.Role;
     if (!data || !data.id) {
       return;
     }
@@ -141,7 +141,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
             multiple
             bordered
             :default-expanded-keys="expandedKeys"
-            v-bind="slotProps"
+            v-bind="slotProps.componentProps"
             :check-strictly="!isCheckStrictly"
             value-field="id"
             label-field="name"

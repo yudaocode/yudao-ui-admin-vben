@@ -43,8 +43,8 @@ const auxiliaryTypeList = ref<FmsAuxiliaryTypeApi.AuxiliaryTypeOption[]>([]); //
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    const typeIds = value.filter((item): item is number =>
-      typeof item === 'number',
+    const typeIds = value.filter(
+      (item): item is number => typeof item === 'number',
     );
     emit('update:modelValue', typeIds);
     emit('change', typeIds);

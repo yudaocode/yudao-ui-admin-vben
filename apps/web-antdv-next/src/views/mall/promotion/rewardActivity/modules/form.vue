@@ -118,7 +118,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallRewardActivityApi.RewardActivity>();
+    const data = modalApi.getData() as MallRewardActivityApi.RewardActivity;
     if (!data || !data.id) {
       formData.value = createDefaultFormData();
       await formApi.setValues(formData.value);

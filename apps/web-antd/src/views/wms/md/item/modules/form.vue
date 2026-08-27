@@ -77,7 +77,7 @@ const [Modal, modalApi] = useVbenModal({
     formApi.setState({ schema: useFormSchema(formApi) });
     await resetSkuForm();
     // 加载数据
-    const data = modalApi.getData<WmsItemApi.Item>();
+    const data = modalApi.getData() as WmsItemApi.Item;
     if (!data || !data.id) {
       return;
     }

@@ -44,7 +44,7 @@ import { VxeGrid, VxeUI } from 'vxe-table';
 
 import { extendProxyOptions } from './extends';
 import { useTableForm } from './init';
-import { applyViewedRowOptions, useViewedRow } from './use-viewed-row';
+import { applyViewedRowOptions, useViewedRow } from './viewed-row';
 
 import 'vxe-table/styles/cssvar.scss';
 import 'vxe-pc-ui/styles/cssvar.scss';
@@ -131,7 +131,7 @@ const [Form, formApi] = useTableForm({
   },
   handleReset: async () => {
     const prevValues = await formApi.getValues();
-    await formApi.resetForm();
+    await formApi.reset();
     const formValues = await formApi.getValues();
     formApi.setLatestSubmissionValues(formValues);
     // 如果值发生了变化，submitOnChange会触发刷新。所以只在submitOnChange为false或者值没有发生变化时，手动刷新
@@ -339,7 +339,6 @@ async function init() {
       'query',
       formOptions.value ? ((await formApi.getValues()) ?? {}) : {},
     );
-    // props.api.reload(formApi.form?.values ?? {});
   }
 
   // form 由 vben-form代替，所以不适配formConfig，这里给出警告
@@ -420,7 +419,7 @@ onUnmounted(() => {
             </VbenHelpTooltip>
           </div>
         </slot>
-        <slot name="toolbar-actions" v-bind="slotProps"> </slot>
+        <slot name="toolbar-actions" v-bind="slotProps.componentProps"> </slot>
       </template>
 
       <!-- 继承默认的slot -->
@@ -429,10 +428,10 @@ onUnmounted(() => {
         :key="slotName"
         #[slotName]="slotProps"
       >
-        <slot :name="slotName" v-bind="slotProps"></slot>
+        <slot :name="slotName" v-bind="slotProps.componentProps"></slot>
       </template>
       <template #toolbar-tools="slotProps">
-        <slot name="toolbar-tools" v-bind="slotProps"></slot>
+        <slot name="toolbar-tools" v-bind="slotProps.componentProps"></slot>
         <VxeButton
           icon="vxe-icon-search"
           circle
@@ -471,20 +470,32 @@ onUnmounted(() => {
               >
                 <slot
                   :name="`${FORM_SLOT_PREFIX}${slotName}`"
-                  v-bind="slotProps"
+                  v-bind="slotProps.componentProps"
                 ></slot>
               </template>
               <template #reset-before="slotProps">
-                <slot name="reset-before" v-bind="slotProps"></slot>
+                <slot
+                  name="reset-before"
+                  v-bind="slotProps.componentProps"
+                ></slot>
               </template>
               <template #submit-before="slotProps">
-                <slot name="submit-before" v-bind="slotProps"></slot>
+                <slot
+                  name="submit-before"
+                  v-bind="slotProps.componentProps"
+                ></slot>
               </template>
               <template #expand-before="slotProps">
-                <slot name="expand-before" v-bind="slotProps"></slot>
+                <slot
+                  name="expand-before"
+                  v-bind="slotProps.componentProps"
+                ></slot>
               </template>
               <template #expand-after="slotProps">
-                <slot name="expand-after" v-bind="slotProps"></slot>
+                <slot
+                  name="expand-after"
+                  v-bind="slotProps.componentProps"
+                ></slot>
               </template>
             </Form>
           </slot>

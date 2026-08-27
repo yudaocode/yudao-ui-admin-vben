@@ -20,7 +20,7 @@ const [Modal, modalApi] = useVbenModal({
       headId.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ headId: number }>();
+    const data = modalApi.getData() as { headId: number };
     if (data?.headId) {
       headId.value = data.headId;
     }

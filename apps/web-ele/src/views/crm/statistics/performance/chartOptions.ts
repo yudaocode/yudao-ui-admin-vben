@@ -264,6 +264,50 @@ export function getChartOptions(activeTabName: any, res: any): any {
         },
       };
     }
+    case 'ContractSummary': {
+      return {
+        grid: getGrid(),
+        legend: getLegend(),
+        series: [
+          {
+            name: '合同金额（元）',
+            type: 'bar',
+            data: res.map((s: any) => s.contractPrice),
+          },
+          {
+            name: '回款金额（元）',
+            type: 'bar',
+            data: res.map((s: any) => s.receivablePrice),
+          },
+          {
+            name: '未回款金额（元）',
+            type: 'line',
+            data: res.map((s: any) => s.unreceivedPrice),
+          },
+        ],
+        toolbox: {
+          feature: {
+            dataZoom: {
+              xAxisIndex: false,
+            },
+            brush: {
+              type: ['lineX', 'clear'],
+            },
+            saveAsImage: { show: true, name: '合同汇总表' },
+          },
+        },
+        tooltip: getTooltip(),
+        yAxis: {
+          type: 'value',
+          name: '金额（元）',
+        },
+        xAxis: {
+          type: 'category',
+          name: '月份',
+          data: res.map((s: any) => s.time),
+        },
+      };
+    }
     case 'ReceivablePricePerformance': {
       return {
         grid: getGrid(),
@@ -384,50 +428,6 @@ export function getChartOptions(activeTabName: any, res: any): any {
         xAxis: {
           type: 'category',
           name: '日期',
-          data: res.map((s: any) => s.time),
-        },
-      };
-    }
-    case 'ContractSummary': {
-      return {
-        grid: getGrid(),
-        legend: getLegend(),
-        series: [
-          {
-            name: '合同金额（元）',
-            type: 'bar',
-            data: res.map((s: any) => s.contractPrice),
-          },
-          {
-            name: '回款金额（元）',
-            type: 'bar',
-            data: res.map((s: any) => s.receivablePrice),
-          },
-          {
-            name: '未回款金额（元）',
-            type: 'line',
-            data: res.map((s: any) => s.unreceivedPrice),
-          },
-        ],
-        toolbox: {
-          feature: {
-            dataZoom: {
-              xAxisIndex: false,
-            },
-            brush: {
-              type: ['lineX', 'clear'],
-            },
-            saveAsImage: { show: true, name: '合同汇总表' },
-          },
-        },
-        tooltip: getTooltip(),
-        yAxis: {
-          type: 'value',
-          name: '金额（元）',
-        },
-        xAxis: {
-          type: 'category',
-          name: '月份',
           data: res.map((s: any) => s.time),
         },
       };

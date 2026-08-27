@@ -225,10 +225,11 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
     if (index === 0) return '合计';
     const field = amountFields[index - 3];
     if (!field) return '';
-    const total = data.reduce((result, item) => {
+    let total = 0;
+    for (const item of data) {
       const amount = Number(item[field] || 0);
-      return result + (item.operator === '-' ? -amount : amount);
-    }, 0);
+      total += item.operator === '-' ? -amount : amount;
+    }
     return formatMoney(total);
   });
 }
@@ -310,10 +311,8 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
           label="期末数"
         >
           <template #default="{ row }">
-{{
-            formatMoney(row.closingAmount)
-          }}
-</template>
+            {{ formatMoney(row.closingAmount) }}
+          </template>
         </ElTableColumn>
         <ElTableColumn
           v-if="formulaType === 'balance'"
@@ -321,10 +320,8 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
           label="年初数"
         >
           <template #default="{ row }">
-{{
-            formatMoney(row.openingAmount)
-          }}
-</template>
+            {{ formatMoney(row.openingAmount) }}
+          </template>
         </ElTableColumn>
         <ElTableColumn
           v-if="formulaType !== 'balance'"
@@ -332,10 +329,8 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
           label="本期金额"
         >
           <template #default="{ row }">
-{{
-            formatMoney(row.currentAmount)
-          }}
-</template>
+            {{ formatMoney(row.currentAmount) }}
+          </template>
         </ElTableColumn>
         <ElTableColumn
           v-if="formulaType !== 'balance'"
@@ -343,10 +338,8 @@ function getSummaries({ columns, data }: SummaryMethodProps) {
           label="本年累计金额"
         >
           <template #default="{ row }">
-{{
-            formatMoney(row.yearAmount)
-          }}
-</template>
+            {{ formatMoney(row.yearAmount) }}
+          </template>
         </ElTableColumn>
         <ElTableColumn align="center" label="操作" width="80">
           <template #default="{ $index }">

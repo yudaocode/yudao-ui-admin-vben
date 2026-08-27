@@ -125,7 +125,7 @@ async function getList() {
 /** 打开成员表单 */
 async function openForm() {
   formOpen.value = true;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({ teamId: props.teamId });
 }
 

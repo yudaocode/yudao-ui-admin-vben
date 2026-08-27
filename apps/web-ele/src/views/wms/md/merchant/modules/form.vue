@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     formApi.setState({ schema: useFormSchema(formApi) });
-    const data = modalApi.getData<WmsMerchantApi.Merchant>();
+    const data = modalApi.getData() as WmsMerchantApi.Merchant;
     if (!data || !data.id) {
       return;
     }

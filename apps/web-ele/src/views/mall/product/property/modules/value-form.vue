@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallPropertyApi.PropertyValue>();
+    const data = modalApi.getData() as MallPropertyApi.PropertyValue;
     if (!data || !data.id) {
       // 设置 propertyId
       await formApi.setValues(data);

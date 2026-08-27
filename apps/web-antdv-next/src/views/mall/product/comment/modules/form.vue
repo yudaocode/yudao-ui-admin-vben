@@ -105,7 +105,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallCommentApi.Comment>();
+    const data = modalApi.getData() as MallCommentApi.Comment;
     if (!data || !data.id) {
       return;
     }

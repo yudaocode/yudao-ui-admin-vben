@@ -63,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MesMdItemTypeApi.ItemType>();
+    const data = modalApi.getData() as MesMdItemTypeApi.ItemType;
     formApi.setState({
       schema: useFormSchema(data?.id ? 'update' : 'create', formApi),
     });

@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ cardId: number; id?: number }>();
+    const data = modalApi.getData() as { cardId: number; id?: number };
     cardId.value = data.cardId;
     if (!data.id) {
       return;

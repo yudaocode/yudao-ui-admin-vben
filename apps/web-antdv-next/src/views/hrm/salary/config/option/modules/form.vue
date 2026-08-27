@@ -59,7 +59,8 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const parentCode = modalApi.getData<{ parentCode: number }>()?.parentCode;
+    const parentCode = (modalApi.getData() as { parentCode: number })
+      ?.parentCode;
     optionList.value = await getSalaryOptionList();
     formData.value = { parentCode, name: '', remark: '' };
   },

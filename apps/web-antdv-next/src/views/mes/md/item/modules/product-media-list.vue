@@ -167,7 +167,7 @@ async function getList() {
 async function openForm(row?: MediaItem) {
   formOpen.value = true;
   formData.value = row;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({
     itemId: props.itemId,
     sort: 0,

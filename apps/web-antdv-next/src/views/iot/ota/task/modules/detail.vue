@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ id: number }>();
+    const data = modalApi.getData() as { id: number };
     if (!data?.id) {
       return;
     }

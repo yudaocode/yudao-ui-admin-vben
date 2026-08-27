@@ -31,7 +31,7 @@ const [Modal, modalApi] = useVbenModal({
       detailData.value = undefined;
       return;
     }
-    detailData.value = modalApi.getData<MesWmBatchApi.Batch>();
+    detailData.value = modalApi.getData() as MesWmBatchApi.Batch;
     subTabsName.value = 'forward';
   },
 });

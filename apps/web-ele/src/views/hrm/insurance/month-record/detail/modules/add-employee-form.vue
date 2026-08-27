@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const recordId = modalApi.getData<{ recordId?: number }>()?.recordId;
+    const recordId = (modalApi.getData() as { recordId?: number })?.recordId;
     if (!recordId) {
       return;
     }
@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
           },
         },
       ]);
-      await formApi.resetForm();
+      await formApi.reset();
       modalApi.setState({ title: '添加参保人员' });
     } finally {
       modalApi.unlock();

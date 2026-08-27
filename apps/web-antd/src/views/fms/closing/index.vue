@@ -5,7 +5,7 @@ import type { FmsClosingPeriodApi } from '#/api/fms/closing/period';
 
 import { computed, reactive, ref, watch } from 'vue';
 
-import { DocAlert, confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Alert, Button, Card, DatePicker, message, Spin } from 'ant-design-vue';
@@ -59,7 +59,10 @@ const overview = reactive<FmsClosingPeriodApi.ClosingOverview>({
   canClose: false,
 }); // 结账概况
 const isBeforeCurrentPeriod = computed(() =>
-  dayjs(`${month.value}-01`).isBefore(dayjs(`${currentMonth.value}-01`), 'month'),
+  dayjs(`${month.value}-01`).isBefore(
+    dayjs(`${currentMonth.value}-01`),
+    'month',
+  ),
 ); // 是否早于当前会计期间
 const canClose = computed(() => overview.canClose); // 是否满足后端全部结账条件
 const balanceSheetCheckLabel = computed(() => {
@@ -213,7 +216,9 @@ function disabledMonth(date: Dayjs) {
     <!-- 结账检查 -->
     <Card class="mb-4">
       <Alert
-        :message="overview.closed ? `${monthLabel} 已结账` : `${monthLabel} 尚未结账`"
+        :message="
+          overview.closed ? `${monthLabel} 已结账` : `${monthLabel} 尚未结账`
+        "
         :type="overview.closed ? 'success' : 'info'"
         class="!mb-4"
         show-icon
@@ -222,10 +227,13 @@ function disabledMonth(date: Dayjs) {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatusCard
             :tag-label="
-              overview.voucherReviewRequired ? '结账前必须审核' : '当前未强制审核'
+              overview.voucherReviewRequired
+                ? '结账前必须审核'
+                : '当前未强制审核'
             "
             :tag-type="
-              !overview.voucherReviewRequired || overview.pendingVoucherCount === 0
+              !overview.voucherReviewRequired ||
+              overview.pendingVoucherCount === 0
                 ? 'success'
                 : 'danger'
             "
@@ -233,13 +241,17 @@ function disabledMonth(date: Dayjs) {
             title="凭证审核"
           />
           <StatusCard
-            :tag-label="overview.initialBalanceBalanced ? '检查通过' : '需要处理'"
+            :tag-label="
+              overview.initialBalanceBalanced ? '检查通过' : '需要处理'
+            "
             :tag-type="overview.initialBalanceBalanced ? 'success' : 'danger'"
             :value="overview.initialBalanceBalanced ? '试算平衡' : '试算不平衡'"
             title="初始余额"
           />
           <StatusCard
-            :tag-label="overview.voucherNumberContinuous ? '检查通过' : '需要整理'"
+            :tag-label="
+              overview.voucherNumberContinuous ? '检查通过' : '需要整理'
+            "
             :tag-type="overview.voucherNumberContinuous ? 'success' : 'danger'"
             :value="overview.voucherNumberContinuous ? '编号连续' : '存在断号'"
             title="凭证编号"
@@ -253,7 +265,8 @@ function disabledMonth(date: Dayjs) {
                   : '待结转'
             "
             :tag-type="
-              overview.profitLossVoucherGenerated && overview.profitLossBalance === 0
+              overview.profitLossVoucherGenerated &&
+              overview.profitLossBalance === 0
                 ? 'success'
                 : 'warning'
             "

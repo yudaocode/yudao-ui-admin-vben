@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    formData.value = modalApi.getData<CategoryFormData>();
+    formData.value = modalApi.getData() as CategoryFormData;
     await formApi.setValues({
       id: formData.value?.row?.id,
       name: formData.value?.row?.name ?? '',

@@ -88,7 +88,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallCouponTemplateApi.CouponTemplate>();
+    const data = modalApi.getData() as MallCouponTemplateApi.CouponTemplate;
     if (!data || !data.id) {
       return;
     }

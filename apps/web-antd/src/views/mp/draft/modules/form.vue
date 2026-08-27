@@ -59,12 +59,12 @@ const [Modal, modalApi] = useVbenModal({
       newsList.value = [];
       return;
     }
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       accountId: number;
       isCreating: boolean;
       mediaId?: string;
       newsList?: MpDraftApi.NewsItem[];
-    }>();
+    };
     if (!data) {
       return;
     }

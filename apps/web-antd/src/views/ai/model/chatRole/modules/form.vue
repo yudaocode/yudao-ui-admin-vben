@@ -63,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiModelChatRoleApi.ChatRole>();
+    const data = modalApi.getData() as AiModelChatRoleApi.ChatRole;
     if (!data || !data.id) {
       await formApi.setValues(data);
       return;

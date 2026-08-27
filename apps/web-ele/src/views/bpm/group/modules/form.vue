@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmUserGroupApi.UserGroup>();
+    const data = modalApi.getData() as BpmUserGroupApi.UserGroup;
     if (!data || !data.id) {
       return;
     }

@@ -43,7 +43,7 @@ function open(
   row?: HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo,
 ) {
   employeeId.value = empId;
-  formApi.resetForm();
+  formApi.reset();
   formApi.setValues({ ...row, employeeId: empId });
   modalApi.setState({ title: '编辑社保资料' });
   modalApi.open();

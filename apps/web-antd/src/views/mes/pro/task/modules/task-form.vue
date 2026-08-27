@@ -72,14 +72,14 @@ const [Modal, modalApi] = useVbenModal({
     }
     formApi.setState({ schema: useTaskFormSchema(formApi) });
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       colorCode?: string;
       id?: number;
       itemId?: number;
       processId?: number;
       routeId?: number;
       workOrderId?: number;
-    }>();
+    };
     if (data?.id) {
       modalApi.lock();
       try {

@@ -54,11 +54,11 @@ export function fromTimestampPickerValue(value: unknown): number | undefined {
   if (value === null || value === undefined || value === '') {
     return undefined;
   }
-  const timestamp = dayjs.isDayjs(value)
-    ? value.valueOf()
-    : typeof value === 'number' || typeof value === 'string'
+  const primitiveTimestamp =
+    typeof value === 'number' || typeof value === 'string'
       ? Number(value)
       : Number.NaN;
+  const timestamp = dayjs.isDayjs(value) ? value.valueOf() : primitiveTimestamp;
   return Number.isFinite(timestamp) ? timestamp : undefined;
 }
 

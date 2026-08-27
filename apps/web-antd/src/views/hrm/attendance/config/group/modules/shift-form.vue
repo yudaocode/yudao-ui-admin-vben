@@ -127,10 +127,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const payload = modalApi.getData<{
+    const payload = modalApi.getData() as {
       index?: number;
       shift?: HrmAttendanceGroupApi.Shift;
-    }>();
+    };
     editIndex.value = payload?.index;
     formData.value = payload?.shift
       ? { ...payload.shift, weeks: [...payload.shift.weeks] }

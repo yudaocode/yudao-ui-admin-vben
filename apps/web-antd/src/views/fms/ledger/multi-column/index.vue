@@ -18,7 +18,10 @@ import { Button, Card } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSubjectSimpleList } from '#/api/fms/config/subject';
-import { exportLedgerMultiColumn, getLedgerMultiColumn } from '#/api/fms/ledger';
+import {
+  exportLedgerMultiColumn,
+  getLedgerMultiColumn,
+} from '#/api/fms/ledger';
 import FmsLedgerSearchBar from '#/views/fms/ledger/components/ledger-search-bar.vue';
 import { useFmsStore } from '#/views/fms/store/fms';
 import { buildPeriodFilename } from '#/views/fms/utils/format';
@@ -36,7 +39,9 @@ const router = useRouter();
 const fmsStore = useFmsStore(); // FMS 状态
 const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套编号
 const subjects = ref<FmsSubjectApi.Subject[]>([]); // 会计科目树
-const multiColumnSubjects = computed(() => filterParentSubjects(subjects.value)); // 含下级科目的科目树
+const multiColumnSubjects = computed(() =>
+  filterParentSubjects(subjects.value),
+); // 含下级科目的科目树
 const result = reactive<FmsLedgerApi.MultiColumn>({ columns: [], rows: [] }); // 多栏账查询结果
 const currentMonth = formatDate(new Date(), 'YYYY-MM'); // 当前月份
 const queryParams = reactive<FmsLedgerApi.ListReq>({

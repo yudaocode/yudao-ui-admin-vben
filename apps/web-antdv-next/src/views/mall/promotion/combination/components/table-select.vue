@@ -228,10 +228,9 @@ const [Modal, modalApi] = useVbenModal({
     // 1. 先查询数据
     await gridApi.query();
     // 2. 设置已选中行
-    const data = modalApi.getData<
+    const data = modalApi.getData() as
       | MallCombinationActivityApi.CombinationActivity
-      | MallCombinationActivityApi.CombinationActivity[]
-    >();
+      | MallCombinationActivityApi.CombinationActivity[];
     if (props.multiple && Array.isArray(data) && data.length > 0) {
       setTimeout(() => {
         const tableData = gridApi.grid.getTableData()

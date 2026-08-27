@@ -335,9 +335,7 @@ async function initComponentAdapter() {
     }),
     Input: withDefaultPlaceholder(ElInput, 'input'),
     InputTag: withDefaultPlaceholder(ElInputTag, 'input'),
-    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input', {
-      style: { width: '100%' },
-    }),
+    InputNumber: withDefaultPlaceholder(ElInputNumber, 'input'),
     RadioGroup: (props, { attrs, slots }) => {
       let defaultSlot;
       if (Reflect.has(slots, 'default')) {

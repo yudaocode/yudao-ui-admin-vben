@@ -116,7 +116,7 @@ defineExpose({ getList });
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'education'">
           <DictTag
-            v-if="record.education != null"
+            v-if="record.education !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
             :value="record.education"
           />

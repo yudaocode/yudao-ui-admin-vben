@@ -106,17 +106,6 @@ async function handleTabChange(key: any) {
       data = await getContractPricePerformance(queryParams);
       break;
     }
-    case 'ReceivablePricePerformance': {
-      tableData = [
-        { title: '当月回款金额统计（元）' },
-        { title: '上月回款金额统计（元）' },
-        { title: '去年当月回款金额统计（元）' },
-        { title: '环比增长率（%）' },
-        { title: '同比增长率（%）' },
-      ];
-      data = await getReceivablePricePerformance(queryParams);
-      break;
-    }
     case 'ContractSummary': {
       data = await getContractSummary(queryParams);
       columnsData.push(
@@ -145,6 +134,17 @@ async function handleTabChange(key: any) {
       await gridApi.grid.reloadColumn(columnsData);
       await gridApi.grid.reloadData(data);
       return;
+    }
+    case 'ReceivablePricePerformance': {
+      tableData = [
+        { title: '当月回款金额统计（元）' },
+        { title: '上月回款金额统计（元）' },
+        { title: '去年当月回款金额统计（元）' },
+        { title: '环比增长率（%）' },
+        { title: '同比增长率（%）' },
+      ];
+      data = await getReceivablePricePerformance(queryParams);
+      break;
     }
     default: {
       break;

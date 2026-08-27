@@ -51,7 +51,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ firmwareId: number; productId: number }>();
+    const data = modalApi.getData() as {
+      firmwareId: number;
+      productId: number;
+    };
     if (!data?.firmwareId || !data?.productId) {
       return;
     }

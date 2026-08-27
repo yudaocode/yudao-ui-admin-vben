@@ -82,7 +82,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<FmsAccountSetApi.AccountSet>();
+    const data = modalApi.getData() as FmsAccountSetApi.AccountSet;
     if (!data?.id) {
       await formApi.setValues({
         companyCode: '',

@@ -57,6 +57,7 @@ async function handleExport() {
     } as PageParam);
     downloadFileFromBlobPart({ fileName: '请假记录.xls', source: data });
   } catch {
+    //
   } finally {
     exportLoading.value = false;
   }

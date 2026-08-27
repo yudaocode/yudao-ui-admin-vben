@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     let data =
-      modalApi.getData<CrmCustomerLimitConfigApi.CustomerLimitConfig>();
+      modalApi.getData() as CrmCustomerLimitConfigApi.CustomerLimitConfig;
     if (!data) {
       return;
     }

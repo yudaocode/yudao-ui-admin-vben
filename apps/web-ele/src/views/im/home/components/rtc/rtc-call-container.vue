@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Room } from 'livekit-client';
+
 import type { ShallowRef } from 'vue';
 
 import type { CallParticipantVM } from './rtc-call-participant-tile.vue';
@@ -7,7 +9,7 @@ import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 
 import { useIntervalFn } from '@vueuse/core';
 import { ElMessage } from 'element-plus';
-import { type Room, Track } from 'livekit-client';
+import { Track } from 'livekit-client';
 
 import {
   acceptCall,
@@ -81,7 +83,9 @@ function captureRtcOwner(
 
 /** 判断捕获的 RTC owner 是否仍拥有当前通话 */
 function isRtcOwnerActive(owner: RtcActionOwner): boolean {
-  return getCurrentUserId() === owner.userId && getCurrentRtcRoom() === owner.room;
+  return (
+    getCurrentUserId() === owner.userId && getCurrentRtcRoom() === owner.room
+  );
 }
 
 /** 判断两个异步动作是否属于同一次通话 */
@@ -138,7 +142,9 @@ function runRtcAction(
 }
 
 /** 仅当前通话显示动作加载状态 */
-function isCurrentRtcActionPending(action: RtcActionTicket | undefined): boolean {
+function isCurrentRtcActionPending(
+  action: RtcActionTicket | undefined,
+): boolean {
   return Boolean(action && isRtcOwnerActive(action.owner));
 }
 
@@ -160,11 +166,9 @@ async function disconnectRtcOwner(owner: RtcActionOwner): Promise<void> {
       await lk.disconnectCaptured(owner.liveKitRoom);
     } else if (isRtcOwnerActive(owner)) {
       const currentRoom = lk.room.value;
-      if (currentRoom) {
-        await lk.disconnectCaptured(currentRoom);
-      } else {
-        await lk.disconnect();
-      }
+      await (currentRoom
+        ? lk.disconnectCaptured(currentRoom)
+        : lk.disconnect());
     }
   } finally {
     if (liveKitRoom === owner.room && !lk.room.value) {
@@ -335,11 +339,7 @@ const participants = computed<CallParticipantVM[]>(() => {
 // ==================== LiveKit 连接 ====================
 
 /** 连入 LiveKit 房间并注册离开回调；INVITING 主叫预连和被叫 accept 后连入共用 */
-async function connectLiveKit(
-  room: string,
-  livekitUrl: string,
-  token: string,
-) {
+async function connectLiveKit(room: string, livekitUrl: string, token: string) {
   const owner = captureRtcOwner(room);
   if (
     !owner ||
@@ -417,11 +417,9 @@ watch(
       const disconnectedRoomId = liveKitRoom;
       clearRtcListeners();
       try {
-        if (disconnectedRoom) {
-          await lk.disconnectCaptured(disconnectedRoom);
-        } else {
-          await lk.disconnect();
-        }
+        await (disconnectedRoom
+          ? lk.disconnectCaptured(disconnectedRoom)
+          : lk.disconnect());
       } catch (error) {
         console.warn('[Call] LiveKit 空闲清理失败', error);
       } finally {
@@ -617,9 +615,7 @@ onBeforeUnmount(() => {
   if (capturedRoom) {
     void lk
       .disconnectCaptured(capturedRoom)
-      .catch((error) =>
-        console.warn('[Call] 卸载时 LiveKit 断开失败', error),
-      );
+      .catch((error) => console.warn('[Call] 卸载时 LiveKit 断开失败', error));
   } else {
     void lk
       .disconnect()

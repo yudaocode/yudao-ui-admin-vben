@@ -43,7 +43,10 @@ const subjectKeyword = ref(''); // 科目搜索关键字
 const selectedSubjectKeys = ref<number[]>([]); // 选中的科目
 const expandedSubjectKeys = ref<number[]>([]); // 展开的科目
 const displaySubjectTree = computed(() =>
-  filterSubjectTree(buildSubjectTreeNodes(subjects.value), subjectKeyword.value),
+  filterSubjectTree(
+    buildSubjectTreeNodes(subjects.value),
+    subjectKeyword.value,
+  ),
 ); // 过滤后的科目树
 const currentMonth = formatDate(new Date(), 'YYYY-MM'); // 当前月份
 const queryParams = reactive<FmsLedgerApi.ListReq>({

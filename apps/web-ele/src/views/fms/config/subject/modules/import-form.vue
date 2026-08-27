@@ -103,8 +103,11 @@ const [Modal, modalApi] = useVbenModal({
   showConfirmButton: false,
   onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    accountSetId.value =
-      modalApi.getData<{ accountSetId: number }>().accountSetId;
+    accountSetId.value = (
+      modalApi.getData() as {
+        accountSetId: number;
+      }
+    ).accountSetId;
     resetForm();
   },
 });
@@ -124,7 +127,10 @@ const [Modal, modalApi] = useVbenModal({
         accept=".xlsx, .xls"
         drag
       >
-        <IconifyIcon class="text-[56px] text-gray-400" icon="ep:upload-filled" />
+        <IconifyIcon
+          class="text-[56px] text-gray-400"
+          icon="ep:upload-filled"
+        />
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </ElUpload>
       <div class="mt-2 text-center text-xs">

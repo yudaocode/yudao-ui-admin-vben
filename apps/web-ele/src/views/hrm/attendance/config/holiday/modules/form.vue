@@ -49,7 +49,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
+    const data = modalApi.getData() as {
+      id?: number;
+      type: 'create' | 'update';
+    };
     formType.value = data?.type || 'create';
     formData.value = data?.id
       ? await getAttendanceHoliday(data.id)

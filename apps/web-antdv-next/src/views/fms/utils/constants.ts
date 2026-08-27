@@ -56,7 +56,10 @@ export const FMS_LEDGER_BALANCE_MODE = {
 /** 账簿余额方向模式选项 */
 export const FMS_LEDGER_BALANCE_MODE_OPTIONS = [
   { label: '与科目方向相同', value: FMS_LEDGER_BALANCE_MODE.SAME_AS_SUBJECT },
-  { label: '与科目方向相反', value: FMS_LEDGER_BALANCE_MODE.OPPOSITE_TO_SUBJECT },
+  {
+    label: '与科目方向相反',
+    value: FMS_LEDGER_BALANCE_MODE.OPPOSITE_TO_SUBJECT,
+  },
 ] as const;
 
 /** 科目余额表节点类型 */

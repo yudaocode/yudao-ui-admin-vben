@@ -7,7 +7,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 

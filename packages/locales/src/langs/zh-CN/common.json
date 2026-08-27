@@ -24,5 +24,6 @@
   "submit": "提交",
   "approve": "审批",
   "showSearchPanel": "显示搜索面板",
-  "hideSearchPanel": "隐藏搜索面板"
+  "hideSearchPanel": "隐藏搜索面板",
+  "notShow": "不显示"
 }

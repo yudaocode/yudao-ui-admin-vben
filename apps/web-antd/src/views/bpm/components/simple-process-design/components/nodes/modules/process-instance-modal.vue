@@ -28,7 +28,7 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     try {
-      const data = modalApi.getData<any[]>();
+      const data = modalApi.getData() as any[];
       // 填充列表数据
       gridApi.setGridOptions({ data });
     } finally {

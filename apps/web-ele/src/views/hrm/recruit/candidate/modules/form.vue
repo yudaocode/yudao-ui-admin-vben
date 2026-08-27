@@ -64,7 +64,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<HrmRecruitCandidateApi.RecruitCandidate>();
+    const data = modalApi.getData() as HrmRecruitCandidateApi.RecruitCandidate;
     if (!data?.id) {
       await formApi.setValues({ resumeUrls: [], sex: 1 });
       return;

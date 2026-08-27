@@ -79,7 +79,7 @@ function openModal(id: number) {
   open.value = true;
   selectedRows.value = [];
   // 查询列表
-  gridApi.formApi?.resetForm();
+  gridApi.formApi?.reset();
   gridApi.formApi?.setValues({ supplierId: id });
   gridApi.query();
 }

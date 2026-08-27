@@ -79,10 +79,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const payload = modalApi.getData<{
+    const payload = modalApi.getData() as {
       index?: number;
       point?: HrmAttendanceGroupApi.Point;
-    }>();
+    };
     editIndex.value = payload?.index;
     formData.value = payload?.point ? { ...payload.point } : createDefault();
   },

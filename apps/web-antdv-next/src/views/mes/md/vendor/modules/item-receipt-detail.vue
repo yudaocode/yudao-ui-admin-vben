@@ -95,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
       receipt.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ id?: number }>();
+    const data = modalApi.getData() as { id?: number };
     if (!data?.id) {
       return;
     }

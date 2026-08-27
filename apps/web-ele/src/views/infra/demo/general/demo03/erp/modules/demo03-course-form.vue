@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 加载数据
-    let data = modalApi.getData<Demo03StudentApi.Demo03Course>();
+    let data = modalApi.getData() as Demo03StudentApi.Demo03Course;
     if (!data) {
       return;
     }

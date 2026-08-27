@@ -25,7 +25,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<PayRefundApi.Refund>();
+    const data = modalApi.getData() as PayRefundApi.Refund;
     if (!data || !data.id) {
       return;
     }

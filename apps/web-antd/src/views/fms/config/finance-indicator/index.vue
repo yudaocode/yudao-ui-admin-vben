@@ -4,7 +4,7 @@ import type { FmsFinanceIndicatorApi } from '#/api/fms/config/finance-indicator'
 
 import { computed, watch } from 'vue';
 
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -43,9 +43,7 @@ function handleCreate() {
 /** 编辑财务指标 */
 function handleEdit(row: FmsFinanceIndicatorApi.FinanceIndicator) {
   if (!accountSetId.value) return;
-  formModalApi
-    .setData({ accountSetId: accountSetId.value, id: row.id })
-    .open();
+  formModalApi.setData({ accountSetId: accountSetId.value, id: row.id }).open();
 }
 
 /** 删除财务指标 */

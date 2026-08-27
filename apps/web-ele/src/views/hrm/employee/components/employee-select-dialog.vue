@@ -188,11 +188,12 @@ async function handleOpen(options: {
 }
 
 function handleConfirm() {
+  const singleSelection = selectedRadioRow.value
+    ? [selectedRadioRow.value]
+    : [];
   const rows = multiple.value
     ? [...selectedRowMap.value.values()]
-    : selectedRadioRow.value
-      ? [selectedRadioRow.value]
-      : [];
+    : singleSelection;
   if (rows.length === 0) {
     ElMessage.warning('请选择员工');
     return;

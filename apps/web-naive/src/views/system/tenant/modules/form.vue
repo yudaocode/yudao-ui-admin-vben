@@ -57,7 +57,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemTenantApi.Tenant>();
+    const data = modalApi.getData() as SystemTenantApi.Tenant;
     if (!data || !data.id) {
       return;
     }

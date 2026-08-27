@@ -7,17 +7,10 @@ import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  Button,
-  Dropdown,
-  Menu,
-  MenuItem,
-  message,
-  Tag,
-} from 'ant-design-vue';
+import { Button, Dropdown, Menu, MenuItem, message, Tag } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -30,9 +23,7 @@ import {
   updateVoucherReviewStatus,
 } from '#/api/fms/voucher';
 import { useFmsStore } from '#/views/fms/store/fms';
-import {
-  FMS_VOUCHER_STATUS,
-} from '#/views/fms/utils/constants';
+import { FMS_VOUCHER_STATUS } from '#/views/fms/utils/constants';
 import { formatMoney } from '#/views/fms/utils/format';
 
 import { buildVoucherListPrintHtml } from '../components/print';
@@ -57,8 +48,7 @@ const lastQuery = ref<FmsVoucherApi.PageReq>(); // 最近一次查询参数
 const lastMonthRange = ref<string[]>([]); // 最近一次查询的会计期间范围
 const exportLoading = ref(false); // 导出的加载中
 
-const attachmentFormRef =
-  ref<InstanceType<typeof FmsVoucherAttachmentForm>>(); // 凭证附件表单 Ref
+const attachmentFormRef = ref<InstanceType<typeof FmsVoucherAttachmentForm>>(); // 凭证附件表单 Ref
 const importFormRef = ref<InstanceType<typeof FmsVoucherImportForm>>(); // 凭证导入表单 Ref
 const printFormRef = ref<InstanceType<typeof FmsVoucherPrintForm>>(); // 凭证打印表单 Ref
 
@@ -239,7 +229,7 @@ async function handleMoreCommand(
       return;
     }
   }
-  if (!voucherWords.value.length) {
+  if (voucherWords.value.length === 0) {
     message.warning('请先设置凭证字');
     return;
   }
@@ -261,10 +251,10 @@ async function handleMoreCommand(
 async function handlePrintVoucher(row?: FmsVoucherApi.Voucher) {
   if (!accountSetId.value) return;
   let vouchers = row ? [row] : selectedRows.value;
-  if (!vouchers.length) {
+  if (vouchers.length === 0) {
     vouchers = await getAllVoucherList();
   }
-  if (!vouchers.length) {
+  if (vouchers.length === 0) {
     message.warning('暂无可打印的凭证');
     return;
   }
@@ -278,7 +268,7 @@ async function handlePrintVoucher(row?: FmsVoucherApi.Voucher) {
 /** 打印凭证列表 */
 async function handlePrintList() {
   const vouchers = await getAllVoucherList();
-  if (!vouchers.length) {
+  if (vouchers.length === 0) {
     message.warning('暂无可打印的凭证');
     return;
   }
@@ -291,7 +281,9 @@ async function handlePrintList() {
   printFormRef.value?.previewHtml(
     buildVoucherListPrintHtml(
       fmsStore.getAccountSet?.companyName || '',
-      startPeriod === endPeriod ? startPeriod : `${startPeriod} 至 ${endPeriod}`,
+      startPeriod === endPeriod
+        ? startPeriod
+        : `${startPeriod} 至 ${endPeriod}`,
       vouchers,
     ),
   );
@@ -303,12 +295,14 @@ async function handleExport() {
   try {
     await confirm('是否确认导出凭证列表的数据项？');
     exportLoading.value = true;
-    const ids = selectedRows.value.length
-      ? selectedRows.value.map((row) => row.id)
-      : undefined;
+    const ids =
+      selectedRows.value.length > 0
+        ? selectedRows.value.map((row) => row.id)
+        : undefined;
     const data = await exportVoucher({ ...lastQuery.value, ids });
     downloadFileFromBlobPart({ fileName: '凭证列表.xls', source: data });
   } catch {
+    //
   } finally {
     exportLoading.value = false;
   }
@@ -364,13 +358,13 @@ async function handleReview(row: FmsVoucherApi.Voucher, status: number) {
 
 /** 批量审核或反审核凭证 */
 async function handleBatchReview(status: number) {
-  if (!accountSetId.value || !selectedRows.value.length) return;
+  if (!accountSetId.value || selectedRows.value.length === 0) return;
   const rows = selectedRows.value.filter((row) =>
     status === FMS_VOUCHER_STATUS.APPROVED
       ? row.status === FMS_VOUCHER_STATUS.PENDING_REVIEW
       : row.status === FMS_VOUCHER_STATUS.APPROVED,
   );
-  if (!rows.length) {
+  if (rows.length === 0) {
     message.warning('所选凭证不符合当前审核操作');
     return;
   }
@@ -596,7 +590,11 @@ onMounted(() => {
         <div
           class="[&>div]:border-border [&>div]:min-h-[28px] [&>div]:overflow-hidden [&>div]:text-ellipsis [&>div]:whitespace-nowrap [&>div]:border-0 [&>div]:border-b [&>div]:border-dashed [&>div]:leading-[28px] [&>div:last-child]:border-b-0"
         >
-          <div v-for="entry in row.entries" :key="entry.id" :title="entry.digest">
+          <div
+            v-for="entry in row.entries"
+            :key="entry.id"
+            :title="entry.digest"
+          >
             {{ entry.digest }}
           </div>
         </div>
@@ -611,7 +609,10 @@ onMounted(() => {
             :title="entry.subjectName"
           >
             {{ entry.subjectCode }} {{ entry.subjectName }}
-            <span v-if="entry.auxiliaries?.length" class="text-muted-foreground">
+            <span
+              v-if="entry.auxiliaries?.length"
+              class="text-muted-foreground"
+            >
               / {{ entry.auxiliaries.map((item: any) => item.name).join('、') }}
             </span>
           </div>
@@ -622,7 +623,9 @@ onMounted(() => {
           class="[font-family:Arial,sans-serif] [font-variant-numeric:tabular-nums] [&>div]:border-border [&>div]:min-h-[28px] [&>div]:overflow-hidden [&>div]:text-ellipsis [&>div]:whitespace-nowrap [&>div]:border-0 [&>div]:border-b [&>div]:border-dashed [&>div]:leading-[28px] [&>div:last-child]:border-b-0"
         >
           <div v-for="entry in row.entries" :key="entry.id">
-            {{ Number(entry.debitAmount) ? formatMoney(entry.debitAmount) : '' }}
+            {{
+              Number(entry.debitAmount) ? formatMoney(entry.debitAmount) : ''
+            }}
           </div>
         </div>
       </template>
@@ -631,7 +634,9 @@ onMounted(() => {
           class="[font-family:Arial,sans-serif] [font-variant-numeric:tabular-nums] [&>div]:border-border [&>div]:min-h-[28px] [&>div]:overflow-hidden [&>div]:text-ellipsis [&>div]:whitespace-nowrap [&>div]:border-0 [&>div]:border-b [&>div]:border-dashed [&>div]:leading-[28px] [&>div:last-child]:border-b-0"
         >
           <div v-for="entry in row.entries" :key="entry.id">
-            {{ Number(entry.creditAmount) ? formatMoney(entry.creditAmount) : '' }}
+            {{
+              Number(entry.creditAmount) ? formatMoney(entry.creditAmount) : ''
+            }}
           </div>
         </div>
       </template>
@@ -665,7 +670,11 @@ onMounted(() => {
                 fmsStore.isAccountSetWritable &&
                 !row.closingGenerated &&
                 row.status === FMS_VOUCHER_STATUS.PENDING_REVIEW,
-              onClick: handleReview.bind(null, row, FMS_VOUCHER_STATUS.APPROVED),
+              onClick: handleReview.bind(
+                null,
+                row,
+                FMS_VOUCHER_STATUS.APPROVED,
+              ),
             },
             {
               label: '反审核',
@@ -708,7 +717,10 @@ onMounted(() => {
     <TidyFormModal @success="gridApi.query()" />
     <FmsVoucherImportForm ref="importFormRef" @success="gridApi.query()" />
     <FmsVoucherPrintForm ref="printFormRef" />
-    <FmsVoucherAttachmentForm ref="attachmentFormRef" @success="gridApi.query()" />
+    <FmsVoucherAttachmentForm
+      ref="attachmentFormRef"
+      @success="gridApi.query()"
+    />
   </Page>
 </template>
 

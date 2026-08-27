@@ -25,7 +25,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<PayTransferApi.Transfer>();
+    const data = modalApi.getData() as PayTransferApi.Transfer;
     if (!data || !data.id) {
       return;
     }

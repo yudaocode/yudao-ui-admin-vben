@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemDictDataApi.DictData>();
+    const data = modalApi.getData() as SystemDictDataApi.DictData;
     if (!data || !data.id) {
       // 设置 dictType
       await formApi.setValues(data);

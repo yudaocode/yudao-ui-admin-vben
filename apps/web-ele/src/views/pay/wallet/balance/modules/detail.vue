@@ -21,7 +21,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getTransactionPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            walletId: modalApi.getData<PayWalletApi.Wallet>().id,
+            walletId: (modalApi.getData() as PayWalletApi.Wallet).id,
           });
         },
       },

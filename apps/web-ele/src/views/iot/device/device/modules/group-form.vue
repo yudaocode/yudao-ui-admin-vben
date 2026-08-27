@@ -58,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const ids = modalApi.getData<number[]>();
+    const ids = modalApi.getData() as number[];
     if (ids) {
       deviceIds.value = ids;
     }

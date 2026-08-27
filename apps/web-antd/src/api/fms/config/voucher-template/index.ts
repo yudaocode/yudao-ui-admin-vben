@@ -51,14 +51,20 @@ export function getVoucherTemplateSimpleList(accountSetId: number) {
 export function createVoucherTemplate(
   data: FmsVoucherTemplateApi.VoucherTemplate,
 ) {
-  return requestClient.post<number>('/fms/config/voucher-template/create', data);
+  return requestClient.post<number>(
+    '/fms/config/voucher-template/create',
+    data,
+  );
 }
 
 /** 修改凭证模板 */
 export function updateVoucherTemplate(
   data: FmsVoucherTemplateApi.VoucherTemplate,
 ) {
-  return requestClient.put<boolean>('/fms/config/voucher-template/update', data);
+  return requestClient.put<boolean>(
+    '/fms/config/voucher-template/update',
+    data,
+  );
 }
 
 /** 删除凭证模板 */

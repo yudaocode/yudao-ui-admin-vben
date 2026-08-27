@@ -93,7 +93,10 @@ async function open() {
 function handleUserChange(
   users: SystemUserApi.User | SystemUserApi.User[] | undefined,
 ) {
-  const list = Array.isArray(users) ? users : users ? [users] : [];
+  const list = Array.isArray(users) ? users : [];
+  if (users && !Array.isArray(users)) {
+    list.push(users);
+  }
   const oldMap = new Map(employees.value.map((row) => [row.userId, row]));
   employees.value = list.map((user, index) => {
     const old = oldMap.get(user.id!);

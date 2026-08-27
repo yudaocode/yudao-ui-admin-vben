@@ -209,11 +209,7 @@ onMounted(() => {
           class="h-full w-64 shrink-0"
           :body-style="{ height: '100%', overflow: 'auto' }"
         >
-          <ElInput
-            v-model="subjectKeyword"
-            clearable
-            placeholder="搜索科目"
-          />
+          <ElInput v-model="subjectKeyword" clearable placeholder="搜索科目" />
           <ElTree
             ref="subjectTreeRef"
             class="mt-3"

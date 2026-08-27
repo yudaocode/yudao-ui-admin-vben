@@ -210,10 +210,7 @@ function formatCurrentMonth(currentMonth?: string) {
 </script>
 
 <template>
-  <div
-    v-if="isFmsRoute"
-    class="mr-2 w-[285px] flex-shrink-0 max-xl:w-[190px]"
-  >
+  <div v-if="isFmsRoute" class="mr-2 w-[285px] flex-shrink-0 max-xl:w-[190px]">
     <ElSelect
       v-model="selectedAccountSetId"
       :disabled="switching"

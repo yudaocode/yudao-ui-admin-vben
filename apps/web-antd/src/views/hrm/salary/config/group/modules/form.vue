@@ -91,7 +91,10 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = createDefault();
       return;
     }
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
+    const data = modalApi.getData() as {
+      id?: number;
+      type: 'create' | 'update';
+    };
     formType.value = data?.type || 'create';
     await loadDeptTree();
     if (data?.id) {

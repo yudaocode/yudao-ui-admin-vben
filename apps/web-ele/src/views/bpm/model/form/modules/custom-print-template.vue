@@ -33,9 +33,9 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      const { template } = modalApi.getData<{
+      const { template } = modalApi.getData() as {
         template: string;
-      }>();
+      };
       if (template !== undefined) {
         valueHtml.value = template;
       }

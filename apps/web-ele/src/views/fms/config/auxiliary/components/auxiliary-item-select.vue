@@ -61,7 +61,10 @@ function handleChange(value: unknown) {
   }
   const itemId = typeof value === 'number' ? value : undefined;
   emit('update:modelValue', itemId);
-  emit('change', auxiliaryItemList.value.find((item) => item.id === itemId));
+  emit(
+    'change',
+    auxiliaryItemList.value.find((item) => item.id === itemId),
+  );
 }
 
 /** 获得辅助核算项目列表 */

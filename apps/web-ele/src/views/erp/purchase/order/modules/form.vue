@@ -57,7 +57,7 @@ const [Form, formApi] = useVbenForm({
 
 /** 更新采购订单项 */
 function handleUpdateItems(items: ErpPurchaseOrderApi.PurchaseOrderItem[]) {
-  formData.value = modalApi.getData<ErpPurchaseOrderApi.PurchaseOrder>();
+  formData.value = modalApi.getData() as ErpPurchaseOrderApi.PurchaseOrder;
   formData.value.items = items;
   formApi.setValues({
     items,
@@ -126,7 +126,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     formApi.setDisabled(formType.value === 'detail');
     formApi.updateSchema(useFormSchema(formType.value));

@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data =
-      modalApi.getData<MallDeliveryPickUpStoreApi.DeliveryPickUpBindReqVO>();
+      modalApi.getData() as MallDeliveryPickUpStoreApi.DeliveryPickUpBindReqVO;
     if (!data || !data.id) {
       return;
     }

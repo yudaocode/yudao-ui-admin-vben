@@ -143,7 +143,7 @@ async function open(recordId: number) {
   employeeList.value = [];
   employeeTotal.value = 0;
   selectedEmployeeIdSet.value = new Set();
-  await searchFormApi.resetForm();
+  await searchFormApi.reset();
   await searchFormApi.setValues({ sent: false });
   modalApi.open();
   await loadTemplates();
@@ -230,7 +230,7 @@ async function handleQuery() {
 }
 
 async function resetQuery() {
-  await searchFormApi.resetForm();
+  await searchFormApi.reset();
   await searchFormApi.setValues({ sent: false });
   await loadEmployees();
 }

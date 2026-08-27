@@ -87,9 +87,9 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ date?: string }>();
+    const data = modalApi.getData() as { date?: string };
     const date = data?.date || dayjs().format('YYYY-MM-DD');
-    await formApi.resetForm();
+    await formApi.reset();
     // 设置到 values
     await formApi.setValues({
       content: '',

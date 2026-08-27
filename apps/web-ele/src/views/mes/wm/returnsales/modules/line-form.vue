@@ -70,12 +70,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       clientId?: number;
       id?: number;
       returnId: number;
       salesOrderCode?: string;
-    }>();
+    };
     returnId.value = data.returnId;
     formApi.setState({
       schema: useLineFormSchema(data.clientId, data.salesOrderCode),

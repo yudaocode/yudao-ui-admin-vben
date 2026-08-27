@@ -126,7 +126,7 @@ async function open(type: 'create' | 'update', id?: number) {
   modalApi.open();
   modalApi.lock();
   try {
-    await formApi.resetForm();
+    await formApi.reset();
     salaryOptionAllList.value = (await optionSelectRef.value?.init()) || [];
     salaryOptionList.value = salaryOptionAllList.value.filter(
       (item) => item.parentCode !== HrmSalaryOptionCategoryCode.ROOT,

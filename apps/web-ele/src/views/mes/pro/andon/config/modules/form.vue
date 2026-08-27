@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MesProAndonConfigApi.AndonConfig>();
+    const data = modalApi.getData() as MesProAndonConfigApi.AndonConfig;
     if (!data || !data.id) {
       return;
     }

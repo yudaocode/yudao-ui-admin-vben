@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { SubjectBalanceRow } from './data';
+
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { FmsLedgerApi } from '#/api/fms/ledger';
 
@@ -24,11 +26,7 @@ import {
 } from '#/views/fms/utils/constants';
 import { buildPeriodFilename } from '#/views/fms/utils/format';
 
-import {
-  flattenSubjectBalanceTree,
-  type SubjectBalanceRow,
-  useGridColumns,
-} from './data';
+import { flattenSubjectBalanceTree, useGridColumns } from './data';
 
 defineOptions({ name: 'FmsSubjectBalance' });
 

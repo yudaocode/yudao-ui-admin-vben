@@ -102,7 +102,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     subTabsName.value = 'bom';
     // 加载数据
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(data.formType, formApi) });
     formApi.setDisabled(formType.value === 'detail');

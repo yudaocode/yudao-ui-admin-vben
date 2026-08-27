@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<SystemSmsTemplateApi.SmsTemplate>();
+    const data = modalApi.getData() as SystemSmsTemplateApi.SmsTemplate;
     if (!data) {
       return;
     }

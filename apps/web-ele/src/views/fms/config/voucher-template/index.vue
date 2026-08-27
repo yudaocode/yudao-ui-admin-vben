@@ -5,7 +5,7 @@ import type { FmsVoucherTemplateCategoryApi } from '#/api/fms/config/voucher-tem
 import { computed, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -51,7 +51,9 @@ const currentCategory =
 
 const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套编号
 const currentTemplates = computed(() =>
-  templates.value.filter((item) => item.categoryId === currentCategory.value?.id),
+  templates.value.filter(
+    (item) => item.categoryId === currentCategory.value?.id,
+  ),
 ); // 当前分类的凭证模板列表
 
 /** 查询列表 */
@@ -79,7 +81,8 @@ async function getList() {
 
 /** 统计分类下的模板数 */
 function getCategoryTemplateCount(categoryId?: number) {
-  return templates.value.filter((item) => item.categoryId === categoryId).length;
+  return templates.value.filter((item) => item.categoryId === categoryId)
+    .length;
 }
 
 /** 新增模板分类 */
@@ -185,7 +188,10 @@ watch(accountSetId, getList, { immediate: true });
                 {{ getCategoryTemplateCount(item.id) }}
               </ElTag>
             </div>
-            <div v-if="fmsStore.isAccountSetWritable" class="ml-1 flex shrink-0">
+            <div
+              v-if="fmsStore.isAccountSetWritable"
+              class="ml-1 flex shrink-0"
+            >
               <ElTooltip
                 v-if="
                   hasAccessByCodes([
@@ -254,7 +260,11 @@ watch(accountSetId, getList, { immediate: true });
                 "
                 link
                 type="danger"
-                @click="handleDeleteTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)"
+                @click="
+                  handleDeleteTemplate(
+                    row as FmsVoucherTemplateApi.VoucherTemplate,
+                  )
+                "
               >
                 删除
               </ElButton>

@@ -2,15 +2,14 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { FmsInitialBalanceApi } from '#/api/fms/config/initial-balance';
 
 /** 初始余额表格行：科目行与辅助核算明细行平铺展示 */
-export type FmsInitialBalanceViewRow =
-  FmsInitialBalanceApi.InitialBalance & {
-    auxiliaries?: FmsInitialBalanceApi.AuxiliaryItem[];
-    auxiliaryItemIds?: number[];
-    isAssist?: boolean;
-    isLeaf?: boolean;
-    level: number;
-    rowKey: string;
-  };
+export type FmsInitialBalanceViewRow = FmsInitialBalanceApi.InitialBalance & {
+  auxiliaries?: FmsInitialBalanceApi.AuxiliaryItem[];
+  auxiliaryItemIds?: number[];
+  isAssist?: boolean;
+  isLeaf?: boolean;
+  level: number;
+  rowKey: string;
+};
 
 /** 金额和数量字段，父级行由子级行汇总 */
 export const AMOUNT_FIELDS: (keyof FmsInitialBalanceApi.Amounts)[] = [

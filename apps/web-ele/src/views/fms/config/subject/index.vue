@@ -149,6 +149,7 @@ async function handleBatchStatus(status: number) {
     ElMessage.success('更新成功');
     handleRefresh();
   } catch {
+    //
   } finally {
     batchLoading.value = false;
   }
@@ -164,6 +165,7 @@ async function handleBatchDelete() {
     ElMessage.success('删除成功');
     handleRefresh();
   } catch {
+    //
   } finally {
     batchLoading.value = false;
   }

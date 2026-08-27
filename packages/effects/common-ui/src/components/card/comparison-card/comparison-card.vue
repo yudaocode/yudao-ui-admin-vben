@@ -43,7 +43,7 @@ const iconName = computed(() => iconMap[props.icon] || iconMap.menu);
             <VbenCountToAnimator v-else :end-val="value" :duration="1000" />
           </span>
         </div>
-        <div :class="`text-4xl ${iconColor || ''}`">
+        <div class="text-4xl" :class="iconColor || ''">
           <VbenIcon :icon="iconName" />
         </div>
       </div>

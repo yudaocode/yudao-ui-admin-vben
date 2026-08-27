@@ -56,11 +56,11 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const employee = modalApi.getData<HrmEmployeeApi.Employee>();
+    const employee = modalApi.getData() as HrmEmployeeApi.Employee;
     if (!employee) return;
     const isLeft = employee.entryStatus === HrmEmployeeEntryStatus.LEFT;
     modalApi.setState({ title: isLeft ? '修改离职信息' : '办理离职' });
-    await formApi.resetForm();
+    await formApi.reset();
     await formApi.setValues({
       employeeId: employee.id,
       employeeName: employee.name,

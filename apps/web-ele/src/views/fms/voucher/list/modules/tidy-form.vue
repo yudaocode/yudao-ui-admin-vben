@@ -31,11 +31,11 @@ const [Modal, modalApi] = useVbenModal({
   onConfirm: submitForm,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       accountSetId: number;
       defaultMonth: string;
       voucherWords: FmsVoucherWordApi.VoucherWord[];
-    }>();
+    };
     modalApi.setState({ loading: true });
     try {
       await formApi.updateSchema([
@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
 async function submitForm() {
   const { valid } = await formApi.validate();
   if (!valid) return;
-  const data = modalApi.getData<{ accountSetId: number }>();
+  const data = modalApi.getData() as { accountSetId: number };
   const values = await formApi.getValues();
   modalApi.lock();
   try {

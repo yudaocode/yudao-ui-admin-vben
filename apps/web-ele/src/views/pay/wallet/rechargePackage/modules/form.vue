@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data =
-      modalApi.getData<WalletRechargePackageApi.WalletRechargePackage>();
+      modalApi.getData() as WalletRechargePackageApi.WalletRechargePackage;
     if (!data || !data.id) {
       return;
     }

@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const data = modalApi.getData<PositionChangeFormData>();
+    const data = modalApi.getData() as PositionChangeFormData;
     if (!data?.employee || !data.mode) return;
 
     const { employee, mode } = data;
@@ -103,7 +103,7 @@ const [Modal, modalApi] = useVbenModal({
     formApi.setState({
       schema: usePositionChangeFormSchema(config.schemaType),
     });
-    await formApi.resetForm();
+    await formApi.reset();
     // 默认值对齐源：部门/岗位/职级/地点/上级沿用当前值；降级默认违规违纪
     await formApi.setValues({
       employeeId: employee.id,

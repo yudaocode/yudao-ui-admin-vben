@@ -60,7 +60,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
-    const data = modalApi.getData<MesQcDefectApi.Defect>();
+    const data = modalApi.getData() as MesQcDefectApi.Defect;
     if (!data || !data.id) {
       return;
     }

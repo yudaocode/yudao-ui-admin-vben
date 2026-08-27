@@ -79,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     formData.value = buildEmptyFormData();
     structFormRef.value?.clearValidate?.();
-    const data = modalApi.getData<any>();
+    const data = modalApi.getData() as any;
     if (isEmpty(data)) {
       return;
     }

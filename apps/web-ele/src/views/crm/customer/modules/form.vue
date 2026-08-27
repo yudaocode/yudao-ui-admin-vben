@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmCustomerApi.Customer>();
+    const data = modalApi.getData() as CrmCustomerApi.Customer;
     if (!data || !data.id) {
       return;
     }

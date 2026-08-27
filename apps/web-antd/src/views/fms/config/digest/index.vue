@@ -4,7 +4,7 @@ import type { FmsDigestApi } from '#/api/fms/config/digest';
 
 import { computed, watch } from 'vue';
 
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 

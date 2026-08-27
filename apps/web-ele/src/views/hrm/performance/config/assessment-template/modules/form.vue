@@ -62,10 +62,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const payload = modalApi.getData<{
+    const payload = modalApi.getData() as {
       id?: number;
       type: 'create' | 'update';
-    }>();
+    };
     formType.value = payload?.type || 'create';
     if (payload?.id) {
       modalApi.lock();

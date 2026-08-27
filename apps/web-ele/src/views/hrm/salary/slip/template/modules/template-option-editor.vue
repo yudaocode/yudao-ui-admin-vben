@@ -41,7 +41,7 @@ const emit = defineEmits<{
 const categoryOptions = computed(() =>
   (props.modelValue || [])
     .filter((item) => item.type === HrmSalarySlipTemplateOptionType.CATEGORY)
-    .sort(compareOption),
+    .toSorted(compareOption),
 );
 
 const displayOptions = computed(() => {

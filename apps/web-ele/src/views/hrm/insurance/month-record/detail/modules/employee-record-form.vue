@@ -116,7 +116,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     const row =
-      modalApi.getData<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>();
+      modalApi.getData() as HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord;
     if (!row?.id) {
       return;
     }
@@ -128,7 +128,7 @@ const [Modal, modalApi] = useVbenModal({
         ...(detail.socialSecurityProjectList || []),
         ...(detail.providentFundProjectList || []),
       ].map((project) => ({ ...project }));
-      await formApi.resetForm();
+      await formApi.reset();
       await formApi.setValues({
         employeeDisplay: `${detail.employeeName || ''}${detail.jobNumber ? ` / ${detail.jobNumber}` : ''}`,
         schemeId: detail.schemeId,

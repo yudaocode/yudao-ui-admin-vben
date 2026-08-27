@@ -182,7 +182,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
-    const row = modalApi.getData<InfraCodegenApi.CodegenTable>();
+    const row = modalApi.getData() as InfraCodegenApi.CodegenTable;
     if (!row) {
       return;
     }

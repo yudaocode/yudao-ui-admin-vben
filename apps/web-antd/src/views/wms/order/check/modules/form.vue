@@ -155,7 +155,7 @@ async function initCreateForm(warehouse: {
     warehouseName: warehouse.warehouseName,
   };
   setDetails([]);
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues(formData.value);
   await nextTick();
   syncActualPriceField();
@@ -532,7 +532,7 @@ const [Modal, modalApi] = useVbenModal({
       setDetails([]);
       return;
     }
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     if (data?.id) {
       modalApi.lock();
@@ -558,7 +558,7 @@ const [Modal, modalApi] = useVbenModal({
     warehouseName.value = undefined;
     formData.value = {};
     setDetails([]);
-    await warehouseFormApi.resetForm();
+    await warehouseFormApi.reset();
   },
 });
 </script>

@@ -122,7 +122,7 @@ export function formatSubjectDisplay(
 ) {
   if (!code && !name) return '';
   const names = auxiliaryNames.filter(Boolean);
-  return `${code || ''} ${name || ''}${names.length ? ` / ${names.join('、')}` : ''}`;
+  return `${code || ''} ${name || ''}${names.length > 0 ? ` / ${names.join('、')}` : ''}`;
 }
 
 /** 构建会计期间导出文件名 */
@@ -140,7 +140,5 @@ export function buildPeriodFilename(
 export function formatPeriodLabel(startMonth: string, endMonth: string) {
   const startLabel = dayjs(`${startMonth}-01`).format('YYYY年第MM期');
   const endLabel = dayjs(`${endMonth}-01`).format('YYYY年第MM期');
-  return startLabel === endLabel
-    ? startLabel
-    : `${startLabel} 至 ${endLabel}`;
+  return startLabel === endLabel ? startLabel : `${startLabel} 至 ${endLabel}`;
 }

@@ -68,7 +68,9 @@ export function buildVoucherPrintHtml(
   const marginTop = VOUCHER_PRINT_BASE_MARGIN + setting.marginTop;
   const marginLeft = VOUCHER_PRINT_BASE_MARGIN + setting.marginLeft;
   const pages = buildVoucherPrintPages(vouchers);
-  const content = pages.map((page) => buildVoucherPageHtml(companyName, page)).join('');
+  const content = pages
+    .map((page) => buildVoucherPageHtml(companyName, page))
+    .join('');
   return buildPrintDocument(
     '凭证打印',
     content,
@@ -86,7 +88,9 @@ export function buildVoucherListPrintHtml(
   period: string,
   vouchers: FmsVoucherApi.Voucher[],
 ) {
-  const rows = vouchers.map(buildVoucherListRowHtml).join('');
+  const rows = vouchers
+    .map((voucher) => buildVoucherListRowHtml(voucher))
+    .join('');
   const content = `
     <section class="voucher-list-page">
       <h1>凭证列表</h1>
@@ -130,10 +134,7 @@ function buildVoucherPrintPages(vouchers: FmsVoucherApi.Voucher[]) {
 }
 
 /** 构建单页凭证 HTML */
-function buildVoucherPageHtml(
-  companyName: string,
-  page: VoucherPrintPage,
-) {
+function buildVoucherPageHtml(companyName: string, page: VoucherPrintPage) {
   const { voucher, entries } = page;
   const entryRows = entries
     .map(

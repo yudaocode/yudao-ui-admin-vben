@@ -19,7 +19,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ html: string; title: string }>();
+    const data = modalApi.getData() as { html: string; title: string };
     title.value = data?.title ?? '';
     html.value = data?.html ?? '';
   },

@@ -49,7 +49,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await formApi.resetForm();
+    await formApi.reset();
     await formApi.setValues({ count: 100 });
   },
 });

@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiKnowledgeSegmentApi.KnowledgeSegment>();
+    const data = modalApi.getData() as AiKnowledgeSegmentApi.KnowledgeSegment;
     if (!data || !data.id) {
       return;
     }

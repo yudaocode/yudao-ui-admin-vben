@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallDiyPageApi.DiyPage>();
+    const data = modalApi.getData() as MallDiyPageApi.DiyPage;
     if (!data || !data.id) {
       return;
     }

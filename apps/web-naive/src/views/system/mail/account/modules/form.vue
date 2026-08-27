@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailAccountApi.MailAccount>();
+    const data = modalApi.getData() as SystemMailAccountApi.MailAccount;
     if (!data || !data.id) {
       return;
     }

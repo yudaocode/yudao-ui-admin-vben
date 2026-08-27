@@ -10,7 +10,14 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, InputNumber, message, Select, Table } from 'ant-design-vue';
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Table,
+} from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { updateSpecialClosingSettings } from '#/api/fms/closing/scheme';
@@ -43,7 +50,9 @@ const modalData = ref<SpecialClosingSettingsFormData>(); // 弹窗数据
 const subjectRules = ref<SubjectRuleRow[]>([]); // 凭证分录规则
 let ruleKeySeed = 0; // 分录规则行标识种子
 
-const getTitle = computed(() => `编辑${modalData.value?.scheme.name ?? '专用结转'}`);
+const getTitle = computed(
+  () => `编辑${modalData.value?.scheme.name ?? '专用结转'}`,
+);
 
 // 金额比例校验提示
 const ratioTip = computed(() =>
@@ -119,7 +128,7 @@ const [Modal, modalApi] = useVbenModal({
       subjectRules.value = [];
       return;
     }
-    const data = modalApi.getData<SpecialClosingSettingsFormData>();
+    const data = modalApi.getData() as SpecialClosingSettingsFormData;
     if (!data) return;
     modalData.value = data;
     subjectRules.value = data.scheme.subjects.map((item) => ({

@@ -70,7 +70,6 @@ import {
   FMS_VOUCHER_MONEY_UNITS,
   FMS_VOUCHER_STATUS,
 } from '#/views/fms/utils/constants';
-
 import {
   formatPeriodLabel,
   formatSubjectBalance as formatSubjectBalanceText,
@@ -245,8 +244,8 @@ async function init() {
     voucherWords.value = wordList;
     subjects.value = handleTree(subjectList);
     auxiliaryTypes.value = auxiliaryTypeList;
-    Object.keys(auxiliaryOptions).forEach(
-      (key) => delete auxiliaryOptions[Number(key)],
+    Object.keys(auxiliaryOptions).forEach((key) =>
+      Reflect.deleteProperty(auxiliaryOptions, Number(key)),
     );
     currentMonth.value = accountingMonth || dayjs().format('YYYY-MM');
     // 等待选项渲染完成，避免选中值先于选项解析导致下拉回显为原始值
@@ -281,7 +280,7 @@ async function loadDetail(id: number) {
   });
   entries.value = data.entries.map((entry) => ({
     ...entry,
-    rowKey: Symbol(),
+    rowKey: Symbol('voucher-entry'),
     auxiliaries: entry.auxiliaries.map((item) => ({ ...item })),
   }));
   padEntries();
@@ -297,7 +296,7 @@ async function initializeCopiedVoucher(id: number) {
   const copiedEntries = entries.value.map((entry) => ({
     ...entry,
     id: undefined,
-    rowKey: Symbol(),
+    rowKey: Symbol('voucher-entry'),
     auxiliaries: entry.auxiliaries.map((item) => ({ ...item })),
   }));
   await resetForm(false);
@@ -397,7 +396,7 @@ function disableVoucherDate(date: Dayjs) {
 
 /** 创建空白凭证分录 */
 function createEmptyEntry(): VoucherEntryForm {
-  return { rowKey: Symbol(), digest: '', auxiliaries: [] };
+  return { rowKey: Symbol('voucher-entry'), digest: '', auxiliaries: [] };
 }
 
 /** 空摘要沿用上一条分录 */
@@ -829,7 +828,7 @@ function buildPayload(): FmsVoucherApi.SaveReq | undefined {
     accountSetId: currentAccountSetId,
     voucherWordId,
     voucherNumber,
-    entries: filledEntries.map(buildVoucherEntry),
+    entries: filledEntries.map((entry) => buildVoucherEntry(entry)),
   };
 }
 
@@ -848,7 +847,7 @@ function buildTemplateEntries(): FmsVoucherApi.VoucherEntry[] | undefined {
     message.warning('凭证模板借贷金额不平衡');
     return;
   }
-  return filledEntries.map(buildVoucherEntry);
+  return filledEntries.map((entry) => buildVoucherEntry(entry));
 }
 
 /** 构建凭证业务分录 */
@@ -961,7 +960,7 @@ async function applyTemplate(template: FmsVoucherTemplateApi.VoucherTemplate) {
   }
   entries.value = template.entries.map((entry) => ({
     ...entry,
-    rowKey: Symbol(),
+    rowKey: Symbol('voucher-entry'),
     auxiliaries: entry.auxiliaries.map((item) => ({ ...item })),
   }));
   padEntries();
@@ -1336,7 +1335,9 @@ onBeforeUnmount(removePageShortcutListener);
                     数量
                   </th>
                   <th class="entry-money entry-money-header relative !p-0">
-                    <strong class="block h-[25px] leading-[25px]">借方金额</strong>
+                    <strong class="block h-[25px] leading-[25px]">
+                      借方金额
+                    </strong>
                     <div
                       class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                     >
@@ -1349,7 +1350,9 @@ onBeforeUnmount(removePageShortcutListener);
                     </div>
                   </th>
                   <th class="entry-money entry-money-header relative !p-0">
-                    <strong class="block h-[25px] leading-[25px]">贷方金额</strong>
+                    <strong class="block h-[25px] leading-[25px]">
+                      贷方金额
+                    </strong>
                     <div
                       class="flex h-[22px] border-t border-[var(--el-border-color)] border-t-solid !bg-[var(--el-bg-color)] leading-[22px] [&>span:last-child]:border-r-0 [&>span:nth-child(4)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(8)]:border-r-[var(--el-color-primary-light-5)] [&>span:nth-child(9)]:border-r-[var(--el-color-danger-light-5)] [&>span]:box-border [&>span]:inline-flex [&>span]:h-full [&>span]:w-[calc(100%/11)] [&>span]:items-center [&>span]:justify-center [&>span]:border-r [&>span]:border-[var(--el-border-color-lighter)] [&>span]:border-r-solid [&>span]:text-12px [&>span]:font-400 [&>span]:text-[var(--el-text-color-secondary)]"
                     >

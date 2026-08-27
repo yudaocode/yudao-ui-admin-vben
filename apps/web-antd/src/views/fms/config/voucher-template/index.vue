@@ -5,10 +5,18 @@ import type { FmsVoucherTemplateCategoryApi } from '#/api/fms/config/voucher-tem
 import { computed, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Card, message, Spin, Table, Tag, Tooltip } from 'ant-design-vue';
+import {
+  Button,
+  Card,
+  message,
+  Spin,
+  Table,
+  Tag,
+  Tooltip,
+} from 'ant-design-vue';
 
 import {
   deleteVoucherTemplate,
@@ -43,13 +51,20 @@ const currentCategory =
 
 const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套编号
 const currentTemplates = computed(() =>
-  templates.value.filter((item) => item.categoryId === currentCategory.value?.id),
+  templates.value.filter(
+    (item) => item.categoryId === currentCategory.value?.id,
+  ),
 ); // 当前分类的凭证模板列表
 
 /** 凭证模板表格列 */
 const templateColumns = [
   { title: '模板名称', dataIndex: 'name', ellipsis: true },
-  { title: '分录数', dataIndex: 'entries', align: 'center' as const, width: 100 },
+  {
+    title: '分录数',
+    dataIndex: 'entries',
+    align: 'center' as const,
+    width: 100,
+  },
   { title: '操作', key: 'action', align: 'center' as const, width: 120 },
 ];
 
@@ -78,7 +93,8 @@ async function getList() {
 
 /** 统计分类下的模板数 */
 function getCategoryTemplateCount(categoryId?: number) {
-  return templates.value.filter((item) => item.categoryId === categoryId).length;
+  return templates.value.filter((item) => item.categoryId === categoryId)
+    .length;
 }
 
 /** 新增模板分类 */
@@ -182,7 +198,10 @@ watch(accountSetId, getList, { immediate: true });
               <span class="truncate">{{ item.name }}</span>
               <Tag class="ml-1.5">{{ getCategoryTemplateCount(item.id) }}</Tag>
             </div>
-            <div v-if="fmsStore.isAccountSetWritable" class="ml-1 flex shrink-0">
+            <div
+              v-if="fmsStore.isAccountSetWritable"
+              class="ml-1 flex shrink-0"
+            >
               <Tooltip
                 v-if="
                   hasAccessByCodes([
@@ -246,7 +265,11 @@ watch(accountSetId, getList, { immediate: true });
                 "
                 danger
                 type="link"
-                @click="handleDeleteTemplate(record as FmsVoucherTemplateApi.VoucherTemplate)"
+                @click="
+                  handleDeleteTemplate(
+                    record as FmsVoucherTemplateApi.VoucherTemplate,
+                  )
+                "
               >
                 删除
               </Button>

@@ -81,6 +81,7 @@ async function handleBatchDelete() {
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
   } catch {
+    //
   } finally {
     batchDeleteLoading.value = false;
   }
@@ -101,6 +102,7 @@ async function handleExport() {
     } as PageParam);
     downloadFileFromBlobPart({ fileName: '打卡记录.xls', source: data });
   } catch {
+    //
   } finally {
     exportLoading.value = false;
   }

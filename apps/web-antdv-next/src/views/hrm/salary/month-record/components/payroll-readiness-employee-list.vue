@@ -37,7 +37,7 @@ const columns = [
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'status'">
         <DictTag
-          v-if="record.status != null"
+          v-if="record.status !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="record.status"
         />

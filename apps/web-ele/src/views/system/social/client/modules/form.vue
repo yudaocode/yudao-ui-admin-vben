@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSocialClientApi.SocialClient>();
+    const data = modalApi.getData() as SystemSocialClientApi.SocialClient;
     if (!data || !data.id) {
       return;
     }

@@ -94,7 +94,7 @@ const [AddModal, addModalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await addFormApi.resetForm();
+    await addFormApi.reset();
   },
 });
 
@@ -125,7 +125,7 @@ const [Modal, modalApi] = useVbenModal({
       memberList.value = [];
       return;
     }
-    accountSet.value = modalApi.getData<FmsAccountSetApi.AccountSet>();
+    accountSet.value = modalApi.getData() as FmsAccountSetApi.AccountSet;
     if (!accountSet.value?.id) {
       return;
     }

@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraJobApi.Job>();
+    const data = modalApi.getData() as InfraJobApi.Job;
     if (!data || !data.id) {
       return;
     }

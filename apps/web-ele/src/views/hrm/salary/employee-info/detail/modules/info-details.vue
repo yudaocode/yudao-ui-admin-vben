@@ -39,7 +39,7 @@ defineProps<{
         </ElDescriptionsItem>
         <ElDescriptionsItem label="调整原因">
           <DictTag
-            v-if="salaryEmployee.changeReason != null"
+            v-if="salaryEmployee.changeReason !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
             :value="salaryEmployee.changeReason"
           />
@@ -47,7 +47,7 @@ defineProps<{
         </ElDescriptionsItem>
         <ElDescriptionsItem label="档案状态">
           <DictTag
-            v-if="salaryEmployee.changeType != null"
+            v-if="salaryEmployee.changeType !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_TYPE"
             :value="salaryEmployee.changeType"
           />

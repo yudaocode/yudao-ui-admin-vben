@@ -93,7 +93,7 @@ const [Modal, modalApi] = useVbenModal({
 
 /** 查询结账模板列表 */
 async function getList() {
-  const data = modalApi.getData<TemplateSelectData>();
+  const data = modalApi.getData() as TemplateSelectData;
   if (!data?.accountSetId) return;
   loading.value = true;
   try {
@@ -111,7 +111,7 @@ function selectTemplate(template: FmsClosingTemplateApi.ClosingTemplate) {
 
 /** 处理新增操作 */
 function handleCreate(command: 'scheme' | 'template') {
-  const data = modalApi.getData<TemplateSelectData>();
+  const data = modalApi.getData() as TemplateSelectData;
   if (!data) return;
   if (command === 'template') {
     templateFormModalApi
@@ -130,7 +130,7 @@ function handleCreate(command: 'scheme' | 'template') {
 
 /** 编辑结账模板 */
 function handleEdit(template: FmsClosingTemplateApi.ClosingTemplate) {
-  const data = modalApi.getData<TemplateSelectData>();
+  const data = modalApi.getData() as TemplateSelectData;
   if (!data) return;
   templateFormModalApi
     .setData({
@@ -143,7 +143,7 @@ function handleEdit(template: FmsClosingTemplateApi.ClosingTemplate) {
 
 /** 删除结账模板 */
 async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
-  const data = modalApi.getData<TemplateSelectData>();
+  const data = modalApi.getData() as TemplateSelectData;
   if (!template.id || !data) return;
   try {
     await confirm(`确认删除结账模板“${template.name}”吗？`);

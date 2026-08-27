@@ -30,7 +30,7 @@ const [PrintModal, printModalApi] = useVbenModal({
 
 /** 打印：构造目标表格的打印 HTML 并打开预览 */
 function handlePrint() {
-  const tableElement = document.getElementById(props.target);
+  const tableElement = document.querySelector<HTMLElement>(`#${props.target}`);
   if (!tableElement) {
     message.error('未找到可打印的表格');
     return;

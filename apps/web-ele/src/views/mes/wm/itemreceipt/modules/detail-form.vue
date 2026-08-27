@@ -73,12 +73,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     formApi.setState({ schema: useDetailFormSchema(formApi) });
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       detailId?: number;
       itemId?: number;
       lineId: number;
       receiptId: number;
-    }>();
+    };
     receiptId.value = data.receiptId;
     lineId.value = data.lineId;
     if (data.detailId) {

@@ -48,7 +48,12 @@ const filteredList = computed(() =>
 const templateColumns = [
   { title: '分类', dataIndex: 'categoryName', ellipsis: true },
   { title: '模板名称', dataIndex: 'name', ellipsis: true },
-  { title: '分录数', dataIndex: 'entries', align: 'center' as const, width: 90 },
+  {
+    title: '分录数',
+    dataIndex: 'entries',
+    align: 'center' as const,
+    width: 90,
+  },
   { title: '操作', key: 'action', align: 'center' as const, width: 130 },
 ];
 
@@ -132,7 +137,14 @@ defineExpose({ open });
           {{ record.entries.length }}
         </template>
         <template v-else-if="column.key === 'action'">
-          <Button type="link" @click="selectTemplate(record as FmsVoucherTemplateApi.VoucherTemplate)">套用</Button>
+          <Button
+            type="link"
+            @click="
+              selectTemplate(record as FmsVoucherTemplateApi.VoucherTemplate)
+            "
+          >
+            套用
+          </Button>
           <Button
             v-if="
               fmsStore.isAccountSetWritable &&
@@ -140,15 +152,15 @@ defineExpose({ open });
             "
             danger
             type="link"
-            @click="deleteTemplate(record as FmsVoucherTemplateApi.VoucherTemplate)"
+            @click="
+              deleteTemplate(record as FmsVoucherTemplateApi.VoucherTemplate)
+            "
           >
             删除
           </Button>
         </template>
       </template>
     </Table>
-    <div class="mt-2.5 text-xs text-gray-400">
-      双击模板可直接套用到当前凭证
-    </div>
+    <div class="mt-2.5 text-xs text-gray-400">双击模板可直接套用到当前凭证</div>
   </Modal>
 </template>

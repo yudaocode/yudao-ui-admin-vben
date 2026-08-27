@@ -137,7 +137,7 @@ async function openModal(
       : new Set(selectedIds || []);
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
-  await gridApi.formApi.resetForm();
+  await gridApi.formApi.reset();
   await gridApi.query();
 }
 

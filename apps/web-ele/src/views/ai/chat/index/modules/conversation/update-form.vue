@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiChatConversationApi.ChatConversation>();
+    const data = modalApi.getData() as AiChatConversationApi.ChatConversation;
     if (!data || !data.id) {
       return;
     }

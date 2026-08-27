@@ -9,7 +9,14 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, InputNumber, message, Select, Table } from 'ant-design-vue';
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Table,
+} from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -130,7 +137,7 @@ const [Modal, modalApi] = useVbenModal({
       subjectRules.value = [];
       return;
     }
-    const data = modalApi.getData<TemplateFormData>();
+    const data = modalApi.getData() as TemplateFormData;
     if (!data) return;
     modalData.value = data;
     subjectRules.value = [];
@@ -197,7 +204,10 @@ function validateSubjectRules() {
   const creditRatio = subjectRules.value
     .filter((item) => item.direction === FMS_DEBIT_CREDIT_DIRECTION.CREDIT)
     .reduce((sum, item) => sum + Number(item.amountRatio), 0);
-  if (Math.abs(debitRatio - 100) > 0.001 || Math.abs(creditRatio - 100) > 0.001) {
+  if (
+    Math.abs(debitRatio - 100) > 0.001 ||
+    Math.abs(creditRatio - 100) > 0.001
+  ) {
     return '借方和贷方的金额比例需要分别等于 100%';
   }
   return '';

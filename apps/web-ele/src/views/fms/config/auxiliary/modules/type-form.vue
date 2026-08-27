@@ -23,9 +23,7 @@ const emit = defineEmits(['success']);
 const fmsStore = useFmsStore();
 
 const formData = ref<FmsAuxiliaryTypeApi.AuxiliaryType>(); // 编辑时的类别
-const getTitle = computed(() =>
-  formData.value?.id ? '编辑类别' : '新增类别',
-);
+const getTitle = computed(() => (formData.value?.id ? '编辑类别' : '新增类别'));
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -76,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<FmsAuxiliaryTypeApi.AuxiliaryType>();
+    const data = modalApi.getData() as FmsAuxiliaryTypeApi.AuxiliaryType;
     formData.value = data?.id ? data : undefined;
     await formApi.setValues({ name: data?.name ?? '' });
   },

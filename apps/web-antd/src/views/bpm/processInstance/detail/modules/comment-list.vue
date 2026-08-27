@@ -17,6 +17,7 @@ defineOptions({ name: 'BpmProcessInstanceCommentList' });
 
 const props = withDefaults(
   defineProps<{
+    // eslint-disable-next-line vue/require-default-prop
     id?: string;
     loading?: boolean;
   }>(),
@@ -80,10 +81,7 @@ defineExpose({ getList });
 </script>
 
 <template>
-  <div
-    v-loading="props.loading || commentLoading"
-    class="min-h-full px-7 py-6"
-  >
+  <div v-loading="props.loading || commentLoading" class="min-h-full px-7 py-6">
     <div class="flex items-center gap-3 border-b pb-4">
       <div class="text-lg font-bold text-gray-900 dark:text-gray-100">
         流程评论
@@ -109,7 +107,11 @@ defineExpose({ getList });
         <div class="min-w-0 flex-1">
           <div class="flex min-h-8 items-center gap-2">
             <div class="flex shrink-0 items-center gap-2 font-bold">
-              <Avatar v-if="comment.user?.avatar" :size="28" :src="comment.user.avatar" />
+              <Avatar
+                v-if="comment.user?.avatar"
+                :size="28"
+                :src="comment.user.avatar"
+              />
               <Avatar v-else :size="28">
                 {{ comment.user?.nickname?.slice(0, 1) || '?' }}
               </Avatar>
@@ -120,11 +122,15 @@ defineExpose({ getList });
               v-if="comment.task?.name"
               class="inline-flex h-6 min-w-0 max-w-lg items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-2 text-sm text-gray-700 dark:border-blue-900 dark:bg-blue-950 dark:text-gray-200"
             >
-              <span class="inline-flex shrink-0 items-center gap-1 font-medium text-blue-500">
+              <span
+                class="inline-flex shrink-0 items-center gap-1 font-medium text-blue-500"
+              >
                 <IconifyIcon icon="lucide:git-branch" />
                 任务
               </span>
-              <span class="truncate font-medium text-gray-900 dark:text-gray-100">
+              <span
+                class="truncate font-medium text-gray-900 dark:text-gray-100"
+              >
                 {{ comment.task.name }}
               </span>
             </div>

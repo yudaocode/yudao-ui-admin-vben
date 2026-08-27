@@ -145,11 +145,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     subTabsName.value = 'line';
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       formType: FormType;
       id?: number;
       prefill?: MesQcRqcApi.Rqc;
-    }>();
+    };
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     formApi.setDisabled(formType.value === 'detail');
