@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmProcessListenerApi.ProcessListener>();
+    const data = modalApi.getData() as BpmProcessListenerApi.ProcessListener;
     if (!data || !data.id) {
       return;
     }

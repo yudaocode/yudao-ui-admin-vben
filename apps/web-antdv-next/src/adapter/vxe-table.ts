@@ -1,3 +1,4 @@
+import type { FormValues } from '@vben/common-ui';
 import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 import type { Recordable } from '@vben/types';
 
@@ -370,8 +371,23 @@ export { createRequiredValidation };
 export const [VxeTable, VxeColumn] = [AsyncVxeTable, AsyncVxeColumn];
 
 export * from '#/components/table-action';
-export const useVbenVxeGrid = <T extends Record<string, any>>(
-  ...rest: Parameters<typeof useGrid<T, ComponentType, ComponentPropsMap>>
-) => useGrid<T, ComponentType, ComponentPropsMap>(...rest);
+export const useVbenVxeGrid = <
+  T extends Record<string, any>,
+  TFormValues extends FormValues = FormValues,
+  TSubmitValues extends FormValues = TFormValues,
+>(
+  ...rest: Parameters<
+    typeof useGrid<
+      T,
+      ComponentType,
+      ComponentPropsMap,
+      TFormValues,
+      TSubmitValues
+    >
+  >
+) =>
+  useGrid<T, ComponentType, ComponentPropsMap, TFormValues, TSubmitValues>(
+    ...rest,
+  );
 
 export type * from '@vben/plugins/vxe-table';

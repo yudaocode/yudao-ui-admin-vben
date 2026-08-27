@@ -20,7 +20,7 @@ const formRef = ref();
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = modalApi.getData<any>();
+      const data = modalApi.getData() as any;
       form.value = data || {};
       // clear validate
       setTimeout(() => {

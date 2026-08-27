@@ -56,7 +56,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ day: string }>();
+    const data = modalApi.getData() as { day: string };
     if (!data?.day) {
       return;
     }

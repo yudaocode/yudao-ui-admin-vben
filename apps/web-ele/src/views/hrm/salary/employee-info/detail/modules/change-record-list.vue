@@ -98,7 +98,7 @@ defineExpose({ getList });
       <ElTableColumn align="center" label="调整原因" width="120">
         <template #default="{ row }">
           <DictTag
-            v-if="row.changeReason != null"
+            v-if="row.changeReason !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
             :value="row.changeReason"
           />
@@ -133,7 +133,7 @@ defineExpose({ getList });
       <ElTableColumn align="center" label="状态" width="110">
         <template #default="{ row }">
           <DictTag
-            v-if="row.status != null"
+            v-if="row.status !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_RECORD_STATUS"
             :value="row.status"
           />

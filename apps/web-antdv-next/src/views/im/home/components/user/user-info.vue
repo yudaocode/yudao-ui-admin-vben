@@ -10,14 +10,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon as Icon } from '@vben/icons';
 
-import {
-  Button,
-  Checkbox,
-  Dropdown,
-  Input,
-  Menu,
-  message,
-} from 'antdv-next';
+import { Button, Checkbox, Dropdown, Input, Menu, message } from 'antdv-next';
 
 import { getSimpleUser } from '#/api/system/user';
 import { formatDate } from '#/views/im/utils/time';

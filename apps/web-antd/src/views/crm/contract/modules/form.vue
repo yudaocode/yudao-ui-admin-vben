@@ -29,7 +29,7 @@ const getTitle = computed(() => {
 
 /** 更新产品列表 */
 function handleUpdateProducts(products: any) {
-  formData.value = modalApi.getData<CrmContractApi.Contract>();
+  formData.value = modalApi.getData() as CrmContractApi.Contract;
   formData.value!.products = products;
   if (formData.value) {
     const totalProductPrice =
@@ -88,7 +88,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmContractApi.Contract>();
+    const data = modalApi.getData() as CrmContractApi.Contract;
     if (!data || !data.id) {
       return;
     }
@@ -109,7 +109,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4">
       <template #product="slotProps">
         <ProductEditTable
-          v-bind="slotProps"
+          v-bind="slotProps.componentProps"
           class="w-full"
           :products="formData?.products ?? []"
           :biz-type="BizTypeEnum.CRM_CONTRACT"

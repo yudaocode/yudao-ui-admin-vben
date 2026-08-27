@@ -66,9 +66,12 @@ export function updateAuxiliaryItem(data: FmsAuxiliaryItemApi.AuxiliaryItem) {
 
 /** 批量删除辅助核算项目 */
 export function deleteAuxiliaryItemList(accountSetId: number, ids: number[]) {
-  return requestClient.delete<boolean>('/fms/config/auxiliary-item/delete-list', {
-    params: { accountSetId, ids: ids.join(',') },
-  });
+  return requestClient.delete<boolean>(
+    '/fms/config/auxiliary-item/delete-list',
+    {
+      params: { accountSetId, ids: ids.join(',') },
+    },
+  );
 }
 
 /** 修改辅助核算项目状态 */
@@ -77,11 +80,14 @@ export function updateAuxiliaryItemStatus(
   id: number,
   status: number,
 ) {
-  return requestClient.put<boolean>('/fms/config/auxiliary-item/update-status', {
-    accountSetId,
-    id,
-    status,
-  });
+  return requestClient.put<boolean>(
+    '/fms/config/auxiliary-item/update-status',
+    {
+      accountSetId,
+      id,
+      status,
+    },
+  );
 }
 
 /** 导出辅助核算项目 Excel */

@@ -63,7 +63,7 @@ function open(empId: number, row?: HrmEmployeeContractApi.EmployeeContract) {
   employeeId.value = empId;
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });
-  formApi.resetForm();
+  formApi.reset();
   formApi.setValues({
     sort: 1,
     type: HrmEmployeeContractType.FIXED_TERM_LABOR_CONTRACT,

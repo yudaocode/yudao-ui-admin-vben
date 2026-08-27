@@ -66,10 +66,20 @@ function deleteNode() {
       >
         <div class="node-title-container">
           <div
-            :class="`node-title-icon ${currentNode.childProcessSetting?.async === true ? 'async-child-process' : 'child-process'}`"
+            class="node-title-icon"
+            :class="
+              currentNode.childProcessSetting?.async === true
+                ? 'async-child-process'
+                : 'child-process'
+            "
           >
             <span
-              :class="`iconfont ${currentNode.childProcessSetting?.async === true ? 'icon-async-child-process' : 'icon-child-process'}`"
+              class="iconfont"
+              :class="
+                currentNode.childProcessSetting?.async === true
+                  ? 'icon-async-child-process'
+                  : 'icon-child-process'
+              "
             >
             </span>
           </div>

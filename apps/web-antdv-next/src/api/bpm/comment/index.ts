@@ -15,10 +15,10 @@ export namespace BpmCommentApi {
     message: string;
     createTime: string;
     user?: {
-      id: number;
-      nickname: string;
       avatar?: string;
       deptName?: string;
+      id: number;
+      nickname: string;
     };
   }
 }
@@ -37,4 +37,3 @@ export const getCommentListByProcessInstanceId = async (
 export const createComment = async (taskId: string, message: string) => {
   return await requestClient.post('/bpm/comment/create', { taskId, message });
 };
-

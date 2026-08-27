@@ -346,7 +346,10 @@ const [Modal, modalApi] = useVbenModal({
       insuranceTypeList.value = [];
       return;
     }
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
+    const data = modalApi.getData() as {
+      id?: number;
+      type: 'create' | 'update';
+    };
     formType.value = data?.type || 'create';
     if (data?.id) {
       formData.value = await getInsuranceScheme(data.id);

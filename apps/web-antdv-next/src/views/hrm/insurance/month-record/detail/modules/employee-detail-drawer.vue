@@ -190,25 +190,28 @@ defineExpose({ open });
           <div>
             <span class="text-muted-foreground">性别：</span>
             <DictTag
-              v-if="detail?.sex != null"
+              v-if="detail?.sex !== null"
               :type="DICT_TYPE.SYSTEM_USER_SEX"
               :value="detail.sex"
             />
             <span v-else>--</span>
           </div>
           <div>
-            <span class="text-muted-foreground">年龄：</span>{{ detail?.age ?? '--' }}
+            <span class="text-muted-foreground"> 年龄： </span>
+            {{ detail?.age ?? '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">工号：</span>{{ detail?.jobNumber || '--' }}
+            <span class="text-muted-foreground"> 工号： </span>
+            {{ detail?.jobNumber || '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">部门：</span>{{ detail?.deptName || '--' }}
+            <span class="text-muted-foreground"> 部门： </span>
+            {{ detail?.deptName || '--' }}
           </div>
           <div>
             <span class="text-muted-foreground">员工状态：</span>
             <DictTag
-              v-if="detail?.employeeStatus != null"
+              v-if="detail?.employeeStatus !== null"
               :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
               :value="detail.employeeStatus"
             />
@@ -219,19 +222,24 @@ defineExpose({ open });
             {{ formatHrmDate(detail?.entryTime) }}
           </div>
           <div>
-            <span class="text-muted-foreground">参保城市：</span>{{ detail?.areaName || '--' }}
+            <span class="text-muted-foreground"> 参保城市： </span>
+            {{ detail?.areaName || '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">身份证号：</span>{{ detail?.idNumber || '--' }}
+            <span class="text-muted-foreground"> 身份证号： </span>
+            {{ detail?.idNumber || '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">个人社保号：</span>{{ detail?.socialSecurityNumber || '--' }}
+            <span class="text-muted-foreground"> 个人社保号： </span>
+            {{ detail?.socialSecurityNumber || '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">个人公积金号：</span>{{ detail?.accumulationFundNumber || '--' }}
+            <span class="text-muted-foreground"> 个人公积金号： </span>
+            {{ detail?.accumulationFundNumber || '--' }}
           </div>
           <div>
-            <span class="text-muted-foreground">参保方案：</span>{{ detail?.schemeName || '--' }}
+            <span class="text-muted-foreground"> 参保方案： </span>
+            {{ detail?.schemeName || '--' }}
           </div>
         </div>
 

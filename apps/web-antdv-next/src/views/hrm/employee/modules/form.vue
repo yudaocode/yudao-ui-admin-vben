@@ -175,17 +175,17 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       defaultData?: Partial<HrmEmployeeApi.Employee>;
       id?: number;
       type?: string;
-    }>();
+    };
     formType.value = data?.type || 'create';
     activeTab.value = 'personal';
     modalApi.setState({ title: modalTitle.value });
     const defaults = createDefaultEmployeeFormData();
-    await formApi.resetForm();
-    await entryFormApi.resetForm();
+    await formApi.reset();
+    await entryFormApi.reset();
     await formApi.setValues(defaults);
     await entryFormApi.setValues(defaults);
     leaderEmployeeId.value = undefined;

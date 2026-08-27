@@ -249,9 +249,7 @@ async function getDetail() {
       marketPrice: Number(formatToFraction(item.marketPrice)),
       costPrice: Number(formatToFraction(item.costPrice)),
       firstBrokeragePrice: Number(formatToFraction(item.firstBrokeragePrice)),
-      secondBrokeragePrice: Number(
-        formatToFraction(item.secondBrokeragePrice),
-      ),
+      secondBrokeragePrice: Number(formatToFraction(item.secondBrokeragePrice)),
     }));
     initializingForm.value = true;
     formData.value = res;

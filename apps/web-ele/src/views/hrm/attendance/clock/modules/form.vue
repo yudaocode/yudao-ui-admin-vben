@@ -135,10 +135,13 @@ const [Modal, modalApi] = useVbenModal({
       shiftInfo.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ id?: number; type: 'create' | 'update' }>();
+    const data = modalApi.getData() as {
+      id?: number;
+      type: 'create' | 'update';
+    };
     formType.value = data?.type ?? 'create';
     shiftInfo.value = undefined;
-    await formApi.resetForm();
+    await formApi.reset();
     if (data?.type === 'update' && data.id) {
       modalApi.lock();
       try {

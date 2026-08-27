@@ -24,5 +24,8 @@ export function getFinanceParameter(accountSetId: number) {
 export function updateFinanceParameter(
   data: FmsFinanceParameterApi.FinanceParameter,
 ) {
-  return requestClient.put<boolean>('/fms/config/finance-parameter/update', data);
+  return requestClient.put<boolean>(
+    '/fms/config/finance-parameter/update',
+    data,
+  );
 }

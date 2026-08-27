@@ -87,11 +87,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       id?: number;
       maxSort?: number;
       ruleId: number;
-    }>();
+    };
     if (!data?.id) {
       await formApi.setValues({
         ruleId: data.ruleId,

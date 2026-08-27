@@ -67,7 +67,7 @@ defineExpose({ getQuitInfo });
       </DescriptionsItem>
       <DescriptionsItem label="原员工状态">
         <DictTag
-          v-if="quitInfo.oldEmployeeStatus != null"
+          v-if="quitInfo.oldEmployeeStatus !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="quitInfo.oldEmployeeStatus"
         />

@@ -164,7 +164,9 @@ function openFormula(row: FmsBalanceSheetApi.BalanceSheetRow, asset: boolean) {
       <template #assetName="{ row }">
         <div class="flex items-center gap-1">
           <span
-            :class="itemClass(row.assetLevel, row.assetEditable, row.assetRowNo)"
+            :class="
+              itemClass(row.assetLevel, row.assetEditable, row.assetRowNo)
+            "
           >
             {{ row.assetName }}
           </span>

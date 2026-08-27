@@ -93,7 +93,7 @@ const [Modal, modalApi] = useVbenModal({
       modalData.value = undefined;
       return;
     }
-    const data = modalApi.getData<ProfitLossSettingsFormData>();
+    const data = modalApi.getData() as ProfitLossSettingsFormData;
     if (!data) return;
     modalData.value = data;
     await formApi.setState({
@@ -108,7 +108,9 @@ const [Modal, modalApi] = useVbenModal({
     // 按科目编码预填默认科目，再回显已保存的设置
     const subjects = data.subjects;
     const settings = data.settings;
-    const legacySettings = settings ? !settings.priorYearAdjustmentSubjectId : false;
+    const legacySettings = settings
+      ? !settings.priorYearAdjustmentSubjectId
+      : false;
     const values = {
       voucherWordId:
         settings?.voucherWordId ||
@@ -116,7 +118,8 @@ const [Modal, modalApi] = useVbenModal({
         data.voucherWords[0]?.id,
       digest: settings?.digest || '结转损益',
       voucherType:
-        settings?.voucherType ?? FMS_CLOSING_VOUCHER_TYPE.COMBINED_GAIN_AND_LOSS,
+        settings?.voucherType ??
+        FMS_CLOSING_VOUCHER_TYPE.COMBINED_GAIN_AND_LOSS,
       priorYearAdjustmentSubjectId:
         settings?.priorYearAdjustmentSubjectId ||
         subjects.find((item) => item.code === '6000')?.id,

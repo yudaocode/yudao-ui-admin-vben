@@ -103,7 +103,7 @@ const [AddModal, addModalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await addFormApi.resetForm();
+    await addFormApi.reset();
   },
 });
 
@@ -134,7 +134,7 @@ const [Modal, modalApi] = useVbenModal({
       memberList.value = [];
       return;
     }
-    accountSet.value = modalApi.getData<FmsAccountSetApi.AccountSet>();
+    accountSet.value = modalApi.getData() as FmsAccountSetApi.AccountSet;
     if (!accountSet.value?.id) {
       return;
     }
@@ -174,12 +174,7 @@ const [Modal, modalApi] = useVbenModal({
       <ElTableColumn label="姓名" min-width="140">
         <template #default="{ row }">
           {{ row.nickname || `用户 #${row.userId}` }}
-          <ElTag
-            v-if="row.founder"
-            type="success"
-            effect="plain"
-            class="ml-1"
-          >
+          <ElTag v-if="row.founder" type="success" effect="plain" class="ml-1">
             创建人
           </ElTag>
         </template>

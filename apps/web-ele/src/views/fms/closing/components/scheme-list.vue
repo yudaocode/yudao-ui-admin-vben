@@ -202,9 +202,10 @@ async function generateScheme(scheme: FmsClosingSchemeApi.ClosingScheme) {
 /** 批量生成选中的结账方案凭证 */
 async function generateSelectedSchemes() {
   if (!props.currentPeriod) return;
-  const ids = selectedSchemeIds.value.length
-    ? selectedSchemeIds.value
-    : allSchemeIds.value;
+  const ids =
+    selectedSchemeIds.value.length > 0
+      ? selectedSchemeIds.value
+      : allSchemeIds.value;
   const availableIds = ids.filter((id) => {
     if (id === PROFIT_LOSS_SCHEME_ID) {
       return (
@@ -215,7 +216,7 @@ async function generateSelectedSchemes() {
     const scheme = otherSchemes.value.find((item) => item.id === id);
     return scheme?.balance !== 0 || Boolean(scheme?.voucherIds.length);
   });
-  if (!availableIds.length) {
+  if (availableIds.length === 0) {
     ElMessage.warning('当前没有需要生成凭证的结账方案');
     return;
   }
@@ -366,9 +367,7 @@ function openVoucher(voucherId: number) {
     </div>
 
     <div v-loading="loading">
-      <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-4"
-      >
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-4">
         <SchemeCard
           name="结转损益"
           :balance="profitLossScheme?.balance ?? profitLossBalance"
@@ -390,7 +389,9 @@ function openVoucher(voucherId: number) {
           :balance="scheme.balance"
           :checked="selectedSchemeIds.includes(scheme.id)"
           :generate-disabled="
-            closed || !currentPeriod || (scheme.balance === 0 && !scheme.voucherIds.length)
+            closed ||
+            !currentPeriod ||
+            (scheme.balance === 0 && !scheme.voucherIds.length)
           "
           :name="scheme.name"
           :voucher-ids="scheme.voucherIds"

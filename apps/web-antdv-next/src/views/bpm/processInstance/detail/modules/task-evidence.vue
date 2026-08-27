@@ -75,7 +75,10 @@ function isImageAttachment(url: string) {
       <div v-if="!compact" class="mb-1 text-xs font-semibold text-gray-400">
         附件列表：
       </div>
-      <div class="flex flex-wrap gap-1.5" :class="{ 'justify-center': compact }">
+      <div
+        class="flex flex-wrap gap-1.5"
+        :class="{ 'justify-center': compact }"
+      >
         <a
           v-for="attachment in attachmentList"
           :key="attachment"

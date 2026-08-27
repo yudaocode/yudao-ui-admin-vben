@@ -70,7 +70,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<MallBrokerageUserApi.BrokerageUser>();
+    const data = modalApi.getData() as MallBrokerageUserApi.BrokerageUser;
     if (!data || !data.id) {
       return;
     }

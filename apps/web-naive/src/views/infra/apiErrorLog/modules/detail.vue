@@ -23,7 +23,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraApiErrorLogApi.ApiErrorLog>();
+    const data = modalApi.getData() as InfraApiErrorLogApi.ApiErrorLog;
     if (!data || !data.id) {
       return;
     }

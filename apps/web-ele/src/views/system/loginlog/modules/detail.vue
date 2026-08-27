@@ -24,7 +24,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemLoginLogApi.LoginLog>();
+    const data = modalApi.getData() as SystemLoginLogApi.LoginLog;
     if (!data || !data.id) {
       return;
     }

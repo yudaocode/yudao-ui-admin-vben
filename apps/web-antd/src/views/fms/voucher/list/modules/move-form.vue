@@ -30,11 +30,11 @@ const [Modal, modalApi] = useVbenModal({
   onConfirm: submitForm,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       accountSetId: number;
       defaultMonth: string;
       voucherWords: FmsVoucherWordApi.VoucherWord[];
-    }>();
+    };
     modalApi.setState({ loading: true });
     try {
       await formApi.updateSchema([
@@ -70,7 +70,7 @@ async function submitForm() {
     message.warning('移动到的凭证号必须小于原凭证号');
     return;
   }
-  const data = modalApi.getData<{ accountSetId: number }>();
+  const data = modalApi.getData() as { accountSetId: number };
   modalApi.lock();
   try {
     const params: FmsVoucherApi.MoveReq = {

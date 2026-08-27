@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmClueApi.Clue>();
+    const data = modalApi.getData() as CrmClueApi.Clue;
     if (!data || !data.id) {
       return;
     }

@@ -68,7 +68,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     if (!isOpen) {
       return;
     }
-    const data = drawerApi.getData<RuleSceneApi.SceneRule>();
+    const data = drawerApi.getData() as RuleSceneApi.SceneRule;
     // 先用列表传入的数据立即回填，避免 await 期间表单显示空白
     formData.value = data?.id ? normalizeFormData(data) : buildEmptyFormData();
     await nextTick();

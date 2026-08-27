@@ -67,7 +67,7 @@ onMounted(() => {
         </ElDescriptionsItem>
         <ElDescriptionsItem label="入职状态">
           <DictTag
-            v-if="employee.entryStatus != null"
+            v-if="employee.entryStatus !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_ENTRY_STATUS"
             :value="employee.entryStatus"
           />
@@ -75,7 +75,7 @@ onMounted(() => {
         </ElDescriptionsItem>
         <ElDescriptionsItem label="员工状态">
           <DictTag
-            v-if="employee.status != null"
+            v-if="employee.status !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
             :value="employee.status"
           />
@@ -83,7 +83,7 @@ onMounted(() => {
         </ElDescriptionsItem>
         <ElDescriptionsItem label="聘用形式">
           <DictTag
-            v-if="employee.type != null"
+            v-if="employee.type !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_TYPE"
             :value="employee.type"
           />
@@ -96,10 +96,10 @@ onMounted(() => {
           {{ formatHrmDateTime(employee.regularTime?.valueOf()) }}
         </ElDescriptionsItem>
         <ElDescriptionsItem label="试用期">
-          {{ employee.probation != null ? `${employee.probation} 个月` : '-' }}
+          {{ employee.probation !== null ? `${employee.probation} 个月` : '-' }}
         </ElDescriptionsItem>
         <ElDescriptionsItem label="司龄">
-          {{ employee.companyAge != null ? `${employee.companyAge} 年` : '-' }}
+          {{ employee.companyAge !== null ? `${employee.companyAge} 年` : '-' }}
         </ElDescriptionsItem>
         <ElDescriptionsItem label="工作城市">
           {{ employee.workCity || '-' }}

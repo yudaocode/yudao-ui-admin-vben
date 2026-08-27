@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<ErpProductCategoryApi.ProductCategory>();
+    const data = modalApi.getData() as ErpProductCategoryApi.ProductCategory;
     if (!data || !data.id) {
       // 设置上级
       await formApi.setValues(data);

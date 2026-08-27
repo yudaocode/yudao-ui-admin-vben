@@ -4,7 +4,7 @@ import type { FmsCurrencyApi } from '#/api/fms/config/currency';
 
 import { computed, watch } from 'vue';
 
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 

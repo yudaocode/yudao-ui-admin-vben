@@ -55,7 +55,9 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ afterSale: MallAfterSaleApi.AfterSale }>();
+    const data = modalApi.getData() as {
+      afterSale: MallAfterSaleApi.AfterSale;
+    };
     if (!data?.afterSale) {
       return;
     }

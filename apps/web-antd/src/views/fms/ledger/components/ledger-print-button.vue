@@ -42,7 +42,7 @@ const [PrintModal, printModalApi] = useVbenModal({
 async function handlePrint() {
   await props.beforePrint?.();
   await nextTick();
-  const tableElement = document.getElementById(props.target);
+  const tableElement = document.querySelector<HTMLElement>(`#${props.target}`);
   if (!tableElement) {
     message.error('未找到可打印的表格');
     return;

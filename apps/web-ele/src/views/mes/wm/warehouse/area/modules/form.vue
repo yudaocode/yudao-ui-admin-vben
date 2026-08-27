@@ -95,12 +95,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       formType: FormType;
       id?: number;
       locationId?: number;
       warehouseId?: number;
-    }>();
+    };
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     formApi.setDisabled(formType.value === 'detail');

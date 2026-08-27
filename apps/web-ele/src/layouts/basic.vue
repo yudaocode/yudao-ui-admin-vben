@@ -251,7 +251,12 @@ watch(
 </script>
 
 <template>
-  <BasicLayout @clear-preferences-and-logout="handleLogout">
+  <BasicLayout
+    :avatar
+    :text="userStore.userInfo?.realName"
+    @clear-preferences-and-logout="handleLogout"
+    @logout="handleLogout"
+  >
     <template #user-dropdown>
       <UserDropdown
         :avatar
@@ -259,8 +264,8 @@ watch(
         :text="userStore.userInfo?.nickname"
         :description="userStore.userInfo?.email"
         :tag-text="userStore.userInfo?.username"
-        @logout="handleLogout"
         @clear-preferences-and-logout="handleLogout"
+        @logout="handleLogout"
       />
     </template>
     <template #notification>

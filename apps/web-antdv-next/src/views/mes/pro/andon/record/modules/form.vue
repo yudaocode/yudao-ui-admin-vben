@@ -129,7 +129,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     formApi.setState({ schema: useFormSchema(formType.value, formApi) });
     modalApi.setState({ showConfirmButton: formType.value === 'create' });

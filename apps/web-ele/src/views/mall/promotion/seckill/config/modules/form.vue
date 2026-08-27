@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MallSeckillConfigApi.SeckillConfig>();
+    const data = modalApi.getData() as MallSeckillConfigApi.SeckillConfig;
     if (!data || !data.id) {
       return;
     }

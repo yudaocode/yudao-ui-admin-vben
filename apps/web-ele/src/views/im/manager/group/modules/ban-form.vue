@@ -37,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<ImManagerGroupApi.Group>();
+    const data = modalApi.getData() as ImManagerGroupApi.Group;
     formData.id = data.id;
     formData.groupName = data.name;
     formData.reason = '';

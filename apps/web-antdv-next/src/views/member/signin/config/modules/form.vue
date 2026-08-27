@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MemberSignInConfigApi.SignInConfig>();
+    const data = modalApi.getData() as MemberSignInConfigApi.SignInConfig;
     if (!data || !data.id) {
       return;
     }

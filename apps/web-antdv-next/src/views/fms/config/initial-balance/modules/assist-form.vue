@@ -94,7 +94,7 @@ const [Modal, modalApi] = useVbenModal({
       selectedIds.value = {};
       return;
     }
-    const data = modalApi.getData<FmsInitialBalanceApi.InitialBalance>();
+    const data = modalApi.getData() as FmsInitialBalanceApi.InitialBalance;
     if (!data) return;
     subject.value = data;
     selectedItems.value = {};
@@ -119,12 +119,15 @@ function handleItemsChange(
     | FmsAuxiliaryItemApi.AuxiliaryItemOption[]
     | undefined,
 ) {
-  const itemList = Array.isArray(items) ? items : items ? [items] : [];
+  const itemList = Array.isArray(items) ? items : [];
+  if (items && !Array.isArray(items)) {
+    itemList.push(items);
+  }
   selectedItems.value[auxiliaryTypeId] = itemList;
   // 同步表单值用于必填校验
   formApi.setFieldValue(
     `items_${auxiliaryTypeId}`,
-    itemList.length ? itemList.map((item) => item.id) : undefined,
+    itemList.length > 0 ? itemList.map((item) => item.id) : undefined,
   );
 }
 
@@ -132,13 +135,13 @@ function handleItemsChange(
 function buildCombinations(
   itemGroups: FmsAuxiliaryItemApi.AuxiliaryItemOption[][],
 ) {
-  return itemGroups.reduce<FmsAuxiliaryItemApi.AuxiliaryItemOption[][]>(
-    (combinations, items) =>
-      combinations.flatMap((combination) =>
-        items.map((item) => [...combination, item]),
-      ),
-    [[]],
-  );
+  let combinations: FmsAuxiliaryItemApi.AuxiliaryItemOption[][] = [[]];
+  for (const items of itemGroups) {
+    combinations = combinations.flatMap((combination) =>
+      items.map((item) => [...combination, item]),
+    );
+  }
+  return combinations;
 }
 </script>
 

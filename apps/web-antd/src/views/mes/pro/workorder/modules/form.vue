@@ -153,7 +153,7 @@ async function handleGenerateWorkOrder(
   formType.value = 'create';
   subTabsName.value = 'bom';
   applySchema();
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({
     clientId: current.clientId,
     name: `${bomRow.itemName}【${bomRow.quantity}】${bomRow.unitMeasureName || ''}`,
@@ -213,11 +213,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       formType: FormType;
       id?: number;
       parentRow?: MesProWorkOrderApi.WorkOrder;
-    }>();
+    };
     formType.value = data.formType;
     subTabsName.value = 'bom';
     applySchema();

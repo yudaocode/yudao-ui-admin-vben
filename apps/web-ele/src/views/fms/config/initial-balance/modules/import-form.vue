@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ accountSetId: number }>();
+    const data = modalApi.getData() as { accountSetId: number };
     accountSetId.value = data.accountSetId;
     resetImport();
   },
@@ -129,7 +129,9 @@ function resetImport() {
             class="text-[56px] text-gray-400"
             icon="ep:upload-filled"
           />
-          <div class="el-upload__text">将文件拖到此处，或<em>点击选择文件</em></div>
+          <div class="el-upload__text">
+            将文件拖到此处，或<em>点击选择文件</em>
+          </div>
           <template #tip>
             <div class="el-upload__tip">仅支持 xls、xlsx 格式</div>
           </template>

@@ -77,7 +77,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MesMdAutoCodeRuleApi.AutoCodeRule>();
+    const data = modalApi.getData() as MesMdAutoCodeRuleApi.AutoCodeRule;
     if (!data?.id) {
       return;
     }

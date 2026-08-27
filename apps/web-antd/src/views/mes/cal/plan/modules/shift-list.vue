@@ -168,7 +168,7 @@ async function openForm(
 ) {
   formOpen.value = true;
   shiftFormType.value = type;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues(row ? { ...row } : { planId: props.planId, sort: 1 });
 }
 

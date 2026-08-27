@@ -180,10 +180,7 @@ async function startRecord() {
     recordOwner = null;
     mediaRecorder = null;
     recordedMimeType =
-      recordingMimeType ||
-      recorder.mimeType ||
-      chunks[0]?.type ||
-      'audio/webm';
+      recordingMimeType || recorder.mimeType || chunks[0]?.type || 'audio/webm';
     recordedExtension =
       recordingExtension || getVoiceExtension(recordedMimeType);
     recordedBlob = new Blob(chunks, { type: recordedMimeType });

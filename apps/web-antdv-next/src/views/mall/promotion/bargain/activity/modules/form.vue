@@ -213,7 +213,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 加载数据
-    const data = modalApi.getData<MallBargainActivityApi.BargainActivity>();
+    const data = modalApi.getData() as MallBargainActivityApi.BargainActivity;
     if (!data || !data.id) {
       return;
     }

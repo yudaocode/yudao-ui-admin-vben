@@ -170,7 +170,7 @@ defineExpose({ getList });
         </template>
         <template v-else-if="column.key === 'changeReason'">
           <DictTag
-            v-if="record.changeReason != null"
+            v-if="record.changeReason !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
             :value="record.changeReason"
           />
@@ -193,7 +193,7 @@ defineExpose({ getList });
         </template>
         <template v-else-if="column.key === 'status'">
           <DictTag
-            v-if="record.status != null"
+            v-if="record.status !== null"
             :type="DICT_TYPE.HRM_SALARY_CHANGE_RECORD_STATUS"
             :value="record.status"
           />

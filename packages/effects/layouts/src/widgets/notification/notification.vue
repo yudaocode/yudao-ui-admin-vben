@@ -44,23 +44,25 @@ const close = () => {
   open.value = false;
 };
 
-const handleViewAll = () => {
+function handleViewAll() {
   emit('viewAll');
   close();
-};
+}
 
-const handleMakeAll = () => {
+function handleMakeAll() {
   emit('makeAll');
-};
+}
 
-const handleClear = () => {
+function handleClear() {
   emit('clear');
-};
+}
 
 function handleOpen() {
   toggle();
   emit('open', open.value);
 }
+
+defineExpose({ toggle });
 </script>
 <template>
   <VbenPopover v-model:open="open" content-class="relative right-2 w-90 p-0">

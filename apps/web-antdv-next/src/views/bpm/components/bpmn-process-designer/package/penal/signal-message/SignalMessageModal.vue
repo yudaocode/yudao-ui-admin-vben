@@ -33,12 +33,12 @@ const config = computed(() => {
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = modalApi.getData<{
+      const data = modalApi.getData() as {
         id?: string;
         isEdit?: boolean;
         name?: string;
         type: 'message' | 'signal';
-      }>();
+      };
       modelType.value = data?.type || 'message';
       isEdit.value = data?.isEdit || false;
       form.value = {

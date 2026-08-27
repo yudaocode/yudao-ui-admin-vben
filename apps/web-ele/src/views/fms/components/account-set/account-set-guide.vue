@@ -51,7 +51,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ reason: GuideReason }>();
+    const data = modalApi.getData() as { reason: GuideReason };
     reason.value = data?.reason ?? 'empty';
     // 无权自行处理时只展示“我知道了”
     modalApi.setState({
@@ -63,11 +63,7 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal
-    :close-on-click-modal="false"
-    class="w-[560px]"
-    title="账套开通引导"
-  >
+  <Modal :close-on-click-modal="false" class="w-[560px]" title="账套开通引导">
     <ElResult icon="warning" :sub-title="description" :title="title" />
   </Modal>
 </template>

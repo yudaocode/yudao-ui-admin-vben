@@ -6,7 +6,7 @@ import { computed, onMounted, ref, toRaw, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { DocAlert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
 import { Button, message } from 'antdv-next';
@@ -181,6 +181,7 @@ async function handleExport() {
       source: data,
     });
   } catch {
+    //
   } finally {
     exportLoading.value = false;
   }

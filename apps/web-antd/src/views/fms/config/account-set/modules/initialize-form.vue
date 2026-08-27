@@ -67,7 +67,7 @@ const [Modal, modalApi] = useVbenModal({
       accountSet.value = undefined;
       return;
     }
-    accountSet.value = modalApi.getData<FmsAccountSetApi.AccountSet>();
+    accountSet.value = modalApi.getData() as FmsAccountSetApi.AccountSet;
     await formApi.setValues({
       companyName: accountSet.value?.companyName,
       currencyCode: FMS_CURRENCY_CODE.RMB,

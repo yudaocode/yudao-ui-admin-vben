@@ -156,7 +156,7 @@ async function openForm(
 ) {
   formOpen.value = true;
   lineFormType.value = type;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues(
     row
       ? await getMaintenRecordLine(row.id!)

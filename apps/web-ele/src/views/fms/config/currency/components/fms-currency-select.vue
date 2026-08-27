@@ -40,7 +40,9 @@ const accountSetId = computed(() => fmsStore.getAccountSetId); // 当前账套�
 const loading = ref(false); // 币别列表的加载中
 const list = ref<FmsCurrencyApi.Currency[]>([]); // 币别列表
 const currencyList = computed(() =>
-  props.excludeStandard ? list.value.filter((item) => !item.standard) : list.value,
+  props.excludeStandard
+    ? list.value.filter((item) => !item.standard)
+    : list.value,
 ); // 可选币别列表
 
 /** 选中变化 */

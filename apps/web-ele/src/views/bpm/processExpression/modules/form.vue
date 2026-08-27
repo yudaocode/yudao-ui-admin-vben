@@ -59,7 +59,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmProcessExpressionApi.ProcessExpression>();
+    const data =
+      modalApi.getData() as BpmProcessExpressionApi.ProcessExpression;
     if (!data || !data.id) {
       return;
     }

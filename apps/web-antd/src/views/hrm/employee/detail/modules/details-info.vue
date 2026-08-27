@@ -29,7 +29,7 @@ const activeKeys = ref(['basicInfo', 'systemInfo']);
         </Descriptions.Item>
         <Descriptions.Item label="性别">
           <DictTag
-            v-if="employee.sex != null"
+            v-if="employee.sex !== null"
             :type="DICT_TYPE.SYSTEM_USER_SEX"
             :value="employee.sex"
           /><span v-else>-</span>
@@ -60,7 +60,7 @@ const activeKeys = ref(['basicInfo', 'systemInfo']);
         </Descriptions.Item>
         <Descriptions.Item label="最高学历">
           <DictTag
-            v-if="employee.highestEducation != null"
+            v-if="employee.highestEducation !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
             :value="employee.highestEducation"
           /><span v-else>-</span>

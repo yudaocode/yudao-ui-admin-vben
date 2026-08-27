@@ -52,7 +52,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<HrmRecruitChannelApi.RecruitChannel>();
+    const data = modalApi.getData() as HrmRecruitChannelApi.RecruitChannel;
     if (!data?.id) {
       return;
     }

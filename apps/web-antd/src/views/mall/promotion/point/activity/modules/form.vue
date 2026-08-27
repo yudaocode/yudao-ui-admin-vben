@@ -187,7 +187,7 @@ const [Modal, modalApi] = useVbenModal({
     }
 
     // 加载数据
-    const data = modalApi.getData<MallPointActivityApi.PointActivity>();
+    const data = modalApi.getData() as MallPointActivityApi.PointActivity;
     if (!data || !data.id) {
       return;
     }

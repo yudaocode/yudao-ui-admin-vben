@@ -79,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取数据
-    const data = modalApi.getData<MpMessageTemplateApi.MessageTemplate>();
+    const data = modalApi.getData() as MpMessageTemplateApi.MessageTemplate;
     if (!data) {
       return;
     }

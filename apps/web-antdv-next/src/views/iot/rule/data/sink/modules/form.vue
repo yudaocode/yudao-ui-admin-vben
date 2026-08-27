@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     formData.value = buildEmptyFormData();
     formRef.value?.clearValidate?.();
-    const data = modalApi.getData<{ id?: number }>();
+    const data = modalApi.getData() as { id?: number };
     if (!data?.id) {
       return;
     }

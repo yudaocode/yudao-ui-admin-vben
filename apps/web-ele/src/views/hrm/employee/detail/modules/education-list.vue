@@ -74,7 +74,7 @@ defineExpose({ getList });
       <ElTableColumn label="学历" min-width="100">
         <template #default="{ row }">
           <DictTag
-            v-if="row.education != null"
+            v-if="row.education !== null"
             :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
             :value="row.education"
           />

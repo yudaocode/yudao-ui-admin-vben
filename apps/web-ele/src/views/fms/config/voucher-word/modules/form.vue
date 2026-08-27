@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<FmsVoucherWordApi.VoucherWord>();
+    const data = modalApi.getData() as FmsVoucherWordApi.VoucherWord;
     if (!data?.id) {
       // 新增时，打印标题默认“记账凭证”，是否默认为否
       await formApi.setValues({

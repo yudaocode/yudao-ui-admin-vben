@@ -67,8 +67,7 @@ const filteredItems = computed(() => {
     .filter((item) => dataItemIds.value.includes(item.id))
     .filter(
       (item) =>
-        !keyword ||
-        `${item.code} ${item.name}`.toLowerCase().includes(keyword),
+        !keyword || `${item.code} ${item.name}`.toLowerCase().includes(keyword),
     );
 }); // 过滤后的辅助项目列表
 const exportLoading = ref(false); // 导出的加载中
@@ -364,7 +363,10 @@ onMounted(() => {
               />
             </div>
           </div>
-          <div v-else class="w-9 shrink-0 border-l border-solid border-border pl-2">
+          <div
+            v-else
+            class="w-9 shrink-0 border-l border-solid border-border pl-2"
+          >
             <Tooltip title="展开快捷项目">
               <Button
                 shape="circle"

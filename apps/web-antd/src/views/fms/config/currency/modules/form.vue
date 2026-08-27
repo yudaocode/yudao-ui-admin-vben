@@ -7,10 +7,7 @@ import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
-import {
-  createCurrency,
-  updateCurrency,
-} from '#/api/fms/config/currency';
+import { createCurrency, updateCurrency } from '#/api/fms/config/currency';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -52,9 +49,7 @@ const [Modal, modalApi] = useVbenModal({
       standard: values.standard,
     };
     try {
-      await (formData.value?.id
-        ? updateCurrency(data)
-        : createCurrency(data));
+      await (formData.value?.id ? updateCurrency(data) : createCurrency(data));
       await modalApi.close();
       emit('success');
       message.success($t('ui.actionMessage.operationSuccess'));
@@ -67,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<FmsCurrencyApi.Currency>();
+    const data = modalApi.getData() as FmsCurrencyApi.Currency;
     if (!data?.id) {
       await formApi.setValues({
         accountSetId: data?.accountSetId,

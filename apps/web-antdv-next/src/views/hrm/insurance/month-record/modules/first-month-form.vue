@@ -58,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    await formApi.resetForm();
+    await formApi.reset();
     modalApi.setState({ title: '新建首月社保表' });
   },
 });

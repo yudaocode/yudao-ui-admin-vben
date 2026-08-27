@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMenuApi.Menu>();
+    const data = modalApi.getData() as SystemMenuApi.Menu;
     if (!data || !data.id) {
       // 设置上级
       await formApi.setValues(data);

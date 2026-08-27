@@ -74,7 +74,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     await nextTick();
-    await loadDetail(modalApi.getData<MesWmSnApi.SnGroup>());
+    await loadDetail(modalApi.getData() as MesWmSnApi.SnGroup);
   },
 });
 </script>

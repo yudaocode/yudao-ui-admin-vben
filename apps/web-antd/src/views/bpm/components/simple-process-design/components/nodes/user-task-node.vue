@@ -91,10 +91,20 @@ function findReturnTaskNodes(
       >
         <div class="node-title-container">
           <div
-            :class="`node-title-icon ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'transactor-task' : 'user-task'}`"
+            class="node-title-icon"
+            :class="
+              currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE
+                ? 'transactor-task'
+                : 'user-task'
+            "
           >
             <span
-              :class="`iconfont ${currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE ? 'icon-transactor' : 'icon-approve'}`"
+              class="iconfont"
+              :class="
+                currentNode.type === BpmNodeTypeEnum.TRANSACTOR_NODE
+                  ? 'icon-transactor'
+                  : 'icon-approve'
+              "
             >
             </span>
           </div>

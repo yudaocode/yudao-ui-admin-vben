@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemNotifyTemplateApi.NotifyTemplate>();
+    const data = modalApi.getData() as SystemNotifyTemplateApi.NotifyTemplate;
     if (!data || !data.id) {
       return;
     }

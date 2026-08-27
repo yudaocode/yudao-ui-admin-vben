@@ -18,10 +18,7 @@ import {
   ElUpload,
 } from 'element-plus';
 
-import {
-  getVoucherImportTemplate,
-  importVoucher,
-} from '#/api/fms/voucher';
+import { getVoucherImportTemplate, importVoucher } from '#/api/fms/voucher';
 
 defineOptions({ name: 'FmsVoucherImportForm' });
 
@@ -164,11 +161,10 @@ function handleExceed() {
           action="none"
           drag
         >
-          <IconifyIcon
-            class="text-primary text-5xl"
-            icon="ep:upload-filled"
-          />
-          <div class="el-upload__text">将文件拖到此处，或<em>点击选择文件</em></div>
+          <IconifyIcon class="text-primary text-5xl" icon="ep:upload-filled" />
+          <div class="el-upload__text">
+            将文件拖到此处，或<em>点击选择文件</em>
+          </div>
           <template #tip>
             <div class="el-upload__tip">仅支持 xls、xlsx 格式</div>
           </template>
@@ -196,7 +192,9 @@ function handleExceed() {
       <ElResult
         :icon="result?.failureVoucherCount ? 'warning' : 'success'"
         :title="
-          result?.failureVoucherCount ? '凭证导入完成，部分数据未导入' : '凭证导入成功'
+          result?.failureVoucherCount
+            ? '凭证导入完成，部分数据未导入'
+            : '凭证导入成功'
         "
         :sub-title="importResultSummary"
       >

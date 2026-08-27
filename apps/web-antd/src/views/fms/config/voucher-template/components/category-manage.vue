@@ -58,13 +58,9 @@ async function open() {
 }
 
 async function getList() {
-  if (!props.accountSetId) {
-    categories.value = [];
-  } else {
-    categories.value = await getVoucherTemplateCategorySimpleList(
-      props.accountSetId,
-    );
-  }
+  categories.value = props.accountSetId
+    ? await getVoucherTemplateCategorySimpleList(props.accountSetId)
+    : [];
   emit('change', categories.value);
 }
 

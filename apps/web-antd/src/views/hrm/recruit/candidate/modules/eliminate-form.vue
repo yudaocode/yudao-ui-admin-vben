@@ -90,10 +90,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       ids: number | number[];
       name?: string;
-    }>();
+    };
     if (!data) {
       return;
     }

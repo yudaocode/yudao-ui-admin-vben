@@ -55,7 +55,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmFollowUpApi.FollowUpRecord>();
+    const data = modalApi.getData() as CrmFollowUpApi.FollowUpRecord;
     if (!data) {
       return;
     }

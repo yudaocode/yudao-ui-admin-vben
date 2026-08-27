@@ -23,7 +23,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemMailLogApi.MailLog>();
+    const data = modalApi.getData() as SystemMailLogApi.MailLog;
     if (!data || !data.id) {
       return;
     }

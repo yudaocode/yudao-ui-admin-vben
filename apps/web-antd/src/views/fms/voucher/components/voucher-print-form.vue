@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { FormInstance, FormProps } from 'ant-design-vue';
 
+import type { VoucherPrintSetting } from './print';
+
 import type { FmsVoucherApi } from '#/api/fms/voucher';
 
 import { nextTick, ref } from 'vue';
@@ -15,11 +17,7 @@ import {
   Radio,
 } from 'ant-design-vue';
 
-import {
-  buildVoucherPrintHtml,
-  DEFAULT_VOUCHER_PRINT_SETTING,
-  type VoucherPrintSetting,
-} from './print';
+import { buildVoucherPrintHtml, DEFAULT_VOUCHER_PRINT_SETTING } from './print';
 
 defineOptions({ name: 'FmsVoucherPrintForm' });
 
@@ -191,11 +189,7 @@ defineExpose({ open, printHtml, previewHtml });
       </FormItem>
       <FormItem label="字体大小">
         <div class="flex items-center gap-2 [&_.ant-input-number]:!w-[72px]">
-          <InputNumber
-            v-model:value="formData.fontSize"
-            :max="24"
-            :min="12"
-          />
+          <InputNumber v-model:value="formData.fontSize" :max="24" :min="12" />
           <span>像素</span>
         </div>
       </FormItem>

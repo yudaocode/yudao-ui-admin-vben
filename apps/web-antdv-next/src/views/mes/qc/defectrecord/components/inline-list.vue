@@ -130,7 +130,7 @@ const [Modal, modalApi] = useVbenModal({
       ctxData.value = undefined;
       return;
     }
-    ctxData.value = modalApi.getData<CtxData>();
+    ctxData.value = modalApi.getData() as CtxData;
     await gridApi.query();
   },
 });

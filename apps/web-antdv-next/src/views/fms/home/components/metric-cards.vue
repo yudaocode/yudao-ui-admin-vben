@@ -51,7 +51,9 @@ function scrollCards(direction: -1 | 1) {
 
 <template>
   <div>
-    <div class="border-border flex items-center justify-between border-b pb-3.5">
+    <div
+      class="border-border flex items-center justify-between border-b pb-3.5"
+    >
       <div class="text-[18px] font-semibold">财务指标</div>
       <div class="text-muted-foreground text-[13px]">
         {{ home?.currentMonth }} 当期数据
@@ -90,7 +92,11 @@ function scrollCards(direction: -1 | 1) {
           </div>
         </button>
       </div>
-      <Button :disabled="!canScrollRight" shape="circle" @click="scrollCards(1)">
+      <Button
+        :disabled="!canScrollRight"
+        shape="circle"
+        @click="scrollCards(1)"
+      >
         <IconifyIcon icon="lucide:arrow-right" />
       </Button>
     </div>

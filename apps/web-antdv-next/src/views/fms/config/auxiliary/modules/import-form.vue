@@ -57,10 +57,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       accountSetId: number;
       auxiliaryType: FmsAuxiliaryTypeApi.AuxiliaryType;
-    }>();
+    };
     accountSetId.value = data.accountSetId;
     auxiliaryType.value = data.auxiliaryType;
     resetImport();
@@ -153,9 +153,7 @@ function resetImport() {
             <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
           </p>
           <p class="ant-upload-text">将文件拖到此处，或点击选择文件</p>
-          <p class="ant-upload-hint">
-            仅支持 xls、xlsx 格式，文件不能超过 2MB
-          </p>
+          <p class="ant-upload-hint">仅支持 xls、xlsx 格式，文件不能超过 2MB</p>
         </Upload.Dragger>
       </div>
     </div>
@@ -164,7 +162,9 @@ function resetImport() {
       <Result
         :status="failureCount ? 'warning' : 'success'"
         :sub-title="`共 ${importResult.totalCount} 个项目，成功 ${importResult.successItemCodes.length} 个，失败 ${failureCount} 个`"
-        :title="failureCount ? '导入完成，部分数据未导入' : '辅助核算项目导入成功'"
+        :title="
+          failureCount ? '导入完成，部分数据未导入' : '辅助核算项目导入成功'
+        "
       />
       <Table
         v-if="failureCount"

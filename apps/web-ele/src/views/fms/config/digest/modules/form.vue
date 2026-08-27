@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<FmsDigestApi.Digest>();
+    const data = modalApi.getData() as FmsDigestApi.Digest;
     if (!data?.id) {
       await formApi.setValues({
         accountSetId: data?.accountSetId,

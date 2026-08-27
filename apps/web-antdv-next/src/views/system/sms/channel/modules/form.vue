@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemSmsChannelApi.SmsChannel>();
+    const data = modalApi.getData() as SystemSmsChannelApi.SmsChannel;
     if (!data || !data.id) {
       return;
     }

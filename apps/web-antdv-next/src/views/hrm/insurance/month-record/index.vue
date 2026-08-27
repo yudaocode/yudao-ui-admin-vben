@@ -85,6 +85,7 @@ async function handleCreateNext() {
     const id = await createNextInsuranceMonthRecord();
     openDetail(id);
   } catch {
+    //
   } finally {
     createLoading.value = false;
   }

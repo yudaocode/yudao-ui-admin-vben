@@ -20,7 +20,8 @@ const props = defineProps<{
 
 /** 各报表检查结果的并集，页面按自身报表类型传入对应检查结果 */
 interface FmsReportCheckResult
-  extends FmsBalanceSheetApi.BalanceSheetCheck,
+  extends
+    FmsBalanceSheetApi.BalanceSheetCheck,
     FmsCashFlowStatementApi.CashFlowCheck,
     FmsIncomeStatementApi.IncomeStatementCheck {}
 
@@ -41,7 +42,7 @@ const passed = computed(() => {
   }
   return (
     props.result.balanced === true &&
-    !props.result.unmappedSubjects.length &&
+    props.result.unmappedSubjects.length === 0 &&
     (props.reportType === FMS_REPORT_TYPE.INCOME_STATEMENT ||
       (props.result.initialBalanceBalanced === true &&
         props.result.profitLossTransferred === true))

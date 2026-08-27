@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<ErpWarehouseApi.Warehouse>();
+    const data = modalApi.getData() as ErpWarehouseApi.Warehouse;
     if (!data || !data.id) {
       return;
     }

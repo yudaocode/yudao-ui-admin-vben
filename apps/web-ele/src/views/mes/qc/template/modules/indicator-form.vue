@@ -70,9 +70,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<
-      MesQcTemplateIndicatorApi.TemplateIndicator & { templateId: number }
-    >();
+    const data =
+      modalApi.getData() as MesQcTemplateIndicatorApi.TemplateIndicator & {
+        templateId: number;
+      };
     templateId.value = data.templateId;
     if (!data?.id) {
       return;

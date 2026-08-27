@@ -318,6 +318,7 @@ async function handleBatchDelete() {
     message.success($t('ui.actionMessage.deleteSuccess'));
     await handleRefresh();
   } catch {
+    //
   } finally {
     batchDeleteLoading.value = false;
   }

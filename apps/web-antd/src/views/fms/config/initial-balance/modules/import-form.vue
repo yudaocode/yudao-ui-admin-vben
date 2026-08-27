@@ -32,7 +32,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<{ accountSetId: number }>();
+    const data = modalApi.getData() as { accountSetId: number };
     accountSetId.value = data.accountSetId;
     resetImport();
   },

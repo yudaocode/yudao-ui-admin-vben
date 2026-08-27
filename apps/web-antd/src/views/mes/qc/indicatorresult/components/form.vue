@@ -132,7 +132,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     formApi.setState({ schema: useQcIndicatorResultFormSchema(formApi) });
     // 加载数据
-    const data = modalApi.getData<CtxData>();
+    const data = modalApi.getData() as CtxData;
     ctxData.value = data;
     formType.value = data.formType;
     modalApi.lock();

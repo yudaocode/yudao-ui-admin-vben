@@ -44,9 +44,9 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const ids = modalApi.getData<number[]>() || [];
+    const ids = (modalApi.getData() as number[]) || [];
     employeeIds.value = ids;
-    await formApi.resetForm();
+    await formApi.reset();
     await formApi.setValues({ employeeCount: `${ids.length} 人` });
     modalApi.setState({ title: '设置参保方案' });
   },

@@ -26,7 +26,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 获取传入的记录ID
-    const data = modalApi.getData<{ recordId: number }>();
+    const data = modalApi.getData() as { recordId: number };
     if (data?.recordId) {
       recordId.value = data.recordId;
     }

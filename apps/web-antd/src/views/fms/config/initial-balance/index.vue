@@ -29,7 +29,6 @@ import {
   FMS_DEBIT_CREDIT_DIRECTION,
   FMS_SUBJECT_TYPE,
 } from '#/views/fms/utils/constants';
-
 import { formatAmount, formatQuantity } from '#/views/fms/utils/format';
 
 import AmountInput from './components/amount-input.vue';

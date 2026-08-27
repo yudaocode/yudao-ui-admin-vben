@@ -30,7 +30,7 @@ defineProps<{
     <ElTableColumn align="center" label="员工状态" width="100">
       <template #default="{ row }">
         <DictTag
-          v-if="row.status != null"
+          v-if="row.status !== null"
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="row.status"
         />

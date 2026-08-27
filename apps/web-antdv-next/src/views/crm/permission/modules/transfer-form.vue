@@ -103,7 +103,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{ bizType: number }>();
+    const data = modalApi.getData() as { bizType: number };
     if (!data || !data.bizType) {
       return;
     }

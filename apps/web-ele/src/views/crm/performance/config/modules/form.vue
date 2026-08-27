@@ -43,7 +43,9 @@ const formRules = reactive<FormRules>({
   objectType: [
     { required: true, message: '对象类型不能为空', trigger: 'change' },
   ],
-  objectId: [{ required: true, message: '目标对象不能为空', trigger: 'change' }],
+  objectId: [
+    { required: true, message: '目标对象不能为空', trigger: 'change' },
+  ],
 });
 
 /** 年度目标金额 */
@@ -88,7 +90,7 @@ const [Modal, modalApi] = useVbenModal({
     resetForm();
     await loadOptions();
     const data =
-      modalApi.getData<CrmPerformanceConfigApi.PerformanceConfig>();
+      modalApi.getData() as CrmPerformanceConfigApi.PerformanceConfig;
     if (!data?.id) {
       return;
     }
@@ -112,10 +114,10 @@ function handleObjectTypeChange() {
 
 /** 加载部门和员工选项 */
 async function loadOptions() {
-  if (!deptList.value.length) {
+  if (deptList.value.length === 0) {
     deptList.value = handleTree(await getSimpleDeptList());
   }
-  if (!userList.value.length) {
+  if (userList.value.length === 0) {
     userList.value = await getSimpleUserList();
   }
 }

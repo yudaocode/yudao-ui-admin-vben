@@ -150,7 +150,7 @@ async function getList() {
 /** 打开设备资源表单 */
 async function openForm() {
   formOpen.value = true;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({
     quantity: 1,
     workstationId: props.workstationId,

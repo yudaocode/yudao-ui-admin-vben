@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
     formData.value = buildEmptyFormData();
     paramFormRef.value?.clearValidate?.();
     // 加载数据
-    const data = modalApi.getData<any>();
+    const data = modalApi.getData() as any;
     if (isEmpty(data)) {
       return;
     }

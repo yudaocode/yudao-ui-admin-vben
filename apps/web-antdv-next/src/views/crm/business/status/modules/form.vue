@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CrmBusinessStatusApi.BusinessStatus>();
+    const data = modalApi.getData() as CrmBusinessStatusApi.BusinessStatus;
     modalApi.lock();
     try {
       if (!data || !data.id) {

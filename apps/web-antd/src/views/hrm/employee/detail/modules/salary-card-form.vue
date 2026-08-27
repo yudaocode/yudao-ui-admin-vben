@@ -42,7 +42,7 @@ function open(
   row?: HrmEmployeeSalaryCardApi.EmployeeSalaryCard,
 ) {
   employeeId.value = empId;
-  formApi.resetForm();
+  formApi.reset();
   formApi.setValues({ ...row, employeeId: empId });
   modalApi.setState({ title: '编辑工资卡' });
   modalApi.open();

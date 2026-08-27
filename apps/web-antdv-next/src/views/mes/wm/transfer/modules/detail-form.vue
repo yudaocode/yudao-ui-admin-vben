@@ -72,12 +72,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       detailId?: number;
       itemId?: number;
       lineId: number;
       transferId: number;
-    }>();
+    };
     transferId.value = data.transferId;
     lineId.value = data.lineId;
     if (data.detailId) {

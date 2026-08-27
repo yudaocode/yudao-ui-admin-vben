@@ -107,7 +107,7 @@ const [Modal, modalApi] = useVbenModal({
       schema: useBasicFormSchema(formApi, generateProductKey),
     });
     // 加载数据
-    const data = modalApi.getData<IotProductApi.Product>();
+    const data = modalApi.getData() as IotProductApi.Product;
     if (!data || !data.id) {
       // 新增：确保 Collapse 折叠，并设置默认值
       activeKey.value = [];

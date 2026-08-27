@@ -72,7 +72,13 @@ onMounted(async () => {
       .ensureFacePackList()
       .catch((error) => console.warn('[IM] 后台预拉表情包失败', error));
     // 1.3 多个 store 并发从 IDB 读取本地缓存
-    const [, , hasFriendRows, hasGroupRows, hasChannelRows] = await Promise.all([
+    const [
+      _conversationRows,
+      _messageCursorRows,
+      hasFriendRows,
+      hasGroupRows,
+      hasChannelRows,
+    ] = await Promise.all([
       conversationStore.loadConversationList(),
       messageStore.loadMessageCursorList(),
       friendStore.loadFriendData(),

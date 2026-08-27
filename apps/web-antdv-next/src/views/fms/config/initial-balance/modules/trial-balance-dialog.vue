@@ -56,7 +56,7 @@ const [Modal, modalApi] = useVbenModal({
       result.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ accountSetId: number }>();
+    const data = modalApi.getData() as { accountSetId: number };
     if (!data?.accountSetId) {
       return;
     }
@@ -76,7 +76,9 @@ const [Modal, modalApi] = useVbenModal({
       :status="result?.balanced ? 'success' : 'warning'"
       :title="result?.balanced ? '期初余额试算平衡' : '期初余额试算不平衡'"
       :sub-title="
-        result?.balanced ? '借贷金额相等，可以开始记账' : '请检查期初余额和累计发生额'
+        result?.balanced
+          ? '借贷金额相等，可以开始记账'
+          : '请检查期初余额和累计发生额'
       "
     />
     <Table

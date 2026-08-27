@@ -63,7 +63,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<BpmCategoryApi.Category>();
+    const data = modalApi.getData() as BpmCategoryApi.Category;
     if (!data || !data.id) {
       return;
     }

@@ -58,7 +58,7 @@ function open(empId: number, row?: HrmEmployeeContactApi.EmployeeContact) {
   employeeId.value = empId;
   editingId.value = row?.id;
   modalApi.setState({ title: title.value });
-  formApi.resetForm();
+  formApi.reset();
   formApi.setValues({ sort: 1, ...row, employeeId: empId });
   modalApi.open();
 }

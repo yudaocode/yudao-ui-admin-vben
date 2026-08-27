@@ -12,13 +12,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
-import {
-  ElButton,
-  ElCard,
-  ElEmpty,
-  ElInput,
-  ElTooltip,
-} from 'element-plus';
+import { ElButton, ElCard, ElEmpty, ElInput, ElTooltip } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAuxiliaryItemSimpleList } from '#/api/fms/config/auxiliary/item';
@@ -73,8 +67,7 @@ const filteredItems = computed(() => {
     .filter((item) => dataItemIds.value.includes(item.id))
     .filter(
       (item) =>
-        !keyword ||
-        `${item.code} ${item.name}`.toLowerCase().includes(keyword),
+        !keyword || `${item.code} ${item.name}`.toLowerCase().includes(keyword),
     );
 }); // 过滤后的辅助项目列表
 const exportLoading = ref(false); // 导出的加载中

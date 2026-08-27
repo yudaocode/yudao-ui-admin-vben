@@ -81,10 +81,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       formType: 'detail' | 'schedule';
       id: number;
-    }>();
+    };
     formType.value = data.formType;
     activeProcessStep.value = 0;
     routeProcessList.value = [];

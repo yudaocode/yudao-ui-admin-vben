@@ -35,14 +35,20 @@ export function getFinanceIndicatorList(accountSetId: number) {
 export function createFinanceIndicator(
   data: FmsFinanceIndicatorApi.FinanceIndicator,
 ) {
-  return requestClient.post<number>('/fms/config/finance-indicator/create', data);
+  return requestClient.post<number>(
+    '/fms/config/finance-indicator/create',
+    data,
+  );
 }
 
 /** 修改财务指标 */
 export function updateFinanceIndicator(
   data: FmsFinanceIndicatorApi.FinanceIndicator,
 ) {
-  return requestClient.put<boolean>('/fms/config/finance-indicator/update', data);
+  return requestClient.put<boolean>(
+    '/fms/config/finance-indicator/update',
+    data,
+  );
 }
 
 /** 删除财务指标 */

@@ -72,10 +72,9 @@ const query = reactive<Partial<FmsLedgerApi.ListReq>>({
   maxLevel: props.maxLevel,
 });
 const printCenterText = computed(() => {
-  const subject = traverseTreeValues(
-    props.subjects || [],
-    (item) => item,
-  ).find((item) => item.id === query.subjectId);
+  const subject = traverseTreeValues(props.subjects || [], (item) => item).find(
+    (item) => item.id === query.subjectId,
+  );
   return subject ? `科目：${subject.code} ${subject.name}` : '';
 }); // 打印科目文本
 

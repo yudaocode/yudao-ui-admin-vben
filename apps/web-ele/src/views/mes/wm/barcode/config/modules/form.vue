@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MesWmBarcodeConfigApi.BarcodeConfig>();
+    const data = modalApi.getData() as MesWmBarcodeConfigApi.BarcodeConfig;
     if (!data || !data.id) {
       return;
     }

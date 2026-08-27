@@ -121,7 +121,9 @@ defineExpose({ open });
       border
       highlight-current-row
       stripe
-      @row-dblclick="(row) => selectTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)"
+      @row-dblclick="
+        (row) => selectTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)
+      "
     >
       <ElTableColumn label="分类" min-width="180" prop="categoryName" />
       <ElTableColumn label="模板名称" min-width="260" prop="name" />
@@ -130,7 +132,13 @@ defineExpose({ open });
       </ElTableColumn>
       <ElTableColumn align="center" label="操作" width="130">
         <template #default="{ row }">
-          <ElButton link type="primary" @click="selectTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)">
+          <ElButton
+            link
+            type="primary"
+            @click="
+              selectTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)
+            "
+          >
             套用
           </ElButton>
           <ElButton
@@ -140,15 +148,15 @@ defineExpose({ open });
             "
             link
             type="danger"
-            @click="deleteTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)"
+            @click="
+              deleteTemplate(row as FmsVoucherTemplateApi.VoucherTemplate)
+            "
           >
             删除
           </ElButton>
         </template>
       </ElTableColumn>
     </ElTable>
-    <div class="mt-2.5 text-xs text-gray-400">
-      双击模板可直接套用到当前凭证
-    </div>
+    <div class="mt-2.5 text-xs text-gray-400">双击模板可直接套用到当前凭证</div>
   </ElDialog>
 </template>

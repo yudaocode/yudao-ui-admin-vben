@@ -35,7 +35,10 @@ export function buildFmsTablePrintHtml(options: FmsTablePrintOptions) {
     throw new Error('未找到可打印的表格内容');
   }
   const printDate = formatDate(new Date(), 'YYYY-MM-DD');
-  const footerLabels = [...(options.footerLabels || []), `打印日期：${printDate}`]
+  const footerLabels = [
+    ...(options.footerLabels || []),
+    `打印日期：${printDate}`,
+  ]
     .map((label) => `<span>${escapeHtml(label)}</span>`)
     .join('');
   return `<!doctype html>
@@ -91,12 +94,16 @@ export function printFmsHtml(printHtml: string) {
   iframe.style.height = '0';
   iframe.style.border = '0';
   iframe.srcdoc = printHtml;
-  iframe.onload = () => {
-    iframe.contentWindow?.focus();
-    iframe.contentWindow?.print();
-    window.setTimeout(() => iframe.remove(), 1000);
-  };
-  document.body.appendChild(iframe);
+  iframe.addEventListener(
+    'load',
+    () => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      window.setTimeout(() => iframe.remove(), 1000);
+    },
+    { once: true },
+  );
+  document.body.append(iframe);
 }
 
 /** 克隆表格区域并清理不可打印元素 */

@@ -103,7 +103,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     formData.value = undefined;
-    await formApi.resetForm();
+    await formApi.reset();
     const data = modalApi.getData() as null | ReceivableFormModalData;
     if (!data) {
       return;

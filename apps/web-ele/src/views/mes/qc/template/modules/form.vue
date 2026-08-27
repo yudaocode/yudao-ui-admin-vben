@@ -80,7 +80,7 @@ const [Modal, modalApi] = useVbenModal({
     formApi.setState({ schema: useFormSchema(formApi) });
     subTabsName.value = 'indicator';
     // 加载数据
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     formApi.setDisabled(formType.value === 'detail');
     modalApi.setState({ showConfirmButton: formType.value !== 'detail' });

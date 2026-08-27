@@ -113,7 +113,7 @@ export function useFormSchema(
       rules: z
         .number({ message: '汇率不能为空' })
         .min(0.000001, { message: '汇率不能小于 0.000001' })
-        .max(999_999_999_999.999999, {
+        .max(1_000_000_000_000, {
           message: '汇率不能大于 999999999999.999999',
         })
         .default(1),
@@ -127,7 +127,7 @@ export function useFormSchema(
       },
       componentProps: {
         min: 0.000001,
-        max: 999_999_999_999.999999,
+        max: 1_000_000_000_000,
         precision: 6,
         step: 0.01,
         controlsPosition: 'right',

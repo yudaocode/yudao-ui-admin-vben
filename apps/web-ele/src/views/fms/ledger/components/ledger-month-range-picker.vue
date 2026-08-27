@@ -22,15 +22,13 @@ const accountSetStartMonth = computed(() => {
     : undefined;
 }); // 账套启用月份
 
-const datePickerValue = computed(
-  () => monthRange.value as [string, string],
-); // 会计期间范围控件值
+const datePickerValue = computed(() => monthRange.value as [string, string]); // 会计期间范围控件值
 
 /** 禁用账套启用月份之前的日期 */
 function disabledDate(date: Date) {
   return Boolean(
     accountSetStartMonth.value &&
-      dayjs(date).format('YYYY-MM') < accountSetStartMonth.value,
+    dayjs(date).format('YYYY-MM') < accountSetStartMonth.value,
   );
 }
 

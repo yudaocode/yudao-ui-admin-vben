@@ -139,7 +139,7 @@ async function openModal(selectedInventoryKeys: string[] = []) {
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
   await gridApi.grid.clearCheckboxReserve();
-  await gridApi.formApi.resetForm();
+  await gridApi.formApi.reset();
   await gridApi.query();
 }
 

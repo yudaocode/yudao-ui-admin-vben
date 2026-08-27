@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
 
+import type { VoucherPrintSetting } from './print';
+
 import type { FmsVoucherApi } from '#/api/fms/voucher';
 
 import { nextTick, reactive, ref } from 'vue';
@@ -16,11 +18,7 @@ import {
   ElRadioGroup,
 } from 'element-plus';
 
-import {
-  buildVoucherPrintHtml,
-  DEFAULT_VOUCHER_PRINT_SETTING,
-  type VoucherPrintSetting,
-} from './print';
+import { buildVoucherPrintHtml, DEFAULT_VOUCHER_PRINT_SETTING } from './print';
 
 defineOptions({ name: 'FmsVoucherPrintForm' });
 
@@ -162,7 +160,11 @@ defineExpose({ open, printHtml, previewHtml });
         >
           <div class="flex items-center gap-2 [&_.el-input-number]:!w-[72px]">
             <span>宽度</span>
-            <ElInputNumber v-model="formData.width" :controls="false" :min="1" />
+            <ElInputNumber
+              v-model="formData.width"
+              :controls="false"
+              :min="1"
+            />
             <span>毫米</span>
           </div>
           <div class="flex items-center gap-2 [&_.el-input-number]:!w-[72px]">

@@ -68,12 +68,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const objectId =
-            formValues.objectType === PerformanceConfigObjectTypeEnum.DEPT
-              ? formValues.deptObjectId
-              : formValues.objectType === PerformanceConfigObjectTypeEnum.USER
-                ? formValues.userObjectId
-                : undefined;
+          let objectId: number | undefined;
+          if (formValues.objectType === PerformanceConfigObjectTypeEnum.DEPT) {
+            objectId = formValues.deptObjectId;
+          }
+          if (formValues.objectType === PerformanceConfigObjectTypeEnum.USER) {
+            objectId = formValues.userObjectId;
+          }
           return await getPerformanceConfigPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

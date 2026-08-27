@@ -69,7 +69,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<MesMdUnitMeasureApi.UnitMeasure>();
+    const data = modalApi.getData() as MesMdUnitMeasureApi.UnitMeasure;
     if (!data || !data.id) {
       return;
     }

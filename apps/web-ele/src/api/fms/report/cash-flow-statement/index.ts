@@ -65,7 +65,10 @@ export function getCashFlowStatement(params: FmsReportApi.ListReq) {
 export function updateCashFlowStatement(
   data: FmsCashFlowStatementApi.CashFlowStatementUpdateReq,
 ) {
-  return requestClient.put<boolean>('/fms/report/cash-flow-statement/update', data);
+  return requestClient.put<boolean>(
+    '/fms/report/cash-flow-statement/update',
+    data,
+  );
 }
 
 /** 导出现金流量表 Excel */

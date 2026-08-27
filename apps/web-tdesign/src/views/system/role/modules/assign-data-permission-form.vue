@@ -69,7 +69,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData<SystemRoleApi.Role>();
+    const data = modalApi.getData() as SystemRoleApi.Role;
     if (!data || !data.id) {
       return;
     }

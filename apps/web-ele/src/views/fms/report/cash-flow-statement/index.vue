@@ -149,7 +149,7 @@ async function saveStatementAdjustment() {
       currentAmount: Number(currentAmount || 0),
       yearAmount: Number(yearAmount || 0),
     }));
-  if (!accountSetId.value || !items.length) return;
+  if (!accountSetId.value || items.length === 0) return;
   submitting.value = true;
   try {
     await updateCashFlowStatement({ ...queryParams, items });
@@ -191,7 +191,7 @@ async function saveAdjustment(next = false) {
       currentAmount: Number(item.currentAmount || 0),
       yearAmount: Number(item.yearAmount || 0),
     }));
-  if (!accountSetId.value || !items.length) return;
+  if (!accountSetId.value || items.length === 0) return;
   submitting.value = true;
   try {
     await updateCashFlowAdjustment({
@@ -220,7 +220,9 @@ function clearAdjustment() {
 
 /** 根据当前辅助数据即时重算行次公式项目 */
 function recalculateAdjustmentLineItems() {
-  const lineMap = new Map(adjustmentList.value.map((item) => [item.rowNo, item]));
+  const lineMap = new Map(
+    adjustmentList.value.map((item) => [item.rowNo, item]),
+  );
   adjustmentList.value.forEach((item) => {
     if (!item.formula?.includes('L')) return;
     item.currentAmount = calculateAdjustmentLineAmount(

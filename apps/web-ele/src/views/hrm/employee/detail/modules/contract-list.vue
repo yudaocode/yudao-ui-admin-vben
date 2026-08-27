@@ -81,7 +81,7 @@ onMounted(getList);
       </ElTableColumn>
       <ElTableColumn label="期限" min-width="90">
         <template #default="{ row }">
-          {{ row.term != null ? `${row.term} 年` : '-' }}
+          {{ row.term !== null ? `${row.term} 年` : '-' }}
         </template>
       </ElTableColumn>
       <ElTableColumn label="合同状态" min-width="110">
@@ -98,7 +98,7 @@ onMounted(getList);
       <ElTableColumn label="到期提醒" min-width="100">
         <template #default="{ row }">
           <DictTag
-            v-if="row.expireRemind != null"
+            v-if="row.expireRemind !== null"
             :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
             :value="row.expireRemind"
           />

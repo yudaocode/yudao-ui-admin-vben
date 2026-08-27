@@ -58,7 +58,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<InfraConfigApi.Config>();
+    const data = modalApi.getData() as InfraConfigApi.Config;
     if (!data || !data.id) {
       return;
     }

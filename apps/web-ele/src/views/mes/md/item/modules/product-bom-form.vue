@@ -179,7 +179,7 @@ async function handleItemSelected(rows: MesMdItemApi.Item[]) {
 async function openForm(row: MesMdProductBomApi.ProductBom) {
   formOpen.value = true;
   formData.value = row;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({
     ...row,
     itemId: props.itemId,

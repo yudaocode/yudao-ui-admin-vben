@@ -66,7 +66,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<IotProductCategoryApi.ProductCategory>();
+    const data = modalApi.getData() as IotProductCategoryApi.ProductCategory;
     if (!data || !data.id) {
       return;
     }

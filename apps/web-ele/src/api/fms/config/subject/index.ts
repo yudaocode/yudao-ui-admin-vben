@@ -58,9 +58,12 @@ export namespace FmsSubjectApi {
 
 /** 查询科目列表 */
 export function getSubjectList(accountSetId: number, type?: number) {
-  return requestClient.get<FmsSubjectApi.Subject[]>('/fms/config/subject/list', {
-    params: { accountSetId, type },
-  });
+  return requestClient.get<FmsSubjectApi.Subject[]>(
+    '/fms/config/subject/list',
+    {
+      params: { accountSetId, type },
+    },
+  );
 }
 
 /** 查询科目精简列表 */

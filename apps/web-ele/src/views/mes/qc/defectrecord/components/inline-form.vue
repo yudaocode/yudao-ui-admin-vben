@@ -93,7 +93,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<CtxData>();
+    const data = modalApi.getData() as CtxData;
     formType.value = data.formType;
     if (!data.id) {
       // 新增：保留来自父级的上下文，并默认数量为 1

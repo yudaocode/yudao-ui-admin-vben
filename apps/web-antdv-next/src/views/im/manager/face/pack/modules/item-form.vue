@@ -92,10 +92,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       formData.value = undefined;
       lastUrl.value = '';
-      await formApi.resetForm();
+      await formApi.reset();
       return;
     }
-    const data = modalApi.getData<{ id?: number; packId: number }>();
+    const data = modalApi.getData() as { id?: number; packId: number };
     packId.value = data?.packId || 0;
     await formApi.setValues({ packId: packId.value, sort: 0 });
     if (!data?.id) {

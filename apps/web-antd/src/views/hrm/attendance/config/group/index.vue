@@ -104,7 +104,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <div v-if="row.employeeNames?.length">
           员工：{{ row.employeeNames.join('、') }}
         </div>
-        <span v-if="!row.deptNames?.length && !row.employeeNames?.length">-</span>
+        <span v-if="!row.deptNames?.length && !row.employeeNames?.length">
+          -
+        </span>
       </template>
       <template #actions="{ row }">
         <TableAction

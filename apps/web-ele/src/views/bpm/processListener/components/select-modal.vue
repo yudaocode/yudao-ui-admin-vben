@@ -61,7 +61,7 @@ const [Modal, modalApi] = useVbenModal({
       listenerType.value = '';
       return;
     }
-    const data = modalApi.getData<{ type: string }>();
+    const data = modalApi.getData() as { type: string };
     if (data?.type) {
       listenerType.value = data.type;
     }

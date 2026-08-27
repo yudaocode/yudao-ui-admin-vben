@@ -279,7 +279,7 @@ const [AddModal, addModalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       addSelectedRowKeys.value = [];
-      await addGridApi.formApi?.resetForm();
+      await addGridApi.formApi?.reset();
       await addGridApi.query();
     }
   },

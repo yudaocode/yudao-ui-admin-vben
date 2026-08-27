@@ -132,14 +132,14 @@ onMounted(getList);
           {{ formatHrmDateTime(record.signTime) }}
         </template>
         <template v-else-if="column.key === 'term'">
-          {{ record.term != null ? `${record.term} 年` : '-' }}
+          {{ record.term !== null ? `${record.term} 年` : '-' }}
         </template>
         <template v-else-if="column.key === 'status'">
           {{ formatHrmEmployeeContractStatus(record.status) }}
         </template>
         <template v-else-if="column.key === 'expireRemind'">
           <DictTag
-            v-if="record.expireRemind != null"
+            v-if="record.expireRemind !== null"
             :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
             :value="record.expireRemind"
           />

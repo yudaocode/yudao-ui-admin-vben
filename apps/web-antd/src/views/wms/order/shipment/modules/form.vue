@@ -357,7 +357,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     initializing.value = true;
-    const data = modalApi.getData<{ formType: FormType; id?: number }>();
+    const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
     if (data?.id) {
       modalApi.lock();

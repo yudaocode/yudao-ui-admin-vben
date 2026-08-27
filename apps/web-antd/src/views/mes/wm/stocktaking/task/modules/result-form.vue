@@ -71,11 +71,11 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<{
+    const data = modalApi.getData() as {
       execute?: boolean;
       id?: number;
       taskId: number;
-    }>();
+    };
     taskId.value = data.taskId;
     isExecute.value = !!data.execute;
     // 执行盘点模式：加载盘点清单作为可选项，供选择后回填

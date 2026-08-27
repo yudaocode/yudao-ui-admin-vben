@@ -48,12 +48,12 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const employee = modalApi.getData<HrmEmployeeApi.Employee>();
+    const employee = modalApi.getData() as HrmEmployeeApi.Employee;
     if (!employee) return;
     disabledLeaderIds.value = employee.id ? [employee.id] : [];
     leaderEmployeeId.value = employee.leaderEmployeeId;
     modalApi.setState({ title: '办理转正' });
-    await formApi.resetForm();
+    await formApi.reset();
     await formApi.setValues({
       employeeId: employee.id,
       employeeName: employee.name,

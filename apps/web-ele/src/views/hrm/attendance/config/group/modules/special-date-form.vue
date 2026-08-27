@@ -44,10 +44,10 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (!isOpen) return;
-    const payload = modalApi.getData<{
+    const payload = modalApi.getData() as {
       index?: number;
       specialDate?: HrmAttendanceGroupApi.SpecialDate;
-    }>();
+    };
     editIndex.value = payload?.index;
     formData.value = payload?.specialDate
       ? { ...payload.specialDate }

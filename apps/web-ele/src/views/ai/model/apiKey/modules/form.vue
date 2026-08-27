@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<AiModelApiKeyApi.ApiKey>();
+    const data = modalApi.getData() as AiModelApiKeyApi.ApiKey;
     if (!data || !data.id) {
       return;
     }

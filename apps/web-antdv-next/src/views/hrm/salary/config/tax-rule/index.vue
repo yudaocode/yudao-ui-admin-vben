@@ -144,7 +144,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         }}
       </template>
       <template #taxEnabled="{ row }">
-        <template v-if="row.taxEnabled == null">-</template>
+        <template v-if="row.taxEnabled === null">-</template>
         <Tag v-else :color="row.taxEnabled ? 'success' : 'default'">
           {{ formatHrmYesNo(row.taxEnabled) }}
         </Tag>

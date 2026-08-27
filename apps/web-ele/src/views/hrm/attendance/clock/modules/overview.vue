@@ -84,7 +84,7 @@ function handleQuery() {
 }
 
 async function handleReset() {
-  await queryFormApi.resetForm();
+  await queryFormApi.reset();
   await queryFormApi.setValues({
     month: formatDate(new Date(), 'YYYY-MM'),
   });
@@ -109,6 +109,7 @@ async function handleExport() {
       source: data,
     });
   } catch {
+    //
   } finally {
     exportLoading.value = false;
   }

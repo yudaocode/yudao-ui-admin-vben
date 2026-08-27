@@ -73,7 +73,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<{ accountSetId: number; id?: number }>();
+    const data = modalApi.getData() as { accountSetId: number; id?: number };
     if (!data?.id) {
       // 新增：账套编号由列表页传入，其余字段使用业务默认值
       await formApi.setValues({

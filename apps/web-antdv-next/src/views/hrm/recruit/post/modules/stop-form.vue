@@ -39,7 +39,7 @@ const [Modal, modalApi] = useVbenModal({
       message.warning('停止原因不能超过 255 个字符');
       return;
     }
-    const data = modalApi.getData<{ id: number }>();
+    const data = modalApi.getData() as { id: number };
     if (!data?.id) {
       return;
     }

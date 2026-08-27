@@ -86,7 +86,7 @@ const [Modal, modalApi] = useVbenModal({
     // 加载菜单列表
     await loadMenuTree();
     // 加载数据
-    const data = modalApi.getData<SystemTenantPackageApi.TenantPackage>();
+    const data = modalApi.getData() as SystemTenantPackageApi.TenantPackage;
     if (!data || !data.id) {
       return;
     }

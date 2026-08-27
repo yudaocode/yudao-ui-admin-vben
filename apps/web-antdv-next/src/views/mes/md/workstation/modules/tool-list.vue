@@ -162,7 +162,7 @@ async function getList() {
 async function openForm(row?: MesMdWorkstationToolApi.WorkstationTool) {
   formOpen.value = true;
   formData.value = row;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({
     quantity: 1,
     workstationId: props.workstationId,

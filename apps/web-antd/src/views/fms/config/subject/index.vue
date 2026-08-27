@@ -147,6 +147,7 @@ async function handleBatchStatus(status: number) {
     message.success('更新成功');
     handleRefresh();
   } catch {
+    //
   } finally {
     batchLoading.value = false;
   }
@@ -162,6 +163,7 @@ async function handleBatchDelete() {
     message.success('删除成功');
     handleRefresh();
   } catch {
+    //
   } finally {
     batchLoading.value = false;
   }

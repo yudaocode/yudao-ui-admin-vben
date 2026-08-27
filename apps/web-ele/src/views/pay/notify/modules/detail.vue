@@ -48,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<PayNotifyApi.NotifyTask>();
+    const data = modalApi.getData() as PayNotifyApi.NotifyTask;
     if (!data || !data.id) {
       return;
     }

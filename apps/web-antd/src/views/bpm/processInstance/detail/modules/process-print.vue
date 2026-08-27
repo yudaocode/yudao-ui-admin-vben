@@ -77,9 +77,9 @@ const [Modal, modalApi] = useVbenModal({
 
     modalApi.lock();
     try {
-      const { processInstanceId } = modalApi.getData<{
+      const { processInstanceId } = modalApi.getData() as {
         processInstanceId: string;
-      }>();
+      };
       if (processInstanceId) {
         await fetchPrintData(processInstanceId);
       }

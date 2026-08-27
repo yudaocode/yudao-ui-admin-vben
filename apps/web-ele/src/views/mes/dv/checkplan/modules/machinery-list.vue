@@ -117,7 +117,7 @@ async function getList() {
 /** 打开点检设备表单 */
 async function openForm() {
   formOpen.value = true;
-  await formApi.resetForm();
+  await formApi.reset();
   await formApi.setValues({ planId: props.planId });
 }
 

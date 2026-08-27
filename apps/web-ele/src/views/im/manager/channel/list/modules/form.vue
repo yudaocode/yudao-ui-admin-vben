@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    const data = modalApi.getData<ImManagerChannelApi.Channel>();
+    const data = modalApi.getData() as ImManagerChannelApi.Channel;
     if (!data || !data.id) {
       return;
     }

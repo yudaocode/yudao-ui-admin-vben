@@ -65,7 +65,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData<SystemOAuth2ClientApi.OAuth2Client>();
+    const data = modalApi.getData() as SystemOAuth2ClientApi.OAuth2Client;
     if (!data || !data.id) {
       return;
     }
