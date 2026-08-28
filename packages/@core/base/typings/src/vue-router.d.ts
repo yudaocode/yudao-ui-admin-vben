@@ -44,6 +44,11 @@ interface RouteMeta {
     | 'warning'
     | string;
   /**
+   * 是否使用 activePath 对应的路由层级补齐面包屑
+   * @default false
+   */
+  breadcrumbUseActivePath?: boolean;
+  /**
    * 路由对应dom是否缓存起来
    */
   domCached?: boolean;
