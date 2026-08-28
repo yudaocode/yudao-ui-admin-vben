@@ -348,6 +348,11 @@ interface RouteMeta {
     | 'warning'
     | string;
   /**
+   * Whether to prepend the route hierarchy resolved from activePath to the breadcrumb
+   * @default false
+   */
+  breadcrumbUseActivePath?: boolean;
+  /**
    * The children of the current route are not displayed in the menu
    * @default false
    */
@@ -512,6 +517,13 @@ Used to configure the badge color of the page.
 - Default: `''`
 
 Used to configure the currently active menu. Sometimes the page is not displayed in the menu, and this is used to activate the parent menu.
+
+### breadcrumbUseActivePath
+
+- Type: `boolean`
+- Default: `false`
+
+When enabled, the route hierarchy resolved from `activePath` is used as the breadcrumb parent of the current page. This is useful for detail or edit pages that are hidden from the menu and registered as independent routes.
 
 ### affixTab
 
