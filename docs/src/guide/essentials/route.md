@@ -341,6 +341,11 @@ interface RouteMeta {
     | 'warning'
     | string;
   /**
+   * 是否使用 activePath 对应的路由层级补齐面包屑
+   * @default false
+   */
+  breadcrumbUseActivePath?: boolean;
+  /**
    * 路由的完整路径作为key（默认true）
    */
   fullPathKey?: boolean;
@@ -520,6 +525,13 @@ interface RouteMeta {
 - 默认值：`''`
 
 用于配置当前激活的菜单，有时候页面没有显示在菜单内，需要激活父级菜单时使用。
+
+### breadcrumbUseActivePath
+
+- 类型：`boolean`
+- 默认值：`false`
+
+开启后，会使用 `activePath` 对应的路由层级作为当前页面的面包屑父级。适用于详情、编辑等未显示在菜单中，并且作为独立路由注册的辅助页面。
 
 ### affixTab
 
