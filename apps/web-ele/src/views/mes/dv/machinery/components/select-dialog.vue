@@ -219,6 +219,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="设备选择"
     width="80%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

@@ -144,6 +144,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="班组选择"
     width="720px"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

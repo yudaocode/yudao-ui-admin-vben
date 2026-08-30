@@ -212,6 +212,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="工作站选择"
     width="70%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

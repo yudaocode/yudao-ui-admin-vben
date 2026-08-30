@@ -231,7 +231,12 @@ defineExpose({ open: openModal });
 </script>
 
 <template>
-  <ElDialog v-model="open" title="批次选择" width="80%">
+  <ElDialog
+    v-model="open"
+    title="批次选择"
+    width="80%"
+    :append-to-body="true"
+  >
     <ElAlert
       v-if="filterTip"
       :closable="false"

@@ -193,6 +193,7 @@ defineExpose({ open: openModal });
     destroy-on-close
     title="质检指标选择"
     width="70%"
+    :append-to-body="true"
     @close="closeModal"
   >
     <Grid table-title="质检指标列表" />

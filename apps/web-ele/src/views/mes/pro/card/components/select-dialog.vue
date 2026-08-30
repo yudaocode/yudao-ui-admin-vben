@@ -185,7 +185,12 @@ defineExpose({ open: openModal });
 </script>
 
 <template>
-  <ElDialog v-model="open" title="流转卡选择" width="70%">
+  <ElDialog
+    v-model="open"
+    title="流转卡选择"
+    width="70%"
+    :append-to-body="true"
+  >
     <Grid table-title="流转卡列表" />
     <template #footer>
       <ElButton @click="closeModal">取消</ElButton>

@@ -205,6 +205,7 @@ defineExpose({ open: openModal });
     destroy-on-close
     title="盘点方案选择"
     width="70%"
+    :append-to-body="true"
     @close="closeModal"
   >
     <Grid table-title="盘点方案列表" />

@@ -232,6 +232,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="生产任务选择"
     width="80%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >
