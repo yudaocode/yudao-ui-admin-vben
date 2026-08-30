@@ -50,7 +50,7 @@ async function open(employeeId: number, attendanceDate: string) {
   try {
     detailData.value = await getAttendanceDailyDetail({
       employeeId,
-      attendanceTime: formatDate(attendanceDate),
+      attendanceTime: formatDate(attendanceDate, 'YYYY-MM-DD HH:mm:ss'),
     });
     modalApi.setState({ title: dialogTitle.value });
   } finally {
