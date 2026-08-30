@@ -102,7 +102,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择引用知识库',
         api: getSimpleKnowledgeList,
         labelField: 'name',
-        mode: 'multiple',
+        multiple: true,
         valueField: 'id',
         allowClear: true,
       },
@@ -114,7 +114,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择引用工具',
         api: getToolSimpleList,
-        mode: 'multiple',
+        multiple: true,
         labelField: 'name',
         valueField: 'id',
         allowClear: true,
@@ -127,7 +127,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择 MCP',
         options: getDictOptions(DICT_TYPE.AI_MCP_CLIENT_NAME, 'string'),
-        mode: 'multiple',
+        multiple: true,
         allowClear: true,
       },
     },
