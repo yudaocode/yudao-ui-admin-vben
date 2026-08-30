@@ -3,7 +3,7 @@ import type { UploadFiles, UploadProps, UploadRawFile } from 'element-plus';
 
 import type { MpDraftApi } from '#/api/mp/draft';
 
-import { computed, inject, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
@@ -14,6 +14,7 @@ import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/components/';
 
 const props = defineProps<{
+  accountId: number;
   isFirst: boolean;
   modelValue: MpDraftApi.NewsItem;
 }>();
@@ -33,7 +34,6 @@ const newsItem = computed<MpDraftApi.NewsItem>({
   },
 });
 
-const accountId = inject<number>('accountId');
 const dialogVisible = ref(false);
 
 const fileList = ref<UploadFiles>([]);
@@ -41,10 +41,10 @@ interface UploadData {
   type: UploadType;
   accountId: number;
 }
-const uploadData: UploadData = reactive({
+const uploadData = computed<UploadData>(() => ({
   type: UploadType.Image,
-  accountId: accountId!,
-});
+  accountId: props.accountId,
+}));
 
 function handleOpenDialog() {
   dialogVisible.value = true;
@@ -62,20 +62,30 @@ const onBeforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 
 function onUploadSuccess(res: any) {
-  if (res.code !== 0) {
-    ElMessage.error(`上传出错：${res.msg}`);
+  const data = res?.data;
+  if (
+    res?.code !== 0 ||
+    !data ||
+    typeof data.mediaId !== 'string' ||
+    typeof data.url !== 'string'
+  ) {
+    fileList.value = [];
+    const errorMessage =
+      res?.code === 0 ? '上传响应格式错误' : res?.msg || '上传失败';
+    ElMessage.error(`上传出错：${errorMessage}`);
     return false;
   }
 
   // 重置上传文件的表单
   fileList.value = [];
   // 设置草稿的封面字段
-  newsItem.value.thumbMediaId = res.data.mediaId;
-  newsItem.value.thumbUrl = res.data.url;
+  newsItem.value.thumbMediaId = data.mediaId;
+  newsItem.value.thumbUrl = data.url;
 }
 
 /** 上传失败处理 */
 function onUploadError(err: Error) {
+  fileList.value = [];
   ElMessage.error(`上传失败: ${err.message}`);
 }
 </script>
@@ -137,7 +147,7 @@ function onUploadError(err: Error) {
       >
         <WxMaterialSelect
           type="image"
-          :account-id="accountId!"
+          :account-id="accountId"
           @select-material="onMaterialSelected"
         />
       </ElDialog>

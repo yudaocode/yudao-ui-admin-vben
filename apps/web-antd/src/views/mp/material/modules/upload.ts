@@ -11,7 +11,6 @@ const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` }; // 请�
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传地址
 
 interface UploadData {
-  accountId: number;
   introduction: string;
   title: string;
   type: UploadType;

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { UploadFile } from 'ant-design-vue';
+import type { UploadFile, UploadProps } from 'ant-design-vue';
 
 import type { MpDraftApi } from '#/api/mp/draft';
 
-import { computed, inject, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
@@ -13,7 +13,10 @@ import { Button, Image, message, Modal, Upload } from 'ant-design-vue';
 import { UploadType, useBeforeUpload } from '#/utils/useUpload';
 import { WxMaterialSelect } from '#/views/mp/components/';
 
+import { parseCoverUploadChange } from './cover-upload';
+
 const props = defineProps<{
+  accountId: number;
   isFirst: boolean;
   modelValue: MpDraftApi.NewsItem;
 }>();
@@ -33,18 +36,22 @@ const newsItem = computed<MpDraftApi.NewsItem>({
   },
 });
 
-const accountId = inject<number>('accountId');
 const dialogVisible = ref(false);
 
-const fileList = ref<UploadFile[]>([]);
-interface UploadData {
-  type: UploadType;
-  accountId: number;
+interface CoverUploadResponse {
+  code?: number;
+  data?: {
+    mediaId?: unknown;
+    url?: unknown;
+  };
+  msg?: string;
 }
-const uploadData: UploadData = reactive({
+
+const fileList = ref<UploadFile[]>([]);
+const uploadData = computed(() => ({
+  accountId: props.accountId,
   type: UploadType.Image,
-  accountId: accountId!,
-});
+}));
 
 function handleOpenDialog() {
   dialogVisible.value = true;
@@ -61,29 +68,43 @@ function onMaterialSelected(item: any) {
 const onBeforeUpload = (file: UploadFile) =>
   useBeforeUpload(UploadType.Image, 2)(file as any);
 
-/** 上传错误处理 */
-function onUploadChange(info: any) {
-  if (info.file.status === 'error') {
-    onUploadError(info.file.error || new Error('上传失败'));
+/** 上传状态处理 */
+const onUploadChange: UploadProps['onChange'] = (info) => {
+  fileList.value = info.fileList;
+  const result = parseCoverUploadChange<CoverUploadResponse>(info);
+  if (result.error) {
+    onUploadError(result.error);
+  } else if (result.response) {
+    onUploadSuccess(result.response);
   }
-}
+};
 
 /** 上传成功处理 */
-function onUploadSuccess(res: any) {
-  if (res.code !== 0) {
-    message.error(`上传出错：${res.msg}`);
+function onUploadSuccess(res: CoverUploadResponse) {
+  const data = res.data;
+  if (
+    res.code !== 0 ||
+    !data ||
+    typeof data.mediaId !== 'string' ||
+    typeof data.url !== 'string'
+  ) {
+    fileList.value = [];
+    const errorMessage =
+      res.code === 0 ? '上传响应格式错误' : res.msg || '上传失败';
+    message.error(`上传出错：${errorMessage}`);
     return false;
   }
 
   // 重置上传文件的表单
   fileList.value = [];
   // 设置草稿的封面字段
-  newsItem.value.thumbMediaId = res.data.mediaId;
-  newsItem.value.thumbUrl = res.data.url;
+  newsItem.value.thumbMediaId = data.mediaId;
+  newsItem.value.thumbUrl = data.url;
 }
 
 /** 上传失败处理 */
 function onUploadError(err: Error) {
+  fileList.value = [];
   message.error(`上传失败: ${err.message}`);
 }
 </script>
@@ -110,9 +131,8 @@ function onUploadError(err: Error) {
             :action="UPLOAD_URL"
             :headers="HEADERS"
             :file-list="fileList"
-            :data="{ ...uploadData }"
+            :data="uploadData"
             :before-upload="onBeforeUpload"
-            @success="onUploadSuccess"
             @change="onUploadChange"
           >
             <template #default>
@@ -141,7 +161,7 @@ function onUploadError(err: Error) {
       >
         <WxMaterialSelect
           type="image"
-          :account-id="accountId!"
+          :account-id="props.accountId"
           @select-material="onMaterialSelected"
         />
       </Modal>

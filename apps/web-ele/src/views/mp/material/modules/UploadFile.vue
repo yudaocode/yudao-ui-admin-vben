@@ -3,7 +3,7 @@ import type { UploadProps } from 'element-plus';
 
 import type { UploadData } from './upload';
 
-import { inject, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -17,17 +17,17 @@ import {
   UploadType,
 } from './upload';
 
-const props = defineProps<{ type: UploadType }>();
+const props = defineProps<{
+  accountId: number;
+  type: UploadType;
+}>();
 
 const emit = defineEmits<{
   uploaded: [];
 }>();
 
-const accountId = inject<number>('accountId');
-
 const fileList = ref<any[]>([]);
 const uploadData: UploadData = reactive({
-  accountId: accountId!,
   introduction: '',
   title: '',
   type: props.type,
@@ -46,7 +46,7 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
   formData.append('type', uploadData.type);
   formData.append('title', uploadData.title);
   formData.append('introduction', uploadData.introduction);
-  formData.append('accountId', String(uploadData.accountId));
+  formData.append('accountId', String(props.accountId));
 
   try {
     const response = await fetch(UPLOAD_URL, {
@@ -57,9 +57,11 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
 
     const res = await response.json();
 
-    if (res.code !== 0) {
-      ElMessage.error(`上传出错：${res.msg}`);
-      const error = new Error(res.msg) as any;
+    if (res?.code !== 0) {
+      fileList.value = [];
+      const errorMessage = res?.msg || '上传响应格式错误';
+      ElMessage.error(`上传出错：${errorMessage}`);
+      const error = new Error(errorMessage) as any;
       error.status = 200;
       error.method = 'POST';
       error.url = UPLOAD_URL;
@@ -76,6 +78,7 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
     onSuccess?.(res);
     emit('uploaded');
   } catch (error: any) {
+    fileList.value = [];
     ElMessage.error(`上传失败: ${error.message}`);
     onError?.(error);
   }

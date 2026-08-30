@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMaterialApi } from '#/api/mp/material';
 
-import { provide, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
@@ -38,7 +38,6 @@ const type = ref<UploadType>(UploadType.Image); // 素材类型
 const showCreateVideo = ref(false); // 是否新建视频的弹窗
 
 const accountId = ref(-1);
-provide('accountId', accountId);
 
 // 根据类型获取对应的列配置
 const getColumnsByType = () => {
@@ -193,6 +192,7 @@ async function handleDelete(id: number) {
             type === UploadType.Image
           "
           :type="UploadType.Image"
+          :account-id="accountId"
           @uploaded="handleRefresh"
         />
         <UploadFile
@@ -201,6 +201,7 @@ async function handleDelete(id: number) {
             type === UploadType.Voice
           "
           :type="UploadType.Voice"
+          :account-id="accountId"
           @uploaded="handleRefresh"
         />
         <ElButton
@@ -258,6 +259,10 @@ async function handleDelete(id: number) {
     </Grid>
 
     <!-- 新建视频的弹窗 -->
-    <UploadVideo v-model:open="showCreateVideo" @uploaded="handleRefresh" />
+    <UploadVideo
+      v-model:open="showCreateVideo"
+      :account-id="accountId"
+      @uploaded="handleRefresh"
+    />
   </Page>
 </template>

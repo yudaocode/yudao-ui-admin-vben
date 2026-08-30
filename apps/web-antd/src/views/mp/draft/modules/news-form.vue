@@ -16,6 +16,7 @@ import CoverSelect from './cover-select.vue';
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
+  accountId: number;
   isCreating: boolean;
   modelValue: MpDraftApi.NewsItem[] | null;
 }>();
@@ -230,6 +231,7 @@ function plusNews() {
           <Col :span="12">
             <CoverSelect
               v-model="activeNewsItem"
+              :account-id="accountId"
               :is-first="activeNewsIndex === 0"
             />
           </Col>
