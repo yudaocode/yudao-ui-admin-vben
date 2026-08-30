@@ -247,6 +247,7 @@ watch(
       v-model="formOpen"
       :title="formData?.id ? '编辑人员' : '添加人员'"
       width="520px"
+      :append-to-body="true"
     >
       <Form class="mx-4" />
       <template #footer>

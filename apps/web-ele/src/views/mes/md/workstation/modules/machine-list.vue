@@ -226,7 +226,12 @@ watch(
       </template>
     </Grid>
 
-    <ElDialog v-model="formOpen" title="添加设备" width="520px">
+    <ElDialog
+      v-model="formOpen"
+      title="添加设备"
+      width="520px"
+      :append-to-body="true"
+    >
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

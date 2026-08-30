@@ -203,6 +203,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="供应商选择"
     width="70%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

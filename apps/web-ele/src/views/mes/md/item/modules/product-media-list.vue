@@ -277,6 +277,7 @@ watch(
       v-model="formOpen"
       :title="`${formData?.id ? '编辑' : '新增'} ${title}`"
       width="500px"
+      :append-to-body="true"
     >
       <Form class="mx-4" />
       <template #footer>
