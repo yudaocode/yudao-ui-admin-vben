@@ -98,8 +98,7 @@ async function loadThingModel(productId: number) {
 }
 
 /** 产品变化时清空设备 / 消息 / 标识符 */
-function handleProductChange(rowIndex: number) {
-  const row = formData.value[rowIndex];
+function handleProductChange(row: any) {
   row.deviceId = 0;
   row.method = undefined;
   row.identifier = undefined;
@@ -107,8 +106,7 @@ function handleProductChange(rowIndex: number) {
 }
 
 /** 消息方法变化时清空标识符 + 按需加载物模型 */
-async function handleMethodChange(rowIndex: number) {
-  const row = formData.value[rowIndex];
+async function handleMethodChange(row: any) {
   row.identifier = undefined;
   if (shouldShowIdentifierSelect(row) && row.productId) {
     row.identifierLoading = true;
@@ -211,9 +209,9 @@ defineExpose({ validate, getData, setData });
 <template>
   <div>
     <Grid>
-      <template #productId="{ rowIndex }">
+      <template #productId="{ row }">
         <Select
-          v-model:value="formData[rowIndex].productId"
+          v-model:value="row.productId"
           placeholder="请选择产品"
           show-search
           allow-clear
@@ -225,12 +223,12 @@ defineExpose({ validate, getData, setData });
             productList.map((p: any) => ({ label: p.name, value: p.id }))
           "
           class="w-full"
-          @change="() => handleProductChange(rowIndex)"
+          @change="() => handleProductChange(row)"
         />
       </template>
-      <template #deviceId="{ rowIndex }">
+      <template #deviceId="{ row }">
         <Select
-          v-model:value="formData[rowIndex].deviceId"
+          v-model:value="row.deviceId"
           placeholder="请选择设备"
           show-search
           allow-clear
@@ -240,7 +238,7 @@ defineExpose({ validate, getData, setData });
           "
           :options="[
             { label: '全部设备', value: 0 },
-            ...getFilteredDevices(formData[rowIndex].productId).map(
+            ...getFilteredDevices(row.productId).map(
               (d: any) => ({
                 label: d.deviceName,
                 value: d.id,
@@ -250,9 +248,9 @@ defineExpose({ validate, getData, setData });
           class="w-full"
         />
       </template>
-      <template #method="{ rowIndex }">
+      <template #method="{ row }">
         <Select
-          v-model:value="formData[rowIndex].method"
+          v-model:value="row.method"
           placeholder="请选择消息"
           show-search
           allow-clear
@@ -267,22 +265,22 @@ defineExpose({ validate, getData, setData });
             }))
           "
           class="w-full"
-          @change="() => handleMethodChange(rowIndex)"
+          @change="() => handleMethodChange(row)"
         />
       </template>
-      <template #identifier="{ rowIndex }">
+      <template #identifier="{ row }">
         <Select
-          v-if="shouldShowIdentifierSelect(formData[rowIndex])"
-          v-model:value="formData[rowIndex].identifier"
+          v-if="shouldShowIdentifierSelect(row)"
+          v-model:value="row.identifier"
           placeholder="请选择标识符"
           show-search
           allow-clear
-          :loading="formData[rowIndex].identifierLoading"
+          :loading="row.identifierLoading"
           :filter-option="
             (input: string, option: any) =>
               option.label.toLowerCase().includes(input.toLowerCase())
           "
-          :options="getThingModelOptions(formData[rowIndex])"
+          :options="getThingModelOptions(row)"
           class="w-full"
         />
         <span v-else class="text-xs text-muted-foreground">-</span>
