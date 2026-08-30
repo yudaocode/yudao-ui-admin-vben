@@ -15,6 +15,7 @@ import {
   message,
   Row,
   Space,
+  TabPane,
   Tabs,
   Tooltip,
 } from 'antdv-next';
@@ -94,14 +95,15 @@ async function loadProcessDefinitionList() {
 
 /** 搜索流程 */
 function handleQuery() {
-  if (searchName.value.trim()) {
+  const keyword = searchName.value.trim().toLowerCase();
+  if (keyword) {
     // 如果有搜索关键字，进行过滤
     filteredProcessDefinitionList.value = processDefinitionList.value.filter(
       (definition: any) =>
-        definition.name.toLowerCase().includes(searchName.value.toLowerCase()),
+        definition.name.toLowerCase().includes(keyword),
     );
     // 如果有匹配，切换到第一个包含匹配结果的分类
-    activeCategory.value = availableCategories.value[0]?.name;
+    activeCategory.value = availableCategories.value[0]?.code;
   } else {
     // 如果没有搜索关键字，恢复所有数据
     filteredProcessDefinitionList.value = processDefinitionList.value;
@@ -202,7 +204,7 @@ onMounted(() => {
               class="!w-50%"
               placeholder="请输入流程名称检索"
               allow-clear
-              @input="handleQuery"
+              @change="handleQuery"
               @clear="handleQuery"
             />
           </div>

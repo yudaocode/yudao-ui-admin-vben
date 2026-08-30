@@ -141,7 +141,7 @@ async function initProcessInfo(row: any, formVariables?: any) {
     if (formVariables) {
       for (const key in formVariables) {
         if (!allowedFields.has(key)) {
-          delete formVariables.key;
+          Reflect.deleteProperty(formVariables, key);
         }
       }
     }
