@@ -116,7 +116,7 @@ catalog:
   bpmn-js-properties-panel: 5.54.0
   bpmn-js-token-simulation: ^0.39.4
   cac: ^7.0.0
-  camunda-bpmn-moddle: ^7.0.2
+  camunda-bpmn-moddle: ^8.0.1
   chalk: ^5.6.2
   cheerio: ^1.2.0
   circular-dependency-scanner: ^3.0.1

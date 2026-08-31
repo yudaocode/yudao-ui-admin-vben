@@ -35,7 +35,7 @@ catalogs:
       version: 3.3.3
     '@form-create/antd-designer':
       specifier: ^3.4.0
-      version: 3.4.0
+      version: 3.5.0
     '@form-create/antdv-next':
       specifier: ^3.3.3
       version: 3.3.3
@@ -241,8 +241,8 @@ catalogs:
       specifier: ^7.0.0
       version: 7.0.0
     camunda-bpmn-moddle:
-      specifier: ^7.0.2
-      version: 7.0.2
+      specifier: ^8.0.1
+      version: 8.0.1
     chalk:
       specifier: ^5.6.2
       version: 5.6.2
@@ -747,7 +747,7 @@ importers:
         version: 3.3.3(vue@3.5.42(typescript@6.0.3))
       '@form-create/antd-designer':
         specifier: 'catalog:'
-        version: 3.4.0(vue@3.5.42(typescript@6.0.3))
+        version: 3.5.0(vue@3.5.42(typescript@6.0.3))
       '@tinymce/tinymce-vue':
         specifier: 'catalog:'
         version: 6.3.0(tinymce@7.9.3)(vue@3.5.42(typescript@6.0.3))
@@ -813,13 +813,13 @@ importers:
         version: 18.25.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
+        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
       camunda-bpmn-moddle:
         specifier: 'catalog:'
-        version: 7.0.2
+        version: 8.0.1
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.3
@@ -879,7 +879,7 @@ importers:
     dependencies:
       '@form-create/antd-designer':
         specifier: 'catalog:'
-        version: 3.4.0(vue@3.5.42(typescript@6.0.3))
+        version: 3.5.0(vue@3.5.42(typescript@6.0.3))
       '@form-create/antdv-next':
         specifier: 'catalog:'
         version: 3.3.3(vue@3.5.42(typescript@6.0.3))
@@ -948,13 +948,13 @@ importers:
         version: 18.25.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
+        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
       camunda-bpmn-moddle:
         specifier: 'catalog:'
-        version: 7.0.2
+        version: 8.0.1
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.3
@@ -1080,13 +1080,13 @@ importers:
         version: 18.25.1
       bpmn-js-properties-panel:
         specifier: 'catalog:'
-        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
+        version: 5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1)
       bpmn-js-token-simulation:
         specifier: 'catalog:'
         version: 0.39.4
       camunda-bpmn-moddle:
         specifier: 'catalog:'
-        version: 7.0.2
+        version: 8.0.1
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.3
@@ -4034,8 +4034,8 @@ packages:
     peerDependencies:
       vue: ^3.5.40
 
-  '@form-create/antd-designer@3.4.0':
-    resolution: {integrity: sha512-55wFRbsLJ02Fj4+CLJK2HJ628xsQRafzlmz2yhHFk99O8eMl523QpxD/0O4yH7e+azqakxW6H5WoFexG78qSgA==}
+  '@form-create/antd-designer@3.5.0':
+    resolution: {integrity: sha512-BdDe7o/z4yMowxAG/votNnDqzdFvz/T8CI9tkwSzZYbjWPsyz3K0e7mZslHS9mOSl/nd66KI5jToCjaGZ9T7hw==}
     peerDependencies:
       vue: ^3.5.40
 
@@ -4316,6 +4316,9 @@ packages:
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
+
+  '@jridgewell/sourcemap-codec@1.6.0':
+    resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
@@ -7123,8 +7126,8 @@ packages:
       camunda-bpmn-moddle: '>= 7'
       zeebe-bpmn-moddle: '>= 0.18'
 
-  camunda-bpmn-moddle@7.0.2:
-    resolution: {integrity: sha512-I8Hs3bXBOOyBkhjAdaxct9ppbX/uYcLwgvUljgNumXtIzBSAP1gWy/MlJOE6WYqVZO9eLw6+0w42W4pYIMlsCg==}
+  camunda-bpmn-moddle@8.0.1:
+    resolution: {integrity: sha512-vBhESk3Lpt/wGsB/cT3HnRpIC/mUmUpH/sQ8eSF1Ba1ewS3W8LoSTKzmTO9ZE0iCBZ+wfEcD9+V9tl2qh9nXsA==}
 
   caniuse-lite@1.0.30001810:
     resolution: {integrity: sha512-TITQPUkaz+aVk5GL6NhOdwk1aEaNTSDPsGFWrTuhKGtjTF70jL/Oht2W4c6rXUe5fu7Ie19VIahAXHIIiWWNeg==}
@@ -14244,7 +14247,7 @@ snapshots:
       '@form-create/utils': 3.3.0
       vue: 3.5.42(typescript@6.0.3)
 
-  '@form-create/antd-designer@3.4.0(vue@3.5.42(typescript@6.0.3))':
+  '@form-create/antd-designer@3.5.0(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@form-create/ant-design-vue': 3.3.3(vue@3.5.42(typescript@6.0.3))
       '@form-create/component-wangeditor': 3.3.0(vue@3.5.42(typescript@6.0.3))
@@ -14254,6 +14257,7 @@ snapshots:
       js-beautify: 1.15.4
       marked: 17.0.6
       signature_pad: 5.1.4
+      sortablejs: 1.14.0
       vue: 3.5.42(typescript@6.0.3)
       vuedraggable: 4.1.0(vue@3.5.42(typescript@6.0.3))
 
@@ -14585,6 +14589,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
+
+  '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
@@ -17178,13 +17184,13 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  bpmn-js-properties-panel@5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1):
+  bpmn-js-properties-panel@5.54.0(@bpmn-io/properties-panel@3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.25.1)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)))(diagram-js@15.24.1):
     dependencies:
       '@bpmn-io/extract-process-variables': 2.2.1
       '@bpmn-io/properties-panel': 3.52.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9))
       array-move: 4.0.0
       bpmn-js: 18.25.1
-      camunda-bpmn-js-behaviors: 1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1))
+      camunda-bpmn-js-behaviors: 1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1))
       diagram-js: 15.24.1
       ids: 3.0.2
       min-dash: 5.1.0
@@ -17309,15 +17315,18 @@ snapshots:
 
   camelcase@8.0.0: {}
 
-  camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@7.0.2)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)):
+  camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.25.1)(camunda-bpmn-moddle@8.0.1)(zeebe-bpmn-moddle@1.18.0(moddle@8.2.1)):
     dependencies:
       bpmn-js: 18.25.1
-      camunda-bpmn-moddle: 7.0.2
+      camunda-bpmn-moddle: 8.0.1
       ids: 3.0.2
       min-dash: 5.1.0
       zeebe-bpmn-moddle: 1.18.0(moddle@8.2.1)
 
-  camunda-bpmn-moddle@7.0.2: {}
+  camunda-bpmn-moddle@8.0.1:
+    dependencies:
+      bpmn-moddle: 10.2.0
+      moddle: 8.2.1
 
   caniuse-lite@1.0.30001810: {}
 
@@ -18578,7 +18587,7 @@ snapshots:
 
   esrap@2.3.6(@typescript-eslint/types@8.68.0):
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
     optionalDependencies:
       '@typescript-eslint/types': 8.68.0
 
@@ -19882,11 +19891,11 @@ snapshots:
 
   magic-string@0.30.21:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   magic-string@1.2.3:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   magicast@0.5.4:
     dependencies:
@@ -21814,7 +21823,7 @@ snapshots:
   svelte@5.56.10(@typescript-eslint/types@8.68.0):
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
       '@sveltejs/acorn-typescript': 1.0.13(acorn@8.18.0)
       '@types/estree': 1.0.9
       '@types/trusted-types': 2.0.7
