@@ -36,7 +36,7 @@ overrides:
   pinia: 'catalog:'
   vue: 'catalog:'
 catalog:
-  '@ast-grep/napi': ^0.44.1
+  '@ast-grep/napi': ^0.45.2
   '@changesets/changelog-github': ^0.7.0
   '@changesets/cli': ^2.31.1
   '@changesets/git': ^3.0.4
@@ -58,7 +58,7 @@ catalog:
   '@intlify/core-base': ^11.4.7
   '@intlify/unplugin-vue-i18n': ^11.2.4
   '@jspm/generator': ^2.16.3
-  '@lucide/vue': ^1.26.0
+  '@lucide/vue': ^1.35.0
   '@manypkg/get-packages': ^3.1.0
   '@microsoft/fetch-event-source': ^2.0.1
   '@nolebase/vitepress-plugin-git-changelog': ^2.18.2
@@ -102,7 +102,7 @@ catalog:
   '@vitejs/plugin-vue': ^6.0.8
   '@vitejs/plugin-vue-jsx': ^5.1.6
   '@vue/shared': ^3.5.40
-  '@vue/test-utils': ^2.4.11
+  '@vue/test-utils': ^2.5.0
   '@vueuse/core': ^14.3.0
   '@vueuse/integrations': ^14.3.0
   '@vueuse/motion': ^3.0.3
@@ -112,9 +112,9 @@ catalog:
   axios: ^1.18.1
   axios-mock-adapter: ^2.1.0
   benz-amr-recorder: ^1.1.5
-  bpmn-js: ^18.25.1
-  bpmn-js-properties-panel: 5.54.0
-  bpmn-js-token-simulation: ^0.39.4
+  bpmn-js: ^18.26.0
+  bpmn-js-properties-panel: 5.65.0
+  bpmn-js-token-simulation: ^0.40.0
   cac: ^7.0.0
   camunda-bpmn-moddle: ^7.0.2
   chalk: ^5.6.2
@@ -134,11 +134,11 @@ catalog:
   dayjs: ^1.11.21
   defu: ^6.1.7
   dhtmlx-gantt: ^9.1.4
-  diagram-js: ^15.24.1
+  diagram-js: ^15.25.0
   dotenv: ^17.4.2
   echarts: ^6.1.0
   element-plus: ^2.14.3
-  es-toolkit: ^1.49.0
+  es-toolkit: ^1.52.0
   eslint: ^10.9.0
   eslint-plugin-better-tailwindcss: ^4.7.0
   eslint-plugin-command: ^3.5.3
@@ -154,7 +154,7 @@ catalog:
   find-up: ^8.0.0
   get-port: ^7.2.0
   globals: ^17.7.0
-  happy-dom: ^20.11.6
+  happy-dom: ^20.11.12
   highlight.js: ^11.11.1
   html-minifier-terser: ^7.2.0
   is-ci: ^4.1.0
@@ -162,7 +162,7 @@ catalog:
   jsencrypt: ^3.5.4
   json-bigint: ^1.0.0
   knip: ^6.29.0
-  lefthook: ^2.1.10
+  lefthook: ^2.1.12
   livekit-client: ^2.22.1
   lodash.clonedeep: ^4.5.0
   markdown-it: ^14.3.0
@@ -171,11 +171,11 @@ catalog:
   markmap-toolbar: ^0.18.12
   markmap-view: ^0.18.12
   medium-zoom: ^1.1.0
-  naive-ui: ^2.44.1
+  naive-ui: ^2.45.3
   nitropack: ^2.13.4
   nprogress: ^0.2.0
   ora: ^9.4.1
-  oxfmt: ^0.60.0
+  oxfmt: ^0.65.0
   oxlint: ^1.79.0
   oxlint-tsgolint: ^0.25.0
   pinia: ^4.0.2
@@ -207,7 +207,7 @@ catalog:
   stylelint-scss: ^7.2.0
   tailwind-merge: ^3.6.0
   tailwindcss: ^4.3.3
-  tdesign-vue-next: ^1.20.3
+  tdesign-vue-next: ^1.20.7
   theme-colors: ^0.1.0
   tinymce: ^7.9.3
   tippy.js: ^6.3.7
@@ -233,13 +233,13 @@ catalog:
   vue-eslint-parser: ^10.4.1
   vue-i18n: ^11.4.7
   vue-json-pretty: ^2.6.0
-  vue-router: ^5.2.0
+  vue-router: ^5.3.0
   vue-tippy: ^6.7.1
   vue-tsc: ^3.3.11
   vue3-print-nb: ^0.1.4
   vue3-signature: ^0.4.4
   vuedraggable: ^4.1.0
-  vxe-pc-ui: ^4.16.19
+  vxe-pc-ui: ^4.17.20
   vxe-table: ^4.20.6
   watermark-js-plus: ^1.6.6
   yaml-eslint-parser: ^2.1.0
