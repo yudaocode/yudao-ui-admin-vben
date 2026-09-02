@@ -75,6 +75,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
+      // 是否需要设置访问租户；该配置仅供前端请求拦截器使用，不作为请求头发送
+      const isVisitTenant = config.headers.get('isVisitTenant') !== false;
+      config.headers.delete('isVisitTenant');
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
@@ -83,9 +86,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         ? accessStore.tenantId
         : undefined;
       // 只有登录时，才设置 visit-tenant-id 访问租户
-      config.headers['visit-tenant-id'] = tenantEnable
-        ? accessStore.visitTenantId
-        : undefined;
+      config.headers['visit-tenant-id'] =
+        tenantEnable && isVisitTenant ? accessStore.visitTenantId : undefined;
 
       // 是否 API 加密
       if ((config.headers || {}).isEncrypt) {
