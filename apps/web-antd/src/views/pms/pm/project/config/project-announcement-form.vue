@@ -13,6 +13,7 @@ import {
   getProjectAnnouncement,
   updateProjectAnnouncement,
 } from '#/api/pms/pm/project/announcement';
+import { $t } from '#/locales';
 
 import { useAnnouncementFormSchema } from './data';
 
@@ -24,7 +25,9 @@ const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于�
 
 const formType = ref<'create' | 'update'>('create'); // 表单的类型：create - 新增；update - 修改
 const dialogTitle = computed(() =>
-  formType.value === 'create' ? '发布公告' : '编辑公告',
+  formType.value === 'create'
+    ? $t('ui.actionTitle.create', ['公告'])
+    : $t('ui.actionTitle.edit', ['公告']),
 ); // 弹窗的标题
 
 const [Form, formApi] = useVbenForm({

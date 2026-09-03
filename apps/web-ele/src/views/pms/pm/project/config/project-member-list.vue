@@ -53,6 +53,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [ProjectMemberFormModal, projectMemberFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectMemberForm,
 });
 

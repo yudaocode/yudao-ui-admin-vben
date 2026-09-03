@@ -54,8 +54,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
       title: '更新时间',
       width: 180,
       align: 'center',
-      // TODO @AI：对齐 system user，用 formatter: 'formatDateTime'。antdv-next ColorPicker 多了 valueFormat，三端 schema 要对齐。
-      slots: { default: 'updateTime' },
+      formatter: 'formatDateTime',
     },
   ];
 }

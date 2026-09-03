@@ -57,6 +57,7 @@ const unassignedStatuses = ref<PmsWorkItemStatusApi.WorkItemStatus[]>([]); // �
 const defaultStatusId = ref<number>(); // 初始状态编号
 
 const [StatusDeleteFormModal, statusDeleteFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: StatusDeleteForm,
 });
 

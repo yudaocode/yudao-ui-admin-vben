@@ -107,7 +107,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectTemplateApi.Proj
       width: 180,
       align: 'center',
       // TODO @AI：对齐 system user，用 formatter: 'formatDateTime'，不要 slots。
-      slots: { default: 'createTime' },
+      formatter: 'formatDateTime',
     },
     {
       title: '操作',

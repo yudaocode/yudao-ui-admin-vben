@@ -70,7 +70,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeLibraryApi.Kno
       title: '创建时间',
       width: 180,
       // TODO @AI：对齐 system user，用 formatter: 'formatDateTime'，不要 slots；index.vue 里对应 slot 删掉。
-      slots: { default: 'createTime' },
+      formatter: 'formatDateTime',
     },
     {
       field: 'favoriteStatus',

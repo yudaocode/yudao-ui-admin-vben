@@ -24,6 +24,7 @@ defineOptions({ name: 'PmsKnowledgeLabelManageDialog' });
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const [KnowledgeLabelFormModal, knowledgeLabelFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: KnowledgeLabelForm,
 });
 

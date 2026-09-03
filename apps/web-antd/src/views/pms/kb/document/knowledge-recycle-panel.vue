@@ -5,7 +5,6 @@ import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 import { computed, ref } from 'vue';
 
 import { confirm } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import { Button, message, Tabs } from 'ant-design-vue';
 
@@ -173,9 +172,6 @@ function countByType(type: number) {
           {{
             row.fileSize == null ? '-' : formatKnowledgeFileSize(row.fileSize)
           }}
-        </template>
-        <template #deleteTime="{ row }">
-          {{ formatDateTime(row.deleteTime) }}
         </template>
         <template #actions="{ row }">
           <TableAction

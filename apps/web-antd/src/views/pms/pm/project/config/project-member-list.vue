@@ -5,7 +5,7 @@ import type { PmsProjectMemberApi } from '#/api/pms/pm/project/member';
 
 import { onMounted, ref } from 'vue';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { Avatar, Button, message, Tag } from 'ant-design-vue';
 
@@ -53,6 +53,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 const [ProjectMemberFormModal, projectMemberFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectMemberForm,
 });
 
@@ -71,14 +72,9 @@ function handleEdit(member: PmsProjectMemberApi.ProjectMember) {
 
 /** 删除项目成员 */
 async function handleDelete(member: PmsProjectMemberApi.ProjectMember) {
-  try {
-    // 删除的二次确认
-    await confirm(`确认将“${member.nickname}”移出项目吗？`);
-    // 删除成员并刷新列表
-    await deleteProjectMember(props.project.id, member.userId);
-    message.success('成员已移出项目');
-    gridApi.query();
-  } catch {}
+  await deleteProjectMember(props.project.id, member.userId);
+  message.success('成员已移出项目');
+  gridApi.query();
 }
 
 /** 初始化 */
@@ -140,7 +136,10 @@ onMounted(() => {
               icon: ACTION_ICON.DELETE,
               auth: ['pms:pm:project-member:update'],
               disabled: row.creatorStatus,
-              onClick: handleDelete.bind(null, row),
+              popConfirm: {
+                title: `确认将“${row.nickname}”移出项目吗？`,
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

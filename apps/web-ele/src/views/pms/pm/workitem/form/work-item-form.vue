@@ -120,6 +120,7 @@ function updateTypeSchema() {
 }
 
 const [LabelManageModal, labelManageModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemLabelList,
 });
 

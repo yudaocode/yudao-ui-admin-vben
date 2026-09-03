@@ -43,6 +43,7 @@ const configurationList = computed(() =>
 ); // 当前项目可配置的事项类型
 
 const [WorkItemStatusListModal, workItemStatusListModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemStatusList,
 });
 

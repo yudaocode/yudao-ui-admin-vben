@@ -43,6 +43,7 @@ const [IterationFormModal, iterationFormModalApi] = useVbenModal({
   // TODO @AI：对齐 system user，补 destroyOnClose。删除改 TableAction popConfirm，不要 confirm + empty catch。
 });
 const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: IterationStartForm,
 });
 

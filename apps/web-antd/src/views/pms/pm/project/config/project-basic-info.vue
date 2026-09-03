@@ -27,6 +27,7 @@ const emit = defineEmits<{ success: [] }>(); // 项目更新成功事件
 const { push } = useRouter(); // 路由操作
 
 const [ProjectFormModal, projectFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectForm,
 });
 

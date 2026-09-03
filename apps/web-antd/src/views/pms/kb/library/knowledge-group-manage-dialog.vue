@@ -28,6 +28,7 @@ const emit = defineEmits(['success']); // 定义 success 事件，用于操作�
 const saving = ref(false); // 保存排序中
 
 const [KnowledgeGroupFormModal, knowledgeGroupFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: KnowledgeGroupForm,
 });
 

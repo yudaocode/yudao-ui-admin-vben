@@ -478,9 +478,6 @@ onBeforeUnmount(() => {
         </Button>
         <span v-else>{{ formatDateTime(row.endTime) || '-' }}</span>
       </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
-      </template>
       <template #iterationName="{ row }">
         <Button
           type="link"
@@ -490,12 +487,6 @@ onBeforeUnmount(() => {
         >
           {{ row.name }}
         </Button>
-      </template>
-      <template #iterationStartTime="{ row }">
-        {{ formatDateTime(row.startTime) }}
-      </template>
-      <template #iterationEndTime="{ row }">
-        {{ formatDateTime(row.endTime) }}
       </template>
     </Grid>
 

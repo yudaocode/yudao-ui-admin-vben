@@ -242,9 +242,11 @@ function handleSceneChange(key: number | string) {
 }
 
 const [ProjectFormModal, projectFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectForm,
 });
 const [ProjectGroupListModal, projectGroupListModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectGroupList,
 });
 

@@ -19,11 +19,10 @@ import LabelForm from './label-form.vue';
 
 defineOptions({ name: 'PmsWorkItemLabelList' });
 
-// TODO @AI：补 destroyOnClose。操作继续走 TableAction。
-
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const [LabelFormModal, labelFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: LabelForm,
 });
 

@@ -58,6 +58,8 @@ import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
 defineOptions({ name: 'PmsPlanningBoard' });
 
 // TODO @AI：看板可以保留自定义拖拽；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts，不要页面里 dayjs.format。
+// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；补显式导入后验证拖拽页的 loading 分支。
+// TODO @AI：getPlanningData 先分页取全部迭代/待规划事项，再对每个迭代逐一分页取工作项，形成 N+1 且请求量随迭代数增长；优先补聚合规划接口或一次查询返回分组数据。
 
 const props = defineProps<{
   editable: boolean;
@@ -97,15 +99,18 @@ const quickIterationName = ref(''); // 快速创建迭代名称
 const draggedWorkItemId = ref<number>(); // 当前拖拽工作项编号
 
 const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemForm,
 });
 const [WorkItemDetailDrawer, workItemDetailDrawerApi] = useVbenDrawer({
   connectedComponent: WorkItemDetail,
 });
 const [IterationFormModal, iterationFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: IterationForm,
 });
 const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: IterationStartForm,
 });
 
@@ -446,7 +451,7 @@ onMounted(() => {
 
 <template>
   <!-- 待规划工作项 -->
-  <div v-loading="loading">
+  <Spin :spinning="loading">
     <!-- 搜索与布局 -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
       <Input
@@ -811,5 +816,5 @@ onMounted(() => {
     <WorkItemDetailDrawer @success="getPlanningData" />
     <IterationFormModal @success="getPlanningData" />
     <IterationStartFormModal @success="getPlanningData" />
-  </div>
+  </Spin>
 </template>

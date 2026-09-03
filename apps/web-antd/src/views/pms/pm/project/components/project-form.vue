@@ -9,6 +9,7 @@ import { message, Radio } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createProject, getProject, updateProject } from '#/api/pms/pm/project';
+import { $t } from '#/locales';
 import {
   PmsProjectLevel,
   PmsProjectType,
@@ -18,13 +19,14 @@ import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectForm' });
 
-// TODO @AI：标题对齐 system user 用 $t('ui.actionTitle.create/edit')；项目类型不要 slot 手写 Radio，放到 schema 的 RadioGroup。connectedComponent 补 destroyOnClose。
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 
 const formType = ref<'create' | 'update'>('create'); // 表单类型：create - 新增；update - 修改
 const formData = ref<Partial<PmsProjectApi.Project>>(getDefaultFormData()); // 表单数据
 const dialogTitle = computed(() =>
-  formType.value === 'create' ? '新增' : '修改',
+  formType.value === 'create'
+    ? $t('ui.actionTitle.create', ['项目'])
+    : $t('ui.actionTitle.edit', ['项目']),
 ); // 弹窗标题
 
 /** 项目类型说明 */

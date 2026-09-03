@@ -123,6 +123,7 @@ async function getWorkItemDetail(id: number) {
 }
 
 const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemForm,
 });
 

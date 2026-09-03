@@ -2,10 +2,9 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectTemplateApi } from '#/api/pms/pm/project/template';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
-import { formatDateTime } from '@vben/utils';
 
 import { message, Tag } from 'antdv-next';
 
@@ -35,18 +34,11 @@ function openForm(formType: 'create' | 'update', id?: number) {
   projectTemplateFormModalApi.setData({ formType, id }).open();
 }
 
-/** 删除按钮操作 */
+/** 删除项目模板 */
 async function handleDelete(id: number) {
-  try {
-    // 删除的二次确认
-    await confirm('是否确认删除该项目模板？');
-    // 发起删除
-    await deleteProjectTemplate(id);
-    message.success('删除成功');
-    // 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await deleteProjectTemplate(id);
+  message.success('删除成功');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -110,9 +102,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #boardCount="{ row }">
         {{ row.boards.length }}
       </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -129,7 +118,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['pms:pm:project-template:delete'],
-              onClick: handleDelete.bind(null, row.id!),
+              popConfirm: {
+                title: '是否确认删除该项目模板？',
+                confirm: handleDelete.bind(null, row.id!),
+              },
             },
           ]"
         />

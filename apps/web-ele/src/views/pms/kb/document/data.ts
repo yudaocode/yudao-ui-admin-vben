@@ -133,7 +133,7 @@ export function useRecycleGridColumns(
       field: 'deleteTime',
       title: '删除时间',
       width: 180,
-      slots: { default: 'deleteTime' },
+      formatter: 'formatDateTime',
     },
     {
       title: '操作',

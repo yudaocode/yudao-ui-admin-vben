@@ -2,8 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
@@ -31,30 +30,16 @@ function handleRefresh() {
 
 /** 恢复回收站项目 */
 async function handleRestore(project: PmsProjectApi.Project) {
-  try {
-    // 1. 恢复的二次确认
-    await confirm(`确认恢复项目“${project.name}”吗？`);
-    // 2. 恢复项目
-    await restoreProject(project.id);
-    ElMessage.success('项目已恢复');
-    // 3. 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await restoreProject(project.id);
+  ElMessage.success('项目已恢复');
+  handleRefresh();
 }
 
 /** 彻底删除回收站项目 */
 async function handleDelete(project: PmsProjectApi.Project) {
-  try {
-    // 1. 删除的二次确认
-    await confirm(`彻底删除后不可恢复，确认删除项目“${project.name}”吗？`);
-    // 2. 彻底删除项目
-    await deleteProject(project.id);
-    ElMessage.success('项目已彻底删除');
-    // 3. 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await deleteProject(project.id);
+  ElMessage.success('项目已彻底删除');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -94,9 +79,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <!-- 回收站项目列表 -->
     <Grid>
-      <template #recycleTime="{ row }">
-        {{ formatDateTime(row.recycleTime) }}
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
@@ -106,7 +88,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               auth: ['pms:pm:project:update'],
               ifShow: row.adminStatus,
-              onClick: handleRestore.bind(null, row),
+              popConfirm: {
+                title: `确认恢复项目“${row.name}”吗？`,
+                confirm: handleRestore.bind(null, row),
+              },
             },
             {
               label: '彻底删除',
@@ -114,7 +99,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               auth: ['pms:pm:project:delete'],
               ifShow: row.ownerStatus,
-              onClick: handleDelete.bind(null, row),
+              popConfirm: {
+                title: `彻底删除后不可恢复，确认删除项目“${row.name}”吗？`,
+                confirm: handleDelete.bind(null, row),
+              },
             },
           ]"
         />

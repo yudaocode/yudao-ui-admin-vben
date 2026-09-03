@@ -9,7 +9,7 @@ import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart, formatDateTime } from '@vben/utils';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
   Button,
@@ -127,6 +127,7 @@ function resetQuery() {
 }
 
 const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemForm,
 });
 const [WorkItemDetailDrawer, workItemDetailDrawerApi] = useVbenDrawer({
@@ -340,9 +341,6 @@ defineExpose({ refresh: () => gridApi.reload() });
       </template>
       <template #progress="{ row }">
         <Progress :percent="row.progress" />
-      </template>
-      <template #endTime="{ row }">
-        {{ formatDateTime(row.endTime) }}
       </template>
     </Grid>
 

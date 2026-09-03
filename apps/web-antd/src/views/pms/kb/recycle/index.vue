@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import { Alert, message } from 'ant-design-vue';
 
@@ -91,9 +90,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     />
     <!-- 列表 -->
     <Grid>
-      <template #deleteTime="{ row }">
-        {{ formatDateTime(row.deleteTime) }}
-      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[

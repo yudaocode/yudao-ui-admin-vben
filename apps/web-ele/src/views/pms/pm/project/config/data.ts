@@ -42,7 +42,7 @@ export function useAnnouncementColumns(
       title: '发布时间',
       width: 180,
       // TODO @AI：对齐 system user，用 formatter: 'formatDateTime'，不要 slots。
-      slots: { default: 'createTime' },
+      formatter: 'formatDateTime',
     },
     ...(editable
       ? [

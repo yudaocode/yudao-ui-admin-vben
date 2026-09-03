@@ -20,6 +20,7 @@ import ProjectMemberList from './project-member-list.vue';
 defineOptions({ name: 'PmsProjectConfig' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。页签内容已经拆组件了，加载态对齐 system user 用 lock/Spin。
+// TODO @AI：模板已使用 <Spin>，但当前 ant-design-vue 导入未包含 Spin；补显式导入并用 system/user 的写法验证构建。
 
 type ProjectConfigTab = 'announcement' | 'basic' | 'configuration' | 'member';
 
@@ -87,7 +88,7 @@ watch(
 
 <template>
   <Page auto-content-height>
-    <div v-loading="loading" class="p-4">
+    <Spin :spinning="loading" class="p-4">
       <!-- 项目设置标题 -->
       <div class="mb-4 flex items-center gap-3">
         <div
@@ -135,6 +136,6 @@ watch(
           />
         </Tabs.TabPane>
       </Tabs>
-    </div>
+    </Spin>
   </Page>
 </template>

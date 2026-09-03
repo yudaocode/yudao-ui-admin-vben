@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDateTime } from '@vben/utils';
 
 import { Button, Col, Empty, Input, Row } from 'antdv-next';
 
@@ -44,6 +43,7 @@ const selectedLabel = computed(() =>
 
 const [KnowledgeLabelManageDialogModal, knowledgeLabelManageDialogModalApi] =
   useVbenModal({
+  destroyOnClose: true,
     connectedComponent: KnowledgeLabelManageDialog,
   });
 
@@ -201,9 +201,6 @@ onMounted(() => {
               <Button type="link" @click="openDocumentDetail(row)">
                 {{ row.title }}
               </Button>
-            </template>
-            <template #updateTime="{ row }">
-              {{ formatDateTime(row.updateTime) }}
             </template>
           </Grid>
           <Empty v-else description="暂无可用标签" />

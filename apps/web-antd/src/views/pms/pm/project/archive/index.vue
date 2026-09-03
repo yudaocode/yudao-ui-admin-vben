@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -18,7 +18,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsProjectArchive' });
 
-// TODO @AI：恢复操作对齐 system user，用 TableAction popConfirm，不要 confirm + empty catch。归档列表是否也要搜索 form schema？补 toolbarConfig。
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -26,15 +25,9 @@ function handleRefresh() {
 
 /** 恢复归档项目 */
 async function handleRestore(project: PmsProjectApi.Project) {
-  try {
-    // 1. 恢复的二次确认
-    await confirm(`确认恢复项目“${project.name}”吗？`);
-    // 2. 恢复项目
-    await restoreProject(project.id);
-    message.success('项目已恢复');
-    // 3. 刷新列表
-    handleRefresh();
-  } catch {}
+  await restoreProject(project.id);
+  message.success('项目已恢复');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -78,7 +71,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'link',
               auth: ['pms:pm:project:update'],
               ifShow: () => row.adminStatus,
-              onClick: handleRestore.bind(null, row),
+              popConfirm: {
+                title: `确认恢复项目“${row.name}”吗？`,
+                confirm: handleRestore.bind(null, row),
+              },
             },
           ]"
         />

@@ -10,7 +10,6 @@ import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
-import { formatDateTime } from '@vben/utils';
 
 import {
   Avatar,
@@ -69,13 +68,16 @@ const activeGroupKey = computed({
 });
 
 const [KnowledgeLibraryFormModal, knowledgeLibraryFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: KnowledgeLibraryForm,
 });
 const [KnowledgeGroupFormModal, knowledgeGroupFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: KnowledgeGroupForm,
 });
 const [KnowledgeGroupManageDialogModal, knowledgeGroupManageDialogModalApi] =
   useVbenModal({
+  destroyOnClose: true,
     connectedComponent: KnowledgeGroupManageDialog,
   });
 
@@ -295,9 +297,6 @@ onMounted(async () => {
         <Tag :color="row.openStatus ? 'green' : 'default'">
           {{ row.openStatus ? '公开' : '私有' }}
         </Tag>
-      </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
       </template>
       <template #favoriteStatus="{ row }">
         <Switch

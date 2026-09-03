@@ -30,7 +30,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectApi.Project>['co
       field: 'recycleTime',
       title: '删除时间',
       width: 220,
-      slots: { default: 'recycleTime' },
+      formatter: 'formatDateTime',
     },
     {
       field: 'action',

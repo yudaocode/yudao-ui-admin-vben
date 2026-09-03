@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { PmsIterationApi } from '#/api/pms/pm/iteration';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
-// TODO @AI：useVbenForm 从 #/adapter/form 引入，对齐 system user；PMS 里好些 form 都从 @vben/common-ui 拿，三端一并改。
+import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
+// TODO @AI：useVbenForm 从 #/adapter/form 引入，对齐 system user；PMS 里好些 form 都从 @vben/common-ui 拿，三端一并改。
 
+import { useVbenForm } from '#/adapter/form';
 import { startIteration } from '#/api/pms/pm/iteration';
 
 import { useFormSchema } from './data';

@@ -36,6 +36,7 @@ const summary = ref<PmsWorkItemWorkLogApi.WorkItemWorkLogSummary>({
 }); // 工时汇总
 
 const [WorkLogFormModal, workLogFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkLogForm,
 });
 

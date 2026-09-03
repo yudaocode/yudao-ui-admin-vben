@@ -210,9 +210,11 @@ function getTypePercentage(count: number) {
 }
 
 const [IterationFormModal, iterationFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: IterationForm,
 });
 const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: IterationStartForm,
 });
 

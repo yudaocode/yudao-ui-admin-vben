@@ -32,6 +32,7 @@ import ProjectWorkLog from './project-work-log.vue';
 defineOptions({ name: 'PmsProjectDetail' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。三端详情页结构差一截，对齐页签、权限按钮和空态。
+// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；这不是可依赖全局注册的组件，需补导入并验证详情页构建。
 
 type ProjectDetailTab =
   | 'all'
@@ -190,7 +191,7 @@ watch(
 
 <template>
   <Page auto-content-height>
-    <div v-loading="loading" class="p-4">
+    <Spin :spinning="loading" class="p-4">
       <!-- 项目工作区标题 -->
       <div class="flex items-center justify-between gap-4 pb-4">
         <div class="flex min-w-0 items-center gap-3">
@@ -315,6 +316,6 @@ watch(
           />
         </Tabs.TabPane>
       </Tabs>
-    </div>
+    </Spin>
   </Page>
 </template>

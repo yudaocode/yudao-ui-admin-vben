@@ -143,7 +143,7 @@ export function useWorkItemColumns(): VxeTableGridOptions<PmsWorkbenchApi.Workbe
       field: 'createTime',
       title: '创建日期',
       width: 180,
-      slots: { default: 'createTime' },
+      formatter: 'formatDateTime',
     },
   ];
 }
@@ -180,13 +180,13 @@ export function useIterationColumns(): VxeTableGridOptions<PmsWorkbenchApi.Workb
       field: 'startTime',
       title: '开始日期',
       width: 180,
-      slots: { default: 'iterationStartTime' },
+      formatter: 'formatDateTime',
     },
     {
       field: 'endTime',
       title: '截止日期',
       width: 180,
-      slots: { default: 'iterationEndTime' },
+      formatter: 'formatDateTime',
     },
   ];
 }

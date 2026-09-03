@@ -4,8 +4,7 @@ import type { PmsProjectAnnouncementApi } from '#/api/pms/pm/project/announcemen
 
 import { ref } from 'vue';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
+import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Dropdown, Menu, MenuItem, message } from 'antdv-next';
 
@@ -21,6 +20,7 @@ import ProjectAnnouncementForm from './project-announcement-form.vue';
 defineOptions({ name: 'PmsProjectAnnouncementList' });
 
 // TODO @AI：删除改 TableAction popConfirm。createTime 走 formatter。补 destroyOnClose。
+// TODO @AI：模板使用了 <TableAction>，但脚本只导入 useVbenVxeGrid；按 system/user 显式从 #/adapter/vxe-table 导入，否则操作列会变成未注册组件。
 
 const props = defineProps<{ editable: boolean; projectId: number }>();
 
@@ -28,6 +28,7 @@ const total = ref(0); // 公告总数
 
 const [ProjectAnnouncementFormModal, projectAnnouncementFormModalApi] =
   useVbenModal({
+  destroyOnClose: true,
     connectedComponent: ProjectAnnouncementForm,
   });
 
@@ -63,18 +64,11 @@ function openForm(formType: 'create' | 'update', id?: number) {
     .open();
 }
 
-/** 删除按钮操作 */
+/** 删除公告 */
 async function handleDelete(id: number) {
-  try {
-    // 删除的二次确认
-    await confirm('是否确认删除该公告？');
-    // 发起删除
-    await deleteProjectAnnouncement(id);
-    message.success('删除成功');
-    // 刷新列表
-    await gridApi.query();
-  } catch {
-  }
+  await deleteProjectAnnouncement(id);
+  message.success('删除成功');
+  gridApi.query();
 }
 </script>
 
@@ -113,25 +107,27 @@ async function handleDelete(id: number) {
         </Dropdown>
         <span v-else>--</span>
       </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
-      </template>
       <template #action="{ row }">
-        <Button
-          v-access:code="['pms:pm:project:update']"
-          type="link"
-          @click="openForm('update', row.id)"
-        >
-          编辑
-        </Button>
-        <Button
-          v-access:code="['pms:pm:project:update']"
-          danger
-          type="link"
-          @click="handleDelete(row.id!)"
-        >
-          删除
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'link',
+              auth: ['pms:pm:project:update'],
+              onClick: () => openForm('update', row.id),
+            },
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              auth: ['pms:pm:project:update'],
+              popConfirm: {
+                title: '是否确认删除该公告？',
+                confirm: handleDelete.bind(null, row.id!),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
 

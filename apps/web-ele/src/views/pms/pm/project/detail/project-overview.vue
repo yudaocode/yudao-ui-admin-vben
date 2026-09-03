@@ -45,6 +45,8 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectOverview' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
+// TODO @AI：概况只展示未完成迭代和最新公告，却分页拉取全部迭代/公告后再 filter[0]；应补后端状态/limit 查询或聚合接口，避免项目数据增长后首屏请求无界膨胀。
+// TODO @AI：trendChartRef 使用 ref<any>，应对齐 CRM/system 的 EchartsUIType 实例类型，避免模板 ref 和图表调用失去类型约束。
 
 const props = defineProps<{
   editable: boolean;

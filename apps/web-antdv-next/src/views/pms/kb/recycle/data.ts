@@ -30,7 +30,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeRecycleApi.Kno
       field: 'deleteTime',
       title: '删除时间',
       width: 180,
-      slots: { default: 'deleteTime' },
+      formatter: 'formatDateTime',
     },
     {
       title: '操作',

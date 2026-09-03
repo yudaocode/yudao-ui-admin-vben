@@ -5,7 +5,7 @@ import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, message, Tooltip } from 'antdv-next';
@@ -25,6 +25,7 @@ import ProjectGroupForm from './project-group-form.vue';
 defineOptions({ name: 'PmsProjectGroupList' });
 
 // TODO @AI：删除改 TableAction popConfirm。补 destroyOnClose。
+// TODO @AI：模板使用了 <TableAction>，但脚本未从 #/adapter/vxe-table 导入；三端都要补显式导入，否则分组操作列无法按 system/user 注册。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于项目分组发生变化后的回调
 
@@ -36,6 +37,7 @@ const gridWrapperRef = ref<HTMLElement>(); // 表格容器 Ref
 let sortable: Sortable | undefined; // 表格拖拽实例
 
 const [ProjectGroupFormModal, projectGroupFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: ProjectGroupForm,
 });
 
@@ -132,19 +134,12 @@ async function handleSaveSort() {
   }
 }
 
-/** 删除按钮操作 */
+/** 删除项目分组 */
 async function handleDelete(id: number) {
-  try {
-    // 删除的二次确认
-    await confirm('是否确认删除该分组？');
-    // 发起删除
-    await deleteProjectGroup(id);
-    message.success('删除成功');
-    // 刷新列表
-    await gridApi.query();
-    emit('success');
-  } catch {
-  }
+  await deleteProjectGroup(id);
+  message.success('删除成功');
+  await gridApi.query();
+  emit('success');
 }
 
 /** 销毁拖拽实例 */
@@ -199,25 +194,27 @@ onBeforeUnmount(() => destroySortable());
           </Tooltip>
         </template>
         <template #actions="{ row }">
-          <template v-if="row.type === PmsProjectGroupType.CUSTOM">
-            <Button
-              v-access:code="['pms:pm:project-group:update']"
-              size="small"
-              type="link"
-              @click="openForm(row)"
-            >
-              编辑
-            </Button>
-            <Button
-              v-access:code="['pms:pm:project-group:delete']"
-              danger
-              size="small"
-              type="link"
-              @click="handleDelete(row.id as number)"
-            >
-              删除
-            </Button>
-          </template>
+          <TableAction
+            v-if="row.type === PmsProjectGroupType.CUSTOM"
+            :actions="[
+              {
+                label: '编辑',
+                type: 'link',
+                auth: ['pms:pm:project-group:update'],
+                onClick: () => openForm(row),
+              },
+              {
+                label: '删除',
+                type: 'link',
+                danger: true,
+                auth: ['pms:pm:project-group:delete'],
+                popConfirm: {
+                  title: '是否确认删除该分组？',
+                  confirm: handleDelete.bind(null, row.id!),
+                },
+              },
+            ]"
+          />
         </template>
       </Grid>
     </div>

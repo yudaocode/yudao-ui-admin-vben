@@ -45,6 +45,9 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectOverview' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
+// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；同时 getAllPageItems 与 formatDateTime 被拆成重复工具导入，需合并后跑 lint/build。
+// TODO @AI：概况只展示未完成迭代和最新公告，却分页拉取全部迭代/公告后再 filter[0]；应补后端状态/limit 查询或聚合接口，避免项目数据增长后首屏请求无界膨胀。
+// TODO @AI：trendChartRef 使用 ref<any>，应对齐 CRM/system 的 EchartsUIType 实例类型，避免模板 ref 和图表调用失去类型约束。
 
 const props = defineProps<{
   editable: boolean;
@@ -184,8 +187,8 @@ onMounted(() => {
 
 <template>
   <!-- 项目一览：统一布局和信息层级 -->
-  <div
-    v-loading="loading"
+  <Spin
+    :spinning="loading"
     class="grid grid-cols-2 gap-4 max-[1200px]:grid-cols-1"
   >
     <!-- 项目公告 -->
@@ -362,7 +365,7 @@ onMounted(() => {
         />
       </div>
     </Card>
-  </div>
+  </Spin>
   <!-- 工作项详情 -->
   <WorkItemDetailDrawer @success="getOverview" />
 </template>

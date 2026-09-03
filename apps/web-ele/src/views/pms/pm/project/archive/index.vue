@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
@@ -26,16 +26,9 @@ function handleRefresh() {
 
 /** 恢复归档项目 */
 async function handleRestore(project: PmsProjectApi.Project) {
-  try {
-    // 1. 恢复的二次确认
-    await confirm(`确认恢复项目“${project.name}”吗？`);
-    // 2. 恢复项目
-    await restoreProject(project.id);
-    ElMessage.success('项目已恢复');
-    // 3. 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await restoreProject(project.id);
+  ElMessage.success('项目已恢复');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -80,7 +73,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               auth: ['pms:pm:project:update'],
               ifShow: () => row.adminStatus,
-              onClick: handleRestore.bind(null, row),
+              popConfirm: {
+                title: `确认恢复项目“${row.name}”吗？`,
+                confirm: handleRestore.bind(null, row),
+              },
             },
           ]"
         />

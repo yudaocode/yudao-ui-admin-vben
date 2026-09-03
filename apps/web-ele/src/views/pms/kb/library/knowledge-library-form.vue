@@ -42,6 +42,7 @@ const selectedTemplate = computed(() =>
 ); // 当前选中的知识库模板
 
 const [KnowledgeMemberFormModal, knowledgeMemberFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: KnowledgeMemberForm,
 });
 

@@ -7,7 +7,6 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import {
   ElButton,
@@ -51,6 +50,7 @@ const selectedLabel = computed(() =>
 
 const [KnowledgeLabelManageDialogModal, knowledgeLabelManageDialogModalApi] =
   useVbenModal({
+  destroyOnClose: true,
     connectedComponent: KnowledgeLabelManageDialog,
   });
 
@@ -213,9 +213,6 @@ onMounted(() => {
               <ElLink type="primary" @click="openDocumentDetail(row)">
                 {{ row.title }}
               </ElLink>
-            </template>
-            <template #updateTime="{ row }">
-              {{ formatDateTime(row.updateTime) }}
             </template>
           </Grid>
           <ElEmpty v-else description="暂无可用标签" />

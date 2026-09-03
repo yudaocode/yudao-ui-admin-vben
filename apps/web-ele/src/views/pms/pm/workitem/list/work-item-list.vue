@@ -74,6 +74,7 @@ import { useWorkItemGridColumns } from './data';
 defineOptions({ name: 'PmsWorkItemList' });
 
 // TODO @AI：筛选不要手写 Input/Select/Popover，放到 formOptions.schema，对齐 system user。height 用 auto。不要为前端搜索把全部分页拉下来。看板模式可保留自定义。
+// TODO @AI：列表模式每次当前页查询都并行再拉一遍 getAllPageItems 全量缓存，随后才串行请求状态选项；这是按搜索刷新放大的重复网络开销，应改为服务端筛选/专用搜索接口，并把独立状态请求并入同一 Promise.all。
 const props = defineProps<{
   defaultViewMode?: 'board' | 'list';
   editable: boolean;
@@ -305,15 +306,18 @@ function handleViewModeChange() {
 }
 
 const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemForm,
 });
 const [WorkItemDetailDrawer, workItemDetailDrawerApi] = useVbenDrawer({
   connectedComponent: WorkItemDetail,
 });
 const [WorkItemStatusListModal, workItemStatusListModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemStatusList,
 });
 const [WorkItemImportFormModal, workItemImportFormModalApi] = useVbenModal({
+  destroyOnClose: true,
   connectedComponent: WorkItemImportForm,
 });
 
