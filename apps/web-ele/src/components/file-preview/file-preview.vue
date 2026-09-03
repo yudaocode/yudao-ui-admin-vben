@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-// TODO @AI：这个是不是改成全局呀？vue3 + ep 是全局的；
 import { computed } from 'vue';
 
-import { Alert, Image } from 'ant-design-vue';
+import { ElAlert, ElImage } from 'element-plus';
 
 defineOptions({ name: 'FilePreview' });
 
@@ -13,22 +12,12 @@ const props = defineProps<{
   url: string;
 }>();
 
-const IMAGE_EXTENSIONS = new Set([
-  'bmp',
-  'gif',
-  'jpeg',
-  'jpg',
-  'png',
-  'svg',
-  'webp',
-]);
+const IMAGE_EXTENSIONS = new Set(['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp']);
 const IFRAME_EXTENSIONS = new Set(['pdf', 'txt']);
 const VIDEO_EXTENSIONS = new Set(['m4v', 'mov', 'mp4', 'ogg', 'webm']);
 const AUDIO_EXTENSIONS = new Set(['aac', 'flac', 'm4a', 'mp3', 'wav']);
 
-const declaredType = computed(
-  () => props.fileType?.trim().toLowerCase().replace(/^\./, '') || '',
-);
+const declaredType = computed(() => props.fileType?.trim().toLowerCase().replace(/^\./, '') || '');
 const extension = computed(() => {
   if (declaredType.value && !declaredType.value.includes('/')) {
     return declaredType.value;
@@ -39,10 +28,7 @@ const extension = computed(() => {
 });
 const previewType = computed(() => {
   if (declaredType.value.startsWith('image/')) return 'image';
-  if (
-    declaredType.value === 'application/pdf' ||
-    declaredType.value === 'text/plain'
-  ) {
+  if (declaredType.value === 'application/pdf' || declaredType.value === 'text/plain') {
     return 'iframe';
   }
   if (declaredType.value.startsWith('video/')) return 'video';
@@ -56,47 +42,33 @@ const previewType = computed(() => {
 const unsupportedTitle = computed(() =>
   props.downloadable
     ? '当前文件格式暂不支持在线预览，可使用下载功能查看'
-    : '当前文件格式暂不支持在线预览，且当前账号没有下载权限',
+    : '当前文件格式暂不支持在线预览，且当前账号没有下载权限'
 );
 </script>
 
 <template>
   <div
-    class="flex min-h-[360px] items-center justify-center overflow-hidden rounded border border-solid border-border bg-accent"
+    class="flex min-h-[360px] items-center justify-center overflow-hidden rounded-[var(--el-border-radius-base)] border border-solid border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-lighter)]"
   >
-    <Image
+    <ElImage
       v-if="previewType === 'image'"
-      class="h-[520px] w-full object-contain"
+      class="h-[520px] w-full"
+      fit="contain"
+      :preview-src-list="[url]"
       :src="url"
     />
     <iframe
       v-else-if="previewType === 'iframe'"
-      class="h-[620px] w-full border-0 bg-background"
+      class="h-[620px] w-full border-0 bg-[var(--el-bg-color)]"
       :src="url"
       title="文件在线预览"
     ></iframe>
-    <video
-      v-else-if="previewType === 'video'"
-      class="h-[520px] w-full"
-      controls
-      :src="url"
-    >
+    <video v-else-if="previewType === 'video'" class="h-[520px] w-full" controls :src="url">
       当前浏览器不支持视频预览
     </video>
-    <audio
-      v-else-if="previewType === 'audio'"
-      class="w-[min(560px,90%)]"
-      controls
-      :src="url"
-    >
+    <audio v-else-if="previewType === 'audio'" class="w-[min(560px,90%)]" controls :src="url">
       当前浏览器不支持音频预览
     </audio>
-    <Alert
-      v-else
-      :closable="false"
-      :message="unsupportedTitle"
-      show-icon
-      type="info"
-    />
+    <ElAlert v-else :closable="false" show-icon :title="unsupportedTitle" type="info" />
   </div>
 </template>

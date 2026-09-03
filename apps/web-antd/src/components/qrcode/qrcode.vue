@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-// TODO @AI：这个是不是改成全局呀？vue3 + ep 是全局的；
 import { toRef, watch } from 'vue';
 
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 
-defineOptions({ name: 'PmsQrCode' });
+defineOptions({ name: 'Qrcode' });
 
 const props = withDefaults(
   defineProps<{
     text: string;
     width?: number;
   }>(),
-  { width: 160 },
+  { width: 160 }
 );
 
 const emit = defineEmits<{ done: [dataUrl: string] }>();
@@ -29,14 +28,10 @@ watch(
       emit('done', dataUrl);
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 
 <template>
-  <img
-    :src="qrcode"
-    alt="qrcode"
-    class="h-40 w-40 rounded border border-solid border-border"
-  />
+  <img :src="qrcode" alt="qrcode" class="h-40 w-40 rounded border border-solid border-border" />
 </template>
