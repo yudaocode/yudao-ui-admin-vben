@@ -116,11 +116,9 @@ function handleTabChange(tab: number | string) {
 
 /** 切换项目关注状态 */
 async function handleCollect() {
-  if (project.value.favoriteStatus) {
-    await deleteProjectFavorite(project.value.id);
-  } else {
-    await createProjectFavorite(project.value.id);
-  }
+  await (project.value.favoriteStatus
+    ? deleteProjectFavorite(project.value.id)
+    : createProjectFavorite(project.value.id));
   // 更新当前页面的关注状态
   project.value.favoriteStatus = !project.value.favoriteStatus;
   message.success(project.value.favoriteStatus ? '收藏成功' : '已取消收藏');
@@ -144,6 +142,7 @@ function openProjectConfig() {
     params: {
       id: project.value.id,
     },
+    query: { pageKey: 'PmsProjectConfig' },
   });
 }
 

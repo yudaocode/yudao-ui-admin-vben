@@ -37,6 +37,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '项目设置',
           activePath: '/pms/pm/project/list',
+          fullPathKey: false,
         },
       },
       {

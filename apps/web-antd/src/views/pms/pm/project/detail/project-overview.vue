@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EChartsOption } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { PmsIterationApi } from '#/api/pms/pm/iteration';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
@@ -44,8 +44,8 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectOverview' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
-// TODO @AI：概况只展示未完成迭代和最新公告，却分页拉取全部迭代/公告后再 filter[0]；应补后端状态/limit 查询或聚合接口，避免项目数据增长后首屏请求无界膨胀。
-// TODO @AI：trendChartRef 使用 ref<any>，应对齐 CRM/system 的 EchartsUIType 实例类型，避免模板 ref 和图表调用失去类型约束。
+// TODO DONE @AI：已对照 Vue3 + EP，源端同样全量查询迭代和公告；按用户要求本轮不调整请求行为。
+// TODO DONE @AI：trendChartRef 已对齐 CRM/system，使用 EchartsUIType 保留图表实例类型约束。
 
 const props = defineProps<{
   editable: boolean;
@@ -69,7 +69,7 @@ const latestAnnouncement = computed(() => announcements.value[0]); // 最新项�
 const isAgileProject = computed(
   () => props.project.type === PmsProjectType.AGILE,
 );
-const trendChartRef = ref<any>(); // 工作项趋势图
+const trendChartRef = ref<EchartsUIType>(); // 工作项趋势图
 const { renderEcharts: renderTrendChart } = useEcharts(trendChartRef);
 
 const trendChartOptions = computed<EChartsOption>(() => ({
@@ -135,6 +135,7 @@ function openAnnouncementConfig() {
       id: props.project.id,
     },
     query: {
+      pageKey: 'PmsProjectConfig',
       tabs: 'announcement',
     },
   });
@@ -249,7 +250,12 @@ onMounted(() => {
           <div class="flex items-center justify-between gap-2">
             <span class="truncate font-medium">{{ iteration.name }}</span>
             <Tag :color="getIterationStatusTagType(iteration.status)">
-              {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+              {{
+                getDictLabel(
+                  DICT_TYPE.PMS_ITERATION_STATUS,
+                  iteration.status,
+                ) || '-'
+              }}
             </Tag>
           </div>
           <div
