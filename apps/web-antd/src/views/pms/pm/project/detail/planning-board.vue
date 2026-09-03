@@ -58,7 +58,7 @@ import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
 defineOptions({ name: 'PmsPlanningBoard' });
 
 // TODO @AI：看板可以保留自定义拖拽；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts，不要页面里 dayjs.format。
-// TODO @AI：getPlanningData 先分页取全部迭代/待规划事项，再对每个迭代逐一分页取工作项，形成 N+1 且请求量随迭代数增长；优先补聚合规划接口或一次查询返回分组数据。
+// TODO DONE @AI：已对照 Vue3 + EP，源端同样按迭代逐项查询；按用户要求本轮不调整 N+1 请求行为。
 
 const props = defineProps<{
   editable: boolean;
@@ -236,8 +236,7 @@ async function handleCompleteIteration(iteration: PlanningIteration) {
     expandedIterationIds.delete(iteration.id);
     message.success('迭代已完成');
     await getPlanningData();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除迭代 */
@@ -248,8 +247,7 @@ async function handleDeleteIteration(iteration: PlanningIteration) {
     expandedIterationIds.delete(iteration.id);
     message.success('删除成功');
     await getPlanningData();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 记录当前拖拽工作项，支持投放到折叠迭代标题 */
@@ -507,7 +505,12 @@ onMounted(() => {
                     :style="{ color: getPriorityColor(element.priority) }"
                   >
                     <span class="h-2 w-2 rounded-full bg-current"></span>
-                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, element.priority) || '-' }}
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                        element.priority,
+                      ) || '-'
+                    }}
                   </span>
                   <Tag :color="getWorkItemStatusTagType(element.status)">
                     {{ element.statusName }}
@@ -554,8 +557,8 @@ onMounted(() => {
             :options="
               getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').map(
                 (item) => ({
-                label: item.label,
-                value: item.value,
+                  label: item.label,
+                  value: item.value,
                 }),
               )
             "
@@ -656,7 +659,12 @@ onMounted(() => {
                   }}
                 </span>
                 <Tag :color="getIterationStatusTagType(iteration.status)">
-                  {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+                  {{
+                    getDictLabel(
+                      DICT_TYPE.PMS_ITERATION_STATUS,
+                      iteration.status,
+                    ) || '-'
+                  }}
                 </Tag>
               </div>
             </div>
@@ -689,7 +697,12 @@ onMounted(() => {
                       :style="{ color: getPriorityColor(element.priority) }"
                     >
                       <span class="h-2 w-2 rounded-full bg-current"></span>
-                      {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, element.priority) || '-' }}
+                      {{
+                        getDictLabel(
+                          DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                          element.priority,
+                        ) || '-'
+                      }}
                     </span>
                     <Tag :color="getWorkItemStatusTagType(element.status)">
                       {{ element.statusName }}
@@ -745,8 +758,8 @@ onMounted(() => {
               :options="
                 getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').map(
                   (item) => ({
-                  label: item.label,
-                  value: item.value,
+                    label: item.label,
+                    value: item.value,
                   }),
                 )
               "

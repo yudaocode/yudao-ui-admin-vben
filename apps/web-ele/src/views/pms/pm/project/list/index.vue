@@ -5,7 +5,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -13,9 +13,7 @@ import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
-import dayjs from 'dayjs';
 import {
   ElButton,
   ElDropdown,
@@ -55,38 +53,31 @@ import {
   PmsProjectType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   formatProjectCompletionRate,
   formatProjectWorkItemCounts,
 } from '#/views/pms/pm/utils/format';
 
 import ProjectForm from '../components/project-form.vue';
+import FavoriteTrendChart from './components/favorite-trend-chart.vue';
 import ProjectGroupList from './components/group/project-group-list.vue';
-import { useGridColumns, useSearchFormSchema } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectList' });
 // TODO @AI：对齐 system/user，项目表单从 components 改引 ./modules/form.vue。
 
-// TODO @AI：antd/antdv-next 的 v-loading 是 EP 指令，改 Spin 或 lock。表格操作对齐 TableAction；connectedComponent 补 destroyOnClose；grid 补 toolbarConfig.refresh/search。三端这段注释和实现要对齐。
+// TODO DONE @AI：web-ele 保留 v-loading，弹窗已启用 destroyOnClose，Grid 已补 refresh/search，三端一致。
+// TODO @AI：项目操作包含分组子菜单，后续需要在保留交互能力的前提下对齐 TableAction。
 /** 星标项目趋势小图（v-for 内逐卡片渲染） */
-const favoriteChartRenderers = new Map<number, (options: EChartsOption) => void>(); // 星标项目趋势图渲染器
-
-/** 收集星标项目趋势图容器并创建渲染器 */
-function setFavoriteChartRef(id: number, el: any) {
-  if (el) {
-    if (!favoriteChartRenderers.has(id)) {
-      // 列表数据异步渲染，useEcharts 的挂载钩子已过，手动标记激活
-      const { isActive, renderEcharts } = useEcharts(ref(el));
-      isActive.value = true;
-      favoriteChartRenderers.set(id, (options) => renderEcharts(options));
-    }
-  } else {
-    favoriteChartRenderers.delete(id);
-  }
-}
+// TODO DONE @AI：星标趋势图已拆为子组件，在组件 setup 生命周期内持有 EchartsUIType ref。
+// TODO DONE @AI：已对照 Vue3 + EP，源端同样逐项目查询概况；按用户要求本轮不调整 N+1 请求行为。
+// TODO DONE @AI：项目截止日期已统一通过 PMS format.ts 格式化并处理空值。
 
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由
 const route = useRoute(); // 当前路由
+// 项目范围通过查询参数切换，复用同一个“我的项目”页签
+route.matched[route.matched.length - 1]!.meta.fullPathKey = false;
 const PROJECT_SCENE_TAB_MAP: Record<number, string> = {
   [PmsProjectSceneType.ALL]: 'all',
   [PmsProjectSceneType.MANAGED]: 'owner',
@@ -145,7 +136,7 @@ function getProjectSceneByRoute() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(),
+    schema: useGridFormSchema(),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -171,6 +162,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
   } as VxeTableGridOptions<PmsProjectApi.Project>,
 });
 
@@ -180,16 +175,11 @@ async function getFavoriteList() {
   try {
     const projects = await getFavoriteProjectList();
     favoriteProjectList.value = await Promise.all(
-      projects.map(async (project) => ({
-        ...project,
-        completedTrends: (await getProjectOverview(project.id)).completedTrends,
-      })),
+      projects.map(async (project) => {
+        const overview = await getProjectOverview(project.id);
+        return { ...project, completedTrends: overview.completedTrends };
+      }),
     );
-    // 图表容器随列表渲染完成后逐卡片渲染
-    await nextTick();
-    for (const project of favoriteProjectList.value) {
-      favoriteChartRenderers.get(project.id)?.(getFavoriteTrendChartOptions(project));
-    }
   } finally {
     favoriteLoading.value = false;
   }
@@ -264,6 +254,7 @@ function openProjectConfig(id: number) {
   push({
     name: 'PmsProjectConfig',
     params: { id },
+    query: { pageKey: 'PmsProjectConfig' },
   });
 }
 
@@ -281,11 +272,9 @@ async function handleMoveGroup(projectId: number, groupId: number) {
 
 /** 星标或取消星标项目 */
 async function handleCollect(project: PmsProjectApi.Project) {
-  if (project.favoriteStatus) {
-    await deleteProjectFavorite(project.id);
-  } else {
-    await createProjectFavorite(project.id);
-  }
+  await (project.favoriteStatus
+    ? deleteProjectFavorite(project.id)
+    : createProjectFavorite(project.id));
   const favoriteStatus = !project.favoriteStatus;
   ElMessage.success(favoriteStatus ? '星标成功' : '已取消星标');
   await Promise.all([gridApi.query(), getFavoriteList()]);
@@ -302,8 +291,7 @@ async function handleExit(project: PmsProjectApi.Project) {
     await exitProject(project.id);
     ElMessage.success('已退出项目');
     await handleProjectChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 处理项目生命周期操作 */
@@ -320,10 +308,7 @@ async function handleProjectCommand(
     return;
   }
   if (command.startsWith('group:')) {
-    await handleMoveGroup(
-      project.id,
-      Number(command.substring('group:'.length)),
-    );
+    await handleMoveGroup(project.id, Number(command.slice('group:'.length)));
     return;
   }
   try {
@@ -338,8 +323,7 @@ async function handleProjectCommand(
       ElMessage.success('项目已移入回收站');
     }
     await handleProjectChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 项目发生变化后刷新列表与个人分组 */
@@ -426,7 +410,7 @@ watch(
         <div
           v-for="project in favoriteProjectList"
           :key="project.id"
-          class="relative flex h-full min-w-0 cursor-pointer items-center gap-3 rounded-md border border-solid border-border bg-accent p-4 transition-[border-color,box-shadow] hover:border-primary hover:shadow-md"
+          class="relative flex h-full min-w-0 cursor-pointer items-start gap-3 rounded-md border border-solid border-border bg-accent p-4 transition-[border-color,box-shadow] hover:border-primary hover:shadow-md"
           @click="openProjectDetail(project)"
         >
           <span
@@ -435,7 +419,7 @@ watch(
             <IconifyIcon :icon="project.icon || 'lucide:folder'" />
           </span>
           <div class="min-w-0 flex-1">
-            <div class="truncate font-medium text-primary">
+            <div class="truncate pr-8 font-medium text-primary">
               {{ project.name }}
             </div>
             <div class="mt-1 truncate text-xs text-muted-foreground">
@@ -450,24 +434,28 @@ watch(
               :show-text="false"
               :stroke-width="5"
             />
-            <EchartsUI
-              v-if="project.completedTrends"
-              :ref="(el: any) => setFavoriteChartRef(project.id, el)"
-              class="mt-1.5"
-              height="56px"
-            />
+            <div v-if="project.completedTrends" class="pr-10">
+              <FavoriteTrendChart
+                class="mt-1.5"
+                :options="getFavoriteTrendChartOptions(project)"
+              />
+            </div>
           </div>
           <ElTooltip content="取消星标" placement="top">
             <ElButton
               aria-label="取消星标"
-              class="absolute right-3 top-3 !text-yellow-500"
+              class="!absolute !right-3 !top-3 !h-auto !p-0 !text-yellow-500"
               link
               @click.stop="handleCollect(project)"
             >
-              <IconifyIcon :size="20" icon="lucide:star" />
+              <IconifyIcon
+                class="[&_path]:fill-current"
+                :size="20"
+                icon="lucide:star"
+              />
             </ElButton>
           </ElTooltip>
-          <div class="absolute bottom-2 right-3" @click.stop>
+          <div class="absolute bottom-2 right-3 z-10" @click.stop>
             <ElDropdown
               @command="(command) => handleProjectCommand(command, project)"
             >
@@ -592,7 +580,7 @@ watch(
       </template>
       <template #endTime="{ row }">
         <ElTag v-if="row.endTime" effect="plain" type="info">
-          {{ dayjs(row.endTime).format('M月D日截止') }}
+          {{ formatPmsDate(row.endTime, 'M月D日') }}截止
         </ElTag>
         <span v-else>-</span>
       </template>

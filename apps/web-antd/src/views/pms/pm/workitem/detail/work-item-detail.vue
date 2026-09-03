@@ -41,9 +41,7 @@ import {
   PmsWorkItemLifecycleStatus,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import {
-  getWorkItemStatusTagType,
-} from '#/views/pms/pm/utils/format';
+import { getWorkItemStatusTagType } from '#/views/pms/pm/utils/format';
 
 import WorkItemForm from '../form/work-item-form.vue';
 import WorkItemStatusSelect from '../status/work-item-status-select.vue';
@@ -55,6 +53,7 @@ import WorkItemSubtaskList from './work-item-subtask-list.vue';
 defineOptions({ name: 'PmsWorkItemDetail' });
 
 // TODO @AI：详情里可编辑字段（时间、负责人等）尽量抽 schema；as any、v-loading 对齐 system user 的 lock。三端模板差异也收一下。
+// TODO DONE @AI：已对照 Vue3 + EP，源端同样提交当前详情对象；按用户要求本轮不调整更新行为。
 
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于详情变更后的回调
 
@@ -66,8 +65,10 @@ const workItem = ref<PmsWorkItemApi.WorkItem>(); // 工作项详情
 const activeTab = ref('comment'); // 当前协作信息页签
 const expandedPanels = ref(['basic']); // 展开的属性面板
 const workItemActivityRef = ref<InstanceType<typeof WorkItemActivity>>(); // 工作项动态 Ref
-const workItemTypeName = computed(() =>
-  getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItem.value?.type || 0) || '-',
+const workItemTypeName = computed(
+  () =>
+    getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItem.value?.type || 0) ||
+    '-',
 ); // 工作项类型名称
 const canUpdate = computed(
   () => editable.value && hasAccessByCodes(['pms:pm:work-item:update']),
@@ -221,8 +222,7 @@ async function handleRecycle() {
     message.success('已移入回收站');
     drawerApi.close();
     emit('success');
-  } catch {
-  }
+  } catch {}
 }
 
 const [Drawer, drawerApi] = useVbenDrawer({
@@ -309,11 +309,11 @@ const [Drawer, drawerApi] = useVbenDrawer({
         <!-- 工作项内容与协作信息 -->
         <main class="min-w-0 overflow-y-auto px-8 py-6">
           <section class="mb-7">
-            <div v-if="editable" class="mb-4 flex items-center gap-2">
-              <Button type="link" @click="openEditForm">
+            <div v-if="editable" class="mb-4 flex items-center gap-5">
+              <Button class="!h-auto !px-0" type="link" @click="openEditForm">
                 <IconifyIcon class="mr-1" icon="lucide:square-pen" />编辑描述
               </Button>
-              <Button type="link" @click="openEditForm">
+              <Button class="!h-auto !px-0" type="link" @click="openEditForm">
                 <IconifyIcon class="mr-1" icon="lucide:paperclip" />上传附件
               </Button>
             </div>
@@ -389,35 +389,39 @@ const [Drawer, drawerApi] = useVbenDrawer({
         <aside
           class="overflow-y-auto border-0 border-l border-solid border-border bg-background p-5"
         >
-          <WorkItemStatusSelect
-            v-if="workItem && canUpdate && isInlineEditing('statusId')"
-            v-model="workItem.statusId"
-            class="mb-4 !w-full"
-            :project-id="workItem.projectId"
-            :work-item-type="workItem.type"
-            @change="handleQuickStatusChange"
-            @blur="cancelInlineEditing"
-            @keyup.esc.stop="cancelInlineEditing"
-          />
-          <Tag
-            v-else-if="workItem && canUpdate"
-            class="mb-4 cursor-pointer"
-            :color="getWorkItemStatusTagType(workItem.status)"
-            @click="startInlineEditing('statusId')"
-          >
-            {{ workItem.statusName }}
-          </Tag>
-          <Tag
-            v-else
-            class="mb-4"
-            :color="getWorkItemStatusTagType(workItem?.status)"
-          >
-            {{ workItem?.statusName }}
-          </Tag>
-
           <Collapse v-model:active-key="expandedPanels">
             <Collapse.Panel key="basic" header="基础信息">
               <div class="flex flex-col gap-0.5">
+                <div
+                  class="grid min-h-[42px] grid-cols-[86px_minmax(0,1fr)] items-center gap-3 text-[13px]"
+                >
+                  <span class="text-muted-foreground">状态</span>
+                  <WorkItemStatusSelect
+                    v-if="workItem && canUpdate && isInlineEditing('statusId')"
+                    v-model="workItem.statusId"
+                    class="!w-full"
+                    :project-id="workItem.projectId"
+                    :work-item-type="workItem.type"
+                    @change="handleQuickStatusChange"
+                    @blur="cancelInlineEditing"
+                    @keyup.esc.stop="cancelInlineEditing"
+                  />
+                  <Button
+                    v-else-if="workItem && canUpdate"
+                    class="min-w-0 !justify-start !px-0 font-medium"
+                    type="link"
+                    @click="startInlineEditing('statusId')"
+                  >
+                    {{ workItem.statusName }}
+                  </Button>
+                  <Tag
+                    v-else
+                    class="w-fit"
+                    :color="getWorkItemStatusTagType(workItem?.status)"
+                  >
+                    {{ workItem?.statusName }}
+                  </Tag>
+                </div>
                 <div
                   class="grid min-h-[42px] grid-cols-[86px_minmax(0,1fr)] items-center gap-3 text-[13px]"
                 >
@@ -475,13 +479,23 @@ const [Drawer, drawerApi] = useVbenDrawer({
                     type="link"
                     @click="startInlineEditing('priority')"
                   >
-                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, workItem?.priority) || '-' }}
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                        workItem?.priority,
+                      ) || '-'
+                    }}
                   </Button>
                   <strong
                     v-else
                     class="min-w-0 truncate font-medium text-foreground"
                   >
-                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, workItem?.priority) || '-' }}
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                        workItem?.priority,
+                      ) || '-'
+                    }}
                   </strong>
                 </div>
                 <div

@@ -27,7 +27,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '项目详情',
           activePath: '/pms/pm/project/list',
-          // 页签查询参数变化时不重复打开标签页
           fullPathKey: false,
         },
       },
@@ -38,6 +37,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '项目设置',
           activePath: '/pms/pm/project/list',
+          fullPathKey: false,
         },
       },
       {
