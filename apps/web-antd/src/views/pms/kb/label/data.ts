@@ -5,7 +5,7 @@ import type { PmsKnowledgeDocumentLabelApi } from '#/api/pms/kb/content/document
 
 import { markRaw } from 'vue';
 
-import PmsColorPicker from '#/views/pms/components/color-picker.vue';
+import { ColorPicker } from '#/components/color-picker';
 
 /** 新增/编辑文档标签的表单 */
 export function useLabelFormSchema(): VbenFormSchema[] {
@@ -21,7 +21,7 @@ export function useLabelFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: markRaw(PmsColorPicker),
+      component: markRaw(ColorPicker),
       defaultValue: '#409EFF',
       fieldName: 'color',
       label: '标签颜色',
