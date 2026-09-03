@@ -15,6 +15,7 @@ import {
 import { useUploadFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFileUploadForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/upload-form.vue。
 
 // TODO @AI：对齐 system user 导入表单：文件走 schema Upload slot。补 destroyOnClose。打开方式不要 defineExpose。
 

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
+// TODO @AI（glm5.3 flash）：表单主体字段改 useVbenForm schema（放 data.ts），对齐 system/user；内嵌调薪明细表评估 VXE Grid（可编辑用 edit-render），三端同步。
 import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';

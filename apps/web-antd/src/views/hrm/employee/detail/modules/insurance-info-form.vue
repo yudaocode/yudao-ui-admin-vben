@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmInsuranceEmployeeInfoApi } from '#/api/hrm/insurance/employee-info';
 
 import { ref } from 'vue';

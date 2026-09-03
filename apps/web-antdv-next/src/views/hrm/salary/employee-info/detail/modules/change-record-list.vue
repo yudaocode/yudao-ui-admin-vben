@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：子列表手写 Table 改 useVbenVxeGrid（或至少三端结构一致），操作列走 TableAction popConfirm，对齐 employee 主列表。
+// TODO @AI（glm5.3 flash）：删除/操作确认改 TableAction popConfirm（对齐 system/user），不要 confirm + 空 catch 把取消和失败一起吞掉。
 import type { HrmSalaryChangeRecordApi } from '#/api/hrm/salary/change-record';
 
 import { onMounted, ref } from 'vue';

@@ -20,6 +20,7 @@ import {
 import { useUpdateFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeDocumentUpdateForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/update-form.vue。
 
 // TODO @AI：打开方式用 connectedComponent + setData，不要 defineExpose。补 destroyOnClose。
 

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
 import type { PmsWorkItemWorkLogApi } from '#/api/pms/pm/workitem/worklog';
 
 import { computed, ref } from 'vue';
@@ -17,6 +18,7 @@ import {
 import { useWorkLogFormSchema } from './data';
 
 defineOptions({ name: 'PmsWorkItemWorkLogForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue。
 
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于提交成功后的回调
 

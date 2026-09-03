@@ -18,6 +18,7 @@ import { getProjectMemberList } from '#/api/pms/pm/project/member';
 import { useIterationFormSchema } from './data';
 
 defineOptions({ name: 'PmsIterationForm' });
+// TODO @AI：对齐 system/user，这是迭代表单弹窗，不要放 components。挪到 ../list/modules/form.vue，schema 并进 list/data.ts；详情和规划板从那边引。iteration-select 继续留 components。
 
 // TODO @AI：时间交叉校验放到 schema dependencies（参考 project-form）；加载用 modalApi.lock，不要 v-loading。connectedComponent 补 destroyOnClose。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调

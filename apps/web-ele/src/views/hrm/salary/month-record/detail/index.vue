@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：命名对齐 system user 改 useGridFormSchema（hrm 里 recruit/post、employee 等已用该名），三端统一。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryMonthRecordApi } from '#/api/hrm/salary/month-record';

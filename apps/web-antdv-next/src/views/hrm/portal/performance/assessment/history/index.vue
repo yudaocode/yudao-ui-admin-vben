@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
+// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
 import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/performance/assessment';
 
 import { onActivated, reactive, ref } from 'vue';

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 import { computed, ref } from 'vue';
@@ -18,6 +19,7 @@ import {
 import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectForm' });
+// TODO @AI：对齐 system/user，这是列表新增/编辑弹窗，不要放 components。挪到 ../list/modules/form.vue，schema 并进 list/data.ts；config 基本信息从那边引。components 只留选择器。
 
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 

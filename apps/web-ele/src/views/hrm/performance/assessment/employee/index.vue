@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：Grid 补 toolbarConfig: { refresh: true, search: true }，对齐 system/user，三端同步。
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
 
 import { computed, onMounted, ref } from 'vue';

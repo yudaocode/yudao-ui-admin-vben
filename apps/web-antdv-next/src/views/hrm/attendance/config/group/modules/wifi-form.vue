@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：考勤组内嵌编辑弹窗可保留，但打开契约对齐 system/user 的 useVbenModal（connectedComponent + setData/open），三端一致。
+// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { Rule } from 'antdv-next';
 
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';

@@ -18,6 +18,7 @@ import { useLabelManageGridColumns } from './data';
 import KnowledgeLabelForm from './knowledge-label-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLabelManageDialog' });
+// TODO @AI：对齐 system/user，这是列表页弹窗，挪到 ./modules/manage.vue。
 
 // TODO @AI：已用 VXE 的话补 destroyOnClose。操作列继续走 TableAction。
 

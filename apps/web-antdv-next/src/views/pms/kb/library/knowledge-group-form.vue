@@ -17,6 +17,7 @@ import { $t } from '#/locales';
 import { PmsKnowledgeGroupType } from '#/views/pms/kb/utils/constants';
 
 defineOptions({ name: 'PmsKnowledgeGroupForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/group-form.vue。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 

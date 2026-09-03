@@ -16,6 +16,7 @@ import {
 import { PmsWorkItemType } from '#/views/pms/pm/utils/constants';
 
 defineOptions({ name: 'PmsWorkItemImportForm' });
+// TODO @AI：对齐 system/user，挪到 ../list/modules/import-form.vue。
 
 // TODO @AI：对齐 system/user/modules/import-form.vue：useVbenForm + schema，文件用 Upload slot，模板下载放 prepend-footer。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调

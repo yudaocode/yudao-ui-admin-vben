@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
 import type { PmsWorkItemLabelApi } from '#/api/pms/pm/workitem/label';
 
 import { computed, ref } from 'vue';
@@ -18,6 +19,7 @@ import { $t } from '#/locales';
 import { useLabelFormSchema } from './data';
 
 defineOptions({ name: 'PmsWorkItemLabelForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue。
 
 const emit = defineEmits(['success']);
 

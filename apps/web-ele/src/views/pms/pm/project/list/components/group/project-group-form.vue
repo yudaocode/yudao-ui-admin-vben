@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
 import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
 import { computed, ref } from 'vue';
@@ -16,6 +17,7 @@ import {
 import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectGroupForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue；分组列表继续留在这层。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 

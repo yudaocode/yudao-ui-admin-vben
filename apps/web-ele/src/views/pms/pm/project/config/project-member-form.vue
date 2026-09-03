@@ -14,6 +14,7 @@ import { PmsProjectMemberLevel } from '#/views/pms/pm/utils/constants';
 import { useProjectMemberFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectMemberForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/member-form.vue。
 
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 

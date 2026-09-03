@@ -20,6 +20,7 @@ import { useKnowledgeGroupGridColumns } from './data';
 import KnowledgeGroupForm from './knowledge-group-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeGroupManageDialog' });
+// TODO @AI：对齐 system/user，这是列表页弹窗，挪到 ./modules/group-manage.vue。
 
 // TODO @AI：已用 VXE 的话补 destroyOnClose。拖拽排序列和 system 同类页对齐。
 

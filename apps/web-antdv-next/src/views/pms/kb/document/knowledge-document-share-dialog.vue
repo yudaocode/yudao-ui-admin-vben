@@ -17,6 +17,7 @@ import { Qrcode } from '#/components/qrcode';
 import { UserSelect } from '#/views/system/user/components';
 
 defineOptions({ name: 'PmsKnowledgeDocumentShareDialog' });
+// TODO @AI：对齐 system/user，挪到 ./modules/share-dialog.vue。
 
 // TODO @AI：分享成员等字段尽量走 schema；底部按钮对齐 system user 用 Modal footer/onConfirm，不要手写取消。打开方式用 connectedComponent + setData，不要 defineExpose({ open })。
 const formLoading = ref(false); // 表单提交中

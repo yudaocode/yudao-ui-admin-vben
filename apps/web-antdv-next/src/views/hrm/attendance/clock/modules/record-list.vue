@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：删除/操作确认改 TableAction popConfirm（对齐 system/user），不要 confirm + 空 catch 把取消和失败一起吞掉。
 import type { PageParam } from '@vben/request';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';

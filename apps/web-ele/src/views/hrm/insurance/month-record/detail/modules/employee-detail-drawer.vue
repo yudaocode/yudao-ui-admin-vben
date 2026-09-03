@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
+// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { TableColumnCtx } from 'element-plus';
 
 import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/month-record/employee';

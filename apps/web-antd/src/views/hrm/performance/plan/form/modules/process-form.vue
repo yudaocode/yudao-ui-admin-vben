@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：分步表单每步手写字段尽量抽 useVbenForm schema（放 data.ts），对齐 system/user/modules/form.vue，三端同步。
+// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
 import { computed } from 'vue';

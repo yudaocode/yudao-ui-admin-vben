@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：子列表手写 Table 改 useVbenVxeGrid（或至少三端结构一致），操作列走 TableAction popConfirm，对齐 employee 主列表。
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
 import { onMounted, reactive, ref } from 'vue';

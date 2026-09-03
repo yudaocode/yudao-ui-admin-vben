@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
 
 import { onMounted, ref } from 'vue';

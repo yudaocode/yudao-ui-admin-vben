@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：Grid 补 toolbarConfig: { refresh: true, search: true }，对齐 system/user，三端同步。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceResultTemplateApi } from '#/api/hrm/performance/config/result-template';
 
