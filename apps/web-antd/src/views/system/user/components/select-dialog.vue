@@ -23,6 +23,7 @@ const open = ref(false); // 弹窗是否打开
 const multiple = ref(false); // 是否多选；默认按单选选择器使用
 const selectedRows = ref<SystemUserApi.User[]>([]); // 已选用户列表
 const preSelectedIds = ref<number[]>([]); // 预选用户编号列表
+const disabledIds = ref<number[]>([]); // 禁止选择的用户编号列表
 const deptId = ref<number>(); // 当前部门过滤
 const deptTreeRef = ref<InstanceType<typeof DeptTreeSelect>>(); // 部门树
 
@@ -138,6 +139,9 @@ function handleRadioChange(row: SystemUserApi.User) {
 
 /** 多选模式下切换行勾选 */
 async function toggleMultipleRow(row: SystemUserApi.User) {
+  if (row.id !== undefined && disabledIds.value.includes(row.id)) {
+    return;
+  }
   const selected = gridApi.grid.isCheckedByCheckboxRow(row);
   await gridApi.grid.setCheckboxRow(row, !selected);
   selectedRows.value = getMultipleSelectedRows();
@@ -145,6 +149,9 @@ async function toggleMultipleRow(row: SystemUserApi.User) {
 
 /** 处理行双击：单选直接确认，多选切换勾选 */
 async function handleCellDblclick({ row }: { row: SystemUserApi.User }) {
+  if (row.id !== undefined && disabledIds.value.includes(row.id)) {
+    return;
+  }
   if (multiple.value) {
     await toggleMultipleRow(row);
     return;
@@ -186,11 +193,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 520,
     keepSource: true,
     checkboxConfig: {
+      checkMethod: ({ row }: { row: SystemUserApi.User }) =>
+        row.id === undefined || !disabledIds.value.includes(row.id),
       highlight: true,
       range: true,
       reserve: true,
     },
     radioConfig: {
+      checkMethod: ({ row }: { row: SystemUserApi.User }) =>
+        row.id === undefined || !disabledIds.value.includes(row.id),
       highlight: true,
       trigger: 'row',
     },
@@ -245,11 +256,14 @@ async function resetQueryState() {
 /** 打开用户选择弹窗 */
 async function openModal(
   selectedIds?: number[],
-  options?: { multiple?: boolean },
+  options?: { disabledIds?: number[]; multiple?: boolean },
 ) {
   open.value = true;
   multiple.value = options?.multiple ?? false;
-  preSelectedIds.value = selectedIds || [];
+  disabledIds.value = options?.disabledIds || [];
+  preSelectedIds.value = (selectedIds || []).filter(
+    (id) => !disabledIds.value.includes(id),
+  );
   await nextTick();
   gridApi.setGridOptions({
     columns: useUserSelectGridColumns(multiple.value),
