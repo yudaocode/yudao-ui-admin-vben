@@ -1,0 +1,158 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types';
+
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { confirm, Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+import { formatDateTime } from '@vben/utils';
+
+import { Button, message, Switch, Tabs } from 'ant-design-vue';
+
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteKnowledgeFavorite,
+  getKnowledgeFavoritePage,
+} from '#/api/pms/kb/interaction/favorite';
+import { PmsKnowledgeObjectType } from '#/views/pms/kb/utils/constants';
+import {
+  formatKnowledgeFileSize,
+  getKnowledgeObjectIcon,
+  getKnowledgeObjectTypeName,
+} from '#/views/pms/kb/utils/format';
+
+import { useGridColumns } from './data';
+
+defineOptions({ name: 'PmsKnowledgeCollection' });
+
+const router = useRouter(); // 路由
+const activeType = ref('all'); // 当前对象类型
+
+/** 切换关注类型 */
+function handleTypeChange() {
+  gridApi.query();
+}
+
+/** 打开内容详情 */
+function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
+  if (item.type === PmsKnowledgeObjectType.LIBRARY) {
+    router.push(`/pms/kb/library/${item.libraryId}`);
+    return;
+  }
+  if (item.documentId) {
+    router.push(
+      `/pms/kb/library/${item.libraryId}/document/${item.documentId}`,
+    );
+    return;
+  }
+  router.push(`/pms/kb/library/${item.libraryId}/folder/${item.folderId}`);
+}
+
+/** 取消关注 */
+async function handleCancelFavorite(
+  item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+) {
+  try {
+    // 取消关注的二次确认
+    await confirm(`确认取消关注“${item.name}”吗？`);
+    // 发起取消关注
+    await deleteKnowledgeFavorite(item.type, item.entityId);
+    message.success('已取消关注');
+    // 刷新列表
+    await gridApi.reload();
+  } catch {
+    /* 取消操作 */
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    pagerConfig: {
+      enabled: true,
+      pageSize: 10,
+      pageSizes: [10, 20, 30, 50],
+    },
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }) => {
+          return await getKnowledgeFavoritePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            type:
+              activeType.value === 'all' ? undefined : Number(activeType.value),
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <!-- 关注列表 -->
+    <Grid>
+      <template #toolbar-actions>
+        <!-- 对象类型 -->
+        <Tabs
+          v-model:active-key="activeType"
+          class="w-full"
+          @change="handleTypeChange"
+        >
+          <Tabs.TabPane key="all" tab="全部" />
+          <Tabs.TabPane key="1" tab="知识库" />
+          <Tabs.TabPane key="3" tab="文档" />
+          <Tabs.TabPane key="2" tab="文件夹" />
+          <Tabs.TabPane key="4" tab="文件" />
+        </Tabs>
+      </template>
+      <!-- TODO @AI：宽度没占满；是不是别的，可能也有类似问题； -->
+      <!-- TODO @AI：很多这里的 format 逻辑，是不是都适合放到 data.ts 里？你分析下； -->
+      <template #name="{ row }">
+        <Button class="!p-0" type="link" @click="openItem(row)">
+          <IconifyIcon
+            class="mr-1.5"
+            :icon="getKnowledgeObjectIcon(row.type)"
+          />
+          {{ row.name }}
+        </Button>
+        <div v-if="row.description" class="text-xs text-muted-foreground">
+          {{ row.description }}
+        </div>
+        <div
+          v-if="row.fileType || row.fileSize != null"
+          class="text-xs text-muted-foreground"
+        >
+          <span v-if="row.fileType">{{ row.fileType.toUpperCase() }}</span>
+          <span v-if="row.fileType && row.fileSize != null"> · </span>
+          <span v-if="row.fileSize != null">
+            {{ formatKnowledgeFileSize(row.fileSize) }}
+          </span>
+        </div>
+      </template>
+      <template #type="{ row }">
+        {{ getKnowledgeObjectTypeName(row.type) }}
+      </template>
+      <template #targetUpdateTime="{ row }">
+        {{ formatDateTime(row.targetUpdateTime) }}
+      </template>
+      <template #createTime="{ row }">
+        {{ formatDateTime(row.createTime) }}
+      </template>
+      <template #favorite="{ row }">
+        <Switch :checked="true" @change="handleCancelFavorite(row)" />
+      </template>
+    </Grid>
+  </Page>
+</template>
