@@ -15,6 +15,8 @@ import { formatKnowledgeFileSize } from '#/views/pms/kb/utils/format';
 
 defineOptions({ name: 'PmsKnowledgeRecycleDetail' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。删除时间用 formatDateTime，不要页面里 dayjs.format。
+
 const props = defineProps<{
   detail: PmsKnowledgeRecycleApi.KnowledgeRecycleDetail;
 }>();

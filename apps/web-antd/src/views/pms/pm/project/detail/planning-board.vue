@@ -56,6 +56,8 @@ import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
 
 defineOptions({ name: 'PmsPlanningBoard' });
 
+// TODO @AI：看板可以保留自定义拖拽；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts，不要页面里 dayjs.format。
+
 const props = defineProps<{
   editable: boolean;
   projectId: number;

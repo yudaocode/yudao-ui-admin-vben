@@ -5,6 +5,7 @@ import type { PmsProjectApi } from '#/api/pms/pm/project';
 import { PmsProjectSortType } from '#/views/pms/pm/utils/constants';
 
 /** 列表的搜索表单 */
+// TODO @AI：命名对齐 system user，改成 useGridFormSchema；iteration/recycle/workbench 等也有 useSearchFormSchema，一并统一。
 export function useSearchFormSchema(): VbenFormSchema[] {
   return [
     {

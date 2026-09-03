@@ -7,6 +7,7 @@ import { markRaw } from 'vue';
 import { ColorPicker } from 'antdv-next';
 
 /** 新增/编辑工作项标签的表单 */
+// TODO @AI：antdv-next ColorPicker 多了 valueFormat，antd 走共享 ColorPicker；三端 schema 对齐，不要各写一套。
 export function useLabelFormSchema(): VbenFormSchema[] {
   return [
     {

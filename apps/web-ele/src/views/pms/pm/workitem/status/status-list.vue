@@ -40,6 +40,7 @@ import StatusDeleteForm from './status-delete-form.vue';
 
 defineOptions({ name: 'PmsWorkItemStatusList' });
 
+// TODO @AI：拖拽看板可以保留自定义；新增状态字段能否抽 schema？操作对齐 TableAction。下面「定义 success 事件」注释删掉。
 const emit = defineEmits(['success']);
 
 interface WorkItemBoard extends PmsWorkItemStatusApi.WorkItemBoard {

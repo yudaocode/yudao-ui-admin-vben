@@ -19,6 +19,8 @@ import KnowledgeLabelForm from './knowledge-label-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLabelManageDialog' });
 
+// TODO @AI：已用 VXE 的话补 destroyOnClose。操作列继续走 TableAction。
+
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const [KnowledgeLabelFormModal, knowledgeLabelFormModalApi] = useVbenModal({

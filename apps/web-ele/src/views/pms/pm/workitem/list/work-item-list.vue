@@ -73,6 +73,7 @@ import { useWorkItemGridColumns } from './data';
 
 defineOptions({ name: 'PmsWorkItemList' });
 
+// TODO @AI：筛选不要手写 Input/Select/Popover，放到 formOptions.schema，对齐 system user。height 用 auto。不要为前端搜索把全部分页拉下来。看板模式可保留自定义。
 const props = defineProps<{
   defaultViewMode?: 'board' | 'list';
   editable: boolean;

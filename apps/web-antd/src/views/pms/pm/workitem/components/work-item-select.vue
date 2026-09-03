@@ -11,6 +11,8 @@ import { getWorkItemPage } from '#/api/pms/pm/workitem';
 
 defineOptions({ name: 'PmsWorkItemSelect' });
 
+// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
+
 const props = withDefaults(
   defineProps<{
     excludeId?: number;

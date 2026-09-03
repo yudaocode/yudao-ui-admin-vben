@@ -33,6 +33,7 @@ const { push } = useRouter(); // 路由操作
 
 const [IterationFormModal, iterationFormModalApi] = useVbenModal({
   connectedComponent: IterationForm,
+  // TODO @AI：对齐 system user，补 destroyOnClose。删除改 TableAction popConfirm，不要 confirm + empty catch。
 });
 const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
   connectedComponent: IterationStartForm,

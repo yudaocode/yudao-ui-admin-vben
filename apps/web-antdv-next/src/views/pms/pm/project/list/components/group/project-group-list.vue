@@ -24,6 +24,8 @@ import ProjectGroupForm from './project-group-form.vue';
 
 defineOptions({ name: 'PmsProjectGroupList' });
 
+// TODO @AI：删除改 TableAction popConfirm。补 destroyOnClose。
+
 const emit = defineEmits(['success']); // 定义 success 事件，用于项目分组发生变化后的回调
 
 const { hasAccessByCodes } = useAccess();

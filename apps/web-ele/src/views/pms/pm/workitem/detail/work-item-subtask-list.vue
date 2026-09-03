@@ -35,6 +35,8 @@ import { useColumns } from './data';
 
 defineOptions({ name: 'PmsWorkItemSubtaskList' });
 
+// TODO @AI：已用 VXE 的话操作列走 TableAction，不要手写按钮。
+
 const props = withDefaults(
   defineProps<{
     editable: boolean;

@@ -17,6 +17,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeSearch' });
 
+// TODO @AI：Grid 补 table-title、toolbarConfig.refresh/search，对齐 system user。
 const route = useRoute(); // 当前路由
 const router = useRouter(); // 路由对象
 const keyword = ref(String(route.query.keyword || '')); // 当前搜索关键字

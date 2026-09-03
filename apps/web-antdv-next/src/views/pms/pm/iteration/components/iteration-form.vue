@@ -19,6 +19,7 @@ import { useIterationFormSchema } from './data';
 
 defineOptions({ name: 'PmsIterationForm' });
 
+// TODO @AI：时间交叉校验放到 schema dependencies（参考 project-form）；加载用 modalApi.lock，不要 v-loading。connectedComponent 补 destroyOnClose。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const formLoading = ref(false); // 表单加载中

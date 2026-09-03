@@ -50,6 +50,7 @@ import KnowledgeLibraryForm from './knowledge-library-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibrary' });
 
+// TODO @AI：useAccess() 空调用删掉。删除改 TableAction popConfirm，不要 confirm + empty catch。补 destroyOnClose、toolbarConfig。createTime 不要再走 slot。
 useAccess();
 const router = useRouter(); // 路由
 const currentUserId = useUserStore().userInfo?.id; // 当前登录用户，用于判断创建人级操作

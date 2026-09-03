@@ -25,6 +25,8 @@ import {
 
 defineOptions({ name: 'PmsWorkItemComment' });
 
+// TODO @AI：评论区可以保留自定义；antd/antdv-next 不要用 v-loading。三端模板对齐。
+
 const props = withDefaults(
   defineProps<{
     editable: boolean;

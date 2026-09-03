@@ -11,6 +11,8 @@ import { getWorkItemActivityList } from '#/api/pms/pm/workitem/activity';
 
 defineOptions({ name: 'PmsWorkItemActivity' });
 
+// TODO @AI：动态时间线可以保留自定义；antd/antdv-next 不要用 v-loading。
+
 const props = withDefaults(
   defineProps<{ showTitle?: boolean; workItemId: number }>(),
   { showTitle: true },

@@ -24,6 +24,8 @@ import { getKnowledgeTreeNodeIcon } from './types';
 
 defineOptions({ name: 'PmsKnowledgeLibrarySidebar' });
 
+// TODO @AI：树可以保留自定义；三端节点菜单和拖拽行为对齐。
+
 const props = defineProps<{
   activeView: KnowledgeContentView;
   canCreateDocument: boolean;

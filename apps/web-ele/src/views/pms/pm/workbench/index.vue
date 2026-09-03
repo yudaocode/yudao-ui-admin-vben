@@ -118,6 +118,7 @@ function cancelQuickEdit() {
 }
 
 /** 点击当前编辑器外部时退出行内编辑 */
+// TODO @AI：点外部关闭依赖 antd/ele 各自 class，三端容易漏改；抽公共判断，或改成组件自身 blur。DatePicker 的 as any 去掉。
 function handleDocumentPointerDown(event: PointerEvent) {
   if (!quickEditingKey.value || !(event.target instanceof Element)) {
     return;

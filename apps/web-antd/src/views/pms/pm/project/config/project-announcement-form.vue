@@ -18,6 +18,8 @@ import { useAnnouncementFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectAnnouncementForm' });
 
+// TODO @AI：connectedComponent 补 destroyOnClose。标题对齐 system user 用 $t。
+
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 
 const formType = ref<'create' | 'update'>('create'); // 表单的类型：create - 新增；update - 修改

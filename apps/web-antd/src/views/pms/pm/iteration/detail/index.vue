@@ -68,6 +68,8 @@ import {
 
 defineOptions({ name: 'PmsIterationDetail' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。工作项列表已用 VXE 的话，补 toolbarConfig；日期不要页面里 dayjs.format。
+
 const { hasAccessByCodes } = useAccess();
 const { push } = useRouter(); // 路由操作
 const route = useRoute(); // 当前路由

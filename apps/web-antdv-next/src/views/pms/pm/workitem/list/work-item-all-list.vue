@@ -41,6 +41,7 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsWorkItemAllList' });
 
+// TODO @AI：筛选改 formOptions.schema，不要页面里手写 Input/Select/Popover。height 用 auto，补 toolbarConfig。和 work-item-list 的筛选项保持同一套 schema。
 const props = defineProps<{
   editable: boolean;
   iterationId?: number;

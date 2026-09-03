@@ -11,6 +11,8 @@ import { getProjectPage } from '#/api/pms/pm/project';
 
 defineOptions({ name: 'PmsProjectSelect' });
 
+// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
+
 withDefaults(defineProps<{ modelValue?: number }>(), {
   modelValue: undefined,
 });

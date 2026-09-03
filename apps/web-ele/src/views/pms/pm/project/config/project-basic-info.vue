@@ -22,6 +22,7 @@ import ProjectForm from '../components/project-form.vue';
 
 defineOptions({ name: 'PmsProjectBasicInfo' });
 
+// TODO @AI：日期用 formatDateTime，不要页面里 dayjs.format。归档/回收站对齐 TableAction 或补 auth。empty catch 处理下。补 destroyOnClose。
 const props = defineProps<{
   editable: boolean;
   project: PmsProjectApi.Project;

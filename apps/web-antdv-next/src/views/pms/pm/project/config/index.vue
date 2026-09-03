@@ -19,6 +19,8 @@ import ProjectMemberList from './project-member-list.vue';
 
 defineOptions({ name: 'PmsProjectConfig' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。页签内容已经拆组件了，加载态对齐 system user 用 lock/Spin。
+
 type ProjectConfigTab = 'announcement' | 'basic' | 'configuration' | 'member';
 
 const route = useRoute(); // 当前路由

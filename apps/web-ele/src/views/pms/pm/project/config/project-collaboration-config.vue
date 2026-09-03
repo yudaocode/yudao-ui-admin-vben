@@ -19,6 +19,7 @@ import { useCollaborationConfigColumns } from './data';
 
 defineOptions({ name: 'PmsProjectCollaborationConfig' });
 
+// TODO @AI：操作列用 TableAction，不要手写 Button。connectedComponent 补 destroyOnClose。
 const props = defineProps<{ projectId: number; projectType: number }>();
 
 const configurationList = computed(() =>

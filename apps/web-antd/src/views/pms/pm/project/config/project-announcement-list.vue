@@ -20,6 +20,8 @@ import ProjectAnnouncementForm from './project-announcement-form.vue';
 
 defineOptions({ name: 'PmsProjectAnnouncementList' });
 
+// TODO @AI：删除改 TableAction popConfirm。createTime 走 formatter。补 destroyOnClose。
+
 const props = defineProps<{ editable: boolean; projectId: number }>();
 
 const total = ref(0); // 公告总数

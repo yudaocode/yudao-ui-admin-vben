@@ -16,6 +16,7 @@ import { useFolderFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFolderForm' });
 
+// TODO @AI：去掉 as any，API 类型对不上就补 VO。打开弹窗用 connectedComponent + setData，不要 defineExpose({ open })。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const formType = ref<'create' | 'update'>('create'); // 表单类型：create - 新增；update - 修改

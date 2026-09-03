@@ -23,6 +23,7 @@ import KnowledgeLabelManageDialog from './knowledge-label-manage-dialog.vue';
 
 defineOptions({ name: 'PmsKnowledgeDocumentLabel' });
 
+// TODO @AI：左侧标签列表也能用 VXE；antd/antdv-next 不要用 v-loading。文档列表补 toolbarConfig。updateTime 走 formatter。
 const router = useRouter(); // 路由
 const labelLoading = ref(true); // 标签列表加载中
 const labelList = ref<PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[]>(

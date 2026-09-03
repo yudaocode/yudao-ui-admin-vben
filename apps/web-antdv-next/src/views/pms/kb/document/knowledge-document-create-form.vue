@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+// TODO @AI：useVbenForm 从 #/adapter/form 引入，对齐 system user；PMS 里好些 form 都从 @vben/common-ui 拿，三端一并改。
 
 import { message } from 'antdv-next';
 
@@ -13,6 +14,7 @@ import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeDocumentCreateForm' });
 
+// TODO @AI：打开弹窗用 connectedComponent + setData，不要 defineExpose({ open })，对齐 system user。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const [Form, formApi] = useVbenForm({

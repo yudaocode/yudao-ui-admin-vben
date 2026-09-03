@@ -4,6 +4,7 @@ import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types'
 import { DICT_TYPE } from '@vben/constants';
 
 /** 列表的字段 */
+// TODO @AI：三端列定义不一致：antd 用 CellDict，antdv-next/ele 用 getDictLabel formatter。统一成 CellDict。
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {

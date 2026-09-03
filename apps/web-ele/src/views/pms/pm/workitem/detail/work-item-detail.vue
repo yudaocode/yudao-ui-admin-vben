@@ -59,6 +59,8 @@ import WorkItemSubtaskList from './work-item-subtask-list.vue';
 
 defineOptions({ name: 'PmsWorkItemDetail' });
 
+// TODO @AI：详情里可编辑字段（时间、负责人等）尽量抽 schema；as any、v-loading 对齐 system user 的 lock。三端模板差异也收一下。
+
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于详情变更后的回调
 
 const { hasAccessByCodes } = useAccess();

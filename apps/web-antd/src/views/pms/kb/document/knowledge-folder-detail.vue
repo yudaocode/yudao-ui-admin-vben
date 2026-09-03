@@ -27,6 +27,8 @@ import {
 
 defineOptions({ name: 'PmsKnowledgeFolderDetail' });
 
+// TODO @AI：内容列表已用 VXE 的话操作列走 TableAction。antd/antdv-next 不要用 v-loading。
+
 const props = defineProps<{
   children: KnowledgeTreeNode[];
   folder: PmsKnowledgeFolderApi.KnowledgeFolder;

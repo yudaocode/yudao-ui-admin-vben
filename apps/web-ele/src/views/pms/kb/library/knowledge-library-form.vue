@@ -1,42 +1,31 @@
 <script lang="ts" setup>
-import type { FormRules } from 'element-plus';
-
 import type { PmsKnowledgeLibraryApi } from '#/api/pms/kb/library';
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
-import {
-  ElButton,
-  ElForm,
-  ElFormItem,
-  ElImage,
-  ElInput,
-  ElMessage,
-  ElRadio,
-  ElRadioGroup,
-  ElScrollbar,
-} from 'element-plus';
+import { ElButton, ElImage, ElMessage, ElScrollbar } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createKnowledgeLibrary,
   getKnowledgeLibrary,
   getKnowledgeLibraryTemplateList,
   updateKnowledgeLibrary,
 } from '#/api/pms/kb/library';
-import { ImageUpload } from '#/components/upload';
-import { UserSelect } from '#/views/system/user/components';
 
+import { useLibraryFormSchema } from './data';
 import KnowledgeMemberForm from './knowledge-member-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryForm' });
 
-const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
+// TODO @AI：模板选择步可以自定义；名称/封面/可见范围/初始成员对齐 system user，用 useVbenForm + schema。v-loading 换成 modalApi.lock。「定义 success 事件」这类注释删掉。
+// TODO DONE @AI：基础信息表单已改为 useVbenForm + useLibraryFormSchema（见 data.ts），模板选择步保留为自定义区块；详情加载和提交改用 modalApi.lock，模板列表加载保留自定义区块内的 v-loading；低价值注释已删除。
+const emit = defineEmits(['success']);
 
-const formLoading = ref(false); // 表单提交中
 const formType = ref<'create' | 'update'>('create'); // 表单类型：create - 新增；update - 修改
 const templateSelecting = ref(false); // 是否正在选择知识库模板
 const templateLoading = ref(false); // 模板加载中
@@ -45,15 +34,6 @@ const selectedTemplateId = ref(0); // 0 表示空白知识库
 const formData =
   ref<PmsKnowledgeLibraryApi.KnowledgeLibrary>(getDefaultFormData()); // 表单数据
 const currentUserId = useUserStore().userInfo?.id; // 创建人用户编号，不能重复加入初始成员
-const initialAdminUserIds = ref<number[]>([]); // 创建时的初始管理员
-const initialMemberUserIds = ref<number[]>([]); // 创建时的普通成员
-const formRules: FormRules = {
-  name: [{ required: true, message: '请输入知识库名称', trigger: 'blur' }],
-  openStatus: [
-    { required: true, message: '请选择可见范围', trigger: 'change' },
-  ],
-}; // 表单校验规则
-const formRef = ref(); // 表单 Ref
 const dialogTitle = ref(''); // 弹窗标题
 const selectedTemplate = computed(() =>
   templateList.value.find(
@@ -63,6 +43,19 @@ const selectedTemplate = computed(() =>
 
 const [KnowledgeMemberFormModal, knowledgeMemberFormModalApi] = useVbenModal({
   connectedComponent: KnowledgeMemberForm,
+});
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: {
+      class: 'w-full',
+    },
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
+  schema: useLibraryFormSchema(currentUserId),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-1',
 });
 
 /** 查询知识库模板 */
@@ -76,20 +69,20 @@ async function getTemplateList() {
 }
 
 /** 进入知识库基本信息表单 */
-function handleTemplateNext() {
-  formData.value = selectedTemplate.value
-    ? {
-        ...getDefaultFormData(),
-        name: selectedTemplate.value.name,
-        description: selectedTemplate.value.description,
-        coverUrl: selectedTemplate.value.coverUrl,
-        templateId: selectedTemplateId.value,
-      }
-    : getDefaultFormData();
-  resetInitialMembers();
+async function handleTemplateNext() {
   templateSelecting.value = false;
   dialogTitle.value = '新建知识库';
-  nextTick(() => formRef.value?.clearValidate());
+  await formApi.setValues(
+    selectedTemplate.value
+      ? {
+          ...getDefaultFormData(),
+          name: selectedTemplate.value.name,
+          description: selectedTemplate.value.description,
+          coverUrl: selectedTemplate.value.coverUrl,
+          templateId: selectedTemplateId.value,
+        }
+      : getDefaultFormData(),
+  );
 }
 
 /** 返回知识库模板选择 */
@@ -98,18 +91,13 @@ function handleTemplateBack() {
   dialogTitle.value = '选择知识库模板';
 }
 
-/** 重置创建时的初始成员 */
-function resetInitialMembers() {
-  initialAdminUserIds.value = [];
-  initialMemberUserIds.value = [];
-}
-
 /** 校验初始管理员和普通成员不能重复 */
-function validateInitialMembers() {
-  const memberUserIdSet = new Set(initialMemberUserIds.value);
-  return !initialAdminUserIds.value.some((userId) =>
-    memberUserIdSet.has(userId),
-  );
+function validateInitialMembers(
+  adminUserIds: number[] = [],
+  memberUserIds: number[] = [],
+) {
+  const memberUserIdSet = new Set(memberUserIds);
+  return !adminUserIds.some((userId) => memberUserIdSet.has(userId));
 }
 
 /** 打开知识库成员表单 */
@@ -123,13 +111,6 @@ function openMemberForm() {
 /** 处理知识库成员更新成功 */
 function handleMemberSuccess() {
   emit('success');
-}
-
-/** 重置表单 */
-function resetForm() {
-  formData.value = getDefaultFormData();
-  resetInitialMembers();
-  formRef.value?.resetFields();
 }
 
 /** 获得默认表单数据 */
@@ -164,11 +145,12 @@ const [Modal, modalApi] = useVbenModal({
         ? '选择知识库模板'
         : '修改';
     selectedTemplateId.value = 0;
-    resetForm();
+    // 重置表单数据；新增时表单在模板选择后才挂载，由 handleTemplateNext 设置默认值
+    formData.value = getDefaultFormData();
     if (data.formType === 'create') {
       await getTemplateList();
     } else if (data.id) {
-      formLoading.value = true;
+      modalApi.lock();
       try {
         formData.value = {
           ...(await getKnowledgeLibrary(data.id)),
@@ -176,8 +158,10 @@ const [Modal, modalApi] = useVbenModal({
           memberUserIds: [],
           templateId: undefined,
         };
+        await formApi.reset();
+        await formApi.setValues(formData.value);
       } finally {
-        formLoading.value = false;
+        modalApi.unlock();
       }
     }
   },
@@ -186,32 +170,37 @@ const [Modal, modalApi] = useVbenModal({
 /** 提交表单 */
 async function submitForm() {
   // 校验表单
-  if (!formRef.value || !(await formRef.value.validate().catch(() => false))) {
+  const { valid } = await formApi.validate();
+  if (!valid) {
     return;
   }
-  if (formType.value === 'create' && !validateInitialMembers()) {
+  const values = await formApi.getValues();
+  if (
+    formType.value === 'create' &&
+    !validateInitialMembers(values.adminUserIds, values.memberUserIds)
+  ) {
     ElMessage.warning('同一用户不能同时设置为初始管理员和普通成员');
     return;
   }
   // 提交请求
-  formLoading.value = true;
+  modalApi.lock();
   try {
+    const data = {
+      ...formData.value,
+      ...values,
+    };
     if (formType.value === 'create') {
-      await createKnowledgeLibrary({
-        ...formData.value,
-        adminUserIds: [...initialAdminUserIds.value],
-        memberUserIds: [...initialMemberUserIds.value],
-      });
+      await createKnowledgeLibrary(data);
       ElMessage.success('创建成功');
     } else {
-      await updateKnowledgeLibrary(formData.value);
+      await updateKnowledgeLibrary(data);
       ElMessage.success('更新成功');
     }
     await modalApi.close();
     // 发送操作成功的事件
     emit('success');
   } finally {
-    formLoading.value = false;
+    modalApi.unlock();
   }
 }
 </script>
@@ -337,69 +326,7 @@ async function submitForm() {
     </div>
 
     <!-- 知识库基础信息 -->
-    <ElForm
-      v-else
-      ref="formRef"
-      v-loading="formLoading"
-      :model="formData"
-      :rules="formRules"
-      label-width="100px"
-    >
-      <ElFormItem label="知识库名称" prop="name">
-        <ElInput
-          v-model="formData.name"
-          maxlength="50"
-          placeholder="请输入知识库名称"
-          show-word-limit
-        />
-      </ElFormItem>
-      <ElFormItem label="知识库封面" prop="coverUrl">
-        <ImageUpload v-model="formData.coverUrl" :limit="1" />
-      </ElFormItem>
-      <ElFormItem label="知识库简介" prop="description">
-        <ElInput
-          v-model="formData.description"
-          :rows="4"
-          maxlength="300"
-          placeholder="请输入知识库简介"
-          show-word-limit
-          type="textarea"
-        />
-      </ElFormItem>
-      <ElFormItem label="可见范围" prop="openStatus">
-        <ElRadioGroup
-          v-model="formData.openStatus"
-          :disabled="
-            formType === 'update' && formData.creatorUserId !== currentUserId
-          "
-        >
-          <ElRadio :value="false">私有：只有知识库成员可以查看</ElRadio>
-          <ElRadio :value="true">公开：所有人可以查看，成员可以协作</ElRadio>
-        </ElRadioGroup>
-      </ElFormItem>
-      <ElFormItem v-if="formType === 'create'" label="初始管理员">
-        <UserSelect
-          v-model="initialAdminUserIds"
-          :disabled-ids="currentUserId === undefined ? [] : [currentUserId]"
-          :multiple="true"
-          placeholder="请选择初始管理员"
-        />
-        <div class="mt-1 text-xs text-[var(--el-text-color-secondary)]">
-          可管理知识库信息和成员；创建人由系统自动加入
-        </div>
-      </ElFormItem>
-      <ElFormItem v-if="formType === 'create'" label="普通成员">
-        <UserSelect
-          v-model="initialMemberUserIds"
-          :disabled-ids="currentUserId === undefined ? [] : [currentUserId]"
-          :multiple="true"
-          placeholder="请选择普通成员"
-        />
-        <div class="mt-1 text-xs text-[var(--el-text-color-secondary)]">
-          可参与内容协作，具体能力受文档权限控制
-        </div>
-      </ElFormItem>
-    </ElForm>
+    <Form v-else class="mx-4" />
 
     <!-- 底部操作 -->
     <div class="mt-4 flex items-center justify-between">
@@ -421,16 +348,10 @@ async function submitForm() {
           下一步
         </ElButton>
         <template v-else>
-          <ElButton
-            v-if="formType === 'create'"
-            :disabled="formLoading"
-            @click="handleTemplateBack"
-          >
+          <ElButton v-if="formType === 'create'" @click="handleTemplateBack">
             上一步
           </ElButton>
-          <ElButton :disabled="formLoading" type="primary" @click="submitForm">
-            确 定
-          </ElButton>
+          <ElButton type="primary" @click="submitForm">确 定</ElButton>
         </template>
         <ElButton @click="modalApi.close()">取 消</ElButton>
       </div>

@@ -9,6 +9,8 @@ import { getProjectMemberList } from '#/api/pms/pm/project/member';
 
 defineOptions({ name: 'PmsProjectMemberSelect' });
 
+// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
+
 const props = withDefaults(
   defineProps<{
     modelValue?: number | number[];

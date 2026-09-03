@@ -18,6 +18,7 @@ import { UserSelect } from '#/views/system/user/components';
 
 defineOptions({ name: 'PmsKnowledgeDocumentShareDialog' });
 
+// TODO @AI：分享成员等字段尽量走 schema；底部按钮对齐 system user 用 Modal footer/onConfirm，不要手写取消。打开方式用 connectedComponent + setData，不要 defineExpose({ open })。
 const formLoading = ref(false); // 表单提交中
 const documentId = ref<number>(); // 文档编号
 const share = ref<PmsKnowledgeDocumentShareApi.KnowledgeDocumentShare>(); // 文档分享信息

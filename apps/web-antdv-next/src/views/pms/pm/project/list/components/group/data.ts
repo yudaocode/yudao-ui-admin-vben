@@ -5,6 +5,7 @@ import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 import { DICT_TYPE } from '@vben/constants';
 
 /** 新增/修改的表单 */
+// TODO @AI：antdv-next 少了一行空行，三端 data.ts 格式对齐。分组类型列已用 CellDict，保持不要改成 getDictLabel。
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {

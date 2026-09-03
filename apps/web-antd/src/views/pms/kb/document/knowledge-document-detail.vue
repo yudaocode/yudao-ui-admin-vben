@@ -40,6 +40,8 @@ import KnowledgeDocumentComment from './knowledge-document-comment.vue';
 
 defineOptions({ name: 'PmsKnowledgeDocumentDetail' });
 
+// TODO @AI：详情可以保留自定义；三端模板差一截，对齐操作区和附件展示。
+
 const props = defineProps<{
   document: PmsKnowledgeDocumentApi.KnowledgeDocument;
   labels: PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[];

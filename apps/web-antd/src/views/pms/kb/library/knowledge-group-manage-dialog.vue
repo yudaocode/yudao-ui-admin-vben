@@ -21,6 +21,8 @@ import KnowledgeGroupForm from './knowledge-group-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeGroupManageDialog' });
 
+// TODO @AI：已用 VXE 的话补 destroyOnClose。拖拽排序列和 system 同类页对齐。
+
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const saving = ref(false); // 保存排序中

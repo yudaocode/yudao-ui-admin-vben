@@ -43,6 +43,8 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 
 defineOptions({ name: 'PmsProjectOverview' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
+
 const props = defineProps<{
   editable: boolean;
   project: PmsProjectApi.Project;

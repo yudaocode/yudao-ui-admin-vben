@@ -23,6 +23,7 @@ function getGroupDailyHours(items: ReportRow[] | undefined, date: string) {
 }
 
 /** 列表的搜索表单 */
+// TODO @AI：命名对齐 system user，改成 useGridFormSchema。
 export function useSearchFormSchema(
   onCreateTimeChange: () => void,
 ): VbenFormSchema[] {

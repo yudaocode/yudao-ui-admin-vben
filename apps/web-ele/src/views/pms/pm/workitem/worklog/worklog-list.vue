@@ -17,6 +17,8 @@ import WorkLogForm from './worklog-form.vue';
 
 defineOptions({ name: 'PmsWorkItemWorkLogList' });
 
+// TODO @AI：登记/编辑操作对齐 TableAction，不要手写 Button。补 destroyOnClose。
+
 const props = withDefaults(
   defineProps<{
     editable: boolean;

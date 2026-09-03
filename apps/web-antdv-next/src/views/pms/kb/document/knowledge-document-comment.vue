@@ -25,6 +25,8 @@ import {
 
 defineOptions({ name: 'PmsKnowledgeDocumentComment' });
 
+// TODO @AI：评论区可以保留自定义；antd/antdv-next 不要用 v-loading。
+
 const props = defineProps<{ documentId: number }>();
 
 const loginUserId = computed(() => useUserStore().userInfo?.id); // 当前登录用户编号

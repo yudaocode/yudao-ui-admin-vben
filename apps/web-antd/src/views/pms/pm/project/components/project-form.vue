@@ -18,6 +18,7 @@ import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectForm' });
 
+// TODO @AI：标题对齐 system user 用 $t('ui.actionTitle.create/edit')；项目类型不要 slot 手写 Radio，放到 schema 的 RadioGroup。connectedComponent 补 destroyOnClose。
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 
 const formType = ref<'create' | 'update'>('create'); // 表单类型：create - 新增；update - 修改
@@ -121,18 +122,19 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="dialogTitle">
     <Form class="mx-4">
-      <template #type="{ model, field }">
+      <template #type="slotProps">
         <div class="w-full">
           <Radio.Group
-            v-model:value="model[field]"
             option-type="button"
             :options="[
               { label: '通用项目', value: PmsProjectType.GENERAL },
               { label: '敏捷开发项目', value: PmsProjectType.AGILE },
             ]"
+            :value="slotProps.componentField.modelValue"
+            @update:value="slotProps.componentField['onUpdate:modelValue']"
           />
           <div class="mt-2 text-[13px] text-muted-foreground">
-            {{ projectTypeTip(model[field]) }}
+            {{ projectTypeTip(slotProps.componentField.modelValue) }}
           </div>
         </div>
       </template>

@@ -4,6 +4,7 @@ import type { PmsKnowledgeGroupApi } from '#/api/pms/kb/library/group';
 import { computed, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
+// TODO @AI：useVbenForm 从 #/adapter/form 引入，对齐 system user；PMS 里好些 form 都从 @vben/common-ui 拿，三端一并改。
 
 import { ElMessage } from 'element-plus';
 
@@ -35,6 +36,7 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 90,
   },
   layout: 'horizontal',
+  // TODO @AI：schema 放到 data.ts 的 useFormSchema，不要写在 vue 里，对齐 system user。
   schema: [
     {
       component: 'Input',

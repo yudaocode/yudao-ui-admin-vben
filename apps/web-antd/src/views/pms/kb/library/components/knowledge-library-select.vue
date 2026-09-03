@@ -11,6 +11,8 @@ import { getKnowledgeLibraryPage } from '#/api/pms/kb/library';
 
 defineOptions({ name: 'PmsKnowledgeLibrarySelect' });
 
+// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
+
 withDefaults(
   defineProps<{
     clearable?: boolean;

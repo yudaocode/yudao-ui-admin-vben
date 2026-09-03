@@ -20,6 +20,8 @@ import ProjectMemberForm from './project-member-form.vue';
 
 defineOptions({ name: 'PmsProjectMemberList' });
 
+// TODO @AI：删除改 TableAction popConfirm，不要 confirm + empty catch。补 destroyOnClose。
+
 const props = defineProps<{
   editable: boolean;
   project: PmsProjectApi.Project;

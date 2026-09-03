@@ -19,6 +19,7 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeRecent' });
 
+// TODO @AI：antd 给 Tabs 加了 scoped 去 margin，ele 没有；三端 Tabs 样式对齐。补 toolbarConfig。
 const router = useRouter(); // 路由对象
 const activeTab =
   ref<keyof PmsKnowledgeViewRecordApi.KnowledgeRecentList>('todayItems'); // 当前时间分组

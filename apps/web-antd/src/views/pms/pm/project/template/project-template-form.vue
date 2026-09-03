@@ -42,6 +42,7 @@ import {
 import { getWorkItemTypeCode } from '#/views/pms/pm/utils/format';
 defineOptions({ name: 'PmsProjectTemplateForm' });
 
+// TODO @AI：基本信息页签改 useVbenForm + schema；状态/看板内嵌表格改 VXE Grid（可拖拽）。antd、antdv-next 的 v-loading 换成 lock。复杂 Tab 可以留，但不要继续手写 Form.Item。
 const emit = defineEmits<{ success: [] }>();
 
 type ProjectTemplateTab = 'basic' | 'board' | 'itemType' | 'status'; // 操作成功事件

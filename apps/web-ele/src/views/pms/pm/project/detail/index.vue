@@ -39,6 +39,8 @@ import ProjectWorkLog from './project-work-log.vue';
 
 defineOptions({ name: 'PmsProjectDetail' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。三端详情页结构差一截，对齐页签、权限按钮和空态。
+
 type ProjectDetailTab =
   | 'all'
   | 'defect'

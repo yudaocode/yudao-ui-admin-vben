@@ -21,6 +21,8 @@ import {
 
 defineOptions({ name: 'PmsKnowledgeLibraryHome' });
 
+// TODO @AI：已用 VXE 的话补 toolbarConfig。antd/antdv-next 不要用 v-loading。
+
 const props = defineProps<{
   favoriteItems: PmsKnowledgeInteractionApi.KnowledgeInteractionItem[];
   favoriteLoading: boolean;

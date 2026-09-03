@@ -9,6 +9,8 @@ import { getWorkItemLabelList } from '#/api/pms/pm/workitem/label';
 
 defineOptions({ name: 'PmsWorkItemLabelSelect' });
 
+// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
+
 withDefaults(
   defineProps<{
     modelValue?: number[];

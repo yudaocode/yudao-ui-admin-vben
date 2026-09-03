@@ -57,6 +57,7 @@ import KnowledgeRecyclePanel from './knowledge-recycle-panel.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryDetail' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。目录/列表能用 VXE 的地方用 VXE，自定义树和详情区可以留。三端 index.vue 行数差一截，先对齐交互再对齐结构。
 const route = useRoute(); // 当前路由
 const router = useRouter(); // 路由
 const libraryId = computed(() => Number(route.params.libraryId)); // 知识库编号

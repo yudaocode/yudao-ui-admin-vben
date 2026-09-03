@@ -19,6 +19,8 @@ import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectWorkLog' });
 
+// TODO @AI：搜索 schema 命名改 useGridFormSchema。已用 VXE 的话补 toolbarConfig。
+
 const props = defineProps<{
   editable: boolean;
   projectId: number;

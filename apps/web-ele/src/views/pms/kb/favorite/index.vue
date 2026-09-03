@@ -25,6 +25,7 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFavorite' });
 
+// TODO @AI：取消关注改 TableAction popConfirm，不要 confirm + empty catch。关注列对齐 system user 的 CellSwitch，不要手写 Switch。
 const router = useRouter(); // 路由
 const activeType = ref('all'); // 当前对象类型
 

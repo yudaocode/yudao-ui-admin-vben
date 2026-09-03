@@ -16,6 +16,8 @@ import { useUploadFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFileUploadForm' });
 
+// TODO @AI：对齐 system user 导入表单：文件走 schema Upload slot。补 destroyOnClose。打开方式不要 defineExpose。
+
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 /** 获得文件文档上传表单默认数据 */

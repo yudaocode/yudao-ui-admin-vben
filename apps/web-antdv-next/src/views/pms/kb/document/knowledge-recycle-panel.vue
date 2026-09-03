@@ -24,6 +24,8 @@ import KnowledgeRecycleDetail from './knowledge-recycle-detail.vue';
 
 defineOptions({ name: 'PmsKnowledgeRecyclePanel' });
 
+// TODO @AI：恢复/删除改 TableAction popConfirm。补 toolbarConfig 与 system user 对齐。
+
 const props = defineProps<{
   libraryId: number;
 }>(); // 组件参数

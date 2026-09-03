@@ -59,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 提交请求；用户选择器不支持禁用已有成员，提交时跳过重复用户
+    // TODO @AI：system user 选择器已支持禁用指定用户，这里接 disabledUserIds，不要提交时静默跳过。补 destroyOnClose。
     modalApi.lock();
     try {
       const values = (await formApi.getValues()) as {

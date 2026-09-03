@@ -63,13 +63,16 @@ import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectList' });
 
+// TODO @AI：antd/antdv-next 的 v-loading 是 EP 指令，改 Spin 或 lock。表格操作对齐 TableAction；connectedComponent 补 destroyOnClose；grid 补 toolbarConfig.refresh/search。
 const favoriteChartRenderers = new Map<number, (options: EChartsOption) => void>(); // 星标项目趋势图渲染器
 
 /** 收集星标项目趋势图容器并创建渲染器 */
 function setFavoriteChartRef(id: number, el: any) {
   if (el) {
     if (!favoriteChartRenderers.has(id)) {
-      const { renderEcharts } = useEcharts(ref(el));
+      // 列表数据异步渲染，useEcharts 的挂载钩子已过，手动标记激活
+      const { isActive, renderEcharts } = useEcharts(ref(el));
+      isActive.value = true;
       favoriteChartRenderers.set(id, (options) => renderEcharts(options));
     }
   } else {

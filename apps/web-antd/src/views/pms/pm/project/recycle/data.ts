@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 /** 列表的搜索表单 */
+// TODO @AI：命名对齐 system user，改成 useGridFormSchema。
 export function useSearchFormSchema(): VbenFormSchema[] {
   return [
     {

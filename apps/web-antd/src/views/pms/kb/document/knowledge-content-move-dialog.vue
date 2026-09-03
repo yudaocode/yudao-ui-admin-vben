@@ -33,7 +33,7 @@ interface TargetOption {
   value: string;
 }
 
-// 定义 success 事件，用于操作成功后的回调 TODO 这个注释？需要删除，还是保留噢？
+// TODO @AI：目标知识库/目标位置改成 useVbenForm + schema；「定义 success 事件」这类注释对齐 system user 删掉。v-loading 换成 lock。
 
 const loading = ref(false); // 数据加载和提交中
 const contentKind = ref<'document' | 'folder'>('document'); // 内容类型

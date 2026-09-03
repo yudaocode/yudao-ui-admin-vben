@@ -21,6 +21,8 @@ import { useUpdateFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeDocumentUpdateForm' });
 
+// TODO @AI：打开方式用 connectedComponent + setData，不要 defineExpose。补 destroyOnClose。
+
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 
 const previewing = ref(false); // 富文本只读预览

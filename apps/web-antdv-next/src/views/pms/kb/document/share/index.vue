@@ -12,6 +12,8 @@ import { PmsKnowledgeDocumentType } from '#/views/pms/kb/utils/constants';
 
 defineOptions({ name: 'PmsKnowledgeDocumentShare' });
 
+// TODO @AI：antd/antdv-next 不要用 v-loading。公开分享页三端布局对齐。
+
 const route = useRoute(); // 当前路由
 const loading = ref(false); // 数据加载中
 const document =
