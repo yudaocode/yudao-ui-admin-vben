@@ -3,10 +3,11 @@ import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 import { onMounted, ref } from 'vue';
 
+import { getAllPageItems } from '@vben/utils';
+
 import { Select } from 'antdv-next';
 
 import { getProjectPage } from '#/api/pms/pm/project';
-import { getAllPageItems } from '#/views/pms/utils/page';
 
 defineOptions({ name: 'PmsProjectSelect' });
 

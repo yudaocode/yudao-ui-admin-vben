@@ -13,7 +13,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectApi.Project>['co
       field: 'archiveTime',
       title: '归档时间',
       width: 220,
-      slots: { default: 'archiveTime' },
+      formatter: 'formatDateTime',
     },
     {
       field: 'action',

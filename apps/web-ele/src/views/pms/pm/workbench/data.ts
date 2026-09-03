@@ -4,12 +4,12 @@ import type { PmsWorkbenchApi } from '#/api/pms/pm/workbench';
 
 import { markRaw } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
+
 import { getRangePickerDefaultProps } from '#/utils';
 import IterationSelect from '#/views/pms/pm/iteration/components/iteration-select.vue';
-import {
-  PmsWorkItemPriorityOptions,
-  PmsWorkItemStatusType,
-} from '#/views/pms/pm/utils/constants';
+import { PmsWorkItemStatusType } from '#/views/pms/pm/utils/constants';
 
 import ProjectSelect from './components/project-select.vue';
 
@@ -55,10 +55,12 @@ export function useSearchFormSchema(
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: PmsWorkItemPriorityOptions.map((item) => ({
+        options: getDictOptions(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, 'number').map(
+          (item) => ({
           label: item.label,
           value: item.value,
-        })),
+          }),
+        ),
         placeholder: '全部优先级',
       },
     },
@@ -163,7 +165,10 @@ export function useIterationColumns(): VxeTableGridOptions<PmsWorkbenchApi.Workb
       field: 'status',
       title: '状态',
       width: 120,
-      slots: { default: 'iterationStatus' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_ITERATION_STATUS },
+      },
     },
     {
       field: 'projectName',

@@ -1,0 +1,839 @@
+<script lang="ts" setup>
+import type { PmsIterationApi } from '#/api/pms/pm/iteration';
+import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
+
+import { onMounted, reactive, ref } from 'vue';
+
+import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel, getDictOptions } from '@vben/hooks';
+import { IconifyIcon } from '@vben/icons';
+import { getAllPageItems } from '@vben/utils';
+
+import dayjs from 'dayjs';
+import {
+  ElAvatar,
+  ElButton,
+  ElCard,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElEmpty,
+  ElInput,
+  ElMessage,
+  ElOption,
+  ElSelect,
+  ElTag,
+} from 'element-plus';
+import draggable from 'vuedraggable';
+
+import {
+  completeIteration,
+  createIteration,
+  deleteIteration,
+  getIterationPage,
+} from '#/api/pms/pm/iteration';
+import {
+  createWorkItem,
+  getWorkItemPage,
+  recycleWorkItem,
+  updateWorkItemIteration,
+  updateWorkItemPlanningSort,
+} from '#/api/pms/pm/workitem';
+import IterationForm from '#/views/pms/pm/iteration/components/iteration-form.vue';
+import IterationStartForm from '#/views/pms/pm/iteration/components/iteration-start-form.vue';
+import {
+  PmsIterationStatus,
+  PmsWorkItemDefectType,
+  PmsWorkItemPriority,
+  PmsWorkItemType,
+} from '#/views/pms/pm/utils/constants';
+import {
+  getIterationStatusTagType,
+  getPriorityColor,
+  getWorkItemStatusTagType,
+} from '#/views/pms/pm/utils/format';
+import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
+import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
+
+defineOptions({ name: 'PmsPlanningBoard' });
+
+const props = defineProps<{
+  editable: boolean;
+  projectId: number;
+  projectType: number;
+}>();
+
+interface QuickWorkItemDraft {
+  name: string;
+  type: number;
+}
+
+type PlanningIteration = Omit<PmsIterationApi.Iteration, 'id' | 'status'> & {
+  expanded: boolean;
+  id: number;
+  list: PmsWorkItemApi.WorkItem[];
+  status: number;
+};
+
+const loading = ref(true); // 加载中
+const saving = ref(false); // 拖拽排序保存中
+const creatingKey = ref(''); // 快速创建中的区域标识
+const searchKeyword = ref(''); // 事项搜索关键字
+const layoutMode = ref<'double' | 'single'>('double'); // 规划布局
+const backlogCreating = ref(false); // 是否正在 Backlog 新建事项
+const creatingIterationId = ref<number>(); // 正在新建事项的迭代编号
+const iterationCreating = ref(false); // 是否正在新建迭代
+const expandedIterationIds = new Set<number>(); // 缓存已展开的迭代
+const iterationList = ref<PlanningIteration[]>([]); // 规划中的迭代列表
+const unplannedWorkItems = ref<PmsWorkItemApi.WorkItem[]>([]); // 待规划工作项列表
+const backlogDraft = reactive<QuickWorkItemDraft>({
+  name: '',
+  type: PmsWorkItemType.TASK,
+}); // Backlog 快速创建草稿
+const iterationDrafts = reactive<Record<number, QuickWorkItemDraft>>({}); // 各迭代快速创建草稿
+const quickIterationName = ref(''); // 快速创建迭代名称
+const draggedWorkItemId = ref<number>(); // 当前拖拽工作项编号
+
+const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
+  connectedComponent: WorkItemForm,
+});
+const [WorkItemDetailDrawer, workItemDetailDrawerApi] = useVbenDrawer({
+  connectedComponent: WorkItemDetail,
+});
+const [IterationFormModal, iterationFormModalApi] = useVbenModal({
+  connectedComponent: IterationForm,
+});
+const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
+  connectedComponent: IterationStartForm,
+});
+
+/** 查询迭代规划数据 */
+async function getPlanningData() {
+  loading.value = true;
+  try {
+    // 并行加载页面所需数据
+    const [plannedIterations, activeIterations, fetchedUnplannedWorkItems] =
+      await Promise.all([
+        getIterationList(PmsIterationStatus.PLANNED),
+        getIterationList(PmsIterationStatus.ACTIVE),
+        getWorkItemList({
+          projectId: props.projectId,
+          unplannedOnly: true,
+          name: searchKeyword.value.trim() || undefined,
+        }),
+      ]);
+    // 逐个加载迭代内工作项，并初始化快速创建草稿
+    const projectIterations = [...activeIterations, ...plannedIterations];
+    iterationList.value = await Promise.all(
+      projectIterations.map(async (iteration) => {
+        const iterationId = iteration.id!;
+        iterationDrafts[iterationId] ||= {
+          name: '',
+          type: PmsWorkItemType.TASK,
+        };
+        return {
+          ...iteration,
+          id: iterationId,
+          status: iteration.status!,
+          expanded: expandedIterationIds.has(iterationId),
+          list: await getWorkItemList({
+            projectId: props.projectId,
+            iterationId,
+            name: searchKeyword.value.trim() || undefined,
+          }),
+        };
+      }),
+    );
+    unplannedWorkItems.value = fetchedUnplannedWorkItems;
+  } finally {
+    loading.value = false;
+  }
+}
+
+/** 查询指定状态的迭代列表 */
+async function getIterationList(status: number) {
+  return getAllPageItems<PmsIterationApi.Iteration>((pageNo, pageSize) =>
+    getIterationPage({ pageNo, pageSize, projectId: props.projectId, status }),
+  );
+}
+
+/** 查询规划视图的工作项列表 */
+async function getWorkItemList(params: {
+  iterationId?: number;
+  name?: string;
+  projectId: number;
+  unplannedOnly?: boolean;
+}) {
+  return getAllPageItems<PmsWorkItemApi.WorkItem>((pageNo, pageSize) =>
+    getWorkItemPage({ ...params, planningOnly: true, pageNo, pageSize }),
+  );
+}
+
+/** 展开或折叠迭代，并保留刷新前的状态 */
+function toggleIteration(iteration: PlanningIteration) {
+  iteration.expanded = !iteration.expanded;
+  if (iteration.expanded) {
+    expandedIterationIds.add(iteration.id);
+  } else {
+    expandedIterationIds.delete(iteration.id);
+  }
+}
+
+/** 处理工作项更多操作 */
+function handleWorkItemCommand(
+  command: string,
+  workItem: PmsWorkItemApi.WorkItem,
+) {
+  if (command === 'edit') {
+    workItemFormModalApi
+      .setData({ formType: 'update', id: workItem.id })
+      .open();
+  } else if (command === 'recycle') {
+    handleRecycleWorkItem(workItem);
+  }
+}
+
+/** 将工作项移入回收站 */
+async function handleRecycleWorkItem(workItem: PmsWorkItemApi.WorkItem) {
+  try {
+    await confirm(`确认将事项“${workItem.name}”移入回收站吗？`);
+    await recycleWorkItem(workItem.id!);
+    ElMessage.success('已移入回收站');
+    await getPlanningData();
+  } catch {
+  }
+}
+
+/** 处理迭代操作 */
+function handleIterationCommand(command: string, iteration: PlanningIteration) {
+  if (command === 'start') {
+    iterationStartFormModalApi.setData(iteration).open();
+  } else if (command === 'complete') {
+    handleCompleteIteration(iteration);
+  } else if (command === 'edit') {
+    iterationFormModalApi
+      .setData({
+        formType: 'update',
+        id: iteration.id,
+        projectId: props.projectId,
+      })
+      .open();
+  } else if (command === 'delete') {
+    handleDeleteIteration(iteration);
+  }
+}
+
+/** 完成迭代 */
+async function handleCompleteIteration(iteration: PlanningIteration) {
+  try {
+    await confirm(`确认完成迭代“${iteration.name}”吗？`);
+    await completeIteration(iteration.id);
+    expandedIterationIds.delete(iteration.id);
+    ElMessage.success('迭代已完成');
+    await getPlanningData();
+  } catch {
+  }
+}
+
+/** 删除迭代 */
+async function handleDeleteIteration(iteration: PlanningIteration) {
+  try {
+    await confirm(`确认删除迭代“${iteration.name}”吗？`);
+    await deleteIteration(iteration.id);
+    expandedIterationIds.delete(iteration.id);
+    ElMessage.success('删除成功');
+    await getPlanningData();
+  } catch {
+  }
+}
+
+/** 记录当前拖拽工作项，支持投放到折叠迭代标题 */
+function handlePlanningDragStart(event: { item?: HTMLElement }) {
+  const workItemId = event.item?.dataset.workItemId;
+  draggedWorkItemId.value = workItemId ? Number(workItemId) : undefined;
+}
+
+/** 将工作项投放到折叠的迭代标题 */
+async function handleCollapsedIterationDrop(iteration: PlanningIteration) {
+  const workItemId = draggedWorkItemId.value;
+  if (
+    iteration.expanded ||
+    !workItemId ||
+    iteration.list.some((item) => item.id === workItemId)
+  ) {
+    return;
+  }
+  saving.value = true;
+  try {
+    await updateWorkItemIteration(workItemId, iteration.id);
+    await updateWorkItemPlanningSort(props.projectId, iteration.id, [
+      ...iteration.list.map((item) => item.id!),
+      workItemId,
+    ]);
+    ElMessage.success(`已规划到“${iteration.name}”`);
+    await getPlanningData();
+  } catch {
+    await getPlanningData();
+  } finally {
+    saving.value = false;
+    draggedWorkItemId.value = undefined;
+  }
+}
+
+/** 打开工作项详情 */
+function openWorkItem(workItem: PmsWorkItemApi.WorkItem) {
+  workItemDetailDrawerApi.setData({ id: workItem.id! }).open();
+}
+
+/** 拖拽工作项到迭代 */
+async function handlePlanDrop(
+  iteration: PlanningIteration,
+  event: { newIndex: number },
+) {
+  // 获得拖入目标迭代的工作项
+  const workItem = iteration.list[event.newIndex];
+  if (!workItem) {
+    return;
+  }
+  // 更新所属迭代和迭代内排序
+  saving.value = true;
+  try {
+    await updateWorkItemIteration(workItem.id!, iteration.id);
+    await updateWorkItemPlanningSort(
+      props.projectId,
+      iteration.id,
+      iteration.list.map((item) => item.id!),
+    );
+    ElMessage.success(`已规划到“${iteration.name}”`);
+  } catch {
+    await getPlanningData();
+  } finally {
+    saving.value = false;
+  }
+}
+
+/** 拖拽工作项回待规划 */
+async function handleUnplanDrop(event: { newIndex: number }) {
+  // 获得拖回待规划区域的工作项
+  const workItem = unplannedWorkItems.value[event.newIndex];
+  if (!workItem) {
+    return;
+  }
+  // 清空所属迭代并保存待规划列表排序
+  saving.value = true;
+  try {
+    await updateWorkItemIteration(workItem.id!);
+    await updateWorkItemPlanningSort(
+      props.projectId,
+      undefined,
+      unplannedWorkItems.value.map((item) => item.id!),
+    );
+    ElMessage.success('已移回待规划');
+  } catch {
+    await getPlanningData();
+  } finally {
+    saving.value = false;
+  }
+}
+
+/** 保存规划列表排序 */
+async function handlePlanningSort(
+  iterationId: number | undefined,
+  list: PmsWorkItemApi.WorkItem[],
+  event: {
+    from?: HTMLElement;
+    newIndex?: number;
+    oldIndex?: number;
+    to?: HTMLElement;
+  },
+) {
+  // 跨列表拖拽由对应的规划方法处理，这里只保存当前列表内排序
+  if (
+    event.from !== event.to ||
+    event.oldIndex === event.newIndex ||
+    saving.value
+  ) {
+    return;
+  }
+  saving.value = true;
+  try {
+    await updateWorkItemPlanningSort(
+      props.projectId,
+      iterationId,
+      list.map((item) => item.id!),
+    );
+    ElMessage.success('排序已保存');
+  } catch {
+    await getPlanningData();
+  } finally {
+    saving.value = false;
+  }
+}
+
+/** 快速创建工作项 */
+async function createQuickWorkItem(
+  draft: QuickWorkItemDraft,
+  iterationId?: number,
+) {
+  // 校验工作项标题
+  const name = draft.name.trim();
+  if (!name) {
+    ElMessage.warning('请输入事项标题');
+    return;
+  }
+  // 创建工作项
+  creatingKey.value = iterationId ? `iteration-${iterationId}` : 'backlog';
+  try {
+    await createWorkItem({
+      projectId: props.projectId,
+      type: draft.type,
+      name,
+      priority: PmsWorkItemPriority.MEDIUM,
+      memberUserIds: [],
+      defectType:
+        draft.type === PmsWorkItemType.DEFECT
+          ? PmsWorkItemDefectType.FUNCTION
+          : undefined,
+      iterationId,
+      fileUrls: [],
+      labelIds: [],
+    });
+    // 清空草稿并刷新规划数据
+    draft.name = '';
+    backlogCreating.value = false;
+    creatingIterationId.value = undefined;
+    ElMessage.success('事项创建成功');
+    await getPlanningData();
+  } finally {
+    creatingKey.value = '';
+  }
+}
+
+/** 快速创建迭代 */
+async function createQuickIteration() {
+  // 校验迭代名称
+  const name = quickIterationName.value.trim();
+  if (!name) {
+    ElMessage.warning('请输入迭代名称');
+    return;
+  }
+  // 创建待开始迭代
+  creatingKey.value = 'iteration';
+  try {
+    await createIteration({
+      projectId: props.projectId,
+      name,
+    });
+    // 清空草稿并刷新规划数据
+    quickIterationName.value = '';
+    iterationCreating.value = false;
+    ElMessage.success('迭代创建成功');
+    await getPlanningData();
+  } finally {
+    creatingKey.value = '';
+  }
+}
+
+defineExpose({ refresh: getPlanningData });
+
+/** 初始化 */
+onMounted(() => {
+  getPlanningData();
+});
+</script>
+
+<template>
+  <!-- 待规划工作项 -->
+  <div v-loading="loading">
+    <!-- 搜索与布局 -->
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <ElInput
+        v-model="searchKeyword"
+        class="!w-[240px]"
+        clearable
+        placeholder="搜索事项"
+        @clear="getPlanningData"
+        @keyup.enter="getPlanningData"
+      />
+      <ElSelect v-model="layoutMode" class="!w-[130px]">
+        <ElOption label="双栏展示" value="double" />
+        <ElOption label="单栏展示" value="single" />
+      </ElSelect>
+    </div>
+
+    <!-- Backlog 与迭代规划面板 -->
+    <div
+      class="grid grid-cols-[repeat(2,minmax(0,1fr))] gap-4 max-[1200px]:grid-cols-1"
+      :class="{ '!grid-cols-1': layoutMode === 'single' }"
+    >
+      <!-- Backlog 区域：展示尚未规划到迭代的工作项 -->
+      <ElCard shadow="never">
+        <template #header>
+          <span class="font-semibold">Backlog 共 {{ unplannedWorkItems.length }} 个事项</span>
+        </template>
+        <draggable
+          v-model="unplannedWorkItems"
+          class="min-h-[420px] p-1"
+          :disabled="!editable || saving || Boolean(searchKeyword.trim())"
+          group="pms-planning"
+          item-key="id"
+          @start="handlePlanningDragStart"
+          @add="handleUnplanDrop"
+          @end="handlePlanningSort(undefined, unplannedWorkItems, $event)"
+        >
+          <template #item="{ element }">
+            <article
+              :data-work-item-id="element.id"
+              class="mb-2 flex cursor-move items-center gap-3 rounded-md border border-solid border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-blank)] p-3 hover:border-[var(--el-color-primary-light-5)]"
+            >
+              <div
+                class="flex min-w-0 flex-1 items-center justify-between gap-3"
+              >
+                <ElButton
+                  link
+                  type="primary"
+                  @click.stop="openWorkItem(element)"
+                >
+                  #{{ element.serialNumber }} {{ element.name }}
+                </ElButton>
+                <div class="flex shrink-0 items-center gap-2.5">
+                  <span
+                    class="flex items-center gap-1 text-xs"
+                    :style="{ color: getPriorityColor(element.priority) }"
+                  >
+                    <span class="h-2 w-2 rounded-full bg-current"></span>
+                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, element.priority) || '-' }}
+                  </span>
+                  <ElTag
+                    :type="getWorkItemStatusTagType(element.status)"
+                    size="small"
+                  >
+                    {{ element.statusName }}
+                  </ElTag>
+                  <ElAvatar :size="24">
+                    {{ element.assigneeUserName?.slice(0, 1) || '未' }}
+                  </ElAvatar>
+                  <ElDropdown
+                    v-if="editable"
+                    @command="handleWorkItemCommand($event, element)"
+                  >
+                    <ElButton link @click.stop>
+                      <IconifyIcon icon="ep:more-filled" />
+                    </ElButton>
+                    <template #dropdown>
+                      <ElDropdownMenu>
+                        <ElDropdownItem command="edit">编辑事项</ElDropdownItem>
+                        <ElDropdownItem command="recycle" divided>
+                          移入回收站
+                        </ElDropdownItem>
+                      </ElDropdownMenu>
+                    </template>
+                  </ElDropdown>
+                </div>
+              </div>
+            </article>
+          </template>
+        </draggable>
+        <ElButton
+          v-if="editable && !backlogCreating"
+          class="mt-2"
+          link
+          type="primary"
+          @click="backlogCreating = true"
+        >
+          <IconifyIcon icon="ep:plus" />新建事项
+        </ElButton>
+        <div
+          v-if="editable && backlogCreating"
+          class="flex items-center gap-2 border-0 border-t border-solid border-[var(--el-border-color-lighter)] pt-3"
+          @click.stop
+        >
+          <ElSelect v-model="backlogDraft.type" class="!w-[92px]">
+            <ElOption
+              v-for="option in getDictOptions(
+                DICT_TYPE.PMS_WORK_ITEM_TYPE,
+                'number',
+              )"
+              :key="option.value"
+              :label="option.label"
+              :value="option.value"
+            />
+          </ElSelect>
+          <ElInput
+            v-model="backlogDraft.name"
+            maxlength="100"
+            placeholder="快速创建待规划事项"
+            @keyup.enter="createQuickWorkItem(backlogDraft)"
+          />
+          <ElButton
+            v-access:code="['pms:pm:work-item:create']"
+            :loading="creatingKey === 'backlog'"
+            type="primary"
+            @click="createQuickWorkItem(backlogDraft)"
+          >
+            创建
+          </ElButton>
+          <ElButton @click="backlogCreating = false">取消</ElButton>
+        </div>
+      </ElCard>
+
+      <!-- 迭代规划区域：按迭代组织工作项，并支持跨区域拖拽规划 -->
+      <div class="flex flex-col gap-3">
+        <ElEmpty
+          v-if="iterationList.length === 0"
+          description="暂无可规划迭代"
+        />
+        <ElCard
+          v-for="iteration in iterationList"
+          :key="iteration.id"
+          shadow="never"
+        >
+          <template #header>
+            <div
+              class="flex cursor-pointer items-center justify-between gap-4"
+              @dragover.prevent="!iteration.expanded"
+              @drop.prevent="handleCollapsedIterationDrop(iteration)"
+              @click="toggleIteration(iteration)"
+            >
+              <div class="flex min-w-0 items-center gap-2">
+                <IconifyIcon
+                  :icon="
+                    iteration.expanded ? 'ep:arrow-down' : 'ep:arrow-right'
+                  "
+                />
+                <span class="truncate font-medium">{{ iteration.name }}</span>
+                <span
+                  class="shrink-0 text-[13px] text-[var(--el-text-color-secondary)]"
+                >
+                  共 {{ iteration.list.length }} 个事项
+                </span>
+                <ElDropdown
+                  v-if="editable"
+                  trigger="click"
+                  @command="handleIterationCommand($event, iteration)"
+                >
+                  <ElButton link @click.stop>
+                    <IconifyIcon icon="ep:more-filled" />
+                  </ElButton>
+                  <template #dropdown>
+                    <ElDropdownMenu>
+                      <ElDropdownItem
+                        v-if="iteration.status === PmsIterationStatus.PLANNED"
+                        v-access:code="['pms:pm:iteration:update']"
+                        command="start"
+                      >
+                        开始迭代
+                      </ElDropdownItem>
+                      <ElDropdownItem
+                        v-if="iteration.status === PmsIterationStatus.ACTIVE"
+                        v-access:code="['pms:pm:iteration:update']"
+                        command="complete"
+                      >
+                        完成迭代
+                      </ElDropdownItem>
+                      <ElDropdownItem
+                        v-access:code="['pms:pm:iteration:update']"
+                        command="edit"
+                      >
+                        编辑迭代
+                      </ElDropdownItem>
+                      <ElDropdownItem
+                        v-access:code="['pms:pm:iteration:delete']"
+                        command="delete"
+                        divided
+                      >
+                        删除迭代
+                      </ElDropdownItem>
+                    </ElDropdownMenu>
+                  </template>
+                </ElDropdown>
+              </div>
+              <div class="flex shrink-0 items-center gap-3">
+                <span class="text-xs text-[var(--el-text-color-secondary)]">
+                  {{
+                    iteration.startTime
+                      ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                      : '--'
+                  }}
+                  至
+                  {{
+                    iteration.endTime
+                      ? dayjs(iteration.endTime).format('YYYY-MM-DD')
+                      : '--'
+                  }}
+                </span>
+                <ElTag :type="getIterationStatusTagType(iteration.status)">
+                  {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+                </ElTag>
+              </div>
+            </div>
+          </template>
+          <draggable
+            v-show="iteration.expanded"
+            v-model="iteration.list"
+            class="min-h-[72px] p-1"
+            :disabled="!editable || saving || Boolean(searchKeyword.trim())"
+            group="pms-planning"
+            item-key="id"
+            @start="handlePlanningDragStart"
+            @add="handlePlanDrop(iteration, $event)"
+            @end="handlePlanningSort(iteration.id, iteration.list, $event)"
+          >
+            <template #item="{ element }">
+              <article
+                :data-work-item-id="element.id"
+                class="mb-2 flex cursor-move items-center gap-3 rounded-md border border-solid border-[var(--el-border-color-lighter)] bg-[var(--el-fill-color-blank)] p-3 hover:border-[var(--el-color-primary-light-5)]"
+              >
+                <div
+                  class="flex min-w-0 flex-1 items-center justify-between gap-3"
+                >
+                  <ElButton
+                    link
+                    type="primary"
+                    @click.stop="openWorkItem(element)"
+                  >
+                    #{{ element.serialNumber }} {{ element.name }}
+                  </ElButton>
+                  <div class="flex shrink-0 items-center gap-2.5">
+                    <span
+                      class="flex items-center gap-1 text-xs"
+                      :style="{ color: getPriorityColor(element.priority) }"
+                    >
+                      <span class="h-2 w-2 rounded-full bg-current"></span>
+                      {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, element.priority) || '-' }}
+                    </span>
+                    <ElTag
+                      :type="getWorkItemStatusTagType(element.status)"
+                      size="small"
+                    >
+                      {{ element.statusName }}
+                    </ElTag>
+                    <ElAvatar :size="24">
+                      {{ element.assigneeUserName?.slice(0, 1) || '未' }}
+                    </ElAvatar>
+                    <ElDropdown
+                      v-if="editable"
+                      @command="handleWorkItemCommand($event, element)"
+                    >
+                      <ElButton link @click.stop>
+                        <IconifyIcon icon="ep:more-filled" />
+                      </ElButton>
+                      <template #dropdown>
+                        <ElDropdownMenu>
+                          <ElDropdownItem command="edit">
+编辑事项
+</ElDropdownItem>
+                          <ElDropdownItem command="recycle" divided>
+                            移入回收站
+                          </ElDropdownItem>
+                        </ElDropdownMenu>
+                      </template>
+                    </ElDropdown>
+                  </div>
+                </div>
+              </article>
+            </template>
+          </draggable>
+          <ElButton
+            v-if="
+              editable &&
+              iteration.expanded &&
+              creatingIterationId !== iteration.id
+            "
+            class="mt-2"
+            link
+            type="primary"
+            @click="creatingIterationId = iteration.id"
+          >
+            <IconifyIcon icon="ep:plus" />新建事项
+          </ElButton>
+          <div
+            v-if="
+              editable &&
+              iteration.expanded &&
+              creatingIterationId === iteration.id
+            "
+            class="flex items-center gap-2 border-0 border-t border-solid border-[var(--el-border-color-lighter)] pt-3"
+            @click.stop
+          >
+            <ElSelect
+              v-model="iterationDrafts[iteration.id]!.type"
+              class="!w-[92px]"
+            >
+              <ElOption
+                  v-for="option in getDictOptions(
+                    DICT_TYPE.PMS_WORK_ITEM_TYPE,
+                    'number',
+                  )"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </ElSelect>
+            <ElInput
+              v-model="iterationDrafts[iteration.id]!.name"
+              maxlength="100"
+              :placeholder="`在“${iteration.name}”中快速创建事项`"
+              @keyup.enter="
+                createQuickWorkItem(
+                  iterationDrafts[iteration.id]!,
+                  iteration.id,
+                )
+              "
+            />
+            <ElButton
+              v-access:code="['pms:pm:work-item:create']"
+              :loading="creatingKey === `iteration-${iteration.id}`"
+              type="primary"
+              @click="
+                createQuickWorkItem(
+                  iterationDrafts[iteration.id]!,
+                  iteration.id,
+                )
+              "
+            >
+              创建
+            </ElButton>
+            <ElButton @click="creatingIterationId = undefined">取消</ElButton>
+          </div>
+        </ElCard>
+        <ElButton
+          v-if="editable && !iterationCreating"
+          class="self-start"
+          link
+          type="primary"
+          @click="iterationCreating = true"
+        >
+          <IconifyIcon icon="ep:plus" />新建迭代
+        </ElButton>
+        <ElCard v-if="editable && iterationCreating" shadow="never">
+          <div class="flex items-center gap-2">
+            <ElInput
+              v-model="quickIterationName"
+              maxlength="100"
+              placeholder="快速创建迭代"
+              @keyup.enter="createQuickIteration"
+            />
+            <ElButton
+              v-access:code="['pms:pm:iteration:create']"
+              :loading="creatingKey === 'iteration'"
+              type="primary"
+              @click="createQuickIteration"
+            >
+              创建迭代
+            </ElButton>
+            <ElButton @click="iterationCreating = false">取消</ElButton>
+          </div>
+        </ElCard>
+      </div>
+    </div>
+
+    <!-- 工作项编辑表单 -->
+    <WorkItemFormModal @success="getPlanningData" />
+    <!-- 工作项详情 -->
+    <WorkItemDetailDrawer @success="getPlanningData" />
+    <IterationFormModal @success="getPlanningData" />
+    <IterationStartFormModal @success="getPlanningData" />
+  </div>
+</template>

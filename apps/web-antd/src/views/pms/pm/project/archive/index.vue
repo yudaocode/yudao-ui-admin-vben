@@ -3,7 +3,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
-import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -70,10 +69,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     </template>
     <!-- 归档项目列表 -->
     <Grid>
-      <!-- TODO @AI：这种，一般放到 data.ts 里把。 -->
-      <template #archiveTime="{ row }">
-        {{ formatDateTime(row.archiveTime) }}
-      </template>
       <template #action="{ row }">
         <TableAction
           :actions="[

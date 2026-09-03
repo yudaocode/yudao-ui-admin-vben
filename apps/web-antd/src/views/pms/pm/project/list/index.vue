@@ -5,7 +5,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
-import { computed, defineComponent, h, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -63,23 +63,19 @@ import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectList' });
 
-/** 星标项目趋势小图（v-for 内逐卡片渲染） */
-// TODO @AI：不用这么封装把？直接 html 里使用把。
-const FavoriteTrendChart = defineComponent({
-  props: {
-    options: { required: true, type: Object },
-  },
-  setup(props) {
-    const chartRef = ref<any>();
-    const { renderEcharts } = useEcharts(chartRef);
-    onMounted(() => renderEcharts(props.options as EChartsOption));
-    watch(
-      () => props.options,
-      (options) => renderEcharts(options as EChartsOption),
-    );
-    return () => h(EchartsUI, { ref: chartRef, height: '56px' });
-  },
-});
+const favoriteChartRenderers = new Map<number, (options: EChartsOption) => void>(); // 星标项目趋势图渲染器
+
+/** 收集星标项目趋势图容器并创建渲染器 */
+function setFavoriteChartRef(id: number, el: any) {
+  if (el) {
+    if (!favoriteChartRenderers.has(id)) {
+      const { renderEcharts } = useEcharts(ref(el));
+      favoriteChartRenderers.set(id, (options) => renderEcharts(options));
+    }
+  } else {
+    favoriteChartRenderers.delete(id);
+  }
+}
 
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由
@@ -182,6 +178,11 @@ async function getFavoriteList() {
         completedTrends: (await getProjectOverview(project.id)).completedTrends,
       })),
     );
+    // 图表容器随列表渲染完成后逐卡片渲染
+    await nextTick();
+    for (const project of favoriteProjectList.value) {
+      favoriteChartRenderers.get(project.id)?.(getFavoriteTrendChartOptions(project));
+    }
   } finally {
     favoriteLoading.value = false;
   }
@@ -440,10 +441,11 @@ watch(
               :show-info="false"
               :stroke-width="5"
             />
-            <FavoriteTrendChart
+            <EchartsUI
               v-if="project.completedTrends"
+              :ref="(el: any) => setFavoriteChartRef(project.id, el)"
               class="mt-1.5"
-              :options="getFavoriteTrendChartOptions(project)"
+              height="56px"
             />
           </div>
           <Tooltip title="取消星标" placement="top">

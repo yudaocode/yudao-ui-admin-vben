@@ -2,7 +2,6 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
 
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {

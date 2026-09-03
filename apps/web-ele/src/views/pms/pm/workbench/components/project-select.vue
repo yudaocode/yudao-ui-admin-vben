@@ -3,10 +3,11 @@ import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 import { onMounted, ref } from 'vue';
 
+import { getAllPageItems } from '@vben/utils';
+
 import { ElOption, ElSelect } from 'element-plus';
 
 import { getProjectPage } from '#/api/pms/pm/project';
-import { getAllPageItems } from '#/views/pms/utils/page';
 
 defineOptions({ name: 'PmsProjectSelect' });
 

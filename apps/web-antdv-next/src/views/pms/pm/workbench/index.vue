@@ -7,7 +7,9 @@ import type { PmsWorkItemStatusApi } from '#/api/pms/pm/workitem/status';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { Badge, Button, DatePicker, message, Select, Tabs } from 'antdv-next';
@@ -28,13 +30,8 @@ import { getWorkItemStatusList } from '#/api/pms/pm/workitem/status';
 import {
   PmsWorkbenchTab,
   PmsWorkbenchTabOptions,
-  PmsWorkItemPriorityOptions,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import {
-  getIterationStatusName,
-  getPriorityName,
-} from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 import {
@@ -52,7 +49,10 @@ type QuickEditField = 'statusId' | QuickUpdateField;
 const { push } = useRouter(); // 路由操作
 const activeTab = ref<WorkbenchTab>(PmsWorkbenchTab.ALL); // 当前事项类型
 const tabs = PmsWorkbenchTabOptions; // 工作台事项页签
-const priorityOptions = PmsWorkItemPriorityOptions; // 工作项优先级选项
+const priorityOptions = getDictOptions(
+  DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+  'number',
+); // 工作项优先级选项
 const countData = ref<PmsWorkbenchApi.WorkbenchCount>({
   requirementCount: 0,
   taskCount: 0,
@@ -164,11 +164,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: workItemColumns,
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 20,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -335,6 +330,13 @@ onBeforeUnmount(() => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="PMS 手册（功能开启）"
+        url="https://doc.iocoder.cn/pms/build/"
+      />
+    </template>
+
     <!-- 工作项列表 -->
     <Grid class="pms-workbench-table">
       <template #toolbar-actions>
@@ -389,9 +391,11 @@ onBeforeUnmount(() => {
           type="link"
           @click="startQuickEdit(row, 'priority')"
         >
-          {{ getPriorityName(row.priority) }}
+          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
         </Button>
-        <span v-else>{{ getPriorityName(row.priority) }}</span>
+        <span v-else>
+          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+        </span>
       </template>
       <template #statusId="{ row }">
         <Select
@@ -478,9 +482,6 @@ onBeforeUnmount(() => {
         >
           {{ row.name }}
         </Button>
-      </template>
-      <template #iterationStatus="{ row }">
-        {{ getIterationStatusName(row.status) }}
       </template>
       <template #iterationStartTime="{ row }">
         {{ formatDateTime(row.startTime) }}
