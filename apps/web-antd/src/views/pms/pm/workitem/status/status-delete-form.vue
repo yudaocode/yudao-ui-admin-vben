@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
 import type { PmsWorkItemStatusApi } from '#/api/pms/pm/workitem/status';
 
 import { ref } from 'vue';
@@ -15,6 +16,7 @@ import {
 } from '#/api/pms/pm/workitem/status';
 
 defineOptions({ name: 'PmsWorkItemStatusDeleteForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/delete-form.vue。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 

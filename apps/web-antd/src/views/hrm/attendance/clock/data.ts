@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { getSimpleDeptList } from '#/api/system/dept';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import { HrmAttendanceClockType } from '#/views/hrm/utils/constants';
+// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
 
 /** 部门多选 ApiTreeSelect 配置 */
 export function useDeptTreeSelectProps() {

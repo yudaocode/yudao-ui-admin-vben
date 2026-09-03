@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：基础字段（名称/部门/员工/规则类型）改 useVbenForm schema，对齐 system/user；班次、特殊日期等内嵌编辑可保留自定义，三端同步。
 import type { Rule, TableColumnsType } from 'antdv-next';
 
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';

@@ -38,6 +38,7 @@ import { UserSelect } from '#/views/system/user/components';
 import { useGridColumns, usePermissionFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeContentPermissionForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/permission-form.vue。
 
 // TODO @AI：已有 permission schema，剩余手写成员表格尽量走 VXE edit-render。v-loading 换成 lock。下面「定义 success 事件」注释删掉。
 const emit = defineEmits(['success']);

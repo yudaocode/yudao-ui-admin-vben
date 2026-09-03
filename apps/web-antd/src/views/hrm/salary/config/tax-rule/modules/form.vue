@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { Rule } from 'ant-design-vue/es/form';
 
 import type { HrmSalaryTaxRuleApi } from '#/api/hrm/salary/config/tax-rule';

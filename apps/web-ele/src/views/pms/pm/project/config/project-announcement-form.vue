@@ -18,6 +18,7 @@ import { $t } from '#/locales';
 import { useAnnouncementFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectAnnouncementForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/announcement-form.vue。
 
 // TODO @AI：connectedComponent 补 destroyOnClose。标题对齐 system user 用 $t。
 

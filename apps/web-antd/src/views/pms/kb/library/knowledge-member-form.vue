@@ -36,6 +36,7 @@ import {
 } from './data';
 
 defineOptions({ name: 'PmsKnowledgeMemberForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/member-form.vue；文档中心继续从 library/modules 引。
 
 // TODO @AI：行内成员编辑能否用 VXE edit-render，少手写 Select/TreeSelect slot。v-loading 换成 lock。UserSelect 禁用已有成员。
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调

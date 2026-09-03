@@ -21,6 +21,7 @@ import { useLibraryFormSchema } from './data';
 import KnowledgeMemberForm from './knowledge-member-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue。
 
 // TODO @AI：模板选择步可以自定义；名称/封面/可见范围/初始成员对齐 system user，用 useVbenForm + schema。v-loading 换成 modalApi.lock。「定义 success 事件」这类注释删掉。
 // TODO DONE @AI：基础信息表单已改为 useVbenForm + useLibraryFormSchema（见 data.ts），模板选择步保留为自定义区块；详情加载和提交改用 modalApi.lock，模板列表加载保留自定义区块内的 v-loading；低价值注释已删除。

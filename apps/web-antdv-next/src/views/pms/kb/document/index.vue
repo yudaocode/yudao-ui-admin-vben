@@ -55,6 +55,7 @@ import KnowledgeLibrarySidebar from './knowledge-library-sidebar.vue';
 import KnowledgeRecyclePanel from './knowledge-recycle-panel.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryDetail' });
+// TODO @AI：对齐 system/user，创建/编辑/文件夹/上传/权限/分享/移动这些弹窗挪到 ./modules/；侧栏、首页、详情、回收站页签继续留在这层。
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。目录/列表能用 VXE 的地方用 VXE，自定义树和详情区可以留。三端 index.vue 行数差一截，先对齐交互再对齐结构。
 const route = useRoute(); // 当前路由

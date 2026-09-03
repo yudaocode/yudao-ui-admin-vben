@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：空 catch 会把接口失败和用户取消一起吞掉；失败分支至少 message.error，仅取消才静默返回。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipSendRecordApi } from '#/api/hrm/salary/slip/send-record';
 

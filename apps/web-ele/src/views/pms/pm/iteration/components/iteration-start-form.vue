@@ -11,6 +11,7 @@ import { startIteration } from '#/api/pms/pm/iteration';
 import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsIterationStartForm' });
+// TODO @AI：对齐 system/user，挪到 ../list/modules/start-form.vue，和 iteration-form 放一起。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 

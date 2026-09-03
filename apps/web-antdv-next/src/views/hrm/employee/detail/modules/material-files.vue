@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：v-loading 是 Element Plus 指令，当前组件库不生效；加载态对齐 system/user 用 Spin（或 modalApi.lock）。
 import type { HrmEmployeeFileApi } from '#/api/hrm/employee/file';
 
 import { onMounted, ref } from 'vue';

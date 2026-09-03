@@ -18,6 +18,7 @@ import { $t } from '#/locales';
 import { useLabelFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeLabelForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
 

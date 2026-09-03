@@ -35,6 +35,7 @@ import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { ImageUpload } from '#/components/upload';
 
 defineOptions({ name: 'PmsKnowledgeLibraryTemplateForm' });
+// TODO @AI：对齐 system/user，挪到 ./modules/form.vue。
 
 // TODO @AI：模板基础字段用 useVbenForm schema；文档列表用 VXE Grid，不要手写 Table。内嵌文档编辑也改 useVbenModal，不要再套一层 Ant/El Modal。v-loading 换成 lock。
 const emit = defineEmits<{ success: [] }>(); // 操作成功事件

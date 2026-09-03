@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：命名对齐 system user 改 useGridFormSchema（hrm 里 recruit/post、employee 等已用该名），三端统一。
+// TODO @AI（glm5.3 flash）：空 catch 会把接口失败和用户取消一起吞掉；失败分支至少 message.error，仅取消才静默返回。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryMonthRecordApi } from '#/api/hrm/salary/month-record';

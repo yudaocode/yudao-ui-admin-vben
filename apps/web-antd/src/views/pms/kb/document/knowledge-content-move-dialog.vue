@@ -20,6 +20,7 @@ import { PmsKnowledgeRootId } from '#/views/pms/kb/utils/constants';
 import { canManageKnowledgeContent } from '#/views/pms/kb/utils/permission';
 
 defineOptions({ name: 'PmsKnowledgeContentMoveDialog' });
+// TODO @AI：对齐 system/user，挪到 ./modules/move-dialog.vue。
 
 const emit = defineEmits(['success']);
 

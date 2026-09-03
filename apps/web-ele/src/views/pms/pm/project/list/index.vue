@@ -64,6 +64,7 @@ import ProjectGroupList from './components/group/project-group-list.vue';
 import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectList' });
+// TODO @AI：对齐 system/user，项目表单从 components 改引 ./modules/form.vue。
 
 // TODO @AI：antd/antdv-next 的 v-loading 是 EP 指令，改 Spin 或 lock。表格操作对齐 TableAction；connectedComponent 补 destroyOnClose；grid 补 toolbarConfig.refresh/search。三端这段注释和实现要对齐。
 /** 星标项目趋势小图（v-for 内逐卡片渲染） */

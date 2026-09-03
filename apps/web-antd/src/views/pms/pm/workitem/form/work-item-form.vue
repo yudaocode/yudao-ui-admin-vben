@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：补充评审——useVbenForm/z 从 #/adapter/form 引入（对齐 system/user），PMS 多数 form 同问题，三端一并改。
+// TODO @AI（glm5.3 flash）：补充评审——v-loading 加载态改 modalApi.lock（对齐 system/user 弹窗写法），三端一并改。
 import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 
 import { computed, ref } from 'vue';
@@ -29,6 +31,7 @@ import WorkItemLabelSelect from '../label/work-item-label-select.vue';
 import { useWorkItemFormSchema } from './data';
 
 defineOptions({ name: 'PmsWorkItemForm' });
+// TODO @AI：对齐 system/user，挪到 ../list/modules/form.vue，form/data.ts 的 schema 并进 list/data.ts；列表/全部/详情/规划板都从 list/modules 引。
 
 const emit = defineEmits<{ success: [] }>();
 

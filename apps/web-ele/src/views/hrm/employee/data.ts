@@ -17,6 +17,8 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import { AreaCascader } from '#/components/area';
 import { getRangePickerDefaultProps } from '#/utils';
 import {
+// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
+// TODO @AI（glm5.3 flash）：状态页签里 { status: 11, label: '在职' }、{ status: 12, label: '全职' } 硬编码与 getDictLabel 混用；确认字典来源，统一走字典或 HrmEmployeeStatus 常量。
   HRM_EMPLOYEE_CREATE_ENTRY_STATUSES,
   HRM_EMPLOYEE_NO_PROBATION_MONTHS,
   HRM_EMPLOYEE_NON_FORMAL_STATUSES,

@@ -15,6 +15,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import {
+// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
   HrmEmployeeEntryStatus,
   HrmRecruitCandidateStatus,
   HrmRecruitInterviewResult,

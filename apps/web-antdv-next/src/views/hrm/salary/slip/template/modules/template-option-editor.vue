@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
 import { computed } from 'vue';

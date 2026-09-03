@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
 import { computed, onMounted, ref } from 'vue';
