@@ -44,6 +44,7 @@ const emit = defineEmits([
   'delete',
   'returnText',
   'preview',
+  'update:fileSize',
 ]);
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
@@ -242,6 +243,8 @@ function handleUploadSuccess(res: any, file: File) {
     emit('update:value', value);
     emit('update:modelValue', value);
     emit('change', value);
+    // 通知调用方最新上传文件的大小（用于保存文件元数据）
+    emit('update:fileSize', file.size);
   }
 }
 
