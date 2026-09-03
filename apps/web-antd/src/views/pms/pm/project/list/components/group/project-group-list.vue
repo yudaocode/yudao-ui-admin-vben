@@ -18,7 +18,6 @@ import {
   updateProjectGroupSort,
 } from '#/api/pms/pm/project/group';
 import { PmsProjectGroupType } from '#/views/pms/pm/utils/constants';
-import { getProjectGroupTypeName } from '#/views/pms/pm/utils/format';
 
 import { useGridColumns } from './data';
 import ProjectGroupForm from './project-group-form.vue';
@@ -142,9 +141,7 @@ async function handleDelete(id: number) {
     // 刷新列表
     await gridApi.query();
     emit('success');
-  } catch {
-    /* 取消删除 */
-  }
+  } catch {}
 }
 
 /** 销毁拖拽实例 */
@@ -197,9 +194,6 @@ onBeforeUnmount(() => destroySortable());
               icon="lucide:grip-vertical"
             />
           </Tooltip>
-        </template>
-        <template #type="{ row }">
-          {{ getProjectGroupTypeName(row.type) }}
         </template>
         <template #actions="{ row }">
           <template v-if="row.type === PmsProjectGroupType.CUSTOM">

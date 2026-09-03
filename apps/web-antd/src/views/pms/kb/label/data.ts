@@ -36,7 +36,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
     {
       field: 'title',
       title: '文档标题',
-      width: 240,
+      minWidth: 240,
       slots: { default: 'title' },
     },
     {
@@ -65,7 +65,7 @@ export function useLabelManageGridColumns(): VxeTableGridOptions<PmsKnowledgeDoc
     {
       field: 'name',
       title: '标签',
-      width: 220,
+      minWidth: 220,
       slots: { default: 'name' },
     },
     {

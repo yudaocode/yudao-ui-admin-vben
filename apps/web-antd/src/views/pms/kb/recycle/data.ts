@@ -1,6 +1,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 
+import { DICT_TYPE } from '@vben/constants';
+
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeRecycleApi.KnowledgeRecycle>['columns'] {
   return [
@@ -14,7 +16,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeRecycleApi.Kno
       title: '类型',
       width: 100,
       align: 'center',
-      slots: { default: 'type' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE },
+      },
     },
     {
       field: 'deleteUserName',

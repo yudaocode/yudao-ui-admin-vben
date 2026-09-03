@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -38,9 +38,7 @@ async function handleRestore(project: PmsProjectApi.Project) {
     message.success('项目已恢复');
     // 3. 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消恢复 */
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站项目 */
@@ -54,11 +52,9 @@ async function handleDelete(project: PmsProjectApi.Project) {
     // 3. 刷新列表
     handleRefresh();
   } catch {
-    /* 取消删除 */
   }
 }
 
-// TODO @AI：检查下，哪些 Grid 属性是多余的，类似 pagerConfig 整个？还有其他的也看看；另外是整个 pms 模块都要看噢；
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useSearchFormSchema(),
@@ -67,11 +63,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -96,6 +87,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="【PMS】项目中心、工作台与项目管理" url="https://doc.iocoder.cn/pms/pm/project/" />
+    </template>
     <!-- 回收站项目列表 -->
     <Grid>
       <template #recycleTime="{ row }">

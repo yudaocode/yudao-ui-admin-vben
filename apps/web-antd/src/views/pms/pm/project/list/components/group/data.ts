@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
+import { DICT_TYPE } from '@vben/constants';
+
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -37,7 +39,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectGroupApi.Project
       field: 'type',
       title: '分组类型',
       width: 130,
-      slots: { default: 'type' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_PROJECT_GROUP_TYPE },
+      },
     },
     {
       field: 'projectCount',
@@ -51,3 +56,4 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectGroupApi.Project
     },
   ];
 }
+

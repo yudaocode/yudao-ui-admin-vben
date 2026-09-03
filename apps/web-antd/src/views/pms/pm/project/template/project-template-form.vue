@@ -37,12 +37,9 @@ import {
 import {
   PmsProjectType,
   PmsWorkItemStatusType,
-  PmsWorkItemStatusTypeOptions,
   PmsWorkItemType,
-  PmsWorkItemTypeOptions,
 } from '#/views/pms/pm/utils/constants';
 import { getWorkItemTypeCode } from '#/views/pms/pm/utils/format';
-// TODO @AI：需要尽量使用 vxe 的 form 组件么？类似 codegen 的实现风格；
 defineOptions({ name: 'PmsProjectTemplateForm' });
 
 const emit = defineEmits<{ success: [] }>();
@@ -53,7 +50,8 @@ const formLoading = ref(false); // 表单加载中
 const formType = ref<'create' | 'update'>('create'); // 表单类型
 const activeTab = ref<ProjectTemplateTab>('basic'); // 当前页签
 const previousProjectType = ref<number>(PmsProjectType.GENERAL); // 切换前的项目类型
-const formData = ref<PmsProjectTemplateApi.ProjectTemplate>(getDefaultFormData()); // 表单数据
+const formData =
+  ref<PmsProjectTemplateApi.ProjectTemplate>(getDefaultFormData()); // 表单数据
 const formRules: Record<string, Rule[]> = {
   name: [{ required: true, message: '请输入模板名称' }],
   projectType: [{ required: true, message: '请选择项目类型' }],
@@ -67,7 +65,9 @@ const boardTableRef = ref<HTMLElement>(); // 看板表格容器 Ref
 const statusSortables = new Map<number, Sortable>(); // 状态分组拖拽实例
 let boardSortable: Sortable | undefined; // 看板拖拽实例
 const enabledWorkItemTypeOptions = computed(() =>
-  PmsWorkItemTypeOptions.filter((item) => formData.value.itemTypes.includes(item.value)),
+  getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').filter((item) =>
+    formData.value.itemTypes.includes(item.value),
+  ),
 ); // 已启用的事项类型选项
 const statusGroups = computed(() =>
   enabledWorkItemTypeOptions.value
@@ -87,7 +87,13 @@ const statusColumns = [
   { key: 'workItemType', title: '事项类型', width: 130 },
   { key: 'statusType', title: '语义状态', width: 130 },
   { key: 'defaultStatus', title: '初始', width: 80, align: 'center' as const },
-  { key: 'action', title: '操作', width: 70, align: 'center' as const, fixed: 'right' as const },
+  {
+    key: 'action',
+    title: '操作',
+    width: 70,
+    align: 'center' as const,
+    fixed: 'right' as const,
+  },
 ];
 
 const boardColumns = [
@@ -96,18 +102,27 @@ const boardColumns = [
   { key: 'name', title: '名称', width: 130 },
   { key: 'workItemType', title: '事项类型', width: 130 },
   { key: 'statusCodes', title: '关联状态', width: 260 },
-  { key: 'action', title: '操作', width: 70, align: 'center' as const, fixed: 'right' as const },
+  {
+    key: 'action',
+    title: '操作',
+    width: 70,
+    align: 'center' as const,
+    fixed: 'right' as const,
+  },
 ];
 
 /** 切换项目类型时恢复对应的默认配置 */
 async function handleProjectTypeChange(projectType: number) {
-  const previousConfig = getDefaultCollaborationConfig(previousProjectType.value);
+  const previousConfig = getDefaultCollaborationConfig(
+    previousProjectType.value,
+  );
   const customized =
     JSON.stringify(formData.value.itemTypes) !==
       JSON.stringify(previousConfig.itemTypes) ||
     JSON.stringify(formData.value.statuses) !==
       JSON.stringify(previousConfig.statuses) ||
-    JSON.stringify(formData.value.boards) !== JSON.stringify(previousConfig.boards);
+    JSON.stringify(formData.value.boards) !==
+      JSON.stringify(previousConfig.boards);
   if (customized) {
     try {
       await confirm('切换项目类型会恢复默认事项类型、状态和看板，确认继续吗？');
@@ -133,7 +148,11 @@ function handleItemTypesChange() {
     itemTypeSet.has(board.workItemType),
   );
   formData.value.itemTypes.forEach((workItemType) => {
-    if (formData.value.statuses.some((status) => status.workItemType === workItemType)) {
+    if (
+      formData.value.statuses.some(
+        (status) => status.workItemType === workItemType,
+      )
+    ) {
       return;
     }
     const config = getDefaultWorkItemTypeConfig(workItemType);
@@ -159,7 +178,8 @@ function initStatusSortable() {
   statusSortables.forEach((sortable) => sortable.destroy());
   statusSortables.clear();
   statusGroups.value.forEach((group) => {
-    const tableBody = statusTableRefs.value[group.value]?.querySelector('.ant-table-tbody');
+    const tableBody =
+      statusTableRefs.value[group.value]?.querySelector('.ant-table-tbody');
     if (!tableBody) {
       return;
     }
@@ -167,7 +187,11 @@ function initStatusSortable() {
       animation: 150,
       handle: '.status-drag-handle',
       onEnd: ({ newIndex, oldIndex }) => {
-        if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) {
+        if (
+          oldIndex === undefined ||
+          newIndex === undefined ||
+          oldIndex === newIndex
+        ) {
           return;
         }
         const movedStatus = group.statuses[oldIndex]!;
@@ -208,17 +232,27 @@ function initBoardSortable() {
     animation: 150,
     handle: '.board-drag-handle',
     onEnd: ({ newIndex, oldIndex }) => {
-      if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) {
+      if (
+        oldIndex === undefined ||
+        newIndex === undefined ||
+        oldIndex === newIndex
+      ) {
         return;
       }
-      formData.value.boards.splice(newIndex, 0, formData.value.boards.splice(oldIndex, 1)[0]!);
+      formData.value.boards.splice(
+        newIndex,
+        0,
+        formData.value.boards.splice(oldIndex, 1)[0]!,
+      );
       updateBoardSort();
     },
   });
 }
 
 /** 设置事项类型的初始状态 */
-function handleDefaultStatusChange(status: PmsProjectTemplateApi.ProjectTemplateStatus) {
+function handleDefaultStatusChange(
+  status: PmsProjectTemplateApi.ProjectTemplateStatus,
+) {
   formData.value.statuses.forEach((item) => {
     if (item.workItemType === status.workItemType) {
       item.defaultStatus = item === status;
@@ -228,12 +262,16 @@ function handleDefaultStatusChange(status: PmsProjectTemplateApi.ProjectTemplate
 
 /** 按当前顺序更新状态排序值 */
 function updateStatusSort() {
-  formData.value.statuses.forEach((status, index) => (status.sort = (index + 1) * 10));
+  formData.value.statuses.forEach(
+    (status, index) => (status.sort = (index + 1) * 10),
+  );
 }
 
 /** 按当前顺序更新看板排序值 */
 function updateBoardSort() {
-  formData.value.boards.forEach((board, index) => (board.sort = (index + 1) * 10));
+  formData.value.boards.forEach(
+    (board, index) => (board.sort = (index + 1) * 10),
+  );
 }
 
 /** 新增状态 */
@@ -261,7 +299,9 @@ function removeStatus(index: number) {
 }
 
 /** 删除分组中的状态 */
-function removeStatusByItem(status: PmsProjectTemplateApi.ProjectTemplateStatus) {
+function removeStatusByItem(
+  status: PmsProjectTemplateApi.ProjectTemplateStatus,
+) {
   const index = formData.value.statuses.indexOf(status);
   if (index >= 0) {
     removeStatus(index);
@@ -294,7 +334,8 @@ function getStatusOptions(workItemType: number, currentBoardCode: string) {
   );
   return formData.value.statuses.filter(
     (status) =>
-      status.workItemType === workItemType && !selectedStatusCodes.has(status.code),
+      status.workItemType === workItemType &&
+      !selectedStatusCodes.has(status.code),
   );
 }
 
@@ -302,7 +343,11 @@ function getStatusOptions(workItemType: number, currentBoardCode: string) {
 function validateCollaborationConfig() {
   const statusCodeSet = new Set<string>();
   for (const status of formData.value.statuses) {
-    if (!status.code || !status.name || !formData.value.itemTypes.includes(status.workItemType)) {
+    if (
+      !status.code ||
+      !status.name ||
+      !formData.value.itemTypes.includes(status.workItemType)
+    ) {
       return warnAndSwitchTab('status', '请完整填写状态编码、名称和事项类型');
     }
     if (statusCodeSet.has(status.code)) {
@@ -315,14 +360,21 @@ function validateCollaborationConfig() {
       (status) => status.workItemType === workItemType && status.defaultStatus,
     ).length;
     if (defaultStatusCount !== 1) {
-      return warnAndSwitchTab('status', '每种事项类型必须且只能配置一个初始状态');
+      return warnAndSwitchTab(
+        'status',
+        '每种事项类型必须且只能配置一个初始状态',
+      );
     }
   }
 
   const boardCodeSet = new Set<string>();
   const assignedStatusCountMap = new Map<string, number>();
   for (const board of formData.value.boards) {
-    if (!board.code || !board.name || !formData.value.itemTypes.includes(board.workItemType)) {
+    if (
+      !board.code ||
+      !board.name ||
+      !formData.value.itemTypes.includes(board.workItemType)
+    ) {
       return warnAndSwitchTab('board', '请完整填写看板编码、名称和事项类型');
     }
     if (boardCodeSet.has(board.code)) {
@@ -330,14 +382,23 @@ function validateCollaborationConfig() {
     }
     boardCodeSet.add(board.code);
     for (const statusCode of board.statusCodes) {
-      const status = formData.value.statuses.find((item) => item.code === statusCode);
+      const status = formData.value.statuses.find(
+        (item) => item.code === statusCode,
+      );
       if (!status || status.workItemType !== board.workItemType) {
         return warnAndSwitchTab('board', '看板只能关联相同事项类型的有效状态');
       }
-      assignedStatusCountMap.set(statusCode, (assignedStatusCountMap.get(statusCode) || 0) + 1);
+      assignedStatusCountMap.set(
+        statusCode,
+        (assignedStatusCountMap.get(statusCode) || 0) + 1,
+      );
     }
   }
-  if (formData.value.statuses.some((status) => assignedStatusCountMap.get(status.code) !== 1)) {
+  if (
+    formData.value.statuses.some(
+      (status) => assignedStatusCountMap.get(status.code) !== 1,
+    )
+  ) {
     return warnAndSwitchTab('board', '每个状态必须且只能归属一个看板列');
   }
   return true;
@@ -355,7 +416,9 @@ function buildSubmitData() {
   const data = structuredClone(toRaw(formData.value));
   const statusBoardMap = new Map<string, string>();
   data.boards.forEach((board) => {
-    board.statusCodes.forEach((statusCode) => statusBoardMap.set(statusCode, board.code));
+    board.statusCodes.forEach((statusCode) =>
+      statusBoardMap.set(statusCode, board.code),
+    );
   });
   data.statuses.forEach((status) => {
     status.boardCode = statusBoardMap.get(status.code) || '';
@@ -396,9 +459,15 @@ function getDefaultFormData(): PmsProjectTemplateApi.ProjectTemplate {
 function getDefaultCollaborationConfig(projectType: number) {
   const itemTypes =
     projectType === PmsProjectType.AGILE
-      ? [PmsWorkItemType.REQUIREMENT, PmsWorkItemType.TASK, PmsWorkItemType.DEFECT]
+      ? [
+          PmsWorkItemType.REQUIREMENT,
+          PmsWorkItemType.TASK,
+          PmsWorkItemType.DEFECT,
+        ]
       : [PmsWorkItemType.TASK];
-  const configs = itemTypes.map((workItemType) => getDefaultWorkItemTypeConfig(workItemType));
+  const configs = itemTypes.map((workItemType) =>
+    getDefaultWorkItemTypeConfig(workItemType),
+  );
   const statuses = configs.flatMap((config) => config.statuses);
   const boards = configs.flatMap((config) => config.boards);
   return { itemTypes, statuses, boards };
@@ -409,7 +478,14 @@ function getDefaultWorkItemTypeConfig(workItemType: number) {
   const prefix = getWorkItemTypeCode(workItemType);
   return {
     statuses: [
-      createStatus(`${prefix}_todo`, '待处理', workItemType, PmsWorkItemStatusType.PENDING, true, 10),
+      createStatus(
+        `${prefix}_todo`,
+        '待处理',
+        workItemType,
+        PmsWorkItemStatusType.PENDING,
+        true,
+        10,
+      ),
       createStatus(
         `${prefix}_doing`,
         '进行中',
@@ -428,9 +504,15 @@ function getDefaultWorkItemTypeConfig(workItemType: number) {
       ),
     ],
     boards: [
-      createBoard(`${prefix}_todo`, '待处理', workItemType, 10, [`${prefix}_todo`]),
-      createBoard(`${prefix}_doing`, '进行中', workItemType, 20, [`${prefix}_doing`]),
-      createBoard(`${prefix}_done`, '已完成', workItemType, 30, [`${prefix}_done`]),
+      createBoard(`${prefix}_todo`, '待处理', workItemType, 10, [
+        `${prefix}_todo`,
+      ]),
+      createBoard(`${prefix}_doing`, '进行中', workItemType, 20, [
+        `${prefix}_doing`,
+      ]),
+      createBoard(`${prefix}_done`, '已完成', workItemType, 30, [
+        `${prefix}_done`,
+      ]),
     ],
   };
 }
@@ -444,7 +526,15 @@ function createStatus(
   defaultStatus: boolean,
   sort: number,
 ): PmsProjectTemplateApi.ProjectTemplateStatus {
-  return { code, name, workItemType, statusType, defaultStatus, sort, boardCode: code };
+  return {
+    code,
+    name,
+    workItemType,
+    statusType,
+    defaultStatus,
+    sort,
+    boardCode: code,
+  };
 }
 
 /** 创建默认看板列 */
@@ -471,7 +561,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await formRef.value.validate();
     } catch (fields: any) {
-      activeTab.value = Object.prototype.hasOwnProperty.call(fields, 'itemTypes')
+      activeTab.value = Object.prototype.hasOwnProperty.call(
+        fields,
+        'itemTypes',
+      )
         ? 'itemType'
         : 'basic';
       return;
@@ -502,7 +595,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData() as { formType: 'create' | 'update'; id?: number };
+    const data = modalApi.getData() as {
+      formType: 'create' | 'update';
+      id?: number;
+    };
     formType.value = data.formType;
     activeTab.value = 'basic';
     resetForm();
@@ -549,13 +645,16 @@ onBeforeUnmount(destroySortables);
             <Col :span="12">
               <Form.Item label="项目类型" name="projectType">
                 <Select
+                  class="w-full"
                   v-model:value="formData.projectType"
                   :options="[
                     { label: '通用项目', value: PmsProjectType.GENERAL },
                     { label: '敏捷开发项目', value: PmsProjectType.AGILE },
                   ]"
                   placeholder="请选择项目类型"
-                  @change="(value: any) => handleProjectTypeChange(Number(value))"
+                  @change="
+                    (value: any) => handleProjectTypeChange(Number(value))
+                  "
                 />
               </Form.Item>
             </Col>
@@ -566,17 +665,23 @@ onBeforeUnmount(destroySortables);
                 <Radio.Group
                   v-model:value="formData.status"
                   :options="
-                    getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map((item) => ({
-                      label: item.label,
-                      value: item.value,
-                    }))
+                    getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map(
+                      (item) => ({
+                        label: item.label,
+                        value: item.value,
+                      }),
+                    )
                   "
                 />
               </Form.Item>
             </Col>
             <Col :span="12">
               <Form.Item label="显示顺序" name="sort">
-                <InputNumber v-model:value="formData.sort" class="!w-full" :min="0" />
+                <InputNumber
+                  v-model:value="formData.sort"
+                  class="!w-full"
+                  :min="0"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -592,7 +697,10 @@ onBeforeUnmount(destroySortables);
         </Tabs.TabPane>
 
         <!-- 启用的事项类型 -->
-        <Tabs.TabPane key="itemType" :tab="`事项类型（${formData.itemTypes.length}）`">
+        <Tabs.TabPane
+          key="itemType"
+          :tab="`事项类型（${formData.itemTypes.length}）`"
+        >
           <div class="mb-5">
             <Alert
               :closable="false"
@@ -605,10 +713,12 @@ onBeforeUnmount(destroySortables);
             <Checkbox.Group
               v-model:value="formData.itemTypes"
               :options="
-                PmsWorkItemTypeOptions.map((item) => ({
+                getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').map(
+                  (item) => ({
                   label: item.label,
                   value: item.value,
-                }))
+                  }),
+                )
               "
               @change="handleItemTypesChange"
             />
@@ -634,7 +744,11 @@ onBeforeUnmount(destroySortables);
                 <span>{{ group.label }}</span>
                 <span class="text-muted-foreground">（{{ group.statuses.length }}）</span>
               </div>
-              <div :ref="(el) => setStatusTableRef(group.value, el as Element | null)">
+              <div
+                :ref="
+                  (el) => setStatusTableRef(group.value, el as Element | null)
+                "
+              >
                 <Table
                   :columns="statusColumns"
                   :data-source="group.statuses"
@@ -653,13 +767,20 @@ onBeforeUnmount(destroySortables);
                       </Tooltip>
                     </template>
                     <template v-else-if="column.key === 'code'">
-                      <Input v-model:value="record.code" placeholder="如 task_todo" />
+                      <Input
+                        v-model:value="record.code"
+                        placeholder="如 task_todo"
+                      />
                     </template>
                     <template v-else-if="column.key === 'name'">
-                      <Input v-model:value="record.name" placeholder="请输入状态名称" />
+                      <Input
+                        v-model:value="record.name"
+                        placeholder="请输入状态名称"
+                      />
                     </template>
                     <template v-else-if="column.key === 'workItemType'">
                       <Select
+                        class="w-full"
                         v-model:value="record.workItemType"
                         :options="
                           enabledWorkItemTypeOptions.map((item) => ({
@@ -672,9 +793,13 @@ onBeforeUnmount(destroySortables);
                     </template>
                     <template v-else-if="column.key === 'statusType'">
                       <Select
+                        class="w-full"
                         v-model:value="record.statusType"
                         :options="
-                          PmsWorkItemStatusTypeOptions.map((item) => ({
+                          getDictOptions(
+                            DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
+                            'number',
+                          ).map((item) => ({
                             label: item.label,
                             value: item.value,
                           }))
@@ -685,13 +810,25 @@ onBeforeUnmount(destroySortables);
                       <Radio
                         :checked="record.defaultStatus"
                         class="!mr-0"
-                        @change="handleDefaultStatusChange(record as PmsProjectTemplateApi.ProjectTemplateStatus)"
+                        @change="
+                          handleDefaultStatusChange(
+                            record as PmsProjectTemplateApi.ProjectTemplateStatus,
+                          )
+                        "
                       >
                         初始
                       </Radio>
                     </template>
                     <template v-else-if="column.key === 'action'">
-                      <Button danger type="link" @click="removeStatusByItem(record as PmsProjectTemplateApi.ProjectTemplateStatus)">
+                      <Button
+                        danger
+                        type="link"
+                        @click="
+                          removeStatusByItem(
+                            record as PmsProjectTemplateApi.ProjectTemplateStatus,
+                          )
+                        "
+                      >
                         删除
                       </Button>
                     </template>
@@ -703,7 +840,6 @@ onBeforeUnmount(destroySortables);
         </Tabs.TabPane>
 
         <!-- 看板列 -->
-        <!-- TODO @AI：关联状态，宽度不对；修改下，使用浏览器检查下； -->
         <Tabs.TabPane key="board" :tab="`看板（${formData.boards.length}）`">
           <div class="mb-4 flex items-center gap-4">
             <Alert
@@ -738,10 +874,14 @@ onBeforeUnmount(destroySortables);
                   <Input v-model:value="record.code" placeholder="如 todo" />
                 </template>
                 <template v-else-if="column.key === 'name'">
-                  <Input v-model:value="record.name" placeholder="请输入看板列名称" />
+                  <Input
+                    v-model:value="record.name"
+                    placeholder="请输入看板列名称"
+                  />
                 </template>
                 <template v-else-if="column.key === 'workItemType'">
                   <Select
+                    class="w-full"
                     v-model:value="record.workItemType"
                     :options="
                       enabledWorkItemTypeOptions.map((item) => ({
@@ -754,20 +894,25 @@ onBeforeUnmount(destroySortables);
                 </template>
                 <template v-else-if="column.key === 'statusCodes'">
                   <Select
+                    class="w-full"
                     v-model:value="record.statusCodes"
                     max-tag-count="responsive"
                     mode="multiple"
                     :options="
-                      getStatusOptions(record.workItemType, record.code).map((status) => ({
-                        label: status.name || status.code,
-                        value: status.code,
-                      }))
+                      getStatusOptions(record.workItemType, record.code).map(
+                        (status) => ({
+                          label: status.name || status.code,
+                          value: status.code,
+                        }),
+                      )
                     "
                     placeholder="请选择关联状态"
                   />
                 </template>
                 <template v-else-if="column.key === 'action'">
-                  <Button danger type="link" @click="removeBoard(index)">删除</Button>
+                  <Button danger type="link" @click="removeBoard(index)">
+                    删除
+                  </Button>
                 </template>
               </template>
             </Table>

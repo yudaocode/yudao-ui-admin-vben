@@ -6,18 +6,14 @@ import type { PmsKnowledgeViewRecordApi } from '#/api/pms/kb/interaction/view-re
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDateTime } from '@vben/utils';
 
 import { Button, Tabs } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getKnowledgeRecentViewRecordList } from '#/api/pms/kb/interaction/view-record';
-import {
-  getKnowledgeObjectIcon,
-  getKnowledgeObjectTypeName,
-} from '#/views/pms/kb/utils/format';
+import { getKnowledgeObjectIcon } from '#/views/pms/kb/utils/format';
 
 import { useGridColumns } from './data';
 
@@ -60,7 +56,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 切换时间分组 */
 async function handleTabChange() {
-  // 三个时间分组由同一次查询返回，切换页签直接复用已查询的数据
   await gridApi.grid.loadData(recent[activeTab.value]);
 }
 
@@ -68,16 +63,28 @@ async function handleTabChange() {
 function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   if (item.documentId) {
     router.push(
-      `/pms/kb/library/${item.libraryId}/document/${item.documentId}`,
+      {
+        path: `/pms/kb/library/${item.libraryId}`,
+        query: { documentId: String(item.documentId) },
+      },
     );
     return;
   }
-  router.push(`/pms/kb/library/${item.libraryId}/folder/${item.folderId}`);
+  router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { folderId: String(item.folderId) },
+    });
 }
 </script>
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
+    </template>
     <!-- 最近浏览列表 -->
     <Grid>
       <template #toolbar-actions>
@@ -92,8 +99,6 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
           <Tabs.TabPane key="recent30DayItems" tab="最近 30 天" />
         </Tabs>
       </template>
-      <!-- TODO @AI：宽度没占满；是不是别的，可能也有类似问题； -->
-      <!-- TODO @AI：很多这里的 format 逻辑，是不是都适合放到 data.ts 里？你分析下； -->
       <template #name="{ row }">
         <Button class="!p-0" type="link" @click="openItem(row)">
           <IconifyIcon
@@ -102,12 +107,6 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
           />
           {{ row.name }}
         </Button>
-      </template>
-      <template #type="{ row }">
-        {{ getKnowledgeObjectTypeName(row.type) }}
-      </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
       </template>
     </Grid>
   </Page>

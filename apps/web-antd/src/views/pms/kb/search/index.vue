@@ -5,15 +5,12 @@ import type { PmsKnowledgeDocumentApi } from '#/api/pms/kb/content/document';
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { formatDateTime } from '@vben/utils';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getKnowledgeDocumentSearchPage } from '#/api/pms/kb/content/document';
-import { DictTag } from '#/components/dict-tag';
 import { formatKnowledgeFileSize } from '#/views/pms/kb/utils/format';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -48,11 +45,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -76,7 +68,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 function openDocumentDetail(
   document: PmsKnowledgeDocumentApi.KnowledgeDocument,
 ) {
-  router.push(`/pms/kb/library/${document.libraryId}/document/${document.id}`);
+  router.push({
+    path: `/pms/kb/library/${document.libraryId}`,
+    query: { documentId: String(document.id) },
+  });
 }
 
 /** 在摘要中高亮当前关键词，内容经过 DOMPurify 指令处理。 */
@@ -104,9 +99,13 @@ watch(
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
+    </template>
     <!-- 文档列表 -->
-    <!-- TODO @AI：宽度没占满；是不是别的，可能也有类似问题； -->
-    <!-- TODO @AI：很多这里的 format 逻辑，是不是都适合放到 data.ts 里？你分析下； -->
     <Grid>
       <template #title="{ row }">
         <Button class="!p-0" type="link" @click="openDocumentDetail(row)">
@@ -123,15 +122,6 @@ watch(
           v-dompurify-html="highlightSummary(row.contentSummary)"
           class="mt-1 truncate text-xs text-muted-foreground"
         ></div>
-      </template>
-      <template #type="{ row }">
-        <DictTag
-          :type="DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_TYPE"
-          :value="row.type"
-        />
-      </template>
-      <template #updateTime="{ row }">
-        {{ formatDateTime(row.updateTime) }}
       </template>
     </Grid>
   </Page>

@@ -5,9 +5,8 @@ import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDateTime } from '@vben/utils';
 
 import { Button, message, Switch, Tabs } from 'ant-design-vue';
 
@@ -20,12 +19,13 @@ import { PmsKnowledgeObjectType } from '#/views/pms/kb/utils/constants';
 import {
   formatKnowledgeFileSize,
   getKnowledgeObjectIcon,
-  getKnowledgeObjectTypeName,
 } from '#/views/pms/kb/utils/format';
 
 import { useGridColumns } from './data';
 
-defineOptions({ name: 'PmsKnowledgeCollection' });
+// TODO @AI：貌似这个模块不应该是 collection？而是 favorite？如果是，貌似 vue3 + ep、uniapp 都要改下；还有相关的 doc、cloud 文档；（修复完，不要直接删除）；
+// TODO DONE @AI：该页面实际调用 `/pms/kb/favorite` 接口并展示用户关注内容，已统一命名为 favorite。
+defineOptions({ name: 'PmsKnowledgeFavorite' });
 
 const router = useRouter(); // 路由
 const activeType = ref('all'); // 当前对象类型
@@ -43,11 +43,17 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   }
   if (item.documentId) {
     router.push(
-      `/pms/kb/library/${item.libraryId}/document/${item.documentId}`,
+      {
+        path: `/pms/kb/library/${item.libraryId}`,
+        query: { documentId: String(item.documentId) },
+      },
     );
     return;
   }
-  router.push(`/pms/kb/library/${item.libraryId}/folder/${item.folderId}`);
+  router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { folderId: String(item.folderId) },
+    });
 }
 
 /** 取消关注 */
@@ -63,7 +69,6 @@ async function handleCancelFavorite(
     // 刷新列表
     await gridApi.reload();
   } catch {
-    /* 取消操作 */
   }
 }
 
@@ -71,11 +76,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
@@ -92,15 +92,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-    toolbarConfig: {
-      refresh: true,
-    },
   } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
+    </template>
     <!-- 关注列表 -->
     <Grid>
       <template #toolbar-actions>
@@ -117,8 +120,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <Tabs.TabPane key="4" tab="文件" />
         </Tabs>
       </template>
-      <!-- TODO @AI：宽度没占满；是不是别的，可能也有类似问题； -->
-      <!-- TODO @AI：很多这里的 format 逻辑，是不是都适合放到 data.ts 里？你分析下； -->
       <template #name="{ row }">
         <Button class="!p-0" type="link" @click="openItem(row)">
           <IconifyIcon
@@ -140,15 +141,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {{ formatKnowledgeFileSize(row.fileSize) }}
           </span>
         </div>
-      </template>
-      <template #type="{ row }">
-        {{ getKnowledgeObjectTypeName(row.type) }}
-      </template>
-      <template #targetUpdateTime="{ row }">
-        {{ formatDateTime(row.targetUpdateTime) }}
-      </template>
-      <template #createTime="{ row }">
-        {{ formatDateTime(row.createTime) }}
       </template>
       <template #favorite="{ row }">
         <Switch :checked="true" @change="handleCancelFavorite(row)" />

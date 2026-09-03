@@ -4,6 +4,8 @@ import type { PmsKnowledgeDocumentApi } from '#/api/pms/kb/content/document';
 
 import { markRaw } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+
 import { getRangePickerDefaultProps } from '#/utils';
 import KnowledgeLibrarySelect from '#/views/pms/kb/library/components/knowledge-library-select.vue';
 import { UserSelect } from '#/views/system/user/components';
@@ -60,7 +62,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
     {
       field: 'title',
       title: '文档标题',
-      width: 280,
+      minWidth: 280,
       slots: { default: 'title' },
     },
     {
@@ -73,7 +75,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
       title: '类型',
       width: 130,
       align: 'center',
-      slots: { default: 'type' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_TYPE },
+      },
     },
     {
       field: 'creatorUserName',
@@ -85,7 +90,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
       title: '更新时间',
       width: 180,
       align: 'center',
-      slots: { default: 'updateTime' },
+      formatter: 'formatDateTime',
     },
   ];
 }

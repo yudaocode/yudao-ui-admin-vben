@@ -99,8 +99,6 @@ const [Modal] = useVbenModal({
       </Button>
     </div>
     <!-- 标签列表 -->
-    <!-- TODO @AI：宽度没占满；是不是别的，可能也有类似问题； -->
-    <!-- TODO @AI：很多这里的 format 逻辑，是不是都适合放到 data.ts 里？你分析下； -->
     <Grid>
       <template #name="{ row }">
         <Tag :color="row.color">{{ row.name }}</Tag>

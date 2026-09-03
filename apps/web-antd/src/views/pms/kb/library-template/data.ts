@@ -51,7 +51,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeLibraryTemplat
       title: '状态',
       width: 100,
       align: 'center',
-      slots: { default: 'status' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
     },
     {
       field: 'sort',

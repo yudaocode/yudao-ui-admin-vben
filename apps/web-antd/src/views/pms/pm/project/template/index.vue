@@ -4,6 +4,7 @@ import type { PmsProjectTemplateApi } from '#/api/pms/pm/project/template';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
 import { message, Tag } from 'ant-design-vue';
@@ -13,11 +14,6 @@ import {
   deleteProjectTemplate,
   getProjectTemplatePage,
 } from '#/api/pms/pm/project/template';
-import { DictTag } from '#/components/dict-tag';
-import {
-  formatProjectType,
-  getWorkItemTypeName,
-} from '#/views/pms/pm/utils/format';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import ProjectTemplateForm from './project-template-form.vue';
@@ -48,9 +44,7 @@ async function handleDelete(id: number) {
     message.success('删除成功');
     // 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消删除 */
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -60,11 +54,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -86,10 +75,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <template #doc><DocAlert title="【PMS】项目模板" url="https://doc.iocoder.cn/pms/pm/project/" /></template>
+    <template #doc>
+      <DocAlert
+        title="【PMS】项目模板"
+        url="https://doc.iocoder.cn/pms/pm/project/"
+      />
+    </template>
 
     <!-- 模板列表 -->
-    <!-- TODO @AI：宽度？貌似没占满，可以看看； -->
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -104,12 +97,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           ]"
         />
       </template>
-      <template #projectType="{ row }">
-        {{ formatProjectType(row.projectType) }}
-      </template>
       <template #itemTypes="{ row }">
         <Tag v-for="type in row.itemTypes" :key="type" class="mr-1">
-          {{ getWorkItemTypeName(type) }}
+          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, type) || '-' }}
         </Tag>
       </template>
       <template #statusCount="{ row }">
@@ -117,9 +107,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #boardCount="{ row }">
         {{ row.boards.length }}
-      </template>
-      <template #status="{ row }">
-        <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="row.status" />
       </template>
       <template #createTime="{ row }">
         {{ formatDateTime(row.createTime) }}

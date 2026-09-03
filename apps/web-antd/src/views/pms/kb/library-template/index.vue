@@ -2,8 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeLibraryTemplateApi } from '#/api/pms/kb/library/template';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -12,7 +11,6 @@ import {
   deleteKnowledgeLibraryTemplate,
   getKnowledgeLibraryTemplatePage,
 } from '#/api/pms/kb/library/template';
-import { DictTag } from '#/components/dict-tag';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import KnowledgeLibraryTemplateForm from './knowledge-library-template-form.vue';
@@ -50,9 +48,7 @@ async function handleDelete(id: number) {
     message.success('删除成功');
     // 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消删除 */
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -63,11 +59,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -89,6 +80,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】知识库管理"
+        url="https://doc.iocoder.cn/pms/kb/library/"
+      />
+    </template>
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -102,9 +99,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
-      </template>
-      <template #status="{ row }">
-        <DictTag :type="DICT_TYPE.COMMON_STATUS" :value="row.status" />
       </template>
       <template #actions="{ row }">
         <TableAction

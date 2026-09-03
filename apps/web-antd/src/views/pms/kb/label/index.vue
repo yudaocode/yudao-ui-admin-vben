@@ -3,10 +3,10 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeDocumentApi } from '#/api/pms/kb/content/document';
 import type { PmsKnowledgeDocumentLabelApi } from '#/api/pms/kb/content/document/label';
 
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
@@ -24,15 +24,12 @@ import KnowledgeLabelManageDialog from './knowledge-label-manage-dialog.vue';
 defineOptions({ name: 'PmsKnowledgeDocumentLabel' });
 
 const router = useRouter(); // 路由
-const route = useRoute(); // 当前路由
 const labelLoading = ref(true); // 标签列表加载中
 const labelList = ref<PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[]>(
   [],
 ); // 标签列表
 const labelKeyword = ref(''); // 标签关键字
-const selectedLabelId = ref<number | undefined>(
-  route.query.labelId ? Number(route.query.labelId) : undefined,
-); // 当前标签编号
+const selectedLabelId = ref<number>(); // 当前标签编号
 const total = ref(0); // 文档总数
 
 const filteredLabelList = computed(() =>
@@ -53,13 +50,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
-      // 选中标签后由页面主动查询，不使用挂载自动加载
       autoLoad: false,
       ajax: {
         query: async ({ page }) => {
@@ -113,7 +104,6 @@ async function getDocumentList() {
 /** 选择标签 */
 function handleSelectLabel(labelId: number) {
   selectedLabelId.value = labelId;
-  router.replace({ query: { labelId: String(labelId) } });
   getDocumentList();
 }
 
@@ -121,37 +111,32 @@ function handleSelectLabel(labelId: number) {
 function clearSelectedLabel() {
   selectedLabelId.value = undefined;
   total.value = 0;
-  router.replace({ query: {} });
 }
 
 /** 打开文档详情 */
 function openDocumentDetail(
   document: PmsKnowledgeDocumentApi.KnowledgeDocument,
 ) {
-  router.push(`/pms/kb/library/${document.libraryId}/document/${document.id}`);
+  router.push({
+    path: `/pms/kb/library/${document.libraryId}`,
+    query: { documentId: String(document.id) },
+  });
 }
 
 /** 初始化 */
 onMounted(() => {
   getLabelList();
 });
-
-watch(
-  () => route.query.labelId,
-  (labelId) => {
-    selectedLabelId.value = labelId ? Number(labelId) : undefined;
-    getDocumentList();
-  },
-);
-// TODO @AI：选择标签之后，会弹出一个新 tab；不太符合预期；需要修复下；
 </script>
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="【PMS】文档与协作" url="https://doc.iocoder.cn/pms/kb/document/" />
+    </template>
     <Row :gutter="20" class="h-full">
       <!-- 左侧标签列表 -->
-      <!-- TODO @AI：貌似左右两侧没生效；检查下； -->
-      <Col :span="4" :xs="24">
+      <Col :xs="24" :md="4">
         <div class="h-full rounded-lg bg-background p-4">
           <div class="mb-3 flex items-center justify-between">
             <span class="font-semibold">文档标签</span>
@@ -198,7 +183,7 @@ watch(
       </Col>
 
       <!-- 右侧文档列表 -->
-      <Col :span="20" :xs="24">
+      <Col :xs="24" :md="20">
         <div class="flex h-full flex-col rounded-lg bg-background p-4">
           <div
             v-if="selectedLabel"

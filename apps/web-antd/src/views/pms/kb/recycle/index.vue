@@ -2,8 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 
-import { confirm, Page } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { Alert, message } from 'ant-design-vue';
@@ -14,7 +13,6 @@ import {
   permanentDeleteKnowledgeRecycle,
   restoreKnowledgeRecycle,
 } from '#/api/pms/kb/recycle';
-import { DictTag } from '#/components/dict-tag';
 
 import { useGridColumns } from './data';
 
@@ -35,9 +33,7 @@ async function handleRestore(row: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
     message.success('恢复成功');
     // 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消恢复 */
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站记录 */
@@ -52,9 +48,7 @@ async function handlePermanentDelete(
     message.success('彻底删除成功');
     // 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消删除 */
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -74,17 +68,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-    toolbarConfig: {
-      refresh: true,
-    },
   } as VxeTableGridOptions<PmsKnowledgeRecycleApi.KnowledgeRecycle>,
 });
 </script>
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
+    </template>
     <!-- 回收站提示 -->
-    <!-- TODO @AI：mb-3 变成 !mb-3；看看别的有没类似的问题 -->
     <Alert
       class="!mb-3"
       :closable="false"
@@ -94,12 +90,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     />
     <!-- 列表 -->
     <Grid>
-      <template #type="{ row }">
-        <DictTag
-          :type="DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE"
-          :value="row.type"
-        />
-      </template>
       <template #deleteTime="{ row }">
         {{ formatDateTime(row.deleteTime) }}
       </template>

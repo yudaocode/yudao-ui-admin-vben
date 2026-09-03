@@ -113,9 +113,7 @@ async function removeDocument(index: number) {
     // 删除的二次确认
     await confirm('确定删除该模板文档吗？');
     formData.value.documents.splice(index, 1);
-  } catch {
-    /* 取消删除 */
-  }
+  } catch {}
 }
 
 /** 重置表单 */
@@ -144,10 +142,15 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onConfirm() {
     // 校验表单
-    if (!formRef.value || !(await formRef.value.validate().catch(() => false))) {
+    if (
+      !formRef.value ||
+      !(await formRef.value.validate().catch(() => false))
+    ) {
       return;
     }
-    const documentTitles = formData.value.documents.map((document) => document.title);
+    const documentTitles = formData.value.documents.map(
+      (document) => document.title,
+    );
     if (new Set(documentTitles).size !== documentTitles.length) {
       message.warning('模板文档标题不能重复');
       return;
@@ -173,7 +176,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       return;
     }
-    const data = modalApi.getData() as { formType: 'create' | 'update'; id?: number };
+    const data = modalApi.getData() as {
+      formType: 'create' | 'update';
+      id?: number;
+    };
     formType.value = data.formType;
     resetForm();
     // 修改时，设置数据
@@ -187,8 +193,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-// TODO @AI：可以使用 vxe 的 form 组件么？
-// TODO @AI：是不是好些，应该放到 modules 里？
 </script>
 
 <template>
@@ -216,10 +220,12 @@ const [Modal, modalApi] = useVbenModal({
             <Radio.Group
               v-model:value="formData.status"
               :options="
-                getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map((item) => ({
-                  label: item.label,
-                  value: item.value,
-                }))
+                getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map(
+                  (item) => ({
+                    label: item.label,
+                    value: item.value,
+                  }),
+                )
               "
             />
           </Form.Item>
@@ -228,7 +234,11 @@ const [Modal, modalApi] = useVbenModal({
       <Row :gutter="20">
         <Col :span="12">
           <Form.Item label="显示顺序" name="sort">
-            <InputNumber v-model:value="formData.sort" class="!w-full" :min="0" />
+            <InputNumber
+              v-model:value="formData.sort"
+              class="!w-full"
+              :min="0"
+            />
           </Form.Item>
         </Col>
         <Col :span="12">
@@ -259,8 +269,12 @@ const [Modal, modalApi] = useVbenModal({
             <template #bodyCell="{ column, record, index }">
               <template v-if="column.key === 'index'">{{ index + 1 }}</template>
               <template v-else-if="column.key === 'action'">
-                <Button type="link" @click="openDocumentForm(index)">编辑</Button>
-                <Button danger type="link" @click="removeDocument(index)">删除</Button>
+                <Button type="link" @click="openDocumentForm(index)">
+                  编辑
+                </Button>
+                <Button danger type="link" @click="removeDocument(index)">
+                  删除
+                </Button>
               </template>
               <template v-else>{{ record.title }}</template>
             </template>

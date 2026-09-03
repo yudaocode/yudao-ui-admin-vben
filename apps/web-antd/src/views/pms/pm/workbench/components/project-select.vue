@@ -3,10 +3,11 @@ import type { PmsProjectApi } from '#/api/pms/pm/project';
 
 import { onMounted, ref } from 'vue';
 
+import { getAllPageItems } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getProjectPage } from '#/api/pms/pm/project';
-import { getAllPageItems } from '#/views/pms/utils/page';
 
 defineOptions({ name: 'PmsProjectSelect' });
 
@@ -43,7 +44,9 @@ onMounted(() => {
 <template>
   <Select
     :allow-clear="true"
-    :options="projectList.map((project) => ({ label: project.name, value: project.id }))"
+    :options="
+      projectList.map((project) => ({ label: project.name, value: project.id }))
+    "
     :value="modelValue"
     class="w-full"
     option-filter-prop="label"

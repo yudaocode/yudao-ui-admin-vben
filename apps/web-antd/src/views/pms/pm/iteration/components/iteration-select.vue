@@ -3,10 +3,11 @@ import type { PmsIterationApi } from '#/api/pms/pm/iteration';
 
 import { ref, watch } from 'vue';
 
+import { getAllPageItems } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getIterationPage } from '#/api/pms/pm/iteration';
-import { getAllPageItems } from '#/views/pms/utils/page';
 
 defineOptions({ name: 'PmsIterationSelect' });
 

@@ -1,13 +1,16 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types';
 
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
+
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {
       field: 'name',
       title: '名称',
-      width: 260,
+      minWidth: 260,
       align: 'left',
       slots: { default: 'name' },
     },
@@ -16,7 +19,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       title: '类型',
       width: 100,
       align: 'left',
-      slots: { default: 'type' },
+      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE } },
     },
     {
       field: 'libraryName',
@@ -28,13 +31,13 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       field: 'targetUpdateTime',
       title: '内容更新时间',
       width: 180,
-      slots: { default: 'targetUpdateTime' },
+      formatter: 'formatDateTime',
     },
     {
       field: 'createTime',
       title: '关注时间',
       width: 180,
-      slots: { default: 'createTime' },
+      formatter: 'formatDateTime',
     },
     {
       title: '是否关注',

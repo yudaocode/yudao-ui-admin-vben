@@ -51,7 +51,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectTemplateApi.Proj
     {
       field: 'name',
       title: '模板名称',
-      width: 180,
+      minWidth: 180,
       align: 'center',
     },
     {
@@ -59,7 +59,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectTemplateApi.Proj
       title: '项目类型',
       width: 140,
       align: 'center',
-      slots: { default: 'projectType' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_PROJECT_TYPE },
+      },
     },
     {
       field: 'itemTypes',
@@ -87,7 +90,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectTemplateApi.Proj
       title: '状态',
       width: 90,
       align: 'center',
-      slots: { default: 'status' },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.COMMON_STATUS },
+      },
     },
     {
       field: 'sort',

@@ -5,12 +5,15 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, h, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
+import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import {
   Button,
@@ -51,17 +54,32 @@ import {
 } from '#/views/pms/pm/utils/constants';
 import {
   formatProjectCompletionRate,
-  formatProjectType,
-  formatProjectTypeShort,
   formatProjectWorkItemCounts,
 } from '#/views/pms/pm/utils/format';
 
-import TrendChart from '../../components/trend-chart.vue';
 import ProjectForm from '../components/project-form.vue';
 import ProjectGroupList from './components/group/project-group-list.vue';
 import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectList' });
+
+/** 星标项目趋势小图（v-for 内逐卡片渲染） */
+// TODO @AI：不用这么封装把？直接 html 里使用把。
+const FavoriteTrendChart = defineComponent({
+  props: {
+    options: { required: true, type: Object },
+  },
+  setup(props) {
+    const chartRef = ref<any>();
+    const { renderEcharts } = useEcharts(chartRef);
+    onMounted(() => renderEcharts(props.options as EChartsOption));
+    watch(
+      () => props.options,
+      (options) => renderEcharts(options as EChartsOption),
+    );
+    return () => h(EchartsUI, { ref: chartRef, height: '56px' });
+  },
+});
 
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由
@@ -132,11 +150,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
       getProjectSceneByRoute() !== PmsProjectSceneType.ALL,
     ),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       autoLoad: false,
       ajax: {
@@ -280,7 +293,6 @@ async function handleExit(project: PmsProjectApi.Project) {
     message.success('已退出项目');
     await handleProjectChanged();
   } catch {
-    /* 取消退出 */
   }
 }
 
@@ -317,7 +329,6 @@ async function handleProjectCommand(
     }
     await handleProjectChanged();
   } catch {
-    /* 取消操作 */
   }
 }
 
@@ -420,7 +431,7 @@ watch(
             <div class="mt-1 truncate text-xs text-muted-foreground">
               {{
                 project.description ||
-                `${formatProjectType(project.type)} · 暂无项目描述`
+                `${getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, project.type) || '-'} · 暂无项目描述`
               }}
             </div>
             <Progress
@@ -429,7 +440,7 @@ watch(
               :show-info="false"
               :stroke-width="5"
             />
-            <TrendChart
+            <FavoriteTrendChart
               v-if="project.completedTrends"
               class="mt-1.5"
               :options="getFavoriteTrendChartOptions(project)"
@@ -541,7 +552,7 @@ watch(
             >
               {{ row.name }}
             </div>
-            <Tag>{{ formatProjectTypeShort(row.type) }}</Tag>
+            <Tag>{{ getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, row.type) || '-' }}</Tag>
           </div>
         </div>
       </template>

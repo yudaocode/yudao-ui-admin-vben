@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
@@ -34,20 +34,13 @@ async function handleRestore(project: PmsProjectApi.Project) {
     message.success('项目已恢复');
     // 3. 刷新列表
     handleRefresh();
-  } catch {
-    /* 取消恢复 */
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
-    pagerConfig: {
-      enabled: true,
-      pageSize: 10,
-      pageSizes: [10, 20, 30, 50],
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
@@ -72,8 +65,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="【PMS】项目中心、工作台与项目管理" url="https://doc.iocoder.cn/pms/pm/project/" />
+    </template>
     <!-- 归档项目列表 -->
     <Grid>
+      <!-- TODO @AI：这种，一般放到 data.ts 里把。 -->
       <template #archiveTime="{ row }">
         {{ formatDateTime(row.archiveTime) }}
       </template>
