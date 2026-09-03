@@ -8,7 +8,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { getAllPageItems } from '@vben/utils';
 
-import { Button, DatePicker, Empty, Input, Popover, Select } from 'antdv-next';
+import { Button, DatePicker, Empty, Input, Popover, Select, Spin } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getIterationPage } from '#/api/pms/pm/iteration';
@@ -19,7 +19,6 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectGantt' });
 
 // TODO @AI：甘特可以保留自定义；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts。三端行数差一截，对齐交互。
-// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；补显式导入后确认甘特页不再出现未注册组件。
 
 const props = defineProps<{
   editable: boolean;

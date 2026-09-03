@@ -19,7 +19,6 @@ import { useFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectForm' });
 
-// TODO @AI：标题对齐 system user 用 $t('ui.actionTitle.create/edit')；项目类型不要 slot 手写 Radio，放到 schema 的 RadioGroup。connectedComponent 补 destroyOnClose。
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于操作成功后的回调
 
 const formType = ref<'create' | 'update'>('create'); // 表单类型：create - 新增；update - 修改

@@ -2,7 +2,6 @@
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'antdv-next';
-// TODO @AI：useVbenForm 从 #/adapter/form 引入，对齐 system user；PMS 里好些 form 都从 @vben/common-ui 拿，三端一并改。
 
 import { useVbenForm } from '#/adapter/form';
 import { createKnowledgeDocument } from '#/api/pms/kb/content/document';

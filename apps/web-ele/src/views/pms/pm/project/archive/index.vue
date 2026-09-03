@@ -18,7 +18,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsProjectArchive' });
 
-// TODO @AI：恢复操作对齐 system user，用 TableAction popConfirm，不要 confirm + empty catch。归档列表是否也要搜索 form schema？补 toolbarConfig。
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();

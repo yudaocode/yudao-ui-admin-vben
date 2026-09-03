@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Button, message, Tooltip } from 'ant-design-vue';
 import Sortable from 'sortablejs';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProjectGroup,
   getProjectGroupList,
@@ -25,7 +25,6 @@ import ProjectGroupForm from './project-group-form.vue';
 defineOptions({ name: 'PmsProjectGroupList' });
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于项目分组发生变化后的回调
-// TODO @AI：模板使用了 <TableAction>，但脚本未从 #/adapter/vxe-table 导入；三端都要补显式导入，否则分组操作列无法按 system/user 注册。
 
 const { hasAccessByCodes } = useAccess();
 const sortLoading = ref(false); // 保存排序的加载中

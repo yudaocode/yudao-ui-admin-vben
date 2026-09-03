@@ -24,6 +24,7 @@ import {
   RadioGroup,
   Row,
   Select,
+  Spin,
   Table,
   Tabs,
   TextArea,
@@ -46,7 +47,6 @@ import { getWorkItemTypeCode } from '#/views/pms/pm/utils/format';
 defineOptions({ name: 'PmsProjectTemplateForm' });
 
 // TODO @AI：基本信息页签改 useVbenForm + schema；状态/看板内嵌表格改 VXE Grid（可拖拽）。antd、antdv-next 的 v-loading 换成 lock。复杂 Tab 可以留，但不要继续手写 Form.Item。
-// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；先补导入再评估该超大表单的拆分，避免把未注册组件带入模板。
 const emit = defineEmits<{ success: [] }>();
 
 type ProjectTemplateTab = 'basic' | 'board' | 'itemType' | 'status';

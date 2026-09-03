@@ -64,7 +64,6 @@ export function useGridColumns(): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['
       field: 'endTime',
       title: '截止时间',
       width: 180,
-      // TODO @AI：同文件 useWorkItemGridColumns 已用 formatter: 'formatDateTime'，这里不要再 slots，两套列定义对齐。
       formatter: 'formatDateTime',
     },
   ];

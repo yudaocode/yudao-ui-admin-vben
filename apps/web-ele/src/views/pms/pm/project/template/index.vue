@@ -24,7 +24,7 @@ defineOptions({ name: 'PmsProjectTemplate' });
 
 const [ProjectTemplateFormModal, projectTemplateFormModalApi] = useVbenModal({
   connectedComponent: ProjectTemplateForm,
-  // TODO @AI：对齐 system user，补 destroyOnClose。删除改 TableAction popConfirm，不要 confirm + empty catch。
+  destroyOnClose: true,
 });
 
 /** 刷新表格 */

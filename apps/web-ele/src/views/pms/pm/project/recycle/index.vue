@@ -22,7 +22,6 @@ import { useGridColumns, useSearchFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectRecycle' });
 
-// TODO @AI：恢复/删除改 TableAction popConfirm，不要 confirm + empty catch。补 destroyOnClose、toolbarConfig。
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();

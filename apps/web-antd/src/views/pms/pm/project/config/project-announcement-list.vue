@@ -8,7 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Dropdown, Menu, message } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProjectAnnouncement,
   getProjectAnnouncementList,
@@ -18,9 +18,6 @@ import { useAnnouncementColumns } from './data';
 import ProjectAnnouncementForm from './project-announcement-form.vue';
 
 defineOptions({ name: 'PmsProjectAnnouncementList' });
-
-// TODO @AI：删除改 TableAction popConfirm。createTime 走 formatter。补 destroyOnClose。
-// TODO @AI：模板使用了 <TableAction>，但脚本只导入 useVbenVxeGrid；按 system/user 显式从 #/adapter/vxe-table 导入，否则操作列会变成未注册组件。
 
 const props = defineProps<{ editable: boolean; projectId: number }>();
 

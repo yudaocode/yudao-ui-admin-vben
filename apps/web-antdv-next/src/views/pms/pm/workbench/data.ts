@@ -14,7 +14,7 @@ import { PmsWorkItemStatusType } from '#/views/pms/pm/utils/constants';
 import ProjectSelect from './components/project-select.vue';
 
 /** 列表的搜索表单 */
-// TODO @AI：命名对齐 system user，改成 useGridFormSchema；createTime 用 formatter: 'formatDateTime'，不要 slots。
+// TODO @AI：命名对齐 system user，改成 useGridFormSchema。
 export function useSearchFormSchema(
   onProjectChange: () => void,
 ): VbenFormSchema[] {

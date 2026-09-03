@@ -11,7 +11,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Button, message, Tooltip } from 'antdv-next';
 import Sortable from 'sortablejs';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteProjectGroup,
   getProjectGroupList,
@@ -23,9 +23,6 @@ import { useGridColumns } from './data';
 import ProjectGroupForm from './project-group-form.vue';
 
 defineOptions({ name: 'PmsProjectGroupList' });
-
-// TODO @AI：删除改 TableAction popConfirm。补 destroyOnClose。
-// TODO @AI：模板使用了 <TableAction>，但脚本未从 #/adapter/vxe-table 导入；三端都要补显式导入，否则分组操作列无法按 system/user 注册。
 
 const emit = defineEmits(['success']); // 定义 success 事件，用于项目分组发生变化后的回调
 

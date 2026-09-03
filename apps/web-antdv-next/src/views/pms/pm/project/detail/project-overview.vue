@@ -14,8 +14,7 @@ import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { useUserStore } from '@vben/stores';
-import { formatDateTime } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { formatDateTime, getAllPageItems } from '@vben/utils';
 
 import {
   Avatar,
@@ -25,6 +24,7 @@ import {
   DescriptionsItem,
   Empty,
   Progress,
+  Spin,
   Tag,
 } from 'antdv-next';
 import dayjs from 'dayjs';
@@ -45,7 +45,6 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectOverview' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
-// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；同时 getAllPageItems 与 formatDateTime 被拆成重复工具导入，需合并后跑 lint/build。
 // TODO @AI：概况只展示未完成迭代和最新公告，却分页拉取全部迭代/公告后再 filter[0]；应补后端状态/limit 查询或聚合接口，避免项目数据增长后首屏请求无界膨胀。
 // TODO @AI：trendChartRef 使用 ref<any>，应对齐 CRM/system 的 EchartsUIType 实例类型，避免模板 ref 和图表调用失去类型约束。
 

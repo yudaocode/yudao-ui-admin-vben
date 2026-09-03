@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { message, Tabs } from 'antdv-next';
+import { message, Spin, Tabs } from 'antdv-next';
 
 import { getProject } from '#/api/pms/pm/project';
 import { PmsProjectStatus } from '#/views/pms/pm/utils/constants';
@@ -18,9 +18,6 @@ import ProjectCollaborationConfig from './project-collaboration-config.vue';
 import ProjectMemberList from './project-member-list.vue';
 
 defineOptions({ name: 'PmsProjectConfig' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。页签内容已经拆组件了，加载态对齐 system user 用 lock/Spin。
-// TODO @AI：模板已使用 <Spin>，但当前 antdv-next 导入未包含 Spin；补显式导入并用 system/user 的写法验证构建。
 
 type ProjectConfigTab = 'announcement' | 'basic' | 'configuration' | 'member';
 
